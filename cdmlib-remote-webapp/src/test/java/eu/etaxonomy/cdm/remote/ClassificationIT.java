@@ -13,7 +13,7 @@ import org.junit.Test;
 
 /**
  * @author a.kohlbecker
- * @date Mar 3, 2014
+ * @since Mar 3, 2014
  *
  */
 

@@ -18,6 +18,7 @@ import java.util.UUID;
 
 import org.apache.lucene.index.CorruptIndexException;
 import org.hibernate.search.spatial.impl.Rectangle;
+import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
@@ -30,7 +31,6 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.LuceneParseException;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
-import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -47,19 +47,22 @@ import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
+import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
+import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author a.babadshanjan
- * @created 01.09.2008
+ * @since 01.09.2008
  */
 public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenOrObservationBase> {
 
@@ -258,6 +261,27 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
             Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
+     * The method will search for specimen associated with the taxon nodes.<br>
+     * It will search for 3 possible association types: <br>
+     * - via IndividualAssociations of the taxon<br>
+     *  - via TypeDesignations of the taxon name<br>
+     *  - via Determinations of the taxon or taxon name<br>
+     * <br>
+     * more are covered in
+     * {@link IOccurrenceService#findByTitle(IIdentifiableEntityServiceConfigurator)}
+     * @param taxonNodeUuids
+     *            a list of {@link UUID}s of the taxon nodes
+     * @param limit
+     * @param start
+     * @return a collection of {@link SpecimenNodeWrapper} containing the
+     *         {@link TaxonNode} and the corresponding {@link UuidAndTitleCache}
+     *         object for the specimen found for this taxon node
+     */
+    public Collection<SpecimenNodeWrapper> listUuidAndTitleCacheByAssociatedTaxon(List<UUID> taxonNodeUuids,
+            Integer limit, Integer start);
+
+
+    /**
      * Lists all instances of {@link FieldUnit} which are
      * associated <b>directly or indirectly</b>with the <code>taxon</code> specified
      * as parameter. "Indirectly" means that a sub derivate of the FieldUnit is
@@ -317,10 +341,11 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
     /**
      * Retrieves all {@link FieldUnit}s for the {@link SpecimenOrObservationBase} with the given {@link UUID}.<br>
      * @param specimenUuid the UUID of the specimen
+     * @param propertyPaths the property path
      * @return either a collection of FieldUnits this specimen was derived from, the FieldUnit itself
      * if this was a FieldUnit or an empty collection if no FieldUnits were found
      */
-    public Collection<FieldUnit> getFieldUnits(UUID specimenUuid);
+    public Collection<FieldUnit> getFieldUnits(UUID specimenUuid, List<String> propertyPaths);
 
     /**
      * @param clazz
@@ -407,13 +432,6 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @return a DTO with all the assembled information
      */
     public PreservedSpecimenDTO assemblePreservedSpecimenDTO(DerivedUnit derivedUnit);
-
-    /**
-     * Returns a collection of {@link ICdmBase}s that are not persisted via cascading when saving the given specimen (mostly DefinedTerms).
-     * @param specimen the specimen that is checked for non-cascaded elements.
-     * @return collection of non-cascaded element associated with the specimen
-     */
-    public Collection<ICdmBase> getNonCascadedAssociatedElements(SpecimenOrObservationBase<?> specimen);
 
     /**
      * Deletes the specified specimen according to the setting in the {@link SpecimenDeleteConfigurator}.<br>
@@ -621,5 +639,23 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @return an unordered list of all child derivatives
      */
     public List<DerivedUnit> getAllChildDerivatives(UUID specimenUuid);
+
+    /**
+     * Returns all {@link FieldUnit}s that are referencing this {@link GatheringEvent}
+     * @param gatheringEventUuid the {@link UUID} of the gathering event
+     * @return a list of field units referencing the gathering event
+     */
+    public List<FieldUnit> getFieldUnitsForGatheringEvent(UUID gatheringEventUuid);
+
+
+    /**
+     * Returns a list of {@link UuidAndTitleCache} for the specimens found with the
+     * given configurator
+     * @param config the configurator for the search
+     * @return a list of UuidAndTitleCache object
+     */
+    @Transactional(readOnly = true)
+    public Pager<UuidAndTitleCache<SpecimenOrObservationBase>> findByTitleUuidAndTitleCache(
+            FindOccurrencesConfigurator config);
 
 }

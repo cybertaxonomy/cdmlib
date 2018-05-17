@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.common.Language;
  * @see http://dev.e-taxonomy.eu/trac/ticket/3521
  * 
  * @author a.mueller
- * @created 11.06.2013
+ * @since 11.06.2013
  */
 @XmlEnum
 public enum RankClass implements IEnumTerm<RankClass>, Serializable{

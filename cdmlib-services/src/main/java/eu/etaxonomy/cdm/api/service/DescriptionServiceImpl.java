@@ -66,12 +66,12 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 /**
  * @author a.mueller
- * @created 24.06.2008
+ * @since 24.06.2008
  * @version 1.0
  */
 /**
  * @author a.kohlbecker
- * @date Dec 5, 2013
+ * @since Dec 5, 2013
  *
  */
 @Service
@@ -464,7 +464,7 @@ public class DescriptionServiceImpl
     		Taxon tax = taxDescription.getTaxon();
     		tax.removeDescription(taxDescription, true);
     		dao.delete(description);
-
+    		deleteResult.addDeletedObject(taxDescription);
             deleteResult.addUpdatedObject(tax);
             deleteResult.setCdmEntity(tax);
     	}
@@ -679,6 +679,7 @@ public class DescriptionServiceImpl
                        }
                    }
                     dao.delete(description);
+
                 }else{
                     dao.saveOrUpdate(description);
                     result.addUpdatedObject(description);

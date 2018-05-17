@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.molecular.Amplification;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -51,7 +51,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
  * @author a.mueller
- * @created 18.03.2009
+ * @since 18.03.2009
  */
 public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest {
 	private static Logger logger = Logger.getLogger(CacheStrategyGeneratorTest.class);
@@ -192,8 +192,8 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest 
 		person1 = Person.NewInstance();
 
 		person1.setUuid(UUID.fromString("646dad4b-0f0e-4f5a-b059-8099ad9a6125"));
-		person1.setFirstname("P1FN");
-		person1.setLastname("P1LN");
+		person1.setGivenName("P1FN");
+		person1.setFamilyName("P1LN");
 		person1.setPrefix("Dr1.");
 		person1.setSuffix("Suff1");
 		return person1;
@@ -204,8 +204,8 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest 
 		person2 = Person.NewInstance();
 		person2.setUuid(UUID.fromString("ca904533-2a70-49f3-9a0e-5e4bcc12c154"));
 		person2.setNomenclaturalTitle("P2NomT");
-		person2.setLastname("P2LN");
-		person2.setFirstname("P2FN");
+		person2.setFamilyName("P2LN");
+		person2.setGivenName("P2FN");
 		person2.setSuffix("P2Suff");
 		return person2;
 	}
@@ -234,7 +234,7 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest 
 		article1.setUuid(UUID.fromString("eb090fbc-5895-405c-aba5-cac287efb128"));
 		article1.setAbbrevTitle("M. Art.");
 		article1.setVolume("1");
-		article1.setDatePublished(TimePeriod.NewInstance(1972));
+		article1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1972));
 		article1.setInJournal(journal1);
 		article1.setAuthorship(articleAuthor);
 		article1.getAbbrevTitleCache();

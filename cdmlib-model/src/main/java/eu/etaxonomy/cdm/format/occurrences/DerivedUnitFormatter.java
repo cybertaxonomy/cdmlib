@@ -13,7 +13,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 
 /**
  * @author pplitzner
- * @date Nov 30, 2015
+ * @since Nov 30, 2015
  *
  */
 public class DerivedUnitFormatter extends SpecimenOrObservationBaseFormatter{

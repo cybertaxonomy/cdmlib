@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 
 /**
  * @author k.luther
- * @date 15.07.2016
+ * @since 15.07.2016
  *
  */
 public class GbifDataHolder extends SpecimenDataHolder{

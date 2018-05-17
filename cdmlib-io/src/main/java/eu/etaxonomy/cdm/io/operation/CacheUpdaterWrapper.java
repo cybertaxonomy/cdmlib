@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.io.operation.config.CacheUpdaterConfigurator;
 
 /**
  * @author k.luther
- * @date 08.12.2016
+ * @since 08.12.2016
  *
  */
 public class CacheUpdaterWrapper extends CdmImportBase<CacheUpdaterConfigurator, DefaultImportState<CacheUpdaterConfigurator>> {

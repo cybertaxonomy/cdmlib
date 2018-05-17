@@ -60,8 +60,8 @@
                         <class type="string">Contact</class>
                     </contact>
                     <data class="array"/>
-                    <firstname type="string"/>
-                    <lastname type="string"/>
+                    <givenname type="string"/>
+                    <familyname type="string"/>
                     <lifespan class="object">
                         <class type="string">TimePeriod</class>
                         <end type="string">����-��-��</end>

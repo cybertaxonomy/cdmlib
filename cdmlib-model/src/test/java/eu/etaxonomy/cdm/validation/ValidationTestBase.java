@@ -20,7 +20,7 @@ import org.junit.Assert;
 /**
  * Class providing some base functionality for validator testing
  * @author a.mueller
- * @date 18.02.2015
+ * @since 18.02.2015
  *
  */
 public abstract class ValidationTestBase {

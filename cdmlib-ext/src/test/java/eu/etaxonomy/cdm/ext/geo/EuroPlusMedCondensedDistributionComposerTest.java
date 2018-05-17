@@ -14,39 +14,23 @@ import java.util.List;
 import java.util.Set;
 
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
-import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.test.TermTestBase;
 
 /**
  * @author a.mueller
- * @date 15.06.2016
+ * @since 15.06.2016
  *
  */
-public class EuroPlusMedCondensedDistributionComposerTest {
-
-    /**
-     * @throws java.lang.Exception
-     */
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-        DefaultTermInitializer initializer = new DefaultTermInitializer();
-        initializer.initialize();
-    }
-
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception {
-    }
+@Ignore
+public class EuroPlusMedCondensedDistributionComposerTest extends TermTestBase {
 
 
     @Test

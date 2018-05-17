@@ -10,7 +10,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 
 /**
  * @author a.kohlbecker
- * @date Jun 25, 2013
+ * @since Jun 25, 2013
  *
  */
 public class DefinedTermBaseList<T extends DefinedTermBase> extends ArrayList<T> {

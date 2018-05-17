@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.model.common.LSID;
 
 /**
  * @author a.mueller
- * @date 29.04.2011
+ * @since 29.04.2011
  *
  */
 public class CsvId {

@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
  * This is a console style progress monitor with prints the progress information to configured {@link Logger} with level {@link Level#INFO}
  *
  * @author a.mueller
- * @date 14.09.2010
+ * @since 14.09.2010
  *
  */
 public class DefaultProgressMonitor implements IProgressMonitor {

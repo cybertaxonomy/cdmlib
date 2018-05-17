@@ -55,7 +55,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
  * the node N1.
  *
  * @author  m.doering
- * @created 08-Nov-2007 13:06:16
+ * @since 08-Nov-2007 13:06:16
  */
 @SuppressWarnings("serial")
 @XmlAccessorType(XmlAccessType.FIELD)

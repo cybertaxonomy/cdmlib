@@ -43,7 +43,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author pplitzner
- * @date 31.03.2014
+ * @since 31.03.2014
  *
  */
 public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegrationTest {

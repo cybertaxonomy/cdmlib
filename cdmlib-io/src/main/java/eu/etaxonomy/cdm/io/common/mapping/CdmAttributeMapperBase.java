@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 
 /**
  * @author a.mueller
- * @created 05.08.2008
+ * @since 05.08.2008
  * @version 1.0
  */
 public abstract class CdmAttributeMapperBase extends CdmMapperBase{

@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
  * Configurator for the setSecundumForSubtree operation.
  *
  * @author a.mueller
- * @date 06.01.2017
+ * @since 06.01.2017
  *
  */
 public abstract class ForSubtreeConfiguratorBase implements Serializable{//<CONFIG extends ImportConfiguratorBase>

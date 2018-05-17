@@ -72,7 +72,7 @@ import eu.etaxonomy.cdm.validation.Level2;
  * The originalSource representing that taxon as it was found in IPNI would contain IPNI as the reference, the IPNI id of the taxon and the name of the taxon exactly as it was used in IPNI.
  *
  * @author m.doering
- * @created 08-Nov-2007 13:06:27
+ * @since 08-Nov-2007 13:06:27
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "IdentifiableEntity", propOrder = {
@@ -134,7 +134,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @XmlElementWrapper(name = "Credits", nillable = true)
     @XmlElement(name = "Credit")
     @OrderColumn(name="sortIndex")
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     //TODO
     @Merge(MergeMode.ADD_CLONE)
@@ -152,7 +152,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @XmlElementWrapper(name = "Identifiers", nillable = true)
     @XmlElement(name = "Identifier")
     @OrderColumn(name="sortIndex")
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @Merge(MergeMode.ADD_CLONE)
     @NotNull
@@ -609,11 +609,10 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
             result.addSource(newSource);
         }
 
-        //Rights
+        //Rights  - reusable since #5762
         result.rights = new HashSet<>();
-        for(Rights rights : getRights()) {
-            Rights newRights = (Rights)rights.clone();
-            result.addRights(newRights);
+        for(Rights right : getRights()) {
+            result.addRights(right);
         }
 
 

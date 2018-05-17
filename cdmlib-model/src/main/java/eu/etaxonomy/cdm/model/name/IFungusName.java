@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.model.name;
  * TaxonName interface for fungi.
  *
  * @author a.mueller
- * @date 05.05.2017
+ * @since 05.05.2017
  */
 public interface IFungusName extends IBotanicalName {
       /**

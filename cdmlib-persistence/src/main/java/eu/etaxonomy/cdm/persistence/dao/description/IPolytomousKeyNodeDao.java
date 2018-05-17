@@ -13,7 +13,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IVersionableDao;
 
 /**
  * @author a.mueller
- * @created 08.11.2010
+ * @since 08.11.2010
  */
 public interface IPolytomousKeyNodeDao extends IVersionableDao<PolytomousKeyNode> {
 

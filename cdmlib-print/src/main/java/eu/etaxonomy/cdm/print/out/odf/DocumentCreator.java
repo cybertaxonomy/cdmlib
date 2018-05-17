@@ -14,7 +14,7 @@ import org.w3c.dom.NodeList;
 /**
  * 
  * @author n.hoffmann
- * @created Apr 20, 2010
+ * @since Apr 20, 2010
  * @version 1.0
  */
 public class DocumentCreator {

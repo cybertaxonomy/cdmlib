@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 
 /**
  * @author h.fradin (from a.babadshanjan JaxbExportConfigurator)
- * @created 09.12.2008
+ * @since 09.12.2008
  */
 public class PilotOutputExportConfigurator
         extends XmlExportConfiguratorBase<PilotOutputExportState> {

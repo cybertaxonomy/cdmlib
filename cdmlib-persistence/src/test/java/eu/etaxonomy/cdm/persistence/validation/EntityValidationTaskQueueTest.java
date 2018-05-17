@@ -30,12 +30,12 @@ public class EntityValidationTaskQueueTest {
 	public void setUp(){
 
 		Employee emp1 = new Employee();
-		emp1.setFirstName("John");
-		emp1.setLastName("Smith");
+		emp1.setGivenName("John");
+		emp1.setFamilyName("Smith");
 
 		Employee emp2 = new Employee();
-		emp2.setFirstName("John");
-		emp2.setLastName("Smith");
+		emp2.setGivenName("John");
+		emp2.setFamilyName("Smith");
 
 		//TODO dao
 		evt1 = new Level2ValidationTask(emp1, null);

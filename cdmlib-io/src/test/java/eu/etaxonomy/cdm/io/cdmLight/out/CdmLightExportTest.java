@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.io.cdmLight.out;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -58,7 +57,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author k.luther
- * @date 17.01.2018
+ * @since 17.01.2018
  *
  */
 public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
@@ -160,7 +159,6 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
         @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/BlankDataSet.xml")
         public void testFullTreeWithUnpublished(){
 
-
             CdmLightExportConfigurator config = new CdmLightExportConfigurator(null);
             config.setTarget(TARGET.EXPORT_DATA);
             config.getTaxonNodeFilter().setIncludeUnpublished(true);
@@ -194,8 +192,8 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
                 }
                 Assert.assertTrue("There should be 1 synonym", count == 2);
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
+                Assert.fail("IO Exception thrown during test.");
             }
             byte[] taxon = data.get(CdmLightExportTable.TAXON.getTableName());
             Assert.assertNotNull("Taxon table must not be null", taxon);
@@ -243,7 +241,6 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
         @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/BlankDataSet.xml")
         public void testFullData(){
 
-            File destinationFolder = null;
             CdmLightExportConfigurator config = new CdmLightExportConfigurator(null);
             config.setTarget(TARGET.EXPORT_DATA);
 
@@ -270,18 +267,15 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
                 }
                 Assert.assertTrue("There should be 4 references", count == 5);
                 try{
-                stream = new ByteArrayInputStream(data.get(CdmLightExportTable.SYNONYM.getTableName()));
-                Assert.fail("There should not be a synonym table, because the only synonym is not public.");
+                    stream = new ByteArrayInputStream(data.get(CdmLightExportTable.SYNONYM.getTableName()));
+                    Assert.fail("There should not be a synonym table, because the only synonym is not public.");
                 }catch(NullPointerException e){
-
+                    //OK, should be thrown
                 }
 
             } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
-
-
         }
 
         /**
@@ -301,7 +295,7 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             TaxonName familyName = parser.parseReferencedName("Family L., Sp. Pl. 3: 22. 1752",
                     NomenclaturalCode.ICNAFP, Rank.FAMILY());
             setUuid(familyName,"e983cc5e-4c77-4c80-8cb0-73d43df31ef7");
-            setUuid((Reference)familyName.getNomenclaturalReference(), "b0dd7f4a-0c7f-4372-bc5d-3b676363bc63");
+            setUuid(familyName.getNomenclaturalReference(), "b0dd7f4a-0c7f-4372-bc5d-3b676363bc63");
             Taxon family = Taxon.NewInstance(familyName, sec1);
             setUuid(family,"3162e136-f2e2-4f9a-9010-3f35908fbae1");
             TaxonNode node1 = classification.addChildTaxon(family, sec1, "22");
@@ -311,7 +305,7 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             TaxonName genusName = parser.parseReferencedName("Genus Humb., The book of botany 3: 22. 1804",
                     NomenclaturalCode.ICNAFP, Rank.GENUS());
             setUuid(genusName,"5e83cc5e-4c77-4d80-8cb0-73d63df35ee3");
-            setUuid((Reference)genusName.getNomenclaturalReference(), "5ed27f4a-6c7f-4372-bc5d-3b67636abc52");
+            setUuid(genusName.getNomenclaturalReference(), "5ed27f4a-6c7f-4372-bc5d-3b67636abc52");
             Taxon genus = Taxon.NewInstance(genusName, sec1);
             setUuid(genus,"3f52e136-f2e1-4f9a-9010-2f35908fbd39");
 
@@ -323,7 +317,7 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             TaxonName speciesName = parser.parseReferencedName("Genus species Mill., The book of botany 3: 22. 1804",
                     NomenclaturalCode.ICNAFP, Rank.SPECIES());
             setUuid(speciesName,"f983cc5e-4c77-4c80-8cb0-73d43df31ee9");
-            setUuid((Reference)speciesName.getNomenclaturalReference(), "a0dd7f4a-0c7f-4372-bc5d-3b676363bc0e");
+            setUuid(speciesName.getNomenclaturalReference(), "a0dd7f4a-0c7f-4372-bc5d-3b676363bc0e");
             Taxon species = Taxon.NewInstance(speciesName, sec1);
             setUuid(species,"9182e136-f2e2-4f9a-9010-3f35908fb5e0");
             TaxonName synonymName = parser.parseReferencedName("Genus synonym Mill., The book of botany 3: 22. 1804", NomenclaturalCode.ICNAFP, Rank.SPECIES());
@@ -340,7 +334,7 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             TaxonName subspeciesName = parser.parseReferencedName("Genus species subsp. subspec Mill., The book of botany 3: 22. 1804",
                     NomenclaturalCode.ICNAFP, Rank.SUBSPECIES());
             setUuid(subspeciesName,"3483cc5e-4c77-4c80-8cb0-73d43df31ee3");
-            setUuid((Reference)subspeciesName.getNomenclaturalReference(), "b8dd7f4a-0c7f-4372-bc5d-3b676363bc0f");
+            setUuid(subspeciesName.getNomenclaturalReference(), "b8dd7f4a-0c7f-4372-bc5d-3b676363bc0f");
 
             Taxon subspecies = Taxon.NewInstance(subspeciesName, sec1);
             setUuid(subspecies, "b2c86698-500e-4efb-b9ae-6bb6e701d4bc");

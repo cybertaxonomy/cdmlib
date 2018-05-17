@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.strategy.cache.agent.PersonDefaultCacheStrategy;
 /**
  * Updates the field Person.initials from Person.firstname.
  * @author a.mueller
- * @date 21.05.2017
+ * @since 21.05.2017
  *
  */
 public class InitialsUpdater extends SchemaUpdaterStepBase{
@@ -65,7 +65,7 @@ public class InitialsUpdater extends SchemaUpdaterStepBase{
             String sqlSelectInitials = "SELECT id, firstname FROM AgentBase WHERE DTYPE='Person'"
                     + " AND firstname IS NOT NULL AND initials = firstname ";
 
-            int n = datasource.executeUpdate(sqlCopyFirstname);
+            datasource.executeUpdate(sqlCopyFirstname);
 
             ResultSet rs = datasource.executeQuery(sqlSelectInitials);
             while (rs.next()){
@@ -96,8 +96,8 @@ public class InitialsUpdater extends SchemaUpdaterStepBase{
             Integer id = rs.getInt("id");
             String firstname = rs.getString("firstname");
 
-            String initialsAllow = formatter.getInitialsFromFirstname(firstname, false);
-            String initialsForced = formatter.getInitialsFromFirstname(firstname, true);
+            String initialsAllow = formatter.getInitialsFromGivenName(firstname, false);
+            String initialsForced = formatter.getInitialsFromGivenName(firstname, true);
 
             String firstnameSql;
             String initialsSql;

@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 
 /**
  * @author a.mueller
- * @created 23.11.2011
+ * @since 23.11.2011
  */
 public class DwcaImportState extends DwcaDataImportStateBase<DwcaImportConfigurator>{
 	@SuppressWarnings("unused")

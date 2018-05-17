@@ -9,11 +9,6 @@
 
 package eu.etaxonomy.cdm.model.description;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -25,39 +20,25 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
-import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 
 /**
  * @author k.luther
- * @created 11.04.2011
- * @version 1.0
+ * @since 11.04.2011
  */
 public class DescriptionElementTest {
 @SuppressWarnings("unused")
 private static Logger logger = Logger.getLogger(DescriptionElementTest.class);
 
 
-	private CategoricalData categorialData;
-	private IndividualsAssociation indAssociation;
-	private QuantitativeData quantData;
-	private Taxon taxon;
-	private TaxonInteraction taxonInteraction;
-
 	@BeforeClass
 	public static void setUpBeforeClass() {
-		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
-		vocabularyStore.initialize();
+		if (Language.DEFAULT() == null){
+		    DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
+		    vocabularyStore.initialize();
+		}
 	}
 
 	/**
@@ -65,78 +46,11 @@ private static Logger logger = Logger.getLogger(DescriptionElementTest.class);
 	 */
 	@Before
 	public void setUp() throws Exception {
-		categorialData = CategoricalData.NewInstance();
-		Media media = Media.NewInstance(null, 1000, "jpeg", null);
-		categorialData.addMedia(media);
-
-		DescriptionElementSource source = DescriptionElementSource.NewInstance(OriginalSourceType.Unknown);
-		Reference citation = ReferenceFactory.newArticle();
-		citation.setTitle("Test");
-		source.setCitation(citation);
-		categorialData.addSource(source );
-		StateData state = StateData.NewInstance();
-		categorialData.addStateData(state);
-
-		indAssociation = IndividualsAssociation.NewInstance();
-
-		DerivedUnit associatedSpecimen = DerivedUnit.NewPreservedSpecimenInstance();
-		associatedSpecimen.setIndividualCount(2);
-
-		indAssociation.setAssociatedSpecimenOrObservation(associatedSpecimen);
-		LanguageString langString = LanguageString.NewInstance("Test", Language.ENGLISH());
-
-		indAssociation.putDescription(langString);
-
-		quantData = QuantitativeData.NewInstance();
-
-		StatisticalMeasurementValue statisticalValue = StatisticalMeasurementValue.NewInstance();
-
-		statisticalValue.setType(StatisticalMeasure.AVERAGE() );
-
-		statisticalValue.setValue((float) 23.8);
-
-		quantData.addStatisticalValue(statisticalValue);
-		taxon = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(), "Abies", null, "alba", null, null, null, null, null), null);
-		taxonInteraction = TaxonInteraction.NewInstance();
-		taxonInteraction.setTaxon2(taxon);
-		langString = LanguageString.NewInstance("TestTaxonInteraction", Language.ENGLISH());
-
-		taxonInteraction.putDescription(langString);
 
 	}
 
 /* ************************** TESTS **********************************************************/
-	@Test
-	public void testCloneCategorialData(){
-		CategoricalData clone = (CategoricalData)categorialData.clone();
-		assertEquals(clone.getStateData().size(),categorialData.getStateData().size() );
-		assertSame(clone.getStateData().get(0), categorialData.getStateData().get(0));
-		assertNotSame(clone, categorialData);
 
-	}
-
-	@Test
-	public void testCloneIndividualAssociation(){
-		IndividualsAssociation clone = (IndividualsAssociation) indAssociation.clone();
-		assertEquals(clone.getFeature(), indAssociation.getFeature());
-		assertNotSame(clone.getDescription().get(Language.ENGLISH()), indAssociation.getDescription().get(Language.ENGLISH()));
-	}
-
-
-	@Test
-	public void testCloneQuantitativeData(){
-		QuantitativeData clone = (QuantitativeData) quantData.clone();
-		assertTrue(clone.getStatisticalValues().iterator().next().getValue() == quantData.getStatisticalValues().iterator().next().getValue());
-		assertNotSame(clone.getStatisticalValues().iterator().next(), quantData.getStatisticalValues().iterator().next());
-
-	}
-
-	@Test
-	public void testCloneTaxonInteraction(){
-		TaxonInteraction clone = (TaxonInteraction)taxonInteraction.clone();
-		assertNotSame(clone.getDescription().get(Language.ENGLISH()), taxonInteraction.getDescription().get(Language.ENGLISH()));
-		assertTrue(clone.getDescription(Language.ENGLISH()).equals(taxonInteraction.getDescription(Language.ENGLISH())));
-	}
 
 	@Test
 	public void testGetModifiersVocabulary(){

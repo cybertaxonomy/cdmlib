@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.test.function;
 
 /**
  * @author a.babadshanjan
- * @created 30.10.2008
+ * @since 30.10.2008
  */
 public class TestRegExs {
 	

@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 
 /**
  * @author a.babadshanjan
- * @created 19.05.2009
+ * @since 19.05.2009
  * @version 1.0
  */
 public class NameTypeDesignationTest {

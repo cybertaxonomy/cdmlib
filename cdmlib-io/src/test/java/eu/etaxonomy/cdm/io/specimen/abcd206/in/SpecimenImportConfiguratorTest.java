@@ -61,7 +61,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author a.mueller
- * @created 29.01.2009
+ * @since 29.01.2009
  */
 public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationTest {
 

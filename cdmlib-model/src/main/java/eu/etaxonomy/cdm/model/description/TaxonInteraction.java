@@ -55,7 +55,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  *
  * @author m.doering
  * @version 1.0
- * @created 08-Nov-2007 13:06:57
+ * @since 08-Nov-2007 13:06:57
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TaxonInteraction", propOrder = {

@@ -12,7 +12,7 @@ import eu.etaxonomy.cdm.model.molecular.Sequence;
 
 /**
  * @author pplitzner
- * @date Nov 30, 2015
+ * @since Nov 30, 2015
  *
  */
 public class SequenceFormatter extends AbstractCdmFormatter {

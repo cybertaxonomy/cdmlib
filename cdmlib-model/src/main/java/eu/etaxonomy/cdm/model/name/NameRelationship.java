@@ -20,8 +20,6 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
@@ -44,7 +42,7 @@ import eu.etaxonomy.cdm.validation.annotation.NamesWithHomotypicRelationshipsMus
  *
  * @author m.doering
  * @version 1.0
- * @created 08-Nov-2007 13:06:37
+ * @since 08-Nov-2007 13:06:37
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "NameRelationship", propOrder = {
@@ -58,8 +56,7 @@ import eu.etaxonomy.cdm.validation.annotation.NamesWithHomotypicRelationshipsMus
 @NamesWithHomotypicRelationshipsMustBelongToSameGroup(groups = Level3.class)
 @BasionymsMustShareEpithetsAndAuthors(groups = Level3.class)
 public class NameRelationship
-            extends RelationshipBase<TaxonName, TaxonName, NameRelationshipType>
-            implements Cloneable{
+            extends RelationshipBase<TaxonName, TaxonName, NameRelationshipType>{
 	private static final long serialVersionUID = -615987333520172043L;
 	private static final Logger logger = Logger.getLogger(NameRelationship.class);
 
@@ -72,14 +69,14 @@ public class NameRelationship
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+//    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private TaxonName relatedFrom;
 
 	@XmlElement(name = "RelatedTo")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+//    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private TaxonName relatedTo;
 
     @XmlElement(name = "Type")

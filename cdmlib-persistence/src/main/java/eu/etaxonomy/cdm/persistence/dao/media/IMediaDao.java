@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 
 /**
  * @author a.babadshanjan
- * @created 08.09.2008
+ * @since 08.09.2008
  */
 public interface IMediaDao extends IIdentifiableDao<Media> {
 

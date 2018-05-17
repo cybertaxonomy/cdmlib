@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.remote.staticSwagger.StaticSwaggerApiDoc;
 
 /**
  * @author a.kohlbecker
- * @date Mar 3, 2014
+ * @since Mar 3, 2014
  *
  */
 

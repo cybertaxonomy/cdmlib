@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 /**
  * Base class for Distribution Composers
  * @author a.mueller
- * @date 02.06.2016
+ * @since 02.06.2016
  *
  */
 public abstract class CondensedDistributionComposerBase implements ICondensedDistributionComposer{

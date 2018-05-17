@@ -8,13 +8,15 @@
 */
 package eu.etaxonomy.cdm.model.name;
 
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+
 /**
  * TaxonName interface for animals.
  * <P>
  * This class corresponds to: NameZoological according to the ABCD schema.
  *
  * @author a.mueller
- * @date 26.01.2017
+ * @since 26.01.2017
  *
  */
 public interface IZoologicalName extends INonViralName {
@@ -65,5 +67,34 @@ public interface IZoologicalName extends INonViralName {
      * @see  #getPublicationYear()
      */
     public void setPublicationYear(Integer publicationYear);
+
+    /**
+     * @return the zoological in author of current combination
+     * according to ICZN Recommendation 51E.
+     * @see https://dev.e-taxonomy.eu/redmine/issues/6943
+     */
+    public TeamOrPersonBase<?> getInCombinationAuthorship();
+    /**
+     * @param the zoological in author of current combination
+     * according to ICZN Recommendation 51E.
+     * @see https://dev.e-taxonomy.eu/redmine/issues/6943
+     */
+    public void setInCombinationAuthorship(TeamOrPersonBase<?> inCombinationAuthorship);
+
+    /**
+     * @return the zoological in author of original combination
+     * according to ICZN Recommendation 51E.
+     * @see https://dev.e-taxonomy.eu/redmine/issues/6943
+     */
+    public TeamOrPersonBase<?> getInBasionymAuthorship();
+
+    /**
+     * @param the zoological in author of original combination
+     * according to ICZN Recommendation 51E.
+     * @see https://dev.e-taxonomy.eu/redmine/issues/6943
+     */
+    public void setInBasionymAuthorship(TeamOrPersonBase<?> inBasionymAuthorship);
+
+
 
 }

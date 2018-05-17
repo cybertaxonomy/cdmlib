@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.model.name;
 
 /**
  * @author a.mueller
- * @date 26.01.2017
+ * @since 26.01.2017
  *
  */
 public interface ITaxonName extends IBotanicalName, ICultivarPlantName, IBacterialName, IZoologicalName {

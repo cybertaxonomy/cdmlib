@@ -13,7 +13,7 @@ package eu.etaxonomy.cdm.model.common;
  * an {@link IntextReference}.
  *
  * @author a.mueller
- * @date 08.03.2017
+ * @since 08.03.2017
  *
  */
 public interface IIntextReferenceTarget extends ICdmBase{

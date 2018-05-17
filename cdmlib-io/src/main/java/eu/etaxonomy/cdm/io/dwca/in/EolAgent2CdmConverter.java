@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
- * @date 22.11.2011
+ * @since 22.11.2011
  *
  */
 public class EolAgent2CdmConverter extends PartitionableConverterBase<DwcaDataImportConfiguratorBase, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase>>
@@ -62,7 +62,7 @@ public class EolAgent2CdmConverter extends PartitionableConverterBase<DwcaDataIm
 //		Taxon taxon = getTaxonBase(id, item, Taxon.class, state);
 
 		String id = item.get(TermUri.DC_IDENTIFIER);
-		String firstName = item.get(TermUri.FOAF_FIRST_NAME);
+		String givenName = item.get(TermUri.FOAF_FIRST_NAME);
 		String familyName = item.get(TermUri.FOAF_FAMILY_NAME);
 		String name = item.get(TermUri.FOAF_NAME);
 		String organization = item.get(TermUri.EOL_ORGANIZATION);
@@ -84,8 +84,8 @@ public class EolAgent2CdmConverter extends PartitionableConverterBase<DwcaDataIm
 
 		if (isPerson(item)){
 			Person person = Person.NewInstance();
-			person.setFirstname(firstName);
-			person.setLastname(familyName);
+			person.setGivenName(givenName);
+			person.setFamilyName(familyName);
 			if (isNotBlank(name) && ! name.equalsIgnoreCase(person.getTitleCache())){
 				//TODO FOAF_NAME allows multiple names per object
 				person.setTitleCache(name, true);
@@ -116,10 +116,10 @@ public class EolAgent2CdmConverter extends PartitionableConverterBase<DwcaDataIm
 
 
 	private boolean isPerson(StreamItem item) {
-		String firstName = item.get(TermUri.FOAF_FIRST_NAME);
+		String givenName = item.get(TermUri.FOAF_FIRST_NAME);
 		String familyName = item.get(TermUri.FOAF_FAMILY_NAME);
 		String accountName = item.get(TermUri.FOAF_ACCOUNT_NAME);
-		if (isNotBlank(firstName) || isNotBlank(familyName) || isNotBlank(accountName) ){
+		if (isNotBlank(givenName) || isNotBlank(familyName) || isNotBlank(accountName) ){
 			return true;
 		}else{
 			return false;

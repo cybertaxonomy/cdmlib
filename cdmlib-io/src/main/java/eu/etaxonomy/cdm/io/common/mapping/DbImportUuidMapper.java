@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author a.mueller
- * @created 24.02.2010
+ * @since 24.02.2010
  * @version 1.0
  */
 public class DbImportUuidMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, CdmBase>{

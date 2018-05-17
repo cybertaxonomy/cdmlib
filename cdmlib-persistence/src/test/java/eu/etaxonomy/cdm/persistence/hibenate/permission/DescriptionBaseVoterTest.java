@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.voter.DescriptionBaseVo
 
 /**
  * @author a.kohlbecker
- * @date Feb 2, 2017
+ * @since Feb 2, 2017
  *
  */
 public class DescriptionBaseVoterTest extends AbstractCdmPermissionVoterTest {

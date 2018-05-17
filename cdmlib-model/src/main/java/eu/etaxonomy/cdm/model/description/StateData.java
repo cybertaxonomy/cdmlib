@@ -60,8 +60,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
  * This class corresponds to CharacterStateDataType according to the SDD schema.
  *
  * @author m.doering
- * @version 1.0
- * @created 08-Nov-2007 13:06:53
+ * @since 08-Nov-2007 13:06:53
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "StateData", propOrder = {
@@ -97,7 +96,7 @@ public class StateData extends VersionableEntity implements IModifiable, IMultiL
 //    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})   remove cascade #5755
     @IndexedEmbedded(depth=1)
 //	@NotNull // avoids creating a UNIQUE key for this field -> not needed for ManyToMany
-    private Set<DefinedTerm> modifiers = new HashSet<DefinedTerm>();
+    private Set<DefinedTerm> modifiers = new HashSet<>();
 
     @XmlElement(name = "ModifyingText")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
@@ -312,7 +311,7 @@ public class StateData extends VersionableEntity implements IModifiable, IMultiL
             StateData result = (StateData)super.clone();
 
             //modifiers
-            result.modifiers = new HashSet<DefinedTerm>();
+            result.modifiers = new HashSet<>();
             for (DefinedTerm modifier : getModifiers()){
                 result.modifiers.add(modifier);
             }

@@ -13,7 +13,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.kohlbecker
- * @date Feb 24, 2014
+ * @since Feb 24, 2014
  *
  */
 public class ReferenceVoter extends CdmPermissionVoter {
@@ -31,8 +31,8 @@ public class ReferenceVoter extends CdmPermissionVoter {
      */
     @Override
     public boolean isOrpahn(CdmBase object) {
-        // we always return true here to allow deleting the reference
-        return true;
+        // References must never be considered orphan. So the must not be deleted without explicit DELETE permission
+        return false;
     }
 
 }

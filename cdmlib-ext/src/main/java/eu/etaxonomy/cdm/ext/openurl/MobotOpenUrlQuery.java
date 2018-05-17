@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2009 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -12,8 +12,8 @@ import java.net.URI;
 
 /**
  * @author a.kohlbecker
- * @date 17.12.2010
- * 
+ * @since 17.12.2010
+ *
  */
 public class MobotOpenUrlQuery {
 	public MobotOpenUrlServiceWrapper.ReferenceType refType;

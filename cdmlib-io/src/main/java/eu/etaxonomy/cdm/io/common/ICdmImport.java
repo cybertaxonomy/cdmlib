@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.io.common;
  * Interface for all import classes.
  *
  * @author a.babadshanjan
- * @created 17.11.2008
+ * @since 17.11.2008
  */
 public interface ICdmImport<CONFIG extends IImportConfigurator, STATE extends ImportStateBase>
             extends ICdmIO<STATE>{

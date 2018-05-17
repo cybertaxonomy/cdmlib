@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.CdmDataChangeEvent.EventType;
 
 /**
  * @author n.hoffman
- * @created 09.04.2009
+ * @since 09.04.2009
  * @version 1.0
  */
 public class CdmDataChangeMap  implements Map<EventType, Vector<CdmDataChangeEvent>>{

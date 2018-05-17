@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author a.mueller
- * @date 2014/06/13
+ * @since 2014/06/13
  *
  */
 public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegrationTest {

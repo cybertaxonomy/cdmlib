@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.format.ICdmFormatter;
 
 /**
  * @author pplitzner
- * @date Nov 30, 2015
+ * @since Nov 30, 2015
  *
  */
 public abstract class AbstractCdmFormatter implements ICdmFormatter {

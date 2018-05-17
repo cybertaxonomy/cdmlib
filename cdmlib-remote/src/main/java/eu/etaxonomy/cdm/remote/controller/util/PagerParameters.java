@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.remote.controller.HttpStatusMessage;
  * TODO consider merging this class with {@link PagerUtils}
  *
  * @author a.kohlbecker
- * @date 22.08.2011
+ * @since 22.08.2011
  *
  */
 public class PagerParameters {

@@ -1087,8 +1087,8 @@ public class NonViralNameParserImplTest {
         assertTrue(nameTestStatus.getStatus().size()== 1);
         assertEquals( NomenclaturalStatusType.PROVISIONAL(), nameTestStatus.getStatus().iterator().next().getType());
 
-        //nom. valid
-        strTestStatus = "Abies alba Mill., Sp. Pl. 4: 455. 1987, nom. valid";
+        //nom. val.
+        strTestStatus = "Abies alba Mill., Sp. Pl. 4: 455. 1987, nom. val.";
         nameTestStatus = parser.parseReferencedName(strTestStatus, null, Rank.SPECIES());
         assertFullRefStandard(nameTestStatus);
         assertTrue(nameTestStatus.getStatus().size()== 1);
@@ -1166,16 +1166,16 @@ public class NonViralNameParserImplTest {
         String strFullWhiteSpcaceAndDot = "Abies alba Mill.,  Sp.   Pl.  4:  455 .  1987 .";
         INonViralName namefullWhiteSpcaceAndDot = parser.parseReferencedName(strFullWhiteSpcaceAndDot, null, rankSpecies);
         assertFullRefStandard(namefullWhiteSpcaceAndDot);
-        assertTrue(((Reference)namefullWhiteSpcaceAndDot.getNomenclaturalReference()).getType().equals(eu.etaxonomy.cdm.model.reference.ReferenceType.Book));
+        assertTrue(namefullWhiteSpcaceAndDot.getNomenclaturalReference().getType().equals(eu.etaxonomy.cdm.model.reference.ReferenceType.Book));
         assertEquals( "Abies alba Mill., Sp. Pl. 4: 455. 1987", namefullWhiteSpcaceAndDot.getFullTitleCache());
 
         //Book
         String fullReference = "Abies alba Mill., Sp. Pl. 4: 455. 1987";
         INonViralName name1 = parser.parseReferencedName(fullReference, null, rankSpecies);
         assertFullRefStandard(name1);
-        assertTrue(((Reference)name1.getNomenclaturalReference()).getType().equals(eu.etaxonomy.cdm.model.reference.ReferenceType.Book));
+        assertTrue(name1.getNomenclaturalReference().getType().equals(eu.etaxonomy.cdm.model.reference.ReferenceType.Book));
         assertEquals(fullReference, name1.getFullTitleCache());
-        assertTrue("Name author and reference author should be the same", name1.getCombinationAuthorship() == ((Reference)name1.getNomenclaturalReference()).getAuthorship());
+        assertTrue("Name author and reference author should be the same", name1.getCombinationAuthorship() == name1.getNomenclaturalReference().getAuthorship());
 
         //Book Section
         fullReference = "Abies alba Mill. in Otto, Sp. Pl. 4(6): 455. 1987";
@@ -1193,7 +1193,7 @@ public class NonViralNameParserImplTest {
         assertEquals("Otto, Sp. Pl. 4(6)", inBook.getTitleCache());
         assertEquals("Sp. Pl.", inBook.getAbbrevTitle());
         assertEquals("4(6)", inBook.getVolume());
-        assertTrue("Name author and reference author should be the same", name2.getCombinationAuthorship() == ((Reference)name2.getNomenclaturalReference()).getAuthorship());
+        assertTrue("Name author and reference author should be the same", name2.getCombinationAuthorship() == name2.getNomenclaturalReference().getAuthorship());
 
         //Article
         fullReference = "Abies alba Mill. in Sp. Pl. 4(6): 455. 1987";
@@ -1917,7 +1917,7 @@ public class NonViralNameParserImplTest {
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         TeamOrPersonBase<?> combinationAuthor = name.getCombinationAuthorship();
         assertEquals( "Borhidi", combinationAuthor.getNomenclaturalTitle());
-        Reference nomRef = (Reference)name.getNomenclaturalReference();
+        Reference nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("46 (1-2)", nomRef.getVolume());
 
@@ -1927,7 +1927,7 @@ public class NonViralNameParserImplTest {
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
         assertEquals( "Rzed.", combinationAuthor.getNomenclaturalTitle());
-        nomRef = (Reference)name.getNomenclaturalReference();
+        nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("44", nomRef.getVolume());
         assertEquals("72, fig. 1", name.getNomenclaturalMicroReference());
@@ -1938,7 +1938,7 @@ public class NonViralNameParserImplTest {
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
         assertEquals( "Dwyer & Lorence", combinationAuthor.getNomenclaturalTitle());
-        nomRef = (Reference)name.getNomenclaturalReference();
+        nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("4", nomRef.getVolume());
         assertEquals("428. fig 4a-c", name.getNomenclaturalMicroReference());
@@ -1949,7 +1949,7 @@ public class NonViralNameParserImplTest {
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
         assertEquals( "Borhidi", combinationAuthor.getNomenclaturalTitle());
-        nomRef = (Reference)name.getNomenclaturalReference();
+        nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("33 (3" + UTF8.EN_DASH + "4)", nomRef.getVolume());
         assertEquals("303", name.getNomenclaturalMicroReference());
@@ -1960,7 +1960,7 @@ public class NonViralNameParserImplTest {
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
         assertEquals( "Terrell", combinationAuthor.getNomenclaturalTitle());
-        nomRef = (Reference)name.getNomenclaturalReference();
+        nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("19(4)", nomRef.getVolume());
         assertEquals("901" + UTF8.EN_DASH + "911, f. 1" + UTF8.EN_DASH + "2", name.getNomenclaturalMicroReference());
@@ -1971,7 +1971,7 @@ public class NonViralNameParserImplTest {
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
         assertEquals( "Wiggins", combinationAuthor.getNomenclaturalTitle());
-        nomRef = (Reference)name.getNomenclaturalReference();
+        nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("3", nomRef.getVolume());
         assertEquals("75, figs 4-6", name.getNomenclaturalMicroReference());
@@ -1982,7 +1982,7 @@ public class NonViralNameParserImplTest {
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
         assertEquals( "Wiggins", combinationAuthor.getNomenclaturalTitle());
-        nomRef = (Reference)name.getNomenclaturalReference();
+        nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("3", nomRef.getVolume());
         assertEquals("75, pl. 19, figs 4-6", name.getNomenclaturalMicroReference());
@@ -1994,7 +1994,7 @@ public class NonViralNameParserImplTest {
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
         assertEquals( "Aubl.", combinationAuthor.getNomenclaturalTitle());
-        nomRef = (Reference)name.getNomenclaturalReference();
+        nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("1", nomRef.getVolume());
         assertEquals("167, pl. 64", name.getNomenclaturalMicroReference());
@@ -2005,7 +2005,7 @@ public class NonViralNameParserImplTest {
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
         assertEquals( "Lorence", combinationAuthor.getNomenclaturalTitle());
-        nomRef = (Reference)name.getNomenclaturalReference();
+        nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("4", nomRef.getVolume());
         assertEquals("121. fig. 2a, b", name.getNomenclaturalMicroReference());
@@ -2016,7 +2016,7 @@ public class NonViralNameParserImplTest {
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
         assertEquals( "Lorence", combinationAuthor.getNomenclaturalTitle());
-        nomRef = (Reference)name.getNomenclaturalReference();
+        nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("4", nomRef.getVolume());
         assertEquals("399. figs 1e, 2", name.getNomenclaturalMicroReference());
@@ -2027,7 +2027,7 @@ public class NonViralNameParserImplTest {
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
         assertEquals( "Wernham", combinationAuthor.getNomenclaturalTitle());
-        nomRef = (Reference)name.getNomenclaturalReference();
+        nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("57(Suppl.)", nomRef.getVolume());
         assertEquals("38", name.getNomenclaturalMicroReference());
@@ -2038,7 +2038,7 @@ public class NonViralNameParserImplTest {
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
         assertEquals( "W.R. Anderson", combinationAuthor.getNomenclaturalTitle());
-        nomRef = (Reference)name.getNomenclaturalReference();
+        nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("22", nomRef.getVolume());
         assertEquals("75", name.getNomenclaturalMicroReference());
@@ -2049,7 +2049,7 @@ public class NonViralNameParserImplTest {
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
         assertEquals( "Benth.", combinationAuthor.getNomenclaturalTitle());
-        nomRef = (Reference)name.getNomenclaturalReference();
+        nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("3", nomRef.getVolume());
         assertEquals("219", name.getNomenclaturalMicroReference());
@@ -2060,7 +2060,7 @@ public class NonViralNameParserImplTest {
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
         assertEquals( "Griseb.", combinationAuthor.getNomenclaturalTitle());
-        nomRef = (Reference)name.getNomenclaturalReference();
+        nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("6 (1)", nomRef.getVolume());
         assertEquals("8", name.getNomenclaturalMicroReference());
@@ -2071,7 +2071,7 @@ public class NonViralNameParserImplTest {
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
         assertEquals( "Borhidi & Jarai-Koml.", combinationAuthor.getNomenclaturalTitle());
-        nomRef = (Reference)name.getNomenclaturalReference();
+        nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("29(1\u20134)", nomRef.getVolume());
         assertEquals("16, f. 1\u20132, t. 1-8", name.getNomenclaturalMicroReference());
@@ -2084,7 +2084,7 @@ public class NonViralNameParserImplTest {
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
         assertEquals( "Borhidi & Jarai-Koml.", combinationAuthor.getNomenclaturalTitle());
-        nomRef = (Reference)name.getNomenclaturalReference();
+        nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("29(1-4)", nomRef.getVolume());
         assertEquals("16, f. 1-2", name.getNomenclaturalMicroReference());
@@ -2097,7 +2097,7 @@ public class NonViralNameParserImplTest {
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
         assertEquals( "Borhidi & Jarai-Koml.", combinationAuthor.getNomenclaturalTitle());
-        nomRef = (Reference)name.getNomenclaturalReference();
+        nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("29(1-4)", nomRef.getVolume());
         assertEquals("16, f. 1-2", name.getNomenclaturalMicroReference());
@@ -2110,7 +2110,7 @@ public class NonViralNameParserImplTest {
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
         assertEquals( "Ruiz & Pav.", combinationAuthor.getNomenclaturalTitle());
-        nomRef = (Reference)name.getNomenclaturalReference();
+        nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("2", nomRef.getVolume());
         assertEquals("59, pl. 206, fig. a", name.getNomenclaturalMicroReference());
@@ -2121,7 +2121,7 @@ public class NonViralNameParserImplTest {
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
         assertEquals( "Planch.", combinationAuthor.getNomenclaturalTitle());
-        nomRef = (Reference)name.getNomenclaturalReference();
+        nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("5", nomRef.getVolume());
         assertEquals("442A", name.getNomenclaturalMicroReference());
@@ -2132,7 +2132,7 @@ public class NonViralNameParserImplTest {
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
         assertEquals( "L.O. Williams", combinationAuthor.getNomenclaturalTitle());
-        nomRef = (Reference)name.getNomenclaturalReference();
+        nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("26 (6)", nomRef.getVolume());
         assertEquals("488-489, f", name.getNomenclaturalMicroReference());
@@ -2143,7 +2143,7 @@ public class NonViralNameParserImplTest {
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
         assertEquals( "Nees & Mart.", combinationAuthor.getNomenclaturalTitle());
-        nomRef = (Reference)name.getNomenclaturalReference();
+        nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("Nova Acta Phys.-Med. Acad. Caes.\u2013Leop. Nat. Cur.", nomRef.getInReference().getAbbrevTitle());
         assertEquals("12", nomRef.getVolume());
@@ -2170,7 +2170,7 @@ public class NonViralNameParserImplTest {
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
         assertEquals( "Schinz", combinationAuthor.getNomenclaturalTitle());
-        nomRef = (Reference)name.getNomenclaturalReference();
+        nomRef = name.getNomenclaturalReference();
         Assert.assertFalse("Reference should be parsable", nomRef.isProtectedTitleCache());
         assertEquals(ReferenceType.Book, nomRef.getType());
         assertEquals("Nat. Pflanzenfam.", nomRef.getAbbrevTitle());
@@ -2192,7 +2192,7 @@ public class NonViralNameParserImplTest {
         //Vorabdr.
         name = parser.parseReferencedName("Ophrys hystera  Kreutz & Ruedi Peter in J. Eur. Orchideen 30(Vorabdr.): 128. 1997");
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
-        assertEquals( "30(Vorabdr.)", ((Reference)name.getNomenclaturalReference()).getVolume());
+        assertEquals( "30(Vorabdr.)", name.getNomenclaturalReference().getVolume());
 
         //#6100  jun.
         String nameStr = "Swida \u00D7 friedlanderi (W.H.Wagner jun.) Holub";
@@ -2280,11 +2280,20 @@ public class NonViralNameParserImplTest {
         nameStr = "Nepenthes deaniana Macfarl. in Engl., Mein Pflanzenr. IV. 111 (Heft 36): 57. 1908.";
         name = parser.parseReferencedName(nameStr);
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
-        Reference ref = (Reference)name.getNomenclaturalReference();
+        Reference ref = name.getNomenclaturalReference();
         Assert.assertFalse("Reference should be parsable", ref.hasProblem());
         //or even better IV. 111 (Heft 36), but this is currently not implemented
         assertEquals("111 (Heft 36)", ref.getInReference().getVolume());
 
+        //journal with commata at pos 4
+        nameStr = "Bufonia kotschyana subsp. densa Chrtek & Krisa in Acta Univ.Carol., Biol. 43(2): 105. 1999";
+        name = parser.parseReferencedName(nameStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        String author = name.getAuthorshipCache();
+        assertEquals("Chrtek & Krisa", author);
+        ref = name.getNomenclaturalReference();
+        Assert.assertNotNull("Nomenclatural reference should be an article and therefore have an in reference", ref.getInReference());
+        Assert.assertEquals(ReferenceType.Journal, ref.getInReference().getType());
 
     }
 

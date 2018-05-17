@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 
 /**
  * @author a.kohlbecker
- * @date 20.07.2010
+ * @since 20.07.2010
  *
  */
 public abstract class AbstractWebApplicationConfigurer {

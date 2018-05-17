@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.common.XmlHelp;
  *      see also http://dev.e-taxonomy.eu/trac/ticket/4263
  *
  * @author a.mueller
- * @date 11.08.2011
+ * @since 11.08.2011
  *
  */
 public class GeoServiceArea {

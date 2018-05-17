@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
  * @author a.babadshanjan
- * @created 10.11.2008
+ * @since 10.11.2008
  */
 @Component
 public class DistributionImport

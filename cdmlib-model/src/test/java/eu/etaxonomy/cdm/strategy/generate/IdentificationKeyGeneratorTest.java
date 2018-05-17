@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
  * @author m.venin
- * @created 16.12.2010
+ * @since 16.12.2010
  */
 
 public class IdentificationKeyGeneratorTest {

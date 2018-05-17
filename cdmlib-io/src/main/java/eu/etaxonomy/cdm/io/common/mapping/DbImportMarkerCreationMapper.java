@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
  * Object creation mapper which creates a marker.
  * 
  * @author a.mueller
- * @created 11.03.2010
+ * @since 11.03.2010
  * @version 1.0
  */
 public class DbImportMarkerCreationMapper extends DbImportSupplementCreationMapperBase<Marker, AnnotatableEntity, DbImportStateBase<?, ?>, MarkerType> {

@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
  * @author a.mueller
- * @created 01.07.2017
+ * @since 01.07.2017
  */
 public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase> {
 

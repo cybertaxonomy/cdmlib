@@ -16,7 +16,7 @@ import java.util.Map;
 
 /**
  * @author k.luther
- * @date 17.03.2017
+ * @since 17.03.2017
  *
  */
 public class ExportDataWrapper<T> implements Serializable{

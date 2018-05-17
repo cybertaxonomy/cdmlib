@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 /**
  * @author a.kohlbecker
- * @date Jan 13, 2017
+ * @since Jan 13, 2017
  *
  */
 public class LuceneIndexToolProviderTest extends CdmIntegrationTest {

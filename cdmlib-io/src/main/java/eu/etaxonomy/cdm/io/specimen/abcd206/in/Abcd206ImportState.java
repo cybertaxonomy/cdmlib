@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.io.specimen.SpecimenImportStateBase;
 
 /**
  * @author a.mueller
- * @created 11.05.2009
+ * @since 11.05.2009
  */
 public class Abcd206ImportState
         extends SpecimenImportStateBase<Abcd206ImportConfigurator, Abcd206ImportState>{

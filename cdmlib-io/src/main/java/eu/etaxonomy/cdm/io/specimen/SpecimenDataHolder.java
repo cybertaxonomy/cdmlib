@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 
 /**
  * @author k.luther
- * @date 18.07.2016
+ * @since 18.07.2016
  *
  */
 public class SpecimenDataHolder {

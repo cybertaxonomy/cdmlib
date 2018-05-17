@@ -12,7 +12,7 @@ import org.apache.log4j.Logger;
 
 /**
  * @author e.-m.lee
- * @date 12.01.2010
+ * @since 12.01.2010
  *
  */
 public class DatabaseSchemaMismatchException extends Exception {

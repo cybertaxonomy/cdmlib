@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.description.TextData;
 /**
  * Maps text data to a database string field. (Only handles one language)
  * @author a.mueller
- * @created 06.02.2012
+ * @since 06.02.2012
  * @version 1.0
  */
 public class DbTextDataMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{

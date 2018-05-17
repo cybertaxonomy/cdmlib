@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.model.molecular.Cloning;
  * http://rs.tdwg.org/ontology/voc/Collection.rdf#SpecimenPreservationMethodTypeTerm
  *
  * @author a.mueller
- * @created 2013-09-11
+ * @since 2013-09-11
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)

@@ -102,6 +102,7 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<Reference,IRef
 
         if (result.isOk()){
             dao.delete(reference);
+            result.addDeletedObject(reference);
         }
 
         return result;

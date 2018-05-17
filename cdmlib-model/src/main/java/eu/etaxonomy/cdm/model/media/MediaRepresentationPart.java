@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
  * E.g. a jpg file or a website
  *
  * @author a.mueller
- * @created 09.06.2008
+ * @since 09.06.2008
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "MediaRepresentationPart", propOrder = {
@@ -81,6 +81,7 @@ public class MediaRepresentationPart extends VersionableEntity implements Clonea
 	protected MediaRepresentationPart() {
 		super();
 	}
+
 	protected MediaRepresentationPart(URI uri, Integer size) {
 		this();
 		this.setUri(uri);
@@ -105,6 +106,7 @@ public class MediaRepresentationPart extends VersionableEntity implements Clonea
 	public URI getUri() {
 		return this.uri;
 	}
+
 	public void setUri(URI uri) {
 		this.uri = uri;
 	}
@@ -129,6 +131,4 @@ public class MediaRepresentationPart extends VersionableEntity implements Clonea
 		//no changes to: size, uri
 		return result;
 	}
-
-
 }

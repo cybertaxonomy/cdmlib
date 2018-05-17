@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IEventBaseDao;
 
 /**
  * @author a.kohlbecker
- * @date Jan 9, 2013
+ * @since Jan 9, 2013
  *
  */
 @Service

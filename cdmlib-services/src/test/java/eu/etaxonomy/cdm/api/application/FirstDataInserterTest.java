@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * test for the {@link FirstDataInserter}
  *
  * @author a.kohlbecker
- * @date Oct 12, 2012
+ * @since Oct 12, 2012
  *
  */
 @DataSet
@@ -93,8 +93,6 @@ public class FirstDataInserterTest extends CdmTransactionalIntegrationTest {
 
 
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 
 }

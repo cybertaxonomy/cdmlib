@@ -29,7 +29,7 @@ import org.hibernate.envers.Audited;
  * types, but rather content types like "DOI", "2nd nomenclatural reference", "3rd
  * hybrid parent" or specific local identifiers.
  * @author m.doering
- * @created 08-Nov-2007 13:06:23
+ * @since 08-Nov-2007 13:06:23
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ExtensionType")

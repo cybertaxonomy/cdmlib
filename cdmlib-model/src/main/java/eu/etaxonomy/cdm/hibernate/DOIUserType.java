@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.common.DOI;
 /**
  * Hibernate user type for the {@link DOI} class.
  * @author a.mueller
- * @created 05.09.2013
+ * @since 05.09.2013
  */
 public class DOIUserType  extends AbstractUserType implements UserType {
 	private static final long serialVersionUID = 2227841000128722278L;

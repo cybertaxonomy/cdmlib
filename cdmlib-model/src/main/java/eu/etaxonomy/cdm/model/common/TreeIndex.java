@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * Might be come a hibernate user type in future.
  *
  * @author a.mueller
- * @date 02.12.2016
+ * @since 02.12.2016
  *
  */
 public class TreeIndex {

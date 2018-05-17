@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.common.Language;
  * an object.
  *
  * @author a.mueller
- * @date 04.05.2017
+ * @since 04.05.2017
  *
  * @deprecated This class is still experimental. It may be changed
  * or even deleted in future without notice.
@@ -142,5 +142,15 @@ public class Character extends Feature {
         super(term, label, labelAbbrev);
         this.structure = structure;
         this.property = property;
+    }
+
+ // ****************** GETTER / SETTER *********************************************/
+
+    public FeatureNode getStructure() {
+        return structure;
+    }
+
+    public FeatureNode getProperty() {
+        return property;
     }
 }

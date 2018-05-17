@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.print.out.IPublishOutputModule;
  * Retrieves all necessary data from an {@link IXMLEntityFactory}.
  * 
  * @author n.hoffmann
- * @created Apr 8, 2010
+ * @since Apr 8, 2010
  * @version 1.0
  */
 public class XMLHarvester {

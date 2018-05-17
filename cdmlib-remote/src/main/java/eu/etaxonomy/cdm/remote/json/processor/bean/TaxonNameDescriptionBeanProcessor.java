@@ -16,7 +16,7 @@ import net.sf.json.JsonConfig;
 
 /**
  * @author a.kohlbecker
- * @date 28.07.2010
+ * @since 28.07.2010
  *
  */
 public class TaxonNameDescriptionBeanProcessor extends AbstractCdmBeanProcessor<TaxonNameDescription> {

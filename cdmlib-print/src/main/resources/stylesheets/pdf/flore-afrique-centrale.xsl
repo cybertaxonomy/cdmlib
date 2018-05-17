@@ -1226,8 +1226,8 @@
       <xsl:sort select="sources/e[1]/citation/datePublished/start"/>
       <xsl:for-each select="sources/e">
         
-        <xsl:variable name="lastname_text" select="citation/authorship/lastname"/>
-        <xsl:variable name="prev_lastname_text" select="preceding-sibling::e[1]/citation/authorship/lastname"/>
+        <xsl:variable name="familyname_text" select="citation/authorship/familyname"/>
+        <xsl:variable name="prev_familyname_text" select="preceding-sibling::e[1]/citation/authorship/familyname"/>
         
         <xsl:if test="nameUsedInSource/uuid=$name-uuid">
           <xsl:text>; </xsl:text>
@@ -1235,7 +1235,7 @@
             <!--xsl:value-of select="citation/authorship/titleCache"/-->
             <!--TODO wrap this in a variable and compare the previous variable to this one to see if we're dealing with the same name-->
             <xsl:for-each select="citation/authorship/teamMembers/e">
-              <xsl:value-of select="lastname"/>
+              <xsl:value-of select="familyname"/>
               <xsl:choose>
                 <xsl:when test="position() != last()">
                   <xsl:text> &amp; </xsl:text>
@@ -1244,8 +1244,8 @@
             </xsl:for-each>
 
 <xsl:choose>
-            <xsl:when test="$lastname_text != $prev_lastname_text">
-            <xsl:value-of select="citation/authorship/lastname"/><!--TODO We print lastname here as well as the author list is this a mistake?-->
+            <xsl:when test="$familyname_text != $prev_familyname_text">
+            <xsl:value-of select="citation/authorship/familyname"/><!--TODO We print familyname here as well as the author list is this a mistake?-->
             
             <xsl:text> (</xsl:text>
             <xsl:value-of select="citation/datePublished/start"/>
@@ -1285,7 +1285,7 @@
           <fo:inline>
             <!--xsl:value-of select="citation/authorship/titleCache"/-->
             <xsl:for-each select="citation/authorship/teamMembers/e">
-              <xsl:value-of select="lastname"/>
+              <xsl:value-of select="familyname"/>
               <xsl:choose>
                 <xsl:when test="position() != last()">
                   <xsl:text> &amp; </xsl:text>
@@ -1293,7 +1293,7 @@
               </xsl:choose>
             </xsl:for-each>
             
-            <xsl:value-of select="citation/authorship/lastname"/>
+            <xsl:value-of select="citation/authorship/familyname"/>
             <xsl:text> (</xsl:text>
             <xsl:value-of select="citation/datePublished/start"/>
             <xsl:text>: </xsl:text>
@@ -1324,7 +1324,7 @@
     <xsl:for-each select="//nomenclaturalReference[count(. | key('citations-by-uuid', uuid)[1]) = 1] | //citation[count(. | key('citations-by-uuid', uuid)[1]) = 1]">
     <!--xsl:for-each select="//nomenclaturalReference[count(. | key('nomenclaturalrefs-by-uuid', uuid)[1]) = 1]"-->
       <!--xsl:for-each select="//nomenclaturalReference"-->
-        <xsl:sort select="authorship/lastname | authorship/teamMembers/e[1]/lastname" />
+        <xsl:sort select="authorship/familyname | authorship/teamMembers/e[1]/familyname" />
       <xsl:sort select="datePublished/start"></xsl:sort>
 
       <fo:block linefeed-treatment="preserve" text-align="justify" text-indent="-{$taxon-name-indentation}" start-indent="{$taxon-name-indentation}">
@@ -1335,15 +1335,15 @@
           <!--xsl:value-of select="titleCache"/-->
           
           <!--I am only listing references which have at least one author name. If there are other references in the database - why don't these have an author name-->
-          <xsl:if test="authorship/teamMembers/e[1]/lastname != '' or authorship/lastname != '' or authorship/titleCache != ''">               
+          <xsl:if test="authorship/teamMembers/e[1]/familyname != '' or authorship/familyname != '' or authorship/titleCache != ''">               
                 <!--xsl:text>&#xA;</xsl:text-->
                 <xsl:choose>
-                  <xsl:when test="authorship/teamMembers/e[1]/lastname != ''">
+                  <xsl:when test="authorship/teamMembers/e[1]/familyname != ''">
                     <xsl:for-each select="authorship/teamMembers/e">
                       <fo:inline>
-                        <xsl:value-of select="lastname"/>
+                        <xsl:value-of select="familyname"/>
                         <xsl:text> </xsl:text>
-                        <xsl:value-of select="firstname"/>
+                        <xsl:value-of select="givenname"/>
                         <xsl:choose>
                           <xsl:when test="position() != last()">
                             <xsl:text> &amp; </xsl:text>
@@ -1354,12 +1354,12 @@
                   </xsl:when>
                   <xsl:otherwise>
                     <xsl:choose>
-                      <xsl:when test="authorship/lastname != ''">
-                    <!--xsl:if test="authorship/lastname != ''"-->
+                      <xsl:when test="authorship/familyname != ''">
+                    <!--xsl:if test="authorship/familyname != ''"-->
                     <fo:inline>
-                      <xsl:value-of select="authorship/lastname"/>
+                      <xsl:value-of select="authorship/familyname"/>
                       <xsl:text> </xsl:text>
-                      <xsl:value-of select="authorship/firstname"/>
+                      <xsl:value-of select="authorship/givenname"/>
                     </fo:inline>
                       </xsl:when>
                       <xsl:otherwise>
@@ -1434,12 +1434,12 @@
 
   <xsl:template name="Referencesold">
     
-      <!-- need to sort by lastname of the first author i.e. //citation/authorship/teamMembers/e[1]/lastname -->
+      <!-- need to sort by familyname of the first author i.e. //citation/authorship/teamMembers/e[1]/familyname -->
       <xsl:for-each select="//citation">
 
         <!-- TODO sorting only works for the first citation, implement correctly -->
-        <xsl:sort select="authorship/lastname"/>
-        <xsl:sort select="authorship/teamMembers/e[1]/lastname"/>
+        <xsl:sort select="authorship/familyname"/>
+        <xsl:sort select="authorship/teamMembers/e[1]/familyname"/>
         <fo:block>
         <fo:inline>
           
@@ -1459,13 +1459,13 @@
            <!-- .[not(preceding-sibling::Link[@personId   = current()/@personId -->
           <xsl:choose>
                          
-            <xsl:when test="authorship/teamMembers/e[1]/lastname != '' or authorship/lastname != ''">                                     
+            <xsl:when test="authorship/teamMembers/e[1]/familyname != '' or authorship/familyname != ''">                                     
             
               <xsl:choose>
-                <xsl:when test="authorship/teamMembers/e[1]/lastname != ''">
+                <xsl:when test="authorship/teamMembers/e[1]/familyname != ''">
                 <xsl:for-each select="authorship/teamMembers/e">
                   <fo:inline font-weight="bold">
-                    <xsl:value-of select="lastname"/>
+                    <xsl:value-of select="familyname"/>
                     <xsl:choose>
                       <xsl:when test="position() != last()">
                         <xsl:text> &amp; </xsl:text>
@@ -1475,9 +1475,9 @@
                 </xsl:for-each>
                 </xsl:when>
                 <xsl:otherwise>
-                  <xsl:if test="authorship/lastname != ''">
+                  <xsl:if test="authorship/familyname != ''">
                   <fo:inline font-weight="bold">
-                    <xsl:value-of select="authorship/lastname"/>
+                    <xsl:value-of select="authorship/familyname"/>
                   </fo:inline>
                   </xsl:if>
                 </xsl:otherwise>

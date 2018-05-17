@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
  * 
  * @see DbImportDefinedTermCreationMapperBase
  * @author a.mueller
- * @created 11.03.2010
+ * @since 11.03.2010
  * @version 1.0
  */
 public class DbImportFeatureCreationMapper<STATE extends DbImportStateBase<?,?>> extends DbImportDefinedTermCreationMapperBase<Feature, DescriptionElementBase, DbImportStateBase<?,?>> {

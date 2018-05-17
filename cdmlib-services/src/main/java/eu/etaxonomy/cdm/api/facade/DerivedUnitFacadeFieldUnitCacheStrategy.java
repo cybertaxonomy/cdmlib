@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 /**
  * @author a.mueller
- * @date 03.06.2010
+ * @since 03.06.2010
  *
  */
 public class DerivedUnitFacadeFieldUnitCacheStrategy extends StrategyBase implements IIdentifiableEntityCacheStrategy<FieldUnit> {
@@ -186,10 +186,10 @@ public class DerivedUnitFacadeFieldUnitCacheStrategy extends StrategyBase implem
 	 * @return
 	 */
 	private String getMemberString(Person member) {
-		if (StringUtils.isNotBlank(member.getLastname()) && ! member.isProtectedTitleCache() ){
-			String result = member.getLastname();
-			if  (StringUtils.isNotBlank(member.getFirstname())){
-				result = member.getFirstname().substring(0,1) + ". " + result;
+		if (StringUtils.isNotBlank(member.getFamilyName()) && ! member.isProtectedTitleCache() ){
+			String result = member.getFamilyName();
+			if  (StringUtils.isNotBlank(member.getGivenName())){
+				result = member.getGivenName().substring(0,1) + ". " + result;
 			}
 			return result;
 		}else{
@@ -220,12 +220,12 @@ public class DerivedUnitFacadeFieldUnitCacheStrategy extends StrategyBase implem
 		String code = "";
 		if(facade.getCollection() != null){
 			code = facade.getCollection().getCode();
-			if (CdmUtils.isEmpty(code)){
+			if (isBlank(code)){
 				Institution institution = facade.getCollection().getInstitute();
 				if (institution != null){
 					code = institution.getCode();
 				}
-				if (CdmUtils.isEmpty(code)){
+				if (isBlank(code)){
 					Collection superCollection = facade.getCollection().getSuperCollection();
 					if (superCollection != null){
 						code = superCollection.getCode();

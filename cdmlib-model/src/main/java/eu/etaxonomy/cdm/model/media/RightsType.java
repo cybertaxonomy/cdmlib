@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
  * @author m.doering
- * @created 08-Nov-2007 13:06:50
+ * @since 08-Nov-2007 13:06:50
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "RightsType")

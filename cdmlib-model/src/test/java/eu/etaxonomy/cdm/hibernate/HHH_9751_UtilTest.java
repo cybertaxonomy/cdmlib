@@ -15,7 +15,7 @@ import org.junit.Test;
 
 /**
  * @author a.kohlbecker
- * @date Jun 13, 2016
+ * @since Jun 13, 2016
  *
  */
 public class HHH_9751_UtilTest extends Assert {

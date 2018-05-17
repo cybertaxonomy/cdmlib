@@ -47,8 +47,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @see		TypeDesignationBase
  * @see		NameTypeDesignation
  * @author	m.doering
- * @version 1.0
- * @created 08-Nov-2007 13:06:38
+ * @since 08-Nov-2007 13:06:38
  */
 @XmlRootElement(name = "SpecimenTypeDesignation")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -57,7 +56,9 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 })
 @Entity
 @Audited
-public class SpecimenTypeDesignation extends TypeDesignationBase<SpecimenTypeDesignationStatus> implements ITypeDesignation, Cloneable {
+public class SpecimenTypeDesignation
+        extends TypeDesignationBase<SpecimenTypeDesignationStatus>
+        implements ITypeDesignation, Cloneable {
 	private static final long serialVersionUID = 6481627446997275007L;
 	private static final Logger logger = Logger.getLogger(SpecimenTypeDesignation.class);
 
@@ -173,9 +174,6 @@ public class SpecimenTypeDesignation extends TypeDesignationBase<SpecimenTypeDes
 		this.typeSpecimen = typeSpecimen;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.name.ITypeDesignation#isLectoType()
-	 */
 	@Override
     @Transient
 	public boolean isLectoType() {

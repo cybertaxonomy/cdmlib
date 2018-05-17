@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.model.description.PolytomousKey;
 
 /**
  * @author a.kohlbecker
- * @date 24.03.2011
+ * @since 24.03.2011
  * @Deprecated ONLY FOR TESTING PURPOSES
  */
 @Deprecated

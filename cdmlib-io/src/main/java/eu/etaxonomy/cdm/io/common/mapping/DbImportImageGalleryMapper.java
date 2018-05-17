@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * TODO maybe this class should not inherit from DbSingleAttributeImportMapperBase
  * as it does not map to a single attribute
  * @author a.mueller
- * @created 12.05.2009
+ * @since 12.05.2009
  * @version 1.0
  */
 public class DbImportImageGalleryMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, Taxon> implements IDbImportMapper<DbImportStateBase<?,?>,Taxon>{

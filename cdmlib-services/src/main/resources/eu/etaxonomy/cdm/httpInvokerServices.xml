@@ -233,6 +233,16 @@
       <value>eu.etaxonomy.cdm.api.service.IReferenceService</value>
     </property>
   </bean>
+  
+   <bean id="httpExtReferenceService"
+    class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+    <property name="service">
+      <ref bean="referenceServiceImpl" />
+    </property>
+    <property name="serviceInterface">
+      <value>eu.etaxonomy.cdm.api.service.IReferenceService</value>
+    </property>
+  </bean>
 
   <bean id="httpBaseService"
     class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
@@ -326,13 +336,13 @@
     </property>
   </bean>
 
-  <bean id="httpWorkingService"
+  <bean id="httpDescriptiveDataSetService"
     class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
     <property name="service">
-      <ref bean="workingSetService" />
+      <ref bean="descriptiveDataSetService" />
     </property>
     <property name="serviceInterface">
-      <value>eu.etaxonomy.cdm.api.service.IWorkingSetService</value>
+      <value>eu.etaxonomy.cdm.api.service.IDescriptiveDataSetService</value>
     </property>
   </bean>
 
@@ -455,6 +465,17 @@
     </property>
   </bean>
   
+  <bean id="httpLongRunningTasksService"
+    class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+    <property name="service">
+      <ref bean="longRunningTasksServiceImpl" />
+    </property>
+    <property name="serviceInterface">
+      <value>eu.etaxonomy.cdm.api.longrunningService.ILongRunningTasksService
+      </value>
+    </property>
+  </bean>
+       
    <bean id="httpTestService"
     class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
     <property name="service">

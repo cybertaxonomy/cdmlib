@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
  * @author a.mueller
- * @date 05.05.2017
+ * @since 05.05.2017
  *
  */
 public class RegistrationDaoHibernateImplTest  extends CdmTransactionalIntegrationTest {

@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.model.common.ICdmBase;
 
 /**
  * @author a.mueller
- * @created 31.07.2009
+ * @since 31.07.2009
  * @version 1.0
  */
 public interface IMergeStrategy {

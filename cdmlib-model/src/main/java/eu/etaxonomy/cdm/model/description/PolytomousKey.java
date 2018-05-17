@@ -57,7 +57,7 @@ import eu.etaxonomy.cdm.strategy.generate.PolytomousKeyGenerator;
  * documentation on the decision graph structure.
  *
  * @author h.fradin
- * @created 13.08.2009
+ * @since 13.08.2009
  *
  * @author a.mueller
  * @version 2.0 (08.11.2010)

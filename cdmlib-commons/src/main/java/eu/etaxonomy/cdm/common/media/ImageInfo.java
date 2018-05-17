@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.common.UriUtils;
 
 /**
  * @author k.luther
- * @date 27.11.2009
+ * @since 27.11.2009
  */
 public  class ImageInfo extends MediaInfo {
 	private static Logger logger = Logger.getLogger(ImageInfo.class);

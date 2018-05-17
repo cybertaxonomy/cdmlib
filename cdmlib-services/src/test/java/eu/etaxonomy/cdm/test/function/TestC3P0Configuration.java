@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.database.DbSchemaValidation;
  *
  *
  * @author n.hoffmann
- * @created Sep 25, 2009
+ * @since Sep 25, 2009
  */
 @Ignore /* IGNORE in Suite */
 public class TestC3P0Configuration{

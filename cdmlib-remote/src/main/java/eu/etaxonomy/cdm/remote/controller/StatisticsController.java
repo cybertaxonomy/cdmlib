@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
  * can be chosen have a look at doStatistics method
  *
  * @author s.buers
- * @created 07.11.2012
+ * @since 07.11.2012
  *
  */
 @Controller

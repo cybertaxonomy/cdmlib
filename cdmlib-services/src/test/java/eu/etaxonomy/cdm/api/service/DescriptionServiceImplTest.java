@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
  * @author a.babadshanjan
- * @created 09.02.2009
+ * @since 09.02.2009
  * @version 1.0
  */
 

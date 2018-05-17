@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
 
 /**
  * @author a.kohlbecker
- * @date 23.06.2010
+ * @since 23.06.2010
  *
  */
 public class MapJSONValueProcessor implements JsonValueProcessor {

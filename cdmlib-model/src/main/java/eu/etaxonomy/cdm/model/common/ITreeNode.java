@@ -18,7 +18,7 @@ import org.hibernate.event.spi.SaveOrUpdateEventListener;
  * Mainly used by {@link SaveOrUpdateEventListener} to update the indices.
  * 
  * @author a.mueller
- * @created 12.08.2013
+ * @since 12.08.2013
  *
  */
 public interface ITreeNode<T extends ITreeNode<T>> extends ICdmBase {

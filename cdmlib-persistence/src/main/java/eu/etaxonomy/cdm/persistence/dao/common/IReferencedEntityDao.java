@@ -10,7 +10,7 @@ import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 
 /**
  * @author a.babadshanjan
- * @created 04.09.2008
+ * @since 04.09.2008
  */
 public interface IReferencedEntityDao<T extends ReferencedEntityBase> extends ICdmEntityDao<T> {
 

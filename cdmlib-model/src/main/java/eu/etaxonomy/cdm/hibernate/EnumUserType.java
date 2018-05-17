@@ -27,6 +27,7 @@ import org.jadira.usertype.dateandtime.shared.spi.AbstractUserType;
 import eu.etaxonomy.cdm.model.common.IKeyTerm;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TermType;
+import eu.etaxonomy.cdm.model.media.ExternalLinkType;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName;
 import eu.etaxonomy.cdm.model.molecular.SequenceDirection;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
@@ -40,7 +41,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceType;
  * User type for IEnumTerm
  * Partly copied from http://stackoverflow.com/questions/9839553/hibernate-map-enum-to-varchar
  * @author a.mueller
- * @created 15-07-2013
+ * @since 15-07-2013
  */
 public class EnumUserType<E extends Enum<E>>  extends AbstractUserType implements UserType, ParameterizedType {
 	private static final long serialVersionUID = 4641078915907621907L;
@@ -117,6 +118,9 @@ public class EnumUserType<E extends Enum<E>>  extends AbstractUserType implement
             //EntityAuthority
             }else if (clazz.equals(AuthorityType.class)){
                 return AuthorityType.getByKey(val);
+            //ExternalLinkType
+            }else if (clazz.equals(ExternalLinkType.class)){
+                return ExternalLinkType.getByKey(val);
             }else{
 	        	throw new IllegalArgumentException(String.format("EnumType %s not supported by %s.", clazz.getSimpleName(), EnumUserType.class.getSimpleName()));
 	        }

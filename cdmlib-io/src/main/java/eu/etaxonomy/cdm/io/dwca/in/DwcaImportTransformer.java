@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 
 /**
  * @author a.mueller
- * @created 05.05.2011
+ * @since 05.05.2011
  */
 public final class DwcaImportTransformer extends InputTransformerBase {
     private static final long serialVersionUID = 3204045957159056826L;

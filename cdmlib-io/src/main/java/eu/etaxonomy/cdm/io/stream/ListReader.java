@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 /**
  * ListReader wraps a list to implement IReader.
  * @author a.mueller
- * @date 23.11.2011
+ * @since 23.11.2011
  *
  */
 public class ListReader<TYPE extends Object> implements IReader<TYPE> {

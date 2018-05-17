@@ -138,8 +138,8 @@
         <agent:Person id="3" uuid="urn-uuid-28e67c60-ca40-41bb-aa1c-f713efd0f235">
             <common:TitleCache>Schott</common:TitleCache>
             <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
-            <agent:FirstName>Heinrich Wilhelm</agent:FirstName>
-            <agent:LastName>Schott</agent:LastName>
+            <agent:GivenName>Heinrich Wilhelm</agent:GivenName>
+            <agent:FamilyName>Schott</agent:FamilyName>
             <agent:Lifespan>
                 <common:Start>1794-01-07</common:Start>
                 <common:End>1865-03-05</common:End>
@@ -152,8 +152,8 @@
         <agent:Person id="5" uuid="urn-uuid-b8cd17ba-32ea-4201-85f1-63d31526ccdb">
             <common:TitleCache>Tutt</common:TitleCache>
             <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
-            <agent:FirstName>James William</agent:FirstName>
-            <agent:LastName>Tutt</agent:LastName>
+            <agent:GivenName>James William</agent:GivenName>
+            <agent:FamilyName>Tutt</agent:FamilyName>
         </agent:Person>
         <agent:Team id="6" uuid="urn-uuid-cb525bcb-3736-4fda-91f1-13dceb64466c">
             <common:TitleCache>Kitching &amp; Cadiou</common:TitleCache>
@@ -167,14 +167,14 @@
         <agent:Person id="7" uuid="urn-uuid-4e8ba982-c79b-4f85-8aea-13d742e48187">
             <common:TitleCache>Kitching</common:TitleCache>
             <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
-            <agent:FirstName>Ian J.</agent:FirstName>
-            <agent:LastName>Kitching</agent:LastName>
+            <agent:GivenName>Ian J.</agent:GivenName>
+            <agent:FamilyName>Kitching</agent:FamilyName>
         </agent:Person>
         <agent:Person id="8" uuid="urn-uuid-b116ad18-fede-416c-938a-f491764b5ca8">
             <common:TitleCache>Cadiou</common:TitleCache>
             <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
-            <agent:FirstName>Jean-Marie</agent:FirstName>
-            <agent:LastName>Cadiou</agent:LastName>
+            <agent:GivenName>Jean-Marie</agent:GivenName>
+            <agent:FamilyName>Cadiou</agent:FamilyName>
         </agent:Person>
     </Agents>
     <Collections>

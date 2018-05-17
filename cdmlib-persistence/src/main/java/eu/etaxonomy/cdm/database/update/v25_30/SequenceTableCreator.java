@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
  * if they do not exist, as needed.
  *
  * @author n.hoffmann
- * @created Oct 27, 2010
+ * @since Oct 27, 2010
  */
 public class SequenceTableCreator extends SchemaUpdaterStepBase {
 

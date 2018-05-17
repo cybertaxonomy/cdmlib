@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.model.occurrence.Collection;
 /**
 * Interface for queying the Biodiversity Collection Index  via webservices ({@link http://www.biodiversitycollectionsindex.org}). 
 * @author a.mueller
-* @created Aug 18, 2010
+* @since Aug 18, 2010
 * @version 1.0
  */
 public interface IBciServiceWrapper {

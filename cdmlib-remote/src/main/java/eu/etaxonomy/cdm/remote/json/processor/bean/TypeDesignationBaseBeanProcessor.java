@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 
 /**
  * @author a.kohlbecker
- * @date 09.07.2010
+ * @since 09.07.2010
  *
  */
 public class TypeDesignationBaseBeanProcessor extends AbstractCdmBeanProcessor<TypeDesignationBase> {

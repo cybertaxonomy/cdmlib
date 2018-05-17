@@ -14,7 +14,7 @@ import org.springframework.jdbc.datasource.AbstractDriverBasedDataSource;
 
 /**
  * @author a.kohlbecker
- * @date 12.01.2010
+ * @since 12.01.2010
  *
  */
 public class DataSourceInfo {

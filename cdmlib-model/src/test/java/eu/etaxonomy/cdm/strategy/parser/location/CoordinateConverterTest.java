@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.strategy.parser.location.CoordinateConverter.ConversionR
 
 /**
  * @author a.mueller
- * @date 07.06.2010
+ * @since 07.06.2010
  *
  */
 public class CoordinateConverterTest {

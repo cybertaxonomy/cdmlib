@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author a.mueller
- * @created 20.03.2008
+ * @since 20.03.2008
  */
 public abstract class TcsXmlExportBase<T extends CdmBase>
         extends CdmExportBase<TcsXmlExportConfigurator, TcsXmlExportState, IExportTransformer, File>  {

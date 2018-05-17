@@ -31,7 +31,7 @@ import org.apache.tools.zip.ZipOutputStream;
  * into in parallel.
  *
  * @author a.mueller
- * @date 29.06.2017
+ * @since 29.06.2017
  *
  */
 public class ZipWriter {

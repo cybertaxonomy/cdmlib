@@ -52,8 +52,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
  * according to the SDD schema.
  *
  * @author m.doering
- * @version 1.0
- * @created 08-Nov-2007 13:06:28
+ * @since 08-Nov-2007 13:06:28
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "IndividualsAssociation", propOrder = {
@@ -64,7 +63,8 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 @Entity
 @Audited
 @Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
-public class IndividualsAssociation extends DescriptionElementBase implements IMultiLanguageTextHolder, Cloneable{
+public class IndividualsAssociation extends DescriptionElementBase
+        implements IMultiLanguageTextHolder, Cloneable{
 	private static final long serialVersionUID = -4117554860254531809L;
 	private static final Logger logger = Logger.getLogger(IndividualsAssociation.class);
 

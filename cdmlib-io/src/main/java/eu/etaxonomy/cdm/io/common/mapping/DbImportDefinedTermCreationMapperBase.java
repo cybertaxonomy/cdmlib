@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * it via its uuid available through the transformer, if not retrievable it tries to retrieve from the
  * database via the original source, if not retrievable it creates the new and stores it in the database.
  * @author a.mueller
- * @created 12.05.2009
+ * @since 12.05.2009
  * @version 1.0
  * @param <TERM>The class of the term to be created or retrieved.
  * @param <TERMED>The class of the object the term is added to.

@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.model.reference;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 
 public class ReferenceFactory {
 	private static final Logger logger = Logger.getLogger(ReferenceFactory.class);
@@ -107,7 +107,7 @@ public class ReferenceFactory {
 	}
 
 	public static Reference newArticle(Reference inJournal, TeamOrPersonBase partAuthor,
-			String title, String pages, String seriesPart, String volume, TimePeriod datePublished) {
+			String title, String pages, String seriesPart, String volume, VerbatimTimePeriod datePublished) {
 		IArticle article = newArticle();
 		article.setInReference(inJournal);
 		article.setAuthorship(partAuthor);

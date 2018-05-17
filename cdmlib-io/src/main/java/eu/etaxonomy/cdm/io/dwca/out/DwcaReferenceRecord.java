@@ -19,12 +19,12 @@ import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.media.Rights;
 
 /**
  * @author a.mueller
- * @date 20.04.2011
+ * @since 20.04.2011
  *
  */
 public class DwcaReferenceRecord extends DwcaRecordBase{
@@ -40,7 +40,7 @@ public class DwcaReferenceRecord extends DwcaRecordBase{
 	private String bibliographicCitation;
 	private String title;
 	private AgentBase<?> creator;
-	private TimePeriod date;
+	private VerbatimTimePeriod date;
 	private String source;
 	private String description;
 	private String subject;
@@ -194,12 +194,12 @@ public class DwcaReferenceRecord extends DwcaRecordBase{
 	}
 
 
-	public TimePeriod getDate() {
+	public VerbatimTimePeriod getDate() {
 		return date;
 	}
 
 
-	public void setDate(TimePeriod date) {
+	public void setDate(VerbatimTimePeriod date) {
 		this.date = date;
 	}
 

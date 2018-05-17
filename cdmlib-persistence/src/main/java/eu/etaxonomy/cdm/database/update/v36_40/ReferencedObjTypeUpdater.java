@@ -69,7 +69,7 @@ import eu.etaxonomy.cdm.model.description.TaxonInteraction;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.description.TextFormat;
-import eu.etaxonomy.cdm.model.description.WorkingSet;
+import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
@@ -127,7 +127,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
  * Not needed anymore as long as we gave up bidirectionality #5743
  *
  * @author a.mueller
- * @date 25.04.2016
+ * @since 25.04.2016
  */
 public class ReferencedObjTypeUpdater extends SchemaUpdaterStepBase{
 	private static final Logger logger = Logger.getLogger(ReferencedObjTypeUpdater.class);
@@ -176,7 +176,7 @@ public class ReferencedObjTypeUpdater extends SchemaUpdaterStepBase{
 			    TaxonNameDescription.class,
 			    TextData.class,
 			    TextFormat.class,
-			    WorkingSet.class,
+			    DescriptiveDataSet.class,
 			    Country.class,
 			    NamedArea.class,
 			    NamedAreaLevel.class,

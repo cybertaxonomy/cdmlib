@@ -13,7 +13,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 /**
  * This is an exporter that invokes the application aware defaultExport when invoked itself
  * @author a.babadshanjan
- * @created 17.11.2008
+ * @since 17.11.2008
  */
 public class CdmDefaultExport<T extends IExportConfigurator>
             extends CdmDefaultIOBase<IExportConfigurator>

@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.remote.l10n.TermRepresentation_L10n;
 
 /**
  * @author a.kohlbecker
- * @date 24.03.2009
+ * @since 24.03.2009
  *
  * @param <T>
  * @param <SERVICE>

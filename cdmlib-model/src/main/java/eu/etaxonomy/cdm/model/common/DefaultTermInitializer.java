@@ -39,7 +39,7 @@ public class DefaultTermInitializer implements ITermInitializer {
 	}
 
 	protected void doInitialize(){
-		Map<UUID,DefinedTermBase> terms = new HashMap<UUID,DefinedTermBase>();
+		Map<UUID,DefinedTermBase> terms = new HashMap<>();
 
 //		for(Class<? extends DefinedTermBase<?>> clazz : classesToInitialize) {
 		for(VocabularyEnum vocabularyEnum : VocabularyEnum.values()) {

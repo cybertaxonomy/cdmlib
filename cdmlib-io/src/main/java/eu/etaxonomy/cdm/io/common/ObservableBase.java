@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.io.common.events.IoProblemEvent;
 
 /**
  * @author a.mueller
- * @created 30.03.2012
+ * @since 30.03.2012
  *
  */
 public class ObservableBase implements IIoObservable {

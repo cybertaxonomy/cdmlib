@@ -14,7 +14,7 @@ import java.util.UUID;
 
 /**
  * @author n.hoffmann
- * @created Sep 15, 2010
+ * @since Sep 15, 2010
  * @version 1.0
  */
 public interface IAnnotatableEntity extends IVersionableEntity {

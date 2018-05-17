@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
  * clear.
  *
  * @author a.kohlbecker
- * @date Oct 6, 2016
+ * @since Oct 6, 2016
  *
  */
 @EnableWebSecurity
@@ -53,7 +53,7 @@ public class MultiWebSecurityConfiguration {
     /**
      * Check for full authentication for remoting services
      * @author a.kohlbecker
-     * @date Oct 6, 2016
+     * @since Oct 6, 2016
      *
      */
     @Configuration
@@ -78,7 +78,7 @@ public class MultiWebSecurityConfiguration {
      * so that the user is requested to provide his credentials.
      *
      * @author a.kohlbecker
-     * @date Jan 16, 2017
+     * @since Jan 16, 2017
      *
      */
     @Configuration
@@ -105,7 +105,7 @@ public class MultiWebSecurityConfiguration {
      * in the OAuth2ServerConfiguration.
      *
      * @author a.kohlbecker
-     * @date Oct 6, 2016
+     * @since Oct 6, 2016
      *
      */
     @Configuration

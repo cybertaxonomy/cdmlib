@@ -71,7 +71,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * (gathering event) it derives from.<BR>
  *
  * @author a.mueller
- * @date 14.05.2010
+ * @since 14.05.2010
  */
 public class DerivedUnitFacade {
 	private static final String METER = "m";
@@ -1795,11 +1795,11 @@ public class DerivedUnitFacade {
 
 	// individual counts
 	@Transient
-	public Integer getIndividualCount() {
+	public String getIndividualCount() {
 		return (hasFieldUnit() ? getFieldUnit(true).getIndividualCount() : null);
 	}
 
-	public void setIndividualCount(Integer individualCount) {
+	public void setIndividualCount(String individualCount) {
 		getFieldUnit(true).setIndividualCount(individualCount);
 	}
 
@@ -2581,7 +2581,7 @@ public class DerivedUnitFacade {
 	 * @param text text representation of distance
 	 * @return the formatted distance string
 	 */
-	private String distanceString(Number min, Number max, String text, String unit) {
+	public static String distanceString(Number min, Number max, String text, String unit) {
 		if (StringUtils.isNotBlank(text)){
 			return text;
 		}else{

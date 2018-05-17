@@ -22,7 +22,7 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.reference.IArticle;
 import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.IBookSection;
@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  * Copy of {@link ArticleDefaultCacheStrategyTest} to test the {@link DefaultReferenceCacheStrategy}.
  *
  * @author a.mueller
- * @date 25.05.2016
+ * @since 25.05.2016
  *
  */
 public class DefaultReferenceCacheStrategyTest {
@@ -115,7 +115,7 @@ public class DefaultReferenceCacheStrategyTest {
         cdDvd.setTitle(cdDvdTitle);
         String publisher = "An ugly publisher";  //not yet implemented
         String place = "A beutiful place";  //not yet implemented
-        TimePeriod publicationDate = TimePeriod.NewInstance(1999, 2001);
+        VerbatimTimePeriod publicationDate = VerbatimTimePeriod.NewVerbatimInstance(1999, 2001);
         cdDvd.setDatePublished(publicationDate);
 
         //Generic
@@ -139,7 +139,7 @@ public class DefaultReferenceCacheStrategyTest {
 		article1.setTitle("My article");
 		article1.setInJournal(journal1);
 		article1.setAuthorship(articleTeam1);
-		article1.setDatePublished(TimePeriod.NewInstance(1975));
+		article1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1975));
 		Assert.assertEquals("Team1, My article in My journal. 1975", article1.getTitleCache());
 
 		article1.setInJournal(null);
@@ -156,7 +156,7 @@ public class DefaultReferenceCacheStrategyTest {
 		article1.setTitle("My article");
 		article1.setInJournal(journal1);
 		article1.setAuthorship(articleTeam1);
-		article1.setDatePublished(TimePeriod.NewInstance(1975));
+		article1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1975));
 		Assert.assertEquals("Team1, My article in My journal. 1975", article1.getTitleCache());
 
 		article1.setInJournal(null);
@@ -171,7 +171,7 @@ public class DefaultReferenceCacheStrategyTest {
         article1.setTitle("My article");
         article1.setInJournal(journal1);
         article1.setAuthorship(articleTeam1);
-        article1.setDatePublished(TimePeriod.NewInstance(1975));
+        article1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1975));
         Assert.assertEquals("Team1, My article in My journal. 1975", article1.getTitleCache());
         article1.setPages("12-22");
         Assert.assertEquals("Team1, My article in My journal: 12-22. 1975", article1.getTitleCache());
@@ -193,7 +193,7 @@ public class DefaultReferenceCacheStrategyTest {
 		article1.setTitle("My article");
 		article1.setInJournal(journal1);
 		article1.setAuthorship(articleTeam1);
-		article1.setDatePublished(TimePeriod.NewInstance(1975));
+		article1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1975));
 		article1.setAbbrevTitle("M. Art.");
 		Assert.assertEquals("T., M. Art. in M. Journ. 1975", article1.getAbbrevTitleCache());  //double dot may be removed in future #3645
 
@@ -211,7 +211,7 @@ public class DefaultReferenceCacheStrategyTest {
 		article1.setTitle("My article");
 		article1.setInJournal(journal1);
 		article1.setAuthorship(articleTeam1);
-		article1.setDatePublished(TimePeriod.NewInstance(1975));
+		article1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1975));
 		Assert.assertEquals("in M. J.: 55. 1975", article1.getNomenclaturalCitation(detail1));
 
 		article1.setVolume("22");
@@ -232,7 +232,7 @@ public class DefaultReferenceCacheStrategyTest {
 		article1.setVolume("22");
 		journal1.setAbbrevTitle("J. Pl. Eur.");
 		journal1.setAuthorship(articleTeam2);
-		article1.setDatePublished(TimePeriod.NewInstance(1975));
+		article1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1975));
 		//no ser, sect, abt
 		Assert.assertEquals("in J. Pl. Eur. 22: 55. 1975", article1.getNomenclaturalCitation(detail1));
 		//ser
@@ -275,7 +275,7 @@ public class DefaultReferenceCacheStrategyTest {
 		article1.setAuthorship(articleTeam1);
 		article1.setVolume("34");
 		article1.setSeriesPart("ser. 2");
-		article1.setDatePublished(TimePeriod.NewInstance(1975));
+		article1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1975));
 		//FIXME removed for new formatter
 //		Assert.assertEquals("in My journal, ser. 2, 34", defaultStrategy.getTitleWithoutYearAndAuthor((Reference)article1, false));
 	}
@@ -290,7 +290,7 @@ public class DefaultReferenceCacheStrategyTest {
 		article1.setInJournal(journal1);
 		article1.setAuthorship(articleAuthor);
 		article1.setVolume("18");
-		article1.setDatePublished(TimePeriod.NewInstance(1943));
+		article1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1943));
 		Assert.assertEquals("Babc. & Stebbins in Univ. Calif. Publ. Bot. 18. 1943", defaultStrategy.getTitleCache((Reference)article1));
 	}
 
@@ -300,14 +300,14 @@ public class DefaultReferenceCacheStrategyTest {
     public void testBookGetTitleCache0(){
         book1.setTitle("My book");
         book1.setAuthorship(bookTeam1);
-        book1.setDatePublished(TimePeriod.NewInstance(1975));
+        book1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1975));
         Assert.assertEquals("Unexpected title cache.", "Book Author, My book. 1975", book1.getTitleCache());
 
         book1.setTitleCache(null, false);
         book1.setEdition("ed. 3");
         Assert.assertEquals("Unexpected title cache.", "Book Author, My book, ed. 3. 1975", book1.getTitleCache());
 
-        TimePeriod newDatePublished = TimePeriodParser.parseString("1975 (after Aug.)");
+        VerbatimTimePeriod newDatePublished = TimePeriodParser.parseStringVerbatim("1975 (after Aug.)");
         book1.setDatePublished(newDatePublished);
         book1.setTitleCache(null, false);
         //TODO this behaviour needs to be discussed. Maybe better the complete date published string should be returned.
@@ -326,7 +326,7 @@ public class DefaultReferenceCacheStrategyTest {
         book1.setAbbrevTitle("Acta Inst. Bot. Acad. Sci. URSS");
         book1.setSeriesPart("1");
         book1.setVolume("Fasc. 11");
-        book1.setDatePublished(TimePeriodParser.parseString("1955"));
+        book1.setDatePublished(TimePeriodParser.parseStringVerbatim("1955"));
         Assert.assertEquals("Unexpected abbrev title cache", "Acta Inst. Bot. Acad. Sci. URSS, ser. 1, Fasc. 11. 1955", book1.getTitleCache());
         Assert.assertEquals("Unexpected nomencl. reference", "Acta Inst. Bot. Acad. Sci. URSS, ser. 1, Fasc. 11: 248. 1955", book1.getNomenclaturalCitation("248"));
     }
@@ -338,7 +338,7 @@ public class DefaultReferenceCacheStrategyTest {
         IBook book1 = ReferenceFactory.newBook();
         book1.setAbbrevTitle("Acta Inst. Bot. Acad. Sci. URSS");
         book1.setVolume("Fasc. 11");
-        book1.setDatePublished(TimePeriodParser.parseString("1955"));
+        book1.setDatePublished(TimePeriodParser.parseStringVerbatim("1955"));
         Assert.assertEquals("Unexpected abbrev title cache", "Acta Inst. Bot. Acad. Sci. URSS Fasc. 11. 1955", book1.getTitleCache());
         Assert.assertEquals("Unexpected nomencl. reference", "Acta Inst. Bot. Acad. Sci. URSS Fasc. 11: 248. 1955", book1.getNomenclaturalCitation("248"));
         book1.setSeriesPart("1");
@@ -349,7 +349,7 @@ public class DefaultReferenceCacheStrategyTest {
     public void testBookGetNomenclaturalCitation(){
         book1.setTitle("My book");
         book1.setAuthorship(bookTeam1);
-        book1.setDatePublished(TimePeriod.NewInstance(1975));
+        book1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1975));
         Assert.assertEquals("My book: 55. 1975", book1.getNomenclaturalCitation(detail1));
         book1.setAbbrevTitle("Analect. Bot.");
         Assert.assertEquals("Analect. Bot. 1975", book1.getNomenclaturalCitation(null));
@@ -364,14 +364,14 @@ public class DefaultReferenceCacheStrategyTest {
         bookSection1.setTitle("My chapter");
         bookSection1.setInBook(book1);
         bookSection1.setAuthorship(sectionTeam1);
-        book1.setDatePublished(TimePeriod.NewInstance(1975));
+        book1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1975));
         Assert.assertEquals("Unexpected title cache.", "Section Author - My chapter in Book Author, My book. 1975", bookSection1.getTitleCache());
-        book1.setDatePublished(null);
-        bookSection1.setDatePublished(TimePeriod.NewInstance(1976));
+        book1.setDatePublished((VerbatimTimePeriod)null);
+        bookSection1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1976));
         bookSection1.setTitleCache(null, false);
         book1.setTitleCache(null, false);
         Assert.assertEquals("Unexpected title cache.", "Section Author - My chapter in Book Author, My book. 1976", bookSection1.getTitleCache());
-        book1.setDatePublished(TimePeriod.NewInstance(1977));
+        book1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1977));
         bookSection1.setTitleCache(null, false);
         book1.setTitleCache(null, false);
         Assert.assertEquals("Unexpected title cache.", "Section Author - My chapter in Book Author, My book. 1976", bookSection1.getTitleCache());
@@ -399,12 +399,12 @@ public class DefaultReferenceCacheStrategyTest {
         bookSection1.setTitle("My chapter");
         bookSection1.setInBook(book1);
         bookSection1.setAuthorship(sectionTeam1);
-        book1.setDatePublished(TimePeriod.NewInstance(1975));
+        book1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1975));
         Assert.assertEquals("Unexpected title cache.", "Section Author - My chapter in Book Author, My book. 1975", bookSection1.getTitleCache());
-        book1.setDatePublished(null);
-        bookSection1.setDatePublished(TimePeriod.NewInstance(1976));
+        book1.setDatePublished((VerbatimTimePeriod)null);
+        bookSection1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1976));
         Assert.assertEquals("Unexpected title cache.", "Section Author - My chapter in Book Author, My book. 1976", bookSection1.getTitleCache());
-        book1.setDatePublished(TimePeriod.NewInstance(1977));
+        book1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1977));
         Assert.assertEquals("Unexpected title cache.", "Section Author - My chapter in Book Author, My book. 1976", bookSection1.getTitleCache());
 
 
@@ -421,7 +421,7 @@ public class DefaultReferenceCacheStrategyTest {
         bookSection1.setTitle("My chapter");
         bookSection1.setInBook(book1);
         bookSection1.setAuthorship(sectionTeam1);
-        book1.setDatePublished(TimePeriod.NewInstance(1975));
+        book1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1975));
         //TODO still unclear which is correct
 //      Assert.assertEquals("in Book Author, My book: 55. 1975", bookSection1.getNomenclaturalCitation(detail1));
         Assert.assertEquals("in TT., My book: 55. 1975", bookSection1.getNomenclaturalCitation(detail1));
@@ -443,7 +443,7 @@ public class DefaultReferenceCacheStrategyTest {
         book.setVolume("2(3)");
         book.setPlacePublished("Riyadh");
         book.setPublisher("National Herbarium");
-        book.setDatePublished(TimePeriod.NewInstance(2000));
+        book.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(2000));
 
         Team sectionTeam = Team.NewTitledInstance("Chaudhary S. A.", "Chaudhary S. A.");
         IBookSection bookSection = ReferenceFactory.newBookSection();
@@ -516,7 +516,7 @@ public class DefaultReferenceCacheStrategyTest {
     public void testGenericGetAbbrevTitleCache(){
         generic1.setTitle("Part Title");
         generic1.setAbbrevTitle("Pt. Tit.");
-        generic1.setDatePublished(TimePeriodParser.parseString("1987"));
+        generic1.setDatePublished(TimePeriodParser.parseStringVerbatim("1987"));
         IBook book1 = ReferenceFactory.newBook();
         book1.setTitle("My book title");
         book1.setAbbrevTitle("My bk. tit.");
@@ -542,12 +542,12 @@ public class DefaultReferenceCacheStrategyTest {
         Assert.assertEquals("Unexpected abbrev title cache.", "My prot. abb. tit. in a bk.", generic1.getAbbrevTitleCache());
         Assert.assertEquals("Unexpected title cache.", "Part Title in Authorteam, My book title. 1987", generic1.getTitleCache());
 
-        generic1.setDatePublished(null);
+        generic1.setDatePublished((VerbatimTimePeriod)null);
         Assert.assertEquals("Unexpected nom. ref.", "My prot. abb. tit. in a bk.", generic1.getNomenclaturalCitation(null));
         Assert.assertEquals("Unexpected nom. ref.", "My prot. abb. tit. in a bk.", generic1.getNomenclaturalCitation(""));
         Assert.assertEquals("Unexpected nom. ref.", "My prot. abb. tit. in a bk.: pp. 44", generic1.getNomenclaturalCitation("pp. 44"));
 
-        generic1.setDatePublished(TimePeriodParser.parseString("1893"));
+        generic1.setDatePublished(TimePeriodParser.parseStringVerbatim("1893"));
         Assert.assertEquals("Unexpected nom. ref.", "My prot. abb. tit. in a bk.: pp. 44. 1893", generic1.getNomenclaturalCitation("pp. 44"));
 
     }
@@ -571,7 +571,7 @@ public class DefaultReferenceCacheStrategyTest {
     @Test
     public void testGenericYearAndAuthorOnly(){
         generic1.setAuthorship(genericTeam1);
-        generic1.setDatePublished(TimePeriodParser.parseString("1792"));
+        generic1.setDatePublished(TimePeriodParser.parseStringVerbatim("1792"));
         generic1.setTitleCache(null, false);  //reset cache in case aspectJ is not enabled
         Assert.assertEquals("Unexpected title cache.", "Authorteam, 1792", generic1.getTitleCache());
         Assert.assertEquals("1792", generic1.getNomenclaturalCitation(null));
@@ -582,7 +582,7 @@ public class DefaultReferenceCacheStrategyTest {
         generic1.setAuthorship(genericTeam1);
         String detail = "sine no.";
         generic1.setAbbrevTitle("My title");
-        generic1.setDatePublished(TimePeriodParser.parseString("1883-1884"));
+        generic1.setDatePublished(TimePeriodParser.parseStringVerbatim("1883-1884"));
         generic1.setTitleCache(null, false);  //reset cache in case aspectJ is not enabled
         Assert.assertEquals("My title: sine no. 1883-1884", generic1.getNomenclaturalCitation(detail));
     }
@@ -592,7 +592,7 @@ public class DefaultReferenceCacheStrategyTest {
     public void testGenericMissingVolume(){
         generic1.setTitle("My generic");
         generic1.setAuthorship(genericTeam1);
-        generic1.setDatePublished(TimePeriodParser.parseString("1883-1884"));
+        generic1.setDatePublished(TimePeriodParser.parseStringVerbatim("1883-1884"));
         generic1.setTitleCache(null, false);  //reset cache in case aspectJ is not enabled
         Assert.assertEquals("My generic: 55. 1883-1884", generic1.getNomenclaturalCitation(detail1));
         generic1.setVolume("7");
@@ -605,7 +605,7 @@ public class DefaultReferenceCacheStrategyTest {
         generic2.setTitle("My InRef");
         Person person2 = Person.NewTitledInstance("InRefAuthor");
         generic2.setAuthorship(person2);
-        generic2.setDatePublished(TimePeriodParser.parseString("1885"));
+        generic2.setDatePublished(TimePeriodParser.parseStringVerbatim("1885"));
         generic1.setInReference(generic2);
 
         //only reference has a volume
@@ -638,7 +638,7 @@ public class DefaultReferenceCacheStrategyTest {
         database1.setTitle("My database");
         //maybe we should have a trailing dot here
         Assert.assertEquals("My database: 55", reference.getNomenclaturalCitation(detail1));
-        database1.setDatePublished(TimePeriodParser.parseString("1998"));
+        database1.setDatePublished(TimePeriodParser.parseStringVerbatim("1998"));
         Assert.assertEquals("My database: 55. 1998", reference.getNomenclaturalCitation(detail1));
 
         database1.setTitleCache("Your database", true);
@@ -655,7 +655,7 @@ public class DefaultReferenceCacheStrategyTest {
         cdDvd.setTitle("My Cd/Dvd");
         //maybe we should have a trailing dot here
         Assert.assertEquals("My Cd/Dvd: 55", reference.getNomenclaturalCitation(detail1));
-        cdDvd.setDatePublished(TimePeriodParser.parseString("1998"));
+        cdDvd.setDatePublished(TimePeriodParser.parseStringVerbatim("1998"));
         Assert.assertEquals("My Cd/Dvd: 55. 1998", reference.getNomenclaturalCitation(detail1));
 
         cdDvd.setTitleCache("Your Cd/Dvd", true);
@@ -672,7 +672,7 @@ public class DefaultReferenceCacheStrategyTest {
         webPage.setTitle("My WebPage");
         //maybe we should have a trailing dot here
         Assert.assertEquals("My WebPage: 55", reference.getNomenclaturalCitation(detail1));
-        webPage.setDatePublished(TimePeriodParser.parseString("1998"));
+        webPage.setDatePublished(TimePeriodParser.parseStringVerbatim("1998"));
         Assert.assertEquals("My WebPage: 55. 1998", reference.getNomenclaturalCitation(detail1));
 
         webPage.setTitleCache("Your WebPage", true);

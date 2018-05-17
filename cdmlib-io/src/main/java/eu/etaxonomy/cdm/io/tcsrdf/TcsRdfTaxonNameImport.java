@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -47,7 +47,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 /**
  * @author a.mueller
- * @created 29.05.2008
+ * @since 29.05.2008
  */
 @Component
 public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<TcsRdfImportState> {
@@ -210,7 +210,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 				if (strYear != null){
 					try {
 						year = Integer.valueOf(strYear);
-						TimePeriod timeP = TimePeriod.NewInstance(year);
+						VerbatimTimePeriod timeP = VerbatimTimePeriod.NewVerbatimInstance(year);
 						nomRef.setDatePublished(timeP);
 					} catch (RuntimeException e) {
 						logger.warn("year could not be parsed");

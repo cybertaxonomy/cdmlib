@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.api.service;
 
 /**
  * @author a.kohlbecker
- * @date Sep 4, 2013
+ * @since Sep 4, 2013
  *
  */
 public enum TaxaAndNamesSearchMode {

@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName;
 
 /**
  * @author cmathew
- * @date 20 Nov 2015
+ * @since 20 Nov 2015
  *
  */
 public interface IMetadataService {

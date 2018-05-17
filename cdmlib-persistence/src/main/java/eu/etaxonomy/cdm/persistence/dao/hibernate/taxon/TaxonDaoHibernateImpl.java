@@ -75,7 +75,7 @@ import eu.etaxonomy.cdm.persistence.query.TaxonTitleType;
 
 /**
  * @author a.mueller
- * @created 24.11.2008
+ * @since 24.11.2008
  */
 @Repository
 @Qualifier("taxonDaoHibernateImpl")
@@ -499,6 +499,8 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 // find synonyms
                 if (synonyms.size()>0){
                     query.setParameterList("synonyms", synonyms);
+                }else if (!doTaxa && !doCommonNames && !doIncludeMisappliedNames){
+                    return null;
                 }
             }
 
@@ -1201,63 +1203,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         return hql;
     }
 
-    @Override
-    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification, Integer limit, String pattern) {
-        int classificationId = classification.getId();
-        // StringBuffer excludeUuids = new StringBuffer();
 
-         String queryString = "SELECT nodes.uuid, nodes.id, taxon.titleCache, taxon.name.rank FROM TaxonNode AS nodes JOIN nodes.taxon as taxon WHERE nodes.classification.id = " + classificationId ;
-         if (pattern != null){
-             if (pattern.equals("?")){
-                 limit = null;
-             } else{
-                 if (!pattern.endsWith("*")){
-                     pattern += "%";
-                 }
-                 pattern = pattern.replace("*", "%");
-                 pattern = pattern.replace("?", "%");
-                 queryString = queryString + " AND taxon.titleCache like (:pattern)" ;
-             }
-         }
-
-
-
-         Query query = getSession().createQuery(queryString);
-
-
-         if (limit != null){
-             query.setMaxResults(limit);
-         }
-
-         if (pattern != null && !pattern.equals("?")){
-             query.setParameter("pattern", pattern);
-         }
-         @SuppressWarnings("unchecked")
-         List<Object[]> result = query.list();
-
-         if(result.size() == 0){
-             return null;
-         }else{
-             List<UuidAndTitleCache<TaxonNode>> list = new ArrayList<UuidAndTitleCache<TaxonNode>>(result.size());
-             if (result != null && !result.isEmpty()){
-                 if (result.iterator().next().length == 4){
-                     Collections.sort(result, new UuidAndTitleCacheTaxonComparator());
-                 }
-             }
-             for (Object object : result){
-
-                 Object[] objectArray = (Object[]) object;
-
-                 UUID uuid = (UUID)objectArray[0];
-                 Integer id = (Integer) objectArray[1];
-                 String titleCache = (String) objectArray[2];
-
-                 list.add(new UuidAndTitleCache<TaxonNode>(TaxonNode.class, uuid, id, titleCache));
-             }
-
-             return list;
-         }
-    }
 
 
     @Override
@@ -1874,7 +1820,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
             pattern = pattern + "%";
             query.setParameter("pattern", pattern);
             } else {
-            query = session.createQuery("select uuid, id, titleCache, taxonBase.name.rank from TaxonBase "  );
+            query = session.createQuery("select taxonBase.uuid, taxonBase.id, taxonBase.titleCache, taxonBase.name.rank from TaxonBase as taxonBase"  );
         }
         if (limit != null){
            query.setMaxResults(limit);

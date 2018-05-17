@@ -51,10 +51,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 public class StatisticsDaoHibernateImplTest
         extends CdmTransactionalIntegrationTest {
 
-    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(StatisticsDaoHibernateImplTest.class);
-
-	private static final boolean PRINTOUT = true;
 
 	@SpringBeanByType
 	private IStatisticsDao statisticsDao;
@@ -182,11 +179,11 @@ public class StatisticsDaoHibernateImplTest
 			root= createTaxTree(classification);
 
 			result=statisticsDao.getAllChildNodeIds(root.getUuid());
-			System.out.println("classification "+ classification.getName()+": ");
-			System.out.println("result: "+result.toString());
-			System.out.println("");
+		    logger.debug("classification "+ classification.getName()+": ");
+		    logger.debug("result: "+result.toString());
+
 		}
-		if (PRINTOUT) {
+		if (logger.isTraceEnabled()) {
 			print();
 		}
 		// result=statisticsDao.getAllTaxonIds(nodeUuid);

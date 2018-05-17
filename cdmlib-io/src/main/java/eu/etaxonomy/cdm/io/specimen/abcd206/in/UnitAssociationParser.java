@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.ext.occurrence.bioCase.BioCaseQueryServiceWrapper;
 
 /**
  * @author pplitzner
- * @date 16.06.2015
+ * @since 16.06.2015
  *
  */
 public class UnitAssociationParser {

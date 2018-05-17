@@ -46,7 +46,7 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 /**
  * @author AM
- * @created 09.05.2008
+ * @since 09.05.2008
  * @version 1.0
  */
 public class TestSpecimen {

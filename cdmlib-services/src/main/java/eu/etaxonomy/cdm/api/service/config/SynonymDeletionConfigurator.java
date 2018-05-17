@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.api.service.ITaxonService;
  * @see  ITaxonService#deleteSynonym(eu.etaxonomy.cdm.model.taxon.Synonym)
  *
  * @author k.luther
- * @date 09.11.2011
+ * @since 09.11.2011
  *
  */
 public class SynonymDeletionConfigurator extends TaxonBaseDeletionConfigurator{

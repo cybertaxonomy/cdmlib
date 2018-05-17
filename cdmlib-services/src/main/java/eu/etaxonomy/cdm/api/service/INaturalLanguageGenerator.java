@@ -12,7 +12,7 @@ import eu.etaxonomy.cdm.model.description.FeatureTree;
 /**
  * Interface for Natural Language generation 
  * @author m.venin
- * @date 12.04.2010
+ * @since 12.04.2010
  *
  */
 

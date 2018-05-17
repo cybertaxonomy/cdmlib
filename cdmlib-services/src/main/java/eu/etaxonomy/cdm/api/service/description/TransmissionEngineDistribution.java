@@ -88,7 +88,7 @@ import eu.etaxonomy.cdm.persistence.dto.ClassificationLookupDTO;
  *
  * @author Anton Güntsch (author of original Transmission Engine Occurrence version 14 written in Visual Basic)
  * @author Andreas Kohlbecker (2013, porting Transmission Engine Occurrence to Java)
- * @date Feb 22, 2013
+ * @since Feb 22, 2013
  */
 @Service
 public class TransmissionEngineDistribution { //TODO extends IoBase?
@@ -459,7 +459,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
         TransactionStatus txStatus = startTransaction(false);
 
         // reload superAreas TODO is it faster to getSession().merge(object) ??
-        Set<UUID> superAreaUuids = new HashSet<UUID>(superAreas.size());
+        Set<UUID> superAreaUuids = new HashSet<>(superAreas.size());
         for (NamedArea superArea : superAreas){
             superAreaUuids.add(superArea.getUuid());
         }
@@ -486,7 +486,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
             // iterate over the taxa and accumulate areas
             // start processing the new batch
 
-            for(TaxonBase taxonBase : taxa) {
+            for(TaxonBase<?> taxonBase : taxa) {
                 if(logger.isDebugEnabled()){
                     logger.debug("accumulateByArea() - taxon :" + taxonToString(taxonBase));
                 }
@@ -590,7 +590,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
         // taxa of the specified rank but also taxa of lower ranks
         // if no taxon of the specified rank exists, so we need to
         // remember which taxa have been processed already
-        Set<Integer> taxaProcessedIds = new HashSet<Integer>();
+        Set<Integer> taxaProcessedIds = new HashSet<>();
         List<TaxonBase> taxa = null;
         List<TaxonBase> childTaxa = null;
 
@@ -634,7 +634,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
 //                           logger.debug("accumulateByRank() - taxon " + taxonPager.getFirstRecord() + " to " + taxonPager.getLastRecord() + " of " + taxonPager.getCount() + "]");
 //                }
 
-                for(TaxonBase taxonBase : taxa) {
+                for(TaxonBase<?> taxonBase : taxa) {
 
                     batch.incementCounter();
 
@@ -660,12 +660,12 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
                     }
                     if(!childTaxonIds.isEmpty()) {
                         childTaxa = taxonService.loadByIds(childTaxonIds, TAXONDESCRIPTION_INIT_STRATEGY);
-                        LinkedList<TaxonBase> childStack = new LinkedList<TaxonBase>(childTaxa);
+                        LinkedList<TaxonBase> childStack = new LinkedList<>(childTaxa);
                         childTaxa = null; // allow to be garbage collected
 
                         while(childStack.size() > 0){
 
-                            TaxonBase childTaxonBase = childStack.pop();
+                            TaxonBase<?> childTaxonBase = childStack.pop();
                             getSession().setReadOnly(childTaxonBase, true);
 
                             Taxon childTaxon = (Taxon) childTaxonBase;
@@ -780,7 +780,7 @@ private List<Rank> rankInterval(Rank lowerRank, Rank upperRank) {
 
     TransactionStatus txStatus = startTransaction(false);
     Rank currentRank = lowerRank;
-    List<Rank> ranks = new ArrayList<Rank>();
+    List<Rank> ranks = new ArrayList<>();
     ranks.add(currentRank);
     while (!currentRank.isHigher(upperRank)) {
         currentRank = findNextHigherRank(currentRank);
@@ -892,7 +892,7 @@ private List<Rank> rankInterval(Rank lowerRank, Rank upperRank) {
                 logger.debug("reusing computed description for " + taxon.getTitleCache());
                 if (doClear) {
                     int deleteCount = 0;
-                    Set<DescriptionElementBase> deleteCandidates = new HashSet<DescriptionElementBase>();
+                    Set<DescriptionElementBase> deleteCandidates = new HashSet<>();
                     for (DescriptionElementBase descriptionElement : description.getElements()) {
                         if(descriptionElement instanceof Distribution) {
                             deleteCandidates.add(descriptionElement);
@@ -942,7 +942,7 @@ private List<Rank> rankInterval(Rank lowerRank, Rank upperRank) {
      * @return
      */
     private List<Distribution> distributionsFor(Taxon taxon) {
-        List<Distribution> distributions = new ArrayList<Distribution>();
+        List<Distribution> distributions = new ArrayList<>();
         for(TaxonDescription description: taxon.getDescriptions()) {
             readOnlyIfInSession(description);
             for(DescriptionElementBase deb : description.getElements()) {
@@ -974,7 +974,7 @@ private List<Rank> rankInterval(Rank lowerRank, Rank upperRank) {
      * @param logger2
      * @return
      */
-    private String taxonToString(TaxonBase taxon) {
+    private String taxonToString(TaxonBase<?> taxon) {
         if(logger.isTraceEnabled()) {
             return taxon.getTitleCache();
         } else {
@@ -1003,7 +1003,7 @@ private List<Rank> rankInterval(Rank lowerRank, Rank upperRank) {
 
         TransactionStatus txStatus = startTransaction(false);
 
-        Map<PresenceAbsenceTerm, Integer> priorityMap = new HashMap<PresenceAbsenceTerm, Integer>();
+        Map<PresenceAbsenceTerm, Integer> priorityMap = new HashMap<>();
 
         priorityMap.put(PresenceAbsenceTerm.CULTIVATED_REPORTED_IN_ERROR(), 1);
         priorityMap.put(PresenceAbsenceTerm.INTRODUCED_UNCERTAIN_DEGREE_OF_NATURALISATION(), 2);

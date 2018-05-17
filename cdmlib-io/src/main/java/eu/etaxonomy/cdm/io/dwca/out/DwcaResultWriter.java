@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
  * Final result processor for Darwin Core Archive exports.
  *
  * @author a.mueller
- * @date 25.06.2017
+ * @since 25.06.2017
  *
  */
 @Component

@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.model.common.EventBase;
 
 /**
  * @author a.mueller
- * @date 17.05.2010
+ * @since 17.05.2010
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)

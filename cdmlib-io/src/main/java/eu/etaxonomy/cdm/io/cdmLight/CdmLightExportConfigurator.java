@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 
 /**
  * @author k.luther
- * @date 15.03.2017
+ * @since 15.03.2017
  *
  */
 public class CdmLightExportConfigurator

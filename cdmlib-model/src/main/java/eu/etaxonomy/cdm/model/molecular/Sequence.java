@@ -63,7 +63,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * {@link #getBarcodeSequencePart() barcode sequence}, ...).
  *
  * @author m.doering
- * @created 08-Nov-2007 13:06:51
+ * @since 08-Nov-2007 13:06:51
  * @author a.mueller
  * @updated 11-Jul-2013
  */
@@ -162,7 +162,7 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-	private Set<Reference> citations = new HashSet<Reference>();
+	private Set<Reference> citations = new HashSet<>();
 
 //	//should be calculated in case sequence is set
 //	@XmlElement (name = "DateSequenced", type= String.class)

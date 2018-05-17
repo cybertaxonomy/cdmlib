@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * {@link eu.etaxonomy.cdm.model.name.TaxonName taxon names}.
  *
  * @author a.mueller
- * @created 11.06.2008
+ * @since 11.06.2008
  */
 public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
 	private static final long serialVersionUID = -1433623743189043446L;

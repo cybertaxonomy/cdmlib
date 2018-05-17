@@ -23,7 +23,7 @@ import io.swagger.annotations.Api;
 
 /**
  * @author n.hoffmann
- * @created Apr 8, 2010
+ * @since Apr 8, 2010
  */
 @Controller
 @Api("classification")

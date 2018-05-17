@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.io.stream.mapping;
 
 /**
  * @author a.mueller
- * @created 19.03.2012
+ * @since 19.03.2012
  *
  */
 public class MappingEntry<SOURCE_NS extends Object, SOURCE_KEY extends Object, 

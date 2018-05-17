@@ -71,7 +71,7 @@ import eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynony
  * </ul>
  *
  * @author m.doering
- * @created 08-Nov-2007 13:06:56
+ * @since 08-Nov-2007 13:06:56
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TaxonBase", propOrder = {
@@ -438,7 +438,7 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy> extends Identifia
 
     /**
      * Clones <i>this</i> taxon. This is a shortcut that enables to create
-     * a new instance with empty taxon name and sec reference.
+     * a new instance with exactly the same taxon name and sec reference.
      *
      * @see eu.etaxonomy.cdm.model.media.IdentifiableEntity#clone()
      * @see java.lang.Object#clone()
@@ -448,7 +448,7 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy> extends Identifia
         TaxonBase<?> result;
         try {
             result = (TaxonBase<?>)super.clone();
-            result.setSec(null);
+//            result.setSec(null);
 
             return result;
         } catch (CloneNotSupportedException e) {

@@ -26,7 +26,7 @@ import org.springframework.beans.BeanUtils;
  * therefore this class is a special test for
  * {@link Reference}.
  * @author a.mueller
- * @created 23.03.2009
+ * @since 23.03.2009
  */
 public class PublicationBaseTest {
 	@SuppressWarnings("unused")

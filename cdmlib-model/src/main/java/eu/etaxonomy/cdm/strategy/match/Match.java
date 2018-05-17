@@ -17,7 +17,7 @@ import java.lang.annotation.Target;
 
 /**
  * @author a.mueller
- * @created 03.08.2009
+ * @since 03.08.2009
  */
 @Target({FIELD})
 @Retention(RUNTIME)

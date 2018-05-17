@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.io.cdmLight;
  * An enumeration with each instance representing a table type in the Output Model.
  *
  * @author a.mueller
- * @date 15.03.2017
+ * @since 15.03.2017
  */
 public enum CdmLightExportTable {
     METADATA("Metadata", metaDataColumns()),
@@ -45,7 +45,12 @@ public enum CdmLightExportTable {
     protected static final String PARENT_FK = "Parent_FK";
     protected static final String SEC_REFERENCE_FK = "SecReference_FK";
     protected static final String SEC_REFERENCE = "SecReference";
+    protected static final String SYN_SEC_REFERENCE_FK = "SynSecReference_FK";
+    protected static final String SYN_SEC_REFERENCE = "SynSecReference";
+
     protected static final String IS_PRO_PARTE = "IsProParteSynonym";
+    protected static final String IS_PARTIAL = "IsPartial";
+    protected static final String IS_MISAPPLIED = "IsMisapplied";
     //Reference
     protected static final String REFERENCE_ID = "Reference_ID";
     protected static final String BIBLIO_SHORT_CITATION = "BibliographicShortCitation";
@@ -131,8 +136,8 @@ public enum CdmLightExportTable {
     protected static final String AUTHOR_ID = "Author_ID";
     protected static final String ABBREV_AUTHOR = "AbbrevAuthor";
     protected static final String AUTHOR_TITLE = "AuthorTitle";
-    protected static final String AUTHOR_FIRST_NAME = "AuthorFirstName";
-    protected static final String AUTHOR_LASTNAME = "AuthorLastName";
+    protected static final String AUTHOR_GIVEN_NAME = "AuthorFirstName";
+    protected static final String AUTHOR_FAMILY_NAME = "AuthorLastName";
     protected static final String AUTHOR_PREFIX = "AuthorPrefix";
     protected static final String AUTHOR_SUFFIX = "AuthorSuffix";
 
@@ -243,7 +248,7 @@ public enum CdmLightExportTable {
 
     }
    final static String[] nomenclaturalAuthorColumns() {
-        return new String[]{AUTHOR_ID, ABBREV_AUTHOR, AUTHOR_TITLE, AUTHOR_FIRST_NAME, AUTHOR_LASTNAME, AUTHOR_PREFIX, AUTHOR_SUFFIX};
+        return new String[]{AUTHOR_ID, ABBREV_AUTHOR, AUTHOR_TITLE, AUTHOR_GIVEN_NAME, AUTHOR_FAMILY_NAME, AUTHOR_PREFIX, AUTHOR_SUFFIX};
     }
 
     final static String[] nomenclaturalAuthorTeamRelColumns() {

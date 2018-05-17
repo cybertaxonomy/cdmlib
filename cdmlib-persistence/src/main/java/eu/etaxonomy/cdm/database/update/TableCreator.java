@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 
 /**
  * @author a.mueller
- * @date 16.09.2010
+ * @since 16.09.2010
  *
  */
 public class TableCreator extends AuditedSchemaUpdaterStepBase {
@@ -198,8 +198,8 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase {
 			//Rights
 			stepName= "Add @tableName rights";
 			stepName = stepName.replace("@tableName", tableName);
-			tableCreator = MnTableCreator.NewMnInstance(stepName, tableName, "Rights", SchemaUpdaterBase.INCLUDE_AUDIT, !IS_LIST, IS_M_TO_M);
-			mnTablesStepList.add(tableCreator);
+			tableCreator = MnTableCreator.NewMnInstance(stepName, tableName, null, "RightsInfo", null, "rights", SchemaUpdaterBase.INCLUDE_AUDIT, !IS_LIST, IS_M_TO_M);
+            mnTablesStepList.add(tableCreator);
 		}
 	}
 

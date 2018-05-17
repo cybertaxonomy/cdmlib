@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
 
 /**
  * @author a.kohlbecker
- * @date 18.10.2010
+ * @since 18.10.2010
  *
  */
 public class DerivedUnitFacadeBeanProcessor extends AbstractBeanProcessor<DerivedUnitFacade> {

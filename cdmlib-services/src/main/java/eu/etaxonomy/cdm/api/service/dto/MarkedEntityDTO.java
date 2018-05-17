@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
  * DTO for IdentifiableEntities matching a certain marker.
  *
  * @author a.mueller
- * @date 2016-09-16
+ * @since 2016-09-16
  *
  */
 //might extend AnnotatableEntity in future

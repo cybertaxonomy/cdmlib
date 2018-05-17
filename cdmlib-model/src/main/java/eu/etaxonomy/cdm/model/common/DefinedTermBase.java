@@ -67,14 +67,15 @@ import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
  * use partOf relation and BreadthFirst. Default iterator order should therefore
  * be BreadthFirst (not DepthFirst)
  * @author m.doering
- * @created 08-Nov-2007 13:06:19
+ * @since 08-Nov-2007 13:06:19
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DefinedTermBase", propOrder = {
     "media",
     "vocabulary",
     "idInVocabulary",
-    "symbol"
+    "symbol",
+    "symbol2",
 })
 @XmlRootElement(name = "DefinedTermBase")
 @XmlSeeAlso({
@@ -176,6 +177,13 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
     //this term can be changed by the database instance even if the term is not managed by this instance as it is only for representation and has no semantic or identifying character
     //empty string is explicitly allowed and should be distinguished from NULL!
     private String symbol;
+
+    @XmlElement(name = "symbol2")
+    @Column(length=30)
+    //the second symbol to be used in String representations for this term #7096
+    //this term can be changed by the database instance even if the term is not managed by this instance as it is only for representation and has no semantic or identifying character
+    //empty string is explicitly allowed and should be distinguished from NULL!
+    private String symbol2;
 
 //***************************** CONSTRUCTOR *******************************************/
 
@@ -387,8 +395,8 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
         newInstance.setUuid(UUID.fromString(csvLine.get(0)));
         newInstance.setUri( URI.create(csvLine.get(1)));
         String label = csvLine.get(2).trim();
-        String description = csvLine.get(3);
-        String abbreviatedLabel = csvLine.get(4);
+        String description = CdmUtils.Ne(csvLine.get(3).trim());
+        String abbreviatedLabel = CdmUtils.Ne(csvLine.get(4).trim());
         if (CdmUtils.isBlank(abbreviatedLabel)){
             abbreviatedLabel = null;
         }

@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.model.description.KeyStatement;
  * 
  * A row to display each PolytomousKeyNode in a flat data structure for a LinkedStyle display of the PolytomousKey 
  * @author l.morris
- * @date Jan 25, 2013
+ * @since Jan 25, 2013
  * 
  */
 public class LinkedPolytomousKeyNodeRowDto {

@@ -132,7 +132,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 /**
  * @author a.kohlbecker
- * @date 10.09.2010
+ * @since 10.09.2010
  */
 @Service
 @Transactional(readOnly = true)
@@ -292,6 +292,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         return result;
     }
 
+
+
+
     @Override
     @Transactional(readOnly = false)
     public UpdateResult changeSynonymToRelatedTaxon(UUID synonymUuid,
@@ -328,6 +331,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 */
         // Create a taxon with synonym name
         Taxon fromTaxon = Taxon.NewInstance(synonymName, null);
+        save(fromTaxon);
         fromTaxon.setAppendedPhrase(synonym.getAppendedPhrase());
 
         // Add taxon relation
@@ -930,7 +934,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                         //TODO which value
                         boolean newHomotypicGroupIfNeeded = true;
                         SynonymDeletionConfigurator synConfig = new SynonymDeletionConfigurator();
-                        deleteSynonym(synonym, synConfig);
+                        result.includeResult(deleteSynonym(synonym, synConfig));
                     }
                 }
             }
@@ -1020,6 +1024,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                         HibernateProxyHelper.deproxy(node, TaxonNode.class);
                         success =taxon.removeTaxonNode(node, deleteChildren);
                         nodeService.delete(node);
+                        result.addDeletedObject(node);
                     } else {
                     	result.setError();
                     	result.addException(new Exception("The taxon can not be deleted because it is not used in defined classification."));
@@ -1058,13 +1063,11 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
          if ((taxon.getTaxonNodes() == null || taxon.getTaxonNodes().size()== 0)  && result.isOk()){
              try{
-                 //taxon.setName(null);
                  UUID uuid = dao.delete(taxon);
-
+                 result.addDeletedObject(taxon);
              }catch(Exception e){
                  result.addException(e);
                  result.setError();
-
              }
          } else {
              result.setError();
@@ -1073,8 +1076,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
          }
             //TaxonName
         if (config.isDeleteNameIfPossible() && result.isOk()){
-           // name = HibernateProxyHelper.deproxy(name);
-
             DeleteResult nameResult = new DeleteResult();
             //remove name if possible (and required)
             if (name != null ){
@@ -1083,16 +1084,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             if (nameResult.isError() || nameResult.isAbort()){
                 result.addRelatedObject(name);
                 result.addExceptions(nameResult.getExceptions());
+            }else{
+                result.includeResult(nameResult);
             }
 
 
-            }
-
-
-
-
-
-        }
+       }
+       }
 
         return result;
 
@@ -1197,7 +1195,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             synonym.setName(null);
 
             dao.delete(synonym);
-
+            result.addDeletedObject(synonym);
 
             //remove name if possible (and required)
             if (name != null && config.isDeleteNameIfPossible()){
@@ -1206,6 +1204,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                     if (nameDeleteResult.isAbort() || nameDeleteResult.isError()){
                     	result.addExceptions(nameDeleteResult.getExceptions());
                     	result.addRelatedObject(name);
+                    }else{
+                        result.addDeletedObject(name);
                     }
             }
 
@@ -2882,7 +2882,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     @Override
     public DeleteResult isDeletable(UUID taxonBaseUuid, DeleteConfiguratorBase config){
         DeleteResult result = new DeleteResult();
-        TaxonBase taxonBase = load(taxonBaseUuid);
+        TaxonBase<?> taxonBase = load(taxonBaseUuid);
         Set<CdmBase> references = commonService.getReferencingObjectsForDeletion(taxonBase);
         if (taxonBase instanceof Taxon){
             TaxonDeletionConfigurator taxonConfig = (TaxonDeletionConfigurator) config;

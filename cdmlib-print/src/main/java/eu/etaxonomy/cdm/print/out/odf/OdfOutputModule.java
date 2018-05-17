@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.print.out.PublishOutputModuleBase;
  * <a href="http://www.openoffice.org/">OpenOffice</a> or any other tool that understands ODF.
  * 
  * @author n.hoffmann
- * @created Apr 20, 2010
+ * @since Apr 20, 2010
  * @version 1.0
  */
 public class OdfOutputModule extends PublishOutputModuleBase {

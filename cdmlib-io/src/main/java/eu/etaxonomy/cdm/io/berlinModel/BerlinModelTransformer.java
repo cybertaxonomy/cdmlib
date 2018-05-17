@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 /**
  * @author a.mueller
- * @created 20.03.2008
+ * @since 20.03.2008
  */
 public class BerlinModelTransformer {
 	private static final Logger logger = Logger.getLogger(BerlinModelTransformer.class);
@@ -270,7 +270,8 @@ public class BerlinModelTransformer {
 	public static final UUID uuidEurArea = UUID.fromString("71dd0368-835c-4b53-889a-2bf316e10297");
 	public static final UUID uuidEurMedArea = UUID.fromString("aa6a5b25-3ee3-4771-b4d1-b91918f23fa5");
 	public static final UUID uuidHiddenArea = UUID.fromString("0318c67d-e323-4e9c-bffb-bc0c7f8f9f40");
-
+	public static final UUID uuidTaxonomicallyValueless = UUID.fromString("e07060cc-5a51-471f-863b-01011e3142fb");
+	public static final UUID uuidProbablyTaxonomicallyValueless = UUID.fromString("3b8b620e-986d-4a87-8070-1884a51c6bad");
 
 	//Extension Types
 	public static final UUID uuidSpeciesExpertName = UUID.fromString("2e8153d2-7412-49e4-87e1-5c38f4c5153a");

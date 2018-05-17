@@ -58,7 +58,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @see		SpecimenTypeDesignation
  * @author  m.doering
  * @version 1.0
- * @created 08-Nov-2007
+ * @since 08-Nov-2007
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "HomotypicalGroup", propOrder = {

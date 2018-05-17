@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * @author andreas kohlbecker
- * @date Sep 4, 2012
+ * @since Sep 4, 2012
  *
  */
 public class TaxonBaseVoter extends CdmPermissionVoter {

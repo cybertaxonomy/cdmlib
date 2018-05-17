@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.io.dwca.out.DwcaMetaDataRecord.FieldEntry;
 
 /**
  * @author a.mueller
- * @created 20.04.2011
+ * @since 20.04.2011
  */
 @Component
 public class DwcaMetaDataExport extends DwcaExportBase {

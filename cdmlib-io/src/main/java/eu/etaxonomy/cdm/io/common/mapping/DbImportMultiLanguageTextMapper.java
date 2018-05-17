@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
 
 /**
  * @author a.mueller
- * @created 15.03.2010
+ * @since 15.03.2010
  * @version 1.0
  */
 public class DbImportMultiLanguageTextMapper<CDMBASE extends CdmBase> extends DbImportMultiAttributeMapperBase<CDMBASE, DbImportStateBase<?,?>> {

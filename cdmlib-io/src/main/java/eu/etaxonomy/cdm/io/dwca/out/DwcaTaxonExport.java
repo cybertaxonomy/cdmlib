@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 
 /**
  * @author a.mueller
- * @created 18.04.2011
+ * @since 18.04.2011
  */
 public class DwcaTaxonExport extends DwcaDataExportBase {
     private static final long serialVersionUID = -3770976064909193441L;
@@ -80,7 +80,7 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
             TaxonName basionym = name.getBasionym();
             Classification classification = node.getClassification();
             if (! state.recordExists(file, taxon)){
-            	handleTaxonBase(state, record, taxon, name, taxon, parent, basionym, classification, null, false, false);
+            	handleTaxonBase(state, record, taxon, name, taxon, parent, basionym, classification, null);
             	PrintWriter writer = createPrintWriter(state, file);
                 record.write(state, writer);
             	state.addExistingRecord(file, taxon);
@@ -90,12 +90,16 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
             //synonyms
             if (state.getConfig().isDoSynonyms()){
                 handleSynonyms(state, taxon, file, classification, metaRecord);
+                //pro parte syonyms
+                handleProparteSynonyms(state, taxon, file, classification, metaRecord);
             }
 
             //misapplied names
             if (state.getConfig().isDoMisappliedNames()){
                 handleMisapplication(state, taxon, file, classification, metaRecord);
             }
+
+
 
         } catch (Exception e) {
             String message = "Unexpected exception: " + e.getMessage();
@@ -117,8 +121,6 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
 
 		    DwcaTaxonRecord record = new DwcaTaxonRecord(metaRecord, state.getConfig());
 			SynonymType type = synonym.getType();
-			boolean isProParte = synonym.isProParte();
-			boolean isPartial = synonym.isPartial();
 			if (type == null){ // should not happen
 				type = SynonymType.SYNONYM_OF();
 			}
@@ -128,7 +130,7 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
 			TaxonName basionym = name.getBasionym();
 
 			if (! state.recordExists(file, synonym)){
-				handleTaxonBase(state, record, synonym, name, taxon, parent, basionym, classification, type, isProParte, isPartial);
+				handleTaxonBase(state, record, synonym, name, taxon, parent, basionym, classification, type);
 				PrintWriter writer = createPrintWriter(state, file);
 				record.write(state, writer);
 				state.addExistingRecord(file, synonym);
@@ -150,13 +152,37 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
 
 			if (! state.recordExists(file, misappliedName)){
 				handleTaxonBase(state, record, misappliedName, name, taxon, parent, basionym, classification,
-				        misappliedNameRel.getType(), false, false);
+				        misappliedNameRel.getType());
 				PrintWriter writer = createPrintWriter(state, file);
                 record.write(state, writer);
 				state.addExistingRecord(file, misappliedName);
 			}
 		}
 	}
+
+    private void handleProparteSynonyms(DwcaTaxExportState state, Taxon taxon,
+            DwcaTaxExportFile file, Classification classification, DwcaMetaDataRecord metaRecord) throws FileNotFoundException, UnsupportedEncodingException, IOException {
+
+        Set<TaxonRelationship> proParteRels = taxon.getProParteAndPartialSynonymRelations();
+        for (TaxonRelationship proParteRel : proParteRels ){
+            DwcaTaxonRecord record = new DwcaTaxonRecord(metaRecord, state.getConfig());
+            Taxon proParteSynonym = proParteRel.getFromTaxon();
+            TaxonName name = proParteSynonym.getName();
+            //????
+            Taxon parent = null;
+            TaxonName basionym = name.getBasionym();
+
+            if (! state.recordExists(file, proParteSynonym)){
+                handleTaxonBase(state, record, proParteSynonym, name, taxon, parent, basionym, classification,
+                        proParteRel.getType());
+                PrintWriter writer = createPrintWriter(state, file);
+                record.write(state, writer);
+                state.addExistingRecord(file, proParteSynonym);
+            }
+        }
+    }
+
+
 
 	/**
 	 * @param state
@@ -173,7 +199,7 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
 	 */
 	private void handleTaxonBase(DwcaTaxExportState state, DwcaTaxonRecord record, TaxonBase<?> taxonBase, TaxonName name,
 			Taxon acceptedTaxon, Taxon parent, TaxonName basionym, Classification classification,
-			RelationshipTermBase<?> relType, boolean isProParte, boolean isPartial) {
+			RelationshipTermBase<?> relType) {
 		record.setId(taxonBase.getId());
 		record.setUuid(taxonBase.getUuid());
 
@@ -256,7 +282,7 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
 
 		record.setNomenclaturalCode(name.getNameType());
 		// ??? TODO Misapplied Names, inferred synonyms
-		handleTaxonomicStatus(record, name, relType, isProParte, isPartial);
+		handleTaxonomicStatus(record, name, relType);
 		handleNomStatus(record, taxonBase, name);
 
 		// TODO we need to differentiate technical
@@ -368,8 +394,7 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
 	 * @param isProParte
 	 */
 	private void handleTaxonomicStatus(DwcaTaxonRecord record,
-			INonViralName name, RelationshipTermBase<?> type,
-			boolean isProParte, boolean isPartial) {
+			INonViralName name, RelationshipTermBase<?> type) {
 		if (type == null){
 			record.setTaxonomicStatus(name.getNomenclaturalCode().acceptedTaxonStatusLabel());
 		}else{
@@ -378,18 +403,21 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
 				status = "heterotypicSynonym";
 			}else if(type.equals(SynonymType.HOMOTYPIC_SYNONYM_OF())){
 				status = "homotypicSynonym";
+			}else if(type.equals(TaxonRelationshipType.PRO_PARTE_SYNONYM_FOR())){
+			    status = "proParteSynonym";
+			}else if(type.equals(TaxonRelationshipType.PARTIAL_SYNONYM_FOR())){
+			    String message = "Partial synonym is not part of the gbif toxonomic status vocabulary";
+			    logger.warn(message);
+			    status = "proParteMisapplied";
 			}else if(type.equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR())){
 				status = "misapplied";
 			}else if(type.equals(TaxonRelationshipType.PRO_PARTE_MISAPPLIED_NAME_FOR())){
                 status = "proParteMisapplied";
+            }else if(type.equals(TaxonRelationshipType.PARTIAL_MISAPPLIED_NAME_FOR())){
+                String message = "Partial misapplied names are not part of the gbif toxonomic status vocabulary";
+                logger.warn(message);
+                status = "partialMisapplied";
             }
-			if (isProParte){
-				status = "proParteSynonym";
-			}else if (isPartial){
-				String message = "Partial synonym is not part of the gbif toxonomic status vocabulary";
-				logger.warn(message);
-				status = "partialSynonym";
-			}
 
 			record.setTaxonomicStatus(status);
 		}

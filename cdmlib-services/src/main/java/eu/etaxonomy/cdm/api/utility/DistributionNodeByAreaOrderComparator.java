@@ -20,13 +20,17 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
  * defined by the ordered {@link NamedArea} vocabulary.
  *
  * @author a.mueller
- * @date 04.04.2016
+ * @since 04.04.2016
  *
  */
 public class DistributionNodeByAreaOrderComparator implements Comparator<TreeNode<Set<Distribution>, NamedArea>>{
 
     @Override
     public int compare(TreeNode<Set<Distribution>, NamedArea> node1, TreeNode<Set<Distribution>, NamedArea> node2) {
+        if (node1.equals(node2)){
+            return 0;
+        }
+
         NamedArea area1 = node1.getNodeId();
         NamedArea area2 = node2.getNodeId();
         if (area1 == null && area2 == null){

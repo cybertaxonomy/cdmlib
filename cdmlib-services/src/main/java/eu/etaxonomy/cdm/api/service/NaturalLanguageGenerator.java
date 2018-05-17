@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.common.Language;
  * Generator of natural language descriptions from TaxonDescriptions.
  * 
  * @author m.venin
- * @created 13.04.2010
+ * @since 13.04.2010
  * @version 1.0
  */
 @Component

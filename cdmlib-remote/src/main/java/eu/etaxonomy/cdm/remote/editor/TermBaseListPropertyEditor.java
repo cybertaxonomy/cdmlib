@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
  * UUID or by ID The separator for concatenations is the colon: ','
  *
  * @author a.kohlbecker
- * @date Jun 25, 2013
+ * @since Jun 25, 2013
  *
  * @deprecated see {@link TermBasePropertyEditor}
  */

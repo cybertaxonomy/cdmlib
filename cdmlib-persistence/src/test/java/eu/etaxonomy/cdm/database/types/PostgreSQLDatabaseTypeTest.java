@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 
 /**
  * @author a.mueller
- * @created 18.12.2008
+ * @since 18.12.2008
  * @version 1.0
  */
 public class PostgreSQLDatabaseTypeTest {

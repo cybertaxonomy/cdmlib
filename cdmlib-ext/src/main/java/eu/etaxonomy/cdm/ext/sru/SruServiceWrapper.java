@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.kohlbecker
- * @date 24.08.2010
+ * @since 24.08.2010
  *
  */
 public class SruServiceWrapper extends ServiceWrapperBase<Reference> {

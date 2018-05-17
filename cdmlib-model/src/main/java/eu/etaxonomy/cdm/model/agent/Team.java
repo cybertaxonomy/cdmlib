@@ -55,7 +55,7 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
  * </ul>
  *
  * @author m.doering
- * @created 08-Nov-2007 13:06:58
+ * @since 08-Nov-2007 13:06:58
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Team", propOrder = {

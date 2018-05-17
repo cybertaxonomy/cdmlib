@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
 /**
  * @author n.hoffmann
- * @created Apr 9, 2010
+ * @since Apr 9, 2010
  */
 public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 
@@ -118,7 +118,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	 *
 	 */
 	public DeleteResult makeTaxonNodeASynonymOfAnotherTaxonNode(TaxonNode oldTaxonNode, TaxonNode newAcceptedTaxonNode, SynonymType synonymType, Reference citation, String citationMicroReference) ;
-	
+
 	/**
 	 * Changes the taxa associated with the given taxon nodes into synonyms of the new accepted taxon node.
 	 * All data associated with the former taxa are moved to the newly accepted taxon.
@@ -134,7 +134,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	UpdateResult makeTaxonNodeSynonymsOfAnotherTaxonNode(Set<UUID> oldTaxonNodeUuids, UUID newAcceptedTaxonNodeUUIDs,
 			SynonymType synonymType, Reference citation, String citationMicroReference);
 
-	
+
 	public UpdateResult makeTaxonNodeASynonymOfAnotherTaxonNode(UUID oldTaxonNodeUuid,
 	        UUID newAcceptedTaxonNodeUUID,
 	        SynonymType synonymType,
@@ -314,6 +314,19 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      */
     UUID monitSetSecundum(SecundumForSubtreeConfigurator configurator);
 
-	
+
+    /**
+     * @param parent
+     * @return
+     */
+    List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(UuidAndTitleCache<TaxonNode> parent);
+
+    /**
+     * @param parent
+     * @return
+     */
+    List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(ITaxonTreeNode parent);
+
+
 
 }

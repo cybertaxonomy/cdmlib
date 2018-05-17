@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author a.mueller
- * @created 04.08.2008
+ * @since 04.08.2008
  */
 public abstract class TcsRdfImportBase  extends CdmImportBase<TcsRdfImportConfigurator, TcsRdfImportState> {
     private static final long serialVersionUID = -8765093240068562907L;

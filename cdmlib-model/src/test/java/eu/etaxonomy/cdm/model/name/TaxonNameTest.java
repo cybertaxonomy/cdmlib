@@ -24,6 +24,7 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -37,7 +38,7 @@ import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 
 /**
  * @author a.mueller
- * @created 28.06.2008
+ * @since 28.06.2008
  */
 public class TaxonNameTest {
 	private static final Logger logger = Logger.getLogger(TaxonNameTest.class);
@@ -663,16 +664,32 @@ public class TaxonNameTest {
 	@Test
 	public void testRemoveBasionyms(){
 		TaxonName name1 = TaxonNameFactory.NewBotanicalInstance(null);
-		TaxonName basionym = TaxonNameFactory.NewBotanicalInstance(null);
-		TaxonName name3 = TaxonNameFactory.NewBotanicalInstance(null);
+		TaxonName basionym1 = TaxonNameFactory.NewBotanicalInstance(null);
+		TaxonName basionym2 = TaxonNameFactory.NewBotanicalInstance(null);
 
-		name1.addBasionym(basionym);
+		name1.addBasionym(basionym1);
 		assertEquals(1, name1.getBasionyms().size());
-		name1.addBasionym(name3);
+		name1.addBasionym(basionym2);
 		assertEquals(2, name1.getBasionyms().size());
 		name1.removeBasionyms();
 		assertEquals(0, name1.getBasionyms().size());
 	}
+
+
+	@Test
+    public void testRemoveRelationWithTaxonName(){
+	    TaxonName name1 = TaxonNameFactory.NewBotanicalInstance(null);
+        TaxonName basionym1 = TaxonNameFactory.NewBotanicalInstance(null);
+        TaxonName basionym2 = TaxonNameFactory.NewBotanicalInstance(null);
+
+        name1.addBasionym(basionym1);
+        assertEquals(1, name1.getBasionyms().size());
+        name1.addBasionym(basionym2);
+        assertEquals(2, name1.getBasionyms().size());
+        name1.removeRelationWithTaxonName(basionym1, Direction.relatedTo, NameRelationshipType.BASIONYM());
+        assertEquals(1, name1.getBasionyms().size());
+    }
+
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#isSupraGeneric()}.

@@ -4,7 +4,7 @@
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-    <version>4.14.0</version>
+    <version>5.0.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -12,11 +12,7 @@
   <artifactId>cdmlib-io</artifactId>
   <name>CDM Import/Export</name>
   <description>The import-export package for EDIT's cdmLibrary</description>
-  <scm>
-    <connection>scm:git:https://dev.e-taxonomy.eu/git/cdmlib-io.git</connection>
-    <developerConnection>scm:git:ssh://git@dev.e-taxonomy.eu/var/git/cdmlib-io.git</developerConnection>
-    <url>https://dev.e-taxonomy.eu/gitweb/cdmlib.git/tree/HEAD:/cdmlib-io/</url>
-  </scm>
+
   <build>
     <plugins>
       <plugin>

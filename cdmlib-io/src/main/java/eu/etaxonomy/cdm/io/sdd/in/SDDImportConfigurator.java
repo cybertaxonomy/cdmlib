@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
  * @author h.fradin
- * @created 24.10.2008
+ * @since 24.10.2008
  */
 public class SDDImportConfigurator extends XmlImportConfiguratorBase<SDDImportState> implements IImportConfigurator, IMatchingImportConfigurator {
     private static final long serialVersionUID = -960998183005112130L;

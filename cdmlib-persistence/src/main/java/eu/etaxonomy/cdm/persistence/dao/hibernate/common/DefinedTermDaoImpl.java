@@ -68,7 +68,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author a.kohlbecker
- * @created 29.05.2008
+ * @since 29.05.2008
  * @version 1.0
  */
 @Repository

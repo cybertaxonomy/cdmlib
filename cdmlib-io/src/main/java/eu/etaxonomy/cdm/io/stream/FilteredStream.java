@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.io.stream.terms.TermUri;
  * FilteredReader filters a stream. Only a sub-stream of the input items
  * is in the output stream.
  * @author a.mueller
- * @date 23.11.2011
+ * @since 23.11.2011
  *
  */
 public class FilteredStream implements IItemStream {

@@ -74,7 +74,7 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImplRegExBase;
 
 /**
  * @author pkelbert
- * @date 2 avr. 2013
+ * @since 2 avr. 2013
  *
  */
 public class TaxonXTreatmentExtractor extends TaxonXExtractor{

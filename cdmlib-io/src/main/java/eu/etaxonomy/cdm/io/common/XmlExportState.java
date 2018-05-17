@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author a.mueller
- * @created 11.05.2009
+ * @since 11.05.2009
  */
 public class XmlExportState<CONFIG extends XmlExportConfiguratorBase<?>>
             extends ExportStateBase<CONFIG, IExportTransformer, File> {

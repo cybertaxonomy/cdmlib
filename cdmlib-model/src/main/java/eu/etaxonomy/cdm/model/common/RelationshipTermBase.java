@@ -39,6 +39,7 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
 import au.com.bytecode.opencsv.CSVWriter;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
@@ -87,7 +88,8 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase<T>> ex
     @XmlElement(name = "inverseSymbol")
     @Column(length=30)
     //the symbol to be used in String representations for the reverse representation of this term #5734
-    //this term can be changed by the database instance even if the term is not managed by this instance as it is only for representation and has no semantic or identifying character
+    //this term can be changed by the database instance even if the term is not managed by this instance
+    //as it is only for representation and has no semantic or identifying character
     //empty string is explicitly allowed and should be distinguished from NULL!
     private String inverseSymbol;
 
@@ -240,9 +242,9 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase<T>> ex
 	public T readCsvLine(Class<T> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
 		T newInstance = super.readCsvLine(termClass, csvLine, terms, abbrevAsId);
 
-		String inverseText = csvLine.get(6).trim();
+		String inverseText = CdmUtils.Ne(csvLine.get(6).trim());
 		String inverseLabel = csvLine.get(5).trim();
-		String inverseLabelAbbrev = csvLine.get(7).trim();
+		String inverseLabelAbbrev = CdmUtils.Ne(csvLine.get(7).trim());
 		newInstance.addInverseRepresentation(new Representation(inverseText, inverseLabel, inverseLabelAbbrev, Language.CSV_LANGUAGE()) );
 		newInstance.setSymmetric(Boolean.parseBoolean(csvLine.get(8)));
 		newInstance.setTransitive(Boolean.parseBoolean(csvLine.get(9)));

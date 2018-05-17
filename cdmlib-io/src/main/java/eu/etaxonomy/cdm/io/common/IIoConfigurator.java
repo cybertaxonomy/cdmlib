@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.HibernateConfiguration;
 
 /**
  * @author a.babadshanjan
- * @created 13.11.2008
+ * @since 13.11.2008
  */
 public interface IIoConfigurator extends IIoObservable{
 

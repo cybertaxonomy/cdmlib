@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.io.common;
 
 /**
  * @author a.kohlbecker
- * @date 15.09.2010
+ * @since 15.09.2010
  *
  */
 public interface IMatchingImportConfigurator {

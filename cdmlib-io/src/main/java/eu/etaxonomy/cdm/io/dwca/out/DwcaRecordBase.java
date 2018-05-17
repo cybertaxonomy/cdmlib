@@ -45,7 +45,7 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 
 /**
  * @author a.mueller
- * @date 20.04.2011
+ * @since 20.04.2011
  *
  */
 public abstract class DwcaRecordBase {
@@ -315,7 +315,7 @@ public abstract class DwcaRecordBase {
 		if (date == null){
 			return "";
 		}else{
-			//TODO
+		    //TODO
 			return date.toString();
 		}
 	}
@@ -433,7 +433,6 @@ public abstract class DwcaRecordBase {
 		if (period == null){
 			return "";
 		}else{
-			//TODO
 			return period.toString();
 		}
 	}

@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.tcsxml.TcsXmlTransformer;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -568,7 +568,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
     			if (name.isZoological()){
     				name.setPublicationYear(getIntegerYear(year));
     			}else{
-    			    TimePeriod period = TimePeriod.NewInstance(getIntegerYear(year));
+    			    VerbatimTimePeriod period = VerbatimTimePeriod.NewVerbatimInstance(getIntegerYear(year));
     			    if (name.getNomenclaturalReference()!= null){
     			        name.getNomenclaturalReference().setDatePublished(period);
     			    } else{

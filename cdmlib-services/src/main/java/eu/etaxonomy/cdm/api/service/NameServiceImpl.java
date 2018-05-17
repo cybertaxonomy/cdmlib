@@ -173,8 +173,8 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
 
 
             try{
-            UUID nameUuid = dao.delete(name);
-
+                UUID nameUuid = dao.delete(name);
+                result.addDeletedObject(name);
             }catch(Exception e){
                 result.addException(e);
                 result.setError();
@@ -194,6 +194,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
     }
 
     @Override
+    @Transactional
     public DeleteResult deleteTypeDesignation(TaxonName name, TypeDesignationBase typeDesignation){
     	if(typeDesignation!=null && typeDesignation.getId()!=0){
     		typeDesignation = HibernateProxyHelper.deproxy(referencedEntityDao.load(typeDesignation.getUuid()), TypeDesignationBase.class);
@@ -218,12 +219,14 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
                 removeSingleDesignation(singleName, typeDesignation);
             }
         }
+        result.addDeletedObject(typeDesignation);
         result.addUpdatedObject(name);
         return result;
     }
 
 
     @Override
+    @Transactional(readOnly = false)
     public DeleteResult deleteTypeDesignation(UUID nameUuid, UUID typeDesignationUuid){
         TaxonName nameBase = load(nameUuid);
         TypeDesignationBase typeDesignation = HibernateProxyHelper.deproxy(referencedEntityDao.load(typeDesignationUuid), TypeDesignationBase.class);
@@ -234,6 +237,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
      * @param name
      * @param typeDesignation
      */
+    @Transactional
     private void removeSingleDesignation(TaxonName name, TypeDesignationBase typeDesignation) {
         name.removeTypeDesignation(typeDesignation);
         if (typeDesignation.getTypifiedNames().isEmpty()){
@@ -246,6 +250,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
                 }
             }
             typeDesignationDao.delete(typeDesignation);
+
         }
     }
 
@@ -396,10 +401,12 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
         return typeDesignationDao.getAllTypeDesignations(limit, start);
     }
 
+    @Override
     public TypeDesignationBase loadTypeDesignation(int id, List<String> propertyPaths){
         return typeDesignationDao.load(id, propertyPaths);
     }
 
+    @Override
     public TypeDesignationBase loadTypeDesignation(UUID uuid, List<String> propertyPaths){
         return typeDesignationDao.load(uuid, propertyPaths);
     }

@@ -422,6 +422,11 @@ public class DataBaseTablePrinter {
             logger.warn("Writing new DbUnit dataset file to " + file.getAbsolutePath());
         }
 
+        if(!file.getParentFile().exists()){
+            logger.info("Creating parent directories");
+            file.getParentFile().mkdirs();
+        }
+
         printDataSetWithNull(
             new FileOutputStream(file),
             false,

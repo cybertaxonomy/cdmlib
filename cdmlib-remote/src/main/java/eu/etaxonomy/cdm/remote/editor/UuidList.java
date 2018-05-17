@@ -10,7 +10,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 
 /**
  * @author f.revilla
- * @date 09.06.2010
+ * @since 09.06.2010
  */
 public class UuidList extends ArrayList<UUID> {
 

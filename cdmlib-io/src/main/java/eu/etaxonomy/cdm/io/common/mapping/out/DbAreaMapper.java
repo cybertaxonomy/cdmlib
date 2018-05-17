@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 /**
  * Maps an area to a database key or cache field.
  * @author a.mueller
- * @created 06.02.2012
+ * @since 06.02.2012
  */
 public class DbAreaMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{
 	private static final Logger logger = Logger.getLogger(DbAreaMapper.class);

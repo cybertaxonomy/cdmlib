@@ -46,17 +46,17 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String nonCapitalWord = "\\p{javaLowerCase}+";
     protected static String word = "(" + capitalWord + "|" + nonCapitalWord + ")"; //word (capital or non-capital) with no '.' at the end
     protected static String uppercaseWord = "\\p{javaUpperCase}{2,}";
-    protected static String apostrophWord = word + "('\\p{javaLowerCase}*)?";
+    protected static String apostropheWord = word + "('\\p{javaLowerCase}*)?"; //word with optional apostrophe in between
 
-    protected static String capitalDotWord = capitalWord + "\\.?"; //capitalWord with facultativ '.' at the end
-    protected static String capital2charDotWord = "(" + capital2LetterWord + "\\.?|\\p{javaUpperCase}\\.)"; //capitalWord with facultativ '.' but minimum 2 characters (single capital word like 'L' is not allowed
+    protected static String capitalDotWord = capitalWord + "\\.?"; //capitalWord with facultative '.' at the end
+    protected static String capital2charDotWord = "(" + capital2LetterWord + "\\.?|\\p{javaUpperCase}\\.)"; //capitalWord with facultative '.' but minimum 2 characters (single capital word like 'L' is not allowed
     protected static String twoCapitalDotWord = "\\p{javaUpperCase}{2}\\.";   //e.g. NY.
 
-    protected static String nonCapitalDotWord = nonCapitalWord + "\\.?"; //nonCapitalWord with facultativ '.' at the end
-    protected static String dotWord = "(" + capitalWord + "|" + nonCapitalWord + ")\\.?"; //word (capital or non-capital) with facultativ '.' at the end
+    protected static String nonCapitalDotWord = nonCapitalWord + "\\.?"; //nonCapitalWord with facultative '.' at the end
+    protected static String dotWord = "(" + capitalWord + "|" + nonCapitalWord + ")\\.?"; //word (capital or non-capital) with facultative '.' at the end
     protected static String obligateDotWord = "(" + capitalWord + "|" + nonCapitalWord + ")\\.+"; //word (capital or non-capital) with obligate '.' at the end
 
-    //Words used in an epethiton for a TaxonName
+    //Words used in an epithet for a TaxonName
     protected static String nonCapitalEpiWord = "[a-z\u00EF\u00EB\u00F6\\-]+";   //a-z + diaeresis for ieo
     protected static String capitalEpiWord = "[A-Z]"+ nonCapitalEpiWord;
 
@@ -193,12 +193,12 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String anySepChar = "([\u005E:a-zA-Z]" + fWs + ")"; //all characters except for the detail separator, a stricter version would be [,\\-\\&] and some other characters
 //  protected static String anySepChar = "([,\\-\\&\\.\\+\\']" + fWs + ")";
 
-    protected static int authorSeparatorMaxPosition = 4;  //Author may have a maximum of 4 words
+    protected static int authorSeparatorMaxPosition = 3;  //author may have a maximum of 2 words
     protected static String pTitleWordSeparator = "(\\."+ fWs+"|" + oWs + "|\\.?[-\u2013])";
     protected static String pSeriesPart = ",?" + fWs + "[sS]er(\\.)?" + oWs + "\\d{1,2},?";
 
-    protected static String referenceTitleFirstPart = "(" + apostrophWord + pTitleWordSeparator + "|" + twoCapitalDotWord + fWs + ")";
-    protected static String referenceTitle = referenceTitleFirstPart + "*" + "("+ dotWord + "|" + uppercaseWord + "|" + pSeriesPart + ")";  //reference title may have words seperated by whitespace or dot. The last word may not have a whitespace at the end. There must be at least one word
+    protected static String referenceTitleFirstPart = "(" + apostropheWord + pTitleWordSeparator + "|" + twoCapitalDotWord + fWs + ")";
+    protected static String referenceTitle = referenceTitleFirstPart + "*" + "("+ dotWord + "|" + uppercaseWord + "|" + pSeriesPart + ")";  //reference title may have words separated by whitespace or dot. The last word may not have a whitespace at the end. There must be at least one word
     protected static String referenceTitleWithSepCharacters = "(((" + referenceTitle +"|\\(.+\\))"  + anySepChar + ")*" + referenceTitle + ")"; //,?
     //TODO test performance ??
     protected static String referenceTitleWithSepCharactersAndBrackets = referenceTitleWithSepCharacters + fWs + "(\\(" + referenceTitleWithSepCharacters + "\\)"+fWs+ ")?(" + referenceTitleWithSepCharacters +")?"  ;
@@ -236,7 +236,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static Pattern referenceSineDetailPattern = Pattern.compile(pReferenceSineDetail);
 
     protected static String pNomStatusNom =
-            "nom\\." + fWs + "(ambig\\.|dub\\.|confus\\.|superfl\\.|nud\\.|illeg\\.|inval\\.|cons\\.(\\s*(prop|des)\\.)?|altern(ativ)?\\.|subnud\\.|nov\\.|legit\\.|sanct\\.|valid|"+
+            "nom\\." + fWs + "(ambig\\.|dub\\.|confus\\.|superfl\\.|nud\\.|illeg\\.|inval\\.|cons\\.(\\s*(prop|des)\\.)?|altern(ativ)?\\.|subnud\\.|nov\\.|legit\\.|sanct\\.|val\\.|"+
     			"rej\\.("+ fWs + "prop\\.)?|provis\\.|utique"+fWs+"rej\\.("+fWs+"prop\\.)?|orth\\."+fWs+"cons\\.("+fWs+"prop\\.)?)";
     protected static String pNomStatusOrthVar = "orth\\." + fWs + "(var\\.|rej\\.)";
     protected static String pNomStatusComb = "comb\\." + fWs + "(inval\\.|illeg\\.|nov\\.)";

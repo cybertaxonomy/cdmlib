@@ -58,6 +58,7 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.strategy.cache.reference.DefaultReferenceCacheStrategy;
@@ -86,7 +87,7 @@ import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
  * </ul>
  *
  * @author m.doering
- * @created 08-Nov-2007 13:06:47
+ * @since 08-Nov-2007 13:06:47
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Reference", propOrder = {
@@ -284,9 +285,9 @@ public class Reference
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-//    @IndexedEmbedded
+//  @IndexedEmbedded
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-   // @InReference(groups=Level2.class)
+//  @InReference(groups=Level2.class)
    	protected Reference inReference;
 
 //********************************************************/
@@ -295,7 +296,7 @@ public class Reference
 	@XmlElement(name ="DatePublished" )
 	@Embedded
 	@IndexedEmbedded
-	private TimePeriod datePublished = TimePeriod.NewInstance();
+	private VerbatimTimePeriod datePublished = VerbatimTimePeriod.NewVerbatimInstance();
 
     //#5258
     @XmlElement (name = "Accessed", type= String.class)
@@ -698,16 +699,21 @@ public class Reference
 	 * <i>this</i> reference.
 	 */
 	@Override
-    public TimePeriod getDatePublished(){
+    public VerbatimTimePeriod getDatePublished(){
 		return this.datePublished;
 	}
 	/**
 	 * @see 	#getDatePublished()
 	 */
 	@Override
-    public void setDatePublished(TimePeriod datePublished){
+    public void setDatePublished(VerbatimTimePeriod datePublished){
 		this.datePublished = datePublished;
 	}
+    @Override
+    @Transient
+    public void setDatePublished(TimePeriod datePublished){
+        setDatePublished(VerbatimTimePeriod.toVerbatim(datePublished));
+    }
 
 	public boolean hasDatePublished(){
 		boolean result =  ! ( (this.datePublished == null) || StringUtils.isBlank(datePublished.toString()));
@@ -852,7 +858,7 @@ public class Reference
 	@Override
     @Transient
 	public String getYear(){
-		TimePeriod datePublished = this.getDatePublished();
+		VerbatimTimePeriod datePublished = this.getDatePublished();
 		if (datePublished != null ){
 			String result = getDatePublished().getYear();
 			return result;
@@ -869,7 +875,7 @@ public class Reference
 	 */
 	@Transient
 	public String getDatePublishedString(){
-		TimePeriod datePublished = this.getDatePublished();
+		VerbatimTimePeriod datePublished = this.getDatePublished();
 		if (datePublished != null ){
 			return getDatePublished().toString();
 		}else{
@@ -885,7 +891,7 @@ public class Reference
      */
     @Transient
     public String getTimePeriodPublishedString(){
-        TimePeriod datePublished = this.getDatePublished();
+        VerbatimTimePeriod datePublished = this.getDatePublished();
         if (datePublished != null ){
             return getDatePublished().getTimePeriod();
         }else{
@@ -1159,7 +1165,7 @@ public class Reference
 	public Object clone() {
 		try {
 			Reference result = (Reference)super.clone();
-			result.setDatePublished(datePublished != null? (TimePeriod)datePublished.clone(): null);
+			result.setDatePublished(datePublished != null? (VerbatimTimePeriod)datePublished.clone(): null);
 			//no changes to: title, authorship, hasProblem, nomenclaturallyRelevant, uri
 			return result;
 		} catch (CloneNotSupportedException e) {

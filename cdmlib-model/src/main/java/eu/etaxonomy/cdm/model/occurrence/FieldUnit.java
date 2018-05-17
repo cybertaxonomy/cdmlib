@@ -47,7 +47,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStra
  * is "derived" from the field unit via derivation type "accessioning" or any other.
  *
  * @author m.doering
- * @created 08-Nov-2007 13:06:40
+ * @since 08-Nov-2007 13:06:40
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "FieldUnit", propOrder = {

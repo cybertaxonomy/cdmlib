@@ -8,7 +8,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author andreas
- * @date Jul 2, 2012
+ * @since Jul 2, 2012
  */
 public interface ICdmMassIndexer {
 

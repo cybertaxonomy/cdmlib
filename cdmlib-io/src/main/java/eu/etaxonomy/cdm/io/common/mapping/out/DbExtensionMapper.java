@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 
 /**
  * @author a.mueller
- * @created 12.05.2009
+ * @since 12.05.2009
  */
 public class DbExtensionMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{
 	private static final Logger logger = Logger.getLogger(DbExtensionMapper.class);

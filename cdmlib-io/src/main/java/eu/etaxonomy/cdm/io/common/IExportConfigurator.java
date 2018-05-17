@@ -12,7 +12,7 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 
 /**
  * @author a.babadshanjan
- * @created 16.11.2008
+ * @since 16.11.2008
  */
 public interface IExportConfigurator<STATE extends ExportStateBase, TRANSFORM extends IExportTransformer>
             extends IIoConfigurator {

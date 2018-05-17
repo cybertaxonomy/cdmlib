@@ -21,33 +21,35 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * This class represents the result of a delete action.
  *
  * @author a.mueller
- * @date 04.01.2012
+ * @since 04.01.2012
  *
  */
 public class DeleteResult extends UpdateResult{
 
-	@SuppressWarnings("unused")
+    private static final long serialVersionUID = 8856465763413085548L;
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DeleteResult.class);
 
-	
 
-	private final List<Exception> exceptions = new ArrayList<Exception>();
 
-	private final Set<CdmBase> relatedObjects = new HashSet<CdmBase>();
+	private final List<Exception> exceptions = new ArrayList();
 
-//	private Set<PersistPair> objectsToDelete = new HashSet<PersistPair>();
+	private final Set<CdmBase> relatedObjects = new HashSet();
+
+	private Set<CdmBase> deletedObjects = new HashSet();
+
 //
-//	private Set<PersistPair> objectsToSave = new HashSet<DeleteResult.PersistPair>();
+//	private Set<PersistPair> objectsToSave = new HashSet<>();
 
 //	protected class PersistPair{
 //		protected CdmBase objectToPersist;
 //		protected ICdmEntityDao<CdmBase> dao;
 //	}
 
-	
+
 
 //***************************** GETTER /SETTER /ADDER *************************/
-	
 
 
 	/**
@@ -65,16 +67,25 @@ public class DeleteResult extends UpdateResult{
 	}
 
 
+	@Override
+	public void includeResult(UpdateResult includedResult){
 
+        this.setMaxStatus(includedResult.getStatus());
+        this.addExceptions(includedResult.getExceptions());
+        this.addUpdatedObjects(includedResult.getUpdatedObjects());
+        if (includedResult instanceof DeleteResult){
+            this.addDeletedObjects(((DeleteResult)includedResult).getDeletedObjects());
+        }
 
-
-	
-
-	
-
-
-
-	
-
+    }
+    public Set<CdmBase> getDeletedObjects() {
+        return deletedObjects;
+    }
+    public void addDeletedObjects(Set<CdmBase> deletedObjects) {
+        this.deletedObjects.addAll(deletedObjects);
+    }
+    public void addDeletedObject(CdmBase deletedObject) {
+        this.deletedObjects.add(deletedObject);
+    }
 
 }

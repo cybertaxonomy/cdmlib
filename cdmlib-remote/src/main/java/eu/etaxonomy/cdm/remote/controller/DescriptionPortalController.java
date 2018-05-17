@@ -47,7 +47,7 @@ import eu.etaxonomy.cdm.remote.editor.UuidList;
 /**
  *
  * @author a.kohlbecker
- * @date Jun 25, 2013
+ * @since Jun 25, 2013
  *
  */
 @Controller

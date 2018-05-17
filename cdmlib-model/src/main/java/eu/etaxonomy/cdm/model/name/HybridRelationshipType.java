@@ -47,7 +47,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  *
  * @author m.doering
  * @version 1.0
- * @created 08-Nov-2007 13:06:27
+ * @since 08-Nov-2007 13:06:27
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "HybridRelationshipType")

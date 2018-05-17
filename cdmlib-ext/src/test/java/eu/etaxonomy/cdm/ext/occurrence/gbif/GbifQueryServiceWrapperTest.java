@@ -19,13 +19,14 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.message.BasicNameValuePair;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;
 
 /**
  * @author pplitzner
- * @date 20.05.2014
+ * @since 20.05.2014
  *
  */
 public class GbifQueryServiceWrapperTest {
@@ -124,6 +125,7 @@ public class GbifQueryServiceWrapperTest {
     }
 
     @Test
+    @Ignore
     public void testGbifWebService() {
         OccurenceQuery query = new OccurenceQuery("Campanula persicifolia", "E. J. Palmer", null, null, null, null, null, null, null);
         GbifQueryServiceWrapper service = new GbifQueryServiceWrapper();

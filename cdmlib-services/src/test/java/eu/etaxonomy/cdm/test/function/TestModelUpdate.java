@@ -25,8 +25,15 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdateResult;
  * This class is meant for functional testing of model changes. It is not meant
  * for running in maven.
  *
+ * For testing
+ *
+ * 1. First run with CREATE first against H2, than MySQL, PostGreSQL, (SQLServer)
+ * 2. Save old schema databases
+ * 3. Run with VALIDATE
+ *
+ *
  * @author a.mueller
- * @date 22.05.2015
+ * @since 22.05.2015
  * @see CdmUpdater
  */
 public class TestModelUpdate {
@@ -37,11 +44,10 @@ public class TestModelUpdate {
 	private void testSelectedDb(){
 		DbSchemaValidation schema = DbSchemaValidation.VALIDATE;
 
-		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.H2;
 
 
-		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm41" : "cdm47");
-//		database = "cdm36";
+		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm47" : "cdm50");
 		CdmDataSource dataSource = getDatasource(dbType, database);
 
 
@@ -129,7 +135,7 @@ public class TestModelUpdate {
 	private void updateRemoteWebappTestH2(){
 	    String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\cdmlib\\cdmlib-remote-webapp\\";
 //	    String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\cdm-vaadin\\";
-//	    String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\taxeditor\\eu.etaxonomy.taxeditor.test\\";
+//	    String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\taxeditor2\\eu.etaxonomy.taxeditor.test\\";
 
 	    String pathInProject = "src\\test\\resources\\h2";
 

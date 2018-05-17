@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>eu.etaxonomy</groupId>
   <artifactId>cdmlib-parent</artifactId>
-  <version>4.14.0</version>
+  <version>5.0.0</version>
   <name>CDM Library</name>
   <description>The Java implementation of the Common Data Model (CDM), the data model for EDIT's internet platform for cybertaxonomy.</description>
   <url>http://cybertaxonomy.eu/cdmlib/</url>
@@ -1530,7 +1530,12 @@
         <groupId>ojdbc</groupId>
         <artifactId>ojdbc</artifactId>
         <version>14</version>
-    </dependency>   -->      
-    </dependencies>
+        </dependency>   -->      
+      <dependency>
+        <groupId>com.taskadapter</groupId>
+        <artifactId>redmine-java-api</artifactId>
+        <version>3.1.0</version>
+      </dependency>
+    </dependencies>    
   </dependencyManagement>
 </project>

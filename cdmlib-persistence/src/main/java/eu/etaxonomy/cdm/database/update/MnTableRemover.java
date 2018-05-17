@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  *  - validation that no duplicate values exist (which will throw an exception during invoke)
  *
  * @author a.mueller
- * @date 2015-05-21
+ * @since 2015-05-21
  */
 public class MnTableRemover extends AuditedSchemaUpdaterStepBase {
 

@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * according to the needs of a certain import.
  *
  * @author a.mueller
- * @date 08.07.2017
+ * @since 08.07.2017
  *
  */
 public class CsvImportState<CONFIG extends CsvImportConfiguratorBase>

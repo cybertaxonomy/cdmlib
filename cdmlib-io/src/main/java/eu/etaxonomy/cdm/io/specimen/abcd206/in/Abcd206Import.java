@@ -49,6 +49,8 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
+import eu.etaxonomy.cdm.model.common.TermType;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
@@ -68,7 +70,8 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 /**
  * @author p.kelbert
  * @author p.plitzner
- * @created 20.10.2008
+ * @author k.luther
+ * @since 20.10.2008
  */
 @Component
 public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator, Abcd206ImportState> {
@@ -93,6 +96,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         MapWrapper<TeamOrPersonBase<?>> authorStore = (MapWrapper<TeamOrPersonBase<?>>)stores.get(ICdmIO.TEAM_STORE);
         state.setPersonStore(authorStore);
         MapWrapper<Reference> referenceStore = (MapWrapper<Reference>)stores.get(ICdmIO.REFERENCE_STORE);
+        createKindOfUnitsMap(state);
         URI sourceUri = config.getSourceUri();
         try{
             state.setTx(startTransaction());
@@ -230,7 +234,9 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 state.getDataHolder().reset();
 
                 Abcd206XMLFieldGetter abcdFieldGetter = new Abcd206XMLFieldGetter(state.getDataHolder(), state.getPrefix());
-
+                if (config.getNomenclaturalCode() != null){
+                    state.getDataHolder().setNomenclatureCode(config.getNomenclaturalCode().getKey());
+                }
                 prepareCollectors(state, unitsList, abcdFieldGetter);
 
 
@@ -286,17 +292,38 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
 
     /**
+     *
+     */
+    private void createKindOfUnitsMap(Abcd206ImportState state) {
+
+        ICdmRepository cdmRepository = state.getConfig().getCdmAppController();
+        if (cdmRepository == null){
+            cdmRepository = this;
+        }
+
+        List<DefinedTerm> terms = cdmRepository.getTermService().listByTermType(TermType.KindOfUnit, null, 0, null, null);
+        kindOfUnitsMap = new HashMap<>();
+        for (DefinedTerm kindOfUnit:terms) {
+            kindOfUnitsMap.put(kindOfUnit.getLabel().toLowerCase(), kindOfUnit);
+        }
+    }
+
+
+    /**
      * @param state
      * @param item
      */
     private void getSiblings(Abcd206ImportState state, Object item, DerivedUnitFacade facade) {
         String unitId = facade.getCatalogNumber();
+        if (unitId == null){
+            unitId = facade.getAccessionNumber();
+        }
 
         UnitAssociationParser unitParser = new UnitAssociationParser(state.getPrefix(), state.getReport(), state.getCdmRepository());
         UnitAssociationWrapper unitAssociationWrapper = null;
         for (URI accessPoint: state.getActualAccesPoint()){
             unitAssociationWrapper = unitParser.parseSiblings(unitId, accessPoint);
-            if (unitAssociationWrapper.getAssociatedUnits() != null){
+            if (unitAssociationWrapper != null &&  unitAssociationWrapper.getAssociatedUnits() != null){
                 break;
             }
         }
@@ -319,7 +346,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
                         DerivedUnit associatedUnit = state.getDerivedUnitBase();
                         FieldUnit associatedFieldUnit = null;
-                        java.util.Collection<FieldUnit> associatedFieldUnits = state.getCdmRepository().getOccurrenceService().getFieldUnits(associatedUnit.getUuid());
+                        java.util.Collection<FieldUnit> associatedFieldUnits = state.getCdmRepository().getOccurrenceService().getFieldUnits(associatedUnit.getUuid(), null);
                         //ignore field unit if associated unit has more than one
                         if(associatedFieldUnits.size()>1){
                             state.getReport().addInfoMessage(String.format("%s has more than one field unit.", associatedUnit));
@@ -382,7 +409,9 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     if (handleAssociatedUnits){
                         importAssociatedUnits(state, item, derivedUnitFacade);
                     }
+
                     state.getReport().addAlreadyExistingSpecimen(SpecimenImportUtility.getUnitID(derivedUnit, config), derivedUnit);
+
                     return;
                 }
             }
@@ -800,7 +829,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
                                     DerivedUnit associatedUnit = state.getDerivedUnitBase();
                                     FieldUnit associatedFieldUnit = null;
-                                    java.util.Collection<FieldUnit> associatedFieldUnits = state.getCdmRepository().getOccurrenceService().getFieldUnits(associatedUnit.getUuid());
+                                    java.util.Collection<FieldUnit> associatedFieldUnits = state.getCdmRepository().getOccurrenceService().getFieldUnits(associatedUnit.getUuid(), null);
                                     //ignore field unit if associated unit has more than one
                                     if(associatedFieldUnits.size()>1){
                                         state.getReport().addInfoMessage(String.format("%s has more than one field unit.", associatedUnit));
@@ -998,17 +1027,23 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         }
 
         if (NB((state.getDataHolder()).getKindOfUnit()) != null) {
-            if (state.getDataHolder().getKindOfUnit().toLowerCase().indexOf("clone")>-1) {
-                kindOfUnit = getKindOfUnit(state, null, "clone culture", "clone culture", "cc", null);
-            }
-            else if (state.getDataHolder().getKindOfUnit().toLowerCase().startsWith("live"))  {
-                kindOfUnit = getKindOfUnit(state, null, "live sample", "live sample", "ls", null);
-            }
+            kindOfUnit =  getKindOfUnit(state, null, state.getDataHolder().getKindOfUnit().toLowerCase(), null, null, null);
+            if (kindOfUnit == null){
+                if (state.getDataHolder().getKindOfUnit().toLowerCase().indexOf("clone")>-1) {
+                    kindOfUnit = getKindOfUnit(state, null, "clone culture", "clone culture", "cc", null);
+                }
+                else if (state.getDataHolder().getKindOfUnit().toLowerCase().startsWith("live"))  {
+                    kindOfUnit = getKindOfUnit(state, null, "live sample", "live sample", "ls", null);
+                }
+                else if (state.getDataHolder().getKindOfUnit().toLowerCase().startsWith("microscopic slide"))  {
+                    kindOfUnit = getKindOfUnit(state, null, "microscopic slide", "microscopic slide", "ms", null);
+                }
 
 
-            if (kindOfUnit == null) {
-                logger.info("The kind of unit does not seem to be known: " + state.getDataHolder().getKindOfUnit());
+                if (kindOfUnit == null) {
+                    logger.info("The kind of unit does not seem to be known: " + state.getDataHolder().getKindOfUnit());
 
+                }
             }
         } else {
             logger.info("The kind of unit is null");
@@ -1227,5 +1262,39 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     protected boolean isIgnore(Abcd206ImportState state) {
         return false;
     }
+
+
+    @Override
+    protected DefinedTerm getKindOfUnit(Abcd206ImportState state, UUID uuid, String label, String description, String labelAbbrev, TermVocabulary<DefinedTerm> voc){
+
+        DefinedTerm unit = null;
+
+        if (uuid == null){
+            unit = this.kindOfUnitsMap.get(label.toLowerCase());
+        }else{
+            unit = state.getKindOfUnit(uuid);
+
+        }
+        if (unit == null){
+            unit = (DefinedTerm)getTermService().find(uuid);
+            if (unit == null){
+                if (uuid == null){
+                    uuid = UUID.randomUUID();
+                }
+                unit = DefinedTerm.NewKindOfUnitInstance(description, label, labelAbbrev);
+                unit.setUuid(uuid);
+                if (voc == null){
+                    boolean isOrdered = false;
+                    voc = getVocabulary(TermType.KindOfUnit, uuidUserDefinedKindOfUnitVocabulary, "User defined vocabulary for kind-of-units", "User Defined Measurement kind-of-units", null, null, isOrdered, unit);
+                }
+                voc.addTerm(unit);
+                getTermService().save(unit);
+            }
+            state.putKindOfUnit(unit);
+            kindOfUnitsMap.put(unit.getLabel().toLowerCase(), unit);
+        }
+        return unit;
+    }
+
 
 }

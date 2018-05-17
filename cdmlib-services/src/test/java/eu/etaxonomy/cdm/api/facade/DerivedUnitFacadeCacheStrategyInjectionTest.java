@@ -58,7 +58,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * this test can be deleted or adapted and moved to cdmlib-model.
  *
  * @author a.mueller
- * @date 03.06.2010
+ * @since 03.06.2010
  *
  */
 public class DerivedUnitFacadeCacheStrategyInjectionTest extends CdmTransactionalIntegrationTest {
@@ -96,7 +96,7 @@ public class DerivedUnitFacadeCacheStrategyInjectionTest extends CdmTransactiona
     private final String fieldNotes = "such a beautiful specimen";
     private Person primaryCollector;
 
-    private final Integer individualCount = 1;
+    private final String individualCount = "1";
 	private final DefinedTerm lifeStage = DefinedTerm.NewStageInstance("A wonderful stage", "stage", "st");
 	private final DefinedTerm sex = DefinedTerm.NewSexInstance("FemaleMale", "FM", "FM");
 	private final NamedArea country = Country.GERMANY();
@@ -120,15 +120,6 @@ public class DerivedUnitFacadeCacheStrategyInjectionTest extends CdmTransactiona
 
 //****************************** SET UP *****************************************/
 
-//     /**
-//      * @throws java.lang.Exception
-//      */
-//     @BeforeClass
-//     public static void setUpBeforeClass() throws Exception {
-//         // FIXME maybe this will cause problems in other tests
-//         // INDEED !!!! it causes problems thus this is replaced by making this test a  CdmIntegrationTest !!!
-//         new DefaultTermInitializer().initialize();
-//     }
 
 	/**
 	 * @throws java.lang.Exception
@@ -164,8 +155,8 @@ public class DerivedUnitFacadeCacheStrategyInjectionTest extends CdmTransactiona
 		primaryCollector = Person.NewTitledInstance("Kilian");
 		collector.addTeamMember(primaryCollector);
 		Person secondCollector = Person.NewInstance();
-		secondCollector.setFirstname("Andreas");
-		secondCollector.setLastname("Muller");
+		secondCollector.setGivenName("Andreas");
+		secondCollector.setFamilyName("Muller");
 		collector.addTeamMember(secondCollector);
 		Person thirdCollector = Person.NewTitledInstance("Kohlbecker");
 		collector.addTeamMember(thirdCollector);

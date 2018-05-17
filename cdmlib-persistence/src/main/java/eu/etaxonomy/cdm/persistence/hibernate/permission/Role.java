@@ -14,7 +14,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IGrantedAuthorityDao;
  * <code>RoleVoter</code>
  *
  * @author a.kohlbecker
- * @date Oct 5, 2012
+ * @since Oct 5, 2012
  *
  *
  */

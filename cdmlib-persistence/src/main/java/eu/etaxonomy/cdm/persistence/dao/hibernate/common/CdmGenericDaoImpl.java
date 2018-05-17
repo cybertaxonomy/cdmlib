@@ -83,7 +83,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 
 
 	private Set<Class<? extends CdmBase>> allCdmClasses = null;
-	private final Map<Class<? extends CdmBase>, Set<ReferenceHolder>> referenceMap = new HashMap<>();
+	private final Map<Class<? extends CdmBase>, Set<ReferenceHolder>> referenceMap = new HashMap<Class<? extends CdmBase>, Set<ReferenceHolder>>();
 
 
 	protected class ReferenceHolder{
@@ -109,8 +109,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
       if (limit != null){
           criteria.setMaxResults(limit);
       }
-      //criteria.setReadOnly(true);
-        @SuppressWarnings("unchecked")
+
         List<CdmBase> result = criteria.list();
         return result;
 	}
@@ -120,13 +119,13 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
         Session session = super.getSession();
         Query queryCount = session.createQuery("SELECT count(this) FROM "+ clazz.getSimpleName() + " this WHERE this." + propertyName +" = :referencedObject").setEntity("referencedObject", referencedCdmBase);
 
+        @SuppressWarnings("unchecked")
         Integer result =((Number)queryCount.uniqueResult()).intValue();
         return result;
     }
 
 	@Override
-	public List<CdmBase> getCdmBasesWithItemInCollection(Class itemClass, Class clazz,
-	        String propertyName, CdmBase item, Integer limit){
+	public List<CdmBase> getCdmBasesWithItemInCollection(Class itemClass, Class clazz, String propertyName, CdmBase item, Integer limit){
 		Session session = super.getSession();
 		String thisClassStr = itemClass.getSimpleName();
 		String otherClassStr = clazz.getSimpleName();
@@ -194,13 +193,13 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 			Class<? extends CdmBase> referencedClass = referencedCdmBase.getClass();
 
 			Set<ReferenceHolder> holderSet = getOrMakeHolderSet(referencedClass);
-			Integer count = getReferencingObjectsCount(referencedCdmBase);
+			//Integer count = getReferencingObjectsCount(referencedCdmBase);
 			for (ReferenceHolder refHolder: holderSet){
-			    if (count > 100000) {
-                    handleReferenceHolder(referencedCdmBase, result, refHolder, true);
-                }else{
+//			    if (count > 100000) {
+//                    handleReferenceHolder(referencedCdmBase, result, refHolder, true);
+//                }else{
                     handleReferenceHolder(referencedCdmBase, result, refHolder, false);
-                }
+//                }
 			}
 			return result;
 		} catch (Exception e) {
@@ -489,6 +488,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 	@Override
 	public <T extends CdmBase> void   merge(T cdmBase1, T cdmBase2, IMergeStrategy mergeStrategy) throws MergeException {
 		SessionImpl session = (SessionImpl) getSession();
+
 		DeduplicationHelper helper = new DeduplicationHelper(session, this);
 		helper.merge(cdmBase1, cdmBase2, mergeStrategy);
 	}
@@ -582,7 +582,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		ClassMetadata classMetaData = session.getSessionFactory().getClassMetadata(matchClass.getCanonicalName());
 		Criteria criteria = session.createCriteria(matchClass);
 		boolean noMatch = makeCriteria(objectToMatch, matchStrategy, classMetaData, criteria);
-		logger.debug(criteria);
+		if (logger.isDebugEnabled()){logger.debug(criteria);}
 		//session.flush();
 		if (noMatch == false){
 			@SuppressWarnings("unchecked")
@@ -614,7 +614,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 			Criteria criteria) throws IllegalAccessException, MatchException {
 		Matching matching = matchStrategy.getMatching();
 		boolean noMatch = false;
-		Map<String, List<MatchMode>> replaceMatchers = new HashMap<String, List<MatchMode>>();
+		Map<String, List<MatchMode>> replaceMatchers = new HashMap<>();
 		for (CacheMatcher cacheMatcher: matching.getCacheMatchers()){
 			boolean cacheProtected = (Boolean)cacheMatcher.getProtectedField(matching).get(objectToMatch);
 			if (cacheProtected == true){
@@ -630,7 +630,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 						String propertyName = replacementMode.getFirstResult();
 						List<MatchMode> replaceMatcherList = replaceMatchers.get(propertyName);
 						if (replaceMatcherList == null){
-							replaceMatcherList = new ArrayList<MatchMode>();
+							replaceMatcherList = new ArrayList<>();
 							replaceMatchers.put(propertyName, replaceMatcherList);
 						}
 						replaceMatcherList.add(replacementMode.getSecondResult());
@@ -643,7 +643,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 			String propertyName = fieldMatcher.getPropertyName();
 			Type propertyType = classMetaData.getPropertyType(propertyName);
 			Object value = fieldMatcher.getField().get(objectToMatch);
-			List<MatchMode> matchModes= new ArrayList<MatchMode>();
+			List<MatchMode> matchModes= new ArrayList<>();
 			matchModes.add(fieldMatcher.getMatchMode());
 			if (replaceMatchers.get(propertyName) != null){
 				matchModes.addAll(replaceMatchers.get(propertyName));

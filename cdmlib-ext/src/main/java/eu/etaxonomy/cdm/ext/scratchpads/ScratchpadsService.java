@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.common.UriUtils;
 
 /**
  * @author l.morris
- * @date Jul 2, 2013
+ * @since Jul 2, 2013
  *
  */
 public class ScratchpadsService {

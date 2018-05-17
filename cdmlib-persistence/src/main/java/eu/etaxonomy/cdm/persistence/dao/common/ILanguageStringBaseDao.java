@@ -10,7 +10,7 @@ import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 
 /**
  * @author a.babadshanjan
- * @created 10.09.2008
+ * @since 10.09.2008
  */
 public interface ILanguageStringBaseDao <T extends LanguageStringBase> extends IAnnotatableDao<T> {
 

@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  * Controlled vocabulary to differentiate levels of areas such as province, state,
  * etc.
  * @author m.doering
- * @created 08-Nov-2007 13:06:36
+ * @since 08-Nov-2007 13:06:36
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "NamedAreaLevel")

@@ -17,7 +17,7 @@ import org.w3c.dom.NodeList;
 import eu.etaxonomy.cdm.common.DOI;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
@@ -305,7 +305,7 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
         List<String> originInfo = null;
         List<String> partList = null;
 
-        TimePeriod date;
+        VerbatimTimePeriod date;
 
         String publisher="";
         String publishplace="";
@@ -364,7 +364,7 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                     if (!content.isEmpty()) {
                         originInfo.add(children.item(i).getNodeName()+":"+content);
                         if (children.item(i).getNodeName().contains("dateIssued")) {
-                            ref.setDatePublished(TimePeriodParser.parseString(content));
+                            ref.setDatePublished(TimePeriodParser.parseStringVerbatim(content));
                         }
                     }
                     publisher="";
@@ -403,7 +403,7 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
         	        } else if (children.item(i).getNodeName().equalsIgnoreCase("mods:date")){
                         content = children.item(i).getTextContent().trim();
                         if (!content.isEmpty()){
-                            date = TimePeriodParser.parseString(content);
+                            date = TimePeriodParser.parseStringVerbatim(content);
                             //TODO need to check if date belongs to ref or inref
                             ref.setDatePublished(date);
                         }

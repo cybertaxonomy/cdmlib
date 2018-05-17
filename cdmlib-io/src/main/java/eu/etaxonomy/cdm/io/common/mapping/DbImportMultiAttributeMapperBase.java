@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author a.mueller
- * @created 12.03.2010
+ * @since 12.03.2010
  * @version 1.0
  */
 public abstract class DbImportMultiAttributeMapperBase<CDMBASE extends CdmBase, STATE extends DbImportStateBase<?,?>> extends MultipleAttributeMapperBase<CdmSingleAttributeMapperBase> implements IDbImportMapper<STATE, CDMBASE>{

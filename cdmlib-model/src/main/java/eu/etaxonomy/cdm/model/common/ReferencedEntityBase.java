@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 /**
  * Abstract class for all objects that may have a reference
  * @author m.doering
- * @created 08-Nov-2007 13:06:47
+ * @since 08-Nov-2007 13:06:47
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ReferencedEntityBase", propOrder = {

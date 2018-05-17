@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 /**
  * Base class for all configurators for stream based imports.
  * @author a.mueller
- * @created 14.05.2013
+ * @since 14.05.2013
  */
 public abstract class StreamImportConfiguratorBase<STATE extends StreamImportStateBase, SOURCE extends Object> extends ImportConfiguratorBase<STATE, SOURCE> implements IImportConfigurator {
     private static final long serialVersionUID = 4200675007263433594L;

@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
  * Configurator for the setPublishForSubtree operation.
  *
  * @author a.mueller
- * @date 13.09.2017
+ * @since 13.09.2017
  *
  */
 public class PublishForSubtreeConfigurator

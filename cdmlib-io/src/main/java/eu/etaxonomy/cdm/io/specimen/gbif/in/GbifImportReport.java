@@ -12,7 +12,7 @@ import eu.etaxonomy.cdm.io.specimen.abcd206.in.SpecimenImportReport;
 
 /**
  * @author k.luther
- * @date 15.07.2016
+ * @since 15.07.2016
  *
  */
 public class GbifImportReport extends SpecimenImportReport{

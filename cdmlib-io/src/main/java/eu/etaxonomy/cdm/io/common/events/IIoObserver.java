@@ -13,7 +13,7 @@ package eu.etaxonomy.cdm.io.common.events;
 /**
  * Interface for Objects observing an IOObservable
  * @author a.mueller
- * @created 23.06.2011
+ * @since 23.06.2011
  */
 public interface IIoObserver {
 

@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
  * @see ITaxonService#deleteTaxon(eu.etaxonomy.cdm.model.taxon.Taxon)
  *
  * @author a.mueller
- * @date 09.11.2011
+ * @since 09.11.2011
  *
  */
 public class TaxonDeletionConfigurator extends TaxonBaseDeletionConfigurator {

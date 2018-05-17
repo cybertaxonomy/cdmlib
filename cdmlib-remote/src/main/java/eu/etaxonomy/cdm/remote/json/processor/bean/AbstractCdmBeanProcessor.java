@@ -12,7 +12,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author a.kohlbecker
- * @date 30.03.2009
+ * @since 30.03.2009
  *
  */
 public abstract class AbstractCdmBeanProcessor<T extends CdmBase> extends AbstractBeanProcessor<T>{

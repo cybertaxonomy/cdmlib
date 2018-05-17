@@ -20,6 +20,7 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
@@ -54,10 +55,16 @@ public class DerivedUnitConverterIntegrationTest extends CdmTransactionalIntegra
 
         DerivedUnit du = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
         du.setTitleCache("test derived unit", true);
+        SpecimenTypeDesignation std = SpecimenTypeDesignation.NewInstance();
+        std.setTypeSpecimen(du);
         du = (DerivedUnit) service.save(du); // intermediate save is essential for this test
-        DerivedUnitConverter<MediaSpecimen> duc = DerivedUnitConverterFactory.createDerivedUnitConverter(du, MediaSpecimen.class);
-        duc.convertTo(MediaSpecimen.class, SpecimenOrObservationType.StillImage);
-
+        DerivedUnitConverter<MediaSpecimen> converter = new DerivedUnitConverter<MediaSpecimen>(std);
+        SpecimenTypeDesignation newDu = converter.convertTo(MediaSpecimen.class, SpecimenOrObservationType.StillImage);
+        assertEquals(du, converter.oldDerivedUnit());
+        printDataSet(System.err, new String[]{"SpecimenOrObservationBase", "TypeDesignationBase"});
+        service.saveOrUpdate(newDu.getTypeSpecimen());
+        service.delete(du);
+        printDataSet(System.err, new String[]{"SpecimenOrObservationBase", "TypeDesignationBase"});
         assertEquals(1, service.list(null, null, null, null, null).size());
         assertEquals(1, service.list(MediaSpecimen.class, null, null, null, null).size());
     }
@@ -75,7 +82,9 @@ public class DerivedUnitConverterIntegrationTest extends CdmTransactionalIntegra
 
         MediaSpecimen du = MediaSpecimen.NewInstance(SpecimenOrObservationType.StillImage);
         du.setTitleCache("test media specimen", true);
-        DerivedUnitConverter<DerivedUnit> duc = DerivedUnitConverterFactory.createDerivedUnitConverter(du, DerivedUnit.class);
+        SpecimenTypeDesignation std = SpecimenTypeDesignation.NewInstance();
+        std.setTypeSpecimen(du);
+        DerivedUnitConverter<DerivedUnit> duc = new DerivedUnitConverter<DerivedUnit>(std);
         du = (MediaSpecimen) service.save(du); // intermediate save is essential for this test
         duc.convertTo(DerivedUnit.class, SpecimenOrObservationType.PreservedSpecimen);
 
@@ -104,14 +113,20 @@ public class DerivedUnitConverterIntegrationTest extends CdmTransactionalIntegra
                 "derivedFrom.originals.*",
                 "derivedFrom.originals.derivationEvents",
                 "specimenTypeDesignations.typifiedNames.typeDesignations",
+                "specimenTypeDesignations.typifiedNames.homotypicalGroup",
+                "specimenTypeDesignations.annotations",
+                "specimenTypeDesignations.markers",
+                "specimenTypeDesignations.registrations",
                 //
                 "derivedFrom.originals.gatheringEvent.$",
                 "derivedFrom.originals.gatheringEvent.country",
                 "derivedFrom.originals.gatheringEvent.collectingAreas",
                 "derivedFrom.originals.gatheringEvent.actor.teamMembers",
                 "derivedFrom.originals.derivationEvents.derivatives" }));
-        DerivedUnitConverter<DerivedUnit> duc = DerivedUnitConverterFactory.createDerivedUnitConverter(du, DerivedUnit.class);
-        DerivedUnit target = duc.convertTo(DerivedUnit.class, SpecimenOrObservationType.HumanObservation);
+        SpecimenTypeDesignation specimenTypeDesignation = du.getSpecimenTypeDesignations().iterator().next();
+        DerivedUnitConverter<DerivedUnit> duc = new DerivedUnitConverter<>(specimenTypeDesignation);
+        SpecimenTypeDesignation newSpecimenTypeDesignation = duc.convertTo(DerivedUnit.class, SpecimenOrObservationType.HumanObservation);
+        DerivedUnit target = newSpecimenTypeDesignation.getTypeSpecimen();
 
         //service.save(target); // save is performed in convertTo()
 

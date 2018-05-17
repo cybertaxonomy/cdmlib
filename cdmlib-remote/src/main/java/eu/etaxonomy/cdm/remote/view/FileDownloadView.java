@@ -28,7 +28,7 @@ import org.springframework.web.servlet.View;
  *
  *
  * @author a.oppermann
- * @date 20.03.2014
+ * @since 20.03.2014
  *
  */
 public class FileDownloadView implements View{

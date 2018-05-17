@@ -12,7 +12,7 @@ import java.util.TreeSet;
  * Rules to define tagging for HTML tagged string output.
  *
  * @author a.mueller
- * @created 14/02/2012
+ * @since 14/02/2012
  *
  */
 public class HTMLTagRules {

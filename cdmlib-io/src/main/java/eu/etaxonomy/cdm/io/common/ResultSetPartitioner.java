@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author a.mueller
- * @created 16.02.2010
+ * @since 16.02.2010
  */
 public class ResultSetPartitioner<STATE extends IPartitionedState> {
 	private static final Logger logger = Logger.getLogger(ResultSetPartitioner.class);
@@ -121,37 +121,41 @@ public class ResultSetPartitioner<STATE extends IPartitionedState> {
 	 * @param partitionedIO
 	 */
 	public void doPartition(IPartitionedIO<STATE> partitionedIO, STATE state) {
-		try{
+		int i = 0;
+	    try{
 			profiler.startTx();
 			TransactionStatus txStatus = getTransaction(partitionSize, partitionedIO);
 
+			i = 1;
 			state.makeTransactionalSourceReference(partitionedIO.getReferenceService());
 
 			profiler.startRs();
 			ResultSet rs = makePartitionResultSet();
-
+            i = 2;
 			profiler.startRelObjects();
 			this.relatedObjects = partitionedIO.getRelatedObjectsForPartition(rs, state);
-			state.setRelatedObjects(relatedObjects);
-
+            i = 3;
+            state.setRelatedObjects(relatedObjects);
+            i = 4;
 			profiler.startRs2();
 			partitionResultSet = makePartitionResultSet();
-
+            i = 5;
 			profiler.startDoPartition();
 			partitionedIO.doPartition(this, state);
-
+            i = 6;
 			profiler.startDoCommit();
 			partitionedIO.commitTransaction(txStatus);
 			state.resetTransactionalSourceReference();
-
+            i = 7;
 			profiler.end();
 			state.setRelatedObjects(null);
-
+            i = 8;
 			logger.info("Saved " + getCurrentNumberOfRows() + " " + partitionedIO.getPluralString() );
 			profiler.print();
 		}catch(Exception e){
-			String message = "Exception (%s) occurred while handling import partition for %s.";
-			message = String.format(message, e.getLocalizedMessage(), partitionedIO.getPluralString());
+			String message = "Exception (%s) occurred at position " + i + " while handling import partition for %s.";
+			message = String.format(message, e.getMessage(), partitionedIO.getPluralString());
+			e.printStackTrace();
 			throw new RuntimeException(message, e);
 		}
 	}

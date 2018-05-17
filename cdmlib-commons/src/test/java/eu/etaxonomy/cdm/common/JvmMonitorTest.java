@@ -14,7 +14,7 @@ import org.junit.Test;
 
 /**
  * @author a.kohlbecker
- * @date Jul 1, 2016
+ * @since Jul 1, 2016
  *
  */
 public class JvmMonitorTest extends Assert{

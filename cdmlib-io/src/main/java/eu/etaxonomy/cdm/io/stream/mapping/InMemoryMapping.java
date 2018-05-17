@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 
 /**
  * @author a.mueller
- * @created 10.03.2012
+ * @since 10.03.2012
  *
  */
 public class InMemoryMapping implements IImportMapping {

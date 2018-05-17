@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.persistence.dao.media.IMediaDao;
 
 /**
  * @author a.babadshanjan
- * @created 08.09.2008
+ * @since 08.09.2008
  */
 @Repository
 public class MediaDaoHibernateImpl extends IdentifiableDaoBase<Media> implements IMediaDao {

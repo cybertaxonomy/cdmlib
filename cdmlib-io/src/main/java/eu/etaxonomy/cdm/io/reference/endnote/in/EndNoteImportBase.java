@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.io.common.CdmImportBase;
 
 /**
  * @author a.mueller
- * @created 04.08.2008
+ * @since 04.08.2008
  */
 public abstract class EndNoteImportBase
         extends CdmImportBase<EndnoteImportConfigurator, EndnoteImportState> {

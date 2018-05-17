@@ -46,7 +46,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
  * @author a.mueller
- * @created 01.04.2009
+ * @since 01.04.2009
  * @version 1.0
  */
 public class ClassificationTest {

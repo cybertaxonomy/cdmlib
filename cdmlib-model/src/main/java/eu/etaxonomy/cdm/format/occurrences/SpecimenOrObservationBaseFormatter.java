@@ -12,7 +12,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 
 /**
  * @author pplitzner
- * @date Nov 30, 2015
+ * @since Nov 30, 2015
  *
  */
 public class SpecimenOrObservationBaseFormatter extends IdentifiableEntityFormatter {

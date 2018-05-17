@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
  * @author a.babadshanjan
- * @created 16.11.2008
+ * @since 16.11.2008
  */
 public abstract class ExportConfiguratorBase<STATE extends ExportStateBase, TRANSFORM extends IExportTransformer, DEST extends Object>
             extends IoConfiguratorBase

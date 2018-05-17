@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 /**
  * @author a.mueller
- * @date 02.08.2011
+ * @since 02.08.2011
  *
  */
 public class NameTypeParserTest {

@@ -58,7 +58,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 
 /**
  * @author m.doering
- * @created 08-Nov-2007 13:06:36
+ * @since 08-Nov-2007 13:06:36
  */
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(name = "NamedArea", propOrder = {

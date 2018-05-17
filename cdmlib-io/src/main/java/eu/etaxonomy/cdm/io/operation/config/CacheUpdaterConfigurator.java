@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
- * @created 02-Jul-2010 13:06:43
+ * @since 02-Jul-2010 13:06:43
  *
  */
 public class CacheUpdaterConfigurator extends ImportConfiguratorBase<DefaultImportState<CacheUpdaterConfigurator>, Object> implements IImportConfigurator{
@@ -180,7 +180,8 @@ public class CacheUpdaterConfigurator extends ImportConfiguratorBase<DefaultImpo
 
 
 	public List<Class<? extends IdentifiableEntity>> getClassList(){
-		return this.classList;
+//	    classList.sort(new ClassComparator());
+		return classList;
 	}
 	private void setClassList(List<Class<? extends IdentifiableEntity>> classList) {
 		this.classList = classList;
@@ -363,5 +364,58 @@ public class CacheUpdaterConfigurator extends ImportConfiguratorBase<DefaultImpo
 	public void setUpdateCacheStrategy(boolean doUpdateCacheStrategies){
 		this.updateCacheStrategies = doUpdateCacheStrategies;
 	}
+
+//	private class ClassComparator implements Comparator<Class>{
+//
+//        /**
+//         * {@inheritDoc}
+//         */
+//        @Override
+//        public int compare(Class o1, Class o2) {
+//            if (o1.equals(o2)){
+//                return 0;
+//            }
+//            if (o1 == null){
+//                return -1;
+//            }
+//            if (o2 == null){
+//                return 1;
+//            }
+//            if (o1.equals(AgentBase.class)){
+//                return -1;
+//            }
+//            if (o1.equals(Reference.class)){
+//                if (o2.equals(AgentBase.class)){
+//                    return 1;
+//                }else{
+//                    return -1;
+//                }
+//            }
+//            if (o1.equals(TaxonName.class)){
+//                if (o2.equals(AgentBase.class) || o2.equals(Reference.class)){
+//                    return 1;
+//                }else{
+//                    return -1;
+//                }
+//            }
+//            if (o1.equals(TaxonBase.class)){
+//                if (o2.equals(AgentBase.class) || o2.equals(Reference.class) || o2.equals(TaxonName.class)){
+//                    return 1;
+//                }else{
+//                    return -1;
+//                }
+//            }
+//            if (o1.equals(SpecimenOrObservationBase.class)){
+//                if (o2.equals(AgentBase.class) || o2.equals(Reference.class) || o2.equals(TaxonName.class) || o2.equals(TaxonBase.class)){
+//                    return 1;
+//                }else{
+//                    return -1;
+//                }
+//            }
+//            return 0;
+//
+//        }
+//
+//	}
 
 }

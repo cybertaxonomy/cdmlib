@@ -6,7 +6,7 @@
 	<parent>
 	    <groupId>eu.etaxonomy</groupId>
 	    <artifactId>cdmlib-parent</artifactId>
-	    <version>4.14.0</version>
+	    <version>5.0.0</version>
 	    <relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -14,11 +14,6 @@
   <artifactId>cdmlib-ext</artifactId>
   <name>CDM External</name>
   <description>EDIT CDM library external services. Module for handling requests to non CDM library services like the EDIT geoservice.</description>
-  <scm>
-    <connection>scm:git:https://dev.e-taxonomy.eu/git/cdmlib-ext.git</connection>
-    <developerConnection>scm:git:ssh://git@dev.e-taxonomy.eu/var/git/cdmlib-ext.git</developerConnection>
-    <url>https://dev.e-taxonomy.eu/gitweb/cdmlib.git/tree/HEAD:/cdmlib-ext/</url>
-  </scm>
 
   <dependencies>
  	<dependency>
@@ -29,7 +24,6 @@
         <groupId>eu.etaxonomy</groupId>
         <artifactId>cdmlib-test</artifactId>
         <scope>test</scope>
-        <version>${project.version}</version>
     </dependency>
 <!--   	<dependency> -->
 <!--   		<groupId>eu.etaxonomy</groupId> -->
@@ -114,6 +108,10 @@
     <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>com.taskadapter</groupId>
+        <artifactId>redmine-java-api</artifactId>
     </dependency>
   </dependencies>
 </project>

@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author pplitzner
- * @date 11.03.2014
+ * @since 11.03.2014
  *
  */
 public interface IPrimerService extends IAnnotatableService<Primer>{

@@ -27,7 +27,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -52,7 +51,6 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Fields;
 import org.hibernate.search.annotations.IndexedEmbedded;
-import org.hibernate.search.annotations.NumericField;
 import org.hibernate.search.annotations.SortableField;
 import org.hibernate.search.annotations.Store;
 
@@ -83,7 +81,7 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
 /**
  * type figures are observations with at least a figure object in media
  * @author m.doering
- * @created 08-Nov-2007 13:06:41
+ * @since 08-Nov-2007 13:06:41
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SpecimenOrObservationBase", propOrder = {
@@ -177,12 +175,10 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 
     @XmlElement(name = "IndividualCount")
     @Field(analyze = Analyze.NO)
-    @NumericField
-    @Min(0)
-    private Integer individualCount;
+    private String individualCount;
 
     /**
-     * The preferred stable identifer (URI) as discussed in
+     * The preferred stable identifier (URI) as discussed in
      * {@link  http://dev.e-taxonomy.eu/trac/ticket/5606}
      */
     @XmlElement(name = "PreferredStableUri")
@@ -486,11 +482,11 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
         this.kindOfUnit = kindOfUnit;
     }
 
-    public Integer getIndividualCount() {
+    public String getIndividualCount() {
         return individualCount;
     }
 
-    public void setIndividualCount(Integer individualCount) {
+    public void setIndividualCount(String individualCount) {
         this.individualCount = individualCount;
     }
 

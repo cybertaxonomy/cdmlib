@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.name.RankClass;
 /**
  * Creates a new term if a term with the same given uuid does not exist yet
  * @author a.mueller
- * @date 10.09.2010
+ * @since 10.09.2010
  *
  */
 public class SingleTermUpdater extends SchemaUpdaterStepBase {
@@ -36,12 +36,22 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase {
 	 */
 	@Deprecated
 	public static final SingleTermUpdater NewInstance(String stepName, UUID uuidTerm, String description,  String label, String abbrev, String dtype, UUID uuidVocabulary, UUID uuidLanguage, boolean isOrdered, UUID uuidAfterTerm){
-		return new SingleTermUpdater(stepName, null, uuidTerm, null, description, label, abbrev, dtype, uuidVocabulary, uuidLanguage, isOrdered, uuidAfterTerm);
+		return new SingleTermUpdater(stepName, null, uuidTerm, null, null, description, label, abbrev, null, null, null, dtype, uuidVocabulary, uuidLanguage, isOrdered, uuidAfterTerm);
 	}
 
-	public static final SingleTermUpdater NewInstance(String stepName, TermType termType, UUID uuidTerm, String idInVocabulary, String description,  String label, String abbrev, String dtype, UUID uuidVocabulary, UUID uuidLanguage, boolean isOrdered, UUID uuidAfterTerm){
-		return new SingleTermUpdater(stepName, termType, uuidTerm, idInVocabulary, description, label, abbrev, dtype, uuidVocabulary, uuidLanguage, isOrdered, uuidAfterTerm);
+	public static final SingleTermUpdater NewInstance(String stepName, TermType termType, UUID uuidTerm, String idInVocabulary, String symbol,
+	        String description,  String label, String abbrev, String dtype, UUID uuidVocabulary, UUID uuidLanguage, boolean isOrdered, UUID uuidAfterTerm){
+		return new SingleTermUpdater(stepName, termType, uuidTerm, idInVocabulary, symbol,
+		        description, label, abbrev, null, null, null, dtype, uuidVocabulary, uuidLanguage, isOrdered, uuidAfterTerm);
 	}
+
+	   public static final SingleTermUpdater NewReverseInstance(String stepName, TermType termType, UUID uuidTerm, String idInVocabulary, String symbol,
+	           String description,  String label, String abbrev, String reverseDescription, String reverseLabel, String reverseAbbrev,
+	           String dtype, UUID uuidVocabulary, UUID uuidLanguage, boolean isOrdered, UUID uuidAfterTerm){
+	        return new SingleTermUpdater(stepName, termType, uuidTerm, idInVocabulary,symbol,
+	                description, label, abbrev, reverseDescription, reverseLabel, reverseAbbrev,
+	                dtype, uuidVocabulary, uuidLanguage, isOrdered, uuidAfterTerm);
+	    }
 
 
 	private final UUID uuidTerm ;
@@ -61,13 +71,17 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase {
 	private final String idInVocabulary;
 	private boolean symmetric = false;
 	private boolean transitive = false;
+	private String symbol;
 
 
 
-	private SingleTermUpdater(String stepName, TermType termType, UUID uuidTerm, String idInVocabulary, String description, String label, String abbrev, String dtype, UUID uuidVocabulary, UUID uuidLanguage, boolean isOrdered, UUID uuidAfterTerm) {
+	private SingleTermUpdater(String stepName, TermType termType, UUID uuidTerm, String idInVocabulary, String symbol,
+	        String description, String label, String abbrev, String reverseDescription, String reverseLabel, String reverseAbbrev,
+	        String dtype, UUID uuidVocabulary, UUID uuidLanguage, boolean isOrdered, UUID uuidAfterTerm) {
 		super(stepName);
 		this.termType = termType;
 		this.idInVocabulary = idInVocabulary;
+		this.symbol = symbol;
 		this.abbrev = abbrev;
 		this.description = description;
 		this.dtype = dtype;
@@ -77,6 +91,9 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase {
 		this.uuidVocabulary = uuidVocabulary;
 		this.uuidAfterTerm = uuidAfterTerm;
 		this.uuidLanguage = uuidLanguage;
+		this.reverseDescription = reverseDescription;
+		this.reverseLabel = reverseLabel;
+		this.reverseAbbrev = reverseAbbrev;
 	}
 
     @Override
@@ -108,17 +125,11 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase {
             return;
 		}
 
-		Integer termId;
-		String sqlMaxId = " SELECT max(id)+1 as maxId FROM " + caseType.transformTo("DefinedTermBase");
-		rs = datasource.executeQuery(sqlMaxId);
-		if (rs.next()){
-			termId = rs.getInt("maxId");
-		}else{
-			String message = "No defined terms do exist yet. Can't update terms!";
-			monitor.warning(message);
-			result.addError(message, getStepName() + ", SingleTermUpdater.invoke");
+		String sqlMaxId;
+        Integer termId = getMaxId(datasource, monitor, caseType, result);
+        if (termId == null){
             return;
-		}
+        }
 
 		String id = Integer.toString(termId);
 		String created = getNowString();
@@ -132,20 +143,15 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase {
 		}
 		String titleCache = label != null ? label : (abbrev != null ? abbrev : description );
 		String idInVocStr = idInVocabulary == null ? "NULL" : "'" + idInVocabulary + "'";
-		String sqlInsertTerm = " INSERT INTO @@DefinedTermBase@@ (DTYPE, id, uuid, created, termtype, idInVocabulary, protectedtitlecache, titleCache, orderindex, defaultcolor, vocabulary_id)" +
-				"VALUES ('" + dtype + "', " + id + ", '" + uuidTerm + "', '" + created + "', '" + termType.getKey() + "', " + idInVocStr +  ", " + protectedTitleCache + ", '" + titleCache + "', " + orderIndex + ", " + defaultColor + ", " + vocId + ")";
-
+		String symbol = this.symbol == null ? "NULL" : "'" + this.symbol + "'";
+		String sqlInsertTerm = " INSERT INTO @@DefinedTermBase@@ (DTYPE, id, uuid, created, termtype, idInVocabulary, symbol, protectedtitlecache, titleCache, orderindex, defaultcolor, vocabulary_id)" +
+				"VALUES ('" + dtype + "', " + id + ", '" + uuidTerm + "', '" + created + "', '" + termType.getKey() + "', " + idInVocStr + ", " + symbol +  ", " + protectedTitleCache + ", '" + titleCache + "', " + orderIndex + ", " + defaultColor + ", " + vocId + ")";
+		sqlInsertTerm = caseType.replaceTableNames(sqlInsertTerm);
 		datasource.executeUpdate(caseType.replaceTableNames(sqlInsertTerm));
 
 		updateFeatureTerms(termId, datasource, monitor, caseType);
 		updateRelationshipTerms(termId, datasource, monitor, caseType);
 		updateRanks(termId, datasource, monitor, caseType);
-
-//
-//		INSERT INTO DefinedTermBase (DTYPE, id, uuid, created, protectedtitlecache, titleCache, orderindex, defaultcolor, vocabulary_id)
-//		SELECT 'ReferenceSystem' ,  (@defTermId := max(id)+1)  as maxId , '1bb67042-2814-4b09-9e76-c8c1e68aa281', '2010-06-01 10:15:00', b'0', 'Google Earth', null, null, @refSysVocId
-//		FROM DefinedTermBase ;
-//
 
 		//language id
 		Integer langId = getLanguageId(uuidLanguage, datasource, monitor, caseType);
@@ -189,7 +195,7 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase {
 
 			datasource.executeUpdate(caseType.replaceTableNames(sqlInsertReverseRepresentation));
 
-			String sqlReverseInsertMN = "INSERT INTO @@RelationshipTermBase_inverseRepresentation@@ (DefinedTermBase_id, inverserepresentations_id) " +
+			String sqlReverseInsertMN = "INSERT INTO @@TermBase_inverseRepresentation@@ (term_id, inverserepresentations_id) " +
 					" VALUES ("+ termId +"," +reverseRepId+ " )";
 
 			datasource.executeUpdate(caseType.replaceTableNames(sqlReverseInsertMN));
@@ -197,6 +203,39 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase {
 
 		return;
 	}
+
+    /**
+     * @param datasource
+     * @param monitor
+     * @param caseType
+     * @param result
+     * @return
+     * @throws SQLException
+     */
+    protected Integer getMaxId(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType,
+            SchemaUpdateResult result) throws SQLException {
+
+//       For some very strange reason max(id) gave back a wrong result when
+//        executed here while updateing remote-webapp H2 test database, therefore
+//        we took this workaround which worked. Can be removed when it does not
+//        appear anymore
+
+//        String sqlMaxId = " SELECT max(id)+1 as maxId"
+//                + " FROM " + caseType.transformTo("DefinedTermBase");
+        String sqlMaxId = " SELECT id  as maxId"
+                + " FROM " + caseType.transformTo("DefinedTermBase") +
+                 " ORDER BY id DESC ";
+		ResultSet rs = datasource.executeQuery(sqlMaxId);
+		while (rs.next()){
+		    Integer termId = rs.getInt("maxId");
+		    System.out.println(termId);
+		    return termId +1;
+		}
+		String message = "No defined terms do exist yet. Can't update terms!";
+		monitor.warning(message);
+		result.addError(message, getStepName() + ", SingleTermUpdater.invoke");
+        return null;
+    }
 
 	private String nullSafeStr(String str) {
 		if (str == null){

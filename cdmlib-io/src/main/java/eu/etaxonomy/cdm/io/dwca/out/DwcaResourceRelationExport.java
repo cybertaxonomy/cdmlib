@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 /**
  * Mapps taxon concept relationships, taxon name relationships and taxon interactions
  * @author a.mueller
- * @created 20.04.2011
+ * @since 20.04.2011
  */
 public class DwcaResourceRelationExport extends DwcaDataExportBase {
     private static final long serialVersionUID = 33810773244068812L;

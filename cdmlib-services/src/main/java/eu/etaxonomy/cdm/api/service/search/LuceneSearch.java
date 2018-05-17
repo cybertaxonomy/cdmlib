@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 /**
  *
  * @author Andreas Kohlbecker
- * @date Dec 21, 2011
+ * @since Dec 21, 2011
  *
  */
 public class LuceneSearch {

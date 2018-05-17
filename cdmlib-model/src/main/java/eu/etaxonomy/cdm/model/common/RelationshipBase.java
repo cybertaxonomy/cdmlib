@@ -56,11 +56,6 @@ public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelate
     @XmlAttribute(name = "isDoubtful")
     private boolean doubtful;
 
-    /*this set is used only for persistence (CdmDeleteListener) to delete safely relationships and update their former related objects
-    @XmlTransient
-    @Transient
-   protected Set<IRelated> deletedObjects = new HashSet<IRelated>();
-*/
 
     /**
      * Enumeration and String representation of the <code>relatedFrom</code> (invers) and
@@ -135,29 +130,6 @@ public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelate
         return this.getRelatedFrom() == null || this.getRelatedTo() == null;
     }
 
- /*   public Set getDeletedObjects(){
-        return this.deletedObjects;
-    }
-*/
-// TODO
-//	UUID toUuid;
-//	UUID fromUuid;
-//
-//	@Transient
-//	public UUID getToUuidCache(){
-//		return relationTo.getUuid();
-//	}
-//	protected void setToUuid(UUID uuid){
-//		toUuid = uuid;
-//	}
-//
-//	public UUID getFromUuid(){
-//		return relationTo.getUuid();
-//	}
-//	protected void setFromUuid(UUID uuid){
-//		fromUuid = uuid;
-//	}
-
 
 //*********************** CLONE ********************************************************/
 
@@ -173,7 +145,8 @@ public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelate
     @Override
     public Object clone() throws CloneNotSupportedException {
         RelationshipBase<FROM,TO,TYPE> result = (RelationshipBase<FROM,TO,TYPE>)super.clone();
-        //no changes to: doubtful, deletedObjects
+
+        //no changes to: doubtful
         return result;
     }
 }

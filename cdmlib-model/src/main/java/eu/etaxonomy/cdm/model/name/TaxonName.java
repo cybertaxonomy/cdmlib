@@ -24,7 +24,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
@@ -72,9 +71,12 @@ import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
 import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.IDescribable;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -118,7 +120,7 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
  * </ul>
  *
  * @author m.doering
- * @created 08-Nov-2007 13:06:57
+ * @since 08-Nov-2007 13:06:57
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TaxonName", propOrder = {
@@ -126,6 +128,7 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
     "appendedPhrase",
     "nomenclaturalMicroReference",
     "nomenclaturalReference",
+    "nomenclaturalSource",
     "rank",
     "fullTitleCache",
     "protectedFullTitleCache",
@@ -165,6 +168,8 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
     "breed",
     "publicationYear",
     "originalPublicationYear",
+    "inCombinationAuthorship",
+    "inBasionymAuthorship",
 
     "anamorphic",
 
@@ -233,11 +238,12 @@ public class TaxonName
     @Column(length=255)
     private String appendedPhrase;
 
+    //#6581
     @XmlElement(name = "NomenclaturalMicroReference")
     @Field
     @CacheUpdate(noUpdate ="titleCache")
     //TODO Val #3379
-//    @NullOrNotEmpty
+    //@NullOrNotEmpty
     @Column(length=255)
     private String nomenclaturalMicroReference;
 
@@ -325,6 +331,7 @@ public class TaxonName
     @IndexedEmbedded(depth=1)
     private Rank rank;
 
+    //#6581
     @XmlElement(name = "NomenclaturalReference")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
@@ -333,6 +340,18 @@ public class TaxonName
     @CacheUpdate(noUpdate ="titleCache")
     @IndexedEmbedded
     private Reference nomenclaturalReference;
+
+    //#6581
+    @XmlElement(name = "NomenclaturalSource")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    @CacheUpdate(noUpdate ="titleCache")
+    @IndexedEmbedded
+    private DescriptionElementSource nomenclaturalSource;
+
+
 
     @XmlElementWrapper(name = "Registrations")
     @XmlElement(name = "Registration")
@@ -399,49 +418,61 @@ public class TaxonName
     @Pattern(regexp = "[a-z\\u00E4\\u00EB\\u00EF\\u00F6\\u00FC\\-]+", groups=Level2.class, message = "{eu.etaxonomy.cdm.model.name.NonViralName.allowedCharactersForEpithet.message}")
     private String infraSpecificEpithet;
 
-    @XmlElement(name = "CombinationAuthorship", type = TeamOrPersonBase.class)
+    @XmlElement(name = "CombinationAuthorship")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-//    @Target(TeamOrPersonBase.class)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    @JoinColumn(name="combinationAuthorship_id")
     @CacheUpdate("authorshipCache")
     @IndexedEmbedded
     private TeamOrPersonBase<?> combinationAuthorship;
 
-    @XmlElement(name = "ExCombinationAuthorship", type = TeamOrPersonBase.class)
+    @XmlElement(name = "ExCombinationAuthorship")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-//    @Target(TeamOrPersonBase.class)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    @JoinColumn(name="exCombinationAuthorship_id")
     @CacheUpdate("authorshipCache")
     @IndexedEmbedded
     private TeamOrPersonBase<?> exCombinationAuthorship;
 
-    @XmlElement(name = "BasionymAuthorship", type = TeamOrPersonBase.class)
+    //#6943
+    @XmlElement(name = "InCombinationAuthorship")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-//    @Target(TeamOrPersonBase.class)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    @JoinColumn(name="basionymAuthorship_id")
+    @CacheUpdate("authorshipCache")
+    @IndexedEmbedded
+    private TeamOrPersonBase<?> inCombinationAuthorship;
+
+    @XmlElement(name = "BasionymAuthorship")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @CacheUpdate("authorshipCache")
     @IndexedEmbedded
     private TeamOrPersonBase<?> basionymAuthorship;
 
-    @XmlElement(name = "ExBasionymAuthorship", type = TeamOrPersonBase.class)
+    @XmlElement(name = "ExBasionymAuthorship")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-//    @Target(TeamOrPersonBase.class)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    @JoinColumn(name="exBasionymAuthorship_id")
     @CacheUpdate("authorshipCache")
     @IndexedEmbedded
     private TeamOrPersonBase<?> exBasionymAuthorship;
+
+    //#6943
+    @XmlElement(name = "InBasionymAuthorship")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    @CacheUpdate("authorshipCache")
+    @IndexedEmbedded
+    private TeamOrPersonBase<?> inBasionymAuthorship;
 
     @XmlElement(name = "AuthorshipCache")
     @Fields({
@@ -662,7 +693,10 @@ public class TaxonName
      * @see     eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
      * @see     eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
      */
-    protected TaxonName(NomenclaturalCode type, Rank rank, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorship, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
+    protected TaxonName(NomenclaturalCode type, Rank rank, String genusOrUninomial,
+            String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet,
+            TeamOrPersonBase combinationAuthorship, Reference nomenclaturalReference,
+            String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
         this(type, rank, homotypicalGroup);
         setGenusOrUninomial(genusOrUninomial);
         setInfraGenericEpithet (infraGenericEpithet);
@@ -956,13 +990,21 @@ public class TaxonName
     public TeamOrPersonBase<?> getExCombinationAuthorship(){
         return this.exCombinationAuthorship;
     }
-
     /**
      * @see  #getExCombinationAuthorship()
      */
     @Override
     public void setExCombinationAuthorship(TeamOrPersonBase<?> exCombinationAuthorship){
         this.exCombinationAuthorship = exCombinationAuthorship;
+    }
+
+    @Override
+    public TeamOrPersonBase<?> getInCombinationAuthorship(){
+        return this.inCombinationAuthorship;
+    }
+    @Override
+    public void setInCombinationAuthorship(TeamOrPersonBase<?> inCombinationAuthorship) {
+        this.inCombinationAuthorship = inCombinationAuthorship;
     }
 
     /**
@@ -1016,6 +1058,15 @@ public class TaxonName
     @Override
     public void setExBasionymAuthorship(TeamOrPersonBase<?> exBasionymAuthorship) {
         this.exBasionymAuthorship = exBasionymAuthorship;
+    }
+
+    @Override
+    public TeamOrPersonBase<?> getInBasionymAuthorship(){
+        return this.inBasionymAuthorship;
+    }
+    @Override
+    public void setInBasionymAuthorship(TeamOrPersonBase<?> inBasionymAuthorship) {
+        this.inBasionymAuthorship = inBasionymAuthorship;
     }
 
     /**
@@ -1781,6 +1832,19 @@ public class TaxonName
         }
     }
 
+    public void removeRelationWithTaxonName(TaxonName otherTaxonName, Direction direction, NameRelationshipType type) {
+
+        Set<NameRelationship> tmpRels = new HashSet<>(relationsWithThisName(direction));
+        for(NameRelationship nameRelationship : tmpRels) {
+            if (direction.equals(Direction.relatedFrom) && nameRelationship.getToName().equals(otherTaxonName) ||
+                    direction.equals(Direction.relatedTo) && nameRelationship.getFromName().equals(otherTaxonName)) {
+                if (type == null || type.equals(nameRelationship.getType())){
+                    this.removeNameRelationship(nameRelationship);
+                }
+            }
+        }
+    }
+
 
     /**
      * If relation is of type NameRelationship, addNameRelationship is called;
@@ -2035,10 +2099,30 @@ public class TaxonName
     @Override
     @Transient
     public Set<TaxonName> getBasionyms(){
+
+        return getRelatedNames(Direction.relatedTo, NameRelationshipType.BASIONYM());
+    }
+
+    /**
+     *
+     * @param direction
+     * @param type
+     * @return
+     */
+    public Set<TaxonName> getRelatedNames(Direction direction, NameRelationshipType type) {
+
+        return getRelatedNames(relationsWithThisName(direction), type);
+    }
+
+    /**
+     * @param rels
+     * @param type
+     * @return
+     */
+    private Set<TaxonName> getRelatedNames(Set<NameRelationship> rels, NameRelationshipType type) {
         Set<TaxonName> result = new HashSet<>();
-        Set<NameRelationship> rels = this.getRelationsToThisName();
         for (NameRelationship rel : rels){
-            if (rel.getType()!= null && rel.getType().isBasionymRelation()){
+            if (rel.getType()!= null && rel.getType().isRelationshipType(type)){
                 TaxonName basionym = rel.getFromName();
                 result.add(basionym);
             }
@@ -2091,15 +2175,8 @@ public class TaxonName
     @Override
     @Transient
     public Set<TaxonName> getReplacedSynonyms(){
-        Set<TaxonName> result = new HashSet<>();
-        Set<NameRelationship> rels = this.getRelationsToThisName();
-        for (NameRelationship rel : rels){
-            if (rel.getType().isReplacedSynonymRelation()){
-                TaxonName replacedSynonym = rel.getFromName();
-                result.add(replacedSynonym);
-            }
-        }
-        return result;
+
+        return getRelatedNames(Direction.relatedTo, NameRelationshipType.REPLACED_SYNONYM());
     }
 
     /**
@@ -2133,9 +2210,24 @@ public class TaxonName
      */
     @Override
     public void removeBasionyms(){
-        Set<NameRelationship> removeRelations = new HashSet<NameRelationship>();
-        for (NameRelationship nameRelation : this.getRelationsToThisName()){
-            if (nameRelation.getType().isBasionymRelation()){
+        removeNameRelations(Direction.relatedTo, NameRelationshipType.BASIONYM());
+    }
+
+
+    /**
+     * Removes all {@link NameRelationship relationships} of the given <code>type</code> from the set of
+     * relations in the specified <code>direction</code> direction wich are related from or to this
+     * <i>this</i> taxon name. The same relationship will be removed from the set of
+     * reverse relations of the other taxon name.
+     *
+     * @param direction
+     * @param type
+     */
+    public void removeNameRelations(Direction direction, NameRelationshipType type) {
+        Set<NameRelationship> relationsWithThisName = relationsWithThisName(direction);
+        Set<NameRelationship> removeRelations = new HashSet<>();
+        for (NameRelationship nameRelation : relationsWithThisName){
+            if (nameRelation.getType().isRelationshipType(type)){
                 removeRelations.add(nameRelation);
             }
         }
@@ -2144,6 +2236,22 @@ public class TaxonName
         // relations in a second step.
         for (NameRelationship relation : removeRelations){
             this.removeNameRelationship(relation);
+        }
+    }
+
+
+    /**
+     * @param direction
+     * @return
+     */
+    protected Set<NameRelationship> relationsWithThisName(Direction direction) {
+
+        switch(direction) {
+            case relatedTo:
+                return this.getRelationsToThisName();
+            case relatedFrom:
+                return this.getRelationsFromThisName();
+            default: throw new RuntimeException("invalid Direction:" + direction);
         }
     }
 
@@ -2165,37 +2273,77 @@ public class TaxonName
         this.rank = rank;
     }
 
-    /**
-     * Returns the {@link eu.etaxonomy.cdm.model.reference.INomenclaturalReference nomenclatural reference} of <i>this</i> taxon name.
-     * The nomenclatural reference is here meant to be the one publication
-     * <i>this</i> taxon name was originally published in while fulfilling the formal
-     * requirements as specified by the corresponding {@link NomenclaturalCode nomenclatural code}.
-     *
-     * @see 	eu.etaxonomy.cdm.model.reference.INomenclaturalReference
-     * @see 	eu.etaxonomy.cdm.model.reference.Reference
-     */
+
     @Override
-    public INomenclaturalReference getNomenclaturalReference(){
+    public Reference getNomenclaturalReference(){
+        //#6581
         return this.nomenclaturalReference;
+//        if (this.nomenclaturalSource == null){
+//            return null;
+//        }
+//        return this.nomenclaturalSource.getCitation();
     }
+
+    @Override
+    public DescriptionElementSource getNomenclaturalSource(){
+        return this.nomenclaturalSource;
+    }
+
+    protected DescriptionElementSource getNomenclaturalSource(boolean createIfNotExist){
+        if (this.nomenclaturalSource == null){
+            if (!createIfNotExist){
+                return null;
+            }
+            this.nomenclaturalSource = DescriptionElementSource.NewInstance(OriginalSourceType.NomenclaturalReference);
+        }
+        return this.nomenclaturalSource;
+    }
+
     /**
      * Assigns a {@link eu.etaxonomy.cdm.model.reference.INomenclaturalReference nomenclatural reference} to <i>this</i> taxon name.
      * The corresponding {@link eu.etaxonomy.cdm.model.reference.Reference.isNomenclaturallyRelevant nomenclaturally relevant flag} will be set to true
      * as it is obviously used for nomenclatural purposes.
      *
+     * Shortcut to set the nomenclatural reference.
+     *
      * @throws IllegalArgumentException if parameter <code>nomenclaturalReference</code> is not assignable from {@link INomenclaturalReference}
      * @see  #getNomenclaturalReference()
      */
+
+    @Override
+    public void setNomenclaturalReference(Reference nomenclaturalReference){
+        //#6581
+        this.nomenclaturalReference = nomenclaturalReference;
+//        getNomenclaturalSource(true).setCitation(nomenclaturalReference);
+//        checkNullSource();
+    }
     @Override
     public void setNomenclaturalReference(INomenclaturalReference nomenclaturalReference){
-        if(nomenclaturalReference != null){
-            if(!INomenclaturalReference.class.isAssignableFrom(nomenclaturalReference.getClass())){
-                throw new IllegalArgumentException("Parameter nomenclaturalReference is not assignable from INomenclaturalReference");
-            }
-            this.nomenclaturalReference = (Reference)nomenclaturalReference;
-        } else {
-            this.nomenclaturalReference = null;
+        setNomenclaturalReference(CdmBase.deproxy(nomenclaturalReference, Reference.class));
+    }
+
+    //#6581
+    private void checkNullSource() {
+        if (this.nomenclaturalSource == null){
+            return;
+        }else if (this.nomenclaturalSource.getCitation() != null
+           || this.nomenclaturalSource.getCitationMicroReference() != null
+           || this.nomenclaturalSource.getNameUsedInSource() != null
+           || isBlank(this.nomenclaturalSource.getOriginalNameString())){
+            //TODO what about supplemental data?
+                return;
+        }else{
+            this.nomenclaturalSource = null;
         }
+    }
+
+
+    @Override
+    public void setNomenclaturalSource(DescriptionElementSource nomenclaturalSource) throws IllegalArgumentException {
+        if (!OriginalSourceType.NomenclaturalReference.equals(nomenclaturalSource.getType()) ){
+            throw new IllegalArgumentException("Nomenclatural source must be of type " + OriginalSourceType.NomenclaturalReference.getMessage());
+        }
+        this.nomenclaturalSource = nomenclaturalSource;
     }
 
     /**
@@ -2227,14 +2375,22 @@ public class TaxonName
     //Details of the nomenclatural reference (protologue).
     @Override
     public String getNomenclaturalMicroReference(){
+        //#6581
         return this.nomenclaturalMicroReference;
+//        if (this.nomenclaturalSource == null){
+//            return null;
+//        }
+//        return this.nomenclaturalSource.getCitationMicroReference();
     }
     /**
      * @see  #getNomenclaturalMicroReference()
      */
     @Override
     public void setNomenclaturalMicroReference(String nomenclaturalMicroReference){
-        this.nomenclaturalMicroReference = StringUtils.isBlank(nomenclaturalMicroReference)? null : nomenclaturalMicroReference;
+        //#6581
+        this.nomenclaturalMicroReference = nomenclaturalMicroReference;
+//        this.getNomenclaturalSource(true).setCitationMicroReference(StringUtils.isBlank(nomenclaturalMicroReference)? null : nomenclaturalMicroReference);
+//        checkNullSource();
     }
 
     @Override
@@ -2526,7 +2682,7 @@ public class TaxonName
      */
     private void checkHomotypicalGroup(TypeDesignationBase typeDesignation) {
         if(typeDesignation.getTypifiedNames().size() > 0){
-            Set<HomotypicalGroup> groups = new HashSet<HomotypicalGroup>();
+            Set<HomotypicalGroup> groups = new HashSet<>();
             Set<TaxonName> names = typeDesignation.getTypifiedNames();
             for (TaxonName taxonName: names){
                 groups.add(taxonName.getHomotypicalGroup());
@@ -3267,7 +3423,7 @@ public class TaxonName
      * @return the first not blank name part in reverse order
      */
     @Override
-    public String getLastNamePart() {
+    public String getFamilyNamePart() {
         String result =
                 StringUtils.isNotBlank(this.getInfraSpecificEpithet())?
                     this.getInfraSpecificEpithet() :
@@ -3400,6 +3556,37 @@ public class TaxonName
         return result;
     }
 
+//************************ isType ***********************************************/
+
+    /**
+     * @return
+     */
+    @Override
+    public boolean isNonViral() {
+        return nameType.isNonViral();
+    }
+
+    @Override
+    public boolean isZoological(){
+        return nameType.isZoological();
+    }
+    @Override
+    public boolean isBotanical() {
+        return nameType.isBotanical();
+    }
+    @Override
+    public boolean isCultivar() {
+        return nameType.isCultivar();
+    }
+    @Override
+    public boolean isBacterial() {
+        return nameType.isBacterial();
+    }
+    @Override
+    public boolean isViral() {
+        return nameType.isViral();
+    }
+
 
 //*********************** CLONE ********************************************************/
 
@@ -3445,7 +3632,7 @@ public class TaxonName
             }
 
 
-            //To Relations
+            //to relations
             result.relationsToThisName = new HashSet<>();
             for (NameRelationship toRelationship : getRelationsToThisName()){
                 NameRelationship newRelationship = (NameRelationship)toRelationship.clone();
@@ -3453,7 +3640,7 @@ public class TaxonName
                 result.relationsToThisName.add(newRelationship);
             }
 
-            //From Relations
+            //from relations
             result.relationsFromThisName = new HashSet<>();
             for (NameRelationship fromRelationship : getRelationsFromThisName()){
                 NameRelationship newRelationship = (NameRelationship)fromRelationship.clone();
@@ -3465,8 +3652,8 @@ public class TaxonName
             result.typeDesignations = new HashSet<>();
             for (TypeDesignationBase<?> typeDesignation : getTypeDesignations()){
                 TypeDesignationBase<?> newDesignation = (TypeDesignationBase<?>)typeDesignation.clone();
-                result.typeDesignations.add(newDesignation);
-                newDesignation.addTypifiedName(result);
+                this.removeTypeDesignation(newDesignation);
+                result.addTypeDesignation(newDesignation, false);
             }
 
             //homotypicalGroup
@@ -3476,7 +3663,7 @@ public class TaxonName
 
 
             //HybridChildRelations
-            result.hybridChildRelations = new HashSet<HybridRelationship>();
+            result.hybridChildRelations = new HashSet<>();
             for (HybridRelationship hybridRelationship : getHybridChildRelations()){
                 HybridRelationship newChildRelationship = (HybridRelationship)hybridRelationship.clone();
                 newChildRelationship.setRelatedTo(result);
@@ -3484,7 +3671,7 @@ public class TaxonName
             }
 
             //HybridParentRelations
-            result.hybridParentRelations = new HashSet<HybridRelationship>();
+            result.hybridParentRelations = new HashSet<>();
             for (HybridRelationship hybridRelationship : getHybridParentRelations()){
                 HybridRelationship newParentRelationship = (HybridRelationship)hybridRelationship.clone();
                 newParentRelationship.setRelatedFrom(result);
@@ -3521,34 +3708,6 @@ public class TaxonName
 
     }
 
-    /**
-     * @return
-     */
-    @Override
-    public boolean isNonViral() {
-        return nameType.isNonViral();
-    }
-
-    @Override
-    public boolean isZoological(){
-        return nameType.isZoological();
-    }
-    @Override
-    public boolean isBotanical() {
-        return nameType.isBotanical();
-    }
-    @Override
-    public boolean isCultivar() {
-        return nameType.isCultivar();
-    }
-    @Override
-    public boolean isBacterial() {
-        return nameType.isBacterial();
-    }
-    @Override
-    public boolean isViral() {
-        return nameType.isViral();
-    }
 
 }
 

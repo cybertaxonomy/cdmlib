@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
- * @created 29.05.2008
+ * @since 29.05.2008
  */
 @Component
 public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<TcsRdfImportState> {

@@ -41,10 +41,12 @@ import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
+import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
@@ -68,12 +70,13 @@ import eu.etaxonomy.cdm.model.description.TaxonInteraction;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.description.TextFormat;
-import eu.etaxonomy.cdm.model.description.WorkingSet;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.media.AudioFile;
+import eu.etaxonomy.cdm.model.media.ExternalLink;
+import eu.etaxonomy.cdm.model.media.ExternalLinkType;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -103,6 +106,7 @@ import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -126,6 +130,7 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
@@ -142,7 +147,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  * depend on general parameter than concrete data values.
  *
  * @author a.mueller
- * @created 3013-12-02
+ * @since 3013-12-02
  *
  *
  */
@@ -150,7 +155,7 @@ public class FullCoverageDataGenerator {
 
 
 	public void fillWithData(Session session){
-		List<CdmBase> cdmBases = new ArrayList<CdmBase>();
+		List<CdmBase> cdmBases = new ArrayList<>();
 
 		createAgents(cdmBases);
 
@@ -220,8 +225,8 @@ public class FullCoverageDataGenerator {
 	private void createAgents(List<CdmBase> cdmBases) {
 		//Person
 		Person person = Person.NewTitledInstance("Person Title");
-		person.setFirstname("first name");
-		person.setLastname("last name");
+		person.setGivenName("first name");
+		person.setFamilyName("last name");
 		person.setLifespan(TimePeriodParser.parseString("1905-1995"));
 		person.setPrefix("prefix");
 		person.setSuffix("suffix");
@@ -385,6 +390,9 @@ public class FullCoverageDataGenerator {
 		Reference ref = ReferenceFactory.newArticle();
 		DescriptionElementSource source = textData.addSource(OriginalSourceType.Import, "22", "taxon description table", ref, "detail");
 		source.setNameUsedInSource(TaxonNameFactory.NewBotanicalInstance(Rank.GENUS()));
+		ExternalLink link = ExternalLink.NewInstance(ExternalLinkType.WebSite,
+		        URI.create("http://wwww.abd.de"), "Somehow useful link", 445);
+		source.addLink(link);
 		handleAnnotatableEntity(source);
 
 		taxonDescription.addDescriptionSource(ref);
@@ -422,11 +430,20 @@ public class FullCoverageDataGenerator {
 		cdmBases.add(leaveLengthNode);
 
 
-		WorkingSet workingSet = WorkingSet.NewInstance();
-		workingSet.addDescription(taxonDescription);
-		workingSet.setLabel("My Workingset");
-		workingSet.getDescriptiveSystem();
-		handleAnnotatableEntity(workingSet);
+		//DescriptiveDataSet
+		DescriptiveDataSet descriptiveDataSet = DescriptiveDataSet.NewInstance();
+		descriptiveDataSet.addDescription(taxonDescription);
+		descriptiveDataSet.setLabel("My Descriptive Dataset");
+		descriptiveDataSet.getDescriptiveSystem();
+		handleAnnotatableEntity(descriptiveDataSet);
+		descriptiveDataSet.addGeoFilterArea(Country.GERMANY());
+		Classification classification = Classification.NewInstance("DescriptiveDataSet subtree classification");
+		Taxon subTreeTaxon = getTaxon();
+        TaxonNode subtree = classification.addChildTaxon(subTreeTaxon, null, null);
+		descriptiveDataSet.addTaxonSubtree(subtree);
+
+		cdmBases.add(classification);
+		cdmBases.add(subtree);
 
 
 		//polytomous keys
@@ -495,7 +512,7 @@ public class FullCoverageDataGenerator {
 		media.addRepresentation(mediaRepresentation);
 
 		media.putTitle(Language.ENGLISH(), "Media title");
-		media.setMediaCreated(DateTime.now());
+		media.setMediaCreated(TimePeriod.NewInstance(DateTime.now()));
 		media.putDescription(Language.ENGLISH(), "Media description");
 		handleIdentifiableEntity(media);
 
@@ -647,10 +664,14 @@ public class FullCoverageDataGenerator {
 		classification.addGeoScope(Country.GERMANY());
 		classification.putDescription(Language.ENGLISH(), "An interesting classification");
 
-
 		TaxonNode node = classification.addChildTaxon(taxon, sec,"22");
 		handleIdentifiableEntity(classification);
 		handleAnnotatableEntity(node);
+		node.putExcludedNote(Language.DEFAULT(), "Excluded note");
+		DefinedTerm agentRelationType = DefinedTerm.NewTaxonNodeAgentRelationTypeInstance(null, "agentRelation", "ar");
+		Person agent = Person.NewTitledInstance("Related agent");
+		TaxonNodeAgentRelation agentRelation = node.addAgentRelation(agentRelationType, agent);
+		handleAnnotatableEntity(agentRelation);
 
 		Taxon childTaxon = Taxon.NewInstance(synName, sec);
 		node.addChildTaxon(childTaxon, sec, "44");
@@ -661,6 +682,7 @@ public class FullCoverageDataGenerator {
 		cdmBases.add(concept);
 		cdmBases.add(childTaxon);
 		cdmBases.add(classification);
+		cdmBases.add(agentRelationType);
 
 
 	}
@@ -674,7 +696,7 @@ public class FullCoverageDataGenerator {
 		reference.setAuthorship(author);
 		reference.setTitle("ref title");
 		reference.setAbbrevTitle("abbrev title");
-		reference.setDatePublished(TimePeriodParser.parseString("1999"));
+		reference.setDatePublished(TimePeriodParser.parseStringVerbatim("1999"));
 		reference.setEdition("edition");
 		reference.setEditor("editor");
 		Institution institution = Institution.NewInstance();
@@ -787,7 +809,7 @@ public class FullCoverageDataGenerator {
 		DefinedTerm kindOfUnit = DefinedTerm.NewKindOfUnitInstance("Kind of unit", "Kind of unit", null);
 		cdmBases.add(kindOfUnit);
 		fieldUnit.setKindOfUnit(kindOfUnit);
-		fieldUnit.setIndividualCount(3);
+		fieldUnit.setIndividualCount("3");
 		fieldUnit.putDefinition(Language.ENGLISH(), "definition");
 		fieldUnit.setPublish(true);
 		handleIdentifiableEntity(fieldUnit);
@@ -863,11 +885,24 @@ public class FullCoverageDataGenerator {
 		viralName.setAcronym("acronym");
 		handleIdentifiableEntity(viralName);
 
+		//Registration
+		Registration registration = Registration.NewInstance("registration identifier",
+		        "specificIdentifier", speciesZooName, null);
+		registration.addTypeDesignation(specimenDesig);
+		registration.setRegistrationDate(DateTime.now());
+		Registration blockingRegistration = Registration.NewInstance();
+		registration.addBlockedBy(blockingRegistration);
+		registration.setInstitution(Institution.NewInstance());
+		User submitter = User.NewInstance("submitter", "12345");
+		registration.setSubmitter(submitter);
+		handleAnnotatableEntity(registration);;
 
+		cdmBases.add(submitter);
 		cdmBases.add(bacName);
 		cdmBases.add(botName);
 		cdmBases.add(viralName);
 		cdmBases.add(zooName);
+		cdmBases.add(botName2);
 	}
 
 	private void handleEventBase(EventBase event){

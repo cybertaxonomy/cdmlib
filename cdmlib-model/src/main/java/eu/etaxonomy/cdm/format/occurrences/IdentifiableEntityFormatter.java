@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.model.common.Identifier;
 
 /**
  * @author pplitzner
- * @date Nov 30, 2015
+ * @since Nov 30, 2015
  *
  */
 public class IdentifiableEntityFormatter extends AbstractCdmFormatter {

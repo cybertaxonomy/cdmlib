@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase;
 
 /**
  * @author a.babadshanjan
- * @created 07.11.2008
+ * @since 07.11.2008
  */
 @Repository
 public class StatisticalMeasurementValueDaoImpl extends CdmEntityDaoBase<StatisticalMeasurementValue> 

@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStra
  * publication (protolog) or a picture of this publication.
  *
  * @author a.mueller
- * @created 08-Jul-2008
+ * @since 08-Jul-2008
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TaxonNameDescription", propOrder = {

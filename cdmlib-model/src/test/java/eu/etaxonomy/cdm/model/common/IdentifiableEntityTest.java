@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
  * @author a.babadshanjan
- * @created 02.02.2009
+ * @since 02.02.2009
  */
 public class IdentifiableEntityTest {
 

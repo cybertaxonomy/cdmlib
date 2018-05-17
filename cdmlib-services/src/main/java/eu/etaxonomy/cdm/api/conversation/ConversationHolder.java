@@ -68,7 +68,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.CdmPostDataChangeObservableListene
  * @see http://www.hibernate.org/42.html
  *
  * @author n.hoffmann,c.mathew
- * @created 12.03.2009
+ * @since 12.03.2009
  */
 public class ConversationHolder {
 

@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author a.mueller
- * @created 23.02.2010
+ * @since 23.02.2010
  * @version 1.0
  */
 public interface IMappingImport<T extends CdmBase, STATE extends ImportStateBase> {

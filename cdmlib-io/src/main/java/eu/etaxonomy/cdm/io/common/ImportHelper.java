@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -299,10 +299,10 @@ public class ImportHelper {
 	}
 
 
-	public static TimePeriod getDatePublished(String refYear){
-		TimePeriod resultNew;
+	public static VerbatimTimePeriod getDatePublished(String refYear){
+	    VerbatimTimePeriod resultNew;
 		try {
-			resultNew = TimePeriodParser.parseString(refYear);
+			resultNew = TimePeriodParser.parseStringVerbatim(refYear);
 		} catch (IllegalArgumentException e) {
 			logger.warn("RefYear could not be parsed: " + refYear);
 			resultNew = null;

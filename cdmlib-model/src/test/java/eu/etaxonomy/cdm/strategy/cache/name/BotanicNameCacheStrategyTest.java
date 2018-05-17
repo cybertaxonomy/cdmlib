@@ -24,7 +24,7 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
@@ -108,7 +108,7 @@ public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase{
 		GregorianCalendar testDate = new GregorianCalendar();
 		testDate.set(1968, 3, 2);
 
-		TimePeriod period = TimePeriod.NewInstance(testDate);
+		VerbatimTimePeriod period = VerbatimTimePeriod.NewVerbatimInstance(testDate);
 
 		citationRef.setDatePublished(period);
 

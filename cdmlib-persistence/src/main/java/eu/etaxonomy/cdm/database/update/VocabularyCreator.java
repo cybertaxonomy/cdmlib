@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.common.TermType;
 
 /**
  * @author a.mueller
- * @date 10.09.2010
+ * @since 10.09.2010
  *
  */
 public class VocabularyCreator extends SchemaUpdaterStepBase {

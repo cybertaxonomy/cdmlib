@@ -47,7 +47,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStra
  * starting with a process called {@link Amplification amplification}.
  *
  * @author m.doering
- * @created 08-Nov-2007
+ * @since 08-Nov-2007
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DnaSample", propOrder = {

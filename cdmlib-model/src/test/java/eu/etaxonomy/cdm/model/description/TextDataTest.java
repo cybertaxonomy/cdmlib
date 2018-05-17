@@ -30,8 +30,7 @@ import eu.etaxonomy.cdm.model.common.MultilanguageText;
 
 /**
  * @author a.mueller
- * @created 23.04.2008
- * @version 1.0
+ * @since 23.04.2008
  */
 public class TextDataTest {
 	@SuppressWarnings("unused")

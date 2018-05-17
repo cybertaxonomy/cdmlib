@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 /**
  * @author a.mueller
- * @created 29.07.2008
+ * @since 29.07.2008
  * @version 1.0
  */
 public final class TaxonXTransformer {

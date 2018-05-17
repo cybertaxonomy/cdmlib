@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @see eu.etaxonomy.cdm.model.common.IOriginalSource
  *
  * @author a.mueller
- * @created 18.09.2009
+ * @since 18.09.2009
  */
 @XmlType(name = "IdentifiableSource", propOrder = {
 	})

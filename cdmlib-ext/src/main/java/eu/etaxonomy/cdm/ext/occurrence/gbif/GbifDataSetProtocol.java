@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.ext.occurrence.gbif;
 
 /**
  * @author pplitzner
- * @date 28.05.2014
+ * @since 28.05.2014
  *
  */
 public enum GbifDataSetProtocol {

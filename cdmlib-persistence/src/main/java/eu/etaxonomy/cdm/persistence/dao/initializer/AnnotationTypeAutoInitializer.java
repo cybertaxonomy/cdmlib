@@ -12,7 +12,7 @@ import eu.etaxonomy.cdm.model.common.Annotation;
 
 /**
  * @author a.kohlbecker
- * @date 30.07.2010
+ * @since 30.07.2010
  *
  */
 public class AnnotationTypeAutoInitializer extends AutoPropertyInitializer<Annotation> {

@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.common.Language;
  * the in reference or to change the type of the in reference which may have further consequences.
  *
  * @author a.mueller
- * @created 20.09.2009
+ * @since 20.09.2009
  */
 
 //TODO hierarchies, see http://dev.e-taxonomy.eu/trac/ticket/3619

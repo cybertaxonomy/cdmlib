@@ -27,14 +27,11 @@ import eu.etaxonomy.cdm.database.update.TableCreator;
 import eu.etaxonomy.cdm.database.update.TableNameChanger;
 import eu.etaxonomy.cdm.database.update.UniqueIndexDropper;
 import eu.etaxonomy.cdm.database.update.v40_41.SchemaUpdater_40_41;
+import eu.etaxonomy.cdm.database.update.v47_50.SchemaUpdater_47_50;
 
 /**
  * @author a.mueller
- * @created 16.04.2016
- */
-/**
- * @author a.mueller
- * @date 09.05.2017
+ * @since 09.05.2017
  *
  */
 public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
@@ -100,11 +97,11 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
         step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
         stepList.add(step);
 
-        //subtree filter
+        //geo filter
         stepName= "Add geo filter MN table to WorkingSet";
         String firstTableName = "WorkingSet";
-        String secondTableAlias = "NamedArea";
         String secondTableName = "DefinedTermBase";
+        String secondTableAlias = "NamedArea";
         String attributeName = "geoFilter";
         boolean isList = ! IS_LIST;
         step = MnTableCreator.NewMnInstance(stepName, firstTableName, null, secondTableName, secondTableAlias, attributeName, INCLUDE_AUDIT, isList, IS_M_TO_M);
@@ -480,7 +477,7 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
 
         //LSIDAuthority_namespaces for taxonnamebase
         stepName = "Upate LSIDAuthority_namespaces for TaxonNameBase";
-        query = "UPDATE LSIDAuthority_namespaces " +
+        query = "UPDATE @@LSIDAuthority_namespaces@@ " +
                 " SET namespaces_element = Replace (namespaces_element, 'TaxonNameBase','TaxonName') " +
                 " WHERE namespaces_element like '%TaxonNameBase%' ";
         step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query, -99);
@@ -503,7 +500,6 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
             step = ColumnNameChanger.NewIntegerInstance(stepName, newTableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
             stepList.add(step);
         }
-
     }
 
     /**
@@ -536,7 +532,7 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
 
     @Override
 	public ISchemaUpdater getNextUpdater() {
-		return null;
+		return SchemaUpdater_47_50.NewInstance() ;
 	}
 
 	@Override

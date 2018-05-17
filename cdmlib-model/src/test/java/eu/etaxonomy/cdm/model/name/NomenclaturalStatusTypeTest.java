@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 /**
  * @author a.babadshanjan
- * @created 25.03.2009
+ * @since 25.03.2009
  */
 public class NomenclaturalStatusTypeTest extends EntityTestBase {
 	@SuppressWarnings("unused")

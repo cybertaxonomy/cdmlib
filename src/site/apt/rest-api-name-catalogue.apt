@@ -33,12 +33,12 @@ Name Catalogue REST API
 		
 	The name catalogue services (and related documentation) which correspond to Catalogue of Life data can be found at,
 	
-	*** name search 		: {{{http://dev.e-taxonomy.eu/cdmserver/col/name_catalogue} http://dev.e-taxonomy.eu/cdmserver/col/name_catalogue}} 
+	*** name search 		: {{{http://api.cybertaxonomy.org/col/name_catalogue} http://dev.e-taxonomy.eu/cdmserver/col/name_catalogue}} 
 		
-	*** name information 	: {{{http://dev.e-taxonomy.eu/cdmserver/col/name_catalogue/name} http://dev.e-taxonomy.eu/cdmserver/col/name_catalogue/name}} 	
+	*** name information 	: {{{http://api.cybertaxonomy.org/col/name_catalogue/name} http://dev.e-taxonomy.eu/cdmserver/col/name_catalogue/name}} 	
 	
-	*** taxon information 	: {{{http://dev.e-taxonomy.eu/cdmserver/col/name_catalogue/taxon} http://dev.e-taxonomy.eu/cdmserver/col/name_catalogue/taxon}} 	
+	*** taxon information 	: {{{http://api.cybertaxonomy.org/col/name_catalogue/taxon} http://dev.e-taxonomy.eu/cdmserver/col/name_catalogue/taxon}} 	
 	
-	*** accepted name search 	: {{{http://dev.e-taxonomy.eu/cdmserver/col/name_catalogue/accepted} http://dev.e-taxonomy.eu/cdmserver/col/name_catalogue/accepted}}
+	*** accepted name search 	: {{{http://api.cybertaxonomy.org/col/name_catalogue/accepted} http://dev.e-taxonomy.eu/cdmserver/col/name_catalogue/accepted}}
 	
-	*** fuzzy name search 	: {{{http://dev.e-taxonomy.eu/cdmserver/col/name_catalogue/fuzzy} http://dev.e-taxonomy.eu/cdmserver/col/name_catalogue/fuzzy}}
+	*** fuzzy name search 	: {{{http://api.cybertaxonomy.org/col/name_catalogue/fuzzy} http://dev.e-taxonomy.eu/cdmserver/col/name_catalogue/fuzzy}}

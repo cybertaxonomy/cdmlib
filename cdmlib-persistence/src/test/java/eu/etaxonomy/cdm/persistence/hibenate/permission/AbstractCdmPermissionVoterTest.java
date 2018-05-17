@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
 
 /**
  * @author a.kohlbecker
- * @date Feb 2, 2017
+ * @since Feb 2, 2017
  *
  */
 abstract public class AbstractCdmPermissionVoterTest extends Assert {

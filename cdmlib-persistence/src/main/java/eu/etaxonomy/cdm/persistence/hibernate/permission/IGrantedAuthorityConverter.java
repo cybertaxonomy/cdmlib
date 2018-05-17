@@ -12,7 +12,7 @@ import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
 
 /**
  * @author a.kohlbecker
- * @date Oct 15, 2012
+ * @since Oct 15, 2012
  *
  */
 public interface IGrantedAuthorityConverter {

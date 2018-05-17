@@ -16,7 +16,7 @@ import java.util.Set;
 /**
  * Holds query parameters for a query to an occurrence provider.
  * @author pplitzner
- * @date 17.09.2013
+ * @since 17.09.2013
  *
  */
 public class OccurenceQuery implements Serializable{

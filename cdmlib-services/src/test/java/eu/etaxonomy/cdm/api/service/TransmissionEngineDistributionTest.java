@@ -54,7 +54,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author a.kohlbecker
- * @date Feb 26, 2013
+ * @since Feb 26, 2013
  *
  */
 public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrationTest {

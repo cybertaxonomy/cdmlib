@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 
 /**
  * @author a.kohlbecker
- * @date 22.07.2009
+ * @since 22.07.2009
  *
  * @param <T>
  * @param <SERVICE>

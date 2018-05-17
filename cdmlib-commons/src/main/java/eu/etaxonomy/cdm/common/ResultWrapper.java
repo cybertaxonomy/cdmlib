@@ -31,7 +31,7 @@ import org.apache.log4j.Logger;
  * by the calling method
  *  
  * @author a.mueller
- * @created 01.11.2008
+ * @since 01.11.2008
  * @version 1.0
  */
 public class ResultWrapper<T> {

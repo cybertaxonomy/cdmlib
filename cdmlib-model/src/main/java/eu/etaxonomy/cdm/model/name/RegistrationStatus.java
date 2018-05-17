@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 /**
  *
  * @author a.mueller
- * @date 13.03.2017
+ * @since 13.03.2017
  *
  */
 @XmlEnum

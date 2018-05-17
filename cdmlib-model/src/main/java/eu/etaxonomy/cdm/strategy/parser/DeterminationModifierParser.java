@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 /**
  * @author a.mueller
- * @date 28.10.2017
+ * @since 28.10.2017
  */
 public class DeterminationModifierParser {
 

@@ -46,7 +46,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @see		SpecimenTypeDesignation
  * @author	m.doering
  * @version 1.0
- * @created 08-Nov-2007 13:06:38
+ * @since 08-Nov-2007 13:06:38
  */
 @XmlRootElement(name = "NameTypeDesignation")
 @XmlAccessorType(XmlAccessType.FIELD)

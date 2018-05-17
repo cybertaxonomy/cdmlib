@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 
 /**
  * @author p.kelbert
- * @created 20.10.2008
+ * @since 20.10.2008
  * @version 1.0
  */
 public class UnitsGatheringEvent {

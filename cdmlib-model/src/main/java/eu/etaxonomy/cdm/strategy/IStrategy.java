@@ -13,7 +13,7 @@ package eu.etaxonomy.cdm.strategy;
  * Interface for all CDM strategy classes
  *
  * @author Andreas Mueller
- * @created 12-Sep-2007
+ * @since 12-Sep-2007
  */
 
 public interface IStrategy {

@@ -20,7 +20,7 @@ import org.apache.log4j.Logger;
 
 /**
  * @author a.mueller
- * @created 20.11.2008
+ * @since 20.11.2008
  * @version 1.0
  */
 public class FileCopy {

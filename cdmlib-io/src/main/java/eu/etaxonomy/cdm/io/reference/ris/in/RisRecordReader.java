@@ -20,7 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author a.mueller
- * @date 11.05.2017
+ * @since 11.05.2017
  *
  */
 public class RisRecordReader {

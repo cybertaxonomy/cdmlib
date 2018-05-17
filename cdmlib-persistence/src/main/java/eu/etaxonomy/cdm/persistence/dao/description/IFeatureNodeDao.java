@@ -13,7 +13,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IVersionableDao;
 
 /**
  * @author a.babadshanjan
- * @created 09.09.2008
+ * @since 09.09.2008
  */
 public interface IFeatureNodeDao extends IVersionableDao<FeatureNode> {
 

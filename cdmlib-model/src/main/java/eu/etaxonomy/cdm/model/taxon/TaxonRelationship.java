@@ -22,8 +22,6 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
@@ -42,7 +40,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * </ul>
  *
  * @author m.doering
- * @created 08-Nov-2007 13:06:58
+ * @since 08-Nov-2007 13:06:58
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TaxonRelationship", propOrder = {
@@ -54,7 +52,8 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 @Entity
 @Audited
 @Indexed(index = "eu.etaxonomy.cdm.model.taxon.TaxonRelationship")
-public class TaxonRelationship extends RelationshipBase<Taxon, Taxon, TaxonRelationshipType> {
+public class TaxonRelationship
+        extends RelationshipBase<Taxon, Taxon, TaxonRelationshipType> {
     private static final long serialVersionUID = 1378437971941534653L;
     static private final Logger logger = Logger.getLogger(TaxonRelationship.class);
 
@@ -62,7 +61,7 @@ public class TaxonRelationship extends RelationshipBase<Taxon, Taxon, TaxonRelat
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.EAGER)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+//    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     @IndexedEmbedded(includeEmbeddedObjectId=true, depth=1)
     private Taxon relatedFrom;
 
@@ -70,7 +69,7 @@ public class TaxonRelationship extends RelationshipBase<Taxon, Taxon, TaxonRelat
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.EAGER)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+//  @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     @IndexedEmbedded(includeEmbeddedObjectId=true, depth=1)
     private Taxon relatedTo;
 

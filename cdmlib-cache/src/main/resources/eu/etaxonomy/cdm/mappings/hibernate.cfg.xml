@@ -3,6 +3,12 @@
  "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
  "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 
+<!-- This is a copy of cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/hibernate/hibernate.cfg.xml. If the former changes in the mapping part *this* file needs to be changed accordingly.
+Difference are to be found in 
+ * <property name="hibernate.implicit_naming_strategy">   which is missing in the original file
+ * <property name="hibernate.connection.provider_class" which has a differen value in the original file
+-->
+ 
 <hibernate-configuration>
     <session-factory>
 
@@ -122,7 +128,7 @@
       <mapping class="eu.etaxonomy.cdm.model.description.TaxonNameDescription"/>
       <mapping class="eu.etaxonomy.cdm.model.description.TextData"/>
       <mapping class="eu.etaxonomy.cdm.model.description.TextFormat"/>
-      <mapping class="eu.etaxonomy.cdm.model.description.WorkingSet"/>
+      <mapping class="eu.etaxonomy.cdm.model.description.DescriptiveDataSet"/>
       <!-- Location Package -->
       <mapping class="eu.etaxonomy.cdm.model.location.NamedArea"/>
       <mapping class="eu.etaxonomy.cdm.model.location.NamedAreaLevel"/>
@@ -132,6 +138,7 @@
       <mapping class="eu.etaxonomy.cdm.model.location.Country"/>
       <!-- Media Package -->
       <mapping class="eu.etaxonomy.cdm.model.media.AudioFile"/>
+      <mapping class="eu.etaxonomy.cdm.model.media.ExternalLink"/>
       <mapping class="eu.etaxonomy.cdm.model.media.ImageFile"/>
       <mapping class="eu.etaxonomy.cdm.model.media.Media"/>
       <mapping class="eu.etaxonomy.cdm.model.media.MediaRepresentation"/>

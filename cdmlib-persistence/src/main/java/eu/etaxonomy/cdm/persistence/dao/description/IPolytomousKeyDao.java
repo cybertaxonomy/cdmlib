@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 
 /**
  * @author a.mueller
- * @created 08.11.2010
+ * @since 08.11.2010
  * @version 1.0
  */
 public interface IPolytomousKeyDao extends IIdentifiableDao<PolytomousKey> {

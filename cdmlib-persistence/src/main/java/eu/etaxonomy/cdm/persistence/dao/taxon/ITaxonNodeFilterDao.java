@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 
 /**
  * @author a.mueller
- * @date 30.06.2017
+ * @since 30.06.2017
  *
  */
 public interface ITaxonNodeFilterDao {

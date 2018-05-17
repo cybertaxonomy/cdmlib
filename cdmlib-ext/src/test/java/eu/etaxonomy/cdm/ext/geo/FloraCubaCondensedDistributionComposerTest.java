@@ -19,21 +19,22 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
-import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.test.TermTestBase;
 
 /**
  * Tests for {@link FloraCubaCondensedDistributionComposerOld}
  * @author a.mueller
- * @date 07.04.2016
+ * @since 07.04.2016
  *
  */
-public class FloraCubaCondensedDistributionComposerTest {
+@Ignore
+public class FloraCubaCondensedDistributionComposerTest extends TermTestBase {
 
     private static OrderedTermVocabulary<PresenceAbsenceTerm> statusVoc;
     private static OrderedTermVocabulary<NamedArea> cubaAreasVocabualary;
@@ -65,8 +66,6 @@ public class FloraCubaCondensedDistributionComposerTest {
     @SuppressWarnings("unchecked")
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        DefaultTermInitializer initializer = new DefaultTermInitializer();
-        initializer.initialize();
 
         defineSymbolsForExistingTerms();
         statusVoc = OrderedTermVocabulary.NewInstance(TermType.PresenceAbsenceTerm);

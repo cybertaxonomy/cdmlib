@@ -10,7 +10,7 @@ Developing with the CDM Library
 %{toc|section=0|fromDepth=2|toDepth=3}
 
 
-  <<Note:>> The CDM Library uses Apache Maven for dependency management. If you are not familiar with that please take a look at the {{{https://dev.e-taxonomy.eu/trac/wiki/GeneralDev#Maven}developer resources on the wiki}}. In case you run into problems, you might want to check {{{./troubleshooting.html}Troubleshooting}} or contact {{{mailto:editsupport@bgbm.org}editsupport@bgbm.org}} directly.
+  <<Note:>> The CDM Library uses Apache Maven for dependency management. If you are not familiar with that please take a look at the {{{https://dev.e-taxonomy.eu/redmine/projects/edit/wiki/GeneralDev#Maven}developer resources on the wiki}}. In case you run into problems, you might want to check {{{./troubleshooting.html}Troubleshooting}} or contact {{{mailto:editsupport@bgbm.org}editsupport@bgbm.org}} directly.
 
 * Integrating the CDM Library into a maven project
 
@@ -93,7 +93,7 @@ applicationContext.xml
 
 	To use the entire CDM Library with {{{http://www.eclipse.org/} Eclipse}}, you must meet the following prerequisites:
 
-    * Maven 3 commandline tools. Follow the instruction to install maven on your local machine. See {{{https://dev.e-taxonomy.eu/trac/wiki/GeneralDev#Maven}}} for installation instructions.
+    * Maven 3 commandline tools. Follow the instruction to install maven on your local machine. See {{{https://dev.e-taxonomy.eu/redmine/projects/edit/wiki/GeneralDev#Maven}}} for installation instructions.
 
     * Subclipse 1.6.x (for convenient subversion access from Eclipse). {{{http://subclipse.tigris.org/}}}
 
@@ -172,8 +172,8 @@ $ mvn eclipse:eclipse
 	on how to develop with it. A good start is to read the {{{./reference.html}reference documentation}}
 	of the CDM Library. The {{{./cdm-uml}UML diagrams}} are also a good starting point to get familiar
 	with the structure of the Common Data Model itself or consult the {{{./apidocs}javadoc}} for the API documentation.
-	Please also have a look at the {{{http://dev.e-taxonomy.eu/trac/wiki/GeneralDev} general information}} and
-	{{{http://dev.e-taxonomy.eu/trac/wiki/CdmLibraryDev} further information about coding with the CDM Library}} in the development wiki.
+	Please also have a look at the {{{https://dev.e-taxonomy.eu/redmine/projects/edit/wiki/GeneralDev} general information}} and
+	{{{https://dev.e-taxonomy.eu/redmine/projects/edit/wiki/CdmLibraryDev} further information about coding with the CDM Library}} in the development wiki.
 
 
 

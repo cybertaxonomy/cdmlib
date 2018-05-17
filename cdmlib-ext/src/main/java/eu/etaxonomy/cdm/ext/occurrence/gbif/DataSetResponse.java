@@ -13,7 +13,7 @@ import java.net.URI;
 /**
  * Wrapper object for the parameters that are parsed from a GBIF dataset query
  * @author pplitzner
- * @date 02.06.2014
+ * @since 02.06.2014
  *
  */
 public class DataSetResponse {

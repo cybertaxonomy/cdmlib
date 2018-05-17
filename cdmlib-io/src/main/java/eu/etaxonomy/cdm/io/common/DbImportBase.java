@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
  * @author a.mueller
- * @created 20.03.2008
+ * @since 20.03.2008
  */
 public abstract class DbImportBase<STATE extends DbImportStateBase<CONFIG, STATE>, CONFIG extends DbImportConfiguratorBase<STATE>>
             extends CdmImportBase<CONFIG, STATE>
@@ -141,8 +141,8 @@ public abstract class DbImportBase<STATE extends DbImportStateBase<CONFIG, STATE
 	 * @param annotatableEntity
 	 * @param notes
 	 */
-	protected void doNotes(AnnotatableEntity annotatableEntity, String notes) {
-		if (StringUtils.isNotBlank(notes) && annotatableEntity != null ){
+	protected Annotation doNotes(AnnotatableEntity annotatableEntity, String notes) {
+		if (isNotBlank(notes) && annotatableEntity != null ){
 			String notesString = String.valueOf(notes);
 			if (notesString.length() > 65530 ){
 				notesString = notesString.substring(0, 65530) + "...";
@@ -152,7 +152,9 @@ public abstract class DbImportBase<STATE extends DbImportStateBase<CONFIG, STATE
 			//notesAnnotation.setAnnotationType(AnnotationType.EDITORIAL());
 			//notes.setCommentator(bmiConfig.getCommentator());
 			annotatableEntity.addAnnotation(notesAnnotation);
+			return notesAnnotation;
 		}
+		return null;
 	}
 
 

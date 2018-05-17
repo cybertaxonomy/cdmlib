@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.common.monitor.IRestServiceProgressMonitor;
  * Manages monitors for long running jobs.
  *
  * @author cmathew
- * @date 14 Oct 2015
+ * @since 14 Oct 2015
  *
  */
 @Component

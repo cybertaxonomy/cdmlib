@@ -11,7 +11,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 
 /**
  * @author a.babadshanjan
- * @created 08.09.2008
+ * @since 08.09.2008
  */
 public interface IMediaRepresentationDao extends ICdmEntityDao<MediaRepresentation>{
 

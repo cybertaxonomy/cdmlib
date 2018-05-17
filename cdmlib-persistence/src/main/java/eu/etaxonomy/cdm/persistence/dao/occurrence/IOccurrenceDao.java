@@ -23,19 +23,22 @@ import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
+import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
+import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author a.babadshanjan
- * @created 01.09.2008
+ * @since 01.09.2008
  */
 public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBase> {
 
@@ -131,6 +134,27 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
             String significantIdentifier, SpecimenOrObservationType type, Taxon determinedAs,
             TaxonName associatedTaxonName, MatchMode matchmode, Integer limit, Integer start,
             List<OrderHint> orderHints, List<String> propertyPaths);
+
+    /**
+     * @see IOccurrenceDao#findOccurrences(Class, String, String, SpecimenOrObservationType, Taxon, TaxonName, MatchMode, Integer, Integer, List, List)
+     * @param clazz
+     * @param queryString
+     * @param significantIdentifier
+     * @param type
+     * @param determinedAs
+     * @param associatedTaxonName
+     * @param matchmode
+     * @param limit
+     * @param start
+     * @param orderHints
+     * @param propertyPaths
+     * @return
+     */
+    public <T extends SpecimenOrObservationBase> List<UuidAndTitleCache<SpecimenOrObservationBase>> findOccurrencesUuidAndTitleCache(
+            Class<T> clazz, String queryString,
+            String significantIdentifier, SpecimenOrObservationType type, Taxon determinedAs,
+            TaxonName associatedTaxonName, MatchMode matchmode, Integer limit, Integer start,
+            List<OrderHint> orderHints);
 
     /**
      * Returns the number of specimens that match the given parameters
@@ -277,6 +301,38 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	public <T extends SpecimenOrObservationBase> List<T> listByAssociatedTaxon(Class<T> type, Taxon associatedTaxon,
 			Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
+	/**
+	 * @see IOccurrenceDao#listByAssociatedTaxon(Class, Taxon, Integer, Integer, List, List)
+	 * @param type
+	 * @param associatedTaxon
+	 * @param limit
+	 * @param start
+	 * @param orderHints
+	 * @param propertyPaths
+	 * @return
+	 */
+	public <T extends SpecimenOrObservationBase> List<UuidAndTitleCache<SpecimenOrObservationBase>> listUuidAndTitleCacheByAssociatedTaxon(Class<T> type, Taxon associatedTaxon,
+	        Integer limit, Integer start, List<OrderHint> orderHints);
+
+    /**
+     * The method will search for specimen associated with the taxon nodes.<br>
+     * It will search for 3 possible association types:
+     * : <br>
+     *  - via IndividualAssociations of the taxon<br>
+     *  - via TypeDesignations of the taxon name<br>
+     *  - via Determinations of the taxon or taxon name<br>
+     *  <br>
+     *  (more are covered in
+     * {@link IOccurrenceDao#findOccurrences(Class, String, String, SpecimenOrObservationType, Taxon, TaxonName, MatchMode, Integer, Integer, List, List)}
+     * @param taxonNodeUuids a list of {@link UUID}s of the taxon nodes
+     * @param limit
+     * @param start
+     * @return a collection of {@link SpecimenNodeWrapper} containing the {@link TaxonNode}
+     * and the corresponding {@link UuidAndTitleCache}  object for the specimen found for this taxon node
+     */
+	public Collection<SpecimenNodeWrapper> listUuidAndTitleCacheByAssociatedTaxon(List<UUID> taxonNodeUuids,
+            Integer limit, Integer start);
+
     /**
      * Retrieves all {@link IndividualsAssociation} with the given specimen.<br>
      * @param specimen the specimen for which the associations are retrieved
@@ -341,4 +397,16 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
      * @return collection of specimen with the given type
      */
     public Collection<SpecimenOrObservationBase> listBySpecimenOrObservationType(SpecimenOrObservationType type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
+    /**
+     *
+     * Returns all {@link FieldUnit}s that are referencing this {@link GatheringEvent}
+     * @param gatheringEventUuid the {@link UUID} of the gathering event
+     * @param limit
+     * @param start
+     * @param orderHints
+     * @param propertyPaths
+     * @return a list of field units referencing the gathering event
+     */
+    public List<FieldUnit> getFieldUnitsForGatheringEvent(UUID gatheringEventUuid, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 }

@@ -22,14 +22,14 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 /**
  * This class represents one step in a schema update.
  * @author a.mueller
- * @date 13.09.2010
+ * @since 13.09.2010
  *
  */
 public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase {
 	private static final Logger logger = Logger.getLogger(SimpleSchemaUpdaterStep.class);
 
-	private final Map<DatabaseTypeEnum, String> queryMap = new HashMap<DatabaseTypeEnum, String>();
-	private final Map<DatabaseTypeEnum, String> auditQueryMap = new HashMap<DatabaseTypeEnum, String>();
+	private final Map<DatabaseTypeEnum, String> queryMap = new HashMap<>();
+	private final Map<DatabaseTypeEnum, String> auditQueryMap = new HashMap<>();
 
 	private boolean includeAudit = false;
 //	private String tableName;

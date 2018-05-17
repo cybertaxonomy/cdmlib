@@ -42,8 +42,7 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
  * This test checks of all the business logic methods do what they are expected to do.
  *
  * @author n.hoffmann
- * @created Dec 16, 2010
- * @version 1.0
+ * @since Dec 16, 2010
  */
 public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 
@@ -113,7 +112,6 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 		HomotypicalGroup oldGroup = s1.getName().getHomotypicalGroup();
 		Assert.assertEquals("Homotypical group of new accepted taxon should contain exactly 2 names", 2, oldGroup.getTypifiedNames().size());
 		boolean deleteSynonym = false;
-		boolean copyCitationInfo = true;
 		Taxon taxon = null;
 
 		UpdateResult result;

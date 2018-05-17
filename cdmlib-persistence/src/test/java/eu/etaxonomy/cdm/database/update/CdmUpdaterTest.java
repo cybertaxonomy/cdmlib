@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
 
 /**
  * @author a.mueller
- * @date 14.09.2010
+ * @since 14.09.2010
  *
  */
 public class CdmUpdaterTest {

@@ -46,7 +46,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author a.mueller
- * @created 26.11.2008
+ * @since 26.11.2008
  */
 public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase{
     @SuppressWarnings("unused")
@@ -341,7 +341,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
         Assert.assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton, My Reference [as \"glabratus\"]", correctName.getFullTitleCache());
         citationRef.setProtectedTitleCache(false);
         citationRef.setTitle("Sp. Pl.");
-        citationRef.setDatePublished(TimePeriodParser.parseString("1988"));
+        citationRef.setDatePublished(TimePeriodParser.parseStringVerbatim("1988"));
         correctName.setFullTitleCache(null, false);
         Assert.assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton, Sp. Pl. 1988 [as \"glabratus\"]", correctName.getFullTitleCache());
         correctName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.ILLEGITIMATE()));

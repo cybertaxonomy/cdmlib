@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author a.mueller
- * @created 24.03.2009
+ * @since 24.03.2009
  */
 public class CdmOneToManyXmlMapper<ONE extends CdmBase, MANY extends CdmBase, SINGLE_MAPPER extends CdmSingleAttributeXmlMapperBase> extends
 		CdmOneToManyMapper<ONE, MANY, SINGLE_MAPPER> implements IXmlMapper{

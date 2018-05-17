@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.strategy.StrategyBase;
 
 /**
  * @author a.mueller
- * @created 31.07.2009
+ * @since 31.07.2009
  */
 public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy  {
 	private static final long serialVersionUID = -8513956338156791995L;

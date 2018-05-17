@@ -331,6 +331,13 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
          return HibernateProxyHelper.isInstanceOf(this, clazz);
      }
 
+    @Override
+    @XmlTransient
+    @Transient
+    public boolean isPersited() {
+        return id != 0;
+    }
+
 // ************* Object overrides *************************/
 
     /**

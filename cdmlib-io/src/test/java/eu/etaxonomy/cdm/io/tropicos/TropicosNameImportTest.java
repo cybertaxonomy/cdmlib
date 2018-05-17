@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author a.mueller
- * @date 15.11.2017
+ * @since 15.11.2017
  *
  */
 public class TropicosNameImportTest extends CdmTransactionalIntegrationTest{

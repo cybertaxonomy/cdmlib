@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.print.out.PublishOutputModuleBase;
 
 /**
  * @author l.morris, s.buers
- * @date Sep 11, 2013
+ * @since Sep 11, 2013
  * 
  */
 public class MediawikiOutputModule extends PublishOutputModuleBase {

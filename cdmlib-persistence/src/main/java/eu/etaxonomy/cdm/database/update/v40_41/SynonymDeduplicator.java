@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
  * Creates new synonym records for all synonym having >1 synonym relationships.
  * Expects unplaced, excluded and taxonomicChildrenCount to not exist anymore
  * @author a.mueller
- * @date 14.11.2016
+ * @since 14.11.2016
  *
  */
 public class SynonymDeduplicator

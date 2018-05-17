@@ -77,30 +77,30 @@ public class TaxonBaseShortSecCacheStrategy<T extends TaxonBase>
 				if (sec.getAuthorship().isInstanceOf(Team.class)){
 					Team authorTeam = HibernateProxyHelper.deproxy(sec.getAuthorship(), Team.class);
 					if (authorTeam.getTeamMembers().size() > 2){
-						if (authorTeam.getTeamMembers().get(0).getLastname() != null){
-					        result = authorTeam.getTeamMembers().get(0).getLastname() + " & al.";
+						if (authorTeam.getTeamMembers().get(0).getFamilyName() != null){
+					        result = authorTeam.getTeamMembers().get(0).getFamilyName() + " & al.";
 					    } else {
 					        result = authorTeam.getTeamMembers().get(0).getTitleCache();
 					        result = result + " & al.";
 					    }
 					} else if (authorTeam.getTeamMembers().size() == 2){
 						String firstAuthor;
-						if (authorTeam.getTeamMembers().get(0).getLastname() != null){
-							firstAuthor = authorTeam.getTeamMembers().get(0).getLastname();
+						if (authorTeam.getTeamMembers().get(0).getFamilyName() != null){
+							firstAuthor = authorTeam.getTeamMembers().get(0).getFamilyName();
 						}else{
 							firstAuthor = authorTeam.getTeamMembers().get(0).getTitleCache();
 						}
 						String secondAuthor;
-						if (authorTeam.getTeamMembers().get(1).getLastname() != null){
-							secondAuthor = authorTeam.getTeamMembers().get(1).getLastname();
+						if (authorTeam.getTeamMembers().get(1).getFamilyName() != null){
+							secondAuthor = authorTeam.getTeamMembers().get(1).getFamilyName();
 						}else{
 							secondAuthor = authorTeam.getTeamMembers().get(1).getTitleCache();
 						}
 						result = firstAuthor + " & " + secondAuthor;
 
 					} else{
-						if (authorTeam.getTeamMembers().get(0).getLastname() != null){
-					        result = authorTeam.getTeamMembers().get(0).getLastname();
+						if (authorTeam.getTeamMembers().get(0).getFamilyName() != null){
+					        result = authorTeam.getTeamMembers().get(0).getFamilyName();
 					    } else {
 					        result = authorTeam.getTeamMembers().get(0).getTitleCache();
 					    }
@@ -108,8 +108,8 @@ public class TaxonBaseShortSecCacheStrategy<T extends TaxonBase>
 
 				} else {
 					Person author = HibernateProxyHelper.deproxy(sec.getAuthorship(), Person.class);
-					if (author.getLastname() != null){
-						result = author.getLastname();
+					if (author.getFamilyName() != null){
+						result = author.getFamilyName();
 					} else{
 						result = author.getTitleCache();
 					}
@@ -230,8 +230,8 @@ public class TaxonBaseShortSecCacheStrategy<T extends TaxonBase>
 
         Person author = HibernateProxyHelper.deproxy(sec.getAuthorship(), Person.class);
         String authorStr;
-        if (author.getLastname() != null){
-            authorStr = author.getLastname();
+        if (author.getFamilyName() != null){
+            authorStr = author.getFamilyName();
         } else{
             authorStr = author.getTitleCache();
         }
@@ -248,8 +248,8 @@ public class TaxonBaseShortSecCacheStrategy<T extends TaxonBase>
             tags.add(new TaggedText(TagEnum.authors, authorStr));
         }else if (authorTeam.getTeamMembers().size() > 2){
             //>2 members
-            if (authorTeam.getTeamMembers().get(0).getLastname() != null){
-                String authorStr = authorTeam.getTeamMembers().get(0).getLastname() + " & al.";
+            if (authorTeam.getTeamMembers().get(0).getFamilyName() != null){
+                String authorStr = authorTeam.getTeamMembers().get(0).getFamilyName() + " & al.";
                 tags.add(new TaggedText(TagEnum.authors, authorStr));
             } else {
                 String authorStr = authorTeam.getTeamMembers().get(0).getTitleCache();
@@ -259,14 +259,14 @@ public class TaxonBaseShortSecCacheStrategy<T extends TaxonBase>
         } else if (authorTeam.getTeamMembers().size() == 2){
             //2 members
             String firstAuthor;
-            if (authorTeam.getTeamMembers().get(0).getLastname() != null){
-                firstAuthor = authorTeam.getTeamMembers().get(0).getLastname();
+            if (authorTeam.getTeamMembers().get(0).getFamilyName() != null){
+                firstAuthor = authorTeam.getTeamMembers().get(0).getFamilyName();
             }else{
                 firstAuthor = authorTeam.getTeamMembers().get(0).getTitleCache();
             }
             String secondAuthor;
-            if (authorTeam.getTeamMembers().get(1).getLastname() != null){
-                secondAuthor = authorTeam.getTeamMembers().get(1).getLastname();
+            if (authorTeam.getTeamMembers().get(1).getFamilyName() != null){
+                secondAuthor = authorTeam.getTeamMembers().get(1).getFamilyName();
             }else{
                 secondAuthor = authorTeam.getTeamMembers().get(1).getTitleCache();
             }
@@ -275,8 +275,8 @@ public class TaxonBaseShortSecCacheStrategy<T extends TaxonBase>
         } else{
             //1 member
             String authorStr;
-            if (authorTeam.getTeamMembers().get(0).getLastname() != null){
-                authorStr = authorTeam.getTeamMembers().get(0).getLastname();
+            if (authorTeam.getTeamMembers().get(0).getFamilyName() != null){
+                authorStr = authorTeam.getTeamMembers().get(0).getFamilyName();
             } else {
                 authorStr = authorTeam.getTeamMembers().get(0).getTitleCache();
             }

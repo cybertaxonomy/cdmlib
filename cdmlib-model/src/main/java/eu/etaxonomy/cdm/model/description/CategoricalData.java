@@ -53,7 +53,7 @@ import eu.etaxonomy.cdm.validation.Level2;
  * the SDD schema.
  *
  * @author m.doering
- * @created 08-Nov-2007 13:06:15
+ * @since 08-Nov-2007 13:06:15
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "CategoricalData", propOrder = {
@@ -79,7 +79,7 @@ public class CategoricalData extends DescriptionElementBase implements Cloneable
     @Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @IndexedEmbedded(depth = 3)
     @NotEmpty(groups = Level2.class)
-    private List<StateData> stateData = new ArrayList<StateData>();
+    private List<StateData> stateData = new ArrayList<>();
 
     @XmlElement(name = "UnknownData")
     private final Boolean unknownData = false;
@@ -224,12 +224,13 @@ public class CategoricalData extends DescriptionElementBase implements Cloneable
      * All existing state data are removed.
      * @return
      */
-    @Transient
     public List<StateData> setStateDataOnly(List<State> states){
-        this.stateData.clear();
-        for (State state : states){
-            StateData stateDate = StateData.NewInstance(state);
-            this.stateData.add(stateDate);
+        List<StateData> stateDataList = new ArrayList<>(getStateData());
+        for (StateData stateData : stateDataList) {
+            removeStateData(stateData);
+        }
+        for (State state : states) {
+            addStateData(state);
         }
         return this.stateData;
     }
@@ -259,11 +260,10 @@ public class CategoricalData extends DescriptionElementBase implements Cloneable
             CategoricalData result = (CategoricalData)super.clone();
 
             //states
-            result.stateData = new ArrayList<StateData>();
+            result.stateData = new ArrayList<>();
             for (StateData stateData : getStateData()){
-                //TODO do we need to clone here?
-                //StateData newState = (StateData)stateData.clone();
-                result.stateData.add(stateData);
+                StateData newState = (StateData)stateData.clone();
+                result.addStateData(newState);
             }
 
             return result;

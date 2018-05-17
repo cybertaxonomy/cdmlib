@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 
 /**
  * @author a.mueller
- * @created 01.07.2008
+ * @since 01.07.2008
  */
 public abstract class CdmExportBase<CONFIG extends ExportConfiguratorBase<STATE, TRANSFORM, DEST>, STATE extends ExportStateBase, TRANSFORM extends IExportTransformer, DEST extends Object>
             extends CdmIoBase<STATE, ExportResult>
@@ -181,6 +181,16 @@ public abstract class CdmExportBase<CONFIG extends ExportConfiguratorBase<STATE,
      */
     protected boolean isUnpublished(CONFIG config, Synonym synonym) {
         return ! (synonym.isPublish()
+                || config.getTaxonNodeFilter().isIncludeUnpublished());
+    }
+
+
+    /**
+     * <code>true</code> if neither pro parte synonym or misapplied name has state publish nor
+     * taxon node filter includes unpublished taxa.
+     */
+    protected boolean isUnpublished(CONFIG config, Taxon relatedSynonymOrMisappliedName) {
+        return ! (relatedSynonymOrMisappliedName.isPublish()
                 || config.getTaxonNodeFilter().isIncludeUnpublished());
     }
 

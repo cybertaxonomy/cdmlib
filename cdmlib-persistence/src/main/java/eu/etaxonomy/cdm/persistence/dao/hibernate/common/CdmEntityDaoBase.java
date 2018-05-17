@@ -130,7 +130,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
             if (logger.isDebugEnabled()){logger.debug("ClassType: + " + cdmObjCollection.getClass().getTypeParameters()[0]);}
         }
 
-        Map<UUID, T> resultMap = new HashMap<UUID, T>();
+        Map<UUID, T> resultMap = new HashMap<>();
         Iterator<T> iterator = cdmObjCollection.iterator();
         int i = 0;
         while(iterator.hasNext()){
@@ -440,7 +440,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         }
 
         Criteria criteria = prepareList(uuids, pageSize, pageNumber, orderHints, "uuid");
-
         @SuppressWarnings("unchecked")
 		List<T> result = criteria.list();
         defaultBeanInitializer.initializeAll(result, propertyPaths);

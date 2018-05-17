@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.remote.editor.RankPropertyEditor;
 /**
  * The ClassificationController class is a Spring MVC Controller.
  * @author a.kohlbecker
- * @date 20.03.2009
+ * @since 20.03.2009
  */
 @Controller
 @Api("portal_classification")

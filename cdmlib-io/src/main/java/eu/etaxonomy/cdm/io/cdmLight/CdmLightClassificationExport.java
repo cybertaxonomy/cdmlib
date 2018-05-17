@@ -76,11 +76,13 @@ import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 /**
  * @author k.luther
- * @date 15.03.2017
+ * @since 15.03.2017
  */
 @Component
 public class CdmLightClassificationExport
@@ -145,17 +147,17 @@ public class CdmLightClassificationExport
 
             @SuppressWarnings("unchecked")
             TaxonNodeOutStreamPartitioner<XmlExportState> partitioner
-              = TaxonNodeOutStreamPartitioner.NewInstance(
-                    this, state, state.getConfig().getTaxonNodeFilter(),
-                    100, monitor, null);
+                  = TaxonNodeOutStreamPartitioner.NewInstance(
+                          this, state, state.getConfig().getTaxonNodeFilter(),
+                          100, monitor, null);
 
 
                 monitor.subTask("Start partitioning");
 
                 TaxonNode node = partitioner.next();
                 while (node != null){
-                  handleTaxonNode(state, node);
-                  node = partitioner.next();
+                    handleTaxonNode(state, node);
+                    node = partitioner.next();
                 }
 
 
@@ -175,28 +177,27 @@ public class CdmLightClassificationExport
      * @param classificationUuid
      */
     private void handleTaxonNode(CdmLightExportState state, TaxonNode taxonNode) {
-        try {
-//            TaxonNode taxonNode = getTaxonNodeService().find(taxonNodeUuid);
 
             if (taxonNode == null){
                 String message = "TaxonNode for given taxon node UUID not found. ";
                 //TODO
                 state.getResult().addWarning(message);
             }else{
-                TaxonNode root = taxonNode;
-                if (root.hasTaxon()){
-                    handleTaxon(state, root);
-                }else{
-//                    for (TaxonNode child : root.getChildNodes()){
-//                        handleTaxon(state, child);
-//                        //TODO progress monitor
-//                    }
+                try {
+                    TaxonNode root = taxonNode;
+                    if (root.hasTaxon()){
+                        handleTaxon(state, root);
+                    }else{
+    //                    for (TaxonNode child : root.getChildNodes()){
+    //                        handleTaxon(state, child);
+    //                        //TODO progress monitor
+    //                    }
+                    }
+                } catch (Exception e) {
+                    state.getResult().addException(e, "An unexpected error occurred when handling classification " +
+                            taxonNode.getUuid() + ": " + e.getMessage() + e.getStackTrace());
                 }
             }
-        } catch (Exception e) {
-            state.getResult().addException(e, "An unexpected error occurred when handling classification " +
-                    taxonNode.getUuid() + ": " + e.getMessage() + e.getStackTrace());
-        }
     }
 
     /**
@@ -223,7 +224,12 @@ public class CdmLightClassificationExport
                 for (Synonym syn : taxon.getSynonyms()){
                     handleSynonym(state, syn);
                 }
-
+                for (TaxonRelationship rel : taxon.getProParteAndPartialSynonymRelations()){
+                    handleProPartePartialMisapplied(state, rel);
+                }
+                for (TaxonRelationship rel : taxon.getMisappliedNameRelations()){
+                    handleProPartePartialMisapplied(state, rel);
+                }
 
                 CdmLightExportTable table = CdmLightExportTable.TAXON;
                 String[] csvLine = new String[table.getSize()];
@@ -255,6 +261,7 @@ public class CdmLightClassificationExport
                     cdmBaseStr(taxonNode.getTaxon()) + ": " + e.getMessage());
         }
     }
+
 
     /**
      * @param state
@@ -704,17 +711,72 @@ public class CdmLightClassificationExport
            csvLine[table.getIndex(CdmLightExportTable.NAME_FK)] = getId(state, name);
            csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE_FK)] = getId(state, synonym.getSec());
            csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE)] = getTitleCache(synonym.getSec());
-           if (synonym.isProParte()) {
-        	   csvLine[table.getIndex(CdmLightExportTable.IS_PRO_PARTE)] = "1";
-           }else {
-        	   csvLine[table.getIndex(CdmLightExportTable.IS_PRO_PARTE)] = "0";
-           }
 
            state.getProcessor().put(table, synonym, csvLine);
         } catch (Exception e) {
             state.getResult().addException(e, "An unexpected error occurred when handling synonym " +
                     cdmBaseStr(synonym) + ": " + e.getMessage());
         }
+    }
+
+
+    /**
+     * Handles Misapplied names (including pro parte and partial as well as
+     * pro parte and partial synonyms
+     * @param state
+     * @param rel
+     */
+    private void handleProPartePartialMisapplied(CdmLightExportState state, TaxonRelationship rel) {
+        try {
+            Taxon ppSyonym = rel.getFromTaxon();
+            if (isUnpublished(state.getConfig(), ppSyonym)){
+                return;
+            }
+            TaxonName name = ppSyonym.getName();
+            handleName(state, name);
+
+            CdmLightExportTable table = CdmLightExportTable.SYNONYM;
+            String[] csvLine = new String[table.getSize()];
+
+            csvLine[table.getIndex(CdmLightExportTable.SYNONYM_ID)] = getId(state, rel);
+            csvLine[table.getIndex(CdmLightExportTable.TAXON_FK)] = getId(state, rel.getToTaxon());
+            csvLine[table.getIndex(CdmLightExportTable.NAME_FK)] = getId(state, name);
+
+            //TODO pro parte synonyms have to references, the synonym relationship reference
+            //and the sec reference of the Taxon representing the synonym.
+            //As we currently do have only 1 reference column in CDM light the synonym relationship
+            //reference is used here. This is according to how pro parte synonyms were mapped to
+            //concept relationships in #7334
+//            Reference secRef = rel.getCitation();
+//            csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE_FK)] = getId(state, secRef);
+//            csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE)] = getTitleCache(secRef);
+
+            Reference secRef = ppSyonym.getSec();
+            csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE_FK)] = getId(state, secRef);
+            csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE)] = getTitleCache(secRef);
+            Reference synSecRef = rel.getCitation();
+            csvLine[table.getIndex(CdmLightExportTable.SYN_SEC_REFERENCE_FK)] = getId(state, secRef);
+            csvLine[table.getIndex(CdmLightExportTable.SYN_SEC_REFERENCE)] = getTitleCache(secRef);
+
+            //pro parte type
+            TaxonRelationshipType type = rel.getType();
+            csvLine[table.getIndex(CdmLightExportTable.IS_PRO_PARTE)] = type.isProParte()? "1":"0";
+            csvLine[table.getIndex(CdmLightExportTable.IS_PARTIAL)] = type.isPartial()? "1":"0";
+            csvLine[table.getIndex(CdmLightExportTable.IS_MISAPPLIED)] = type.isAnyMisappliedName()? "1":"0";
+            if (type.isPartial()) {
+                String message = "Partial synonyms/misapplied names not yet handled by CDM light. Created "
+                    + "pro parte synonym/misapplied name instead for " +  rel.getId();
+                state.getResult().addWarning(message, "handleProParteSynonym", ppSyonym.getTitleCache());
+                csvLine[table.getIndex(CdmLightExportTable.IS_PRO_PARTE)] = "1";
+            }
+
+            state.getProcessor().put(table, ppSyonym, csvLine);
+         } catch (Exception e) {
+             state.getResult().addException(e, "An unexpected error occurred when handling "
+                     + "pro parte/partial synonym relationship " +
+                     cdmBaseStr(rel) + ": " + e.getMessage());
+         }
+
     }
 
 
@@ -800,7 +862,7 @@ public class CdmLightClassificationExport
 
             csvLine[table.getIndex(CdmLightExportTable.AUTHOR_TEAM_STRING)] = name.getAuthorshipCache();
 
-            Reference nomRef = (Reference)name.getNomenclaturalReference();
+            Reference nomRef = name.getNomenclaturalReference();
 
             if (nomRef != null){
                 if (state.getReferenceFromStore(nomRef.getId()) == null){
@@ -815,7 +877,7 @@ public class CdmLightClassificationExport
                 if (nomRef.getDatePublished() != null){
                     csvLine[table.getIndex(CdmLightExportTable.DATE_PUBLISHED)] = nomRef.getTimePeriodPublishedString();
                     csvLine[table.getIndex(CdmLightExportTable.YEAR_PUBLISHED)] = nomRef.getDatePublished().getYear();
-                    csvLine[table.getIndex(CdmLightExportTable.VERBATIM_DATE)] = null;
+                    csvLine[table.getIndex(CdmLightExportTable.VERBATIM_DATE)] = nomRef.getDatePublished().getVerbatimDate();
                 }
                 if (name.getNomenclaturalMicroReference() != null){
                     csvLine[table.getIndex(CdmLightExportTable.DETAIL)] = name.getNomenclaturalMicroReference();
@@ -955,7 +1017,7 @@ public class CdmLightClassificationExport
     private String createCollatation(TaxonName name) {
         String collation = "";
         if (name.getNomenclaturalReference() != null){
-            Reference ref = (Reference) name.getNomenclaturalReference();
+            Reference ref = name.getNomenclaturalReference();
             collation = getVolume(ref);
         }
         if (name.getNomenclaturalMicroReference() != null){
@@ -1106,8 +1168,8 @@ public class CdmLightClassificationExport
             author = HibernateProxyHelper.deproxy(author);
             if (author instanceof Person){
                 Person authorPerson = (Person)author;
-                csvLine[table.getIndex(CdmLightExportTable.AUTHOR_FIRST_NAME)] = authorPerson.getFirstname();
-                csvLine[table.getIndex(CdmLightExportTable.AUTHOR_LASTNAME)] = authorPerson.getLastname();
+                csvLine[table.getIndex(CdmLightExportTable.AUTHOR_GIVEN_NAME)] = authorPerson.getGivenName();
+                csvLine[table.getIndex(CdmLightExportTable.AUTHOR_FAMILY_NAME)] = authorPerson.getFamilyName();
                 csvLine[table.getIndex(CdmLightExportTable.AUTHOR_PREFIX)] = authorPerson.getPrefix();
                 csvLine[table.getIndex(CdmLightExportTable.AUTHOR_SUFFIX)] = authorPerson.getSuffix();
             } else{
@@ -1128,8 +1190,8 @@ public class CdmLightClassificationExport
                         csvLineMember[table.getIndex(CdmLightExportTable.AUTHOR_ID)] = getId(state, member);
                         csvLineMember[table.getIndex(CdmLightExportTable.ABBREV_AUTHOR)] = member.getNomenclaturalTitle();
                         csvLineMember[table.getIndex(CdmLightExportTable.AUTHOR_TITLE)] = member.getTitleCache();
-                        csvLineMember[table.getIndex(CdmLightExportTable.AUTHOR_FIRST_NAME)] = member.getFirstname();
-                        csvLineMember[table.getIndex(CdmLightExportTable.AUTHOR_LASTNAME)] = member.getLastname();
+                        csvLineMember[table.getIndex(CdmLightExportTable.AUTHOR_GIVEN_NAME)] = member.getGivenName();
+                        csvLineMember[table.getIndex(CdmLightExportTable.AUTHOR_FAMILY_NAME)] = member.getFamilyName();
                         csvLineMember[table.getIndex(CdmLightExportTable.AUTHOR_PREFIX)] = member.getPrefix();
                         csvLineMember[table.getIndex(CdmLightExportTable.AUTHOR_SUFFIX)] = member.getSuffix();
                         state.getProcessor().put(table, member, csvLineMember);
@@ -1370,9 +1432,9 @@ public class CdmLightClassificationExport
             return nomAuthorString;
         }
 
-        if (teamMember.getFirstname() != null){
-            String firstNameString = teamMember.getFirstname().replaceAll("\\.", "\\. ");
-            splittedAuthorString = firstNameString.split("\\s");
+        if (teamMember.getGivenName() != null){
+            String givenNameString = teamMember.getGivenName().replaceAll("\\.", "\\. ");
+            splittedAuthorString = givenNameString.split("\\s");
             for (String split: splittedAuthorString){
                 if (!StringUtils.isBlank(split)){
                     nomAuthorString += split.substring(0, 1);
@@ -1380,9 +1442,9 @@ public class CdmLightClassificationExport
                 }
             }
         }
-        if (teamMember.getLastname() != null){
-            String lastNameString = teamMember.getLastname().replaceAll("\\.", "\\. ");
-            splittedAuthorString = lastNameString.split("\\s");
+        if (teamMember.getFamilyName() != null){
+            String familyNameString = teamMember.getFamilyName().replaceAll("\\.", "\\. ");
+            splittedAuthorString = familyNameString.split("\\s");
             for (String split: splittedAuthorString){
                 nomAuthorString += " " +split;
             }
@@ -1473,7 +1535,7 @@ public class CdmLightClassificationExport
             return null;
         }
         authorship = HibernateProxyHelper.deproxy(authorship);
-        if (authorship instanceof Person){ shortCitation = ((Person)authorship).getLastname();}
+        if (authorship instanceof Person){ shortCitation = ((Person)authorship).getFamilyName();}
         else if (authorship instanceof Team){
 
             Team authorTeam = HibernateProxyHelper.deproxy(authorship, Team.class);
@@ -1482,7 +1544,7 @@ public class CdmLightClassificationExport
             for (Person teamMember : authorTeam.getTeamMembers()){
                 index++;
                 String concat = concatString(authorTeam, authorTeam.getTeamMembers(), index);
-                shortCitation += concat + teamMember.getLastname();
+                shortCitation += concat + teamMember.getFamilyName();
             }
 
         }

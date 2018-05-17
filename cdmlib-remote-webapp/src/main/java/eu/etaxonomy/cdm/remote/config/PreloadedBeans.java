@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.remote.controller.interceptor.LocaleContextHandlerInterc
 
 /**
  * @author a.kohlbecker
- * @date Jul 28, 2014
+ * @since Jul 28, 2014
  *
  */
 @Configuration

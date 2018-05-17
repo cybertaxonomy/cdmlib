@@ -47,7 +47,7 @@ import eu.etaxonomy.cdm.validation.Level2;
 
 /**
  * @author m.doering
- * @created 08-Nov-2007 13:06:44
+ * @since 08-Nov-2007 13:06:44
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Point", propOrder = {

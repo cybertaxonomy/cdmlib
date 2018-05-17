@@ -16,7 +16,7 @@ package net.sf.json;
  * needs access to the protected static methods in {@link JSONObject}
  *
  * @author a.kohlbecker
- * @date 19.03.2009
+ * @since 19.03.2009
  *
  */
 public class CycleSetAcess{

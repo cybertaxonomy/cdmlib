@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
  * @author a.babadshanjan
- * @created 10.11.2008
+ * @since 10.11.2008
  */
 public class DistributionImportConfigurator extends ExcelImportConfiguratorBase implements IImportConfigurator {
 

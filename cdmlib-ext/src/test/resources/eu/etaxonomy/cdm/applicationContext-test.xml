@@ -1,56 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:context="http://www.springframework.org/schema/context"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans
-    http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
-    http://www.springframework.org/schema/context
-    http://www.springframework.org/schema/context/spring-context-4.0.xsd">
-
-    <!-- This application can definetly still be adapted to the new structure.
-    However currently it is only used the EditGeoServiceTest and works, so for now
-    we don't touch it -->
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+    ">
     
-    <import resource="classpath:/eu/etaxonomy/cdm/defaultApplicationContext.xml"/>
-
 	<context:component-scan base-package="eu/etaxonomy/cdm/ext"/>
-
+  
+    <!--  ====== should go into common app context configuration ===== -->
+    
+    <context:component-scan base-package="eu/etaxonomy/cdm/api/service"/>  
+    <!-- in this context the CdmRepository can not be used since it autowires the authenticationManager which is not ready in time -->
+    
     <bean id="dataSource" class="org.unitils.database.UnitilsDataSourceFactoryBean"/>
+    
+    <import resource="classpath:/eu/etaxonomy/cdm/applicationContext-test.common.xml" />
+    
+    <import resource="classpath:/eu/etaxonomy/cdm/persistence.xml" />
+    <import resource="classpath:/eu/etaxonomy/cdm/services_base_test.xml"/>
 
-    <!--
-    <bean id="testingTermInitializer" class="eu.etaxonomy.cdm.database.TestingTermInitializer">
-            TermsDataSet-with_auditing_info.cdmlib-services.xml has different IDs than TermsDataSet-with_auditing_info.xml
-            which is used in persistence !!
-        <property name="termsDataSet" value="classpath:/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.cdmlib-services.xml"/>
-        <property name="termsDtd" value="classpath:/eu/etaxonomy/cdm/persistence/dao/hibernate/dataset.dtd"/>
-        <property name="omit" value="false"/>
-    </bean>
-    <bean id="persistentTermInitializer" class="eu.etaxonomy.cdm.database.PersistentTermInitializer">
-        <property name="omit" value="true"/>
-    </bean>
-    -->
 
-     <bean id="hibernateProperties"
-            class="org.springframework.beans.factory.config.PropertiesFactoryBean">
-            <property name="properties">
-                <props>
-                    <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.internal.NoCachingRegionFactory</prop>
-                    <prop key="hibernate.show_sql">false</prop>
-                    <prop key="hibernate.format_sql">false</prop>
-                    <prop key="hibernate.search.default.directory_provider">org.hibernate.search.store.impl.FSDirectoryProvider</prop>
-                    <!-- TODO trying to use a managed session context
-                    <prop key="hibernate.current_session_context_class">managed</prop>
-                    -->
-                    <prop key="hibernate.search.default.indexBase">./target/index</prop>
-                    <!--  hibernate.search.default.exclusive_index_use=false
-                          locks must not only be released after application shutdown in test environment -->
-                    <prop key="hibernate.search.default.exclusive_index_use">false</prop>
-                    <!-- hsqldb v. <1.9 has a bug (http://sourceforge.net/tracker/?func=detail&atid=378131&aid=1407528&group_id=23316)
-                        due to which it is not possible to use batch updates, so we need to disable
-                        hibernate batching when using hsqldb in the app context: -->
-                    <prop key="hibernate.jdbc.batch_size">0</prop>
-                </props>
-            </property>
+    <!-- security  -->
+    <bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder"/>
+    <bean id="saltSource" class="org.springframework.security.authentication.dao.ReflectionSaltSource">
+        <property name="userPropertyToUse" value="getUsername"/>
     </bean>
-
+    <bean id="daoAuthenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+        <property name="userDetailsService" ref="userService"/>
+        <property name="saltSource" ref="saltSource"/>
+        <property name="passwordEncoder" ref="passwordEncoder"/>
+    </bean>
+    <bean id="authenticationManager" class="org.springframework.security.authentication.ProviderManager">
+        <constructor-arg>
+            <list>
+                <bean class="org.springframework.security.authentication.TestingAuthenticationProvider"/>
+                <ref local="daoAuthenticationProvider"/>
+            </list>
+        </constructor-arg>
+    </bean>
+    <!--  ================================================================== -->
+    
 </beans>

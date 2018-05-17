@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 
 /**
  * @author a.mueller
- * @date 19.05.2010
+ * @since 19.05.2010
  *
  */
 public class TermDefaultCacheStrategyTest {

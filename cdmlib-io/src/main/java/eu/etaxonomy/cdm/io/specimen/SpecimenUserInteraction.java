@@ -49,7 +49,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
  * @author pkelbert
- * @date 21 juin 2013
+ * @since 21 juin 2013
  *
  */
 public class SpecimenUserInteraction implements ItemListener, Serializable {

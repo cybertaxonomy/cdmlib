@@ -65,7 +65,7 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 /**
  * @author a.mueller
- * @date 22.11.2011
+ * @since 22.11.2011
  *
  */
 public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImportConfiguratorBase, STATE extends StreamImportStateBase<CONFIG, StreamImportBase>>

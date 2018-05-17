@@ -10,48 +10,61 @@
 package eu.etaxonomy.cdm.model.common;
 
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Table;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.springframework.util.Assert;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.media.ExternalLink;
+import eu.etaxonomy.cdm.strategy.merge.Merge;
+import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 
 /**
  * Abstract base class for classes implementing {@link eu.etaxonomy.cdm.model.common.IOriginalSource IOriginalSource}.
  * @see eu.etaxonomy.cdm.model.common.IOriginalSource
  *
  * @author m.doering
- * @version 1.0
- * @created 08-Nov-2007 13:06:22
+ * @since 08-Nov-2007 13:06:22
  */
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "OriginalSource", propOrder = {
     "type",
 	"idInSource",
-    "idNamespace"
+    "idNamespace",
+    "links"
 })
 @XmlRootElement(name = "OriginalSource")
 @Entity
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Table(appliesTo="OriginalSourceBase")
-public abstract class OriginalSourceBase<T extends ISourceable> extends ReferencedEntityBase implements IOriginalSource<T>, Cloneable {
+public abstract class OriginalSourceBase<T extends ISourceable>
+        extends ReferencedEntityBase
+        implements IOriginalSource<T>, IIntextReferenceTarget,Cloneable {
 	private static final long serialVersionUID = -1972959999261181462L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(OriginalSourceBase.class);
@@ -76,6 +89,13 @@ public abstract class OriginalSourceBase<T extends ISourceable> extends Referenc
 
 	@XmlElement(name = "IdNamespace")
 	private String idNamespace;
+
+    @XmlElementWrapper(name = "Links", nillable = true)
+    @XmlElement(name = "Link")
+    @OneToMany(fetch=FetchType.LAZY, orphanRemoval=true)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @Merge(MergeMode.ADD_CLONE)
+	private Set<ExternalLink> links = new HashSet<>();
 
 //***************** CONSTRUCTOR ***********************/
 
@@ -128,12 +148,36 @@ public abstract class OriginalSourceBase<T extends ISourceable> extends Referenc
 		this.type = type;
 	}
 
+//********************** External Links **********************************************
+
+    public Set<ExternalLink> getLinks(){
+        return this.links;
+    }
+    public void setLinks(Set<ExternalLink> links){
+        this.links = links;
+    }
+    public void addLink(ExternalLink link){
+        if (link != null){
+            links.add(link);
+        }
+    }
+    public void removeLink(ExternalLink link){
+        if(links.contains(link)) {
+            links.remove(link);
+        }
+    }
 
 //********************** CLONE ************************************************/
 
 	@Override
 	public Object clone() throws CloneNotSupportedException{
 		OriginalSourceBase<?> result = (OriginalSourceBase<?>)super.clone();
+
+		Set<ExternalLink> links = new HashSet<>();
+		result.setLinks(links);
+		for(ExternalLink link : this.links){
+		    result.addLink((ExternalLink)link.clone());
+		}
 
 		//no changes to: idInSource
 		return result;

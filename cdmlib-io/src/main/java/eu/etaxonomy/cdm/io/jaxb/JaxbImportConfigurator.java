@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
  * @author a.babadshanjan
- * @created 14.11.2008
+ * @since 14.11.2008
  */
 public class JaxbImportConfigurator extends ImportConfiguratorBase<JaxbImportState, URI> implements IImportConfigurator {
 

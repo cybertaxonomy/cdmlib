@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.print.out.PublishOutputModuleBase;
  * with a predefined output for quick printing.
  * 
  * @author n.hoffmann
- * @created Jul 20, 2010
+ * @since Jul 20, 2010
  * @version 1.0
  */
 public class PdfOutputModule extends PublishOutputModuleBase {

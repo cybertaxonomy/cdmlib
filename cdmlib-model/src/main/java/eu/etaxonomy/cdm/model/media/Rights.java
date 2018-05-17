@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.model.common.LanguageStringBase;
  * http://purl.org/dc/elements/1.1/rights  http://dublincore.org/documents/dcmi-
  * terms/
  * @author m.doering
- * @created 08-Nov-2007 13:06:49
+ * @since 08-Nov-2007 13:06:49
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Rights", propOrder = {

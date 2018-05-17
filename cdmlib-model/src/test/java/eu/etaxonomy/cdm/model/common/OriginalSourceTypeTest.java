@@ -11,7 +11,7 @@ import org.junit.Test;
 
 /**
  * @author a.mueller
- * @created 6.6.2013
+ * @since 6.6.2013
  *
  */
 public class OriginalSourceTypeTest {

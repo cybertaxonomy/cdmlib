@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 /**
  * @author a.mueller
- * @date 05.05.2015
+ * @since 05.05.2015
  *
  */
 public class WrappedCdmDataSourceTest extends CdmIntegrationTest {

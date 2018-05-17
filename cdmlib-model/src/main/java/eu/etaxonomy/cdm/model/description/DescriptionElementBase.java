@@ -80,7 +80,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
  * </ul>
  *
  * @author m.doering
- * @created 08-Nov-2007 13:06:24
+ * @since 08-Nov-2007 13:06:24
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DescriptionElementBase", propOrder = {
@@ -501,7 +501,10 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
         DescriptionElementBase result = (DescriptionElementBase)super.clone();
 
         //inDescription
-        result.inDescription = null;
+        if (result.inDescription != null){
+            result.inDescription.removeElement(this);
+            result.inDescription = null;
+        }
 
         //Sources
         result.sources = new HashSet<DescriptionElementSource>();

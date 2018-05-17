@@ -32,7 +32,7 @@ import net.sf.json.util.PropertyFilter;
 
 /**
  * @author a.kohlbecker
- * @date 30.03.2009
+ * @since 30.03.2009
  *
  */
 public abstract class AbstractBeanProcessor<T extends Object> implements JsonBeanProcessor{

@@ -43,7 +43,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * This class is initiated by #6524
  *
  * @author a.mueller
- * @date 04.04.2017
+ * @since 04.04.2017
  *
  */
 @Component

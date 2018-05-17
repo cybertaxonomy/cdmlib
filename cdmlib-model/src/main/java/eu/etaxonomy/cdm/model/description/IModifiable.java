@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.model.common.IVersionableEntity;
 
 /**
  * @author n.hoffmann
- * @created Sep 15, 2010
+ * @since Sep 15, 2010
  */
 public interface IModifiable extends IVersionableEntity {
 

@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
  * But it can also be used on its own for importing tcs-xml data
  *
  * @author a.mueller
- * @created 28.01.2009
+ * @since 28.01.2009
  */
 @Component
 public class CdmTcsXmlImport extends CdmApplicationAwareDefaultImport<TcsXmlImportConfigurator> {

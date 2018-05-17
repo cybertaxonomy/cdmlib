@@ -26,7 +26,7 @@ import org.hibernate.envers.Audited;
 /**
  * Annotation types ...
  * @author a.mueller
- * @created 12-Nov-2008 15:37:33
+ * @since 12-Nov-2008 15:37:33
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "AnnotationType")

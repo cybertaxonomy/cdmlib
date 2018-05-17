@@ -48,7 +48,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author a.mueller
- * @date 25.06.2017
+ * @since 25.06.2017
  *
  */
 public class DwcaExportTest  extends CdmTransactionalIntegrationTest{

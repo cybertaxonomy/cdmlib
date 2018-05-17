@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
  * @author a.mueller
- * @created 20.04.2011
+ * @since 20.04.2011
  */
 public class DwcaImageExport extends DwcaDataExportBase {
     private static final long serialVersionUID = -4997807762779037215L;

@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
 
 /**
  * @author a.kohlbecker
- * @date 24.03.2011
+ * @since 24.03.2011
  *
  */
 public class KeyStatementBeanProcessor extends AbstractBeanProcessor<KeyStatement> {

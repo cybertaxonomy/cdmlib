@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.config;
 
 /**
  * @author a.kohlbecker
- * @date Mar 26, 2013
+ * @since Mar 26, 2013
  *
  */
 public class Configuration {

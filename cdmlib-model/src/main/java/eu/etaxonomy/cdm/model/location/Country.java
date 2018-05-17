@@ -48,7 +48,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  * http://userpage.chemie.fu-berlin.de/diverse/doc/ISO_3166.html
  * http://www.davros.org/misc/iso3166.txt
  * @author m.doering
- * @created 08-Nov-2007 13:07:02
+ * @since 08-Nov-2007 13:07:02
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Country", propOrder = {
@@ -636,6 +636,7 @@ public class Country extends NamedArea {
 			String text = csvLine.get(3).trim();
 			String abbreviatedLabel = csvLine.get(2);
 			newInstance.addRepresentation(Representation.NewInstance(text, label, abbreviatedLabel, lang) );
+			newInstance.setLevel(NamedAreaLevel.COUNTRY());
 
 			// iso codes extra
 			newInstance.setIso3166_A2(csvLine.get(4).trim());

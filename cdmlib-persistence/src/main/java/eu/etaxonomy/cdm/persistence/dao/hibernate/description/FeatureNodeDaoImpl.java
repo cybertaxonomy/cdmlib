@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.common.VersionableDaoBase;
 
 /**
  * @author a.babadshanjan
- * @created 09.09.2008
+ * @since 09.09.2008
  */
 @Repository
 public class FeatureNodeDaoImpl extends VersionableDaoBase<FeatureNode> implements IFeatureNodeDao {

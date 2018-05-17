@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.Operation;
 
 /**
  * @author c.mathew
- * @created Mar 26, 2013
+ * @since Mar 26, 2013
  */
 public class CdmAuthorityTest {
 

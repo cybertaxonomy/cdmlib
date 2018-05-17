@@ -13,7 +13,7 @@ package eu.etaxonomy.cdm.strategy.merge;
 /**
  * Enumeration for merge modes
  * @author a.mueller
- * @created 31.07.2009
+ * @since 31.07.2009
  */
 public enum MergeMode {
 	FIRST,

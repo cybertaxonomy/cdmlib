@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.strategy.cache.agent.INomenclaturalAuthorCacheStrategy;
  * for authorship of {@link eu.etaxonomy.cdm.model.reference.Reference references} or of {@link eu.etaxonomy.cdm.model.name.TaxonName taxon names}.
  *
  * @author a.mueller
- * @created 17-APR-2008
+ * @since 17-APR-2008
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TeamOrPersonBase", propOrder = {

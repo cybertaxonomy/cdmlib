@@ -31,7 +31,7 @@ import org.jdom.transform.XSLTransformException;
  * Note: This class provides access to the JAXP XSL transformer currently active. 
  * 
  * @author n.hoffmann
- * @created Apr 20, 2010
+ * @since Apr 20, 2010
  * @version 1.0
  */
 public class Transformator {

@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 
 /**
  * @author a.mueller
- * @date 2013-10-25
+ * @since 2013-10-25
  */
 public class BeanInitNode implements Comparable<BeanInitNode>{
 

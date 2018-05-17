@@ -49,7 +49,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
  *
  * @author m.doering
  * @version 1.0
- * @created 08-Nov-2007 13:06:34
+ * @since 08-Nov-2007 13:06:34
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "MediaRepresentation", propOrder = {

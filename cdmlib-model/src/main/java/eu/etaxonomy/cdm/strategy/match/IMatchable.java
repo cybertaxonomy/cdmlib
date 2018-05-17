@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.model.common.ICdmBase;
  * This is an interface to tag all those classes which can be tested for matching via an
  * <code>eu.etaxonomy.cdm.strategy.match.IMatchStrategy</code>.
  * @author a.mueller
- * @created 31.07.2009
+ * @since 31.07.2009
  */
 public interface IMatchable extends ICdmBase{
 

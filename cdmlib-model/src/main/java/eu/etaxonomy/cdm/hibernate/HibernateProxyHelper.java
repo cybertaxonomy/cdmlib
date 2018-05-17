@@ -13,11 +13,12 @@ import java.io.Serializable;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
+import org.hibernate.HibernateException;
 import org.hibernate.proxy.HibernateProxy;
 
 /**
  * @author a.mueller
- * @created 03.03.2009
+ * @since 03.03.2009
  */
 public class HibernateProxyHelper {
 	@SuppressWarnings("unused")
@@ -49,6 +50,8 @@ public class HibernateProxyHelper {
 
 	 /**
 	  * Unwrap the target instance from the proxy.
+	  *
+	  * @throws org.hibernate.HibernateException
 	  */
 	 public static <T> T deproxy(T entity){
 	     if (entity == null){
@@ -60,6 +63,20 @@ public class HibernateProxyHelper {
 	     }
 	     return entity;
 	}
+
+	 /**
+	  * Unwrap the target instance from the proxy if possible otrherwise return null.
+	  *
+	  * @param entity
+	  * @return the deproxied entity or null in case it was not initialized.
+	  */
+	 public static <T> T deproxyOrNull(T entity){
+	     try{
+	         return deproxy(entity);
+	     } catch (HibernateException e) {
+            return null;
+        }
+	 }
 
 
 	public static boolean isInstanceOf(Object object, Class clazz) throws ClassCastException {

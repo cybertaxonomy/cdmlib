@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.print.out.xml.XMLOutputModule;
 
 /**
  * @author l.morris
- * @date Mar 7, 2013
+ * @since Mar 7, 2013
  *
  */
 public class PubTest {

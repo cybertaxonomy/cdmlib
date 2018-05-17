@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * The determination process is performed by an identification software.
  *
  * @author h.fradin
- * @created 13.08.2009
+ * @since 13.08.2009
  */
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -54,10 +54,10 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @XmlRootElement(name = "MultiAccessKey")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.media.WorkingSet")
+//@Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptiveDataSet")
 @Audited
 
-public class MultiAccessKey extends WorkingSet implements IIdentificationKey{
+public class MultiAccessKey extends DescriptiveDataSet implements IIdentificationKey{
 	private static final long serialVersionUID = -240407483572972239L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MultiAccessKey.class);

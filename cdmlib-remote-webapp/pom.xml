@@ -4,7 +4,7 @@
   <parent>
     <artifactId>cdmlib-parent</artifactId>
     <groupId>eu.etaxonomy</groupId>
-    <version>4.14.0</version>
+    <version>5.0.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -16,11 +16,6 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
-  <scm>
-    <connection>scm:git:https://dev.e-taxonomy.eu/git/cdmlib-remote-webapp.git</connection>
-    <developerConnection>scm:git:ssh://git@dev.e-taxonomy.eu/var/git/cdmlib-remote-webapp.git</developerConnection>
-    <url>https://dev.e-taxonomy.eu/gitweb/cdmlib.git/tree/HEAD:/cdmlib-remote-webapp/</url>
-  </scm>
 
   <profiles>
     <profile>

@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 /**
  * Updates the base type of a class.
  * E.g. if a class is VersionableEntity it may be upgraded to AnnotatableEntity
- * @date 2015-03-20
+ * @since 2015-03-20
  * @author a.mueller
  */
 public class ClassBaseTypeUpdater extends AuditedSchemaUpdaterStepBase {
@@ -98,9 +98,6 @@ public class ClassBaseTypeUpdater extends AuditedSchemaUpdaterStepBase {
 			newColumnName = "protectedTitleCache";
 			adder = ColumnAdder.NewBooleanInstance(innerStepName, tableName, newColumnName,
 					SchemaUpdaterBase.INCLUDE_AUDIT, false);
-
-			adder = ColumnAdder.NewStringInstance(stepName + innerStepName, tableName,
-					newColumnName, SchemaUpdaterBase.INCLUDE_AUDIT);
 			this.columnAdderStepList.add(adder);
 
 			//title cache

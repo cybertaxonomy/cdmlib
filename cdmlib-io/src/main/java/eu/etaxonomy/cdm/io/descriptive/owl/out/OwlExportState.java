@@ -14,7 +14,7 @@ import eu.etaxonomy.cdm.io.common.XmlExportState;
 
 /**
  * @author a.mueller
- * @created 18.04.2011
+ * @since 18.04.2011
  */
 public class OwlExportState extends XmlExportState<OwlExportConfigurator>{
 

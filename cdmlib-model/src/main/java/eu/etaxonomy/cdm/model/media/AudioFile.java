@@ -23,7 +23,7 @@ import org.hibernate.envers.Audited;
 
 /**
  * @author m.doering
- * @created 08-Nov-2007 13:06:11
+ * @since 08-Nov-2007 13:06:11
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "AudioFile", propOrder = {

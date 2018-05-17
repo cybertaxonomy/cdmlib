@@ -13,7 +13,7 @@ package eu.etaxonomy.cdm.io.stream;
 /**
  * Interface which allows filtering of stream items.
  * @author a.mueller
- * @date 19.07.2015
+ * @since 19.07.2015
  *
  */
 public interface ItemFilter<ITEM extends Object> {

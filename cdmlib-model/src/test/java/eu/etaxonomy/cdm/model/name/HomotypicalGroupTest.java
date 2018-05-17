@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 
 /**
  * @author a.mueller
- * @created 18.06.2009
+ * @since 18.06.2009
  * @version 1.0
  */
 public class HomotypicalGroupTest {

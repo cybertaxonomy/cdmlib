@@ -55,7 +55,7 @@ import eu.etaxonomy.cdm.strategy.cache.description.TaxonDescriptionDefaultCacheS
  *
  * @author m.doering
  * @version 1.0
- * @created 08-Nov-2007 13:06:20
+ * @since 08-Nov-2007 13:06:20
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TaxonDescription", propOrder = {

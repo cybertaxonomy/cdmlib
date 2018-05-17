@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 
 /**
  * @author a.mueller
- * @created 01.03.2010
+ * @since 01.03.2010
  * @version 1.0
  */
 public class SDDTransformer extends InputTransformerBase {

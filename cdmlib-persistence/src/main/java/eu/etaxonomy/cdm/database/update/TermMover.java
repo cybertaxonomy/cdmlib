@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * TODO Does not handle orderindex
  *
  * @author a.mueller
- * @date 06.09.2013
+ * @since 06.09.2013
  *
  */
 public class TermMover extends SchemaUpdaterStepBase{

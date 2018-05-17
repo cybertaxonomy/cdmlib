@@ -23,7 +23,7 @@ import org.hibernate.envers.Audited;
 
 /**
  * @author a.mueller
- * @created 2013-06-19
+ * @since 2013-06-19
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -166,6 +166,10 @@ public class DefinedTerm extends DefinedTermBase<DefinedTerm> implements Compara
         return getTermByUuid(uuidIpniNameIdentifier);
     }
     public static DefinedTerm IDENTIFIER_NAME_WFO(){
+        return getTermByUuid(uuidWfoNameIdentifier);
+    }
+
+    public static DefinedTerm WFO_NAME_IDENTIFIER(){
         return getTermByUuid(uuidWfoNameIdentifier);
     }
 

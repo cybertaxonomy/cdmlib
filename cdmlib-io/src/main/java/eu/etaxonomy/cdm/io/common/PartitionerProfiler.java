@@ -17,7 +17,7 @@ import org.joda.time.ReadableDuration;
 
 /**
  * @author a.mueller
- * @created 21.02.2010
+ * @since 21.02.2010
  * @version 1.0
  */
 public class PartitionerProfiler {

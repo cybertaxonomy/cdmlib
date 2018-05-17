@@ -66,7 +66,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author a.mueller
- * @created 29.01.2009
+ * @since 29.01.2009
  */
 
 public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
@@ -498,7 +498,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	    assertEquals("Wrong number of originals", 1, dnaSample.getDerivedFrom().getOriginals().size());
 
 	    FieldUnit specimenFieldUnit = (FieldUnit) occurrenceService.load(fieldUnit1Uuid);
-	    Collection<FieldUnit> fieldUnits = occurrenceService.getFieldUnits(dnaSample.getUuid());
+	    Collection<FieldUnit> fieldUnits = occurrenceService.getFieldUnits(dnaSample.getUuid(), null);
 	    assertEquals(1, fieldUnits.size());
 	    FieldUnit dnaSampleFieldUnit = fieldUnits.iterator().next();
         assertEquals(specimenFieldUnit, dnaSampleFieldUnit);
@@ -558,7 +558,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 
 	    assertEquals("Wrong number of originals", 1, dnaSample.getDerivedFrom().getOriginals().size());
         FieldUnit specimenFieldUnit = (FieldUnit) occurrenceService.load(fieldUnit1Uuid);
-        Collection<FieldUnit> fieldUnits = occurrenceService.getFieldUnits(dnaSample.getUuid());
+        Collection<FieldUnit> fieldUnits = occurrenceService.getFieldUnits(dnaSample.getUuid(), null);
         assertEquals(1, fieldUnits.size());
         FieldUnit dnaSampleFieldUnit = fieldUnits.iterator().next();
         assertEquals(specimenFieldUnit, dnaSampleFieldUnit);

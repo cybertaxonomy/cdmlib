@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.model.media.Media;
  * Run this script to clean-up a database for which this convention was not satisfied.
  *
  * @author n.hoffmann
- * @created Jun 9, 2010
+ * @since Jun 9, 2010
  * @version 1.0
  */
 public class FixMultipleTextDataInImageGalleries {

@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.jaxb.FormattedTextAdapter;
 /**
  * @author a.mueller
  * @version 1.0
- * @created 25.04.2008
+ * @since 25.04.2008
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "LanguageStringBase", propOrder = {

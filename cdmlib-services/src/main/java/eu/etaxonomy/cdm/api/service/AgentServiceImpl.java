@@ -141,8 +141,14 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 	@Override
 	@Transactional(readOnly = false)
     public DeleteResult delete(UUID agentUUID){
+	    DeleteResult result = new DeleteResult();
+	    if (agentUUID == null){
+	        result.setAbort();
+	        result.addException(new Exception("Can't delete object without UUID."));
+	        return result;
+	    }
 		AgentBase base = dao.load(agentUUID);
-		DeleteResult result = this.isDeletable(base.getUuid(), null);
+		result = isDeletable(agentUUID, null);
 
     	if (result.isOk()){
 			if (base instanceof Team){
@@ -159,6 +165,7 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 			saveOrUpdate(base);
 
 			dao.delete(base);
+			result.addDeletedObject(base);
 
 		}
 
@@ -224,10 +231,11 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 			throw new MergeException("Person can not be transformed into team.");
 		}
 		try {
-			this.save(team);
+			//this.save(team);
 			team.setProtectedNomenclaturalTitleCache(false);
 			team.setProtectedTitleCache(true);
 			team.setTitleCache(person.getTitleCache(), true);
+			team =(Team) this.save(team);
 			genericDao.merge(team, person, strategy);
 			//team.addTeamMember(person);
 
@@ -237,6 +245,7 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 			throw new MergeException("Unhandled merge exception", e);
 		}
 		result.setCdmEntity(team);
+		result.addUpdatedObject(team);
         return result;
 	}
 

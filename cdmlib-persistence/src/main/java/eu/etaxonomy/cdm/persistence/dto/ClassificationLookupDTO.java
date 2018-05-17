@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 
 /**
  * @author a.kohlbecker
- * @date Sep 3, 2015
+ * @since Sep 3, 2015
  *
  */
 public class ClassificationLookupDTO {

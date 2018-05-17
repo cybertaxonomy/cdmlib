@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.io.common.events.IoProblemEvent;
 /**
  * Base class for XMLSax imports
  * @author a.mueller
- * @date 28.06.2011
+ * @since 28.06.2011
  *
  */
 public class ImportHandlerBase extends DefaultHandler2 {

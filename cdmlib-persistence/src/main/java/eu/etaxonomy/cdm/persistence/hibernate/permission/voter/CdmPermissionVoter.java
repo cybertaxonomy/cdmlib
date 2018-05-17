@@ -20,14 +20,14 @@ import org.springframework.security.core.GrantedAuthority;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionClass;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthorityParsingException;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionClass;
 
 /**
  * The <code>CdmPermissionVoter</code> provides access control votes for {@link CdmBase} objects.
  *
  * @author andreas kohlbecker
- * @date Sep 4, 2012
+ * @since Sep 4, 2012
  *
  */
 public abstract class CdmPermissionVoter implements AccessDecisionVoter <CdmBase> {
@@ -78,12 +78,12 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter <CdmBase
     public int vote(Authentication authentication, CdmBase cdmBase, Collection<ConfigAttribute> attributes) {
 
         if(!isResponsibleFor(cdmBase)){
-            logger.debug("class missmatch => ACCESS_ABSTAIN");
+            logger.debug(voterLoggingLabel() + " class missmatch => ACCESS_ABSTAIN");
             return ACCESS_ABSTAIN;
         }
 
         if (logger.isDebugEnabled()){
-            logger.debug("authentication: " + authentication.getName() + ", object : " + cdmBase.toString() + ", attribute[0]:" + ((CdmAuthority)attributes.iterator().next()).getAttribute());
+            logger.debug(voterLoggingLabel() + " voting for authentication: " + authentication.getName() + ", object : " + cdmBase.toString() + ", attribute[0]:" + ((CdmAuthority)attributes.iterator().next()).getAttribute());
         }
 
         int fallThroughVote = ACCESS_DENIED;
@@ -103,13 +103,13 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter <CdmBase
                 try {
                     auth = CdmAuthority.fromGrantedAuthority(authority);
                 } catch (CdmAuthorityParsingException e) {
-                    logger.debug("skipping " + authority.getAuthority() + " due to CdmAuthorityParsingException");
+                    logger.debug(voterLoggingLabel() + " skipping " + authority.getAuthority() + " due to CdmAuthorityParsingException");
                     continue;
                 }
 
                 // check if the voter is responsible for the permission to be evaluated
                 if( ! isResponsibleFor(evalPermission.getPermissionClass())){
-                    logger.debug(getResponsibility() + " not responsible for " + evalPermission.getPermissionClass() + " -> skipping");
+                    logger.debug(voterLoggingLabel() + " not responsible for " + evalPermission.getPermissionClass() + " -> skipping");
                     continue;
                 }
 
@@ -120,19 +120,31 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter <CdmBase
                 vr.isClassMatch = isALL || auth.getPermissionClass().equals(evalPermission.getPermissionClass());
                 vr.isPermissionMatch = auth.getOperation().containsAll(evalPermission.getOperation());
                 vr.isUuidMatch = auth.hasTargetUuid() && auth.getTargetUUID().equals(cdmBase.getUuid());
+                vr.isIgnoreUuidMatch = !auth.hasTargetUuid();
+
+                if(logger.isDebugEnabled()){
+                    logger.debug(voterLoggingLabel() + " " + vr);
+                }
 
                 // first of all, always allow deleting orphan entities
                 if(vr.isClassMatch && evalPermission.getOperation().equals(DELETE) && isOrpahn(cdmBase)) {
+                    if(logger.isDebugEnabled()){
+                        logger.debug(voterLoggingLabel() +" entity is considered orphan => ACCESS_GRANTED");
+                    }
                     return ACCESS_GRANTED;
                 }
 
                 if(!auth.hasProperty()){
-                    if ( !auth.hasTargetUuid() && vr.isClassMatch && vr.isPermissionMatch){
-                        logger.debug("no targetUuid, class & permission match => ACCESS_GRANTED");
+                    if ( vr.isIgnoreUuidMatch && vr.isClassMatch && vr.isPermissionMatch){
+                        if(logger.isDebugEnabled()){
+                            logger.debug(voterLoggingLabel() +" no targetUuid, class & permission match => ACCESS_GRANTED");
+                        }
                         return ACCESS_GRANTED;
                     }
                     if ( vr.isUuidMatch && vr.isClassMatch && vr.isPermissionMatch ){
-                        logger.debug("permission, class and uuid are matching => ACCESS_GRANTED");
+                        if(logger.isDebugEnabled()){
+                            logger.debug(voterLoggingLabel() +" permission, class and uuid are matching => ACCESS_GRANTED");
+                        }
                         return ACCESS_GRANTED;
                     }
                 } else {
@@ -153,7 +165,9 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter <CdmBase
                 //
                 Integer furtherVotingResult = furtherVotingDescisions(auth, cdmBase, attributes, vr);
                 if(furtherVotingResult != null){
-                    logger.debug("furtherVotingResult => " + furtherVotingResult);
+                    if(logger.isDebugEnabled()){
+                        logger.debug(voterLoggingLabel() + " furtherVotingResult => " + voteToString(furtherVotingResult));
+                    }
                     switch(furtherVotingResult){
                         case ACCESS_GRANTED:
                             // no further check needed
@@ -172,9 +186,13 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter <CdmBase
             } // END Authorities loop
         } // END attributes loop
 
+        int votingResult = deniedByPreviousFurtherVoting ? ACCESS_DENIED : fallThroughVote;
         // the value of fallThroughVote depends on whether the authority had an property or not, see above
-        logger.debug("fallThroughVote => " + fallThroughVote);
-        return deniedByPreviousFurtherVoting ? ACCESS_DENIED : fallThroughVote;
+        if(logger.isDebugEnabled()){
+            logger.debug(voterLoggingLabel() + " fallThroughVote => " + voteToString(fallThroughVote));
+            logger.debug(voterLoggingLabel() + " ##votingResult## => " + voteToString(votingResult));
+        }
+        return votingResult;
     }
 
     /**
@@ -209,20 +227,59 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter <CdmBase
     }
 
     /**
+     * returns a label for the logging output
+     * @return
+     */
+    protected String voterLoggingLabel(){
+        return "(" + getResponsibilityClass().getSimpleName() + "-Voter)";
+    }
+
+    /**
+     *
+     * @param vote
+     * @return string representations for the votes defined in {@link AccessDecisionVoter}
+     */
+    protected String voteToString(int vote) {
+        switch (vote){
+            case 1: return "ACCESS_GRANTED";
+            case 0: return "ACCESS_ABSTAIN";
+            case -1: return "ACCESS_DENIED";
+            default: return Integer.toString(vote);
+        }
+    }
+
+
+    /**
      * Holds various flags with validation results.
      * Is used to pass this information from
      * {@link CdmPermissionVoter#vote(Authentication, Object, Collection)}
      * to {@link CdmPermissionVoter#furtherVotingDescisions(CdmAuthority, Object, Collection, ValidationResult)}
      *
      * @author andreas kohlbecker
-     * @date Sep 5, 2012
+     * @since Sep 5, 2012
      *
      */
     protected class ValidationResult {
+
+        /**
+         * ignore the result of the uuid match test completely
+         * this flag becomes true when the authority given to
+         * an authentication has no uuid part
+         */
+        public boolean isIgnoreUuidMatch;
         boolean isPermissionMatch = false;
         boolean isPropertyMatch = false;
         boolean isUuidMatch = false;
         boolean isClassMatch = false;
+
+        @Override
+        public String toString(){
+            return "isClassMatch: " + Boolean.toString(isClassMatch) + ", "
+                    + "isUuidMatch: " + Boolean.toString(isUuidMatch) + ", "
+                    + "isPermissionMatch: " + Boolean.toString(isPermissionMatch) + ", "
+                    + "isPropertyMatch: " + Boolean.toString(isPropertyMatch);
+
+        }
     }
 
 }

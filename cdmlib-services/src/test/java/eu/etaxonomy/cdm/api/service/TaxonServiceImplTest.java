@@ -1065,21 +1065,22 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet("../../database/BlankDataSet.xml")
     public final void testTaxonDeletionConfig(){
-        final String[]tableNames = {
-                "Classification", "Classification_AUD",
-                "TaxonBase","TaxonBase_AUD",
-                "TaxonNode","TaxonNode_AUD",
-                "TaxonName","TaxonName_AUD",
-                "TaxonRelationship", "TaxonRelationship_AUD",
-                "TaxonDescription", "TaxonDescription_AUD",
-                "HomotypicalGroup","HomotypicalGroup_AUD",
-                "PolytomousKey","PolytomousKey_AUD",
-                "PolytomousKeyNode","PolytomousKeyNode_AUD",
-                "Media","Media_AUD",
-                "WorkingSet","WorkingSet_AUD",
-                "DescriptionElementBase","DescriptionElementBase_AUD",
-        		"DeterminationEvent","DeterminationEvent_AUD",
-        		"SpecimenOrObservationBase","SpecimenOrObservationBase_AUD"};
+        final String[]tableNames = {}
+//                "Classification", "Classification_AUD",
+//                "TaxonBase","TaxonBase_AUD",
+//                "TaxonNode","TaxonNode_AUD",
+//                "TaxonName","TaxonName_AUD",
+//                "TaxonRelationship", "TaxonRelationship_AUD",
+//                "TaxonDescription", "TaxonDescription_AUD",
+//                "HomotypicalGroup","HomotypicalGroup_AUD",
+//                "PolytomousKey","PolytomousKey_AUD",
+//                "PolytomousKeyNode","PolytomousKeyNode_AUD",
+//                "Media","Media_AUD",
+//                "DescriptiveDataSet","DescriptiveDataSet_AUD",
+//                "DescriptionElementBase","DescriptionElementBase_AUD",
+//        		"DeterminationEvent","DeterminationEvent_AUD",
+//        		"SpecimenOrObservationBase","SpecimenOrObservationBase_AUD"}
+        ;
 
         UUID uuidParent=UUID.fromString("b5271d4f-e203-4577-941f-00d76fa9f4ca");
         UUID uuidChild1=UUID.fromString("326167f9-0b97-4e7d-b1bf-4ca47b82e21e");
@@ -1409,6 +1410,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         assertNotNull(taxonName);
         TaxonName fromName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         taxonName.addRelationshipFromName(fromName, NameRelationshipType.VALIDATED_BY_NAME(), null);
+        nameService.save(fromName);
 
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator();
         config.setDeleteNameIfPossible(true);
@@ -1775,6 +1777,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
     	service.saveOrUpdate(c1Species);
        	service.saveOrUpdate(c2Species);
+       	service.save(c4Species);
 
     	//Tests
        	//default starting at species 1
@@ -1800,10 +1803,6 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     	//same without doubtful
     	dto = service.listIncludedTaxa(c1Species.getUuid(), new IncludedTaxonConfiguration(null, false, true));
     	Assert.assertEquals(1, dto.getIncludedTaxa().size());
-
-
-
-
     }
 
     @Test
@@ -1992,12 +1991,13 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
             missName.setSpecificEpithet("lupium");
             missName.setCombinationAuthorship(deCandolle);
             missName.setUuid(SPECIES5_NAME_UUID);
-            Taxon misappliedName = Taxon.NewInstance(missName, sec);
-            childTaxon2.addMisappliedName(misappliedName, citationRef, "125");
+            Taxon misappliedNameTaxon = Taxon.NewInstance(missName, sec);
+            childTaxon2.addMisappliedName(misappliedNameTaxon, citationRef, "125");
             taxDesc = getTestDescription(descrIndex++);
            // taxDesc.setUuid(DESCRIPTION2_UUID);
             genusTaxon.addDescription(taxDesc);
             service.saveOrUpdate(genusTaxon);
+            service.save(misappliedNameTaxon);
 
             return genusTaxon;
         }

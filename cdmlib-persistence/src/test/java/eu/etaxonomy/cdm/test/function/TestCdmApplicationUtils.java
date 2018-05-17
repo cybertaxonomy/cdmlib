@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
 
 /**
  * @author a.mueller
- * @created 20.11.2008
+ * @since 20.11.2008
  * @version 1.0
  */
 public class TestCdmApplicationUtils {

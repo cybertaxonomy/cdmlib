@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 
 /**
  * @author a.mueller
- * @created 17.12.2008
+ * @since 17.12.2008
  * @version 1.0
  */
 public interface IDatabaseType {

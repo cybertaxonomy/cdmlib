@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.io.stream.excel.ExcelStreamImportConfigurator;
 /**
  * 
  * @author a.oppermann
- * @date 08.05.2013
+ * @since 08.05.2013
  *
  *
  *<ROW extends ExcelRowBase>

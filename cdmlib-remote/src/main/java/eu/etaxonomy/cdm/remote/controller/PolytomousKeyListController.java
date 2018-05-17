@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 
 /**
  * @author a.kohlbecker
- * @date 24.03.2011
+ * @since 24.03.2011
  *
  */
 @Controller

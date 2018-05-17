@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 
 /**
  * @author k.luther
- * @date 18.03.2010
+ * @since 18.03.2010
  *
  */
 public class TaxonNodeByRankAndNameComparator implements Serializable, Comparator<TaxonNode> {

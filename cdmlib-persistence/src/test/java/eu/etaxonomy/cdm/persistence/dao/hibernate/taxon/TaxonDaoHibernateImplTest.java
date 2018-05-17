@@ -985,9 +985,11 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         groups.add(new GroupByCount("count",SortOrder.DESCENDING));
         groups.add(new Grouping("name.genusOrUninomial", "genus", "n", SortOrder.ASCENDING));
         List<Object[]> results = taxonDao.group(null, null, null, groups,null);
-        System.out.println("count\tname.genuOrUninomial");
-        for(Object[] result : results) {
-            System.out.println(result[0] + "\t" + result[1]);
+        if(logger.isTraceEnabled()){
+            System.out.println("count\tname.genuOrUninomial");
+            for(Object[] result : results) {
+                System.out.println(result[0] + "\t" + result[1]);
+            }
         }
     }
 
@@ -998,9 +1000,11 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         groups.add(new GroupByCount("count",SortOrder.DESCENDING));
         groups.add(new Grouping("class", "class",null, SortOrder.ASCENDING));
         List<Object[]> results = taxonDao.group(null, null, null, groups,null);
-        System.out.println("count\tclass");
-        for(Object[] result : results) {
-            System.out.println(result[0] + "\t" + result[1]);
+        if(logger.isTraceEnabled()){
+            System.out.println("count\tclass");
+            for(Object[] result : results) {
+                System.out.println(result[0] + "\t" + result[1]);
+            }
         }
     }
 
@@ -1011,9 +1015,11 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         orderHints.add(new NativeSqlOrderHint("case when {alias}.titleCache like 'C%' then 0 else 1 end",SortOrder.ASCENDING));
 
         List<TaxonBase> results = taxonDao.list(null, null, orderHints);
-        System.out.println("native SQL order");
-        for(TaxonBase<?> result : results) {
-            System.out.println(result.getTitleCache());
+        if(logger.isTraceEnabled()){
+            System.out.println("native SQL order");
+            for(TaxonBase<?> result : results) {
+                System.out.println(result.getTitleCache());
+            }
         }
     }
 
@@ -1024,40 +1030,15 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         groups.add(new GroupByCount("count",null));
         groups.add(new GroupByDate("created", "dateGroup", SortOrder.ASCENDING, GroupByDate.Resolution.MONTH));
         List<Object[]> results = taxonDao.group(null, null, null, groups,null);
-        System.out.println("count\tyear\tmonth");
-        for(Object[] result : results) {
-            System.out.println(result[0] + "\t" + result[1] + "\t" + result[2]);
+        if(logger.isTraceEnabled()){
+            System.out.println("count\tyear\tmonth");
+            for(Object[] result : results) {
+                System.out.println(result[0] + "\t" + result[1] + "\t" + result[2]);
+            }
         }
     }
 
-    @Test
-    @DataSet ("TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml")
-    public final void testGetTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(){
-        Classification classification = classificationDao.findByUuid(classificationUuid);
-        List<UuidAndTitleCache<TaxonNode>> result = taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification,  null, null);
-        assertNotNull(result);
-        assertEquals(5, result.size());
 
-        //test exclude
-        UUID excludeUUID = UUID.fromString("a9f42927-e507-4fda-9629-62073a908aae");
-        List<UUID> excludeUUids = new ArrayList<>();
-        excludeUUids.add(excludeUUID);
-        result = taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification,  null, null);
-        assertEquals(5, result.size());
-
-        //test limit
-        int limit = 2;
-        result = taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification,  limit, null);
-        assertEquals(2, result.size());
-
-        //test pattern
-        String pattern = "*Rothschi*";
-        result = taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, 2, pattern);
-        assertNotNull(result);
-        assertEquals(1, result.size());
-        assertEquals("0b5846e5-b8d2-4ca9-ac51-099286ea4adc", result.get(0).getUuid().toString());
-
-    }
 
 
     @Test
@@ -1159,6 +1140,8 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
                 propertyPaths);
         Assert.assertSame("Returned object should be the same proxy to assure that we ran initialization on this proxy", taxonProxy, taxon);
     }
+
+
 
     /**
      * {@inheritDoc}

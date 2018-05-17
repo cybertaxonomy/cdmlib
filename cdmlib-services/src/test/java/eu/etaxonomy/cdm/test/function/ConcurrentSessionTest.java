@@ -847,7 +847,7 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
 
     }
 
-    @Ignore
+    @Ignore //see #4528
     @Test
     @DataSet("ConcurrentSessionTest.xml")
     public void testSaveOrUpdate() {

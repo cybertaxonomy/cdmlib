@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.common.VersionableDaoBase;
 
 /**
  * @author a.mueller
- * @created 08.11.2010
+ * @since 08.11.2010
  */
 @Repository
 public class PolytomousKeyNodeDaoImpl extends VersionableDaoBase<PolytomousKeyNode> implements IPolytomousKeyNodeDao {

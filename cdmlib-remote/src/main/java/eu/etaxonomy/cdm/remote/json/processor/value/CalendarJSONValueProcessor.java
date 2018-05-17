@@ -21,7 +21,7 @@ import org.apache.log4j.Logger;
 
 /**
  * @author a.kohlbecker
- * @created 20.01.2009
+ * @since 20.01.2009
  * @version 1.0
  */
 public class CalendarJSONValueProcessor implements JsonValueProcessor {

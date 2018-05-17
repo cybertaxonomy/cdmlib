@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 /**
  * Enumeration for matching modes.
  * @author a.mueller
- * @created 31.07.2009
+ * @since 31.07.2009
  */
 public enum MatchMode {
 	EQUAL_REQUIRED,  //parameters must be equal and not null

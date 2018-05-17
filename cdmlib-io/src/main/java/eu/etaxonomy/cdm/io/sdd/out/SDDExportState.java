@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.io.common.XmlExportState;
 
 /**
  * @author a.mueller
- * @created 11.05.2009
+ * @since 11.05.2009
  */
 public class SDDExportState extends XmlExportState<SDDExportConfigurator>{
 	@SuppressWarnings("unused")

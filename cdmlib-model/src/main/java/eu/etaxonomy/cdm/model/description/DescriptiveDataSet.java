@@ -36,12 +36,13 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.strategy.cache.description.DescriptiveDataSetDefaultCacheStrategy;
 
 /**
  *
@@ -50,11 +51,11 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * dependencies.
  *
  * @author h.fradin
- * @created 12.08.2009
+ * @since 12.08.2009
  */
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "WorkingSet", propOrder = {
+@XmlType(name = "DescriptiveDataSet", propOrder = {
     "representations",
     "descriptiveSystem",
     "descriptions",
@@ -63,12 +64,12 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
     "minRank",
     "maxRank"
 })
-@XmlRootElement(name = "WorkingSet")
+@XmlRootElement(name = "DescriptiveDataSet")
 @Entity
 @Audited
-public class WorkingSet extends AnnotatableEntity {
+public class DescriptiveDataSet extends IdentifiableEntity<DescriptiveDataSetDefaultCacheStrategy> {
 	private static final long serialVersionUID = 3256448866757415686L;
-	private static final Logger logger = Logger.getLogger(WorkingSet.class);
+	private static final Logger logger = Logger.getLogger(DescriptiveDataSet.class);
 
 	@XmlElementWrapper(name = "Representations")
 	@XmlElement(name = "Representation")
@@ -113,7 +114,7 @@ public class WorkingSet extends AnnotatableEntity {
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    @JoinTable(name="WorkingSet_NamedArea")
+    @JoinTable(name="DescriptiveDataSet_NamedArea")
     @NotNull
     private Set<NamedArea> geoFilter = new HashSet<>();
 
@@ -131,8 +132,8 @@ public class WorkingSet extends AnnotatableEntity {
 
 // ******************* FACTORY *********************************************/
 
-	public static WorkingSet NewInstance(){
-        return new WorkingSet();
+	public static DescriptiveDataSet NewInstance(){
+        return new DescriptiveDataSet();
     }
 
 
@@ -140,8 +141,9 @@ public class WorkingSet extends AnnotatableEntity {
 	/**
 	 * Class constructor: creates a new empty working set instance.
 	 */
-	protected WorkingSet() {
+	protected DescriptiveDataSet() {
 		super();
+		this.cacheStrategy = new DescriptiveDataSetDefaultCacheStrategy();
 	}
 
 // ******************** GETTER / SETTER ************************/
@@ -220,7 +222,10 @@ public class WorkingSet extends AnnotatableEntity {
 	 * @return
 	 */
 	public Representation getPreferredRepresentation(Language language) {
-		Representation repr = getRepresentation(language);
+		if (representations.size() == 0){
+		    return null;
+		}
+	    Representation repr = getRepresentation(language);
 		if(repr == null){
 			repr = getRepresentation(Language.DEFAULT());
 		}
@@ -326,12 +331,12 @@ public class WorkingSet extends AnnotatableEntity {
 	 *
 	 * @param description	the description to be added to <i>this</i> working set
 	 * @see    	   			#getDescriptions()
-	 * @see    	   			WorkingSet#addDescription(DescriptionBase)
+	 * @see    	   			DescriptiveDataSet#addDescription(DescriptionBase)
 	 */
 	public boolean addDescription(DescriptionBase description) {
 		boolean result = this.descriptions.add(description);
-		if (! description.getWorkingSets().contains(this)){
-			description.addWorkingSet(this);
+		if (! description.getDescriptiveDataSets().contains(this)){
+			description.addDescriptiveDataSet(this);
 		}
 		return result;
 	}
@@ -343,12 +348,12 @@ public class WorkingSet extends AnnotatableEntity {
 	 * @param  description	the description which should be removed
 	 * @see     		 	#getDescriptions()
 	 * @see     		  	#addDescription(DescriptionBase)
-	 * @see     		  	WorkingSet#removeDescription(DescriptionBase)
+	 * @see     		  	DescriptiveDataSet#removeDescription(DescriptionBase)
 	 */
 	public boolean removeDescription(DescriptionBase description) {
 		boolean result = this.descriptions.remove(description);
-		if (description.getWorkingSets().contains(this)){
-			description.removeWorkingSet(this);
+		if (description.getDescriptiveDataSets().contains(this)){
+			description.removeDescriptiveDataSet(this);
 		}
 		return result;
 	}
@@ -356,8 +361,8 @@ public class WorkingSet extends AnnotatableEntity {
 	//*********************** CLONE ********************************************************/
 
 	/**
-	 * Clones <i>this</i> WorkingSet. This is a shortcut that enables to create
-	 * a new instance that differs only slightly from <i>this</i> WorkingSet by
+	 * Clones <i>this</i> DescriptiveDataSet. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> DescriptiveDataSet by
 	 * modifying only some of the attributes.
 	 * The descriptions and the descriptive system are the same, the representations
 	 * are cloned.
@@ -367,9 +372,9 @@ public class WorkingSet extends AnnotatableEntity {
 	 */
 	@Override
 	public Object clone() {
-		WorkingSet result;
+		DescriptiveDataSet result;
 		try {
-			result = (WorkingSet)super.clone();
+			result = (DescriptiveDataSet)super.clone();
 
 			//descriptions
 			result.descriptions = new HashSet<>();

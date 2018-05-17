@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 
 /**
  * @author a.kohlbecker
- * @date Jan 26, 2017
+ * @since Jan 26, 2017
  *
  */
 public class JsonpUtil {

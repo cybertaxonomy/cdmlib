@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 /**
  *
  * @author a.oppermann
- * @date 08.05.2013
+ * @since 08.05.2013
  *
  */
 public class ExcelStreamImportConfigurator extends DwcaDataImportConfiguratorBase<ExcelStreamImportState> implements IImportConfigurator {

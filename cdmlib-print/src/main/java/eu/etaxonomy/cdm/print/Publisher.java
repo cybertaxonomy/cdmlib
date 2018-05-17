@@ -12,7 +12,7 @@ import eu.etaxonomy.cdm.print.out.IPublishOutputModule;
  * The central or main class that will execute the publishing process
  * 
  * @author n.hoffmann
- * @created Apr 1, 2010
+ * @since Apr 1, 2010
  * @version 1.0
  */
 public class Publisher {

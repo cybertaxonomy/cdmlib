@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 /**
  * Comparator that compares two TaxonNode instances by the titleCache of their referenced names.
  * @author a.kohlbecker
- * @date 24.06.2009
+ * @since 24.06.2009
  *
  */
 public class TaxonNodeByNameComparator extends AbstractStringComparator<TaxonNode> implements Comparator<TaxonNode>, ITaxonNodeComparator<TaxonNode> {
@@ -35,23 +35,48 @@ public class TaxonNodeByNameComparator extends AbstractStringComparator<TaxonNod
     private boolean sortInfraGenericFirst = true;
 
     @Override
-    public int compare(TaxonNode o1, TaxonNode o2) {
-
-        if (o1 == null && o2 == null) {
+    public int compare(TaxonNode node1, TaxonNode node2) {
+        if (node1 == null && node2 == null) {
             return 0;
         }
-        else if (o1 == null) {
+        else if (node1 == null) {
             return 1;
         }
-        else if (o2 == null) {
+        else if (node2 == null) {
             return -1;
         }
-        if (o1.equals(o2)){
+        if (node1.equals(node2)){
         	return 0;
         }
+        boolean node1Excluded = node1.isExcluded();
+        boolean node2Excluded = node2.isExcluded();
+        boolean node1Unplaced = node1.isUnplaced();
+        boolean node2Unplaced = node2.isUnplaced();
 
-        String titleCache1 = createSortableTitleCache(o1);
-        String titleCache2 = createSortableTitleCache(o2);
+      //They should both be put to the end (first unplaced then excluded)
+        if (node2Excluded && !node1Excluded){
+            return -1;
+        }
+        if (node2Unplaced && !(node1Unplaced || node1Excluded)){
+            return -1;
+        }
+
+        if (node1Excluded && !node2Excluded){
+            return 1;
+        }
+        if (node1Unplaced && !(node2Unplaced || node2Excluded)){
+            return 1;
+        }
+
+        if (node1Unplaced && node2Excluded){
+            return -1;
+        }
+        if (node2Unplaced && node1Excluded){
+            return 1;
+        }
+
+        String titleCache1 = createSortableTitleCache(node1);
+        String titleCache2 = createSortableTitleCache(node2);
 
         if(isIgnoreHybridSign()) {
             if (logger.isTraceEnabled()){logger.trace("ignoring Hybrid Signs: " + HYBRID_SIGN);}
@@ -85,7 +110,7 @@ public class TaxonNodeByNameComparator extends AbstractStringComparator<TaxonNod
         if (result != 0){
         	return result;
         }else{
-        	return o1.getUuid().compareTo(o2.getUuid());
+        	return node1.getUuid().compareTo(node2.getUuid());
         }
     }
 

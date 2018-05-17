@@ -16,6 +16,7 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.merge.IMergable;
@@ -93,11 +94,22 @@ public interface IReference
 	/**
 	 * Returns the date when the reference was published as a {@link TimePeriod}
 	 */
-	public TimePeriod getDatePublished();
+	public VerbatimTimePeriod getDatePublished();
 
 	/**
 	 * Sets the date when the reference was published.
 	 */
+    public void setDatePublished(VerbatimTimePeriod datePublished);
+
+
+    /**
+     * Sets the date when the reference was published.
+     * <BR>
+     * Note: The time period will be internally converted to
+     * a VerbatimTimePeriod so later changes to it will not
+     * be reflected in the reference time period.
+     */
+    @Transient
     public void setDatePublished(TimePeriod datePublished);
 
 	/**

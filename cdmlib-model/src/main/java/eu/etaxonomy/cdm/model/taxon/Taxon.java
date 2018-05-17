@@ -71,7 +71,7 @@ import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
  * and between ("synonym") taxa and ("accepted/correct") taxa on the other.
  *
  * @author m.doering
- * @created 08-Nov-2007 13:06:56
+ * @since 08-Nov-2007 13:06:56
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Taxon", propOrder = {
@@ -657,7 +657,7 @@ public class Taxon
      * The taxon relationship will also be added to the set of taxon
      * relationships to the other (misapplied name) taxon involved in the created relationship.
      *
-     * @param misappliedNameTaxon	the taxon which plays the target role in the new taxon relationship
+     * @param misappliedNameTaxon	the taxon which plays the source role in the new taxon relationship
      * @param citation				the reference source for the new taxon relationship
      * @param microcitation			the string with the details describing the exact localisation within the reference
      * @return
@@ -688,9 +688,9 @@ public class Taxon
      * "pro parte misapplied name for") instance where <i>this</i> taxon plays the target role
      * and adds it to the set of {@link #getRelationsToThisTaxon() taxon relationships to <i>this</i> taxon}.
      * The taxon relationship will also be added to the set of taxon
-     * relationships to the other (misapplied name) taxon involved in the created relationship.
+     * relationships to the other (pro parte misapplied name) taxon involved in the created relationship.
      *
-     * @param misappliedNameTaxon   the taxon which plays the target role in the new taxon relationship
+     * @param proParteMisappliedNameTaxon   the taxon which plays the source role in the new taxon relationship
      * @param citation              the reference source for the new taxon relationship
      * @param microcitation         the string with the details describing the exact localisation within the reference
      * @return
@@ -702,8 +702,78 @@ public class Taxon
      * @see                         #getRelationsFromThisTaxon()
      * @see                         #getRelationsToThisTaxon()
      */
-    public TaxonRelationship addProParteMisappliedName(Taxon proPartemisappliedNameTaxon, Reference citation, String microcitation) {
-        return proPartemisappliedNameTaxon.addTaxonRelation(this, TaxonRelationshipType.PRO_PARTE_MISAPPLIED_NAME_FOR(), citation, microcitation);
+    public TaxonRelationship addProParteMisappliedName(Taxon proParteMisappliedNameTaxon, Reference citation, String microcitation) {
+        return proParteMisappliedNameTaxon.addTaxonRelation(this, TaxonRelationshipType.PRO_PARTE_MISAPPLIED_NAME_FOR(), citation, microcitation);
+    }
+
+    /**
+     * Creates a new {@link TaxonRelationship taxon relationship} (with {@link TaxonRelationshipType taxon relationship type}
+     * "partial misapplied name for") instance where <i>this</i> taxon plays the target role
+     * and adds it to the set of {@link #getRelationsToThisTaxon() taxon relationships to <i>this</i> taxon}.
+     * The taxon relationship will also be added to the set of taxon
+     * relationships to the other (pro parte misapplied name) taxon involved in the created relationship.
+     *
+     * @param partialMisappliedNameTaxon   the taxon which plays the source role in the new taxon relationship
+     * @param citation              the reference source for the new taxon relationship
+     * @param microcitation         the string with the details describing the exact localization within the reference
+     * @return
+     * @see                         #addMisappliedName(Taxon, Reference, String)
+     * @see                         #addProParteMisappliedName(Taxon, Reference, String)
+     * @see                         #getMisappliedNames()
+     * @see                         #addTaxonRelation(Taxon, TaxonRelationshipType, Reference, String)
+     * @see                         #addTaxonRelation(TaxonRelationship)
+     * @see                         #getTaxonRelations()
+     * @see                         #getRelationsFromThisTaxon()
+     * @see                         #getRelationsToThisTaxon()
+     */
+    public TaxonRelationship addPartialMisappliedName(Taxon partialMisappliedNameTaxon, Reference citation, String microcitation) {
+        return partialMisappliedNameTaxon.addTaxonRelation(this, TaxonRelationshipType.PARTIAL_MISAPPLIED_NAME_FOR(), citation, microcitation);
+    }
+
+    /**
+     * Creates a new {@link TaxonRelationship taxon relationship} (with {@link TaxonRelationshipType taxon relationship type}
+     * "pro parte synonym for") instance where <i>this</i> taxon plays the target role
+     * and adds it to the set of {@link #getRelationsToThisTaxon() taxon relationships to <i>this</i> taxon}.
+     * The taxon relationship will also be added to the set of taxon
+     * relationships to the other (pro parte synonym) taxon involved in the created relationship.
+     *
+     * @param proParteTaxon         the taxon which plays the source role in the new taxon relationship
+     * @param citation              the reference source for the new taxon relationship
+     * @param microcitation         the string with the details describing the exact localisation within the reference
+     * @return
+     * @see                         #getMisappliedNames()
+     * @see                         #addProParteMisappliedName(Taxon, Reference, String)
+     * @see                         #addTaxonRelation(Taxon, TaxonRelationshipType, Reference, String)
+     * @see                         #addTaxonRelation(TaxonRelationship)
+     * @see                         #getTaxonRelations()
+     * @see                         #getRelationsFromThisTaxon()
+     * @see                         #getRelationsToThisTaxon()
+     */
+    public TaxonRelationship addProparteSynonym(Taxon proParteTaxon, Reference citation, String microcitation) {
+        return proParteTaxon.addTaxonRelation(this, TaxonRelationshipType.PRO_PARTE_SYNONYM_FOR(), citation, microcitation);
+    }
+
+    /**
+     * Creates a new {@link TaxonRelationship taxon relationship} instance with
+     * {@link TaxonRelationshipType taxon relationship type} {@link TaxonRelationshipType#PARTIAL_SYNONYM_FOR()
+     * partial synonym for} where <i>this</i> taxon plays the target role
+     * and adds it to the set of {@link #getRelationsToThisTaxon() taxon relationships to <i>this</i> taxon}.
+     * The taxon relationship will also be added to the set of taxon
+     * relationships to the other (partial synonym) taxon involved in the created relationship.
+     *
+     * @param partialTaxon         the taxon which plays the source role in the new taxon relationship
+     * @param citation             the reference source for the new taxon relationship
+     * @param microcitation        the string with the details describing the exact localisation within the reference
+     * @return
+     * @see                         #addProparteSynonym(Taxon, Reference, String)
+     * @see                         #addTaxonRelation(Taxon, TaxonRelationshipType, Reference, String)
+     * @see                         #addTaxonRelation(TaxonRelationship)
+     * @see                         #getTaxonRelations()
+     * @see                         #getRelationsFromThisTaxon()
+     * @see                         #getRelationsToThisTaxon()
+     */
+    public TaxonRelationship addPartialSynonym(Taxon partialTaxon, Reference citation, String microcitation) {
+        return partialTaxon.addTaxonRelation(this, TaxonRelationshipType.PARTIAL_SYNONYM_FOR(), citation, microcitation);
     }
 
     /**
@@ -740,16 +810,41 @@ public class Taxon
     }
 
     /**
-     * Counts the number of misapplied name relationships (including pro parte misapplied
-     * names) where this taxon represents the
+     * Counts the number of misapplied name relationships (including pro parte and partial
+     * misapplied names) where this taxon represents the
      * misapplied name for another taxon.
      * @return
      */
     private int computeMisapliedNameRelations(){
         int count = 0;
         for (TaxonRelationship rel: this.getRelationsFromThisTaxon()){
-            if (rel.getType().equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR())
-                    || rel.getType().equals(TaxonRelationshipType.PRO_PARTE_MISAPPLIED_NAME_FOR())){
+            if (rel.getType().isAnyMisappliedName()){
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * Returns the boolean value indicating whether <i>this</i> taxon is a misapplication
+     * (misapplied name) for at least one other taxon.
+     */
+    // TODO cache as for #hasTaxonomicChildren
+    @Transient
+    public boolean isProparteSynonym(){
+        return computeProparteSynonymRelations() > 0;
+    }
+
+    /**
+     * Counts the number of misapplied name relationships (including pro parte misapplied
+     * names) where this taxon represents the
+     * misapplied name for another taxon.
+     * @return
+     */
+    private int computeProparteSynonymRelations(){
+        int count = 0;
+        for (TaxonRelationship rel: this.getRelationsFromThisTaxon()){
+            if (rel.getType().isAnySynonym()){
                 count++;
             }
         }
@@ -896,27 +991,45 @@ public class Taxon
     }
 
 
-    /*
-     * DEALING WITH SYNONYMS
-     */
+
+
     /**
-     * Returns the set of all {@link Synonym synonyms} of <i>this</i> ("accepted/valid") taxon
-     * sorted by the different {@link SynonymType categories}.
-      *
-     * @see    #getSynonyms()
-     * @see    #getSynonymNames()
-     * @see    #addSynonym(Synonym, SynonymType)
-     * @see    #addSynonym(Synonym, SynonymType, Reference, String)
-     * @see    #removeSynonym(Synonym)
-     * @deprecated not yet implemented
+     * Returns the set of pro parte or partial synonym relationships in which this taxon
+     * plays the role of the "correctly" accepted taxon (target).
+     *
+     * @see #getProParteAndPartialSynonyms()
+     * @see #getMisappliedNameRelations()
      */
     @Transient
-    @Deprecated
-    public Set<Synonym> getSynonymsSortedByType(){
-        // FIXME: need to sort synonyms according to type!!!
-        logger.warn("getSynonymsSortedByType() not yet implemented");
-        return getSynonyms();
+    public Set<TaxonRelationship> getProParteAndPartialSynonymRelations(){
+        Set<TaxonRelationship> result = new HashSet<>();
+        Set<TaxonRelationship> rels = this.getRelationsToThisTaxon();
+        for (TaxonRelationship rel: rels){
+            TaxonRelationshipType relType = rel.getType();
+            if (relType.isAnySynonym()){
+                result.add(rel);
+            }
+        }
+        return result;
     }
+
+    /**
+     * Returns the set of pro parte or partial synonyms in which this taxon
+     * plays the role of the "correctly" accepted taxon (target).
+     *
+     * @see #getProParteAndPartialSynonymRelations()
+     * @see #getMisappliedNames(boolean)
+     */
+    @Transient
+    public Set<Taxon> getProParteAndPartialSynonyms(){
+        Set<Taxon> synonyms = new HashSet<>();
+        Set<TaxonRelationship> rels = this.getProParteAndPartialSynonymRelations();
+        for (TaxonRelationship rel: rels){
+            synonyms.add(rel.getFromTaxon());
+        }
+        return synonyms;
+    }
+
     /**
      * Returns the set of all {@link TaxonName taxon names} used as {@link Synonym synonyms}
      * of <i>this</i> ("accepted/valid") taxon.

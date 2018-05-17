@@ -69,6 +69,7 @@ import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.User;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
@@ -169,7 +170,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author a.mueller
- * @created 27.07.2009
+ * @since 27.07.2009
  */
 public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 	private static final Logger logger = Logger.getLogger(CdmGenericDaoImplTest.class);
@@ -192,9 +193,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
     @SpringBeanByType
     private IReferenceDao referenceDao;
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {}
 
@@ -202,8 +200,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 
 	@Test
 	@DataSets({
-     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-     @DataSet("/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")})
+      @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+      @DataSet("/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")})
 	public void testDelete(){
 		Reference ref1 = ReferenceFactory.newBook();
 		Reference ref2 = ReferenceFactory.newBook();
@@ -212,7 +210,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		UUID ref1Uuid = cdmGenericDao.saveOrUpdate(ref1);
 		UUID ref2Uuid = cdmGenericDao.saveOrUpdate(ref2);
 		List<Reference> list = cdmGenericDao.list(Reference.class, 10, 0, null, null);
-        System.out.println("ref1: " + ref1Uuid + " ref2: " + ref2Uuid);
+//        System.out.println("ref1: " + ref1Uuid + " ref2: " + ref2Uuid);
         for (Reference ref: list){
             System.out.println("reference: " + ref.getUuid());
         }
@@ -224,10 +222,10 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		}
 		commitAndStartNewTransaction(null);
 		list = cdmGenericDao.list(Reference.class, 10, 0, null, null);
-		System.out.println("ref1: " + ref1Uuid + " ref2: " + ref2Uuid);
-        for (Reference ref: list){
-            System.out.println("reference: " + ref.getUuid());
-        }
+//		System.out.println("ref1: " + ref1Uuid + " ref2: " + ref2Uuid);
+//        for (Reference ref: list){
+//            System.out.println("reference: " + ref.getUuid());
+//        }
 		Assert.assertEquals(1, list.size());
 
 	}
@@ -331,9 +329,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 				Sequence.class,
 				PhylogeneticTree.class,
 				Sequence.class,
-//				BacterialName.class,
-//				BotanicalName.class,
-//				CultivarPlantName.class,
 				HomotypicalGroup.class,
 				HybridRelationship.class,
 				HybridRelationshipType.class,
@@ -343,14 +338,11 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 				NameTypeDesignationStatus.class,
 				NomenclaturalStatus.class,
 				NomenclaturalStatusType.class,
-//				NonViralName.class,
 				Rank.class,
 				SpecimenTypeDesignation.class,
 				SpecimenTypeDesignationStatus.class,
 				TaxonName.class,
 				TypeDesignationBase.class,
-//				ViralName.class,
-//				ZoologicalName.class,
 				Collection.class,
 				DerivationEvent.class,
 				DerivationEventType.class,
@@ -603,7 +595,10 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		Assert.assertEquals("Taxon description must have article1 as source", taxDesc.getSources().iterator().next().getCitation(),article1);
 
 		//test exceptions
+
 		testMergeExceptions(name1, name2, taxon1, zooName1);
+
+
 
 
 		//FIXME TO BE IMPLEMENTED
@@ -1054,15 +1049,15 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 			Assert.assertEquals("Resultlist must have 1 entries", 1, matchResult.size());
 			Assert.assertSame("Resultlist entry must be book 1", book1, matchResult.get(0));
 
-			book1.setDatePublished(TimePeriod.NewInstance(1999, 2002));
+			book1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1999, 2002));
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
 			Assert.assertTrue("Resultlist must have no entries", matchResult.isEmpty());
 
-			book3.setDatePublished(TimePeriod.NewInstance(1999));
+			book3.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1999));
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
 			Assert.assertTrue("Resultlist must have no entries", matchResult.isEmpty());
 
-			book3.setDatePublished(TimePeriod.NewInstance(1999,2002));
+			book3.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1999,2002));
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
 			Assert.assertEquals("Resultlist must have 1 entries", 1, matchResult.size());
 			Assert.assertSame("Resultlist entry must be book 1", book1, matchResult.get(0));

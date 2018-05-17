@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.model.location.Point;
  * </ul>
  *
  * @author m.doering
- * @created 08-Nov-2007 13:06:09
+ * @since 08-Nov-2007 13:06:09
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Address", propOrder = {

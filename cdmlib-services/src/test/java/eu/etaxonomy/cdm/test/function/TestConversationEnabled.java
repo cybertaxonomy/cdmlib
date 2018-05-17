@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.CdmDataChangeMap;
  * but it should be annotate with @Ignore when running the project a s junit suite in eclipse
  *
  * @author n.hoffmann
- * @created 25.03.2009
+ * @since 25.03.2009
  * @version 1.0
  */
 @Ignore

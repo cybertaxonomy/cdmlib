@@ -17,7 +17,7 @@ import org.hibernate.service.spi.SessionFactoryServiceRegistry;
  * this would allow for flexible and extensible configuration via the spring application context.
  *
  * @author a.mueller
- * @created 30.03.2013
+ * @since 30.03.2013
  *
  */
 public class CdmListenerIntegrator implements Integrator {

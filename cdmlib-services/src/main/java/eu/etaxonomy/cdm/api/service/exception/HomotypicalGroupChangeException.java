@@ -14,7 +14,7 @@ package eu.etaxonomy.cdm.api.service.exception;
  * which may lead to inconsistent data. Only throw this exception if the inconsistency can not be
  * resolved automatically.
  * @author a.mueller
- * @date 14.10.2011
+ * @since 14.10.2011
  *
  */
 public class HomotypicalGroupChangeException extends DataChangeNoRollbackException {

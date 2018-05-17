@@ -81,14 +81,13 @@ import io.swagger.annotations.Api;
  * </blockquote>
  *
  * @author a.kohlbecker
- * @date 20.07.2009
+ * @since 20.07.2009
  *
  */
 @Controller
 @Api("portal_taxon")
 @RequestMapping(value = {"/portal/taxon/{uuid}"})
-public class TaxonPortalController extends TaxonController
-{
+public class TaxonPortalController extends TaxonController{
 
     public static final Logger logger = Logger.getLogger(TaxonPortalController.class);
 

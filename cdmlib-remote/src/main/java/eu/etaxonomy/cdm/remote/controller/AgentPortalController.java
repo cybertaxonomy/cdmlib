@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * @author a.kohlbecker
- * @date Nov 16, 2015
+ * @since Nov 16, 2015
  *
  */
 @Controller

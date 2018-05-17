@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.molecular.SingleReadAlignment.Shift;
 /**
  * Hibernate user type for arrays of int(eger).
  * @author a.mueller
- * @created 03.12.2014
+ * @since 03.12.2014
  */
 public class ShiftUserType  extends AbstractUserType implements UserType {
 	private static final long serialVersionUID = -2507496252811101383L;

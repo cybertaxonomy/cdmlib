@@ -13,7 +13,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
  * @author a.mueller
- * @date 15.11.2017
+ * @since 15.11.2017
  *
  */
 public class TropicosNameImportState extends CsvImportState<TropicosNameImportConfigurator> {

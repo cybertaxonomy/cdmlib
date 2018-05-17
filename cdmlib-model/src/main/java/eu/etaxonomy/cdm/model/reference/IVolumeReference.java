@@ -15,7 +15,7 @@ package eu.etaxonomy.cdm.model.reference;
  * 
  * @author a.mueller
  * @version 1.0
- * @created 24-Nov-2008 21:06:29
+ * @since 24-Nov-2008 21:06:29
  */
 public interface IVolumeReference extends IReference {
 

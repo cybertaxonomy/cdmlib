@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
 
 /**
  * @author a.kohlbecker
- * @date Dec 4, 2013
+ * @since Dec 4, 2013
  *
  */
 public class StateDataBeanProcessor extends AbstractModifiableThingBeanProcessor<StateData> implements IMultilanguageTextBeanProcessor {

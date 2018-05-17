@@ -14,7 +14,7 @@ import java.lang.reflect.Method;
 
 /**
  * @author n.hoffmann
- * @created Mar 11, 2010
+ * @since Mar 11, 2010
  * @version 1.0
  */
 public interface IMethodCache {

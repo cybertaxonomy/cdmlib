@@ -42,7 +42,7 @@ import eu.etaxonomy.cdm.strategy.match.Match.ReplaceMode;
 
 /**
  * @author a.mueller
- * @created 06.08.2009
+ * @since 06.08.2009
  */
 public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy {
 	private static final long serialVersionUID = 5045874493910155162L;

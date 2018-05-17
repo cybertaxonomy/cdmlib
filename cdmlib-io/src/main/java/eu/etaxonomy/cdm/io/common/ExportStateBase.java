@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 
 /**
  * @author a.mueller
- * @created 11.05.2009
+ * @since 11.05.2009
  */
 //TODO make it CONFIG extends DBExportConfigurator
 public abstract class ExportStateBase<CONFIG extends ExportConfiguratorBase<?, TRANSFORM, DEST>, TRANSFORM extends IExportTransformer, DEST extends Object>

@@ -23,12 +23,12 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
- * @created 12.05.2009
+ * @since 12.05.2009
  * @version 1.0
  */
 /**
  * @author a.mueller
- * @created 02.03.2010
+ * @since 02.03.2010
  * @version 1.0
  * @param <CDM_BASE>
  * @param <STATE>

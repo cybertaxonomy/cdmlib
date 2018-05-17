@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
 
 /**
  * @author andreas kohlbecker
- * @date Sep 4, 2012
+ * @since Sep 4, 2012
  *
  */
 public class TaxonNodeVoter extends CdmPermissionVoter {

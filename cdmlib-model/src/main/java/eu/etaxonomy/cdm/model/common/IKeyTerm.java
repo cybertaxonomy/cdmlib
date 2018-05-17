@@ -17,7 +17,7 @@ package eu.etaxonomy.cdm.model.common;
  * guaranteed by the interface as interfaces do not allow definitions of static methods.
  * 
  * @author a.mueller
- * @created 30-Aug-2013
+ * @since 30-Aug-2013
  *
  */
 public interface IKeyTerm  {

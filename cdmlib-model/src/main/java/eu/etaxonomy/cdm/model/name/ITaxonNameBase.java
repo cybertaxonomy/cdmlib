@@ -17,6 +17,7 @@ import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
@@ -43,7 +44,7 @@ import eu.etaxonomy.cdm.strategy.match.IMatchable;
  * instances of any other class
  *
  * @author a.mueller
- * @date 21.01.2017
+ * @since 21.01.2017
  *
  */
 public interface ITaxonNameBase
@@ -335,25 +336,66 @@ public interface ITaxonNameBase
     public void setRank(Rank rank);
 
     /**
-     * Returns the {@link eu.etaxonomy.cdm.model.reference.INomenclaturalReference nomenclatural reference} of <i>this</i> taxon name.
+     * Returns the {@link eu.etaxonomy.cdm.model.reference.Reference nomenclatural reference} of <i>this</i> taxon name.
      * The nomenclatural reference is here meant to be the one publication
      * <i>this</i> taxon name was originally published in while fulfilling the formal
      * requirements as specified by the corresponding {@link NomenclaturalCode nomenclatural code}.
      *
-     * @see     eu.etaxonomy.cdm.model.reference.INomenclaturalReference
      * @see     eu.etaxonomy.cdm.model.reference.Reference
+     * @see #getNomenclaturalSource()
      */
-    public INomenclaturalReference getNomenclaturalReference();
+    public Reference getNomenclaturalReference();
 
     /**
      * Assigns a {@link eu.etaxonomy.cdm.model.reference.INomenclaturalReference nomenclatural reference} to <i>this</i> taxon name.
      * The corresponding {@link eu.etaxonomy.cdm.model.reference.Reference.isNomenclaturallyRelevant nomenclaturally relevant flag} will be set to true
      * as it is obviously used for nomenclatural purposes.
      *
-     * @throws IllegalArgumentException if parameter <code>nomenclaturalReference</code> is not assignable from {@link INomenclaturalReference}
      * @see  #getNomenclaturalReference()
      */
+    public void setNomenclaturalReference(Reference nomenclaturalReference);
+
+    /**
+     * Same as setNomenclaturalReferences, to also allow interfaces to be used.
+     * @see #setNomenclaturalReference(Reference)
+     * @param nomenclaturalReference
+     */
     public void setNomenclaturalReference(INomenclaturalReference nomenclaturalReference);
+
+    /**
+     * Returns the details string of the {@link #getNomenclaturalReference() nomenclatural reference} assigned
+     * to <i>this</i> taxon name. The details describe the exact localisation within
+     * the publication used as nomenclature reference. These are mostly
+     * (implicitly) pages but can also be figures or tables or any other
+     * element of a publication. A nomenclatural micro reference (details)
+     * requires the existence of a nomenclatural reference.
+     *
+     * @see #getNomenclaturalReference()
+     * @see #getNomenclaturalSource()
+     */
+    public String getNomenclaturalMicroReference();
+
+    /**
+     * @see  #getNomenclaturalMicroReference()
+     */
+    public void setNomenclaturalMicroReference(String nomenclaturalMicroReference);
+
+    /**
+     * Sets the nomenclatural source which is a combination of the nomenclatural reference
+     * and the detail information (exact page, table, figure, ...) where to find this name
+     * for the first time.
+     *
+     * @see #getNomenclaturalReference()
+     * @see #getNomenclaturalMicroReference()
+     */
+    public DescriptionElementSource getNomenclaturalSource();
+
+    /**
+     * Sets the nomenclatural source
+     * @param nomenclaturalSource
+     */
+    public void setNomenclaturalSource(DescriptionElementSource nomenclaturalSource);
+
 
     /**
      * Returns the appended phrase string assigned to <i>this</i> taxon name.
@@ -367,21 +409,6 @@ public interface ITaxonNameBase
      */
     public void setAppendedPhrase(String appendedPhrase);
 
-    /**
-     * Returns the details string of the {@link #getNomenclaturalReference() nomenclatural reference} assigned
-     * to <i>this</i> taxon name. The details describe the exact localisation within
-     * the publication used as nomenclature reference. These are mostly
-     * (implicitly) pages but can also be figures or tables or any other
-     * element of a publication. A nomenclatural micro reference (details)
-     * requires the existence of a nomenclatural reference.
-     */
-    //Details of the nomenclatural reference (protologue).
-    public String getNomenclaturalMicroReference();
-
-    /**
-     * @see  #getNomenclaturalMicroReference()
-     */
-    public void setNomenclaturalMicroReference(String nomenclaturalMicroReference);
 
     /**
      * @param warnings

@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -71,7 +72,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author p.kelbert
- * @created 20.10.2008
+ * @since 20.10.2008
  */
 public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STATE extends SpecimenImportStateBase>
         extends CdmImportBase<CONFIG, STATE> {
@@ -82,6 +83,8 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	protected static final UUID SPECIMEN_SCAN_TERM = UUID.fromString("acda15be-c0e2-4ea8-8783-b9b0c4ad7f03");
 
 	private static final String COLON = ":";
+
+	protected Map<String, DefinedTerm> kindOfUnitsMap;
 
 
 	@Override
@@ -271,7 +274,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	                problem = true;
 	            }
 	        }
-	        else if (state.getDataHolder().getNomenclatureCode().toString().equals("Botanical") || state.getDataHolder().getNomenclatureCode().toString().contains("ICBN")) {
+	        else if (state.getDataHolder().getNomenclatureCode().toString().equals("Botanical") || state.getDataHolder().getNomenclatureCode().toString().contains("ICBN")  || state.getDataHolder().getNomenclatureCode().toString().contains("ICNAFP")) {
 	            taxonName = (TaxonName)nvnpi.parseFullName(scientificName, NomenclaturalCode.ICNAFP, rank);
 	            if (taxonName.hasProblem()) {
 	                problem = true;
@@ -977,7 +980,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 
 	            String preferred = identification.getPreferred();
 	            preferredFlag = false;
-	            if (preferred != null){
+	            if (preferred != null || state.getDataHolder().getIdentificationList().size()==1){
     	            if (preferred.equals("1") || preferred.toLowerCase().indexOf("true") != -1 || state.getDataHolder().getIdentificationList().size()==1) {
     	                preferredFlag = true;
     	            }

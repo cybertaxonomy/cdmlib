@@ -55,7 +55,7 @@ import io.swagger.annotations.Api;
  * to scientific names as well as taxa present in the underlying datasource.
  *
  * @author p.kelbert
- * @created March-2014
+ * @since March-2014
  */
 
 @Controller

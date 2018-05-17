@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.io.reference.ris.in;
 
 /**
  * @author a.mueller
- * @date 11.05.2017
+ * @since 11.05.2017
  *
  */
 public enum RisReferenceTag {

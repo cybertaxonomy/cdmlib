@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.description.FeatureNode;
 
 /**
  * @author n.hoffmann
- * @created Aug 6, 2010
+ * @since Aug 6, 2010
  * @version 1.0
  */
 @Controller

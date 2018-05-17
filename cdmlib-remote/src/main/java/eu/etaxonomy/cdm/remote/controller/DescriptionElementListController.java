@@ -53,7 +53,7 @@ import eu.etaxonomy.cdm.remote.editor.UuidList;
  * TODO write controller documentation
  *
  * @author a.kohlbecker
- * @date 24.03.2009
+ * @since 24.03.2009
  */
 @Controller
 @Api("descriptionElement")

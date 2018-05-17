@@ -14,7 +14,7 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 
 /**
  * @author a.kohlbecker
- * @date Jan 15, 2013
+ * @since Jan 15, 2013
  *
  */
 public class MediaAutoInitializer extends AutoPropertyInitializer<Media> {

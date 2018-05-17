@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
  * inherit from {@link IIdentifiableEntity} in future.
  *
  * @author a.mueller
- * @created 2013-12-02
+ * @since 2013-12-02
  *
  */
 public interface IDescribable<T extends DescriptionBase<?>> extends IAnnotatableEntity {

@@ -43,7 +43,7 @@ import eu.etaxonomy.cdm.validation.Level2;
  * </ul>
  *
  * @author m.doering
- * @created 08-Nov-2007 13:06:21
+ * @since 08-Nov-2007 13:06:21
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Distribution", propOrder = {

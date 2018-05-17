@@ -16,7 +16,7 @@ import java.util.Set;
  * to an instance of this class.
  *
  * @author a.mueller
- * @created 07.07.2008
+ * @since 07.07.2008
  */
 public interface IMediaEntity extends IMediaDocumented{
 

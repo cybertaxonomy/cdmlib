@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.strategy.cache;
 
+import java.io.Serializable;
+
 import javax.persistence.Transient;
 
 import org.apache.commons.lang.StringUtils;
@@ -22,12 +24,13 @@ import eu.etaxonomy.cdm.common.CdmUtils;
  * @author a.kohlbecker
  * @author  m.doering
  * @version 1.0
- * @created 11.12.2007 12:11:19
+ * @since 11.12.2007 12:11:19
  *
  */
-public class TaggedText {
+public class TaggedText implements Serializable{
 
-	private String text;
+	private static final long serialVersionUID = -3553949743902449813L;
+    private String text;
 	private TagEnum type;
 
 

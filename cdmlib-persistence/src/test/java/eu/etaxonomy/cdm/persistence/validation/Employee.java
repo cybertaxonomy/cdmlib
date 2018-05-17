@@ -27,9 +27,9 @@ import eu.etaxonomy.cdm.validation.Level3;
 public class Employee extends CdmBase {
 
     @CheckCase(value = CaseMode.UPPER, groups = { Level2.class })
-    private String firstName;
+    private String givenName;
     @CheckCase(value = CaseMode.UPPER, groups = { Level3.class })
-    private String lastName;
+    private String familyName;
     @Valid
     private Company company;
     @Valid
@@ -38,20 +38,20 @@ public class Employee extends CdmBase {
     public Employee() {
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getGivenName() {
+        return givenName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setGivenName(String givenName) {
+        this.givenName = givenName;
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getFamilyName() {
+        return familyName;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setFamilyName(String familyName) {
+        this.familyName = familyName;
     }
 
     public Company getCompany() {
@@ -79,14 +79,14 @@ public class Employee extends CdmBase {
             return false;
         }
         Employee emp = (Employee) obj;
-        return firstName.equals(emp.firstName) && lastName.equals(emp.lastName);
+        return givenName.equals(emp.givenName) && familyName.equals(emp.familyName);
     }
 
     @Override
     public int hashCode() {
         int hash = 17;
-        hash = (hash * 31) + (firstName == null ? 0 : firstName.hashCode());
-        hash = (hash * 31) + (lastName == null ? 0 : lastName.hashCode());
+        hash = (hash * 31) + (givenName == null ? 0 : givenName.hashCode());
+        hash = (hash * 31) + (familyName == null ? 0 : familyName.hashCode());
         return hash;
     }
 

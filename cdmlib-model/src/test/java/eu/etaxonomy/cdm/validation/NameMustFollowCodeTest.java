@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.validation.constraint.NameMustFollowCodeValidator;
  * Test class for {@link NameMustFollowCodeValidator}
  *
  * @author a.mueller
- * @date 11.03.2017
+ * @since 11.03.2017
  */
 public class NameMustFollowCodeTest extends ValidationTestBase {
 	@SuppressWarnings("unused")

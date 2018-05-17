@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.io.common.XmlExportConfiguratorBase;
 
 /**
  * @author a.mueller
- * @created 18.04.2011
+ * @since 18.04.2011
  */
 public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTaxExportState> {
 

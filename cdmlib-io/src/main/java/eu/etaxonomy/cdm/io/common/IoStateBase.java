@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.common.IoResultBase;
 
 /**
  * @author a.mueller
- * @created 11.05.2009
+ * @since 11.05.2009
  */
 public abstract class IoStateBase<CONFIG extends IIoConfigurator, IO extends ICdmIO, RESULT extends IoResultBase> {
 

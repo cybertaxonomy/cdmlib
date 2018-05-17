@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 
 /**
  * @author a.mueller
- * @date 13.09.2010
+ * @since 13.09.2010
  *
  */
 public abstract class SchemaUpdaterStepBase implements ISchemaUpdaterStep {

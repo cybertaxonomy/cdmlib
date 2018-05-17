@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.persistence.query.NameSearchOrder;
 
 /**
  * @author a.babadshanjan
- * @created 20.01.2009
+ * @since 20.01.2009
  */
 public interface IFindTaxaAndNamesConfigurator<T extends TaxonBase> extends IIdentifiableEntityServiceConfigurator<T>{
 

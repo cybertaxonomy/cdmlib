@@ -47,7 +47,7 @@ import eu.etaxonomy.cdm.io.stream.terms.TermUri;
  * For each data file included in the zip it creates one stream by evaluating the meta file.
  * Ecological metadata handling is still unclear.
  * @author a.mueller
- * @date 17.10.2011
+ * @since 17.10.2011
  *
  */
 public class DwcaZipToStreamConverter<STATE extends DwcaImportState> {

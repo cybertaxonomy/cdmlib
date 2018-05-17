@@ -381,6 +381,7 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 				//TODO save voc
 				if (true /*!config.isInternal()*/){
 					dao.delete(term);
+					result.addDeletedObject(term);
 					dao.saveOrUpdateAll(termsToSave);
 //					for (DeleteResult.PersistPair persistPair : result.getObjectsToDelete()){
 //						persistPair.dao.delete(persistPair.objectToPersist);

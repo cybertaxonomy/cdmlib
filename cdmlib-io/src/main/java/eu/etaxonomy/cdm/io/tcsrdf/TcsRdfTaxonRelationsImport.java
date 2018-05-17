@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 
 /**
  * @author a.mueller
- * @created 29.05.2008
+ * @since 29.05.2008
  */
 @Component
 public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdmIO<TcsRdfImportState> {

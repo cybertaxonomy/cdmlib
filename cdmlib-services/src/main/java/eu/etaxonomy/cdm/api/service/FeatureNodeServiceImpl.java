@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandlin
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
@@ -31,7 +32,7 @@ import eu.etaxonomy.cdm.persistence.dao.description.IFeatureNodeDao;
 
 /**
  * @author n.hoffmann
- * @created Aug 5, 2010
+ * @since Aug 5, 2010
  * @version 1.0
  */
 @Service
@@ -86,14 +87,28 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<FeatureNode, 
 	         }
 
 	         dao.delete(node);
+	         result.addDeletedObject(node);
 	         if(parent!=null){
 	             result.addUpdatedObject(parent);
 	         }
 	         if (config.isDeleteElement()){
                  feature = node.getFeature();
                  termService.delete(feature.getUuid());
+                 result.addDeletedObject(feature);
              }
 	     }
+	     return result;
+	 }
+
+	 @Override
+	 public UpdateResult createChildFeatureNode(FeatureNode node, Feature featureChild){
+	     DefinedTermBase feature = termService.save(featureChild);
+	     FeatureNode childNode = FeatureNode.NewInstance(featureChild);
+	     save(childNode);
+	     UpdateResult result = new UpdateResult();
+	     node.addChild(childNode);
+	     result.addUpdatedObject(node);
+	     result.setCdmEntity(node.getFeatureTree());
 	     return result;
 	 }
 
@@ -101,9 +116,9 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<FeatureNode, 
 	 public UpdateResult addChildFeatureNode(FeatureNode node, Feature featureChild){
 	     UpdateResult result = new UpdateResult();
 	     FeatureNode childNode = FeatureNode.NewInstance(featureChild);
-	     save(childNode);
 	     node.addChild(childNode);
 	     result.addUpdatedObject(node);
+	     result.setCdmEntity(node.getFeatureTree());
 	     return result;
 	 }
 
@@ -151,11 +166,8 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<FeatureNode, 
             targetNode.addChild(movedNode, position);
         }
         result.addUpdatedObject(targetNode);
-        saveOrUpdate(targetNode);
-        saveOrUpdate(movedNode);
         if(parent!=null){
             result.addUpdatedObject(parent);
-            saveOrUpdate(parent);
         }
         result.setCdmEntity(targetNode.getFeatureTree());
         return result;

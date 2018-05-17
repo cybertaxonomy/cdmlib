@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
- * @created 20.06.2008
+ * @since 20.06.2008
  * @param <STATE> the import state
  */
 @Component

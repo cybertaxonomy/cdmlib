@@ -16,7 +16,7 @@ import net.sf.json.JsonConfig;
 
 /**
  * @author a.kohlbecker
- * @date 09.06.2009
+ * @since 09.06.2009
  *
  */
 public class TaxonRelationshipBeanProcessor extends AbstractCdmBeanProcessor<TaxonRelationship> {

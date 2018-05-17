@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.common.ExcelUtils;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.distribution.excelupdate.ExcelDistributionUpdateConfigurator;
 import eu.etaxonomy.cdm.io.excel.taxa.NormalExplicitImportConfigurator;
+import eu.etaxonomy.cdm.io.excel.taxa.TaxonListImportConfigurator;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -37,7 +38,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author a.babadshanjan
- * @created 17.12.2008
+ * @since 17.12.2008
  */
 public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW>, CONFIG extends ExcelImportConfiguratorBase, ROW extends ExcelRowBase>
         extends CdmImportBase<CONFIG, STATE> {
@@ -74,7 +75,7 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
 
 		byte[] data = null;
 		// read and save all rows of the excel worksheet
-		if ((state.getConfig() instanceof NormalExplicitImportConfigurator || state.getConfig() instanceof ExcelDistributionUpdateConfigurator) &&
+		if ((state.getConfig() instanceof NormalExplicitImportConfigurator || state.getConfig() instanceof ExcelDistributionUpdateConfigurator || state.getConfig() instanceof TaxonListImportConfigurator) &&
 		        (state.getConfig().getStream() != null || state.getConfig().getStream() != null)){
 		    data =  state.getConfig().getStream();
 		} else{

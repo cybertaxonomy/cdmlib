@@ -22,7 +22,7 @@ import org.junit.Test;
 
 /**
  * @author a.mueller
- * @created 04.09.2009
+ * @since 04.09.2009
  * @version 1.0
  */
 public class ParserProblemTest {

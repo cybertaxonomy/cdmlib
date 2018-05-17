@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 
 /**
  * @author a.mueller
- * @date 2015-01-19
+ * @since 2015-01-19
  *
  */
 public class IdentifiedEntityDTO<T extends IdentifiableEntity> extends EntityDTOBase<T> implements Serializable{

@@ -41,7 +41,6 @@ import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
-import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -51,7 +50,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 
 /**
  * @author a.mueller
- * @created 28.10.2008
+ * @since 28.10.2008
  */
 public class SpecimenTest {
 	private static final Logger logger = Logger.getLogger(SpecimenTest.class);
@@ -70,7 +69,6 @@ public class SpecimenTest {
 	public void testNewInstance() {
 		DerivedUnit specimen = DerivedUnit.NewPreservedSpecimenInstance();
 		assertNotNull(specimen);
-		assertTrue(specimen instanceof DerivedUnit);
 		assertTrue(specimen.getRecordBasis().equals(SpecimenOrObservationType.PreservedSpecimen));
 	}
 
@@ -225,7 +223,7 @@ public class SpecimenTest {
 		Person createdBy = Person.NewTitledInstance("creator");
 		DerivationEvent derivedFrom = DerivationEvent.NewInstance(null);
 		int id = 22;
-		int individualCount = 25;
+		String individualCount = "25";
 		DefinedTerm lifeStage = DefinedTerm.NewStageInstance(null, null, null);
 		LSID lsid = null;
 		try {
@@ -234,8 +232,8 @@ public class SpecimenTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		DerivedUnit nextVersion = DerivedUnit.NewPreservedSpecimenInstance();
-		DerivedUnit previousVersion = DerivedUnit.NewPreservedSpecimenInstance();
+//		DerivedUnit nextVersion = DerivedUnit.NewPreservedSpecimenInstance();
+//		DerivedUnit previousVersion = DerivedUnit.NewPreservedSpecimenInstance();
 		PreservationMethod preservation = PreservationMethod.NewInstance();
 		boolean protectedTitleCache = true;
 		DefinedTerm sex = DefinedTerm.SEX_FEMALE();
@@ -255,7 +253,7 @@ public class SpecimenTest {
 		extension.setValue("extension");
 		Marker marker = Marker.NewInstance(MarkerType.COMPLETE(), false);
 		Rights right = Rights.NewInstance("right", Language.DEFAULT());
-		Media media = Media.NewInstance();
+//		Media media = Media.NewInstance();
 		IdentifiableSource source = IdentifiableSource.NewDataImportInstance("12", "idNamespace");
 
 		specimen.setAccessionNumber(accessionNumber);
@@ -350,10 +348,10 @@ public class SpecimenTest {
 //		assertEquals(media, specimenClone.getMedia().iterator().next());  #3597
 //		assertEquals(right, specimenClone.getRights().iterator().next()); #5762
 		assertTrue("Rights must contain 1 rights object", specimenClone.getRights().size() == 1);
-        assertFalse("Rights must be coloned", specimenClone.getRights().iterator().next().equals(right));
+  	    assertTrue("Rights must not be cloned", specimenClone.getRights().iterator().next().equals(right));
 
 		assertFalse(source.equals(specimenClone.getSources().iterator().next()));
-		assertEquals(source.getId(), ((OriginalSourceBase)specimenClone.getSources().iterator().next()).getId());
+		assertEquals(source.getId(), ((OriginalSourceBase<?>)specimenClone.getSources().iterator().next()).getId());
 		assertNotSame(source, specimenClone.getSources().iterator().next());
 		assertEquals(1, specimenClone.getSources().size());
 	}

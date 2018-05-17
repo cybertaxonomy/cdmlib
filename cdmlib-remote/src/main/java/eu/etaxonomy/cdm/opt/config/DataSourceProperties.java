@@ -13,7 +13,7 @@ import java.util.Properties;
 
 /**
  * @author a.kohlbecker
- * @date Oct 5, 2012
+ * @since Oct 5, 2012
  *
  */
 public class DataSourceProperties {

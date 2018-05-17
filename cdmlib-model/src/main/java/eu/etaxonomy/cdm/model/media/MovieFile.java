@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * @author m.doering
  * @version 1.0
- * @created 08-Nov-2007 13:06:35
+ * @since 08-Nov-2007 13:06:35
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "MovieFile", propOrder = {

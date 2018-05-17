@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 
 /**
  * @author a.mueller
- * @date 18.09.2017
+ * @since 18.09.2017
  *
  */
 public class ViralNameDefaultCacheStrategyTest {

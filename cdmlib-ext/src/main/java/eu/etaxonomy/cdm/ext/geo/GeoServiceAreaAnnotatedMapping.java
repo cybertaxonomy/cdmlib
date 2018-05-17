@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
  * is stored as a technical annotation of the area.
  * The area is saved while the mapping is set.
  * @author a.mueller
- * @date 15.08.2011
+ * @since 15.08.2011
  *
  */
 @Component

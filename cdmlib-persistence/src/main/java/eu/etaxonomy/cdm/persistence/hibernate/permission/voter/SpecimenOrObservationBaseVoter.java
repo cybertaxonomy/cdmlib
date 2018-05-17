@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
  * see  https://dev.e-taxonomy.eu/redmine/issues/7018
  *
  * @author a.kohlbecker
- * @date Feb 24, 2014
+ * @since Feb 24, 2014
  *
  */
 public class SpecimenOrObservationBaseVoter extends CdmPermissionVoter {

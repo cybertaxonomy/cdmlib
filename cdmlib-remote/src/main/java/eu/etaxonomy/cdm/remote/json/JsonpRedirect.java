@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
  * The JsonpRedirect is used to mimic redirects when using json ajax requests.
  *
  * @author andreas
- * @date Jul 20, 2012
+ * @since Jul 20, 2012
  *
  */
 public class JsonpRedirect {

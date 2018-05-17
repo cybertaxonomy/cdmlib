@@ -60,7 +60,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
  * transform former classes to general classes with enums as their types.
  *
  * @author a.mueller
- * @created 11.06.2013
+ * @since 11.06.2013
  */
 @XmlEnum
 public enum TermType implements IEnumTerm<TermType>{

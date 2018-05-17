@@ -46,7 +46,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  * </ul>
  *
  * @author m.doering
- * @created 08-Nov-2007 13:06:17
+ * @since 08-Nov-2007 13:06:17
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TaxonRelationshipType")
@@ -67,6 +67,9 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 
 	private static final UUID uuidMisappliedNameFor = UUID.fromString("1ed87175-59dd-437e-959e-0d71583d8417");
 	private static final UUID uuidProParteMisappliedNameFor = UUID.fromString("b59b4bd2-11ff-45d1-bae2-146efdeee206");
+	private static final UUID uuidPartialMisappliedNameFor = UUID.fromString("859fb615-b0e8-440b-866e-8a19f493cd36");
+	public static final UUID uuidProParteSynonymFor = UUID.fromString("8a896603-0fa3-44c6-9cd7-df2d8792e577");
+	public static final UUID uuidPartialSynonymFor = UUID.fromString("9d7a5e56-973c-474c-b6c3-a1cb00833a3c");
 	private static final UUID uuidInvalidDesignationFor = UUID.fromString("605b1d01-f2b1-4544-b2e0-6f08def3d6ed");
 
 	private static final UUID uuidContradiction = UUID.fromString("a8f03491-2ad6-4fae-a04c-2a4c117a2e9b");
@@ -185,6 +188,38 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
         return (allMisappliedNameTypes().contains(this));
     }
 
+
+    /**
+     * <code>true</code> if this relationship type is any
+     * of the pro parte or partial synonym relationship types
+     * {@link #PRO_PARTE_SYNONYM_FOR()} or {@link #PARTIAL_SYNONYM_FOR()}
+     *
+     * @see #isAnyMisappliedName()
+     */
+    public boolean isAnySynonym(){
+        return (allSynonymTypes().contains(this));
+    }
+
+    /**
+     * <code>true</code> if this relationship type is either
+     * a pro parte synonym or a pro parte misapplied name relationship type
+     * {@link #PRO_PARTE_SYNONYM_FOR()} or {@link #PRO_PARTE_MISAPPLIED_NAME_FOR}
+     */
+    public boolean isProParte(){
+        return (allProParteTypes().contains(this));
+    }
+
+    /**
+     * <code>true</code> if this relationship type is either
+     * a partial synonym or a partial misapplied name relationship type
+     * {@link #PARTIAL_SYNONYM_FOR()} or {@link #PARTIAL_MISAPPLIED_NAME_FOR}
+     *
+     * @see #isProParte()
+     */
+    public boolean isPartial(){
+        return (allPartialTypes().contains(this));
+    }
+
     /**
      * Returns a list of all misapplied name relationship
      * types such as "misapplied name for" and
@@ -197,9 +232,30 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
         Set<TaxonRelationshipType> result = new HashSet<>();
         result.add(MISAPPLIED_NAME_FOR());
         result.add(PRO_PARTE_MISAPPLIED_NAME_FOR());
+        result.add(PARTIAL_MISAPPLIED_NAME_FOR());
         return result;
     }
 
+    public static Set<TaxonRelationshipType> allSynonymTypes(){
+        Set<TaxonRelationshipType> result = new HashSet<>();
+        result.add(PRO_PARTE_SYNONYM_FOR());
+        result.add(PARTIAL_SYNONYM_FOR());
+        return result;
+    }
+
+    public static Set<TaxonRelationshipType> allProParteTypes(){
+        Set<TaxonRelationshipType> result = new HashSet<>();
+        result.add(PRO_PARTE_SYNONYM_FOR());
+        result.add(PRO_PARTE_MISAPPLIED_NAME_FOR());
+        return result;
+    }
+
+    public static Set<TaxonRelationshipType> allPartialTypes(){
+        Set<TaxonRelationshipType> result = new HashSet<>();
+        result.add(PARTIAL_SYNONYM_FOR());
+        result.add(PARTIAL_MISAPPLIED_NAME_FOR());
+        return result;
+    }
 
 
 	/**
@@ -251,14 +307,62 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
      * in such a {@link TaxonRelationship taxon relationship} has been erroneously used by
      * the {@link TaxonBase#getSec() concept reference} to (partly) denominate the same real taxon
      * as the one meant by the target {@link Taxon taxon}. Additionaly another real taxon
-     * is (partly) demoninated by the given name in the concept reference. Therefore it is called
+     * is (partly) denominated by the given name in the concept reference. Therefore it is called
      * pro parte. <BR>
      * This type is neither symmetric nor transitive.
      *
      * @see #MISAPPLIED_NAME_FOR()
+     * @see #PRO_PARTE_SYNONYM_FOR()
      */
     public static final TaxonRelationshipType PRO_PARTE_MISAPPLIED_NAME_FOR(){
         return getTermByUuid(uuidProParteMisappliedNameFor);
+    }
+    /**
+     * Returns the taxon relationship type "is partial misapplied name for". This
+     * indicates that the {@link eu.etaxonomy.cdm.model.name.TaxonName taxon name} of the
+     * {@link TaxonRelationship#getFromTaxon() source taxon}
+     * in such a {@link TaxonRelationship taxon relationship} has been erroneously used by
+     * the {@link TaxonBase#getSec() concept reference} to (partly) denominate the same real taxon
+     * as the one meant by the target {@link Taxon taxon}. In contrary to a
+     * {@link #PRO_PARTE_MISAPPLIED_NAME_FOR() pro parte misapplied name} no other real taxon
+     * is (partly) demoninated by the given name in the concept reference. Therefore it is called
+     * partial.<BR>
+     * This type is neither symmetric nor transitive.
+     *
+     * @see #MISAPPLIED_NAME_FOR()
+     * @see #PRO_PARTE_MISAPPLIED_NAME_FOR()
+     * @see #PARTIAL_SYNONYM_FOR()
+     * @see #INCLUDES()
+     */
+    public static final TaxonRelationshipType PARTIAL_MISAPPLIED_NAME_FOR(){
+        return getTermByUuid(uuidPartialMisappliedNameFor);
+    }
+    /**
+     * Returns the taxon relationship type "is pro parte synonym for". This
+     * indicates that the {@link eu.etaxonomy.cdm.model.name.TaxonName taxon name} of the
+     * {@link TaxonRelationship#getFromTaxon() source taxon}
+     * in such a {@link TaxonRelationship taxon relationship} has been used as a
+     * pro parte synonym.<BR>
+     * This type is neither symmetric nor transitive.
+     *
+     * @see #PRO_PARTE_MISAPPLIED_NAME_FOR()
+     */
+    public static final TaxonRelationshipType PRO_PARTE_SYNONYM_FOR(){
+        return getTermByUuid(uuidProParteSynonymFor);
+    }
+    /**
+     * Returns the taxon relationship type "is partial synonym for". This
+     * indicates that the {@link eu.etaxonomy.cdm.model.name.TaxonName taxon name} of the
+     * {@link TaxonRelationship#getFromTaxon() source taxon}
+     * in such a {@link TaxonRelationship taxon relationship} has been used as a
+     * partial synonym.<BR>
+     * This type is neither symmetric nor transitive.
+     *
+     * @see #PRO_PARTE_SYNONYM_FOR()
+     * @see #PARTIAL_MISAPPLIED_NAME_FOR()
+     */
+    public static final TaxonRelationshipType PARTIAL_SYNONYM_FOR(){
+        return getTermByUuid(uuidPartialSynonymFor);
     }
 
 	/**

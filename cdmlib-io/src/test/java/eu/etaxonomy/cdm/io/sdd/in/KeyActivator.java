@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.io.sdd.ikeyplus.IkeyPlusImportConfigurator;
 
 /**
  * @author andreas
- * @date Sep 19, 2012
+ * @since Sep 19, 2012
  *
  */
 public class KeyActivator {

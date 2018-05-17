@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.io.common.events.IIoObserver;
 /**
  * Base class for XML imports
  * @author a.mueller
- * @date 28.06.2011
+ * @since 28.06.2011
  *
  */
 public abstract class XmlImportBase<CONFIG extends XmlImportConfiguratorBase<STATE>, STATE extends XmlImportState<CONFIG, ?>>

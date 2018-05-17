@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  * Maybe it will need improvement later on.
 
  * @author a.mueller
- * @date 07.04.2010
+ * @since 07.04.2010
  *
  */
 public class CollectionDefaultCacheStrategy extends StrategyBase implements IIdentifiableEntityCacheStrategy<Collection>{

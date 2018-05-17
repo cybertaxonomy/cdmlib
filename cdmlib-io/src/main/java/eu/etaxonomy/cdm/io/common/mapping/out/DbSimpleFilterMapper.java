@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * Current implementation
  * 
  * @author a.mueller
- * @created 13.02.2012
+ * @since 13.02.2012
  */
 public class DbSimpleFilterMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> {
 	private static final Logger logger = Logger.getLogger(DbSimpleFilterMapper.class);

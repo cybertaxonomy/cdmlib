@@ -72,7 +72,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author a.babadshanjan
- * @created 08.01.2009
+ * @since 08.01.2009
  */
 
 @Component
@@ -97,7 +97,7 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 	@Override
 	protected void analyzeSingleValue(KeyValue keyValue, TaxonExcelImportState state) {
 
-		NormalExplicitRow normalExplicitRow = state.getCurrentRow();
+		NormalExplicitRow normalExplicitRow = (NormalExplicitRow)state.getCurrentRow();
 		String key = keyValue.key;
 		String value = keyValue.value;
 		Integer index = keyValue.index;
@@ -244,7 +244,7 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 //		}
 //		System.out.println("FP:" + state.getCurrentLine());
 		Rank rank = null;
-		NormalExplicitRow taxonDataHolder = state.getCurrentRow();
+		NormalExplicitRow taxonDataHolder = (NormalExplicitRow)state.getCurrentRow();
 
 		String rankStr = taxonDataHolder.getRank();
 		String taxonNameStr = taxonDataHolder.getScientificName();
@@ -399,7 +399,7 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
     protected void secondPass(TaxonExcelImportState state) {
 		if (logger.isDebugEnabled()){logger.debug(state.getCurrentLine());}
 		try {
-			NormalExplicitRow taxonDataHolder = state.getCurrentRow();
+			NormalExplicitRow taxonDataHolder = (NormalExplicitRow)state.getCurrentRow();
 			String taxonNameStr = taxonDataHolder.getScientificName();
 			String nameStatus = taxonDataHolder.getNameStatus();
 			String commonNameStr = taxonDataHolder.getCommonName();
@@ -644,7 +644,7 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 						}else if (type.equals(SourceType.Title)) {
 							ref.setTitle(value);
 						}else if (type.equals(SourceType.Year)) {
-							ref.setDatePublished(TimePeriodParser.parseString(value));
+							ref.setDatePublished(TimePeriodParser.parseStringVerbatim(value));
 						}else if (type.equals(SourceType.RefExtension)) {
 							ExtensionType extensionType = getExtensionType(state, uuidRefExtension, "RefExtension", "Reference Extension", "RefExt.");
 							Extension extension = Extension.NewInstance(ref, value, extensionType);
@@ -732,8 +732,8 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 	 */
 	private void handleCommonName(TaxonExcelImportState state,
 			String taxonNameStr, String commonNameStr, Taxon acceptedTaxon) {
-		Language language = getTermService().getLanguageByIso(state.getCurrentRow().getLanguage());
-		if (language == null && CdmUtils.isNotEmpty(state.getCurrentRow().getLanguage())  ){
+		Language language = getTermService().getLanguageByIso(((NormalExplicitRow)state.getCurrentRow()).getLanguage());
+		if (language == null && CdmUtils.isNotEmpty(((NormalExplicitRow)state.getCurrentRow()).getLanguage())  ){
 			String error ="Language is null but shouldn't";
 			logger.error(error);
 			throw new IllegalArgumentException(error);
@@ -874,7 +874,7 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
  				}
 			}
 			if (StringUtils.isNotBlank(reference)) {
-			    String pub = CdmUtils.concat(" ", reference, state.getCurrentRow().getCollation());
+			    String pub = CdmUtils.concat(" ", reference, ((NormalExplicitRow)state.getCurrentRow()).getCollation());
 			    String[] split = pub.split(":");
 			    pub = split[0];
 

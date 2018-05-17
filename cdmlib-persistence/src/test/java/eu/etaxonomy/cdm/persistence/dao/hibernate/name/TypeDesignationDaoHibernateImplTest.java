@@ -45,7 +45,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 /**
  * @author a.babadshanjan
  * @author a.mueller
- * @created 25.05.2009
+ * @since 25.05.2009
  */
 public class TypeDesignationDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 	@SuppressWarnings("unused")

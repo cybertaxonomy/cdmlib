@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.reference.IPublicationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author a.mueller
- * @created 29.07.2008
+ * @since 29.07.2008
  */
 @Component
 public class TaxonXModsImport extends CdmImportBase<TaxonXImportConfigurator, TaxonXImportState>{
@@ -131,7 +131,7 @@ public class TaxonXModsImport extends CdmImportBase<TaxonXImportConfigurator, Ta
 			String dateIssued = elDateIssued.getTextNormalize();
 			contentList.remove(elDateIssued);
 
-			TimePeriod datePublished = TimePeriodParser.parseString(dateIssued);
+			VerbatimTimePeriod datePublished = TimePeriodParser.parseStringVerbatim(dateIssued);
 			if (ref.getType().isPublication()){
 				((IPublicationBase)ref).setDatePublished(datePublished );
 			}else{
@@ -203,9 +203,9 @@ public class TaxonXModsImport extends CdmImportBase<TaxonXImportConfigurator, Ta
 				if (elNamePart.getAttributeValue("type").equals("family")){
 					lastTeamMember = Person.NewInstance();
 					authorship.addTeamMember(lastTeamMember);
-					lastTeamMember.setLastname(elNamePart.getTextNormalize());
+					lastTeamMember.setFamilyName(elNamePart.getTextNormalize());
 				}else if (elNamePart.getAttributeValue("type").equals("given")){
-					lastTeamMember.setFirstname(elNamePart.getTextNormalize());
+					lastTeamMember.setGivenName(elNamePart.getTextNormalize());
 				}else{
 					logger.warn("Unsupport name part type");
 				}

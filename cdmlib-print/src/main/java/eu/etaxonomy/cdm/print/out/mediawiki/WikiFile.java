@@ -14,7 +14,7 @@ import java.io.File;
 
 /**
  * @author n.paule
- * @date Sep 19, 2013
+ * @since Sep 19, 2013
  *
  */
 public class WikiFile {

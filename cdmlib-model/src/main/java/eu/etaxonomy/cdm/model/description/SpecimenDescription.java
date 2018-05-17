@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.strategy.cache.description.SpecimenDescriptionDefaultCac
  *
  * @author a.mueller
  * @version 1.0
- * @created 08-Jul-2008
+ * @since 08-Jul-2008
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SpecimenDescription")

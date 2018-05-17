@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  *
  *
  * @author a.mueller
- * @created 18.09.2009
+ * @since 18.09.2009
  */
 public interface IOriginalSource<T extends ISourceable> {
 

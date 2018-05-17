@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * </ul>
  *
  * @author a.kohlbecker
- * @date 24.08.2010
+ * @since 24.08.2010
  *
  */
 public class MobotOpenUrlServiceWrapper extends ServiceWrapperBase<OpenUrlReference> {
@@ -62,7 +62,7 @@ public class MobotOpenUrlServiceWrapper extends ServiceWrapperBase<OpenUrlRefere
      */
     public List<OpenUrlReference> doResolve(MobotOpenUrlQuery query) {
 
-        List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+        List<NameValuePair> pairs = new ArrayList<>();
 
         // find the appropriate schemadapter using the schemaShortName
         if(query.schemaShortName == null){
@@ -128,7 +128,7 @@ public class MobotOpenUrlServiceWrapper extends ServiceWrapperBase<OpenUrlRefere
             pairs.add(new BasicNameValuePair("rft_id", "info:lccn/" +query.libofCongressID));
         }
 
-        Map<String, String> requestHeaders = new HashMap<String, String>();
+        Map<String, String> requestHeaders = new HashMap<>();
         requestHeaders.put("Accept-Charset", "UTF-8");
 
         try {

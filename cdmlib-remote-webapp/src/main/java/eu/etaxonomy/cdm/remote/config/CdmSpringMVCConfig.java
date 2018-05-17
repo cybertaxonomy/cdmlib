@@ -45,7 +45,7 @@ import eu.etaxonomy.cdm.remote.view.PatternViewResolver;
  *
  *
  * @author a.kohlbecker
- * @date Jul 1, 2014
+ * @since Jul 1, 2014
  *
  */
 // @EnableWebMvc // do not add this since we are overriding WebMvcConfigurationSupport directly

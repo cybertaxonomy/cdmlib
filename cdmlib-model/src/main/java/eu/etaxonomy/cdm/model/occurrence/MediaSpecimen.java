@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStra
  * or preserved accordingly and may therefore be photographed instead.
  *
  * @author a.mueller
- * @created 14-Jul-2013 13:06:22
+ * @since 14-Jul-2013 13:06:22
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "MediaSpecimen", propOrder = {

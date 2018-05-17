@@ -27,8 +27,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 
 /**
  * @author a.babadshanjan
- * @created 19.05.2009
- * @version 1.0
+ * @since 19.05.2009
  */
 public class SpecimenTypeDesignationTest {
 	@SuppressWarnings("unused")

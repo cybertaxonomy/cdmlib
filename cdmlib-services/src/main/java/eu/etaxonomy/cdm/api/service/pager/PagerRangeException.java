@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.api.service.pager;
 
 /**
  * @author a.mueller
- * @date 22.09.2016
+ * @since 22.09.2016
  *
  */
 public class PagerRangeException extends RuntimeException {

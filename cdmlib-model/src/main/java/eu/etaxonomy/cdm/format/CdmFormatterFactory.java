@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
  * and configures the format according to the given formatKeys.
  * 
  * @author pplitzner
- * @date Nov 30, 2015
+ * @since Nov 30, 2015
  *
  */
 public class CdmFormatterFactory {

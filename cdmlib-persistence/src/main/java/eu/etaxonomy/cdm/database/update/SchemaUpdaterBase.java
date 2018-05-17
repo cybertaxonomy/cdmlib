@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName;
  * Base class for updating a schema.
  *
  * @author a.mueller
- * @date 10.09.2010
+ * @since 10.09.2010
  *
  */
 public abstract class SchemaUpdaterBase

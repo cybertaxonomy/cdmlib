@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.persistence.dto.ITermRepresentation_L10n;
 
 /**
  * @author l.morris & a.kohlbecker
- * @date Feb 22, 2013
+ * @since Feb 22, 2013
  *
  */
 public class TermRepresentation_L10n implements ITermRepresentation_L10n {

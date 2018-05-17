@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
  * @author a.kohlbecker
- * @date Jan 27, 2014
+ * @since Jan 27, 2014
  *
  */
 public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {

@@ -13,7 +13,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
 
 /**
  * @author pplitzner
- * @date 11.03.2014
+ * @since 11.03.2014
  *
  */
 public interface ISequenceDao extends IAnnotatableDao<Sequence>{

@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author a.mueller
- * @created 10.06.2009
+ * @since 10.06.2009
  */
 public class DbIntegerAnnotationMapper extends DbAnnotationMapper {
 	private static final Logger logger = Logger.getLogger(DbIntegerAnnotationMapper.class);

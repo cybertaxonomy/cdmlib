@@ -19,7 +19,7 @@ import org.springframework.util.ClassUtils;
 
 /**
  * @author a.kohlbecker
- * @date Jul 31, 2014
+ * @since Jul 31, 2014
  *
  */
 public class CdmTypeScanner<T> extends ClassPathScanningCandidateComponentProvider {

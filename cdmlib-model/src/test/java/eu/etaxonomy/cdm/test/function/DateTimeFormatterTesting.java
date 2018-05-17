@@ -16,7 +16,7 @@ import org.joda.time.format.DateTimeFormatter;
 
 /**
  * @author a.mueller
- * @date 03.05.2017
+ * @since 03.05.2017
  *
  */
 public class DateTimeFormatterTesting {

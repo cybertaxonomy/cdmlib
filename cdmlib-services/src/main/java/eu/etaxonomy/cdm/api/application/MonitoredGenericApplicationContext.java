@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
  * {@link GenericApplicationContext Generic application context} which allows progress monitoring.
  *
  * @author a.mueller
- * @date 29.09.2011
+ * @since 29.09.2011
  *
  */
 public class MonitoredGenericApplicationContext extends GenericApplicationContext{

@@ -47,7 +47,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 
 /**
  * @author a.oppermann
- * @created 18.10.2012
+ * @since 18.10.2012
  */
 
 @Component

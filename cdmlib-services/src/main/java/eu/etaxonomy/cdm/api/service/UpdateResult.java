@@ -26,12 +26,12 @@ import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
  * This class represents the result of an update action.
  *
  * @author k.luther
- * @date 11.02.2015
+ * @since 11.02.2015
  *
  */
 public class UpdateResult implements Serializable{
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -7040027587709706700L;
 
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(UpdateResult.class);
@@ -41,18 +41,18 @@ public class UpdateResult implements Serializable{
     @SuppressWarnings("unchecked")
     private final Collection<Exception> exceptions = new CircularFifoBuffer(10);
 
-    private Set<CdmBase> updatedObjects = new HashSet<CdmBase>();
+    private Set<CdmBase> updatedObjects = new HashSet<>();
 
-    private final Set<CdmEntityIdentifier> updatedCdmIds = new HashSet<CdmEntityIdentifier>();
+    private final Set<CdmEntityIdentifier> updatedCdmIds = new HashSet<>();
 
-    private final Set<CdmBase> unchangedObjects = new HashSet<CdmBase>();
+    private final Set<CdmBase> unchangedObjects = new HashSet<>();
 
     private CdmBase cdmEntity;
 
 
-    //		private Set<PersistPair> objectsToDelete = new HashSet<PersistPair>();
+    //		private Set<PersistPair> objectsToDelete = new HashSet<>();
     //
-    //		private Set<PersistPair> objectsToSave = new HashSet<DeleteResult.PersistPair>();
+    //		private Set<PersistPair> objectsToSave = new HashSet<>();
 
     //		protected class PersistPair{
     //			protected CdmBase objectToPersist;
@@ -122,8 +122,8 @@ public class UpdateResult implements Serializable{
         return updatedObjects;
     }
     public void addUpdatedObject(CdmBase relatedObject) {
-        this.updatedObjects.add(relatedObject);
-    }
+            this.updatedObjects.add(relatedObject);
+        }
     public void addUpdatedObjects(Set<? extends CdmBase> updatedObjects) {
         this.updatedObjects.addAll(updatedObjects);
     }
@@ -184,6 +184,10 @@ public class UpdateResult implements Serializable{
         this.setMaxStatus(includedResult.getStatus());
         this.addExceptions(includedResult.getExceptions());
         this.addUpdatedObjects(includedResult.getUpdatedObjects());
+        //also add cdm entity of included result to updated objects
+        if(includedResult.getCdmEntity()!=null){
+            this.getUpdatedObjects().add(includedResult.getCdmEntity());
+        }
     }
 
     public boolean isOk(){
@@ -222,7 +226,7 @@ public class UpdateResult implements Serializable{
         if(relatedObjectString.endsWith(separator)){
             relatedObjectString = relatedObjectString.substring(0, relatedObjectString.length()-separator.length());
         }
-        return "[DeleteResult]\n" +
+        return "[UpdateResult]\n" +
         "Status: " + status.toString()+"\n" +
         "Exceptions: " + exceptionString+"\n" +
         "Related Objects: "+relatedObjectString;

@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * Configurator for importing Identifier via csv for a given class.
  *
  * @author a.mueller
- * @date 14.03.2017
+ * @since 14.03.2017
  */
 public class IdentifierImportConfigurator
         extends SimpleImportConfiguratorBase<InputStreamReader>{

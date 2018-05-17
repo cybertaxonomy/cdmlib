@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author a.kohlbecker
- * @date Feb 3, 2014
+ * @since Feb 3, 2014
  *
  */
 public interface ICdmPermissionEvaluator extends PermissionEvaluator {

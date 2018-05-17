@@ -7,7 +7,7 @@ import java.util.UUID;
 
 /**
  * @author f.revilla
- * @date 09.06.2010
+ * @since 09.06.2010
  */
 
 public class UUIDListPropertyEditor extends PropertyEditorSupport {

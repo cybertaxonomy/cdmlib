@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
  * string is given the length is computed automatically.
  *
  * @author a.mueller
- * @created 2013-07-05
+ * @since 2013-07-05
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SequenceString", propOrder = {

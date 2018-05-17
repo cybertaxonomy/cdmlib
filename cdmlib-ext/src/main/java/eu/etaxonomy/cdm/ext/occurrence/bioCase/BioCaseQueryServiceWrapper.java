@@ -46,7 +46,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
  * This service provides access to BioCASe providers.<br>
  * It sends a {@link OccurenceQuery} via HTTP POST to a given provider
  * @author pplitzner
- * @date 13.09.2013
+ * @since 13.09.2013
  *
  */
 
@@ -88,7 +88,7 @@ public class BioCaseQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObs
             UrlEncodedFormEntity httpEntity = new UrlEncodedFormEntity(queryParamsPOST);
 
             //Query provider
-            logger.info("Querying BioCASE service with " + endPoint + ", POST: " + queryParamsPOST);
+            logger.debug("Querying BioCASE service with " + endPoint + ", POST: " + queryParamsPOST);
             //FIXME do the ABCD import here
             return executeHttpPost(endPoint, null, httpEntity);
         }
@@ -176,7 +176,7 @@ public class BioCaseQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObs
             UrlEncodedFormEntity httpEntity = new UrlEncodedFormEntity(queryParamsPOST);
 
             //Query provider
-            logger.info("Querying BioCASE service with " + endPoint + ", POST: " + queryParamsPOST);
+            logger.debug("Querying BioCASE service with " + endPoint + ", POST: " + queryParamsPOST);
             //FIXME do the ABCD import here
             return executeHttpPost(endPoint, null, httpEntity);
         }

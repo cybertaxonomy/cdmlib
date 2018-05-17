@@ -40,7 +40,7 @@ import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 /**
  * For now this is a test if we can improve performance for bean initializing
  * @author a.mueller
- * @date 2013-10-25
+ * @since 2013-10-25
  *
  */
 public class AdvancedBeanInitializer extends HibernateBeanInitializer {
@@ -457,7 +457,14 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
                 query.setParameterList("idSet", idSet);
                 List<Object> list = query.list();
 
-                if (logger.isTraceEnabled()){logger.trace("initialize bulk loaded beans of class " +  clazz.getSimpleName());}
+                if (logger.isTraceEnabled()){
+//                    String beanList = "";
+//                    for(Object id : idSet){
+//                        Set<Serializable> bean = node.getLazyBeans().get(id);
+//                        beanList += bean.getClass().getSimpleName() + "<" + id + "> ";
+//                    }
+                    logger.trace("initialize bulk loaded beans of class " +  clazz.getSimpleName() + ": " + idSet );
+                }
                 for (Object object : list){
                     if (object instanceof HibernateProxy){  //TODO remove hibernate dependency
                         object = initializeInstance(object);

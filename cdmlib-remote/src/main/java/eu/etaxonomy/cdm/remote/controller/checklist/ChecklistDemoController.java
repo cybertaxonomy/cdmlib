@@ -63,7 +63,7 @@ import eu.etaxonomy.cdm.remote.view.HtmlView;
 
 /**
  * @author a.oppermann
- * @created 20.09.2012
+ * @since 20.09.2012
  * <p>
  *  This controller enables an export of the cdm platform via a
  *  REST request. It is debatable if this a wanted behavior.

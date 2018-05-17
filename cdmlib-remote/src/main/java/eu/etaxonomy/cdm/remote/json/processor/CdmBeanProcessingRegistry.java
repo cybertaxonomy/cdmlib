@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author a.kohlbecker
- * @date 30.03.2009
+ * @since 30.03.2009
  * @deprecated class is not beeing used but kept as reference
  */
 @Deprecated

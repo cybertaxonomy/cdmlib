@@ -23,7 +23,7 @@ import org.apache.commons.lang.StringUtils;
  * 
  * 
  * @author a.mueller
- * @created 2013-09-04
+ * @since 2013-09-04
  */
 public final class DOI implements java.io.Serializable{
 	

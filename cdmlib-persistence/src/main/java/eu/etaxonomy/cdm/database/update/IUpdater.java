@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * Common interface for {@link ISchemaUpdater} and {@link ITermUpdater}
  *
  * @author a.mueller
- * @date 16.11.2010
+ * @since 16.11.2010
  */
 public interface IUpdater<U extends IUpdater<U>> {
 

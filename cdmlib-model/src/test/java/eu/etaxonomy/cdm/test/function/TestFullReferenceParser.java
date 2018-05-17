@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 /**
  * @author a.mueller
- * @created 21.11.2008
+ * @since 21.11.2008
  */
 public class TestFullReferenceParser {
 	private static final Logger logger = Logger.getLogger(TestFullReferenceParser.class);

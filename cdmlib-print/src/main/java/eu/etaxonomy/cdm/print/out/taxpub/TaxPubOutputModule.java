@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.print.out.PublishOutputModuleBase;
 
 /**
  * @author n.hoffmann
- * @created Aug 4, 2010
+ * @since Aug 4, 2010
  * @version 1.0
  */
 public class TaxPubOutputModule extends PublishOutputModuleBase {

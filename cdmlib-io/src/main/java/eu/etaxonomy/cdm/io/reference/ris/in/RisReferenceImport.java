@@ -32,13 +32,14 @@ import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 
 /**
  * @author a.mueller
- * @date 11.05.2017
+ * @since 11.05.2017
  *
  */
 @Component
@@ -166,7 +167,7 @@ public class RisReferenceImport
         RisValue py = getSingleValue(state, record, RisReferenceTag.PY);
         RisValue da = getSingleValue(state, record, RisReferenceTag.DA);
         Integer year = makeYear(state, py);
-        TimePeriod date = makeDate(state, da);
+        VerbatimTimePeriod date = makeDate(state, da);
         assertDateYear(state, year, date, py);
         ref.setDatePublished(date);
         //TODO y1 not yet handled
@@ -324,7 +325,7 @@ public class RisReferenceImport
      * @param da
      * @return
      */
-    private TimePeriod makeDate(RisReferenceImportState state, RisValue da) {
+    private VerbatimTimePeriod makeDate(RisReferenceImportState state, RisValue da) {
         if (da == null){
             return null;
         }
@@ -335,7 +336,7 @@ public class RisReferenceImport
             return null;
         }
         String[] split = da.value.split("/");
-        TimePeriod tp = TimePeriod.NewInstance();
+        VerbatimTimePeriod tp = VerbatimTimePeriod.NewVerbatimInstance();
         if (split.length > 0 && isNotBlank(split[0])){
             tp.setStartYear(Integer.valueOf(split[0]));
         }
@@ -398,10 +399,10 @@ public class RisReferenceImport
         Person person = Person.NewInstance();
         String[] split = risValue.value.split(",");
         if (split.length >= 1){
-            person.setLastname(split[0].trim());
+            person.setFamilyName(split[0].trim());
         }
         if (split.length >= 2){
-            person.setFirstname(split[1].trim());
+            person.setGivenName(split[1].trim());
         }
         if (split.length >= 3){
             person.setSuffix(split[2].trim());

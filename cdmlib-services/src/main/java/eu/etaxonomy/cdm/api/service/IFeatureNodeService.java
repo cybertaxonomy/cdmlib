@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.model.description.FeatureNode;
 
 /**
  * @author n.hoffmann
- * @created Aug 5, 2010
+ * @since Aug 5, 2010
  * @version 1.0
  */
 public interface IFeatureNodeService extends IVersionableService<FeatureNode>{
@@ -45,6 +45,16 @@ public interface IFeatureNodeService extends IVersionableService<FeatureNode>{
      * @return the result of the operation
      */
     public UpdateResult addChildFeatureNode(FeatureNode parentNode, Feature featureChild);
+
+
+    /**
+     * <b>Saves</b> and adds the specified feature as a child node to the given feature node.
+     * @see IFeatureNodeService#addChildFeatureNode(FeatureNode, Feature)
+     * @param parentNode the feature node where the new feature should be added
+     * @param featureChild the feature which should be <b>saved</b> and added to the given feature node
+     * @return the result of the operation
+     */
+    public UpdateResult createChildFeatureNode(FeatureNode node, Feature featureChild);
 
     /**
      * Adds the specified feature as a child node to the given feature node

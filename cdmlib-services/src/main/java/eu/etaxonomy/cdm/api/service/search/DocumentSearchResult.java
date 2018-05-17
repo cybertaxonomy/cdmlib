@@ -19,7 +19,7 @@ import org.hibernate.search.engine.ProjectionConstants;
  * TODO class description
  *
  * @author Andreas Kohlbecker
- * @date Jan 6, 2012
+ * @since Jan 6, 2012
  *
  */
 public class DocumentSearchResult {

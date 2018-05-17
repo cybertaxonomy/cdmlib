@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author a.babadshanjan
- * @created 03.03.2009
+ * @since 03.03.2009
  */
 public interface IIdentifiableEntityServiceConfigurator<T extends IIdentifiableEntity> extends Serializable {
 

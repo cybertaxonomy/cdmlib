@@ -57,7 +57,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author a.kohlbecker
- * @created 04.02.2009
+ * @since 04.02.2009
  */
 public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrationTest {
 

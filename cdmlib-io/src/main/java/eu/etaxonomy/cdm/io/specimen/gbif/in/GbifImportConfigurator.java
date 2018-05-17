@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author k.luther
- * @date 15.07.2016
+ * @since 15.07.2016
  *
  */
 public class GbifImportConfigurator<GbifImportState, InputStream> extends SpecimenImportConfiguratorBase {

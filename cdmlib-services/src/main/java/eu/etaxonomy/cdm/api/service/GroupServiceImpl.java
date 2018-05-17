@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author n.hoffmann
- * @created Mar 9, 2011
+ * @since Mar 9, 2011
  */
 @Service
 @Transactional(readOnly = true)
@@ -62,6 +62,7 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
 
         return users;
     }
+
 
     @Override
     @Transactional(readOnly=false)
@@ -218,10 +219,13 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
     public DeleteResult delete(UUID groupUUID ){
 
        String groupUUIDString = groupUUID.toString();
+       Group group = dao.findByUuid(groupUUID);
        //org.springframework.security.provisioning.GroupManager#deleteGroup needs a string argument
-        this.deleteGroup(groupUUIDString);
+       this.deleteGroup(groupUUIDString);
+       DeleteResult result = new DeleteResult();
+       result.addDeletedObject(group);
         //there is no feedback from the deleteGroup method...
-        return new DeleteResult();
+        return result;
     }
 
     @Override

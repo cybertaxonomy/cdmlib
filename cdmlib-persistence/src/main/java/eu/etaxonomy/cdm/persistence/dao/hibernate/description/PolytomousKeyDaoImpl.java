@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 
 /**
  * @author a.mueller
- * @created 08.11.2010
+ * @since 08.11.2010
  * @version 1.0
  */
 @Repository

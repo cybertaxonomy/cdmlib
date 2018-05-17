@@ -8,9 +8,9 @@
 
 REST API
 
-	The CDM REST API is a {{{http://en.wikipedia.org/wiki/Representational_State_Transfer} RESTful}} interface to resources stored in the {{{./index.html#The_Common_Data_Model_-_CDM}CDM}}. The RESTful architecture allows accessing the various resources like Taxa, Names, References, Media, etc by stable URIs. Due to security constraints and to assure the integration of data, currently only read operations (= HTTP GET) are permitted, {{{http://dev.e-taxonomy.eu/trac/wiki/CdmServerReadWriteRest} write operations}} may become available in the future.
+	The CDM REST API is a {{{http://en.wikipedia.org/wiki/Representational_State_Transfer} RESTful}} interface to resources stored in the {{{./index.html#The_Common_Data_Model_-_CDM}CDM}}. The RESTful architecture allows accessing the various resources like Taxa, Names, References, Media, etc by stable URIs. Due to security constraints and to assure the integration of data, currently only read operations (= HTTP GET) are permitted, {{{https://dev.e-taxonomy.eu/redmine/projects/edit/wiki/CdmServerReadWriteRest} write operations}} may become available in the future.
 
-	The architecture directly exposes domain model entities, i.e. it provides direct serializations of the objects as they are stored in the CDM whereever possible. For the external representations, like LSIDs and TDWG data exchange schema like TCS however using DTOs is unavoidable. The {{{API_Service}API Service}} provides an easy to use way to transfer CDM data to web based clients. The {{{Portal_Service} Portal Service}} is a specialization as needed by {{{http://wp5.e-taxonomy.eu/portal}CDM Dataportal}} that adds some fields like localized representations to the pure CDM entities.
+	The architecture directly exposes domain model entities, i.e. it provides direct serializations of the objects as they are stored in the CDM whereever possible. For the external representations, like LSIDs and TDWG data exchange schema like TCS however using DTOs is unavoidable. The {{{API_Service}API Service}} provides an easy to use way to transfer CDM data to web based clients. The {{{Portal_Service} Portal Service}} is a specialization as needed by {{{http://cybertaxonomy.eu/portal}CDM Dataportal}} that adds some fields like localized representations to the pure CDM entities.
 
 	<Table of Contents>
 
@@ -65,12 +65,12 @@ REST API
 	
 	This syntax description partially is lend from {{{http://commons.apache.org/beanutils/commons-beanutils-1.7.0/docs/api/org/apache/commons/beanutils/PropertyUtilsBean.html} Apache Commons BeanUtils}}
 
-	In fact the actual extend of serialized CDM entities may exceed the extend indicated by the property path syntax. This especially happens when a transient getter is to be initialized. Due to potential internal logic in the transient getter it is unpredictable which properties actually are being initialized when only looking at the property path. A common candidate for this is the <<<getTaggedName()>>> property of {{{http://wp5.e-taxonomy.eu/cdmlib/apidocs/eu/etaxonomy/cdm/model/name/TaxonNameBase.html} TaxonNameBase}}.
+	In fact the actual extend of serialized CDM entities may exceed the extend indicated by the property path syntax. This especially happens when a transient getter is to be initialized. Due to potential internal logic in the transient getter it is unpredictable which properties actually are being initialized when only looking at the property path. A common candidate for this is the <<<getTaggedName()>>> property of {{{http://cybertaxonomy.eu/cdmlib/apidocs/eu/etaxonomy/cdm/model/name/TaxonNameBase.html} TaxonNameBase}}.
 
 
 	<Developer Hints>:
 
-	The initialization od CDM entities is performed by implementations of the  {{{http://wp5.e-taxonomy.eu/cdmlib/apidocs/eu/etaxonomy/cdm/persistence/dao/BeanInitializer.html} BeanInitializer}} interface. In order to find out more on this topic please refer to {{{http://dev.e-taxonomy.eu/trac/wiki/CdmEntityInitalization} CDM Entity Initialization}}.
+	The initialization od CDM entities is performed by implementations of the  {{{http://cybertaxonomy.eu/cdmlib/apidocs/eu/etaxonomy/cdm/persistence/dao/BeanInitializer.html} BeanInitializer}} interface. In order to find out more on this topic please refer to {{{https://dev.e-taxonomy.eu/redmine/projects/edit/wiki/CdmEntityInitalization} CDM Entity Initialization}}.
 
 
 
@@ -80,23 +80,23 @@ REST API
 
 	In order to provide the client with localized resources all services respect the {{{http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4} Accept-Language HTTP header}}.
 	For example the Portal service returns localized representations according to the Language tags supplied in the  Accept-Language HTTP header. 
-The service tries finding the best matching representation. If no representation in any preferred language is found the service falls back to return the representation in {{{http://wp5.e-taxonomy.eu/cdmlib/apidocs/eu/etaxonomy/cdm/model/common/Language.html#DEFAULT()} Default Language}} and if necessary further falls back to return the first representation found if any exists.
+The service tries finding the best matching representation. If no representation in any preferred language is found the service falls back to return the representation in {{{http://cybertaxonomy.eu/cdmlib/apidocs/eu/etaxonomy/cdm/model/common/Language.html#DEFAULT()} Default Language}} and if necessary further falls back to return the first representation found if any exists.
 
 	Instances of the folowing CDM classes or subclasses of them potentially have multiple internationalized representations in different languages:
 
-	* <{{{http://wp5.e-taxonomy.eu/cdmlib/apidocs/eu/etaxonomy/cdm/model/common/TermBase.html} TermBase}}> - language dependent representation through {{{http://wp5.e-taxonomy.eu/cdmlib/apidocs/eu/etaxonomy/cdm/model/common/Representation.html} Representation}}; The localized reresentation string is added to the TermBase entities by adding the aaditional field: <representation_L10n>.
+	* <{{{http://cybertaxonomy.eu/cdmlib/apidocs/eu/etaxonomy/cdm/model/common/TermBase.html} TermBase}}> - language dependent representation through {{{http://cybertaxonomy.eu/cdmlib/apidocs/eu/etaxonomy/cdm/model/common/Representation.html} Representation}}; The localized reresentation string is added to the TermBase entities by adding the aaditional field: <representation_L10n>.
  
-	* <{{{http://wp5.e-taxonomy.eu/cdmlib/apidocs/eu/etaxonomy/cdm/model/description/TextData.html} TextData}}> - language dependent representation through {{{http://wp5.e-taxonomy.eu/cdmlib/apidocs/eu/etaxonomy/cdm/model/common/MultilanguageText.html} MultilanguageText}}; The localized multilanguage text string is added to the TextData entities by adding the aaditional field: <multilanguageText_L10n>.
+	* <{{{http://cybertaxonomy.eu/cdmlib/apidocs/eu/etaxonomy/cdm/model/description/TextData.html} TextData}}> - language dependent representation through {{{http://cybertaxonomy.eu/cdmlib/apidocs/eu/etaxonomy/cdm/model/common/MultilanguageText.html} MultilanguageText}}; The localized multilanguage text string is added to the TextData entities by adding the aaditional field: <multilanguageText_L10n>.
 
 	[]
 
-	Localization is handeled a bit differently by various service sections the {{{API_Service} API Service}} just adds the localized representations. The {{{Portal_Service} Portal Service}} which focuses in representation, not only adds the localized representations but also hides the {{{http://wp5.e-taxonomy.eu/cdmlib/apidocs/eu/etaxonomy/cdm/model/common/Representation.html} Representation}} or {{{http://wp5.e-taxonomy.eu/cdmlib/apidocs/eu/etaxonomy/cdm/model/common/MultilanguageText.html} MultilanguageText}} fields from serialization in order to reduce complexity and to improve performance.
+	Localization is handled a bit differently by various service sections the {{{API_Service} API Service}} just adds the localized representations. The {{{Portal_Service} Portal Service}} which focuses in representation, not only adds the localized representations but also hides the {{{http://cybertaxonomy.eu/cdmlib/apidocs/eu/etaxonomy/cdm/model/common/Representation.html} Representation}} or {{{http://cybertaxonomy.eu/cdmlib/apidocs/eu/etaxonomy/cdm/model/common/MultilanguageText.html} MultilanguageText}} fields from serialization in order to reduce complexity and to improve performance.
 
 	<Developer Hints>
 
 	Classes involved in Content Localization:
 	
-	* {{{http://wp5.e-taxonomy.eu/cdmlib/apidocs/eu/etaxonomy/cdm/remote/controller/interceptor/LocaleContextHandlerInterceptor.html} LocaleContextHandlerInterceptor}}
+	* {{{http://cybertaxonomy.eu/cdmlib/apidocs/eu/etaxonomy/cdm/remote/controller/interceptor/LocaleContextHandlerInterceptor.html} LocaleContextHandlerInterceptor}}
 Configuration in: 
 	
 	* {{{http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-remote-webapp/src/main/webapp/WEB-INF/cdmrest-servlet.xml} WEB-INF/cdmrest-servlet.xml}}
@@ -150,7 +150,7 @@ Configuration in:
 
 	[]
 
-	The actual location of the "datasources.xml" can specified and thus be overridden using a specific commandline parameter for EDIT CDM-Server. For more information please refer to the {{{http://wp5.e-taxonomy.eu/cdm-server} CDM Community Server documentation}}.
+	The actual location of the "datasources.xml" can specified and thus be overridden using a specific commandline parameter for EDIT CDM-Server. For more information please refer to the {{{http://cybertaxonomy.eu/cdm-server} CDM Community Server documentation}}.
 
  
 	<NOTE:>

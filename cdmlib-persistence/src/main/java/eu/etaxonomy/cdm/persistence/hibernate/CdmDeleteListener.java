@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.common.RelationshipBase;
 
 /**
  * @author a.mueller
- * @created 04.03.2009
+ * @since 04.03.2009
  */
 public class CdmDeleteListener implements DeleteEventListener {
 

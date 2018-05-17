@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -29,14 +29,14 @@ import org.xml.sax.helpers.DefaultHandler;
 import eu.etaxonomy.cdm.ext.common.SchemaAdapterBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 
 
 /**
  * @author a.kohlbecker
- * @date 25.08.2010
+ * @since 25.08.2010
  */
 public class MobotOpenUrlResponseSchemaAdapter extends SchemaAdapterBase<Reference>{
 
@@ -49,7 +49,7 @@ public class MobotOpenUrlResponseSchemaAdapter extends SchemaAdapterBase<Referen
 	public URI getIdentifier() {
 		return identifier;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.ext.schema.SchemaAdapter#getShortName()
 	 */
@@ -57,7 +57,7 @@ public class MobotOpenUrlResponseSchemaAdapter extends SchemaAdapterBase<Referen
 	public String getShortName() {
 		return "MOBOT.OpenUrl.Utilities.OpenUrlResponse";
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.ext.schema.SchemaAdapter#getCmdEntities(java.io.Reader)
 	 */
@@ -75,9 +75,9 @@ public class MobotOpenUrlResponseSchemaAdapter extends SchemaAdapterBase<Referen
 			logger.error(e);
 		}
 
-	    
+
 		OpenUrlResponseHandler handler = new OpenUrlResponseHandler();
-	    
+
 	    try {
 	    	if(parser != null){
 	    		Reader reader = new InputStreamReader(inputStream, "UTF-8");
@@ -91,14 +91,14 @@ public class MobotOpenUrlResponseSchemaAdapter extends SchemaAdapterBase<Referen
 	    	}
 		} catch (SAXException e) {
 			logger.error(e);
-		} 
+		}
 
-		
+
 		return handler.referenceList;
 	}
-	
+
 	class OpenUrlResponseHandler extends DefaultHandler {
-		
+
 		/*
 		 * Fields of OpenUrlResponse
 		 *  see http://code.google.com/p/bhl-bits/source/browse/trunk/portal/OpenUrlUtilities/OpenUrlResponse.cs
@@ -108,12 +108,12 @@ public class MobotOpenUrlResponseSchemaAdapter extends SchemaAdapterBase<Referen
 		private static final String MESSAGE = "Message";
 		private static final String CITATIONS = "citations";
 		private static final String OPENURL_RESPONSE_CITATION = "OpenUrlResponseCitation";
-		
+
 		/*
 		 * Fields of OpenUrlResponseCitation
 		 *  see http://code.google.com/p/bhl-bits/source/browse/trunk/portal/OpenUrlUtilities/OpenUrlResponseCitation.cs
 		 */
-		
+
 		/**
 		 * references the specific page in the title
 		 */
@@ -149,23 +149,23 @@ public class MobotOpenUrlResponseSchemaAdapter extends SchemaAdapterBase<Referen
 		private static final String SPAGE = "SPage";
 		private static final String EPAGE = "EPage";
 		private static final String PAGES = "Pages";
-		
-	
+
+
 		List<Reference> referenceList = new ArrayList<Reference>();
 
 		OpenUrlReference reference = null;
-		
+
 		ResponseStatus status = null;
 		Team authorship = null;
 		String message = null;
-		
+
 		String elementName = null;
 		private String elementNameToStore;
 		private StringBuilder textBuffer = new StringBuilder();
-		
+
 
 		@Override
-		public void startElement(String uri, String localName, 
+		public void startElement(String uri, String localName,
 				String qName, Attributes attributes) throws SAXException {
 
 			if (qName.equals(OPENURL_RESPONSE)) {
@@ -176,7 +176,7 @@ public class MobotOpenUrlResponseSchemaAdapter extends SchemaAdapterBase<Referen
 			} else if (reference != null && qName.equals(AUTHORS)) {
 				authorship = Team.NewInstance();
 			} else if (reference != null && qName.equals(SUBJECTS)) {
-				//TODO implement, but no equivalent in the cdm model			
+				//TODO implement, but no equivalent in the cdm model
 			} else {
 				elementName = qName;
 			}
@@ -186,7 +186,7 @@ public class MobotOpenUrlResponseSchemaAdapter extends SchemaAdapterBase<Referen
 		public void endElement(String uri, String localName, String qName) throws SAXException {
 
 			if (qName.equals(OPENURL_RESPONSE)) {
-				
+
 			} else if (qName.equals(OPENURL_RESPONSE_CITATION)) {
 				referenceList.add(reference);
 				reference = null;
@@ -194,7 +194,7 @@ public class MobotOpenUrlResponseSchemaAdapter extends SchemaAdapterBase<Referen
 				reference.setAuthorship(authorship);
 				authorship = null;
 			} else if (reference != null && qName.equals(SUBJECTS)) {
-				//TODO implement, but no equivalent in the cdm model		
+				//TODO implement, but no equivalent in the cdm model
 			}else {
 				elementNameToStore = elementName;
 				elementName = null;
@@ -205,21 +205,21 @@ public class MobotOpenUrlResponseSchemaAdapter extends SchemaAdapterBase<Referen
 		@Override
 		public void characters(char ch[], int start, int length)
 				throws SAXException {
-			
+
 			if(elementNameToStore  == null){
-				
+
 				textBuffer.append(new String(ch, start, length));
-				
+
 			} else {
-				
+
 				logger.debug("Characters [" + elementNameToStore + "]: " + textBuffer);
 				String trimmedText = textBuffer.toString().trim();
 				// empty the text buffer
 				textBuffer.delete(0, textBuffer.length());
-				
-				// --- Reference --- //  
+
+				// --- Reference --- //
 				if(reference != null){
-					
+
 					if(elementNameToStore.equals(URL)){
 						try {
 							reference.setUri(new URI(trimmedText));
@@ -264,8 +264,8 @@ public class MobotOpenUrlResponseSchemaAdapter extends SchemaAdapterBase<Referen
 							try {
 								startYear = Integer.valueOf(trimmedText.substring(0, 4));
 								endYear = Integer.valueOf(trimmedText.substring(5));
-								reference.setDatePublished(TimePeriod.NewInstance(startYear, endYear));
-							} catch (NumberFormatException e) {	
+								reference.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(startYear, endYear));
+							} catch (NumberFormatException e) {
 								logger.error("date can not be parsed: "+ trimmedText);
 							}
 						} else if(trimmedText.length() == 4) {
@@ -274,7 +274,7 @@ public class MobotOpenUrlResponseSchemaAdapter extends SchemaAdapterBase<Referen
 							} catch (NumberFormatException e) {
 								logger.error("date can not be parsed: "+ trimmedText);
 							}
-							reference.setDatePublished(TimePeriod.NewInstance(startYear));
+							reference.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(startYear));
 						}
 					}
 					if(elementNameToStore.equals(VOLUME)){
@@ -308,15 +308,15 @@ public class MobotOpenUrlResponseSchemaAdapter extends SchemaAdapterBase<Referen
 						reference.setIssn(trimmedText);
 					}
 				}
-				
+
 				// --- Reference.authorship --- //
 				if(authorship != null && reference != null){
 					if(elementNameToStore.equals("String")){
 						authorship.addTeamMember(Person.NewTitledInstance(trimmedText));
 					}
 				}
-				
-				// openUrlResponse // 
+
+				// openUrlResponse //
 				if(reference == null){
 					if(elementNameToStore.equals(STATUS)){
 						status = ResponseStatus.valueOf(trimmedText);
@@ -326,9 +326,9 @@ public class MobotOpenUrlResponseSchemaAdapter extends SchemaAdapterBase<Referen
 				elementNameToStore = null;
 			}
 		}
-		
+
 	}
-	
+
 	 /**
 	 * @see http://code.google.com/p/bhl-bits/source/browse/trunk/portal/OpenUrlUtilities/IOpenUrlResponse.cs
 	 */
@@ -337,5 +337,5 @@ public class MobotOpenUrlResponseSchemaAdapter extends SchemaAdapterBase<Referen
 		Success, Error
 	}
 
-	
+
 }

@@ -46,6 +46,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
@@ -63,7 +64,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author a.mueller
- * @created Aug 16, 2010
+ * @since Aug 16, 2010
  *
  * TODO the whole ipni service should be refactored to use UriUtils. I did this for the queryService method only because we ran into timeout
  * problems in tests. UriUtils handles these problems already.
@@ -425,7 +426,7 @@ public class IpniService  implements IIpniService{
 
 
 		//dates
-		TimePeriod date = TimePeriodParser.parseString(valueMap.get(DATE));
+		VerbatimTimePeriod date = TimePeriodParser.parseStringVerbatim(valueMap.get(DATE));
 		ref.setDatePublished(date);
 
 
@@ -548,7 +549,7 @@ public class IpniService  implements IIpniService{
     		    ref.setAbbrevTitle(nomRefTitle);
 		    }
 
-    		TimePeriod datePublished = parsePublicationFullYear(valueMap.get(PUBLICATION_YEAR_FULL));
+		    VerbatimTimePeriod datePublished = parsePublicationFullYear(valueMap.get(PUBLICATION_YEAR_FULL));
 		    ref.setDatePublished(datePublished);
 
 		    name.setNomenclaturalReference(ref);
@@ -722,8 +723,8 @@ public class IpniService  implements IIpniService{
      * @param string
      * @return
      */
-    private TimePeriod parsePublicationFullYear(String fullYearStr) {
-        TimePeriod result = null;
+    private VerbatimTimePeriod parsePublicationFullYear(String fullYearStr) {
+        VerbatimTimePeriod result = null;
 
         if (fullYearStr != null){
             Matcher matcher = datePattern.matcher(fullYearStr);
@@ -731,14 +732,14 @@ public class IpniService  implements IIpniService{
                 String yearStr = matcher.group(1);
                 Integer year = Integer.valueOf(yearStr);
                 String exactDate = matcher.group(2);
-                result = TimePeriodParser.parseString(exactDate);
+                result = TimePeriodParser.parseStringVerbatim(exactDate);
                 if (!year.equals(result.getStartYear())){
                     logger.warn("Year and exact date year do not match");
-                    result = TimePeriod.NewInstance(year);
+                    result = VerbatimTimePeriod.NewVerbatimInstance(year);
                     result.setFreeText(fullYearStr);
                 }
             }else{
-                result = TimePeriodParser.parseString(fullYearStr);
+                result = TimePeriodParser.parseStringVerbatim(fullYearStr);
             }
         }
         return result;
@@ -825,8 +826,8 @@ public class IpniService  implements IIpniService{
 		Person person = Person.NewInstance();
 
 		person.setNomenclaturalTitle(valueMap.get(STANDARD_FORM));
-		person.setFirstname(valueMap.get(DEFAULT_AUTHOR_FORENAME));
-		person.setLastname(valueMap.get(DEFAULT_AUTHOR_SURNAME));
+		person.setGivenName(valueMap.get(DEFAULT_AUTHOR_FORENAME));
+		person.setFamilyName(valueMap.get(DEFAULT_AUTHOR_SURNAME));
 
 		Reference citation = getIpniCitation(repository);
 

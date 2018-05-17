@@ -14,6 +14,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -46,6 +47,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import javassist.util.proxy.Proxy;
 
@@ -68,6 +70,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     private UUID uuid1;
     private UUID uuid2;
     private UUID uuid3;
+    private UUID classificationUuid;
 
     private static final UUID ACHERONTIA_UUID = UUID.fromString("3b2b3e17-5c4a-4d1b-aa39-349f63100d6b");
     private static final UUID ACHERONTIA_LACHESIS = UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783");
@@ -86,6 +89,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         uuid1 = UUID.fromString("0b5846e5-b8d2-4ca9-ac51-099286ea4adc");
         uuid3 = UUID.fromString("20c8f083-5870-4cbd-bf56-c5b2b98ab6a7");
         uuid2 = UUID.fromString("770239f6-4fa8-496b-8738-fe8f7b2ad519");
+        classificationUuid = UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9");
         AuditEventContextHolder.clearContext();
     }
 
@@ -292,6 +296,41 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         Assert.assertTrue("", langIds.contains(2));
     }
 
+    @Test
+    @DataSet ("TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml")
+    public final void testGetTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(){
+        Classification classification = classificationDao.findByUuid(classificationUuid);
+        List<UuidAndTitleCache<TaxonNode>> result = taxonNodeDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification,  null, null, true);
+        assertNotNull(result);
+        assertEquals(6, result.size());
+
+        //test exclude
+        UUID excludeUUID = UUID.fromString("a9f42927-e507-4fda-9629-62073a908aae");
+        List<UUID> excludeUUids = new ArrayList<>();
+        excludeUUids.add(excludeUUID);
+        result = taxonNodeDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification,  null, null, false);
+        assertEquals(5, result.size());
+
+        //test limit
+        int limit = 2;
+        result = taxonNodeDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification,  limit, null, false);
+        assertEquals(2, result.size());
+
+        //test pattern
+        String pattern = "*Rothschi*";
+        result = taxonNodeDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, 2, pattern, true);
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals("0b5846e5-b8d2-4ca9-ac51-099286ea4adc", result.get(0).getUuid().toString());
+
+        //test pattern
+        pattern = "*TestBaum*";
+        result = taxonNodeDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, null, pattern, true);
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals("6d6b43aa-3a77-4be5-91d0-00b702fc5d6e", result.get(0).getUuid().toString());
+
+    }
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}

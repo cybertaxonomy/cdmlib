@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
 /**
  * @author a.mueller
- * @date 21.09.2016
+ * @since 21.09.2016
  *
  */
 public abstract class EntityDTOBase<T extends CdmBase> implements Serializable{

@@ -21,8 +21,6 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
@@ -44,7 +42,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  *
  * @author m.doering
  * @version 1.0
- * @created 08-Nov-2007 13:06:26
+ * @since 08-Nov-2007 13:06:26
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "HybridRelationship", propOrder = {
@@ -55,8 +53,12 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 })
 @Entity
 @Audited
-public class HybridRelationship extends RelationshipBase<INonViralName, INonViralName, HybridRelationshipType>  implements Cloneable, Comparable<HybridRelationship>{
-	private static final Logger logger = Logger.getLogger(HybridRelationship.class);
+public class HybridRelationship
+        extends RelationshipBase<INonViralName, INonViralName, HybridRelationshipType>
+        implements Comparable<HybridRelationship>{
+
+    private static final long serialVersionUID = -78515930138896939L;
+    private static final Logger logger = Logger.getLogger(HybridRelationship.class);
 
 	//The nomenclatural code rule considered. The article/note/recommendation in the code in question that is commented on in
 	//the note property.
@@ -67,14 +69,14 @@ public class HybridRelationship extends RelationshipBase<INonViralName, INonVira
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+//    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private TaxonName relatedFrom;
 
 	@XmlElement(name = "RelatedTo")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+//    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private TaxonName relatedTo;
 
     @XmlElement(name = "Type")

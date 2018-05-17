@@ -51,6 +51,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 @XmlType(name = "User", propOrder = {
     "username",
     "password",
+    "salt",
     "emailAddress",
     "grantedAuthorities",
     "groups",
@@ -109,11 +110,21 @@ public class User extends CdmBase implements UserDetails {
     protected String username;
 
     /**
-     * a salted, MD5 encoded hash of the plaintext password
+     * a salted, MD5 encoded hash of the plain text password
      */
     @XmlElement(name = "Password")
     @NotAudited
     protected String password;
+
+
+    /**
+     * The salt for password hashing.
+     * @see https://dev.e-taxonomy.eu/redmine/issues/7210
+     * @see https://code-bude.net/2015/03/30/grundlagen-sicheres-passwort-hashing-mit-salts/
+     */
+    @XmlElement(name = "Salt")
+    @NotAudited
+    protected String salt;
 
     @XmlElement(name = "EmailAddress")
     protected String emailAddress;
@@ -175,7 +186,7 @@ public class User extends CdmBase implements UserDetails {
      */
     //FIXME made public as preliminary solution to #4053 (Transient field User.authorities not refreshed on reloading entity)
     public void initAuthorities() {
-        authorities = new HashSet<GrantedAuthority>();
+        authorities = new HashSet<>();
         authorities.addAll(grantedAuthorities);
         for(Group group : groups) {
             authorities.addAll(group.getGrantedAuthorities());

@@ -54,7 +54,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  * @see		MediaKey
  *
  * @author  m.doering
- * @created 08-Nov-2007 13:06:16
+ * @since 08-Nov-2007 13:06:16
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "FeatureTree", propOrder = {

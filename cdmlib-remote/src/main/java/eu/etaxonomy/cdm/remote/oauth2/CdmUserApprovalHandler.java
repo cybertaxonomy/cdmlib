@@ -30,7 +30,7 @@ import org.springframework.security.oauth2.provider.approval.ApprovalStoreUserAp
 
 /**
  * @author a.kohlbecker
- * @date Oct 6, 2016
+ * @since Oct 6, 2016
  *
  */
 public class CdmUserApprovalHandler extends ApprovalStoreUserApprovalHandler {

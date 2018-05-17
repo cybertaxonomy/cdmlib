@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
  * </ol>
  *
  * @author Andreas Kohlbecker
- * @date Jun 4, 2012
+ * @since Jun 4, 2012
  *
  */
 public class MultilanguageTextFieldBridge implements FieldBridge {

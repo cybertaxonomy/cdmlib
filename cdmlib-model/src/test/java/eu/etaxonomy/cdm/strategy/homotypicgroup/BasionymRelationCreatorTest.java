@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
  * @author a.mueller
- * @date 22.04.2017
+ * @since 22.04.2017
  *
  */
 public class BasionymRelationCreatorTest {

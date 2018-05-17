@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 
 /**
  * @author a.kohlbecker
- * @date 16.12.2010
+ * @since 16.12.2010
  *
  */
 public class StreamUtils {

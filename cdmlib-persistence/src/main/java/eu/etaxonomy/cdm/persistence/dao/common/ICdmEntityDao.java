@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 /**
  * An data access interface that all data access classes implement
  * @author m.doering
- * @created 02-Nov-2007 19:36:10
+ * @since 02-Nov-2007 19:36:10
  */
 public interface ICdmEntityDao<T extends CdmBase> {
 

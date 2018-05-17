@@ -20,7 +20,7 @@ import java.util.Map;
  * partition is again represented by a {@link Statistics}.
  * 
  * @author a.mueller, a.kohlbecker, s.buers
- * @date 21.09.2012
+ * @since 21.09.2012
  */
 public class Statistics {
 

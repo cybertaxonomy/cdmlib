@@ -17,7 +17,7 @@ import org.junit.Test;
 
 /**
  * @author n.hoffmann
- * @created Mar 9, 2011
+ * @since Mar 9, 2011
  */
 public class GrantedAuthorityImplTest {
 

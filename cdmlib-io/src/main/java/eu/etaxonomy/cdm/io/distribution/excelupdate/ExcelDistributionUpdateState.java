@@ -13,7 +13,7 @@ import eu.etaxonomy.cdm.io.excel.common.ExcelRowBase;
 
 /**
  * @author a.mueller
- * @date 06.04.2017
+ * @since 06.04.2017
  */
 public class ExcelDistributionUpdateState
     extends ExcelImportState<ExcelDistributionUpdateConfigurator, ExcelRowBase>{

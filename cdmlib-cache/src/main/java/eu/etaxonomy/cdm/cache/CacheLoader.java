@@ -27,7 +27,7 @@ import net.sf.ehcache.Element;
 
 /**
  * @author cmathew
- * @date 19 Feb 2015
+ * @since 19 Feb 2015
  *
  */
 public class CacheLoader {
@@ -142,7 +142,7 @@ public class CacheLoader {
             }
         }
         map.clear();
-        for(i = 0; i < originalMapSize; i+=2 ) {
+        for(i = 0; i < result.length; i+=2 ) {
             map.put(
                     (T)result[i],
                     (T)result[i+1]

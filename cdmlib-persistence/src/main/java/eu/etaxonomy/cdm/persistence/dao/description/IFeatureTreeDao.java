@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 
 /**
  * @author a.mueller
- * @created 10.07.2008
+ * @since 10.07.2008
  * @version 1.0
  */
 public interface IFeatureTreeDao extends IIdentifiableDao<FeatureTree> {

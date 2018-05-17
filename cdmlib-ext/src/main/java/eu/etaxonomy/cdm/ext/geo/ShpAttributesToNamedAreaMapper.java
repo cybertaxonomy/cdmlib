@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
  *
  *
  * @author a.kohlbecker
- * @date Oct 18, 2013
+ * @since Oct 18, 2013
  *
  */
 public class ShpAttributesToNamedAreaMapper {
@@ -84,13 +84,13 @@ public class ShpAttributesToNamedAreaMapper {
 
         logger.setLevel(Level.DEBUG);
 
-        Map<NamedArea, String> resultMap = new HashMap<NamedArea, String>(areas.size());
+        Map<NamedArea, String> resultMap = new HashMap<>(areas.size());
 
         CSVReader csvReader = new CSVReader(reader, COMMA);
 
         // read header row and prepare the searchColumnMap
         String[] headerRow = csvReader.readNext();
-        searchColumnMap = new HashMap<String, Integer>();
+        searchColumnMap = new HashMap<>();
         for(String colName : idSearchFields){
             int idx = ArrayUtils.indexOf(headerRow, colName);
             if(idx > -1){
@@ -102,6 +102,7 @@ public class ShpAttributesToNamedAreaMapper {
 
         // read the rest of the file
         List<String[]> data = csvReader.readAll();
+        csvReader.close();
         csvReader = null; // release memory
 
         String matchIdCode;
@@ -164,7 +165,6 @@ public class ShpAttributesToNamedAreaMapper {
 
 
         } // END of areas loop
-
         return resultMap;
     }
 

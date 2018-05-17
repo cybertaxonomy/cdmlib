@@ -50,7 +50,7 @@ import net.sf.json.JSONObject;
  * Utility class which provides the functionality to convert a JSON response
  * resulting from a GBIF query for occurrences to the corresponding CDM entities.
  * @author pplitzner
- * @date 22.05.2014
+ * @since 22.05.2014
  *
  */
 public class GbifJsonOccurrenceParser {
@@ -445,9 +445,7 @@ public class GbifJsonOccurrenceParser {
                                 try {
                                     uri = new URI(mediaRecord.getString("identifier"));
                                     imageInf = ImageInfo.NewInstance(uri, 0);
-
                                 } catch (URISyntaxException |IOException | HttpException e) {
-                                    // TODO Auto-generated catch block
                                     e.printStackTrace();
                                 }
                                // media.addIdentifier(mediaRecord.getString("identifier"), null);

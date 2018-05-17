@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * are possible.
  *
  * @author a.mueller
- * @date 08.07.2017
+ * @since 08.07.2017
  *
  */
 public abstract class CsvImportBase<CONFIG extends CsvImportConfiguratorBase, STATE extends CsvImportState<CONFIG>, T>

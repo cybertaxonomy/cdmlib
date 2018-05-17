@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.test.function.strategy;
 import java.util.Calendar;
 
 import eu.etaxonomy.cdm.model.agent.Person;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.reference.IGeneric;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -32,7 +32,7 @@ public class TestBookDefaultCacheStrategies {
 		book.setTitle("TestTitel eines Buches");
 		Calendar cal = Calendar.getInstance();
 
-		book.setDatePublished(TimePeriod.NewInstance(cal));
+		book.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(cal));
 		Person bookAuthor = Person.NewTitledInstance("BuchAuthorTitle");
 		book.setAuthorship(bookAuthor);
 		book.setVolume("v 22");
@@ -56,7 +56,7 @@ public class TestBookDefaultCacheStrategies {
 		inJournal.setAuthorship(journalAuthor);
 		inJournal.setTitle("JournalTitle");
 		inJournal.setIssn("issn");
-		Reference article = ReferenceFactory.newArticle(inJournal, partAuthor, "artTitel", "123-456", "ser4", "55", TimePeriod.NewInstance(cal));
+		Reference article = ReferenceFactory.newArticle(inJournal, partAuthor, "artTitel", "123-456", "ser4", "55", VerbatimTimePeriod.NewVerbatimInstance(cal));
 		System.out.println("FULL: " + article.getNomenclaturalCitation("922 fig"));
 		System.out.println("Citation: " + article.getCitation());
 		System.out.println("Titel: " + article.getTitleCache());
@@ -67,7 +67,7 @@ public class TestBookDefaultCacheStrategies {
 		Person genericAuthor = Person.NewTitledInstance("GenericAuthorTitle");
 		generic.setAuthorship(genericAuthor);
 		generic.setTitle("GenericTitle");
-		generic.setDatePublished(TimePeriod.NewInstance(cal));
+		generic.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(cal));
 		generic.setEditor("EditorString");
 
 		generic.setPages("p.124-754");

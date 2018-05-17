@@ -58,7 +58,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 /**
  * @author a.mueller
- * @created 31.03.2009
+ * @since 31.03.2009
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Classification", propOrder = {
@@ -74,7 +74,9 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 @Entity
 @Audited
 @Indexed(index = "eu.etaxonomy.cdm.model.taxon.Classification")
-public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheStrategy<Classification>> implements IReferencedEntity, ITaxonTreeNode, Cloneable{
+public class Classification
+            extends IdentifiableEntity<IIdentifiableEntityCacheStrategy<Classification>>
+            implements IReferencedEntity, ITaxonTreeNode, Cloneable{
     private static final long serialVersionUID = -753804821474209635L;
     private static final Logger logger = Logger.getLogger(Classification.class);
 

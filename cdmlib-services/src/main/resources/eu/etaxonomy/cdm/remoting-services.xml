@@ -62,13 +62,15 @@
         <prop key="/remoting/entityvalidation.service">httpEntityValidationService</prop>
         <prop key="/remoting/entityconstraintviolation.service">httpEntityConstraintViolationService</prop>
         <prop key="/remoting/vocabulary.service">httpVocabularyService</prop>
-        <prop key="/remoting/workingset.service">httpWorkingService</prop>
+        <prop key="/remoting/descriptivedataset.service">httpDescriptiveDataSetService</prop>
         <prop key="/remoting/authenticationManager.service">httpAuthenticationManager</prop>
         <prop key="/remoting/io.service">httpIOService</prop>
+        <prop key="/remoting/longrunningtasks.service">httpLongRunningTasksService</prop>
         <prop key="/remoting/test.service">httpTestService</prop>
         <!-- public services from cdmlib-services project -->
         <prop key="/remoting-public/user.service">httpUserService</prop>
         <prop key="/remoting-public/metadata.service">httpMetadataService</prop>
+        <prop key="/remoting-public/extReference.service">httpExtReferenceService</prop>
         <!-- services from cdmlib-ext project -->
         <prop key="/remoting/editgeo.service">httpEditGeoService</prop>
         <!-- services from cdmlib-io project -->

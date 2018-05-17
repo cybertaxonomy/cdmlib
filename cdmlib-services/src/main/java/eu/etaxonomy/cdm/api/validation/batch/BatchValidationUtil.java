@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
-import eu.etaxonomy.cdm.model.description.WorkingSet;
+import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.molecular.Amplification;
 import eu.etaxonomy.cdm.model.molecular.Primer;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
@@ -52,7 +52,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
  * @author ayco_holleman
- * @date 28 jan. 2015
+ * @since 28 jan. 2015
  *
  */
 class BatchValidationUtil {
@@ -96,7 +96,7 @@ class BatchValidationUtil {
         services.add(new EntityValidationUnit(DefinedTermBase.class, appConfig.getTermService()));
         services.add(new EntityValidationUnit(User.class, appConfig.getUserService()));
         services.add(new EntityValidationUnit(TermVocabulary.class, appConfig.getVocabularyService()));
-        services.add(new EntityValidationUnit(WorkingSet.class, appConfig.getWorkingSetService()));
+        services.add(new EntityValidationUnit(DescriptiveDataSet.class, appConfig.getDescriptiveDataSetService()));
         return services;
     }
 

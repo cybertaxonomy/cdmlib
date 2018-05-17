@@ -6,7 +6,7 @@
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-    <version>4.14.0</version>
+    <version>5.0.0</version>
 	<relativePath>../pom.xml</relativePath>
   </parent>
   
@@ -14,11 +14,6 @@
   <artifactId>cdmlib-commons</artifactId>
   <name>CDM Commons</name>
   <description>EDIT CDM library - Commons</description>
-  <scm>
-    <connection>scm:git:https://dev.e-taxonomy.eu/git/cdmlib-commons.git</connection>
-    <developerConnection>scm:git:ssh://git@dev.e-taxonomy.eu/var/git/cdmlib-commons.git</developerConnection>
-    <url>https://dev.e-taxonomy.eu/gitweb/cdmlib.git/tree/HEAD:/cdmlib-commons/</url>
-  </scm>
   
   <dependencies>
     <dependency>

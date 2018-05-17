@@ -14,7 +14,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author a.kohlbecker
- * @date 30.07.2010
+ * @since 30.07.2010
  *
  */
 public abstract class AutoPropertyInitializer<T extends CdmBase> {

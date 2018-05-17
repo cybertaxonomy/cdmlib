@@ -8,31 +8,52 @@
 */
 package eu.etaxonomy.cdm.model.description;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
  * @author a.mueller
- * @date 22.11.2011
+ * @since 22.11.2011
  *
  */
 public class CategoricalDataTest {
+
+    private CategoricalData categorialData;
 
     /**
      * @throws java.lang.Exception
      */
     @Before
     public void setUp() throws Exception {
+        categorialData = CategoricalData.NewInstance();
+        Media media = Media.NewInstance(null, 1000, "jpeg", null);
+        categorialData.addMedia(media);
+
+        DescriptionElementSource source = DescriptionElementSource.NewInstance(OriginalSourceType.Unknown);
+        Reference citation = ReferenceFactory.newArticle();
+        citation.setTitle("Test");
+        source.setCitation(citation);
+        categorialData.addSource(source );
+        StateData state = StateData.NewInstance();
+        categorialData.addStateData(state);
     }
 
 //************************ TESTS ********************************************
@@ -90,6 +111,19 @@ public class CategoricalDataTest {
         Assert.assertFalse("Category 1 should not be included anymore", data.getStatesOnly().contains(useCategory1));
         Assert.assertTrue("Category 2 should be included", data.getStatesOnly().contains(useCategory2));
 
+    }
+
+    @Test
+    public void testClone(){
+        CategoricalData clone = (CategoricalData)categorialData.clone();
+        assertNotSame(clone, categorialData);
+        assertEquals(1, clone.getStateData().size());
+        assertEquals(clone.getStateData().size(), categorialData.getStateData().size() );
+        StateData stateOrig = categorialData.getStateData().get(0);
+        StateData stateClone = clone.getStateData().get(0);
+        assertNotEquals(stateOrig, stateClone);
+        assertSame(stateOrig.getState(), stateClone.getState());
+        assertNotEquals(stateOrig.getCategoricalData(), stateClone.getCategoricalData());
     }
 
 }

@@ -61,7 +61,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
  * @see EditGeoService
  *
  * @author a.mueller
- * @created 17.11.2008
+ * @since 17.11.2008
  */
 public class EditGeoServiceUtilities {
     private static final Logger logger = Logger.getLogger(EditGeoServiceUtilities.class);

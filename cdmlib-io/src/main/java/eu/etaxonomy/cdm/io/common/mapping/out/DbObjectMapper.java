@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 
 /**
  * @author a.mueller
- * @created 12.05.2009
+ * @since 12.05.2009
  */
 public class DbObjectMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer> {
 	@SuppressWarnings("unused")

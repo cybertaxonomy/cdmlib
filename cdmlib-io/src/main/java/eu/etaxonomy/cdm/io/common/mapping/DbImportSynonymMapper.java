@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 /**
  * TODO synonyms are no relationships anymore, maybe we need to change something here
  * @author a.mueller
- * @created 02.03.2010
+ * @since 02.03.2010
  * @param <CDM_BASE>
  * @param <STATE>
  */

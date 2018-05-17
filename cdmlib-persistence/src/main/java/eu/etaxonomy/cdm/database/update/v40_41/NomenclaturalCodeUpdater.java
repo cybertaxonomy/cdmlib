@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
  * Updates the CdmPreference NomenclaturalCode  #3658
  *
  * @author a.mueller
- * @date 13.10.2016
+ * @since 13.10.2016
  */
 public class NomenclaturalCodeUpdater extends SchemaUpdaterStepBase {
     private static final Logger logger = Logger.getLogger(NomenclaturalCodeUpdater.class);

@@ -57,7 +57,7 @@ import org.apache.log4j.Logger;
 
 /**
  * @author n.hoffmann
- * @created Sep 23, 2010
+ * @since Sep 23, 2010
  * @version 1.0
  */
 public class UriUtils {

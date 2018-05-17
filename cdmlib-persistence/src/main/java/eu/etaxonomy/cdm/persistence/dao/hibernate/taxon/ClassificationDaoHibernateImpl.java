@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.persistence.dto.ClassificationLookupDTO;
 
 /**
  * @author a.mueller
- * @created 16.06.2009
+ * @since 16.06.2009
  */
 @Repository
 @Qualifier("classificationDaoHibernateImpl")

@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * Configurator for the setSecundumForSubtree operation.
  *
  * @author a.mueller
- * @date 06.01.2017
+ * @since 06.01.2017
  *
  */
 public class SecundumForSubtreeConfigurator extends ForSubtreeConfiguratorBase{

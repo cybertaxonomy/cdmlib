@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.io.common.mapping.IDbImportMapper;
 
 /**
  * @author a.mueller
- * @created 02.03.2010
+ * @since 02.03.2010
  * @version 1.0
  */
 public interface ICheckIgnoreMapper {

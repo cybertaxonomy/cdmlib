@@ -82,7 +82,7 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 /**
  * @author n.hoffmann
- * @created Sep 21, 2009
+ * @since Sep 21, 2009
  */
 @Service
 @Transactional(readOnly = true)
@@ -416,23 +416,23 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
     }
 
     @Override
-    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(UUID classificationUuid, Integer limit, String pattern) {
-        return taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(dao.load(classificationUuid),  limit, pattern);
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(UUID classificationUuid, Integer limit, String pattern, boolean searchForClassifications) {
+        return taxonNodeDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(dao.load(classificationUuid),  limit, pattern, searchForClassifications);
     }
 
     @Override
-    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification,  Integer limit, String pattern) {
-        return taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification,  limit, pattern);
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification,  Integer limit, String pattern, boolean searchForClassifications) {
+        return taxonNodeDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification,  limit, pattern, searchForClassifications);
     }
 
     @Override
-    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(UUID classificationUuid ) {
-        return taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(dao.load(classificationUuid), null, null);
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(UUID classificationUuid, boolean searchForClassifications ) {
+        return taxonNodeDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(dao.load(classificationUuid), null, null, searchForClassifications);
     }
 
     @Override
-    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification ) {
-        return taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, null, null);
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification, boolean searchForClassifications ) {
+        return taxonNodeDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, null, null, searchForClassifications);
     }
 
     @Override
@@ -673,6 +673,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
 
 
     @Override
+    @Transactional
     public DeleteResult delete(UUID classificationUuid, TaxonDeletionConfigurator config){
         DeleteResult result = new DeleteResult();
         Classification classification = dao.findByUuid(classificationUuid);
@@ -683,11 +684,16 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
         }
         if (!classification.hasChildNodes()){
             dao.delete(classification);
+            result.addDeletedObject(classification);
+            return result;
         }
-        if (config.getTaxonNodeConfig().getChildHandling().equals(ChildHandling.DELETE) ){
-            TaxonNode root = classification.getRootNode();
-            taxonNodeDao.delete(root, true);
+        if (config.getTaxonNodeConfig().getChildHandling().equals(ChildHandling.DELETE)){
+//            TaxonNode root = classification.getRootNode();
+//            result.includeResult(taxonNodeService.deleteTaxonNode(HibernateProxyHelper.deproxy(root), config));
+//            result.addDeletedObject(classification);
             dao.delete(classification);
+            result.addDeletedObject(classification);
+            return result;
         }
 
 
@@ -977,6 +983,42 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
         if (parentNode != null){
             handleAncestorsForMarkersRecursive(result, markerTypes, parentNode);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
+            Classification classification) {
+        return getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, false);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
+            UUID classificationUuid) {
+        return getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classificationUuid, false);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
+            UUID classificationUuid, Integer limit, String pattern) {
+        return  getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classificationUuid,  limit, pattern, false);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
+            Classification classification, Integer limit, String pattern) {
+        return getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, limit, pattern, false);
     }
 
 

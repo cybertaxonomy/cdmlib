@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
 
 /**
  * @author a.mueller
- * @created 07.08.2009
+ * @since 07.08.2009
  */
 public class Matching {
 	@SuppressWarnings("unused")

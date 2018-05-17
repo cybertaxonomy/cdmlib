@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
  * @author a.mueller
- * @created 07.09.2009
+ * @since 07.09.2009
  */
 @Entity
 public class CdmMetaData extends CdmBase{
@@ -59,25 +59,8 @@ public class CdmMetaData extends CdmBase{
 	 * The last number represents the date of change.
 	 */
 //	private static final String dbSchemaVersion = "4.1.0.0.201607300000";
-  private static final String dbSchemaVersion = "4.7.0.0.201710040000";
-
-	/**
-	 * The version number for the terms loaded by the termloader (csv-files)
-	 * It is recommended to have the first two numbers equal to the CDM Library version number.
-	 *
-	 * But it is not obligatory as there may be cases when the library number changes but the
-	 * schema version is not changing.
-	 *
-	 * The third should be incremented if the terms change in a way that is not compatible
-	 * to the previous version (e.g. by changing the type of a term)
-	 *
-	 * The fourth number should be incremented when compatible term changes take place
-	 * (e.g. when new terms were added)
-	 *
-	 * The last number represents the date of change.
-	 */
-	private static final String termsVersion = "4.1.0.0.201607300000";
-//	private static final String termsVersion = "4.0.0.0.201604200000";
+//  private static final String dbSchemaVersion = "4.7.0.0.201710040000";
+     private static final String dbSchemaVersion = "5.0.0.0.20180514";
 
 
 	/* END OF CONFUSION */
@@ -121,8 +104,6 @@ public class CdmMetaData extends CdmBase{
         List<CdmMetaData> result = new ArrayList<>();
         // schema version
         result.add(new CdmMetaData(CdmMetaDataPropertyName.DB_SCHEMA_VERSION, dbSchemaVersion));
-        //term version
-        result.add(new CdmMetaData(CdmMetaDataPropertyName.TERMS_VERSION, termsVersion));
         // database create time
         result.add(new CdmMetaData(CdmMetaDataPropertyName.DB_CREATE_DATE, new DateTime().toString()));
         result.add(new CdmMetaData(CdmMetaDataPropertyName.INSTANCE_ID, UUID.randomUUID().toString()));
@@ -173,9 +154,6 @@ public class CdmMetaData extends CdmBase{
 			this.monitor = monitor;
 		}
 
-		/* (non-Javadoc)
-		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-		 */
 		@Override
         public int compare(String version1, String version2) {
 			int result = 0;
@@ -242,14 +220,6 @@ public class CdmMetaData extends CdmBase{
 
 	public static String getDbSchemaVersion() {
 		return dbSchemaVersion;
-	}
-
-	public static String getTermsVersion() {
-		return termsVersion;
-	}
-
-	public static boolean isTermsVersionCompatible(String version){
-		return compareVersion(termsVersion, version, 3, null) == 0;
 	}
 
 }

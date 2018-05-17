@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 
 /**
  * @author a.mueller
- * @created 15.03.2010
+ * @since 15.03.2010
  * @version 1.0
  */
 public class ExportTransformerBase implements IExportTransformer {

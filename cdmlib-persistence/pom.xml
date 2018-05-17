@@ -3,7 +3,7 @@
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-    <version>4.14.0</version>
+    <version>5.0.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -11,11 +11,7 @@
   <artifactId>cdmlib-persistence</artifactId>
   <name>CDM Persistence</name>
   <description>EDIT CDM library persistence layer. Mainly DAOs</description>
-  <scm>
-    <connection>scm:git:https://dev.e-taxonomy.eu/git/cdmlib-persistence.git</connection>
-    <developerConnection>scm:git:ssh://git@dev.e-taxonomy.eu/var/git/cdmlib-persistence.git</developerConnection>
-    <url>https://dev.e-taxonomy.eu/gitweb/cdmlib.git/tree/HEAD:/cdmlib-persistence/</url>
-  </scm>
+
   <build>
     <plugins>
       <plugin>

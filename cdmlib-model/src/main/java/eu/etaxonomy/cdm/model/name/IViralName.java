@@ -23,7 +23,7 @@ package eu.etaxonomy.cdm.model.name;
  * This class corresponds to: NameViral according to the ABCD schema.
  *
  * @author a.mueller
- * @date 26.01.2017
+ * @since 26.01.2017
  *
  */
 public interface IViralName extends ITaxonNameBase {

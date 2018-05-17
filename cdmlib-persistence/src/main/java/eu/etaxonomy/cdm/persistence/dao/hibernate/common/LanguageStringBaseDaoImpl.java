@@ -13,7 +13,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringBaseDao;
 
 /**
  * @author a.babadshanjan
- * @created 10.09.2008
+ * @since 10.09.2008
  */
 @Repository(value="langStrBaseDao")
 public class LanguageStringBaseDaoImpl<T extends LanguageStringBase> extends AnnotatableDaoImpl<T> 

@@ -16,7 +16,7 @@ import org.springframework.core.type.filter.AbstractTypeHierarchyTraversingFilte
  *
  *
  * @author a.kohlbecker
- * @date Jul 31, 2014
+ * @since Jul 31, 2014
  *
  */
 public class CdmAssignableTypeFilter extends AbstractTypeHierarchyTraversingFilter {

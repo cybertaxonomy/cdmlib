@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
  * @see ISchemaUpdater
  *
  * @author a.mueller
- * @date 16.11.2010
+ * @since 16.11.2010
  *
  */
 public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdater<U>>

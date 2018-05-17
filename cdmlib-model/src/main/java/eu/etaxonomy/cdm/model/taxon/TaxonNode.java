@@ -68,7 +68,7 @@ import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks;
 
 /**
  * @author a.mueller
- * @created 31.03.2009
+ * @since 31.03.2009
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TaxonNode", propOrder = {
@@ -324,6 +324,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
      */
     protected void setParent(TaxonNode parent) {
         this.parent = parent;
+//        this.treeIndex = parent.treeIndex() +
     }
 
     // *************** Excluded Note ***************

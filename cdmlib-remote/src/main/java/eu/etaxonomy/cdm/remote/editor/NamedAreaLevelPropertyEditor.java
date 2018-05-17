@@ -6,7 +6,7 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 
 /**
  * @author f.revilla
- * @date 09.06.2010
+ * @since 09.06.2010
  */
 public class NamedAreaLevelPropertyEditor extends PropertyEditorSupport {
 	@Override

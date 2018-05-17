@@ -34,7 +34,7 @@ import org.hibernate.search.bridge.TwoWayFieldBridge;
  * {@link Store.NO},{@link Index.NOT_ANALYZED}, {@link TermVector.NO}.
  *
  * @author a.kohlbecker
- * @date Sep 21, 2012
+ * @since Sep 21, 2012
  *
  */
 public class NotNullAwareIdBridge implements TwoWayFieldBridge {

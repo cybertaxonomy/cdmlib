@@ -15,7 +15,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.persistence.Basic;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
@@ -40,13 +40,10 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.joda.time.DateTime;
 
-import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
@@ -56,6 +53,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.media.MediaDefaultCacheStrategy;
@@ -70,7 +68,7 @@ import eu.etaxonomy.cdm.validation.Level2;
  * (2) an formatted text can have a text/html or an application/pdf representation.
  *
  * @author m.doering
- * @created 08-Nov-2007 13:06:34
+ * @since 08-Nov-2007 13:06:34
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Media", propOrder = {
@@ -105,13 +103,13 @@ public class Media extends IdentifiableEntity<IIdentifiableEntityCacheStrategy>
     private Map<Language,LanguageString> title = new HashMap<>();
 
     //creation date of the media (not of the record)
-    @XmlElement(name = "MediaCreated", type= String.class)
-    @XmlJavaTypeAdapter(DateTimeAdapter.class)
-    @Type(type="dateTimeUserType")
-    @Basic(fetch = FetchType.LAZY)
-    private DateTime mediaCreated;
+    @XmlElement(name ="MediaCreated" )
+    @Embedded
+    @IndexedEmbedded
+    private TimePeriod mediaCreated;
 
-     // TODO once hibernate annotations support custom collection type
+
+    // TODO once hibernate annotations support custom collection type
     // private MultilanguageText description = new MultilanguageText();
     @XmlElement(name = "MediaDescription")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
@@ -131,7 +129,7 @@ public class Media extends IdentifiableEntity<IIdentifiableEntityCacheStrategy>
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.REFRESH})
     @NotNull
     @NotEmpty(groups = Level2.class)
-    private Set<MediaRepresentation> representations = new HashSet<MediaRepresentation>();
+    private Set<MediaRepresentation> representations = new HashSet<>();
 
     @XmlElement(name = "Artist")
     @XmlIDREF
@@ -141,6 +139,7 @@ public class Media extends IdentifiableEntity<IIdentifiableEntityCacheStrategy>
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private AgentBase<?> artist;
 
+//************************* FACTORY METHODS *******************************/
 
     /**
      * Factory method
@@ -323,11 +322,11 @@ public class Media extends IdentifiableEntity<IIdentifiableEntityCacheStrategy>
 
 
 
-    public DateTime getMediaCreated(){
+    public TimePeriod getMediaCreated(){
         return this.mediaCreated;
     }
 
-    public void setMediaCreated(DateTime mediaCreated){
+    public void setMediaCreated(TimePeriod mediaCreated){
         this.mediaCreated = mediaCreated;
     }
 

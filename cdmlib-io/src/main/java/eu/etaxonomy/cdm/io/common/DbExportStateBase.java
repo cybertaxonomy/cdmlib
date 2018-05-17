@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author a.mueller
- * @created 11.05.2009
+ * @since 11.05.2009
  */
 public abstract class DbExportStateBase<CONFIG extends DbExportConfiguratorBase<? extends DbExportStateBase<CONFIG, TRANSFORM>, TRANSFORM, Source>, TRANSFORM extends IExportTransformer>
         extends ExportStateBase<CONFIG, TRANSFORM, Source> {

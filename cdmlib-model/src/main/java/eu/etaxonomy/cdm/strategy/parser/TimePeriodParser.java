@@ -23,11 +23,12 @@ import org.joda.time.Partial;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 
 /**
  * Class for parsing all types of date string to TimePeriod
  * @author a.mueller
- * @created 14-Jul-2013
+ * @since 14-Jul-2013
  */
 public class TimePeriodParser {
 	private static final Logger logger = Logger.getLogger(TimePeriodParser.class);
@@ -55,9 +56,9 @@ public class TimePeriodParser {
 	private static final String strDateWithMonthes = "([0-3]?\\d" + dotOrWs + ")?" + strMonthes + dotOrWs + "\\d{4,4}";
 	private static final Pattern dateWithMonthNamePattern = Pattern.compile(strDateWithMonthes);
 
-	public static TimePeriod parseString(TimePeriod timePeriod, String periodString){
+	public static <T extends TimePeriod> T parseString(T timePeriod, String periodString){
 		//TODO until now only quick and dirty (and partly wrong)
-		TimePeriod result = timePeriod;
+		T result = timePeriod;
 
 		if(timePeriod == null){
 			return timePeriod;
@@ -407,9 +408,36 @@ public class TimePeriodParser {
 		return parseString(timePeriod, strPeriod);
 	}
 
+	public static VerbatimTimePeriod parseStringVerbatim(String strPeriod) {
+	    VerbatimTimePeriod timePeriod = VerbatimTimePeriod.NewVerbatimInstance();
+	    strPeriod = parseVerbatimPart(timePeriod, strPeriod);
+	    return parseString(timePeriod, strPeriod);
+	}
 
 
-	protected static Partial parseSingleDate(String singleDateString) throws IllegalArgumentException{
+
+	/**
+     * @param timePeriod
+	 * @param strPeriod
+     * @return
+     */
+    private static String parseVerbatimPart(VerbatimTimePeriod timePeriod, String strPeriod) {
+        if (strPeriod == null){
+            return null;
+        }
+        //very first implementation, only for years and following 1 format
+        String regEx = "(.*)(\\[\"\\d{4}\"\\])";
+        Pattern pattern = Pattern.compile(regEx);
+        Matcher matcher = pattern.matcher(strPeriod);
+        if (matcher.matches()){
+            String verbatimDate = matcher.group(2).substring(2, 6);
+            timePeriod.setVerbatimDate(verbatimDate);
+            strPeriod = matcher.group(1).trim();
+        }
+        return strPeriod;
+    }
+
+    protected static Partial parseSingleDate(String singleDateString) throws IllegalArgumentException{
 		//FIXME until now only quick and dirty and incomplete
 		Partial partial =  new Partial();
 		singleDateString = singleDateString.trim();

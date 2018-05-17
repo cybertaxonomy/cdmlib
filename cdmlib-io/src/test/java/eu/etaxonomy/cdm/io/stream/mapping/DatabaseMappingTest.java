@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 
 /**
  * @author a.mueller
- * @date 26.03.2012
+ * @since 26.03.2012
  *
  */
 public class DatabaseMappingTest {

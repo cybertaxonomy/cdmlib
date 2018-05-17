@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * @author a.babadshanjan
- * @created 15.09.2008
+ * @since 15.09.2008
  * @version 1.0
  */
 @XmlAccessorType(XmlAccessType.FIELD)

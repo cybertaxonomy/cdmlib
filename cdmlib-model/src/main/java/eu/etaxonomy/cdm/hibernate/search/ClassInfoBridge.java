@@ -22,7 +22,7 @@ import org.hibernate.search.bridge.LuceneOptions;
  *
  * @author c.mathew
  * @version 1.0
- * @created 26 Jul 2013
+ * @since 26 Jul 2013
  */
 public class ClassInfoBridge implements FieldBridge {
 

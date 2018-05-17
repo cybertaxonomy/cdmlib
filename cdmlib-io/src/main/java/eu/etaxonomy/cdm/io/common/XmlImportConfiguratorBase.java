@@ -14,7 +14,7 @@ import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 
 /**
  * @author a.mueller
- * @date 28.06.2011
+ * @since 28.06.2011
  *
  */
 

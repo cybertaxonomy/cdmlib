@@ -76,7 +76,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * schema.
  *
  * @author m.doering
- * @created 08-Nov-2007 13:06:24
+ * @since 08-Nov-2007 13:06:24
  */
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(name="Feature", factoryMethod="NewInstance", propOrder = {
@@ -978,7 +978,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 */
 	public static final Feature INDIVIDUALS_ASSOCIATION(){
 		Feature individuals_association =  getTermByUuid(uuidIndividualsAssociation);
-		Set<Feature> generalizationOf = new HashSet<Feature>();
+		Set<Feature> generalizationOf = new HashSet<>();
 		generalizationOf.add(SPECIMEN());
 		generalizationOf.add(OBSERVATION());
 		individuals_association.setGeneralizationOf(generalizationOf);

@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 
 /**
  * @author a.kohlbecker
- * @date 30.06.2009
+ * @since 30.06.2009
  */
 public class CdmTypePropertyEditor extends PropertyEditorSupport  {
 

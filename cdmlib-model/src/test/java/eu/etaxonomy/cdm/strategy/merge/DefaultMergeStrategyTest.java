@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.Point;
@@ -52,7 +53,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStr
 
 /**
  * @author a.mueller
- * @created 03.08.2009
+ * @since 03.08.2009
  */
 public class DefaultMergeStrategyTest {
 	@SuppressWarnings("unused")
@@ -66,7 +67,7 @@ public class DefaultMergeStrategyTest {
 	private Reference printSeries1;
 	private Annotation annotation1;
 	private String title1 = "Title1";
-	private TimePeriod datePublished1 = TimePeriod.NewInstance(2000);
+	private VerbatimTimePeriod datePublished1 = VerbatimTimePeriod.NewVerbatimInstance(2000);
 	private int hasProblem1 = 1;
 	private LSID lsid1;
 
@@ -79,7 +80,7 @@ public class DefaultMergeStrategyTest {
 	private String annotationString2;
 	private String title2 = "Title2";
 	private DateTime created2 = new DateTime(1999, 3, 1, 0, 0, 0, 0);
-	private TimePeriod datePublished2 = TimePeriod.NewInstance(2002);
+	private VerbatimTimePeriod datePublished2 = VerbatimTimePeriod.NewVerbatimInstance(2002);
 	private int hasProblem2 = 1;
 	private LSID lsid2;
 
@@ -264,7 +265,7 @@ public class DefaultMergeStrategyTest {
 		Assert.assertSame("Created must be created2", created2, book1.getCreated());
 		//TODO updated should have the actual date if any value has changed
 		Assert.assertSame("Created must be created2", null, book1.getUpdated());
-		Assert.assertSame("Created must be datePublsihed2", datePublished2, book1.getDatePublished());
+		Assert.assertEquals("Created must be datePublsihed2", datePublished2, book1.getDatePublished());
 		//TODO this may not be correct
 		Assert.assertSame("LSID must be LSID2", lsid2, book1.getLsid());
 

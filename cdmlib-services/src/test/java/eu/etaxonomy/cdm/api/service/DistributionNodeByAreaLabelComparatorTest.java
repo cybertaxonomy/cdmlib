@@ -11,36 +11,22 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.Set;
 
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.common.TreeNode;
-import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
-import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.test.TermTestBase;
 
 /**
  * @author a.mueller
- * @date 10.03.2017
+ * @since 10.03.2017
  *
  */
-public class DistributionNodeByAreaLabelComparatorTest {
+public class DistributionNodeByAreaLabelComparatorTest extends TermTestBase {
 
-    private static DistributionNodeByAreaLabelComparator comparator;
+    private static DistributionNodeByAreaLabelComparator comparator = new DistributionNodeByAreaLabelComparator();
 
-
-
-    /**
-     * @throws java.lang.Exception
-     */
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        comparator = new DistributionNodeByAreaLabelComparator();
-        if (Language.DEFAULT() == null){
-            new DefaultTermInitializer().initialize();
-        }
-    }
 
     @Test
     public void testComparatorContract() {
