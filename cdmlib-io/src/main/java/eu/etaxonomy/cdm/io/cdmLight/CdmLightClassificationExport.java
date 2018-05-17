@@ -877,7 +877,7 @@ public class CdmLightClassificationExport
                 if (nomRef.getDatePublished() != null){
                     csvLine[table.getIndex(CdmLightExportTable.DATE_PUBLISHED)] = nomRef.getTimePeriodPublishedString();
                     csvLine[table.getIndex(CdmLightExportTable.YEAR_PUBLISHED)] = nomRef.getDatePublished().getYear();
-                    csvLine[table.getIndex(CdmLightExportTable.VERBATIM_DATE)] = null;
+                    csvLine[table.getIndex(CdmLightExportTable.VERBATIM_DATE)] = nomRef.getDatePublished().getVerbatimDate();
                 }
                 if (name.getNomenclaturalMicroReference() != null){
                     csvLine[table.getIndex(CdmLightExportTable.DETAIL)] = name.getNomenclaturalMicroReference();
