@@ -711,8 +711,11 @@ public class Reference
 	}
     @Override
     @Transient
-    public void setDatePublished(TimePeriod datePublished){
-        setDatePublished(VerbatimTimePeriod.toVerbatim(datePublished));
+    @Deprecated
+    public VerbatimTimePeriod setDatePublished(TimePeriod datePublished){
+        VerbatimTimePeriod newTimePeriod = VerbatimTimePeriod.toVerbatim(datePublished);
+        setDatePublished(newTimePeriod);
+        return newTimePeriod;
     }
 
 	public boolean hasDatePublished(){
