@@ -658,4 +658,14 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
     public Pager<UuidAndTitleCache<SpecimenOrObservationBase>> findByTitleUuidAndTitleCache(
             FindOccurrencesConfigurator config);
 
+    /**
+     * @param queryString
+     * @param propertyPaths
+     * @return
+     * @throws IOException
+     */
+    List<DerivedUnit> findByAccessionNumber(
+             String accessionNumberString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+            List<String> propertyPaths);
+
 }

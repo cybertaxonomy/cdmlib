@@ -926,6 +926,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         UUID derivedUnit1Uuid = UUID.fromString("843bc8c9-c0fe-4735-bf40-82f1996dcefb");
         UUID derivedUnit2Uuid = UUID.fromString("40cd9cb1-7c74-4e7d-a1f8-8a1e0314e940");
         UUID dnaSampleUuid = UUID.fromString("364969a6-2457-4e2e-ae1e-29a6fcaa741a");
+        UUID dnaSampleWithSequenceUuid = UUID.fromString("571d4e9a-0736-4da3-ad4a-a2df427a1f01");
         UUID tissueUuid = UUID.fromString("b608613c-1b5a-4882-8b14-d643b6fc5998");
 
         UUID taxonUuid = UUID.fromString("dfca7629-8a60-4d51-998d-371897f725e9");
@@ -999,6 +1000,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         SpecimenOrObservationBase derivedUnit2 = occurrenceService.load(derivedUnit2Uuid);
         SpecimenOrObservationBase tissue = occurrenceService.load(tissueUuid);
         SpecimenOrObservationBase dnaSample = occurrenceService.load(dnaSampleUuid);
+        SpecimenOrObservationBase dnaSampleWithSequence = occurrenceService.load(dnaSampleWithSequenceUuid);
         Taxon taxon = (Taxon) taxonService.load(taxonUuid);
 
         assertNotNull(derivedUnit1);
@@ -1010,9 +1012,9 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         // wildcard search => all derivates
         FindOccurrencesConfigurator config = new FindOccurrencesConfigurator();
         config.setTitleSearchString("*");
-        assertEquals(4, occurrenceService.countOccurrences(config));
+        assertEquals(5, occurrenceService.countOccurrences(config));
         List<SpecimenOrObservationBase> allDerivates = occurrenceService.findByTitle(config).getRecords();
-        assertEquals(4, allDerivates.size());
+        assertEquals(5, allDerivates.size());
         assertTrue(allDerivates.contains(derivedUnit1));
         assertTrue(allDerivates.contains(derivedUnit2));
         assertTrue(allDerivates.contains(tissue));
@@ -1031,9 +1033,9 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         // class search => 4 results
         config = new FindOccurrencesConfigurator();
         config.setClazz(SpecimenOrObservationBase.class);
-        assertEquals(4, occurrenceService.countOccurrences(config));
+        assertEquals(5, occurrenceService.countOccurrences(config));
         List<SpecimenOrObservationBase> specimenOrObservationBases = occurrenceService.findByTitle(config).getRecords();
-        assertEquals(4, specimenOrObservationBases.size());
+        assertEquals(5, specimenOrObservationBases.size());
 
         // class search => 0 results
         config = new FindOccurrencesConfigurator();
@@ -1045,9 +1047,9 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         // class search => 4 results
         config = new FindOccurrencesConfigurator();
         config.setClazz(DerivedUnit.class);
-        assertEquals(4, occurrenceService.countOccurrences(config));
+        assertEquals(5, occurrenceService.countOccurrences(config));
         List<SpecimenOrObservationBase> derivedUnits = occurrenceService.findByTitle(config).getRecords();
-        assertEquals(4, derivedUnits.size());
+        assertEquals(5, derivedUnits.size());
         assertTrue(derivedUnits.contains(derivedUnit1));
         assertTrue(derivedUnits.contains(derivedUnit2));
         assertTrue(derivedUnits.contains(tissue));
@@ -1122,9 +1124,9 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         //all specimen
         config = new FindOccurrencesConfigurator();
         config.setAssignmentStatus(AssignmentStatus.ALL_SPECIMENS);
-        assertEquals(4, occurrenceService.countOccurrences(config));
+        assertEquals(5, occurrenceService.countOccurrences(config));
         List<SpecimenOrObservationBase> allSpecimens = occurrenceService.findByTitle(config).getRecords();
-        assertEquals(4, allSpecimens.size());
+        assertEquals(5, allSpecimens.size());
         assertTrue(allSpecimens.contains(derivedUnit1));
         assertTrue(allSpecimens.contains(derivedUnit2));
         assertTrue(allSpecimens.contains(tissue));
@@ -1142,9 +1144,9 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         //unassigned specimen
         config = new FindOccurrencesConfigurator();
         config.setAssignmentStatus(AssignmentStatus.UNASSIGNED_SPECIMENS);
-        assertEquals(2, occurrenceService.countOccurrences(config));
+        assertEquals(3, occurrenceService.countOccurrences(config));
         List<SpecimenOrObservationBase> unAssignedSpecimens = occurrenceService.findByTitle(config).getRecords();
-        assertEquals(2, unAssignedSpecimens.size());
+        assertEquals(3, unAssignedSpecimens.size());
         assertTrue(unAssignedSpecimens.contains(derivedUnit2));
         assertTrue(unAssignedSpecimens.contains(dnaSample));
 
@@ -1157,6 +1159,14 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         assertEquals(2, ignoreAssignmentStatusSpecimens.size());
         assertTrue(ignoreAssignmentStatusSpecimens.contains(derivedUnit1));
         assertTrue(ignoreAssignmentStatusSpecimens.contains(tissue));
+
+
+
+        List<DerivedUnit> findByAccessionNumber = occurrenceService.findByAccessionNumber("ACC_DNA", 10, 1, null, null);
+
+        assertEquals(1, findByAccessionNumber.size());
+       // assertTrue(findByAccessionNumber.contains(derivedUnit1));
+        assertTrue(findByAccessionNumber.contains(dnaSampleWithSequence));
 
 
     }

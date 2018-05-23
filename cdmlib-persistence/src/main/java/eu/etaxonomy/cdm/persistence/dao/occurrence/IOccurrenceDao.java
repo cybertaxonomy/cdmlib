@@ -409,4 +409,13 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
      * @return a list of field units referencing the gathering event
      */
     public List<FieldUnit> getFieldUnitsForGatheringEvent(UUID gatheringEventUuid, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
+    /**
+    *
+    * Returns {@link DerivedUNit} that has the accession number
+    * @param accessionNumber
+    * @param propertyPaths
+    * @return a derived unit
+    */
+   public List<DerivedUnit> getByGeneticAccessionNumber(String accessionNumberString, List<String> propertyPaths);
 }

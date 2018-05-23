@@ -790,6 +790,18 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     @Override
+    public  List<DerivedUnit> findByAccessionNumber(
+            String accessionNumberString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+            List<String> propertyPaths)  {
+
+        List<DerivedUnit> records = new ArrayList<>();
+        records = dao.getByGeneticAccessionNumber(accessionNumberString, propertyPaths);
+
+        return records;
+
+    }
+
+    @Override
     public Pager<SearchResult<SpecimenOrObservationBase>> findByFullText(
             Class<? extends SpecimenOrObservationBase> clazz, String queryString, Rectangle boundingBox, List<Language> languages,
             boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,

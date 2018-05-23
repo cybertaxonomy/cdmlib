@@ -1040,4 +1040,17 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
         return results;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<DerivedUnit> getByGeneticAccessionNumber(String accessionNumberString, List<String> propertyPaths) {
+        String queryString = "SELECT dnaSample FROM DnaSample dnaSample join dnaSample.sequences sequence WHERE sequence.geneticAccessionNumber LIKE :accessionNumberString";
+        Query query = getSession().createQuery(queryString);
+        query.setParameter("accessionNumberString", accessionNumberString);
+        List results = query.list();
+        defaultBeanInitializer.initializeAll(results, propertyPaths);
+        return results;
+    }
+
 }
