@@ -287,6 +287,11 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         finally{
             state.getReport().printReport(state.getConfig().getReportUri());
         }
+
+        if (state.getConfig().isDownloadSequenceData()){
+            //download fasta files for imported sequences
+            //TODO: where to store the files and how to create the new Blast DB
+        }
         return;
     }
 

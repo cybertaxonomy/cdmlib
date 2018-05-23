@@ -245,9 +245,12 @@ public class AbcdGgbnParser {
                 //contig file URL
                 NodeList consensusSequenceChromatogramFileURIList = sequencing.getElementsByTagName(prefix+"consensusSequenceChromatogramFileURI");
                 URI uri = AbcdParseUtility.parseFirstUri(consensusSequenceChromatogramFileURIList, report);
-                Media contigFile = Media.NewInstance(uri, null, null, null);
-                sequence.setContigFile(contigFile);
-
+                if (uri.toString().endsWith("fasta")){
+                    state.putSequenceDataStableIdentifier(uri);
+                }else{
+                    Media contigFile = Media.NewInstance(uri, null, null, null);
+                    sequence.setContigFile(contigFile);
+                }
                 //genetic Accession
                 NodeList geneticAccessionList = sequencing.getElementsByTagName(prefix+"geneticAccession");
                 parseGeneticAccession(geneticAccessionList, sequence);
