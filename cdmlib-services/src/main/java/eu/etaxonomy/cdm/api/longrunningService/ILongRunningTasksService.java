@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.api.longrunningService;
 
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.api.service.config.SecundumForSubtreeConfigurator;
+import eu.etaxonomy.cdm.api.service.config.ForSubtreeConfiguratorBase;
 
 /**
  * @author cmathew
@@ -24,7 +24,7 @@ public interface ILongRunningTasksService {
      * @param configurator
      * @return
      */
-    public UUID monitLongRunningTask(SecundumForSubtreeConfigurator configurator);
+    public UUID monitLongRunningTask(ForSubtreeConfiguratorBase configurator);
 
 
 

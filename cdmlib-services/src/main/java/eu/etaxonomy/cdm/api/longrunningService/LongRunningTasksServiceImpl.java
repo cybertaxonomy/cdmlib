@@ -18,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.etaxonomy.cdm.api.service.IProgressMonitorService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.UpdateResult;
+import eu.etaxonomy.cdm.api.service.config.ForSubtreeConfiguratorBase;
+import eu.etaxonomy.cdm.api.service.config.PublishForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitorThread;
@@ -38,17 +40,20 @@ public class LongRunningTasksServiceImpl implements ILongRunningTasksService{
 
 
     @Override
-    public UUID monitLongRunningTask(SecundumForSubtreeConfigurator config) {
+    public UUID monitLongRunningTask(ForSubtreeConfiguratorBase config) {
 
         RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
             @Override
             public Serializable doRun(IRemotingProgressMonitor monitor) {
                 UpdateResult result;
                 config.setMonitor(monitor);
+                System.err.println(monitor.getThread().getId());
+
                 result = updateData(config);
                 for(Exception e : result.getExceptions()) {
                     monitor.addReport(e.getMessage());
                 }
+                monitor.setResult(result);
                 return result;
             }
         };
@@ -58,8 +63,12 @@ public class LongRunningTasksServiceImpl implements ILongRunningTasksService{
         return uuid;
     }
 
-    private UpdateResult updateData(SecundumForSubtreeConfigurator config){
-        return taxonNodeService.setSecundumForSubtree(config);
+    private UpdateResult updateData(ForSubtreeConfiguratorBase config){
+        if (config instanceof SecundumForSubtreeConfigurator){
+            return taxonNodeService.setSecundumForSubtree((SecundumForSubtreeConfigurator)config);
+        }else{
+            return taxonNodeService.setPublishForSubtree(config.getSubtreeUuid(), ((PublishForSubtreeConfigurator)config).isPublish(), ((PublishForSubtreeConfigurator)config).isIncludeAcceptedTaxa(), ((PublishForSubtreeConfigurator)config).isIncludeSynonyms(), ((PublishForSubtreeConfigurator)config).isIncludeSharedTaxa(), config.getMonitor());
+        }
     }
 
 
