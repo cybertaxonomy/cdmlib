@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 public enum CdmPermissionClass {
     ALL,
     ANNOTATION,
+    ANNOTATIONTYPE,
     CDMMETADATA,
     CLASSIFICATION,
     COLLECTION,
@@ -41,6 +42,7 @@ public enum CdmPermissionClass {
     HOMOTYPICALGROUP,
     HYBRIDRELATIONSHIP,
     IDENTIFIABLESOURCE,
+    LANGUAGE,
     LANGUAGESTRING,
     MARKER,
     MARKERTYPE,
@@ -61,6 +63,7 @@ public enum CdmPermissionClass {
     TAXONBASE,
     TAXONNAME,
     TAXONNODE,
+    TAXONRELATIONSHIP,
     TEAMORPERSONBASE,
     TERMVOCABULARY,
     USER,

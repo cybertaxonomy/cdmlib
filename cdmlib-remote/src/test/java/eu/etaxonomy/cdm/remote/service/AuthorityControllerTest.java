@@ -86,7 +86,7 @@ public class AuthorityControllerTest extends UnitilsJUnit4 {
 
 	@Test(expected = LSIDServerException.class)
     public void testNotifyForeignAuthority() throws Exception {
-    	LSIDServerException lse = new LSIDServerException(LSIDServerException.METHOD_NOT_IMPLEMENTED, "FAN service not available");
+    	LSIDServerException lse = new LSIDServerException(LSIDException.METHOD_NOT_IMPLEMENTED, "FAN service not available");
 
     	authorityService.notifyForeignAuthority(LSIDMatchers.eqLSID(lsid), LSIDMatchers.eqLSIDAuthority(lsidAuthority));
     	EasyMock.expectLastCall().andThrow(lse);
@@ -98,7 +98,7 @@ public class AuthorityControllerTest extends UnitilsJUnit4 {
 
 	@Test(expected = LSIDServerException.class)
     public void testRevokeForeignAuthority() throws Exception {
-    	LSIDServerException lse = new LSIDServerException(LSIDServerException.METHOD_NOT_IMPLEMENTED, "FAN service not available");
+    	LSIDServerException lse = new LSIDServerException(LSIDException.METHOD_NOT_IMPLEMENTED, "FAN service not available");
 
     	authorityService.revokeNotificationForeignAuthority(LSIDMatchers.eqLSID(lsid), LSIDMatchers.eqLSIDAuthority(lsidAuthority));
     	EasyMock.expectLastCall().andThrow(lse);
