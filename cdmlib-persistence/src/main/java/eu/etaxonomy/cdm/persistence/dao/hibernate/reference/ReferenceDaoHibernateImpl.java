@@ -15,9 +15,11 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -95,6 +97,25 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 
 		return list;
 	}
+
+	@Override
+    public List<UuidAndTitleCache<Reference>> getUuidAndTitle(Set<UUID> uuids){
+        List<UuidAndTitleCache<Reference>> list = new ArrayList<UuidAndTitleCache<Reference>>();
+
+        Criteria criteria = null;
+
+        criteria = getSession().createCriteria(Reference.class);
+        criteria.add(Restrictions.in("uuid", uuids ) );
+
+        @SuppressWarnings("unchecked")
+        List<Reference> result = criteria.list();
+
+        for(Reference object : result){
+            list.add(new UuidAndTitleCache<Reference>(type, object.getUuid(), object.getId(), object.getTitleCache()));
+        }
+
+        return list;
+    }
 
 	@Override
 	public List<UuidAndTitleCache<Reference>> getUuidAndTitleCache(Integer limit, String pattern, ReferenceType refType) {
