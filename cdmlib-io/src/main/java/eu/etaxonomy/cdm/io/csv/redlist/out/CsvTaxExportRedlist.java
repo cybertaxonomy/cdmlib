@@ -173,8 +173,8 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 	 */
 	protected List<TaxonNode> handleGeographicalFilter(List<NamedArea> selectedAreas,
 	        Set<TaxonNode> taxonNodes) {
-	    List<TaxonNode> filteredNodes = new ArrayList<TaxonNode>();
-	    List<TaxonNode> allNodes = new ArrayList<TaxonNode>();
+	    List<TaxonNode> filteredNodes = new ArrayList<>();
+	    List<TaxonNode> allNodes = new ArrayList<>();
 	    for (TaxonNode node : taxonNodes){
 	        if(node.getTaxon()!=null){
 	            allNodes.add(node);

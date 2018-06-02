@@ -318,7 +318,8 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
                     classificationFilter.add(UUID.fromString(classString));
                 }
             }
-            final IncludedTaxonConfiguration configuration = new IncludedTaxonConfiguration(classificationFilter, includeDoubtful, onlyCongruent);
+            final IncludedTaxonConfiguration configuration =
+                    new IncludedTaxonConfiguration(classificationFilter, includeDoubtful, onlyCongruent);
             IncludedTaxaDTO listIncludedTaxa = service.listIncludedTaxa(uuid, configuration);
             mv.addObject(listIncludedTaxa);
             return mv;
