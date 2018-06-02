@@ -623,13 +623,18 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
         Session session = getSession();
         Query query = null;
         if (pattern != null){
-            query = session.createQuery("select uuid, id, titleCache from " + clazz.getSimpleName() +" where titleCache like :pattern");
+            query = session.createQuery(
+                      " SELECT uuid, id, titleCache "
+                    + " FROM " + clazz.getSimpleName()
+                    + " WHERE titleCache LIKE :pattern");
             pattern = pattern.replace("*", "%");
             pattern = pattern.replace("?", "_");
             pattern = pattern + "%";
             query.setParameter("pattern", pattern);
         } else {
-            query = session.createQuery("select uuid, id, titleCache from " + clazz.getSimpleName() );
+            query = session.createQuery(
+                      " SELECT uuid, id, titleCache "
+                    + " FROM  " + clazz.getSimpleName() );
         }
         if (limit != null){
            query.setMaxResults(limit);

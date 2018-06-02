@@ -79,7 +79,9 @@ import eu.etaxonomy.cdm.persistence.query.TaxonTitleType;
  */
 @Repository
 @Qualifier("taxonDaoHibernateImpl")
-public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implements ITaxonDao {
+public class TaxonDaoHibernateImpl
+              extends IdentifiableDaoBase<TaxonBase>
+              implements ITaxonDao {
 //    private AlternativeSpellingSuggestionParser<TaxonBase> alternativeSpellingSuggestionParser;
     private static final Logger logger = Logger.getLogger(TaxonDaoHibernateImpl.class);
 
@@ -129,7 +131,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
             criteria.add(Restrictions.ilike("name.nameCache", queryString));
         }
 
-        return criteria.list();
+        @SuppressWarnings("unchecked")
+        List<TaxonBase> result = criteria.list();
+        return result;
     }
 
     public List<TaxonBase> getTaxaByName(boolean doTaxa, boolean doSynonyms, String queryString, MatchMode matchMode,
@@ -173,9 +177,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
             //Collections.sort(results, comp);
             return results;
+        }else{
+            return new ArrayList<>();
         }
 
-        return new ArrayList<>();
 
     }
 
@@ -193,7 +198,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
         boolean doCount = false;
         boolean includeAuthors = false;
-        List<UuidAndTitleCache<IdentifiableEntity>> resultObjects = new ArrayList<UuidAndTitleCache<IdentifiableEntity>>();
+        List<UuidAndTitleCache<IdentifiableEntity>> resultObjects = new ArrayList<>();
         if (doNamesWithoutTaxa){
         	List<? extends TaxonName> nameResult = taxonNameDao.findByName(
         	        includeAuthors, queryString, matchMode, null, null, null, null);
@@ -208,7 +213,6 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         	}
         }
         Query query = prepareTaxaByNameForEditor(doTaxa, doSynonyms, doMisappliedNames, doCommonNames, "nameCache", queryString, classification, matchMode, namedAreas, doCount, order);
-
 
         if (query != null){
             List<Object[]> results = query.list();
@@ -232,11 +236,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                     resultObjects.add( new UuidAndTitleCache(Synonym.class, (UUID) result[0], (Integer) result[1], (String)result[2], new Boolean(result[4].toString()), null));
                 }
             }
-
-
-
         }
-
         return resultObjects;
 
     }
@@ -248,11 +248,13 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         boolean doCount = false;
         Query query = prepareTaxaByCommonName(queryString, classification, matchMode, namedAreas, pageSize, pageNumber, doCount, false);
         if (query != null){
+            @SuppressWarnings("unchecked")
             List<Taxon> results = query.list();
             defaultBeanInitializer.initializeAll(results, propertyPaths);
             return results;
+        }else{
+            return new ArrayList<>();
         }
-        return new ArrayList<Taxon>();
 
     }
 
@@ -623,7 +625,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
             criteria.setMaxResults(limit);
         }
 
-        return criteria.list();
+        @SuppressWarnings("unchecked")
+        List<Synonym> result = criteria.list();
+        return result;
     }
 
     @Override
@@ -635,7 +639,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
             criteria.setMaxResults(limit);
         }
 
-        return criteria.list();
+        @SuppressWarnings("unchecked")
+        List<Taxon> result = criteria.list();
+        return result;
     }
 
 
@@ -741,6 +747,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     @Override
     public int countMatchesByName(String queryString, MatchMode matchMode, boolean onlyAcccepted) {
         checkNotInPriorView("TaxonDaoHibernateImpl.countMatchesByName(String queryString, ITitledDao.MATCH_MODE matchMode, boolean onlyAcccepted)");
+
         Criteria crit = getSession().createCriteria(type);
         crit.add(Restrictions.ilike("titleCache", matchMode.queryStringFrom(queryString)));
         crit.setProjection(Projections.rowCount());
@@ -752,6 +759,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     @Override
     public int countMatchesByName(String queryString, MatchMode matchMode, boolean onlyAcccepted, List<Criterion> criteria) {
         checkNotInPriorView("TaxonDaoHibernateImpl.countMatchesByName(String queryString, ITitledDao.MATCH_MODE matchMode, boolean onlyAcccepted, List<Criterion> criteria)");
+
         Criteria crit = getSession().createCriteria(type);
         crit.add(Restrictions.ilike("titleCache", matchMode.queryStringFrom(queryString)));
         if(criteria != null){
@@ -799,7 +807,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
             Query query = null;
 
-            String queryStr = "SELECT count(syn) FROM Synonym syn";
+            String queryStr =
+                    " SELECT count(syn) "
+                  + " FROM Synonym syn";
             if (onlyAttachedToTaxon){
                 queryStr += " WHERE syn.acceptedTaxon IS NOT NULL";
             }
@@ -1149,9 +1159,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         String hql = prepareListAcceptedTaxaFor(classificationFilter, false);
 
         Query query = getSession().createQuery(hql);
-
         query.setParameter("synonym", synonym);
-
         if(classificationFilter != null){
             query.setParameter("classificationFilter", classificationFilter);
         }
@@ -1170,15 +1178,12 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         String hql = prepareListAcceptedTaxaFor(classificationFilter, true);
 
         Query query = getSession().createQuery(hql);
-
         query.setParameter("synonym", synonym);
-
         if(classificationFilter != null){
             query.setParameter("classificationFilter", classificationFilter);
         }
 
         Long count = Long.parseLong(query.uniqueResult().toString());
-
         return count;
 
     }
@@ -1192,12 +1197,14 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     private String prepareListAcceptedTaxaFor(Classification classificationFilter, boolean doCount) {
 
         String hql;
-        String hqlSelect = "SELECT " + (doCount? "COUNT(taxon)" : "taxon") + " FROM Synonym as syn JOIN syn.acceptedTaxon as taxon ";
+        String hqlSelect = "SELECT " + (doCount? "COUNT(taxon)" : "taxon") +
+                 " FROM Synonym as syn "
+                 + "   JOIN syn.acceptedTaxon as taxon ";
         String hqlWhere = " WHERE syn = :synonym";
 
         if(classificationFilter != null){
             hqlSelect += " JOIN taxon.taxonNodes AS taxonNode";
-            hqlWhere += " AND taxonNode.classification = :classificationFilter";
+            hqlWhere  += " AND taxonNode.classification = :classificationFilter";
         }
         hql = hqlSelect + hqlWhere;
         return hql;
@@ -1235,8 +1242,11 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     @Override
     public List<String> taxaByNameNotInDB(List<String> taxonNames){
         //get all taxa, already in db
-        Query query = getSession().createQuery("from TaxonName t where t.nameCache IN (:taxonList)");
+        Query query = getSession().createQuery(
+                 " FROM TaxonName t "
+                +" WHERE t.nameCache IN (:taxonList)");
         query.setParameterList("taxonList", taxonNames);
+        @SuppressWarnings("unchecked")
         List<TaxonName> taxaInDB = query.list();
         //compare the original list with the result of the query
         for (TaxonName taxonName: taxaInDB){
@@ -1253,7 +1263,11 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     //TODO: mal nur mit UUID probieren (ohne fetch all properties), vielleicht geht das schneller?
     @Override
     public List<UUID> findIdenticalTaxonNameIds(List<String> propertyPaths){
-        Query query=getSession().createQuery("select tmb2 from ZoologicalName tmb, ZoologicalName tmb2 fetch all properties where tmb.id != tmb2.id and tmb.nameCache = tmb2.nameCache");
+        Query query=getSession().createQuery(
+                   "SELECT tmb2 "
+                + " FROM ZoologicalName tmb, ZoologicalName tmb2 FETCH ALL properties "
+                + " WHERE tmb.id != tmb2.id AND tmb.nameCache = tmb2.nameCache");
+        @SuppressWarnings("unchecked")
         List<UUID> zooNames = query.list();
 
         return zooNames;
@@ -1263,7 +1277,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     @Override
     public List<TaxonName> findIdenticalTaxonNames(List<String> propertyPaths) {
 
-        Query query=getSession().createQuery("select tmb2 from ZoologicalName tmb, ZoologicalName tmb2 fetch all properties where tmb.id != tmb2.id and tmb.nameCache = tmb2.nameCache");
+        Query query=getSession().createQuery(
+                  " SELECT tmb2 "
+                + " FROM ZoologicalName tmb, ZoologicalName tmb2 FETCH ALL properties "
+                + " WHERE tmb.id != tmb2.id AND tmb.nameCache = tmb2.nameCache");
 
         @SuppressWarnings("unchecked")
         List<TaxonName> zooNames = query.list();
@@ -1282,14 +1299,19 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     public List<TaxonName> findIdenticalNamesNew(List<String> propertyPaths){
 
         //Hole die beiden Source_ids von "Fauna Europaea" und "Erms" und in sources der names darf jeweils nur das entgegengesetzte auftreten (i member of tmb.taxonBases)
-        Query query = getSession().createQuery("Select id from Reference where titleCache like 'Fauna Europaea database'");
+        Query query = getSession().createQuery("SELECT id "
+                + "FROM Reference "
+                + " WHERE titleCache LIKE 'Fauna Europaea database'");
+        @SuppressWarnings("unchecked")
         List<String> secRefFauna = query.list();
         query = getSession().createQuery("Select id from Reference where titleCache like 'ERMS'");
+        @SuppressWarnings("unchecked")
         List<String> secRefErms = query.list();
         //Query query = getSession().createQuery("select tmb2.nameCache from ZoologicalName tmb, TaxonBase tb1, ZoologicalName tmb2, TaxonBase tb2 where tmb.id != tmb2.id and tb1.name = tmb and tb2.name = tmb2 and tmb.nameCache = tmb2.nameCache and tb1.sec != tb2.sec");
         //Get all names of fauna europaea
         query = getSession().createQuery("select zn.nameCache from ZoologicalName zn, TaxonBase tb where tb.name = zn and tb.sec.id = :secRefFauna");
         query.setParameter("secRefFauna", secRefFauna.get(0));
+        @SuppressWarnings("unchecked")
         List<String> namesFauna= query.list();
 
         //Get all names of erms
@@ -1297,13 +1319,13 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         query = getSession().createQuery("select zn.nameCache from ZoologicalName zn, TaxonBase tb where tb.name = zn and tb.sec.id = :secRefErms");
         query.setParameter("secRefErms", secRefErms.get(0));
 
+        @SuppressWarnings("unchecked")
         List<String> namesErms = query.list();
         /*TaxonNameComparator comp = new TaxonNameComparator();
         Collections.sort(namesFauna);
         Collections.sort(namesErms);
         */
-        List <String> identicalNames = new ArrayList<String>();
-        String predecessor = "";
+        List <String> identicalNames = new ArrayList<>();
 
         for (String nameFauna: namesFauna){
             if (namesErms.contains(nameFauna)){
@@ -1361,33 +1383,44 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     private String[] createHQLString(boolean doTaxa, boolean doSynonyms, boolean doIncludeMisappliedNames, Classification classification,  Set<NamedArea> areasExpanded, MatchMode matchMode, String searchField){
 
            boolean doAreaRestriction = areasExpanded.size() > 0;
-           String 	doAreaRestrictionSubSelect = "select %s.id from" +
-                " Distribution e" +
-                " join e.inDescription d" +
-                " join d.taxon t" +
-                (classification != null ? " join t.taxonNodes as tn " : " ");
+           String 	doAreaRestrictionSubSelect =
+                     " SELECT %s.id "
+                   + " FROM Distribution e "
+                   + "    JOIN e.inDescription d "
+                   + "    JOIN d.taxon t " +
+                (classification != null ? " JOIN t.taxonNodes AS tn " : " ");
 
-           String 	doAreaRestrictionMisappliedNameSubSelect = "select %s.id from" +
-            " Distribution e" +
-            " join e.inDescription d" +
-            " join d.taxon t";
+           String doAreaRestrictionMisappliedNameSubSelect =
+                   "SELECT %s.id "
+                   + " FROM Distribution e "
+                   + "   JOIN e.inDescription d"
+                   + "   JOIN d.taxon t";
 
-           String doTaxonSubSelect = "select %s.id from Taxon t " + (classification != null ? " join t.taxonNodes as tn " : " ");
-           String doTaxonMisappliedNameSubSelect = "select %s.id from Taxon t ";
+           String doTaxonSubSelect =
+                     " SELECT %s.id "
+                   + " FROM Taxon t " + (classification != null ? " "
+                           + " JOIN t.taxonNodes AS tn " : " ");
+           String doTaxonMisappliedNameSubSelect =
+                     " SELECT %s.id "
+                   + " FROM Taxon t ";
 
-           String doTaxonNameJoin =   " join t.name n ";
+           String doTaxonNameJoin =   " JOIN t.name n ";
 
-           String doSynonymNameJoin =  	" join t.synonyms s join s.name sn";
+           String doSynonymNameJoin =
+                   " JOIN t.synonyms s "
+                 + " JOIN s.name sn";
 
-           String doMisappliedNamesJoin = " left join t.relationsFromThisTaxon as rft" +
-                " left join rft.relatedTo as rt" +
-                (classification != null ? " left join rt.taxonNodes as tn2" : " ") +
-                " left join rt.name as n2" +
-                " left join rft.type as rtype";
+           String doMisappliedNamesJoin =
+                   " LEFT JOIN t.relationsFromThisTaxon AS rft" +
+                " LEFT JOIN rft.relatedTo AS rt" +
+                 (classification != null ? " LEFT JOIN rt.taxonNodes AS tn2" : " ") +
+                " LEFT JOIN rt.name AS n2" +
+                " LEFT JOIN rft.type as rtype";
 
-           String doCommonNamesJoin =   "join t.descriptions as description "+
-                   "left join description.descriptionElements as com " +
-                   "left join com.feature f ";
+           String doCommonNamesJoin =
+                   " JOIN t.descriptions AS description "+
+                   " LEFT JOIN description.descriptionElements AS com " +
+                   " LEFT JOIN com.feature f ";
 
 
            String doClassificationWhere = " tn.classification = :classification";
@@ -1504,21 +1537,21 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	@Override
 	public List<UuidAndTitleCache<IdentifiableEntity>> getTaxaByCommonNameForEditor(
 			String titleSearchStringSqlized, Classification classification,
-			MatchMode matchMode, Set namedAreas) {
-	    List<Object> resultArray = new ArrayList<Object>();
+			MatchMode matchMode, Set<NamedArea> namedAreas) {
 		Query query = prepareTaxaByCommonName(titleSearchStringSqlized, classification, matchMode, namedAreas, null, null, false, true);
         if (query != null){
-            resultArray = query.list();
-            List<UuidAndTitleCache<IdentifiableEntity>> returnResult = new ArrayList<UuidAndTitleCache<IdentifiableEntity>>() ;
+            @SuppressWarnings("unchecked")
+            List<Object> resultArray = query.list();
+            List<UuidAndTitleCache<IdentifiableEntity>> returnResult = new ArrayList<>() ;
             Object[] result;
             for(int i = 0; i<resultArray.size();i++){
             	result = (Object[]) resultArray.get(i);
             	returnResult.add(new UuidAndTitleCache(Taxon.class, (UUID) result[0],(Integer)result[1], (String)result[2], new Boolean(result[4].toString()), null));
             }
             return returnResult;
+        }else{
+            return new ArrayList<>();
         }
-
-		return null;
 	}
 
 
@@ -1592,7 +1625,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		String accWhere = isTaxon ?  "tn.treeIndex like " + filterStr : "(1=0)";
 		String synWhere = isSynonym  ?  "synTn.treeIndex like " + filterStr : "(1=0)";
 
-		String queryString = "SELECT ids.type, ids.identifier, %s " +
+		String queryString = " SELECT ids.type, ids.identifier, %s " +
 				" FROM %s as c " +
                 " INNER JOIN c.identifiers as ids " +
                 accTreeJoin +
@@ -1814,13 +1847,18 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         Session session = getSession();
         Query query = null;
         if (pattern != null){
-            query = session.createQuery("select taxonBase.uuid, taxonBase.id, taxonBase.titleCache, taxonBase.name.rank from TaxonBase as taxonBase where taxonBase.titleCache like :pattern");
+            query = session.createQuery(
+                  " SELECT tb.uuid, taxonBase.id, tb.titleCache, tb.name.rank "
+                  + " FROM TaxonBase as tb "
+                  + " WHERE tb.titleCache LIKE :pattern");
             pattern = pattern.replace("*", "%");
             pattern = pattern.replace("?", "_");
             pattern = pattern + "%";
             query.setParameter("pattern", pattern);
-            } else {
-            query = session.createQuery("select taxonBase.uuid, taxonBase.id, taxonBase.titleCache, taxonBase.name.rank from TaxonBase as taxonBase"  );
+        } else {
+            query = session.createQuery(
+                    " SELECT tb.uuid, taxonBase.id, tb.titleCache, tb.name.rank "
+                  + " FROM TaxonBase AS tb");
         }
         if (limit != null){
            query.setMaxResults(limit);
@@ -1831,10 +1869,11 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
     @Override
     protected List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCache(Query query){
-        List<UuidAndTitleCache<TaxonBase>> list = new ArrayList<UuidAndTitleCache<TaxonBase>>();
+        List<UuidAndTitleCache<TaxonBase>> list = new ArrayList<>();
 
+        @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
-        if (result != null && !result.isEmpty()){
+        if (!result.isEmpty()){
             if (result.iterator().next().length == 4){
                 Collections.sort(result, new UuidAndTitleCacheTaxonComparator());
             }

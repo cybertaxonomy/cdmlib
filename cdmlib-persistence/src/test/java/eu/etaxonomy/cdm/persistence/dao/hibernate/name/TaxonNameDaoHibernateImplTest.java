@@ -226,7 +226,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
         UUID taxonUuid = taxon.getUuid();
 
         //int numbOfTaxa = taxonDao.count(TaxonBase.class);
-        List<TaxonBase> taxaList = taxonDao.getAllTaxonBases(100, 0);
+        List<TaxonBase> taxaList = taxonDao.list(100, 0);
 
         acherontiaLachesis = taxonNameDao.findByUuid(UUID.fromString("497a9955-5c5a-4f2b-b08c-2135d336d633"));
         taxon = taxonDao.findByUuid(taxonUuid);

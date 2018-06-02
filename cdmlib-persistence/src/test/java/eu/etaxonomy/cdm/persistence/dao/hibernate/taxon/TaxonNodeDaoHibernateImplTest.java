@@ -130,7 +130,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
 
 
 
-        List<TaxonBase> taxa = taxonDao.getAllTaxonBases(10, 0);
+        List<TaxonBase> taxa = taxonDao.list(10, 0);
         assertEquals("there should be 7 taxa", 7, taxa.size());
         taxNode3 = HibernateProxyHelper.deproxy(taxNode3, TaxonNode.class);
         taxNode = HibernateProxyHelper.deproxy(taxNode, TaxonNode.class);
@@ -143,7 +143,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         assertNull(taxonNodeDao.findByUuid(taxNode3.getUuid()));
         classification = classificationDao.findByUuid(ClassificationUuid);
 
-        taxa = taxonDao.getAllTaxonBases(10, 0);
+        taxa = taxonDao.list(10, 0);
         // There should be 4 taxonBases: at the beginning 6 in the classification + 1 orphan taxon; 1 new created taxon -> 8: delete node3 deleted 4 taxa -> 4 taxa left.
         assertEquals("there should be 4 taxa left", 4, taxa.size());
 

@@ -396,7 +396,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 
 	public List<UuidAndTitleCache<IdentifiableEntity>> getTaxaByCommonNameForEditor(
 			String titleSearchStringSqlized, Classification classification,
-			MatchMode matchMode, Set namedAreas);
+			MatchMode matchMode, Set<NamedArea> namedAreas);
 
 	public <S extends TaxonBase> List<Object[]> findByIdentifier(Class<S> clazz, String identifier,
 			DefinedTerm identifierType, TaxonNode subtreeFilter, MatchMode matchmode,

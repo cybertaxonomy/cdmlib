@@ -116,7 +116,7 @@ public class ClassificationDaoHibernateImpl
             whereClassification = " AND tn.classification = :classification ";
         }
 
-        String selectWhat = doCount ? "count(distinct tn)" : "distinct tn";
+        String selectWhat = doCount ? "COUNT(distinct tn)" : "DISTINCT tn";
 
         String joinFetch = doCount ? "" : " JOIN FETCH tn.taxon t JOIN FETCH t.name n LEFT JOIN FETCH n.rank LEFT JOIN FETCH t.sec ";
 
@@ -184,17 +184,20 @@ public class ClassificationDaoHibernateImpl
 
     @Override
     public TaxonNode getRootNode(UUID classificationUuid){
-        String queryString = "select tn from TaxonNode tn, Classification c where tn = c.rootNode and c.uuid = :classificationUuid";
+        String queryString =
+                  " SELECT tn "
+                + " FROM TaxonNode tn, Classification c "
+                + " WHERE tn = c.rootNode AND c.uuid = :classificationUuid";
 
         Query query = getSession().createQuery(queryString);
         query.setParameter("classificationUuid", classificationUuid);
 
-
-        List results = query.list();
+        @SuppressWarnings("unchecked")
+        List<TaxonNode> results = query.list();
         if(results.size()!=1){
             return null;
         }
-        return taxonNodeDao.load(((TaxonNode) results.iterator().next()).getUuid());
+        return taxonNodeDao.load((results.iterator().next()).getUuid());
     }
 
     @Override
@@ -256,11 +259,18 @@ public class ClassificationDaoHibernateImpl
 
     private Query prepareListSiblingsOf(Taxon taxon, Classification classification, boolean doCount){
 
-        String selectWhat = doCount ? "count(tn)" : "tn";
+        String selectWhat = doCount ? "COUNT(tn)" : "tn";
 
-         String subSelect = "SELECT tn.parent FROM TaxonNode as tn JOIN tn.classification as c JOIN tn.taxon as t "
-                 + "WHERE t = :taxon AND c = :classification";
-         String hql = "SELECT " + selectWhat + " FROM TaxonNode as tn WHERE tn.parent IN ( " + subSelect + ")";
+         String subSelect =
+                   " SELECT tn.parent "
+                 + " FROM TaxonNode AS tn "
+                 + "     JOIN tn.classification AS c "
+                 + "     JOIN tn.taxon AS t "
+                 + " WHERE t = :taxon "
+                 + "   AND c = :classification";
+         String hql = " SELECT " + selectWhat
+                 + " FROM TaxonNode as tn "
+                 + " WHERE tn.parent IN ( " + subSelect + ")";
          Query query = getSession().createQuery(hql);
          query.setParameter("taxon", taxon);
          query.setParameter("classification", classification);
@@ -341,10 +351,11 @@ public class ClassificationDaoHibernateImpl
     @Override
     public Set<TreeIndex> getMarkedTreeIndexes(MarkerType markerType, Boolean flag){
         String hql = " SELECT tn.treeIndex "
-                + " FROM Taxon t JOIN t.taxonNodes tn "
-                + "     JOIN t.markers m "
+                + " FROM Taxon t "
+                + "    JOIN t.taxonNodes tn "
+                + "    JOIN t.markers m "
                 + " WHERE (1=1)"
-                + "   AND m.markerType = :markerType "
+                + "    AND m.markerType = :markerType "
                 ;
         if (flag != null){
             hql += "  AND m.flag = :flag ";

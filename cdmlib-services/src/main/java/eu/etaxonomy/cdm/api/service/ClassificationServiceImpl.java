@@ -875,7 +875,6 @@ public class ClassificationServiceImpl
             }
         }
 
-
         result.setTaxonUuid(taxonBaseUuid);
         result.setClassificationUuid(classificationUuid);
         if (taxonBase.getSec() != null){
