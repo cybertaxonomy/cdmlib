@@ -203,16 +203,6 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      */
     public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification);
 
-    /**
-     *
-     * @param taxonNode
-     * @param propertyPaths
-     * @param size
-     * @param height
-     * @param widthOrDuration
-     * @param mimeTypes
-     * @return
-     */
     public Map<UUID, List<MediaRepresentation>> getAllMediaForChildNodes(TaxonNode taxonNode, List<String> propertyPaths, int size, int height, int widthOrDuration, String[] mimeTypes);
 
     /**
@@ -242,82 +232,31 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
     @Deprecated
     public Map<UUID, TaxonNode> saveTaxonNodeAll(Collection<TaxonNode> taxonNodeCollection);
 
-    /**
-     *
-     * @param treeNode
-     * @return
-     */
-
     public UUID removeTreeNode(ITaxonTreeNode treeNode);
 
-    /**
-     *
-     * @param treeNode
-     * @return
-     */
     public UUID saveTreeNode(ITaxonTreeNode treeNode);
-
 
     public List<TaxonNode> getAllNodes();
 
 	public UpdateResult createHierarchyInClassification(Classification classification, CreateHierarchyForClassificationConfigurator configurator);
 
-    /**
-     * @param classificationUuid
-     * @param excludeTaxa
-     * @return
-     */
     public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(UUID classificationUuid);
 
-    /**
-     * @param classificationUuid
-     * @param excludeTaxa
-     * @param limit
-     * @param pattern
-     * @return
-     */
-    List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
             UUID classificationUuid, Integer limit, String pattern);
 
-    /**
-     * @param classification
-     * @param excludeTaxa
-     * @param limit
-     * @param pattern
-     * @return
-     */
-    List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
             Classification classification, Integer limit, String pattern);
 
-    /**
-     * @param taxonUuid
-     * @param classificationUuid
-     * @param pageSize
-     * @param pageIndex
-     * @param propertyPaths
-     * @return
-     */
-    List<TaxonNode> listSiblingsOfTaxon(UUID taxonUuid, UUID classificationUuid, Integer pageSize, Integer pageIndex,
+    public List<TaxonNode> listSiblingsOfTaxon(UUID taxonUuid, UUID classificationUuid, Integer pageSize, Integer pageIndex,
             List<String> propertyPaths);
 
-    /**
-     * @param taxonUuid
-     * @param classificationUuid
-     * @param pageSize
-     * @param pageIndex
-     * @param propertyPaths
-     * @return
-     */
-    Pager<TaxonNode> pageSiblingsOfTaxon(UUID taxonUuid, UUID classificationUuid, Integer pageSize, Integer pageIndex,
+    public Pager<TaxonNode> pageSiblingsOfTaxon(UUID taxonUuid, UUID classificationUuid, Integer pageSize, Integer pageIndex,
             List<String> propertyPaths);
 
-    /**
-     * @param classification
-     * @return
-     */
-    ClassificationLookupDTO classificationLookup(Classification classification);
+    public ClassificationLookupDTO classificationLookup(Classification classification);
 
-    DeleteResult delete(UUID classificationUuid, TaxonDeletionConfigurator config);
+    public DeleteResult delete(UUID classificationUuid, TaxonDeletionConfigurator config);
 
     /**
      * Returns the higher taxon id for each taxon in taxonUuids.
@@ -330,7 +269,7 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @param maxRank
      * @return
      */
-    List<GroupedTaxonDTO> groupTaxaByHigherTaxon(List<UUID> taxonUuids, UUID classificationUuid, Rank minRank, Rank maxRank);
+    public List<GroupedTaxonDTO> groupTaxaByHigherTaxon(List<UUID> taxonUuids, UUID classificationUuid, Rank minRank, Rank maxRank);
 
     /**
      * @param taxonUuids
@@ -370,7 +309,7 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @param searchForClassifications
      * @return
      */
-    List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
             UUID classificationUuid, Integer limit, String pattern, boolean searchForClassifications);
 
     /**
@@ -380,7 +319,7 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @param searchForClassifications
      * @return
      */
-    List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
             Classification classification, Integer limit, String pattern, boolean searchForClassifications);
 
     /**
@@ -388,7 +327,7 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @param searchForClassifications
      * @return
      */
-    List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
             UUID classificationUuid, boolean searchForClassifications);
 
     /**
@@ -396,9 +335,7 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @param searchForClassifications
      * @return
      */
-    List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
             Classification classification, boolean searchForClassifications);
-
-
 
 }

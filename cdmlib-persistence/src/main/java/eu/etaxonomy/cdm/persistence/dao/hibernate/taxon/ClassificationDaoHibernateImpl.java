@@ -40,7 +40,8 @@ import eu.etaxonomy.cdm.persistence.dto.ClassificationLookupDTO;
  */
 @Repository
 @Qualifier("classificationDaoHibernateImpl")
-public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classification>
+public class ClassificationDaoHibernateImpl
+        extends IdentifiableDaoBase<Classification>
         implements IClassificationDao {
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(ClassificationDaoHibernateImpl.class);
@@ -270,14 +271,12 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
                 persistentObject.deleteChildNode(node, true);
                 taxonNodeDao.delete(node, true);
             }
-
         }
 
         TaxonNode rootNode = persistentObject.getRootNode();
         persistentObject.removeRootNode();
         taxonNodeDao.delete(rootNode);
-        UUID uuid =super.delete(persistentObject);
-
+        super.delete(persistentObject);
 
         return persistentObject.getUuid();
     }
@@ -287,13 +286,16 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
 
         ClassificationLookupDTO classificationLookupDTO = new ClassificationLookupDTO(classification);
 
-        // only for debugging:
-//        logger.setLevel(Level.TRACE);
-//        Logger.getLogger("org.hibernate.SQL").setLevel(Level.DEBUG);
+        String hql =
+                " SELECT t.id, n.rank, tp.id "
+              + " FROM TaxonNode AS tn "
+              +   " JOIN tn.classification AS c "
+              +   " JOIN tn.taxon AS t "
+              +   " JOIN t.name AS n "
+              +   " LEFT JOIN tn.parent AS tnp "
+              +   " LEFT JOIN tnp.taxon as tp "
+              + " WHERE c = :classification";
 
-        String hql = "select t.id, n.rank, tp.id from TaxonNode as tn join tn.classification as c join tn.taxon as t join t.name as n "
-                + " left join tn.parent as tnp left join tnp.taxon as tp "
-                + " where c = :classification";
         Query query = getSession().createQuery(hql);
         query.setParameter("classification", classification);
         @SuppressWarnings("unchecked")

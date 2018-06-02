@@ -86,8 +86,9 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
  */
 @Service
 @Transactional(readOnly = true)
-public class ClassificationServiceImpl extends IdentifiableServiceBase<Classification, IClassificationDao>
-    implements IClassificationService {
+public class ClassificationServiceImpl
+             extends IdentifiableServiceBase<Classification, IClassificationDao>
+             implements IClassificationService {
     private static final Logger logger = Logger.getLogger(ClassificationServiceImpl.class);
 
     @Autowired

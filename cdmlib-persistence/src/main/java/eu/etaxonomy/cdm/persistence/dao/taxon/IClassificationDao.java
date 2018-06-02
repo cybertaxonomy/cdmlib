@@ -74,22 +74,9 @@ public interface IClassificationDao extends IIdentifiableDao<Classification> {
 
     public ClassificationLookupDTO classificationLookup(Classification classification);
 
-    /**
-     * @param taxon
-     * @param classification
-     * @param pageSize
-     * @param pageIndex
-     * @param propertyPaths
-     * @return
-     */
     public List<TaxonNode> listSiblingsOf(Taxon taxon, Classification classification, Integer pageSize, Integer pageIndex,
             List<String> propertyPaths);
 
-    /**
-     * @param taxon
-     * @param classification
-     * @return
-     */
     public Long countSiblingsOf(Taxon taxon, Classification classification);
 
     /**
@@ -100,11 +87,6 @@ public interface IClassificationDao extends IIdentifiableDao<Classification> {
      */
     public Map<UUID, TreeIndex> treeIndexForTaxonUuids( UUID classificationUuid, List<UUID> originalTaxonUuids);
 
-    /**
-     * @param markerType
-     * @param value
-     * @return
-     */
     public Set<TreeIndex> getMarkedTreeIndexes(MarkerType markerType, Boolean value);
 
     /**

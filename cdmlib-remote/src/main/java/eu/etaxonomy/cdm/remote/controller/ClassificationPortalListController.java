@@ -8,8 +8,6 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -36,6 +34,7 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.remote.editor.RankPropertyEditor;
+import io.swagger.annotations.Api;
 
 /**
  * The ClassificationController class is a Spring MVC Controller.
@@ -155,8 +154,6 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
 //        System.err.println("service.listRankSpecificRootNodes() " + (System.currentTimeMillis() - start));
         return rootNodes;
     }
-
-
 
 
     /**
