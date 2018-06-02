@@ -235,10 +235,16 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     }
 
     @Override
-    public List<TaxonNode> listChildrenOf(TaxonNode node, Integer pageSize, Integer pageIndex, List<String> propertyPaths, boolean recursive){
+    public List<TaxonNode> listChildrenOf(TaxonNode node, Integer pageSize, Integer pageIndex,
+            boolean recursive, boolean includeUnpublished, List<String> propertyPaths
+        ){
     	if (recursive == true){
     		Criteria crit = getSession().createCriteria(TaxonNode.class);
     		crit.add( Restrictions.like("treeIndex", node.treeIndex()+ "%") );
+    		if (!includeUnpublished){
+                crit.createCriteria("taxon").add( Restrictions.eq("publish", Boolean.TRUE));
+            }
+
     		if(pageSize != null) {
                 crit.setMaxResults(pageSize);
                 if(pageIndex != null) {
@@ -260,11 +266,14 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 
     @Override
 	public Long countChildrenOf(TaxonNode node, Classification classification,
-			boolean recursive) {
+			boolean recursive, boolean includeUnpublished) {
 
 		if (recursive == true){
 			Criteria crit = getSession().createCriteria(TaxonNode.class);
     		crit.add( Restrictions.like("treeIndex", node.treeIndex()+ "%") );
+    		if (!includeUnpublished){
+    		    crit.createCriteria("taxon").add( Restrictions.eq("publish", Boolean.TRUE));
+    		}
     		crit.setProjection(Projections.rowCount());
     		return ((Integer)crit.uniqueResult().hashCode()).longValue();
 		}else{

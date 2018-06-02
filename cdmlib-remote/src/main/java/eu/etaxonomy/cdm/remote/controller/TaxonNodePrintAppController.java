@@ -67,17 +67,17 @@ public class TaxonNodePrintAppController extends AbstractController<TaxonNode, I
      * @throws IOException
      *
      * @deprecated use the TaxonNodeController.doPageChildNodes() instead,
-     *  has no request mapping to avoid conflicts with that method
+     *    has no request mapping to avoid conflicts with that method
      */
     @Deprecated
     public List<TaxonNode> getChildNodes(
-           UUID taxonNodeUuid,
+            UUID taxonNodeUuid, boolean includeUnpublished,
             HttpServletResponse response
             ) throws IOException {
 
         TaxonNode taxonNode = service.find(taxonNodeUuid);
 
-        return service.loadChildNodesOfTaxonNode(taxonNode, NODE_INIT_STRATEGY, false, null);
+        return service.loadChildNodesOfTaxonNode(taxonNode, NODE_INIT_STRATEGY, false, includeUnpublished, null);
     }
 
     public TaxonNode doGet(UUID taxonNodeUuid, HttpServletRequest request, HttpServletResponse response

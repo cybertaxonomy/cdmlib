@@ -3021,7 +3021,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         Set<Taxon> children = new HashSet<>();
         if (! config.onlyCongruent){
             for (TaxonNode node: taxonNodes){
-                List<TaxonNode> childNodes = nodeService.loadChildNodesOfTaxonNode(node, null, true, null);
+                List<TaxonNode> childNodes = nodeService.loadChildNodesOfTaxonNode(node, null, true, config.includeUnpublished, null);
                 for (TaxonNode child : childNodes){
                     children.add(child.getTaxon());
                 }

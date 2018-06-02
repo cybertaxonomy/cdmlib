@@ -349,11 +349,12 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @param classificationUuid
      * @param taxonUuid
      * @param doSynonyms
+     * @param includeUnpublished
      * @param ancestorMarkers
      * @return
      */
     public TaxonInContextDTO getTaxonInContext(UUID classificationUuid, UUID taxonUuid,
-            Boolean doChildren, Boolean doSynonyms, List<UUID> ancestorMarkers,
+            Boolean doChildren, Boolean doSynonyms, boolean includeUnpublished, List<UUID> ancestorMarkers,
             NodeSortMode sortMode);
 
     /**

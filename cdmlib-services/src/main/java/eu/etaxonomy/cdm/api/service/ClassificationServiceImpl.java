@@ -827,7 +827,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
      */
     @Override
     public TaxonInContextDTO getTaxonInContext(UUID classificationUuid, UUID taxonBaseUuid,
-            Boolean doChildren, Boolean doSynonyms, List<UUID> ancestorMarkers,
+            Boolean doChildren, Boolean doSynonyms, boolean includeUnpublished, List<UUID> ancestorMarkers,
             NodeSortMode sortMode) {
         TaxonInContextDTO result = new TaxonInContextDTO();
 
@@ -906,7 +906,8 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
         boolean recursive = false;
         Integer pageSize = null;
         Integer pageIndex = null;
-        Pager<TaxonNodeDto> children = taxonNodeService.pageChildNodesDTOs(taxonNodeUuid, recursive, doSynonyms, sortMode, pageSize, pageIndex);
+        Pager<TaxonNodeDto> children = taxonNodeService.pageChildNodesDTOs(taxonNodeUuid, recursive, includeUnpublished, doSynonyms,
+                sortMode, pageSize, pageIndex);
 
         //children
         if(! isSynonym) {

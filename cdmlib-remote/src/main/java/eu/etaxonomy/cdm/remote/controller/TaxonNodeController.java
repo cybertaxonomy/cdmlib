@@ -87,9 +87,11 @@ public class TaxonNodeController extends AbstractController<TaxonNode, ITaxonNod
             HttpServletResponse response
             ) throws IOException {
 
+        boolean includeUnpublished = false;  //for now we do not allow any remote service to publish unpublished data
+
         PagerParameters pagerParameters = new PagerParameters(pageSize, pageIndex);
         pagerParameters.normalizeAndValidate(response);
 
-        return service.pageChildNodesDTOs(uuid, false, doSynonyms, sortMode, pagerParameters.getPageSize(), pagerParameters.getPageIndex());
+        return service.pageChildNodesDTOs(uuid, false, includeUnpublished, doSynonyms, sortMode, pagerParameters.getPageSize(), pagerParameters.getPageIndex());
     }
 }

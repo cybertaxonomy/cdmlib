@@ -158,6 +158,8 @@ public class ClassificationController extends AbstractIdentifiableController<Cla
            HttpServletResponse response
            ) throws IOException {
 
+       boolean includeUnpublished = false;  //for now we do not allow any remote service to publish unpublished data
+
        PagerParameters pagerParameters = new PagerParameters(pageSize, pageIndex);
        pagerParameters.normalizeAndValidate(response);
 
@@ -168,7 +170,8 @@ public class ClassificationController extends AbstractIdentifiableController<Cla
            HttpStatusMessage.UUID_NOT_FOUND.send(response);
            return null;
        }
-       Pager<TaxonNodeDto> pager = taxonNodeService.pageChildNodesDTOs(taxonNodeUuid, recursive, doSynonyms, sortMode, pageSize, pageIndex);
+       Pager<TaxonNodeDto> pager = taxonNodeService.pageChildNodesDTOs(taxonNodeUuid, recursive, includeUnpublished,
+               doSynonyms, sortMode, pageSize, pageIndex);
 //       service.commitTransaction()
 
        return pager;
@@ -289,7 +292,9 @@ public class ClassificationController extends AbstractIdentifiableController<Cla
            ) throws IOException {
 
        try {
-           TaxonInContextDTO taxonInContextDTO = service.getTaxonInContext(classificationUuid, taxonUuid, doChildren, doSynonyms, ancestorMarkers, sortMode);
+           boolean includeUnpublished = false;  //for now we do not allow any remote service to publish unpublished data
+           TaxonInContextDTO taxonInContextDTO = service.getTaxonInContext(classificationUuid, taxonUuid, doChildren, includeUnpublished,
+                   doSynonyms, ancestorMarkers, sortMode);
            return taxonInContextDTO;
        } catch (EntityNotFoundException e) {
            HttpStatusMessage.UUID_NOT_FOUND.send(response);

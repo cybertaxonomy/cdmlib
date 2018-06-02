@@ -229,13 +229,20 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
 
     private Query prepareListChildrenOf(Taxon taxon, Classification classification, boolean doCount){
 
-    	String selectWhat = doCount ? "count(cn)" : "cn";
+    	 String selectWhat = doCount ? "COUNT(cn)" : "cn";
 
-         String hql = "select " + selectWhat + " from TaxonNode as tn JOIN tn.classification as c JOIN tn.taxon as t JOIN tn.childNodes as cn "
-                 + "where t = :taxon and c = :classification";
+         String hql = "SELECT " + selectWhat
+                 + " FROM TaxonNode AS tn "
+                 + "    JOIN tn.classification AS c "
+                 + "    JOIN tn.taxon AS t "
+                 + "    JOIN tn.childNodes AS cn "
+                 + " WHERE t = :taxon "
+                 + "   AND c = :classification"
+                 + "   AND cn.taxon.publish = :publish ";
          Query query = getSession().createQuery(hql);
          query.setParameter("taxon", taxon);
          query.setParameter("classification", classification);
+         query.setBoolean("publish", Boolean.TRUE);
          return query;
     }
 

@@ -71,9 +71,10 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
      */
     public List<UuidAndTitleCache<TaxonNode>> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid);
 
-    public List<TaxonNode> listChildrenOf(TaxonNode node, Integer pageSize, Integer pageIndex, List<String> propertyPaths, boolean recursive);
+    public List<TaxonNode> listChildrenOf(TaxonNode node, Integer pageSize, Integer pageIndex,
+            boolean recursive, boolean includeUnpublished, List<String> propertyPaths);
 
-    public abstract Long countChildrenOf(TaxonNode node, Classification classification, boolean recursive);
+    public abstract Long countChildrenOf(TaxonNode node, Classification classification, boolean recursive, boolean includeUnpublished);
 
     /**
      * Returns the of TaxonNodeAgentRelation entities which are associated with the TaxonNode for the

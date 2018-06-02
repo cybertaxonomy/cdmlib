@@ -162,6 +162,8 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
 
         UUID uuid = XMLHelper.getUuid(treeNode);
 
+        boolean includeUnpublished = false;  //for now we do not allow any remote service to publish unpublished data
+
         Object resultObject = null;
         try {
             if (EntityType.CLASSIFICATION.equals(entityType)) {
@@ -169,7 +171,7 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
                         null, null);
             } else if (EntityType.TAXON_NODE.equals(entityType)) {
                 resultObject = taxonNodePrintAppController
-                        .getChildNodes(uuid, null);
+                        .getChildNodes(uuid, includeUnpublished, null);
             }
         } catch (IOException e) {
             monitor.warning(e.getLocalizedMessage(), e);

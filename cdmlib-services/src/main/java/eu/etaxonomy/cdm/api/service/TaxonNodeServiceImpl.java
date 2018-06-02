@@ -99,14 +99,22 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
     @Override
     public List<TaxonNode> loadChildNodesOfTaxonNode(TaxonNode taxonNode,
-            List<String> propertyPaths, boolean recursive, NodeSortMode sortMode) {
+            List<String> propertyPaths, boolean recursive,  boolean includeUnpublished,
+            NodeSortMode sortMode) {
 
         getSession().refresh(taxonNode);
         List<TaxonNode> childNodes;
         if (recursive == true){
-        	childNodes  = dao.listChildrenOf(taxonNode, null, null, null, recursive);
+        	childNodes  = dao.listChildrenOf(taxonNode, null, null, recursive, includeUnpublished, null);
+        }else if (includeUnpublished){
+            childNodes = new ArrayList<>(taxonNode.getChildNodes());
         }else{
-        	childNodes = new ArrayList<>(taxonNode.getChildNodes());
+            childNodes = new ArrayList<>();
+            for (TaxonNode node:taxonNode.getChildNodes()){
+                if (node.getTaxon().isPublish()){
+                    childNodes.add(node);
+                }
+            }
         }
 
         HHH_9751_Util.removeAllNull(childNodes);
@@ -186,7 +194,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
      * {@inheritDoc}
      */
     @Override
-    public Pager<TaxonNodeDto> pageChildNodesDTOs(UUID taxonNodeUuid, boolean recursive,
+    public Pager<TaxonNodeDto> pageChildNodesDTOs(UUID taxonNodeUuid, boolean recursive,  boolean includeUnpublished,
             boolean doSynonyms, NodeSortMode sortMode,
             Integer pageSize, Integer pageIndex) {
 
@@ -195,7 +203,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         List<CdmBase> allRecords = new ArrayList<>();
 
         //acceptedTaxa
-        List<TaxonNode> childNodes = loadChildNodesOfTaxonNode(parentNode, null, recursive, sortMode);
+        List<TaxonNode> childNodes = loadChildNodesOfTaxonNode(parentNode, null, recursive, includeUnpublished, sortMode);
         allRecords.addAll(childNodes);
 
         //add synonyms if pager is not yet full synonyms
