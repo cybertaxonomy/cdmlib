@@ -177,15 +177,8 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      */
     public List<TaxonNode> loadTreeBranchToTaxon(Taxon taxon, Classification classification, Rank baseRank, List<String> propertyPaths);
 
-
-
-    /**
-     * @param taxonUuid
-     * @param classificationUuid
-     * @param propertyPaths
-     * @return
-     */
-    public List<TaxonNode> listChildNodesOfTaxon(UUID taxonUuid, UUID classificationUuid, Integer pageSize, Integer pageIndex, List<String> propertyPaths);
+    public List<TaxonNode> listChildNodesOfTaxon(UUID taxonUuid, UUID classificationUuid, boolean includeUnpublished,
+            Integer pageSize, Integer pageIndex, List<String> propertyPaths);
 
     /**
      * @param taxonNode

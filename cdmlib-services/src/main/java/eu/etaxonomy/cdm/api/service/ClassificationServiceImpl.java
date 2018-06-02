@@ -305,13 +305,14 @@ public class ClassificationServiceImpl
     }
 
     @Override
-    public List<TaxonNode> listChildNodesOfTaxon(UUID taxonUuid, UUID classificationUuid, Integer pageSize,
-            Integer pageIndex, List<String> propertyPaths){
+    public List<TaxonNode> listChildNodesOfTaxon(UUID taxonUuid, UUID classificationUuid,
+            boolean includeUnpublished, Integer pageSize, Integer pageIndex, List<String> propertyPaths){
 
         Classification classification = dao.load(classificationUuid);
         Taxon taxon = (Taxon) taxonDao.load(taxonUuid);
 
-        List<TaxonNode> results = dao.listChildrenOf(taxon, classification, pageSize, pageIndex, propertyPaths);
+        List<TaxonNode> results = dao.listChildrenOf(
+                taxon, classification, includeUnpublished, pageSize, pageIndex, propertyPaths);
         Collections.sort(results, taxonNodeComparator); // FIXME this is only a HACK, order during the hibernate query in the dao
         return results;
     }

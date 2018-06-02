@@ -159,17 +159,28 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     @Test
     @DataSet
     public void testListChildren(){
-        boolean includeUnpublished = true;
+        boolean includeUnpublished;
         Taxon t_acherontia = (Taxon) taxonDao.load(ACHERONTIA_UUID);
 
+        includeUnpublished = true;
         Classification classification =  classificationDao.load(ClassificationUuid);
-        List<TaxonNode> children = classificationDao.listChildrenOf(t_acherontia, classification, null, null, null);
+        List<TaxonNode> children = classificationDao.listChildrenOf(
+                t_acherontia, classification, includeUnpublished, null, null, null);
+        assertNotNull(children);
+        assertEquals(2, children.size());
+
+        includeUnpublished = false;
+        children = classificationDao.listChildrenOf(
+                t_acherontia, classification, includeUnpublished, null, null, null);
         assertNotNull(children);
         assertEquals(1, children.size()); //1 is unpublished
+
+        includeUnpublished = true;
         TaxonNode t_acherontia_node = taxonNodeDao.load(NODE_ACHERONTIA_UUID);
         children =taxonNodeDao.listChildrenOf(t_acherontia_node, null, null, true, includeUnpublished, null);
         assertNotNull(children);
         assertEquals(3, children.size());
+
         includeUnpublished = false;
         children =taxonNodeDao.listChildrenOf(t_acherontia_node, null, null, true, includeUnpublished, null);
         assertNotNull(children);

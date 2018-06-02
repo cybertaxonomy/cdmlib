@@ -166,8 +166,9 @@ public class ClassificationDaoHibernateImpl
     }
 
     @Override
-    public List<TaxonNode> listChildrenOf(Taxon taxon, Classification classification, Integer pageSize, Integer pageIndex, List<String> propertyPaths){
-    	 Query query = prepareListChildrenOf(taxon, classification, false);
+    public List<TaxonNode> listChildrenOf(Taxon taxon, Classification classification, boolean includeUnpublished,
+            Integer pageSize, Integer pageIndex, List<String> propertyPaths){
+    	 Query query = prepareListChildrenOf(taxon, classification, false, includeUnpublished);
 
          setPagingParameter(query, pageSize, pageIndex);
 
@@ -215,8 +216,9 @@ public class ClassificationDaoHibernateImpl
 
 
     @Override
-    public Long countChildrenOf(Taxon taxon, Classification classification){
-        Query query = prepareListChildrenOf(taxon, classification, true);
+    public Long countChildrenOf(Taxon taxon, Classification classification,
+            boolean includeUnpublished){
+        Query query = prepareListChildrenOf(taxon, classification, true, includeUnpublished);
         Long count = (Long) query.uniqueResult();
         return count;
     }
@@ -228,22 +230,27 @@ public class ClassificationDaoHibernateImpl
         return count;
     }
 
-    private Query prepareListChildrenOf(Taxon taxon, Classification classification, boolean doCount){
+    private Query prepareListChildrenOf(Taxon taxon, Classification classification,
+            boolean doCount, boolean includeUnpublished){
 
     	 String selectWhat = doCount ? "COUNT(cn)" : "cn";
 
          String hql = "SELECT " + selectWhat
                  + " FROM TaxonNode AS tn "
-                 + "    JOIN tn.classification AS c "
-                 + "    JOIN tn.taxon AS t "
-                 + "    JOIN tn.childNodes AS cn "
+                 + "   JOIN tn.classification AS c "
+                 + "   JOIN tn.taxon AS t "
+                 + "   JOIN tn.childNodes AS cn "
                  + " WHERE t = :taxon "
-                 + "   AND c = :classification"
-                 + "   AND cn.taxon.publish = :publish ";
+                 + "   AND c = :classification";
+         if (!includeUnpublished){
+             hql += "  AND cn.taxon.publish = :publish ";
+         }
          Query query = getSession().createQuery(hql);
          query.setParameter("taxon", taxon);
          query.setParameter("classification", classification);
-         query.setBoolean("publish", Boolean.TRUE);
+         if (!includeUnpublished){
+             query.setBoolean("publish", Boolean.TRUE);
+         }
          return query;
     }
 
