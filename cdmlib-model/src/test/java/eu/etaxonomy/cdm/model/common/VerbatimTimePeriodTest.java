@@ -211,7 +211,6 @@ public class VerbatimTimePeriodTest {
         Assert.assertNotNull("Time period must be created",tp);
     }
 
-//  @Ignore
     @Test
     public void testSetStart(){
         Partial startDate = new Partial().with(DateTimeFieldType.year(), 2010)

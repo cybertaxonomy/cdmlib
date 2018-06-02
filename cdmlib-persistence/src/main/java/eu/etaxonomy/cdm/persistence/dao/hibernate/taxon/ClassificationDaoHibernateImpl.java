@@ -59,7 +59,7 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
     public List<TaxonNode> listRankSpecificRootNodes(Classification classification, Rank rank,
             Integer limit, Integer start, List<String> propertyPaths, int queryIndex){
 
-        List<TaxonNode> results = new ArrayList<TaxonNode>();
+        List<TaxonNode> results = new ArrayList<>();
         Query[] queries = prepareRankSpecificRootNodes(classification, rank, false);
 
         // since this method is using two queries sequentially the handling of limit and start
@@ -258,7 +258,7 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
         //delete all child nodes, then delete the tree
         if (persistentObject.getRootNode() != null){
             List<TaxonNode> nodes = persistentObject.getChildNodes();
-            List<TaxonNode> nodesTmp = new ArrayList<TaxonNode>(nodes);
+            List<TaxonNode> nodesTmp = new ArrayList<>(nodes);
             for(TaxonNode node : nodesTmp){
                 persistentObject.deleteChildNode(node, true);
                 taxonNodeDao.delete(node, true);
