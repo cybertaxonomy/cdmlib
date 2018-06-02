@@ -89,7 +89,7 @@ public class PolytomousKey
     @ManyToMany(fetch = FetchType.LAZY)
     @NotNull
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
-    private Set<Taxon> coveredTaxa = new HashSet<Taxon>();
+    private Set<Taxon> coveredTaxa = new HashSet<>();
 
     @XmlElementWrapper(name = "TaxonomicScope")
     @XmlElement(name = "Taxon")
@@ -102,7 +102,7 @@ public class PolytomousKey
     )
     @NotNull
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
-    private Set<Taxon> taxonomicScope = new HashSet<Taxon>();
+    private Set<Taxon> taxonomicScope = new HashSet<>();
 
     @XmlElementWrapper(name = "GeographicalScope")
     @XmlElement(name = "Area")
@@ -112,7 +112,7 @@ public class PolytomousKey
     @JoinTable(name = "PolytomousKey_NamedArea")
     @NotNull
 //    @Cascade({CascadeType.MERGE})   remove cascade #5755
-    private Set<NamedArea> geographicalScope = new HashSet<NamedArea>();
+    private Set<NamedArea> geographicalScope = new HashSet<>();
 
     @XmlElementWrapper(name = "ScopeRestrictions")
     @XmlElement(name = "Restriction")
@@ -122,7 +122,7 @@ public class PolytomousKey
     @JoinTable(name = "PolytomousKey_Scope")
     @NotNull
  //   @Cascade({CascadeType.MERGE}) remove cascade #5755
-    private Set<DefinedTerm> scopeRestrictions = new HashSet<DefinedTerm>();
+    private Set<DefinedTerm> scopeRestrictions = new HashSet<>();
 
     @XmlElement(name = "Root")
     @OneToOne(fetch = FetchType.LAZY)

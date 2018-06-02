@@ -132,9 +132,6 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     private NamedArea russia ;
     private NamedArea canada ;
 
-    /**
-     * @throws java.lang.Exception
-     */
     @Before
     public void setUp() throws Exception {
         typesToIndex = new HashSet<Class<? extends CdmBase>>();
@@ -146,7 +143,6 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         france = Country.FRANCEFRENCHREPUBLIC();
         russia = Country.RUSSIANFEDERATION();
         canada = Country.CANADA();
-
 
     }
 
