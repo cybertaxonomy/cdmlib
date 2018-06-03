@@ -507,14 +507,14 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
         }
 
         //Sources
-        result.sources = new HashSet<DescriptionElementSource>();
+        result.sources = new HashSet<>();
         for (DescriptionElementSource source : getSources()){
             DescriptionElementSource newSource = (DescriptionElementSource)source.clone();
             result.addSource(newSource);
         }
 
         //media
-        result.media = new ArrayList<Media>();
+        result.media = new ArrayList<>();
         for (Media media : getMedia()){
             result.media.add(media);
         }
@@ -523,7 +523,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
         result.modifyingText = cloneLanguageString(getModifyingText());
 
         //modifiers
-        result.modifiers = new HashSet<DefinedTerm>();
+        result.modifiers = new HashSet<>();
         for (DefinedTerm modifier : getModifiers()){
             result.modifiers.add(modifier);
         }
