@@ -502,7 +502,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
 
         //inDescription
         if (result.inDescription != null){
-            result.inDescription.removeElement(this);
+            result.inDescription.removeElement(result);
             result.inDescription = null;
         }
 
