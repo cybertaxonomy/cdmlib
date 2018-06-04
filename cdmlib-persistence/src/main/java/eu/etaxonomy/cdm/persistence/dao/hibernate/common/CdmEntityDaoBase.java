@@ -79,8 +79,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
     protected Class<T> type;
 
-//    protected Version version = Configuration.luceneVersion;
-
     @Autowired
 //	@Qualifier("defaultBeanInitializer")
     protected IBeanInitializer defaultBeanInitializer;

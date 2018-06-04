@@ -42,25 +42,15 @@ public abstract class IoConfiguratorBase extends ObservableBase implements IIoCo
 	protected HibernateConfiguration hibernateConfig = new HibernateConfiguration();
 
 
-
-//	private Set<IIoObserver> observers = new HashSet<>();
-
-
     //etc
 	private IProgressMonitor progressMonitor;
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IIoConfigurator#getDbSchemaValidation()
-	 */
 	@Override
     public DbSchemaValidation getDbSchemaValidation() {
 		return dbSchemaValidation;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IIoConfigurator#setDbSchemaValidation(eu.etaxonomy.cdm.database.DbSchemaValidation)
-	 */
 	@Override
     public void setDbSchemaValidation(DbSchemaValidation dbSchemaValidation) {
 		this.dbSchemaValidation = dbSchemaValidation;

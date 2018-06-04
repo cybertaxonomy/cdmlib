@@ -72,7 +72,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 	@Override
 	public UUID delete(TaxonNode persistentObject, boolean deleteChildren){
 		Taxon taxon = persistentObject.getTaxon();
-		taxon = HibernateProxyHelper.deproxy(taxon, Taxon.class);
+		taxon = HibernateProxyHelper.deproxy(taxon);
 
 		/*Session session = this.getSession();
 		Query query = session.createQuery("from TaxonNode t where t.taxon = :taxon");
@@ -84,13 +84,13 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 			Set<TaxonNode> nodes = taxon.getTaxonNodes();
 			//Hibernate.initialize(taxon.getTaxonNodes());
 			for (TaxonNode node:nodes) {
-			    node = HibernateProxyHelper.deproxy(node, TaxonNode.class);
+			    node = HibernateProxyHelper.deproxy(node);
 
 			    if (node.equals(persistentObject)){
 			        if (node.hasChildNodes()){
 			            Iterator<TaxonNode> childNodes = node.getChildNodes().iterator();
 			            TaxonNode childNode;
-			            List<TaxonNode> listForDeletion = new ArrayList<TaxonNode>();
+			            List<TaxonNode> listForDeletion = new ArrayList<>();
 	                    while (childNodes.hasNext()){
 	                        childNode = childNodes.next();
 	                        listForDeletion.add(childNode);

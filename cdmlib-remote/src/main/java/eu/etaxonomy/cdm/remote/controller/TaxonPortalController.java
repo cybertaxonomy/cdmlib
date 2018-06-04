@@ -241,9 +241,6 @@ public class TaxonPortalController extends TaxonController{
         setInitializationStrategy(TAXON_INIT_STRATEGY);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu.etaxonomy.cdm.api.service.IService)
-     */
     @Autowired
     @Override
     public void setService(ITaxonService service) {
@@ -258,15 +255,12 @@ public class TaxonPortalController extends TaxonController{
         binder.registerCustomEditor(MatchMode.class, new MatchModePropertyEditor());
         binder.registerCustomEditor(Class.class, new CdmTypePropertyEditor());
         binder.registerCustomEditor(UuidList.class, new UUIDListPropertyEditor());
-        binder.registerCustomEditor(DefinedTermBaseList.class, new TermBaseListPropertyEditor<NamedArea>(termService));
+        binder.registerCustomEditor(DefinedTermBaseList.class, new TermBaseListPropertyEditor<>(termService));
 
     }
 
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.controller.BaseController#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-
-    @Override
+    /*   @Override
     @RequestMapping(method = RequestMethod.GET)
     public TaxonBase doGet(HttpServletRequest request, HttpServletResponse response)throws IOException {
         logger.info("doGet()");
@@ -317,12 +311,9 @@ public class TaxonPortalController extends TaxonController{
         synonymyGroups.remove(0);
         synonymy.put("heterotypicSynonymyGroups", synonymyGroups);
 
-
-
         //old
 //        synonymy.put("homotypicSynonymsByHomotypicGroup", service.getHomotypicSynonymsByHomotypicGroup(taxon, SYNONYMY_INIT_STRATEGY));
 //        synonymy.put("heterotypicSynonymyGroups", service.getHeterotypicSynonymyGroups(taxon, SYNONYMY_INIT_STRATEGY));
-
 
         mv.addObject(synonymy);
         return mv;
@@ -392,7 +383,7 @@ public class TaxonPortalController extends TaxonController{
     public List<NameRelationship> doGetToNameRelations(@PathVariable("uuid") UUID uuid,
             HttpServletRequest request, HttpServletResponse response)throws IOException {
         logger.info("doGetNameRelations()" + request.getRequestURI());
-        TaxonBase taxonBase = getCdmBaseInstance(TaxonBase.class, uuid, response, (List<String>)null);
+        TaxonBase<?> taxonBase = getCdmBaseInstance(TaxonBase.class, uuid, response, (List<String>)null);
         List<NameRelationship> list = nameService.listNameRelationships(taxonBase.getName(), Direction.relatedTo, null, null, 0, null, NAMERELATIONSHIP_INIT_STRATEGY);
         //List<NameRelationship> list = nameService.listToNameRelationships(taxonBase.getName(), null, null, null, null, NAMERELATIONSHIP_INIT_STRATEGY);
         return list;
@@ -418,7 +409,7 @@ public class TaxonPortalController extends TaxonController{
             HttpServletRequest request, HttpServletResponse response)throws IOException {
         logger.info("doGetNameFromNameRelations()" + requestPathAndQuery(request));
 
-        TaxonBase taxonbase = getCdmBaseInstance(TaxonBase.class, uuid, response, SIMPLE_TAXON_INIT_STRATEGY);
+        TaxonBase<?> taxonbase = getCdmBaseInstance(TaxonBase.class, uuid, response, SIMPLE_TAXON_INIT_STRATEGY);
         List<NameRelationship> list = nameService.listNameRelationships(taxonbase.getName(), Direction.relatedFrom, null, null, 0, null, NAMERELATIONSHIP_INIT_STRATEGY);
         //List<NameRelationship> list = nameService.listFromNameRelationships(taxonbase.getName(), null, null, null, null, NAMERELATIONSHIP_INIT_STRATEGY);
         return list;
@@ -431,7 +422,7 @@ public class TaxonPortalController extends TaxonController{
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
         logger.info("doGetTaxonNodes" + requestPathAndQuery(request));
-        TaxonBase taxon = service.load(uuid, TAXONNODE_INIT_STRATEGY);
+        TaxonBase<?> taxon = service.load(uuid, TAXONNODE_INIT_STRATEGY);
         if(taxon instanceof Taxon){
             return ((Taxon)taxon).getTaxonNodes();
         } else {
@@ -449,7 +440,7 @@ public class TaxonPortalController extends TaxonController{
 //
 //		ModelAndView mv = new ModelAndView();
 //
-//		List<DerivedUnitFacade> derivedUnitFacadeList = new ArrayList<DerivedUnitFacade>();
+//		List<DerivedUnitFacade> derivedUnitFacadeList = new ArrayList<>();
 //
 //		// find speciemens in the TaxonDescriptions
 //		List<TaxonDescription> taxonDescriptions = doGetDescriptions(uuid, request, response);
@@ -459,7 +450,7 @@ public class TaxonPortalController extends TaxonController{
 //				derivedUnitFacadeList.addAll( occurrenceService.listDerivedUnitFacades(description, null) );
 //			}
 //		}
-//		// TODO find speciemens in the NameDescriptions ??
+//		// TODO find specimens in the NameDescriptions ??
 //
 //		// TODO also find type specimens
 //
@@ -526,19 +517,19 @@ public class TaxonPortalController extends TaxonController{
     @RequestMapping(
             value = {"subtree/media"},
             method = RequestMethod.GET)
-        public List<Media> doGetSubtreeMedia(
-                @PathVariable("uuid") UUID uuid,
-                @RequestParam(value = "type", required = false) Class<? extends MediaRepresentationPart> type,
-                @RequestParam(value = "mimeTypes", required = false) String[] mimeTypes,
-                @RequestParam(value = "relationships", required = false) UuidList relationshipUuids,
-                @RequestParam(value = "relationshipsInvers", required = false) UuidList relationshipInversUuids,
-                @RequestParam(value = "includeTaxonDescriptions", required = true) Boolean  includeTaxonDescriptions,
-                @RequestParam(value = "includeOccurrences", required = true) Boolean  includeOccurrences,
-                @RequestParam(value = "includeTaxonNameDescriptions", required = true) Boolean  includeTaxonNameDescriptions,
-                @RequestParam(value = "widthOrDuration", required = false) Integer  widthOrDuration,
-                @RequestParam(value = "height", required = false) Integer height,
-                @RequestParam(value = "size", required = false) Integer size,
-                HttpServletRequest request, HttpServletResponse response)throws IOException {
+    public List<Media> doGetSubtreeMedia(
+            @PathVariable("uuid") UUID uuid,
+            @RequestParam(value = "type", required = false) Class<? extends MediaRepresentationPart> type,
+            @RequestParam(value = "mimeTypes", required = false) String[] mimeTypes,
+            @RequestParam(value = "relationships", required = false) UuidList relationshipUuids,
+            @RequestParam(value = "relationshipsInvers", required = false) UuidList relationshipInversUuids,
+            @RequestParam(value = "includeTaxonDescriptions", required = true) Boolean  includeTaxonDescriptions,
+            @RequestParam(value = "includeOccurrences", required = true) Boolean  includeOccurrences,
+            @RequestParam(value = "includeTaxonNameDescriptions", required = true) Boolean  includeTaxonNameDescriptions,
+            @RequestParam(value = "widthOrDuration", required = false) Integer  widthOrDuration,
+            @RequestParam(value = "height", required = false) Integer height,
+            @RequestParam(value = "size", required = false) Integer size,
+            HttpServletRequest request, HttpServletResponse response)throws IOException {
 
         logger.info("doGetSubtreeMedia() " + requestPathAndQuery(request));
 

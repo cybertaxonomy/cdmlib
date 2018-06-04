@@ -51,9 +51,6 @@ public class TaxonNodePrintAppController extends AbstractController<TaxonNode, I
 
     private ITaxonNodeService service;
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.controller.AbstractListController#setService(eu.etaxonomy.cdm.api.service.IService)
-     */
     @Override
     @Autowired
     public void setService(ITaxonNodeService service) {

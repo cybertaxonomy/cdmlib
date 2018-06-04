@@ -99,7 +99,9 @@ import eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynony
             impl = AcceptedTaxonBridge.class),
     @ClassBridge(impl = eu.etaxonomy.cdm.hibernate.search.NomenclaturalSortOrderBrigde.class)
 })
-public abstract class TaxonBase<S extends ITaxonCacheStrategy> extends IdentifiableEntity<S> implements  IPublishable, IIntextReferenceTarget, Cloneable {
+public abstract class TaxonBase<S extends ITaxonCacheStrategy>
+           extends IdentifiableEntity<S>
+           implements  IPublishable, IIntextReferenceTarget, Cloneable {
     private static final long serialVersionUID = -3589185949928938529L;
     private static final Logger logger = Logger.getLogger(TaxonBase.class);
 

@@ -115,7 +115,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
-import eu.etaxonomy.cdm.persistence.dao.common.IOrderedTermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.initializer.AbstractBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
@@ -165,9 +164,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
     @Autowired
     private IDescriptionService descriptionService;
-
-    @Autowired
-    private IOrderedTermVocabularyDao orderedVocabularyDao;
+//
+//    @Autowired
+//    private IOrderedTermVocabularyDao orderedVocabularyDao;
 
     @Autowired
     private IOccurrenceDao occurrenceDao;
@@ -181,9 +180,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     @Autowired
     private ILuceneIndexToolProvider luceneIndexToolProvider;
 
-    /**
-     * Constructor
-     */
+//************************ CONSTRUCTOR ****************************/
     public TaxonServiceImpl(){
         if (logger.isDebugEnabled()) { logger.debug("Load TaxonService Bean"); }
     }
@@ -3215,6 +3212,5 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
 		return this.swapSynonymAndAcceptedTaxon(syn, taxon);
 	}
-
 
 }

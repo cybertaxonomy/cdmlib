@@ -32,7 +32,8 @@ import eu.etaxonomy.cdm.remote.editor.MatchModePropertyEditor;
  * @since 06 Oct 2016
  *
  */
-public abstract class AbstractIdentifiableController <T extends IdentifiableEntity, SERVICE extends IIdentifiableEntityService<T>> extends BaseController<T,SERVICE>  {
+public abstract class AbstractIdentifiableController <T extends IdentifiableEntity, SERVICE extends IIdentifiableEntityService<T>>
+        extends BaseController<T,SERVICE>  {
 
 
     @InitBinder

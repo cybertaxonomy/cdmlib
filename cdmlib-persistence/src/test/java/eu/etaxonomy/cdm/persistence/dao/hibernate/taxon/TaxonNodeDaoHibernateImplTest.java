@@ -30,8 +30,8 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -129,13 +129,12 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         TaxonNode taxNode3 = taxonNodeDao.load(uuid3, TAXONNODE_INIT_STRATEGY);
 
 
-
         List<TaxonBase> taxa = taxonDao.list(10, 0);
         assertEquals("there should be 7 taxa", 7, taxa.size());
-        taxNode3 = HibernateProxyHelper.deproxy(taxNode3, TaxonNode.class);
-        taxNode = HibernateProxyHelper.deproxy(taxNode, TaxonNode.class);
-        taxNode2 = HibernateProxyHelper.deproxy(taxNode2, TaxonNode.class);
-        TaxonNode rootNode = HibernateProxyHelper.deproxy(classification.getRootNode(), TaxonNode.class);
+        taxNode3 = CdmBase.deproxy(taxNode3);
+        taxNode = CdmBase.deproxy(taxNode);
+        taxNode2 = CdmBase.deproxy(taxNode2);
+        TaxonNode rootNode = CdmBase.deproxy(classification.getRootNode());
         TaxonNode newNode = rootNode.addChildTaxon(Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.GENUS()), null), null, null);
         taxonNodeDao.saveOrUpdate(newNode);
         taxonNodeDao.delete(taxNode3, true);
@@ -144,7 +143,8 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         classification = classificationDao.findByUuid(ClassificationUuid);
 
         taxa = taxonDao.list(10, 0);
-        // There should be 4 taxonBases: at the beginning 6 in the classification + 1 orphan taxon; 1 new created taxon -> 8: delete node3 deleted 4 taxa -> 4 taxa left.
+        // There should be 4 taxonBases: at the beginning 6 in the classification + 1 orphan taxon;
+        //1 new created taxon -> 8: delete node3 deleted 4 taxa -> 4 taxa left.
         assertEquals("there should be 4 taxa left", 4, taxa.size());
 
         classificationDao.delete(classification);

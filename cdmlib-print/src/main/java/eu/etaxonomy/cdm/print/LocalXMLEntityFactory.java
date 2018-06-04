@@ -139,11 +139,6 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
                 .getBean("jsonConfigPortal");
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see eu.etaxonomy.printpublisher.IXMLEntityFactory#getClassifications()
-     */
     @Override
     public List<Element> getClassifications() {
         xmlView.setJsonConfig(jsonConfig);
@@ -198,11 +193,6 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
         return result;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see eu.etaxonomy.printpublisher.IXMLEntityFactory#getFeatureTrees()
-     */
     @Override
     public List<Element> getFeatureTrees() {
         xmlView.setJsonConfig(jsonConfig);
@@ -213,13 +203,6 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
         return processElementList(result);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * eu.etaxonomy.printpublisher.IXMLEntityFactory#getFeatureNode(java.util
-     * .UUID)
-     */
     @Override
     public Element getFeatureNode(UUID uuid) {
         xmlView.setJsonConfig(jsonConfig);
@@ -251,11 +234,6 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
         return result;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see eu.etaxonomy.printpublisher.IXMLEntityFactory#getFeatureTree()
-     */
     @Override
     public Element getFeatureTree(UUID uuid) {
         xmlView.setJsonConfig(jsonConfig);

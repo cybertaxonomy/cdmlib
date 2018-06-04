@@ -192,7 +192,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
             return null;
         }
 
-        List<T> entities = new ArrayList<T>();
+        List<T> entities = new ArrayList<>();
         for(UUID uuid : uuids) {
             entities.add(uuid == null ? null : dao.load(uuid, propertyPaths));
         }
