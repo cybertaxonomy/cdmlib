@@ -113,7 +113,7 @@ public class ClassificationDaoHibernateImpl
         Query query2 = null;
 
         String whereClassification = classification != null? " AND tn.classification = :classification " : "";
-        String whereUnpublished = includeUnpublished? "" : " AND t.publish = :publish ";
+        String whereUnpublished = includeUnpublished? "" : " AND tn.taxon.publish = :publish ";
 
         String selectWhat = doCount ? "COUNT(distinct tn)" : "DISTINCT tn";
 
