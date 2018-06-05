@@ -121,7 +121,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
     }
 
     /**
-     * Get the set of accepted {@link Taxon} entities for a given
+     * Get the accepted {@link Taxon} for a given
      * {@link TaxonBase} entity identified by the <code>{taxon-uuid}</code>.
      * <p>
      * URI: <b>&#x002F;{datasource-name}&#x002F;taxon&#x002F;{taxon-uuid}&#x002F;accepted</b>

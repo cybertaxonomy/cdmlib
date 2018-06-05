@@ -37,8 +37,6 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(ServiceBase.class);
 
-    //flush after saving this number of objects
-    int flushAfterNo = 2000;
     protected ApplicationContext appContext;
 
     public final static boolean NO_UNPUBLISHED = DaoBase.NO_UNPUBLISHED;  //constant for unpublished
