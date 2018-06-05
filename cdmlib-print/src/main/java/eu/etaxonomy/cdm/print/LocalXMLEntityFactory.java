@@ -26,6 +26,7 @@ import org.springframework.web.servlet.ModelAndView;
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DaoBase;
 import eu.etaxonomy.cdm.print.XMLHelper.EntityType;
 import eu.etaxonomy.cdm.remote.controller.ClassificationController;
 import eu.etaxonomy.cdm.remote.controller.ClassificationListController;
@@ -157,7 +158,7 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
 
         UUID uuid = XMLHelper.getUuid(treeNode);
 
-        boolean includeUnpublished = false;  //for now we do not allow any remote service to publish unpublished data
+        boolean includeUnpublished = DaoBase.NO_UNPUBLISHED;  //for now we do not allow any remote service to publish unpublished data
 
         Object resultObject = null;
         try {

@@ -158,7 +158,7 @@ public class ClassificationController extends AbstractIdentifiableController<Cla
            HttpServletResponse response
            ) throws IOException {
 
-       boolean includeUnpublished = false;  //for now we do not allow any remote service to publish unpublished data
+       boolean includeUnpublished = NO_UNPUBLISHED;  //for now we do not allow any remote service to publish unpublished data
 
        PagerParameters pagerParameters = new PagerParameters(pageSize, pageIndex);
        pagerParameters.normalizeAndValidate(response);
@@ -292,7 +292,7 @@ public class ClassificationController extends AbstractIdentifiableController<Cla
            ) throws IOException {
 
        try {
-           boolean includeUnpublished = false;  //for now we do not allow any remote service to publish unpublished data
+           boolean includeUnpublished = NO_UNPUBLISHED;  //for now we do not allow any remote service to publish unpublished data
            TaxonInContextDTO taxonInContextDTO = service.getTaxonInContext(classificationUuid, taxonUuid, doChildren, includeUnpublished,
                    doSynonyms, ancestorMarkers, sortMode);
            return taxonInContextDTO;

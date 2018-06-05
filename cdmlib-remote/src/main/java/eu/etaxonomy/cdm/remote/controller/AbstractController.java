@@ -20,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DaoBase;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 
 /**
@@ -52,6 +53,9 @@ public abstract class AbstractController<T extends CdmBase, SERVICE extends ISer
      * {@link Thread#NORM_PRIORITY}
      */
     public static final int DEFAULT_BATCH_THREAD_PRIORITY = 3;
+
+    protected static final boolean NO_UNPUBLISHED = DaoBase.NO_UNPUBLISHED;
+    protected static final boolean INCLUDE_UNPUBLISHED = DaoBase.INCLUDE_UNPUBLISHED;
 
     protected SERVICE service;
 

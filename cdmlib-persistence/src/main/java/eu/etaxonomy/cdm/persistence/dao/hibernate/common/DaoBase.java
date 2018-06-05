@@ -33,6 +33,9 @@ public abstract class DaoBase {
 
     final static Logger logger = Logger.getLogger(DaoBase.class);
 
+    public final static boolean NO_UNPUBLISHED = false;  //constant for unpublished
+    public final static boolean INCLUDE_UNPUBLISHED = true;  //constant for unpublished
+
     @Autowired
     private SessionFactory factory;
 

@@ -183,7 +183,7 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
             HttpServletResponse response) throws IOException {
         logger.info("getChildNodesOfTaxon() " + request.getRequestURI());
 
-        boolean includeUnpublished = false;  //for now we do not allow any remote service to publish unpublished data
+        boolean includeUnpublished = NO_UNPUBLISHED;  //for now we do not allow any remote service to publish unpublished data
 
         List<TaxonNode> children = service.listChildNodesOfTaxon(taxonUuid, treeUuid,
                 includeUnpublished, null, null, NODE_INIT_STRATEGY);

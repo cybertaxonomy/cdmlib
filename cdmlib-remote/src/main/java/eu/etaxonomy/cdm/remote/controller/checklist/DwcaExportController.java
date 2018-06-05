@@ -233,7 +233,7 @@ public class DwcaExportController
             ModelAndView mv = new ModelAndView();
 
             // replacement for commented RequestParam
-            Boolean includeUnpublished = false;
+            Boolean includeUnpublished = NO_UNPUBLISHED;
 
             final String origin = request.getRequestURL().append('?')
                     .append(CdmUtils.Nz(request.getQueryString())).toString()
