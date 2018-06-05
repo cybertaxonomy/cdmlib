@@ -477,8 +477,13 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @param propertyPaths
      * @return a collection of associated taxa
      */
-    public Collection<TaxonBase<?>> listIndividualsAssociationTaxa(SpecimenOrObservationBase<?> specimen, Integer limit,
-            Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+    public Collection<TaxonBase<?>> listIndividualsAssociationTaxa(SpecimenOrObservationBase<?> specimen,
+            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+    /**
+      * @see #listIndividualsAssociationTaxa(SpecimenOrObservationBase, Integer, Integer, List, List)
+      */
+    public Collection<TaxonBase<?>> listIndividualsAssociationTaxa(SpecimenOrObservationBase<?> specimen, boolean includeUnpublished,
+            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Retrieves all associated taxa for the given specimen (via type designations, determination, individuals associations)
@@ -489,7 +494,13 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @param propertyPaths
      * @return
      */
-    public Collection<TaxonBase<?>> listAssociatedTaxa(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+    public Collection<TaxonBase<?>> listAssociatedTaxa(SpecimenOrObservationBase<?> specimen, boolean includeUnpublished,
+            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+    /**
+     * @see #listAssociatedTaxa(SpecimenOrObservationBase, Integer, Integer, List, List)axa
+     */
+    public Collection<TaxonBase<?>> listAssociatedTaxa(SpecimenOrObservationBase<?> specimen,
+            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Retrieves all taxa that the given specimen is determined as
@@ -500,8 +511,13 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @param propertyPaths
      * @return collection of all taxa the given specimen is determined as
      */
-    public Collection<TaxonBase<?>> listDeterminedTaxa(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start,
-            List<OrderHint> orderHints, List<String> propertyPaths);
+    public Collection<TaxonBase<?>> listDeterminedTaxa(SpecimenOrObservationBase<?> specimen, boolean includeUnpublished,
+            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+    /**
+     * @see #listDeterminedTaxa(SpecimenOrObservationBase, Integer, Integer, List, List)
+     */
+    public Collection<TaxonBase<?>> listDeterminedTaxa(SpecimenOrObservationBase<?> specimen,
+            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Retrieves all {@link DeterminationEvent}s which have the given specimen set as identified unit.
@@ -524,8 +540,13 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @param propertyPaths
      * @return a collection of all taxa where the given specimen is the type specimen
      */
-    public Collection<TaxonBase<?>> listTypeDesignationTaxa(DerivedUnit specimen, Integer limit,
-            Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+    public Collection<TaxonBase<?>> listTypeDesignationTaxa(DerivedUnit specimen,
+            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+    /**
+     * @see #listTypeDesignationTaxa(DerivedUnit, Integer, Integer, List, List)a
+     */
+    public Collection<TaxonBase<?>> listTypeDesignationTaxa(DerivedUnit specimen, boolean includeUnpublished,
+            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Retrieves all {@link SpecimenTypeDesignation}s which have the given specimens as a type specimen.

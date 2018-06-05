@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DaoBase;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -39,6 +40,9 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
     //flush after saving this number of objects
     int flushAfterNo = 2000;
     protected ApplicationContext appContext;
+
+    public final static boolean NO_UNPUBLISHED = DaoBase.NO_UNPUBLISHED;  //constant for unpublished
+    public final static boolean INCLUDE_UNPUBLISHED = DaoBase.INCLUDE_UNPUBLISHED;  //constant for unpublished
 
     protected DAO dao;
 

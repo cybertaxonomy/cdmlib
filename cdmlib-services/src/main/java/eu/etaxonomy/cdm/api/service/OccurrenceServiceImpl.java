@@ -1227,37 +1227,55 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         return dao.listIndividualsAssociations(specimen, limit, start, orderHints, propertyPaths);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Collection<TaxonBase<?>> listAssociatedTaxa(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start,
-            List<OrderHint> orderHints, List<String> propertyPaths) {
+    public Collection<TaxonBase<?>> listAssociatedTaxa(SpecimenOrObservationBase<?> specimen, Integer limit,
+            Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+        return listAssociatedTaxa(specimen, INCLUDE_UNPUBLISHED, limit, start, orderHints, propertyPaths);
+    }
+    @Override
+    public Collection<TaxonBase<?>> listAssociatedTaxa(SpecimenOrObservationBase<?> specimen, boolean includeUnpublished,
+            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
         Collection<TaxonBase<?>> associatedTaxa = new HashSet<>();
 
         //individuals associations
-        associatedTaxa.addAll(listIndividualsAssociationTaxa(specimen, limit, start, orderHints, propertyPaths));
+        associatedTaxa.addAll(listIndividualsAssociationTaxa(specimen, includeUnpublished, limit, start, orderHints, propertyPaths));
         //type designation
         if(specimen.isInstanceOf(DerivedUnit.class)){
-            associatedTaxa.addAll(listTypeDesignationTaxa(HibernateProxyHelper.deproxy(specimen, DerivedUnit.class), limit, start, orderHints, propertyPaths));
+            associatedTaxa.addAll(listTypeDesignationTaxa(HibernateProxyHelper.deproxy(specimen, DerivedUnit.class),
+                  includeUnpublished, limit, start, orderHints, propertyPaths));
         }
         //determinations
-        associatedTaxa.addAll(listDeterminedTaxa(specimen, limit, start, orderHints, propertyPaths));
+        associatedTaxa.addAll(listDeterminedTaxa(specimen, includeUnpublished, limit, start, orderHints, propertyPaths));
 
         return associatedTaxa;
     }
 
 
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Collection<TaxonBase<?>> listDeterminedTaxa(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start,
+    public Collection<TaxonBase<?>> listDeterminedTaxa(SpecimenOrObservationBase<?> specimen, Integer limit,
+            Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+        return listDeterminedTaxa(specimen, INCLUDE_UNPUBLISHED, limit, start, orderHints, propertyPaths);
+    }
+    @Override
+    public Collection<TaxonBase<?>> listDeterminedTaxa(SpecimenOrObservationBase<?> specimen, boolean includeUnpublished, Integer limit, Integer start,
             List<OrderHint> orderHints, List<String> propertyPaths) {
         Collection<TaxonBase<?>> associatedTaxa = new HashSet<>();
         for (DeterminationEvent determinationEvent : listDeterminationEvents(specimen, limit, start, orderHints, propertyPaths)) {
             if(determinationEvent.getIdentifiedUnit().equals(specimen)){
                 if(determinationEvent.getTaxon()!=null){
-                    associatedTaxa.add(taxonService.load(determinationEvent.getTaxon().getUuid(), propertyPaths));
+                    associatedTaxa.add(taxonService.load(determinationEvent.getTaxon().getUuid(), includeUnpublished, propertyPaths));
                 }
                 if(determinationEvent.getTaxonName()!=null){
                     Collection<TaxonBase> taxonBases = determinationEvent.getTaxonName().getTaxonBases();
                     for (TaxonBase taxonBase : taxonBases) {
-                        associatedTaxa.add(taxonService.load(taxonBase.getUuid(), propertyPaths));
+                        associatedTaxa.add(taxonService.load(taxonBase.getUuid(), includeUnpublished, propertyPaths));
                     }
                 }
             }
@@ -1265,9 +1283,17 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         return associatedTaxa;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Collection<TaxonBase<?>> listTypeDesignationTaxa(DerivedUnit specimen, Integer limit, Integer start,
             List<OrderHint> orderHints, List<String> propertyPaths) {
+        return listTypeDesignationTaxa(specimen, INCLUDE_UNPUBLISHED, limit, start, orderHints, propertyPaths);
+    }
+    @Override
+    public Collection<TaxonBase<?>> listTypeDesignationTaxa(DerivedUnit specimen, boolean includeUnpublished,
+            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
         Collection<TaxonBase<?>> associatedTaxa = new HashSet<>();
         for (SpecimenTypeDesignation typeDesignation : listTypeDesignations(specimen, limit, start, orderHints, propertyPaths)) {
             if(typeDesignation.getTypeSpecimen().equals(specimen)){
@@ -1275,7 +1301,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 for (TaxonName taxonName : typifiedNames) {
                     Set<Taxon> taxa = taxonName.getTaxa();
                     for (Taxon taxon : taxa) {
-                        associatedTaxa.add(taxonService.load(taxon.getUuid(), propertyPaths));
+                        associatedTaxa.add(taxonService.load(taxon.getUuid(), includeUnpublished, propertyPaths));
                     }
                 }
             }
@@ -1283,15 +1309,24 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         return associatedTaxa;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Collection<TaxonBase<?>> listIndividualsAssociationTaxa(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start,
-            List<OrderHint> orderHints, List<String> propertyPaths) {
+    public Collection<TaxonBase<?>> listIndividualsAssociationTaxa(SpecimenOrObservationBase<?> specimen, Integer limit,
+            Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+        return listIndividualsAssociationTaxa(specimen, INCLUDE_UNPUBLISHED, limit, start, orderHints, propertyPaths);
+    }
+
+    @Override
+    public Collection<TaxonBase<?>> listIndividualsAssociationTaxa(SpecimenOrObservationBase<?> specimen, boolean includeUnpublished,
+            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
         Collection<TaxonBase<?>> associatedTaxa = new HashSet<>();
         for (IndividualsAssociation individualsAssociation : listIndividualsAssociations(specimen, null, null, null, null)) {
             if(individualsAssociation.getInDescription().isInstanceOf(TaxonDescription.class)){
                 TaxonDescription taxonDescription = HibernateProxyHelper.deproxy(individualsAssociation.getInDescription(), TaxonDescription.class);
                 if(taxonDescription.getTaxon()!=null){
-                    associatedTaxa.add(taxonService.load(taxonDescription.getTaxon().getUuid(), propertyPaths));
+                    associatedTaxa.add(taxonService.load(taxonDescription.getTaxon().getUuid(), includeUnpublished, propertyPaths));
                 }
             }
         }
@@ -1451,7 +1486,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             List<SpecimenOrObservationBase<?>> specimenWithAssociations = new ArrayList<>();
             if(!assignmentStatus.equals(AssignmentStatus.ALL_SPECIMENS)){
                 for (SpecimenOrObservationBase specimenOrObservationBase : occurrences) {
-                    Collection<TaxonBase<?>> associatedTaxa = listAssociatedTaxa(specimenOrObservationBase, null, null, null, null);
+                    boolean includeUnpublished = true;  //TODO not sure if this is correct, maybe we have to propagate publish flag to higher methods.
+                    Collection<TaxonBase<?>> associatedTaxa = listAssociatedTaxa(specimenOrObservationBase,
+                            includeUnpublished, null, null, null, null);
                     if(!associatedTaxa.isEmpty()){
                         specimenWithAssociations.add(specimenOrObservationBase);
                     }
@@ -1531,5 +1568,4 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     public List<FieldUnit> getFieldUnitsForGatheringEvent(UUID gatheringEventUuid) {
         return dao.getFieldUnitsForGatheringEvent(gatheringEventUuid, null, null, null, null);
     }
-
 }
