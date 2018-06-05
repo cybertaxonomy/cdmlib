@@ -175,7 +175,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
-        TaxonBase<?> tb = service.load(uuid, TAXONNODE_INIT_STRATEGY);
+        TaxonBase<?> tb = service.load(uuid, NO_UNPUBLISHED, TAXONNODE_INIT_STRATEGY);
         if(tb instanceof Taxon){
             return ((Taxon)tb).getTaxonNodes();
         } else {
@@ -276,7 +276,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
 
         ModelAndView mv = new ModelAndView();
 
-        TaxonBase<?> tb = service.load(uuid, Arrays.asList(new String[] {"name"}));
+        TaxonBase<?> tb = service.load(uuid, NO_UNPUBLISHED, Arrays.asList(new String[] {"name"}));
         mv.addObject(nameService.getTaggedName(tb.getName().getUuid()));
         return mv;
     }

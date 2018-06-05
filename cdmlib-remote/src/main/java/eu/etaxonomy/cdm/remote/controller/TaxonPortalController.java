@@ -422,7 +422,7 @@ public class TaxonPortalController extends TaxonController{
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
         logger.info("doGetTaxonNodes" + requestPathAndQuery(request));
-        TaxonBase<?> taxon = service.load(uuid, TAXONNODE_INIT_STRATEGY);
+        TaxonBase<?> taxon = service.load(uuid, NO_UNPUBLISHED, TAXONNODE_INIT_STRATEGY);
         if(taxon instanceof Taxon){
             return ((Taxon)taxon).getTaxonNodes();
         } else {
@@ -555,7 +555,7 @@ public class TaxonPortalController extends TaxonController{
             for (TaxonNode child : children){
                 childTaxon = child.getTaxon();
                 if(childTaxon != null) {
-                childTaxon = (Taxon)taxonService.load(childTaxon.getUuid(), null);
+                childTaxon = (Taxon)taxonService.load(childTaxon.getUuid(), NO_UNPUBLISHED, null);
                     returnMedia.addAll(getMediaForTaxon(childTaxon, includeRelationships,
                             includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions,
                             type, mimeTypes, widthOrDuration, height, size));
