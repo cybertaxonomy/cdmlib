@@ -101,10 +101,15 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 	}
 
 	@Override
-	public T load(UUID uuid, List<String> propertyPaths) {
+    public T load(UUID uuid, List<String> propertyPaths) {
+	    return this.load(uuid, INCLUDE_UNPUBLISHED, propertyPaths);
+	}
+
+	@Override
+    protected T load(UUID uuid, boolean includeUnpublished, List<String> propertyPaths) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-			return super.load(uuid,propertyPaths);
+			return super.load(uuid, includeUnpublished, propertyPaths);
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(type,auditEvent.getRevisionNumber());
 			query.add(AuditEntity.property("uuid").eq(uuid));

@@ -102,6 +102,17 @@ public class TaxonDaoHibernateImpl
 //        this.alternativeSpellingSuggestionParser = alternativeSpellingSuggestionParser;
 //    }
 
+    @Override
+    public TaxonBase load(UUID uuid, List<String> propertyPaths){
+        return load(uuid, INCLUDE_UNPUBLISHED, propertyPaths);
+    }
+
+    @Override
+    public TaxonBase load(UUID uuid, boolean includeUnpublished, List<String> propertyPaths){
+        TaxonBase<?> result = super.load(uuid, includeUnpublished, propertyPaths);
+        return result; //(result == null || (!result.isPublish() && !includeUnpublished))? null : result;
+    }
+
 
     @Override
     public List<TaxonBase> getTaxaByName(String queryString, Reference sec) {

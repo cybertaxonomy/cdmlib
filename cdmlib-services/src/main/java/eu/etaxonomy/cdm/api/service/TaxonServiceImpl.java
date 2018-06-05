@@ -185,6 +185,17 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         if (logger.isDebugEnabled()) { logger.debug("Load TaxonService Bean"); }
     }
 
+// ****************************** METHODS ********************************/
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public TaxonBase load(UUID uuid, boolean includeUnpublished, List<String> propertyPaths) {
+        return dao.load(uuid, includeUnpublished, propertyPaths);
+    }
+
     /**
      * FIXME Candidate for harmonization
      * rename searchByName ?

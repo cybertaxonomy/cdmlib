@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
+import eu.etaxonomy.cdm.persistence.dao.common.IPublishableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
@@ -44,7 +45,17 @@ import eu.etaxonomy.cdm.persistence.query.TaxonTitleType;
  * @author a.mueller
  *
  */
-public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<TaxonBase> {
+public interface ITaxonDao
+          extends IIdentifiableDao<TaxonBase>, ITitledDao<TaxonBase>, IPublishableDao<TaxonBase> {
+
+
+    /**
+     * {@inheritDoc}
+     * <BR><BR>
+     * NOTE: Also taxa with <code>publish=false</code> are returned.
+     */
+    @Override
+    public TaxonBase load(UUID uuid, List<String> propertyPaths);
 
     /**
      * Returns a list of TaxonBase instances where the taxon.titleCache property matches the name parameter,
@@ -462,5 +473,6 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
     public List<TaxonRelationship> getTaxonRelationships(Set<TaxonRelationshipType> types,
             Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints, List<String> propertyPaths);
+
 
 }

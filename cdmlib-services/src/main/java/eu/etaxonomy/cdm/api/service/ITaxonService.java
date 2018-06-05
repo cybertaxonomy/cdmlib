@@ -59,7 +59,16 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.TaxonTitleType;
 
 
-public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
+public interface ITaxonService
+             extends IIdentifiableEntityService<TaxonBase>, IPublishableService<TaxonBase>{
+
+    /**
+     * {@inheritDoc}
+     * <BR><BR>
+     * NOTE: Also taxa with <code>publish=false</code> are returned.
+     */
+    @Override
+    public TaxonBase load(UUID uuid, List<String> propertyPaths);
 
     /**
      * Returns a list of taxa that matches the name string and the sec reference

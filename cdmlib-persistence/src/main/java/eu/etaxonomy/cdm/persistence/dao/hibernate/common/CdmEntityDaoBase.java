@@ -52,6 +52,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.ReflectionUtils;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IPublishable;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
@@ -362,13 +363,20 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         return getSession().get(type, id);
     }
 
-
-    @Override
+	@Override
     public T findByUuid(UUID uuid) throws DataAccessException{
+	    return this.findByUuid(uuid, INCLUDE_UNPUBLISHED);
+	}
+
+    protected T findByUuid(UUID uuid, boolean includeUnpublished) throws DataAccessException{
         Session session = getSession();
         Criteria crit = session.createCriteria(type);
         crit.add(Restrictions.eq("uuid", uuid));
         crit.addOrder(Order.desc("created"));
+        if (IPublishable.class.isAssignableFrom(type) && !includeUnpublished ){
+            crit.add(Restrictions.eq("publish", Boolean.TRUE));
+        }
+
         @SuppressWarnings("unchecked")
 		List<T> results = crit.list();
         Set<T> resultSet = new HashSet<>();
@@ -672,7 +680,11 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
     @Override
     public T load(UUID uuid, List<String> propertyPaths){
-        T bean = findByUuid(uuid);
+        return this.load(uuid, INCLUDE_UNPUBLISHED, propertyPaths);
+    }
+
+    protected T load(UUID uuid, boolean includeUnpublished, List<String> propertyPaths){
+        T bean = findByUuid(uuid, includeUnpublished);
         if(bean == null){
             return bean;
         }
