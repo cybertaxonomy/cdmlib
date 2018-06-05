@@ -61,10 +61,10 @@ public interface IClassificationDao extends IIdentifiableDao<Classification> {
      *            <code>rank != null</code>.
      * @return
      */
-    public List<TaxonNode> listRankSpecificRootNodes(Classification classification, Rank rank, Integer limit, Integer start,
-            List<String> propertyPaths, int queryIndex);
+    public List<TaxonNode> listRankSpecificRootNodes(Classification classification, Rank rank,
+            boolean includeUnpublished, Integer limit, Integer start, List<String> propertyPaths, int queryIndex);
 
-    public long[] countRankSpecificRootNodes(Classification classification, Rank rank);
+    public long[] countRankSpecificRootNodes(Classification classification, boolean includeUnpublished, Rank rank);
 
     public List<TaxonNode> listChildrenOf(Taxon taxon, Classification classification, boolean includeUnpublished,
             Integer pageSize, Integer pageIndex, List<String> propertyPaths);

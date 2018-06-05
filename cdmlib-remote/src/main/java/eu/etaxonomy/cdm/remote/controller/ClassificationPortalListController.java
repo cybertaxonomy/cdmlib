@@ -148,9 +148,9 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
             }
         }
         rank = findRank(rankUuid);
-
+        boolean includeUnpublished = NO_UNPUBLISHED;
 //        long start = System.currentTimeMillis();
-        List<TaxonNode> rootNodes = service.listRankSpecificRootNodes(tree, rank, null, null, NODE_INIT_STRATEGY);
+        List<TaxonNode> rootNodes = service.listRankSpecificRootNodes(tree, rank, includeUnpublished, null, null, NODE_INIT_STRATEGY);
 //        System.err.println("service.listRankSpecificRootNodes() " + (System.currentTimeMillis() - start));
         return rootNodes;
     }

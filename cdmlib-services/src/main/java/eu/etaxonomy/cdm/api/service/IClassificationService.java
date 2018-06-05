@@ -111,16 +111,18 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * So the nodes returned may reference Taxa with different Ranks.
      *
      * If the <code>rank</code> is null the absolute root nodes will be returned.
-     *
+
      * @param classification may be null for all classifications
      * @param rank the set to null for to get the root nodes of classifications
+     * @param includeUnpublished if <code>true</code> unpublished taxa are also exported
      * @param pageSize The maximum number of relationships returned (can be null for all relationships)
      * @param pageIndex The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @param propertyPaths
      * @return
      *
      */
-    public List<TaxonNode> listRankSpecificRootNodes(Classification classification, Rank rank, Integer pageSize, Integer pageIndex, List<String> propertyPaths);
+    public List<TaxonNode> listRankSpecificRootNodes(Classification classification, Rank rank,
+            boolean includeUnpublished, Integer pageSize, Integer pageIndex, List<String> propertyPaths);
 
 
     /**
@@ -133,13 +135,15 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      *
      * @param classification may be null for all classifications
      * @param rank the set to null for to get the root nodes of classifications
+     * @param includeUnpublished if <code>true</code> unpublished taxa are also exported
      * @param pageSize The maximum number of relationships returned (can be null for all relationships)
      * @param pageIndex The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @param propertyPaths
      * @return
      *
      */
-    public Pager<TaxonNode> pageRankSpecificRootNodes(Classification classification, Rank rank, Integer pageSize, Integer pageIndex, List<String> propertyPaths);
+    public Pager<TaxonNode> pageRankSpecificRootNodes(Classification classification, Rank rank,
+            boolean includeUnpublished, Integer pageSize, Integer pageIndex, List<String> propertyPaths);
 
     /**
      * @param taxonNode

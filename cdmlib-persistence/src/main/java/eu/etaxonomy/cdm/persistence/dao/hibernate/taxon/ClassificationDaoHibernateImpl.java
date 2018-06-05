@@ -58,10 +58,10 @@ public class ClassificationDaoHibernateImpl
     @Override
     @SuppressWarnings("unchecked")
     public List<TaxonNode> listRankSpecificRootNodes(Classification classification, Rank rank,
-            Integer limit, Integer start, List<String> propertyPaths, int queryIndex){
+            boolean includeUnpublished, Integer limit, Integer start, List<String> propertyPaths, int queryIndex){
 
         List<TaxonNode> results = new ArrayList<>();
-        Query[] queries = prepareRankSpecificRootNodes(classification, rank, false);
+        Query[] queries = prepareRankSpecificRootNodes(classification, rank, includeUnpublished, false);
 
         // since this method is using two queries sequentially the handling of limit and start
         // is a bit more complex
@@ -86,10 +86,10 @@ public class ClassificationDaoHibernateImpl
     }
 
     @Override
-    public long[] countRankSpecificRootNodes(Classification classification, Rank rank) {
+    public long[] countRankSpecificRootNodes(Classification classification, boolean includeUnpublished, Rank rank) {
 
         long[] result = new long[(rank == null ? 1 : 2)];
-        Query[] queries = prepareRankSpecificRootNodes(classification, rank, true);
+        Query[] queries = prepareRankSpecificRootNodes(classification, rank, includeUnpublished, true);
         int i = 0;
         for(Query q : queries) {
             result[i++] = (Long)q.uniqueResult();
@@ -107,14 +107,13 @@ public class ClassificationDaoHibernateImpl
      *      one or two Queries as array, depending on the <code>rank</code> parameter:
      *      <code>rank == null</code>: array with one item, <code>rank != null</code>: array with two items.
      */
-    private Query[] prepareRankSpecificRootNodes(Classification classification, Rank rank, boolean doCount) {
+    private Query[] prepareRankSpecificRootNodes(Classification classification, Rank rank,
+            boolean includeUnpublished, boolean doCount) {
         Query query1;
         Query query2 = null;
 
-        String whereClassification = "";
-        if (classification != null){
-            whereClassification = " AND tn.classification = :classification ";
-        }
+        String whereClassification = classification != null? " AND tn.classification = :classification " : "";
+        String whereUnpublished = includeUnpublished? "" : " AND t.publish = :publish ";
 
         String selectWhat = doCount ? "COUNT(distinct tn)" : "DISTINCT tn";
 
@@ -124,7 +123,7 @@ public class ClassificationDaoHibernateImpl
             String hql = "SELECT " + selectWhat + " FROM TaxonNode tn" +
                     joinFetch +
                     " WHERE tn.parent.parent = null " +
-                    whereClassification;
+                    whereClassification +  whereUnpublished;
             query1 = getSession().createQuery(hql);
         } else {
             // this is for the cases
@@ -136,7 +135,7 @@ public class ClassificationDaoHibernateImpl
                     " (tn.taxon.name.rank = :rank" +
                     "   OR (tn.taxon.name.rank.orderIndex > :rankOrderIndex AND tn.parent.parent = null)" +
                     " )"
-                    + whereClassification ;
+                    + whereClassification + whereUnpublished ;
 
             // this is for the case
             //   - rank of root node is lower and it has a parent with higher rank
@@ -144,7 +143,7 @@ public class ClassificationDaoHibernateImpl
                     joinFetch +
                     " WHERE " +
                     " (tn.taxon.name.rank.orderIndex > :rankOrderIndex AND parent.taxon.name.rank.orderIndex < :rankOrderIndex )"
-                    + whereClassification ;
+                    + whereClassification + whereUnpublished;
             query1 = getSession().createQuery(hql1);
             query2 = getSession().createQuery(hql2);
             query1.setParameter("rank", rank);
@@ -152,12 +151,20 @@ public class ClassificationDaoHibernateImpl
             query2.setParameter("rankOrderIndex", rank.getOrderIndex());
         }
 
+        //parameters
         if (classification != null){
             query1.setParameter("classification", classification);
             if(query2 != null) {
                 query2.setParameter("classification", classification);
             }
         }
+        if (!includeUnpublished){
+            query1.setBoolean("publish", true);
+            if(query2 != null) {
+                query2.setBoolean("publish", true);
+            }
+        }
+
         if(query2 != null) {
             return new Query[]{query1, query2};
         } else {

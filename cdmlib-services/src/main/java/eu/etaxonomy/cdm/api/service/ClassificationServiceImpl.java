@@ -184,19 +184,22 @@ public class ClassificationServiceImpl
     	}
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public List<TaxonNode> listRankSpecificRootNodes(Classification classification, Rank rank, Integer pageSize,
-            Integer pageIndex, List<String> propertyPaths) {
-        return pageRankSpecificRootNodes(classification, rank, pageSize, pageIndex, propertyPaths).getRecords();
+    public List<TaxonNode> listRankSpecificRootNodes(Classification classification, Rank rank,
+            boolean includeUnpublished, Integer pageSize, Integer pageIndex, List<String> propertyPaths) {
+        return pageRankSpecificRootNodes(classification, rank, includeUnpublished, pageSize, pageIndex, propertyPaths).getRecords();
     }
 
     @Override
-    public Pager<TaxonNode> pageRankSpecificRootNodes(Classification classification, Rank rank, Integer pageSize,
-            Integer pageIndex, List<String> propertyPaths) {
-        long[] numberOfResults = dao.countRankSpecificRootNodes(classification, rank);
+    public Pager<TaxonNode> pageRankSpecificRootNodes(Classification classification, Rank rank,
+            boolean includeUnpublished, Integer pageSize, Integer pageIndex, List<String> propertyPaths) {
+        long[] numberOfResults = dao.countRankSpecificRootNodes(classification, includeUnpublished, rank);
         long totalNumberOfResults = numberOfResults[0] + (numberOfResults.length > 1 ? numberOfResults[1] : 0);
 
-        List<TaxonNode> results = new ArrayList<TaxonNode>();
+        List<TaxonNode> results = new ArrayList<>();
 
         if (AbstractPagerImpl.hasResultsInRange(totalNumberOfResults, pageIndex, pageSize)) { // no point checking again
             Integer limit = PagerUtils.limitFor(pageSize);
@@ -212,7 +215,8 @@ public class ClassificationServiceImpl
                     continue;
                 }
 
-                List<TaxonNode> perQueryResults = dao.listRankSpecificRootNodes(classification, rank, remainingLimit, start, propertyPaths, queryIndex);
+                List<TaxonNode> perQueryResults = dao.listRankSpecificRootNodes(classification,
+                        rank, includeUnpublished, remainingLimit, start, propertyPaths, queryIndex);
                 results.addAll(perQueryResults);
                 if(remainingLimit != null ){
                     remainingLimit = remainingLimit - results.size();
@@ -228,7 +232,7 @@ public class ClassificationServiceImpl
 //        long start_t = System.currentTimeMillis();
         Collections.sort(results, taxonNodeComparator); // TODO is ordering during the hibernate query in the dao possible?
 //        System.err.println("service.pageRankSpecificRootNodes() - Collections.sort(results,  taxonNodeComparator) " + (System.currentTimeMillis() - start_t));
-        return new DefaultPagerImpl<TaxonNode>(pageIndex, (int) totalNumberOfResults, pageSize, results);
+        return new DefaultPagerImpl<TaxonNode>(pageIndex, totalNumberOfResults, pageSize, results);
 
     }
 
