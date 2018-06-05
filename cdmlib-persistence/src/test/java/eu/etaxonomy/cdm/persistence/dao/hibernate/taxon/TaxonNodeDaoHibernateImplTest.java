@@ -72,6 +72,8 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     private UUID uuid3;
     private UUID classificationUuid;
 
+    boolean includeUnpublished;
+
     private static final UUID ACHERONTIA_UUID = UUID.fromString("3b2b3e17-5c4a-4d1b-aa39-349f63100d6b");
     private static final UUID ACHERONTIA_LACHESIS = UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783");
     private static final UUID NODE_ACHERONTIA_UUID = UUID.fromString("20c8f083-5870-4cbd-bf56-c5b2b98ab6a7");
@@ -91,6 +93,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         uuid2 = UUID.fromString("770239f6-4fa8-496b-8738-fe8f7b2ad519");
         classificationUuid = UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9");
         AuditEventContextHolder.clearContext();
+        includeUnpublished = true;
     }
 
     @After
@@ -193,9 +196,10 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         Taxon t_acherontia_lachesis = (Taxon) taxonDao.load(ACHERONTIA_LACHESIS);
 
         Classification classification =  classificationDao.load(ClassificationUuid);
-        long count = classificationDao.countSiblingsOf(t_acherontia_lachesis, classification);
+        long count = classificationDao.countSiblingsOf(t_acherontia_lachesis, classification, includeUnpublished);
         assertEquals(2, count);
-        List<TaxonNode> siblings = classificationDao.listSiblingsOf(t_acherontia_lachesis, classification, null, null, null);
+        List<TaxonNode> siblings = classificationDao.listSiblingsOf(
+                t_acherontia_lachesis, classification, includeUnpublished, null, null, null);
         assertNotNull(siblings);
         assertEquals(2, siblings.size());
     }

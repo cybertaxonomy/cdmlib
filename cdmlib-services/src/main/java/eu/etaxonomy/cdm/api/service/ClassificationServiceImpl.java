@@ -322,17 +322,17 @@ public class ClassificationServiceImpl
     }
 
     @Override
-    public Pager<TaxonNode> pageSiblingsOfTaxon(UUID taxonUuid, UUID classificationUuid, Integer pageSize,
-            Integer pageIndex, List<String> propertyPaths){
+    public Pager<TaxonNode> pageSiblingsOfTaxon(UUID taxonUuid, UUID classificationUuid, boolean includeUnpublished,
+            Integer pageSize, Integer pageIndex, List<String> propertyPaths){
 
         Classification classification = dao.load(classificationUuid);
         Taxon taxon = (Taxon) taxonDao.load(taxonUuid);
 
-        long numberOfResults = dao.countSiblingsOf(taxon, classification);
+        long numberOfResults = dao.countSiblingsOf(taxon, classification, includeUnpublished);
 
         List<TaxonNode> results;
         if(PagerUtils.hasResultsInRange(numberOfResults, pageIndex, pageSize)) {
-            results = dao.listSiblingsOf(taxon, classification, pageSize, pageIndex, propertyPaths);
+            results = dao.listSiblingsOf(taxon, classification, includeUnpublished, pageSize, pageIndex, propertyPaths);
             Collections.sort(results, taxonNodeComparator); // FIXME this is only a HACK, order during the hibernate query in the dao
         } else {
             results = new ArrayList<>();
@@ -342,10 +342,10 @@ public class ClassificationServiceImpl
     }
 
     @Override
-    public List<TaxonNode> listSiblingsOfTaxon(UUID taxonUuid, UUID classificationUuid, Integer pageSize,
-            Integer pageIndex, List<String> propertyPaths){
+    public List<TaxonNode> listSiblingsOfTaxon(UUID taxonUuid, UUID classificationUuid, boolean includeUnpublished,
+            Integer pageSize, Integer pageIndex, List<String> propertyPaths){
 
-        Pager<TaxonNode> pager = pageSiblingsOfTaxon(taxonUuid, classificationUuid, pageSize, pageIndex, propertyPaths);
+        Pager<TaxonNode> pager = pageSiblingsOfTaxon(taxonUuid, classificationUuid, includeUnpublished, pageSize, pageIndex, propertyPaths);
         return pager.getRecords();
     }
 

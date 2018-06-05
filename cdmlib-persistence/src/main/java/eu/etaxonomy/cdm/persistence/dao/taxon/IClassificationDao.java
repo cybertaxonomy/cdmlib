@@ -75,10 +75,10 @@ public interface IClassificationDao extends IIdentifiableDao<Classification> {
 
     public ClassificationLookupDTO classificationLookup(Classification classification);
 
-    public List<TaxonNode> listSiblingsOf(Taxon taxon, Classification classification, Integer pageSize, Integer pageIndex,
-            List<String> propertyPaths);
+    public List<TaxonNode> listSiblingsOf(Taxon taxon, Classification classification, boolean includeUnpublished,
+            Integer pageSize, Integer pageIndex, List<String> propertyPaths);
 
-    public Long countSiblingsOf(Taxon taxon, Classification classification);
+    public Long countSiblingsOf(Taxon taxon, Classification classification, boolean includeUnpublished);
 
     /**
      * Returns the tree indexes for a given set of taxon uuids as a map.

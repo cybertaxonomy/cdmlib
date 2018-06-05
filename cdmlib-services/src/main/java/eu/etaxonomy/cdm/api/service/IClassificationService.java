@@ -245,10 +245,10 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
     public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
             Classification classification, Integer limit, String pattern);
 
-    public List<TaxonNode> listSiblingsOfTaxon(UUID taxonUuid, UUID classificationUuid, Integer pageSize, Integer pageIndex,
-            List<String> propertyPaths);
+    public List<TaxonNode> listSiblingsOfTaxon(UUID taxonUuid, UUID classificationUuid, boolean includeUnpublished,
+            Integer pageSize, Integer pageIndex, List<String> propertyPaths);
 
-    public Pager<TaxonNode> pageSiblingsOfTaxon(UUID taxonUuid, UUID classificationUuid, Integer pageSize, Integer pageIndex,
+    public Pager<TaxonNode> pageSiblingsOfTaxon(UUID taxonUuid, UUID classificationUuid, boolean includeUnpublished, Integer pageSize, Integer pageIndex,
             List<String> propertyPaths);
 
     public ClassificationLookupDTO classificationLookup(Classification classification);

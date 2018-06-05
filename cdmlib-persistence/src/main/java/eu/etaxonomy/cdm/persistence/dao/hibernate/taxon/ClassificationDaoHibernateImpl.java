@@ -208,8 +208,9 @@ public class ClassificationDaoHibernateImpl
     }
 
     @Override
-    public List<TaxonNode> listSiblingsOf(Taxon taxon, Classification classification, Integer pageSize, Integer pageIndex, List<String> propertyPaths){
-         Query query = prepareListSiblingsOf(taxon, classification, false);
+    public List<TaxonNode> listSiblingsOf(Taxon taxon, Classification classification, boolean includeUnpublished,
+            Integer pageSize, Integer pageIndex, List<String> propertyPaths){
+         Query query = prepareListSiblingsOf(taxon, classification, includeUnpublished, false);
 
          setPagingParameter(query, pageSize, pageIndex);
 
@@ -234,8 +235,8 @@ public class ClassificationDaoHibernateImpl
     }
 
     @Override
-    public Long countSiblingsOf(Taxon taxon, Classification classification){
-        Query query = prepareListSiblingsOf(taxon, classification, true);
+    public Long countSiblingsOf(Taxon taxon, Classification classification, boolean includeUnpublished){
+        Query query = prepareListSiblingsOf(taxon, classification, includeUnpublished, true);
         Long count = (Long) query.uniqueResult();
         return count;
     }
@@ -264,9 +265,11 @@ public class ClassificationDaoHibernateImpl
          return query;
     }
 
-    private Query prepareListSiblingsOf(Taxon taxon, Classification classification, boolean doCount){
+    private Query prepareListSiblingsOf(Taxon taxon, Classification classification,
+            boolean includeUnpublished, boolean doCount){
 
-        String selectWhat = doCount ? "COUNT(tn)" : "tn";
+         String selectWhat = doCount ? "COUNT(tn)" : "tn";
+         String whereUnpublished = includeUnpublished? "" : " AND t.publish = :publish ";
 
          String subSelect =
                    " SELECT tn.parent "
@@ -274,13 +277,17 @@ public class ClassificationDaoHibernateImpl
                  + "     JOIN tn.classification AS c "
                  + "     JOIN tn.taxon AS t "
                  + " WHERE t = :taxon "
-                 + "   AND c = :classification";
+                 + "   AND c = :classification "
+                 + whereUnpublished;
          String hql = " SELECT " + selectWhat
                  + " FROM TaxonNode as tn "
                  + " WHERE tn.parent IN ( " + subSelect + ")";
          Query query = getSession().createQuery(hql);
          query.setParameter("taxon", taxon);
          query.setParameter("classification", classification);
+         if (!includeUnpublished){
+             query.setBoolean("publish", true);
+         }
          return query;
     }
 

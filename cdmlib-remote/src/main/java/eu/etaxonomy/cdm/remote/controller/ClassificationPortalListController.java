@@ -201,8 +201,9 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
             HttpServletResponse response) throws IOException {
         logger.info("getSiblingsOfTaxon() " + request.getRequestURI());
 
+        boolean includeUnpublished = NO_UNPUBLISHED;
         //FIXME return pager
-        List<TaxonNode> childs = service.listSiblingsOfTaxon(taxonUuid, treeUuid, null, null, NODE_INIT_STRATEGY);
+        List<TaxonNode> childs = service.listSiblingsOfTaxon(taxonUuid, treeUuid, includeUnpublished, null, null, NODE_INIT_STRATEGY);
         return childs;
 
     }
