@@ -1142,7 +1142,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
 
-
     /**
      * {@inheritDoc}
      */

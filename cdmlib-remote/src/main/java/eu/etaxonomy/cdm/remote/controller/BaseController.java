@@ -245,7 +245,7 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
      */
     @SuppressWarnings("unchecked")
     protected final <SUB_T extends T> SUB_T getCdmBaseInstance(Class<SUB_T> clazz, UUID uuid, HttpServletResponse response, List<String> pathProperties)
-    throws IOException {
+            throws IOException {
 
         CdmBase cdmBaseObject = getCdmBaseInstance(uuid, response, pathProperties);
         if(!clazz.isAssignableFrom(cdmBaseObject.getClass())){
@@ -265,7 +265,7 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
      */
     @SuppressWarnings("unchecked")
     protected final <SUB_T extends T> SUB_T getCdmBaseInstance(Class<SUB_T> clazz, UUID uuid, HttpServletResponse response, String pathProperty)
-    throws IOException {
+            throws IOException {
 
         CdmBase cdmBaseObject = getCdmBaseInstance(uuid, response, pathProperty);
         if(!clazz.isAssignableFrom(cdmBaseObject.getClass())){
@@ -311,14 +311,14 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
      * @throws IOException
      */
     protected final <CDM_BASE extends CdmBase> CDM_BASE getCdmBaseInstance(Class<CDM_BASE> clazz, IService<CDM_BASE> service, UUID uuid, HttpServletResponse response, List<String> pathProperties)
-    throws IOException {
+            throws IOException {
 
         CDM_BASE cdmBaseObject = service.load(uuid, pathProperties);
         if (cdmBaseObject == null) {
             HttpStatusMessage.UUID_NOT_FOUND.send(response);
         }
         return cdmBaseObject;
-        }
+    }
 
     /**
      * @param instance
