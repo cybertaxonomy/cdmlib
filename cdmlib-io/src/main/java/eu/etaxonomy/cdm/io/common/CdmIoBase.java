@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.io.common.events.IIoObserver;
 import eu.etaxonomy.cdm.io.common.events.IoProblemEvent;
 import eu.etaxonomy.cdm.io.common.events.IoProgressEvent;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DaoBase;
 
 /**
  * @author a.mueller
@@ -44,6 +45,8 @@ public abstract class CdmIoBase<STATE extends IoStateBase, RESULT extends IoResu
     private final Set<IIoObserver> observers = new HashSet<>();
     protected String ioName = null;
 
+    public static final boolean NO_UNPUBLISHED = DaoBase.NO_UNPUBLISHED;
+    public static final boolean INCLUDE_UNPUBLISHED = DaoBase.INCLUDE_UNPUBLISHED;
 
     protected CdmIoBase() {
         super();

@@ -432,7 +432,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
                         }
                     }
                     else{
-                        c = getTaxonService().searchByName(scientificName, true, ref);
+                        c = getTaxonService().searchByName(scientificName, INCLUDE_UNPUBLISHED, ref);
                         for (TaxonBase<?> b : c) {
                             taxon = (Taxon) b;
                         }
