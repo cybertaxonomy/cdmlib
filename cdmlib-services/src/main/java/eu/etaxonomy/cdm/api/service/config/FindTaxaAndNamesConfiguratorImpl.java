@@ -22,7 +22,6 @@ import eu.etaxonomy.cdm.persistence.query.NameSearchOrder;
 /**
  * @author a.babadshanjan
  * @since 20.01.2009
- * @version 1.0
  */
 public class FindTaxaAndNamesConfiguratorImpl<T extends TaxonBase<?>> extends IdentifiableServiceConfiguratorImpl<T>
 			implements IFindTaxaAndNamesConfigurator<T> {

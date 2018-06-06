@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Level;
 import org.hibernate.Hibernate;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.criteria.AuditCriterion;
@@ -172,7 +171,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
         int numberOfTaxaByName_A = 5;
 
-        logger.setLevel(Level.DEBUG); //FIXME #######################
+        //logger.setLevel(Level.DEBUG); //FIXME #######################
         if (logger.isDebugEnabled()) {
             for (int i = 0; i < results.size(); i++) {
                 String nameCache = "";
