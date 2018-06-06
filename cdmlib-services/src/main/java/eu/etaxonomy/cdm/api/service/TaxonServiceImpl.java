@@ -135,7 +135,10 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  */
 @Service
 @Transactional(readOnly = true)
-public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDao> implements ITaxonService{
+public class TaxonServiceImpl
+            extends IdentifiableServiceBase<TaxonBase,ITaxonDao>
+            implements ITaxonService{
+
     private static final Logger logger = Logger.getLogger(TaxonServiceImpl.class);
 
     public static final String POTENTIAL_COMBINATION_NAMESPACE = "Potential combination";
@@ -196,13 +199,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         return dao.load(uuid, includeUnpublished, propertyPaths);
     }
 
-    /**
-     * FIXME Candidate for harmonization
-     * rename searchByName ?
-     */
     @Override
-    public List<TaxonBase> searchTaxaByName(String name, Reference sec) {
-        return dao.getTaxaByName(name, sec);
+    public List<TaxonBase> searchByName(String name, boolean includeUnpublished, Reference sec) {
+        return dao.getTaxaByName(name, includeUnpublished, sec);
     }
 
     @Override
@@ -662,16 +661,15 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     }
 
     @Override
-    public List<UuidAndTitleCache<IdentifiableEntity>> findTaxaAndNamesForEditor(IFindTaxaAndNamesConfigurator configurator){
+    public List<UuidAndTitleCache<IdentifiableEntity>> findTaxaAndNamesForEditor(IFindTaxaAndNamesConfigurator config){
 
-        List<UuidAndTitleCache<IdentifiableEntity>> results = new ArrayList<>();
-
-
-        if (configurator.isDoSynonyms() || configurator.isDoTaxa() || configurator.isDoNamesWithoutTaxa() || configurator.isDoTaxaByCommonNames()){
-        	results = dao.getTaxaByNameForEditor(configurator.isDoTaxa(), configurator.isDoSynonyms(), configurator.isDoNamesWithoutTaxa(), configurator.isDoMisappliedNames(), configurator.isDoTaxaByCommonNames(), configurator.getTitleSearchStringSqlized(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas(), configurator.getOrder());
+        if (config.isDoSynonyms() || config.isDoTaxa() || config.isDoNamesWithoutTaxa() || config.isDoTaxaByCommonNames()){
+        	return dao.getTaxaByNameForEditor(config.isDoTaxa(), config.isDoSynonyms(), config.isDoNamesWithoutTaxa(),
+        	        config.isDoMisappliedNames(), config.isDoTaxaByCommonNames(), config.isIncludeUnpublished(),
+        	        config.getTitleSearchStringSqlized(), config.getClassification(), config.getMatchMode(), config.getNamedAreas(), config.getOrder());
+        }else{
+            return new ArrayList<>();
         }
-
-        return results;
     }
 
     @Override
@@ -697,15 +695,15 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                     dao.countTaxaByName(configurator.isDoTaxa(),configurator.isDoSynonyms(), configurator.isDoMisappliedNames(),
                         configurator.isDoTaxaByCommonNames(), configurator.isDoIncludeAuthors(), configurator.getTitleSearchStringSqlized(),
                         configurator.getClassification(), configurator.getMatchMode(),
-                        configurator.getNamedAreas());
+                        configurator.getNamedAreas(), configurator.isIncludeUnpublished());
             }
 
             if(configurator.getPageSize() == null || numberTaxaResults > configurator.getPageSize() * configurator.getPageNumber()){ // no point checking again if less results
                 taxa = dao.getTaxaByName(configurator.isDoTaxa(), configurator.isDoSynonyms(),
                     configurator.isDoMisappliedNames(), configurator.isDoTaxaByCommonNames(), configurator.isDoIncludeAuthors(),
                     configurator.getTitleSearchStringSqlized(), configurator.getClassification(),
-                    configurator.getMatchMode(), configurator.getNamedAreas(), configurator.getOrder(),
-                    configurator.getPageSize(), configurator.getPageNumber(), propertyPath);
+                    configurator.getMatchMode(), configurator.getNamedAreas(), configurator.isIncludeUnpublished(),
+                    configurator.getOrder(), configurator.getPageSize(), configurator.getPageNumber(), propertyPath);
             }
        }
 
@@ -1245,7 +1243,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         Taxon bestCandidate = null;
         try{
             // 1. search for accepted taxa
-            List<TaxonBase> taxonList = dao.findByNameTitleCache(true, false, config.getTaxonNameTitle(), null, MatchMode.EXACT, null, null, 0, null, null);
+            List<TaxonBase> taxonList = dao.findByNameTitleCache(true, false, config.isIncludeUnpublished(),
+                    config.getTaxonNameTitle(), null, MatchMode.EXACT, null, null, 0, null, null);
             boolean bestCandidateMatchesSecUuid = false;
             boolean bestCandidateIsInClassification = false;
             int countEqualCandidates = 0;
@@ -1296,7 +1295,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
             // 2. search for synonyms
             if (config.isIncludeSynonyms()){
-                List<TaxonBase> synonymList = dao.findByNameTitleCache(false, true, config.getTaxonNameTitle(), null, MatchMode.EXACT, null, null, 0, null, null);
+                List<TaxonBase> synonymList = dao.findByNameTitleCache(false, true, config.isIncludeUnpublished(),
+                        config.getTaxonNameTitle(), null, MatchMode.EXACT, null, null, 0, null, null);
                 for(TaxonBase taxonBase : synonymList){
                     if(taxonBase instanceof Synonym){
                         Synonym synonym = CdmBase.deproxy(taxonBase, Synonym.class);
@@ -1342,8 +1342,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     }
 
     @Override
-    public Synonym findBestMatchingSynonym(String taxonName) {
-        List<TaxonBase> synonymList = dao.findByNameTitleCache(false, true, taxonName, null, MatchMode.EXACT, null, null, 0, null, null);
+    public Synonym findBestMatchingSynonym(String taxonName, boolean includeUnpublished) {
+        List<TaxonBase> synonymList = dao.findByNameTitleCache(false, true, includeUnpublished, taxonName, null, MatchMode.EXACT, null, null, 0, null, null);
         if(! synonymList.isEmpty()){
             Synonym result = CdmBase.deproxy(synonymList.iterator().next(), Synonym.class);
             if(synonymList.size() == 1){
@@ -3106,7 +3106,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     @Override
     public List<TaxonBase> findTaxaByName(MatchingTaxonConfigurator config){
         List<TaxonBase> taxonList = dao.getTaxaByName(true, config.isIncludeSynonyms(), false, false, false,
-                config.getTaxonNameTitle(), null, MatchMode.EXACT, null, null, 0, 0, config.getPropertyPath());
+                config.getTaxonNameTitle(), null, MatchMode.EXACT, null, config.isIncludeSynonyms(), null, 0, 0, config.getPropertyPath());
         return taxonList;
     }
 

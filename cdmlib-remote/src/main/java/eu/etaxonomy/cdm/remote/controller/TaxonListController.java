@@ -272,6 +272,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
             )
              throws IOException {
 
+        boolean includeUnpublished = NO_UNPUBLISHED;
 
         logger.info("find : " + request.getRequestURI() + "?" + request.getQueryString() );
 
@@ -291,6 +292,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
         config.setNamedAreas(areas);
         config.setDoIncludeAuthors(includeAuthors != null ? includeAuthors : Boolean.FALSE);
         config.setOrder(order);
+        config.setIncludeUnpublished(includeUnpublished);
         if(treeUuid != null){
             Classification classification = classificationService.find(treeUuid);
             config.setClassification(classification);

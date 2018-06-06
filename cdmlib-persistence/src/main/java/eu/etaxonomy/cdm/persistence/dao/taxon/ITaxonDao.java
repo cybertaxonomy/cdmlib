@@ -64,7 +64,7 @@ public interface ITaxonDao
      * @param sec
      * @return
      */
-    public List<TaxonBase> getTaxaByName(String name, Reference sec);
+    public List<TaxonBase> getTaxaByName(String name, boolean includeUnpublished, Reference sec);
 
     /**
      * Returns a list of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false)
@@ -73,7 +73,7 @@ public interface ITaxonDao
      * @param sec
      * @return
      */
-    public List<TaxonBase> getTaxaByName(String queryString, Boolean accepted, Reference sec);
+    public List<TaxonBase> getTaxaByName(String queryString, Boolean accepted, boolean includeUnpublished, Reference sec);
 
     /**
      * Returns a list of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false)
@@ -86,7 +86,7 @@ public interface ITaxonDao
      * @return
      */
     public List<TaxonBase> getTaxaByName(String queryString, MatchMode matchMode,
-            Boolean accepted, Integer pageSize, Integer pageNumber);
+            Boolean accepted, boolean includeUnpublished, Integer pageSize, Integer pageNumber);
 
 
     /**
@@ -105,7 +105,7 @@ public interface ITaxonDao
      */
     public List<TaxonBase> getTaxaByName(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames, boolean doCommonNames,
             boolean includeAuthors, String queryString, Classification classification,
-            MatchMode matchMode, Set<NamedArea> namedAreas,
+            MatchMode matchMode, Set<NamedArea> namedAreas, boolean includeUnpublished,
             NameSearchOrder order, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
@@ -122,7 +122,7 @@ public interface ITaxonDao
      */
     public long countTaxaByName(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames, boolean doCommonNames,
             boolean doIncludeAuthors, String queryString, Classification classification,
-            MatchMode matchMode, Set<NamedArea> namedAreas);
+            MatchMode matchMode, Set<NamedArea> namedAreas, boolean includeUnpublished);
 
 //	/**
 //	 * @param queryString
@@ -200,7 +200,8 @@ public interface ITaxonDao
      * @param onlyAcccepted
      * @return
      */
-    public List<TaxonBase> findByNameTitleCache(boolean doTaxa, boolean doSynonyms, String queryString, Classification classification, MatchMode matchMode, Set<NamedArea> namedAreas,
+    public List<TaxonBase> findByNameTitleCache(boolean doTaxa, boolean doSynonyms, boolean includeUnpublished,
+            String queryString, Classification classification, MatchMode matchMode, Set<NamedArea> namedAreas,
             NameSearchOrder order, Integer pageNumber, Integer pageSize, List<String> propertyPaths) ;
 
     /**
@@ -380,7 +381,7 @@ public interface ITaxonDao
     public List<TaxonName> findIdenticalNamesNew(List <String> propertyPaths);
 
     public List<UuidAndTitleCache<IdentifiableEntity>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doNamesWithoutTaxa,
-            boolean doMisappliedNames, boolean doCommonNames,
+            boolean doMisappliedNames, boolean doCommonNames, boolean includeUnpublished,
             String queryString, Classification classification,
             MatchMode matchMode, Set<NamedArea> namedAreas, NameSearchOrder order);
 

@@ -76,7 +76,7 @@ public interface ITaxonService
      * @param sec the taxons sec reference
      * @return a list of taxa matching the name and the sec reference
      */
-    public List<TaxonBase> searchTaxaByName(String name, Reference sec);
+    public List<TaxonBase> searchByName(String name, boolean includeUnpublished, Reference sec);
 
     /**
      * Swaps given synonym and accepted taxon.
@@ -851,7 +851,7 @@ public interface ITaxonService
 
     public Taxon findBestMatchingTaxon(MatchingTaxonConfigurator config);
 
-    public Synonym findBestMatchingSynonym(String taxonName);
+    public Synonym findBestMatchingSynonym(String taxonName, boolean includeUnpublished);
 
      public List<UuidAndTitleCache<IdentifiableEntity>> findTaxaAndNamesForEditor(IFindTaxaAndNamesConfigurator configurator);
 

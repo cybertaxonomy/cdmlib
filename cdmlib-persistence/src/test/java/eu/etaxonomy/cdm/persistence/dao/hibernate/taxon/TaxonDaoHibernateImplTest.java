@@ -104,6 +104,8 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
     private UUID classificationUuid;
 
+    private boolean includeUnpublished = true;
+
     private static final String[] TABLE_NAMES = new String[] {
         "HOMOTYPICALGROUP", "HOMOTYPICALGROUP_AUD", "REFERENCE", "REFERENCE_AUD", "TAXONBASE", "TAXONBASE_AUD"
         , "TAXONNAME", "TAXONNAME_AUD", "TAXONRELATIONSHIP", "TAXONRELATIONSHIP_AUD" };
@@ -134,6 +136,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         antarcticaUuid = UUID.fromString("791b3aa0-54dd-4bed-9b68-56b4680aad0c");
 
         classificationUuid = UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9");
+        includeUnpublished = true;
     }
 
     @After
@@ -158,15 +161,19 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet
     public void testGetTaxaByName() {
+
+        includeUnpublished= true;
+        boolean accepted = true;
+
         Reference sec = referenceDao.findById(1);
         assert sec != null : "sec must exist";
 
-        List<TaxonBase> results = taxonDao.getTaxaByName("Aus", sec);
+        List<TaxonBase> results = taxonDao.getTaxaByName("Aus", includeUnpublished, sec);
         assertNotNull("getTaxaByName should return a List", results);
         //assertFalse("The list should not be empty", results.isEmpty());
         assertEquals(1, results.size());
 
-        results = taxonDao.getTaxaByName("A*", MatchMode.BEGINNING, true, null, null);
+        results = taxonDao.getTaxaByName("A*", MatchMode.BEGINNING, accepted, includeUnpublished, null, null);
         assertNotNull("getTaxaByName should return a List", results);
 
         int numberOfTaxaByName_A = 5;
@@ -184,6 +191,10 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
         assertEquals(numberOfTaxaByName_A, results.size());
 
+        includeUnpublished = false;
+        results = taxonDao.getTaxaByName("A*", MatchMode.BEGINNING, accepted, includeUnpublished, null, null);
+        assertEquals(numberOfTaxaByName_A, results.size());  // no unpublished yet
+
 
         //System.err.println("Species group: " + Rank.SPECIESGROUP().getId() + "Species: " + Rank.SPECIES().getId() + "Section Botany: "+ Rank.SECTION_BOTANY());
 
@@ -194,11 +205,12 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 //		assertEquals(results.get(4).getTitleCache(), "Abies alba Michx. sec. ???");
 //		assertEquals(results.get(5).getTitleCache(), "Abies alba Mill. sec. ???");
 
-        results = taxonDao.getTaxaByName("A*", MatchMode.BEGINNING, true, null, null);
+        includeUnpublished = true;
+        results = taxonDao.getTaxaByName("A*", MatchMode.BEGINNING, accepted, includeUnpublished, null, null);
         assertNotNull("getTaxaByName should return a List", results);
         assertEquals(numberOfTaxaByName_A, results.size());
 
-        results = taxonDao.getTaxaByName("Aus", MatchMode.EXACT, true, null, null);
+        results = taxonDao.getTaxaByName("Aus", MatchMode.EXACT, accepted, includeUnpublished, null, null);
         assertNotNull("getTaxaByName should return a List", results);
         assertEquals("Results list should contain one entity",1,results.size());
     }
@@ -216,35 +228,50 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
          * Misapplied names should be found regardless of whether they are contained in a classification or not.
          */
         //two accepted taxa starting with R in classification "TestBaum"
-        List<TaxonBase> results = taxonDao.getTaxaByName(true, false, false, false, false, "R*", classification, MatchMode.BEGINNING, null, null, null, null, null);
+        List<TaxonBase> results = taxonDao.getTaxaByName(true, false, false, false, false, "R*", classification, MatchMode.BEGINNING,
+                null, includeUnpublished, null, null, null, null);
         Assert.assertEquals("There should be 2 Taxa", 2, results.size());
 
         //three taxa, 2 accepted and 1 misapplied name starting with R
-        results = taxonDao.getTaxaByName(true, false, true, false, false, "R*", null, MatchMode.BEGINNING, null, null, null, null, null);
+        results = taxonDao.getTaxaByName(true, false, true, false, false, "R*", null, MatchMode.BEGINNING,
+                null, includeUnpublished, null, null, null, null);
         Assert.assertEquals("There should be 3 Taxa", 3, results.size());
 
         //one synonym has no accepted taxon
-        results = taxonDao.getTaxaByName(true, true, true, false, false, "A*", null, MatchMode.BEGINNING, null, null, null, null, null);
+        results = taxonDao.getTaxaByName(true, true, true, false, false, "A*", null, MatchMode.BEGINNING,
+                null, includeUnpublished, null, null, null, null);
         Assert.assertEquals("There should be 11 Taxa",11, results.size());
 
         //two accepted taxa in classification and 1 misapplied name with accepted name in classification
-        results = taxonDao.getTaxaByName(true, true, true, false, false, "R*", classification, MatchMode.BEGINNING, null, null, null, null, null);
+        results = taxonDao.getTaxaByName(true, true, true, false, false, "R*", classification, MatchMode.BEGINNING,
+                null, includeUnpublished, null, null, null, null);
         Assert.assertEquals("There should be 3 Taxa", 3, results.size());
+        //same with unpublished
+        includeUnpublished = false;
+        results = taxonDao.getTaxaByName(true, true, true, false, false, "R*", classification, MatchMode.BEGINNING,
+                null, includeUnpublished, null, null, null, null);
+        Assert.assertEquals("There should be 3 Taxa", 3, results.size());
+        includeUnpublished = true;
+
 
         //same as above because all taxa, synonyms and misapplied names starting with R are in the classification
-        results = taxonDao.getTaxaByName(true, true, true, false, false, "R*", null, MatchMode.BEGINNING, null, null, null, null, null);
+        results = taxonDao.getTaxaByName(true, true, true, false, false, "R*", null, MatchMode.BEGINNING,
+                null, includeUnpublished, null, null, null, null);
         Assert.assertEquals("There should be 3 Taxa", 3, results.size());
 
         //find misapplied names with accepted taxon in the classification, the accepted taxa of two misapplied names are in the classification
-        results = taxonDao.getTaxaByName(false, false, true, false, false, "*", classification, MatchMode.BEGINNING, null, null, null, null, null);
+        results = taxonDao.getTaxaByName(false, false, true, false, false, "*", classification, MatchMode.BEGINNING,
+                null, includeUnpublished, null, null, null, null);
         Assert.assertEquals("There should be 2 Taxa", 2, results.size());
 
         //find misapplied names beginning with R
-        results = taxonDao.getTaxaByName(false, false, true, false, false, "R*", null, MatchMode.BEGINNING, null, null, null, null, null);
+        results = taxonDao.getTaxaByName(false, false, true, false, false, "R*", null, MatchMode.BEGINNING,
+                null, includeUnpublished, null, null, null, null);
         Assert.assertEquals("There should be 1 Taxa", 1, results.size());
 
         //find all three misapplied names
-        results = taxonDao.getTaxaByName(false, false, true, false, false, "*", null, MatchMode.BEGINNING, null, null, null, null, null);
+        results = taxonDao.getTaxaByName(false, false, true, false, false, "*", null, MatchMode.BEGINNING,
+                null, includeUnpublished, null, null, null, null);
         Assert.assertEquals("There should be 3 Taxa", 3, results.size());
 
     }
@@ -254,26 +281,33 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet (loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml")
     public void testGetTaxaByNameVariants(){
-        List<TaxonBase> results = taxonDao.getTaxaByName(false, false, false, true, false, "c*", null, MatchMode.BEGINNING, null, null, null, null, null);
+        List<TaxonBase> results = taxonDao.getTaxaByName(false, false, false, true, false, "c*", null, MatchMode.BEGINNING,
+                null, includeUnpublished, null, null, null, null);
         Assert.assertEquals("There should be 2 Taxa",2, results.size());
 
-        results = taxonDao.getTaxaByName(false, false, true, true, false, "R*", null, MatchMode.BEGINNING, null, null, null, null, null);
+        results = taxonDao.getTaxaByName(false, false, true, true, false, "R*", null, MatchMode.BEGINNING,
+                null, includeUnpublished, null, null, null, null);
         Assert.assertEquals("There should be 1 Taxa", 1, results.size());
 
-        results = taxonDao.getTaxaByName(false, true, true, true, false, "R*", null, MatchMode.BEGINNING, null, null, null, null, null);
+        results = taxonDao.getTaxaByName(false, true, true, true, false, "R*", null, MatchMode.BEGINNING,
+                null, includeUnpublished, null, null, null, null);
         Assert.assertEquals("There should be 1 Taxa", 1, results.size());
 
-        results = taxonDao.getTaxaByName(false, true, false, true, false, "c*", null, MatchMode.BEGINNING, null, null, null, null, null);
+        results = taxonDao.getTaxaByName(false, true, false, true, false, "c*", null, MatchMode.BEGINNING,
+                null, includeUnpublished, null, null, null, null);
         Assert.assertEquals("There should be 2 Taxa", 2, results.size());
 
-        results = taxonDao.getTaxaByName(true, false, false, true, false, "c*", null, MatchMode.BEGINNING, null, null, null, null, null);
+        results = taxonDao.getTaxaByName(true, false, false, true, false, "c*", null, MatchMode.BEGINNING,
+                null, includeUnpublished, null, null, null, null);
         Assert.assertEquals("There should be 2 Taxa", 2, results.size());
         Classification classification = classificationDao.load(classificationUuid);
-        results = taxonDao.getTaxaByName(false, false, false, true, false, "c*", classification, MatchMode.BEGINNING, null, null, null, null, null);
+        results = taxonDao.getTaxaByName(false, false, false, true, false, "c*", classification, MatchMode.BEGINNING,
+                null, includeUnpublished, null, null, null, null);
         Assert.assertEquals("There should be 1 Taxa", 1, results.size());
         Set<NamedArea> namedAreas = new HashSet<>();
         namedAreas.add((NamedArea)definedTermDao.load(southernAmericaUuid));
-        results = taxonDao.getTaxaByName(false, false, false, true, false, "c*", null, MatchMode.BEGINNING, namedAreas, null, null, null, null);
+        results = taxonDao.getTaxaByName(false, false, false, true, false, "c*", null, MatchMode.BEGINNING,
+                namedAreas, includeUnpublished, null, null, null, null);
         Assert.assertEquals("There should be 1 Taxa", 1, results.size());
     }
 
@@ -286,32 +320,32 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         Reference sec = referenceDao.findById(1);
         assert sec != null : "sec must exist";
 
-        List<UuidAndTitleCache<IdentifiableEntity>> results = taxonDao.getTaxaByNameForEditor(true, true, false,false, false, "Acher", null, MatchMode.BEGINNING, null, null);
+        List<UuidAndTitleCache<IdentifiableEntity>> results = taxonDao.getTaxaByNameForEditor(true, true, false,false, false, includeUnpublished, "Acher", null, MatchMode.BEGINNING, null, null);
         assertNotNull("getTaxaByName should return a List", results);
         assertFalse("The list should not be empty", results.isEmpty());
         assertEquals(4, results.size());
 
 
-        results = taxonDao.getTaxaByNameForEditor(true, true, false, false,false,"A",null, MatchMode.BEGINNING, null, null);
+        results = taxonDao.getTaxaByNameForEditor(true, true, false, false,false,includeUnpublished, "A",null, MatchMode.BEGINNING, null, null);
         assertNotNull("getTaxaByName should return a List", results);
         assertEquals(7, results.size());
 
 
-        results = taxonDao.getTaxaByNameForEditor(true, false,false, false,false, "A", null,MatchMode.BEGINNING, null, null);
+        results = taxonDao.getTaxaByNameForEditor(true, false,false, false,false, includeUnpublished, "A", null,MatchMode.BEGINNING, null, null);
         assertNotNull("getTaxaByName should return a List", results);
         assertEquals(5, results.size());
         assertEquals(results.get(0).getType(), Taxon.class);
 
-        results = taxonDao.getTaxaByNameForEditor(false, true,false,false, false,"A", null,MatchMode.BEGINNING, null, null);
+        results = taxonDao.getTaxaByNameForEditor(false, true,false,false, false,includeUnpublished, "A", null,MatchMode.BEGINNING, null, null);
         assertNotNull("getTaxaByName should return a List", results);
         assertEquals(2, results.size());
         assertEquals(results.get(0).getType(), Synonym.class);
 
-        results = taxonDao.getTaxaByNameForEditor(true, true,false,false,false,"Aus", null,MatchMode.EXACT,  null, null);
+        results = taxonDao.getTaxaByNameForEditor(true, true,false,false,false,includeUnpublished, "Aus", null,MatchMode.EXACT,  null, null);
         assertNotNull("getTaxaByName should return a List", results);
         assertEquals("Results list should contain one entity",1,results.size());
 
-        results = taxonDao.getTaxaByNameForEditor(true, true,true,false,false,"A", null,MatchMode.BEGINNING,  null, null);
+        results = taxonDao.getTaxaByNameForEditor(true, true,true,false,false,includeUnpublished, "A", null,MatchMode.BEGINNING,  null, null);
         assertNotNull("getTaxaByName should return a List", results);
         assertEquals("Results list should contain one entity", 8, results.size());
 
@@ -352,25 +386,25 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         //long numberOfTaxa = taxonDao.countTaxaByName(Taxon.class, "Rethera", null, MatchMode.BEGINNING, namedAreas);
 
         List<TaxonBase> results = taxonDao.getTaxaByName(true,false, false, false, false,"Rethera", null, MatchMode.BEGINNING, namedAreas,
-            null, null, null, null);
+                includeUnpublished, null, null, null, null);
         assertNotNull("getTaxaByName should return a List", results);
         assertTrue("expected to find two taxa but found "+results.size(), results.size() == 2);
 
-        results = taxonDao.getTaxaByName(false,false, false, true, false,"com*", null, MatchMode.BEGINNING, namedAreas,
-                null, null, null, null);
+        results = taxonDao.getTaxaByName(false,false, false, true, false, "com*", null, MatchMode.BEGINNING, namedAreas,
+                includeUnpublished, null, null, null, null);
             assertNotNull("getTaxaByName should return a List", results);
             assertTrue("expected to find one taxon but found "+results.size(), results.size() == 1);
 
         // 2. searching for a taxon (Rethera) contained in a specific classification
-        results = taxonDao.getTaxaByName(true, false, false, false, false,"Rethera", taxonmicTree, MatchMode.BEGINNING, namedAreas,
-            null, null, null, null);
+        results = taxonDao.getTaxaByName(true, false, false, false, false, "Rethera", taxonmicTree, MatchMode.BEGINNING, namedAreas,
+                includeUnpublished, null, null, null, null);
         assertNotNull("getTaxaByName should return a List", results);
         assertTrue("expected to find one taxon but found "+results.size(), results.size() == 1);
 
 
         // 3. searching for Synonyms
-        results = taxonDao.getTaxaByName(false, true, false, false, false,"Atropo", null, MatchMode.ANYWHERE, null,
-            null, null, null, null);
+        results = taxonDao.getTaxaByName(false, true, false, false, false, "Atropo", null, MatchMode.ANYWHERE, null,
+                includeUnpublished, null, null, null, null);
         assertNotNull("getTaxaByName should return a List", results);
         /*System.err.println(results.get(0).getTitleCache() + " - " +results.get(1).getTitleCache() + " - " +results.get(2).getTitleCache() );
 
@@ -381,14 +415,14 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
         // 4. searching for Synonyms
         results = taxonDao.getTaxaByName(false, true, false, false, false,"Atropo", null, MatchMode.BEGINNING, null,
-            null, null, null, null);
+                includeUnpublished, null, null, null, null);
         assertNotNull("getTaxaByName should return a List", results);
         assertTrue("expected to find three taxa but found "+results.size(), results.size() == 3);
 
 
         // 5. searching for a Synonyms and Taxa
         results = taxonDao.getTaxaByName(true, true, false, false, false,"A", null, MatchMode.BEGINNING, namedAreas,
-            null, null, null, null);
+                includeUnpublished, null, null, null, null);
         //only five taxa have a distribution
         assertNotNull("getTaxaByName should return a List", results);
         assertTrue("expected to find 8 taxa but found "+results.size(), results.size() == 8);
@@ -423,28 +457,28 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         // 1. searching for a taxon (Rethera)
         //long numberOfTaxa = taxonDao.countTaxaByName(Taxon.class, "Rethera", null, MatchMode.BEGINNING, namedAreas);
 
-        List<TaxonBase> results = taxonDao.findByNameTitleCache(true, false, "Rethera Rothschild & Jordan, 1903", null, MatchMode.EXACT, namedAreas,
-            null, null, null, null);
+        List<TaxonBase> results = taxonDao.findByNameTitleCache(true, false, includeUnpublished, "Rethera Rothschild & Jordan, 1903", null, MatchMode.EXACT, namedAreas,
+                null, null, null, null);
         assertNotNull("getTaxaByName should return a List", results);
         assertTrue("expected to find two taxa but found "+results.size(), results.size() == 2);
 
         // 2. searching for a taxon (Rethera) contained in a specific classification
-        results = taxonDao.findByNameTitleCache(true, false, "Rethera Rothschild & Jordan, 1903", classification, MatchMode.EXACT, namedAreas,
-            null, null, null, null);
+        results = taxonDao.findByNameTitleCache(true, false, includeUnpublished, "Rethera Rothschild & Jordan, 1903", classification, MatchMode.EXACT, namedAreas,
+                null, null, null, null);
         assertNotNull("getTaxaByName should return a List", results);
         assertTrue("expected to find one taxon but found "+results.size(), results.size() == 1);
 
 
         // 3. searching for Synonyms
-        results = taxonDao.findByNameTitleCache(false, true, "*Atropo", null, MatchMode.ANYWHERE, null,
-            null, null, null, null);
+        results = taxonDao.findByNameTitleCache(false, true, includeUnpublished, "*Atropo", null, MatchMode.ANYWHERE, null,
+                null, null, null, null);
         assertNotNull("getTaxaByName should return a List", results);
 
         assertTrue("expected to find two taxa but found "+results.size(), results.size() == 2);
 
         // 4. searching for Synonyms
-        results = taxonDao.findByNameTitleCache(false, true, "Atropo", null, MatchMode.BEGINNING, null,
-            null, null, null, null);
+        results = taxonDao.findByNameTitleCache(false, true, includeUnpublished, "Atropo", null, MatchMode.BEGINNING, null,
+                null, null, null, null);
         assertNotNull("getTaxaByName should return a List", results);
         assertTrue("expected to find two taxa but found "+results.size(), results.size() == 2);
 
@@ -456,8 +490,8 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         tax.addSynonym(syn, SynonymType.HETEROTYPIC_SYNONYM_OF());
 
         taxonDao.save(tax);
-        results = taxonDao.findByNameTitleCache(true, true, "A", null, MatchMode.BEGINNING, namedAreas,
-            null, null, null, null);
+        results = taxonDao.findByNameTitleCache(true, true, includeUnpublished, "A", null, MatchMode.BEGINNING, namedAreas,
+                null, null, null, null);
         assertNotNull("getTaxaByName should return a List", results);
         assertTrue("expected to find 8 taxa but found "+results.size(), results.size() == 8);
     }
@@ -468,7 +502,8 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         int numberOfClassifications = classificationDao.count();
         List<String> propertyPaths = new ArrayList<>();
         propertyPaths.add("taxonNodes");
-        List<TaxonBase> taxa = taxonDao.getTaxaByName(true, true, false, false, false,"P", null, MatchMode.BEGINNING, null, null, null, null, null);
+        List<TaxonBase> taxa = taxonDao.getTaxaByName(true, true, false, false, false,"P", null, MatchMode.BEGINNING,
+                null, includeUnpublished, null, null, null, null);
         Taxon taxon = (Taxon)taxa.get(0);
         Set<TaxonNode> nodes = taxon.getTaxonNodes();
         assertTrue(nodes.size() == 1);
@@ -509,15 +544,15 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet
     public void testCountTaxaByName() {
-        long numberOfTaxa = taxonDao.countTaxaByName(true, false, false, false,false, "A", null, MatchMode.BEGINNING, null);
+        long numberOfTaxa = taxonDao.countTaxaByName(true, false, false, false,false, "A", null, MatchMode.BEGINNING, null, includeUnpublished);
         assertEquals(5, numberOfTaxa);
-        numberOfTaxa = taxonDao.countTaxaByName(true, false, false, false, false,"Smerinthus kindermannii", null, MatchMode.EXACT, null);
+        numberOfTaxa = taxonDao.countTaxaByName(true, false, false, false, false,"Smerinthus kindermannii", null, MatchMode.EXACT, null, includeUnpublished);
         assertEquals(1, numberOfTaxa);
-        numberOfTaxa = taxonDao.countTaxaByName(false, true, false, false, false,"A", null, MatchMode.BEGINNING, null);
+        numberOfTaxa = taxonDao.countTaxaByName(false, true, false, false, false,"A", null, MatchMode.BEGINNING, null, includeUnpublished);
         assertEquals(2, numberOfTaxa);
-        numberOfTaxa = taxonDao.countTaxaByName(true, true, false, false, false,"A", null, MatchMode.BEGINNING, null);
+        numberOfTaxa = taxonDao.countTaxaByName(true, true, false, false, false,"A", null, MatchMode.BEGINNING, null, includeUnpublished);
         assertEquals(7, numberOfTaxa);
-        numberOfTaxa = taxonDao.countTaxaByName(true, true, false, false,false, "Aasfwerfwf fffe", null, MatchMode.BEGINNING, null);
+        numberOfTaxa = taxonDao.countTaxaByName(true, true, false, false,false, "Aasfwerfwf fffe", null, MatchMode.BEGINNING, null, includeUnpublished);
         assertEquals(0, numberOfTaxa);
 //	FIXME implement test for search in specific classification
 //		Reference reference = referenceDao.findByUuid(UUID.fromString("596b1325-be50-4b0a-9aa2-3ecd610215f2"));

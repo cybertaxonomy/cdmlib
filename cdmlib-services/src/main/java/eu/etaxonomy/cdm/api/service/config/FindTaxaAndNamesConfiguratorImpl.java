@@ -28,6 +28,7 @@ public class FindTaxaAndNamesConfiguratorImpl<T extends TaxonBase<?>> extends Id
 
     private static final long serialVersionUID = -8510776848175860267L;
 
+    private boolean includeUnpublished = false;
 
     public static FindTaxaAndNamesConfiguratorImpl<?> NewInstance() {
 		return new FindTaxaAndNamesConfiguratorImpl<>();
@@ -204,6 +205,15 @@ public class FindTaxaAndNamesConfiguratorImpl<T extends TaxonBase<?>> extends Id
     @Override
     public void setOrder(NameSearchOrder order) {
         this.order = order;
+    }
+
+    @Override
+    public boolean isIncludeUnpublished() {
+        return includeUnpublished;
+    }
+    @Override
+    public void setIncludeUnpublished(boolean includeUnpublished) {
+        this.includeUnpublished = includeUnpublished;
     }
 
 }

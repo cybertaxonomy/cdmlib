@@ -74,4 +74,9 @@ public interface IFindTaxaAndNamesConfigurator<T extends TaxonBase> extends IIde
     public void setOrder(NameSearchOrder order);
 
     public NameSearchOrder getOrder();
+
+    public boolean isIncludeUnpublished();
+
+    public void setIncludeUnpublished(boolean includeUnpublished);
+
 }

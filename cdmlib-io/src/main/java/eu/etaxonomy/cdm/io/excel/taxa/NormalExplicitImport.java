@@ -81,9 +81,9 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 
     private static final Logger logger = Logger.getLogger(NormalExplicitImport.class);
 
-	public static Set<String> validMarkers = new HashSet<String>(Arrays.asList(new String[]{"", "valid", "accepted", "a", "v", "t", "!"}));
-	public static Set<String> synonymMarkers = new HashSet<String>(Arrays.asList(new String[]{"**","invalid", "synonym", "s", "i"}));
-	public static Set<String> nameStatusMarkers = new HashSet<String>(Arrays.asList(new String[]{"illegitimate", "nom. rej.", "nom. cons."}));
+	public static Set<String> validMarkers = new HashSet<>(Arrays.asList(new String[]{"", "valid", "accepted", "a", "v", "t", "!"}));
+	public static Set<String> synonymMarkers = new HashSet<>(Arrays.asList(new String[]{"**","invalid", "synonym", "s", "i"}));
+	public static Set<String> nameStatusMarkers = new HashSet<>(Arrays.asList(new String[]{"illegitimate", "nom. rej.", "nom. cons."}));
 	public static final UUID uuidRefExtension = UUID.fromString("a46533df-7a78-448f-9b80-36d087fbdf2a");
 
     private static final Object NOM_ILLEG = "illegitimate";
@@ -91,9 +91,6 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
     private static final Object NOM_CONS = "nom. cons.";
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.excel.common.ExcelTaxonOrSpecimenImportBase#analyzeSingleValue(eu.etaxonomy.cdm.io.excel.common.ExcelTaxonOrSpecimenImportBase.KeyValue, eu.etaxonomy.cdm.io.excel.common.ExcelImportState)
-	 */
 	@Override
 	protected void analyzeSingleValue(KeyValue keyValue, TaxonExcelImportState state) {
 
@@ -191,8 +188,6 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
         } else if (key.equalsIgnoreCase(SOURCE_ID_COLUMN)){
             normalExplicitRow.setSource_Id(value);
         }
-
-
 
 
         else if(key.equalsIgnoreCase("!")) {
@@ -783,7 +778,7 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 		if (! synonymMarkers.contains(nameStatus)  && state.getConfig().isReuseExistingTaxaWhenPossible()){
 			taxonBase = getTaxonService().findBestMatchingTaxon(nameCache);
 		}else{
-			taxonBase = getTaxonService().findBestMatchingSynonym(nameCache);
+			taxonBase = getTaxonService().findBestMatchingSynonym(nameCache, INCLUDE_UNPUBLISHED);
 			if (taxonBase != null){
 				logger.info("Matching taxon/synonym found for " + nameCache);
 			}
@@ -822,7 +817,7 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
             titleCache = CdmUtils.concat(" ", taxonNameStr, authorStr);
             taxonBase = getTaxonService().findBestMatchingTaxon(titleCache);
         }else if ( state.getConfig().isReuseExistingTaxaWhenPossible()){
-            taxonBase = getTaxonService().findBestMatchingSynonym(titleCache);
+            taxonBase = getTaxonService().findBestMatchingSynonym(titleCache, INCLUDE_UNPUBLISHED);
             if (taxonBase != null){
                 logger.info("Matching taxon/synonym found for " + titleCache);
             }

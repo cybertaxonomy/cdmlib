@@ -115,13 +115,13 @@ public class TaxonDaoHibernateImpl
 
 
     @Override
-    public List<TaxonBase> getTaxaByName(String queryString, Reference sec) {
+    public List<TaxonBase> getTaxaByName(String queryString, boolean includeUnpublished, Reference sec) {
 
-        return getTaxaByName(queryString, true, sec);
+        return getTaxaByName(queryString, true, includeUnpublished, sec);
     }
 
     @Override
-    public List<TaxonBase> getTaxaByName(String queryString, Boolean accepted, Reference sec) {
+    public List<TaxonBase> getTaxaByName(String queryString, Boolean accepted, boolean includeUnpublished, Reference sec) {
         checkNotInPriorView("TaxonDaoHibernateImpl.getTaxaByName(String name, Reference sec)");
 
         Criteria criteria = null;
@@ -133,6 +133,10 @@ public class TaxonDaoHibernateImpl
 
         criteria.setFetchMode( "name", FetchMode.JOIN );
         criteria.createAlias("name", "name");
+
+        if (!includeUnpublished){
+            criteria.add(Restrictions.eq("publish", Boolean.TRUE ));
+        }
 
         if (sec != null && sec.getId() != 0) {
             criteria.add(Restrictions.eq("sec", sec ) );
@@ -147,15 +151,15 @@ public class TaxonDaoHibernateImpl
         return result;
     }
 
-    public List<TaxonBase> getTaxaByName(boolean doTaxa, boolean doSynonyms, String queryString, MatchMode matchMode,
-            Integer pageSize, Integer pageNumber) {
-
-        return getTaxaByName(doTaxa, doSynonyms, false, false, false, queryString, null, matchMode, null, null, pageSize, pageNumber, null);
+    public List<TaxonBase> getTaxaByName(boolean doTaxa, boolean doSynonyms, boolean includeUnpublished,
+            String queryString, MatchMode matchMode, Integer pageSize, Integer pageNumber) {
+        return getTaxaByName(doTaxa, doSynonyms, false, false, false,
+                queryString, null, matchMode, null, includeUnpublished, null, pageSize, pageNumber, null);
     }
 
     @Override
     public List<TaxonBase> getTaxaByName(String queryString, MatchMode matchMode,
-            Boolean accepted, Integer pageSize, Integer pageNumber) {
+            Boolean accepted, boolean includeUnpublished, Integer pageSize, Integer pageNumber) {
 
         boolean doTaxa = true;
         boolean doSynonyms = true;
@@ -165,20 +169,20 @@ public class TaxonDaoHibernateImpl
         } else {
            doTaxa = false;
         }
-        return getTaxaByName(doTaxa, doSynonyms, queryString, matchMode, pageSize, pageNumber);
+        return getTaxaByName(doTaxa, doSynonyms, includeUnpublished, queryString, matchMode, pageSize, pageNumber);
     }
 
     @Override
     public List<TaxonBase> getTaxaByName(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames, boolean doCommonNames,
             boolean includeAuthors,
             String queryString, Classification classification,
-            MatchMode matchMode, Set<NamedArea> namedAreas, NameSearchOrder order,
+            MatchMode matchMode, Set<NamedArea> namedAreas, boolean includeUnpublished, NameSearchOrder order,
             Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 
         boolean doCount = false;
 
         String searchField = includeAuthors ? "titleCache" : "nameCache";
-        Query query = prepareTaxaByName(doTaxa, doSynonyms, doMisappliedNames, doCommonNames, searchField, queryString, classification, matchMode, namedAreas, order, pageSize, pageNumber, doCount);
+        Query query = prepareTaxaByName(doTaxa, doSynonyms, doMisappliedNames, doCommonNames, includeUnpublished, searchField, queryString, classification, matchMode, namedAreas, order, pageSize, pageNumber, doCount);
 
         if (query != null){
             @SuppressWarnings("unchecked")
@@ -199,7 +203,8 @@ public class TaxonDaoHibernateImpl
     //new search for the editor, for performance issues the return values are only uuid and titleCache, to avoid the initialisation of all objects
     @Override
     @SuppressWarnings("unchecked")
-    public List<UuidAndTitleCache<IdentifiableEntity>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doNamesWithoutTaxa, boolean doMisappliedNames, boolean doCommonNames, String queryString, Classification classification,
+    public List<UuidAndTitleCache<IdentifiableEntity>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doNamesWithoutTaxa,
+            boolean doMisappliedNames, boolean doCommonNames, boolean includeUnpublished, String queryString, Classification classification,
             MatchMode matchMode, Set<NamedArea> namedAreas, NameSearchOrder order) {
 //        long zstVorher;
 //        long zstNachher;
@@ -223,7 +228,8 @@ public class TaxonDaoHibernateImpl
         		return resultObjects;
         	}
         }
-        Query query = prepareTaxaByNameForEditor(doTaxa, doSynonyms, doMisappliedNames, doCommonNames, "nameCache", queryString, classification, matchMode, namedAreas, doCount, order);
+        Query query = prepareTaxaByNameForEditor(doTaxa, doSynonyms, doMisappliedNames, doCommonNames, includeUnpublished,
+                "nameCache", queryString, classification, matchMode, namedAreas, doCount, order);
 
         if (query != null){
             List<Object[]> results = query.list();
@@ -284,9 +290,10 @@ public class TaxonDaoHibernateImpl
      *
      */
     private Query prepareTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames, boolean doCommonNames,
-            String searchField, String queryString, Classification classification,
+            boolean includeUnpublished, String searchField, String queryString, Classification classification,
             MatchMode matchMode, Set<NamedArea> namedAreas, boolean doCount, NameSearchOrder order) {
-        return prepareQuery(doTaxa, doSynonyms, doMisappliedNames, doCommonNames, searchField, queryString,
+        return prepareByNameQuery(doTaxa, doSynonyms, doMisappliedNames, doCommonNames, includeUnpublished,
+                searchField, queryString,
                 classification, matchMode, namedAreas, order, doCount, true);
     }
 
@@ -305,27 +312,31 @@ public class TaxonDaoHibernateImpl
      * @param clazz
      * @return
      */
-    private Query prepareQuery(boolean doTaxa, boolean doSynonyms, boolean doIncludeMisappliedNames, boolean doCommonNames, String searchField, String queryString,
-                Classification classification, MatchMode matchMode, Set<NamedArea> namedAreas, NameSearchOrder order, boolean doCount, boolean doNotReturnFullEntities){
+    private Query prepareByNameQuery(boolean doTaxa, boolean doSynonyms, boolean doIncludeMisappliedNames,
+                boolean doCommonNames, boolean includeUnpublished, String searchField, String queryString,
+                Classification classification, MatchMode matchMode, Set<NamedArea> namedAreas,
+                NameSearchOrder order, boolean doCount, boolean returnIdAndTitle){
 
             if (order == null){
                 order = NameSearchOrder.DEFAULT();
             }
             String hqlQueryString = matchMode.queryStringFrom(queryString);
             String selectWhat;
-            if (doNotReturnFullEntities){
+            if (returnIdAndTitle){
                 selectWhat = "t.uuid, t.id, t.titleCache ";
             }else {
                 selectWhat = (doCount ? "count(t)": "t");
             }
 
-
-
+            //area filter
+            //TODO share code with taxon node filter
             String hql = "";
             Set<NamedArea> areasExpanded = new HashSet<>();
             if(namedAreas != null && namedAreas.size() > 0){
                 // expand areas and restrict by distribution area
-                Query areaQuery = getSession().createQuery("select childArea from NamedArea as childArea left join childArea.partOf as parentArea where parentArea = :area");
+                Query areaQuery = getSession().createQuery("SELECT childArea "
+                        + " FROM NamedArea AS childArea LEFT JOIN childArea.partOf as parentArea "
+                        + " WHERE parentArea = :area");
                 expandNamedAreas(namedAreas, areasExpanded, areaQuery);
             }
             boolean doAreaRestriction = areasExpanded.size() > 0;
@@ -336,10 +347,11 @@ public class TaxonDaoHibernateImpl
             }
 
 
-            String [] subSelects = createHQLString(doTaxa, doSynonyms, doIncludeMisappliedNames, classification, areasExpanded, matchMode, searchField);
-            String taxonSubselect = subSelects[1];
-            String synonymSubselect = subSelects[2];
-            String misappliedSelect = subSelects[0];
+            String [] subSelects = createByNameHQLString(doTaxa, doSynonyms, doIncludeMisappliedNames,
+                    includeUnpublished, classification, areasExpanded, matchMode, searchField);
+            String taxonSubselect = subSelects[0];
+            String synonymSubselect = subSelects[1];
+            String misappliedSelect = subSelects[2];
             String commonNameSubSelect = subSelects[3];
 
 
@@ -354,6 +366,8 @@ public class TaxonDaoHibernateImpl
             Query subSynonym = null;
             Query subMisappliedNames = null;
             Query subCommonNames = null;
+            List<Integer> taxonIDs = new ArrayList<>();
+            List<Integer> synonymIDs = new ArrayList<>();
 
             if(doTaxa){
                 // find Taxa
@@ -364,8 +378,11 @@ public class TaxonDaoHibernateImpl
                 }
                 if(classification != null){
                     subTaxon.setParameter("classification", classification);
-
                 }
+                if(!includeUnpublished){
+                    subTaxon.setBoolean("publish", true);
+                }
+                taxonIDs = subTaxon.list();
             }
 
             if(doSynonyms){
@@ -378,6 +395,10 @@ public class TaxonDaoHibernateImpl
                 if(classification != null){
                     subSynonym.setParameter("classification", classification);
                 }
+                if(!includeUnpublished){
+                    subSynonym.setBoolean("publish", true);
+                }
+                synonymIDs = subSynonym.list();
             }
             if (doIncludeMisappliedNames ){
                 subMisappliedNames = getSession().createQuery(misappliedSelect).setParameter("queryString", hqlQueryString);
@@ -391,6 +412,10 @@ public class TaxonDaoHibernateImpl
                 if(classification != null){
                     subMisappliedNames.setParameter("classification", classification);
                 }
+                if(!includeUnpublished){
+                    subMisappliedNames.setBoolean("publish", true);
+                }
+                taxonIDs.addAll(subMisappliedNames.list());
             }
 
             if(doCommonNames){
@@ -403,62 +428,56 @@ public class TaxonDaoHibernateImpl
                 if(classification != null){
                     subCommonNames.setParameter("classification", classification);
                 }
-            }
-
-            List<Integer> taxa = new ArrayList<Integer>();
-            List<Integer> synonyms = new ArrayList<Integer>();
-            if (doSynonyms){
-                synonyms = subSynonym.list();
-            }
-            if(doTaxa){
-                taxa = subTaxon.list();
-            }
-            if (doIncludeMisappliedNames){
-                taxa.addAll(subMisappliedNames.list());
-            }
-            if (doCommonNames){
-                taxa.addAll(subCommonNames.list());
-            }
-
-
-           // if (doTaxa && doSynonyms){
-                if(synonyms.size()>0 && taxa.size()>0){
-                    hql = "select " + selectWhat;
-                    // in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
-                    // also return the computed isOrphaned flag
-                    if (doNotReturnFullEntities &&  !doCount ){
-                        hql += ", case when t.id in (:taxa) then 'taxon' else 'synonym' end, " +
-                                " case when t.id in (:taxa) and t.taxonNodes is empty and t.relationsFromThisTaxon is empty and t.relationsToThisTaxon is empty then true else false end ";
-                    }
-                    hql +=  " from %s t " +
-                            " where (t.id in (:taxa) OR t.id in (:synonyms)) ";
-                }else if (synonyms.size()>0 ){
-                    hql = "select " + selectWhat;
-                    // in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
-                    // also return the computed isOrphaned flag
-                    if (doNotReturnFullEntities &&  !doCount ){
-                        hql += ", 'synonym', 'false' ";
-
-                    }
-                    hql +=  " from %s t " +
-                            " where t.id in (:synonyms) ";
-
-                } else if (taxa.size()>0 ){
-                    hql = "select " + selectWhat;
-                    // in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
-                    // also return the computed isOrphaned flag
-                    if (doNotReturnFullEntities &&  !doCount ){
-                        hql += ", 'taxon', " +
-                                " case when t.taxonNodes is empty and t.relationsFromThisTaxon is empty and t.relationsToThisTaxon is empty then true else false end ";
-                    }
-                    hql +=  " from %s t " +
-                            " where t.id in (:taxa) ";
-
-                } else if (StringUtils.isBlank(queryString)){
-                    hql = "select " + selectWhat + " from %s t";
-                } else{
-                    return null;
+                if(!includeUnpublished){
+                    subCommonNames.setBoolean("publish", true);
                 }
+                taxonIDs.addAll(subCommonNames.list());
+            }
+
+
+            if(synonymIDs.size()>0 && taxonIDs.size()>0){
+                hql = "SELECT " + selectWhat;
+                // in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
+                // also return the computed isOrphaned flag
+                if (returnIdAndTitle &&  !doCount ){
+                    hql += ", CASE WHEN t.id in (:taxa) THEN 'taxon' ELSE 'synonym' END, " +
+                            " CASE WHEN t.id in (:taxa) "
+                                    + " AND t.taxonNodes IS EMPTY "
+                                    + " AND t.relationsFromThisTaxon IS EMPTY "
+                                    + " AND t.relationsToThisTaxon IS EMPTY "
+                                 + " THEN true ELSE false END ";
+                }
+                hql +=  " FROM %s t " +
+                        " WHERE (t.id in (:taxa) OR t.id IN (:synonyms)) ";
+            }else if (synonymIDs.size()>0 ){
+                hql = "SELECT " + selectWhat;
+                // in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
+                // also return the computed isOrphaned flag
+                if (returnIdAndTitle &&  !doCount ){
+                    hql += ", 'synonym', 'false' ";
+
+                }
+                hql +=  " FROM %s t " +
+                        " WHERE t.id in (:synonyms) ";
+
+            } else if (taxonIDs.size()>0 ){
+                hql = "SELECT " + selectWhat;
+                // in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
+                // also return the computed isOrphaned flag
+                if (returnIdAndTitle &&  !doCount ){
+                    hql += ", 'taxon', " +
+                            " CASE WHEN t.taxonNodes is empty "
+                            + "  AND t.relationsFromThisTaxon is empty "
+                            + "  AND t.relationsToThisTaxon is empty "
+                            + "THEN true ELSE false END ";
+                }
+                hql +=  " FROM %s t " +
+                        " WHERE t.id in (:taxa) ";
+            } else if (StringUtils.isBlank(queryString)){
+                hql = "SELECT " + selectWhat + " FROM %s t";
+            } else{
+                return null;
+            }
 
             String classString;
             if ((doTaxa || doCommonNames || doIncludeMisappliedNames) && doSynonyms){
@@ -472,7 +491,6 @@ public class TaxonDaoHibernateImpl
             }
 
             hql = String.format(hql, classString);
-
 
             if (hql == "") {
                 return null;
@@ -498,20 +516,20 @@ public class TaxonDaoHibernateImpl
 
             if ((doTaxa || doCommonNames || doIncludeMisappliedNames) ){
                 // find taxa and synonyms
-                if (taxa.size()>0){
-                    query.setParameterList("taxa", taxa);
+                if (taxonIDs.size()>0){
+                    query.setParameterList("taxa", taxonIDs);
                 }
-                if (synonyms.size()>0){
-                    query.setParameterList("synonyms",synonyms);
+                if (synonymIDs.size()>0){
+                    query.setParameterList("synonyms",synonymIDs);
                 }
-                if (taxa.size()== 0 && synonyms.size() == 0){
+                if (taxonIDs.size()== 0 && synonymIDs.size() == 0){
                     return null;
                 }
             }
             if(doSynonyms){
                 // find synonyms
-                if (synonyms.size()>0){
-                    query.setParameterList("synonyms", synonyms);
+                if (synonymIDs.size()>0){
+                    query.setParameterList("synonyms", synonymIDs);
                 }else if (!doTaxa && !doCommonNames && !doIncludeMisappliedNames){
                     return null;
                 }
@@ -535,12 +553,14 @@ public class TaxonDaoHibernateImpl
      *
      * FIXME implement classification restriction & implement test: see {@link TaxonDaoHibernateImplTest#testCountTaxaByName()}
      */
-    private Query prepareTaxaByName(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames, boolean doCommonNames, String searchField, String queryString,
+    private Query prepareTaxaByName(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames,
+            boolean doCommonNames, boolean includeUnpublished, String searchField, String queryString,
             Classification classification, MatchMode matchMode, Set<NamedArea> namedAreas, NameSearchOrder order, Integer pageSize, Integer pageNumber, boolean doCount) {
 
-        Query query = prepareQuery(doTaxa, doSynonyms, doMisappliedNames, doCommonNames, searchField, queryString, classification, matchMode, namedAreas, order, doCount, false);
+        Query query = prepareByNameQuery(doTaxa, doSynonyms, doMisappliedNames, doCommonNames, includeUnpublished,
+                searchField, queryString, classification, matchMode, namedAreas, order, doCount, false);
 
-        if(pageSize != null &&  !doCount && query != null) {
+        if(pageSize != null && !doCount && query != null) {
             query.setMaxResults(pageSize);
             if(pageNumber != null) {
                 query.setFirstResult(pageNumber * pageSize);
@@ -551,10 +571,11 @@ public class TaxonDaoHibernateImpl
     }
 
     private Query prepareTaxaByCommonName(String queryString, Classification classification,
-            MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize, Integer pageNumber, boolean doCount, boolean doNotReturnFullEntities){
+            MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize, Integer pageNumber,
+            boolean doCount, boolean returnIdAndTitle){
 
         String what = "select distinct";
-        if (doNotReturnFullEntities){
+        if (returnIdAndTitle){
         	what += " t.uuid, t.id, t.titleCache, \'taxon\', case when t.taxonNodes is empty and t.relationsFromThisTaxon is empty and t.relationsToThisTaxon is empty then true else false end ";
         }else {
         	what += (doCount ? " count(t)": " t");
@@ -581,7 +602,7 @@ public class TaxonDaoHibernateImpl
     @Override
     public long countTaxaByName(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames, boolean doCommonNames,
             boolean doIncludeAuthors, String queryString, Classification classification,
-        MatchMode matchMode, Set<NamedArea> namedAreas) {
+        MatchMode matchMode, Set<NamedArea> namedAreas, boolean includeUnpublished) {
 
         boolean doCount = true;
         /*
@@ -595,7 +616,8 @@ public class TaxonDaoHibernateImpl
         */
         String searchField = doIncludeAuthors ? "titleCache": "nameCache";
 
-        Query query = prepareTaxaByName(doTaxa, doSynonyms, doMisappliedNames, doCommonNames, searchField, queryString, classification, matchMode, namedAreas, null, null, null, doCount);
+        Query query = prepareTaxaByName(doTaxa, doSynonyms, doMisappliedNames, doCommonNames, includeUnpublished,
+                searchField, queryString, classification, matchMode, namedAreas, null, null, null, doCount);
         if (query != null) {
             return (Long)query.uniqueResult();
         }else{
@@ -686,10 +708,10 @@ public class TaxonDaoHibernateImpl
     }
 
     @Override
-    public List<TaxonBase> findByNameTitleCache(boolean doTaxa, boolean doSynonyms, String queryString, Classification classification, MatchMode matchMode, Set<NamedArea> namedAreas, NameSearchOrder order, Integer pageNumber, Integer pageSize, List<String> propertyPaths) {
+    public List<TaxonBase> findByNameTitleCache(boolean doTaxa, boolean doSynonyms, boolean includeUnpublished, String queryString, Classification classification, MatchMode matchMode, Set<NamedArea> namedAreas, NameSearchOrder order, Integer pageNumber, Integer pageSize, List<String> propertyPaths) {
 
         boolean doCount = false;
-        Query query = prepareTaxaByName(doTaxa, doSynonyms, false, false, "titleCache", queryString, classification, matchMode, namedAreas, order, pageSize, pageNumber, doCount);
+        Query query = prepareTaxaByName(doTaxa, doSynonyms, false, false, includeUnpublished, "titleCache", queryString, classification, matchMode, namedAreas, order, pageSize, pageNumber, doCount);
         if (query != null){
             List<TaxonBase> results = query.list();
             defaultBeanInitializer.initializeAll(results, propertyPaths);
@@ -1391,58 +1413,61 @@ public class TaxonDaoHibernateImpl
         return 0;
     }
 
-    private String[] createHQLString(boolean doTaxa, boolean doSynonyms, boolean doIncludeMisappliedNames, Classification classification,  Set<NamedArea> areasExpanded, MatchMode matchMode, String searchField){
+    private String[] createByNameHQLString(boolean doTaxa, boolean doSynonyms, boolean doIncludeMisappliedNames,
+                boolean includeUnpublished, Classification classification,  Set<NamedArea> areasExpanded,
+                MatchMode matchMode, String searchField){
 
-           boolean doAreaRestriction = areasExpanded.size() > 0;
-           String 	doAreaRestrictionSubSelect =
+        boolean doAreaRestriction = areasExpanded.size() > 0;
+        String doAreaRestrictionSubSelect =
                      " SELECT %s.id "
                    + " FROM Distribution e "
                    + "    JOIN e.inDescription d "
                    + "    JOIN d.taxon t " +
                 (classification != null ? " JOIN t.taxonNodes AS tn " : " ");
 
-           String doAreaRestrictionMisappliedNameSubSelect =
+        String doAreaRestrictionMisappliedNameSubSelect =
                    "SELECT %s.id "
                    + " FROM Distribution e "
                    + "   JOIN e.inDescription d"
                    + "   JOIN d.taxon t";
 
-           String doTaxonSubSelect =
+        String doTaxonSubSelect =
                      " SELECT %s.id "
                    + " FROM Taxon t " + (classification != null ? " "
                            + " JOIN t.taxonNodes AS tn " : " ");
-           String doTaxonMisappliedNameSubSelect =
+
+        String doTaxonMisappliedNameSubSelect =
                      " SELECT %s.id "
                    + " FROM Taxon t ";
 
-           String doTaxonNameJoin =   " JOIN t.name n ";
+        String doTaxonNameJoin = " JOIN t.name n ";
 
-           String doSynonymNameJoin =
+        String doSynonymNameJoin =
                    " JOIN t.synonyms s "
                  + " JOIN s.name sn";
 
-           String doMisappliedNamesJoin =
-                   " LEFT JOIN t.relationsFromThisTaxon AS rft" +
-                " LEFT JOIN rft.relatedTo AS rt" +
-                 (classification != null ? " LEFT JOIN rt.taxonNodes AS tn2" : " ") +
-                " LEFT JOIN rt.name AS n2" +
-                " LEFT JOIN rft.type as rtype";
+        String doMisappliedNamesJoin =
+                   " LEFT JOIN t.relationsFromThisTaxon AS rft " +
+                   " LEFT JOIN rft.relatedTo AS rt " +
+                      (classification != null ? " LEFT JOIN rt.taxonNodes AS tn2 " : " ") +
+                   " LEFT JOIN rt.name AS n2" +
+                   " LEFT JOIN rft.type as rtype";
 
-           String doCommonNamesJoin =
+        String doCommonNamesJoin =
                    " JOIN t.descriptions AS description "+
                    " LEFT JOIN description.descriptionElements AS com " +
                    " LEFT JOIN com.feature f ";
 
 
-           String doClassificationWhere = " tn.classification = :classification";
-           String doClassificationForMisappliedNamesWhere = " tn2 .classification = :classification";
+        String doClassificationWhere = " tn.classification = :classification";
+        String doClassificationForMisappliedNamesWhere = " tn2.classification = :classification";
 
-           String doAreaRestrictionWhere =  " e.area.uuid in (:namedAreasUuids)";
-           String doCommonNamesRestrictionWhere = " (f.supportsCommonTaxonName = true and com.name "+matchMode.getMatchOperator()+" :queryString )";
+        String doAreaRestrictionWhere =  " e.area.uuid in (:namedAreasUuids)";
+        String doCommonNamesRestrictionWhere = " (f.supportsCommonTaxonName = true and com.name "+matchMode.getMatchOperator()+" :queryString )";
 
-           String doSearchFieldWhere = "%s." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
+        String doSearchFieldWhere = "%s." + searchField + " " + matchMode.getMatchOperator() + " :queryString";
 
-           String doRelationshipTypeComparison = " rtype in (:rTypeSet) ";
+        String doRelationshipTypeComparison = " rtype in (:rTypeSet) ";
 
         String taxonSubselect = null;
         String synonymSubselect = null;
@@ -1453,94 +1478,100 @@ public class TaxonDaoHibernateImpl
             if (!doIncludeMisappliedNames){
                 if(doAreaRestriction){
                     taxonSubselect = String.format(doAreaRestrictionSubSelect, "t") + doTaxonNameJoin +
-                    " WHERE " + doAreaRestrictionWhere +
-                    " AND " + doClassificationWhere +
-                    " AND " + String.format(doSearchFieldWhere, "n");
+                            " WHERE " + doAreaRestrictionWhere +
+                            "  AND " + doClassificationWhere +
+                            "  AND " + String.format(doSearchFieldWhere, "n");
                     synonymSubselect = String.format(doAreaRestrictionSubSelect, "s") + doSynonymNameJoin +
-                    " WHERE " + doAreaRestrictionWhere +
-                    " AND " + doClassificationWhere +
-                    " AND " + String.format(doSearchFieldWhere, "sn");
+                            " WHERE " + doAreaRestrictionWhere +
+                            "  AND " + doClassificationWhere +
+                            "  AND " + String.format(doSearchFieldWhere, "sn");
                     commonNameSubselect =  String.format(doAreaRestrictionSubSelect, "t") + doCommonNamesJoin +
-                            " WHERE " +  doAreaRestrictionWhere + " AND " + doClassificationWhere +
-                            " AND " + String.format(doSearchFieldWhere, "n")
-                            + " AND " + doCommonNamesRestrictionWhere;
-                } else {
+                            " WHERE " +  doAreaRestrictionWhere +
+                            "  AND " + doClassificationWhere +
+                            "  AND " + String.format(doSearchFieldWhere, "n") +
+                            "  AND " + doCommonNamesRestrictionWhere;
+                } else {//no area restriction
                     taxonSubselect = String.format(doTaxonSubSelect, "t" )+ doTaxonNameJoin +
-                    " WHERE " + doClassificationWhere +
-                    " AND " + String.format(doSearchFieldWhere, "n");
+                            " WHERE " + doClassificationWhere +
+                            "  AND " + String.format(doSearchFieldWhere, "n");
                     synonymSubselect = String.format(doTaxonSubSelect, "s" ) + doSynonymNameJoin +
-                    " WHERE " + doClassificationWhere +
-                    " AND " + String.format(doSearchFieldWhere, "sn");
+                            " WHERE " + doClassificationWhere +
+                            "  AND " + String.format(doSearchFieldWhere, "sn");
                     commonNameSubselect =String.format(doTaxonSubSelect, "t" )+ doCommonNamesJoin +
                             " WHERE " + doClassificationWhere +
-                            " AND " + doCommonNamesRestrictionWhere;
+                            "  AND " + doCommonNamesRestrictionWhere;
                 }
             }else{ //misappliedNames included
                 if(doAreaRestriction){
                     misappliedSelect = String.format(doAreaRestrictionMisappliedNameSubSelect, "t") + doTaxonNameJoin + doMisappliedNamesJoin  +
-                    " WHERE " + doAreaRestrictionWhere +
-                    " AND " + String.format(doSearchFieldWhere, "n") +
-                    " AND " + doClassificationForMisappliedNamesWhere +
-                    " AND " + doRelationshipTypeComparison;
-
+                            " WHERE " + doAreaRestrictionWhere +
+                            "  AND " + String.format(doSearchFieldWhere, "n") +
+                            "  AND " + doClassificationForMisappliedNamesWhere +
+                            "  AND " + doRelationshipTypeComparison;
                     taxonSubselect = String.format(doAreaRestrictionSubSelect, "t") + doTaxonNameJoin +
-                    " WHERE " + doAreaRestrictionWhere +
-                    " AND "+ String.format(doSearchFieldWhere, "n") + " AND "+ doClassificationWhere;
-
+                            " WHERE " + doAreaRestrictionWhere +
+                            "  AND " + String.format(doSearchFieldWhere, "n") +
+                            "  AND " + doClassificationWhere;
                     synonymSubselect = String.format(doAreaRestrictionSubSelect, "s") + doSynonymNameJoin +
-                    " WHERE " + doAreaRestrictionWhere +
-                    " AND " + doClassificationWhere + " AND " +  String.format(doSearchFieldWhere, "sn");
-
+                            " WHERE " + doAreaRestrictionWhere +
+                            "  AND " + doClassificationWhere +
+                            "  AND " + String.format(doSearchFieldWhere, "sn");
                     commonNameSubselect= String.format(doAreaRestrictionSubSelect, "t")+ doCommonNamesJoin +
                             " WHERE " + doAreaRestrictionWhere +
-                            " AND "+ doClassificationWhere + " AND " + doCommonNamesRestrictionWhere;
-                } else {
+                            "  AND " + doClassificationWhere +
+                            "  AND " + doCommonNamesRestrictionWhere;
+                } else {//no area restriction
                     misappliedSelect = String.format(doTaxonMisappliedNameSubSelect, "t" ) + doTaxonNameJoin + doMisappliedNamesJoin +
-                    " WHERE " + String.format(doSearchFieldWhere, "n") +
-                    " AND " + doClassificationForMisappliedNamesWhere +
-                    " AND " + doRelationshipTypeComparison;
-
+                            " WHERE " + String.format(doSearchFieldWhere, "n") +
+                            "  AND " + doClassificationForMisappliedNamesWhere +
+                            "  AND " + doRelationshipTypeComparison;
                     taxonSubselect = String.format(doTaxonSubSelect, "t" ) + doTaxonNameJoin +
-                    " WHERE " +  String.format(doSearchFieldWhere, "n") +
-                    " AND "+ doClassificationWhere;
-
+                            " WHERE " +  String.format(doSearchFieldWhere, "n") +
+                            " AND "+ doClassificationWhere;
                     synonymSubselect = String.format(doTaxonSubSelect, "s" ) + doSynonymNameJoin +
-                    " WHERE " + doClassificationWhere +
-                    " AND " +  String.format(doSearchFieldWhere, "sn");
-
+                            " WHERE " + doClassificationWhere +
+                            "  AND " +  String.format(doSearchFieldWhere, "sn");
                     commonNameSubselect= String.format(doTaxonSubSelect, "t")+ doCommonNamesJoin +
-                            " WHERE " + doClassificationWhere + " AND " + doCommonNamesRestrictionWhere;
-
+                            " WHERE " + doClassificationWhere +
+                            "  AND " + doCommonNamesRestrictionWhere;
                 }
             }
-        } else {
+        } else { //classification = null
             if(doAreaRestriction){
                 misappliedSelect = String.format(doAreaRestrictionMisappliedNameSubSelect, "t") + doTaxonNameJoin + doMisappliedNamesJoin +
-                " WHERE " + doAreaRestrictionWhere +
-                " AND " + String.format(doSearchFieldWhere, "n")+
-                " AND " + doRelationshipTypeComparison;
-
+                        " WHERE " + doAreaRestrictionWhere +
+                        "  AND " + String.format(doSearchFieldWhere, "n")+
+                        "  AND " + doRelationshipTypeComparison;
                 taxonSubselect = String.format(doAreaRestrictionSubSelect, "t") + doTaxonNameJoin +
-                " WHERE " + doAreaRestrictionWhere +
-                " AND " + String.format(doSearchFieldWhere, "n");
-
+                        " WHERE " + doAreaRestrictionWhere +
+                        "  AND " + String.format(doSearchFieldWhere, "n");
                 synonymSubselect = String.format(doAreaRestrictionSubSelect, "s") + doSynonymNameJoin +
-                " WHERE " +   doAreaRestrictionWhere +
-                " AND " +  String.format(doSearchFieldWhere, "sn");
+                        " WHERE " + doAreaRestrictionWhere +
+                        "  AND " + String.format(doSearchFieldWhere, "sn");
                 commonNameSubselect = String.format(doAreaRestrictionSubSelect, "t")+ doCommonNamesJoin +
                         " WHERE " + doAreaRestrictionWhere +
-                        " AND " + doCommonNamesRestrictionWhere;
-
-
-            } else {
-                misappliedSelect = String.format(doTaxonMisappliedNameSubSelect, "t" ) + doTaxonNameJoin + doMisappliedNamesJoin + " WHERE " +  String.format(doSearchFieldWhere, "n") + " AND " + doRelationshipTypeComparison;
-                taxonSubselect = String.format(doTaxonSubSelect, "t" ) + doTaxonNameJoin + " WHERE " +  String.format(doSearchFieldWhere, "n");
-                synonymSubselect = String.format(doTaxonSubSelect, "s" ) + doSynonymNameJoin + " WHERE " +  String.format(doSearchFieldWhere, "sn");
-                commonNameSubselect = String.format(doTaxonSubSelect, "t" ) +doCommonNamesJoin + " WHERE "+  doCommonNamesRestrictionWhere;
-
+                        "  AND " + doCommonNamesRestrictionWhere;
+            } else { //no area restriction
+                misappliedSelect = String.format(doTaxonMisappliedNameSubSelect, "t" ) + doTaxonNameJoin + doMisappliedNamesJoin +
+                        " WHERE " +  String.format(doSearchFieldWhere, "n") +
+                        " AND " + doRelationshipTypeComparison;
+                taxonSubselect = String.format(doTaxonSubSelect, "t" ) + doTaxonNameJoin +
+                        " WHERE " +  String.format(doSearchFieldWhere, "n");
+                synonymSubselect = String.format(doTaxonSubSelect, "s" ) + doSynonymNameJoin +
+                        " WHERE " +  String.format(doSearchFieldWhere, "sn");
+                commonNameSubselect = String.format(doTaxonSubSelect, "t" ) +doCommonNamesJoin +
+                        " WHERE "+  doCommonNamesRestrictionWhere;
             }
         }
-        String[] result = {misappliedSelect, taxonSubselect, synonymSubselect, commonNameSubselect};
+
+        if (!includeUnpublished){
+            taxonSubselect   += " AND t.publish = :publish ";
+            synonymSubselect += " AND s.publish = :publish AND t.publish = :publish ";
+            commonNameSubselect += " AND t.publish = :publish ";
+            misappliedSelect += " AND t.publish = :publish AND rt.publish = :publish ";
+        }
+
+        String[] result = {taxonSubselect, synonymSubselect, misappliedSelect, commonNameSubselect};
 
         return result;
     }

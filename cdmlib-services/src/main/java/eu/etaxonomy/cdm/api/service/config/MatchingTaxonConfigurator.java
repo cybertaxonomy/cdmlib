@@ -22,6 +22,8 @@ public class MatchingTaxonConfigurator {
 		return new MatchingTaxonConfigurator();
 	}
 
+    private boolean includeUnpublished = false;
+
 	private String taxonNameTitle;
 
 	private UUID secUuid;
@@ -134,6 +136,13 @@ public class MatchingTaxonConfigurator {
      */
     public void setPropertyPath(List<String> propertyPath) {
         this.propertyPath = propertyPath;
+    }
+
+    public boolean isIncludeUnpublished() {
+        return includeUnpublished;
+    }
+    public void setIncludeUnpublished(boolean includeUnpublished) {
+        this.includeUnpublished = includeUnpublished;
     }
 
 

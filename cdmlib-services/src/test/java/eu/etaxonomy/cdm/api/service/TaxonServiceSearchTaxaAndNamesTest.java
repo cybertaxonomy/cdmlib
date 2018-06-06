@@ -584,7 +584,7 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#searchTaxaByName(java.lang.String, eu.etaxonomy.cdm.model.reference.Reference)}
+     * {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#searchByName(java.lang.String, eu.etaxonomy.cdm.model.reference.Reference)}
      * .
      */
     @Test
