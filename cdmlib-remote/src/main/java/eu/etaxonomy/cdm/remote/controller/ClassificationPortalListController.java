@@ -233,7 +233,7 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
             @PathVariable("taxonUuid") UUID taxonUuid,
             @PathVariable("rankUuid") UUID rankUuid,
             HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
+            HttpServletResponse response) {
         logger.info("getPathFromTaxonToRank() " + request.getRequestURI());
 
         Classification tree = service.find(treeUuid);

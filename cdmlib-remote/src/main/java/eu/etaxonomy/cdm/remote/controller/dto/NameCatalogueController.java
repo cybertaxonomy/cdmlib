@@ -686,7 +686,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
             if (nvn != null) {
                 NameInformation ni = new NameInformation();
                 ni.setRequest(nameUuid);
-                Reference ref = (Reference) nvn.getNomenclaturalReference();
+                Reference ref = nvn.getNomenclaturalReference();
                 String citation = "";
                 String citation_details = "";
                 if (ref != null) {
@@ -803,7 +803,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
             @RequestParam(value = "include", required = false, defaultValue = "") String[] includes,
             HttpServletRequest request, HttpServletResponse response) throws IOException {
         ModelAndView mv = new ModelAndView();
-        List<RemoteResponse> tiList = new ArrayList<RemoteResponse>();
+        List<RemoteResponse> tiList = new ArrayList<>();
         // loop through each name uuid
         for (String taxonUuid : taxonUuids) {
             logger.info("doGetTaxonInformation()" + request.getRequestURI() + " for taxon uuid \""

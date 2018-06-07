@@ -350,11 +350,6 @@ public class ClassificationServiceImpl
     }
 
     @Override
-    public TaxonNode getTaxonNodeByUuid(UUID uuid) {
-        return taxonNodeDao.findByUuid(uuid);
-    }
-
-    @Override
     public ITaxonTreeNode getTreeNodeByUuid(UUID uuid){
         ITaxonTreeNode treeNode = taxonNodeDao.findByUuid(uuid);
         if(treeNode == null){
