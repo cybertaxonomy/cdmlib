@@ -43,6 +43,7 @@ import eu.etaxonomy.cdm.api.service.pager.PagerUtils;
 import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.exception.UnpublishedException;
 import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -236,39 +237,45 @@ public class ClassificationServiceImpl
 
     }
 
+
     /**
-     * @implements {@link IClassificationService#loadTreeBranch(TaxonNode, Rank, List)
-     * @see eu.etaxonomy.cdm.api.service.ITaxonService#loadTreeBranchTo(eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.name.Rank, java.util.List)
-     * FIXME Candidate for harmonization
-     * move to classification service
+     * {@inheritDoc}
      */
     @Override
-    public List<TaxonNode> loadTreeBranch(TaxonNode taxonNode, Rank baseRank, List<String> propertyPaths){
+    public List<TaxonNode> loadTreeBranch(TaxonNode taxonNode, Rank baseRank,
+            boolean includeUnpublished, List<String> propertyPaths) throws UnpublishedException{
 
         TaxonNode thisNode = taxonNodeDao.load(taxonNode.getUuid(), propertyPaths);
         if(baseRank != null){
             baseRank = (Rank) termDao.load(baseRank.getUuid());
         }
-        List<TaxonNode> pathToRoot = new ArrayList<TaxonNode>();
+        if (!includeUnpublished && thisNode.getTaxon() != null && thisNode.getTaxon().isPublish()){
+            throw new UnpublishedException("Final taxon in tree branch is unpublished.");
+        }
+
+        List<TaxonNode> pathToRoot = new ArrayList<>();
         pathToRoot.add(thisNode);
 
         while(!thisNode.isTopmostNode()){
             //TODO why do we need to deproxy here?
             //     without this thisNode.getParent() will return NULL in
             //     some cases (environment dependend?) even if the parent exits
-            TaxonNode parentNode = CdmBase.deproxy(thisNode, TaxonNode.class).getParent();
+            TaxonNode parentNode = CdmBase.deproxy(thisNode).getParent();
 
             if(parentNode == null){
-                throw new NullPointerException("taxonNode " + thisNode + " must have a parent since it is not top most");
+                throw new NullPointerException("Taxon node " + thisNode + " must have a parent since it is not top most");
             }
             if(parentNode.getTaxon() == null){
-                throw new NullPointerException("The taxon associated with taxonNode " + parentNode + " is NULL");
+                throw new NullPointerException("The taxon associated with taxon node " + parentNode + " is NULL");
+            }
+            if(!includeUnpublished && !parentNode.getTaxon().isPublish()){
+                throw new UnpublishedException("Some taxon in tree branch is unpublished.");
             }
             if(parentNode.getTaxon().getName() == null){
                 throw new NullPointerException("The name of the taxon associated with taxonNode " + parentNode + " is NULL");
             }
 
-            Rank parentNodeRank = parentNode.getTaxon().getName() == null ? null : parentNode.getTaxon().getName().getRank();
+            Rank parentNodeRank = (parentNode.getTaxon().getName() == null) ? null : parentNode.getTaxon().getName().getRank();
             // stop if the next parent is higher than the baseRank
             if(baseRank != null && parentNodeRank != null && baseRank.isLower(parentNodeRank)){
                 break;
@@ -286,15 +293,16 @@ public class ClassificationServiceImpl
     }
 
     @Override
-    public List<TaxonNode> loadTreeBranchToTaxon(Taxon taxon, Classification classification, Rank baseRank, List<String> propertyPaths){
-        Classification tree = dao.load(classification.getUuid());
-        taxon = (Taxon) taxonDao.load(taxon.getUuid());
-        TaxonNode node = tree.getNode(taxon);
+    public List<TaxonNode> loadTreeBranchToTaxon(Taxon taxon, Classification classification, Rank baseRank,
+            boolean includeUnpublished, List<String> propertyPaths) throws UnpublishedException{
+
+        UUID nodeUuid = getTaxonNodeUuidByTaxonUuid(classification.getUuid(), taxon.getUuid());
+        TaxonNode node = taxonNodeService.find(nodeUuid);
         if(node == null){
             logger.warn("The specified taxon is not found in the given tree.");
             return null;
         }
-        return loadTreeBranch(node, baseRank, propertyPaths);
+        return loadTreeBranch(node, baseRank, includeUnpublished, propertyPaths);
     }
 
 

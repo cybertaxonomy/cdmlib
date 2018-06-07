@@ -48,6 +48,7 @@ import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.search.DocumentSearchResult;
 import eu.etaxonomy.cdm.api.service.search.LuceneParseException;
 import eu.etaxonomy.cdm.common.DocUtils;
+import eu.etaxonomy.cdm.exception.UnpublishedException;
 import eu.etaxonomy.cdm.hibernate.search.AcceptedTaxonBridge;
 import eu.etaxonomy.cdm.io.dwca.in.DwcaImportTransformer;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -802,6 +803,9 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
             @RequestParam(value = "classification", required = false, defaultValue = CLASSIFICATION_DEFAULT) String classificationType,
             @RequestParam(value = "include", required = false, defaultValue = "") String[] includes,
             HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        boolean includeUnpublished = NO_UNPUBLISHED;
+
         ModelAndView mv = new ModelAndView();
         List<RemoteResponse> tiList = new ArrayList<>();
         // loop through each name uuid
@@ -821,7 +825,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
                     Taxon taxon = (Taxon) tb;
                     // build classification map
                     boolean includeUuids = Arrays.asList(includes).contains(INCLUDE_CLUUIDS);
-                    Map<String,Map> classificationMap = getClassification(taxon, classificationType, includeUuids);
+                    Map<String,Map> classificationMap = getClassification(taxon, classificationType, includeUuids, includeUnpublished);
 
                     logger.info("taxon uuid " + taxon.getUuid().toString() + " original hash code : " + System.identityHashCode(taxon) + ", name class " + taxon.getName().getClass().getName());
                     // update taxon information object with taxon related data
@@ -1139,6 +1143,8 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
         List<RemoteResponse> ansList = new ArrayList<RemoteResponse>();
         logger.info("doGetAcceptedNameSearch()");
 
+        boolean includeUnpublished = NO_UNPUBLISHED;
+
         // if search type is not known then return error
         if (!searchType.equals(NAME_SEARCH) && !searchType.equals(TITLE_SEARCH)) {
             ErrorResponse er = new ErrorResponse();
@@ -1187,7 +1193,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
                             Taxon accTaxon = synonym.getAcceptedTaxon();
                             if (accTaxon != null) {
                                 INonViralName accNvn = CdmBase.deproxy(accTaxon.getName());
-                                Map<String, Map> classificationMap = getClassification(accTaxon, CLASSIFICATION_DEFAULT, false);
+                                Map<String, Map> classificationMap = getClassification(accTaxon, CLASSIFICATION_DEFAULT, false, includeUnpublished);
                                 ans.addToResponseList(accNvn.getNameCache(),accNvn.getAuthorshipCache(), accNvn.getRank().getTitleCache(), classificationMap);
                             }
                         } else {
@@ -1205,7 +1211,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
                                 }
                             }
                             if(isConceptRelationship) {
-                                Map classificationMap = getClassification(taxon, CLASSIFICATION_DEFAULT, false);
+                                Map classificationMap = getClassification(taxon, CLASSIFICATION_DEFAULT, false, includeUnpublished);
                                 ans.addToResponseList(nvn.getNameCache(), nvn.getAuthorshipCache(),nvn.getRank().getTitleCache(), classificationMap);
                             }
 
@@ -1364,10 +1370,10 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
     /**
      * Build classification map.
      */
-    private Map<String, Map> getClassification(Taxon taxon, String classificationType, boolean includeUuids) {
+    private Map<String, Map> getClassification(Taxon taxon, String classificationType, boolean includeUuids, boolean includeUnpublished) {
         // Using TreeMap is important, because we need the sorting of the classification keys
         // in the map to be stable.
-        TreeMap<String, Map> sourceClassificationMap = buildClassificationMap(taxon, includeUuids);
+        TreeMap<String, Map> sourceClassificationMap = buildClassificationMap(taxon, includeUuids, includeUnpublished);
 
         // if classification key is 'default' then return the default element of the map
         if(classificationType.equals(CLASSIFICATION_DEFAULT) && !sourceClassificationMap.isEmpty()) {
@@ -1381,34 +1387,39 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
         } else if(classificationType.equals(CLASSIFICATION_ALL)) {
             return sourceClassificationMap;
         } else {
-            return new TreeMap<String,Map>();
+            return new TreeMap<>();
         }
     }
 
     /**
      * Build classification map.
      */
-    private TreeMap<String, Map> buildClassificationMap(Taxon taxon, boolean includeUuid) {
+    private TreeMap<String, Map> buildClassificationMap(Taxon taxon, boolean includeUuid, boolean includeUnpublished) {
         // Using TreeMap is important, because we need the sorting of the classification keys
         // in the map to be stable.
-        TreeMap<String, Map> sourceClassificationMap = new TreeMap<String, Map>();
+        TreeMap<String, Map> sourceClassificationMap = new TreeMap<>();
         Set<TaxonNode> taxonNodes = taxon.getTaxonNodes();
         //loop through taxon nodes and build classification map for each classification key
         for (TaxonNode tn : taxonNodes) {
-            Map<String, Object> classificationMap = new LinkedHashMap<String, Object>();
-            List<TaxonNode> tnList = classificationService.loadTreeBranchToTaxon(taxon,
-                    tn.getClassification(), null, TAXON_NODE_INIT_STRATEGY);
-            for (TaxonNode classificationtn : tnList) {
-                if(includeUuid) {
-                    // creating map object with <name, uuid> elements
-                    Map<String, String> clMap = new HashMap<String, String>();
-                    clMap.put("name",classificationtn.getTaxon().getName().getTitleCache());
-                    clMap.put("uuid",classificationtn.getTaxon().getUuid().toString());
-                    classificationMap.put(classificationtn.getTaxon().getName().getRank().getTitleCache(), clMap);
-                } else {
-                    classificationMap.put(classificationtn.getTaxon().getName().getRank().getTitleCache(),
-                            classificationtn.getTaxon().getName().getTitleCache());
+            Map<String, Object> classificationMap = new LinkedHashMap<>();
+            try {
+                List<TaxonNode> tnList = classificationService.loadTreeBranchToTaxon(taxon,
+                        tn.getClassification(), null, includeUnpublished, TAXON_NODE_INIT_STRATEGY);
+
+                for (TaxonNode classificationtn : tnList) {
+                    if(includeUuid) {
+                        // creating map object with <name, uuid> elements
+                        Map<String, String> clMap = new HashMap<>();
+                        clMap.put("name",classificationtn.getTaxon().getName().getTitleCache());
+                        clMap.put("uuid",classificationtn.getTaxon().getUuid().toString());
+                        classificationMap.put(classificationtn.getTaxon().getName().getRank().getTitleCache(), clMap);
+                    } else {
+                        classificationMap.put(classificationtn.getTaxon().getName().getRank().getTitleCache(),
+                                classificationtn.getTaxon().getName().getTitleCache());
+                    }
                 }
+            } catch (UnpublishedException e) {
+                //classificationMap stays empty for this node
             }
             String cname = removeInternalWhitespace(tn.getClassification().getTitleCache());
             logger.info("Building classification map " + cname);

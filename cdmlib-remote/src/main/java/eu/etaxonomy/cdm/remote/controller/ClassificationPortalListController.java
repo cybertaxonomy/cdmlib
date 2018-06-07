@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.exception.UnpublishedException;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -236,11 +238,17 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
             HttpServletResponse response) {
         logger.info("getPathFromTaxonToRank() " + request.getRequestURI());
 
+        boolean includeUnpublished = NO_UNPUBLISHED;
+
         Classification tree = service.find(treeUuid);
         Rank rank = findRank(rankUuid);
         Taxon taxon = (Taxon) taxonService.load(taxonUuid);
 
-        return service.loadTreeBranchToTaxon(taxon, tree, rank, NODE_INIT_STRATEGY);
+        try {
+            return service.loadTreeBranchToTaxon(taxon, tree, rank, includeUnpublished, NODE_INIT_STRATEGY);
+        } catch (UnpublishedException e) {
+            return new ArrayList<>();
+        }
     }
 
     /**

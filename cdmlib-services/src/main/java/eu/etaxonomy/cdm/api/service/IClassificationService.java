@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.GroupedTaxonDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonInContextDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.exception.UnpublishedException;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -148,10 +149,16 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @param propertyPaths
      *            the initialization strategy for the returned TaxonNode
      *            instances.
+     * @param includeUnpublished
+     *            if <code>true</code> no {@link UnpublishedException}
+     *            is thrown if any of the taxa in the branch are unpublished
      * @return the path of nodes from the <b>base node</b> to the node of the
-     *         specified taxon.
+     *            specified taxon.
+     * @throws UnpublishedException
+     *            if any of the taxa in the path is unpublished an {@link UnpublishedException} is thrown.
      */
-    public List<TaxonNode> loadTreeBranch(TaxonNode taxonNode, Rank baseRank, List<String> propertyPaths);
+    public List<TaxonNode> loadTreeBranch(TaxonNode taxonNode, Rank baseRank, boolean includeUnpublished,
+            List<String> propertyPaths) throws UnpublishedException;
 
     /**
      * Although this method seems to be a redundant alternative to {@link #loadChildNodesOfTaxonNode(TaxonNode, List)} it is an important
@@ -166,13 +173,19 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      *            Nodes of this rank or in case this rank does not exist in the
      *            current branch the next lower rank is taken as as root node for
      *            this rank henceforth called the <b>base node</b>.
+     * @param includeUnpublished
+     *            if <code>true</code> no {@link UnpublishedException}
+     *            is thrown if any of the taxa in the branch are unpublished
      * @param propertyPaths
      *            the initialization strategy for the returned TaxonNode
      *            instances.
      * @return the path of nodes from the <b>base node</b> to the node of the specified
-     *         taxon.
+     *            taxon.
+     * @throws UnpublishedException
+     *            if any of the taxa in the path is unpublished an {@link UnpublishedException} is thrown
      */
-    public List<TaxonNode> loadTreeBranchToTaxon(Taxon taxon, Classification classification, Rank baseRank, List<String> propertyPaths);
+    public List<TaxonNode> loadTreeBranchToTaxon(Taxon taxon, Classification classification, Rank baseRank,
+            boolean includeUnpublished, List<String> propertyPaths) throws UnpublishedException;
 
     public List<TaxonNode> listChildNodesOfTaxon(UUID taxonUuid, UUID classificationUuid, boolean includeUnpublished,
             Integer pageSize, Integer pageIndex, List<String> propertyPaths);
