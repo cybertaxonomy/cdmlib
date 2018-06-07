@@ -17,8 +17,6 @@
       <context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.persistence\.dao\.hibernate\.taxon\.TaxonAlternativeSpellingSuggestionParser"/>
     </context:component-scan>
 
-    <context:component-scan base-package="eu/etaxonomy/cdm/search" />
-
     <context:component-scan base-package="eu/etaxonomy/cdm/database"/>
 
     <!-- also find the implementation of ITaxonNodeComparator (otherwise it is not found by a component scan)  -->
