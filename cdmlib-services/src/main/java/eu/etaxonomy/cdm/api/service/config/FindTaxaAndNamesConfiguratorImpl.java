@@ -28,12 +28,13 @@ public class FindTaxaAndNamesConfiguratorImpl<T extends TaxonBase<?>> extends Id
 
     private static final long serialVersionUID = -8510776848175860267L;
 
-    private boolean includeUnpublished = false;
+    private boolean includeUnpublished = true;
 
     public static FindTaxaAndNamesConfiguratorImpl<?> NewInstance() {
 		return new FindTaxaAndNamesConfiguratorImpl<>();
 	}
 
+    private FindTaxaAndNamesConfiguratorImpl(){}
 
 	private boolean doTaxa = true;
 	private boolean doSynonyms = false;
