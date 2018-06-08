@@ -249,7 +249,7 @@ public class ClassificationServiceImpl
         if(baseRank != null){
             baseRank = (Rank) termDao.load(baseRank.getUuid());
         }
-        if (!includeUnpublished && thisNode.getTaxon() != null && thisNode.getTaxon().isPublish()){
+        if (!includeUnpublished && thisNode.getTaxon() != null && !thisNode.getTaxon().isPublish()){
             throw new UnpublishedException("Final taxon in tree branch is unpublished.");
         }
 
