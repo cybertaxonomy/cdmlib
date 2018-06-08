@@ -1476,7 +1476,7 @@ public class TaxonServiceImpl
                 topDocsResultSet, luceneSearch.getHighlightFields(), dao, idFieldMap, propertyPaths);
 
         int totalHits = topDocsResultSet != null ? topDocsResultSet.totalGroupCount : 0;
-        return new DefaultPagerImpl<>(pageNumber, totalHits, pageSize, searchResults);
+        return new DefaultPagerImpl<>(pageNumber, Long.valueOf(totalHits), pageSize, searchResults);
     }
 
     @Override
@@ -1506,7 +1506,7 @@ public class TaxonServiceImpl
                 topDocsResultSet, luceneSearch.getHighlightFields(), dao, idFieldMap, propertyPaths);
 
         int totalHits = topDocsResultSet != null ? topDocsResultSet.totalGroupCount : 0;
-        return new DefaultPagerImpl<>(pageNumber, totalHits, pageSize, searchResults);
+        return new DefaultPagerImpl<>(pageNumber, Long.valueOf(totalHits), pageSize, searchResults);
     }
 
     /**
@@ -1770,7 +1770,7 @@ public class TaxonServiceImpl
                                 createByDescriptionElementFullTextQuery(queryString, classification, null, languages, descriptionElementQueryFactory)
                                 , CommonTaxonName.class
                                 ).build(), "id", null, ScoreMode.Max);
-            logger.debug("byCommonNameJoinQuery: " + byCommonNameJoinQuery.toString());
+            if (logger.isDebugEnabled()){logger.debug("byCommonNameJoinQuery: " + byCommonNameJoinQuery.toString());}
             LuceneSearch byCommonNameSearch = new LuceneSearch(luceneIndexToolProvider,
                     GroupByTaxonClassBridge.GROUPBY_TAXON_FIELD, Taxon.class);
             byCommonNameSearch.setCdmTypRestriction(Taxon.class);
@@ -1859,6 +1859,7 @@ public class TaxonServiceImpl
                 multiIndexByAreaFilterBuilder.add(taxonAreaJoinQuery, Occur.SHOULD);
             }
         }
+
 
         LuceneMultiSearch multiSearch = new LuceneMultiSearch(luceneIndexToolProvider,
                 luceneSearches.toArray(new LuceneSearch[luceneSearches.size()]));

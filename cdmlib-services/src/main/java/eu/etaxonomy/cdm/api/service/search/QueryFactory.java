@@ -128,7 +128,7 @@ public class QueryFactory {
     }
 
     /**
-     * only to be used for text fields, see {@link #newTermQuery(String, String, boolean)}
+     * Only to be used for text fields, see {@link #newTermQuery(String, String, boolean)}
      * @param fieldName
      * @param queryString
      * @return a {@link TermQuery} or a {@link WildcardQuery}

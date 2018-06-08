@@ -395,7 +395,11 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
         return pager;
     }
 
+    /**
+     * @deprecated see {@link ITaxonService#findByEverythingFullText(String, Classification, boolean, List, boolean, Integer, Integer, List, List)}
+     */
     @RequestMapping(method = RequestMethod.GET, value={"findByEverythingFullText"})
+    @Deprecated
     public Pager<SearchResult<TaxonBase>> dofindByEverythingFullText(
             @RequestParam(value = "clazz", required = false) Class<? extends TaxonBase> clazz,
             @RequestParam(value = "query", required = true) String queryString,
