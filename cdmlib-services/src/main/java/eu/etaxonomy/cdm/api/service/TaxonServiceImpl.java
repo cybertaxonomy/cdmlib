@@ -427,7 +427,7 @@ public class TaxonServiceImpl
             results = dao.findTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, authorship, rank, pageSize, pageNumber);
         }
 
-        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
+        return new DefaultPagerImpl<>(pageNumber, Long.valueOf(numberOfResults), pageSize, results);
     }
 
     @Override
@@ -464,7 +464,7 @@ public class TaxonServiceImpl
         if(numberOfResults > 0) { // no point checking again
             results = dao.getTaxonRelationships(taxon, type, pageSize, pageNumber, orderHints, propertyPaths, TaxonRelationship.Direction.relatedTo);
         }
-        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
+        return new DefaultPagerImpl<>(pageNumber, Long.valueOf(numberOfResults), pageSize, results);
     }
 
     @Override
@@ -486,7 +486,7 @@ public class TaxonServiceImpl
         if(numberOfResults > 0) { // no point checking again
             results = dao.getTaxonRelationships(taxon, type, pageSize, pageNumber, orderHints, propertyPaths, TaxonRelationship.Direction.relatedFrom);
         }
-        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
+        return new DefaultPagerImpl<>(pageNumber, Long.valueOf(numberOfResults), pageSize, results);
     }
 
     @Override
@@ -735,10 +735,7 @@ public class TaxonServiceImpl
             }
         }
 
-
-
-       return new DefaultPagerImpl<>
-            (configurator.getPageNumber(), numberOfResults, configurator.getPageSize(), results);
+       return new DefaultPagerImpl<> (configurator.getPageNumber(), numberOfResults, configurator.getPageSize(), results);
     }
 
     public List<UuidAndTitleCache<TaxonBase>> getTaxonUuidAndTitleCache(Integer limit, String pattern){
@@ -951,7 +948,6 @@ public class TaxonServiceImpl
                     result.setAbort();
                     result.addException(new Exception("Taxon can't be deleted as it is related to another taxon. " +
                             "Remove taxon from all relations to other taxa prior to deletion."));
-
                 }
             } else{
                 TaxonDeletionConfigurator configRelTaxon = new TaxonDeletionConfigurator();
@@ -972,7 +968,6 @@ public class TaxonServiceImpl
                         }
                     }
                     taxon.removeTaxonRelation(taxRel);
-
                 }
             }
 
@@ -1069,7 +1064,7 @@ public class TaxonServiceImpl
 
          if ((taxon.getTaxonNodes() == null || taxon.getTaxonNodes().size()== 0)  && result.isOk()){
              try{
-                 UUID uuid = dao.delete(taxon);
+                 dao.delete(taxon);
                  result.addDeletedObject(taxon);
              }catch(Exception e){
                  result.addException(e);
@@ -1080,8 +1075,8 @@ public class TaxonServiceImpl
              result.addException(new Exception("The Taxon can't be deleted because it is used in a classification."));
 
          }
-            //TaxonName
-        if (config.isDeleteNameIfPossible() && result.isOk()){
+         //TaxonName
+         if (config.isDeleteNameIfPossible() && result.isOk()){
             DeleteResult nameResult = new DeleteResult();
             //remove name if possible (and required)
             if (name != null ){
@@ -1093,12 +1088,10 @@ public class TaxonServiceImpl
             }else{
                 result.includeResult(nameResult);
             }
-
-
-       }
+         }
        }
 
-        return result;
+       return result;
 
     }
 
@@ -1149,9 +1142,7 @@ public class TaxonServiceImpl
     @Override
     @Transactional(readOnly = false)
     public DeleteResult delete(UUID synUUID){
-    	DeleteResult result = new DeleteResult();
     	Synonym syn = (Synonym)dao.load(synUUID);
-
         return this.deleteSynonym(syn, null);
     }
 
@@ -1178,7 +1169,6 @@ public class TaxonServiceImpl
         }
 
         result = isDeletable(synonym.getUuid(), config);
-
 
         if (result.isOk()){
 
@@ -1224,11 +1214,7 @@ public class TaxonServiceImpl
 
         return this.dao.findIdenticalNamesNew(propertyPath);
     }
-//
-//    @Override
-//    public String getPhylumName(TaxonName name){
-//        return this.dao.getPhylumName(name);
-//    }
+
 
     @Override
     public Taxon findBestMatchingTaxon(String taxonName) {
@@ -1454,7 +1440,6 @@ public class TaxonServiceImpl
             Classification classification, boolean includeUnpublished, List<Language> languages,
             boolean highlightFragments, Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints, List<String> propertyPaths) throws IOException, LuceneParseException {
-
 
         LuceneSearch luceneSearch = prepareFindByFullTextSearch(clazz, queryString, classification, includeUnpublished, languages, highlightFragments, null);
 
@@ -2039,7 +2024,7 @@ public class TaxonServiceImpl
                 topDocsResultSet, luceneSearch.getHighlightFields(), dao, idFieldMap, propertyPaths);
 
         int totalHits = topDocsResultSet != null ? topDocsResultSet.totalGroupCount : 0;
-        return new DefaultPagerImpl<>(pageNumber, totalHits, pageSize, searchResults);
+        return new DefaultPagerImpl<>(pageNumber, Long.valueOf(totalHits), pageSize, searchResults);
 
     }
 
@@ -2077,7 +2062,7 @@ public class TaxonServiceImpl
                 topDocsResultSet, multiSearch.getHighlightFields(), dao, idFieldMap, propertyPaths);
 
         int totalHits = topDocsResultSet != null ? topDocsResultSet.totalGroupCount : 0;
-        return new DefaultPagerImpl<>(pageNumber, totalHits, pageSize, searchResults);
+        return new DefaultPagerImpl<>(pageNumber, Long.valueOf(totalHits), pageSize, searchResults);
 
     }
 
@@ -3152,7 +3137,7 @@ public class TaxonServiceImpl
         		result.add(new IdentifiedEntityDTO<S>((DefinedTerm)daoObj[0], (String)daoObj[1], (UUID)daoObj[2], (String)daoObj[3], null));
         	}
         }
-		return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, result);
+		return new DefaultPagerImpl<>(pageNumber, Long.valueOf(numberOfResults), pageSize, result);
 	}
 
 	@Override
