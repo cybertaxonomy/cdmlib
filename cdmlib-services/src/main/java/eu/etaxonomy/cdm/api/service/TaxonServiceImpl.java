@@ -1528,7 +1528,7 @@ public class TaxonServiceImpl
         QueryFactory taxonBaseQueryFactory = luceneIndexToolProvider.newQueryFactoryFor(TaxonBase.class);
 
         if(sortFields == null){
-            sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.Type.STRING,  false)};
+            sortFields = new SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.Type.STRING, false)};
         }
         luceneSearch.setSortFields(sortFields);
 
@@ -1771,13 +1771,13 @@ public class TaxonServiceImpl
                                 , CommonTaxonName.class
                                 ).build(), "id", null, ScoreMode.Max);
             logger.debug("byCommonNameJoinQuery: " + byCommonNameJoinQuery.toString());
-            LuceneSearch byCommonNameSearch = new LuceneSearch(luceneIndexToolProvider, GroupByTaxonClassBridge.GROUPBY_TAXON_FIELD, Taxon.class);
+            LuceneSearch byCommonNameSearch = new LuceneSearch(luceneIndexToolProvider,
+                    GroupByTaxonClassBridge.GROUPBY_TAXON_FIELD, Taxon.class);
             byCommonNameSearch.setCdmTypRestriction(Taxon.class);
             byCommonNameSearch.setQuery(byCommonNameJoinQuery);
             byCommonNameSearch.setSortFields(sortFields);
 
             DuplicateFilter df = new DuplicateFilter("inDescription.taxon.id");
-            Set<String> results=new HashSet<>();
 //            ScoreDoc[] hits = searcher.search(tq,df, 1000).scoreDocs;
 //
 //            byCommonNameSearch.setFilter(df);
@@ -1821,7 +1821,7 @@ public class TaxonServiceImpl
 
                 /*
                  * Here i was facing wired and nasty bug which took me bugging be really for hours until I found this solution.
-                 * Maybe this is a bug in java itself java.
+                 * Maybe this is a bug in java itself.
                  *
                  * When the string toField is constructed by using the expression TaxonRelationshipType.MISAPPLIED_NAME_FOR().getUuid().toString()
                  * directly:
@@ -1848,7 +1848,8 @@ public class TaxonServiceImpl
 
                 //TODO replace by createByDistributionJoinQuery
                 BooleanQuery byDistributionQuery = createByDistributionQuery(namedAreaList, distributionStatusList, distributionFilterQueryFactory);
-                Query taxonAreaJoinQuery = distributionFilterQueryFactory.newJoinQuery(Distribution.class, fromField, true, byDistributionQuery, toField, null, ScoreMode.None);
+                Query taxonAreaJoinQuery = distributionFilterQueryFactory.newJoinQuery(Distribution.class,
+                        fromField, true, byDistributionQuery, toField, null, ScoreMode.None);
 
 //                debug code for bug described above
                 //does not compile anymore since changing from lucene 3.6.2 to lucene 4.10+
@@ -1902,8 +1903,8 @@ public class TaxonServiceImpl
         List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSet(
                 topDocsResultSet, multiSearch.getHighlightFields(), dao, idFieldMap, propertyPaths);
 
-        int totalHits = topDocsResultSet != null ? topDocsResultSet.totalGroupCount : 0;
-        return new DefaultPagerImpl<>(pageNumber, totalHits, pageSize, searchResults);
+        int totalHits = (topDocsResultSet != null) ? topDocsResultSet.totalGroupCount : 0;
+        return new DefaultPagerImpl<>(pageNumber, Long.valueOf(totalHits), pageSize, searchResults);
     }
 
     /**

@@ -245,8 +245,9 @@ public class QueryFactory {
     }
 
     /**
-     * creates a query for searching for documents in which the field specified by <code>uuidFieldName</code> matches at least one of the uuid
-     * of the <code>entities</code>, the sql equivalent of this is <code>WHERE uuidFieldName IN (uuid_1, uuid_2, ...) </code>.
+     * Creates a query for searching for documents in which the field specified by <code>uuidFieldName</code>
+     * matches at least one of the uuid of the <code>entities</code>, the sql equivalent of this is
+     * <code>WHERE uuidFieldName IN (uuid_1, uuid_2, ...) </code>.
      * @param uuidFieldName
      * @param entities
      * @return
@@ -264,7 +265,7 @@ public class QueryFactory {
 
 
     /**
-     * creates a query for searching for documents in which the field specified by <code>uuidFieldName</code> matches at least one of the
+     * Creates a query for searching for documents in which the field specified by <code>uuidFieldName</code> matches at least one of the
      * supplied <code>uuids</code>
      * the sql equivalent of this is <code>WHERE uuidFieldName IN (uuid_1, uuid_2, ...) </code>.
      * @param uuidFieldName

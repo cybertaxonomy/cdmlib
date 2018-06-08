@@ -182,7 +182,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
 
         Set<NamedArea> areaSet = null;
         if(areaList != null){
-            areaSet = new HashSet<NamedArea>(areaList.size());
+            areaSet = new HashSet<>(areaList.size());
             areaSet.addAll(areaList);
             TaxonListController.includeAllSubAreas(areaSet, termService);
         }
@@ -209,7 +209,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
 
         Set<PresenceAbsenceTerm> statusSet = null;
         if(status != null) {
-                statusSet = new HashSet<PresenceAbsenceTerm>(Arrays.asList(status));
+                statusSet = new HashSet<>(Arrays.asList(status));
         }
 
         return service.findTaxaAndNamesByFullText(searchModes, query,
@@ -434,7 +434,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
      * @param areaSet
      */
     static public void includeAllSubAreas(Set<NamedArea> areaSet, ITermService termService) {
-        Collection<NamedArea> tmpAreas = new HashSet<NamedArea>(areaSet);
+        Collection<NamedArea> tmpAreas = new HashSet<>(areaSet);
         // expand all areas to include also the sub areas
         Pager<NamedArea> pager = null;
         while(true){
