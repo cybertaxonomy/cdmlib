@@ -194,12 +194,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 
 
 
-    /**
-     * @param taxonNodeUuids
-     * @param newParentNodeUuid
-     * @return
-     */
-    UpdateResult moveTaxonNodes(Set<UUID> taxonNodeUuids, UUID newParentNodeUuid, int movingType);
+
 
     /**
      * @param taxonNode
@@ -308,11 +303,11 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      */
     public List<Integer> idList(TaxonNodeFilter filter);
 
-    /**
-     * @param configurator
-     * @return
-     */
-    UUID monitSetSecundum(SecundumForSubtreeConfigurator configurator);
+//    /**
+//     * @param configurator
+//     * @return
+//     */
+//    UUID monitSetSecundum(SecundumForSubtreeConfigurator configurator);
 
 
     /**
@@ -326,6 +321,16 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      * @return
      */
     List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(ITaxonTreeNode parent);
+
+    /**
+     * @param taxonNodeUuids
+     * @param newParentNodeUuid
+     * @param movingType
+     * @param monitor
+     * @return
+     */
+    UpdateResult moveTaxonNodes(Set<UUID> taxonNodeUuids, UUID newParentNodeUuid, int movingType,
+            IProgressMonitor monitor);
 
 
 

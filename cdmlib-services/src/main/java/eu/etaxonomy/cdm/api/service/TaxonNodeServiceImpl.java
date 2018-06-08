@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.api.service;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -37,7 +36,6 @@ import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
-import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitorThread;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -712,8 +710,8 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         result.addUpdatedObject(oldParent);
         result.setCdmEntity(taxonNode);
 
-        dao.saveOrUpdate(taxonNode);
-        dao.saveOrUpdate(oldParent);
+//        dao.saveOrUpdate(taxonNode);
+//        dao.saveOrUpdate(oldParent);
 
         return result;
     }
@@ -722,13 +720,22 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
     @Override
     @Transactional
-    public UpdateResult moveTaxonNodes(Set<UUID> taxonNodeUuids, UUID newParentNodeUuid, int movingType){
-        UpdateResult result = new UpdateResult();
-        TaxonNode targetNode = dao.load(newParentNodeUuid);
-        for (UUID taxonNodeUuid: taxonNodeUuids){
-            TaxonNode taxonNode = dao.load(taxonNodeUuid);
-            result.includeResult(moveTaxonNode(taxonNode,targetNode, movingType));
+    public UpdateResult moveTaxonNodes(Set<UUID> taxonNodeUuids, UUID newParentNodeUuid, int movingType, IProgressMonitor monitor){
+
+        if (monitor == null){
+            monitor = DefaultProgressMonitor.NewInstance();
         }
+        UpdateResult result = new UpdateResult();
+
+        TaxonNode targetNode = dao.load(newParentNodeUuid);
+        List<TaxonNode> nodes = dao.list(taxonNodeUuids, null, null, null, null);
+        monitor.beginTask("Move Taxonnodes", nodes.size());
+        ((IRemotingProgressMonitor)monitor).setResult(result);
+        for (TaxonNode node: nodes){
+            result.includeResult(moveTaxonNode(node,targetNode, movingType));
+            monitor.worked(1);
+        }
+        monitor.done();
         return result;
     }
 
@@ -946,21 +953,21 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         return nodeFilterDao.idList(filter);
     }
 
-    @Override
-    @Transactional(readOnly=false)
-    public UUID monitSetSecundum(final SecundumForSubtreeConfigurator configurator) {
-        RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
-            @Override
-            public Serializable doRun(IRemotingProgressMonitor monitor) {
-                configurator.setMonitor(monitor);
-                UpdateResult result = setSecundumForSubtree(configurator);
-                return result;
-            }
-        };
-        UUID uuid = progressMonitorService.registerNewRemotingMonitor(monitorThread);
-        monitorThread.setPriority(3);
-        monitorThread.start();
-        return uuid;
-    }
+//    @Override
+//    @Transactional(readOnly=false)
+//    public UUID monitSetSecundum(final SecundumForSubtreeConfigurator configurator) {
+//        RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
+//            @Override
+//            public Serializable doRun(IRemotingProgressMonitor monitor) {
+//                configurator.setMonitor(monitor);
+//                UpdateResult result = setSecundumForSubtree(configurator);
+//                return result;
+//            }
+//        };
+//        UUID uuid = progressMonitorService.registerNewRemotingMonitor(monitorThread);
+//        monitorThread.setPriority(3);
+//        monitorThread.start();
+//        return uuid;
+//    }
 
 }
