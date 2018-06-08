@@ -529,7 +529,7 @@ public interface ITaxonService
      */
     @Deprecated
     public Pager<SearchResult<TaxonBase>> findByEverythingFullText(String queryString,
-            Classification classification, List<Language> languages, boolean highlightFragments,
+            Classification classification, boolean includeUnpublished, List<Language> languages, boolean highlightFragments,
             Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws IOException, LuceneParseException, LuceneMultiSearchException;
 
     /**
@@ -574,8 +574,9 @@ public interface ITaxonService
      * @throws IOException
      * @throws LuceneParseException
      */
-    public Pager<SearchResult<TaxonBase>> findByFullText(Class<? extends TaxonBase> clazz, String queryString, Classification classification,
-            List<Language> languages, boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+    public Pager<SearchResult<TaxonBase>> findByFullText(Class<? extends TaxonBase> clazz, String queryString,
+            Classification classification, boolean includeUnpublished, List<Language> languages,
+            boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths) throws IOException, LuceneParseException;
 
 

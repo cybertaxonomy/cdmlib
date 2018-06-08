@@ -174,8 +174,9 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
             @RequestParam(value = "doTaxaByCommonNames", required = false) Boolean doTaxaByCommonNames,
             HttpServletRequest request,
             HttpServletResponse response
-            )
-             throws IOException, LuceneParseException, LuceneMultiSearchException {
+            ) throws IOException, LuceneParseException, LuceneMultiSearchException {
+
+        boolean includeUnpublished = NO_UNPUBLISHED;
 
 
         logger.info("search : " + requestPathAndQuery(request) );
@@ -203,6 +204,9 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
         }
         if(BooleanUtils.toBoolean(doTaxaByCommonNames)) {
             searchModes.add(TaxaAndNamesSearchMode.doTaxaByCommonNames);
+        }
+        if(includeUnpublished) {
+            searchModes.add(TaxaAndNamesSearchMode.includeUnpublished);
         }
 
         Classification classification = classificationService.load(classificationUuid);
@@ -375,22 +379,24 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
             )
              throws IOException, LuceneParseException {
 
-         logger.info("findByFullText : " + requestPathAndQuery(request)  );
+        boolean includeUnpublished = NO_UNPUBLISHED;
 
-         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
-         pagerParams.normalizeAndValidate(response);
+        logger.info("findByFullText : " + requestPathAndQuery(request)  );
 
-         if(highlighting == null){
-             highlighting = false;
-         }
+        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
+        pagerParams.normalizeAndValidate(response);
 
-         Classification classification = null;
+        if(highlighting == null){
+            highlighting = false;
+        }
+
+        Classification classification = null;
         if(treeUuid != null){
             classification = classificationService.find(treeUuid);
         }
 
-        Pager<SearchResult<TaxonBase>> pager = service.findByFullText(clazz, queryString, classification, languages,
-                highlighting, pagerParams.getPageSize(), pagerParams.getPageIndex(), ((List<OrderHint>)  null),
+        Pager<SearchResult<TaxonBase>> pager = service.findByFullText(clazz, queryString, classification, includeUnpublished,
+                languages, highlighting, pagerParams.getPageSize(), pagerParams.getPageIndex(), ((List<OrderHint>) null),
                 initializationStrategy);
         return pager;
     }
@@ -415,6 +421,8 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
 
          logger.info("findByEverythingFullText : " + requestPathAndQuery(request) );
 
+         boolean includeUnpublished = NO_UNPUBLISHED;
+
          PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
          pagerParams.normalizeAndValidate(response);
 
@@ -428,7 +436,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
         }
 
         Pager<SearchResult<TaxonBase>> pager = service.findByEverythingFullText(
-                queryString, classification, languages, highlighting,
+                queryString, classification, includeUnpublished, languages, highlighting,
                 pagerParams.getPageSize(), pagerParams.getPageIndex(),
                 ((List<OrderHint>)null), initializationStrategy);
         return pager;

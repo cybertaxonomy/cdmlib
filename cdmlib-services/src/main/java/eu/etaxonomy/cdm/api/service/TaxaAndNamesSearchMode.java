@@ -19,4 +19,5 @@ public enum TaxaAndNamesSearchMode {
     doSynonyms,
     doTaxaByCommonNames,
     doMisappliedNames,
+    includeUnpublished,
 }

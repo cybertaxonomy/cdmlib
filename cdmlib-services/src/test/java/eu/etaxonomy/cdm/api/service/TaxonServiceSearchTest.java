@@ -138,6 +138,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         russia = Country.RUSSIANFEDERATION();
         canada = Country.CANADA();
 
+        includeUnpublished = true;
     }
 
     @Test
@@ -156,19 +157,19 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         Pager<SearchResult<TaxonBase>> pager;
 
-        pager = taxonService.findByFullText(null, "Abies", null, null, true, null, null, null, null); // --> 8
+        pager = taxonService.findByFullText(null, "Abies", null, includeUnpublished, null, true, null, null, null, null); // --> 8
         Assert.assertEquals("Expecting 8 entities", 8, pager.getCount().intValue());
 
         indexer.purge(null);
         commitAndStartNewTransaction(null);
 
-        pager = taxonService.findByFullText(null, "Abies", null, null, true, null, null, null, null); // --> 0
+        pager = taxonService.findByFullText(null, "Abies", null, includeUnpublished, null, true, null, null, null, null); // --> 0
         Assert.assertEquals("Expecting no entities since the index has been purged", 0, pager.getCount().intValue());
 
         indexer.reindex(indexer.indexedClasses(), null);
         commitAndStartNewTransaction(null);
 
-        pager = taxonService.findByFullText(null, "Abies", null, null, true, null, null, null, null); // --> 8
+        pager = taxonService.findByFullText(null, "Abies", null, includeUnpublished, null, true, null, null, null, null); // --> 8
         Assert.assertEquals("Expecting 8 entities", 8, pager.getCount().intValue());
     }
 
@@ -443,7 +444,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("expecting 10 highlighted fragments of field 'name'", maxDocsPerGroup, highlightMap.get("name").length);
 
         // test with findByEverythingFullText
-        pager = taxonService.findByEverythingFullText( "Rot*", null, null, highlightFragments, pageSize, null, null, null);
+        pager = taxonService.findByEverythingFullText( "Rot*", null, includeUnpublished, null, highlightFragments, pageSize, null, null, null);
         logFreeTextSearchResults(pager, Level.DEBUG, null);
         Assert.assertEquals("All matches should be grouped into a single SearchResult element", 1, pager.getRecords().size());
         Assert.assertEquals("The count property of the pager must be set correctly", 1, pager.getCount().intValue());
@@ -794,23 +795,23 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         Pager<SearchResult<TaxonBase>> pager;
 
-        pager = taxonService.findByFullText(null, "Abies", null, null, true, null, null, null, null); // --> 7
+        pager = taxonService.findByFullText(null, "Abies", null, includeUnpublished, null, true, null, null, null, null); // --> 7
         logFreeTextSearchResults(pager, Level.DEBUG, null);
         Assert.assertEquals("Expecting 8 entities", 8, pager.getCount().intValue());
 
-        pager = taxonService.findByFullText(Taxon.class, "Abies", null, null, true, null, null, null, null); // --> 6
+        pager = taxonService.findByFullText(Taxon.class, "Abies", null, includeUnpublished, null, true, null, null, null, null); // --> 6
         Assert.assertEquals("Expecting 7 entities", 7, pager.getCount().intValue());
 
-        pager = taxonService.findByFullText(Synonym.class, "Abies", null, null, true, null, null, null, null); // --> 1
+        pager = taxonService.findByFullText(Synonym.class, "Abies", null, includeUnpublished, null, true, null, null, null, null); // --> 1
         Assert.assertEquals("Expecting 1 entity", 1, pager.getCount().intValue());
 
-        pager = taxonService.findByFullText(TaxonBase.class, "sec", null, null, true, null, null, null, null); // --> 7
+        pager = taxonService.findByFullText(TaxonBase.class, "sec", null, includeUnpublished, null, true, null, null, null, null); // --> 7
         Assert.assertEquals("Expecting 8 entities", 9, pager.getCount().intValue());
 
-        pager = taxonService.findByFullText(null, "genus", null, null, true, null, null, null, null); // --> 1
+        pager = taxonService.findByFullText(null, "genus", null, includeUnpublished, null, true, null, null, null, null); // --> 1
         Assert.assertEquals("Expecting 1 entity", 1, pager.getCount().intValue());
 
-        pager = taxonService.findByFullText(Taxon.class, "subalpina", null, null, true, null, null, null, null); // --> 0
+        pager = taxonService.findByFullText(Taxon.class, "subalpina", null, includeUnpublished, null, true, null, null, null, null); // --> 0
         Assert.assertEquals("Expecting 0 entities", 0, pager.getCount().intValue());
 
         // synonym in classification ???
@@ -1119,14 +1120,14 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Pager<SearchResult<TaxonBase>> pager;
 
         // via Taxon
-        pager = taxonService.findByEverythingFullText("Abies", null, null, true, null, null, null, null);
+        pager = taxonService.findByEverythingFullText("Abies", null, includeUnpublished, null, true, null, null, null, null);
         logFreeTextSearchResults(pager, Level.DEBUG, null);
         Assert.assertTrue("Expecting at least 7 entities for 'Abies'", pager.getCount() > 7);
         Assert.assertNotNull("Expecting entity", pager.getRecords().get(0).getEntity());
         Assert.assertEquals("Expecting Taxon entity", Taxon.class, pager.getRecords().get(0).getEntity().getClass());
 
         // via DescriptionElement
-        pager = taxonService.findByEverythingFullText("present", null, null, true, null, null, null, null);
+        pager = taxonService.findByEverythingFullText("present", null, includeUnpublished, null, true, null, null, null, null);
         Assert.assertEquals("Expecting one entity when searching for area 'present'", 1, pager.getCount().intValue());
         Assert.assertNotNull("Expecting entity", pager.getRecords().get(0).getEntity());
         Assert.assertEquals("Expecting Taxon entity", Taxon.class, CdmBase.deproxy(pager.getRecords().get(0).getEntity()).getClass());
@@ -1143,15 +1144,15 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         Pager<SearchResult<TaxonBase>> pager;
 
-        pager = taxonService.findByEverythingFullText("genus", null, null,  false, null, null, null, null); // --> 1
+        pager = taxonService.findByEverythingFullText("genus", null, includeUnpublished, null, false, null, null, null, null); // --> 1
         Assert.assertEquals("Expecting 1 entity", 1, pager.getCount().intValue());
 
         //FIXME FAILS: abies balamea is returned twice, see also testFullText_Grouping()
-        pager = taxonService.findByEverythingFullText("Balsam", null, Arrays.asList(new Language[]{Language.GERMAN()}), false, null, null, null, null);
+        pager = taxonService.findByEverythingFullText("Balsam", null, includeUnpublished, Arrays.asList(new Language[]{Language.GERMAN()}), false, null, null, null, null);
         logFreeTextSearchResults(pager, Level.DEBUG, null);
         Assert.assertEquals("expecting to find the Abies balsamea via the GERMAN DescriptionElements", 1, pager.getCount().intValue());
 
-        pager = taxonService.findByEverythingFullText("Abies", null, null, true, null, null, null, null);
+        pager = taxonService.findByEverythingFullText("Abies", null, includeUnpublished, null, true, null, null, null, null);
         Assert.assertEquals("Expecting 8 entities", 8, pager.getCount().intValue());
         SearchResult<TaxonBase> searchResult = pager.getRecords().get(0);
         Assert.assertTrue("the map of highlighted fragments should contain at least one item", searchResult.getFieldHighlightMap().size() > 0);

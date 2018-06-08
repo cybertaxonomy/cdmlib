@@ -137,6 +137,10 @@ public class QueryFactory {
         return newTermQuery(fieldName, queryString, true);
     }
 
+    public Query newBooleanQuery(String fieldName, boolean value){
+        return new TermQuery(new Term(fieldName, Boolean.valueOf(value).toString()));
+    }
+
     /**
      * DefinedTerms are stored in the Lucene index by the
      * {@link DefinedTermBaseClassBridge} in a consistent way. One field per
