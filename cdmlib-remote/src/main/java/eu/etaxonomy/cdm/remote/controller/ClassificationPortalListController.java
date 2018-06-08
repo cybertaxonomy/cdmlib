@@ -274,7 +274,7 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
             @PathVariable("treeUuid") UUID treeUuid,
             @PathVariable("taxonUuid") UUID taxonUuid,
             HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
+            HttpServletResponse response) {
 
         return getPathFromTaxonToRank(treeUuid, taxonUuid, null, request, response);
     }

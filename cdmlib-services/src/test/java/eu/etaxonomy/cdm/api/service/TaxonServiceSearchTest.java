@@ -977,22 +977,22 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         Pager<SearchResult<TaxonBase>> pager;
 
-        Set<NamedArea> a_germany_canada_russia = new HashSet<NamedArea>();
+        Set<NamedArea> a_germany_canada_russia = new HashSet<>();
         a_germany_canada_russia.add(germany);
         a_germany_canada_russia.add(canada);
         a_germany_canada_russia.add(russia);
 
-        Set<NamedArea> a_russia = new HashSet<NamedArea>();
+        Set<NamedArea> a_russia = new HashSet<>();
         a_russia.add(russia);
 
-        Set<PresenceAbsenceTerm> present = new HashSet<PresenceAbsenceTerm>();
+        Set<PresenceAbsenceTerm> present = new HashSet<>();
         present.add(PresenceAbsenceTerm.PRESENT());
 
-        Set<PresenceAbsenceTerm> present_native = new HashSet<PresenceAbsenceTerm>();
+        Set<PresenceAbsenceTerm> present_native = new HashSet<>();
         present_native.add(PresenceAbsenceTerm.PRESENT());
         present_native.add(PresenceAbsenceTerm.NATIVE());
 
-        Set<PresenceAbsenceTerm> absent = new HashSet<PresenceAbsenceTerm>();
+        Set<PresenceAbsenceTerm> absent = new HashSet<>();
         absent.add(PresenceAbsenceTerm.ABSENT());
 
         pager = taxonService.findTaxaAndNamesByFullText(
@@ -1074,7 +1074,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @Ignore // remove once http://dev.e-taxonomy.eu/trac/ticket/5477 is solved
     public final void testFindTaxaAndNamesByFullText_AreaFilter_issue5477() throws IOException, LuceneParseException, LuceneMultiSearchException {
 
-        Set<NamedArea> a_germany_canada_russia = new HashSet<NamedArea>();
+        Set<NamedArea> a_germany_canada_russia = new HashSet<>();
         a_germany_canada_russia.add(germany);
         a_germany_canada_russia.add(canada);
         a_germany_canada_russia.add(russia);
