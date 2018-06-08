@@ -421,6 +421,7 @@ public class TaxonPortalController extends TaxonController{
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
+
         logger.info("doGetTaxonNodes" + requestPathAndQuery(request));
         TaxonBase<?> taxon = service.load(uuid, NO_UNPUBLISHED, TAXONNODE_INIT_STRATEGY);
         if(taxon instanceof Taxon){
