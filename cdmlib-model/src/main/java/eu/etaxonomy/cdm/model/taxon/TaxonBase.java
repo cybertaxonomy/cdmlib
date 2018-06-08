@@ -32,10 +32,14 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.ClassBridge;
 import org.hibernate.search.annotations.ClassBridges;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Store;
+import org.hibernate.search.bridge.builtin.BooleanBridge;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.search.AcceptedTaxonBridge;
@@ -155,6 +159,8 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy>
     private boolean useNameCache = false;
 
     @XmlAttribute(name = "publish")
+    @Field(analyze = Analyze.NO)
+    @FieldBridge(impl=BooleanBridge.class)
     private boolean publish = true;
 
 

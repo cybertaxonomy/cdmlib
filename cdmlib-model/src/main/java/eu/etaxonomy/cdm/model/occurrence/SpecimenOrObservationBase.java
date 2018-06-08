@@ -53,6 +53,7 @@ import org.hibernate.search.annotations.Fields;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.SortableField;
 import org.hibernate.search.annotations.Store;
+import org.hibernate.search.bridge.builtin.BooleanBridge;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.hibernate.search.StripHtmlBridge;
@@ -208,6 +209,8 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
     protected Set<DerivationEvent> derivationEvents = new HashSet<DerivationEvent>();
 
     @XmlAttribute(name = "publish")
+    @Field(analyze = Analyze.NO)
+    @FieldBridge(impl=BooleanBridge.class)
     private boolean publish = true;
 
     @XmlElement(name = "IdentityCache", required = false)
