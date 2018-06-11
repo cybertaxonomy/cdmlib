@@ -189,10 +189,10 @@ public class TestModelUpdate {
 
 	private void test(){
 		System.out.println("Start Datasource");
-//		testSelectedDb();
+		testSelectedDb();
 
 //		updateRemoteWebappTestH2();  //also updates vaadin and taxedtior model
-      updateEdaphobasePostgres();
+//      updateEdaphobasePostgres();
 		System.out.println("\nEnd Datasource");
 	}
 
