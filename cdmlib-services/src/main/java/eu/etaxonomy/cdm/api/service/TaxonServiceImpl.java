@@ -25,7 +25,6 @@ import javax.persistence.EntityNotFoundException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.lucene.queryparser.classic.ParseException;
-import org.apache.lucene.sandbox.queries.DuplicateFilter;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.BooleanQuery.Builder;
@@ -1787,10 +1786,6 @@ public class TaxonServiceImpl
             byCommonNameSearch.setQuery(builder.build());
             byCommonNameSearch.setSortFields(sortFields);
 
-            DuplicateFilter df = new DuplicateFilter("inDescription.taxon.id");
-//            ScoreDoc[] hits = searcher.search(tq,df, 1000).scoreDocs;
-//
-//            byCommonNameSearch.setFilter(df);
             idFieldMap.put(CdmBaseType.TAXON, "id");
 
             luceneSearches.add(byCommonNameSearch);
