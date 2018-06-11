@@ -124,8 +124,6 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
      * Test method for
      * {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#findTaxaAndNames(eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator)}
      * .
-     */
-    /**
      * This test permutes through all search mode combinations.
      *
      * 7 Accepted Taxa

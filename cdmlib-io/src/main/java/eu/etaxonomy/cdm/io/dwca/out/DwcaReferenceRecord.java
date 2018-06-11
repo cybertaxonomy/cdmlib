@@ -70,7 +70,6 @@ public class DwcaReferenceRecord extends DwcaRecordBase{
 			addKnownField("taxonRemarks", "http://rs.tdwg.org/dwc/terms/taxonRemarks");
 			addKnownField("type", "http://purl.org/dc/terms/type");
 
-
 		} catch (URISyntaxException e) {
 			throw new RuntimeException(e);
 		}
@@ -130,7 +129,6 @@ public class DwcaReferenceRecord extends DwcaRecordBase{
 	public String getIsbnIssn() {
 		return isbnIssn;
 	}
-
 	public void setIsbnIssn(String isbnIssn) {
 		this.isbnIssn = isbnIssn;
 	}
@@ -138,7 +136,6 @@ public class DwcaReferenceRecord extends DwcaRecordBase{
 	public URI getUri() {
 		return uri;
 	}
-
 	public void setUri(URI uri) {
 		this.uri = uri;
 	}
@@ -146,7 +143,6 @@ public class DwcaReferenceRecord extends DwcaRecordBase{
 	public String getDoi() {
 		return doi;
 	}
-
 	public void setDoi(String doi) {
 		this.doi = doi;
 	}
@@ -154,7 +150,6 @@ public class DwcaReferenceRecord extends DwcaRecordBase{
 	public LSID getLsid() {
 		return lsid;
 	}
-
 	public void setLsid(LSID lsid) {
 		this.lsid = lsid;
 	}
@@ -167,8 +162,6 @@ public class DwcaReferenceRecord extends DwcaRecordBase{
 	public String getBibliographicCitation() {
 		return bibliographicCitation;
 	}
-
-
 	public void setBibliographicCitation(String bibliographicCitation) {
 		this.bibliographicCitation = bibliographicCitation;
 	}
@@ -177,8 +170,6 @@ public class DwcaReferenceRecord extends DwcaRecordBase{
 	public String getTitle() {
 		return title;
 	}
-
-
 	public void setTitle(String title) {
 		this.title = title;
 	}
@@ -187,8 +178,6 @@ public class DwcaReferenceRecord extends DwcaRecordBase{
 	public AgentBase<?> getCreator() {
 		return creator;
 	}
-
-
 	public void setCreator(AgentBase<?> creator) {
 		this.creator = creator;
 	}
@@ -197,8 +186,6 @@ public class DwcaReferenceRecord extends DwcaRecordBase{
 	public VerbatimTimePeriod getDate() {
 		return date;
 	}
-
-
 	public void setDate(VerbatimTimePeriod date) {
 		this.date = date;
 	}
@@ -207,8 +194,6 @@ public class DwcaReferenceRecord extends DwcaRecordBase{
 	public String getDescription() {
 		return description;
 	}
-
-
 	public void setDescription(String description) {
 		this.description = description;
 	}
@@ -217,8 +202,6 @@ public class DwcaReferenceRecord extends DwcaRecordBase{
 	public String getSubject() {
 		return subject;
 	}
-
-
 	public void setSubject(String subject) {
 		this.subject = subject;
 	}
@@ -227,8 +210,6 @@ public class DwcaReferenceRecord extends DwcaRecordBase{
 	public Language getLanguage() {
 		return language;
 	}
-
-
 	public void setLanguage(Language language) {
 		this.language = language;
 	}
@@ -237,8 +218,6 @@ public class DwcaReferenceRecord extends DwcaRecordBase{
 	public Set<Rights> getRights() {
 		return rights;
 	}
-
-
 	public void setRights(Set<Rights> rights) {
 		this.rights = rights;
 	}
@@ -247,8 +226,6 @@ public class DwcaReferenceRecord extends DwcaRecordBase{
 	public String getTaxonRemarks() {
 		return taxonRemarks;
 	}
-
-
 	public void setTaxonRemarks(String taxonRemarks) {
 		this.taxonRemarks = taxonRemarks;
 	}
@@ -257,11 +234,8 @@ public class DwcaReferenceRecord extends DwcaRecordBase{
 	public String getType() {
 		return type;
 	}
-
-
 	public void setType(String type) {
 		this.type = type;
 	}
-
 
 }

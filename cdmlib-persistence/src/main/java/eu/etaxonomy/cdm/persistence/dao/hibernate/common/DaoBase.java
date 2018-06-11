@@ -39,9 +39,6 @@ public abstract class DaoBase {
     @Autowired
     private SessionFactory factory;
 
-//    @Autowired
-//    private PlatformTransactionManager transactionManager;
-
     public void setSessionFactory(SessionFactory sessionFactory) {
         this.factory = sessionFactory;
     }
