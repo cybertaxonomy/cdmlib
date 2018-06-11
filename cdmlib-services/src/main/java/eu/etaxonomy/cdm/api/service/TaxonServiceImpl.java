@@ -1575,6 +1575,7 @@ public class TaxonServiceImpl
         String fromField;
         String queryTermField;
         String toField = "id"; // TaxonBase.uuid
+        String publishField;
 
         if(edge.isBidirectional()){
             throw new RuntimeException("Bidirectional joining not supported!");
@@ -1582,9 +1583,11 @@ public class TaxonServiceImpl
         if(edge.isEvers()){
             fromField = "relatedFrom.id";
             queryTermField = "relatedFrom.titleCache";
+            publishField = "relatedFrom.publish";
         } else if(edge.isInvers()) {
             fromField = "relatedTo.id";
             queryTermField = "relatedTo.titleCache";
+            publishField = "relatedTo.publish";
         } else {
             throw new RuntimeException("Invalid direction: " + edge.getDirections());
         }
@@ -1597,6 +1600,9 @@ public class TaxonServiceImpl
         Builder joinFromQueryBuilder = new Builder();
         joinFromQueryBuilder.add(taxonBaseQueryFactory.newTermQuery(queryTermField, queryString), Occur.MUST);
         joinFromQueryBuilder.add(taxonBaseQueryFactory.newEntityIdsQuery("type.id", edge.getTaxonRelationshipTypes()), Occur.MUST);
+        if(!includeUnpublished){
+            joinFromQueryBuilder.add(taxonBaseQueryFactory.newBooleanQuery(publishField, true), Occur.MUST);
+        }
 
         Query joinQuery = taxonBaseQueryFactory.newJoinQuery(TaxonRelationship.class, fromField, false, joinFromQueryBuilder.build(), toField, null, ScoreMode.Max);
 
@@ -1772,7 +1778,13 @@ public class TaxonServiceImpl
             LuceneSearch byCommonNameSearch = new LuceneSearch(luceneIndexToolProvider,
                     GroupByTaxonClassBridge.GROUPBY_TAXON_FIELD, Taxon.class);
             byCommonNameSearch.setCdmTypRestriction(Taxon.class);
-            byCommonNameSearch.setQuery(byCommonNameJoinQuery);
+            Builder builder = new BooleanQuery.Builder();
+            builder.add(byCommonNameJoinQuery, Occur.MUST);
+            if(!includeUnpublished)  {
+                QueryFactory taxonBaseQueryFactory = luceneIndexToolProvider.newQueryFactoryFor(TaxonBase.class);
+                builder.add(taxonBaseQueryFactory.newBooleanQuery("publish", true), Occur.MUST);
+            }
+            byCommonNameSearch.setQuery(builder.build());
             byCommonNameSearch.setSortFields(sortFields);
 
             DuplicateFilter df = new DuplicateFilter("inDescription.taxon.id");
