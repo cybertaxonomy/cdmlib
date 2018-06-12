@@ -260,7 +260,7 @@ public class QueryFactory {
 
         Builder uuidInQueryBuilder = new Builder();
         if(entities != null && entities.size() > 0 ){
-            for(IdentifiableEntity entity : entities){
+            for(IdentifiableEntity<?> entity : entities){
                 uuidInQueryBuilder.add(newEntityUuidQuery(uuidFieldName, entity), Occur.SHOULD);
             }
         }

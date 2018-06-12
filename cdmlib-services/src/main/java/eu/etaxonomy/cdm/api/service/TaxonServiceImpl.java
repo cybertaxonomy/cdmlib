@@ -1441,7 +1441,8 @@ public class TaxonServiceImpl
             boolean highlightFragments, Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints, List<String> propertyPaths) throws IOException, LuceneParseException {
 
-        LuceneSearch luceneSearch = prepareFindByFullTextSearch(clazz, queryString, classification, includeUnpublished, languages, highlightFragments, null);
+        LuceneSearch luceneSearch = prepareFindByFullTextSearch(clazz, queryString, classification,
+                includeUnpublished, languages, highlightFragments, null);
 
         // --- execute search
         TopGroups<BytesRef> topDocsResultSet;
@@ -1830,7 +1831,7 @@ public class TaxonServiceImpl
                 String fromField = "inDescription.taxon.id"; // in DescriptionElementBase index
 
                 /*
-                 * Here i was facing wired and nasty bug which took me bugging be really for hours until I found this solution.
+                 * Here I was facing a weired and nasty bug which took me bugging be really for hours until I found this solution.
                  * Maybe this is a bug in java itself.
                  *
                  * When the string toField is constructed by using the expression TaxonRelationshipType.MISAPPLIED_NAME_FOR().getUuid().toString()

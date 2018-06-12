@@ -87,14 +87,17 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     private static Logger logger = Logger.getLogger(TaxonServiceSearchTest.class);
 
-    private static final String ABIES_BALSAMEA_UUID = "f65d47bd-4f49-4ab1-bc4a-bc4551eaa1a8";
-    private static final String ABIES_ALBA_UUID = "7dbd5810-a3e5-44b6-b563-25152b8867f4";
-    private static final String CLASSIFICATION_UUID = "2a5ceebb-4830-4524-b330-78461bf8cb6b";
-    private static final String CLASSIFICATION_ALT_UUID = "d7c741e3-ae9e-4a7d-a566-9e3a7a0b51ce";
-    private static final String D_ABIES_BALSAMEA_UUID = "900108d8-e6ce-495e-b32e-7aad3099135e";
-    private static final String D_ABIES_ALBA_UUID = "ec8bba03-d993-4c85-8472-18b14942464b";
-    private static final String D_ABIES_KAWAKAMII_SEC_KOMAROV_UUID = "e9d8c2fd-6409-46d5-9c2e-14a2bbb1b2b1";
+    private static final UUID ABIES_BALSAMEA_UUID = UUID.fromString("f65d47bd-4f49-4ab1-bc4a-bc4551eaa1a8");
+    private static final UUID ABIES_ALBA_UUID = UUID.fromString("7dbd5810-a3e5-44b6-b563-25152b8867f4");
+    private static final UUID CLASSIFICATION_UUID = UUID.fromString("2a5ceebb-4830-4524-b330-78461bf8cb6b");
+    private static final UUID CLASSIFICATION_ALT_UUID = UUID.fromString("d7c741e3-ae9e-4a7d-a566-9e3a7a0b51ce");
+    private static final UUID D_ABIES_BALSAMEA_UUID = UUID.fromString("900108d8-e6ce-495e-b32e-7aad3099135e");
+    private static final UUID D_ABIES_ALBA_UUID = UUID.fromString("ec8bba03-d993-4c85-8472-18b14942464b");
+    private static final UUID D_ABIES_KAWAKAMII_SEC_KOMAROV_UUID = UUID.fromString("e9d8c2fd-6409-46d5-9c2e-14a2bbb1b2b1");
+    private static final UUID ABIES_SUBALPINA_UUID = UUID.fromString("9fee273c-c819-4f1f-913a-cd910465df51");
+
     private static final int NUM_OF_NEW_RADOM_ENTITIES = 1000;
+
     private boolean includeUnpublished = true;
 
 
@@ -240,7 +243,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     public final void testFindByDescriptionElementFullText_TooManyClauses() throws IOException, LuceneParseException {
 
         // generate 1024 terms to reproduce the bug
-        TaxonDescription description = (TaxonDescription) descriptionService.find(UUID.fromString(D_ABIES_ALBA_UUID));
+        TaxonDescription description = (TaxonDescription) descriptionService.find(D_ABIES_ALBA_UUID);
         Set<String> uniqueRandomStrs = new HashSet<>(1024);
         while(uniqueRandomStrs.size() < 1024){
             uniqueRandomStrs.add(RandomStringUtils.random(10, true, false));
@@ -399,7 +402,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @DataSet
     public final void testFullText_Grouping() throws IOException, LuceneParseException, LuceneMultiSearchException {
 
-        TaxonDescription description = (TaxonDescription) descriptionService.find(UUID.fromString(D_ABIES_ALBA_UUID));
+        TaxonDescription description = (TaxonDescription) descriptionService.find(D_ABIES_ALBA_UUID);
         Set<String> uniqueRandomStrs = new HashSet<>(1024);
         int numOfItems = 100;
         while(uniqueRandomStrs.size() < numOfItems){
@@ -580,8 +583,8 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         refreshLuceneIndex();
 
-        Taxon t_abies_balsamea = (Taxon)taxonService.find(UUID.fromString(ABIES_BALSAMEA_UUID));
-        TaxonDescription d_abies_balsamea = (TaxonDescription)descriptionService.find(UUID.fromString(D_ABIES_BALSAMEA_UUID));
+        Taxon t_abies_balsamea = (Taxon)taxonService.find(ABIES_BALSAMEA_UUID);
+        TaxonDescription d_abies_balsamea = (TaxonDescription)descriptionService.find(D_ABIES_BALSAMEA_UUID);
 
         Pager<SearchResult<TaxonBase>> pager = taxonService.findByDescriptionElementFullText(TextData.class, "Balsam-Tanne", null, null, Arrays.asList(new Language[]{Language.GERMAN()}), false, null, null, null, null);
         Assert.assertEquals("expecting to find the GERMAN 'Balsam-Tanne'", 1, pager.getCount().intValue());
@@ -630,8 +633,8 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         refreshLuceneIndex();
 
         // put taxon into other classification, new taxon node
-        Classification classification = classificationService.find(UUID.fromString(CLASSIFICATION_UUID));
-        Classification alternateClassification = classificationService.find(UUID.fromString(CLASSIFICATION_ALT_UUID));
+        Classification classification = classificationService.find(CLASSIFICATION_UUID);
+        Classification alternateClassification = classificationService.find(CLASSIFICATION_ALT_UUID);
 
         // TODO: why is the test failing when the childNode is already retrieved here, and not after the following four lines?
         //TaxonNode childNode = classification.getChildNodes().iterator().next();
@@ -643,8 +646,8 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         // check for the right taxon node
         TaxonNode childNode = classification.getChildNodes().iterator().next();
-        Assert.assertEquals("expecting Abies balsamea sec.", childNode.getTaxon().getUuid().toString(), ABIES_BALSAMEA_UUID);
-        Assert.assertEquals("expecting default classification", childNode.getClassification().getUuid().toString(), CLASSIFICATION_UUID);
+        Assert.assertEquals("expecting Abies balsamea sec.", childNode.getTaxon().getUuid(), ABIES_BALSAMEA_UUID);
+        Assert.assertEquals("expecting default classification", childNode.getClassification().getUuid(), CLASSIFICATION_UUID);
 
         // moving the taxon around, the rootnode is only a proxy
         alternateClassification.setRootNode(HibernateProxyHelper.deproxy(alternateClassification.getRootNode(), TaxonNode.class));
@@ -658,7 +661,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 //        });
 
         // reload classification
-        classification = classificationService.find(UUID.fromString(CLASSIFICATION_UUID));
+        classification = classificationService.find(CLASSIFICATION_UUID);
         pager = taxonService.findByDescriptionElementFullText(TextData.class, "Balsam-Tanne", alternateClassification, null, Arrays.asList(new Language[]{Language.GERMAN()}), false, null, null, null, null);
         Assert.assertEquals("GERMAN 'Balsam-Tanne' should now be found in other classification", 1, pager.getCount().intValue());
 
@@ -677,7 +680,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     public final void testFindByDescriptionElementFullText_CategoricalData() throws IOException, LuceneParseException {
 
         // add CategoricalData
-        DescriptionBase d_abies_balsamea = descriptionService.find(UUID.fromString(D_ABIES_BALSAMEA_UUID));
+        DescriptionBase d_abies_balsamea = descriptionService.find(D_ABIES_BALSAMEA_UUID);
         // Categorical data
         CategoricalData cdata = CategoricalData.NewInstance();
         cdata.setFeature(Feature.DESCRIPTION());
@@ -768,7 +771,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         refreshLuceneIndex();
 
-        classificationService.find(UUID.fromString(CLASSIFICATION_UUID));
+        classificationService.find(CLASSIFICATION_UUID);
 
         boolean NO_UNPUBLISHED = false;
 
@@ -1023,7 +1026,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
 
         // 1. remove existing taxon relation
-        Taxon t_abies_balsamea = (Taxon)taxonService.find(UUID.fromString(ABIES_BALSAMEA_UUID));
+        Taxon t_abies_balsamea = (Taxon)taxonService.find(ABIES_BALSAMEA_UUID);
         Set<TaxonRelationship> relsTo = t_abies_balsamea.getRelationsToThisTaxon();
         Assert.assertEquals(1, relsTo.size());
         TaxonRelationship taxonRelation = relsTo.iterator().next();
@@ -1037,8 +1040,8 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("misappliedNames with matching area & status filter, should match nothing now", 0, pager.getCount().intValue());
 
         // 2. now add abies_kawakamii_sensu_komarov as misapplied name for t_abies_alba and search for misapplications in russia: ABSENT
-        Taxon t_abies_kawakamii_sensu_komarov = (Taxon)taxonService.find(UUID.fromString(D_ABIES_KAWAKAMII_SEC_KOMAROV_UUID));
-        Taxon t_abies_alba = (Taxon)taxonService.find(UUID.fromString(ABIES_ALBA_UUID));
+        Taxon t_abies_kawakamii_sensu_komarov = (Taxon)taxonService.find(D_ABIES_KAWAKAMII_SEC_KOMAROV_UUID);
+        Taxon t_abies_alba = (Taxon)taxonService.find(ABIES_ALBA_UUID);
         t_abies_alba.addMisappliedName(t_abies_kawakamii_sensu_komarov, null, null);
 
         taxonService.update(t_abies_kawakamii_sensu_komarov);
@@ -1066,8 +1069,8 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Set<PresenceAbsenceTerm> absent = new HashSet<>();
         absent.add(PresenceAbsenceTerm.ABSENT());
 
-        Taxon t_abies_kawakamii_sensu_komarov = (Taxon)taxonService.find(UUID.fromString(D_ABIES_KAWAKAMII_SEC_KOMAROV_UUID));
-        Taxon t_abies_alba = (Taxon)taxonService.find(UUID.fromString(ABIES_ALBA_UUID));
+        Taxon t_abies_kawakamii_sensu_komarov = (Taxon)taxonService.find(D_ABIES_KAWAKAMII_SEC_KOMAROV_UUID);
+        Taxon t_abies_alba = (Taxon)taxonService.find(ABIES_ALBA_UUID);
         t_abies_alba.addMisappliedName(t_abies_kawakamii_sensu_komarov, null, null);
 
         /* Since the upgrade from hibernate search 4 to 5.5
@@ -1078,12 +1081,12 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
          */
         taxonService.update(t_abies_alba);
 
-          commitAndStartNewTransaction(null);
+        commitAndStartNewTransaction(null);
 
-          Pager pager = taxonService.findTaxaAndNamesByFullText(
+        Pager<SearchResult<TaxonBase>> pager = taxonService.findTaxaAndNamesByFullText(
                   EnumSet.of(TaxaAndNamesSearchMode.doMisappliedNames),
                   "Abies", null, a_germany_canada_russia, absent, null, true, null, null, null, null);
-          Assert.assertEquals("misappliedNames with matching area & status filter, should find one", 1, pager.getCount().intValue());
+        Assert.assertEquals("misappliedNames with matching area & status filter, should find one", 1, pager.getCount().intValue());
     }
 
 
@@ -1112,7 +1115,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("Expecting one entity when searching for area 'present'", 1, pager.getCount().intValue());
         Assert.assertNotNull("Expecting entity", pager.getRecords().get(0).getEntity());
         Assert.assertEquals("Expecting Taxon entity", Taxon.class, CdmBase.deproxy(pager.getRecords().get(0).getEntity()).getClass());
-        Assert.assertEquals("Expecting Taxon ", ABIES_BALSAMEA_UUID, pager.getRecords().get(0).getEntity().getUuid().toString());
+        Assert.assertEquals("Expecting Taxon ", ABIES_BALSAMEA_UUID, pager.getRecords().get(0).getEntity().getUuid());
 
     }
 
@@ -1228,11 +1231,11 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     public final void createTestDataSet() throws FileNotFoundException {
 
         Classification europeanAbiesClassification = Classification.NewInstance("European Abies");
-        europeanAbiesClassification.setUuid(UUID.fromString(CLASSIFICATION_UUID));
+        europeanAbiesClassification.setUuid(CLASSIFICATION_UUID);
         classificationService.save(europeanAbiesClassification);
 
         Classification alternativeClassification = Classification.NewInstance("Abies alternative");
-        alternativeClassification.setUuid(UUID.fromString(CLASSIFICATION_ALT_UUID));
+        alternativeClassification.setUuid(CLASSIFICATION_ALT_UUID);
         classificationService.save(alternativeClassification);
 
         Reference sec = ReferenceFactory.newBook();
@@ -1250,7 +1253,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         IBotanicalName n_abies_alba = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         n_abies_alba.setNameCache("Abies alba", true);
         Taxon t_abies_alba = Taxon.NewInstance(n_abies_alba, sec);
-        t_abies_alba.setUuid(UUID.fromString(ABIES_ALBA_UUID));
+        t_abies_alba.setUuid(ABIES_ALBA_UUID);
         taxonService.save(t_abies_alba);
 
         IBotanicalName n_abies_subalpina = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
@@ -1261,7 +1264,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         IBotanicalName n_abies_balsamea = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         n_abies_balsamea.setNameCache("Abies balsamea", true);
         Taxon t_abies_balsamea = Taxon.NewInstance(n_abies_balsamea, sec);
-        t_abies_balsamea.setUuid(UUID.fromString(ABIES_BALSAMEA_UUID));
+        t_abies_balsamea.setUuid(ABIES_BALSAMEA_UUID);
         t_abies_balsamea.addSynonym(s_abies_subalpina, SynonymType.SYNONYM_OF());
         taxonService.save(t_abies_balsamea);
 
@@ -1299,8 +1302,8 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         TaxonDescription d_abies_alba = TaxonDescription.NewInstance(t_abies_alba);
         TaxonDescription d_abies_balsamea = TaxonDescription.NewInstance(t_abies_balsamea);
 
-        d_abies_alba.setUuid(UUID.fromString(D_ABIES_ALBA_UUID));
-        d_abies_balsamea.setUuid(UUID.fromString(D_ABIES_BALSAMEA_UUID));
+        d_abies_alba.setUuid(D_ABIES_ALBA_UUID);
+        d_abies_balsamea.setUuid(D_ABIES_BALSAMEA_UUID);
 
 
         // CommonTaxonName

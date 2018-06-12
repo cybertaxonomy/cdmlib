@@ -82,14 +82,6 @@ public class Synonym extends TaxonBase<ITaxonCacheStrategy<Synonym>> {
 //    @NotNull(groups = Level2.class)
     private Taxon acceptedTaxon;
 
-//
-//    @XmlElement(name = "IsProParte")
-//    private boolean proParte = false;
-//
-//    @XmlElement(name = "IsPartial")
-//    private boolean partial = false;
-
-
     @XmlElement(name = "Type")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
@@ -134,12 +126,12 @@ public class Synonym extends TaxonBase<ITaxonCacheStrategy<Synonym>> {
 	 */
 	//TODO should be private, but still produces Spring init errors
 	public Synonym(){
-		this.cacheStrategy = new TaxonBaseDefaultCacheStrategy<Synonym>();
+		this.cacheStrategy = new TaxonBaseDefaultCacheStrategy<>();
 	}
 
 	private Synonym(TaxonName taxonName, Reference sec, String secDetail){
 		super(taxonName, sec, secDetail);
-		this.cacheStrategy = new TaxonBaseDefaultCacheStrategy<Synonym>();
+		this.cacheStrategy = new TaxonBaseDefaultCacheStrategy<>();
 	}
 
 //********************** GETTER/SETTER ******************************/
@@ -170,44 +162,6 @@ public class Synonym extends TaxonBase<ITaxonCacheStrategy<Synonym>> {
             checkHomotypic();
         }
     }
-//
-//    /**
-//     * Returns "true" if the proParte flag is set.
-//     * This indicates that the {@link name.TaxonName taxon name} used as a
-//     * {@link Synonym synonym} designated originally a real taxon which later has
-//     * been split. In this case the synonym is therefore the synonym of at least
-//     * two different ("accepted/valid") {@link Taxon taxa}.
-//     */
-//    public boolean isProParte() {
-//        return proParte;
-//    }
-//
-//    /**
-//     * @see #isProParte()
-//     */
-//    public void setProParte(boolean proParte) {
-//        this.proParte = proParte;
-//    }
-//
-//    /**
-//     * Returns "true" if the <cod>partial</code> flag is set.
-//     * This indicates that the {@link name.TaxonName taxon name} used as <code>this</code>
-//     * {@link Synonym synonym} designated originally a real taxon which later has
-//     * been lumped together with another one. In this case the
-//     * ("accepted/valid") {@link Taxon taxon} has therefore at least
-//     * two different synonyms (for the two lumped real taxa).
-//     */
-//    public boolean isPartial() {
-//        return partial;
-//    }
-//
-//    /**
-//     * @see #isPartial()
-//     */
-//    public void setPartial(boolean partial) {
-//        this.partial = partial;
-//    }
-
 
     public SynonymType getType() {
         return type;
