@@ -8,7 +8,8 @@
 */
 package eu.etaxonomy.cdm.io.excel.taxa;
 
-import org.codehaus.plexus.util.StringUtils;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
@@ -23,6 +24,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @since 19.02.2018
  *
  */
+@Component
 public class TaxonListImport extends TaxonExcelImportBase {
 
     private static final long serialVersionUID = 515631363871257717L;
