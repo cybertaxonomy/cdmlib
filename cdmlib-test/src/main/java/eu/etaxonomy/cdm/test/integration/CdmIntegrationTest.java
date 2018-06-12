@@ -72,6 +72,7 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
     protected static final Logger logger = Logger.getLogger(CdmIntegrationTest.class);
 
     private static final String PROPERTY_H2_SERVER = "h2Server";
+    private static final String H2_SERVER_RUNNING = "h2ServerIsRunning";
 
     /**
      * List of the tables which are initially being populated during term loading. {@link PersistentTermInitializer}
@@ -141,17 +142,25 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
     @Before
     public void startH2Server() throws Exception {
 
-        if(System.getProperty(PROPERTY_H2_SERVER) != null){
+        if(System.getProperty(PROPERTY_H2_SERVER) != null && System.getProperty(H2_SERVER_RUNNING) == null){
             try {
+                // printing to System.out, so that developers get feedback always
+                System.out.println("####################################################");
+                System.out.println("  Starting h2 web server ...");
                 List<String> args = new ArrayList<String>();
+                Integer port = null;
                 try {
-                    Integer port = Integer.parseInt(System.getProperty(PROPERTY_H2_SERVER));
+                    port = Integer.parseInt(System.getProperty(PROPERTY_H2_SERVER));
                     args.add("-webPort");
                     args.add(port.toString());
                 } catch (Exception e) {
-                    // will start at port 8082 by default
+                    // the default port is 8082
                 }
                 Server.createWebServer(args.toArray(new String[]{})).start();
+                System.setProperty(H2_SERVER_RUNNING, "true");
+                System.out.println("  you can connect to the h2 web server by opening");
+                System.out.println("  http://localhost:" + (port != null ? port : "8082") + "/ in your browser");
+                System.out.println("#####################################################");
             } catch (SQLException e) {
                 e.printStackTrace();
             }
