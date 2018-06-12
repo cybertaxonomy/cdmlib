@@ -54,9 +54,13 @@ import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
+import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
+import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
@@ -176,6 +180,51 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
             Assert.fail();
         }
     }
+
+    @Test
+    public final void testSaveOrUpdateTaxonWithMisappliedName() {
+        Taxon expectedTaxon = Taxon.NewInstance(null, null);
+        TaxonName misappliedNameName = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(), "Abies", null, "alba", null, null, null, null, null);
+
+        UUID misappliedNameNameUuid = nameService.save(misappliedNameName).getUuid();
+        misappliedNameName = nameService.find(misappliedNameNameUuid);
+        SpecimenTypeDesignation typedes = SpecimenTypeDesignation.NewInstance();
+        DerivedUnit derivedUnit = DerivedUnit.NewPreservedSpecimenInstance();
+        FieldUnit fieldUnit = FieldUnit.NewInstance();
+        DerivationEvent derivationEvent = DerivationEvent.NewSimpleInstance(fieldUnit, derivedUnit, DerivationEventType.ACCESSIONING());
+//        derivedUnit.addDerivationEvent(derivationEvent);
+        typedes.setTypeSpecimen(derivedUnit);
+        misappliedNameName.addTypeDesignation(typedes, false);
+        Taxon misappliedName = Taxon.NewInstance(misappliedNameName, null);
+        UUID misappliedNameUuid = service.save(misappliedName).getUuid();
+        misappliedName = (Taxon) service.find(misappliedNameUuid);
+        expectedTaxon.addMisappliedName(misappliedName, null, null);
+        UUID uuid = service.save(expectedTaxon).getUuid();
+        TaxonBase<?> actualTaxon = service.find(uuid);
+        assertEquals(expectedTaxon, actualTaxon);
+        misappliedName.setSec(ReferenceFactory.newArticle());
+
+        try{
+            service.saveOrUpdate(actualTaxon);
+            misappliedName = (Taxon)service.find(misappliedNameUuid);
+            Assert.assertNotNull(misappliedName.getSec());
+        }catch(Exception e){
+            Assert.fail();
+        }
+
+        service.getSession().flush();
+        service.getSession().beginTransaction();
+        actualTaxon = service.find(uuid);
+        ((Taxon)actualTaxon).getTaxonRelations(misappliedName).iterator().next().getFromTaxon().setSec(null);
+        try{
+            service.saveOrUpdate(actualTaxon);
+            misappliedName = (Taxon)service.find(misappliedNameUuid);
+            Assert.assertNull(misappliedName.getSec());
+        }catch(Exception e){
+            Assert.fail();
+        }
+    }
+
     /**
      * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#removeTaxon(eu.etaxonomy.cdm.model.taxon.TaxonBase)}.
      */
