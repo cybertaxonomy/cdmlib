@@ -1507,6 +1507,7 @@ public class TaxonServiceImpl
      */
     protected LuceneSearch prepareFindByFullTextSearch(Class<? extends CdmBase> clazz, String queryString, Classification classification,
             boolean includeUnpublished, List<Language> languages, boolean highlightFragments, SortField[] sortFields) {
+
         Builder finalQueryBuilder = new Builder();
         Builder textQueryBuilder = new Builder();
 

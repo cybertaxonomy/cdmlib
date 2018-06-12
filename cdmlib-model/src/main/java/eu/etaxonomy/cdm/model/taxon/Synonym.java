@@ -57,8 +57,6 @@ import eu.etaxonomy.cdm.validation.annotation.HomotypicSynonymsShouldBelongToGro
 @XmlType(name = "Synonym", propOrder = {
     "acceptedTaxon",
     "type",
-//    "proParte",
-//    "partial"
 })
 @XmlRootElement(name = "Synonym")
 @Entity

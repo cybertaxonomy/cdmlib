@@ -30,7 +30,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  *
  * @author c.mathew
  * @author a.kohlbecker
- * @version 1.0
  * @since 26 Jul 2013
  */
 public class AcceptedTaxonBridge implements FieldBridge { // TODO inherit from AbstractClassBridge since this base class provides presets for id fields?

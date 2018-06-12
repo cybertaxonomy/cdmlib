@@ -614,7 +614,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
     }
 
     private String[] mergeSynAccTaxonUuids(String[] accTaxonUuids) {
-        List<String> accTaxonUuidList = new ArrayList<String>();
+        List<String> accTaxonUuidList = new ArrayList<>();
         for(String accTaxonUuid : accTaxonUuids) {
             for(String uuidListAsString : accTaxonUuid.split(AcceptedTaxonBridge.ACCEPTED_TAXON_UUID_LIST_SEP)) {
                 accTaxonUuidList.add(uuidListAsString);
