@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * Lucene index class bridge which sets the uuids of the accepted taxon for the
  * TaxonBase object into the index.
  * <p>
- * Adds multivalued id fields with the uuid and id of the accepted taxa of the
+ * Adds id fields with the uuid and id of the accepted taxon of the
  * current {@link TaxonBase} entity. Id fields should not be analyzed, therefore
  * this FieldBridge ignores the settings {@link org.hibernate.annotations.Index}
  * annotation and always sets this to <code>NOT_ANALYZED</code>.
