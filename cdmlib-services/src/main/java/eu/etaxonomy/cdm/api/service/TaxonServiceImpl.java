@@ -64,6 +64,7 @@ import eu.etaxonomy.cdm.api.service.search.SearchResultBuilder;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.hibernate.search.AcceptedTaxonBridge;
 import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.MultilanguageTextFieldBridge;
@@ -1752,7 +1753,7 @@ public class TaxonServiceImpl
             if(addDistributionFilter && searchModes.contains(TaxaAndNamesSearchMode.doSynonyms)){
                 // add additional area filter for synonyms
                 String fromField = "inDescription.taxon.id"; // in DescriptionElementBase index
-                String toField = "accTaxon.id"; // id in TaxonBase index (is multivalued)
+                String toField = "accTaxon" + AcceptedTaxonBridge.DOC_KEY_ID_SUFFIX; // id in TaxonBase index
 
                 //TODO replace by createByDistributionJoinQuery
                 BooleanQuery byDistributionQuery = createByDistributionQuery(namedAreaList, distributionStatusList, distributionFilterQueryFactory);

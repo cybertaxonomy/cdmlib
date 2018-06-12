@@ -423,7 +423,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
                             searchResult.getMaxScore(),
                             doc.getValues("uuid")[0].toString(),
                             doc.getValues("taxonBases.uuid"),
-                            mergeSynAccTaxonUuids(doc.getValues("taxonBases.accTaxon.uuids")));
+                            mergeSynAccTaxonUuids(doc.getValues("taxonBases.accTaxon"+AcceptedTaxonBridge.DOC_KEY_UUID_SUFFIX)));
                     }
                 }
                 nsList.add(ns);
@@ -597,7 +597,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
                             searchResult.getMaxScore(),
                             doc.getValues("uuid")[0].toString(),
                             doc.getValues("taxonBases.uuid"),
-                            mergeSynAccTaxonUuids(doc.getValues("taxonBases.accTaxon.uuids")));
+                            mergeSynAccTaxonUuids(doc.getValues("taxonBases.accTaxon"+AcceptedTaxonBridge.DOC_KEY_UUID_SUFFIX)));
                     }
                 }
                 nsList.add(ns);
@@ -616,9 +616,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
     private String[] mergeSynAccTaxonUuids(String[] accTaxonUuids) {
         List<String> accTaxonUuidList = new ArrayList<>();
         for(String accTaxonUuid : accTaxonUuids) {
-            for(String uuidListAsString : accTaxonUuid.split(AcceptedTaxonBridge.ACCEPTED_TAXON_UUID_LIST_SEP)) {
-                accTaxonUuidList.add(uuidListAsString);
-            }
+              accTaxonUuidList.add(accTaxonUuid);
         }
         return accTaxonUuidList.toArray(new String[0]);
 
