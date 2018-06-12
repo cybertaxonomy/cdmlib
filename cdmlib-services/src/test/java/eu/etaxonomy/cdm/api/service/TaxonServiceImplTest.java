@@ -211,9 +211,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         }catch(Exception e){
             Assert.fail();
         }
-
-        service.getSession().flush();
-        service.getSession().beginTransaction();
+        commitAndStartNewTransaction(null);
         actualTaxon = service.find(uuid);
         ((Taxon)actualTaxon).getTaxonRelations(misappliedName).iterator().next().getFromTaxon().setSec(null);
         try{
