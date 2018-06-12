@@ -70,6 +70,13 @@ public class AcceptedTaxonBridge implements FieldBridge { // TODO inherit from A
             //TODO  do we really need to set the boost for an id field?
             canonicalNameUuidField.setBoost(luceneOptions.getBoost());
             document.add(canonicalNameUuidField);
+
+            //publish
+            Field accPublishField = new StringField(name + DOC_KEY_PUBLISH_SUFFIX,
+                    Boolean.toString(accTaxon.isPublish()),
+                    luceneOptions.getStore()
+                    );
+            document.add(accPublishField);
         }
     }
 }

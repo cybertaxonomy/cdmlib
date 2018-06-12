@@ -97,7 +97,7 @@ import eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynony
             index = org.hibernate.search.annotations.Index.YES,
             store = Store.YES,
             impl = ClassInfoBridge.class),
-    @ClassBridge(name="accTaxon", // TODO rename to acceptedTaxon, since we are usually not using abbreviations for field names
+    @ClassBridge(name="accTaxon", // TODO rename to acceptedTaxon, since we are usually not using abbreviations for field names, see also ACC_TAXON_BRIDGE_PREFIX
             index = org.hibernate.search.annotations.Index.YES,
             store = Store.YES,
             impl = AcceptedTaxonBridge.class),
@@ -108,6 +108,8 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy>
            implements  IPublishable, IIntextReferenceTarget, Cloneable {
     private static final long serialVersionUID = -3589185949928938529L;
     private static final Logger logger = Logger.getLogger(TaxonBase.class);
+
+    public static final String ACC_TAXON_BRIDGE_PREFIX = "accTaxon";
 
     private static Method methodTaxonNameAddTaxonBase;
 

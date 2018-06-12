@@ -1538,6 +1538,8 @@ public class TaxonServiceImpl
             finalQueryBuilder.add(taxonBaseQueryFactory.newEntityIdQuery("taxonNodes.classification.id", classification), Occur.MUST);
         }
         if(!includeUnpublished)  {
+            String accPublishParam = TaxonBase.ACC_TAXON_BRIDGE_PREFIX + AcceptedTaxonBridge.DOC_KEY_PUBLISH_SUFFIX;
+            finalQueryBuilder.add(taxonBaseQueryFactory.newBooleanQuery(accPublishParam, true), Occur.MUST);
             finalQueryBuilder.add(taxonBaseQueryFactory.newBooleanQuery("publish", true), Occur.MUST);
         }
 
