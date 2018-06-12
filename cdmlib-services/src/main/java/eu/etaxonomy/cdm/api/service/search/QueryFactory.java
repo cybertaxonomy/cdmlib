@@ -281,7 +281,7 @@ public class QueryFactory {
         Builder uuidInQueryBuilder = new Builder();
         if(uuids != null && uuids.size() > 0 ){
             for(UUID uuid : uuids){
-                uuidInQueryBuilder.add(newTermQuery(uuidFieldName, uuids.toString(), false), Occur.SHOULD);
+                uuidInQueryBuilder.add(newTermQuery(uuidFieldName, uuid.toString(), false), Occur.SHOULD);
             }
         }
         return uuidInQueryBuilder.build();
