@@ -1130,7 +1130,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet
-    @Ignore // remove once http://dev.e-taxonomy.eu/trac/ticket/5477 is solved
+    //http://dev.e-taxonomy.eu/trac/ticket/5477
     public final void testFindTaxaAndNamesByFullText_AreaFilter_issue5477() throws IOException, LuceneParseException, LuceneMultiSearchException {
 
         Set<NamedArea> a_germany_canada_russia = new HashSet<>();
