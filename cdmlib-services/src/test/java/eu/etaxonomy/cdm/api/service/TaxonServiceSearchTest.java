@@ -826,7 +826,8 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         refreshLuceneIndex();
 
-        Classification alternateClassification = classificationService.find(UUID.fromString(CLASSIFICATION_ALT_UUID));
+        Classification alternateClassification = classificationService.find(CLASSIFICATION_ALT_UUID);
+        Synonym abiesSubalpina = (Synonym)taxonService.find(ABIES_SUBALPINA_UUID);
 
         Pager<SearchResult<TaxonBase>> pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms, TaxaAndNamesSearchMode.includeUnpublished),
