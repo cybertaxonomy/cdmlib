@@ -107,7 +107,7 @@ public abstract class AbstractController<T extends CdmBase, SERVICE extends ISer
     }
 
     // =============================================================
-    // TODO move into userHelper Class? See Vaddin CdmUserHelper!
+    // TODO move into userHelper Class? See Vaadin CdmUserHelper!
     /**
      * @return
      */

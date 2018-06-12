@@ -109,7 +109,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
     @Override
     public void initBinder(WebDataBinder binder) {
         super.initBinder(binder);
-        binder.registerCustomEditor(MarkerType.class, new TermBasePropertyEditor<MarkerType>(termService));
+        binder.registerCustomEditor(MarkerType.class, new TermBasePropertyEditor<>(termService));
     }
 
     protected List<String> getTaxonDescriptionInitStrategy() {
@@ -119,6 +119,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
     protected List<String> getTaxonDescriptionElementInitStrategy() {
         return getInitializationStrategy();
     }
+
 
     /**
      * Get the accepted {@link Taxon} for a given
@@ -305,24 +306,25 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             @RequestParam(value="onlyCongruent", required=false) final boolean onlyCongruent,
             HttpServletResponse response,
             HttpServletRequest request) throws IOException {
-            ModelAndView mv = new ModelAndView();
-            /**
-             * List<UUID> classificationFilter,
-             * boolean includeDoubtful,
-             * boolean onlyCongruent)
-             */
-            List<UUID> classificationFilter = null;
-            if( classificationStringList != null ){
-                classificationFilter = new ArrayList<UUID>();
-                for(String classString :classificationStringList){
-                    classificationFilter.add(UUID.fromString(classString));
-                }
+
+        ModelAndView mv = new ModelAndView();
+        /**
+         * List<UUID> classificationFilter,
+         * boolean includeDoubtful,
+         * boolean onlyCongruent)
+         */
+        List<UUID> classificationFilter = null;
+        if( classificationStringList != null ){
+            classificationFilter = new ArrayList<>();
+            for(String classString :classificationStringList){
+                classificationFilter.add(UUID.fromString(classString));
             }
-            final IncludedTaxonConfiguration configuration =
-                    new IncludedTaxonConfiguration(classificationFilter, includeDoubtful, onlyCongruent);
-            IncludedTaxaDTO listIncludedTaxa = service.listIncludedTaxa(uuid, configuration);
-            mv.addObject(listIncludedTaxa);
-            return mv;
+        }
+        IncludedTaxonConfiguration configuration =
+                new IncludedTaxonConfiguration(classificationFilter, includeDoubtful, onlyCongruent);
+        IncludedTaxaDTO listIncludedTaxa = service.listIncludedTaxa(uuid, configuration);
+        mv.addObject(listIncludedTaxa);
+        return mv;
     }
 
     // TODO ================================================================================ //
@@ -378,7 +380,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
 
         ModelAndView mv = new ModelAndView();
 
-        List<DescriptionElementBase> allElements = new ArrayList<DescriptionElementBase>();
+        List<DescriptionElementBase> allElements = new ArrayList<>();
         List<DescriptionElementBase> elements;
         int count = 0;
 
@@ -386,7 +388,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
 
         Taxon t = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
 
-        Set<MarkerType> markerTypesSet = new HashSet<MarkerType>();
+        Set<MarkerType> markerTypesSet = new HashSet<>();
         if (markerTypes == null) {
             markerTypesSet.addAll(markerTypes);
         }

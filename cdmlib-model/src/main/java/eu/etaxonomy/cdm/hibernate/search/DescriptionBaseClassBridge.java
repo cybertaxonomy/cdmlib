@@ -39,14 +39,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  */
 public class DescriptionBaseClassBridge extends AbstractClassBridge {
 
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.hibernate.search.bridge.FieldBridge#set(java.lang.String,
-     * java.lang.Object, org.apache.lucene.document.Document,
-     * org.hibernate.search.bridge.LuceneOptions)
-     */
     @Override
     public void set(String name, Object entity, Document document, LuceneOptions luceneOptions) {
 
