@@ -34,6 +34,8 @@ public class HttpStatusMessage {
 
     public final static HttpStatusMessage INTERNAL_ERROR = new HttpStatusMessage(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "internal server error");
 
+    public final static HttpStatusMessage ACCESS_DENIED = new HttpStatusMessage(HttpServletResponse.SC_FORBIDDEN, "access denied");
+
 
     private int statusCode;
 

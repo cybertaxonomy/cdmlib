@@ -160,12 +160,12 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
+
+        boolean includeUnpublished = NO_UNPUBLISHED;
+
         logger.info("doGetClassifications(): " + request.getRequestURI());
         TaxonBase<?> taxonBase = service.load(uuid);
-
-        if (taxonBase == null){
-            HttpStatusMessage.UUID_NOT_FOUND.send(response);
-        }
+        taxonBase = checkExistsAndAccess(taxonBase, includeUnpublished, response);
 
         return service.listClassifications(taxonBase, null, null, getInitializationStrategy());
     }
@@ -255,18 +255,20 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
 
         ModelAndView mv = new ModelAndView();
 
-        TaxonBase<?> tb = service.load(uuid);
+        TaxonBase<?> taxonBase = service.load(uuid);
+        taxonBase = checkExistsAndAccess(taxonBase, NO_UNPUBLISHED, response);
 
-        List<OrderHint> orderHints = new ArrayList<OrderHint>();
+        List<OrderHint> orderHints = new ArrayList<>();
         orderHints.add(new OrderHint("titleCache", SortOrder.ASCENDING));
 
-        if(tb instanceof Taxon){
+        if(taxonBase instanceof Taxon){
             PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
             pagerParams.normalizeAndValidate(response);
 
-            return occurrenceService.pageFieldUnitsByAssociatedTaxon(null, (Taxon) tb, null, pagerParams.getPageSize(), pagerParams.getPageIndex(), orderHints, null);
+            return occurrenceService.pageFieldUnitsByAssociatedTaxon(null, (Taxon) taxonBase, null, pagerParams.getPageSize(), pagerParams.getPageIndex(), orderHints, null);
+        }else{
+            return null;
         }
-        return null;
     }
 
     @RequestMapping(value = "taggedName", method = RequestMethod.GET)
@@ -357,13 +359,15 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             logger.info("doGetDescriptions()" + requestPathAndQuery(request));
         }
 
-        Taxon t = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
-        Set<MarkerType> markerTypesSet = new HashSet<MarkerType>();
+        Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
+        taxon = checkExistsAndAccess(taxon, NO_UNPUBLISHED, response);
+
+        Set<MarkerType> markerTypesSet = new HashSet<>();
         if (markerTypes != null) {
             markerTypesSet.addAll(markerTypes);
         }
 
-        Pager<TaxonDescription> p = descriptionService.pageTaxonDescriptions(t, null, null, markerTypesSet, null, null, getTaxonDescriptionInitStrategy());
+        Pager<TaxonDescription> p = descriptionService.pageTaxonDescriptions(taxon, null, null, markerTypesSet, null, null, getTaxonDescriptionInitStrategy());
 
         return p;
     }
@@ -378,6 +382,9 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             HttpServletResponse response) throws IOException {
         logger.info("doGetDescriptionElementsByType() - " + requestPathAndQuery(request));
 
+
+        boolean includeUnpublished = NO_UNPUBLISHED;
+
         ModelAndView mv = new ModelAndView();
 
         List<DescriptionElementBase> allElements = new ArrayList<>();
@@ -386,14 +393,18 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
 
         List<String> initStrategy = doCount ? null : getTaxonDescriptionElementInitStrategy();
 
-        Taxon t = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
+        Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
+
+        taxon = checkExistsAndAccess(taxon, includeUnpublished, response);
+
 
         Set<MarkerType> markerTypesSet = new HashSet<>();
         if (markerTypes == null) {
             markerTypesSet.addAll(markerTypes);
         }
 
-        List<TaxonDescription> taxonDescriptions = descriptionService.listTaxonDescriptions(t, null, null, markerTypesSet, null, null, null);
+        List<TaxonDescription> taxonDescriptions = descriptionService.listTaxonDescriptions(
+                taxon, null, null, markerTypesSet, null, null, null);
         try {
             Class type;
             type = Class.forName("eu.etaxonomy.cdm.model.description."

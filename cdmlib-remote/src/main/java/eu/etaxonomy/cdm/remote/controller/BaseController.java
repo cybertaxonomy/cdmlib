@@ -43,6 +43,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IPublishable;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
@@ -386,6 +387,26 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
         }
         return sub_c;
 
+    }
+
+    /**
+     * Checks if an {@link IPublishable} was found and if it is publish.
+     * If not the according {@link HttpStatusMessage http messages} are added to response.
+     * @param publishable
+     * @param includeUnpublished
+     * @param response
+     * @return
+     * @throws IOException
+     */
+    protected <T extends IPublishable> T checkExistsAndAccess(T publishable, boolean includeUnpublished,
+            HttpServletResponse response) throws IOException {
+        if (publishable == null){
+            HttpStatusMessage.UUID_NOT_FOUND.send(response);
+        }else if (!includeUnpublished && !publishable.isPublish()){
+            HttpStatusMessage.ACCESS_DENIED.send(response);
+            publishable = null;
+        }
+        return publishable;
     }
 
 
