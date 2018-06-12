@@ -1580,6 +1580,7 @@ public class TaxonServiceImpl
         String queryTermField;
         String toField = "id"; // TaxonBase.uuid
         String publishField;
+        String publishFieldInvers;
 
         if(edge.isBidirectional()){
             throw new RuntimeException("Bidirectional joining not supported!");
@@ -1588,10 +1589,12 @@ public class TaxonServiceImpl
             fromField = "relatedFrom.id";
             queryTermField = "relatedFrom.titleCache";
             publishField = "relatedFrom.publish";
+            publishFieldInvers = "relatedTo.publish";
         } else if(edge.isInvers()) {
             fromField = "relatedTo.id";
             queryTermField = "relatedTo.titleCache";
             publishField = "relatedTo.publish";
+            publishFieldInvers = "relatedFrom.publish";
         } else {
             throw new RuntimeException("Invalid direction: " + edge.getDirections());
         }
@@ -1606,6 +1609,7 @@ public class TaxonServiceImpl
         joinFromQueryBuilder.add(taxonBaseQueryFactory.newEntityIdsQuery("type.id", edge.getTaxonRelationshipTypes()), Occur.MUST);
         if(!includeUnpublished){
             joinFromQueryBuilder.add(taxonBaseQueryFactory.newBooleanQuery(publishField, true), Occur.MUST);
+            joinFromQueryBuilder.add(taxonBaseQueryFactory.newBooleanQuery(publishFieldInvers, true), Occur.MUST);
         }
 
         Query joinQuery = taxonBaseQueryFactory.newJoinQuery(TaxonRelationship.class, fromField, false, joinFromQueryBuilder.build(), toField, null, ScoreMode.Max);
@@ -1619,9 +1623,6 @@ public class TaxonServiceImpl
 
         if(classification != null){
             finalQueryBuilder.add(taxonBaseQueryFactory.newEntityIdQuery("taxonNodes.classification.id", classification), Occur.MUST);
-        }
-        if(!includeUnpublished)  {
-            finalQueryBuilder.add(taxonBaseQueryFactory.newBooleanQuery("publish", true), Occur.MUST);
         }
 
         luceneSearch.setQuery(finalQueryBuilder.build());

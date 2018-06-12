@@ -161,8 +161,7 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy>
     private boolean useNameCache = false;
 
     @XmlAttribute(name = "publish")
-    @Field(analyze = Analyze.NO)
-    @FieldBridge(impl=BooleanBridge.class)
+    @Field(analyze = Analyze.NO, store = Store.YES, bridge= @FieldBridge(impl=BooleanBridge.class))
     private boolean publish = true;
 
 
