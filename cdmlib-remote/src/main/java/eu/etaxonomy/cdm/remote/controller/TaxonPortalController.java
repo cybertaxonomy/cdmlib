@@ -298,6 +298,7 @@ public class TaxonPortalController extends TaxonController{
     public ModelAndView doGetSynonymy(@PathVariable("uuid") UUID uuid,
             HttpServletRequest request, HttpServletResponse response)throws IOException {
 
+        boolean includeUnpublished = NO_UNPUBLISHED;
         if(request != null){
             logger.info("doGetSynonymy() " + requestPathAndQuery(request));
         }
@@ -307,6 +308,10 @@ public class TaxonPortalController extends TaxonController{
 
         //new
         List<List<Synonym>> synonymyGroups = service.getSynonymsByHomotypicGroup(taxon, SYNONYMY_INIT_STRATEGY);
+        if(!includeUnpublished){
+            removeUnpublishedSynonyms(synonymyGroups);
+        }
+
         synonymy.put("homotypicSynonymsByHomotypicGroup", synonymyGroups.get(0));
         synonymyGroups.remove(0);
         synonymy.put("heterotypicSynonymyGroups", synonymyGroups);
@@ -319,6 +324,25 @@ public class TaxonPortalController extends TaxonController{
         return mv;
     }
 
+
+    /**
+     * @param synonymyGroups
+     */
+    private List<List<Synonym>> removeUnpublishedSynonyms(List<List<Synonym>> synonymyGroups) {
+        List<List<Synonym>> result = new ArrayList<>();
+        for (List<Synonym> oldList : synonymyGroups){
+            List<Synonym> newList = new ArrayList<>();
+            for (Synonym oldSyn : oldList){
+                if (oldSyn.isPublish()){
+                    newList.add(oldSyn);
+                }
+            }
+            if (!newList.isEmpty()){
+                result.add(newList);
+            }
+        }
+        return result;
+    }
 
     /**
      * {@inheritDoc}
