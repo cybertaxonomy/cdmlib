@@ -206,8 +206,7 @@ public class TaxonDaoHibernateImpl
     public List<UuidAndTitleCache<IdentifiableEntity>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doNamesWithoutTaxa,
             boolean doMisappliedNames, boolean doCommonNames, boolean includeUnpublished, String queryString, Classification classification,
             MatchMode matchMode, Set<NamedArea> namedAreas, NameSearchOrder order) {
-//        long zstVorher;
-//        long zstNachher;
+
         if (order == null){
             order = NameSearchOrder.ALPHA;  //TODO add to signature
         }
@@ -1890,7 +1889,7 @@ public class TaxonDaoHibernateImpl
         Query query = null;
         if (pattern != null){
             query = session.createQuery(
-                  " SELECT tb.uuid, taxonBase.id, tb.titleCache, tb.name.rank "
+                  " SELECT tb.uuid, tb.id, tb.titleCache, tb.name.rank "
                   + " FROM TaxonBase as tb "
                   + " WHERE tb.titleCache LIKE :pattern");
             pattern = pattern.replace("*", "%");
