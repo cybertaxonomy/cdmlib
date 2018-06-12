@@ -1728,7 +1728,8 @@ public class TaxonServiceImpl
 
         // search for taxa or synonyms
         if(searchModes.contains(TaxaAndNamesSearchMode.doTaxa) || searchModes.contains(TaxaAndNamesSearchMode.doSynonyms)) {
-            Class taxonBaseSubclass = TaxonBase.class;
+            @SuppressWarnings("rawtypes")
+            Class<? extends TaxonBase> taxonBaseSubclass = TaxonBase.class;
             if(searchModes.contains(TaxaAndNamesSearchMode.doTaxa) && !searchModes.contains(TaxaAndNamesSearchMode.doSynonyms)){
                 taxonBaseSubclass = Taxon.class;
             } else if (!searchModes.contains(TaxaAndNamesSearchMode.doTaxa) && searchModes.contains(TaxaAndNamesSearchMode.doSynonyms)) {

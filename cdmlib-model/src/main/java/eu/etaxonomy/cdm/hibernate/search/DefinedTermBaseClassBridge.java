@@ -27,10 +27,8 @@ import eu.etaxonomy.cdm.model.common.Representation;
  */
 public class DefinedTermBaseClassBridge extends AbstractClassBridge implements ParameterizedBridge {
 
-    /**
-     *
-     */
     private static final String INCLUDE_PARENT_TERMS_KEY = "includeParentTerms";
+
     private boolean includeParentTerms = false;
 
 
@@ -42,7 +40,7 @@ public class DefinedTermBaseClassBridge extends AbstractClassBridge implements P
         }
         NotNullAwareIdBridge idFieldBridge = new NotNullAwareIdBridge();
 
-        DefinedTermBase term = (DefinedTermBase)value;
+        DefinedTermBase<?> term = (DefinedTermBase<?>)value;
 
         idFieldBridge.set(name + "id", term.getId(), document, idFieldOptions);
 
@@ -65,7 +63,7 @@ public class DefinedTermBaseClassBridge extends AbstractClassBridge implements P
 
         if(includeParentTerms){
 
-            DefinedTermBase parentTerm = term.getPartOf();
+            DefinedTermBase<?> parentTerm = term.getPartOf();
             while(parentTerm != null){
                 Field setOfParentsField = new StringField(name + "setOfParents",
                         parentTerm.getUuid().toString(),

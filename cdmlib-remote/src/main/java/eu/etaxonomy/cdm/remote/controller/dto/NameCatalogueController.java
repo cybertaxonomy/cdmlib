@@ -507,8 +507,9 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
             @RequestParam(value = "hits", required = false, defaultValue = "10") String hits,
             @RequestParam(value = "type", required = false, defaultValue = FUZZY_NAME_CACHE) String type,
             HttpServletRequest request, HttpServletResponse response) throws IOException {
+
         ModelAndView mv = new ModelAndView();
-        List<RemoteResponse> nsList = new ArrayList<RemoteResponse>();
+        List<RemoteResponse> nsList = new ArrayList<>();
         float acc = 0.5f;
         int h = 10;
         try {
@@ -542,8 +543,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
             stringArray[0] = Character.toUpperCase(stringArray[0]);
             queryWOWildcards = new String(stringArray);
             logger.info("doGetNameSearch()" + request.getRequestURI() + " for query \"" + queryWOWildcards + " with accuracy " + accuracy);
-            //List<NonViralName> nameList = new ArrayList<NonViralName>();
-            List<DocumentSearchResult> nameSearchList = new ArrayList<DocumentSearchResult>();
+            List<DocumentSearchResult> nameSearchList = new ArrayList<>();
             try {
                 if(type.equals(FUZZY_ATOMISED)) {
                     nameSearchList = service.findByNameFuzzySearch(
@@ -561,8 +561,6 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
                             h);
                 }
             } catch (LuceneParseException e) {
-                // TODO Auto-generated catch block
-                //e.printStackTrace();
                 ErrorResponse er = new ErrorResponse();
                 er.setErrorMessage("Could not parse name : " + queryWOWildcards);
                 nsList.add(er);
@@ -582,8 +580,8 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
                     // the corresponding accepted taxa.
                     // reason to return accepted taxa also, is to be able to get from
                     // scientific name to taxon concept in two web service calls.
-                    List<String> tbUuidList = new ArrayList<String>();//nvn.getTaxonBases();
-                    List<String> accTbUuidList = new ArrayList<String>();
+                    List<String> tbUuidList = new ArrayList<>();//nvn.getTaxonBases();
+                    List<String> accTbUuidList = new ArrayList<>();
                     String[] tbUuids = doc.getValues("taxonBases.uuid");
                     String[] tbClassNames = doc.getValues("taxonBases.classInfo.name");
                     for(int i=0;i<tbUuids.length;i++) {

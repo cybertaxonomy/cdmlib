@@ -38,6 +38,7 @@ public class AcceptedTaxonBridge implements FieldBridge { // TODO inherit from A
     public static final String DOC_KEY_ID_SUFFIX = ".id";
     public final static String DOC_KEY_PUBLISH_SUFFIX = ".publish";
 
+
     @Override
     public void set(String name, Object value, Document document,
             LuceneOptions luceneOptions) {
