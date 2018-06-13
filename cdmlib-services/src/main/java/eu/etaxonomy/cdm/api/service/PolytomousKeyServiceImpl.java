@@ -131,7 +131,7 @@ public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<Polytomous
 				dao.loadNodes(polytomousKey.getRoot(), nodePaths);
 			}
 		}
-		Pager<PolytomousKey> pager = new DefaultPagerImpl<PolytomousKey>(pageNumber, numberOfResults.intValue(), pageSize, list);
+		Pager<PolytomousKey> pager = new DefaultPagerImpl<PolytomousKey>(pageNumber, numberOfResults, pageSize, list);
 
 		return pager;
 	}

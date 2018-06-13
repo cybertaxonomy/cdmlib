@@ -49,7 +49,7 @@ public class IdentificationKeyServiceImpl implements IIdentificationKeyService {
         if(AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)){
             results = dao.findByTaxonomicScope(taxon.getUuid(), type, pageSize, pageNumber, propertyPaths);
         }
-        return new DefaultPagerImpl<T>(pageNumber, numberOfResults.intValue(), pageSize, results);
+        return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
     }
 
 }

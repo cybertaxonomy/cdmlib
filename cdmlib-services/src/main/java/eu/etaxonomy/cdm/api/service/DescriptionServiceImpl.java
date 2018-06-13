@@ -521,7 +521,7 @@ public class DescriptionServiceImpl
             descriptionElements = new ArrayList<T>(0);
         }
         if (logger.isDebugEnabled()){logger.debug(" service - DONE ...");}
-        return new DefaultPagerImpl<T>(pageNumber, count.intValue(), pageSize, descriptionElements);
+        return new DefaultPagerImpl<T>(pageNumber, count, pageSize, descriptionElements);
     }
 
 
