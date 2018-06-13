@@ -74,6 +74,7 @@ public class OccurrenceController extends AbstractIdentifiableController<Specime
         logger.info("doGetDerivedFrom()" + requestPathAndQuery(request));
 
         SpecimenOrObservationBase<?> sob = getCdmBaseInstance(uuid, response, DERIVED_UNIT_INIT_STRATEGY);
+        sob = checkExistsAndAccess(sob, NO_UNPUBLISHED, response);
         if(sob instanceof DerivedUnit){
             DerivationEvent derivationEvent = ((DerivedUnit)sob).getDerivedFrom();
             if (derivationEvent != null) {
@@ -104,6 +105,7 @@ public class OccurrenceController extends AbstractIdentifiableController<Specime
 
         logger.info("doGetExtensions()" + requestPathAndQuery(request));
         SpecimenOrObservationBase<?> sob = getCdmBaseInstance(uuid, response, EXTENSIONS_INIT_STRATEGY);
+        sob = checkExistsAndAccess(sob, NO_UNPUBLISHED, response);
 
         return pageFromCollection(sob.getExtensions(), pageNumber, pageSize, start, limit, response) ;
     }

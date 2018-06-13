@@ -104,6 +104,9 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
             logger.info("doGet() " + request.getRequestURI());
         }
         T obj = getCdmBaseInstance(uuid, response, initializationStrategy);
+        if (obj instanceof IPublishable){
+            obj = (T)checkExistsAndAccess((IPublishable)obj, NO_UNPUBLISHED, response);
+        }
         return obj;
     }
 
@@ -312,16 +315,18 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
      * @return
      * @throws IOException
      */
-    protected final <CDM_BASE extends CdmBase> CDM_BASE getCdmBaseInstance(Class<CDM_BASE> clazz, IService<CDM_BASE> service, UUID uuid, HttpServletResponse response, List<String> pathProperties)
+    protected final <CDM_BASE extends CdmBase> CDM_BASE getCdmBaseInstance(
+            Class<CDM_BASE> clazz, IService<CDM_BASE> service, UUID uuid,
+            HttpServletResponse response, List<String> pathProperties)
             throws IOException {
 
         boolean includeUnpublished = NO_UNPUBLISHED;
         CDM_BASE cdmBaseObject;
-        if (service instanceof IPublishableService){
+//        if (service instanceof IPublishableService){
             cdmBaseObject = ((IPublishableService<CDM_BASE>)service).load(uuid, includeUnpublished, pathProperties);
-        }else{
-            cdmBaseObject = service.load(uuid, pathProperties);
-        }
+//        }else{
+//            cdmBaseObject = service.load(uuid, pathProperties);
+//        }
         if (cdmBaseObject == null) {
             HttpStatusMessage.UUID_NOT_FOUND.send(response);
         }
