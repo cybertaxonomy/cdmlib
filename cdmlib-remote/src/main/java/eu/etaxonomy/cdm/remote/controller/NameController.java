@@ -99,11 +99,10 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
         if (request != null) {
             logger.info("doGetTypeDesignations()" + requestPathAndQuery(request));
         }
-        TaxonName tnb = getCdmBaseInstance(uuid, response,
-                (List<String>) null);
-        Pager<TypeDesignationBase> p = service.getTypeDesignations(tnb, null,
+        TaxonName tnb = getCdmBaseInstance(uuid, response, (List<String>) null);
+        Pager<TypeDesignationBase> pager = service.getTypeDesignations(tnb, null,
                 null, null, TYPEDESIGNATION_INIT_STRATEGY);
-        return p.getRecords();
+        return pager.getRecords();
     }
 
     @RequestMapping(
