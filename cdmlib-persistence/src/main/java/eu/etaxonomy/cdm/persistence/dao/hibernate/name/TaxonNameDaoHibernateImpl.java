@@ -260,7 +260,8 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
     }
 
     @Override
-    public List<HybridRelationship> getHybridNames(INonViralName name, HybridRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+    public List<HybridRelationship> getHybridNames(INonViralName name, HybridRelationshipType type,
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
             Criteria criteria = getSession().createCriteria(HybridRelationship.class);
@@ -280,6 +281,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
 
             addOrder(criteria, orderHints);
 
+            @SuppressWarnings("unchecked")
             List<HybridRelationship> results = criteria.list();
             defaultBeanInitializer.initializeAll(results, propertyPaths);
             return results;
@@ -300,6 +302,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
                 }
             }
 
+            @SuppressWarnings("unchecked")
             List<HybridRelationship> results =  query.getResultList();
             defaultBeanInitializer.initializeAll(results, propertyPaths);
             return results;
@@ -331,6 +334,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
             }
             addOrder(criteria, orderHints);
 
+            @SuppressWarnings("unchecked")
             List<NameRelationship> results = criteria.list();
             defaultBeanInitializer.initializeAll(results, propertyPaths);
             return results;
@@ -351,6 +355,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
                 }
             }
 
+            @SuppressWarnings("unchecked")
             List<NameRelationship> results = query.getResultList();
             defaultBeanInitializer.initializeAll(results, propertyPaths);
             return results;
@@ -375,7 +380,9 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
                 query.setFirstResult(0);
             }
         }
-        return query.list();
+        @SuppressWarnings("unchecked")
+        List<Integer> result = query.list();
+        return result;
     }
 
     @Override
@@ -395,7 +402,9 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
                 query.setFirstResult(0);
             }
         }
-        return defaultBeanInitializer.initializeAll((List<T>)query.list(), propertyPaths);
+        @SuppressWarnings("unchecked")
+        List<T> result = defaultBeanInitializer.initializeAll((List<T>)query.list(), propertyPaths);
+        return result;
     }
 
     private <T extends TypeDesignationBase> Query getTypeDesignationQuery(String select, TaxonName name,
@@ -438,6 +447,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
                 criteria.setFirstResult(0);
             }
         }
+        @SuppressWarnings("unchecked")
         List<TaxonName> results = criteria.list();
         return results;
     }
@@ -499,6 +509,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
 
             addOrder(criteria, orderHints);
 
+            @SuppressWarnings("unchecked")
             List<TaxonName> results = criteria.list();
             defaultBeanInitializer.initializeAll(results, propertyPaths);
             return results;
@@ -542,6 +553,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
                 }
             }
 
+            @SuppressWarnings("unchecked")
             List<TaxonName> results = query.getResultList();
             defaultBeanInitializer.initializeAll(results, propertyPaths);
             return results;
@@ -622,6 +634,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
             }
         }
 
+        @SuppressWarnings("unchecked")
         List<? extends TaxonName> results = crit.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
 
@@ -668,7 +681,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
             // for some reason the HQL .class discriminator didn't work here so I created this preliminary
             // implementation for now. Should be cleaned in future.
 
-            List<RelationshipBase> result = new ArrayList<RelationshipBase>();
+            List<RelationshipBase> result = new ArrayList<>();
 
             int nameRelSize = countAllRelationships(NameRelationship.class);
             if (nameRelSize > start){
@@ -697,7 +710,9 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
             return result;
         } else {
             AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(RelationshipBase.class,auditEvent.getRevisionNumber());
-            return query.getResultList();
+            @SuppressWarnings("unchecked")
+            List<RelationshipBase> result = query.getResultList();
+            return result;
         }
     }
 
@@ -745,7 +760,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
         if(result.size() == 0){
             return null;
         }else{
-            List<UuidAndTitleCache> list = new ArrayList<UuidAndTitleCache>(result.size());
+            List<UuidAndTitleCache> list = new ArrayList<>(result.size());
 
             for (Object object : result){
 
@@ -776,17 +791,13 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
     public UUID delete (TaxonName persistentObject){
         Set<TaxonBase> taxonBases = persistentObject.getTaxonBases();
 
-        if (persistentObject == null){
-            logger.warn(type.getName() + " was 'null'");
-            return null;
-        }
         getSession().saveOrUpdate(persistentObject);
         UUID persUuid = persistentObject.getUuid();
        // persistentObject = this.load(persUuid);
         UUID homotypicalGroupUUID = persistentObject.getHomotypicalGroup().getUuid();
 
 
-        for (TaxonBase taxonBase: taxonBases){
+        for (TaxonBase<?> taxonBase: taxonBases){
             taxonDao.delete(taxonBase);
         }
         HomotypicalGroup homotypicalGroup = homotypicalGroupDao.load(homotypicalGroupUUID);
@@ -797,7 +808,6 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
                 homotypicalGroup.getTypifiedNames().remove(persistentObject);
                 homotypicalGroupDao.saveOrUpdate(homotypicalGroup);
             }
-
         }
 
         getSession().delete(persistentObject);
@@ -869,7 +879,6 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
 
 
     	SQLQuery query = getSession().createSQLQuery(sql);
-    	List result = query.list();
 
     	String hqlQueryStringSelect = "SELECT * ";
 
@@ -879,19 +888,18 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
 
 
     	Query hqlQuery = getSession().createQuery(hqlQueryStringFrom);
-    	List hqlResult = hqlQuery.list();
+    	List<?> hqlResult = hqlQuery.list();
 
 
-		List<HashMap<String,String>> nameRecords = new ArrayList();
-		HashMap<String,String> nameRecord = new HashMap<String,String>();
+		List<HashMap<String,String>> nameRecords = new ArrayList<>();
+		HashMap<String,String> nameRecord = new HashMap<>();
 		Taxon accTaxon = null;
 		Synonym syn = null;
 		TaxonNode familyNode = null;
-		for(Object object : hqlResult)
-         {
+		for(Object object : hqlResult){
 			Object[] row = (Object[])object;
-			nameRecord = new HashMap<String,String>();
-			TaxonBase taxonBase = (TaxonBase)row[0];
+			nameRecord = new HashMap<>();
+			TaxonBase<?> taxonBase = (TaxonBase<?>)row[0];
 			if (taxonBase instanceof Taxon){
 			    accTaxon = HibernateProxyHelper.deproxy(taxonBase, Taxon.class);
 			} else{

@@ -94,6 +94,7 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
                 }
             }
 
+            @SuppressWarnings("unchecked")
             List<Media> results = query.list();
             defaultBeanInitializer.initializeAll(results, propertyPaths);
             return results;
@@ -148,6 +149,7 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
                 }
             }
 
+            @SuppressWarnings("unchecked")
             List<DescriptionElementBase> results = fullTextQuery.list();
             defaultBeanInitializer.initializeAll(results, propertyPaths);
             return results;
@@ -160,8 +162,8 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
     @Override
     public void purgeIndex() {
         FullTextSession fullTextSession = Search.getFullTextSession(getSession());
-        for(Class clazz : indexedClasses) {
-          fullTextSession.purgeAll(type); // remove all description element base from indexes
+        for(Class<? extends DescriptionElementBase> clazz : indexedClasses) {
+            fullTextSession.purgeAll(type); // remove all description element base from indexes
         }
         fullTextSession.flushToIndexes();
     }
@@ -182,7 +184,7 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
     public void optimizeIndex() {
         FullTextSession fullTextSession = Search.getFullTextSession(getSession());
         SearchFactory searchFactory = fullTextSession.getSearchFactory();
-        for(Class clazz : indexedClasses) {
+        for(Class<? extends DescriptionElementBase> clazz : indexedClasses) {
             searchFactory.optimize(clazz); // optimize the indices ()
         }
         fullTextSession.flushToIndexes();

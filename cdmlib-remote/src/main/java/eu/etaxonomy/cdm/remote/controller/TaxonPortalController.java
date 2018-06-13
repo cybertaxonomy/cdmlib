@@ -331,6 +331,7 @@ public class TaxonPortalController extends TaxonController{
     private List<List<Synonym>> removeUnpublishedSynonyms(List<List<Synonym>> synonymyGroups) {
         List<List<Synonym>> result = new ArrayList<>();
         boolean isHomotypicToAccepted = true;
+
         for (List<Synonym> oldList : synonymyGroups){
             List<Synonym> newList = new ArrayList<>();
             for (Synonym oldSyn : oldList){

@@ -549,10 +549,11 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 
         inner.setProjection(Projections.distinct(Projections.id()));
 
+        @SuppressWarnings("unchecked")
         List<Object> intermediateResult = inner.list();
 
         if(intermediateResult.isEmpty()) {
-            return new ArrayList<DescriptionBase>();
+            return new ArrayList<>();
         }
 
         Integer[] resultIds = new Integer[intermediateResult.size()];
@@ -614,10 +615,11 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 
         addOrder(criteria,orderHints);
 
+        @SuppressWarnings("unchecked")
         List<Object> intermediateResult = criteria.list();
 
         if(intermediateResult.isEmpty()) {
-            return new ArrayList<TaxonDescription>();
+            return new ArrayList<>();
         }
 
         Integer[] resultIds = new Integer[intermediateResult.size()];
@@ -633,6 +635,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
         criteria.add(Restrictions.in("id", resultIds));
         addOrder(criteria,orderHints);
 
+        @SuppressWarnings("unchecked")
         List<TaxonDescription> results = criteria.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
@@ -654,6 +657,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
                 crit.setFirstResult(pageNumber * pageSize);
             }
         }
+        @SuppressWarnings("unchecked")
         List<CommonTaxonName> results = crit.list();
         return results;
     }
@@ -667,9 +671,9 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 
     @Override
     public DescriptionBase find(LSID lsid) {
-        DescriptionBase descriptionBase = super.find(lsid);
+        DescriptionBase<?> descriptionBase = super.find(lsid);
         if(descriptionBase != null) {
-            List<String> propertyPaths = new ArrayList<String>();
+            List<String> propertyPaths = new ArrayList<>();
             propertyPaths.add("createdBy");
             propertyPaths.add("updatedBy");
             propertyPaths.add("taxon");
@@ -793,6 +797,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 
                 setPagingParameter(query, pageSize, pageNumber);
 
+                @SuppressWarnings("unchecked")
                 List<Media> results = query.list();
 
                 defaultBeanInitializer.initializeAll(results, propertyPaths);
@@ -803,10 +808,6 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
             }
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao#countTaxonDescriptionMedia(java.util.UUID, java.lang.Boolean, java.util.Set)
-     */
     @Override
     public int countTaxonDescriptionMedia(UUID taxonUuid,
             Boolean limitToGalleries, Set<MarkerType> markerTypes) {
@@ -867,9 +868,6 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao#listNamedAreasInUse(java.lang.Integer, java.lang.Integer, java.util.List)
-     */
     @SuppressWarnings("unchecked")
     @Override
     public List<TermDto> listNamedAreasInUse(boolean includeAllParents, Integer pageSize, Integer pageNumber) {
@@ -885,7 +883,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
         List<Object[]> parentResults = new ArrayList<Object[]>();
 
         if(!areasInUse.isEmpty()) {
-            Set<Object> allAreaIds = new HashSet<Object>(areasInUse.size());
+            Set<Object> allAreaIds = new HashSet<>(areasInUse.size());
 
             if(includeAllParents) {
                 // find all parent nodes
@@ -894,7 +892,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
                 List<Object[]> allAreasResult = query.list();
                 Map<Object, Object> allAreasMap = ArrayUtils.toMap(allAreasResult.toArray());
 
-                Set<Object> parents = new HashSet<Object>();
+                Set<Object> parents = new HashSet<>();
 
                 for(Object[] leaf : areasInUse) {
                     allAreaIds.add(leaf[0]);
@@ -942,7 +940,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
      * @return
      */
     private List<TermDto> termDtoListFrom(List<Object[]> results) {
-        Map<UUID, TermDto> dtoMap = new HashMap<UUID, TermDto>(results.size());
+        Map<UUID, TermDto> dtoMap = new HashMap<>(results.size());
         for (Object[] elements : results) {
             UUID uuid = (UUID)elements[0];
             if(dtoMap.containsKey(uuid)){
@@ -958,7 +956,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
                 dtoMap.put(uuid, new TermDto(uuid, representations, (UUID)elements[2], (UUID)elements[3], (Integer)elements[4]));
             }
         }
-        return new ArrayList<TermDto>(dtoMap.values());
+        return new ArrayList<>(dtoMap.values());
     }
 
 

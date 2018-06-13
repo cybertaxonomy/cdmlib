@@ -550,7 +550,7 @@ public class TaxonServiceImpl
 
 
     /**
-     * recursively collect related taxa for the given <code>taxon</code> . The returned list will also include the
+     * Recursively collect related taxa for the given <code>taxon</code> . The returned list will also include the
      *  <code>taxon</code> supplied as parameter.
      *
      * @param taxon

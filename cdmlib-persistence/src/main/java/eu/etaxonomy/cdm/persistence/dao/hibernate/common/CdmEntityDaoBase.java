@@ -69,7 +69,9 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  * FIXME CdmEntityDaoBase is abstract, can it be annotated with @Repository?
  */
 @Repository
-public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implements ICdmEntityDao<T> {
+public abstract class CdmEntityDaoBase<T extends CdmBase>
+            extends DaoBase
+            implements ICdmEntityDao<T> {
 
     private static final Logger logger = Logger.getLogger(CdmEntityDaoBase.class);
 
@@ -859,16 +861,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
     @Override
     public <S extends T> List<S> list(Class<S> type, Integer limit, Integer start) {
         return list(type,limit,start,null,null);
-    }
-
-    @Override
-    public List<T> rows(String tableName, int limit, int start) {
-        Query query = getSession().createQuery("from " + tableName + " order by uuid");
-        query.setFirstResult(start);
-        query.setMaxResults(limit);
-        @SuppressWarnings("unchecked")
-		List<T> result = query.list();
-        return result;
     }
 
     @Override

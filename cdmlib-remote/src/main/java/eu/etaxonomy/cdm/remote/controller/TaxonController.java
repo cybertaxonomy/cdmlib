@@ -253,8 +253,6 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             HttpServletResponse response) throws IOException {
         logger.info("doGetFieldUnits() - " + request.getRequestURI());
 
-        ModelAndView mv = new ModelAndView();
-
         TaxonBase<?> taxonBase = service.load(uuid);
         taxonBase = checkExistsAndAccess(taxonBase, NO_UNPUBLISHED, response);
 

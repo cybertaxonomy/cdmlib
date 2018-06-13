@@ -153,7 +153,7 @@ public abstract class DaoBase {
     }
 
     /**
-     * Null save method which compiles a order by clause from the given list of OrderHints
+     * Null save method which compiles an order by clause from the given list of OrderHints
      *
      * @param orderHints can be NULL
      * @return a StringBuffer holding the hql orderby clause
@@ -162,14 +162,13 @@ public abstract class DaoBase {
 
         StringBuffer orderString = new StringBuffer();
 
-        StringBuffer aliasPrefix = new StringBuffer();
-        aliasPrefix.append(" ");
+        StringBuffer aliasPrefix = new StringBuffer(" ");
         if(aliasName != null && !aliasName.isEmpty()){
             aliasPrefix.append(aliasName).append(".");
         }
 
         if(orderHints != null && !orderHints.isEmpty()) {
-            orderString.append(" order by");
+            orderString.append(" ORDER BY ");
             for(OrderHint orderHint : orderHints) {
                 orderString.append(aliasPrefix).append(orderHint.toHql());
             }

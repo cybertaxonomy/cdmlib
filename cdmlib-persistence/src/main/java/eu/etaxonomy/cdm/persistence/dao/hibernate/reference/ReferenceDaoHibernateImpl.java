@@ -33,7 +33,6 @@ import eu.etaxonomy.cdm.model.reference.IPrintedUnitBase;
 import eu.etaxonomy.cdm.model.reference.IReport;
 import eu.etaxonomy.cdm.model.reference.IThesis;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
@@ -280,7 +279,7 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 		 */
 
 		//TODO implement search in nameDescriptions
-		Set<Reference> referenceSet = new HashSet<Reference>();
+		Set<Reference> referenceSet = new HashSet<>();
 		referenceSet.add(reference);
 		if(includeSubordinateReferences){
 			referenceSet.addAll(getSubordinateReferences(reference));
@@ -341,13 +340,9 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 		return taxonBaseList;
 	}
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao#getUuidAndAbbrevTitleCache(java.lang.Integer, java.lang.String)
-     */
     @Override
     public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCache(Integer limit, String pattern, ReferenceType refType) {
         Session session = getSession();
-        Reference ref = ReferenceFactory.newArticle();
 
         Query query = null;
         if (pattern != null){
@@ -371,13 +366,9 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao#getUuidAndAbbrevTitleCache(java.lang.Integer, java.lang.String)
-     */
     @Override
     public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthor(Integer limit, String pattern, ReferenceType refType) {
         Session session = getSession();
-        Reference ref = ReferenceFactory.newArticle();
 
         Query query = null;
         if (pattern != null){

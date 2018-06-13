@@ -146,7 +146,6 @@ public class OrderHint {
              *
              * http://opensource.atlassian.com/projects/hibernate/browse/HHH-879
              */
-            Order order;
 
             String[] assocObjs = getPropertyName().split("\\.");
             String path = "";

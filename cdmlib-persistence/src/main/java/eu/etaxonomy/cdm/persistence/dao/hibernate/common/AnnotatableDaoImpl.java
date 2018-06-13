@@ -101,7 +101,8 @@ public abstract class AnnotatableDaoImpl<T extends AnnotatableEntity>
 		    }
 		}
 
-		List<Annotation> results = query.list();
+		@SuppressWarnings("unchecked")
+        List<Annotation> results = query.list();
 		defaultBeanInitializer.initializeAll(results, propertyPaths);
 		return results;
 	}

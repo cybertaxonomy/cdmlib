@@ -295,8 +295,6 @@ public interface ICdmEntityDao<T extends CdmBase> {
      */
     public List<Object[]> group(Class<? extends T> clazz,Integer limit, Integer start, List<Grouping> groups, List<String> propertyPaths);
 
-    public List<T> rows(String tableName, int limit, int start) throws DataAccessException;
-
     /**
      * @param id
      * @return

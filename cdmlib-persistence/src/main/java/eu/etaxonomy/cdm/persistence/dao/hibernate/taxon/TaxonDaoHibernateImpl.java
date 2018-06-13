@@ -1069,6 +1069,7 @@ public class TaxonDaoHibernateImpl
                 }
             }
 
+            @SuppressWarnings("unchecked")
             List<TaxonRelationship> result = query.getResultList();
             defaultBeanInitializer.initializeAll(result, propertyPaths);
 
@@ -1076,9 +1077,9 @@ public class TaxonDaoHibernateImpl
             // and we can't live without this functionality in CATE as it screws up the whole
             // taxon tree thing
             if(orderHints != null && !orderHints.isEmpty()) {
-                SortedSet<TaxonRelationship> sortedList = new TreeSet<TaxonRelationship>(new TaxonRelationshipFromTaxonComparator());
+                SortedSet<TaxonRelationship> sortedList = new TreeSet<>(new TaxonRelationshipFromTaxonComparator());
                 sortedList.addAll(result);
-                return new ArrayList<TaxonRelationship>(sortedList);
+                return new ArrayList<>(sortedList);
             }
 
             return result;

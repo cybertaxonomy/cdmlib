@@ -33,7 +33,9 @@ import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
-public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T>> implements IService<T>, ApplicationContextAware {
+public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T>>
+            implements IService<T>, ApplicationContextAware {
+
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(ServiceBase.class);
 
@@ -250,18 +252,6 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
     @Transactional(readOnly = true)
     public UUID refresh(T persistentObject) {
         return dao.refresh(persistentObject);
-    }
-
-    /**
-     * FIXME Candidate for harmonization
-     * is this method used, and if so, should it be exposed in the service layer?
-     * it seems a bit incongruous that we use an ORM to hide the fact that there is a
-     * database, then expose a method that talks about "rows" . . .
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public List<T> rows(String tableName, int limit, int start) {
-        return dao.rows(tableName, limit, start);
     }
 
     @Override

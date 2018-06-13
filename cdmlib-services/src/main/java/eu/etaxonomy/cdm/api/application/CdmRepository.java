@@ -60,7 +60,6 @@ import eu.etaxonomy.cdm.api.service.IProgressMonitorService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.IRegistrationService;
 import eu.etaxonomy.cdm.api.service.IRightsService;
-import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
@@ -69,7 +68,6 @@ import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.api.service.molecular.IAmplificationService;
 import eu.etaxonomy.cdm.api.service.molecular.IPrimerService;
 import eu.etaxonomy.cdm.api.service.molecular.ISequenceService;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.ICdmPermissionEvaluator;
 
 /**
@@ -186,10 +184,6 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
 	private ICdmPermissionEvaluator permissionEvaluator;
 	@Autowired
     private SessionFactory factory;
-
-	//	@Autowired
-	//@Qualifier("mainService")
-	private IService<CdmBase> mainService;
 
 	@Autowired
 	private IDescriptiveDataSetService descriptiveDataSetService;
@@ -334,11 +328,6 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
 	@Override
 	public IGrantedAuthorityService getGrantedAuthorityService(){
 		return this.grantedAuthorityService;
-	}
-
-	@Override
-	public IService<CdmBase> getMainService(){
-		return this.mainService;
 	}
 
 	@Override

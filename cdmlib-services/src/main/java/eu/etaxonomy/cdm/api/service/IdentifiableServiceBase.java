@@ -71,7 +71,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 	public Pager<Rights> getRights(T t, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = dao.countRights(t);
 
-		List<Rights> results = new ArrayList<Rights>();
+		List<Rights> results = new ArrayList<>();
 		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.getRights(t, pageSize, pageNumber,propertyPaths);
 		}

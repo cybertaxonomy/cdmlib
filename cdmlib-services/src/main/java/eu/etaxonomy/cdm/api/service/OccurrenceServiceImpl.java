@@ -767,13 +767,13 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
         for (Taxon taxon : taxa) {
             List<T> perTaxonOccurrences = dao.listByAssociatedTaxon(type, taxon, null, null, orderHints, propertyPaths);
-            for (SpecimenOrObservationBase o : perTaxonOccurrences) {
+            for (SpecimenOrObservationBase<?> o : perTaxonOccurrences) {
                 occurrenceIds.add(o.getId());
             }
         }
         occurrences = (List<T>) dao.loadList(occurrenceIds, propertyPaths);
 
-        return new DefaultPagerImpl<T>(pageNumber, occurrenceIds.size(), pageSize, occurrences);
+        return new DefaultPagerImpl<T>(pageNumber, Long.valueOf(occurrenceIds.size()), pageSize, occurrences);
 
     }
 
