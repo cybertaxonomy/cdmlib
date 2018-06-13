@@ -309,7 +309,7 @@ public class TaxonPortalController extends TaxonController{
         //new
         List<List<Synonym>> synonymyGroups = service.getSynonymsByHomotypicGroup(taxon, SYNONYMY_INIT_STRATEGY);
         if(!includeUnpublished){
-            removeUnpublishedSynonyms(synonymyGroups);
+            synonymyGroups = removeUnpublishedSynonyms(synonymyGroups);
         }
 
         synonymy.put("homotypicSynonymsByHomotypicGroup", synonymyGroups.get(0));
