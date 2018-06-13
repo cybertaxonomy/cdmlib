@@ -848,7 +848,7 @@ public class OccurrenceDaoHibernateImpl
         String queryString = "FROM SpecimenOrObservationBase specimens "
                 + " WHERE specimens.recordBasis = :type ";
 
-        queryString += orderByClause(orderHints, "specimens");
+        queryString += orderByClause("specimens", orderHints);
 
         Query query = getSession().createQuery(queryString);
         query.setParameter("type", type);
@@ -874,7 +874,7 @@ public class OccurrenceDaoHibernateImpl
         String queryString = "FROM DeterminationEvent determination "
                 + " WHERE determination.identifiedUnit = :specimen";
 
-        queryString += orderByClause(orderHints, "determination");
+        queryString += orderByClause("determination", orderHints);
 
         Query query = getSession().createQuery(queryString);
         query.setParameter("specimen", specimen);
@@ -899,7 +899,7 @@ public class OccurrenceDaoHibernateImpl
         String queryString = "FROM SpecimenTypeDesignation designations "
                 + " WHERE designations.typeSpecimen = :specimen";
 
-        queryString += orderByClause(orderHints, "designations");
+        queryString += orderByClause("designations", orderHints);
 
         Query query = getSession().createQuery(queryString);
         query.setParameter("specimen", specimen);
@@ -924,7 +924,7 @@ public class OccurrenceDaoHibernateImpl
         //DISTINCT is necessary if more than one description exists for a taxon because we create the cross product of all taxon descriptions and description elements
         String queryString = "FROM IndividualsAssociation associations WHERE associations.associatedSpecimenOrObservation = :specimen";
 
-        queryString += orderByClause(orderHints, "associations");
+        queryString += orderByClause("associations", orderHints);
 
         Query query = getSession().createQuery(queryString);
         query.setParameter("specimen", specimen);
@@ -950,7 +950,7 @@ public class OccurrenceDaoHibernateImpl
         String queryString = "FROM DescriptionBase descriptions "
                 + " WHERE descriptions.describedSpecimenOrObservation = :specimen";
 
-        queryString += orderByClause(orderHints, "descriptions");
+        queryString += orderByClause("descriptions", orderHints);
 
         Query query = getSession().createQuery(queryString);
         query.setParameter("specimen", specimen);
@@ -978,7 +978,7 @@ public class OccurrenceDaoHibernateImpl
         String queryString = "FROM SpecimenOrObservationBase sob "
                 + "WHERE sob.gatheringEvent.uuid = :gatheringEventUuid";
 
-        queryString += orderByClause(orderHints, "sob");
+        queryString += orderByClause("sob", orderHints);
 
         Query query = getSession().createQuery(queryString);
         query.setParameter("gatheringEventUuid", gatheringEventUuid);

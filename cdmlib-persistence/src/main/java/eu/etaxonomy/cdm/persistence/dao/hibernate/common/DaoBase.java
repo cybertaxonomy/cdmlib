@@ -152,29 +152,6 @@ public abstract class DaoBase {
         }
     }
 
-    /**
-     * Null save method which compiles an order by clause from the given list of OrderHints
-     *
-     * @param orderHints can be NULL
-     * @return a StringBuffer holding the hql orderby clause
-     */
-    protected StringBuffer orderByClause(List<OrderHint> orderHints, String aliasName) {
-
-        StringBuffer orderString = new StringBuffer();
-
-        StringBuffer aliasPrefix = new StringBuffer(" ");
-        if(aliasName != null && !aliasName.isEmpty()){
-            aliasPrefix.append(aliasName).append(".");
-        }
-
-        if(orderHints != null && !orderHints.isEmpty()) {
-            for(OrderHint orderHint : orderHints) {
-                orderString.append((orderString.length() < 2) ? " ORDER BY " : "," );
-                orderString.append(aliasPrefix).append(orderHint.toHql());
-            }
-        }
-        return orderString;
-    }
     protected void addOrder(Criteria criteria, List<OrderHint> orderHints) {
 
         if(orderHints != null){
@@ -210,28 +187,36 @@ public abstract class DaoBase {
     }
 
     /**
+     * Null save method which compiles an order by clause from the given list of OrderHints
+     *
+     * @param orderHints can be NULL
+     * @return a StringBuffer holding the hql orderby clause
+     */
+    protected StringBuilder orderByClause(String aliasName, List<OrderHint> orderHints) {
+
+        StringBuilder orderString = new StringBuilder();
+
+        StringBuffer aliasPrefix = new StringBuffer(" ");
+        if(aliasName != null && !aliasName.isEmpty()){
+            aliasPrefix.append(aliasName).append(".");
+        }
+
+        if(orderHints != null && !orderHints.isEmpty()) {
+            for(OrderHint orderHint : orderHints) {
+                orderString.append((orderString.length() < 2) ? " ORDER BY " : "," );
+                orderString.append(aliasPrefix).append(orderHint.toHql());
+            }
+        }
+        return orderString;
+    }
+
+    /**
      * @param hql
      * @param orderHints
      */
     protected void addOrder(StringBuilder hql, String alias, List<OrderHint> orderHints) {
-        boolean orderByAdded = false;
-        String fieldPrefix = "";
-        if(alias != null){
-            fieldPrefix = alias + ".";
-        }
-        if(orderHints != null && !orderHints.isEmpty()){
-            for(OrderHint oh : orderHints){
-                if(oh != null){
-                    if(!orderByAdded){
-                        hql.append(" order by ");
-                    }
-                    hql.append(fieldPrefix + oh.toHql() + (orderByAdded ? ", ": " "));
-                    orderByAdded = true;
-                }
-            }
-
-        }
-    }
+        hql.append(orderByClause(alias, orderHints));
+     }
 
    // ---------------------------- //
 

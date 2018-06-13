@@ -1063,7 +1063,7 @@ public class TaxonDaoHibernateImpl
 
             String queryString = prepareTaxonRelationshipQuery(type, includePublished, direction, false);
 
-            queryString += orderByClause(orderHints, "rel");
+            queryString += orderByClause("rel", orderHints);
 
             Query query = getSession().createQuery(queryString);
             query.setParameter("relatedTaxon", taxon);

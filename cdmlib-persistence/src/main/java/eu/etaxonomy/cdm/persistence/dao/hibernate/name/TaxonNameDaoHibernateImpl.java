@@ -961,15 +961,17 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
             Optional<String> infraGenericEpithet, Optional<String> specificEpithet,
             Optional<String> infraSpecificEpithet, Rank rank, Integer pageSize, Integer pageIndex, List<OrderHint> orderHints) {
 
-        StringBuilder hql = prepareFindTaxonNameParts(false, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, rank);
+        StringBuilder hql = prepareFindTaxonNameParts(false, genusOrUninomial, infraGenericEpithet,
+                specificEpithet, infraSpecificEpithet, rank);
         addOrder(hql, "n", orderHints);
         Query query = getSession().createQuery(hql.toString());
         if(rank != null){
             query.setParameter("rank", rank);
         }
         setPagingParameter(query, pageSize, pageIndex);
-        List<?> result = query.list();
-        return (List<TaxonNameParts>) result;
+        @SuppressWarnings("unchecked")
+        List<TaxonNameParts> result = query.list();
+        return result;
     }
 
 
