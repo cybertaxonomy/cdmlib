@@ -37,7 +37,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import eu.etaxonomy.cdm.api.service.IPublishableService;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
@@ -323,9 +322,9 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
         boolean includeUnpublished = NO_UNPUBLISHED;
         CDM_BASE cdmBaseObject;
 //        if (service instanceof IPublishableService){
-            cdmBaseObject = ((IPublishableService<CDM_BASE>)service).load(uuid, includeUnpublished, pathProperties);
+//            cdmBaseObject = ((IPublishableService<CDM_BASE>)service).load(uuid, includeUnpublished, pathProperties);
 //        }else{
-//            cdmBaseObject = service.load(uuid, pathProperties);
+            cdmBaseObject = service.load(uuid, pathProperties);
 //        }
         if (cdmBaseObject == null) {
             HttpStatusMessage.UUID_NOT_FOUND.send(response);
