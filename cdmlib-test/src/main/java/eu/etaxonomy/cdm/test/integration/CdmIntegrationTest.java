@@ -139,6 +139,13 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
 //      System.err.println("####" +  agentstr);
 //  }
 
+    /**
+     * How to use:
+     * <ol>
+     * <li>Add <code>-Dh2Server</code> as jvm argument to activate.</li>
+     * <li>uncomment <code>database.url= jdbc:h2:tcp://localhost/~/cdm</code> in <code>/cdmlib-test/src/main/resources/unitils.properties</code></li>
+     * @throws Exception
+     */
     @Before
     public void startH2Server() throws Exception {
 
