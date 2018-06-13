@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -47,6 +48,7 @@ import eu.etaxonomy.cdm.api.service.search.LuceneSearch;
 import eu.etaxonomy.cdm.api.service.search.QueryFactory;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.search.SearchResultBuilder;
+import eu.etaxonomy.cdm.api.utility.TaxonNamePartsFilter;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.CdmBaseType;
@@ -79,6 +81,7 @@ import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.name.INomenclaturalStatusDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITypeDesignationDao;
+import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -329,7 +332,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
      */
     @Override
     public List<TaxonName> findNamesByTitleCache(String titleCache, MatchMode matchMode, List<String> propertyPaths){
-        List result = dao.findByTitle(titleCache, matchMode, null, null, null ,propertyPaths);
+        List result = dao.findByTitle(titleCache, matchMode, null, null, null, propertyPaths);
         return result;
     }
 
@@ -341,8 +344,44 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
      */
     @Override
     public List<TaxonName> findNamesByNameCache(String nameCache, MatchMode matchMode, List<String> propertyPaths){
-        List result = dao.findByName(false, nameCache, matchMode, null, null, null ,propertyPaths);
+        List result = dao.findByName(false, nameCache, matchMode, null, null, null , propertyPaths);
         return result;
+    }
+
+    @Override
+    public Pager<TaxonNameParts> findTaxonNameParts(Optional<String> genusOrUninomial,
+            Optional<String> infraGenericEpithet, Optional<String> specificEpithet,
+            Optional<String> infraSpecificEpithet, Rank rank, Integer pageSize, Integer pageIndex, List<OrderHint> orderHints) {
+
+
+        long count = dao.countTaxonNameParts(genusOrUninomial, infraGenericEpithet, specificEpithet, infraGenericEpithet, rank);
+
+        List<TaxonNameParts> results;
+        if(AbstractPagerImpl.hasResultsInRange(count, pageIndex, pageSize)){
+            results = dao.findTaxonNameParts(genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet,
+                    rank,
+                    pageSize, pageIndex, orderHints);
+        } else {
+            results = new ArrayList<>();
+        }
+
+        return new DefaultPagerImpl<TaxonNameParts>(pageIndex, count, pageSize, results);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Pager<TaxonNameParts> findTaxonNameParts(TaxonNamePartsFilter filter, String namePartQueryString,
+            Integer pageSize, Integer pageIndex, List<OrderHint> orderHints) {
+
+        return findTaxonNameParts(
+                filter.uninomialQueryString(namePartQueryString),
+                filter.infraGenericEpithet(namePartQueryString),
+                filter.specificEpithet(namePartQueryString),
+                filter.infraspecificEpithet(namePartQueryString),
+                filter.getRank(),
+                pageSize, pageIndex, orderHints);
     }
 
     /**

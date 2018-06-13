@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.name;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -54,6 +55,7 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
+import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -941,6 +943,71 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
 	   }
 
 		return nameRecords;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<TaxonNameParts> findTaxonNameParts(Optional<String> genusOrUninomial,
+            Optional<String> infraGenericEpithet, Optional<String> specificEpithet,
+            Optional<String> infraSpecificEpithet, Rank rank, Integer pageSize, Integer pageIndex, List<OrderHint> orderHints) {
+
+        StringBuilder hql = prepareFindTaxonNameParts(false, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, rank);
+        addOrder(hql, "n", orderHints);
+        Query query = getSession().createQuery(hql.toString());
+        if(rank != null){
+            query.setParameter("rank", rank);
+        }
+        setPagingParameter(query, pageSize, pageIndex);
+        List<?> result = query.list();
+        return (List<TaxonNameParts>) result;
+    }
+
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public long countTaxonNameParts(Optional<String> genusOrUninomial, Optional<String> infraGenericEpithet,
+            Optional<String> specificEpithet, Optional<String> infraSpecificEpithet, Rank rank) {
+
+        StringBuilder hql = prepareFindTaxonNameParts(true, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, rank);
+        Query query = getSession().createQuery(hql.toString());
+        if(rank != null){
+            query.setParameter("rank", rank);
+        }
+
+        Object count = query.uniqueResult();
+        return (Long) count;
+    }
+
+    /**
+     * @return
+     */
+    private StringBuilder prepareFindTaxonNameParts(boolean doCount, Optional<String> genusOrUninomial,
+            Optional<String> infraGenericEpithet, Optional<String> specificEpithet,
+            Optional<String> infraSpecificEpithet, Rank rank) {
+
+        StringBuilder hql = new StringBuilder();
+        if(doCount){
+            hql.append("select count(n.id) ");
+        } else {
+            hql.append("select new eu.etaxonomy.cdm.persistence.dto.TaxonNameParts(n.id, n.rank, n.genusOrUninomial, n.infraGenericEpithet, n.specificEpithet, n.infraSpecificEpithet) ");
+        }
+        hql.append("from TaxonName n where 1 = 1 ");
+
+        if(rank != null){
+            hql.append("and n.rank = :rank ");
+        }
+
+        addFieldPredicate(hql, "n.genusOrUninomial", genusOrUninomial);
+        addFieldPredicate(hql, "n.infraGenericEpithet", infraGenericEpithet);
+        addFieldPredicate(hql, "n.specificEpithet", specificEpithet);
+        addFieldPredicate(hql, "n.infraSpecificEpithet", infraSpecificEpithet);
+
+        return hql;
     }
 
 

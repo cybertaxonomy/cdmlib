@@ -21,8 +21,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.apache.lucene.search.Sort;
-import org.apache.lucene.search.SortField;
 import org.hibernate.Criteria;
 import org.hibernate.FlushMode;
 import org.hibernate.HibernateException;
@@ -40,7 +38,6 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.metadata.ClassMetadata;
-import org.hibernate.search.FullTextQuery;
 import org.hibernate.type.Type;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -809,39 +806,8 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         }
     }
 
-    protected void addCriteria(Criteria criteria, List<Criterion> criterion) {
-        if(criterion != null) {
-            for(Criterion c : criterion) {
-                criteria.add(c);
-            }
-        }
 
-    }
 
-    protected void addOrder(FullTextQuery fullTextQuery, List<OrderHint> orderHints) {
-        //FIXME preliminary hardcoded type:
-    	SortField.Type type = SortField.Type.STRING;
-
-    	if(orderHints != null && !orderHints.isEmpty()) {
-            org.apache.lucene.search.Sort sort = new Sort();
-            SortField[] sortFields = new SortField[orderHints.size()];
-            for(int i = 0; i < orderHints.size(); i++) {
-                OrderHint orderHint = orderHints.get(i);
-                switch(orderHint.getSortOrder()) {
-                case ASCENDING:
-                    sortFields[i] = new SortField(orderHint.getPropertyName(), type, true);
-                    break;
-                case DESCENDING:
-                default:
-                    sortFields[i] = new SortField(orderHint.getPropertyName(), type, false);
-
-                }
-            }
-            sort.setSort(sortFields);
-            fullTextQuery.setSort(sort);
-
-        }
-    }
 
     @Override
     public List<T> list(Integer limit, Integer start, List<OrderHint> orderHints) {
@@ -885,22 +851,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         return results;
     }
 
-    /**
-     * @param limit
-     * @param start
-     * @param criteria
-     */
-    protected void addLimitAndStart(Integer limit, Integer start, Criteria criteria) {
-        if(limit != null) {
-            if(start != null) {
-                criteria.setFirstResult(start);
-            } else {
-                criteria.setFirstResult(0);
-            }
-            criteria.setMaxResults(limit);
-        }
-    }
-
 
     public <S extends T> List<S> list(Class<S> type, Integer limit, Integer start, List<OrderHint> orderHints) {
         return list(type,limit,start,orderHints,null);
@@ -926,22 +876,22 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         return type;
     }
 
-    protected void setPagingParameter(Query query, Integer pageSize, Integer pageNumber){
+    protected void setPagingParameter(Query query, Integer pageSize, Integer pageIndex){
         if(pageSize != null) {
             query.setMaxResults(pageSize);
-            if(pageNumber != null) {
-                query.setFirstResult(pageNumber * pageSize);
+            if(pageIndex != null) {
+                query.setFirstResult(pageIndex * pageSize);
             } else {
                 query.setFirstResult(0);
             }
         }
     }
 
-    protected void setPagingParameter(AuditQuery query, Integer pageSize, Integer pageNumber){
+    protected void setPagingParameter(AuditQuery query, Integer pageSize, Integer pageIndex){
         if(pageSize != null) {
             query.setMaxResults(pageSize);
-            if(pageNumber != null) {
-                query.setFirstResult(pageNumber * pageSize);
+            if(pageIndex != null) {
+                query.setFirstResult(pageIndex * pageSize);
             } else {
                 query.setFirstResult(0);
             }

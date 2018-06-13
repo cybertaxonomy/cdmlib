@@ -8,22 +8,120 @@
 */
 package eu.etaxonomy.cdm.persistence.dto;
 
+import java.util.UUID;
+
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonName;
 
 public class TaxonNameParts {
 
-    Integer taxonNameId;
+    protected Integer taxonNameId;
 
-    Rank rank;
+    protected UUID taxonNameUuid;
 
-    private String uninomial;
+    protected Rank rank;
 
-    private String infraGenericEpithet;
+    protected String genusOrUninomial;
 
-    private String specificEpithet;
+    protected String infraGenericEpithet;
 
-    private String infraSpecificEpithet;
+    protected String specificEpithet;
+
+    protected String infraSpecificEpithet;
+
+    /**
+     * @return the taxonNameId
+     */
+    public Integer getTaxonNameId() {
+        return taxonNameId;
+    }
+
+
+    /**
+     * @param taxonNameId the taxonNameId to set
+     */
+    public void setTaxonNameId(Integer taxonNameId) {
+        this.taxonNameId = taxonNameId;
+    }
+
+
+    /**
+     * @return the rank
+     */
+    public Rank getRank() {
+        return rank;
+    }
+
+
+    /**
+     * @param rank the rank to set
+     */
+    public void setRank(Rank rank) {
+        this.rank = rank;
+    }
+
+
+    /**
+     * @return the uninomial
+     */
+    public String getGenusOrUninomial() {
+        return genusOrUninomial;
+    }
+
+
+    /**
+     * @param uninomial the genusOrUninomial to set
+     */
+    public void setGenusOrUninomial(String genusOrUninomial) {
+        this.genusOrUninomial = genusOrUninomial;
+    }
+
+
+    /**
+     * @return the infraGenericEpithet
+     */
+    public String getInfraGenericEpithet() {
+        return infraGenericEpithet;
+    }
+
+
+    /**
+     * @param infraGenericEpithet the infraGenericEpithet to set
+     */
+    public void setInfraGenericEpithet(String infraGenericEpithet) {
+        this.infraGenericEpithet = infraGenericEpithet;
+    }
+
+
+    /**
+     * @return the specificEpithet
+     */
+    public String getSpecificEpithet() {
+        return specificEpithet;
+    }
+
+
+    /**
+     * @param specificEpithet the specificEpithet to set
+     */
+    public void setSpecificEpithet(String specificEpithet) {
+        this.specificEpithet = specificEpithet;
+    }
+
+
+    /**
+     * @return the infraSpecificEpithet
+     */
+    public String getInfraSpecificEpithet() {
+        return infraSpecificEpithet;
+    }
+
+
+    /**
+     * @param infraSpecificEpithet the infraSpecificEpithet to set
+     */
+    public void setInfraSpecificEpithet(String infraSpecificEpithet) {
+        this.infraSpecificEpithet = infraSpecificEpithet;
+    }
 
 
     /**
@@ -34,31 +132,12 @@ public class TaxonNameParts {
      * @param specificEpithet
      * @param infraSpecificEpithet
      */
-//    public TaxonNameParts(Integer taxonNameId, String uninomial, String infraGenericEpithet,
-//            String specificEpithet, String infraSpecificEpithet) {
-//        super();
-//        this.taxonNameId = taxonNameId;
-//        this.uninomial = uninomial;
-//        this.infraGenericEpithet = infraGenericEpithet;
-//        this.specificEpithet = specificEpithet;
-//        this.infraSpecificEpithet = infraSpecificEpithet;
-//    }
-
-
-    /**
-     * @param taxonNameId
-     * @param rank
-     * @param uninomial
-     * @param infraGenericEpithet
-     * @param specificEpithet
-     * @param infraSpecificEpithet
-     */
-    public TaxonNameParts(Integer taxonNameId, Rank rank, String uninomial, String infraGenericEpithet,
+    public TaxonNameParts(Integer taxonNameId, Rank rank, String genusOrUninomial, String infraGenericEpithet,
             String specificEpithet, String infraSpecificEpithet) {
         super();
         this.taxonNameId = taxonNameId;
         this.rank = rank;
-        this.uninomial = uninomial;
+        this.genusOrUninomial = genusOrUninomial;
         this.infraGenericEpithet = infraGenericEpithet;
         this.specificEpithet = specificEpithet;
         this.infraSpecificEpithet = infraSpecificEpithet;
@@ -66,55 +145,30 @@ public class TaxonNameParts {
 
 
     /**
+     *
+     */
+    public TaxonNameParts() {
+    }
+
+
+    /**
      * @param tn
      * @return
      */
-    public String nameRankSpecificNamePart(TaxonName tn) {
-        if(rank.isSpecies()){
-            return tn.getGenusOrUninomial();
+    public String rankSpecificNamePart() {
+        if(rank.isGenus() || rank.isHigher(Rank.GENUS())){
+            return getGenusOrUninomial();
         }
-        if(rank.isInfraSpecific()){
-            return tn.getSpecificEpithet();
-        }
-        return "--ERROR: INVALID RANK (" + rank.getLabel() + ")--";
-    }
-
-
-    public String uninomialQueryString(String query){
-         if(rank.isLower(Rank.GENUS())){
-            return uninomial;
-        } else {
-            return query;
-        }
-    }
-
-    public String infraGenericEpithet(String query){
         if(rank.isInfraGeneric()){
-            return query;
-        } else if(rank.isLower(Rank.GENUS())) {
-            return infraGenericEpithet;
-        } else {
-            // mask invalid data as null
-            return null;
+            return getInfraGenericEpithet();
         }
-    }
-
-    public String specificEpithet(String query){
-        if(rank.isLower(Rank.SPECIES())){
-            return specificEpithet;
-        } else if(rank.isSpecies()) {
-            return query;
-        } else {
-            return null;
+        if(rank.isSpecies()){
+            return getSpecificEpithet();
         }
-    }
-
-    public String infraspecificEpithet(String query){
         if(rank.isInfraSpecific()){
-            return query;
-        } else {
-            return null;
+            return getInfraSpecificEpithet();
         }
+        return "-- ERROR: INVALID OR UNSUPPORTED RANK (" + rank.getLabel() + ") --";
     }
 
 }
