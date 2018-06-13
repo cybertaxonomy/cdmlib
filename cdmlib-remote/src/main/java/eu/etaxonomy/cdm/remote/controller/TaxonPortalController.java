@@ -379,10 +379,15 @@ public class TaxonPortalController extends TaxonController{
     public List<TaxonRelationship> doGetTaxonRelations(@PathVariable("uuid") UUID uuid,
             HttpServletRequest request, HttpServletResponse response)throws IOException {
 
+        boolean includePublished = NO_UNPUBLISHED;
         logger.info("doGetTaxonRelations()" + requestPathAndQuery(request));
         Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
-        List<TaxonRelationship> toRelationships = service.listToTaxonRelationships(taxon, null, null, null, null, TAXONRELATIONSHIP_INIT_STRATEGY);
-        List<TaxonRelationship> fromRelationships = service.listFromTaxonRelationships(taxon, null, null, null, null, TAXONRELATIONSHIP_INIT_STRATEGY);
+        taxon = checkExistsAndAccess(taxon, includePublished, response);
+
+        List<TaxonRelationship> toRelationships = service.listToTaxonRelationships(taxon, null,
+                includePublished, null, null, null, TAXONRELATIONSHIP_INIT_STRATEGY);
+        List<TaxonRelationship> fromRelationships = service.listFromTaxonRelationships(taxon, null,
+                includePublished, null, null, null, TAXONRELATIONSHIP_INIT_STRATEGY);
 
         List<TaxonRelationship> allRelationships = new ArrayList<>(toRelationships.size() + fromRelationships.size());
         allRelationships.addAll(toRelationships);

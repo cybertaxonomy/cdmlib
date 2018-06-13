@@ -446,45 +446,49 @@ public class TaxonServiceImpl
     }
 
     @Override
-    public List<TaxonRelationship> listToTaxonRelationships(Taxon taxon, TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
-        Integer numberOfResults = dao.countTaxonRelationships(taxon, type, TaxonRelationship.Direction.relatedTo);
+    public List<TaxonRelationship> listToTaxonRelationships(Taxon taxon, TaxonRelationshipType type,
+            boolean includePublished, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
+        Integer numberOfResults = dao.countTaxonRelationships(taxon, type, includePublished, TaxonRelationship.Direction.relatedTo);
 
         List<TaxonRelationship> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again
-            results = dao.getTaxonRelationships(taxon, type, pageSize, pageNumber, orderHints, propertyPaths, TaxonRelationship.Direction.relatedTo);
+            results = dao.getTaxonRelationships(taxon, type, includePublished, pageSize, pageNumber, orderHints, propertyPaths, TaxonRelationship.Direction.relatedTo);
         }
         return results;
     }
 
     @Override
-    public Pager<TaxonRelationship> pageToTaxonRelationships(Taxon taxon, TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        Integer numberOfResults = dao.countTaxonRelationships(taxon, type, TaxonRelationship.Direction.relatedTo);
+    public Pager<TaxonRelationship> pageToTaxonRelationships(Taxon taxon, TaxonRelationshipType type,
+            boolean includePublished, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+        Integer numberOfResults = dao.countTaxonRelationships(taxon, type, includePublished, TaxonRelationship.Direction.relatedTo);
 
         List<TaxonRelationship> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again
-            results = dao.getTaxonRelationships(taxon, type, pageSize, pageNumber, orderHints, propertyPaths, TaxonRelationship.Direction.relatedTo);
+            results = dao.getTaxonRelationships(taxon, type, includePublished, pageSize, pageNumber, orderHints, propertyPaths, TaxonRelationship.Direction.relatedTo);
         }
         return new DefaultPagerImpl<>(pageNumber, Long.valueOf(numberOfResults), pageSize, results);
     }
 
     @Override
-    public List<TaxonRelationship> listFromTaxonRelationships(Taxon taxon, TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
-        Integer numberOfResults = dao.countTaxonRelationships(taxon, type, TaxonRelationship.Direction.relatedFrom);
+    public List<TaxonRelationship> listFromTaxonRelationships(Taxon taxon, TaxonRelationshipType type,
+            boolean includePublished, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
+        Integer numberOfResults = dao.countTaxonRelationships(taxon, type, includePublished, TaxonRelationship.Direction.relatedFrom);
 
         List<TaxonRelationship> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again
-            results = dao.getTaxonRelationships(taxon, type, pageSize, pageNumber, orderHints, propertyPaths, TaxonRelationship.Direction.relatedFrom);
+            results = dao.getTaxonRelationships(taxon, type, includePublished, pageSize, pageNumber, orderHints, propertyPaths, TaxonRelationship.Direction.relatedFrom);
         }
         return results;
     }
 
     @Override
-    public Pager<TaxonRelationship> pageFromTaxonRelationships(Taxon taxon, TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        Integer numberOfResults = dao.countTaxonRelationships(taxon, type, TaxonRelationship.Direction.relatedFrom);
+    public Pager<TaxonRelationship> pageFromTaxonRelationships(Taxon taxon, TaxonRelationshipType type,
+            boolean includePublished, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+        Integer numberOfResults = dao.countTaxonRelationships(taxon, type, includePublished, TaxonRelationship.Direction.relatedFrom);
 
         List<TaxonRelationship> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again
-            results = dao.getTaxonRelationships(taxon, type, pageSize, pageNumber, orderHints, propertyPaths, TaxonRelationship.Direction.relatedFrom);
+            results = dao.getTaxonRelationships(taxon, type, includePublished, pageSize, pageNumber, orderHints, propertyPaths, TaxonRelationship.Direction.relatedFrom);
         }
         return new DefaultPagerImpl<>(pageNumber, Long.valueOf(numberOfResults), pageSize, results);
     }
@@ -540,9 +544,9 @@ public class TaxonServiceImpl
 
     @Override
     public Set<Taxon> listRelatedTaxa(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships, Integer maxDepth,
-            Integer limit, Integer start, List<String> propertyPaths) {
+            boolean includeUnpublished, Integer limit, Integer start, List<String> propertyPaths) {
 
-        Set<Taxon> relatedTaxa = collectRelatedTaxa(taxon, includeRelationships, new HashSet<>(), maxDepth);
+        Set<Taxon> relatedTaxa = collectRelatedTaxa(taxon, includeRelationships, new HashSet<>(), includeUnpublished, maxDepth);
         relatedTaxa.remove(taxon);
         beanInitializer.initializeAll(relatedTaxa, propertyPaths);
         return relatedTaxa;
@@ -559,7 +563,8 @@ public class TaxonServiceImpl
      * @param maxDepth can be <code>null</code> for infinite depth
      * @return
      */
-    private Set<Taxon> collectRelatedTaxa(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships, Set<Taxon> taxa, Integer maxDepth) {
+    private Set<Taxon> collectRelatedTaxa(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships, Set<Taxon> taxa,
+            boolean includeUnpublished, Integer maxDepth) {
 
         if(taxa.isEmpty()) {
             taxa.add(taxon);
@@ -575,7 +580,7 @@ public class TaxonServiceImpl
         if(logger.isDebugEnabled()){
             logger.debug("collecting related taxa for " + taxon + " with maxDepth=" + maxDepth);
         }
-        List<TaxonRelationship> taxonRelationships = dao.getTaxonRelationships(taxon, null, null, null, null, null, null);
+        List<TaxonRelationship> taxonRelationships = dao.getTaxonRelationships(taxon, null, includeUnpublished, null, null, null, null, null);
         for (TaxonRelationship taxRel : taxonRelationships) {
 
             // skip invalid data
@@ -591,7 +596,7 @@ public class TaxonServiceImpl
                         }
                         taxa.add(taxRel.getToTaxon());
                         if(maxDepth == null || maxDepth > 0) {
-                            taxa.addAll(collectRelatedTaxa(taxRel.getToTaxon(), includeRelationships, taxa, maxDepth));
+                            taxa.addAll(collectRelatedTaxa(taxRel.getToTaxon(), includeRelationships, taxa, includeUnpublished, maxDepth));
                         }
                     }
                     if(relationshipEdgeFilter.getDirections().contains(Direction.relatedFrom) && !taxa.contains(taxRel.getFromTaxon())) {
@@ -600,7 +605,7 @@ public class TaxonServiceImpl
                             logger.debug(maxDepth + ": " +taxRel.getFromTaxon().getTitleCache() + " --[" + taxRel.getType().getLabel() + "]--> " + taxon.getTitleCache() );
                         }
                         if(maxDepth == null || maxDepth > 0) {
-                            taxa.addAll(collectRelatedTaxa(taxRel.getFromTaxon(), includeRelationships, taxa, maxDepth));
+                            taxa.addAll(collectRelatedTaxa(taxRel.getFromTaxon(), includeRelationships, taxa, includeUnpublished, maxDepth));
                         }
                     }
                 }
@@ -771,6 +776,9 @@ public class TaxonServiceImpl
             Boolean limitToGalleries, Boolean includeTaxonDescriptions, Boolean includeOccurrences,
             Boolean includeTaxonNameDescriptions, List<String> propertyPath) {
 
+        //TODO let inherit
+        boolean includeUnpublished = INCLUDE_UNPUBLISHED;
+
     //    logger.setLevel(Level.TRACE);
 //        Logger.getLogger("org.hibernate.SQL").setLevel(Level.TRACE);
 
@@ -787,7 +795,7 @@ public class TaxonServiceImpl
         // --- resolve related taxa
         if (includeRelationships != null && ! includeRelationships.isEmpty()) {
             logger.trace("listMedia() - resolve related taxa");
-            taxa = listRelatedTaxa(taxon, includeRelationships, null, null, null, null);
+            taxa = listRelatedTaxa(taxon, includeRelationships, null, includeUnpublished, null, null, null);
         }
 
         taxa.add((Taxon) dao.load(taxon.getUuid()));
@@ -2208,11 +2216,13 @@ public class TaxonServiceImpl
 
     @Override
     public List<Synonym> createInferredSynonyms(Taxon taxon, Classification classification, SynonymType type, boolean doWithMisappliedNames){
+
+
         List <Synonym> inferredSynonyms = new ArrayList<>();
         List<Synonym> inferredSynonymsToBeRemoved = new ArrayList<>();
 
-        HashMap <UUID, IZoologicalName> zooHashMap = new HashMap<>();
-
+        Map <UUID, IZoologicalName> zooHashMap = new HashMap<>();
+        boolean includeUnpublished = INCLUDE_UNPUBLISHED;
 
         UUID nameUuid= taxon.getName().getUuid();
         IZoologicalName taxonName = getZoologicalName(nameUuid, zooHashMap);
@@ -2267,9 +2277,9 @@ public class TaxonServiceImpl
                             List<OrderHint> orderHintsMisapplied = new ArrayList<>();
                             orderHintsMisapplied.add(new OrderHint("relatedFrom.titleCache", SortOrder.ASCENDING));
                             taxonRelListParent = dao.getTaxonRelationships(parentTaxon, TaxonRelationshipType.MISAPPLIED_NAME_FOR(),
-                                    null, null, orderHintsMisapplied, propertyPaths, Direction.relatedTo);
+                                    includeUnpublished, null, null, orderHintsMisapplied, propertyPaths, Direction.relatedTo);
                             taxonRelListTaxon = dao.getTaxonRelationships(taxon, TaxonRelationshipType.MISAPPLIED_NAME_FOR(),
-                                    null, null, orderHintsMisapplied, propertyPaths, Direction.relatedTo);
+                                    includeUnpublished, null, null, orderHintsMisapplied, propertyPaths, Direction.relatedTo);
                         }
 
                         if (type.equals(SynonymType.INFERRED_EPITHET_OF())){

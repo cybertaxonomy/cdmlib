@@ -168,8 +168,8 @@ public abstract class DaoBase {
         }
 
         if(orderHints != null && !orderHints.isEmpty()) {
-            orderString.append(" ORDER BY ");
             for(OrderHint orderHint : orderHints) {
+                orderString.append((orderString.length() < 2) ? " ORDER BY " : "," );
                 orderString.append(aliasPrefix).append(orderHint.toHql());
             }
         }

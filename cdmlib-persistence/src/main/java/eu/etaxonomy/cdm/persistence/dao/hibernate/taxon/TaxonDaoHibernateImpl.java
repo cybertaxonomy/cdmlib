@@ -804,34 +804,6 @@ public class TaxonDaoHibernateImpl
         return result;
     }
 
-    @Override
-    public int countTaxonRelationships(Taxon taxon, TaxonRelationshipType type, Direction direction) {
-        AuditEvent auditEvent = getAuditEventFromContext();
-        if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Query query = null;
-
-            if(type == null) {
-                query = getSession().createQuery("select count(taxonRelationship) from TaxonRelationship taxonRelationship where taxonRelationship."+direction+" = :relatedTaxon");
-            } else {
-                query = getSession().createQuery("select count(taxonRelationship) from TaxonRelationship taxonRelationship where taxonRelationship."+direction+" = :relatedTaxon and taxonRelationship.type = :type");
-                query.setParameter("type",type);
-            }
-            query.setParameter("relatedTaxon", taxon);
-
-            return ((Long)query.uniqueResult()).intValue();
-        } else {
-            AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(TaxonRelationship.class,auditEvent.getRevisionNumber());
-            query.add(AuditEntity.relatedId(direction.toString()).eq(taxon.getId()));
-            query.addProjection(AuditEntity.id().count());
-
-            if(type != null) {
-                query.add(AuditEntity.relatedId("type").eq(type.getId()));
-            }
-
-            return ((Long)query.getSingleResult()).intValue();
-        }
-    }
-
 
     @Override
     public int countSynonyms(boolean onlyAttachedToTaxon) {
@@ -1010,49 +982,132 @@ public class TaxonDaoHibernateImpl
             }
         }
 
-        return criteria.list();
+        @SuppressWarnings({ "unchecked", "rawtypes" })
+        List<TaxonBase> result = criteria.list();
+        return result;
+    }
+
+
+    @Override
+    public int countTaxonRelationships(Taxon taxon, TaxonRelationshipType type,
+            boolean includePublished, Direction direction) {
+        AuditEvent auditEvent = getAuditEventFromContext();
+        if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
+
+            String queryString = prepareTaxonRelationshipQuery(type, includePublished, direction, true);
+            Query query = getSession().createQuery(queryString);
+            query.setParameter("relatedTaxon", taxon);
+            if(type != null) {
+                query.setParameter("type",type);
+            }
+            if(! includePublished) {
+                query.setBoolean("publish",Boolean.TRUE);
+            }
+
+
+//            if(type == null) {
+//                query = getSession().createQuery(
+//                        "select count(taxonRelationship) from TaxonRelationship taxonRelationship where taxonRelationship."+direction+" = :relatedTaxon");
+//            } else {
+//                query = getSession().createQuery("select count(taxonRelationship) from TaxonRelationship taxonRelationship where taxonRelationship."+direction+" = :relatedTaxon and taxonRelationship.type = :type");
+//                query.setParameter("type",type);
+//            }
+//            query.setParameter("relatedTaxon", taxon);
+
+            return ((Long)query.uniqueResult()).intValue();
+        } else {
+          //TODO unpublished
+
+            AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(TaxonRelationship.class,auditEvent.getRevisionNumber());
+            query.add(AuditEntity.relatedId(direction.toString()).eq(taxon.getId()));
+            query.addProjection(AuditEntity.id().count());
+
+            if(type != null) {
+                query.add(AuditEntity.relatedId("type").eq(type.getId()));
+            }
+
+            return ((Long)query.getSingleResult()).intValue();
+        }
+    }
+
+
+    /**
+     * @param type
+     * @param includePublished
+     * @param direction
+     * @param b
+     * @return
+     */
+    private String prepareTaxonRelationshipQuery(TaxonRelationshipType type, boolean includePublished,
+            Direction direction, boolean isCount) {
+        String selectStr = isCount? " count(rel) as n ":" rel ";
+        String result = "SELECT " + selectStr +
+             " FROM TaxonRelationship rel " +
+             " WHERE rel."+direction+" = :relatedTaxon";
+        if (type != null){
+            result += " AND rel.type = :type ";
+        }
+        if(! includePublished) {
+            result += " AND rel."+direction+".publish = :publish";
+        }
+        return result;
     }
 
     @Override
     public List<TaxonRelationship> getTaxonRelationships(Taxon taxon, TaxonRelationshipType type,
-            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+            boolean includePublished, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths, Direction direction) {
 
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 
-            Criteria criteria = getSession().createCriteria(TaxonRelationship.class);
+            String queryString = prepareTaxonRelationshipQuery(type, includePublished, direction, false);
 
-            if(direction != null) {
-                criteria.add(Restrictions.eq(direction.name(), taxon));
-            } else {
-                criteria.add(Restrictions.or(
-                        Restrictions.eq(Direction.relatedFrom.name(), taxon),
-                        Restrictions.eq(Direction.relatedTo.name(), taxon))
-                    );
-            }
+            queryString += orderByClause(orderHints, "rel");
 
+            Query query = getSession().createQuery(queryString);
+            query.setParameter("relatedTaxon", taxon);
             if(type != null) {
-                criteria.add(Restrictions.eq("type", type));
+                query.setParameter("type",type);
             }
-
-            addOrder(criteria,orderHints);
-
-            if(pageSize != null) {
-                criteria.setMaxResults(pageSize);
-                if(pageNumber != null) {
-                    criteria.setFirstResult(pageNumber * pageSize);
-                } else {
-                    criteria.setFirstResult(0);
-                }
+            if(! includePublished) {
+                query.setBoolean("publish",Boolean.TRUE);
             }
+            setPagingParameter(query, pageSize, pageNumber);
+
+//            Criteria criteria = getSession().createCriteria(TaxonRelationship.class);
+//
+//            if(direction != null) {
+//                criteria.add(Restrictions.eq(direction.name(), taxon));
+//            } else {
+//                criteria.add(Restrictions.or(
+//                        Restrictions.eq(Direction.relatedFrom.name(), taxon),
+//                        Restrictions.eq(Direction.relatedTo.name(), taxon))
+//                    );
+//            }
+//
+//            if(type != null) {
+//                criteria.add(Restrictions.eq("type", type));
+//            }
+//
+//            addOrder(criteria,orderHints);
+//
+//            if(pageSize != null) {
+//                criteria.setMaxResults(pageSize);
+//                if(pageNumber != null) {
+//                    criteria.setFirstResult(pageNumber * pageSize);
+//                } else {
+//                    criteria.setFirstResult(0);
+//                }
+//            }
 
             @SuppressWarnings("unchecked")
-            List<TaxonRelationship> result = criteria.list();
+            List<TaxonRelationship> result = query.list();
             defaultBeanInitializer.initializeAll(result, propertyPaths);
 
             return result;
         } else {
+            //TODO unpublished
             AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(TaxonRelationship.class,auditEvent.getRevisionNumber());
             query.add(AuditEntity.relatedId("relatedTo").eq(taxon.getId()));
 

@@ -262,13 +262,15 @@ public interface ITaxonService
      *
      * @param taxon The taxon that is relatedTo
      * @param type The type of TaxonRelationship (can be null)
+     * @param includePublished should unpublished related taxa also be returned?
      * @param pageSize The maximum number of relationships returned (can be null for all relationships)
      * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @param orderHints Properties to order by
      * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link IBeanInitializer#initialize(Object, List)}
      * @return a List of TaxonRelationship instances
      */
-    public List<TaxonRelationship> listToTaxonRelationships(Taxon taxon, TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+    public List<TaxonRelationship> listToTaxonRelationships(Taxon taxon, TaxonRelationshipType type,
+            boolean includePublished, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 
     /**
@@ -277,13 +279,15 @@ public interface ITaxonService
      *
      * @param taxon The taxon that is relatedTo
      * @param type The type of TaxonRelationship (can be null)
+     * @param includePublished should unpublished related taxa also be returned?
      * @param pageSize The maximum number of relationships returned (can be null for all relationships)
      * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @param orderHints Properties to order by
      * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link IBeanInitializer#initialize(Object, List)}
      * @return a Pager of TaxonRelationship instances
      */
-    public Pager<TaxonRelationship> pageToTaxonRelationships(Taxon taxon, TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+    public Pager<TaxonRelationship> pageToTaxonRelationships(Taxon taxon, TaxonRelationshipType type,
+            boolean includePublished, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Returns the TaxonRelationships (of where relationship.type == type, if this argument is supplied)
@@ -291,13 +295,15 @@ public interface ITaxonService
      *
      * @param taxon The taxon that is relatedFrom
      * @param type The type of TaxonRelationship (can be null)
+     * @param includePublished should unpublished related taxa also be returned?
      * @param pageSize The maximum number of relationships returned (can be null for all relationships)
      * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @param orderHints Properties to order by
      * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link IBeanInitializer#initialize(Object, List)}
      * @return a List of TaxonRelationship instances
      */
-    public List<TaxonRelationship> listFromTaxonRelationships(Taxon taxon, TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+    public List<TaxonRelationship> listFromTaxonRelationships(Taxon taxon, TaxonRelationshipType type,
+            boolean includePublished, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 
     /**
@@ -306,13 +312,15 @@ public interface ITaxonService
      *
      * @param taxon The taxon that is relatedFrom
      * @param type The type of TaxonRelationship (can be null)
+     * @param includePublished should unpublished related taxa also be returned?
      * @param pageSize The maximum number of relationships returned (can be null for all relationships)
      * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @param orderHints Properties to order by
      * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link IBeanInitializer#initialize(Object, List)}
      * @return a Pager of TaxonRelationship instances
      */
-    public Pager<TaxonRelationship> pageFromTaxonRelationships(Taxon taxon, TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+    public Pager<TaxonRelationship> pageFromTaxonRelationships(Taxon taxon, TaxonRelationshipType type,
+            boolean includePublished, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * lists all taxa which are related to the <code>taxon</code> given as
@@ -329,7 +337,7 @@ public interface ITaxonService
      * @return
      */
     public Set<Taxon> listRelatedTaxa(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships, Integer maxDepth,
-            Integer limit, Integer start, List<String> propertyPaths);
+            boolean includeUnpublished, Integer limit, Integer start, List<String> propertyPaths);
 
 
     /**

@@ -745,12 +745,13 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T extends SpecimenOrObservationBase> Pager<T> pageByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
+    public <T extends SpecimenOrObservationBase> Pager<T> pageByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includedRelationships,
             Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 
         Set<Taxon> taxa = new HashSet<>();
         Set<Integer> occurrenceIds = new HashSet<>();
         List<T> occurrences = new ArrayList<>();
+        boolean includeUnpublished = INCLUDE_UNPUBLISHED;
 
         // Integer limit = PagerUtils.limitFor(pageSize);
         // Integer start = PagerUtils.startFor(pageSize, pageNumber);
@@ -759,8 +760,8 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             associatedTaxon = (Taxon) taxonService.load(associatedTaxon.getUuid());
         }
 
-        if (includeRelationships != null) {
-            taxa = taxonService.listRelatedTaxa(associatedTaxon, includeRelationships, maxDepth, null, null, propertyPaths);
+        if (includedRelationships != null) {
+            taxa = taxonService.listRelatedTaxa(associatedTaxon, includedRelationships, maxDepth, includeUnpublished, null, null, propertyPaths);
         }
 
         taxa.add(associatedTaxon);
