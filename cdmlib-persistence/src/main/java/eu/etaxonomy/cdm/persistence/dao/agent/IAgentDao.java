@@ -40,7 +40,7 @@ public interface IAgentDao extends IIdentifiableDao<AgentBase> {
 	 * @param person the person
 	 * @return a count of InstitutionalMembership instances
 	 */
-	public int countInstitutionalMemberships(Person person);
+	public long countInstitutionalMemberships(Person person);
 
 	/**
 	 * Return a List of members of a given team
@@ -58,7 +58,7 @@ public interface IAgentDao extends IIdentifiableDao<AgentBase> {
 	 * @param team the team
 	 * @return a count of Person instances
 	 */
-	public int countMembers(Team team);
+	public long countMembers(Team team);
 
 	/**
 	 * Return a count of addresses of a given agent
@@ -66,7 +66,7 @@ public interface IAgentDao extends IIdentifiableDao<AgentBase> {
 	 * @param agent the agent
 	 * @return a count of Address instances
 	 */
-	public Integer countAddresses(AgentBase agent);
+	public long countAddresses(AgentBase agent);
 
 	/**
 	 * Return a List of addresses of a given agent

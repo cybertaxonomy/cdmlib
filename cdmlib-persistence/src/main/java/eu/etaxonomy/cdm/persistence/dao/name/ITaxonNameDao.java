@@ -121,7 +121,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 	 *            the type designation status (or null to return all types)
 	 * @return a count of TypeDesignationBase instances
 	 */
-	public int countTypeDesignations(TaxonName name,
+	public long countTypeDesignations(TaxonName name,
 			SpecimenTypeDesignationStatus status);
 
 	/**

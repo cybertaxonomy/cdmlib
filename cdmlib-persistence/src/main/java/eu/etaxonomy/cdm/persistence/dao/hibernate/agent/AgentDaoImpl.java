@@ -63,26 +63,26 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 	}
 
 	@Override
-    public int countInstitutionalMemberships(Person person) {
+    public long countInstitutionalMemberships(Person person) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 		    Query query = getSession().createQuery("select count(institutionalMembership) from InstitutionalMembership institutionalMembership where institutionalMembership.person = :person");
 		    query.setParameter("person", person);
-		    return ((Long)query.uniqueResult()).intValue();
+		    return (Long)query.uniqueResult();
 		} else {
-			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(InstitutionalMembership.class,auditEvent.getRevisionNumber());
+			AuditQuery query = makeAuditQuery(InstitutionalMembership.class, auditEvent);
 			query.add(AuditEntity.relatedId("person").eq(person.getId()));
 			query.addProjection(AuditEntity.id());
-			return ((Long)query.getSingleResult()).intValue();
+			return (Long)query.getSingleResult();
 		}
 	}
 
 	@Override
-    public int countMembers(Team team) {
+    public long countMembers(Team team) {
 		checkNotInPriorView("AgentDaoImpl.countMembers(Team team)");
 		Query query = getSession().createQuery("select count(teamMember) from Team team join team.teamMembers teamMember where team = :team");
 		query.setParameter("team", team);
-		return ((Long)query.uniqueResult()).intValue();
+		return (Long)query.uniqueResult();
 	}
 
 	@Override
@@ -108,15 +108,17 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 		query.setParameter("team", team);
 		//query.addOrder( Order.asc("sortindex") );
 		setPagingParameter(query, pageSize, pageNumber);
-		return query.list();
+		@SuppressWarnings("unchecked")
+        List<Person> result = query.list();
+		return result;
 	}
 
 	@Override
-    public Integer countAddresses(AgentBase agent) {
+    public long countAddresses(AgentBase agent) {
 		checkNotInPriorView("AgentDaoImpl.countAddresses(AgentBase agent)");
 		Query query = getSession().createQuery("select count(address) from AgentBase agent join agent.contact.addresses address where agent = :agent");
 		query.setParameter("agent", agent);
-		return ((Long)query.uniqueResult()).intValue();
+		return (Long)query.uniqueResult();
 	}
 
 	@Override
@@ -125,13 +127,15 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 		Query query = getSession().createQuery("select address from AgentBase agent join agent.contact.addresses address where agent = :agent");
 		query.setParameter("agent", agent);
 		setPagingParameter(query, pageSize, pageNumber);
-		return query.list();
+        @SuppressWarnings("unchecked")
+        List<Address> result = query.list();
+        return result;
 	}
 
 
 	@Override
 	public List<UuidAndTitleCache<Team>> getTeamUuidAndNomenclaturalTitle() {
-		List<UuidAndTitleCache<Team>> list = new ArrayList<UuidAndTitleCache<Team>>();
+		List<UuidAndTitleCache<Team>> list = new ArrayList<>();
 		Session session = getSession();
 
 		Query query = session.createQuery("select uuid, id, nomenclaturalTitle from " + type.getSimpleName() + " where dtype = 'Team'");
@@ -140,7 +144,7 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
         List<Object[]> result = query.list();
 
 		for(Object[] object : result){
-			list.add(new UuidAndTitleCache<Team>(Team.class, (UUID) object[0], (Integer)object[1], (String) object[2]));
+			list.add(new UuidAndTitleCache<>(Team.class, (UUID) object[0], (Integer)object[1], (String) object[2]));
 		}
 
 		return list;

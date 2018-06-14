@@ -186,19 +186,19 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
     }
 
     @Override
-    public int countRights(T identifiableEntity) {
+    public long countRights(T identifiableEntity) {
         checkNotInPriorView("IdentifiableDaoBase.countRights(T identifiableEntity)");
         Query query = getSession().createQuery("select count(rights) from " + type.getSimpleName() + " identifiableEntity join identifiableEntity.rights rights where identifiableEntity = :identifiableEntity");
         query.setParameter("identifiableEntity",identifiableEntity);
-        return ((Long)query.uniqueResult()).intValue();
+        return (Long)query.uniqueResult();
     }
 
     @Override
-    public int countSources(T identifiableEntity) {
+    public long countSources(T identifiableEntity) {
         checkNotInPriorView("IdentifiableDaoBase.countSources(T identifiableEntity)");
         Query query = getSession().createQuery("SELECT COUNT(source) FROM "+identifiableEntity.getClass().getName() + " ie JOIN ie.sources source WHERE ie = :identifiableEntity");
         query.setParameter("identifiableEntity", identifiableEntity);
-        return ((Long)query.uniqueResult()).intValue();
+        return (Long)query.uniqueResult();
     }
 
     @Override
@@ -207,6 +207,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
         Query query = getSession().createQuery("select rights from " + type.getSimpleName() + " identifiableEntity join identifiableEntity.rights rights where identifiableEntity = :identifiableEntity");
         query.setParameter("identifiableEntity",identifiableEntity);
         setPagingParameter(query, pageSize, pageNumber);
+        @SuppressWarnings("unchecked")
         List<Rights> results = query.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
@@ -218,7 +219,9 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
         Query query = getSession().createQuery("select credits from " + type.getSimpleName() + " identifiableEntity join identifiableEntity.credits credits where identifiableEntity = :identifiableEntity");
         query.setParameter("identifiableEntity",identifiableEntity);
         setPagingParameter(query, pageSize, pageNumber);
-        return query.list();
+        @SuppressWarnings("unchecked")
+        List<Credit> result = query.list();
+        return result;
     }
 
     @Override
@@ -245,7 +248,10 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
         query.setString("idInSource", idInSource);
         query.setString("idNamespace", idNamespace);
         //TODO integrate reference in where
-        return query.list();
+
+        @SuppressWarnings("unchecked")
+        List<T> result = query.list();
+        return result;
     }
 
     @Override
@@ -318,7 +324,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
     }
 
     @Override
-    public int count(Class<? extends T> clazz, String queryString) {
+    public long count(Class<? extends T> clazz, String queryString) {
         checkNotInPriorView("IdentifiableDaoBase.count(Class<? extends T> clazz, String queryString)");
         QueryParser queryParser = new QueryParser(defaultField , new StandardAnalyzer());
 
@@ -334,7 +340,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
                 fullTextQuery = fullTextSession.createFullTextQuery(query, clazz);
             }
 
-            Integer  result = fullTextQuery.getResultSize();
+            int  result = fullTextQuery.getResultSize();
             return result;
 
         } catch (ParseException e) {
@@ -346,7 +352,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
     public void optimizeIndex() {
         FullTextSession fullTextSession = Search.getFullTextSession(getSession());
         SearchFactory searchFactory = fullTextSession.getSearchFactory();
-        for(Class clazz : indexedClasses) {
+        for(Class<?> clazz : indexedClasses) {
             searchFactory.optimize(clazz); // optimize the indices ()
         }
         fullTextSession.flushToIndexes();

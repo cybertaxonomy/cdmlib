@@ -165,7 +165,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
         TaxonName acherontiaLachesis = taxonNameDao.findByUuid(acherontiaLachesisUuid);
         assert acherontiaLachesis != null : "name must exist";
 
-        int count = taxonNameDao.countTypeDesignations(acherontiaLachesis, null);
+        long count = taxonNameDao.countTypeDesignations(acherontiaLachesis, null);
 
         assertEquals("countTypeDesignations should return 1",1,count);
     }

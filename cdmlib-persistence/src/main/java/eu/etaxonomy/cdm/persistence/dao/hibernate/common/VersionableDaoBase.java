@@ -247,7 +247,7 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 	}
 
 	@Override
-    public int countAuditEvents(T t, AuditEventSort sort) {
+    public long countAuditEvents(T t, AuditEventSort sort) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 
 		AuditQuery query = getAuditReader().createQuery().forRevisionsOfEntity(type, false, true);
@@ -267,7 +267,7 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 
 		query.addProjection(AuditEntity.revisionNumber().count());
 
-		return ((Long)query.getSingleResult()).intValue();
+		return (Long)query.getSingleResult();
 	}
 
 	@Override
@@ -291,7 +291,7 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 	}
 
 	@Override
-    public int countAuditEvents(Class<? extends T> clazz, AuditEvent from,	AuditEvent to, List<AuditCriterion> criteria) {
+    public long countAuditEvents(Class<? extends T> clazz, AuditEvent from,	AuditEvent to, List<AuditCriterion> criteria) {
 		AuditQuery query = null;
 
 		if(clazz == null) {
@@ -312,8 +312,7 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 
 		query.addProjection(AuditEntity.revisionNumber().count());
 
-		int result = ((Long)query.getSingleResult()).intValue();
-		return result;
+		return (Long)query.getSingleResult();
 	}
 
 	protected void addCriteria(AuditQuery query, List<AuditCriterion> criteria) {

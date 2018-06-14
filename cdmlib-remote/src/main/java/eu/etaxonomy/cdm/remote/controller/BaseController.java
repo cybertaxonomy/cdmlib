@@ -202,8 +202,8 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
             pagerParameters.normalizeAndValidate(response);
 
             start = pagerParameters.getPageIndex() * pagerParameters.getPageSize();
-            List sub_c = subCollection(c, start, pagerParameters.getPageSize());
-            Pager p = new DefaultPagerImpl(pageNumber, c.size(), pagerParameters.getPageSize(), sub_c);
+            List<? extends CdmBase> sub_c = subCollection(c, start, pagerParameters.getPageSize());
+            Pager<? extends CdmBase> p = new DefaultPagerImpl<>(pageNumber, c.size(), pagerParameters.getPageSize(), sub_c);
             return p;
         }
     }

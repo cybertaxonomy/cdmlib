@@ -898,7 +898,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         TaxonBase<?> taxon = taxonDao.findByUuid(sphingidae);
         assert taxon != null : "taxon cannot be null";
 
-        int numberOfAuditEvents = taxonDao.countAuditEvents(taxon, null);
+        long numberOfAuditEvents = taxonDao.countAuditEvents(taxon, null);
         assertEquals("countAuditEvents should return 2",numberOfAuditEvents,2);
     }
 
@@ -1098,7 +1098,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     public void testGetAuditEventsByTypeWithRestrictions() {
         commitAndStartNewTransaction(new String[]{"AUDITEVENT", "TAXONBASE_AUD"});
 
-        List<String> propertyPaths = new ArrayList<String>();
+        List<String> propertyPaths = new ArrayList<>();
         propertyPaths.add("name");
         propertyPaths.add("createdBy");
         propertyPaths.add("updatedBy");
@@ -1106,7 +1106,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         List<AuditCriterion> criteria = new ArrayList<>();
         criteria.add(AuditEntity.property("lsid_lsid").isNotNull());
 
-        int count = taxonDao.countAuditEvents(TaxonBase.class, null, null, null);
+        long count = taxonDao.countAuditEvents(TaxonBase.class, null, null, null);
 
         List<AuditEventRecord<TaxonBase>> auditEvents = taxonDao.getAuditEvents(TaxonBase.class, previousAuditEvent, mostRecentAuditEvent, criteria,null, null, AuditEventSort.FORWARDS, propertyPaths);
         assertNotNull("getAuditEvents should return a list",auditEvents);
@@ -1134,7 +1134,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         propertyPaths.add("name");
         propertyPaths.add("createdBy");
         propertyPaths.add("updatedBy");
-        int count = taxonDao.countAuditEvents(TaxonBase.class, null, null, null);
+        long count = taxonDao.countAuditEvents(TaxonBase.class, null, null, null);
         List<AuditEventRecord<TaxonBase>> auditEvents = taxonDao.getAuditEvents(TaxonBase.class, previousAuditEvent, mostRecentAuditEvent, null,null, null, AuditEventSort.FORWARDS, propertyPaths);
         assertNotNull("getAuditEvents should return a list", auditEvents);
         assertFalse("the list should not be empty", auditEvents.isEmpty());

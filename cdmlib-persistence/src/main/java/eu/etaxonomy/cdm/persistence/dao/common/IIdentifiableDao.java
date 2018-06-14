@@ -49,7 +49,7 @@ public interface IIdentifiableDao <T extends IdentifiableEntity> extends IAnnota
 	 * @param identifiableEntity The identifiable entity
 	 * @return a count of OriginalSource instances
 	 */
-	public int countSources(T identifiableEntity);
+	public long countSources(T identifiableEntity);
 
 	/**
 	 * Return a List of the sources for this identifiable entity
@@ -68,7 +68,7 @@ public interface IIdentifiableDao <T extends IdentifiableEntity> extends IAnnota
 	 * @param identifiableEntity The identifiable entity
 	 * @return a count of Rights instances
 	 */
-    public int countRights(T identifiableEntity);
+    public long countRights(T identifiableEntity);
 
 
 	/**

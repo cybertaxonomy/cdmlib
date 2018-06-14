@@ -77,7 +77,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
 
 	@Override
     public Pager<Rights> getRights(Media t, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-        Integer numberOfResults = dao.countRights(t);
+        long numberOfResults = dao.countRights(t);
 
 		List<Rights> results = new ArrayList<>();
 		if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)

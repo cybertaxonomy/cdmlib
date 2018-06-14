@@ -69,7 +69,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 	@Override
 	@Transactional(readOnly = true)
 	public Pager<Rights> getRights(T t, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-        Integer numberOfResults = dao.countRights(t);
+        long numberOfResults = dao.countRights(t);
 
 		List<Rights> results = new ArrayList<>();
 		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
@@ -82,7 +82,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 	@Override
 	@Transactional(readOnly = true)
 	public Pager<IdentifiableSource> getSources(T t, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-		 Integer numberOfResults = dao.countSources(t);
+		 long numberOfResults = dao.countSources(t);
 
 		 List<IdentifiableSource> results = new ArrayList<>();
 		 if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
@@ -221,7 +221,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 	@Transactional(readOnly = true)
 	@Override
 	public Pager<T> search(Class<? extends T> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        Integer numberOfResults = dao.count(clazz,queryString);
+        long numberOfResults = dao.count(clazz,queryString);
 
 		List<T> results = new ArrayList<>();
 		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)

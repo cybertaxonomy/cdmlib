@@ -180,7 +180,7 @@ public class DescriptionServiceImpl
             Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 
         List<T> results = listDescriptionElements(description, descriptionType, features, type, pageSize, pageNumber, propertyPaths);
-        return new DefaultPagerImpl<T>(pageNumber, results.size(), pageSize, results);
+        return new DefaultPagerImpl<>(pageNumber, results.size(), pageSize, results);
     }
 
     @Override
@@ -389,14 +389,14 @@ public class DescriptionServiceImpl
      */
     @Override
     public Pager<DescriptionElementBase> searchElements(Class<? extends DescriptionElementBase> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        Integer numberOfResults = descriptionElementDao.count(clazz, queryString);
+        long numberOfResults = descriptionElementDao.count(clazz, queryString);
 
-        List<DescriptionElementBase> results = new ArrayList<DescriptionElementBase>();
+        List<DescriptionElementBase> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
             results = descriptionElementDao.search(clazz, queryString, pageSize, pageNumber, orderHints, propertyPaths);
         }
 
-        return new DefaultPagerImpl<DescriptionElementBase>(pageNumber, numberOfResults, pageSize, results);
+        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
     }
 
     /**

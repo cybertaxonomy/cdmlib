@@ -385,7 +385,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         }
         //dao.list() does the paging of the field units. Passing the field units directly to the Pager would not work
         List<SpecimenOrObservationBase> fieldUnits = dao.list(fieldUnitUuids, pageSize, pageNumber, orderHints, propertyPaths);
-        return new DefaultPagerImpl<SpecimenOrObservationBase>(pageNumber, fieldUnitUuids.size(), pageSize, fieldUnits);
+        return new DefaultPagerImpl<>(pageNumber, fieldUnitUuids.size(), pageSize, fieldUnits);
     }
 
     @Override

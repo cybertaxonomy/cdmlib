@@ -246,7 +246,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
 
 
     @Override
-    public int countTypeDesignations(TaxonName name, SpecimenTypeDesignationStatus status) {
+    public long countTypeDesignations(TaxonName name, SpecimenTypeDesignationStatus status) {
         checkNotInPriorView("countTypeDesignations(TaxonName name, SpecimenTypeDesignationStatus status)");
         Query query = null;
         if(status == null) {
@@ -256,7 +256,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
             query.setParameter("status", status);
         }
         query.setParameter("name",name);
-        return ((Long)query.uniqueResult()).intValue();
+        return (Long)query.uniqueResult();
     }
 
     @Override

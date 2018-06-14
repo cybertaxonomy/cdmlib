@@ -796,14 +796,14 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
     @Override
     public Pager<TypeDesignationBase> getTypeDesignations(TaxonName name, SpecimenTypeDesignationStatus status,
                 Integer pageSize, Integer pageNumber, List<String> propertyPaths){
-        Integer numberOfResults = dao.countTypeDesignations(name, status);
+        long numberOfResults = dao.countTypeDesignations(name, status);
 
-        List<TypeDesignationBase> results = new ArrayList<TypeDesignationBase>();
-        if(AbstractPagerImpl.hasResultsInRange(numberOfResults.longValue(), pageNumber, pageSize)) {
+        List<TypeDesignationBase> results = new ArrayList<>();
+        if(AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)) {
             results = dao.getTypeDesignations(name, null, status, pageSize, pageNumber, propertyPaths);
         }
 
-        return new DefaultPagerImpl<TypeDesignationBase>(pageNumber, numberOfResults, pageSize, results);
+        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
     }
 
     /**

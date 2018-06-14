@@ -57,7 +57,7 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
     }
 
     @Override
-    public int count(Class<? extends DescriptionElementBase> clazz, String queryString) {
+    public long count(Class<? extends DescriptionElementBase> clazz, String queryString) {
         checkNotInPriorView("DescriptionElementDaoImpl.countTextData(String queryString)");
         QueryParser queryParser = new QueryParser(defaultField, new StandardAnalyzer());
 
@@ -72,7 +72,7 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
             } else {
                 fullTextQuery = fullTextSession.createFullTextQuery(query, clazz);
             }
-            return  fullTextQuery.getResultSize();
+            return fullTextQuery.getResultSize();
         } catch (ParseException e) {
             throw new QueryParseException(e, queryString);
         }
