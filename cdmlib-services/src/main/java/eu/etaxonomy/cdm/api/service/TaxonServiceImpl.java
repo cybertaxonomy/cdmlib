@@ -441,48 +441,48 @@ public class TaxonServiceImpl
 
     @Override
     public List<TaxonRelationship> listToTaxonRelationships(Taxon taxon, TaxonRelationshipType type,
-            boolean includePublished, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
-        long numberOfResults = dao.countTaxonRelationships(taxon, type, includePublished, TaxonRelationship.Direction.relatedTo);
+            boolean includeUnpublished, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
+        long numberOfResults = dao.countTaxonRelationships(taxon, type, includeUnpublished, TaxonRelationship.Direction.relatedTo);
 
         List<TaxonRelationship> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again
-            results = dao.getTaxonRelationships(taxon, type, includePublished, pageSize, pageNumber, orderHints, propertyPaths, TaxonRelationship.Direction.relatedTo);
+            results = dao.getTaxonRelationships(taxon, type, includeUnpublished, pageSize, pageNumber, orderHints, propertyPaths, TaxonRelationship.Direction.relatedTo);
         }
         return results;
     }
 
     @Override
     public Pager<TaxonRelationship> pageToTaxonRelationships(Taxon taxon, TaxonRelationshipType type,
-            boolean includePublished, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        long numberOfResults = dao.countTaxonRelationships(taxon, type, includePublished, TaxonRelationship.Direction.relatedTo);
+            boolean includeUnpublished, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+        long numberOfResults = dao.countTaxonRelationships(taxon, type, includeUnpublished, TaxonRelationship.Direction.relatedTo);
 
         List<TaxonRelationship> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again
-            results = dao.getTaxonRelationships(taxon, type, includePublished, pageSize, pageNumber, orderHints, propertyPaths, TaxonRelationship.Direction.relatedTo);
+            results = dao.getTaxonRelationships(taxon, type, includeUnpublished, pageSize, pageNumber, orderHints, propertyPaths, TaxonRelationship.Direction.relatedTo);
         }
         return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
     }
 
     @Override
     public List<TaxonRelationship> listFromTaxonRelationships(Taxon taxon, TaxonRelationshipType type,
-            boolean includePublished, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
-        long numberOfResults = dao.countTaxonRelationships(taxon, type, includePublished, TaxonRelationship.Direction.relatedFrom);
+            boolean includeUnpublished, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
+        long numberOfResults = dao.countTaxonRelationships(taxon, type, includeUnpublished, TaxonRelationship.Direction.relatedFrom);
 
         List<TaxonRelationship> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again
-            results = dao.getTaxonRelationships(taxon, type, includePublished, pageSize, pageNumber, orderHints, propertyPaths, TaxonRelationship.Direction.relatedFrom);
+            results = dao.getTaxonRelationships(taxon, type, includeUnpublished, pageSize, pageNumber, orderHints, propertyPaths, TaxonRelationship.Direction.relatedFrom);
         }
         return results;
     }
 
     @Override
     public Pager<TaxonRelationship> pageFromTaxonRelationships(Taxon taxon, TaxonRelationshipType type,
-            boolean includePublished, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        long numberOfResults = dao.countTaxonRelationships(taxon, type, includePublished, TaxonRelationship.Direction.relatedFrom);
+            boolean includeUnpublished, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+        long numberOfResults = dao.countTaxonRelationships(taxon, type, includeUnpublished, TaxonRelationship.Direction.relatedFrom);
 
         List<TaxonRelationship> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again
-            results = dao.getTaxonRelationships(taxon, type, includePublished, pageSize, pageNumber, orderHints, propertyPaths, TaxonRelationship.Direction.relatedFrom);
+            results = dao.getTaxonRelationships(taxon, type, includeUnpublished, pageSize, pageNumber, orderHints, propertyPaths, TaxonRelationship.Direction.relatedFrom);
         }
         return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
     }

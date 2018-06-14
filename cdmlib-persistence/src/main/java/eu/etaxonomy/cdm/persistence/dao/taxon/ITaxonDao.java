@@ -303,7 +303,7 @@ public interface ITaxonDao
      * @return the number of TaxonRelationship instances
      */
     public long countTaxonRelationships(Taxon taxon, TaxonRelationshipType type,
-            boolean includePublished, Direction direction);
+            boolean includeUnpublished, Direction direction);
 
     /**
      * Returns the TaxonRelationships (of where relationship.type == type, if
@@ -332,7 +332,7 @@ public interface ITaxonDao
      * @return a List of TaxonRelationship instances
      */
     public List<TaxonRelationship> getTaxonRelationships(Taxon taxon,
-            TaxonRelationshipType type, boolean includePublished,
+            TaxonRelationshipType type, boolean includeUnpublished,
             Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints, List<String> propertyPaths,
             Direction direction);

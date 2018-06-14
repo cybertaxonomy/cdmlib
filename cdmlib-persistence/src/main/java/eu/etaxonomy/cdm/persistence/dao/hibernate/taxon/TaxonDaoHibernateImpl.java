@@ -984,17 +984,17 @@ public class TaxonDaoHibernateImpl
 
     @Override
     public long countTaxonRelationships(Taxon taxon, TaxonRelationshipType type,
-            boolean includePublished, Direction direction) {
+            boolean includeUnpublished, Direction direction) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 
-            String queryString = prepareTaxonRelationshipQuery(type, includePublished, direction, true);
+            String queryString = prepareTaxonRelationshipQuery(type, includeUnpublished, direction, true);
             Query query = getSession().createQuery(queryString);
             query.setParameter("relatedTaxon", taxon);
             if(type != null) {
                 query.setParameter("type",type);
             }
-            if(! includePublished) {
+            if(! includeUnpublished) {
                 query.setBoolean("publish",Boolean.TRUE);
             }
 
@@ -1027,12 +1027,12 @@ public class TaxonDaoHibernateImpl
 
     /**
      * @param type
-     * @param includePublished
+     * @param includeUnpublished
      * @param direction
      * @param b
      * @return
      */
-    private String prepareTaxonRelationshipQuery(TaxonRelationshipType type, boolean includePublished,
+    private String prepareTaxonRelationshipQuery(TaxonRelationshipType type, boolean includeUnpublished,
             Direction direction, boolean isCount) {
         String selectStr = isCount? " count(rel) as n ":" rel ";
         String result = "SELECT " + selectStr +
@@ -1041,21 +1041,21 @@ public class TaxonDaoHibernateImpl
         if (type != null){
             result += " AND rel.type = :type ";
         }
-        if(! includePublished) {
-            result += " AND rel."+direction+".publish = :publish";
+        if(! includeUnpublished) {
+            result += " AND rel."+direction.invers()+".publish = :publish";
         }
         return result;
     }
 
     @Override
     public List<TaxonRelationship> getTaxonRelationships(Taxon taxon, TaxonRelationshipType type,
-            boolean includePublished, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+            boolean includeUnpublished, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths, Direction direction) {
 
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 
-            String queryString = prepareTaxonRelationshipQuery(type, includePublished, direction, false);
+            String queryString = prepareTaxonRelationshipQuery(type, includeUnpublished, direction, false);
 
             queryString += orderByClause("rel", orderHints);
 
@@ -1064,7 +1064,7 @@ public class TaxonDaoHibernateImpl
             if(type != null) {
                 query.setParameter("type",type);
             }
-            if(! includePublished) {
+            if(! includeUnpublished) {
                 query.setBoolean("publish",Boolean.TRUE);
             }
             setPagingParameter(query, pageSize, pageNumber);
