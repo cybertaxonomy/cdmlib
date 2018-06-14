@@ -29,6 +29,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 import au.com.bytecode.opencsv.CSVWriter;
+import eu.etaxonomy.cdm.common.CdmUtils;
 
 /**
  * list of languages according to current internet best practices as given by IANA
@@ -1212,7 +1213,7 @@ public class Language extends DefinedTermBase<Language> {
 //          newInstance.setIso639_2(csvLine.get(4).trim());   //does not exist anymore
 //          newInstance.setIdInVocabulary(csvLine.get(4).trim());  //same as abbrev
 
-            newInstance.setIso639_1(csvLine.get(5).trim());
+            newInstance.setIso639_1(CdmUtils.Ne(csvLine.get(5).trim()));
             //TODO could replace with generic validation
             if(iso639_1 != null && iso639_1.length() > 2){
                 logger.warn("Iso639-1: "+ newInstance.getIso639_1() +" from "+csvLine.get(3)+" ,"+csvLine.get(2)+" too long");
