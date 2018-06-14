@@ -90,19 +90,19 @@ public class OccurrenceDaoHibernateImpl
     }
 
     @Override
-    public int countDerivationEvents(SpecimenOrObservationBase occurence) {
+    public long countDerivationEvents(SpecimenOrObservationBase occurence) {
         checkNotInPriorView("OccurrenceDaoHibernateImpl.countDerivationEvents(SpecimenOrObservationBase occurence)");
         Query query = getSession().createQuery("select count(distinct derivationEvent) from DerivationEvent derivationEvent join derivationEvent.originals occurence where occurence = :occurence");
         query.setParameter("occurence", occurence);
 
-        return ((Long)query.uniqueResult()).intValue();
+        return (Long)query.uniqueResult();
     }
 
     @Override
-    public int countDeterminations(SpecimenOrObservationBase occurrence, TaxonBase taxonBase) {
+    public long countDeterminations(SpecimenOrObservationBase occurrence, TaxonBase taxonBase) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Criteria criteria = getSession().createCriteria(DeterminationEvent.class);
+            Criteria criteria = getCriteria(DeterminationEvent.class);
             if(occurrence != null) {
                 criteria.add(Restrictions.eq("identifiedUnit",occurrence));
             }
@@ -112,9 +112,9 @@ public class OccurrenceDaoHibernateImpl
             }
 
             criteria.setProjection(Projections.rowCount());
-            return ((Number)criteria.uniqueResult()).intValue();
+            return (Long)criteria.uniqueResult();
         } else {
-            AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(DeterminationEvent.class,auditEvent.getRevisionNumber());
+            AuditQuery query = makeAuditQuery(DeterminationEvent.class,auditEvent);
 
             if(occurrence != null) {
                 query.add(AuditEntity.relatedId("identifiedUnit").eq(occurrence.getId()));
@@ -125,17 +125,17 @@ public class OccurrenceDaoHibernateImpl
             }
             query.addProjection(AuditEntity.id().count());
 
-            return ((Long)query.getSingleResult()).intValue();
+            return (Long)query.getSingleResult();
         }
     }
 
     @Override
-    public int countMedia(SpecimenOrObservationBase occurence) {
+    public long countMedia(SpecimenOrObservationBase occurence) {
         checkNotInPriorView("OccurrenceDaoHibernateImpl.countMedia(SpecimenOrObservationBase occurence)");
         Query query = getSession().createQuery("select count(media) from SpecimenOrObservationBase occurence join occurence.media media where occurence = :occurence");
         query.setParameter("occurence", occurence);
 
-        return ((Long)query.uniqueResult()).intValue();
+        return (Long)query.uniqueResult();
     }
 
     @Override
@@ -241,13 +241,13 @@ public class OccurrenceDaoHibernateImpl
     }
 
     @Override
-    public int count(Class<? extends SpecimenOrObservationBase> clazz,	TaxonName determinedAs) {
+    public long count(Class<? extends SpecimenOrObservationBase> clazz,	TaxonName determinedAs) {
 
         Criteria criteria = getCriteria(clazz);
 
         criteria.createCriteria("determinations").add(Restrictions.eq("taxonName", determinedAs));
         criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
-        return ((Number)criteria.uniqueResult()).intValue();
+        return (Long)criteria.uniqueResult();
     }
 
     @Override
@@ -267,13 +267,13 @@ public class OccurrenceDaoHibernateImpl
     }
 
     @Override
-    public int count(Class<? extends SpecimenOrObservationBase> clazz,	TaxonBase determinedAs) {
+    public long count(Class<? extends SpecimenOrObservationBase> clazz,	TaxonBase determinedAs) {
 
         Criteria criteria = getCriteria(clazz);
 
         criteria.createCriteria("determinations").add(Restrictions.eq("taxon", determinedAs));
         criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
-        return ((Number)criteria.uniqueResult()).intValue();
+        return (Long)criteria.uniqueResult();
     }
 
 
@@ -427,7 +427,7 @@ public class OccurrenceDaoHibernateImpl
 
 
     @Override
-    public <T extends SpecimenOrObservationBase> int countOccurrences(Class<T> clazz, String queryString,
+    public <T extends SpecimenOrObservationBase> long countOccurrences(Class<T> clazz, String queryString,
             String significantIdentifier, SpecimenOrObservationType recordBasis, Taxon associatedTaxon, TaxonName associatedTaxonName,
             MatchMode matchmode, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
 
@@ -436,7 +436,7 @@ public class OccurrenceDaoHibernateImpl
 
         if(criteria!=null){
             criteria.setProjection(Projections.rowCount());
-            return ((Number)criteria.uniqueResult()).intValue();
+            return (Long)criteria.uniqueResult();
         }else{
             return 0;
         }

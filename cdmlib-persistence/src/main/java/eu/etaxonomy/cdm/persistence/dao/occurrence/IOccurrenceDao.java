@@ -48,7 +48,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
      * @param determinedAs the taxon name that these specimens are determined to belong to
      * @return
      */
-    public int count(Class<? extends SpecimenOrObservationBase> clazz,TaxonName determinedAs);
+    public long count(Class<? extends SpecimenOrObservationBase> clazz,TaxonName determinedAs);
 
     /**
      * Returns a sublist of SpecimenOrObservationBase instances stored in the database. A maximum
@@ -73,7 +73,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	 * @param determinedAs the taxon concept that these specimens are determined to belong to
 	 * @return
 	 */
-	public int count(Class<? extends SpecimenOrObservationBase> clazz,TaxonBase determinedAs);
+	public long count(Class<? extends SpecimenOrObservationBase> clazz,TaxonBase determinedAs);
 
 	/**
 	 * Returns a sublist of SpecimenOrObservationBase instances stored in the database. A maximum
@@ -181,7 +181,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
      *            authorTeam.persistentTitleCache
      * @return the number of found specimens
      */
-    public <T extends SpecimenOrObservationBase> int countOccurrences(Class<T> clazz, String queryString,
+    public <T extends SpecimenOrObservationBase> long countOccurrences(Class<T> clazz, String queryString,
             String significantIdentifier, SpecimenOrObservationType recordBasis, Taxon associatedTaxon,
             TaxonName associatedTaxonName, MatchMode matchmode, Integer limit, Integer start,
             List<OrderHint> orderHints, List<String> propertyPaths);
@@ -192,7 +192,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	 * @param occurence the occurence associated with these media
      * @return a count of media instances
      */
-	public int countMedia(SpecimenOrObservationBase occurence);
+	public long countMedia(SpecimenOrObservationBase occurence);
 
     /**
      * Returns a List of Media that are associated with a given occurence
@@ -212,7 +212,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	 * @param taxonbase the taxon concept associated with these determinations (can be null for all taxon concepts)
      * @return a count of determination events
      */
-    public int countDeterminations(SpecimenOrObservationBase occurence,TaxonBase taxonbase);
+    public long countDeterminations(SpecimenOrObservationBase occurence,TaxonBase taxonbase);
 
     /**
      * Returns a List of determinations that have been made for a given occurence and for a given taxon concept
@@ -232,7 +232,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	 * @param occurence the occurence that was a source of these derivation events
      * @return a count of derivation events
      */
-    public int countDerivationEvents(SpecimenOrObservationBase occurence);
+    public long countDerivationEvents(SpecimenOrObservationBase occurence);
 
     /**
      * Returns a list of derivation events that have involved creating new DerivedUnits from this occurence

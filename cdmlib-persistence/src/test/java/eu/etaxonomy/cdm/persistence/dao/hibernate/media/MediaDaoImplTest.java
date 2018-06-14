@@ -66,7 +66,7 @@ public class MediaDaoImplTest extends CdmIntegrationTest {
 
 	@Test
 	public void testCountMediaKeys() {
-		int numberOfMediaKeys = mediaDao.countMediaKeys(null,null);
+		long numberOfMediaKeys = mediaDao.countMediaKeys(null,null);
 
 		assertEquals("countMediaKeys should return 3",3,numberOfMediaKeys);
 	}
@@ -96,7 +96,7 @@ public class MediaDaoImplTest extends CdmIntegrationTest {
 		geoScopes.add(africa);
 		taxonomicScope.add(sphingidae);
 
-		int numberOfMediaKeys = mediaDao.countMediaKeys(taxonomicScope,geoScopes);
+		long numberOfMediaKeys = mediaDao.countMediaKeys(taxonomicScope,geoScopes);
 
 		assertEquals("countMediaKeys should return 1",1,numberOfMediaKeys);
 	}

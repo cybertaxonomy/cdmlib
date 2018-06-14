@@ -415,27 +415,28 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
     }
 
     @Override
-    public Integer countByTitle(String queryString) {
+    public long countByTitle(String queryString) {
         return countByTitle(queryString, null);
     }
 
     @Override
-    public Integer countByTitle(String queryString, CdmBase sessionObject) {
+    public long countByTitle(String queryString, CdmBase sessionObject) {
         Session session = getSession();
         if ( sessionObject != null ) {
             session.update(sessionObject);
         }
         checkNotInPriorView("IdentifiableDaoBase.countByTitle(String queryString, CdmBase sessionObject)");
         Criteria crit = session.createCriteria(type);
-        crit.add(Restrictions.ilike("titleCache", queryString));
-        Integer result =  ((Number)crit.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+        crit.add(Restrictions.ilike("titleCache", queryString))
+            .setProjection(Projections.rowCount());
+        long result =  (Long)crit.uniqueResult();
         return result;
     }
 
     @Override
-    public Integer countByTitle(String queryString, MatchMode matchMode, List<Criterion> criteria) {
+    public long countByTitle(String queryString, MatchMode matchMode, List<Criterion> criteria) {
         checkNotInPriorView("IdentifiableDaoBase.findByTitle(String queryString, MATCH_MODE matchmode, int page, int pagesize, List<Criterion> criteria)");
-        Criteria crit = getSession().createCriteria(type);
+        Criteria crit = getCriteria(type);
         if (matchMode == MatchMode.EXACT) {
             crit.add(Restrictions.eq("titleCache", matchMode.queryStringFrom(queryString)));
         } else {
@@ -448,9 +449,9 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
                 crit.add(criterion);
             }
         }
+        crit.setProjection(Projections.rowCount());
 
-
-        Integer result = ((Number)crit.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+        long result = (Long)crit.uniqueResult();
         return result;
     }
 

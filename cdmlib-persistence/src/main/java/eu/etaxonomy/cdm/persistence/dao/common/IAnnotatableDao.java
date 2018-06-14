@@ -21,7 +21,6 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 /**
  * @author n.hoffmann
  * @since 24.09.2008
- * @version 1.0
  */
 public interface IAnnotatableDao<T extends AnnotatableEntity> extends IVersionableDao<T>{
 
@@ -45,7 +44,7 @@ public interface IAnnotatableDao<T extends AnnotatableEntity> extends IVersionab
 	 * @param status The status of the annotations (null to count all annotations regardless of status)
 	 * @return a count of Annotation instances
 	 */
-	public int countAnnotations(T annotatableEntity, MarkerType status);
+	public long countAnnotations(T annotatableEntity, MarkerType status);
 
 	/**
 	 * Returns a count of Markers belonging to the supplied AnnotatableEntity
@@ -54,7 +53,7 @@ public interface IAnnotatableDao<T extends AnnotatableEntity> extends IVersionab
 	 * @param technical The type of MarkerTypes to consider (null to count all markers, regardless of whether the makerType is technical or not)
 	 * @return a count of Marker instances
 	 */
-	public int countMarkers(T annotatableEntity, Boolean technical);
+	public long countMarkers(T annotatableEntity, Boolean technical);
 
 	/**
 	 *

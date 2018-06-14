@@ -319,7 +319,7 @@ public interface ICdmGenericDao {
      * @param item
      * @return
      */
-    public Integer getCountWithItemInCollection(Class itemClass, Class clazz, String propertyName, CdmBase item);
+    public long getCountWithItemInCollection(Class itemClass, Class clazz, String propertyName, CdmBase item);
 
     /**
      * @param clazz

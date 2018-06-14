@@ -74,7 +74,7 @@ public class PreferenceServiceImpl implements IPreferenceService {
 	}
 
 	@Override
-	public int count() {
+	public long count() {
 		return dao.count();
 	}
 

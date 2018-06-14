@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
+import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -216,7 +217,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 	 * @param rank
 	 * @return a count of TaxonName instances
 	 */
-	public int countNames(String uninomial, String infraGenericEpithet,
+	public long countNames(String uninomial, String infraGenericEpithet,
 			String specificEpithet, String infraspecificEpithet, Rank rank);
 
 	/**
@@ -226,7 +227,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 	 * @param matchMode
 	 * @param criteria
 	 */
-	public int countNames(String queryString, MatchMode matchMode, List<Criterion> criteria);
+	public long countNames(String queryString, MatchMode matchMode, List<Criterion> criteria);
 
 	/**
 	 * Returns a List of TaxonName instances which nameCache matches the
@@ -253,7 +254,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 	 * @param queryString
 	 * @return a count of TaxonName instances
 	 */
-	public int countNames(String queryString);
+	public long countNames(String queryString);
 
 	/**
 	 * @param queryString

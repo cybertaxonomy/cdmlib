@@ -33,7 +33,7 @@ public interface ITermVocabularyDao extends IIdentifiableDao<TermVocabulary> {
 	 * @param termVocabulary The term vocabulary which 'owns' the terms of interest
 	 * @return a count of terms
 	 */
-	public int countTerms(TermVocabulary termVocabulary);
+	public long countTerms(TermVocabulary termVocabulary);
 
 	/**
 	 * Return a List of terms that belong to the termVocabulary supplied

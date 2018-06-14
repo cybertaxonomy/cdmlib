@@ -417,25 +417,19 @@ public class TaxonServiceImpl
 
     @Override
     public Pager<TaxonBase> findTaxaByName(Class<? extends TaxonBase> clazz, String uninomial,	String infragenericEpithet, String specificEpithet,	String infraspecificEpithet, String authorship, Rank rank, Integer pageSize,Integer pageNumber) {
-        if (clazz == null){
-            clazz = TaxonBase.class;
-        }
-        Integer numberOfResults = dao.countTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, rank);
+        long numberOfResults = dao.countTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, rank);
 
         List<TaxonBase> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again
             results = dao.findTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, authorship, rank, pageSize, pageNumber);
         }
 
-        return new DefaultPagerImpl<>(pageNumber, Long.valueOf(numberOfResults), pageSize, results);
+        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
     }
 
     @Override
     public List<TaxonBase> listTaxaByName(Class<? extends TaxonBase> clazz, String uninomial, String infragenericEpithet, String specificEpithet,	String infraspecificEpithet, String authorship, Rank rank, Integer pageSize,Integer pageNumber) {
-        if (clazz == null){
-            clazz = TaxonBase.class;
-        }
-        Integer numberOfResults = dao.countTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, rank);
+        long numberOfResults = dao.countTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, rank);
 
         List<TaxonBase> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again
@@ -448,7 +442,7 @@ public class TaxonServiceImpl
     @Override
     public List<TaxonRelationship> listToTaxonRelationships(Taxon taxon, TaxonRelationshipType type,
             boolean includePublished, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
-        Integer numberOfResults = dao.countTaxonRelationships(taxon, type, includePublished, TaxonRelationship.Direction.relatedTo);
+        long numberOfResults = dao.countTaxonRelationships(taxon, type, includePublished, TaxonRelationship.Direction.relatedTo);
 
         List<TaxonRelationship> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again
@@ -460,19 +454,19 @@ public class TaxonServiceImpl
     @Override
     public Pager<TaxonRelationship> pageToTaxonRelationships(Taxon taxon, TaxonRelationshipType type,
             boolean includePublished, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        Integer numberOfResults = dao.countTaxonRelationships(taxon, type, includePublished, TaxonRelationship.Direction.relatedTo);
+        long numberOfResults = dao.countTaxonRelationships(taxon, type, includePublished, TaxonRelationship.Direction.relatedTo);
 
         List<TaxonRelationship> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again
             results = dao.getTaxonRelationships(taxon, type, includePublished, pageSize, pageNumber, orderHints, propertyPaths, TaxonRelationship.Direction.relatedTo);
         }
-        return new DefaultPagerImpl<>(pageNumber, Long.valueOf(numberOfResults), pageSize, results);
+        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
     }
 
     @Override
     public List<TaxonRelationship> listFromTaxonRelationships(Taxon taxon, TaxonRelationshipType type,
             boolean includePublished, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
-        Integer numberOfResults = dao.countTaxonRelationships(taxon, type, includePublished, TaxonRelationship.Direction.relatedFrom);
+        long numberOfResults = dao.countTaxonRelationships(taxon, type, includePublished, TaxonRelationship.Direction.relatedFrom);
 
         List<TaxonRelationship> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again
@@ -484,13 +478,13 @@ public class TaxonServiceImpl
     @Override
     public Pager<TaxonRelationship> pageFromTaxonRelationships(Taxon taxon, TaxonRelationshipType type,
             boolean includePublished, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        Integer numberOfResults = dao.countTaxonRelationships(taxon, type, includePublished, TaxonRelationship.Direction.relatedFrom);
+        long numberOfResults = dao.countTaxonRelationships(taxon, type, includePublished, TaxonRelationship.Direction.relatedFrom);
 
         List<TaxonRelationship> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again
             results = dao.getTaxonRelationships(taxon, type, includePublished, pageSize, pageNumber, orderHints, propertyPaths, TaxonRelationship.Direction.relatedFrom);
         }
-        return new DefaultPagerImpl<>(pageNumber, Long.valueOf(numberOfResults), pageSize, results);
+        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
     }
 
     @Override
@@ -3146,7 +3140,7 @@ public class TaxonServiceImpl
 			return findByIdentifier(clazz, identifier, identifierType, matchmode, includeEntity, pageSize, pageNumber, propertyPaths);
 		}
 
-		Integer numberOfResults = dao.countByIdentifier(clazz, identifier, identifierType, subtreeFilter, matchmode);
+		long numberOfResults = dao.countByIdentifier(clazz, identifier, identifierType, subtreeFilter, matchmode);
         List<Object[]> daoResults = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again
         	daoResults = dao.findByIdentifier(clazz, identifier, identifierType, subtreeFilter,
@@ -3156,12 +3150,12 @@ public class TaxonServiceImpl
         List<IdentifiedEntityDTO<S>> result = new ArrayList<>();
         for (Object[] daoObj : daoResults){
         	if (includeEntity){
-        		result.add(new IdentifiedEntityDTO<S>((DefinedTerm)daoObj[0], (String)daoObj[1], (S)daoObj[2]));
+        		result.add(new IdentifiedEntityDTO<>((DefinedTerm)daoObj[0], (String)daoObj[1], (S)daoObj[2]));
         	}else{
-        		result.add(new IdentifiedEntityDTO<S>((DefinedTerm)daoObj[0], (String)daoObj[1], (UUID)daoObj[2], (String)daoObj[3], null));
+        		result.add(new IdentifiedEntityDTO<>((DefinedTerm)daoObj[0], (String)daoObj[1], (UUID)daoObj[2], (String)daoObj[3], null));
         	}
         }
-		return new DefaultPagerImpl<>(pageNumber, Long.valueOf(numberOfResults), pageSize, result);
+		return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, result);
 	}
 
 	@Override

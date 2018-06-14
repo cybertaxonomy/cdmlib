@@ -200,44 +200,44 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
     @Override
     public Pager<DerivationEvent> getDerivationEvents(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-        Integer numberOfResults = dao.countDerivationEvents(occurence);
+        long numberOfResults = dao.countDerivationEvents(occurence);
 
         List<DerivationEvent> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
             results = dao.getDerivationEvents(occurence, pageSize, pageNumber, propertyPaths);
         }
 
-        return new DefaultPagerImpl<DerivationEvent>(pageNumber, Long.valueOf(numberOfResults), pageSize, results);
+        return new DefaultPagerImpl<DerivationEvent>(pageNumber, numberOfResults, pageSize, results);
     }
 
     @Override
-    public int countDeterminations(SpecimenOrObservationBase occurence, TaxonBase taxonbase) {
+    public long countDeterminations(SpecimenOrObservationBase occurence, TaxonBase taxonbase) {
         return dao.countDeterminations(occurence, taxonbase);
     }
 
     @Override
     public Pager<DeterminationEvent> getDeterminations(SpecimenOrObservationBase occurrence, TaxonBase taxonBase,
             Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-        Integer numberOfResults = dao.countDeterminations(occurrence, taxonBase);
+        long numberOfResults = dao.countDeterminations(occurrence, taxonBase);
 
         List<DeterminationEvent> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
             results = dao.getDeterminations(occurrence, taxonBase, pageSize, pageNumber, propertyPaths);
         }
 
-        return new DefaultPagerImpl<DeterminationEvent>(pageNumber, Long.valueOf(numberOfResults), pageSize, results);
+        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
     }
 
     @Override
     public Pager<Media> getMedia(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-        Integer numberOfResults = dao.countMedia(occurence);
+        long numberOfResults = dao.countMedia(occurence);
 
         List<Media> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
             results = dao.getMedia(occurence, pageSize, pageNumber, propertyPaths);
         }
 
-        return new DefaultPagerImpl<Media>(pageNumber, Long.valueOf(numberOfResults), pageSize, results);
+        return new DefaultPagerImpl<Media>(pageNumber, numberOfResults, pageSize, results);
     }
 
     @Override
@@ -279,27 +279,25 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     @Override
     public Pager<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonName determinedAs,
             Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        Integer numberOfResults = dao.count(type, determinedAs);
+        long numberOfResults = dao.count(type, determinedAs);
         @SuppressWarnings("rawtypes")
         List<SpecimenOrObservationBase> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
             results = dao.list(type, determinedAs, pageSize, pageNumber, orderHints, propertyPaths);
         }
-        return new DefaultPagerImpl<SpecimenOrObservationBase>(
-                pageNumber, Long.valueOf(numberOfResults), pageSize, results);
+        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
     }
 
     @Override
     public Pager<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonBase determinedAs,
             Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        Integer numberOfResults = dao.count(type, determinedAs);
+        long numberOfResults = dao.count(type, determinedAs);
         @SuppressWarnings("rawtypes")
         List<SpecimenOrObservationBase> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
             results = dao.list(type, determinedAs, pageSize, pageNumber, orderHints, propertyPaths);
         }
-        return new DefaultPagerImpl<SpecimenOrObservationBase>(
-                pageNumber, Long.valueOf(numberOfResults), pageSize, results);
+        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
     }
 
     @Override
@@ -830,8 +828,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
         int totalHits = topDocsResultSet != null ? topDocsResultSet.totalGroupCount : 0;
 
-        return new DefaultPagerImpl<SearchResult<SpecimenOrObservationBase>>(pageNumber, totalHits, pageSize,
-                searchResults);
+        return new DefaultPagerImpl<>(pageNumber, Long.valueOf(totalHits), pageSize, searchResults);
 
     }
 
@@ -1387,12 +1384,12 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
 
     @Override
-    public Integer countByTitle(IIdentifiableEntityServiceConfigurator<SpecimenOrObservationBase> config){
+    public long countByTitle(IIdentifiableEntityServiceConfigurator<SpecimenOrObservationBase> config){
         if (config instanceof FindOccurrencesConfigurator) {
             FindOccurrencesConfigurator occurrenceConfig = (FindOccurrencesConfigurator) config;
             Taxon taxon = null;
             if(occurrenceConfig.getAssociatedTaxonUuid()!=null){
-                TaxonBase taxonBase = taxonService.load(occurrenceConfig.getAssociatedTaxonUuid());
+                TaxonBase<?> taxonBase = taxonService.load(occurrenceConfig.getAssociatedTaxonUuid());
                 if(taxonBase.isInstanceOf(Taxon.class)){
                     taxon = HibernateProxyHelper.deproxy(taxonBase, Taxon.class);
                 }
@@ -1432,7 +1429,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         List<UuidAndTitleCache<SpecimenOrObservationBase>> occurrences = new ArrayList<>();
         Taxon taxon = null;
         if(config.getAssociatedTaxonUuid()!=null){
-            TaxonBase taxonBase = taxonService.load(config.getAssociatedTaxonUuid());
+            TaxonBase<?> taxonBase = taxonService.load(config.getAssociatedTaxonUuid());
             if(taxonBase.isInstanceOf(Taxon.class)){
                 taxon = HibernateProxyHelper.deproxy(taxonBase, Taxon.class);
             }
@@ -1557,7 +1554,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     @Override
-    public int countOccurrences(IIdentifiableEntityServiceConfigurator<SpecimenOrObservationBase> config){
+    public long countOccurrences(IIdentifiableEntityServiceConfigurator<SpecimenOrObservationBase> config){
         return countByTitle(config);
     }
 

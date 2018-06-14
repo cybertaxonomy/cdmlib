@@ -146,7 +146,7 @@ public class CdmGenericDaoImpl
 	}
 
 	@Override
-    public Integer getCountWithItemInCollection(Class itemClass, Class clazz, String propertyName,
+    public long getCountWithItemInCollection(Class itemClass, Class clazz, String propertyName,
             CdmBase item){
         Session session = super.getSession();
         String thisClassStr = itemClass.getSimpleName();
@@ -155,8 +155,7 @@ public class CdmGenericDaoImpl
             " WHERE this = :referencedObject AND this member of other."+propertyName ;
 
         Query query = session.createQuery(queryStr).setEntity("referencedObject", item);
-        @SuppressWarnings("unchecked")
-        Integer result =((Number)query.uniqueResult()).intValue();
+        long result =(Long)query.uniqueResult();
         return result;
     }
 

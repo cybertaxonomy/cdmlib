@@ -110,22 +110,22 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
     }
 
     @Override
-    public int countNames(String queryString) {
+    public long countNames(String queryString) {
         checkNotInPriorView("TaxonNameDaoHibernateImpl.countNames(String queryString)");
-        Criteria criteria = getSession().createCriteria(TaxonName.class);
+        Criteria criteria = getCriteria(null);
 
         if (queryString != null) {
             criteria.add(Restrictions.ilike("nameCache", queryString));
         }
         criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
 
-        return ((Number)criteria.uniqueResult()).intValue();
+        return (Long)criteria.uniqueResult();
     }
 
     @Override
-    public int countNames(String queryString, MatchMode matchMode, List<Criterion> criteria) {
+    public long countNames(String queryString, MatchMode matchMode, List<Criterion> criteria) {
 
-        Criteria crit = getSession().createCriteria(type);
+        Criteria crit = getCriteria(type);
         if (matchMode == MatchMode.EXACT) {
             crit.add(Restrictions.eq("nameCache", matchMode.queryStringFrom(queryString)));
         } else {
@@ -138,14 +138,14 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
         }
 
         crit.setProjection(Projections.projectionList().add(Projections.rowCount()));
-        return ((Number)crit.uniqueResult()).intValue();
+        return (Long)crit.uniqueResult();
     }
 
     @Override
-    public int countNames(String genusOrUninomial, String infraGenericEpithet,	String specificEpithet, String infraSpecificEpithet, Rank rank) {
+    public long countNames(String genusOrUninomial, String infraGenericEpithet,	String specificEpithet, String infraSpecificEpithet, Rank rank) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Criteria criteria = getSession().createCriteria(TaxonName.class);
+            Criteria criteria = getCriteria(TaxonName.class);
 
             /**
              * Given HHH-2951 - "Restrictions.eq when passed null, should create a NullRestriction"
@@ -180,9 +180,9 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
             }
 
             criteria.setProjection(Projections.rowCount());
-            return ((Number)criteria.uniqueResult()).intValue();
+            return (Long)criteria.uniqueResult();
         } else {
-            AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(TaxonName.class,auditEvent.getRevisionNumber());
+            AuditQuery query = makeAuditQuery(TaxonName.class, auditEvent);
 
             if(genusOrUninomial != null) {
                 query.add(AuditEntity.property("genusOrUninomial").eq(genusOrUninomial));
@@ -213,7 +213,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
             }
 
             query.addProjection(AuditEntity.id().count());
-            return ((Long)query.getSingleResult()).intValue();
+            return (Long)query.getSingleResult();
         }
     }
 

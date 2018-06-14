@@ -269,7 +269,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 
     @Test
     public void testCountNames() {
-        int count = taxonNameDao.countNames("Atropos", null, null, null, Rank.GENUS());
+        long count = taxonNameDao.countNames("Atropos", null, null, null, Rank.GENUS());
 
         assertEquals("countNames should return 3",3,count);
     }

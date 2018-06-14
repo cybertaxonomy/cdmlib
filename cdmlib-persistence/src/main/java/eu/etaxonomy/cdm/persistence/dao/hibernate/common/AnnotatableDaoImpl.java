@@ -41,7 +41,7 @@ public abstract class AnnotatableDaoImpl<T extends AnnotatableEntity>
 	}
 
 	@Override
-    public int countAnnotations(T annotatableEntity, MarkerType status) {
+    public long countAnnotations(T annotatableEntity, MarkerType status) {
 		checkNotInPriorView("AnnotatableDaoImpl.countAnnotations(T annotatableEntity, MarkerType status)");
 		Query query = null;
 
@@ -58,7 +58,7 @@ public abstract class AnnotatableDaoImpl<T extends AnnotatableEntity>
         query.setParameter("id", annotatableEntity.getId());
 
 
-		return ((Long)query.uniqueResult()).intValue();
+		return (Long)query.uniqueResult();
 	}
 
 	@Override
@@ -108,7 +108,7 @@ public abstract class AnnotatableDaoImpl<T extends AnnotatableEntity>
 	}
 
 	@Override
-    public int countMarkers(T annotatableEntity, Boolean technical) {
+    public long countMarkers(T annotatableEntity, Boolean technical) {
 		checkNotInPriorView("AnnotatableDaoImpl.countMarkers(T annotatableEntity, Boolean technical");
         Query query = null;
 
@@ -123,7 +123,7 @@ public abstract class AnnotatableDaoImpl<T extends AnnotatableEntity>
 
 		query.setParameter("id",annotatableEntity.getId());
 
-		return ((Long)query.uniqueResult()).intValue();
+		return (Long)query.uniqueResult();
 	}
 
     @Override

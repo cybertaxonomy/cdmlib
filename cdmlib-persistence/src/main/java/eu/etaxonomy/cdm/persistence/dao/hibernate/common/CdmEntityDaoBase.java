@@ -1023,7 +1023,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
      * @param auditEvent
      * @return
      */
-    protected <S extends T> AuditQuery makeAuditQuery(Class<S> clazz, AuditEvent auditEvent) {
+    protected AuditQuery makeAuditQuery(Class<? extends CdmBase> clazz, AuditEvent auditEvent) {
         AuditQuery query = null;
 
         if(clazz == null) {

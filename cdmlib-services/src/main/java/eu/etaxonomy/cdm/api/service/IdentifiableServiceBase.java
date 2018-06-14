@@ -563,15 +563,15 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 
 	@Transactional(readOnly = true)
 	@Override
-	public Integer countByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria){
+	public long countByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria){
 		 long numberOfResults = dao.countByTitle(clazz, queryString, matchmode, criteria);
 
-		 return ((Number)numberOfResults).intValue();
+		 return numberOfResults;
 	}
 
 	@Transactional(readOnly = true)
 	@Override
-	public Integer countByTitle(IIdentifiableEntityServiceConfigurator<T> config){
+	public long countByTitle(IIdentifiableEntityServiceConfigurator<T> config){
 		return countByTitle(config.getClazz(), config.getTitleSearchStringSqlized(),
 				config.getMatchMode(), config.getCriteria());
 

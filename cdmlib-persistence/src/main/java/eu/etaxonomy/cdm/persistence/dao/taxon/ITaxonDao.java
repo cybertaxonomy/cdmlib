@@ -156,7 +156,7 @@ public interface ITaxonDao
      * @param rank
      * @return a count of TaxonBase instances
      */
-    public int countTaxaByName(Class <? extends TaxonBase> clazz, String uninomial, String infragenericEpithet,String specificEpithet, String infraspecificEpithet, Rank rank);
+    public long countTaxaByName(Class <? extends TaxonBase> clazz, String uninomial, String infragenericEpithet,String specificEpithet, String infraspecificEpithet, Rank rank);
 
     /**
      * Returns a list of TaxonBase instances where the
@@ -277,7 +277,7 @@ public interface ITaxonDao
      * @param onlyAcccepted
      * @return
      */
-    public int countMatchesByName(String queryString, MatchMode matchMode, boolean onlyAcccepted);
+    public long countMatchesByName(String queryString, MatchMode matchMode, boolean onlyAcccepted);
 
     /**
      * @param queryString
@@ -286,7 +286,7 @@ public interface ITaxonDao
      * @param criteria
      * @return
      */
-    public int countMatchesByName(String queryString, MatchMode matchMode, boolean onlyAcccepted, List<Criterion> criteria);
+    public long countMatchesByName(String queryString, MatchMode matchMode, boolean onlyAcccepted, List<Criterion> criteria);
 
     /**
      * Returns a count of the TaxonRelationships (of where relationship.type ==
@@ -302,7 +302,7 @@ public interface ITaxonDao
      *            specifies the direction of the relationship
      * @return the number of TaxonRelationship instances
      */
-    public int countTaxonRelationships(Taxon taxon, TaxonRelationshipType type,
+    public long countTaxonRelationships(Taxon taxon, TaxonRelationshipType type,
             boolean includePublished, Direction direction);
 
     /**
@@ -369,7 +369,7 @@ public interface ITaxonDao
      * @param type The type of Synonym (can be null)
      * @return the number of Synonym instances
      */
-    public int countSynonyms(Synonym synonym, SynonymType type);
+    public long countSynonyms(Synonym synonym, SynonymType type);
 
     public List<TaxonName> findIdenticalTaxonNames(List<String> propertyPath);
 
@@ -426,7 +426,7 @@ public interface ITaxonDao
 	 * @param subtreeFilter the subtree filter as taxon node
 	 * @return
 	 */
-	public <S extends TaxonBase> int countByIdentifier(Class<S> clazz,
+	public <S extends TaxonBase> long countByIdentifier(Class<S> clazz,
 			String identifier, DefinedTerm identifierType, TaxonNode subtreeFilter, MatchMode matchmode);
 
 	/**

@@ -56,19 +56,19 @@ public class PreferenceServiceImplTest  extends CdmIntegrationTest {
     @Test
     @DataSet
     public void testCount() {
-    	 int countStart = service.count();
+    	 long countStart = service.count();
          Assert.assertEquals("There should be 1 preference in the CDM store", 1, countStart);
     }
 
     @Test
     @DataSet
     public void testSet() {
-    	 int countStart = service.count();
-         Assert.assertEquals(1, countStart);
+    	long countStart = service.count();
+        Assert.assertEquals(1, countStart);
 
     	CdmPreference pref = CdmPreference.NewDatabaseInstance(PreferencePredicate.Test, "200");
     	service.set(pref);
-	   	int count = service.count();
+	   	long count = service.count();
 	    Assert.assertEquals("There should be 1 new preference", countStart + 1, count);
 
 

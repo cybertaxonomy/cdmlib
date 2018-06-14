@@ -80,7 +80,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 //    }
 
     @Override
-    public int countDescriptionByDistribution(Set<NamedArea> namedAreas, PresenceAbsenceTerm status) {
+    public long countDescriptionByDistribution(Set<NamedArea> namedAreas, PresenceAbsenceTerm status) {
         checkNotInPriorView("DescriptionDaoImpl.countDescriptionByDistribution(Set<NamedArea> namedAreas, PresenceAbsenceTermBase status)");
         Query query = null;
 
@@ -92,25 +92,23 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
         }
         query.setParameterList("namedAreas", namedAreas);
 
-        return ((Long)query.uniqueResult()).intValue();
+        return (Long)query.uniqueResult();
     }
 
     @Override
-    public <T extends DescriptionElementBase> int countDescriptionElements(DescriptionBase description, Set<Feature> features, Class<T> clazz) {
+    public <T extends DescriptionElementBase> long countDescriptionElements(DescriptionBase description, Set<Feature> features, Class<T> clazz) {
         return countDescriptionElements(description, null, features, clazz);
     }
 
     @Override
-    public <T extends DescriptionElementBase> int countDescriptionElements(DescriptionBase description, Class<? extends DescriptionBase> descriptionType,
+    public <T extends DescriptionElementBase> long countDescriptionElements(DescriptionBase description, Class<? extends DescriptionBase> descriptionType,
             Set<Feature> features, Class<T> clazz) {
         AuditEvent auditEvent = getAuditEventFromContext();
+        if (clazz == null){
+            clazz = (Class<T>)DescriptionElementBase.class;
+        }
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Criteria criteria = null;
-            if(clazz == null) {
-                criteria = getSession().createCriteria(DescriptionElementBase.class);
-            } else {
-                criteria = getSession().createCriteria(clazz);
-            }
+            Criteria criteria = getCriteria(clazz);
 
             if(description != null) {
                 criteria.add(Restrictions.eq("inDescription", description));
@@ -126,17 +124,13 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 
             criteria.setProjection(Projections.rowCount());
 
-            return ((Number)criteria.uniqueResult()).intValue();
+            return (Long)criteria.uniqueResult();
         } else {
             if(features != null && !features.isEmpty()) {
-                Integer count = 0;
+                long count = 0;
                 for(Feature f : features) {
                     AuditQuery query = null;
-                    if(clazz == null) {
-                        query = getAuditReader().createQuery().forEntitiesAtRevision(DescriptionElementBase.class,auditEvent.getRevisionNumber());
-                    } else {
-                        query = getAuditReader().createQuery().forEntitiesAtRevision(clazz,auditEvent.getRevisionNumber());
-                    }
+                    query = makeAuditQuery(clazz, auditEvent);
 
                     if(description != null) {
                         query.add(AuditEntity.relatedId("inDescription").eq(description.getId()));
@@ -148,17 +142,12 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 
                     query.add(AuditEntity.relatedId("feature").eq(f.getId()));
                     query.addProjection(AuditEntity.id().count());
-                    count += ((Long)query.getSingleResult()).intValue();
+                    count += (Long)query.getSingleResult();
                 }
 
                 return count;
             } else {
-                AuditQuery query = null;
-                if(clazz == null) {
-                    query = getAuditReader().createQuery().forEntitiesAtRevision(DescriptionElementBase.class,auditEvent.getRevisionNumber());
-                } else {
-                    query = getAuditReader().createQuery().forEntitiesAtRevision(clazz,auditEvent.getRevisionNumber());
-                }
+                AuditQuery query = makeAuditQuery(clazz, auditEvent);
 
                 if(description != null) {
                     query.add(AuditEntity.relatedId("inDescription").eq(description.getId()));
@@ -168,21 +157,16 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
                 }
 
                 query.addProjection(AuditEntity.id().count());
-                return ((Long)query.getSingleResult()).intValue();
+                return (Long)query.getSingleResult();
             }
         }
     }
 
     @Override
-    public int countDescriptions(Class<? extends DescriptionBase> clazz, Boolean hasImages, Boolean hasText, Set<Feature> features) {
+    public long countDescriptions(Class<? extends DescriptionBase> clazz, Boolean hasImages, Boolean hasText, Set<Feature> features) {
         checkNotInPriorView("DescriptionDaoImpl.countDescriptions(Class<TYPE> type, Boolean hasImages, Boolean hasText, Set<Feature> features)");
-        Criteria inner = null;
 
-        if(clazz == null) {
-            inner = getSession().createCriteria(type);
-        } else {
-            inner = getSession().createCriteria(clazz);
-        }
+        Criteria inner = getCriteria(clazz);
 
         Criteria elementsCriteria = inner.createCriteria("descriptionElements");
         if(hasText != null) {
@@ -207,21 +191,22 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 
         inner.setProjection(Projections.countDistinct("id"));
 
-        return ((Number) inner.uniqueResult()).intValue();
+        return (Long)inner.uniqueResult();
     }
 
     @Override
-    public int countTaxonDescriptions(Taxon taxon, Set<DefinedTerm> scopes,Set<NamedArea> geographicalScopes, Set<MarkerType> markerTypes) {
+    public long countTaxonDescriptions(Taxon taxon, Set<DefinedTerm> scopes,
+            Set<NamedArea> geographicalScopes, Set<MarkerType> markerTypes) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Criteria criteria = getSession().createCriteria(TaxonDescription.class);
+            Criteria criteria = getCriteria(TaxonDescription.class);
 
             if(taxon != null) {
                 criteria.add(Restrictions.eq("taxon", taxon));
             }
 
             if(scopes != null && !scopes.isEmpty()) {
-                Set<Integer> scopeIds = new HashSet<Integer>();
+                Set<Integer> scopeIds = new HashSet<>();
                 for(DefinedTerm s : scopes) {
                     scopeIds.add(s.getId());
                 }
@@ -229,30 +214,28 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
             }
 
             if(geographicalScopes != null && !geographicalScopes.isEmpty()) {
-                Set<Integer> geoScopeIds = new HashSet<Integer>();
+                Set<Integer> geoScopeIds = new HashSet<>();
                 for(NamedArea n : geographicalScopes) {
                     geoScopeIds.add(n.getId());
                 }
                 criteria.createCriteria("geoScopes").add(Restrictions.in("id", geoScopeIds));
             }
 
-
             addMarkerTypesCriterion(markerTypes, criteria);
-
 
             criteria.setProjection(Projections.rowCount());
 
-            return ((Number)criteria.uniqueResult()).intValue();
+            return (Long)criteria.uniqueResult();
         } else {
             if((scopes == null || scopes.isEmpty())&& (geographicalScopes == null || geographicalScopes.isEmpty()) && (markerTypes == null || markerTypes.isEmpty())) {
-                AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(TaxonDescription.class,auditEvent.getRevisionNumber());
+                AuditQuery query = makeAuditQuery(TaxonDescription.class,auditEvent);
                 if(taxon != null) {
                     query.add(AuditEntity.relatedId("taxon").eq(taxon.getId()));
                 }
 
                 query.addProjection(AuditEntity.id().count());
 
-                return ((Long)query.getSingleResult()).intValue();
+                return (Long)query.getSingleResult();
             } else {
                 throw new OperationNotSupportedInPriorViewException("countTaxonDescriptions(Taxon taxon, Set<Scope> scopes,Set<NamedArea> geographicalScopes)");
             }
@@ -484,10 +467,10 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
     }
 
     @Override
-    public int countTaxonNameDescriptions(TaxonName name) {
+    public long countTaxonNameDescriptions(TaxonName name) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Criteria criteria = getSession().createCriteria(TaxonNameDescription.class);
+            Criteria criteria = getCriteria(TaxonNameDescription.class);
 
             if(name != null) {
                 criteria.add(Restrictions.eq("taxonName", name));
@@ -495,16 +478,16 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 
             criteria.setProjection(Projections.rowCount());
 
-            return ((Number)criteria.uniqueResult()).intValue();
+            return (Long)criteria.uniqueResult();
         } else {
-            AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(TaxonNameDescription.class,auditEvent.getRevisionNumber());
+            AuditQuery query = makeAuditQuery(TaxonNameDescription.class,auditEvent);
 
             if(name != null) {
                 query.add(AuditEntity.relatedId("taxonName").eq(name.getId()));
             }
 
             query.addProjection(AuditEntity.id().count());
-            return ((Long)query.getSingleResult()).intValue();
+            return (Long)query.getSingleResult();
         }
     }
 
@@ -518,13 +501,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
     @Override
     public List<DescriptionBase> listDescriptions(Class<? extends DescriptionBase> clazz, Boolean hasImages, Boolean hasText,	Set<Feature> features, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         checkNotInPriorView("DescriptionDaoImpl.listDescriptions(Class<TYPE> type, Boolean hasImages, Boolean hasText,	Set<Feature> features, Integer pageSize, Integer pageNumber)");
-        Criteria inner = null;
-
-        if(clazz == null) {
-            inner = getSession().createCriteria(type);
-        } else {
-            inner = getSession().createCriteria(clazz);
-        }
+        Criteria inner = getCriteria(clazz);
 
         Criteria elementsCriteria = inner.createCriteria("descriptionElements");
         if(hasText != null) {
@@ -558,27 +535,17 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 
         Integer[] resultIds = new Integer[intermediateResult.size()];
         for(int i = 0; i < resultIds.length; i++) {
-                resultIds[i] = ((Number)intermediateResult.get(i)).intValue();
+                resultIds[i] = (Integer)intermediateResult.get(i);
         }
 
-        Criteria outer = null;
-
-        if(clazz == null) {
-            outer = getSession().createCriteria(type);
-        } else {
-            outer = getSession().createCriteria(clazz);
-        }
+        Criteria outer = getCriteria(clazz);
 
         outer.add(Restrictions.in("id", resultIds));
         addOrder(outer, orderHints);
 
-        if(pageSize != null) {
-            outer.setMaxResults(pageSize);
-            if(pageNumber != null) {
-                outer.setFirstResult(pageNumber * pageSize);
-            }
-        }
+        addPageSizeAndNumber(outer, pageSize, pageNumber);
 
+        @SuppressWarnings({ "unchecked", "rawtypes" })
         List<DescriptionBase> results = outer.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
@@ -625,7 +592,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
         Integer[] resultIds = new Integer[intermediateResult.size()];
         for(int i = 0; i < resultIds.length; i++) {
             if(orderHints == null || orderHints.isEmpty()) {
-                resultIds[i] = ((Number)intermediateResult.get(i)).intValue();
+                resultIds[i] = (Integer)intermediateResult.get(i);
             } else {
               resultIds[i] = ((Number)((Object[])intermediateResult.get(i))[0]).intValue();
             }

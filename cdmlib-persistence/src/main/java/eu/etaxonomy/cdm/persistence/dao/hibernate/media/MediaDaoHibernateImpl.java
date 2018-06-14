@@ -52,10 +52,10 @@ public class MediaDaoHibernateImpl extends IdentifiableDaoBase<Media> implements
 	}
 
 	@Override
-    public int countMediaKeys(Set<Taxon> taxonomicScope,	Set<NamedArea> geoScopes) {
+    public long countMediaKeys(Set<Taxon> taxonomicScope,	Set<NamedArea> geoScopes) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-			Criteria criteria = getSession().createCriteria(MediaKey.class);
+			Criteria criteria = getCriteria(MediaKey.class);
 
 			if(taxonomicScope != null && !taxonomicScope.isEmpty()) {
 				Set<Integer> taxonomicScopeIds = new HashSet<Integer>();
@@ -75,12 +75,12 @@ public class MediaDaoHibernateImpl extends IdentifiableDaoBase<Media> implements
 
 			criteria.setProjection(Projections.countDistinct("id"));
 
-			return ((Number)criteria.uniqueResult()).intValue();
+			return (Long)criteria.uniqueResult();
 		} else {
 			if((taxonomicScope == null || taxonomicScope.isEmpty()) && (geoScopes == null || geoScopes.isEmpty())) {
-				AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(MediaKey.class,auditEvent.getRevisionNumber());
+				AuditQuery query = makeAuditQuery(MediaKey.class,auditEvent);
 				query.addProjection(AuditEntity.id().countDistinct());
-				return ((Long)query.getSingleResult()).intValue();
+				return (Long)query.getSingleResult();
 			} else {
 				throw new OperationNotSupportedInPriorViewException("countMediaKeys(Set<Taxon> taxonomicScope,	Set<NamedArea> geoScopes)");
 			}

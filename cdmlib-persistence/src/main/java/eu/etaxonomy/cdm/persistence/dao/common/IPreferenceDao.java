@@ -36,12 +36,12 @@ public interface IPreferenceDao {
 	 * Return the number of all existing cdm preferences
 	 * @return
 	 */
-	public int count();
+	public long count();
 
     /**
      * @return
      */
-    List<CdmPreference> list();
+    public List<CdmPreference> list();
 
     /**
      * Retrieves the best matching CdmPreference for the given
@@ -50,7 +50,7 @@ public interface IPreferenceDao {
      * @param predicate
      * @return the CdmPreference
      */
-    CdmPreference find(TaxonNode taxonNode, String predicate);
+    public CdmPreference find(TaxonNode taxonNode, String predicate);
 
 
 }

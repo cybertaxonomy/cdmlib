@@ -167,7 +167,7 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @param taxonbase the taxon concept associated with these determinations (can be null for all taxon concepts)
      * @return a count of determination events
      */
-    public int countDeterminations(SpecimenOrObservationBase occurence,TaxonBase taxonbase);
+    public long countDeterminations(SpecimenOrObservationBase occurence,TaxonBase taxonbase);
 
     /**
      * Returns a List of determinations that have been made for a given occurence
@@ -634,7 +634,7 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      *            authorTeam.persistentTitleCache
      * @return the number of found specimens
      */
-    public int countOccurrences(IIdentifiableEntityServiceConfigurator<SpecimenOrObservationBase> config);
+    public long countOccurrences(IIdentifiableEntityServiceConfigurator<SpecimenOrObservationBase> config);
 
     /**
      * Return the all {@link SpecimenOrObservationBase}s of the complete

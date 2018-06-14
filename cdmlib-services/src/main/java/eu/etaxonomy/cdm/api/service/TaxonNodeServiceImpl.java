@@ -214,7 +214,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         }
 
         List<TaxonNodeDto> dtos = new ArrayList<>(pageSize==null?25:pageSize);
-        Long totalCount = Long.valueOf(allRecords.size());
+        long totalCount = Long.valueOf(allRecords.size());
 
         TaxonName parentName = null;
 
@@ -228,7 +228,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
                 dtos.add(new TaxonNodeDto(synonym, isHomotypic));
             }
         }
-        return new DefaultPagerImpl<TaxonNodeDto>(pageIndex, totalCount, pageSize , dtos);
+        return new DefaultPagerImpl<>(pageIndex, totalCount, pageSize , dtos);
     }
 
     @Override

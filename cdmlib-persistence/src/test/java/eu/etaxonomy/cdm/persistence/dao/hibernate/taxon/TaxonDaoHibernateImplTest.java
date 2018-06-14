@@ -536,7 +536,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         Taxon taxon = (Taxon)taxonDao.findByUuid(sphingidae);
         assert taxon != null : "taxon must exist";
 
-        int numberOfRelatedTaxa = taxonDao.countTaxonRelationships(taxon, TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN(),
+        long numberOfRelatedTaxa = taxonDao.countTaxonRelationships(taxon, TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN(),
                 includeUnpublished, TaxonRelationship.Direction.relatedTo);
         assertEquals("countTaxonRelationships should return 8", 8, numberOfRelatedTaxa);
     }
@@ -574,7 +574,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         orderHints.add(new OrderHint("relatedFrom.name.specificEpithet", SortOrder.ASCENDING));
         orderHints.add(new OrderHint("relatedFrom.name.infraSpecificEpithet", SortOrder.ASCENDING));
 
-        int count = taxonDao.countTaxonRelationships(taxon, TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN(),
+        long count = taxonDao.countTaxonRelationships(taxon, TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN(),
                 includeUnpublished, TaxonRelationship.Direction.relatedTo);
         assertEquals("Count should return 8 (related taxa)", 8, count);
 
