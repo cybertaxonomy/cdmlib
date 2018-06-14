@@ -499,7 +499,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml")
     public void testTaxonNameInTwoClassifications(){
-        int numberOfClassifications = classificationDao.count();
         List<String> propertyPaths = new ArrayList<>();
         propertyPaths.add("taxonNodes");
         List<TaxonBase> taxa = taxonDao.getTaxaByName(true, true, false, false, false,"P", null, MatchMode.BEGINNING,
@@ -788,7 +787,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet
     public void testCountAllTaxa() {
-        int numberOfTaxa = taxonDao.count(Taxon.class);
+        long numberOfTaxa = taxonDao.count(Taxon.class);
         assertEquals("count should return 14 taxa", 14, numberOfTaxa);
     }
 

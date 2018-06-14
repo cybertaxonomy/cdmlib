@@ -283,7 +283,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
         includedProperties.add("specificEpithet");
         includedProperties.add("infraSpecificEpithet");
         includedProperties.add("rank");
-        int count = taxonNameDao.count(zoologicalName, includedProperties);
+        long count = taxonNameDao.count(zoologicalName, includedProperties);
 
         assertEquals("countNames should return 3",3,count);
     }

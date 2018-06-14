@@ -67,7 +67,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
     @Override
     @Transactional(readOnly = true)
     public int count(Class<? extends T> clazz) {
-        return dao.count(clazz);
+        return Long.valueOf(dao.count(clazz)).intValue();
     }
 
     @Override
@@ -238,7 +238,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
     @Override
     @Transactional(readOnly = true)
     public  <S extends T> Pager<S> page(Class<S> type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
-        Integer numberOfResults = dao.count(type);
+        Long numberOfResults = dao.count(type);
         List<S> results = new ArrayList<S>();
         pageNumber = pageNumber == null ? 0 : pageNumber;
         if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)

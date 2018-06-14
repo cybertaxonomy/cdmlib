@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.persistence.dao.common;
 
@@ -17,17 +17,17 @@ import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public interface IMarkerDao extends IVersionableDao<Marker> {
-	
+
 	/**
 	 * Returns a count of markers which have the same type
 	 * @param markerType The type of markerType
 	 * @return a count of markers
 	 */
-	public int count(MarkerType markerType);
-	
+	public long count(MarkerType markerType);
+
 	/**
 	 * Returns a list of markers which have the same type
-	 * 
+	 *
 	 * @param markerType The type of markerType
 	 * @param pageSize The maximum number of markers returned (can be null for all markers)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)

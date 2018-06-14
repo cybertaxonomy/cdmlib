@@ -56,7 +56,7 @@ public interface IDefinedTermDao extends IIdentifiableDao<DefinedTermBase>, ITit
 
 	public <TYPE extends DefinedTermBase> List<TYPE> getDefinedTermByRepresentationText(String text, Class<TYPE> clazz, Integer pageSize,Integer  pageNumber);
 
-	public int countDefinedTermByRepresentationText(String text, Class<? extends DefinedTermBase> clazz);
+	public long countDefinedTermByRepresentationText(String text, Class<? extends DefinedTermBase> clazz);
 
 	public <TYPE extends DefinedTermBase> List<TYPE> getDefinedTermByRepresentationAbbrev(String text, Class<TYPE> clazz, Integer pageSize,Integer  pageNumber);
 

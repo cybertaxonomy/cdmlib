@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -22,15 +22,15 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 public interface IAnnotationService extends IAnnotatableService<Annotation> {
 	/**
 	 * return a count of the number of annotations made by this person, optionally filtered by the status of those annotations
-	 * 
+	 *
 	 * @param commentator the person who created those annotations
 	 * @param status the status of those annotations (can be null)
 	 * @return an integer
 	 */
-	public int count(Person commentator, MarkerType status);
-    
+	public long count(Person commentator, MarkerType status);
+
 	/**
-	 * 
+	 *
 	 * @param commentator the person who created those annotations
 	 * @param status the status of those annotations (can be null)
 	 * @param pageSize The maximum number of annotations returned (can be null for all annotations)
@@ -40,18 +40,18 @@ public interface IAnnotationService extends IAnnotatableService<Annotation> {
 	 * @return a paged list of Annotation instances
 	 */
     public Pager<Annotation> list(Person commentator, MarkerType status, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
-    
+
     /**
 	 * return a count of the number of annotations created by this user, optionally filtered by the status of those annotations
-	 * 
+	 *
 	 * @param creator the user who created those annotations
 	 * @param status the status of those annotations (can be null)
 	 * @return an integer
 	 */
-	public int count(User creator, MarkerType status);
-    
+	public long count(User creator, MarkerType status);
+
 	/**
-	 * 
+	 *
 	 * @param creator the user who created those annotations
 	 * @param status the status of those annotations (can be null)
 	 * @param pageSize The maximum number of annotations returned (can be null for all annotations)

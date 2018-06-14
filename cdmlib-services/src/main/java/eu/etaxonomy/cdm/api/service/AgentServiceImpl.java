@@ -47,7 +47,9 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
  */
 @Service
 @Transactional(readOnly = true)
-public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDao> implements IAgentService {
+public class AgentServiceImpl
+        extends IdentifiableServiceBase<AgentBase,IAgentDao>
+        implements IAgentService {
     private static final Logger logger = Logger.getLogger(AgentServiceImpl.class);
 
     @Autowired

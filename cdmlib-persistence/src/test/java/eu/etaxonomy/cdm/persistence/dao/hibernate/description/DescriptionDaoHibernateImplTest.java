@@ -408,11 +408,11 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
     //see #2592
     @Test
     public void testSaveScope(){
-        int n1 = this.descriptionDao.count();
+        long n1 = this.descriptionDao.count();
         Taxon taxon = Taxon.NewInstance(null, null);
         TaxonDescription description = TaxonDescription.NewInstance(taxon);
         this.taxonDao.save(taxon);
-        int n2 = this.descriptionDao.count();
+        long n2 = this.descriptionDao.count();
         Assert.assertEquals(1, n2-n1);
 
         DefinedTerm scope = DefinedTerm.SEX_FEMALE();

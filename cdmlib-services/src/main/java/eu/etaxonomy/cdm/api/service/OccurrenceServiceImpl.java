@@ -110,7 +110,6 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.initializer.AbstractBeanInitializer;
-import eu.etaxonomy.cdm.persistence.dao.molecular.ISingleReadDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
@@ -146,9 +145,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
     @Autowired
     private ISequenceService sequenceService;
-
-    @Autowired
-    private ISingleReadDao singleReadDao;
 
     @Autowired
     private AbstractBeanInitializer beanInitializer;
@@ -211,7 +207,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             results = dao.getDerivationEvents(occurence, pageSize, pageNumber, propertyPaths);
         }
 
-        return new DefaultPagerImpl<DerivationEvent>(pageNumber, numberOfResults, pageSize, results);
+        return new DefaultPagerImpl<DerivationEvent>(pageNumber, Long.valueOf(numberOfResults), pageSize, results);
     }
 
     @Override
@@ -220,7 +216,8 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     @Override
-    public Pager<DeterminationEvent> getDeterminations(SpecimenOrObservationBase occurrence, TaxonBase taxonBase, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+    public Pager<DeterminationEvent> getDeterminations(SpecimenOrObservationBase occurrence, TaxonBase taxonBase,
+            Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = dao.countDeterminations(occurrence, taxonBase);
 
         List<DeterminationEvent> results = new ArrayList<>();
@@ -228,7 +225,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             results = dao.getDeterminations(occurrence, taxonBase, pageSize, pageNumber, propertyPaths);
         }
 
-        return new DefaultPagerImpl<DeterminationEvent>(pageNumber, numberOfResults, pageSize, results);
+        return new DefaultPagerImpl<DeterminationEvent>(pageNumber, Long.valueOf(numberOfResults), pageSize, results);
     }
 
     @Override
@@ -240,7 +237,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             results = dao.getMedia(occurence, pageSize, pageNumber, propertyPaths);
         }
 
-        return new DefaultPagerImpl<Media>(pageNumber, numberOfResults, pageSize, results);
+        return new DefaultPagerImpl<Media>(pageNumber, Long.valueOf(numberOfResults), pageSize, results);
     }
 
     @Override
@@ -276,31 +273,33 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 }
             }
         }
-        return new DefaultPagerImpl<Media>(pageNumber, media.size(), pageSize, media);
+        return new DefaultPagerImpl<Media>(pageNumber, Long.valueOf(media.size()), pageSize, media);
     }
 
     @Override
-    public Pager<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonName determinedAs, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+    public Pager<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonName determinedAs,
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         Integer numberOfResults = dao.count(type, determinedAs);
+        @SuppressWarnings("rawtypes")
         List<SpecimenOrObservationBase> results = new ArrayList<>();
-        pageNumber = pageNumber == null ? 0 : pageNumber;
         if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-            Integer start = pageSize == null ? 0 : pageSize * pageNumber;
-            results = dao.list(type, determinedAs, pageSize, start, orderHints, propertyPaths);
+            results = dao.list(type, determinedAs, pageSize, pageNumber, orderHints, propertyPaths);
         }
-        return new DefaultPagerImpl<SpecimenOrObservationBase>(pageNumber, numberOfResults, pageSize, results);
+        return new DefaultPagerImpl<SpecimenOrObservationBase>(
+                pageNumber, Long.valueOf(numberOfResults), pageSize, results);
     }
 
     @Override
-    public Pager<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonBase determinedAs, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+    public Pager<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonBase determinedAs,
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         Integer numberOfResults = dao.count(type, determinedAs);
+        @SuppressWarnings("rawtypes")
         List<SpecimenOrObservationBase> results = new ArrayList<>();
-        pageNumber = pageNumber == null ? 0 : pageNumber;
         if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-            Integer start = pageSize == null ? 0 : pageSize * pageNumber;
-            results = dao.list(type, determinedAs, pageSize, start, orderHints, propertyPaths);
+            results = dao.list(type, determinedAs, pageSize, pageNumber, orderHints, propertyPaths);
         }
-        return new DefaultPagerImpl<SpecimenOrObservationBase>(pageNumber, numberOfResults, pageSize, results);
+        return new DefaultPagerImpl<SpecimenOrObservationBase>(
+                pageNumber, Long.valueOf(numberOfResults), pageSize, results);
     }
 
     @Override

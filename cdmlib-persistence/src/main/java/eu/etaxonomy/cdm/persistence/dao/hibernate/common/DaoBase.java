@@ -26,9 +26,11 @@ import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
+import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.search.FullTextQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -116,24 +118,58 @@ public abstract class DaoBase {
 
     protected void addFieldPredicate(StringBuilder hql, String field, Optional<String> value) {
         if(value != null){
-            hql.append("and " + field);
+            hql.append("AND " + field);
             if(value.isPresent()){
                 if(value.get().contains("*")){
-                    hql.append(" like '" + value.get().replace('*', '%') + "' ");
+                    hql.append(" LIKE '" + value.get().replace('*', '%') + "' ");
                 } else {
                     hql.append(" = '" + value.get() + "' ");
                 }
             } else {
-                hql.append(" is null ");
+                hql.append(" IS NULL ");
             }
         }
     }
+
+    protected void addPageSizeAndNumber(Query query, Integer pageSize, Integer pageNumber) {
+        if(pageSize != null) {
+            query.setMaxResults(pageSize);
+            if(pageNumber != null) {
+                query.setFirstResult(pageNumber * pageSize);
+            } else {
+                query.setFirstResult(0);
+            }
+        }
+    }
+
+    protected void addPageSizeAndNumber(AuditQuery query, Integer pageSize, Integer pageNumber) {
+        if(pageSize != null) {
+            query.setMaxResults(pageSize);
+            if(pageNumber != null) {
+                query.setFirstResult(pageNumber * pageSize);
+            } else {
+                query.setFirstResult(0);
+            }
+        }
+    }
+
     /**
      * @param limit
      * @param start
      * @param criteria
      */
-    protected void addLimitAndStart(Integer limit, Integer start, Criteria criteria) {
+    protected void addPageSizeAndNumber(Criteria criteria, Integer pageSize, Integer pageNumber) {
+        if(pageSize != null) {
+            criteria.setMaxResults(pageSize);
+            if(pageNumber != null) {
+                criteria.setFirstResult(pageNumber * pageSize);
+            } else {
+                criteria.setFirstResult(0);
+            }
+        }
+    }
+
+    protected void addLimitAndStart(Criteria criteria, Integer limit, Integer start) {
         if(limit != null) {
             if(start != null) {
                 criteria.setFirstResult(start);
@@ -141,6 +177,34 @@ public abstract class DaoBase {
                 criteria.setFirstResult(0);
             }
             criteria.setMaxResults(limit);
+        }
+    }
+
+
+    /**
+     * @param limit
+     * @param start
+     * @param query
+     */
+    protected void addLimitAndStart(Query query, Integer limit, Integer start) {
+        if(limit != null) {
+            if(start != null) {
+                query.setFirstResult(start);
+            } else {
+                query.setFirstResult(0);
+            }
+            query.setMaxResults(limit);
+        }
+    }
+
+    protected void addLimitAndStart(AuditQuery query, Integer limit, Integer start) {
+        if(limit != null) {
+            if(start != null) {
+                query.setFirstResult(start);
+            } else {
+                query.setFirstResult(0);
+            }
+            query.setMaxResults(limit);
         }
     }
 

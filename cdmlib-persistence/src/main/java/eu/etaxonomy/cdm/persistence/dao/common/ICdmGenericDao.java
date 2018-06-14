@@ -213,7 +213,7 @@ public interface ICdmGenericDao {
      * @param type
      * @return
      */
-    public int count(Class<? extends CdmBase> type);
+    public long count(Class<? extends CdmBase> type);
 
 
 	   /**
@@ -327,13 +327,13 @@ public interface ICdmGenericDao {
      * @param referencedCdmBase
      * @return
      */
-    Integer getCountByFieldAndClass(Class clazz, String propertyName, CdmBase referencedCdmBase);
+    public long getCountByFieldAndClass(Class clazz, String propertyName, CdmBase referencedCdmBase);
 
     /**
      * @param referencedCdmBase
      * @return
      */
-    Integer getReferencingObjectsCount(CdmBase referencedCdmBase);
+    public Long getReferencingObjectsCount(CdmBase referencedCdmBase);
 
 
 

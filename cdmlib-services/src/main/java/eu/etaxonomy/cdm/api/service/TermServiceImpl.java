@@ -205,9 +205,9 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 
 	@Override
 	public <T extends DefinedTermBase> Pager<T> findByRepresentationText(String label, Class<T> clazz, Integer pageSize, Integer pageNumber) {
-        Integer numberOfResults = dao.countDefinedTermByRepresentationText(label,clazz);
+        long numberOfResults = dao.countDefinedTermByRepresentationText(label,clazz);
 
-		List<T> results = new ArrayList<T>();
+		List<T> results = new ArrayList<>();
 		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.getDefinedTermByRepresentationText(label, clazz, pageSize, pageNumber);
 		}
@@ -219,7 +219,7 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 	public <T extends DefinedTermBase> Pager<T> findByRepresentationAbbreviation(String abbrev, Class<T> clazz, Integer pageSize, Integer pageNumber) {
         Integer numberOfResults = dao.countDefinedTermByRepresentationAbbrev(abbrev,clazz);
 
-		List<T> results = new ArrayList<T>();
+		List<T> results = new ArrayList<>();
 		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.getDefinedTermByRepresentationAbbrev(abbrev, clazz, pageSize, pageNumber);
 		}

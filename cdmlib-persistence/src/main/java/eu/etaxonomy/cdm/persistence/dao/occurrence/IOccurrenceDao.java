@@ -57,10 +57,6 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
      *
      * @param type
      * @param determinedAs the taxon name that these specimens are determined to belong to
-     * @param limit
-     *            the maximum number of entities returned (can be null to return
-     *            all entities)
-     * @param start
      * @param orderHints
      *            Supports path like <code>orderHints.propertyNames</code> which
      *            include *-to-one properties like createdBy.username or
@@ -68,7 +64,8 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
      * @return
      * @throws DataAccessException
      */
-    public List<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonName determinedAs, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+    public List<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonName determinedAs,
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
 	 * Returns the number of occurences belonging to a certain subclass - which must extend SpecimenOrObservationBase
@@ -85,10 +82,6 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	 *
 	 * @param type
 	 * @param determinedAs the taxon concept that these specimens are determined to belong to
-	 * @param limit
-	 *            the maximum number of entities returned (can be null to return
-	 *            all entities)
-	 * @param start
 	 * @param orderHints
 	 *            Supports path like <code>orderHints.propertyNames</code> which
 	 *            include *-to-one properties like createdBy.username or
@@ -96,7 +89,8 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	 * @return
 	 * @throws DataAccessException
 	 */
-	public List<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonBase determinedAs, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+	public List<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonBase determinedAs,
+	        Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
      * Queries the database for specimens which match the given criteria<br>

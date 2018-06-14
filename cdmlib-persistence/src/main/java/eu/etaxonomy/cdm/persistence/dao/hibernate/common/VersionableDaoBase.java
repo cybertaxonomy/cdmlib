@@ -16,8 +16,6 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.hibernate.criterion.Criterion;
-import org.hibernate.envers.AuditReader;
-import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.envers.query.criteria.AuditCriterion;
@@ -36,10 +34,6 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public abstract class VersionableDaoBase<T extends VersionableEntity> extends CdmEntityDaoBase<T> implements IVersionableDao<T> {
 	private static final Logger logger = Logger.getLogger(VersionableDaoBase.class);
-
-	protected AuditReader getAuditReader() {
-		return AuditReaderFactory.get(getSession());
-	}
 
 	public VersionableDaoBase(Class<T> type) {
 		super(type);
@@ -71,7 +65,7 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 			return super.findByUuid(uuid);
 		} else {
-			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(type,auditEvent.getRevisionNumber());
+		    AuditQuery query = makeAuditQuery(null, auditEvent);
 			query.add(AuditEntity.property("uuid").eq(uuid));
 			@SuppressWarnings("unchecked")
             T result = (T)query.getSingleResult();
@@ -91,7 +85,7 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 			return super.load(uuid);
 		} else {
-			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(type,auditEvent.getRevisionNumber());
+			AuditQuery query = makeAuditQuery(null, auditEvent);
 			query.add(AuditEntity.property("uuid").eq(uuid));
 			@SuppressWarnings("unchecked")
             T t = (T)query.getSingleResult();
@@ -111,7 +105,8 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 			return super.load(uuid, includeUnpublished, propertyPaths);
 		} else {
-			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(type,auditEvent.getRevisionNumber());
+		    //TODO includeUnpublished
+			AuditQuery query = makeAuditQuery(null, auditEvent);
 			query.add(AuditEntity.property("uuid").eq(uuid));
 			@SuppressWarnings("unchecked")
             T t = (T)query.getSingleResult();
@@ -127,14 +122,14 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 			return super.exists(uuid);
 		} else {
-			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(type,auditEvent.getRevisionNumber());
+			AuditQuery query = makeAuditQuery(null, auditEvent);
 			query.add(AuditEntity.property("uuid").eq(uuid));
 			return null != query.getSingleResult();
 		}
 	}
 
 	@Override
-	public int count() {
+	public long count() {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 			return super.count();
@@ -144,21 +139,16 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 	}
 
 	@Override
-	public int count(Class<? extends T> clazz) {
+	public long count(Class<? extends T> clazz) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 			return super.count(clazz);
 		} else {
-			AuditQuery query = null;
-			if(clazz == null) {
-			    query = getAuditReader().createQuery().forEntitiesAtRevision(type, auditEvent.getRevisionNumber());
-			} else {
-				query = getAuditReader().createQuery().forEntitiesAtRevision(clazz, auditEvent.getRevisionNumber());
-			}
+			AuditQuery query = makeAuditQuery(clazz, auditEvent);
 
 			query.addProjection(AuditEntity.id().count());
 
-			return ((Long)query.getSingleResult()).intValue();
+			return (Long)query.getSingleResult();
 		}
 	}
 
@@ -188,20 +178,10 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 			return super.list(clazz, limit, start, orderHints, propertyPaths);
 		} else {
-			AuditQuery query = null;
-
-			if(clazz == null) {
-				query = getAuditReader().createQuery().forEntitiesAtRevision(type,auditEvent.getRevisionNumber());
-			} else {
-				query = getAuditReader().createQuery().forEntitiesAtRevision(clazz,auditEvent.getRevisionNumber());
-			}
+			AuditQuery query = makeAuditQuery(clazz, auditEvent);
 
 			addOrder(query,orderHints);
-
-			if(limit != null) {
-		   	  query.setMaxResults(limit);
-			  query.setFirstResult(start);
-			}
+			addLimitAndStart(query, limit, start);
 
 			@SuppressWarnings("unchecked")
             List<S> result = query.getResultList();
@@ -403,7 +383,7 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 	}
 
 	@Override
-	public int count(T example, Set<String> includeProperties) {
+	public long count(T example, Set<String> includeProperties) {
 		this.checkNotInPriorView("count(T example, Set<String> includeProperties)");
 		return super.count(example, includeProperties);
 	}

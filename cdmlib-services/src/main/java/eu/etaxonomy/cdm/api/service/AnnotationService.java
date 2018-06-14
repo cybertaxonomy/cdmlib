@@ -37,13 +37,13 @@ public class AnnotationService extends AnnotatableServiceBase<Annotation, Annota
 	}
 
 	@Override
-    public int count(Person commentator, MarkerType status) {
+    public long count(Person commentator, MarkerType status) {
 		return dao.count(commentator, status);
 	}
 
 	@Override
     public Pager<Annotation> list(Person commentator, MarkerType status,Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-		Integer numberOfResults = dao.count(commentator, status);
+		Long numberOfResults = dao.count(commentator, status);
 
 		List<Annotation> results = new ArrayList<Annotation>();
 		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
@@ -54,16 +54,16 @@ public class AnnotationService extends AnnotatableServiceBase<Annotation, Annota
 	}
 
 	@Override
-    public int count(User creator, MarkerType status) {
+    public long count(User creator, MarkerType status) {
 		return dao.count(creator, status);
 	}
 
 	@Override
     public Pager<Annotation> list(User creator, MarkerType status,	Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
 			List<String> propertyPaths) {
-        Integer numberOfResults = dao.count(creator, status);
+        long numberOfResults = dao.count(creator, status);
 
-		List<Annotation> results = new ArrayList<Annotation>();
+		List<Annotation> results = new ArrayList<>();
 		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.list(creator, status, pageSize, pageNumber, orderHints, propertyPaths);
 		}

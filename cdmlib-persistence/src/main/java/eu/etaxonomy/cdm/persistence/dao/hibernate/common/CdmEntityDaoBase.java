@@ -36,6 +36,8 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.envers.AuditReader;
+import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.type.Type;
@@ -52,6 +54,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IPublishable;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
@@ -462,7 +465,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
 
         addRestrictions(restrictions, criteria);
 
-        addLimitAndStart(limit, start, criteria);
+        addLimitAndStart(criteria, limit, start);
         addOrder(criteria, orderHints);
 
         @SuppressWarnings("unchecked")
@@ -546,7 +549,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
      * {@inheritDoc}
      */
     @Override
-    public int count(Class<? extends T> type, List<Restriction<?>> restrictions) {
+    public long count(Class<? extends T> type, List<Restriction<?>> restrictions) {
 
         Criteria criteria = criterionForType(type);
 
@@ -556,7 +559,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
 
         //since hibernate 4 (or so) uniqueResult returns Long, not Integer, therefore needs
         //to be casted. Think about returning long rather then int!
-        return ((Number) criteria.uniqueResult()).intValue();
+        return (Long) criteria.uniqueResult();
 
     }
 
@@ -701,12 +704,12 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     }
 
     @Override
-    public int count() {
+    public long count() {
         return count(type);
     }
 
     @Override
-    public int count(Class<? extends T> clazz) {
+    public long count(Class<? extends T> clazz) {
         Session session = getSession();
         Criteria criteria = null;
         if(clazz == null) {
@@ -718,7 +721,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
 
         //since hibernate 4 (or so) uniqueResult returns Long, not Integer, therefore needs
         //to be casted. Think about returning long rather then int!
-        return ((Number) criteria.uniqueResult()).intValue();
+        return (long)criteria.uniqueResult();
     }
 
     @Override
@@ -842,7 +845,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
             criteria = getSession().createCriteria(clazz);
         }
 
-        addLimitAndStart(limit, start, criteria);
+        addLimitAndStart(criteria, limit, start);
 
         addOrder(criteria, orderHints);
 
@@ -891,12 +894,12 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     }
 
     @Override
-    public int count(T example, Set<String> includeProperties) {
+    public long count(T example, Set<String> includeProperties) {
         Criteria criteria = getSession().createCriteria(example.getClass());
         addExample(criteria,example,includeProperties);
 
         criteria.setProjection(Projections.rowCount());
-        return ((Number)criteria.uniqueResult()).intValue();
+        return (Long)criteria.uniqueResult();
     }
 
     protected void addExample(Criteria criteria, T example, Set<String> includeProperties) {
@@ -956,7 +959,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
 
         criteria.setProjection(Projections.rowCount());
 
-        return ((Number)criteria.uniqueResult()).longValue();
+        return (Long)criteria.uniqueResult();
     }
 
 
@@ -965,7 +968,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         Criteria criteria = getSession().createCriteria(example.getClass());
         addExample(criteria,example,includeProperties);
 
-        addLimitAndStart(limit, start, criteria);
+        addLimitAndStart(criteria, limit, start);
 
         addOrder(criteria,orderHints);
 
@@ -996,6 +999,44 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
             }
         }
 
+    }
+
+
+    /**
+     * Returns a Criteria for the given {@link Class class} or, if <code>null</code>,
+     * for the base {@link Class class} of this DAO.
+     * @param clazz
+     * @return the Criteria
+     */
+    protected Criteria getCriteria(Class<? extends CdmBase> clazz) {
+        Criteria criteria = null;
+        if(clazz == null) {
+            criteria = getSession().createCriteria(type);
+        } else {
+            criteria = getSession().createCriteria(clazz);
+        }
+        return criteria;
+    }
+
+    /**
+     * @param clazz
+     * @param auditEvent
+     * @return
+     */
+    protected <S extends T> AuditQuery makeAuditQuery(Class<S> clazz, AuditEvent auditEvent) {
+        AuditQuery query = null;
+
+        if(clazz == null) {
+            query = getAuditReader().createQuery().forEntitiesAtRevision(type,auditEvent.getRevisionNumber());
+        } else {
+            query = getAuditReader().createQuery().forEntitiesAtRevision(clazz,auditEvent.getRevisionNumber());
+        }
+        return query;
+    }
+
+
+    protected AuditReader getAuditReader() {
+        return AuditReaderFactory.get(getSession());
     }
 }
 

@@ -100,7 +100,7 @@ public class AnnotationDaoTest extends CdmIntegrationTest {
 
 		assert markerType != null : "markerType must exist";
 
-		int numberOfAnnotations = annotationDao.count((User)null, markerType);
+		long numberOfAnnotations = annotationDao.count((User)null, markerType);
 		assertEquals("countAnnotations should return 2",2,numberOfAnnotations);
 	}
 

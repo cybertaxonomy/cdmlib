@@ -267,7 +267,7 @@ public interface ICdmEntityDao<T extends CdmBase> {
      *
      * @return
      */
-    public int count(Class<? extends T> type, List<Restriction<?>> restrictions);
+    public long count(Class<? extends T> type, List<Restriction<?>> restrictions);
 
     /**
      * Returns a sublist of CdmBase instances of type <TYPE> stored in the database.
@@ -384,7 +384,7 @@ public interface ICdmEntityDao<T extends CdmBase> {
      */
     public Boolean exists(UUID uuid) throws DataAccessException;
 
-    public int count();
+    public long count();
 
     /**
      * Returns the number of objects of type <T> - which must extend T
@@ -392,7 +392,7 @@ public interface ICdmEntityDao<T extends CdmBase> {
      * @param clazz
      * @return
      */
-    public int count(Class<? extends T> clazz);
+    public long count(Class<? extends T> clazz);
 
     /**
      * FIXME Should this method exist : I would expect flushing of a session to be
@@ -423,7 +423,7 @@ public interface ICdmEntityDao<T extends CdmBase> {
      * @param includeProperties
      * @return a count of matching objects
      */
-    public int count(T example, Set<String> includeProperties);
+    public long count(T example, Set<String> includeProperties);
 
     /**
      * Method that lists the objects matching the example provided.

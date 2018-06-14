@@ -246,8 +246,8 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 			monitor = DefaultProgressMonitor.NewInstance();
 		}
 
-		int count = dao.count(clazz);
-		monitor.beginTask("update titles", count);
+		long count = dao.count(clazz);
+		monitor.beginTask("update titles", Long.valueOf(count).intValue());
 		int worked = 0;
 		for(int i = 0 ; i < count ; i = i + stepSize){
 			// not sure if such strict ordering is necessary here, but for safety reasons I do it

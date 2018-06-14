@@ -10,10 +10,10 @@ import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public interface IMarkerService extends IVersionableService<Marker> {
-	
+
 	/**
 	 * Returns a pager of markers which have the same type
-	 * 
+	 *
 	 * @param markerType The type of markerType
 	 * @param pageSize The maximum number of markers returned (can be null for all markers)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
@@ -22,9 +22,9 @@ public interface IMarkerService extends IVersionableService<Marker> {
 	 * @return
 	 */
 	public Pager<Marker> page(MarkerType markerType, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
-	
+
 	/**
-	 * 
+	 *
 	 * @param creator the person who created those markers
 	 * @param markerType the markerType of those markers (can be null)
 	 * @param pageSize The maximum number of markers returned (can be null for all markers)
@@ -34,13 +34,13 @@ public interface IMarkerService extends IVersionableService<Marker> {
 	 * @return a paged list of Marker instances
 	 */
     public Pager<Marker> list(User creator, MarkerType markerType, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
-    
+
     /**
-     * 
+     *
      * @param creator the person who created those markers
      * @param markerType the markerType of those markers (can be null)
      * @return
      */
-    public int count(User creator, MarkerType markerType);
+    public long count(User creator, MarkerType markerType);
 
 }
