@@ -710,8 +710,8 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         result.addUpdatedObject(oldParent);
         result.setCdmEntity(taxonNode);
 
-//        dao.saveOrUpdate(taxonNode);
-//        dao.saveOrUpdate(oldParent);
+
+
 
         return result;
     }
@@ -731,10 +731,14 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         List<TaxonNode> nodes = dao.list(taxonNodeUuids, null, null, null, null);
         monitor.beginTask("Move Taxonnodes", nodes.size());
         ((IRemotingProgressMonitor)monitor).setResult(result);
+
         for (TaxonNode node: nodes){
+
             result.includeResult(moveTaxonNode(node,targetNode, movingType));
             monitor.worked(1);
         }
+        dao.saveOrUpdateAll(nodes);
+
         monitor.done();
         return result;
     }
