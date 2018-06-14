@@ -79,20 +79,13 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
     }
 
     @Override
-    public List<Media> getMedia(DescriptionElementBase descriptionElement,	Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+    public List<Media> getMedia(DescriptionElementBase descriptionElement, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
             Query query = getSession().createQuery("select media from DescriptionElementBase descriptionElement join descriptionElement.media media where descriptionElement = :descriptionElement order by index(media)");
             query.setParameter("descriptionElement", descriptionElement);
 
-            if(pageSize != null) {
-                query.setMaxResults(pageSize);
-                if(pageNumber != null) {
-                    query.setFirstResult(pageNumber * pageSize);
-                } else {
-                    query.setFirstResult(0);
-                }
-            }
+            addPageSizeAndNumber(query, pageSize, pageNumber);
 
             @SuppressWarnings("unchecked")
             List<Media> results = query.list();
@@ -101,10 +94,10 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
         } else {
             // Horribly inefficient, I know, but hard to do at the moment with envers.
             // FIXME Improve this (by improving envers)
-            List<String> pPaths = new ArrayList<String>();
+            List<String> pPaths = new ArrayList<>();
             propertyPaths.add("media");
             DescriptionElementBase d = super.load(descriptionElement.getUuid(), pPaths);
-            List<Media> results = new ArrayList<Media>();
+            List<Media> results = new ArrayList<>();
             results.addAll(d.getMedia());
             if(pageSize != null) {
                 int fromIndex = 0;
@@ -112,7 +105,7 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
                 if(pageNumber != null) {
                     // if the page is out of scope
                     if(results.size() < (pageNumber * pageSize)) {
-                        return new ArrayList<Media>();
+                        return new ArrayList<>();
                     }
                     fromIndex =   pageNumber * pageSize;
                 }
@@ -140,14 +133,7 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
             }
             addOrder(fullTextQuery,orderHints);
 
-            if(pageSize != null) {
-                fullTextQuery.setMaxResults(pageSize);
-                if(pageNumber != null) {
-                    fullTextQuery.setFirstResult(pageNumber * pageSize);
-                } else {
-                    fullTextQuery.setFirstResult(0);
-                }
-            }
+            addPageSizeAndNumber(fullTextQuery, pageSize, pageNumber);
 
             @SuppressWarnings("unchecked")
             List<DescriptionElementBase> results = fullTextQuery.list();

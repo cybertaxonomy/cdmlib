@@ -214,10 +214,10 @@ public class CdmGenericDaoImpl
 	}
 
 	@Override
-    public Long getReferencingObjectsCount(CdmBase referencedCdmBase){
+    public long getReferencingObjectsCount(CdmBase referencedCdmBase){
         long result = 0;
         if (referencedCdmBase == null) {
-            return null;
+            return 0;
         }
         try {
 

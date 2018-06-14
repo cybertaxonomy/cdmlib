@@ -371,7 +371,7 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
      * @param referencedCdmBase
      * @return
      */
-    public Long getReferencingObjectsCount(CdmBase referencedCdmBase);
+    public long getReferencingObjectsCount(CdmBase referencedCdmBase);
 
 
 }

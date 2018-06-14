@@ -141,6 +141,16 @@ public abstract class DaoBase {
             }
         }
     }
+    protected void addPageSizeAndNumber(FullTextQuery query, Integer pageSize, Integer pageNumber) {
+        if(pageSize != null) {
+            query.setMaxResults(pageSize);
+            if(pageNumber != null) {
+                query.setFirstResult(pageNumber * pageSize);
+            } else {
+                query.setFirstResult(0);
+            }
+        }
+    }
 
     protected void addPageSizeAndNumber(AuditQuery query, Integer pageSize, Integer pageNumber) {
         if(pageSize != null) {
