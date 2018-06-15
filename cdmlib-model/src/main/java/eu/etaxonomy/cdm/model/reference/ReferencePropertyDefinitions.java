@@ -90,6 +90,10 @@ public class ReferencePropertyDefinitions {
         map = iProceedings;
         put(map, "organization");
 
+        iJournal = merge(iPublicationBase);
+        map = iJournal;
+        put(map, "issn");
+
         iInProceedings = merge(iSection);
         map = iInProceedings;
         put(map, "seriesPart");
