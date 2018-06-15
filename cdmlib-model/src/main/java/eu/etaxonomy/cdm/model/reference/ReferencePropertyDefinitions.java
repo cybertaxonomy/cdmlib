@@ -34,6 +34,7 @@ public class ReferencePropertyDefinitions {
     private static Map<String, String> iBook = new HashMap<>();
     private static Map<String, String> iBookSection = new HashMap<>();
     private static Map<String, String> iInProceedings = new HashMap<>();
+    private static Map<String, String> iProceedings = new HashMap<>();
     private static Map<String, String> iJournal = new HashMap<>();
     private static Map<String, String> iPrintSeries = new HashMap<>();
     private static Map<String, String> iThesis = new HashMap<>();
@@ -85,6 +86,10 @@ public class ReferencePropertyDefinitions {
         map = iBookSection;
         put(map, "inReference", "inBook");
 
+        iProceedings = merge(iPrintedUnitBase);
+        map = iProceedings;
+        put(map, "organization");
+
         iInProceedings = merge(iSection);
         map = iInProceedings;
         put(map, "seriesPart");
@@ -117,11 +122,11 @@ public class ReferencePropertyDefinitions {
 
         switch (type){
         case Article:
-            return merge(iSection, iVolumeReference, iArticle);
+            return iArticle;
         case Book:
-            return merge(iPrintedUnitBase, iBook);
+            return iBook;
         case BookSection:
-            return merge(iSection, iBookSection);
+            return iBookSection;
         case CdDvd:
             throw new UnimplemetedCaseException(type);
         case Database:
@@ -129,9 +134,9 @@ public class ReferencePropertyDefinitions {
         case Generic:
             throw new UnimplemetedCaseException(type);
         case InProceedings:
-            return merge(iSection, iInProceedings);
+            return iInProceedings;
         case Journal:
-            return merge(iPublicationBase, iJournal);
+            return iJournal;
         case Map:
             throw new UnimplemetedCaseException(type);
         case Patent:
@@ -141,13 +146,13 @@ public class ReferencePropertyDefinitions {
         case PrintSeries:
             return iPublicationBase;
         case Proceedings:
-            throw new UnimplemetedCaseException(type);
+            return iProceedings;
         case Report:
             throw new UnimplemetedCaseException(type);
         case Section:
             return iSection;
         case Thesis:
-            return merge(iPublicationBase, iThesis);
+            return iThesis;
         case WebPage:
             throw new UnimplemetedCaseException(type);
         default:
