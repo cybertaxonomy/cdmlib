@@ -43,7 +43,7 @@ public class ReferencePropertyDefinitions {
         Map<String, String> map;
 
         map = iReference;
-        put(map, "URI");
+        put(map, "uri");
         put(map, "datePublished");
         put(map, "abbrevTitle");
         put(map, "title");
@@ -104,8 +104,15 @@ public class ReferencePropertyDefinitions {
 
     }
 
+    /**
+     *
+     * @param type
+     * @return a map (Reference.fieldName -> propertyName) with the Reference class field name as key and the property name as
+     * defined in the most significant interface as value.
+     *
+     * @throws UnimplemetedCaseException
+     */
     public static Map<String, String> fieldPropertyDefinition(ReferenceType type) throws UnimplemetedCaseException{
-
 
 
         switch (type){
