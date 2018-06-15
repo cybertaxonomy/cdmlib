@@ -594,7 +594,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 String label = typeStatus.getLabel();
                 Set<TaxonName> typifiedNames = specimenTypeDesignation.getTypifiedNames();
                 for (TaxonName taxonName : typifiedNames) {
-                    typedTaxaNames.add(taxonName.getFullTitleCache());
+                    typedTaxaNames.add(taxonName.getNameCache());
                 }
                 preservedSpecimenDTO.addTypes(label, typedTaxaNames);
             }
