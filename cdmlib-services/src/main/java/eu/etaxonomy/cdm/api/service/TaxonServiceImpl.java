@@ -1443,7 +1443,7 @@ public class TaxonServiceImpl
             boolean highlightFragments, Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints, List<String> propertyPaths) throws IOException, LuceneParseException {
 
-        LuceneSearch luceneSearch = prepareFindByFullTextSearch(clazz, queryString, classification,
+        LuceneSearch luceneSearch = prepareFindByFullTextSearch(clazz, queryString, classification, null,
                 includeUnpublished, languages, highlightFragments, null);
 
         // --- execute search
@@ -1509,8 +1509,9 @@ public class TaxonServiceImpl
      * @param directorySelectClass
      * @return
      */
-    protected LuceneSearch prepareFindByFullTextSearch(Class<? extends CdmBase> clazz, String queryString, Classification classification,
-            boolean includeUnpublished, List<Language> languages, boolean highlightFragments, SortField[] sortFields) {
+    protected LuceneSearch prepareFindByFullTextSearch(Class<? extends CdmBase> clazz, String queryString,
+            Classification classification, String className, boolean includeUnpublished, List<Language> languages,
+            boolean highlightFragments, SortField[] sortFields) {
 
         Builder finalQueryBuilder = new Builder();
         Builder textQueryBuilder = new Builder();
@@ -1529,6 +1530,9 @@ public class TaxonServiceImpl
         if(!queryString.isEmpty() && !queryString.equals("*") && !queryString.equals("?") ) {
             textQueryBuilder.add(taxonBaseQueryFactory.newTermQuery("titleCache", queryString), Occur.SHOULD);
             textQueryBuilder.add(taxonBaseQueryFactory.newDefinedTermQuery("name.rank", queryString, languages), Occur.SHOULD);
+        }
+        if(className != null){
+            textQueryBuilder.add(taxonBaseQueryFactory.newTermQuery("classInfo.name", className, false), Occur.MUST);
         }
 
         BooleanQuery textQuery = textQueryBuilder.build();
@@ -1736,12 +1740,13 @@ public class TaxonServiceImpl
         if(searchModes.contains(TaxaAndNamesSearchMode.doTaxa) || searchModes.contains(TaxaAndNamesSearchMode.doSynonyms) ) {
             @SuppressWarnings("rawtypes")
             Class<? extends TaxonBase> taxonBaseSubclass = TaxonBase.class;
+            String className = null;
             if(searchModes.contains(TaxaAndNamesSearchMode.doTaxa) && !searchModes.contains(TaxaAndNamesSearchMode.doSynonyms)){
                 taxonBaseSubclass = Taxon.class;
             } else if (!searchModes.contains(TaxaAndNamesSearchMode.doTaxa) && searchModes.contains(TaxaAndNamesSearchMode.doSynonyms)) {
-                taxonBaseSubclass = Synonym.class;
+                className = "eu.etaxonomy.cdm.model.taxon.Synonym";
             }
-            luceneSearches.add(prepareFindByFullTextSearch(taxonBaseSubclass, queryString, classification,
+            luceneSearches.add(prepareFindByFullTextSearch(taxonBaseSubclass, queryString, classification, className,
                     includeUnpublished, languages, highlightFragments, sortFields));
             idFieldMap.put(CdmBaseType.TAXON, "id");
             /* A) does not work!!!!
@@ -2052,7 +2057,7 @@ public class TaxonServiceImpl
 
         LuceneSearch luceneSearchByDescriptionElement = prepareByDescriptionElementFullTextSearch(null, queryString, classification,
                 null, languages, highlightFragments);
-        LuceneSearch luceneSearchByTaxonBase = prepareFindByFullTextSearch(null, queryString, classification,
+        LuceneSearch luceneSearchByTaxonBase = prepareFindByFullTextSearch(null, queryString, classification, null,
                 includeUnpublished, languages, highlightFragments, null);
 
         LuceneMultiSearch multiSearch = new LuceneMultiSearch(luceneIndexToolProvider, luceneSearchByDescriptionElement, luceneSearchByTaxonBase);

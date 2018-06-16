@@ -951,7 +951,24 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
                 "kawakamii", (Classification)null, null, null, null, true, null, null, null, null);
         Assert.assertEquals("Expecting 0 entities", 0, pager.getCount().intValue());
 
+    }
 
+    @Test
+    @DataSet
+    //test for https://dev.e-taxonomy.eu/redmine/issues/7486
+    public final void testFindTaxaAndNamesByFullText_synonymsAndMisapplied_7486() throws IOException, LuceneParseException, LuceneMultiSearchException {
+
+        refreshLuceneIndex();
+
+        //misapplied names
+        Pager<SearchResult<TaxonBase>> pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doSynonyms, TaxaAndNamesSearchMode.doMisappliedNames, TaxaAndNamesSearchMode.includeUnpublished),
+                "Abies", (Classification)null, null, null, null, true, null, null, null, null);
+        logFreeTextSearchResults(pager, Level.DEBUG, null);
+        Assert.assertEquals("Expecting 2 entity", 2, pager.getCount().intValue());
+        Set<UUID> uuids = getTaxonUuidSet(pager);
+        Assert.assertTrue("The real synonym should be contained", uuids.contains(ABIES_SUBALPINA_UUID));
+        Assert.assertTrue("The misapplied name should be contained",uuids.contains(D_ABIES_KAWAKAMII_SEC_KOMAROV_UUID));
     }
 
     @Test
@@ -1524,6 +1541,19 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
             }
             logger.log(level, b);
         }
+    }
+
+
+    /**
+     * @param pager
+     * @return
+     */
+    private Set<UUID> getTaxonUuidSet(Pager<SearchResult<TaxonBase>> pager) {
+        Set<UUID> result = new HashSet<>();
+        for (SearchResult<TaxonBase> searchResult : pager.getRecords()){
+            result.add(searchResult.getEntity().getUuid());
+        }
+        return result;
     }
 
 }
