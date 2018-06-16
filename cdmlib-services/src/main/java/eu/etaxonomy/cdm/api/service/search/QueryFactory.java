@@ -76,7 +76,7 @@ public class QueryFactory {
 
     Set<String> textFieldNames = new HashSet<String>();
 
-    Map<Class<? extends CdmBase>, IndexSearcher> indexSearcherMap = new HashMap<Class<? extends CdmBase>, IndexSearcher>();
+    Map<Class<? extends CdmBase>, IndexSearcher> indexSearcherMap = new HashMap<>();
 
     private final Class<? extends CdmBase> cdmBaseType;
 

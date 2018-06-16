@@ -328,7 +328,7 @@ public class LuceneSearch {
         } else {
             newTopGroups = groupsResult;
         }
-        TopGroups<BytesRef> topGroupsWithMaxScore = new TopGroups<BytesRef>(newTopGroups, allGroupsCollector.getGroupCount());
+        TopGroups<BytesRef> topGroupsWithMaxScore = new TopGroups<>(newTopGroups, allGroupsCollector.getGroupCount());
         // --- done with max score for the group results
 
         return topGroupsWithMaxScore;

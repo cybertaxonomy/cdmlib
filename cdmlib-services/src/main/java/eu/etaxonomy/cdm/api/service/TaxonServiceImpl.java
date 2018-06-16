@@ -1712,7 +1712,7 @@ public class TaxonServiceImpl
                DescriptionElementBase !!! PROBLEM !!!
                This cannot work since the distributions are different entities than the
                common names and thus these are different lucene documents.
-           - byMisaplliedNames (join query TaxonRelationship -> TaxaonBase):
+           - byMisaplliedNames (join query TaxonRelationship -> TaxonBase):
                use a join area filter (Distribution -> TaxonBase)
 
           B) use a common distribution filter for all index sub-query/searches:
@@ -1733,7 +1733,7 @@ public class TaxonServiceImpl
         boolean includeUnpublished = searchModes.contains(TaxaAndNamesSearchMode.includeUnpublished);
 
         // search for taxa or synonyms
-        if(searchModes.contains(TaxaAndNamesSearchMode.doTaxa) || searchModes.contains(TaxaAndNamesSearchMode.doSynonyms)) {
+        if(searchModes.contains(TaxaAndNamesSearchMode.doTaxa) || searchModes.contains(TaxaAndNamesSearchMode.doSynonyms) ) {
             @SuppressWarnings("rawtypes")
             Class<? extends TaxonBase> taxonBaseSubclass = TaxonBase.class;
             if(searchModes.contains(TaxaAndNamesSearchMode.doTaxa) && !searchModes.contains(TaxaAndNamesSearchMode.doSynonyms)){
@@ -1918,8 +1918,8 @@ public class TaxonServiceImpl
         List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSet(
                 topDocsResultSet, multiSearch.getHighlightFields(), dao, idFieldMap, propertyPaths);
 
-        int totalHits = (topDocsResultSet != null) ? topDocsResultSet.totalGroupCount : 0;
-        return new DefaultPagerImpl<>(pageNumber, Long.valueOf(totalHits), pageSize, searchResults);
+        long totalHits = (topDocsResultSet != null) ? Long.valueOf(topDocsResultSet.totalGroupCount) : 0;
+        return new DefaultPagerImpl<>(pageNumber, totalHits, pageSize, searchResults);
     }
 
     /**
