@@ -1464,8 +1464,8 @@ public class TaxonServiceImpl
         List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSet(
                 topDocsResultSet, luceneSearch.getHighlightFields(), dao, idFieldMap, propertyPaths);
 
-        int totalHits = topDocsResultSet != null ? topDocsResultSet.totalGroupCount : 0;
-        return new DefaultPagerImpl<>(pageNumber, Long.valueOf(totalHits), pageSize, searchResults);
+        long totalHits = topDocsResultSet != null ? Long.valueOf(topDocsResultSet.totalGroupCount) : 0;
+        return new DefaultPagerImpl<>(pageNumber, totalHits, pageSize, searchResults);
     }
 
     @Override
@@ -1494,8 +1494,8 @@ public class TaxonServiceImpl
         List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSet(
                 topDocsResultSet, luceneSearch.getHighlightFields(), dao, idFieldMap, propertyPaths);
 
-        int totalHits = topDocsResultSet != null ? topDocsResultSet.totalGroupCount : 0;
-        return new DefaultPagerImpl<>(pageNumber, Long.valueOf(totalHits), pageSize, searchResults);
+        long totalHits = topDocsResultSet != null ? Long.valueOf(topDocsResultSet.totalGroupCount) : 0;
+        return new DefaultPagerImpl<>(pageNumber, totalHits, pageSize, searchResults);
     }
 
     /**
@@ -1839,7 +1839,7 @@ public class TaxonServiceImpl
                 String fromField = "inDescription.taxon.id"; // in DescriptionElementBase index
 
                 /*
-                 * Here I was facing a weired and nasty bug which took me bugging be really for hours until I found this solution.
+                 * Here I was facing a weird and nasty bug which took me bugging be really for hours until I found this solution.
                  * Maybe this is a bug in java itself.
                  *
                  * When the string toField is constructed by using the expression TaxonRelationshipType.MISAPPLIED_NAME_FOR().getUuid().toString()
