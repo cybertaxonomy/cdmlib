@@ -269,7 +269,6 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @SuppressWarnings("rawtypes")
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
-    @Ignore
     public final void testFullText_Paging() throws IOException, LuceneParseException {
 
         Reference sec = ReferenceFactory.newDatabase();
@@ -446,7 +445,6 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @SuppressWarnings("rawtypes")
     @Test
     @DataSet
-    @Ignore
     public final void testFindByDescriptionElementFullText_TextData() throws IOException, LuceneParseException {
 
         refreshLuceneIndex();
@@ -850,7 +848,8 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Classification alternateClassification = classificationService.find(CLASSIFICATION_ALT_UUID);
         Synonym abiesSubalpina = (Synonym)taxonService.find(ABIES_SUBALPINA_UUID);
 
-        Pager<SearchResult<TaxonBase>> pager = taxonService.findTaxaAndNamesByFullText(
+        Pager<SearchResult<TaxonBase>> pager;
+         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms, TaxaAndNamesSearchMode.includeUnpublished),
                 "Abies", null, null, null, null, true, null, null, null, null);
 //        logPagerRecords(pager, Level.DEBUG);
@@ -882,7 +881,6 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
                 "Abies", null, null, null, null, true, null, null, null, null);
         Assert.assertEquals("Expecting 6 entities. Synonym and accepted should not be found, though synonym is published",
                 6, pager.getCount().intValue());
-
 
         EnumSet<TaxaAndNamesSearchMode> searchMode = EnumSet.allOf(TaxaAndNamesSearchMode.class);
         pager = taxonService.findTaxaAndNamesByFullText(
