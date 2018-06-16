@@ -1824,7 +1824,7 @@ public class TaxonServiceImpl
 
 
         // search by misapplied names
-        //TODO merge with pro parte synonym search once #7486 is fixed
+        //TODO merge with pro parte synonym search once #7487 is fixed
         if(searchModes.contains(TaxaAndNamesSearchMode.doMisappliedNames) /*|| searchModes.contains(TaxaAndNamesSearchMode.doSynonyms) */) {
             // NOTE:
             // prepareFindByTaxonRelationFullTextSearch() is making use of JoinUtil.createJoinQuery()
@@ -1892,7 +1892,7 @@ public class TaxonServiceImpl
 
         // search by pro parte synonyms
         if(searchModes.contains(TaxaAndNamesSearchMode.doSynonyms)) {
-            //TODO merge with misapplied name search once #7486 is fixed
+            //TODO merge with misapplied name search once #7487 is fixed
             Set<TaxonRelationshipType> relTypes = new HashSet<>();
             relTypes.addAll(TaxonRelationshipType.allSynonymTypes());
 

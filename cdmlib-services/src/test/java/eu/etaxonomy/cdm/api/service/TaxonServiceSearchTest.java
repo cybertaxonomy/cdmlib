@@ -1051,8 +1051,8 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet
-//    @Ignore //ignore until #7486 is fixed
-    public final void testFindTaxaAndNamesByFullText_AreaFilter_7486() throws IOException, LuceneParseException, LuceneMultiSearchException {
+//    @Ignore //ignore until #7487 is fixed
+    public final void testFindTaxaAndNamesByFullText_AreaFilter_7487() throws IOException, LuceneParseException, LuceneMultiSearchException {
         refreshLuceneIndex();
         Set<NamedArea> a_germany_canada_russia = new HashSet<>();
         a_germany_canada_russia.add(germany);
@@ -1106,7 +1106,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         taxonService.saveOrUpdate(t_abies_balsamea);
         commitAndStartNewTransaction(null);
 
-        //strange it works here before fixing #7486 already
+        //strange it works here before fixing #7487 already
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doMisappliedNames, TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.includeUnpublished),
                 "Abies", null, a_germany_canada_russia, present_native, null, true, null, null, null, null);
