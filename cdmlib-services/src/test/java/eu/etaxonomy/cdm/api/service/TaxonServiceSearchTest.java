@@ -1051,7 +1051,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet
-//    @Ignore //ignore until #7487 is fixed
+    @Ignore //ignore until #7487 is fixed
     public final void testFindTaxaAndNamesByFullText_AreaFilter_7487() throws IOException, LuceneParseException, LuceneMultiSearchException {
         refreshLuceneIndex();
         Set<NamedArea> a_germany_canada_russia = new HashSet<>();
