@@ -1051,6 +1051,74 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet
+//    @Ignore //ignore until #7486 is fixed
+    public final void testFindTaxaAndNamesByFullText_AreaFilter_7486() throws IOException, LuceneParseException, LuceneMultiSearchException {
+        refreshLuceneIndex();
+        Set<NamedArea> a_germany_canada_russia = new HashSet<>();
+        a_germany_canada_russia.add(germany);
+        a_germany_canada_russia.add(canada);
+        a_germany_canada_russia.add(russia);
+
+        Set<PresenceAbsenceTerm> present_native = new HashSet<>();
+        present_native.add(PresenceAbsenceTerm.PRESENT());
+        present_native.add(PresenceAbsenceTerm.NATIVE());
+
+        Pager<SearchResult<TaxonBase>> pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doSynonyms, TaxaAndNamesSearchMode.includeUnpublished),
+                "Abies", null, a_germany_canada_russia, present_native, null, true, null, null, null, null);
+        Assert.assertEquals("Synonyms with matching area filter", 2, pager.getCount().intValue());
+        Set<UUID> uuids = this.getTaxonUuidSet(pager);
+        Assert.assertTrue("Synonym of balsamea should be in", uuids.contains(ABIES_SUBALPINA_UUID));
+        Assert.assertTrue("Pro parte synonym of balsamea should be in", uuids.contains(ABIES_LASIOCARPA_UUID));
+
+        //pro parte syn => partial syn
+        Taxon t_abies_balsamea = (Taxon)taxonService.find(ABIES_BALSAMEA_UUID);
+        Set<TaxonRelationship> relsTo = t_abies_balsamea.getProParteAndPartialSynonymRelations();
+        Assert.assertEquals(1, relsTo.size());
+        TaxonRelationship taxonRelation = relsTo.iterator().next();
+        taxonRelation.setType(TaxonRelationshipType.PARTIAL_SYNONYM_FOR());
+        taxonService.saveOrUpdate(t_abies_balsamea);
+        commitAndStartNewTransaction(null);
+
+        //should give same results as above
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doSynonyms, TaxaAndNamesSearchMode.includeUnpublished),
+                "Abies", null, a_germany_canada_russia, present_native, null, true, null, null, null, null);
+//        Assert.assertEquals("Synonyms with matching area filter", 2, pager.getCount().intValue());
+//        uuids = this.getTaxonUuidSet(pager);
+//        Assert.assertTrue("Synonym of balsamea should be in", uuids.contains(ABIES_SUBALPINA_UUID));
+//        Assert.assertTrue("Partial synonym of balsamea should be in", uuids.contains(ABIES_LASIOCARPA_UUID));
+
+        ///MISAPPLIED
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doMisappliedNames, TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.includeUnpublished),
+                "Abies", null, a_germany_canada_russia, present_native, null, true, null, null, null, null);
+        Assert.assertEquals("misappliedNames with matching area & status filter", 3, pager.getCount().intValue());
+        uuids = this.getTaxonUuidSet(pager);
+        Assert.assertTrue("Misapplied name should be in", uuids.contains(D_ABIES_KAWAKAMII_SEC_KOMAROV_UUID));
+
+        t_abies_balsamea = (Taxon)taxonService.find(ABIES_BALSAMEA_UUID);
+        relsTo = t_abies_balsamea.getMisappliedNameRelations();
+        Assert.assertEquals(1, relsTo.size());
+        taxonRelation = relsTo.iterator().next();
+        Assert.assertEquals(taxonRelation.getFromTaxon().getUuid(), D_ABIES_KAWAKAMII_SEC_KOMAROV_UUID);
+        taxonRelation.setType(TaxonRelationshipType.PRO_PARTE_MISAPPLIED_NAME_FOR());
+        taxonService.saveOrUpdate(t_abies_balsamea);
+        commitAndStartNewTransaction(null);
+
+        //strange it works here before fixing #7486 already
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doMisappliedNames, TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.includeUnpublished),
+                "Abies", null, a_germany_canada_russia, present_native, null, true, null, null, null, null);
+        Assert.assertEquals("misappliedNames with matching area & status filter", 3, pager.getCount().intValue());
+        uuids = this.getTaxonUuidSet(pager);
+        Assert.assertTrue("Pro parte misapplied name should be in", uuids.contains(D_ABIES_KAWAKAMII_SEC_KOMAROV_UUID));
+
+    }
+
+
+    @Test
+    @DataSet
     public final void testFindTaxaAndNamesByFullText_AreaFilter() throws IOException, LuceneParseException, LuceneMultiSearchException {
 
         refreshLuceneIndex();
@@ -1077,13 +1145,16 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.includeUnpublished),
                 "Abies", null, a_germany_canada_russia, null, null, true, null, null, null, null);
         logFreeTextSearchResults(pager, Level.DEBUG, null);
+        Assert.assertEquals("Synonyms with matching area filter", 2, pager.getCount().intValue());
+        Set<UUID> uuids = this.getTaxonUuidSet(pager);
+        Assert.assertTrue("Abies alba (accepted with distribution) should be in", uuids.contains(ABIES_ALBA_UUID));
+        Assert.assertTrue("Abies balsamea (accepted with distribution) should be in", uuids.contains(ABIES_BALSAMEA_UUID));
 
-        // abies_kawakamii_sensu_komarov as missapplied name for t_abies_balsamea
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doSynonyms, TaxaAndNamesSearchMode.includeUnpublished),
                 "Abies", null, a_germany_canada_russia, present_native, null, true, null, null, null, null);
         Assert.assertEquals("Synonyms with matching area filter", 2, pager.getCount().intValue());
-        Set<UUID> uuids = this.getTaxonUuidSet(pager);
+        uuids = this.getTaxonUuidSet(pager);
         Assert.assertTrue("Synonym of balsamea should be in", uuids.contains(ABIES_SUBALPINA_UUID));
         Assert.assertTrue("Pro parte synonym of balsamea should be in", uuids.contains(ABIES_LASIOCARPA_UUID));
 
