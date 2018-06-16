@@ -1823,15 +1823,23 @@ public class TaxonServiceImpl
         }
 
         // search by misapplied names
-        if(searchModes.contains(TaxaAndNamesSearchMode.doMisappliedNames)) {
+        if(searchModes.contains(TaxaAndNamesSearchMode.doMisappliedNames) /*|| searchModes.contains(TaxaAndNamesSearchMode.doSynonyms) */) {
             // NOTE:
             // prepareFindByTaxonRelationFullTextSearch() is making use of JoinUtil.createJoinQuery()
             // which allows doing query time joins
             // finds the misapplied name (Taxon B) which is an misapplication for
             // a related Taxon A.
             //
+            Set<TaxonRelationshipType> relTypes = new HashSet<>();
+            if (searchModes.contains(TaxaAndNamesSearchMode.doMisappliedNames)){
+                relTypes.addAll(TaxonRelationshipType.allMisappliedNameTypes());
+            }
+//            if (searchModes.contains(TaxaAndNamesSearchMode.doSynonyms)){
+//                relTypes.addAll(TaxonRelationshipType.allSynonymTypes());
+//            }
+
             luceneSearches.add(prepareFindByTaxonRelationFullTextSearch(
-                    new TaxonRelationshipEdge(TaxonRelationshipType.allMisappliedNameTypes(), Direction.relatedTo),
+                    new TaxonRelationshipEdge(relTypes, Direction.relatedTo),
                     queryString, classification, includeUnpublished, languages, highlightFragments, sortFields));
             idFieldMap.put(CdmBaseType.TAXON, "id");
 
@@ -1878,6 +1886,27 @@ public class TaxonServiceImpl
                 multiIndexByAreaFilterBuilder.add(taxonAreaJoinQuery, Occur.SHOULD);
             }
         }
+
+        // search by pro parte synonyms
+        if(searchModes.contains(TaxaAndNamesSearchMode.doSynonyms)) {
+            //TODO merge with misapplied name search once #7486 is fixed
+            Set<TaxonRelationshipType> relTypes = new HashSet<>();
+            relTypes.addAll(TaxonRelationshipType.allSynonymTypes());
+
+            luceneSearches.add(prepareFindByTaxonRelationFullTextSearch(
+                    new TaxonRelationshipEdge(relTypes, Direction.relatedTo),
+                    queryString, classification, includeUnpublished, languages, highlightFragments, sortFields));
+            idFieldMap.put(CdmBaseType.TAXON, "id");
+
+            if(addDistributionFilter){
+                String fromField = "inDescription.taxon.id"; // in DescriptionElementBase index
+                String toField = "relation.8a896603-0fa3-44c6-9cd7-df2d8792e577.to.id";
+                BooleanQuery byDistributionQuery = createByDistributionQuery(namedAreaList, distributionStatusList, distributionFilterQueryFactory);
+                Query taxonAreaJoinQuery = distributionFilterQueryFactory.newJoinQuery(Distribution.class,
+                        fromField, true, byDistributionQuery, toField, null, ScoreMode.None);
+                multiIndexByAreaFilterBuilder.add(taxonAreaJoinQuery, Occur.SHOULD);
+            }
+        }//end pro parte synonyms
 
 
         LuceneMultiSearch multiSearch = new LuceneMultiSearch(luceneIndexToolProvider,
