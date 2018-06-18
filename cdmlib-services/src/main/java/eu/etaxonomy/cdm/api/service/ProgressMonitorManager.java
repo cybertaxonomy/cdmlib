@@ -18,6 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.monitor.IRestServiceProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitorThread;
 
 /**
  * Manages monitors for long running jobs.
@@ -30,6 +31,8 @@ import eu.etaxonomy.cdm.common.monitor.IRestServiceProgressMonitor;
 public class ProgressMonitorManager<T extends IRestServiceProgressMonitor> {
 
     private final Map<UUID, T> monitors = new ConcurrentHashMap<UUID, T>();
+    private final Map<UUID, RemotingProgressMonitorThread> threads = new ConcurrentHashMap<>();
+
 
     private final Map<UUID, Long> timeoutMap = new HashMap<UUID, Long>();
 
@@ -55,7 +58,7 @@ public class ProgressMonitorManager<T extends IRestServiceProgressMonitor> {
                 while(true){
                     scheduledCleanUp();
                     try {
-                        sleep(cleanUpInterval);
+                        wait(cleanUpInterval);
                     } catch (InterruptedException e) {
                         /* IGNORE */
                     }
@@ -88,6 +91,7 @@ public class ProgressMonitorManager<T extends IRestServiceProgressMonitor> {
             }
             if(monitor.hasFeedbackWaitTimedOut()) {
                 monitor.interrupt();
+                threads.get(uuid).interrupt();
             }
         }
 
@@ -102,13 +106,30 @@ public class ProgressMonitorManager<T extends IRestServiceProgressMonitor> {
         for(UUID uuid : timedOutMonitors){
             timeoutMap.remove(uuid);
             monitors.remove(uuid);
+            threads.remove(uuid);
+
         }
 
     }
 
+    /**
+     * @return the threads
+     */
+    public RemotingProgressMonitorThread getThread(UUID uuid) {
+        return threads.get(uuid);
+    }
+
+
+    public UUID registerMonitor(T monitor, RemotingProgressMonitorThread thread){
+        UUID uuid = UUID.randomUUID();
+        monitors.put(uuid, monitor);
+        threads.put(uuid, thread);
+        return uuid;
+    }
     public UUID registerMonitor(T monitor){
         UUID uuid = UUID.randomUUID();
         monitors.put(uuid, monitor);
+
         return uuid;
     }
 
