@@ -734,7 +734,9 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         ((IRemotingProgressMonitor)monitor).setResult(result);
 
         for (TaxonNode node: nodes){
-            result.includeResult(moveTaxonNode(node,targetNode, movingType));
+            if (!nodes.contains(node.getParent())){
+                result.includeResult(moveTaxonNode(node,targetNode, movingType));
+            }
             monitor.worked(1);
         }
         dao.saveOrUpdateAll(nodes);
