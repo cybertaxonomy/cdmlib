@@ -680,7 +680,8 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     public UpdateResult moveTaxonNode(UUID taxonNodeUuid, UUID targetNodeUuid, int movingType){
         TaxonNode taxonNode = HibernateProxyHelper.deproxy(dao.load(taxonNodeUuid), TaxonNode.class);
     	TaxonNode targetNode = HibernateProxyHelper.deproxy(dao.load(targetNodeUuid), TaxonNode.class);
-    	return moveTaxonNode(taxonNode, targetNode, movingType);
+    	UpdateResult result = moveTaxonNode(taxonNode, targetNode, movingType);
+    	return result;
     }
 
     @Override
@@ -706,9 +707,9 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
 
         taxonNode = newParent.addChildNode(taxonNode, sortIndex, taxonNode.getReference(),  taxonNode.getMicroReference());
-        result.addUpdatedObject(newParent);
-        result.addUpdatedObject(oldParent);
-        result.setCdmEntity(taxonNode);
+//        result.addUpdatedObject(newParent);
+        result.addUpdatedObject(taxonNode);
+//        result.setCdmEntity(taxonNode);
 
 
 
@@ -729,17 +730,16 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
         TaxonNode targetNode = dao.load(newParentNodeUuid);
         List<TaxonNode> nodes = dao.list(taxonNodeUuids, null, null, null, null);
-        monitor.beginTask("Move Taxonnodes", nodes.size());
+        monitor.beginTask("Move Taxonnodes", nodes.size() +1);
         ((IRemotingProgressMonitor)monitor).setResult(result);
 
         for (TaxonNode node: nodes){
-
             result.includeResult(moveTaxonNode(node,targetNode, movingType));
             monitor.worked(1);
         }
         dao.saveOrUpdateAll(nodes);
 
-        monitor.done();
+//        monitor.done();
         return result;
     }
 
