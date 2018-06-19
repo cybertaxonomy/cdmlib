@@ -35,7 +35,6 @@ import eu.etaxonomy.cdm.api.service.pager.PagerUtils;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
-import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -730,8 +729,9 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
         TaxonNode targetNode = dao.load(newParentNodeUuid);
         List<TaxonNode> nodes = dao.list(taxonNodeUuids, null, null, null, null);
+        boolean hasPermission = true;
+
         monitor.beginTask("Move Taxonnodes", nodes.size() +1);
-        ((IRemotingProgressMonitor)monitor).setResult(result);
 
         for (TaxonNode node: nodes){
             if (!nodes.contains(node.getParent())){
@@ -741,7 +741,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         }
         dao.saveOrUpdateAll(nodes);
 
-//        monitor.done();
+        monitor.done();
         return result;
     }
 
@@ -848,6 +848,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     public UpdateResult setSecundumForSubtree(SecundumForSubtreeConfigurator config) {
         UpdateResult result = new UpdateResult();
         IProgressMonitor monitor = config.getMonitor();
+
         if (monitor == null){
             monitor = DefaultProgressMonitor.NewInstance();
         }
@@ -890,7 +891,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
            result.addUpdatedObjects(updatedSynonyms);
         }
 
-//        monitor.done();
+        monitor.done();
         return result;
     }
 
@@ -939,7 +940,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
             result.addUpdatedObjects(updatedSynonyms);
         }
 
-//        monitor.done();
+        monitor.done();
         return result;
     }
 

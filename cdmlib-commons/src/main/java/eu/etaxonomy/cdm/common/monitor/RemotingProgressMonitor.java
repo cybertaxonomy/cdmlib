@@ -23,6 +23,7 @@ public class RemotingProgressMonitor extends RestServiceProgressMonitor implemen
 
     private Serializable result;
     private List<String> reports = new ArrayList<String>();
+    private boolean serviceDone;
 //    private transient RemotingProgressMonitorThread monitorThread;
 
 
@@ -52,6 +53,9 @@ public class RemotingProgressMonitor extends RestServiceProgressMonitor implemen
     @Override
     public void setResult(Serializable result) {
         this.result = result;
+        if (serviceDone){
+            super.done();
+        }
     }
 
 
@@ -70,6 +74,14 @@ public class RemotingProgressMonitor extends RestServiceProgressMonitor implemen
     @Override
     public void addReport(String report) {
         reports.add(report);
+    }
+
+    @Override
+    public void done() {
+        serviceDone = true;
+        if (result != null){
+            super.done();
+        }
     }
 
 //    /**
