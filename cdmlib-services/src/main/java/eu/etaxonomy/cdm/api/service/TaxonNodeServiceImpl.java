@@ -741,7 +741,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         }
         dao.saveOrUpdateAll(nodes);
 
-        monitor.done();
+//        monitor.done();
         return result;
     }
 
@@ -890,7 +890,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
            result.addUpdatedObjects(updatedSynonyms);
         }
 
-        monitor.done();
+//        monitor.done();
         return result;
     }
 
@@ -939,7 +939,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
             result.addUpdatedObjects(updatedSynonyms);
         }
 
-        monitor.done();
+//        monitor.done();
         return result;
     }
 
