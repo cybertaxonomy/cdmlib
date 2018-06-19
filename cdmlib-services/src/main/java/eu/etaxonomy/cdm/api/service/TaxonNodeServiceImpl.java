@@ -23,6 +23,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
@@ -734,12 +735,22 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         monitor.beginTask("Move Taxonnodes", nodes.size() +1);
 
         for (TaxonNode node: nodes){
-            if (!nodes.contains(node.getParent())){
-                result.includeResult(moveTaxonNode(node,targetNode, movingType));
+            if (!monitor.isCanceled()){
+                if (!nodes.contains(node.getParent())){
+                    result.includeResult(moveTaxonNode(node,targetNode, movingType));
+                }
+                monitor.worked(1);
+            }else{
+                monitor.done();
+                result.setAbort();
+                break;
             }
-            monitor.worked(1);
         }
-        dao.saveOrUpdateAll(nodes);
+        if (!monitor.isCanceled()){
+            dao.saveOrUpdateAll(nodes);
+        }else{
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
 
         monitor.done();
         return result;
