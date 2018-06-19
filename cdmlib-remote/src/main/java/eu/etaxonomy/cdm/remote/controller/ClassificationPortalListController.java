@@ -287,7 +287,7 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
             if(dt instanceof Rank){
                 rank = (Rank)dt;
             } else {
-               new IllegalArgumentException("DefinedTermBase is not a Rank");
+               throw new IllegalArgumentException("DefinedTermBase is not a Rank");
             }
         }
         return rank;
