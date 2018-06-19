@@ -27,5 +27,8 @@ public enum TaxaAndNamesSearchMode {
     public static EnumSet<TaxaAndNamesSearchMode> taxaAndSynonyms(){
         return EnumSet.of(doTaxa, doSynonyms);
     }
+    public static EnumSet<TaxaAndNamesSearchMode> taxaAndSynonymsWithUnpublished(){
+        return EnumSet.of(doTaxa, doSynonyms, includeUnpublished);
+    }
 
 }

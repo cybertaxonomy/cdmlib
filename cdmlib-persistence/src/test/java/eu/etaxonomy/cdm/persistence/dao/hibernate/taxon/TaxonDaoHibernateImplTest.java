@@ -320,7 +320,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         Reference sec = referenceDao.findById(1);
         assert sec != null : "sec must exist";
 
-        List<UuidAndTitleCache<IdentifiableEntity>> results = taxonDao.getTaxaByNameForEditor(true, true, false,false, false, includeUnpublished, "Acher", null, MatchMode.BEGINNING, null, null);
+        List<UuidAndTitleCache<? extends IdentifiableEntity>> results = taxonDao.getTaxaByNameForEditor(true, true, false,false, false, includeUnpublished, "Acher", null, MatchMode.BEGINNING, null, null);
         assertNotNull("getTaxaByName should return a List", results);
         assertFalse("The list should not be empty", results.isEmpty());
         assertEquals(4, results.size());

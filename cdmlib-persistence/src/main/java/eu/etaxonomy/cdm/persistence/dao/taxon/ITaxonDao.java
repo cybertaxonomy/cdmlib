@@ -381,7 +381,7 @@ public interface ITaxonDao
 
     public List<TaxonName> findIdenticalNamesNew(List <String> propertyPaths);
 
-    public List<UuidAndTitleCache<IdentifiableEntity>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doNamesWithoutTaxa,
+    public List<UuidAndTitleCache<? extends IdentifiableEntity>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doNamesWithoutTaxa,
             boolean doMisappliedNames, boolean doCommonNames, boolean includeUnpublished,
             String queryString, Classification classification,
             MatchMode matchMode, Set<NamedArea> namedAreas, NameSearchOrder order);

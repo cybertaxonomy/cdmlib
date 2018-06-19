@@ -203,7 +203,7 @@ public class TaxonDaoHibernateImpl
     //new search for the editor, for performance issues the return values are only uuid and titleCache, to avoid the initialisation of all objects
     @Override
     @SuppressWarnings("unchecked")
-    public List<UuidAndTitleCache<IdentifiableEntity>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doNamesWithoutTaxa,
+    public List<UuidAndTitleCache<? extends IdentifiableEntity>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doNamesWithoutTaxa,
             boolean doMisappliedNames, boolean doCommonNames, boolean includeUnpublished, String queryString, Classification classification,
             MatchMode matchMode, Set<NamedArea> namedAreas, NameSearchOrder order) {
 
@@ -213,14 +213,14 @@ public class TaxonDaoHibernateImpl
 
         boolean doCount = false;
         boolean includeAuthors = false;
-        List<UuidAndTitleCache<IdentifiableEntity>> resultObjects = new ArrayList<>();
+        List<UuidAndTitleCache<? extends IdentifiableEntity>> resultObjects = new ArrayList<>();
         if (doNamesWithoutTaxa){
         	List<? extends TaxonName> nameResult = taxonNameDao.findByName(
         	        includeAuthors, queryString, matchMode, null, null, null, null);
 
         	for (TaxonName name: nameResult){
         		if (name.getTaxonBases().size() == 0){
-        			resultObjects.add(new UuidAndTitleCache(TaxonName.class, name.getUuid(), name.getId(), name.getTitleCache()));
+        			resultObjects.add(new UuidAndTitleCache<TaxonName>(TaxonName.class, name.getUuid(), name.getId(), name.getTitleCache()));
         		}
         	}
         	if (!doSynonyms && !doTaxa && !doCommonNames){
@@ -242,14 +242,14 @@ public class TaxonDaoHibernateImpl
                 // see FIXME in 'prepareQuery' for more details
                 if (doTaxa || doSynonyms || doCommonNames){
                     if (result[3].equals("synonym")) {
-                        resultObjects.add( new UuidAndTitleCache(Synonym.class, (UUID) result[0], (Integer) result[1], (String)result[2], new Boolean(result[4].toString()), null));
+                        resultObjects.add( new UuidAndTitleCache<Synonym>(Synonym.class, (UUID) result[0], (Integer) result[1], (String)result[2], new Boolean(result[4].toString()), null));
                     }
                     else {
-                        resultObjects.add( new UuidAndTitleCache(Taxon.class, (UUID) result[0], (Integer) result[1], (String)result[2], new Boolean(result[4].toString()), null));
+                        resultObjects.add( new UuidAndTitleCache<Taxon>(Taxon.class, (UUID) result[0], (Integer) result[1], (String)result[2], new Boolean(result[4].toString()), null));
                     }
 
                 }else if (doSynonyms){
-                    resultObjects.add( new UuidAndTitleCache(Synonym.class, (UUID) result[0], (Integer) result[1], (String)result[2], new Boolean(result[4].toString()), null));
+                    resultObjects.add( new UuidAndTitleCache<Synonym>(Synonym.class, (UUID) result[0], (Integer) result[1], (String)result[2], new Boolean(result[4].toString()), null));
                 }
             }
         }

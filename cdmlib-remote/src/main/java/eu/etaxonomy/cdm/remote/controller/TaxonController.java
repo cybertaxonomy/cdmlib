@@ -229,7 +229,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
 
         TaxonBase<?> tb = service.load(uuid);
 
-        List<OrderHint> orderHints = new ArrayList<OrderHint>();
+        List<OrderHint> orderHints = new ArrayList<>();
         orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
 
         if(tb instanceof Taxon){

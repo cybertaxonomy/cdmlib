@@ -660,7 +660,7 @@ public class TaxonServiceImpl
     }
 
     @Override
-    public List<UuidAndTitleCache<IdentifiableEntity>> findTaxaAndNamesForEditor(IFindTaxaAndNamesConfigurator config){
+    public List<UuidAndTitleCache<? extends IdentifiableEntity>> findTaxaAndNamesForEditor(IFindTaxaAndNamesConfigurator config){
 
         if (config.isDoSynonyms() || config.isDoTaxa() || config.isDoNamesWithoutTaxa() || config.isDoTaxaByCommonNames()){
         	return dao.getTaxaByNameForEditor(config.isDoTaxa(), config.isDoSynonyms(), config.isDoNamesWithoutTaxa(),

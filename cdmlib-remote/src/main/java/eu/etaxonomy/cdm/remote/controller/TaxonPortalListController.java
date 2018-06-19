@@ -45,7 +45,6 @@ public class TaxonPortalListController extends TaxonListController {
 
     @Override
     protected List<String> getSimpleTaxonInitStrategy() {
-        // TODO Auto-generated method stub
         return SIMPLE_TAXON_INIT_STRATEGY;
     }
 

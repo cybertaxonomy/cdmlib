@@ -322,7 +322,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
      * @throws ParseException
      */
     @RequestMapping(method = RequestMethod.GET, value={"findByDescriptionElementFullText"})
-    public Pager<SearchResult<TaxonBase>> dofindByDescriptionElementFullText(
+    public Pager<SearchResult<TaxonBase>> doFindByDescriptionElementFullText(
             @RequestParam(value = "clazz", required = false) Class<? extends DescriptionElementBase> clazz,
             @RequestParam(value = "query", required = true) String queryString,
             @RequestParam(value = "tree", required = false) UUID treeUuid,
@@ -352,7 +352,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
 
         List<Feature> features = null;
         if(featureUuids != null){
-            features = new ArrayList<Feature>(featureUuids.size());
+            features = new ArrayList<>(featureUuids.size());
             for(UUID uuid : featureUuids){
                 features.add((Feature) termService.find(uuid));
             }
@@ -366,7 +366,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
     }
 
     @RequestMapping(method = RequestMethod.GET, value={"findByFullText"})
-    public Pager<SearchResult<TaxonBase>> dofindByFullText(
+    public Pager<SearchResult<TaxonBase>> doFindByFullText(
             @RequestParam(value = "clazz", required = false) Class<? extends TaxonBase> clazz,
             @RequestParam(value = "query", required = true) String queryString,
             @RequestParam(value = "tree", required = false) UUID treeUuid,
@@ -406,7 +406,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
      */
     @RequestMapping(method = RequestMethod.GET, value={"findByEverythingFullText"})
     @Deprecated
-    public Pager<SearchResult<TaxonBase>> dofindByEverythingFullText(
+    public Pager<SearchResult<TaxonBase>> doFindByEverythingFullText(
             @RequestParam(value = "clazz", required = false) Class<? extends TaxonBase> clazz,
             @RequestParam(value = "query", required = true) String queryString,
             @RequestParam(value = "tree", required = false) UUID treeUuid,
@@ -417,7 +417,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
             HttpServletRequest request,
             HttpServletResponse response
             )
-             throws IOException, LuceneParseException, LuceneMultiSearchException {
+            throws IOException, LuceneParseException, LuceneMultiSearchException {
 
          logger.info("findByEverythingFullText : " + requestPathAndQuery(request) );
 

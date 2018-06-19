@@ -283,7 +283,7 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
     private Rank findRank(UUID rankUuid) {
         Rank rank = null;
         if(rankUuid != null){
-            DefinedTermBase dt =  termService.find(rankUuid);
+            DefinedTermBase<?> dt =  termService.find(rankUuid);
             if(dt instanceof Rank){
                 rank = (Rank)dt;
             } else {

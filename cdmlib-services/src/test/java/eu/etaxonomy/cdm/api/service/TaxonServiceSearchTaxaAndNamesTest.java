@@ -596,7 +596,7 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
          configurator.setDoNamesWithoutTaxa(true);
          configurator.setDoTaxaByCommonNames(false);
 
-        List<UuidAndTitleCache<IdentifiableEntity>> list = taxonService.findTaxaAndNamesForEditor(configurator);
+        List<UuidAndTitleCache<? extends IdentifiableEntity>> list = taxonService.findTaxaAndNamesForEditor(configurator);
 
          Assert.assertEquals("Expecting one entity", 1, list.size());
 

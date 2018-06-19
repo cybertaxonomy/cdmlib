@@ -862,7 +862,7 @@ public interface ITaxonService
 
     public Synonym findBestMatchingSynonym(String taxonName, boolean includeUnpublished);
 
-     public List<UuidAndTitleCache<IdentifiableEntity>> findTaxaAndNamesForEditor(IFindTaxaAndNamesConfigurator configurator);
+     public List<UuidAndTitleCache<? extends IdentifiableEntity>> findTaxaAndNamesForEditor(IFindTaxaAndNamesConfigurator configurator);
 
     /**
      * Creates the specified inferred synonyms for the taxon in the classification, but do not insert it to the database
