@@ -99,7 +99,7 @@ public class ProgressMonitorServiceImpl implements IProgressMonitorService {
     public boolean isMonitorThreadRunning(UUID uuid) {
         IRemotingProgressMonitor remotingMonitor = getRemotingMonitor(uuid);
         if(remotingMonitor != null) {
-            return progressMonitorManager.getThread(uuid) != null;
+            return remotingMonitor.isMonitorThreadRunning();
         }
         return false;
     }
@@ -113,6 +113,7 @@ public class ProgressMonitorServiceImpl implements IProgressMonitorService {
         if(monitor != null) {
             monitor.setCanceled(true);
             monitor.done();
+
         }
     }
 

@@ -95,9 +95,9 @@ public class RemotingProgressMonitor extends RestServiceProgressMonitor implemen
 //    /**
 //     * {@inheritDoc}
 //     */
-//    @Override
-//    public boolean isMonitorThreadRunning() {
-//        RemotingProgressMonitorThread monitorThread = RemotingProgressMonitorThread.getMonitorThread(this);
-//        return monitorThread != null;
-//    }
+    @Override
+    public boolean isMonitorThreadRunning() {
+        RemotingProgressMonitorThread monitorThread = RemotingProgressMonitorThread.getMonitorThread(this);
+        return monitorThread != null;
+    }
 }

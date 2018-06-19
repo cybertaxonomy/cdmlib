@@ -46,8 +46,8 @@ public interface IRemotingProgressMonitor extends IRestServiceProgressMonitor {
     public void addReport(String report);
 
 
+
 //    public RemotingProgressMonitorThread getThread();
-//
-//    public boolean isMonitorThreadRunning();
+    public boolean isMonitorThreadRunning();
 
 }

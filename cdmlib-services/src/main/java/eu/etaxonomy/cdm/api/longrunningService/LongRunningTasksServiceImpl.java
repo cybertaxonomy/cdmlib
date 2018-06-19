@@ -48,7 +48,6 @@ public class LongRunningTasksServiceImpl implements ILongRunningTasksService{
             public Serializable doRun(IRemotingProgressMonitor monitor) {
                 UpdateResult result;
                 config.setMonitor(monitor);
-                System.err.println(monitor.getThread().getId());
 
                 result = updateData(config);
                 for(Exception e : result.getExceptions()) {
@@ -79,9 +78,6 @@ public class LongRunningTasksServiceImpl implements ILongRunningTasksService{
             @Override
             public Serializable doRun(IRemotingProgressMonitor remotingMonitor) {
                 UpdateResult result;
-
-                System.err.println(remotingMonitor.getThread().getId());
-
                 result = taxonNodeService.moveTaxonNodes(movingUuids,targetTreeNodeUuid, movingType, remotingMonitor);
                 for(Exception e : result.getExceptions()) {
                     remotingMonitor.addReport(e.getMessage());
