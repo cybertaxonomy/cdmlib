@@ -732,8 +732,8 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         List<TaxonNode> nodes = dao.list(taxonNodeUuids, null, null, null, null);
         boolean hasPermission = true;
 
-        monitor.beginTask("Move Taxonnodes", nodes.size() +1);
-
+        monitor.beginTask("Move Taxonnodes", nodes.size());
+        monitor.subTask("move taxon nodes");
         for (TaxonNode node: nodes){
             if (!monitor.isCanceled()){
                 if (!nodes.contains(node.getParent())){
