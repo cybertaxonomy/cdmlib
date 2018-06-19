@@ -23,14 +23,14 @@ public class RemotingProgressMonitor extends RestServiceProgressMonitor implemen
 
     private Serializable result;
     private List<String> reports = new ArrayList<String>();
-    private transient RemotingProgressMonitorThread monitorThread;
+//    private transient RemotingProgressMonitorThread monitorThread;
 
 
     public RemotingProgressMonitor(RemotingProgressMonitorThread monitorThread) {
-        if(monitorThread == null) {
-            throw new IllegalStateException("Monitor Thread is null");
-        }
-        this.monitorThread = monitorThread;
+//        if(monitorThread == null) {
+//            throw new IllegalStateException("Monitor Thread is null");
+//        }
+//        this.monitorThread = monitorThread;
     }
 
     public RemotingProgressMonitor() {
@@ -72,31 +72,32 @@ public class RemotingProgressMonitor extends RestServiceProgressMonitor implemen
         reports.add(report);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void interrupt() {
-        if(monitorThread.isAlive()) {
-            monitorThread.interrupt();
-        }
-    }
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    public void interrupt() {
+//
+//        if(monitorThread.isAlive()) {
+//            monitorThread.interrupt();
+//        }
+//    }
 
 
     /**
      * {@inheritDoc}
      */
-    @Override
-    public RemotingProgressMonitorThread getThread() {
-        return monitorThread;
-    }
+//    @Override
+//    public RemotingProgressMonitorThread getThread() {
+//        return monitorThread;
+//    }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean isMonitorThreadRunning() {
-        RemotingProgressMonitorThread monitorThread = RemotingProgressMonitorThread.getMonitorThread(this);
-        return monitorThread != null;
-    }
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    public boolean isMonitorThreadRunning() {
+//        RemotingProgressMonitorThread monitorThread = RemotingProgressMonitorThread.getMonitorThread(this);
+//        return monitorThread != null;
+//    }
 }
