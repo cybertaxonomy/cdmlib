@@ -58,9 +58,10 @@ public class ProgressMonitorManager<T extends IRestServiceProgressMonitor> {
                 while(true){
                     scheduledCleanUp();
                     try {
-                        wait(cleanUpInterval);
+                        sleep(cleanUpInterval);
                     } catch (InterruptedException e) {
                         /* IGNORE */
+                        System.err.println("interrupted");
                     }
                 }
             }
