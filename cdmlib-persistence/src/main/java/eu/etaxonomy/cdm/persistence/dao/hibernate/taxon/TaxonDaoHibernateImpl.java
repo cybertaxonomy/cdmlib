@@ -367,46 +367,26 @@ public class TaxonDaoHibernateImpl
                 logger.debug("synonymSubselect: " + (synonymSubselect != null ? synonymSubselect: "NULL"));
             }
 
-            Query subTaxon = null;
-            Query subSynonym = null;
-            Query subMisappliedNames = null;
-            Query subCommonNames = null;
             List<Integer> taxonIDs = new ArrayList<>();
             List<Integer> synonymIDs = new ArrayList<>();
 
             if(doTaxa){
                 // find Taxa
-                subTaxon = getSession().createQuery(taxonSubselect).setParameter("queryString", hqlQueryString);
+                Query subTaxon = getSearchQueryString(hqlQueryString, taxonSubselect);
 
-                if(doAreaRestriction){
-                    subTaxon.setParameterList("namedAreasUuids", namedAreasUuids);
-                }
-                if(classification != null){
-                    subTaxon.setParameter("classification", classification);
-                }
-                if(!includeUnpublished){
-                    subTaxon.setBoolean("publish", true);
-                }
+                addRestrictions(doAreaRestriction, classification, includeUnpublished,
+                        namedAreasUuids, subTaxon);
                 taxonIDs = subTaxon.list();
             }
 
             if(doSynonyms){
                 // find synonyms
-                subSynonym = getSession().createQuery(synonymSubselect).setParameter("queryString", hqlQueryString);
-
-                if(doAreaRestriction){
-                    subSynonym.setParameterList("namedAreasUuids", namedAreasUuids);
-                }
-                if(classification != null){
-                    subSynonym.setParameter("classification", classification);
-                }
-                if(!includeUnpublished){
-                    subSynonym.setBoolean("publish", true);
-                }
+                Query subSynonym = getSearchQueryString(hqlQueryString, synonymSubselect);
+                addRestrictions(doAreaRestriction, classification, includeUnpublished, namedAreasUuids,subSynonym);
                 synonymIDs = subSynonym.list();
             }
             if (doConceptRelations ){
-                subMisappliedNames = getSession().createQuery(conceptSelect).setParameter("queryString", hqlQueryString);
+                Query subMisappliedNames = getSearchQueryString(hqlQueryString, conceptSelect);
                 Set<TaxonRelationshipType> relTypeSet = new HashSet<>();
                 if (doMisappliedNames){
                     relTypeSet.addAll(TaxonRelationshipType.allMisappliedNameTypes());
@@ -415,31 +395,14 @@ public class TaxonDaoHibernateImpl
                     relTypeSet.addAll(TaxonRelationshipType.allSynonymTypes());
                 }
                 subMisappliedNames.setParameterList("rTypeSet", relTypeSet);
-                if(doAreaRestriction){
-                    subMisappliedNames.setParameterList("namedAreasUuids", namedAreasUuids);
-                }
-                if(classification != null){
-                    subMisappliedNames.setParameter("classification", classification);
-                }
-                if(!includeUnpublished){
-                    subMisappliedNames.setBoolean("publish", true);
-                }
+                addRestrictions(doAreaRestriction, classification, includeUnpublished, namedAreasUuids, subMisappliedNames);
                 taxonIDs.addAll(subMisappliedNames.list());
             }
 
             if(doCommonNames){
                 // find Taxa
-                subCommonNames = getSession().createQuery(commonNameSubSelect).setParameter("queryString", hqlQueryString);
-
-                if(doAreaRestriction){
-                    subCommonNames.setParameterList("namedAreasUuids", namedAreasUuids);
-                }
-                if(classification != null){
-                    subCommonNames.setParameter("classification", classification);
-                }
-                if(!includeUnpublished){
-                    subCommonNames.setBoolean("publish", true);
-                }
+                Query subCommonNames = getSearchQueryString(hqlQueryString, commonNameSubSelect);
+                addRestrictions(doAreaRestriction, classification, includeUnpublished, namedAreasUuids, subCommonNames);
                 taxonIDs.addAll(subCommonNames.list());
             }
 
@@ -534,6 +497,35 @@ public class TaxonDaoHibernateImpl
             }
 
             return query;
+    }
+
+    /**
+     * @param hqlQueryString
+     * @param synonymSubselect
+     * @return
+     */
+    protected Query getSearchQueryString(String hqlQueryString, String synonymSubselect) {
+        return getSession().createQuery(synonymSubselect).setParameter("queryString", hqlQueryString);
+    }
+
+    /**
+     * @param includeUnpublished
+     * @param classification
+     * @param doAreaRestriction
+     * @param namedAreasUuids
+     * @param subTaxon
+     */
+    protected void addRestrictions(boolean doAreaRestriction, Classification classification, boolean includeUnpublished,
+            Set<UUID> namedAreasUuids, Query query) {
+        if(doAreaRestriction){
+            query.setParameterList("namedAreasUuids", namedAreasUuids);
+        }
+        if(classification != null){
+            query.setParameter("classification", classification);
+        }
+        if(!includeUnpublished){
+            query.setBoolean("publish", true);
+        }
     }
 
 
