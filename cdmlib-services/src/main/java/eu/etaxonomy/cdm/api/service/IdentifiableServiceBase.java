@@ -105,7 +105,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 	@Transactional(readOnly = true)
 	@Override
 	public ISourceable getSourcedObjectByIdInSource(Class clazz, String idInSource, String idNamespace) {
-		ISourceable result = null;
+		ISourceable<?> result = null;
 
 		List<T> list = dao.findOriginalSourceByIdInSource(idInSource, idNamespace);
 		if (! list.isEmpty()){
@@ -142,7 +142,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 				results = dao.findByTitle(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
 		 }
 
-		  return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
+		 return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
 	}
 
 	@Transactional(readOnly = true)
@@ -175,7 +175,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 		 long r = 0;
 		 r += numberOfResults;
 
-		  return new DefaultPagerImpl<>(pageNumber, r , pageSize, results);
+		 return new DefaultPagerImpl<>(pageNumber, r , pageSize, results);
 	}
 
 	@Transactional(readOnly = true)
@@ -185,7 +185,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 
 		 List<T> results = new ArrayList<>();
 		 if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-				results = dao.findByReferenceTitle(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
+		     results = dao.findByReferenceTitle(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
 		 }
 		 return results;
 	}
@@ -287,11 +287,6 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 		return oldAutoInitializers;
 	}
 
-	/**
-	 * @param cacheStrategy
-	 * @param entitiesToUpdate
-	 * @param entity
-	 */
 	/**
 	 * @param cacheStrategy
 	 * @param entitiesToUpdate
