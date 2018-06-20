@@ -22,7 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.BooleanUtils;
-import org.apache.lucene.queryparser.classic.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
@@ -56,7 +55,6 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Classification;
-import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -179,7 +177,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
         boolean includeUnpublished = NO_UNPUBLISHED;
 
 
-        logger.info("search : " + requestPathAndQuery(request) );
+        logger.info("doSearch() " + requestPathAndQuery(request) );
 
         Set<NamedArea> areaSet = null;
         if(areaList != null){
@@ -381,7 +379,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
 
         boolean includeUnpublished = NO_UNPUBLISHED;
 
-        logger.info("findByFullText : " + requestPathAndQuery(request)  );
+        logger.info("doFindByFullText() " + requestPathAndQuery(request)  );
 
         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
         pagerParams.normalizeAndValidate(response);

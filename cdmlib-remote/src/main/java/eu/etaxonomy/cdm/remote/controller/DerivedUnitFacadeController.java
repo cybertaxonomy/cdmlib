@@ -76,7 +76,7 @@ public class DerivedUnitFacadeController extends AbstractController<SpecimenOrOb
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
-        logger.info("getGet() - " + request.getRequestURI());
+        logger.info("doGet() - " + request.getRequestURI());
         DerivedUnitFacade duf = newFacadeFrom(occurrenceUuid, response, null);
         return duf;
     }

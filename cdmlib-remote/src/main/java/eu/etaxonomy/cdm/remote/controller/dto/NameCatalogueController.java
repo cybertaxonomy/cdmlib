@@ -827,7 +827,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
                     boolean includeUuids = Arrays.asList(includes).contains(INCLUDE_CLUUIDS);
                     Map<String,Map> classificationMap = getClassification(taxon, classificationType, includeUuids, includeUnpublished);
 
-                    logger.info("taxon uuid " + taxon.getUuid().toString() + " original hash code : " + System.identityHashCode(taxon) + ", name class " + taxon.getName().getClass().getName());
+                    logger.debug("taxon uuid " + taxon.getUuid().toString() + " original hash code : " + System.identityHashCode(taxon) + ", name class " + taxon.getName().getClass().getName());
                     // update taxon information object with taxon related data
                     INonViralName nvn = CdmBase.deproxy(taxon.getName());
 
@@ -1004,9 +1004,9 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
                     Taxon accTaxon = synonym.getAcceptedTaxon();
                     if (accTaxon != null){
                         String uuid = accTaxon.getUuid().toString();
-                        logger.info("acc taxon uuid " + accTaxon.getUuid().toString() + " original hash code : " + System.identityHashCode(accTaxon) + ", name class " + accTaxon.getName().getClass().getName());
+                        logger.debug("acc taxon uuid " + accTaxon.getUuid().toString() + " original hash code : " + System.identityHashCode(accTaxon) + ", name class " + accTaxon.getName().getClass().getName());
                         String title = accTaxon.getTitleCache();
-                        logger.info("taxon title cache : " + accTaxon.getTitleCache());
+                        logger.debug("taxon title cache : " + accTaxon.getTitleCache());
 
                         TaxonName accnvn = accTaxon.getName();
                         String name = accnvn.getTitleCache();
@@ -1141,7 +1141,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
             HttpServletRequest request, HttpServletResponse response) throws IOException {
         ModelAndView mv = new ModelAndView();
         List<RemoteResponse> ansList = new ArrayList<RemoteResponse>();
-        logger.info("doGetAcceptedNameSearch()");
+        logger.info("doGetAcceptedNameSearch() " +  requestPathAndQuery(request));
 
         boolean includeUnpublished = NO_UNPUBLISHED;
 
@@ -1248,6 +1248,9 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
      */
     @RequestMapping(value = { "voc/classification" }, method = RequestMethod.GET, params = {})
     public ModelAndView doGetClassificationMap(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        logger.info("doGetClassificationMap() " +  requestPathAndQuery(request));
+
         List<Map> cmapList = new ArrayList<Map>();
         Map<String, String> classifications = new HashMap<String, String>();
         ModelAndView mv = new ModelAndView();
@@ -1422,7 +1425,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
                 //classificationMap stays empty for this node
             }
             String cname = removeInternalWhitespace(tn.getClassification().getTitleCache());
-            logger.info("Building classification map " + cname);
+            logger.debug("Building classification map " + cname);
             sourceClassificationMap.put(cname, classificationMap);
         }
         return sourceClassificationMap;
@@ -1457,7 +1460,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
             UUID fromStringUUID = UUID.fromString(uuid);
             String toStringUUID = fromStringUUID.toString();
 
-            System.out.println("input uuid : " + uuid + " , parsed uuid : " + toStringUUID);
+            logger.debug("input uuid : " + uuid + " , parsed uuid : " + toStringUUID);
             return toStringUUID.equals(uuid);
         } catch(IllegalArgumentException e) {
             return false;

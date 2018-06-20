@@ -129,6 +129,9 @@ public class OccurrenceCatalogueController extends AbstractController<SpecimenOr
     public ModelAndView doGetNameSearchDocumentation(
             HttpServletRequest request, HttpServletResponse response)
             throws IOException {
+
+        logger.info("doGetNameSearchDocumentation() " +  requestPathAndQuery(request));
+
         ModelAndView mv = new ModelAndView();
         // Read apt documentation file.
         Resource resource = resourceLoader.getResource("classpath:eu/etaxonomy/cdm/doc/remote/apt/occurrence-catalogue-default.apt");
@@ -202,7 +205,9 @@ public class OccurrenceCatalogueController extends AbstractController<SpecimenOr
             @RequestParam(value = "pageNumber", required = false, defaultValue = DEFAULT_PAGE_NUMBER) String pageNumber,
             @RequestParam(value = "pageSize", required = false, defaultValue = DEFAULT_PAGE_SIZE) String pageSize,
             HttpServletRequest request, HttpServletResponse response) throws IOException {
-        logger.info("doGetOccurrenceSearch, " + "taxonUuid : " + taxonUuid + " - pageSize : " + pageSize + " - " + "pageNumber : " + pageNumber);
+
+        logger.info("doGetOccurrenceSearch() " +  requestPathAndQuery(request));
+
         ModelAndView mv = new ModelAndView();
 
         Integer pS = null;
@@ -212,13 +217,13 @@ public class OccurrenceCatalogueController extends AbstractController<SpecimenOr
             pN=Integer.valueOf(pageNumber);
         } catch (Exception e) {
             pN=Integer.valueOf(DEFAULT_PAGE_NUMBER);
-            logger.info("pagenumber is not a number");
+            logger.debug("pagenumber is not a number");
         }
         try {
             pS=Integer.valueOf(pageSize);
         } catch (Exception e) {
             pS=Integer.valueOf(DEFAULT_PAGE_SIZE);
-            logger.info("pagesize is not a number");
+            logger.debug("pagesize is not a number");
         }
 
         PagerParameters pagerParams = new PagerParameters(pS, pN);
@@ -324,7 +329,7 @@ public class OccurrenceCatalogueController extends AbstractController<SpecimenOr
             UUID fromStringUUID = UUID.fromString(uuid);
             String toStringUUID = fromStringUUID.toString();
 
-            System.out.println("input uuid : " + uuid + " , parsed uuid : " + toStringUUID);
+            logger.debug("input uuid : " + uuid + " , parsed uuid : " + toStringUUID);
             return toStringUUID.equals(uuid);
         } catch(IllegalArgumentException e) {
             return false;
