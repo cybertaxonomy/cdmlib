@@ -2462,7 +2462,7 @@ public class TaxonName
     @Override
     public Set<TypeDesignationBase> getTypeDesignations() {
         if(typeDesignations == null) {
-            this.typeDesignations = new HashSet<TypeDesignationBase>();
+            this.typeDesignations = new HashSet<>();
         }
         return typeDesignations;
     }

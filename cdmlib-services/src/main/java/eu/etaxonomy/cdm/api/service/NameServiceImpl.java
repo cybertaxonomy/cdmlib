@@ -205,9 +205,9 @@ public class NameServiceImpl
         }else if (name != null && typeDesignation != null){
             removeSingleDesignation(name, typeDesignation);
         }else if (name != null){
-            Set<TypeDesignationBase<?>> designationSet = new HashSet<>(name.getTypeDesignations());
-            for (Object o : designationSet){
-                TypeDesignationBase<?> desig = CdmBase.deproxy(o, TypeDesignationBase.class);
+            Set<TypeDesignationBase> designationSet = new HashSet<>(name.getTypeDesignations());
+            for (TypeDesignationBase<?> o : designationSet){
+                TypeDesignationBase<?> desig = CdmBase.deproxy(o);
                 removeSingleDesignation(name, desig);
             }
         }else if (typeDesignation != null){
