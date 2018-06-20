@@ -223,8 +223,9 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         Classification classification = classificationDao.load(classificationUuid);
 
         /* NOTE:
-         * The testdata contains 3 misapplied names (1. nameCache = Aus, 2. nameCache = Rethera, 3. nameCache = Daphnis), two contained in the classification used in this test,
-         * the other one is not contained in any classification. This latter case is the more general situation.
+         * The testdata contains 3 misapplied names (1. nameCache = Aus, 2. nameCache = Rethera, 3. nameCache = Daphnis),
+         * two contained in the classification used in this test,
+         * the other one is not contained in any classification. This later case is the more general situation.
          * Misapplied names should be found regardless of whether they are contained in a classification or not.
          */
         //two accepted taxa starting with R in classification "TestBaum"

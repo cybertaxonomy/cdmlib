@@ -354,7 +354,7 @@ public class TaxonDaoHibernateImpl
                 namedAreasUuids.add(area.getUuid());
             }
 
-            Subselects subSelects = createByNameHQLString(doTaxa, doSynonyms, doConceptRelations,
+            Subselects subSelects = createByNameHQLString(doConceptRelations,
                     includeUnpublished, classification, areasExpanded, matchMode, searchField);
             String taxonSubselect = subSelects.taxonSubselect;
             String synonymSubselect = subSelects.synonymSubselect;
@@ -711,11 +711,12 @@ public class TaxonDaoHibernateImpl
         boolean doCount = false;
         Query query = prepareTaxaByName(doTaxa, doSynonyms, false, false, includeUnpublished, "titleCache", queryString, classification, matchMode, namedAreas, order, pageSize, pageNumber, doCount);
         if (query != null){
+            @SuppressWarnings("unchecked")
             List<TaxonBase> results = query.list();
             defaultBeanInitializer.initializeAll(results, propertyPaths);
             return results;
         }
-        return new ArrayList<TaxonBase>();
+        return new ArrayList<>();
 
     }
 
@@ -737,10 +738,11 @@ public class TaxonDaoHibernateImpl
         }
         crit.addOrder(Order.asc("uuid"));
 
+        @SuppressWarnings({ "unchecked", "rawtypes" })
         List<? extends TaxonBase> results = crit.list();
         if (results.size() == 1) {
             defaultBeanInitializer.initializeAll(results, propertyPaths);
-            TaxonBase taxon = results.iterator().next();
+            TaxonBase<?> taxon = results.iterator().next();
             return taxon;
         } else if (results.size() > 1) {
             logger.error("Multiple results for UUID: " + uuid);
@@ -769,6 +771,7 @@ public class TaxonDaoHibernateImpl
         }
         crit.addOrder(Order.asc("uuid"));
 
+        @SuppressWarnings({ "unchecked", "rawtypes" })
         List<? extends TaxonBase> results = crit.list();
 
         defaultBeanInitializer.initializeAll(results, propertyPaths);
@@ -1194,6 +1197,7 @@ public class TaxonDaoHibernateImpl
                 }
             }
 
+            @SuppressWarnings("unchecked")
             List<Synonym> result = query.getResultList();
             defaultBeanInitializer.initializeAll(result, propertyPaths);
 
@@ -1205,7 +1209,7 @@ public class TaxonDaoHibernateImpl
     public void rebuildIndex() {
         FullTextSession fullTextSession = Search.getFullTextSession(getSession());
 
-        for(TaxonBase taxonBase : list(null,null)) { // re-index all taxon base
+        for(TaxonBase<?> taxonBase : list(null,null)) { // re-index all taxon base
             Hibernate.initialize(taxonBase.getName());
             fullTextSession.index(taxonBase);
         }
@@ -1298,7 +1302,7 @@ public class TaxonDaoHibernateImpl
     public TaxonBase find(LSID lsid) {
         TaxonBase<?> taxonBase = super.find(lsid);
         if(taxonBase != null) {
-            List<String> propertyPaths = new ArrayList<String>();
+            List<String> propertyPaths = new ArrayList<>();
             propertyPaths.add("createdBy");
             propertyPaths.add("updatedBy");
             propertyPaths.add("name");
@@ -1461,7 +1465,7 @@ public class TaxonDaoHibernateImpl
         return 0;
     }
 
-    private Subselects createByNameHQLString(boolean doTaxa, boolean doSynonyms, boolean doConceptRelations,
+    private Subselects createByNameHQLString(boolean doConceptRelations,
                 boolean includeUnpublished, Classification classification,  Set<NamedArea> areasExpanded,
                 MatchMode matchMode, String searchField){
 
@@ -1645,6 +1649,7 @@ public class TaxonDaoHibernateImpl
         if (query != null){
             @SuppressWarnings("unchecked")
             List<Object> resultArray = query.list();
+            @SuppressWarnings("rawtypes")
             List<UuidAndTitleCache<IdentifiableEntity>> returnResult = new ArrayList<>() ;
             Object[] result;
             for(int i = 0; i<resultArray.size();i++){
