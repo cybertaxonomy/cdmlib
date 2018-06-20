@@ -19,6 +19,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.Resource;
@@ -62,6 +63,9 @@ import io.swagger.annotations.Api;
 @Api("occurrence_catalogue")
 @RequestMapping(value = { "/occurrence_catalogue" })
 public class OccurrenceCatalogueController extends AbstractController<SpecimenOrObservationBase, IOccurrenceService> implements ResourceLoaderAware{
+
+
+    private static final Logger logger = Logger.getLogger(OccurrenceCatalogueController.class);
 
     private ResourceLoader resourceLoader;
 
