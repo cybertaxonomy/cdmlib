@@ -268,9 +268,9 @@ public class DwcaExportController
                             try {
                                 boolean created = cacheFile.createNewFile();
 //                                boolean created = cacheFile.mkdir();
-                                if (!created){logger.info("Could not create file");}
+                                if (!created){logger.error("Could not create file");}
                             } catch (Exception e) {
-                                logger.info("Could not create file " + e);
+                                logger.error("Could not create file " + e);
                             }
                             IRestServiceProgressMonitor monitor = progressMonitorController.getMonitor(
                                     indexMonitorUuid);
