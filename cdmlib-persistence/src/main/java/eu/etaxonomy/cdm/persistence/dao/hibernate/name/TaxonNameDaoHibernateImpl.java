@@ -789,11 +789,10 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
 
     @Override
     public UUID delete (TaxonName persistentObject){
+        @SuppressWarnings("rawtypes")
         Set<TaxonBase> taxonBases = persistentObject.getTaxonBases();
 
         getSession().saveOrUpdate(persistentObject);
-        UUID persUuid = persistentObject.getUuid();
-       // persistentObject = this.load(persUuid);
         UUID homotypicalGroupUUID = persistentObject.getHomotypicalGroup().getUuid();
 
 
@@ -801,7 +800,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
             taxonDao.delete(taxonBase);
         }
         HomotypicalGroup homotypicalGroup = homotypicalGroupDao.load(homotypicalGroupUUID);
-        homotypicalGroup = HibernateProxyHelper.deproxy(homotypicalGroup, HomotypicalGroup.class);
+        homotypicalGroup = HibernateProxyHelper.deproxy(homotypicalGroup);
 
         if (homotypicalGroup != null){
             if (homotypicalGroup.getTypifiedNames().contains(persistentObject)){
@@ -893,33 +892,30 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
 
 		List<HashMap<String,String>> nameRecords = new ArrayList<>();
 		HashMap<String,String> nameRecord = new HashMap<>();
-		Taxon accTaxon = null;
-		Synonym syn = null;
 		TaxonNode familyNode = null;
 		for(Object object : hqlResult){
 			Object[] row = (Object[])object;
 			nameRecord = new HashMap<>();
 			TaxonBase<?> taxonBase = (TaxonBase<?>)row[0];
+			Taxon accTaxon = null;
 			if (taxonBase instanceof Taxon){
 			    accTaxon = HibernateProxyHelper.deproxy(taxonBase, Taxon.class);
 			} else{
 			    nameRecord.put("famName", "");
-			    syn = HibernateProxyHelper.deproxy(taxonBase, Synonym.class);
+			    Synonym syn = HibernateProxyHelper.deproxy(taxonBase, Synonym.class);
 			    accTaxon = syn.getAcceptedTaxon();
 			}
 			Set<TaxonNode> nodes = accTaxon.getTaxonNodes();
             if (nodes.size() == 1){
                 TaxonNode node = nodes.iterator().next();
                 familyNode = node.getAncestorOfRank(Rank.FAMILY());
-
             }
 
-             nameRecord.put("famName",familyNode.getTaxon().getName().getNameCache());
-             nameRecord.put("accFamName","");
+            nameRecord.put("famName",familyNode.getTaxon().getName().getNameCache());
+            nameRecord.put("accFamName","");
 
 
 			//nameRecord.put("famName",(String)row[0]);
-
 
 			nameRecord.put("accFamName",(String)row[1]);
 

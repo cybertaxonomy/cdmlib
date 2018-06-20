@@ -246,7 +246,6 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      */
     public void printDataSetWithNull(OutputStream out, Boolean excludeTermLoadingTables,
             ITableFilterSimple excludeFilterOrig, String[] includeTableNames) {
-
         dbTablePrinter.printDataSetWithNull(out, excludeTermLoadingTables, excludeFilterOrig, includeTableNames);
     }
 
@@ -256,7 +255,6 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      * @param formatString can be null, otherwise a format string like eg. "&lt; %1$s /&gt;" see also {@link String#format(String, Object...)}
      */
     public void printTableNames(OutputStream out, String formatString) {
-
         dbTablePrinter.printTableNames(out, formatString);
     }
 
@@ -288,7 +286,6 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      * 		the names of tables to print (should be in upper case letters)
      */
     public void printDataSet(OutputStream out, String[] includeTableNames) {
-
         dbTablePrinter.printDataSet(out, includeTableNames);
 
     }
@@ -318,7 +315,6 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      * @param filter
      */
     public void printDataSet(OutputStream out, ITableFilterSimple filter) {
-
         dbTablePrinter.printDataSet(out, filter);
     }
 
@@ -331,7 +327,6 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      * @see org.dbunit.dataset.xml.FlatDtdDataSet
      */
     public void printDtd(OutputStream out) {
-
         dbTablePrinter.printDtd(out);
     }
 
@@ -361,7 +356,6 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      */
     public void writeDbUnitDataSetFile(String[] includeTableNames) throws FileNotFoundException {
         dbTablePrinter.writeDbUnitDataSetFile(includeTableNames, this.getClass());
-
     }
 
     /**
@@ -377,7 +371,6 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      * @see #writeDbUnitDataSetFile(String[])
      */
     public void writeDbUnitDataSetFile(String[] includeTableNames, String fileAppendix) throws FileNotFoundException {
-
         dbTablePrinter.writeDbUnitDataSetFile(includeTableNames, this.getClass(), fileAppendix);
     }
 
@@ -385,7 +378,6 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      * see {@link DataBaseTablePrinter#transformSourceToString(Source)
      */
     protected String transformSourceToString(Source source) throws TransformerException {
-
         return dbTablePrinter.transformSourceToString(source);
     }
 

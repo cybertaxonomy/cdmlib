@@ -75,7 +75,7 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
 
     private static final String D_ABIES_ALBA_UUID = "ec8bba03-d993-4c85-8472-18b14942464b";
 
-    private static final String D_ABIES_KAWAKAMII_SEC_KOMAROV_UUID = "e9d8c2fd-6409-46d5-9c2e-14a2bbb1b2b1";
+//    private static final String D_ABIES_KAWAKAMII_SEC_KOMAROV_UUID = "e9d8c2fd-6409-46d5-9c2e-14a2bbb1b2b1";
 
     @SpringBeanByType
     private ITaxonService taxonService;
@@ -97,7 +97,7 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
 
 
     private NamedArea germany;
-    private NamedArea france ;
+//    private NamedArea france ;
     private NamedArea russia ;
     private NamedArea canada ;
 
@@ -108,7 +108,7 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
     public void setUp() throws Exception {
 
         germany =  Country.GERMANY();
-        france = Country.FRANCEFRENCHREPUBLIC();
+//        france = Country.FRANCEFRENCHREPUBLIC();
         russia = Country.RUSSIANFEDERATION();
         canada = Country.CANADA();
     }
@@ -121,9 +121,6 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
     }
 
     /**
-     * Test method for
-     * {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#findTaxaAndNames(eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator)}
-     * .
      * This test permutes through all search mode combinations.
      *
      * 7 Accepted Taxa
@@ -143,6 +140,7 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
         // ---------------------------------------------------------
 
         setTaxaAndNamesModes(conf, true, true, true, true, true);
+        @SuppressWarnings("rawtypes")
         Pager<IdentifiableEntity> pager = taxonService.findTaxaAndNames(conf);
         logSearchResults(pager, Level.DEBUG);
         assertEquals(10, pager.getRecords().size());
@@ -318,12 +316,6 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
         assertEquals(0, pager.getRecords().size());
     }
 
-
-    /**
-     * Test method for
-     * {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#findTaxaAndNames(eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator)}
-     * .
-     */
     /**
      * This test permutes through all search mode combinations with classification filter
      *
@@ -345,6 +337,7 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
         // ---------------------------------------------------------
 
         setTaxaAndNamesModes(conf, true, true, true, true, true);
+        @SuppressWarnings("rawtypes")
         Pager<IdentifiableEntity> pager = taxonService.findTaxaAndNames(conf);
         logSearchResults(pager, Level.DEBUG);
         assertEquals(5, pager.getRecords().size());
@@ -523,11 +516,6 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
         assertEquals(0, pager.getRecords().size());
     }
 
-    /**
-     * Test method for
-     * {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#findTaxaAndNames(eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator)}
-     * .
-     */
     @Test
     @DataSet
     public final void testFindTaxaAndNames_CommonName() {
@@ -540,8 +528,10 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
         configurator.setDoTaxaByCommonNames(true);
         configurator.setTitleSearchString("Balsam-Tanne");
 
+        @SuppressWarnings("rawtypes")
         Pager<IdentifiableEntity> pager = taxonService.findTaxaAndNames(configurator);
 
+        @SuppressWarnings("rawtypes")
         List<IdentifiableEntity> list = pager.getRecords();
         assertEquals(1, list.size());
         configurator.setTitleSearchString("Abies*");
@@ -557,11 +547,6 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
 
     }
 
-    /**
-     * Test method for
-     * {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#findTaxaAndNames(eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator)}
-     * .
-     */
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
     public final void testFindTaxaAndNamesWithHybridFormula() {
@@ -575,9 +560,10 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
         configurator.setDoNamesWithoutTaxa(true);
         configurator.setDoTaxaByCommonNames(true);
 
+        @SuppressWarnings("rawtypes")
         Pager<IdentifiableEntity> pager = taxonService.findTaxaAndNames(configurator);
     //    Assert.assertEquals("Expecting one taxon",1,pager.getRecords().size());
-        List<IdentifiableEntity> list = pager.getRecords();
+
     }
 
     /**
@@ -596,6 +582,7 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
          configurator.setDoNamesWithoutTaxa(true);
          configurator.setDoTaxaByCommonNames(false);
 
+        @SuppressWarnings("rawtypes")
         List<UuidAndTitleCache<? extends IdentifiableEntity>> list = taxonService.findTaxaAndNamesForEditor(configurator);
 
          Assert.assertEquals("Expecting one entity", 1, list.size());
@@ -644,7 +631,8 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
     /**
      * @param pager
      */
-    protected void logSearchResults(Pager<IdentifiableEntity> pager, Level level) {
+    protected void logSearchResults(@SuppressWarnings("rawtypes") Pager<IdentifiableEntity> pager, Level level) {
+        @SuppressWarnings("rawtypes")
         List<IdentifiableEntity> list = pager.getRecords();
         logger.debug("number of taxa: " + list.size());
 
@@ -654,7 +642,7 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
                 if (list.get(i) instanceof TaxonName) {
                     nameCache = ((TaxonName)list.get(i)).getNameCache();
                 } else if (list.get(i) instanceof TaxonBase) {
-                    TaxonName taxonName = ((TaxonBase) list.get(i)).getName();
+                    TaxonName taxonName = ((TaxonBase<?>) list.get(i)).getName();
                     nameCache = taxonName.getNameCache();
                 } else {
                 }

@@ -1645,9 +1645,9 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
      * @param pager
      * @return
      */
-    private Set<UUID> getTaxonUuidSet(Pager<SearchResult<TaxonBase>> pager) {
+    private Set<UUID> getTaxonUuidSet(@SuppressWarnings("rawtypes") Pager<SearchResult<TaxonBase>> pager) {
         Set<UUID> result = new HashSet<>();
-        for (SearchResult<TaxonBase> searchResult : pager.getRecords()){
+        for (@SuppressWarnings("rawtypes") SearchResult<TaxonBase> searchResult : pager.getRecords()){
             result.add(searchResult.getEntity().getUuid());
         }
         return result;

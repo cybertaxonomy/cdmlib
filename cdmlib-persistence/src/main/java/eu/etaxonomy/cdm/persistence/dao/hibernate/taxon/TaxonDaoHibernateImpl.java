@@ -703,7 +703,7 @@ public class TaxonDaoHibernateImpl
         boolean doCount = false;
         Query query = prepareTaxaByName(doTaxa, doSynonyms, false, false, includeUnpublished, "titleCache", queryString, classification, matchMode, namedAreas, order, pageSize, pageNumber, doCount);
         if (query != null){
-            @SuppressWarnings("unchecked")
+            @SuppressWarnings({ "unchecked", "rawtypes" })
             List<TaxonBase> results = query.list();
             defaultBeanInitializer.initializeAll(results, propertyPaths);
             return results;

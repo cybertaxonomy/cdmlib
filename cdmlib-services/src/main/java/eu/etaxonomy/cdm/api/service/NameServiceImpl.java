@@ -116,15 +116,11 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
     /**
      * Constructor
      */
-    public NameServiceImpl(){
-        if (logger.isDebugEnabled()) { logger.debug("Load NameService Bean"); }
-    }
+    public NameServiceImpl(){}
 
 //********************* METHODS ****************************************************************//
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.ServiceBase#delete(eu.etaxonomy.cdm.model.common.CdmBase)
-     */
+
     @Override
     @Transactional(readOnly = false)
     public DeleteResult delete(UUID nameUUID){
@@ -142,7 +138,6 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
     @Transactional(readOnly = false)
     public DeleteResult delete(TaxonName name, NameDeletionConfigurator config) {
         DeleteResult result = new DeleteResult();
-
 
         if (name == null){
             result.setAbort();
@@ -174,9 +169,8 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
     //          throw new ReferrencedObjectUndeletableException(message);
     //      }
 
-
             try{
-                UUID nameUuid = dao.delete(name);
+                dao.delete(name);
                 result.addDeletedObject(name);
             }catch(Exception e){
                 result.addException(e);
@@ -199,7 +193,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
     @Override
     @Transactional
     public DeleteResult deleteTypeDesignation(TaxonName name, TypeDesignationBase typeDesignation){
-    	if(typeDesignation!=null && typeDesignation.getId()!=0){
+    	if(typeDesignation != null && typeDesignation .isPersited()){
     		typeDesignation = HibernateProxyHelper.deproxy(referencedEntityDao.load(typeDesignation.getUuid()), TypeDesignationBase.class);
     	}
 
@@ -210,13 +204,14 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
         }else if (name != null && typeDesignation != null){
             removeSingleDesignation(name, typeDesignation);
         }else if (name != null){
-            Set<TypeDesignationBase> designationSet = new HashSet<TypeDesignationBase>(name.getTypeDesignations());
+            Set<TypeDesignationBase<?>> designationSet = new HashSet<>(name.getTypeDesignations());
             for (Object o : designationSet){
-                TypeDesignationBase desig = CdmBase.deproxy(o, TypeDesignationBase.class);
+                TypeDesignationBase<?> desig = CdmBase.deproxy(o, TypeDesignationBase.class);
                 removeSingleDesignation(name, desig);
             }
         }else if (typeDesignation != null){
-            Set<TaxonName> nameSet = new HashSet<TaxonName>(typeDesignation.getTypifiedNames());
+            @SuppressWarnings("unchecked")
+            Set<TaxonName> nameSet = new HashSet<>(typeDesignation.getTypifiedNames());
             for (Object o : nameSet){
                 TaxonName singleName = CdmBase.deproxy(o, TaxonName.class);
                 removeSingleDesignation(singleName, typeDesignation);
@@ -232,7 +227,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
     @Transactional(readOnly = false)
     public DeleteResult deleteTypeDesignation(UUID nameUuid, UUID typeDesignationUuid){
         TaxonName nameBase = load(nameUuid);
-        TypeDesignationBase typeDesignation = HibernateProxyHelper.deproxy(referencedEntityDao.load(typeDesignationUuid), TypeDesignationBase.class);
+        TypeDesignationBase<?> typeDesignation = HibernateProxyHelper.deproxy(referencedEntityDao.load(typeDesignationUuid), TypeDesignationBase.class);
         return deleteTypeDesignation(nameBase, typeDesignation);
     }
 
@@ -1000,7 +995,6 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
 
     @Override
     public List<HashMap<String,String>> getNameRecords(){
-
 		return dao.getNameRecords();
 
     }
