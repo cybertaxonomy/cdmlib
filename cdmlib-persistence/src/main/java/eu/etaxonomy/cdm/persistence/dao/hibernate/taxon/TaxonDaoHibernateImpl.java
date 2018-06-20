@@ -220,7 +220,8 @@ public class TaxonDaoHibernateImpl
 
         	for (TaxonName name: nameResult){
         		if (name.getTaxonBases().size() == 0){
-        			resultObjects.add(new UuidAndTitleCache<TaxonName>(TaxonName.class, name.getUuid(), name.getId(), name.getTitleCache()));
+        			resultObjects.add(new UuidAndTitleCache<>(TaxonName.class, name.getUuid(),
+        			        name.getId(), name.getTitleCache()));
         		}
         	}
         	if (!doSynonyms && !doTaxa && !doCommonNames){
@@ -242,14 +243,14 @@ public class TaxonDaoHibernateImpl
                 // see FIXME in 'prepareQuery' for more details
                 if (doTaxa || doSynonyms || doCommonNames){
                     if (result[3].equals("synonym")) {
-                        resultObjects.add( new UuidAndTitleCache<Synonym>(Synonym.class, (UUID) result[0], (Integer) result[1], (String)result[2], new Boolean(result[4].toString()), null));
+                        resultObjects.add( new UuidAndTitleCache<>(Synonym.class, (UUID) result[0], (Integer) result[1], (String)result[2], new Boolean(result[4].toString()), null));
                     }
                     else {
-                        resultObjects.add( new UuidAndTitleCache<Taxon>(Taxon.class, (UUID) result[0], (Integer) result[1], (String)result[2], new Boolean(result[4].toString()), null));
+                        resultObjects.add( new UuidAndTitleCache<>(Taxon.class, (UUID) result[0], (Integer) result[1], (String)result[2], new Boolean(result[4].toString()), null));
                     }
 
                 }else if (doSynonyms){
-                    resultObjects.add( new UuidAndTitleCache<Synonym>(Synonym.class, (UUID) result[0], (Integer) result[1], (String)result[2], new Boolean(result[4].toString()), null));
+                    resultObjects.add( new UuidAndTitleCache<>(Synonym.class, (UUID) result[0], (Integer) result[1], (String)result[2], new Boolean(result[4].toString()), null));
                 }
             }
         }
@@ -296,19 +297,24 @@ public class TaxonDaoHibernateImpl
                 classification, matchMode, namedAreas, order, doCount, true);
     }
 
+
     /**
+     * @param doTaxa
+     * @param doSynonyms
+     * @param doIncludeMisappliedNames
+     * @param doCommonNames
+     * @param includeUnpublished
      * @param searchField
      * @param queryString
      * @param classification
      * @param matchMode
      * @param namedAreas
+     * @param order
      * @param doCount
-     * @param doNotReturnFullEntities
-     *            if set true the seach method will not return synonym and taxon
+     * @param returnIdAndTitle
+     *            If set true the seach method will not return synonym and taxon
      *            entities but an array containing the uuid, titleCache, and the
      *            DTYPE in lowercase letters.
-     * @param order
-     * @param clazz
      * @return
      */
     private Query prepareByNameQuery(boolean doTaxa, boolean doSynonyms, boolean doIncludeMisappliedNames,
@@ -356,8 +362,6 @@ public class TaxonDaoHibernateImpl
 
             if (logger.isDebugEnabled()) {
                 logger.debug("taxonSubselect: " + (taxonSubselect != null ? taxonSubselect: "NULL"));
-            }
-            if (logger.isDebugEnabled()) {
                 logger.debug("synonymSubselect: " + (synonymSubselect != null ? synonymSubselect: "NULL"));
             }
 
