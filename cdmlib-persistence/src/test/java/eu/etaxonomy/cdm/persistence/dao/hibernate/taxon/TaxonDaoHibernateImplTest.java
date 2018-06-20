@@ -84,7 +84,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     private IReferenceDao referenceDao;
 
     @SpringBeanByType
-    IDefinedTermDao definedTermDao;
+    private IDefinedTermDao definedTermDao;
 
     private UUID uuid;
     private UUID sphingidae;
@@ -102,7 +102,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
     private UUID northernAmericaUuid;
     private UUID southernAmericaUuid;
-    private UUID antarcticaUuid;
 
     private UUID classificationUuid;
 
@@ -150,7 +149,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
         northernAmericaUuid = UUID.fromString("2757e726-d897-4546-93bd-7951d203bf6f");
         southernAmericaUuid = UUID.fromString("6310b3ba-96f4-4855-bb5b-326e7af188ea");
-        antarcticaUuid = UUID.fromString("791b3aa0-54dd-4bed-9b68-56b4680aad0c");
 
         classificationUuid = UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9");
         includeUnpublished = true;

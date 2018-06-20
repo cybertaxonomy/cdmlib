@@ -205,16 +205,17 @@ public class NameServiceImpl
         }else if (name != null && typeDesignation != null){
             removeSingleDesignation(name, typeDesignation);
         }else if (name != null){
+            @SuppressWarnings("rawtypes")
             Set<TypeDesignationBase> designationSet = new HashSet<>(name.getTypeDesignations());
-            for (TypeDesignationBase<?> o : designationSet){
-                TypeDesignationBase<?> desig = CdmBase.deproxy(o);
+            for (TypeDesignationBase<?> desig : designationSet){
+                desig = CdmBase.deproxy(desig);
                 removeSingleDesignation(name, desig);
             }
         }else if (typeDesignation != null){
             @SuppressWarnings("unchecked")
             Set<TaxonName> nameSet = new HashSet<>(typeDesignation.getTypifiedNames());
-            for (Object o : nameSet){
-                TaxonName singleName = CdmBase.deproxy(o, TaxonName.class);
+            for (TaxonName singleName : nameSet){
+                singleName = CdmBase.deproxy(singleName);
                 removeSingleDesignation(singleName, typeDesignation);
             }
         }
