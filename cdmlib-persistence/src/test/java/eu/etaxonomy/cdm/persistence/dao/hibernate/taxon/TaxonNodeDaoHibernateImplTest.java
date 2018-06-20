@@ -132,6 +132,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         TaxonNode taxNode3 = taxonNodeDao.load(uuid3, TAXONNODE_INIT_STRATEGY);
 
 
+        @SuppressWarnings("rawtypes")
         List<TaxonBase> taxa = taxonDao.list(10, 0);
         assertEquals("there should be 7 taxa", 7, taxa.size());
         taxNode3 = CdmBase.deproxy(taxNode3);
@@ -244,7 +245,6 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     @Test
     @DataSet(value="TaxonNodeDaoHibernateImplTest.testSortindexForJavassist.xml")
     @ExpectedDataSet("TaxonNodeDaoHibernateImplTest.testSortindexForJavassist-result.xml")
-
     //test if TaxonNode.remove(index) works correctly with proxies
     public void testSortindexForJavassist(){
     	Taxon taxonWithLazyLoadedParentNodeOnTopLevel = (Taxon)taxonDao.findByUuid(UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783"));
