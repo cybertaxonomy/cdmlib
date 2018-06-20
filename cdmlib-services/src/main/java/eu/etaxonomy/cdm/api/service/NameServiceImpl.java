@@ -92,7 +92,9 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 @Service
 @Transactional(readOnly = true)
-public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNameDao> implements INameService {
+public class NameServiceImpl
+          extends IdentifiableServiceBase<TaxonName,ITaxonNameDao>
+          implements INameService {
     static private final Logger logger = Logger.getLogger(NameServiceImpl.class);
 
     @Autowired
@@ -377,14 +379,6 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
                 filter.infraspecificEpithet(namePartQueryString),
                 filter.getRank(),
                 pageSize, pageIndex, orderHints);
-    }
-
-    /**
-     * TODO candidate for harmonization
-     */
-    @Override
-    public List getNamesByName(String name, CdmBase sessionObject){
-        return super.findCdmObjectsByTitle(name, sessionObject);
     }
 
     /**

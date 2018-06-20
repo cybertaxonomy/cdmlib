@@ -635,40 +635,6 @@ public class TaxonDaoHibernateImpl
 
 
     @Override
-    public List<TaxonBase> getAllTaxonBases(Integer pagesize, Integer page) {
-        return super.list(pagesize, page);
-    }
-
-    @Override
-    public List<Synonym> getAllSynonyms(Integer limit, Integer start) {
-        Criteria criteria = getSession().createCriteria(Synonym.class);
-
-        if(limit != null) {
-            criteria.setFirstResult(start);
-            criteria.setMaxResults(limit);
-        }
-
-        @SuppressWarnings("unchecked")
-        List<Synonym> result = criteria.list();
-        return result;
-    }
-
-    @Override
-    public List<Taxon> getAllTaxa(Integer limit, Integer start) {
-        Criteria criteria = getSession().createCriteria(Taxon.class);
-
-        if(limit != null) {
-            criteria.setFirstResult(start);
-            criteria.setMaxResults(limit);
-        }
-
-        @SuppressWarnings("unchecked")
-        List<Taxon> result = criteria.list();
-        return result;
-    }
-
-
-    @Override
     public UUID delete(TaxonBase taxonBase) throws DataAccessException{
         if (taxonBase == null){
             logger.warn("TaxonBase was 'null'");

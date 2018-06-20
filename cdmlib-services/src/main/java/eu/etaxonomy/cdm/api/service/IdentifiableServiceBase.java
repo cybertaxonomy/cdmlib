@@ -98,28 +98,6 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 	public T replace(T x, T y) {
 		return dao.replace(x, y);
 	}
-	/**
-	 * FIXME Candidate for harmonization
-	 * Given that this method is strongly typed, and generic, could we not simply expose it as
-	 * List<T> findByTitle(String title) as it is somewhat less cumbersome. Admittedly, I don't
-	 * understand what is going on with the configurators etc. so maybe there is a good reason for
-	 * the design of this method.
-	 * @param title
-	 * @return
-	 */
-	@Transactional(readOnly = true)
-	protected List<T> findCdmObjectsByTitle(String title){
-		return ((IIdentifiableDao)dao).findByTitle(title);
-	}
-
-	@Transactional(readOnly = true)
-	protected List<T> findCdmObjectsByTitle(String title, Class<T> clazz){
-		return ((IIdentifiableDao)dao).findByTitleAndClass(title, clazz);
-	}
-	@Transactional(readOnly = true)
-	protected List<T> findCdmObjectsByTitle(String title, CdmBase sessionObject){
-		return ((IIdentifiableDao)dao).findByTitle(title, sessionObject);
-	}
 
 	/*
 	 * TODO - Migrated from CommonServiceBase

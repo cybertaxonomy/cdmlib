@@ -241,29 +241,6 @@ public interface ITaxonDao
             Integer pageNumber, List<String> propertyPaths);
 
     /**
-     * TODO necessary?
-     * @param pagesize max maximum number of returned taxa
-     * @param page page to start, with 0 being first page
-     * @return
-     */
-    public List<TaxonBase> getAllTaxonBases(Integer pagesize, Integer page);
-
-
-    /**
-     * @param limit
-     * @param start
-     * @return
-     */
-    public List<Taxon> getAllTaxa(Integer limit, Integer start);
-
-    /**
-     * @param limit
-     * @param start
-     * @return
-     */
-    public List<Synonym> getAllSynonyms(Integer limit, Integer start);
-
-    /**
      * Counts the number of synonyms
      * @param onlyAttachedToTaxon if <code>true</code> only those synonyms being attached to
      * an accepted taxon are counted
