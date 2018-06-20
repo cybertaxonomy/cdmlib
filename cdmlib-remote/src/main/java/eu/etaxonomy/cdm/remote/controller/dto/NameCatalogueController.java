@@ -13,7 +13,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -243,13 +242,6 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
         setInitializationStrategy(Arrays.asList(new String[] { "$" }));
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu
-     * .etaxonomy.cdm.api.service.IService)
-     */
     @Autowired
     @Override
     public void setService(INameService service) {
@@ -277,7 +269,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
         // as well as files inside jars
         InputStream aptInputStream = resource.getInputStream();
         // Build Html View
-        Map<String, String> modelMap = new HashMap<String, String>();
+        Map<String, String> modelMap = new HashMap<>();
         // Convert Apt to Html
         modelMap.put("html", DocUtils.convertAptToHtml(aptInputStream));
         mv.addAllObjects(modelMap);
@@ -348,7 +340,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
             @RequestParam(value = "hits", required = false, defaultValue = DEFAULT_MAX_NB_FOR_EXACT_SEARCH) String hits,
             HttpServletRequest request, HttpServletResponse response) throws IOException {
         ModelAndView mv = new ModelAndView();
-        List<RemoteResponse> nsList = new ArrayList<RemoteResponse>();
+        List<RemoteResponse> nsList = new ArrayList<>();
 
         int h = 100;
         try {
@@ -382,7 +374,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
             }
             logger.info("doGetNameSearch()" + request.getRequestURI() + " for query \"" + query);
 
-            List<DocumentSearchResult> nameSearchList = new ArrayList<DocumentSearchResult>();
+            List<DocumentSearchResult> nameSearchList = new ArrayList<>();
             try {
                 nameSearchList = service.findByNameExactSearch(
                         queryWOWildcards,
@@ -412,8 +404,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
                     // the corresponding accepted taxa.
                     // reason to return accepted taxa also, is to be able to get from
                     // scientific name to taxon concept in two web service calls.
-                    List<String> tbUuidList = new ArrayList<String>();//nvn.getTaxonBases();
-                    List<String> accTbUuidList = new ArrayList<String>();
+                    List<String> accTbUuidList = new ArrayList<>();
                     String[] tbUuids = doc.getValues("taxonBases.uuid");
                     String[] tbClassNames = doc.getValues("taxonBases.classInfo.name");
                     for(int i=0;i<tbUuids.length;i++) {
@@ -464,7 +455,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
         // as well as files inside jars
         InputStream aptInputStream = resource.getInputStream();
         // Build Html View
-        Map<String, String> modelMap = new HashMap<String, String>();
+        Map<String, String> modelMap = new HashMap<>();
         // Convert Apt to Html
         modelMap.put("html", DocUtils.convertAptToHtml(aptInputStream));
         mv.addAllObjects(modelMap);
@@ -473,6 +464,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
         mv.setView(hv);
         return mv;
     }
+
     /**
      * Returns a list of scientific names similar to the <code>{query}</code>
      * string pattern. Each of these scientific names is accompanied by a list of
@@ -584,7 +576,6 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
                     // the corresponding accepted taxa.
                     // reason to return accepted taxa also, is to be able to get from
                     // scientific name to taxon concept in two web service calls.
-                    List<String> tbUuidList = new ArrayList<>();//nvn.getTaxonBases();
                     List<String> accTbUuidList = new ArrayList<>();
                     String[] tbUuids = doc.getValues("taxonBases.uuid");
                     String[] tbClassNames = doc.getValues("taxonBases.classInfo.name");
@@ -689,7 +680,6 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
                 ni.setRequest(nameUuid);
                 Reference ref = nvn.getNomenclaturalReference();
                 String citation = "";
-                String citation_details = "";
                 if (ref != null) {
                     citation = ref.getTitleCache();
                 }
@@ -993,7 +983,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
                             nvn.getRank().getTitleCache(),
                             SYNONYM_STATUS,
                             buildFlagMap(synonym),
-                            new TreeMap<String,Map>(),
+                            new TreeMap<>(),
                             "",
                             didname[0],
                             didname[1],
@@ -1179,20 +1169,21 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
                 AcceptedNameSearch ans = new AcceptedNameSearch();
                 ans.setRequest(query);
 
-                for (INonViralName nvn : nameList) {
+                for (TaxonName nvn : nameList) {
                     // we need to retrieve both taxon uuid of name queried and
                     // the corresponding accepted taxa.
                     // reason to return accepted taxa also, is to be able to get from
                     // scientific name to taxon concept in two web service calls.
+                    @SuppressWarnings("rawtypes")
                     Set<TaxonBase> tbSet = nvn.getTaxonBases();
-                    Set<TaxonBase> accTbSet = new HashSet<TaxonBase>();
-                    for (TaxonBase tb : tbSet) {
+                    for (@SuppressWarnings("rawtypes") TaxonBase tb : tbSet) {
                         // if synonym then get accepted taxa.
                         if (tb instanceof Synonym) {
                             Synonym synonym = (Synonym) tb;
                             Taxon accTaxon = synonym.getAcceptedTaxon();
                             if (accTaxon != null) {
                                 INonViralName accNvn = CdmBase.deproxy(accTaxon.getName());
+                                @SuppressWarnings("rawtypes")
                                 Map<String, Map> classificationMap = getClassification(accTaxon, CLASSIFICATION_DEFAULT, false, includeUnpublished);
                                 ans.addToResponseList(accNvn.getNameCache(),accNvn.getAuthorshipCache(), accNvn.getRank().getTitleCache(), classificationMap);
                             }
@@ -1211,8 +1202,9 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
                                 }
                             }
                             if(isConceptRelationship) {
-                                Map classificationMap = getClassification(taxon, CLASSIFICATION_DEFAULT, false, includeUnpublished);
-                                ans.addToResponseList(nvn.getNameCache(), nvn.getAuthorshipCache(),nvn.getRank().getTitleCache(), classificationMap);
+                                @SuppressWarnings("rawtypes")
+                                Map<String, Map> classificationMap = getClassification(taxon, CLASSIFICATION_DEFAULT, false, includeUnpublished);
+                                ans.addToResponseList(nvn.getNameCache(), nvn.getAuthorshipCache(), nvn.getRank().getTitleCache(), classificationMap);
                             }
 
                         }
@@ -1251,16 +1243,16 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
 
         logger.info("doGetClassificationMap() " +  requestPathAndQuery(request));
 
-        List<Map> cmapList = new ArrayList<Map>();
+        List<Map> cmapList = new ArrayList<>();
         Map<String, String> classifications = new HashMap<String, String>();
         ModelAndView mv = new ModelAndView();
         List<Classification> clist = getClassificationList(100);
         boolean isFirst = true;
-        Iterator itr = clist.iterator();
+        Iterator<Classification> itr = clist.iterator();
         // loop through all classifications and populate map with
         // (classificationKey, reference) elements
         while(itr.hasNext()) {
-            Classification c = (Classification) itr.next();
+            Classification c = itr.next();
             String refTitleCache = "";
             String classificationKey = removeInternalWhitespace(c.getTitleCache());
             if(c.getReference() != null) {
@@ -1278,8 +1270,9 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
             classifications.put(classificationKey, refTitleCache);
 
         }
-        Map<String, Map> cmap = new HashMap<String, Map>();
-        cmap.put("classification",classifications);
+        @SuppressWarnings("rawtypes")
+        Map<String, Map> cmap = new HashMap<>();
+        cmap.put("classification", classifications);
         cmapList.add(cmap);
         mv.addObject(cmapList);
         return mv;

@@ -265,7 +265,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 	 * @param propertyPaths TODO
 	 * @return
 	 */
-	public List<? extends TaxonName> findByName(boolean doIncludeAuthors,
+	public List<TaxonName> findByName(boolean doIncludeAuthors,
 	        String queryString,
 			MatchMode matchmode, Integer pageSize, Integer pageNumber,
 			List<Criterion> criteria, List<String> propertyPaths);
@@ -279,7 +279,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 	 * @param propertyPaths TODO
 	 * @return
 	 */
-	public List<? extends TaxonName> findByTitle(String queryString,
+	public List<TaxonName> findByTitle(String queryString,
 			MatchMode matchmode, Integer pageSize, Integer pageNumber,
 			List<Criterion> criteria, List<String> propertyPaths);
 
@@ -320,7 +320,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 	 * @param propertyPaths TODO
 	 * @return
 	 */
-	public List<TaxonName> findByName(Class<? extends TaxonName> clazz,	String queryString, MatchMode matchmode, List<Criterion> criteria,Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths);
+	public List<TaxonName> findByName(Class<TaxonName> clazz,	String queryString, MatchMode matchmode, List<Criterion> criteria,Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths);
 
 	/**
 	 * @param clazz
@@ -329,7 +329,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 	 * @param criteria
 	 * @return
 	 */
-	public long countByName(Class<? extends TaxonName> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria);
+	public long countByName(Class<TaxonName> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria);
 
 	public IZoologicalName findZoologicalNameByUUID(UUID uuid);
 

@@ -718,7 +718,7 @@ public class TaxonServiceImpl
         if (configurator.isDoNamesWithoutTaxa()) {
             int numberNameResults = 0;
 
-            List<? extends TaxonName> names =
+            List<TaxonName> names =
                 nameDao.findByName(configurator.isDoIncludeAuthors(), configurator.getTitleSearchStringSqlized(), configurator.getMatchMode(),
                         configurator.getPageSize(), configurator.getPageNumber(), null, configurator.getTaxonNamePropertyPath());
             if (logger.isDebugEnabled()) { logger.debug(names.size() + " matching name(s) found"); }

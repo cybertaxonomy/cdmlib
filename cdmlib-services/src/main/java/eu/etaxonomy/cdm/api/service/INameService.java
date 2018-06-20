@@ -48,7 +48,8 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
-public interface INameService extends IIdentifiableEntityService<TaxonName> {
+public interface INameService
+        extends IIdentifiableEntityService<TaxonName> {
 
 	/**
 	 * Deletes a name. Depening on the configurator state links to the name will either be
@@ -483,7 +484,8 @@ public interface INameService extends IIdentifiableEntityService<TaxonName> {
 	 *            authorTeam.persistentTitleCache
 	 * @return a paged list of instances of type T matching the queryString
 	 */
-    public Pager<TaxonName> findByName(Class<? extends TaxonName> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+    public Pager<TaxonName> findByName(Class<TaxonName> clazz, String queryString, MatchMode matchmode,
+            List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Returns a homotypical group with the given UUID or null if not homotypical group exists with that UUID

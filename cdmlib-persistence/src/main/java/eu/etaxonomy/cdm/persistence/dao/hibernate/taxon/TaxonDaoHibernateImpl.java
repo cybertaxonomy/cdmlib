@@ -215,7 +215,7 @@ public class TaxonDaoHibernateImpl
         boolean includeAuthors = false;
         List<UuidAndTitleCache<? extends IdentifiableEntity>> resultObjects = new ArrayList<>();
         if (doNamesWithoutTaxa){
-        	List<? extends TaxonName> nameResult = taxonNameDao.findByName(
+        	List<TaxonName> nameResult = taxonNameDao.findByName(
         	        includeAuthors, queryString, matchMode, null, null, null, null);
 
         	for (TaxonName name: nameResult){

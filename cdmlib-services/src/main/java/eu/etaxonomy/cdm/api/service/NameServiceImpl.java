@@ -122,7 +122,6 @@ public class NameServiceImpl
 
 //********************* METHODS ****************************************************************//
 
-
     @Override
     @Transactional(readOnly = false)
     public DeleteResult delete(UUID nameUUID){
@@ -320,7 +319,6 @@ public class NameServiceImpl
         return result;
     }
 
-
     /**
      * TODO candidate for harmonization
      * new name saveHomotypicalGroups
@@ -341,7 +339,7 @@ public class NameServiceImpl
      */
     @Override
     public List<TaxonName> findNamesByNameCache(String nameCache, MatchMode matchMode, List<String> propertyPaths){
-        List result = dao.findByName(false, nameCache, matchMode, null, null, null , propertyPaths);
+        List<TaxonName> result = dao.findByName(false, nameCache, matchMode, null, null, null , propertyPaths);
         return result;
     }
 
@@ -818,7 +816,8 @@ public class NameServiceImpl
     }
 
     @Override
-    public Pager<TaxonName> findByName(Class<? extends TaxonName> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria, Integer pageSize,Integer pageNumber, List<OrderHint> orderHints,List<String> propertyPaths) {
+    public Pager<TaxonName> findByName(Class<TaxonName> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria,
+            Integer pageSize,Integer pageNumber, List<OrderHint> orderHints,List<String> propertyPaths) {
          Long numberOfResults = dao.countByName(clazz, queryString, matchmode, criteria);
 
          List<TaxonName> results = new ArrayList<>();

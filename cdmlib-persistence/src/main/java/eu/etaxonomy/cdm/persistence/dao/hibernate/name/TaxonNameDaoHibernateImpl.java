@@ -561,7 +561,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
     }
 
     @Override
-    public List<? extends TaxonName> findByName(boolean doIncludeAuthors,
+    public List<TaxonName> findByName(boolean doIncludeAuthors,
             String queryString, MatchMode matchmode, Integer pageSize,
             Integer pageNumber, List<Criterion> criteria, List<String> propertyPaths) {
 
@@ -604,14 +604,14 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
         }
 
         @SuppressWarnings("unchecked")
-        List<? extends TaxonName> results = crit.list();
+        List<TaxonName> results = crit.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
 
         return results;
     }
 
     @Override
-    public List<? extends TaxonName> findByTitle(String queryString,
+    public List<TaxonName> findByTitle(String queryString,
             MatchMode matchmode, Integer pageSize, Integer pageNumber, List<Criterion> criteria, List<String> propertyPaths) {
 
         Criteria crit = getSession().createCriteria(type);
@@ -635,7 +635,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
         }
 
         @SuppressWarnings("unchecked")
-        List<? extends TaxonName> results = crit.list();
+        List<TaxonName> results = crit.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
 
         return results;
@@ -660,7 +660,8 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
         }
         crit.addOrder(Order.asc("uuid"));
 
-        List<? extends TaxonName> results = crit.list();
+        @SuppressWarnings("unchecked")
+        List<TaxonName> results = crit.list();
         if (results.size() == 1) {
             defaultBeanInitializer.initializeAll(results, propertyPaths);
             TaxonName taxonName = results.iterator().next();
@@ -681,6 +682,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
             // for some reason the HQL .class discriminator didn't work here so I created this preliminary
             // implementation for now. Should be cleaned in future.
 
+            @SuppressWarnings("rawtypes")
             List<RelationshipBase> result = new ArrayList<>();
 
             int nameRelSize = countAllRelationships(NameRelationship.class);
@@ -744,7 +746,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
     public Integer countByName(String queryString, MatchMode matchmode, List<Criterion> criteria) {
         //TODO improve performance
         boolean includeAuthors = false;
-        List<? extends TaxonName> results = findByName(
+        List<TaxonName> results = findByName(
                 includeAuthors,queryString, matchmode, null, null, criteria, null);
         return results.size();
 
@@ -778,12 +780,12 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
     }
 
     @Override
-    public long countByName(Class<? extends TaxonName> clazz,String queryString, MatchMode matchmode, List<Criterion> criteria) {
+    public long countByName(Class<TaxonName> clazz,String queryString, MatchMode matchmode, List<Criterion> criteria) {
         return super.countByParam(clazz, "nameCache", queryString, matchmode, criteria);
     }
 
     @Override
-    public List<TaxonName> findByName(Class<? extends TaxonName> clazz,	String queryString, MatchMode matchmode, List<Criterion> criteria,Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
+    public List<TaxonName> findByName(Class<TaxonName> clazz,	String queryString, MatchMode matchmode, List<Criterion> criteria,Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
         return super.findByParam(clazz, "nameCache", queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
     }
 
@@ -828,7 +830,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
         }
 
         @SuppressWarnings("unchecked")
-        List<? extends TaxonName> results = criteria.list();
+        List<TaxonName> results = criteria.list();
         if (results.size() == 1) {
             defaultBeanInitializer.initializeAll(results, null);
             TaxonName taxonName = results.iterator().next();
