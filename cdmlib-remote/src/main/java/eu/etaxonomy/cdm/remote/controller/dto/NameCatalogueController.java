@@ -393,7 +393,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
 
 
             // if search is successful then get related information , else return error
-            if (nameSearchList == null || !nameSearchList.isEmpty()) {
+            if (nameSearchList != null && !nameSearchList.isEmpty()) {
                 NameSearch ns = new NameSearch();
                 ns.setRequest(query);
 
@@ -565,7 +565,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
 
 
             // if search is successful then get related information , else return error
-            if (nameSearchList == null || !nameSearchList.isEmpty()) {
+            if (nameSearchList != null && !nameSearchList.isEmpty()) {
                 NameSearch ns = new NameSearch();
                 ns.setRequest(query);
 
@@ -1165,7 +1165,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
             }
 
             // if search is successful then get related information , else return error
-            if (nameList == null || !nameList.isEmpty()) {
+            if (nameList != null && !nameList.isEmpty()) {
                 AcceptedNameSearch ans = new AcceptedNameSearch();
                 ans.setRequest(query);
 
