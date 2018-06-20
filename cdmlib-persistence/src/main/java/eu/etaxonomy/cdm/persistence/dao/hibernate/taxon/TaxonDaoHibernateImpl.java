@@ -322,6 +322,7 @@ public class TaxonDaoHibernateImpl
                 Classification classification, MatchMode matchMode, Set<NamedArea> namedAreas,
                 NameSearchOrder order, boolean doCount, boolean returnIdAndTitle){
 
+            boolean doProParteSynonyms = doSynonyms;  //we may distinguish in future
             if (order == null){
                 order = NameSearchOrder.DEFAULT();
             }
@@ -403,11 +404,15 @@ public class TaxonDaoHibernateImpl
                 }
                 synonymIDs = subSynonym.list();
             }
-            if (doIncludeMisappliedNames ){
+            if (doIncludeMisappliedNames || doProParteSynonyms ){
                 subMisappliedNames = getSession().createQuery(misappliedSelect).setParameter("queryString", hqlQueryString);
                 Set<TaxonRelationshipType> relTypeSet = new HashSet<>();
-                relTypeSet.add(TaxonRelationshipType.MISAPPLIED_NAME_FOR());
-                relTypeSet.add(TaxonRelationshipType.PRO_PARTE_MISAPPLIED_NAME_FOR());
+                if (doIncludeMisappliedNames){
+                    relTypeSet.addAll(TaxonRelationshipType.allMisappliedNameTypes());
+                }
+                if (doProParteSynonyms){
+                    relTypeSet.addAll(TaxonRelationshipType.allSynonymTypes());
+                }
                 subMisappliedNames.setParameterList("rTypeSet", relTypeSet);
                 if(doAreaRestriction){
                     subMisappliedNames.setParameterList("namedAreasUuids", namedAreasUuids);
