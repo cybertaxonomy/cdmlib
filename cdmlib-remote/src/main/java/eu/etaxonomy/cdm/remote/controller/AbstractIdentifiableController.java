@@ -14,6 +14,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,6 +36,8 @@ import eu.etaxonomy.cdm.remote.editor.MatchModePropertyEditor;
 public abstract class AbstractIdentifiableController <T extends IdentifiableEntity, SERVICE extends IIdentifiableEntityService<T>>
         extends BaseController<T,SERVICE>  {
 
+
+    private static final Logger logger = Logger.getLogger(AbstractIdentifiableController.class);
 
     @InitBinder
     @Override

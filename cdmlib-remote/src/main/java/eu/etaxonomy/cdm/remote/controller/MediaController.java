@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.HttpException;
+import org.apache.log4j.Logger;
 //import org.mortbay.log.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -48,6 +49,7 @@ import io.swagger.annotations.Api;
 @RequestMapping(value = {"/media/{uuid}"})
 public class MediaController extends AbstractIdentifiableController<Media, IMediaService>{
 
+    private static final Logger logger = Logger.getLogger(MediaController.class);
 
     @Autowired
     @Override

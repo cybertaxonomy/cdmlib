@@ -17,6 +17,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
@@ -55,6 +56,7 @@ import io.swagger.annotations.Api;
 @RequestMapping(value = {"/classification/{uuid}"})
 public class ClassificationController extends AbstractIdentifiableController<Classification,IClassificationService> {
 
+    private static final Logger logger = Logger.getLogger(ClassificationController.class);
 
     private ITermService termService;
     private ITaxonNodeService taxonNodeService;

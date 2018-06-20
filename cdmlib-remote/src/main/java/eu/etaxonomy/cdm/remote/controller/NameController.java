@@ -20,6 +20,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,6 +47,8 @@ import io.swagger.annotations.Api;
 @Api("name")
 @RequestMapping(value = {"/name/{uuid}"})
 public class NameController extends AbstractIdentifiableController<TaxonName, INameService>{
+
+    private static Logger logger = Logger.getLogger(NameController.class);
 
     private static final List<String> TYPEDESIGNATION_INIT_STRATEGY = Arrays.asList(new String []{
             "typeStatus.representations",

@@ -13,7 +13,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.log4j.Logger;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -38,8 +37,6 @@ import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
  * @param <SERVICE>
  */
 public abstract class AbstractController<T extends CdmBase, SERVICE extends IService<T>> {
-
-    public static final Logger logger = Logger.getLogger(AbstractController.class);
 
     protected static final List<String> DEFAULT_INIT_STRATEGY = Arrays.asList(new String []{
             "$"

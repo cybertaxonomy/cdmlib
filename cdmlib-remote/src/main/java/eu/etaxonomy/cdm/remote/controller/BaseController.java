@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.hibernate.mapping.Map;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -57,6 +58,9 @@ import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
  */
 
 public abstract class BaseController<T extends CdmBase, SERVICE extends IService<T>> extends AbstractController<T, SERVICE> {
+
+    private static final Logger logger = Logger.getLogger(BaseController.class);
+
 
 /*	protected SERVICE service;
 

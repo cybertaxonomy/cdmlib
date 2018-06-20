@@ -17,6 +17,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
@@ -55,8 +56,10 @@ import io.swagger.annotations.Api;
 @Controller
 @Api("description")
 @RequestMapping(value = {"/description/{uuid}", "/description/{uuid_list}"})
-public class DescriptionController extends AbstractIdentifiableController<DescriptionBase, IDescriptionService>
-{
+public class DescriptionController extends AbstractIdentifiableController<DescriptionBase, IDescriptionService> {
+
+    private static final Logger logger = Logger.getLogger(DescriptionController.class);
+
     @Autowired
     private IFeatureTreeService featureTreeService;
 
