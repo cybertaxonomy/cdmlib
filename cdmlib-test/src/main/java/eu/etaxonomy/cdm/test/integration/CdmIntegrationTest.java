@@ -13,7 +13,9 @@ import java.io.FileNotFoundException;
 import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 import javax.sql.DataSource;
 import javax.xml.transform.Source;
@@ -38,6 +40,8 @@ import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.database.DataBaseTablePrinter;
+import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.test.unitils.FlatFullXmlWriter;
 
 /**
  * Abstract base class for integration testing a spring / hibernate application using
@@ -381,6 +385,20 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      */
     protected String transformSourceToString(Source source) throws TransformerException {
         return dbTablePrinter.transformSourceToString(source);
+    }
+
+
+    protected <T extends CdmBase> T getEntityFromCollection(Collection<T> cdmBases, UUID uuid) {
+        for (T cdmBase : cdmBases){
+            if (cdmBase.getUuid().equals(uuid)){
+                return cdmBase;
+            }
+        }
+        return null;
+    }
+
+    protected boolean existsInCollection(Collection<? extends CdmBase> cdmBases, UUID uuid) {
+         return getEntityFromCollection(cdmBases, uuid) != null;
     }
 
 

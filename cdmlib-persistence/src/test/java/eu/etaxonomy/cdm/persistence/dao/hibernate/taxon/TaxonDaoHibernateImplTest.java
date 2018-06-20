@@ -92,8 +92,10 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     private UUID rethera;
     private UUID retheraSecCdmtest;
     private UUID atroposAgassiz; // a Synonym
+    private UUID atroposOken;  // a Synonym
     private UUID atroposLeach; // a Synonym
     private UUID acherontiaLachesis;
+    private UUID aus;
 
     private AuditEvent previousAuditEvent;
     private AuditEvent mostRecentAuditEvent;
@@ -105,6 +107,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     private UUID classificationUuid;
 
     private boolean includeUnpublished = true;
+    private boolean NO_UNPUBLISHED = false;
 
     private static final boolean doTaxa = true;
     private static final boolean noTaxa = false;
@@ -131,9 +134,11 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         acherontia = UUID.fromString("c5cc8674-4242-49a4-aada-72d63194f5fa");
         acherontiaLachesis = UUID.fromString("b04cc9cb-2b4a-4cc4-a94a-3c93a2158b06");
         atroposAgassiz = UUID.fromString("d75b2e3d-7394-4ada-b6a5-93175b8751c1");
+        atroposOken = UUID.fromString("6bfedf25-6dbc-4d5c-9d56-84f9052f3b2a");
         atroposLeach =  UUID.fromString("3da4ab34-6c50-4586-801e-732615899b07");
         rethera = UUID.fromString("a9f42927-e507-4fda-9629-62073a908aae");
         retheraSecCdmtest = UUID.fromString("a9f42927-e507-4fda-9629-62073a908aae");
+        aus = UUID.fromString("496b1325-be50-4b0a-9aa2-3ecd610215f2");
 
         previousAuditEvent = new AuditEvent();
         previousAuditEvent.setRevisionNumber(1025);
@@ -527,6 +532,32 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         assertTrue(nodes.size() == 1);
         //assertNotNull(taxa);
         //assertTrue(taxa.size() > 0);
+    }
+
+    @Test
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml")
+    public void testGetTaxaByNameProParteSynonym(){
+
+        @SuppressWarnings("rawtypes")
+        List<TaxonBase> taxa = taxonDao.getTaxaByName(noTaxa, doSynonyms, noMisapplied, noCommonNames, false, "A", null,
+                MatchMode.BEGINNING, null, includeUnpublished, null, null, null, null);
+        Assert.assertEquals("2 synonyms and 1 pro parte synonym should be returned.", 3, taxa.size());
+        assertTrue("Pro parte should exist", existsInCollection(taxa, acherontiaLachesis));
+        assertTrue("Normal synonym should exist", existsInCollection(taxa, atroposAgassiz));
+        assertTrue("2. normal synonym should exist", existsInCollection(taxa, atroposOken));
+        //TODO shouldn't we also find orphaned synonyms (without accepted taxon) like Atropos Leach?
+
+        taxa = taxonDao.getTaxaByName(noTaxa, doSynonyms, noMisapplied, noCommonNames, false, "A", null,
+                MatchMode.BEGINNING, null, NO_UNPUBLISHED, null, null, null, null);
+        Assert.assertEquals("2 synonyms and no pro parte synonym should be returned.", 2, taxa.size());
+        assertTrue("Normal synonym should exist", existsInCollection(taxa, atroposAgassiz));
+        assertTrue("2. normal synonym should exist", existsInCollection(taxa, atroposOken));
+
+        taxa = taxonDao.getTaxaByName(noTaxa, noSynonyms, doMisapplied, noCommonNames, false, "A", null,
+                MatchMode.BEGINNING, null, includeUnpublished, null, null, null, null);
+        Assert.assertEquals("1 misapplied name, no pro parte synonym should be returned.", 1, taxa.size());
+        assertTrue("Pro parte should exist", existsInCollection(taxa, aus));
+
     }
 
     @Test
