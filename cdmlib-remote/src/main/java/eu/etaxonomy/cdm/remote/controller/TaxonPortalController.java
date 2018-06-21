@@ -415,9 +415,12 @@ public class TaxonPortalController extends TaxonController{
     public List<NameRelationship> doGetToNameRelations(@PathVariable("uuid") UUID uuid,
             HttpServletRequest request, HttpServletResponse response)throws IOException {
         logger.info("doGetNameRelations()" + request.getRequestURI());
+        boolean includeUnpublished = NO_UNPUBLISHED;
+
         TaxonBase<?> taxonBase = getCdmBaseInstance(TaxonBase.class, uuid, response, (List<String>)null);
+        taxonBase = checkExistsAndAccess(taxonBase, includeUnpublished, response);
+
         List<NameRelationship> list = nameService.listNameRelationships(taxonBase.getName(), Direction.relatedTo, null, null, 0, null, NAMERELATIONSHIP_INIT_STRATEGY);
-        //List<NameRelationship> list = nameService.listToNameRelationships(taxonBase.getName(), null, null, null, null, NAMERELATIONSHIP_INIT_STRATEGY);
         return list;
     }
 
@@ -441,9 +444,13 @@ public class TaxonPortalController extends TaxonController{
             HttpServletRequest request, HttpServletResponse response)throws IOException {
         logger.info("doGetNameFromNameRelations()" + requestPathAndQuery(request));
 
-        TaxonBase<?> taxonbase = getCdmBaseInstance(TaxonBase.class, uuid, response, SIMPLE_TAXON_INIT_STRATEGY);
-        List<NameRelationship> list = nameService.listNameRelationships(taxonbase.getName(), Direction.relatedFrom, null, null, 0, null, NAMERELATIONSHIP_INIT_STRATEGY);
-        //List<NameRelationship> list = nameService.listFromNameRelationships(taxonbase.getName(), null, null, null, null, NAMERELATIONSHIP_INIT_STRATEGY);
+        boolean includeUnpublished = NO_UNPUBLISHED;
+
+        TaxonBase<?> taxonBase = getCdmBaseInstance(TaxonBase.class, uuid, response, SIMPLE_TAXON_INIT_STRATEGY);
+        taxonBase = checkExistsAndAccess(taxonBase, includeUnpublished, response);
+
+        List<NameRelationship> list = nameService.listNameRelationships(taxonBase.getName(), Direction.relatedFrom, null, null, 0, null, NAMERELATIONSHIP_INIT_STRATEGY);
+
         return list;
     }
 
