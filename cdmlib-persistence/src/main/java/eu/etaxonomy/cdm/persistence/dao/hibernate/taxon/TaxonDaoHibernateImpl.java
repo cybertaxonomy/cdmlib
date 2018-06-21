@@ -146,7 +146,7 @@ public class TaxonDaoHibernateImpl
             criteria.add(Restrictions.ilike("name.nameCache", queryString));
         }
 
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings({ "unchecked", "rawtypes" })
         List<TaxonBase> result = criteria.list();
         return result;
     }
@@ -185,7 +185,7 @@ public class TaxonDaoHibernateImpl
         Query query = prepareTaxaByName(doTaxa, doSynonyms, doMisappliedNames, doCommonNames, includeUnpublished, searchField, queryString, classification, matchMode, namedAreas, order, pageSize, pageNumber, doCount);
 
         if (query != null){
-            @SuppressWarnings("unchecked")
+            @SuppressWarnings({ "unchecked", "rawtypes" })
             List<TaxonBase> results = query.list();
 
             defaultBeanInitializer.initializeAll(results, propertyPaths);
@@ -213,6 +213,7 @@ public class TaxonDaoHibernateImpl
 
         boolean doCount = false;
         boolean includeAuthors = false;
+        @SuppressWarnings("rawtypes")
         List<UuidAndTitleCache<? extends IdentifiableEntity>> resultObjects = new ArrayList<>();
         if (doNamesWithoutTaxa){
         	List<TaxonName> nameResult = taxonNameDao.findByName(
@@ -764,7 +765,7 @@ public class TaxonDaoHibernateImpl
 
 
     @Override
-    public int countSynonyms(boolean onlyAttachedToTaxon) {
+    public long countSynonyms(boolean onlyAttachedToTaxon) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
             Query query = null;
@@ -777,7 +778,7 @@ public class TaxonDaoHibernateImpl
             }
             query = getSession().createQuery(queryStr);
 
-            return ((Long)query.uniqueResult()).intValue();
+            return (Long)query.uniqueResult();
         } else {
             AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(Synonym.class,auditEvent.getRevisionNumber());
             if (onlyAttachedToTaxon){
@@ -785,7 +786,7 @@ public class TaxonDaoHibernateImpl
             }
             query.addProjection(AuditEntity.id().count());
 
-            return ((Long)query.getSingleResult()).intValue();
+            return (Long)query.getSingleResult();
         }
     }
 

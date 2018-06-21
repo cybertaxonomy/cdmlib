@@ -70,7 +70,9 @@ import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
  */
 @Service
 @Transactional(readOnly = true)
-public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITaxonNodeDao> implements ITaxonNodeService{
+public class TaxonNodeServiceImpl
+           extends AnnotatableServiceBase<TaxonNode, ITaxonNodeDao>
+           implements ITaxonNodeService{
     private static final Logger logger = Logger.getLogger(TaxonNodeServiceImpl.class);
 
     @Autowired

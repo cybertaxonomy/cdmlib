@@ -128,12 +128,6 @@ public class ClassificationServiceImpl
         return loadTaxonNode(node.getUuid(), propertyPaths);
     }
 
-    @Override
-    @Deprecated // use loadTaxonNode(UUID, List<String>) instead
-    public TaxonNode loadTaxonNode(TaxonNode taxonNode, List<String> propertyPaths){
-        return taxonNodeDao.load(taxonNode.getUuid(), propertyPaths);
-    }
-
     public TaxonNode loadTaxonNode(UUID taxonNodeUuid, List<String> propertyPaths){
         return taxonNodeDao.load(taxonNodeUuid, propertyPaths);
     }
@@ -454,43 +448,36 @@ public class ClassificationServiceImpl
             TaxonNode taxonNode, List<String> propertyPaths, int size,
             int height, int widthOrDuration, String[] mimeTypes) {
 
-        TreeMap<UUID, List<MediaRepresentation>> result = new TreeMap<UUID, List<MediaRepresentation>>();
-        List<Media> taxonMedia = new ArrayList<Media>();
-        List<MediaRepresentation> mediaRepresentations = new ArrayList<MediaRepresentation>();
+        TreeMap<UUID, List<MediaRepresentation>> result = new TreeMap<>();
+        List<Media> taxonMedia = new ArrayList<>();
+        List<MediaRepresentation> mediaRepresentations = new ArrayList<>();
 
         //add all media of the children to the result map
         if (taxonNode != null){
 
-            List<TaxonNode> nodes = new ArrayList<TaxonNode>();
+            List<TaxonNode> nodes = new ArrayList<>();
 
-            nodes.add(loadTaxonNode(taxonNode, propertyPaths));
+            nodes.add(loadTaxonNode(taxonNode.getUuid(), propertyPaths));
             nodes.addAll(loadChildNodesOfTaxonNode(taxonNode, propertyPaths));
 
-            if (nodes != null){
-                for(TaxonNode node : nodes){
-                    Taxon taxon = node.getTaxon();
-                    for (TaxonDescription taxonDescription: taxon.getDescriptions()){
-                        for (DescriptionElementBase descriptionElement: taxonDescription.getElements()){
-                            for(Media media : descriptionElement.getMedia()){
-                                taxonMedia.add(media);
+            for(TaxonNode node : nodes){
+                Taxon taxon = node.getTaxon();
+                for (TaxonDescription taxonDescription: taxon.getDescriptions()){
+                    for (DescriptionElementBase descriptionElement: taxonDescription.getElements()){
+                        for(Media media : descriptionElement.getMedia()){
+                            taxonMedia.add(media);
 
-                                //find the best matching representation
-                                mediaRepresentations.add(MediaUtils.findBestMatchingRepresentation(media,null, size, height, widthOrDuration, mimeTypes));
-
-                            }
+                            //find the best matching representation
+                            mediaRepresentations.add(MediaUtils.findBestMatchingRepresentation(media,null, size, height, widthOrDuration, mimeTypes));
                         }
                     }
-                    result.put(taxon.getUuid(), mediaRepresentations);
-
                 }
+                result.put(taxon.getUuid(), mediaRepresentations);
             }
-
         }
 
         return result;
-
     }
-
 
     @Override
     @Transactional(readOnly = false)
@@ -536,7 +523,7 @@ public class ClassificationServiceImpl
     			sortedGenusMap.put(genusOrUninomial, list);
     		}else{
     			//create List for genus
-    			List<TaxonNode> list = new ArrayList<TaxonNode>();
+    			List<TaxonNode> list = new ArrayList<>();
     			list.add(node);
     			sortedGenusMap.put(genusOrUninomial, list);
     		}

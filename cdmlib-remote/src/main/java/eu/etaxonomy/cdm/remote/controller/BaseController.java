@@ -135,23 +135,23 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
             HttpServletResponse response) throws IOException {
 
         String servletPath = request.getServletPath();
-        String baseName = FilenameUtils.getBaseName(servletPath);
+        String propertyName = FilenameUtils.getBaseName(servletPath);
 
         if(request != null) {
-            logger.info("doGetMethod()[doGet" + StringUtils.capitalize(baseName) + "] " + requestPathAndQuery(request));
+            logger.info("doGetMethod()[doGet" + StringUtils.capitalize(propertyName) + "] " + requestPathAndQuery(request));
         }
 
         // <CUT
 //		T instance = getCdmBaseInstance(uuid, response, (List<String>)null);
         //Class<?> propertyClass = propertyClass(instance, baseName);
-        Object objectFromProperty = getCdmBaseProperty(uuid, baseName, response);//   invokeProperty(instance, baseName, response);
+        Object objectFromProperty = getCdmBaseProperty(uuid, propertyName, response);//   invokeProperty(instance, baseName, response);
         // CUT>
         if(objectFromProperty != null){
             if( Collection.class.isAssignableFrom(objectFromProperty.getClass())){
                 // Map types cannot be returned as list or in a pager!
                 return pageFromCollection((Collection<CdmBase>)objectFromProperty, pageNumber, pageSize, start, limit, response);
             } else {
-               return objectFromProperty;
+                return objectFromProperty;
             }
         }
         return null;

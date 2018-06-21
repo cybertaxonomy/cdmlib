@@ -646,7 +646,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("There should be 2 synonyms in the database", 2, nSynonyms);
         int nNames = nameService.count(TaxonName.class);
         Assert.assertEquals("There should  be 4 names in the database", 4, nNames);
-        int nRelations = service.countSynonyms(true);
+        long nRelations = service.countSynonyms(true);
         Assert.assertEquals("There should be two relationship left in the database", 2, nRelations);
 
         UUID uuidSynonym1=UUID.fromString("7da85381-ad9d-4886-9d4d-0eeef40e3d88");
@@ -679,7 +679,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("There should be 2 synonyms in the database", 2, nSynonyms);
         int nNames = nameService.count(TaxonName.class);
         Assert.assertEquals("There should  be 4 names in the database", 4, nNames);
-        int nRelations = service.countSynonyms(true);
+        long nRelations = service.countSynonyms(true);
         Assert.assertEquals("There should be 2 relationship left in the database", 2, nRelations);
 
         UUID uuidSynonym1=UUID.fromString("7da85381-ad9d-4886-9d4d-0eeef40e3d88");
@@ -722,7 +722,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         List<String> initStrat = new ArrayList<String>();
         initStrat.add("markers");
         Synonym synonym1 = (Synonym)service.load(uuidSynonym1, initStrat);
-        int nRelations = service.countSynonyms(true);
+        long nRelations = service.countSynonyms(true);
         Assert.assertEquals("There should be 2 relationship left in the database", 2, nRelations);
 
         taxon2.removeSynonym(synonym1, false);
@@ -789,7 +789,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Synonym synonym1 = (Synonym)service.load(uuidSynonym1);
         taxon2.addSynonym(synonym1, SynonymType.HETEROTYPIC_SYNONYM_OF());
         service.saveOrUpdate(synonym1);
-        int nRelations = service.countSynonyms(true);
+        long nRelations = service.countSynonyms(true);
         //this was "3" when we still had synonym relationships
         Assert.assertEquals("There should be 2 relationship left in the database", 2, nRelations);
         service.deleteSynonym(synonym1, new SynonymDeletionConfigurator());
@@ -863,7 +863,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
         service.saveOrUpdate(synonym1);
 
-        int nRelations = nameService.getAllRelationships(1000, 0).size();
+        long nRelations = nameService.getAllRelationships(1000, 0).size();
         logger.info("number of name relations: " + nRelations);
         Assert.assertEquals("There should be 1 name relationship left in the database", 1, nRelations);
         SynonymDeletionConfigurator config = new SynonymDeletionConfigurator();
@@ -918,7 +918,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
         service.saveOrUpdate(synonym1);
 
-        int nRelations = nameService.getAllRelationships(1000, 0).size();
+        long nRelations = nameService.getAllRelationships(1000, 0).size();
         logger.info("number of name relations: " + nRelations);
         Assert.assertEquals("There should be 1 name relationship left in the database", 1, nRelations);
         SynonymDeletionConfigurator config = new SynonymDeletionConfigurator();
@@ -966,7 +966,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
         service.saveOrUpdate(synonym1);
 
-        int nRelations = nameService.getAllRelationships(1000, 0).size();
+        long nRelations = nameService.getAllRelationships(1000, 0).size();
         logger.info("number of name relations: " + nRelations);
         Assert.assertEquals("There should be 1 name relationship left in the database", 1, nRelations);
         SynonymDeletionConfigurator config = new SynonymDeletionConfigurator();
@@ -1005,7 +1005,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("There should be 2 synonyms in the database", 2, nSynonyms);
         int nNames = nameService.count(TaxonName.class);
         Assert.assertEquals("There should  be 4 names in the database", 4, nNames);
-        int nRelations = service.countSynonyms(true);
+        long nRelations = service.countSynonyms(true);
 
 
         //may change with better implementation of countAllRelationships (see #2653)
@@ -1039,6 +1039,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet("TaxonServiceImplTest.testDeleteSynonym.xml")
     public final void testDeleteSynonymSynonymTaxonBooleanWithoutTransaction(){
+        @SuppressWarnings("unused")
         final String[]tableNames = {"TaxonBase","TaxonBase_AUD", "TaxonName","TaxonName_AUD",
                 "HomotypicalGroup","HomotypicalGroup_AUD"};
 
@@ -1046,7 +1047,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("There should be 2 synonyms in the database", 2, nSynonyms);
         int nNames = nameService.count(TaxonName.class);
         Assert.assertEquals("There should  be 4 names in the database", 4, nNames);
-        int nRelations = service.countSynonyms(true);
+        long nRelations = service.countSynonyms(true);
         //may change with better implementation of countAllRelationships (see #2653)
         Assert.assertEquals("There should be 2 relationship in the database (the 2 synonym relationships) but no name relationship", 2, nRelations);
 

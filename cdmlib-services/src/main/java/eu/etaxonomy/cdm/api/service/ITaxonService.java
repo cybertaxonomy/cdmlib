@@ -792,7 +792,7 @@ public interface ITaxonService
      * an accepted taxon are counted
      * @return the number of synonyms
      */
-    public int countSynonyms(boolean onlyAttachedToTaxon);
+    public long countSynonyms(boolean onlyAttachedToTaxon);
 
     public List<TaxonName> findIdenticalTaxonNames(List<String> propertyPath);
 

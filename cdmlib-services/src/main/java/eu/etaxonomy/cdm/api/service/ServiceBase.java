@@ -239,13 +239,13 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
     @Transactional(readOnly = true)
     public  <S extends T> Pager<S> page(Class<S> type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
         Long numberOfResults = dao.count(type);
-        List<S> results = new ArrayList<S>();
+        List<S> results = new ArrayList<>();
         pageNumber = pageNumber == null ? 0 : pageNumber;
         if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
             Integer start = pageSize == null ? 0 : pageSize * pageNumber;
-            results = dao.list(type, pageSize, start, orderHints,propertyPaths);
+            results = dao.list(type, pageSize, start, orderHints, propertyPaths);
         }
-        return new DefaultPagerImpl<S>(pageNumber, numberOfResults, pageSize, results);
+        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
     }
 
     @Override

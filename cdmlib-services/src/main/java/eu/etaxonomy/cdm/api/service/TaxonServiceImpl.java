@@ -897,7 +897,7 @@ public class TaxonServiceImpl
     }
 
     @Override
-    public int countSynonyms(boolean onlyAttachedToTaxon){
+    public long countSynonyms(boolean onlyAttachedToTaxon){
         return this.dao.countSynonyms(onlyAttachedToTaxon);
     }
 

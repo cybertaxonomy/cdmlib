@@ -89,16 +89,6 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
     public TaxonNode loadTaxonNodeByTaxon(Taxon taxon, UUID classificationUuid, List<String> propertyPaths);
 
     /**
-     *
-     * @param taxonNode
-     * @param propertyPaths
-     * @return
-     * @deprecated use TaxonNodeService instead
-     */
-    @Deprecated
-    public TaxonNode loadTaxonNode(TaxonNode taxonNode, List<String> propertyPaths);
-
-    /**
      * Loads all TaxonNodes of the specified classification for a given Rank or lower.
      * If a branch of the classification tree is not containing a TaxonNode with a Taxon at the given
      * Rank the according node associated with the next lower Rank is taken as root node in this case.

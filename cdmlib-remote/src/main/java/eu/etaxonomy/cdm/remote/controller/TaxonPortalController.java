@@ -33,8 +33,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.INameService;
+import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
@@ -95,7 +95,7 @@ public class TaxonPortalController extends TaxonController{
     private INameService nameService;
 
     @Autowired
-    private IClassificationService classificationService;
+    private ITaxonNodeService taxonNodeService;
 
     @Autowired
     private ITaxonService taxonService;
@@ -574,6 +574,8 @@ public class TaxonPortalController extends TaxonController{
                 includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions,
                 type, mimeTypes, widthOrDuration, height, size);
         TaxonNode node;
+
+        //TODO use treeindex
         //looking for all medias of genus
         if (taxon.getTaxonNodes().size()>0){
             Set<TaxonNode> nodes = taxon.getTaxonNodes();
@@ -582,13 +584,13 @@ public class TaxonPortalController extends TaxonController{
             node = iterator.next();
             //Check if TaxonNode belongs to the current tree
 
-            node = classificationService.loadTaxonNode(node, TAXONNODE_WITHTAXON_INIT_STRATEGY);
+            node = taxonNodeService.load(node.getUuid(), TAXONNODE_WITHTAXON_INIT_STRATEGY);
             List<TaxonNode> children = node.getChildNodes();
             Taxon childTaxon;
             for (TaxonNode child : children){
                 childTaxon = child.getTaxon();
                 if(childTaxon != null) {
-                childTaxon = (Taxon)taxonService.load(childTaxon.getUuid(), NO_UNPUBLISHED, null);
+                    childTaxon = (Taxon)taxonService.load(childTaxon.getUuid(), NO_UNPUBLISHED, null);
                     returnMedia.addAll(getMediaForTaxon(childTaxon, includeRelationships,
                             includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions,
                             type, mimeTypes, widthOrDuration, height, size));

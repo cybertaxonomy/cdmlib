@@ -724,7 +724,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
         // as well as files inside jars
         InputStream aptInputStream = resource.getInputStream();
         // Build Html View
-        Map<String, String> modelMap = new HashMap<String, String>();
+        Map<String, String> modelMap = new HashMap<>();
         // Convert Apt to Html
         modelMap.put("html", DocUtils.convertAptToHtml(aptInputStream));
         mv.addAllObjects(modelMap);
