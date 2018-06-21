@@ -734,7 +734,7 @@ public class TaxonNodeServiceImpl
         List<TaxonNode> nodes = dao.list(taxonNodeUuids, null, null, null, null);
         boolean hasPermission = true;
 
-        monitor.beginTask("Move Taxonnodes", nodes.size());
+        monitor.beginTask("Move Taxonnodes", nodes.size()*2);
         monitor.subTask("move taxon nodes");
         for (TaxonNode node: nodes){
             if (!monitor.isCanceled()){
@@ -749,6 +749,7 @@ public class TaxonNodeServiceImpl
             }
         }
         if (!monitor.isCanceled()){
+            monitor.subTask("saving and reindex");
             dao.saveOrUpdateAll(nodes);
         }else{
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
