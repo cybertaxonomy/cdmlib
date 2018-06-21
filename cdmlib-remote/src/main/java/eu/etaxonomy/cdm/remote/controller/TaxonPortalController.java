@@ -537,7 +537,10 @@ public class TaxonPortalController extends TaxonController{
 
         logger.info("doGetMedia() " + requestPathAndQuery(request));
 
+        boolean includeUnpublished = NO_UNPUBLISHED;
+
         Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
+        taxon = checkExistsAndAccess(taxon, includeUnpublished, response);
 
         Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(relationshipUuids, relationshipInversUuids, termService);
 
@@ -564,9 +567,13 @@ public class TaxonPortalController extends TaxonController{
             @RequestParam(value = "size", required = false) Integer size,
             HttpServletRequest request, HttpServletResponse response)throws IOException {
 
+
+        boolean includeUnpublished = NO_UNPUBLISHED;
+
         logger.info("doGetSubtreeMedia() " + requestPathAndQuery(request));
 
         Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, TAXON_WITH_NODES_INIT_STRATEGY);
+        taxon = checkExistsAndAccess(taxon, includeUnpublished, response);
 
         Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(relationshipUuids, relationshipInversUuids, termService);
 
