@@ -49,9 +49,10 @@ public class IdentifiableServiceConfiguratorImpl<T extends IIdentifiableEntity> 
     public String getTitleSearchString() {
 		return titleSearchString;
 	}
-	
-	public String getTitleSearchStringSqlized(){
-		return getTitleSearchString().replace("*", "%");
+
+	@Override
+    public String getTitleSearchStringSqlized(){
+	    return getTitleSearchString() == null ? null : getTitleSearchString().replace("*", "%");
 	}
 
 	@Override
