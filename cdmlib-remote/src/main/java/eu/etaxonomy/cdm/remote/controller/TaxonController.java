@@ -153,9 +153,9 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
 
             return result;
         } catch (EntityNotFoundException e){
-            HttpStatusMessage.UUID_NOT_FOUND.send(response);
+            HttpStatusMessage.UUID_NOT_FOUND.send(response, e.getMessage());
         } catch (UnpublishedException e) {
-            HttpStatusMessage.ACCESS_DENIED.send(response);
+            HttpStatusMessage.ACCESS_DENIED.send(response, e.getMessage());
         }
         return null;
 
