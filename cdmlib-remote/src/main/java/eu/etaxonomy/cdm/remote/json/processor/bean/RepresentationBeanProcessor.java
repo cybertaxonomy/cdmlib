@@ -51,7 +51,7 @@ public class RepresentationBeanProcessor extends AbstractCdmBeanProcessor<Repres
             if (iso != null){
                 json.element("languageIso", iso);
             }
-            json.element("languageUuid", language.getUuid());
+            json.element("languageUuid", language.getUuid().toString());
         }
 
         return json;
