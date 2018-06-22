@@ -9,7 +9,6 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -226,6 +225,7 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
      * @param request
      * @return a List of {@link TaxonNode} entities initialized by
      *         the {@link #NODE_INIT_STRATEGY}
+     * @throws IOException
      */
     @RequestMapping(
             value = {"{treeUuid}/pathFrom/{taxonUuid}/toRank/{rankUuid}"},
@@ -235,7 +235,7 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
             @PathVariable("taxonUuid") UUID taxonUuid,
             @PathVariable("rankUuid") UUID rankUuid,
             HttpServletRequest request,
-            HttpServletResponse response) {
+            HttpServletResponse response) throws IOException {
         logger.info("getPathFromTaxonToRank() " + request.getRequestURI());
 
         boolean includeUnpublished = NO_UNPUBLISHED;
@@ -247,7 +247,8 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
         try {
             return service.loadTreeBranchToTaxon(taxon, tree, rank, includeUnpublished, NODE_INIT_STRATEGY);
         } catch (UnpublishedException e) {
-            return new ArrayList<>();
+            HttpStatusMessage.ACCESS_DENIED.send(response);
+            return null;
         }
     }
 
@@ -266,6 +267,7 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
      * @param request
      * @return a List of {@link TaxonNode} entities initialized by
      *         the {@link #NODE_INIT_STRATEGY}
+     * @throws IOException
      */
     @RequestMapping(
             value = {"{treeUuid}/pathFrom/{taxonUuid}"},
@@ -274,7 +276,7 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
             @PathVariable("treeUuid") UUID treeUuid,
             @PathVariable("taxonUuid") UUID taxonUuid,
             HttpServletRequest request,
-            HttpServletResponse response) {
+            HttpServletResponse response) throws IOException {
 
         return getPathFromTaxonToRank(treeUuid, taxonUuid, null, request, response);
     }
