@@ -33,6 +33,8 @@ public class TermRepresentation_L10n implements ITermRepresentation_L10n {
 
     String label = null;
     String abbreviatedLabel = null;
+    String languageIso = null;
+    String languageUuid = null;
 
     public TermRepresentation_L10n() {
     }
@@ -89,6 +91,15 @@ public class TermRepresentation_L10n implements ITermRepresentation_L10n {
             }
 
             abbreviatedLabel = representation.getAbbreviatedLabel();
+
+            Language lang = representation.getLanguage();
+            if (lang != null){
+                this.languageIso = lang.getIso639_2();
+                if (this.languageIso == null){
+                    this.languageIso = lang.getIso639_1();
+                }
+                this.languageUuid = lang.getUuid().toString();
+            }
         }
     }
 
@@ -116,6 +127,19 @@ public class TermRepresentation_L10n implements ITermRepresentation_L10n {
         this.abbreviatedLabel = abbreviatedLabel;
     }
 
+    public String getLanguageIso() {
+        return languageIso;
+    }
 
+    public void setLanguageIso(String languageIso) {
+        this.languageIso = languageIso;
+    }
 
+    public String getLanguageUuid() {
+        return languageUuid;
+    }
+
+    public void setLanguageUuid(String languageUuid) {
+        this.languageUuid = languageUuid;
+    }
 }
