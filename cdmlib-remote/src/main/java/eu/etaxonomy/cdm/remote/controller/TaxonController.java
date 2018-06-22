@@ -40,6 +40,7 @@ import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.config.IncludedTaxonConfiguration;
 import eu.etaxonomy.cdm.api.service.dto.IncludedTaxaDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.exception.UnpublishedException;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -145,14 +146,19 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             logger.info("doGetAcceptedFor() " + requestPathAndQuery(request));
         }
 
-        Taxon result = null;
         try {
-            result = service.findAcceptedTaxonFor(uuid, classification_uuid, getInitializationStrategy());
+            boolean includeUnpublished = NO_UNPUBLISHED;
+            Taxon result = service.findAcceptedTaxonFor(uuid, classification_uuid, includeUnpublished, getInitializationStrategy());
+            result = checkExistsAndAccess(result, includeUnpublished, response);
+
+            return result;
         } catch (EntityNotFoundException e){
             HttpStatusMessage.UUID_NOT_FOUND.send(response);
+        } catch (UnpublishedException e) {
+            HttpStatusMessage.ACCESS_DENIED.send(response);
         }
+        return null;
 
-        return result;
     }
 
     @RequestMapping(value = "classifications", method = RequestMethod.GET)

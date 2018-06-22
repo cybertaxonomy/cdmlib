@@ -26,7 +26,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.exception.UnpublishedException;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IPublishable;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DaoBase;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
@@ -296,6 +298,20 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
     @Transactional(readOnly = true)
     public List<T> list(T example, Set<String> includeProperties, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
         return dao.list(example, includeProperties, limit, start, orderHints, propertyPaths);
+    }
+
+
+    /**
+     * Throws an exception if the publishable entity should not be published.
+     * @param publishable the publishable entity
+     * @param includeUnpublished should publish be checked
+     * @param message the error message to include
+     * @throws UnpublishedException thrown if entity is not public and unpublished should not be included
+     */
+    protected void checkPublished(IPublishable publishable, boolean includeUnpublished, String message) throws UnpublishedException {
+        if (!(includeUnpublished || !publishable.isPublish())){
+            throw new UnpublishedException("Access denied. "+  message);
+        }
     }
 
 

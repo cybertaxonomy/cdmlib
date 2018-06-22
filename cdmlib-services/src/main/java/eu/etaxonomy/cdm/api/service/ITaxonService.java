@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.api.service.search.LuceneMultiSearchException;
 import eu.etaxonomy.cdm.api.service.search.LuceneParseException;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
+import eu.etaxonomy.cdm.exception.UnpublishedException;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -881,7 +882,8 @@ public interface ITaxonService
      */
     public List<Synonym>  createAllInferredSynonyms(Taxon taxon, Classification tree, boolean doWithMisappliedNames);
 
-    public Taxon findAcceptedTaxonFor(UUID synonymUuid, UUID classificationUuid, List<String> propertyPaths);
+    public Taxon findAcceptedTaxonFor(UUID synonymUuid, UUID classificationUuid, boolean includeUnpublished,
+            List<String> propertyPaths) throws UnpublishedException;
 
     public List<TaxonBase> findTaxaByName(MatchingTaxonConfigurator config);
 

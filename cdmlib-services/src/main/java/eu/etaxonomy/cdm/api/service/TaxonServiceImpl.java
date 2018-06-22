@@ -63,6 +63,7 @@ import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.search.SearchResultBuilder;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.exception.UnpublishedException;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.hibernate.search.AcceptedTaxonBridge;
 import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
@@ -500,7 +501,8 @@ public class TaxonServiceImpl
     }
 
     @Override
-    public Taxon findAcceptedTaxonFor(UUID synonymUuid, UUID classificationUuid, List<String> propertyPaths){
+    public Taxon findAcceptedTaxonFor(UUID synonymUuid, UUID classificationUuid,
+            boolean includeUnpublished, List<String> propertyPaths) throws UnpublishedException{
 
         Taxon result = null;
         Long count = 0l;
@@ -509,6 +511,7 @@ public class TaxonServiceImpl
 
         try {
             synonym = (Synonym) dao.load(synonymUuid);
+            checkPublished(synonym, includeUnpublished, "Synoym is unpublished.");
         } catch (ClassCastException e){
             throw new EntityNotFoundException("The TaxonBase entity referenced by " + synonymUuid + " is not a Synonmy");
         } catch (NullPointerException e){
@@ -530,11 +533,11 @@ public class TaxonServiceImpl
         count = dao.countAcceptedTaxonFor(synonym, classificationFilter) ;
         if(count > 0){
             result = dao.acceptedTaxonFor(synonym, classificationFilter, propertyPaths);
+            checkPublished(result, includeUnpublished, "Accepted taxon unpublished");
         }
 
         return result;
     }
-
 
     @Override
     public Set<Taxon> listRelatedTaxa(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships, Integer maxDepth,
