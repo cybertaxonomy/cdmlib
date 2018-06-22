@@ -65,8 +65,8 @@ import io.swagger.annotations.Api;
 @Controller
 @Api("taxon")
 @RequestMapping(value = {"/taxon/{uuid}"})
-public class TaxonController extends AbstractIdentifiableController<TaxonBase, ITaxonService>
-{
+public class TaxonController extends AbstractIdentifiableController<TaxonBase, ITaxonService>{
+
     public static final Logger logger = Logger.getLogger(TaxonController.class);
 
     @Autowired
@@ -135,14 +135,14 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
      * @throws IOException
      */
     @RequestMapping(value = "accepted", method = RequestMethod.GET)
-    public Taxon getAcceptedFor(
+    public Taxon doGetAcceptedFor(
             @PathVariable("uuid") UUID uuid,
             @RequestParam(value = "classificationFilter", required = false) UUID classification_uuid,
             HttpServletRequest request,
             HttpServletResponse response)
             throws IOException {
         if(request != null){
-            logger.info("getAcceptedFor() " + requestPathAndQuery(request));
+            logger.info("doGetAcceptedFor() " + requestPathAndQuery(request));
         }
 
         Taxon result = null;
