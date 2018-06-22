@@ -140,14 +140,13 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
         Classification tree = null;
         Rank rank = null;
         if(treeUuid != null){
-            // get view and rank
             tree = service.find(treeUuid);
-
             if(tree == null) {
-                response.sendError(404 , "Classification not found using " + treeUuid );
+                HttpStatusMessage.UUID_NOT_FOUND.send(response, "Classification not found using " + treeUuid);
                 return null;
             }
         }
+
         rank = findRank(rankUuid);
         boolean includeUnpublished = NO_UNPUBLISHED;
 //        long start = System.currentTimeMillis();
