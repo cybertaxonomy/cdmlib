@@ -46,7 +46,6 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
-import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
@@ -111,13 +110,6 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         return result;
     }
 
-    private Taxon getTaxon() {
-        Reference sec = getReference();
-        TaxonName name = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
-        Taxon taxon = Taxon.NewInstance(name, sec);
-        return taxon;
-
-    }
 
     @Test
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "OccurenceServiceTest.move.xml")

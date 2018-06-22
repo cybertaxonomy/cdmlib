@@ -1254,9 +1254,6 @@ public class TaxonDaoHibernateImpl
         return hql;
     }
 
-
-
-
     @Override
     public TaxonBase find(LSID lsid) {
         TaxonBase<?> taxonBase = super.find(lsid);
@@ -1281,8 +1278,6 @@ public class TaxonDaoHibernateImpl
         return taxonBase;
     }
 
-
-
     @Override
     public List<String> taxaByNameNotInDB(List<String> taxonNames){
         //get all taxa, already in db
@@ -1298,7 +1293,6 @@ public class TaxonDaoHibernateImpl
             if (taxonNames.contains(nameCache)){
                 taxonNames.remove(nameCache);
             }
-
         }
 
         return taxonNames;
@@ -1376,7 +1370,6 @@ public class TaxonDaoHibernateImpl
                 identicalNames.add(nameFauna);
             }
         }
-
 
         query = getSession().createQuery("from ZoologicalName zn where zn.nameCache IN (:identicalNames)");
         query.setParameterList("identicalNames", identicalNames);
