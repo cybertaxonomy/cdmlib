@@ -35,17 +35,12 @@ public class TermRepresentation_L10n implements ITermRepresentation_L10n {
     String abbreviatedLabel = null;
 
     public TermRepresentation_L10n() {
-
     }
 
     public TermRepresentation_L10n(TermBase term, boolean useInverseRepresentation) {
-
         localize(term, useInverseRepresentation);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.l10n.ITermRepresentation_L10n#localize(eu.etaxonomy.cdm.model.common.TermBase, boolean)
-     */
     @Override
     public void localize(TermBase term, boolean useInverseRepresentation) {
 
@@ -97,9 +92,6 @@ public class TermRepresentation_L10n implements ITermRepresentation_L10n {
         }
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.l10n.ITermRepresentation_L10n#getLabel()
-     */
     @Override
     public String getLabel() {
         return label;
@@ -112,9 +104,6 @@ public class TermRepresentation_L10n implements ITermRepresentation_L10n {
         this.label = label;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.l10n.ITermRepresentation_L10n#getAbbreviatedLabel()
-     */
     @Override
     public String getAbbreviatedLabel() {
         return abbreviatedLabel;

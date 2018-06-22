@@ -137,9 +137,7 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
         String servletPath = request.getServletPath();
         String propertyName = FilenameUtils.getBaseName(servletPath);
 
-        if(request != null) {
-            logger.info("doGetMethod()[doGet" + StringUtils.capitalize(propertyName) + "] " + requestPathAndQuery(request));
-        }
+        logger.info("doGetMethod()[doGet" + StringUtils.capitalize(propertyName) + "] " + requestPathAndQuery(request));
 
         // <CUT
 //		T instance = getCdmBaseInstance(uuid, response, (List<String>)null);

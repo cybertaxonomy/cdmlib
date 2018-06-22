@@ -12,9 +12,6 @@ package eu.etaxonomy.cdm.remote.json.processor.bean;
 import java.util.Arrays;
 import java.util.List;
 
-import net.sf.json.JSONObject;
-import net.sf.json.JsonConfig;
-
 import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
 
@@ -24,6 +21,8 @@ import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dto.ITermRepresentation_L10n;
 import eu.etaxonomy.cdm.remote.l10n.TermRepresentation_L10n;
+import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
 
 /**
  * @author a.kohlbecker
@@ -49,28 +48,22 @@ public class TermBaseBeanProcessor extends AbstractCdmBeanProcessor<TermBase> {
         this.replaceRepresentations = replace;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.json.processor.AbstractCdmBeanProcessor#getIgnorePropNames()
-     */
     @Override
     public List<String> getIgnorePropNames() {
         return IGNORE_LIST;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.json.processor.AbstractCdmBeanProcessor#processBeanSecondStep(eu.etaxonomy.cdm.model.common.CdmBase, net.sf.json.JSONObject, net.sf.json.JsonConfig)
-     */
     @Override
     public JSONObject processBeanSecondStep(TermBase term, JSONObject json,	JsonConfig jsonConfig) {
 
         // handle OrderedTermVocabulary
         if(OrderedTermVocabulary.class.isAssignableFrom(term.getClass())){
-            OrderedTermVocabulary otv = (OrderedTermVocabulary)term;
+            OrderedTermVocabulary<?> otv = (OrderedTermVocabulary<?>)term;
             if(Hibernate.isInitialized(otv.getTerms())){
                 json.element("terms", otv.getOrderedTerms(), jsonConfig);
             }
         } else if(TermVocabulary.class.isAssignableFrom(term.getClass())) {
-            TermVocabulary tv = (TermVocabulary)term;
+            TermVocabulary<?> tv = (TermVocabulary<?>)term;
             if(Hibernate.isInitialized(tv.getTerms())){
                 json.element("terms", tv.getTerms(), jsonConfig);
             }
