@@ -520,10 +520,11 @@ public class TaxonServiceImpl
             try {
                 classificationFilter = classificationDao.load(classificationUuid);
             } catch (NullPointerException e){
+                //TODO not sure, why an NPE should be thrown in the above load method
                 throw new EntityNotFoundException("No Classification entity found for " + classificationUuid);
             }
             if(classificationFilter == null){
-
+                throw new EntityNotFoundException("No Classification entity found for " + classificationUuid);
             }
         }
 
