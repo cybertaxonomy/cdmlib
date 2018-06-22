@@ -18,23 +18,17 @@ import net.sf.json.JsonConfig;
  * @since Nov 21, 2013
  *
  */
-public class DefaultBeanProcessor extends AbstractBeanProcessor {
+public class DefaultBeanProcessor extends AbstractBeanProcessor<Object> {
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.json.processor.bean.AbstractBeanProcessor#getIgnorePropNames()
-     */
     @Override
-    public List getIgnorePropNames() {
+    public List<String> getIgnorePropNames() {
         // nothing to ignore by default
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.json.processor.bean.AbstractBeanProcessor#processBeanSecondStep(java.lang.Object, net.sf.json.JSONObject, net.sf.json.JsonConfig)
-     */
     @Override
-    public JSONObject processBeanSecondStep(Object bean, JSONObject json, JsonConfig jsonConfig) {
-        return json;
+    public JSONObject processBeanSecondStep(Object bean, JSONObject jsonObj, JsonConfig jsonConfig) {
+        return jsonObj;
     }
 
 }
