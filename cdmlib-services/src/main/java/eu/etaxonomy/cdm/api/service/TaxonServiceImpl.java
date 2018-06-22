@@ -504,9 +504,6 @@ public class TaxonServiceImpl
     public Taxon findAcceptedTaxonFor(UUID synonymUuid, UUID classificationUuid,
             boolean includeUnpublished, List<String> propertyPaths) throws UnpublishedException{
 
-        Taxon result = null;
-        Long count = 0l;
-
         Synonym synonym = null;
 
         try {
@@ -521,7 +518,7 @@ public class TaxonServiceImpl
         Classification classificationFilter = null;
         if(classificationUuid != null){
             try {
-            classificationFilter = classificationDao.load(classificationUuid);
+                classificationFilter = classificationDao.load(classificationUuid);
             } catch (NullPointerException e){
                 throw new EntityNotFoundException("No Classification entity found for " + classificationUuid);
             }
@@ -530,13 +527,14 @@ public class TaxonServiceImpl
             }
         }
 
-        count = dao.countAcceptedTaxonFor(synonym, classificationFilter) ;
+        long count = dao.countAcceptedTaxonFor(synonym, classificationFilter) ;
         if(count > 0){
-            result = dao.acceptedTaxonFor(synonym, classificationFilter, propertyPaths);
+            Taxon result = dao.acceptedTaxonFor(synonym, classificationFilter, propertyPaths);
             checkPublished(result, includeUnpublished, "Accepted taxon unpublished");
+            return result;
+        }else{
+            return null;
         }
-
-        return result;
     }
 
     @Override
