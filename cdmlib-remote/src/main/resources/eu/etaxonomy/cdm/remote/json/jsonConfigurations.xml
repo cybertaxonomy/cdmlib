@@ -122,6 +122,9 @@
             </property>
            </bean>
          </entry>
+         <entry key="eu.etaxonomy.cdm.model.common.Representation">
+          <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.RepresentationBeanProcessor"/>
+         </entry>
          <entry key="eu.etaxonomy.cdm.model.media.Media">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.MediaBeanProcessor">
               <property name="replaceTitle" value="true" />
