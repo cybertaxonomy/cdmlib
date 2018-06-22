@@ -1406,7 +1406,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             if(occurrenceConfig.isRetrieveIndirectlyAssociatedSpecimens() || !occurrenceConfig.getAssignmentStatus().equals(AssignmentStatus.ALL_SPECIMENS)){
                 List<SpecimenOrObservationBase> occurrences = new ArrayList<>();
                 occurrences.addAll(dao.findOccurrences(occurrenceConfig.getClazz(),
-                        occurrenceConfig.getTitleSearchString(), occurrenceConfig.getSignificantIdentifier(),
+                        occurrenceConfig.getTitleSearchStringSqlized(), occurrenceConfig.getSignificantIdentifier(),
                         occurrenceConfig.getSpecimenType(), taxon, taxonName, occurrenceConfig.getMatchMode(), null, null,
                         occurrenceConfig.getOrderHints(), occurrenceConfig.getPropertyPaths()));
                 occurrences = filterOccurencesByAssignmentAndHierarchy(occurrenceConfig, occurrences, taxon, taxonName);
@@ -1414,12 +1414,12 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             }
 
             return dao.countOccurrences(occurrenceConfig.getClazz(),
-                    occurrenceConfig.getTitleSearchString(), occurrenceConfig.getSignificantIdentifier(),
+                    occurrenceConfig.getTitleSearchStringSqlized(), occurrenceConfig.getSignificantIdentifier(),
                     occurrenceConfig.getSpecimenType(), taxon, taxonName, occurrenceConfig.getMatchMode(), null, null,
                     occurrenceConfig.getOrderHints(), occurrenceConfig.getPropertyPaths());
         }
         else{
-            return dao.countByTitle(config.getTitleSearchString());
+            return super.countByTitle(config);
         }
     }
 
