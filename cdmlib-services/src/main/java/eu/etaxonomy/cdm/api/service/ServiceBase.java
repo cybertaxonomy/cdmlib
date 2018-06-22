@@ -309,7 +309,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
      * @throws UnpublishedException thrown if entity is not public and unpublished should not be included
      */
     protected void checkPublished(IPublishable publishable, boolean includeUnpublished, String message) throws UnpublishedException {
-        if (!(includeUnpublished || !publishable.isPublish())){
+        if (!(includeUnpublished || publishable.isPublish())){
             throw new UnpublishedException("Access denied. "+  message);
         }
     }
