@@ -227,7 +227,7 @@ public class ClassificationServiceImpl
 //        long start_t = System.currentTimeMillis();
         Collections.sort(results, taxonNodeComparator); // TODO is ordering during the hibernate query in the dao possible?
 //        System.err.println("service.pageRankSpecificRootNodes() - Collections.sort(results,  taxonNodeComparator) " + (System.currentTimeMillis() - start_t));
-        return new DefaultPagerImpl<TaxonNode>(pageIndex, totalNumberOfResults, pageSize, results);
+        return new DefaultPagerImpl<>(pageIndex, totalNumberOfResults, pageSize, results);
 
     }
 
@@ -340,7 +340,7 @@ public class ClassificationServiceImpl
             results = new ArrayList<>();
         }
 
-        return new DefaultPagerImpl<TaxonNode>(pageIndex, numberOfResults, pageSize, results);
+        return new DefaultPagerImpl<>(pageIndex, numberOfResults, pageSize, results);
     }
 
     @Override
@@ -501,7 +501,6 @@ public class ClassificationServiceImpl
     	}
     	Map<String, List<TaxonNode>> sortedGenusMap = new HashMap<>();
     	for(TaxonNode node:allNodesOfClassification){
-    		final TaxonNode tn = node;
     		Taxon taxon = node.getTaxon();
     		INonViralName name = taxon.getName();
     		String genusOrUninomial = name.getGenusOrUninomial();
@@ -911,7 +910,7 @@ public class ClassificationServiceImpl
                     EntityDTO<Taxon> child = new EntityDTO<Taxon>(childDto.getTaxonUuid(), childDto.getTitleCache());
                     result.addChild(child);
                 }else if (doSynonyms && childDto.getStatus().isSynonym()){
-                    EntityDTO<Synonym> child = new EntityDTO<Synonym>(childDto.getTaxonUuid(), childDto.getTitleCache());
+                    EntityDTO<Synonym> child = new EntityDTO<>(childDto.getTaxonUuid(), childDto.getTitleCache());
                     result.addSynonym(child);
                 }
             }
@@ -924,6 +923,7 @@ public class ClassificationServiceImpl
 
         //marked ancestors
         if (ancestorMarkers != null && !ancestorMarkers.isEmpty()){
+            @SuppressWarnings("rawtypes")
             List<DefinedTermBase> markerTypesTerms = termDao.list(ancestorMarkers, pageSize, null, null, null);
             List<MarkerType> markerTypes = new ArrayList<>();
             for (DefinedTermBase<?> term : markerTypesTerms){
@@ -1016,6 +1016,4 @@ public class ClassificationServiceImpl
             Classification classification, Integer limit, String pattern) {
         return getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, limit, pattern, false);
     }
-
-
 }
