@@ -974,6 +974,26 @@ public class TaxonNodeServiceImpl
         return nodeFilterDao.idList(filter);
     }
 
+    @Override
+    public TaxonNodeDto getCommonParent(List<TaxonNodeDto> nodes) {
+        int highestRank = -1;
+        String parentTreeIndex = null;
+        for (TaxonNodeDto nodeDto : nodes) {
+            String nodeTreeIndex = nodeDto.getTreeIndex();
+            if(parentTreeIndex==null){
+                parentTreeIndex = nodeTreeIndex;
+            }
+            else if(nodeTreeIndex.length()<parentTreeIndex.length()){
+                parentTreeIndex = nodeTreeIndex;
+            }
+            else if(nodeTreeIndex.length()<parentTreeIndex.length()){
+                parentTreeIndex = nodeTreeIndex;
+            }
+        }
+        return null;
+    }
+
+
 //    @Override
 //    @Transactional(readOnly=false)
 //    public UUID monitSetSecundum(final SecundumForSubtreeConfigurator configurator) {
