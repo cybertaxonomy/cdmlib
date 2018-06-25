@@ -70,7 +70,7 @@ public class TermBaseBeanProcessor extends AbstractCdmBeanProcessor<TermBase> {
         }
 
         ITermRepresentation_L10n representation_L10n = new TermRepresentation_L10n(term, false);
-        handleL10nRepresentation(json, representation_L10n);
+        handleL10nRepresentation(json, representation_L10n, false);
         if(!replaceRepresentations){
             json.element("representations", term.getRepresentations(), jsonConfig);
         }
@@ -79,7 +79,7 @@ public class TermBaseBeanProcessor extends AbstractCdmBeanProcessor<TermBase> {
         if(RelationshipTermBase.class.isAssignableFrom(term.getClass())){
             RelationshipTermBase<?> relTerm = (RelationshipTermBase<?>)term;
             ITermRepresentation_L10n inverseRepresentation_L10n = new TermRepresentation_L10n(relTerm, true);
-            handleL10nRepresentation(json, inverseRepresentation_L10n);
+            handleL10nRepresentation(json, inverseRepresentation_L10n, true);
             if(!replaceRepresentations){
                 json.element("inverseRepresentations", relTerm.getInverseRepresentations(), jsonConfig);
             }
@@ -91,18 +91,19 @@ public class TermBaseBeanProcessor extends AbstractCdmBeanProcessor<TermBase> {
      * @param json
      * @param representation_L10n
      */
-    private void handleL10nRepresentation(JSONObject json, ITermRepresentation_L10n representation_L10n) {
+    private void handleL10nRepresentation(JSONObject json, ITermRepresentation_L10n representation_L10n, boolean isInverse) {
+        String baseLabel = isInverse? "inverseRepresentation_L10n" : "representation_L10n";
         if (representation_L10n.getLabel() != null) {
-            json.element("representation_L10n",representation_L10n.getLabel());
+            json.element(baseLabel,representation_L10n.getLabel());
         }
         if (representation_L10n.getAbbreviatedLabel() != null) {
-            json.element("representation_L10n_abbreviatedLabel", representation_L10n.getAbbreviatedLabel());
+            json.element(baseLabel + "_abbreviatedLabel", representation_L10n.getAbbreviatedLabel());
         }
         if (representation_L10n.getAbbreviatedLabel() != null) {
-            json.element("representation_L10n_language_iso", representation_L10n.getLanguageIso());
+            json.element(baseLabel + "_languageIso", representation_L10n.getLanguageIso());
         }
         if (representation_L10n.getAbbreviatedLabel() != null) {
-            json.element("representation_L10n_language_uuid", representation_L10n.getLanguageUuid());
+            json.element(baseLabel + "_languageUuid", representation_L10n.getLanguageUuid());
         }
     }
 
