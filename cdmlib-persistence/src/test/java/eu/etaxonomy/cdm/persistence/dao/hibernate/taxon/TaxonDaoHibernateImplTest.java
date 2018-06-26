@@ -1213,8 +1213,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         assertFalse("the list should not be empty", commonNameResults.isEmpty());
         assertEquals("There should be two taxa with common name", 2,commonNameResults.size());
 
-        @SuppressWarnings("rawtypes")
-        List<UuidAndTitleCache<IdentifiableEntity>> list = taxonDao.getTaxaByCommonNameForEditor(
+        List<UuidAndTitleCache<Taxon>> list = taxonDao.getTaxaByCommonNameForEditor(
                 "common%", null, MatchMode.BEGINNING, null);
 
         assertNotNull("getTaxaByCommonName should return a list", list);

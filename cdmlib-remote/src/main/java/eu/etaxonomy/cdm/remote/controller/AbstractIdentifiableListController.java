@@ -88,8 +88,6 @@ public abstract class AbstractIdentifiableListController <T extends Identifiable
             )
              throws IOException {
 
-
-
         logger.info("doFind : " + request.getRequestURI() + "?" + request.getQueryString() );
 
         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);

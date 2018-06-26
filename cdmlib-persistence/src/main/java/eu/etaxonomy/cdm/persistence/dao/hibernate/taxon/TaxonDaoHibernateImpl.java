@@ -1594,7 +1594,7 @@ public class TaxonDaoHibernateImpl
     }
 
 	@Override
-	public List<UuidAndTitleCache<IdentifiableEntity>> getTaxaByCommonNameForEditor(
+	public List<UuidAndTitleCache<Taxon>> getTaxaByCommonNameForEditor(
 			String titleSearchStringSqlized, Classification classification,
 			MatchMode matchMode, Set<NamedArea> namedAreas) {
 		Query query = prepareTaxaByCommonName(titleSearchStringSqlized, classification, matchMode, namedAreas, null, null, false, true);
@@ -1602,7 +1602,7 @@ public class TaxonDaoHibernateImpl
             @SuppressWarnings("unchecked")
             List<Object> resultArray = query.list();
             @SuppressWarnings("rawtypes")
-            List<UuidAndTitleCache<IdentifiableEntity>> returnResult = new ArrayList<>() ;
+            List<UuidAndTitleCache<Taxon>> returnResult = new ArrayList<>() ;
             Object[] result;
             for(int i = 0; i<resultArray.size();i++){
             	result = (Object[]) resultArray.get(i);

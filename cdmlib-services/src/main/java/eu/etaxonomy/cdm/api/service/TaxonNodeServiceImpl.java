@@ -974,21 +974,4 @@ public class TaxonNodeServiceImpl
         return nodeFilterDao.idList(filter);
     }
 
-//    @Override
-//    @Transactional(readOnly=false)
-//    public UUID monitSetSecundum(final SecundumForSubtreeConfigurator configurator) {
-//        RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
-//            @Override
-//            public Serializable doRun(IRemotingProgressMonitor monitor) {
-//                configurator.setMonitor(monitor);
-//                UpdateResult result = setSecundumForSubtree(configurator);
-//                return result;
-//            }
-//        };
-//        UUID uuid = progressMonitorService.registerNewRemotingMonitor(monitorThread);
-//        monitorThread.setPriority(3);
-//        monitorThread.start();
-//        return uuid;
-//    }
-
 }

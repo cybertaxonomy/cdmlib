@@ -179,6 +179,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
         crit.addOrder(Order.asc("titleCache"));
         int firstItem = (page - 1) * pagesize;
         crit.setFirstResult(firstItem);
+        @SuppressWarnings("unchecked")
         List<T> results = crit.list();
         List<String> propertyPaths = null;
         defaultBeanInitializer.initializeAll(results, propertyPaths);
