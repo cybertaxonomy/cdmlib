@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -975,24 +976,48 @@ public class TaxonNodeServiceImpl
     }
 
     @Override
-    public TaxonNodeDto getCommonParent(List<TaxonNodeDto> nodes) {
-        int highestRank = -1;
-        String parentTreeIndex = null;
+    public TaxonNodeDto findCommonParentDto(List<TaxonNodeDto> nodes) {
+        TaxonNodeDto commonParent = null;
+        List<String> treePath = null;
         for (TaxonNodeDto nodeDto : nodes) {
             String nodeTreeIndex = nodeDto.getTreeIndex();
-            if(parentTreeIndex==null){
-                parentTreeIndex = nodeTreeIndex;
+            nodeTreeIndex = nodeTreeIndex.replaceFirst("#", "");
+            String[] split = nodeTreeIndex.split("#");
+            if(treePath == null){
+                treePath = Arrays.asList(split);
             }
-            else if(nodeTreeIndex.length()<parentTreeIndex.length()){
-                parentTreeIndex = nodeTreeIndex;
-            }
-            else if(nodeTreeIndex.length()<parentTreeIndex.length()){
-                parentTreeIndex = nodeTreeIndex;
+            else{
+                List<String> match = new ArrayList<>();
+                for(int i=0;i<treePath.size();i++){
+                    if(i>=split.length){
+                        //current tree index is shorter so break
+                        break;
+                    }
+                    else if(split[i].equals(treePath.get(i))){
+                        //match found
+                        match.add(treePath.get(i));
+                    }
+                    else{
+                        //first mismatch found
+                        break;
+                    }
+                }
+                treePath = match;
+                if(treePath.isEmpty()){
+                    //no common parent found for at least two nodes
+                    //-> they belong to a different classification
+                    break;
+                }
             }
         }
-        return null;
+        if(treePath!=null && !treePath.isEmpty()) {
+            //get last index
+            int nodeId = Integer.parseInt(treePath.get(treePath.size()-1));
+            TaxonNode taxonNode = dao.load(nodeId, null);
+            commonParent = new TaxonNodeDto(taxonNode);
+        }
+        return commonParent;
     }
-
 
 //    @Override
 //    @Transactional(readOnly=false)
