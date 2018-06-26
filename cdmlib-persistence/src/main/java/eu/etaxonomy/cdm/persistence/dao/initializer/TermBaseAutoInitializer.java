@@ -13,9 +13,10 @@ import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.common.TermBase;
 
 /**
+ * Note: Probably not really needed as we are currently loading representations and inverse representations eager.
+ *
  * @author a.kohlbecker
  * @since 30.07.2010
- *
  */
 public class TermBaseAutoInitializer extends AutoPropertyInitializer<TermBase> {
 
