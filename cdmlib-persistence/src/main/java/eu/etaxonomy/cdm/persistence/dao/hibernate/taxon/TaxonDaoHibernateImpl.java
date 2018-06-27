@@ -1601,12 +1601,11 @@ public class TaxonDaoHibernateImpl
         if (query != null){
             @SuppressWarnings("unchecked")
             List<Object> resultArray = query.list();
-            @SuppressWarnings("rawtypes")
             List<UuidAndTitleCache<Taxon>> returnResult = new ArrayList<>() ;
             Object[] result;
             for(int i = 0; i<resultArray.size();i++){
             	result = (Object[]) resultArray.get(i);
-            	returnResult.add(new UuidAndTitleCache(Taxon.class, (UUID) result[0],(Integer)result[1], (String)result[2], new Boolean(result[4].toString()), null));
+            	returnResult.add(new UuidAndTitleCache<Taxon>(Taxon.class, (UUID) result[0],(Integer)result[1], (String)result[2], new Boolean(result[4].toString()), null));
             }
             return returnResult;
         }else{

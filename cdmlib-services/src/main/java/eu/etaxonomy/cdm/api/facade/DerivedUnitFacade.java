@@ -1737,7 +1737,7 @@ public class DerivedUnitFacade {
 	public List<Media> getFieldObjectMedia() {
 		try {
 			List<Media> result = getMediaList(getFieldUnit(false), false);
-			return result == null ? new ArrayList<Media>() : result;
+			return result == null ? new ArrayList<>() : result;
 		} catch (DerivedUnitFacadeNotSupportedException e) {
 			throw new IllegalStateException(notSupportMessage, e);
 		}
@@ -2090,7 +2090,7 @@ public class DerivedUnitFacade {
 		}
 		try {
 			List<Media> result = getMediaList(derivedUnit, false);
-			return result == null ? new ArrayList<Media>() : result;
+			return result == null ? new ArrayList<>() : result;
 		} catch (DerivedUnitFacadeNotSupportedException e) {
 			throw new IllegalStateException(notSupportMessage, e);
 		}
