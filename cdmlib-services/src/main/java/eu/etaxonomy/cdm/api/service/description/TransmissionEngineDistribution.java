@@ -471,7 +471,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
         while (taxonIdIterator.hasNext() || batch.hasUnprocessedItems()) {
 
             if(txStatus == null) {
-                // transaction has been comitted at the end of this batch, start a new one
+                // transaction has been committed at the end of this batch, start a new one
                 txStatus = startTransaction(false);
             }
 

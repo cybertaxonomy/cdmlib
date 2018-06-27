@@ -9,6 +9,8 @@
 package eu.etaxonomy.cdm.persistence.dao.reference;
 
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -105,6 +107,12 @@ public interface IReferenceDao extends IIdentifiableDao<Reference>, ITitledDao<R
      */
     List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthor(Integer limit, String pattern,
             ReferenceType refType);
+
+    /**
+     * @param uuids
+     * @return
+     */
+    List<UuidAndTitleCache<Reference>> getUuidAndTitle(Set<UUID> uuids);
 
 
 }

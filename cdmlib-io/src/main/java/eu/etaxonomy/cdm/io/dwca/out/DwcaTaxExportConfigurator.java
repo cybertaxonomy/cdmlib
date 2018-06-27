@@ -314,8 +314,6 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	}
 
 
-
-
     public boolean isDoSynonyms() {
         return doSynonyms;
     }
@@ -329,6 +327,5 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
     public void setDoMisappliedNames(boolean doMisappliedNames) {
         this.doMisappliedNames = doMisappliedNames;
     }
-
 
 }

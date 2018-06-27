@@ -245,7 +245,6 @@ public class JaxbImport
 				if ((homotypicalGroups = dataSet.getHomotypicalGroups()).size() > 0) {
 					logger.info("Homotypical groups: " + homotypicalGroups.size());
 					getNameService().saveAllHomotypicalGroups(homotypicalGroups);
-
 				}
 			}
 		} catch (Exception ex) {

@@ -116,6 +116,7 @@ public class Taxon
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     @NotNull
     @Valid
+    @ContainedIn
     private Set<Synonym> synonyms = new HashSet<>();
 
     // all taxa relations with rel.fromTaxon==this
@@ -125,6 +126,7 @@ public class Taxon
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @NotNull
 //    @Valid
+    @ContainedIn
     private Set<TaxonRelationship> relationsFromThisTaxon = new HashSet<>();
 
     // all taxa relations with rel.toTaxon==this
@@ -135,6 +137,7 @@ public class Taxon
     @OneToMany(mappedBy="relatedTo", fetch=FetchType.LAZY, orphanRemoval=true)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 //    @Valid
+    @ContainedIn
     private Set<TaxonRelationship> relationsToThisTaxon = new HashSet<>();
 
     @XmlAttribute(name= "taxonStatusUnknown")

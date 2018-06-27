@@ -35,7 +35,7 @@ public class DocumentSearchResult {
     /**
      * key will be a combination of DocumentBuilder.CLASS_FIELDNAME and id field: ID_FIELD
      */
-    private final Map<String, Document> docs = new HashMap<String, Document>();
+    private final Map<String, Document> docs = new HashMap<>();
     private Map<String,String[]> fieldHighlightMap;
 
 

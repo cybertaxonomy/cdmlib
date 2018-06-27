@@ -8,8 +8,6 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -30,12 +28,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.exception.UnpublishedException;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.remote.editor.RankPropertyEditor;
+import io.swagger.annotations.Api;
 
 /**
  * The ClassificationController class is a Spring MVC Controller.
@@ -140,23 +140,20 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
         Classification tree = null;
         Rank rank = null;
         if(treeUuid != null){
-            // get view and rank
             tree = service.find(treeUuid);
-
             if(tree == null) {
-                response.sendError(404 , "Classification not found using " + treeUuid );
+                HttpStatusMessage.UUID_NOT_FOUND.send(response, "Classification not found using " + treeUuid);
                 return null;
             }
         }
-        rank = findRank(rankUuid);
 
+        rank = findRank(rankUuid);
+        boolean includeUnpublished = NO_UNPUBLISHED;
 //        long start = System.currentTimeMillis();
-        List<TaxonNode> rootNodes = service.listRankSpecificRootNodes(tree, rank, null, null, NODE_INIT_STRATEGY);
+        List<TaxonNode> rootNodes = service.listRankSpecificRootNodes(tree, rank, includeUnpublished, null, null, NODE_INIT_STRATEGY);
 //        System.err.println("service.listRankSpecificRootNodes() " + (System.currentTimeMillis() - start));
         return rootNodes;
     }
-
-
 
 
     /**
@@ -186,9 +183,11 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
             HttpServletResponse response) throws IOException {
         logger.info("getChildNodesOfTaxon() " + request.getRequestURI());
 
+        boolean includeUnpublished = NO_UNPUBLISHED;  //for now we do not allow any remote service to publish unpublished data
 
-        List<TaxonNode> childs = service.listChildNodesOfTaxon(taxonUuid, treeUuid, null, null, NODE_INIT_STRATEGY);
-        return childs;
+        List<TaxonNode> children = service.listChildNodesOfTaxon(taxonUuid, treeUuid,
+                includeUnpublished, null, null, NODE_INIT_STRATEGY);
+        return children;
 
     }
 
@@ -202,8 +201,9 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
             HttpServletResponse response) throws IOException {
         logger.info("getSiblingsOfTaxon() " + request.getRequestURI());
 
+        boolean includeUnpublished = NO_UNPUBLISHED;
         //FIXME return pager
-        List<TaxonNode> childs = service.listSiblingsOfTaxon(taxonUuid, treeUuid, null, null, NODE_INIT_STRATEGY);
+        List<TaxonNode> childs = service.listSiblingsOfTaxon(taxonUuid, treeUuid, includeUnpublished, null, null, NODE_INIT_STRATEGY);
         return childs;
 
     }
@@ -224,6 +224,7 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
      * @param request
      * @return a List of {@link TaxonNode} entities initialized by
      *         the {@link #NODE_INIT_STRATEGY}
+     * @throws IOException
      */
     @RequestMapping(
             value = {"{treeUuid}/pathFrom/{taxonUuid}/toRank/{rankUuid}"},
@@ -236,11 +237,18 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
             HttpServletResponse response) throws IOException {
         logger.info("getPathFromTaxonToRank() " + request.getRequestURI());
 
+        boolean includeUnpublished = NO_UNPUBLISHED;
+
         Classification tree = service.find(treeUuid);
         Rank rank = findRank(rankUuid);
         Taxon taxon = (Taxon) taxonService.load(taxonUuid);
 
-        return service.loadTreeBranchToTaxon(taxon, tree, rank, NODE_INIT_STRATEGY);
+        try {
+            return service.loadTreeBranchToTaxon(taxon, tree, rank, includeUnpublished, NODE_INIT_STRATEGY);
+        } catch (UnpublishedException e) {
+            HttpStatusMessage.ACCESS_DENIED.send(response);
+            return null;
+        }
     }
 
     /**
@@ -258,6 +266,7 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
      * @param request
      * @return a List of {@link TaxonNode} entities initialized by
      *         the {@link #NODE_INIT_STRATEGY}
+     * @throws IOException
      */
     @RequestMapping(
             value = {"{treeUuid}/pathFrom/{taxonUuid}"},
@@ -275,11 +284,11 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
     private Rank findRank(UUID rankUuid) {
         Rank rank = null;
         if(rankUuid != null){
-            DefinedTermBase dt =  termService.find(rankUuid);
+            DefinedTermBase<?> dt =  termService.find(rankUuid);
             if(dt instanceof Rank){
                 rank = (Rank)dt;
             } else {
-               new IllegalArgumentException("DefinedTermBase is not a Rank");
+               throw new IllegalArgumentException("DefinedTermBase is not a Rank");
             }
         }
         return rank;

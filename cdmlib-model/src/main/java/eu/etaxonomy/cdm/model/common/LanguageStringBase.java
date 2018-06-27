@@ -35,7 +35,6 @@ import eu.etaxonomy.cdm.jaxb.FormattedTextAdapter;
 
 /**
  * @author a.mueller
- * @version 1.0
  * @since 25.04.2008
  */
 @XmlAccessorType(XmlAccessType.FIELD)

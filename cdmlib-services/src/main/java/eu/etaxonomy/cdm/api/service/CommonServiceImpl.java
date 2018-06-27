@@ -104,7 +104,7 @@ public class CommonServiceImpl /*extends ServiceBase<OriginalSourceBase,IOrigina
     }
 
     @Override
-    public Integer getReferencingObjectsCount(CdmBase referencedCdmBase){
+    public long getReferencingObjectsCount(CdmBase referencedCdmBase){
         return this.genericDao.getReferencingObjectsCount(referencedCdmBase);
     }
 
@@ -398,7 +398,7 @@ public class CommonServiceImpl /*extends ServiceBase<OriginalSourceBase,IOrigina
     }
 
     @Override
-    public <S extends CdmBase> int count(Class<S> type) {
+    public <S extends CdmBase> long count(Class<S> type) {
         return genericDao.count(type);
     }
 

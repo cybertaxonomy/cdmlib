@@ -48,7 +48,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
      * @param determinedAs the taxon name that these specimens are determined to belong to
      * @return
      */
-    public int count(Class<? extends SpecimenOrObservationBase> clazz,TaxonName determinedAs);
+    public long count(Class<? extends SpecimenOrObservationBase> clazz,TaxonName determinedAs);
 
     /**
      * Returns a sublist of SpecimenOrObservationBase instances stored in the database. A maximum
@@ -57,10 +57,6 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
      *
      * @param type
      * @param determinedAs the taxon name that these specimens are determined to belong to
-     * @param limit
-     *            the maximum number of entities returned (can be null to return
-     *            all entities)
-     * @param start
      * @param orderHints
      *            Supports path like <code>orderHints.propertyNames</code> which
      *            include *-to-one properties like createdBy.username or
@@ -68,7 +64,8 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
      * @return
      * @throws DataAccessException
      */
-    public List<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonName determinedAs, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+    public List<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonName determinedAs,
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
 	 * Returns the number of occurences belonging to a certain subclass - which must extend SpecimenOrObservationBase
@@ -76,7 +73,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	 * @param determinedAs the taxon concept that these specimens are determined to belong to
 	 * @return
 	 */
-	public int count(Class<? extends SpecimenOrObservationBase> clazz,TaxonBase determinedAs);
+	public long count(Class<? extends SpecimenOrObservationBase> clazz,TaxonBase determinedAs);
 
 	/**
 	 * Returns a sublist of SpecimenOrObservationBase instances stored in the database. A maximum
@@ -85,10 +82,6 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	 *
 	 * @param type
 	 * @param determinedAs the taxon concept that these specimens are determined to belong to
-	 * @param limit
-	 *            the maximum number of entities returned (can be null to return
-	 *            all entities)
-	 * @param start
 	 * @param orderHints
 	 *            Supports path like <code>orderHints.propertyNames</code> which
 	 *            include *-to-one properties like createdBy.username or
@@ -96,7 +89,8 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	 * @return
 	 * @throws DataAccessException
 	 */
-	public List<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonBase determinedAs, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+	public List<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonBase determinedAs,
+	        Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
      * Queries the database for specimens which match the given criteria<br>
@@ -187,7 +181,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
      *            authorTeam.persistentTitleCache
      * @return the number of found specimens
      */
-    public <T extends SpecimenOrObservationBase> int countOccurrences(Class<T> clazz, String queryString,
+    public <T extends SpecimenOrObservationBase> long countOccurrences(Class<T> clazz, String queryString,
             String significantIdentifier, SpecimenOrObservationType recordBasis, Taxon associatedTaxon,
             TaxonName associatedTaxonName, MatchMode matchmode, Integer limit, Integer start,
             List<OrderHint> orderHints, List<String> propertyPaths);
@@ -198,7 +192,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	 * @param occurence the occurence associated with these media
      * @return a count of media instances
      */
-	public int countMedia(SpecimenOrObservationBase occurence);
+	public long countMedia(SpecimenOrObservationBase occurence);
 
     /**
      * Returns a List of Media that are associated with a given occurence
@@ -218,7 +212,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	 * @param taxonbase the taxon concept associated with these determinations (can be null for all taxon concepts)
      * @return a count of determination events
      */
-    public int countDeterminations(SpecimenOrObservationBase occurence,TaxonBase taxonbase);
+    public long countDeterminations(SpecimenOrObservationBase occurence,TaxonBase taxonbase);
 
     /**
      * Returns a List of determinations that have been made for a given occurence and for a given taxon concept
@@ -238,7 +232,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	 * @param occurence the occurence that was a source of these derivation events
      * @return a count of derivation events
      */
-    public int countDerivationEvents(SpecimenOrObservationBase occurence);
+    public long countDerivationEvents(SpecimenOrObservationBase occurence);
 
     /**
      * Returns a list of derivation events that have involved creating new DerivedUnits from this occurence
@@ -409,4 +403,13 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
      * @return a list of field units referencing the gathering event
      */
     public List<FieldUnit> getFieldUnitsForGatheringEvent(UUID gatheringEventUuid, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
+    /**
+    *
+    * Returns {@link DerivedUNit} that has the accession number
+    * @param accessionNumber
+    * @param propertyPaths
+    * @return a derived unit
+    */
+   public List<DerivedUnit> getByGeneticAccessionNumber(String accessionNumberString, List<String> propertyPaths);
 }

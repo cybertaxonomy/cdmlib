@@ -428,6 +428,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     /**
      * @param extensionTypeUuid
      * @return a Set of extension value strings
+     * @see #hasExtension(UUID, String)
      */
     public Set<String> getExtensions(UUID extensionTypeUuid){
         Set<String> result = new HashSet<>();
@@ -447,6 +448,31 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
             }
         }
         return result;
+    }
+
+    /**
+     * Has this entity an extension of given type with value 'value'.
+     * If value is <code>null</code> <code>true</code> is returned if
+     * an Extension exists with given type and 'value' is <code>null</code>.
+     * @param extensionTypeUuid
+     * @param value
+     * @see #hasExtension(ExtensionType, String)
+     * @see #getExtensions(UUID)
+     */
+    public boolean hasExtension(UUID extensionTypeUuid, String value) {
+        for (String ext : this.getExtensions(extensionTypeUuid)){
+            if (CdmUtils.nullSafeEqual(ext, value)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @see #hasExtension(UUID, String)
+     */
+    public boolean hasExtension(ExtensionType extensionType, String value) {
+        return hasExtension(extensionType.getUuid(), value);
     }
 
     @Override

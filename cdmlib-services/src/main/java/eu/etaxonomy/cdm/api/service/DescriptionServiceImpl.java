@@ -171,7 +171,7 @@ public class DescriptionServiceImpl
     }
 
     @Override
-    public int count(Class<? extends DescriptionBase> type, Boolean hasImages, Boolean hasText,Set<Feature> feature) {
+    public long count(Class<? extends DescriptionBase> type, Boolean hasImages, Boolean hasText,Set<Feature> feature) {
         return dao.countDescriptions(type, hasImages, hasText, feature);
     }
 
@@ -180,7 +180,7 @@ public class DescriptionServiceImpl
             Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 
         List<T> results = listDescriptionElements(description, descriptionType, features, type, pageSize, pageNumber, propertyPaths);
-        return new DefaultPagerImpl<T>(pageNumber, results.size(), pageSize, results);
+        return new DefaultPagerImpl<>(pageNumber, results.size(), pageSize, results);
     }
 
     @Override
@@ -197,9 +197,9 @@ public class DescriptionServiceImpl
             Class<? extends DescriptionBase> descriptionType, Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber,
             List<String> propertyPaths) {
 
-        Integer numberOfResults = dao.countDescriptionElements(description, descriptionType, features, type);
+        long numberOfResults = dao.countDescriptionElements(description, descriptionType, features, type);
         List<T> results = new ArrayList<T>();
-        if(AbstractPagerImpl.hasResultsInRange(numberOfResults.longValue(), pageNumber, pageSize)) {
+        if(AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)) {
             results = dao.getDescriptionElements(description, descriptionType, features, type, pageSize, pageNumber, propertyPaths);
         }
         return results;
@@ -217,14 +217,14 @@ public class DescriptionServiceImpl
 
     @Override
     public Pager<Annotation> getDescriptionElementAnnotations(DescriptionElementBase annotatedObj, MarkerType status, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
-        Integer numberOfResults = descriptionElementDao.countAnnotations(annotatedObj, status);
+        long numberOfResults = descriptionElementDao.countAnnotations(annotatedObj, status);
 
-        List<Annotation> results = new ArrayList<Annotation>();
+        List<Annotation> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
             results = descriptionElementDao.getAnnotations(annotatedObj, status, pageSize, pageNumber, orderHints, propertyPaths);
         }
 
-        return new DefaultPagerImpl<Annotation>(pageNumber, numberOfResults, pageSize, results);
+        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
     }
 
 
@@ -254,14 +254,14 @@ public class DescriptionServiceImpl
 
     @Override
     public Pager<TaxonDescription> pageTaxonDescriptions(Taxon taxon, Set<DefinedTerm> scopes, Set<NamedArea> geographicalScope, Set<MarkerType> markerTypes, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-        Integer numberOfResults = dao.countTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes);
+        long numberOfResults = dao.countTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes);
 
-        List<TaxonDescription> results = new ArrayList<TaxonDescription>();
+        List<TaxonDescription> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
             results = dao.listTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, pageSize, pageNumber, propertyPaths);
         }
 
-        return new DefaultPagerImpl<TaxonDescription>(pageNumber, numberOfResults, pageSize, results);
+        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
     }
 
     @Override
@@ -343,27 +343,28 @@ public class DescriptionServiceImpl
 
     @Override
     public Pager<TaxonNameDescription> getTaxonNameDescriptions(TaxonName name, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-        Integer numberOfResults = dao.countTaxonNameDescriptions(name);
+        long numberOfResults = dao.countTaxonNameDescriptions(name);
 
         List<TaxonNameDescription> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
             results = dao.getTaxonNameDescriptions(name, pageSize, pageNumber,propertyPaths);
         }
 
-        return new DefaultPagerImpl<TaxonNameDescription>(pageNumber, numberOfResults, pageSize, results);
+        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
     }
 
 
     @Override
     public Pager<DescriptionBase> page(Class<? extends DescriptionBase> type, Boolean hasImages, Boolean hasText, Set<Feature> feature, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        Integer numberOfResults = dao.countDescriptions(type, hasImages, hasText, feature);
+        long numberOfResults = dao.countDescriptions(type, hasImages, hasText, feature);
 
-        List<DescriptionBase> results = new ArrayList<DescriptionBase>();
+        @SuppressWarnings("rawtypes")
+        List<DescriptionBase> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
             results = dao.listDescriptions(type, hasImages, hasText, feature, pageSize, pageNumber,orderHints,propertyPaths);
         }
 
-        return new DefaultPagerImpl<DescriptionBase>(pageNumber, numberOfResults, pageSize, results);
+        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
     }
 
     /**
@@ -372,14 +373,14 @@ public class DescriptionServiceImpl
      */
     @Override
     public Pager<TaxonDescription> searchDescriptionByDistribution(Set<NamedArea> namedAreas, PresenceAbsenceTerm presence,	Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        Integer numberOfResults = dao.countDescriptionByDistribution(namedAreas, presence);
+        long numberOfResults = dao.countDescriptionByDistribution(namedAreas, presence);
 
-        List<TaxonDescription> results = new ArrayList<TaxonDescription>();
+        List<TaxonDescription> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
             results = dao.searchDescriptionByDistribution(namedAreas, presence, pageSize, pageNumber,orderHints,propertyPaths);
         }
 
-        return new DefaultPagerImpl<TaxonDescription>(pageNumber, numberOfResults, pageSize, results);
+        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
     }
 
     /**
@@ -388,14 +389,14 @@ public class DescriptionServiceImpl
      */
     @Override
     public Pager<DescriptionElementBase> searchElements(Class<? extends DescriptionElementBase> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        Integer numberOfResults = descriptionElementDao.count(clazz, queryString);
+        long numberOfResults = descriptionElementDao.count(clazz, queryString);
 
-        List<DescriptionElementBase> results = new ArrayList<DescriptionElementBase>();
+        List<DescriptionElementBase> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
             results = descriptionElementDao.search(clazz, queryString, pageSize, pageNumber, orderHints, propertyPaths);
         }
 
-        return new DefaultPagerImpl<DescriptionElementBase>(pageNumber, numberOfResults, pageSize, results);
+        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
     }
 
     /**
@@ -521,7 +522,7 @@ public class DescriptionServiceImpl
             descriptionElements = new ArrayList<T>(0);
         }
         if (logger.isDebugEnabled()){logger.debug(" service - DONE ...");}
-        return new DefaultPagerImpl<T>(pageNumber, count.intValue(), pageSize, descriptionElements);
+        return new DefaultPagerImpl<T>(pageNumber, count, pageSize, descriptionElements);
     }
 
 

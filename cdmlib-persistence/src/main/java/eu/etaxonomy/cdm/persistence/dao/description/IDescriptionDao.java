@@ -59,7 +59,7 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
      * @param feature Restrict the description to those <i>elements</i> which are scoped by one of the Features passed (can be null or empty)
      * @return a count of DescriptionBase instances
      */
-     int countDescriptions(Class<? extends DescriptionBase> type, Boolean hasImages, Boolean hasText, Set<Feature> feature);
+     public long countDescriptions(Class<? extends DescriptionBase> type, Boolean hasImages, Boolean hasText, Set<Feature> feature);
 
     /**
      * Returns a count of TaxonDescription instances, optionally filtered by parameters passed to this method
@@ -70,7 +70,7 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
      * @param markerType Restrict the results to those descriptions which are marked as true by one of the given marker types (can be null or empty)
      * @return a count of TaxonDescription instances
      */
-    int countTaxonDescriptions(Taxon taxon, Set<DefinedTerm> scopes, Set<NamedArea> geographicalScope, Set<MarkerType> markerType);
+    public long countTaxonDescriptions(Taxon taxon, Set<DefinedTerm> scopes, Set<NamedArea> geographicalScope, Set<MarkerType> markerType);
 
     /**
      * Returns description elements of type <TYPE>, belonging to a given description, optionally filtered by one or more features
@@ -85,7 +85,7 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
      * @deprecated use {@link #getDescriptionElements(DescriptionBase, Class, Set, Class, Integer, Integer, List)} instead
      */
      @Deprecated
-     <T extends DescriptionElementBase> List<T> getDescriptionElements(DescriptionBase description,Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+     public <T extends DescriptionElementBase> List<T> getDescriptionElements(DescriptionBase description,Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
      * Returns description elements of type <TYPE>, belonging to a given
@@ -114,7 +114,7 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
      *            {@link IBeanInitializer#initialize(Object, List)}
      * @return a List of DescriptionElementBase instances
      */
-    <T extends DescriptionElementBase> List<T> getDescriptionElements(DescriptionBase description, Class<? extends DescriptionBase> descriptionType, Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+    public <T extends DescriptionElementBase> List<T> getDescriptionElements(DescriptionBase description, Class<? extends DescriptionBase> descriptionType, Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
 
     /**
@@ -127,7 +127,7 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
      * @deprecated use {@link #countDescriptionElements(DescriptionBase, Class, Set, Class)} instead
      */
     @Deprecated
-    <T extends DescriptionElementBase> int countDescriptionElements(DescriptionBase description, Set<Feature> features, Class<T> type);
+    <T extends DescriptionElementBase> long countDescriptionElements(DescriptionBase description, Set<Feature> features, Class<T> type);
 
     /**
      * Returns a count of description elements of type <TYPE>, belonging to a
@@ -146,7 +146,7 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
      *            The type of description
      * @return a count of DescriptionElementBase instances
      */
-    <T extends DescriptionElementBase> int countDescriptionElements(DescriptionBase description, Class<? extends DescriptionBase> descriptionType, Set<Feature> features, Class<T> type);
+    public <T extends DescriptionElementBase> long countDescriptionElements(DescriptionBase description, Class<? extends DescriptionBase> descriptionType, Set<Feature> features, Class<T> type);
 
     /**
      * Returns a List of TaxonDescription instances, optionally filtered by parameters passed to this method
@@ -207,7 +207,7 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
      * @param name Restrict the results to those descriptions that refer to a specific name (can be null for all TaxonNameDescription instances)
      * @return a count of TaxonName instances
      */
-    int countTaxonNameDescriptions(TaxonName name);
+    public long countTaxonNameDescriptions(TaxonName name);
 
     /**
      * Returns a List of distinct TaxonDescription instances which have Distribution elements that refer to one of the NamedArea instances passed (optionally
@@ -248,7 +248,7 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
      * @param presence Restrict the descriptions to those which have Distribution elements are of this status (can be null)
      * @return a count of TaxonDescription instances
      */
-    int countDescriptionByDistribution(Set<NamedArea> namedAreas, PresenceAbsenceTerm presence);
+    long countDescriptionByDistribution(Set<NamedArea> namedAreas, PresenceAbsenceTerm presence);
 
     /**
      * @param taxon

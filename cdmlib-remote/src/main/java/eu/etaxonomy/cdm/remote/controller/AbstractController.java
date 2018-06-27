@@ -13,13 +13,13 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.log4j.Logger;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DaoBase;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 
 /**
@@ -38,8 +38,6 @@ import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
  */
 public abstract class AbstractController<T extends CdmBase, SERVICE extends IService<T>> {
 
-    public static final Logger logger = Logger.getLogger(AbstractController.class);
-
     protected static final List<String> DEFAULT_INIT_STRATEGY = Arrays.asList(new String []{
             "$"
     });
@@ -52,6 +50,9 @@ public abstract class AbstractController<T extends CdmBase, SERVICE extends ISer
      * {@link Thread#NORM_PRIORITY}
      */
     public static final int DEFAULT_BATCH_THREAD_PRIORITY = 3;
+
+    protected static final boolean NO_UNPUBLISHED = DaoBase.NO_UNPUBLISHED;
+    protected static final boolean INCLUDE_UNPUBLISHED = DaoBase.INCLUDE_UNPUBLISHED;
 
     protected SERVICE service;
 
@@ -103,7 +104,7 @@ public abstract class AbstractController<T extends CdmBase, SERVICE extends ISer
     }
 
     // =============================================================
-    // TODO move into userHelper Class? See Vaddin CdmUserHelper!
+    // TODO move into userHelper Class? See Vaadin CdmUserHelper!
     /**
      * @return
      */

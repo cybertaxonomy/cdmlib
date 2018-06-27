@@ -17,6 +17,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,6 +41,9 @@ import io.swagger.annotations.Api;
 @Api("occurrence")
 @RequestMapping(value = {"/occurrence/{uuid}"})
 public class OccurrenceController extends AbstractIdentifiableController<SpecimenOrObservationBase, IOccurrenceService>{
+
+    private static final Logger logger = Logger.getLogger(OccurrenceController.class);
+
 
     protected static final List<String> DEFAULT_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
@@ -74,6 +78,7 @@ public class OccurrenceController extends AbstractIdentifiableController<Specime
         logger.info("doGetDerivedFrom()" + requestPathAndQuery(request));
 
         SpecimenOrObservationBase<?> sob = getCdmBaseInstance(uuid, response, DERIVED_UNIT_INIT_STRATEGY);
+        sob = checkExistsAndAccess(sob, NO_UNPUBLISHED, response);
         if(sob instanceof DerivedUnit){
             DerivationEvent derivationEvent = ((DerivedUnit)sob).getDerivedFrom();
             if (derivationEvent != null) {
@@ -104,6 +109,7 @@ public class OccurrenceController extends AbstractIdentifiableController<Specime
 
         logger.info("doGetExtensions()" + requestPathAndQuery(request));
         SpecimenOrObservationBase<?> sob = getCdmBaseInstance(uuid, response, EXTENSIONS_INIT_STRATEGY);
+        sob = checkExistsAndAccess(sob, NO_UNPUBLISHED, response);
 
         return pageFromCollection(sob.getExtensions(), pageNumber, pageSize, start, limit, response) ;
     }

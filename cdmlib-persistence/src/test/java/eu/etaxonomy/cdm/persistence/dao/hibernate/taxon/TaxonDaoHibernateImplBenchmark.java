@@ -138,17 +138,11 @@ public class TaxonDaoHibernateImplBenchmark extends CdmTransactionalIntegrationT
         endTransaction();
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
+
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
 
     }
-
-
-
-
 
 }

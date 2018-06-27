@@ -39,7 +39,7 @@ public abstract class AbstractBeanProcessor<T extends Object> implements JsonBea
 
     public static final Logger logger = Logger.getLogger(AbstractBeanProcessor.class);
 
-    private Set<String> excludes = new HashSet<String>();
+    private Set<String> excludes = new HashSet<>();
 
     private Set<String> mergedExcludes = null;
 
@@ -79,7 +79,7 @@ public abstract class AbstractBeanProcessor<T extends Object> implements JsonBea
      */
     protected Set<String> getMergedExcludes(){
         if(mergedExcludes  == null) {
-            mergedExcludes = new HashSet<String>(excludes);
+            mergedExcludes = new HashSet<>(excludes);
             if(getIgnorePropNames() != null){
                 mergedExcludes.addAll(getIgnorePropNames());
             }

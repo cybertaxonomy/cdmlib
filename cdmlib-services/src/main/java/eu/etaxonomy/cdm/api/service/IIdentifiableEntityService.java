@@ -150,7 +150,7 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity>
      *
      * @return
      */
-    public Integer countByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria);
+    public long countByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria);
 
     /**
      * Return an Integer of how many objects matching the given query string, optionally filtered by class, optionally with a particular MatchMode
@@ -159,7 +159,7 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity>
      *
      * @return
      */
-    public Integer countByTitle(IIdentifiableEntityServiceConfigurator<T> configurator);
+    public long countByTitle(IIdentifiableEntityServiceConfigurator<T> configurator);
 
 
     /**

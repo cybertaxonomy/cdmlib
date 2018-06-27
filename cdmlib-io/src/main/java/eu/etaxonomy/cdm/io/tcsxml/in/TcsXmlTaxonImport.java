@@ -311,7 +311,7 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<TcsXm
 	 * @param elTaxonRelationships
 	 * @param success
 	 */
-	private TaxonName makeScientificName(Element elName, NomenclaturalCode code, MapWrapper<? extends TaxonName> objectMap, ResultWrapper<Boolean> success){
+	private TaxonName makeScientificName(Element elName, NomenclaturalCode code, MapWrapper<TaxonName> objectMap, ResultWrapper<Boolean> success){
 		TaxonName result = null;
 		if (elName != null){
 			String language = elName.getAttributeValue("language");

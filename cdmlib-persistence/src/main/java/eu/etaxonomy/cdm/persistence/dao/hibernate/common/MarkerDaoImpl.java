@@ -31,11 +31,11 @@ public class MarkerDaoImpl extends VersionableDaoBase<Marker> implements IMarker
 	}
 
 	@Override
-    public int count(MarkerType markerType) {
+    public long count(MarkerType markerType) {
 		Criteria criteria = getSession().createCriteria(Marker.class);
 		criteria.add(Restrictions.eq("markerType", markerType));
 		criteria.setProjection(Projections.rowCount());
-        return ((Number)criteria.uniqueResult()).intValue();
+        return (Long)criteria.uniqueResult();
 	}
 
 	@Override
@@ -62,14 +62,14 @@ public class MarkerDaoImpl extends VersionableDaoBase<Marker> implements IMarker
 		throw new RuntimeException("Delete is not supported for markers. Markers must be removed from the marked object instead.");
 	}
 
-	public Integer count(User creator, MarkerType markerType) {
+	public long count(User creator, MarkerType markerType) {
 		Criteria criteria = getSession().createCriteria(Marker.class);
 		criteria.add(Restrictions.eq("createdBy", creator));
 		if(markerType != null) {
 		    criteria.add(Restrictions.eq("markerType", markerType));
 		}
 		criteria.setProjection(Projections.rowCount());
-        return ((Number)criteria.uniqueResult()).intValue();
+        return (Long)criteria.uniqueResult();
 	}
 
 	public List<Marker> list(User creator, MarkerType markerType, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {

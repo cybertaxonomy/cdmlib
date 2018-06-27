@@ -88,7 +88,6 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
             restrictions.add(new Restriction<>("name.titleCache", MatchMode.LIKE, taxonNameFilterPattern));
         }
 
-
         long numberOfResults = dao.count(Registration.class, restrictions);
 
         List<Registration> results = new ArrayList<>();

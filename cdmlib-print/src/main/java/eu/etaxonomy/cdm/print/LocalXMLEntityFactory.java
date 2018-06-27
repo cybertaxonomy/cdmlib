@@ -26,6 +26,7 @@ import org.springframework.web.servlet.ModelAndView;
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DaoBase;
 import eu.etaxonomy.cdm.print.XMLHelper.EntityType;
 import eu.etaxonomy.cdm.remote.controller.ClassificationController;
 import eu.etaxonomy.cdm.remote.controller.ClassificationListController;
@@ -139,11 +140,6 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
                 .getBean("jsonConfigPortal");
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see eu.etaxonomy.printpublisher.IXMLEntityFactory#getClassifications()
-     */
     @Override
     public List<Element> getClassifications() {
         xmlView.setJsonConfig(jsonConfig);
@@ -162,6 +158,8 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
 
         UUID uuid = XMLHelper.getUuid(treeNode);
 
+        boolean includeUnpublished = DaoBase.NO_UNPUBLISHED;  //for now we do not allow any remote service to publish unpublished data
+
         Object resultObject = null;
         try {
             if (EntityType.CLASSIFICATION.equals(entityType)) {
@@ -169,7 +167,7 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
                         null, null);
             } else if (EntityType.TAXON_NODE.equals(entityType)) {
                 resultObject = taxonNodePrintAppController
-                        .getChildNodes(uuid, null);
+                        .getChildNodes(uuid, includeUnpublished, null);
             }
         } catch (IOException e) {
             monitor.warning(e.getLocalizedMessage(), e);
@@ -196,11 +194,6 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
         return result;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see eu.etaxonomy.printpublisher.IXMLEntityFactory#getFeatureTrees()
-     */
     @Override
     public List<Element> getFeatureTrees() {
         xmlView.setJsonConfig(jsonConfig);
@@ -211,13 +204,6 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
         return processElementList(result);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * eu.etaxonomy.printpublisher.IXMLEntityFactory#getFeatureNode(java.util
-     * .UUID)
-     */
     @Override
     public Element getFeatureNode(UUID uuid) {
         xmlView.setJsonConfig(jsonConfig);
@@ -249,11 +235,6 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
         return result;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see eu.etaxonomy.printpublisher.IXMLEntityFactory#getFeatureTree()
-     */
     @Override
     public Element getFeatureTree(UUID uuid) {
         xmlView.setJsonConfig(jsonConfig);

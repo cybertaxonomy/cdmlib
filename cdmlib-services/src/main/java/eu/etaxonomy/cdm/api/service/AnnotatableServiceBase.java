@@ -23,32 +23,34 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
-public abstract class AnnotatableServiceBase<T extends AnnotatableEntity,DAO extends IAnnotatableDao<T>> extends VersionableServiceBase<T, DAO>
+public abstract class AnnotatableServiceBase<T extends AnnotatableEntity,DAO extends IAnnotatableDao<T>>
+        extends VersionableServiceBase<T, DAO>
 		implements IAnnotatableService<T> {
-	@Override
+
+    @Override
     @Transactional(readOnly = true)
 	public Pager<Annotation> getAnnotations(T annotatedObj, MarkerType status, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-		Integer numberOfResults = dao.countAnnotations(annotatedObj, status);
+		long numberOfResults = dao.countAnnotations(annotatedObj, status);
 
-		List<Annotation> results = new ArrayList<Annotation>();
+		List<Annotation> results = new ArrayList<>();
 		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.getAnnotations(annotatedObj, status, pageSize, pageNumber, orderHints, propertyPaths);
 		}
 
-		return new DefaultPagerImpl<Annotation>(pageNumber, numberOfResults, pageSize, results);
+		return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
 	}
 
 	@Override
     @Transactional(readOnly = true)
     public Pager<Marker> getMarkers(T annotatableEntity, Boolean technical, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        Integer numberOfResults = dao.countMarkers(annotatableEntity, technical);
+        long numberOfResults = dao.countMarkers(annotatableEntity, technical);
 
-		List<Marker> results = new ArrayList<Marker>();
+		List<Marker> results = new ArrayList<>();
 		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.getMarkers(annotatableEntity, technical, pageSize, pageNumber, orderHints, propertyPaths);
 		}
 
-		return new DefaultPagerImpl<Marker>(pageNumber, numberOfResults, pageSize, results);
+		return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
     }
 
 

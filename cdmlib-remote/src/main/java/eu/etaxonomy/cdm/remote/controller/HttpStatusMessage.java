@@ -34,6 +34,8 @@ public class HttpStatusMessage {
 
     public final static HttpStatusMessage INTERNAL_ERROR = new HttpStatusMessage(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "internal server error");
 
+    public final static HttpStatusMessage ACCESS_DENIED = new HttpStatusMessage(HttpServletResponse.SC_FORBIDDEN, "access denied");
+
 
     private int statusCode;
 
@@ -76,8 +78,13 @@ public class HttpStatusMessage {
 
 
     public void send(HttpServletResponse response) throws IOException{
-        logger.info("HTTP " + getStatusCode() + " : " +  getMessage());
-        response.sendError(getStatusCode(), getMessage());
+        send(response, null);
+    }
+
+    public void send(HttpServletResponse response, String message) throws IOException{
+        message = getMessage() + ((message == null)? "": ". " + message);
+        logger.info("HTTP " + getStatusCode() + " : " +  message);
+        response.sendError(getStatusCode(), message);
     }
 
 }

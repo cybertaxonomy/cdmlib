@@ -13,7 +13,9 @@ import java.io.FileNotFoundException;
 import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 import javax.sql.DataSource;
 import javax.xml.transform.Source;
@@ -24,6 +26,7 @@ import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.filter.ITableFilterSimple;
+import org.dbunit.dataset.xml.FlatXmlDataSet;
 import org.dbunit.ext.h2.H2DataTypeFactory;
 import org.h2.tools.Server;
 import org.junit.Before;
@@ -31,11 +34,14 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.database.annotations.TestDataSource;
+import org.unitils.dbunit.util.MultiSchemaXmlDataSetReader;
 import org.unitils.orm.hibernate.annotation.HibernateSessionFactory;
 import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.database.DataBaseTablePrinter;
+import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.test.unitils.FlatFullXmlWriter;
 
 /**
  * Abstract base class for integration testing a spring / hibernate application using
@@ -72,6 +78,7 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
     protected static final Logger logger = Logger.getLogger(CdmIntegrationTest.class);
 
     private static final String PROPERTY_H2_SERVER = "h2Server";
+    private static final String H2_SERVER_RUNNING = "h2ServerIsRunning";
 
     /**
      * List of the tables which are initially being populated during term loading. {@link PersistentTermInitializer}
@@ -138,20 +145,35 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
 //      System.err.println("####" +  agentstr);
 //  }
 
+    /**
+     * How to use:
+     * <ol>
+     * <li>Add <code>-Dh2Server</code> as jvm argument to activate.</li>
+     * <li>uncomment <code>database.url= jdbc:h2:tcp://localhost/~/cdm</code> in <code>/cdmlib-test/src/main/resources/unitils.properties</code></li>
+     * @throws Exception
+     */
     @Before
     public void startH2Server() throws Exception {
 
-        if(System.getProperty(PROPERTY_H2_SERVER) != null){
+        if(System.getProperty(PROPERTY_H2_SERVER) != null && System.getProperty(H2_SERVER_RUNNING) == null){
             try {
+                // printing to System.out, so that developers get feedback always
+                System.out.println("####################################################");
+                System.out.println("  Starting h2 web server ...");
                 List<String> args = new ArrayList<String>();
+                Integer port = null;
                 try {
-                    Integer port = Integer.parseInt(System.getProperty(PROPERTY_H2_SERVER));
+                    port = Integer.parseInt(System.getProperty(PROPERTY_H2_SERVER));
                     args.add("-webPort");
                     args.add(port.toString());
                 } catch (Exception e) {
-                    // will start at port 8082 by default
+                    // the default port is 8082
                 }
                 Server.createWebServer(args.toArray(new String[]{})).start();
+                System.setProperty(H2_SERVER_RUNNING, "true");
+                System.out.println("  you can connect to the h2 web server by opening");
+                System.out.println("  http://localhost:" + (port != null ? port : "8082") + "/ in your browser");
+                System.out.println("#####################################################");
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -230,7 +252,6 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      */
     public void printDataSetWithNull(OutputStream out, Boolean excludeTermLoadingTables,
             ITableFilterSimple excludeFilterOrig, String[] includeTableNames) {
-
         dbTablePrinter.printDataSetWithNull(out, excludeTermLoadingTables, excludeFilterOrig, includeTableNames);
     }
 
@@ -240,7 +261,6 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      * @param formatString can be null, otherwise a format string like eg. "&lt; %1$s /&gt;" see also {@link String#format(String, Object...)}
      */
     public void printTableNames(OutputStream out, String formatString) {
-
         dbTablePrinter.printTableNames(out, formatString);
     }
 
@@ -272,7 +292,6 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      * 		the names of tables to print (should be in upper case letters)
      */
     public void printDataSet(OutputStream out, String[] includeTableNames) {
-
         dbTablePrinter.printDataSet(out, includeTableNames);
 
     }
@@ -302,7 +321,6 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      * @param filter
      */
     public void printDataSet(OutputStream out, ITableFilterSimple filter) {
-
         dbTablePrinter.printDataSet(out, filter);
     }
 
@@ -315,7 +333,6 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      * @see org.dbunit.dataset.xml.FlatDtdDataSet
      */
     public void printDtd(OutputStream out) {
-
         dbTablePrinter.printDtd(out);
     }
 
@@ -345,7 +362,6 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      */
     public void writeDbUnitDataSetFile(String[] includeTableNames) throws FileNotFoundException {
         dbTablePrinter.writeDbUnitDataSetFile(includeTableNames, this.getClass());
-
     }
 
     /**
@@ -361,7 +377,6 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      * @see #writeDbUnitDataSetFile(String[])
      */
     public void writeDbUnitDataSetFile(String[] includeTableNames, String fileAppendix) throws FileNotFoundException {
-
         dbTablePrinter.writeDbUnitDataSetFile(includeTableNames, this.getClass(), fileAppendix);
     }
 
@@ -369,8 +384,21 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      * see {@link DataBaseTablePrinter#transformSourceToString(Source)
      */
     protected String transformSourceToString(Source source) throws TransformerException {
-
         return dbTablePrinter.transformSourceToString(source);
+    }
+
+
+    protected <T extends CdmBase> T getEntityFromCollection(Collection<T> cdmBases, UUID uuid) {
+        for (T cdmBase : cdmBases){
+            if (cdmBase.getUuid().equals(uuid)){
+                return cdmBase;
+            }
+        }
+        return null;
+    }
+
+    protected boolean existsInCollection(Collection<? extends CdmBase> cdmBases, UUID uuid) {
+         return getEntityFromCollection(cdmBases, uuid) != null;
     }
 
 

@@ -44,7 +44,7 @@ public class ProgressMonitorServiceImpl implements IProgressMonitorService {
     public UUID registerNewRemotingMonitor(RemotingProgressMonitorThread monitorThread) {
         RemotingProgressMonitor monitor = new RemotingProgressMonitor(monitorThread);
         monitorThread.setMonitor(monitor);
-        UUID uuid = progressMonitorManager.registerMonitor(monitor);
+        UUID uuid = progressMonitorManager.registerMonitor(monitor, monitorThread);
         User user = User.getCurrentAuthenticatedUser();
         if(user == null) {
             throw new IllegalStateException("Current authenticated user is null");
@@ -59,19 +59,23 @@ public class ProgressMonitorServiceImpl implements IProgressMonitorService {
      */
     @Override
     public IRemotingProgressMonitor getRemotingMonitor(UUID uuid) {
-        IRestServiceProgressMonitor monitor = progressMonitorManager.getMonitor(uuid);
-        // lookup remoting monitors
-        if(monitor != null && monitor instanceof IRemotingProgressMonitor ) {
-            IRemotingProgressMonitor remotingMonitor = (IRemotingProgressMonitor)monitor;
-            String monitorOwner = remotingMonitor.getOwner();
-            User currentUser = User.getCurrentAuthenticatedUser();
-            // ensure that current user is admin or is the same as the owner of
-            // the monitor
-            if(currentUser != null &&
-                    (currentUser.getUsername().equals(monitorOwner) ||
-                            permissionEvaluator.hasOneOfRoles(SecurityContextHolder.getContext().getAuthentication(), Role.ROLE_ADMIN))) {
-                return remotingMonitor;
+        try{
+            IRestServiceProgressMonitor monitor = progressMonitorManager.getMonitor(uuid);
+            // lookup remoting monitors
+            if(monitor != null && monitor instanceof IRemotingProgressMonitor ) {
+                IRemotingProgressMonitor remotingMonitor = (IRemotingProgressMonitor)monitor;
+                String monitorOwner = remotingMonitor.getOwner();
+                User currentUser = User.getCurrentAuthenticatedUser();
+                // ensure that current user is admin or is the same as the owner of
+                // the monitor
+                if(currentUser != null &&
+                        (currentUser.getUsername().equals(monitorOwner) ||
+                                permissionEvaluator.hasOneOfRoles(SecurityContextHolder.getContext().getAuthentication(), Role.ROLE_ADMIN))) {
+                    return remotingMonitor;
+                }
             }
+        }catch (Exception e){
+            return null;
         }
         return null;
     }
@@ -84,6 +88,7 @@ public class ProgressMonitorServiceImpl implements IProgressMonitorService {
         IRemotingProgressMonitor remotingMonitor = getRemotingMonitor(uuid);
         if(remotingMonitor!= null) {
             remotingMonitor.interrupt();
+            progressMonitorManager.getThread(uuid).interrupt();
         }
     }
 
@@ -108,6 +113,7 @@ public class ProgressMonitorServiceImpl implements IProgressMonitorService {
         if(monitor != null) {
             monitor.setCanceled(true);
             monitor.done();
+
         }
     }
 

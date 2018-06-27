@@ -77,7 +77,7 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
         Team team = (Team)agentDao.findByUuid(uuid);
         assert team != null : "team must exist";
 
-        int numberOfMembers = agentDao.countMembers(team);
+        long numberOfMembers = agentDao.countMembers(team);
         assertEquals("countMembers should return 5",5,numberOfMembers);
     }
 
@@ -106,7 +106,7 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
         Person person = (Person)agentDao.findByUuid(personUuid);
         assert person != null : "person must exist";
 
-        int numberOfInstitutionalMemberships = agentDao.countInstitutionalMemberships(person);
+        long numberOfInstitutionalMemberships = agentDao.countInstitutionalMemberships(person);
         assertEquals("countInstitutionalMemberships should return 3",3,numberOfInstitutionalMemberships);
     }
 

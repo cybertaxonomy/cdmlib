@@ -159,11 +159,11 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                             state.setRef(state.getConfig().getSourceReference());
                         }else{
                             state.setRef(ReferenceFactory.newGeneric());
+                            state.getRef().setUri(sourceUri);
+                            state.getRef().setTitle(StringUtils.substringAfter(sourceUri.toString(), "dsa="));
 
-                            if (state.getConfig().getSourceReferenceTitle() != null){
+                            if (!StringUtils.isBlank(state.getConfig().getSourceReferenceTitle())){
                                 state.getRef().setTitle(state.getConfig().getSourceReferenceTitle());
-                            } else{
-                                state.getRef().setTitle("ABCD Import Source Reference");
                             }
                         }
 
@@ -286,6 +286,11 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         }
         finally{
             state.getReport().printReport(state.getConfig().getReportUri());
+        }
+
+        if (state.getConfig().isDownloadSequenceData()){
+            //download fasta files for imported sequences
+            //TODO: where to store the files and how to create the new Blast DB
         }
         return;
     }

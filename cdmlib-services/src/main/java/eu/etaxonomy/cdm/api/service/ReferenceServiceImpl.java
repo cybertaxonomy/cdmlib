@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -184,6 +185,14 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<Reference,IRef
             inReferenceType = ReferenceType.Generic;
         }
         return inReferenceType;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<UuidAndTitleCache<Reference>> getUuidAndTitleCacheForUUIDS(Set<UUID> uuids) {
+        return dao.getUuidAndTitle(uuids);
     }
 
 }

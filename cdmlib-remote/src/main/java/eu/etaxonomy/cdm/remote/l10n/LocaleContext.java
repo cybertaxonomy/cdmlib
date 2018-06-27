@@ -20,12 +20,12 @@ public class LocaleContext {
 
 		@Override
 		protected Vector<Locale> initialValue() {
-			return new Vector<Locale>();
+			return new Vector<>();
 		}
 
 	};
 
-	protected static Hashtable<String, List<Language>> languageMap = new Hashtable<String, List<Language>>();
+	protected static Hashtable<String, List<Language>> languageMap = new Hashtable<>();
 
 	private ITermService termService;
 

@@ -206,7 +206,7 @@ public class CsvDemoExport extends CsvDemoBase {
 	    	if(progressMonitor != null) {
 	    		progressMonitor.beginTask("", totalWork);
 	    	}
-	    	List<TaxonNode> result = new ArrayList<TaxonNode>();
+	    	List<TaxonNode> result = new ArrayList<>();
 	    	int totalNodes = getTaxonNodeService().count(TaxonNode.class);
 
 	    	for(int i = 0 ; i < totalNodes; i++){
@@ -275,7 +275,7 @@ public class CsvDemoExport extends CsvDemoBase {
 		if(config != null){
 			Set<UUID> classificationUuidSet = config.getClassificationUuids();
 			List<Classification> classificationList = getClassificationService().find(classificationUuidSet);
-			Set<Classification> classificationSet = new HashSet<Classification>();
+			Set<Classification> classificationSet = new HashSet<>();
 			classificationSet.addAll(classificationList);
 			return classificationSet;
 		}
@@ -299,99 +299,6 @@ public class CsvDemoExport extends CsvDemoBase {
 		return null;
 	}
 
-	/**
-	 * Takes positive List of areas and iterates over a given classification
-	 * and their {@link Taxon} to return all {@link Taxon} with the desired
-	 * geographical attribute.
-	 *
-	 * <p><p>
-	 *
-	 * If selectedAreas is null all {@link TaxonNode}s of the given {@link Classification} will be returned.
-	 *
-	 * @param selectedAreas
-	 * @param classificationSet
-	 * @param limit
-	 * @param start
-	 * @return
-	 */
-//	protected List<TaxonNode> handleGeographicalFilter(CsvDemoExportState state,
-//			Set<Classification> classificationSet, CsvDemoExportConfigurator config, int limit, int start) {
-//		List<TaxonNode> filteredNodes = new ArrayList<TaxonNode>();
-//		List<TaxonNode> allNodes = new ArrayList<TaxonNode>();
-//		//Check if json/XML export
-//		if(config.getRecordList() != null){
-//		    if(config.getProgressMonitor() != null) {
-//                config.getProgressMonitor().subTask("Calculate size of export...");
-//            }
-//		    //FIXME does not filter for classifications
-//		    allNodes = getTaxonNodeService().list(TaxonNode.class, config.getPageSize(), config.getPageNumber(), null, null);
-//		    config.setTaxonNodeListSize(getAllNodes(classificationSet).size());
-//		    //getTaxonNodeService().page(TaxonNode.class, config.getPageSize(), config.getPageNumber(), null, null).getRecords();
-//		}else{
-//
-//		    //do your own pagination
-//		        allNodes =  getAllNodes(classificationSet);
-//
-//		}
-//		//Geographical filter
-//		if(state.getConfig().isDoGeographicalFilter()){
-//			List<NamedArea> selectedAreas = state.getConfig().getNamedAreas();
-//			logger.info(selectedAreas.size());
-//			if(selectedAreas != null && !selectedAreas.isEmpty() && selectedAreas.size() < 16){
-//				//				if(selectedAreas.size() == 16){
-//				//					//Germany TDWG Level 3
-//				//					String germany="uu7b7c2db5-aa44-4302-bdec-6556fd74b0b9id";
-//				//					selectedAreas.add((NamedArea) getTermService().find(UUID.fromString(germany)));
-//				//				}
-//				for (TaxonNode node : allNodes){
-//					Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
-//					Set<TaxonDescription> descriptions = taxon.getDescriptions();
-//					for (TaxonDescription description : descriptions){
-//						for (DescriptionElementBase el : description.getElements()){
-//							if (el.isInstanceOf(Distribution.class) ){
-//								Distribution distribution = CdmBase.deproxy(el, Distribution.class);
-//								NamedArea area = distribution.getArea();
-//								for(NamedArea selectedArea:selectedAreas){
-//									if(selectedArea.getUuid().equals(area.getUuid())){
-//										filteredNodes.add(node);
-//									}
-//								}
-//							}
-//						}
-//					}
-//				}
-//			}else{
-//				filteredNodes = allNodes;
-//			}
-//		}
-//		return filteredNodes;
-//	}
-
-	/**
-	 * handles misapplied {@link Taxon}
-	 * @param taxon
-	 * @param writer
-	 * @param classification
-	 * @param metaRecord
-	 * @param config
-	 * @param node
-	 */
-//	private void handleMisapplication(Taxon taxon, PrintWriter writer, Classification classification, CsvDemoRecord record, CsvDemoExportConfigurator config, TaxonNode node) {
-//		Set<Taxon> misappliedNames = taxon.getMisappliedNames();
-//		for (Taxon misappliedName : misappliedNames ){
-////			CsvTaxRecordRedlist record = new CsvTaxRecordRedlist(metaRecord, config);
-//			TaxonRelationshipType relType = TaxonRelationshipType.MISAPPLIED_NAME_FOR();
-//			INonViralName name = misappliedName.getName();
-//
-//			if (! this.recordExists(misappliedName)){
-//				handleTaxonBase(record, misappliedName, name, taxon, classification, relType, false, false, config, node);
-//				if(writer != null){
-//				    record.write(writer);
-//				}
-//				this.addExistingRecord(misappliedName);
-//			}
-//		}
-//	}
 
 	/**
 	 * handles the information record for the actual {@link Taxon} including {@link Classification classification}, Taxon Name, Taxon ID,

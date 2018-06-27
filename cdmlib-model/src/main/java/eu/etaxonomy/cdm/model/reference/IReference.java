@@ -108,9 +108,15 @@ public interface IReference
      * Note: The time period will be internally converted to
      * a VerbatimTimePeriod so later changes to it will not
      * be reflected in the reference time period.
+     * @return the new converted VerbatimTimePeriod
+     * @param datePublished the not yet converted TimePeriod
+     * @deprecated only for compatibility with older versions
+     * but may create problems in certain contexts therefore
+     * will be removed soon.
      */
     @Transient
-    public void setDatePublished(TimePeriod datePublished);
+    @Deprecated
+    public VerbatimTimePeriod setDatePublished(TimePeriod datePublished);
 
 	/**
 	 * Returns the Uniform Resource Identifier (URI) corresponding to <i>this</i>

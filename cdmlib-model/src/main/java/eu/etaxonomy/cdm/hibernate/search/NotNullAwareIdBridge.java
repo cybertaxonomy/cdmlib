@@ -53,9 +53,6 @@ public class NotNullAwareIdBridge implements TwoWayFieldBridge {
         return name + "." + NOT_NULL_FIELD_NAME;
     }
 
-    /* (non-Javadoc)
-     * @see org.hibernate.search.bridge.FieldBridge#set(java.lang.String, java.lang.Object, org.apache.lucene.document.Document, org.hibernate.search.bridge.LuceneOptions)
-     */
     @Override
     public void set(String name, Object value, Document document, LuceneOptions luceneOptions) {
 
@@ -94,9 +91,6 @@ public class NotNullAwareIdBridge implements TwoWayFieldBridge {
         return document.get(name);
     }
 
-    /* (non-Javadoc)
-     * @see org.hibernate.search.bridge.TwoWayFieldBridge#objectToString(java.lang.Object)
-     */
     @Override
     public String objectToString(Object object) {
         if(object == null){

@@ -197,16 +197,14 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 	}
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.ILoadableTerm#readCsvLine(java.util.List)
-	 */
 	public TermVocabulary<T> readCsvLine(List<String> csvLine) {
 		return readCsvLine(csvLine, Language.CSV_LANGUAGE());
 	}
 
 	public TermVocabulary<T> readCsvLine(List<String> csvLine, Language lang) {
 		this.setUuid(UUID.fromString(csvLine.get(0)));
-		this.setUri(URI.create(csvLine.get(1)));
+        String uriStr = CdmUtils.Ne(csvLine.get(1));
+        this.setUri(uriStr == null? null: URI.create(uriStr));
 		String label = csvLine.get(2).trim();
 		String description = csvLine.get(3);
 

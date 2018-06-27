@@ -25,9 +25,9 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
  */
 public class ClassificationLookupDTO {
 
-    private final Map<Integer, Integer> taxonIdToParentId = new HashMap<Integer, Integer>();
-    private final Map<Rank,Set<Integer>> taxonIdByRank = new HashMap<Rank, Set<Integer>>();
-    private final Map<Integer,Set<Integer>> childTaxonMap = new HashMap<Integer,Set<Integer>>();
+    private final Map<Integer, Integer> taxonIdToParentId = new HashMap<>();
+    private final Map<Rank,Set<Integer>> taxonIdByRank = new HashMap<>();
+    private final Map<Integer,Set<Integer>> childTaxonMap = new HashMap<>();
     private Classification classification = null;
 
     /**
@@ -104,7 +104,7 @@ public class ClassificationLookupDTO {
      */
     public void filterInclude(List<Rank> includeRanks) {
 
-       Set<Rank> rankSet = new HashSet<Rank>(taxonIdByRank.keySet());
+       Set<Rank> rankSet = new HashSet<>(taxonIdByRank.keySet());
        for(Rank rank : rankSet) {
            if(!includeRanks.contains(rank)) {
                dropRank(rank);

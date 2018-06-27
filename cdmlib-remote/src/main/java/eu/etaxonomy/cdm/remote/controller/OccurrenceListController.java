@@ -16,7 +16,6 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.lucene.queryparser.classic.ParseException;
 import org.hibernate.search.spatial.impl.Rectangle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -153,7 +152,7 @@ public class OccurrenceListController extends AbstractIdentifiableListController
             )
              throws IOException, LuceneParseException {
 
-         logger.info("findByFullText : " + request.getRequestURI() + "?" + request.getQueryString() );
+         logger.info("dofindByFullText() " + request.getRequestURI() + "?" + request.getQueryString() );
 
          PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
          pagerParams.normalizeAndValidate(response);

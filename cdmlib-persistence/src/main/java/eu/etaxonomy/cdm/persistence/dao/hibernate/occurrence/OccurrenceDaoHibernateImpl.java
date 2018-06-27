@@ -65,7 +65,9 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  * @since 01.09.2008
  */
 @Repository
-public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrObservationBase> implements IOccurrenceDao {
+public class OccurrenceDaoHibernateImpl
+          extends IdentifiableDaoBase<SpecimenOrObservationBase>
+          implements IOccurrenceDao {
 
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(TaxonDaoHibernateImpl.class);
@@ -88,19 +90,19 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
     }
 
     @Override
-    public int countDerivationEvents(SpecimenOrObservationBase occurence) {
+    public long countDerivationEvents(SpecimenOrObservationBase occurence) {
         checkNotInPriorView("OccurrenceDaoHibernateImpl.countDerivationEvents(SpecimenOrObservationBase occurence)");
         Query query = getSession().createQuery("select count(distinct derivationEvent) from DerivationEvent derivationEvent join derivationEvent.originals occurence where occurence = :occurence");
         query.setParameter("occurence", occurence);
 
-        return ((Long)query.uniqueResult()).intValue();
+        return (Long)query.uniqueResult();
     }
 
     @Override
-    public int countDeterminations(SpecimenOrObservationBase occurrence, TaxonBase taxonBase) {
+    public long countDeterminations(SpecimenOrObservationBase occurrence, TaxonBase taxonBase) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Criteria criteria = getSession().createCriteria(DeterminationEvent.class);
+            Criteria criteria = getCriteria(DeterminationEvent.class);
             if(occurrence != null) {
                 criteria.add(Restrictions.eq("identifiedUnit",occurrence));
             }
@@ -110,9 +112,9 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
             }
 
             criteria.setProjection(Projections.rowCount());
-            return ((Number)criteria.uniqueResult()).intValue();
+            return (Long)criteria.uniqueResult();
         } else {
-            AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(DeterminationEvent.class,auditEvent.getRevisionNumber());
+            AuditQuery query = makeAuditQuery(DeterminationEvent.class,auditEvent);
 
             if(occurrence != null) {
                 query.add(AuditEntity.relatedId("identifiedUnit").eq(occurrence.getId()));
@@ -123,17 +125,17 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
             }
             query.addProjection(AuditEntity.id().count());
 
-            return ((Long)query.getSingleResult()).intValue();
+            return (Long)query.getSingleResult();
         }
     }
 
     @Override
-    public int countMedia(SpecimenOrObservationBase occurence) {
+    public long countMedia(SpecimenOrObservationBase occurence) {
         checkNotInPriorView("OccurrenceDaoHibernateImpl.countMedia(SpecimenOrObservationBase occurence)");
         Query query = getSession().createQuery("select count(media) from SpecimenOrObservationBase occurence join occurence.media media where occurence = :occurence");
         query.setParameter("occurence", occurence);
 
-        return ((Long)query.uniqueResult()).intValue();
+        return (Long)query.uniqueResult();
     }
 
     @Override
@@ -142,15 +144,9 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
         Query query = getSession().createQuery("select distinct derivationEvent from DerivationEvent derivationEvent join derivationEvent.originals occurence where occurence = :occurence");
         query.setParameter("occurence", occurence);
 
-        if(pageSize != null) {
-            query.setMaxResults(pageSize);
-            if(pageNumber != null) {
-                query.setFirstResult(pageNumber * pageSize);
-            } else {
-                query.setFirstResult(0);
-            }
-        }
+        addPageSizeAndNumber(query, pageSize, pageNumber);
 
+        @SuppressWarnings("unchecked")
         List<DerivationEvent> result = query.list();
         defaultBeanInitializer.initializeAll(result, propertyPaths);
         return result;
@@ -169,14 +165,9 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
                 criteria.add(Restrictions.eq("taxon",taxonBase));
             }
 
-            if(pageSize != null) {
-                criteria.setMaxResults(pageSize);
-                if(pageNumber != null) {
-                    criteria.setFirstResult(pageNumber * pageSize);
-                } else {
-                    criteria.setFirstResult(0);
-                }
-            }
+            addPageSizeAndNumber(criteria, pageSize, pageNumber);
+
+            @SuppressWarnings("unchecked")
             List<DeterminationEvent> result = criteria.list();
             defaultBeanInitializer.initializeAll(result, propertyPaths);
             return result;
@@ -189,14 +180,9 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
             if(taxonBase != null) {
                 query.add(AuditEntity.relatedId("taxon").eq(taxonBase.getId()));
             }
-            if(pageSize != null) {
-                query.setMaxResults(pageSize);
-                if(pageNumber != null) {
-                    query.setFirstResult(pageNumber * pageSize);
-                } else {
-                    query.setFirstResult(0);
-                }
-            }
+            addPageSizeAndNumber(query, pageSize, pageNumber);
+
+            @SuppressWarnings("unchecked")
             List<DeterminationEvent> result = query.getResultList();
             defaultBeanInitializer.initializeAll(result, propertyPaths);
             return result;
@@ -206,18 +192,16 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
     @Override
     public List<Media> getMedia(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         checkNotInPriorView("OccurrenceDaoHibernateImpl.getMedia(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths)");
-        Query query = getSession().createQuery("select media from SpecimenOrObservationBase occurence join occurence.media media where occurence = :occurence");
+        Query query = getSession().createQuery(
+                "   SELECT media "
+                + " FROM SpecimenOrObservationBase occurence "
+                + " JOIN occurence.media media "
+                + " WHERE occurence = :occurence");
         query.setParameter("occurence", occurence);
 
-        if(pageSize != null) {
-            query.setMaxResults(pageSize);
-            if(pageNumber != null) {
-                query.setFirstResult(pageNumber * pageSize);
-            } else {
-                query.setFirstResult(0);
-            }
-        }
+        addPageSizeAndNumber(query, pageSize, pageNumber);
 
+        @SuppressWarnings("unchecked")
         List<Media> results = query.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
@@ -257,86 +241,54 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
     }
 
     @Override
-    public int count(Class<? extends SpecimenOrObservationBase> clazz,	TaxonName determinedAs) {
+    public long count(Class<? extends SpecimenOrObservationBase> clazz,	TaxonName determinedAs) {
 
-        Criteria criteria = null;
-        if(clazz == null) {
-            criteria = getSession().createCriteria(type);
-        } else {
-            criteria = getSession().createCriteria(clazz);
-        }
+        Criteria criteria = getCriteria(clazz);
 
         criteria.createCriteria("determinations").add(Restrictions.eq("taxonName", determinedAs));
         criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
-        return ((Number)criteria.uniqueResult()).intValue();
+        return (Long)criteria.uniqueResult();
     }
 
     @Override
-    public List<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> clazz, TaxonName determinedAs, Integer limit, Integer start,	List<OrderHint> orderHints, List<String> propertyPaths) {
-        Criteria criteria = null;
-        if(clazz == null) {
-            criteria = getSession().createCriteria(type);
-        } else {
-            criteria = getSession().createCriteria(clazz);
-        }
+    public List<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> clazz, TaxonName determinedAs,
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+        Criteria criteria = getCriteria(clazz);
 
         criteria.createCriteria("determinations").add(Restrictions.eq("taxonName", determinedAs));
 
-        if(limit != null) {
-            if(start != null) {
-                criteria.setFirstResult(start);
-            } else {
-                criteria.setFirstResult(0);
-            }
-            criteria.setMaxResults(limit);
-        }
-
+        addPageSizeAndNumber(criteria, pageSize, pageNumber);
         addOrder(criteria,orderHints);
 
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings({ "unchecked", "rawtypes" })
         List<SpecimenOrObservationBase> results = criteria.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
     }
 
     @Override
-    public int count(Class<? extends SpecimenOrObservationBase> clazz,	TaxonBase determinedAs) {
+    public long count(Class<? extends SpecimenOrObservationBase> clazz,	TaxonBase determinedAs) {
 
-        Criteria criteria = null;
-        if(clazz == null) {
-            criteria = getSession().createCriteria(type);
-        } else {
-            criteria = getSession().createCriteria(clazz);
-        }
+        Criteria criteria = getCriteria(clazz);
 
         criteria.createCriteria("determinations").add(Restrictions.eq("taxon", determinedAs));
         criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
-        return ((Number)criteria.uniqueResult()).intValue();
+        return (Long)criteria.uniqueResult();
     }
 
+
     @Override
-    public List<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> clazz, TaxonBase determinedAs, Integer limit, Integer start,	List<OrderHint> orderHints, List<String> propertyPaths) {
-        Criteria criteria = null;
-        if(clazz == null) {
-            criteria = getSession().createCriteria(type);
-        } else {
-            criteria = getSession().createCriteria(clazz);
-        }
+    public List<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> clazz, TaxonBase determinedAs,
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+
+        Criteria criteria = getCriteria(clazz);
 
         criteria.createCriteria("determinations").add(Restrictions.eq("taxon", determinedAs));
 
-        if(limit != null) {
-            if(start != null) {
-                criteria.setFirstResult(start);
-            } else {
-                criteria.setFirstResult(0);
-            }
-            criteria.setMaxResults(limit);
-        }
-
+        addPageSizeAndNumber(criteria, pageSize, pageNumber);
         addOrder(criteria,orderHints);
 
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings({ "unchecked", "rawtypes" })
         List<SpecimenOrObservationBase> results = criteria.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
@@ -356,14 +308,16 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
             projectionList.add(Projections.property("titleCache"));
             criteria.setProjection(projectionList);
 
+            @SuppressWarnings("unchecked")
             List<Object[]> result = criteria.list();
             List<UuidAndTitleCache<SpecimenOrObservationBase>> uuidAndTitleCacheList = new ArrayList<>();
             for(Object[] object : result){
-                uuidAndTitleCacheList.add(new UuidAndTitleCache<SpecimenOrObservationBase>((UUID) object[0],(Integer) object[1], (String) object[2]));
+                uuidAndTitleCacheList.add(new UuidAndTitleCache<>((UUID) object[0],(Integer) object[1], (String) object[2]));
             }
             return uuidAndTitleCacheList;
+        }else{
+            return Collections.emptyList();
         }
-        return Collections.emptyList();
     }
 
     @Override
@@ -378,8 +332,9 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
             List<T> results = criteria.list();
             defaultBeanInitializer.initializeAll(results, propertyPaths);
             return results;
+        }else{
+            return Collections.emptyList();
         }
-        return Collections.emptyList();
     }
 
     private <T extends SpecimenOrObservationBase> Criteria createFindOccurrenceCriteria(Class<T> clazz, String queryString,
@@ -444,7 +399,7 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
         else if(associatedTaxonName!=null){
             List<? extends SpecimenOrObservationBase> associatedTaxaList = listByAssociatedTaxonName(clazz, associatedTaxonName, limit, start, orderHints, propertyPaths);
             if(associatedTaxaList!=null){
-                for (SpecimenOrObservationBase specimenOrObservationBase : associatedTaxaList) {
+                for (SpecimenOrObservationBase<?> specimenOrObservationBase : associatedTaxaList) {
                     associationUuids.add(specimenOrObservationBase.getUuid());
                 }
             }
@@ -474,41 +429,43 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 
 
     @Override
-    public <T extends SpecimenOrObservationBase> int countOccurrences(Class<T> clazz, String queryString,
+    public <T extends SpecimenOrObservationBase> long countOccurrences(Class<T> clazz, String queryString,
             String significantIdentifier, SpecimenOrObservationType recordBasis, Taxon associatedTaxon, TaxonName associatedTaxonName,
             MatchMode matchmode, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+
         Criteria criteria = createFindOccurrenceCriteria(clazz, queryString, significantIdentifier, recordBasis,
                 associatedTaxon, associatedTaxonName, matchmode, limit, start, orderHints, propertyPaths);
 
         if(criteria!=null){
-
             criteria.setProjection(Projections.rowCount());
-
-            return ((Number)criteria.uniqueResult()).intValue();
+            return (Long)criteria.uniqueResult();
+        }else{
+            return 0;
         }
-        return 0;
     }
 
     @Override
     public List<UuidAndTitleCache<DerivedUnit>> getDerivedUnitUuidAndTitleCache(Integer limit, String pattern) {
-        List<UuidAndTitleCache<DerivedUnit>> list = new ArrayList<UuidAndTitleCache<DerivedUnit>>();
+        List<UuidAndTitleCache<DerivedUnit>> list = new ArrayList<>();
         Session session = getSession();
+        String hql = "SELECT uuid, id, titleCache "
+                + " FROM " + type.getSimpleName()
+                + " WHERE NOT dtype = " + FieldUnit.class.getSimpleName();
         Query query;
         if (pattern != null){
-            query = session.createQuery("select uuid, id, titleCache from " + type.getSimpleName() + " where NOT dtype = " + FieldUnit.class.getSimpleName() +" AND titleCache like :pattern");
             pattern = pattern.replace("*", "%");
             pattern = pattern.replace("?", "_");
             pattern = pattern + "%";
+            query = session.createQuery(hql +" AND titleCache like :pattern");
             query.setParameter("pattern", pattern);
         } else {
-            query = session.createQuery("select uuid, id, titleCache from " + type.getSimpleName() +" where NOT dtype = " + FieldUnit.class.getSimpleName());
+            query = session.createQuery(hql);
         }
         if (limit != null){
            query.setMaxResults(limit);
         }
 
-
-
+        @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
 
         for(Object[] object : result){
@@ -520,11 +477,12 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 
     @Override
     public List<UuidAndTitleCache<FieldUnit>> getFieldUnitUuidAndTitleCache() {
-        List<UuidAndTitleCache<FieldUnit>> list = new ArrayList<UuidAndTitleCache<FieldUnit>>();
+        List<UuidAndTitleCache<FieldUnit>> list = new ArrayList<>();
         Session session = getSession();
 
         Query query = session.createQuery("select uuid, id, titleCache from " + type.getSimpleName() + " where dtype = " + FieldUnit.class.getSimpleName());
 
+        @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
 
         for(Object[] object : result){
@@ -537,9 +495,12 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
     @Override
     public <T extends SpecimenOrObservationBase> List<T> listByAssociatedTaxonName(Class<T> type,
             TaxonName associatedTaxonName, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
-        Set<SpecimenOrObservationBase> setOfAll = new HashSet<SpecimenOrObservationBase>();
+
+        @SuppressWarnings("rawtypes")
+        Set<SpecimenOrObservationBase> setOfAll = new HashSet<>();
 
         // A Taxon name may be referenced by the DeterminationEvent of the SpecimenOrObservationBase
+        @SuppressWarnings("rawtypes")
         List<SpecimenOrObservationBase> byDetermination = list(type, associatedTaxonName, null, 0, null, null);
         setOfAll.addAll(byDetermination);
 
@@ -549,25 +510,14 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
         }
 
         String queryString =
-            "select sob " +
-            " from SpecimenOrObservationBase sob" +
-            " where sob in (:setOfAll)";
+            "SELECT sob " +
+            " FROM SpecimenOrObservationBase sob" +
+            " WHERE sob in (:setOfAll)";
 
         if(type != null && !type.equals(SpecimenOrObservationBase.class)){
-            queryString += " and sob.class = :type";
+            queryString += " AND sob.class = :type";
         }
-
-        if(orderHints != null && orderHints.size() > 0){
-            queryString += " order by ";
-            String orderStr = "";
-            for(OrderHint orderHint : orderHints){
-                if(orderStr.length() > 0){
-                    orderStr += ", ";
-                }
-                queryString += "sob." + orderHint.getPropertyName() + " " + orderHint.getSortOrder().toHql();
-            }
-            queryString += orderStr;
-        }
+        queryString += orderByClause("sob", orderHints);
 
         Query query = getSession().createQuery(queryString);
         query.setParameterList("setOfAll", setOfAll);
@@ -576,16 +526,9 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
             query.setParameter("type", type.getSimpleName());
         }
 
-        if(limit != null) {
-            if(start != null) {
-                query.setFirstResult(start);
-            } else {
-                query.setFirstResult(0);
-            }
-            query.setMaxResults(limit);
-        }
+        addLimitAndStart(query, limit, start);
 
-
+        @SuppressWarnings("unchecked")
         List<T> results = query.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
@@ -596,20 +539,14 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
             Integer limit, Integer start){
         query.setParameterList("taxonNodeUuids", taxonNodeUuids);
 
-        if(limit != null) {
-            if(start != null) {
-                query.setFirstResult(start);
-            } else {
-                query.setFirstResult(0);
-            }
-            query.setMaxResults(limit);
-        }
+        addLimitAndStart(query, limit, start);
 
         List<SpecimenNodeWrapper> list = new ArrayList<>();
+        @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
         for(Object[] object : result){
             list.add(new SpecimenNodeWrapper(
-                    new UuidAndTitleCache<SpecimenOrObservationBase>(
+                    new UuidAndTitleCache<>(
                             (UUID) object[0],
                             (Integer) object[1],
                             (String) object[2]),
@@ -707,9 +644,10 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
             return Collections.emptyList();
         }
         List<UuidAndTitleCache<SpecimenOrObservationBase>> list = new ArrayList<>();
+        @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
         for(Object[] object : result){
-            list.add(new UuidAndTitleCache<SpecimenOrObservationBase>((UUID) object[0],(Integer) object[1], (String) object[2]));
+            list.add(new UuidAndTitleCache<>((UUID) object[0],(Integer) object[1], (String) object[2]));
         }
         return list;
     }
@@ -721,6 +659,7 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
         if(query==null){
             return Collections.emptyList();
         }
+        @SuppressWarnings("unchecked")
         List<T> results = query.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
@@ -824,111 +763,59 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
             query.setParameter("type", clazz.getSimpleName());
         }
 
-        if(limit != null) {
-            if(start != null) {
-                query.setFirstResult(start);
-            } else {
-                query.setFirstResult(0);
-            }
-            query.setMaxResults(limit);
-        }
+        addLimitAndStart(query, limit, start);
 
         return query;
     }
 
     @Override
     public Collection<SpecimenOrObservationBase> listBySpecimenOrObservationType(SpecimenOrObservationType type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
-        String queryString = "FROM SpecimenOrObservationBase specimens WHERE specimens.recordBasis = :type";
+        String queryString = "FROM SpecimenOrObservationBase specimens "
+                + " WHERE specimens.recordBasis = :type ";
 
-        if(orderHints != null && orderHints.size() > 0){
-            queryString += " order by ";
-            String orderStr = "";
-            for(OrderHint orderHint : orderHints){
-                if(orderStr.length() > 0){
-                    orderStr += ", ";
-                }
-                queryString += "specimens." + orderHint.getPropertyName() + " " + orderHint.getSortOrder().toHql();
-            }
-            queryString += orderStr;
-        }
+        queryString += orderByClause("specimens", orderHints);
 
         Query query = getSession().createQuery(queryString);
         query.setParameter("type", type);
 
-        if(limit != null) {
-            if(start != null) {
-                query.setFirstResult(start);
-            } else {
-                query.setFirstResult(0);
-            }
-            query.setMaxResults(limit);
-        }
+        addLimitAndStart(query, limit, start);
 
-        List results = query.list();
+        @SuppressWarnings({ "unchecked", "rawtypes" })
+        List<SpecimenOrObservationBase> results = query.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
     }
 
+
     @Override
     public Collection<DeterminationEvent> listDeterminationEvents(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
-        String queryString = "FROM DeterminationEvent determination WHERE determination.identifiedUnit = :specimen";
+        String queryString = "FROM DeterminationEvent determination "
+                + " WHERE determination.identifiedUnit = :specimen";
 
-        if(orderHints != null && orderHints.size() > 0){
-            queryString += " order by ";
-            String orderStr = "";
-            for(OrderHint orderHint : orderHints){
-                if(orderStr.length() > 0){
-                    orderStr += ", ";
-                }
-                queryString += "determination." + orderHint.getPropertyName() + " " + orderHint.getSortOrder().toHql();
-            }
-            queryString += orderStr;
-        }
+        queryString += orderByClause("determination", orderHints);
 
         Query query = getSession().createQuery(queryString);
         query.setParameter("specimen", specimen);
 
-        if(limit != null) {
-            if(start != null) {
-                query.setFirstResult(start);
-            } else {
-                query.setFirstResult(0);
-            }
-            query.setMaxResults(limit);
-        }
+        addLimitAndStart(query, limit, start);
 
-        List results = query.list();
+        @SuppressWarnings("unchecked")
+        List<DeterminationEvent> results = query.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
     }
 
     @Override
     public Collection<SpecimenTypeDesignation> listTypeDesignations(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
-        String queryString = "FROM SpecimenTypeDesignation designations WHERE designations.typeSpecimen = :specimen";
+        String queryString = "FROM SpecimenTypeDesignation designations "
+                + " WHERE designations.typeSpecimen = :specimen";
 
-        if(orderHints != null && orderHints.size() > 0){
-            queryString += " ORDER BY ";
-            String orderStr = "";
-            for(OrderHint orderHint : orderHints){
-                if(orderStr.length() > 0){
-                    orderStr += ", ";
-                }
-                queryString += "designations." + orderHint.getPropertyName() + " " + orderHint.getSortOrder().toHql();
-            }
-            queryString += orderStr;
-        }
+        queryString += orderByClause("designations", orderHints);
 
         Query query = getSession().createQuery(queryString);
         query.setParameter("specimen", specimen);
 
-        if(limit != null) {
-            if(start != null) {
-                query.setFirstResult(start);
-            } else {
-                query.setFirstResult(0);
-            }
-            query.setMaxResults(limit);
-        }
+        addLimitAndStart(query, limit, start);
 
         @SuppressWarnings("unchecked")
         List<SpecimenTypeDesignation> results = query.list();
@@ -936,36 +823,21 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
         return results;
     }
 
+
     @Override
     public Collection<IndividualsAssociation> listIndividualsAssociations(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
         //DISTINCT is necessary if more than one description exists for a taxon because we create the cross product of all taxon descriptions and description elements
         String queryString = "FROM IndividualsAssociation associations WHERE associations.associatedSpecimenOrObservation = :specimen";
 
-        if(orderHints != null && orderHints.size() > 0){
-            queryString += " order by ";
-            String orderStr = "";
-            for(OrderHint orderHint : orderHints){
-                if(orderStr.length() > 0){
-                    orderStr += ", ";
-                }
-                queryString += "associations." + orderHint.getPropertyName() + " " + orderHint.getSortOrder().toHql();
-            }
-            queryString += orderStr;
-        }
+        queryString += orderByClause("associations", orderHints);
 
         Query query = getSession().createQuery(queryString);
         query.setParameter("specimen", specimen);
 
-        if(limit != null) {
-            if(start != null) {
-                query.setFirstResult(start);
-            } else {
-                query.setFirstResult(0);
-            }
-            query.setMaxResults(limit);
-        }
+        addLimitAndStart(query, limit, start);
 
-        List results = query.list();
+        @SuppressWarnings("unchecked")
+        List<IndividualsAssociation> results = query.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
     }
@@ -973,33 +845,18 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
     @Override
     public Collection<DescriptionBase<?>> listDescriptionsWithDescriptionSpecimen(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
         //DISTINCT is necessary if more than one description exists for a taxon because we create the cross product of all taxon descriptions and description elements
-        String queryString = "FROM DescriptionBase descriptions WHERE descriptions.describedSpecimenOrObservation = :specimen";
+        String queryString = "FROM DescriptionBase descriptions "
+                + " WHERE descriptions.describedSpecimenOrObservation = :specimen";
 
-        if(orderHints != null && orderHints.size() > 0){
-            queryString += " order by ";
-            String orderStr = "";
-            for(OrderHint orderHint : orderHints){
-                if(orderStr.length() > 0){
-                    orderStr += ", ";
-                }
-                queryString += "descriptions." + orderHint.getPropertyName() + " " + orderHint.getSortOrder().toHql();
-            }
-            queryString += orderStr;
-        }
+        queryString += orderByClause("descriptions", orderHints);
 
         Query query = getSession().createQuery(queryString);
         query.setParameter("specimen", specimen);
 
-        if(limit != null) {
-            if(start != null) {
-                query.setFirstResult(start);
-            } else {
-                query.setFirstResult(0);
-            }
-            query.setMaxResults(limit);
-        }
+        addLimitAndStart(query, limit, start);
 
-        List results = query.list();
+        @SuppressWarnings("unchecked")
+        List<DescriptionBase<?>> results = query.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
     }
@@ -1009,33 +866,32 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
      */
     @Override
     public List<FieldUnit> getFieldUnitsForGatheringEvent(UUID gatheringEventUuid, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
-        String queryString = "FROM SpecimenOrObservationBase s WHERE s.gatheringEvent.uuid = :gatheringEventUuid";
+        String queryString = "FROM SpecimenOrObservationBase sob "
+                + "WHERE sob.gatheringEvent.uuid = :gatheringEventUuid";
 
-        if(orderHints != null && orderHints.size() > 0){
-            queryString += " order by ";
-            String orderStr = "";
-            for(OrderHint orderHint : orderHints){
-                if(orderStr.length() > 0){
-                    orderStr += ", ";
-                }
-                queryString += "descriptions." + orderHint.getPropertyName() + " " + orderHint.getSortOrder().toHql();
-            }
-            queryString += orderStr;
-        }
+        queryString += orderByClause("sob", orderHints);
 
         Query query = getSession().createQuery(queryString);
         query.setParameter("gatheringEventUuid", gatheringEventUuid);
 
-        if(limit != null) {
-            if(start != null) {
-                query.setFirstResult(start);
-            } else {
-                query.setFirstResult(0);
-            }
-            query.setMaxResults(limit);
-        }
+        addLimitAndStart(query, limit, start);
 
-        List results = query.list();
+        @SuppressWarnings("unchecked")
+        List<FieldUnit> results = query.list();
+        defaultBeanInitializer.initializeAll(results, propertyPaths);
+        return results;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<DerivedUnit> getByGeneticAccessionNumber(String accessionNumberString, List<String> propertyPaths) {
+        String queryString = "SELECT dnaSample FROM DnaSample dnaSample join dnaSample.sequences sequence WHERE sequence.geneticAccessionNumber LIKE :accessionNumberString";
+        Query query = getSession().createQuery(queryString);
+        query.setParameter("accessionNumberString", accessionNumberString);
+        @SuppressWarnings("unchecked")
+        List<DerivedUnit> results = query.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
     }

@@ -158,7 +158,7 @@ public class DefinedTermDaoImplTest extends CdmTransactionalIntegrationTest {
 		 assert northernEurope != null : "NamedArea must exist";
 		 namedAreas.add(northernEurope);
 
-		 int numberOfIncludes = dao.countIncludes(namedAreas);
+		 long numberOfIncludes = dao.countIncludes(namedAreas);
 		 assertEquals("countIncludes should return 9",9, numberOfIncludes);
 
 	 }
@@ -199,7 +199,7 @@ public class DefinedTermDaoImplTest extends CdmTransactionalIntegrationTest {
 		 namedAreas.add(middleEurope);
 		 namedAreas.add(westTropicalAfrica);
 
-		 int numberOfPartOf = dao.countPartOf(namedAreas);
+		 long numberOfPartOf = dao.countPartOf(namedAreas);
 		 assertEquals("countPartOf should return 2",2,numberOfPartOf);
 	 }
 

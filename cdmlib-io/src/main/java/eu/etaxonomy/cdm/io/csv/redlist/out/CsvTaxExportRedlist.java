@@ -88,7 +88,7 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 			byteArrayOutputStream = config.getByteArrayOutputStream();
 			writer = new PrintWriter(byteArrayOutputStream);
 			//geographical Filter
-			List<TaxonNode> filteredNodes = handleGeographicalFilter(selectedAreas, taxonNodes);
+			List<TaxonNode> filteredNodes = handleGeographicalFilter(state, selectedAreas, taxonNodes);
 
 			//sorting List
 			Collections.sort(filteredNodes, new Comparator<TaxonNode>() {
@@ -166,20 +166,22 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 	 * <p><p>
 	 *
 	 * If selectedAreas is null all child {@link TaxonNode}s of the given taxon node will be returned.
+	 * @param state
 	 *
 	 * @param selectedAreas
 	 * @param taxonNodes
 	 * @return
 	 */
-	protected List<TaxonNode> handleGeographicalFilter(List<NamedArea> selectedAreas,
+	protected List<TaxonNode> handleGeographicalFilter(CsvTaxExportStateRedlist state, List<NamedArea> selectedAreas,
 	        Set<TaxonNode> taxonNodes) {
-	    List<TaxonNode> filteredNodes = new ArrayList<TaxonNode>();
-	    List<TaxonNode> allNodes = new ArrayList<TaxonNode>();
+	    List<TaxonNode> filteredNodes = new ArrayList<>();
+	    List<TaxonNode> allNodes = new ArrayList<>();
 	    for (TaxonNode node : taxonNodes){
 	        if(node.getTaxon()!=null){
 	            allNodes.add(node);
 	        }
-	        allNodes.addAll(getTaxonNodeService().loadChildNodesOfTaxonNode(node, null, true, null));
+	        allNodes.addAll(getTaxonNodeService().loadChildNodesOfTaxonNode(node, null, true,
+	                state.getConfig().isIncludeUnpublished(), null));
 	    }
 	    //Geographical filter
 	    if(selectedAreas != null && !selectedAreas.isEmpty() && selectedAreas.size() < 16){

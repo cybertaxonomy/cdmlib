@@ -122,18 +122,16 @@ public class StatisticsServiceImpl implements IStatisticsService {
 			switch (type) {
 
 			case ALL_TAXA:
-				counter = Long.valueOf(taxonDao.count(TaxonBase.class));
+				counter = taxonDao.count(TaxonBase.class);
 				break;
 			case SYNONYMS:
-				counter = Long.valueOf(taxonDao.count(Synonym.class));
+				counter = taxonDao.count(Synonym.class);
 				break;
 			case ACCEPTED_TAXA:
-				counter = Long.valueOf(taxonDao.count(Taxon.class));
+				counter = taxonDao.count(Taxon.class);
 				break;
 			case ALL_REFERENCES:
-				counter = Long
-						.valueOf(referenceDao
-								.count(eu.etaxonomy.cdm.model.reference.Reference.class));
+				counter = referenceDao.count(eu.etaxonomy.cdm.model.reference.Reference.class);
 				counter -=statisticsDao.countNomenclaturalReferences();
 				break;
 
@@ -143,13 +141,12 @@ public class StatisticsServiceImpl implements IStatisticsService {
 				break;
 
 			case CLASSIFICATION:
-				counter = Long.valueOf(classificationDao
-						.count(Classification.class));
+				counter = classificationDao.count(Classification.class);
 
 				break;
 
 			case TAXON_NAMES:
-				counter = Long.valueOf(taxonNameDao.count(TaxonName.class));
+				counter = taxonNameDao.count(TaxonName.class);
 				break;
 
 			case DESCRIPTIVE_SOURCE_REFERENCES:
@@ -159,7 +156,7 @@ public class StatisticsServiceImpl implements IStatisticsService {
 				break;
 			case DESCRIPTIONS:
 
-				counter = Long.valueOf(descriptionDao.count(DescriptionBase.class));
+				counter = descriptionDao.count(DescriptionBase.class);
 
 				break;
 			}

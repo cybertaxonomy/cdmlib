@@ -12,9 +12,6 @@ package eu.etaxonomy.cdm.remote.json.processor.bean;
 import java.util.Arrays;
 import java.util.List;
 
-import net.sf.json.JSONObject;
-import net.sf.json.JsonConfig;
-
 import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
 
@@ -24,6 +21,8 @@ import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dto.ITermRepresentation_L10n;
 import eu.etaxonomy.cdm.remote.l10n.TermRepresentation_L10n;
+import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
 
 /**
  * @author a.kohlbecker
@@ -35,7 +34,7 @@ public class TermBaseBeanProcessor extends AbstractCdmBeanProcessor<TermBase> {
 
     private static final List<String> IGNORE_LIST = Arrays.asList(new String[] {
             "representations",
-            "inversRepresentations",
+            "inverseRepresentations",
             "terms"
             });
 
@@ -49,40 +48,29 @@ public class TermBaseBeanProcessor extends AbstractCdmBeanProcessor<TermBase> {
         this.replaceRepresentations = replace;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.json.processor.AbstractCdmBeanProcessor#getIgnorePropNames()
-     */
     @Override
     public List<String> getIgnorePropNames() {
         return IGNORE_LIST;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.json.processor.AbstractCdmBeanProcessor#processBeanSecondStep(eu.etaxonomy.cdm.model.common.CdmBase, net.sf.json.JSONObject, net.sf.json.JsonConfig)
-     */
     @Override
     public JSONObject processBeanSecondStep(TermBase term, JSONObject json,	JsonConfig jsonConfig) {
 
         // handle OrderedTermVocabulary
         if(OrderedTermVocabulary.class.isAssignableFrom(term.getClass())){
-            OrderedTermVocabulary otv = (OrderedTermVocabulary)term;
+            OrderedTermVocabulary<?> otv = (OrderedTermVocabulary<?>)term;
             if(Hibernate.isInitialized(otv.getTerms())){
                 json.element("terms", otv.getOrderedTerms(), jsonConfig);
             }
         } else if(TermVocabulary.class.isAssignableFrom(term.getClass())) {
-            TermVocabulary tv = (TermVocabulary)term;
+            TermVocabulary<?> tv = (TermVocabulary<?>)term;
             if(Hibernate.isInitialized(tv.getTerms())){
                 json.element("terms", tv.getTerms(), jsonConfig);
             }
         }
 
         ITermRepresentation_L10n representation_L10n = new TermRepresentation_L10n(term, false);
-        if (representation_L10n.getLabel() != null) {
-            json.element("representation_L10n",representation_L10n.getLabel());
-        }
-        if (representation_L10n.getAbbreviatedLabel() != null) {
-            json.element("representation_L10n_abbreviatedLabel", representation_L10n.getAbbreviatedLabel());
-        }
+        handleL10nRepresentation(json, representation_L10n, false);
         if(!replaceRepresentations){
             json.element("representations", term.getRepresentations(), jsonConfig);
         }
@@ -91,17 +79,32 @@ public class TermBaseBeanProcessor extends AbstractCdmBeanProcessor<TermBase> {
         if(RelationshipTermBase.class.isAssignableFrom(term.getClass())){
             RelationshipTermBase<?> relTerm = (RelationshipTermBase<?>)term;
             ITermRepresentation_L10n inverseRepresentation_L10n = new TermRepresentation_L10n(relTerm, true);
-            if (inverseRepresentation_L10n.getLabel() != null) {
-                json.element("inverseRepresentation_L10n", inverseRepresentation_L10n.getLabel());
-            }
-            if (inverseRepresentation_L10n.getAbbreviatedLabel() != null) {
-                json.element("inverseRepresentation_L10n_abbreviatedLabel",  inverseRepresentation_L10n.getAbbreviatedLabel());
-            }
+            handleL10nRepresentation(json, inverseRepresentation_L10n, true);
             if(!replaceRepresentations){
-                json.element("inverseRepresentations", relTerm.getRepresentations(), jsonConfig);
+                json.element("inverseRepresentations", relTerm.getInverseRepresentations(), jsonConfig);
             }
         }
         return json;
+    }
+
+    /**
+     * @param json
+     * @param representation_L10n
+     */
+    private void handleL10nRepresentation(JSONObject json, ITermRepresentation_L10n representation_L10n, boolean isInverse) {
+        String baseLabel = isInverse? "inverseRepresentation_L10n" : "representation_L10n";
+        if (representation_L10n.getLabel() != null) {
+            json.element(baseLabel,representation_L10n.getLabel());
+        }
+        if (representation_L10n.getAbbreviatedLabel() != null) {
+            json.element(baseLabel + "_abbreviatedLabel", representation_L10n.getAbbreviatedLabel());
+        }
+        if (representation_L10n.getAbbreviatedLabel() != null) {
+            json.element(baseLabel + "_languageIso", representation_L10n.getLanguageIso());
+        }
+        if (representation_L10n.getAbbreviatedLabel() != null) {
+            json.element(baseLabel + "_languageUuid", representation_L10n.getLanguageUuid());
+        }
     }
 
 }

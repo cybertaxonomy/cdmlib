@@ -34,9 +34,6 @@ public class TaxonRelationshipClassBridge extends AbstractClassBridge {
     private static final String FROM = ".from.";
     private static final String TO = ".to.";
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.hibernate.search.AbstractClassBridge#set(java.lang.String, java.lang.Object, org.apache.lucene.document.Document, org.hibernate.search.bridge.LuceneOptions)
-     */
     @Override
     public void set(String name, Object value, Document document, LuceneOptions luceneOptions) {
         if(value instanceof Taxon){

@@ -12,9 +12,10 @@ import java.util.UUID;
 
 public class UUIDListPropertyEditor extends PropertyEditorSupport {
 
+    @Override
     public void setAsText(String text) {
         String separator = ",";
-        List<UUID> uuidList = new ArrayList<UUID>();
+        List<UUID> uuidList = new ArrayList<>();
         if (text.contains(",")){
             //set the value for more than one UUID
             String[] uuidStringList = text.split(separator);

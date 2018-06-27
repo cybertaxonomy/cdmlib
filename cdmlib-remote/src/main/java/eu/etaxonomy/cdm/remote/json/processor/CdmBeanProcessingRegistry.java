@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2009 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -13,8 +13,8 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import net.sf.json.CycleSetAcess;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import net.sf.json.CycleSetAcess;
 
 /**
  * @author a.kohlbecker
@@ -23,12 +23,13 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  */
 @Deprecated
 public class CdmBeanProcessingRegistry extends CycleSetAcess {
-	
-	public static final Logger logger = Logger.getLogger(CdmBeanProcessingRegistry.class);
+
+	private static final Logger logger = Logger.getLogger(CdmBeanProcessingRegistry.class);
 
 	protected static ThreadLocal<Set<CdmBase>> processedBeans = new ThreadLocal<Set<CdmBase>>(){
-		      protected synchronized Set<CdmBase> initialValue() {
-		         return new HashSet<CdmBase>();
+		      @Override
+            protected synchronized Set<CdmBase> initialValue() {
+		         return new HashSet<>();
 		      }
 		   };
 
@@ -38,14 +39,14 @@ public class CdmBeanProcessingRegistry extends CycleSetAcess {
 		}
 		return processedBeans.get().contains(bean);
 	}
-	
+
 	protected static void register(CdmBase bean){
 		if(logger.isDebugEnabled()){
 			logger.debug("registering: " + bean.getClass() + " with hash: " + bean.hashCode());
 		}
 		processedBeans.get().add(bean);
 	}
-	
+
 	protected static void unregister(CdmBase bean){
 		if(logger.isDebugEnabled()){
 			logger.debug("un-registering: " + bean.getClass() + " with hash: " + bean.hashCode());

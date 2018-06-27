@@ -39,6 +39,7 @@ import eu.etaxonomy.cdm.api.service.ICollectionService;
 import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
+import eu.etaxonomy.cdm.api.service.IDescriptiveDataSetService;
 import eu.etaxonomy.cdm.api.service.IEntityConstraintViolationService;
 import eu.etaxonomy.cdm.api.service.IEntityValidationService;
 import eu.etaxonomy.cdm.api.service.IEventBaseService;
@@ -59,13 +60,11 @@ import eu.etaxonomy.cdm.api.service.IProgressMonitorService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.IRegistrationService;
 import eu.etaxonomy.cdm.api.service.IRightsService;
-import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
-import eu.etaxonomy.cdm.api.service.IDescriptiveDataSetService;
 import eu.etaxonomy.cdm.api.service.molecular.IAmplificationService;
 import eu.etaxonomy.cdm.api.service.molecular.IPrimerService;
 import eu.etaxonomy.cdm.api.service.molecular.ISequenceService;
@@ -650,13 +649,6 @@ public class CdmApplicationController implements ICdmRepository {
 	public IEntityConstraintViolationService getEntityConstraintViolationService(){
 		return configuration.getEntityConstraintViolationService();
 	}
-
-
-	@Override
-	public final IService<CdmBase> getMainService(){
-		return configuration.getMainService();
-	}
-
 
 	@Override
 	public final IDescriptiveDataSetService getDescriptiveDataSetService(){

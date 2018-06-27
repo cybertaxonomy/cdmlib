@@ -26,19 +26,25 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.exception.UnpublishedException;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IPublishable;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DaoBase;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
-public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T>> implements IService<T>, ApplicationContextAware {
+public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T>>
+            implements IService<T>, ApplicationContextAware {
+
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(ServiceBase.class);
 
-    //flush after saving this number of objects
-    int flushAfterNo = 2000;
     protected ApplicationContext appContext;
+
+    public final static boolean NO_UNPUBLISHED = DaoBase.NO_UNPUBLISHED;  //constant for unpublished
+    public final static boolean INCLUDE_UNPUBLISHED = DaoBase.INCLUDE_UNPUBLISHED;  //constant for unpublished
 
     protected DAO dao;
 
@@ -63,7 +69,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
     @Override
     @Transactional(readOnly = true)
     public int count(Class<? extends T> clazz) {
-        return dao.count(clazz);
+        return Long.valueOf(dao.count(clazz)).intValue();
     }
 
     @Override
@@ -192,7 +198,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
             return null;
         }
 
-        List<T> entities = new ArrayList<T>();
+        List<T> entities = new ArrayList<>();
         for(UUID uuid : uuids) {
             entities.add(uuid == null ? null : dao.load(uuid, propertyPaths));
         }
@@ -234,32 +240,20 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
     @Override
     @Transactional(readOnly = true)
     public  <S extends T> Pager<S> page(Class<S> type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
-        Integer numberOfResults = dao.count(type);
-        List<S> results = new ArrayList<S>();
+        Long numberOfResults = dao.count(type);
+        List<S> results = new ArrayList<>();
         pageNumber = pageNumber == null ? 0 : pageNumber;
         if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
             Integer start = pageSize == null ? 0 : pageSize * pageNumber;
-            results = dao.list(type, pageSize, start, orderHints,propertyPaths);
+            results = dao.list(type, pageSize, start, orderHints, propertyPaths);
         }
-        return new DefaultPagerImpl<S>(pageNumber, numberOfResults, pageSize, results);
+        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
     }
 
     @Override
     @Transactional(readOnly = true)
     public UUID refresh(T persistentObject) {
         return dao.refresh(persistentObject);
-    }
-
-    /**
-     * FIXME Candidate for harmonization
-     * is this method used, and if so, should it be exposed in the service layer?
-     * it seems a bit incongruous that we use an ORM to hide the fact that there is a
-     * database, then expose a method that talks about "rows" . . .
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public List<T> rows(String tableName, int limit, int start) {
-        return dao.rows(tableName, limit, start);
     }
 
     @Override
@@ -304,6 +298,20 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
     @Transactional(readOnly = true)
     public List<T> list(T example, Set<String> includeProperties, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
         return dao.list(example, includeProperties, limit, start, orderHints, propertyPaths);
+    }
+
+
+    /**
+     * Throws an exception if the publishable entity should not be published.
+     * @param publishable the publishable entity
+     * @param includeUnpublished should publish be checked
+     * @param message the error message to include
+     * @throws UnpublishedException thrown if entity is not public and unpublished should not be included
+     */
+    protected void checkPublished(IPublishable publishable, boolean includeUnpublished, String message) throws UnpublishedException {
+        if (!(includeUnpublished || publishable.isPublish())){
+            throw new UnpublishedException("Access denied. "+  message);
+        }
     }
 
 

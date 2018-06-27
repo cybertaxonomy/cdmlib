@@ -14,6 +14,7 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.NullProgressMonitor;
 import eu.etaxonomy.cdm.config.Configuration;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DaoBase;
 import eu.etaxonomy.cdm.persistence.hibernate.HibernateConfiguration;
 
 /**
@@ -27,6 +28,9 @@ public abstract class IoConfiguratorBase extends ObservableBase implements IIoCo
 
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(IoConfiguratorBase.class);
+
+    public static final boolean NO_UNPUBLISHED = DaoBase.NO_UNPUBLISHED;
+    public static final boolean INCLUDE_UNPUBLISHED = DaoBase.INCLUDE_UNPUBLISHED;
 
 	//im-/export uses Classification for is_taxonomically_included_in relationships
 	private boolean useClassification = true;
@@ -42,25 +46,15 @@ public abstract class IoConfiguratorBase extends ObservableBase implements IIoCo
 	protected HibernateConfiguration hibernateConfig = new HibernateConfiguration();
 
 
-
-//	private Set<IIoObserver> observers = new HashSet<>();
-
-
     //etc
 	private IProgressMonitor progressMonitor;
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IIoConfigurator#getDbSchemaValidation()
-	 */
 	@Override
     public DbSchemaValidation getDbSchemaValidation() {
 		return dbSchemaValidation;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IIoConfigurator#setDbSchemaValidation(eu.etaxonomy.cdm.database.DbSchemaValidation)
-	 */
 	@Override
     public void setDbSchemaValidation(DbSchemaValidation dbSchemaValidation) {
 		this.dbSchemaValidation = dbSchemaValidation;

@@ -9,8 +9,6 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -19,6 +17,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,6 +42,7 @@ import eu.etaxonomy.cdm.remote.editor.NamedAreaLevelPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.TermBaseListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
+import io.swagger.annotations.Api;
 
 /**
  *
@@ -56,8 +56,9 @@ import eu.etaxonomy.cdm.remote.editor.UuidList;
 @RequestMapping(value = {
             "/portal/description/{uuid}",
             "/portal/description/{uuid_list}"})
-public class DescriptionPortalController extends BaseController<DescriptionBase, IDescriptionService>
-{
+public class DescriptionPortalController extends BaseController<DescriptionBase, IDescriptionService> {
+
+    private static final Logger logger = Logger.getLogger(DescriptionPortalController.class);
 
     protected static final List<String> DESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
             "$",

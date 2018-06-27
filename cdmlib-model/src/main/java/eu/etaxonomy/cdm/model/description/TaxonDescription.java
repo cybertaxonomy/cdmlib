@@ -42,6 +42,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.description.TaxonDescriptionDefaultCacheStrategy;
+import javafx.stage.Stage;
 
 
 /**
@@ -82,7 +83,7 @@ public class TaxonDescription
     @XmlSchemaType(name="IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="DescriptionBase_Scope")
-    private Set<DefinedTerm> scopes = new HashSet<DefinedTerm>();
+    private Set<DefinedTerm> scopes = new HashSet<>();
 
     @XmlElementWrapper( name = "GeoScopes")
     @XmlElement( name = "GeoScope")
@@ -91,7 +92,7 @@ public class TaxonDescription
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="DescriptionBase_GeoScope")
 //    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})  remove cascade #5755
-    private Set<NamedArea> geoScopes = new HashSet<NamedArea>();
+    private Set<NamedArea> geoScopes = new HashSet<>();
 
     @XmlElement( name = "Taxon")
     @ManyToOne(fetch = FetchType.LAZY)

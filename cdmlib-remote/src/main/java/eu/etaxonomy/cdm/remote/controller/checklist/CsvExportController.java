@@ -122,11 +122,13 @@ public class CsvExportController extends AbstractController{
 			HttpServletResponse response,
 			HttpServletRequest request) {
 
+	    boolean includeUnpublished = NO_UNPUBLISHED;
 		Classification classification = classificationService.load(UUID.fromString(classificationUuid), CLASSIFICATION_INIT_STRATEGY);
 		UUID taxonNodeUuid = classification.getRootNode().getUuid();
 
 		if(CdmUtils.isNotBlank(taxonName)){
 			MatchingTaxonConfigurator config = new MatchingTaxonConfigurator();
+			config.setIncludeUnpublished(includeUnpublished);
 			config.setClassificationUuid(UUID.fromString(classificationUuid));
 			config.setTaxonNameTitle(taxonName);
 

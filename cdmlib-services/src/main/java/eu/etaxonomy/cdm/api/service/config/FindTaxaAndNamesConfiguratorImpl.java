@@ -22,18 +22,19 @@ import eu.etaxonomy.cdm.persistence.query.NameSearchOrder;
 /**
  * @author a.babadshanjan
  * @since 20.01.2009
- * @version 1.0
  */
 public class FindTaxaAndNamesConfiguratorImpl<T extends TaxonBase<?>> extends IdentifiableServiceConfiguratorImpl<T>
 			implements IFindTaxaAndNamesConfigurator<T> {
 
     private static final long serialVersionUID = -8510776848175860267L;
 
+    private boolean includeUnpublished = true;
 
     public static FindTaxaAndNamesConfiguratorImpl<?> NewInstance() {
 		return new FindTaxaAndNamesConfiguratorImpl<>();
 	}
 
+    private FindTaxaAndNamesConfiguratorImpl(){}
 
 	private boolean doTaxa = true;
 	private boolean doSynonyms = false;
@@ -205,6 +206,15 @@ public class FindTaxaAndNamesConfiguratorImpl<T extends TaxonBase<?>> extends Id
     @Override
     public void setOrder(NameSearchOrder order) {
         this.order = order;
+    }
+
+    @Override
+    public boolean isIncludeUnpublished() {
+        return includeUnpublished;
+    }
+    @Override
+    public void setIncludeUnpublished(boolean includeUnpublished) {
+        this.includeUnpublished = includeUnpublished;
     }
 
 }

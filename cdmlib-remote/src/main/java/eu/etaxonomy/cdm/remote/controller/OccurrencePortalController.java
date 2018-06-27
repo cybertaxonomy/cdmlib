@@ -17,6 +17,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,6 +45,8 @@ import io.swagger.annotations.Api;
 @RequestMapping(value = {"/portal/occurrence/{uuid}"})
 public class OccurrencePortalController extends OccurrenceController
 {
+
+    private static Logger logger = Logger.getLogger(OccurrencePortalController.class);
 
     private static final List<String> DEFAULT_INIT_STRATEGY =  Arrays.asList(new String []{
             "$",

@@ -194,8 +194,8 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 			taxonNameMap.put(removeVersionOfRef(strId), handleTaxonNameElement(elTaxonName, success, state));
 		}
 		logger.info(i + " names handled");
-		Collection<? extends TaxonName> col = taxonNameMap.objects();
-		getNameService().save((Collection)col);
+		Collection<TaxonName> col = taxonNameMap.objects();
+		getNameService().save(col);
 
 		logger.info("end makeTaxonNames ...");
 		if (!success.getValue()){
@@ -528,7 +528,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 			if (elGenus != null){
 			    INonViralName genusReferenceName;
 				//TODO code
-				Class<? extends TaxonName> clazz = TaxonName.class;
+				Class<TaxonName> clazz = TaxonName.class;
 				genusReferenceName = makeReferenceType(elGenus, clazz, taxonNameMap, success);
 				genusReferenceName.setNameType(NomenclaturalCode.NonViral);
 				//Genus is stored either in Genus part (if ref) or in titleCache (if plain text)

@@ -17,6 +17,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,7 +28,6 @@ import org.springframework.web.servlet.ModelAndView;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
@@ -58,8 +58,9 @@ import io.swagger.annotations.Api;
 @Controller
 @Api("portal_name")
 @RequestMapping(value = {"/portal/name/{uuid}"})
-public class NamePortalController extends BaseController<TaxonName, INameService>
-{
+public class NamePortalController extends BaseController<TaxonName, INameService> {
+
+    private static final Logger logger = Logger.getLogger(NamePortalController.class);
 
     private static final List<String> TYPEDESIGNATION_INIT_STRATEGY = Arrays.asList(new String []{
             "typeName.$",

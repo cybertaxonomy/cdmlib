@@ -46,13 +46,14 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 
 	private static final int REFERENCE_LINK_RECURSION_DEPTH = 1;
 
-	private static final Logger logger = Logger
+	@SuppressWarnings("unused")
+    private static final Logger logger = Logger
 			.getLogger(StatisticsDaoHibernateImpl.class);
 
 	@Override
 	public Long countDescriptiveSourceReferences() {
 
-		List<String> queryStrings = new ArrayList<String>();
+		List<String> queryStrings = new ArrayList<>();
 
 		// this query does not work...
 

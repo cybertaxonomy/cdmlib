@@ -37,7 +37,7 @@ public interface IPreferenceService {
      * Return the number of all existing cdm preferences
      * @return
      */
-    public int count();
+    public long count();
 
      /**
       * Returns all CDM preferences.

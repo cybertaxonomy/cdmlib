@@ -15,6 +15,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.update.ClassBaseTypeUpdater;
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ColumnNameChanger;
@@ -317,10 +318,14 @@ public class SchemaUpdater_47_50 extends SchemaUpdaterBase {
 
         //move data
         stepName = "Copy mediaCreated to new columns";
-        String query = "UPDATE @@Media@@ "
-                + " SET mediaCreated_start = Left(Replace(Replace(Replace(mediaCreatedOld, '-', ''), ':', ''), ' ', '_'), 13)"
+        String queryTemplate = "UPDATE @@Media@@ "
+                + " SET mediaCreated_start = %s "
                 + " WHERE mediaCreatedOld IS NOT NULL ";
-        step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, tableName, -99);
+        String queryDefault = String.format(queryTemplate, "Left(Replace(Replace(Replace(mediaCreatedOld, '-', ''), ':', ''), ' ', '_'), 13)");
+        String queryPostgres = String.format(queryTemplate, "to_char(mediaCreatedOld,'YYYYMMDD HH24MI')");
+        step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, queryDefault, tableName, -99)
+                  .put(DatabaseTypeEnum.PostgreSQL, queryPostgres)
+                  .putAudited(DatabaseTypeEnum.PostgreSQL, queryPostgres);
         stepList.add(step);
 
         //delete old column

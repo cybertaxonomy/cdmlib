@@ -297,7 +297,7 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
      * @param type the CdmBase class
      * @return the number of objects in the database
      */
-    public <S extends CdmBase> int count(Class<S> type);
+    public <S extends CdmBase> long count(Class<S> type);
 
 
     /**
@@ -371,7 +371,7 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
      * @param referencedCdmBase
      * @return
      */
-    Integer getReferencingObjectsCount(CdmBase referencedCdmBase);
+    public long getReferencingObjectsCount(CdmBase referencedCdmBase);
 
 
 }

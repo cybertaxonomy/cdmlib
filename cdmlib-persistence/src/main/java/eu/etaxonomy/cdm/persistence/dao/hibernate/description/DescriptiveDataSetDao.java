@@ -68,8 +68,10 @@ public class DescriptiveDataSetDao
 	}
 
 	@Override
-	public <T extends DescriptionElementBase> Map<UuidAndTitleCache, Map<UUID, Set<T>>> getTaxonFeatureDescriptionElementMap(Class<T> clazz, UUID descriptiveDataSetUuid, DescriptiveSystemRole role) {
+	public <T extends DescriptionElementBase> Map<UuidAndTitleCache, Map<UUID, Set<T>>> getTaxonFeatureDescriptionElementMap(
+	        Class<T> clazz, UUID descriptiveDataSetUuid, DescriptiveSystemRole role) {
 		checkNotInPriorView("DescriptiveDataSetDao.getTaxonFeatureDescriptionElementMap(DescriptiveDataSet descriptiveDataSet, Set<Feature> features, Integer pageSize,Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths)");
+
 		Map<UuidAndTitleCache, Map<UUID, Set<T>>> result = new HashMap<>();
 		try {
 
@@ -135,12 +137,12 @@ public class DescriptiveDataSetDao
                 T data = (T)listEntry[4];
 				Map<UUID, Set<T>> taxonMap = result.get(taxon);
 				if (taxonMap == null){
-					taxonMap = new HashMap<UUID, Set<T>>();
+					taxonMap = new HashMap<>();
 					result.put(taxon, taxonMap);
 				}
 				Set<T> featureSet = taxonMap.get(featureUuid);
 				if (featureSet == null){
-					featureSet = new HashSet<T>();
+					featureSet = new HashSet<>();
 					taxonMap.put(featureUuid, featureSet);
 				}else{
 					if (logger.isDebugEnabled()){logger.debug("feature set already exists");}

@@ -234,14 +234,14 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
             taxon.setCreated(new DateTime());
             taxon.setLsid(new LSID("urn:lsid:example.org:taxonconcepts:"+i));
             if((i % 3) == 0 ) {
-                AuditEventRecord<TaxonBase> auditEventRecord = new AuditEventRecordImpl<TaxonBase>(new Object[] {taxon, new AuditEvent(),RevisionType.DEL});
+                AuditEventRecord<TaxonBase> auditEventRecord = new AuditEventRecordImpl<>(new Object[] {taxon, new AuditEvent(), RevisionType.DEL});
                 r.add(auditEventRecord);
             } else {
-                AuditEventRecord<TaxonBase> auditEventRecord = new AuditEventRecordImpl<TaxonBase>(new Object[] {taxon, new AuditEvent(),RevisionType.ADD});
+                AuditEventRecord<TaxonBase> auditEventRecord = new AuditEventRecordImpl<>(new Object[] {taxon, new AuditEvent(), RevisionType.ADD});
                 r.add(auditEventRecord);
             }
         }
-        Pager<AuditEventRecord<TaxonBase>> results = new DefaultPagerImpl(0, 100, 10,r);
+        Pager<AuditEventRecord<TaxonBase>> results = new DefaultPagerImpl<>(0, Long.valueOf(100), 10, r);
         model.put("pager", results);
         ResumptionToken resumptionToken = new ResumptionToken(results, from, until, MetadataPrefix.OAI_DC, null);
         model.put("resumptionToken",resumptionToken);
@@ -271,14 +271,14 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
             taxon.setCreated(new DateTime());
             taxon.setLsid(new LSID("urn:lsid:example.org:taxonconcepts:"+i));
             if((i % 3) == 0 ) {
-                AuditEventRecord<TaxonBase> auditEventRecord = new AuditEventRecordImpl<TaxonBase>(new Object[] {taxon, new AuditEvent(),RevisionType.DEL});
+                AuditEventRecord<TaxonBase> auditEventRecord = new AuditEventRecordImpl<>(new Object[] {taxon, new AuditEvent(), RevisionType.DEL});
                 r.add(auditEventRecord);
             } else {
-                AuditEventRecord<TaxonBase> auditEventRecord = new AuditEventRecordImpl<TaxonBase>(new Object[] {taxon, new AuditEvent(),RevisionType.ADD});
+                AuditEventRecord<TaxonBase> auditEventRecord = new AuditEventRecordImpl<>(new Object[] {taxon, new AuditEvent(), RevisionType.ADD});
                 r.add(auditEventRecord);
             }
         }
-        Pager<AuditEventRecord<TaxonBase>> results = new DefaultPagerImpl(0, 100, 10,r);
+        Pager<AuditEventRecord<TaxonBase>> results = new DefaultPagerImpl<>(0, Long.valueOf(100), 10, r);
         model.put("pager", results);
         ResumptionToken resumptionToken = new ResumptionToken(results, from, until, MetadataPrefix.OAI_DC, null);
         model.put("resumptionToken",resumptionToken);

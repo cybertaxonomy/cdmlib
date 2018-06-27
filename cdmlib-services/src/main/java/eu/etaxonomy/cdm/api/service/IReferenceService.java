@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.dto.IdentifiedEntityDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -122,5 +124,12 @@ public interface IReferenceService extends IIdentifiableEntityService<Reference>
      */
     List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthor(Integer limit, String pattern,
             ReferenceType type);
+
+    /**
+     * @param uuids
+     *
+     * @return
+     */
+    List<UuidAndTitleCache<Reference>> getUuidAndTitleCacheForUUIDS(Set<UUID> uuids);
 
 }

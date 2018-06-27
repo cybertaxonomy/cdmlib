@@ -31,7 +31,7 @@ public class AnnotationDaoImpl extends LanguageStringBaseDaoImpl<Annotation> imp
 	}
 
 	@Override
-	public int count(Person commentator, MarkerType status) {
+	public long count(Person commentator, MarkerType status) {
 		checkNotInPriorView("AnnotationDaoImpl.count(Person commentator, MarkerType status)");
 		Criteria criteria = getSession().createCriteria(Annotation.class);
 
@@ -45,7 +45,7 @@ public class AnnotationDaoImpl extends LanguageStringBaseDaoImpl<Annotation> imp
 
 		criteria.setProjection(Projections.countDistinct("id"));
 
-		return ((Number)criteria.uniqueResult()).intValue();
+		return (Long)criteria.uniqueResult();
 	}
 
 	@Override
@@ -75,7 +75,7 @@ public class AnnotationDaoImpl extends LanguageStringBaseDaoImpl<Annotation> imp
 	}
 
 	@Override
-    public int count(User creator, MarkerType status) {
+    public long count(User creator, MarkerType status) {
 		checkNotInPriorView("AnnotationDaoImpl.count(User creator, MarkerType statu)");
 		Criteria criteria = getSession().createCriteria(Annotation.class);
 
@@ -89,7 +89,7 @@ public class AnnotationDaoImpl extends LanguageStringBaseDaoImpl<Annotation> imp
 
 		criteria.setProjection(Projections.countDistinct("id"));
 
-		return ((Number)criteria.uniqueResult()).intValue();
+		return (Long)criteria.uniqueResult();
 	}
 
 	@Override

@@ -90,7 +90,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
         return tags;
     }
 
-    private <X extends TaxonName> List<TaggedText> getNameTags(T taxonBase) {
+    private List<TaggedText> getNameTags(T taxonBase) {
         List<TaggedText> tags = new ArrayList<>();
         TaxonName name = CdmBase.deproxy(taxonBase.getName());
 

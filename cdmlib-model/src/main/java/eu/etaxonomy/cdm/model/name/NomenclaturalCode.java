@@ -43,20 +43,22 @@ import eu.etaxonomy.cdm.model.common.Language;
 @XmlType(name = "NomenclaturalCode")
 @XmlEnum
 public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode> {
-	//0
+
+    //0
+    /**
+     * International Code of Nomenclature for algae, fungi, and plants
+     * Former International Code of Botanical Nomenclature
+     */
+    @XmlEnumValue("ICNAFP")
+    ICNAFP(UUID.fromString("540fc02a-8a8e-4813-89d2-581dad4dd482"), "ICNAFP","BotanicalName"),
+
+    //1
 	/**
 	 * International Code of Nomenclature of Bacteria
 	*/
 	@XmlEnumValue("ICNB")
 	ICNB(UUID.fromString("ff4b0979-7abf-4b40-95c0-8b8b1e8a4d5e"), "ICNB","BacterialName"),
 
-	//1
-	/**
-	 * International Code of Nomenclature for algae, fungi, and plants
-	 * Former International Code of Botanical Nomenclature
-	 */
-	@XmlEnumValue("ICNAFP")
-	ICNAFP(UUID.fromString("540fc02a-8a8e-4813-89d2-581dad4dd482"), "ICNAFP","BotanicalName"),
 
 	//2
 	/**
