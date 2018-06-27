@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.persistence.query;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +28,9 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.persistence.dao.common.OperationNotSupportedInPriorViewException;
 
-public class OrderHint {
+public class OrderHint implements Serializable {
+
+    private static final long serialVersionUID = -6638812694578112279L;
 
     public enum SortOrder {
 
@@ -146,7 +149,6 @@ public class OrderHint {
              *
              * http://opensource.atlassian.com/projects/hibernate/browse/HHH-879
              */
-            Order order;
 
             String[] assocObjs = getPropertyName().split("\\.");
             String path = "";

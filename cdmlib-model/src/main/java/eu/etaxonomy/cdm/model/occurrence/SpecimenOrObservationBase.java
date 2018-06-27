@@ -53,6 +53,7 @@ import org.hibernate.search.annotations.Fields;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.SortableField;
 import org.hibernate.search.annotations.Store;
+import org.hibernate.search.bridge.builtin.BooleanBridge;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.hibernate.search.StripHtmlBridge;
@@ -125,7 +126,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
     @Column(name="recordBasis")
     @NotNull
     @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-        parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType")}
+        parameters = {@org.hibernate.annotations.Parameter(name = "enumClass", value = "eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType")}
     )
     @Audited
     private SpecimenOrObservationType recordBasis;
@@ -205,9 +206,11 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
     @ManyToMany(fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
     @NotNull
-    protected Set<DerivationEvent> derivationEvents = new HashSet<DerivationEvent>();
+    protected Set<DerivationEvent> derivationEvents = new HashSet<>();
 
     @XmlAttribute(name = "publish")
+    @Field(analyze = Analyze.NO)
+    @FieldBridge(impl=BooleanBridge.class)
     private boolean publish = true;
 
     @XmlElement(name = "IdentityCache", required = false)
@@ -561,7 +564,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
      */
     @Transient
     public Collection<DescriptionElementBase> characterData() {
-        Collection<DescriptionElementBase> states = new ArrayList<DescriptionElementBase>();
+        Collection<DescriptionElementBase> states = new ArrayList<>();
         Set<DescriptionBase<S>> descriptions = this.getDescriptions();
         for (DescriptionBase<?> descriptionBase : descriptions) {
             if (descriptionBase.isInstanceOf(SpecimenDescription.class)) {
@@ -617,6 +620,4 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
         //no changes to: individualCount
         return result;
     }
-
-
 }

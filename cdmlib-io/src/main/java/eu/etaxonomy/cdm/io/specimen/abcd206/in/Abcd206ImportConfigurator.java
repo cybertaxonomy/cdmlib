@@ -232,7 +232,7 @@ public String toString(){
       result.append(";");
       result.append("nomenclaturalCode");
       result.append(":");
-      result.append(this.getNomenclaturalCode().getKey());
+      result.append(this.getNomenclaturalCode() != null ? this.getNomenclaturalCode().getKey():"");
       result.append(";");
 
 

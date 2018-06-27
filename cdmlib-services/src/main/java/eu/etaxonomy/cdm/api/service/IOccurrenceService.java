@@ -167,7 +167,7 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @param taxonbase the taxon concept associated with these determinations (can be null for all taxon concepts)
      * @return a count of determination events
      */
-    public int countDeterminations(SpecimenOrObservationBase occurence,TaxonBase taxonbase);
+    public long countDeterminations(SpecimenOrObservationBase occurence,TaxonBase taxonbase);
 
     /**
      * Returns a List of determinations that have been made for a given occurence
@@ -477,8 +477,13 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @param propertyPaths
      * @return a collection of associated taxa
      */
-    public Collection<TaxonBase<?>> listIndividualsAssociationTaxa(SpecimenOrObservationBase<?> specimen, Integer limit,
-            Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+    public Collection<TaxonBase<?>> listIndividualsAssociationTaxa(SpecimenOrObservationBase<?> specimen,
+            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+    /**
+      * @see #listIndividualsAssociationTaxa(SpecimenOrObservationBase, Integer, Integer, List, List)
+      */
+    public Collection<TaxonBase<?>> listIndividualsAssociationTaxa(SpecimenOrObservationBase<?> specimen, boolean includeUnpublished,
+            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Retrieves all associated taxa for the given specimen (via type designations, determination, individuals associations)
@@ -489,7 +494,13 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @param propertyPaths
      * @return
      */
-    public Collection<TaxonBase<?>> listAssociatedTaxa(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+    public Collection<TaxonBase<?>> listAssociatedTaxa(SpecimenOrObservationBase<?> specimen, boolean includeUnpublished,
+            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+    /**
+     * @see #listAssociatedTaxa(SpecimenOrObservationBase, Integer, Integer, List, List)axa
+     */
+    public Collection<TaxonBase<?>> listAssociatedTaxa(SpecimenOrObservationBase<?> specimen,
+            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Retrieves all taxa that the given specimen is determined as
@@ -500,8 +511,13 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @param propertyPaths
      * @return collection of all taxa the given specimen is determined as
      */
-    public Collection<TaxonBase<?>> listDeterminedTaxa(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start,
-            List<OrderHint> orderHints, List<String> propertyPaths);
+    public Collection<TaxonBase<?>> listDeterminedTaxa(SpecimenOrObservationBase<?> specimen, boolean includeUnpublished,
+            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+    /**
+     * @see #listDeterminedTaxa(SpecimenOrObservationBase, Integer, Integer, List, List)
+     */
+    public Collection<TaxonBase<?>> listDeterminedTaxa(SpecimenOrObservationBase<?> specimen,
+            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Retrieves all {@link DeterminationEvent}s which have the given specimen set as identified unit.
@@ -524,8 +540,13 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @param propertyPaths
      * @return a collection of all taxa where the given specimen is the type specimen
      */
-    public Collection<TaxonBase<?>> listTypeDesignationTaxa(DerivedUnit specimen, Integer limit,
-            Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+    public Collection<TaxonBase<?>> listTypeDesignationTaxa(DerivedUnit specimen,
+            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+    /**
+     * @see #listTypeDesignationTaxa(DerivedUnit, Integer, Integer, List, List)a
+     */
+    public Collection<TaxonBase<?>> listTypeDesignationTaxa(DerivedUnit specimen, boolean includeUnpublished,
+            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Retrieves all {@link SpecimenTypeDesignation}s which have the given specimens as a type specimen.
@@ -613,7 +634,7 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      *            authorTeam.persistentTitleCache
      * @return the number of found specimens
      */
-    public int countOccurrences(IIdentifiableEntityServiceConfigurator<SpecimenOrObservationBase> config);
+    public long countOccurrences(IIdentifiableEntityServiceConfigurator<SpecimenOrObservationBase> config);
 
     /**
      * Return the all {@link SpecimenOrObservationBase}s of the complete
@@ -657,5 +678,15 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
     @Transactional(readOnly = true)
     public Pager<UuidAndTitleCache<SpecimenOrObservationBase>> findByTitleUuidAndTitleCache(
             FindOccurrencesConfigurator config);
+
+    /**
+     * @param queryString
+     * @param propertyPaths
+     * @return
+     * @throws IOException
+     */
+    List<DerivedUnit> findByAccessionNumber(
+             String accessionNumberString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+            List<String> propertyPaths);
 
 }

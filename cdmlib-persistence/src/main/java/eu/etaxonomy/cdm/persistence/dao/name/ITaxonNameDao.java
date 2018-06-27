@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.persistence.dao.name;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.hibernate.criterion.Criterion;
@@ -28,6 +29,7 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
+import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -119,7 +121,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 	 *            the type designation status (or null to return all types)
 	 * @return a count of TypeDesignationBase instances
 	 */
-	public int countTypeDesignations(TaxonName name,
+	public long countTypeDesignations(TaxonName name,
 			SpecimenTypeDesignationStatus status);
 
 	/**
@@ -215,7 +217,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 	 * @param rank
 	 * @return a count of TaxonName instances
 	 */
-	public int countNames(String uninomial, String infraGenericEpithet,
+	public long countNames(String uninomial, String infraGenericEpithet,
 			String specificEpithet, String infraspecificEpithet, Rank rank);
 
 	/**
@@ -225,7 +227,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 	 * @param matchMode
 	 * @param criteria
 	 */
-	public int countNames(String queryString, MatchMode matchMode, List<Criterion> criteria);
+	public long countNames(String queryString, MatchMode matchMode, List<Criterion> criteria);
 
 	/**
 	 * Returns a List of TaxonName instances which nameCache matches the
@@ -252,7 +254,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 	 * @param queryString
 	 * @return a count of TaxonName instances
 	 */
-	public int countNames(String queryString);
+	public long countNames(String queryString);
 
 	/**
 	 * @param queryString
@@ -263,7 +265,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 	 * @param propertyPaths TODO
 	 * @return
 	 */
-	public List<? extends TaxonName> findByName(boolean doIncludeAuthors,
+	public List<TaxonName> findByName(boolean doIncludeAuthors,
 	        String queryString,
 			MatchMode matchmode, Integer pageSize, Integer pageNumber,
 			List<Criterion> criteria, List<String> propertyPaths);
@@ -277,7 +279,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 	 * @param propertyPaths TODO
 	 * @return
 	 */
-	public List<? extends TaxonName> findByTitle(String queryString,
+	public List<TaxonName> findByTitle(String queryString,
 			MatchMode matchmode, Integer pageSize, Integer pageNumber,
 			List<Criterion> criteria, List<String> propertyPaths);
 
@@ -318,7 +320,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 	 * @param propertyPaths TODO
 	 * @return
 	 */
-	public List<TaxonName> findByName(Class<? extends TaxonName> clazz,	String queryString, MatchMode matchmode, List<Criterion> criteria,Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths);
+	public List<TaxonName> findByName(Class<TaxonName> clazz,	String queryString, MatchMode matchmode, List<Criterion> criteria,Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths);
 
 	/**
 	 * @param clazz
@@ -327,9 +329,39 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 	 * @param criteria
 	 * @return
 	 */
-	public long countByName(Class<? extends TaxonName> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria);
+	public long countByName(Class<TaxonName> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria);
 
 	public IZoologicalName findZoologicalNameByUUID(UUID uuid);
 
 	List<HashMap<String, String>> getNameRecords();
+
+	/**
+	 * Supports using wildcards in the query parameters.
+	 * If a name part passed to the method contains the asterisk character ('*') it will be translated into '%' the related field is search with a LIKE clause.
+	 * <p>
+	 * A query parameter which is passed as <code>NULL</code> value will be ignored. A parameter passed as {@link Optional} object containing a <code>NULL</code> value will be used
+	 * to filter select taxon names where the according field is <code>null</code>.
+	 *
+	 * @param genusOrUninomial
+	 * @param infraGenericEpithet
+	 * @param specificEpithet
+	 * @param infraSpecificEpithet
+	 * @param rank
+	 *     Only name having the specified rank are taken into account.
+	 * @return
+	 */
+	public List<TaxonNameParts> findTaxonNameParts(Optional<String> genusOrUninomial, Optional<String> infraGenericEpithet, Optional<String> specificEpithet,
+	        Optional<String> infraSpecificEpithet, Rank rank, Integer pageSize, Integer pageIndex, List<OrderHint> orderHints);
+    /**
+     * Count method complementing {@link #findTaxonNameParts(Optional, Optional, Optional, Optional, Rank)}
+     *
+     * @param genusOrUninomial
+     * @param infraGenericEpithet
+     * @param specificEpithet
+     * @param infraSpecificEpithet
+     * @param rank
+     *     Only name having the specified rank are taken into account.
+     * @return
+     */
+    public long countTaxonNameParts(Optional<String> genusOrUninomial, Optional<String> infraGenericEpithet, Optional<String> specificEpithet, Optional<String> infraSpecificEpithet, Rank rank);
 }

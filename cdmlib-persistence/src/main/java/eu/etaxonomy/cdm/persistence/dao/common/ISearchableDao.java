@@ -24,7 +24,7 @@ public interface ISearchableDao<T extends CdmBase> {
 	 * @return a count of the matching entities
 	 * @see <a href="http://lucene.apache.org/java/2_4_0/queryparsersyntax.html">Apache Lucene - Query Parser Syntax</a>
 	 */
-	public int count(Class<? extends T> clazz, String queryString);
+	public long count(Class<? extends T> clazz, String queryString);
 
 	/**
 	 * Returns a List of T instances where the default field matches the String queryString (as interpreted by the Lucene QueryParser)

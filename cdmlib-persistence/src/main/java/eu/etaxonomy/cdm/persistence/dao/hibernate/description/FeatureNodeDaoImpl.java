@@ -1,6 +1,6 @@
 /**
 * Copyright (C) 2008 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
 */
 
@@ -20,15 +20,20 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.common.VersionableDaoBase;
  * @since 09.09.2008
  */
 @Repository
-public class FeatureNodeDaoImpl extends VersionableDaoBase<FeatureNode> implements IFeatureNodeDao {
+public class FeatureNodeDaoImpl
+        extends VersionableDaoBase<FeatureNode>
+        implements IFeatureNodeDao {
 
 	public FeatureNodeDaoImpl() {
-		super(FeatureNode.class); 
+		super(FeatureNode.class);
 	}
 
-	public List<FeatureNode> list() {
-		Criteria crit = getSession().createCriteria(type); 
-		return crit.list(); 
+	@Override
+    public List<FeatureNode> list() {
+		Criteria crit = getSession().createCriteria(type);
+		@SuppressWarnings("unchecked")
+        List<FeatureNode> result = crit.list();
+		return result;
 	}
-	
+
 }

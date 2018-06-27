@@ -62,7 +62,7 @@ public class TestCdmDbComparator {
 
 	private static final String[] table_list = {
 //			"Address",
-			"Agent",
+			"AgentBase",
 //			"Agent_Agent",
 //			"Agent_Annotation",
 //			"Agent_DefinedTermBase",
@@ -325,8 +325,6 @@ public class TestCdmDbComparator {
 
 		Map<String, List<CdmBase>> tables_ = new HashMap<String, List<CdmBase>>(table_list.length);
 
-		List<String> tableRows = new ArrayList<String>(MAX_ROWS);
-
 		//List<Agent> agents = appCtr.getAgentService().getAllAgents(MAX_ROWS, 0);
 
 		try {
@@ -336,9 +334,9 @@ public class TestCdmDbComparator {
 	    		logger.debug("Retrieving table '" + table_list[i] + "'");
 	    		System.out.println("Retrieving table '" + table_list[i] + "'");
 
-				List<CdmBase> rows = new ArrayList<CdmBase>(MAX_ROWS);
+				List<CdmBase> rows = new ArrayList<>(MAX_ROWS);
 
-				rows = appCtr.getMainService().rows(table_list[i], MAX_ROWS, 0);
+//				rows = appCtr.getCommonService().count (table_list[i], MAX_ROWS, 0);
 
     			tables_.put(table_list[i], rows);
 
@@ -354,14 +352,13 @@ public class TestCdmDbComparator {
 
     private Map<String, List<String>> retrieveAllTables___(Source source) {
 
-		Map<String, List<String>> tables = new HashMap<String, List<String>>(table_list.length);
-		List<String> tableRows = new ArrayList<String>(MAX_ROWS);
+		Map<String, List<String>> tables = new HashMap<>(table_list.length);
 
 		try {
 			//get data from database
 			for (int i = 0; i < table_list.length; i++) {
 
-				List<String> rows = new ArrayList<String>(MAX_ROWS);
+				List<String> rows = new ArrayList<>(MAX_ROWS);
 
 //					Session session = factory.getCurrentSession();
 
@@ -394,8 +391,7 @@ public class TestCdmDbComparator {
 //		Source source = bmiConfig.getSource();
 //		ResultSet rs = berlinModelSource.getResultSet();
 
-		Map<String, List<String>> tables = new HashMap<String, List<String>>(table_list.length);
-		List<String> tableRows = new ArrayList<String>(MAX_ROWS);
+		Map<String, List<String>> tables = new HashMap<>(table_list.length);
 
 		try {
 			//get data from database
@@ -406,7 +402,7 @@ public class TestCdmDbComparator {
 				//ResultSet rs = berlinModelSource.getResultSet();
 				//ResultSet rs = source.getResultSet(strQuery) ;
 				ResultSet rs = source.getResultSet(strQuery) ;
-				List<String> rows = new ArrayList<String>(MAX_ROWS);
+				List<String> rows = new ArrayList<>(MAX_ROWS);
 
 				while (rs.next()) {
 					rows.add(rs.toString());
@@ -421,9 +417,9 @@ public class TestCdmDbComparator {
 
     private Map<String, List<String>> retrieveAllTables(CdmApplicationController appCtr) {
 
-		Map<String, List<String>> tables = new HashMap<String, List<String>>(table_list.length);
+		Map<String, List<String>> tables = new HashMap<>(table_list.length);
 
-		List<String> agentTableContent = new ArrayList<String>(MAX_ROWS);
+		List<String> agentTableContent = new ArrayList<>(MAX_ROWS);
 		List<? extends AgentBase> agents = appCtr.getAgentService().list(null,MAX_ROWS, 0,null,null);
 		for (AgentBase agent: agents ) {
 			//TODO: Want the entire row as string not just toString() of the object.
@@ -433,7 +429,7 @@ public class TestCdmDbComparator {
 
 		//List<Annotation> annotations = appCtr.getTermService().getAllAnnotations(MAX_ROWS, 0);
 
-		List<String> definedTermBaseTableContent = new ArrayList<String>(MAX_ROWS);
+		List<String> definedTermBaseTableContent = new ArrayList<>(MAX_ROWS);
 		List<DefinedTermBase> definedTermBases = appCtr.getTermService().list(null,MAX_ROWS, 0,null,null);
 		for (DefinedTermBase definedTermBase: definedTermBases ) {
 			definedTermBaseTableContent.add(definedTermBase.toString());
@@ -504,7 +500,6 @@ public class TestCdmDbComparator {
 	}
 
     	private void doCompareDatabases(Map<String, List<CdmBase>> tablesDbOne, Map<String, List<CdmBase>> tablesDbTwo) {
-//        public void doCompareDatabases(Map<String, List<String>> tablesDbOne, Map<String, List<String>> tablesDbTwo) {
 
 		logger.debug("# Tables in DB 1: " + tablesDbOne.size());
 		logger.debug("# Tables in DB 2: " + tablesDbTwo.size());
@@ -513,10 +508,8 @@ public class TestCdmDbComparator {
 
 			logger.info("Comparing table '" + tableName + "'");
 
-//			List<String> dbOneTableRows = new ArrayList<String>();
-//			List<String> dbTwoTableRows = new ArrayList<String>();
-			List<CdmBase> dbOneTableRows = new ArrayList<CdmBase>();
-			List<CdmBase> dbTwoTableRows = new ArrayList<CdmBase>();
+			List<CdmBase> dbOneTableRows = new ArrayList<>();
+			List<CdmBase> dbTwoTableRows = new ArrayList<>();
 
 			dbOneTableRows = tablesDbOne.get(tableName);
 			dbTwoTableRows = tablesDbTwo.get(tableName);
@@ -576,6 +569,7 @@ public class TestCdmDbComparator {
 			logger.error("Error creating application controller");
 			e.printStackTrace();
 			System.exit(1);
+			return;
 		}
 
 		try {
@@ -584,10 +578,10 @@ public class TestCdmDbComparator {
 	    	TransactionStatus txStatTwo = appCtrTwo.startTransaction(true);
 			for (int i = 0; i < table_list.length; i++) {
 
-				List<CdmBase> rowsDbOne = new ArrayList<CdmBase>(MAX_ROWS);
-				List<CdmBase> rowsDbTwo = new ArrayList<CdmBase>(MAX_ROWS);
-				rowsDbOne = appCtrOne.getMainService().rows(table_list[i], MAX_ROWS, 0);
-				rowsDbTwo = appCtrTwo.getMainService().rows(table_list[i], MAX_ROWS, 0);
+				List<CdmBase> rowsDbOne = new ArrayList<>(MAX_ROWS);
+				List<CdmBase> rowsDbTwo = new ArrayList<>(MAX_ROWS);
+//				rowsDbOne = appCtrOne.getCommonService().count(table_list[i], MAX_ROWS, 0);
+//				rowsDbTwo = appCtrTwo.getCommonService().count(table_list[i], MAX_ROWS, 0);
 				compareTables(table_list[i], rowsDbOne, rowsDbTwo);
 			}
 	    	appCtrTwo.commitTransaction(txStatTwo);

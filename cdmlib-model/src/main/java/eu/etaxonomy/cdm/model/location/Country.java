@@ -631,7 +631,8 @@ public class Country extends NamedArea {
 			Language lang= Language.DEFAULT();
 			Country newInstance = Country.class.newInstance();
 			newInstance.setUuid(UUID.fromString(csvLine.get(0)));
-			newInstance.setUri(URI.create(csvLine.get(1)));
+			String uriStr = CdmUtils.Ne(csvLine.get(1));
+	        newInstance.setUri(uriStr == null? null: URI.create(uriStr));
 			String label = csvLine.get(3).trim();
 			String text = csvLine.get(3).trim();
 			String abbreviatedLabel = csvLine.get(2);
@@ -639,7 +640,7 @@ public class Country extends NamedArea {
 			newInstance.setLevel(NamedAreaLevel.COUNTRY());
 
 			// iso codes extra
-			newInstance.setIso3166_A2(csvLine.get(4).trim());
+			newInstance.setIso3166_A2(CdmUtils.Ne(csvLine.get(4).trim()));
 			newInstance.setIdInVocabulary(abbreviatedLabel);
 
 

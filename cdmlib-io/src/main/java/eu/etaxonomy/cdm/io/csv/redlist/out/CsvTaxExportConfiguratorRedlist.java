@@ -48,6 +48,7 @@ public class CsvTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<C
 	private boolean isUseIdWherePossible = false;
 	private boolean includeBasionymsInResourceRelations;
 	private boolean includeMisappliedNamesInResourceRelations;
+	private boolean includeUnpublished = false;
 	private String defaultBibliographicCitation = null;
 	private List<UUID> featureExclusions = new ArrayList<UUID>();
 	//filter on the classifications to be exported
@@ -63,6 +64,8 @@ public class CsvTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<C
 
 	//TODO
 	private static IExportTransformer defaultTransformer = null;
+
+// ********************************* FACTORY *****************************/
 
 	public static CsvTaxExportConfiguratorRedlist NewInstance(ICdmDataSource source, File destinationFolder) {
 		return new CsvTaxExportConfiguratorRedlist(source, destinationFolder);
@@ -289,5 +292,16 @@ public class CsvTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<C
 	public List<NamedArea> getNamedAreas(){
 		return areas;
 	}
+
+    /**
+     * Should the import include unpublished taxa?<BR>
+     * Default is <code>false</code>
+     */
+    public boolean isIncludeUnpublished() {
+        return includeUnpublished;
+    }
+    public void setIncludeUnpublished(boolean includeUnpublished) {
+        this.includeUnpublished = includeUnpublished;
+    }
 
 }

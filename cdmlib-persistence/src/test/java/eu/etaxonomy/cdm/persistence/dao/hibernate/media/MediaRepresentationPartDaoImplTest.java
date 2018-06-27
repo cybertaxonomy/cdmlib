@@ -46,7 +46,7 @@ public class MediaRepresentationPartDaoImplTest extends CdmTransactionalIntegrat
 
 	@Test
 	public void testCount() {
-		int numberOfMediaRepresentationParts = dao.count();
+		long numberOfMediaRepresentationParts = dao.count();
 		assertEquals("count should return 3",3,numberOfMediaRepresentationParts);
 	}
 

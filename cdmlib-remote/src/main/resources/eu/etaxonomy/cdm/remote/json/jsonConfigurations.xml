@@ -108,56 +108,59 @@
     </property>
     <property name="jsonBeanProcessors">
       <map>
-      <entry key="org.hibernate.proxy.HibernateProxy">
-        <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.HibernateProxyBeanProcessor" />
-      </entry>
-      <entry key="eu.etaxonomy.cdm.model.common.TermBase">
-        <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TermBaseBeanProcessor">
-           <property name="excludes">
-             <set value-type="java.lang.String">
-                 <value>partOf</value><!-- FIXME exclude partOf to avoid  lazy loading exceptions  -->
-                 <value>kindOf</value><!-- FIXME exclude kindOf to avoid  lazy loading exceptions  -->
-                 <value>infraGenericMarker</value><!-- FIXME leads to IllegalStateException if not excluded  -->
-             </set>
-          </property>
-        </bean>
+        <entry key="org.hibernate.proxy.HibernateProxy">
+          <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.HibernateProxyBeanProcessor" />
         </entry>
-        <entry key="eu.etaxonomy.cdm.model.media.Media">
-          <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.MediaBeanProcessor">
-            <property name="replaceTitle" value="true" />
-            <property name="replaceDescription" value="true" />
-          </bean>
-        </entry>
-        <entry key="eu.etaxonomy.cdm.model.taxon.TaxonNode">
-          <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TaxonNodeBeanProcessor" />
-        </entry>
-        <entry key="eu.etaxonomy.cdm.model.reference.Reference">
-            <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.ReferenceBaseBeanProcessor"/>
-        </entry>
-        <entry key="eu.etaxonomy.cdm.model.name.TaxonName">
-          <bean
-            class="eu.etaxonomy.cdm.remote.json.processor.bean.TaxonNameBeanProcessor">
-            <property name="skipTaggedName" value="true" />
-          </bean>
-        </entry>
-        <entry key="eu.etaxonomy.cdm.model.name.TypeDesignationBase">
-          <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TypeDesignationBaseBeanProcessor"/>
-        </entry>
-        <entry key="eu.etaxonomy.cdm.model.description.KeyStatement">
-            <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.KeyStatementBeanProcessor" />
-        </entry>
-        <entry key="eu.etaxonomy.cdm.model.agent.TeamOrPersonBase">
-            <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TeamOrPersonBaseBeanProcessor" />
-        </entry>
-        <entry key="eu.etaxonomy.cdm.model.description.DescriptionElementBase">
-            <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.DescriptionElementBeanProcessor" />
-        </entry>
-        <entry key="eu.etaxonomy.cdm.model.description.StateData">
-            <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.StateDataBeanProcessor" />
-        </entry>
-        <entry key="org.apache.lucene.document.Document">
-            <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.LuceneDocumentBeanProcessor" />
-        </entry>
+        <entry key="eu.etaxonomy.cdm.model.common.TermBase">
+          <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TermBaseBeanProcessor">
+             <property name="excludes">
+               <set value-type="java.lang.String">
+                   <value>partOf</value><!-- FIXME exclude partOf to avoid  lazy loading exceptions  -->
+                   <value>kindOf</value><!-- FIXME exclude kindOf to avoid  lazy loading exceptions  -->
+                   <value>infraGenericMarker</value><!-- FIXME leads to IllegalStateException if not excluded  -->
+               </set>
+            </property>
+           </bean>
+         </entry>
+         <entry key="eu.etaxonomy.cdm.model.common.Representation">
+          <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.RepresentationBeanProcessor"/>
+         </entry>
+         <entry key="eu.etaxonomy.cdm.model.media.Media">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.MediaBeanProcessor">
+              <property name="replaceTitle" value="true" />
+              <property name="replaceDescription" value="true" />
+            </bean>
+         </entry>
+         <entry key="eu.etaxonomy.cdm.model.taxon.TaxonNode">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TaxonNodeBeanProcessor" />
+         </entry>
+         <entry key="eu.etaxonomy.cdm.model.reference.Reference">
+              <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.ReferenceBaseBeanProcessor"/>
+         </entry>
+         <entry key="eu.etaxonomy.cdm.model.name.TaxonName">
+            <bean
+              class="eu.etaxonomy.cdm.remote.json.processor.bean.TaxonNameBeanProcessor">
+              <property name="skipTaggedName" value="true" />
+            </bean>
+         </entry>
+         <entry key="eu.etaxonomy.cdm.model.name.TypeDesignationBase">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TypeDesignationBaseBeanProcessor"/>
+         </entry>
+         <entry key="eu.etaxonomy.cdm.model.description.KeyStatement">
+              <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.KeyStatementBeanProcessor" />
+         </entry>
+         <entry key="eu.etaxonomy.cdm.model.agent.TeamOrPersonBase">
+              <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TeamOrPersonBaseBeanProcessor" />
+         </entry>
+         <entry key="eu.etaxonomy.cdm.model.description.DescriptionElementBase">
+              <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.DescriptionElementBeanProcessor" />
+         </entry>
+         <entry key="eu.etaxonomy.cdm.model.description.StateData">
+              <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.StateDataBeanProcessor" />
+         </entry>
+         <entry key="org.apache.lucene.document.Document">
+              <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.LuceneDocumentBeanProcessor" />
+         </entry>
       </map>
     </property>
     <property name="jsonPropertyFilter">

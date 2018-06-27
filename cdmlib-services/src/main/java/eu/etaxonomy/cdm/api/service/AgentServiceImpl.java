@@ -47,7 +47,9 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
  */
 @Service
 @Transactional(readOnly = true)
-public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDao> implements IAgentService {
+public class AgentServiceImpl
+        extends IdentifiableServiceBase<AgentBase,IAgentDao>
+        implements IAgentService {
     private static final Logger logger = Logger.getLogger(AgentServiceImpl.class);
 
     @Autowired
@@ -84,38 +86,38 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 
 	@Override
 	public Pager<InstitutionalMembership> getInstitutionalMemberships(Person person, Integer pageSize, Integer pageNumber) {
-        Integer numberOfResults = dao.countInstitutionalMemberships(person);
+        long numberOfResults = dao.countInstitutionalMemberships(person);
 
-		List<InstitutionalMembership> results = new ArrayList<InstitutionalMembership>();
+		List<InstitutionalMembership> results = new ArrayList<>();
 		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.getInstitutionalMemberships(person, pageSize, pageNumber);
 		}
 
-		return new DefaultPagerImpl<InstitutionalMembership>(pageNumber, numberOfResults, pageSize, results);
+		return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
 	}
 
 	@Override
 	public Pager<Person> getMembers(Team team, Integer pageSize, Integer pageNumber) {
-		Integer numberOfResults = dao.countMembers(team);
+		long numberOfResults = dao.countMembers(team);
 
-		List<Person> results = new ArrayList<Person>();
+		List<Person> results = new ArrayList<>();
 		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.getMembers(team, pageSize, pageNumber);
 		}
 
-		return new DefaultPagerImpl<Person>(pageNumber, numberOfResults, pageSize, results);
+		return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
 	}
 
 	@Override
 	public Pager<Address> getAddresses(AgentBase agent, Integer pageSize, Integer pageNumber) {
-		Integer numberOfResults = dao.countAddresses(agent);
+		long numberOfResults = dao.countAddresses(agent);
 
-		List<Address> results = new ArrayList<Address>();
+		List<Address> results = new ArrayList<>();
 		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.getAddresses(agent, pageSize, pageNumber);
 		}
 
-		return new DefaultPagerImpl<Address>(pageNumber, numberOfResults, pageSize, results);
+		return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
 	}
 
 	@Override

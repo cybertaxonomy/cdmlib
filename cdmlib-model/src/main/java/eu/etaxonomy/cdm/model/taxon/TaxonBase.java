@@ -32,10 +32,14 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.ClassBridge;
 import org.hibernate.search.annotations.ClassBridges;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Store;
+import org.hibernate.search.bridge.builtin.BooleanBridge;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.search.AcceptedTaxonBridge;
@@ -93,15 +97,19 @@ import eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynony
             index = org.hibernate.search.annotations.Index.YES,
             store = Store.YES,
             impl = ClassInfoBridge.class),
-    @ClassBridge(name="accTaxon", // TODO rename to acceptedTaxon, since we are usually not using abbreviations for field names
+    @ClassBridge(name="accTaxon", // TODO rename to acceptedTaxon, since we are usually not using abbreviations for field names, see also ACC_TAXON_BRIDGE_PREFIX
             index = org.hibernate.search.annotations.Index.YES,
             store = Store.YES,
             impl = AcceptedTaxonBridge.class),
     @ClassBridge(impl = eu.etaxonomy.cdm.hibernate.search.NomenclaturalSortOrderBrigde.class)
 })
-public abstract class TaxonBase<S extends ITaxonCacheStrategy> extends IdentifiableEntity<S> implements  IPublishable, IIntextReferenceTarget, Cloneable {
+public abstract class TaxonBase<S extends ITaxonCacheStrategy>
+           extends IdentifiableEntity<S>
+           implements  IPublishable, IIntextReferenceTarget, Cloneable {
     private static final long serialVersionUID = -3589185949928938529L;
     private static final Logger logger = Logger.getLogger(TaxonBase.class);
+
+    public static final String ACC_TAXON_BRIDGE_PREFIX = "accTaxon";
 
     private static Method methodTaxonNameAddTaxonBase;
 
@@ -153,6 +161,7 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy> extends Identifia
     private boolean useNameCache = false;
 
     @XmlAttribute(name = "publish")
+    @Field(analyze = Analyze.NO, store = Store.YES, bridge= @FieldBridge(impl=BooleanBridge.class))
     private boolean publish = true;
 
 

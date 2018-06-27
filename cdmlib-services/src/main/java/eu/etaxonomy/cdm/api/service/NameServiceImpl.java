@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -47,6 +48,7 @@ import eu.etaxonomy.cdm.api.service.search.LuceneSearch;
 import eu.etaxonomy.cdm.api.service.search.QueryFactory;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.search.SearchResultBuilder;
+import eu.etaxonomy.cdm.api.utility.TaxonNamePartsFilter;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.CdmBaseType;
@@ -79,6 +81,7 @@ import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.name.INomenclaturalStatusDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITypeDesignationDao;
+import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -89,7 +92,9 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 @Service
 @Transactional(readOnly = true)
-public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNameDao> implements INameService {
+public class NameServiceImpl
+          extends IdentifiableServiceBase<TaxonName,ITaxonNameDao>
+          implements INameService {
     static private final Logger logger = Logger.getLogger(NameServiceImpl.class);
 
     @Autowired
@@ -113,15 +118,10 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
     /**
      * Constructor
      */
-    public NameServiceImpl(){
-        if (logger.isDebugEnabled()) { logger.debug("Load NameService Bean"); }
-    }
+    public NameServiceImpl(){}
 
 //********************* METHODS ****************************************************************//
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.ServiceBase#delete(eu.etaxonomy.cdm.model.common.CdmBase)
-     */
     @Override
     @Transactional(readOnly = false)
     public DeleteResult delete(UUID nameUUID){
@@ -139,7 +139,6 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
     @Transactional(readOnly = false)
     public DeleteResult delete(TaxonName name, NameDeletionConfigurator config) {
         DeleteResult result = new DeleteResult();
-
 
         if (name == null){
             result.setAbort();
@@ -171,9 +170,8 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
     //          throw new ReferrencedObjectUndeletableException(message);
     //      }
 
-
             try{
-                UUID nameUuid = dao.delete(name);
+                dao.delete(name);
                 result.addDeletedObject(name);
             }catch(Exception e){
                 result.addException(e);
@@ -196,7 +194,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
     @Override
     @Transactional
     public DeleteResult deleteTypeDesignation(TaxonName name, TypeDesignationBase typeDesignation){
-    	if(typeDesignation!=null && typeDesignation.getId()!=0){
+    	if(typeDesignation != null && typeDesignation .isPersited()){
     		typeDesignation = HibernateProxyHelper.deproxy(referencedEntityDao.load(typeDesignation.getUuid()), TypeDesignationBase.class);
     	}
 
@@ -207,15 +205,17 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
         }else if (name != null && typeDesignation != null){
             removeSingleDesignation(name, typeDesignation);
         }else if (name != null){
-            Set<TypeDesignationBase> designationSet = new HashSet<TypeDesignationBase>(name.getTypeDesignations());
-            for (Object o : designationSet){
-                TypeDesignationBase desig = CdmBase.deproxy(o, TypeDesignationBase.class);
+            @SuppressWarnings("rawtypes")
+            Set<TypeDesignationBase> designationSet = new HashSet<>(name.getTypeDesignations());
+            for (TypeDesignationBase<?> desig : designationSet){
+                desig = CdmBase.deproxy(desig);
                 removeSingleDesignation(name, desig);
             }
         }else if (typeDesignation != null){
-            Set<TaxonName> nameSet = new HashSet<TaxonName>(typeDesignation.getTypifiedNames());
-            for (Object o : nameSet){
-                TaxonName singleName = CdmBase.deproxy(o, TaxonName.class);
+            @SuppressWarnings("unchecked")
+            Set<TaxonName> nameSet = new HashSet<>(typeDesignation.getTypifiedNames());
+            for (TaxonName singleName : nameSet){
+                singleName = CdmBase.deproxy(singleName);
                 removeSingleDesignation(singleName, typeDesignation);
             }
         }
@@ -229,7 +229,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
     @Transactional(readOnly = false)
     public DeleteResult deleteTypeDesignation(UUID nameUuid, UUID typeDesignationUuid){
         TaxonName nameBase = load(nameUuid);
-        TypeDesignationBase typeDesignation = HibernateProxyHelper.deproxy(referencedEntityDao.load(typeDesignationUuid), TypeDesignationBase.class);
+        TypeDesignationBase<?> typeDesignation = HibernateProxyHelper.deproxy(referencedEntityDao.load(typeDesignationUuid), TypeDesignationBase.class);
         return deleteTypeDesignation(nameBase, typeDesignation);
     }
 
@@ -320,7 +320,6 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
         return result;
     }
 
-
     /**
      * TODO candidate for harmonization
      * new name saveHomotypicalGroups
@@ -329,7 +328,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
      */
     @Override
     public List<TaxonName> findNamesByTitleCache(String titleCache, MatchMode matchMode, List<String> propertyPaths){
-        List result = dao.findByTitle(titleCache, matchMode, null, null, null ,propertyPaths);
+        List result = dao.findByTitle(titleCache, matchMode, null, null, null, propertyPaths);
         return result;
     }
 
@@ -341,16 +340,44 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
      */
     @Override
     public List<TaxonName> findNamesByNameCache(String nameCache, MatchMode matchMode, List<String> propertyPaths){
-        List result = dao.findByName(false, nameCache, matchMode, null, null, null ,propertyPaths);
+        List<TaxonName> result = dao.findByName(false, nameCache, matchMode, null, null, null , propertyPaths);
         return result;
     }
 
+    @Override
+    public Pager<TaxonNameParts> findTaxonNameParts(Optional<String> genusOrUninomial,
+            Optional<String> infraGenericEpithet, Optional<String> specificEpithet,
+            Optional<String> infraSpecificEpithet, Rank rank, Integer pageSize, Integer pageIndex, List<OrderHint> orderHints) {
+
+
+        long count = dao.countTaxonNameParts(genusOrUninomial, infraGenericEpithet, specificEpithet, infraGenericEpithet, rank);
+
+        List<TaxonNameParts> results;
+        if(AbstractPagerImpl.hasResultsInRange(count, pageIndex, pageSize)){
+            results = dao.findTaxonNameParts(genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet,
+                    rank,
+                    pageSize, pageIndex, orderHints);
+        } else {
+            results = new ArrayList<>();
+        }
+
+        return new DefaultPagerImpl<TaxonNameParts>(pageIndex, count, pageSize, results);
+    }
+
     /**
-     * TODO candidate for harmonization
+     * {@inheritDoc}
      */
     @Override
-    public List getNamesByName(String name, CdmBase sessionObject){
-        return super.findCdmObjectsByTitle(name, sessionObject);
+    public Pager<TaxonNameParts> findTaxonNameParts(TaxonNamePartsFilter filter, String namePartQueryString,
+            Integer pageSize, Integer pageIndex, List<OrderHint> orderHints) {
+
+        return findTaxonNameParts(
+                filter.uninomialQueryString(namePartQueryString),
+                filter.infraGenericEpithet(namePartQueryString),
+                filter.specificEpithet(namePartQueryString),
+                filter.infraspecificEpithet(namePartQueryString),
+                filter.getRank(),
+                pageSize, pageIndex, orderHints);
     }
 
     /**
@@ -757,14 +784,14 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
     @Override
     public Pager<TypeDesignationBase> getTypeDesignations(TaxonName name, SpecimenTypeDesignationStatus status,
                 Integer pageSize, Integer pageNumber, List<String> propertyPaths){
-        Integer numberOfResults = dao.countTypeDesignations(name, status);
+        long numberOfResults = dao.countTypeDesignations(name, status);
 
-        List<TypeDesignationBase> results = new ArrayList<TypeDesignationBase>();
-        if(AbstractPagerImpl.hasResultsInRange(numberOfResults.longValue(), pageNumber, pageSize)) {
+        List<TypeDesignationBase> results = new ArrayList<>();
+        if(AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)) {
             results = dao.getTypeDesignations(name, null, status, pageSize, pageNumber, propertyPaths);
         }
 
-        return new DefaultPagerImpl<TypeDesignationBase>(pageNumber, numberOfResults, pageSize, results);
+        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
     }
 
     /**
@@ -774,14 +801,14 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
     @Override
     public Pager<TaxonName> searchNames(String uninomial,String infraGenericEpithet, String specificEpithet, String infraspecificEpithet, Rank rank, Integer pageSize,	Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths) {
-        Integer numberOfResults = dao.countNames(uninomial, infraGenericEpithet, specificEpithet, infraspecificEpithet, rank);
+        long numberOfResults = dao.countNames(uninomial, infraGenericEpithet, specificEpithet, infraspecificEpithet, rank);
 
-        List<TaxonName> results = new ArrayList<TaxonName>();
+        List<TaxonName> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
             results = dao.searchNames(uninomial, infraGenericEpithet, specificEpithet, infraspecificEpithet, rank, pageSize, pageNumber, orderHints, propertyPaths);
         }
 
-        return new DefaultPagerImpl<TaxonName>(pageNumber, numberOfResults, pageSize, results);
+        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
     }
 
     @Override
@@ -790,7 +817,8 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
     }
 
     @Override
-    public Pager<TaxonName> findByName(Class<? extends TaxonName> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria, Integer pageSize,Integer pageNumber, List<OrderHint> orderHints,List<String> propertyPaths) {
+    public Pager<TaxonName> findByName(Class<TaxonName> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria,
+            Integer pageSize,Integer pageNumber, List<OrderHint> orderHints,List<String> propertyPaths) {
          Long numberOfResults = dao.countByName(clazz, queryString, matchmode, criteria);
 
          List<TaxonName> results = new ArrayList<>();
@@ -961,7 +989,6 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonName,ITaxonNam
 
     @Override
     public List<HashMap<String,String>> getNameRecords(){
-
 		return dao.getNameRecords();
 
     }

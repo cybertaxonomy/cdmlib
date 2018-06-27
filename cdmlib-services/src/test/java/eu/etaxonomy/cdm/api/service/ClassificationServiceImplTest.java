@@ -24,6 +24,7 @@ import java.util.UUID;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -81,21 +82,20 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
 
     private Comparator<? super TaxonNode> taxonNodeComparator;
 
+    private boolean includeUnpublished;
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#setTaxonNodeComparator(eu.etaxonomy.cdm.model.taxon.ITaxonNodeComparator)}.
-     */
-//    @Test
-    public final void testSetTaxonNodeComparator() {
-//		fail("Not yet implemented");
+    @Before
+    public void setUp() {
+        includeUnpublished = true;
     }
+
 
     /**
      * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#loadTaxonNodeByTaxon(eu.etaxonomy.cdm.model.taxon.Taxon, java.util.UUID, java.util.List)}.
      */
-//    @Test
+    @Test
     public final void testLoadTaxonNodeByTaxon() {
-//		fail("Not yet implemented");
+		logger.warn("testLoadTaxonNodeByTaxon not yet implemented");
     }
 
     /**
@@ -103,7 +103,7 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
      */
     @Test
     public final void testLoadTaxonNode() {
-//		fail("Not yet implemented");
+		logger.warn("testLoadTaxonNode not yet implemented");
     }
 
 
@@ -173,32 +173,32 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
         //
         // for more historic Acacia taxonomy see http://lexikon.freenet.de/Akazien
 
-        List<TaxonNode> taxonNodes = service.listRankSpecificRootNodes(null, null, null, null, NODE_INIT_STRATEGY);
+        List<TaxonNode> taxonNodes = service.listRankSpecificRootNodes(null, null, includeUnpublished, null, null, NODE_INIT_STRATEGY);
         Assert.assertEquals(2, taxonNodes.size());
 
-        taxonNodes = service.listRankSpecificRootNodes(classification, null, null, null, NODE_INIT_STRATEGY);
+        taxonNodes = service.listRankSpecificRootNodes(classification, null, includeUnpublished, null, null, NODE_INIT_STRATEGY);
         Assert.assertEquals(2, taxonNodes.size());
 
-        taxonNodes = service.listRankSpecificRootNodes(classification, Rank.SECTION_BOTANY(), null, null, NODE_INIT_STRATEGY);
+        taxonNodes = service.listRankSpecificRootNodes(classification, Rank.SECTION_BOTANY(), includeUnpublished, null, null, NODE_INIT_STRATEGY);
         Assert.assertEquals(4, taxonNodes.size());
 
         // also test if the pager works
-        taxonNodes = service.listRankSpecificRootNodes(classification, Rank.SECTION_BOTANY(), 10, 0, NODE_INIT_STRATEGY);
+        taxonNodes = service.listRankSpecificRootNodes(classification, Rank.SECTION_BOTANY(), includeUnpublished, 10, 0, NODE_INIT_STRATEGY);
         Assert.assertEquals(4, taxonNodes.size());
-        taxonNodes = service.listRankSpecificRootNodes(classification, Rank.SECTION_BOTANY(), 2, 0, NODE_INIT_STRATEGY);
+        taxonNodes = service.listRankSpecificRootNodes(classification, Rank.SECTION_BOTANY(), includeUnpublished, 2, 0, NODE_INIT_STRATEGY);
         Assert.assertEquals(2, taxonNodes.size());
-        taxonNodes = service.listRankSpecificRootNodes(classification, Rank.SECTION_BOTANY(), 2, 1, NODE_INIT_STRATEGY);
+        taxonNodes = service.listRankSpecificRootNodes(classification, Rank.SECTION_BOTANY(), includeUnpublished, 2, 1, NODE_INIT_STRATEGY);
         Assert.assertEquals(2, taxonNodes.size());
-        taxonNodes = service.listRankSpecificRootNodes(classification, Rank.SECTION_BOTANY(), 2, 2, NODE_INIT_STRATEGY);
+        taxonNodes = service.listRankSpecificRootNodes(classification, Rank.SECTION_BOTANY(), includeUnpublished, 2, 2, NODE_INIT_STRATEGY);
         Assert.assertEquals(0, taxonNodes.size());
 
-        taxonNodes = service.listRankSpecificRootNodes(classification, Rank.SPECIES(), null, null, NODE_INIT_STRATEGY);
+        taxonNodes = service.listRankSpecificRootNodes(classification, Rank.SPECIES(), includeUnpublished, null, null, NODE_INIT_STRATEGY);
         Assert.assertEquals(3, taxonNodes.size());
 
         // also test if the pager works
-        taxonNodes = service.listRankSpecificRootNodes(classification, Rank.SPECIES(), 10, 0, NODE_INIT_STRATEGY);
+        taxonNodes = service.listRankSpecificRootNodes(classification, Rank.SPECIES(), includeUnpublished, 10, 0, NODE_INIT_STRATEGY);
         Assert.assertEquals(3, taxonNodes.size());
-        taxonNodes = service.listRankSpecificRootNodes(classification, Rank.SPECIES(), 2, 1, NODE_INIT_STRATEGY);
+        taxonNodes = service.listRankSpecificRootNodes(classification, Rank.SPECIES(), includeUnpublished, 2, 1, NODE_INIT_STRATEGY);
         Assert.assertEquals(1, taxonNodes.size());
 
 

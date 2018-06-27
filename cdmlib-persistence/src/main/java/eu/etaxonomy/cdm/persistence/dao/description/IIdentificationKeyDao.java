@@ -43,7 +43,7 @@ public interface IIdentificationKeyDao {
 	 * Returns the number of objects of type IIdentificationKey
 	 * @return
 	 */
-	public int count();
+	public long count();
 
 	/**
 	 * Finds IdentificationKeys which cover the Taxon given as parameter
@@ -76,5 +76,5 @@ public interface IIdentificationKeyDao {
 	 *            IIdentificationKey
 	 * @return
 	 */
-	public <T extends IIdentificationKey> Long countByTaxonomicScope(UUID taxonUuid, Class<T> type);
+	public <T extends IIdentificationKey> long countByTaxonomicScope(UUID taxonUuid, Class<T> type);
 }

@@ -30,7 +30,7 @@ public interface IMediaDao extends IIdentifiableDao<Media> {
 	 * @param geoScopes a Set of NamedArea instances that define the geospatial scope of the key (can be null)
 	 * @return a count of MediaKey instances
 	 */
-	public int countMediaKeys(Set<Taxon> taxonomicScope, Set<NamedArea> geoScopes);
+	public long countMediaKeys(Set<Taxon> taxonomicScope, Set<NamedArea> geoScopes);
 
 	/**
 	 * Return a List of MediaKeys, optionally filtered by the parameters passed. The MediaKey
@@ -54,7 +54,7 @@ public interface IMediaDao extends IIdentifiableDao<Media> {
 	 * @return a count of Rights instances
 	 */
     @Override
-    public int countRights(Media t);
+    public long countRights(Media t);
 
 	/**
 	 * Return a List of the rights for this media entity

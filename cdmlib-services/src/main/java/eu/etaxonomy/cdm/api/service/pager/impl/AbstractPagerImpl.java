@@ -270,22 +270,45 @@ public abstract class AbstractPagerImpl<T> implements Pager<T>, Serializable {
 	 * When using this method in a service layer class you will also need to provide the according <code>limit</code> and <code>start</code>
 	 * parameters for dao list methods. The PagerUtil class provides the according methods for the required calculation:
 	 * {@link PagerUtils#limitFor(Integer)} and {@link PagerUtils#startFor(Integer, Integer)}.<br/>
-     * <b>NOTE:</b> It is highly recommended to use the {@link #limitStartforRange(Long, Integer, Integer)} method instead which already
-     * includes the calculation of <code>limit</code> and <code>start</code>.
+     * <b>NOTE:</b> To calculate <code>limit</code> and <code>start</code> for dao methods is highly recommended to use
+     * the {@link #limitStartforRange(Long, Integer, Integer)} method instead which already includes the calculation of
+     * <code>limit</code> and <code>start</code>.
 	 *
 	 * @param numberOfResults
 	 * @param pageIndex
 	 * @param pageSize
 	 * @return
-	 *
-	 * @deprecated use {@link #limitStartforRange(Long, Integer, Integer)} instead if appropriate.
 	 */
-	@Deprecated
 	public static boolean hasResultsInRange(Long numberOfResults, Integer pageIndex, Integer pageSize) {
 		return numberOfResults > 0 // no results at all
 				&& (pageSize == null // page size may be null : return all in this case
 				|| pageIndex != null && numberOfResults > (pageIndex * pageSize));
 	}
+
+	/**
+     * Test if the the <code>numberOfResults</code> in the range of the page specified by <code>pageIndex</code> and <code>pageSize</code>.
+     * <p>
+     * When using this method in a service layer class you will also need to provide the according <code>limit</code> and <code>start</code>
+     * parameters for dao list methods. The PagerUtil class provides the according methods for the required calculation:
+     * {@link PagerUtils#limitFor(Integer)} and {@link PagerUtils#startFor(Integer, Integer)}.<br/>
+     * <b>NOTE:</b> To calculate <code>limit</code> and <code>start</code> for dao methods is highly recommended to use
+     * the {@link #limitStartforRange(Long, Integer, Integer)} method instead which already includes the calculation of
+     * <code>limit</code> and <code>start</code>.
+     *
+     * @param numberOfResults
+     * @param pageIndex
+     * @param pageSize
+     * @return
+     *
+     * @deprecated The Hibernate <code>count</code> function returns <code>Long</code> values!
+     *  Use {@link #hasResultsInRange(Long, Integer, Integer)} instead.
+     */
+    @Deprecated
+    public static boolean hasResultsInRange(Integer numberOfResults, Integer pageIndex, Integer pageSize) {
+        return numberOfResults > 0 // no results at all
+                && (pageSize == null // page size may be null : return all in this case
+                || pageIndex != null && numberOfResults > (pageIndex * pageSize));
+    }
 
 	/**
      * Test if the the <code>numberOfResults</code> in the range of the page specified by <code>pageIndex</code> and <code>pageSize</code>.
@@ -301,9 +324,35 @@ public abstract class AbstractPagerImpl<T> implements Pager<T>, Serializable {
      * @param pageSize
      * @return An <code>Integer</code> array containing limit and start: <code>new int[]{limit, start}</code> or null if there is no result in the range of
      *  <code>pageIndex</code> and <code>pageSize</code>.
+     *
      */
     public static Integer[] limitStartforRange(Long numberOfResults, Integer pageIndex, Integer pageSize) {
         if(hasResultsInRange(numberOfResults, pageIndex, pageSize)){
+            return  new Integer[]{PagerUtils.limitFor(pageSize), PagerUtils.startFor(pageSize, pageIndex)};
+        }
+        return null;
+    }
+
+    /**
+     * Test if the the <code>numberOfResults</code> in the range of the page specified by <code>pageIndex</code> and <code>pageSize</code>.
+     * And returns the according <code>limit</code> and <code>start</code> values as an array in case the test is successful. If there is no
+     * result in the specified range the return value will be <code>null</code>.
+     * <p>
+     * When using this method in a service layer class you will also need to provide the according <code>limit</code> and <code>start</code>
+     * parameters for dao list methods. The PagerUtil class provides the according methods for the required calculation:
+     * {@link PagerUtils#limitFor(Integer)} and {@link PagerUtils#startFor(Integer, Integer)}
+     *
+     * @param numberOfResults
+     * @param pageIndex
+     * @param pageSize
+     * @return An <code>Integer</code> array containing limit and start: <code>new int[]{limit, start}</code> or null if there is no result in the range of
+     *  <code>pageIndex</code> and <code>pageSize</code>.
+     *
+     * @deprecated The Hibernate <code>count</code> function returns <code>Long</code> values! Use {@link #limitStartforRange(Long, Integer, Integer)} instead.
+     */
+    @Deprecated
+    public static Integer[] limitStartforRange(Integer numberOfResults, Integer pageIndex, Integer pageSize) {
+        if(hasResultsInRange(new Long(numberOfResults), pageIndex, pageSize)){
             return  new Integer[]{PagerUtils.limitFor(pageSize), PagerUtils.startFor(pageSize, pageIndex)};
         }
         return null;

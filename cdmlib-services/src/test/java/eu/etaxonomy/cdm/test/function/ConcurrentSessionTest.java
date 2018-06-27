@@ -179,10 +179,10 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
         conversationHolder2 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
 
         conversationHolder1.bind();
-        int context1Count = taxonDao.count();
+        long context1Count = taxonDao.count();
 
         conversationHolder2.bind();
-        int context2Count = taxonDao.count();
+        long context2Count = taxonDao.count();
 
         assertEquals("Both contexts should yield the same results(at least if " +
                 "there where no write operations in between)", context1Count, context2Count);

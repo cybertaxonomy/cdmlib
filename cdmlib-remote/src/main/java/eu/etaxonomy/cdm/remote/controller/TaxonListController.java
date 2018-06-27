@@ -22,7 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.BooleanUtils;
-import org.apache.lucene.queryparser.classic.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
@@ -56,7 +55,6 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Classification;
-import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -174,15 +172,16 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
             @RequestParam(value = "doTaxaByCommonNames", required = false) Boolean doTaxaByCommonNames,
             HttpServletRequest request,
             HttpServletResponse response
-            )
-             throws IOException, LuceneParseException, LuceneMultiSearchException {
+            ) throws IOException, LuceneParseException, LuceneMultiSearchException {
+
+        boolean includeUnpublished = NO_UNPUBLISHED;
 
 
-        logger.info("search : " + requestPathAndQuery(request) );
+        logger.info("doSearch() " + requestPathAndQuery(request) );
 
         Set<NamedArea> areaSet = null;
         if(areaList != null){
-            areaSet = new HashSet<NamedArea>(areaList.size());
+            areaSet = new HashSet<>(areaList.size());
             areaSet.addAll(areaList);
             TaxonListController.includeAllSubAreas(areaSet, termService);
         }
@@ -204,12 +203,15 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
         if(BooleanUtils.toBoolean(doTaxaByCommonNames)) {
             searchModes.add(TaxaAndNamesSearchMode.doTaxaByCommonNames);
         }
+        if(includeUnpublished) {
+            searchModes.add(TaxaAndNamesSearchMode.includeUnpublished);
+        }
 
         Classification classification = classificationService.load(classificationUuid);
 
         Set<PresenceAbsenceTerm> statusSet = null;
         if(status != null) {
-                statusSet = new HashSet<PresenceAbsenceTerm>(Arrays.asList(status));
+                statusSet = new HashSet<>(Arrays.asList(status));
         }
 
         return service.findTaxaAndNamesByFullText(searchModes, query,
@@ -272,13 +274,16 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
             )
              throws IOException {
 
+        boolean includeUnpublished = NO_UNPUBLISHED;
 
-        logger.info("find : " + request.getRequestURI() + "?" + request.getQueryString() );
+        logger.info("doFind() " + requestPathAndQuery(request));
 
         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
         pagerParams.normalizeAndValidate(response);
 
-        IFindTaxaAndNamesConfigurator<?> config = new FindTaxaAndNamesConfiguratorImpl<>();
+
+        IFindTaxaAndNamesConfigurator<?> config = FindTaxaAndNamesConfiguratorImpl.NewInstance();
+        config.setIncludeUnpublished(includeUnpublished);
         config.setPageNumber(pagerParams.getPageIndex());
         config.setPageSize(pagerParams.getPageSize());
         config.setTitleSearchString(query);
@@ -315,7 +320,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
      * @throws ParseException
      */
     @RequestMapping(method = RequestMethod.GET, value={"findByDescriptionElementFullText"})
-    public Pager<SearchResult<TaxonBase>> dofindByDescriptionElementFullText(
+    public Pager<SearchResult<TaxonBase>> doFindByDescriptionElementFullText(
             @RequestParam(value = "clazz", required = false) Class<? extends DescriptionElementBase> clazz,
             @RequestParam(value = "query", required = true) String queryString,
             @RequestParam(value = "tree", required = false) UUID treeUuid,
@@ -345,7 +350,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
 
         List<Feature> features = null;
         if(featureUuids != null){
-            features = new ArrayList<Feature>(featureUuids.size());
+            features = new ArrayList<>(featureUuids.size());
             for(UUID uuid : featureUuids){
                 features.add((Feature) termService.find(uuid));
             }
@@ -359,7 +364,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
     }
 
     @RequestMapping(method = RequestMethod.GET, value={"findByFullText"})
-    public Pager<SearchResult<TaxonBase>> dofindByFullText(
+    public Pager<SearchResult<TaxonBase>> doFindByFullText(
             @RequestParam(value = "clazz", required = false) Class<? extends TaxonBase> clazz,
             @RequestParam(value = "query", required = true) String queryString,
             @RequestParam(value = "tree", required = false) UUID treeUuid,
@@ -372,28 +377,34 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
             )
              throws IOException, LuceneParseException {
 
-         logger.info("findByFullText : " + requestPathAndQuery(request)  );
+        boolean includeUnpublished = NO_UNPUBLISHED;
 
-         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
-         pagerParams.normalizeAndValidate(response);
+        logger.info("doFindByFullText() " + requestPathAndQuery(request)  );
 
-         if(highlighting == null){
-             highlighting = false;
-         }
+        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
+        pagerParams.normalizeAndValidate(response);
 
-         Classification classification = null;
+        if(highlighting == null){
+            highlighting = false;
+        }
+
+        Classification classification = null;
         if(treeUuid != null){
             classification = classificationService.find(treeUuid);
         }
 
-        Pager<SearchResult<TaxonBase>> pager = service.findByFullText(clazz, queryString, classification, languages,
-                highlighting, pagerParams.getPageSize(), pagerParams.getPageIndex(), ((List<OrderHint>)  null),
+        Pager<SearchResult<TaxonBase>> pager = service.findByFullText(clazz, queryString, classification, includeUnpublished,
+                languages, highlighting, pagerParams.getPageSize(), pagerParams.getPageIndex(), ((List<OrderHint>) null),
                 initializationStrategy);
         return pager;
     }
 
+    /**
+     * @deprecated see {@link ITaxonService#findByEverythingFullText(String, Classification, boolean, List, boolean, Integer, Integer, List, List)}
+     */
     @RequestMapping(method = RequestMethod.GET, value={"findByEverythingFullText"})
-    public Pager<SearchResult<TaxonBase>> dofindByEverythingFullText(
+    @Deprecated
+    public Pager<SearchResult<TaxonBase>> doFindByEverythingFullText(
             @RequestParam(value = "clazz", required = false) Class<? extends TaxonBase> clazz,
             @RequestParam(value = "query", required = true) String queryString,
             @RequestParam(value = "tree", required = false) UUID treeUuid,
@@ -404,9 +415,11 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
             HttpServletRequest request,
             HttpServletResponse response
             )
-             throws IOException, LuceneParseException, LuceneMultiSearchException {
+            throws IOException, LuceneParseException, LuceneMultiSearchException {
 
          logger.info("findByEverythingFullText : " + requestPathAndQuery(request) );
+
+         boolean includeUnpublished = NO_UNPUBLISHED;
 
          PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
          pagerParams.normalizeAndValidate(response);
@@ -421,7 +434,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
         }
 
         Pager<SearchResult<TaxonBase>> pager = service.findByEverythingFullText(
-                queryString, classification, languages, highlighting,
+                queryString, classification, includeUnpublished, languages, highlighting,
                 pagerParams.getPageSize(), pagerParams.getPageIndex(),
                 ((List<OrderHint>)null), initializationStrategy);
         return pager;
@@ -431,7 +444,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
      * @param areaSet
      */
     static public void includeAllSubAreas(Set<NamedArea> areaSet, ITermService termService) {
-        Collection<NamedArea> tmpAreas = new HashSet<NamedArea>(areaSet);
+        Collection<NamedArea> tmpAreas = new HashSet<>(areaSet);
         // expand all areas to include also the sub areas
         Pager<NamedArea> pager = null;
         while(true){

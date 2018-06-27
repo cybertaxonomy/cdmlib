@@ -51,18 +51,18 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 	}
 
 	@Override
-    public int countTerms(TermVocabulary termVocabulary) {
+    public long countTerms(TermVocabulary termVocabulary) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 		    Query query = getSession().createQuery("select count(term) from DefinedTermBase term where term.vocabulary = :vocabulary");
 		    query.setParameter("vocabulary", termVocabulary);
 
-		    return ((Long)query.uniqueResult()).intValue();
+		    return (Long)query.uniqueResult();
 		} else {
-			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(type,auditEvent.getRevisionNumber());
+			AuditQuery query = makeAuditQuery(null, auditEvent);
 			query.addProjection(AuditEntity.id().count());
 			query.add(AuditEntity.relatedId("vocabulary").eq(termVocabulary.getId()));
-			return ((Number)query.getSingleResult()).intValue();
+			return (Long)query.getSingleResult();
 		}
 	}
 
@@ -70,31 +70,21 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
     public <T extends DefinedTermBase> List<T> getTerms(TermVocabulary<T> vocabulary,Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,List<String> propertyPaths) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-			Criteria criteria = getSession().createCriteria(DefinedTermBase.class);
+			Criteria criteria = getCriteria(DefinedTermBase.class);
 			criteria.createCriteria("vocabulary").add(Restrictions.idEq(vocabulary.getId()));
 
-		    if(pageSize != null) {
-		    	criteria.setMaxResults(pageSize);
-		        if(pageNumber != null) {
-		        	criteria.setFirstResult(pageNumber * pageSize);
-		        }
-		    }
-
+			addPageSizeAndNumber(criteria, pageSize, pageNumber);
 		    this.addOrder(criteria, orderHints);
+
 		    @SuppressWarnings("unchecked")
             List<T> result = criteria.list();
 		    defaultBeanInitializer.initializeAll(result, propertyPaths);
 		    return result;
 		} else {
-			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(type,auditEvent.getRevisionNumber());
+			AuditQuery query = makeAuditQuery(null, auditEvent);
 			query.add(AuditEntity.relatedId("vocabulary").eq(vocabulary.getId()));
 
-			if(pageSize != null) {
-			    query.setMaxResults(pageSize);
-		        if(pageNumber != null) {
-		    	    query.setFirstResult(pageNumber * pageSize);
-		        }
-			}
+			addPageSizeAndNumber(query, pageSize, pageNumber);
 
 			@SuppressWarnings("unchecked")
             List<T> result = query.getResultList();
@@ -103,19 +93,25 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 		}
 	}
 
-	@Override
+    @Override
     public <T extends DefinedTermBase> TermVocabulary<T> findByUri(String termSourceUri, Class<T> clazz) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
+		    //TODO use clazz
     		Query query = getSession().createQuery("select vocabulary from TermVocabulary vocabulary where vocabulary.termSourceUri= :termSourceUri");
 	    	query.setParameter("termSourceUri", termSourceUri);
 
-	    	return (TermVocabulary<T>)query.uniqueResult();
+	    	@SuppressWarnings("unchecked")
+	    	TermVocabulary<T> result = (TermVocabulary<T>)query.uniqueResult();
+	    	return result;
 		} else {
-			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(type,auditEvent.getRevisionNumber());
+			@SuppressWarnings("unchecked")
+            AuditQuery query = makeAuditQuery((Class)clazz, auditEvent);
 			query.add(AuditEntity.property("termSourceUri").eq(termSourceUri));
 
-			return (TermVocabulary<T>)query.getSingleResult();
+			@SuppressWarnings("unchecked")
+            TermVocabulary<T> result = (TermVocabulary<T>)query.getSingleResult();
+			return result;
 		}
 	}
 

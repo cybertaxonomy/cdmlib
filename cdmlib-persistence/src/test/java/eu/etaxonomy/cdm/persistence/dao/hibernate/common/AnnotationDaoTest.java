@@ -49,7 +49,7 @@ public class AnnotationDaoTest extends CdmIntegrationTest {
 		Annotation annotatedObj = annotationDao.findByUuid(uuid);
 		assert annotatedObj != null : "annotatedObj must exist";
 
-		int numberOfAnnotations = annotationDao.countAnnotations(annotatedObj, null);
+		long numberOfAnnotations = annotationDao.countAnnotations(annotatedObj, null);
 		assertEquals("countAnnotations should return 4",4,numberOfAnnotations);
 	}
 
@@ -77,7 +77,7 @@ public class AnnotationDaoTest extends CdmIntegrationTest {
 		assert annotatedObj != null : "annotatedObj must exist";
 		assert markerType != null : "markerType must exist";
 
-		int numberOfAnnotations = annotationDao.countAnnotations(annotatedObj, markerType);
+		long numberOfAnnotations = annotationDao.countAnnotations(annotatedObj, markerType);
 		assertEquals("countAnnotations should return 2",2,numberOfAnnotations);
 	}
 
@@ -100,7 +100,7 @@ public class AnnotationDaoTest extends CdmIntegrationTest {
 
 		assert markerType != null : "markerType must exist";
 
-		int numberOfAnnotations = annotationDao.count((User)null, markerType);
+		long numberOfAnnotations = annotationDao.count((User)null, markerType);
 		assertEquals("countAnnotations should return 2",2,numberOfAnnotations);
 	}
 

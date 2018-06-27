@@ -29,6 +29,9 @@ public class TaxonListImportConfigurator extends ExcelImportConfiguratorBase {
         super(uri, destination);
 
     }
+    public static TaxonListImportConfigurator NewInstance(URI uri, ICdmDataSource destination){
+        return new TaxonListImportConfigurator(uri, destination);
+    }
 
     /**
      * {@inheritDoc}

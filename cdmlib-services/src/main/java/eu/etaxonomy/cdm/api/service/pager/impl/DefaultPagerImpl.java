@@ -23,7 +23,8 @@ public class DefaultPagerImpl<T> extends AbstractPagerImpl<T> {
      * @param pageSize The size of pages (can be null or 0 if all results should be returned if available)
      * @param records A list of objects in this page (can be empty if there were no results)
      *
-     * @deprecated This constructor only supports total result counts to {@link Integer#MAX_VALUE} u
+     * @deprecated The Hibernate <code>count</code> function returns <code>Long</code> values!
+     * This constructor only supports total result counts to {@link Integer#MAX_VALUE} u
      * use {@link DefaultPagerImpl(Integer currentIndex, Long count, Integer pageSize, List<T> records, String suggestion)}
      * instead
      */

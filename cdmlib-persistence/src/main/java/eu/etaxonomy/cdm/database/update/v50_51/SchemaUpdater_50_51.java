@@ -74,6 +74,8 @@ public class SchemaUpdater_50_51 extends SchemaUpdaterBase {
         step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
         stepList.add(step);
 
+        //TODO remove proparte and partial columns
+
         return stepList;
 
 	}

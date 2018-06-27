@@ -33,19 +33,16 @@ public class TermRepresentation_L10n implements ITermRepresentation_L10n {
 
     String label = null;
     String abbreviatedLabel = null;
+    String languageIso = null;
+    String languageUuid = null;
 
     public TermRepresentation_L10n() {
-
     }
 
     public TermRepresentation_L10n(TermBase term, boolean useInverseRepresentation) {
-
         localize(term, useInverseRepresentation);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.l10n.ITermRepresentation_L10n#localize(eu.etaxonomy.cdm.model.common.TermBase, boolean)
-     */
     @Override
     public void localize(TermBase term, boolean useInverseRepresentation) {
 
@@ -94,12 +91,18 @@ public class TermRepresentation_L10n implements ITermRepresentation_L10n {
             }
 
             abbreviatedLabel = representation.getAbbreviatedLabel();
+
+            Language lang = representation.getLanguage();
+            if (lang != null){
+                this.languageIso = lang.getIso639_2();
+                if (this.languageIso == null){
+                    this.languageIso = lang.getIso639_1();
+                }
+                this.languageUuid = lang.getUuid().toString();
+            }
         }
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.l10n.ITermRepresentation_L10n#getLabel()
-     */
     @Override
     public String getLabel() {
         return label;
@@ -112,9 +115,6 @@ public class TermRepresentation_L10n implements ITermRepresentation_L10n {
         this.label = label;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.l10n.ITermRepresentation_L10n#getAbbreviatedLabel()
-     */
     @Override
     public String getAbbreviatedLabel() {
         return abbreviatedLabel;
@@ -127,6 +127,19 @@ public class TermRepresentation_L10n implements ITermRepresentation_L10n {
         this.abbreviatedLabel = abbreviatedLabel;
     }
 
+    public String getLanguageIso() {
+        return languageIso;
+    }
 
+    public void setLanguageIso(String languageIso) {
+        this.languageIso = languageIso;
+    }
 
+    public String getLanguageUuid() {
+        return languageUuid;
+    }
+
+    public void setLanguageUuid(String languageUuid) {
+        this.languageUuid = languageUuid;
+    }
 }

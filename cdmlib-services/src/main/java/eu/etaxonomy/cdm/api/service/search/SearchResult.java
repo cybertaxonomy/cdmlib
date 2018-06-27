@@ -21,15 +21,18 @@ public class SearchResult<T extends CdmBase> extends DocumentSearchResult {
 
     private T entity;
 
+    public SearchResult() {}
+
     public T getEntity() {
         return entity;
     }
-
     public void setEntity(T entity) {
         this.entity = entity;
     }
 
-    public SearchResult() {
+    @Override
+    public String toString() {
+        return "SearchResult [entity=" + entity + "]";
     }
 
 }

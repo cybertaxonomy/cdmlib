@@ -179,6 +179,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
         crit.addOrder(Order.asc("titleCache"));
         int firstItem = (page - 1) * pagesize;
         crit.setFirstResult(firstItem);
+        @SuppressWarnings("unchecked")
         List<T> results = crit.list();
         List<String> propertyPaths = null;
         defaultBeanInitializer.initializeAll(results, propertyPaths);
@@ -186,19 +187,19 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
     }
 
     @Override
-    public int countRights(T identifiableEntity) {
+    public long countRights(T identifiableEntity) {
         checkNotInPriorView("IdentifiableDaoBase.countRights(T identifiableEntity)");
         Query query = getSession().createQuery("select count(rights) from " + type.getSimpleName() + " identifiableEntity join identifiableEntity.rights rights where identifiableEntity = :identifiableEntity");
         query.setParameter("identifiableEntity",identifiableEntity);
-        return ((Long)query.uniqueResult()).intValue();
+        return (Long)query.uniqueResult();
     }
 
     @Override
-    public int countSources(T identifiableEntity) {
+    public long countSources(T identifiableEntity) {
         checkNotInPriorView("IdentifiableDaoBase.countSources(T identifiableEntity)");
         Query query = getSession().createQuery("SELECT COUNT(source) FROM "+identifiableEntity.getClass().getName() + " ie JOIN ie.sources source WHERE ie = :identifiableEntity");
         query.setParameter("identifiableEntity", identifiableEntity);
-        return ((Long)query.uniqueResult()).intValue();
+        return (Long)query.uniqueResult();
     }
 
     @Override
@@ -207,6 +208,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
         Query query = getSession().createQuery("select rights from " + type.getSimpleName() + " identifiableEntity join identifiableEntity.rights rights where identifiableEntity = :identifiableEntity");
         query.setParameter("identifiableEntity",identifiableEntity);
         setPagingParameter(query, pageSize, pageNumber);
+        @SuppressWarnings("unchecked")
         List<Rights> results = query.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
@@ -218,7 +220,9 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
         Query query = getSession().createQuery("select credits from " + type.getSimpleName() + " identifiableEntity join identifiableEntity.credits credits where identifiableEntity = :identifiableEntity");
         query.setParameter("identifiableEntity",identifiableEntity);
         setPagingParameter(query, pageSize, pageNumber);
-        return query.list();
+        @SuppressWarnings("unchecked")
+        List<Credit> result = query.list();
+        return result;
     }
 
     @Override
@@ -245,7 +249,10 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
         query.setString("idInSource", idInSource);
         query.setString("idNamespace", idNamespace);
         //TODO integrate reference in where
-        return query.list();
+
+        @SuppressWarnings("unchecked")
+        List<T> result = query.list();
+        return result;
     }
 
     @Override
@@ -318,7 +325,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
     }
 
     @Override
-    public int count(Class<? extends T> clazz, String queryString) {
+    public long count(Class<? extends T> clazz, String queryString) {
         checkNotInPriorView("IdentifiableDaoBase.count(Class<? extends T> clazz, String queryString)");
         QueryParser queryParser = new QueryParser(defaultField , new StandardAnalyzer());
 
@@ -334,7 +341,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
                 fullTextQuery = fullTextSession.createFullTextQuery(query, clazz);
             }
 
-            Integer  result = fullTextQuery.getResultSize();
+            int  result = fullTextQuery.getResultSize();
             return result;
 
         } catch (ParseException e) {
@@ -346,7 +353,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
     public void optimizeIndex() {
         FullTextSession fullTextSession = Search.getFullTextSession(getSession());
         SearchFactory searchFactory = fullTextSession.getSearchFactory();
-        for(Class clazz : indexedClasses) {
+        for(Class<?> clazz : indexedClasses) {
             searchFactory.optimize(clazz); // optimize the indices ()
         }
         fullTextSession.flushToIndexes();
@@ -415,27 +422,28 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
     }
 
     @Override
-    public Integer countByTitle(String queryString) {
+    public long countByTitle(String queryString) {
         return countByTitle(queryString, null);
     }
 
     @Override
-    public Integer countByTitle(String queryString, CdmBase sessionObject) {
+    public long countByTitle(String queryString, CdmBase sessionObject) {
         Session session = getSession();
         if ( sessionObject != null ) {
             session.update(sessionObject);
         }
         checkNotInPriorView("IdentifiableDaoBase.countByTitle(String queryString, CdmBase sessionObject)");
         Criteria crit = session.createCriteria(type);
-        crit.add(Restrictions.ilike("titleCache", queryString));
-        Integer result =  ((Number)crit.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+        crit.add(Restrictions.ilike("titleCache", queryString))
+            .setProjection(Projections.rowCount());
+        long result =  (Long)crit.uniqueResult();
         return result;
     }
 
     @Override
-    public Integer countByTitle(String queryString, MatchMode matchMode, List<Criterion> criteria) {
+    public long countByTitle(String queryString, MatchMode matchMode, List<Criterion> criteria) {
         checkNotInPriorView("IdentifiableDaoBase.findByTitle(String queryString, MATCH_MODE matchmode, int page, int pagesize, List<Criterion> criteria)");
-        Criteria crit = getSession().createCriteria(type);
+        Criteria crit = getCriteria(type);
         if (matchMode == MatchMode.EXACT) {
             crit.add(Restrictions.eq("titleCache", matchMode.queryStringFrom(queryString)));
         } else {
@@ -448,9 +456,9 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
                 crit.add(criterion);
             }
         }
+        crit.setProjection(Projections.rowCount());
 
-
-        Integer result = ((Number)crit.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+        long result = (Long)crit.uniqueResult();
         return result;
     }
 
@@ -623,13 +631,18 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
         Session session = getSession();
         Query query = null;
         if (pattern != null){
-            query = session.createQuery("select uuid, id, titleCache from " + clazz.getSimpleName() +" where titleCache like :pattern");
+            query = session.createQuery(
+                      " SELECT uuid, id, titleCache "
+                    + " FROM " + clazz.getSimpleName()
+                    + " WHERE titleCache LIKE :pattern");
             pattern = pattern.replace("*", "%");
             pattern = pattern.replace("?", "_");
             pattern = pattern + "%";
             query.setParameter("pattern", pattern);
         } else {
-            query = session.createQuery("select uuid, id, titleCache from " + clazz.getSimpleName() );
+            query = session.createQuery(
+                      " SELECT uuid, id, titleCache "
+                    + " FROM  " + clazz.getSimpleName() );
         }
         if (limit != null){
            query.setMaxResults(limit);

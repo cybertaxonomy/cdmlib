@@ -20,7 +20,7 @@ public class StringLabelPagerImpl<T> extends DefaultPagerImpl<T> {
 	}
 
 	public StringLabelPagerImpl(Integer currentIndex, Integer count,Integer pageSize, List<T> records,String suggestion) {
-		super(currentIndex, count, pageSize, records,suggestion);
+		super(currentIndex, count, pageSize, records, suggestion);
 	}
 
 	@Override

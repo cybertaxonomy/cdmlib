@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
+import eu.etaxonomy.cdm.persistence.dao.common.IPublishableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
@@ -44,7 +45,17 @@ import eu.etaxonomy.cdm.persistence.query.TaxonTitleType;
  * @author a.mueller
  *
  */
-public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<TaxonBase> {
+public interface ITaxonDao
+          extends IIdentifiableDao<TaxonBase>, ITitledDao<TaxonBase>, IPublishableDao<TaxonBase> {
+
+
+    /**
+     * {@inheritDoc}
+     * <BR><BR>
+     * NOTE: Also taxa with <code>publish=false</code> are returned.
+     */
+    @Override
+    public TaxonBase load(UUID uuid, List<String> propertyPaths);
 
     /**
      * Returns a list of TaxonBase instances where the taxon.titleCache property matches the name parameter,
@@ -53,7 +64,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      * @param sec
      * @return
      */
-    public List<TaxonBase> getTaxaByName(String name, Reference sec);
+    public List<TaxonBase> getTaxaByName(String name, boolean includeUnpublished, Reference sec);
 
     /**
      * Returns a list of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false)
@@ -62,7 +73,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      * @param sec
      * @return
      */
-    public List<TaxonBase> getTaxaByName(String queryString, Boolean accepted, Reference sec);
+    public List<TaxonBase> getTaxaByName(String queryString, Boolean accepted, boolean includeUnpublished, Reference sec);
 
     /**
      * Returns a list of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false)
@@ -75,7 +86,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      * @return
      */
     public List<TaxonBase> getTaxaByName(String queryString, MatchMode matchMode,
-            Boolean accepted, Integer pageSize, Integer pageNumber);
+            Boolean accepted, boolean includeUnpublished, Integer pageSize, Integer pageNumber);
 
 
     /**
@@ -94,7 +105,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      */
     public List<TaxonBase> getTaxaByName(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames, boolean doCommonNames,
             boolean includeAuthors, String queryString, Classification classification,
-            MatchMode matchMode, Set<NamedArea> namedAreas,
+            MatchMode matchMode, Set<NamedArea> namedAreas, boolean includeUnpublished,
             NameSearchOrder order, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
@@ -111,7 +122,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      */
     public long countTaxaByName(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames, boolean doCommonNames,
             boolean doIncludeAuthors, String queryString, Classification classification,
-            MatchMode matchMode, Set<NamedArea> namedAreas);
+            MatchMode matchMode, Set<NamedArea> namedAreas, boolean includeUnpublished);
 
 //	/**
 //	 * @param queryString
@@ -145,7 +156,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      * @param rank
      * @return a count of TaxonBase instances
      */
-    public int countTaxaByName(Class <? extends TaxonBase> clazz, String uninomial, String infragenericEpithet,String specificEpithet, String infraspecificEpithet, Rank rank);
+    public long countTaxaByName(Class <? extends TaxonBase> clazz, String uninomial, String infragenericEpithet,String specificEpithet, String infraspecificEpithet, Rank rank);
 
     /**
      * Returns a list of TaxonBase instances where the
@@ -189,7 +200,8 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      * @param onlyAcccepted
      * @return
      */
-    public List<TaxonBase> findByNameTitleCache(boolean doTaxa, boolean doSynonyms, String queryString, Classification classification, MatchMode matchMode, Set<NamedArea> namedAreas,
+    public List<TaxonBase> findByNameTitleCache(boolean doTaxa, boolean doSynonyms, boolean includeUnpublished,
+            String queryString, Classification classification, MatchMode matchMode, Set<NamedArea> namedAreas,
             NameSearchOrder order, Integer pageNumber, Integer pageSize, List<String> propertyPaths) ;
 
     /**
@@ -229,35 +241,12 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
             Integer pageNumber, List<String> propertyPaths);
 
     /**
-     * TODO necessary?
-     * @param pagesize max maximum number of returned taxa
-     * @param page page to start, with 0 being first page
-     * @return
-     */
-    public List<TaxonBase> getAllTaxonBases(Integer pagesize, Integer page);
-
-
-    /**
-     * @param limit
-     * @param start
-     * @return
-     */
-    public List<Taxon> getAllTaxa(Integer limit, Integer start);
-
-    /**
-     * @param limit
-     * @param start
-     * @return
-     */
-    public List<Synonym> getAllSynonyms(Integer limit, Integer start);
-
-    /**
      * Counts the number of synonyms
      * @param onlyAttachedToTaxon if <code>true</code> only those synonyms being attached to
      * an accepted taxon are counted
      * @return the number of synonyms
      */
-    public int countSynonyms(boolean onlyAttachedToTaxon);
+    public long countSynonyms(boolean onlyAttachedToTaxon);
 
     /**
      * @param queryString
@@ -265,7 +254,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      * @param onlyAcccepted
      * @return
      */
-    public int countMatchesByName(String queryString, MatchMode matchMode, boolean onlyAcccepted);
+    public long countMatchesByName(String queryString, MatchMode matchMode, boolean onlyAcccepted);
 
     /**
      * @param queryString
@@ -274,7 +263,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      * @param criteria
      * @return
      */
-    public int countMatchesByName(String queryString, MatchMode matchMode, boolean onlyAcccepted, List<Criterion> criteria);
+    public long countMatchesByName(String queryString, MatchMode matchMode, boolean onlyAcccepted, List<Criterion> criteria);
 
     /**
      * Returns a count of the TaxonRelationships (of where relationship.type ==
@@ -290,8 +279,8 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      *            specifies the direction of the relationship
      * @return the number of TaxonRelationship instances
      */
-    public int countTaxonRelationships(Taxon taxon, TaxonRelationshipType type,
-            Direction direction);
+    public long countTaxonRelationships(Taxon taxon, TaxonRelationshipType type,
+            boolean includeUnpublished, Direction direction);
 
     /**
      * Returns the TaxonRelationships (of where relationship.type == type, if
@@ -320,7 +309,8 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      * @return a List of TaxonRelationship instances
      */
     public List<TaxonRelationship> getTaxonRelationships(Taxon taxon,
-            TaxonRelationshipType type, Integer pageSize, Integer pageNumber,
+            TaxonRelationshipType type, boolean includeUnpublished,
+            Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints, List<String> propertyPaths,
             Direction direction);
 
@@ -356,7 +346,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      * @param type The type of Synonym (can be null)
      * @return the number of Synonym instances
      */
-    public int countSynonyms(Synonym synonym, SynonymType type);
+    public long countSynonyms(Synonym synonym, SynonymType type);
 
     public List<TaxonName> findIdenticalTaxonNames(List<String> propertyPath);
 
@@ -368,8 +358,8 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 
     public List<TaxonName> findIdenticalNamesNew(List <String> propertyPaths);
 
-    public List<UuidAndTitleCache<IdentifiableEntity>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doNamesWithoutTaxa,
-            boolean doMisappliedNames, boolean doCommonNames,
+    public List<UuidAndTitleCache<? extends IdentifiableEntity>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doNamesWithoutTaxa,
+            boolean doMisappliedNames, boolean doCommonNames, boolean includeUnpublished,
             String queryString, Classification classification,
             MatchMode matchMode, Set<NamedArea> namedAreas, NameSearchOrder order);
 
@@ -394,9 +384,9 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      */
     public long countAcceptedTaxonFor(Synonym synonym, Classification classificationFilter);
 
-	public List<UuidAndTitleCache<IdentifiableEntity>> getTaxaByCommonNameForEditor(
+	public List<UuidAndTitleCache<Taxon>> getTaxaByCommonNameForEditor(
 			String titleSearchStringSqlized, Classification classification,
-			MatchMode matchMode, Set namedAreas);
+			MatchMode matchMode, Set<NamedArea> namedAreas);
 
 	public <S extends TaxonBase> List<Object[]> findByIdentifier(Class<S> clazz, String identifier,
 			DefinedTerm identifierType, TaxonNode subtreeFilter, MatchMode matchmode,
@@ -413,7 +403,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * @param subtreeFilter the subtree filter as taxon node
 	 * @return
 	 */
-	public <S extends TaxonBase> int countByIdentifier(Class<S> clazz,
+	public <S extends TaxonBase> long countByIdentifier(Class<S> clazz,
 			String identifier, DefinedTerm identifierType, TaxonNode subtreeFilter, MatchMode matchmode);
 
 	/**
@@ -462,5 +452,6 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
     public List<TaxonRelationship> getTaxonRelationships(Set<TaxonRelationshipType> types,
             Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints, List<String> propertyPaths);
+
 
 }

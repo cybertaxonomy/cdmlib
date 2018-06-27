@@ -61,36 +61,24 @@ public interface IClassificationDao extends IIdentifiableDao<Classification> {
      *            <code>rank != null</code>.
      * @return
      */
-    public List<TaxonNode> listRankSpecificRootNodes(Classification classification, Rank rank, Integer limit, Integer start,
-            List<String> propertyPaths, int queryIndex);
+    public List<TaxonNode> listRankSpecificRootNodes(Classification classification, Rank rank,
+            boolean includeUnpublished, Integer limit, Integer start, List<String> propertyPaths, int queryIndex);
 
-    public long[] countRankSpecificRootNodes(Classification classification, Rank rank);
+    public long[] countRankSpecificRootNodes(Classification classification, boolean includeUnpublished, Rank rank);
 
-    public List<TaxonNode> listChildrenOf(Taxon taxon, Classification classification, Integer pageSize, Integer pageIndex, List<String> propertyPaths);
+    public List<TaxonNode> listChildrenOf(Taxon taxon, Classification classification, boolean includeUnpublished,
+            Integer pageSize, Integer pageIndex, List<String> propertyPaths);
+
+    public Long countChildrenOf(Taxon taxon, Classification classification, boolean includeUnpublished);
 
     public TaxonNode getRootNode(UUID classificationUuid);
 
-    public Long countChildrenOf(Taxon taxon, Classification classification);
-
     public ClassificationLookupDTO classificationLookup(Classification classification);
 
-    /**
-     * @param taxon
-     * @param classification
-     * @param pageSize
-     * @param pageIndex
-     * @param propertyPaths
-     * @return
-     */
-    public List<TaxonNode> listSiblingsOf(Taxon taxon, Classification classification, Integer pageSize, Integer pageIndex,
-            List<String> propertyPaths);
+    public List<TaxonNode> listSiblingsOf(Taxon taxon, Classification classification, boolean includeUnpublished,
+            Integer pageSize, Integer pageIndex, List<String> propertyPaths);
 
-    /**
-     * @param taxon
-     * @param classification
-     * @return
-     */
-    public Long countSiblingsOf(Taxon taxon, Classification classification);
+    public Long countSiblingsOf(Taxon taxon, Classification classification, boolean includeUnpublished);
 
     /**
      * Returns the tree indexes for a given set of taxon uuids as a map.
@@ -100,11 +88,6 @@ public interface IClassificationDao extends IIdentifiableDao<Classification> {
      */
     public Map<UUID, TreeIndex> treeIndexForTaxonUuids( UUID classificationUuid, List<UUID> originalTaxonUuids);
 
-    /**
-     * @param markerType
-     * @param value
-     * @return
-     */
     public Set<TreeIndex> getMarkedTreeIndexes(MarkerType markerType, Boolean value);
 
     /**

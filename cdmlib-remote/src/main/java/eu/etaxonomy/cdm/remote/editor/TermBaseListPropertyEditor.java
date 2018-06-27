@@ -47,7 +47,7 @@ public class TermBaseListPropertyEditor<T extends DefinedTermBase<?>> extends Te
             try{
                 UUID.fromString(tokens[0]);
                 // no exception! treat all tokens as UUID
-                Set<UUID> uuids = new HashSet<UUID>(tokens.length);
+                Set<UUID> uuids = new HashSet<>(tokens.length);
                 for(String token : tokens){
                     uuids.add(UUID.fromString(token));
                 }
@@ -58,7 +58,7 @@ public class TermBaseListPropertyEditor<T extends DefinedTermBase<?>> extends Te
                     // no exception! treat all tokens as ID
 
                 } catch (IllegalArgumentException e2){
-                    Set<Integer> ids = new HashSet<Integer>(tokens.length);
+                    Set<Integer> ids = new HashSet<>(tokens.length);
                     for(String token : tokens){
                         ids.add(Integer.parseInt(token));
                     }

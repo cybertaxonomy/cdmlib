@@ -18,10 +18,13 @@ import java.util.UUID;
 
 import org.hibernate.LockOptions;
 import org.hibernate.Session;
+import org.hibernate.event.spi.MergeEvent;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
+import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
+import eu.etaxonomy.cdm.persistence.hibernate.PostMergeEntityListener;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -284,8 +287,6 @@ public interface IService<T extends ICdmBase>{
      * @return the unique identifier
      */
     public UUID refresh(T persistentObject);
-
-    public List<T> rows(String tableName, int limit, int start);
 
     /**
      * Save a collection containing new entities (persists the entities)

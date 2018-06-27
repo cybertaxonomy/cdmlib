@@ -68,7 +68,7 @@ public class PreferenceDaoTest  extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet
     public void testCount() {
-    	 int countStart = dao.count();
+    	 long countStart = dao.count();
          Assert.assertEquals("There should be 1 preference in the CDM store", 1, countStart);
     }
 
@@ -86,13 +86,13 @@ public class PreferenceDaoTest  extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet
     public void testSet() {
-    	 int countStart = dao.count();
+    	 long countStart = dao.count();
          Assert.assertEquals(1, countStart);
 
          CdmPreference pref = CdmPreference.NewInstance(PreferenceSubject.NewDatabaseInstance(), PreferencePredicate.Test, "200");
 //         CdmPreference pref = CdmPreference.NewInstance(PreferenceSubjectEnum.Database, PreferencePredicate.Test, "200");
         dao.set(pref);
-	   	int count = dao.count();
+	   	long count = dao.count();
 	    Assert.assertEquals("There should be 1 new preference", countStart + 1, count);
 
 	    pref = CdmPreference.NewInstance(PreferenceSubject.NewDatabaseInstance(), PreferencePredicate.NomenclaturalCode, "ICZN");

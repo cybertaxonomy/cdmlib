@@ -71,7 +71,7 @@ public class IdentifiableDaoBaseTest extends CdmIntegrationTest {
 
     @Test
     public void testCountByTitle() {
-        int result = identifiableDao.countByTitle("%");
+        long result = identifiableDao.countByTitle("%");
         assertNotNull("findByTitle should return an integer",result);
         assertEquals("findByTitle should return 2", 2, result);
 
@@ -89,7 +89,7 @@ public class IdentifiableDaoBaseTest extends CdmIntegrationTest {
     }
     @Test
     public void testGetRights() {
-        TaxonBase taxon = identifiableDao.findByUuid(uuid);
+        TaxonBase<?> taxon = identifiableDao.findByUuid(uuid);
         assert taxon != null : "IdentifiableEntity must exist";
 
         List<Rights> rights = identifiableDao.getRights(taxon, null, null, null);
@@ -101,7 +101,7 @@ public class IdentifiableDaoBaseTest extends CdmIntegrationTest {
 
     @Test
     public void testGetCredits() {
-        TaxonBase taxon = identifiableDao.findByUuid(uuid);
+        TaxonBase<?> taxon = identifiableDao.findByUuid(uuid);
         assert taxon != null : "IdentifiableEntity must exist";
         taxon.getCredits();
 
@@ -114,7 +114,7 @@ public class IdentifiableDaoBaseTest extends CdmIntegrationTest {
 
     @Test
     public void testCreditsOrder() {
-        TaxonBase taxon = identifiableDao.findByUuid(uuid);
+        TaxonBase<?> taxon = identifiableDao.findByUuid(uuid);
         assert taxon != null : "IdentifiableEntity must exist";
         List<Credit> credits = taxon.getCredits();
 
@@ -129,7 +129,7 @@ public class IdentifiableDaoBaseTest extends CdmIntegrationTest {
 
     @Test
     public void testSources() throws Exception {
-        TaxonBase taxon = identifiableDao.findByUuid(uuid);
+        TaxonBase<?> taxon = identifiableDao.findByUuid(uuid);
         assert taxon != null : "IdentifiableEntity must exist";
 
         List<IdentifiableSource> sources = identifiableDao.getSources(taxon, null, null,null);

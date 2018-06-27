@@ -3,7 +3,7 @@
   <skin>
     <groupId>eu.etaxonomy.site</groupId>
     <artifactId>platform-site-skin</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
   </skin>
   <body>
     <menu name="General Information">

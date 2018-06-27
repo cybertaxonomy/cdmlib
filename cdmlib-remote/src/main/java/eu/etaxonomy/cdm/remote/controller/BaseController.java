@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.hibernate.mapping.Map;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -42,6 +43,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IPublishable;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
@@ -56,6 +58,9 @@ import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
  */
 
 public abstract class BaseController<T extends CdmBase, SERVICE extends IService<T>> extends AbstractController<T, SERVICE> {
+
+    private static final Logger logger = Logger.getLogger(BaseController.class);
+
 
 /*	protected SERVICE service;
 
@@ -102,6 +107,9 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
             logger.info("doGet() " + request.getRequestURI());
         }
         T obj = getCdmBaseInstance(uuid, response, initializationStrategy);
+        if (obj instanceof IPublishable){
+            obj = (T)checkExistsAndAccess((IPublishable)obj, NO_UNPUBLISHED, response);
+        }
         return obj;
     }
 
@@ -127,23 +135,21 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
             HttpServletResponse response) throws IOException {
 
         String servletPath = request.getServletPath();
-        String baseName = FilenameUtils.getBaseName(servletPath);
+        String propertyName = FilenameUtils.getBaseName(servletPath);
 
-        if(request != null) {
-            logger.info("doGetMethod()[doGet" + StringUtils.capitalize(baseName) + "] " + requestPathAndQuery(request));
-        }
+        logger.info("doGetMethod()[doGet" + StringUtils.capitalize(propertyName) + "] " + requestPathAndQuery(request));
 
         // <CUT
 //		T instance = getCdmBaseInstance(uuid, response, (List<String>)null);
         //Class<?> propertyClass = propertyClass(instance, baseName);
-        Object objectFromProperty = getCdmBaseProperty(uuid, baseName, response);//   invokeProperty(instance, baseName, response);
+        Object objectFromProperty = getCdmBaseProperty(uuid, propertyName, response);//   invokeProperty(instance, baseName, response);
         // CUT>
         if(objectFromProperty != null){
             if( Collection.class.isAssignableFrom(objectFromProperty.getClass())){
                 // Map types cannot be returned as list or in a pager!
                 return pageFromCollection((Collection<CdmBase>)objectFromProperty, pageNumber, pageSize, start, limit, response);
             } else {
-               return objectFromProperty;
+                return objectFromProperty;
             }
         }
         return null;
@@ -198,8 +204,8 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
             pagerParameters.normalizeAndValidate(response);
 
             start = pagerParameters.getPageIndex() * pagerParameters.getPageSize();
-            List sub_c = subCollection(c, start, pagerParameters.getPageSize());
-            Pager p = new DefaultPagerImpl(pageNumber, c.size(), pagerParameters.getPageSize(), sub_c);
+            List<? extends CdmBase> sub_c = subCollection(c, start, pagerParameters.getPageSize());
+            Pager<? extends CdmBase> p = new DefaultPagerImpl<>(pageNumber, c.size(), pagerParameters.getPageSize(), sub_c);
             return p;
         }
     }
@@ -245,7 +251,7 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
      */
     @SuppressWarnings("unchecked")
     protected final <SUB_T extends T> SUB_T getCdmBaseInstance(Class<SUB_T> clazz, UUID uuid, HttpServletResponse response, List<String> pathProperties)
-    throws IOException {
+            throws IOException {
 
         CdmBase cdmBaseObject = getCdmBaseInstance(uuid, response, pathProperties);
         if(!clazz.isAssignableFrom(cdmBaseObject.getClass())){
@@ -265,7 +271,7 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
      */
     @SuppressWarnings("unchecked")
     protected final <SUB_T extends T> SUB_T getCdmBaseInstance(Class<SUB_T> clazz, UUID uuid, HttpServletResponse response, String pathProperty)
-    throws IOException {
+            throws IOException {
 
         CdmBase cdmBaseObject = getCdmBaseInstance(uuid, response, pathProperty);
         if(!clazz.isAssignableFrom(cdmBaseObject.getClass())){
@@ -310,15 +316,23 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
      * @return
      * @throws IOException
      */
-    protected final <CDM_BASE extends CdmBase> CDM_BASE getCdmBaseInstance(Class<CDM_BASE> clazz, IService<CDM_BASE> service, UUID uuid, HttpServletResponse response, List<String> pathProperties)
-    throws IOException {
+    protected final <CDM_BASE extends CdmBase> CDM_BASE getCdmBaseInstance(
+            Class<CDM_BASE> clazz, IService<CDM_BASE> service, UUID uuid,
+            HttpServletResponse response, List<String> pathProperties)
+            throws IOException {
 
-        CDM_BASE cdmBaseObject = service.load(uuid, pathProperties);
+        boolean includeUnpublished = NO_UNPUBLISHED;
+        CDM_BASE cdmBaseObject;
+//        if (service instanceof IPublishableService){
+//            cdmBaseObject = ((IPublishableService<CDM_BASE>)service).load(uuid, includeUnpublished, pathProperties);
+//        }else{
+            cdmBaseObject = service.load(uuid, pathProperties);
+//        }
         if (cdmBaseObject == null) {
             HttpStatusMessage.UUID_NOT_FOUND.send(response);
         }
         return cdmBaseObject;
-        }
+    }
 
     /**
      * @param instance
@@ -379,6 +393,26 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
         }
         return sub_c;
 
+    }
+
+    /**
+     * Checks if an {@link IPublishable} was found and if it is publish.
+     * If not the according {@link HttpStatusMessage http messages} are added to response.
+     * @param publishable
+     * @param includeUnpublished
+     * @param response
+     * @return
+     * @throws IOException
+     */
+    protected <T extends IPublishable> T checkExistsAndAccess(T publishable, boolean includeUnpublished,
+            HttpServletResponse response) throws IOException {
+        if (publishable == null){
+            HttpStatusMessage.UUID_NOT_FOUND.send(response);
+        }else if (!includeUnpublished && !publishable.isPublish()){
+            HttpStatusMessage.ACCESS_DENIED.send(response);
+            publishable = null;
+        }
+        return publishable;
     }
 
 

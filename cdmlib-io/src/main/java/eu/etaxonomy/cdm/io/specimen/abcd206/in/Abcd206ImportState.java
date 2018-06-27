@@ -39,6 +39,8 @@ public class Abcd206ImportState
 
 	private URI actualAccessPoint;
 
+	private Set<URI> sequenceDataStableIdentifier = new HashSet<>();
+
 
 //****************** CONSTRUCTOR ***************************************************/
 
@@ -113,6 +115,14 @@ public class Abcd206ImportState
     public void setActualAccessPoint(URI actualAccessPoint) {
         this.addActualAccesPoint(actualAccessPoint);
         this.actualAccessPoint = actualAccessPoint;
+    }
+
+    public Set<URI> getSequenceDataStableIdentifier() {
+        return sequenceDataStableIdentifier;
+    }
+
+    public void putSequenceDataStableIdentifier(URI sequenceDataStableIdentifier) {
+        this.sequenceDataStableIdentifier.add(sequenceDataStableIdentifier);
     }
 
 //

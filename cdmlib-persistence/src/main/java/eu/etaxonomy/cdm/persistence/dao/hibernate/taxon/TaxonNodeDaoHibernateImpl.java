@@ -72,7 +72,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 	@Override
 	public UUID delete(TaxonNode persistentObject, boolean deleteChildren){
 		Taxon taxon = persistentObject.getTaxon();
-		taxon = HibernateProxyHelper.deproxy(taxon, Taxon.class);
+		taxon = HibernateProxyHelper.deproxy(taxon);
 
 		/*Session session = this.getSession();
 		Query query = session.createQuery("from TaxonNode t where t.taxon = :taxon");
@@ -84,13 +84,13 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 			Set<TaxonNode> nodes = taxon.getTaxonNodes();
 			//Hibernate.initialize(taxon.getTaxonNodes());
 			for (TaxonNode node:nodes) {
-			    node = HibernateProxyHelper.deproxy(node, TaxonNode.class);
+			    node = HibernateProxyHelper.deproxy(node);
 
 			    if (node.equals(persistentObject)){
 			        if (node.hasChildNodes()){
 			            Iterator<TaxonNode> childNodes = node.getChildNodes().iterator();
 			            TaxonNode childNode;
-			            List<TaxonNode> listForDeletion = new ArrayList<TaxonNode>();
+			            List<TaxonNode> listForDeletion = new ArrayList<>();
 	                    while (childNodes.hasNext()){
 	                        childNode = childNodes.next();
 	                        listForDeletion.add(childNode);
@@ -124,7 +124,12 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 		    limit = "LIMIT "+start+"," +end;
 		}
 		//FIXME write test
-        String queryString = "SELECT DISTINCT nodes.*,taxa.titleCache FROM TaxonNode AS nodes LEFT JOIN TaxonBase AS taxa ON nodes.taxon_id = taxa.id WHERE taxa.DTYPE = 'Taxon' AND nodes.classification_id = " + classificationId + " ORDER BY taxa.titleCache " + limit;
+        String queryString = "SELECT DISTINCT nodes.*,taxa.titleCache "
+                + " FROM TaxonNode AS nodes "
+                + "    LEFT JOIN TaxonBase AS taxa ON nodes.taxon_id = taxa.id "
+                + " WHERE taxa.DTYPE = 'Taxon' "
+                + "    AND nodes.classification_id = " + classificationId +
+                  " ORDER BY taxa.titleCache " + limit;
         @SuppressWarnings("unchecked")
         List<TaxonNode> result  = getSession().createSQLQuery(queryString).addEntity(TaxonNode.class).list();
 
@@ -135,7 +140,11 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     public int countTaxonOfAcceptedTaxaByClassification(Classification classification){
         int classificationId = classification.getId();
         //FIXME write test
-        String queryString = "SELECT DISTINCT COUNT('nodes.*') FROM TaxonNode AS nodes LEFT JOIN TaxonBase AS taxa ON nodes.taxon_id = taxa.id WHERE taxa.DTYPE = 'Taxon' AND nodes.classification_id = " + classificationId;
+        String queryString = ""
+                + " SELECT DISTINCT COUNT('nodes.*') "
+                + " FROM TaxonNode AS nodes "
+                + "   LEFT JOIN TaxonBase AS taxa ON nodes.taxon_id = taxa.id "
+                + " WHERE taxa.DTYPE = 'Taxon' AND nodes.classification_id = " + classificationId;
          @SuppressWarnings("unchecked")
         List<BigInteger> result = getSession().createSQLQuery(queryString).list();
          return result.get(0).intValue ();
@@ -143,42 +152,53 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 
     @Override
     public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(UuidAndTitleCache<TaxonNode> parent) {
-        String queryString = "select tn.uuid, tn.id, tx.titleCache from TaxonNode tn INNER JOIN tn.taxon as tx where tn.parent.uuid = :parentId";
+        String queryString =
+                  " SELECT tn.uuid, tn.id, t.titleCache "
+                + " FROM TaxonNode tn "
+                + "    INNER JOIN tn.taxon AS t "
+                + " WHERE tn.parent.uuid = :parentId";
+
         Query query =  getSession().createQuery(queryString);
         query.setParameter("parentId", parent.getUuid());
-        List<UuidAndTitleCache<TaxonNode>> list = new ArrayList<>();
 
         @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
 
+        List<UuidAndTitleCache<TaxonNode>> list = new ArrayList<>();
         for(Object[] object : result){
-            list.add(new UuidAndTitleCache<TaxonNode>((UUID) object[0],(Integer) object[1], (String) object[2]));
+            list.add(new UuidAndTitleCache<>((UUID) object[0],(Integer) object[1], (String) object[2]));
         }
         return list;
     }
 
     @Override
     public List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(UuidAndTitleCache<TaxonNode> parent) {
-        String queryString = "select tn from TaxonNode tn INNER JOIN tn.taxon as tx where tn.parent.uuid = :parentId";
+        String queryString =
+                 " SELECT tn "
+               + " FROM TaxonNode tn "
+               + "    INNER JOIN tn.taxon AS t "
+               + " WHERE tn.parent.uuid = :parentId";
         Query query =  getSession().createQuery(queryString);
         query.setParameter("parentId", parent.getUuid());
-        List<TaxonNodeDto> list = new ArrayList<>();
 
         @SuppressWarnings("unchecked")
         List<TaxonNode> result = query.list();
 
+        List<TaxonNodeDto> list = new ArrayList<>();
         for(TaxonNode object : result){
             list.add(new TaxonNodeDto(object));
         }
         return list;
     }
+
     @Override
     public List<UuidAndTitleCache<TaxonNode>> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid) {
-        String queryString = "select tn.uuid, tn.id, tx.titleCache, tx.name.rank from TaxonNode tn "
-        		+ "INNER JOIN tn.taxon as tx "
-        		+ "INNER JOIN tn.classification as cls "
-        		+ "WHERE tx.titleCache like :pattern ";
-        if(classificationUuid!=null){
+        String queryString = "SELECT tn.uuid, tn.id, t.titleCache, t.name.rank "
+                + " FROM TaxonNode tn "
+        		+ "   INNER JOIN tn.taxon AS t "
+        		+ "   INNER JOIN tn.classification AS cls "
+        		+ "WHERE t.titleCache LIKE :pattern ";
+        if(classificationUuid != null){
         	queryString += "AND cls.uuid = :classificationUuid";
         }
         Query query =  getSession().createQuery(queryString);
@@ -186,16 +206,14 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         query.setParameter("pattern", pattern.toLowerCase()+"%");
         query.setParameter("classificationUuid", classificationUuid);
 
-        List<UuidAndTitleCache<TaxonNode>> list = new ArrayList<>();
 
         @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
+        Collections.sort(result, new UuidAndTitleCacheTaxonComparator());
 
-        if (result != null){
-            Collections.sort(result, new UuidAndTitleCacheTaxonComparator());
-        }
+        List<UuidAndTitleCache<TaxonNode>> list = new ArrayList<>();
         for(Object[] object : result){
-            list.add(new UuidAndTitleCache<TaxonNode>((UUID) object[0],(Integer) object[1], (String) object[2]));
+            list.add(new UuidAndTitleCache<>((UUID) object[0],(Integer) object[1], (String) object[2]));
         }
         return list;
     }
@@ -205,10 +223,12 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
      */
     @Override
     public UuidAndTitleCache<TaxonNode> getParentUuidAndTitleCache(UuidAndTitleCache<TaxonNode> child) {
-        String queryString = "select tn.parent.uuid, tn.parent.id, tn.parent.taxon.titleCache, tn.parent.classification.titleCache "
-                + " from TaxonNode tn"
-                + " LEFT OUTER JOIN tn.parent.taxon"
-                + " where tn.id = :childId";
+        String queryString = ""
+                + " SELECT tn.parent.uuid, tn.parent.id, tn.parent.taxon.titleCache, "
+                + "                  tn.parent.classification.titleCache "
+                + " FROM TaxonNode tn"
+                + "    LEFT OUTER JOIN tn.parent.taxon"
+                + " WHERE tn.id = :childId";
         Query query =  getSession().createQuery(queryString);
         query.setParameter("childId", child.getId());
         List<UuidAndTitleCache<TaxonNode>> list = new ArrayList<>();
@@ -222,10 +242,10 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
             String taxonTitleCache = (String) object[2];
             String classificationTitleCache = (String) object[3];
             if(taxonTitleCache!=null){
-                list.add(new UuidAndTitleCache<TaxonNode>(uuid,id, taxonTitleCache));
+                list.add(new UuidAndTitleCache<>(uuid,id, taxonTitleCache));
             }
             else{
-                list.add(new UuidAndTitleCache<TaxonNode>(uuid,id, classificationTitleCache));
+                list.add(new UuidAndTitleCache<>(uuid,id, classificationTitleCache));
             }
         }
         if(list.size()==1){
@@ -235,10 +255,12 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     }
 
     @Override
-    public List<TaxonNode> listChildrenOf(TaxonNode node, Integer pageSize, Integer pageIndex, List<String> propertyPaths, boolean recursive){
-    	if (recursive == true){
-    		Criteria crit = getSession().createCriteria(TaxonNode.class);
-    		crit.add( Restrictions.like("treeIndex", node.treeIndex()+ "%") );
+    public List<TaxonNode> listChildrenOf(TaxonNode node, Integer pageSize, Integer pageIndex,
+            boolean recursive, boolean includeUnpublished, List<String> propertyPaths){
+
+        if (recursive == true){
+    		Criteria crit = childrenOfCriteria(node, includeUnpublished);
+
     		if(pageSize != null) {
                 crit.setMaxResults(pageSize);
                 if(pageIndex != null) {
@@ -253,33 +275,48 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     		defaultBeanInitializer.initializeAll(results, propertyPaths);
     		return results;
     	}else{
-    		return classificationDao.listChildrenOf(node.getTaxon(), node.getClassification(), pageSize, pageIndex, propertyPaths);
+    		return classificationDao.listChildrenOf(node.getTaxon(), node.getClassification(),
+    		       includeUnpublished, pageSize, pageIndex, propertyPaths);
     	}
 
     }
 
     @Override
 	public Long countChildrenOf(TaxonNode node, Classification classification,
-			boolean recursive) {
+			boolean recursive, boolean includeUnpublished) {
 
 		if (recursive == true){
-			Criteria crit = getSession().createCriteria(TaxonNode.class);
-    		crit.add( Restrictions.like("treeIndex", node.treeIndex()+ "%") );
+			Criteria crit = childrenOfCriteria(node, includeUnpublished);
     		crit.setProjection(Projections.rowCount());
     		return ((Integer)crit.uniqueResult().hashCode()).longValue();
 		}else{
-			return classificationDao.countChildrenOf(node.getTaxon(), classification);
+			return classificationDao.countChildrenOf(
+			        node.getTaxon(), classification, includeUnpublished);
 		}
 	}
+    /**
+     * @param node
+     * @param includeUnpublished
+     * @return
+     */
+    private Criteria childrenOfCriteria(TaxonNode node, boolean includeUnpublished) {
+        Criteria crit = getSession().createCriteria(TaxonNode.class);
+        crit.add( Restrictions.like("treeIndex", node.treeIndex()+ "%") );
+        if (!includeUnpublished){
+            crit.createCriteria("taxon").add( Restrictions.eq("publish", Boolean.TRUE));
+        }
+        return crit;
+    }
     /**
      * {@inheritDoc}
      */
     @Override
     public List<TaxonNodeAgentRelation> listTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid,
-            UUID agentUuid, UUID rankUuid, UUID relTypeUuid, Integer start, Integer limit, List<String> propertyPaths) {
+            UUID agentUuid, UUID rankUuid, UUID relTypeUuid, Integer start, Integer limit,
+            List<String> propertyPaths) {
 
-
-        StringBuilder hql = prepareListTaxonNodeAgentRelations(taxonUuid, classificationUuid, agentUuid, rankUuid, relTypeUuid, false);
+        StringBuilder hql = prepareListTaxonNodeAgentRelations(taxonUuid, classificationUuid,
+                agentUuid, rankUuid, relTypeUuid, false);
 
         Query query =  getSession().createQuery(hql.toString());
 
@@ -330,54 +367,57 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 
         StringBuilder hql = new StringBuilder();
 
-        String join_fetch_mode = doCount ? "join" : "join fetch";
+        String join_fetch_mode = doCount ? "JOIN" : "JOIN FETCH";
 
         if(doCount) {
-            hql.append("select count(tnar)");
+            hql.append("SELECT COUNT(tnar)");
         } else {
-            hql.append("select tnar");
+            hql.append("SELECT tnar");
         }
 
-        hql.append(" from TaxonNodeAgentRelation as tnar ");
+        hql.append(" FROM TaxonNodeAgentRelation AS tnar ");
         if(taxonUuid != null) {
             // taxonUuid is search filter, do not fetch it
-            hql.append(" join tnar.taxonNode as tn join tn.taxon as t ");
+            hql.append(" JOIN tnar.taxonNode AS tn "
+                    + "  JOIN tn.taxon AS t ");
         } else {
-            hql.append(join_fetch_mode).append(" tnar.taxonNode as tn ").append(join_fetch_mode).append(" tn.taxon as t ");
+            hql.append(join_fetch_mode)
+                .append(" tnar.taxonNode AS tn ")
+                .append(join_fetch_mode).append(" tn.taxon AS t ");
             if(rankUuid != null) {
                 hql.append(" join t.name as n ");
             }
         }
-        hql.append(" join tn.classification as c ");
+        hql.append(" JOIN tn.classification AS c ");
         if(agentUuid != null) {
             // agentUuid is search filter, do not fetch it
 //            hql.append(" join tnar.agent as a ");
-            hql.append(join_fetch_mode).append(" tnar.agent as a ");
+            hql.append(join_fetch_mode).append(" tnar.agent AS a ");
         } else {
-            hql.append(join_fetch_mode).append(" tnar.agent as a ");
+            hql.append(join_fetch_mode).append(" tnar.agent AS a ");
         }
 
-        hql.append(" where 1 = 1 ");
+        hql.append(" WHERE (1 = 1) ");
 
         if(relTypeUuid != null) {
-            hql.append(" and tnar.type.uuid = :relTypeUuid ");
+            hql.append(" AND tnar.type.uuid = :relTypeUuid ");
         }
 
         if(taxonUuid != null) {
-            hql.append(" and t.uuid = :taxonUuid ");
+            hql.append(" AND t.uuid = :taxonUuid ");
         } else {
             if(rankUuid != null) {
-                hql.append(" and n.rank.uuid = :rankUuid ");
+                hql.append(" AND n.rank.uuid = :rankUuid ");
             }
         }
         if(classificationUuid != null) {
-            hql.append(" and c.uuid = :classificationUuid ");
+            hql.append(" AND c.uuid = :classificationUuid ");
         }
         if(agentUuid != null) {
-            hql.append(" and a.uuid = :agentUuid ");
+            hql.append(" AND a.uuid = :agentUuid ");
         }
 
-        hql.append(" order by a.titleCache");
+        hql.append(" ORDER BY a.titleCache");
         return hql;
     }
     /**
@@ -420,7 +460,10 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         }
 
         String hql = " SELECT tn.treeIndex, r.orderIndex "
-                + " FROM TaxonNode tn JOIN tn.taxon t JOIN t.name n JOIN n.rank r "
+                + " FROM TaxonNode tn "
+                + "     JOIN tn.taxon t "
+                + "     JOIN t.name n "
+                + "      JOIN n.rank r "
                 + " WHERE tn.treeIndex IN (:treeIndexes) ";
         if (minRankOrderIndex != null){
             hql += " AND r.orderIndex <= :minOrderIndex";
@@ -453,7 +496,8 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
             return result;
         }
 
-        String hql = " SELECT tn.treeIndex, t.uuid, tnb.titleCache "
+        String hql =
+                  " SELECT tn.treeIndex, t.uuid, tnb.titleCache "
                 + " FROM TaxonNode tn JOIN tn.taxon t Join t.name tnb "
                 + " WHERE tn.treeIndex IN (:treeIndexes) ";
         Query query =  getSession().createQuery(hql);
@@ -483,7 +527,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
      * @param queryStr
      * @return
      */
-    protected int countResult(String queryStr) {
+    private int countResult(String queryStr) {
         Query query = getSession().createQuery(queryStr);
         return ((Long)query.uniqueResult()).intValue();
     }
@@ -662,8 +706,10 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
      */
     private String synonymForSubtreeQueryStr(boolean includeSharedTaxa, TreeIndex subTreeIndex, SelectMode mode) {
         String queryStr = "SELECT " + mode.hql("syn")
-                + " FROM TaxonNode tn JOIN tn.taxon t JOIN t.synonyms syn"
-                + " WHERE tn.treeIndex like '%s%%' ";
+                + " FROM TaxonNode tn "
+                + "   JOIN tn.taxon t "
+                + "   JOIN t.synonyms syn"
+                + " WHERE tn.treeIndex LIKE '%s%%' ";
         if (!includeSharedTaxa){
             queryStr += " AND t.taxonNodes.size <= 1  ";
         }
@@ -710,9 +756,12 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     @Override
     public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification, Integer limit, String pattern, boolean searchForClassifications) {
         int classificationId = classification.getId();
-        // StringBuffer excludeUuids = new StringBuffer();
-   //, taxon.name.rank
-         String queryString = "SELECT nodes.uuid, nodes.id,  taxon.titleCache, taxon.name.rank FROM TaxonNode AS nodes JOIN nodes.taxon as taxon WHERE nodes.classification.id = " + classificationId ;
+
+         String queryString =
+                   " SELECT nodes.uuid, nodes.id,  taxon.titleCache, taxon.name.rank " +
+                   " FROM TaxonNode AS nodes "
+                   + "    JOIN nodes.taxon as taxon " +
+                   " WHERE nodes.classification.id = " + classificationId ;
          if (pattern != null){
              if (pattern.equals("?")){
                  limit = null;
@@ -722,14 +771,11 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
                  }
                  pattern = pattern.replace("*", "%");
                  pattern = pattern.replace("?", "%");
-                 queryString = queryString + " AND taxon.titleCache like (:pattern) " ;
+                 queryString = queryString + " AND taxon.titleCache LIKE (:pattern) " ;
              }
          }
 
-
-
          Query query = getSession().createQuery(queryString);
-
 
          if (limit != null){
              query.setMaxResults(limit);
@@ -742,7 +788,11 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
          List<Object[]> result = query.list();
 
          if (searchForClassifications){
-             queryString = "SELECT nodes.uuid, nodes.id,  nodes.classification.titleCache, NULLIF(1,1) FROM TaxonNode AS nodes WHERE nodes.classification.id = " + classificationId + " AND nodes.taxon IS NULL";
+             queryString = ""
+                     + " SELECT nodes.uuid, nodes.id,  nodes.classification.titleCache, NULLIF(1,1) "
+                     + " FROM TaxonNode AS nodes "
+                     + " WHERE nodes.classification.id = " + classificationId +
+                          " AND nodes.taxon IS NULL";
              if (pattern != null){
                  if (pattern.equals("?")){
                      limit = null;
@@ -752,11 +802,10 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
                      }
                      pattern = pattern.replace("*", "%");
                      pattern = pattern.replace("?", "%");
-                     queryString = queryString + " AND nodes.classification.titleCache like (:pattern) " ;
+                     queryString = queryString + " AND nodes.classification.titleCache LIKE (:pattern) " ;
                  }
              }
-              query = getSession().createQuery(queryString);
-
+             query = getSession().createQuery(queryString);
 
              if (limit != null){
                  query.setMaxResults(limit);
@@ -765,6 +814,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
              if (pattern != null && !pattern.equals("?")){
                  query.setParameter("pattern", pattern);
              }
+             @SuppressWarnings("unchecked")
              List<Object[]> resultClassifications = query.list();
 
              result.addAll(resultClassifications);
@@ -773,28 +823,21 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
          if(result.size() == 0){
              return null;
          }else{
-             List<UuidAndTitleCache<TaxonNode>> list = new ArrayList<UuidAndTitleCache<TaxonNode>>(result.size());
-             if (result != null && !result.isEmpty()){
-                 if (result.iterator().next().length == 4){
-                     Collections.sort(result, new UuidAndTitleCacheTaxonComparator());
-                 }
+             List<UuidAndTitleCache<TaxonNode>> list = new ArrayList<>(result.size());
+             if (result.iterator().next().length == 4){
+                 Collections.sort(result, new UuidAndTitleCacheTaxonComparator());
              }
              for (Object object : result){
-
                  Object[] objectArray = (Object[]) object;
-
                  UUID uuid = (UUID)objectArray[0];
                  Integer id = (Integer) objectArray[1];
                  String titleCache = (String) objectArray[2];
 
-                 list.add(new UuidAndTitleCache<TaxonNode>(TaxonNode.class, uuid, id, titleCache));
+                 list.add(new UuidAndTitleCache<>(TaxonNode.class, uuid, id, titleCache));
              }
 
              return list;
          }
     }
-
-
-
 
 }

@@ -26,7 +26,6 @@ import org.hibernate.search.annotations.Store;
 /**
  * workaround for enumerations
  * @author m.doering
- * @version 1.0
  * @since 08-Nov-2007 13:06:49
  */
 

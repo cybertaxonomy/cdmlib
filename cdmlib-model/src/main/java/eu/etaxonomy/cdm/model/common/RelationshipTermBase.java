@@ -61,7 +61,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 })
 @Entity
 @Audited
-public abstract class RelationshipTermBase<T extends RelationshipTermBase<T>> extends OrderedTermBase<T> {
+public abstract class RelationshipTermBase<T extends RelationshipTermBase<T>>
+          extends OrderedTermBase<T> {
 	private static final long serialVersionUID = 5497187985269083971L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(RelationshipTermBase.class);
@@ -77,7 +78,7 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase<T>> ex
 
 	@XmlElementWrapper(name = "InverseRepresentations")
 	@XmlElement(name = "Representation")
-	@OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
+	@OneToMany(fetch = FetchType.EAGER, orphanRemoval=true)  //eager loading same as TermBase.representations
 	@JoinTable(name="TermBase_inverseRepresentation",
         joinColumns=@JoinColumn(name="term_id")
     )

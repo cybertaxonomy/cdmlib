@@ -144,70 +144,70 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 
 	@Override
 	public <T extends DefinedTermBase> Pager<T> getGeneralizationOf(T definedTerm, Integer pageSize, Integer pageNumber) {
-        Integer numberOfResults = dao.countGeneralizationOf(definedTerm);
+        long numberOfResults = dao.countGeneralizationOf(definedTerm);
 
-		List<T> results = new ArrayList<T>();
+		List<T> results = new ArrayList<>();
 		if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.getGeneralizationOf(definedTerm, pageSize, pageNumber);
 		}
 
-		return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
+		return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
 	}
 
 	@Override
 	public <T extends DefinedTermBase> Pager<T> getIncludes(Collection<T> definedTerms, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-        Integer numberOfResults = dao.countIncludes(definedTerms);
+        long numberOfResults = dao.countIncludes(definedTerms);
 
-		List<T> results = new ArrayList<T>();
+		List<T> results = new ArrayList<>();
 		if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.getIncludes(definedTerms, pageSize, pageNumber,propertyPaths);
 		}
 
-		return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
+		return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
 	}
 
 	@Override
 	public Pager<Media> getMedia(DefinedTermBase definedTerm, Integer pageSize,	Integer pageNumber) {
-        Integer numberOfResults = dao.countMedia(definedTerm);
+        long numberOfResults = dao.countMedia(definedTerm);
 
-		List<Media> results = new ArrayList<Media>();
+		List<Media> results = new ArrayList<>();
 		if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.getMedia(definedTerm, pageSize, pageNumber);
 		}
 
-		return new DefaultPagerImpl<Media>(pageNumber, numberOfResults, pageSize, results);
+		return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
 	}
 
 	@Override
 	public <T extends DefinedTermBase> Pager<T> getPartOf(Set<T> definedTerms,Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-        Integer numberOfResults = dao.countPartOf(definedTerms);
+        long numberOfResults = dao.countPartOf(definedTerms);
 
-		List<T> results = new ArrayList<T>();
+		List<T> results = new ArrayList<>();
 		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.getPartOf(definedTerms, pageSize, pageNumber, propertyPaths);
 		}
 
-		return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
+		return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
 	}
 
 	@Override
 	public Pager<NamedArea> list(NamedAreaLevel level, NamedAreaType type, Integer pageSize, Integer pageNumber,
 			List<OrderHint> orderHints, List<String> propertyPaths) {
-		Integer numberOfResults = dao.count(level, type);
+		long numberOfResults = dao.count(level, type);
 
-		List<NamedArea> results = new ArrayList<NamedArea>();
+		List<NamedArea> results = new ArrayList<>();
 		if (numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.list(level, type, pageSize, pageNumber, orderHints, propertyPaths);
 		}
 
-		return new DefaultPagerImpl<NamedArea>(pageNumber, numberOfResults, pageSize, results);
+		return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
 	}
 
 	@Override
 	public <T extends DefinedTermBase> Pager<T> findByRepresentationText(String label, Class<T> clazz, Integer pageSize, Integer pageNumber) {
-        Integer numberOfResults = dao.countDefinedTermByRepresentationText(label,clazz);
+        long numberOfResults = dao.countDefinedTermByRepresentationText(label,clazz);
 
-		List<T> results = new ArrayList<T>();
+		List<T> results = new ArrayList<>();
 		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.getDefinedTermByRepresentationText(label, clazz, pageSize, pageNumber);
 		}
@@ -217,9 +217,9 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 
 	@Override
 	public <T extends DefinedTermBase> Pager<T> findByRepresentationAbbreviation(String abbrev, Class<T> clazz, Integer pageSize, Integer pageNumber) {
-        Integer numberOfResults = dao.countDefinedTermByRepresentationAbbrev(abbrev,clazz);
+        long numberOfResults = dao.countDefinedTermByRepresentationAbbrev(abbrev,clazz);
 
-		List<T> results = new ArrayList<T>();
+		List<T> results = new ArrayList<>();
 		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.getDefinedTermByRepresentationAbbrev(abbrev, clazz, pageSize, pageNumber);
 		}

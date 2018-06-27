@@ -99,11 +99,10 @@ public class PreferenceDaoImpl extends DaoBase implements IPreferenceDao  {
 
 
 	@Override
-	public int count(){
+	public long count(){
 		Criteria crit = getSession().createCriteria(CdmPreference.class);
         crit.setProjection(Projections.rowCount());
-        int result = ((Number)crit.list().get(0)).intValue();
-        return result;
+        return (Long)crit.uniqueResult();
 	}
 
     @Override

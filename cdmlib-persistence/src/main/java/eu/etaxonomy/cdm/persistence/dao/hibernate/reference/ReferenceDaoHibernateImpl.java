@@ -15,9 +15,11 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -31,7 +33,6 @@ import eu.etaxonomy.cdm.model.reference.IPrintedUnitBase;
 import eu.etaxonomy.cdm.model.reference.IReport;
 import eu.etaxonomy.cdm.model.reference.IThesis;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
@@ -95,6 +96,25 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 
 		return list;
 	}
+
+	@Override
+    public List<UuidAndTitleCache<Reference>> getUuidAndTitle(Set<UUID> uuids){
+        List<UuidAndTitleCache<Reference>> list = new ArrayList<UuidAndTitleCache<Reference>>();
+
+        Criteria criteria = null;
+
+        criteria = getSession().createCriteria(Reference.class);
+        criteria.add(Restrictions.in("uuid", uuids ) );
+
+        @SuppressWarnings("unchecked")
+        List<Reference> result = criteria.list();
+
+        for(Reference object : result){
+            list.add(new UuidAndTitleCache<Reference>(type, object.getUuid(), object.getId(), object.getTitleCache()));
+        }
+
+        return list;
+    }
 
 	@Override
 	public List<UuidAndTitleCache<Reference>> getUuidAndTitleCache(Integer limit, String pattern, ReferenceType refType) {
@@ -259,7 +279,7 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 		 */
 
 		//TODO implement search in nameDescriptions
-		Set<Reference> referenceSet = new HashSet<Reference>();
+		Set<Reference> referenceSet = new HashSet<>();
 		referenceSet.add(reference);
 		if(includeSubordinateReferences){
 			referenceSet.addAll(getSubordinateReferences(reference));
@@ -320,13 +340,9 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 		return taxonBaseList;
 	}
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao#getUuidAndAbbrevTitleCache(java.lang.Integer, java.lang.String)
-     */
     @Override
     public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCache(Integer limit, String pattern, ReferenceType refType) {
         Session session = getSession();
-        Reference ref = ReferenceFactory.newArticle();
 
         Query query = null;
         if (pattern != null){
@@ -350,13 +366,9 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao#getUuidAndAbbrevTitleCache(java.lang.Integer, java.lang.String)
-     */
     @Override
     public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthor(Integer limit, String pattern, ReferenceType refType) {
         Session session = getSession();
-        Reference ref = ReferenceFactory.newArticle();
 
         Query query = null;
         if (pattern != null){

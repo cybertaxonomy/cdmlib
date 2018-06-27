@@ -13,7 +13,7 @@ import org.hibernate.search.bridge.StringBridge;
 
 /**
  * @deprecated use the solr HTMLStripStandardTokenizerFactory instead
- *  why is the solr  implementation a better option?
+ *  why is the solr implementation a better option?
  *
  */
 @Deprecated

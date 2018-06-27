@@ -69,9 +69,9 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 	@Override
 	@Transactional(readOnly = true)
 	public Pager<Rights> getRights(T t, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-        Integer numberOfResults = dao.countRights(t);
+        long numberOfResults = dao.countRights(t);
 
-		List<Rights> results = new ArrayList<Rights>();
+		List<Rights> results = new ArrayList<>();
 		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.getRights(t, pageSize, pageNumber,propertyPaths);
 		}
@@ -82,7 +82,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 	@Override
 	@Transactional(readOnly = true)
 	public Pager<IdentifiableSource> getSources(T t, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-		 Integer numberOfResults = dao.countSources(t);
+		 long numberOfResults = dao.countSources(t);
 
 		 List<IdentifiableSource> results = new ArrayList<>();
 		 if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
@@ -98,28 +98,6 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 	public T replace(T x, T y) {
 		return dao.replace(x, y);
 	}
-	/**
-	 * FIXME Candidate for harmonization
-	 * Given that this method is strongly typed, and generic, could we not simply expose it as
-	 * List<T> findByTitle(String title) as it is somewhat less cumbersome. Admittedly, I don't
-	 * understand what is going on with the configurators etc. so maybe there is a good reason for
-	 * the design of this method.
-	 * @param title
-	 * @return
-	 */
-	@Transactional(readOnly = true)
-	protected List<T> findCdmObjectsByTitle(String title){
-		return ((IIdentifiableDao)dao).findByTitle(title);
-	}
-
-	@Transactional(readOnly = true)
-	protected List<T> findCdmObjectsByTitle(String title, Class<T> clazz){
-		return ((IIdentifiableDao)dao).findByTitleAndClass(title, clazz);
-	}
-	@Transactional(readOnly = true)
-	protected List<T> findCdmObjectsByTitle(String title, CdmBase sessionObject){
-		return ((IIdentifiableDao)dao).findByTitle(title, sessionObject);
-	}
 
 	/*
 	 * TODO - Migrated from CommonServiceBase
@@ -127,7 +105,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 	@Transactional(readOnly = true)
 	@Override
 	public ISourceable getSourcedObjectByIdInSource(Class clazz, String idInSource, String idNamespace) {
-		ISourceable result = null;
+		ISourceable<?> result = null;
 
 		List<T> list = dao.findOriginalSourceByIdInSource(idInSource, idNamespace);
 		if (! list.isEmpty()){
@@ -164,7 +142,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 				results = dao.findByTitle(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
 		 }
 
-		  return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
+		 return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
 	}
 
 	@Transactional(readOnly = true)
@@ -197,7 +175,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 		 long r = 0;
 		 r += numberOfResults;
 
-		  return new DefaultPagerImpl<>(pageNumber, r , pageSize, results);
+		 return new DefaultPagerImpl<>(pageNumber, r , pageSize, results);
 	}
 
 	@Transactional(readOnly = true)
@@ -207,7 +185,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 
 		 List<T> results = new ArrayList<>();
 		 if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-				results = dao.findByReferenceTitle(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
+		     results = dao.findByReferenceTitle(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
 		 }
 		 return results;
 	}
@@ -221,7 +199,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 	@Transactional(readOnly = true)
 	@Override
 	public Pager<T> search(Class<? extends T> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        Integer numberOfResults = dao.count(clazz,queryString);
+        long numberOfResults = dao.count(clazz,queryString);
 
 		List<T> results = new ArrayList<>();
 		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
@@ -246,8 +224,8 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 			monitor = DefaultProgressMonitor.NewInstance();
 		}
 
-		int count = dao.count(clazz);
-		monitor.beginTask("update titles", count);
+		long count = dao.count(clazz);
+		monitor.beginTask("update titles", Long.valueOf(count).intValue());
 		int worked = 0;
 		for(int i = 0 ; i < count ; i = i + stepSize){
 			// not sure if such strict ordering is necessary here, but for safety reasons I do it
@@ -309,11 +287,6 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 		return oldAutoInitializers;
 	}
 
-	/**
-	 * @param cacheStrategy
-	 * @param entitiesToUpdate
-	 * @param entity
-	 */
 	/**
 	 * @param cacheStrategy
 	 * @param entitiesToUpdate
@@ -563,15 +536,15 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 
 	@Transactional(readOnly = true)
 	@Override
-	public Integer countByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria){
+	public long countByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria){
 		 long numberOfResults = dao.countByTitle(clazz, queryString, matchmode, criteria);
 
-		 return ((Number)numberOfResults).intValue();
+		 return numberOfResults;
 	}
 
 	@Transactional(readOnly = true)
 	@Override
-	public Integer countByTitle(IIdentifiableEntityServiceConfigurator<T> config){
+	public long countByTitle(IIdentifiableEntityServiceConfigurator<T> config){
 		return countByTitle(config.getClazz(), config.getTitleSearchStringSqlized(),
 				config.getMatchMode(), config.getCriteria());
 

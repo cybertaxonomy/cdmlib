@@ -21,8 +21,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.apache.lucene.search.Sort;
-import org.apache.lucene.search.SortField;
 import org.hibernate.Criteria;
 import org.hibernate.FlushMode;
 import org.hibernate.HibernateException;
@@ -38,9 +36,10 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.envers.AuditReader;
+import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.metadata.ClassMetadata;
-import org.hibernate.search.FullTextQuery;
 import org.hibernate.type.Type;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,8 +51,10 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.ReflectionUtils;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IPublishable;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
@@ -71,15 +72,15 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  * FIXME CdmEntityDaoBase is abstract, can it be annotated with @Repository?
  */
 @Repository
-public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implements ICdmEntityDao<T> {
+public abstract class CdmEntityDaoBase<T extends CdmBase>
+            extends DaoBase
+            implements ICdmEntityDao<T> {
 
     private static final Logger logger = Logger.getLogger(CdmEntityDaoBase.class);
 
     protected int flushAfterNo = 1000; //large numbers may cause synchronisation errors when commiting the session !!
 
     protected Class<T> type;
-
-//    protected Version version = Configuration.luceneVersion;
 
     @Autowired
 //	@Qualifier("defaultBeanInitializer")
@@ -364,13 +365,20 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         return getSession().get(type, id);
     }
 
-
-    @Override
+	@Override
     public T findByUuid(UUID uuid) throws DataAccessException{
+	    return this.findByUuid(uuid, INCLUDE_UNPUBLISHED);
+	}
+
+    protected T findByUuid(UUID uuid, boolean includeUnpublished) throws DataAccessException{
         Session session = getSession();
         Criteria crit = session.createCriteria(type);
         crit.add(Restrictions.eq("uuid", uuid));
         crit.addOrder(Order.desc("created"));
+        if (IPublishable.class.isAssignableFrom(type) && !includeUnpublished ){
+            crit.add(Restrictions.eq("publish", Boolean.TRUE));
+        }
+
         @SuppressWarnings("unchecked")
 		List<T> results = crit.list();
         Set<T> resultSet = new HashSet<>();
@@ -457,7 +465,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
         addRestrictions(restrictions, criteria);
 
-        addLimitAndStart(limit, start, criteria);
+        addLimitAndStart(criteria, limit, start);
         addOrder(criteria, orderHints);
 
         @SuppressWarnings("unchecked")
@@ -541,7 +549,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
      * {@inheritDoc}
      */
     @Override
-    public int count(Class<? extends T> type, List<Restriction<?>> restrictions) {
+    public long count(Class<? extends T> type, List<Restriction<?>> restrictions) {
 
         Criteria criteria = criterionForType(type);
 
@@ -551,7 +559,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
         //since hibernate 4 (or so) uniqueResult returns Long, not Integer, therefore needs
         //to be casted. Think about returning long rather then int!
-        return ((Number) criteria.uniqueResult()).intValue();
+        return (Long) criteria.uniqueResult();
 
     }
 
@@ -674,7 +682,11 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
     @Override
     public T load(UUID uuid, List<String> propertyPaths){
-        T bean = findByUuid(uuid);
+        return this.load(uuid, INCLUDE_UNPUBLISHED, propertyPaths);
+    }
+
+    protected T load(UUID uuid, boolean includeUnpublished, List<String> propertyPaths){
+        T bean = findByUuid(uuid, includeUnpublished);
         if(bean == null){
             return bean;
         }
@@ -692,12 +704,12 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
     }
 
     @Override
-    public int count() {
+    public long count() {
         return count(type);
     }
 
     @Override
-    public int count(Class<? extends T> clazz) {
+    public long count(Class<? extends T> clazz) {
         Session session = getSession();
         Criteria criteria = null;
         if(clazz == null) {
@@ -709,7 +721,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
         //since hibernate 4 (or so) uniqueResult returns Long, not Integer, therefore needs
         //to be casted. Think about returning long rather then int!
-        return ((Number) criteria.uniqueResult()).intValue();
+        return (long)criteria.uniqueResult();
     }
 
     @Override
@@ -799,39 +811,8 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         }
     }
 
-    protected void addCriteria(Criteria criteria, List<Criterion> criterion) {
-        if(criterion != null) {
-            for(Criterion c : criterion) {
-                criteria.add(c);
-            }
-        }
 
-    }
 
-    protected void addOrder(FullTextQuery fullTextQuery, List<OrderHint> orderHints) {
-        //FIXME preliminary hardcoded type:
-    	SortField.Type type = SortField.Type.STRING;
-
-    	if(orderHints != null && !orderHints.isEmpty()) {
-            org.apache.lucene.search.Sort sort = new Sort();
-            SortField[] sortFields = new SortField[orderHints.size()];
-            for(int i = 0; i < orderHints.size(); i++) {
-                OrderHint orderHint = orderHints.get(i);
-                switch(orderHint.getSortOrder()) {
-                case ASCENDING:
-                    sortFields[i] = new SortField(orderHint.getPropertyName(), type, true);
-                    break;
-                case DESCENDING:
-                default:
-                    sortFields[i] = new SortField(orderHint.getPropertyName(), type, false);
-
-                }
-            }
-            sort.setSort(sortFields);
-            fullTextQuery.setSort(sort);
-
-        }
-    }
 
     @Override
     public List<T> list(Integer limit, Integer start, List<OrderHint> orderHints) {
@@ -864,7 +845,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
             criteria = getSession().createCriteria(clazz);
         }
 
-        addLimitAndStart(limit, start, criteria);
+        addLimitAndStart(criteria, limit, start);
 
         addOrder(criteria, orderHints);
 
@@ -873,22 +854,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
-    }
-
-    /**
-     * @param limit
-     * @param start
-     * @param criteria
-     */
-    protected void addLimitAndStart(Integer limit, Integer start, Criteria criteria) {
-        if(limit != null) {
-            if(start != null) {
-                criteria.setFirstResult(start);
-            } else {
-                criteria.setFirstResult(0);
-            }
-            criteria.setMaxResults(limit);
-        }
     }
 
 
@@ -902,36 +867,26 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
     }
 
     @Override
-    public List<T> rows(String tableName, int limit, int start) {
-        Query query = getSession().createQuery("from " + tableName + " order by uuid");
-        query.setFirstResult(start);
-        query.setMaxResults(limit);
-        @SuppressWarnings("unchecked")
-		List<T> result = query.list();
-        return result;
-    }
-
-    @Override
     public Class<T> getType() {
         return type;
     }
 
-    protected void setPagingParameter(Query query, Integer pageSize, Integer pageNumber){
+    protected void setPagingParameter(Query query, Integer pageSize, Integer pageIndex){
         if(pageSize != null) {
             query.setMaxResults(pageSize);
-            if(pageNumber != null) {
-                query.setFirstResult(pageNumber * pageSize);
+            if(pageIndex != null) {
+                query.setFirstResult(pageIndex * pageSize);
             } else {
                 query.setFirstResult(0);
             }
         }
     }
 
-    protected void setPagingParameter(AuditQuery query, Integer pageSize, Integer pageNumber){
+    protected void setPagingParameter(AuditQuery query, Integer pageSize, Integer pageIndex){
         if(pageSize != null) {
             query.setMaxResults(pageSize);
-            if(pageNumber != null) {
-                query.setFirstResult(pageNumber * pageSize);
+            if(pageIndex != null) {
+                query.setFirstResult(pageIndex * pageSize);
             } else {
                 query.setFirstResult(0);
             }
@@ -939,12 +894,12 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
     }
 
     @Override
-    public int count(T example, Set<String> includeProperties) {
+    public long count(T example, Set<String> includeProperties) {
         Criteria criteria = getSession().createCriteria(example.getClass());
         addExample(criteria,example,includeProperties);
 
         criteria.setProjection(Projections.rowCount());
-        return ((Number)criteria.uniqueResult()).intValue();
+        return (Long)criteria.uniqueResult();
     }
 
     protected void addExample(Criteria criteria, T example, Set<String> includeProperties) {
@@ -1004,7 +959,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
         criteria.setProjection(Projections.rowCount());
 
-        return ((Number)criteria.uniqueResult()).longValue();
+        return (Long)criteria.uniqueResult();
     }
 
 
@@ -1013,7 +968,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         Criteria criteria = getSession().createCriteria(example.getClass());
         addExample(criteria,example,includeProperties);
 
-        addLimitAndStart(limit, start, criteria);
+        addLimitAndStart(criteria, limit, start);
 
         addOrder(criteria,orderHints);
 
@@ -1044,6 +999,44 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
             }
         }
 
+    }
+
+
+    /**
+     * Returns a Criteria for the given {@link Class class} or, if <code>null</code>,
+     * for the base {@link Class class} of this DAO.
+     * @param clazz
+     * @return the Criteria
+     */
+    protected Criteria getCriteria(Class<? extends CdmBase> clazz) {
+        Criteria criteria = null;
+        if(clazz == null) {
+            criteria = getSession().createCriteria(type);
+        } else {
+            criteria = getSession().createCriteria(clazz);
+        }
+        return criteria;
+    }
+
+    /**
+     * @param clazz
+     * @param auditEvent
+     * @return
+     */
+    protected AuditQuery makeAuditQuery(Class<? extends CdmBase> clazz, AuditEvent auditEvent) {
+        AuditQuery query = null;
+
+        if(clazz == null) {
+            query = getAuditReader().createQuery().forEntitiesAtRevision(type,auditEvent.getRevisionNumber());
+        } else {
+            query = getAuditReader().createQuery().forEntitiesAtRevision(clazz,auditEvent.getRevisionNumber());
+        }
+        return query;
+    }
+
+
+    protected AuditReader getAuditReader() {
+        return AuditReaderFactory.get(getSession());
     }
 }
 

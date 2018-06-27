@@ -56,11 +56,11 @@ public interface IDefinedTermDao extends IIdentifiableDao<DefinedTermBase>, ITit
 
 	public <TYPE extends DefinedTermBase> List<TYPE> getDefinedTermByRepresentationText(String text, Class<TYPE> clazz, Integer pageSize,Integer  pageNumber);
 
-	public int countDefinedTermByRepresentationText(String text, Class<? extends DefinedTermBase> clazz);
+	public long countDefinedTermByRepresentationText(String text, Class<? extends DefinedTermBase> clazz);
 
 	public <TYPE extends DefinedTermBase> List<TYPE> getDefinedTermByRepresentationAbbrev(String text, Class<TYPE> clazz, Integer pageSize,Integer  pageNumber);
 
-	public int countDefinedTermByRepresentationAbbrev(String text, Class<? extends DefinedTermBase> clazz);
+	public long countDefinedTermByRepresentationAbbrev(String text, Class<? extends DefinedTermBase> clazz);
 
 
     /**
@@ -80,7 +80,7 @@ public interface IDefinedTermDao extends IIdentifiableDao<DefinedTermBase>, ITit
 	 * @param definedTerm the definedTerm represented by these media
 	 * @return a count of Media entities
 	 */
-	public int countMedia(DefinedTermBase definedTerm);
+	public long countMedia(DefinedTermBase definedTerm);
 
 	/**
 	 * Returns a List of NamedArea instances (optionally filtered by type or level)
@@ -112,7 +112,7 @@ public interface IDefinedTermDao extends IIdentifiableDao<DefinedTermBase>, ITit
 	 * @param type restrict the result set to named areas of a certain type (can be null)
 	 * @return a count of named areas
 	 */
-	public int count(NamedAreaLevel level, NamedAreaType type);
+	public long count(NamedAreaLevel level, NamedAreaType type);
 
 	/**
 	 * Return a list of terms which are specializations of a given definedTerm
@@ -130,7 +130,7 @@ public interface IDefinedTermDao extends IIdentifiableDao<DefinedTermBase>, ITit
 	 * @param definedTerm The term which is a generalization of the terms returned
 	 * @return a count of DefinedTerms
 	 */
-	public <T extends DefinedTermBase> int countGeneralizationOf(T definedTerm);
+	public <T extends DefinedTermBase> long countGeneralizationOf(T definedTerm);
 
 	/**
 	 * Return a List of distinct terms which include the terms supplied
@@ -149,7 +149,7 @@ public interface IDefinedTermDao extends IIdentifiableDao<DefinedTermBase>, ITit
 	 * @param definedTerms the set of terms which are part of the terms of interest
 	 * @return a count of DefinedTerms
 	 */
-	public <T extends DefinedTermBase> int countPartOf(Set<T> definedTerms);
+	public <T extends DefinedTermBase> long countPartOf(Set<T> definedTerms);
 
 	/**
 	 * Return a List of terms which are part of the terms supplied
@@ -168,7 +168,7 @@ public interface IDefinedTermDao extends IIdentifiableDao<DefinedTermBase>, ITit
 	 * @param definedTerms the set of terms which include the terms of interest
 	 * @return a count of DefinedTerms
 	 */
-	public <T extends DefinedTermBase> int countIncludes(Collection<T> definedTerms);
+	public <T extends DefinedTermBase> long countIncludes(Collection<T> definedTerms);
 
 	public DefinedTermBase findByUri(URI uri);
 

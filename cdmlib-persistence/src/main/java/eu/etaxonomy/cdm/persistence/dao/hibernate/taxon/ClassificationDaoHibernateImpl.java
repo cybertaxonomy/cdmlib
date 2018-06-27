@@ -40,7 +40,8 @@ import eu.etaxonomy.cdm.persistence.dto.ClassificationLookupDTO;
  */
 @Repository
 @Qualifier("classificationDaoHibernateImpl")
-public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classification>
+public class ClassificationDaoHibernateImpl
+        extends IdentifiableDaoBase<Classification>
         implements IClassificationDao {
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(ClassificationDaoHibernateImpl.class);
@@ -57,10 +58,10 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
     @Override
     @SuppressWarnings("unchecked")
     public List<TaxonNode> listRankSpecificRootNodes(Classification classification, Rank rank,
-            Integer limit, Integer start, List<String> propertyPaths, int queryIndex){
+            boolean includeUnpublished, Integer limit, Integer start, List<String> propertyPaths, int queryIndex){
 
-        List<TaxonNode> results = new ArrayList<TaxonNode>();
-        Query[] queries = prepareRankSpecificRootNodes(classification, rank, false);
+        List<TaxonNode> results = new ArrayList<>();
+        Query[] queries = prepareRankSpecificRootNodes(classification, rank, includeUnpublished, false);
 
         // since this method is using two queries sequentially the handling of limit and start
         // is a bit more complex
@@ -85,10 +86,10 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
     }
 
     @Override
-    public long[] countRankSpecificRootNodes(Classification classification, Rank rank) {
+    public long[] countRankSpecificRootNodes(Classification classification, boolean includeUnpublished, Rank rank) {
 
         long[] result = new long[(rank == null ? 1 : 2)];
-        Query[] queries = prepareRankSpecificRootNodes(classification, rank, true);
+        Query[] queries = prepareRankSpecificRootNodes(classification, rank, includeUnpublished, true);
         int i = 0;
         for(Query q : queries) {
             result[i++] = (Long)q.uniqueResult();
@@ -106,16 +107,15 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
      *      one or two Queries as array, depending on the <code>rank</code> parameter:
      *      <code>rank == null</code>: array with one item, <code>rank != null</code>: array with two items.
      */
-    private Query[] prepareRankSpecificRootNodes(Classification classification, Rank rank, boolean doCount) {
+    private Query[] prepareRankSpecificRootNodes(Classification classification, Rank rank,
+            boolean includeUnpublished, boolean doCount) {
         Query query1;
         Query query2 = null;
 
-        String whereClassification = "";
-        if (classification != null){
-            whereClassification = " AND tn.classification = :classification ";
-        }
+        String whereClassification = classification != null? " AND tn.classification = :classification " : "";
+        String whereUnpublished = includeUnpublished? "" : " AND tn.taxon.publish = :publish ";
 
-        String selectWhat = doCount ? "count(distinct tn)" : "distinct tn";
+        String selectWhat = doCount ? "COUNT(distinct tn)" : "DISTINCT tn";
 
         String joinFetch = doCount ? "" : " JOIN FETCH tn.taxon t JOIN FETCH t.name n LEFT JOIN FETCH n.rank LEFT JOIN FETCH t.sec ";
 
@@ -123,7 +123,7 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
             String hql = "SELECT " + selectWhat + " FROM TaxonNode tn" +
                     joinFetch +
                     " WHERE tn.parent.parent = null " +
-                    whereClassification;
+                    whereClassification +  whereUnpublished;
             query1 = getSession().createQuery(hql);
         } else {
             // this is for the cases
@@ -135,7 +135,7 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
                     " (tn.taxon.name.rank = :rank" +
                     "   OR (tn.taxon.name.rank.orderIndex > :rankOrderIndex AND tn.parent.parent = null)" +
                     " )"
-                    + whereClassification ;
+                    + whereClassification + whereUnpublished ;
 
             // this is for the case
             //   - rank of root node is lower and it has a parent with higher rank
@@ -143,7 +143,7 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
                     joinFetch +
                     " WHERE " +
                     " (tn.taxon.name.rank.orderIndex > :rankOrderIndex AND parent.taxon.name.rank.orderIndex < :rankOrderIndex )"
-                    + whereClassification ;
+                    + whereClassification + whereUnpublished;
             query1 = getSession().createQuery(hql1);
             query2 = getSession().createQuery(hql2);
             query1.setParameter("rank", rank);
@@ -151,12 +151,20 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
             query2.setParameter("rankOrderIndex", rank.getOrderIndex());
         }
 
+        //parameters
         if (classification != null){
             query1.setParameter("classification", classification);
             if(query2 != null) {
                 query2.setParameter("classification", classification);
             }
         }
+        if (!includeUnpublished){
+            query1.setBoolean("publish", true);
+            if(query2 != null) {
+                query2.setBoolean("publish", true);
+            }
+        }
+
         if(query2 != null) {
             return new Query[]{query1, query2};
         } else {
@@ -165,8 +173,9 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
     }
 
     @Override
-    public List<TaxonNode> listChildrenOf(Taxon taxon, Classification classification, Integer pageSize, Integer pageIndex, List<String> propertyPaths){
-    	 Query query = prepareListChildrenOf(taxon, classification, false);
+    public List<TaxonNode> listChildrenOf(Taxon taxon, Classification classification, boolean includeUnpublished,
+            Integer pageSize, Integer pageIndex, List<String> propertyPaths){
+    	 Query query = prepareListChildrenOf(taxon, classification, false, includeUnpublished);
 
          setPagingParameter(query, pageSize, pageIndex);
 
@@ -182,22 +191,26 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
 
     @Override
     public TaxonNode getRootNode(UUID classificationUuid){
-        String queryString = "select tn from TaxonNode tn, Classification c where tn = c.rootNode and c.uuid = :classificationUuid";
+        String queryString =
+                  " SELECT tn "
+                + " FROM TaxonNode tn, Classification c "
+                + " WHERE tn = c.rootNode AND c.uuid = :classificationUuid";
 
         Query query = getSession().createQuery(queryString);
         query.setParameter("classificationUuid", classificationUuid);
 
-
-        List results = query.list();
+        @SuppressWarnings("unchecked")
+        List<TaxonNode> results = query.list();
         if(results.size()!=1){
             return null;
         }
-        return taxonNodeDao.load(((TaxonNode) results.iterator().next()).getUuid());
+        return taxonNodeDao.load((results.iterator().next()).getUuid());
     }
 
     @Override
-    public List<TaxonNode> listSiblingsOf(Taxon taxon, Classification classification, Integer pageSize, Integer pageIndex, List<String> propertyPaths){
-         Query query = prepareListSiblingsOf(taxon, classification, false);
+    public List<TaxonNode> listSiblingsOf(Taxon taxon, Classification classification, boolean includeUnpublished,
+            Integer pageSize, Integer pageIndex, List<String> propertyPaths){
+         Query query = prepareListSiblingsOf(taxon, classification, includeUnpublished, false);
 
          setPagingParameter(query, pageSize, pageIndex);
 
@@ -214,41 +227,67 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
 
 
     @Override
-    public Long countChildrenOf(Taxon taxon, Classification classification){
-        Query query = prepareListChildrenOf(taxon, classification, true);
+    public Long countChildrenOf(Taxon taxon, Classification classification,
+            boolean includeUnpublished){
+        Query query = prepareListChildrenOf(taxon, classification, true, includeUnpublished);
         Long count = (Long) query.uniqueResult();
         return count;
     }
 
     @Override
-    public Long countSiblingsOf(Taxon taxon, Classification classification){
-        Query query = prepareListSiblingsOf(taxon, classification, true);
+    public Long countSiblingsOf(Taxon taxon, Classification classification, boolean includeUnpublished){
+        Query query = prepareListSiblingsOf(taxon, classification, includeUnpublished, true);
         Long count = (Long) query.uniqueResult();
         return count;
     }
 
-    private Query prepareListChildrenOf(Taxon taxon, Classification classification, boolean doCount){
+    private Query prepareListChildrenOf(Taxon taxon, Classification classification,
+            boolean doCount, boolean includeUnpublished){
 
-    	String selectWhat = doCount ? "count(cn)" : "cn";
+    	 String selectWhat = doCount ? "COUNT(cn)" : "cn";
 
-         String hql = "select " + selectWhat + " from TaxonNode as tn JOIN tn.classification as c JOIN tn.taxon as t JOIN tn.childNodes as cn "
-                 + "where t = :taxon and c = :classification";
+         String hql = "SELECT " + selectWhat
+                 + " FROM TaxonNode AS tn "
+                 + "   JOIN tn.classification AS c "
+                 + "   JOIN tn.taxon AS t "
+                 + "   JOIN tn.childNodes AS cn "
+                 + " WHERE t = :taxon "
+                 + "   AND c = :classification";
+         if (!includeUnpublished){
+             hql += "  AND cn.taxon.publish = :publish ";
+         }
          Query query = getSession().createQuery(hql);
          query.setParameter("taxon", taxon);
          query.setParameter("classification", classification);
+         if (!includeUnpublished){
+             query.setBoolean("publish", Boolean.TRUE);
+         }
          return query;
     }
 
-    private Query prepareListSiblingsOf(Taxon taxon, Classification classification, boolean doCount){
+    private Query prepareListSiblingsOf(Taxon taxon, Classification classification,
+            boolean includeUnpublished, boolean doCount){
 
-        String selectWhat = doCount ? "count(tn)" : "tn";
+         String selectWhat = doCount ? "COUNT(tn)" : "tn";
+         String whereUnpublished = includeUnpublished? "" : " AND t.publish = :publish ";
 
-         String subSelect = "SELECT tn.parent FROM TaxonNode as tn JOIN tn.classification as c JOIN tn.taxon as t "
-                 + "WHERE t = :taxon AND c = :classification";
-         String hql = "SELECT " + selectWhat + " FROM TaxonNode as tn WHERE tn.parent IN ( " + subSelect + ")";
+         String subSelect =
+                   " SELECT tn.parent "
+                 + " FROM TaxonNode AS tn "
+                 + "     JOIN tn.classification AS c "
+                 + "     JOIN tn.taxon AS t "
+                 + " WHERE t = :taxon "
+                 + "   AND c = :classification "
+                 + whereUnpublished;
+         String hql = " SELECT " + selectWhat
+                 + " FROM TaxonNode as tn "
+                 + " WHERE tn.parent IN ( " + subSelect + ")";
          Query query = getSession().createQuery(hql);
          query.setParameter("taxon", taxon);
          query.setParameter("classification", classification);
+         if (!includeUnpublished){
+             query.setBoolean("publish", true);
+         }
          return query;
     }
 
@@ -258,19 +297,17 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
         //delete all child nodes, then delete the tree
         if (persistentObject.getRootNode() != null){
             List<TaxonNode> nodes = persistentObject.getChildNodes();
-            List<TaxonNode> nodesTmp = new ArrayList<TaxonNode>(nodes);
+            List<TaxonNode> nodesTmp = new ArrayList<>(nodes);
             for(TaxonNode node : nodesTmp){
                 persistentObject.deleteChildNode(node, true);
                 taxonNodeDao.delete(node, true);
             }
-
         }
 
         TaxonNode rootNode = persistentObject.getRootNode();
         persistentObject.removeRootNode();
         taxonNodeDao.delete(rootNode);
-        UUID uuid =super.delete(persistentObject);
-
+        super.delete(persistentObject);
 
         return persistentObject.getUuid();
     }
@@ -280,13 +317,16 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
 
         ClassificationLookupDTO classificationLookupDTO = new ClassificationLookupDTO(classification);
 
-        // only for debugging:
-//        logger.setLevel(Level.TRACE);
-//        Logger.getLogger("org.hibernate.SQL").setLevel(Level.DEBUG);
+        String hql =
+                " SELECT t.id, n.rank, tp.id "
+              + " FROM TaxonNode AS tn "
+              +   " JOIN tn.classification AS c "
+              +   " JOIN tn.taxon AS t "
+              +   " JOIN t.name AS n "
+              +   " LEFT JOIN tn.parent AS tnp "
+              +   " LEFT JOIN tnp.taxon as tp "
+              + " WHERE c = :classification";
 
-        String hql = "select t.id, n.rank, tp.id from TaxonNode as tn join tn.classification as c join tn.taxon as t join t.name as n "
-                + " left join tn.parent as tnp left join tnp.taxon as tp "
-                + " where c = :classification";
         Query query = getSession().createQuery(hql);
         query.setParameter("classification", classification);
         @SuppressWarnings("unchecked")
@@ -325,10 +365,11 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
     @Override
     public Set<TreeIndex> getMarkedTreeIndexes(MarkerType markerType, Boolean flag){
         String hql = " SELECT tn.treeIndex "
-                + " FROM Taxon t JOIN t.taxonNodes tn "
-                + "     JOIN t.markers m "
+                + " FROM Taxon t "
+                + "    JOIN t.taxonNodes tn "
+                + "    JOIN t.markers m "
                 + " WHERE (1=1)"
-                + "   AND m.markerType = :markerType "
+                + "    AND m.markerType = :markerType "
                 ;
         if (flag != null){
             hql += "  AND m.flag = :flag ";

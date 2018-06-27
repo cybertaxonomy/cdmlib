@@ -162,9 +162,9 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 		if (StringUtils.isBlank(iso3166) || iso3166.length()<2 || iso3166.length()>3) { return null; }
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-		  Query query = getSession().createQuery("from Country where iso3166_A2 = :isoCode OR idInVocabulary = :isoCode");
-		  query.setParameter("isoCode", iso3166);
-		  return (Country) query.uniqueResult();
+		    Query query = getSession().createQuery("from Country where iso3166_A2 = :isoCode OR idInVocabulary = :isoCode");
+		    query.setParameter("isoCode", iso3166);
+		    return (Country) query.uniqueResult();
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(Country.class,auditEvent.getRevisionNumber());
 			query.add(AuditEntity.property("iso3166_A2").eq(iso3166));
@@ -182,106 +182,70 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
     public <T extends DefinedTermBase> List<T> getDefinedTermByRepresentationText(String text, Class<T> clazz, Integer pageSize,Integer  pageNumber) {
 		checkNotInPriorView("DefinedTermDaoImpl.getDefinedTermByRepresentationText(String text, Class<T> clazz, Integer pageSize,Integer  pageNumber)");
 
-		Criteria criteria = null;
-		if(clazz == null) {
-			criteria = getSession().createCriteria(type);
-		} else {
-			criteria = getSession().createCriteria(clazz);
-		}
+		Criteria criteria = getCriteria(clazz);
 
 		criteria.createAlias("representations", "r").add(Restrictions.like("r.text", text));
 
-		if(pageSize != null) {
-			criteria.setMaxResults(pageSize);
-		    if(pageNumber != null) {
-		    	criteria.setFirstResult(pageNumber * pageSize);
-		    }
-		}
+		addPageSizeAndNumber(criteria, pageSize, pageNumber);
 
-		return criteria.list();
+		@SuppressWarnings("unchecked")
+        List<T> result = criteria.list();
+		return result;
 	}
 
 	@Override
-    public int countDefinedTermByRepresentationText(String text, Class<? extends DefinedTermBase> clazz) {
+    public long countDefinedTermByRepresentationText(String text, Class<? extends DefinedTermBase> clazz) {
 	    checkNotInPriorView("DefinedTermDaoImpl.countDefinedTermByRepresentationText(String text, Class<? extends DefinedTermBase> clazz)");
-		Criteria criteria = null;
-		if(clazz == null) {
-			criteria = getSession().createCriteria(type);
-		} else {
-			criteria = getSession().createCriteria(clazz);
-		}
+		Criteria criteria = getCriteria(clazz);
 
 		criteria.createAlias("representations", "r").add(Restrictions.like("r.text", text));
 
 		criteria.setProjection(Projections.rowCount());
 
-		return ((Number)criteria.uniqueResult()).intValue();
+		return (Long)criteria.uniqueResult();
 	}
 
 	@Override
 	public <T extends DefinedTermBase> List<T> getDefinedTermByIdInVocabulary(String label, UUID vocUuid, Class<T> clazz, Integer pageSize, Integer pageNumber) {
 		checkNotInPriorView("DefinedTermDaoImpl.getDefinedTermByIdInVocabulary(String label, UUID vocUuid, Class<T> clazz, Integer pageSize, Integer pageNumber)");
 
-		Criteria criteria = null;
-		if(clazz == null) {
-			criteria = getSession().createCriteria(type);
-		} else {
-			criteria = getSession().createCriteria(clazz);
-		}
+		Criteria criteria = getCriteria(clazz);
 
-		criteria.createAlias("vocabulary", "voc").add(Restrictions.like("voc.uuid", vocUuid))
+		criteria.createAlias("vocabulary", "voc")
+		    .add(Restrictions.like("voc.uuid", vocUuid))
 			.add(Restrictions.like("idInVocabulary", label, org.hibernate.criterion.MatchMode.EXACT));
 
-		if(pageSize != null) {
-			criteria.setMaxResults(pageSize);
-		    if(pageNumber != null) {
-		    	criteria.setFirstResult(pageNumber * pageSize);
-		    }
-		}
+		addPageSizeAndNumber(criteria, pageSize, pageNumber);
 
+		@SuppressWarnings("unchecked")
+        List<T> result = criteria.list();
+		return result;
+	}
+
+    @Override
+	public <T extends DefinedTermBase> List<T> getDefinedTermByRepresentationAbbrev(String text, Class<T> clazz, Integer pageSize,Integer  pageNumber) {
+		checkNotInPriorView("DefinedTermDaoImpl.getDefinedTermByRepresentationAbbrev(String abbrev, Class<T> clazz, Integer pageSize,Integer  pageNumber)");
+
+		Criteria criteria = getCriteria(clazz);
+
+		criteria.createAlias("representations", "r").add(Restrictions.like("r.abbreviatedLabel", text));
+
+		addPageSizeAndNumber(criteria, pageSize, pageNumber);
+
+		@SuppressWarnings("unchecked")
 		List<T> result = criteria.list();
 		return result;
 	}
 
 	@Override
-	public <T extends DefinedTermBase> List<T> getDefinedTermByRepresentationAbbrev(String text, Class<T> clazz, Integer pageSize,Integer  pageNumber) {
-		checkNotInPriorView("DefinedTermDaoImpl.getDefinedTermByRepresentationAbbrev(String abbrev, Class<T> clazz, Integer pageSize,Integer  pageNumber)");
-
-		Criteria criteria = null;
-		if(clazz == null) {
-			criteria = getSession().createCriteria(type);
-		} else {
-			criteria = getSession().createCriteria(clazz);
-		}
-
-		criteria.createAlias("representations", "r").add(Restrictions.like("r.abbreviatedLabel", text));
-
-		if(pageSize != null) {
-			criteria.setMaxResults(pageSize);
-		    if(pageNumber != null) {
-		    	criteria.setFirstResult(pageNumber * pageSize);
-		    }
-		}
-
-		return criteria.list();
-	}
-
-	@Override
-	public int countDefinedTermByRepresentationAbbrev(String text, Class<? extends DefinedTermBase> clazz) {
+	public long countDefinedTermByRepresentationAbbrev(String text, Class<? extends DefinedTermBase> clazz) {
 	    checkNotInPriorView("DefinedTermDaoImpl.countDefinedTermByRepresentationAbbrev(String abbrev, Class<? extends DefinedTermBase> clazz)");
-		Criteria criteria = null;
-		if(clazz == null) {
-			criteria = getSession().createCriteria(type);
-		} else {
-			criteria = getSession().createCriteria(clazz);
-		}
+		Criteria criteria = getCriteria(clazz);
 
 		criteria.createAlias("representations", "r").add(Restrictions.like("r.abbreviatedLabel", text));
-
-
 		criteria.setProjection(Projections.rowCount());
 
-        return ((Number)criteria.uniqueResult()).intValue();
+        return (Long)criteria.uniqueResult();
 	}
 
 	@Override
@@ -343,10 +307,10 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 	}
 
 	@Override
-    public int count(NamedAreaLevel level, NamedAreaType type) {
+    public long count(NamedAreaLevel level, NamedAreaType type) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-		    Criteria criteria = getSession().createCriteria(NamedArea.class);
+		    Criteria criteria = getCriteria(NamedArea.class);
 
 		    if(level != null) {
 			    criteria.add(Restrictions.eq("level",level));
@@ -358,9 +322,9 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 
 		    criteria.setProjection(Projections.rowCount());
 
-	        return ((Number)criteria.uniqueResult()).intValue();
+	        return (Long)criteria.uniqueResult();
 		} else {
-			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(NamedArea.class,auditEvent.getRevisionNumber());
+			AuditQuery query = makeAuditQuery(NamedArea.class, auditEvent);
 
 			if(level != null) {
 				query.add(AuditEntity.relatedId("level").eq(level.getId()));
@@ -370,17 +334,17 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 		    	query.add(AuditEntity.relatedId("type").eq(type.getId()));
 		    }
 		    query.addProjection(AuditEntity.id().count());
-		    return ((Long)query.getSingleResult()).intValue();
+		    return (Long)query.getSingleResult();
 		}
 	}
 
 	@Override
-    public int countMedia(DefinedTermBase definedTerm) {
+    public long countMedia(DefinedTermBase definedTerm) {
 		checkNotInPriorView("DefinedTermDaoImpl.countMedia(DefinedTermBase definedTerm)");
 		Query query = getSession().createQuery("select count(media) from DefinedTermBase definedTerm join definedTerm.media media where definedTerm = :definedTerm");
 	    query.setParameter("definedTerm", definedTerm);
 
-		return ((Long)query.uniqueResult()).intValue();
+		return (Long)query.uniqueResult();
 	}
 
 	@Override
@@ -389,24 +353,18 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 		Query query = getSession().createQuery("select media from DefinedTermBase definedTerm join definedTerm.media media where definedTerm = :definedTerm");
 		query.setParameter("definedTerm", definedTerm);
 
-		if(pageSize != null) {
-			query.setMaxResults(pageSize);
-		    if(pageNumber != null) {
-		    	query.setFirstResult(pageNumber * pageSize);
-		    }
-		}
+		addPageSizeAndNumber(query, pageSize, pageNumber);
 
-		return query.list();
+		@SuppressWarnings("unchecked")
+        List<Media> result = query.list();
+		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao#list(eu.etaxonomy.cdm.model.location.NamedAreaLevel, eu.etaxonomy.cdm.model.location.NamedAreaType, java.lang.Integer, java.lang.Integer)
-	 */
 	@Override
     public List<NamedArea> list(NamedAreaLevel level, NamedAreaType type, Integer pageSize, Integer pageNumber) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Criteria criteria = getSession().createCriteria(NamedArea.class);
+            Criteria criteria = getCriteria(NamedArea.class);
 
 		    if(level != null) {
 			    criteria.add(Restrictions.eq("level",level));
@@ -416,16 +374,13 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 			    criteria.add(Restrictions.eq("type", type));
 		    }
 
-		    if(pageSize != null) {
-			    criteria.setMaxResults(pageSize);
-		        if(pageNumber != null) {
-		    	    criteria.setFirstResult(pageNumber * pageSize);
-		        }
-		    }
+		    addPageSizeAndNumber(criteria, pageSize, pageNumber);
 
-		    return criteria.list();
+	        @SuppressWarnings("unchecked")
+	        List<NamedArea> result = criteria.list();
+	        return result;
 		} else {
-            AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(NamedArea.class,auditEvent.getRevisionNumber());
+            AuditQuery query = makeAuditQuery(NamedArea.class, auditEvent);
 
 			if(level != null) {
 				query.add(AuditEntity.relatedId("level").eq(level.getId()));
@@ -435,22 +390,21 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 		    	query.add(AuditEntity.relatedId("type").eq(type.getId()));
 		    }
 
-		    return query.getResultList();
+		    @SuppressWarnings("unchecked")
+            List<NamedArea> result = query.getResultList();
+		    return result;
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao#list(eu.etaxonomy.cdm.model.location.NamedAreaLevel, eu.etaxonomy.cdm.model.location.NamedAreaType, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
-	 */
 	@Override
     public List<NamedArea> list(NamedAreaLevel level, NamedAreaType type, Integer pageSize, Integer pageNumber,
 			List<OrderHint> orderHints, List<String> propertyPaths) {
 
-		List<NamedArea> result;
+	    List<NamedArea> result;
 
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if (auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-			Criteria criteria = getSession().createCriteria(NamedArea.class);
+			Criteria criteria = getCriteria(NamedArea.class);
 
 			if (level != null) {
 				criteria.add(Restrictions.eq("level", level));
@@ -458,17 +412,11 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 			if (type != null) {
 				criteria.add(Restrictions.eq("type", type));
 			}
-			if(orderHints != null){
-				addOrder(criteria,orderHints);
-			}
-			if (pageSize != null) {
-				criteria.setMaxResults(pageSize);
-				if (pageNumber != null) {
-					criteria.setFirstResult(pageNumber * pageSize);
-				}
-			}
+			addOrder(criteria,orderHints);
+			addPageSizeAndNumber(criteria, pageSize, pageNumber);
 
 			result = criteria.list();
+
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(NamedArea.class,
 				auditEvent.getRevisionNumber());
@@ -478,7 +426,7 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 			if (type != null) {
 				query.add(AuditEntity.relatedId("type").eq(type.getId()));
 			}
-			result =  query.getResultList();
+			result = query.getResultList();
 		}
 
 		defaultBeanInitializer.initializeAll(result, propertyPaths);
@@ -488,22 +436,22 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 
 
 	@Override
-    public <T extends DefinedTermBase> int countGeneralizationOf(T kindOf) {
+    public <T extends DefinedTermBase> long countGeneralizationOf(T kindOf) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 		    Query query = getSession().createQuery("select count(term) from DefinedTermBase term where term.kindOf = :kindOf");
 		    query.setParameter("kindOf", kindOf);
-		    return ((Long)query.uniqueResult()).intValue();
+		    return (Long)query.uniqueResult();
 		} else {
-            AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(DefinedTermBase.class,auditEvent.getRevisionNumber());
+            AuditQuery query = makeAuditQuery(DefinedTermBase.class,auditEvent);
 			query.add(AuditEntity.relatedId("kindOf").eq(kindOf.getId()));
 		    query.addProjection(AuditEntity.id().count());
-		    return ((Long)query.getSingleResult()).intValue();
+		    return (Long)query.getSingleResult();
 		}
 	}
 
 	@Override
-    public <T extends DefinedTermBase> int countIncludes(Collection<T> partOf) {
+    public <T extends DefinedTermBase> long countIncludes(Collection<T> partOf) {
 		if (partOf == null || partOf.isEmpty()){
 			return 0;
 		}
@@ -511,14 +459,14 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
     		Query query = getSession().createQuery("select count(term) from DefinedTermBase term where term.partOf in (:partOf)");
 	    	query.setParameterList("partOf", partOf);
-		    return ((Long)query.uniqueResult()).intValue();
+		    return (Long)query.uniqueResult();
 		} else {
-			Integer count = 0;
+			long count = 0;
 			for(T t : partOf) {
-				AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(DefinedTermBase.class,auditEvent.getRevisionNumber());
+				AuditQuery query = makeAuditQuery(DefinedTermBase.class, auditEvent);
 				query.add(AuditEntity.relatedId("partOf").eq(t.getId()));
 			    query.addProjection(AuditEntity.id().count());
-			    count += ((Long)query.getSingleResult()).intValue();
+			    count += (Long)query.getSingleResult();
 			}
 			return count;
 		}
@@ -531,45 +479,34 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 		    Query query = getSession().createQuery("select term from DefinedTermBase term where term.kindOf = :kindOf");
 		    query.setParameter("kindOf", kindOf);
 
-		    if(pageSize != null) {
-			    query.setMaxResults(pageSize);
-		        if(pageNumber != null) {
-		    	    query.setFirstResult(pageNumber * pageSize);
-		        }
-		    }
+		    addPageSizeAndNumber(query, pageSize, pageNumber);
 
-	        return query.list();
+		    @SuppressWarnings("unchecked")
+            List<T> result = query.list();
+		    return result;
 		} else {
-			 AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(DefinedTermBase.class,auditEvent.getRevisionNumber());
+			 AuditQuery query = makeAuditQuery(DefinedTermBase.class, auditEvent);
 			 query.add(AuditEntity.relatedId("kindOf").eq(kindOf.getId()));
 
-			 if(pageSize != null) {
-			    query.setMaxResults(pageSize);
-			     if(pageNumber != null) {
-			  	    query.setFirstResult(pageNumber * pageSize);
-			     }
-			 }
+			 addPageSizeAndNumber(query, pageSize, pageNumber);
 
-			 return query.getResultList();
+             @SuppressWarnings("unchecked")
+             List<T> result = query.getResultList();
+             return result;
 		}
 	}
 
 	@Override
     public <T extends DefinedTermBase> List<T> getIncludes(Collection<T> partOf,	Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 		if (partOf == null || partOf.isEmpty()){
-			return new ArrayList<T>();
+			return new ArrayList<>();
 		}
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
     		Query query = getSession().createQuery("select term from DefinedTermBase term where term.partOf in (:partOf)");
     		query.setParameterList("partOf", partOf);
 
-		    if(pageSize != null) {
-			    query.setMaxResults(pageSize);
-		        if(pageNumber != null) {
-		    	    query.setFirstResult(pageNumber * pageSize);
-		        }
-		    }
+    		addPageSizeAndNumber(query, pageSize, pageNumber);
 
 		    @SuppressWarnings("unchecked")
             List<T> results = query.list();
@@ -578,14 +515,9 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 		} else {
 			List<T> result = new ArrayList<T>();
 			for(T t : partOf) {
-				AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(DefinedTermBase.class,auditEvent.getRevisionNumber());
+				AuditQuery query = makeAuditQuery(DefinedTermBase.class, auditEvent);
 				query.add(AuditEntity.relatedId("partOf").eq(t.getId()));
-				if(pageSize != null) {
-				    query.setMaxResults(pageSize);
-			        if(pageNumber != null) {
-			    	    query.setFirstResult(pageNumber * pageSize);
-			        }
-			    }
+				addPageSizeAndNumber(query, pageSize, pageNumber);
 
 			    result.addAll(query.getResultList());
 			}
@@ -595,11 +527,11 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 	}
 
 	@Override
-    public <T extends DefinedTermBase> int countPartOf(Set<T> definedTerms) {
+    public <T extends DefinedTermBase> long countPartOf(Set<T> definedTerms) {
 		checkNotInPriorView("DefinedTermDaoImpl.countPartOf(Set<T> definedTerms)");
 		Query query = getSession().createQuery("select count(distinct definedTerm) from DefinedTermBase definedTerm join definedTerm.includes included where included in (:definedTerms)");
 		query.setParameterList("definedTerms", definedTerms);
-		return ((Long)query.uniqueResult()).intValue();
+		return (Long)query.uniqueResult();
 	}
 
 	@Override
@@ -608,12 +540,8 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 		Query query = getSession().createQuery("select distinct definedTerm from DefinedTermBase definedTerm join definedTerm.includes included where included in (:definedTerms)");
 		query.setParameterList("definedTerms", definedTerms);
 
-		if(pageSize != null) {
-			query.setMaxResults(pageSize);
-		    if(pageNumber != null) {
-		    	query.setFirstResult(pageNumber * pageSize);
-		    }
-		}
+		addPageSizeAndNumber(query, pageSize, pageNumber);
+
 		@SuppressWarnings("unchecked")
         List<T> r = query.list();
 		/**
@@ -624,7 +552,7 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 		 * performance implications are small (we're swapping one array of references for another, not hitting the db or
 		 * cache).
 		 */
-		List<T> results = new ArrayList<T>();
+		List<T> results = new ArrayList<>();
 		if(!definedTerms.isEmpty()) {
 		    for(T t : r) {
 		        T deproxied = CdmBase.deproxy(t);
@@ -643,7 +571,7 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 		    query.setParameter("uri", uri);
 		    return (DefinedTermBase<?>)query.uniqueResult();
 		} else {
-			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(DefinedTermBase.class,auditEvent.getRevisionNumber());
+			AuditQuery query = makeAuditQuery(DefinedTermBase.class, auditEvent);
 			query.add(AuditEntity.property("uri").eq(uri));
 		    return (DefinedTermBase<?>)query.getSingleResult();
 		}
@@ -658,9 +586,7 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 	    @SuppressWarnings("unchecked")
         List<T> result = query.list();
 
-
 	    defaultBeanInitializer.initializeAll(result, propertyPaths);
-
         return result;
 	}
 
@@ -668,8 +594,7 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
     public <TERM extends DefinedTermBase> List<TERM> listByTermClass(Class<TERM> clazz, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
 //		checkNotInPriorView("DefinedTermDaoImpl.listByTermClass(Class<TERM> clazz, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths)");
 
-		Query query = getSession().createQuery("from " + clazz.getSimpleName());
-	    //query.setParameter("DTYPE", );
+		Query query = getSession().createQuery("FROM " + clazz.getSimpleName());
 
 	    @SuppressWarnings("unchecked")
         List<TERM> result = query.list();
@@ -717,7 +642,7 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
         Session session = getSession();
         Query query = null;
         if (pattern != null){
-            if (vocs != null & !vocs.isEmpty()){
+            if (vocs != null && !vocs.isEmpty()){
                 query = session.createQuery("from NamedArea where titleCache like :pattern and vocabulary in :vocs");
                 query.setParameterList("vocs", vocs);
             }else{
@@ -735,6 +660,7 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
         if (limit != null){
            query.setMaxResults(limit);
         }
+        @SuppressWarnings("unchecked")
         List<NamedArea> result = query.list();
         return result;
     }

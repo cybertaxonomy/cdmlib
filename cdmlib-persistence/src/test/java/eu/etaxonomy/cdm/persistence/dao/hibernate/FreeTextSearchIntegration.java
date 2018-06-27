@@ -90,7 +90,7 @@ public class FreeTextSearchIntegration extends CdmTransactionalIntegrationTest {
 
     @Test
     public void testCountTextData() {
-    	int matches = descriptionElementDao.count(TextData.class,"Lorem");
+    	long matches = descriptionElementDao.count(TextData.class,"Lorem");
     	assertEquals("countTextData should return 4",4,matches);
     }
 
@@ -108,7 +108,7 @@ public class FreeTextSearchIntegration extends CdmTransactionalIntegrationTest {
 
     @Test
     public void testSearchCount() {
-		int numberOfResults = taxonDao.count(null,"Arum");
+		long numberOfResults = taxonDao.count(null,"Arum");
 		assertEquals("countTaxa should return 46",46,numberOfResults);
 
     }

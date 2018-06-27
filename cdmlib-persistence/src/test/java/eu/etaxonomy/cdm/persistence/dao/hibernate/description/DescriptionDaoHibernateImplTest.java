@@ -117,7 +117,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
         namedAreas.add(southernAmerica);
         namedAreas.add(antarctica);
 
-        int numberOfDescriptions = descriptionDao.countDescriptionByDistribution(namedAreas, null);
+        long numberOfDescriptions = descriptionDao.countDescriptionByDistribution(namedAreas, null);
         assertEquals("countDescriptionsByDistribution should return 23",23,numberOfDescriptions);
     }
 
@@ -135,7 +135,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
         namedAreas.add(southernAmerica);
         namedAreas.add(antarctica);
 
-        int numberOfDescriptions = descriptionDao.countDescriptionByDistribution(namedAreas, PresenceAbsenceTerm.PRESENT());
+        long numberOfDescriptions = descriptionDao.countDescriptionByDistribution(namedAreas, PresenceAbsenceTerm.PRESENT());
         assertEquals("countDescriptionsByDistribution should return 20",20,numberOfDescriptions);
     }
 
@@ -190,7 +190,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
 
     @Test
     public void testCountDescriptionsWithText() {
-        int numberOfDescriptions = descriptionDao.countDescriptions(TaxonDescription.class, null, true, null);
+        long numberOfDescriptions = descriptionDao.countDescriptions(TaxonDescription.class, null, true, null);
 
         assertNotNull("countDescriptions should return a 2",numberOfDescriptions);
     }
@@ -211,7 +211,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
     @Test
     public void testCountDescriptionsWithTextAndFeatures() {
         features.add(Feature.ECOLOGY());
-        int numberOfDescriptions = descriptionDao.countDescriptions(TaxonDescription.class, null, true, features);
+        long numberOfDescriptions = descriptionDao.countDescriptions(TaxonDescription.class, null, true, features);
 
         assertNotNull("countDescriptions should return a 1",numberOfDescriptions);
     }
@@ -231,7 +231,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
     @Test
     public void testCountDescriptionElements() {
 
-        int numberOfDescriptionElements = descriptionDao.countDescriptionElements(null, null, null, null);
+        long numberOfDescriptionElements = descriptionDao.countDescriptionElements(null, null, null, null);
         assertEquals("expecting 37 description elements in total", 37, numberOfDescriptionElements);
 
         numberOfDescriptionElements = descriptionDao.countDescriptionElements(null, null, null, TextData.class);
@@ -321,7 +321,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
         DescriptionBase<?> description = descriptionDao.findByUuid(uuid);
         assert description != null : "description must exist";
 
-        int numberOfDescriptionElements = descriptionDao.countDescriptionElements(description, features, TextData.class);
+        long numberOfDescriptionElements = descriptionDao.countDescriptionElements(description, features, TextData.class);
 
         assertEquals("countDescriptionElements should return 1", 1, numberOfDescriptionElements);
     }
@@ -408,11 +408,11 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
     //see #2592
     @Test
     public void testSaveScope(){
-        int n1 = this.descriptionDao.count();
+        long n1 = this.descriptionDao.count();
         Taxon taxon = Taxon.NewInstance(null, null);
         TaxonDescription description = TaxonDescription.NewInstance(taxon);
         this.taxonDao.save(taxon);
-        int n2 = this.descriptionDao.count();
+        long n2 = this.descriptionDao.count();
         Assert.assertEquals(1, n2-n1);
 
         DefinedTerm scope = DefinedTerm.SEX_FEMALE();
@@ -436,7 +436,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
         Assert.assertNotNull("MarkerType for 'complete' should exist", completeMarkerType);
         Set<MarkerType> markerTypes = new HashSet<MarkerType>();
         markerTypes.add(completeMarkerType);
-        int n1 = this.descriptionDao.countTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes);
+        long n1 = this.descriptionDao.countTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes);
         Assert.assertEquals("There should be 1 description marked 'complete'", 1, n1);
         List<TaxonDescription> descriptions = this.descriptionDao.listTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, pageSize, pageNumber, propertyPaths);
         Assert.assertEquals("There should be 1 description marked 'complete'", 1, descriptions.size());
@@ -446,7 +446,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
         Assert.assertNotNull("MarkerType for 'doubtful' should exist", isDoubtfulMarkerType);
         markerTypes = new HashSet<MarkerType>();  //reset
         markerTypes.add(isDoubtfulMarkerType);
-        int n2 = this.descriptionDao.countTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes);
+        long n2 = this.descriptionDao.countTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes);
         Assert.assertEquals("There should be no description marked 'doubtful'", 0, n2);
         descriptions = this.descriptionDao.listTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, pageSize, pageNumber, propertyPaths);
         Assert.assertEquals("There should be 0 description marked 'doubtful'", 0, descriptions.size());
@@ -457,7 +457,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
         Assert.assertNotNull("MarkerType for 'imported' should exist", completeMarkerType);
         markerTypes = new HashSet<MarkerType>();
         markerTypes.add(importedMarkerType);
-        int n3 = this.descriptionDao.countTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes);
+        long n3 = this.descriptionDao.countTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes);
         Assert.assertEquals("There should be no description marked 'imported' as true", 0, n3);
         descriptions = this.descriptionDao.listTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, pageSize, pageNumber, propertyPaths);
         Assert.assertEquals("There should be no description marked 'imported' as true", 0, descriptions.size());

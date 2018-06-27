@@ -13,11 +13,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -40,6 +43,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
+import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
@@ -159,7 +165,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
         TaxonName acherontiaLachesis = taxonNameDao.findByUuid(acherontiaLachesisUuid);
         assert acherontiaLachesis != null : "name must exist";
 
-        int count = taxonNameDao.countTypeDesignations(acherontiaLachesis, null);
+        long count = taxonNameDao.countTypeDesignations(acherontiaLachesis, null);
 
         assertEquals("countTypeDesignations should return 1",1,count);
     }
@@ -168,14 +174,102 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
     public void testSearchNames() {
         List<TaxonName> result = taxonNameDao.searchNames("Atropos", null, null, null, Rank.GENUS(), null, null, null, null);
 
-        assertNotNull("searcNames should return a list",result);
+        assertNotNull("searchNames should return a list",result);
         assertFalse("the list should not be empty", result.isEmpty());
         assertEquals("searchNames should return 3 TaxonName instances",3,result.size());
     }
 
     @Test
+    public void testFindTaxonNameParts_genusOrUninomial() {
+        Integer pageSize = 10;
+        Integer pageIndex = 0;
+
+        List<TaxonNameParts> resuls = taxonNameDao.findTaxonNameParts(
+                Optional.of("Atropos"), null, null, null,
+                Rank.GENUS(),
+                pageSize, pageIndex, Arrays.asList(new OrderHint("genusOrUninomial", SortOrder.ASCENDING)));
+
+        assertNotNull("searchNames should return a list",resuls);
+        assertFalse(resuls.isEmpty());
+        assertEquals(3, resuls.size());
+    }
+
+    @Test
+    public void testFindTaxonNameParts_genusOrUninomial_wildcard() {
+        Integer pageSize = 10;
+        Integer pageIndex = 0;
+
+        List<TaxonNameParts> results = taxonNameDao.findTaxonNameParts(
+                Optional.of("Atro*"), null, null, null,
+                Rank.GENUS(),
+                pageSize, pageIndex, Arrays.asList(new OrderHint("genusOrUninomial", SortOrder.ASCENDING)));
+
+        assertNotNull(results);
+        assertFalse(results.isEmpty());
+        assertEquals(3, results.size());
+
+        results = taxonNameDao.findTaxonNameParts(
+                Optional.of("Atro*"), null, null, null,
+                Rank.SPECIES(),
+                pageSize, pageIndex, Arrays.asList(new OrderHint("genusOrUninomial", SortOrder.ASCENDING)));
+
+        assertNotNull(results);
+        assertTrue(results.isEmpty());
+    }
+
+    @Test
+    public void testFindTaxonNameParts_rankSpecies() {
+        Integer pageSize = 10;
+        Integer pageIndex = 0;
+        // Manduca afflicta
+        // Manduca chinchilla
+        // Manduca bergarmatipes
+        List<TaxonNameParts> results = taxonNameDao.findTaxonNameParts(
+                Optional.of("Manduca"), null, Optional.of("*"), null,
+                Rank.SPECIES(),
+                pageSize, pageIndex, Arrays.asList(new OrderHint("specificEpithet", SortOrder.ASCENDING)));
+
+        assertEquals(3, results.size());
+        assertEquals("afflicta", results.get(0).getSpecificEpithet());
+        assertEquals("bergarmatipes", results.get(1).getSpecificEpithet());
+        assertEquals("chinchilla", results.get(2).getSpecificEpithet());
+
+        results = taxonNameDao.findTaxonNameParts(
+                Optional.of("Manduca"), null, Optional.of("chin*"), null,
+                Rank.SPECIES(),
+                pageSize, pageIndex, null);
+
+        assertEquals(1, results.size());
+        assertEquals("chinchilla", results.get(0).getSpecificEpithet());
+    }
+
+    @Test
+    public void testFindTaxonNameParts_rankBelowSpecies() {
+
+        Integer pageSize = 10;
+        Integer pageIndex = 0;
+        // Cryptocoryne x purpurea nothovar borneoensis
+        // Cryptocoryne cordata var. zonata
+        List<TaxonNameParts> results = taxonNameDao.findTaxonNameParts(
+                Optional.of("Cryptocoryne"), null, null, Optional.of("borneo*"),
+                Rank.VARIETY(),
+                pageSize, pageIndex, Arrays.asList(new OrderHint("specificEpithet", SortOrder.ASCENDING)));
+
+        assertEquals(1, results.size());
+
+        // now also with "infraGenericEpithet is null AND specificEpithet = purpurea"
+        results = taxonNameDao.findTaxonNameParts(
+                Optional.of("Cryptocoryne"), Optional.empty(), Optional.of("purpurea"), Optional.of("borneo*"),
+                Rank.VARIETY(),
+                pageSize, pageIndex, Arrays.asList(new OrderHint("specificEpithet", SortOrder.ASCENDING)));
+
+        assertEquals(1, results.size());
+    }
+
+
+    @Test
     public void testCountNames() {
-        int count = taxonNameDao.countNames("Atropos", null, null, null, Rank.GENUS());
+        long count = taxonNameDao.countNames("Atropos", null, null, null, Rank.GENUS());
 
         assertEquals("countNames should return 3",3,count);
     }
@@ -189,7 +283,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
         includedProperties.add("specificEpithet");
         includedProperties.add("infraSpecificEpithet");
         includedProperties.add("rank");
-        int count = taxonNameDao.count(zoologicalName, includedProperties);
+        long count = taxonNameDao.count(zoologicalName, includedProperties);
 
         assertEquals("countNames should return 3",3,count);
     }
@@ -226,7 +320,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
         UUID taxonUuid = taxon.getUuid();
 
         //int numbOfTaxa = taxonDao.count(TaxonBase.class);
-        List<TaxonBase> taxaList = taxonDao.getAllTaxonBases(100, 0);
+        List<TaxonBase> taxaList = taxonDao.list(100, 0);
 
         acherontiaLachesis = taxonNameDao.findByUuid(UUID.fromString("497a9955-5c5a-4f2b-b08c-2135d336d633"));
         taxon = taxonDao.findByUuid(taxonUuid);

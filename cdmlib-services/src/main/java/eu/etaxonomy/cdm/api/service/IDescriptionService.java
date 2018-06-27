@@ -125,7 +125,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      * @param feature Restrict the description to those <i>elements</i> which are scoped by one of the Features passed (can be null or empty)
      * @return a count of DescriptionBase instances
      */
-    public int count(Class<? extends DescriptionBase> type, Boolean hasImages, Boolean hasText, Set<Feature> feature);
+    public long count(Class<? extends DescriptionBase> type, Boolean hasImages, Boolean hasText, Set<Feature> feature);
 
     /**
      * Returns description elements of type <TYPE>, belonging to a given

@@ -74,7 +74,7 @@ public enum CdmBaseType {
         boolean includeAbstract = true;
         boolean includeInterfaces = false;
 
-        CdmTypeScanner<CdmBase> scanner = new CdmTypeScanner<CdmBase>(includeAbstract, includeInterfaces);
+        CdmTypeScanner<CdmBase> scanner = new CdmTypeScanner<>(includeAbstract, includeInterfaces);
         scanner.addIncludeFilter(new CdmAssignableTypeFilter(IdentifiableEntity.class, includeAbstract, includeInterfaces));
         scanner.addIncludeFilter(new AnnotationTypeFilter(Entity.class));
         Collection<Class<? extends CdmBase>> classes = scanner.scanTypesIn("eu/etaxonomy/cdm/model");

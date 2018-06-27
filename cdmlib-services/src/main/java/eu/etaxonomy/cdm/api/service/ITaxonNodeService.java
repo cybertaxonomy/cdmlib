@@ -45,7 +45,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	 * @param recursive
 	 * @return List<TaxonNode>
 	 */
-	public List<TaxonNode> loadChildNodesOfTaxonNode(TaxonNode taxonNode, List<String> propertyPaths, boolean recursive, NodeSortMode sortMode);
+	public List<TaxonNode> loadChildNodesOfTaxonNode(TaxonNode taxonNode, List<String> propertyPaths, boolean recursive,  boolean includeUnpublished, NodeSortMode sortMode);
 
 	/**
 	 * Lists all direct child nodes of the given {@link UuidAndTitleCache} which
@@ -99,7 +99,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      *
      * @return List<TaxonNodeDto>
      */
-    public Pager<TaxonNodeDto> pageChildNodesDTOs(UUID taxonNodeUuid, boolean recursive,
+    public Pager<TaxonNodeDto> pageChildNodesDTOs(UUID taxonNodeUuid, boolean recursive, boolean includeUnpublished,
             boolean doSynonyms, NodeSortMode sortMode,
             Integer pageSize, Integer pageIndex);
 
@@ -194,12 +194,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 
 
 
-    /**
-     * @param taxonNodeUuids
-     * @param newParentNodeUuid
-     * @return
-     */
-    UpdateResult moveTaxonNodes(Set<UUID> taxonNodeUuids, UUID newParentNodeUuid, int movingType);
+
 
     /**
      * @param taxonNode
@@ -308,11 +303,11 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      */
     public List<Integer> idList(TaxonNodeFilter filter);
 
-    /**
-     * @param configurator
-     * @return
-     */
-    UUID monitSetSecundum(SecundumForSubtreeConfigurator configurator);
+//    /**
+//     * @param configurator
+//     * @return
+//     */
+//    UUID monitSetSecundum(SecundumForSubtreeConfigurator configurator);
 
 
     /**
@@ -326,6 +321,16 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      * @return
      */
     List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(ITaxonTreeNode parent);
+
+    /**
+     * @param taxonNodeUuids
+     * @param newParentNodeUuid
+     * @param movingType
+     * @param monitor
+     * @return
+     */
+    UpdateResult moveTaxonNodes(Set<UUID> taxonNodeUuids, UUID newParentNodeUuid, int movingType,
+            IProgressMonitor monitor);
 
 
 

@@ -44,7 +44,7 @@ public class PagerUtils {
                 return null;
             }
         }
-        return pageSize *  pageIndex;
+        return pageSize * pageIndex;
     }
 
     /**

@@ -28,14 +28,14 @@ public class IdentificationKeyServiceImpl implements IIdentificationKeyService {
 
     @Override
     public Pager<IIdentificationKey> page(Integer pageSize, Integer pageNumber,	List<String> propertyPaths) {
-        Integer numberOfResults = dao.count();
-        List<IIdentificationKey> results = new ArrayList<IIdentificationKey>();
+        long numberOfResults = dao.count();
+        List<IIdentificationKey> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
             Integer limit = PagerUtils.limitFor(pageSize);
             Integer start = PagerUtils.startFor(pageSize, pageNumber);
             results = dao.list(limit, start, propertyPaths);
         }
-        return new DefaultPagerImpl<IIdentificationKey>(pageNumber, numberOfResults, pageSize, results);
+        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
     }
 
 
@@ -49,7 +49,7 @@ public class IdentificationKeyServiceImpl implements IIdentificationKeyService {
         if(AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)){
             results = dao.findByTaxonomicScope(taxon.getUuid(), type, pageSize, pageNumber, propertyPaths);
         }
-        return new DefaultPagerImpl<T>(pageNumber, numberOfResults.intValue(), pageSize, results);
+        return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
     }
 
 }

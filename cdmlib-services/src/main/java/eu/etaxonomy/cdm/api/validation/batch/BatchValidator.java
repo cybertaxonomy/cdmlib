@@ -154,7 +154,7 @@ public class BatchValidator implements Runnable, ApplicationContextAware {
     }
 
     private void handleSingleClass(ICommonService commonService, Class<CdmBase> entityClass, IEntityValidationService entityValidationService, EntityValidationCrudJdbcImpl jdbcPersister) {
-        int n = commonService.count(entityClass);
+        int n = Long.valueOf(commonService.count(entityClass)).intValue();
         int pageSize = 1000;
         for (int page = 0; page < n ; page = page + pageSize ){
             handlePage(commonService, entityClass, entityValidationService, jdbcPersister,

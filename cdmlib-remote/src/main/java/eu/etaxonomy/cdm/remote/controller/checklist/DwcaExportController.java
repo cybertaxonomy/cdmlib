@@ -233,7 +233,7 @@ public class DwcaExportController
             ModelAndView mv = new ModelAndView();
 
             // replacement for commented RequestParam
-            Boolean includeUnpublished = false;
+            Boolean includeUnpublished = NO_UNPUBLISHED;
 
             final String origin = request.getRequestURL().append('?')
                     .append(CdmUtils.Nz(request.getQueryString())).toString()
@@ -268,9 +268,9 @@ public class DwcaExportController
                             try {
                                 boolean created = cacheFile.createNewFile();
 //                                boolean created = cacheFile.mkdir();
-                                if (!created){logger.info("Could not create file");}
+                                if (!created){logger.error("Could not create file");}
                             } catch (Exception e) {
-                                logger.info("Could not create file " + e);
+                                logger.error("Could not create file " + e);
                             }
                             IRestServiceProgressMonitor monitor = progressMonitorController.getMonitor(
                                     indexMonitorUuid);

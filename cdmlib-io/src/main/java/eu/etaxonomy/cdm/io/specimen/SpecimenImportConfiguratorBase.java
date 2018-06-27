@@ -71,6 +71,7 @@ public abstract class SpecimenImportConfiguratorBase<CONFIG extends SpecimenImpo
     private boolean mapUnitIdToBarcode = false;
 
     private boolean overwriteExistingSpecimens = false;
+    private boolean downloadSequenceData = false;
 
     private SpecimenOrObservationType type;
 
@@ -381,6 +382,14 @@ public abstract class SpecimenImportConfiguratorBase<CONFIG extends SpecimenImpo
     @Override
     public boolean isValid(){
         return true;
+    }
+
+    public boolean isDownloadSequenceData() {
+        return downloadSequenceData;
+    }
+
+    public void setDownloadSequenceData(boolean downloadSequenceData) {
+        this.downloadSequenceData = downloadSequenceData;
     }
 
 

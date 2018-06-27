@@ -76,7 +76,7 @@ public class QueryFactory {
 
     Set<String> textFieldNames = new HashSet<String>();
 
-    Map<Class<? extends CdmBase>, IndexSearcher> indexSearcherMap = new HashMap<Class<? extends CdmBase>, IndexSearcher>();
+    Map<Class<? extends CdmBase>, IndexSearcher> indexSearcherMap = new HashMap<>();
 
     private final Class<? extends CdmBase> cdmBaseType;
 
@@ -128,13 +128,17 @@ public class QueryFactory {
     }
 
     /**
-     * only to be used for text fields, see {@link #newTermQuery(String, String, boolean)}
+     * Only to be used for text fields, see {@link #newTermQuery(String, String, boolean)}
      * @param fieldName
      * @param queryString
      * @return a {@link TermQuery} or a {@link WildcardQuery}
      */
     public Query newTermQuery(String fieldName, String queryString){
         return newTermQuery(fieldName, queryString, true);
+    }
+
+    public Query newBooleanQuery(String fieldName, boolean value){
+        return new TermQuery(new Term(fieldName, Boolean.valueOf(value).toString()));
     }
 
     /**
@@ -245,8 +249,9 @@ public class QueryFactory {
     }
 
     /**
-     * creates a query for searching for documents in which the field specified by <code>uuidFieldName</code> matches at least one of the uuid
-     * of the <code>entities</code>, the sql equivalent of this is <code>WHERE uuidFieldName IN (uuid_1, uuid_2, ...) </code>.
+     * Creates a query for searching for documents in which the field specified by <code>uuidFieldName</code>
+     * matches at least one of the uuid of the <code>entities</code>, the sql equivalent of this is
+     * <code>WHERE uuidFieldName IN (uuid_1, uuid_2, ...) </code>.
      * @param uuidFieldName
      * @param entities
      * @return
@@ -255,7 +260,7 @@ public class QueryFactory {
 
         Builder uuidInQueryBuilder = new Builder();
         if(entities != null && entities.size() > 0 ){
-            for(IdentifiableEntity entity : entities){
+            for(IdentifiableEntity<?> entity : entities){
                 uuidInQueryBuilder.add(newEntityUuidQuery(uuidFieldName, entity), Occur.SHOULD);
             }
         }
@@ -264,7 +269,7 @@ public class QueryFactory {
 
 
     /**
-     * creates a query for searching for documents in which the field specified by <code>uuidFieldName</code> matches at least one of the
+     * Creates a query for searching for documents in which the field specified by <code>uuidFieldName</code> matches at least one of the
      * supplied <code>uuids</code>
      * the sql equivalent of this is <code>WHERE uuidFieldName IN (uuid_1, uuid_2, ...) </code>.
      * @param uuidFieldName
@@ -276,7 +281,7 @@ public class QueryFactory {
         Builder uuidInQueryBuilder = new Builder();
         if(uuids != null && uuids.size() > 0 ){
             for(UUID uuid : uuids){
-                uuidInQueryBuilder.add(newTermQuery(uuidFieldName, uuids.toString(), false), Occur.SHOULD);
+                uuidInQueryBuilder.add(newTermQuery(uuidFieldName, uuid.toString(), false), Occur.SHOULD);
             }
         }
         return uuidInQueryBuilder.build();

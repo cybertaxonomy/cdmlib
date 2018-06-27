@@ -30,8 +30,8 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -72,6 +72,8 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     private UUID uuid3;
     private UUID classificationUuid;
 
+    boolean includeUnpublished;
+
     private static final UUID ACHERONTIA_UUID = UUID.fromString("3b2b3e17-5c4a-4d1b-aa39-349f63100d6b");
     private static final UUID ACHERONTIA_LACHESIS = UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783");
     private static final UUID NODE_ACHERONTIA_UUID = UUID.fromString("20c8f083-5870-4cbd-bf56-c5b2b98ab6a7");
@@ -91,6 +93,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         uuid2 = UUID.fromString("770239f6-4fa8-496b-8738-fe8f7b2ad519");
         classificationUuid = UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9");
         AuditEventContextHolder.clearContext();
+        includeUnpublished = true;
     }
 
     @After
@@ -129,13 +132,13 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         TaxonNode taxNode3 = taxonNodeDao.load(uuid3, TAXONNODE_INIT_STRATEGY);
 
 
-
-        List<TaxonBase> taxa = taxonDao.getAllTaxonBases(10, 0);
+        @SuppressWarnings("rawtypes")
+        List<TaxonBase> taxa = taxonDao.list(10, 0);
         assertEquals("there should be 7 taxa", 7, taxa.size());
-        taxNode3 = HibernateProxyHelper.deproxy(taxNode3, TaxonNode.class);
-        taxNode = HibernateProxyHelper.deproxy(taxNode, TaxonNode.class);
-        taxNode2 = HibernateProxyHelper.deproxy(taxNode2, TaxonNode.class);
-        TaxonNode rootNode = HibernateProxyHelper.deproxy(classification.getRootNode(), TaxonNode.class);
+        taxNode3 = CdmBase.deproxy(taxNode3);
+        taxNode = CdmBase.deproxy(taxNode);
+        taxNode2 = CdmBase.deproxy(taxNode2);
+        TaxonNode rootNode = CdmBase.deproxy(classification.getRootNode());
         TaxonNode newNode = rootNode.addChildTaxon(Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.GENUS()), null), null, null);
         taxonNodeDao.saveOrUpdate(newNode);
         taxonNodeDao.delete(taxNode3, true);
@@ -143,8 +146,9 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         assertNull(taxonNodeDao.findByUuid(taxNode3.getUuid()));
         classification = classificationDao.findByUuid(ClassificationUuid);
 
-        taxa = taxonDao.getAllTaxonBases(10, 0);
-        // There should be 4 taxonBases: at the beginning 6 in the classification + 1 orphan taxon; 1 new created taxon -> 8: delete node3 deleted 4 taxa -> 4 taxa left.
+        taxa = taxonDao.list(10, 0);
+        // There should be 4 taxonBases: at the beginning 6 in the classification + 1 orphan taxon;
+        //1 new created taxon -> 8: delete node3 deleted 4 taxa -> 4 taxa left.
         assertEquals("there should be 4 taxa left", 4, taxa.size());
 
         classificationDao.delete(classification);
@@ -159,16 +163,32 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     @Test
     @DataSet
     public void testListChildren(){
+        boolean includeUnpublished;
         Taxon t_acherontia = (Taxon) taxonDao.load(ACHERONTIA_UUID);
 
+        includeUnpublished = true;
         Classification classification =  classificationDao.load(ClassificationUuid);
-        List<TaxonNode> children = classificationDao.listChildrenOf(t_acherontia, classification, null, null, null);
+        List<TaxonNode> children = classificationDao.listChildrenOf(
+                t_acherontia, classification, includeUnpublished, null, null, null);
         assertNotNull(children);
         assertEquals(2, children.size());
+
+        includeUnpublished = false;
+        children = classificationDao.listChildrenOf(
+                t_acherontia, classification, includeUnpublished, null, null, null);
+        assertNotNull(children);
+        assertEquals(1, children.size()); //1 is unpublished
+
+        includeUnpublished = true;
         TaxonNode t_acherontia_node = taxonNodeDao.load(NODE_ACHERONTIA_UUID);
-        children =taxonNodeDao.listChildrenOf(t_acherontia_node, null, null, null, true);
+        children =taxonNodeDao.listChildrenOf(t_acherontia_node, null, null, true, includeUnpublished, null);
         assertNotNull(children);
         assertEquals(3, children.size());
+
+        includeUnpublished = false;
+        children =taxonNodeDao.listChildrenOf(t_acherontia_node, null, null, true, includeUnpublished, null);
+        assertNotNull(children);
+        assertEquals(2, children.size()); //1 is unpublished
     }
 
     @Test
@@ -177,9 +197,10 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         Taxon t_acherontia_lachesis = (Taxon) taxonDao.load(ACHERONTIA_LACHESIS);
 
         Classification classification =  classificationDao.load(ClassificationUuid);
-        long count = classificationDao.countSiblingsOf(t_acherontia_lachesis, classification);
+        long count = classificationDao.countSiblingsOf(t_acherontia_lachesis, classification, includeUnpublished);
         assertEquals(2, count);
-        List<TaxonNode> siblings = classificationDao.listSiblingsOf(t_acherontia_lachesis, classification, null, null, null);
+        List<TaxonNode> siblings = classificationDao.listSiblingsOf(
+                t_acherontia_lachesis, classification, includeUnpublished, null, null, null);
         assertNotNull(siblings);
         assertEquals(2, siblings.size());
     }
@@ -224,7 +245,6 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     @Test
     @DataSet(value="TaxonNodeDaoHibernateImplTest.testSortindexForJavassist.xml")
     @ExpectedDataSet("TaxonNodeDaoHibernateImplTest.testSortindexForJavassist-result.xml")
-
     //test if TaxonNode.remove(index) works correctly with proxies
     public void testSortindexForJavassist(){
     	Taxon taxonWithLazyLoadedParentNodeOnTopLevel = (Taxon)taxonDao.findByUuid(UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783"));

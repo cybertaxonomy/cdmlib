@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.api.service.search.LuceneMultiSearchException;
 import eu.etaxonomy.cdm.api.service.search.LuceneParseException;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
+import eu.etaxonomy.cdm.exception.UnpublishedException;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -39,7 +40,6 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -59,7 +59,16 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.TaxonTitleType;
 
 
-public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
+public interface ITaxonService
+             extends IIdentifiableEntityService<TaxonBase>, IPublishableService<TaxonBase>{
+
+    /**
+     * {@inheritDoc}
+     * <BR><BR>
+     * NOTE: Also taxa with <code>publish=false</code> are returned.
+     */
+    @Override
+    public TaxonBase load(UUID uuid, List<String> propertyPaths);
 
     /**
      * Returns a list of taxa that matches the name string and the sec reference
@@ -67,7 +76,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @param sec the taxons sec reference
      * @return a list of taxa matching the name and the sec reference
      */
-    public List<TaxonBase> searchTaxaByName(String name, Reference sec);
+    public List<TaxonBase> searchByName(String name, boolean includeUnpublished, Reference sec);
 
     /**
      * Swaps given synonym and accepted taxon.
@@ -253,13 +262,15 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      *
      * @param taxon The taxon that is relatedTo
      * @param type The type of TaxonRelationship (can be null)
+     * @param includeUnpublished should unpublished related taxa also be returned?
      * @param pageSize The maximum number of relationships returned (can be null for all relationships)
      * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @param orderHints Properties to order by
      * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link IBeanInitializer#initialize(Object, List)}
      * @return a List of TaxonRelationship instances
      */
-    public List<TaxonRelationship> listToTaxonRelationships(Taxon taxon, TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+    public List<TaxonRelationship> listToTaxonRelationships(Taxon taxon, TaxonRelationshipType type,
+            boolean includeUnpublished, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 
     /**
@@ -268,13 +279,15 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      *
      * @param taxon The taxon that is relatedTo
      * @param type The type of TaxonRelationship (can be null)
+     * @param includeUnpublished should unpublished related taxa also be returned?
      * @param pageSize The maximum number of relationships returned (can be null for all relationships)
      * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @param orderHints Properties to order by
      * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link IBeanInitializer#initialize(Object, List)}
      * @return a Pager of TaxonRelationship instances
      */
-    public Pager<TaxonRelationship> pageToTaxonRelationships(Taxon taxon, TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+    public Pager<TaxonRelationship> pageToTaxonRelationships(Taxon taxon, TaxonRelationshipType type,
+            boolean includeUnpublished, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Returns the TaxonRelationships (of where relationship.type == type, if this argument is supplied)
@@ -282,13 +295,15 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      *
      * @param taxon The taxon that is relatedFrom
      * @param type The type of TaxonRelationship (can be null)
+     * @param includeUnpublished should unpublished related taxa also be returned?
      * @param pageSize The maximum number of relationships returned (can be null for all relationships)
      * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @param orderHints Properties to order by
      * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link IBeanInitializer#initialize(Object, List)}
      * @return a List of TaxonRelationship instances
      */
-    public List<TaxonRelationship> listFromTaxonRelationships(Taxon taxon, TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+    public List<TaxonRelationship> listFromTaxonRelationships(Taxon taxon, TaxonRelationshipType type,
+            boolean includeUnpublished, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 
     /**
@@ -297,13 +312,15 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      *
      * @param taxon The taxon that is relatedFrom
      * @param type The type of TaxonRelationship (can be null)
+     * @param includeUnpublished should unpublished related taxa also be returned?
      * @param pageSize The maximum number of relationships returned (can be null for all relationships)
      * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @param orderHints Properties to order by
      * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link IBeanInitializer#initialize(Object, List)}
      * @return a Pager of TaxonRelationship instances
      */
-    public Pager<TaxonRelationship> pageFromTaxonRelationships(Taxon taxon, TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+    public Pager<TaxonRelationship> pageFromTaxonRelationships(Taxon taxon, TaxonRelationshipType type,
+            boolean includeUnpublished, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * lists all taxa which are related to the <code>taxon</code> given as
@@ -320,7 +337,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @return
      */
     public Set<Taxon> listRelatedTaxa(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships, Integer maxDepth,
-            Integer limit, Integer start, List<String> propertyPaths);
+            boolean includeUnpublished, Integer limit, Integer start, List<String> propertyPaths);
 
 
     /**
@@ -520,7 +537,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      */
     @Deprecated
     public Pager<SearchResult<TaxonBase>> findByEverythingFullText(String queryString,
-            Classification classification, List<Language> languages, boolean highlightFragments,
+            Classification classification, boolean includeUnpublished, List<Language> languages, boolean highlightFragments,
             Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws IOException, LuceneParseException, LuceneMultiSearchException;
 
     /**
@@ -565,8 +582,9 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @throws IOException
      * @throws LuceneParseException
      */
-    public Pager<SearchResult<TaxonBase>> findByFullText(Class<? extends TaxonBase> clazz, String queryString, Classification classification,
-            List<Language> languages, boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+    public Pager<SearchResult<TaxonBase>> findByFullText(Class<? extends TaxonBase> clazz, String queryString,
+            Classification classification, boolean includeUnpublished, List<Language> languages,
+            boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths) throws IOException, LuceneParseException;
 
 
@@ -697,22 +715,6 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      */
     public Pager<SearchResult<TaxonBase>> findByDescriptionElementFullText(Class<? extends DescriptionElementBase> clazz, String queryString, Classification classification, List<Feature> features, List<Language> languages, boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws IOException, LuceneParseException;
 
-
-    /**
-     *
-     * @param taxon
-     * @param size
-     * @param height
-     * @param widthOrDuration
-     * @param mimeTypes
-     * @return
-     *
-     * @deprecated use {@link #listMedia(Taxon, Set, boolean, boolean, List)} instead
-     */
-    @Deprecated
-    public List<MediaRepresentation> getAllMedia(Taxon taxon, int size, int height, int widthOrDuration, String[] mimeTypes);
-
-
     /**
      * Lists all Media found in an any TaxonDescription associated with this
      * taxon.
@@ -774,7 +776,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * an accepted taxon are counted
      * @return the number of synonyms
      */
-    public int countSynonyms(boolean onlyAttachedToTaxon);
+    public long countSynonyms(boolean onlyAttachedToTaxon);
 
     public List<TaxonName> findIdenticalTaxonNames(List<String> propertyPath);
 
@@ -842,9 +844,9 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 
     public Taxon findBestMatchingTaxon(MatchingTaxonConfigurator config);
 
-    public Synonym findBestMatchingSynonym(String taxonName);
+    public Synonym findBestMatchingSynonym(String taxonName, boolean includeUnpublished);
 
-     public List<UuidAndTitleCache<IdentifiableEntity>> findTaxaAndNamesForEditor(IFindTaxaAndNamesConfigurator configurator);
+     public List<UuidAndTitleCache<? extends IdentifiableEntity>> findTaxaAndNamesForEditor(IFindTaxaAndNamesConfigurator configurator);
 
     /**
      * Creates the specified inferred synonyms for the taxon in the classification, but do not insert it to the database
@@ -863,7 +865,8 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      */
     public List<Synonym>  createAllInferredSynonyms(Taxon taxon, Classification tree, boolean doWithMisappliedNames);
 
-    public Taxon findAcceptedTaxonFor(UUID synonymUuid, UUID classificationUuid, List<String> propertyPaths);
+    public Taxon findAcceptedTaxonFor(UUID synonymUuid, UUID classificationUuid, boolean includeUnpublished,
+            List<String> propertyPaths) throws UnpublishedException;
 
     public List<TaxonBase> findTaxaByName(MatchingTaxonConfigurator config);
 

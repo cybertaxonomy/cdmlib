@@ -36,31 +36,24 @@ public interface IIdentifiableEntityServiceConfigurator<T extends IIdentifiableE
 	 * @return
 	 */
 	public String getTitleSearchStringSqlized();
-
 	public void setTitleSearchString(String titleSearchString);
 
 	public MatchMode getMatchMode();
-
 	public void setMatchMode(MatchMode matchMode);
 
 	public Integer getPageSize();
-
 	public void setPageSize(Integer pageSize);
 
 	public Integer getPageNumber();
-
 	public void setPageNumber(Integer pageNumber);
 
 	public List<Criterion> getCriteria();
-
 	public void setCriteria(List<Criterion> criteria);
 
 	public List<OrderHint> getOrderHints();
-
 	public void setOrderHints(List<OrderHint> orderHints);
 
 	public List<String> getPropertyPaths();
-
 	public void setPropertyPaths(List<String> propertyPaths);
 
 }

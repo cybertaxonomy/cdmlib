@@ -393,7 +393,8 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
 
     protected static <TERM extends DefinedTermBase> TERM readCsvLine(TERM newInstance, List<String> csvLine, Language lang, boolean abbrevAsId) {
         newInstance.setUuid(UUID.fromString(csvLine.get(0)));
-        newInstance.setUri( URI.create(csvLine.get(1)));
+        String uriStr = CdmUtils.Ne(csvLine.get(1));
+        newInstance.setUri(uriStr == null? null: URI.create(uriStr));
         String label = csvLine.get(2).trim();
         String description = CdmUtils.Ne(csvLine.get(3).trim());
         String abbreviatedLabel = CdmUtils.Ne(csvLine.get(4).trim());

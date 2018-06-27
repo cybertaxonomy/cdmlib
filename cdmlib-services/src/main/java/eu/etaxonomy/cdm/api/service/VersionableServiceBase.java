@@ -35,14 +35,14 @@ public abstract class VersionableServiceBase<T extends VersionableEntity, DAO ex
 	@Override
     @Transactional(readOnly = true)
 	public Pager<AuditEventRecord<T>> pageAuditEvents(T t, Integer pageSize,	Integer pageNumber, AuditEventSort sort, List<String> propertyPaths) {
-		Integer numberOfResults = dao.countAuditEvents(t, sort);
+		long numberOfResults = dao.countAuditEvents(t, sort);
 
-		List<AuditEventRecord<T>> results = new ArrayList<AuditEventRecord<T>>();
+		List<AuditEventRecord<T>> results = new ArrayList<>();
 		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.getAuditEvents(t, pageSize, pageNumber, sort,propertyPaths);
 		}
 
-		return new DefaultPagerImpl<AuditEventRecord<T>>(pageNumber, numberOfResults, pageSize, results);
+		return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
 	}
 
 	@Override
@@ -60,14 +60,14 @@ public abstract class VersionableServiceBase<T extends VersionableEntity, DAO ex
 	@Override
     @Transactional(readOnly = true)
 	public Pager<AuditEventRecord<T>> pageAuditEvents(Class<? extends T> clazz,AuditEvent from,AuditEvent to, List<AuditCriterion> criteria, Integer pageSize, Integer pageNumber, AuditEventSort sort,List<String> propertyPaths) {
-		Integer numberOfResults = dao.countAuditEvents(clazz, from, to, criteria);
+		long numberOfResults = dao.countAuditEvents(clazz, from, to, criteria);
 
-		List<AuditEventRecord<T>> results = new ArrayList<AuditEventRecord<T>>();
+		List<AuditEventRecord<T>> results = new ArrayList<>();
 		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.getAuditEvents(clazz,from,to,criteria, pageSize, pageNumber, sort,propertyPaths);
 		}
 
-		return new DefaultPagerImpl<AuditEventRecord<T>>(pageNumber, numberOfResults, pageSize, results);
+		return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
 	}
 
 	 /**

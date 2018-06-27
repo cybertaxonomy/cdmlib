@@ -39,7 +39,8 @@ public class CdmTypeScanner<T> extends ClassPathScanningCandidateComponentProvid
         String _basePackage = basePackage == null ? defaultBasePackage : basePackage;
         List<Class<? extends T>> classes = new ArrayList<Class<? extends T>>();
         for (BeanDefinition candidate : findCandidateComponents(_basePackage)) {
-                Class cls = ClassUtils.resolveClassName(candidate.getBeanClassName(),
+                @SuppressWarnings("unchecked")
+                Class<? extends T> cls = (Class<? extends T>)ClassUtils.resolveClassName(candidate.getBeanClassName(),
                         ClassUtils.getDefaultClassLoader());
                 classes.add(cls);
         }

@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.EnumSet;
+
 /**
  * @author a.kohlbecker
  * @since Sep 4, 2013
@@ -19,4 +21,14 @@ public enum TaxaAndNamesSearchMode {
     doSynonyms,
     doTaxaByCommonNames,
     doMisappliedNames,
+    includeUnpublished
+    ;
+
+    public static EnumSet<TaxaAndNamesSearchMode> taxaAndSynonyms(){
+        return EnumSet.of(doTaxa, doSynonyms);
+    }
+    public static EnumSet<TaxaAndNamesSearchMode> taxaAndSynonymsWithUnpublished(){
+        return EnumSet.of(doTaxa, doSynonyms, includeUnpublished);
+    }
+
 }

@@ -14,8 +14,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
+import org.apache.lucene.index.CorruptIndexException;
 import org.hibernate.criterion.Criterion;
 
 import eu.etaxonomy.cdm.api.service.config.NameDeletionConfigurator;
@@ -23,7 +25,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.DocumentSearchResult;
 import eu.etaxonomy.cdm.api.service.search.LuceneParseException;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
-import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.api.utility.TaxonNamePartsFilter;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
@@ -38,12 +40,16 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
+import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
+import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
+import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
-public interface INameService extends IIdentifiableEntityService<TaxonName> {
+public interface INameService
+        extends IIdentifiableEntityService<TaxonName> {
 
 	/**
 	 * Deletes a name. Depening on the configurator state links to the name will either be
@@ -135,6 +141,41 @@ public interface INameService extends IIdentifiableEntityService<TaxonName> {
 	public List<TaxonName> findNamesByTitleCache(String titleCache, MatchMode matchMode, List<String> propertyPaths);
 
 	/**
+     * Supports using wildcards in the query parameters.
+     * If a name part passed to the method contains the asterisk character ('*') it will be translated into '%' the related field is search with a LIKE clause.
+     * <p>
+     * A query parameter which is passed as <code>NULL</code> value will be ignored. A parameter passed as {@link Optional} object containing a <code>NULL</code> value will be used
+     * to filter select taxon names where the according field is <code>null</code>.
+     *
+     * @param filter
+     * @param infraGenericEpithet
+     * @param specificEpithet
+     * @param infraSpecificEpithet
+     * @param rank
+     *     Only names having the specified rank are taken into account.
+     * @return
+     */
+	public Pager<TaxonNameParts> findTaxonNameParts(Optional<String> genusOrUninomial,
+            Optional<String> infraGenericEpithet, Optional<String> specificEpithet,
+            Optional<String> infraSpecificEpithet, Rank rank, Integer pageSize, Integer pageIndex, List<OrderHint> orderHints);
+
+	/**
+     * <b>This method behaves differently compared to {@link #findTaxonNameParts(Optional, Optional, Optional, Optional, Rank, Integer, Integer, List)}!</b>
+     * <p>
+     * The {@link TaxonNamePartsFilter} defines the rank and fixed name parts for the search process.
+     * For example: In case the <code>rank</code> is "genus", the <code>genusOrUninomial</code> will be used as search parameter which needs to match exactly.
+     * The <code>namePartQueryString</code> will be used to do a wildcard search on the specificEpithet.
+     * <p>
+     * For name part lookup purposes the <code>TaxonNameParts</code> in the result list can be asked to return the relavant name part by
+     * calling {@link TaxonNameParts#nameRankSpecificNamePart(TaxonName)}
+     *
+     *
+     * @param filter
+     * @return
+     */
+	public Pager<TaxonNameParts> findTaxonNameParts(TaxonNamePartsFilter filter, String namePartQueryString, Integer pageSize, Integer pageIndex, List<OrderHint> orderHints);
+
+	/**
 	 * Returns all NonViralNames with a name cache that matches the given string
 	 * using the given match mode and initialization strategy
 	 *
@@ -144,13 +185,6 @@ public interface INameService extends IIdentifiableEntityService<TaxonName> {
 	 * @return
 	 */
 	public List<TaxonName> findNamesByNameCache(String nameCache, MatchMode matchMode, List<String> propertyPaths);
-
-	/**
-	 * @param name
-	 * @param sessionObject An object that is attached to the session before executing the query
-	 * @return
-	 */
-	public List getNamesByName(String name, CdmBase sessionObject);
 
 	/**
 	 * Fuzzy matching for the taxon name elements. The input name is first atomised using the {@link NonViralNameParserImpl}
@@ -450,7 +484,8 @@ public interface INameService extends IIdentifiableEntityService<TaxonName> {
 	 *            authorTeam.persistentTitleCache
 	 * @return a paged list of instances of type T matching the queryString
 	 */
-    public Pager<TaxonName> findByName(Class<? extends TaxonName> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+    public Pager<TaxonName> findByName(Class<TaxonName> clazz, String queryString, MatchMode matchmode,
+            List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Returns a homotypical group with the given UUID or null if not homotypical group exists with that UUID

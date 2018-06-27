@@ -255,17 +255,15 @@ public class BerlinModelTransformer {
 	public static UUID uuidBt = UUID.fromString("EE13FB74-F3AC-46B1-9F23-6A25AC504446");
 	public static UUID uuidTcs = UUID.fromString("904C3980-B98D-422E-A195-95F4F41FC734");
 
-
-	//salvador
+	//Salvador
 	public static UUID uuidSalvadorAreas = UUID.fromString("8ef90ca3-77d7-4adc-8bbc-1eb354e61b65");
-
-
 
 	//language areas
 //	public static final UUID uuidUkraineAndCrimea = UUID.fromString("99d4d1c2-09f6-416e-86a3-bdde5cae52af");
 	public static final UUID uuidAzerbaijanNakhichevan = UUID.fromString("232fbef0-9f4a-4cab-8ac1-e14c717e9de6");
 
 	//Marker Types
+	public static final UUID uuidVocEMMarkerType = UUID.fromString("7c3d5674-87bf-462a-9cd9-d4a51d2f2a77");
 	public static final UUID uuidMisappliedCommonName = UUID.fromString("25f5cfc3-16ab-4aba-a008-0db0f2cf7f9d");
 	public static final UUID uuidEurArea = UUID.fromString("71dd0368-835c-4b53-889a-2bf316e10297");
 	public static final UUID uuidEurMedArea = UUID.fromString("aa6a5b25-3ee3-4771-b4d1-b91918f23fa5");

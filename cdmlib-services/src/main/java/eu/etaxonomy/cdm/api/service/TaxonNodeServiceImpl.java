@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.api.service;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -24,6 +23,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
@@ -36,8 +36,6 @@ import eu.etaxonomy.cdm.api.service.pager.PagerUtils;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
-import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
-import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitorThread;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -72,7 +70,9 @@ import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
  */
 @Service
 @Transactional(readOnly = true)
-public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITaxonNodeDao> implements ITaxonNodeService{
+public class TaxonNodeServiceImpl
+           extends AnnotatableServiceBase<TaxonNode, ITaxonNodeDao>
+           implements ITaxonNodeService{
     private static final Logger logger = Logger.getLogger(TaxonNodeServiceImpl.class);
 
     @Autowired
@@ -99,14 +99,22 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
     @Override
     public List<TaxonNode> loadChildNodesOfTaxonNode(TaxonNode taxonNode,
-            List<String> propertyPaths, boolean recursive, NodeSortMode sortMode) {
+            List<String> propertyPaths, boolean recursive,  boolean includeUnpublished,
+            NodeSortMode sortMode) {
 
         getSession().refresh(taxonNode);
         List<TaxonNode> childNodes;
         if (recursive == true){
-        	childNodes  = dao.listChildrenOf(taxonNode, null, null, null, recursive);
+        	childNodes  = dao.listChildrenOf(taxonNode, null, null, recursive, includeUnpublished, null);
+        }else if (includeUnpublished){
+            childNodes = new ArrayList<>(taxonNode.getChildNodes());
         }else{
-        	childNodes = new ArrayList<>(taxonNode.getChildNodes());
+            childNodes = new ArrayList<>();
+            for (TaxonNode node:taxonNode.getChildNodes()){
+                if (node.getTaxon().isPublish()){
+                    childNodes.add(node);
+                }
+            }
         }
 
         HHH_9751_Util.removeAllNull(childNodes);
@@ -186,7 +194,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
      * {@inheritDoc}
      */
     @Override
-    public Pager<TaxonNodeDto> pageChildNodesDTOs(UUID taxonNodeUuid, boolean recursive,
+    public Pager<TaxonNodeDto> pageChildNodesDTOs(UUID taxonNodeUuid, boolean recursive,  boolean includeUnpublished,
             boolean doSynonyms, NodeSortMode sortMode,
             Integer pageSize, Integer pageIndex) {
 
@@ -195,7 +203,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         List<CdmBase> allRecords = new ArrayList<>();
 
         //acceptedTaxa
-        List<TaxonNode> childNodes = loadChildNodesOfTaxonNode(parentNode, null, recursive, sortMode);
+        List<TaxonNode> childNodes = loadChildNodesOfTaxonNode(parentNode, null, recursive, includeUnpublished, sortMode);
         allRecords.addAll(childNodes);
 
         //add synonyms if pager is not yet full synonyms
@@ -208,7 +216,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         }
 
         List<TaxonNodeDto> dtos = new ArrayList<>(pageSize==null?25:pageSize);
-        Long totalCount = Long.valueOf(allRecords.size());
+        long totalCount = Long.valueOf(allRecords.size());
 
         TaxonName parentName = null;
 
@@ -222,7 +230,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
                 dtos.add(new TaxonNodeDto(synonym, isHomotypic));
             }
         }
-        return new DefaultPagerImpl<TaxonNodeDto>(pageIndex, totalCount, pageSize , dtos);
+        return new DefaultPagerImpl<>(pageIndex, totalCount, pageSize , dtos);
     }
 
     @Override
@@ -674,7 +682,8 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     public UpdateResult moveTaxonNode(UUID taxonNodeUuid, UUID targetNodeUuid, int movingType){
         TaxonNode taxonNode = HibernateProxyHelper.deproxy(dao.load(taxonNodeUuid), TaxonNode.class);
     	TaxonNode targetNode = HibernateProxyHelper.deproxy(dao.load(targetNodeUuid), TaxonNode.class);
-    	return moveTaxonNode(taxonNode, targetNode, movingType);
+    	UpdateResult result = moveTaxonNode(taxonNode, targetNode, movingType);
+    	return result;
     }
 
     @Override
@@ -700,12 +709,12 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
 
         taxonNode = newParent.addChildNode(taxonNode, sortIndex, taxonNode.getReference(),  taxonNode.getMicroReference());
-        result.addUpdatedObject(newParent);
-        result.addUpdatedObject(oldParent);
-        result.setCdmEntity(taxonNode);
+//        result.addUpdatedObject(newParent);
+        result.addUpdatedObject(taxonNode);
+//        result.setCdmEntity(taxonNode);
 
-        dao.saveOrUpdate(taxonNode);
-        dao.saveOrUpdate(oldParent);
+
+
 
         return result;
     }
@@ -714,13 +723,39 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
     @Override
     @Transactional
-    public UpdateResult moveTaxonNodes(Set<UUID> taxonNodeUuids, UUID newParentNodeUuid, int movingType){
-        UpdateResult result = new UpdateResult();
-        TaxonNode targetNode = dao.load(newParentNodeUuid);
-        for (UUID taxonNodeUuid: taxonNodeUuids){
-            TaxonNode taxonNode = dao.load(taxonNodeUuid);
-            result.includeResult(moveTaxonNode(taxonNode,targetNode, movingType));
+    public UpdateResult moveTaxonNodes(Set<UUID> taxonNodeUuids, UUID newParentNodeUuid, int movingType, IProgressMonitor monitor){
+
+        if (monitor == null){
+            monitor = DefaultProgressMonitor.NewInstance();
         }
+        UpdateResult result = new UpdateResult();
+
+        TaxonNode targetNode = dao.load(newParentNodeUuid);
+        List<TaxonNode> nodes = dao.list(taxonNodeUuids, null, null, null, null);
+        boolean hasPermission = true;
+
+        monitor.beginTask("Move Taxonnodes", nodes.size()*2);
+        monitor.subTask("move taxon nodes");
+        for (TaxonNode node: nodes){
+            if (!monitor.isCanceled()){
+                if (!nodes.contains(node.getParent())){
+                    result.includeResult(moveTaxonNode(node,targetNode, movingType));
+                }
+                monitor.worked(1);
+            }else{
+                monitor.done();
+                result.setAbort();
+                break;
+            }
+        }
+        if (!monitor.isCanceled()){
+            monitor.subTask("saving and reindex");
+            dao.saveOrUpdateAll(nodes);
+        }else{
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
+
+        monitor.done();
         return result;
     }
 
@@ -827,6 +862,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     public UpdateResult setSecundumForSubtree(SecundumForSubtreeConfigurator config) {
         UpdateResult result = new UpdateResult();
         IProgressMonitor monitor = config.getMonitor();
+
         if (monitor == null){
             monitor = DefaultProgressMonitor.NewInstance();
         }
@@ -917,6 +953,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
             Set<TaxonBase> updatedSynonyms = dao.setPublishForSubtreeSynonyms(subTreeIndex, publish, includeSharedTaxa, monitor);
             result.addUpdatedObjects(updatedSynonyms);
         }
+
         monitor.done();
         return result;
     }
@@ -935,23 +972,6 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     @Override
     public List<Integer> idList(TaxonNodeFilter filter){
         return nodeFilterDao.idList(filter);
-    }
-
-    @Override
-    @Transactional(readOnly=false)
-    public UUID monitSetSecundum(final SecundumForSubtreeConfigurator configurator) {
-        RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
-            @Override
-            public Serializable doRun(IRemotingProgressMonitor monitor) {
-                configurator.setMonitor(monitor);
-                UpdateResult result = setSecundumForSubtree(configurator);
-                return result;
-            }
-        };
-        UUID uuid = progressMonitorService.registerNewRemotingMonitor(monitorThread);
-        monitorThread.setPriority(3);
-        monitorThread.start();
-        return uuid;
     }
 
 }

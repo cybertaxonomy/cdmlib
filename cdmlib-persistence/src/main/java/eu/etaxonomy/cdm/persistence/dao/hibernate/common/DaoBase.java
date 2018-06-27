@@ -18,15 +18,21 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.SortField;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.envers.query.AuditQuery;
+import org.hibernate.search.FullTextQuery;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.PlatformTransactionManager;
 
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -34,11 +40,11 @@ public abstract class DaoBase {
 
     final static Logger logger = Logger.getLogger(DaoBase.class);
 
-    @Autowired
-    private SessionFactory factory;
+    public final static boolean NO_UNPUBLISHED = false;  //constant for unpublished
+    public final static boolean INCLUDE_UNPUBLISHED = true;  //constant for unpublished
 
     @Autowired
-    private PlatformTransactionManager transactionManager;
+    private SessionFactory factory;
 
     public void setSessionFactory(SessionFactory sessionFactory) {
         this.factory = sessionFactory;
@@ -78,44 +84,6 @@ public abstract class DaoBase {
 
     }
 
-    protected void addOrder(Criteria criteria, List<OrderHint> orderHints) {
-
-        if(orderHints != null){
-            Collections.sort(orderHints, new OrderHintComparator());
-
-            Map<String,Criteria> criteriaMap = new HashMap<>();
-            for(OrderHint orderHint : orderHints){
-                orderHint.add(criteria, criteriaMap);
-            }
-        }
-    }
-
-    /**
-     * Null save method which compiles a order by clause from the given list of OrderHints
-     *
-     * @param orderHints can be NULL
-     * @return a StringBuffer holding the hql orderby clause
-     */
-    protected StringBuffer orderByClause(List<OrderHint> orderHints, String aliasName) {
-
-        StringBuffer orderString = new StringBuffer();
-
-        StringBuffer aliasPrefix = new StringBuffer();
-        aliasPrefix.append(" ");
-        if(aliasName != null && !aliasName.isEmpty()){
-            aliasPrefix.append(aliasName).append(".");
-        }
-
-        if(orderHints != null && !orderHints.isEmpty()) {
-            orderString.append(" order by");
-            for(OrderHint orderHint : orderHints) {
-                orderString.append(aliasPrefix).append(orderHint.toHql());
-            }
-        }
-        return orderString;
-    }
-
-
     /**
      * Splits a set of e.g. query parameters into a list of sets with size <code>splitSize</code>.
      * Only the last set may be smaller if the collection's size is not an exact multiple of split size.
@@ -145,5 +113,185 @@ public abstract class DaoBase {
         }
         return result;
     }
+
+    // -------------- hql, query and criteria helper methods -------------- //
+
+    protected void addFieldPredicate(StringBuilder hql, String field, Optional<String> value) {
+        if(value != null){
+            hql.append("AND " + field);
+            if(value.isPresent()){
+                if(value.get().contains("*")){
+                    hql.append(" LIKE '" + value.get().replace('*', '%') + "' ");
+                } else {
+                    hql.append(" = '" + value.get() + "' ");
+                }
+            } else {
+                hql.append(" IS NULL ");
+            }
+        }
+    }
+
+    protected void addPageSizeAndNumber(Query query, Integer pageSize, Integer pageNumber) {
+        if(pageSize != null) {
+            query.setMaxResults(pageSize);
+            if(pageNumber != null) {
+                query.setFirstResult(pageNumber * pageSize);
+            } else {
+                query.setFirstResult(0);
+            }
+        }
+    }
+    protected void addPageSizeAndNumber(FullTextQuery query, Integer pageSize, Integer pageNumber) {
+        if(pageSize != null) {
+            query.setMaxResults(pageSize);
+            if(pageNumber != null) {
+                query.setFirstResult(pageNumber * pageSize);
+            } else {
+                query.setFirstResult(0);
+            }
+        }
+    }
+
+    protected void addPageSizeAndNumber(AuditQuery query, Integer pageSize, Integer pageNumber) {
+        if(pageSize != null) {
+            query.setMaxResults(pageSize);
+            if(pageNumber != null) {
+                query.setFirstResult(pageNumber * pageSize);
+            } else {
+                query.setFirstResult(0);
+            }
+        }
+    }
+
+    /**
+     * @param limit
+     * @param start
+     * @param criteria
+     */
+    protected void addPageSizeAndNumber(Criteria criteria, Integer pageSize, Integer pageNumber) {
+        if(pageSize != null) {
+            criteria.setMaxResults(pageSize);
+            if(pageNumber != null) {
+                criteria.setFirstResult(pageNumber * pageSize);
+            } else {
+                criteria.setFirstResult(0);
+            }
+        }
+    }
+
+    protected void addLimitAndStart(Criteria criteria, Integer limit, Integer start) {
+        if(limit != null) {
+            if(start != null) {
+                criteria.setFirstResult(start);
+            } else {
+                criteria.setFirstResult(0);
+            }
+            criteria.setMaxResults(limit);
+        }
+    }
+
+
+    /**
+     * @param limit
+     * @param start
+     * @param query
+     */
+    protected void addLimitAndStart(Query query, Integer limit, Integer start) {
+        if(limit != null) {
+            if(start != null) {
+                query.setFirstResult(start);
+            } else {
+                query.setFirstResult(0);
+            }
+            query.setMaxResults(limit);
+        }
+    }
+
+    protected void addLimitAndStart(AuditQuery query, Integer limit, Integer start) {
+        if(limit != null) {
+            if(start != null) {
+                query.setFirstResult(start);
+            } else {
+                query.setFirstResult(0);
+            }
+            query.setMaxResults(limit);
+        }
+    }
+
+    protected void addCriteria(Criteria criteria, List<Criterion> criterion) {
+        if(criterion != null) {
+            for(Criterion c : criterion) {
+                criteria.add(c);
+            }
+        }
+    }
+
+    protected void addOrder(Criteria criteria, List<OrderHint> orderHints) {
+
+        if(orderHints != null){
+            Collections.sort(orderHints, new OrderHintComparator());
+
+            Map<String,Criteria> criteriaMap = new HashMap<>();
+            for(OrderHint orderHint : orderHints){
+                orderHint.add(criteria, criteriaMap);
+            }
+        }
+    }
+    protected void addOrder(FullTextQuery fullTextQuery, List<OrderHint> orderHints) {
+        //FIXME preliminary hardcoded type:
+        SortField.Type type = SortField.Type.STRING;
+
+        if(orderHints != null && !orderHints.isEmpty()) {
+            org.apache.lucene.search.Sort sort = new Sort();
+            SortField[] sortFields = new SortField[orderHints.size()];
+            for(int i = 0; i < orderHints.size(); i++) {
+                OrderHint orderHint = orderHints.get(i);
+                switch(orderHint.getSortOrder()) {
+                case ASCENDING:
+                    sortFields[i] = new SortField(orderHint.getPropertyName(), type, true);
+                    break;
+                case DESCENDING:
+                default:
+                    sortFields[i] = new SortField(orderHint.getPropertyName(), type, false);
+                }
+            }
+            sort.setSort(sortFields);
+            fullTextQuery.setSort(sort);
+        }
+    }
+
+    /**
+     * Null save method which compiles an order by clause from the given list of OrderHints
+     *
+     * @param orderHints can be NULL
+     * @return a StringBuffer holding the hql orderby clause
+     */
+    protected StringBuilder orderByClause(String aliasName, List<OrderHint> orderHints) {
+
+        StringBuilder orderString = new StringBuilder();
+
+        StringBuffer aliasPrefix = new StringBuffer(" ");
+        if(aliasName != null && !aliasName.isEmpty()){
+            aliasPrefix.append(aliasName).append(".");
+        }
+
+        if(orderHints != null && !orderHints.isEmpty()) {
+            for(OrderHint orderHint : orderHints) {
+                orderString.append((orderString.length() < 2) ? " ORDER BY " : "," );
+                orderString.append(aliasPrefix).append(orderHint.toHql());
+            }
+        }
+        return orderString;
+    }
+
+    /**
+     * @param hql
+     * @param orderHints
+     */
+    protected void addOrder(StringBuilder hql, String alias, List<OrderHint> orderHints) {
+        hql.append(orderByClause(alias, orderHints));
+     }
+
+   // ---------------------------- //
 
 }

@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.GroupedTaxonDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonInContextDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.exception.UnpublishedException;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -38,13 +39,6 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  * @since Sep 21, 2009
  */
 public interface IClassificationService extends IIdentifiableEntityService<Classification> {
-
-    /**
-     *
-     * @param uuid
-     * @return
-     */
-    public TaxonNode getTaxonNodeByUuid(UUID uuid);
 
     /**
      *
@@ -95,14 +89,25 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
     public TaxonNode loadTaxonNodeByTaxon(Taxon taxon, UUID classificationUuid, List<String> propertyPaths);
 
     /**
+     * Loads all TaxonNodes of the specified classification for a given Rank or lower.
+     * If a branch of the classification tree is not containing a TaxonNode with a Taxon at the given
+     * Rank the according node associated with the next lower Rank is taken as root node in this case.
+     * So the nodes returned may reference Taxa with different Ranks.
      *
-     * @param taxonNode
+     * If the <code>rank</code> is null the absolute root nodes will be returned.
+
+     * @param classification may be null for all classifications
+     * @param rank the set to null for to get the root nodes of classifications
+     * @param includeUnpublished if <code>true</code> unpublished taxa are also exported
+     * @param pageSize The maximum number of relationships returned (can be null for all relationships)
+     * @param pageIndex The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @param propertyPaths
      * @return
-     * @deprecated use TaxonNodeService instead
+     *
      */
-    @Deprecated
-    public TaxonNode loadTaxonNode(TaxonNode taxonNode, List<String> propertyPaths);
+    public List<TaxonNode> listRankSpecificRootNodes(Classification classification, Rank rank,
+            boolean includeUnpublished, Integer pageSize, Integer pageIndex, List<String> propertyPaths);
+
 
     /**
      * Loads all TaxonNodes of the specified classification for a given Rank or lower.
@@ -114,32 +119,15 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      *
      * @param classification may be null for all classifications
      * @param rank the set to null for to get the root nodes of classifications
+     * @param includeUnpublished if <code>true</code> unpublished taxa are also exported
      * @param pageSize The maximum number of relationships returned (can be null for all relationships)
      * @param pageIndex The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @param propertyPaths
      * @return
      *
      */
-    public List<TaxonNode> listRankSpecificRootNodes(Classification classification, Rank rank, Integer pageSize, Integer pageIndex, List<String> propertyPaths);
-
-
-    /**
-     * Loads all TaxonNodes of the specified classification for a given Rank or lower.
-     * If a branch of the classification tree is not containing a TaxonNode with a Taxon at the given
-     * Rank the according node associated with the next lower Rank is taken as root node in this case.
-     * So the nodes returned may reference Taxa with different Ranks.
-     *
-     * If the <code>rank</code> is null the absolute root nodes will be returned.
-     *
-     * @param classification may be null for all classifications
-     * @param rank the set to null for to get the root nodes of classifications
-     * @param pageSize The maximum number of relationships returned (can be null for all relationships)
-     * @param pageIndex The offset (in pageSize chunks) from the start of the result set (0 - based)
-     * @param propertyPaths
-     * @return
-     *
-     */
-    public Pager<TaxonNode> pageRankSpecificRootNodes(Classification classification, Rank rank, Integer pageSize, Integer pageIndex, List<String> propertyPaths);
+    public Pager<TaxonNode> pageRankSpecificRootNodes(Classification classification, Rank rank,
+            boolean includeUnpublished, Integer pageSize, Integer pageIndex, List<String> propertyPaths);
 
     /**
      * @param taxonNode
@@ -151,10 +139,16 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @param propertyPaths
      *            the initialization strategy for the returned TaxonNode
      *            instances.
+     * @param includeUnpublished
+     *            if <code>true</code> no {@link UnpublishedException}
+     *            is thrown if any of the taxa in the branch are unpublished
      * @return the path of nodes from the <b>base node</b> to the node of the
-     *         specified taxon.
+     *            specified taxon.
+     * @throws UnpublishedException
+     *            if any of the taxa in the path is unpublished an {@link UnpublishedException} is thrown.
      */
-    public List<TaxonNode> loadTreeBranch(TaxonNode taxonNode, Rank baseRank, List<String> propertyPaths);
+    public List<TaxonNode> loadTreeBranch(TaxonNode taxonNode, Rank baseRank, boolean includeUnpublished,
+            List<String> propertyPaths) throws UnpublishedException;
 
     /**
      * Although this method seems to be a redundant alternative to {@link #loadChildNodesOfTaxonNode(TaxonNode, List)} it is an important
@@ -169,23 +163,22 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      *            Nodes of this rank or in case this rank does not exist in the
      *            current branch the next lower rank is taken as as root node for
      *            this rank henceforth called the <b>base node</b>.
+     * @param includeUnpublished
+     *            if <code>true</code> no {@link UnpublishedException}
+     *            is thrown if any of the taxa in the branch are unpublished
      * @param propertyPaths
      *            the initialization strategy for the returned TaxonNode
      *            instances.
      * @return the path of nodes from the <b>base node</b> to the node of the specified
-     *         taxon.
+     *            taxon.
+     * @throws UnpublishedException
+     *            if any of the taxa in the path is unpublished an {@link UnpublishedException} is thrown
      */
-    public List<TaxonNode> loadTreeBranchToTaxon(Taxon taxon, Classification classification, Rank baseRank, List<String> propertyPaths);
+    public List<TaxonNode> loadTreeBranchToTaxon(Taxon taxon, Classification classification, Rank baseRank,
+            boolean includeUnpublished, List<String> propertyPaths) throws UnpublishedException;
 
-
-
-    /**
-     * @param taxonUuid
-     * @param classificationUuid
-     * @param propertyPaths
-     * @return
-     */
-    public List<TaxonNode> listChildNodesOfTaxon(UUID taxonUuid, UUID classificationUuid, Integer pageSize, Integer pageIndex, List<String> propertyPaths);
+    public List<TaxonNode> listChildNodesOfTaxon(UUID taxonUuid, UUID classificationUuid, boolean includeUnpublished,
+            Integer pageSize, Integer pageIndex, List<String> propertyPaths);
 
     /**
      * @param taxonNode
@@ -203,16 +196,6 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      */
     public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification);
 
-    /**
-     *
-     * @param taxonNode
-     * @param propertyPaths
-     * @param size
-     * @param height
-     * @param widthOrDuration
-     * @param mimeTypes
-     * @return
-     */
     public Map<UUID, List<MediaRepresentation>> getAllMediaForChildNodes(TaxonNode taxonNode, List<String> propertyPaths, int size, int height, int widthOrDuration, String[] mimeTypes);
 
     /**
@@ -242,82 +225,31 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
     @Deprecated
     public Map<UUID, TaxonNode> saveTaxonNodeAll(Collection<TaxonNode> taxonNodeCollection);
 
-    /**
-     *
-     * @param treeNode
-     * @return
-     */
-
     public UUID removeTreeNode(ITaxonTreeNode treeNode);
 
-    /**
-     *
-     * @param treeNode
-     * @return
-     */
     public UUID saveTreeNode(ITaxonTreeNode treeNode);
-
 
     public List<TaxonNode> getAllNodes();
 
 	public UpdateResult createHierarchyInClassification(Classification classification, CreateHierarchyForClassificationConfigurator configurator);
 
-    /**
-     * @param classificationUuid
-     * @param excludeTaxa
-     * @return
-     */
     public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(UUID classificationUuid);
 
-    /**
-     * @param classificationUuid
-     * @param excludeTaxa
-     * @param limit
-     * @param pattern
-     * @return
-     */
-    List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
             UUID classificationUuid, Integer limit, String pattern);
 
-    /**
-     * @param classification
-     * @param excludeTaxa
-     * @param limit
-     * @param pattern
-     * @return
-     */
-    List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
             Classification classification, Integer limit, String pattern);
 
-    /**
-     * @param taxonUuid
-     * @param classificationUuid
-     * @param pageSize
-     * @param pageIndex
-     * @param propertyPaths
-     * @return
-     */
-    List<TaxonNode> listSiblingsOfTaxon(UUID taxonUuid, UUID classificationUuid, Integer pageSize, Integer pageIndex,
+    public List<TaxonNode> listSiblingsOfTaxon(UUID taxonUuid, UUID classificationUuid, boolean includeUnpublished,
+            Integer pageSize, Integer pageIndex, List<String> propertyPaths);
+
+    public Pager<TaxonNode> pageSiblingsOfTaxon(UUID taxonUuid, UUID classificationUuid, boolean includeUnpublished, Integer pageSize, Integer pageIndex,
             List<String> propertyPaths);
 
-    /**
-     * @param taxonUuid
-     * @param classificationUuid
-     * @param pageSize
-     * @param pageIndex
-     * @param propertyPaths
-     * @return
-     */
-    Pager<TaxonNode> pageSiblingsOfTaxon(UUID taxonUuid, UUID classificationUuid, Integer pageSize, Integer pageIndex,
-            List<String> propertyPaths);
+    public ClassificationLookupDTO classificationLookup(Classification classification);
 
-    /**
-     * @param classification
-     * @return
-     */
-    ClassificationLookupDTO classificationLookup(Classification classification);
-
-    DeleteResult delete(UUID classificationUuid, TaxonDeletionConfigurator config);
+    public DeleteResult delete(UUID classificationUuid, TaxonDeletionConfigurator config);
 
     /**
      * Returns the higher taxon id for each taxon in taxonUuids.
@@ -330,7 +262,7 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @param maxRank
      * @return
      */
-    List<GroupedTaxonDTO> groupTaxaByHigherTaxon(List<UUID> taxonUuids, UUID classificationUuid, Rank minRank, Rank maxRank);
+    public List<GroupedTaxonDTO> groupTaxaByHigherTaxon(List<UUID> taxonUuids, UUID classificationUuid, Rank minRank, Rank maxRank);
 
     /**
      * @param taxonUuids
@@ -349,11 +281,12 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @param classificationUuid
      * @param taxonUuid
      * @param doSynonyms
+     * @param includeUnpublished
      * @param ancestorMarkers
      * @return
      */
     public TaxonInContextDTO getTaxonInContext(UUID classificationUuid, UUID taxonUuid,
-            Boolean doChildren, Boolean doSynonyms, List<UUID> ancestorMarkers,
+            Boolean doChildren, Boolean doSynonyms, boolean includeUnpublished, List<UUID> ancestorMarkers,
             NodeSortMode sortMode);
 
     /**
@@ -369,7 +302,7 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @param searchForClassifications
      * @return
      */
-    List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
             UUID classificationUuid, Integer limit, String pattern, boolean searchForClassifications);
 
     /**
@@ -379,7 +312,7 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @param searchForClassifications
      * @return
      */
-    List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
             Classification classification, Integer limit, String pattern, boolean searchForClassifications);
 
     /**
@@ -387,7 +320,7 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @param searchForClassifications
      * @return
      */
-    List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
             UUID classificationUuid, boolean searchForClassifications);
 
     /**
@@ -395,9 +328,7 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @param searchForClassifications
      * @return
      */
-    List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
             Classification classification, boolean searchForClassifications);
-
-
 
 }

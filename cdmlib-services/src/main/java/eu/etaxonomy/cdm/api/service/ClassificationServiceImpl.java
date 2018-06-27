@@ -43,6 +43,7 @@ import eu.etaxonomy.cdm.api.service.pager.PagerUtils;
 import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.exception.UnpublishedException;
 import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -86,8 +87,9 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
  */
 @Service
 @Transactional(readOnly = true)
-public class ClassificationServiceImpl extends IdentifiableServiceBase<Classification, IClassificationDao>
-    implements IClassificationService {
+public class ClassificationServiceImpl
+             extends IdentifiableServiceBase<Classification, IClassificationDao>
+             implements IClassificationService {
     private static final Logger logger = Logger.getLogger(ClassificationServiceImpl.class);
 
     @Autowired
@@ -124,12 +126,6 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
         TaxonNode node = tree.getNode(taxon);
 
         return loadTaxonNode(node.getUuid(), propertyPaths);
-    }
-
-    @Override
-    @Deprecated // use loadTaxonNode(UUID, List<String>) instead
-    public TaxonNode loadTaxonNode(TaxonNode taxonNode, List<String> propertyPaths){
-        return taxonNodeDao.load(taxonNode.getUuid(), propertyPaths);
     }
 
     public TaxonNode loadTaxonNode(UUID taxonNodeUuid, List<String> propertyPaths){
@@ -183,19 +179,22 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
     	}
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public List<TaxonNode> listRankSpecificRootNodes(Classification classification, Rank rank, Integer pageSize,
-            Integer pageIndex, List<String> propertyPaths) {
-        return pageRankSpecificRootNodes(classification, rank, pageSize, pageIndex, propertyPaths).getRecords();
+    public List<TaxonNode> listRankSpecificRootNodes(Classification classification, Rank rank,
+            boolean includeUnpublished, Integer pageSize, Integer pageIndex, List<String> propertyPaths) {
+        return pageRankSpecificRootNodes(classification, rank, includeUnpublished, pageSize, pageIndex, propertyPaths).getRecords();
     }
 
     @Override
-    public Pager<TaxonNode> pageRankSpecificRootNodes(Classification classification, Rank rank, Integer pageSize,
-            Integer pageIndex, List<String> propertyPaths) {
-        long[] numberOfResults = dao.countRankSpecificRootNodes(classification, rank);
+    public Pager<TaxonNode> pageRankSpecificRootNodes(Classification classification, Rank rank,
+            boolean includeUnpublished, Integer pageSize, Integer pageIndex, List<String> propertyPaths) {
+        long[] numberOfResults = dao.countRankSpecificRootNodes(classification, includeUnpublished, rank);
         long totalNumberOfResults = numberOfResults[0] + (numberOfResults.length > 1 ? numberOfResults[1] : 0);
 
-        List<TaxonNode> results = new ArrayList<TaxonNode>();
+        List<TaxonNode> results = new ArrayList<>();
 
         if (AbstractPagerImpl.hasResultsInRange(totalNumberOfResults, pageIndex, pageSize)) { // no point checking again
             Integer limit = PagerUtils.limitFor(pageSize);
@@ -211,7 +210,8 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
                     continue;
                 }
 
-                List<TaxonNode> perQueryResults = dao.listRankSpecificRootNodes(classification, rank, remainingLimit, start, propertyPaths, queryIndex);
+                List<TaxonNode> perQueryResults = dao.listRankSpecificRootNodes(classification,
+                        rank, includeUnpublished, remainingLimit, start, propertyPaths, queryIndex);
                 results.addAll(perQueryResults);
                 if(remainingLimit != null ){
                     remainingLimit = remainingLimit - results.size();
@@ -227,43 +227,49 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
 //        long start_t = System.currentTimeMillis();
         Collections.sort(results, taxonNodeComparator); // TODO is ordering during the hibernate query in the dao possible?
 //        System.err.println("service.pageRankSpecificRootNodes() - Collections.sort(results,  taxonNodeComparator) " + (System.currentTimeMillis() - start_t));
-        return new DefaultPagerImpl<TaxonNode>(pageIndex, (int) totalNumberOfResults, pageSize, results);
+        return new DefaultPagerImpl<>(pageIndex, totalNumberOfResults, pageSize, results);
 
     }
 
+
     /**
-     * @implements {@link IClassificationService#loadTreeBranch(TaxonNode, Rank, List)
-     * @see eu.etaxonomy.cdm.api.service.ITaxonService#loadTreeBranchTo(eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.name.Rank, java.util.List)
-     * FIXME Candidate for harmonization
-     * move to classification service
+     * {@inheritDoc}
      */
     @Override
-    public List<TaxonNode> loadTreeBranch(TaxonNode taxonNode, Rank baseRank, List<String> propertyPaths){
+    public List<TaxonNode> loadTreeBranch(TaxonNode taxonNode, Rank baseRank,
+            boolean includeUnpublished, List<String> propertyPaths) throws UnpublishedException{
 
         TaxonNode thisNode = taxonNodeDao.load(taxonNode.getUuid(), propertyPaths);
         if(baseRank != null){
             baseRank = (Rank) termDao.load(baseRank.getUuid());
         }
-        List<TaxonNode> pathToRoot = new ArrayList<TaxonNode>();
+        if (!includeUnpublished && thisNode.getTaxon() != null && !thisNode.getTaxon().isPublish()){
+            throw new UnpublishedException("Final taxon in tree branch is unpublished.");
+        }
+
+        List<TaxonNode> pathToRoot = new ArrayList<>();
         pathToRoot.add(thisNode);
 
         while(!thisNode.isTopmostNode()){
             //TODO why do we need to deproxy here?
             //     without this thisNode.getParent() will return NULL in
             //     some cases (environment dependend?) even if the parent exits
-            TaxonNode parentNode = CdmBase.deproxy(thisNode, TaxonNode.class).getParent();
+            TaxonNode parentNode = CdmBase.deproxy(thisNode).getParent();
 
             if(parentNode == null){
-                throw new NullPointerException("taxonNode " + thisNode + " must have a parent since it is not top most");
+                throw new NullPointerException("Taxon node " + thisNode + " must have a parent since it is not top most");
             }
             if(parentNode.getTaxon() == null){
-                throw new NullPointerException("The taxon associated with taxonNode " + parentNode + " is NULL");
+                throw new NullPointerException("The taxon associated with taxon node " + parentNode + " is NULL");
+            }
+            if(!includeUnpublished && !parentNode.getTaxon().isPublish()){
+                throw new UnpublishedException("Some taxon in tree branch is unpublished.");
             }
             if(parentNode.getTaxon().getName() == null){
                 throw new NullPointerException("The name of the taxon associated with taxonNode " + parentNode + " is NULL");
             }
 
-            Rank parentNodeRank = parentNode.getTaxon().getName() == null ? null : parentNode.getTaxon().getName().getRank();
+            Rank parentNodeRank = (parentNode.getTaxon().getName() == null) ? null : parentNode.getTaxon().getName().getRank();
             // stop if the next parent is higher than the baseRank
             if(baseRank != null && parentNodeRank != null && baseRank.isLower(parentNodeRank)){
                 break;
@@ -281,15 +287,16 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
     }
 
     @Override
-    public List<TaxonNode> loadTreeBranchToTaxon(Taxon taxon, Classification classification, Rank baseRank, List<String> propertyPaths){
-        Classification tree = dao.load(classification.getUuid());
-        taxon = (Taxon) taxonDao.load(taxon.getUuid());
-        TaxonNode node = tree.getNode(taxon);
+    public List<TaxonNode> loadTreeBranchToTaxon(Taxon taxon, Classification classification, Rank baseRank,
+            boolean includeUnpublished, List<String> propertyPaths) throws UnpublishedException{
+
+        UUID nodeUuid = getTaxonNodeUuidByTaxonUuid(classification.getUuid(), taxon.getUuid());
+        TaxonNode node = taxonNodeService.find(nodeUuid);
         if(node == null){
             logger.warn("The specified taxon is not found in the given tree.");
             return null;
         }
-        return loadTreeBranch(node, baseRank, propertyPaths);
+        return loadTreeBranch(node, baseRank, includeUnpublished, propertyPaths);
     }
 
 
@@ -304,48 +311,44 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
     }
 
     @Override
-    public List<TaxonNode> listChildNodesOfTaxon(UUID taxonUuid, UUID classificationUuid, Integer pageSize,
-            Integer pageIndex, List<String> propertyPaths){
+    public List<TaxonNode> listChildNodesOfTaxon(UUID taxonUuid, UUID classificationUuid,
+            boolean includeUnpublished, Integer pageSize, Integer pageIndex, List<String> propertyPaths){
 
         Classification classification = dao.load(classificationUuid);
         Taxon taxon = (Taxon) taxonDao.load(taxonUuid);
 
-        List<TaxonNode> results = dao.listChildrenOf(taxon, classification, pageSize, pageIndex, propertyPaths);
+        List<TaxonNode> results = dao.listChildrenOf(
+                taxon, classification, includeUnpublished, pageSize, pageIndex, propertyPaths);
         Collections.sort(results, taxonNodeComparator); // FIXME this is only a HACK, order during the hibernate query in the dao
         return results;
     }
 
     @Override
-    public Pager<TaxonNode> pageSiblingsOfTaxon(UUID taxonUuid, UUID classificationUuid, Integer pageSize,
-            Integer pageIndex, List<String> propertyPaths){
+    public Pager<TaxonNode> pageSiblingsOfTaxon(UUID taxonUuid, UUID classificationUuid, boolean includeUnpublished,
+            Integer pageSize, Integer pageIndex, List<String> propertyPaths){
 
         Classification classification = dao.load(classificationUuid);
         Taxon taxon = (Taxon) taxonDao.load(taxonUuid);
 
-        long numberOfResults = dao.countSiblingsOf(taxon, classification);
+        long numberOfResults = dao.countSiblingsOf(taxon, classification, includeUnpublished);
 
         List<TaxonNode> results;
         if(PagerUtils.hasResultsInRange(numberOfResults, pageIndex, pageSize)) {
-            results = dao.listSiblingsOf(taxon, classification, pageSize, pageIndex, propertyPaths);
+            results = dao.listSiblingsOf(taxon, classification, includeUnpublished, pageSize, pageIndex, propertyPaths);
             Collections.sort(results, taxonNodeComparator); // FIXME this is only a HACK, order during the hibernate query in the dao
         } else {
             results = new ArrayList<>();
         }
 
-        return new DefaultPagerImpl<TaxonNode>(pageIndex, numberOfResults, pageSize, results);
+        return new DefaultPagerImpl<>(pageIndex, numberOfResults, pageSize, results);
     }
 
     @Override
-    public List<TaxonNode> listSiblingsOfTaxon(UUID taxonUuid, UUID classificationUuid, Integer pageSize,
-            Integer pageIndex, List<String> propertyPaths){
+    public List<TaxonNode> listSiblingsOfTaxon(UUID taxonUuid, UUID classificationUuid, boolean includeUnpublished,
+            Integer pageSize, Integer pageIndex, List<String> propertyPaths){
 
-        Pager<TaxonNode> pager = pageSiblingsOfTaxon(taxonUuid, classificationUuid, pageSize, pageIndex, propertyPaths);
+        Pager<TaxonNode> pager = pageSiblingsOfTaxon(taxonUuid, classificationUuid, includeUnpublished, pageSize, pageIndex, propertyPaths);
         return pager.getRecords();
-    }
-
-    @Override
-    public TaxonNode getTaxonNodeByUuid(UUID uuid) {
-        return taxonNodeDao.findByUuid(uuid);
     }
 
     @Override
@@ -445,43 +448,33 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
             TaxonNode taxonNode, List<String> propertyPaths, int size,
             int height, int widthOrDuration, String[] mimeTypes) {
 
-        TreeMap<UUID, List<MediaRepresentation>> result = new TreeMap<UUID, List<MediaRepresentation>>();
-        List<Media> taxonMedia = new ArrayList<Media>();
-        List<MediaRepresentation> mediaRepresentations = new ArrayList<MediaRepresentation>();
+        TreeMap<UUID, List<MediaRepresentation>> result = new TreeMap<>();
+        List<MediaRepresentation> mediaRepresentations = new ArrayList<>();
 
         //add all media of the children to the result map
         if (taxonNode != null){
 
-            List<TaxonNode> nodes = new ArrayList<TaxonNode>();
+            List<TaxonNode> nodes = new ArrayList<>();
 
-            nodes.add(loadTaxonNode(taxonNode, propertyPaths));
+            nodes.add(loadTaxonNode(taxonNode.getUuid(), propertyPaths));
             nodes.addAll(loadChildNodesOfTaxonNode(taxonNode, propertyPaths));
 
-            if (nodes != null){
-                for(TaxonNode node : nodes){
-                    Taxon taxon = node.getTaxon();
-                    for (TaxonDescription taxonDescription: taxon.getDescriptions()){
-                        for (DescriptionElementBase descriptionElement: taxonDescription.getElements()){
-                            for(Media media : descriptionElement.getMedia()){
-                                taxonMedia.add(media);
-
-                                //find the best matching representation
-                                mediaRepresentations.add(MediaUtils.findBestMatchingRepresentation(media,null, size, height, widthOrDuration, mimeTypes));
-
-                            }
+            for(TaxonNode node : nodes){
+                Taxon taxon = node.getTaxon();
+                for (TaxonDescription taxonDescription: taxon.getDescriptions()){
+                    for (DescriptionElementBase descriptionElement: taxonDescription.getElements()){
+                        for(Media media : descriptionElement.getMedia()){
+                            //find the best matching representation
+                            mediaRepresentations.add(MediaUtils.findBestMatchingRepresentation(media,null, size, height, widthOrDuration, mimeTypes));
                         }
                     }
-                    result.put(taxon.getUuid(), mediaRepresentations);
-
                 }
+                result.put(taxon.getUuid(), mediaRepresentations);
             }
-
         }
 
         return result;
-
     }
-
 
     @Override
     @Transactional(readOnly = false)
@@ -505,7 +498,6 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
     	}
     	Map<String, List<TaxonNode>> sortedGenusMap = new HashMap<>();
     	for(TaxonNode node:allNodesOfClassification){
-    		final TaxonNode tn = node;
     		Taxon taxon = node.getTaxon();
     		INonViralName name = taxon.getName();
     		String genusOrUninomial = name.getGenusOrUninomial();
@@ -527,7 +519,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
     			sortedGenusMap.put(genusOrUninomial, list);
     		}else{
     			//create List for genus
-    			List<TaxonNode> list = new ArrayList<TaxonNode>();
+    			List<TaxonNode> list = new ArrayList<>();
     			list.add(node);
     			sortedGenusMap.put(genusOrUninomial, list);
     		}
@@ -827,7 +819,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
      */
     @Override
     public TaxonInContextDTO getTaxonInContext(UUID classificationUuid, UUID taxonBaseUuid,
-            Boolean doChildren, Boolean doSynonyms, List<UUID> ancestorMarkers,
+            Boolean doChildren, Boolean doSynonyms, boolean includeUnpublished, List<UUID> ancestorMarkers,
             NodeSortMode sortMode) {
         TaxonInContextDTO result = new TaxonInContextDTO();
 
@@ -873,7 +865,6 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
             }
         }
 
-
         result.setTaxonUuid(taxonBaseUuid);
         result.setClassificationUuid(classificationUuid);
         if (taxonBase.getSec() != null){
@@ -906,7 +897,8 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
         boolean recursive = false;
         Integer pageSize = null;
         Integer pageIndex = null;
-        Pager<TaxonNodeDto> children = taxonNodeService.pageChildNodesDTOs(taxonNodeUuid, recursive, doSynonyms, sortMode, pageSize, pageIndex);
+        Pager<TaxonNodeDto> children = taxonNodeService.pageChildNodesDTOs(taxonNodeUuid, recursive, includeUnpublished, doSynonyms,
+                sortMode, pageSize, pageIndex);
 
         //children
         if(! isSynonym) {
@@ -915,7 +907,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
                     EntityDTO<Taxon> child = new EntityDTO<Taxon>(childDto.getTaxonUuid(), childDto.getTitleCache());
                     result.addChild(child);
                 }else if (doSynonyms && childDto.getStatus().isSynonym()){
-                    EntityDTO<Synonym> child = new EntityDTO<Synonym>(childDto.getTaxonUuid(), childDto.getTitleCache());
+                    EntityDTO<Synonym> child = new EntityDTO<>(childDto.getTaxonUuid(), childDto.getTitleCache());
                     result.addSynonym(child);
                 }
             }
@@ -928,6 +920,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
 
         //marked ancestors
         if (ancestorMarkers != null && !ancestorMarkers.isEmpty()){
+            @SuppressWarnings("rawtypes")
             List<DefinedTermBase> markerTypesTerms = termDao.list(ancestorMarkers, pageSize, null, null, null);
             List<MarkerType> markerTypes = new ArrayList<>();
             for (DefinedTermBase<?> term : markerTypesTerms){
@@ -1020,6 +1013,4 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
             Classification classification, Integer limit, String pattern) {
         return getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, limit, pattern, false);
     }
-
-
 }

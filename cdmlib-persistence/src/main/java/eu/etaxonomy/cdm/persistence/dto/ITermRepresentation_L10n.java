@@ -30,6 +30,10 @@ public interface ITermRepresentation_L10n {
      */
     public abstract String getAbbreviatedLabel();
 
+    public String getLanguageIso();
+
+    public String getLanguageUuid();
+
     /**
      * Derives the localized representations from the given term and sets
      * the according fields of the  TermRepresentation_L10n instance

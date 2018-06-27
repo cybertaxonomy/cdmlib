@@ -75,14 +75,14 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
 
 	@Override
 	public Pager<DefinedTermBase> getTerms(TermVocabulary vocabulary, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
-        Integer numberOfResults = dao.countTerms(vocabulary);
+        long numberOfResults = dao.countTerms(vocabulary);
 
-		List<DefinedTermBase> results = new ArrayList<DefinedTermBase>();
+		List<DefinedTermBase> results = new ArrayList<>();
 		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 			results = dao.getTerms(vocabulary, pageSize, pageNumber,orderHints,propertyPaths);
 		}
 
-		return new DefaultPagerImpl<DefinedTermBase>(pageNumber, numberOfResults, pageSize, results);
+		return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
 	}
 
 }

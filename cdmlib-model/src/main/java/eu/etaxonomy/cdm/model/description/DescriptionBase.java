@@ -64,7 +64,6 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  * </ul>
  *
  * @author m.doering
- * @version 1.0
  * @since 08-Nov-2007 13:06:24
  */
 
@@ -104,7 +103,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
     @XmlIDREF
     @XmlSchemaType(name="IDREF")
     @ManyToMany(fetch = FetchType.LAZY)  //FIXME what is the difference between this and IdentifiableEntity.sources
-    private Set<Reference> descriptionSources = new HashSet<Reference>();
+    private Set<Reference> descriptionSources = new HashSet<>();
 
     @XmlElementWrapper(name = "DescriptiveDataSets")
     @XmlElement(name = "DescriptiveDataSet")
@@ -127,7 +126,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
     @OneToMany(fetch=FetchType.LAZY, mappedBy = "inDescription", orphanRemoval=true)
     @Cascade( { CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @ContainedIn
-    private Set<DescriptionElementBase> descriptionElements = new HashSet<DescriptionElementBase>();
+    private Set<DescriptionElementBase> descriptionElements = new HashSet<>();
 
     @XmlElement(name = "ImageGallery")
     private boolean imageGallery;
