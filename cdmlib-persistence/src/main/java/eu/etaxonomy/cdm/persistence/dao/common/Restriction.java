@@ -15,6 +15,7 @@ import java.util.List;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
+ * See <code>NameServiceImplTest.testFindByTitle()</code> for usage examples.
  *
  * @author a.kohlbecker
  * @since May 8, 2017
@@ -30,13 +31,15 @@ public class Restriction<T extends Object> {
 
     /**
      * @param propertyName
-     * @param matchMode
+     * @param matchMode is only applied if the <code>value</code> is a <code>String</code> object
      */
     public Restriction(String propertyName, MatchMode matchMode, T ... values ) {
         this.propertyName = propertyName;
-        this.matchMode = matchMode;
         if(values.length > 0){
             this.setValues(Arrays.asList(values));
+            if(values[0] != null && values[0] instanceof String){
+                this.matchMode = matchMode;
+            }
         }
     }
 

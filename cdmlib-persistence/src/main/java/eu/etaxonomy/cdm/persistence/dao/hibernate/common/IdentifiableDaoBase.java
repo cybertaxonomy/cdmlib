@@ -41,6 +41,7 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.persistence.dao.QueryParseException;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
+import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -147,15 +148,14 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
         return query;
     }
 
-
     @Override
-    public List<T> findByTitle(Class<? extends T> clazz, String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        return findByParam(clazz, "titleCache", queryString, matchmode, criterion, pageSize, pageNumber, orderHints, propertyPaths);
+    public List<T> findByTitle(Class<? extends T> clazz, String queryString, MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+        return findByParamWithRestrictions(clazz, "titleCache", queryString, matchmode, restrictions, pageSize, pageNumber, orderHints, propertyPaths);
     }
 
     @Override
-    public List<T> findByReferenceTitle(Class<? extends T> clazz, String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        return findByParam(clazz, "title", queryString, matchmode, criterion, pageSize, pageNumber, orderHints, propertyPaths);
+    public List<T> findByReferenceTitle(Class<? extends T> clazz, String queryString, MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+        return findByParamWithRestrictions(clazz, "title", queryString, matchmode, restrictions, pageSize, pageNumber, orderHints, propertyPaths);
     }
 
     @Override
@@ -313,15 +313,14 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
     }
 
 
-
     @Override
-    public long countByTitle(Class<? extends T> clazz, String queryString,	MatchMode matchmode, List<Criterion> criterion) {
-        return countByParam(clazz, "titleCache",queryString,matchmode,criterion);
+    public long countByTitle(Class<? extends T> clazz, String queryString,	MatchMode matchmode, List<Restriction<?>> restrictions) {
+        return countByParamWithRestrictions(clazz, "titleCache", queryString, matchmode, restrictions);
     }
 
     @Override
-    public long countByReferenceTitle(Class<? extends T> clazz, String queryString,	MatchMode matchmode, List<Criterion> criterion) {
-        return countByParam(clazz, "title",queryString,matchmode,criterion);
+    public long countByReferenceTitle(Class<? extends T> clazz, String queryString,	MatchMode matchmode, List<Restriction<?>> restrictions) {
+        return countByParamWithRestrictions(clazz, "title", queryString, matchmode, restrictions);
     }
 
     @Override

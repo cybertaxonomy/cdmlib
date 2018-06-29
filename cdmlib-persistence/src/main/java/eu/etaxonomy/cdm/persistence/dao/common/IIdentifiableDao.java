@@ -12,16 +12,12 @@ package eu.etaxonomy.cdm.persistence.dao.common;
 import java.util.List;
 import java.util.UUID;
 
-import org.hibernate.criterion.Criterion;
-
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
-import eu.etaxonomy.cdm.model.common.Identifier;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.media.Rights;
-import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -103,7 +99,7 @@ public interface IIdentifiableDao <T extends IdentifiableEntity> extends IAnnota
 	 * @param clazz filter by class - can be null to include all instances of type T
 	 * @param queryString the query string to filter by
 	 * @param matchmode use a particular type of matching (can be null - defaults to exact matching)
-	 * @param criteria extra restrictions to apply
+     * @param restrictions a <code>List</code> of additional {@link Restriction}s to filter by
 	 * @param pageSize The maximum number of rights returned (can be null for all rights)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
 	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
@@ -113,7 +109,7 @@ public interface IIdentifiableDao <T extends IdentifiableEntity> extends IAnnota
 	 *            authorTeam.persistentTitleCache
 	 * @return a List of instances of type T matching the queryString
 	 */
-	public List<T> findByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+	public List<T> findByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 
 
@@ -135,7 +131,7 @@ public interface IIdentifiableDao <T extends IdentifiableEntity> extends IAnnota
 	 * @param clazz filter by class - can be null to include all instances of type T
 	 * @param queryString the query string to filter by
 	 * @param matchmode use a particular type of matching (can be null - defaults to exact matching)
-	 * @param criteria extra restrictions to apply
+     * @param restrictions a <code>List</code> of additional {@link Restriction}s to filter by
 	 * @param pageSize The maximum number of rights returned (can be null for all rights)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
 	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
@@ -145,7 +141,7 @@ public interface IIdentifiableDao <T extends IdentifiableEntity> extends IAnnota
 	 *            authorTeam.persistentTitleCache
 	 * @return a List of instances of type T matching the queryString
 	 */
-	public List<T> findByReferenceTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+	public List<T> findByReferenceTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
 	 * Return a count of objects matching the given query string in the titleCache, optionally filtered by class, optionally with a particular MatchMode
@@ -153,10 +149,10 @@ public interface IIdentifiableDao <T extends IdentifiableEntity> extends IAnnota
 	 * @param clazz filter by class - can be null to include all instances of type T
 	 * @param queryString the query string to filter by
 	 * @param matchmode use a particular type of matching (can be null - defaults to exact matching)
-	 * @param criteria extra restrictions to apply
+     * @param restrictions a <code>List</code> of additional {@link Restriction}s to filter by
 	 * @return a count of instances of type T matching the queryString
 	 */
-	public long countByTitle(Class<? extends T> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria);
+	public long countByTitle(Class<? extends T> clazz, String queryString, MatchMode matchmode,  List<Restriction<?>> restrictions);
 
 	/**
 	 * Return a count of objects matching the given query string in the title, optionally filtered by class, optionally with a particular MatchMode
@@ -164,10 +160,10 @@ public interface IIdentifiableDao <T extends IdentifiableEntity> extends IAnnota
 	 * @param clazz filter by class - can be null to include all instances of type T
 	 * @param queryString the query string to filter by
 	 * @param matchmode use a particular type of matching (can be null - defaults to exact matching)
-	 * @param criteria extra restrictions to apply
+     * @param restrictions a <code>List</code> of additional {@link Restriction}s to filter by
 	 * @return a count of instances of type T matching the queryString
 	 */
-	public long countByReferenceTitle(Class<? extends T> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria);
+	public long countByReferenceTitle(Class<? extends T> clazz, String queryString, MatchMode matchmode, List<Restriction<?>> restrictions);
 
 	/**
 	 * Return a count of distinct titleCache Strings for a given {@link IdentifiableEntity}, optionally filtered by class, optionally with a particular MatchMode

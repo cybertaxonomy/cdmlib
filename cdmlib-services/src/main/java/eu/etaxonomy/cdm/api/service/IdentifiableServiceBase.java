@@ -19,7 +19,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.hibernate.criterion.Criterion;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
@@ -44,6 +43,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
+import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.HibernateBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.initializer.AutoPropertyInitializer;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
@@ -134,12 +134,12 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 
 	@Transactional(readOnly = true)
 	@Override
-	public Pager<T> findByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-		 long numberOfResults = dao.countByTitle(clazz, queryString, matchmode, criteria);
+	public Pager<T> findByTitle(Class<? extends T> clazz, String queryString, MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+		 long numberOfResults = dao.countByTitle(clazz, queryString, matchmode, restrictions);
 
 		 List<T> results = new ArrayList<>();
 		 if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-				results = dao.findByTitle(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
+				results = dao.findByTitle(clazz, queryString, matchmode, restrictions, pageSize, pageNumber, orderHints, propertyPaths);
 		 }
 
 		 return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
@@ -148,17 +148,17 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 	@Transactional(readOnly = true)
 	@Override
 	public Pager<T> findByTitle(IIdentifiableEntityServiceConfigurator<T> config){
-		return findByTitle(config.getClazz(), config.getTitleSearchStringSqlized(), config.getMatchMode(), config.getCriteria(), config.getPageSize(), config.getPageNumber(), config.getOrderHints(), config.getPropertyPaths());
+		return findByTitle(config.getClazz(), config.getTitleSearchStringSqlized(), config.getMatchMode(), config.getRestrictions(), config.getPageSize(), config.getPageNumber(), config.getOrderHints(), config.getPropertyPaths());
 	}
 
 	@Transactional(readOnly = true)
 	@Override
-	public List<T> listByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-		 long numberOfResults = dao.countByTitle(clazz, queryString, matchmode, criteria);
+	public List<T> listByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+		 long numberOfResults = dao.countByTitle(clazz, queryString, matchmode, restrictions);
 
 		 List<T> results = new ArrayList<>();
 		 if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-				results = dao.findByTitle(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
+				results = dao.findByTitle(clazz, queryString, matchmode, restrictions, pageSize, pageNumber, orderHints, propertyPaths);
 		 }
 		 return results;
 	}
@@ -180,12 +180,12 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 
 	@Transactional(readOnly = true)
 	@Override
-	public List<T> listByReferenceTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-		 long numberOfResults = dao.countByReferenceTitle(clazz, queryString, matchmode, criteria);
+	public List<T> listByReferenceTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+		 long numberOfResults = dao.countByReferenceTitle(clazz, queryString, matchmode, restrictions);
 
 		 List<T> results = new ArrayList<>();
 		 if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-		     results = dao.findByReferenceTitle(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
+		     results = dao.findByReferenceTitle(clazz, queryString, matchmode, restrictions, pageSize, pageNumber, orderHints, propertyPaths);
 		 }
 		 return results;
 	}
@@ -536,8 +536,8 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 
 	@Transactional(readOnly = true)
 	@Override
-	public long countByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria){
-		 long numberOfResults = dao.countByTitle(clazz, queryString, matchmode, criteria);
+	public long countByTitle(Class<? extends T> clazz, String queryString, MatchMode matchmode,  List<Restriction<?>> restrictions){
+		 long numberOfResults = dao.countByTitle(clazz, queryString, matchmode, restrictions);
 
 		 return numberOfResults;
 	}
@@ -546,7 +546,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 	@Override
 	public long countByTitle(IIdentifiableEntityServiceConfigurator<T> config){
 		return countByTitle(config.getClazz(), config.getTitleSearchStringSqlized(),
-				config.getMatchMode(), config.getCriteria());
+				config.getMatchMode(), config.getRestrictions());
 
 	}
 
