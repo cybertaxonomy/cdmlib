@@ -75,15 +75,15 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 	}
 
     @Override
-	protected List<T> findByParam(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+	protected List<T> findByParamWithCriterion(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
     	checkNotInPriorView("IdentifiableDaoBase.findByParam(Class<? extends T> clazz, String queryString, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
-    	return super.findByParam(clazz, param, queryString, matchmode, criterion, pageSize, pageNumber, orderHints, propertyPaths);
+    	return super.findByParamWithCriterion(clazz, param, queryString, matchmode, criterion, pageSize, pageNumber, orderHints, propertyPaths);
     }
 
     @Override
-    protected List<T> findByParamWithRestrictions(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+    protected List<T> findByParam(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
             checkNotInPriorView("IdentifiableDaoBase.findByParam(Class<? extends T> clazz, String queryString, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
-        return super.findByParamWithRestrictions(clazz, param, queryString, matchmode, restrictions, pageSize, pageNumber, orderHints, propertyPaths);
+        return super.findByParam(clazz, param, queryString, matchmode, restrictions, pageSize, pageNumber, orderHints, propertyPaths);
     }
 
 	@Override
@@ -383,9 +383,9 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 	}
 
 	@Override
-	protected long countByParam(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode, List<Criterion> criterion) {
+	protected long countByParamWithCriterion(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode, List<Criterion> criterion) {
     	checkNotInPriorView("IdentifiableDaoBase.findByParam(Class<? extends T> clazz, String queryString, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
-    	return super.countByParam(clazz, param, queryString, matchmode, criterion);
+    	return super.countByParamWithCriterion(clazz, param, queryString, matchmode, criterion);
 	}
 
 	@Override

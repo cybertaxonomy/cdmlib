@@ -50,12 +50,12 @@ public class UserDaoImpl extends CdmEntityDaoBase<User> implements IUserDao {
 
     @Override
     public long countByUsername(String queryString,	MatchMode matchmode, List<Criterion> criterion) {
-        return countByParam(type, "username",queryString,matchmode,criterion);
+        return countByParamWithCriterion(type, "username",queryString,matchmode,criterion);
     }
 
     @Override
     public List<User> findByUsername(String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        return findByParam(type, "username", queryString, matchmode, criterion, pageSize, pageNumber, orderHints, propertyPaths);
+        return findByParamWithCriterion(type, "username", queryString, matchmode, criterion, pageSize, pageNumber, orderHints, propertyPaths);
     }
 
 }

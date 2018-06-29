@@ -62,13 +62,13 @@ public class PrimerDaoHibernateImpl extends AnnotatableDaoImpl<Primer> implement
 
     @Override
     public long countByTitle(String queryString, MatchMode matchmode, List<Criterion> criteria) {
-        return countByParam(Primer.class, "label", queryString, matchmode, criteria);
+        return countByParamWithCriterion(Primer.class, "label", queryString, matchmode, criteria);
     }
 
     @Override
     public List<Primer> findByTitle(String queryString, MatchMode matchmode, List<Criterion> criteria,
             Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        return findByParam(Primer.class, "label", queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
+        return findByParamWithCriterion(Primer.class, "label", queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
     }
 
     /**
