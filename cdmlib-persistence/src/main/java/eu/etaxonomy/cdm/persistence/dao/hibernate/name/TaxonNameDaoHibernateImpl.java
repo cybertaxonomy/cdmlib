@@ -781,12 +781,12 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
 
     @Override
     public long countByName(Class<TaxonName> clazz,String queryString, MatchMode matchmode, List<Criterion> criteria) {
-        return super.countByParamWithCriterion(clazz, "nameCache", queryString, matchmode, criteria);
+        return super.countByParam(clazz, "nameCache", queryString, matchmode, criteria);
     }
 
     @Override
     public List<TaxonName> findByName(Class<TaxonName> clazz,	String queryString, MatchMode matchmode, List<Criterion> criteria,Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
-        return super.findByParamWithCriterion(clazz, "nameCache", queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
+        return super.findByParam(clazz, "nameCache", queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
     }
 
     @Override

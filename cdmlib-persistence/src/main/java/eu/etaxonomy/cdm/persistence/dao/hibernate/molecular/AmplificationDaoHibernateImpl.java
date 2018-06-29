@@ -69,12 +69,12 @@ public class AmplificationDaoHibernateImpl extends AnnotatableDaoImpl<Amplificat
 
     @Override
     public long countByTitle(String queryString, MatchMode matchmode, List<Criterion> criteria) {
-        return countByParamWithCriterion(Amplification.class, "labelCache", queryString, matchmode, criteria);
+        return countByParam(Amplification.class, "labelCache", queryString, matchmode, criteria);
     }
 
     @Override
     public List<Amplification> findByTitle(String queryString, MatchMode matchmode, List<Criterion> criteria,
             Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        return findByParamWithCriterion(Amplification.class, "labelCache", queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
+        return findByParam(Amplification.class, "labelCache", queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
     }
 }

@@ -966,10 +966,10 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
      * @param propertyPaths
      * @return
      *
-     * @deprecated consider using {@link #findByParam(Class, String, String, MatchMode, List, Integer, Integer, List, List))
+     * @deprecated consider using {@link #findByParamWithRestrictions(Class, String, String, MatchMode, List, Integer, Integer, List, List))
      */
     @Deprecated
-    protected List<T> findByParamWithCriterion(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode,
+    protected List<T> findByParam(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode,
             List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths) {
 
@@ -1017,10 +1017,10 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
      * @param criterion
      * @return
      *
-     * @deprecated consider using {@link #countByParam(Class, String, String, MatchMode, List)}
+     * @deprecated consider using {@link #countByParamWithRestrictions(Class, String, String, MatchMode, List)}
      */
     @Deprecated
-    protected long countByParamWithCriterion(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode,
+    protected long countByParam(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode,
             List<Criterion> criterion) {
 
         Criteria criteria = null;
@@ -1114,7 +1114,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         return criteria;
     }
 
-    protected List<T> findByParam(Class<? extends T> clazz, String param, String queryString,
+    protected List<T> findByParamWithRestrictions(Class<? extends T> clazz, String param, String queryString,
             MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints, List<String> propertyPaths) {
 
@@ -1138,7 +1138,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
     }
 
-    protected long countByParam(Class<? extends T> clazz, String param, String queryString,
+    protected long countByParamWithRestrictions(Class<? extends T> clazz, String param, String queryString,
             MatchMode matchmode, List<Restriction<?>> restrictions) {
 
         Criteria criteria = createCriteria(clazz, param, queryString, matchmode, restrictions, true);
