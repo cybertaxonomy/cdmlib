@@ -102,7 +102,7 @@ public class GbifImport extends SpecimenImportBase<GbifImportConfigurator, Speci
                 logger.info("There were no results for the query: " + config.getOccurenceQuery().toString());
                 return;
             }
-            List<Reference> references = getReferenceService().listByReferenceTitle(Reference.class, state.getConfig().getSourceReferenceTitle(), MatchMode.LIKE, null, null, null, null, null);
+            List<Reference> references = getReferenceService().listByReferenceTitleWithRestrictions(Reference.class, state.getConfig().getSourceReferenceTitle(), MatchMode.LIKE, null, null, null, null, null);
             //List<Reference> references = new ArrayList<Reference>();
             if (state.getRef()==null){
                 String name = NB(( state.getConfig()).getSourceReferenceTitle());

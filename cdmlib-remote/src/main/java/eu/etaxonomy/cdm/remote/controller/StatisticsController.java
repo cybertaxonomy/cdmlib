@@ -123,7 +123,7 @@ public class StatisticsController {
         if (classificationName != null) {
             for (String string : classificationName) {
                     List <Classification> classifications = classificationService
-                            .listByTitle(Classification.class, string,
+                            .listByTitleWithRestrictions(Classification.class, string,
                                     MatchMode.EXACT, null, null, null, null,
                                     null);
                     classificationFilters.addAll(classifications);

@@ -702,7 +702,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
          */
         assertEquals("Number of taxon nodes is incorrect", 2, taxonNodeService.count(TaxonNode.class));
         assertEquals("Number of taxa is incorrect", 1, taxonService.count(TaxonBase.class));
-        assertEquals(1, taxonService.findByTitle(Taxon.class, "Campanula ..g... americana --- hort. ttt ex Steud.", MatchMode.ANYWHERE, null, null, null, null, null).getRecords().size());
+        assertEquals(1, taxonService.findByTitleWithRestrictions(Taxon.class, "Campanula ..g... americana --- hort. ttt ex Steud.", MatchMode.ANYWHERE, null, null, null, null, null).getRecords().size());
     }
 
 	@Test

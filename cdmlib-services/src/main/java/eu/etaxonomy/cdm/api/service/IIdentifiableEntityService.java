@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.List;
 import java.util.UUID;
 
+import org.hibernate.criterion.Criterion;
+
 import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.IdentifiedEntityDTO;
 import eu.etaxonomy.cdm.api.service.dto.MarkedEntityDTO;
@@ -106,6 +108,23 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity>
      */
     public String getTitleCache(UUID uuid, boolean refresh);
 
+    /**
+     * Return a Pager of objects matching the given query string, optionally filtered by class, optionally with a particular MatchMode
+     *
+     * @param clazz filter by class - can be null to include all instances of type T
+     * @param queryString the query string to filter by
+     * @param matchmode use a particular type of matching (can be null - defaults to exact matching)
+     * @param criteria additional criteria to filter by
+     * @param pageSize The maximum number of objects returned (can be null for all objects)
+     * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+     * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
+     * @param orderHints
+     *            Supports path like <code>orderHints.propertyNames</code> which
+     *            include *-to-one properties like createdBy.username or
+     *            authorTeam.persistentTitleCache
+     * @return a paged list of instances of type T matching the queryString
+     */
+    public Pager<T> findByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 
     /**
@@ -124,7 +143,7 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity>
      *            authorTeam.persistentTitleCache
      * @return a paged list of instances of type T matching the queryString
      */
-    public Pager<T> findByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+    public Pager<T> findByTitleWithRestrictions(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 
     /**
@@ -135,6 +154,17 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity>
      */
     public Pager<T> findByTitle(IIdentifiableEntityServiceConfigurator<T> configurator);
 
+    /**
+     * Return an Integer of how many objects matching the given query string, optionally filtered by class, optionally with a particular MatchMode
+     *
+     * @param clazz filter by class - can be null to include all instances of type T
+     * @param queryString the query string to filter by
+     * @param matchmode use a particular type of matching (can be null - defaults to exact matching)
+     * @param criteria additional criteria to filter by
+     *
+     * @return
+     */
+    public long countByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria);
 
     /**
      * Return an Integer of how many objects matching the given query string, optionally filtered by class, optionally with a particular MatchMode
@@ -146,7 +176,7 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity>
      *
      * @return
      */
-    public long countByTitle(Class<? extends T> clazz, String queryString, MatchMode matchmode, List<Restriction<?>> restrictions);
+    public long countByTitleWithRestrictions(Class<? extends T> clazz, String queryString, MatchMode matchmode, List<Restriction<?>> restrictions);
 
     /**
      * Return an Integer of how many objects matching the given query string, optionally filtered by class, optionally with a particular MatchMode
@@ -157,6 +187,23 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity>
      */
     public long countByTitle(IIdentifiableEntityServiceConfigurator<T> configurator);
 
+    /**
+     * Return a List of objects matching the given query string, optionally filtered by class, optionally with a particular MatchMode
+     *
+     * @param clazz filter by class - can be null to include all instances of type T
+     * @param queryString the query string to filter by
+     * @param matchmode use a particular type of matching (can be null - defaults to exact matching)
+     * @param criteria additional criteria to filter by
+     * @param pageSize The maximum number of objects returned (can be null for all objects)
+     * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+     * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
+     * @param orderHints
+     *            Supports path like <code>orderHints.propertyNames</code> which
+     *            include *-to-one properties like createdBy.username or
+     *            authorTeam.persistentTitleCache
+     * @return a list of instances of type T matching the queryString
+     */
+    public List<T> listByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Return a List of objects matching the given query string, optionally filtered by class, optionally with a particular MatchMode
@@ -174,7 +221,25 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity>
      *            authorTeam.persistentTitleCache
      * @return a list of instances of type T matching the queryString
      */
-    public List<T> listByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+    public List<T> listByTitleWithRestrictions(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+
+    /**
+     * Return a List of objects matching the given query string, optionally filtered by class, optionally with a particular MatchMode
+     *
+     * @param clazz filter by class - can be null to include all instances of type T
+     * @param queryString the query string to filter by
+     * @param matchmode use a particular type of matching (can be null - defaults to exact matching)
+     * @param criteria additional criteria to filter by
+     * @param pageSize The maximum number of objects returned (can be null for all objects)
+     * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+     * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
+     * @param orderHints
+     *            Supports path like <code>orderHints.propertyNames</code> which
+     *            include *-to-one properties like createdBy.username or
+     *            authorTeam.persistentTitleCache
+     * @return a list of instances of type T matching the queryString
+     */
+    public List<T> listByReferenceTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Return a List of objects matching the given query string, optionally filtered by class, optionally with a particular MatchMode
@@ -192,7 +257,7 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity>
      *            authorTeam.persistentTitleCache
      * @return a list of instances of type T matching the queryString
      */
-    public List<T> listByReferenceTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+    public List<T> listByReferenceTitleWithRestrictions(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Returns a Paged List of IdentifiableEntity instances where the default field matches the String queryString (as interpreted by the Lucene QueryParser)

@@ -896,43 +896,43 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         List<Restriction<?>> restrictions;
         Pager<TaxonName> result;
 
-        result = nameService.findByTitle(null, "Name1", MatchMode.EXACT, null, null, null, null, null);
+        result = nameService.findByTitleWithRestrictions(null, "Name1", MatchMode.EXACT, null, null, null, null, null);
         assertEquals(1l, result.getCount().longValue());
         assertEquals("Name1", result.getRecords().iterator().next().getTitleCache());
 
-        result = nameService.findByTitle(null, "Name", MatchMode.BEGINNING, null, null, null, null, null);
+        result = nameService.findByTitleWithRestrictions(null, "Name", MatchMode.BEGINNING, null, null, null, null, null);
         assertEquals(3l, result.getCount().longValue());
 
         restrictions = Arrays.asList(new Restriction<UUID>("typeDesignations.uuid", null, UUID.fromString("9bbda70b-7272-4e65-a807-852a3f2eba63")));
-        result = nameService.findByTitle(null, "Name", MatchMode.BEGINNING, restrictions, null, null, null, null);
+        result = nameService.findByTitleWithRestrictions(null, "Name", MatchMode.BEGINNING, restrictions, null, null, null, null);
         assertEquals(1l, result.getCount().longValue());
         assertEquals("Name1", result.getRecords().iterator().next().getTitleCache());
 
-        result = nameService.findByTitle(null, "me1", MatchMode.END, restrictions, null, null, null, null);
+        result = nameService.findByTitleWithRestrictions(null, "me1", MatchMode.END, restrictions, null, null, null, null);
         assertEquals(1l, result.getCount().longValue());
         assertEquals("Name1", result.getRecords().iterator().next().getTitleCache());
 
-        result = nameService.findByTitle(null, "Name2", MatchMode.EXACT, restrictions, null, null, null, null);
+        result = nameService.findByTitleWithRestrictions(null, "Name2", MatchMode.EXACT, restrictions, null, null, null, null);
         assertEquals(0l, result.getCount().longValue());
 
         // Logger.getLogger("eu.etaxonomy.cdm.persistence.dao.hibernate.common").setLevel(Level.DEBUG);
 
         restrictions = Arrays.asList(new Restriction<String>("typeDesignations.typeSpecimen.titleCache", MatchMode.EXACT, "Specimen2"));
-        result = nameService.findByTitle(null, "Name2", MatchMode.EXACT, restrictions, null, null, null, null);
+        result = nameService.findByTitleWithRestrictions(null, "Name2", MatchMode.EXACT, restrictions, null, null, null, null);
         assertEquals(1l, result.getCount().longValue());
         assertEquals("Name2", result.getRecords().iterator().next().getTitleCache());
 
         restrictions = Arrays.asList(new Restriction<String>("typeDesignations.typeSpecimen.titleCache", MatchMode.EXACT, "Specimen1"));
-        result = nameService.findByTitle(null, "Name2", MatchMode.EXACT, restrictions, null, null, null, null);
+        result = nameService.findByTitleWithRestrictions(null, "Name2", MatchMode.EXACT, restrictions, null, null, null, null);
         assertEquals(0l, result.getCount().longValue());
 
         restrictions = Arrays.asList(new Restriction<String>("typeDesignations.typeSpecimen.titleCache", MatchMode.BEGINNING, "Specimen"));
-        result = nameService.findByTitle(null, "Name1", MatchMode.EXACT, restrictions, null, null, null, null);
+        result = nameService.findByTitleWithRestrictions(null, "Name1", MatchMode.EXACT, restrictions, null, null, null, null);
         assertEquals("names with multiple matching typeSpecimens must be deduplicated", 1l, result.getCount().longValue());
         assertEquals("Name1", result.getRecords().iterator().next().getTitleCache());
 
         restrictions = Arrays.asList(new Restriction<String>("typeDesignations.typeSpecimen.titleCache", MatchMode.BEGINNING, "Specimen"));
-        result = nameService.findByTitle(null, "Name", MatchMode.BEGINNING, restrictions, null, null, null, null);
+        result = nameService.findByTitleWithRestrictions(null, "Name", MatchMode.BEGINNING, restrictions, null, null, null, null);
         assertEquals(2l, result.getCount().longValue());
 
     }
@@ -952,11 +952,11 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         Logger.getLogger("eu.etaxonomy.cdm.persistence.dao.hibernate.common").setLevel(Level.DEBUG);
 
         restrictions = Arrays.asList(new Restriction<UUID>("typeDesignations.uuid", null, UUID.fromString("9bbda70b-7272-4e65-a807-852a3f2eba63"), UUID.fromString("1357c307-00c3-499c-8e20-0849d4706125")));
-        result = nameService.findByTitle(null, "Name", MatchMode.BEGINNING, restrictions, null, null, null, null);
+        result = nameService.findByTitleWithRestrictions(null, "Name", MatchMode.BEGINNING, restrictions, null, null, null, null);
         assertEquals(2l, result.getCount().longValue());
 
         restrictions = Arrays.asList(new Restriction<String>("typeDesignations.typeSpecimen.titleCache", null, "Specimen1", "Specimen2"));
-        result = nameService.findByTitle(null, "Name1", MatchMode.EXACT, restrictions, null, null, null, null);
+        result = nameService.findByTitleWithRestrictions(null, "Name1", MatchMode.EXACT, restrictions, null, null, null, null);
         assertEquals("names with multiple matching typeSpecimens must be distinct", 1l, result.getCount().longValue());
         assertEquals("Name1", result.getRecords().iterator().next().getTitleCache());
 

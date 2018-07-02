@@ -184,7 +184,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
      */
     @Override
     public List<Country> getCountryByName(String name) {
-        List<? extends DefinedTermBase> terms = this.definedTermDao.findByTitle(Country.class, name, null, null, null, null, null, null);
+        List<? extends DefinedTermBase> terms = this.definedTermDao.findByTitleWithRestrictions(Country.class, name, null, null, null, null, null, null);
         List<Country> countries = new ArrayList<>();
         for (int i = 0; i < terms.size(); i++) {
             countries.add((Country) terms.get(i));

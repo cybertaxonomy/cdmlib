@@ -269,7 +269,7 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 
 	protected boolean analyzeFeatures(STATE state, KeyValue keyValue) {
 		String key = keyValue.key;
-		Pager<DefinedTermBase> features = getTermService().findByTitle(Feature.class, key, null, null, null, null, null, null);
+		Pager<DefinedTermBase> features = getTermService().findByTitleWithRestrictions(Feature.class, key, null, null, null, null, null, null);
 
 		if (features.getCount() > 1){
 			String message = "More than one feature found matching key " + key;

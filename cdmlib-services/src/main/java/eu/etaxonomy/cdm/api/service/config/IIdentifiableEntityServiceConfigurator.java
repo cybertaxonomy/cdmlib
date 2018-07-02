@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.api.service.config;
 import java.io.Serializable;
 import java.util.List;
 
+import org.hibernate.criterion.Criterion;
+
 import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -45,7 +47,10 @@ public interface IIdentifiableEntityServiceConfigurator<T extends IIdentifiableE
 
 	public Integer getPageNumber();
 	public void setPageNumber(Integer pageNumber);
-
+    
+	public List<Criterion> getCriteria();
+    public void setCriteria(List<Criterion> criteria);
+    
 	public List<Restriction<?>> getRestrictions();
 	public void setRestrictions(List<Restriction<?>> restrictions);
 

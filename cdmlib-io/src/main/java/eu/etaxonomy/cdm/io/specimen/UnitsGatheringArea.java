@@ -112,7 +112,7 @@ public class UnitsGatheringArea {
             UUID areaUUID = null;
             areaUUID = getNamedAreaDecision(namedAreaStr,config);
             //first, check if there is an exact match
-            List<DefinedTermBase> exactMatchingTerms = termService.findByTitle(DefinedTermBase.class, namedAreaStr, MatchMode.EXACT, null, null, null, null, null).getRecords();
+            List<DefinedTermBase> exactMatchingTerms = termService.findByTitleWithRestrictions(DefinedTermBase.class, namedAreaStr, MatchMode.EXACT, null, null, null, null, null).getRecords();
             if(!exactMatchingTerms.isEmpty()){
                 //check for continents
                 List<DefinedTermBase> exactMatchingContinentTerms = new ArrayList<DefinedTermBase>();
@@ -132,7 +132,7 @@ public class UnitsGatheringArea {
                 }
             }
             if (areaUUID == null && config.isInteractWithUser()){
-                Pager<DefinedTermBase> matchingTerms = termService.findByTitle(DefinedTermBase.class, namedAreaStr, MatchMode.ANYWHERE, null, null, null, null, null);
+                Pager<DefinedTermBase> matchingTerms = termService.findByTitleWithRestrictions(DefinedTermBase.class, namedAreaStr, MatchMode.ANYWHERE, null, null, null, null, null);
                 String packagePrefix = "eu.etaxonomy.cdm.model.location.";
                 for (DefinedTermBase matchingTerm : matchingTerms.getRecords()) {
                     String termLabel = matchingTerm.getTitleCache();
