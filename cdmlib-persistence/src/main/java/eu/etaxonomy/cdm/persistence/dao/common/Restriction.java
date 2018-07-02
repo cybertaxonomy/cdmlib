@@ -27,6 +27,8 @@ public class Restriction<T extends Object> {
 
     private MatchMode matchMode;
 
+    private boolean not = false;
+
     private List<T> values = null;
 
     /**
@@ -34,7 +36,12 @@ public class Restriction<T extends Object> {
      * @param matchMode is only applied if the <code>value</code> is a <code>String</code> object
      */
     public Restriction(String propertyName, MatchMode matchMode, T ... values ) {
+        this(propertyName, false, matchMode, values);
+    }
+
+    public Restriction(String propertyName, boolean not , MatchMode matchMode, T ... values ) {
         this.propertyName = propertyName;
+        this.not = not;
         if(values.length > 0){
             this.setValues(Arrays.asList(values));
             if(values[0] != null && values[0] instanceof String){
@@ -94,6 +101,21 @@ public class Restriction<T extends Object> {
      */
     public void addValue(T value){
         getValues().add(value);
+    }
+
+    /**
+     *
+     * @return the not
+     */
+    public boolean isNot() {
+        return not;
+    }
+
+    /**
+     * @param not the not to set
+     */
+    public void setNot(boolean not) {
+        this.not = not;
     }
 
 

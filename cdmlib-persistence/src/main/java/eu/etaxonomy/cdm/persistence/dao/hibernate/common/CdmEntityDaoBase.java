@@ -41,6 +41,7 @@ import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.metadata.ClassMetadata;
+import org.hibernate.sql.JoinType;
 import org.hibernate.type.Type;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -523,6 +524,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
         for(Restriction<?> propMatchMode : restrictions){
             Collection<? extends Object> values = propMatchMode.getValues();
+            JoinType jointype = propMatchMode.isNot() ? JoinType.LEFT_OUTER_JOIN : JoinType.INNER_JOIN;
             if(values != null && !values.isEmpty()){
                 // ---
                 String propertyPath = propMatchMode.getPropertyName();
@@ -533,7 +535,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
                     propertyName = propertyPath;
                 } else {
                     // create aliases if the propertyName is a dot separated property path
-                    String aĺiasKey = "";
+                    String aĺiasKey = jointype.name() + "_";
                     String aliasedProperty = null;
                     String alias = "";
                     for(int p = 0; p < props.length -1; p++){
@@ -542,7 +544,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
                         if(!aliases.containsKey(aliasedProperty)){
                             alias = alias + (alias.isEmpty() ? "" : "_" ) + props[p];
                             aliases.put(aĺiasKey, alias);
-                            criteria.createAlias(aliasedProperty, alias);
+                            criteria.createAlias(aliasedProperty, alias, jointype);
                             if(logger.isDebugEnabled()){
                                 logger.debug("addRestrictions() alias created with aliasKey " + aĺiasKey + " => " + aliasedProperty + " as " + alias);
                             }
@@ -554,7 +556,15 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
                 Criterion[] predicates = new Criterion[values.size()];
                 int i = 0;
                 for(Object v : values){
-                    predicates[i++] = createRestriction(propertyName, v, propMatchMode.getMatchMode());
+                    Criterion criterion = createRestriction(propertyName, v, propMatchMode.getMatchMode());
+                    if(propMatchMode.isNot()){
+                        if(props.length > 1){
+                            criterion = Restrictions.or(Restrictions.not(criterion), Restrictions.isNull(propertyName));
+                        } else {
+                            criterion = Restrictions.not(criterion);
+                        }
+                    }
+                    predicates[i++] = criterion;
                     if(logger.isDebugEnabled()){
                         logger.debug("addRestrictions() predicate with " + propertyName + " " + (propMatchMode.getMatchMode() == null ? "=" : propMatchMode.getMatchMode().name()) + " " + v.toString());
                     }
