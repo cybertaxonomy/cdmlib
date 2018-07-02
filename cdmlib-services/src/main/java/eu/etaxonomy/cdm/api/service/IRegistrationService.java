@@ -27,33 +27,40 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 public interface IRegistrationService extends IAnnotatableService<Registration> {
 
     /**
-     * Returns a sublist of Registration instances stored in the database. A maximum
-     * of 'limit' objects are returned, starting at object with index 'start'.
-     * The bean properties specified by the parameter <code>propertyPaths</code>
-     * and recursively initialized for each of the entities in the resultset
+     * Returns a sublist of Registration instances stored in the database. A
+     * maximum of 'limit' objects are returned, starting at object with index
+     * 'start'. The bean properties specified by the parameter
+     * <code>propertyPaths</code> and recursively initialized for each of the
+     * entities in the resultset
      *
      * For detailed description and examples regarding
      * <code>propertyPaths</code> <b>please refer to:</b>
      * {@link IBeanInitializer#initialize(Object, List)}
      *
-     * @param pageSize The maximum number of objects returned (can be null for all matching objects)
-     * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based,
-     *                   can be null, equivalent of starting at the beginning of the recordset)
+     * @param pageSize
+     *            The maximum number of objects returned (can be null for all
+     *            matching objects)
+     * @param pageNumber
+     *            The offset (in pageSize chunks) from the start of the result
+     *            set (0 - based, can be null, equivalent of starting at the
+     *            beginning of the recordset)
      * @param reference
-     *            filters the Registration by the reference of the nomenclatural act for which the
-     *            Registration as been created. The name and all type designations associated with
-     *            the Registration are sharing the same  citation.
-     *            If the Optional itself is <code>null</code> the parameter is neglected.
-     *            If Optional contains the value <code>null</code> all registrations with a name
-     *            or type designation that has no reference are returned.
-     *            Also those registrations having no name and type designation at all.
+     *            filters the Registration by the reference of the nomenclatural
+     *            act for which the Registration as been created. The name and
+     *            all type designations associated with the Registration are
+     *            sharing the same citation. If the Optional itself is
+     *            <code>null</code> the parameter is neglected. If Optional
+     *            contains the value <code>null</code> all registrations with a
+     *            name or type designation that has no reference are returned.
+     *            Also those registrations having no name and type designation
+     *            at all.
      * @param includedStatus
-     *            filters the Registration by the RegistrationStatus. Only Registration having one of the
-     *            supplied status will included.
-//     * @param orderHints
-//     *            Supports path like <code>orderHints.propertyNames</code> which
-//     *            include *-to-one properties like createdBy.username or
-//     *            authorTeam.persistentTitleCache
+     *            filters the Registration by the RegistrationStatus. Only
+     *            Registration having one of the supplied status will included.
+     *            // * @param orderHints // * Supports path like
+     *            <code>orderHints.propertyNames</code> which // * include
+     *            *-to-one properties like createdBy.username or // *
+     *            authorTeam.persistentTitleCache
      * @param propertyPaths
      * @return
      * @throws DataAccessException
@@ -62,23 +69,35 @@ public interface IRegistrationService extends IAnnotatableService<Registration> 
             Integer pageSize, Integer pageIndex, List<String> propertyPaths);
 
     /**
-     * Returns a sublist of Registration instances stored in the database. A maximum
-     * of 'limit' objects are returned, starting at object with index 'start'.
-     * The bean properties specified by the parameter <code>propertyPaths</code>
-     * and recursively initialized for each of the entities in the resultset
+     * Returns a sublist of Registration instances stored in the database. A
+     * maximum of 'limit' objects are returned, starting at object with index
+     * 'start'. The bean properties specified by the parameter
+     * <code>propertyPaths</code> and recursively initialized for each of the
+     * entities in the resultset
      *
      * For detailed description and examples regarding
      * <code>propertyPaths</code> <b>please refer to:</b>
      * {@link IBeanInitializer#initialize(Object, List)}
      *
-     * @param pageSize The maximum number of objects returned (can be null for all matching objects)
-     * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based,
-     *                   can be null, equivalent of starting at the beginning of the recordset)
      * @param submitter
-     *            Limits the result set to Registrations having the given submitter. This filter is ignored if set to <code>null</code>.
+     *            Limits the result set to Registrations having the given
+     *            submitter. This filter is ignored if set to <code>null</code>.
      * @param includedStatus
-     *            filters the Registration by the RegistrationStatus. Only Registration having one of
-     *            the supplied status will included.
+     *            filters the Registration by the RegistrationStatus. Only
+     *            Registration having one of the supplied status will included.
+     * @param identifierFilterPattern
+     *            filters the Registration by this pattern, The asterisk can be used
+     *            * as wildcard in any position of the pattern string
+     * @param taxonNameFilterPattern
+     *            filters the registered taxon name by this pattern, The asterisk can be used
+     *            * as wildcard in any position of the pattern string
+     * @param pageSize
+     *            The maximum number of objects returned (can be null for all
+     *            matching objects)
+     * @param pageNumber
+     *            The offset (in pageSize chunks) from the start of the result
+     *            set (0 - based, can be null, equivalent of starting at the
+     *            beginning of the recordset)
      * @param orderHints
      *            Supports path like <code>orderHints.propertyNames</code> which
      *            include *-to-one properties like createdBy.username or
@@ -88,9 +107,7 @@ public interface IRegistrationService extends IAnnotatableService<Registration> 
      * @throws DataAccessException
      */
     public Pager<Registration> page(User submitter, Collection<RegistrationStatus> includedStatus,
-            String identifierFilterPattern, String taxonNameFilterPattern,
-            Integer pageSize, Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths);
-
-
+            String identifierFilterPattern, String taxonNameFilterPattern, Integer pageSize, Integer pageIndex,
+            List<OrderHint> orderHints, List<String> propertyPaths);
 
 }
