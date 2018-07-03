@@ -482,7 +482,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
 
 
 	@Override
-	public <S extends T> int countByIdentifier(Class<S> clazz,
+	public <S extends T> long countByIdentifier(Class<S> clazz,
 			String identifier, DefinedTerm identifierType, MatchMode matchMode) {
 		checkNotInPriorView("IdentifiableDaoBase.countByIdentifier(T clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode)");
 
@@ -505,8 +505,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
         	query.setEntity("type", identifierType);
         }
 
-		Long c = (Long)query.uniqueResult();
-        return c.intValue();
+		return (Long)query.uniqueResult();
 	}
 
 	@Override

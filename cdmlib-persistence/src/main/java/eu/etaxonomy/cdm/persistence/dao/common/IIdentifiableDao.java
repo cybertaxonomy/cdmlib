@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.media.Rights;
+import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -190,7 +191,7 @@ public interface IIdentifiableDao <T extends IdentifiableEntity> extends IAnnota
      * @return a count of instances of type T matching the queryString
      */
     public long countByTitle(Class<? extends T> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria);
-    
+
 	/**
 	 * Return a count of objects matching the given query string in the titleCache, optionally filtered by class, optionally with a particular MatchMode
 	 *
@@ -212,7 +213,7 @@ public interface IIdentifiableDao <T extends IdentifiableEntity> extends IAnnota
      * @return a count of instances of type T matching the queryString
      */
     public long countByReferenceTitle(Class<? extends T> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria);
-    
+
 	/**
 	 * Return a count of objects matching the given query string in the title, optionally filtered by class, optionally with a particular MatchMode
 	 *
@@ -244,7 +245,7 @@ public interface IIdentifiableDao <T extends IdentifiableEntity> extends IAnnota
 	 * @see #findByIdentifier
 	 * @return
 	 */
-	public <S extends T> int countByIdentifier(Class<S> clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode);
+	public <S extends T> long countByIdentifier(Class<S> clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode);
 
     /**
      * Returns a tuple including the identifier type, the identifier string,

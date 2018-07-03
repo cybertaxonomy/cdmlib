@@ -155,14 +155,14 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<Reference,IRef
             String identifier, DefinedTerm identifierType, MatchMode matchmode,
             Integer limit) {
 
-        Integer numberOfResults = dao.countByIdentifier(Reference.class, identifier, identifierType, matchmode);
+        long numberOfResults = dao.countByIdentifier(Reference.class, identifier, identifierType, matchmode);
         List<Object[]> daoResults = new ArrayList<Object[]>();
         if(numberOfResults > 0) { // no point checking again
             daoResults = dao.findByIdentifierAbbrev( identifier, identifierType,
                     matchmode,  limit);
         }
 
-        List<IdentifiedEntityDTO<Reference>> result = new ArrayList<IdentifiedEntityDTO<Reference>>();
+        List<IdentifiedEntityDTO<Reference>> result = new ArrayList<>();
         for (Object[] daoObj : daoResults){
             result.add(new IdentifiedEntityDTO<Reference>((DefinedTerm)daoObj[0], (String)daoObj[1], (UUID)daoObj[2], (String)daoObj[3],(String)daoObj[4]));
 

@@ -145,7 +145,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 
          return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
     }
-    
+
 	@Transactional(readOnly = true)
 	@Override
 	public Pager<T> findByTitleWithRestrictions(Class<? extends T> clazz, String queryString, MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
@@ -159,13 +159,13 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 		 return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
 	}
 
-	
+
 	@Transactional(readOnly = true)
 	@Override
 	public Pager<T> findByTitle(IIdentifiableEntityServiceConfigurator<T> config){
 		return findByTitleWithRestrictions(config.getClazz(), config.getTitleSearchStringSqlized(), config.getMatchMode(), config.getRestrictions(), config.getPageSize(), config.getPageNumber(), config.getOrderHints(), config.getPropertyPaths());
 	}
-	
+
    @Transactional(readOnly = true)
     @Override
     public List<T> listByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
@@ -216,7 +216,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
          }
          return results;
     }
-    
+
 	@Transactional(readOnly = true)
 	@Override
 	public List<T> listByReferenceTitleWithRestrictions(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
@@ -572,7 +572,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 		}
 		return result;
 	}
-	
+
     @Transactional(readOnly = true)
     @Override
     public long countByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria){
@@ -580,7 +580,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 
          return numberOfResults;
     }
-    
+
 	@Transactional(readOnly = true)
 	@Override
 	public long countByTitleWithRestrictions(Class<? extends T> clazz, String queryString, MatchMode matchmode,  List<Restriction<?>> restrictions){
@@ -604,7 +604,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 			boolean includeEntity, Integer pageSize,
 			Integer pageNumber,	List<String> propertyPaths) {
 
-		Integer numberOfResults = dao.countByIdentifier(clazz, identifier, identifierType, matchmode);
+		long numberOfResults = dao.countByIdentifier(clazz, identifier, identifierType, matchmode);
         List<Object[]> daoResults = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again
         	daoResults = dao.findByIdentifier(clazz, identifier, identifierType,
@@ -628,7 +628,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
             Class<S> clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode,
             boolean includeEntity, List<String> propertyPaths, Integer limit) {
 
-        Integer numberOfResults = dao.countByIdentifier(clazz, identifier, identifierType, matchmode);
+        long numberOfResults = dao.countByIdentifier(clazz, identifier, identifierType, matchmode);
         List<Object[]> daoResults = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again
             daoResults = dao.findByIdentifier(clazz, identifier, identifierType,
