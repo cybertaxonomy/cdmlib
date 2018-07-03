@@ -147,7 +147,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
         }
         return query;
     }
-    
+
     @Override
     public List<T> findByTitle(Class<? extends T> clazz, String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         return findByParam(clazz, "titleCache", queryString, matchmode, criterion, pageSize, pageNumber, orderHints, propertyPaths);
@@ -483,19 +483,18 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
 
 	@Override
 	public <S extends T> int countByIdentifier(Class<S> clazz,
-			String identifier, DefinedTerm identifierType, MatchMode matchmode) {
+			String identifier, DefinedTerm identifierType, MatchMode matchMode) {
 		checkNotInPriorView("IdentifiableDaoBase.countByIdentifier(T clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode)");
 
 		Class<?> clazzParam = clazz == null ? type : clazz;
 		String queryString = "SELECT count(*) FROM " + clazzParam.getSimpleName() + " as c " +
 	                "INNER JOIN c.identifiers as ids " +
 	                "WHERE (1=1) ";
+		if (matchMode == null){
+		    matchMode = MatchMode.EXACT;
+		}
 		if (identifier != null){
-			if (matchmode == null || matchmode == MatchMode.EXACT){
-				queryString += " AND ids.identifier = '"  + identifier + "'";
-			}else {
-				queryString += " AND ids.identifier LIKE '" + matchmode.queryStringFrom(identifier)  + "'";
-			}
+			queryString += " AND ids.identifier LIKE '" + matchMode.queryStringFrom(identifier)  + "'";
 		}
 		if (identifierType != null){
         	queryString += " AND ids.type = :type";
@@ -513,24 +512,24 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
 	@Override
 	public <S extends T> List<Object[]> findByIdentifier(
 			Class<S> clazz, String identifier, DefinedTerm identifierType,
-			MatchMode matchmode, boolean includeEntity,
+			MatchMode matchMode, boolean includeEntity,
 			Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 
 		checkNotInPriorView("IdentifiableDaoBase.findByIdentifier(T clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
 
 		Class<?> clazzParam = clazz == null ? type : clazz;
-		String queryString = "SELECT ids.type, ids.identifier, %s FROM %s as c " +
+		String queryString = "SELECT ids.type, ids.identifier, %s "
+		        + "FROM %s as c " +
                 " INNER JOIN c.identifiers as ids " +
                 " WHERE (1=1) ";
 		queryString = String.format(queryString, (includeEntity ? "c":"c.uuid, c.titleCache") , clazzParam.getSimpleName());
 
-		//Matchmode and identifier
+		//matchMode and identifier
+		if (matchMode == null){
+		    matchMode = MatchMode.EXACT;
+		}
 		if (identifier != null){
-			if (matchmode == null || matchmode == MatchMode.EXACT){
-				queryString += " AND ids.identifier = '"  + identifier + "'";
-			}else {
-				queryString += " AND ids.identifier LIKE '" + matchmode.queryStringFrom(identifier)  + "'";
-			}
+			queryString += " AND ids.identifier LIKE '" + matchMode.queryStringFrom(identifier)  + "'";
 		}
         if (identifierType != null){
         	queryString += " AND ids.type = :type";
