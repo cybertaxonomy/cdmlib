@@ -8,6 +8,12 @@
 */
 package eu.etaxonomy.cdm.io.wfo.in;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+
 import eu.etaxonomy.cdm.io.csv.in.CsvImportState;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
@@ -20,12 +26,44 @@ public class WfoAccessImportState extends CsvImportState<WfoAccessImportConfigur
 
     private TaxonNode parentNode;
 
+    private Set<String> originalNameOfDoubtful = new HashSet<>();
+    private Set<String> existingWfoIDs = new HashSet<>();
+
+    private Map<String, UUID> taxonNodeUuids = new HashMap<>();
+
 
     /**
      * @param config
      */
     protected WfoAccessImportState(WfoAccessImportConfigurator config) {
         super(config);
+    }
+
+    public void putOriginalNameOfDoubful(String origNameId){
+        originalNameOfDoubtful.add(origNameId);
+    }
+    public boolean isOriginalNameOfDoubful(String origNameId){
+        return originalNameOfDoubtful.contains(origNameId);
+    }
+    public boolean removeOriginalNameOfDoubful(String origNameId){
+        return originalNameOfDoubtful.remove(origNameId);
+    }
+
+    public void putExistingWfoId(String wfoId){
+        existingWfoIDs.add(wfoId);
+    }
+    public boolean isExistingWfoID(String wfoId){
+        return existingWfoIDs.contains(wfoId);
+    }
+    public boolean removeExistingWfoId(String wfoId){
+        return existingWfoIDs.remove(wfoId);
+    }
+
+    public UUID getTaxonNodeUuid(String key){
+        return taxonNodeUuids.get(key);
+    }
+    public UUID putTaxonNodeUuid(String key, UUID taxonNodeUuid){
+        return taxonNodeUuids.put(key, taxonNodeUuid);
     }
 
 
