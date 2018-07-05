@@ -11,11 +11,13 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
+import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -91,6 +93,7 @@ public interface IRegistrationService extends IAnnotatableService<Registration> 
      * @param taxonNameFilterPattern
      *            filters the registered taxon name by this pattern, The asterisk can be used
      *            * as wildcard in any position of the pattern string
+     * @param typeDesignationStatus
      * @param pageSize
      *            The maximum number of objects returned (can be null for all
      *            matching objects)
@@ -107,7 +110,7 @@ public interface IRegistrationService extends IAnnotatableService<Registration> 
      * @throws DataAccessException
      */
     public Pager<Registration> page(User submitter, Collection<RegistrationStatus> includedStatus,
-            String identifierFilterPattern, String taxonNameFilterPattern, Integer pageSize, Integer pageIndex,
-            List<OrderHint> orderHints, List<String> propertyPaths);
+            String identifierFilterPattern, String taxonNameFilterPattern, Set<TypeDesignationStatusBase> typeDesignationStatus, Integer pageSize,
+            Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths);
 
 }
