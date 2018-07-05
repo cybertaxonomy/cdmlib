@@ -522,12 +522,12 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         List<Criterion> perProperty = new ArrayList<>(restrictions.size());
         Map<String, String> aliases = new HashMap<>();
 
-        for(Restriction<?> propMatchMode : restrictions){
-            Collection<? extends Object> values = propMatchMode.getValues();
-            JoinType jointype = propMatchMode.isNot() ? JoinType.LEFT_OUTER_JOIN : JoinType.INNER_JOIN;
+        for(Restriction<?> restriction : restrictions){
+            Collection<? extends Object> values = restriction.getValues();
+            JoinType jointype = restriction.isNot() ? JoinType.LEFT_OUTER_JOIN : JoinType.INNER_JOIN;
             if(values != null && !values.isEmpty()){
                 // ---
-                String propertyPath = propMatchMode.getPropertyName();
+                String propertyPath = restriction.getPropertyName();
                 String[] props =  propertyPath.split("\\.");
                 String propertyName;
                 if(props.length == 1){
@@ -556,8 +556,8 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
                 Criterion[] predicates = new Criterion[values.size()];
                 int i = 0;
                 for(Object v : values){
-                    Criterion criterion = createRestriction(propertyName, v, propMatchMode.getMatchMode());
-                    if(propMatchMode.isNot()){
+                    Criterion criterion = createRestriction(propertyName, v, restriction.getMatchMode());
+                    if(restriction.isNot()){
                         if(props.length > 1){
                             criterion = Restrictions.or(Restrictions.not(criterion), Restrictions.isNull(propertyName));
                         } else {
@@ -566,7 +566,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
                     }
                     predicates[i++] = criterion;
                     if(logger.isDebugEnabled()){
-                        logger.debug("addRestrictions() predicate with " + propertyName + " " + (propMatchMode.getMatchMode() == null ? "=" : propMatchMode.getMatchMode().name()) + " " + v.toString());
+                        logger.debug("addRestrictions() predicate with " + propertyName + " " + (restriction.getMatchMode() == null ? "=" : restriction.getMatchMode().name()) + " " + v.toString());
                     }
                 }
                 perProperty.add(Restrictions.or(predicates));
