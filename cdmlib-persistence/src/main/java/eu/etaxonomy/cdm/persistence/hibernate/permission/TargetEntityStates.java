@@ -61,6 +61,10 @@ public class TargetEntityStates {
     }
 
     public boolean propertyChanged(String propertyName){
+        if(propertyNames == null){
+            // usually during a save or delete operation
+            return false;
+        }
         int i = 0;
         for(String p : propertyNames){
             if(p.equals(propertyName)){
@@ -69,6 +73,15 @@ public class TargetEntityStates {
             i++;
         }
         throw new PropertyNotFoundException("The property " + propertyName + " does not exist in " + entity.getClass());
+    }
+
+    public <T> T previousPropertyState(String propertyName, Class<T> propertyType){
+        Object value = previousPropertyState(propertyName);
+        if(value == null){
+            return null;
+        } else {
+            return propertyType.cast(value);
+        }
     }
 
     public Object previousPropertyState(String propertyName){

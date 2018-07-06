@@ -51,7 +51,13 @@ public class RegistrationVoter extends CdmPermissionVoter {
         // the other case is covered by the CdmPermissionVoter
         if(cdmAuthority.hasProperty() && targetEntityStates.getEntity() instanceof Registration){
 
-            RegistrationStatus status = ((Registration)targetEntityStates.getEntity()).getStatus();
+            RegistrationStatus status;
+            if(targetEntityStates.propertyChanged("status")){
+                status = targetEntityStates.previousPropertyState("status", RegistrationStatus.class); 
+            } else {
+                status = ((Registration)targetEntityStates.getEntity()).getStatus();
+                
+            }
             vr.isPropertyMatch = cdmAuthority.getProperty().contains(status.name());
             logger.debug("property is matching");
 
