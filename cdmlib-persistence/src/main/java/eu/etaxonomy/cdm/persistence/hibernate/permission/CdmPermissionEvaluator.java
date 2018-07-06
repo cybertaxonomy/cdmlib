@@ -64,7 +64,12 @@ public class CdmPermissionEvaluator implements ICdmPermissionEvaluator {
 
         EnumSet<CRUD> requiredOperation = null;
 
-        TargetEntityStates cdmEntitiyStates = (TargetEntityStates)targetDomainObject;
+        TargetEntityStates cdmEntitiyStates;
+        if(targetDomainObject instanceof CdmBase){
+            cdmEntitiyStates = new TargetEntityStates((CdmBase)targetDomainObject);
+        } else {
+            cdmEntitiyStates = (TargetEntityStates)targetDomainObject;
+        }
 
         if(logger.isDebugEnabled()){
             String targteDomainObjText = "  Object: " + (targetDomainObject == null? "null":cdmEntitiyStates.getEntity().instanceToString());
