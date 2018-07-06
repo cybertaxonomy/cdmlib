@@ -64,10 +64,10 @@ public class CdmPermissionEvaluator implements ICdmPermissionEvaluator {
 
         EnumSet<CRUD> requiredOperation = null;
 
-        CdmBase cdmEntitiy = (CdmBase)targetDomainObject;
+        TargetEntityStates cdmEntitiyStates = (TargetEntityStates)targetDomainObject;
 
         if(logger.isDebugEnabled()){
-            String targteDomainObjText = "  Object: " + (targetDomainObject == null? "null":cdmEntitiy.instanceToString());
+            String targteDomainObjText = "  Object: " + (targetDomainObject == null? "null":cdmEntitiyStates.getEntity().instanceToString());
             logUserAndRequirement(authentication, permission.toString(), targteDomainObjText);
         }
         try {
@@ -78,7 +78,7 @@ public class CdmPermissionEvaluator implements ICdmPermissionEvaluator {
             return false;
         }
 
-        return hasPermission(authentication, cdmEntitiy, requiredOperation);
+        return hasPermission(authentication, cdmEntitiyStates, requiredOperation);
 
     }
 
@@ -89,17 +89,28 @@ public class CdmPermissionEvaluator implements ICdmPermissionEvaluator {
      * @return
      */
     @Override
-    public boolean hasPermission(Authentication authentication, CdmBase targetDomainObject, EnumSet<CRUD> requiredOperation) {
+    public boolean hasPermission(Authentication authentication, CdmBase targetEntity, EnumSet<CRUD> requiredOperation) {
+        return hasPermission(authentication, new TargetEntityStates(targetEntity), requiredOperation);
+    }
+
+    /**
+     * @param authentication
+     * @param targetDomainObject
+     * @param requiredOperation
+     * @return
+     */
+    @Override
+    public boolean hasPermission(Authentication authentication, TargetEntityStates targetEntityStates, EnumSet<CRUD> requiredOperation) {
 
         if(authentication == null) {
             return false;
         }
 
-        CdmAuthority evalPermission = authorityRequiredFor(targetDomainObject, requiredOperation);
+        CdmAuthority evalPermission = authorityRequiredFor(targetEntityStates.getEntity(), requiredOperation);
 
         if (evalPermission.getPermissionClass() != null) {
             logger.debug("starting evaluation => ...");
-            return evalPermission(authentication, evalPermission, targetDomainObject);
+            return evalPermission(authentication, evalPermission, targetEntityStates);
         }else{
             logger.debug("skipping evaluation => true");
             return true;
@@ -132,7 +143,7 @@ public class CdmPermissionEvaluator implements ICdmPermissionEvaluator {
             return false;
         }
 
-        return evalPermission(authentication, evalPermission, instance);
+        return evalPermission(authentication, evalPermission, new TargetEntityStates(instance));
     }
 
     /**
@@ -189,7 +200,7 @@ public class CdmPermissionEvaluator implements ICdmPermissionEvaluator {
      * @param targetDomainObject
      * @return
      */
-    private boolean evalPermission(Authentication authentication, CdmAuthority evalPermission, CdmBase targetDomainObject){
+    private boolean evalPermission(Authentication authentication, CdmAuthority evalPermission, TargetEntityStates targetEntityStates){
 
         //if user has administrator rights return true;
         if( hasOneOfRoles(authentication, Role.ROLE_ADMIN)){
@@ -202,7 +213,7 @@ public class CdmPermissionEvaluator implements ICdmPermissionEvaluator {
 
         logger.debug("AccessDecisionManager will decide ...");
         try {
-            accessDecisionManager.decide(authentication, targetDomainObject, attributes);
+            accessDecisionManager.decide(authentication, targetEntityStates, attributes);
         } catch (InsufficientAuthenticationException e) {
             logger.debug("AccessDecisionManager denied by " + e, e);
             return false;

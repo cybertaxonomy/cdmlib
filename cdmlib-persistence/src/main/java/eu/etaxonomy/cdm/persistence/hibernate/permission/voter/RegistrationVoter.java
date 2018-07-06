@@ -16,6 +16,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.TargetEntityStates;
 
 /**
  * @author a.kohlbecker
@@ -44,13 +45,13 @@ public class RegistrationVoter extends CdmPermissionVoter {
      * {@inheritDoc}
      */
     @Override
-    protected Integer furtherVotingDescisions(CdmAuthority cdmAuthority, Object object, Collection<ConfigAttribute> attributes, ValidationResult vr) {
+    protected Integer furtherVotingDescisions(CdmAuthority cdmAuthority, TargetEntityStates targetEntityStates, Collection<ConfigAttribute> attributes, ValidationResult vr) {
 
         // we only need to implement the case where a property is contained in the authority
         // the other case is covered by the CdmPermissionVoter
-        if(cdmAuthority.hasProperty() && object instanceof Registration){
+        if(cdmAuthority.hasProperty() && targetEntityStates.getEntity() instanceof Registration){
 
-            RegistrationStatus status = ((Registration)object).getStatus();
+            RegistrationStatus status = ((Registration)targetEntityStates.getEntity()).getStatus();
             vr.isPropertyMatch = cdmAuthority.getProperty().contains(status.name());
             logger.debug("property is matching");
 

@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionClass;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.TargetEntityStates;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.voter.RegistrationVoter;
 
 /**
@@ -68,7 +69,7 @@ public class RegistrationVoterTest extends AbstractCdmPermissionVoterTest {
     @Test
     public void test1() {
         int vote = voter.vote(auth,
-                regPREPARATION,
+                new TargetEntityStates(regPREPARATION),
                 Arrays.asList(new CdmAuthority(CdmPermissionClass.REGISTRATION, null, EnumSet.of(CRUD.UPDATE), null)));
         assertEquals(AccessDecisionVoter.ACCESS_GRANTED, vote);
     }
@@ -77,7 +78,7 @@ public class RegistrationVoterTest extends AbstractCdmPermissionVoterTest {
     @Test
     public void test2() {
         int vote = voter.vote(auth,
-                regREADY,
+                new TargetEntityStates(regREADY),
                 Arrays.asList(new CdmAuthority(CdmPermissionClass.REGISTRATION, null, EnumSet.of(CRUD.UPDATE), null)));
         assertEquals(AccessDecisionVoter.ACCESS_GRANTED, vote);
     }
@@ -86,7 +87,7 @@ public class RegistrationVoterTest extends AbstractCdmPermissionVoterTest {
     @Test
     public void test3() {
         int vote = voter.vote(auth,
-                regREJECTED,
+                new TargetEntityStates(regREJECTED),
                 Arrays.asList(new CdmAuthority(CdmPermissionClass.REGISTRATION, null, EnumSet.of(CRUD.UPDATE), null)));
         assertEquals(AccessDecisionVoter.ACCESS_DENIED, vote);
     }
@@ -108,13 +109,13 @@ public class RegistrationVoterTest extends AbstractCdmPermissionVoterTest {
                 new CdmAuthority(regGranted, prep, EnumSet.of(CRUD.UPDATE))
                 );
         int vote = voter.vote(auth,
-                regRequired,
+                new TargetEntityStates(regRequired),
                 // the attributes to test for
                 Arrays.asList(new CdmAuthority(CdmPermissionClass.REGISTRATION, null, EnumSet.of(CRUD.UPDATE), regRequired.getUuid())));
         assertEquals(AccessDecisionVoter.ACCESS_DENIED, vote);
 
         vote = voter.vote(auth,
-                regGranted,
+                new TargetEntityStates(regGranted),
                 // the attributes to test for
                 Arrays.asList(new CdmAuthority(CdmPermissionClass.REGISTRATION, null, EnumSet.of(CRUD.UPDATE), regGranted.getUuid())));
         assertEquals(AccessDecisionVoter.ACCESS_GRANTED, vote);
