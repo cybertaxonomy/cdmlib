@@ -38,6 +38,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
@@ -45,6 +46,7 @@ import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
+import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -831,6 +833,7 @@ public class DescriptionServiceImpl
         }
         Taxon taxon = (Taxon)taxonBase;
 
+        //extract all description elements
         Set<DescriptionBase> descriptions = dataSet.getDescriptions();
         for (DescriptionBase descriptionBase : descriptions) {
             List<DescriptionElementBase> descriptionElements = listDescriptionElements(descriptionBase, null, dataSet.getDescriptiveSystem().getDistinctFeatures(), null, null, null, null);
@@ -843,8 +846,31 @@ public class DescriptionServiceImpl
                 featureToElementMap.put(descriptionElement.getFeature(), list);
             }
         }
+
         TaxonDescription description = TaxonDescription.NewInstance(taxon);
         description.setTitleCache("[Aggregation] "+dataSet.getTitleCache(), true);
+
+        featureToElementMap.forEach((feature, elements)->{
+            //aggregate categorical data
+            if(feature.isSupportsCategoricalData()){
+                CategoricalData aggregate = CategoricalData.NewInstance(feature);
+                elements.stream()
+                .filter(element->element instanceof CategoricalData)
+                .forEach(categoricalData->((CategoricalData)categoricalData).getStateData()
+                        .forEach(stateData->aggregate.addStateData(stateData)));
+                description.addElement(aggregate);
+            }
+            //aggregate quantitative data
+            else if(feature.isSupportsQuantitativeData()){
+                QuantitativeData aggregate = QuantitativeData.NewInstance(feature);
+                elements.stream()
+                .filter(element->element instanceof QuantitativeData)
+                .forEach(categoricalData->((QuantitativeData)categoricalData).getStatisticalValues()
+                        .forEach(statisticalValue->aggregate.addStatisticalValue(statisticalValue)));
+                description.addElement(aggregate);
+            }
+        });
+        result.setCdmEntity(taxon);
         return result;
     }
 
