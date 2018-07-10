@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +40,7 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
@@ -51,10 +53,12 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
+import eu.etaxonomy.cdm.persistence.dao.description.IDescriptiveDataSetDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
@@ -90,6 +94,7 @@ public class DescriptionServiceImpl
     protected IDefinedTermDao definedTermDao;
     protected IStatisticalMeasurementValueDao statisticalMeasurementValueDao;
     protected ITaxonDao taxonDao;
+    protected IDescriptiveDataSetDao dataSetDao;
 
     //TODO change to Interface
     private NaturalLanguageGenerator naturalLanguageGenerator;
@@ -137,6 +142,11 @@ public class DescriptionServiceImpl
     @Autowired
     protected void setTaxonDao(ITaxonDao taxonDao) {
         this.taxonDao = taxonDao;
+    }
+
+    @Autowired
+    protected void setDataSetDao(IDescriptiveDataSetDao dataSetDao) {
+        this.dataSetDao = dataSetDao;
     }
 
     /**
@@ -805,6 +815,37 @@ public class DescriptionServiceImpl
        // dao.merge(description);
         return result;
 
+    }
+
+    @Override
+    public UpdateResult aggregateDescription(UUID taxonUuid, Collection<UUID> descriptionUuids, UUID descriptiveDataSet) {
+        UpdateResult result = new UpdateResult();
+        Map<Feature, List<DescriptionElementBase>> featureToElementMap = new HashMap<>();
+
+        DescriptiveDataSet dataSet = dataSetDao.load(descriptiveDataSet);
+        TaxonBase taxonBase = taxonDao.load(taxonUuid);
+        if(!(taxonBase instanceof Taxon)){
+            result.addException(new ClassCastException("The given taxonUUID does not belong to a taxon"));
+            result.setError();
+            return result;
+        }
+        Taxon taxon = (Taxon)taxonBase;
+
+        Set<DescriptionBase> descriptions = dataSet.getDescriptions();
+        for (DescriptionBase descriptionBase : descriptions) {
+            List<DescriptionElementBase> descriptionElements = listDescriptionElements(descriptionBase, null, dataSet.getDescriptiveSystem().getDistinctFeatures(), null, null, null, null);
+            for (DescriptionElementBase descriptionElement : descriptionElements) {
+                List<DescriptionElementBase> list = featureToElementMap.get(descriptionElement.getFeature());
+                if(list==null){
+                    list = new ArrayList<>();
+                }
+                list.add(descriptionElement);
+                featureToElementMap.put(descriptionElement.getFeature(), list);
+            }
+        }
+        TaxonDescription description = TaxonDescription.NewInstance(taxon);
+        description.setTitleCache("[Aggregation] "+dataSet.getTitleCache(), true);
+        return result;
     }
 
 }

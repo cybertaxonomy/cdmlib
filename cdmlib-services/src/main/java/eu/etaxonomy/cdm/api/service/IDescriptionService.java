@@ -607,4 +607,16 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      * @return
      */
     public UpdateResult moveTaxonDescription(UUID descriptionUuid, UUID targetTaxonUuid);
+
+    /**
+     * Aggregates the character data of the given descriptions that match
+     * the given descriptive system and creates a new description
+     * for the given taxon with the aggregated data.
+     * @param taxonUuid the UUID of the taxon where the new description with the
+     * aggregated data will be stored
+     * @param descriptionUuids the uuid of the descriptions that are aggregated
+     * @param descriptiveDataSet the data set defining the characters that should be aggregated
+     * @return the result of the operation
+     */
+    public UpdateResult aggregateDescription(UUID taxonUuid, Collection<UUID> descriptionUuids, UUID descriptiveDataSet);
 }
