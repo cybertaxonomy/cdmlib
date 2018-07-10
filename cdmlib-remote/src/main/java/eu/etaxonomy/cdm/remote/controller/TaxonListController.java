@@ -276,7 +276,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
 
         boolean includeUnpublished = NO_UNPUBLISHED;
 
-        logger.info("find : " + request.getRequestURI() + "?" + request.getQueryString() );
+        logger.info("doFind() " + requestPathAndQuery(request));
 
         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
         pagerParams.normalizeAndValidate(response);

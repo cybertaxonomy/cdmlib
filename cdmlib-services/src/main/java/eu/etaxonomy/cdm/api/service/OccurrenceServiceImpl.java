@@ -184,7 +184,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
      */
     @Override
     public List<Country> getCountryByName(String name) {
-        List<? extends DefinedTermBase> terms = this.definedTermDao.findByTitle(Country.class, name, null, null, null, null, null, null);
+        List<? extends DefinedTermBase> terms = this.definedTermDao.findByTitleWithRestrictions(Country.class, name, null, null, null, null, null, null);
         List<Country> countries = new ArrayList<>();
         for (int i = 0; i < terms.size(); i++) {
             countries.add((Country) terms.get(i));
@@ -1431,7 +1431,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         if(config.getAssociatedTaxonUuid()!=null){
             TaxonBase<?> taxonBase = taxonService.load(config.getAssociatedTaxonUuid());
             if(taxonBase.isInstanceOf(Taxon.class)){
-                taxon = HibernateProxyHelper.deproxy(taxonBase, Taxon.class);
+                taxon = CdmBase.deproxy(taxonBase, Taxon.class);
             }
         }
         TaxonName taxonName = null;
@@ -1443,7 +1443,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 config.getSpecimenType(), taxon, taxonName, config.getMatchMode(), null, null,
                 config.getOrderHints()));
 
-        return new DefaultPagerImpl<UuidAndTitleCache<SpecimenOrObservationBase>>(config.getPageNumber(), occurrences.size(), config.getPageSize(), occurrences);
+        return new DefaultPagerImpl<>(config.getPageNumber(), occurrences.size(), config.getPageSize(), occurrences);
     }
 
     @Override
@@ -1454,7 +1454,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             List<SpecimenOrObservationBase> occurrences = new ArrayList<>();
             Taxon taxon = null;
             if(occurrenceConfig.getAssociatedTaxonUuid()!=null){
-                TaxonBase taxonBase = taxonService.load(occurrenceConfig.getAssociatedTaxonUuid());
+                TaxonBase<?> taxonBase = taxonService.load(occurrenceConfig.getAssociatedTaxonUuid());
                 if(taxonBase.isInstanceOf(Taxon.class)){
                     taxon = HibernateProxyHelper.deproxy(taxonBase, Taxon.class);
                 }
@@ -1469,7 +1469,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                     occurrenceConfig.getOrderHints(), occurrenceConfig.getPropertyPaths()));
             occurrences = filterOccurencesByAssignmentAndHierarchy(occurrenceConfig, occurrences, taxon, taxonName);
 
-            return new DefaultPagerImpl<SpecimenOrObservationBase>(config.getPageNumber(), occurrences.size(), config.getPageSize(), occurrences);
+            return new DefaultPagerImpl<>(config.getPageNumber(), occurrences.size(), config.getPageSize(), occurrences);
         }
         return super.findByTitle(config);
     }
@@ -1482,7 +1482,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             AssignmentStatus assignmentStatus = occurrenceConfig.getAssignmentStatus();
             List<SpecimenOrObservationBase<?>> specimenWithAssociations = new ArrayList<>();
             if(!assignmentStatus.equals(AssignmentStatus.ALL_SPECIMENS)){
-                for (SpecimenOrObservationBase specimenOrObservationBase : occurrences) {
+                for (SpecimenOrObservationBase<?> specimenOrObservationBase : occurrences) {
                     boolean includeUnpublished = true;  //TODO not sure if this is correct, maybe we have to propagate publish flag to higher methods.
                     Collection<TaxonBase<?>> associatedTaxa = listAssociatedTaxa(specimenOrObservationBase,
                             includeUnpublished, null, null, null, null);
@@ -1501,7 +1501,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         // indirectly associated specimens
         if(occurrenceConfig.isRetrieveIndirectlyAssociatedSpecimens()){
             List<SpecimenOrObservationBase> indirectlyAssociatedOccurrences = new ArrayList<>(occurrences);
-            for (SpecimenOrObservationBase specimen : occurrences) {
+            for (SpecimenOrObservationBase<?> specimen : occurrences) {
                 List<SpecimenOrObservationBase<?>> allHierarchyDerivates = getAllHierarchyDerivatives(specimen);
                 for (SpecimenOrObservationBase<?> specimenOrObservationBase : allHierarchyDerivates) {
                     if(!occurrences.contains(specimenOrObservationBase)){

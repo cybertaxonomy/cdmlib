@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.TargetEntityStates;
 
 /**
  * @author andreas kohlbecker
@@ -33,14 +34,12 @@ public class TaxonNodeVoter extends CdmPermissionVoter {
         return TaxonNode.class;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.persistence.hibernate.permission.voter.CdmPermissionVoter#furtherVotingDescisions(org.springframework.security.core.Authentication, java.lang.Object, java.util.Collection, eu.etaxonomy.cdm.persistence.hibernate.permission.voter.TaxonBaseVoter.ValidationResult)
-     */
+
     @Override
-    protected Integer furtherVotingDescisions(CdmAuthority CdmAuthority, Object object, Collection<ConfigAttribute> attributes,
+    protected Integer furtherVotingDescisions(CdmAuthority CdmAuthority, TargetEntityStates targetEntityStates, Collection<ConfigAttribute> attributes,
             ValidationResult validationResult) {
 
-        boolean isUuidMatchInParentNodes = CdmAuthority.hasTargetUuid() && findTargetUuidInParentNodes(CdmAuthority.getTargetUUID(), (TaxonNode)object);
+        boolean isUuidMatchInParentNodes = CdmAuthority.hasTargetUuid() && findTargetUuidInParentNodes(CdmAuthority.getTargetUUID(), (TaxonNode)targetEntityStates.getEntity());
         if ( isUuidMatchInParentNodes  && validationResult.isClassMatch && validationResult.isPermissionMatch){
             logger.debug("permission, class and uuid in parent nodes are matching => ACCESS_GRANTED");
             return ACCESS_GRANTED;

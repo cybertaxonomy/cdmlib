@@ -29,4 +29,13 @@ public interface ICdmPermissionEvaluator extends PermissionEvaluator {
 
     boolean hasPermission(Authentication authentication, CdmBase targetDomainObject, EnumSet<CRUD> requiredOperation);
 
+    /**
+     * @param authentication
+     * @param targetEntityStates
+     * @param requiredOperation
+     * @return
+     */
+    boolean hasPermission(Authentication authentication, TargetEntityStates targetEntityStates,
+            EnumSet<CRUD> requiredOperation);
+
 }

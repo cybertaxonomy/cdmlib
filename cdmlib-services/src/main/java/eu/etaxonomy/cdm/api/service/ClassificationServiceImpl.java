@@ -449,7 +449,6 @@ public class ClassificationServiceImpl
             int height, int widthOrDuration, String[] mimeTypes) {
 
         TreeMap<UUID, List<MediaRepresentation>> result = new TreeMap<>();
-        List<Media> taxonMedia = new ArrayList<>();
         List<MediaRepresentation> mediaRepresentations = new ArrayList<>();
 
         //add all media of the children to the result map
@@ -465,8 +464,6 @@ public class ClassificationServiceImpl
                 for (TaxonDescription taxonDescription: taxon.getDescriptions()){
                     for (DescriptionElementBase descriptionElement: taxonDescription.getElements()){
                         for(Media media : descriptionElement.getMedia()){
-                            taxonMedia.add(media);
-
                             //find the best matching representation
                             mediaRepresentations.add(MediaUtils.findBestMatchingRepresentation(media,null, size, height, widthOrDuration, mimeTypes));
                         }

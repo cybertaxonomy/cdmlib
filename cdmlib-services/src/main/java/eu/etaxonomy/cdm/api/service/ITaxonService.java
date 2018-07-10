@@ -40,7 +40,6 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -715,22 +714,6 @@ public interface ITaxonService
      * @throws LuceneParseException
      */
     public Pager<SearchResult<TaxonBase>> findByDescriptionElementFullText(Class<? extends DescriptionElementBase> clazz, String queryString, Classification classification, List<Feature> features, List<Language> languages, boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws IOException, LuceneParseException;
-
-
-    /**
-     *
-     * @param taxon
-     * @param size
-     * @param height
-     * @param widthOrDuration
-     * @param mimeTypes
-     * @return
-     *
-     * @deprecated use {@link #listMedia(Taxon, Set, boolean, boolean, List)} instead
-     */
-    @Deprecated
-    public List<MediaRepresentation> getAllMedia(Taxon taxon, int size, int height, int widthOrDuration, String[] mimeTypes);
-
 
     /**
      * Lists all Media found in an any TaxonDescription associated with this

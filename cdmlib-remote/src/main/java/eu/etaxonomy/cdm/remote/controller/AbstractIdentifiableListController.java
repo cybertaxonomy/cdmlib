@@ -88,8 +88,6 @@ public abstract class AbstractIdentifiableListController <T extends Identifiable
             )
              throws IOException {
 
-
-
         logger.info("doFind : " + request.getRequestURI() + "?" + request.getQueryString() );
 
         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
@@ -97,7 +95,7 @@ public abstract class AbstractIdentifiableListController <T extends Identifiable
 
         matchMode = matchMode != null ? matchMode : MatchMode.BEGINNING;
 
-        return service.findByTitle(null, query, matchMode, null, pagerParams.getPageSize(), pagerParams.getPageIndex(), null, initializationStrategy);
+        return service.findByTitleWithRestrictions(null, query, matchMode, null, pagerParams.getPageSize(), pagerParams.getPageIndex(), null, initializationStrategy);
 
     }
 

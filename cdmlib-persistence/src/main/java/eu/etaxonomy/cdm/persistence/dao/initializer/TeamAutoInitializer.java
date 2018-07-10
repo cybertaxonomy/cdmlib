@@ -34,10 +34,9 @@ public class TeamAutoInitializer extends AutoPropertyInitializer<TeamOrPersonBas
     public String hibernateFetchJoin(Class<?> clazz, String beanAlias) throws Exception{
 
         String result = "";
-        // no point differentiating here on subtypes of TeamOrPersonBase since the
-        // actual type of the un-itialized Team is not yet known at this point to
-        // the AdvancedBeanInitializer in bulkLoadLazyBeans()
-        result += String.format(" LEFT JOIN FETCH %s.teamMembers ", beanAlias);
+        if(clazz.equals(Team.class)){
+            result += String.format(" LEFT JOIN FETCH %s.teamMembers ", beanAlias);
+        }
 
         return result;
     }

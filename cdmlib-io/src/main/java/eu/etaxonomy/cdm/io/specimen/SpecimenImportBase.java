@@ -134,15 +134,15 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 
             } else {
                 //search for existing names
-                List<TaxonName> names = getNameService().listByTitle(TaxonName.class, scientificName, MatchMode.EXACT, null, null, null, null, null);
+                List<TaxonName> names = getNameService().listByTitleWithRestrictions(TaxonName.class, scientificName, MatchMode.EXACT, null, null, null, null, null);
                 taxonName = getBestMatchingName(scientificName, names, state);
                 //still nothing found -> try with the atomised name full title cache
                 if(taxonName==null && atomisedTaxonName!=null){
-                    names = getNameService().listByTitle(TaxonName.class, atomisedTaxonName.getFullTitleCache(), MatchMode.EXACT, null, null, null, null, null);
+                    names = getNameService().listByTitleWithRestrictions(TaxonName.class, atomisedTaxonName.getFullTitleCache(), MatchMode.EXACT, null, null, null, null, null);
                     taxonName = getBestMatchingName(atomisedTaxonName.getTitleCache(), names, state);
                     //still nothing found -> try with the atomised name title cache
                     if(taxonName==null){
-                        names = getNameService().listByTitle(TaxonName.class, atomisedTaxonName.getTitleCache(), MatchMode.EXACT, null, null, null, null, null);
+                        names = getNameService().listByTitleWithRestrictions(TaxonName.class, atomisedTaxonName.getTitleCache(), MatchMode.EXACT, null, null, null, null, null);
                         taxonName = getBestMatchingName(atomisedTaxonName.getTitleCache(), names, state);
                     }
                 }
@@ -1120,7 +1120,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            String strReference=fullReference[0];
 	            String citationDetail = fullReference[1];
 	            String citationURL = fullReference[2];
-	            List<Reference> references = getReferenceService().listByTitle(Reference.class, "strReference", MatchMode.EXACT, null, null, null, null, null);
+	            List<Reference> references = getReferenceService().listByTitleWithRestrictions(Reference.class, "strReference", MatchMode.EXACT, null, null, null, null, null);
 
 	            if (!references.isEmpty()){
 	                Reference reference = null;

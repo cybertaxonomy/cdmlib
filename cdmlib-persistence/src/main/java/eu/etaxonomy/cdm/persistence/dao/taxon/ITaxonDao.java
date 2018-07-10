@@ -384,7 +384,7 @@ public interface ITaxonDao
      */
     public long countAcceptedTaxonFor(Synonym synonym, Classification classificationFilter);
 
-	public List<UuidAndTitleCache<IdentifiableEntity>> getTaxaByCommonNameForEditor(
+	public List<UuidAndTitleCache<Taxon>> getTaxaByCommonNameForEditor(
 			String titleSearchStringSqlized, Classification classification,
 			MatchMode matchMode, Set<NamedArea> namedAreas);
 

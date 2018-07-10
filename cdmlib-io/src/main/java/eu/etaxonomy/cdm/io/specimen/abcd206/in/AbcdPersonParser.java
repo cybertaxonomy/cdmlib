@@ -44,7 +44,7 @@ public class AbcdPersonParser {
         NodeList fullNameList = item.getElementsByTagName(prefix+"FullName");
         String fullName = AbcdParseUtility.parseFirstTextContent(fullNameList);
         if(fullName!=null){
-            List<AgentBase> matchingAgents = cdmAppController.getAgentService().findByTitle(AgentBase.class, fullName, MatchMode.EXACT, null, null, null, null, null).getRecords();
+            List<AgentBase> matchingAgents = cdmAppController.getAgentService().findByTitleWithRestrictions(AgentBase.class, fullName, MatchMode.EXACT, null, null, null, null, null).getRecords();
             if(matchingAgents.size()==1){
                 agentBase = matchingAgents.iterator().next();
             }

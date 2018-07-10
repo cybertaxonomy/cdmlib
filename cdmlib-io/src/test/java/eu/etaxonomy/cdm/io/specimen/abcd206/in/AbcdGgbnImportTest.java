@@ -130,8 +130,8 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         }
         assertEquals("Number of taxon nodes is incorrect", 4, taxonNodeService.count(TaxonNode.class));
         assertEquals("Number of taxa is incorrect", 3, taxonService.count(TaxonBase.class));
-        assertEquals(1, taxonService.findByTitle(Taxon.class, "Campanula bononiensis", MatchMode.ANYWHERE, null, null, null, null, null).getRecords().size());
-        assertEquals(1, taxonService.findByTitle(Taxon.class, "Campanula isaurica", MatchMode.ANYWHERE, null, null, null, null, null).getRecords().size());
+        assertEquals(1, taxonService.findByTitleWithRestrictions(Taxon.class, "Campanula bononiensis", MatchMode.ANYWHERE, null, null, null, null, null).getRecords().size());
+        assertEquals(1, taxonService.findByTitleWithRestrictions(Taxon.class, "Campanula isaurica", MatchMode.ANYWHERE, null, null, null, null, null).getRecords().size());
 
         //test for sortindex=-1
 

@@ -449,7 +449,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			//TODO matching still experimental
 			if (namedArea == null && (matchMode.equals(TermMatchMode.UUID_LABEL) || matchMode.equals(TermMatchMode.UUID_LABEL_ABBREVLABEL ))){
 				//TODO test
-				Pager<NamedArea> areaPager = (Pager)getTermService().findByTitle(clazz, label, null, null, null, null, null, null);
+				Pager<NamedArea> areaPager = (Pager)getTermService().findByTitleWithRestrictions(clazz, label, null, null, null, null, null, null);
 				namedArea = findBestMatchingArea(areaPager, uuid, label, text, labelAbbrev, vocabularyPreference);
 			}
 			if (namedArea == null && (matchMode.equals(TermMatchMode.UUID_ABBREVLABEL) || matchMode.equals(TermMatchMode.UUID_LABEL_ABBREVLABEL))){

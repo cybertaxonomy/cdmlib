@@ -15,6 +15,7 @@ import java.util.List;
 import org.hibernate.criterion.Criterion;
 
 import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
+import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -46,9 +47,12 @@ public interface IIdentifiableEntityServiceConfigurator<T extends IIdentifiableE
 
 	public Integer getPageNumber();
 	public void setPageNumber(Integer pageNumber);
-
+    
 	public List<Criterion> getCriteria();
-	public void setCriteria(List<Criterion> criteria);
+    public void setCriteria(List<Criterion> criteria);
+    
+	public List<Restriction<?>> getRestrictions();
+	public void setRestrictions(List<Restriction<?>> restrictions);
 
 	public List<OrderHint> getOrderHints();
 	public void setOrderHints(List<OrderHint> orderHints);

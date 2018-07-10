@@ -315,8 +315,9 @@ public class OccurrenceDaoHibernateImpl
                 uuidAndTitleCacheList.add(new UuidAndTitleCache<>((UUID) object[0],(Integer) object[1], (String) object[2]));
             }
             return uuidAndTitleCacheList;
+        }else{
+            return Collections.emptyList();
         }
-        return Collections.emptyList();
     }
 
     @Override
@@ -331,8 +332,9 @@ public class OccurrenceDaoHibernateImpl
             List<T> results = criteria.list();
             defaultBeanInitializer.initializeAll(results, propertyPaths);
             return results;
+        }else{
+            return Collections.emptyList();
         }
-        return Collections.emptyList();
     }
 
     private <T extends SpecimenOrObservationBase> Criteria createFindOccurrenceCriteria(Class<T> clazz, String queryString,
@@ -397,7 +399,7 @@ public class OccurrenceDaoHibernateImpl
         else if(associatedTaxonName!=null){
             List<? extends SpecimenOrObservationBase> associatedTaxaList = listByAssociatedTaxonName(clazz, associatedTaxonName, limit, start, orderHints, propertyPaths);
             if(associatedTaxaList!=null){
-                for (SpecimenOrObservationBase specimenOrObservationBase : associatedTaxaList) {
+                for (SpecimenOrObservationBase<?> specimenOrObservationBase : associatedTaxaList) {
                     associationUuids.add(specimenOrObservationBase.getUuid());
                 }
             }

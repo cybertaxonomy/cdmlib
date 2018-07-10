@@ -434,6 +434,15 @@ public class TimePeriodParser {
             timePeriod.setVerbatimDate(verbatimDate);
             strPeriod = matcher.group(1).trim();
         }
+
+        regEx = "(.*)(\\s+publ.\\s+(\\d{4}))";
+        pattern = Pattern.compile(regEx);
+        matcher = pattern.matcher(strPeriod);
+        if (matcher.matches()){
+            String verbatimDate = matcher.group(3);
+            timePeriod.setVerbatimDate(verbatimDate);
+            strPeriod = matcher.group(1).trim();
+        }
         return strPeriod;
     }
 

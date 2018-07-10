@@ -41,6 +41,7 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.persistence.dao.QueryParseException;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
+import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -147,7 +148,6 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
         return query;
     }
 
-
     @Override
     public List<T> findByTitle(Class<? extends T> clazz, String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         return findByParam(clazz, "titleCache", queryString, matchmode, criterion, pageSize, pageNumber, orderHints, propertyPaths);
@@ -156,6 +156,16 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
     @Override
     public List<T> findByReferenceTitle(Class<? extends T> clazz, String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         return findByParam(clazz, "title", queryString, matchmode, criterion, pageSize, pageNumber, orderHints, propertyPaths);
+    }
+
+    @Override
+    public List<T> findByTitleWithRestrictions(Class<? extends T> clazz, String queryString, MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+        return findByParamWithRestrictions(clazz, "titleCache", queryString, matchmode, restrictions, pageSize, pageNumber, orderHints, propertyPaths);
+    }
+
+    @Override
+    public List<T> findByReferenceTitleWithRestrictions(Class<? extends T> clazz, String queryString, MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+        return findByParamWithRestrictions(clazz, "title", queryString, matchmode, restrictions, pageSize, pageNumber, orderHints, propertyPaths);
     }
 
     @Override
@@ -179,6 +189,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
         crit.addOrder(Order.asc("titleCache"));
         int firstItem = (page - 1) * pagesize;
         crit.setFirstResult(firstItem);
+        @SuppressWarnings("unchecked")
         List<T> results = crit.list();
         List<String> propertyPaths = null;
         defaultBeanInitializer.initializeAll(results, propertyPaths);
@@ -311,16 +322,24 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
         }
     }
 
-
-
     @Override
-    public long countByTitle(Class<? extends T> clazz, String queryString,	MatchMode matchmode, List<Criterion> criterion) {
+    public long countByTitle(Class<? extends T> clazz, String queryString,  MatchMode matchmode, List<Criterion> criterion) {
         return countByParam(clazz, "titleCache",queryString,matchmode,criterion);
     }
 
     @Override
-    public long countByReferenceTitle(Class<? extends T> clazz, String queryString,	MatchMode matchmode, List<Criterion> criterion) {
+    public long countByReferenceTitle(Class<? extends T> clazz, String queryString, MatchMode matchmode, List<Criterion> criterion) {
         return countByParam(clazz, "title",queryString,matchmode,criterion);
+    }
+
+    @Override
+    public long countByTitleWithRestrictions(Class<? extends T> clazz, String queryString,	MatchMode matchmode, List<Restriction<?>> restrictions) {
+        return countByParamWithRestrictions(clazz, "titleCache", queryString, matchmode, restrictions);
+    }
+
+    @Override
+    public long countByReferenceTitleWithRestrictions(Class<? extends T> clazz, String queryString,	MatchMode matchmode, List<Restriction<?>> restrictions) {
+        return countByParamWithRestrictions(clazz, "title", queryString, matchmode, restrictions);
     }
 
     @Override
@@ -463,20 +482,19 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
 
 
 	@Override
-	public <S extends T> int countByIdentifier(Class<S> clazz,
-			String identifier, DefinedTerm identifierType, MatchMode matchmode) {
+	public <S extends T> long countByIdentifier(Class<S> clazz,
+			String identifier, DefinedTerm identifierType, MatchMode matchMode) {
 		checkNotInPriorView("IdentifiableDaoBase.countByIdentifier(T clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode)");
 
 		Class<?> clazzParam = clazz == null ? type : clazz;
 		String queryString = "SELECT count(*) FROM " + clazzParam.getSimpleName() + " as c " +
 	                "INNER JOIN c.identifiers as ids " +
 	                "WHERE (1=1) ";
+		if (matchMode == null){
+		    matchMode = MatchMode.EXACT;
+		}
 		if (identifier != null){
-			if (matchmode == null || matchmode == MatchMode.EXACT){
-				queryString += " AND ids.identifier = '"  + identifier + "'";
-			}else {
-				queryString += " AND ids.identifier LIKE '" + matchmode.queryStringFrom(identifier)  + "'";
-			}
+			queryString += " AND ids.identifier LIKE '" + matchMode.queryStringFrom(identifier)  + "'";
 		}
 		if (identifierType != null){
         	queryString += " AND ids.type = :type";
@@ -487,31 +505,30 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
         	query.setEntity("type", identifierType);
         }
 
-		Long c = (Long)query.uniqueResult();
-        return c.intValue();
+		return (Long)query.uniqueResult();
 	}
 
 	@Override
 	public <S extends T> List<Object[]> findByIdentifier(
 			Class<S> clazz, String identifier, DefinedTerm identifierType,
-			MatchMode matchmode, boolean includeEntity,
+			MatchMode matchMode, boolean includeEntity,
 			Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 
 		checkNotInPriorView("IdentifiableDaoBase.findByIdentifier(T clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
 
 		Class<?> clazzParam = clazz == null ? type : clazz;
-		String queryString = "SELECT ids.type, ids.identifier, %s FROM %s as c " +
+		String queryString = "SELECT ids.type, ids.identifier, %s "
+		        + "FROM %s as c " +
                 " INNER JOIN c.identifiers as ids " +
                 " WHERE (1=1) ";
 		queryString = String.format(queryString, (includeEntity ? "c":"c.uuid, c.titleCache") , clazzParam.getSimpleName());
 
-		//Matchmode and identifier
+		//matchMode and identifier
+		if (matchMode == null){
+		    matchMode = MatchMode.EXACT;
+		}
 		if (identifier != null){
-			if (matchmode == null || matchmode == MatchMode.EXACT){
-				queryString += " AND ids.identifier = '"  + identifier + "'";
-			}else {
-				queryString += " AND ids.identifier LIKE '" + matchmode.queryStringFrom(identifier)  + "'";
-			}
+			queryString += " AND ids.identifier LIKE '" + matchMode.queryStringFrom(identifier)  + "'";
 		}
         if (identifierType != null){
         	queryString += " AND ids.type = :type";

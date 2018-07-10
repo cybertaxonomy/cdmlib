@@ -839,7 +839,7 @@ public class SpecimenCdmExcelImport
 		if (result != null){
 			return result;
 		}
-		List<TaxonName> list = getNameService().findByTitle(null, name, null, null, null, null, null, null).getRecords();
+		List<TaxonName> list = getNameService().findByTitleWithRestrictions(null, name, null, null, null, null, null, null).getRecords();
 		//TODO better strategy to find best name, e.g. depending on the classification it is used in
 		if (! list.isEmpty()){
 			result = list.get(0);

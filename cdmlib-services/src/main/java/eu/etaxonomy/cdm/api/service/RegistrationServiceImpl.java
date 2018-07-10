@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
+import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.name.IRegistrationDao;
@@ -70,7 +72,7 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
      */
     @Override
     public Pager<Registration> page(User submitter, Collection<RegistrationStatus> includedStatus,
-            String identifierFilterPattern, String taxonNameFilterPattern,
+            String identifierFilterPattern, String taxonNameFilterPattern, Set<TypeDesignationStatusBase> typeDesignationStatus,
             Integer pageSize, Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths) {
 
         List<Restriction<? extends Object>> restrictions = new ArrayList<>();
@@ -86,6 +88,9 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
         }
         if(taxonNameFilterPattern != null){
             restrictions.add(new Restriction<>("name.titleCache", MatchMode.LIKE, taxonNameFilterPattern));
+        }
+        if(typeDesignationStatus != null){
+            restrictions.add(new Restriction<>("typeDesignations.typeStatus", null, typeDesignationStatus.toArray(new TypeDesignationStatusBase[typeDesignationStatus.size()])));
         }
 
         long numberOfResults = dao.count(Registration.class, restrictions);

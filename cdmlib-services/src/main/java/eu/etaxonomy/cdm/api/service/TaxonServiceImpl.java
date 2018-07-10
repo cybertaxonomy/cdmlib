@@ -94,8 +94,6 @@ import eu.etaxonomy.cdm.model.description.TaxonInteraction;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -741,25 +739,6 @@ public class TaxonServiceImpl
 
     public List<UuidAndTitleCache<TaxonBase>> getTaxonUuidAndTitleCache(Integer limit, String pattern){
         return dao.getUuidAndTitleCache(limit, pattern);
-    }
-
-    @Override
-    public List<MediaRepresentation> getAllMedia(Taxon taxon, int size, int height, int widthOrDuration, String[] mimeTypes){
-        List<MediaRepresentation> medRep = new ArrayList<>();
-        taxon = (Taxon)dao.load(taxon.getUuid());
-        Set<TaxonDescription> descriptions = taxon.getDescriptions();
-        for (TaxonDescription taxDesc: descriptions){
-            Set<DescriptionElementBase> elements = taxDesc.getElements();
-            for (DescriptionElementBase descElem: elements){
-                for(Media media : descElem.getMedia()){
-
-                    //find the best matching representation
-                    medRep.add(MediaUtils.findBestMatchingRepresentation(media, null, size, height, widthOrDuration, mimeTypes));
-
-                }
-            }
-        }
-        return medRep;
     }
 
     @Override
