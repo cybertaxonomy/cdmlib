@@ -341,6 +341,6 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      * parent should be retrieved
      * @return the common direct/indirect parent of all nodes
      */
-    public TaxonNodeDto findCommonParentDto(List<TaxonNodeDto> nodes);
+    public TaxonNodeDto findCommonParentDto(Collection<TaxonNodeDto> nodes);
 
 }

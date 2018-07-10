@@ -976,7 +976,7 @@ public class TaxonNodeServiceImpl
     }
 
     @Override
-    public TaxonNodeDto findCommonParentDto(List<TaxonNodeDto> nodes) {
+    public TaxonNodeDto findCommonParentDto(Collection<TaxonNodeDto> nodes) {
         TaxonNodeDto commonParent = null;
         List<String> treePath = null;
         for (TaxonNodeDto nodeDto : nodes) {
