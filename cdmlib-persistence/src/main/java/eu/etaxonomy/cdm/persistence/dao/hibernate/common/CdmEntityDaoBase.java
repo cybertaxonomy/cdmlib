@@ -975,11 +975,9 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
      * @param orderHints
      * @param propertyPaths
      * @return
-     *
-     * @deprecated consider using {@link #findByParamWithRestrictions(Class, String, String, MatchMode, List, Integer, Integer, List, List))
      */
-    @Deprecated
-    protected List<T> findByParam(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode,
+    @Override
+    public List<T> findByParam(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode,
             List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths) {
 
@@ -1026,11 +1024,9 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
      * @param matchmode
      * @param criterion
      * @return
-     *
-     * @deprecated consider using {@link #countByParamWithRestrictions(Class, String, String, MatchMode, List)}
      */
-    @Deprecated
-    protected long countByParam(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode,
+    @Override
+    public long countByParam(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode,
             List<Criterion> criterion) {
 
         Criteria criteria = null;
@@ -1124,7 +1120,10 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         return criteria;
     }
 
-    protected List<T> findByParamWithRestrictions(Class<? extends T> clazz, String param, String queryString,
+
+
+    @Override
+    public List<T> findByParamWithRestrictions(Class<? extends T> clazz, String param, String queryString,
             MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints, List<String> propertyPaths) {
 
@@ -1148,7 +1147,8 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
     }
 
-    protected long countByParamWithRestrictions(Class<? extends T> clazz, String param, String queryString,
+    @Override
+    public long countByParamWithRestrictions(Class<? extends T> clazz, String param, String queryString,
             MatchMode matchmode, List<Restriction<?>> restrictions) {
 
         Criteria criteria = createCriteria(clazz, param, queryString, matchmode, restrictions, true);

@@ -19,20 +19,24 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.hibernate.LockOptions;
 import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.dao.DataAccessException;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.exception.UnpublishedException;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IPublishable;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
+import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DaoBase;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T>>
@@ -298,6 +302,35 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
     @Transactional(readOnly = true)
     public List<T> list(T example, Set<String> includeProperties, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
         return dao.list(example, includeProperties, limit, start, orderHints, propertyPaths);
+    }
+
+    @Override
+    public Pager<T> page(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths){
+
+        List<T> records;
+        long resultSize = dao.countByParam(clazz, param, queryString, matchmode, criteria);
+        if(AbstractPagerImpl.hasResultsInRange(resultSize, pageIndex, pageSize)){
+            records = dao.findByParam(clazz, param, queryString, matchmode, criteria, pageSize, pageIndex, orderHints, propertyPaths);
+        } else {
+            records = new ArrayList<>();
+        }
+        Pager<T> pager = new DefaultPagerImpl<>(pageIndex, resultSize, pageSize, records);
+        return pager;
+    }
+
+
+    @Override
+    public Pager<T> pageByRestrictions(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths){
+
+        List<T> records;
+        long resultSize = dao.countByParamWithRestrictions(clazz, param, queryString, matchmode, restrictions);
+        if(AbstractPagerImpl.hasResultsInRange(resultSize, pageIndex, pageSize)){
+            records = dao.findByParamWithRestrictions(clazz, param, queryString, matchmode, restrictions, pageSize, pageIndex, orderHints, propertyPaths);
+        } else {
+            records = new ArrayList<>();
+        }
+        Pager<T> pager = new DefaultPagerImpl<>(pageIndex, resultSize, pageSize, records);
+        return pager;
     }
 
 
