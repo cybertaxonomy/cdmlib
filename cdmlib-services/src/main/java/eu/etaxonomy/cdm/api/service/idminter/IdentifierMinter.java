@@ -40,4 +40,6 @@ public interface IdentifierMinter<T> {
     public void setMaxLocalId(T max);
 
     public Identifier<T> mint() throws OutOfIdentifiersException;
+
+    boolean isFromOwnRegistration(String identifierString);
 }

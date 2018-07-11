@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.hibernate.LazyInitializationException;
 import org.hibernate.collection.spi.PersistentCollection;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.proxy.LazyInitializer;
@@ -530,7 +531,14 @@ public class EntityCacherDebugResult {
                 } else if(object instanceof Map) {
                     label = "[" + className + "] " + fieldName + " : " + String.valueOf(((Map)object).size());
                 } else if(object instanceof CdmBase) {
-                    label = getCachesContainingEntity((CdmBase)object) +  "[" + className + "#" + ((CdmBase)object).getId() + "] " + fieldName + " : " + object.toString();
+                    String objectLabel = "-- not fully initialized for toString() --";
+                    try {
+
+                        objectLabel = object.toString();
+                    } catch(LazyInitializationException e){
+
+                    }
+                    label = getCachesContainingEntity((CdmBase)object) +  "[" + className + "#" + ((CdmBase)object).getId() + "] " + fieldName + " : " + objectLabel;
                 } else {
                     label = "[" + className + "] " + fieldName + " : " + object.toString();
                 }

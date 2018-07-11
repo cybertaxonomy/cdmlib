@@ -8,6 +8,9 @@
 */
 package eu.etaxonomy.cdm.api.service.idminter;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
@@ -40,6 +43,8 @@ public class RegistrationIdentifierMinter implements IdentifierMinter<String> {
     String identifierFormatString = null;
 
     Method method = Method.naturalNumberIncrement;
+
+    private Pattern identifierPattern;
 
     /**
      * {@inheritDoc}
@@ -141,6 +146,24 @@ public class RegistrationIdentifierMinter implements IdentifierMinter<String> {
 
     public void setGenerationMethod(Method method){
         this.method = method;
+    }
+
+    @Override
+    public boolean isFromOwnRegistration(String identifierString){
+        return identifierPattern().matcher(identifierString).matches();
+    }
+
+    public Pattern identifierPattern() {
+        if(identifierPattern == null){
+            if(identifierFormatString == null){
+                identifierPattern = Pattern.compile("\\d*");
+            } else {
+                String patternString = Matcher.quoteReplacement(identifierFormatString);
+                patternString =  "^" + patternString.replace("%s", "\\d+") + "$";
+                identifierPattern = Pattern.compile(patternString);
+            }
+        }
+        return identifierPattern;
     }
 
     /**
