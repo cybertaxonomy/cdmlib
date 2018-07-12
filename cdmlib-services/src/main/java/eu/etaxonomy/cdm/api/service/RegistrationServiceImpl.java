@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.api.utility.UserHelper;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
@@ -48,6 +50,9 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
     protected void setDao(IRegistrationDao dao) {
         this.dao = dao;
     }
+
+    @Autowired
+    private UserHelper userHelper;
 
     /**
      * {@inheritDoc}
@@ -102,6 +107,28 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
         }
 
         return new DefaultPagerImpl<>(pageIndex, numberOfResults, pageSize, results);
+    }
+
+    /**
+     * @param identifier
+     * @param validateUniqueness
+     * @param response
+     * @return
+     * @throws IOException
+     */
+    @Override
+    public Pager<Registration> pageByIdentifier(String identifier, Integer pageIndex,  Integer pageSize, List<String> propertyPaths) throws IOException {
+
+        List<Restriction<?>> restrictions = new ArrayList<>();
+        if( !userHelper.userIsAutheticated() || userHelper.userIsAnnonymous() ) {
+            restrictions.add(new Restriction<>("status", null, RegistrationStatus.PUBLISHED));
+        }
+
+        Pager<Registration> regPager = pageByRestrictions(Registration.class, "identifier", identifier, MatchMode.EXACT,
+                restrictions, pageSize, pageIndex, null, propertyPaths);
+
+
+        return regPager;
     }
 
 

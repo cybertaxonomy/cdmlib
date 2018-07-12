@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -10,10 +10,14 @@ package eu.etaxonomy.cdm.remote.json.processor.value;
 
 import java.util.Map;
 
+import eu.etaxonomy.cdm.api.service.dto.TypedEntityReference;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetManager;
+import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
+import eu.etaxonomy.cdm.remote.l10n.TermRepresentation_L10n;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 import net.sf.json.processors.JsonValueProcessor;
-import eu.etaxonomy.cdm.model.common.LanguageString;
 
 /**
  * @author a.kohlbecker
@@ -22,29 +26,35 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
  */
 public class MapJSONValueProcessor implements JsonValueProcessor {
 
-	
 
-	/* (non-Javadoc)
-	 * @see net.sf.json.processors.JsonValueProcessor#processArrayValue(java.lang.Object, net.sf.json.JsonConfig)
-	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public Object processArrayValue(Object value, JsonConfig jsonConfig) {
-		if(value instanceof Map){ // TODO move type check into vlaue processor matcher
-			Map map= (Map)value;
+
+	    if(value instanceof TypeDesignationSetManager.TypeDesignationWorkingSet){
+	        TypeDesignationSetManager.TypeDesignationWorkingSet map = (TypeDesignationSetManager.TypeDesignationWorkingSet)value;
+	        JSONObject json = new JSONObject();
+            for(TypeDesignationStatusBase<?> key : map.keySet()){
+                TermRepresentation_L10n term_L10n = new TermRepresentation_L10n(key, false);
+                json.element(term_L10n.getLabel(), map.get(key), jsonConfig);
+            }
+            return json;
+	    } else if(value instanceof Map){
+			Map<?,?> map= (Map<?,?>)value;
 			if( ! map.isEmpty()){
-				
-				//Map<String, LanguageString> returnMap = new HashMap<String, LanguageString>(map.size());
-				JSONObject json = new JSONObject();
-				for (Object val : map.values()){
-					if(val instanceof LanguageString){
-						//returnMap.put(((LanguageString)val).getLanguageLabel(), (LanguageString) val);
-						json.element(((LanguageString)val).getLanguageLabel(), val, jsonConfig);
-					} else {
-						return JSONObject.fromObject(value, jsonConfig);
-					}
-						
-				}
+			    JSONObject json = new JSONObject();
+			    if(map.keySet().iterator().next() instanceof TypedEntityReference){
+			        for(Object key : map.keySet()){
+			            json.element(key.toString(), map.get(key), jsonConfig);
+			        }
+			    } else {
+    				for (Object val : map.values()){
+    					if(val instanceof LanguageString){
+    						json.element(((LanguageString)val).getLanguageLabel(), val, jsonConfig);
+    					} else {
+    						return JSONObject.fromObject(value, jsonConfig);
+    					}
+    				}
+			    }
 				return json;
 			}
 		}

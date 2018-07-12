@@ -172,7 +172,7 @@
           </constructor-arg>
         </bean>
     </property>
-    <property name="jsonValueProcessors">
+    <property name="jsonValueProcessorsByClass">
       <map>
         <entry key="org.hibernate.proxy.HibernateProxy">
           <bean
@@ -201,9 +201,15 @@
         <entry key="java.util.Map">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.value.MapJSONValueProcessor" />
         </entry>
-          <entry key="java.net.URI">
-              <bean class="eu.etaxonomy.cdm.remote.json.processor.value.URIJSONValueProcessor"/>
-          </entry>
+        <entry key="java.util.LinkedHashMap">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.value.MapJSONValueProcessor" />
+        </entry>
+        <entry key="eu.etaxonomy.cdm.api.service.name.TypeDesignationSetManager.TypeDesignationWorkingSet">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.value.MapJSONValueProcessor" />
+        </entry>
+        <entry key="java.net.URI">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.value.URIJSONValueProcessor"/>
+        </entry>
       </map>
     </property>
     <property name="ignoreDefaultExcludes" value="true" />
@@ -251,7 +257,7 @@
         </constructor-arg>
       </bean>
     </property>
-    <property name="jsonValueProcessors">
+    <property name="jsonValueProcessorsByClass">
       <map>
         <entry key="org.hibernate.proxy.HibernateProxy">
           <bean
@@ -405,7 +411,7 @@
         <property name="jsonPropertyFilter">
             <bean class="eu.etaxonomy.cdm.remote.json.util.InitializedHibernatePropertyFilter" />
         </property>
-    <property name="jsonValueProcessors">
+    <property name="jsonValueProcessorsByClass">
       <map>
         <entry key="org.hibernate.proxy.HibernateProxy">
           <bean
@@ -475,7 +481,7 @@
           </constructor-arg>
         </bean>
     </property>
-    <property name="jsonValueProcessors">
+    <property name="jsonValueProcessorsByClass">
       <map>
         <entry key="org.hibernate.proxy.HibernateProxy">
           <bean
@@ -531,7 +537,7 @@
           </constructor-arg>
         </bean>
     </property>
-    <property name="jsonValueProcessors">
+    <property name="jsonValueProcessorsByClass">
       <map>
         <entry key="org.hibernate.proxy.HibernateProxy">
           <bean

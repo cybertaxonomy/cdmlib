@@ -17,7 +17,6 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.FactoryBean;
 
-import eu.etaxonomy.cdm.remote.json.processor.bean.AbstractCdmBeanProcessor;
 import net.sf.json.JsonConfig;
 import net.sf.json.processors.JsonBeanProcessor;
 import net.sf.json.processors.JsonBeanProcessorMatcher;
@@ -47,7 +46,8 @@ public class JsonConfigFactoryBean implements FactoryBean<JsonConfig> {
 
 	private Map<Class<?>,JsonBeanProcessor> jsonBeanProcessors = new HashMap<>();
 	private PropertyFilter jsonPropertyFilter = null;
-	private Map<Class<?>,JsonValueProcessor> jsonValueProcessors = new HashMap<>();
+	private Map<Class<?>,JsonValueProcessor> jsonValueProcessorsByClass = new HashMap<>();
+	private Map<String, JsonValueProcessor> jsonValueProcessorsByProperty = new HashMap<>();
 	private JsonBeanProcessorMatcher jsonBeanProcessorMatcher = JsonBeanProcessorMatcher.DEFAULT;
 	private JsonValueProcessorMatcher jsonValueProcessorMatcher = JsonValueProcessorMatcher.DEFAULT;
 	private boolean ignoreDefaultExcludes = false;
@@ -113,9 +113,13 @@ public class JsonConfigFactoryBean implements FactoryBean<JsonConfig> {
 		this.jsonValueProcessorMatcher = jsonValueProcessorMatcher;
 	}
 
-	public void setJsonValueProcessors(Map<Class<?>, JsonValueProcessor> jsonValueProcessors) {
-		this.jsonValueProcessors = jsonValueProcessors;
+	public void setJsonValueProcessorsByClass(Map<Class<?>, JsonValueProcessor> jsonValueProcessors) {
+		this.jsonValueProcessorsByClass = jsonValueProcessors;
 	}
+
+	   public void setJsonValueProcessorsByProperty(Map<String, JsonValueProcessor> jsonValueProcessors) {
+	        this.jsonValueProcessorsByProperty = jsonValueProcessors;
+	    }
 
 	public void setIgnoreDefaultExcludes(boolean ignoreDefaultExcludes) {
 		this.ignoreDefaultExcludes = ignoreDefaultExcludes;
@@ -147,9 +151,13 @@ public class JsonConfigFactoryBean implements FactoryBean<JsonConfig> {
 		}
 
 
-		for(Class<?> clazz : jsonValueProcessors.keySet()) {
-		    jsonConfig.registerJsonValueProcessor(clazz, jsonValueProcessors.get(clazz));
+		for(Class<?> clazz : jsonValueProcessorsByClass.keySet()) {
+		    jsonConfig.registerJsonValueProcessor(clazz, jsonValueProcessorsByClass.get(clazz));
 		}
+
+		for(String prop : jsonValueProcessorsByProperty.keySet()) {
+            jsonConfig.registerJsonValueProcessor(prop, jsonValueProcessorsByClass.get(prop));
+        }
 	}
 
 
