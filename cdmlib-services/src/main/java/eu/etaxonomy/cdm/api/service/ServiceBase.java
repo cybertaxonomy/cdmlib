@@ -305,6 +305,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Pager<T> page(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths){
 
         List<T> records;
@@ -320,6 +321,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 
 
     @Override
+    @Transactional(readOnly = true)
     public Pager<T> pageByRestrictions(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths){
 
         List<T> records;
