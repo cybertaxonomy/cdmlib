@@ -8,16 +8,16 @@
 */
 package eu.etaxonomy.cdm.remote.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.service.IService;
+import eu.etaxonomy.cdm.api.utility.UserHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DaoBase;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
@@ -55,6 +55,9 @@ public abstract class AbstractController<T extends CdmBase, SERVICE extends ISer
     protected static final boolean INCLUDE_UNPUBLISHED = DaoBase.INCLUDE_UNPUBLISHED;
 
     protected SERVICE service;
+
+    @Autowired
+    protected UserHelper userHelper;
 
     public abstract void setService(SERVICE service);
 
@@ -103,31 +106,30 @@ public abstract class AbstractController<T extends CdmBase, SERVICE extends ISer
         return b.toString();
     }
 
-    // =============================================================
-    // TODO move into userHelper Class? See Vaadin CdmUserHelper!
     /**
+     * This method is useful to read path parameters from request urls in methods where the method has been annotated with a
+     * {@link RequestMapping} having wildcards as trailing characters like in <code>@RequestMapping("identifier/**")</code>.
+     * <p>
+     * Reads the path part following pattern passed as <code>basePath</code> and returns it is urldecoded String.
+     * The <code>basepath</code> usually is the combination of the class level and method level RequestMappings e.g.:
+     * <code>"/registration/identifier/"</code>
+     *
+     * @param basePath
+     *      The base path of the controller method.
+     * @param request
      * @return
      */
-    private Authentication getAuthentication() {
-        return SecurityContextHolder.getContext().getAuthentication();
-    }
-
-
-    public boolean userIsAutheticated() {
-        Authentication authentication = getAuthentication();
-        if(authentication != null){
-            return authentication.isAuthenticated();
+    protected String readPathParameter(HttpServletRequest request, String basePath) {
+        String pathParameter = request.getRequestURI().replaceFirst("^(?:.*)" + basePath , "");
+        if(pathParameter != null){
+            try {
+                return java.net.URLDecoder.decode(pathParameter, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                // should never happen
+                throw new RuntimeException(e);
+            }
         }
-        return false;
+        return pathParameter;
     }
-
-
-    public boolean userIsAnnonymous() {
-        Authentication authentication = getAuthentication();
-        return authentication != null
-                && authentication.isAuthenticated()
-                && authentication instanceof AnonymousAuthenticationToken;
-    }
-    // =============================================================
 
 }

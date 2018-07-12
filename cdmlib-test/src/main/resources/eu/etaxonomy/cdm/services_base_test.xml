@@ -25,6 +25,8 @@
 
     <!-- also find the implementation of ITaxonNodeComparator (otherwise it is not found by a component scan)  -->
     <bean name="taxonNodeByNameComparator" class="eu.etaxonomy.cdm.model.taxon.TaxonNodeByNameComparator"/>
+    <!-- find the implementation of UserHelper which is not covered by a component scan  -->
+    <bean name="cdmUserHelper" class="eu.etaxonomy.cdm.api.utility.CdmUserHelper"/>
 
     <!-- equips a new and empty database with the initial set of meta data and admin user   -->
     <bean id="firstDataInserter" class="eu.etaxonomy.cdm.api.application.FirstDataInserter" />

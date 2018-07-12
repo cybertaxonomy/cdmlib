@@ -72,7 +72,7 @@ public class RegistrationController extends BaseController<Registration, IRegist
 
         Registration reg = super.doGet(uuid, request, response);
         if(reg != null){
-            if(userIsAutheticated() && userIsAnnonymous() && !reg.getStatus().equals(RegistrationStatus.PUBLISHED)) {
+            if(userHelper.userIsAutheticated() && userHelper.userIsAnnonymous() && !reg.getStatus().equals(RegistrationStatus.PUBLISHED)) {
                 // completely hide the fact that there is a registration
                 HttpStatusMessage.create("No such Registration", HttpServletResponse.SC_NO_CONTENT).send(response);
             }
@@ -118,7 +118,7 @@ public class RegistrationController extends BaseController<Registration, IRegist
     protected Pager<Registration> pageByIdentifier(String identifier, boolean validateUniqueness,
             HttpServletResponse response) throws IOException {
         List<Restriction<?>> restrictions = new ArrayList<>();
-        if( !userIsAutheticated() || userIsAnnonymous() ) {
+        if( !userHelper.userIsAutheticated() || userHelper.userIsAnnonymous() ) {
             restrictions.add(new Restriction<>("status", null, RegistrationStatus.PUBLISHED));
         }
 
