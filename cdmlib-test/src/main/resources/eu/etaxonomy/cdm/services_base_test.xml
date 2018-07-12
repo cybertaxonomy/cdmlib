@@ -31,6 +31,8 @@
     <!-- equips a new and empty database with the initial set of meta data and admin user   -->
     <bean id="firstDataInserter" class="eu.etaxonomy.cdm.api.application.FirstDataInserter" />
     
+    <bean id="cdmRepository" class="eu.etaxonomy.cdm.api.application.CdmRepository" />
+    
         <context:component-scan base-package="eu/etaxonomy/cdm/api/cache"/>
 
     <bean id="tableGeneratorGlobalOverride"

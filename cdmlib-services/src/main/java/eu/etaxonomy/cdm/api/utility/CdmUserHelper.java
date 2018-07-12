@@ -63,7 +63,7 @@ public class CdmUserHelper implements UserHelper, Serializable {
 
     AuthenticationProvider runAsAuthenticationProvider;
 
-    @Autowired
+    @Autowired(required=false)
     @Qualifier("runAsAuthenticationProvider")
     public void setRunAsAuthenticationProvider(AuthenticationProvider runAsAuthenticationProvider){
         this.runAsAuthenticationProvider = runAsAuthenticationProvider;
@@ -221,7 +221,7 @@ public class CdmUserHelper implements UserHelper, Serializable {
         User user = (User)userDetails;
         if(userDetails != null){
             try{
-                runAsAutheticator.runAsAuthentication(Role.ROLE_USER_MANAGER);
+                getRunAsAutheticator().runAsAuthentication(Role.ROLE_USER_MANAGER);
                 authority = new CdmAuthority(cdmEntity, property, crud);
                 try {
                     GrantedAuthorityImpl grantedAuthority = repo.getGrantedAuthorityService().findAuthorityString(authority.toString());
@@ -235,7 +235,7 @@ public class CdmUserHelper implements UserHelper, Serializable {
                 repo.getSession().flush();
             } finally {
                 // in any case restore the previous authentication
-                runAsAutheticator.restoreAuthentication();
+                getRunAsAutheticator().restoreAuthentication();
             }
             logger.debug("new authority for " + username + ": " + authority.toString());
             Authentication authentication = new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
@@ -323,11 +323,11 @@ public class CdmUserHelper implements UserHelper, Serializable {
 
         UserDetails userDetails = repo.getUserService().loadUserByUsername(username);
         if(userDetails != null){
-            runAsAutheticator.runAsAuthentication(Role.ROLE_USER_MANAGER);
+            getRunAsAutheticator().runAsAuthentication(Role.ROLE_USER_MANAGER);
             User user = (User)userDetails;
             user.getGrantedAuthorities().remove(cdmAuthority);
             repo.getSession().flush();
-            runAsAutheticator.restoreAuthentication();
+            getRunAsAutheticator().restoreAuthentication();
             Authentication authentication = new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
             logger.debug("security context refreshed with user " + username);
@@ -368,6 +368,16 @@ public class CdmUserHelper implements UserHelper, Serializable {
     @Override
     public void setSecurityContextAccess(SecurityContextAccess securityContextAccess) {
         this.securityContextAccess = securityContextAccess;
+    }
+
+    /**
+     * @return the runAsAutheticator
+     */
+    public RunAsAuthenticator getRunAsAutheticator() {
+        if(runAsAutheticator == null){
+          throw new RuntimeException("RunAsAuthenticator is missing! The application needs to be configured with security context.");
+        }
+        return runAsAutheticator;
     }
 
 }
