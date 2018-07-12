@@ -14,6 +14,7 @@ import java.io.Serializable;
 import org.apache.commons.lang.StringUtils;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.ref.TypedEntityReference;
 
 
 
@@ -30,6 +31,7 @@ public class TaggedText implements Serializable{
 	private static final long serialVersionUID = -3553949743902449813L;
     private String text;
 	private TagEnum type;
+	private TypedEntityReference<?> entityReference;
 
 
 	public static TaggedText NewWhitespaceInstance(){
@@ -48,14 +50,33 @@ public class TaggedText implements Serializable{
 	public void setType(TagEnum type) {
 		this.type = type;
 	}
-	public TaggedText() {
+	/**
+     * @return the entityReference
+     */
+    public TypedEntityReference<?> getEntityReference() {
+        return entityReference;
+    }
+
+    /**
+     * @param entityReference the entityReference to set
+     */
+    public void setEntityReference(TypedEntityReference<?> entityReference) {
+        this.entityReference = entityReference;
+    }
+
+    public TaggedText() {
 		super();
 	}
 
+	public TaggedText(TagEnum type, String text, TypedEntityReference<?> entityReference) {
+        super();
+        this.text = text;
+        this.type = type;
+        this.entityReference = entityReference;
+    }
+
 	public TaggedText(TagEnum type, String text) {
-		super();
-		this.text = text;
-		this.type = type;
+		this(type, text, null);
 	}
 
 	protected boolean is(TagEnum type) {

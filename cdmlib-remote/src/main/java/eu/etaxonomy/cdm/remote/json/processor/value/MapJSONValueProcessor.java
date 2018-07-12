@@ -10,10 +10,10 @@ package eu.etaxonomy.cdm.remote.json.processor.value;
 
 import java.util.Map;
 
-import eu.etaxonomy.cdm.api.service.dto.TypedEntityReference;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetManager;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
+import eu.etaxonomy.cdm.ref.TypedEntityReference;
 import eu.etaxonomy.cdm.remote.l10n.TermRepresentation_L10n;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
