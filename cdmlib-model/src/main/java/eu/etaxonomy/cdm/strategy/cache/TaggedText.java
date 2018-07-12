@@ -11,8 +11,6 @@ package eu.etaxonomy.cdm.strategy.cache;
 
 import java.io.Serializable;
 
-import javax.persistence.Transient;
-
 import org.apache.commons.lang.StringUtils;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -60,51 +58,9 @@ public class TaggedText implements Serializable{
 		this.type = type;
 	}
 
-// *************************** DELEGATES ************************************/
-
-	@Transient
-	protected boolean isName() {
-		return type.isName();
+	protected boolean is(TagEnum type) {
+		return type.equals(type);
 	}
-	@Transient
-	protected boolean isRank() {
-		return type.isRank();
-	}
-	@Transient
-	protected boolean isAuthors() {
-		return type.isAuthors();
-	}
-	@Transient
-	protected boolean isAppendedPhrase() {
-		return type.isAppendedPhrase();
-	}
-	@Transient
-	protected boolean isReference() {
-		return type.isReference();
-	}
-	@Transient
-	protected boolean isYear() {
-		return type.isYear();
-	}
-	@Transient
-	protected boolean isFullName() {
-		return type.isFullName();
-	}
-	@Transient
-	protected boolean isNomStatus() {
-		return type.isNomStatus();
-	}
-	@Transient
-	protected boolean isSeparator() {
-		return type.isSeparator();
-	}
-	@Transient
-	protected boolean isHybridSign() {
-		return type.isHybridSign();
-	}
-
-
-// ********************** toString() ***********************************************/
 
 	@Override
 	public String toString(){
