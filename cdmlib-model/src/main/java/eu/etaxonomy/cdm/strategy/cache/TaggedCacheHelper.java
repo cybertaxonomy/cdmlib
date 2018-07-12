@@ -27,7 +27,7 @@ public class TaggedCacheHelper {
      * @see #createString(List, HTMLTagRules)
      */
     public static String createString(List<TaggedText> tags) {
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
 
         boolean isSeparator;
         boolean wasSeparator = true;  //true for start tag

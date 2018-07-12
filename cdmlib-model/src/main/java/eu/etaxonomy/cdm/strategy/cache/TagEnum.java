@@ -85,6 +85,12 @@ public enum TagEnum {
      * a secundum micro reference (for TaxonBase)
      */
     secMicroReference,
+    /**
+     * Any type of label
+     */
+    label,
+    specimenOrObservation,
+    typeDesignation,
 	;
 
 

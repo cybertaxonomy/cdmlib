@@ -38,6 +38,9 @@ import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.ref.EntityReference;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
+import eu.etaxonomy.cdm.strategy.cache.TagEnum;
+import eu.etaxonomy.cdm.strategy.cache.TaggedText;
+import eu.etaxonomy.cdm.strategy.cache.TaggedTextBuilder;
 /**
  * Manages a collection of {@link TypeDesignationBase TypeDesignations} for the same typified name.
  *
@@ -93,6 +96,8 @@ public class TypeDesignationSetManager {
     private List<String> problems = new ArrayList<>();
 
     private boolean printCitation = false;
+
+    private List<TaggedText> taggedText;
 
     /**
      * @param containgEntity
@@ -280,67 +285,68 @@ public class TypeDesignationSetManager {
     }
 */
 
-    public TypeDesignationSetManager buildString(){
+    public void buildString(){
 
         if(finalString == null){
 
+            TaggedTextBuilder finalBuilder = new TaggedTextBuilder();
             finalString = "";
+
             if(getTypifiedNameCache() != null){
                 finalString += getTypifiedNameCache() + " ";
+                finalBuilder.add(TagEnum.name, getTypifiedNameCache(), new TypedEntityReference<>(TaxonName.class, getTypifiedNameRef().getUuid()));
             }
 
             int typeCount = 0;
             if(orderedByTypesByBaseEntity != null){
                 for(TypedEntityReference baseEntityRef : orderedByTypesByBaseEntity.keySet()) {
-                    StringBuilder sb = new StringBuilder();
+
+                    TaggedTextBuilder workingsetBuilder = new TaggedTextBuilder();
                     if(typeCount++ > 0){
-                        sb.append(TYPE_SEPARATOR);
+                        workingsetBuilder.add(TagEnum.separator, TYPE_SEPARATOR);
                     }
                     boolean isNameTypeDesignation = false;
                     if(SpecimenOrObservationBase.class.isAssignableFrom(baseEntityRef.getType())){
-                        sb.append("Type: ");
+                        workingsetBuilder.add(TagEnum.label, "Type:");  // .append(" ");
                     } else {
-                        sb.append("NameType: ");
+                        workingsetBuilder.add(TagEnum.label, "NameType:");  // .append(" ");
                         isNameTypeDesignation = true;
                     }
                     if(!baseEntityRef.getLabel().isEmpty()){
-                        sb.append(baseEntityRef.getLabel()).append(" ");
+                        workingsetBuilder.add(TagEnum.specimenOrObservation, baseEntityRef.getLabel(), baseEntityRef); // .append(" ");
                     }
                     TypeDesignationWorkingSet typeDesignationWorkingSet = orderedByTypesByBaseEntity.get(baseEntityRef);
                     if(!isNameTypeDesignation ){
-                        sb.append("(");
+                        workingsetBuilder.add(TagEnum.separator, " (");
                     }
                     int typeStatusCount = 0;
                     for(TypeDesignationStatusBase<?> typeStatus : typeDesignationWorkingSet.keySet()) {
                         if(typeStatusCount++  > 0){
-                            sb.append(TYPE_STATUS_SEPARATOR);
+                            workingsetBuilder.add(TagEnum.separator, TYPE_STATUS_SEPARATOR);
                         }
                         boolean isPlural = typeDesignationWorkingSet.get(typeStatus).size() > 1;
                         if(!typeStatus.equals(NULL_STATUS)) {
-                            sb.append(typeStatus.getLabel());
-                            if(isPlural){
-                                sb.append("s: ");
-                            } else {
-                                sb.append(", ");
-                            }
+                            workingsetBuilder.add(TagEnum.label, typeStatus.getLabel() + (isPlural ? "s:" : ","));
                         }
                         int typeDesignationCount = 0;
                         for(EntityReference typeDesignationEntityReference : typeDesignationWorkingSet.get(typeStatus)) {
                             if(typeDesignationCount++  > 0){
-                                sb.append(TYPE_DESIGNATION_SEPARATOR);
+                                workingsetBuilder.add(TagEnum.separator, TYPE_DESIGNATION_SEPARATOR);
                             }
-                            sb.append(typeDesignationEntityReference.getLabel());
+                            workingsetBuilder.add(TagEnum.typeDesignation, typeDesignationEntityReference.getLabel(), new TypedEntityReference<TypeDesignationBase>(TypeDesignationBase.class, typeDesignationEntityReference.getUuid()));
                         }
                     }
                     if(!isNameTypeDesignation ){
-                        sb.append(")");
+                        workingsetBuilder.add(TagEnum.separator, ")");
                     }
-                    typeDesignationWorkingSet.setRepresentation(sb.toString());
+                    typeDesignationWorkingSet.setRepresentation(workingsetBuilder.toString());
                     finalString += typeDesignationWorkingSet.getRepresentation();
+                    finalBuilder.addAll(workingsetBuilder);
                 }
             }
+            finalString = finalString.trim();
+            taggedText = finalBuilder.getTaggedText();
         }
-        return this;
     }
 
     /**
@@ -566,7 +572,13 @@ public class TypeDesignationSetManager {
     }
 
     public String print() {
-        return finalString.trim();
+        buildString();
+        return finalString;
+    }
+
+    public List<TaggedText> toTaggedText() {
+        buildString();
+        return taggedText;
     }
 
     /**
