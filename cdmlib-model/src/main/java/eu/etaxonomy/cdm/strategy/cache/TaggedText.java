@@ -79,10 +79,6 @@ public class TaggedText implements Serializable{
 		this(type, text, null);
 	}
 
-	protected boolean is(TagEnum type) {
-		return type.equals(type);
-	}
-
 	@Override
 	public String toString(){
 		String result = CdmUtils.concat(":", type.toString(), text);

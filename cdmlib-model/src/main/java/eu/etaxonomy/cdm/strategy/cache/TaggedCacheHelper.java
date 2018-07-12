@@ -58,7 +58,7 @@ public class TaggedCacheHelper {
         boolean wasSeparator = true;
         while (index < tags.size()){
 
-            if (! tags.get(index).is(TagEnum.separator)){
+            if (! tags.get(index).getType().isSeparator()){
                 if (wasSeparator == false){
                     tags.add(index++, TaggedText.NewWhitespaceInstance());
                 }else{
