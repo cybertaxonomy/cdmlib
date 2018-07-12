@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -25,33 +25,33 @@ import org.springframework.web.servlet.view.XmlViewResolver;
 
 /**
  * Resolves views by using a {@link PathMatcher} to match the view name to the bean names.
- * 
- * Dy default the {@link AntPathMatcher} is used which supports Ant-style path patterns. 
+ *
+ * By default the {@link AntPathMatcher} is used which supports Ant-style path patterns.
  * The mapping matches views using the following rules:
  * <ul>
  *   <li>? matches one character
  *   <li>* matches zero or more characters
- *   <li>** matches zero or more 'directories' in a path 
+ *   <li>** matches zero or more 'directories' in a path
  *  </ul>
  * @author ben.clark
  */
 public class PatternViewResolver extends XmlViewResolver {
-	
+
 	private final Set<String> viewSet = new HashSet<String>();
-	
+
 	private PathMatcher pathMatcher = new AntPathMatcher();
-	
-	
-	
+
+
+
 	public void setPathMatcher(PathMatcher pathMatcher) {
 		Assert.notNull(pathMatcher, "PathMatcher must not be null");
 		this.pathMatcher = pathMatcher;
 	}
-	
+
 	public PathMatcher getPathMatcher() {
 		return this.pathMatcher;
 	}
-	
+
 	@Override
 	public View resolveViewName(String viewName, Locale locale)  throws Exception {
 		// Direct match?
@@ -72,7 +72,7 @@ public class PatternViewResolver extends XmlViewResolver {
 		// No view found...
 		return null;
 	}
-	
+
 	@Override
 	 protected synchronized BeanFactory initFactory() throws BeansException {
 		AbstractApplicationContext beanFactory = (AbstractApplicationContext)super.initFactory();
