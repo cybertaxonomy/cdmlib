@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.api.service.dto;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -33,6 +34,8 @@ import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.ref.EntityReference;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
+import eu.etaxonomy.cdm.strategy.cache.TagEnum;
+import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 public class RegistrationDTO{
 
@@ -57,6 +60,8 @@ public class RegistrationDTO{
     private List<String> validationProblems = new ArrayList<>();
 
     private Set<TypedEntityReference<Registration>> blockedBy;
+
+    private List<TaggedText> summaryTaggedText;
 
 
     /**
@@ -92,9 +97,11 @@ public class RegistrationDTO{
         switch(registrationType) {
         case EMPTY:
             summary = "BLANK REGISTRATION";
+            summaryTaggedText = Arrays.asList(new TaggedText(TagEnum.label, summary));
             break;
         case NAME:
             summary = reg.getName().getTitleCache();
+            summaryTaggedText = reg.getName().getTaggedName();
             break;
         case NAME_AND_TYPIFICATION:
         case TYPIFICATION:
@@ -102,6 +109,7 @@ public class RegistrationDTO{
             try {
                 typeDesignationManager = new TypeDesignationSetManager(reg.getTypeDesignations());
                 summary = typeDesignationManager.print();
+                summaryTaggedText = typeDesignationManager.toTaggedText();
             } catch (RegistrationValidationException e) {
                 validationProblems.add("Validation errors: " + e.getMessage());
             }
@@ -162,6 +170,13 @@ public class RegistrationDTO{
      */
     public String getSummary() {
         return summary;
+    }
+
+    /**
+     * @return the summary
+     */
+    public List<TaggedText> getSummaryTaggedText() {
+        return summaryTaggedText;
     }
 
     public String getSubmitterUserName(){
@@ -298,7 +313,7 @@ public class RegistrationDTO{
         return typeDesignationManager != null ? typeDesignationManager.findTypeDesignation(ref) : null;
     }
 
-    public Collection<TypeDesignationBase> getTypeDesignations() {
+    public Collection<TypeDesignationBase> typeDesignations() {
         return typeDesignationManager != null ? typeDesignationManager.getTypeDesignations() : null;
     }
 
