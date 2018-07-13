@@ -29,6 +29,9 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * TODO write controller documentation
@@ -78,6 +81,12 @@ public class RegistrationController extends BaseController<Registration, IRegist
         return reg;
     }
 
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "identifier", value = "The persitent identifier of the Registration.", required = true, dataType = "string", paramType = "path"),
+    })
+    @ApiOperation(value = "Finds Registration by persitent identifier.",
+        notes = "The identifier passed as paramter must be unique in the database otherwise the server will responde with the HTTP error code: " + HttpServletResponse.SC_PRECONDITION_FAILED
+    )
     @RequestMapping(value="identifier/**", method = RequestMethod.GET)
     public Registration doGetByIdentifier(
             HttpServletRequest request,
@@ -100,6 +109,9 @@ public class RegistrationController extends BaseController<Registration, IRegist
     }
 
 
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "identifier", value = "The persitent identifier of the Registration", required = true, dataType = "string", paramType = "path"),
+    })
     @RequestMapping(value="identifier/**", method = RequestMethod.GET, params={"validateUniqueness"})
     public Pager<Registration> doPageByIdentifier(
             @RequestParam(value = "pageNumber", required = true) Integer pageIndex,

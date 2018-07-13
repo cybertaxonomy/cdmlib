@@ -37,6 +37,9 @@ import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
 import eu.etaxonomy.cdm.remote.editor.term.RegistrationStatusList;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * TODO write controller documentation
@@ -83,6 +86,13 @@ public class RegistrationDTOController extends AbstractController<Registration, 
         binder.registerCustomEditor(UUID.class, new UUIDPropertyEditor());
     }
 
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "identifier", value = "The persitent identifier of the Registration.", required = true, dataType = "string", paramType = "path"),
+    })
+    @ApiOperation(value = "Finds Registration by persitent identifier.",
+        notes = "The identifier passed as paramter must be unique in the database otherwise the server will responde with the HTTP error code: " + HttpServletResponse.SC_PRECONDITION_FAILED,
+        response = Registration.class
+    )
     @RequestMapping(value="identifier/**", method = RequestMethod.GET)
     public RegistrationDTO doGetByIdentifier(
             HttpServletRequest request,
@@ -101,6 +111,11 @@ public class RegistrationDTOController extends AbstractController<Registration, 
         }
     }
 
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "identifier", value = "The persitent identifier of the Registration.", required = true, dataType = "string", paramType = "path"),
+    })
+    @ApiOperation(value = "Finds Registrations by persitent identifier."
+    )
     @RequestMapping(value="identifier/**", method = RequestMethod.GET, params={"validateUniqueness"})
     public Pager<RegistrationDTO> doPageByIdentifier(
             @RequestParam(value = "pageNumber", required=true) Integer pageIndex,
@@ -116,7 +131,6 @@ public class RegistrationDTOController extends AbstractController<Registration, 
 
         return regDTOPager;
     }
-
 
     @RequestMapping(value="find", method = RequestMethod.GET)
     public Pager<RegistrationDTO> doFind(
