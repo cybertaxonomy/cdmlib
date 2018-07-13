@@ -181,19 +181,24 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
     public Pager<RegistrationDTO> pageDTOs(String identifier, Integer pageIndex,  Integer pageSize) throws IOException {
 
         Pager<Registration> regPager = repo.getRegistrationService().pageByIdentifier(identifier, pageIndex, pageSize, REGISTRATION_DTO_INIT_STRATEGY);
-        List<RegistrationDTO> dtoList = new ArrayList<>(regPager.getRecords().size());
-        for(Registration reg : regPager.getRecords()){
-            inititializeSpecimen(reg);
-            dtoList.add(new RegistrationDTO(reg));
-        }
-        return new DefaultPagerImpl<RegistrationDTO>(pageIndex, regPager.getCount(), pageSize, dtoList);
+        return convertToDTOPager(regPager);
+    }
+
+
+    /**
+     * @param regPager
+     * @return
+     */
+    @Override
+    public Pager<RegistrationDTO> convertToDTOPager(Pager<Registration> regPager) {
+        return new DefaultPagerImpl<RegistrationDTO>(regPager.getCurrentIndex(), regPager.getCount(), regPager.getPageSize(), makeDTOs(regPager.getRecords()));
     }
 
 
     @Override
     public Pager<RegistrationDTO> pageDTOs(Integer pageSize, Integer pageIndex) {
 
-        return pageDTOs(null, null, null, null, null, pageSize, pageIndex);
+        return pageDTOs((User)null, null, null, null, null, pageSize, pageIndex, null);
     }
 
     /**
@@ -202,24 +207,53 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
     @Override
     public Pager<RegistrationDTO> pageDTOs(User submitter, Collection<RegistrationStatus> includedStatus,
             String identifierFilterPattern, String taxonNameFilterPattern, Set<TypeDesignationStatusBase> typeStatusFilter,
-            Integer pageSize, Integer pageIndex) {
+            Integer pageSize, Integer pageIndex, List<OrderHint> orderHints) {
 
         if(pageSize == null){
             pageSize = PAGE_SIZE;
         }
 
-        List<OrderHint> orderHints = Arrays.asList(new OrderHint("identifier", SortOrder.ASCENDING));
+        if(orderHints == null){
+            orderHints = Arrays.asList(new OrderHint("identifier", SortOrder.ASCENDING));
+        }
 
         Pager<Registration> pager = repo.getRegistrationService().page(submitter, includedStatus, identifierFilterPattern, taxonNameFilterPattern,
                 typeStatusFilter, PAGE_SIZE, pageIndex , orderHints, REGISTRATION_DTO_INIT_STRATEGY);
-        List<Registration> registrations = pager.getRecords();
-        Pager<RegistrationDTO> dtoPager = new DefaultPagerImpl(pager.getCurrentIndex(), pager.getCount(), pager.getPageSize(), makeDTOs(registrations));
+
+        Pager<RegistrationDTO> dtoPager = convertToDTOPager(pager);
         if(logger.isDebugEnabled()){
-            logger.debug(String.format("pageDTOs() pageIndex: $1%d, pageSize: $2%d, includedStatus: $3%s, identifierFilterPattern: $4%s, taxonNameFilterPattern: $5%s",
-                    pageIndex, pageSize, includedStatus, identifierFilterPattern, taxonNameFilterPattern));
+            logger.debug(String.format("pageDTOs() pageIndex: $1%d, pageSize: $2%d, includedStatus: $3%s, identifierFilterPattern: $4%s, taxonNameFilterPattern: $5%s, submitter: $6%s",
+                    pageIndex, pageSize, includedStatus, identifierFilterPattern, taxonNameFilterPattern, submitter));
             logger.debug("pageDTOs() result: " + pager.toString());
         }
         return dtoPager;
+    }
+
+    @Override
+    public Pager<RegistrationDTO> pageDTOs(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, String identifierFilterPattern,
+            String taxonNameFilterPattern, Collection<UUID> typeDesignationStatusUuids, Integer pageSize,
+            Integer pageIndex, List<OrderHint> orderHints){
+
+            if(pageSize == null){
+                pageSize = PAGE_SIZE;
+            }
+
+            if(orderHints == null){
+                orderHints = Arrays.asList(new OrderHint("identifier", SortOrder.ASCENDING));
+            }
+
+            Pager<Registration> pager = repo.getRegistrationService().page(submitterUuid, includedStatus,
+                    identifierFilterPattern, taxonNameFilterPattern,
+                    typeDesignationStatusUuids, PAGE_SIZE, pageIndex , orderHints, REGISTRATION_DTO_INIT_STRATEGY);
+
+            Pager<RegistrationDTO> dtoPager = convertToDTOPager(pager);
+            if(logger.isDebugEnabled()){
+                logger.debug(String.format("pageDTOs() pageIndex: $1%d, pageSize: $2%d, includedStatusUuids: $3%s, typeDesignationStatusUuids: $4%s, taxonNameFilterPattern: $5%s, submitterUuid: $6%s",
+                        pageIndex, pageSize, includedStatus, identifierFilterPattern, taxonNameFilterPattern, submitterUuid));
+                logger.debug("pageDTOs() result: " + pager.toString());
+            }
+            return dtoPager;
+
     }
 
 

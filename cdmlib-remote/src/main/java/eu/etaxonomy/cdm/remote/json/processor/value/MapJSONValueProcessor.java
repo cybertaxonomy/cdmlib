@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.remote.json.processor.value;
 
 import java.util.Map;
+import java.util.Objects;
 
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetManager;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -35,7 +36,8 @@ public class MapJSONValueProcessor implements JsonValueProcessor {
 	        JSONObject json = new JSONObject();
             for(TypeDesignationStatusBase<?> key : map.keySet()){
                 TermRepresentation_L10n term_L10n = new TermRepresentation_L10n(key, false);
-                json.element(term_L10n.getLabel(), map.get(key), jsonConfig);
+                String label = Objects.toString(term_L10n.getLabel(), "NULL");
+                json.element(label, map.get(key), jsonConfig);
             }
             return json;
 	    } else if(value instanceof Map){

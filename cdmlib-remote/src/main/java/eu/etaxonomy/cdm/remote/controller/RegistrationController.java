@@ -10,9 +10,7 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,8 +28,6 @@ import eu.etaxonomy.cdm.api.service.IRegistrationService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
-import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import io.swagger.annotations.Api;
 
 /**
@@ -91,7 +87,7 @@ public class RegistrationController extends BaseController<Registration, IRegist
 
         String identifier = readPathParameter(request, "/registration/identifier/");
 
-        Pager<Registration> regPager = pageByIdentifier(identifier, 0, 2, response);
+        Pager<Registration> regPager = service.pageByIdentifier(identifier, 0, 2, getInitializationStrategy());
 
         if(regPager.getCount() == 1){
             return regPager.getRecords().get(0);
@@ -115,31 +111,12 @@ public class RegistrationController extends BaseController<Registration, IRegist
 
         String identifier = readPathParameter(request, "/registration/identifier/");
 
-        Pager<Registration> regPager = pageByIdentifier(identifier, pageIndex, pageSize, response);
-
+        Pager<Registration> regPager = service.pageByIdentifier(identifier, pageIndex, pageSize, getInitializationStrategy());
         return regPager;
     }
 
-    /**
-     * @param identifier
-     * @param validateUniqueness
-     * @param response
-     * @return
-     * @throws IOException
-     */
-    protected Pager<Registration> pageByIdentifier(String identifier, Integer pageIndex,  Integer pageSize,
-            HttpServletResponse response) throws IOException {
-
-        List<Restriction<?>> restrictions = new ArrayList<>();
-        if( !userHelper.userIsAutheticated() || userHelper.userIsAnnonymous() ) {
-            restrictions.add(new Restriction<>("status", null, RegistrationStatus.PUBLISHED));
-        }
-
-        Pager<Registration> regPager = service.pageByRestrictions(Registration.class, "identifier", identifier, MatchMode.EXACT,
-                restrictions, pageSize, pageIndex, null, getInitializationStrategy());
 
 
-        return regPager;
-    }
+
 
 }

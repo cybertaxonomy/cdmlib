@@ -10,10 +10,12 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -60,6 +62,7 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
      * {@inheritDoc}
      */
     @Override
+    @Transactional(readOnly = true)
     public Pager<Registration> page(Optional<Reference> reference, Collection<RegistrationStatus> includedStatus,
             Integer pageSize, Integer pageIndex, List<String> propertyPaths) {
 
@@ -78,11 +81,16 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
      * {@inheritDoc}
      */
     @Override
+    @Transactional(readOnly = true)
     public Pager<Registration> page(User submitter, Collection<RegistrationStatus> includedStatus,
             String identifierFilterPattern, String taxonNameFilterPattern, Set<TypeDesignationStatusBase> typeDesignationStatus,
             Integer pageSize, Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths) {
 
         List<Restriction<? extends Object>> restrictions = new ArrayList<>();
+
+        if( !userHelper.userIsAutheticated() || userHelper.userIsAnnonymous() ) {
+            includedStatus = Arrays.asList(RegistrationStatus.PUBLISHED);
+        }
 
         if(submitter != null){
             restrictions.add(new Restriction<>("submitter", MatchMode.EXACT, submitter));
@@ -111,6 +119,48 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
         return new DefaultPagerImpl<>(pageIndex, numberOfResults, pageSize, results);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Pager<Registration> page(UUID submitterUuid, Collection<RegistrationStatus> includedStatus,
+            String identifierFilterPattern, String taxonNameFilterPattern, Collection<UUID> typeDesignationStatusUuids,
+            Integer pageSize, Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths) {
+
+        List<Restriction<? extends Object>> restrictions = new ArrayList<>();
+
+        if( !userHelper.userIsAutheticated() || userHelper.userIsAnnonymous() ) {
+            includedStatus = Arrays.asList(RegistrationStatus.PUBLISHED);
+        }
+
+        if(submitterUuid != null){
+            restrictions.add(new Restriction<>("submitter.uuid", null, submitterUuid));
+        }
+        if(includedStatus != null && !includedStatus.isEmpty()){
+            restrictions.add(new Restriction<>("status", null, includedStatus.toArray(new RegistrationStatus[includedStatus.size()])));
+        }
+        if(identifierFilterPattern != null){
+            restrictions.add(new Restriction<>("identifier", MatchMode.LIKE, identifierFilterPattern));
+        }
+        if(taxonNameFilterPattern != null){
+            restrictions.add(new Restriction<>("name.titleCache", MatchMode.LIKE, taxonNameFilterPattern));
+        }
+        if(typeDesignationStatusUuids != null){
+            restrictions.add(new Restriction<>("typeDesignations.typeStatus.uuid", null, typeDesignationStatusUuids.toArray(new UUID[typeDesignationStatusUuids.size()])));
+        }
+
+        long numberOfResults = dao.count(Registration.class, restrictions);
+
+        List<Registration> results = new ArrayList<>();
+        if(pageIndex == null){
+            pageIndex = 0;
+        }
+        Integer [] limitStart = AbstractPagerImpl.limitStartforRange(numberOfResults, pageIndex, pageSize);
+        if(limitStart != null) {
+            results = dao.list(Registration.class, restrictions, limitStart[0], limitStart[1], orderHints, propertyPaths);
+        }
+
+        return new DefaultPagerImpl<>(pageIndex, numberOfResults, pageSize, results);
+    }
+
     /**
      * @param identifier
      * @param validateUniqueness
@@ -119,6 +169,7 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
      * @throws IOException
      */
     @Override
+    @Transactional(readOnly = true)
     public Pager<Registration> pageByIdentifier(String identifier, Integer pageIndex,  Integer pageSize, List<String> propertyPaths) throws IOException {
 
         List<Restriction<?>> restrictions = new ArrayList<>();
