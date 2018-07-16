@@ -18,7 +18,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,7 +54,6 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
     }
 
     @Autowired
-    @Qualifier("cdmUserHelper")
     private UserHelper userHelper;
 
     /**

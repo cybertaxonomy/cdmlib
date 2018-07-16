@@ -125,6 +125,14 @@ public class CdmUserHelper implements UserHelper, Serializable {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean userIs(RoleProbe roleProbe) {
+        return roleProbe.checkForRole(getAuthentication());
+    }
+
     @Override
     public boolean userHasPermission(CdmBase entity, Object ... args){
         EnumSet<CRUD> crudSet = crudSetFromArgs(args);

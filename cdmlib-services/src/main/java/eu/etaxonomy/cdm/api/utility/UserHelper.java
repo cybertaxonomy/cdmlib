@@ -36,8 +36,6 @@ public interface UserHelper {
 
     boolean userHasPermission(CdmBase entity, Object ... args);
 
-    boolean userIsAdmin();
-
     User user();
 
     String userName();
@@ -45,6 +43,10 @@ public interface UserHelper {
     boolean userIsAnnonymous();
 
     boolean userIsAutheticated();
+
+    boolean userIsAdmin();
+
+    boolean userIs(RoleProbe roleProbe);
 
     /**
      *
