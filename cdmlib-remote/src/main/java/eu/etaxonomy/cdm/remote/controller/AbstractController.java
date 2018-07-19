@@ -123,7 +123,8 @@ public abstract class AbstractController<T extends CdmBase, SERVICE extends ISer
         String pathParameter = request.getRequestURI().replaceFirst("^(?:.*)" + basePath , "");
         if(pathParameter != null){
             try {
-                return java.net.URLDecoder.decode(pathParameter, "UTF-8");
+                pathParameter = java.net.URLDecoder.decode(pathParameter, "UTF-8");
+                pathParameter = pathParameter.replaceAll("\\.json$|\\.xml$", "");
             } catch (UnsupportedEncodingException e) {
                 // should never happen
                 throw new RuntimeException(e);
