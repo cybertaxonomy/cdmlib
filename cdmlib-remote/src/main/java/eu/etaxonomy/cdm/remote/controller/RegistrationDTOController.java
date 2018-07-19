@@ -32,6 +32,8 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.registration.IRegistrationWorkingSetService;
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
@@ -152,7 +154,7 @@ public class RegistrationDTOController extends AbstractController<Registration, 
         }
         Pager<RegistrationDTO> pager = registrationWorkingSetService.pageDTOs(submitterUuid, statusSet,
                 identifierFilterPattern, taxonNameFilterPattern, typeDesignationStatusUuids,
-                pageSize, pageIndex, null);
+                pageSize, pageIndex, Arrays.asList(new OrderHint("specificIdentifier", SortOrder.ASCENDING)));
         return pager;
     }
 
