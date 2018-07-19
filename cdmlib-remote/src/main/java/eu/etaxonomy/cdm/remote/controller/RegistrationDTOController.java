@@ -22,12 +22,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.etaxonomy.cdm.api.service.IRegistrationService;
 import eu.etaxonomy.cdm.api.service.dto.RegistrationDTO;
+import eu.etaxonomy.cdm.api.service.dto.RegistrationWorkingSet;
+import eu.etaxonomy.cdm.api.service.exception.RegistrationValidationException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.registration.IRegistrationWorkingSetService;
 import eu.etaxonomy.cdm.model.name.Registration;
@@ -52,7 +55,6 @@ import io.swagger.annotations.ApiOperation;
 
 @Controller
 @Api("registration")
-@RequestMapping(value = {"/registrationDTO"})
 public class RegistrationDTOController extends AbstractController<Registration, IRegistrationService>
 {
 
@@ -95,7 +97,7 @@ public class RegistrationDTOController extends AbstractController<Registration, 
         notes = "The identifier passed as paramter must be unique in the database otherwise the server will responde with the HTTP error code: " + HttpServletResponse.SC_PRECONDITION_FAILED,
         response = Registration.class
     )
-    @RequestMapping(value="identifier/**", method = RequestMethod.GET)
+    @RequestMapping(value="/registrationDTO/identifier/**", method = RequestMethod.GET)
     public RegistrationDTO doGetByIdentifier(
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
@@ -118,7 +120,7 @@ public class RegistrationDTOController extends AbstractController<Registration, 
     })
     @ApiOperation(value = "Finds Registrations by persitent identifier."
     )
-    @RequestMapping(value="identifier/**", method = RequestMethod.GET, params={"validateUniqueness"})
+    @RequestMapping(value="/registrationDTO/identifier/**", method = RequestMethod.GET, params={"validateUniqueness"})
     public Pager<RegistrationDTO> doPageByIdentifier(
             @RequestParam(value = "pageNumber", required=true) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
@@ -134,7 +136,7 @@ public class RegistrationDTOController extends AbstractController<Registration, 
         return regDTOPager;
     }
 
-    @RequestMapping(value="find", method = RequestMethod.GET)
+    @RequestMapping(value="/registrationDTO/find", method = RequestMethod.GET)
     public Pager<RegistrationDTO> doFind(
             @RequestParam(value = "submitterUuid", required=false) UUID submitterUuid,
             @RequestParam(value = "status", required=false) RegistrationStatusList status,
@@ -144,7 +146,7 @@ public class RegistrationDTOController extends AbstractController<Registration, 
             @RequestParam(value = "pageNumber", required=false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
+            HttpServletResponse response) {
 
         logger.info("doFind() " + requestPathAndQuery(request));
 
@@ -158,4 +160,17 @@ public class RegistrationDTOController extends AbstractController<Registration, 
         return pager;
     }
 
+
+    @RequestMapping(value="/registrationWorkingSetDTO/{reference_uuid}", method = RequestMethod.GET)
+    public RegistrationWorkingSet doGetRegistrationWorkingSet(
+            @PathVariable("reference_uuid") UUID referenceUuid,
+            HttpServletRequest request,
+            HttpServletResponse response) throws RegistrationValidationException {
+
+        logger.info("doGetRegistrationWorkingSet() " + requestPathAndQuery(request));
+
+        RegistrationWorkingSet workingset = registrationWorkingSetService.loadWorkingSetByReferenceUuid(referenceUuid, true);
+
+        return workingset;
+    }
 }

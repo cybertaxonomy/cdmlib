@@ -103,7 +103,7 @@ public class OccurrenceListController extends AbstractIdentifiableListController
                 HttpServletRequest request,
                 HttpServletResponse response) throws IOException {
 
-        logger.info("doListByAssociatedTaxon()" + request.getRequestURI() + "?" + request.getQueryString());
+        logger.info("doListByAssociatedTaxon()" + requestPathAndQuery(request));
 
         Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(relationshipUuids, relationshipInversUuids, termService);
 
@@ -152,7 +152,7 @@ public class OccurrenceListController extends AbstractIdentifiableListController
             )
              throws IOException, LuceneParseException {
 
-         logger.info("dofindByFullText() " + request.getRequestURI() + "?" + request.getQueryString() );
+         logger.info("dofindByFullText() " + requestPathAndQuery(request) );
 
          PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
          pagerParams.normalizeAndValidate(response);

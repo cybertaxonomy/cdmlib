@@ -92,7 +92,7 @@ public class OccurrencePortalController extends OccurrenceController
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
-        logger.info("doGetDerivateHierarchy() " + request.getRequestURI());
+        logger.info("doGetDerivateHierarchy() " + requestPathAndQuery(request));
 
         ModelAndView mv = new ModelAndView();
 
@@ -113,7 +113,7 @@ public class OccurrencePortalController extends OccurrenceController
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
-        logger.info("doGetSpecimenDerivates() " + request.getRequestURI());
+        logger.info("doGetSpecimenDerivates() " + requestPathAndQuery(request));
 
 
         SpecimenOrObservationBase sob = service.load(uuid);

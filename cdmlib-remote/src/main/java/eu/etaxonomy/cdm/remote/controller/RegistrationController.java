@@ -67,7 +67,8 @@ public class RegistrationController extends BaseController<Registration, IRegist
 
     @Override
     @RequestMapping(value="{uuid}", method = RequestMethod.GET)
-    public Registration doGet(@PathVariable("uuid") UUID uuid,
+    public Registration doGet(
+            @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
