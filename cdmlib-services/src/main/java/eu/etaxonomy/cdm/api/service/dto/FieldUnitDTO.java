@@ -12,7 +12,6 @@ public class FieldUnitDTO extends DerivateDTO{
 	private String date;
 	private String herbarium;
 	private boolean hasType;
-	private String protologue;
 
 	private List<PreservedSpecimenDTO> preservedSpecimenDTOs;
     /**
@@ -74,30 +73,6 @@ public class FieldUnitDTO extends DerivateDTO{
      */
     public void setHasType(boolean hasType) {
         this.hasType = hasType;
-    }
-    /**
-     * @return the taxonName
-     */
-    public String getTaxonName() {
-        return taxonName;
-    }
-    /**
-     * @param taxonName the taxonName to set
-     */
-    public void setTaxonName(String taxonName) {
-        this.taxonName = taxonName;
-    }
-    /**
-     * @return the protologue
-     */
-    public String getProtologue() {
-        return protologue;
-    }
-    /**
-     * @param protologue the protologue to set
-     */
-    public void setProtologue(String protologue) {
-        this.protologue = protologue;
     }
 
     /**

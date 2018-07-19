@@ -389,12 +389,11 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     @Override
-    public FieldUnitDTO assembleFieldUnitDTO(FieldUnit fieldUnit, UUID associatedTaxonUuid) {
+    public FieldUnitDTO assembleFieldUnitDTO(FieldUnit fieldUnit) {
 
         if (!getSession().contains(fieldUnit)) {
             fieldUnit = (FieldUnit) load(fieldUnit.getUuid());
         }
-        TaxonBase associatedTaxon = taxonService.load(associatedTaxonUuid);
 
         FieldUnitDTO fieldUnitDTO = new FieldUnitDTO();
 
@@ -427,9 +426,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             }
             fieldUnitDTO.setDate(dateString);
         }
-
-        // Taxon Name
-        fieldUnitDTO.setTaxonName(associatedTaxon.getName().getTitleCache());
 
         // Herbaria map
         Map<eu.etaxonomy.cdm.model.occurrence.Collection, Integer> collectionToCountMap = new HashMap<>();

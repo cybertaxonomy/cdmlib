@@ -22,7 +22,7 @@ public abstract class DerivateDTO {
 
     private TreeSet<Pair<String, String>> characterData;
     private DerivateDataDTO derivateDataDTO;
-    protected String taxonName;
+//    protected String taxonName;
     protected String citation;
     protected boolean hasDetailImage;
     private boolean hasCharacterData;
