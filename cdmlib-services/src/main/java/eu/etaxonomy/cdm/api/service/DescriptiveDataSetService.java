@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,11 +22,16 @@ import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitorThread;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.DescriptiveSystemRole;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.QuantitativeData;
+import eu.etaxonomy.cdm.model.description.SpecimenDescription;
+import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
@@ -47,6 +54,9 @@ public class DescriptiveDataSetService
 
     @Autowired
     private IOccurrenceService occurrenceService;
+
+    @Autowired
+    private IDescriptionService descriptionService;
 
     @Autowired
     private ITaxonNodeService taxonNodeService;
@@ -183,6 +193,184 @@ public class DescriptiveDataSetService
             clazz = DescriptiveDataSet.class;
         }
         super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
+    }
+
+    @Override
+    public SpecimenDescription findDescriptionForDescriptiveDataSet(UUID descriptiveDataSetUuid, UUID specimenUuid){
+        DescriptiveDataSet dataSet = load(descriptiveDataSetUuid);
+        SpecimenOrObservationBase specimen = occurrenceService.load(specimenUuid);
+
+        Set<Feature> datasetFeatures = dataSet.getDescriptiveSystem().getDistinctFeatures();
+        List<DescriptionElementBase> matchingDescriptionElements = new ArrayList<>();
+
+        for (SpecimenDescription specimenDescription : (Set<SpecimenDescription>) specimen.getDescriptions()) {
+            specimenDescription = (SpecimenDescription) descriptionService.load(specimenDescription.getUuid());
+            Set<Feature> specimenDescriptionFeatures = new HashSet<>();
+            //gather specimen description features and check for match with dataset features
+            for (DescriptionElementBase specimenDescriptionElement : specimenDescription.getElements()) {
+                Feature feature = specimenDescriptionElement.getFeature();
+                specimenDescriptionFeatures.add(feature);
+                if(datasetFeatures.contains(feature)){
+                    matchingDescriptionElements.add(specimenDescriptionElement);
+                }
+            }
+            //if description with the exact same features is found return the description
+            if(specimenDescriptionFeatures.equals(datasetFeatures)){
+                return specimenDescription;
+            }
+        }
+        //Create new specimen description if no match was found
+        SpecimenDescription newDesription = SpecimenDescription.NewInstance(specimen);
+        newDesription.setTitleCache("Dataset"+dataSet.getLabel()+": "+newDesription.generateTitle(), true); //$NON-NLS-2$
+
+        //check for equals description element (same feature and same values)
+        Map<Feature, List<DescriptionElementBase>> featureToElementMap = new HashMap<>();
+        for(DescriptionElementBase element:matchingDescriptionElements){
+            List<DescriptionElementBase> list = featureToElementMap.get(element.getFeature());
+            if(list==null){
+                list = new ArrayList<>();
+            }
+            list.add(element);
+            featureToElementMap.put(element.getFeature(), list);
+        }
+        Set<DescriptionElementBase> descriptionElementsToClone = new HashSet<>();
+        for(Feature feature:featureToElementMap.keySet()){
+            List<DescriptionElementBase> elements = featureToElementMap.get(feature);
+            //no duplicate description elements found for this feature
+            if(elements.size()==1){
+                descriptionElementsToClone.add(elements.get(0));
+            }
+            //duplicates found -> check if all are equal
+            else{
+                DescriptionElementBase match = null;
+                for (DescriptionElementBase descriptionElementBase : elements) {
+                    if(match==null){
+                        match = descriptionElementBase;
+                    }
+                    else if(!new DescriptionElementCompareWrapper(match).equals(new DescriptionElementCompareWrapper(descriptionElementBase))){
+                        match = null;
+                        //TODO: propagate message
+//                        MessagingUtils.informationDialog(Messages.CharacterMatrix_MULTIPLE_DATA,
+//                                String.format(Messages.CharacterMatrix_MULTIPLE_DATA_MESSAGE, feature.getLabel()));
+                        break;
+                    }
+                }
+                if(match!=null){
+                    descriptionElementsToClone.add(match);
+                }
+            }
+        }
+        //clone matching descriptionElements
+        for (DescriptionElementBase descriptionElementBase : descriptionElementsToClone) {
+            DescriptionElementBase clone;
+            try {
+                clone = descriptionElementBase.clone(newDesription);
+                clone.getSources().forEach(source -> {
+                    if(descriptionElementBase instanceof CategoricalData){
+                        TextData label = new DefaultCategoricalDescriptionBuilder().build((CategoricalData) descriptionElementBase, null);
+                        source.setOriginalNameString(label.getText(Language.DEFAULT()));
+                    }
+                    else if(descriptionElementBase instanceof QuantitativeData){
+                        TextData label = new DefaultQuantitativeDescriptionBuilder().build((QuantitativeData) descriptionElementBase, null);
+                        source.setOriginalNameString(label.getText(Language.DEFAULT()));
+                    }
+                });
+            } catch (CloneNotSupportedException e) {
+//                MessagingUtils.error(CharacterMatrix.class, e);
+            }
+        }
+
+        //add all remaining description elements to the new description
+        for(Feature wsFeature:datasetFeatures){
+            boolean featureFound = false;
+            for(DescriptionElementBase element:newDesription.getElements()){
+                if(element.getFeature().equals(wsFeature)){
+                    featureFound = true;
+                    break;
+                }
+            }
+            if(!featureFound){
+                if(wsFeature.isSupportsCategoricalData()){
+                    newDesription.addElement(CategoricalData.NewInstance(wsFeature));
+                }
+                else if(wsFeature.isSupportsQuantitativeData()){
+                    newDesription.addElement(QuantitativeData.NewInstance(wsFeature));
+                }
+            }
+        }
+        return newDesription;
+
+    }
+
+    private class DescriptionElementCompareWrapper {
+
+        private DescriptionElementBase element;
+        private Set<UUID> stateUuids = new HashSet<>();
+        private Float min = null;
+        private Float max = null;
+
+        public DescriptionElementCompareWrapper(DescriptionElementBase element) {
+            this.element = element;
+            if(element.isInstanceOf(CategoricalData.class)){
+                CategoricalData elementData = (CategoricalData)element;
+                elementData.getStatesOnly().forEach(state->stateUuids.add(state.getUuid()));
+            }
+            else if(element.isInstanceOf(QuantitativeData.class)){
+                QuantitativeData elementData = (QuantitativeData)element;
+                min = elementData.getMin();
+                max = elementData.getMax();
+            }
+        }
+
+        public DescriptionElementBase unwrap() {
+            return element;
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((max == null) ? 0 : max.hashCode());
+            result = prime * result + ((min == null) ? 0 : min.hashCode());
+            result = prime * result + ((stateUuids == null) ? 0 : stateUuids.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            DescriptionElementCompareWrapper other = (DescriptionElementCompareWrapper) obj;
+            if (max == null) {
+                if (other.max != null) {
+                    return false;
+                }
+            } else if (!max.equals(other.max)) {
+                return false;
+            }
+            if (min == null) {
+                if (other.min != null) {
+                    return false;
+                }
+            } else if (!min.equals(other.min)) {
+                return false;
+            }
+            if (stateUuids == null) {
+                if (other.stateUuids != null) {
+                    return false;
+                }
+            } else if (!stateUuids.equals(other.stateUuids)) {
+                return false;
+            }
+            return true;
+        }
     }
 
 }

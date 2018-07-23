@@ -13,6 +13,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.DescriptiveSystemRole;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
@@ -83,4 +84,12 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      */
     public RowWrapperDTO createRowWrapper(DescriptionBase description, DescriptiveDataSet descriptiveDataSet);
 
+    /**
+     * Returns a {@link SpecimenDescription} for a given specimen with corresponding
+     * features according to the {@link DescriptiveDataSet}.
+     * @param descriptiveDataSetUuid
+     * @param specimenUuid
+     * @return
+     */
+    public SpecimenDescription findDescriptionForDescriptiveDataSet(UUID descriptiveDataSetUuid, UUID specimenUuid);
 }
