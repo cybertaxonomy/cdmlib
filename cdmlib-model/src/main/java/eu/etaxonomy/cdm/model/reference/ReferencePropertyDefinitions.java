@@ -38,6 +38,7 @@ public class ReferencePropertyDefinitions {
     private static Map<String, String> iJournal = new HashMap<>();
     private static Map<String, String> iPrintSeries = new HashMap<>();
     private static Map<String, String> iThesis = new HashMap<>();
+    private static Map<String, String> all = new HashMap<>();
 
     static {
 
@@ -110,6 +111,7 @@ public class ReferencePropertyDefinitions {
         map = iThesis;
         put(map, "school");
 
+        all = merge(iThesis, iPrintSeries, iInProceedings, iPrintedUnitBase, iVolumeReference);
 
     }
 
@@ -117,13 +119,15 @@ public class ReferencePropertyDefinitions {
      *
      * @param type
      * @return a map (Reference.fieldName -> propertyName) with the Reference class field name as key and the property name as
-     * defined in the most significant interface as value.
+     * defined in the most significant interface as value. The propertyName can be used as label in the UI
      *
      * @throws UnimplemetedCaseException
      */
     public static Map<String, String> fieldPropertyDefinition(ReferenceType type) throws UnimplemetedCaseException{
 
-
+        if(type == null){
+            return all;
+        }
         switch (type){
         case Article:
             return iArticle;
@@ -160,7 +164,7 @@ public class ReferencePropertyDefinitions {
         case WebPage:
             throw new UnimplemetedCaseException(type);
         default:
-            throw new UnimplemetedCaseException(type);
+            return all;
         }
 
     }
