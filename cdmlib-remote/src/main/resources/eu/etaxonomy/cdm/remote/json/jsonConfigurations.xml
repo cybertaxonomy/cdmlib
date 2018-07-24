@@ -106,6 +106,10 @@
       <bean
         class="eu.etaxonomy.cdm.remote.json.processor.matcher.CdmProxyBeanProcessorMatcher" />
     </property>
+    <property name="defaultValueProcessorMatcher">
+      <bean
+        class="eu.etaxonomy.cdm.remote.json.processor.matcher.CdmDefaultValueProcessorMatcher" />
+    </property>
     <property name="jsonBeanProcessors">
       <map>
         <entry key="org.hibernate.proxy.HibernateProxy">
@@ -315,6 +319,18 @@
     <property name="jsonBeanProcessorMatcher">
       <bean
         class="eu.etaxonomy.cdm.remote.json.processor.matcher.CdmProxyBeanProcessorMatcher" />
+    </property>
+    <property name="defaultValueProcessorMatcher">
+      <bean
+        class="eu.etaxonomy.cdm.remote.json.processor.matcher.CdmDefaultValueProcessorMatcher" />
+    </property>
+    <property name="defaultValueProcessorMap">
+        <map>
+          <entry key="java.lang.Number">
+            <bean
+              class="eu.etaxonomy.cdm.remote.json.processor.value.CdmDefaultValueProcessor" />
+          </entry>
+        </map>
     </property>
     <property name="jsonBeanProcessors">
       <map>
