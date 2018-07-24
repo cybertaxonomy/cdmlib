@@ -1389,8 +1389,9 @@ public class TaxonServiceImpl
 
             newTaxon = HibernateProxyHelper.deproxy(newTaxon, Taxon.class);
             oldTaxon = HibernateProxyHelper.deproxy(oldTaxon, Taxon.class);
-            newTaxon.addSynonym(synRelation, newSynonymType);
             oldTaxon.removeSynonym(synRelation, false);
+            newTaxon.addSynonym(synRelation, newSynonymType);
+
             if (newSecundum != null || !keepSecundumIfUndefined){
                 synRelation.setSec(newSecundum);
             }
