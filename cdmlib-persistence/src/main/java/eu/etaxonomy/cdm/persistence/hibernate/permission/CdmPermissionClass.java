@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.persistence.hibernate.permission;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
@@ -68,6 +67,7 @@ public enum CdmPermissionClass {
     TEAMORPERSONBASE,
     TERMVOCABULARY,
     USER,
+    AGENTBASE
     ;
 
 
