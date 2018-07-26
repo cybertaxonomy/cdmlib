@@ -155,7 +155,7 @@ public class DescriptiveDataSetService
                                 "taxonNodes",
                                 "taxonNodes.classification",
                         }));
-                if(associatedTaxa!=null){
+                if(associatedTaxa!=null && !associatedTaxa.isEmpty()){
                     //FIXME: what about multiple associated taxa
                     Set<TaxonNode> taxonSubtreeFilter = descriptiveDataSet.getTaxonSubtreeFilter();
                     if(taxonSubtreeFilter!=null && !taxonSubtreeFilter.isEmpty()){
