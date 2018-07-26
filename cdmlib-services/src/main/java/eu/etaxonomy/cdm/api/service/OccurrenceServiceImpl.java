@@ -379,7 +379,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         Set<UUID> fieldUnitUuids = new HashSet<>();
         List<SpecimenOrObservationBase> records = listByAssociatedTaxon(null, includeRelationships, associatedTaxon, maxDepth, null, null, orderHints, propertyPaths);
         for (SpecimenOrObservationBase<?> specimen : records) {
-            for (FieldUnit fieldUnit : getFieldUnits(specimen.getUuid(), null)) {
+            for (FieldUnit fieldUnit : findFieldUnits(specimen.getUuid(), null)) {
                 fieldUnitUuids.add(fieldUnit.getUuid());
             }
         }
@@ -863,7 +863,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
 
     @Override
-    public Collection<FieldUnit> getFieldUnits(UUID derivedUnitUuid, List<String> propertyPaths) {
+    public Collection<FieldUnit> findFieldUnits(UUID derivedUnitUuid, List<String> propertyPaths) {
         //It will search recursively over all {@link DerivationEvent}s and get the "originals" ({@link SpecimenOrObservationBase})
         //from which this DerivedUnit was derived until all FieldUnits are found.
 
@@ -1513,7 +1513,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     @Override
     public List<SpecimenOrObservationBase<?>> getAllHierarchyDerivatives(SpecimenOrObservationBase<?> specimen){
         List<SpecimenOrObservationBase<?>> allHierarchyDerivatives = new ArrayList<>();
-        Collection<FieldUnit> fieldUnits = getFieldUnits(specimen.getUuid(), null);
+        Collection<FieldUnit> fieldUnits = findFieldUnits(specimen.getUuid(), null);
         if(fieldUnits.isEmpty()){
             allHierarchyDerivatives.add(specimen);
             allHierarchyDerivatives.addAll(getAllChildDerivatives(specimen));
