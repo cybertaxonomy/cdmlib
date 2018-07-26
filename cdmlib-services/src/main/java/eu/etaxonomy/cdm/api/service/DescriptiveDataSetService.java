@@ -164,7 +164,7 @@ public class DescriptiveDataSetService
                     }
                 }
             }
-            Collection<FieldUnit> fieldUnits = occurrenceService.getFieldUnits(specimen.getUuid(),
+            Collection<FieldUnit> fieldUnits = occurrenceService.findFieldUnits(specimen.getUuid(),
                     Arrays.asList(new String[]{
                             "gatheringEvent",
                             "gatheringEvent.country"
