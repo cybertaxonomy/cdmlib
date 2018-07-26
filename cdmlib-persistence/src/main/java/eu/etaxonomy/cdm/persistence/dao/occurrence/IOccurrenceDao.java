@@ -15,6 +15,7 @@ import org.springframework.dao.DataAccessException;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
@@ -402,7 +403,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
      * @param propertyPaths
      * @return a list of field units referencing the gathering event
      */
-    public List<FieldUnit> getFieldUnitsForGatheringEvent(UUID gatheringEventUuid, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+    public List<FieldUnit> findFieldUnitsForGatheringEvent(UUID gatheringEventUuid, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
     *
@@ -411,5 +412,17 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
     * @param propertyPaths
     * @return a derived unit
     */
-   public List<DerivedUnit> getByGeneticAccessionNumber(String accessionNumberString, List<String> propertyPaths);
+   public List<DerivedUnit> findByGeneticAccessionNumber(String accessionNumberString, List<String> propertyPaths);
+
+    /**
+     * @param derivedUnitUuid
+     * @return
+     */
+    public List<SpecimenOrObservationBase> findOriginalsForDerivedUnit(UUID derivedUnitUuid, List<String> propertyPaths);
+
+    /**
+     * @param fieldUnitUuids
+     * @return
+     */
+    public List<Point> findPointsForFieldUnitList(List<UUID> fieldUnitUuids);
 }

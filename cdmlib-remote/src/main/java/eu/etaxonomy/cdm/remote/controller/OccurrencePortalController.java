@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
+import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
 import eu.etaxonomy.cdm.api.service.dto.PreservedSpecimenDTO;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -67,6 +68,10 @@ public class OccurrencePortalController extends OccurrenceController
             "gatheringEvent.collectingAreas",
             "descriptions"
     });
+
+    @Autowired
+    private ITermService termService;
+
 
 
     /**
@@ -126,6 +131,24 @@ public class OccurrencePortalController extends OccurrenceController
         return null;
     }
 
-
+//    @RequestMapping(value = { "specimenDerivatesAndOriginals" }, method = RequestMethod.GET)
+//    public ModelAndView doGetSpecimenDerivatesAndOriginals(
+//            @RequestParam(value = "relationships", required = false) UuidList relationshipUuids,
+//            @RequestParam(value = "relationshipsInvers", required = false) UuidList relationshipInversUuids,
+//            @PathVariable("uuid") UUID uuid,
+//            HttpServletRequest request,
+//            HttpServletResponse response) throws IOException {
+//
+//        logger.info("doGetSpecimenDerivates() " + request.getRequestURI());
+//
+//        ModelAndView mv = new ModelAndView();
+//        Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(relationshipUuids, relationshipInversUuids, termService);
+//        List<FieldUnitDTO> fieldUnitDTOs = service.findFieldUnitDTOByAssociatedTaxon(includeRelationships, uuid);
+//        if(fieldUnitDTOs!=null){
+//                    mv.addObject(fieldUnitDTOs);
+//        }
+//
+//        return mv;
+//    }
 
 }

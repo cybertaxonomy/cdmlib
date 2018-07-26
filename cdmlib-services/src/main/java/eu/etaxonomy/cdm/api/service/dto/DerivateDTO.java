@@ -9,9 +9,15 @@
 package eu.etaxonomy.cdm.api.service.dto;
 
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.TreeSet;
+import java.util.UUID;
 
 import org.hibernate.envers.tools.Pair;
+
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 
 /**
  * @author pplitzner
@@ -22,12 +28,91 @@ public abstract class DerivateDTO {
 
     private TreeSet<Pair<String, String>> characterData;
     private DerivateDataDTO derivateDataDTO;
+
 //    protected String taxonName;
+
+    protected String titleCache;
+
     protected String citation;
     protected boolean hasDetailImage;
     private boolean hasCharacterData;
     private boolean hasDna;
     private boolean hasSpecimenScan;
+    private String recordBase;
+    private CollectionDTO collection;
+    private String catalogNumber;
+    private String collectorsNumber;
+    private String barcode;
+    private String preservationMethod;
+    private Set<DerivateDTO> derivates;
+    private UUID uuid;
+
+    private Set<SpecimenTypeDesignation> specimenTypeDesignations;
+
+    private DerivationEventDTO derivationEvent;
+
+    private Set<IdentifiableSource> sources;
+
+    public String getTitleCache() {
+        return titleCache;
+    }
+
+    public void setTitleCache(String titleCache) {
+        this.titleCache = titleCache;
+    }
+
+    public void setCollection(CollectionDTO collection) {
+        this.collection = collection;
+    }
+
+    public String getCatalogNumber() {
+        return catalogNumber;
+    }
+
+    public void setCatalogNumber(String catalogNumber) {
+        this.catalogNumber = catalogNumber;
+    }
+
+    public String getCollectorsNumber() {
+        return collectorsNumber;
+    }
+
+    public void setCollectorsNumber(String collectorsNumber) {
+        this.collectorsNumber = collectorsNumber;
+    }
+
+    public String getBarcode() {
+        return barcode;
+    }
+
+    public void setBarcode(String barcode) {
+        this.barcode = barcode;
+    }
+
+    public String getPreservationMethod() {
+        return preservationMethod;
+    }
+
+    public void setPreservationMethod(String preservationMethod) {
+        this.preservationMethod = preservationMethod;
+    }
+
+    public Set<SpecimenTypeDesignation> getSpecimenTypeDesignations() {
+        return specimenTypeDesignations;
+    }
+
+    public void setSpecimenTypeDesignations(Set<SpecimenTypeDesignation> specimenTypeDesignations) {
+        this.specimenTypeDesignations = specimenTypeDesignations;
+    }
+
+
+    public Set<IdentifiableSource> getSources() {
+        return sources;
+    }
+
+    public void setSources(Set<IdentifiableSource> sources) {
+        this.sources = sources;
+    }
 
     /**
      * @return the derivateDataDTO
@@ -138,6 +223,85 @@ public abstract class DerivateDTO {
      */
     public void setCitation(String citation) {
         this.citation = citation;
+    }
+
+    public String getRecordBase() {
+        return recordBase;
+    }
+    public void setRecordBase(String recordBase) {
+        this.recordBase = recordBase;
+    }
+
+    /**
+     * @return the collection
+     */
+    public String getHerbarium() {
+        if (collection != null){
+            return collection.getCode();
+        } else {
+            return null;
+        }
+    }
+    /**
+     * @param collection the collection to set
+     */
+    public void setHerbarium(String herbarium) {
+        if (collection == null){
+            collection = new CollectionDTO(herbarium, null, null, null);
+        }else{
+            this.collection.setCode(herbarium);
+        }
+    }
+    /**
+     * @return the collection
+     */
+    public CollectionDTO getCollectionDTO() {
+        return collection;
+    }
+    /**
+     * @param collection the collection to set
+     */
+    public void setCollectioDTo(CollectionDTO collection) {
+        this.collection = collection;
+    }
+
+
+
+    public Set<DerivateDTO> getDerivates() {
+        return derivates;
+    }
+
+    public void setDerivates(Set<DerivateDTO> derivates) {
+        this.derivates = derivates;
+    }
+
+    public void addDerivate(DerivateDTO derivate){
+        if (this.derivates == null){
+            this.derivates = new HashSet<>();
+        }
+        this.derivates.add(derivate);
+    }
+    public void addAllDerivates(Set<DerivateDTO> derivates){
+        if (this.derivates == null){
+            this.derivates = new HashSet<>();
+        }
+        this.derivates.addAll(derivates);
+    }
+
+    public DerivationEventDTO getDerivationEvent() {
+        return derivationEvent;
+    }
+
+    public void setDerivationEvent(DerivationEventDTO derivationEvent) {
+        this.derivationEvent = derivationEvent;
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
     }
 
 

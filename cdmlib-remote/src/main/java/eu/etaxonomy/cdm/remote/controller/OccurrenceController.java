@@ -10,7 +10,9 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,6 +28,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
+import eu.etaxonomy.cdm.api.service.dto.DerivateDTO;
+import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
+import eu.etaxonomy.cdm.api.service.dto.PreservedSpecimenDTO;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -53,6 +58,7 @@ public class OccurrenceController extends AbstractIdentifiableController<Specime
     private static final List<String> DERIVED_UNIT_INIT_STRATEGY =  Arrays.asList(new String []{
             "derivedFrom.derivatives",
             "derivedFrom.originals",
+            "collection.$"
     });
 
     private static final List<String> EXTENSIONS_INIT_STRATEGY =  Arrays.asList(new String []{
@@ -86,6 +92,26 @@ public class OccurrenceController extends AbstractIdentifiableController<Specime
             }
         }
         return null;
+    }
+
+    @RequestMapping(value = { "occurrencesDTO" }, method = RequestMethod.GET)
+    public  FieldUnitDTO doGetOccurencesDTO(
+            @PathVariable("uuid") UUID uuid,
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+
+        logger.info("doGetDerivedFrom()" + requestPathAndQuery(request));
+
+        DerivedUnit sob = (DerivedUnit) getCdmBaseInstance(uuid, response, DERIVED_UNIT_INIT_STRATEGY);
+
+        sob = checkExistsAndAccess(sob, NO_UNPUBLISHED, response);
+        FieldUnitDTO fieldUnitDto = null;
+        if(sob instanceof DerivedUnit){
+            fieldUnitDto = service.findFieldUnitDTO(PreservedSpecimenDTO.newInstance(sob, null) , new ArrayList<FieldUnitDTO>(), new HashMap<UUID, DerivateDTO>());
+        }
+
+        return fieldUnitDto;
+
     }
 
     /**

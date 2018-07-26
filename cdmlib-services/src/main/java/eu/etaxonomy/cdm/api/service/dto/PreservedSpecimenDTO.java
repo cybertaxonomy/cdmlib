@@ -17,6 +17,9 @@ import java.util.UUID;
 
 import org.hibernate.envers.tools.Pair;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 
@@ -29,9 +32,33 @@ public class PreservedSpecimenDTO extends DerivateDTO{
 
     private String accessionNumber;
     private URI preferredStableUri;
-    private String uuid;
+
     private List<Pair<UUID, String>> associatedTaxa;
     private Map<String, List<String>> types;
+
+    public static PreservedSpecimenDTO newInstance(DerivedUnit derivedUnit, TaxonName name ){
+        PreservedSpecimenDTO newInstance = new PreservedSpecimenDTO();
+        newInstance.setUuid(derivedUnit.getUuid());
+        newInstance.setTitleCache(derivedUnit.getTitleCache());
+        newInstance.accessionNumber = derivedUnit.getAccessionNumber();
+        newInstance.preferredStableUri = derivedUnit.getPreferredStableUri();
+
+        newInstance.setCollectioDTo(new CollectionDTO(HibernateProxyHelper.deproxy(derivedUnit.getCollection())));
+        newInstance.setBarcode(derivedUnit.getBarcode());
+        newInstance.setCatalogNumber(derivedUnit.getCatalogNumber());
+        newInstance.setCollectorsNumber(derivedUnit.getCollectorsNumber());
+        if (derivedUnit.getDerivedFrom() != null){
+            newInstance.setDerivationEvent(new DerivationEventDTO(derivedUnit.getDerivedFrom() ));
+        }
+        if (derivedUnit.getPreservation()!= null){
+            newInstance.setPreservationMethod(derivedUnit.getPreservation().getMaterialMethodText());
+        }
+        newInstance.setRecordBase(derivedUnit.getRecordBasis().getMessage());
+        newInstance.setSources(derivedUnit.getSources());
+        newInstance.setSpecimenTypeDesignations(derivedUnit.getSpecimenTypeDesignations());
+
+        return newInstance;
+    }
 
     public String getAccessionNumber() {
         return accessionNumber;
@@ -40,12 +67,7 @@ public class PreservedSpecimenDTO extends DerivateDTO{
         this.accessionNumber = accessionNumber;
     }
 
-    public String getUuid() {
-        return uuid;
-    }
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
+
 
     public Map<String, List<String>> getTypes() {
         return types;

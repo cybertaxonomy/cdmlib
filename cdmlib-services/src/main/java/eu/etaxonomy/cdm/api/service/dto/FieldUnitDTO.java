@@ -2,18 +2,79 @@ package eu.etaxonomy.cdm.api.service.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.SpecimenDescription;
+import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
+import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 
 public class FieldUnitDTO extends DerivateDTO{
 
 	//Row Attributes
 	private String country;
-	private String collection;
+	private String collectionString;
 	private String date;
-	private String herbarium;
+
 	private boolean hasType;
 
-	private List<PreservedSpecimenDTO> preservedSpecimenDTOs;
+	private String kindOfUnit;
+	private List<UUID> taxonRelatedDerivedUnits = new ArrayList<>();
+	private List<Media> listOfMedia = new ArrayList<>();
+
+
+    private List<PreservedSpecimenDTO> preservedSpecimenDTOs;
+	private GatheringEventDTO gatheringEvent;
+
+
+	public static FieldUnitDTO newInstance(FieldUnit fieldUnit){
+	    FieldUnitDTO fieldUnitDto = new FieldUnitDTO();
+	    fieldUnitDto.kindOfUnit = fieldUnit.getKindOfUnit().getTitleCache();
+	    fieldUnitDto.gatheringEvent = GatheringEventDTO.newInstance(fieldUnit.getGatheringEvent());
+	    fieldUnitDto.setUuid(fieldUnit.getUuid());
+	    fieldUnitDto.setTitleCache(fieldUnit.getTitleCache());
+
+	    Set<DescriptionBase<IIdentifiableEntityCacheStrategy<FieldUnit>>> descriptions = fieldUnit.getDescriptions();
+	    for (DescriptionBase desc : descriptions){
+	        if (desc instanceof SpecimenDescription){
+	            SpecimenDescription specimenDesc = (SpecimenDescription)desc;
+    	        if (specimenDesc.isImageGallery()){
+    	            for (DescriptionElementBase element : specimenDesc.getElements()){
+    	                if (element.isInstanceOf(TextData.class)&& element.getFeature().equals(Feature.IMAGE())) {
+	                        for (Media media :element.getMedia()){
+	                            fieldUnitDto.listOfMedia.add(media);
+	                        }
+    	                }
+    	            }
+    	        }
+	        }
+	    }
+	    return fieldUnitDto;
+
+	}
+
+
+	/**
+     * @return the listOfMedia
+     */
+    public List<Media> getListOfMedia() {
+        return listOfMedia;
+    }
+
+    /**
+     * @param listOfMedia the listOfMedia to set
+     */
+    public void setListOfMedia(List<Media> listOfMedia) {
+        this.listOfMedia = listOfMedia;
+    }
+
+
     /**
      * @return the country
      */
@@ -27,16 +88,16 @@ public class FieldUnitDTO extends DerivateDTO{
         this.country = country;
     }
     /**
-     * @return the collection
+     * @return the collectionString
      */
     public String getCollection() {
-        return collection;
+        return collectionString;
     }
     /**
-     * @param collection the collection to set
+     * @param collectionString the collectionString to set
      */
     public void setCollection(String collection) {
-        this.collection = collection;
+        this.collectionString = collection;
     }
     /**
      * @return the date
@@ -50,18 +111,8 @@ public class FieldUnitDTO extends DerivateDTO{
     public void setDate(String date) {
         this.date = date;
     }
-    /**
-     * @return the herbarium
-     */
-    public String getHerbarium() {
-        return herbarium;
-    }
-    /**
-     * @param herbarium the herbarium to set
-     */
-    public void setHerbarium(String herbarium) {
-        this.herbarium = herbarium;
-    }
+
+
     /**
      * @return the hasType
      */
@@ -91,6 +142,35 @@ public class FieldUnitDTO extends DerivateDTO{
 
     public void setPreservedSpecimenDTOs(List<PreservedSpecimenDTO> preservedSpecimenDTOs) {
         this.preservedSpecimenDTOs = preservedSpecimenDTOs;
+    }
+    public String getKindOfUnit() {
+        return kindOfUnit;
+    }
+    public void setKindOfUnit(String kindOfUnit) {
+        this.kindOfUnit = kindOfUnit;
+    }
+
+    public GatheringEventDTO getGatheringEvent() {
+        return gatheringEvent;
+    }
+    public void setGatheringEvent(GatheringEventDTO gatheringEvent) {
+        this.gatheringEvent = gatheringEvent;
+    }
+
+
+    /**
+     * @return the taxonRelatedDerivedUnits
+     */
+    public List<UUID> getTaxonRelatedDerivedUnits() {
+        return taxonRelatedDerivedUnits;
+    }
+
+
+    /**
+     * @param taxonRelatedDerivedUnits the taxonRelatedDerivedUnits to set
+     */
+    public void setTaxonRelatedDerivedUnits(List<UUID> taxonRelatedDerivedUnits) {
+        this.taxonRelatedDerivedUnits = taxonRelatedDerivedUnits;
     }
 
 }
