@@ -35,6 +35,7 @@ public class PostMergeEntityListener implements MergeEventListener {
 
     private static Map<Session, Set<CdmBase>> newEntitiesMap = new ConcurrentHashMap<>();
 
+
     public static void addSession(Session session) {
         newEntitiesMap.put(session, new HashSet<>());
     }
@@ -73,7 +74,11 @@ public class PostMergeEntityListener implements MergeEventListener {
         }
 
 
+
+
     }
+
+
 
     /**
      * @param entity
@@ -89,6 +94,9 @@ public class PostMergeEntityListener implements MergeEventListener {
                 PolytomousKeyNode node = (PolytomousKeyNode) entity;
                 if (node.getChildren() != null && Hibernate.isInitialized(node.getChildren()) ){
                     node.removeNullValueFromChildren();
+                    for (PolytomousKeyNode childNode: node.getChildren()){
+                        removeNullFromCollections(childNode);
+                    }
 
                 }
 

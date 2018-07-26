@@ -176,6 +176,15 @@ public enum SpecimenOrObservationType implements IEnumTerm<SpecimenOrObservation
 	Multimedia(UUID.fromString("bfe3fef8-d294-4554-847a-c9d8a6b74313"), "Multimedia Object", "MM", Media),
 
 	//14
+    /**
+     * Type for all material samples belonging to a particular object or observation or a set of these.
+     * Specialization of {@link SpecimenOrObservationType#DerivedUnit}.
+     */
+    @XmlEnumValue("MaterialSample")
+    MaterialSample(UUID.fromString("d6395063-63b3-485f-87d1-8b2eaf224a33"), "Material Sample", "MS", DerivedUnit),
+
+
+	//15
 	/**
 	 * Type for all field data belonging to a particular object or observation or a set of these.
 	 * Derived from the former (before v3.3 CDM class "FieldUnit".
