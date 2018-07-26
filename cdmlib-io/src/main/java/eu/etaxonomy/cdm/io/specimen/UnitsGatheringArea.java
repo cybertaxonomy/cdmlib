@@ -194,9 +194,14 @@ public class UnitsGatheringArea {
                     specimenImportVocabulary = vocabularyService.save(specimenImportVocabulary);
                 }
             }
-            specimenImportVocabulary.addTerm(ar);
-            termService.saveOrUpdate(ar);
-            this.areas.add(ar);
+            DefinedTermBase term =  specimenImportVocabulary.getTermByIdInvocabulary(namedAreaStr);
+            if (term == null){
+                specimenImportVocabulary.addTerm(ar);
+                termService.saveOrUpdate(ar);
+                this.areas.add(ar);
+            }else{
+                this.areas.add(term);
+            }
             addNamedAreaDecision(namedAreaStr,ar.getUuid(), config);
         }
     }

@@ -79,6 +79,68 @@ public class Abcd206XMLFieldGetter {
     }
 
     /**
+     * getType :
+     * @param result
+     */
+    protected void getPreparation(Node result) {
+        if (DEBUG) {
+            logger.info("GetPreparation");
+        }
+        NodeList results, preps, ntds, ntd;
+        String prep;
+        results = result.getChildNodes();
+
+        try {
+            for (int k = 0; k < results.getLength(); k++) {
+
+                if (results.item(k).getNodeName()
+                        .equals(prefix + "SpecimenUnit")) {
+                    preps = results.item(k).getChildNodes();
+                    for (int l = 0; l < preps.getLength(); l++) {
+                        if (preps.item(l).getNodeName().equals(prefix+ "Preparations")) {
+                            ntds = preps.item(l).getChildNodes();
+                            for (int m = 0; m < ntds.getLength(); m++) {
+                                if (ntds.item(m).getNodeName().equals(prefix+ "preparation")) {
+                                    ntd = ntds.item(m).getChildNodes();
+                                    for (int n = 0; n < ntd.getLength(); n++) {
+                                        if (ntd.item(n).getNodeName().equals(prefix + "preparationType"))
+                                        {
+                                            prep = ntd.item(n).getTextContent();
+                                            if(DEBUG) {
+                                                logger.info("ADD "+prep);
+                                            }
+                                            dataHolder.setUnitNotes(prep);
+                                            path = ntd.item(l).getNodeName();
+                                            getHierarchie(ntd.item(l));
+                                            dataHolder.knownABCDelements.add(path);
+                                            path = "";
+                                        }
+                                        if (ntd.item(n).getNodeName().equals(prefix + "preparationAgent"))
+                                        {
+                                            prep = ntd.item(n).getTextContent();
+                                            if(DEBUG) {
+                                                logger.info("ADD "+prep);
+                                            }
+                                            dataHolder.setUnitNotes(prep);
+                                            path = ntd.item(l).getNodeName();
+                                            getHierarchie(ntd.item(l));
+                                            dataHolder.knownABCDelements.add(path);
+                                            path = "";
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+        } catch (NullPointerException e) {
+
+        }
+    }
+
+    /**
      * getScientificNames : get the list of scientific names (preferred and non preferred)
      * @param group
      */
