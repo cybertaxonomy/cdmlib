@@ -10,9 +10,11 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -47,6 +49,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
+import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -54,6 +57,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
@@ -471,16 +475,29 @@ public class DescriptionServiceImpl
     @Transactional(readOnly = false)
     public DeleteResult deleteDescription(DescriptionBase description) {
         DeleteResult deleteResult = new DeleteResult();
+        description = load(description.getId(), Arrays.asList("descriptiveDataSets"));//avoid lazy init exception
 
     	if (description instanceof TaxonDescription){
     		TaxonDescription taxDescription = HibernateProxyHelper.deproxy(description, TaxonDescription.class);
     		Taxon tax = taxDescription.getTaxon();
     		tax.removeDescription(taxDescription, true);
-    		dao.delete(description);
-    		deleteResult.addDeletedObject(taxDescription);
             deleteResult.addUpdatedObject(tax);
-            deleteResult.setCdmEntity(tax);
     	}
+    	else if (HibernateProxyHelper.isInstanceOf(description, SpecimenDescription.class)){
+    	    SpecimenDescription specimenDescription = HibernateProxyHelper.deproxy(description, SpecimenDescription.class);
+    	    SpecimenOrObservationBase specimen = specimenDescription.getDescribedSpecimenOrObservation();
+    	    specimen.removeDescription(specimenDescription);
+    	    deleteResult.addUpdatedObject(specimen);
+    	}
+
+    	Set<DescriptiveDataSet> descriptiveDataSets = description.getDescriptiveDataSets();
+    	for (Iterator<DescriptiveDataSet> iterator = descriptiveDataSets.iterator(); iterator.hasNext();) {
+    	    iterator.next().removeDescription(description);
+        }
+
+    	dao.delete(description);
+    	deleteResult.addDeletedObject(description);
+    	deleteResult.setCdmEntity(description);
 
 
         return deleteResult;
