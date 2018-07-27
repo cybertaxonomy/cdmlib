@@ -1085,6 +1085,20 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
     }
 
     /**
+     * Creates a criteria query for the CDM <code>type</code> either for counting or listing matching entities.
+     * <p>
+     * The set of matching entities can be restricted by passing a list  of {@link Restriction} objects.
+     * Restrictions can logically combined:
+     <pre>
+       Arrays.asList(
+           new Restriction<String>("titleCache", MatchMode.ANYWHERE, "foo"),
+           new Restriction<String>("institute.name", Operator.OR, MatchMode.BEGINNING, "Bar")
+       );
+     </pre>
+     * The first Restriction in the example above by default has the <code>Operator.AND</code> which will be
+     * ignored since this is the first restriction. The <code>Operator</code> of further restrictions in the
+     * list are used to combine with the previous restriction.
+     *
      * @param type
      * @param restrictions
      * @param doCount
@@ -1095,17 +1109,17 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         DetachedCriteria idsOnlyCriteria = DetachedCriteria.forClass(entityType(type));
         idsOnlyCriteria.setProjection(Projections.distinct(Projections.id()));
 
-        //if(restrictions != null  && !restrictions.isEmpty()){
-            addRestrictions(restrictions, idsOnlyCriteria);
+        addRestrictions(restrictions, idsOnlyCriteria);
 
-            Criteria criteria = criterionForType(type);
-            criteria.add(Subqueries.propertyIn("id", idsOnlyCriteria));
-        //}
+        Criteria criteria = criterionForType(type);
+        criteria.add(Subqueries.propertyIn("id", idsOnlyCriteria));
+
         if(doCount){
             criteria.setProjection(Projections.rowCount());
         } else {
             idsOnlyCriteria.setProjection(Projections.distinct(Projections.property("id")));
         }
+
         return criteria;
     }
 
