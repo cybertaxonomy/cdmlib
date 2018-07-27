@@ -928,7 +928,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         result = nameService.findByTitleWithRestrictions(null, "Name2", MatchMode.EXACT, restrictions, null, null, null, null);
         assertEquals(0l, result.getCount().longValue());
 
-        restrictions = Arrays.asList(new Restriction<String>("typeDesignations.typeSpecimen.titleCache", false, Restriction.Operator.OR, MatchMode.EXACT, "Specimen1"));
+        restrictions = Arrays.asList(new Restriction<String>("typeDesignations.typeSpecimen.titleCache", Restriction.Operator.OR, MatchMode.EXACT, "Specimen1"));
         result = nameService.findByTitleWithRestrictions(null, "Name2", MatchMode.EXACT, restrictions, null, null, null, null);
         assertEquals(2l, result.getCount().longValue());
 

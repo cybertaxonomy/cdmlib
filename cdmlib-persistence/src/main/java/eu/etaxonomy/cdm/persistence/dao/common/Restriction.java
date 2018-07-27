@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.persistence.dao.common;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.List;
 
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -25,14 +26,16 @@ public class Restriction<T extends Object> {
 
     public enum Operator {
         AND,
-        OR;
+        OR,
+        AND_NOT,
+        OR_NOT;
     }
+
+    private static final EnumSet<Operator> NOT_OPERATORS = EnumSet.of(Operator.AND_NOT, Operator.OR_NOT);
 
     private String propertyName;
 
     private MatchMode matchMode;
-
-    private boolean not = false;
 
     private Operator operator = Operator.AND;
 
@@ -43,16 +46,11 @@ public class Restriction<T extends Object> {
      * @param matchMode is only applied if the <code>value</code> is a <code>String</code> object
      */
     public Restriction(String propertyName, MatchMode matchMode, T ... values ) {
-        this(propertyName, false, matchMode, values);
+        this(propertyName, Operator.AND, matchMode, values);
     }
 
-    public Restriction(String propertyName, boolean not, MatchMode matchMode, T ... values ) {
-        this(propertyName, false, Operator.AND, matchMode, values);
-    }
-
-    public Restriction(String propertyName, boolean not, Operator operator, MatchMode matchMode, T ... values ) {
+    public Restriction(String propertyName, Operator operator, MatchMode matchMode, T ... values ) {
         this.propertyName = propertyName;
-        this.not = not;
         this.operator = operator;
         if(values.length > 0){
             this.setValues(Arrays.asList(values));
@@ -116,21 +114,6 @@ public class Restriction<T extends Object> {
     }
 
     /**
-     *
-     * @return the not
-     */
-    public boolean isNot() {
-        return not;
-    }
-
-    /**
-     * @param not the not to set
-     */
-    public void setNot(boolean not) {
-        this.not = not;
-    }
-
-    /**
      * @return the operator
      */
     public Operator getOperator() {
@@ -142,6 +125,13 @@ public class Restriction<T extends Object> {
      */
     public void setOperator(Operator operator) {
         this.operator = operator;
+    }
+
+    /**
+     * @return
+     */
+    public boolean isNot() {
+        return NOT_OPERATORS.contains(operator);
     }
 
 }
