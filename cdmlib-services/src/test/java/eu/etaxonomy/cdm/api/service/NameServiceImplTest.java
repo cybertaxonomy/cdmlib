@@ -885,12 +885,14 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet
-    public void testFindByTitle(){
+    public void findByTitleWithRestrictions(){
 
-        // The following typedesigbnations per name are assumed:
+        // The following typeDesignations per name are assumed:
         // Name1 -> SpecimenTypeDesignation -> Specimen1
         //       -> SpecimenTypeDesignation -> Specimen2
         // Name2 -> SpecimenTypeDesignation -> Specimen2
+
+        // Logger.getLogger("org.hibernate.SQL").setLevel(Level.TRACE);
 
 
         List<Restriction<?>> restrictions;
@@ -926,6 +928,10 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         result = nameService.findByTitleWithRestrictions(null, "Name2", MatchMode.EXACT, restrictions, null, null, null, null);
         assertEquals(0l, result.getCount().longValue());
 
+        restrictions = Arrays.asList(new Restriction<String>("typeDesignations.typeSpecimen.titleCache", false, Restriction.Operator.OR, MatchMode.EXACT, "Specimen1"));
+        result = nameService.findByTitleWithRestrictions(null, "Name2", MatchMode.EXACT, restrictions, null, null, null, null);
+        assertEquals(2l, result.getCount().longValue());
+
         restrictions = Arrays.asList(new Restriction<String>("typeDesignations.typeSpecimen.titleCache", MatchMode.BEGINNING, "Specimen"));
         result = nameService.findByTitleWithRestrictions(null, "Name1", MatchMode.EXACT, restrictions, null, null, null, null);
         assertEquals("names with multiple matching typeSpecimens must be deduplicated", 1l, result.getCount().longValue());
@@ -939,7 +945,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet
-    public void testFindByTitleMultiValue(){
+    public void testFindByTitleTitleWithRestrictionsMultiValue(){
 
         // The following typedesigbnations per name are assumed:
         // Name1 -> SpecimenTypeDesignation -> Specimen1

@@ -23,11 +23,18 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
  */
 public class Restriction<T extends Object> {
 
+    public enum Operator {
+        AND,
+        OR;
+    }
+
     private String propertyName;
 
     private MatchMode matchMode;
 
     private boolean not = false;
+
+    private Operator operator = Operator.AND;
 
     private List<T> values = null;
 
@@ -39,9 +46,14 @@ public class Restriction<T extends Object> {
         this(propertyName, false, matchMode, values);
     }
 
-    public Restriction(String propertyName, boolean not , MatchMode matchMode, T ... values ) {
+    public Restriction(String propertyName, boolean not, MatchMode matchMode, T ... values ) {
+        this(propertyName, false, Operator.AND, matchMode, values);
+    }
+
+    public Restriction(String propertyName, boolean not, Operator operator, MatchMode matchMode, T ... values ) {
         this.propertyName = propertyName;
         this.not = not;
+        this.operator = operator;
         if(values.length > 0){
             this.setValues(Arrays.asList(values));
             if(values[0] != null && values[0] instanceof String){
@@ -118,5 +130,18 @@ public class Restriction<T extends Object> {
         this.not = not;
     }
 
+    /**
+     * @return the operator
+     */
+    public Operator getOperator() {
+        return operator;
+    }
+
+    /**
+     * @param operator the operator to set
+     */
+    public void setOperator(Operator operator) {
+        this.operator = operator;
+    }
 
 }
