@@ -50,6 +50,8 @@ import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
+import eu.etaxonomy.cdm.model.description.StateData;
+import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -837,11 +839,10 @@ public class DescriptionServiceImpl
     }
 
     @Override
-    public UpdateResult aggregateDescription(UUID taxonUuid, Collection<UUID> descriptionUuids, UUID descriptiveDataSet) {
+    public UpdateResult aggregateDescription(UUID taxonUuid, List<UUID> descriptionUuids, String descriptionTitle) {
         UpdateResult result = new UpdateResult();
         Map<Feature, List<DescriptionElementBase>> featureToElementMap = new HashMap<>();
 
-        DescriptiveDataSet dataSet = dataSetDao.load(descriptiveDataSet);
         TaxonBase taxonBase = taxonDao.load(taxonUuid);
         if(!(taxonBase instanceof Taxon)){
             result.addException(new ClassCastException("The given taxonUUID does not belong to a taxon"));
@@ -851,9 +852,9 @@ public class DescriptionServiceImpl
         Taxon taxon = (Taxon)taxonBase;
 
         //extract all description elements
-        Set<DescriptionBase> descriptions = dataSet.getDescriptions();
+        List<DescriptionBase> descriptions = load(descriptionUuids, null);
         for (DescriptionBase descriptionBase : descriptions) {
-            List<DescriptionElementBase> descriptionElements = listDescriptionElements(descriptionBase, null, dataSet.getDescriptiveSystem().getDistinctFeatures(), null, null, null, null);
+            Set<DescriptionElementBase> descriptionElements = descriptionBase.getElements();
             for (DescriptionElementBase descriptionElement : descriptionElements) {
                 List<DescriptionElementBase> list = featureToElementMap.get(descriptionElement.getFeature());
                 if(list==null){
@@ -865,7 +866,7 @@ public class DescriptionServiceImpl
         }
 
         TaxonDescription description = TaxonDescription.NewInstance(taxon);
-        description.setTitleCache("[Aggregation] "+dataSet.getTitleCache(), true);
+        description.setTitleCache("[Aggregation] "+descriptionTitle, true);
         description.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
 
         featureToElementMap.forEach((feature, elements)->{
@@ -875,7 +876,7 @@ public class DescriptionServiceImpl
                 elements.stream()
                 .filter(element->element instanceof CategoricalData)
                 .forEach(categoricalData->((CategoricalData)categoricalData).getStateData()
-                        .forEach(stateData->aggregate.addStateData(stateData)));
+                        .forEach(stateData->aggregate.addStateData((StateData) stateData.clone())));
                 description.addElement(aggregate);
             }
             //aggregate quantitative data
@@ -884,7 +885,7 @@ public class DescriptionServiceImpl
                 elements.stream()
                 .filter(element->element instanceof QuantitativeData)
                 .forEach(categoricalData->((QuantitativeData)categoricalData).getStatisticalValues()
-                        .forEach(statisticalValue->aggregate.addStatisticalValue(statisticalValue)));
+                        .forEach(statisticalValue->aggregate.addStatisticalValue((StatisticalMeasurementValue) statisticalValue.clone())));
                 description.addElement(aggregate);
             }
         });
