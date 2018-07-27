@@ -866,6 +866,7 @@ public class DescriptionServiceImpl
 
         TaxonDescription description = TaxonDescription.NewInstance(taxon);
         description.setTitleCache("[Aggregation] "+dataSet.getTitleCache(), true);
+        description.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
 
         featureToElementMap.forEach((feature, elements)->{
             //aggregate categorical data
