@@ -2116,7 +2116,8 @@ public class NonViralNameParserImplTest {
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("29(1-4)", nomRef.getVolume());
         assertEquals("16, f. 1-2", name.getNomenclaturalMicroReference());
-        assertEquals("\"1983\" [1984]", nomRef.getDatePublishedString());
+        //changed from "1983" [1984] to 1984 ["1983"] after implementing #7429
+        assertEquals("1984 [\"1983\"]", nomRef.getDatePublishedString());
         assertEquals("1984", nomRef.getYear());
 
         //fig. a
