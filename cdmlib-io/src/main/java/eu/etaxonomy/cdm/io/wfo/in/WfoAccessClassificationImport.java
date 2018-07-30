@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.io.wfo.in;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -97,14 +98,13 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
             return;
         }
         TaxonName name = getName(state, TAXON_ID);
-        TaxonBase<?> cdmTaxon = getCdmTaxon(state, name, TAXON_ID);
         TaxStatus status =  TaxStatus.from(record.get(TAXONOMIC_STATUS));
         if (status == TaxStatus.ACC){
-            handleAccepted(state, name, cdmTaxon);
+            handleAccepted(state, name);
         }else if (status == TaxStatus.SYN){
-            handleSynonym(state, name, cdmTaxon);
+            handleSynonym(state, name);
         }else if (status == TaxStatus.DOUBT){
-            handleDoubtful(state, name, cdmTaxon);
+            handleDoubtful(state, name);
         }
     }
 
@@ -113,7 +113,9 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
      * @param name
      * @param cdmTaxon
      */
-    private void handleAccepted(STATE state, TaxonName name, TaxonBase<?> cdmTaxon) {
+    private void handleAccepted(STATE state, TaxonName name) {
+        TaxonBase<?> cdmTaxon = getCdmTaxon(state, name, TAXON_ID, Taxon.class);
+
         Reference sec = this.getTransactionalSourceReference(state);
         if (cdmTaxon == null){
             String message = "Taxon does not exist. This should not happen.";
@@ -122,7 +124,7 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
         }else if (cdmTaxon.isInstanceOf(Taxon.class)){
             Taxon taxon = CdmBase.deproxy(cdmTaxon, Taxon.class);
             TaxonName parentName = getName(state, PARENT_NAME_USAGE_ID);
-            TaxonBase<?> parentBase = getCdmTaxon(state, parentName, PARENT_NAME_USAGE_ID);
+            TaxonBase<?> parentBase = getCdmTaxon(state, parentName, PARENT_NAME_USAGE_ID, Taxon.class);
             TaxonNode newNode;
             if (parentBase == null){
                 //parent does not exist
@@ -163,10 +165,43 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
             if (newNode != null){
                 getTaxonNodeService().save(newNode);
             }
+
+            //handle basionym
+            if (state.getCurrentRecord().get(ORIGINAL_NAME_USAGE_ID)!= null){
+                TaxonName basionym;
+                try {
+                    basionym = getName(state, ORIGINAL_NAME_USAGE_ID);
+                    name.addBasionym(basionym, sec, null, null);
+                    TaxonBase<?> basionymTaxon = getCdmTaxon(state, basionym, ORIGINAL_NAME_USAGE_ID, Synonym.class);
+                    if (basionymTaxon.isInstanceOf(Synonym.class)){
+                        Synonym basioSynonym = CdmBase.deproxy(basionymTaxon, Synonym.class);
+                        if (basioSynonym.getAcceptedTaxon() != null){
+                            if (basioSynonym.getAcceptedTaxon().equals(taxon)){
+                                basioSynonym.setType(SynonymType.HOMOTYPIC_SYNONYM_OF());
+                            }else{
+                                String message = "Taxon's basionym already has an accepted taxon (%s), but the accepted taxon is not this taxon (%s).";
+                                message = String.format(message, basioSynonym.getAcceptedTaxon().getTitleCache(), taxon.getTitleCache());
+                                state.getResult().addError(message, state.getRow());
+                            }
+                        }else{
+                            taxon.addHomotypicSynonym(basioSynonym);
+                        }
+                    }else{
+                        String message = "Basionym %s of accepted %s is also accepted. This should not happen";
+                        message = String.format(message, basionymTaxon.getName().getTitleCache(), taxon.getName().getTitleCache());
+                        state.getResult().addWarning(message, state.getRow());
+                    }
+                } catch (Exception e) {
+                    String message = "Problem when handling basionym for " + name.getTitleCache();
+                    state.getResult().addError(message, state.getRow());
+                }
+            }
         }else{
-            //keep as synonym
+            String message = "TaxonBase of accepted name is synonym. This should not happen anymore";
+            state.getResult().addError(message, state.getRow());
         }
     }
+
 
     /**
      * @param state
@@ -208,7 +243,7 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
             }
             Reference sec = this.getTransactionalSourceReference(state);
             TaxonName name = TaxonNameFactory.NewNameInstance(state.getConfig().getNomenclaturalCode(), Rank.GENUS());
-            name.setTitleCache(taxonName + "_wfo", true);
+            name.setTitleCache(taxonName + "_WFO", true);
             addSourceReference(state, name);
 
             Taxon wfoTaxon = Taxon.NewInstance(name, sec);
@@ -228,17 +263,19 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
      * @param name
      * @param cdmTaxon
      */
-    private void handleSynonym(STATE state, TaxonName name, TaxonBase<?> cdmTaxon) {
+    private void handleSynonym(STATE state, TaxonName name) {
+        TaxonBase<?> cdmTaxon = getCdmTaxon(state, name, TAXON_ID, Synonym.class);
+
         if (cdmTaxon == null){
             String message = "Synonym does not exist. This should not happen.";
             state.getResult().addError(message, state.getRow());
         }else if (cdmTaxon.isInstanceOf(Synonym.class)){
             Synonym syn = CdmBase.deproxy(cdmTaxon, Synonym.class);
+            TaxonName accName = getName(state, ACCEPTED_NAME_USAGE_ID);
 
             if (syn.getAcceptedTaxon()== null){
-                TaxonName accName = getName(state, ACCEPTED_NAME_USAGE_ID);
-                //TODO is this correct? might be WFO taxon
-                TaxonBase<?> existingAccepted = getCdmTaxon(state, accName, ACCEPTED_NAME_USAGE_ID);
+                 //TODO is this correct? might be WFO taxon
+                TaxonBase<?> existingAccepted = getCdmTaxon(state, accName, ACCEPTED_NAME_USAGE_ID, Taxon.class);
                 Taxon taxon;
                 if (existingAccepted == null){
                     String message = "Accepted taxon does not exist. Can't add synonym to accepted";
@@ -252,11 +289,45 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
                     taxon = CdmBase.deproxy(existingAccepted, Taxon.class);
                 }
                 if (taxon != null){
-                    taxon.addSynonym(syn, SynonymType.HETEROTYPIC_SYNONYM_OF()); //TODO synonym type
+                    taxon.addSynonym(syn, SynonymType.HETEROTYPIC_SYNONYM_OF());
+                }
+            }else{ //accepted taxon exists
+                Taxon taxon = syn.getAcceptedTaxon();
+                if (!taxon.getName().equals(accName)){
+                    String message = "Synonym already has an accepted taxon (%s), but the accepted taxon is not the expected one (%s).";
+                    message = String.format(message, taxon.getTitleCache(), accName.getTitleCache());
+                    state.getResult().addError(message, state.getRow());
+                }
+            }
+
+            //handle basionym
+            if (state.getCurrentRecord().get(ORIGINAL_NAME_USAGE_ID)!= null){
+                try{
+                    TaxonName basionym = getName(state, ORIGINAL_NAME_USAGE_ID);
+                    name.addBasionym(basionym, getTransactionalSourceReference(state), null, null);
+
+                    TaxonBase<?> basionymTaxon = getCdmTaxon(state, basionym, ORIGINAL_NAME_USAGE_ID, TaxonBase.class);
+                    if (basionymTaxon.isInstanceOf(Taxon.class)){
+                        Taxon basioTaxon = CdmBase.deproxy(basionymTaxon, Taxon.class);
+                        if (syn.getAcceptedTaxon().equals(basioTaxon)){
+                            syn.setType(SynonymType.HOMOTYPIC_SYNONYM_OF());
+                        }else{
+                            String message = "Synonyms(%s) basionym is accepted (%s), but synonym has another accepted taxon (%s).";
+                            message = String.format(message, syn.getName().getTitleCache(), basionymTaxon.getName().getTitleCache(),
+                                    syn.getAcceptedTaxon().getName().getTitleCache());
+                            state.getResult().addError(message, state.getRow());
+                        }
+                    }else{
+                        //basionym is also synonym, for now nothing to do
+                    }
+                } catch (Exception e) {
+                    String message = "Problem when handling basionym for " + name.getTitleCache();
+                    state.getResult().addError(message, state.getRow());
                 }
             }
         }else{  //is accepted
-            //we keep this as accepted (6c)
+            String message = "TaxonBase of synonym is accepted. This should not happen anymore";
+            state.getResult().addError(message, state.getRow());
         }
     }
 
@@ -266,7 +337,8 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
      * @param taxonId
      * @return
      */
-    private TaxonBase<?> getCdmTaxon(STATE state, TaxonName name, String fieldName) {
+    private TaxonBase<?> getCdmTaxon(STATE state, TaxonName name, String fieldName,
+            Class<? extends TaxonBase> expectedClass) {
         Map<String, String> record = state.getCurrentRecord();
         String taxonId = record.get(fieldName);
 
@@ -277,10 +349,20 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
         }else if (cdmTaxa.size()==1){
             return cdmTaxa.iterator().next();
         }else{
-            String message = "Name %s (%s) has more then 1 existing taxon. Can't define existing taxon. Create new one.";
+            Set<TaxonBase<?>> cdmTaxa2 = new HashSet<>();
+            for (TaxonBase<?> x : cdmTaxa){
+                if (x.isInstanceOf(expectedClass)){
+                    cdmTaxa2.add(x);
+                }
+            }
+            if (cdmTaxa2.size() == 1){
+                //TODO preliminary
+                return cdmTaxa2.iterator().next();
+            }
+            String message = "Name %s (%s) has more then 1 existing taxon. Can't define existing taxon. Return arbitrary.";
             message = String.format(message, name.getTitleCache(), taxonId);
             state.getResult().addError(message, state.getRow());
-            return null;
+            return cdmTaxa.iterator().next();
         }
     }
 
@@ -289,7 +371,9 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
      * @param name
      * @param cdmTaxon
      */
-    private void handleDoubtful(STATE state, TaxonName name, TaxonBase<?> cdmTaxon) {
+    private void handleDoubtful(STATE state, TaxonName name) {
+        TaxonBase<?> cdmTaxon = getCdmTaxon(state, name, TAXON_ID, Taxon.class);
+
         Reference sec = getTransactionalSourceReference(state);
 //        Map<String, String> record = state.getCurrentRecord();
 //        String taxonId = record.get(TAXON_ID);
@@ -301,22 +385,28 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
 //            Taxon newTaxon = Taxon.NewInstance(name, sec);
 //            addSourceReference(state, newTaxon);
 //            newTaxon.setDoubtful(true);
-
         if (cdmTaxon.isInstanceOf(Synonym.class)){
-
+            String message = "Doubtful taxon was synonym. This should not happen";
+            state.getResult().addError(message, state.getRow());
         }else{
             Taxon taxon = CdmBase.deproxy(cdmTaxon, Taxon.class);
             TaxonNode parent = getDoubtfulPseudoParent(state, sec);
             TaxonNode newChild = parent.addChildTaxon(taxon, sec, null);
-//            String originalNameIdStr = record.get(ORIGINAL_NAME_USAGE_ID);
-//            if (isNotBlank(originalNameIdStr)){
+            String originalNameIdStr = state.getCurrentRecord().get(ORIGINAL_NAME_USAGE_ID);
+            if (isNotBlank(originalNameIdStr)){
 //                TaxonName basionym = makeDoubtfulBasionym(state, ORIGINAL_NAME_USAGE_ID, sec);
-//                name.addBasionym(basionym, sec, null, null);
+                  try {
+                      TaxonName basionym = getName(state, ORIGINAL_NAME_USAGE_ID);
+                      name.addBasionym(basionym, sec, null, null);
+                } catch (Exception e) {
+                    String message = "Problem when handling basionym for " + name.getTitleCache();
+                    state.getResult().addError(message, state.getRow());
+                }
 //                Synonym synonym = newTaxon.addHomotypicSynonymName(basionym);
 //                synonym.setDoubtful(true);
 //                addSourceReference(state, synonym);
-//            }
-            getTaxonNodeService().save(newChild);
+            }
+            getTaxonNodeService().saveOrUpdate(newChild);
 
         }
 //        }
@@ -350,6 +440,9 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
         UUID pseudoUuid = state.getTaxonNodeUuid(familyPseudo);
         TaxonNode pseudoParent = getTaxonNodeMap().get(pseudoUuid);
         if (pseudoParent == null){
+            pseudoParent = getTaxonNodeService().find(pseudoUuid);
+        }
+        if (pseudoParent == null){
             TaxonNode familyParent = getFamilyParent(state, family);
             TaxonName pseudoName = TaxonNameFactory.NewNameInstance(state.getConfig().getNomenclaturalCode(),
                     Rank.SUPRAGENERICTAXON());
@@ -361,9 +454,9 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
 
             pseudoParent = familyParent.addChildTaxon(pseudoTaxon, sec, null);
             state.putTaxonNodeUuid(familyPseudo, pseudoParent.getUuid());
-            getTaxonNodeMap().put(pseudoParent.getUuid(), pseudoParent);
             getTaxonNodeService().save(pseudoParent);
         }
+        getTaxonNodeMap().put(pseudoParent.getUuid(), pseudoParent);  // in case not yet in
         return pseudoParent;
     }
 
