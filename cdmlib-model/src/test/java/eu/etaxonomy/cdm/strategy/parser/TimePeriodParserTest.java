@@ -289,6 +289,13 @@ public class TimePeriodParserTest {
         Assert.assertEquals(Integer.valueOf(1947), tp.getStartYear());
         Assert.assertEquals("1948", tp.getVerbatimDate());
 
+        strDate = "\"1884-1885\" [1886]";
+        tp = TimePeriodParser.parseStringVerbatim(strDate);
+        assertNotNull(tp);
+        Assert.assertEquals("1886 [\"1884-1885\"]", tp.toString());
+        Assert.assertEquals("1886", tp.getYear());
+        Assert.assertEquals(Integer.valueOf(1886), tp.getStartYear());
+        Assert.assertEquals("1884-1885", tp.getVerbatimDate());
     }
 
 
