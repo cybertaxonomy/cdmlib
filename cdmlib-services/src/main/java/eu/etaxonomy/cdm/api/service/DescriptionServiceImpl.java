@@ -882,11 +882,13 @@ public class DescriptionServiceImpl
             return result;
         }
         Taxon taxon = (Taxon)taxonBase;
-        result.setCdmEntity(taxon);
 
         List<DescriptionBase> descriptions = load(descriptionUuids, null);
 
-        result.includeResult(aggregateDescription(taxon, descriptions, descriptionTitle));
+        UpdateResult aggregateDescriptionResult = aggregateDescription(taxon, descriptions, descriptionTitle);
+        result.setCdmEntity(aggregateDescriptionResult.getCdmEntity());
+        aggregateDescriptionResult.setCdmEntity(null);
+        result.includeResult(aggregateDescriptionResult);
         return result;
     }
 
