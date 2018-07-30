@@ -882,6 +882,7 @@ public class DescriptionServiceImpl
             return result;
         }
         Taxon taxon = (Taxon)taxonBase;
+        result.setCdmEntity(taxon);
 
         List<DescriptionBase> descriptions = load(descriptionUuids, null);
 
