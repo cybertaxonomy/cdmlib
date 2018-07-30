@@ -38,6 +38,7 @@ public class FieldUnitDTO extends DerivateDTO{
 	    fieldUnitDto.kindOfUnit = fieldUnit.getKindOfUnit().getTitleCache();
 	    fieldUnitDto.gatheringEvent = GatheringEventDTO.newInstance(fieldUnit.getGatheringEvent());
 	    fieldUnitDto.setUuid(fieldUnit.getUuid());
+	    fieldUnitDto.setRecordBase(fieldUnit.getRecordBasis().getMessage());
 	    fieldUnitDto.setTitleCache(fieldUnit.getTitleCache());
 
 	    Set<DescriptionBase<IIdentifiableEntityCacheStrategy<FieldUnit>>> descriptions = fieldUnit.getDescriptions();
@@ -75,6 +76,59 @@ public class FieldUnitDTO extends DerivateDTO{
     }
 
 
+//=======
+//	private String protologue;
+//	private String kindOfUnit;
+//	private List<UUID> taxonRelatedDerivedUnits = new ArrayList<>();
+//	private List<Media> listOfMedia = new ArrayList<>();
+//
+//
+//    private List<PreservedSpecimenDTO> preservedSpecimenDTOs;
+//	private GatheringEventDTO gatheringEvent;
+//
+//
+//	public static FieldUnitDTO newInstance(FieldUnit fieldUnit){
+//	    FieldUnitDTO fieldUnitDto = new FieldUnitDTO();
+//	    fieldUnitDto.kindOfUnit = fieldUnit.getKindOfUnit().getTitleCache();
+//	    fieldUnitDto.gatheringEvent = GatheringEventDTO.newInstance(fieldUnit.getGatheringEvent());
+//	    fieldUnitDto.setUuid(fieldUnit.getUuid());
+//	    fieldUnitDto.setTitleCache(fieldUnit.getTitleCache());
+//
+//	    Set<DescriptionBase<IIdentifiableEntityCacheStrategy<FieldUnit>>> descriptions = fieldUnit.getDescriptions();
+//	    for (DescriptionBase desc : descriptions){
+//	        if (desc instanceof SpecimenDescription){
+//	            SpecimenDescription specimenDesc = (SpecimenDescription)desc;
+//    	        if (specimenDesc.isImageGallery()){
+//    	            for (DescriptionElementBase element : specimenDesc.getElements()){
+//    	                if (element.isInstanceOf(TextData.class)&& element.getFeature().equals(Feature.IMAGE())) {
+//	                        for (Media media :element.getMedia()){
+//	                            fieldUnitDto.listOfMedia.add(media);
+//	                        }
+//    	                }
+//    	            }
+//    	        }
+//	        }
+//	    }
+//	    return fieldUnitDto;
+//
+//	}
+//
+//
+//	/**
+//     * @return the listOfMedia
+//     */
+//    public List<Media> getListOfMedia() {
+//        return listOfMedia;
+//    }
+//
+//    /**
+//     * @param listOfMedia the listOfMedia to set
+//     */
+//    public void setListOfMedia(List<Media> listOfMedia) {
+//        this.listOfMedia = listOfMedia;
+//    }
+//
+//>>>>>>> Stashed changes
     /**
      * @return the country
      */
@@ -125,6 +179,35 @@ public class FieldUnitDTO extends DerivateDTO{
     public void setHasType(boolean hasType) {
         this.hasType = hasType;
     }
+//<<<<<<< Updated upstream
+//=======
+//    /**
+//     * @return the taxonName
+//     */
+//    @Override
+//    public String getTaxonName() {
+//        return taxonName;
+//    }
+//    /**
+//     * @param taxonName the taxonName to set
+//     */
+//    @Override
+//    public void setTaxonName(String taxonName) {
+//        this.taxonName = taxonName;
+//    }
+//    /**
+//     * @return the protologue
+//     */
+//    public String getProtologue() {
+//        return protologue;
+//    }
+//    /**
+//     * @param protologue the protologue to set
+//     */
+//    public void setProtologue(String protologue) {
+//        this.protologue = protologue;
+//    }
+//>>>>>>> Stashed changes
 
     /**
      * @return the derivateDTOs
@@ -171,6 +254,18 @@ public class FieldUnitDTO extends DerivateDTO{
      */
     public void setTaxonRelatedDerivedUnits(List<UUID> taxonRelatedDerivedUnits) {
         this.taxonRelatedDerivedUnits = taxonRelatedDerivedUnits;
+    }
+
+
+    /**
+     * @param derivedUnitDTO
+     */
+    public void addTaxonRelatedDerivedUnits(DerivateDTO derivedUnitDTO) {
+        if (this.taxonRelatedDerivedUnits == null){
+            this.taxonRelatedDerivedUnits = new ArrayList<>();
+        }
+        this.taxonRelatedDerivedUnits.add(derivedUnitDTO.getUuid());
+
     }
 
 }

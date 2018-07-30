@@ -105,13 +105,13 @@ public class OccurrenceController extends AbstractIdentifiableController<Specime
         DerivedUnit sob = (DerivedUnit) getCdmBaseInstance(uuid, response, DERIVED_UNIT_INIT_STRATEGY);
 
         sob = checkExistsAndAccess(sob, NO_UNPUBLISHED, response);
+
         FieldUnitDTO fieldUnitDto = null;
         if(sob instanceof DerivedUnit){
             fieldUnitDto = service.findFieldUnitDTO(PreservedSpecimenDTO.newInstance(sob, null) , new ArrayList<FieldUnitDTO>(), new HashMap<UUID, DerivateDTO>());
         }
 
         return fieldUnitDto;
-
     }
 
     /**

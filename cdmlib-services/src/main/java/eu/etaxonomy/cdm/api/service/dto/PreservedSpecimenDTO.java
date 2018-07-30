@@ -56,7 +56,13 @@ public class PreservedSpecimenDTO extends DerivateDTO{
         newInstance.setRecordBase(derivedUnit.getRecordBasis().getMessage());
         newInstance.setSources(derivedUnit.getSources());
         newInstance.setSpecimenTypeDesignations(derivedUnit.getSpecimenTypeDesignations());
-
+//<<<<<<< Updated upstream
+//
+//=======
+//        if (name != null){
+//            newInstance.setTaxonName(name.getTitleCache());
+//        }
+//>>>>>>> Stashed changes
         return newInstance;
     }
 

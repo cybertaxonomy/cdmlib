@@ -28,9 +28,7 @@ public abstract class DerivateDTO {
 
     private TreeSet<Pair<String, String>> characterData;
     private DerivateDataDTO derivateDataDTO;
-
-//    protected String taxonName;
-
+    protected String taxonName;
     protected String titleCache;
 
     protected String citation;
@@ -52,6 +50,7 @@ public abstract class DerivateDTO {
     private DerivationEventDTO derivationEvent;
 
     private Set<IdentifiableSource> sources;
+
 
     public String getTitleCache() {
         return titleCache;

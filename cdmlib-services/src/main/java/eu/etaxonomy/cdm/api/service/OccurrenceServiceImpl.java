@@ -428,7 +428,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             fieldUnitDTO.setDate(dateString);
         }
 
-
         // Herbaria map
         Map<eu.etaxonomy.cdm.model.occurrence.Collection, Integer> collectionToCountMap = new HashMap<>();
         // List of accession numbers for citation
@@ -959,15 +958,16 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     @Override
+
     public FieldUnitDTO findFieldUnitDTO(DerivateDTO derivedUnitDTO, Collection<FieldUnitDTO> fieldUnits, HashMap<UUID, DerivateDTO> alreadyCollectedSpecimen) {
         //It will search recursively over all {@link DerivationEvent}s and get the "originals" ({@link SpecimenOrObservationBase})
         //from which this DerivedUnit was derived until all FieldUnits are found.
-
         List<SpecimenOrObservationBase> specimens = new ArrayList<>();
         List<String> propertyPaths = new ArrayList<>();
         propertyPaths.add("descriptions.elements.media.title");
 
         specimens = dao.findOriginalsForDerivedUnit(derivedUnitDTO.getUuid(), propertyPaths);
+
         if (specimens.size() > 1){
             logger.debug("The derived unit with uuid " + derivedUnitDTO.getUuid() + "has more than one orginal");
         }
@@ -999,7 +999,11 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         }
       //  }
         alreadyCollectedSpecimen.put(derivedUnitDTO.getUuid(), derivedUnitDTO);
+        if (fieldUnitDto != null){
+            fieldUnitDto.addTaxonRelatedDerivedUnits(derivedUnitDTO);
+        }
         return fieldUnitDto;
+
     }
 
     @Override
