@@ -161,7 +161,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @XmlElementWrapper(name = "Sources", nillable = true)
     @XmlElement(name = "IdentifiableSource")
     @OneToMany(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     @Merge(MergeMode.ADD_CLONE)
     @NotNull
     private Set<IdentifiableSource> sources = new HashSet<>();

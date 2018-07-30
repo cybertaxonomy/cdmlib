@@ -442,6 +442,18 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
         return this.determinations;
     }
 
+//    public DeterminationEvent getPreferredDetermination() {
+//        if(determinations == null) {
+//            return null;
+//        }
+//        for (DeterminationEvent determination: determinations){
+//            if (determination.getPreferredFlag()){
+//                return determination;
+//            }
+//        }
+//        return null;
+//    }
+
     public void addDetermination(DeterminationEvent determination) {
         // FIXME bidirectional integrity. Use protected Determination setter
         this.determinations.add(determination);
