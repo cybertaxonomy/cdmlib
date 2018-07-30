@@ -41,6 +41,7 @@ import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
+import eu.etaxonomy.cdm.model.description.Character;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
@@ -62,6 +63,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
@@ -72,6 +74,7 @@ import eu.etaxonomy.cdm.persistence.dao.description.IFeatureNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IStatisticalMeasurementValueDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
+import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -102,6 +105,7 @@ public class DescriptionServiceImpl
     protected IDefinedTermDao definedTermDao;
     protected IStatisticalMeasurementValueDao statisticalMeasurementValueDao;
     protected ITaxonDao taxonDao;
+    protected ITaxonNodeDao taxonNodeDao;
     protected IDescriptiveDataSetDao dataSetDao;
 
     //TODO change to Interface
@@ -150,6 +154,11 @@ public class DescriptionServiceImpl
     @Autowired
     protected void setTaxonDao(ITaxonDao taxonDao) {
         this.taxonDao = taxonDao;
+    }
+
+    @Autowired
+    protected void setTaxonNodeDao(ITaxonNodeDao taxonNodeDao) {
+        this.taxonNodeDao = taxonNodeDao;
     }
 
     @Autowired
@@ -838,10 +847,31 @@ public class DescriptionServiceImpl
 
     }
 
+    public UpdateResult aggregateTaxonDescriptions(UUID taxonNodeUuid){
+        UpdateResult result = new UpdateResult();
+
+        TaxonNode node = taxonNodeDao.load(taxonNodeUuid);
+        Taxon taxon = node.getTaxon();
+        result.setCdmEntity(taxon);
+
+        //get all "computed" descriptions from all sub nodes
+        List<TaxonNode> childNodes = taxonNodeDao.listChildrenOf(node, null, null, true, false, null);
+        List<DescriptionBase> computedDescriptions = new ArrayList<>();
+
+        childNodes.stream().map(childNode -> childNode.getTaxon())
+                .forEach(childTaxon -> childTaxon.getDescriptions().stream()
+                        // filter out non-computed descriptions
+                        .filter(description -> description.getMarkers().stream()
+                                .anyMatch(marker -> marker.getMarkerType().equals(MarkerType.COMPUTED())))
+                        // add them to the list
+                        .forEach(computedDescription -> computedDescriptions.add(computedDescription)));
+
+        return result;
+    }
+
     @Override
     public UpdateResult aggregateDescription(UUID taxonUuid, List<UUID> descriptionUuids, String descriptionTitle) {
         UpdateResult result = new UpdateResult();
-        Map<Feature, List<DescriptionElementBase>> featureToElementMap = new HashMap<>();
 
         TaxonBase taxonBase = taxonDao.load(taxonUuid);
         if(!(taxonBase instanceof Taxon)){
@@ -851,19 +881,33 @@ public class DescriptionServiceImpl
         }
         Taxon taxon = (Taxon)taxonBase;
 
-        //extract all description elements
         List<DescriptionBase> descriptions = load(descriptionUuids, null);
-        for (DescriptionBase descriptionBase : descriptions) {
-            Set<DescriptionElementBase> descriptionElements = descriptionBase.getElements();
-            for (DescriptionElementBase descriptionElement : descriptionElements) {
+
+        result.includeResult(aggregateDescription(taxon, descriptions, descriptionTitle));
+        return result;
+    }
+
+    @SuppressWarnings("unchecked")
+    public UpdateResult aggregateDescription(Taxon taxon, List<DescriptionBase> descriptions, String descriptionTitle) {
+        UpdateResult result = new UpdateResult();
+        Map<Character, List<DescriptionElementBase>> featureToElementMap = new HashMap<>();
+
+        //extract all character description elements
+        descriptions.forEach(description->{
+            description.getElements()
+            .stream()
+            //filter out elements that do not have a Characters as Feature
+            .filter(element->((DescriptionElementBase)element).getFeature() instanceof Character)
+            .forEach(ele->{
+                DescriptionElementBase descriptionElement = (DescriptionElementBase)ele;
                 List<DescriptionElementBase> list = featureToElementMap.get(descriptionElement.getFeature());
                 if(list==null){
                     list = new ArrayList<>();
                 }
                 list.add(descriptionElement);
-                featureToElementMap.put(descriptionElement.getFeature(), list);
-            }
-        }
+                featureToElementMap.put((Character) descriptionElement.getFeature(), list);
+            });
+        });
 
         TaxonDescription description = TaxonDescription.NewInstance(taxon);
         description.setTitleCache("[Aggregation] "+descriptionTitle, true);
