@@ -847,7 +847,8 @@ public class DescriptionServiceImpl
 
     }
 
-    public UpdateResult aggregateTaxonDescriptions(UUID taxonNodeUuid){
+    @Override
+    public UpdateResult aggregateComputedTaxonDescriptions(UUID taxonNodeUuid){
         UpdateResult result = new UpdateResult();
 
         TaxonNode node = taxonNodeDao.load(taxonNodeUuid);
@@ -856,7 +857,7 @@ public class DescriptionServiceImpl
 
         //get all "computed" descriptions from all sub nodes
         List<TaxonNode> childNodes = taxonNodeDao.listChildrenOf(node, null, null, true, false, null);
-        List<DescriptionBase> computedDescriptions = new ArrayList<>();
+        List<TaxonDescription> computedDescriptions = new ArrayList<>();
 
         childNodes.stream().map(childNode -> childNode.getTaxon())
                 .forEach(childTaxon -> childTaxon.getDescriptions().stream()
@@ -866,6 +867,7 @@ public class DescriptionServiceImpl
                         // add them to the list
                         .forEach(computedDescription -> computedDescriptions.add(computedDescription)));
 
+        result.includeResult(aggregateDescription(taxon, computedDescriptions, taxon.getTitleCache()));
         return result;
     }
 
@@ -888,7 +890,7 @@ public class DescriptionServiceImpl
     }
 
     @SuppressWarnings("unchecked")
-    public UpdateResult aggregateDescription(Taxon taxon, List<DescriptionBase> descriptions, String descriptionTitle) {
+    private UpdateResult aggregateDescription(Taxon taxon, List<? extends DescriptionBase> descriptions, String descriptionTitle) {
         UpdateResult result = new UpdateResult();
         Map<Character, List<DescriptionElementBase>> featureToElementMap = new HashMap<>();
 

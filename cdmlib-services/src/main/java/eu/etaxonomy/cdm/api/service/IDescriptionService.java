@@ -618,4 +618,11 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      * @return the result of the operation
      */
     public UpdateResult aggregateDescription(UUID taxonUuid, List<UUID> descriptionUuids, String descriptionTitle);
+
+    /**
+     * Aggregates all {@link TaxonDescription}s of all sub nodes that have a "computed" marker
+     * @param taxonNodeUuid the parent taxon node
+     * @return the result of the operation
+     */
+    public UpdateResult aggregateComputedTaxonDescriptions(UUID taxonNodeUuid);
 }
