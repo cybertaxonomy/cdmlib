@@ -307,18 +307,15 @@ public class TypeDesignationSetManager {
                     }
                     boolean isNameTypeDesignation = false;
                     if(SpecimenOrObservationBase.class.isAssignableFrom(baseEntityRef.getType())){
-                        workingsetBuilder.add(TagEnum.label, "Type:");  // .append(" ");
+                        workingsetBuilder.add(TagEnum.label, "Type:");
                     } else {
-                        workingsetBuilder.add(TagEnum.label, "NameType:");  // .append(" ");
+                        workingsetBuilder.add(TagEnum.label, "NameType:");
                         isNameTypeDesignation = true;
                     }
                     if(!baseEntityRef.getLabel().isEmpty()){
-                        workingsetBuilder.add(TagEnum.specimenOrObservation, baseEntityRef.getLabel(), baseEntityRef); // .append(" ");
+                        workingsetBuilder.add(TagEnum.specimenOrObservation, baseEntityRef.getLabel(), baseEntityRef);
                     }
                     TypeDesignationWorkingSet typeDesignationWorkingSet = orderedByTypesByBaseEntity.get(baseEntityRef);
-                    if(!isNameTypeDesignation ){
-                        workingsetBuilder.add(TagEnum.separator, " (");
-                    }
                     int typeStatusCount = 0;
                     for(TypeDesignationStatusBase<?> typeStatus : typeDesignationWorkingSet.keySet()) {
                         if(typeStatusCount++  > 0){
@@ -335,9 +332,6 @@ public class TypeDesignationSetManager {
                             }
                             workingsetBuilder.add(TagEnum.typeDesignation, typeDesignationEntityReference.getLabel(), new TypedEntityReference<TypeDesignationBase>(TypeDesignationBase.class, typeDesignationEntityReference.getUuid()));
                         }
-                    }
-                    if(!isNameTypeDesignation ){
-                        workingsetBuilder.add(TagEnum.separator, ")");
                     }
                     typeDesignationWorkingSet.setRepresentation(workingsetBuilder.toString());
                     finalString += typeDesignationWorkingSet.getRepresentation();
