@@ -22,6 +22,7 @@ import org.joda.time.DateTimeFieldType;
 import org.joda.time.Partial;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 
@@ -410,10 +411,42 @@ public class TimePeriodParser {
 
 	public static VerbatimTimePeriod parseStringVerbatim(String strPeriod) {
 	    VerbatimTimePeriod timePeriod = VerbatimTimePeriod.NewVerbatimInstance();
-	    strPeriod = parseVerbatimPart(timePeriod, strPeriod);
-	    return parseString(timePeriod, strPeriod);
+	    String strDateOnly = parseVerbatimPart(timePeriod, strPeriod);
+	    timePeriod = parseString(timePeriod, strDateOnly);
+	    if (timePeriod.getFreeText()!= null){
+	        //if date could not be parsed, handle only as freetext
+	        timePeriod.setFreeText(strPeriod);
+
+	    }
+	    return timePeriod;
 	}
 
+	static Pattern patVerbatim1;
+    static Pattern patVerbatim2;
+    static Pattern patVerbatim3;
+
+    static {
+        String verbatimStart = "[\"'" + UTF8.QUOT_DBL_LEFT + UTF8.QUOT_SINGLE_HIGH_REV9 + UTF8.QUOT_DBL_LOW9 + "]";
+        String verbatimEnd = "[\"'" + UTF8.QUOT_DBL_RIGHT + UTF8.QUOT_SINGLE_RIGHT + UTF8.QUOT_DBL_HIGH_REV9 + "]";
+        String fWs = "\\s*"; //facultative whitespace
+        String oWs = "\\s+"; //obligate whitespace
+        String anyDate = "([^\"]+)";
+        String anyVerbatim = "(.*)";
+        String bracketStart = "\\[";
+        String bracketEnd = "\\]";
+
+
+        //very first implementation, only for years and following 1 format
+        String reVerbatim1 = anyDate + fWs + bracketStart + verbatimStart + anyVerbatim + verbatimEnd + bracketEnd;
+        patVerbatim1 = Pattern.compile(reVerbatim1);
+
+        String reVerbatim2 = verbatimStart + anyVerbatim + verbatimEnd + fWs + bracketStart + anyDate + bracketEnd;
+        patVerbatim2 = Pattern.compile(reVerbatim2);
+
+        String reVerbatim3 = anyVerbatim + "(" + oWs + "publ\\." + oWs + "(" + anyDate + "))";
+        patVerbatim3 = Pattern.compile(reVerbatim3);
+
+    }
 
 
 	/**
@@ -425,28 +458,22 @@ public class TimePeriodParser {
         if (strPeriod == null){
             return null;
         }
-        //very first implementation, only for years and following 1 format
-        String regEx = "(.*)(\\[\"\\d{4}\"\\])";
-        Pattern pattern = Pattern.compile(regEx);
-        Matcher matcher = pattern.matcher(strPeriod);
+
+        Matcher matcher = patVerbatim1.matcher(strPeriod);
         if (matcher.matches()){
-            String verbatimDate = matcher.group(2).substring(2, 6);
+            String verbatimDate = matcher.group(2).trim();
             timePeriod.setVerbatimDate(verbatimDate);
             strPeriod = matcher.group(1).trim();
         }
 
-        regEx = "\"(.*)\"\\s*\\[([^\"]+)\\]";
-        pattern = Pattern.compile(regEx);
-        matcher = pattern.matcher(strPeriod);
+        matcher = patVerbatim2.matcher(strPeriod);
         if (matcher.matches()){
             String verbatimDate = matcher.group(1).trim();
             timePeriod.setVerbatimDate(verbatimDate);
             strPeriod = matcher.group(2).trim();
         }
 
-        regEx = "(.*)(\\s+publ.\\s+(\\d{4}))";
-        pattern = Pattern.compile(regEx);
-        matcher = pattern.matcher(strPeriod);
+        matcher = patVerbatim3.matcher(strPeriod);
         if (matcher.matches()){
             String verbatimDate = matcher.group(3);
             timePeriod.setVerbatimDate(verbatimDate);

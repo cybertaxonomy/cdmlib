@@ -248,7 +248,7 @@ public class VerbatimTimePeriod extends TimePeriod {
       @Override
       public String toString(){
          String result = super.toString();
-         if (StringUtils.isNotBlank(this.verbatimDate)){
+         if (StringUtils.isNotBlank(this.verbatimDate) && StringUtils.isBlank(this.getFreeText())){
              result = CdmUtils.concat(" ", result, "[\""+this.verbatimDate+"\"]");
          }
          return result;
