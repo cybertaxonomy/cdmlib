@@ -52,6 +52,7 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 		String result = "";
 
 		DerivedUnitFacade facade;
+		// NOTE: regarding the string representations of MediaTypes, see https://dev.e-taxonomy.eu/redmine/issues/7608
 		try {
 			DerivedUnitFacadeConfigurator config = DerivedUnitFacadeConfigurator.NewInstance();
 			config.setFirePropertyChangeEvents(false);
