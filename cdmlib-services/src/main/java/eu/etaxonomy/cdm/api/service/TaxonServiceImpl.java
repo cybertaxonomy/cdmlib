@@ -66,9 +66,7 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.exception.UnpublishedException;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.hibernate.search.AcceptedTaxonBridge;
-import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
-import eu.etaxonomy.cdm.hibernate.search.MultilanguageTextFieldBridge;
 import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
@@ -113,7 +111,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.initializer.AbstractBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
@@ -160,9 +157,6 @@ public class TaxonServiceImpl
 
     @Autowired
     private ITaxonNodeService nodeService;
-
-    @Autowired
-    private ICdmGenericDao genericDao;
 
     @Autowired
     private IDescriptionService descriptionService;
@@ -808,14 +802,14 @@ public class TaxonServiceImpl
             for (Taxon t : taxa) {
                 specimensOrObservations.addAll(occurrenceDao.listByAssociatedTaxon(null, t, null, null, null, null));
             }
-            for (SpecimenOrObservationBase occurrence : specimensOrObservations) {
+            for (SpecimenOrObservationBase<?> occurrence : specimensOrObservations) {
 
 //            	direct media removed from specimen #3597
 //              taxonMedia.addAll(occurrence.getMedia());
 
                 // SpecimenDescriptions
                 Set<SpecimenDescription> specimenDescriptions = occurrence.getSpecimenDescriptions();
-                for (DescriptionBase specimenDescription : specimenDescriptions) {
+                for (DescriptionBase<?> specimenDescription : specimenDescriptions) {
                     if (!limitToGalleries || specimenDescription.isImageGallery()) {
                         Set<DescriptionElementBase> elements = specimenDescription.getElements();
                         for (DescriptionElementBase element : elements) {
@@ -1076,50 +1070,6 @@ public class TaxonServiceImpl
 
        return result;
 
-    }
-
-    private String checkForReferences(Taxon taxon){
-        Set<CdmBase> referencingObjects = genericDao.getReferencingObjects(taxon);
-        for (CdmBase referencingObject : referencingObjects){
-            //IIdentificationKeys (Media, Polytomous, MultiAccess)
-            if (HibernateProxyHelper.isInstanceOf(referencingObject, IIdentificationKey.class)){
-                String message = "Taxon" + taxon.getTitleCache() + "can't be deleted as it is used in an identification key. Remove from identification key prior to deleting this name";
-
-                return message;
-            }
-
-
-           /* //PolytomousKeyNode
-            if (referencingObject.isInstanceOf(PolytomousKeyNode.class)){
-                String message = "Taxon" + taxon.getTitleCache() + " can't be deleted as it is used in polytomous key node";
-                return message;
-            }*/
-
-            //TaxonInteraction
-            if (referencingObject.isInstanceOf(TaxonInteraction.class)){
-                String message = "Taxon can't be deleted as it is used in taxonInteraction#taxon2";
-                return message;
-            }
-
-          //TaxonInteraction
-            if (referencingObject.isInstanceOf(DeterminationEvent.class)){
-                String message = "Taxon can't be deleted as it is used in a determination event";
-                return message;
-            }
-
-        }
-
-        referencingObjects = null;
-        return null;
-    }
-
-    private boolean checkForPolytomousKeys(Taxon taxon){
-        boolean result = false;
-        List<CdmBase> list = genericDao.getCdmBasesByFieldAndClass(PolytomousKeyNode.class, "taxon", taxon, null);
-        if (!list.isEmpty()) {
-            result = true;
-        }
-        return result;
     }
 
     @Override
@@ -2200,34 +2150,6 @@ public class TaxonServiceImpl
         return finalQuery;
     }
 
-    /**
-     * DefinedTerm representations and MultilanguageString maps are stored in the Lucene index by the {@link DefinedTermBaseClassBridge}
-     * and {@link MultilanguageTextFieldBridge } in a consistent way. One field per language and also in one additional field for all languages.
-     * This method is a convenient means to retrieve a Lucene query string for such the fields.
-     *
-     * @param name name of the term field as in the Lucene index. Must be field created by {@link DefinedTermBaseClassBridge}
-     * or {@link MultilanguageTextFieldBridge }
-     * @param languages the languages to search for exclusively. Can be <code>null</code> to search in all languages
-     * @param stringBuilder a StringBuilder to be reused, if <code>null</code> a new StringBuilder will be instantiated and is returned
-     * @return the StringBuilder given a parameter or a new one if the stringBuilder parameter was null.
-     *
-     * TODO move to utiliy class !!!!!!!!
-     */
-    private StringBuilder appendLocalizedFieldQuery(String name, List<Language> languages, StringBuilder stringBuilder) {
-
-        if(stringBuilder == null){
-            stringBuilder = new StringBuilder();
-        }
-        if(languages == null || languages.size() == 0){
-            stringBuilder.append(name + ".ALL:(%1$s) ");
-        } else {
-            for(Language lang : languages){
-                stringBuilder.append(name + "." + lang.getUuid().toString() + ":(%1$s) ");
-            }
-        }
-        return stringBuilder;
-    }
-
     @Override
     public List<Synonym> createInferredSynonyms(Taxon taxon, Classification classification, SynonymType type, boolean doWithMisappliedNames){
 
@@ -2265,8 +2187,6 @@ public class TaxonServiceImpl
                     TaxonName parentName =  parent.getTaxon().getName();
                     IZoologicalName zooParentName = CdmBase.deproxy(parentName);
                     Taxon parentTaxon = CdmBase.deproxy(parent.getTaxon());
-                    Rank rankOfTaxon = taxonName.getRank();
-
 
                     //create inferred synonyms for species, subspecies
                     if ((parentName.isGenus() || parentName.isSpecies() || parentName.getRank().equals(Rank.SUBGENUS())) ){
@@ -2398,7 +2318,6 @@ public class TaxonServiceImpl
                     }else if (type.equals(SynonymType.POTENTIAL_COMBINATION_OF())){
 
                         Reference sourceReference = null; // TODO: Determination of sourceReference is redundant
-                        IZoologicalName inferredSynName;
                         //for all synonyms of the parent...
                         for (Synonym synonymRelationOfParent:synonyMsOfParent){
                             TaxonName synName;
