@@ -111,7 +111,7 @@ public class ReferencePropertyDefinitions {
         map = iThesis;
         put(map, "school");
 
-        all = merge(iThesis, iPrintSeries, iInProceedings, iPrintedUnitBase, iVolumeReference);
+        all = merge(iThesis, iPrintSeries, iInProceedings, iJournal, iArticle, iBook, iBookSection, iProceedings, iPrintedUnitBase, iVolumeReference);
 
     }
 
