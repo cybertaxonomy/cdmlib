@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -95,6 +96,8 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
     @Autowired
     private ReferringObjectMetadataFactory referringObjectMetadataFactory;
+
+    protected static final EnumSet<Operator> LEFTOUTER_OPS = EnumSet.of(Operator.AND_NOT, Operator.OR, Operator.OR_NOT);
 
     public CdmEntityDaoBase(Class<T> type) {
         this.type = type;
@@ -524,9 +527,11 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         List<CriterionWithOperator> perProperty = new ArrayList<>(restrictions.size());
         Map<String, String> aliases = new HashMap<>();
 
+
+
         for(Restriction<?> restriction : restrictions){
             Collection<? extends Object> values = restriction.getValues();
-            JoinType jointype = restriction.isNot() ? JoinType.LEFT_OUTER_JOIN : JoinType.INNER_JOIN;
+            JoinType jointype = LEFTOUTER_OPS.contains(restriction.getOperator()) ? JoinType.LEFT_OUTER_JOIN : JoinType.INNER_JOIN;
             if(values != null && !values.isEmpty()){
                 // ---
                 String propertyPath = restriction.getPropertyName();
@@ -585,9 +590,11 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
                 } else {
                     switch(cwo.operator){
                         case AND:
+                        case AND_NOT:
                             logicalExpression = Restrictions.and(logicalExpression, cwo.criterion);
                             break;
                         case OR:
+                        case OR_NOT:
                             logicalExpression = Restrictions.or(logicalExpression, cwo.criterion);
                             break;
                         default:

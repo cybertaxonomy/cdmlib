@@ -54,6 +54,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
+import eu.etaxonomy.cdm.persistence.dao.common.Restriction.Operator;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -955,11 +956,10 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         // Name1 -> SpecimenTypeDesignation -> Specimen1
         //       -> SpecimenTypeDesignation -> Specimen2
         // Name2 -> SpecimenTypeDesignation -> Specimen2
+        // Name3 -> NameTypeDesignaton-> typeName = Name1
 
         List<Restriction<?>> restrictions;
         Pager<TaxonName> result;
-
-        Logger.getLogger("eu.etaxonomy.cdm.persistence.dao.hibernate.common").setLevel(Level.DEBUG);
 
         restrictions = Arrays.asList(new Restriction<UUID>("typeDesignations.uuid", null, UUID.fromString("9bbda70b-7272-4e65-a807-852a3f2eba63"), UUID.fromString("1357c307-00c3-499c-8e20-0849d4706125")));
         result = nameService.findByTitleWithRestrictions(null, "Name", MatchMode.BEGINNING, restrictions, null, null, null, null);
@@ -969,6 +969,38 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         result = nameService.findByTitleWithRestrictions(null, "Name1", MatchMode.EXACT, restrictions, null, null, null, null);
         assertEquals("names with multiple matching typeSpecimens must be distinct", 1l, result.getCount().longValue());
         assertEquals("Name1", result.getRecords().iterator().next().getTitleCache());
+    }
+
+    @Test
+    @DataSet
+    public void testFindByTitleTitleWithRestrictionsLogicalOperators(){
+
+        // The following typedesigbnations per name are assumed:
+        // Name1 -> SpecimenTypeDesignation -> Specimen1
+        //       -> SpecimenTypeDesignation -> Specimen2
+        // Name2 -> SpecimenTypeDesignation -> Specimen2
+        // Name3 -> NameTypeDesignaton-> typeName = Name1
+
+        List<Restriction<?>> restrictions;
+        Pager<TaxonName> result;
+
+        Logger.getLogger("org.hibernate.SQL").setLevel(Level.TRACE);
+
+        restrictions = Arrays.asList(new Restriction<String>("typeDesignations.typeName.titleCache", Operator.AND, null, "Name1"));
+        result = nameService.findByTitleWithRestrictions(null, "Name3", MatchMode.EXACT, restrictions, null, null, null, null);
+        assertEquals(1l, result.getCount().longValue());
+
+        restrictions = Arrays.asList(new Restriction<String>("typeDesignations.typeName.titleCache", Operator.AND_NOT, null, "Name1"));
+        result = nameService.findByTitleWithRestrictions(null, "Name", MatchMode.BEGINNING, restrictions, null, null, null, null);
+        assertEquals(2l, result.getCount().longValue());
+
+        restrictions = Arrays.asList(new Restriction<String>("typeDesignations.typeName.titleCache", Operator.OR, null, "Name1"));
+        result = nameService.findByTitleWithRestrictions(null, "Name1", MatchMode.EXACT, restrictions, null, null, null, null);
+        assertEquals(2l, result.getCount().longValue());
+
+        restrictions = Arrays.asList(new Restriction<String>("typeDesignations.typeName.titleCache", Operator.OR_NOT, null, "Name1"));
+        result = nameService.findByTitleWithRestrictions(null, "Name1", MatchMode.EXACT, restrictions, null, null, null, null);
+        assertEquals(2l, result.getCount().longValue());
 
     }
 
