@@ -602,8 +602,17 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 	@Transactional(readOnly = true)
 	@Override
 	public long countByTitle(IIdentifiableEntityServiceConfigurator<T> config){
-		return countByTitleWithRestrictions(config.getClazz(), config.getTitleSearchStringSqlized(),
-				config.getMatchMode(), config.getRestrictions());
+
+        boolean withRestrictions = config.getRestrictions() != null && !config.getRestrictions().isEmpty();
+        boolean withCriteria = config.getCriteria() != null && !config.getCriteria().isEmpty();
+
+        if(withCriteria && withRestrictions){
+            throw new RuntimeException("Restrictions and Criteria can not be used at the same time");
+        } else if(withRestrictions){
+            return countByTitleWithRestrictions(config.getClazz(), config.getTitleSearchStringSqlized(), config.getMatchMode(), config.getRestrictions());
+        } else {
+            return countByTitle(config.getClazz(), config.getTitleSearchStringSqlized(), config.getMatchMode(), config.getCriteria());
+        }
 
 	}
 
