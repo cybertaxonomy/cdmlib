@@ -87,13 +87,14 @@ public class BioCaseQueryGenerator {
     private static final String TAXON_NAME_PATH_ABCD_2_0 = UNIT_PATH + "/Identifications/Identification/Result/TaxonIdentified/ScientificName/FullScientificNameString";
     private static final String LOCALITY_PATH_ABCD_2_0 = UNIT_PATH + "/Gathering/LocalityText";
     private static final String HERBARIUM_PATH_ABCD_2_0 = UNIT_PATH + "/SourceID";
-    private static final String COUNTRY_PATH_ABCD_2_0 = UNIT_PATH + "/Gathering/Country/Name";
+    private static final String COUNTRY_PATH_ABCD_2_0 = UNIT_PATH + "/Gathering/Country/ISO3166Code";
     private static final String COLLECTOR_NUMBER_PATH_ABCD_2_0 = UNIT_PATH + "/CollectorsFieldNumber";
     private static final String COLLECTOR_PATH_ABCD_2_0 = UNIT_PATH + "/Gathering/Agents/GatheringAgentsText";
     private static final String ACCESSION_NUMBER_PATH_ABCD_2_0 = UNIT_PATH + "/SpecimenUnit/Accessions/AccessionNumber";
     private static final String CAT_PATH_ABCD_2_0 = UNIT_PATH + "/CAT";
     private static final String ASSOCIATION_UNIT_ID_ABCD_2_0 = UNIT_PATH +"/Associations/UnitAssociation/AssociatedUnitID";
     private static final String ASSOCIATION_UNIT_ID_ABCD_2_1 = UNIT_PATH +"/Associations/UnitAssociation/UnitID";
+    //private static final String COUNTRY_PATH_ABCD_2_1 = UNIT_PATH + "/Gathering/Country/ISO3166Code";
 
     /**
      * Generates an XML query according to the BioCASe protocol.
