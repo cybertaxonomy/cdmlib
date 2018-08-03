@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.util.Arrays;
@@ -24,6 +25,8 @@ import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.service.config.IdentifiableServiceConfiguratorFactory;
+import eu.etaxonomy.cdm.api.service.config.IdentifiableServiceConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.config.NameDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -52,6 +55,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
@@ -966,6 +970,22 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         assertEquals("names with multiple matching typeSpecimens must be distinct", 1l, result.getCount().longValue());
         assertEquals("Name1", result.getRecords().iterator().next().getTitleCache());
 
+    }
+
+    @Test
+    @DataSet
+    public void testFindByTitleTitle_using_Configurator(){
+
+        String searchString = "*";
+        IdentifiableServiceConfiguratorImpl<TaxonName> searchConfigurator = new IdentifiableServiceConfiguratorImpl<TaxonName>();
+
+        searchConfigurator = IdentifiableServiceConfiguratorFactory.getConfigurator(TaxonName.class);
+        searchConfigurator.setTitleSearchString(searchString);
+        searchConfigurator.setMatchMode(null);
+        searchConfigurator.setOrderHints(OrderHint.ORDER_BY_TITLE_CACHE.asList());
+
+        Pager<TaxonName> results = nameService.findByTitle(searchConfigurator);
+        assertTrue(results.getRecords().size() > 0);
 
     }
 
