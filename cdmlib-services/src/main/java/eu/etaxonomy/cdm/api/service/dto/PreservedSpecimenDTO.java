@@ -32,13 +32,53 @@ public class PreservedSpecimenDTO extends DerivateDTO{
 
     private String accessionNumber;
     private URI preferredStableUri;
+    private String uuidString;
 
     private List<Pair<UUID, String>> associatedTaxa;
     private Map<String, List<String>> types;
 
+
+
+//    public PreservedSpecimenDTO(DerivedUnit derivedUnit){
+//        super();
+//        this.setUuid(derivedUnit.getUuid());
+//        this.setTitleCache(derivedUnit.getTitleCache());
+//        this.setAccessionNumber(derivedUnit.getAccessionNumber());
+//        this.setPreferredStableUri(derivedUnit.getPreferredStableUri());
+//
+//        this.setCollectioDTo(new CollectionDTO(HibernateProxyHelper.deproxy(derivedUnit.getCollection())));
+//        this.setBarcode(derivedUnit.getBarcode());
+//        this.setCatalogNumber(derivedUnit.getCatalogNumber());
+//        this.setCollectorsNumber(derivedUnit.getCollectorsNumber());
+//        if (derivedUnit.getDerivedFrom() != null){
+//            this.setDerivationEvent(new DerivationEventDTO(derivedUnit.getDerivedFrom() ));
+//        }
+//        if (derivedUnit.getPreservation()!= null){
+//            this.setPreservationMethod(derivedUnit.getPreservation().getMaterialMethodText());
+//        }
+//        this.setRecordBase(derivedUnit.getRecordBasis().getMessage());
+//        this.setSources(derivedUnit.getSources());
+//        this.setSpecimenTypeDesignations(derivedUnit.getSpecimenTypeDesignations());
+//
+//    }
+//
+//    public static PreservedSpecimenDTO newInstance(DerivedUnit derivedUnit ){
+//        PreservedSpecimenDTO newInstance = new PreservedSpecimenDTO(derivedUnit);
+//
+//        return newInstance;
+//    }
+
+
+    /**
+     * @param derivedUnit
+     */
+    public PreservedSpecimenDTO(DerivedUnit derivedUnit) {
+        super(derivedUnit);
+    }
+
     public static PreservedSpecimenDTO newInstance(DerivedUnit derivedUnit, TaxonName name ){
-        PreservedSpecimenDTO newInstance = new PreservedSpecimenDTO();
-        newInstance.setUuid(derivedUnit.getUuid());
+        PreservedSpecimenDTO newInstance = new PreservedSpecimenDTO(derivedUnit);
+
         newInstance.setTitleCache(derivedUnit.getTitleCache());
         newInstance.accessionNumber = derivedUnit.getAccessionNumber();
         newInstance.preferredStableUri = derivedUnit.getPreferredStableUri();
@@ -56,13 +96,7 @@ public class PreservedSpecimenDTO extends DerivateDTO{
         newInstance.setRecordBase(derivedUnit.getRecordBasis().getMessage());
         newInstance.setSources(derivedUnit.getSources());
         newInstance.setSpecimenTypeDesignations(derivedUnit.getSpecimenTypeDesignations());
-//<<<<<<< Updated upstream
-//
-//=======
-//        if (name != null){
-//            newInstance.setTaxonName(name.getTitleCache());
-//        }
-//>>>>>>> Stashed changes
+
         return newInstance;
     }
 
@@ -73,7 +107,9 @@ public class PreservedSpecimenDTO extends DerivateDTO{
         this.accessionNumber = accessionNumber;
     }
 
-
+    public String getUuidString() {
+        return uuidString;
+    }
 
     public Map<String, List<String>> getTypes() {
         return types;

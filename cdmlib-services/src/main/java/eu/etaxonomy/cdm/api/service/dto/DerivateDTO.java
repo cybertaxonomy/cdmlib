@@ -18,18 +18,22 @@ import org.hibernate.envers.tools.Pair;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.ref.TypedEntityReference;
+
 
 /**
  * @author pplitzner
  * @since Mar 27, 2015
  *
  */
-public abstract class DerivateDTO {
+public abstract class DerivateDTO extends TypedEntityReference {
 
     private TreeSet<Pair<String, String>> characterData;
     private DerivateDataDTO derivateDataDTO;
     protected String taxonName;
     protected String titleCache;
+
 
     protected String citation;
     protected boolean hasDetailImage;
@@ -51,7 +55,10 @@ public abstract class DerivateDTO {
 
     private Set<IdentifiableSource> sources;
 
+    public DerivateDTO(SpecimenOrObservationBase specimenOrObservation) {
+        super(specimenOrObservation.getClass(), specimenOrObservation.getUuid());
 
+    }
     public String getTitleCache() {
         return titleCache;
     }
@@ -295,6 +302,7 @@ public abstract class DerivateDTO {
         this.derivationEvent = derivationEvent;
     }
 
+    @Override
     public UUID getUuid() {
         return uuid;
     }

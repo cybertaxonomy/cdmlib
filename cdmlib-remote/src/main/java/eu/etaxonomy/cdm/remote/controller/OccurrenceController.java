@@ -94,6 +94,7 @@ public class OccurrenceController extends AbstractIdentifiableController<Specime
         return null;
     }
 
+
     @RequestMapping(value = { "occurrencesDTO" }, method = RequestMethod.GET)
     public  FieldUnitDTO doGetOccurencesDTO(
             @PathVariable("uuid") UUID uuid,
@@ -108,7 +109,9 @@ public class OccurrenceController extends AbstractIdentifiableController<Specime
 
         FieldUnitDTO fieldUnitDto = null;
         if(sob instanceof DerivedUnit){
+
             fieldUnitDto = service.findFieldUnitDTO(PreservedSpecimenDTO.newInstance(sob, null) , new ArrayList<FieldUnitDTO>(), new HashMap<UUID, DerivateDTO>());
+
         }
 
         return fieldUnitDto;

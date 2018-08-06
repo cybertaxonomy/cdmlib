@@ -15,14 +15,15 @@ import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 
-public class FieldUnitDTO extends DerivateDTO{
 
-	//Row Attributes
+public class FieldUnitDTO extends DerivateDTO{
+    //Row Attributes
 	private String country;
 	private String collectionString;
 	private String date;
 
 	private boolean hasType;
+
 
 	private String kindOfUnit;
 	private List<UUID> taxonRelatedDerivedUnits = new ArrayList<>();
@@ -33,11 +34,18 @@ public class FieldUnitDTO extends DerivateDTO{
 	private GatheringEventDTO gatheringEvent;
 
 
-	public static FieldUnitDTO newInstance(FieldUnit fieldUnit){
-	    FieldUnitDTO fieldUnitDto = new FieldUnitDTO();
+	/**
+     * @param fieldUnit
+     */
+    public FieldUnitDTO(FieldUnit fieldUnit) {
+        super(fieldUnit);
+    }
+
+
+    public static FieldUnitDTO newInstance(FieldUnit fieldUnit){
+	    FieldUnitDTO fieldUnitDto = new FieldUnitDTO(fieldUnit);
 	    fieldUnitDto.kindOfUnit = fieldUnit.getKindOfUnit().getTitleCache();
 	    fieldUnitDto.gatheringEvent = GatheringEventDTO.newInstance(fieldUnit.getGatheringEvent());
-	    fieldUnitDto.setUuid(fieldUnit.getUuid());
 	    fieldUnitDto.setRecordBase(fieldUnit.getRecordBasis().getMessage());
 	    fieldUnitDto.setTitleCache(fieldUnit.getTitleCache());
 
@@ -129,6 +137,10 @@ public class FieldUnitDTO extends DerivateDTO{
 //    }
 //
 //>>>>>>> Stashed changes
+
+
+
+
     /**
      * @return the country
      */
