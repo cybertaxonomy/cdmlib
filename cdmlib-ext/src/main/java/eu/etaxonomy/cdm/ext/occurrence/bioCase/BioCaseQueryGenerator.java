@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.ext.occurrence.bioCase;
 
+import java.util.Calendar;
+
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.Namespace;
@@ -72,6 +74,9 @@ public class BioCaseQueryGenerator {
     private static final String COUNT = "count";
     private static final String LIKE = "like";
     private static final String EQUALS = "equals";
+    private static final String NOT_EQUALS = "notEquals";
+    private static final String GREATER_THAN_OR_EQUALS = "greaterThanOrEquals";
+    private static final String LESS_THAN_OR_EQUALS = "lessThanOrEquals";
     private static final String AND = "and";
     private static final String OR = "or";
     private static final String FILTER = "filter";
@@ -94,7 +99,8 @@ public class BioCaseQueryGenerator {
     private static final String CAT_PATH_ABCD_2_0 = UNIT_PATH + "/CAT";
     private static final String ASSOCIATION_UNIT_ID_ABCD_2_0 = UNIT_PATH +"/Associations/UnitAssociation/AssociatedUnitID";
     private static final String ASSOCIATION_UNIT_ID_ABCD_2_1 = UNIT_PATH +"/Associations/UnitAssociation/UnitID";
-    //private static final String COUNTRY_PATH_ABCD_2_1 = UNIT_PATH + "/Gathering/Country/ISO3166Code";
+    private static final String DATE_ABCD_2_0 = UNIT_PATH + "/Gathering/DateTime/ISODateTimeBegin";
+    private static final String MEDIA_ABCD_2_0 = UNIT_PATH + "/MultiMediaObjects/MultiMediaObject/FileURI";
 
     /**
      * Generates an XML query according to the BioCASe protocol.
@@ -176,9 +182,33 @@ public class BioCaseQueryGenerator {
                 addLikeFilter(elAnd, query.country, COUNTRY_PATH_ABCD_2_0);
             }
             //TODO: implement
-    //        if(query.date!=null){
-    //            addFilter(elFilter, query.date);
-    //        }
+            if(query.dateFrom!=null){
+                String dateString = "";
+                if (query.dateFrom.isSet(Calendar.YEAR)){
+                    dateString = Integer.toString(query.dateFrom.get(Calendar.YEAR));
+                }
+                if (query.dateFrom.isSet(Calendar.MONTH)){
+                    dateString = dateString + "-"+Integer.toString(query.dateFrom.get(Calendar.MONTH));
+                }
+                if (query.dateFrom.isSet(Calendar.DAY_OF_MONTH)){
+                    dateString = dateString + "-"+Integer.toString(query.dateFrom.get(Calendar.DAY_OF_MONTH));
+                }
+                addGreaterThanFilter(elAnd, dateString, DATE_ABCD_2_0);
+            }
+
+            if(query.dateTo!=null){
+                String dateString = "";
+                if (query.dateTo.isSet(Calendar.YEAR)){
+                    dateString = Integer.toString(query.dateTo.get(Calendar.YEAR));
+                }
+                if (query.dateTo.isSet(Calendar.MONTH)){
+                    dateString = dateString + "-"+Integer.toString(query.dateTo.get(Calendar.MONTH));
+                }
+                if (query.dateTo.isSet(Calendar.DAY_OF_MONTH)){
+                    dateString = dateString + "-"+Integer.toString(query.dateTo.get(Calendar.DAY_OF_MONTH));
+                }
+                addLessThanFilter(elAnd, dateString, DATE_ABCD_2_0);
+            }
             if(query.herbarium!=null && !query.herbarium.trim().isEmpty()){
                 addLikeFilter(elAnd, query.herbarium, HERBARIUM_PATH_ABCD_2_0);
             }
@@ -188,12 +218,17 @@ public class BioCaseQueryGenerator {
             if(query.taxonName!=null && !query.taxonName.trim().isEmpty()){
                 addLikeFilter(elAnd, query.taxonName, TAXON_NAME_PATH_ABCD_2_0);
             }
+            if(query.hasImage ){
+                addNotEqualsFilter(elAnd, "*", MEDIA_ABCD_2_0);
+            }
         }
         elSearch.addContent(elCount);
         elCount.addContent(FALSE);
 
         return document;
     }
+
+
 
     /**
      * Generates an XML query according to the BioCASe protocol.
@@ -256,10 +291,37 @@ public class BioCaseQueryGenerator {
         elLike.addContent(taxonName);
     }
 
-    private static void addEqualsFilter(Element filterElement, String taxonName, String path){
+    private static void addEqualsFilter(Element filterElement, String value, String path){
         Element elEquals = new Element(EQUALS);
         filterElement.addContent(elEquals);
         elEquals.setAttribute(PATH, path);
-        elEquals.addContent(taxonName);
+        elEquals.addContent(value);
+    }
+
+    private static void addNotEqualsFilter(Element filterElement, String value, String path){
+        Element elNotEquals = new Element(NOT_EQUALS);
+        filterElement.addContent(elNotEquals);
+        elNotEquals.setAttribute(PATH, path);
+        elNotEquals.addContent(value);
+    }
+
+    private static void addGreaterThanFilter(Element filterElement, String value, String path){
+        Element elGreaterThan = new Element(GREATER_THAN_OR_EQUALS);
+        filterElement.addContent(elGreaterThan);
+        elGreaterThan.setAttribute(PATH, path);
+        elGreaterThan.addContent(value);
+    }
+
+    /**
+     * @param elAnd
+     * @param dateString
+     * @param dateAbcd20
+     */
+    private static void addLessThanFilter(Element filterElement, String value, String path) {
+        Element elSmallerThan = new Element(LESS_THAN_OR_EQUALS);
+        filterElement.addContent(elSmallerThan);
+        elSmallerThan.setAttribute(PATH, path);
+        elSmallerThan.addContent(value);
+
     }
 }
