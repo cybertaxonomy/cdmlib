@@ -240,6 +240,9 @@ public class CdmLightClassificationExport
                 csvLine[table.getIndex(CdmLightExportTable.PARENT_FK)] = getId(state, parent);
                 csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE_FK)] = getId(state, taxon.getSec());
                 csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE)] = getTitleCache(taxon.getSec());
+                if (state.getReferenceFromStore(taxon.getSec().getId()) == null){
+                    handleReference(state, taxon.getSec());
+                }
                 csvLine[table.getIndex(CdmLightExportTable.CLASSIFICATION_ID)] = getId(state, taxonNode.getClassification());
                 csvLine[table.getIndex(CdmLightExportTable.CLASSIFICATION_TITLE)] = taxonNode.getClassification().getTitleCache();
 
