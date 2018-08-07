@@ -133,7 +133,7 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
     @DataSet
     public final void testFindTaxaAndNames() {
 
-        IFindTaxaAndNamesConfigurator<?> conf = FindTaxaAndNamesConfiguratorImpl.NewInstance();
+        IFindTaxaAndNamesConfigurator conf = FindTaxaAndNamesConfiguratorImpl.NewInstance();
         conf.setTitleSearchString("Abies*");
         conf.setMatchMode(MatchMode.BEGINNING);
 
@@ -329,7 +329,7 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
     @DataSet
     public final void testFindTaxaAndNames_with_classification() {
 
-        IFindTaxaAndNamesConfigurator<?> conf = FindTaxaAndNamesConfiguratorImpl.NewInstance();
+        IFindTaxaAndNamesConfigurator conf = FindTaxaAndNamesConfiguratorImpl.NewInstance();
         conf.setTitleSearchString("Abies*");
         conf.setClassification(classificationService.load(UUID.fromString(CLASSIFICATION_UUID)));
         conf.setMatchMode(MatchMode.BEGINNING);
@@ -520,7 +520,7 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
     @DataSet
     public final void testFindTaxaAndNames_CommonName() {
      // pass 1
-        IFindTaxaAndNamesConfigurator<?> configurator = FindTaxaAndNamesConfiguratorImpl.NewInstance();
+        IFindTaxaAndNamesConfigurator configurator = FindTaxaAndNamesConfiguratorImpl.NewInstance();
         configurator.setMatchMode(MatchMode.BEGINNING);
         configurator.setDoTaxa(true);
         configurator.setDoSynonyms(true);
@@ -552,7 +552,7 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
     public final void testFindTaxaAndNamesWithHybridFormula() {
 
         // pass 1
-        IFindTaxaAndNamesConfigurator<?> configurator = FindTaxaAndNamesConfiguratorImpl.NewInstance();
+        IFindTaxaAndNamesConfigurator configurator = FindTaxaAndNamesConfiguratorImpl.NewInstance();
         configurator.setTitleSearchString("Achillea*");
         configurator.setMatchMode(MatchMode.BEGINNING);
         configurator.setDoTaxa(true);
@@ -574,7 +574,7 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
     @Test
     @DataSet
     public final void testfindTaxaAndNamesForEditor() {
-         IFindTaxaAndNamesConfigurator<?> configurator = FindTaxaAndNamesConfiguratorImpl.NewInstance();
+         IFindTaxaAndNamesConfigurator configurator = FindTaxaAndNamesConfiguratorImpl.NewInstance();
          configurator.setTitleSearchString("Abies bor*");
          configurator.setMatchMode(MatchMode.BEGINNING);
          configurator.setDoTaxa(true);
@@ -611,8 +611,8 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
      * @param doNamesWithoutTaxa
      * @return
      */
-    protected IFindTaxaAndNamesConfigurator<?> setTaxaAndNamesModes(
-            IFindTaxaAndNamesConfigurator<?> conf,
+    protected IFindTaxaAndNamesConfigurator setTaxaAndNamesModes(
+            IFindTaxaAndNamesConfigurator conf,
             boolean doTaxa,
             boolean doSynonyms,
             boolean doCommonNames,

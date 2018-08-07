@@ -1276,6 +1276,22 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             if (!StringUtils.isBlank(state.getDataHolder().gatheringAgentsText)
                     && state.getDataHolder().gatheringAgentsList.isEmpty()) {
                 teamOrPerson = parseAuthorString(state.getDataHolder().gatheringAgentsText);
+//                if (teamOrPerson instanceof Person) {
+//                    //team.addTeamMember((Person) teamOrPerson);
+//                } else {
+//                    team = new Team();
+//                    for (Person person : ((Team) teamOrPerson).getTeamMembers()) {
+//                        team.addTeamMember(person);
+//                    }
+//                }
+                if (!state.getPersonStore().containsId(state.getDataHolder().gatheringAgentsText)) {
+                    state.getPersonStore().put(state.getDataHolder().gatheringAgentsText, teamOrPerson);
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Stored author " + state.getDataHolder().gatheringAgentsText);
+                    }
+                    logger.warn("Not imported author with duplicated aut_id "
+                            + state.getDataHolder().gatheringAgentsList.toString());
+                }
             }
 
         }

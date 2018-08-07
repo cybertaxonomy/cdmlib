@@ -155,7 +155,7 @@ public class DescriptiveDataSetService
                                 "taxonNodes",
                                 "taxonNodes.classification",
                         }));
-                if(associatedTaxa!=null){
+                if(associatedTaxa!=null && !associatedTaxa.isEmpty()){
                     //FIXME: what about multiple associated taxa
                     Set<TaxonNode> taxonSubtreeFilter = descriptiveDataSet.getTaxonSubtreeFilter();
                     if(taxonSubtreeFilter!=null && !taxonSubtreeFilter.isEmpty()){
@@ -205,8 +205,14 @@ public class DescriptiveDataSetService
 
         for (SpecimenDescription specimenDescription : (Set<SpecimenDescription>) specimen.getDescriptions()) {
             specimenDescription = (SpecimenDescription) descriptionService.load(specimenDescription.getUuid());
-            Set<Feature> specimenDescriptionFeatures = new HashSet<>();
+
+            //check if description is already added to data set
+            if(dataSet.getDescriptions().contains(specimenDescription)){
+                return specimenDescription;
+            }
+
             //gather specimen description features and check for match with dataset features
+            Set<Feature> specimenDescriptionFeatures = new HashSet<>();
             for (DescriptionElementBase specimenDescriptionElement : specimenDescription.getElements()) {
                 Feature feature = specimenDescriptionElement.getFeature();
                 specimenDescriptionFeatures.add(feature);
@@ -214,14 +220,10 @@ public class DescriptiveDataSetService
                     matchingDescriptionElements.add(specimenDescriptionElement);
                 }
             }
-            //if description with the exact same features is found return the description
-            if(specimenDescriptionFeatures.equals(datasetFeatures)){
-                return specimenDescription;
-            }
         }
-        //Create new specimen description if no match was found
+        //Create new specimen description if description has not already been added to the dataset
         SpecimenDescription newDesription = SpecimenDescription.NewInstance(specimen);
-        newDesription.setTitleCache("Dataset"+dataSet.getLabel()+": "+newDesription.generateTitle(), true); //$NON-NLS-2$
+        newDesription.setTitleCache("Dataset "+dataSet.getLabel()+": "+newDesription.generateTitle(), true); //$NON-NLS-2$
 
         //check for equals description element (same feature and same values)
         Map<Feature, List<DescriptionElementBase>> featureToElementMap = new HashMap<>();

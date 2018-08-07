@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.io.wfo.in;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.stereotype.Component;
@@ -18,17 +19,22 @@ import eu.etaxonomy.cdm.api.service.dto.IdentifiedEntityDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.csv.in.CsvImportBase;
+import eu.etaxonomy.cdm.io.wfo.in.WfoAccessClassificationImport.TaxStatus;
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
+import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
@@ -44,7 +50,7 @@ public class WfoAccessTaxonImport<STATE extends WfoAccessImportState>
 
     private static final long serialVersionUID = 8721691506017004260L;
 
-    private static final String TAXON_ID = "taxonId";
+    private static final String TAXON_ID = "taxonID";
     private static final String SCIENTIFIC_NAME_ID = "scientificNameID";
     private static final String SCIENTIFIC_NAME = "scientificName";
     private static final String TAXON_RANK = "taxonRank";
@@ -74,7 +80,13 @@ public class WfoAccessTaxonImport<STATE extends WfoAccessImportState>
     private static final String REFERENCES = "references";
     private static final String PUB_TYPE = "PubType";
 
+    private static final String TPL_DOMAIN = "http://www.theplantlist.org/tpl1.1/record/";
+    private static final String TPL_GENUS_DOMAIN = "http://www.theplantlist.org/1.1/browse/A/";
+
+
     private Map<String,TaxonName> nameMap;
+    private NonViralNameParserImpl parser = NonViralNameParserImpl.NewInstance();
+
 
     /**
      * {@inheritDoc}
@@ -88,18 +100,34 @@ public class WfoAccessTaxonImport<STATE extends WfoAccessImportState>
 
         Map<String, String> record = state.getCurrentRecord();
 
-        makeReference(state, name);
-//        makeNomStatus(state, name);
-
         handleIgnoredFields(record);
         testAlwaysEmptyFields(state);
 
-//        state.getDedupHelper().replaceAuthorNamesAndNomRef(state, name);
 
-//        getNameService().saveOrUpdate(name);
-        state.getResult().addNewRecords(TaxonName.class.getSimpleName(), 1);
+        state.getDedupHelper().replaceAuthorNamesAndNomRef(state, name);
 
-//        makeTaxon(state, name);
+        if (!name.isPersited()){
+            state.getResult().addNewRecords(TaxonName.class.getSimpleName(), 1);
+        }
+        getNameService().saveOrUpdate(name);
+        saveHybridNames(state, name);
+        makeTaxon(state, name);
+    }
+
+
+    /**
+     * @param state
+     * @param name
+     */
+    private void saveHybridNames(STATE state, TaxonName name) {
+        for (HybridRelationship hybridRel : name.getHybridChildRelations()){
+            TaxonName parent = hybridRel.getParentName();
+            if (!parent.isPersited()){
+                state.getResult().addNewRecords(TaxonName.class.getSimpleName(), 1);
+            }
+            getNameService().saveOrUpdate(parent);
+
+        }
 
     }
 
@@ -198,6 +226,9 @@ public class WfoAccessTaxonImport<STATE extends WfoAccessImportState>
             return;
         }
 
+        //TODO pages
+        //TODO remove collation from and of nomRefTitle if there
+
         //Create and set title + in-Reference
         Reference reference;
         if (type == null){
@@ -241,8 +272,8 @@ public class WfoAccessTaxonImport<STATE extends WfoAccessImportState>
                 String message = "Collation has more then 1 ':' and can not be parsed: %s" ;
                 message = String.format(message, collation);
                 state.getResult().addWarning(message, state.getRow());
-                detail = null;
-                volume = null;
+                detail = split[1].trim() + split[2].trim();
+                volume = split[0].trim();
             }
         }else{
             detail = null;
@@ -278,46 +309,6 @@ public class WfoAccessTaxonImport<STATE extends WfoAccessImportState>
         addSourceReference(state, reference);
     }
 
-    /**
-     * Checks if the sourceId (WFO ID) already exists in the database.
-     * @param state
-     * @param name
-     * @param idAttr
-     * @param allowDuplicate
-     * @param identifierType
-     * @return <code>true</code> if sourceId already exists.
-     */
-    private boolean checkAndAddIdentifier(STATE state, TaxonName name, String idAttr,
-            boolean allowDuplicate, DefinedTerm identifierType) {
-        String identifier = state.getCurrentRecord().get(idAttr);
-        if (identifier == null){
-            return false;
-        }
-
-        if (! allowDuplicate || state.getConfig().isReportDuplicateIdentifier()){
-            //TODO precompute existing per session or, at least, implement count
-            Pager<IdentifiedEntityDTO<TaxonName>> existing = getNameService().findByIdentifier(TaxonName.class, identifier, identifierType, MatchMode.EXACT, false, null, null, null);
-            if (existing.getCount() > 0){
-                //TODO make language configurable
-                Language language = Language.DEFAULT();
-                if (! allowDuplicate){
-                    String message = "The name with the given identifier (%s: %s) exists already in the database. Record is not imported.";
-                    message = String.format(message, identifierType.getPreferredRepresentation(Language.DEFAULT()).getText(), identifier);
-                    state.getResult().addWarning(message, state.getRow());
-                    return true;
-                }else{
-                    String message = "The name with the given identifier (%s: %s) exists already in the database. Record is imported but maybe needs to be reviewed.";
-                    message = String.format(message, identifierType.getPreferredRepresentation(language).getText(), identifier);
-                    state.getResult().addWarning(message, state.getRow());
-                }
-            }
-        }
-
-        name.addIdentifier(identifier, identifierType);
-        return false;
-    }
-
-    private NonViralNameParserImpl parser = NonViralNameParserImpl.NewInstance();
 
     /**
      * @param state
@@ -339,29 +330,73 @@ public class WfoAccessTaxonImport<STATE extends WfoAccessImportState>
 //            name = null;
         }
         if (name != null){
-            return name;
+            checkTplAndIpniIds(state, name);
+            state.putExistingWfoId(taxonId);
+            return null;
         }else{
             String nameStr = record.get(SCIENTIFIC_NAME);
             String authorStr = record.get(SCIENTIFIC_NAME_AUTHORSHIP);
+            boolean isAuct = false;
+            if ("auct.".equals(authorStr)){
+                isAuct = true;
+                authorStr = null;
+            }else if ("(Rusby) auct.".equals(authorStr)){
+                isAuct = true;
+                authorStr = "(Rusby)";
+            }
             String fullNameStr = CdmUtils.concat(" ", nameStr, authorStr);
             Rank rank = getRank(state);
             name = (TaxonName)parser.parseFullName(fullNameStr, state.getConfig().getNomenclaturalCode(), rank);
             checkNameParts(state, name);
+            if (isAuct){
+                Person auct = Person.NewInstance();
+                auct.setNomenclaturalTitle("auct.");
+                name.setCombinationAuthorship(auct);
+            }
             getNameMap(state).put(taxonId, name);
-        }
 
-        if (name.isProtectedTitleCache() || name.isProtectedNameCache() || name.isProtectedAuthorshipCache()){
-            String message = "Name (%s) could not be fully parsed, but is processed";
-            message = String.format(message, name.getTitleCache());
-            //TODO
+            if (name.isProtectedTitleCache() || name.isProtectedNameCache() || name.isProtectedAuthorshipCache()){
+                String message = "Name (%s) could not be fully parsed, but is processed";
+                message = String.format(message, name.getTitleCache());
+                //TODO
 //            state.getResult().addWarning(message, state.getRow());
-        }
-        makePlantListIdentifier(state, name);
-        makeIpniId(state, name);
+            }
+            makeReference(state, name);
+//          makeNomStatus(state, name);
 
-        addSourceReference(state, name);
-        return name;
+            makeWfoId(state, name);
+            makePlantListIdentifier(state, name);
+            makeIpniId(state, name);
+            addSourceReference(state, name);
+            return name;
+        }
     }
+
+/**
+     * @param state
+     * @param name
+     */
+    private void checkTplAndIpniIds(STATE state, TaxonName name) {
+        Map<String, String> record = state.getCurrentRecord();
+
+        String ipniId = record.get(SCIENTIFIC_NAME_ID);
+        if (isNotBlank(ipniId)){
+            Set<String> ipniIds = name.getIdentifiers(DefinedTerm.uuidIpniNameIdentifier);
+            if (!ipniIds.contains(ipniId)){
+                makeIpniId(state, name);
+            }
+        }
+
+        String plantListId = record.get(REFERENCES);
+        if (isNotBlank(plantListId)){
+            Set<String> plantListIds = name.getIdentifiers(DefinedTerm.uuidPlantListIdentifier);
+            plantListId = makeTplIdPart(plantListId);
+            if (!plantListIds.contains(plantListId)){
+                makePlantListIdentifier(state, name);
+            }
+        }
+    }
+
 
 /**
      * @param state
@@ -373,10 +408,18 @@ public class WfoAccessTaxonImport<STATE extends WfoAccessImportState>
         String ipniId = record.get(SCIENTIFIC_NAME_ID);
         if (isNotBlank(ipniId)){
             DefinedTerm identifierType = DefinedTerm.IDENTIFIER_NAME_IPNI();
-
             name.addIdentifier(ipniId, identifierType);
         }
+    }
 
+    private void makeWfoId(STATE state, TaxonName name) {
+        Map<String, String> record = state.getCurrentRecord();
+
+        String wfoId = record.get(TAXON_ID);
+        if (isNotBlank(wfoId)){
+            DefinedTerm identifierType = DefinedTerm.IDENTIFIER_NAME_WFO();
+            name.addIdentifier(wfoId, identifierType);
+        }
     }
 
 
@@ -429,15 +472,31 @@ public class WfoAccessTaxonImport<STATE extends WfoAccessImportState>
         if (isNotBlank(references)){
             String typeLabel = "The Plant List 1.1 Identifier";
             DefinedTerm identifierType = this.getIdentiferType(state, DefinedTerm.uuidPlantListIdentifier, typeLabel, typeLabel, "TPL1.1", null);
-            if (!references.startsWith("http://www.theplantlist.org/tpl1.1/record/")){
-                String message = "The plant list identifier does not start with standard format http://www.theplantlist.org/tpl1.1/record/ : " + references;
-                state.getResult().addWarning(message, state.getRow());
+            if (references.startsWith(TPL_DOMAIN)){
+                references = makeTplIdPart(references);
+                name.addIdentifier(references, identifierType);
+            }else if (references.startsWith(TPL_GENUS_DOMAIN)){
+                //do nothing no import
             }else{
-                references = references.replace("http://www.theplantlist.org/tpl1.1/record/", "");
+                String message = "The plant list identifier does not start with standard formats %s or %s : %s";
+                message = String.format(message, TPL_DOMAIN, TPL_GENUS_DOMAIN, references);
+                state.getResult().addWarning(message, state.getRow());
             }
-
-            name.addIdentifier(references, identifierType);
         }
+    }
+
+
+    /**
+     * @param references
+     * @return
+     */
+    protected String makeTplIdPart(String fullUrl) {
+        String result = fullUrl
+                .replace(TPL_DOMAIN, "")
+//                .replace(TPL_GENUS_DOMAIN, "")
+                ;
+
+        return result;
     }
 
 
@@ -524,9 +583,11 @@ public class WfoAccessTaxonImport<STATE extends WfoAccessImportState>
      */
     protected void refreshNameMap(STATE state) {
         nameMap = new HashMap<>();
+
         DefinedTerm wfoType = DefinedTerm.IDENTIFIER_NAME_WFO();
         Pager<IdentifiedEntityDTO<TaxonName>> identifiedNamePager = getNameService().findByIdentifier(TaxonName.class,
                 "*", wfoType, MatchMode.EXACT, true, null, null, null);
+
         for (IdentifiedEntityDTO<TaxonName> dto : identifiedNamePager.getRecords()){
             TaxonName name = dto.getCdmEntity().getEntity();
             String identifier = dto.getIdentifier().getIdentifier();
@@ -545,19 +606,90 @@ public class WfoAccessTaxonImport<STATE extends WfoAccessImportState>
      * @param name
      */
     private void makeTaxon(STATE state, TaxonName name) {
-        //or do we want to allow to define an own sec reference?
-        Reference sec = getTransactionalSourceReference(state);
-        Taxon taxon = Taxon.NewInstance(name, sec);
-        TaxonNode parentNode = getParentNode(state);
-        if (parentNode != null){
-            TaxonNode newNode = parentNode.addChildTaxon(taxon, null, null);
-            if (state.getConfig().isUnplaced()){
-                newNode.setUnplaced(true);
-            }
+        Map<String, String> record = state.getCurrentRecord();
+        TaxonBase<?> cdmTaxon = getCdmTaxon(state, name, TAXON_ID);
+        TaxStatus status =  TaxStatus.from(record.get(TAXONOMIC_STATUS));
+        if (status == TaxStatus.ACC){
+            handleAccepted(state, name, cdmTaxon);
+        }else if (status == TaxStatus.SYN){
+            handleSynonym(state, name, cdmTaxon);
+        }else if (status == TaxStatus.DOUBT){
+            handleDoubtful(state, name, cdmTaxon);
         }
-        addSourceReference(state, taxon);
-        this.getTaxonService().saveOrUpdate(taxon);
-        state.getResult().addNewRecord(taxon);
+    }
+
+    /**
+     * @param state
+     * @param name
+     * @param cdmTaxon
+     */
+    private void handleAccepted(STATE state, TaxonName name, TaxonBase<?> cdmTaxon) {
+        Reference sec = this.getTransactionalSourceReference(state);
+        if (cdmTaxon == null){
+            Taxon newTaxon = Taxon.NewInstance(name, sec);
+            addSourceReference(state, newTaxon);
+            getTaxonService().save(newTaxon);
+        }else{
+            String message = "Accepted name already has taxon. This should not happen anymore.";
+            state.getResult().addError(message, state.getRow());
+        }
+    }
+
+    private void handleDoubtful(STATE state, TaxonName name, TaxonBase<?> cdmTaxon) {
+        //TODO this is probably not needed anymore
+        Map<String, String> record = state.getCurrentRecord();
+        String origName = record.get(ORIGINAL_NAME_USAGE_ID);
+        if (isNotBlank(origName)){
+            state.putOriginalNameOfDoubful(origName);
+        }
+        //end not needed
+
+        Reference sec = this.getTransactionalSourceReference(state);
+        if (cdmTaxon == null){
+            Taxon newTaxon = Taxon.NewInstance(name, sec);
+            newTaxon.setDoubtful(true);
+            addSourceReference(state, newTaxon);
+            getTaxonService().save(newTaxon);
+        }else {
+            String message = "Doubtful name already has taxon. This should not happen anymore.";
+            state.getResult().addError(message, state.getRow());
+        }
+    }
+
+
+    private TaxonBase<?> getCdmTaxon(STATE state, TaxonName name, String fieldName) {
+        Map<String, String> record = state.getCurrentRecord();
+        String taxonId = record.get(fieldName);
+
+        @SuppressWarnings("rawtypes")
+        Set<TaxonBase> cdmTaxa = name.getTaxonBases();
+        if (cdmTaxa.isEmpty()){
+            return null;
+        }else if (cdmTaxa.size()==1){
+            return cdmTaxa.iterator().next();
+        }else{
+            String message = "Name %s has more then 1 existing taxon. Can't define existing taxon. Create new one.";
+            message = String.format(message, taxonId);
+            state.getResult().addError(message, state.getRow());
+            return null;
+        }
+    }
+
+    /**
+     * @param state
+     * @param name
+     * @param cdmTaxon
+     */
+    private void handleSynonym(STATE state, TaxonName name, TaxonBase<?> cdmTaxon) {
+        Reference sec = this.getTransactionalSourceReference(state);
+        if (cdmTaxon == null){
+            Synonym syn = Synonym.NewInstance(name, sec);
+            addSourceReference(state, syn);
+            getTaxonService().save(syn);
+        }else{
+            String message = "Synonym name already has taxon. This should not happen anymore.";
+            state.getResult().addError(message, state.getRow());
+        }
     }
 
 

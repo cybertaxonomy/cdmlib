@@ -45,7 +45,7 @@ public class BioCaseQueryServiceWrapperTest {
         if(UriUtils.isInternetAvailable(null)){
             BioCaseQueryServiceWrapper queryService = new BioCaseQueryServiceWrapper();
             try {
-                OccurenceQuery query = new OccurenceQuery("Campanula patula*", null, null, null, null, null, null, null, null);
+                OccurenceQuery query = new OccurenceQuery("Campanula patula*", null, null, null, null, null, null, null, null, false);
                 InputStream response = queryService.query(query, URI.create("http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=Herbar"));
                 if(response==null){
                     logger.error("SKIPPING TEST: No response from BioCase provider");

@@ -74,7 +74,8 @@ public class WfoAccessImportConfigurator extends CsvImportConfiguratorBase {
     @Override
     protected void makeIoClassList() {
         ioClassList = new Class[]{
-                WfoAccessTaxonImport.class
+                WfoAccessTaxonImport.class,
+                WfoAccessClassificationImport.class
             };
     }
 

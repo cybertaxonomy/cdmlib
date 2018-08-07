@@ -183,7 +183,7 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
                 while ((line = reader.readLine()) != null) {
                     count ++;
                 }
-                Assert.assertTrue("There should be 6 references", count == 7);
+                Assert.assertTrue("There should be 7 references (6 nomenclatural references and 1 sec reference)", count == 8);
                 stream = new ByteArrayInputStream(data.get(CdmLightExportTable.SYNONYM.getTableName()));
                 reader = new BufferedReader(new InputStreamReader(stream, Charset.forName("UTF-8")));
                 count = 0;
@@ -265,7 +265,7 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
                 while ((line = reader.readLine()) != null) {
                     count ++;
                 }
-                Assert.assertTrue("There should be 4 references", count == 5);
+                Assert.assertTrue("There should be 5 references", count == 6);
                 try{
                     stream = new ByteArrayInputStream(data.get(CdmLightExportTable.SYNONYM.getTableName()));
                     Assert.fail("There should not be a synonym table, because the only synonym is not public.");

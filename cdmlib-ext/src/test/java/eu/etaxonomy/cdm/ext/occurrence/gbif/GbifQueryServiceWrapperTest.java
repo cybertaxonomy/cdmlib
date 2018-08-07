@@ -112,7 +112,7 @@ public class GbifQueryServiceWrapperTest {
 
     @Test
     public void testQueryParameterConversion(){
-        OccurenceQuery query = new OccurenceQuery("Campanula persicifolia", "T. Henning", "1234", "ACC-2", "BGBM", "DE", "pollen herbarium", new GregorianCalendar(2014, 05, 27), new GregorianCalendar(2014,05,28));
+        OccurenceQuery query = new OccurenceQuery("Campanula persicifolia", "T. Henning", "1234", "ACC-2", "BGBM", "DE", "pollen herbarium", new GregorianCalendar(2014, 05, 27), new GregorianCalendar(2014,05,28), false);
         List<NameValuePair> queryParams = new GbifQueryGenerator().generateQueryParams(query);
         NameValuePair pair = new BasicNameValuePair("scientificName", "Campanula persicifolia");
         Assert.assertTrue("query parameter is missing", queryParams.contains(pair));
@@ -127,7 +127,7 @@ public class GbifQueryServiceWrapperTest {
     @Test
     @Ignore
     public void testGbifWebService() {
-        OccurenceQuery query = new OccurenceQuery("Campanula persicifolia", "E. J. Palmer", null, null, null, null, null, null, null);
+        OccurenceQuery query = new OccurenceQuery("Campanula persicifolia", "E. J. Palmer", null, null, null, null, null, null, null, false);
         GbifQueryServiceWrapper service = new GbifQueryServiceWrapper();
         try {
             Collection<GbifResponse> gbifResponse = service.query(query);
@@ -148,7 +148,7 @@ public class GbifQueryServiceWrapperTest {
 
     @Test
     public void testGbifWebServiceNoParameters() {
-    	OccurenceQuery query = new OccurenceQuery(null, null, null, null, null, null, null, null, null);
+    	OccurenceQuery query = new OccurenceQuery(null, null, null, null, null, null, null, null, null, false);
     	GbifQueryServiceWrapper service = new GbifQueryServiceWrapper();
     	try {
     		service.query(query);

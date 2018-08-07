@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -32,6 +33,7 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.Example.PropertySelector;
+import org.hibernate.criterion.LogicalExpression;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
@@ -59,6 +61,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
+import eu.etaxonomy.cdm.persistence.dao.common.Restriction.Operator;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.hibernate.PostMergeEntityListener;
@@ -93,6 +96,8 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
     @Autowired
     private ReferringObjectMetadataFactory referringObjectMetadataFactory;
+
+    protected static final EnumSet<Operator> LEFTOUTER_OPS = EnumSet.of(Operator.AND_NOT, Operator.OR, Operator.OR_NOT);
 
     public CdmEntityDaoBase(Class<T> type) {
         this.type = type;
@@ -519,12 +524,14 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
             return ;
         }
 
-        List<Criterion> perProperty = new ArrayList<>(restrictions.size());
+        List<CriterionWithOperator> perProperty = new ArrayList<>(restrictions.size());
         Map<String, String> aliases = new HashMap<>();
+
+
 
         for(Restriction<?> restriction : restrictions){
             Collection<? extends Object> values = restriction.getValues();
-            JoinType jointype = restriction.isNot() ? JoinType.LEFT_OUTER_JOIN : JoinType.INNER_JOIN;
+            JoinType jointype = LEFTOUTER_OPS.contains(restriction.getOperator()) ? JoinType.LEFT_OUTER_JOIN : JoinType.INNER_JOIN;
             if(values != null && !values.isEmpty()){
                 // ---
                 String propertyPath = restriction.getPropertyName();
@@ -569,12 +576,42 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
                         logger.debug("addRestrictions() predicate with " + propertyName + " " + (restriction.getMatchMode() == null ? "=" : restriction.getMatchMode().name()) + " " + v.toString());
                     }
                 }
-                perProperty.add(Restrictions.or(predicates));
-            }
-        }
+                perProperty.add(new CriterionWithOperator(restriction.getOperator(), Restrictions.or(predicates)));
+            } // check has values
+        } // loop over restrictions
 
+        Restriction.Operator firstOperator = null;
         if(!perProperty.isEmpty()){
-            criteria.add(Restrictions.and(perProperty.toArray(new Criterion[perProperty.size()])));
+            LogicalExpression logicalExpression = null;
+            for(CriterionWithOperator cwo : perProperty){
+                if(logicalExpression == null){
+                    firstOperator = cwo.operator;
+                    logicalExpression = Restrictions.and(Restrictions.sqlRestriction("1=1"), cwo.criterion);
+                } else {
+                    switch(cwo.operator){
+                        case AND:
+                        case AND_NOT:
+                            logicalExpression = Restrictions.and(logicalExpression, cwo.criterion);
+                            break;
+                        case OR:
+                        case OR_NOT:
+                            logicalExpression = Restrictions.or(logicalExpression, cwo.criterion);
+                            break;
+                        default:
+                            throw new RuntimeException("Unsupported Operator");
+                    }
+                }
+
+            }
+
+
+            criteria.add(logicalExpression);
+//            if(firstOperator == Operator.OR){
+//                // OR
+//            } else {
+//                // AND
+//                criteria.add(Restrictions.and(queryStringCriterion, logicalExpression));
+//            }
         }
         if(logger.isDebugEnabled()){
             logger.debug("addRestrictions() final criteria: " + criteria.toString());
@@ -1055,60 +1092,33 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
     }
 
     /**
+     * Creates a criteria query for the CDM <code>type</code> either for counting or listing matching entities.
+     * <p>
+     * The set of matching entities can be restricted by passing a list  of {@link Restriction} objects.
+     * Restrictions can logically combined:
+     <pre>
+       Arrays.asList(
+           new Restriction<String>("titleCache", MatchMode.ANYWHERE, "foo"),
+           new Restriction<String>("institute.name", Operator.OR, MatchMode.BEGINNING, "Bar")
+       );
+     </pre>
+     * The first Restriction in the example above by default has the <code>Operator.AND</code> which will be
+     * ignored since this is the first restriction. The <code>Operator</code> of further restrictions in the
+     * list are used to combine with the previous restriction.
+     *
      * @param type
      * @param restrictions
      * @param doCount
      * @return
      */
     protected Criteria createCriteria(Class<? extends T> type, List<Restriction<?>> restrictions, boolean doCount) {
-        Criteria criteria = criterionForType(type);
 
-        if(restrictions != null  && !restrictions.isEmpty()){
-            DetachedCriteria idsOnlyCriteria = DetachedCriteria.forClass(entityType(type));
-            addRestrictions(restrictions, idsOnlyCriteria);
-            criteria.add(Subqueries.propertyIn("id", idsOnlyCriteria));
-
-            if(doCount){
-                criteria.setProjection(Projections.rowCount());
-            } else {
-                idsOnlyCriteria.setProjection(Projections.distinct(Projections.property("id")));
-            }
-        }
-        return criteria;
-    }
-
-    /**
-     * @param clazz
-     * @param param
-     * @param queryString
-     * @param matchmode
-     * @param restrictions
-     * @return
-     */
-    protected Criteria createCriteria(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode,
-            List<Restriction<?>> restrictions, boolean doCount) {
-
-        DetachedCriteria idsOnlyCriteria = DetachedCriteria.forClass(entityType(clazz));
+        DetachedCriteria idsOnlyCriteria = DetachedCriteria.forClass(entityType(type));
         idsOnlyCriteria.setProjection(Projections.distinct(Projections.id()));
-
-
-        if (queryString != null) {
-            if (matchmode == null) {
-                idsOnlyCriteria.add(Restrictions.ilike(param, queryString));
-            } else if (matchmode == MatchMode.BEGINNING) {
-                idsOnlyCriteria.add(Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.START));
-            } else if (matchmode == MatchMode.END) {
-                idsOnlyCriteria.add(Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.END));
-            } else if (matchmode == MatchMode.EXACT) {
-                idsOnlyCriteria.add(Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.EXACT));
-            } else {
-                idsOnlyCriteria.add(Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.ANYWHERE));
-            }
-        }
 
         addRestrictions(restrictions, idsOnlyCriteria);
 
-        Criteria criteria = criterionForType(clazz);
+        Criteria criteria = criterionForType(type);
         criteria.add(Subqueries.propertyIn("id", idsOnlyCriteria));
 
         if(doCount){
@@ -1121,13 +1131,17 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
     }
 
 
-
     @Override
     public List<T> findByParamWithRestrictions(Class<? extends T> clazz, String param, String queryString,
             MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints, List<String> propertyPaths) {
 
-        Criteria criteria = createCriteria(clazz, param, queryString, matchmode, restrictions, false);
+        List<Restriction<?>> allRestrictions = new ArrayList<>();
+        allRestrictions.add(new Restriction<String>(param, matchmode, queryString));
+        if(restrictions != null){
+            allRestrictions.addAll(restrictions);
+        }
+        Criteria criteria = createCriteria(clazz, allRestrictions, false);
 
         if (pageSize != null) {
             criteria.setMaxResults(pageSize);
@@ -1151,7 +1165,12 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
     public long countByParamWithRestrictions(Class<? extends T> clazz, String param, String queryString,
             MatchMode matchmode, List<Restriction<?>> restrictions) {
 
-        Criteria criteria = createCriteria(clazz, param, queryString, matchmode, restrictions, true);
+        List<Restriction<?>> allRestrictions = new ArrayList<>();
+        allRestrictions.add(new Restriction<String>(param, matchmode, queryString));
+        if(restrictions != null){
+            allRestrictions.addAll(restrictions);
+        }
+        Criteria criteria = createCriteria(clazz, allRestrictions, true);
 
         return (Long) criteria.uniqueResult();
     }
@@ -1192,6 +1211,21 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
                 return false;
             }
         }
+
+    }
+
+    private class CriterionWithOperator {
+
+        Restriction.Operator operator;
+        Criterion criterion;
+
+
+        public CriterionWithOperator(Operator operator, Criterion criterion) {
+            super();
+            this.operator = operator;
+            this.criterion = criterion;
+        }
+
 
     }
 

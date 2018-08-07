@@ -111,7 +111,7 @@ public class ReferencePropertyDefinitions {
         map = iThesis;
         put(map, "school");
 
-        all = merge(iThesis, iPrintSeries, iInProceedings, iPrintedUnitBase, iVolumeReference);
+        all = merge(iThesis, iPrintSeries, iInProceedings, iJournal, iArticle, iBook, iBookSection, iProceedings, iPrintedUnitBase, iVolumeReference);
 
     }
 
@@ -136,33 +136,33 @@ public class ReferencePropertyDefinitions {
         case BookSection:
             return iBookSection;
         case CdDvd:
-            throw new UnimplemetedCaseException(type);
+            return all;
         case Database:
-            throw new UnimplemetedCaseException(type);
+            return all;
         case Generic:
-            throw new UnimplemetedCaseException(type);
+            return all;
         case InProceedings:
             return iInProceedings;
         case Journal:
             return iJournal;
         case Map:
-            throw new UnimplemetedCaseException(type);
+            return all;
         case Patent:
-            throw new UnimplemetedCaseException(type);
+            return all;
         case PersonalCommunication:
-            throw new UnimplemetedCaseException(type);
+            return all;
         case PrintSeries:
             return iPublicationBase;
         case Proceedings:
             return iProceedings;
         case Report:
-            throw new UnimplemetedCaseException(type);
+            return all;
         case Section:
             return iSection;
         case Thesis:
             return iThesis;
         case WebPage:
-            throw new UnimplemetedCaseException(type);
+            return all;
         default:
             return all;
         }

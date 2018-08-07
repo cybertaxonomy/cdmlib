@@ -44,6 +44,7 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.TreeIndex;
+import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
@@ -81,6 +82,9 @@ public class TaxonNodeServiceImpl
 
     @Autowired
     private ITaxonService taxonService;
+
+    @Autowired
+    private IDescriptiveDataSetService dataSetService;
 
     @Autowired
     private IAgentService agentService;
@@ -619,6 +623,14 @@ public class TaxonNodeServiceImpl
     	}else{
     	    result.includeResult(deleteTaxonNodes(node.getChildNodes(), config));
     	}
+
+    	//remove node from DescriptiveDataSet
+        commonService.getReferencingObjects(node).stream()
+        .filter(obj->obj instanceof DescriptiveDataSet)
+        .forEach(dataSet->{
+            ((DescriptiveDataSet)dataSet).removeTaxonSubtree(node);
+            dataSetService.saveOrUpdate((DescriptiveDataSet) dataSet);
+        });
 
     	if (taxon != null){
         	if (config.getTaxonNodeConfig().isDeleteTaxon() && (config.isDeleteInAllClassifications() || taxon.getTaxonNodes().size() == 1)){

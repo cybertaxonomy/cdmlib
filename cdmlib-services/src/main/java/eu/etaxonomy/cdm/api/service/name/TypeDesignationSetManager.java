@@ -21,11 +21,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.search.hcore.util.impl.HibernateHelper;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeCacheStrategy;
 import eu.etaxonomy.cdm.api.service.exception.RegistrationValidationException;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
@@ -35,6 +38,7 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
+import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.ref.EntityReference;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
@@ -157,7 +161,10 @@ public class TypeDesignationSetManager {
             final VersionableEntity baseEntity = baseEntity(td);
             final TypedEntityReference<VersionableEntity> baseEntityReference = makeEntityReference(baseEntity);
 
-            EntityReference typeDesignationEntityReference = new EntityReference(td.getUuid(), stringify(td));
+            TypedEntityReference typeDesignationEntityReference = new TypedEntityReference(
+                    HibernateProxyHelper.deproxy(td).getClass(),
+                    td.getUuid(),
+                    stringify(td));
 
             TypeDesignationWorkingSet typedesignationWorkingSet;
             if(!byBaseEntityByTypeStatus.containsKey(baseEntityReference)){
@@ -307,18 +314,15 @@ public class TypeDesignationSetManager {
                     }
                     boolean isNameTypeDesignation = false;
                     if(SpecimenOrObservationBase.class.isAssignableFrom(baseEntityRef.getType())){
-                        workingsetBuilder.add(TagEnum.label, "Type:");  // .append(" ");
+                        workingsetBuilder.add(TagEnum.label, "Type:");
                     } else {
-                        workingsetBuilder.add(TagEnum.label, "NameType:");  // .append(" ");
+                        workingsetBuilder.add(TagEnum.label, "NameType:");
                         isNameTypeDesignation = true;
                     }
                     if(!baseEntityRef.getLabel().isEmpty()){
-                        workingsetBuilder.add(TagEnum.specimenOrObservation, baseEntityRef.getLabel(), baseEntityRef); // .append(" ");
+                        workingsetBuilder.add(TagEnum.specimenOrObservation, baseEntityRef.getLabel(), baseEntityRef);
                     }
                     TypeDesignationWorkingSet typeDesignationWorkingSet = orderedByTypesByBaseEntity.get(baseEntityRef);
-                    if(!isNameTypeDesignation ){
-                        workingsetBuilder.add(TagEnum.separator, " (");
-                    }
                     int typeStatusCount = 0;
                     for(TypeDesignationStatusBase<?> typeStatus : typeDesignationWorkingSet.keySet()) {
                         if(typeStatusCount++  > 0){
@@ -329,15 +333,12 @@ public class TypeDesignationSetManager {
                             workingsetBuilder.add(TagEnum.label, typeStatus.getLabel() + (isPlural ? "s:" : ","));
                         }
                         int typeDesignationCount = 0;
-                        for(EntityReference typeDesignationEntityReference : typeDesignationWorkingSet.get(typeStatus)) {
+                        for(TypedEntityReference typeDesignationEntityReference : typeDesignationWorkingSet.get(typeStatus)) {
                             if(typeDesignationCount++  > 0){
                                 workingsetBuilder.add(TagEnum.separator, TYPE_DESIGNATION_SEPARATOR);
                             }
-                            workingsetBuilder.add(TagEnum.typeDesignation, typeDesignationEntityReference.getLabel(), new TypedEntityReference<TypeDesignationBase>(TypeDesignationBase.class, typeDesignationEntityReference.getUuid()));
+                            workingsetBuilder.add(TagEnum.typeDesignation, typeDesignationEntityReference.getLabel(), typeDesignationEntityReference);
                         }
-                    }
-                    if(!isNameTypeDesignation ){
-                        workingsetBuilder.add(TagEnum.separator, ")");
                     }
                     typeDesignationWorkingSet.setRepresentation(workingsetBuilder.toString());
                     finalString += typeDesignationWorkingSet.getRepresentation();
@@ -509,8 +510,31 @@ public class TypeDesignationSetManager {
                 if(du.isProtectedTitleCache()){
                     result += du.getTitleCache();
                 } else {
-                    DerivedUnitFacadeCacheStrategy cacheStrategy = new DerivedUnitFacadeCacheStrategy();
-                    result += cacheStrategy.getTitleCache(du, true);
+                    du = HibernateProxyHelper.deproxy(du);
+                    boolean isMediaSpecimen = du instanceof MediaSpecimen;
+                    String typeSpecimenTitle = "";
+                    if(isMediaSpecimen && HibernateProxyHelper.deproxyOrNull(du.getCollection()) == null) {
+                        // special case of an published image which is not covered by the DerivedUnitFacadeCacheStrategy
+                        MediaSpecimen msp = (MediaSpecimen)du;
+                        if(msp.getMediaSpecimen() != null){
+                            for(IdentifiableSource source : msp.getMediaSpecimen().getSources()){
+                                String refDetailStr = source.getCitationMicroReference();
+                                String referenceStr = source.getCitation().getTitleCache();
+                                if(StringUtils.isNotBlank(source.getCitationMicroReference())){
+                                    typeSpecimenTitle += refDetailStr;
+                                }
+                                if(!typeSpecimenTitle.isEmpty() && !referenceStr.isEmpty()){
+                                    typeSpecimenTitle += " in ";
+                                }
+                                typeSpecimenTitle += referenceStr + " ";
+                            }
+                        }
+                    } else {
+                        DerivedUnitFacadeCacheStrategy cacheStrategy = new DerivedUnitFacadeCacheStrategy();
+                        typeSpecimenTitle += cacheStrategy.getTitleCache(du, true);
+                    }
+
+                    result += (isMediaSpecimen ? "[icon] " : "") + typeSpecimenTitle.trim();
                 }
             }
         }
@@ -620,7 +644,7 @@ public class TypeDesignationSetManager {
      *
      * A workingset can be referenced by the <code>baseEntityReference</code>.
      */
-    public class TypeDesignationWorkingSet extends LinkedHashMap<TypeDesignationStatusBase<?>, Collection<EntityReference>> {
+    public class TypeDesignationWorkingSet extends LinkedHashMap<TypeDesignationStatusBase<?>, Collection<TypedEntityReference>> {
 
         private static final long serialVersionUID = -1329007606500890729L;
 
@@ -647,8 +671,8 @@ public class TypeDesignationSetManager {
             return baseEntity;
         }
 
-        public List<EntityReference> getTypeDesignations() {
-            List<EntityReference> typeDesignations = new ArrayList<>();
+        public List<TypedEntityReference> getTypeDesignations() {
+            List<TypedEntityReference> typeDesignations = new ArrayList<>();
             this.values().forEach(typeDesignationReferences -> typeDesignationReferences.forEach(td -> typeDesignations.add(td)));
             return typeDesignations;
         }
@@ -657,7 +681,7 @@ public class TypeDesignationSetManager {
          * @param status
          * @param typeDesignationEntityReference
          */
-        public void insert(TypeDesignationStatusBase<?> status, EntityReference typeDesignationEntityReference) {
+        public void insert(TypeDesignationStatusBase<?> status, TypedEntityReference typeDesignationEntityReference) {
 
             if(status == null){
                 status = NULL_STATUS;

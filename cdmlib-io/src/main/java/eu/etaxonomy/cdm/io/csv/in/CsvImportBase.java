@@ -50,7 +50,14 @@ public abstract class CsvImportBase<CONFIG extends CsvImportConfiguratorBase, ST
         try {
             InputStreamReader inputReader = state.getConfig().getSource();
             CSVReader csvReader = new CSVReader(inputReader, state.getConfig().getFieldSeparator());
-            String[] headerStr = csvReader.readNext();
+            String[] headerStr;
+            try {
+                headerStr = csvReader.readNext();
+            } catch (IOException e1) {
+                csvReader.close();  //to handle multiple readings of input stream
+                csvReader = new CSVReader(state.getConfig().newInputStream(), state.getConfig().getFieldSeparator());
+                headerStr = csvReader.readNext();
+            }
             String[] next = csvReader.readNext();
 
             if (headerStr == null){
@@ -62,6 +69,7 @@ public abstract class CsvImportBase<CONFIG extends CsvImportConfiguratorBase, ST
             }else{
                 List<String> header = Arrays.asList(headerStr);
                 TransactionStatus tx = this.startTransaction();
+                tx = startNewTransaction(state, tx);  //only needed for >1 imports to refresh session state
                 int row = 2;
                 int txN = 0; //transaction number
                 while (next != null){
@@ -70,13 +78,14 @@ public abstract class CsvImportBase<CONFIG extends CsvImportConfiguratorBase, ST
                         state.setCurrentRecord(record);
                         state.setRow(row);
                         handleSingleLine(state);
-                        next = csvReader.readNext();
                         row++;
                         txN++;
                         if (txN >= txNLimit && txNLimit > 0){
+                            System.out.println("Next bulk");
                             tx = startNewTransaction(state, tx);
                             txN = 0;
                         }
+                        next = csvReader.readNext();
                     } catch (Exception e) {
                         String message = "Exception when handling csv row: " + e.getMessage();
                         state.getResult().addException(e, message, null, state.getLine());
@@ -84,12 +93,14 @@ public abstract class CsvImportBase<CONFIG extends CsvImportConfiguratorBase, ST
                         if (debug){
                             e.printStackTrace();
                         }
+                        next = csvReader.readNext();
                     }
                 }
                 this.commitTransaction(tx);
-
             }
             csvReader.close();
+            //preliminary, for debugging
+            System.out.println(state.getResult().createReport());
 
             return ;
 
@@ -105,6 +116,7 @@ public abstract class CsvImportBase<CONFIG extends CsvImportConfiguratorBase, ST
         } catch (Exception e) {
             String message = "Exception when commiting transaction: " + e.getMessage();
             state.getResult().addException(e, message, null, state.getLine());
+            e.printStackTrace();
         }
         tx = this.startTransaction();
         try {
