@@ -27,10 +27,10 @@ public class FieldUnitDTO extends DerivateDTO{
 
 	private String kindOfUnit;
 	private List<UUID> taxonRelatedDerivedUnits = new ArrayList<>();
-	private List<Media> listOfMedia = new ArrayList<>();
 
 
-    private List<PreservedSpecimenDTO> preservedSpecimenDTOs;
+
+ //   private List<PreservedSpecimenDTO> preservedSpecimenDTOs;
 	private GatheringEventDTO gatheringEvent;
 
 
@@ -57,7 +57,7 @@ public class FieldUnitDTO extends DerivateDTO{
     	            for (DescriptionElementBase element : specimenDesc.getElements()){
     	                if (element.isInstanceOf(TextData.class)&& element.getFeature().equals(Feature.IMAGE())) {
 	                        for (Media media :element.getMedia()){
-	                            fieldUnitDto.listOfMedia.add(media);
+	                            fieldUnitDto.getListOfMedia().add(media);
 	                        }
     	                }
     	            }
@@ -69,19 +69,6 @@ public class FieldUnitDTO extends DerivateDTO{
 	}
 
 
-	/**
-     * @return the listOfMedia
-     */
-    public List<Media> getListOfMedia() {
-        return listOfMedia;
-    }
-
-    /**
-     * @param listOfMedia the listOfMedia to set
-     */
-    public void setListOfMedia(List<Media> listOfMedia) {
-        this.listOfMedia = listOfMedia;
-    }
 
 
 //=======
@@ -191,53 +178,8 @@ public class FieldUnitDTO extends DerivateDTO{
     public void setHasType(boolean hasType) {
         this.hasType = hasType;
     }
-//<<<<<<< Updated upstream
-//=======
-//    /**
-//     * @return the taxonName
-//     */
-//    @Override
-//    public String getTaxonName() {
-//        return taxonName;
-//    }
-//    /**
-//     * @param taxonName the taxonName to set
-//     */
-//    @Override
-//    public void setTaxonName(String taxonName) {
-//        this.taxonName = taxonName;
-//    }
-//    /**
-//     * @return the protologue
-//     */
-//    public String getProtologue() {
-//        return protologue;
-//    }
-//    /**
-//     * @param protologue the protologue to set
-//     */
-//    public void setProtologue(String protologue) {
-//        this.protologue = protologue;
-//    }
-//>>>>>>> Stashed changes
 
-    /**
-     * @return the derivateDTOs
-     */
-    public List<PreservedSpecimenDTO> getPreservedSpecimenDTOs() {
-        return preservedSpecimenDTOs;
-    }
 
-    public void addPreservedSpecimenDTO(PreservedSpecimenDTO preservedSpecimenDTO){
-        if(preservedSpecimenDTOs==null){
-            preservedSpecimenDTOs = new ArrayList<PreservedSpecimenDTO>();
-        }
-        preservedSpecimenDTOs.add(preservedSpecimenDTO);
-    }
-
-    public void setPreservedSpecimenDTOs(List<PreservedSpecimenDTO> preservedSpecimenDTOs) {
-        this.preservedSpecimenDTOs = preservedSpecimenDTOs;
-    }
     public String getKindOfUnit() {
         return kindOfUnit;
     }

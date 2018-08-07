@@ -8,15 +8,17 @@
 */
 package eu.etaxonomy.cdm.api.service.dto;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.UUID;
 
 import org.hibernate.envers.tools.Pair;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
@@ -40,6 +42,7 @@ public abstract class DerivateDTO extends TypedEntityReference {
     private boolean hasCharacterData;
     private boolean hasDna;
     private boolean hasSpecimenScan;
+
     private String recordBase;
     private CollectionDTO collection;
     private String catalogNumber;
@@ -47,13 +50,13 @@ public abstract class DerivateDTO extends TypedEntityReference {
     private String barcode;
     private String preservationMethod;
     private Set<DerivateDTO> derivates;
-    private UUID uuid;
 
     private Set<SpecimenTypeDesignation> specimenTypeDesignations;
 
     private DerivationEventDTO derivationEvent;
 
     private Set<IdentifiableSource> sources;
+    private List<Media> listOfMedia = new ArrayList<>();
 
     public DerivateDTO(SpecimenOrObservationBase specimenOrObservation) {
         super(specimenOrObservation.getClass(), specimenOrObservation.getUuid());
@@ -119,6 +122,7 @@ public abstract class DerivateDTO extends TypedEntityReference {
     public void setSources(Set<IdentifiableSource> sources) {
         this.sources = sources;
     }
+
 
     /**
      * @return the derivateDataDTO
@@ -231,6 +235,7 @@ public abstract class DerivateDTO extends TypedEntityReference {
         this.citation = citation;
     }
 
+
     public String getRecordBase() {
         return recordBase;
     }
@@ -302,13 +307,19 @@ public abstract class DerivateDTO extends TypedEntityReference {
         this.derivationEvent = derivationEvent;
     }
 
-    @Override
-    public UUID getUuid() {
-        return uuid;
+
+    /**
+     * @return the listOfMedia
+     */
+    public List<Media> getListOfMedia() {
+        return listOfMedia;
     }
 
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
+    /**
+     * @param listOfMedia the listOfMedia to set
+     */
+    public void setListOfMedia(List<Media> listOfMedia) {
+        this.listOfMedia = listOfMedia;
     }
 
 

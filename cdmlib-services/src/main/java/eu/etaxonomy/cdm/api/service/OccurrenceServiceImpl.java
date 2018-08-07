@@ -456,7 +456,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 }
                 if (derivedUnit.getRecordBasis().equals(SpecimenOrObservationType.PreservedSpecimen)) {
                     PreservedSpecimenDTO preservedSpecimenDTO = assemblePreservedSpecimenDTO(derivedUnit, fieldUnitDTO);
-                    fieldUnitDTO.addPreservedSpecimenDTO(preservedSpecimenDTO);
+                    fieldUnitDTO.addDerivate(preservedSpecimenDTO);
                     fieldUnitDTO.setHasCharacterData(fieldUnitDTO.isHasCharacterData() || preservedSpecimenDTO.isHasCharacterData());
                     fieldUnitDTO.setHasDetailImage(fieldUnitDTO.isHasDetailImage() || preservedSpecimenDTO.isHasDetailImage());
                     fieldUnitDTO.setHasDna(fieldUnitDTO.isHasDna() || preservedSpecimenDTO.isHasDna());
@@ -542,7 +542,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             specimenIdentifier = derivedUnit.getUuid().toString();
         }
         preservedSpecimenDTO.setAccessionNumber(specimenIdentifier);
-        preservedSpecimenDTO.setUuid(derivedUnit.getUuid());
+
 
         //preferred stable URI
         preservedSpecimenDTO.setPreferredStableUri(derivedUnit.getPreferredStableUri());
@@ -1068,8 +1068,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         }else{
             if (specimen.isInstanceOf(FieldUnit.class)){
                 fieldUnitDto = FieldUnitDTO.newInstance((FieldUnit)specimen);
-
-                fieldUnitDto.addPreservedSpecimenDTO((PreservedSpecimenDTO)derivedUnitDTO);
+                fieldUnitDto.addDerivate(derivedUnitDTO);
                 fieldUnits.add(fieldUnitDto);
             }else{
                 DerivateDTO originalDTO = PreservedSpecimenDTO.newInstance((DerivedUnit)specimen, null);

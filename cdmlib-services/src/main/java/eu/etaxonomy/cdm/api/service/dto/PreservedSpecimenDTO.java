@@ -32,7 +32,6 @@ public class PreservedSpecimenDTO extends DerivateDTO{
 
     private String accessionNumber;
     private URI preferredStableUri;
-    private String uuidString;
 
     private List<Pair<UUID, String>> associatedTaxa;
     private Map<String, List<String>> types;
@@ -105,10 +104,6 @@ public class PreservedSpecimenDTO extends DerivateDTO{
     }
     public void setAccessionNumber(String accessionNumber) {
         this.accessionNumber = accessionNumber;
-    }
-
-    public String getUuidString() {
-        return uuidString;
     }
 
     public Map<String, List<String>> getTypes() {
