@@ -37,7 +37,6 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptiveDataSetDao;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
@@ -158,12 +157,13 @@ public class DescriptiveDataSetService
                 //get taxon node
                 Set<TaxonNode> taxonSubtreeFilter = descriptiveDataSet.getTaxonSubtreeFilter();
                 for (TaxonNode node : taxonSubtreeFilter) {
-                    Taxon taxon = (Taxon) taxonService.load(node.getTaxon().getId(), Arrays.asList("descriptions"));
-                    if(taxon.getDescriptions().contains(description)){
-                        taxonNode = node;
+                    //check for node
+                    taxonNode = findTaxonNodeForDescription(node, description);
+                    if(taxonNode!=null){
                         break;
                     }
                     else{
+                        //check for child nodes
                         List<TaxonNode> allChildren = taxonNodeService.loadChildNodesOfTaxonNode(node, null, true, false, null);
                         for (TaxonNode child : allChildren) {
                             taxonNode = findTaxonNodeForDescription(child, description);
