@@ -38,7 +38,6 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptiveDataSetDao;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
@@ -55,6 +54,9 @@ public class DescriptiveDataSetService
 
     @Autowired
     private IOccurrenceService occurrenceService;
+
+    @Autowired
+    private ITaxonService taxonService;
 
     @Autowired
     private IDescriptionService descriptionService;
@@ -113,7 +115,10 @@ public class DescriptiveDataSetService
             if(monitor.isCanceled()){
                 return new ArrayList<>();
             }
-            wrappers.add(createRowWrapper(null, description, null, descriptiveDataSet));
+            RowWrapperDTO rowWrapper = createRowWrapper(null, description, descriptiveDataSet);
+            if(rowWrapper!=null){
+                wrappers.add(rowWrapper);
+            }
             monitor.worked(1);
         }
 	    return wrappers;
@@ -131,38 +136,45 @@ public class DescriptiveDataSetService
         return occurrenceService.listUuidAndTitleCacheByAssociatedTaxon(filteredNodes, null, null);
     }
 
-    @Override
-    public RowWrapperDTO createRowWrapper(DescriptionBase description, DescriptiveDataSet descriptiveDataSet){
-        return createRowWrapper(null, description, null, descriptiveDataSet);
+    private TaxonNode findTaxonNodeForDescription(TaxonNode taxonNode, DescriptionBase description){
+        List<DerivedUnit> units = occurrenceService.listByAssociatedTaxon(DerivedUnit.class, null, taxonNode.getTaxon(), null, null, null, null, Arrays.asList("descriptions"));
+        for (DerivedUnit unit : units) {
+            if(unit.getDescriptions().contains(description)){
+                return taxonNode;
+            }
+        }
+        return null;
     }
 
     @Override
-    public RowWrapperDTO createRowWrapper(SpecimenOrObservationBase specimen, DescriptiveDataSet descriptiveDataSet){
-        return createRowWrapper(specimen, null, null, descriptiveDataSet);
-    }
-
-	private RowWrapperDTO createRowWrapper(SpecimenOrObservationBase specimen, DescriptionBase description, TaxonNode taxonNode, DescriptiveDataSet descriptiveDataSet){
-	    if(description!=null){
-	        specimen = description.getDescribedSpecimenOrObservation();
-	    }
+    public RowWrapperDTO createRowWrapper(TaxonNode taxonNode, DescriptionBase description, DescriptiveDataSet descriptiveDataSet){
+	    SpecimenOrObservationBase specimen = description.getDescribedSpecimenOrObservation();
         FieldUnit fieldUnit = null;
         String identifier = null;
         NamedArea country = null;
         //supplemental information
         if(specimen!=null){
             if(taxonNode==null){
-                Collection<TaxonBase<?>> associatedTaxa = occurrenceService.listAssociatedTaxa(specimen, null, null, null,
-                        Arrays.asList(new String[]{
-                                "taxonNodes",
-                                "taxonNodes.classification",
-                        }));
-                if(associatedTaxa!=null && !associatedTaxa.isEmpty()){
-                    //FIXME: what about multiple associated taxa
-                    Set<TaxonNode> taxonSubtreeFilter = descriptiveDataSet.getTaxonSubtreeFilter();
-                    if(taxonSubtreeFilter!=null && !taxonSubtreeFilter.isEmpty()){
-                        Taxon taxon = HibernateProxyHelper.deproxy(associatedTaxa.iterator().next(), Taxon.class);
-                        taxonNode = taxon.getTaxonNode(taxonSubtreeFilter.iterator().next().getClassification());
+                //get taxon node
+                Set<TaxonNode> taxonSubtreeFilter = descriptiveDataSet.getTaxonSubtreeFilter();
+                for (TaxonNode node : taxonSubtreeFilter) {
+                    Taxon taxon = (Taxon) taxonService.load(node.getTaxon().getId(), Arrays.asList("descriptions"));
+                    if(taxon.getDescriptions().contains(description)){
+                        taxonNode = node;
+                        break;
                     }
+                    else{
+                        List<TaxonNode> allChildren = taxonNodeService.loadChildNodesOfTaxonNode(node, null, true, false, null);
+                        for (TaxonNode child : allChildren) {
+                            taxonNode = findTaxonNodeForDescription(child, description);
+                            if(taxonNode!=null){
+                                break;
+                            }
+                        }
+                    }
+                }
+                if(taxonNode==null){
+                    return null;
                 }
             }
             Collection<FieldUnit> fieldUnits = occurrenceService.findFieldUnits(specimen.getUuid(),
@@ -172,6 +184,7 @@ public class DescriptiveDataSetService
                             }));
             if(fieldUnits.size()!=1){
                 logger.error("More than one or no field unit found for specimen"); //$NON-NLS-1$
+                return null;
             }
             else{
                 fieldUnit = fieldUnits.iterator().next();
