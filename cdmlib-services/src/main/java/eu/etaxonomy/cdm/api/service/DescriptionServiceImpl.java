@@ -886,7 +886,8 @@ public class DescriptionServiceImpl
                         // add them to the list
                         .forEach(computedDescription -> computedDescriptions.add(computedDescription)));
 
-        UpdateResult aggregateDescription = aggregateDescription(taxon, computedDescriptions, taxon.getTitleCache());
+        UpdateResult aggregateDescription = aggregateDescription(taxon, computedDescriptions,
+                "[Taxon Descriptions]"+taxon.getTitleCache());
         result.includeResult(aggregateDescription);
         result.setCdmEntity(aggregateDescription.getCdmEntity());
         aggregateDescription.setCdmEntity(null);
