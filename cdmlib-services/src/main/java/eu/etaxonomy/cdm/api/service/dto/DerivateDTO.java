@@ -18,10 +18,19 @@ import java.util.TreeSet;
 import org.hibernate.envers.tools.Pair;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.SpecimenDescription;
+import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.media.MediaRepresentation;
+import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
+import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 
 /**
@@ -29,7 +38,7 @@ import eu.etaxonomy.cdm.ref.TypedEntityReference;
  * @since Mar 27, 2015
  *
  */
-public abstract class DerivateDTO extends TypedEntityReference {
+public abstract class DerivateDTO extends TypedEntityReference{
 
     private TreeSet<Pair<String, String>> characterData;
     private DerivateDataDTO derivateDataDTO;
@@ -56,7 +65,7 @@ public abstract class DerivateDTO extends TypedEntityReference {
     private DerivationEventDTO derivationEvent;
 
     private Set<IdentifiableSource> sources;
-    private List<Media> listOfMedia = new ArrayList<>();
+    private List<MediaDTO> listOfMedia = new ArrayList<>();
 
     public DerivateDTO(SpecimenOrObservationBase specimenOrObservation) {
         super(specimenOrObservation.getClass(), specimenOrObservation.getUuid());
@@ -311,15 +320,41 @@ public abstract class DerivateDTO extends TypedEntityReference {
     /**
      * @return the listOfMedia
      */
-    public List<Media> getListOfMedia() {
+    public List<MediaDTO> getListOfMedia() {
         return listOfMedia;
     }
 
     /**
      * @param listOfMedia the listOfMedia to set
      */
-    public void setListOfMedia(List<Media> listOfMedia) {
+    public void setListOfMedia(List<MediaDTO> listOfMedia) {
         this.listOfMedia = listOfMedia;
+    }
+
+    public void addMedia(SpecimenOrObservationBase specimenOrObservation){
+        Set<DescriptionBase<IIdentifiableEntityCacheStrategy<FieldUnit>>> descriptions = specimenOrObservation.getDescriptions();
+        for (DescriptionBase desc : descriptions){
+            if (desc instanceof SpecimenDescription){
+                SpecimenDescription specimenDesc = (SpecimenDescription)desc;
+                if (specimenDesc.isImageGallery()){
+                    for (DescriptionElementBase element : specimenDesc.getElements()){
+                        if (element.isInstanceOf(TextData.class)&& element.getFeature().equals(Feature.IMAGE())) {
+                            for (Media media :element.getMedia()){
+                                for (MediaRepresentation rep :media.getRepresentations()){
+                                    for(MediaRepresentationPart p : rep.getParts()){
+                                        if(p.getUri() != null){
+                                            MediaDTO dto = new MediaDTO(media.getUuid());
+                                            dto.setUri(p.getUri().toString());
+                                            this.getListOfMedia().add(dto);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
 

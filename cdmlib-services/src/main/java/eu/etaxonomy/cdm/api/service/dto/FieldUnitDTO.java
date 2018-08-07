@@ -2,17 +2,9 @@ package eu.etaxonomy.cdm.api.service.dto;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.model.description.DescriptionBase;
-import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
-import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.SpecimenDescription;
-import eu.etaxonomy.cdm.model.description.TextData;
-import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
-import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 
 
@@ -49,21 +41,7 @@ public class FieldUnitDTO extends DerivateDTO{
 	    fieldUnitDto.setRecordBase(fieldUnit.getRecordBasis().getMessage());
 	    fieldUnitDto.setTitleCache(fieldUnit.getTitleCache());
 
-	    Set<DescriptionBase<IIdentifiableEntityCacheStrategy<FieldUnit>>> descriptions = fieldUnit.getDescriptions();
-	    for (DescriptionBase desc : descriptions){
-	        if (desc instanceof SpecimenDescription){
-	            SpecimenDescription specimenDesc = (SpecimenDescription)desc;
-    	        if (specimenDesc.isImageGallery()){
-    	            for (DescriptionElementBase element : specimenDesc.getElements()){
-    	                if (element.isInstanceOf(TextData.class)&& element.getFeature().equals(Feature.IMAGE())) {
-	                        for (Media media :element.getMedia()){
-	                            fieldUnitDto.getListOfMedia().add(media);
-	                        }
-    	                }
-    	            }
-    	        }
-	        }
-	    }
+
 	    return fieldUnitDto;
 
 	}
