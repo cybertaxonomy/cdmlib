@@ -622,7 +622,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
     /**
      * Aggregates all {@link TaxonDescription}s of all sub nodes that have a "computed" marker
      * @param taxonNodeUuid the parent taxon node
-     * @return the result of the operation
+     * @return the uuid of the progress monitor
      */
-    public UpdateResult aggregateComputedTaxonDescriptions(UUID taxonNodeUuid);
+    public UUID aggregateComputedTaxonDescriptions(UUID taxonNodeUuid);
 }
