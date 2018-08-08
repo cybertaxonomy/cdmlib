@@ -37,6 +37,8 @@ public class CdmLightExportConfigurator
 
     private boolean createZipFile = false;
 
+    private boolean isFilterIntextReferences = true;
+
     /**
      * @param transformer
      */
@@ -121,6 +123,16 @@ public class CdmLightExportConfigurator
     }
     public void setCreateZipFile(boolean createZipFile) {
         this.createZipFile = createZipFile;
+    }
+
+
+    public boolean isFilterIntextReferences() {
+        return isFilterIntextReferences;
+    }
+
+
+    public void setRemoveIntextReferences(boolean isRemoveIntextReferences) {
+        this.isFilterIntextReferences = isRemoveIntextReferences;
     }
 
 
