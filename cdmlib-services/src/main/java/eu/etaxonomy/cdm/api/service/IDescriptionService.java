@@ -17,6 +17,7 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
+import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -622,7 +623,8 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
     /**
      * Aggregates all {@link TaxonDescription}s of all sub nodes that have a "computed" marker
      * @param taxonNodeUuid the parent taxon node
-     * @return the uuid of the progress monitor
+     * @param monitor the progress monitor
+     * @return the update result
      */
-    public UUID aggregateComputedTaxonDescriptions(UUID taxonNodeUuid);
+    public UpdateResult aggregateTaxonDescription(UUID taxonNodeUuid, IRemotingProgressMonitor monitor);
 }

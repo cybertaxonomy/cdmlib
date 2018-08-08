@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.api.service;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -33,7 +32,6 @@ import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
-import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitorThread;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
@@ -854,20 +852,8 @@ public class DescriptionServiceImpl
     }
 
     @Override
-    public UUID aggregateComputedTaxonDescriptions(UUID taxonNodeUuid){
-        RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
-            @Override
-            public Serializable doRun(IRemotingProgressMonitor monitor) {
-                return aggregateTaxonDescription(taxonNodeUuid, monitor);
-            }
-        };
-        UUID uuid = progressMonitorService.registerNewRemotingMonitor(monitorThread);
-        monitorThread.setPriority(3);
-        monitorThread.start();
-        return uuid;
-    }
-
-    private UpdateResult aggregateTaxonDescription(UUID taxonNodeUuid, IRemotingProgressMonitor monitor){
+    @Transactional(readOnly=false)
+    public UpdateResult aggregateTaxonDescription(UUID taxonNodeUuid, IRemotingProgressMonitor monitor){
         UpdateResult result = new UpdateResult();
 
         TaxonNode node = taxonNodeDao.load(taxonNodeUuid);
@@ -961,7 +947,8 @@ public class DescriptionServiceImpl
                 description.addElement(aggregate);
             }
         });
-        result.setCdmEntity(taxon);
+        result.addUpdatedObject(taxon);
+        result.setCdmEntity(description);
         return result;
     }
 
