@@ -1505,6 +1505,7 @@ public class CdmLightClassificationExport
             csvLine[table.getIndex(CdmLightExportTable.SERIES_PART)] = reference.getSeriesPart();
             csvLine[table.getIndex(CdmLightExportTable.VOLUME)] = reference.getVolume();
             csvLine[table.getIndex(CdmLightExportTable.YEAR)] = reference.getYear();
+
             if ( reference.getAuthorship() != null){
                 csvLine[table.getIndex(CdmLightExportTable.AUTHORSHIP_TITLE)] = reference.getAuthorship().getTitleCache();
                 csvLine[table.getIndex(CdmLightExportTable.AUTHOR_FK)] = getId(state,reference.getAuthorship());
@@ -1553,7 +1554,9 @@ public class CdmLightClassificationExport
             }
 
         }
-        if (reference.getYear() != null){
+        if (!StringUtils.isBlank(reference.getDatePublished().getFreeText())){
+            shortCitation = shortCitation + " (" + reference.getDatePublished().getFreeText() + ")";
+        }else if (!StringUtils.isBlank(reference.getYear()) ){
             shortCitation = shortCitation + " (" + reference.getYear() + ")";
         }
         return shortCitation;
