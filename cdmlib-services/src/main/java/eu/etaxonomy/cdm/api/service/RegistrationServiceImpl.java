@@ -260,15 +260,17 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
 
     @Override
     @Transactional(readOnly=false)
-    public void addTypeDesignation(Registration reg, UUID typeDesignationUuid){
+    public void addTypeDesignation(UUID registrationUUID, UUID typeDesignationUuid){
 
-        reg = assureIsPersisted(reg);
         // load the typeDesignations with the registration so that typified names can not be twice in detached sessions
         // otherwise multiple representation problems might occur
-        Registration registration = load(reg.getUuid(), Arrays.asList("typeDesignations"));
+        Registration registration = load(registrationUUID, Arrays.asList("typeDesignations"));
+        if(registration == null){
+            registration = newRegistration();
+            registration = assureIsPersisted(registration);
+        }
         TypeDesignationBase<?> nameTypeDesignation = repository.getNameService().loadTypeDesignation(typeDesignationUuid, Arrays.asList(""));
         registration.getTypeDesignations().add(nameTypeDesignation);
-        // getSession().merge(registration); // not needed!
     }
 
     /**

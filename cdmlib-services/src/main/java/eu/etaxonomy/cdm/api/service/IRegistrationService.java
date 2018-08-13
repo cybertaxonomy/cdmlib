@@ -144,7 +144,7 @@ public interface IRegistrationService extends IAnnotatableService<Registration> 
 
     boolean checkRegistrationExistsFor(TaxonName name);
 
-    public void addTypeDesignation(Registration reg, UUID typeDesignationUuid);
+    public void addTypeDesignation(UUID registrationUUID, UUID typeDesignationUuid);
 
     // ============================================================================================
 
