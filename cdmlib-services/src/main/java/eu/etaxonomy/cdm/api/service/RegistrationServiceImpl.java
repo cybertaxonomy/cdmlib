@@ -18,9 +18,14 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.application.CdmRepository;
+import eu.etaxonomy.cdm.api.service.idminter.IdentifierMinter.Identifier;
+import eu.etaxonomy.cdm.api.service.idminter.RegistrationIdentifierMinter;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
@@ -28,10 +33,13 @@ import eu.etaxonomy.cdm.api.utility.UserHelper;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
+import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.name.IRegistrationDao;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.Operation;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -54,7 +62,16 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
     }
 
     @Autowired
+    private RegistrationIdentifierMinter minter;
+
+    @Autowired
     private UserHelper userHelper;
+
+
+    @Autowired
+    @Qualifier("cdmRepository")
+    private CdmRepository repository;
+
 
     /**
      * {@inheritDoc}
@@ -181,6 +198,114 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
 
         return regPager;
     }
+
+    // ============= functionality to be moved into a "RegistrationManagerBean" ==================
+
+
+    /**
+     * Factory Method
+     * TODO move into RegistrationFactory
+     *
+     * @return a new Registration instance with submitter set to the current authentications principal
+     */
+    @Override
+    public Registration newRegistration() {
+
+        Registration reg = Registration.NewInstance(
+                null,
+                null,
+                null,
+                null);
+        Authentication authentication = userHelper.getAuthentication();
+        reg.setSubmitter((User)authentication.getPrincipal());
+        return reg;
+    }
+
+    /**
+     * @param taxonNameId
+     * @return
+     */
+    @Override
+    @Transactional(readOnly=false)
+    public Registration createRegistrationForName(UUID taxonNameUuid) {
+
+        Registration reg = Registration.NewInstance(
+                null,
+                null,
+                taxonNameUuid != null ? repository.getNameService().load(taxonNameUuid, Arrays.asList("nomenclaturalReference.inReference")) : null,
+                        null);
+
+        reg = assureIsPersisted(reg);
+
+        return repository.getRegistrationService().load(reg.getUuid(), Arrays.asList(new String []{"blockedBy"}));
+    }
+
+    /**
+     * @param typeDesignationTarget
+     */
+    @Override
+    @Transactional(readOnly=false)
+    public Registration assureIsPersisted(Registration reg) {
+
+        if(reg.isPersited()){
+            return reg;
+        }
+
+        prepareForSave(reg);
+        reg = save(reg);
+        userHelper.createAuthorityForCurrentUser(Registration.class, reg.getUuid(), Operation.UPDATE, RegistrationStatus.PREPARATION.name());
+
+        return reg;
+    }
+
+    @Override
+    @Transactional(readOnly=false)
+    public void addTypeDesignation(Registration reg, UUID typeDesignationUuid){
+
+        reg = assureIsPersisted(reg);
+        // load the typeDesignations with the registration so that typified names can not be twice in detached sessions
+        // otherwise multiple representation problems might occur
+        Registration registration = load(reg.getUuid(), Arrays.asList("typeDesignations"));
+        TypeDesignationBase<?> nameTypeDesignation = repository.getNameService().loadTypeDesignation(typeDesignationUuid, Arrays.asList(""));
+        registration.getTypeDesignations().add(nameTypeDesignation);
+        // getSession().merge(registration); // not needed!
+    }
+
+    /**
+     * Sets the registration identifier and submitter in case the registration is not yet persisted.
+     *
+     * @param reg
+     *   The Registration to prepare for saving.
+     */
+    private void prepareForSave(Registration reg) {
+
+        if(!reg.isPersited()){
+            Identifier<String> identifiers = minter.mint();
+            if(identifiers.getIdentifier() == null){
+                throw new RuntimeException("RegistrationIdentifierMinter configuration incomplete.");
+            }
+            reg.setIdentifier(identifiers.getIdentifier());
+            reg.setSpecificIdentifier(identifiers.getLocalId());
+            Authentication authentication = userHelper.getAuthentication();
+            reg.setSubmitter((User)authentication.getPrincipal());
+        }
+    }
+
+    /**
+     * @param name
+     */
+    @Override
+    public boolean checkRegistrationExistsFor(TaxonName name) {
+
+        for(Registration reg : name.getRegistrations()){
+            if(minter.isFromOwnRegistration(reg.getIdentifier())){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // =============================================================================================
 
 
 }

@@ -377,4 +377,11 @@ public class RegistrationDTO{
         return validationProblems;
     }
 
+    /**
+     * @return
+     */
+    public boolean isPersisted() {
+        return reg.isPersited();
+    }
+
 }

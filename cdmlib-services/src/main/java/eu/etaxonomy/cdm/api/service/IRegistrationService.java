@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -132,5 +133,19 @@ public interface IRegistrationService extends IAnnotatableService<Registration> 
     Pager<Registration> page(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, String identifierFilterPattern,
             String taxonNameFilterPattern, Collection<UUID> typeDesignationStatusUuids, Integer pageSize,
             Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths);
+
+    // ============= functionality to be moved into a "RegistrationManagerBean" ==================
+
+    public Registration newRegistration();
+
+    Registration assureIsPersisted(Registration reg);
+
+    Registration createRegistrationForName(UUID taxonNameUuid);
+
+    boolean checkRegistrationExistsFor(TaxonName name);
+
+    public void addTypeDesignation(Registration reg, UUID typeDesignationUuid);
+
+    // ============================================================================================
 
 }
