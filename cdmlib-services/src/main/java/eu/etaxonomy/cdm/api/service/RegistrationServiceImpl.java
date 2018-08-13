@@ -61,7 +61,7 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
         this.dao = dao;
     }
 
-    @Autowired
+    @Autowired(required=false)
     private RegistrationIdentifierMinter minter;
 
     @Autowired
@@ -282,12 +282,14 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
     private void prepareForSave(Registration reg) {
 
         if(!reg.isPersited()){
-            Identifier<String> identifiers = minter.mint();
-            if(identifiers.getIdentifier() == null){
-                throw new RuntimeException("RegistrationIdentifierMinter configuration incomplete.");
+            if(minter != null){
+                Identifier<String> identifiers = minter.mint();
+                if(identifiers.getIdentifier() == null){
+                    throw new RuntimeException("RegistrationIdentifierMinter configuration incomplete.");
+                }
+                reg.setIdentifier(identifiers.getIdentifier());
+                reg.setSpecificIdentifier(identifiers.getLocalId());
             }
-            reg.setIdentifier(identifiers.getIdentifier());
-            reg.setSpecificIdentifier(identifiers.getLocalId());
             Authentication authentication = userHelper.getAuthentication();
             reg.setSubmitter((User)authentication.getPrincipal());
         }
@@ -300,8 +302,12 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
     public boolean checkRegistrationExistsFor(TaxonName name) {
 
         for(Registration reg : name.getRegistrations()){
-            if(minter.isFromOwnRegistration(reg.getIdentifier())){
-                return true;
+            if(minter != null){
+                if(minter.isFromOwnRegistration(reg.getIdentifier())){
+                    return true;
+                }
+            } else {
+                return true; // first registrations wins as we can't distinguish them without a minter.
             }
         }
         return false;
