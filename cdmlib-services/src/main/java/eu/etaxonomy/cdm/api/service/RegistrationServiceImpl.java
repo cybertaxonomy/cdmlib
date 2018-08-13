@@ -18,12 +18,10 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import eu.etaxonomy.cdm.api.application.CdmRepository;
 import eu.etaxonomy.cdm.api.service.idminter.IdentifierMinter.Identifier;
 import eu.etaxonomy.cdm.api.service.idminter.RegistrationIdentifierMinter;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -69,8 +67,7 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
 
 
     @Autowired
-    @Qualifier("cdmRepository")
-    private CdmRepository repository;
+    private INameService nameService;
 
 
     /**
@@ -232,12 +229,12 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
         Registration reg = Registration.NewInstance(
                 null,
                 null,
-                taxonNameUuid != null ? repository.getNameService().load(taxonNameUuid, Arrays.asList("nomenclaturalReference.inReference")) : null,
+                taxonNameUuid != null ? nameService.load(taxonNameUuid, Arrays.asList("nomenclaturalReference.inReference")) : null,
                         null);
 
         reg = assureIsPersisted(reg);
 
-        return repository.getRegistrationService().load(reg.getUuid(), Arrays.asList(new String []{"blockedBy"}));
+        return load(reg.getUuid(), Arrays.asList(new String []{"blockedBy"}));
     }
 
     /**
@@ -269,7 +266,7 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
             registration = newRegistration();
             registration = assureIsPersisted(registration);
         }
-        TypeDesignationBase<?> nameTypeDesignation = repository.getNameService().loadTypeDesignation(typeDesignationUuid, Arrays.asList(""));
+        TypeDesignationBase<?> nameTypeDesignation = nameService.loadTypeDesignation(typeDesignationUuid, Arrays.asList(""));
         registration.getTypeDesignations().add(nameTypeDesignation);
     }
 
