@@ -166,7 +166,7 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
 
 	/**
 	 * To define a worksheet name override this method. Otherwise the first worksheet is taken.
-	 * @return worksheet name. <code>null</null> if not worksheet is defined.
+	 * @return worksheet name. <code>null</null> if no worksheet is defined.
 	 */
 	protected String getWorksheetName() {
 		return null;

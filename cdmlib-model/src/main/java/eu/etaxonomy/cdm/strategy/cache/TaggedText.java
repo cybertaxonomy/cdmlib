@@ -22,13 +22,13 @@ import eu.etaxonomy.cdm.ref.TypedEntityReference;
  *
  * @author a.kohlbecker
  * @author  m.doering
- * @version 1.0
- * @since 11.12.2007 12:11:19
+ * @since 11.12.2007
  *
  */
 public class TaggedText implements Serializable{
 
 	private static final long serialVersionUID = -3553949743902449813L;
+
     private String text;
 	private TagEnum type;
 	private TypedEntityReference<?> entityReference;
@@ -38,31 +38,14 @@ public class TaggedText implements Serializable{
 		return new TaggedText(TagEnum.separator, " ");
 	}
 
-	public String getText() {
-		return text;
-	}
-	public void setText(String text) {
-		this.text = text;
-	}
-	public TagEnum getType() {
-		return type;
-	}
-	public void setType(TagEnum type) {
-		this.type = type;
-	}
-	/**
-     * @return the entityReference
-     */
-    public TypedEntityReference<?> getEntityReference() {
-        return entityReference;
+    public static TaggedText NewSeparatorInstance(String separator){
+        return new TaggedText(TagEnum.separator, separator);
     }
 
-    /**
-     * @param entityReference the entityReference to set
-     */
-    public void setEntityReference(TypedEntityReference<?> entityReference) {
-        this.entityReference = entityReference;
-    }
+	public static TaggedText NewInstance(TagEnum type, String text){
+	    return new TaggedText(type, text);
+	}
+
 
     public TaggedText() {
 		super();
@@ -78,6 +61,28 @@ public class TaggedText implements Serializable{
 	public TaggedText(TagEnum type, String text) {
 		this(type, text, null);
 	}
+
+    public String getText() {
+        return text;
+    }
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public TagEnum getType() {
+        return type;
+    }
+    public void setType(TagEnum type) {
+        this.type = type;
+    }
+
+    public TypedEntityReference<?> getEntityReference() {
+        return entityReference;
+    }
+    public void setEntityReference(TypedEntityReference<?> entityReference) {
+        this.entityReference = entityReference;
+    }
+
 
 	@Override
 	public String toString(){
