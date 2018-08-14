@@ -242,8 +242,8 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
         return new StringResultDTO(String.valueOf(countSpecimen));
     }
 
-    @RequestMapping(value = "specimensOrObservations", method = RequestMethod.GET)
-    public ModelAndView doListSpecimensOrObservations(
+    @RequestMapping(value = "specimensOrObservationDTOs", method = RequestMethod.GET)
+    public ModelAndView doListSpecimensOrObservationDTOs(
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
@@ -253,6 +253,26 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
         List<FieldUnitDTO> fieldUnitDtos = occurrenceService.findFieldUnitDTOByAssociatedTaxon(null, uuid);
            // List<SpecimenOrObservationBase<?>> specimensOrObservations = occurrenceService.listByAssociatedTaxon(null, null, (Taxon)tb, null, null, null, orderHints, null);
         mv.addObject(fieldUnitDtos);
+        return mv;
+    }
+
+    @RequestMapping(value = "specimensOrObservations", method = RequestMethod.GET)
+    public ModelAndView doListSpecimensOrObservations(
+            @PathVariable("uuid") UUID uuid,
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+        logger.info("doListSpecimensOrObservations() - " + request.getRequestURI());
+        ModelAndView mv = new ModelAndView();
+        TaxonBase<?> tb = service.load(uuid);
+        List<OrderHint> orderHints = new ArrayList<>();
+        orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
+        if(tb instanceof Taxon){
+            List<SpecimenOrObservationBase<?>> specimensOrObservations = occurrenceService.listByAssociatedTaxon(null, null, (Taxon)tb, null, null, null, orderHints, null);
+            mv.addObject(specimensOrObservations);
+        } else {
+            HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
+            return null;
+        }
         return mv;
     }
 

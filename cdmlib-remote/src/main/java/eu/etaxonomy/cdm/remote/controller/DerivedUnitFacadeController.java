@@ -30,7 +30,9 @@ import org.springframework.web.servlet.ModelAndView;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
+import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 import io.swagger.annotations.Api;
@@ -107,7 +109,13 @@ public class DerivedUnitFacadeController extends AbstractController<SpecimenOrOb
         ModelAndView mv = new ModelAndView();
         DerivedUnitFacade duf = newFacadeFrom(occurrenceUuid, response,Arrays.asList(new String []{
                 "fieldObjectMedia", "fieldObjectMedia.title"}));
-        mv.addObject(duf.getFieldObjectMedia());
+        SpecimenOrObservationBase sob = service.load(occurrenceUuid, null);
+        FieldUnitDTO dto;
+        if (sob instanceof FieldUnit){
+            dto = FieldUnitDTO.newInstance((FieldUnit)sob);
+            mv.addObject(dto.getListOfMedia());
+        }
+
         return mv;
     }
 

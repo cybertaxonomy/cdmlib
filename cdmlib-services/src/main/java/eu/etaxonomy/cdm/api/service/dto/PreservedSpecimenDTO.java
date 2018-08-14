@@ -38,6 +38,8 @@ public class PreservedSpecimenDTO extends DerivateDTO{
 
 
 
+
+
 //    public PreservedSpecimenDTO(DerivedUnit derivedUnit){
 //        super();
 //        this.setUuid(derivedUnit.getUuid());
@@ -78,13 +80,15 @@ public class PreservedSpecimenDTO extends DerivateDTO{
     public static PreservedSpecimenDTO newInstance(DerivedUnit derivedUnit, TaxonName name ){
         PreservedSpecimenDTO newInstance = new PreservedSpecimenDTO(derivedUnit);
 
-        newInstance.setTitleCache(derivedUnit.getTitleCache());
+//        newInstance.setTitleCache(derivedUnit.getTitleCache());
+
         newInstance.accessionNumber = derivedUnit.getAccessionNumber();
         newInstance.preferredStableUri = derivedUnit.getPreferredStableUri();
 
         newInstance.setCollectioDTo(new CollectionDTO(HibernateProxyHelper.deproxy(derivedUnit.getCollection())));
         newInstance.setBarcode(derivedUnit.getBarcode());
         newInstance.setCatalogNumber(derivedUnit.getCatalogNumber());
+        newInstance.listLabel = derivedUnit.getCatalogNumber();
         newInstance.setCollectorsNumber(derivedUnit.getCollectorsNumber());
         if (derivedUnit.getDerivedFrom() != null){
             newInstance.setDerivationEvent(new DerivationEventDTO(derivedUnit.getDerivedFrom() ));

@@ -43,7 +43,9 @@ public abstract class DerivateDTO extends TypedEntityReference{
     private TreeSet<Pair<String, String>> characterData;
     private DerivateDataDTO derivateDataDTO;
     protected String taxonName;
-    protected String titleCache;
+    protected String listLabel;
+
+
 
 
     protected String citation;
@@ -68,17 +70,21 @@ public abstract class DerivateDTO extends TypedEntityReference{
     private List<MediaDTO> listOfMedia = new ArrayList<>();
 
     public DerivateDTO(SpecimenOrObservationBase specimenOrObservation) {
-        super(specimenOrObservation.getClass(), specimenOrObservation.getUuid());
-
+        super(specimenOrObservation.getClass(), specimenOrObservation.getUuid(), specimenOrObservation.getTitleCache());
+        addMedia(specimenOrObservation);
     }
     public String getTitleCache() {
-        return titleCache;
+        return getLabel();
     }
 
-    public void setTitleCache(String titleCache) {
-        this.titleCache = titleCache;
+
+    public String getListLabel() {
+        return listLabel;
     }
 
+    public void setListLabel(String listLabel) {
+        this.listLabel = listLabel;
+    }
     public void setCollection(CollectionDTO collection) {
         this.collection = collection;
     }
