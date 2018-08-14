@@ -93,6 +93,8 @@ public abstract class CsvImportBase<CONFIG extends CsvImportConfiguratorBase, ST
                         if (debug){
                             e.printStackTrace();
                         }
+                        row++;
+                        txN++;
                         next = csvReader.readNext();
                     }
                 }
