@@ -108,14 +108,14 @@ public enum OriginalSourceType implements IEnumTerm<OriginalSourceType>, Seriali
 	PrimaryMediaSource(UUID.fromString("72be3615-a6da-4728-948a-b3c5797fa4bc"), "Primary Media Source", "PMS", null),
 
 	//6
-    /**
-     * Nomenclatural reference as used for {@link TaxonName taxon names} and
-     * type designations.
-     * E.g. a media may be copy of figure in book. The book itself will then be the primary media source.
-     *
-     */
-    @XmlEnumValue("Nomenclatural Reference")
-    NomenclaturalReference(UUID.fromString("67650daf-d4aa-48da-aa41-18d2763383aa"), "Nomenclatural Reference", "NOR", null),
+	/**
+	 * Nomenclatural reference as used for {@link TaxonName taxon names} and
+	 * type designations.
+	 * E.g. a media may be copy of figure in book. The book itself will then be the primary media source.
+	 *
+	 */
+	@XmlEnumValue("Nomenclatural Reference")
+	NomenclaturalReference(UUID.fromString("67650daf-d4aa-48da-aa41-18d2763383aa"), "Nomenclatural Reference", "NOR", null),
 
 
 	//7
@@ -151,29 +151,28 @@ public enum OriginalSourceType implements IEnumTerm<OriginalSourceType>, Seriali
 	public String getKey(){return delegateVocTerm.getKey();}
 
 	@Override
-    public String getMessage(){return delegateVocTerm.getMessage();}
+	public String getMessage(){return delegateVocTerm.getMessage();}
 
 	@Override
-    public String getMessage(Language language){return delegateVocTerm.getMessage(language);}
+	public String getMessage(Language language){return delegateVocTerm.getMessage(language);}
 
 	@Override
-    public UUID getUuid() {return delegateVocTerm.getUuid();}
+	public UUID getUuid() {return delegateVocTerm.getUuid();}
 
 	@Override
-    public OriginalSourceType getKindOf() {return delegateVocTerm.getKindOf();}
+	public OriginalSourceType getKindOf() {return delegateVocTerm.getKindOf();}
 
 	@Override
-    public Set<OriginalSourceType> getGeneralizationOf() {return delegateVocTerm.getGeneralizationOf();}
+	public Set<OriginalSourceType> getGeneralizationOf() {return delegateVocTerm.getGeneralizationOf();}
 
 	@Override
 	public boolean isKindOf(OriginalSourceType ancestor) {return delegateVocTerm.isKindOf(ancestor);	}
 
 	@Override
-    public Set<OriginalSourceType> getGeneralizationOf(boolean recursive) {return delegateVocTerm.getGeneralizationOf(recursive);}
+	public Set<OriginalSourceType> getGeneralizationOf(boolean recursive) {return delegateVocTerm.getGeneralizationOf(recursive);}
 
 
 	public static OriginalSourceType getByKey(String key){return delegateVoc.getByKey(key);}
-    public static OriginalSourceType getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
-
+	public static OriginalSourceType getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
 
 }

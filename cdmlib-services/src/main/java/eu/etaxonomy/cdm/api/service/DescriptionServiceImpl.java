@@ -31,6 +31,7 @@ import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
@@ -107,6 +108,9 @@ public class DescriptionServiceImpl
     protected ITaxonDao taxonDao;
     protected ITaxonNodeDao taxonNodeDao;
     protected IDescriptiveDataSetDao dataSetDao;
+
+    @Autowired
+    private IProgressMonitorService progressMonitorService;
 
     //TODO change to Interface
     private NaturalLanguageGenerator naturalLanguageGenerator;
@@ -847,16 +851,18 @@ public class DescriptionServiceImpl
 
     }
 
-    public UpdateResult aggregateTaxonDescriptions(UUID taxonNodeUuid){
+    @Override
+    @Transactional(readOnly=false)
+    public UpdateResult aggregateTaxonDescription(UUID taxonNodeUuid, IRemotingProgressMonitor monitor){
         UpdateResult result = new UpdateResult();
 
         TaxonNode node = taxonNodeDao.load(taxonNodeUuid);
-        Taxon taxon = node.getTaxon();
+        Taxon taxon = HibernateProxyHelper.deproxy(taxonDao.load(node.getTaxon().getUuid()), Taxon.class);
         result.setCdmEntity(taxon);
 
         //get all "computed" descriptions from all sub nodes
         List<TaxonNode> childNodes = taxonNodeDao.listChildrenOf(node, null, null, true, false, null);
-        List<DescriptionBase> computedDescriptions = new ArrayList<>();
+        List<TaxonDescription> computedDescriptions = new ArrayList<>();
 
         childNodes.stream().map(childNode -> childNode.getTaxon())
                 .forEach(childTaxon -> childTaxon.getDescriptions().stream()
@@ -866,6 +872,11 @@ public class DescriptionServiceImpl
                         // add them to the list
                         .forEach(computedDescription -> computedDescriptions.add(computedDescription)));
 
+        UpdateResult aggregateDescription = aggregateDescription(taxon, computedDescriptions,
+                "[Taxon Descriptions]"+taxon.getTitleCache());
+        result.includeResult(aggregateDescription);
+        result.setCdmEntity(aggregateDescription.getCdmEntity());
+        aggregateDescription.setCdmEntity(null);
         return result;
     }
 
@@ -883,12 +894,15 @@ public class DescriptionServiceImpl
 
         List<DescriptionBase> descriptions = load(descriptionUuids, null);
 
-        result.includeResult(aggregateDescription(taxon, descriptions, descriptionTitle));
+        UpdateResult aggregateDescriptionResult = aggregateDescription(taxon, descriptions, descriptionTitle);
+        result.setCdmEntity(aggregateDescriptionResult.getCdmEntity());
+        aggregateDescriptionResult.setCdmEntity(null);
+        result.includeResult(aggregateDescriptionResult);
         return result;
     }
 
     @SuppressWarnings("unchecked")
-    public UpdateResult aggregateDescription(Taxon taxon, List<DescriptionBase> descriptions, String descriptionTitle) {
+    private UpdateResult aggregateDescription(Taxon taxon, List<? extends DescriptionBase> descriptions, String descriptionTitle) {
         UpdateResult result = new UpdateResult();
         Map<Character, List<DescriptionElementBase>> featureToElementMap = new HashMap<>();
 
@@ -897,7 +911,7 @@ public class DescriptionServiceImpl
             description.getElements()
             .stream()
             //filter out elements that do not have a Characters as Feature
-            .filter(element->((DescriptionElementBase)element).getFeature() instanceof Character)
+            .filter(element->HibernateProxyHelper.isInstanceOf(((DescriptionElementBase)element).getFeature(), Character.class))
             .forEach(ele->{
                 DescriptionElementBase descriptionElement = (DescriptionElementBase)ele;
                 List<DescriptionElementBase> list = featureToElementMap.get(descriptionElement.getFeature());
@@ -905,7 +919,7 @@ public class DescriptionServiceImpl
                     list = new ArrayList<>();
                 }
                 list.add(descriptionElement);
-                featureToElementMap.put((Character) descriptionElement.getFeature(), list);
+                featureToElementMap.put(HibernateProxyHelper.deproxy(descriptionElement.getFeature(), Character.class), list);
             });
         });
 
@@ -933,7 +947,8 @@ public class DescriptionServiceImpl
                 description.addElement(aggregate);
             }
         });
-        result.setCdmEntity(taxon);
+        result.addUpdatedObject(taxon);
+        result.setCdmEntity(description);
         return result;
     }
 

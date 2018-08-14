@@ -39,5 +39,5 @@ public interface ILongRunningTasksService {
     UUID monitLongRunningTask(Set<UUID> movingUuids, UUID targetTreeNodeUuid, int movingType);
 
 
-
+    public UUID aggregateComputedTaxonDescriptions(UUID taxonNodeUuid);
 }

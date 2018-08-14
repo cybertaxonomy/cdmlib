@@ -52,7 +52,9 @@ public  class ImageInfo extends MediaInfo {
 
 	public static ImageInfo NewInstanceWithMetaData(URI imageUri, Integer timeOut) throws IOException, HttpException {
 		ImageInfo instance = NewInstance(imageUri, timeOut);
+
 		instance.readMetaData(timeOut);
+
 		return instance;
 	}
 
@@ -130,7 +132,7 @@ public  class ImageInfo extends MediaInfo {
 		try {
 			InputStream inputStream = UriUtils.getInputStream(imageUri);
 
-			 IImageMetadata mediaData = Sanselan.getMetadata(inputStream, null);
+			IImageMetadata mediaData = Sanselan.getMetadata(inputStream, null);
 
 			if (mediaData != null){
 				metaData = new HashMap<>();
@@ -147,9 +149,10 @@ public  class ImageInfo extends MediaInfo {
 					}
 				}
 			}
-		} catch (ImageReadException e) {
+		}
+		catch (ImageReadException e) {
 			logger.error("Could not read: " + imageUri + ". " + e.getMessage());
-			throw new IOException(e);
+			//throw new IOException(e);
 		}
 		return metaData;
 	}

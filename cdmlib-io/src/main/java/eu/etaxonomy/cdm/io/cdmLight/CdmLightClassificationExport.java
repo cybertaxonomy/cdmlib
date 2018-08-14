@@ -464,8 +464,11 @@ public class CdmLightClassificationExport
                    for (Language language: textData.getMultilanguageText().keySet()){
                        String[] csvLineLanguage = csvLine.clone();
                        LanguageString langString = textData.getLanguageText(language);
-
-                       csvLineLanguage[table.getIndex(CdmLightExportTable.FACT_TEXT)] = langString.getText();
+                       String text = langString.getText();
+                       if (state.getConfig().isFilterIntextReferences()){
+                           text = filterIntextReferences(langString.getText());
+                       }
+                       csvLineLanguage[table.getIndex(CdmLightExportTable.FACT_TEXT)] = text;
                        csvLineLanguage[table.getIndex(CdmLightExportTable.LANGUAGE)] = language.getLabel();
                        state.getProcessor().put(table, textData, csvLineLanguage);
                    }
@@ -479,6 +482,20 @@ public class CdmLightClassificationExport
         }
     }
 
+
+    /**
+     * @param text
+     * @return
+     */
+    private String filterIntextReferences(String text) {
+        /*
+         * (<cdm:reference cdmId='fbd19251-efee-4ded-b780-915000f66d41' intextId='1352d42c-e201-4155-a02a-55360d3b563e'>Ridley in Fl. Malay Pen. 3 (1924) 22</cdm:reference>)
+         */
+
+       String newText = text.replaceAll("<cdm:reference cdmId='[a-z0-9\\-]*' intextId='[a-z0-9\\-]*'>","");
+       newText = newText.replaceAll("</cdm:reference>","");
+       return newText;
+    }
 
     /**
      * @param state
@@ -1488,6 +1505,7 @@ public class CdmLightClassificationExport
             csvLine[table.getIndex(CdmLightExportTable.SERIES_PART)] = reference.getSeriesPart();
             csvLine[table.getIndex(CdmLightExportTable.VOLUME)] = reference.getVolume();
             csvLine[table.getIndex(CdmLightExportTable.YEAR)] = reference.getYear();
+
             if ( reference.getAuthorship() != null){
                 csvLine[table.getIndex(CdmLightExportTable.AUTHORSHIP_TITLE)] = reference.getAuthorship().getTitleCache();
                 csvLine[table.getIndex(CdmLightExportTable.AUTHOR_FK)] = getId(state,reference.getAuthorship());
@@ -1536,7 +1554,9 @@ public class CdmLightClassificationExport
             }
 
         }
-        if (reference.getYear() != null){
+        if (!StringUtils.isBlank(reference.getDatePublished().getFreeText())){
+            shortCitation = shortCitation + " (" + reference.getDatePublished().getFreeText() + ")";
+        }else if (!StringUtils.isBlank(reference.getYear()) ){
             shortCitation = shortCitation + " (" + reference.getYear() + ")";
         }
         return shortCitation;
