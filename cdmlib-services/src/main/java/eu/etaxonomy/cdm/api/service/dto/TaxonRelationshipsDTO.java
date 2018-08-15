@@ -36,6 +36,8 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
  */
 public class TaxonRelationshipsDTO {
 
+    private static final String SENSU_SEPARATOR = ", ";
+
     public class TaxonRelation{
 
         private UUID relationUuid;
@@ -63,7 +65,11 @@ public class TaxonRelationshipsDTO {
                 this.synonym = relType.isAnySynonym();
                 //TODO there must be a better DTO which also includes
                 Set<Representation> representations = direction.isDirect() ? relType.getRepresentations() : relType.getInverseRepresentations();
-                this.setType(new TermDto(relType.getUuid(), representations, relType.getOrderIndex()));
+                UUID vocUuid = relType.getVocabulary() != null ? relType.getVocabulary().getUuid(): null;
+                TermDto termDto = new TermDto(relType.getUuid(), representations, null, vocUuid, relType.getOrderIndex());
+//                TODO localize
+//                termDto.localize(representation_L10n);
+                this.setType(termDto);
                 this.misapplication = relation.getType().isAnyMisappliedName();
             }
             List<TaggedText> tags = new TaxonRelationshipFormatter().getTaggedText(
@@ -176,9 +182,10 @@ public class TaxonRelationshipsDTO {
      * @param relation
      * @param direction
      */
-    public void addRelation(TaxonRelationship relation, Direction direction, List<Language> languages) {
+    public TaxonRelation addRelation(TaxonRelationship relation, Direction direction, List<Language> languages) {
         TaxonRelation newRelation = new TaxonRelation(relation, direction, languages);
         relations.add(newRelation);
+        return newRelation;
     }
 
 
@@ -246,6 +253,7 @@ public class TaxonRelationshipsDTO {
         isDuplicate = isDuplicate && (i == first.size() || j == second.size());
         if (isDuplicate && sensuEndInFirst > -1 && sensuStartInSecond > -1){
             first.addAll(sensuEndInFirst, second.subList(sensuStartInSecond, senusEndInSecond));
+            first.add(sensuEndInFirst, TaggedText.NewSeparatorInstance(SENSU_SEPARATOR));
             return true;
         }else{
             return false;

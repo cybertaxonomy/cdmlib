@@ -41,7 +41,7 @@ public class TermDto {
         this.uuid = uuid;
         this.partOfUuid = partOfUuid;
         this.vocabularyUuid = vocabularyUuid;
-        this.setOrderIndex(orderIndex);
+        this.orderIndex = orderIndex;
     }
 
     static public TermDto fromNamedArea(NamedArea namedArea) {

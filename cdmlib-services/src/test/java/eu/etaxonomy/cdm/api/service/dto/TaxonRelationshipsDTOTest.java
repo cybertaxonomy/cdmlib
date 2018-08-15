@@ -15,6 +15,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.api.service.dto.TaxonRelationshipsDTO.TaxonRelation;
 import eu.etaxonomy.cdm.format.taxon.TaxonRelationshipFormatter;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
@@ -29,6 +30,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
@@ -123,9 +125,15 @@ public class TaxonRelationshipsDTOTest {
 
         dto.addRelation(taxonRel, Direction.relatedFrom, languages);
         dto.addRelation(rel2, Direction.relatedFrom, languages);
-        dto.addRelation(rel3, Direction.relatedFrom, languages);
+        TaxonRelation relToDuplicate = dto.addRelation(rel3, Direction.relatedFrom, languages);
         dto.createMisapplicationString();
-        Assert.assertEquals(2, dto.getMisapplications().size());
+        List<List<TaggedText>> misapplications = dto.getMisapplications();
+        Assert.assertEquals(2, misapplications.size());  //1 duplicated
+        List<TaggedText> deduplicated = misapplications.get(0);
+        Assert.assertEquals(14, deduplicated.size());
+        Assert.assertSame(relToDuplicate.getTaggedText().get(7), deduplicated.get(9));
+        Assert.assertEquals(12, misapplications.get(1).size());
+
     }
 
 }
