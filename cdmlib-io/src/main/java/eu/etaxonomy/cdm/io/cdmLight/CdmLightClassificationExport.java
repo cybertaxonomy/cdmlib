@@ -240,7 +240,13 @@ public class CdmLightClassificationExport
                 Taxon parent = (taxonNode.getParent()==null) ? null : taxonNode.getParent().getTaxon();
                 csvLine[table.getIndex(CdmLightExportTable.PARENT_FK)] = getId(state, parent);
                 csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE_FK)] = getId(state, taxon.getSec());
-                csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE)] = getTitleCache(taxon.getSec());
+                if (taxon.getSec().getDatePublished().getFreeText() != null){
+                    String sec_string = taxon.getSec().getTitleCache() + ". " + taxon.getSec().getDatePublished().getFreeText();
+                    sec_string = sec_string.replace("..", ".");
+                    csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE)] = sec_string;
+                }else{
+                    csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE)] = getTitleCache(taxon.getSec());
+                }
                 if (state.getReferenceFromStore(taxon.getSec().getId()) == null){
                     handleReference(state, taxon.getSec());
                 }
@@ -1595,10 +1601,8 @@ public class CdmLightClassificationExport
         }
         authorship = HibernateProxyHelper.deproxy(authorship);
         if (authorship instanceof Person){
-            fullAuthorship = ((Person)authorship).getFamilyName();
-            if (StringUtils.isBlank(fullAuthorship) ){
-                fullAuthorship = ((Person)authorship).getTitleCache();
-            }
+            fullAuthorship = ((Person)authorship).getTitleCache();
+
         }
         else if (authorship instanceof Team){
 
@@ -1608,13 +1612,7 @@ public class CdmLightClassificationExport
             for (Person teamMember : authorTeam.getTeamMembers()){
                 index++;
                 String concat = concatString(authorTeam, authorTeam.getTeamMembers(), index);
-                if (teamMember.getFamilyName() != null){
-                    fullAuthorship += concat + teamMember.getFamilyName();
-                }else{
-                    fullAuthorship += concat + teamMember.getTitleCache();
-                }
-
-
+                fullAuthorship += concat + teamMember.getTitleCache();
             }
 
         }
