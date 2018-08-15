@@ -220,26 +220,32 @@ public class TaxonRelationshipsDTO {
         int j = 0;
         int sensuEndInFirst = -1;
         int sensuStartInSecond = -1;
-        int lastEndInSecond = -1;
+        int senusEndInSecond = -1;
 
-        while (i < first.size() && j< second.size()){
+        boolean sensuHandled = false;
+        boolean isDuplicate = true;
+        while (isDuplicate && i < first.size() && j< second.size()){
             if (tagEqualsMisapplied(first.get(i), second.get(i))){
-                i++;j++;
-            }else{
+                //do nothing
+            }else if (!sensuHandled){
                 while (i < first.size() && tagIsSensu(first.get(i))){
                     i++;
+                    sensuEndInFirst = i;
                 }
-                sensuEndInFirst = i;
                 sensuStartInSecond = j;
                 while (j< second.size() && tagIsSensu(second.get(j))){
                     j++;
+                    senusEndInSecond = j;
                 }
-                lastEndInSecond = j;
+                sensuHandled = true;
+            }else{
+                isDuplicate = false;
             }
+            i++;j++;
         }
-        boolean isDuplicate = (i == first.size() || j == second.size());
+        isDuplicate = isDuplicate && (i == first.size() || j == second.size());
         if (isDuplicate && sensuEndInFirst > -1 && sensuStartInSecond > -1){
-            first.addAll(sensuEndInFirst, second.subList(sensuStartInSecond, lastEndInSecond));
+            first.addAll(sensuEndInFirst, second.subList(sensuStartInSecond, senusEndInSecond));
             return true;
         }else{
             return false;
