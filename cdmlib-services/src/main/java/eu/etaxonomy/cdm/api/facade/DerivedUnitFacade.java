@@ -1832,7 +1832,7 @@ public class DerivedUnitFacade {
 	// kind of Unit
 	@Transient
 	public DefinedTerm getKindOfUnit() {
-		return (hasFieldUnit() ? getFieldUnit(true).getKindOfUnit() : null);
+		return (checkDerivedUnit() ? derivedUnit.getKindOfUnit() : null);
 	}
 //
 //   @Transient
