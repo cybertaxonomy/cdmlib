@@ -10,7 +10,7 @@
       <item name="What is the CDM Library?" href="index.html"/>
       <item name="Details" href="overview.html"/>
       <!--item name="FAQ" href="faq.html"/-->
-      <!--item name="Releases" href="changes-report.html"/-->
+      <item name="Releases" href="https://dev.e-taxonomy.eu/redmine/projects/edit/wiki/CdmPlatformRoadmap"/>
     </menu>
     <menu name="Developer">
       <item name="Getting started" href="getting-started.html"/>
