@@ -118,17 +118,19 @@ public class TaxonRelationshipFormatterTest {
     public void testGetTaggedTextMisappliedName() {
 
         reverse = true;
-        String symbol = TaxonRelationshipType.MISAPPLIED_NAME_FOR().getInverseSymbol();
+        String inverseSymbol = TaxonRelationshipType.MISAPPLIED_NAME_FOR().getInverseSymbol();
+        String symbol = TaxonRelationshipType.MISAPPLIED_NAME_FOR().getSymbol();
+
         List<TaggedText> tags = formatter.getTaggedText(taxonRel, reverse, languages);
         String str = TaggedCacheHelper.createString(tags);
         //TODO no initials
-        Assert.assertEquals(symbol + " \"Abies alba\" sensu Macfarlane 1918, err. sec. Cheek 1919: 123", str);
+        Assert.assertEquals(inverseSymbol + " \"Abies alba\" sensu Macfarlane 1918, err. sec. Cheek 1919: 123", str);
 
         //reverse
         tags = formatter.getTaggedText(taxonRel, !reverse, languages);
         str = TaggedCacheHelper.createString(tags);
         System.out.println(str);
-        Assert.assertEquals("– Pinus pinova Mill. sec. ToSecAuthor 1928, rel. sec. Cheek 1919: 123", str);
+        Assert.assertEquals(symbol + " Pinus pinova Mill. sec. ToSecAuthor 1928, rel. sec. Cheek 1919: 123", str);
         //FIXME symbol
 
 
@@ -137,7 +139,7 @@ public class TaxonRelationshipFormatterTest {
         tags = formatter.getTaggedText(taxonRel, reverse, languages);
         str = TaggedCacheHelper.createString(tags);
         System.out.println(str);
-        Assert.assertEquals(symbol + " \"Abies alba\" auctores sensu Macfarlane 1918, err. sec. Cheek 1919: 123", str);
+        Assert.assertEquals(inverseSymbol + " \"Abies alba\" auctores sensu Macfarlane 1918, err. sec. Cheek 1919: 123", str);
 
 
 
@@ -145,13 +147,13 @@ public class TaxonRelationshipFormatterTest {
         tags = formatter.getTaggedText(taxonRel, reverse, languages);
         str = TaggedCacheHelper.createString(tags);
         System.out.println(str);
-        Assert.assertEquals(symbol + " \"Abies alba\" auctores, err. sec. Cheek 1919: 123", str);
+        Assert.assertEquals(inverseSymbol + " \"Abies alba\" auctores, err. sec. Cheek 1919: 123", str);
 
         fromTaxon.setAppendedPhrase("");
         tags = formatter.getTaggedText(taxonRel, reverse, languages);
         str = TaggedCacheHelper.createString(tags);
         System.out.println(str);
-        Assert.assertEquals(symbol + " \"Abies alba\" auct., err. sec. Cheek 1919: 123", str);
+        Assert.assertEquals(inverseSymbol + " \"Abies alba\" auct., err. sec. Cheek 1919: 123", str);
 
     }
 
