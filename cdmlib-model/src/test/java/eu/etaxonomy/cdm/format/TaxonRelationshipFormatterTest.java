@@ -118,11 +118,11 @@ public class TaxonRelationshipFormatterTest {
     public void testGetTaggedTextMisappliedName() {
 
         reverse = true;
-
+        String symbol = TaxonRelationshipType.MISAPPLIED_NAME_FOR().getInverseSymbol();
         List<TaggedText> tags = formatter.getTaggedText(taxonRel, reverse, languages);
         String str = TaggedCacheHelper.createString(tags);
         //TODO no initials
-        Assert.assertEquals("– \"Abies alba\" sensu Macfarlane 1918, err. sec. Cheek 1919: 123", str);
+        Assert.assertEquals(symbol + " \"Abies alba\" sensu Macfarlane 1918, err. sec. Cheek 1919: 123", str);
 
         //reverse
         tags = formatter.getTaggedText(taxonRel, !reverse, languages);
@@ -137,7 +137,7 @@ public class TaxonRelationshipFormatterTest {
         tags = formatter.getTaggedText(taxonRel, reverse, languages);
         str = TaggedCacheHelper.createString(tags);
         System.out.println(str);
-        Assert.assertEquals("– \"Abies alba\" auctores sensu Macfarlane 1918, err. sec. Cheek 1919: 123", str);
+        Assert.assertEquals(symbol + " \"Abies alba\" auctores sensu Macfarlane 1918, err. sec. Cheek 1919: 123", str);
 
 
 
@@ -145,13 +145,13 @@ public class TaxonRelationshipFormatterTest {
         tags = formatter.getTaggedText(taxonRel, reverse, languages);
         str = TaggedCacheHelper.createString(tags);
         System.out.println(str);
-        Assert.assertEquals("– \"Abies alba\" auctores, err. sec. Cheek 1919: 123", str);
+        Assert.assertEquals(symbol + " \"Abies alba\" auctores, err. sec. Cheek 1919: 123", str);
 
         fromTaxon.setAppendedPhrase("");
         tags = formatter.getTaggedText(taxonRel, reverse, languages);
         str = TaggedCacheHelper.createString(tags);
         System.out.println(str);
-        Assert.assertEquals("– \"Abies alba\" auct., err. sec. Cheek 1919: 123", str);
+        Assert.assertEquals(symbol + " \"Abies alba\" auct., err. sec. Cheek 1919: 123", str);
 
     }
 
@@ -160,7 +160,7 @@ public class TaxonRelationshipFormatterTest {
 
         reverse = false;
 
-        final String CONGRUENT = "≜";
+        final String CONGRUENT = TaxonRelationshipType.CONGRUENT_TO().getSymbol();
 
         taxonRel.setType(TaxonRelationshipType.CONGRUENT_TO());
         List<TaggedText> tags = formatter.getTaggedText(taxonRel, reverse, languages);
@@ -199,10 +199,11 @@ public class TaxonRelationshipFormatterTest {
 
         reverse = false;
 
-        final String symbol = "p.p.";
+        TaxonRelationshipType type = TaxonRelationshipType.PRO_PARTE_SYNONYM_FOR();
+        final String symbol = type.getSymbol();
 
 
-        taxonRel.setType(TaxonRelationshipType.PRO_PARTE_SYNONYM_FOR());
+        taxonRel.setType(type);
         List<TaggedText> tags = formatter.getTaggedText(taxonRel, reverse, languages);
         String str = TaggedCacheHelper.createString(tags);
         //TODO no initials
@@ -212,7 +213,7 @@ public class TaxonRelationshipFormatterTest {
         str = TaggedCacheHelper.createString(tags);
         System.out.println(str);
         //FIXME symbol
-        Assert.assertEquals("⊃" + symbol + " Abies alba sec. Macfarlane 1918, syn. sec. Cheek 1919: 123", str);
+        Assert.assertEquals(type.getInverseSymbol() + " Abies alba sec. Macfarlane 1918, syn. sec. Cheek 1919: 123", str);
 
         toTaxon.setAppendedPhrase("sensu lato");
         tags = formatter.getTaggedText(taxonRel, reverse, languages);
