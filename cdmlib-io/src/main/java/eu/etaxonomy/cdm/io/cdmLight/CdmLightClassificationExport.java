@@ -94,6 +94,7 @@ public class CdmLightClassificationExport
     private static final String STD_TEAM_CONCATINATION = ", ";
     private static final String FINAL_TEAM_CONCATINATION = " & ";
 
+
     private static final String IPNI_NAME_IDENTIFIER = "Ipni Name Identifier";
     private static final String TROPICOS_NAME_IDENTIFIER = "Tropicos Name Identifier";
     private static final String WFO_NAME_IDENTIFIER = "WFO Name Identifier";
@@ -494,6 +495,9 @@ public class CdmLightClassificationExport
 
        String newText = text.replaceAll("<cdm:reference cdmId='[a-z0-9\\-]*' intextId='[a-z0-9\\-]*'>","");
        newText = newText.replaceAll("</cdm:reference>","");
+
+       newText = newText.replaceAll("<cdm:key cdmId='[a-z0-9\\-]*' intextId='[a-z0-9\\-]*'>","");
+       newText = newText.replaceAll("</cdm:key>","");
        return newText;
     }
 
@@ -1507,7 +1511,7 @@ public class CdmLightClassificationExport
             csvLine[table.getIndex(CdmLightExportTable.YEAR)] = reference.getYear();
 
             if ( reference.getAuthorship() != null){
-                csvLine[table.getIndex(CdmLightExportTable.AUTHORSHIP_TITLE)] = reference.getAuthorship().getTitleCache();
+                csvLine[table.getIndex(CdmLightExportTable.AUTHORSHIP_TITLE)] = createFullAuthorship(reference);
                 csvLine[table.getIndex(CdmLightExportTable.AUTHOR_FK)] = getId(state,reference.getAuthorship());
             }
 
@@ -1541,7 +1545,12 @@ public class CdmLightClassificationExport
             return null;
         }
         authorship = HibernateProxyHelper.deproxy(authorship);
-        if (authorship instanceof Person){ shortCitation = ((Person)authorship).getFamilyName();}
+        if (authorship instanceof Person){
+            shortCitation = ((Person)authorship).getFamilyName();
+            if (StringUtils.isBlank(shortCitation) ){
+                shortCitation = ((Person)authorship).getTitleCache();
+            }
+        }
         else if (authorship instanceof Team){
 
             Team authorTeam = HibernateProxyHelper.deproxy(authorship, Team.class);
@@ -1549,8 +1558,20 @@ public class CdmLightClassificationExport
 
             for (Person teamMember : authorTeam.getTeamMembers()){
                 index++;
+                if (index == 3){
+                    shortCitation += " & al.";
+                    break;
+                }
                 String concat = concatString(authorTeam, authorTeam.getTeamMembers(), index);
-                shortCitation += concat + teamMember.getFamilyName();
+                if (teamMember.getFamilyName() != null){
+                    shortCitation += concat + teamMember.getFamilyName();
+                }else{
+                    shortCitation += concat + teamMember.getTitleCache();
+                }
+
+            }
+            if (StringUtils.isBlank(shortCitation)){
+                shortCitation = authorTeam.getTitleCache();
             }
 
         }
@@ -1560,6 +1581,45 @@ public class CdmLightClassificationExport
             shortCitation = shortCitation + " (" + reference.getYear() + ")";
         }
         return shortCitation;
+    }
+
+    /**
+     * @param reference
+     * @return
+     */
+    private String createFullAuthorship(Reference reference) {
+        TeamOrPersonBase<?> authorship = reference.getAuthorship();
+        String fullAuthorship = "";
+        if (authorship == null) {
+            return null;
+        }
+        authorship = HibernateProxyHelper.deproxy(authorship);
+        if (authorship instanceof Person){
+            fullAuthorship = ((Person)authorship).getFamilyName();
+            if (StringUtils.isBlank(fullAuthorship) ){
+                fullAuthorship = ((Person)authorship).getTitleCache();
+            }
+        }
+        else if (authorship instanceof Team){
+
+            Team authorTeam = HibernateProxyHelper.deproxy(authorship, Team.class);
+            int index = 0;
+
+            for (Person teamMember : authorTeam.getTeamMembers()){
+                index++;
+                String concat = concatString(authorTeam, authorTeam.getTeamMembers(), index);
+                if (teamMember.getFamilyName() != null){
+                    fullAuthorship += concat + teamMember.getFamilyName();
+                }else{
+                    fullAuthorship += concat + teamMember.getTitleCache();
+                }
+
+
+            }
+
+        }
+
+        return fullAuthorship;
     }
 
     private static String concatString(Team team, List<Person> teamMembers, int i) {
