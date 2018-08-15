@@ -1260,10 +1260,10 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
      */
     @Test
     public void testGetSetKindOfUnit() {
-        assertNotNull("Kind-of-unit must not be null", specimenFacade.getKindOfUnit());
-        assertEquals("Kind-of-unit must be same", kindOfUnit, specimenFacade.getKindOfUnit());
+        assertNotNull("Kind-of-unit must not be null", specimenFacade.getFieldUnitKindOfUnit());
+        assertEquals("Kind-of-unit must be same", kindOfUnit, specimenFacade.getFieldUnitKindOfUnit());
         specimenFacade.setFieldUnitKindOfUnit(null);
-        assertNull("Kind-of-unit must be null", specimenFacade.getKindOfUnit());
+        assertNull("Kind-of-unit must be null", specimenFacade.getFieldUnitKindOfUnit());
         DerivedUnitFacade facade = emptyFacade();
         facade.setFieldUnitKindOfUnit(null);
         assertNull(facade.innerFieldUnit());
