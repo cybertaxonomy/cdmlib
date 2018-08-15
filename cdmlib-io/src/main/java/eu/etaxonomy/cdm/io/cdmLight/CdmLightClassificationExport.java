@@ -240,7 +240,7 @@ public class CdmLightClassificationExport
                 Taxon parent = (taxonNode.getParent()==null) ? null : taxonNode.getParent().getTaxon();
                 csvLine[table.getIndex(CdmLightExportTable.PARENT_FK)] = getId(state, parent);
                 csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE_FK)] = getId(state, taxon.getSec());
-                if (taxon.getSec().getDatePublished().getFreeText() != null){
+                if (taxon.getSec()!= null && taxon.getSec().getDatePublished() != null && taxon.getSec().getDatePublished().getFreeText() != null){
                     String sec_string = taxon.getSec().getTitleCache() + ". " + taxon.getSec().getDatePublished().getFreeText();
                     sec_string = sec_string.replace("..", ".");
                     csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE)] = sec_string;
