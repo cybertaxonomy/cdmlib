@@ -1846,7 +1846,7 @@ public class DerivedUnitFacade {
 	 * Sets the kind-of-unit
 	 * @param kindOfUnit
 	 */
-	public void setKindOfUnit(DefinedTerm kindOfUnit) {
+	public void setFieldUnitKindOfUnit(DefinedTerm kindOfUnit) {
 	    FieldUnit fieldUnit = getFieldUnit(kindOfUnit != null);
 	    if (fieldUnit != null){
 	        fieldUnit.setKindOfUnit(kindOfUnit);
