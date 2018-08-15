@@ -3220,7 +3220,7 @@ public class TaxonServiceImpl
             if (doDirect){
                 direction = Direction.relatedTo;
                 //TODO order hints, property path
-                List<TaxonRelationship> relations = dao.getTaxonRelationships(taxon, type, includeUnpublished, pageSize, pageNumber, null, null, direction);
+                List<TaxonRelationship> relations = dao.getTaxonRelationships(taxon, type, includeUnpublished, pageSize, pageNumber, null, null, direction.invers());
                 for (TaxonRelationship relation : relations){
                     dto.addRelation(relation, direction, languages);
                 }
@@ -3228,7 +3228,7 @@ public class TaxonServiceImpl
             if (doInvers){
                 direction = Direction.relatedFrom;
                 //TODO order hints, property path
-                List<TaxonRelationship> relations = dao.getTaxonRelationships(taxon, type, includeUnpublished, pageSize, pageNumber, null, null, direction);
+                List<TaxonRelationship> relations = dao.getTaxonRelationships(taxon, type, includeUnpublished, pageSize, pageNumber, null, null, direction.invers());
                 for (TaxonRelationship relation : relations){
                     dto.addRelation(relation, direction, languages);
                 }
