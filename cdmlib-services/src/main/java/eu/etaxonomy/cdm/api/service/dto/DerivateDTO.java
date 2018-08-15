@@ -27,10 +27,9 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
-import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
-import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 
 /**
@@ -55,6 +54,7 @@ public abstract class DerivateDTO extends TypedEntityReference{
     private boolean hasSpecimenScan;
 
     private String recordBase;
+    private String kindOfUnit;
     private CollectionDTO collection;
     private String catalogNumber;
     private String collectorsNumber;
@@ -72,6 +72,15 @@ public abstract class DerivateDTO extends TypedEntityReference{
     public DerivateDTO(SpecimenOrObservationBase specimenOrObservation) {
         super(specimenOrObservation.getClass(), specimenOrObservation.getUuid(), specimenOrObservation.getTitleCache());
         addMedia(specimenOrObservation);
+        if (specimenOrObservation.getKindOfUnit() != null){
+            setKindOfUnit(specimenOrObservation.getKindOfUnit().getTitleCache());
+        }
+        if (specimenOrObservation instanceof DerivedUnit){
+            DerivedUnit derivedUnit = (DerivedUnit)specimenOrObservation;
+            if (derivedUnit.getSpecimenTypeDesignations() != null){
+                setSpecimenTypeDesignations(derivedUnit.getSpecimenTypeDesignations());
+            }
+        }
     }
     public String getTitleCache() {
         return getLabel();
@@ -338,21 +347,19 @@ public abstract class DerivateDTO extends TypedEntityReference{
     }
 
     public void addMedia(SpecimenOrObservationBase specimenOrObservation){
-        Set<DescriptionBase<IIdentifiableEntityCacheStrategy<FieldUnit>>> descriptions = specimenOrObservation.getDescriptions();
+        Set<DescriptionBase> descriptions = specimenOrObservation.getSpecimenDescriptionImageGallery();
         for (DescriptionBase desc : descriptions){
             if (desc instanceof SpecimenDescription){
                 SpecimenDescription specimenDesc = (SpecimenDescription)desc;
-                if (specimenDesc.isImageGallery()){
-                    for (DescriptionElementBase element : specimenDesc.getElements()){
-                        if (element.isInstanceOf(TextData.class)&& element.getFeature().equals(Feature.IMAGE())) {
-                            for (Media media :element.getMedia()){
-                                for (MediaRepresentation rep :media.getRepresentations()){
-                                    for(MediaRepresentationPart p : rep.getParts()){
-                                        if(p.getUri() != null){
-                                            MediaDTO dto = new MediaDTO(media.getUuid());
-                                            dto.setUri(p.getUri().toString());
-                                            this.getListOfMedia().add(dto);
-                                        }
+                for (DescriptionElementBase element : specimenDesc.getElements()){
+                    if (element.isInstanceOf(TextData.class)&& element.getFeature().equals(Feature.IMAGE())) {
+                        for (Media media :element.getMedia()){
+                            for (MediaRepresentation rep :media.getRepresentations()){
+                                for(MediaRepresentationPart p : rep.getParts()){
+                                    if(p.getUri() != null){
+                                        MediaDTO dto = new MediaDTO(media.getUuid());
+                                        dto.setUri(p.getUri().toString());
+                                        this.getListOfMedia().add(dto);
                                     }
                                 }
                             }
@@ -361,6 +368,12 @@ public abstract class DerivateDTO extends TypedEntityReference{
                 }
             }
         }
+    }
+    public String getKindOfUnit() {
+        return kindOfUnit;
+    }
+    public void setKindOfUnit(String kindOfUnit) {
+        this.kindOfUnit = kindOfUnit;
     }
 
 

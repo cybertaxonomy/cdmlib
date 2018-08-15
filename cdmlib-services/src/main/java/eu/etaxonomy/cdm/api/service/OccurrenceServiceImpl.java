@@ -1045,7 +1045,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         //from which this DerivedUnit was derived until all FieldUnits are found.
         List<SpecimenOrObservationBase> specimens = new ArrayList<>();
         List<String> propertyPaths = new ArrayList<>();
+
         propertyPaths.add("descriptions.elements.media.title");
+        propertyPaths.add("kindOfUnit");
 
         specimens = dao.findOriginalsForDerivedUnit(derivedUnitDTO.getUuid(), propertyPaths);
 

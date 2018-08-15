@@ -1175,6 +1175,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         DerivedUnitFacade derivedUnitFacade = DerivedUnitFacade.NewInstance(type);
         derivedUnitFacade.setFieldUnit(state.getFieldUnit(state.getDataHolder().getFieldNumber()));
         derivedUnitFacade.setKindOfUnit(kindOfUnit);
+        derivedUnitFacade.setDerivedUnitKindOfUnit(kindOfUnit);
         return derivedUnitFacade;
     }
 

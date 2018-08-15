@@ -15,9 +15,6 @@ public class FieldUnitDTO extends DerivateDTO{
 	private String date;
 
 	private boolean hasType;
-
-
-	private String kindOfUnit;
 	private List<UUID> taxonRelatedDerivedUnits = new ArrayList<>();
 
 
@@ -36,7 +33,6 @@ public class FieldUnitDTO extends DerivateDTO{
 
     public static FieldUnitDTO newInstance(FieldUnit fieldUnit){
 	    FieldUnitDTO fieldUnitDto = new FieldUnitDTO(fieldUnit);
-	    fieldUnitDto.kindOfUnit = fieldUnit.getKindOfUnit().getTitleCache();
 	    fieldUnitDto.gatheringEvent = GatheringEventDTO.newInstance(fieldUnit.getGatheringEvent());
 	    fieldUnitDto.setRecordBase(fieldUnit.getRecordBasis().getMessage());
 	    fieldUnitDto.setListLabel(fieldUnit.getTitleCache());
@@ -154,14 +150,6 @@ public class FieldUnitDTO extends DerivateDTO{
      */
     public void setHasType(boolean hasType) {
         this.hasType = hasType;
-    }
-
-
-    public String getKindOfUnit() {
-        return kindOfUnit;
-    }
-    public void setKindOfUnit(String kindOfUnit) {
-        this.kindOfUnit = kindOfUnit;
     }
 
     public GatheringEventDTO getGatheringEvent() {

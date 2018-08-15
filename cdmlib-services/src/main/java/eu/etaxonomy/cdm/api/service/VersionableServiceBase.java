@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.hibernate.ObjectDeletedException;
 import org.hibernate.envers.query.criteria.AuditCriterion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -78,6 +79,10 @@ public abstract class VersionableServiceBase<T extends VersionableEntity, DAO ex
     public DeleteResult isDeletable(UUID baseUUID, DeleteConfiguratorBase config){
     	DeleteResult result = new DeleteResult();
     	T base = this.find(baseUUID);
+    	if (base == null){
+    	    result.setAbort();
+    	    result.addException(new ObjectDeletedException("The object was already deleted.", baseUUID, null));
+    	}
     	Set<CdmBase> references = commonService.getReferencingObjectsForDeletion(base);
     	if (references != null){
 	    	result.addRelatedObjects(references);
