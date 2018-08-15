@@ -1831,15 +1831,15 @@ public class DerivedUnitFacade {
 
 	// kind of Unit
 	@Transient
-	public DefinedTerm getKindOfUnit() {
-		return (checkDerivedUnit() ? derivedUnit.getKindOfUnit() : null);
+	public DefinedTerm getFieldUnitKindOfUnit() {
+		return (hasFieldUnit() ? fieldUnit.getKindOfUnit() : null);
 	}
 //
-//   @Transient
-//    public DefinedTerm getDerivedUnitKindOfUnit() {
-//       checkDerivedUnit();
-//       return checkDerivedUnit() ? derivedUnit.getKindOfUnit() : null;
-//    }
+   @Transient
+    public DefinedTerm getDerivedUnitKindOfUnit() {
+       checkDerivedUnit();
+       return checkDerivedUnit() ? derivedUnit.getKindOfUnit() : null;
+    }
 
 
 	/**
