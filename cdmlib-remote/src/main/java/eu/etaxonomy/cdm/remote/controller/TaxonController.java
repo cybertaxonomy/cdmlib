@@ -44,6 +44,8 @@ import eu.etaxonomy.cdm.api.service.dto.IncludedTaxaDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonRelationshipsDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.exception.UnpublishedException;
+import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -465,7 +467,8 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
     @RequestMapping(value = "taxonRelationshipsDTO", method = RequestMethod.GET)
     public TaxonRelationshipsDTO doGetTaxonRelationshipsDTO(
             @PathVariable("uuid") UUID taxonUuid,
-            @RequestParam(value = "type", required = false) Set<UUID> typeUuids,
+            //TODO should be set
+            @RequestParam(value = "type", required = false) UUID typeUuid,
             @RequestParam(value = "direction", required = false) Direction direction,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
@@ -474,11 +477,18 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
 
         logger.info("doGetTaxonRelationshipDTOs(): " + request.getRequestURI());
         TaxonBase<?> taxonBase = service.load(taxonUuid);
-        taxonBase = checkExistsAndAccess(taxonBase, includeUnpublished, response);
+        Taxon taxon = checkExistsAccessType(taxonBase, includeUnpublished, Taxon.class, response);
 
-        direction = null;
-        //TODO typeUuids;
         Set<TaxonRelationshipType> types = null;
+        if (typeUuid != null){
+            types = new HashSet<>();
+            DefinedTermBase<?> type = termService.find(typeUuid);
+            if (type.isInstanceOf(TaxonRelationshipType.class)){
+                types.add(CdmBase.deproxy(type, TaxonRelationshipType.class));
+            }else{
+                HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
+            }
+        }
         boolean deduplicateMisapplications = true;
         Integer pageSize = null;
         Integer pageNumber = null;

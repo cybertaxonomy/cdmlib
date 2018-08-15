@@ -64,12 +64,12 @@ public class TaxonRelationshipsDTO {
                 //TODO there must be a better DTO which also includes
                 Set<Representation> representations = direction.isDirect() ? relType.getRepresentations() : relType.getInverseRepresentations();
                 this.setType(new TermDto(relType.getUuid(), representations, relType.getOrderIndex()));
+                this.misapplication = relation.getType().isAnyMisappliedName();
             }
             List<TaggedText> tags = new TaxonRelationshipFormatter().getTaggedText(
                     relation, direction == Direction.relatedFrom, languages);
             this.taggedText = tags;
             this.setCache(TaggedCacheHelper.createString(tags));
-            this.setMisapplication(relation.getType().isAnyMisappliedName());
         }
 
 

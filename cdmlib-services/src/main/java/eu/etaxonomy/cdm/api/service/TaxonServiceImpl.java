@@ -3232,7 +3232,7 @@ public class TaxonServiceImpl
                 }
             }
             if (deduplicateMisapplications){
-                dto.createMisapplicationString();
+//                dto.createMisapplicationString();
             }
             return dto;
         }

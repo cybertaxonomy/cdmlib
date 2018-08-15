@@ -131,8 +131,6 @@ public class TaxonRelationshipFormatterTest {
         str = TaggedCacheHelper.createString(tags);
         System.out.println(str);
         Assert.assertEquals(symbol + " Pinus pinova Mill. sec. ToSecAuthor 1928, rel. sec. Cheek 1919: 123", str);
-        //FIXME symbol
-
 
         //auctores
         fromTaxon.setAppendedPhrase("auctores");
