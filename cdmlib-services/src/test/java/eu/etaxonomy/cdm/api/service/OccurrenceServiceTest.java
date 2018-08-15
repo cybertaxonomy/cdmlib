@@ -1268,7 +1268,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         DerivedUnit tissueUuidNoAssociation = (DerivedUnit) occurrenceService.load(tissueUuidNoAssociationUuid);
         DnaSample dnaSampleUuidIndividualsAssociation = (DnaSample) occurrenceService.load(dnaSampleUuidIndividualsAssociationUuid);
         DerivedUnit fossilTypeDesignation = (DerivedUnit) occurrenceService.load(fossilTypeDesignationUuid);
-        Taxon taxon = (Taxon) taxonService.load(taxonUuid);
+        Taxon taxon = HibernateProxyHelper.deproxy(taxonService.load(taxonUuid), Taxon.class);
         Synonym synonym = (Synonym) taxonService.load(synoymUuid);
         TaxonName taxonName = nameService.load(taxonNameUuid);
         TaxonName synonymName = nameService.load(synonymNameUuid);
@@ -1483,6 +1483,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 
 
     }
+
 
     @Test
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "OccurrenceServiceTest.testDnaSampleDesignation.xml")

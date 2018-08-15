@@ -47,6 +47,7 @@ public abstract class RemotingProgressMonitorThread extends Thread {
         } catch(Exception ex) {
             logger.info("Exception in RemotingProgressMonitorThread ", ex);
             monitor.setResult(ex);
+
             monitor.setIsFailed(true);
         }
         monitor.done();

@@ -24,10 +24,12 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.LuceneParseException;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
@@ -117,6 +119,20 @@ public class OccurrenceListController extends AbstractIdentifiableListController
                 maxDepth, pagerParams.getPageSize(), pagerParams.getPageIndex(),
                 orderHints, getInitializationStrategy());
 
+    }
+
+    @RequestMapping(value = "specimensOrObservationsByAssociatedTaxon", method = RequestMethod.GET)
+    public ModelAndView doListOccurrencesByAssociatedTaxon(
+            @RequestParam(value = "uuid", required = true) UUID uuid,
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+        logger.info("doListSpecimensOrObservations() - " + request.getRequestURI());
+
+        ModelAndView mv = new ModelAndView();
+        List<FieldUnitDTO> fieldUnitDtos = service.findFieldUnitDTOByAssociatedTaxon(null, uuid);
+           // List<SpecimenOrObservationBase<?>> specimensOrObservations = occurrenceService.listByAssociatedTaxon(null, null, (Taxon)tb, null, null, null, orderHints, null);
+        mv.addObject(fieldUnitDtos);
+        return mv;
     }
 
     /**

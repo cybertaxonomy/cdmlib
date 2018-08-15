@@ -8,8 +8,6 @@
  */
 package eu.etaxonomy.cdm.remote.controller.ext;
 
-import io.swagger.annotations.Api;
-
 import java.awt.Color;
 import java.io.FileReader;
 import java.io.IOException;
@@ -43,6 +41,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
 import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
+import eu.etaxonomy.cdm.ext.geo.EditGeoServiceUtilities;
 import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
 import eu.etaxonomy.cdm.ext.geo.OccurrenceServiceRequestParameterDto;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
@@ -52,6 +51,7 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -65,6 +65,7 @@ import eu.etaxonomy.cdm.remote.editor.TermBaseListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
 import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
+import io.swagger.annotations.Api;
 
 /**
  * The ExternalGeoController class is a Spring MVC Controller.
@@ -220,6 +221,39 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
 
         OccurrenceServiceRequestParameterDto dto = geoservice.getOccurrenceServiceRequestParameterString(specimensOrObersvations,
                 specimenOrObservationTypeColors );
+        mv.addObject(dto);
+        return mv;
+    }
+
+    /**
+     * Assembles and returns URI parameter Strings for the EDIT Map Service. The distribution areas for the
+     * {@link Taxon} instance identified by the <code>{taxon-uuid}</code> are found and are translated into
+     * an valid URI parameter String. Higher level distribution areas are expanded in order to include all
+     * nested sub-areas.
+     * <p>
+     * URI: <b>&#x002F;{datasource-name}&#x002F;geo&#x002F;map&#x002F;distribution&#x002F;{taxon-uuid}</b>
+     *
+     * @param request
+     * @param response
+     * @return URI parameter Strings for the EDIT Map Service
+     * @throws IOException TODO write controller method documentation
+     */
+    @RequestMapping(value = { "taxonOccurrencesForX" }, method = RequestMethod.GET)
+    public ModelAndView doGetOccurrenceXMapUriParams(
+            @RequestParam(value = "fieldUnitUuidList", required = false) UuidList fieldUnitUuids,
+            HttpServletRequest request,
+            HttpServletResponse response)
+            throws IOException {
+
+        Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors = null;
+
+        logger.info("doGetOccurrenceMapUriParams() " + requestPathAndQuery(request));
+        ModelAndView mv = new ModelAndView();
+
+        List<Point> fieldUnitPoints = occurrenceService.findPointsForFieldUnitList(fieldUnitUuids);
+
+        OccurrenceServiceRequestParameterDto dto = EditGeoServiceUtilities.getOccurrenceServiceRequestParameterString(fieldUnitPoints,
+                null, specimenOrObservationTypeColors);
         mv.addObject(dto);
         return mv;
     }

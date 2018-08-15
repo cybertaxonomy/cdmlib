@@ -105,7 +105,7 @@ public class SortIndexUpdater extends SchemaUpdaterStepBase {
 	public String createIndexMapQuery(){
 	       String resultsetQuery = "SELECT @id as id, @parentColumn " +
 	                " FROM @tableName " +
-	                " WHERE @parentColumn IS NOT NULL " +
+	              //  " WHERE @parentColumn IS NOT NULL " +
 	                " ORDER BY @parentColumn, @sorted";
 	        resultsetQuery = resultsetQuery.replace("@id", idColumn);
 	        resultsetQuery = resultsetQuery.replace("@tableName", tableName);
@@ -162,8 +162,8 @@ public class SortIndexUpdater extends SchemaUpdaterStepBase {
                 }
                 putIndex(id, index, indexMap);
             }else{
-                logger.warn("This should not happen");
                 index = baseValue;
+                putIndex(id, index, indexMap);
             }
 //          System.out.println(oParentId + "," + id+","+ index+";");
         }

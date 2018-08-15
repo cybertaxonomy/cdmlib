@@ -90,7 +90,7 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
         for (Object bean :beanList){
             Collections.sort(propertyPaths);
             for(String propPath : propertyPaths){
-//		            initializePropertyPath(bean, propPath);
+		            initializePropertyPath(bean, propPath);
             }
         }
 

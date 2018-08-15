@@ -1853,11 +1853,11 @@ public class DerivedUnitFacade {
 	    }
 	}
 
-//    public void setDerivedUnitKindOfUnit(DefinedTerm kindOfUnit) {
-//        testDerivedUnit();
-//
-//        baseUnit().setKindOfUnit(kindOfUnit);
-//    }
+    public void setDerivedUnitKindOfUnit(DefinedTerm kindOfUnit) {
+        testDerivedUnit();
+
+        baseUnit().setKindOfUnit(kindOfUnit);
+    }
 
 
 	// field unit

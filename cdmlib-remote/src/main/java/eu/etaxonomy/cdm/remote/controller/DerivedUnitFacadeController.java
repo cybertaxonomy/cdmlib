@@ -30,7 +30,9 @@ import org.springframework.web.servlet.ModelAndView;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
+import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 import io.swagger.annotations.Api;
@@ -97,6 +99,26 @@ public class DerivedUnitFacadeController extends AbstractController<SpecimenOrOb
         return mv;
     }
 
+    @RequestMapping(value = {"fieldObjectMediaDTO"}, method = RequestMethod.GET)
+    public ModelAndView doGetFieldObjectMediaDTO(
+        @PathVariable("uuid") UUID occurrenceUuid,
+        HttpServletRequest request,
+        HttpServletResponse response) throws IOException {
+
+        logger.info("doGetFieldObjectMedia() - " + request.getRequestURI());
+        ModelAndView mv = new ModelAndView();
+//        DerivedUnitFacade duf = newFacadeFrom(occurrenceUuid, response,Arrays.asList(new String []{
+//                "fieldObjectMedia", "fieldObjectMedia.title"}));
+        SpecimenOrObservationBase sob = service.load(occurrenceUuid, Arrays.asList(new String []{"descriptions", "kindOfUnit"}));
+        FieldUnitDTO dto;
+        if (sob instanceof FieldUnit){
+            dto = FieldUnitDTO.newInstance((FieldUnit)sob);
+            mv.addObject(dto.getListOfMedia());
+        }
+
+        return mv;
+    }
+
     @RequestMapping(value = {"fieldObjectMedia"}, method = RequestMethod.GET)
     public ModelAndView doGetFieldObjectMedia(
         @PathVariable("uuid") UUID occurrenceUuid,
@@ -107,9 +129,12 @@ public class DerivedUnitFacadeController extends AbstractController<SpecimenOrOb
         ModelAndView mv = new ModelAndView();
         DerivedUnitFacade duf = newFacadeFrom(occurrenceUuid, response,Arrays.asList(new String []{
                 "fieldObjectMedia", "fieldObjectMedia.title"}));
+
         mv.addObject(duf.getFieldObjectMedia());
+
         return mv;
     }
+
 
 // TODO
     //@RequestMapping(method = RequestMethod.GET, value = "{uuid}/collectingareas")
@@ -186,6 +211,7 @@ public class DerivedUnitFacadeController extends AbstractController<SpecimenOrOb
                 logger.error(e); //TODO ...
             }
         } else {
+
             HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
         }
         return null;

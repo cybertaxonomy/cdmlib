@@ -704,6 +704,7 @@ public class Reference
 	 * @see 	#getDatePublished()
 	 */
 	@Override
+	@Transient
     public void setDatePublished(VerbatimTimePeriod datePublished){
 		this.datePublished = datePublished;
 	}
