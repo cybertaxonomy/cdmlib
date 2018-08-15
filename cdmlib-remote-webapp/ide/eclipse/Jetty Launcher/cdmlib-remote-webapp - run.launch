@@ -56,9 +56,5 @@
 <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="net.sourceforge.eclipsejetty.launcher.JettyLaunchClassPathProvider"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="net.sourceforge.eclipsejetty.starter.jetty9.Jetty9LauncherMain"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="cdmlib-remote-webapp"/>
-<<<<<<< Updated upstream
 <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx2000M&#13;&#10;-XX:PermSize=150m&#13;&#10;&#13;&#10;-Dlog4j.configDebug=false&#13;&#10;-Dlog4j.configuration=file:///${system_property:user.home}/.cdmLibrary/log4j.properties&#13;&#10;&#13;&#10;-Dcdm.forceSchemaUpdate=true&#13;&#10;-Dspring.profiles.active=remoting"/>
-=======
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx1000M&#13;&#10;-XX:PermSize=150m&#13;&#10;&#13;&#10;-Dlog4j.configDebug=false&#13;&#10;-Dlog4j.configuration=file:///${system_property:user.home}/.cdmLibrary/log4j.properties&#13;&#10;&#13;&#10;-Dcdm.forceSchemaUpdate=true&#13;&#10;-Dspring.profiles.active=remoting"/>
->>>>>>> Stashed changes
 </launchConfiguration>
