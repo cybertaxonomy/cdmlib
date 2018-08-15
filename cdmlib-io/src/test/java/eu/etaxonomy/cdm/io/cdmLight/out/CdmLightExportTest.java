@@ -124,7 +124,7 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             byte[] reference = data.get(CdmLightExportTable.REFERENCE.getTableName());
             String referenceString = new String(reference);
             Assert.assertNotNull("Reference table must not be null", reference);
-            expected ="\"b8dd7f4a-0c7f-4372-bc5d-3b676363bc0f\",\"null (1804)\",\"\",\"The book of botany\",\"1804\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"3\",\"1804\",\"Mill.\"";
+            expected ="\"b8dd7f4a-0c7f-4372-bc5d-3b676363bc0f\",\"Mill. (1804)\",\"\",\"The book of botany\",\"1804\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"3\",\"1804\",\"Mill.\"";
             Assert.assertTrue(referenceString.contains(expected));
 
             byte[] geographicAreaFact = data.get(CdmLightExportTable.GEOGRAPHIC_AREA_FACT.getTableName());
