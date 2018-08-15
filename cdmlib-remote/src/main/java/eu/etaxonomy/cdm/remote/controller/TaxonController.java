@@ -41,9 +41,11 @@ import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator;
 import eu.etaxonomy.cdm.api.service.config.IncludedTaxonConfiguration;
 import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
 import eu.etaxonomy.cdm.api.service.dto.IncludedTaxaDTO;
+import eu.etaxonomy.cdm.api.service.dto.TaxonRelationshipsDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.exception.UnpublishedException;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -52,6 +54,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
@@ -457,6 +460,30 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             mv.addObject(allElements);
         }
         return mv;
+    }
+
+    @RequestMapping(value = "taxonRelationshipsDTO", method = RequestMethod.GET)
+    public TaxonRelationshipsDTO doGetTaxonRelationshipsDTO(
+            @PathVariable("uuid") UUID taxonUuid,
+            @RequestParam(value = "type", required = false) Set<UUID> typeUuids,
+            @RequestParam(value = "direction", required = false) Direction direction,
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+
+        boolean includeUnpublished = NO_UNPUBLISHED;
+
+        logger.info("doGetTaxonRelationshipDTOs(): " + request.getRequestURI());
+        TaxonBase<?> taxonBase = service.load(taxonUuid);
+        taxonBase = checkExistsAndAccess(taxonBase, includeUnpublished, response);
+
+        direction = null;
+        //TODO typeUuids;
+        Set<TaxonRelationshipType> types = null;
+        boolean deduplicateMisapplications = true;
+        Integer pageSize = null;
+        Integer pageNumber = null;
+        return service.listTaxonRelationships(taxonUuid, types, direction, deduplicateMisapplications,
+                includeUnpublished, pageSize, pageNumber);
     }
 
     // TODO ================================================================================ //

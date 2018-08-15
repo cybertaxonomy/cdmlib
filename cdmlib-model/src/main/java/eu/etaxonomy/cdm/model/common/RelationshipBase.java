@@ -77,6 +77,21 @@ public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelate
         public Direction invers(){
             return (this == relatedFrom)? relatedTo: relatedFrom;
         }
+
+        /**
+         * Is <b>this</b> the relatedTo direction?
+         * @return <code>true</code> if <b>this</b> is {@link Direction#relatedTo}
+         */
+        public boolean isDirect() {
+            return this == relatedTo;
+        }
+        /**
+         * Is <b>this</b> the relatedFrom direction?
+         * @return <code>true</code> if <b>this</b> is {@link Direction#relatedFrom}
+         */
+        public boolean isInvers() {
+            return this == relatedFrom;
+        }
     }
 
     protected RelationshipBase(){
@@ -130,12 +145,13 @@ public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelate
         this.doubtful = doubtful;
     }
 
-    public boolean isRemoved(){
-        if ( this.getRelatedFrom() == null ^ this.getRelatedTo() == null){
-            throw new IllegalStateException("A relationship may have only both related object as null or none. But just one is null!");
-        }
-        return this.getRelatedFrom() == null || this.getRelatedTo() == null;
-    }
+//    @Transient
+//    public boolean isRemoved(){
+//        if ( this.getRelatedFrom() == null ^ this.getRelatedTo() == null){
+//            throw new IllegalStateException("A relationship may have only both related object as null or none. But just one is null!");
+//        }
+//        return this.getRelatedFrom() == null || this.getRelatedTo() == null;
+//    }
 
 
 //*********************** CLONE ********************************************************/

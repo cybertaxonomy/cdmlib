@@ -85,11 +85,24 @@ public enum TagEnum {
      */
     secMicroReference,
     /**
+     * a secundum reference as used in a misapplied name (for TaxonRelationship)
+     */
+    sensuReference,
+    /**
+     * a secundum micro reference as used in a misapplied name (for TaxonRelationship)
+     */
+    sensuMicroReference,
+    /**
      * Any type of label
      */
     label,
     specimenOrObservation,
     typeDesignation,
+    /**
+     * Any symbol representing information, used e.g. for representing relationships
+     * like taxon relationships.
+     */
+    symbol,
 	;
 
 

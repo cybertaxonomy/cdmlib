@@ -47,6 +47,7 @@ import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.IdentifiedEntityDTO;
 import eu.etaxonomy.cdm.api.service.dto.IncludedTaxaDTO;
 import eu.etaxonomy.cdm.api.service.dto.MarkedEntityDTO;
+import eu.etaxonomy.cdm.api.service.dto.TaxonRelationshipsDTO;
 import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
@@ -3182,5 +3183,59 @@ public class TaxonServiceImpl
 
 		return this.swapSynonymAndAcceptedTaxon(syn, taxon);
 	}
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public TaxonRelationshipsDTO listTaxonRelationships(UUID taxonUuid, Set<TaxonRelationshipType> types,
+            Direction direction, boolean deduplicateMisapplications,
+            boolean includeUnpublished,
+            Integer pageSize, Integer pageNumber) {
+        TaxonBase<?> taxonBase = dao.load(taxonUuid);
+        if (taxonBase == null || !taxonBase.isInstanceOf(TaxonBase.class)){
+            //TODO handle
+            throw new RuntimeException("Taxon for uuid " + taxonUuid + " not found");
+        }else{
+            Taxon taxon = CdmBase.deproxy(taxonBase, Taxon.class);
+            boolean doDirect = (direction == null || direction == Direction.relatedTo);
+            boolean doInvers = (direction == null || direction == Direction.relatedFrom);
+
+            TaxonRelationshipsDTO dto = new TaxonRelationshipsDTO();
+
+            //TODO paging is difficult because misapplication string is an attribute
+            //of toplevel dto
+//        long numberOfResults = dao.countTaxonRelationships(taxon, type, includeUnpublished, TaxonRelationship.Direction.relatedFrom);
+//        List<TaxonRelationshipsDTO> results = new ArrayList<>();
+//        if(numberOfResults > 0) { // no point checking again
+//            results = dao.getTaxonRelationships(taxon, type, includeUnpublished, pageSize, pageNumber, orderHints, propertyPaths, TaxonRelationship.Direction.relatedFrom);
+//        }
+//
+//        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);;
+
+            //TODO
+            List<Language> languages = null;
+            if (doDirect){
+                direction = Direction.relatedTo;
+                //TODO order hints, property path
+                List<TaxonRelationship> relations = dao.getTaxonRelationships(taxon, null, includeUnpublished, pageSize, pageNumber, null, null, direction);
+                for (TaxonRelationship relation : relations){
+                    dto.addRelation(relation, direction, languages);
+                }
+            }
+            if (doInvers){
+                direction = Direction.relatedFrom;
+                //TODO order hints, property path
+                List<TaxonRelationship> relations = dao.getTaxonRelationships(taxon, null, includeUnpublished, pageSize, pageNumber, null, null, direction);
+                for (TaxonRelationship relation : relations){
+                    dto.addRelation(relation, direction, languages);
+                }
+            }
+            if (deduplicateMisapplications){
+                dto.createMisapplicationString();
+            }
+            return dto;
+        }
+    }
 
 }

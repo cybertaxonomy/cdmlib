@@ -151,6 +151,16 @@ public class Person extends TeamOrPersonBase<Person>{
 		return result;
 	}
 
+	public static Person NewInstance(String nomRefTitle, String familyName, String initials, String givenName){
+        Person result = new Person();
+        result.setNomenclaturalTitle(nomRefTitle);
+        result.setFamilyName(familyName);
+        result.setInitials(initials);
+        result.setGivenName(givenName);
+        return result;
+    }
+
+
 // *********************** CONSTRUCTOR **********************************/
 
 	/**
