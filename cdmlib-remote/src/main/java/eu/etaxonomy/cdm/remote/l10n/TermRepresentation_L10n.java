@@ -52,7 +52,7 @@ public class TermRepresentation_L10n implements ITermRepresentation_L10n {
             RelationshipTermBase<?> relationshipTerm = (RelationshipTermBase<?>)term;
             if(Hibernate.isInitialized(relationshipTerm.getInverseRepresentations())){
                 Representation representation = relationshipTerm.getPreferredInverseRepresentation(languages);
-                setRepresentations(representation);
+                setRepresentation(representation);
             } else {
                 logger.debug("inverse representations of term not initialized  " + term.getUuid().toString());
             }
@@ -60,7 +60,7 @@ public class TermRepresentation_L10n implements ITermRepresentation_L10n {
         } else {
             if(Hibernate.isInitialized(term.getRepresentations())){
                 Representation representation = term.getPreferredRepresentation(languages);
-                setRepresentations(representation);
+                setRepresentation(representation);
             } else {
                 logger.debug("representations of term not initialized  " + term.getUuid().toString());
             }
@@ -74,13 +74,13 @@ public class TermRepresentation_L10n implements ITermRepresentation_L10n {
         tmpTerm.getRepresentations().addAll(representations);
         List<Language> languages = LocaleContext.getLanguages();
         Representation representation = tmpTerm.getPreferredRepresentation(languages);
-        setRepresentations(representation);
+        setRepresentation(representation);
     }
 
     /**
      * @param representation
      */
-    private void setRepresentations(Representation representation) {
+    private void setRepresentation(Representation representation) {
         if(representation != null){
             if(representation.getLabel() != null && representation.getLabel().length() != 0){
                 label = representation.getLabel();

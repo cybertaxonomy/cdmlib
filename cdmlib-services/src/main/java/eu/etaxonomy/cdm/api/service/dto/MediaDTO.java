@@ -20,11 +20,11 @@ import eu.etaxonomy.cdm.ref.TypedEntityReference;
  */
 public class MediaDTO extends TypedEntityReference<Media> {
 
-    String uri;
+    private String uri;
 
-    String title_l10n;
+    private String title_l10n;
 
-    String mimeType;
+    private String mimeType;
 
     private Integer size;
 
@@ -37,70 +37,32 @@ public class MediaDTO extends TypedEntityReference<Media> {
         super(Media.class, uuid);
     }
 
-
-    /**
-     * @return the uri
-     */
     public String getUri() {
         return uri;
     }
-
-
-    /**
-     * @param uri the uri to set
-     */
     public void setUri(String uri) {
         this.uri = uri;
     }
 
-
-    /**
-     * @return the title_l10n
-     */
     public String getTitle_l10n() {
         return title_l10n;
     }
-
-
-    /**
-     * @param title_l10n the title_l10n to set
-     */
     public void setTitle_l10n(String title_l10n) {
         this.title_l10n = title_l10n;
     }
 
-
-    /**
-     * @return the mimeType
-     */
     public String getMimeType() {
         return mimeType;
     }
-
-
-    /**
-     * @param mimeType the mimeType to set
-     */
     public void setMimeType(String mimeType) {
         this.mimeType = mimeType;
     }
 
-
-    /**
-     * @return the size
-     */
     public Integer getSize() {
         return size;
     }
-
-
-    /**
-     * @param size the size to set
-     */
     public void setSize(Integer size) {
         this.size = size;
     }
-
-
 
 }
