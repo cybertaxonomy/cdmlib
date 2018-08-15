@@ -266,7 +266,20 @@ public class TaxonRelationshipsDTO {
      */
     private boolean tagIsSensu(TaggedText tag) {
         if (tag.getType() == TagEnum.sensuReference ||
-                tag.getType() == TagEnum.sensuMicroReference){
+                tag.getType() == TagEnum.sensuMicroReference ||
+                isSensuSeparator(tag)){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @param tag
+     * @return
+     */
+    private boolean isSensuSeparator(TaggedText tag) {
+        if (SENSU_SEPARATOR.equals(tag.getText())
+                && tag.getType() == TagEnum.separator) {
             return true;
         }
         return false;
