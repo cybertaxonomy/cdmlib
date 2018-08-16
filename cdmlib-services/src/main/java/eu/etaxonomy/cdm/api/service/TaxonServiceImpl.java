@@ -3214,14 +3214,12 @@ public class TaxonServiceImpl
 //
 //        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);;
 
-            //TODO type
-            TaxonRelationshipType type = null;
             //TODO languages
             List<Language> languages = null;
             if (doDirect){
                 direction = Direction.relatedTo;
                 //TODO order hints, property path
-                List<TaxonRelationship> relations = dao.getTaxonRelationships(taxon, type, includeUnpublished, pageSize, pageNumber, null, null, direction.invers());
+                List<TaxonRelationship> relations = dao.getTaxonRelationships(taxon, types, includeUnpublished, pageSize, pageNumber, null, null, direction.invers());
                 for (TaxonRelationship relation : relations){
                     dto.addRelation(relation, direction, languages);
                 }
@@ -3229,7 +3227,7 @@ public class TaxonServiceImpl
             if (doInvers){
                 direction = Direction.relatedFrom;
                 //TODO order hints, property path
-                List<TaxonRelationship> relations = dao.getTaxonRelationships(taxon, type, includeUnpublished, pageSize, pageNumber, null, null, direction.invers());
+                List<TaxonRelationship> relations = dao.getTaxonRelationships(taxon, types, includeUnpublished, pageSize, pageNumber, null, null, direction.invers());
                 for (TaxonRelationship relation : relations){
                     dto.addRelation(relation, direction, languages);
                 }
