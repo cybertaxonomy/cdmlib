@@ -469,7 +469,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
             return new ArrayList<T>(0);
         }
 
-        Criteria criteria = prepareList(ids, null, null, null, "id");
+        Criteria criteria = prepareList(null, ids, null, null, null, "id");
 
         if (logger.isDebugEnabled()) {
             logger.debug(criteria.toString());
@@ -489,9 +489,24 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
             return new ArrayList<>();
         }
 
-        Criteria criteria = prepareList(uuids, pageSize, pageNumber, orderHints, "uuid");
+        Criteria criteria = prepareList(null, uuids, pageSize, pageNumber, orderHints, "uuid");
         @SuppressWarnings("unchecked")
         List<T> result = criteria.list();
+        defaultBeanInitializer.initializeAll(result, propertyPaths);
+        return result;
+    }
+
+    @Override
+    public <S extends T> List<S> list(Class<S> clazz, Collection<UUID> uuids, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+            List<String> propertyPaths) throws DataAccessException {
+
+        if (uuids == null || uuids.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        Criteria criteria = prepareList(clazz, uuids, pageSize, pageNumber, orderHints, "uuid");
+        @SuppressWarnings("unchecked")
+        List<S> result = criteria.list();
         defaultBeanInitializer.initializeAll(result, propertyPaths);
         return result;
     }
@@ -681,9 +696,12 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
      * @param propertyName
      * @return
      */
-    private Criteria prepareList(Collection<?> uuids, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+    private Criteria prepareList(Class<? extends T> clazz, Collection<?> uuids, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             String propertyName) {
-        Criteria criteria = getSession().createCriteria(type);
+        if (clazz == null){
+            clazz = type;
+        }
+        Criteria criteria = getSession().createCriteria(clazz);
         criteria.add(Restrictions.in(propertyName, uuids));
 
         if (pageSize != null) {

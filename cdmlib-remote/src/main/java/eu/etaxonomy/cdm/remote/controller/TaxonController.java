@@ -44,8 +44,6 @@ import eu.etaxonomy.cdm.api.service.dto.IncludedTaxaDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonRelationshipsDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.exception.UnpublishedException;
-import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -62,6 +60,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.dto.common.StringResultDTO;
 import eu.etaxonomy.cdm.remote.editor.TermBasePropertyEditor;
+import eu.etaxonomy.cdm.remote.editor.UuidList;
 import io.swagger.annotations.Api;
 
 /**
@@ -468,8 +467,9 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
     public TaxonRelationshipsDTO doGetTaxonRelationshipsDTO(
             @PathVariable("uuid") UUID taxonUuid,
             //TODO should be set
-            @RequestParam(value = "type", required = false) UUID typeUuid,
+            @RequestParam(value = "types", required = false) UuidList typeUuids,
             @RequestParam(value = "direction", required = false) Direction direction,
+            @RequestParam(value="deduplicateMisapplications", required=false, defaultValue="true") final boolean deduplicateMisapplications,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
@@ -477,19 +477,19 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
 
         logger.info("doGetTaxonRelationshipDTOs(): " + request.getRequestURI());
         TaxonBase<?> taxonBase = service.load(taxonUuid);
-        Taxon taxon = checkExistsAccessType(taxonBase, includeUnpublished, Taxon.class, response);
+        checkExistsAccessType(taxonBase, includeUnpublished, Taxon.class, response);
 
         Set<TaxonRelationshipType> types = null;
-        if (typeUuid != null){
+
+        if (typeUuids != null && !typeUuids.isEmpty()){
             types = new HashSet<>();
-            DefinedTermBase<?> type = termService.find(typeUuid);
-            if (type.isInstanceOf(TaxonRelationshipType.class)){
-                types.add(CdmBase.deproxy(type, TaxonRelationshipType.class));
-            }else{
-                HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
-            }
+            List<TaxonRelationshipType> typeList = termService.find(TaxonRelationshipType.class, new HashSet<>(typeUuids));
+            types.addAll(typeList);
+            //TODO should we handle missing uuids as error response
+//            HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
         }
-        boolean deduplicateMisapplications = true;
+
+//        boolean deduplicateMisapplications = true;
         Integer pageSize = null;
         Integer pageNumber = null;
         return service.listTaxonRelationships(taxonUuid, types, direction, deduplicateMisapplications,

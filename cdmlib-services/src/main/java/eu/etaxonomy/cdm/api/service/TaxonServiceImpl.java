@@ -569,7 +569,8 @@ public class TaxonServiceImpl
         if(logger.isDebugEnabled()){
             logger.debug("collecting related taxa for " + taxon + " with maxDepth=" + maxDepth);
         }
-        List<TaxonRelationship> taxonRelationships = dao.getTaxonRelationships(taxon, null, includeUnpublished, null, null, null, null, null);
+        List<TaxonRelationship> taxonRelationships = dao.getTaxonRelationships(taxon,
+                (Set<TaxonRelationshipType>)null, includeUnpublished, null, null, null, null, null);
         for (TaxonRelationship taxRel : taxonRelationships) {
 
             // skip invalid data

@@ -15,12 +15,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.hibernate.Criteria;
 import org.hibernate.LockOptions;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.dao.DataAccessException;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -357,6 +354,21 @@ public interface ICdmEntityDao<T extends CdmBase> {
      * @throws DataAccessException
      */
     public List<T> list(Collection<UUID> uuids, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws DataAccessException;
+
+
+    /**
+     * @param clazz
+     * @param uuids
+     * @param pageSize
+     * @param pageNumber
+     * @param orderHints
+     * @param propertyPaths
+     * @return
+     * @throws DataAccessException
+     */
+    public <S extends T> List<S> list(Class<S> clazz, Collection<UUID> uuids, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws DataAccessException;
+
+
 
     /**
      * Finds the cdm entity specified by the <code>uuid</code> parameter and

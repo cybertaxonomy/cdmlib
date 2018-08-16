@@ -19,11 +19,14 @@ import java.util.UUID;
 import org.hibernate.LockOptions;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
+import org.hibernate.event.spi.MergeEvent;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
+import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
+import eu.etaxonomy.cdm.persistence.hibernate.PostMergeEntityListener;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -107,6 +110,15 @@ public interface IService<T extends ICdmBase>{
      * @return a list of entities of type <T>
      */
     public List<T> find(Set<UUID> uuidSet);
+
+    /**
+     * Return a list of persisted entities that match the unique identifier
+     * set supplied as an argument and that do match the supplied class.
+     *
+     * @param uuidSet the set of unique identifiers of the entities required
+     * @return a list of entities of type <T>
+     */
+    public <S extends T> List<S> find(Class<S> clazz, Set<UUID> uuidSet);
 
     /**
      * Return a persisted entity that matches the unique identifier

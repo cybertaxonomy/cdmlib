@@ -123,6 +123,13 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
         return dao.list(uuidSet, null, null, null, null);
     }
 
+
+    @Override
+    @Transactional(readOnly = true)
+    public <S extends T> List<S> find(Class<S> clazz, Set<UUID> uuidSet) {
+        return dao.list(clazz, uuidSet, null, null, null, null);
+    }
+
     @Override
     @Transactional(readOnly = true)
     public List<T> findById(Set<Integer> idSet) {  //can't be called find(Set<Integer>) as this conflicts with find(Set<UUID)
