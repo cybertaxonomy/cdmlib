@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
+import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
 
 /**
  * @author a.mueller
@@ -89,8 +90,7 @@ public class TaxonRelationshipFormatter {
             tags.add(TaggedText.NewInstance(TagEnum.postSeparator, endQuote));
         }else{
             tags.add(TaggedText.NewWhitespaceInstance());
-            //name title cache
-            //TODO fullTitle?
+            //name full title cache
             List<TaggedText> nameCacheTags = getNameTitleCacheTags(name);
             tags.addAll(nameCacheTags);
         }
@@ -101,7 +101,7 @@ public class TaxonRelationshipFormatter {
             tags.add(TaggedText.NewWhitespaceInstance());
             tags.add(TaggedText.NewInstance(TagEnum.appendedPhrase, relatedTaxon.getAppendedPhrase()));
         }
-        List<TaggedText> secTags = getSensuTags(relatedTaxon.getSec(), relatedTaxon.getSecMicroReference(), isMisapplied);
+        List<TaggedText> secTags = getSensuTags(relatedTaxon.getSec(), relatedTaxon.getSecMicroReference(), isMisapplied, false);
         if (!secTags.isEmpty()) {
             tags.add(TaggedText.NewSeparatorInstance(isMisapplied? SENSU_SEPARATOR : SEC_SEPARATOR));
             tags.addAll(secTags);
@@ -109,7 +109,7 @@ public class TaxonRelationshipFormatter {
             if (isMisapplied){
                 tags.add(TaggedText.NewWhitespaceInstance());
                 //TODO type unclear sensuReference(?)
-                tags.add(TaggedText.NewInstance(TagEnum.authors, AUCT));
+                tags.add(TaggedText.NewInstance(TagEnum.appendedPhrase, AUCT));
             }else{
                 tags.add(TaggedText.NewSeparatorInstance(SEC_SEPARATOR + UNKNOWN_SEC));
             }
@@ -117,18 +117,17 @@ public class TaxonRelationshipFormatter {
 
 //        //, non author
         if (isMisapplied && name != null){
-            if (name.getCombinationAuthorship() != null){
+            if (name.getCombinationAuthorship() != null && isNotBlank(name.getCombinationAuthorship().getNomenclaturalTitle())){
                 tags.add(TaggedText.NewSeparatorInstance(NON_SEPARATOR));
-                //TODO add nom. ref. author tags
+                tags.add(TaggedText.NewInstance(TagEnum.authors, name.getCombinationAuthorship().getNomenclaturalTitle()));
             }else if (isNotBlank(name.getAuthorshipCache())){
                 tags.add(TaggedText.NewSeparatorInstance(NON_SEPARATOR));
                 tags.add(TaggedText.NewInstance(TagEnum.authors, name.getAuthorshipCache().trim()));
             }
         }
 
-        //TODO tagEnum for relSec?
-        List<TaggedText> relSecTags = getSensuTags /*getCitationTags*/(taxonRelationship.getCitation(),
-                taxonRelationship.getCitationMicroReference(), false);
+        List<TaggedText> relSecTags = getSensuTags(taxonRelationship.getCitation(),
+                taxonRelationship.getCitationMicroReference(), false, true);
         if (!relSecTags.isEmpty()){
             TaggedText relSecSeparatorToag = TaggedText.NewSeparatorInstance(isSynonym ? SYN_SEC : isMisapplied ? ERR_SEC : REL_SEC);
             tags.add(relSecSeparatorToag);
@@ -138,7 +137,7 @@ public class TaxonRelationshipFormatter {
         return tags;
     }
 
-    private List<TaggedText> getSensuTags(Reference ref, String detail, boolean isSensu) {
+    private List<TaggedText> getSensuTags(Reference ref, String detail, boolean isSensu, boolean isRelation) {
         List<TaggedText> result = new ArrayList<>();
         String secRef;
 
@@ -164,15 +163,14 @@ public class TaxonRelationshipFormatter {
             }else{
                 secRef = ref.getTitleCache();
             }
-            TagEnum secType = isSensu? TagEnum.sensuReference : TagEnum.secReference;
+            TagEnum secType = isSensu? TagEnum.sensuReference : isRelation? TagEnum.relSecReference : TagEnum.secReference;
             TaggedText refTag = TaggedText.NewInstance(secType, secRef);
             refTag.setEntityReference(new TypedEntityReference<>(CdmBase.deproxy(ref.getClass()), ref.getUuid(), secRef));
             result.add(refTag);
         }
         if (isNotBlank(detail)){
             result.add(TaggedText.NewSeparatorInstance(DETAIL_SEPARATOR));
-            //TODO do we need a sensu micro reference??
-            TagEnum detailType = isSensu? TagEnum.sensuMicroReference : TagEnum.secMicroReference;
+            TagEnum detailType = isSensu? TagEnum.sensuMicroReference : isRelation? TagEnum.relSecMicroReference :TagEnum.secMicroReference;
             TaggedText microTag = TaggedText.NewInstance(detailType, detail);
             result.add(microTag);
         }
@@ -197,13 +195,13 @@ public class TaxonRelationshipFormatter {
             }
             for (Person member : team.getTeamMembers()){
                 String name = isNotBlank(member.getFamilyName())? member.getFamilyName(): member.getTitleCache();
-                String separator = index < n ? ", " : " & ";
+                String separator = index < n ? TeamDefaultCacheStrategy.STD_TEAM_CONCATINATION : TeamDefaultCacheStrategy.FINAL_TEAM_CONCATINATION;
                 result = CdmUtils.concat(separator, result, name);
                 index++;
             }
             if (team.isHasMoreMembers()){
                 //TODO or et al.???
-                result += " & al.";
+                result += TeamDefaultCacheStrategy.ET_AL_TEAM_CONCATINATION_FULL + "al.";
             }
             return result;
         }

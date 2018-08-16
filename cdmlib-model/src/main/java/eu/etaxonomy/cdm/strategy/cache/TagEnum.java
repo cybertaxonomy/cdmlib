@@ -93,6 +93,14 @@ public enum TagEnum {
      */
     sensuMicroReference,
     /**
+     * a reference as used in a relation (e.g. TaxonRelationship reference)
+     */
+    relSecReference,
+    /**
+     * a micro reference as used in a relation (e.g. TaxonRelationship micro reference)
+     */
+    relSecMicroReference,
+    /**
      * Any type of label
      */
     label,
