@@ -165,7 +165,7 @@ public class TaxonRelationshipFormatter {
             }
             TagEnum secType = isSensu? TagEnum.sensuReference : isRelation? TagEnum.relSecReference : TagEnum.secReference;
             TaggedText refTag = TaggedText.NewInstance(secType, secRef);
-            refTag.setEntityReference(new TypedEntityReference<>(CdmBase.deproxy(ref.getClass()), ref.getUuid(), secRef));
+            refTag.setEntityReference(new TypedEntityReference<>(CdmBase.deproxy(ref).getClass(), ref.getUuid()));
             result.add(refTag);
         }
         if (isNotBlank(detail)){
