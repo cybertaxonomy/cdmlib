@@ -41,7 +41,7 @@ public class TaxonRelationshipFormatter {
     private static final String SYN_SEC = ", syn. sec. ";
     private static final String UNKNOWN_SEC = "???";
     private static final String NON_SEPARATOR = ", non ";
-    private static final String QUOTE_START = "\"";   //TODO
+    private static final String QUOTE_START = " \"";   //TODO
     private static final String QUOTE_END = "\"";   //TODO
     private static final String AUCT = "auct.";
     private static final String SENSU_SEPARATOR = " sensu ";
@@ -74,9 +74,6 @@ public class TaxonRelationshipFormatter {
         String symbol = getSymbol(type, reverse, languages);
         tags.add(TaggedText.NewInstance(TagEnum.symbol, symbol));
 
-        //whitespace
-        tags.add(TaggedText.NewWhitespaceInstance());
-
         //name
         if (isMisapplied){
             //starting quote
@@ -89,8 +86,9 @@ public class TaxonRelationshipFormatter {
 
             //end quote
             String endQuote = QUOTE_END;
-            tags.add(TaggedText.NewSeparatorInstance(endQuote));
+            tags.add(TaggedText.NewInstance(TagEnum.postSeparator, endQuote));
         }else{
+            tags.add(TaggedText.NewWhitespaceInstance());
             //name title cache
             //TODO fullTitle?
             List<TaggedText> nameCacheTags = getNameTitleCacheTags(name);
@@ -213,40 +211,6 @@ public class TaxonRelationshipFormatter {
 
 
     /**
-     * @param sec
-     * @param secMicroReference
-     * @return
-     */
-    private List<TaggedText> getCitationTags(Reference ref, String secMicroReference) {
-        List<TaggedText> result = new ArrayList<>();
-        String secRef;
-
-        if (ref != null){
-            //copied from TaxonBaseDefaultCacheStrategy
-            if (ref.isProtectedTitleCache() == false &&
-                    ref.getCacheStrategy() != null &&
-                    ref.getAuthorship() != null &&
-                    isNotBlank(ref.getAuthorship().getTitleCache()) &&
-                    isNotBlank(ref.getYear())){
-                secRef = ref.getCacheStrategy().getCitation(ref);
-            }else{
-                secRef = ref.getTitleCache();
-            }
-            //TODO do we need a sensuReference type?
-            TaggedText refTag = TaggedText.NewInstance(TagEnum.secReference, secRef);
-            refTag.setEntityReference(new TypedEntityReference<>(ref.getClass(), ref.getUuid(), secRef));
-            result.add(refTag);
-        }
-        if (isNotBlank(secMicroReference)){
-            result.add(TaggedText.NewSeparatorInstance(DETAIL_SEPARATOR));
-            TaggedText microTag = TaggedText.NewInstance(TagEnum.secMicroReference, secMicroReference);
-            result.add(microTag);
-        }
-        return result;
-    }
-
-
-    /**
      * @param name
      * @return
      */
@@ -258,7 +222,7 @@ public class TaxonRelationshipFormatter {
     private List<TaggedText> getNameTitleCacheTags(TaxonName name) {
 
         //TODO full title?
-        List<TaggedText> result = name.getCacheStrategy().getTaggedTitle(name);
+        List<TaggedText> result = name.getCacheStrategy().getTaggedFullTitle(name);
         return result;
     }
 

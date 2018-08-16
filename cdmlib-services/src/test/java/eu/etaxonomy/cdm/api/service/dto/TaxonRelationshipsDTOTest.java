@@ -129,9 +129,9 @@ public class TaxonRelationshipsDTOTest {
         List<List<TaggedText>> misapplications = dto.getMisapplications();
         Assert.assertEquals(2, misapplications.size());  //1 deduplicated
         List<TaggedText> deduplicated = misapplications.get(0);
-        Assert.assertEquals(14, deduplicated.size());
-        Assert.assertSame(relToDuplicate.getTaggedText().get(7), deduplicated.get(9));
-        Assert.assertEquals(12, misapplications.get(1).size());
+        Assert.assertEquals(13, deduplicated.size());
+        Assert.assertSame(relToDuplicate.getTaggedText().get(6), deduplicated.get(8));
+        Assert.assertEquals(11, misapplications.get(1).size());
 
     }
 
