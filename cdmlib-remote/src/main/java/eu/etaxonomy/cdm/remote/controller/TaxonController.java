@@ -44,6 +44,7 @@ import eu.etaxonomy.cdm.api.service.dto.IncludedTaxaDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonRelationshipsDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.exception.UnpublishedException;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -466,10 +467,10 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
     @RequestMapping(value = "taxonRelationshipsDTO", method = RequestMethod.GET)
     public TaxonRelationshipsDTO doGetTaxonRelationshipsDTO(
             @PathVariable("uuid") UUID taxonUuid,
-            //TODO should be set
-            @RequestParam(value = "types", required = false) UuidList typeUuids,
+            @RequestParam(value = "directTypes", required = false) UuidList directTypeUuids,
+            @RequestParam(value = "inversTypes", required = false) UuidList inversTypeUuids,
             @RequestParam(value = "direction", required = false) Direction direction,
-            @RequestParam(value="deduplicateMisapplications", required=false, defaultValue="true") final boolean deduplicateMisapplications,
+            @RequestParam(value="groupMisapplications", required=false, defaultValue="true") final boolean groupMisapplications,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
@@ -479,21 +480,42 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
         TaxonBase<?> taxonBase = service.load(taxonUuid);
         checkExistsAccessType(taxonBase, includeUnpublished, Taxon.class, response);
 
-        Set<TaxonRelationshipType> types = null;
+        Set<TaxonRelationshipType> directTypes = getTermsByUuidSet(TaxonRelationshipType.class, directTypeUuids);
+        Set<TaxonRelationshipType> inversTypes = getTermsByUuidSet(TaxonRelationshipType.class, inversTypeUuids);
 
-        if (typeUuids != null && !typeUuids.isEmpty()){
-            types = new HashSet<>();
-            List<TaxonRelationshipType> typeList = termService.find(TaxonRelationshipType.class, new HashSet<>(typeUuids));
-            types.addAll(typeList);
-            //TODO should we handle missing uuids as error response
-//            HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
-        }
+//        Set<TaxonRelationshipType> inversTypes = null;
+//        if (directTypeUuids != null && !directTypeUuids.isEmpty()){
+//            types = new HashSet<>();
+//            List<TaxonRelationshipType> typeList = termService.find(TaxonRelationshipType.class, new HashSet<>(directTypeUuids));
+//            types.addAll(typeList);
+//            //TODO should we handle missing uuids as error response
+////            HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
+//        }
+
+
 
 //        boolean deduplicateMisapplications = true;
         Integer pageSize = null;
         Integer pageNumber = null;
-        return service.listTaxonRelationships(taxonUuid, types, direction, deduplicateMisapplications,
+        return service.listTaxonRelationships(taxonUuid, directTypes, inversTypes, direction, groupMisapplications,
                 includeUnpublished, pageSize, pageNumber);
+    }
+
+    /**
+     * @param directTypeUuids
+     * @return
+     */
+    protected <T extends DefinedTermBase<T>> Set<T> getTermsByUuidSet(Class<T> clazz, UuidList directTypeUuids) {
+        Set<T> directTypes = null;
+
+        if (directTypeUuids != null && !directTypeUuids.isEmpty()){
+            directTypes = new HashSet<>();
+            List<T> typeList = termService.find(clazz, new HashSet<>(directTypeUuids));
+            directTypes.addAll(typeList);
+            //TODO should we handle missing uuids as error response
+//            HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
+        }
+        return directTypes;
     }
 
     // TODO ================================================================================ //

@@ -957,13 +957,18 @@ public interface ITaxonService
     /**
      * Returns a list of taxon relationships for a given taxon as DTO.
      * @param taxonUuid
-     * @param configuration
+     * @param directTypes
+     * @param inversTypes
+     * @param direction
+     * @param groupMisapplications
+     * @param includeUnpublished
+     * @param pageSize
+     * @param pageNumber
      * @return
      */
-    //TODO paging
     public TaxonRelationshipsDTO listTaxonRelationships(UUID taxonUuid,
-            Set<TaxonRelationshipType> types,
-            Direction direction, boolean deduplicateMisapplications,
+            Set<TaxonRelationshipType> directTypes,
+            Set<TaxonRelationshipType> inversTypes, Direction direction, boolean groupMisapplications,
             boolean includeUnpublished, Integer pageSize, Integer pageNumber);
 
 

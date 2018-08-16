@@ -3189,8 +3189,9 @@ public class TaxonServiceImpl
      * {@inheritDoc}
      */
     @Override
-    public TaxonRelationshipsDTO listTaxonRelationships(UUID taxonUuid, Set<TaxonRelationshipType> types,
-            Direction direction, boolean deduplicateMisapplications,
+    public TaxonRelationshipsDTO listTaxonRelationships(UUID taxonUuid, Set<TaxonRelationshipType> directTypes,
+            Set<TaxonRelationshipType> inversTypes,
+            Direction direction, boolean groupMisapplications,
             boolean includeUnpublished,
             Integer pageSize, Integer pageNumber) {
         TaxonBase<?> taxonBase = dao.load(taxonUuid);
@@ -3219,7 +3220,7 @@ public class TaxonServiceImpl
             if (doDirect){
                 direction = Direction.relatedTo;
                 //TODO order hints, property path
-                List<TaxonRelationship> relations = dao.getTaxonRelationships(taxon, types, includeUnpublished, pageSize, pageNumber, null, null, direction.invers());
+                List<TaxonRelationship> relations = dao.getTaxonRelationships(taxon, directTypes, includeUnpublished, pageSize, pageNumber, null, null, direction.invers());
                 for (TaxonRelationship relation : relations){
                     dto.addRelation(relation, direction, languages);
                 }
@@ -3227,12 +3228,13 @@ public class TaxonServiceImpl
             if (doInvers){
                 direction = Direction.relatedFrom;
                 //TODO order hints, property path
-                List<TaxonRelationship> relations = dao.getTaxonRelationships(taxon, types, includeUnpublished, pageSize, pageNumber, null, null, direction.invers());
+                List<TaxonRelationship> relations = dao.getTaxonRelationships(taxon, inversTypes, includeUnpublished, pageSize, pageNumber, null, null, direction.invers());
                 for (TaxonRelationship relation : relations){
                     dto.addRelation(relation, direction, languages);
                 }
             }
-            if (deduplicateMisapplications){
+            if (groupMisapplications){
+                //TODO
                 dto.createMisapplicationString();
             }
             return dto;
