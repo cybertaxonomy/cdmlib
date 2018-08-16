@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.api.service.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.joda.time.DateTime;
@@ -18,9 +19,11 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.format.taxon.TaxonRelationshipFormatter;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
+import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
@@ -46,7 +49,7 @@ public class TaxonRelationshipsDTO {
         private String cache;
         private List<TaggedText> taggedText;
         //TODO maybe this will be changed in future
-        private TaxonRelationshipType type;
+        private TermDto type;
         private UUID typeUuid;
 
 
@@ -57,16 +60,17 @@ public class TaxonRelationshipsDTO {
             this.doubtful = relation.isDoubtful();
             this.relationUuid = relation.getUuid();
             this.direction = direction;
-            this.type = relation.getType();
+            TaxonRelationshipType relType = relation.getType();
 
-            if (this.type != null){
-                this.misapplication = type.isMisappliedNameOrInvalidDesignation();
-                this.synonym = type.isAnySynonym();
-                this.typeUuid = type.getUuid();
-                //TODO there must be a better DTO which also includes
-//                Set<Representation> representations = direction.isDirect() ? relType.getRepresentations() : relType.getInverseRepresentations();
-//                UUID vocUuid = relType.getVocabulary() != null ? relType.getVocabulary().getUuid(): null;
-//                TermDto termDto = new TermDto(relType.getUuid(), representations, null, vocUuid, relType.getOrderIndex());
+            if (relType != null){
+                this.misapplication = relType.isMisappliedNameOrInvalidDesignation();
+                this.synonym = relType.isAnySynonym();
+                this.typeUuid = relType.getUuid();
+//                TODO there must be a better DTO which also includes
+                Set<Representation> representations = direction.isDirect() ? relType.getRepresentations() : relType.getInverseRepresentations();
+                UUID vocUuid = relType.getVocabulary() != null ? relType.getVocabulary().getUuid(): null;
+                TermDto termDto = new TermDto(relType.getUuid(), representations, null, vocUuid, relType.getOrderIndex());
+                this.type = termDto;
 //                TODO localize
 //                termDto.localize(representation_L10n);
             }
@@ -138,11 +142,27 @@ public class TaxonRelationshipsDTO {
             this.synonym = synonym;
         }
 
-        public TaxonRelationshipType getType() {
+        public TermDto getType() {
             return type;
         }
-        public void setType(TaxonRelationshipType type) {
+        public void setType(TermDto type) {
             this.type = type;
+        }
+
+
+        /**
+         * @return the typeUuid
+         */
+        public UUID getTypeUuid() {
+            return typeUuid;
+        }
+
+
+        /**
+         * @param typeUuid the typeUuid to set
+         */
+        public void setTypeUuid(UUID typeUuid) {
+            this.typeUuid = typeUuid;
         }
 
     }
