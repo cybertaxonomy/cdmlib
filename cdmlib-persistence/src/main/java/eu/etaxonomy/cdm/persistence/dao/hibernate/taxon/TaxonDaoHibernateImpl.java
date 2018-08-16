@@ -963,7 +963,7 @@ public class TaxonDaoHibernateImpl
             Query query = getSession().createQuery(queryString);
             query.setParameter("relatedTaxon", taxon);
             if(type != null) {
-                query.setParameter("type",type);
+                query.setParameterList("types",types);
             }
             if(! includeUnpublished) {
                 query.setBoolean("publish",Boolean.TRUE);
