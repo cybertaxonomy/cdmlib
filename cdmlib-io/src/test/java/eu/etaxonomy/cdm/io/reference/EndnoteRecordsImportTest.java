@@ -66,7 +66,6 @@ public class EndnoteRecordsImportTest extends CdmTransactionalIntegrationTest {
 	}
 
 	@Test
-	@Ignore
 	public void testDoInvokeWithoutExceptions() {
 		defaultImport.invoke(configurator);
 	}

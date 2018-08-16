@@ -131,10 +131,10 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
 
         //add blockedBy_id
         stepName= "Add blockedBy_id to Registration";
-         firstTableName = "Registration";
-         secondTableName = "Registration";
-         attributeName = "blockedBy";
-         isList = ! IS_LIST;
+        firstTableName = "Registration";
+        secondTableName = "Registration";
+        attributeName = "blockedBy";
+        isList = ! IS_LIST;
         step = MnTableCreator.NewMnInstance(stepName, firstTableName, null, secondTableName, null, attributeName, INCLUDE_AUDIT, isList, IS_M_TO_M);
         stepList.add(step);
 
@@ -160,7 +160,7 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
         stepName = "Add structure column to DefinedTermBase (Character)";
         tableName = "DefinedTermBase";
         newColumnName = "structure_id";
-         referencedTable = "FeatureNode";
+        referencedTable = "FeatureNode";
         step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
         stepList.add(step);
 

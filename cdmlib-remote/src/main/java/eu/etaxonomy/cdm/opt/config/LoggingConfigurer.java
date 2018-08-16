@@ -99,7 +99,7 @@ public class LoggingConfigurer extends AbstractWebApplicationConfigurer implemen
     @Override
     public void afterPropertiesSet() throws Exception {
         // per instance logfiles disabled, see #6249
-        configureLogFile();
+        // configureLogFile();
         configureInstanceNamePrefix();
     }
 

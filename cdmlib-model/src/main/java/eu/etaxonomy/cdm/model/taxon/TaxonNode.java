@@ -324,7 +324,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
      */
     protected void setParent(TaxonNode parent) {
         this.parent = parent;
-//        this.treeIndex = parent.treeIndex() + "#"+this.getId()+"#";
+//        this.treeIndex = parent.treeIndex() +
     }
 
     // *************** Excluded Note ***************
@@ -526,18 +526,14 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
      */
     @Transient
     private void setClassificationRecursively(Classification newClassification) {
-        try{
-            if (newClassification == null){
-            	throw new IllegalArgumentException("New Classification must not be 'null' when setting new classification.");
+        if (newClassification == null){
+        	throw new IllegalArgumentException("New Classification must not be 'null' when setting new classification.");
+        }
+    	if(! newClassification.equals(this.getClassification())){
+            this.setClassification(newClassification);
+            for(TaxonNode childNode : this.getChildNodes()){
+                childNode.setClassificationRecursively(newClassification);
             }
-        	if(! newClassification.equals(this.getClassification())){
-                this.setClassification(newClassification);
-                for(TaxonNode childNode : this.getChildNodes()){
-                    childNode.setClassificationRecursively(newClassification);
-                }
-            }
-        }catch (NullPointerException e){
-            System.err.println("NPE???");
         }
     }
 
