@@ -196,7 +196,7 @@ public class TaxonRelationshipsDTO {
             if (relation.isMisapplication()){
                 List<TaggedText> tags = relation.getTaggedText();
 
-                boolean isDuplicate = false;;
+                boolean isDuplicate = false;
                 for (List<TaggedText> existing: result){
                     isDuplicate = mergeIfDuplicate(existing, tags);
                     if (isDuplicate){
@@ -230,7 +230,7 @@ public class TaxonRelationshipsDTO {
         boolean isDuplicate = true;
         while (isDuplicate && i < first.size() && j< second.size()){
             if (tagEqualsMisapplied(first.get(i), second.get(i))){
-                //do nothing
+                i++;j++;
             }else if (!sensuHandled){
                 while (i < first.size() && tagIsSensu(first.get(i))){
                     i++;
@@ -244,10 +244,11 @@ public class TaxonRelationshipsDTO {
                 sensuHandled = true;
             }else{
                 isDuplicate = false;
+                i++;j++; //not really necessary
             }
-            i++;j++;
+
         }
-        isDuplicate = isDuplicate && (i == first.size() || j == second.size());
+        isDuplicate = isDuplicate && i == first.size() && j == second.size();
         if (isDuplicate && sensuEndInFirst > -1 && sensuStartInSecond > -1){
             first.addAll(sensuEndInFirst, second.subList(sensuStartInSecond, senusEndInSecond));
             first.add(sensuEndInFirst, TaggedText.NewSeparatorInstance(SENSU_SEPARATOR));
@@ -289,8 +290,8 @@ public class TaxonRelationshipsDTO {
      */
     private boolean tagEqualsMisapplied(TaggedText x, TaggedText y) {
         if (CdmUtils.nullSafeEqual(x.getText(),y.getText())
-                && x.getType().equals(y.getType())){
-            //TODO entity
+                && x.getType().equals(y.getType())
+                && CdmUtils.nullSafeEqual(x.getEntityReference(),y.getEntityReference())){
             return true;
         }else{
             return false;

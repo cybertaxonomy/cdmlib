@@ -112,26 +112,47 @@ public class TaxonRelationshipsDTOTest {
 
     @Test
     public void test() {
+        //2
         Reference sec2 = ReferenceFactory.newGeneric();
         sec2.setAuthorship(Person.NewInstance("Mue.", "Mueller", "I.", "Inger"));
         sec2.setDatePublished(TimePeriodParser.parseStringVerbatim("1987"));
         Taxon from2 = Taxon.NewInstance(fromName, sec2);
         TaxonRelationship rel2 = toTaxon.addMisappliedName(from2, sec2, "333");
+        //3
         //same as rel1 except for sec
         TaxonRelationship rel3 = toTaxon.addMisappliedName(from2, taxonRel.getCitation(), taxonRel.getCitationMicroReference());
+
+        Taxon taxon2 = Taxon.NewInstance(fromName, sec2);
+        Taxon taxon2Dupl = Taxon.NewInstance(fromName, toSec);
+
+        //4
+        TaxonRelationship rel4 = toTaxon.addMisappliedName(taxon2, null, null);
+        TaxonRelationship rel5 = toTaxon.addMisappliedName(taxon2Dupl, null, null);
+
 
         TaxonRelationshipsDTO dto = new TaxonRelationshipsDTO();
 
         dto.addRelation(taxonRel, Direction.relatedFrom, languages);
         dto.addRelation(rel2, Direction.relatedFrom, languages);
         TaxonRelation relToDuplicate = dto.addRelation(rel3, Direction.relatedFrom, languages);
+        dto.addRelation(rel4, Direction.relatedFrom, languages);
+        TaxonRelation duplicateWithoutRelSec2 = dto.addRelation(rel5, Direction.relatedFrom, languages);
+
         dto.createMisapplicationString();
+
         List<List<TaggedText>> misapplications = dto.getMisapplications();
-        Assert.assertEquals(2, misapplications.size());  //1 deduplicated
+        Assert.assertEquals("2 of 5 misapplications must be deduplicated", 3, misapplications.size());  //2/5 were deduplicated
+
         List<TaggedText> deduplicated = misapplications.get(0);
         Assert.assertEquals(13, deduplicated.size());
         Assert.assertSame(relToDuplicate.getTaggedText().get(6), deduplicated.get(8));
+
         Assert.assertEquals(11, misapplications.get(1).size());
+
+        deduplicated = misapplications.get(2);
+        Assert.assertEquals(9, deduplicated.size());
+        Assert.assertSame(duplicateWithoutRelSec2.getTaggedText().get(6), deduplicated.get(8));
+
 
     }
 
