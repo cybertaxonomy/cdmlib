@@ -47,6 +47,7 @@ public class TaxonRelationshipsDTO {
         private List<TaggedText> taggedText;
         //TODO maybe this will be changed in future
         private TaxonRelationshipType type;
+        private UUID typeUuid;
 
 
         public TaxonRelation(TaxonRelationship relation, Direction direction, List<Language> languages) {
@@ -56,18 +57,18 @@ public class TaxonRelationshipsDTO {
             this.doubtful = relation.isDoubtful();
             this.relationUuid = relation.getUuid();
             this.direction = direction;
-            TaxonRelationshipType relType = relation.getType();
-            if (relType != null){
-                this.misapplication = relType.isMisappliedNameOrInvalidDesignation();
-                this.synonym = relType.isAnySynonym();
+            this.type = relation.getType();
+
+            if (this.type != null){
+                this.misapplication = type.isMisappliedNameOrInvalidDesignation();
+                this.synonym = type.isAnySynonym();
+                this.typeUuid = type.getUuid();
                 //TODO there must be a better DTO which also includes
 //                Set<Representation> representations = direction.isDirect() ? relType.getRepresentations() : relType.getInverseRepresentations();
 //                UUID vocUuid = relType.getVocabulary() != null ? relType.getVocabulary().getUuid(): null;
 //                TermDto termDto = new TermDto(relType.getUuid(), representations, null, vocUuid, relType.getOrderIndex());
 //                TODO localize
 //                termDto.localize(representation_L10n);
-                this.setType(relType);
-                this.misapplication = relation.getType().isAnyMisappliedName();
             }
             List<TaggedText> tags = new TaxonRelationshipFormatter().getTaggedText(
                     relation, direction == Direction.relatedFrom, languages);
