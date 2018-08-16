@@ -43,7 +43,7 @@ public class TaxonRelationshipFormatter {
     private static final String SYN_SEC = ", syn. sec. ";
     private static final String UNKNOWN_SEC = "???";
     private static final String NON_SEPARATOR = ", non ";
-    private static final String QUOTE_START = " \"";   //TODO
+    private static final String QUOTE_START = "\"";   //TODO
     private static final String QUOTE_END = "\"";   //TODO
     private static final String AUCT = "auct.";
     private static final String SENSU_SEPARATOR = " sensu ";
@@ -62,12 +62,16 @@ public class TaxonRelationshipFormatter {
         boolean isMisapplied = type == null ? false : type.isMisappliedNameOrInvalidDesignation() && reverse;
         boolean isSynonym = type == null? false : type.isAnySynonym();
 
+
         Taxon relatedTaxon = reverse? taxonRelationship.getFromTaxon()
                 : taxonRelationship.getToTaxon();
 
         if (relatedTaxon == null){
             return null;
         }
+        boolean isDoubtful = taxonRelationship.isDoubtful() || relatedTaxon.isDoubtful();
+        String doubtfulStr = isDoubtful ? "?" : "";
+
         TaxonName name = relatedTaxon.getName();
 
 //        List<TaggedText> tags = new ArrayList<>();
@@ -80,7 +84,7 @@ public class TaxonRelationshipFormatter {
         //name
         if (isMisapplied){
             //starting quote
-            String startQuote = QUOTE_START;
+            String startQuote = " " + doubtfulStr + QUOTE_START;
             builder.addSeparator(startQuote);// .add(TaggedText.NewSeparatorInstance(startQuote));
 
             //name cache
@@ -91,7 +95,7 @@ public class TaxonRelationshipFormatter {
             String endQuote = QUOTE_END;
             builder.add(TagEnum.postSeparator, endQuote);
         }else{
-            builder.addWhitespace();
+            builder.addSeparator(" " + doubtfulStr);
             //name full title cache
             List<TaggedText> nameCacheTags = getNameTitleCacheTags(name);
             builder.addAll(nameCacheTags);

@@ -123,35 +123,34 @@ public class TaxonRelationshipFormatterTest {
 
         List<TaggedText> tags = formatter.getTaggedText(taxonRel, reverse, languages);
         String str = TaggedCacheHelper.createString(tags);
-        //TODO no initials
         Assert.assertEquals(inverseSymbol + " \"Abies alba\" sensu Macfarlane 1918, err. sec. Cheek 1919: 123", str);
 
         //reverse
         tags = formatter.getTaggedText(taxonRel, !reverse, languages);
         str = TaggedCacheHelper.createString(tags);
-        System.out.println(str);
         Assert.assertEquals(symbol + " Pinus pinova Mill. sec. ToSecAuthor 1928, rel. sec. Cheek 1919: 123", str);
 
         //auctores
         fromTaxon.setAppendedPhrase("auctores");
         tags = formatter.getTaggedText(taxonRel, reverse, languages);
         str = TaggedCacheHelper.createString(tags);
-        System.out.println(str);
         Assert.assertEquals(inverseSymbol + " \"Abies alba\" auctores sensu Macfarlane 1918, err. sec. Cheek 1919: 123", str);
-
-
 
         fromTaxon.setSec(null);
         tags = formatter.getTaggedText(taxonRel, reverse, languages);
         str = TaggedCacheHelper.createString(tags);
-        System.out.println(str);
         Assert.assertEquals(inverseSymbol + " \"Abies alba\" auctores, err. sec. Cheek 1919: 123", str);
 
         fromTaxon.setAppendedPhrase("");
         tags = formatter.getTaggedText(taxonRel, reverse, languages);
         str = TaggedCacheHelper.createString(tags);
-        System.out.println(str);
         Assert.assertEquals(inverseSymbol + " \"Abies alba\" auct., err. sec. Cheek 1919: 123", str);
+
+        fromTaxon.setDoubtful(true);
+        tags = formatter.getTaggedText(taxonRel, reverse, languages);
+        str = TaggedCacheHelper.createString(tags);
+        System.out.println(str);
+        Assert.assertEquals(inverseSymbol + " ?\"Abies alba\" auct., err. sec. Cheek 1919: 123", str);
 
     }
 
@@ -160,37 +159,40 @@ public class TaxonRelationshipFormatterTest {
 
         reverse = false;
 
-        final String CONGRUENT = TaxonRelationshipType.CONGRUENT_TO().getSymbol();
+        TaxonRelationshipType relType = TaxonRelationshipType.INCLUDES();
 
-        taxonRel.setType(TaxonRelationshipType.CONGRUENT_TO());
+        final String SYMBOL = relType.getSymbol();
+
+        taxonRel.setType(relType);
         List<TaggedText> tags = formatter.getTaggedText(taxonRel, reverse, languages);
         String str = TaggedCacheHelper.createString(tags);
-        //TODO no initials
-        Assert.assertEquals(CONGRUENT + " Pinus pinova Mill. sec. ToSecAuthor 1928, rel. sec. Cheek 1919: 123", str);
+        Assert.assertEquals(SYMBOL + " Pinus pinova Mill. sec. ToSecAuthor 1928, rel. sec. Cheek 1919: 123", str);
 
         tags = formatter.getTaggedText(taxonRel, !reverse, languages);
         str = TaggedCacheHelper.createString(tags);
-        System.out.println(str);
-        //FIXME symbol
+        Assert.assertEquals(relType.getInverseSymbol() + " Abies alba sec. Macfarlane 1918, rel. sec. Cheek 1919: 123", str);
 
         toTaxon.setAppendedPhrase("sensu stricto");
         tags = formatter.getTaggedText(taxonRel, reverse, languages);
         str = TaggedCacheHelper.createString(tags);
-        System.out.println(str);
-        Assert.assertEquals(CONGRUENT + " Pinus pinova Mill. sensu stricto sec. ToSecAuthor 1928, rel. sec. Cheek 1919: 123", str);
+        Assert.assertEquals(SYMBOL + " Pinus pinova Mill. sensu stricto sec. ToSecAuthor 1928, rel. sec. Cheek 1919: 123", str);
 
 
         toTaxon.setSec(null);
         tags = formatter.getTaggedText(taxonRel, reverse, languages);
         str = TaggedCacheHelper.createString(tags);
-        System.out.println(str);
-        Assert.assertEquals(CONGRUENT + " Pinus pinova Mill. sensu stricto, rel. sec. Cheek 1919: 123", str);
+        Assert.assertEquals(SYMBOL + " Pinus pinova Mill. sensu stricto, rel. sec. Cheek 1919: 123", str);
 
         toTaxon.setAppendedPhrase("");
         tags = formatter.getTaggedText(taxonRel, reverse, languages);
         str = TaggedCacheHelper.createString(tags);
-        System.out.println(str);
-        Assert.assertEquals(CONGRUENT + " Pinus pinova Mill. sec. ???, rel. sec. Cheek 1919: 123", str);
+        Assert.assertEquals(SYMBOL + " Pinus pinova Mill. sec. ???, rel. sec. Cheek 1919: 123", str);
+
+        taxonRel.setDoubtful(true);
+        toTaxon.setAppendedPhrase("");
+        tags = formatter.getTaggedText(taxonRel, reverse, languages);
+        str = TaggedCacheHelper.createString(tags);
+        Assert.assertEquals(SYMBOL + " ?Pinus pinova Mill. sec. ???, rel. sec. Cheek 1919: 123", str);
 
     }
 
@@ -206,32 +208,26 @@ public class TaxonRelationshipFormatterTest {
         taxonRel.setType(type);
         List<TaggedText> tags = formatter.getTaggedText(taxonRel, reverse, languages);
         String str = TaggedCacheHelper.createString(tags);
-        //TODO no initials
         Assert.assertEquals(symbol + " Pinus pinova Mill. sec. ToSecAuthor 1928, syn. sec. Cheek 1919: 123", str);
 
         tags = formatter.getTaggedText(taxonRel, !reverse, languages);
         str = TaggedCacheHelper.createString(tags);
-        System.out.println(str);
-        //FIXME symbol
         Assert.assertEquals(type.getInverseSymbol() + " Abies alba sec. Macfarlane 1918, syn. sec. Cheek 1919: 123", str);
 
         toTaxon.setAppendedPhrase("sensu lato");
         tags = formatter.getTaggedText(taxonRel, reverse, languages);
         str = TaggedCacheHelper.createString(tags);
-        System.out.println(str);
         Assert.assertEquals(symbol + " Pinus pinova Mill. sensu lato sec. ToSecAuthor 1928, syn. sec. Cheek 1919: 123", str);
 
 
         toTaxon.setSec(null);
         tags = formatter.getTaggedText(taxonRel, reverse, languages);
         str = TaggedCacheHelper.createString(tags);
-        System.out.println(str);
         Assert.assertEquals(symbol + " Pinus pinova Mill. sensu lato, syn. sec. Cheek 1919: 123", str);
 
         toTaxon.setAppendedPhrase("");
         tags = formatter.getTaggedText(taxonRel, reverse, languages);
         str = TaggedCacheHelper.createString(tags);
-        System.out.println(str);
         Assert.assertEquals(symbol + " Pinus pinova Mill. sec. ???, syn. sec. Cheek 1919: 123", str);
 
     }
