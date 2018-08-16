@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.strategy.cache;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
 
@@ -32,7 +33,8 @@ public class TaggedTextBuilder {
     }
 
     public void add(TagEnum type, String text, CdmBase entity){
-        taggedText.add(new TaggedText(type, text, new TypedEntityReference<>(entity.getClass(), entity.getUuid())));
+        CdmBase deproxiedEntity = HibernateProxyHelper.deproxy(entity);
+        taggedText.add(new TaggedText(type, text, new TypedEntityReference<>(deproxiedEntity.getClass(), deproxiedEntity.getUuid())));
     }
 
     public void  clear() {
