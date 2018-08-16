@@ -158,13 +158,14 @@ public class DescriptiveDataSetService
                 Set<TaxonNode> taxonSubtreeFilter = descriptiveDataSet.getTaxonSubtreeFilter();
                 for (TaxonNode node : taxonSubtreeFilter) {
                     //check for node
+                    node = taxonNodeService.load(node.getId(), Arrays.asList("taxon"));
                     taxonNode = findTaxonNodeForDescription(node, description);
                     if(taxonNode!=null){
                         break;
                     }
                     else{
                         //check for child nodes
-                        List<TaxonNode> allChildren = taxonNodeService.loadChildNodesOfTaxonNode(node, null, true, false, null);
+                        List<TaxonNode> allChildren = taxonNodeService.loadChildNodesOfTaxonNode(node, Arrays.asList("taxon"), true, true, null);
                         for (TaxonNode child : allChildren) {
                             taxonNode = findTaxonNodeForDescription(child, description);
                             if(taxonNode!=null){
