@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
+import eu.etaxonomy.cdm.strategy.cache.TaggedTextBuilder;
 import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
 
 /**
@@ -69,73 +70,73 @@ public class TaxonRelationshipFormatter {
         }
         TaxonName name = relatedTaxon.getName();
 
-        List<TaggedText> tags = new ArrayList<>();
+//        List<TaggedText> tags = new ArrayList<>();
+        TaggedTextBuilder builder = new TaggedTextBuilder();
 
         //rel symbol
         String symbol = getSymbol(type, reverse, languages);
-        tags.add(TaggedText.NewInstance(TagEnum.symbol, symbol));
+        builder.add(TagEnum.symbol, symbol);
 
         //name
         if (isMisapplied){
             //starting quote
             String startQuote = QUOTE_START;
-            tags.add(TaggedText.NewSeparatorInstance(startQuote));
+            builder.addSeparator(startQuote);// .add(TaggedText.NewSeparatorInstance(startQuote));
 
             //name cache
             List<TaggedText> nameCacheTags = getNameCacheTags(name);
-            tags.addAll(nameCacheTags);
+            builder.addAll(nameCacheTags);
 
             //end quote
             String endQuote = QUOTE_END;
-            tags.add(TaggedText.NewInstance(TagEnum.postSeparator, endQuote));
+            builder.add(TagEnum.postSeparator, endQuote);
         }else{
-            tags.add(TaggedText.NewWhitespaceInstance());
+            builder.addWhitespace();
             //name full title cache
             List<TaggedText> nameCacheTags = getNameTitleCacheTags(name);
-            tags.addAll(nameCacheTags);
+            builder.addAll(nameCacheTags);
         }
 
 
         //sensu (+ Separatoren?)
         if (isNotBlank(relatedTaxon.getAppendedPhrase())){
-            tags.add(TaggedText.NewWhitespaceInstance());
-            tags.add(TaggedText.NewInstance(TagEnum.appendedPhrase, relatedTaxon.getAppendedPhrase()));
+            builder.addWhitespace();
+            builder.add(TagEnum.appendedPhrase, relatedTaxon.getAppendedPhrase());
         }
         List<TaggedText> secTags = getSensuTags(relatedTaxon.getSec(), relatedTaxon.getSecMicroReference(),
                /* isMisapplied,*/ false);
         if (!secTags.isEmpty()) {
-            tags.add(TaggedText.NewSeparatorInstance(isMisapplied? SENSU_SEPARATOR : SEC_SEPARATOR));
-            tags.addAll(secTags);
+            builder.addSeparator(isMisapplied? SENSU_SEPARATOR : SEC_SEPARATOR);
+            builder.addAll(secTags);
         }else if (isBlank(relatedTaxon.getAppendedPhrase())) {
             if (isMisapplied){
-                tags.add(TaggedText.NewWhitespaceInstance());
+                builder.addWhitespace();
                 //TODO type unclear sensuReference(?)
-                tags.add(TaggedText.NewInstance(TagEnum.appendedPhrase, AUCT));
+                builder.add(TagEnum.appendedPhrase, AUCT);
             }else{
-                tags.add(TaggedText.NewSeparatorInstance(SEC_SEPARATOR + UNKNOWN_SEC));
+                builder.addSeparator(SEC_SEPARATOR + UNKNOWN_SEC);
             }
         }
 
 //        //, non author
         if (isMisapplied && name != null){
             if (name.getCombinationAuthorship() != null && isNotBlank(name.getCombinationAuthorship().getNomenclaturalTitle())){
-                tags.add(TaggedText.NewSeparatorInstance(NON_SEPARATOR));
-                tags.add(TaggedText.NewInstance(TagEnum.authors, name.getCombinationAuthorship().getNomenclaturalTitle()));
+                builder.addSeparator(NON_SEPARATOR);
+                builder.add(TagEnum.authors, name.getCombinationAuthorship().getNomenclaturalTitle());
             }else if (isNotBlank(name.getAuthorshipCache())){
-                tags.add(TaggedText.NewSeparatorInstance(NON_SEPARATOR));
-                tags.add(TaggedText.NewInstance(TagEnum.authors, name.getAuthorshipCache().trim()));
+                builder.addSeparator(NON_SEPARATOR);
+                builder.add(TagEnum.authors, name.getAuthorshipCache().trim());
             }
         }
 
         List<TaggedText> relSecTags = getSensuTags(taxonRelationship.getCitation(),
                 taxonRelationship.getCitationMicroReference(),true);
         if (!relSecTags.isEmpty()){
-            TaggedText relSecSeparatorToag = TaggedText.NewSeparatorInstance(isSynonym ? SYN_SEC : isMisapplied ? ERR_SEC : REL_SEC);
-            tags.add(relSecSeparatorToag);
-            tags.addAll(relSecTags);
+            builder.addSeparator(isSynonym ? SYN_SEC : isMisapplied ? ERR_SEC : REL_SEC);
+            builder.addAll(relSecTags);
         }
 
-        return tags;
+        return builder.getTaggedText();
     }
 
     private List<TaggedText> getSensuTags(Reference ref, String detail, /*boolean isSensu,*/ boolean isRelation) {

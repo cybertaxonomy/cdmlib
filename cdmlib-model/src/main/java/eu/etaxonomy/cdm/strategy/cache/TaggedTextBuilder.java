@@ -28,6 +28,15 @@ public class TaggedTextBuilder {
         taggedText.add(new TaggedText(type, text));
     }
 
+    public void addSeparator(String separator) {
+        taggedText.add(TaggedText.NewSeparatorInstance(separator));
+    }
+
+    public void addWhitespace() {
+        taggedText.add(TaggedText.NewWhitespaceInstance());
+    }
+
+
     public void add(TagEnum type, String text, TypedEntityReference<?> entityReference){
         taggedText.add(new TaggedText(type, text, entityReference));
     }
@@ -41,24 +50,26 @@ public class TaggedTextBuilder {
         taggedText.clear();
     }
 
-    @Override
-    public String toString(){
-        return TaggedCacheHelper.createString(taggedText);
-    }
-
     /**
      * @param workingsetBuilder
      */
     public void addAll(TaggedTextBuilder ttb) {
         taggedText.addAll(ttb.taggedText);
-
     }
 
-    /**
-     * @return
-     */
+    public void addAll(List<TaggedText> tags) {
+        taggedText.addAll(tags);
+    }
+
     public List<TaggedText> getTaggedText() {
         return taggedText;
     }
+
+
+    @Override
+    public String toString(){
+        return TaggedCacheHelper.createString(taggedText);
+    }
+
 
 }
