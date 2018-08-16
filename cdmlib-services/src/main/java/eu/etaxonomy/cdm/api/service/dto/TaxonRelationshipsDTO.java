@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.api.service.dto;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import org.joda.time.DateTime;
@@ -19,11 +18,9 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.format.taxon.TaxonRelationshipFormatter;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
-import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
@@ -49,7 +46,7 @@ public class TaxonRelationshipsDTO {
         private String cache;
         private List<TaggedText> taggedText;
         //TODO maybe this will be changed in future
-        private TermDto type;
+        private TaxonRelationshipType type;
 
 
         public TaxonRelation(TaxonRelationship relation, Direction direction, List<Language> languages) {
@@ -61,15 +58,15 @@ public class TaxonRelationshipsDTO {
             this.direction = direction;
             TaxonRelationshipType relType = relation.getType();
             if (relType != null){
-                this.misapplication = relType.isAnyMisappliedName();
+                this.misapplication = relType.isMisappliedNameOrInvalidDesignation();
                 this.synonym = relType.isAnySynonym();
                 //TODO there must be a better DTO which also includes
-                Set<Representation> representations = direction.isDirect() ? relType.getRepresentations() : relType.getInverseRepresentations();
-                UUID vocUuid = relType.getVocabulary() != null ? relType.getVocabulary().getUuid(): null;
-                TermDto termDto = new TermDto(relType.getUuid(), representations, null, vocUuid, relType.getOrderIndex());
+//                Set<Representation> representations = direction.isDirect() ? relType.getRepresentations() : relType.getInverseRepresentations();
+//                UUID vocUuid = relType.getVocabulary() != null ? relType.getVocabulary().getUuid(): null;
+//                TermDto termDto = new TermDto(relType.getUuid(), representations, null, vocUuid, relType.getOrderIndex());
 //                TODO localize
 //                termDto.localize(representation_L10n);
-                this.setType(termDto);
+                this.setType(relType);
                 this.misapplication = relation.getType().isAnyMisappliedName();
             }
             List<TaggedText> tags = new TaxonRelationshipFormatter().getTaggedText(
@@ -140,10 +137,10 @@ public class TaxonRelationshipsDTO {
             this.synonym = synonym;
         }
 
-        public TermDto getType() {
+        public TaxonRelationshipType getType() {
             return type;
         }
-        public void setType(TermDto type) {
+        public void setType(TaxonRelationshipType type) {
             this.type = type;
         }
 
@@ -265,8 +262,8 @@ public class TaxonRelationshipsDTO {
      * @return
      */
     private boolean tagIsSensu(TaggedText tag) {
-        if (tag.getType() == TagEnum.sensuReference ||
-                tag.getType() == TagEnum.sensuMicroReference ||
+        if (tag.getType() == TagEnum.secReference ||
+                tag.getType() == TagEnum.secMicroReference ||
                 isSensuSeparator(tag)){
             return true;
         }

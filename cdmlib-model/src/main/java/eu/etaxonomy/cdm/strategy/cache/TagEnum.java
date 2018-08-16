@@ -84,14 +84,14 @@ public enum TagEnum {
      * a secundum micro reference (for TaxonBase)
      */
     secMicroReference,
-    /**
-     * a secundum reference as used in a misapplied name (for TaxonRelationship)
-     */
-    sensuReference,
-    /**
-     * a secundum micro reference as used in a misapplied name (for TaxonRelationship)
-     */
-    sensuMicroReference,
+//    /**
+//     * a secundum reference as used in a misapplied name (for TaxonRelationship)
+//     */
+//    sensuReference,
+//    /**
+//     * a secundum micro reference as used in a misapplied name (for TaxonRelationship)
+//     */
+//    sensuMicroReference,
     /**
      * a reference as used in a relation (e.g. TaxonRelationship reference)
      */

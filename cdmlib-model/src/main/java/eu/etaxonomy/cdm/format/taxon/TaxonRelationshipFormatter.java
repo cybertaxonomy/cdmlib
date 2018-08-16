@@ -58,7 +58,7 @@ public class TaxonRelationshipFormatter {
         }
 
         TaxonRelationshipType type = taxonRelationship.getType();
-        boolean isMisapplied = type == null ? false : type.isAnyMisappliedName() && reverse;
+        boolean isMisapplied = type == null ? false : type.isMisappliedNameOrInvalidDesignation() && reverse;
         boolean isSynonym = type == null? false : type.isAnySynonym();
 
         Taxon relatedTaxon = reverse? taxonRelationship.getFromTaxon()
@@ -101,7 +101,8 @@ public class TaxonRelationshipFormatter {
             tags.add(TaggedText.NewWhitespaceInstance());
             tags.add(TaggedText.NewInstance(TagEnum.appendedPhrase, relatedTaxon.getAppendedPhrase()));
         }
-        List<TaggedText> secTags = getSensuTags(relatedTaxon.getSec(), relatedTaxon.getSecMicroReference(), isMisapplied, false);
+        List<TaggedText> secTags = getSensuTags(relatedTaxon.getSec(), relatedTaxon.getSecMicroReference(),
+               /* isMisapplied,*/ false);
         if (!secTags.isEmpty()) {
             tags.add(TaggedText.NewSeparatorInstance(isMisapplied? SENSU_SEPARATOR : SEC_SEPARATOR));
             tags.addAll(secTags);
@@ -127,7 +128,7 @@ public class TaxonRelationshipFormatter {
         }
 
         List<TaggedText> relSecTags = getSensuTags(taxonRelationship.getCitation(),
-                taxonRelationship.getCitationMicroReference(), false, true);
+                taxonRelationship.getCitationMicroReference(),true);
         if (!relSecTags.isEmpty()){
             TaggedText relSecSeparatorToag = TaggedText.NewSeparatorInstance(isSynonym ? SYN_SEC : isMisapplied ? ERR_SEC : REL_SEC);
             tags.add(relSecSeparatorToag);
@@ -137,7 +138,7 @@ public class TaxonRelationshipFormatter {
         return tags;
     }
 
-    private List<TaggedText> getSensuTags(Reference ref, String detail, boolean isSensu, boolean isRelation) {
+    private List<TaggedText> getSensuTags(Reference ref, String detail, /*boolean isSensu,*/ boolean isRelation) {
         List<TaggedText> result = new ArrayList<>();
         String secRef;
 
@@ -163,14 +164,14 @@ public class TaxonRelationshipFormatter {
             }else{
                 secRef = ref.getTitleCache();
             }
-            TagEnum secType = isSensu? TagEnum.sensuReference : isRelation? TagEnum.relSecReference : TagEnum.secReference;
+            TagEnum secType = /*isSensu? TagEnum.sensuReference : */ isRelation? TagEnum.relSecReference : TagEnum.secReference;
             TaggedText refTag = TaggedText.NewInstance(secType, secRef);
             refTag.setEntityReference(new TypedEntityReference<>(CdmBase.deproxy(ref).getClass(), ref.getUuid()));
             result.add(refTag);
         }
         if (isNotBlank(detail)){
             result.add(TaggedText.NewSeparatorInstance(DETAIL_SEPARATOR));
-            TagEnum detailType = isSensu? TagEnum.sensuMicroReference : isRelation? TagEnum.relSecMicroReference :TagEnum.secMicroReference;
+            TagEnum detailType = /*isSensu? TagEnum.sensuMicroReference : */ isRelation? TagEnum.relSecMicroReference :TagEnum.secMicroReference;
             TaggedText microTag = TaggedText.NewInstance(detailType, detail);
             result.add(microTag);
         }
