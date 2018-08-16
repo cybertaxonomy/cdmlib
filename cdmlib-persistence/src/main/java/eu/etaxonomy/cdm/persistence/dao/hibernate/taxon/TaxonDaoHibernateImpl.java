@@ -909,7 +909,6 @@ public class TaxonDaoHibernateImpl
             criteria.add(Restrictions.isNull("name.specificEpithet"));
         } else if(!specificEpithet.equals("*")) {
             criteria.add(Restrictions.eq("name.specificEpithet", specificEpithet));
-
         }
 
         if(infraSpecificEpithet == null) {
@@ -962,7 +961,7 @@ public class TaxonDaoHibernateImpl
             String queryString = prepareTaxonRelationshipQuery(types, includeUnpublished, direction, true);
             Query query = getSession().createQuery(queryString);
             query.setParameter("relatedTaxon", taxon);
-            if(type != null) {
+            if(types != null) {
                 query.setParameterList("types",types);
             }
             if(! includeUnpublished) {
@@ -1045,7 +1044,7 @@ public class TaxonDaoHibernateImpl
 
             Query query = getSession().createQuery(queryString);
             query.setParameter("relatedTaxon", taxon);
-            if(type != null) {
+            if(types != null) {
                 query.setParameterList("types",types);
             }
             if(! includeUnpublished) {
