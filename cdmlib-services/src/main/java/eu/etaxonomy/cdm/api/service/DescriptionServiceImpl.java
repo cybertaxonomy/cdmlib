@@ -37,9 +37,11 @@ import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.Character;
@@ -926,6 +928,8 @@ public class DescriptionServiceImpl
         TaxonDescription description = TaxonDescription.NewInstance(taxon);
         description.setTitleCache("[Aggregation] "+descriptionTitle, true);
         description.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
+        IdentifiableSource source = IdentifiableSource.NewInstance(OriginalSourceType.Aggregation);
+        description.addSource(source);
 
         featureToElementMap.forEach((feature, elements)->{
             //aggregate categorical data
