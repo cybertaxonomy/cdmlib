@@ -110,7 +110,7 @@ public class OccurrenceController extends AbstractIdentifiableController<Specime
         FieldUnitDTO fieldUnitDto = null;
         if(sob instanceof DerivedUnit){
 
-            fieldUnitDto = service.findFieldUnitDTO(PreservedSpecimenDTO.newInstance(sob, null) , new ArrayList<FieldUnitDTO>(), new HashMap<UUID, DerivateDTO>());
+            fieldUnitDto = service.findFieldUnitDTO(PreservedSpecimenDTO.newInstance(sob) , new ArrayList<FieldUnitDTO>(), new HashMap<UUID, DerivateDTO>());
 
         }
 

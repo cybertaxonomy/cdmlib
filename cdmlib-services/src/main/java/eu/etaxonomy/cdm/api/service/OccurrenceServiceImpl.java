@@ -48,6 +48,7 @@ import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator;
 import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
+import eu.etaxonomy.cdm.api.service.dto.DNASampleDTO;
 import eu.etaxonomy.cdm.api.service.dto.DerivateDTO;
 import eu.etaxonomy.cdm.api.service.dto.DerivateDataDTO;
 import eu.etaxonomy.cdm.api.service.dto.DerivateDataDTO.ContigFile;
@@ -742,7 +743,12 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         for (DerivationEvent derivationEvent : specimen.getDerivationEvents()) {
             for (DerivedUnit derivative : derivationEvent.getDerivatives()) {
                 if (!alreadyCollectedSpecimen.containsKey(specimenDto.getUuid())){
-                    PreservedSpecimenDTO dto = PreservedSpecimenDTO.newInstance(derivative, null);
+                    PreservedSpecimenDTO dto;
+                    if (derivative instanceof DnaSample) {
+                        dto = new DNASampleDTO(derivative);
+                    } else {
+                        dto = PreservedSpecimenDTO.newInstance(derivative);
+                    }
                     alreadyCollectedSpecimen.put(dto.getUuid(), dto);
                     dto.addAllDerivates(getDerivedUnitDTOsFor(dto, derivative, alreadyCollectedSpecimen));
                     derivedUnits.add(dto);
@@ -849,8 +855,15 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             List<SpecimenOrObservationBase> perTaxonOccurrences = dao.listByAssociatedTaxon(null,taxon, null, null, null, null);
             for (SpecimenOrObservationBase<?> o : perTaxonOccurrences) {
                 if (o.isInstanceOf(DerivedUnit.class)){
-                    DerivedUnit derivedUnit = HibernateProxyHelper.deproxy(o, DerivedUnit.class);
-                    DerivateDTO derivedUnitDTO = PreservedSpecimenDTO.newInstance(derivedUnit, taxon.getName());
+                    DerivedUnit derivedUnit;
+                    DerivateDTO derivedUnitDTO;
+                    if (o.isInstanceOf(DnaSample.class)) {
+                         derivedUnit = HibernateProxyHelper.deproxy(o, DnaSample.class);
+                        derivedUnitDTO = new DNASampleDTO(derivedUnit);
+                    } else {
+                        derivedUnit = HibernateProxyHelper.deproxy(o, DerivedUnit.class);
+                        derivedUnitDTO = PreservedSpecimenDTO.newInstance(derivedUnit);
+                    }
                     if (alreadyCollectedSpecimen.get(derivedUnitDTO.getUuid()) == null){
                         alreadyCollectedSpecimen.put(derivedUnitDTO.getUuid(), derivedUnitDTO);
                     }
@@ -865,64 +878,8 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
     }
 
-//=======
-//<<<<<<< Updated upstream
-//=======
-//    @SuppressWarnings("unchecked")
-//    @Override
-//    public List<FieldUnitDTO> findFieldUnitDTOByAssociatedTaxon(Set<TaxonRelationshipEdge> includedRelationships,
-//            UUID associatedTaxonUuid) {
-//
-//        Set<Taxon> taxa = new HashSet<>();
-//        Set<Integer> occurrenceIds = new HashSet<>();
-//        List<FieldUnitDTO> fieldUnitDTOs = new ArrayList<>();
-//        HashMap<UUID, DerivateDTO> alreadyCollectedSpecimen = new HashMap<>();
-//        List<SpecimenOrObservationBase> occurrences = new ArrayList<>();
-//        boolean includeUnpublished = INCLUDE_UNPUBLISHED;
-//
-//        // Integer limit = PagerUtils.limitFor(pageSize);
-//        // Integer start = PagerUtils.startFor(pageSize, pageNumber);
-//
-//        Taxon associatedTaxon = (Taxon) taxonService.load(associatedTaxonUuid);
-//
-//
-//        if (includedRelationships != null) {
-//            taxa = taxonService.listRelatedTaxa(associatedTaxon, includedRelationships, null, includeUnpublished, null, null, null);
-//        }
-//
-//        taxa.add(associatedTaxon);
-//
-//        for (Taxon taxon : taxa) {
-//            List<SpecimenOrObservationBase> perTaxonOccurrences = dao.listByAssociatedTaxon(null,taxon, null, null, null, null);
-//            for (SpecimenOrObservationBase<?> o : perTaxonOccurrences) {
-//                if (o.isInstanceOf(DerivedUnit.class)){
-//                    DerivedUnit derivedUnit = HibernateProxyHelper.deproxy(o, DerivedUnit.class);
-//                    DerivateDTO derivedUnitDTO;
-//                    //DNASampleDTO dnaDto;
-//                    if (derivedUnit instanceof DnaSample){
-//                        derivedUnitDTO = DNASampleDTO.newInstance((DnaSample)derivedUnit);
-//                    }else{
-//                        derivedUnitDTO = PreservedSpecimenDTO.newInstance(derivedUnit);
-//                    }
-//                    if (alreadyCollectedSpecimen.get(derivedUnitDTO.getUuid()) == null){
-//                        alreadyCollectedSpecimen.put(derivedUnitDTO.getUuid(), derivedUnitDTO);
-//                    }
-//                    derivedUnitDTO.addAllDerivates(getDerivedUnitDTOsFor(derivedUnitDTO, derivedUnit, alreadyCollectedSpecimen));
-//                    FieldUnitDTO dto = this.findFieldUnitDTO(derivedUnitDTO, fieldUnitDTOs, alreadyCollectedSpecimen);
-//                    if (dto != null){
-//                        dto.addTaxonRelatedDerivedUnits(derivedUnitDTO);
-//                    }
-//                }
-//            }
-//
-//        }
-//
-//        return fieldUnitDTOs;
-//
-//    }
-//
-//>>>>>>> Stashed changes
-//>>>>>>> Stashed changes
+
+
     @Override
     public  List<DerivedUnit> findByAccessionNumber(
             String accessionNumberString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
@@ -1073,7 +1030,12 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 fieldUnitDto.addDerivate(derivedUnitDTO);
                 fieldUnits.add(fieldUnitDto);
             }else{
-                DerivateDTO originalDTO = PreservedSpecimenDTO.newInstance((DerivedUnit)specimen, null);
+                DerivateDTO originalDTO;
+                if (specimen instanceof DnaSample){
+                    originalDTO = new DNASampleDTO((DnaSample)specimen);
+                } else {
+                    originalDTO = PreservedSpecimenDTO.newInstance((DerivedUnit)specimen);
+                }
                 originalDTO.addDerivate(derivedUnitDTO);
                 fieldUnitDto = findFieldUnitDTO(originalDTO, fieldUnits, alreadyCollectedSpecimen);
             }
@@ -1089,64 +1051,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     @Override
-//=======
-//<<<<<<< Updated upstream
-//=======
-//
-//    public FieldUnitDTO findFieldUnitDTO(DerivateDTO derivedUnitDTO, Collection<FieldUnitDTO> fieldUnits, HashMap<UUID, DerivateDTO> alreadyCollectedSpecimen) {
-//        //It will search recursively over all {@link DerivationEvent}s and get the "originals" ({@link SpecimenOrObservationBase})
-//        //from which this DerivedUnit was derived until all FieldUnits are found.
-//        List<SpecimenOrObservationBase> specimens = new ArrayList<>();
-//        List<String> propertyPaths = new ArrayList<>();
-//        propertyPaths.add("descriptions.elements.media.title");
-//
-//        specimens = dao.findOriginalsForDerivedUnit(derivedUnitDTO.getUuid(), propertyPaths);
-//
-//        if (specimens.size() > 1){
-//            logger.debug("The derived unit with uuid " + derivedUnitDTO.getUuid() + "has more than one orginal");
-//        }
-//      //  for (SpecimenOrObservationBase specimen: specimens){
-//        SpecimenOrObservationBase specimen = null;
-//        if (specimens.size() > 0){
-//            specimen = specimens.get(0);
-//        }else{
-//            return null;
-//        }
-//        FieldUnitDTO fieldUnitDto = null;
-//        if (alreadyCollectedSpecimen.get(specimen.getUuid()) != null){
-//            alreadyCollectedSpecimen.get(specimen.getUuid()).addDerivate(derivedUnitDTO);
-//            if (specimen instanceof FieldUnit){
-//                return (FieldUnitDTO)alreadyCollectedSpecimen.get(specimen.getUuid());
-//            }else{
-//                fieldUnitDto = findFieldUnitDTO(alreadyCollectedSpecimen.get(specimen.getUuid()), fieldUnits, alreadyCollectedSpecimen);
-//            }
-//
-////            if ( alreadyCollectedSpecimen.get(specimen.getUuid()) instanceof FieldUnitDTO){
-////                ((FieldUnitDTO)alreadyCollectedSpecimen.get(specimen.getUuid())).getTaxonRelatedDerivedUnits().add(derivedUnitDTO.getUuid());
-////            }
-//        }else{
-//            if (specimen.isInstanceOf(FieldUnit.class)){
-//                fieldUnitDto = FieldUnitDTO.newInstance((FieldUnit)specimen);
-//
-//                fieldUnitDto.addPreservedSpecimenDTO((PreservedSpecimenDTO)derivedUnitDTO);
-//                fieldUnits.add(fieldUnitDto);
-//            }else{
-//                DerivateDTO originalDTO = PreservedSpecimenDTO.newInstance((DerivedUnit)specimen);
-//                originalDTO.addDerivate(derivedUnitDTO);
-//                fieldUnitDto = findFieldUnitDTO(originalDTO, fieldUnits, alreadyCollectedSpecimen);
-//            }
-//
-//        }
-//      //  }
-//        alreadyCollectedSpecimen.put(derivedUnitDTO.getUuid(), derivedUnitDTO);
-//
-//        return fieldUnitDto;
-//
-//    }
-//
-//    @Override
-//>>>>>>> Stashed changes
-//>>>>>>> Stashed changes
     @Transactional(readOnly = false)
     public UpdateResult moveSequence(DnaSample from, DnaSample to, Sequence sequence) {
         return moveSequence(from.getUuid(), to.getUuid(), sequence.getUuid());
