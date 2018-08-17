@@ -37,11 +37,16 @@ import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator;
 import eu.etaxonomy.cdm.api.service.config.IncludedTaxonConfiguration;
+import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
 import eu.etaxonomy.cdm.api.service.dto.IncludedTaxaDTO;
+import eu.etaxonomy.cdm.api.service.dto.TaxonRelationshipsDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.exception.UnpublishedException;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -50,10 +55,13 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
+import eu.etaxonomy.cdm.remote.dto.common.StringResultDTO;
 import eu.etaxonomy.cdm.remote.editor.TermBasePropertyEditor;
+import eu.etaxonomy.cdm.remote.editor.UuidList;
 import io.swagger.annotations.Api;
 
 /**
@@ -224,20 +232,45 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
     }
 
 
-    @RequestMapping(value = "specimensOrObservations", method = RequestMethod.GET)
-    public ModelAndView doListSpecimensOrObservations(
+    @RequestMapping(value = "specimensOrObservationsCount", method = RequestMethod.GET)
+    public StringResultDTO doCountSpecimensOrObservations(
+            @PathVariable("uuid") UUID uuid,
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+        logger.info("doListSpecimensOrObservations() - " + request.getRequestURI());
+
+        List<OrderHint> orderHints = new ArrayList<>();
+        orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
+        FindOccurrencesConfigurator config = new FindOccurrencesConfigurator();
+        config.setAssociatedTaxonUuid(uuid);
+        long countSpecimen = occurrenceService.countOccurrences(config);
+        return new StringResultDTO(String.valueOf(countSpecimen));
+    }
+
+    @RequestMapping(value = "specimensOrObservationDTOs", method = RequestMethod.GET)
+    public ModelAndView doListSpecimensOrObservationDTOs(
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
         logger.info("doListSpecimensOrObservations() - " + request.getRequestURI());
 
         ModelAndView mv = new ModelAndView();
+        List<FieldUnitDTO> fieldUnitDtos = occurrenceService.findFieldUnitDTOByAssociatedTaxon(null, uuid);
+           // List<SpecimenOrObservationBase<?>> specimensOrObservations = occurrenceService.listByAssociatedTaxon(null, null, (Taxon)tb, null, null, null, orderHints, null);
+        mv.addObject(fieldUnitDtos);
+        return mv;
+    }
 
+    @RequestMapping(value = "specimensOrObservations", method = RequestMethod.GET)
+    public ModelAndView doListSpecimensOrObservations(
+            @PathVariable("uuid") UUID uuid,
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+        logger.info("doListSpecimensOrObservations() - " + request.getRequestURI());
+        ModelAndView mv = new ModelAndView();
         TaxonBase<?> tb = service.load(uuid);
-
         List<OrderHint> orderHints = new ArrayList<>();
         orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
-
         if(tb instanceof Taxon){
             List<SpecimenOrObservationBase<?>> specimensOrObservations = occurrenceService.listByAssociatedTaxon(null, null, (Taxon)tb, null, null, null, orderHints, null);
             mv.addObject(specimensOrObservations);
@@ -245,7 +278,6 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
             return null;
         }
-
         return mv;
     }
 
@@ -430,6 +462,60 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             mv.addObject(allElements);
         }
         return mv;
+    }
+
+    @RequestMapping(value = "taxonRelationshipsDTO", method = RequestMethod.GET)
+    public TaxonRelationshipsDTO doGetTaxonRelationshipsDTO(
+            @PathVariable("uuid") UUID taxonUuid,
+            @RequestParam(value = "directTypes", required = false) UuidList directTypeUuids,
+            @RequestParam(value = "inversTypes", required = false) UuidList inversTypeUuids,
+            @RequestParam(value = "direction", required = false) Direction direction,
+            @RequestParam(value="groupMisapplications", required=false, defaultValue="true") final boolean groupMisapplications,
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+
+        boolean includeUnpublished = NO_UNPUBLISHED;
+
+        logger.info("doGetTaxonRelationshipDTOs(): " + request.getRequestURI());
+        TaxonBase<?> taxonBase = service.load(taxonUuid);
+        checkExistsAccessType(taxonBase, includeUnpublished, Taxon.class, response);
+
+        Set<TaxonRelationshipType> directTypes = getTermsByUuidSet(TaxonRelationshipType.class, directTypeUuids);
+        Set<TaxonRelationshipType> inversTypes = getTermsByUuidSet(TaxonRelationshipType.class, inversTypeUuids);
+
+//        Set<TaxonRelationshipType> inversTypes = null;
+//        if (directTypeUuids != null && !directTypeUuids.isEmpty()){
+//            types = new HashSet<>();
+//            List<TaxonRelationshipType> typeList = termService.find(TaxonRelationshipType.class, new HashSet<>(directTypeUuids));
+//            types.addAll(typeList);
+//            //TODO should we handle missing uuids as error response
+////            HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
+//        }
+
+
+
+//        boolean deduplicateMisapplications = true;
+        Integer pageSize = null;
+        Integer pageNumber = null;
+        return service.listTaxonRelationships(taxonUuid, directTypes, inversTypes, direction, groupMisapplications,
+                includeUnpublished, pageSize, pageNumber);
+    }
+
+    /**
+     * @param directTypeUuids
+     * @return
+     */
+    protected <T extends DefinedTermBase<T>> Set<T> getTermsByUuidSet(Class<T> clazz, UuidList directTypeUuids) {
+        Set<T> directTypes = null;
+
+        if (directTypeUuids != null && !directTypeUuids.isEmpty()){
+            directTypes = new HashSet<>();
+            List<T> typeList = termService.find(clazz, new HashSet<>(directTypeUuids));
+            directTypes.addAll(typeList);
+            //TODO should we handle missing uuids as error response
+//            HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
+        }
+        return directTypes;
     }
 
     // TODO ================================================================================ //

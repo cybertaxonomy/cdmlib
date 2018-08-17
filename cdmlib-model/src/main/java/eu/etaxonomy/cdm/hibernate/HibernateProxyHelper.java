@@ -65,7 +65,7 @@ public class HibernateProxyHelper {
 	}
 
 	 /**
-	  * Unwrap the target instance from the proxy if possible otrherwise return null.
+	  * Unwrap the target instance from the proxy if possible otherwise return null.
 	  *
 	  * @param entity
 	  * @return the deproxied entity or null in case it was not initialized.

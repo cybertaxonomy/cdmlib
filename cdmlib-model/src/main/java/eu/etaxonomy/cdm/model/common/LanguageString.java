@@ -30,8 +30,8 @@ import org.hibernate.envers.Audited;
 /**
  * This class is an instantiatable class for the base class {@link LanguageStringBase}.
  * No further functionality is added.
+ *
  * @author m.doering
- * @version 1.0
  * @since 08-Nov-2007 13:06:32
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -52,7 +52,7 @@ public class LanguageString  extends LanguageStringBase implements Cloneable, II
 	@OneToMany(mappedBy="languageString", fetch=FetchType.LAZY, orphanRemoval=true)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 //	@Merge(MergeMode.ADD_CLONE)
-    private Set<IntextReference> intextReferences = new HashSet<IntextReference>();
+    private Set<IntextReference> intextReferences = new HashSet<>();
 
 	//*************** INTEXT REFERENCE **********************************************
 
@@ -65,9 +65,11 @@ public class LanguageString  extends LanguageStringBase implements Cloneable, II
     }
 
 
+    @Override
     public IntextReference addIntextReference(IIntextReferenceTarget target, String start, String inner, String end){
         return IntextReferenceHelper.addIntextReference(target, this, start, inner, end);
     }
+    @Override
     public IntextReference addIntextReference(IIntextReferenceTarget target, int start, int end){
         return IntextReferenceHelper.addIntextReference(target, this, start, end);
     }
@@ -129,7 +131,7 @@ public class LanguageString  extends LanguageStringBase implements Cloneable, II
 	@Override
 	public Object clone() throws CloneNotSupportedException {
 		LanguageString result = (LanguageString)super.clone();
-		result.setIntextReferences(new HashSet<IntextReference>());
+		result.setIntextReferences(new HashSet<>());
 
 		for (IntextReference ref : this.intextReferences) {
 		    IntextReference newRef = (IntextReference)ref.clone();

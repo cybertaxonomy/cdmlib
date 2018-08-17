@@ -909,7 +909,6 @@ public class TaxonDaoHibernateImpl
             criteria.add(Restrictions.isNull("name.specificEpithet"));
         } else if(!specificEpithet.equals("*")) {
             criteria.add(Restrictions.eq("name.specificEpithet", specificEpithet));
-
         }
 
         if(infraSpecificEpithet == null) {
@@ -942,18 +941,28 @@ public class TaxonDaoHibernateImpl
         return result;
     }
 
-
     @Override
     public long countTaxonRelationships(Taxon taxon, TaxonRelationshipType type,
+            boolean includeUnpublished, Direction direction) {
+        Set<TaxonRelationshipType> types = null;
+        if (type != null){
+            types = new HashSet<>();
+            types.add(type);
+        }
+        return countTaxonRelationships(taxon, types, includeUnpublished, direction);
+    }
+
+    @Override
+    public long countTaxonRelationships(Taxon taxon, Set<TaxonRelationshipType> types,
             boolean includeUnpublished, Direction direction) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 
-            String queryString = prepareTaxonRelationshipQuery(type, includeUnpublished, direction, true);
+            String queryString = prepareTaxonRelationshipQuery(types, includeUnpublished, direction, true);
             Query query = getSession().createQuery(queryString);
             query.setParameter("relatedTaxon", taxon);
-            if(type != null) {
-                query.setParameter("type",type);
+            if(types != null) {
+                query.setParameterList("types",types);
             }
             if(! includeUnpublished) {
                 query.setBoolean("publish",Boolean.TRUE);
@@ -977,8 +986,9 @@ public class TaxonDaoHibernateImpl
             query.add(AuditEntity.relatedId(direction.toString()).eq(taxon.getId()));
             query.addProjection(AuditEntity.id().count());
 
-            if(type != null) {
-                query.add(AuditEntity.relatedId("type").eq(type.getId()));
+            if(types != null) {
+                //TODO adapt to new Set semantic, was single type before
+//                query.add(AuditEntity.relatedId("type").eq(type.getId()));
             }
 
             return (Long)query.getSingleResult();
@@ -993,14 +1003,14 @@ public class TaxonDaoHibernateImpl
      * @param b
      * @return
      */
-    private String prepareTaxonRelationshipQuery(TaxonRelationshipType type, boolean includeUnpublished,
+    private String prepareTaxonRelationshipQuery(Set<TaxonRelationshipType> types, boolean includeUnpublished,
             Direction direction, boolean isCount) {
         String selectStr = isCount? " count(rel) as n ":" rel ";
         String result = "SELECT " + selectStr +
              " FROM TaxonRelationship rel " +
              " WHERE rel."+direction+" = :relatedTaxon";
-        if (type != null){
-            result += " AND rel.type = :type ";
+        if (types != null){
+            result += " AND rel.type IN (:types) ";
         }
         if(! includeUnpublished) {
             result += " AND rel."+direction.invers()+".publish = :publish";
@@ -1012,18 +1022,30 @@ public class TaxonDaoHibernateImpl
     public List<TaxonRelationship> getTaxonRelationships(Taxon taxon, TaxonRelationshipType type,
             boolean includeUnpublished, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths, Direction direction) {
+        Set<TaxonRelationshipType> types = null;
+        if (type != null){
+            types = new HashSet<>();
+            types.add(type);
+        }
+        return getTaxonRelationships(taxon, types, includeUnpublished, pageSize, pageNumber, orderHints, propertyPaths, direction);
+    }
+
+    @Override
+    public List<TaxonRelationship> getTaxonRelationships(Taxon taxon, Set<TaxonRelationshipType> types,
+            boolean includeUnpublished, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+            List<String> propertyPaths, Direction direction) {
 
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 
-            String queryString = prepareTaxonRelationshipQuery(type, includeUnpublished, direction, false);
+            String queryString = prepareTaxonRelationshipQuery(types, includeUnpublished, direction, false);
 
             queryString += orderByClause("rel", orderHints);
 
             Query query = getSession().createQuery(queryString);
             query.setParameter("relatedTaxon", taxon);
-            if(type != null) {
-                query.setParameter("type",type);
+            if(types != null) {
+                query.setParameterList("types",types);
             }
             if(! includeUnpublished) {
                 query.setBoolean("publish",Boolean.TRUE);
@@ -1066,8 +1088,9 @@ public class TaxonDaoHibernateImpl
             AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(TaxonRelationship.class,auditEvent.getRevisionNumber());
             query.add(AuditEntity.relatedId("relatedTo").eq(taxon.getId()));
 
-            if(type != null) {
-                query.add(AuditEntity.relatedId("type").eq(type.getId()));
+            if(types != null) {
+                //FIXME adapt to Set (was single type before)
+//                query.add(AuditEntity.relatedId("type").eq(types.getId()));
             }
 
             if(pageSize != null) {
@@ -1601,12 +1624,11 @@ public class TaxonDaoHibernateImpl
         if (query != null){
             @SuppressWarnings("unchecked")
             List<Object> resultArray = query.list();
-            @SuppressWarnings("rawtypes")
             List<UuidAndTitleCache<Taxon>> returnResult = new ArrayList<>() ;
             Object[] result;
             for(int i = 0; i<resultArray.size();i++){
             	result = (Object[]) resultArray.get(i);
-            	returnResult.add(new UuidAndTitleCache(Taxon.class, (UUID) result[0],(Integer)result[1], (String)result[2], new Boolean(result[4].toString()), null));
+            	returnResult.add(new UuidAndTitleCache<Taxon>(Taxon.class, (UUID) result[0],(Integer)result[1], (String)result[2], new Boolean(result[4].toString()), null));
             }
             return returnResult;
         }else{

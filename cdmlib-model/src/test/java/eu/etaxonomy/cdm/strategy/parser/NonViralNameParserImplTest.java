@@ -782,6 +782,21 @@ public class NonViralNameParserImplTest {
         assertEquals("Name must have Orchis papilionacea var. schirvanica as second hybrid parent", "Orchis papilionacea var. schirvanica", secondParent.getTitleCache());
         assertEquals("Hybrid name must have the lower rank ('variety') as rank", Rank.VARIETY(), name1.getRank());
 
+      //subspecies and variety with genus part
+        nameStr = "Orchis morio subsp. syriaca \u00D7 Test papilionacea var. schirvanica";
+        name1 = parser.parseFullName(nameStr, botanicCode, null);
+        assertTrue("Name must have hybrid formula bit set", name1.isHybridFormula());
+        assertEquals("Name must have 2 hybrid parents", 2, name1.getHybridChildRelations().size());
+        //could also be N. or no genus at all, depends on formatter
+        assertEquals("Title cache must be correct", "Orchis morio subsp. syriaca \u00D7 Test papilionacea var. schirvanica", name1.getTitleCache());
+        orderedRels = name1.getOrderedChildRelationships();
+        assertEquals("Name must have 2 hybrid parents in ordered list", 2, orderedRels.size());
+        firstParent = orderedRels.get(0).getParentName();
+        assertEquals("Name must have Orchis morio subsp. syriaca as first hybrid parent", "Orchis morio subsp. syriaca", firstParent.getTitleCache());
+        secondParent = orderedRels.get(1).getParentName();
+        assertEquals("Name must have Orchis papilionacea var. schirvanica as second hybrid parent", "Test papilionacea var. schirvanica", secondParent.getTitleCache());
+        assertEquals("Hybrid name must have the lower rank ('variety') as rank", Rank.VARIETY(), name1.getRank());
+
         //2 subspecies with missing genus and species part #5983
         nameStr = "Orchis morio subsp. syriaca \u00D7 subsp. schirvanica";
         name1 = parser.parseFullName(nameStr, botanicCode, null);
@@ -2088,7 +2103,7 @@ public class NonViralNameParserImplTest {
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("29(1-4)", nomRef.getVolume());
         assertEquals("16, f. 1-2", name.getNomenclaturalMicroReference());
-        assertEquals("\u201e1983\u201f [1984]", nomRef.getDatePublishedString());
+        assertEquals("1984 [\"1983\"]", nomRef.getDatePublishedString());
         assertEquals("1984", nomRef.getYear());
 
         //incorrect year with "
@@ -2101,7 +2116,8 @@ public class NonViralNameParserImplTest {
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("29(1-4)", nomRef.getVolume());
         assertEquals("16, f. 1-2", name.getNomenclaturalMicroReference());
-        assertEquals("\"1983\" [1984]", nomRef.getDatePublishedString());
+        //changed from "1983" [1984] to 1984 ["1983"] after implementing #7429
+        assertEquals("1984 [\"1983\"]", nomRef.getDatePublishedString());
         assertEquals("1984", nomRef.getYear());
 
         //fig. a

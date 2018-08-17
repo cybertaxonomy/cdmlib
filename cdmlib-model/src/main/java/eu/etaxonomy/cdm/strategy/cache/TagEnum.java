@@ -12,12 +12,11 @@ package eu.etaxonomy.cdm.strategy.cache;
 
 
 /**
- * Tags for atomised taxon name strings and atomised reference citation strings.
+ * Tag types for atomised taxon name strings and atomised reference citation strings.
  * Used by {@link TaggedText}.
  *
  * @author a.kohlbecker
- * @version 1.0
- * @since 13.12.2007 12:04:15
+ * @since 13.12.2007
  *
  */
 public enum TagEnum {
@@ -68,7 +67,7 @@ public enum TagEnum {
 	/**
      *  A separator that needs to be added to the previous text if and only if
      *  the previous tag is used (not filtered) and if it is not the last tag
-     *  in the list.
+     *  in the list.<BR>
      *  A post-separator should include all needed whitespaces. So adding of whitespace
      *  is not needed if a post-separator is given.
      */
@@ -85,6 +84,33 @@ public enum TagEnum {
      * a secundum micro reference (for TaxonBase)
      */
     secMicroReference,
+//    /**
+//     * a secundum reference as used in a misapplied name (for TaxonRelationship)
+//     */
+//    sensuReference,
+//    /**
+//     * a secundum micro reference as used in a misapplied name (for TaxonRelationship)
+//     */
+//    sensuMicroReference,
+    /**
+     * a reference as used in a relation (e.g. TaxonRelationship reference)
+     */
+    relSecReference,
+    /**
+     * a micro reference as used in a relation (e.g. TaxonRelationship micro reference)
+     */
+    relSecMicroReference,
+    /**
+     * Any type of label
+     */
+    label,
+    specimenOrObservation,
+    typeDesignation,
+    /**
+     * Any symbol representing information, used e.g. for representing relationships
+     * like taxon relationships.
+     */
+    symbol,
 	;
 
 

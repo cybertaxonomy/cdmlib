@@ -94,6 +94,7 @@ public class AbcdDnaParser {
                 DerivationEvent derivedFrom = dnaSample.getDerivedFrom();
 
                 String preparationType = AbcdParseUtility.parseFirstTextContent(((Element) node).getElementsByTagName(prefix+"preparationType"));
+
                 //preparation materials
                 String preparationMaterials = AbcdParseUtility.parseFirstTextContent(((Element) node).getElementsByTagName(prefix+"preparationMaterials"));
                 derivedFrom.setDescription(preparationMaterials);

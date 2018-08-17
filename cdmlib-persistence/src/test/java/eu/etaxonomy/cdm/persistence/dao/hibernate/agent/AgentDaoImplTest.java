@@ -250,7 +250,7 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet("AgentDaoImplTest.testExists.xml")
     public void testListPeople() {
-        List<Person> result = agentDao.list(Person.class,null,null);
+        List<Person> result = agentDao.list(Person.class, null, null);
         Assert.assertNotNull("list() should return a list",result);
         Assert.assertEquals("list() should return four agents in the current view", result.size(),4);
     }

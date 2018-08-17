@@ -281,6 +281,8 @@ public interface ITaxonDao
      */
     public long countTaxonRelationships(Taxon taxon, TaxonRelationshipType type,
             boolean includeUnpublished, Direction direction);
+    public long countTaxonRelationships(Taxon taxon, Set<TaxonRelationshipType> types,
+            boolean includeUnpublished, Direction direction);
 
     /**
      * Returns the TaxonRelationships (of where relationship.type == type, if
@@ -310,6 +312,12 @@ public interface ITaxonDao
      */
     public List<TaxonRelationship> getTaxonRelationships(Taxon taxon,
             TaxonRelationshipType type, boolean includeUnpublished,
+            Integer pageSize, Integer pageNumber,
+            List<OrderHint> orderHints, List<String> propertyPaths,
+            Direction direction);
+
+    public List<TaxonRelationship> getTaxonRelationships(Taxon taxon,
+            Set<TaxonRelationshipType> type, boolean includeUnpublished,
             Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints, List<String> propertyPaths,
             Direction direction);

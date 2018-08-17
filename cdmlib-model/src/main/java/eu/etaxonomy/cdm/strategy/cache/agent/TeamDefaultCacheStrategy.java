@@ -28,10 +28,10 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
     private static final Logger logger = Logger.getLogger(TeamDefaultCacheStrategy.class);
 
 
-    private static final String FINAL_TEAM_CONCATINATION = " & ";
-	private static final String STD_TEAM_CONCATINATION = ", ";
-	private static final String ET_AL_TEAM_CONCATINATION_FULL = " & ";
-	private static final String ET_AL_TEAM_CONCATINATION_ABBREV = " & ";
+    public static final String FINAL_TEAM_CONCATINATION = " & ";
+	public static final String STD_TEAM_CONCATINATION = ", ";
+	public static final String ET_AL_TEAM_CONCATINATION_FULL = " & ";
+	public static final String ET_AL_TEAM_CONCATINATION_ABBREV = " & ";
 
 	public static final String EMPTY_TEAM = "-empty team-";
 

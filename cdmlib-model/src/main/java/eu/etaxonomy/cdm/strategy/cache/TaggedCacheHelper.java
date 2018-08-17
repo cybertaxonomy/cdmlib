@@ -27,7 +27,7 @@ public class TaggedCacheHelper {
      * @see #createString(List, HTMLTagRules)
      */
     public static String createString(List<TaggedText> tags) {
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
 
         boolean isSeparator;
         boolean wasSeparator = true;  //true for start tag
@@ -58,7 +58,7 @@ public class TaggedCacheHelper {
         boolean wasSeparator = true;
         while (index < tags.size()){
 
-            if (! tags.get(index).isSeparator()){
+            if (! tags.get(index).getType().isSeparator()){
                 if (wasSeparator == false){
                     tags.add(index++, TaggedText.NewWhitespaceInstance());
                 }else{

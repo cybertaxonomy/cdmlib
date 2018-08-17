@@ -26,7 +26,7 @@ public class TermIdInVocabularyComparator<T extends DefinedTermBase<?>> implemen
     public int compare(T term1, T term2) {
         String label1;
         String label2;
-        if (term1.equals(term2)){
+        if (term1.getUuid().equals(term2.getUuid())){
             return 0;
         }
 

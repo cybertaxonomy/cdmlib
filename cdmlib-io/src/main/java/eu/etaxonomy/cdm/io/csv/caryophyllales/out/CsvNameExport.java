@@ -492,7 +492,7 @@ public class CsvNameExport extends CsvNameExportBase {
         if (state.getNotesFeature() != null){
             return state.getNotesFeature();
         } else{
-            Pager<DefinedTermBase> notesFeature = getTermService().findByTitle(Feature.class, "Notes" ,MatchMode.EXACT, null, null, null, null, null);
+            Pager<DefinedTermBase> notesFeature = getTermService().findByTitleWithRestrictions(Feature.class, "Notes" ,MatchMode.EXACT, null, null, null, null, null);
             if (notesFeature.getRecords().size() == 0){
                 return null;
             }else{

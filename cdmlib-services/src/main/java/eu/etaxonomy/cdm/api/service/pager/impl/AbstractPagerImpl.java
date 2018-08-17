@@ -321,12 +321,16 @@ public abstract class AbstractPagerImpl<T> implements Pager<T>, Serializable {
      *
      * @param numberOfResults
      * @param pageIndex
+     *  will be set to <code>0</code> if <code>null</code>
      * @param pageSize
      * @return An <code>Integer</code> array containing limit and start: <code>new int[]{limit, start}</code> or null if there is no result in the range of
      *  <code>pageIndex</code> and <code>pageSize</code>.
      *
      */
     public static Integer[] limitStartforRange(Long numberOfResults, Integer pageIndex, Integer pageSize) {
+        if(pageIndex == null){
+            pageIndex = 0;
+        }
         if(hasResultsInRange(numberOfResults, pageIndex, pageSize)){
             return  new Integer[]{PagerUtils.limitFor(pageSize), PagerUtils.startFor(pageSize, pageIndex)};
         }

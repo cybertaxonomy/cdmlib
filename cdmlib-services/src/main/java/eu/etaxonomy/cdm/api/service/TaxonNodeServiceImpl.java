@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -43,6 +44,7 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.TreeIndex;
+import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
@@ -80,6 +82,9 @@ public class TaxonNodeServiceImpl
 
     @Autowired
     private ITaxonService taxonService;
+
+    @Autowired
+    private IDescriptiveDataSetService dataSetService;
 
     @Autowired
     private IAgentService agentService;
@@ -619,6 +624,14 @@ public class TaxonNodeServiceImpl
     	    result.includeResult(deleteTaxonNodes(node.getChildNodes(), config));
     	}
 
+    	//remove node from DescriptiveDataSet
+        commonService.getReferencingObjects(node).stream()
+        .filter(obj->obj instanceof DescriptiveDataSet)
+        .forEach(dataSet->{
+            ((DescriptiveDataSet)dataSet).removeTaxonSubtree(node);
+            dataSetService.saveOrUpdate((DescriptiveDataSet) dataSet);
+        });
+
     	if (taxon != null){
         	if (config.getTaxonNodeConfig().isDeleteTaxon() && (config.isDeleteInAllClassifications() || taxon.getTaxonNodes().size() == 1)){
         		result = taxonService.deleteTaxon(taxon.getUuid(), config, node.getClassification().getUuid());
@@ -973,5 +986,66 @@ public class TaxonNodeServiceImpl
     public List<Integer> idList(TaxonNodeFilter filter){
         return nodeFilterDao.idList(filter);
     }
+
+    @Override
+    public TaxonNodeDto findCommonParentDto(Collection<TaxonNodeDto> nodes) {
+        TaxonNodeDto commonParent = null;
+        List<String> treePath = null;
+        for (TaxonNodeDto nodeDto : nodes) {
+            String nodeTreeIndex = nodeDto.getTreeIndex();
+            nodeTreeIndex = nodeTreeIndex.replaceFirst("#", "");
+            String[] split = nodeTreeIndex.split("#");
+            if(treePath == null){
+                treePath = Arrays.asList(split);
+            }
+            else{
+                List<String> match = new ArrayList<>();
+                for(int i=0;i<treePath.size();i++){
+                    if(i>=split.length){
+                        //current tree index is shorter so break
+                        break;
+                    }
+                    else if(split[i].equals(treePath.get(i))){
+                        //match found
+                        match.add(treePath.get(i));
+                    }
+                    else{
+                        //first mismatch found
+                        break;
+                    }
+                }
+                treePath = match;
+                if(treePath.isEmpty()){
+                    //no common parent found for at least two nodes
+                    //-> they belong to a different classification
+                    break;
+                }
+            }
+        }
+        if(treePath!=null && !treePath.isEmpty()) {
+            //get last index
+            int nodeId = Integer.parseInt(treePath.get(treePath.size()-1));
+            TaxonNode taxonNode = dao.load(nodeId, null);
+            commonParent = new TaxonNodeDto(taxonNode);
+        }
+        return commonParent;
+    }
+
+//    @Override
+//    @Transactional(readOnly=false)
+//    public UUID monitSetSecundum(final SecundumForSubtreeConfigurator configurator) {
+//        RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
+//            @Override
+//            public Serializable doRun(IRemotingProgressMonitor monitor) {
+//                configurator.setMonitor(monitor);
+//                UpdateResult result = setSecundumForSubtree(configurator);
+//                return result;
+//            }
+//        };
+//        UUID uuid = progressMonitorService.registerNewRemotingMonitor(monitorThread);
+//        monitorThread.setPriority(3);
+//        monitorThread.start();
+//        return uuid;
+//    }
 
 }

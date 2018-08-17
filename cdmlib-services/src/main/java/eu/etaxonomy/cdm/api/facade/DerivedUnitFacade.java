@@ -1737,7 +1737,7 @@ public class DerivedUnitFacade {
 	public List<Media> getFieldObjectMedia() {
 		try {
 			List<Media> result = getMediaList(getFieldUnit(false), false);
-			return result == null ? new ArrayList<Media>() : result;
+			return result == null ? new ArrayList<>() : result;
 		} catch (DerivedUnitFacadeNotSupportedException e) {
 			throw new IllegalStateException(notSupportMessage, e);
 		}
@@ -1831,33 +1831,33 @@ public class DerivedUnitFacade {
 
 	// kind of Unit
 	@Transient
-	public DefinedTerm getKindOfUnit() {
-		return (hasFieldUnit() ? getFieldUnit(true).getKindOfUnit() : null);
+	public DefinedTerm getFieldUnitKindOfUnit() {
+		return (hasFieldUnit() ? fieldUnit.getKindOfUnit() : null);
 	}
 //
-//   @Transient
-//    public DefinedTerm getDerivedUnitKindOfUnit() {
-//       checkDerivedUnit();
-//       return checkDerivedUnit() ? derivedUnit.getKindOfUnit() : null;
-//    }
+   @Transient
+    public DefinedTerm getDerivedUnitKindOfUnit() {
+       checkDerivedUnit();
+       return checkDerivedUnit() ? derivedUnit.getKindOfUnit() : null;
+    }
 
 
 	/**
 	 * Sets the kind-of-unit
 	 * @param kindOfUnit
 	 */
-	public void setKindOfUnit(DefinedTerm kindOfUnit) {
+	public void setFieldUnitKindOfUnit(DefinedTerm kindOfUnit) {
 	    FieldUnit fieldUnit = getFieldUnit(kindOfUnit != null);
 	    if (fieldUnit != null){
 	        fieldUnit.setKindOfUnit(kindOfUnit);
 	    }
 	}
 
-//    public void setDerivedUnitKindOfUnit(DefinedTerm kindOfUnit) {
-//        testDerivedUnit();
-//
-//        baseUnit().setKindOfUnit(kindOfUnit);
-//    }
+    public void setDerivedUnitKindOfUnit(DefinedTerm kindOfUnit) {
+        testDerivedUnit();
+
+        baseUnit().setKindOfUnit(kindOfUnit);
+    }
 
 
 	// field unit
@@ -2090,7 +2090,7 @@ public class DerivedUnitFacade {
 		}
 		try {
 			List<Media> result = getMediaList(derivedUnit, false);
-			return result == null ? new ArrayList<Media>() : result;
+			return result == null ? new ArrayList<>() : result;
 		} catch (DerivedUnitFacadeNotSupportedException e) {
 			throw new IllegalStateException(notSupportMessage, e);
 		}

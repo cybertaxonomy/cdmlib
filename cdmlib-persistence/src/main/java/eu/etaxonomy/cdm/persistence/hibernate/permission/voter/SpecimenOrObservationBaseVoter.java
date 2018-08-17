@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.TargetEntityStates;
 
 /**
  * see  https://dev.e-taxonomy.eu/redmine/issues/7018
@@ -41,10 +42,11 @@ public class SpecimenOrObservationBaseVoter extends CdmPermissionVoter {
      * @see eu.etaxonomy.cdm.persistence.hibernate.permission.voter.CdmPermissionVoter#furtherVotingDescisions(org.springframework.security.core.Authentication, java.lang.Object, java.util.Collection, eu.etaxonomy.cdm.persistence.hibernate.permission.voter.TaxonBaseVoter.ValidationResult)
      */
     @Override
-    protected Integer furtherVotingDescisions(CdmAuthority CdmAuthority, Object object, Collection<ConfigAttribute> attributes,
+    protected Integer furtherVotingDescisions(CdmAuthority CdmAuthority, TargetEntityStates targetEntityStates, Collection<ConfigAttribute> attributes,
             ValidationResult validationResult) {
 
-        boolean isUuidMatchInOriginals = CdmAuthority.hasTargetUuid() && propagateGrantsFromOriginal(CdmAuthority.getTargetUUID(), (SpecimenOrObservationBase)object);
+        boolean isUuidMatchInOriginals = CdmAuthority.hasTargetUuid()
+                && propagateGrantsFromOriginal(CdmAuthority.getTargetUUID(), (SpecimenOrObservationBase)targetEntityStates.getEntity());
         if ( isUuidMatchInOriginals  && validationResult.isClassMatch && validationResult.isPermissionMatch){
             logger.debug("permission, class and uuid in originals are matching => ACCESS_GRANTED");
             return ACCESS_GRANTED;

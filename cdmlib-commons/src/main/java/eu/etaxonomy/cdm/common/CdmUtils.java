@@ -24,6 +24,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -376,9 +377,9 @@ public class CdmUtils {
      * @param value
      * @return
      */
-    public static ArrayList<String> buildList(String value) {
+    public static List<String> buildList(String value) {
 
-        ArrayList<String> resultList = new ArrayList<String>();
+        List<String> resultList = new ArrayList<String>();
         for (String tag : value.split("[\\s,;]+")) {
             resultList.add(tag);
         }
@@ -503,11 +504,8 @@ public class CdmUtils {
      * @return
      */
     public static boolean nullSafeEqual(Object obj1, Object obj2) {
-        if (obj1 == null && obj2 == null){
-            return true;
-        }
-        if (obj1 == null && obj2 != null){
-            return false;
+        if (obj1 == null){
+            return obj2 == null;
         }
         return (obj1.equals(obj2));
     }

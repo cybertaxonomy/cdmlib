@@ -114,6 +114,8 @@ public abstract class DaoBase {
         return result;
     }
 
+
+
     // -------------- hql, query and criteria helper methods -------------- //
 
     protected void addFieldPredicate(StringBuilder hql, String field, Optional<String> value) {

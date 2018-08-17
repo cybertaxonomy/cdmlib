@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.IdentifiedEntityDTO;
 import eu.etaxonomy.cdm.api.service.dto.IncludedTaxaDTO;
 import eu.etaxonomy.cdm.api.service.dto.MarkedEntityDTO;
+import eu.etaxonomy.cdm.api.service.dto.TaxonRelationshipsDTO;
 import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -35,6 +36,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
@@ -952,6 +954,22 @@ public interface ITaxonService
     public UpdateResult changeRelatedTaxonToSynonym(UUID fromTaxonUuid, UUID toTaxonUuid,
             TaxonRelationshipType oldRelationshipType, SynonymType synonymType) throws DataChangeNoRollbackException;
 
+    /**
+     * Returns a list of taxon relationships for a given taxon as DTO.
+     * @param taxonUuid
+     * @param directTypes
+     * @param inversTypes
+     * @param direction
+     * @param groupMisapplications
+     * @param includeUnpublished
+     * @param pageSize
+     * @param pageNumber
+     * @return
+     */
+    public TaxonRelationshipsDTO listTaxonRelationships(UUID taxonUuid,
+            Set<TaxonRelationshipType> directTypes,
+            Set<TaxonRelationshipType> inversTypes, Direction direction, boolean groupMisapplications,
+            boolean includeUnpublished, Integer pageSize, Integer pageNumber);
 
 
 

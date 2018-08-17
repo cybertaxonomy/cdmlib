@@ -37,6 +37,8 @@ public abstract class CsvImportConfiguratorBase
 
     private int transactionLineCount = 1000;
 
+    private URI originalUri;
+
 
     // ****************** CONSTRUCTOR *****************************/
     protected CsvImportConfiguratorBase(InputStreamReader inputStream,
@@ -58,6 +60,11 @@ public abstract class CsvImportConfiguratorBase
         super(transformer);
         setSource(toStream(uri));
         setDestination(cdmDestination);
+        this.originalUri = uri;
+    }
+
+    protected InputStreamReader newInputStream() throws IOException{
+        return toStream(originalUri);
     }
 
     /**

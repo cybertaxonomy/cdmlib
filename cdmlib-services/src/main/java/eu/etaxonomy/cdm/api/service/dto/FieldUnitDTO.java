@@ -2,19 +2,42 @@ package eu.etaxonomy.cdm.api.service.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
+
 
 
 public class FieldUnitDTO extends DerivateDTO{
-
-	//Row Attributes
+    //Row Attributes
 	private String country;
-	private String collection;
+	private String collectionString;
 	private String date;
-	private String herbarium;
-	private boolean hasType;
-	private String protologue;
 
-	private List<PreservedSpecimenDTO> preservedSpecimenDTOs;
+	private boolean hasType;
+	private List<UUID> taxonRelatedDerivedUnits = new ArrayList<>();
+
+	private GatheringEventDTO gatheringEvent;
+
+
+	/**
+     * @param fieldUnit
+     */
+    public FieldUnitDTO(FieldUnit fieldUnit) {
+        super(fieldUnit);
+    }
+
+
+    public static FieldUnitDTO newInstance(FieldUnit fieldUnit){
+	    FieldUnitDTO fieldUnitDto = new FieldUnitDTO(fieldUnit);
+	    fieldUnitDto.gatheringEvent = GatheringEventDTO.newInstance(fieldUnit.getGatheringEvent());
+	    fieldUnitDto.setRecordBase(fieldUnit.getRecordBasis().getMessage());
+	    fieldUnitDto.setListLabel(fieldUnit.getTitleCache());
+
+	    return fieldUnitDto;
+
+	}
+
     /**
      * @return the country
      */
@@ -28,16 +51,16 @@ public class FieldUnitDTO extends DerivateDTO{
         this.country = country;
     }
     /**
-     * @return the collection
+     * @return the collectionString
      */
     public String getCollection() {
-        return collection;
+        return collectionString;
     }
     /**
-     * @param collection the collection to set
+     * @param collectionString the collectionString to set
      */
     public void setCollection(String collection) {
-        this.collection = collection;
+        this.collectionString = collection;
     }
     /**
      * @return the date
@@ -51,18 +74,8 @@ public class FieldUnitDTO extends DerivateDTO{
     public void setDate(String date) {
         this.date = date;
     }
-    /**
-     * @return the herbarium
-     */
-    public String getHerbarium() {
-        return herbarium;
-    }
-    /**
-     * @param herbarium the herbarium to set
-     */
-    public void setHerbarium(String herbarium) {
-        this.herbarium = herbarium;
-    }
+
+
     /**
      * @return the hasType
      */
@@ -75,47 +88,40 @@ public class FieldUnitDTO extends DerivateDTO{
     public void setHasType(boolean hasType) {
         this.hasType = hasType;
     }
-    /**
-     * @return the taxonName
-     */
-    public String getTaxonName() {
-        return taxonName;
+
+    public GatheringEventDTO getGatheringEvent() {
+        return gatheringEvent;
     }
-    /**
-     * @param taxonName the taxonName to set
-     */
-    public void setTaxonName(String taxonName) {
-        this.taxonName = taxonName;
-    }
-    /**
-     * @return the protologue
-     */
-    public String getProtologue() {
-        return protologue;
-    }
-    /**
-     * @param protologue the protologue to set
-     */
-    public void setProtologue(String protologue) {
-        this.protologue = protologue;
+    public void setGatheringEvent(GatheringEventDTO gatheringEvent) {
+        this.gatheringEvent = gatheringEvent;
     }
 
+
     /**
-     * @return the derivateDTOs
+     * @return the taxonRelatedDerivedUnits
      */
-    public List<PreservedSpecimenDTO> getPreservedSpecimenDTOs() {
-        return preservedSpecimenDTOs;
+    public List<UUID> getTaxonRelatedDerivedUnits() {
+        return taxonRelatedDerivedUnits;
     }
 
-    public void addPreservedSpecimenDTO(PreservedSpecimenDTO preservedSpecimenDTO){
-        if(preservedSpecimenDTOs==null){
-            preservedSpecimenDTOs = new ArrayList<PreservedSpecimenDTO>();
+
+    /**
+     * @param taxonRelatedDerivedUnits the taxonRelatedDerivedUnits to set
+     */
+    public void setTaxonRelatedDerivedUnits(List<UUID> taxonRelatedDerivedUnits) {
+        this.taxonRelatedDerivedUnits = taxonRelatedDerivedUnits;
+    }
+
+
+    /**
+     * @param derivedUnitDTO
+     */
+    public void addTaxonRelatedDerivedUnits(DerivateDTO derivedUnitDTO) {
+        if (this.taxonRelatedDerivedUnits == null){
+            this.taxonRelatedDerivedUnits = new ArrayList<>();
         }
-        preservedSpecimenDTOs.add(preservedSpecimenDTO);
-    }
+        this.taxonRelatedDerivedUnits.add(derivedUnitDTO.getUuid());
 
-    public void setPreservedSpecimenDTOs(List<PreservedSpecimenDTO> preservedSpecimenDTOs) {
-        this.preservedSpecimenDTOs = preservedSpecimenDTOs;
     }
 
 }

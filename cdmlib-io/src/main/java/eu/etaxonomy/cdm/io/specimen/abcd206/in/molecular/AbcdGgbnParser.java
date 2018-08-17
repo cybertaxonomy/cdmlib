@@ -174,7 +174,7 @@ public class AbcdGgbnParser {
                     if(markerList.item(0)!=null){
                         String amplificationMarker = markerList.item(0).getTextContent();
                         DefinedTerm dnaMarker = null;
-                        List<DefinedTermBase> markersFound = cdmAppController.getTermService().findByTitle(DefinedTerm.class, amplificationMarker, MatchMode.EXACT, null, null, null, null, null).getRecords();
+                        List<DefinedTermBase> markersFound = cdmAppController.getTermService().findByTitleWithRestrictions(DefinedTerm.class, amplificationMarker, MatchMode.EXACT, null, null, null, null, null).getRecords();
                         if(markersFound.size()==1){
                             dnaMarker = (DefinedTerm) markersFound.get(0);
                         }

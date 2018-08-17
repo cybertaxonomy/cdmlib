@@ -130,8 +130,8 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         }
         assertEquals("Number of taxon nodes is incorrect", 4, taxonNodeService.count(TaxonNode.class));
         assertEquals("Number of taxa is incorrect", 3, taxonService.count(TaxonBase.class));
-        assertEquals(1, taxonService.findByTitle(Taxon.class, "Campanula bononiensis", MatchMode.ANYWHERE, null, null, null, null, null).getRecords().size());
-        assertEquals(1, taxonService.findByTitle(Taxon.class, "Campanula isaurica", MatchMode.ANYWHERE, null, null, null, null, null).getRecords().size());
+        assertEquals(1, taxonService.findByTitleWithRestrictions(Taxon.class, "Campanula bononiensis", MatchMode.ANYWHERE, null, null, null, null, null).getRecords().size());
+        assertEquals(1, taxonService.findByTitleWithRestrictions(Taxon.class, "Campanula isaurica", MatchMode.ANYWHERE, null, null, null, null, null).getRecords().size());
 
         //test for sortindex=-1
 
@@ -498,7 +498,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	    assertEquals("Wrong number of originals", 1, dnaSample.getDerivedFrom().getOriginals().size());
 
 	    FieldUnit specimenFieldUnit = (FieldUnit) occurrenceService.load(fieldUnit1Uuid);
-	    Collection<FieldUnit> fieldUnits = occurrenceService.getFieldUnits(dnaSample.getUuid(), null);
+	    Collection<FieldUnit> fieldUnits = occurrenceService.findFieldUnits(dnaSample.getUuid(), null);
 	    assertEquals(1, fieldUnits.size());
 	    FieldUnit dnaSampleFieldUnit = fieldUnits.iterator().next();
         assertEquals(specimenFieldUnit, dnaSampleFieldUnit);
@@ -558,7 +558,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 
 	    assertEquals("Wrong number of originals", 1, dnaSample.getDerivedFrom().getOriginals().size());
         FieldUnit specimenFieldUnit = (FieldUnit) occurrenceService.load(fieldUnit1Uuid);
-        Collection<FieldUnit> fieldUnits = occurrenceService.getFieldUnits(dnaSample.getUuid(), null);
+        Collection<FieldUnit> fieldUnits = occurrenceService.findFieldUnits(dnaSample.getUuid(), null);
         assertEquals(1, fieldUnits.size());
         FieldUnit dnaSampleFieldUnit = fieldUnits.iterator().next();
         assertEquals(specimenFieldUnit, dnaSampleFieldUnit);

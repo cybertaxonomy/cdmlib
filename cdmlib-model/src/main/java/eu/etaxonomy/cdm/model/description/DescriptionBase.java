@@ -310,7 +310,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
     public boolean removeDescriptiveDataSet(DescriptiveDataSet descriptiveDataSet){
         boolean result = this.descriptiveDataSets.remove(descriptiveDataSet);
         if (descriptiveDataSet.getDescriptions().contains(this)){
-            descriptiveDataSet.addDescription(this);
+            descriptiveDataSet.removeDescription(this);
         }
         return result;
     }

@@ -68,6 +68,7 @@ public enum CdmPermissionClass {
     TEAMORPERSONBASE,
     TERMVOCABULARY,
     USER,
+    AGENTBASE
     ;
 
 

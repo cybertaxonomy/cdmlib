@@ -11,10 +11,10 @@ package eu.etaxonomy.cdm.persistence.hibernate.permission.voter;
 import java.util.Collection;
 
 import org.springframework.security.access.ConfigAttribute;
-import org.springframework.security.access.vote.UnanimousBased;
 import org.springframework.security.core.Authentication;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.TargetEntityStates;
 
 /**
  * This voter always returns {@link #ACCESS_GRANTED}.
@@ -29,7 +29,7 @@ public class GrantAlwaysVoter extends CdmPermissionVoter {
      * @see org.springframework.security.access.AccessDecisionVoter#vote(org.springframework.security.core.Authentication, java.lang.Object, java.util.Collection)
      */
     @Override
-    public int vote(Authentication authentication, CdmBase object, Collection<ConfigAttribute> attributes) {
+    public int vote(Authentication authentication, TargetEntityStates object, Collection<ConfigAttribute> attributes) {
         return ACCESS_GRANTED;
     }
 

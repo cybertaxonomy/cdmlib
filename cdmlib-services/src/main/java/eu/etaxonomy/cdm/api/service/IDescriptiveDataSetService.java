@@ -13,7 +13,8 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.DescriptiveSystemRole;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.description.SpecimenDescription;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
@@ -68,19 +69,20 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
     public Collection<SpecimenNodeWrapper> loadSpecimens(DescriptiveDataSet descriptiveDataSet);
 
     /**
-     * Creates a row wrapper object for the given specimen
-     * @param specimen the specimen for which the wrapper should be created
-     * @param descriptiveDataSet the data set it should be used in
-     * @return the created row wrapper
-     */
-    public RowWrapperDTO createRowWrapper(SpecimenOrObservationBase specimen, DescriptiveDataSet descriptiveDataSet);
-
-    /**
      * Creates a row wrapper object for the given description
      * @param description the description for which the wrapper should be created
+     * @param taxonNode the taxonNode (can be <code>null</code>) of the associated taxon
      * @param descriptiveDataSet the data set it should be used in
      * @return the created row wrapper
      */
-    public RowWrapperDTO createRowWrapper(DescriptionBase description, DescriptiveDataSet descriptiveDataSet);
+    public RowWrapperDTO createRowWrapper(TaxonNode taxonNode, DescriptionBase description, DescriptiveDataSet descriptiveDataSet);
 
+    /**
+     * Returns a {@link SpecimenDescription} for a given specimen with corresponding
+     * features according to the {@link DescriptiveDataSet}.
+     * @param descriptiveDataSetUuid
+     * @param specimenUuid
+     * @return
+     */
+    public SpecimenDescription findDescriptionForDescriptiveDataSet(UUID descriptiveDataSetUuid, UUID specimenUuid);
 }

@@ -48,6 +48,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNaturalComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
@@ -979,18 +980,189 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         Assert.assertEquals(publish, taxonService.find(5).isPublish());
     }
 
+    @Test
+    @DataSet("TaxonNodeServiceImplTest-testFindCommonParentNode.xml")
+    public void testFindCommonParentNode(){
+        UUID checklist2Uuid = UUID.fromString("c6e3a598-3b6c-4ef5-8b01-5bdb3de5a9fd");
+        UUID campanulaNodeUuid = UUID.fromString("62fa918d-a1d8-4284-ae4b-93478bde8656");
+        UUID campanulaPersicifoliaNodeUuid = UUID.fromString("dce3defa-5123-44a7-8008-0cc9b27461f6");
+
+        UUID classificationUuid = UUID.fromString("029b4c07-5903-4dcf-87e8-406ed0e0285f");
+        UUID abiesNodeUuid = UUID.fromString("f8306fd3-9825-41bf-94aa-a7b5790b553e");
+        UUID abiesAlbaNodeUuid = UUID.fromString("c70f76e5-2dcb-41c5-ae6f-d756e0a0fae0");
+        UUID abiesAlbaSubBrotaNodeUuid = UUID.fromString("06d58161-7707-44b5-b720-6c0eb916b37c");
+        UUID abiesPalmaNodeUuid = UUID.fromString("6dfd30dd-e589-493a-b66a-19c4cb374f92");
+
+        UUID pinusNodeUuid = UUID.fromString("5d8e8341-f5e9-4616-96cf-f0351dda42f4");
+
+//        /*
+//         * Checklist2
+//         *  - Campanula
+//         *   - Campanula persicifolia
+//         * Checklist
+//         *  - Abies
+//         *   - Abies alba
+//         *    - Abieas alba subs. brota
+//         *   - Abies palma
+//         *  -Pinus
+//         */
+//        Classification checklist2 = Classification.NewInstance("Checklist2");
+//        checklist2.setUuid(checklist2Uuid);
+//
+//        IBotanicalName campanulaName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
+//        campanulaName.setGenusOrUninomial("Campanula");
+//        Taxon campanula = Taxon.NewInstance(campanulaName, null);
+//
+//        IBotanicalName campanulaPersicifoliaName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+//        campanulaPersicifoliaName.setGenusOrUninomial("Campanula");
+//        campanulaPersicifoliaName.setSpecificEpithet("persicifolia");
+//        Taxon campanulaPersicifolia = Taxon.NewInstance(campanulaPersicifoliaName, null);
+//
+//        TaxonNode campanulaNode = checklist2.addChildTaxon(campanula, null, null);
+//        campanulaNode.setUuid(campanulaNodeUuid);
+//        TaxonNode campanulaPersicifoliaNode = checklist2.addParentChild(campanula, campanulaPersicifolia, null, null);
+//        campanulaPersicifoliaNode.setUuid(campanulaPersicifoliaNodeUuid);
+//
+//        Classification checklist = Classification.NewInstance("Checklist");
+//        checklist.setUuid(classificationUuid);
+//
+//        IBotanicalName abiesName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
+//        abiesName.setGenusOrUninomial("Abies");
+//        Taxon abies = Taxon.NewInstance(abiesName, null);
+//
+//        IBotanicalName abiesAlbaName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+//        abiesAlbaName.setGenusOrUninomial("Abies");
+//        abiesAlbaName.setSpecificEpithet("alba");
+//        Taxon abiesAlba = Taxon.NewInstance(abiesAlbaName, null);
+//
+//        IBotanicalName abiesAlbaSubBrotaName = TaxonNameFactory.NewBotanicalInstance(Rank.SUBSPECIES());
+//        abiesAlbaSubBrotaName.setGenusOrUninomial("Abies");
+//        abiesAlbaSubBrotaName.setSpecificEpithet("alba");
+//        abiesAlbaSubBrotaName.setInfraSpecificEpithet("brota");
+//        Taxon abiesAlbaSubBrota = Taxon.NewInstance(abiesAlbaSubBrotaName, null);
+//
+//        IBotanicalName abiesPalmaName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+//        abiesPalmaName.setGenusOrUninomial("Abies");
+//        abiesPalmaName.setSpecificEpithet("palma");
+//        Taxon abiesPalma = Taxon.NewInstance(abiesPalmaName, null);
+//
+//        IBotanicalName pinusName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
+//        pinusName.setGenusOrUninomial("Pinus");
+//        Taxon pinus = Taxon.NewInstance(pinusName, null);
+//
+//        TaxonNode abiesNode = checklist.addChildTaxon(abies, null, null);
+//        abiesNode.setUuid(abiesNodeUuid);
+//        TaxonNode abiesAlbaNode = checklist.addParentChild(abies, abiesAlba, null, null);
+//        abiesAlbaNode.setUuid(abiesAlbaNodeUuid);
+//        TaxonNode abiesAlbaSubBrotaNode = checklist.addParentChild(abiesAlba, abiesAlbaSubBrota, null, null);
+//        abiesAlbaSubBrotaNode.setUuid(abiesAlbaSubBrotaNodeUuid);
+//        TaxonNode abiesPalmaNode = checklist.addParentChild(abies, abiesPalma, null, null);
+//        abiesPalmaNode.setUuid(abiesPalmaNodeUuid);
+//        TaxonNode pinusNode = checklist.addChildTaxon(pinus, null, null);
+//        pinusNode.setUuid(pinusNodeUuid);
+//
+//        taxonService.saveOrUpdate(campanula);
+//        taxonService.saveOrUpdate(campanulaPersicifolia);
+//        classificationService.saveOrUpdate(checklist2);
+//
+//        taxonService.saveOrUpdate(abies);
+//        taxonService.saveOrUpdate(abiesAlba);
+//        taxonService.saveOrUpdate(abiesAlbaSubBrota);
+//        taxonService.saveOrUpdate(abiesPalma);
+//        taxonService.saveOrUpdate(pinus);
+//        classificationService.saveOrUpdate(checklist);
+//
+//
+//        setComplete();
+//        endTransaction();
+//
+//        String fileNameAppendix = "testFindCommonParentNode";
+//
+//        writeDbUnitDataSetFile(new String[] {
+//            "TAXONBASE", "TAXONNAME",
+//            "TAXONRELATIONSHIP",
+//            "HOMOTYPICALGROUP",
+//            "CLASSIFICATION", "TAXONNODE",
+//            "LANGUAGESTRING",
+//            "HIBERNATE_SEQUENCES" // IMPORTANT!!!
+//            },
+//            fileNameAppendix );
+
+        Classification classification = classificationService.load(classificationUuid);
+
+        TaxonNode campanula = taxonNodeService.load(campanulaNodeUuid);
+        TaxonNode campanulaPersicifolia = taxonNodeService.load(campanulaPersicifoliaNodeUuid);
+        TaxonNode abies = taxonNodeService.load(abiesNodeUuid);
+        TaxonNode abiesAlba = taxonNodeService.load(abiesAlbaNodeUuid);
+        TaxonNode abiesPalma = taxonNodeService.load(abiesPalmaNodeUuid);
+        TaxonNode pinus = taxonNodeService.load(pinusNodeUuid);
+
+        //check initial state
+        assertTrue(campanula!=null);
+        assertTrue(campanulaPersicifolia!=null);
+        assertTrue(abies!=null);
+        assertTrue(abiesAlba!=null);
+        assertTrue(abiesPalma!=null);
+        assertTrue(pinus!=null);
+
+        TaxonNodeDto classificationRootNodeDto = new TaxonNodeDto(classification.getRootNode());
+        TaxonNodeDto campanulaDto = new TaxonNodeDto(campanula);
+        TaxonNodeDto campanulaPersicifoliaDto = new TaxonNodeDto(campanulaPersicifolia);
+        TaxonNodeDto abiesDto = new TaxonNodeDto(abies);
+        TaxonNodeDto abiesAlbaDto = new TaxonNodeDto(abiesAlba);
+        TaxonNodeDto abiesPalmaDto = new TaxonNodeDto(abiesPalma);
+        TaxonNodeDto pinusDto = new TaxonNodeDto(pinus);
+
+        List<TaxonNodeDto> nodes = new ArrayList<>();
+        nodes.add(campanulaDto);
+        TaxonNodeDto commonParentNodeDto = taxonNodeService.findCommonParentDto(nodes);
+        assertEquals(campanulaDto.getUuid(), commonParentNodeDto.getUuid());
+
+        nodes = new ArrayList<>();
+        nodes.add(campanulaDto);
+        nodes.add(campanulaPersicifoliaDto);
+        commonParentNodeDto = taxonNodeService.findCommonParentDto(nodes);
+        assertEquals(campanulaDto.getUuid(), commonParentNodeDto.getUuid());
+
+        nodes = new ArrayList<>();
+        nodes.add(campanulaDto);
+        nodes.add(abiesAlbaDto);
+        commonParentNodeDto = taxonNodeService.findCommonParentDto(nodes);
+        assertNull(commonParentNodeDto);
+
+        nodes = new ArrayList<>();
+        nodes.add(abiesAlbaDto);
+        nodes.add(abiesPalmaDto);
+        commonParentNodeDto = taxonNodeService.findCommonParentDto(nodes);
+        assertEquals(abiesDto.getUuid(), commonParentNodeDto.getUuid());
+
+        nodes = new ArrayList<>();
+        nodes.add(abiesDto);
+        nodes.add(pinusDto);
+        commonParentNodeDto = taxonNodeService.findCommonParentDto(nodes);
+        assertEquals(classificationRootNodeDto.getUuid(), commonParentNodeDto.getUuid());
+    }
+
 
     @Override
 //    @Test
     public void createTestDataSet() throws FileNotFoundException {
+        UUID checklist2Uuid = UUID.fromString("c6e3a598-3b6c-4ef5-8b01-5bdb3de5a9fd");
+        UUID campanulaNodeUuid = UUID.fromString("62fa918d-a1d8-4284-ae4b-93478bde8656");
+        UUID campanulaPersicifoliaNodeUuid = UUID.fromString("dce3defa-5123-44a7-8008-0cc9b27461f6");
+
         UUID classificationUuid = UUID.fromString("029b4c07-5903-4dcf-87e8-406ed0e0285f");
-        UUID abiesUuid = UUID.fromString("f8306fd3-9825-41bf-94aa-a7b5790b553e");
-        UUID abiesAlbaUuid = UUID.fromString("c70f76e5-2dcb-41c5-ae6f-d756e0a0fae0");
-        UUID abiesAlbaSubBrotaUuid = UUID.fromString("06d58161-7707-44b5-b720-6c0eb916b37c");
-        UUID abiesPalmaUuid = UUID.fromString("6dfd30dd-e589-493a-b66a-19c4cb374f92");
-        UUID pinusUuid = UUID.fromString("5d8e8341-f5e9-4616-96cf-f0351dda42f4");
+        UUID abiesNodeUuid = UUID.fromString("f8306fd3-9825-41bf-94aa-a7b5790b553e");
+        UUID abiesAlbaNodeUuid = UUID.fromString("c70f76e5-2dcb-41c5-ae6f-d756e0a0fae0");
+        UUID abiesAlbaSubBrotaNodeUuid = UUID.fromString("06d58161-7707-44b5-b720-6c0eb916b37c");
+        UUID abiesPalmaNodeUuid = UUID.fromString("6dfd30dd-e589-493a-b66a-19c4cb374f92");
+
+        UUID pinusNodeUuid = UUID.fromString("5d8e8341-f5e9-4616-96cf-f0351dda42f4");
 
         /*
+         * Checklist2
+         *  - Campanula
+         *   - Campanula persicifolia
          * Checklist
          *  - Abies
          *   - Abies alba
@@ -998,43 +1170,64 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
          *   - Abies palma
          *  -Pinus
          */
+        Classification checklist2 = Classification.NewInstance("Checklist2");
+        checklist2.setUuid(checklist2Uuid);
+
+        IBotanicalName campanulaName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
+        campanulaName.setGenusOrUninomial("Campanula");
+        Taxon campanula = Taxon.NewInstance(campanulaName, null);
+
+        IBotanicalName campanulaPersicifoliaName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        campanulaPersicifoliaName.setGenusOrUninomial("Campanula");
+        campanulaPersicifoliaName.setSpecificEpithet("persicifolia");
+        Taxon campanulaPersicifolia = Taxon.NewInstance(campanulaPersicifoliaName, null);
+
+        TaxonNode campanulaNode = checklist2.addChildTaxon(campanula, null, null);
+        campanulaNode.setUuid(campanulaNodeUuid);
+        TaxonNode campanulaPersicifoliaNode = checklist2.addParentChild(campanula, campanulaPersicifolia, null, null);
+        campanulaPersicifoliaNode.setUuid(campanulaPersicifoliaNodeUuid);
+
         Classification checklist = Classification.NewInstance("Checklist");
         checklist.setUuid(classificationUuid);
 
         IBotanicalName abiesName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
         abiesName.setGenusOrUninomial("Abies");
         Taxon abies = Taxon.NewInstance(abiesName, null);
-        abies.setUuid(abiesUuid);
 
         IBotanicalName abiesAlbaName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         abiesAlbaName.setGenusOrUninomial("Abies");
         abiesAlbaName.setSpecificEpithet("alba");
         Taxon abiesAlba = Taxon.NewInstance(abiesAlbaName, null);
-        abiesAlba.setUuid(abiesAlbaUuid);
 
         IBotanicalName abiesAlbaSubBrotaName = TaxonNameFactory.NewBotanicalInstance(Rank.SUBSPECIES());
         abiesAlbaSubBrotaName.setGenusOrUninomial("Abies");
         abiesAlbaSubBrotaName.setSpecificEpithet("alba");
         abiesAlbaSubBrotaName.setInfraSpecificEpithet("brota");
         Taxon abiesAlbaSubBrota = Taxon.NewInstance(abiesAlbaSubBrotaName, null);
-        abiesAlbaSubBrota.setUuid(abiesAlbaSubBrotaUuid);
 
         IBotanicalName abiesPalmaName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         abiesPalmaName.setGenusOrUninomial("Abies");
         abiesPalmaName.setSpecificEpithet("palma");
         Taxon abiesPalma = Taxon.NewInstance(abiesPalmaName, null);
-        abiesPalma.setUuid(abiesPalmaUuid);
 
         IBotanicalName pinusName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
         pinusName.setGenusOrUninomial("Pinus");
         Taxon pinus = Taxon.NewInstance(pinusName, null);
-        pinus.setUuid(pinusUuid);
 
-        checklist.addChildTaxon(abies, null, null);
-        checklist.addParentChild(abies, abiesAlba, null, null);
-        checklist.addParentChild(abiesAlba, abiesAlbaSubBrota, null, null);
-        checklist.addParentChild(abies, abiesPalma, null, null);
-        checklist.addChildTaxon(pinus, null, null);
+        TaxonNode abiesNode = checklist.addChildTaxon(abies, null, null);
+        abiesNode.setUuid(abiesNodeUuid);
+        TaxonNode abiesAlbaNode = checklist.addParentChild(abies, abiesAlba, null, null);
+        abiesAlbaNode.setUuid(abiesAlbaNodeUuid);
+        TaxonNode abiesAlbaSubBrotaNode = checklist.addParentChild(abiesAlba, abiesAlbaSubBrota, null, null);
+        abiesAlbaSubBrotaNode.setUuid(abiesAlbaSubBrotaNodeUuid);
+        TaxonNode abiesPalmaNode = checklist.addParentChild(abies, abiesPalma, null, null);
+        abiesPalmaNode.setUuid(abiesPalmaNodeUuid);
+        TaxonNode pinusNode = checklist.addChildTaxon(pinus, null, null);
+        pinusNode.setUuid(pinusNodeUuid);
+
+        taxonService.saveOrUpdate(campanula);
+        taxonService.saveOrUpdate(campanulaPersicifolia);
+        classificationService.saveOrUpdate(checklist2);
 
         taxonService.saveOrUpdate(abies);
         taxonService.saveOrUpdate(abiesAlba);
@@ -1047,7 +1240,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         setComplete();
         endTransaction();
 
-        String fileNameAppendix = "testGetUuidAndTitleCacheHierarchy";
+        String fileNameAppendix = "testFindCommonParentNode";
 
         writeDbUnitDataSetFile(new String[] {
             "TAXONBASE", "TAXONNAME",

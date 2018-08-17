@@ -15,12 +15,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.security.access.AccessDecisionVoter;
 
-import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionClass;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.TargetEntityStates;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.voter.DescriptionElementVoter;
 
 /**
@@ -36,13 +36,13 @@ public class DescriptionElementVoterTest extends AbstractCdmPermissionVoterTest 
 
     private DescriptionElementVoter voter = new DescriptionElementVoter();
 
-    private DescriptionElementBase textDataEco = null;
+    private TargetEntityStates textDataEco = null;
     private Feature ecology = Feature.NewInstance(null, "ecology", null);
     private Feature morphology = Feature.NewInstance(null, "morphology", null);
 
     @Before
     public void setup() {
-        textDataEco = new TextData(ecology);
+        textDataEco =  new TargetEntityStates(new TextData(ecology));
     }
 
     @Test
@@ -114,7 +114,7 @@ public class DescriptionElementVoterTest extends AbstractCdmPermissionVoterTest 
                         // combined
                         new CdmAuthority(CdmPermissionClass.DESCRIPTIONELEMENTBASE, ecology.getLabel(), EnumSet.of(CRUD.CREATE, CRUD.UPDATE), null)
                         ),
-                new TextData(),
+                new TargetEntityStates(new TextData()),
                 Arrays.asList(new CdmAuthority(CdmPermissionClass.DESCRIPTIONELEMENTBASE, null, EnumSet.of(CRUD.CREATE), null)));
         assertEquals(AccessDecisionVoter.ACCESS_DENIED, vote);
     }
@@ -126,7 +126,7 @@ public class DescriptionElementVoterTest extends AbstractCdmPermissionVoterTest 
                         // combined
                         new CdmAuthority(CdmPermissionClass.DESCRIPTIONELEMENTBASE, ecology.getLabel(), EnumSet.of(CRUD.CREATE, CRUD.UPDATE), null)
                         ),
-                new TextData(),
+                new TargetEntityStates(new TextData()),
                 Arrays.asList(new CdmAuthority(CdmPermissionClass.TAXONBASE, null, EnumSet.of(CRUD.CREATE), null)));
         assertEquals(AccessDecisionVoter.ACCESS_DENIED, vote);
     }

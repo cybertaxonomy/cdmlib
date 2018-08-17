@@ -33,12 +33,13 @@ public class OccurenceQuery implements Serializable{
     public String locality = null;
     public Calendar dateFrom = null;
     public Calendar dateTo = null;
+    public boolean hasImage = false;
 
 
 
     public OccurenceQuery(Set<String[]> tripleIds) {
 
-        this(tripleIds, null, null, null, null, null, null, null, null, null);
+        this(tripleIds, null, null, null, null, null, null, null, null, null, false);
     }
 
     /**
@@ -53,14 +54,14 @@ public class OccurenceQuery implements Serializable{
      * @param dateTo
      */
     public OccurenceQuery(String taxonName, String collector, String collectorsNumber, String accessionNumber,
-            String herbarium, String country, String locality, Calendar dateFrom, Calendar dateTo) {
-        this(null, taxonName, collector, collectorsNumber, accessionNumber, herbarium, country, locality, dateFrom, dateTo);
+            String herbarium, String country, String locality, Calendar dateFrom, Calendar dateTo, boolean hasImage) {
+        this(null, taxonName, collector, collectorsNumber, accessionNumber, herbarium, country, locality, dateFrom, dateTo, hasImage);
     }
 
     /**
      * Constructor to initially set the parameters
      */
-    private OccurenceQuery(Set<String[]> tripleIds, String taxonName, String collector, String collectorsNumber, String accessionNumber, String herbarium, String country, String locality, Calendar dateFrom, Calendar dateTo) {
+    private OccurenceQuery(Set<String[]> tripleIds, String taxonName, String collector, String collectorsNumber, String accessionNumber, String herbarium, String country, String locality, Calendar dateFrom, Calendar dateTo, boolean hasImage) {
         this.tripleIds = tripleIds;
         this.taxonName = taxonName;
         this.collector = collector;
@@ -71,6 +72,7 @@ public class OccurenceQuery implements Serializable{
         this.locality = locality;
         this.dateFrom = dateFrom;
         this.dateTo = dateTo;
+        this.hasImage = hasImage;
     }
 
     /**
@@ -180,6 +182,8 @@ public class OccurenceQuery implements Serializable{
             }
         } else if (!taxonName.equals(other.taxonName)) {
             return false;
+        } else if (hasImage != other.hasImage) {
+            return false;
         }
         if (tripleIds == null) {
             if (other.tripleIds != null) {
@@ -233,6 +237,9 @@ public class OccurenceQuery implements Serializable{
         if(dateTo!=null){
             string += " dateTo=" + DATE_FORMAT.format(dateTo.getTime());
         }
+
+        string += " hasImage=" + hasImage;
+
         return string;
     }
 }

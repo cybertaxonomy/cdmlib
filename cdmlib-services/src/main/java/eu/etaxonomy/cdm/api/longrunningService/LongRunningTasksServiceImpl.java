@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IProgressMonitorService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.UpdateResult;
@@ -37,8 +38,31 @@ public class LongRunningTasksServiceImpl implements ILongRunningTasksService{
     ITaxonNodeService taxonNodeService;
 
     @Autowired
+    IDescriptionService descriptionService;
+
+    @Autowired
     IProgressMonitorService progressMonitorService;
 
+
+    @Override
+    public UUID aggregateComputedTaxonDescriptions(UUID taxonNodeUuid){
+        RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
+            @Override
+            public Serializable doRun(IRemotingProgressMonitor monitor) {
+                UpdateResult updateResult = descriptionService.aggregateTaxonDescription(taxonNodeUuid, monitor);
+                for(Exception e : updateResult.getExceptions()) {
+                    monitor.addReport(e.getMessage());
+                }
+                monitor.setResult(updateResult);
+                return updateResult;
+
+            }
+        };
+        UUID uuid = progressMonitorService.registerNewRemotingMonitor(monitorThread);
+        monitorThread.setPriority(2);
+        monitorThread.start();
+        return uuid;
+    }
 
     @Override
     public UUID monitLongRunningTask(ForSubtreeConfiguratorBase config) {

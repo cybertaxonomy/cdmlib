@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthorityParsingException;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionClass;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.TargetEntityStates;
 
 /**
  * The <code>CdmPermissionVoter</code> provides access control votes for {@link CdmBase} objects.
@@ -30,7 +31,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionClass;
  * @since Sep 4, 2012
  *
  */
-public abstract class CdmPermissionVoter implements AccessDecisionVoter <CdmBase> {
+public abstract class CdmPermissionVoter implements AccessDecisionVoter <TargetEntityStates> {
 
     /**
      *
@@ -75,15 +76,15 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter <CdmBase
     }
 
     @Override
-    public int vote(Authentication authentication, CdmBase cdmBase, Collection<ConfigAttribute> attributes) {
+    public int vote(Authentication authentication, TargetEntityStates targetEntityStates, Collection<ConfigAttribute> attributes) {
 
-        if(!isResponsibleFor(cdmBase)){
+        if(!isResponsibleFor(targetEntityStates.getEntity())){
             logger.debug(voterLoggingLabel() + " class missmatch => ACCESS_ABSTAIN");
             return ACCESS_ABSTAIN;
         }
 
         if (logger.isDebugEnabled()){
-            logger.debug(voterLoggingLabel() + " voting for authentication: " + authentication.getName() + ", object : " + cdmBase.toString() + ", attribute[0]:" + ((CdmAuthority)attributes.iterator().next()).getAttribute());
+            logger.debug(voterLoggingLabel() + " voting for authentication: " + authentication.getName() + ", object : " + targetEntityStates.getEntity().toString() + ", attribute[0]:" + ((CdmAuthority)attributes.iterator().next()).getAttribute());
         }
 
         int fallThroughVote = ACCESS_DENIED;
@@ -119,7 +120,7 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter <CdmBase
 
                 vr.isClassMatch = isALL || auth.getPermissionClass().equals(evalPermission.getPermissionClass());
                 vr.isPermissionMatch = auth.getOperation().containsAll(evalPermission.getOperation());
-                vr.isUuidMatch = auth.hasTargetUuid() && auth.getTargetUUID().equals(cdmBase.getUuid());
+                vr.isUuidMatch = auth.hasTargetUuid() && auth.getTargetUUID().equals(targetEntityStates.getEntity().getUuid());
                 vr.isIgnoreUuidMatch = !auth.hasTargetUuid();
 
                 if(logger.isDebugEnabled()){
@@ -127,7 +128,7 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter <CdmBase
                 }
 
                 // first of all, always allow deleting orphan entities
-                if(vr.isClassMatch && evalPermission.getOperation().equals(DELETE) && isOrpahn(cdmBase)) {
+                if(vr.isClassMatch && evalPermission.getOperation().equals(DELETE) && isOrpahn(targetEntityStates.getEntity())) {
                     if(logger.isDebugEnabled()){
                         logger.debug(voterLoggingLabel() +" entity is considered orphan => ACCESS_GRANTED");
                     }
@@ -163,7 +164,7 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter <CdmBase
                 // ask subclasses for further voting decisions
                 // subclasses will cast votes for specific Cdm Types
                 //
-                Integer furtherVotingResult = furtherVotingDescisions(auth, cdmBase, attributes, vr);
+                Integer furtherVotingResult = furtherVotingDescisions(auth, targetEntityStates, attributes, vr);
                 if(furtherVotingResult != null){
                     if(logger.isDebugEnabled()){
                         logger.debug(voterLoggingLabel() + " furtherVotingResult => " + voteToString(furtherVotingResult));
@@ -213,15 +214,15 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter <CdmBase
 
     /**
      * Override this method to implement specific decisions.
-     * Implementations of this method will be executed in {@link #vote(Authentication, Object, Collection)}.
+     * Implementations of this method will be executed in {@link #vote(Authentication, TargetEntityStates, Collection)}.
      *
      * @param CdmAuthority
-     * @param object
+     * @param targetEntityStates
      * @param attributes
      * @param validationResult
      * @return A return value of ACCESS_ABSTAIN or null will be ignored in {@link #vote(Authentication, Object, Collection)}
      */
-    protected Integer furtherVotingDescisions(CdmAuthority CdmAuthority, Object object, Collection<ConfigAttribute> attributes,
+    protected Integer furtherVotingDescisions(CdmAuthority CdmAuthority, TargetEntityStates targetEntityStates, Collection<ConfigAttribute> attributes,
             ValidationResult validationResult) {
         return null;
     }

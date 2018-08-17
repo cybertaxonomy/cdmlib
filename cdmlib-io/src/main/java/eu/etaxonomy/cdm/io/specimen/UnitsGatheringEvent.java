@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author p.kelbert
@@ -182,8 +183,10 @@ public class UnitsGatheringEvent {
         if(timeperiod==null){
             timeperiod = TimePeriod.NewInstance();
             this.gatheringEvent.setTimeperiod(timeperiod);
+        }else{
+            this.gatheringEvent.setTimeperiod(TimePeriodParser.parseString(date));
         }
-        timeperiod.setFreeText(date);
+
     }
 
     public void setElevation(String elevationText, String elevationMin, String elevationMax, String elevationUnit){

@@ -88,8 +88,8 @@ public class OccurrenceSearch implements RemoteResponse {
     	}
     	osr.setUnitCount(duf.getIndividualCount());
 
-    	if(duf.getKindOfUnit() != null) {
-    		osr.setKindOfUnit(duf.getKindOfUnit().getLabel());
+    	if(duf.getDerivedUnitKindOfUnit() != null) {
+    		osr.setKindOfUnit(duf.getDerivedUnitKindOfUnit().getLabel());
     	}
 
     	osr.setElevation(duf.getAbsoluteElevation());

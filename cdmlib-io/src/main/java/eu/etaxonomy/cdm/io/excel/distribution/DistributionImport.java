@@ -26,9 +26,9 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.ExcelUtils;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.TdwgAreaProvider;
+import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportState;
 import eu.etaxonomy.cdm.io.excel.common.ExcelRowBase;
-import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
@@ -124,7 +124,7 @@ public class DistributionImport
     	*/
 
         String editName = "";
-        ArrayList<String> distributionList = new ArrayList<String>();
+        List<String> distributionList = new ArrayList<String>();
         String status = "";
         String literatureNumber = "";
         String literature = "";
@@ -168,7 +168,7 @@ public class DistributionImport
 	/**
 	 *  Stores the data of one Excel sheet row in the database
 	 */
-    private void saveRecord(String taxonName, ArrayList<String> distributionList,
+    private void saveRecord(String taxonName, List<String> distributionList,
     		String status, String literatureNumber, String literature) {
 
     	IdentifiableServiceConfiguratorImpl<TaxonName> config = IdentifiableServiceConfiguratorFactory.getConfigurator(TaxonName.class);

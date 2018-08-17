@@ -404,7 +404,7 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
      * @return
      * @throws IOException
      */
-    protected <T extends IPublishable> T checkExistsAndAccess(T publishable, boolean includeUnpublished,
+    protected <S extends IPublishable> S checkExistsAndAccess(S publishable, boolean includeUnpublished,
             HttpServletResponse response) throws IOException {
         if (publishable == null){
             HttpStatusMessage.UUID_NOT_FOUND.send(response);
@@ -415,6 +415,15 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
         return publishable;
     }
 
+    protected <S extends IPublishable> S checkExistsAccessType(IPublishable publishable, boolean includeUnpublished,
+            Class<S> clazz, HttpServletResponse response) throws IOException {
+        IPublishable result = this.checkExistsAndAccess(publishable, includeUnpublished, response);
+        if (clazz != null && !clazz.isAssignableFrom(result.getClass())){
+            HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
+            result = null;
+        }
+        return (S)result;
+    }
 
       /* TODO implement
 

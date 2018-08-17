@@ -55,6 +55,7 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -282,7 +283,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
         pagerParams.normalizeAndValidate(response);
 
 
-        IFindTaxaAndNamesConfigurator<?> config = FindTaxaAndNamesConfiguratorImpl.NewInstance();
+        IFindTaxaAndNamesConfigurator config = FindTaxaAndNamesConfiguratorImpl.NewInstance();
         config.setIncludeUnpublished(includeUnpublished);
         config.setPageNumber(pagerParams.getPageIndex());
         config.setPageSize(pagerParams.getPageSize());

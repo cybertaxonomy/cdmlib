@@ -94,6 +94,7 @@ public class CdmLightClassificationExport
     private static final String STD_TEAM_CONCATINATION = ", ";
     private static final String FINAL_TEAM_CONCATINATION = " & ";
 
+
     private static final String IPNI_NAME_IDENTIFIER = "Ipni Name Identifier";
     private static final String TROPICOS_NAME_IDENTIFIER = "Tropicos Name Identifier";
     private static final String WFO_NAME_IDENTIFIER = "WFO Name Identifier";
@@ -239,7 +240,18 @@ public class CdmLightClassificationExport
                 Taxon parent = (taxonNode.getParent()==null) ? null : taxonNode.getParent().getTaxon();
                 csvLine[table.getIndex(CdmLightExportTable.PARENT_FK)] = getId(state, parent);
                 csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE_FK)] = getId(state, taxon.getSec());
-                csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE)] = getTitleCache(taxon.getSec());
+                if (taxon.getSec()!= null && taxon.getSec().getDatePublished() != null && taxon.getSec().getDatePublished().getFreeText() != null){
+                    String sec_string = taxon.getSec().getTitleCache() + ". " + taxon.getSec().getDatePublished().getFreeText();
+                    sec_string = sec_string.replace("..", ".");
+                    csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE)] = sec_string;
+                }else{
+                    csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE)] = getTitleCache(taxon.getSec());
+                }
+                if (taxon.getSec() != null){
+                    if (state.getReferenceFromStore(taxon.getSec().getId()) == null){
+                        handleReference(state, taxon.getSec());
+                    }
+                }
                 csvLine[table.getIndex(CdmLightExportTable.CLASSIFICATION_ID)] = getId(state, taxonNode.getClassification());
                 csvLine[table.getIndex(CdmLightExportTable.CLASSIFICATION_TITLE)] = taxonNode.getClassification().getTitleCache();
 
@@ -461,8 +473,11 @@ public class CdmLightClassificationExport
                    for (Language language: textData.getMultilanguageText().keySet()){
                        String[] csvLineLanguage = csvLine.clone();
                        LanguageString langString = textData.getLanguageText(language);
-
-                       csvLineLanguage[table.getIndex(CdmLightExportTable.FACT_TEXT)] = langString.getText();
+                       String text = langString.getText();
+                       if (state.getConfig().isFilterIntextReferences()){
+                           text = filterIntextReferences(langString.getText());
+                       }
+                       csvLineLanguage[table.getIndex(CdmLightExportTable.FACT_TEXT)] = text;
                        csvLineLanguage[table.getIndex(CdmLightExportTable.LANGUAGE)] = language.getLabel();
                        state.getProcessor().put(table, textData, csvLineLanguage);
                    }
@@ -476,6 +491,23 @@ public class CdmLightClassificationExport
         }
     }
 
+
+    /**
+     * @param text
+     * @return
+     */
+    private String filterIntextReferences(String text) {
+        /*
+         * (<cdm:reference cdmId='fbd19251-efee-4ded-b780-915000f66d41' intextId='1352d42c-e201-4155-a02a-55360d3b563e'>Ridley in Fl. Malay Pen. 3 (1924) 22</cdm:reference>)
+         */
+
+       String newText = text.replaceAll("<cdm:reference cdmId='[a-z0-9\\-]*' intextId='[a-z0-9\\-]*'>","");
+       newText = newText.replaceAll("</cdm:reference>","");
+
+       newText = newText.replaceAll("<cdm:key cdmId='[a-z0-9\\-]*' intextId='[a-z0-9\\-]*'>","");
+       newText = newText.replaceAll("</cdm:key>","");
+       return newText;
+    }
 
     /**
      * @param state
@@ -1485,8 +1517,9 @@ public class CdmLightClassificationExport
             csvLine[table.getIndex(CdmLightExportTable.SERIES_PART)] = reference.getSeriesPart();
             csvLine[table.getIndex(CdmLightExportTable.VOLUME)] = reference.getVolume();
             csvLine[table.getIndex(CdmLightExportTable.YEAR)] = reference.getYear();
+
             if ( reference.getAuthorship() != null){
-                csvLine[table.getIndex(CdmLightExportTable.AUTHORSHIP_TITLE)] = reference.getAuthorship().getTitleCache();
+                csvLine[table.getIndex(CdmLightExportTable.AUTHORSHIP_TITLE)] = createFullAuthorship(reference);
                 csvLine[table.getIndex(CdmLightExportTable.AUTHOR_FK)] = getId(state,reference.getAuthorship());
             }
 
@@ -1520,7 +1553,59 @@ public class CdmLightClassificationExport
             return null;
         }
         authorship = HibernateProxyHelper.deproxy(authorship);
-        if (authorship instanceof Person){ shortCitation = ((Person)authorship).getFamilyName();}
+        if (authorship instanceof Person){
+            shortCitation = ((Person)authorship).getFamilyName();
+            if (StringUtils.isBlank(shortCitation) ){
+                shortCitation = ((Person)authorship).getTitleCache();
+            }
+        }
+        else if (authorship instanceof Team){
+
+            Team authorTeam = HibernateProxyHelper.deproxy(authorship, Team.class);
+            int index = 0;
+
+            for (Person teamMember : authorTeam.getTeamMembers()){
+                index++;
+                if (index == 3){
+                    shortCitation += " & al.";
+                    break;
+                }
+                String concat = concatString(authorTeam, authorTeam.getTeamMembers(), index);
+                if (teamMember.getFamilyName() != null){
+                    shortCitation += concat + teamMember.getFamilyName();
+                }else{
+                    shortCitation += concat + teamMember.getTitleCache();
+                }
+
+            }
+            if (StringUtils.isBlank(shortCitation)){
+                shortCitation = authorTeam.getTitleCache();
+            }
+
+        }
+        if (!StringUtils.isBlank(reference.getDatePublished().getFreeText())){
+            shortCitation = shortCitation + " (" + reference.getDatePublished().getFreeText() + ")";
+        }else if (!StringUtils.isBlank(reference.getYear()) ){
+            shortCitation = shortCitation + " (" + reference.getYear() + ")";
+        }
+        return shortCitation;
+    }
+
+    /**
+     * @param reference
+     * @return
+     */
+    private String createFullAuthorship(Reference reference) {
+        TeamOrPersonBase<?> authorship = reference.getAuthorship();
+        String fullAuthorship = "";
+        if (authorship == null) {
+            return null;
+        }
+        authorship = HibernateProxyHelper.deproxy(authorship);
+        if (authorship instanceof Person){
+            fullAuthorship = ((Person)authorship).getTitleCache();
+
+        }
         else if (authorship instanceof Team){
 
             Team authorTeam = HibernateProxyHelper.deproxy(authorship, Team.class);
@@ -1529,14 +1614,12 @@ public class CdmLightClassificationExport
             for (Person teamMember : authorTeam.getTeamMembers()){
                 index++;
                 String concat = concatString(authorTeam, authorTeam.getTeamMembers(), index);
-                shortCitation += concat + teamMember.getFamilyName();
+                fullAuthorship += concat + teamMember.getTitleCache();
             }
 
         }
-        if (reference.getYear() != null){
-            shortCitation = shortCitation + " (" + reference.getYear() + ")";
-        }
-        return shortCitation;
+
+        return fullAuthorship;
     }
 
     private static String concatString(Team team, List<Person> teamMembers, int i) {

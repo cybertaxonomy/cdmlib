@@ -281,6 +281,49 @@ public class TimePeriodParserTest {
 //        Assert.assertEquals(Integer.valueOf(24), tp.getStartDay());
         Assert.assertEquals("1958", tp.getVerbatimDate());
 
+        strDate = "1947 publ. 1948";
+        tp = TimePeriodParser.parseStringVerbatim(strDate);
+        assertNotNull(tp);
+        Assert.assertEquals("1947 [\"1948\"]", tp.toString());
+        Assert.assertEquals("1947", tp.getYear());
+        Assert.assertEquals(Integer.valueOf(1947), tp.getStartYear());
+        Assert.assertEquals("1948", tp.getVerbatimDate());
+
+        strDate = "\"1884-1885\" [1886]";
+        tp = TimePeriodParser.parseStringVerbatim(strDate);
+        assertNotNull(tp);
+        Assert.assertEquals("1886 [\"1884-1885\"]", tp.toString());
+        Assert.assertEquals("1886", tp.getYear());
+        Assert.assertEquals(Integer.valueOf(1886), tp.getStartYear());
+        Assert.assertEquals("1884-1885", tp.getVerbatimDate());
+
+        //unparsable date part should generally not be parsed
+        strDate = "1957a [\"1958\"]";
+        tp = TimePeriodParser.parseStringVerbatim(strDate);
+        assertNotNull(tp);
+        Assert.assertEquals(strDate, tp.toString());
+        Assert.assertEquals("", tp.getYear());
+        Assert.assertEquals(null, tp.getStartYear());
+        Assert.assertEquals("1958", tp.getVerbatimDate());
+        Assert.assertEquals(strDate, tp.getFreeText());
+
+        //English quotation
+        strDate = "1957 ["+UTF8.QUOT_DBL_LOW9+"1958"+UTF8.QUOT_DBL_RIGHT+"]";
+        tp = TimePeriodParser.parseStringVerbatim(strDate);
+        assertNotNull(tp);
+        Assert.assertEquals("1957 [\"1958\"]", tp.toString());
+        Assert.assertEquals("1957", tp.getYear());
+        Assert.assertEquals(Integer.valueOf(1957), tp.getStartYear());
+        Assert.assertEquals("1958", tp.getVerbatimDate());
+
+        //invalid verbatim marker
+        strDate = "1947 publa 1948";
+        tp = TimePeriodParser.parseStringVerbatim(strDate);
+        assertNotNull(tp);
+        Assert.assertEquals("1947 publa 1948", tp.toString());
+        Assert.assertEquals("", tp.getYear());
+        Assert.assertEquals(null, tp.getStartYear());
+        Assert.assertEquals(null, tp.getVerbatimDate());
     }
 
 

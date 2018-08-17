@@ -33,6 +33,7 @@ import org.springframework.stereotype.Repository;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
+import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
@@ -865,7 +866,7 @@ public class OccurrenceDaoHibernateImpl
      * {@inheritDoc}
      */
     @Override
-    public List<FieldUnit> getFieldUnitsForGatheringEvent(UUID gatheringEventUuid, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+    public List<FieldUnit> findFieldUnitsForGatheringEvent(UUID gatheringEventUuid, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
         String queryString = "FROM SpecimenOrObservationBase sob "
                 + "WHERE sob.gatheringEvent.uuid = :gatheringEventUuid";
 
@@ -886,13 +887,43 @@ public class OccurrenceDaoHibernateImpl
      * {@inheritDoc}
      */
     @Override
-    public List<DerivedUnit> getByGeneticAccessionNumber(String accessionNumberString, List<String> propertyPaths) {
+    public List<DerivedUnit> findByGeneticAccessionNumber(String accessionNumberString, List<String> propertyPaths) {
         String queryString = "SELECT dnaSample FROM DnaSample dnaSample join dnaSample.sequences sequence WHERE sequence.geneticAccessionNumber LIKE :accessionNumberString";
         Query query = getSession().createQuery(queryString);
         query.setParameter("accessionNumberString", accessionNumberString);
         @SuppressWarnings("unchecked")
         List<DerivedUnit> results = query.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
+        return results;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<SpecimenOrObservationBase> findOriginalsForDerivedUnit(UUID derivedUnitUuid, List<String> propertyPaths) {
+        String queryString = "SELECT DISTINCT o FROM DerivedUnit du"
+                + " JOIN du.derivedFrom.originals o WHERE du.uuid LIKE :derivedUnitUuid";
+        Query query = getSession().createQuery(queryString);
+        query.setParameter("derivedUnitUuid", derivedUnitUuid);
+        @SuppressWarnings("unchecked")
+        List<SpecimenOrObservationBase> results = query.list();
+        defaultBeanInitializer.initializeAll(results, propertyPaths);
+        return results;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Point> findPointsForFieldUnitList(List<UUID> fieldUnitUuids) {
+        String queryString = "SELECT DISTINCT fu.gatheringEvent.exactLocation FROM FieldUnit fu"
+                + "  WHERE fu.uuid IN (:fieldUnitUuids)";
+        Query query = getSession().createQuery(queryString);
+        query.setParameterList("fieldUnitUuids", fieldUnitUuids);
+        @SuppressWarnings("unchecked")
+        List<Point> results = query.list();
+
         return results;
     }
 

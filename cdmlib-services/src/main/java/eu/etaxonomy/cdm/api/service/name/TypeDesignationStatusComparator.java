@@ -14,8 +14,7 @@ import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetManager.NullTypeDesig
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 
 /**
- * @author pplitzner
- * @since May 3, 2018
+ * @author a.kohlbecker
  *
  */
 public class TypeDesignationStatusComparator <T extends TypeDesignationStatusBase<T>>  implements Comparator<T> {

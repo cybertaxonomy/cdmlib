@@ -23,15 +23,15 @@ import eu.etaxonomy.cdm.persistence.query.NameSearchOrder;
  * @author a.babadshanjan
  * @since 20.01.2009
  */
-public class FindTaxaAndNamesConfiguratorImpl<T extends TaxonBase<?>> extends IdentifiableServiceConfiguratorImpl<T>
-			implements IFindTaxaAndNamesConfigurator<T> {
+public class FindTaxaAndNamesConfiguratorImpl extends IdentifiableServiceConfiguratorImpl<TaxonBase>
+			implements IFindTaxaAndNamesConfigurator {
 
     private static final long serialVersionUID = -8510776848175860267L;
 
     private boolean includeUnpublished = true;
 
-    public static FindTaxaAndNamesConfiguratorImpl<?> NewInstance() {
-		return new FindTaxaAndNamesConfiguratorImpl<>();
+    public static FindTaxaAndNamesConfiguratorImpl NewInstance() {
+		return new FindTaxaAndNamesConfiguratorImpl();
 	}
 
     private FindTaxaAndNamesConfiguratorImpl(){}

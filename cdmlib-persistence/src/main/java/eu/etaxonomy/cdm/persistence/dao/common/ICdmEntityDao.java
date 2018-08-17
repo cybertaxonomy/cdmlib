@@ -17,6 +17,7 @@ import java.util.UUID;
 
 import org.hibernate.LockOptions;
 import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
 import org.springframework.dao.DataAccessException;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -354,6 +355,21 @@ public interface ICdmEntityDao<T extends CdmBase> {
      */
     public List<T> list(Collection<UUID> uuids, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws DataAccessException;
 
+
+    /**
+     * @param clazz
+     * @param uuids
+     * @param pageSize
+     * @param pageNumber
+     * @param orderHints
+     * @param propertyPaths
+     * @return
+     * @throws DataAccessException
+     */
+    public <S extends T> List<S> list(Class<S> clazz, Collection<UUID> uuids, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws DataAccessException;
+
+
+
     /**
      * Finds the cdm entity specified by the <code>uuid</code> parameter and
      * initializes all its *ToOne relations.
@@ -449,5 +465,15 @@ public interface ICdmEntityDao<T extends CdmBase> {
      * @return a list of matching objects
      */
     public List<T> list(T example, Set<String> includeProperties, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
+    List<T> findByParamWithRestrictions(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize,
+            Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+
+    long countByParamWithRestrictions(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode, List<Restriction<?>> restrictions);
+
+    long countByParam(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode, List<Criterion> criterion);
+
+    List<T> findByParam(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber,
+            List<OrderHint> orderHints, List<String> propertyPaths);
 
 }

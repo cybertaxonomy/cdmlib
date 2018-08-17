@@ -92,4 +92,26 @@ public class RegistrationIdentifierMinterTest extends CdmTransactionalIntegratio
         Assert.assertTrue(thrown);
     }
 
+    @Test
+    public void testIsFromOwnRegistration(){
+        RegistrationIdentifierMinter minter = new RegistrationIdentifierMinter();
+        Assert.assertNull(minter.getIdentifierFormatString());
+        Assert.assertTrue(minter.isFromOwnRegistration("1234"));
+
+        minter = new RegistrationIdentifierMinter();
+        minter.setIdentifierFormatString("http://phycobank/%s");
+        Assert.assertTrue(minter.isFromOwnRegistration("http://phycobank/1234"));
+        Assert.assertFalse(minter.isFromOwnRegistration("http://phycobank/"));
+        Assert.assertFalse(minter.isFromOwnRegistration("http://otherreg/1234"));
+        Assert.assertFalse(minter.isFromOwnRegistration("1234"));
+
+        minter = new RegistrationIdentifierMinter();
+        minter.setIdentifierFormatString("%s");
+        Assert.assertTrue(minter.isFromOwnRegistration("1234"));
+        Assert.assertFalse(minter.isFromOwnRegistration("http://phycobank/1234"));
+        Assert.assertFalse(minter.isFromOwnRegistration("http://phycobank/"));
+        Assert.assertFalse(minter.isFromOwnRegistration("http://otherreg/1234"));
+    }
+
+
 }

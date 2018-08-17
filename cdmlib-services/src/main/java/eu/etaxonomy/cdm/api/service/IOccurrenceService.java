@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -25,6 +26,7 @@ import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
 import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator;
 import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
+import eu.etaxonomy.cdm.api.service.dto.DerivateDTO;
 import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
 import eu.etaxonomy.cdm.api.service.dto.PreservedSpecimenDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -37,6 +39,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.Country;
+import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
@@ -345,7 +348,7 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @return either a collection of FieldUnits this specimen was derived from, the FieldUnit itself
      * if this was a FieldUnit or an empty collection if no FieldUnits were found
      */
-    public Collection<FieldUnit> getFieldUnits(UUID specimenUuid, List<String> propertyPaths);
+    public Collection<FieldUnit> findFieldUnits(UUID specimenUuid, List<String> propertyPaths);
 
     /**
      * @param clazz
@@ -417,14 +420,12 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
     public boolean moveDerivate(SpecimenOrObservationBase<?> from, SpecimenOrObservationBase<?> to, DerivedUnit derivate);
 
     /**
-     * Assembles a {@link FieldUnitDTO} for the given field unit uuid which is associated to the {@link Taxon}.<br>
-     * <br>
-     * For the meaning of "associated" see also {@link #listFieldUnitsByAssociatedTaxon(Set, Taxon, Integer, Integer, Integer, List, List)}
+     * Assembles a {@link FieldUnitDTO} for the given field unit.<br>
+     *
      * @param fieldUnit
-     * @param associatedTaxonUuid
      * @return a DTO with all the assembled information
      */
-    public FieldUnitDTO assembleFieldUnitDTO(FieldUnit fieldUnit, UUID associatedTaxonUuid);
+    public FieldUnitDTO assembleFieldUnitDTO(FieldUnit fieldUnit);
 
     /**
      * Assembles a {@link PreservedSpecimenDTO} for the given derived unit.
@@ -666,7 +667,7 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @param gatheringEventUuid the {@link UUID} of the gathering event
      * @return a list of field units referencing the gathering event
      */
-    public List<FieldUnit> getFieldUnitsForGatheringEvent(UUID gatheringEventUuid);
+    public List<FieldUnit> findFieldUnitsForGatheringEvent(UUID gatheringEventUuid);
 
 
     /**
@@ -688,5 +689,33 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
     List<DerivedUnit> findByAccessionNumber(
              String accessionNumberString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths);
+
+    /**
+     * @param includedRelationships
+     * @param associatedTaxon
+     * @param maxDepth
+     * @param pageSize
+     * @param pageNumber
+     * @param orderHints
+     * @param propertyPaths
+     * @return
+     */
+    List<FieldUnitDTO> findFieldUnitDTOByAssociatedTaxon(Set<TaxonRelationshipEdge> includedRelationships,
+            UUID associatedTaxonUuid);
+
+    /**
+     * @param derivedUnitUuid
+     * @param propertyPaths
+     * @return
+     */
+
+    FieldUnitDTO findFieldUnitDTO(DerivateDTO derivedUnitDTO, Collection<FieldUnitDTO> fieldUnits, HashMap<UUID, DerivateDTO> alreadyCollectedSpecimen);
+
+
+    /**
+     * @param fieldUnitUuids
+     * @return
+     */
+    public List<Point> findPointsForFieldUnitList(List<UUID> fieldUnitUuids);
 
 }

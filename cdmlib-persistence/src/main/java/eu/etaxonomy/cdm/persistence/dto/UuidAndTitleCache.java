@@ -32,7 +32,7 @@ public class UuidAndTitleCache<T extends ICdmBase> implements Serializable {
 	private static final Logger logger = Logger	.getLogger(UuidAndTitleCache.class);
 
 	private Class<T> type;
-	private UUID uuid;
+	final private UUID uuid;
 	private Integer id;
 	private String titleCache;
 	private String abbrevTitleCache;

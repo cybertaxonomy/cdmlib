@@ -9,6 +9,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.TargetEntityStates;
 
 public class DescriptionElementVoter extends CdmPermissionVoter {
 
@@ -18,14 +19,14 @@ public class DescriptionElementVoter extends CdmPermissionVoter {
     }
 
     @Override
-    protected Integer furtherVotingDescisions(CdmAuthority ap, Object object, Collection<ConfigAttribute> attributes,
+    protected Integer furtherVotingDescisions(CdmAuthority ap, TargetEntityStates targetEntityStates, Collection<ConfigAttribute> attributes,
             ValidationResult vr) {
 
         // we only need to implement the case where a property is contained in the authority
         // the other case is covered by the CdmPermissionVoter
-        if(ap.hasProperty() && object instanceof DescriptionElementBase){
+        if(ap.hasProperty() && targetEntityStates.getEntity() instanceof DescriptionElementBase){
 
-            Feature feature = ((DescriptionElementBase)object).getFeature();
+            Feature feature = ((DescriptionElementBase)targetEntityStates.getEntity()).getFeature();
 
             if(feature == null){
                 // if the user is granted for a specific feature

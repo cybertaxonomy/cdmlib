@@ -1895,7 +1895,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         //  if ((id.indexOf("lsid")<0) || !lsidok){
         //ADD ORIGINAL SOURCE ID EVEN IF LSID
         Reference re = null;
-        Pager<Reference> references = importer.getReferenceService().findByTitle(Reference.class, source, MatchMode.EXACT, null, 1, null, null, null);
+        Pager<Reference> references = importer.getReferenceService().findByTitleWithRestrictions(Reference.class, source, MatchMode.EXACT, null, 1, null, null, null);
         if( references !=null && references.getCount()>0){
             re=references.getRecords().get(0);
         }
@@ -3441,7 +3441,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             }
             List<TaxonBase> tmpList = new ArrayList<>();
 
-            Pager<TaxonBase> taxontest = importer.getTaxonService().findByTitle(TaxonBase.class, newName2, MatchMode.BEGINNING, null, null, null, null, null);
+            Pager<TaxonBase> taxontest = importer.getTaxonService().findByTitleWithRestrictions(TaxonBase.class, newName2, MatchMode.BEGINNING, null, null, null, null, null);
             tmpList.addAll(taxontest.getRecords());
 
             //logger.info("tmpList returned: "+tmpList.size());
@@ -3887,10 +3887,10 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 
             List<TaxonBase> tmpListFiltered = new ArrayList<TaxonBase>();
 
-            Pager<TaxonBase> taxontest = importer.getTaxonService().findByTitle(TaxonBase.class, fullname, MatchMode.BEGINNING, null, null, null, null, null);
+            Pager<TaxonBase> taxontest = importer.getTaxonService().findByTitleWithRestrictions(TaxonBase.class, fullname, MatchMode.BEGINNING, null, null, null, null, null);
 
             tmpListFiltered.addAll(taxontest.getRecords());
-            taxontest = importer.getTaxonService().findByTitle(TaxonBase.class, partialname, MatchMode.BEGINNING, null, null, null, null, null);
+            taxontest = importer.getTaxonService().findByTitleWithRestrictions(TaxonBase.class, partialname, MatchMode.BEGINNING, null, null, null, null, null);
             tmpListFiltered.addAll(taxontest.getRecords());
 
             //logger.info("tmpListFiltered returned: "+tmpListFiltered.size());
@@ -4835,7 +4835,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
     		tnb.setTitleCache(tnb.toString(), tnb.isProtectedTitleCache());
     	}
 
-        Pager<TaxonBase> pager=importer.getTaxonService().findByTitle(TaxonBase.class, tnb.getTitleCache().split("sec.")[0].trim(), MatchMode.BEGINNING, null, null, null, null, null);
+        Pager<TaxonBase> pager=importer.getTaxonService().findByTitleWithRestrictions(TaxonBase.class, tnb.getTitleCache().split("sec.")[0].trim(), MatchMode.BEGINNING, null, null, null, null, null);
         List<TaxonBase>records = pager.getRecords();
 
         List<Taxon> existingTaxons = new ArrayList<Taxon>();
@@ -4983,7 +4983,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         if(parentStr!=null){
 
             Taxon parent = null;
-            Pager<TaxonBase> taxontest = importer.getTaxonService().findByTitle(TaxonBase.class, parentStr, MatchMode.BEGINNING, null, null, null, null, null);
+            Pager<TaxonBase> taxontest = importer.getTaxonService().findByTitleWithRestrictions(TaxonBase.class, parentStr, MatchMode.BEGINNING, null, null, null, null, null);
             for(TaxonBase tb:taxontest.getRecords()){
                 try {
                     if (tb.getName().getRank().equals(r)) {

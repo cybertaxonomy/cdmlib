@@ -147,7 +147,7 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
         if(regs != null && regs.size() > 0){
             Set<Registration> regsFiltered = new HashSet<>(regs.size());
             for(Registration reg : regs){
-                if(userIsAutheticated() && userIsAnnonymous() && reg.getStatus().equals(RegistrationStatus.PUBLISHED)) {
+                if(userHelper.userIsAutheticated() && userHelper.userIsAnnonymous() && reg.getStatus().equals(RegistrationStatus.PUBLISHED)) {
                     regsFiltered.add(reg);
                 } else {
                     logger.debug("skipping unpublished registration");

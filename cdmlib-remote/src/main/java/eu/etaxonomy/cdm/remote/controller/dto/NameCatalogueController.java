@@ -808,6 +808,9 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
 
             // if search is successful then get related information, else return error
             if (tb != null) {
+                if (!includeUnpublished && !tb.isPublish()){
+                    continue;
+                }
                 TaxonInformation ti = new TaxonInformation();
                 ti.setRequest(taxonUuid);
                 // check if result (taxon base) is a taxon or synonym
@@ -859,6 +862,9 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
                     Set<Synonym> syns = taxon.getSynonyms();
                     // add synonyms (if exists) to taxon information object
                     for (Synonym syn : syns) {
+                        if (! includeUnpublished && !syn.isPublish()){
+                            continue;
+                        }
                         String uuid = syn.getUuid().toString();
                         String title = syn.getTitleCache();
                         TaxonName synnvn = syn.getName();
@@ -897,24 +903,28 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
                     // - relationships from the requested taxon
                     Set<TaxonRelationship> trFromSet = taxon.getRelationsFromThisTaxon();
                     for (TaxonRelationship tr : trFromSet) {
-                        String titleTo = tr.getToTaxon().getTitleCache();
-                        TaxonName tonvn = tr.getToTaxon().getName();
+                        Taxon toTaxon = tr.getToTaxon();
+                        if (!includeUnpublished && !toTaxon.isPublish()){
+                            continue;
+                        }
+                        String titleTo = toTaxon.getTitleCache();
+                        TaxonName tonvn = toTaxon.getName();
                         String name = tonvn.getTitleCache();
                         String rank = tonvn.getRank().getTitleCache();
-                        String uuid = tr.getToTaxon().getUuid().toString();
+                        String uuid = toTaxon.getUuid().toString();
                         String status = ACCEPTED_NAME_STATUS;
                         String relLabel = tr.getType().getRepresentation(Language.DEFAULT())
                                 .getLabel();
 
                         secTitle = "" ;
                         modified = "";
-                        if(tr.getToTaxon().getSec() != null) {
-                            secTitle = tr.getToTaxon().getSec().getTitleCache();
-                            DateTime dt = tr.getToTaxon().getUpdated();
+                        if(toTaxon.getSec() != null) {
+                            secTitle = toTaxon.getSec().getTitleCache();
+                            DateTime dt = toTaxon.getUpdated();
                             modified = fmt.print(dt);
                         }
 
-                        sources = tr.getToTaxon().getSources();
+                        sources = toTaxon.getSources();
                         didname = getDatasetIdName(sources);
 
                         ti.addToResponseRelatedTaxa(uuid,
@@ -934,26 +944,31 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
                     // - relationships to the requested taxon
                     Set<TaxonRelationship> trToSet = taxon.getRelationsToThisTaxon();
                     for (TaxonRelationship tr : trToSet) {
-                        String titleFrom = tr.getFromTaxon().getTitleCache();
-                        TaxonName fromnvn = tr.getFromTaxon().getName();
+                        Taxon fromTaxon = tr.getFromTaxon();
+                        if (!includeUnpublished && !fromTaxon.isPublish()){
+                            continue;
+                        }
+                        String titleFrom = fromTaxon.getTitleCache();
+                        TaxonName fromnvn = fromTaxon.getName();
                         String name = fromnvn.getTitleCache();
                         String rank = fromnvn.getRank().getTitleCache();
-                        String uuid = tr.getFromTaxon().getUuid().toString();
+                        String uuid = fromTaxon.getUuid().toString();
                         String status = ACCEPTED_NAME_STATUS;
                         String relLabel = tr.getType()
                                 .getInverseRepresentation(Language.DEFAULT())
                                 .getLabel();
 
-                        if(tr.getFromTaxon().getSec() != null) {
-                            secTitle = tr.getFromTaxon().getSec().getTitleCache();
-                            DateTime dt = tr.getFromTaxon().getSec().getUpdated();
+                        if(fromTaxon.getSec() != null) {
+                            secTitle = fromTaxon.getSec().getTitleCache();
+                            DateTime dt = fromTaxon.getSec().getUpdated();
                             modified = fmt.print(dt);
+                        }else{
+                            secTitle = "";
                         }
 
-                        sources = tr.getFromTaxon().getSources();
+                        sources = fromTaxon.getSources();
                         didname = getDatasetIdName(sources);
 
-                        secTitle = (tr.getFromTaxon().getSec() == null) ? "" : tr.getFromTaxon().getSec().getTitleCache();
                         ti.addToResponseRelatedTaxa(uuid,
                                 titleFrom,
                                 name,
@@ -992,7 +1007,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
                     // add accepted taxa (if exists) to taxon information object
 
                     Taxon accTaxon = synonym.getAcceptedTaxon();
-                    if (accTaxon != null){
+                    if (accTaxon != null && (accTaxon.isPublish() || INCLUDE_UNPUBLISHED)){
                         String uuid = accTaxon.getUuid().toString();
                         logger.debug("acc taxon uuid " + accTaxon.getUuid().toString() + " original hash code : " + System.identityHashCode(accTaxon) + ", name class " + accTaxon.getName().getClass().getName());
                         String title = accTaxon.getTitleCache();

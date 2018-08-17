@@ -171,7 +171,7 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
     private <T extends ICdmBase> Map<String, Set<T>> refreshSetMap(Map<String, Set<T>> oldMap,
             IService<T> service, ImportResult importResult) {
         Map<String, Set<T>> newMap = new HashMap<>();
-        logger.warn("Start loading map");  //TODO debug only
+        logger.debug("Start loading map");  //TODO debug only
         //create UUID set
         Set<UUID> uuidSet = new HashSet<>();
         for (String key : oldMap.keySet()){

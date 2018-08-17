@@ -332,6 +332,15 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
     UpdateResult moveTaxonNodes(Set<UUID> taxonNodeUuids, UUID newParentNodeUuid, int movingType,
             IProgressMonitor monitor);
 
-
+    /**
+     * Retrieves the first taxon node that is direct or indirect parent
+     * to all nodes of the given list of nodes. This can also return
+     * the root node of a classification<br>
+     * If no common parent node could be found <code>null</code> is returned.
+     * @param nodes the direct/indirect child taxon nodes for which the common
+     * parent should be retrieved
+     * @return the common direct/indirect parent of all nodes
+     */
+    public TaxonNodeDto findCommonParentDto(Collection<TaxonNodeDto> nodes);
 
 }

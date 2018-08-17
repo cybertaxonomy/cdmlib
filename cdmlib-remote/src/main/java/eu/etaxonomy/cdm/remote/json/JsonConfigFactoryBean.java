@@ -17,8 +17,9 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.FactoryBean;
 
-import eu.etaxonomy.cdm.remote.json.processor.bean.AbstractCdmBeanProcessor;
 import net.sf.json.JsonConfig;
+import net.sf.json.processors.DefaultValueProcessor;
+import net.sf.json.processors.DefaultValueProcessorMatcher;
 import net.sf.json.processors.JsonBeanProcessor;
 import net.sf.json.processors.JsonBeanProcessorMatcher;
 import net.sf.json.processors.JsonValueProcessor;
@@ -47,11 +48,15 @@ public class JsonConfigFactoryBean implements FactoryBean<JsonConfig> {
 
 	private Map<Class<?>,JsonBeanProcessor> jsonBeanProcessors = new HashMap<>();
 	private PropertyFilter jsonPropertyFilter = null;
-	private Map<Class<?>,JsonValueProcessor> jsonValueProcessors = new HashMap<>();
+	private Map<Class<?>,JsonValueProcessor> jsonValueProcessorsByClass = new HashMap<>();
+	private DefaultValueProcessorMatcher defaultValueProcessorMatcher = null;
+	private Map<Class<?>, DefaultValueProcessor> defaultValueProcessorMap = new HashMap<>();
+	private Map<String, JsonValueProcessor> jsonValueProcessorsByProperty = new HashMap<>();
 	private JsonBeanProcessorMatcher jsonBeanProcessorMatcher = JsonBeanProcessorMatcher.DEFAULT;
 	private JsonValueProcessorMatcher jsonValueProcessorMatcher = JsonValueProcessorMatcher.DEFAULT;
 	private boolean ignoreDefaultExcludes = false;
 	private List<String> excludes = new ArrayList<>();
+
 
 	public void setCycleDetectionStrategy(CycleDetectionStrategy cycleDetectionStrategy) {
 		this.cycleDetectionStrategy = cycleDetectionStrategy;
@@ -113,9 +118,21 @@ public class JsonConfigFactoryBean implements FactoryBean<JsonConfig> {
 		this.jsonValueProcessorMatcher = jsonValueProcessorMatcher;
 	}
 
-	public void setJsonValueProcessors(Map<Class<?>, JsonValueProcessor> jsonValueProcessors) {
-		this.jsonValueProcessors = jsonValueProcessors;
+	public void setDefaultValueProcessorMap(Map<Class<?>, DefaultValueProcessor> defaultValueProcessorMap){
+	    this.defaultValueProcessorMap = defaultValueProcessorMap;
 	}
+
+	public void setDefaultValueProcessorMatcher(DefaultValueProcessorMatcher defaultValueProcessorMatcher){
+	    this.defaultValueProcessorMatcher = defaultValueProcessorMatcher;
+	}
+
+	public void setJsonValueProcessorsByClass(Map<Class<?>, JsonValueProcessor> jsonValueProcessors) {
+		this.jsonValueProcessorsByClass = jsonValueProcessors;
+	}
+
+	   public void setJsonValueProcessorsByProperty(Map<String, JsonValueProcessor> jsonValueProcessors) {
+	        this.jsonValueProcessorsByProperty = jsonValueProcessors;
+	    }
 
 	public void setIgnoreDefaultExcludes(boolean ignoreDefaultExcludes) {
 		this.ignoreDefaultExcludes = ignoreDefaultExcludes;
@@ -132,6 +149,8 @@ public class JsonConfigFactoryBean implements FactoryBean<JsonConfig> {
 
 		jsonConfig.setIgnoreJPATransient(ignoreJPATransient);
 
+		jsonConfig.setDefaultValueProcessorMatcher(defaultValueProcessorMatcher);
+
 		jsonConfig.setJsonValueProcessorMatcher(jsonValueProcessorMatcher);
 
 		jsonConfig.setJsonBeanProcessorMatcher(jsonBeanProcessorMatcher);
@@ -146,10 +165,17 @@ public class JsonConfigFactoryBean implements FactoryBean<JsonConfig> {
 			jsonConfig.registerJsonBeanProcessor(clazz, jsonBeanProcessors.get(clazz));
 		}
 
+		for(Class<?> clazz : defaultValueProcessorMap.keySet()) {
+            jsonConfig.registerDefaultValueProcessor(clazz, defaultValueProcessorMap.get(clazz));
+        }
 
-		for(Class<?> clazz : jsonValueProcessors.keySet()) {
-		    jsonConfig.registerJsonValueProcessor(clazz, jsonValueProcessors.get(clazz));
+		for(Class<?> clazz : jsonValueProcessorsByClass.keySet()) {
+		    jsonConfig.registerJsonValueProcessor(clazz, jsonValueProcessorsByClass.get(clazz));
 		}
+
+		for(String prop : jsonValueProcessorsByProperty.keySet()) {
+            jsonConfig.registerJsonValueProcessor(prop, jsonValueProcessorsByClass.get(prop));
+        }
 	}
 
 

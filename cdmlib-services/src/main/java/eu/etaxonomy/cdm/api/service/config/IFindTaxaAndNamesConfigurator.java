@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.persistence.query.NameSearchOrder;
  * @author a.babadshanjan
  * @since 20.01.2009
  */
-public interface IFindTaxaAndNamesConfigurator<T extends TaxonBase> extends IIdentifiableEntityServiceConfigurator<T>{
+public interface IFindTaxaAndNamesConfigurator extends IIdentifiableEntityServiceConfigurator<TaxonBase>{
 
     public boolean isDoTaxa();
     public void setDoTaxa(boolean doTaxa);

@@ -67,7 +67,7 @@ public class TaxonNameDefaultCacheStrategy
 
 
     @Override
-    public  UUID getUuid(){
+    public UUID getUuid(){
         return uuid;
     }
 
@@ -154,12 +154,6 @@ public class TaxonNameDefaultCacheStrategy
     public void setZooAuthorYearSeperator(String authorYearSeperator) {
         this.zooAuthorYearSeperator = authorYearSeperator;
     }
-
-
-//** *****************************************************************************************/
-
-
-
 
 // ******************* Authorship ******************************/
 

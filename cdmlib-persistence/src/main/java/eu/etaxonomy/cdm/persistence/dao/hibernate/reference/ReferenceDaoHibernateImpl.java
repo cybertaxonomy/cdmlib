@@ -99,6 +99,9 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 
 	@Override
     public List<UuidAndTitleCache<Reference>> getUuidAndTitle(Set<UUID> uuids){
+	    if (uuids.isEmpty()){
+	        return null;
+	    }
         List<UuidAndTitleCache<Reference>> list = new ArrayList<UuidAndTitleCache<Reference>>();
 
         Criteria criteria = null;

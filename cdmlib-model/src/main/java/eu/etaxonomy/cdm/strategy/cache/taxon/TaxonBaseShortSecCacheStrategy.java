@@ -171,7 +171,7 @@ public class TaxonBaseShortSecCacheStrategy<T extends TaxonBase>
             if (ref != null){
                 secTags = getSecReferenceTags(ref);
             }else{
-                secTags = new ArrayList<TaggedText>();
+                secTags = new ArrayList<>();
                 if (isBlank(taxonBase.getAppendedPhrase())){
                     secTags.add(new TaggedText(TagEnum.reference, "???"));
                 }

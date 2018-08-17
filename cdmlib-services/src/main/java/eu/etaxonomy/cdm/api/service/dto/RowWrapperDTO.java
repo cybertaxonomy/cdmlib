@@ -109,7 +109,7 @@ public class RowWrapperDTO implements Serializable {
         }
     }
 
-    public Object getDataValueForFeature(Feature feature){
+    public DescriptionElementBase getDataValueForFeature(Feature feature){
         DescriptionElementBase descriptionElementBase = featureToElementMap.get(feature);
         return descriptionElementBase;
     }

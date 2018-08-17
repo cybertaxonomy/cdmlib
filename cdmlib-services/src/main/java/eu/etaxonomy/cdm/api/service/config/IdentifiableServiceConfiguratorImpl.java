@@ -14,6 +14,7 @@ import java.util.List;
 import org.hibernate.criterion.Criterion;
 
 import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
+import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -31,7 +32,8 @@ public class IdentifiableServiceConfiguratorImpl<T extends IIdentifiableEntity> 
 	private Integer pageSize;
 	private Integer pageNumber;
 	private Class<? extends T> clazz;
-	private List<Criterion> criteria;
+    private List<Criterion> criteria;
+	private List<Restriction<?>> restrictions;
 	private List<String> propertyPaths;
 	private List<OrderHint> orderHints;
 
@@ -107,17 +109,28 @@ public class IdentifiableServiceConfiguratorImpl<T extends IIdentifiableEntity> 
 		this.matchMode = matchMode;
 	}
 
-	@Override
-	public List<Criterion> getCriteria() {
-		return criteria;
-	}
+   @Override
+    public List<Criterion> getCriteria() {
+        return criteria;
+    }
 
-	@Override
-	public void setCriteria(List<Criterion> criteria) {
-		this.criteria = criteria;
-	}
+    @Override
+    public void setCriteria(List<Criterion> criteria) {
+        this.criteria = criteria;
+    }
 
-	@Override
+
+    @Override
+    public List<Restriction<?>> getRestrictions() {
+        return restrictions;
+    }
+
+    @Override
+    public void setRestrictions(List<Restriction<?>> restrictions) {
+        this.restrictions = restrictions;
+    }
+
+    @Override
 	public List<OrderHint> getOrderHints() {
 		return orderHints;
 	}
