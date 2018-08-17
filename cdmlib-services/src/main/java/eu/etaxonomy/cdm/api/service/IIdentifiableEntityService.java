@@ -27,11 +27,14 @@ import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
+import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
+import eu.etaxonomy.cdm.strategy.match.IMatchable;
+import eu.etaxonomy.cdm.strategy.merge.IMergable;
 import eu.etaxonomy.cdm.strategy.merge.IMergeStrategy;
 
 public interface IIdentifiableEntityService<T extends IdentifiableEntity>
@@ -124,7 +127,7 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity>
      *            authorTeam.persistentTitleCache
      * @return a paged list of instances of type T matching the queryString
      */
-    public Pager<T> findByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+    public <S extends T> Pager<S> findByTitle(Class<S> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 
     /**
@@ -143,7 +146,7 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity>
      *            authorTeam.persistentTitleCache
      * @return a paged list of instances of type T matching the queryString
      */
-    public Pager<T> findByTitleWithRestrictions(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+    public <S extends T> Pager<S> findByTitleWithRestrictions(Class<S> clazz, String queryString,MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 
     /**
@@ -152,7 +155,7 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity>
      *
      * @return a paged list of instances of type T matching the queryString
      */
-    public Pager<T> findByTitle(IIdentifiableEntityServiceConfigurator<T> configurator);
+    public <S extends T> Pager<S> findByTitle(IIdentifiableEntityServiceConfigurator<S> configurator);
 
     /**
      * Return an Integer of how many objects matching the given query string, optionally filtered by class, optionally with a particular MatchMode
@@ -203,7 +206,7 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity>
      *            authorTeam.persistentTitleCache
      * @return a list of instances of type T matching the queryString
      */
-    public List<T> listByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+    public <S extends T> List<S> listByTitle(Class<S> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Return a List of objects matching the given query string, optionally filtered by class, optionally with a particular MatchMode
@@ -221,7 +224,7 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity>
      *            authorTeam.persistentTitleCache
      * @return a list of instances of type T matching the queryString
      */
-    public List<T> listByTitleWithRestrictions(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+    public <S extends T> List<S> listByTitleWithRestrictions(Class<S> clazz, String queryString,MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Return a List of objects matching the given query string, optionally filtered by class, optionally with a particular MatchMode
@@ -239,7 +242,7 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity>
      *            authorTeam.persistentTitleCache
      * @return a list of instances of type T matching the queryString
      */
-    public List<T> listByReferenceTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+    public <S extends T> List<S> listByReferenceTitle(Class<S> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Return a List of objects matching the given query string, optionally filtered by class, optionally with a particular MatchMode
@@ -257,7 +260,7 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity>
      *            authorTeam.persistentTitleCache
      * @return a list of instances of type T matching the queryString
      */
-    public List<T> listByReferenceTitleWithRestrictions(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+    public <S extends T> List<S> listByReferenceTitleWithRestrictions(Class<S> clazz, String queryString,MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Returns a Paged List of IdentifiableEntity instances where the default field matches the String queryString (as interpreted by the Lucene QueryParser)
@@ -275,6 +278,7 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity>
      * @see <a href="http://lucene.apache.org/java/2_4_0/queryparsersyntax.html">Apache Lucene - Query Parser Syntax</a>
      */
     public Pager<T> search(Class<? extends T> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+//    public <S extends T> Pager<S> search(Class<S> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 
     /**
@@ -304,7 +308,7 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity>
      * @param matchMode
      * @return
      */
-    public Pager<T> findTitleCache(Class<? extends T> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, MatchMode matchMode);
+    public <S extends T> Pager<S> findTitleCache(Class<S> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, MatchMode matchMode);
 
 
     /**

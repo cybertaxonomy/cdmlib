@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.api.service;
 
@@ -23,8 +23,10 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 @Service
 @Transactional(readOnly = true)
-public class CollectionServiceImpl extends	IdentifiableServiceBase<Collection, ICollectionDao> implements	ICollectionService {
-	
+public class CollectionServiceImpl
+            extends	IdentifiableServiceBase<Collection, ICollectionDao>
+            implements	ICollectionService {
+
 	@SuppressWarnings("unused")
 	static private final Logger logger = Logger.getLogger(CollectionServiceImpl.class);
 
@@ -43,10 +45,10 @@ public class CollectionServiceImpl extends	IdentifiableServiceBase<Collection, I
 		}
 		super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
 	}
- 
 
-	
-	public List<Collection> searchByCode(String code) {
+
+	@Override
+    public List<Collection> searchByCode(String code) {
 		return this.dao.getCollectionByCode(code);
 	}
 }

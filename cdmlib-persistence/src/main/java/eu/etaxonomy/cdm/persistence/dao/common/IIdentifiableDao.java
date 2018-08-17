@@ -111,7 +111,7 @@ public interface IIdentifiableDao <T extends IdentifiableEntity> extends IAnnota
     *            authorTeam.persistentTitleCache
     * @return a List of instances of type T matching the queryString
     */
-   public List<T> findByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+   public <S extends T> List<S> findByTitle(Class<S> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 
 	 /**
@@ -130,7 +130,7 @@ public interface IIdentifiableDao <T extends IdentifiableEntity> extends IAnnota
 	 *            authorTeam.persistentTitleCache
 	 * @return a List of instances of type T matching the queryString
 	 */
-	public List<T> findByTitleWithRestrictions(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+	public <S extends T> List<S> findByTitleWithRestrictions(Class<S> clazz, String queryString,MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 
 
@@ -144,7 +144,7 @@ public interface IIdentifiableDao <T extends IdentifiableEntity> extends IAnnota
 	 * @param matchMode
 	 * @return
 	 */
-	public List<T> findTitleCache(Class<? extends T> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, MatchMode matchMode);
+	public <S extends T> List<S> findTitleCache(Class<S> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, MatchMode matchMode);
     /**
     * Return a List of objects matching the given query string, optionally filtered by class, optionally with a particular MatchMode
     *
@@ -161,7 +161,7 @@ public interface IIdentifiableDao <T extends IdentifiableEntity> extends IAnnota
     *            authorTeam.persistentTitleCache
     * @return a List of instances of type T matching the queryString
     */
-   public List<T> findByReferenceTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+   public <S extends T> List<S> findByReferenceTitle(Class<S> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	 /**
 	 * Return a List of objects matching the given query string, optionally filtered by class, optionally with a particular MatchMode
@@ -179,7 +179,7 @@ public interface IIdentifiableDao <T extends IdentifiableEntity> extends IAnnota
 	 *            authorTeam.persistentTitleCache
 	 * @return a List of instances of type T matching the queryString
 	 */
-	public List<T> findByReferenceTitleWithRestrictions(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+	public <S extends T> List<S> findByReferenceTitleWithRestrictions(Class<S> clazz, String queryString,MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
      * Return a count of objects matching the given query string in the titleCache, optionally filtered by class, optionally with a particular MatchMode

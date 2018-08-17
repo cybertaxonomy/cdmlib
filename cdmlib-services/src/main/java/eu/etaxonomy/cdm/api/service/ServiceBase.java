@@ -313,32 +313,31 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 
     @Override
     @Transactional(readOnly = true)
-    public Pager<T> page(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths){
+    public <S extends T> Pager<S> page(Class<S> clazz, String param, String queryString, MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths){
 
-        List<T> records;
+        List<S> records;
         long resultSize = dao.countByParam(clazz, param, queryString, matchmode, criteria);
         if(AbstractPagerImpl.hasResultsInRange(resultSize, pageIndex, pageSize)){
             records = dao.findByParam(clazz, param, queryString, matchmode, criteria, pageSize, pageIndex, orderHints, propertyPaths);
         } else {
             records = new ArrayList<>();
         }
-        Pager<T> pager = new DefaultPagerImpl<>(pageIndex, resultSize, pageSize, records);
-        return pager;
+        return new DefaultPagerImpl<>(pageIndex, resultSize, pageSize, records);
     }
 
 
     @Override
     @Transactional(readOnly = true)
-    public Pager<T> pageByRestrictions(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths){
+    public <S extends T> Pager<S> pageByRestrictions(Class<S> clazz, String param, String queryString, MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths){
 
-        List<T> records;
+        List<S> records;
         long resultSize = dao.countByParamWithRestrictions(clazz, param, queryString, matchmode, restrictions);
         if(AbstractPagerImpl.hasResultsInRange(resultSize, pageIndex, pageSize)){
             records = dao.findByParamWithRestrictions(clazz, param, queryString, matchmode, restrictions, pageSize, pageIndex, orderHints, propertyPaths);
         } else {
             records = new ArrayList<>();
         }
-        Pager<T> pager = new DefaultPagerImpl<>(pageIndex, resultSize, pageSize, records);
+        Pager<S> pager = new DefaultPagerImpl<>(pageIndex, resultSize, pageSize, records);
         return pager;
     }
 

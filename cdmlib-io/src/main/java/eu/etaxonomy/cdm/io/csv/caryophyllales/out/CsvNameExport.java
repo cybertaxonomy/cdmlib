@@ -28,7 +28,6 @@ import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.io.common.TaxonNodeOutStreamPartitioner;
 import eu.etaxonomy.cdm.io.common.XmlExportState;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -492,17 +491,13 @@ public class CsvNameExport extends CsvNameExportBase {
         if (state.getNotesFeature() != null){
             return state.getNotesFeature();
         } else{
-            Pager<DefinedTermBase> notesFeature = getTermService().findByTitleWithRestrictions(Feature.class, "Notes" ,MatchMode.EXACT, null, null, null, null, null);
+            Pager<Feature> notesFeature = getTermService().findByTitleWithRestrictions(Feature.class, "Notes" ,MatchMode.EXACT, null, null, null, null, null);
             if (notesFeature.getRecords().size() == 0){
                 return null;
             }else{
-                DefinedTermBase<?> feature=  notesFeature.getRecords().iterator().next();
-                if (feature instanceof Feature){
-                    state.setNotesFeature((Feature)feature);
-                    return (Feature) feature;
-                } else{
-                    return null;
-                }
+                Feature feature=  notesFeature.getRecords().iterator().next();
+                state.setNotesFeature(feature);
+                return feature;
             }
         }
 

@@ -1032,7 +1032,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
      * @return
      */
     @Override
-    public List<T> findByParam(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode,
+    public <S extends T> List<S> findByParam(Class<S> clazz, String param, String queryString, MatchMode matchmode,
             List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths) {
 
@@ -1066,7 +1066,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         addOrder(criteria, orderHints);
 
         @SuppressWarnings("unchecked")
-        List<T> result = criteria.list();
+        List<S> result = criteria.list();
         defaultBeanInitializer.initializeAll(result, propertyPaths);
         return result;
     }
@@ -1150,7 +1150,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
 
     @Override
-    public List<T> findByParamWithRestrictions(Class<? extends T> clazz, String param, String queryString,
+    public <S extends T> List<S> findByParamWithRestrictions(Class<S> clazz, String param, String queryString,
             MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints, List<String> propertyPaths) {
 
@@ -1173,7 +1173,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         addOrder(criteria, orderHints);
 
         @SuppressWarnings("unchecked")
-        List<T> result = criteria.list();
+        List<S> result = criteria.list();
         defaultBeanInitializer.initializeAll(result, propertyPaths);
         return result;
 

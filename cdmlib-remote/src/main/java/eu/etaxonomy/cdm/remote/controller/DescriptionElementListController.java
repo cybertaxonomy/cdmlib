@@ -8,8 +8,6 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -48,6 +46,7 @@ import eu.etaxonomy.cdm.remote.editor.TermBasePropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
+import io.swagger.annotations.Api;
 
 /**
  * TODO write controller documentation
@@ -207,7 +206,7 @@ public class DescriptionElementListController {
     * @throws IOException
     */
    @RequestMapping(value = "find", method = RequestMethod.GET) // mapped as absolute path, see CdmAntPathMatcher
-   public Pager<DescriptionElementBase> doFindDescriptionElements(
+   public Pager<? extends DescriptionElementBase> doFindDescriptionElements(
            @RequestParam(value = "query", required = true) String queryString,
            @RequestParam(value = "type", required = false) Class<? extends DescriptionElementBase> type,
            @RequestParam(value = "pageSize", required = false) Integer pageSize,
@@ -223,7 +222,7 @@ public class DescriptionElementListController {
        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
        pagerParams.normalizeAndValidate(response);
 
-       Pager<DescriptionElementBase> pager = service.searchElements(type, queryString, pageSize, pageNumber, null, getInitializationStrategy());
+       Pager<? extends DescriptionElementBase> pager = service.searchElements(type, queryString, pageSize, pageNumber, null, getInitializationStrategy());
 
        return pager;
    }

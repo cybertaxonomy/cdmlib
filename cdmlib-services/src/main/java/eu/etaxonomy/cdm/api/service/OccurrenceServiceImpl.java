@@ -1596,8 +1596,8 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     @Override
-    public Pager<SpecimenOrObservationBase> findByTitle(
-            IIdentifiableEntityServiceConfigurator<SpecimenOrObservationBase> config) {
+    public <S extends SpecimenOrObservationBase> Pager<S> findByTitle(
+            IIdentifiableEntityServiceConfigurator<S> config) {
         if (config instanceof FindOccurrencesConfigurator) {
             FindOccurrencesConfigurator occurrenceConfig = (FindOccurrencesConfigurator) config;
             List<SpecimenOrObservationBase> occurrences = new ArrayList<>();
@@ -1612,13 +1612,14 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             if(occurrenceConfig.getAssociatedTaxonNameUuid()!=null){
                 taxonName = nameService.load(occurrenceConfig.getAssociatedTaxonNameUuid());
             }
-            occurrences.addAll(dao.findOccurrences(occurrenceConfig.getClazz(),
+            List<? extends SpecimenOrObservationBase> foundOccurrences = dao.findOccurrences(occurrenceConfig.getClazz(),
                     occurrenceConfig.getTitleSearchString(), occurrenceConfig.getSignificantIdentifier(),
                     occurrenceConfig.getSpecimenType(), taxon, taxonName, occurrenceConfig.getMatchMode(), null, null,
-                    occurrenceConfig.getOrderHints(), occurrenceConfig.getPropertyPaths()));
+                    occurrenceConfig.getOrderHints(), occurrenceConfig.getPropertyPaths());
+            occurrences.addAll(foundOccurrences);
             occurrences = filterOccurencesByAssignmentAndHierarchy(occurrenceConfig, occurrences, taxon, taxonName);
 
-            return new DefaultPagerImpl<>(config.getPageNumber(), occurrences.size(), config.getPageSize(), occurrences);
+            return new DefaultPagerImpl<>(config.getPageNumber(), occurrences.size(), config.getPageSize(), (List<S>)occurrences);
         }
         return super.findByTitle(config);
     }
@@ -1629,9 +1630,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         //filter out (un-)assigned specimens
         if(taxon==null && taxonName==null){
             AssignmentStatus assignmentStatus = occurrenceConfig.getAssignmentStatus();
-            List<SpecimenOrObservationBase<?>> specimenWithAssociations = new ArrayList<>();
+            List<SpecimenOrObservationBase> specimenWithAssociations = new ArrayList<>();
             if(!assignmentStatus.equals(AssignmentStatus.ALL_SPECIMENS)){
-                for (SpecimenOrObservationBase<?> specimenOrObservationBase : occurrences) {
+                for (SpecimenOrObservationBase specimenOrObservationBase : occurrences) {
                     boolean includeUnpublished = true;  //TODO not sure if this is correct, maybe we have to propagate publish flag to higher methods.
                     Collection<TaxonBase<?>> associatedTaxa = listAssociatedTaxa(specimenOrObservationBase,
                             includeUnpublished, null, null, null, null);

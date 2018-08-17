@@ -22,7 +22,6 @@ import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportState;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.AbcdParseUtility;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.SpecimenImportReport;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.OrderedTerm;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.molecular.Amplification;
@@ -174,9 +173,9 @@ public class AbcdGgbnParser {
                     if(markerList.item(0)!=null){
                         String amplificationMarker = markerList.item(0).getTextContent();
                         DefinedTerm dnaMarker = null;
-                        List<DefinedTermBase> markersFound = cdmAppController.getTermService().findByTitleWithRestrictions(DefinedTerm.class, amplificationMarker, MatchMode.EXACT, null, null, null, null, null).getRecords();
+                        List<DefinedTerm> markersFound = cdmAppController.getTermService().findByTitleWithRestrictions(DefinedTerm.class, amplificationMarker, MatchMode.EXACT, null, null, null, null, null).getRecords();
                         if(markersFound.size()==1){
-                            dnaMarker = (DefinedTerm) markersFound.get(0);
+                            dnaMarker = markersFound.get(0);
                         }
                         else{
                             dnaMarker = DefinedTerm.NewDnaMarkerInstance(amplificationMarker, amplificationMarker, amplificationMarker);
