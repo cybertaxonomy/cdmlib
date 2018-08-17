@@ -8,11 +8,14 @@
 */
 package eu.etaxonomy.cdm.api.service.dto;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
+import eu.etaxonomy.cdm.persistence.dto.TermDto;
 
 /**
  * @author k.luther
@@ -24,7 +27,7 @@ public class GatheringEventDTO {
     private String locality;
     private Point exactLocation;
     private String country;
-    private Set<String> collectingAreas;
+    private Set<TermDto> collectingAreas;
     private String collectingMethod;
     private Integer absoluteElevation;
     private Integer absoluteElevationMax;
@@ -52,7 +55,7 @@ public class GatheringEventDTO {
      * @param distanceToWaterSurfaceMax
      * @param distanceToWaterSurfaceText
      */
-    public GatheringEventDTO(String locality, Point exactLocation, String country, Set<String> collectingAreas,
+    public GatheringEventDTO(String locality, Point exactLocation, String country, Set<TermDto> collectingAreas,
             String collectingMethod, String collector, Integer absoluteElevation, Integer absoluteElevationMax,
             String absoluteElevationText, Double distanceToGround, Double distanceToGroundMax,
             String distanceToGroundText, Double distanceToWaterSurface, Double distanceToWaterSurfaceMax,
@@ -75,10 +78,66 @@ public class GatheringEventDTO {
         this.distanceToWaterSurfaceText = distanceToWaterSurfaceText;
     }
 
+    /**
+     *
+     */
+    public GatheringEventDTO() {
+
+    }
+
     public static GatheringEventDTO newInstance(GatheringEvent gathering){
-        GatheringEventDTO dto = new GatheringEventDTO(gathering.getLocality().getLanguageLabel(Language.DEFAULT()), gathering.getExactLocation(), gathering.getCountry().getTitleCache(),
-                null,gathering.getCollectingMethod(), gathering.getCollector() != null ? gathering.getCollector().getTitleCache(): null, gathering.getAbsoluteElevation(), gathering.getAbsoluteElevationMax(), gathering.getAbsoluteElevationText(),
-                gathering.getDistanceToGround(), gathering.getDistanceToGroundMax(), gathering.getDistanceToGroundText(), gathering.getDistanceToWaterSurface(), gathering.getDistanceToWaterSurfaceMax(), gathering.getDistanceToWaterSurfaceText());
+        GatheringEventDTO dto = new GatheringEventDTO();
+        if (gathering.getLocality() != null){
+            dto.locality = gathering.getLocality().getLanguageLabel(Language.DEFAULT());
+            }
+        if (gathering.getExactLocation() != null){
+            dto.exactLocation = gathering.getExactLocation();
+        }
+        if (gathering.getCountry() != null){
+            dto.country =  gathering.getCountry().getTitleCache();
+        }
+        if (gathering.getCollectingMethod() != null){
+            dto.collectingMethod = gathering.getCollectingMethod();
+        }
+        if (gathering.getCollector() != null ){
+            dto.collector = gathering.getCollector().getTitleCache();
+        }
+        if (gathering.getAbsoluteElevation() != null){
+            dto.absoluteElevation = gathering.getAbsoluteElevation();
+        }
+        if (gathering.getAbsoluteElevationMax() != null){
+            dto.absoluteElevationMax = gathering.getAbsoluteElevationMax();
+        }
+        if (gathering.getAbsoluteElevationText() != null){
+            dto.absoluteElevationText = gathering.getAbsoluteElevationText();
+        }
+        if (gathering.getDistanceToGround() != null){
+            dto.distanceToGround = gathering.getDistanceToGround();
+        }
+        if (gathering.getDistanceToGroundMax() != null){
+            dto.distanceToGroundMax = gathering.getDistanceToGroundMax();
+        }
+        if (gathering.getDistanceToGroundText() != null){
+            dto.distanceToGroundText = gathering.getDistanceToGroundText();
+        }
+        if (gathering.getDistanceToWaterSurface() != null){
+            dto.distanceToWaterSurface= gathering.getDistanceToWaterSurface();
+        }
+        if (gathering.getDistanceToWaterSurfaceMax() != null){
+            dto.distanceToWaterSurfaceMax= gathering.getDistanceToWaterSurfaceMax();
+        }
+        if (gathering.getDistanceToWaterSurfaceText() != null){
+            dto.distanceToWaterSurfaceText= gathering.getDistanceToWaterSurfaceText();
+        }
+
+        for (NamedArea area: gathering.getCollectingAreas()){
+            TermDto areaDto = TermDto.fromNamedArea(area);
+            if (dto.getCollectingAreas() == null){
+                dto.collectingAreas = new HashSet<>();
+            }
+            dto.collectingAreas.add(areaDto);
+        }
+
         return dto;
     }
 
@@ -92,7 +151,7 @@ public class GatheringEventDTO {
     public String getCountry() {
         return country;
     }
-    public Set<String> getCollectingAreas() {
+    public Set<TermDto> getCollectingAreas() {
         return collectingAreas;
     }
     public String getCollectingMethod() {

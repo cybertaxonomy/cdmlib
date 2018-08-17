@@ -11,8 +11,11 @@ package eu.etaxonomy.cdm.api.service.dto;
 import java.util.HashSet;
 import java.util.Set;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.molecular.AmplificationResult;
 import eu.etaxonomy.cdm.model.molecular.DnaQuality;
+import eu.etaxonomy.cdm.model.molecular.DnaSample;
+import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 
 /**
@@ -22,40 +25,55 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
  */
 public class DNASampleDTO extends PreservedSpecimenDTO{
 
-    /**
-     * @param derivedUnit
-     */
-    public DNASampleDTO(DerivedUnit derivedUnit) {
-        super(derivedUnit);
-    }
-
     private Set<SequenceDTO> sequences = new HashSet<SequenceDTO>();
 
     private Set<AmplificationResult> amplificationResults = new HashSet<AmplificationResult>();
 
     private DnaQuality dnaQuality;
 
-//    public DNASampleDTO(DnaSample dnaSample){
-//        super(dnaSample);
-//        Set<SequenceDTO> seqDtos = new HashSet<>();
-//        for (Sequence seq: dnaSample.getSequences()){
-//            seqDtos.add(new SequenceDTO(seq));
-//        }
-//        this.setSequences(seqDtos);
-//        this.amplificationResults = dnaSample.getAmplificationResults();
-//        this.dnaQuality = dnaSample.getDnaQuality();
-//    }
-//
-//    public static DNASampleDTO newInstance(DnaSample dnaSample){
-//        DNASampleDTO dnaSampleDto = (DNASampleDTO) PreservedSpecimenDTO.newInstance(dnaSample);
-//
-//        return dnaSampleDto;
-//    }
 
+
+
+    public DNASampleDTO(DerivedUnit derivedUnit) {
+        super(derivedUnit);
+        DnaSample dnaSample = HibernateProxyHelper.deproxy(derivedUnit, DnaSample.class);
+        Set<SequenceDTO> seqDtos = new HashSet<>();
+        for (Sequence seq: dnaSample.getSequences()){
+            seqDtos.add(new SequenceDTO(seq));
+        }
+        this.setSequences(seqDtos);
+        this.amplificationResults = dnaSample.getAmplificationResults();
+        this.dnaQuality = dnaSample.getDnaQuality();
+    }
 
 
     public void setSequences(Set<SequenceDTO> sequences) {
         this.sequences = sequences;
+    }
+
+
+    public Set<AmplificationResult> getAmplificationResults() {
+        return amplificationResults;
+    }
+
+
+    public void setAmplificationResults(Set<AmplificationResult> amplificationResults) {
+        this.amplificationResults = amplificationResults;
+    }
+
+
+    public DnaQuality getDnaQuality() {
+        return dnaQuality;
+    }
+
+
+    public void setDnaQuality(DnaQuality dnaQuality) {
+        this.dnaQuality = dnaQuality;
+    }
+
+
+    public Set<SequenceDTO> getSequences() {
+        return sequences;
     }
 
 

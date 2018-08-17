@@ -18,7 +18,6 @@ import java.util.UUID;
 import org.hibernate.envers.tools.Pair;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
-import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
@@ -77,15 +76,16 @@ public class PreservedSpecimenDTO extends DerivateDTO{
         super(derivedUnit);
     }
 
-    public static PreservedSpecimenDTO newInstance(DerivedUnit derivedUnit, TaxonName name ){
+    public static PreservedSpecimenDTO newInstance(DerivedUnit derivedUnit){
         PreservedSpecimenDTO newInstance = new PreservedSpecimenDTO(derivedUnit);
 
 //        newInstance.setTitleCache(derivedUnit.getTitleCache());
 
         newInstance.accessionNumber = derivedUnit.getAccessionNumber();
         newInstance.preferredStableUri = derivedUnit.getPreferredStableUri();
-
-        newInstance.setCollectioDTo(new CollectionDTO(HibernateProxyHelper.deproxy(derivedUnit.getCollection())));
+        if (derivedUnit.getCollection() != null){
+            newInstance.setCollectioDTo(new CollectionDTO(HibernateProxyHelper.deproxy(derivedUnit.getCollection())));
+        }
         newInstance.setBarcode(derivedUnit.getBarcode());
         newInstance.setCatalogNumber(derivedUnit.getCatalogNumber());
         newInstance.listLabel = derivedUnit.getCatalogNumber();
