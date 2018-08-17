@@ -21,15 +21,9 @@
 <stringAttribute key="net.sourceforge.eclipsejetty.launcher.jetty.config.type.0" value="DEFAULT"/>
 <booleanAttribute key="net.sourceforge.eclipsejetty.launcher.jetty.embedded" value="false"/>
 <intAttribute key="net.sourceforge.eclipsejetty.launcher.jetty.microVersion" value="1"/>
-<<<<<<< HEAD
-<intAttribute key="net.sourceforge.eclipsejetty.launcher.jetty.minorVersion" value="2"/>
-<stringAttribute key="net.sourceforge.eclipsejetty.launcher.jetty.path" value="C:\Program Files\jetty-distribution-9.2.14.v20151106"/>
-<stringAttribute key="net.sourceforge.eclipsejetty.launcher.jetty.version" value="JETTY_9"/>
-=======
 <intAttribute key="net.sourceforge.eclipsejetty.launcher.jetty.minorVersion" value="4"/>
 <stringAttribute key="net.sourceforge.eclipsejetty.launcher.jetty.path" value="${jetty-runtime-9}"/>
 <stringAttribute key="net.sourceforge.eclipsejetty.launcher.jetty.version" value="JETTY_9_3"/>
->>>>>>> parent of ff21181c06... mend
 <stringAttribute key="net.sourceforge.eclipsejetty.launcher.jmx.enabled" value="false"/>
 <stringAttribute key="net.sourceforge.eclipsejetty.launcher.jndi.enabled" value="false"/>
 <stringAttribute key="net.sourceforge.eclipsejetty.launcher.jsp.enabled" value="true"/>
