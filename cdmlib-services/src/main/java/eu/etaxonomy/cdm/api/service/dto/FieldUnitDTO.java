@@ -39,66 +39,6 @@ public class FieldUnitDTO extends DerivateDTO{
 
 	}
 
-
-
-
-//=======
-//	private String protologue;
-//	private String kindOfUnit;
-//	private List<UUID> taxonRelatedDerivedUnits = new ArrayList<>();
-//	private List<Media> listOfMedia = new ArrayList<>();
-//
-//
-//    private List<PreservedSpecimenDTO> preservedSpecimenDTOs;
-//	private GatheringEventDTO gatheringEvent;
-//
-//
-//	public static FieldUnitDTO newInstance(FieldUnit fieldUnit){
-//	    FieldUnitDTO fieldUnitDto = new FieldUnitDTO();
-//	    fieldUnitDto.kindOfUnit = fieldUnit.getKindOfUnit().getTitleCache();
-//	    fieldUnitDto.gatheringEvent = GatheringEventDTO.newInstance(fieldUnit.getGatheringEvent());
-//	    fieldUnitDto.setUuid(fieldUnit.getUuid());
-//	    fieldUnitDto.setTitleCache(fieldUnit.getTitleCache());
-//
-//	    Set<DescriptionBase<IIdentifiableEntityCacheStrategy<FieldUnit>>> descriptions = fieldUnit.getDescriptions();
-//	    for (DescriptionBase desc : descriptions){
-//	        if (desc instanceof SpecimenDescription){
-//	            SpecimenDescription specimenDesc = (SpecimenDescription)desc;
-//    	        if (specimenDesc.isImageGallery()){
-//    	            for (DescriptionElementBase element : specimenDesc.getElements()){
-//    	                if (element.isInstanceOf(TextData.class)&& element.getFeature().equals(Feature.IMAGE())) {
-//	                        for (Media media :element.getMedia()){
-//	                            fieldUnitDto.listOfMedia.add(media);
-//	                        }
-//    	                }
-//    	            }
-//    	        }
-//	        }
-//	    }
-//	    return fieldUnitDto;
-//
-//	}
-//
-//
-//	/**
-//     * @return the listOfMedia
-//     */
-//    public List<Media> getListOfMedia() {
-//        return listOfMedia;
-//    }
-//
-//    /**
-//     * @param listOfMedia the listOfMedia to set
-//     */
-//    public void setListOfMedia(List<Media> listOfMedia) {
-//        this.listOfMedia = listOfMedia;
-//    }
-//
-//>>>>>>> Stashed changes
-
-
-
-
     /**
      * @return the country
      */
