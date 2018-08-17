@@ -2,7 +2,6 @@ package eu.etaxonomy.cdm.api.service.dto;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
@@ -123,16 +122,6 @@ public class FieldUnitDTO extends DerivateDTO{
         }
         this.taxonRelatedDerivedUnits.add(derivedUnitDTO.getUuid());
 
-    }
-
-
-    public Set<DerivateDTO> getPreservedSpecimenDTOs() {
-        return getDerivates();
-    }
-
-
-    public void setPreservedSpecimenDTOs(Set<DerivateDTO> preservedSpecimenDTOs) {
-        this.setDerivates(preservedSpecimenDTOs);
     }
 
 }
