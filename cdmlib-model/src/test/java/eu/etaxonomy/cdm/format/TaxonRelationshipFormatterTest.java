@@ -192,7 +192,7 @@ public class TaxonRelationshipFormatterTest {
         toTaxon.setAppendedPhrase("");
         tags = formatter.getTaggedText(taxonRel, reverse, languages);
         str = TaggedCacheHelper.createString(tags);
-        Assert.assertEquals(SYMBOL + " ?Pinus pinova Mill. sec. ???, rel. sec. Cheek 1919: 123", str);
+        Assert.assertEquals("?" + SYMBOL + " Pinus pinova Mill. sec. ???, rel. sec. Cheek 1919: 123", str);
 
     }
 
