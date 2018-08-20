@@ -1583,11 +1583,14 @@ public class CdmLightClassificationExport
             }
 
         }
-        if (!StringUtils.isBlank(reference.getDatePublished().getFreeText())){
-            shortCitation = shortCitation + " (" + reference.getDatePublished().getFreeText() + ")";
-        }else if (!StringUtils.isBlank(reference.getYear()) ){
-            shortCitation = shortCitation + " (" + reference.getYear() + ")";
+        if (reference.getDatePublished() != null) {
+            if (!StringUtils.isBlank(reference.getDatePublished().getFreeText())){
+                shortCitation = shortCitation + " (" + reference.getDatePublished().getFreeText() + ")";
+            }else if (!StringUtils.isBlank(reference.getYear()) ){
+                shortCitation = shortCitation + " (" + reference.getYear() + ")";
+            }
         }
+
         return shortCitation;
     }
 
