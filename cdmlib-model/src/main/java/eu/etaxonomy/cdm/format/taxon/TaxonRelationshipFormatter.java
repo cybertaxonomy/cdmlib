@@ -69,23 +69,24 @@ public class TaxonRelationshipFormatter {
         if (relatedTaxon == null){
             return null;
         }
-        boolean isDoubtful = taxonRelationship.isDoubtful() || relatedTaxon.isDoubtful();
-        String doubtfulStr = isDoubtful ? "?" : "";
+
+        String doubtfulTaxonStr = relatedTaxon.isDoubtful() ? "?" : "";
+        String doubtfulRelationStr = taxonRelationship.isDoubtful() ? "?" : "";
+
 
         TaxonName name = relatedTaxon.getName();
 
-//        List<TaggedText> tags = new ArrayList<>();
         TaggedTextBuilder builder = new TaggedTextBuilder();
 
         //rel symbol
-        String symbol = getSymbol(type, reverse, languages);
+        String symbol = doubtfulRelationStr + getSymbol(type, reverse, languages);
         builder.add(TagEnum.symbol, symbol);
 
         //name
         if (isMisapplied){
             //starting quote
-            String startQuote = " " + doubtfulStr + QUOTE_START;
-            builder.addSeparator(startQuote);// .add(TaggedText.NewSeparatorInstance(startQuote));
+            String startQuote = " " + doubtfulTaxonStr + QUOTE_START;
+            builder.addSeparator(startQuote);
 
             //name cache
             List<TaggedText> nameCacheTags = getNameCacheTags(name);
@@ -95,14 +96,14 @@ public class TaxonRelationshipFormatter {
             String endQuote = QUOTE_END;
             builder.add(TagEnum.postSeparator, endQuote);
         }else{
-            builder.addSeparator(" " + doubtfulStr);
+            builder.addSeparator(" " + doubtfulTaxonStr);
             //name full title cache
             List<TaggedText> nameCacheTags = getNameTitleCacheTags(name);
             builder.addAll(nameCacheTags);
         }
 
 
-        //sensu (+ Separatoren?)
+        //sec/sensu (+ Separatoren?)
         if (isNotBlank(relatedTaxon.getAppendedPhrase())){
             builder.addWhitespace();
             builder.add(TagEnum.appendedPhrase, relatedTaxon.getAppendedPhrase());
@@ -124,10 +125,7 @@ public class TaxonRelationshipFormatter {
 
 //        //, non author
         if (isMisapplied && name != null){
-            if (name.getCombinationAuthorship() != null && isNotBlank(name.getCombinationAuthorship().getNomenclaturalTitle())){
-                builder.addSeparator(NON_SEPARATOR);
-                builder.add(TagEnum.authors, name.getCombinationAuthorship().getNomenclaturalTitle());
-            }else if (isNotBlank(name.getAuthorshipCache())){
+            if (isNotBlank(name.getAuthorshipCache())){
                 builder.addSeparator(NON_SEPARATOR);
                 builder.add(TagEnum.authors, name.getAuthorshipCache().trim());
             }
