@@ -519,7 +519,7 @@ public class TypeDesignationSetManager {
                         if(msp.getMediaSpecimen() != null){
                             for(IdentifiableSource source : msp.getMediaSpecimen().getSources()){
                                 String refDetailStr = source.getCitationMicroReference();
-                                String referenceStr = source.getCitation().getTitleCache();
+                                String referenceStr = source.getCitation() == null? "": source.getCitation().getTitleCache();
                                 if(StringUtils.isNotBlank(source.getCitationMicroReference())){
                                     typeSpecimenTitle += refDetailStr;
                                 }
