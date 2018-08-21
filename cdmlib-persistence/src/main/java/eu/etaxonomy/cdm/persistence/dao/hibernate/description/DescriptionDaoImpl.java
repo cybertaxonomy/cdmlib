@@ -46,6 +46,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.common.OperationNotSupportedInPriorViewException;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
@@ -926,6 +927,25 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
         return new ArrayList<>(dtoMap.values());
     }
 
+    @Override
+    public TaxonNode findTaxonNodeForDescription(int descriptionId, Set<Integer> nodeIds){
+        TaxonNode node = null;
 
+        String parentAreasQueryStr = "select node "
+                + "from DescriptionBase as d, TaxonBase as t , TaxonNode as node "+
+                "where d.id = :descriptionId "+
+                "AND d.taxon.id = t.id "+
+                "AND node.taxon.id = t.id "+
+                "AND node.id in (:nodeIds)";
+        Query query = getSession().createQuery(parentAreasQueryStr);
+        query.setParameter("descriptionId", descriptionId);
+        query.setParameterList("nodeIds", nodeIds);
+        List list = query.list();
+        if(list.size()==1){
+            node = (TaxonNode) list.iterator().next();
+//            defaultBeanInitializer.initializeAll(list, null);
+        }
+        return node;
+    }
 
 }

@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.media.IMediaDao;
@@ -300,4 +301,6 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
      * @return
      */
     List<TermDto> listNamedAreasInUse(boolean includeAllParents, Integer pageSize, Integer pageNumber);
+
+    TaxonNode findTaxonNodeForDescription(int descriptionId, Set<Integer> nodeIds);
 }

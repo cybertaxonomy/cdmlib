@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptiveDataSetDao;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
@@ -58,7 +60,7 @@ public class DescriptiveDataSetService
     private ITaxonService taxonService;
 
     @Autowired
-    private IDescriptionService descriptionService;
+    private IDescriptionDao descriptionDao;
 
     @Autowired
     private ITaxonNodeService taxonNodeService;
@@ -158,21 +160,20 @@ public class DescriptiveDataSetService
                 Set<TaxonNode> taxonSubtreeFilter = descriptiveDataSet.getTaxonSubtreeFilter();
                 for (TaxonNode node : taxonSubtreeFilter) {
                     //check for node
-                    node = taxonNodeService.load(node.getId(), Arrays.asList("taxon"));
-                    taxonNode = findTaxonNodeForDescription(node, description);
-                    if(taxonNode!=null){
-                        break;
-                    }
-                    else{
-                        //check for child nodes
-                        List<TaxonNode> allChildren = taxonNodeService.loadChildNodesOfTaxonNode(node, Arrays.asList("taxon"), true, true, null);
-                        for (TaxonNode child : allChildren) {
-                            taxonNode = findTaxonNodeForDescription(child, description);
-                            if(taxonNode!=null){
-                                break;
-                            }
-                        }
-                    }
+                    List<UuidAndTitleCache<TaxonNode>> nodesAsUuidAndTitleCache = taxonNodeService.listChildNodesAsUuidAndTitleCache(node);
+                    Set<Integer> nodeIds = nodesAsUuidAndTitleCache.stream()
+                            .map(uuidAndTitleCache->uuidAndTitleCache.getId())
+                            .collect(Collectors.toSet());
+                    nodeIds.add(node.getId());
+                    taxonNode = descriptionDao.findTaxonNodeForDescription(description.getId(), nodeIds);
+//                    node = taxonNodeService.load(node.getId(), Arrays.asList("taxon"));
+//                    taxonNode = findTaxonNodeForDescription(node, description);
+//                    if(taxonNode!=null){
+//                        break;
+//                    }
+//                    else{
+//                        //check for child nodes
+//                    }
                 }
                 if(taxonNode==null){
                     return null;
@@ -219,7 +220,7 @@ public class DescriptiveDataSetService
         List<DescriptionElementBase> matchingDescriptionElements = new ArrayList<>();
 
         for (SpecimenDescription specimenDescription : (Set<SpecimenDescription>) specimen.getDescriptions()) {
-            specimenDescription = (SpecimenDescription) descriptionService.load(specimenDescription.getUuid());
+            specimenDescription = (SpecimenDescription) descriptionDao.load(specimenDescription.getUuid());
 
             //check if description is already added to data set
             if(dataSet.getDescriptions().contains(specimenDescription)){
