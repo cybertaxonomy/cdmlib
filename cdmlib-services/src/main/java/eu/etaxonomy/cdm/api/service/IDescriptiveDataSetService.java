@@ -7,6 +7,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.dto.RowWrapperDTO;
+import eu.etaxonomy.cdm.api.service.dto.SpecimenRowWrapperDTO;
+import eu.etaxonomy.cdm.api.service.dto.TaxonRowWrapperDTO;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -14,6 +16,7 @@ import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.DescriptiveSystemRole;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
@@ -78,12 +81,20 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
     public List<UUID> findFilteredTaxonNodes(DescriptiveDataSet descriptiveDataSet);
 
     /**
-     * Creates a row wrapper object for the given description
-     * @param description the description for which the wrapper should be created
+     * Creates a specimen row wrapper object for the given description
+     * @param description the specimen description for which the wrapper should be created
      * @param descriptiveDataSet the data set it should be used in
      * @return the created row wrapper
      */
-    public RowWrapperDTO createRowWrapper(DescriptionBase description, DescriptiveDataSet descriptiveDataSet);
+    public SpecimenRowWrapperDTO createSpecimenRowWrapper(SpecimenDescription description, DescriptiveDataSet descriptiveDataSet);
+
+    /**
+     * Creates a taxon row wrapper object for the given description
+     * @param description the taxon description for which the wrapper should be created
+     * @param descriptiveDataSet the data set it should be used in
+     * @return the created row wrapper
+     */
+    public TaxonRowWrapperDTO createTaxonRowWrapper(TaxonDescription description, DescriptiveDataSet descriptiveDataSet);
 
     /**
      * Returns a {@link SpecimenDescription} for a given specimen with corresponding

@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -17,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.dto.RowWrapperDTO;
+import eu.etaxonomy.cdm.api.service.dto.SpecimenRowWrapperDTO;
+import eu.etaxonomy.cdm.api.service.dto.TaxonRowWrapperDTO;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitorThread;
@@ -32,11 +35,13 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptiveDataSetDao;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
@@ -114,7 +119,13 @@ public class DescriptiveDataSetService
             if(monitor.isCanceled()){
                 return new ArrayList<>();
             }
-            RowWrapperDTO rowWrapper = createRowWrapper(description, descriptiveDataSet);
+            RowWrapperDTO rowWrapper = null;
+            if(description instanceof TaxonDescription){
+                rowWrapper = createTaxonRowWrapper((TaxonDescription) description, descriptiveDataSet);
+            }
+            else if (description instanceof SpecimenDescription){
+                rowWrapper = createSpecimenRowWrapper((SpecimenDescription) description, descriptiveDataSet);
+            }
             if(rowWrapper!=null){
                 wrappers.add(rowWrapper);
             }
@@ -155,7 +166,22 @@ public class DescriptiveDataSetService
     }
 
     @Override
-    public RowWrapperDTO createRowWrapper(DescriptionBase description, DescriptiveDataSet descriptiveDataSet){
+    public TaxonRowWrapperDTO createTaxonRowWrapper(TaxonDescription description,
+            DescriptiveDataSet descriptiveDataSet) {
+        TaxonNode taxonNode = null;
+        Classification classification = null;
+        Optional<TaxonNode> first = descriptiveDataSet.getTaxonSubtreeFilter().stream()
+                .filter(node->node.getClassification()!=null).findFirst();
+        Optional<Classification> classificationOptional = first.map(node->node.getClassification());
+        if(classificationOptional.isPresent()){
+            classification = classificationOptional.get();
+            taxonNode = description.getTaxon().getTaxonNode(classification);
+        }
+        return new TaxonRowWrapperDTO(description, taxonNode);
+    }
+
+    @Override
+    public SpecimenRowWrapperDTO createSpecimenRowWrapper(SpecimenDescription description, DescriptiveDataSet descriptiveDataSet){
 	    SpecimenOrObservationBase specimen = description.getDescribedSpecimenOrObservation();
 	    TaxonNode taxonNode = null;
         FieldUnit fieldUnit = null;
@@ -205,7 +231,7 @@ public class DescriptiveDataSetService
                 country = fieldUnit.getGatheringEvent().getCountry();
             }
         }
-        return new RowWrapperDTO(description, taxonNode, fieldUnit, identifier, country);
+        return new SpecimenRowWrapperDTO(description, taxonNode, fieldUnit, identifier, country);
 	}
 
     @Override

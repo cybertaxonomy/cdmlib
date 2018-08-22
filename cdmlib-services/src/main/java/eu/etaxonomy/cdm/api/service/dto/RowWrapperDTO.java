@@ -23,9 +23,6 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.State;
-import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
-import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
@@ -33,28 +30,19 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @since 16.04.2018
  *
  */
-public class RowWrapperDTO implements Serializable {
+public abstract class RowWrapperDTO <T extends DescriptionBase> implements Serializable {
 
     private static final long serialVersionUID = -7817164423660563673L;
 
-    private DescriptionBase description;
+    protected T description;
 
-    private SpecimenOrObservationBase specimen;
     private TaxonNode taxonNode;
-    private FieldUnit fieldUnit;
-    private String identifier;
-    private NamedArea country;
     private Map<Feature, DescriptionElementBase> featureToElementMap;
 
-    public RowWrapperDTO(DescriptionBase description, TaxonNode taxonNode, FieldUnit fieldUnit, String identifier,
-                NamedArea country) {
+    public RowWrapperDTO(T description, TaxonNode taxonNode) {
         this.taxonNode = taxonNode;
-        this.fieldUnit = fieldUnit;
-        this.identifier = identifier;
-        this.country = country;
         this.featureToElementMap = new HashMap<>();
         this.description = description;
-        this.specimen = description.getDescribedSpecimenOrObservation();
         Set<DescriptionElementBase> elements = description.getElements();
         for (DescriptionElementBase descriptionElementBase : elements) {
             Feature feature = descriptionElementBase.getFeature();
@@ -76,28 +64,12 @@ public class RowWrapperDTO implements Serializable {
         return data;
     }
 
-    public DescriptionBase getSpecimenDescription() {
+    public T getSpecimenDescription() {
         return description;
-    }
-
-    public SpecimenOrObservationBase getSpecimen() {
-        return specimen;
     }
 
     public TaxonNode getTaxonNode() {
         return taxonNode;
-    }
-
-    public FieldUnit getFieldUnit() {
-        return fieldUnit;
-    }
-
-    public String getIdentifier() {
-        return identifier;
-    }
-
-    public NamedArea getCountry() {
-        return country;
     }
 
     public DescriptionElementBase getDataValueForFeature(Feature feature){
