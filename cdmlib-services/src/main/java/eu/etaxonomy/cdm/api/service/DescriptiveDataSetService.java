@@ -114,7 +114,7 @@ public class DescriptiveDataSetService
             if(monitor.isCanceled()){
                 return new ArrayList<>();
             }
-            RowWrapperDTO rowWrapper = createRowWrapper(null, description, descriptiveDataSet);
+            RowWrapperDTO rowWrapper = createRowWrapper(description, descriptiveDataSet);
             if(rowWrapper!=null){
                 wrappers.add(rowWrapper);
             }
@@ -155,37 +155,36 @@ public class DescriptiveDataSetService
     }
 
     @Override
-    public RowWrapperDTO createRowWrapper(TaxonNode taxonNode, DescriptionBase description, DescriptiveDataSet descriptiveDataSet){
+    public RowWrapperDTO createRowWrapper(DescriptionBase description, DescriptiveDataSet descriptiveDataSet){
 	    SpecimenOrObservationBase specimen = description.getDescribedSpecimenOrObservation();
+	    TaxonNode taxonNode = null;
         FieldUnit fieldUnit = null;
         String identifier = null;
         NamedArea country = null;
         //supplemental information
         if(specimen!=null){
-            if(taxonNode==null){
-                //get taxon node
-                Set<TaxonNode> taxonSubtreeFilter = descriptiveDataSet.getTaxonSubtreeFilter();
-                for (TaxonNode node : taxonSubtreeFilter) {
-                    //check for node
-                    node = taxonNodeService.load(node.getId(), Arrays.asList("taxon"));
-                    taxonNode = findTaxonNodeForDescription(node, specimen);
-                    if(taxonNode!=null){
-                        break;
-                    }
-                    else{
-                        //check for child nodes
-                        List<TaxonNode> allChildren = taxonNodeService.loadChildNodesOfTaxonNode(node, Arrays.asList("taxon"), true, true, null);
-                        for (TaxonNode child : allChildren) {
-                            taxonNode = findTaxonNodeForDescription(child, specimen);
-                            if(taxonNode!=null){
-                                break;
-                            }
+            //get taxon node
+            Set<TaxonNode> taxonSubtreeFilter = descriptiveDataSet.getTaxonSubtreeFilter();
+            for (TaxonNode node : taxonSubtreeFilter) {
+                //check for node
+                node = taxonNodeService.load(node.getId(), Arrays.asList("taxon"));
+                taxonNode = findTaxonNodeForDescription(node, specimen);
+                if(taxonNode!=null){
+                    break;
+                }
+                else{
+                    //check for child nodes
+                    List<TaxonNode> allChildren = taxonNodeService.loadChildNodesOfTaxonNode(node, Arrays.asList("taxon"), true, true, null);
+                    for (TaxonNode child : allChildren) {
+                        taxonNode = findTaxonNodeForDescription(child, specimen);
+                        if(taxonNode!=null){
+                            break;
                         }
                     }
                 }
-                if(taxonNode==null){
-                    return null;
-                }
+            }
+            if(taxonNode==null){
+                return null;
             }
             Collection<FieldUnit> fieldUnits = occurrenceService.findFieldUnits(specimen.getUuid(),
                     Arrays.asList(new String[]{
@@ -206,7 +205,7 @@ public class DescriptiveDataSetService
                 country = fieldUnit.getGatheringEvent().getCountry();
             }
         }
-        return new RowWrapperDTO(description, specimen, taxonNode, fieldUnit, identifier, country);
+        return new RowWrapperDTO(description, taxonNode, fieldUnit, identifier, country);
 	}
 
     @Override
