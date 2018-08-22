@@ -125,14 +125,23 @@ public class DescriptiveDataSetService
 
     @Override
     public Collection<SpecimenNodeWrapper> loadSpecimens(DescriptiveDataSet descriptiveDataSet){
-        //set filter parameters
+        List<UUID> filteredNodes = findFilteredTaxonNodes(descriptiveDataSet);
+        return occurrenceService.listUuidAndTitleCacheByAssociatedTaxon(filteredNodes, null, null);
+    }
+
+    @Override
+    public List<UUID> findFilteredTaxonNodes(DescriptiveDataSet descriptiveDataSet){
         TaxonNodeFilter filter = TaxonNodeFilter.NewRankInstance(descriptiveDataSet.getMinRank(), descriptiveDataSet.getMaxRank());
         descriptiveDataSet.getGeoFilter().forEach(area -> filter.orArea(area.getUuid()));
         descriptiveDataSet.getTaxonSubtreeFilter().forEach(node -> filter.orSubtree(node));
         filter.setIncludeUnpublished(true);
 
-        List<UUID> filteredNodes = taxonNodeService.uuidList(filter);
-        return occurrenceService.listUuidAndTitleCacheByAssociatedTaxon(filteredNodes, null, null);
+        return taxonNodeService.uuidList(filter);
+    }
+
+    @Override
+    public List<TaxonNode> loadFilteredTaxonNodes(DescriptiveDataSet descriptiveDataSet, List<String> propertyPaths){
+        return taxonNodeService.load(findFilteredTaxonNodes(descriptiveDataSet), propertyPaths);
     }
 
     private TaxonNode findTaxonNodeForDescription(TaxonNode taxonNode, SpecimenOrObservationBase specimen){

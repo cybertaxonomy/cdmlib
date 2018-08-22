@@ -61,12 +61,21 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
     public UUID monitGetRowWrapper(DescriptiveDataSet descriptiveDataSet);
 
     /**
-     * Loads all avaliable specimens wrapped in a {@link SpecimenNodeWrapper} object for
+     * Loads all available specimens wrapped in a {@link SpecimenNodeWrapper} object for
      * a given {@link DescriptiveDataSet} according to the filters set in the working set
-     * @param descriptiveDataSet the working set for which the specimens should be fetched
+     * @param descriptiveDataSet the data set for which the specimens should be fetched
      * @return a collection of wrapper objects
      */
     public Collection<SpecimenNodeWrapper> loadSpecimens(DescriptiveDataSet descriptiveDataSet);
+
+    /**
+     * Lists all taxon nodes that match the filter set defined in the
+     * {@link DescriptiveDataSet} given.
+     * @param the data set which defined the taxon node filter
+     * @return a list of {@link UUID}s from the filtered nodes
+     *
+     */
+    public List<UUID> findFilteredTaxonNodes(DescriptiveDataSet descriptiveDataSet);
 
     /**
      * Creates a row wrapper object for the given description
@@ -85,4 +94,13 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      * @return
      */
     public SpecimenDescription findDescriptionForDescriptiveDataSet(UUID descriptiveDataSetUuid, UUID specimenUuid);
+
+    /**
+     * Loads all taxon nodes that match the filter set defined in the
+     * {@link DescriptiveDataSet} given.
+     * @param the data set which defined the taxon node filter
+     * @return a list of {@link TaxonNode}s from the filtered nodes
+     *
+     */
+    public List<TaxonNode> loadFilteredTaxonNodes(DescriptiveDataSet descriptiveDataSet, List<String> propertyPaths);
 }
