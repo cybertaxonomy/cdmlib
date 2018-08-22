@@ -99,6 +99,7 @@ public class DescriptionServiceImpl
 
     protected IDescriptionElementDao descriptionElementDao;
     protected IFeatureTreeDao featureTreeDao;
+    protected IDescriptiveDataSetDao descriptiveDataSetDao;
     protected IFeatureNodeDao featureNodeDao;
     protected IFeatureDao featureDao;
     protected ITermVocabularyDao vocabularyDao;
@@ -117,6 +118,11 @@ public class DescriptionServiceImpl
     @Autowired
     protected void setFeatureTreeDao(IFeatureTreeDao featureTreeDao) {
         this.featureTreeDao = featureTreeDao;
+    }
+
+    @Autowired
+    protected void setDescriptiveDataSetDao(IDescriptiveDataSetDao descriptiveDataSetDao) {
+        this.descriptiveDataSetDao = descriptiveDataSetDao;
     }
 
     @Autowired
@@ -853,7 +859,8 @@ public class DescriptionServiceImpl
 
     @Override
     @Transactional(readOnly=false)
-    public UpdateResult aggregateTaxonDescription(UUID taxonNodeUuid, IRemotingProgressMonitor monitor){
+    public UpdateResult aggregateTaxonDescription(UUID taxonNodeUuid, UUID descriptiveDataSetUuid,
+            IRemotingProgressMonitor monitor){
         UpdateResult result = new UpdateResult();
 
         TaxonNode node = taxonNodeDao.load(taxonNodeUuid);
@@ -873,7 +880,7 @@ public class DescriptionServiceImpl
                         .forEach(computedDescription -> computedDescriptions.add(computedDescription)));
 
         UpdateResult aggregateDescription = aggregateDescription(taxon, computedDescriptions,
-                "[Taxon Descriptions]"+taxon.getTitleCache());
+                "[Taxon Descriptions]"+taxon.getTitleCache(), descriptiveDataSetUuid);
         result.includeResult(aggregateDescription);
         result.setCdmEntity(aggregateDescription.getCdmEntity());
         aggregateDescription.setCdmEntity(null);
@@ -881,7 +888,8 @@ public class DescriptionServiceImpl
     }
 
     @Override
-    public UpdateResult aggregateDescription(UUID taxonUuid, List<UUID> descriptionUuids, String descriptionTitle) {
+    public UpdateResult aggregateDescription(UUID taxonUuid, List<UUID> descriptionUuids, String descriptionTitle
+            , UUID descriptiveDataSetUuid) {
         UpdateResult result = new UpdateResult();
 
         TaxonBase taxonBase = taxonDao.load(taxonUuid);
@@ -894,7 +902,7 @@ public class DescriptionServiceImpl
 
         List<DescriptionBase> descriptions = load(descriptionUuids, null);
 
-        UpdateResult aggregateDescriptionResult = aggregateDescription(taxon, descriptions, descriptionTitle);
+        UpdateResult aggregateDescriptionResult = aggregateDescription(taxon, descriptions, descriptionTitle, descriptiveDataSetUuid);
         result.setCdmEntity(aggregateDescriptionResult.getCdmEntity());
         aggregateDescriptionResult.setCdmEntity(null);
         result.includeResult(aggregateDescriptionResult);
@@ -902,9 +910,17 @@ public class DescriptionServiceImpl
     }
 
     @SuppressWarnings("unchecked")
-    private UpdateResult aggregateDescription(Taxon taxon, List<? extends DescriptionBase> descriptions, String descriptionTitle) {
+    private UpdateResult aggregateDescription(Taxon taxon, List<? extends DescriptionBase> descriptions, String descriptionTitle
+            , UUID descriptiveDataSetUuid) {
         UpdateResult result = new UpdateResult();
         Map<Character, List<DescriptionElementBase>> featureToElementMap = new HashMap<>();
+
+        DescriptiveDataSet dataSet = descriptiveDataSetDao.load(descriptiveDataSetUuid);
+        if(dataSet==null){
+            result.addException(new IllegalArgumentException("Could not find data set for uuid "+descriptiveDataSetUuid));
+            result.setAbort();
+            return result;
+        }
 
         //extract all character description elements
         descriptions.forEach(description->{
@@ -928,6 +944,7 @@ public class DescriptionServiceImpl
         description.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
         IdentifiableSource source = IdentifiableSource.NewInstance(OriginalSourceType.Aggregation);
         description.addSource(source);
+        description.addDescriptiveDataSet(dataSet);
 
         featureToElementMap.forEach((feature, elements)->{
             //aggregate categorical data

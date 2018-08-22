@@ -616,15 +616,21 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      * aggregated data will be stored
      * @param descriptionUuids the uuid of the descriptions that are aggregated
      * @param descriptionTitle the new title of the description
+     * @param descriptiveDataSetUuid the uuid of the descriptive data set to which the
+     * aggregated description will be added to
      * @return the result of the operation
      */
-    public UpdateResult aggregateDescription(UUID taxonUuid, List<UUID> descriptionUuids, String descriptionTitle);
+    public UpdateResult aggregateDescription(UUID taxonUuid, List<UUID> descriptionUuids, String descriptionTitle
+            , UUID descriptiveDataSetUuid);
 
     /**
      * Aggregates all {@link TaxonDescription}s of all sub nodes that have a "computed" marker
      * @param taxonNodeUuid the parent taxon node
+     * @param descriptiveDataSetUuid the uuid of the descriptive data set to which the
+     * aggregated description will be added to
      * @param monitor the progress monitor
      * @return the update result
      */
-    public UpdateResult aggregateTaxonDescription(UUID taxonNodeUuid, IRemotingProgressMonitor monitor);
+    public UpdateResult aggregateTaxonDescription(UUID taxonNodeUuid, UUID descriptiveDataSetUuid,
+            IRemotingProgressMonitor monitor);
 }
