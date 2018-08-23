@@ -42,6 +42,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptiveDataSetDao;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
@@ -120,11 +121,11 @@ public class DescriptiveDataSetService
                 return new ArrayList<>();
             }
             RowWrapperDTO rowWrapper = null;
-            if(description instanceof TaxonDescription){
-                rowWrapper = createTaxonRowWrapper((TaxonDescription) description, descriptiveDataSet);
+            if(HibernateProxyHelper.isInstanceOf(description, TaxonDescription.class)){
+                rowWrapper = createTaxonRowWrapper(HibernateProxyHelper.deproxy(description, TaxonDescription.class), descriptiveDataSet);
             }
-            else if (description instanceof SpecimenDescription){
-                rowWrapper = createSpecimenRowWrapper((SpecimenDescription) description, descriptiveDataSet);
+            else if (HibernateProxyHelper.isInstanceOf(description, SpecimenDescription.class)){
+                rowWrapper = createSpecimenRowWrapper(HibernateProxyHelper.deproxy(description, SpecimenDescription.class), descriptiveDataSet);
             }
             if(rowWrapper!=null){
                 wrappers.add(rowWrapper);
@@ -175,7 +176,8 @@ public class DescriptiveDataSetService
         Optional<Classification> classificationOptional = first.map(node->node.getClassification());
         if(classificationOptional.isPresent()){
             classification = classificationOptional.get();
-            taxonNode = description.getTaxon().getTaxonNode(classification);
+            Taxon taxon = (Taxon) taxonService.load(description.getTaxon().getId(), Arrays.asList("taxonNodes", "taxonNodes.classification"));
+            taxonNode = taxon.getTaxonNode(classification);
         }
         return new TaxonRowWrapperDTO(description, taxonNode);
     }
