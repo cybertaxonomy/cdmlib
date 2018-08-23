@@ -64,7 +64,7 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
         return data;
     }
 
-    public T getSpecimenDescription() {
+    public T getDescription() {
         return description;
     }
 
