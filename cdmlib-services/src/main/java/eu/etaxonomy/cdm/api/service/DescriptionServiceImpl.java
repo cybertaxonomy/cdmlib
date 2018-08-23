@@ -888,6 +888,7 @@ public class DescriptionServiceImpl
     }
 
     @Override
+    @Transactional(readOnly=false)
     public UpdateResult aggregateDescription(UUID taxonUuid, List<UUID> descriptionUuids, String descriptionTitle
             , UUID descriptiveDataSetUuid) {
         UpdateResult result = new UpdateResult();
