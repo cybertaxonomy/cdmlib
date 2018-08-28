@@ -29,11 +29,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.INameService;
+import eu.etaxonomy.cdm.api.service.exception.RegistrationValidationException;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetManager;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
+import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import io.swagger.annotations.Api;
 
 /**
@@ -57,6 +60,22 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
             "typeName",
             "citation",
             "citation.authorship.$",
+    });
+
+    private static final List<String> HOMOTYPICALGROUP_TYPEDESIGNATION_INIT_STRATEGY = Arrays.asList(new String []{
+            "typeStatus.representations",
+            "typifiedNames",
+            "typeSpecimen",
+            "typeName",
+            "citation",
+            "citation.authorship.$",
+            // ---
+            "homotypicalGroup.typifiedNames.typeDesignations.typeStatus.representations",
+            "homotypicalGroup.typifiedNames.typeDesignations.typifiedNames",
+            "homotypicalGroup.typifiedNames.typeDesignations.typeSpecimen",
+            "homotypicalGroup.typifiedNames.typeDesignations.typeName",
+            "homotypicalGroup.typifiedNames.typeDesignations.citation",
+            "homotypicalGroup.typifiedNames.typeDesignations.citation.authorship.$",
     });
 
     private static final List<String> NAME_CACHE_INIT_STRATEGY = Arrays.asList(new String []{
@@ -95,7 +114,7 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
      * TODO obsolete method?
      */
     @RequestMapping(value = { "typeDesignations" }, method = RequestMethod.GET)
-    public List<TypeDesignationBase> doGetNameTypeDesignations(
+    public List<TypeDesignationBase> doGetTypeDesignations(
             @PathVariable("uuid") UUID uuid, HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
@@ -106,6 +125,25 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
         Pager<TypeDesignationBase> pager = service.getTypeDesignations(tnb, null,
                 null, null, TYPEDESIGNATION_INIT_STRATEGY);
         return pager.getRecords();
+    }
+
+    @RequestMapping(value = { "homotypicGroupTypeDesignationsDTO" }, method = RequestMethod.GET)
+    public List<TaggedText> doHomotypicGroupTypeDesignations(
+            @PathVariable("uuid") UUID uuid, HttpServletRequest request,
+            HttpServletResponse response) throws IOException, RegistrationValidationException {
+
+        if (request != null) {
+            logger.info("doHomotypicGroupTypeDesignations()" + requestPathAndQuery(request));
+        }
+        Set<TypeDesignationBase> typeDesignations;
+        TaxonName tnb = getCdmBaseInstance(uuid, response, HOMOTYPICALGROUP_TYPEDESIGNATION_INIT_STRATEGY);
+        if(tnb.getHomotypicalGroup() != null){
+            typeDesignations = tnb.getHomotypicalGroup().getTypeDesignations();
+        } else {
+            typeDesignations = tnb.getTypeDesignations();
+        }
+        TypeDesignationSetManager manager = new TypeDesignationSetManager(typeDesignations);
+        return manager.toTaggedText();
     }
 
     @RequestMapping(
