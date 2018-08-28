@@ -988,7 +988,7 @@ public class CdmLightClassificationExport
             HomotypicalGroup group =name.getHomotypicalGroup();
 
             if (state.getHomotypicalGroupFromStore(group.getId()) == null){
-                handleHomotypicalGroup(state, group);
+                handleHomotypicalGroup(state, HibernateProxyHelper.deproxy(group, HomotypicalGroup.class));
             }
             csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_FK)] = getId(state, group);
             List<TaxonName> typifiedNames = new ArrayList<>();
@@ -1303,7 +1303,10 @@ public class CdmLightClassificationExport
             designationList.addAll(typeDesigantions);
             Collections.sort(designationList, new TypeComparator());
             StringBuffer typeDesignationString = new StringBuffer();
-            for (TypeDesignationBase typeDesignation: typeDesigantions){
+            for (TypeDesignationBase typeDesignation: designationList){
+
+                //[Vorschlag Soll:]
+               // Sumatra Utara, Kab. Karo, around Sidikalang areas, 1000─1500 m, Dec 11, 2003, Nepenthes Team (Hernawati, P. Akhriadi & I. Petra), NP 354 (‘ANDA’–Holo, BO–Iso) [fide Akhriadi & al. 2004]
                 if (typeDesignation != null && typeDesignation.getTypeStatus() != null){
                     typeDesignationString.append(typeDesignation.getTypeStatus().getTitleCache() + ": ");
                 }
@@ -1318,7 +1321,7 @@ public class CdmLightClassificationExport
                     }
                 }
                 if(typeDesignation.getCitation() != null ){
-                    typeDesignationString.append(", "+typeDesignation.getCitation().getTitleCache());
+                    typeDesignationString.append("[fide " + createShortCitation(typeDesignation.getCitation()) +"]");
                 }
                 //TODO...
                 /*
