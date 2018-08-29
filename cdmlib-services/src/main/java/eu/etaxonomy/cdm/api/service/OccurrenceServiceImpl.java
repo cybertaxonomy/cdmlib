@@ -590,15 +590,12 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 fieldUnitDTO.setHasType(true);
             }
             TypeDesignationStatusBase<?> typeStatus = specimenTypeDesignation.getTypeStatus();
-            if (typeStatus != null) {
-                List<String> typedTaxaNames = new ArrayList<>();
-                String label = typeStatus.getLabel();
-                Set<TaxonName> typifiedNames = specimenTypeDesignation.getTypifiedNames();
-                for (TaxonName taxonName : typifiedNames) {
-                    typedTaxaNames.add(taxonName.getNameCache());
-                }
-                preservedSpecimenDTO.addTypes(label, typedTaxaNames);
+            Set<TaxonName> typifiedNames = specimenTypeDesignation.getTypifiedNames();
+            List<String> typedTaxaNames = new ArrayList<>();
+            for (TaxonName taxonName : typifiedNames) {
+                typedTaxaNames.add(taxonName.getNameCache());
             }
+            preservedSpecimenDTO.addTypes(typeStatus!=null?typeStatus.getLabel():null, typedTaxaNames);
         }
 
         // individuals associations
