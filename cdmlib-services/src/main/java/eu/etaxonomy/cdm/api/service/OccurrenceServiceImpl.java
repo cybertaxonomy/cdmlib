@@ -540,6 +540,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 collectionKey, FormatKey.SPACE,
                 FormatKey.MOST_SIGNIFICANT_IDENTIFIER, FormatKey.SPACE });
         if(CdmUtils.isBlank(specimenIdentifier)){
+            specimenIdentifier = derivedUnit.getTitleCache();
+        }
+        if(CdmUtils.isBlank(specimenIdentifier)){
             specimenIdentifier = derivedUnit.getUuid().toString();
         }
         preservedSpecimenDTO.setAccessionNumber(specimenIdentifier);
