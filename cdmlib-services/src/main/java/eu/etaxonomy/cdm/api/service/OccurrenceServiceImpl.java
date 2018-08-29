@@ -595,7 +595,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             for (TaxonName taxonName : typifiedNames) {
                 typedTaxaNames.add(taxonName.getNameCache());
             }
-            preservedSpecimenDTO.addTypes(typeStatus!=null?typeStatus.getLabel():null, typedTaxaNames);
+            preservedSpecimenDTO.addTypes(typeStatus!=null?typeStatus.getLabel():"", typedTaxaNames);
         }
 
         // individuals associations
