@@ -1,27 +1,25 @@
 package eu.etaxonomy.cdm.cache;
 
-import java.util.UUID;
-
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 public class CdmEntityCacheKey<T extends CdmBase> {
 
 	private Class<T> persistenceClass;
-	private UUID persistenceId;
+	private int persistenceId;
 
 
 	public CdmEntityCacheKey(T cdmBase) {
 		this.persistenceClass = (Class<T>)cdmBase.getClass();
-		this.persistenceId = cdmBase.getUuid();
+		this.persistenceId = cdmBase.getId();
 	}
 
 	/**
 	 * @param clazz
 	 * @param uuid
 	 */
-	public CdmEntityCacheKey(Class<T> clazz, UUID uuid) {
+	public CdmEntityCacheKey(Class<T> clazz, int id) {
 		this.persistenceClass = clazz;
-		this.persistenceId = uuid;
+		this.persistenceId = id;
 		throw new NullPointerException("Uuid is null for CdmEntityCacheKey, null values are not allowed as they do not represent a valid entity");
 	}
 
@@ -31,7 +29,7 @@ public class CdmEntityCacheKey<T extends CdmBase> {
 		return persistenceClass;
 	}
 
-	public UUID getPersistenceId() {
+	public int getPersistenceId() {
 		return persistenceId;
 	}
 	@Override
@@ -45,7 +43,7 @@ public class CdmEntityCacheKey<T extends CdmBase> {
 		}
 		CdmEntityCacheKey<?> that = (CdmEntityCacheKey<?>) obj;
 		if(this.persistenceClass.equals(that.persistenceClass)
-		        && this.persistenceId.equals(that.persistenceId)) {
+		        && this.persistenceId == that.persistenceId) {
 			return true;
 		}
 
@@ -54,12 +52,12 @@ public class CdmEntityCacheKey<T extends CdmBase> {
 
 	@Override
 	public int hashCode() {
-		return (this.persistenceClass.getName() + this.persistenceId.toString()).hashCode();
+		return (this.persistenceClass.getName() + String.valueOf(this.persistenceId)).hashCode();
 	}
 
 	@Override
 	public String toString() {
-		return this.persistenceClass.getName() + this.persistenceId.toString();
+		return this.persistenceClass.getName() + String.valueOf(this.persistenceId);
 	}
 
 }
