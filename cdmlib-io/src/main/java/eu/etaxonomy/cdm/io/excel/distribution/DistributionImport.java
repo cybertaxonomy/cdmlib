@@ -76,7 +76,7 @@ public class DistributionImport
 		if (logger.isDebugEnabled()) { logger.debug("Importing distribution data"); }
 
 		// read and save all rows of the excel worksheet
-		ArrayList<HashMap<String, String>> recordList;
+		List<HashMap<String, String>> recordList;
 		URI source = state.getConfig().getSource();
 		try{
     		recordList = ExcelUtils.parseXLS(source);

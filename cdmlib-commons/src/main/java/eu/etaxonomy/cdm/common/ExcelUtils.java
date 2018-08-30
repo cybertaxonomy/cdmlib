@@ -17,6 +17,7 @@ import java.text.Format;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 import org.apache.log4j.Logger;
@@ -37,13 +38,13 @@ public class ExcelUtils {
 	private static final Logger logger = Logger.getLogger(ExcelUtils.class);
 
     /** Reads all rows of an Excel worksheet */
-    public static ArrayList<HashMap<String, String>> parseXLS(URI uri) throws FileNotFoundException {
+    public static List<HashMap<String, String>> parseXLS(URI uri) throws FileNotFoundException {
     	return parseXLS(uri, null);
     }
 
 
 	/** Reads all rows of an Excel worksheet */
-    public static ArrayList<HashMap<String, String>> parseXLS(URI uri, String worksheetName) throws FileNotFoundException {
+    public static List<HashMap<String, String>> parseXLS(URI uri, String worksheetName) throws FileNotFoundException {
         InputStream stream;
         try {
             stream = UriUtils.getInputStream(uri);
@@ -57,19 +58,18 @@ public class ExcelUtils {
         return null;
 
     }
-        /** Reads all rows of an Excel worksheet */
-        public static ArrayList<HashMap<String, String>> parseXLS(InputStream stream, String worksheetName) throws FileNotFoundException {
+
+    /** Reads all rows of an Excel worksheet */
+    public static List<HashMap<String, String>> parseXLS(InputStream stream, String worksheetName) throws FileNotFoundException {
 
 
-    	ArrayList<HashMap<String, String>> recordList = new ArrayList<HashMap<String, String>>();
+    	ArrayList<HashMap<String, String>> recordList = new ArrayList<>();
 
     	try {
 //    		POIFSFileSystem fs = new POIFSFileSystem(UriUtils.getInputStream(uri));
 //    		HSSFWorkbook wb = new HSSFWorkbook(fs);
 
-
     		Workbook wb = WorkbookFactory.create(stream);
-
 
     		Sheet sheet;
     		if (worksheetName == null){
@@ -104,9 +104,8 @@ public class ExcelUtils {
 	    			}
 	    		}
 
-
 	    		//first row
-	    		ArrayList<String> columns = new ArrayList<String>();
+	    		ArrayList<String> columns = new ArrayList<>();
 	    		row = sheet.getRow(0);
 	    		for (int c = 0; c < cols; c++){
 	    			cell = row.getCell(c);

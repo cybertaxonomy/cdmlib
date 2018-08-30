@@ -16,7 +16,6 @@ import eu.etaxonomy.cdm.model.common.ICdmBase;
 /**
  * @author cmathew
  * @since 7 Oct 2015
- *
  */
 public class MergeResult<T extends ICdmBase> implements Serializable {
 

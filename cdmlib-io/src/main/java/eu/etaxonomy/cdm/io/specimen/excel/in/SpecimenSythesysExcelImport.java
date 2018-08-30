@@ -877,7 +877,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
         refreshTransaction();
 
         URI source = state.getConfig().getSource();
-        ArrayList<HashMap<String,String>> unitsList = null;
+        List<HashMap<String,String>> unitsList = null;
         try{
             unitsList = ExcelUtils.parseXLS(source);
             logger.info("unitslist : "+unitsList.size());
@@ -936,11 +936,11 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
      * @param unitsList
      * @param state
      */
-    private void prepareCollectors(ArrayList<HashMap<String, String>> unitsList, SpecimenSynthesysExcelImportState state) {
+    private void prepareCollectors(List<HashMap<String, String>> unitsList, SpecimenSynthesysExcelImportState state) {
         System.out.println("PREPARE COLLECTORS");
-        List<String> collectors = new ArrayList<String>();
-        List<String> teams = new ArrayList<String>();
-        List<List<String>> collectorinteams = new ArrayList<List<String>>();
+        List<String> collectors = new ArrayList<>();
+        List<String> teams = new ArrayList<>();
+        List<List<String>> collectorinteams = new ArrayList<>();
         String tmp;
         for (HashMap<String,String> unit : unitsList){
             tmp=null;

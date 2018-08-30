@@ -216,7 +216,6 @@ public class TimePeriodParser {
                 result.setFreeText(periodString);
             }
         }
-
     }
 
 

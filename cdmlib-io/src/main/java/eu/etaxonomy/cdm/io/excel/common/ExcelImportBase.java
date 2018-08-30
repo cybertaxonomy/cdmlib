@@ -12,8 +12,8 @@ package eu.etaxonomy.cdm.io.excel.common;
 import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -48,7 +48,7 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
 
 	protected static final String SCIENTIFIC_NAME_COLUMN = "ScientificName";
 
-	private ArrayList<HashMap<String, String>> recordList = null;
+	private List<HashMap<String, String>> recordList = null;
 
 	private ExcelImportConfiguratorBase configurator = null;
 
@@ -82,10 +82,7 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
 		    source = state.getConfig().getSource();
 		}
 
-
-
 		String sheetName = getWorksheetName();
-
 
 		if (data != null){
             try {
@@ -293,7 +290,7 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
 
             return CdmBase.deproxy(result, clazz);
         }else{
-            String message = "No taxon identifier found";
+            String message = "No taxon identifier column found";
             state.getResult().addWarning(message, null, line);
             return null;
         }

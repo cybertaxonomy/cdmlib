@@ -295,7 +295,7 @@ public class CdmTransientEntityCacher implements ICdmCacher {
     }
 
     public List<CdmBase> getAllEntities() {
-        List<CdmBase> entities = new ArrayList<CdmBase>();
+        List<CdmBase> entities = new ArrayList<>();
         Map<String, CdmBase> elementsMap = getCache().getAllWithLoader(getCache().getKeys(), null);
         for (Map.Entry<String, CdmBase> entry : elementsMap.entrySet()) {
             entities.add(entry.getValue());
