@@ -106,7 +106,7 @@ public class CdmTransientEntityCacher implements ICdmCacher {
     }
 
     public static void setPermanentCacher(CdmCacher permanentCacher) {
-        permanentCache = css;
+        permanentCache = permanentCacher;
     }
 
     public LiveCacheStatistics getCacheStatistics() {
