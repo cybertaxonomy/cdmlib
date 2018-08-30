@@ -30,7 +30,6 @@ import eu.etaxonomy.cdm.strategy.cache.description.SpecimenDescriptionDefaultCac
  * according to the SDD schema.
  *
  * @author a.mueller
- * @version 1.0
  * @since 08-Jul-2008
  */
 @XmlAccessorType(XmlAccessType.FIELD)
