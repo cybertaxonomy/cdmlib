@@ -20,7 +20,6 @@ public class CdmEntityCacheKey<T extends CdmBase> {
 	public CdmEntityCacheKey(Class<T> clazz, int id) {
 		this.persistenceClass = clazz;
 		this.persistenceId = id;
-		throw new NullPointerException("Uuid is null for CdmEntityCacheKey, null values are not allowed as they do not represent a valid entity");
 	}
 
 
