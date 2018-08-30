@@ -30,6 +30,10 @@ import net.sf.ehcache.config.SizeOfPolicyConfiguration;
 import net.sf.ehcache.statistics.LiveCacheStatistics;
 
 /**
+ * This cache handle transient (id>0) and volatile (id=0) CdmBase object.
+ * Volatile objects need to be added via {@link #addNewEntity(CdmBase)}
+ * and there id is updated as soon as a transient object with same
+ * uuid is added to the cacher.
  *
  * This cache guarantees that
  *  - all objects put will be ancestors of CdmBase
@@ -42,23 +46,25 @@ import net.sf.ehcache.statistics.LiveCacheStatistics;
  * @since 14 Oct 2014
  *
  */
-
 public class CdmTransientEntityCacher implements ICdmCacher {
 
     private static final Logger logger = Logger.getLogger(CdmTransientEntityCacher.class);
 
-    /**
-     * permanent cache which is usually used to cache terms permanently
-     */
-    private static CdmCacher permanentCache;
-
+    //the key for this cacher within the CacheManager
     private final String cacheId;
 
+    //the cache
     private final Cache cache;
+
+    //permanent cache which is usually used to cache terms permanently
+    private static CdmCacher permanentCache;
 
     private final CacheLoader cacheLoader;
 
+    //map for volatile entities (id=0)
     private final Map<UUID, CdmBase> newEntitiesMap = new HashMap<>();
+
+// ********************* CONSTRUCTOR **********************************/
 
     public CdmTransientEntityCacher(String cacheId) {
         this.cacheId = cacheId;
@@ -68,11 +74,7 @@ public class CdmTransientEntityCacher implements ICdmCacher {
         CacheManager.create().removeCache(cache.getName());
         CacheManager.create().addCache(cache);
 
-        // removed since unused ########################
-        // this.cdmEntitySessionManager = cdmEntitySessionManager;
-
         cacheLoader = new CacheLoader(this);
-
     }
 
     public CdmTransientEntityCacher(Object sessionOwner) {
@@ -82,6 +84,8 @@ public class CdmTransientEntityCacher implements ICdmCacher {
     public static String generateCacheId(Object sessionOwner) {
         return sessionOwner.getClass().getName() +  String.valueOf(sessionOwner.hashCode());
     }
+
+//****************************** METHODS *********************************/
 
     /**
      * Returns the default cache configuration.
@@ -101,7 +105,7 @@ public class CdmTransientEntityCacher implements ICdmCacher {
 
     }
 
-    public static void setDefaultCacher(CdmCacher css) {
+    public static void setPermanentCacher(CdmCacher permanentCacher) {
         permanentCache = css;
     }
 
@@ -213,7 +217,8 @@ public class CdmTransientEntityCacher implements ICdmCacher {
     }
 
     /**
-     * Puts the passed <code>cdmEntity</code> into the cache as long it does not yet exist in the caches.
+     * Puts the passed <code>cdmEntity</code> into the cache as long it does
+     * not yet exist in the caches.
      * <p>
      * The adjacent <b>ENTITY GRAPH WILL NOT BE LOADED RECURSIVELY</b>
      */
@@ -225,9 +230,9 @@ public class CdmTransientEntityCacher implements ICdmCacher {
             logger.info("Cdm Entity with id : " + cdmEntity.getId() + " already exists in permanent cache. Ignoring put.");
             return;
         }
-        CdmEntityCacheKey<?> id = new CdmEntityCacheKey<>(cdmEntity);
+        CdmEntityCacheKey<?> key = new CdmEntityCacheKey<>(cdmEntity);
 
-        cachedCdmEntity = getFromCache(id);
+        cachedCdmEntity = getFromCache(key);
         if(cachedCdmEntity == null) {
             CdmBase cdmEntityToCache = cdmEntity;
             CdmBase newEntity = newEntitiesMap.get(cdmEntity.getUuid());
@@ -235,10 +240,10 @@ public class CdmTransientEntityCacher implements ICdmCacher {
                 newEntity.setId(cdmEntity.getId());
                 cdmEntityToCache = newEntity;
             }
-            getCache().put(new Element(id, cdmEntityToCache));
+            getCache().put(new Element(key, cdmEntityToCache));
             cdmEntityToCache.initListener();
             newEntitiesMap.remove(cdmEntity.getUuid());
-            logger.debug(" - object of type " + cdmEntityToCache.getClass().getName() + " with id " + cdmEntityToCache.getId() + " put in cache");
+            if (logger.isDebugEnabled()){logger.debug(" - object of type " + cdmEntityToCache.getClass().getName() + " with id " + cdmEntityToCache.getId() + " put in cache");}
             return;
         }
         logger.debug(" - object of type " + cdmEntity.getClass().getName() + " with id " + cdmEntity.getId() + " already exists");
