@@ -47,15 +47,10 @@ public class CdmTransientEntityCacher implements ICdmCacher {
 
     private static final Logger logger = Logger.getLogger(CdmTransientEntityCacher.class);
 
-
-    // removed since unused ########################
-    // private final eu.etaxonomy.cdm.session.ICdmEntitySessionManager cdmEntitySessionManager;
-
     /**
      * permanent cache which is usually used to cache terms permanently
-     * FIXME rename to permanent cache
      */
-    private static CdmCacher cdmCacher;
+    private static CdmCacher permanentCache;
 
     private final String cacheId;
 
@@ -63,7 +58,7 @@ public class CdmTransientEntityCacher implements ICdmCacher {
 
     private final CacheLoader cacheLoader;
 
-    private final Map<UUID, CdmBase> newEntitiesMap = new HashMap<UUID, CdmBase>();
+    private final Map<UUID, CdmBase> newEntitiesMap = new HashMap<>();
 
     public CdmTransientEntityCacher(String cacheId) {
         this.cacheId = cacheId;
@@ -99,15 +94,15 @@ public class CdmTransientEntityCacher implements ICdmCacher {
         sizeOfConfig.setMaxDepthExceededBehavior("abort");
 
         return new CacheConfiguration(cacheId, 0)
-        .eternal(true)
-        .statistics(true)
-        .sizeOfPolicy(sizeOfConfig)
-        .overflowToOffHeap(false);
+            .eternal(true)
+            .statistics(true)
+            .sizeOfPolicy(sizeOfConfig)
+            .overflowToOffHeap(false);
 
     }
 
     public static void setDefaultCacher(CdmCacher css) {
-        cdmCacher = css;
+        permanentCache = css;
     }
 
     public LiveCacheStatistics getCacheStatistics() {
@@ -225,7 +220,7 @@ public class CdmTransientEntityCacher implements ICdmCacher {
     @Override
     public void put(CdmBase cdmEntity) {
 
-        CdmBase cachedCdmEntity = cdmCacher.load(cdmEntity);
+        CdmBase cachedCdmEntity = permanentCache.load(cdmEntity);
         if(cachedCdmEntity != null) {
             logger.info("Cdm Entity with id : " + cdmEntity.getId() + " already exists in permanent cache. Ignoring put.");
             return;
@@ -282,7 +277,7 @@ public class CdmTransientEntityCacher implements ICdmCacher {
         if(cachedCdmEntity == null) {
             // ... then try the permanent cache
             //TODO also use generics and clazz parameter for getFromCache(uuid)
-            cachedCdmEntity = (T)cdmCacher.getFromCache(cdmBase.getUuid());
+            cachedCdmEntity = (T)permanentCache.getFromCache(cdmBase.getUuid());
         }
 
         return cachedCdmEntity;
