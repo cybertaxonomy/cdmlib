@@ -252,23 +252,23 @@ public class CacheLoader {
             }
         }
 
-        CdmBase loadedCdmBase;
+        T loadedCdmBase;
         if(isRecursiveEnabled && recursive) {
             logger.debug("---- starting recursive load for cdm entity " + cdmEntity.getClass().getName() + " with id " + cdmEntity.getId());
             List<Object> alreadyVisitedEntities = new ArrayList<Object>();
-            CdmBase cb =  loadRecursive(cdmEntity, alreadyVisitedEntities, update);
+            T cb =  loadRecursive(cdmEntity, alreadyVisitedEntities, update);
             alreadyVisitedEntities.clear();
             logger.debug("---- ending recursive load for cdm entity " + cdmEntity.getClass().getName() + " with id " + cdmEntity.getId() + "\n");
             loadedCdmBase =  cb;
         } else {
             loadedCdmBase = load(cdmEntity);
         }
-        return (T) loadedCdmBase;
+        return loadedCdmBase;
 
     }
 
 
-    protected CdmBase load(CdmBase cdmEntity) {
+    protected <T extends CdmBase> T load(T cdmEntity) {
         logger.debug("loading object of type " + cdmEntity.getClass().getName() + " with id " + cdmEntity.getId());
         cdmCacher.put((CdmBase)ProxyUtils.deproxy(cdmEntity));
         return cdmCacher.getFromCache(cdmEntity);
@@ -293,15 +293,16 @@ public class CacheLoader {
      *            them to the value of the cdm entity being loaded
      * @return
      */
-    private CdmBase loadRecursive(CdmBase cdmEntity,  List<Object> alreadyVisitedEntities, boolean update) {
+    private <T extends CdmBase> T loadRecursive(T cdmEntity,  List<Object> alreadyVisitedEntities, boolean update) {
 
-        CdmBase cachedCdmEntity = load(cdmEntity);
+        T cachedCdmEntity = load(cdmEntity);
 
         // we want to recursive through the cdmEntity (and not the cachedCdmEntity)
         // since there could be new or deleted objects in the cdmEntity sub-graph
 
         // start by getting the fields from the cdm entity
-        CdmBase deproxiedEntity = (CdmBase)ProxyUtils.deproxyOrNull(cdmEntity);
+        //TODO improve generics for deproxyOrNull, probably need to split the method
+        T deproxiedEntity = (T)ProxyUtils.deproxyOrNull(cdmEntity);
         if(deproxiedEntity != null){
             String className = deproxiedEntity.getClass().getName();
             CdmModelFieldPropertyFromClass cmgmfc = getFromCdmlibModelCache(className);

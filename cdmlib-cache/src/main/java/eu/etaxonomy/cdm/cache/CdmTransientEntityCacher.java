@@ -230,7 +230,7 @@ public class CdmTransientEntityCacher implements ICdmCacher {
             logger.info("Cdm Entity with id : " + cdmEntity.getId() + " already exists in permanent cache. Ignoring put.");
             return;
         }
-        CdmEntityCacheKey id = new CdmEntityCacheKey(cdmEntity);
+        CdmEntityCacheKey<?> id = new CdmEntityCacheKey<>(cdmEntity);
 
         cachedCdmEntity = getFromCache(id);
         if(cachedCdmEntity == null) {
@@ -250,39 +250,42 @@ public class CdmTransientEntityCacher implements ICdmCacher {
     }
 
 
-    private Element getCacheElement(CdmEntityCacheKey key) {
+    private Element getCacheElement(CdmEntityCacheKey<?> key) {
         return getCache().get(key);
     }
 
 
-    public CdmBase getFromCache(CdmEntityCacheKey id) {
+    public <T extends CdmBase> T getFromCache(CdmEntityCacheKey<T> id) {
         Element e = getCacheElement(id);
 
         if (e == null) {
             return null;
         } else {
-            return (CdmBase) e.getObjectValue();
+            @SuppressWarnings("unchecked")
+            T result = (T) e.getObjectValue();
+            return result;
         }
     }
 
-    public CdmBase getFromCache(Class<? extends CdmBase> clazz, int id) {
-        CdmEntityCacheKey cacheId = generateKey(clazz,id);
+    public <T extends CdmBase> T getFromCache(Class<T> clazz, int id) {
+        CdmEntityCacheKey<T> cacheId = generateKey(clazz, id);
         return getFromCache(cacheId);
     }
 
     @Override
     public <T extends CdmBase> T getFromCache(T cdmBase) {
 
-        CdmEntityCacheKey cacheId = generateKey((CdmBase)ProxyUtils.deproxy(cdmBase));
+        CdmEntityCacheKey<T> cacheId = generateKey((T)ProxyUtils.deproxy(cdmBase));
         // first try this cache
-        CdmBase  cachedCdmEntity = getFromCache(cacheId);
+        T  cachedCdmEntity = getFromCache(cacheId);
 
         if(cachedCdmEntity == null) {
             // ... then try the permanent cache
-            cachedCdmEntity = cdmCacher.getFromCache(cdmBase.getUuid());
+            //TODO also use generics and clazz parameter for getFromCache(uuid)
+            cachedCdmEntity = (T)cdmCacher.getFromCache(cdmBase.getUuid());
         }
 
-        return (T) cachedCdmEntity;
+        return cachedCdmEntity;
     }
 
     public CdmBase getFromCache(CdmBase cdmBase, Class<? extends CdmBase> clazz) {
@@ -300,11 +303,11 @@ public class CdmTransientEntityCacher implements ICdmCacher {
         return entities;
     }
 
-    public boolean exists(CdmEntityCacheKey key) {
+    public boolean exists(CdmEntityCacheKey<?> key) {
         return (getCacheElement(key) != null);
     }
 
-    public boolean existsAndIsNotNull(CdmEntityCacheKey id) {
+    public boolean existsAndIsNotNull(CdmEntityCacheKey<?> id) {
         return getFromCache(id) != null;
     }
 
@@ -320,15 +323,15 @@ public class CdmTransientEntityCacher implements ICdmCacher {
     }
 
 
-    public static CdmEntityCacheKey generateKey(Class<? extends CdmBase> clazz, int id) {
-        return new CdmEntityCacheKey(clazz, id);
+    public static <T extends CdmBase> CdmEntityCacheKey<T> generateKey(Class<T> clazz, int id) {
+        return new CdmEntityCacheKey<T>(clazz, id);
     }
 
 
-    public static CdmEntityCacheKey generateKey(CdmBase cdmBase) {
-        Class<? extends CdmBase> entityClass = cdmBase.getClass();
+    public static <T extends CdmBase> CdmEntityCacheKey<T> generateKey(T cdmBase) {
+        Class<T> entityClass = (Class<T>)cdmBase.getClass();
         int id = cdmBase.getId();
-        return new CdmEntityCacheKey(entityClass, id);
+        return new CdmEntityCacheKey<T>(entityClass, id);
     }
 
     @Override
