@@ -13,8 +13,6 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
  * CDM Entity Cacher class which handles the caching of Defined Terms.
  *
  * @author cmathew
- *
- * @param <T>
  */
 @Component
 public class CdmTermCacher extends CdmCacher {

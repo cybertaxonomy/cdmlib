@@ -15,12 +15,10 @@ import net.sf.ehcache.config.CacheConfiguration.CacheEventListenerFactoryConfigu
 import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
 
 /**
- * CDM Entity Cacher class based on EhCache.
+ * CDM Entity Cacher class based on EhCache using UUID as key.
  * The cacher allows null values to be cached.
  *
  * @author cmathew
- *
- * @param <T>
  */
 
 public abstract class CdmCacher implements ICdmUuidCacher {
@@ -188,7 +186,6 @@ public abstract class CdmCacher implements ICdmUuidCacher {
     @Override
     public boolean existsAndIsNotNull(UUID uuid) {
         Element e = getCacheElement(uuid);
-        CdmBase cdmEntity;
         if (e != null) {
             return e.getObjectValue() != null;
         }
