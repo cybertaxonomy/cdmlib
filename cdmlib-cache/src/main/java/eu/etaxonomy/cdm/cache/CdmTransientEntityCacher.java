@@ -267,8 +267,8 @@ public class CdmTransientEntityCacher implements ICdmCacher {
         }
     }
 
-    public <T extends CdmBase> T getFromCache(Class<T> clazz, UUID uuid) {
-        CdmEntityCacheKey<T> cacheId = generateKey(clazz, uuid);
+    public <T extends CdmBase> T getFromCache(Class<T> clazz, int id) {
+        CdmEntityCacheKey<T> cacheId = generateKey(clazz, id);
         return getFromCache(cacheId);
     }
 
@@ -323,14 +323,14 @@ public class CdmTransientEntityCacher implements ICdmCacher {
     }
 
 
-    public static <T extends CdmBase> CdmEntityCacheKey<T> generateKey(Class<T> clazz, UUID uuid) {
-        return new CdmEntityCacheKey<T>(clazz, uuid);
+    public static <T extends CdmBase> CdmEntityCacheKey<T> generateKey(Class<T> clazz, int id) {
+        return new CdmEntityCacheKey<T>(clazz, id);
     }
 
 
     public static <T extends CdmBase> CdmEntityCacheKey<T> generateKey(T cdmBase) {
         Class<T> entityClass = (Class<T>)cdmBase.getClass();
-        return new CdmEntityCacheKey<T>(entityClass, cdmBase.getUuid());
+        return new CdmEntityCacheKey<T>(entityClass, cdmBase.getId());
     }
 
     @Override
