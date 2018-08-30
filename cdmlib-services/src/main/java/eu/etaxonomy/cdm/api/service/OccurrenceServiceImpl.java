@@ -540,6 +540,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 collectionKey, FormatKey.SPACE,
                 FormatKey.MOST_SIGNIFICANT_IDENTIFIER, FormatKey.SPACE });
         if(CdmUtils.isBlank(specimenIdentifier)){
+            specimenIdentifier = derivedUnit.getTitleCache();
+        }
+        if(CdmUtils.isBlank(specimenIdentifier)){
             specimenIdentifier = derivedUnit.getUuid().toString();
         }
         preservedSpecimenDTO.setAccessionNumber(specimenIdentifier);
@@ -587,15 +590,12 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 fieldUnitDTO.setHasType(true);
             }
             TypeDesignationStatusBase<?> typeStatus = specimenTypeDesignation.getTypeStatus();
-            if (typeStatus != null) {
-                List<String> typedTaxaNames = new ArrayList<>();
-                String label = typeStatus.getLabel();
-                Set<TaxonName> typifiedNames = specimenTypeDesignation.getTypifiedNames();
-                for (TaxonName taxonName : typifiedNames) {
-                    typedTaxaNames.add(taxonName.getNameCache());
-                }
-                preservedSpecimenDTO.addTypes(label, typedTaxaNames);
+            Set<TaxonName> typifiedNames = specimenTypeDesignation.getTypifiedNames();
+            List<String> typedTaxaNames = new ArrayList<>();
+            for (TaxonName taxonName : typifiedNames) {
+                typedTaxaNames.add(taxonName.getNameCache());
             }
+            preservedSpecimenDTO.addTypes(typeStatus!=null?typeStatus.getLabel():"", typedTaxaNames);
         }
 
         // individuals associations

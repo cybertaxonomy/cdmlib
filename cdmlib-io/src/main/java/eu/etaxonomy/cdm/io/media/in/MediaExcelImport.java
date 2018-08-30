@@ -127,22 +127,15 @@ public class MediaExcelImport
 
         //date
         String dateStr = record.get(COL_DATE);
-        if (isNotBlank(artistStr)){
+        if (isNotBlank(dateStr)){
             TimePeriod timePeriod = TimePeriodParser.parseString(dateStr);
             if (timePeriod.getFreeText()!=  null){
                 String message = "Date could not be parsed: %s";
                 message = String.format(message, dateStr);
                 state.getResult().addWarning(message, null, line);
             }
-            if (timePeriod.getEnd() !=  null){
-                String message = "Date is a period with an end date. Periods are currently not yet supported: %s";
-                message = String.format(message, dateStr);
-                state.getResult().addWarning(message, null, line);
-            }
 
-            Partial start = timePeriod.getStart();
-            DateTime dateTime = toDateTime(state, start, dateStr, line);
-            media.setMediaCreated(TimePeriod.NewInstance(dateTime));
+            media.setMediaCreated(timePeriod);
         }
 
         //URLs
@@ -333,7 +326,7 @@ public class MediaExcelImport
         }
 
         Person result = (Person)getDeduplicationHelper(state).getExistingAuthor(null, person);
-        return person;
+        return result;
     }
 
     /**

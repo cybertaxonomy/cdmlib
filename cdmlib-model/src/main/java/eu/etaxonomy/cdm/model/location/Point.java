@@ -80,7 +80,7 @@ public class Point implements Cloneable, Serializable {
     @XmlElement(name = "ErrorRadius")
     @Field
     @NumericField
-    private Integer errorRadius = 0;
+    private Integer errorRadius;
 
     @XmlElement(name = "ReferenceSystem")
     @XmlIDREF

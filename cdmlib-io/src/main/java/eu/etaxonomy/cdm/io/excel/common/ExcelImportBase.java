@@ -308,7 +308,7 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
         //nameCache
         String strExpectedNameCache = record.get(colNameCache);
         String nameCache = result.getName() == null ? null : result.getName().getNameCache();
-        if (isNotBlank(strExpectedNameCache) && (!strExpectedNameCache.equals(nameCache))){
+        if (isNotBlank(strExpectedNameCache) && (!strExpectedNameCache.trim().equals(nameCache))){
             String message = "Name cache (%s) does not match expected name (%s)";
             message = String.format(message, nameCache==null? "null":nameCache, strExpectedNameCache);
             state.getResult().addWarning(message, null, line);
@@ -316,7 +316,7 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
         //name title
         String strExpectedNameTitleCache = record.get(colNameTitleCache);
         String nameTitleCache = result.getName() == null ? null : result.getName().getTitleCache();
-        if (isNotBlank(strExpectedNameTitleCache) && (!strExpectedNameTitleCache.equals(nameTitleCache))){
+        if (isNotBlank(strExpectedNameTitleCache) && (!strExpectedNameTitleCache.trim().equals(nameTitleCache))){
             String message = "Name title cache (%s) does not match expected name (%s)";
             message = String.format(message, nameTitleCache==null? "null":nameTitleCache, strExpectedNameTitleCache);
             state.getResult().addWarning(message, null, line);
@@ -324,7 +324,7 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
         //taxon title cache
         String strExpectedTaxonTitleCache = record.get(colTaxonTitleCache);
         String taxonTitleCache = result.getTitleCache();
-        if (isNotBlank(strExpectedTaxonTitleCache) && (!strExpectedTaxonTitleCache.equals(taxonTitleCache))){
+        if (isNotBlank(strExpectedTaxonTitleCache) && (!strExpectedTaxonTitleCache.trim().equals(taxonTitleCache))){
             String message = "Name cache (%s) does not match expected name (%s)";
             message = String.format(message, taxonTitleCache==null? "null":taxonTitleCache, strExpectedTaxonTitleCache);
             state.getResult().addWarning(message, null, line);
