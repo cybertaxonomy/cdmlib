@@ -37,9 +37,9 @@ public interface ICdmCacher {
     public void put(CdmBase cdmEntity);
 
     /**
-     * load into the cache and return the entity from the cache. The the entity
-     * might already exist in the cache. In case the entity in the cache might
-     * get updated whereas the returned entity represents is the entity from the
+     * Load into the cache and return the entity from the cache. The entity
+     * might already exist in the cache. In this case the entity in the cache might
+     * get updated whereas the returned entity represents the entity from the
      * cache not the <code>cdmEntity</code> passed to this method.
      *
      * @param cdmEntity
