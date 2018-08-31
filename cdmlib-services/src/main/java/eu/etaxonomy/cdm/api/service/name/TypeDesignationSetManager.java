@@ -169,9 +169,7 @@ public class TypeDesignationSetManager {
             if(!byBaseEntityByTypeStatus.containsKey(baseEntityReference)){
                 byBaseEntityByTypeStatus.put(baseEntityReference, new TypeDesignationWorkingSet(baseEntity, baseEntityReference));
             }
-
-            TypeDesignationWorkingSet typedesignationWorkingSet = byBaseEntityByTypeStatus.get(baseEntityReference);
-            typedesignationWorkingSet.insert(status, typeDesignationEntityReference);
+            byBaseEntityByTypeStatus.get(baseEntityReference).insert(status, typeDesignationEntityReference);
 
         } catch (DataIntegrityException e){
             problems.add(e.getMessage());
