@@ -24,17 +24,19 @@ public class SpecimenRowWrapperDTO extends RowWrapperDTO<SpecimenDescription> {
 
     private static final long serialVersionUID = 5198447592554976471L;
 
+    private TaxonRowWrapperDTO defaultTaxonDescription;
     private SpecimenOrObservationBase specimen;
     private FieldUnit fieldUnit;
     private String identifier;
     private NamedArea country;
 
     public SpecimenRowWrapperDTO(SpecimenDescription description, TaxonNode taxonNode, FieldUnit fieldUnit, String identifier,
-                NamedArea country) {
+                NamedArea country, TaxonRowWrapperDTO defaultTaxonDescription) {
         super(description, taxonNode);
         this.fieldUnit = fieldUnit;
         this.identifier = identifier;
         this.country = country;
+        this.defaultTaxonDescription = defaultTaxonDescription;
         this.specimen = description.getDescribedSpecimenOrObservation();
     }
 
@@ -52,5 +54,9 @@ public class SpecimenRowWrapperDTO extends RowWrapperDTO<SpecimenDescription> {
 
     public NamedArea getCountry() {
         return country;
+    }
+
+    public TaxonRowWrapperDTO getDefaultTaxonDescription() {
+        return defaultTaxonDescription;
     }
 }

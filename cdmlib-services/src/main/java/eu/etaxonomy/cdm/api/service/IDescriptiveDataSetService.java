@@ -84,9 +84,12 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      * Creates a specimen row wrapper object for the given description
      * @param description the specimen description for which the wrapper should be created
      * @param descriptiveDataSet the data set it should be used in
+     * @param if <code>true</code> a default taxon description will be created for the taxon
+     * this wrapper belongs to
      * @return the created row wrapper
      */
-    public SpecimenRowWrapperDTO createSpecimenRowWrapper(SpecimenDescription description, DescriptiveDataSet descriptiveDataSet);
+    public SpecimenRowWrapperDTO createSpecimenRowWrapper(SpecimenDescription description, DescriptiveDataSet descriptiveDataSet,
+            boolean createDefaultTaxonDescription);
 
     /**
      * Creates a taxon row wrapper object for the given description
@@ -98,12 +101,27 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
 
     /**
      * Returns a {@link SpecimenDescription} for a given specimen with corresponding
-     * features according to the {@link DescriptiveDataSet}.
-     * @param descriptiveDataSetUuid
-     * @param specimenUuid
-     * @return
+     * features according to the {@link DescriptiveDataSet}.<br>
+     * If a description is found that matches all features of the data set this description
+     * will be returned. A new one will be created otherwise.
+     * @param descriptiveDataSetUuid the uuid of the dataset defining the features
+     * @param specimenUuid the uuid of the specimen
+     * @return either the found specimen description or a newly created one
      */
-    public SpecimenDescription findDescriptionForDescriptiveDataSet(UUID descriptiveDataSetUuid, UUID specimenUuid);
+    public SpecimenDescription findSpecimenDescription(UUID descriptiveDataSetUuid, UUID specimenUuid);
+
+    /**
+     * Returns a {@link TaxonDescription} for a given taxon node with corresponding
+     * features according to the {@link DescriptiveDataSet}.<br>
+     * If a description is found that matches all features of the data set this description
+     * will be returned. Otherwise a new one will be created if specified.
+     * @param descriptiveDataSetUuid the uuid of the dataset defining the features
+     * @param taxonNodeUuid the uuid of the taxon node that links to the taxon
+     * @param create if <code>true</code> a new description will be created
+     * if none could be found
+     * @return either the found taxon description or a newly created one
+     */
+    public TaxonDescription findDefaultTaxonDescription(UUID descriptiveDataSetUuid, UUID taxonNodeUuid, boolean create);
 
     /**
      * Loads all taxon nodes that match the filter set defined in the

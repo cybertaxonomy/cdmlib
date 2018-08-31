@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitorThread;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -125,7 +127,7 @@ public class DescriptiveDataSetService
                 rowWrapper = createTaxonRowWrapper(HibernateProxyHelper.deproxy(description, TaxonDescription.class), descriptiveDataSet);
             }
             else if (HibernateProxyHelper.isInstanceOf(description, SpecimenDescription.class)){
-                rowWrapper = createSpecimenRowWrapper(HibernateProxyHelper.deproxy(description, SpecimenDescription.class), descriptiveDataSet);
+                rowWrapper = createSpecimenRowWrapper(HibernateProxyHelper.deproxy(description, SpecimenDescription.class), descriptiveDataSet, false);
             }
             if(rowWrapper!=null){
                 wrappers.add(rowWrapper);
@@ -183,57 +185,66 @@ public class DescriptiveDataSetService
     }
 
     @Override
-    public SpecimenRowWrapperDTO createSpecimenRowWrapper(SpecimenDescription description, DescriptiveDataSet descriptiveDataSet){
+    public SpecimenRowWrapperDTO createSpecimenRowWrapper(SpecimenDescription description, DescriptiveDataSet descriptiveDataSet,
+            boolean createDefaultTaxonDescription){
 	    SpecimenOrObservationBase specimen = description.getDescribedSpecimenOrObservation();
 	    TaxonNode taxonNode = null;
         FieldUnit fieldUnit = null;
         String identifier = null;
         NamedArea country = null;
         //supplemental information
-        if(specimen!=null){
-            //get taxon node
-            Set<TaxonNode> taxonSubtreeFilter = descriptiveDataSet.getTaxonSubtreeFilter();
-            for (TaxonNode node : taxonSubtreeFilter) {
-                //check for node
-                node = taxonNodeService.load(node.getId(), Arrays.asList("taxon"));
-                taxonNode = findTaxonNodeForDescription(node, specimen);
-                if(taxonNode!=null){
-                    break;
-                }
-                else{
-                    //check for child nodes
-                    List<TaxonNode> allChildren = taxonNodeService.loadChildNodesOfTaxonNode(node, Arrays.asList("taxon"), true, true, null);
-                    for (TaxonNode child : allChildren) {
-                        taxonNode = findTaxonNodeForDescription(child, specimen);
-                        if(taxonNode!=null){
-                            break;
-                        }
+        //get taxon node
+        Set<TaxonNode> taxonSubtreeFilter = descriptiveDataSet.getTaxonSubtreeFilter();
+        for (TaxonNode node : taxonSubtreeFilter) {
+            //check for node
+            node = taxonNodeService.load(node.getId(), Arrays.asList("taxon"));
+            taxonNode = findTaxonNodeForDescription(node, specimen);
+            if(taxonNode!=null){
+                break;
+            }
+            else{
+                //check for child nodes
+                List<TaxonNode> allChildren = taxonNodeService.loadChildNodesOfTaxonNode(node, Arrays.asList("taxon"), true, true, null);
+                for (TaxonNode child : allChildren) {
+                    taxonNode = findTaxonNodeForDescription(child, specimen);
+                    if(taxonNode!=null){
+                        break;
                     }
                 }
             }
-            if(taxonNode==null){
-                return null;
-            }
-            Collection<FieldUnit> fieldUnits = occurrenceService.findFieldUnits(specimen.getUuid(),
-                    Arrays.asList(new String[]{
-                            "gatheringEvent",
-                            "gatheringEvent.country"
-                            }));
-            if(fieldUnits.size()!=1){
-                logger.error("More than one or no field unit found for specimen"); //$NON-NLS-1$
-                return null;
-            }
-            else{
-                fieldUnit = fieldUnits.iterator().next();
-            }
-            if(specimen instanceof DerivedUnit){
-                identifier = occurrenceService.getMostSignificantIdentifier(HibernateProxyHelper.deproxy(specimen, DerivedUnit.class));
-            }
-            if(fieldUnit!=null && fieldUnit.getGatheringEvent()!=null){
-                country = fieldUnit.getGatheringEvent().getCountry();
-            }
         }
-        return new SpecimenRowWrapperDTO(description, taxonNode, fieldUnit, identifier, country);
+        if(taxonNode==null){
+            return null;
+        }
+        //taxon node was found
+
+        //get field unit
+        Collection<FieldUnit> fieldUnits = occurrenceService.findFieldUnits(specimen.getUuid(),
+                Arrays.asList(new String[]{
+                        "gatheringEvent",
+                        "gatheringEvent.country"
+                }));
+        if(fieldUnits.size()!=1){
+            logger.error("More than one or no field unit found for specimen"); //$NON-NLS-1$
+            return null;
+        }
+        else{
+            fieldUnit = fieldUnits.iterator().next();
+        }
+        //get identifier
+        if(specimen instanceof DerivedUnit){
+            identifier = occurrenceService.getMostSignificantIdentifier(HibernateProxyHelper.deproxy(specimen, DerivedUnit.class));
+        }
+        //get country
+        if(fieldUnit!=null && fieldUnit.getGatheringEvent()!=null){
+            country = fieldUnit.getGatheringEvent().getCountry();
+        }
+        //get default taxon description
+        TaxonDescription defaultTaxonDescription = findDefaultTaxonDescription(descriptiveDataSet.getUuid(),
+                taxonNode.getUuid(), createDefaultTaxonDescription);
+        TaxonRowWrapperDTO taxonRowWrapper = defaultTaxonDescription != null
+                ? createTaxonRowWrapper(defaultTaxonDescription, descriptiveDataSet) : null;
+        return new SpecimenRowWrapperDTO(description, taxonNode, fieldUnit, identifier, country, taxonRowWrapper);
 	}
 
     @Override
@@ -247,7 +258,41 @@ public class DescriptiveDataSetService
     }
 
     @Override
-    public SpecimenDescription findDescriptionForDescriptiveDataSet(UUID descriptiveDataSetUuid, UUID specimenUuid){
+    public TaxonDescription findDefaultTaxonDescription(UUID descriptiveDataSetUuid, UUID taxonNodeUuid, boolean create){
+        DescriptiveDataSet dataSet = load(descriptiveDataSetUuid);
+        TaxonNode taxonNode = taxonNodeService.load(taxonNodeUuid, Arrays.asList("taxon", "taxon.descriptions", "taxon.descriptions.markers"));
+        Set<DescriptionBase> dataSetDescriptions = dataSet.getDescriptions();
+        //filter out COMPUTED descriptions
+        List<TaxonDescription> nonComputedDescriptions = taxonNode.getTaxon().getDescriptions().stream()
+                .filter(desc -> desc.getMarkers().stream()
+                        .anyMatch(marker -> marker.getMarkerType().equals(MarkerType.COMPUTED())))
+                .collect(Collectors.toList());
+        for (TaxonDescription taxonDescription : nonComputedDescriptions) {
+            for (DescriptionBase description : dataSetDescriptions) {
+                if(description.getUuid().equals(taxonDescription.getUuid())){
+                    return taxonDescription;
+                }
+            }
+        }
+        if(!create){
+            return null;
+        }
+        //description not yet added to dataset -> create a new one
+        TaxonDescription newTaxonDescription = TaxonDescription.NewInstance(taxonNode.getTaxon());
+        newTaxonDescription.setTitleCache("Dataset "+dataSet.getLabel()+": "+newTaxonDescription.generateTitle(), true); //$NON-NLS-2$
+        dataSet.getDescriptiveSystem().getDistinctFeatures().forEach(wsFeature->{
+            if(wsFeature.isSupportsCategoricalData()){
+                newTaxonDescription.addElement(CategoricalData.NewInstance(wsFeature));
+            }
+            else if(wsFeature.isSupportsQuantitativeData()){
+                newTaxonDescription.addElement(QuantitativeData.NewInstance(wsFeature));
+            }
+        });
+        return newTaxonDescription;
+    }
+
+    @Override
+    public SpecimenDescription findSpecimenDescription(UUID descriptiveDataSetUuid, UUID specimenUuid){
         DescriptiveDataSet dataSet = load(descriptiveDataSetUuid);
         SpecimenOrObservationBase specimen = occurrenceService.load(specimenUuid);
 
