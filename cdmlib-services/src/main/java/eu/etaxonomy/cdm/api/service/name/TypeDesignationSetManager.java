@@ -166,13 +166,13 @@ public class TypeDesignationSetManager {
                     td.getUuid(),
                     stringify(td));
 
-            TypeDesignationWorkingSet typedesignationWorkingSet;
             if(!byBaseEntityByTypeStatus.containsKey(baseEntityReference)){
                 byBaseEntityByTypeStatus.put(baseEntityReference, new TypeDesignationWorkingSet(baseEntity, baseEntityReference));
             }
 
-            typedesignationWorkingSet = byBaseEntityByTypeStatus.get(baseEntityReference);
+            TypeDesignationWorkingSet typedesignationWorkingSet = byBaseEntityByTypeStatus.get(baseEntityReference);
             typedesignationWorkingSet.insert(status, typeDesignationEntityReference);
+
         } catch (DataIntegrityException e){
             problems.add(e.getMessage());
         }
