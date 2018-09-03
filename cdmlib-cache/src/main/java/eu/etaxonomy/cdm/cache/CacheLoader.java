@@ -66,7 +66,7 @@ public class CacheLoader {
         } else if (obj instanceof Collection) {
             return (T) load((Collection<T>)obj, recursive, update);
         } else if(obj instanceof Pager) {
-        	load(((Pager<?>)obj).getRecords(), recursive, update);
+            load(((Pager<T>)obj).getRecords(), recursive, update);
             return obj;
         } else if(obj instanceof MergeResult) {
             return (T) load((MergeResult<CdmBase>)obj, recursive, update);
@@ -99,7 +99,7 @@ public class CacheLoader {
 
         if(isRecursiveEnabled && recursive) {
             if (logger.isDebugEnabled()){logger.debug("---- starting recursive load for cdm entity map");}
-            List<Object> alreadyVisitedEntities = new ArrayList<Object>();
+            List<Object> alreadyVisitedEntities = new ArrayList<>();
             Map<T,T> cachedMap = load(map, alreadyVisitedEntities, update);
             alreadyVisitedEntities.clear();
             if (logger.isDebugEnabled()){logger.debug("---- ending recursive load for cdm entity map \n");}
