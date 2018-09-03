@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -38,32 +39,31 @@ public class ExcelUtils {
 	private static final Logger logger = Logger.getLogger(ExcelUtils.class);
 
     /** Reads all rows of an Excel worksheet */
-    public static List<HashMap<String, String>> parseXLS(URI uri) throws FileNotFoundException {
+    public static List<Map<String, String>> parseXLS(URI uri) throws FileNotFoundException {
     	return parseXLS(uri, null);
     }
 
 
 	/** Reads all rows of an Excel worksheet */
-    public static List<HashMap<String, String>> parseXLS(URI uri, String worksheetName) throws FileNotFoundException {
-        InputStream stream;
+    public static List<Map<String, String>> parseXLS(URI uri, String worksheetName) throws FileNotFoundException {
         try {
-            stream = UriUtils.getInputStream(uri);
+            InputStream stream = UriUtils.getInputStream(uri);
             return parseXLS(stream, worksheetName);
         } catch(FileNotFoundException fne) {
             throw new FileNotFoundException(uri.toString());
         } catch(Exception ioe) {
-            logger.error("Error reading the Excel file." + uri.toString());
+            String message = "Error reading the Excel file." + uri.toString();
+            logger.error(message);
             ioe.printStackTrace();
+            throw new RuntimeException(message);
         }
-        return null;
 
     }
 
     /** Reads all rows of an Excel worksheet */
-    public static List<HashMap<String, String>> parseXLS(InputStream stream, String worksheetName) throws FileNotFoundException {
+    public static List<Map<String, String>> parseXLS(InputStream stream, String worksheetName) {
 
-
-    	ArrayList<HashMap<String, String>> recordList = new ArrayList<>();
+    	List<Map<String, String>> recordList = new ArrayList<>();
 
     	try {
 //    		POIFSFileSystem fs = new POIFSFileSystem(UriUtils.getInputStream(uri));
@@ -105,13 +105,15 @@ public class ExcelUtils {
 	    		}
 
 	    		//first row
-	    		ArrayList<String> columns = new ArrayList<>();
+	    		List<String> columns = new ArrayList<>();
 	    		row = sheet.getRow(0);
 	    		for (int c = 0; c < cols; c++){
 	    			cell = row.getCell(c);
 					if(cell != null) {
-						columns.add(cell.toString());
-						if(logger.isDebugEnabled()) { logger.debug("Cell #" + c + ": " + cell.toString()); }
+					    String str = cell.toString();
+					    //TODO better make case sensitive, but need to adapt all existing imports for this
+						columns.add(str == null? null : str.trim());
+						if(logger.isDebugEnabled()) { logger.debug("Cell #" + c + ": " + str); }
 					} else {
 						if(logger.isDebugEnabled()) { logger.debug("Cell #" + c + " is null"); }
 					}
@@ -120,7 +122,7 @@ public class ExcelUtils {
 	    		//value rows
 	    		for(int r = 1; r < rows; r++) {
 	    			row = sheet.getRow(r);
-	    			HashMap<String, String> headers = new HashMap<String, String>();
+	    			Map<String, String> headers = new HashMap<>();
 	    			boolean notEmpty = checkIsEmptyRow(row);
 	    			if(notEmpty) {
 	    				for(int c = 0; c < cols; c++) {

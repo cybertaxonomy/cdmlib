@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.io.excel.common;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -27,15 +27,13 @@ public class ExcelImportState<CONFIG extends ExcelImportConfiguratorBase, ROW ex
 
 	private Integer currentLine;
 	private ROW currentRow;
-    private HashMap<String, String> originalRecord;
+    private Map<String, String> originalRecord;
 
     private Reference sourceReference;
-
 
     public ExcelImportState(CONFIG config) {
         super(config);
     }
-
 
 	public Integer getCurrentLine() {
 		return currentLine;
@@ -64,11 +62,11 @@ public class ExcelImportState<CONFIG extends ExcelImportConfiguratorBase, ROW ex
 		this.currentRow = currentRow;
 	}
 
-	public HashMap<String,String> getOriginalRecord(){
+	public Map<String,String> getOriginalRecord(){
 	    return this.originalRecord;
 	}
 
-    public void setOriginalRecord(HashMap<String,String> originalRecord){
+    public void setOriginalRecord(Map<String,String> originalRecord){
         this.originalRecord = originalRecord;
     }
 

@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.io.excel.common;
 import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.net.URI;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -48,7 +47,7 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
 
 	protected static final String SCIENTIFIC_NAME_COLUMN = "ScientificName";
 
-	private List<HashMap<String, String>> recordList = null;
+	private List<Map<String, String>> recordList = null;
 
 	private ExcelImportConfiguratorBase configurator = null;
 
@@ -88,7 +87,7 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
             try {
                 ByteArrayInputStream stream = new ByteArrayInputStream(data);
                 recordList = ExcelUtils.parseXLS(stream, sheetName);
-            } catch (FileNotFoundException e) {
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }else{
@@ -121,7 +120,7 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
 	private void handleRecordList(STATE state, URI source) {
 		Integer startingLine = 2;
 		if (recordList != null) {
-    		HashMap<String,String> record = null;
+    		Map<String,String> record = null;
 
     		TransactionStatus txStatus = startTransaction();
 
@@ -182,7 +181,7 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
 	 * @param record
 	 * @return
 	 */
-	protected abstract void analyzeRecord(HashMap<String,String> record, STATE state);
+	protected abstract void analyzeRecord(Map<String,String> record, STATE state);
 
 	protected abstract void firstPass(STATE state);
 	protected abstract void secondPass(STATE state);
@@ -262,7 +261,7 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
             String colNameCache, String colNameTitleCache, String colTaxonTitleCache,
             Class<T> clazz, String line) {
 
-        HashMap<String, String> record = state.getOriginalRecord();
+        Map<String, String> record = state.getOriginalRecord();
         String strUuidTaxon = record.get(colTaxonUuid);
         if (strUuidTaxon != null){
             UUID uuidTaxon;
@@ -301,7 +300,7 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
      * @see #getTaxonByCdmId(ExcelImportState, String, String, String, String, Class, String)
      */
     protected void verifyName(STATE state, String colNameCache, String colNameTitleCache, String colTaxonTitleCache,
-            String line, HashMap<String, String> record, TaxonBase<?> result) {
+            String line, Map<String, String> record, TaxonBase<?> result) {
         //nameCache
         String strExpectedNameCache = record.get(colNameCache);
         String nameCache = result.getName() == null ? null : result.getName().getNameCache();

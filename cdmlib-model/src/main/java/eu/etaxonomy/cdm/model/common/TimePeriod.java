@@ -83,7 +83,6 @@ public class TimePeriod implements Cloneable, Serializable {
     @JsonIgnore // currently used for swagger model scanner
     private Partial end;
 
-
     @XmlElement(name = "FreeText")
     private String freeText;
 

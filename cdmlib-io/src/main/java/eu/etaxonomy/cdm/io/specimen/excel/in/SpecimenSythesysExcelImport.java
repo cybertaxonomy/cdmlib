@@ -877,7 +877,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
         refreshTransaction();
 
         URI source = state.getConfig().getSource();
-        List<HashMap<String,String>> unitsList = null;
+        List<Map<String,String>> unitsList = null;
         try{
             unitsList = ExcelUtils.parseXLS(source);
             logger.info("unitslist : "+unitsList.size());
@@ -901,7 +901,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
 
                 specimenOrObs = getOccurrenceService().listByAssociatedTaxon(null, null, taxon, null, null, null, null, null);
             }
-            HashMap<String,String> unit=null;
+            Map<String,String> unit=null;
             MyHashMap<String,String> myunit;
             for (int i=0; i<unitsList.size();i++){
                 //            for (int i=0; i<10;i++){
@@ -936,13 +936,13 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
      * @param unitsList
      * @param state
      */
-    private void prepareCollectors(List<HashMap<String, String>> unitsList, SpecimenSynthesysExcelImportState state) {
+    private void prepareCollectors(List<Map<String, String>> unitsList, SpecimenSynthesysExcelImportState state) {
         System.out.println("PREPARE COLLECTORS");
         List<String> collectors = new ArrayList<>();
         List<String> teams = new ArrayList<>();
         List<List<String>> collectorinteams = new ArrayList<>();
         String tmp;
-        for (HashMap<String,String> unit : unitsList){
+        for (Map<String,String> unit : unitsList){
             tmp=null;
             tmp = unit.get("collector");
             if (tmp != null && !tmp.isEmpty()) {

@@ -76,7 +76,7 @@ public class DistributionImport
 		if (logger.isDebugEnabled()) { logger.debug("Importing distribution data"); }
 
 		// read and save all rows of the excel worksheet
-		List<HashMap<String, String>> recordList;
+		List<Map<String, String>> recordList;
 		URI source = state.getConfig().getSource();
 		try{
     		recordList = ExcelUtils.parseXLS(source);
@@ -88,7 +88,7 @@ public class DistributionImport
 			return;
 		}
     	if (recordList != null) {
-    		HashMap<String,String> record = null;
+    		Map<String,String> record = null;
     		TransactionStatus txStatus = startTransaction();
 
     		for (int i = 0; i < recordList.size(); i++) {
@@ -113,7 +113,7 @@ public class DistributionImport
 	/**
 	 *  Reads the data of one Excel sheet row
 	 */
-    private void analyzeRecord(HashMap<String,String> record) {
+    private void analyzeRecord(Map<String,String> record) {
     	/*
     	 * Relevant columns:
     	 * Name (EDIT)

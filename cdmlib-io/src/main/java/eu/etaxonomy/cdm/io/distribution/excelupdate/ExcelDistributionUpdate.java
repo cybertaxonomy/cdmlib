@@ -59,7 +59,7 @@ public class ExcelDistributionUpdate
      * {@inheritDoc}
      */
     @Override
-    protected void analyzeRecord(HashMap<String, String> record, ExcelDistributionUpdateState state) {
+    protected void analyzeRecord(Map<String, String> record, ExcelDistributionUpdateState state) {
         // nothing to do
     }
 
@@ -68,7 +68,7 @@ public class ExcelDistributionUpdate
      */
     @Override
     protected void firstPass(ExcelDistributionUpdateState state) {
-        HashMap<String, String> record = state.getOriginalRecord();
+        Map<String, String> record = state.getOriginalRecord();
         String line = state.getCurrentLine() + ": ";
         String taxonUuid = getValue(record, "taxon_uuid");
         String taxonName = getValue(record, "Taxonname");
@@ -99,7 +99,7 @@ public class ExcelDistributionUpdate
      * @param record
      * @param line
      */
-    private void handleAreasForTaxon(ExcelDistributionUpdateState state, Taxon taxon, HashMap<String, String> record,
+    private void handleAreasForTaxon(ExcelDistributionUpdateState state, Taxon taxon, Map<String, String> record,
             String line) {
         ImportResult result = state.getResult();
         Map<NamedArea, Set<Distribution>> existingDistributions = getExistingDistributions(state, taxon, line);
@@ -165,7 +165,7 @@ public class ExcelDistributionUpdate
     }
 
     private Map<NamedArea, Distribution> getNewDistributions(ExcelDistributionUpdateState state,
-            HashMap<String, String> record, String line) {
+            Map<String, String> record, String line) {
 
         Map<NamedArea, Distribution> result = new HashMap<>();
 
