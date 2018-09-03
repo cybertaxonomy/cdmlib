@@ -232,7 +232,7 @@ public class DescriptiveDataSetService
             fieldUnit = fieldUnits.iterator().next();
         }
         //get identifier
-        if(specimen instanceof DerivedUnit){
+        if(HibernateProxyHelper.isInstanceOf(specimen, DerivedUnit.class)){
             identifier = occurrenceService.getMostSignificantIdentifier(HibernateProxyHelper.deproxy(specimen, DerivedUnit.class));
         }
         //get country
@@ -265,12 +265,13 @@ public class DescriptiveDataSetService
         //filter out COMPUTED descriptions
         List<TaxonDescription> nonComputedDescriptions = taxonNode.getTaxon().getDescriptions().stream()
                 .filter(desc -> desc.getMarkers().stream()
-                        .anyMatch(marker -> marker.getMarkerType().equals(MarkerType.COMPUTED())))
+                        .noneMatch(marker -> marker.getMarkerType().equals(MarkerType.COMPUTED())))
                 .collect(Collectors.toList());
         for (TaxonDescription taxonDescription : nonComputedDescriptions) {
             for (DescriptionBase description : dataSetDescriptions) {
                 if(description.getUuid().equals(taxonDescription.getUuid())){
-                    return taxonDescription;
+                    return HibernateProxyHelper.deproxy(descriptionService.load(taxonDescription.getUuid(),
+                            Arrays.asList("taxon", "descriptionElements", "descriptionElements.feature")), TaxonDescription.class);
                 }
             }
         }
