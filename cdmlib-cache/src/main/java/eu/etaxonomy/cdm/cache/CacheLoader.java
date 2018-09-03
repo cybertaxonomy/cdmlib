@@ -87,7 +87,7 @@ public class CacheLoader {
         } else if (obj instanceof Collection) {
             return (T) load((Collection<T>)obj, alreadyVisitedEntities, update);
         } else if (obj instanceof MergeResult) {
-            return (T) loadRecursive((MergeResult<?>)obj, alreadyVisitedEntities, update);
+            return (T) loadRecursive((MergeResult)obj, alreadyVisitedEntities, update);
         }
 
         if (logger.isInfoEnabled()){logger.info("No caching yet for type " + obj.getClass().getName());}
