@@ -66,7 +66,7 @@ public class CacheLoader {
         } else if (obj instanceof Collection) {
             return (T) load((Collection<T>)obj, recursive, update);
         } else if(obj instanceof Pager) {
-            load(((Pager<T>)obj).getRecords(), recursive, update);
+            load(((Pager)obj).getRecords(), recursive, update);
             return obj;
         } else if(obj instanceof MergeResult) {
             return (T) load((MergeResult<CdmBase>)obj, recursive, update);
@@ -200,13 +200,13 @@ public class CacheLoader {
     public MergeResult<CdmBase> load(MergeResult<CdmBase> mergeResult, boolean recursive, boolean update) {
         CdmBase cdmBase = load(mergeResult.getMergedEntity(), recursive, update);
         load(mergeResult.getNewEntities(), recursive, update);
-        return new MergeResult<CdmBase>(cdmBase, mergeResult.getNewEntities());
+        return new MergeResult<>(cdmBase, mergeResult.getNewEntities());
     }
 
     public MergeResult<CdmBase> loadRecursive(MergeResult<CdmBase> mergeResult,List<Object> alreadyVisitedEntities, boolean update) {
         CdmBase cdmBase = loadRecursive(mergeResult.getMergedEntity(), alreadyVisitedEntities, update);
         loadRecursive(mergeResult.getNewEntities(), alreadyVisitedEntities, update);
-        return new MergeResult<CdmBase>(cdmBase, mergeResult.getNewEntities());
+        return new MergeResult<>(cdmBase, mergeResult.getNewEntities());
     }
 
     /**
