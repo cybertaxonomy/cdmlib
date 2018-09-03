@@ -280,7 +280,7 @@ public class DescriptiveDataSetService
         }
         //description not yet added to dataset -> create a new one
         TaxonDescription newTaxonDescription = TaxonDescription.NewInstance(taxonNode.getTaxon());
-        newTaxonDescription.setTitleCache("Dataset "+dataSet.getLabel()+": "+newTaxonDescription.generateTitle(), true); //$NON-NLS-2$
+        newTaxonDescription.setTitleCache("[Default] "+dataSet.getLabel()+": "+newTaxonDescription.generateTitle(), true); //$NON-NLS-2$
         dataSet.getDescriptiveSystem().getDistinctFeatures().forEach(wsFeature->{
             if(wsFeature.isSupportsCategoricalData()){
                 newTaxonDescription.addElement(CategoricalData.NewInstance(wsFeature));
