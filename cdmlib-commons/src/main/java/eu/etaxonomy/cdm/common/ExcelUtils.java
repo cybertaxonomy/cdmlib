@@ -111,8 +111,9 @@ public class ExcelUtils {
 	    			cell = row.getCell(c);
 					if(cell != null) {
 					    String str = cell.toString();
+					    str = (str == null)? null : str.trim();
 					    //TODO better make case sensitive, but need to adapt all existing imports for this
-						columns.add(str == null? null : str.trim());
+						columns.add(str);
 						if(logger.isDebugEnabled()) { logger.debug("Cell #" + c + ": " + str); }
 					} else {
 						if(logger.isDebugEnabled()) { logger.debug("Cell #" + c + " is null"); }
