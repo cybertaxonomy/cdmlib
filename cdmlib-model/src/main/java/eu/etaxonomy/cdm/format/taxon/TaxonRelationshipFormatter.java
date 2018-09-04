@@ -14,6 +14,7 @@ import java.util.List;
 import org.codehaus.plexus.util.StringUtils;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -38,6 +39,10 @@ import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
  */
 public class TaxonRelationshipFormatter {
 
+    /**
+     *
+     */
+    private static final String DOUBTFUL_TAXON_MARKER = "?" + UTF8.NARROW_NO_BREAK;
     private static final String REL_SEC = ", rel. sec. ";
     private static final String ERR_SEC = ", err. sec. ";
     private static final String SYN_SEC = ", syn. sec. ";
@@ -70,7 +75,7 @@ public class TaxonRelationshipFormatter {
             return null;
         }
 
-        String doubtfulTaxonStr = relatedTaxon.isDoubtful() ? "?\u202F" : "";
+        String doubtfulTaxonStr = relatedTaxon.isDoubtful() ? DOUBTFUL_TAXON_MARKER : "";
         String doubtfulRelationStr = taxonRelationship.isDoubtful() ? "?" : "";
 
 

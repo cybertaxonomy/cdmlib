@@ -32,6 +32,7 @@ public enum UTF8 {
 	ACUTE_ACCENT("\u00B4"),     //Acute Accent, looks a bit similar to th single quotation mark
 	BLACK_CIRCLE("\u25CF"),       //Black circle, symbol for endemic
 	DEGREE_SIGN("\u00B0"),      //°
+	NARROW_NO_BREAK("\u202F")
 	;
 
 	private String value;
