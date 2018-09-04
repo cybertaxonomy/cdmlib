@@ -292,8 +292,8 @@ public class TimePeriod implements Cloneable, Serializable {
         start=startDate;
     }
     public TimePeriod(Partial startDate, Partial endDate) {
-        start=startDate;
-        end=endDate;
+        start = startDate;
+        end = endDate;
     }
 
 //******************* GETTER / SETTER ************************************/
@@ -311,7 +311,7 @@ public class TimePeriod implements Cloneable, Serializable {
 
     @JsonIgnore // currently used for swagger model scanner
     public Partial getEnd() {
-        return end;
+        return isContinued() ? null : end;
     }
 
     public void setEnd(Partial end) {
@@ -337,6 +337,21 @@ public class TimePeriod implements Cloneable, Serializable {
      */
     public void setFreeText(String freeText) {
         this.freeText = freeText;
+    }
+
+
+    /**
+     * Shortcut to define that {@link #getEnd() end of period} is defined end
+     * for a continuous period represented by {@link #CONTINUED}
+     * @return
+     */
+    public boolean isContinued() {
+        return CONTINUED.equals(end);
+    }
+    public void setContinued(boolean isContinued) {
+        if (isContinued == true){
+            this.end = CONTINUED;
+        }
     }
 
 
@@ -405,17 +420,17 @@ public class TimePeriod implements Cloneable, Serializable {
 
     @Transient
     public Integer getEndYear(){
-        return getPartialValue(end, YEAR_TYPE);
+        return getPartialValue(getEnd(), YEAR_TYPE);
     }
 
     @Transient
     public Integer getEndMonth(){
-        return getPartialValue(end, MONTH_TYPE);
+        return getPartialValue(getEnd(), MONTH_TYPE);
     }
 
     @Transient
     public Integer getEndDay(){
-        return getPartialValue(end, DAY_TYPE);
+        return getPartialValue(getEnd(), DAY_TYPE);
     }
 
     public TimePeriod setStartYear(Integer year){
@@ -465,7 +480,7 @@ public class TimePeriod implements Cloneable, Serializable {
     @Transient
     private TimePeriod setEndField(Integer value, DateTimeFieldType type)
             throws IndexOutOfBoundsException{
-        end = setPartialField(end, value, type);
+        end = setPartialField(getEnd(), value, type);
         return this;
     }
 
@@ -526,7 +541,6 @@ public class TimePeriod implements Cloneable, Serializable {
 
     /**
      * Returns the concatenation of <code>start</code> and <code>end</code>
-     *
      */
     public String getTimePeriod(){
         String result = null;
@@ -578,9 +592,9 @@ public class TimePeriod implements Cloneable, Serializable {
     public int hashCode() {
         int hashCode = 7;
         hashCode = 29*hashCode +
-                    (start== null? 33: start.hashCode()) +
-                    (end== null? 39: end.hashCode()) +
-                    (freeText== null? 41: freeText.hashCode());
+                    (start == null? 33: start.hashCode()) +
+                    (end == null? 39: end.hashCode()) +
+                    (freeText == null? 41: freeText.hashCode());
         return hashCode;
     }
 
@@ -608,21 +622,5 @@ public class TimePeriod implements Cloneable, Serializable {
         target.setEnd(origin.end);
         target.setFreeText(origin.freeText);
     }
-
-
-    /**
-     * Shortcut to define that {@link #getEnd() end of period} is defined end
-     * for a continuous period represented by {@link #CONTINUED}
-     * @return
-     */
-    public boolean isContinued() {
-        return CONTINUED.equals(end);
-    }
-    public void setContinued(boolean isContinued) {
-        if (isContinued == true){
-            this.end = CONTINUED;
-        }
-    }
-
 
 }

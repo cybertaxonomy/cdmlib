@@ -332,6 +332,25 @@ public class TimePeriodTest {
         Assert.assertEquals("+", tp1.toString());
 	}
 
+	@Test
+	public void testContinued() {
+	    TimePeriod tp1 = TimePeriod.NewInstance(2017, 2018);
+	    Assert.assertEquals((Integer)2018, tp1.getEndYear());
+	    tp1.setContinued(true);
+	    Assert.assertNull("The end should be removed and also the CONTINUED constant should be returned for getEnd()", tp1.getEnd());
+	    Assert.assertTrue(tp1.isContinued());
+        Assert.assertEquals(null, tp1.getEndYear());
+	    Assert.assertEquals(null, tp1.getEndMonth());
+	    Assert.assertEquals(null, tp1.getEndDay());
+	    tp1.setEndMonth(month);
+	    Assert.assertFalse(tp1.isContinued());
+        Assert.assertEquals(null, tp1.getEndYear());
+        Assert.assertEquals(month, tp1.getEndMonth());
+        Assert.assertEquals(null, tp1.getEndDay());
+
+	}
+
+
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#clone()}.
