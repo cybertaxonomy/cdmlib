@@ -38,9 +38,8 @@ public class TaxonRelationshipsDTO {
 
     private static final String SENSU_SEPARATOR = ", ";
 
-    public class TaxonRelation{
+    public class TaxonRelationDTO{
 
-        private UUID relationUuid;
         private boolean doubtful = false;
         private boolean misapplication = false;
         private boolean synonym = false;
@@ -51,14 +50,15 @@ public class TaxonRelationshipsDTO {
         //TODO maybe this will be changed in future
         private TermDto type;
         private UUID typeUuid;
+        private SourceDTO sec;
+        private SourceDTO relSec;
 
 
-        public TaxonRelation(TaxonRelationship relation, Direction direction, List<Language> languages) {
+        public TaxonRelationDTO(TaxonRelationship relation, Direction direction, List<Language> languages) {
             Taxon relatedTaxon = direction == Direction.relatedTo? relation.getToTaxon()
                     : relation.getFromTaxon();
             this.taxonUuid = relatedTaxon.getUuid();
             this.doubtful = relation.isDoubtful();
-            this.relationUuid = relation.getUuid();
             this.direction = direction;
             TaxonRelationshipType relType = relation.getType();
 
@@ -92,12 +92,6 @@ public class TaxonRelationshipsDTO {
         }
         public void setDoubtful(boolean doubtful) {
             this.doubtful = doubtful;
-        }
-        public UUID getRelationUuid() {
-            return relationUuid;
-        }
-        public void setRelationUuid(UUID relationUuid) {
-            this.relationUuid = relationUuid;
         }
 
         public Direction getDirection() {
@@ -167,7 +161,7 @@ public class TaxonRelationshipsDTO {
 
     }
 
-    private List<TaxonRelation> relations = new ArrayList<>();
+    private List<TaxonRelationDTO> relations = new ArrayList<>();
 
     private List<List<TaggedText>> misapplications = new ArrayList<>();
 
@@ -184,15 +178,15 @@ public class TaxonRelationshipsDTO {
 
  // ************************** GETTER / SETTER  ***********************/
 
-    public List<TaxonRelation> getRelations() {
+    public List<TaxonRelationDTO> getRelations() {
         return relations;
     }
 
-    public void setIncludedTaxa(List<TaxonRelation> relations) {
+    public void setIncludedTaxa(List<TaxonRelationDTO> relations) {
         this.relations = relations;
     }
 
-    public void addRelation(TaxonRelation relation){
+    public void addRelation(TaxonRelationDTO relation){
         relations.add(relation);
     }
 
@@ -200,8 +194,8 @@ public class TaxonRelationshipsDTO {
      * @param relation
      * @param direction
      */
-    public TaxonRelation addRelation(TaxonRelationship relation, Direction direction, List<Language> languages) {
-        TaxonRelation newRelation = new TaxonRelation(relation, direction, languages);
+    public TaxonRelationDTO addRelation(TaxonRelationship relation, Direction direction, List<Language> languages) {
+        TaxonRelationDTO newRelation = new TaxonRelationDTO(relation, direction, languages);
         relations.add(newRelation);
         return newRelation;
     }
@@ -213,7 +207,7 @@ public class TaxonRelationshipsDTO {
     public void createMisapplicationString() {
         List<List<TaggedText>> result = new ArrayList<>();
 
-        for (TaxonRelation relation: relations){
+        for (TaxonRelationDTO relation: relations){
             if (relation.isMisapplication()){
                 List<TaggedText> tags = relation.getTaggedText();
 
@@ -331,7 +325,7 @@ public class TaxonRelationshipsDTO {
     }
 //
 //    public boolean contains(UUID taxonUuid) {
-//        for (TaxonRelation relation: relations){
+//        for (TaxonRelationDTO relation: relations){
 //            if (taxon.taxonUuid.equals(taxonUuid)){
 //                return true;
 //            }
@@ -342,7 +336,7 @@ public class TaxonRelationshipsDTO {
     @Override
     public String toString(){
         String result = "";
-        for (TaxonRelation relation : relations){
+        for (TaxonRelationDTO relation : relations){
             result += relation.toString() + ",";
         }
         if (result.length() > 0){

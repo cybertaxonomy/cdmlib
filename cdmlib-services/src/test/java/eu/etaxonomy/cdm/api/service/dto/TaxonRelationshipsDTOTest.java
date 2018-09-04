@@ -15,7 +15,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.api.service.dto.TaxonRelationshipsDTO.TaxonRelation;
+import eu.etaxonomy.cdm.api.service.dto.TaxonRelationshipsDTO.TaxonRelationDTO;
 import eu.etaxonomy.cdm.format.taxon.TaxonRelationshipFormatter;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
@@ -134,9 +134,9 @@ public class TaxonRelationshipsDTOTest {
 
         dto.addRelation(taxonRel, Direction.relatedFrom, languages);
         dto.addRelation(rel2, Direction.relatedFrom, languages);
-        TaxonRelation relToDuplicate = dto.addRelation(rel3, Direction.relatedFrom, languages);
+        TaxonRelationDTO relToDuplicate = dto.addRelation(rel3, Direction.relatedFrom, languages);
         dto.addRelation(rel4, Direction.relatedFrom, languages);
-        TaxonRelation duplicateWithoutRelSec2 = dto.addRelation(rel5, Direction.relatedFrom, languages);
+        TaxonRelationDTO duplicateWithoutRelSec2 = dto.addRelation(rel5, Direction.relatedFrom, languages);
 
         dto.createMisapplicationString();
 

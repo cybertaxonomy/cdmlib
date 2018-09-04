@@ -70,7 +70,7 @@ public class TaxonRelationshipFormatter {
             return null;
         }
 
-        String doubtfulTaxonStr = relatedTaxon.isDoubtful() ? "?" : "";
+        String doubtfulTaxonStr = relatedTaxon.isDoubtful() ? "?\u202F" : "";
         String doubtfulRelationStr = taxonRelationship.isDoubtful() ? "?" : "";
 
 
