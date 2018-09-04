@@ -342,7 +342,19 @@ public class TimePeriodTest {
         Assert.assertEquals(null, tp1.getEndYear());
 	    Assert.assertEquals(null, tp1.getEndMonth());
 	    Assert.assertEquals(null, tp1.getEndDay());
-	    tp1.setEndMonth(month);
+
+	    //set continued to false (will not recover old end value)
+	    tp1.setContinued(false);
+	    Assert.assertFalse(tp1.isContinued());
+        Assert.assertEquals(null, tp1.getEndYear());
+        Assert.assertEquals(null, tp1.getEndMonth());
+        Assert.assertEquals(null, tp1.getEndDay());
+
+        //replace continued by end
+        tp1 = TimePeriod.NewInstance(2017, 2018);
+        tp1.setContinued(true);
+        Assert.assertTrue(tp1.isContinued());
+        tp1.setEndMonth(month);
 	    Assert.assertFalse(tp1.isContinued());
         Assert.assertEquals(null, tp1.getEndYear());
         Assert.assertEquals(month, tp1.getEndMonth());

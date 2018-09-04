@@ -341,16 +341,24 @@ public class TimePeriod implements Cloneable, Serializable {
 
 
     /**
-     * Shortcut to define that {@link #getEnd() end of period} is defined end
-     * for a continuous period represented by {@link #CONTINUED}
+     * Returns the continued flag (internally stored as a constant
+     * far away date. {@link #CONTINUED}
      * @return
      */
     public boolean isContinued() {
         return CONTINUED.equals(end);
     }
+    /**
+     * Sets the (virtual) continued flag.<BR><BR>
+     * NOTE: setting the flag to true, will remove an
+     * existing end date.
+     * @param isContinued
+     */
     public void setContinued(boolean isContinued) {
         if (isContinued == true){
             this.end = CONTINUED;
+        }else if (isContinued()){
+            this.end = null;
         }
     }
 
