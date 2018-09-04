@@ -9,7 +9,9 @@
 
 package eu.etaxonomy.cdm.model.common;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -122,6 +124,25 @@ public abstract class AnnotatableEntity extends VersionableEntity implements IAn
 			getAnnotations().remove(annotation);
 		}
 	}
+
+	 public void setAnnotations(Set<Annotation> annotations) {
+        List<Annotation> currentAnnotations = new ArrayList<>(annotations);
+        List<Annotation> annotationsSeen = new ArrayList<>();
+        for(Annotation a : annotations){
+            if(a == null){
+                continue;
+            }
+            if(!currentAnnotations.contains(a)){
+                addAnnotation(a);
+            }
+            annotationsSeen.add(a);
+        }
+        for(Annotation a : currentAnnotations){
+            if(!annotationsSeen.contains(a)){
+                removeAnnotation(a);
+            }
+        }
+    }
 
 //********************** CLONE *****************************************/
 
