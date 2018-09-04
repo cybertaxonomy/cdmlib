@@ -61,11 +61,15 @@ import eu.etaxonomy.cdm.strategy.cache.common.TimePeriodPartialFormatter;
 public class TimePeriod implements Cloneable, Serializable {
     private static final long serialVersionUID = 3405969418194981401L;
     private static final Logger logger = Logger.getLogger(TimePeriod.class);
-    public static final DateTimeFieldType MONTH_TYPE = DateTimeFieldType.monthOfYear();
     public static final DateTimeFieldType YEAR_TYPE = DateTimeFieldType.year();
+    public static final DateTimeFieldType MONTH_TYPE = DateTimeFieldType.monthOfYear();
     public static final DateTimeFieldType DAY_TYPE = DateTimeFieldType.dayOfMonth();
     public static final DateTimeFieldType HOUR_TYPE = DateTimeFieldType.hourOfDay();
     public static final DateTimeFieldType MINUTE_TYPE = DateTimeFieldType.minuteOfHour();
+
+    public static final Partial CONTINUED = new Partial
+            (new DateTimeFieldType[]{YEAR_TYPE, MONTH_TYPE, DAY_TYPE},
+             new int[]{9999, 11, 30});
 
     @XmlElement(name = "Start")
     @XmlJavaTypeAdapter(value = PartialAdapter.class)
@@ -528,8 +532,12 @@ public class TimePeriod implements Cloneable, Serializable {
         String result = null;
         DateTimeFormatter formatter = TimePeriodPartialFormatter.NewInstance();
         String strStart = start != null ? start.toString(formatter): null;
-        String strEnd = end != null ? end.toString(formatter): null;
-        result = CdmUtils.concat("-", strStart, strEnd);
+        if (isContinued()){
+            result = CdmUtils.concat("", strStart, "+");
+        }else{
+            String strEnd = end != null ? end.toString(formatter): null;
+            result = CdmUtils.concat("-", strStart, strEnd);
+        }
 
         return result;
     }
@@ -599,6 +607,21 @@ public class TimePeriod implements Cloneable, Serializable {
         target.setStart(origin.start);   //DateTime is immutable
         target.setEnd(origin.end);
         target.setFreeText(origin.freeText);
+    }
+
+
+    /**
+     * Shortcut to define that {@link #getEnd() end of period} is defined end
+     * for a continuous period represented by {@link #CONTINUED}
+     * @return
+     */
+    public boolean isContinued() {
+        return CONTINUED.equals(end);
+    }
+    public void setContinued(boolean isContinued) {
+        if (isContinued == true){
+            this.end = CONTINUED;
+        }
     }
 
 

@@ -47,7 +47,7 @@ public class TimePeriodParser {
 	//standard
 	private static final Pattern standardPattern =  Pattern.compile("\\s*\\d{2,4}(\\s*-(\\s*\\d{2,4})?)?");
 	private static final String strDotDate = "[0-3]?\\d\\.[01]?\\d\\.\\d{4,4}";
-	private static final String strDotDatePeriodPattern = String.format("%s(\\s*-\\s*%s?)?", strDotDate, strDotDate);
+	private static final String strDotDatePeriodPattern = String.format("%s(\\s*-\\s*%s?|\\+)?", strDotDate, strDotDate);
 	private static final Pattern dotDatePattern =  Pattern.compile(strDotDatePeriodPattern);
 	private static final String strSlashDate = "[0-3]?\\d\\/[01]?\\d\\/\\d{4,4}";
 	private static final String strSlashDatePeriodPattern = String.format("%s(\\s*-\\s*%s?)?", strSlashDate, strSlashDate);
@@ -233,9 +233,14 @@ public class TimePeriodParser {
 			result.setFreeText(periodString);
 		}else {
 			try {
+
 				//start
 				if (! StringUtils.isBlank(dates[0])){
-					dtStart = parseSingleDotDate(dates[0].trim());
+				    if (dates.length == 1 && dates[0].endsWith("+") && dates[0].length()>1){
+	                    dates[0] = dates[0].substring(0, dates[0].length()-1);
+	                    dtEnd = TimePeriod.CONTINUED;
+	                }
+				    dtStart = parseSingleDotDate(dates[0].trim());
 				}
 
 				//end

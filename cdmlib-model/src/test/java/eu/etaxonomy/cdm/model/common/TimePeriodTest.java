@@ -320,6 +320,16 @@ public class TimePeriodTest {
 		Assert.assertEquals("3.xx.1788-1799", tp1.toString());
 		tp1.setEndMonth(11);
 		Assert.assertEquals("3.xx.1788-11.1799", tp1.toString());
+		tp1.setContinued(true);
+		Assert.assertEquals("3.xx.1788+", tp1.toString());
+
+		tp1 = TimePeriod.NewInstance(1788,1799);
+		tp1.setContinued(true);
+        Assert.assertEquals("1788+", tp1.toString());
+        tp1 = TimePeriod.NewInstance((Integer)null);
+        tp1.setContinued(true);
+        //this is still undefined, could be something like 'xxxx+' in future
+        Assert.assertEquals("+", tp1.toString());
 	}
 
 
