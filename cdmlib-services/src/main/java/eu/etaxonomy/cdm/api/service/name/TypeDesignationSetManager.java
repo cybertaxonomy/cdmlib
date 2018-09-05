@@ -438,10 +438,10 @@ public class TypeDesignationSetManager {
 
                             TypeDesignationBase typeDes =  typeDesignations.get(typeDesignationEntityReference.getUuid());
                             if (typeDes.getCitation() != null){
-                                workingsetBuilder.add(TagEnum.separator, REFERENCE_PARENTHESIS_LEFT);
+                               // workingsetBuilder.add(TagEnum.separator, REFERENCE_PARENTHESIS_LEFT);
                                 String shortCitation = ((DefaultReferenceCacheStrategy)typeDes.getCitation().getCacheStrategy()).createShortCitation(typeDes.getCitation());
                                 workingsetBuilder.add(TagEnum.reference, shortCitation, typeDesignationEntityReference);
-                                workingsetBuilder.add(TagEnum.separator, REFERENCE_PARENTHESIS_RIGHT);
+                                //workingsetBuilder.add(TagEnum.separator, REFERENCE_PARENTHESIS_RIGHT);
                             }
 
                             if ((!typeStatus.equals(NULL_STATUS)) &&(typeDesignationCount ==  typeDesignationWorkingSet.get(typeStatus).size())){
