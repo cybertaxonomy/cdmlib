@@ -8,7 +8,6 @@
  */
 package eu.etaxonomy.cdm.ext.geo;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.HashMap;
@@ -17,7 +16,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import au.com.bytecode.opencsv.CSVReader;
@@ -82,7 +80,7 @@ public class ShpAttributesToNamedAreaMapper {
      */
     public Map<NamedArea, String> readCsv(Reader reader, List<String> idSearchFields, String wmsLayerName) throws IOException {
 
-        logger.setLevel(Level.DEBUG);
+        //logger.setLevel(Level.DEBUG);
 
         Map<NamedArea, String> resultMap = new HashMap<>(areas.size());
 
