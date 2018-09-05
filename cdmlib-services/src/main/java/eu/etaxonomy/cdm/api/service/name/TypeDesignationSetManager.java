@@ -85,7 +85,8 @@ public class TypeDesignationSetManager {
     private static final String TYPE_STATUS_PARENTHESIS_LEFT = " (";
     private static final String TYPE_STATUS_PARENTHESIS_RIGHT = ")";
     private static final String REFERENCE_PARENTHESIS_RIGHT = "]";
-    private static final String REFERENCE_PARENTHESIS_LEFT = " [fide ";
+    private static final String REFERENCE_PARENTHESIS_LEFT = " [";
+    private static final String REFERENCE_FIDE = "fide ";
     private Map<UUID,TypeDesignationBase> typeDesignations;
 
     private NameTypeBaseEntityType nameTypeBaseEntityType = NameTypeBaseEntityType.NAME_TYPE_DESIGNATION;
