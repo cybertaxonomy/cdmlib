@@ -394,26 +394,6 @@ public class TimePeriod implements Cloneable, Serializable {
     }
 
 
-
-    @Transient
-    public String getYear(){
-        String result = "";
-        if (getStartYear() != null){
-            result += String.valueOf(getStartYear());
-            if (getEndYear() != null){
-                result += "-" + String.valueOf(getEndYear());
-            }
-        }else{
-            if (getEndYear() != null){
-                result += String.valueOf(getEndYear());
-            }
-        }
-        if (isContinued()){
-            result += "+";
-        }
-        return result;
-    }
-
     @Transient
     public Integer getStartYear(){
         return getPartialValue(start, YEAR_TYPE);
@@ -541,7 +521,6 @@ public class TimePeriod implements Cloneable, Serializable {
     @Override
     public String toString(){
         String result = null;
-//        DateTimeFormatter formatter = TimePeriodPartialFormatter.NewInstance();
         if ( StringUtils.isNotBlank(this.getFreeText())){
             result = this.getFreeText();
         }else{
@@ -564,6 +543,25 @@ public class TimePeriod implements Cloneable, Serializable {
             result = CdmUtils.concat("-", strStart, strEnd);
         }
 
+        return result;
+    }
+
+    @Transient
+    public String getYear(){
+        String result = "";
+        if (getStartYear() != null){
+            result += String.valueOf(getStartYear());
+            if (getEndYear() != null){
+                result += "-" + String.valueOf(getEndYear());
+            }
+        }else{
+            if (getEndYear() != null){
+                result += String.valueOf(getEndYear());
+            }
+        }
+        if (isContinued()){
+            result += "+";
+        }
         return result;
     }
 
