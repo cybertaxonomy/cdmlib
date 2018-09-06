@@ -11,31 +11,33 @@ package eu.etaxonomy.cdm.api.service.name;
 import java.util.Comparator;
 
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
+import eu.etaxonomy.cdm.ref.TypedEntityReference;
 
 /**
  * @author pplitzner
  * @since May 3, 2018
  *
  */
-public class TypeDesignationComparator implements Comparator<TypeDesignationBase> {
+public class TypedEntityComparator implements Comparator<TypedEntityReference<TypeDesignationBase> >{
 
-    private TypeDesignationStatusComparator statusComparator = new TypeDesignationStatusComparator();
 
-    @SuppressWarnings("unchecked")
+
     @Override
-    public int compare(TypeDesignationBase o1, TypeDesignationBase o2) {
+    @SuppressWarnings("unchecked")
+    public int compare(TypedEntityReference<TypeDesignationBase> o1, TypedEntityReference<TypeDesignationBase> o2) {
         if(o1==null){
             return 1;
         }
         if(o2==null){
             return -1;
         }
-        if(o1.getTypeStatus()==null){
+        if(o1.getUuid()==null){
             return 1;
         }
-        if(o2.getTypeStatus()==null){
+        if(o2.getUuid()==null){
             return-1;
         }
-        return statusComparator.compare(o1.getTypeStatus(), o2.getTypeStatus()) ;
+
+        return o1.getLabel().compareTo(o2.getLabel());
     }
 }

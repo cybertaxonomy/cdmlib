@@ -370,8 +370,10 @@ public class TypeDesignationSetManager {
 
                         int typeDesignationCount = 0;
 
+                        List<TypedEntityReference<TypeDesignationBase>> typeDesignationEntityrReferences = new ArrayList(typeDesignationWorkingSet.get(typeStatus));
+                       Collections.sort(typeDesignationEntityrReferences, new TypedEntityComparator());
 
-                        for(TypedEntityReference typeDesignationEntityReference : typeDesignationWorkingSet.get(typeStatus)) {
+                        for(TypedEntityReference typeDesignationEntityReference : typeDesignationEntityrReferences) {
 
                             if(typeDesignationCount++  > 0){
                                workingsetBuilder.add(TagEnum.separator, TYPE_DESIGNATION_SEPARATOR);
@@ -430,10 +432,10 @@ public class TypeDesignationSetManager {
                             workingsetBuilder.add(TagEnum.label, typeStatus.getLabel() + (isPlural ? "s:" : ":"));
                          }
                         int typeDesignationCount = 0;
+                        List<TypedEntityReference<TypeDesignationBase>> typeDesignationEntityrReferences = new ArrayList(typeDesignationWorkingSet.get(typeStatus));
+                        Collections.sort(typeDesignationEntityrReferences, new TypedEntityComparator());
 
-
-                        for(TypedEntityReference typeDesignationEntityReference : typeDesignationWorkingSet.get(typeStatus)) {
-
+                        for(TypedEntityReference typeDesignationEntityReference : typeDesignationEntityrReferences) {
                             if(typeDesignationCount++  > 0){
                                workingsetBuilder.add(TagEnum.separator, TYPE_DESIGNATION_SEPARATOR);
                             }
@@ -802,6 +804,8 @@ public class TypeDesignationSetManager {
             this.values().forEach(typeDesignationReferences -> typeDesignationReferences.forEach(td -> typeDesignations.add(td)));
             return typeDesignations;
         }
+
+
 
         /**
          * @param status
