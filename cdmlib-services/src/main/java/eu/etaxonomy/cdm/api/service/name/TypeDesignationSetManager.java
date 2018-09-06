@@ -369,11 +369,7 @@ public class TypeDesignationSetManager {
 
 
                         int typeDesignationCount = 0;
-
-                        List<TypedEntityReference<TypeDesignationBase>> typeDesignationEntityrReferences = new ArrayList(typeDesignationWorkingSet.get(typeStatus));
-                       Collections.sort(typeDesignationEntityrReferences, new TypedEntityComparator());
-
-                        for(TypedEntityReference typeDesignationEntityReference : typeDesignationEntityrReferences) {
+                        for(TypedEntityReference typeDesignationEntityReference : createSortedList(typeDesignationWorkingSet, typeStatus)) {
 
                             if(typeDesignationCount++  > 0){
                                workingsetBuilder.add(TagEnum.separator, TYPE_DESIGNATION_SEPARATOR);
@@ -432,10 +428,7 @@ public class TypeDesignationSetManager {
                             workingsetBuilder.add(TagEnum.label, typeStatus.getLabel() + (isPlural ? "s:" : ":"));
                          }
                         int typeDesignationCount = 0;
-                        List<TypedEntityReference<TypeDesignationBase>> typeDesignationEntityrReferences = new ArrayList(typeDesignationWorkingSet.get(typeStatus));
-                        Collections.sort(typeDesignationEntityrReferences, new TypedEntityComparator());
-
-                        for(TypedEntityReference typeDesignationEntityReference : typeDesignationEntityrReferences) {
+                        for(TypedEntityReference typeDesignationEntityReference : createSortedList(typeDesignationWorkingSet, typeStatus)) {
                             if(typeDesignationCount++  > 0){
                                workingsetBuilder.add(TagEnum.separator, TYPE_DESIGNATION_SEPARATOR);
                             }
@@ -464,6 +457,18 @@ public class TypeDesignationSetManager {
             finalString = finalString.trim();
             taggedText = finalBuilder.getTaggedText();
         }
+    }
+
+    /**
+     * @param typeDesignationWorkingSet
+     * @param typeStatus
+     * @return
+     */
+    private List<TypedEntityReference<TypeDesignationBase>> createSortedList(
+            TypeDesignationWorkingSet typeDesignationWorkingSet, TypeDesignationStatusBase<?> typeStatus) {
+        List<TypedEntityReference<TypeDesignationBase>> typeDesignationEntityrReferences = new ArrayList(typeDesignationWorkingSet.get(typeStatus));
+        Collections.sort(typeDesignationEntityrReferences, new TypedEntityComparator());
+        return typeDesignationEntityrReferences;
     }
 
 
