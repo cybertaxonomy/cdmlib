@@ -347,6 +347,9 @@ public class TypeDesignationSetManager {
                     boolean isNameTypeDesignation = false;
                     if(SpecimenOrObservationBase.class.isAssignableFrom(baseEntityRef.getType()) ){
                         workingsetBuilder.add(TagEnum.label, "Type:");
+                    } else{
+                        workingsetBuilder.add(TagEnum.label, "NameType:");
+                        isNameTypeDesignation = true;
                     }
                     if(!baseEntityRef.getLabel().isEmpty()){
                         workingsetBuilder.add(TagEnum.specimenOrObservation, baseEntityRef.getLabel(), baseEntityRef);
@@ -361,7 +364,7 @@ public class TypeDesignationSetManager {
                         boolean isPlural = typeDesignationWorkingSet.get(typeStatus).size() > 1;
                         if(!typeStatus.equals(NULL_STATUS)) {
 
-                            workingsetBuilder.add(TagEnum.label, typeStatus.getLabel() + (isPlural ? "s:" : ":"));
+                            workingsetBuilder.add(TagEnum.label, typeStatus.getLabel() + (isPlural ? "s:" : ","));
                          }
 
 
