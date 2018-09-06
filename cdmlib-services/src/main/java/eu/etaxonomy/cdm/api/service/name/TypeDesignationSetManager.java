@@ -535,8 +535,8 @@ public class TypeDesignationSetManager {
     /**
      * @return
      */
-    public Map<UUID,TypeDesignationBase> getTypeDesignations() {
-        return typeDesignations;
+    public Collection<TypeDesignationBase> getTypeDesignations() {
+        return typeDesignations.values();
     }
 
     /**
