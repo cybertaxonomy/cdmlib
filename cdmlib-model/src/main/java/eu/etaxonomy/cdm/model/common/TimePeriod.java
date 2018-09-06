@@ -408,6 +408,9 @@ public class TimePeriod implements Cloneable, Serializable {
                 result += String.valueOf(getEndYear());
             }
         }
+        if (isContinued()){
+            result += "+";
+        }
         return result;
     }
 

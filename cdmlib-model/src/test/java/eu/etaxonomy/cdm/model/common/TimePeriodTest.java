@@ -305,6 +305,8 @@ public class TimePeriodTest {
 		Assert.assertEquals("Year should be 1999", "1999", tp.getYear());
 		tp.setEndYear(2002);
 		Assert.assertEquals("Year should be 1999-2002", "1999-2002", tp.getYear());
+		tp.setContinued(true);
+		Assert.assertEquals("Year should be 1999+", "1999+", tp.getYear());
 	}
 
 
