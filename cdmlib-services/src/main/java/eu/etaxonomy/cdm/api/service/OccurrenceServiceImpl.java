@@ -747,7 +747,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                     if (derivative instanceof DnaSample) {
                         dto = new DNASampleDTO(derivative);
                     } else {
-                        dto = PreservedSpecimenDTO.newInstance(derivative);
+                        dto = new PreservedSpecimenDTO(derivative);
                     }
                     alreadyCollectedSpecimen.put(dto.getUuid(), dto);
                     dto.addAllDerivates(getDerivedUnitDTOsFor(dto, derivative, alreadyCollectedSpecimen));
@@ -862,7 +862,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                         derivedUnitDTO = new DNASampleDTO(derivedUnit);
                     } else {
                         derivedUnit = HibernateProxyHelper.deproxy(o, DerivedUnit.class);
-                        derivedUnitDTO = PreservedSpecimenDTO.newInstance(derivedUnit);
+                        derivedUnitDTO = new PreservedSpecimenDTO(derivedUnit);
                     }
                     if (alreadyCollectedSpecimen.get(derivedUnitDTO.getUuid()) == null){
                         alreadyCollectedSpecimen.put(derivedUnitDTO.getUuid(), derivedUnitDTO);
@@ -1034,7 +1034,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 if (specimen instanceof DnaSample){
                     originalDTO = new DNASampleDTO((DnaSample)specimen);
                 } else {
-                    originalDTO = PreservedSpecimenDTO.newInstance((DerivedUnit)specimen);
+                    originalDTO = new PreservedSpecimenDTO((DerivedUnit)specimen);
                 }
                 originalDTO.addDerivate(derivedUnitDTO);
                 fieldUnitDto = findFieldUnitDTO(originalDTO, fieldUnits, alreadyCollectedSpecimen);
