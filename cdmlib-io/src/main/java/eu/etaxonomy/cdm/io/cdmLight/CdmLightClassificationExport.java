@@ -1319,7 +1319,7 @@ public class CdmLightClassificationExport
                 if (text != null && text.getText() != null && (text.getText().equals("Type:") || text.getText().equals("NameType:"))){
                   //do nothing
                 } else if (text.getType().equals(TagEnum.reference)){
-                    homotypicalGroupTypeDesignationString.append(" [fide "+ text.getText() + "]");
+                    homotypicalGroupTypeDesignationString.append(text.getText());
                 }else if (text.getType().equals(TagEnum.typeDesignation)){
                     homotypicalGroupTypeDesignationString.append(text.getText().replace(").", "").replace("(", "").replace(")", "") );
                 } else{

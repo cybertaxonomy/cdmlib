@@ -21,8 +21,8 @@ public class Identification {
     private final String code;
     private final String date;
 
-    public Identification(String taxonName, String preferred, String date) {
-        this(taxonName, preferred, null, null, date);
+    public Identification(String taxonName, String preferred, String identifier, String date) {
+        this(taxonName, preferred, null, identifier, date);
     }
 
     public Identification(String scientificName, String preferred, String code, String identifier, String date) {

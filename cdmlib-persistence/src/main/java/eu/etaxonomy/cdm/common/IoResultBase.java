@@ -173,6 +173,7 @@ public abstract class IoResultBase implements Serializable{
      */
     public StringBuffer createReport() {
         StringBuffer report = new StringBuffer("");
+        addShortDescription(report);
         addErrorReport(report, "Errors", errors);
         addErrorReport(report, "Exceptions", exceptions);
         addErrorReport(report, "Warnings", warnings);
@@ -180,6 +181,16 @@ public abstract class IoResultBase implements Serializable{
     }
 
 
+
+
+
+    /**
+     * @param report
+     */
+    protected void addShortDescription(StringBuffer report) {
+        //do nothing
+
+    }
     /**
      * @param report
      * @param label
