@@ -177,7 +177,7 @@ public class TypeDesignationSetManager {
         finalString = null;
         Map<TypedEntityReference, TypeDesignationWorkingSet> byBaseEntityByTypeStatus = new HashMap<>();
 
-        this.typeDesignations.forEach((uuid, td) -> mapTypeDesignation(byBaseEntityByTypeStatus, td));
+        this.typeDesignations.values().forEach(td -> mapTypeDesignation(byBaseEntityByTypeStatus, td));
         orderedByTypesByBaseEntity = orderByTypeByBaseEntity(byBaseEntityByTypeStatus);
     }
 
