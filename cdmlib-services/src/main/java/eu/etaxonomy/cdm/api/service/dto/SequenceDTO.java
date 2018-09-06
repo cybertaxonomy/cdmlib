@@ -13,7 +13,6 @@ import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Set;
 
-import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.molecular.SequenceString;
@@ -29,7 +28,7 @@ public class SequenceDTO {
 
     private Media contigFile;
 
-    private SequenceString consensusSequence = SequenceString.NewInstance();
+    private SequenceString consensusSequence;
 
 
     private Boolean isBarcode = null;
@@ -47,7 +46,7 @@ public class SequenceDTO {
     private Set<SingleReadAlignment> singleReadAlignments = new HashSet<SingleReadAlignment>();
 
 
-    private DefinedTerm dnaMarker;
+    private String dnaMarker;
 
 
 
@@ -69,7 +68,7 @@ public class SequenceDTO {
         geneticAccessionNumber = seq.getGeneticAccessionNumber();
         boldProcessId = seq.getBoldProcessId();
         singleReadAlignments = seq.getSingleReadAlignments();
-        dnaMarker = seq.getDnaMarker();
+        dnaMarker = seq.getDnaMarker().getLabel();
         haplotype = seq.getHaplotype();
         citations = seq.getCitations();
         try{
@@ -176,7 +175,7 @@ public class SequenceDTO {
     /**
      * @return the dnaMarker
      */
-    public DefinedTerm getDnaMarker() {
+    public String getDnaMarker() {
         return dnaMarker;
     }
 
