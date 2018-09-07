@@ -28,7 +28,7 @@ public abstract class CdmCacher implements ICdmUuidCacher {
     @Autowired
     public CacheManager cacheManager;
 
-    public static final String DEFAULT_CACHE_NAME = "defaultCache"; //TODO compare with CacheConfiguration where the name for the default cache is 'default', Why another name here?
+    public static final String DEFAULT_CACHE_NAME = "cdmDefaultCache"; //TODO compare with CacheConfiguration where the name for the default cache is 'default', Why another name here?
 
     /**
      * Constructor which initialises a singleton {@link net.sf.ehcache.CacheManager}
