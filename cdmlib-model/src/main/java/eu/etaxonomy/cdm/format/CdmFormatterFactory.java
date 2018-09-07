@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 /**
  * Factory class that instantiates a matching ICdmFormatter for the given object
  * and configures the format according to the given formatKeys.
- * 
+ *
  * @author pplitzner
  * @since Nov 30, 2015
  *
@@ -35,7 +35,7 @@ public class CdmFormatterFactory {
 	/**
 	 * Returns a matching ICdmFormatter for the given object configured with the
 	 * given formatKeys
-	 * 
+	 *
 	 * @param object
 	 *            the object which should be formatted as a string
 	 * @param formatKeys
@@ -74,7 +74,7 @@ public class CdmFormatterFactory {
 	/**
 	 * Convenience method which directly formats the given object according to
 	 * the given formatKeys.
-	 * 
+	 *
 	 * @param object
 	 *            the object which should be formatted as a string
 	 * @param formatKeys

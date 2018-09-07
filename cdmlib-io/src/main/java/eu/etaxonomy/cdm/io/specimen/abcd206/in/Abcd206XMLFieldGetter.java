@@ -44,6 +44,13 @@ public class Abcd206XMLFieldGetter {
                         .equals(prefix + "SpecimenUnit")) {
                     types = results.item(k).getChildNodes();
                     for (int l = 0; l < types.getLength(); l++) {
+                        /*
+                         *NomenclaturalTypeDesignations>
+                         *<abcd21:NomenclaturalTypeDesignation>
+                         *<abcd21:TypeStatus>epitype</abcd21:TypeStatus>
+                         *</abcd21:NomenclaturalTypeDesignation>
+                         *</abcd21:NomenclaturalTypeDesignations>
+                         */
                         if (types.item(l).getNodeName().equals(prefix+ "NomenclaturalTypeDesignations")) {
                             ntds = types.item(l).getChildNodes();
                             for (int m = 0; m < ntds.getLength(); m++) {
@@ -58,10 +65,10 @@ public class Abcd206XMLFieldGetter {
                                             }
                                             dataHolder.getStatusList().add(getSpecimenTypeDesignationStatusByKey(type));
                                             typeFound=true;
-                                            path = ntd.item(l).getNodeName();
-                                            getHierarchie(ntd.item(l));
-                                            dataHolder.knownABCDelements.add(path);
-                                            path = "";
+                                          //  path = ntd.item(n).getNodeName();
+                                         //   getHierarchie(ntd.item(l));
+                                          //  dataHolder.knownABCDelements.add(path);
+                                           // path = "";
                                         }
                                     }
                                 }
@@ -74,6 +81,7 @@ public class Abcd206XMLFieldGetter {
                 }
             }
         } catch (NullPointerException e) {
+            System.err.println(e.getMessage());
             dataHolder.setStatusList(new ArrayList<SpecimenTypeDesignationStatus>());
         }
     }
@@ -210,7 +218,7 @@ public class Abcd206XMLFieldGetter {
                     // logger.info("TMP NAME P" + tmpName);
                     dataHolder.getIdentificationList().add(new Identification(tmpName, preferredFlag, dataHolder.getNomenclatureCode(), identifierStr, dateStr));
                 } else {
-                    dataHolder.getIdentificationList().add(new Identification(tmpName, preferredFlag, dateStr));
+                    dataHolder.getIdentificationList().add(new Identification(tmpName, preferredFlag,identifierStr, dateStr));
                 }
             }
         }
@@ -238,7 +246,7 @@ public class Abcd206XMLFieldGetter {
                             && dataHolder.getNomenclatureCode() != "") {
                         dataHolder.getIdentificationList().add(new Identification(tmpName, "0", dataHolder.getNomenclatureCode(), null, dateStr));
                     } else {
-                        dataHolder.getIdentificationList().add(new Identification(tmpName, "0", dateStr));
+                        dataHolder.getIdentificationList().add(new Identification(tmpName, "0", null, dateStr));
                     }
                 }
             }
@@ -276,6 +284,15 @@ public class Abcd206XMLFieldGetter {
 
         for (int k = 0; k < results.getLength(); k++) {
             if (results.item(k).getNodeName().equals(prefix + "Identifier")) {
+                /*
+                 * <abcd21:Identifiers>
+                 * <abcd21:Identifier>
+                 * <abcd21:PersonName>
+                 * <abcd21:FullName>R. Jahn</abcd21:FullName>
+                 * </abcd21:PersonName>
+                 * </abcd21:Identifier>
+                 * </abcd21:Identifiers>
+                 */
                 identifier = results.item(k).getChildNodes();
                 for (int l = 0; l < identifier.getLength(); l++) {
                     if (identifier.item(l).getNodeName().equals(prefix + "PersonName")) {
@@ -664,6 +681,16 @@ public class Abcd206XMLFieldGetter {
             dataHolder.latitude = null;
         }
         try {
+            group = root.getElementsByTagName(prefix + "CoordinateErrorDistanceInMeters");
+            path = group.item(0).getNodeName();
+            getHierarchie(group.item(0));
+            dataHolder.knownABCDelements.add(path);
+            path = "";
+            dataHolder.setGatheringCoordinateErrorMethod(group.item(0).getTextContent());
+        } catch (NullPointerException e) {
+            dataHolder.latitude = null;
+        }
+        try {
             group = root.getElementsByTagName(prefix + "Country");
             childs = group.item(0).getChildNodes();
             for (int i = 0; i < childs.getLength(); i++) {
@@ -843,7 +870,7 @@ public class Abcd206XMLFieldGetter {
      * @param root
      */
     protected void getMultimedia(Element root) {
-        NodeList group, multimedias, multimedia, creators, creator, copyRightNodes, iprNodes, textNodes, licences, copyrights;
+        NodeList group, multimedias, multimedia, creators, creator, copyRightNodes, iprNodes, textNodes, licenceNodes, licences, copyrights;
         try {
             group = root.getElementsByTagName(prefix + "MultiMediaObjects");
             for (int i = 0; i < group.getLength(); i++) {
@@ -853,61 +880,8 @@ public class Abcd206XMLFieldGetter {
                     if (multimedias.item(j).getNodeName().equals(prefix + "MultiMediaObject")) {
                         multimedia = multimedias.item(j).getChildNodes();
                         Map<String,String> mediaObjectMap = new HashMap<String, String>();
-                        String fileUri = "";
-                        for (int k = 0; k < multimedia.getLength(); k++) {
-                            if (multimedia.item(k).getNodeName().equalsIgnoreCase(prefix + "fileURI")) {
-                                fileUri = multimedia.item(k).getTextContent();
-                                mediaObjectMap.put("fileUri", fileUri);
-                                path = multimedia.item(k).getNodeName();
-                                getHierarchie(multimedia.item(k));
-                                dataHolder.knownABCDelements.add(path);
-                                path = "";
-                            } else if (multimedia.item(k).getNodeName().equalsIgnoreCase(prefix + "context")) {
-                                mediaObjectMap.put("Context", multimedia.item(k).getTextContent());
-                            } else if (multimedia.item(k).getNodeName().equalsIgnoreCase(prefix + "Creators")){
-                                String creatorString = "";
-                                creators = multimedia.item(k).getChildNodes();
-                                for (int l = 0; l < creators.getLength(); l++) {
 
-                                    if (creators.item(l).getNodeName().equalsIgnoreCase(prefix + "Creator")){
-                                        if (creatorString != ""){
-                                            creatorString += ", ";
-                                        }
-                                       creatorString += creators.item(l).getTextContent();
-                                    }
-                                }
-                                mediaObjectMap.put("Creators",creatorString);
-                            } else if (multimedia.item(k).getNodeName().equalsIgnoreCase(prefix + "Creator")){
-                                mediaObjectMap.put("Creators",multimedia.item(k).getTextContent());
-                            } else if (multimedia.item(k).getNodeName().equals("CreatedDate")){
-                                mediaObjectMap.put("CreatedDate",multimedia.item(k).getTextContent());
-                            } else if (multimedia.item(k).getNodeName().equalsIgnoreCase(prefix + "comment")){
-                                mediaObjectMap.put("Comment",multimedia.item(k).getTextContent());
-                            } else if (multimedia.item(k).getNodeName().equalsIgnoreCase(prefix + "IPR")){
-                                String copyRightString = "";
-                                iprNodes = multimedia.item(k).getChildNodes();
-                                for (int l = 0; l < iprNodes.getLength(); l++) {
-                                    if (iprNodes.item(l).getNodeName().equalsIgnoreCase(prefix + "Copyrights")){
-                                        copyRightNodes = iprNodes.item(l).getChildNodes();
-                                        for (int m = 0; m < copyRightNodes.getLength(); m++) {
-                                            if (copyRightNodes.item(l).getNodeName().equalsIgnoreCase(prefix + "Copyright")){
-                                                copyrights = copyRightNodes.item(l).getChildNodes();
-                                                for (int n = 0; n < copyrights.getLength(); n++){
-                                                    if (copyrights.item(n).getNodeName().equalsIgnoreCase(prefix + "text")){
-                                                           //TODO: decide whether this is the copyright owner or a description text
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-
-
-
-                              // TODO: mediaObjectMap.put("IPR",multimedia.item(k).getTextContent());
-                            }
-
-                        }
+                        String fileUri = extractMediaInformation(multimedia, mediaObjectMap);
                         if (fileUri != ""){
                             dataHolder.putMultiMediaObject(fileUri,mediaObjectMap);
                         }
@@ -917,6 +891,103 @@ public class Abcd206XMLFieldGetter {
         } catch (NullPointerException e) {
             logger.info(e);
         }
+    }
+
+
+    /**
+     * @param multimedia
+     * @param mediaObjectMap
+     * @param fileUri
+     * @return
+     */
+    private String extractMediaInformation(NodeList multimedia, Map<String, String> mediaObjectMap) {
+        NodeList creators;
+        NodeList copyRightNodes;
+        NodeList iprNodes;
+        NodeList licenceNodes;
+        NodeList license;
+        NodeList copyrights;
+        String fileUri = "";
+        for (int k = 0; k < multimedia.getLength(); k++) {
+            if (multimedia.item(k).getNodeName().equalsIgnoreCase(prefix + "fileURI")) {
+                fileUri = multimedia.item(k).getTextContent();
+                mediaObjectMap.put("fileUri", fileUri);
+                path = multimedia.item(k).getNodeName();
+                getHierarchie(multimedia.item(k));
+                dataHolder.knownABCDelements.add(path);
+                path = "";
+            } else if (multimedia.item(k).getNodeName().equalsIgnoreCase(prefix + "context")) {
+                mediaObjectMap.put("Context", multimedia.item(k).getTextContent());
+            } else if (multimedia.item(k).getNodeName().equalsIgnoreCase(prefix + "createDate")) {
+                mediaObjectMap.put("CreateDate", multimedia.item(k).getTextContent());
+            }else if (multimedia.item(k).getNodeName().equalsIgnoreCase(prefix + "Creators")){
+                String creatorString = "";
+                creators = multimedia.item(k).getChildNodes();
+                for (int l = 0; l < creators.getLength(); l++) {
+
+                    if (creators.item(l).getNodeName().equalsIgnoreCase(prefix + "Creator")){
+                        if (creatorString != ""){
+                            creatorString += ", ";
+                        }
+                       creatorString += creators.item(l).getTextContent();
+                    }
+                }
+                mediaObjectMap.put("Creators",creatorString);
+            } else if (multimedia.item(k).getNodeName().equalsIgnoreCase(prefix + "Creator")){
+                mediaObjectMap.put("Creators",multimedia.item(k).getTextContent());
+            } else if (multimedia.item(k).getNodeName().equals("CreatedDate")){
+                mediaObjectMap.put("CreatedDate",multimedia.item(k).getTextContent());
+            } else if (multimedia.item(k).getNodeName().equalsIgnoreCase(prefix + "comment")){
+                mediaObjectMap.put("Comment",multimedia.item(k).getTextContent());
+            } else if (multimedia.item(k).getNodeName().equalsIgnoreCase(prefix + "IPR")){
+                String copyRightString = "";
+                iprNodes = multimedia.item(k).getChildNodes();
+                for (int l = 0; l < iprNodes.getLength(); l++) {
+                    if (iprNodes.item(l).getNodeName().equalsIgnoreCase(prefix + "Copyrights")){
+                        copyRightNodes = iprNodes.item(l).getChildNodes();
+                        for (int m = 0; m < copyRightNodes.getLength(); m++) {
+                            if (copyRightNodes.item(l).getNodeName().equalsIgnoreCase(prefix + "Copyright")){
+                                copyrights = copyRightNodes.item(l).getChildNodes();
+                                for (int n = 0; n < copyrights.getLength(); n++){
+                                    if (copyrights.item(n).getNodeName().equalsIgnoreCase(prefix + "text")){
+                                        mediaObjectMap.put("Copyright", copyrights.item(n).getTextContent());
+                                    }
+                                }
+                            }
+                        }
+                    } else if (iprNodes.item(l).getNodeName().equalsIgnoreCase(prefix + "Licenses")){
+                        licenceNodes = iprNodes.item(l).getChildNodes();
+                        for (int m = 0; m < licenceNodes.getLength(); m++) {
+                            if (licenceNodes.item(l).getNodeName().equalsIgnoreCase(prefix + "License")){
+                                license = licenceNodes.item(l).getChildNodes();
+                                for (int n = 0; n < license.getLength(); n++){
+                                    if (license.item(n).getNodeName().equalsIgnoreCase(prefix + "Text")){
+                                        mediaObjectMap.put("License", license.item(n).getTextContent());
+                                    }else{
+                                        Node node = license.item(n);
+                                        NodeList children = node.getChildNodes();
+                                        for (int o = 0; o < children.getLength(); o++){
+                                            if (children.item(n).getNodeName().equalsIgnoreCase(prefix + "Text")){
+                                                mediaObjectMap.put("License", children.item(n).getTextContent());
+                                            }
+
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }else{
+                        System.err.println(iprNodes.item(l).getNodeName());
+                    }
+
+                }
+
+            } else{
+                System.err.println(multimedia.item(k).getNodeName());
+            }
+
+        }
+        return fileUri;
     }
 
     protected void getAssociatedUnitIds(Element root) {
@@ -1082,7 +1153,7 @@ public class Abcd206XMLFieldGetter {
                     if (children.item(j).getNodeName().equals(prefix + "DateTime")) {
                         NodeList dateTimes = children.item(j).getChildNodes();
                         for (int k = 0; k < dateTimes.getLength(); k++) {
-                            if (dateTimes.item(k).getNodeName().equals(prefix + "DateText")) {
+                            if (dateTimes.item(k).getNodeName().equals(prefix + "ISODateTimeBegin")) {
                                 path = dateTimes.item(k).getNodeName();
                                 getHierarchie(dateTimes.item(k));
                                 dataHolder.knownABCDelements.add(path);
@@ -1462,38 +1533,8 @@ public class Abcd206XMLFieldGetter {
                     if (multimedias.item(j).getNodeName().equals(prefix + "SiteImage")) {
                         multimedia = multimedias.item(j).getChildNodes();
                         Map<String,String> mediaObjectMap = new HashMap<String, String>();
-                        String fileUri = "";
-                        for (int k = 0; k < multimedia.getLength(); k++) {
+                        String fileUri = extractMediaInformation(multimedia, mediaObjectMap);
 
-
-                            if (multimedia.item(k).getNodeName().equalsIgnoreCase(prefix + "fileURI")) {
-                                fileUri = multimedia.item(k).getTextContent();
-                                mediaObjectMap.put("fileUri", fileUri);
-                                path = multimedia.item(k).getNodeName();
-                                getHierarchie(multimedia.item(k));
-                                dataHolder.knownABCDelements.add(path);
-                                path = "";
-                            } else if (multimedia.item(k).getNodeName().equalsIgnoreCase(prefix + "Context")) {
-                                mediaObjectMap.put("Context", multimedia.item(k).getTextContent());
-                            }else if (multimedia.item(k).getNodeName().equalsIgnoreCase(prefix + "Comment")) {
-                                mediaObjectMap.put("Comment", multimedia.item(k).getTextContent());
-                            } else if (multimedia.item(k).getNodeName().equalsIgnoreCase(prefix + "Creators")){
-                                String creatorString = "";
-                                creators = multimedia.item(k).getChildNodes();
-                                for (int l = 0; l < creators.getLength(); l++) {
-
-                                    if (creators.item(l).getNodeName().equalsIgnoreCase(prefix + "Creator")){
-                                        if (creatorString != ""){
-                                            creatorString += ", ";
-                                        }
-                                       creatorString += creators.item(l).getTextContent();
-                                    }
-                                }
-                                mediaObjectMap.put("Creators",creatorString);
-                            } else if (multimedia.item(k).getNodeName().equalsIgnoreCase(prefix + "Creator")){
-                                mediaObjectMap.put("Creators",multimedia.item(k).getTextContent());
-                            }
-                        }
                         if (fileUri != ""){
                             dataHolder.putGatheringMultiMediaObject(fileUri,mediaObjectMap);
                         }

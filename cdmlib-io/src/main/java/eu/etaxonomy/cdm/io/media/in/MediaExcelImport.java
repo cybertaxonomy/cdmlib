@@ -11,8 +11,8 @@ package eu.etaxonomy.cdm.io.media.in;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -68,7 +68,7 @@ public class MediaExcelImport
      * {@inheritDoc}
      */
     @Override
-    protected void analyzeRecord(HashMap<String, String> record, MediaExcelImportState state) {
+    protected void analyzeRecord(Map<String, String> record, MediaExcelImportState state) {
         // do nothing
     }
 
@@ -77,7 +77,7 @@ public class MediaExcelImport
      */
     @Override
     protected void firstPass(MediaExcelImportState state) {
-        HashMap<String, String> record = state.getOriginalRecord();
+        Map<String, String> record = state.getOriginalRecord();
         String line = "row " + state.getCurrentLine() + ": ";
         String linePure = "row " + state.getCurrentLine();
         System.out.println(linePure);
@@ -272,7 +272,7 @@ public class MediaExcelImport
      */
     private List<URI> getUrls(MediaExcelImportState state, String line) {
         List<URI> list = new ArrayList<>();
-        HashMap<String, String> record = state.getOriginalRecord();
+        Map<String, String> record = state.getOriginalRecord();
         for (String str : record.keySet()){
             if (str.equals("url") || str.matches("url_size\\d+") ){
                 String url = record.get(str);

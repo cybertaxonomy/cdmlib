@@ -95,7 +95,7 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 		ResultWrapper<Boolean> success = ResultWrapper.NewInstance(true);
 		String childName;
 		boolean obligatory;
-		String idNamespace = "TaxonRelation";
+		String idNamespace = "TaxonRelationDTO";
 
 		TcsXmlImportConfigurator config = state.getConfig();
 		Element elDataSet = super.getDataSetElement(config);

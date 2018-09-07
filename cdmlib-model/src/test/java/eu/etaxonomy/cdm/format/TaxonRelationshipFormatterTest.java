@@ -150,7 +150,7 @@ public class TaxonRelationshipFormatterTest {
         tags = formatter.getTaggedText(taxonRel, reverse, languages);
         str = TaggedCacheHelper.createString(tags);
         System.out.println(str);
-        Assert.assertEquals(inverseSymbol + " ?\"Abies alba\" auct., err. sec. Cheek 1919: 123", str);
+        Assert.assertEquals(inverseSymbol + " ?\u202F\"Abies alba\" auct., err. sec. Cheek 1919: 123", str);
 
     }
 

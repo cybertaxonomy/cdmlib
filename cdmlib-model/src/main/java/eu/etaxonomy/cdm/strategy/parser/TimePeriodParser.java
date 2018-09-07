@@ -45,16 +45,16 @@ public class TimePeriodParser {
 	//case fl. 1806 or c. 1806 or fl. 1806?
 	private static final Pattern prefixedYearPattern =  Pattern.compile("(fl|c)\\.\\s*\\d{4}(\\s*-\\s*\\d{4})?\\??");
 	//standard
-	private static final Pattern standardPattern =  Pattern.compile("\\s*\\d{2,4}(\\s*-(\\s*\\d{2,4})?)?");
+	private static final Pattern standardPattern =  Pattern.compile("\\s*\\d{2,4}(\\s*-(\\s*\\d{2,4})?|\\+)?");
 	private static final String strDotDate = "[0-3]?\\d\\.[01]?\\d\\.\\d{4,4}";
-	private static final String strDotDatePeriodPattern = String.format("%s(\\s*-\\s*%s?)?", strDotDate, strDotDate);
+	private static final String strDotDatePeriodPattern = String.format("%s(\\s*-\\s*%s|\\+)?", strDotDate, strDotDate);
 	private static final Pattern dotDatePattern =  Pattern.compile(strDotDatePeriodPattern);
 	private static final String strSlashDate = "[0-3]?\\d\\/[01]?\\d\\/\\d{4,4}";
-	private static final String strSlashDatePeriodPattern = String.format("%s(\\s*-\\s*%s?)?", strSlashDate, strSlashDate);
+	private static final String strSlashDatePeriodPattern = String.format("%s(\\s*-\\s*%s|\\+)?", strSlashDate, strSlashDate);
 	private static final Pattern slashDatePattern =  Pattern.compile(strSlashDatePeriodPattern);
 	private static final Pattern lifeSpanPattern =  Pattern.compile(String.format("%s--%s", firstYearPattern, firstYearPattern));
 	private static final String strMonthes = "((Jan|Feb|Aug|Sept?|Oct(ober)?|Nov|Dec)\\.?|(Mar(ch)?|Apr(il)?|May|June?|July?))";
-	private static final String strDateWithMonthes = "([0-3]?\\d" + dotOrWs + ")?" + strMonthes + dotOrWs + "\\d{4,4}";
+	private static final String strDateWithMonthes = "([0-3]?\\d" + dotOrWs + ")?" + strMonthes + dotOrWs + "\\d{4,4}\\+?";
 	private static final Pattern dateWithMonthNamePattern = Pattern.compile(strDateWithMonthes);
 
 	public static <T extends TimePeriod> T parseString(T timePeriod, String periodString){
@@ -72,14 +72,14 @@ public class TimePeriodParser {
 
 		result.setFreeText(null);
 
-		//case "1806"[1807];
+		//case "1806"[1807];  => TODO this should (and is?) handled in parse verbatim, should be removed here
 		if (uncorrectYearPatter.matcher(periodString).matches()){
 			result.setFreeText(periodString);
 			String realYear = periodString.split("\\[")[1];
 			realYear = realYear.replace("]", "");
 			result.setStartYear(Integer.valueOf(realYear));
 			result.setFreeText(periodString);
-		//case fl. 1806 or c. 1806 or fl. 1806?
+		//case fl. 1806 or c. 1806 or fl. 1806?  => TODO questionable if this should really be handled here, fl. probably stands for flowering and is not part of the date but of the date  context. What stands "c." for? Used by Markup import?
 		}else if(prefixedYearPattern.matcher(periodString).matches()){
 			result.setFreeText(periodString);
 			Matcher yearMatcher = firstYearPattern.matcher(periodString);
@@ -199,13 +199,14 @@ public class TimePeriodParser {
             result.setFreeText(periodString);
         }else {
             try {
+                dtEnd = handleContinued(dates, dtEnd);
                 //start
-                if (! StringUtils.isBlank(dates[0])){
+                if (isNotBlank(dates[0])){
                     dtStart = parseSingleSlashDate(dates[0].trim());
                 }
 
                 //end
-                if (dates.length >= 2 && ! StringUtils.isBlank(dates[1])){
+                if (dates.length >= 2 && isNotBlank(dates[1])){
                     dtEnd = parseSingleSlashDate(dates[1].trim());
                 }
 
@@ -216,7 +217,6 @@ public class TimePeriodParser {
                 result.setFreeText(periodString);
             }
         }
-
     }
 
 
@@ -234,9 +234,10 @@ public class TimePeriodParser {
 			result.setFreeText(periodString);
 		}else {
 			try {
+			    dtEnd = handleContinued(dates, dtEnd);
 				//start
 				if (! StringUtils.isBlank(dates[0])){
-					dtStart = parseSingleDotDate(dates[0].trim());
+				    dtStart = parseSingleDotDate(dates[0].trim());
 				}
 
 				//end
@@ -253,6 +254,21 @@ public class TimePeriodParser {
 		}
 	}
 
+    /**
+     * Checks if dates is a "continued" date (e.g. 2017+).
+     * If yes, dtEnd is returned as {@link TimePeriod#CONTINUED} and dates[0] is shortened by "+".
+     * @param dates
+     * @param dtEnd
+     * @return
+     */
+    protected static Partial handleContinued(String[] dates, Partial dtEnd) {
+        if (dates.length == 1 && dates[0].endsWith("+") && dates[0].length()>1){
+            dates[0] = dates[0].substring(0, dates[0].length()-1).trim();
+            dtEnd = TimePeriod.CONTINUED;
+        }
+        return dtEnd;
+    }
+
 
     /**
      * @param dateString
@@ -260,8 +276,6 @@ public class TimePeriodParser {
      */
     private static void parseDateWithMonthName(String dateString, TimePeriod result) {
         String[] dates = dateString.split("(\\.|\\s+)+");
-
-
 
         if (dates.length > 3 || dates.length < 2){
             logger.warn("Not 2 or 3 date parts in date string: " + dateString);
@@ -272,6 +286,10 @@ public class TimePeriodParser {
             String strMonth = hasNoDay? dates[0] : dates[1];
             String strDay = hasNoDay? null : dates[0];
             try {
+                if (strYear.endsWith("+")){
+                    strYear = strYear.substring(0, strYear.length()-1).trim();
+                    result.setContinued(true);
+                }
                 Integer year = Integer.valueOf(strYear.trim());
                 Integer month = monthNrFormName(strMonth.trim());
                 Integer day = strDay == null ? null : Integer.valueOf(strDay.trim());
@@ -350,7 +368,7 @@ public class TimePeriodParser {
 
     }
 
-
+    //TODO "continued" not yet handled, probably looks different here (e.g. 2017--x)
     private static void parseLifeSpanPattern(String periodString, TimePeriod result) {
 
 		try{
@@ -381,6 +399,7 @@ public class TimePeriodParser {
 			logger.warn("More than 1 '-' in period String: " + periodString);
 		}else {
 			try {
+			    dtEnd = handleContinued(years, dtEnd);
 				//start
 				if (! StringUtils.isBlank(years[0])){
 					dtStart = parseSingleDate(years[0].trim());
@@ -607,8 +626,13 @@ public class TimePeriodParser {
      * @return the parsed period
      */
     private static TimePeriod parseEnglishDate(String strFrom, String strTo, boolean isAmerican) {
-        Partial dateFrom = parseSingleEnglishDate(strFrom, isAmerican);
         Partial dateTo = parseSingleEnglishDate(strTo, isAmerican);
+        if (strFrom.endsWith("+") && dateTo == null){
+            dateTo = TimePeriod.CONTINUED;
+            strFrom = strFrom.substring(0, strFrom.length()-1).trim();
+        }
+
+        Partial dateFrom = parseSingleEnglishDate(strFrom, isAmerican);
         TimePeriod result = TimePeriod.NewInstance(dateFrom, dateTo);
         return result;
     }
@@ -641,6 +665,14 @@ public class TimePeriodParser {
         Partial result = makePartialFromDateParts(year, month, day);
 
         return result;
+    }
+
+
+    private static boolean isBlank(String str){
+        return StringUtils.isBlank(str);
+    }
+    private static boolean isNotBlank(String str){
+        return StringUtils.isNotBlank(str);
     }
 
 }

@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -984,7 +983,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         List<Restriction<?>> restrictions;
         Pager<TaxonName> result;
 
-        Logger.getLogger("org.hibernate.SQL").setLevel(Level.TRACE);
+        //Logger.getLogger("org.hibernate.SQL").setLevel(Level.TRACE);
 
         restrictions = Arrays.asList(new Restriction<String>("typeDesignations.typeName.titleCache", Operator.AND, null, "Name1"));
         result = nameService.findByTitleWithRestrictions(null, "Name3", MatchMode.EXACT, restrictions, null, null, null, null);

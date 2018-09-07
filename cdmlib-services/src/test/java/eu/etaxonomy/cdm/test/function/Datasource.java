@@ -17,7 +17,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -422,7 +421,7 @@ public class Datasource {
 			UUID uuid2 = botName2.getUuid();
 			try {
 				Logger loggerTrace = Logger.getLogger("org.hibernate.type");
-				loggerTrace.setLevel(Level.TRACE);
+				//loggerTrace.setLevel(Level.TRACE);
 				System.out.println(logger.getName());
 
 				appCtr.getNameService().save(botName1);

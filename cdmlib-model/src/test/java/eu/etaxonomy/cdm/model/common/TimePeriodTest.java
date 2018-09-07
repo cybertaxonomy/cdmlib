@@ -305,6 +305,8 @@ public class TimePeriodTest {
 		Assert.assertEquals("Year should be 1999", "1999", tp.getYear());
 		tp.setEndYear(2002);
 		Assert.assertEquals("Year should be 1999-2002", "1999-2002", tp.getYear());
+		tp.setContinued(true);
+		Assert.assertEquals("Year should be 1999+", "1999+", tp.getYear());
 	}
 
 
@@ -320,7 +322,48 @@ public class TimePeriodTest {
 		Assert.assertEquals("3.xx.1788-1799", tp1.toString());
 		tp1.setEndMonth(11);
 		Assert.assertEquals("3.xx.1788-11.1799", tp1.toString());
+		tp1.setContinued(true);
+		Assert.assertEquals("3.xx.1788+", tp1.toString());
+
+		tp1 = TimePeriod.NewInstance(1788,1799);
+		tp1.setContinued(true);
+        Assert.assertEquals("1788+", tp1.toString());
+        tp1 = TimePeriod.NewInstance((Integer)null);
+        tp1.setContinued(true);
+        //this is still undefined, could be something like 'xxxx+' in future
+        Assert.assertEquals("+", tp1.toString());
 	}
+
+	@Test
+	public void testContinued() {
+	    TimePeriod tp1 = TimePeriod.NewInstance(2017, 2018);
+	    Assert.assertEquals((Integer)2018, tp1.getEndYear());
+	    tp1.setContinued(true);
+	    Assert.assertNull("The end should be removed and also the CONTINUED constant should be returned for getEnd()", tp1.getEnd());
+	    Assert.assertTrue(tp1.isContinued());
+        Assert.assertEquals(null, tp1.getEndYear());
+	    Assert.assertEquals(null, tp1.getEndMonth());
+	    Assert.assertEquals(null, tp1.getEndDay());
+
+	    //set continued to false (will not recover old end value)
+	    tp1.setContinued(false);
+	    Assert.assertFalse(tp1.isContinued());
+        Assert.assertEquals(null, tp1.getEndYear());
+        Assert.assertEquals(null, tp1.getEndMonth());
+        Assert.assertEquals(null, tp1.getEndDay());
+
+        //replace continued by end
+        tp1 = TimePeriod.NewInstance(2017, 2018);
+        tp1.setContinued(true);
+        Assert.assertTrue(tp1.isContinued());
+        tp1.setEndMonth(month);
+	    Assert.assertFalse(tp1.isContinued());
+        Assert.assertEquals(null, tp1.getEndYear());
+        Assert.assertEquals(month, tp1.getEndMonth());
+        Assert.assertEquals(null, tp1.getEndDay());
+
+	}
+
 
 
 	/**

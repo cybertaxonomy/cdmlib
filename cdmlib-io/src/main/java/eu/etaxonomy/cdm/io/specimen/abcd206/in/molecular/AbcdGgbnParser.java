@@ -197,9 +197,14 @@ public class AbcdGgbnParser {
 
                     //consensus sequence
                     NodeList sequencingsList = amplificationElement.getElementsByTagName(prefix+"Sequencings");
-                    if(sequencingsList.item(0)!=null && sequencingsList.item(0) instanceof Element){
-                        parseAmplificationSequencings((Element)sequencingsList.item(0), amplification, amplificationResult, dnaSample, state);
+                    if(sequencingsList.item(0)!=null) {
+                        if ( sequencingsList.item(0) instanceof Element){
+                            Element el = (Element)sequencingsList.item(0);
+                            parseAmplificationSequencings(el, amplification, amplificationResult, dnaSample, state);
+                        }
                     }
+
+
                     parseAmplificationPrimers(amplificationElement.getElementsByTagName(prefix+"AmplificationPrimers"));
                 }
             }
@@ -244,7 +249,7 @@ public class AbcdGgbnParser {
                 //contig file URL
                 NodeList consensusSequenceChromatogramFileURIList = sequencing.getElementsByTagName(prefix+"consensusSequenceChromatogramFileURI");
                 URI uri = AbcdParseUtility.parseFirstUri(consensusSequenceChromatogramFileURIList, report);
-                if (uri.toString().endsWith("fasta")){
+                if (uri != null && uri.toString().endsWith("fasta")){
                     state.putSequenceDataStableIdentifier(uri);
                 }else{
                     Media contigFile = Media.NewInstance(uri, null, null, null);

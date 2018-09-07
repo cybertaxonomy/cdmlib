@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.hibernate.FlushMode;
 import org.hibernate.Hibernate;
@@ -260,7 +259,7 @@ public class AdvancedBeanInitializerTest extends CdmTransactionalIntegrationTest
 
         assureSessionClear();
 
-        Logger.getLogger(AdvancedBeanInitializer.class).setLevel(Level.TRACE);
+        //Logger.getLogger(AdvancedBeanInitializer.class).setLevel(Level.TRACE);
 
         Taxon taxon = (Taxon)taxonDao.load(taxonUuid, Arrays.asList("$"));
         assertTrue(Hibernate.isInitialized(taxon.getName()));
@@ -276,7 +275,7 @@ public class AdvancedBeanInitializerTest extends CdmTransactionalIntegrationTest
 
         assureSessionClear();
 
-        Logger.getLogger(AdvancedBeanInitializer.class).setLevel(Level.TRACE);
+        //Logger.getLogger(AdvancedBeanInitializer.class).setLevel(Level.TRACE);
 
         deacivatedAutoIntitializers = clearAutoinitializers();
         // load bean with autoinitializers deactivated

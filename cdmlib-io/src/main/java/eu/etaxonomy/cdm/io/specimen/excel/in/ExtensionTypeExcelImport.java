@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.io.specimen.excel.in;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -49,7 +49,7 @@ public class ExtensionTypeExcelImport
 	}
 
 	@Override
-	protected void analyzeRecord(HashMap<String, String> record, SpecimenCdmExcelImportState state) {
+	protected void analyzeRecord(Map<String, String> record, SpecimenCdmExcelImportState state) {
 		Set<String> keys = record.keySet();
 
     	NamedAreaLevellRow row = new NamedAreaLevellRow();
