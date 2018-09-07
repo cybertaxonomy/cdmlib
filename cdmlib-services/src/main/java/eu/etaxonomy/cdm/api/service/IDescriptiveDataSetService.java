@@ -10,6 +10,7 @@ import eu.etaxonomy.cdm.api.service.dto.RowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenRowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonRowWrapperDTO;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
@@ -122,6 +123,17 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      * @return either the found taxon description or a newly created one
      */
     public TaxonDescription findDefaultTaxonDescription(UUID descriptiveDataSetUuid, UUID taxonNodeUuid, boolean create);
+
+    /**
+     * Creates a new taxon description with the features defined in the dataset for the
+     * taxon associated with the given taxon node.
+     * @param descriptiveDataSetUuid the uuid of the dataset defining the features
+     * @param taxonNodeUuid the uuid of the taxon node that links to the taxon
+     * @param markerType the type of the description
+     * @param markerFlag the flag of the marker
+     * @return a taxon row wrapper of the description with the features defined in the data set
+     */
+    public TaxonRowWrapperDTO createTaxonDescription(UUID dataSetUuid, UUID taxonNodeUuid, MarkerType markerType, boolean markerFlag);
 
     /**
      * Loads all taxon nodes that match the filter set defined in the

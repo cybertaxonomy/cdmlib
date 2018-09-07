@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitorThread;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
@@ -278,9 +279,20 @@ public class DescriptiveDataSetService
         if(!create){
             return null;
         }
-        //description not yet added to dataset -> create a new one
+        TaxonRowWrapperDTO taxonRowWrapperDTO = createTaxonDescription(descriptiveDataSetUuid, taxonNodeUuid, MarkerType.USE(), true);
+        TaxonDescription newTaxonDescription = taxonRowWrapperDTO.getDescription();
+        return newTaxonDescription;
+    }
+
+    @Override
+    public TaxonRowWrapperDTO createTaxonDescription(UUID dataSetUuid, UUID taxonNodeUuid, MarkerType markerType, boolean markerFlag){
+        DescriptiveDataSet dataSet = load(dataSetUuid);
+        TaxonNode taxonNode = taxonNodeService.load(taxonNodeUuid, Arrays.asList("taxon"));
         TaxonDescription newTaxonDescription = TaxonDescription.NewInstance(taxonNode.getTaxon());
         newTaxonDescription.setTitleCache("[Default] "+dataSet.getLabel()+": "+newTaxonDescription.generateTitle(), true); //$NON-NLS-2$
+        if(markerType!=null){
+            newTaxonDescription.addMarker(Marker.NewInstance(markerType, markerFlag));
+        }
         dataSet.getDescriptiveSystem().getDistinctFeatures().forEach(wsFeature->{
             if(wsFeature.isSupportsCategoricalData()){
                 newTaxonDescription.addElement(CategoricalData.NewInstance(wsFeature));
@@ -289,7 +301,9 @@ public class DescriptiveDataSetService
                 newTaxonDescription.addElement(QuantitativeData.NewInstance(wsFeature));
             }
         });
-        return newTaxonDescription;
+        dataSet.addDescription(newTaxonDescription);
+
+        return createTaxonRowWrapper(newTaxonDescription, dataSet);
     }
 
     @Override
