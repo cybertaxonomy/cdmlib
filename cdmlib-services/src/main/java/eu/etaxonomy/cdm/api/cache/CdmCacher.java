@@ -101,6 +101,11 @@ public abstract class CdmCacher implements ICdmUuidCacher {
         return defaultCache;
     }
 
+    @Override
+    public void dispose(){
+        cacheManager.getCache(DEFAULT_CACHE_NAME).dispose();
+    }
+
     /**
      * Gets the cache element corresponding to the given {@link java.util.UUID}
      *
