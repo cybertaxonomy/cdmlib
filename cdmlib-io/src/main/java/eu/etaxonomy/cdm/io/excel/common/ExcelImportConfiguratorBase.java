@@ -31,6 +31,9 @@ public abstract class ExcelImportConfiguratorBase
 	private byte[] stream;
 	private boolean deduplicateReferences = false;
 	private boolean deduplicateAuthors = false;
+
+	private String worksheetName = null;
+
 	/**
 	 * @param url
 	 * @param destination
@@ -65,32 +68,29 @@ public abstract class ExcelImportConfiguratorBase
 	}
 	 public byte[] getStream(){
 	        return stream;
-	    }
+    }
+    public void setStream(byte[] stream) {
+        this.stream = stream;
+    }
 
+    public boolean isDeduplicateReferences() {
+        return deduplicateReferences;
+    }
+    public void setDeduplicateReferences(boolean deduplicateReferences) {
+        this.deduplicateReferences = deduplicateReferences;
+    }
 
-	    public void setStream(byte[] stream) {
-	        this.stream = stream;
-	    }
+    public boolean isDeduplicateAuthors() {
+        return deduplicateAuthors;
+    }
+    public void setDeduplicateAuthors(boolean deduplicateAuthors) {
+        this.deduplicateAuthors = deduplicateAuthors;
+    }
 
-        /**
-         * @return the deduplicateReferences
-         */
-        public boolean isDeduplicateReferences() {
-            return deduplicateReferences;
-        }
-
-        /**
-         * @param deduplicateReferences the deduplicateReferences to set
-         */
-        public void setDeduplicateReferences(boolean deduplicateReferences) {
-            this.deduplicateReferences = deduplicateReferences;
-        }
-
-        public boolean isDeduplicateAuthors() {
-            return deduplicateAuthors;
-        }
-
-        public void setDeduplicateAuthors(boolean deduplicateAuthors) {
-            this.deduplicateAuthors = deduplicateAuthors;
-        }
+    public String getWorksheetName() {
+        return worksheetName;
+    }
+    public void setWorksheetName(String worksheetName) {
+        this.worksheetName = worksheetName;
+    }
 }

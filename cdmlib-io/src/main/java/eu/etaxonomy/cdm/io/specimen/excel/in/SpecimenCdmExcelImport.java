@@ -98,13 +98,11 @@ public class SpecimenCdmExcelImport
 	private static final String REFERENCE_SYSTEM_COLUMN = "(?i)(ReferenceSystem)";
 	private static final String ERROR_RADIUS_COLUMN = "(?i)(ErrorRadius)";
 
-
 	private static final String COLLECTORS_NUMBER_COLUMN = "(?i)((Collectors|Field)Number)";
 	private static final String ECOLOGY_COLUMN = "(?i)(Ecology|Habitat)";
 	private static final String PLANT_DESCRIPTION_COLUMN = "(?i)(PlantDescription)";
 	private static final String FIELD_NOTES_COLUMN = "(?i)(FieldNotes)";
 	private static final String SEX_COLUMN = "(?i)(Sex)";
-
 
 	private static final String ACCESSION_NUMBER_COLUMN = "(?i)(AccessionNumber)";
 	private static final String BARCODE_COLUMN = "(?i)(Barcode)";
@@ -112,14 +110,11 @@ public class SpecimenCdmExcelImport
 	private static final String COLLECTION_COLUMN = "(?i)(Collection)";
 	private static final String UNIT_NOTES_COLUMN = "(?i)((Unit)?Notes)";
 
-
 	private static final String TYPE_CATEGORY_COLUMN = "(?i)(TypeCategory)";
 	private static final String TYPIFIED_NAME_COLUMN = "(?i)(TypifiedName|TypeOf)";
 
-
 	private static final String SOURCE_COLUMN = "(?i)(Source)";
 	private static final String ID_IN_SOURCE_COLUMN = "(?i)(IdInSource)";
-
 
 	private static final String DETERMINATION_AUTHOR_COLUMN = "(?i)(Author)";
 	private static final String DETERMINATION_MODIFIER_COLUMN = "(?i)(DeterminationModifier)";
@@ -128,13 +123,9 @@ public class SpecimenCdmExcelImport
 	private static final String DETERMINATION_NOTES_COLUMN = "(?i)(DeterminationNote)";
 	private static final String EXTENSION_COLUMN = "(?i)(Ext(ension)?)";
 
-
 	public SpecimenCdmExcelImport() {
 		super();
 	}
-
-
-
 
 	@Override
 	protected void analyzeSingleValue(KeyValue keyValue, SpecimenCdmExcelImportState state) {
@@ -246,7 +237,6 @@ public class SpecimenCdmExcelImport
 			}else{
 				logger.warn("Extension without postfix not yet implemented");
 			}
-
 		}else {
 			state.setUnsuccessfull();
 			logger.error("Unexpected column header " + keyValue.originalKey);
@@ -254,7 +244,6 @@ public class SpecimenCdmExcelImport
 
     	return;
 	}
-
 
 	@Override
 	protected void firstPass(SpecimenCdmExcelImportState state) {
@@ -269,7 +258,6 @@ public class SpecimenCdmExcelImport
 			type = SpecimenOrObservationType.DerivedUnit;
 		}
 		DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(type);
-
 
 		Language lang = Language.DEFAULT();
 		if (StringUtils.isNotBlank(row.getLanguage())){
@@ -373,8 +361,6 @@ public class SpecimenCdmExcelImport
 			return;
 
 		}
-
-
 	}
 
 	private void handleAreas(DerivedUnitFacade facade, SpecimenRow row, SpecimenCdmExcelImportState state) {
@@ -432,7 +418,6 @@ public class SpecimenCdmExcelImport
 			}
 		}
 
-
 		for (DeterminationLight determinationLight : row.getDetermination()){
 			Taxon taxon;
 			if (! hasCommonTaxonInfo){
@@ -456,7 +441,6 @@ public class SpecimenCdmExcelImport
 					if (state.getConfig().isUseMaterialsExaminedForIndividualsAssociations()){
 						feature = Feature.MATERIALS_EXAMINED();
 					}
-
 					indivAssociciation.setFeature(feature);
 				}
 				if (state.getConfig().isDeterminationsAreDeterminationEvent()){
@@ -497,7 +481,7 @@ public class SpecimenCdmExcelImport
 
 		//name
 		INonViralName name;
-		INonViralNameParser parser = NonViralNameParserImpl.NewInstance();
+		INonViralNameParser<INonViralName> parser = NonViralNameParserImpl.NewInstance();
 		NomenclaturalCode nc = state.getConfig().getNomenclaturalCode();
 		if (StringUtils.isNotBlank(commonDetermination.fullName)){
 			name = parser.parseFullName(commonDetermination.fullName, nc, rank);
@@ -561,11 +545,7 @@ public class SpecimenCdmExcelImport
 
 		//return
 		return taxon;
-
 	}
-
-
-
 
 	private void setAuthorship(INonViralName name, String author, INonViralNameParser<INonViralName> parser) {
 		if (name.isBotanical() || name.isZoological()){
@@ -579,12 +559,9 @@ public class SpecimenCdmExcelImport
 		}
 	}
 
-
-
 	/**
 	 * This method tries to find the best matching taxon depending on the import configuration,
 	 * the taxon name information and the concept information available.
-	 *
 	 *
 	 * @param state
 	 * @param determinationLight
@@ -635,7 +612,6 @@ public class SpecimenCdmExcelImport
 			if (StringUtils.isNotBlank(computedTitleCache)){
 				titleCache = computedTitleCache;
 			}
-
 		}
 		return titleCache;
 	}
@@ -700,9 +676,7 @@ public class SpecimenCdmExcelImport
 		}else{
 			return null;
 		}
-
 	}
-
 
 	private DeterminationEvent makeDeterminationEvent(SpecimenCdmExcelImportState state, DeterminationLight determination, Taxon taxon) {
 		DeterminationEvent event = DeterminationEvent.NewInstance();
@@ -761,7 +735,7 @@ public class SpecimenCdmExcelImport
 			return null;
 		}
 		AgentBase<?> collector = facade.getCollector();
-		List<Person> collectors = new ArrayList<Person>();
+		List<Person> collectors = new ArrayList<>();
 		if (collector.isInstanceOf(Team.class) ){
 			Team team = CdmBase.deproxy(collector, Team.class);
 			collectors.addAll(team.getTeamMembers());
@@ -819,8 +793,6 @@ public class SpecimenCdmExcelImport
 		return result;
 	}
 
-
-
 	private Collection getOrMakeCollection(SpecimenCdmExcelImportState state, String collectionCode, String collectionString) {
 		Collection result = state.getCollection(collectionCode);
 		if (result == null){
@@ -848,7 +820,6 @@ public class SpecimenCdmExcelImport
 			NonViralNameParserImpl parser = NonViralNameParserImpl.NewInstance();
 			NomenclaturalCode code = state.getConfig().getNomenclaturalCode();
 			result = (TaxonName)parser.parseFullName(name, code, null);
-
 		}
 		if (result != null){
 			state.putName(name, result);
@@ -869,8 +840,6 @@ public class SpecimenCdmExcelImport
 		} catch (UndefinedTransformerMethodException e) {
 			throw new RuntimeException("getSpecimenTypeDesignationStatusByKey not yet implemented");
 		}
-
-
 	}
 
 
@@ -899,8 +868,6 @@ public class SpecimenCdmExcelImport
 			}
 		}
 
-
-
 		// lat/ long /error
 		try {
 			String longitude = row.getLongitude();
@@ -921,13 +888,8 @@ public class SpecimenCdmExcelImport
 			String message = "Problems when parsing exact location for line %d";
 			message = String.format(message, state.getCurrentLine());
 			logger.warn(message);
-
 		}
-
-
-
 	}
-
 
 	/*
 	 * Set the current Country
@@ -972,7 +934,7 @@ public class SpecimenCdmExcelImport
 
 
 	@Override
-	protected String getWorksheetName() {
+	protected String getWorksheetName(SpecimenCdmExcelImportConfigurator config) {
 		return WORKSHEET_NAME;
 	}
 
@@ -981,33 +943,19 @@ public class SpecimenCdmExcelImport
 		return false;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.excel.common.ExcelTaxonOrSpecimenImportBase#createDataHolderRow()
-	 */
 	@Override
 	protected SpecimenRow createDataHolderRow() {
 		return new SpecimenRow();
 	}
 
-
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IoStateBase)
-	 */
 	@Override
 	protected boolean doCheck(SpecimenCdmExcelImportState state) {
 		logger.warn("Validation not yet implemented for " + this.getClass().getSimpleName());
 		return true;
 	}
 
-
-
 	@Override
 	protected boolean isIgnore(SpecimenCdmExcelImportState state) {
 		return !state.getConfig().isDoSpecimen();
 	}
-
-
 }

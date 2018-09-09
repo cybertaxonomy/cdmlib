@@ -137,7 +137,7 @@ public class ExtensionTypeExcelImport
 	}
 
 	@Override
-    protected String getWorksheetName() {
+    protected String getWorksheetName(SpecimenCdmExcelImportConfigurator config) {
 		return WORKSHEET_NAME;
 	}
 

@@ -81,7 +81,7 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
 		    source = state.getConfig().getSource();
 		}
 
-		String sheetName = getWorksheetName();
+		String sheetName = getWorksheetName(state.getConfig());
 
 		if (data != null){
             try {
@@ -161,11 +161,14 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
 	}
 
 	/**
-	 * To define a worksheet name override this method. Otherwise the first worksheet is taken.
+	 * To define a worksheet name other then the one defined in the configurator
+	 * override this method with a non <code>null</code> return value.
+	 * If <code>null</code> is returned the first worksheet is taken.
+
 	 * @return worksheet name. <code>null</null> if no worksheet is defined.
 	 */
-	protected String getWorksheetName() {
-		return null;
+	protected String getWorksheetName(CONFIG config) {
+		return config.getWorksheetName();
 	}
 
 	@Override
