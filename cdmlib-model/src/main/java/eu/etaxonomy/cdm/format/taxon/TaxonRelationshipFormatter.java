@@ -198,7 +198,7 @@ public class TaxonRelationshipFormatter {
             Team team = CdmBase.deproxy(author, Team.class);
             String result = null;
             int n = team.getTeamMembers().size();
-            int index = 0;
+            int index = 1;
             if (team.isHasMoreMembers()){
                 n++;
             }

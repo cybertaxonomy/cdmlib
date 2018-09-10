@@ -17,6 +17,7 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.format.taxon.TaxonRelationshipFormatter;
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
@@ -53,7 +54,10 @@ public class TaxonRelationshipFormatterTest {
     private TaxonRelationshipFormatter formatter;
     private boolean reverse;
 
-    Person toNameAuthor;
+    private Person toNameAuthor;
+    private Person macFarlane;
+    private Person cheek;
+    private Person toSecAuthor;
     private List<Language> languages;
 
 
@@ -85,18 +89,21 @@ public class TaxonRelationshipFormatterTest {
         fromSec = ReferenceFactory.newGeneric();
         fromSec.setTitle("From Sec");
         String initials = "J.M.";
-        fromSec.setAuthorship(Person.NewInstance(null, "Macfarlane", initials, null));
+        macFarlane = Person.NewInstance(null, "Macfarlane", initials, null);
+        fromSec.setAuthorship(macFarlane);
         fromSec.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1918));
 
         relSec = ReferenceFactory.newGeneric();
         relSec.setTitle("From rel reference");
         initials = null; //"M.R.";
-        relSec.setAuthorship(Person.NewInstance(null, "Cheek", initials, null));
+        cheek = Person.NewInstance(null, "Cheek", initials, null);
+        relSec.setAuthorship(cheek);
         relSec.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1919));
 
         toSec = ReferenceFactory.newGeneric();
         toSec.setTitle("To Sec");
-        toSec.setAuthorship(Person.NewTitledInstance("ToSecAuthor"));
+        toSecAuthor = Person.NewTitledInstance("ToSecAuthor");
+        toSec.setAuthorship(toSecAuthor);
         toSec.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1928));
 
         fromTaxon = Taxon.NewInstance(fromName, fromSec);
@@ -229,6 +236,41 @@ public class TaxonRelationshipFormatterTest {
         tags = formatter.getTaggedText(taxonRel, reverse, languages);
         str = TaggedCacheHelper.createString(tags);
         Assert.assertEquals(symbol + " Pinus pinova Mill. sec. ???, syn. sec. Cheek 1919: 123", str);
+
+    }
+
+    @Test
+    public void testGetFamilyNames() {
+
+        //Test start condition with single person
+        List<TaggedText> tags = formatter.getTaggedText(taxonRel, reverse, languages);
+        String str = TaggedCacheHelper.createString(tags);
+        Assert.assertFalse("Formatted text should not contain the team correctly formatted", str.contains("Macfarlane & Cheek"));
+
+        //use team
+        Team secRelTeam = Team.NewInstance();
+        secRelTeam.addTeamMember(macFarlane);
+        secRelTeam.addTeamMember(cheek);
+        relSec.setAuthorship(secRelTeam);
+
+        tags = formatter.getTaggedText(taxonRel, reverse, languages);
+        str = TaggedCacheHelper.createString(tags);
+        System.out.println(str);
+        Assert.assertTrue(str.contains("rel. sec. Macfarlane & Cheek 1919"));
+
+        //add third member
+        secRelTeam.addTeamMember(toSecAuthor);
+        tags = formatter.getTaggedText(taxonRel, reverse, languages);
+        str = TaggedCacheHelper.createString(tags);
+        System.out.println(str);
+        Assert.assertTrue(str.contains("rel. sec. Macfarlane, Cheek & ToSecAuthor 1919"));
+
+        //add et al.
+        secRelTeam.setHasMoreMembers(true);
+        tags = formatter.getTaggedText(taxonRel, reverse, languages);
+        str = TaggedCacheHelper.createString(tags);
+        System.out.println(str);
+        Assert.assertTrue(str.contains("rel. sec. Macfarlane, Cheek, ToSecAuthor & al. 1919"));
 
     }
 
