@@ -17,7 +17,6 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
-import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -609,28 +608,4 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      */
     public UpdateResult moveTaxonDescription(UUID descriptionUuid, UUID targetTaxonUuid);
 
-    /**
-     * Aggregates the character data of the given descriptions and creates a new description
-     * for the given taxon with the aggregated data.
-     * @param taxonUuid the UUID of the taxon where the new description with the
-     * aggregated data will be stored
-     * @param descriptionUuids the uuid of the descriptions that are aggregated
-     * @param descriptionTitle the new title of the description
-     * @param descriptiveDataSetUuid the uuid of the descriptive data set to which the
-     * aggregated description will be added to
-     * @return the result of the operation
-     */
-    public UpdateResult aggregateDescription(UUID taxonUuid, List<UUID> descriptionUuids, String descriptionTitle
-            , UUID descriptiveDataSetUuid);
-
-    /**
-     * Aggregates all {@link TaxonDescription}s of all sub nodes that have a "computed" marker
-     * @param taxonNodeUuid the parent taxon node
-     * @param descriptiveDataSetUuid the uuid of the descriptive data set to which the
-     * aggregated description will be added to
-     * @param monitor the progress monitor
-     * @return the update result
-     */
-    public UpdateResult aggregateTaxonDescription(UUID taxonNodeUuid, UUID descriptiveDataSetUuid,
-            IRemotingProgressMonitor monitor);
 }

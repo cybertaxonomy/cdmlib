@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import eu.etaxonomy.cdm.api.service.IDescriptionService;
+import eu.etaxonomy.cdm.api.service.IDescriptiveDataSetService;
 import eu.etaxonomy.cdm.api.service.IProgressMonitorService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.UpdateResult;
@@ -38,7 +38,7 @@ public class LongRunningTasksServiceImpl implements ILongRunningTasksService{
     ITaxonNodeService taxonNodeService;
 
     @Autowired
-    IDescriptionService descriptionService;
+    IDescriptiveDataSetService descriptiveDataSetService;
 
     @Autowired
     IProgressMonitorService progressMonitorService;
@@ -49,7 +49,7 @@ public class LongRunningTasksServiceImpl implements ILongRunningTasksService{
         RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
             @Override
             public Serializable doRun(IRemotingProgressMonitor monitor) {
-                UpdateResult updateResult = descriptionService.aggregateTaxonDescription(taxonNodeUuid, descriptiveDataSetUuid, monitor);
+                UpdateResult updateResult = descriptiveDataSetService.aggregateTaxonDescription(taxonNodeUuid, descriptiveDataSetUuid, monitor);
                 for(Exception e : updateResult.getExceptions()) {
                     monitor.addReport(e.getMessage());
                 }
