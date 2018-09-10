@@ -414,7 +414,16 @@ public class DescriptiveDataSetService
         DescriptiveDataSet dataSet = load(dataSetUuid);
         TaxonNode taxonNode = taxonNodeService.load(taxonNodeUuid, Arrays.asList("taxon"));
         TaxonDescription newTaxonDescription = TaxonDescription.NewInstance(taxonNode.getTaxon());
-        newTaxonDescription.setTitleCache("[Default] "+dataSet.getLabel()+": "+newTaxonDescription.generateTitle(), true); //$NON-NLS-2$
+        String tag = "";
+        if(markerFlag){
+            if(markerType.equals(MarkerType.USE())){
+                tag = "[Default]";
+            }
+            else if(markerType.equals(MarkerType.IN_BIBLIOGRAPHY())){
+                tag = "[Literature]";
+            }
+        }
+        newTaxonDescription.setTitleCache(tag+" "+dataSet.getLabel()+": "+newTaxonDescription.generateTitle(), true); //$NON-NLS-2$
         if(markerType!=null){
             newTaxonDescription.addMarker(Marker.NewInstance(markerType, markerFlag));
         }
