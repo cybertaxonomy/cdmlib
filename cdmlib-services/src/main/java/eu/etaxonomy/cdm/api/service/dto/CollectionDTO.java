@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.service.dto;
 
+import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 
 /**
@@ -28,10 +29,12 @@ public class CollectionDTO {
      * @param institute
      * @param townOrLocation
      */
-    public CollectionDTO(String code, String codeStandard, String institute, String townOrLocation) {
+    public CollectionDTO(String code, String codeStandard, Institution institute, String townOrLocation) {
         this.code = code;
         this.codeStandard = codeStandard;
-        this.institute = institute;
+        if (institute != null){
+            this.institute = institute.getTitleCache();
+        }
         this.townOrLocation = townOrLocation;
     }
 
@@ -39,7 +42,7 @@ public class CollectionDTO {
      * @param collection
      */
     public CollectionDTO(Collection collection) {
-        this(collection.getCode(),collection.getCodeStandard(), collection.getInstitute().getTitleCache(),collection.getTownOrLocation());
+        this(collection.getCode(),collection.getCodeStandard(), collection.getInstitute(),collection.getTownOrLocation());
 
     }
 
