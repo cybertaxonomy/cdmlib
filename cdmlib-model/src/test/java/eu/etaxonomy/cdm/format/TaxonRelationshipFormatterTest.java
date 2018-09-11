@@ -40,6 +40,8 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
  */
 public class TaxonRelationshipFormatterTest {
 
+    private static boolean WITHOUT_NAME = true;
+
     private TaxonRelationship taxonRel;
     private Reference relSec;
 
@@ -281,32 +283,69 @@ public class TaxonRelationshipFormatterTest {
         String inverseSymbol = TaxonRelationshipType.MISAPPLIED_NAME_FOR().getInverseSymbol();
         String symbol = TaxonRelationshipType.MISAPPLIED_NAME_FOR().getSymbol();
 
-        List<TaggedText> tags = formatter.getTaggedText(taxonRel, reverse, languages, true);
+        List<TaggedText> tags = formatter.getTaggedText(taxonRel, reverse, languages, WITHOUT_NAME);
         String str = TaggedCacheHelper.createString(tags);
         Assert.assertEquals(inverseSymbol + " sensu Macfarlane 1918, err. sec. Cheek 1919: 123", str);
 
         //reverse
-        tags = formatter.getTaggedText(taxonRel, !reverse, languages, true);
+        tags = formatter.getTaggedText(taxonRel, !reverse, languages, WITHOUT_NAME);
         str = TaggedCacheHelper.createString(tags);
         Assert.assertEquals(symbol + " sec. ToSecAuthor 1928, rel. sec. Cheek 1919: 123", str);
 
         //auctores
         fromTaxon.setAppendedPhrase("auctores");
-        tags = formatter.getTaggedText(taxonRel, reverse, languages, true);
+        tags = formatter.getTaggedText(taxonRel, reverse, languages, WITHOUT_NAME);
         str = TaggedCacheHelper.createString(tags);
         Assert.assertEquals(inverseSymbol + " auctores sensu Macfarlane 1918, err. sec. Cheek 1919: 123", str);
 
         fromTaxon.setSec(null);
         fromTaxon.setAppendedPhrase("");
-        tags = formatter.getTaggedText(taxonRel, reverse, languages, true);
+        tags = formatter.getTaggedText(taxonRel, reverse, languages, WITHOUT_NAME);
         str = TaggedCacheHelper.createString(tags);
         Assert.assertEquals(inverseSymbol + " auct., err. sec. Cheek 1919: 123", str);
 
         fromTaxon.setDoubtful(true);
-        tags = formatter.getTaggedText(taxonRel, reverse, languages, true);
+        tags = formatter.getTaggedText(taxonRel, reverse, languages, WITHOUT_NAME);
         str = TaggedCacheHelper.createString(tags);
         System.out.println(str);
         Assert.assertEquals(inverseSymbol + " ?\u202F auct., err. sec. Cheek 1919: 123", str);
+
+    }
+
+    @Test
+    public void testGetTaggedTextConceptRelationsWithoutName() {
+
+        reverse = false;
+
+        TaxonRelationshipType relType = TaxonRelationshipType.INCLUDES();
+
+        final String SYMBOL = relType.getSymbol();
+
+        taxonRel.setType(relType);
+        List<TaggedText> tags = formatter.getTaggedText(taxonRel, reverse, languages, WITHOUT_NAME);
+        String str = TaggedCacheHelper.createString(tags);
+        Assert.assertEquals(SYMBOL + " sec. ToSecAuthor 1928, rel. sec. Cheek 1919: 123", str);
+
+        tags = formatter.getTaggedText(taxonRel, !reverse, languages, WITHOUT_NAME);
+        str = TaggedCacheHelper.createString(tags);
+        Assert.assertEquals(relType.getInverseSymbol() + " sec. Macfarlane 1918, rel. sec. Cheek 1919: 123", str);
+
+        toTaxon.setAppendedPhrase("sensu stricto");
+        tags = formatter.getTaggedText(taxonRel, reverse, languages, WITHOUT_NAME);
+        str = TaggedCacheHelper.createString(tags);
+        Assert.assertEquals(SYMBOL + " sensu stricto sec. ToSecAuthor 1928, rel. sec. Cheek 1919: 123", str);
+
+        toTaxon.setSec(null);
+        toTaxon.setAppendedPhrase("");
+        tags = formatter.getTaggedText(taxonRel, reverse, languages, WITHOUT_NAME);
+        str = TaggedCacheHelper.createString(tags);
+        Assert.assertEquals(SYMBOL + " sec. ???, rel. sec. Cheek 1919: 123", str);
+
+        taxonRel.setDoubtful(true);
+        toTaxon.setAppendedPhrase("");
+        tags = formatter.getTaggedText(taxonRel, reverse, languages, WITHOUT_NAME);
+        str = TaggedCacheHelper.createString(tags);
+        Assert.assertEquals("?" + SYMBOL + " sec. ???, rel. sec. Cheek 1919: 123", str);
 
     }
 
