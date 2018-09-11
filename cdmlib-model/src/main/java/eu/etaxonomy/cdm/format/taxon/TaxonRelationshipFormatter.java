@@ -58,6 +58,12 @@ public class TaxonRelationshipFormatter {
     private static final String UNDEFINED_SYMBOL = "??";  //TODO
 
     public List<TaggedText> getTaggedText(TaxonRelationship taxonRelationship, boolean reverse, List<Language> languages) {
+        return getTaggedText(taxonRelationship, reverse, languages, false);
+    }
+
+
+
+    public List<TaggedText> getTaggedText(TaxonRelationship taxonRelationship, boolean reverse, List<Language> languages, boolean withoutName) {
 
         if (taxonRelationship == null){
             return null;
@@ -88,32 +94,37 @@ public class TaxonRelationshipFormatter {
         builder.add(TagEnum.symbol, symbol);
 
         //name
-        if (isMisapplied){
-            //starting quote
-            String startQuote = " " + doubtfulTaxonStr + QUOTE_START;
-            builder.addSeparator(startQuote);
+        if (!withoutName){
+            if (isMisapplied){
+                //starting quote
+                String startQuote = " " + doubtfulTaxonStr + QUOTE_START;
+                builder.addSeparator(startQuote);
 
-            //name cache
-            List<TaggedText> nameCacheTags = getNameCacheTags(name);
-            builder.addAll(nameCacheTags);
+                //name cache
+                List<TaggedText> nameCacheTags = getNameCacheTags(name);
+                builder.addAll(nameCacheTags);
 
-            //end quote
-            String endQuote = QUOTE_END;
-            builder.add(TagEnum.postSeparator, endQuote);
+                //end quote
+                String endQuote = QUOTE_END;
+                builder.add(TagEnum.postSeparator, endQuote);
+            }else{
+                builder.addSeparator(" " + doubtfulTaxonStr);
+                //name full title cache
+                List<TaggedText> nameCacheTags = getNameTitleCacheTags(name);
+                builder.addAll(nameCacheTags);
+            }
         }else{
-            builder.addSeparator(" " + doubtfulTaxonStr);
-            //name full title cache
-            List<TaggedText> nameCacheTags = getNameTitleCacheTags(name);
-            builder.addAll(nameCacheTags);
+            if (isNotBlank(doubtfulTaxonStr)){
+                builder.addSeparator(" " + doubtfulTaxonStr);
+            }
         }
-
 
         //sec/sensu (+ Separatoren?)
         if (isNotBlank(relatedTaxon.getAppendedPhrase())){
             builder.addWhitespace();
             builder.add(TagEnum.appendedPhrase, relatedTaxon.getAppendedPhrase());
         }
-        List<TaggedText> secTags = getSensuTags(relatedTaxon.getSec(), relatedTaxon.getSecMicroReference(),
+        List<TaggedText> secTags = getReferenceTags(relatedTaxon.getSec(), relatedTaxon.getSecMicroReference(),
                /* isMisapplied,*/ false);
         if (!secTags.isEmpty()) {
             builder.addSeparator(isMisapplied? SENSU_SEPARATOR : SEC_SEPARATOR);
@@ -136,7 +147,7 @@ public class TaxonRelationshipFormatter {
             }
         }
 
-        List<TaggedText> relSecTags = getSensuTags(taxonRelationship.getCitation(),
+        List<TaggedText> relSecTags = getReferenceTags(taxonRelationship.getCitation(),
                 taxonRelationship.getCitationMicroReference(),true);
         if (!relSecTags.isEmpty()){
             builder.addSeparator(isSynonym ? SYN_SEC : isMisapplied ? ERR_SEC : REL_SEC);
@@ -146,7 +157,7 @@ public class TaxonRelationshipFormatter {
         return builder.getTaggedText();
     }
 
-    private List<TaggedText> getSensuTags(Reference ref, String detail, /*boolean isSensu,*/ boolean isRelation) {
+    private List<TaggedText> getReferenceTags(Reference ref, String detail, /*boolean isSensu,*/ boolean isRelation) {
         List<TaggedText> result = new ArrayList<>();
         String secRef;
 
