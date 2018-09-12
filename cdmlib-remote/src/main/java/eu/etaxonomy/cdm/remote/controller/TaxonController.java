@@ -470,7 +470,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             @RequestParam(value = "directTypes", required = false) UuidList directTypeUuids,
             @RequestParam(value = "inversTypes", required = false) UuidList inversTypeUuids,
             @RequestParam(value = "direction", required = false) Direction direction,
-            @RequestParam(value="groupMisapplications", required=false, defaultValue="true") final boolean groupMisapplications,
+            @RequestParam(value="groupMisapplications", required=false, defaultValue="false") final boolean groupMisapplications,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
