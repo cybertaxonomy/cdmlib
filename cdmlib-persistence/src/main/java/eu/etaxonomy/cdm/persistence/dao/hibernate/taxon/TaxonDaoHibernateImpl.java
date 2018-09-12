@@ -196,10 +196,7 @@ public class TaxonDaoHibernateImpl
         }else{
             return new ArrayList<>();
         }
-
-
     }
-
 
     //new search for the editor, for performance issues the return values are only uuid and titleCache, to avoid the initialisation of all objects
     @Override
@@ -376,7 +373,7 @@ public class TaxonDaoHibernateImpl
                 // find Taxa
                 Query subTaxon = getSearchQueryString(hqlQueryString, taxonSubselect);
 
-                addRestrictions(doAreaRestriction, classification, includeUnpublished,
+                addRestrictions(doAreaRestriction, classification, subtree, includeUnpublished,
                         namedAreasUuids, subTaxon);
                 taxonIDs = subTaxon.list();
             }
@@ -384,7 +381,7 @@ public class TaxonDaoHibernateImpl
             if(doSynonyms){
                 // find synonyms
                 Query subSynonym = getSearchQueryString(hqlQueryString, synonymSubselect);
-                addRestrictions(doAreaRestriction, classification, includeUnpublished, namedAreasUuids,subSynonym);
+                addRestrictions(doAreaRestriction, classification, subtree, includeUnpublished, namedAreasUuids,subSynonym);
                 synonymIDs = subSynonym.list();
             }
             if (doConceptRelations ){
@@ -397,14 +394,14 @@ public class TaxonDaoHibernateImpl
                     relTypeSet.addAll(TaxonRelationshipType.allSynonymTypes());
                 }
                 subMisappliedNames.setParameterList("rTypeSet", relTypeSet);
-                addRestrictions(doAreaRestriction, classification, includeUnpublished, namedAreasUuids, subMisappliedNames);
+                addRestrictions(doAreaRestriction, classification, subtree, includeUnpublished, namedAreasUuids, subMisappliedNames);
                 taxonIDs.addAll(subMisappliedNames.list());
             }
 
             if(doCommonNames){
                 // find Taxa
                 Query subCommonNames = getSearchQueryString(hqlQueryString, commonNameSubSelect);
-                addRestrictions(doAreaRestriction, classification, includeUnpublished, namedAreasUuids, subCommonNames);
+                addRestrictions(doAreaRestriction, classification, subtree, includeUnpublished, namedAreasUuids, subCommonNames);
                 taxonIDs.addAll(subCommonNames.list());
             }
 
@@ -514,16 +511,20 @@ public class TaxonDaoHibernateImpl
      * @param includeUnpublished
      * @param classification
      * @param doAreaRestriction
+     * @param subtree
      * @param namedAreasUuids
      * @param subTaxon
      */
-    protected void addRestrictions(boolean doAreaRestriction, Classification classification, boolean includeUnpublished,
+    protected void addRestrictions(boolean doAreaRestriction, Classification classification, TaxonNode subtree, boolean includeUnpublished,
             Set<UUID> namedAreasUuids, Query query) {
         if(doAreaRestriction){
             query.setParameterList("namedAreasUuids", namedAreasUuids);
         }
         if(classification != null){
             query.setParameter("classification", classification);
+        }
+        if(subtree != null){
+            query.setParameter("treeIndexLike", subtree.treeIndex() + "%");
         }
         if(!includeUnpublished){
             query.setBoolean("publish", true);
