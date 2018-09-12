@@ -260,6 +260,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
     public Pager<IdentifiableEntity> doFind(
             @RequestParam(value = "query", required = true) String query,
             @RequestParam(value = "tree", required = false) UUID treeUuid,
+            @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
             @RequestParam(value = "area", required = false) Set<NamedArea> areas,
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
@@ -301,6 +302,9 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
             Classification classification = classificationService.find(treeUuid);
             config.setClassification(classification);
         }
+
+        TaxonNode subtree = getSubtreeOrError(subtreeUuid, taxonNodeService, response);
+        config.setSubtree(subtree);
 
         return service.findTaxaAndNames(config);
 
