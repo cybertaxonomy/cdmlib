@@ -1495,7 +1495,7 @@ public class TaxonDaoHibernateImpl
         String doTreeForConceptRelationsWhere = classification == null ? "": " AND tn2.classification = :classification";
 
         String doSubtreeWhere = subtree == null? "":" AND tn.treeIndex like :treeIndexLike";
-        String doSubtreeForConceptRelationsWhere = subtree == null? "":" AND tn2.treeindex like :treeIndexLike";
+        String doSubtreeForConceptRelationsWhere = subtree == null? "":" AND tn2.treeIndex like :treeIndexLike";
 
         String doAreaRestrictionWhere =  " e.area.uuid in (:namedAreasUuids)";
         String doCommonNamesRestrictionWhere = " (f.supportsCommonTaxonName = true and com.name "+matchMode.getMatchOperator()+" :queryString )";
