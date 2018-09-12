@@ -1006,9 +1006,12 @@ public class TaxonDaoHibernateImpl
     private String prepareTaxonRelationshipQuery(Set<TaxonRelationshipType> types, boolean includeUnpublished,
             Direction direction, boolean isCount) {
         String selectStr = isCount? " count(rel) as n ":" rel ";
-        String result = "SELECT " + selectStr +
-             " FROM TaxonRelationship rel " +
-             " WHERE rel."+direction+" = :relatedTaxon";
+        String result = "SELECT " + selectStr + " FROM TaxonRelationship rel ";
+        if(direction != null){
+            result += " WHERE rel."+direction+" = :relatedTaxon";
+        } else {
+            result += " WHERE (rel.relatedFrom = :relatedTaxon OR rel.relatedTo = :relatedTaxon )";
+        }
         if (types != null){
             result += " AND rel.type IN (:types) ";
         }
