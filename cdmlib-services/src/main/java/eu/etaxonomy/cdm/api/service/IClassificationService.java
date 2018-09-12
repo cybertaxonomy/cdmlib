@@ -97,16 +97,29 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * If the <code>rank</code> is null the absolute root nodes will be returned.
 
      * @param classification may be null for all classifications
+     * @param subtree filter on a taxonomic subtree
      * @param rank the set to null for to get the root nodes of classifications
      * @param includeUnpublished if <code>true</code> unpublished taxa are also exported
      * @param pageSize The maximum number of relationships returned (can be null for all relationships)
      * @param pageIndex The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @param propertyPaths
      * @return
+     * @see #pageRankSpecificRootNodes(Classification, TaxonNode, Rank, boolean, Integer, Integer, List)
      *
      */
-    public List<TaxonNode> listRankSpecificRootNodes(Classification classification, Rank rank,
-            boolean includeUnpublished, Integer pageSize, Integer pageIndex, List<String> propertyPaths);
+    public List<TaxonNode> listRankSpecificRootNodes(Classification classification, TaxonNode subtree,
+            Rank rank, boolean includeUnpublished, Integer pageSize, Integer pageIndex,
+            List<String> propertyPaths);
+
+
+    /**
+     * @see #listRankSpecificRootNodes(Classification, TaxonNode, Rank, boolean, Integer, Integer, List)
+     * @deprecated keep this for compatibility to older versions, might be removed in versions >5.3
+     */
+    @Deprecated
+    public List<TaxonNode> listRankSpecificRootNodes(Classification classification,
+            Rank rank, boolean includeUnpublished, Integer pageSize, Integer pageIndex,
+            List<String> propertyPaths);
 
 
     /**
@@ -118,6 +131,7 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * If the <code>rank</code> is null the absolute root nodes will be returned.
      *
      * @param classification may be null for all classifications
+     * @param subtree the taxonomic subtree filter
      * @param rank the set to null for to get the root nodes of classifications
      * @param includeUnpublished if <code>true</code> unpublished taxa are also exported
      * @param pageSize The maximum number of relationships returned (can be null for all relationships)
@@ -125,9 +139,19 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @param propertyPaths
      * @return
      *
+     * @see #listRankSpecificRootNodes(Classification, TaxonNode, Rank, boolean, Integer, Integer, List)
      */
-    public Pager<TaxonNode> pageRankSpecificRootNodes(Classification classification, Rank rank,
-            boolean includeUnpublished, Integer pageSize, Integer pageIndex, List<String> propertyPaths);
+    public Pager<TaxonNode> pageRankSpecificRootNodes(Classification classification, TaxonNode subtree,
+            Rank rank, boolean includeUnpublished, Integer pageSize, Integer pageIndex,
+            List<String> propertyPaths);
+    /**
+     * @see #pageRankSpecificRootNodes(Classification, TaxonNode, Rank, boolean, Integer, Integer, List)
+     * @deprecated keep this for compatibility to older versions, might be removed in versions >5.3
+     */
+    @Deprecated
+    public Pager<TaxonNode> pageRankSpecificRootNodes(Classification classification,
+            Rank rank, boolean includeUnpublished, Integer pageSize, Integer pageIndex,
+            List<String> propertyPaths);
 
     /**
      * @param taxonNode

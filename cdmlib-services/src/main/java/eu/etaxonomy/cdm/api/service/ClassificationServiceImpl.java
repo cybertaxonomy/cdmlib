@@ -179,19 +179,32 @@ public class ClassificationServiceImpl
     	}
     }
 
+    @Override
+    public List<TaxonNode> listRankSpecificRootNodes(Classification classification, Rank rank,
+            boolean includeUnpublished, Integer pageSize, Integer pageIndex, List<String> propertyPaths) {
+        return listRankSpecificRootNodes(classification, rank, includeUnpublished, pageSize, pageIndex, propertyPaths);
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<TaxonNode> listRankSpecificRootNodes(Classification classification, Rank rank,
+    public List<TaxonNode> listRankSpecificRootNodes(Classification classification,
+            TaxonNode subtree, Rank rank,
             boolean includeUnpublished, Integer pageSize, Integer pageIndex, List<String> propertyPaths) {
-        return pageRankSpecificRootNodes(classification, rank, includeUnpublished, pageSize, pageIndex, propertyPaths).getRecords();
+        return pageRankSpecificRootNodes(classification, subtree, rank, includeUnpublished, pageSize, pageIndex, propertyPaths).getRecords();
     }
 
     @Override
     public Pager<TaxonNode> pageRankSpecificRootNodes(Classification classification, Rank rank,
             boolean includeUnpublished, Integer pageSize, Integer pageIndex, List<String> propertyPaths) {
-        long[] numberOfResults = dao.countRankSpecificRootNodes(classification, includeUnpublished, rank);
+        return pageRankSpecificRootNodes(classification, null, rank, includeUnpublished, pageSize, pageIndex, propertyPaths);
+    }
+
+    @Override
+    public Pager<TaxonNode> pageRankSpecificRootNodes(Classification classification, TaxonNode subtree, Rank rank,
+            boolean includeUnpublished, Integer pageSize, Integer pageIndex, List<String> propertyPaths) {
+        long[] numberOfResults = dao.countRankSpecificRootNodes(classification, subtree, includeUnpublished, rank);
         long totalNumberOfResults = numberOfResults[0] + (numberOfResults.length > 1 ? numberOfResults[1] : 0);
 
         List<TaxonNode> results = new ArrayList<>();
@@ -211,7 +224,8 @@ public class ClassificationServiceImpl
                 }
 
                 List<TaxonNode> perQueryResults = dao.listRankSpecificRootNodes(classification,
-                        rank, includeUnpublished, remainingLimit, start, propertyPaths, queryIndex);
+                        subtree, rank, includeUnpublished, remainingLimit,
+                        start, propertyPaths, queryIndex);
                 results.addAll(perQueryResults);
                 if(remainingLimit != null ){
                     remainingLimit = remainingLimit - results.size();

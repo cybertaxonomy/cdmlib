@@ -57,11 +57,11 @@ public class ClassificationDaoHibernateImpl
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<TaxonNode> listRankSpecificRootNodes(Classification classification, Rank rank,
+    public List<TaxonNode> listRankSpecificRootNodes(Classification classification, TaxonNode taxonNode, Rank rank,
             boolean includeUnpublished, Integer limit, Integer start, List<String> propertyPaths, int queryIndex){
 
         List<TaxonNode> results = new ArrayList<>();
-        Query[] queries = prepareRankSpecificRootNodes(classification, rank, includeUnpublished, false);
+        Query[] queries = prepareRankSpecificRootNodes(classification, taxonNode, rank, includeUnpublished, false);
 
         // since this method is using two queries sequentially the handling of limit and start
         // is a bit more complex
@@ -86,10 +86,10 @@ public class ClassificationDaoHibernateImpl
     }
 
     @Override
-    public long[] countRankSpecificRootNodes(Classification classification, boolean includeUnpublished, Rank rank) {
+    public long[] countRankSpecificRootNodes(Classification classification, TaxonNode subtree, boolean includeUnpublished, Rank rank) {
 
         long[] result = new long[(rank == null ? 1 : 2)];
-        Query[] queries = prepareRankSpecificRootNodes(classification, rank, includeUnpublished, true);
+        Query[] queries = prepareRankSpecificRootNodes(classification, subtree, rank, includeUnpublished, true);
         int i = 0;
         for(Query q : queries) {
             result[i++] = (Long)q.uniqueResult();
@@ -107,43 +107,57 @@ public class ClassificationDaoHibernateImpl
      *      one or two Queries as array, depending on the <code>rank</code> parameter:
      *      <code>rank == null</code>: array with one item, <code>rank != null</code>: array with two items.
      */
-    private Query[] prepareRankSpecificRootNodes(Classification classification, Rank rank,
+    private Query[] prepareRankSpecificRootNodes(Classification classification,
+            TaxonNode subtree, Rank rank,
             boolean includeUnpublished, boolean doCount) {
         Query query1;
         Query query2 = null;
 
         String whereClassification = classification != null? " AND tn.classification = :classification " : "";
         String whereUnpublished = includeUnpublished? "" : " AND tn.taxon.publish = :publish ";
+        String whereSubtree = subtree != null ? " AND tn.treeIndex like :treeIndexLike " : "";
+        TreeIndex treeIndex = TreeIndex.NewInstance(subtree);
+        String whereHighest =
+                treeIndex == null ? " tn.parent.parent = null ":
+                treeIndex.isTreeRoot() ? " tn.parent.treeIndex = :treeIndex ":
+                            " tn.treeIndex = :treeIndex "   ;
 
         String selectWhat = doCount ? "COUNT(distinct tn)" : "DISTINCT tn";
 
         String joinFetch = doCount ? "" : " JOIN FETCH tn.taxon t JOIN FETCH t.name n LEFT JOIN FETCH n.rank LEFT JOIN FETCH t.sec ";
 
         if(rank == null){
-            String hql = "SELECT " + selectWhat + " FROM TaxonNode tn" +
-                    joinFetch +
-                    " WHERE tn.parent.parent = null " +
-                    whereClassification +  whereUnpublished;
+            String hql = "SELECT " + selectWhat +
+                    " FROM TaxonNode tn" +
+                        joinFetch +
+                    " WHERE " + whereHighest +
+                    whereClassification + whereUnpublished;
             query1 = getSession().createQuery(hql);
         } else {
             // this is for the cases
             //   - exact match of the ranks
-            //   - rank of root node is lower but is has no parents
-            String hql1 = "SELECT " + selectWhat + " FROM TaxonNode tn " +
-                    joinFetch +
+            //   - rank of root node is lower but it has no parents
+            String hql1 = "SELECT " + selectWhat +
+                    " FROM TaxonNode tn " +
+                       joinFetch +
                     " WHERE " +
                     " (tn.taxon.name.rank = :rank" +
-                    "   OR (tn.taxon.name.rank.orderIndex > :rankOrderIndex AND tn.parent.parent = null)" +
+                    "   OR ((tn.taxon.name.rank.orderIndex > :rankOrderIndex) AND (" + whereHighest + "))" +
                     " )"
-                    + whereClassification + whereUnpublished ;
+                    + whereClassification + whereSubtree + whereUnpublished ;
 
             // this is for the case
             //   - rank of root node is lower and it has a parent with higher rank
-            String hql2 = "SELECT " + selectWhat + " FROM TaxonNode tn JOIN tn.parent as parent" +
-                    joinFetch +
+            String whereParentSubtree = subtree != null ? " AND parent.treeIndex like :treeIndexLike " : "";
+            String hql2 = "SELECT " + selectWhat +
+                    " FROM TaxonNode tn JOIN tn.parent as parent" +
+                       joinFetch +
                     " WHERE " +
-                    " (tn.taxon.name.rank.orderIndex > :rankOrderIndex AND parent.taxon.name.rank.orderIndex < :rankOrderIndex )"
-                    + whereClassification + whereUnpublished;
+                    " (tn.taxon.name.rank.orderIndex > :rankOrderIndex "
+                    + "     AND parent.taxon.name.rank.orderIndex < :rankOrderIndex )"
+                    + whereClassification + whereSubtree
+                    + whereParentSubtree + whereUnpublished;
+
             query1 = getSession().createQuery(hql1);
             query2 = getSession().createQuery(hql2);
             query1.setParameter("rank", rank);
@@ -156,6 +170,15 @@ public class ClassificationDaoHibernateImpl
             query1.setParameter("classification", classification);
             if(query2 != null) {
                 query2.setParameter("classification", classification);
+            }
+        }
+        if (subtree != null){
+            query1.setParameter("treeIndex", subtree.treeIndex());
+            if (rank != null){
+                query1.setParameter("treeIndexLike", subtree.treeIndex()+"%");
+            }
+            if(query2 != null) {
+                query2.setParameter("treeIndexLike", subtree.treeIndex()+"%");
             }
         }
         if (!includeUnpublished){

@@ -31,6 +31,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
+import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dto.ClassificationLookupDTO;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
@@ -48,14 +49,17 @@ public class ClassificationDaoHibernateImplTest extends CdmTransactionalIntegrat
     private IClassificationDao classificationDao;
     @SpringBeanByType
     private IReferenceDao referenceDao;
+    @SpringBeanByType
+    private ITaxonNodeDao taxonNodeDao;
 
     private boolean includeUnpublished;
 
-    private static final String CLASSIFICATION_UUID = "2a5ceebb-4830-4524-b330-78461bf8cb6b";
-    private static final String CLASSIFICATION_FULL_UUID = "a71467a6-74dc-4148-9530-484628a5ab0e";
+    private static final UUID FLAT_CLASSIFICATION_UUID = UUID.fromString("2a5ceebb-4830-4524-b330-78461bf8cb6b");
+    private static final UUID CLASSIFICATION_FULL_UUID = UUID.fromString("a71467a6-74dc-4148-9530-484628a5ab0e");
     private static final UUID UUID_ABIES = UUID.fromString("19f560d9-a555-4883-9c54-39d04872307c");
     private static final UUID UUID_PINACEAE = UUID.fromString("74216ed8-5f04-439e-87e0-500738f5e7fc");
-
+    private static final UUID UUID_ABIES_NODE = UUID.fromString("56b10cf0-9522-407e-9f90-0c2dba263c94");
+    private static final UUID UUID_FLAT_ROOT = UUID.fromString("75202d4e-b2aa-4343-8b78-340a52d15c40");
 
     @Before
     public void setUp() {
@@ -72,21 +76,21 @@ public class ClassificationDaoHibernateImplTest extends CdmTransactionalIntegrat
 
         checkPreconditions();
 
-        Classification classification = classificationDao.load(UUID.fromString(CLASSIFICATION_UUID));
+        Classification classification = classificationDao.load(FLAT_CLASSIFICATION_UUID);
 
         includeUnpublished = true;
         // test for the bug in http://dev.e-taxonomy.eu/trac/ticket/2778
         Rank rank = Rank.GENUS();
         // run both queries in dao method since rank != null
-        List<TaxonNode> rootNodes = classificationDao.listRankSpecificRootNodes(classification, rank, includeUnpublished,
+        List<TaxonNode> rootNodes = classificationDao.listRankSpecificRootNodes(classification, null, rank, includeUnpublished,
                 null, null, null, 0);
-        rootNodes.addAll(classificationDao.listRankSpecificRootNodes(classification, rank, includeUnpublished,
+        rootNodes.addAll(classificationDao.listRankSpecificRootNodes(classification, null, rank, includeUnpublished,
                 null, null, null, 1));
         assertEquals(3, rootNodes.size());
 
         rank = null;
         // run only fist query in dao method since rank == null
-        rootNodes = classificationDao.listRankSpecificRootNodes(classification, rank, includeUnpublished,
+        rootNodes = classificationDao.listRankSpecificRootNodes(classification, null, rank, includeUnpublished,
                 null, null, null, 0);
         assertEquals("The absolut root nodes should be returned", 3, rootNodes.size());
 
@@ -95,14 +99,14 @@ public class ClassificationDaoHibernateImplTest extends CdmTransactionalIntegrat
 
         rank = Rank.GENUS();
         // run both queries in dao method since rank != null
-        rootNodes = classificationDao.listRankSpecificRootNodes(classification, rank, includeUnpublished,
+        rootNodes = classificationDao.listRankSpecificRootNodes(classification, null, rank, includeUnpublished,
                 null, null, null, 0);
-        rootNodes.addAll(classificationDao.listRankSpecificRootNodes(classification, rank, includeUnpublished,
+        rootNodes.addAll(classificationDao.listRankSpecificRootNodes(classification, null, rank, includeUnpublished,
                 null, null, null, 1));
         assertEquals(2, rootNodes.size());  //5002 in unpublished
 
         rank = null;
-        rootNodes = classificationDao.listRankSpecificRootNodes(classification, rank, includeUnpublished,
+        rootNodes = classificationDao.listRankSpecificRootNodes(classification, null, rank, includeUnpublished,
                 null, null, null, 0);
         assertEquals("The absolut root nodes should be returned", 2, rootNodes.size());
     }
@@ -118,12 +122,12 @@ public class ClassificationDaoHibernateImplTest extends CdmTransactionalIntegrat
         // check preconditions
     	checkPreconditions();
 
-        Classification classification = classificationDao.load(UUID.fromString(CLASSIFICATION_FULL_UUID));
+        Classification classification = classificationDao.load(CLASSIFICATION_FULL_UUID);
         includeUnpublished = false;
         Rank rank = Rank.GENUS();
         // run both queries in dao method since rank != null
-        List<TaxonNode> rootNodes = classificationDao.listRankSpecificRootNodes(classification, rank, includeUnpublished, null, null, null, 0);
-        rootNodes.addAll(classificationDao.listRankSpecificRootNodes(classification, rank, includeUnpublished, null, null, null, 1));
+        List<TaxonNode> rootNodes = classificationDao.listRankSpecificRootNodes(classification, null, rank, includeUnpublished, null, null, null, 0);
+        rootNodes.addAll(classificationDao.listRankSpecificRootNodes(classification, null, rank, includeUnpublished, null, null, null, 1));
         assertEquals("Only the genus should come back", 1, rootNodes.size());
         assertEquals(Rank.GENUS(), rootNodes.get(0).getTaxon().getName().getRank());
         assertEquals(UUID_ABIES, rootNodes.get(0).getTaxon().getUuid());
@@ -131,16 +135,16 @@ public class ClassificationDaoHibernateImplTest extends CdmTransactionalIntegrat
         rank = Rank.SUBGENUS();
         // run both queries in dao method since rank != null
         includeUnpublished = true;
-        rootNodes = classificationDao.listRankSpecificRootNodes(classification, rank, includeUnpublished, null, null, null, 0);
-        rootNodes.addAll(classificationDao.listRankSpecificRootNodes(classification, rank, includeUnpublished, null, null, null, 1));
+        rootNodes = classificationDao.listRankSpecificRootNodes(classification, null, rank, includeUnpublished, null, null, null, 0);
+        rootNodes.addAll(classificationDao.listRankSpecificRootNodes(classification, null, rank, includeUnpublished, null, null, null, 1));
         assertEquals("Only the 2 species should come back", 2, rootNodes.size());
         for (TaxonNode tn : rootNodes){
         	assertEquals(Rank.SPECIES(), tn.getTaxon().getName().getRank());
         }
         // run both queries in dao method since rank != null
         includeUnpublished = false;
-        rootNodes = classificationDao.listRankSpecificRootNodes(classification, rank, includeUnpublished, null, null, null, 0);
-        rootNodes.addAll(classificationDao.listRankSpecificRootNodes(classification, rank, includeUnpublished, null, null, null, 1));
+        rootNodes = classificationDao.listRankSpecificRootNodes(classification, null, rank, includeUnpublished, null, null, null, 0);
+        rootNodes.addAll(classificationDao.listRankSpecificRootNodes(classification, null, rank, includeUnpublished, null, null, null, 1));
         assertEquals("Only the 1 published species should come back", 1, rootNodes.size());
         for (TaxonNode tn : rootNodes){
             assertEquals(Rank.SPECIES(), tn.getTaxon().getName().getRank());
@@ -148,26 +152,151 @@ public class ClassificationDaoHibernateImplTest extends CdmTransactionalIntegrat
 
         rank = Rank.SUBFAMILY();
         // run both queries in dao method since rank != null
-        rootNodes = classificationDao.listRankSpecificRootNodes(classification, rank, includeUnpublished, null, null, null, 0);
-        rootNodes.addAll(classificationDao.listRankSpecificRootNodes(classification, rank, includeUnpublished, null, null, null, 1));
+        rootNodes = classificationDao.listRankSpecificRootNodes(classification, null, rank, includeUnpublished, null, null, null, 0);
+        rootNodes.addAll(classificationDao.listRankSpecificRootNodes(classification, null, rank, includeUnpublished, null, null, null, 1));
         assertEquals("Only the genus should come back", 1, rootNodes.size());
         assertEquals(Rank.GENUS(), rootNodes.get(0).getTaxon().getName().getRank());
         assertEquals(UUID_ABIES, rootNodes.get(0).getTaxon().getUuid());
 
         rank = Rank.FAMILY();
         // run both queries in dao method since rank != null
-        rootNodes = classificationDao.listRankSpecificRootNodes(classification, rank, includeUnpublished, null, null, null, 0);
-        rootNodes.addAll(classificationDao.listRankSpecificRootNodes(classification, rank, includeUnpublished, null, null, null, 1));
+        rootNodes = classificationDao.listRankSpecificRootNodes(classification, null, rank, includeUnpublished, null, null, null, 0);
+        rootNodes.addAll(classificationDao.listRankSpecificRootNodes(classification, null, rank, includeUnpublished, null, null, null, 1));
         assertEquals("Only the family should come back", 1, rootNodes.size());
         assertEquals(Rank.FAMILY(), rootNodes.get(0).getTaxon().getName().getRank());
         assertEquals(UUID_PINACEAE, rootNodes.get(0).getTaxon().getUuid());
 
         rank = null;
         // run only fist query in dao method since rank == null
-        rootNodes = classificationDao.listRankSpecificRootNodes(classification, rank, includeUnpublished, null, null, null, 0);
+        rootNodes = classificationDao.listRankSpecificRootNodes(classification, null, rank, includeUnpublished, null, null, null, 0);
         assertEquals("Only the family as the absolut root node should come back", 1, rootNodes.size());
         assertEquals(Rank.FAMILY(), rootNodes.get(0).getTaxon().getName().getRank());
         assertEquals(UUID_PINACEAE, rootNodes.get(0).getTaxon().getUuid());
+
+    }
+
+    /**
+     * Test listRankSpecificRootNode with an existing classification
+     */
+    @Test
+    @DataSet(value="ClassificationDaoHibernateImplTest.listRankSpecificRootNodes.xml")
+    public void testListRankSpecificRootNodesWithHierarchie_withSubtree() {
+
+        // check preconditions
+        checkPreconditions();
+
+        Classification classification = classificationDao.load(CLASSIFICATION_FULL_UUID);
+        TaxonNode subtree = taxonNodeDao.findByUuid(UUID_ABIES_NODE);
+
+        includeUnpublished = false;
+        Rank rank = null;
+        // run only first query as rank is null
+        List<TaxonNode> rootNodes = classificationDao.listRankSpecificRootNodes(classification, subtree, rank, includeUnpublished, null, null, null, 0);
+        assertEquals("Only 1 node - the Abies node - should come back as root node for the subtree", 1, rootNodes.size());
+        assertEquals(Rank.GENUS(), rootNodes.get(0).getTaxon().getName().getRank());
+        assertEquals(UUID_ABIES, rootNodes.get(0).getTaxon().getUuid());
+
+        rank = Rank.GENUS();
+        // run both queries in dao method since rank != null
+        rootNodes = classificationDao.listRankSpecificRootNodes(classification, subtree, rank, includeUnpublished, null, null, null, 0);
+        rootNodes.addAll(classificationDao.listRankSpecificRootNodes(classification, subtree, rank, includeUnpublished, null, null, null, 1));
+        assertEquals("Only 1 node - the Abies node - should come back", 1, rootNodes.size());
+        assertEquals(Rank.GENUS(), rootNodes.get(0).getTaxon().getName().getRank());
+        assertEquals(UUID_ABIES, rootNodes.get(0).getTaxon().getUuid());
+
+
+        rank = Rank.SUBGENUS();
+        // run both queries in dao method since rank != null
+        includeUnpublished = true;
+        rootNodes = classificationDao.listRankSpecificRootNodes(classification, subtree, rank, includeUnpublished, null, null, null, 0);
+        rootNodes.addAll(classificationDao.listRankSpecificRootNodes(classification, subtree, rank, includeUnpublished, null, null, null, 1));
+        assertEquals("Only the 2 species should come back", 2, rootNodes.size());
+        for (TaxonNode tn : rootNodes){
+            assertEquals(Rank.SPECIES(), tn.getTaxon().getName().getRank());
+        }
+        // same with unpublished
+        includeUnpublished = false;
+        rootNodes = classificationDao.listRankSpecificRootNodes(classification, subtree, rank, includeUnpublished, null, null, null, 0);
+        rootNodes.addAll(classificationDao.listRankSpecificRootNodes(classification, subtree, rank, includeUnpublished, null, null, null, 1));
+        assertEquals("Only the 1 published species should come back", 1, rootNodes.size());
+        for (TaxonNode tn : rootNodes){
+            assertEquals(Rank.SPECIES(), tn.getTaxon().getName().getRank());
+        }
+
+        rank = Rank.SUBFAMILY();
+        // run both queries in dao method since rank != null
+        rootNodes = classificationDao.listRankSpecificRootNodes(classification, subtree, rank, includeUnpublished, null, null, null, 0);
+        rootNodes.addAll(classificationDao.listRankSpecificRootNodes(classification, subtree, rank, includeUnpublished, null, null, null, 1));
+        assertEquals("Only the genus should come back", 1, rootNodes.size());
+        assertEquals(Rank.GENUS(), rootNodes.get(0).getTaxon().getName().getRank());
+        assertEquals(UUID_ABIES, rootNodes.get(0).getTaxon().getUuid());
+
+        rank = Rank.FAMILY();
+        // run both queries in dao method since rank != null
+        rootNodes = classificationDao.listRankSpecificRootNodes(classification, subtree, rank, includeUnpublished, null, null, null, 0);
+        rootNodes.addAll(classificationDao.listRankSpecificRootNodes(classification, subtree, rank, includeUnpublished, null, null, null, 1));
+        assertEquals("Only the genus should come back as family is not in subtree", 1, rootNodes.size());
+        assertEquals(Rank.GENUS(), rootNodes.get(0).getTaxon().getName().getRank());
+        assertEquals(UUID_ABIES, rootNodes.get(0).getTaxon().getUuid());
+
+        //no classification filter
+        //should have no effect as subtree is kind of classification filter
+        TaxonNode rootNode = classification.getRootNode();
+        classification = null;
+        rank = null;
+        rootNodes = classificationDao.listRankSpecificRootNodes(classification, subtree, rank, includeUnpublished, null, null, null, 0);
+        assertEquals("Only 1 node - the Abies node - should come back", 1, rootNodes.size());
+        assertEquals(UUID_ABIES, rootNodes.get(0).getTaxon().getUuid());
+
+        rank = Rank.GENUS();
+        rootNodes = classificationDao.listRankSpecificRootNodes(null, subtree, rank, includeUnpublished, null, null, null, 0);
+        rootNodes.addAll(classificationDao.listRankSpecificRootNodes(classification, null, rank, includeUnpublished, null, null, null, 1));
+        assertEquals("Only 1 node - the Abies node - should come back", 1, rootNodes.size());
+        assertEquals(UUID_ABIES, rootNodes.get(0).getTaxon().getUuid());
+
+        rank = Rank.SUBGENUS();
+        includeUnpublished = true;
+        rootNodes = classificationDao.listRankSpecificRootNodes(classification, subtree, rank, includeUnpublished, null, null, null, 0);
+        rootNodes.addAll(classificationDao.listRankSpecificRootNodes(classification, subtree, rank, includeUnpublished, null, null, null, 1));
+        assertEquals("Only the 2 species should come back", 2, rootNodes.size());
+
+        //with root node
+        subtree = rootNode;
+        rank = null;
+        rootNodes = classificationDao.listRankSpecificRootNodes(classification, subtree, rank, includeUnpublished, null, null, null, 0);
+        assertEquals("Only the family should come back", 1, rootNodes.size());
+        assertEquals(Rank.FAMILY(), rootNodes.get(0).getTaxon().getName().getRank());
+        assertEquals(UUID_PINACEAE, rootNodes.get(0).getTaxon().getUuid());
+
+        rank = Rank.GENUS();
+        rootNodes = classificationDao.listRankSpecificRootNodes(null, subtree, rank, includeUnpublished, null, null, null, 0);
+        rootNodes.addAll(classificationDao.listRankSpecificRootNodes(classification, null, rank, includeUnpublished, null, null, null, 1));
+        assertEquals("Only 1 node - the Abies node - should come back", 1, rootNodes.size());
+        assertEquals(UUID_ABIES, rootNodes.get(0).getTaxon().getUuid());
+
+        rank = Rank.SUBGENUS();
+        includeUnpublished = true;
+        rootNodes = classificationDao.listRankSpecificRootNodes(classification, subtree, rank, includeUnpublished, null, null, null, 0);
+        rootNodes.addAll(classificationDao.listRankSpecificRootNodes(classification, subtree, rank, includeUnpublished, null, null, null, 1));
+        assertEquals("Only the 2 species should come back", 2, rootNodes.size());
+
+
+        //flat hierarchie
+        classification = classificationDao.load(FLAT_CLASSIFICATION_UUID);
+        includeUnpublished = false;
+
+        rank = null;
+        rootNodes = classificationDao.listRankSpecificRootNodes(classification, subtree, rank, includeUnpublished, null, null, null, 0);
+        assertEquals("No subtree should be returned as subtree is not from classification", 0, rootNodes.size());
+
+        subtree = taxonNodeDao.findByUuid(UUID_FLAT_ROOT);
+        rootNodes = classificationDao.listRankSpecificRootNodes(classification, subtree, rank, includeUnpublished, null, null, null, 0);
+//        assertEquals("The 2 published species should be returned", 2, rootNodes.size());
+
+        rank = Rank.GENUS();
+        rootNodes = classificationDao.listRankSpecificRootNodes(classification, subtree, rank, includeUnpublished, null, null, null, 0);
+        rootNodes.addAll(classificationDao.listRankSpecificRootNodes(classification, subtree, rank, includeUnpublished, null, null, null, 1));
+        assertEquals(2, rootNodes.size());  //5002 in unpublished
 
     }
 
@@ -181,13 +310,13 @@ public class ClassificationDaoHibernateImplTest extends CdmTransactionalIntegrat
 
     	Rank rank = Rank.GENUS();
         // run both queries in dao method since rank != null
-        List<TaxonNode> rootNodes = classificationDao.listRankSpecificRootNodes(classification, rank, includeUnpublished, null, null, null, 0);
-        rootNodes.addAll(classificationDao.listRankSpecificRootNodes(classification, rank, includeUnpublished, null, null, null, 1));
+        List<TaxonNode> rootNodes = classificationDao.listRankSpecificRootNodes(classification, null, rank, includeUnpublished, null, null, null, 0);
+        rootNodes.addAll(classificationDao.listRankSpecificRootNodes(classification, null, rank, includeUnpublished, null, null, null, 1));
         assertEquals("3 Species from no hierarchie and 1 genus from hierarchie should return", 4, rootNodes.size());
 
         rank = null;
         // run only fist query in dao method since rank == null
-        rootNodes = classificationDao.listRankSpecificRootNodes(classification, rank, includeUnpublished, null, null, null, 0);
+        rootNodes = classificationDao.listRankSpecificRootNodes(classification, null, rank, includeUnpublished, null, null, null, 0);
         assertEquals("4 taxa should return (3 species from no hierarchie, 1 family, from hierarchie classification", 4, rootNodes.size());
     }
 
@@ -205,7 +334,7 @@ public class ClassificationDaoHibernateImplTest extends CdmTransactionalIntegrat
     @DataSet(value="ClassificationDaoHibernateImplTest.listRankSpecificRootNodes.xml")
     public void testClassificationLookup() {
 
-        Classification classification = classificationDao.load(UUID.fromString(CLASSIFICATION_FULL_UUID));
+        Classification classification = classificationDao.load(CLASSIFICATION_FULL_UUID);
         ClassificationLookupDTO classificationLookupDto = classificationDao.classificationLookup(classification);
         assertEquals(4, classificationLookupDto.getTaxonIds().size());
     }
@@ -224,7 +353,7 @@ public class ClassificationDaoHibernateImplTest extends CdmTransactionalIntegrat
 
 	    // 1. create the entities   and save them
 	    Classification flatHierarchieClassification = Classification.NewInstance("European Abies");
-	    flatHierarchieClassification.setUuid(UUID.fromString(CLASSIFICATION_UUID));
+	    flatHierarchieClassification.setUuid(FLAT_CLASSIFICATION_UUID);
 	    classificationDao.save(flatHierarchieClassification);
 
 	    Reference sec = ReferenceFactory.newBook();
@@ -277,7 +406,7 @@ public class ClassificationDaoHibernateImplTest extends CdmTransactionalIntegrat
 
 	    // 1. create the entities   and save them
 	    Classification fullHierarchieClassification = Classification.NewInstance("European Abies full hierarchie");
-	    fullHierarchieClassification.setUuid(UUID.fromString(CLASSIFICATION_FULL_UUID));
+	    fullHierarchieClassification.setUuid(CLASSIFICATION_FULL_UUID);
 	    classificationDao.save(fullHierarchieClassification);
 
 	    fullHierarchieClassification.addParentChild(t_pinaceae, t_abies, null, null);
