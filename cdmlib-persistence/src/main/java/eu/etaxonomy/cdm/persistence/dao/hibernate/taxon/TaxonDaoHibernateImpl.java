@@ -1449,13 +1449,16 @@ public class TaxonDaoHibernateImpl
                 boolean includeUnpublished, Classification classification, TaxonNode subtree,
                 Set<NamedArea> areasExpanded, MatchMode matchMode, String searchField){
 
+
         boolean doAreaRestriction = areasExpanded.size() > 0;
+        boolean hasTaxonNodeFilter = classification != null || subtree != null;
+
         String doAreaRestrictionSubSelect =
                      " SELECT %s.id "
                    + " FROM Distribution e "
                    + "    JOIN e.inDescription d "
                    + "    JOIN d.taxon t " +
-                (classification != null ? " JOIN t.taxonNodes AS tn " : " ");
+                (hasTaxonNodeFilter ? " JOIN t.taxonNodes AS tn " : " ");
 
         String doAreaRestrictionConceptRelationSubSelect =
                    "SELECT %s.id "
@@ -1465,7 +1468,7 @@ public class TaxonDaoHibernateImpl
 
         String doTaxonSubSelect =
                      " SELECT %s.id "
-                   + " FROM Taxon t " + (classification != null ? " "
+                   + " FROM Taxon t " + (hasTaxonNodeFilter ? " "
                            + " JOIN t.taxonNodes AS tn " : " ");
 
         String doTaxonMisappliedNameSubSelect =
@@ -1481,7 +1484,7 @@ public class TaxonDaoHibernateImpl
         String doConceptRelationJoin =
                    " LEFT JOIN t.relationsFromThisTaxon AS rft " +
                    " LEFT JOIN rft.relatedTo AS rt " +
-                      (classification != null ? " LEFT JOIN rt.taxonNodes AS tn2 " : " ") +
+                      (hasTaxonNodeFilter ? " LEFT JOIN rt.taxonNodes AS tn2 " : " ") +
                    " LEFT JOIN rt.name AS n2" +
                    " LEFT JOIN rft.type as rtype";
 
@@ -1509,7 +1512,7 @@ public class TaxonDaoHibernateImpl
         String conceptSelect = null;
         String commonNameSubselect = null;
 
-        if(classification != null || subtree != null){
+        if(hasTaxonNodeFilter){
             if (!doConceptRelations){
                 if(doAreaRestriction){
                     taxonSubselect = String.format(doAreaRestrictionSubSelect, "t") + doTaxonNameJoin +

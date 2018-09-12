@@ -57,6 +57,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
+import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.GroupByCount;
 import eu.etaxonomy.cdm.persistence.query.GroupByDate;
@@ -78,6 +79,9 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     private ITaxonDao taxonDao;
 
     @SpringBeanByType
+    private ITaxonNodeDao taxonNodeDao;
+
+    @SpringBeanByType
     private IClassificationDao classificationDao;
 
     @SpringBeanByType
@@ -86,16 +90,19 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @SpringBeanByType
     private IDefinedTermDao definedTermDao;
 
-    private UUID uuid;
-    private UUID sphingidae;
-    private UUID acherontia;
-    private UUID rethera;
-    private UUID retheraSecCdmtest;
-    private UUID atroposAgassiz; // a Synonym
-    private UUID atroposOken;  // a Synonym
-    private UUID atroposLeach; // a Synonym
-    private UUID acherontiaLachesis;
-    private UUID aus;
+    private UUID uuid = UUID.fromString("496b1325-be50-4b0a-9aa2-3ecd610215f2");
+    private UUID sphingidae = UUID.fromString("54e767ee-894e-4540-a758-f906ecb4e2d9");
+    private UUID acherontia = UUID.fromString("c5cc8674-4242-49a4-aada-72d63194f5fa");
+    private UUID rethera = UUID.fromString("a9f42927-e507-4fda-9629-62073a908aae");
+    private UUID retheraSecCdmtest = UUID.fromString("a9f42927-e507-4fda-9629-62073a908aae");
+    private UUID atroposAgassiz = UUID.fromString("d75b2e3d-7394-4ada-b6a5-93175b8751c1"); // a Synonym
+    private UUID atroposOken = UUID.fromString("6bfedf25-6dbc-4d5c-9d56-84f9052f3b2a");  // a Synonym
+    private UUID atroposLeach = UUID.fromString("3da4ab34-6c50-4586-801e-732615899b07"); // a Synonym
+    private UUID acherontiaLachesis = UUID.fromString("b04cc9cb-2b4a-4cc4-a94a-3c93a2158b06");
+    private UUID aus = UUID.fromString("496b1325-be50-4b0a-9aa2-3ecd610215f2");
+
+    private UUID UUID_ACHERONTIA_NODE = UUID.fromString("56b10cf0-9522-407e-9f90-0c2dba263c94");
+    private UUID UUID_CLASSIFICATION2 = UUID.fromString("a71467a6-74dc-4148-9530-484628a5ab0e");
 
     private AuditEvent previousAuditEvent;
     private AuditEvent mostRecentAuditEvent;
@@ -128,16 +135,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @Before
     public void setUp() {
 
-        uuid = UUID.fromString("496b1325-be50-4b0a-9aa2-3ecd610215f2");
-        sphingidae = UUID.fromString("54e767ee-894e-4540-a758-f906ecb4e2d9");
-        acherontia = UUID.fromString("c5cc8674-4242-49a4-aada-72d63194f5fa");
-        acherontiaLachesis = UUID.fromString("b04cc9cb-2b4a-4cc4-a94a-3c93a2158b06");
-        atroposAgassiz = UUID.fromString("d75b2e3d-7394-4ada-b6a5-93175b8751c1");
-        atroposOken = UUID.fromString("6bfedf25-6dbc-4d5c-9d56-84f9052f3b2a");
-        atroposLeach =  UUID.fromString("3da4ab34-6c50-4586-801e-732615899b07");
-        rethera = UUID.fromString("a9f42927-e507-4fda-9629-62073a908aae");
-        retheraSecCdmtest = UUID.fromString("a9f42927-e507-4fda-9629-62073a908aae");
-        aus = UUID.fromString("496b1325-be50-4b0a-9aa2-3ecd610215f2");
 
         previousAuditEvent = new AuditEvent();
         previousAuditEvent.setRevisionNumber(1025);
@@ -472,40 +469,39 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         Synonym synAtroposAgassiz = (Synonym)taxonDao.findByUuid(atroposAgassiz);
         Taxon taxonRethera = (Taxon)taxonDao.findByUuid(rethera);
         taxonRethera.addSynonym(synAtroposAgassiz, SynonymType.SYNONYM_OF());
-        logger.warn("addSynonym(..)");
+        //logger.warn("addSynonym(..)");
         this.taxonDao.clear();
         Synonym synAtroposLeach = (Synonym)taxonDao.findByUuid(atroposLeach);
         Taxon taxonRetheraSecCdmtest = (Taxon)taxonDao.findByUuid(retheraSecCdmtest);
         taxonRetheraSecCdmtest.addSynonym(synAtroposLeach, SynonymType.SYNONYM_OF());
         this.taxonDao.clear();
+
         // 1. searching for a taxon (Rethera)
         //long numberOfTaxa = taxonDao.countTaxaByName(Taxon.class, "Rethera", null, MatchMode.BEGINNING, namedAreas);
 
         @SuppressWarnings("rawtypes")
-        List<TaxonBase> results = taxonDao.findByNameTitleCache(true, false, includeUnpublished, "Rethera Rothschild & Jordan, 1903", null, subtree, MatchMode.EXACT, namedAreas,
+        List<TaxonBase> results = taxonDao.findByNameTitleCache(doTaxa, noSynonyms, includeUnpublished, "Rethera Rothschild & Jordan, 1903", null, subtree, MatchMode.EXACT, namedAreas,
                 null, null, null, null);
         assertNotNull("getTaxaByName should return a List", results);
         assertTrue("expected to find two taxa but found "+results.size(), results.size() == 2);
 
         // 2. searching for a taxon (Rethera) contained in a specific classification
-        results = taxonDao.findByNameTitleCache(true, false, includeUnpublished, "Rethera Rothschild & Jordan, 1903", classification, subtree, MatchMode.EXACT, namedAreas,
+        results = taxonDao.findByNameTitleCache(doTaxa, noSynonyms, includeUnpublished, "Rethera Rothschild & Jordan, 1903", classification, subtree, MatchMode.EXACT, namedAreas,
                 null, null, null, null);
         assertNotNull("getTaxaByName should return a List", results);
         assertTrue("expected to find one taxon but found "+results.size(), results.size() == 1);
 
-
         // 3. searching for Synonyms
-        results = taxonDao.findByNameTitleCache(false, true, includeUnpublished, "*Atropo", null, subtree, MatchMode.ANYWHERE, null,
+        results = taxonDao.findByNameTitleCache(noTaxa, doSynonyms, includeUnpublished, "*Atropo", null, subtree, MatchMode.ANYWHERE, null,
                 null, null, null, null);
         assertNotNull("getTaxaByName should return a List", results);
         assertTrue("expected to find two taxa but found "+results.size(), results.size() == 2);
 
         // 4. searching for Synonyms
-        results = taxonDao.findByNameTitleCache(false, true, includeUnpublished, "Atropo", null, subtree, MatchMode.BEGINNING, null,
+        results = taxonDao.findByNameTitleCache(noTaxa, doSynonyms, includeUnpublished, "Atropo", null, subtree, MatchMode.BEGINNING, null,
                 null, null, null, null);
         assertNotNull("getTaxaByName should return a List", results);
         assertTrue("expected to find two taxa but found "+results.size(), results.size() == 2);
-
 
         // 5. searching for a Synonyms and Taxa
         //   attache a synonym first
@@ -514,7 +510,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         tax.addSynonym(syn, SynonymType.HETEROTYPIC_SYNONYM_OF());
 
         taxonDao.save(tax);
-        results = taxonDao.findByNameTitleCache(true, true, includeUnpublished, "A", null, subtree, MatchMode.BEGINNING, namedAreas,
+        results = taxonDao.findByNameTitleCache(doTaxa, doSynonyms, includeUnpublished, "A", null, subtree, MatchMode.BEGINNING, namedAreas,
                 null, null, null, null);
         assertNotNull("getTaxaByName should return a List", results);
         assertTrue("expected to find 8 taxa but found "+results.size(), results.size() == 8);
@@ -597,20 +593,48 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @DataSet
     public void testCountTaxaByName() {
         TaxonNode subtree = null;
-        long numberOfTaxa = taxonDao.countTaxaByName(true, false, false, false,false, "A", null, subtree, MatchMode.BEGINNING, null, includeUnpublished);
+        Classification classification= null;
+        long numberOfTaxa = taxonDao.countTaxaByName(doTaxa, noSynonyms, noMisapplied, noCommonNames,false, "A", classification, subtree, MatchMode.BEGINNING, null, includeUnpublished);
         assertEquals(5, numberOfTaxa);
-        numberOfTaxa = taxonDao.countTaxaByName(true, false, false, false, false,"Smerinthus kindermannii", null, subtree, MatchMode.EXACT, null, includeUnpublished);
+        numberOfTaxa = taxonDao.countTaxaByName(doTaxa, noSynonyms, noMisapplied, noCommonNames, false, "S", classification, subtree, MatchMode.BEGINNING, null, includeUnpublished);
+        assertEquals("Sphingidae, Smerinthus, Smerinthus kindermannii and Sphingonaepiopsis expected", 4, numberOfTaxa);
+        numberOfTaxa = taxonDao.countTaxaByName(doTaxa, noSynonyms, noMisapplied, noCommonNames, false, "Smerinthus kindermannii", classification, subtree, MatchMode.EXACT, null, includeUnpublished);
         assertEquals(1, numberOfTaxa);
-        numberOfTaxa = taxonDao.countTaxaByName(false, true, false, false, false,"A", null, subtree, MatchMode.BEGINNING, null, includeUnpublished);
+        numberOfTaxa = taxonDao.countTaxaByName(noTaxa, doSynonyms, noMisapplied, noCommonNames, false, "A", classification, subtree, MatchMode.BEGINNING, null, includeUnpublished);
         assertEquals(2, numberOfTaxa);
-        numberOfTaxa = taxonDao.countTaxaByName(true, true, false, false, false,"A", null, subtree, MatchMode.BEGINNING, null, includeUnpublished);
+        numberOfTaxa = taxonDao.countTaxaByName(doTaxa, doSynonyms, noMisapplied, noCommonNames, false, "A", classification, subtree, MatchMode.BEGINNING, null, includeUnpublished);
         assertEquals(7, numberOfTaxa);
-        numberOfTaxa = taxonDao.countTaxaByName(true, true, false, false,false, "Aasfwerfwf fffe", null, subtree, MatchMode.BEGINNING, null, includeUnpublished);
+        numberOfTaxa = taxonDao.countTaxaByName(doTaxa, doSynonyms, noMisapplied, noCommonNames, false, "Aasfwerfwf fffe", classification, subtree, MatchMode.BEGINNING, null, includeUnpublished);
         assertEquals(0, numberOfTaxa);
-//	FIXME implement test for search in specific classification
-//		Reference reference = referenceDao.findByUuid(UUID.fromString("596b1325-be50-4b0a-9aa2-3ecd610215f2"));
-//		numberOfTaxa = taxonDao.countTaxaByName("A*", MatchMode.BEGINNING, SelectMode.ALL, null, null);
-//		assertEquals(numberOfTaxa, 2);
+
+        subtree = taxonNodeDao.findByUuid(UUID_ACHERONTIA_NODE);
+        numberOfTaxa = taxonDao.countTaxaByName(doTaxa, noSynonyms, noMisapplied, noCommonNames, false, "A", classification, subtree, MatchMode.BEGINNING, null, includeUnpublished);
+        assertEquals("Acherontia and 2 A. species expected", 3, numberOfTaxa);
+        numberOfTaxa = taxonDao.countTaxaByName(doTaxa, noSynonyms, noMisapplied, noCommonNames, false, "S", classification, subtree, MatchMode.BEGINNING, null, includeUnpublished);
+        assertEquals("", 0, numberOfTaxa);
+        numberOfTaxa = taxonDao.countTaxaByName(doTaxa, noSynonyms, noMisapplied, noCommonNames, false, "Smerinthus kindermannii", classification, subtree, MatchMode.EXACT, null, includeUnpublished);
+        assertEquals("Smerinthus is not in subtree", 0, numberOfTaxa);
+        numberOfTaxa = taxonDao.countTaxaByName(noTaxa, doSynonyms, noMisapplied, noCommonNames, false, "A", classification, subtree, MatchMode.BEGINNING, null, includeUnpublished);
+        assertEquals("Atropos Agassiz and Atropos Oken expected as Synonyms", 2, numberOfTaxa);
+        numberOfTaxa = taxonDao.countTaxaByName(doTaxa, doSynonyms, noMisapplied, noCommonNames, false, "A", classification, subtree, MatchMode.BEGINNING, null, includeUnpublished);
+        assertEquals("The above accepted and synonyms expected", 5, numberOfTaxa);
+        numberOfTaxa = taxonDao.countTaxaByName(doTaxa, doSynonyms, noMisapplied, noCommonNames, false, "Aasfwerfwf fffe", classification, subtree, MatchMode.BEGINNING, null, includeUnpublished);
+        assertEquals(0, numberOfTaxa);
+
+        classification = classificationDao.findByUuid(UUID_CLASSIFICATION2);
+        subtree = null;
+        numberOfTaxa = taxonDao.countTaxaByName(doTaxa, noSynonyms, noMisapplied, noCommonNames, false, "A", classification, subtree, MatchMode.BEGINNING, null, includeUnpublished);
+        assertEquals("Acherontia and 2 A. species expected", 3, numberOfTaxa);
+        numberOfTaxa = taxonDao.countTaxaByName(doTaxa, noSynonyms, noMisapplied, noCommonNames, false, "S", classification, subtree, MatchMode.BEGINNING, null, includeUnpublished);
+        assertEquals("Sphingidae expected", 1, numberOfTaxa);
+        numberOfTaxa = taxonDao.countTaxaByName(doTaxa, noSynonyms, noMisapplied, noCommonNames, false, "Smerinthus kindermannii", classification, subtree, MatchMode.EXACT, null, includeUnpublished);
+        assertEquals("Smerinthus is not in subtree", 0, numberOfTaxa);
+        numberOfTaxa = taxonDao.countTaxaByName(noTaxa, doSynonyms, noMisapplied, noCommonNames, false, "A", classification, subtree, MatchMode.BEGINNING, null, includeUnpublished);
+        assertEquals("Atropos Agassiz and Atropos Oken expected as Synonyms", 2, numberOfTaxa);
+        numberOfTaxa = taxonDao.countTaxaByName(doTaxa, doSynonyms, noMisapplied, noCommonNames, false, "A", classification, subtree, MatchMode.BEGINNING, null, includeUnpublished);
+        assertEquals("The above accepted and synonyms expected", 5, numberOfTaxa);
+        numberOfTaxa = taxonDao.countTaxaByName(doTaxa, doSynonyms, noMisapplied, noCommonNames, false, "Aasfwerfwf fffe", classification, subtree, MatchMode.BEGINNING, null, includeUnpublished);
+        assertEquals(0, numberOfTaxa);
     }
 
     @Test
