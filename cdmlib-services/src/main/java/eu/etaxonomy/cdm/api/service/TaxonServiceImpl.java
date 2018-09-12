@@ -678,14 +678,12 @@ public class TaxonServiceImpl
         // Taxa and synonyms
         long numberTaxaResults = 0L;
 
-
         List<String> propertyPath = new ArrayList<>();
         if(configurator.getTaxonPropertyPath() != null){
             propertyPath.addAll(configurator.getTaxonPropertyPath());
         }
 
-
-       if (configurator.isDoMisappliedNames() || configurator.isDoSynonyms() || configurator.isDoTaxa() || configurator.isDoTaxaByCommonNames()){
+        if (configurator.isDoMisappliedNames() || configurator.isDoSynonyms() || configurator.isDoTaxa() || configurator.isDoTaxaByCommonNames()){
             if(configurator.getPageSize() != null){ // no point counting if we need all anyway
                 numberTaxaResults =
                     dao.countTaxaByName(configurator.isDoTaxa(),configurator.isDoSynonyms(), configurator.isDoMisappliedNames(),
@@ -1374,12 +1372,12 @@ public class TaxonServiceImpl
     @Override
     public Pager<SearchResult<TaxonBase>> findByFullText(
             Class<? extends TaxonBase> clazz, String queryString,
-            Classification classification, boolean includeUnpublished, List<Language> languages,
+            Classification classification, TaxonNode subtree, boolean includeUnpublished, List<Language> languages,
             boolean highlightFragments, Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints, List<String> propertyPaths) throws IOException, LuceneParseException {
 
-        LuceneSearch luceneSearch = prepareFindByFullTextSearch(clazz, queryString, classification, null,
-                includeUnpublished, languages, highlightFragments, null);
+        LuceneSearch luceneSearch = prepareFindByFullTextSearch(clazz, queryString, classification, subtree,
+                null, includeUnpublished, languages, highlightFragments, null);
 
         // --- execute search
         TopGroups<BytesRef> topDocsResultSet;
@@ -1445,7 +1443,7 @@ public class TaxonServiceImpl
      * @return
      */
     protected LuceneSearch prepareFindByFullTextSearch(Class<? extends CdmBase> clazz, String queryString,
-            Classification classification, String className, boolean includeUnpublished, List<Language> languages,
+            Classification classification, TaxonNode subtree, String className, boolean includeUnpublished, List<Language> languages,
             boolean highlightFragments, SortField[] sortFields) {
 
         Builder finalQueryBuilder = new Builder();
@@ -1576,7 +1574,8 @@ public class TaxonServiceImpl
 
     @Override
     public Pager<SearchResult<TaxonBase>> findTaxaAndNamesByFullText(
-            EnumSet<TaxaAndNamesSearchMode> searchModes, String queryString, Classification classification,
+            EnumSet<TaxaAndNamesSearchMode> searchModes, String queryString,
+            Classification classification, TaxonNode subtree,
             Set<NamedArea> namedAreas, Set<PresenceAbsenceTerm> distributionStatus, List<Language> languages,
             boolean highlightFragments, Integer pageSize,
             Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)
@@ -1593,7 +1592,7 @@ public class TaxonServiceImpl
 
         // convert sets to lists
         List<NamedArea> namedAreaList = null;
-        List<PresenceAbsenceTerm>distributionStatusList = null;
+        List<PresenceAbsenceTerm> distributionStatusList = null;
         if(namedAreas != null){
             namedAreaList = new ArrayList<>(namedAreas.size());
             namedAreaList.addAll(namedAreas);
@@ -1681,7 +1680,7 @@ public class TaxonServiceImpl
             } else if (!searchModes.contains(TaxaAndNamesSearchMode.doTaxa) && searchModes.contains(TaxaAndNamesSearchMode.doSynonyms)) {
                 className = "eu.etaxonomy.cdm.model.taxon.Synonym";
             }
-            luceneSearches.add(prepareFindByFullTextSearch(taxonBaseSubclass, queryString, classification, className,
+            luceneSearches.add(prepareFindByFullTextSearch(taxonBaseSubclass, queryString, classification, subtree, className,
                     includeUnpublished, languages, highlightFragments, sortFields));
             idFieldMap.put(CdmBaseType.TAXON, "id");
             /* A) does not work!!!!
@@ -1719,7 +1718,7 @@ public class TaxonServiceImpl
                     "inDescription.taxon.id",
                     true,
                     QueryFactory.addTypeRestriction(
-                                createByDescriptionElementFullTextQuery(queryString, classification, null, languages, descriptionElementQueryFactory)
+                                createByDescriptionElementFullTextQuery(queryString, classification, subtree, null, languages, descriptionElementQueryFactory)
                                 , CommonTaxonName.class
                                 ).build(), "id", null, ScoreMode.Max);
             if (logger.isDebugEnabled()){logger.debug("byCommonNameJoinQuery: " + byCommonNameJoinQuery.toString());}
@@ -1987,11 +1986,11 @@ public class TaxonServiceImpl
     @Override
     public Pager<SearchResult<TaxonBase>> findByDescriptionElementFullText(
             Class<? extends DescriptionElementBase> clazz, String queryString,
-            Classification classification, List<Feature> features, List<Language> languages,
+            Classification classification, TaxonNode subtree, List<Feature> features, List<Language> languages,
             boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws IOException, LuceneParseException {
 
 
-        LuceneSearch luceneSearch = prepareByDescriptionElementFullTextSearch(clazz, queryString, classification, features, languages, highlightFragments);
+        LuceneSearch luceneSearch = prepareByDescriptionElementFullTextSearch(clazz, queryString, classification, subtree, features, languages, highlightFragments);
 
         // --- execute search
         TopGroups<BytesRef> topDocsResultSet;
@@ -2020,12 +2019,13 @@ public class TaxonServiceImpl
 
     @Override
     public Pager<SearchResult<TaxonBase>> findByEverythingFullText(String queryString,
-            Classification classification, boolean includeUnpublished, List<Language> languages, boolean highlightFragments,
+            Classification classification, TaxonNode subtree, boolean includeUnpublished, List<Language> languages, boolean highlightFragments,
             Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws IOException, LuceneParseException, LuceneMultiSearchException {
 
-        LuceneSearch luceneSearchByDescriptionElement = prepareByDescriptionElementFullTextSearch(null, queryString, classification,
+        LuceneSearch luceneSearchByDescriptionElement = prepareByDescriptionElementFullTextSearch(null, queryString,
+                classification, subtree,
                 null, languages, highlightFragments);
-        LuceneSearch luceneSearchByTaxonBase = prepareFindByFullTextSearch(null, queryString, classification, null,
+        LuceneSearch luceneSearchByTaxonBase = prepareFindByFullTextSearch(null, queryString, classification, subtree, null,
                 includeUnpublished, languages, highlightFragments, null);
 
         LuceneMultiSearch multiSearch = new LuceneMultiSearch(luceneIndexToolProvider, luceneSearchByDescriptionElement, luceneSearchByTaxonBase);
@@ -2067,7 +2067,7 @@ public class TaxonServiceImpl
      * @return
      */
     protected LuceneSearch prepareByDescriptionElementFullTextSearch(Class<? extends CdmBase> clazz,
-            String queryString, Classification classification, List<Feature> features,
+            String queryString, Classification classification, TaxonNode subtree, List<Feature> features,
             List<Language> languages, boolean highlightFragments) {
 
         LuceneSearch luceneSearch = new LuceneSearch(luceneIndexToolProvider, GroupByTaxonClassBridge.GROUPBY_TAXON_FIELD, DescriptionElementBase.class);
@@ -2075,7 +2075,7 @@ public class TaxonServiceImpl
 
         SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("inDescription.taxon.titleCache__sort", SortField.Type.STRING, false)};
 
-        BooleanQuery finalQuery = createByDescriptionElementFullTextQuery(queryString, classification, features,
+        BooleanQuery finalQuery = createByDescriptionElementFullTextQuery(queryString, classification, subtree, features,
                 languages, descriptionElementQueryFactory);
 
         luceneSearch.setSortFields(sortFields);
@@ -2097,7 +2097,7 @@ public class TaxonServiceImpl
      * @return
      */
     private BooleanQuery createByDescriptionElementFullTextQuery(String queryString, Classification classification,
-            List<Feature> features, List<Language> languages, QueryFactory descriptionElementQueryFactory) {
+            TaxonNode subtree, List<Feature> features, List<Language> languages, QueryFactory descriptionElementQueryFactory) {
         Builder finalQueryBuilder = new Builder();
         Builder textQueryBuilder = new Builder();
         textQueryBuilder.add(descriptionElementQueryFactory.newTermQuery("titleCache", queryString), Occur.SHOULD);

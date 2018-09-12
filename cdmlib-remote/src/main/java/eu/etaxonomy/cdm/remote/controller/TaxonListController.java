@@ -83,15 +83,11 @@ import io.swagger.annotations.Api;
 @RequestMapping(value = {"/taxon"})
 public class TaxonListController extends AbstractIdentifiableListController<TaxonBase, ITaxonService> {
 
-
     private static final List<String> SIMPLE_TAXON_INIT_STRATEGY = DEFAULT_INIT_STRATEGY;
     protected List<String> getSimpleTaxonInitStrategy() {
         return SIMPLE_TAXON_INIT_STRATEGY;
     }
 
-    /**
-     *
-     */
     public TaxonListController(){
         super();
         setInitializationStrategy(Arrays.asList(new String[]{"$","name.nomenclaturalReference"}));
@@ -109,7 +105,6 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
     @Autowired
     private ITaxonNodeService taxonNodeService;
 
-
     @Autowired
     private ITermService termService;
 
@@ -121,7 +116,6 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
         binder.registerCustomEditor(MatchMode.class, new MatchModePropertyEditor());
         binder.registerCustomEditor(Rank.class, new RankPropertyEditor());
         binder.registerCustomEditor(PresenceAbsenceTerm.class, new TermBasePropertyEditor<PresenceAbsenceTerm>(termService));
-
     }
 
     /**
@@ -163,6 +157,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
     public Pager<SearchResult<TaxonBase>> doSearch(
             @RequestParam(value = "query", required = true) String query,
             @RequestParam(value = "classificationUuid", required = false) UUID classificationUuid,
+            @RequestParam(value = "subtreeUuid", required = false) UUID subtreeUuid,
             @RequestParam(value = "area", required = false) DefinedTermBaseList<NamedArea> areaList,
             @RequestParam(value = "status", required = false) PresenceAbsenceTerm[] status,
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
@@ -209,6 +204,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
         }
 
         Classification classification = classificationService.load(classificationUuid);
+        TaxonNode subtree = getSubtreeOrError(subtreeUuid, taxonNodeService, response);
 
         Set<PresenceAbsenceTerm> statusSet = null;
         if(status != null) {
@@ -216,7 +212,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
         }
 
         return service.findTaxaAndNamesByFullText(searchModes, query,
-                classification, areaSet, statusSet, null,
+                classification, subtree, areaSet, statusSet, null,
                 false, pagerParams.getPageSize(), pagerParams.getPageIndex(),
                 OrderHint.NOMENCLATURAL_SORT_ORDER.asList(), getSimpleTaxonInitStrategy());
     }
@@ -259,7 +255,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
     @RequestMapping(method = RequestMethod.GET, value={"find"})
     public Pager<IdentifiableEntity> doFind(
             @RequestParam(value = "query", required = true) String query,
-            @RequestParam(value = "tree", required = false) UUID treeUuid,
+            @RequestParam(value = "tree", required = false) UUID classificationUuid,
             @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
             @RequestParam(value = "area", required = false) Set<NamedArea> areas,
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
@@ -298,8 +294,8 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
         config.setNamedAreas(areas);
         config.setDoIncludeAuthors(includeAuthors != null ? includeAuthors : Boolean.FALSE);
         config.setOrder(order);
-        if(treeUuid != null){
-            Classification classification = classificationService.find(treeUuid);
+        if(classificationUuid != null){
+            Classification classification = classificationService.find(classificationUuid);
             config.setClassification(classification);
         }
 
@@ -329,6 +325,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
             @RequestParam(value = "clazz", required = false) Class<? extends DescriptionElementBase> clazz,
             @RequestParam(value = "query", required = true) String queryString,
             @RequestParam(value = "tree", required = false) UUID treeUuid,
+            @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
             @RequestParam(value = "features", required = false) UuidList featureUuids,
             @RequestParam(value = "languages", required = false) List<Language> languages,
             @RequestParam(value = "hl", required = false) Boolean highlighting,
@@ -349,30 +346,32 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
          }
 
          Classification classification = null;
-        if(treeUuid != null){
+         if(treeUuid != null){
             classification = classificationService.find(treeUuid);
-        }
+         }
+         TaxonNode subtree = getSubtreeOrError(subtreeUuid, taxonNodeService, response);
 
-        List<Feature> features = null;
-        if(featureUuids != null){
+         List<Feature> features = null;
+         if(featureUuids != null){
             features = new ArrayList<>(featureUuids.size());
             for(UUID uuid : featureUuids){
                 features.add((Feature) termService.find(uuid));
             }
-        }
+         }
 
-        Pager<SearchResult<TaxonBase>> pager = service.findByDescriptionElementFullText(
-                clazz, queryString, classification, features, languages, highlighting,
+         Pager<SearchResult<TaxonBase>> pager = service.findByDescriptionElementFullText(
+                clazz, queryString, classification, subtree, features, languages, highlighting,
                 pagerParams.getPageSize(), pagerParams.getPageIndex(),
                 ((List<OrderHint>)null), getSimpleTaxonInitStrategy());
-        return pager;
+         return pager;
     }
 
     @RequestMapping(method = RequestMethod.GET, value={"findByFullText"})
     public Pager<SearchResult<TaxonBase>> doFindByFullText(
             @RequestParam(value = "clazz", required = false) Class<? extends TaxonBase> clazz,
             @RequestParam(value = "query", required = true) String queryString,
-            @RequestParam(value = "tree", required = false) UUID treeUuid,
+            @RequestParam(value = "tree", required = false) UUID classificationUuid,
+            @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
             @RequestParam(value = "languages", required = false) List<Language> languages,
             @RequestParam(value = "hl", required = false) Boolean highlighting,
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
@@ -394,11 +393,13 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
         }
 
         Classification classification = null;
-        if(treeUuid != null){
-            classification = classificationService.find(treeUuid);
+        if(classificationUuid != null){
+            classification = classificationService.find(classificationUuid);
         }
+        TaxonNode subtree = getSubtreeOrError(subtreeUuid, taxonNodeService, response);
 
-        Pager<SearchResult<TaxonBase>> pager = service.findByFullText(clazz, queryString, classification, includeUnpublished,
+        Pager<SearchResult<TaxonBase>> pager = service.findByFullText(clazz, queryString, classification, subtree,
+                includeUnpublished,
                 languages, highlighting, pagerParams.getPageSize(), pagerParams.getPageIndex(), ((List<OrderHint>) null),
                 initializationStrategy);
         return pager;
@@ -413,6 +414,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
             @RequestParam(value = "clazz", required = false) Class<? extends TaxonBase> clazz,
             @RequestParam(value = "query", required = true) String queryString,
             @RequestParam(value = "tree", required = false) UUID treeUuid,
+            @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
             @RequestParam(value = "languages", required = false) List<Language> languages,
             @RequestParam(value = "hl", required = false) Boolean highlighting,
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
@@ -434,15 +436,16 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
          }
 
          Classification classification = null;
-        if(treeUuid != null){
+         if(treeUuid != null){
             classification = classificationService.find(treeUuid);
-        }
+         }
+         TaxonNode subtree = getSubtreeOrError(subtreeUuid, taxonNodeService, response);
 
-        Pager<SearchResult<TaxonBase>> pager = service.findByEverythingFullText(
-                queryString, classification, includeUnpublished, languages, highlighting,
+         Pager<SearchResult<TaxonBase>> pager = service.findByEverythingFullText(
+                queryString, classification, subtree, includeUnpublished, languages, highlighting,
                 pagerParams.getPageSize(), pagerParams.getPageIndex(),
                 ((List<OrderHint>)null), initializationStrategy);
-        return pager;
+         return pager;
     }
 
     /**

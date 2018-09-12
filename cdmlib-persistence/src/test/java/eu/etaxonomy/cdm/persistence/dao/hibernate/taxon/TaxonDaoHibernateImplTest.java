@@ -344,11 +344,9 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         assertFalse("The list should not be empty", results.isEmpty());
         assertEquals(4, results.size());
 
-
-        results = taxonDao.getTaxaByNameForEditor(doTaxa, doSynonyms, noMisapplied, noCommonNames, false,includeUnpublished, "A",null, subtree, MatchMode.BEGINNING, null, null);
+        results = taxonDao.getTaxaByNameForEditor(doTaxa, doSynonyms, noMisapplied, noCommonNames, false,includeUnpublished, "A", null, subtree, MatchMode.BEGINNING, null, null);
         assertNotNull("getTaxaByName should return a List", results);
         assertEquals(7, results.size());
-
 
         results = taxonDao.getTaxaByNameForEditor(doTaxa, noSynonyms, noMisapplied, noCommonNames, false, includeUnpublished, "A", null, subtree, MatchMode.BEGINNING, null, null);
         assertNotNull("getTaxaByName should return a List", results);

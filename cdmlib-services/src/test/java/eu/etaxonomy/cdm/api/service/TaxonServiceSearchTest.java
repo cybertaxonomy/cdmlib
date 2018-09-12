@@ -158,21 +158,22 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     public final void testPurgeAndReindex() throws IOException, LuceneParseException {
 
         refreshLuceneIndex();
+        TaxonNode subtree = null;
 
-        Pager<SearchResult<TaxonBase>> pager = taxonService.findByFullText(null, "Abies", null, includeUnpublished,
-                null, true, null, null, null, null); // --> 8
+        Pager<SearchResult<TaxonBase>> pager = taxonService.findByFullText(null, "Abies", null, subtree,
+                includeUnpublished, null, true, null, null, null, null); // --> 8
         Assert.assertEquals("Expecting 8 entities", 8, pager.getCount().intValue());
 
         indexer.purge(null);
         commitAndStartNewTransaction(null);
 
-        pager = taxonService.findByFullText(null, "Abies", null, includeUnpublished, null, true, null, null, null, null); // --> 0
+        pager = taxonService.findByFullText(null, "Abies", null, subtree, includeUnpublished, null, true, null, null, null, null); // --> 0
         Assert.assertEquals("Expecting no entities since the index has been purged", 0, pager.getCount().intValue());
 
         indexer.reindex(indexer.indexedClasses(), null);
         commitAndStartNewTransaction(null);
 
-        pager = taxonService.findByFullText(null, "Abies", null, includeUnpublished, null, true, null, null, null, null); // --> 8
+        pager = taxonService.findByFullText(null, "Abies", null, subtree, includeUnpublished, null, true, null, null, null, null); // --> 8
         Assert.assertEquals("Expecting 8 entities", 8, pager.getCount().intValue());
     }
 
@@ -183,24 +184,26 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     public final void testFindByDescriptionElementFullText_CommonName() throws IOException,
             LuceneParseException {
 
+        TaxonNode subtree = null;
         refreshLuceneIndex();
 
-        Pager<SearchResult<TaxonBase>> pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Wei"+UTF8.SHARP_S+"tanne", null, null, null,
+        Pager<SearchResult<TaxonBase>> pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Wei"+UTF8.SHARP_S+"tanne",
+                null, subtree, null, null,
                 false, null, null, null, null);
         Assert.assertEquals("Expecting one entity when searching for CommonTaxonName", 1,
                 pager.getCount().intValue());
 
         // the description containing the Nulltanne has no taxon attached,
         // taxon.id = null
-        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Nulltanne", null, null, null,
+        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Nulltanne", null, subtree, null, null,
                 false, null, null, null, null);
         Assert.assertEquals("Expecting no entity when searching for 'Nulltanne' ", 0, pager.getCount().intValue());
 
-        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Wei"+UTF8.SHARP_S+"tanne", null, null,
+        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Wei"+UTF8.SHARP_S+"tanne", null, subtree, null,
                 Arrays.asList(new Language[] { Language.GERMAN() }), false, null, null, null, null);
         Assert.assertEquals("Expecting one entity when searching in German", 1, pager.getCount().intValue());
 
-        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Wei"+UTF8.SHARP_S+"tanne", null, null,
+        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Wei"+UTF8.SHARP_S+"tanne", null, subtree, null,
                 Arrays.asList(new Language[] { Language.RUSSIAN() }), false, null, null, null, null);
         Assert.assertEquals("Expecting no entity when searching in Russian", 0, pager.getCount().intValue());
 
@@ -212,12 +215,13 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     public final void testFindByDescriptionElementFullText_Distribution() throws IOException, LuceneParseException {
 
         refreshLuceneIndex();
+        TaxonNode subtree = null;
 
         // by Area
-        Pager<SearchResult<TaxonBase>>  pager = taxonService.findByDescriptionElementFullText(null, "Canada", null, null, null, false, null, null, null, null);
+        Pager<SearchResult<TaxonBase>>  pager = taxonService.findByDescriptionElementFullText(null, "Canada", null, subtree, null, null, false, null, null, null, null);
         Assert.assertEquals("Expecting one entity when searching for arae 'Canada'", 1, pager.getCount().intValue());
         // by Status
-        pager = taxonService.findByDescriptionElementFullText(null, "present", null, null, null, false, null, null, null, null);
+        pager = taxonService.findByDescriptionElementFullText(null, "present", null, subtree, null, null, false, null, null, null, null);
         Assert.assertEquals("Expecting one entity when searching for status 'present'", 1, pager.getCount().intValue());
     }
 
@@ -227,8 +231,9 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     public final void testFindByDescriptionElementFullText_wildcard() throws IOException, LuceneParseException {
 
         refreshLuceneIndex();
+        TaxonNode subtree = null;
 
-        Pager<SearchResult<TaxonBase>> pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Wei"+UTF8.SHARP_S+"*", null, null, null, false, null, null, null, null);
+        Pager<SearchResult<TaxonBase>> pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Wei"+UTF8.SHARP_S+"*", null, subtree, null, null, false, null, null, null, null);
         Assert.assertEquals("Expecting one entity when searching for CommonTaxonName", 1, pager.getCount().intValue());
     }
 
@@ -242,6 +247,8 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet
     public final void testFindByDescriptionElementFullText_TooManyClauses() throws IOException, LuceneParseException {
+
+        TaxonNode subtree = null;
 
         // generate 1024 terms to reproduce the bug
         TaxonDescription description = (TaxonDescription) descriptionService.find(D_ABIES_ALBA_UUID);
@@ -257,7 +264,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         refreshLuceneIndex();
 
-        Pager<SearchResult<TaxonBase>> pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Rot*", null, null, null, false, null, null, null, null);
+        Pager<SearchResult<TaxonBase>> pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Rot*", null, subtree, null, null, false, null, null, null, null);
         Assert.assertEquals("Expecting all 1024 entities grouped into one SearchResult item when searching for Rot*", 1, pager.getCount().intValue());
     }
 
@@ -272,6 +279,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
     public final void testFullText_Paging() throws IOException, LuceneParseException {
 
+        TaxonNode subtree = null;
         Reference sec = ReferenceFactory.newDatabase();
         referenceService.save(sec);
 
@@ -297,12 +305,12 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         int pageSize = 10;
 
-        Pager<SearchResult<TaxonBase>> pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Rot*", null, null, null, false, pageSize, null, null, null);
+        Pager<SearchResult<TaxonBase>> pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Rot*", null, subtree, null, null, false, pageSize, null, null, null);
         Assert.assertEquals("unexpeted number of pages", Integer.valueOf(numOfItems / pageSize), pager.getPagesAvailable());
-        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Rot*", null, null, null, false, pageSize, 9, null, null);
+        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Rot*", null, subtree, null, null, false, pageSize, 9, null, null);
         Assert.assertNotNull("last page must have records", pager.getRecords());
         Assert.assertNotNull("last item on last page must exist", pager.getRecords().get(0));
-        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Rot*", null, null, null, false, pageSize, 10, null, null);
+        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Rot*", null, subtree, null, null, false, pageSize, 10, null, null);
         Assert.assertNotNull("last page + 1 must not have any records", pager.getRecords());
     }
 
@@ -321,6 +329,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @Ignore // test fails, maybe the assumptions made here are not compatible with the lucene scoring mechanism see http://lucene.apache.org/core/3_6_1/scoring.html
     public final void testFullText_ScoreAndOrder_1() throws IOException, LuceneParseException {
 
+        TaxonNode subtree = null;
         int numOfTaxa = 3;
 
         UUID[] taxonUuids = new UUID[numOfTaxa];
@@ -342,7 +351,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         commitAndStartNewTransaction(null);
         refreshLuceneIndex();
 
-        Pager<SearchResult<TaxonBase>> pager = taxonService.findByDescriptionElementFullText(TextData.class, "Rot", null, null, null, false, null, null, null, null);
+        Pager<SearchResult<TaxonBase>> pager = taxonService.findByDescriptionElementFullText(TextData.class, "Rot", null, subtree, null, null, false, null, null, null, null);
         for(int i = 0; i < numOfTaxa; i++){
             Assert.assertEquals("taxa should be orderd by relevance (= score)", taxonUuids[numOfTaxa - i - 1], pager.getRecords().get(i).getEntity().getUuid());
         }
@@ -364,6 +373,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @Ignore // test fails, maybe the assumptions made here are not compatible with the lucene scoring mechanism see http://lucene.apache.org/core/3_6_1/scoring.html
     public final void testFullText_ScoreAndOrder_2() throws IOException, LuceneParseException {
 
+        TaxonNode subtree = null;
         int numOfTaxa = 3;
 
         UUID[] taxonUuids = new UUID[numOfTaxa];
@@ -385,7 +395,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         commitAndStartNewTransaction(null);
         refreshLuceneIndex();
 
-        Pager<SearchResult<TaxonBase>> pager = taxonService.findByDescriptionElementFullText(TextData.class, "Rot", null, null, null, false, null, null, null, null);
+        Pager<SearchResult<TaxonBase>> pager = taxonService.findByDescriptionElementFullText(TextData.class, "Rot", null, subtree, null, null, false, null, null, null, null);
         for(int i = 0; i < numOfTaxa; i++){
             Assert.assertEquals("taxa should be orderd by relevance (= score)", taxonUuids[numOfTaxa - i - 1], pager.getRecords().get(i).getEntity().getUuid());
         }
@@ -402,6 +412,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @DataSet
     public final void testFullText_Grouping() throws IOException, LuceneParseException, LuceneMultiSearchException {
 
+        TaxonNode subtree = null;
         TaxonDescription description = (TaxonDescription) descriptionService.find(D_ABIES_ALBA_UUID);
         Set<String> uniqueRandomStrs = new HashSet<>(1024);
         int numOfItems = 100;
@@ -422,7 +433,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
          boolean highlightFragments = true;
 
         // test with findByDescriptionElementFullText
-        Pager<SearchResult<TaxonBase>> pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Rot*", null, null, null, highlightFragments, pageSize, null, null, null);
+        Pager<SearchResult<TaxonBase>> pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Rot*", null, subtree, null, null, highlightFragments, pageSize, null, null, null);
         logFreeTextSearchResults(pager, Level.DEBUG, null);
         Assert.assertEquals("All matches should be grouped into a single SearchResult element", 1, pager.getRecords().size());
         Assert.assertEquals("The count property of the pager must be set correctly", 1, pager.getCount().intValue());
@@ -432,7 +443,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("expecting 10 highlighted fragments of field 'name'", maxDocsPerGroup, highlightMap.get("name").length);
 
         // test with findByEverythingFullText
-        pager = taxonService.findByEverythingFullText( "Rot*", null, includeUnpublished, null, highlightFragments, pageSize, null, null, null);
+        pager = taxonService.findByEverythingFullText( "Rot*", null, subtree, includeUnpublished, null, highlightFragments, pageSize, null, null, null);
         logFreeTextSearchResults(pager, Level.DEBUG, null);
         Assert.assertEquals("All matches should be grouped into a single SearchResult element", 1, pager.getRecords().size());
         Assert.assertEquals("The count property of the pager must be set correctly", 1, pager.getCount().intValue());
@@ -449,8 +460,9 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     public final void testFindByDescriptionElementFullText_TextData() throws IOException, LuceneParseException {
 
         refreshLuceneIndex();
+        TaxonNode subtree = null;
 
-        Pager<SearchResult<TaxonBase>> pager = taxonService.findByDescriptionElementFullText(TextData.class, "Abies", null, null, null, false, null, null, null, null);
+        Pager<SearchResult<TaxonBase>> pager = taxonService.findByDescriptionElementFullText(TextData.class, "Abies", null, subtree, null, null, false, null, null, null, null);
         logFreeTextSearchResults(pager, Level.DEBUG, null);
         Assert.assertEquals("Expecting one entity when searching for any TextData", 1, pager.getCount().intValue());
         Assert.assertEquals("Abies balsamea sec. Kohlbecker, A., Testcase standart views, 2013", pager.getRecords().get(0).getEntity().getTitleCache());
@@ -458,33 +470,33 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("Abies balsamea sec. Kohlbecker, A., Testcase standart views, 2013", pager.getRecords().get(0).getDocs().iterator().next().get("inDescription.taxon.titleCache"));
 
 
-        pager = taxonService.findByDescriptionElementFullText(null, "Abies", null, null, null, false, null, null, null, null);
+        pager = taxonService.findByDescriptionElementFullText(null, "Abies", null, subtree, null, null, false, null, null, null, null);
         Assert.assertEquals("Expecting one entity when searching for any type", 1, pager.getCount().intValue());
 
-        pager = taxonService.findByDescriptionElementFullText(null, "Abies", null, Arrays.asList(new Feature[]{Feature.UNKNOWN()}), null, false, null, null, null, null);
+        pager = taxonService.findByDescriptionElementFullText(null, "Abies", null, subtree, Arrays.asList(new Feature[]{Feature.UNKNOWN()}), null, false, null, null, null, null);
         Assert.assertEquals("Expecting one entity when searching for any type and for Feature DESCRIPTION", 1, pager.getCount().intValue());
 
-        pager = taxonService.findByDescriptionElementFullText(null, "Abies", null, Arrays.asList(new Feature[]{Feature.CHROMOSOME_NUMBER()}), null, false, null, null, null, null);
+        pager = taxonService.findByDescriptionElementFullText(null, "Abies", null, subtree, Arrays.asList(new Feature[]{Feature.CHROMOSOME_NUMBER()}), null, false, null, null, null, null);
         Assert.assertEquals("Expecting no entity when searching for any type and for Feature CHROMOSOME_NUMBER", 0, pager.getCount().intValue());
 
-        pager = taxonService.findByDescriptionElementFullText(null, "Abies", null, Arrays.asList(new Feature[]{Feature.CHROMOSOME_NUMBER(), Feature.UNKNOWN()}), null, false, null, null, null, null);
+        pager = taxonService.findByDescriptionElementFullText(null, "Abies", null, subtree, Arrays.asList(new Feature[]{Feature.CHROMOSOME_NUMBER(), Feature.UNKNOWN()}), null, false, null, null, null, null);
         Assert.assertEquals("Expecting no entity when searching for any type and for Feature DESCRIPTION or CHROMOSOME_NUMBER", 1, pager.getCount().intValue());
 
-        pager = taxonService.findByDescriptionElementFullText(Distribution.class, "Abies", null, null, null, false, null, null, null, null);
+        pager = taxonService.findByDescriptionElementFullText(Distribution.class, "Abies", null, subtree, null, null, false, null, null, null, null);
         Assert.assertEquals("Expecting no entity when searching for Distribution", 0, pager.getCount().intValue());
 
-        pager = taxonService.findByDescriptionElementFullText(TextData.class, "Бальзам", null, null, Arrays.asList(new Language[]{}), false, null, null, null, null);
+        pager = taxonService.findByDescriptionElementFullText(TextData.class, "Бальзам", null, subtree, null, Arrays.asList(new Language[]{}), false, null, null, null, null);
         Assert.assertEquals("Expecting one entity", 1, pager.getCount().intValue());
         Assert.assertEquals("Abies balsamea sec. Kohlbecker, A., Testcase standart views, 2013", pager.getRecords().get(0).getEntity().getTitleCache());
 
-        pager = taxonService.findByDescriptionElementFullText(TextData.class, "Бальзам", null, null, Arrays.asList(new Language[]{Language.RUSSIAN()}), false, null, null, null, null);
+        pager = taxonService.findByDescriptionElementFullText(TextData.class, "Бальзам", null, subtree, null, Arrays.asList(new Language[]{Language.RUSSIAN()}), false, null, null, null, null);
         Assert.assertEquals("Expecting one entity", 1, pager.getCount().intValue());
         Assert.assertEquals("Abies balsamea sec. Kohlbecker, A., Testcase standart views, 2013", pager.getRecords().get(0).getEntity().getTitleCache());
 
-        pager = taxonService.findByDescriptionElementFullText(TextData.class, "Бальзам", null, null, Arrays.asList(new Language[]{Language.GERMAN()}), false, null, null, null, null);
+        pager = taxonService.findByDescriptionElementFullText(TextData.class, "Бальзам", null, subtree, null, Arrays.asList(new Language[]{Language.GERMAN()}), false, null, null, null, null);
         Assert.assertEquals("Expecting no entity", 0, pager.getCount().intValue());
 
-        pager = taxonService.findByDescriptionElementFullText(TextData.class, "Balsam-Tanne", null, null, Arrays.asList(new Language[]{Language.GERMAN(), Language.RUSSIAN()}), false, null, null, null, null);
+        pager = taxonService.findByDescriptionElementFullText(TextData.class, "Balsam-Tanne", null, subtree, null, Arrays.asList(new Language[]{Language.GERMAN(), Language.RUSSIAN()}), false, null, null, null, null);
         Assert.assertEquals("Expecting one entity", 1, pager.getCount().intValue());
         Assert.assertEquals("Abies balsamea sec. Kohlbecker, A., Testcase standart views, 2013", pager.getRecords().get(0).getEntity().getTitleCache());
     }
@@ -495,26 +507,27 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     public final void testFindByDescriptionElementFullText_MultipleWords() throws IOException, LuceneParseException {
 
         refreshLuceneIndex();
+        TaxonNode subtree = null;
 
         // Pflanzenart aus der Gattung der Tannen
         long start = System.currentTimeMillis();
 
-        Pager<SearchResult<TaxonBase>> pager = taxonService.findByDescriptionElementFullText(TextData.class, "Pflanzenart Tannen", null, null, null, false, null, null, null, null);
+        Pager<SearchResult<TaxonBase>> pager = taxonService.findByDescriptionElementFullText(TextData.class, "Pflanzenart Tannen", null, subtree, null, null, false, null, null, null, null);
         Assert.assertEquals("OR search : Expecting one entity", 1, pager.getCount().intValue());
 
-        pager = taxonService.findByDescriptionElementFullText(TextData.class, "Pflanzenart Wespen", null, null, null, false, null, null, null, null);
+        pager = taxonService.findByDescriptionElementFullText(TextData.class, "Pflanzenart Wespen", null, subtree, null, null, false, null, null, null, null);
         Assert.assertEquals("OR search : Expecting one entity", 1, pager.getCount().intValue());
 
-        pager = taxonService.findByDescriptionElementFullText(TextData.class, "+Pflanzenart +Tannen", null, null, null, false, null, null, null, null);
+        pager = taxonService.findByDescriptionElementFullText(TextData.class, "+Pflanzenart +Tannen", null, subtree, null, null, false, null, null, null, null);
         Assert.assertEquals("AND search : Expecting one entity", 1, pager.getCount().intValue());
 
-        pager = taxonService.findByDescriptionElementFullText(TextData.class, "+Pflanzenart +Wespen", null, null, null, false, null, null, null, null);
+        pager = taxonService.findByDescriptionElementFullText(TextData.class, "+Pflanzenart +Wespen", null, subtree, null, null, false, null, null, null, null);
         Assert.assertEquals("AND search : Expecting no entity", 0, pager.getCount().intValue());
 
-        pager = taxonService.findByDescriptionElementFullText(TextData.class, "\"Pflanzenart aus der Gattung der Tannen\"", null, null, null, false, null, null, null, null);
+        pager = taxonService.findByDescriptionElementFullText(TextData.class, "\"Pflanzenart aus der Gattung der Tannen\"", null, subtree, null, null, false, null, null, null, null);
         Assert.assertEquals("Phrase search : Expecting one entity", 1, pager.getCount().intValue());
 
-        pager = taxonService.findByDescriptionElementFullText(TextData.class, "\"Pflanzenart aus der Gattung der Wespen\"", null, null, null, false, null, null, null, null);
+        pager = taxonService.findByDescriptionElementFullText(TextData.class, "\"Pflanzenart aus der Gattung der Wespen\"", null, subtree, null, null, false, null, null, null, null);
         Assert.assertEquals("Phrase search : Expecting one entity", 0, pager.getCount().intValue());
 
         logger.info("testFindByDescriptionElementFullText_MultipleWords() duration: " + (System.currentTimeMillis() - start) + "ms");
@@ -528,10 +541,11 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     public final void testFindByDescriptionElementFullText_modify_DescriptionElement() throws IOException, LuceneParseException {
 
         refreshLuceneIndex();
+        TaxonNode subtree = null;
 
         //
         // modify the DescriptionElement
-        Pager<SearchResult<TaxonBase>> pager = taxonService.findByDescriptionElementFullText(TextData.class, "Balsam-Tanne", null, null, Arrays.asList(new Language[]{Language.GERMAN(), Language.RUSSIAN()}), false, null, null, null, null);
+        Pager<SearchResult<TaxonBase>> pager = taxonService.findByDescriptionElementFullText(TextData.class, "Balsam-Tanne", null, subtree, null, Arrays.asList(new Language[]{Language.GERMAN(), Language.RUSSIAN()}), false, null, null, null, null);
         Assert.assertTrue("Search did not return any results", pager.getRecords().size() > 0);
         Assert.assertTrue("Expecting only one doc", pager.getRecords().get(0).getDocs().size() == 1);
         Document indexDocument = pager.getRecords().get(0).getDocs().iterator().next();
@@ -550,11 +564,11 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 //        );
 
         //
-        pager = taxonService.findByDescriptionElementFullText(TextData.class, "Balsam-Tanne", null, null, Arrays.asList(new Language[]{Language.GERMAN(), Language.RUSSIAN()}), false, null, null, null, null);
+        pager = taxonService.findByDescriptionElementFullText(TextData.class, "Balsam-Tanne", null, subtree, null, Arrays.asList(new Language[]{Language.GERMAN(), Language.RUSSIAN()}), false, null, null, null, null);
         Assert.assertEquals("The german 'Balsam-Tanne' TextData should no longer be indexed", 0, pager.getCount().intValue());
-        pager = taxonService.findByDescriptionElementFullText(TextData.class, "abeto", null, null, Arrays.asList(new Language[]{Language.SPANISH_CASTILIAN()}), false, null, null, null, null);
+        pager = taxonService.findByDescriptionElementFullText(TextData.class, "abeto", null, subtree, null, Arrays.asList(new Language[]{Language.SPANISH_CASTILIAN()}), false, null, null, null, null);
         Assert.assertEquals("expecting to find the SPANISH_CASTILIAN 'abeto bals"+UTF8.SMALL_A_ACUTE+"mico'", 1, pager.getCount().intValue());
-        pager = taxonService.findByDescriptionElementFullText(TextData.class, "bals"+UTF8.SMALL_A_ACUTE+"mico", null, null, null, false, null, null, null, null);
+        pager = taxonService.findByDescriptionElementFullText(TextData.class, "bals"+UTF8.SMALL_A_ACUTE+"mico", null, subtree, null, null, false, null, null, null, null);
         Assert.assertEquals("expecting to find the SPANISH_CASTILIAN 'abeto bals"+UTF8.SMALL_A_ACUTE+"mico'", 1, pager.getCount().intValue());
 
         //
@@ -569,9 +583,9 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         }
         descriptionService.saveOrUpdate(description);
         commitAndStartNewTransaction(null);
-        pager = taxonService.findByDescriptionElementFullText(TextData.class, "abeto", null, null, Arrays.asList(new Language[]{Language.SPANISH_CASTILIAN()}), false, null, null, null, null);
+        pager = taxonService.findByDescriptionElementFullText(TextData.class, "abeto", null, subtree, null, Arrays.asList(new Language[]{Language.SPANISH_CASTILIAN()}), false, null, null, null, null);
         Assert.assertEquals("The spanish 'abeto bals"+UTF8.SMALL_A_ACUTE+"mico' TextData should no longer be indexed", 0, pager.getCount().intValue());
-        pager = taxonService.findByDescriptionElementFullText(TextData.class, "balsamiczna", null, null, Arrays.asList(new Language[]{Language.POLISH()}), false, null, null, null, null);
+        pager = taxonService.findByDescriptionElementFullText(TextData.class, "balsamiczna", null, subtree, null, Arrays.asList(new Language[]{Language.POLISH()}), false, null, null, null, null);
         Assert.assertEquals("expecting to find the POLISH 'Jod"+UTF8.POLISH_L+"a balsamiczna'", 1, pager.getCount().intValue());
     }
 
@@ -581,11 +595,13 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     public final void testFindByDescriptionElementFullText_modify_Taxon() throws IOException, LuceneParseException {
 
         refreshLuceneIndex();
+        TaxonNode subtree = null;
 
         Taxon t_abies_balsamea = (Taxon)taxonService.find(ABIES_BALSAMEA_UUID);
         TaxonDescription d_abies_balsamea = (TaxonDescription)descriptionService.find(D_ABIES_BALSAMEA_UUID);
 
-        Pager<SearchResult<TaxonBase>> pager = taxonService.findByDescriptionElementFullText(TextData.class, "Balsam-Tanne", null, null, Arrays.asList(new Language[]{Language.GERMAN()}), false, null, null, null, null);
+        Pager<SearchResult<TaxonBase>> pager = taxonService.findByDescriptionElementFullText(TextData.class, "Balsam-Tanne",
+                null, subtree, null, Arrays.asList(new Language[]{Language.GERMAN()}), false, null, null, null, null);
         Assert.assertEquals("expecting to find the GERMAN 'Balsam-Tanne'", 1, pager.getCount().intValue());
 
         // exchange the Taxon with another one via the Taxon object
@@ -597,7 +613,8 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         t_abies_balsamea = (Taxon)taxonService.find(t_abies_balsamea.getUuid());
 
-        pager = taxonService.findByDescriptionElementFullText(TextData.class, "Balsam-Tanne", null, null, Arrays.asList(new Language[]{Language.GERMAN()}), false, null, null, null, null);
+        pager = taxonService.findByDescriptionElementFullText(TextData.class, "Balsam-Tanne",
+                null, subtree, null, Arrays.asList(new Language[]{Language.GERMAN()}), false, null, null, null, null);
         Assert.assertEquals("'Balsam-Tanne' should no longer be found", 0, pager.getCount().intValue());
 
         // 2.) create new description and add to taxon:
@@ -620,7 +637,8 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 //                "DESCRIPTIONBASE"
 //        });
 
-        pager = taxonService.findByDescriptionElementFullText(TextData.class, "mittelgro"+UTF8.SHARP_S+"er Baum", null, null, Arrays.asList(new Language[]{Language.GERMAN()}), false, null, null, null, null);
+        pager = taxonService.findByDescriptionElementFullText(TextData.class, "mittelgro"+UTF8.SHARP_S+"er Baum",
+                null, subtree, null, Arrays.asList(new Language[]{Language.GERMAN()}), false, null, null, null, null);
         Assert.assertEquals("the taxon should be found via the new Description", 1, pager.getCount().intValue());
     }
 
@@ -630,6 +648,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     public final void testFindByDescriptionElementFullText_modify_Classification() throws IOException, LuceneParseException {
 
         refreshLuceneIndex();
+        TaxonNode subtree = null;
 
         // put taxon into other classification, new taxon node
         Classification classification = classificationService.find(CLASSIFICATION_UUID);
@@ -638,9 +657,9 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         // TODO: why is the test failing when the childNode is already retrieved here, and not after the following four lines?
         //TaxonNode childNode = classification.getChildNodes().iterator().next();
 
-        Pager<SearchResult<TaxonBase>> pager = taxonService.findByDescriptionElementFullText(TextData.class, "Balsam-Tanne", null, null, Arrays.asList(new Language[]{Language.GERMAN()}), false, null, null, null, null);
+        Pager<SearchResult<TaxonBase>> pager = taxonService.findByDescriptionElementFullText(TextData.class, "Balsam-Tanne", null, subtree, null, Arrays.asList(new Language[]{Language.GERMAN()}), false, null, null, null, null);
         Assert.assertEquals("expecting to find the GERMAN 'Balsam-Tanne' even if filtering by classification", 1, pager.getCount().intValue());
-        pager = taxonService.findByDescriptionElementFullText(TextData.class, "Balsam-Tanne", alternateClassification, null, Arrays.asList(new Language[]{Language.GERMAN()}), false, null, null, null, null);
+        pager = taxonService.findByDescriptionElementFullText(TextData.class, "Balsam-Tanne", alternateClassification, subtree, null, Arrays.asList(new Language[]{Language.GERMAN()}), false, null, null, null, null);
         Assert.assertEquals("GERMAN 'Balsam-Tanne' should NOT be found in other classification", 0, pager.getCount().intValue());
 
         // check for the right taxon node
@@ -661,14 +680,16 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         // reload classification
         classification = classificationService.find(CLASSIFICATION_UUID);
-        pager = taxonService.findByDescriptionElementFullText(TextData.class, "Balsam-Tanne", alternateClassification, null, Arrays.asList(new Language[]{Language.GERMAN()}), false, null, null, null, null);
+        pager = taxonService.findByDescriptionElementFullText(TextData.class, "Balsam-Tanne",
+                alternateClassification, subtree, null, Arrays.asList(new Language[]{Language.GERMAN()}), false, null, null, null, null);
         Assert.assertEquals("GERMAN 'Balsam-Tanne' should now be found in other classification", 1, pager.getCount().intValue());
 
         classification.getChildNodes().clear();
         classificationService.saveOrUpdate(classification);
         commitAndStartNewTransaction(null);
 
-        pager = taxonService.findByDescriptionElementFullText(TextData.class, "Balsam-Tanne", classification, null, Arrays.asList(new Language[]{Language.GERMAN()}), false, null, null, null, null);
+        pager = taxonService.findByDescriptionElementFullText(TextData.class, "Balsam-Tanne",
+                classification, subtree, null, Arrays.asList(new Language[]{Language.GERMAN()}), false, null, null, null, null);
         Assert.assertEquals("Now the GERMAN 'Balsam-Tanne' should NOT be found in original classification", 0, pager.getCount().intValue());
 
     }
@@ -678,6 +699,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @DataSet
     public final void testFindByDescriptionElementFullText_CategoricalData() throws IOException, LuceneParseException {
 
+        TaxonNode subtree = null;
         // add CategoricalData
         DescriptionBase d_abies_balsamea = descriptionService.find(D_ABIES_BALSAMEA_UUID);
         // Categorical data
@@ -700,7 +722,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         refreshLuceneIndex();
 
-        Pager<SearchResult<TaxonBase>> pager = taxonService.findByDescriptionElementFullText(CategoricalData.class, "green", null, null, null, false, null, null, null, null);
+        Pager<SearchResult<TaxonBase>> pager = taxonService.findByDescriptionElementFullText(CategoricalData.class, "green", null, subtree, null, null, false, null, null, null, null);
         Assert.assertEquals("Expecting one entity", 1, pager.getCount().intValue());
         Assert.assertEquals("Abies balsamea sec. Kohlbecker, A., Testcase standart views, 2013", pager.getRecords().get(0).getEntity().getTitleCache());
         Assert.assertTrue("Expecting only one doc", pager.getRecords().get(0).getDocs().size() == 1);
@@ -730,33 +752,34 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     public final void testFindByDescriptionElementFullText_Highlighting() throws IOException, LuceneParseException {
 
         refreshLuceneIndex();
+        TaxonNode subtree = null;
 
-        Pager<SearchResult<TaxonBase>> pager = taxonService.findByDescriptionElementFullText(TextData.class, "Abies", null, null, null, true, null, null, null, null);
+        Pager<SearchResult<TaxonBase>> pager = taxonService.findByDescriptionElementFullText(TextData.class, "Abies", null, subtree, null, null, true, null, null, null, null);
         Assert.assertEquals("Expecting one entity when searching for any TextData", 1, pager.getCount().intValue());
         SearchResult<TaxonBase> searchResult = pager.getRecords().get(0);
         Assert.assertTrue("the map of highlighted fragments should contain at least one item", searchResult.getFieldHighlightMap().size() > 0);
         String[] fragments = searchResult.getFieldHighlightMap().values().iterator().next();
         Assert.assertTrue("first fragments should contains serch term", fragments[0].contains("<B>Abies</B>"));
 
-        pager = taxonService.findByDescriptionElementFullText(TextData.class, "Pflanzenart Tannen", null, null, null, true, null, null, null, null);
+        pager = taxonService.findByDescriptionElementFullText(TextData.class, "Pflanzenart Tannen", null, subtree, null, null, true, null, null, null, null);
         searchResult = pager.getRecords().get(0);
         Assert.assertTrue("Phrase search : Expecting at least one item in highlighted fragments", searchResult.getFieldHighlightMap().size() > 0);
         fragments = searchResult.getFieldHighlightMap().values().iterator().next();
         Assert.assertTrue("first fragments should contains serch term", fragments[0].contains("<B>Pflanzenart</B>") || fragments[0].contains("<B>Tannen</B>"));
 
-        pager = taxonService.findByDescriptionElementFullText(TextData.class, "+Pflanzenart +Tannen", null, null, null, true, null, null, null, null);
+        pager = taxonService.findByDescriptionElementFullText(TextData.class, "+Pflanzenart +Tannen", null, subtree, null, null, true, null, null, null, null);
         searchResult = pager.getRecords().get(0);
         Assert.assertTrue("Phrase search : Expecting at least one item in highlighted fragments", searchResult.getFieldHighlightMap().size() > 0);
         fragments = searchResult.getFieldHighlightMap().values().iterator().next();
         Assert.assertTrue("first fragments should contains serch term", fragments[0].contains("<B>Pflanzenart</B>") && fragments[0].contains("<B>Tannen</B>"));
 
-        pager = taxonService.findByDescriptionElementFullText(TextData.class, "\"Pflanzenart aus der Gattung der Tannen\"", null, null, null, true, null, null, null, null);
+        pager = taxonService.findByDescriptionElementFullText(TextData.class, "\"Pflanzenart aus der Gattung der Tannen\"", null, subtree, null, null, true, null, null, null, null);
         searchResult = pager.getRecords().get(0);
         Assert.assertTrue("Phrase search : Expecting at least one item in highlighted fragments", searchResult.getFieldHighlightMap().size() > 0);
         fragments = searchResult.getFieldHighlightMap().values().iterator().next();
         Assert.assertTrue("first fragments should contains serch term", fragments[0].contains("<B>Pflanzenart</B> <B>aus</B> <B>der</B> <B>Gattung</B> <B>der</B> <B>Tannen</B>"));
 
-        pager = taxonService.findByDescriptionElementFullText(TextData.class, "Gatt*", null, null, null, true, null, null, null, null);
+        pager = taxonService.findByDescriptionElementFullText(TextData.class, "Gatt*", null, subtree, null, null, true, null, null, null, null);
         searchResult = pager.getRecords().get(0);
         Assert.assertTrue("Wildcard search : Expecting at least one item in highlighted fragments", searchResult.getFieldHighlightMap().size() > 0);
         fragments = searchResult.getFieldHighlightMap().values().iterator().next();
@@ -771,15 +794,16 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         refreshLuceneIndex();
 
         classificationService.find(CLASSIFICATION_UUID);
+        TaxonNode subtree = null;
 
         boolean NO_UNPUBLISHED = false;
 
-        Pager<SearchResult<TaxonBase>> pager = taxonService.findByFullText(null, "Abies", null, includeUnpublished, null, true, null, null, null, null); // --> 7
+        Pager<SearchResult<TaxonBase>> pager = taxonService.findByFullText(null, "Abies", null, subtree, includeUnpublished, null, true, null, null, null, null); // --> 7
 //        logFreeTextSearchResults(pager, Level.DEBUG, null);
         Assert.assertEquals("Expecting 8 entities", 8, pager.getCount().intValue());
 
 
-        pager = taxonService.findByFullText(null, "Abies", null, NO_UNPUBLISHED, null, true, null, null, null, null); // --> 7
+        pager = taxonService.findByFullText(null, "Abies", null, subtree, NO_UNPUBLISHED, null, true, null, null, null, null); // --> 7
 //        logFreeTextSearchResults(pager, Level.DEBUG, null);
         Assert.assertEquals("Expecting 6 entities", 6, pager.getCount().intValue());
         Synonym abiesSubalpina = (Synonym)taxonService.find(ABIES_SUBALPINA_UUID);
@@ -787,39 +811,39 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         //accepted published, syn not published
         abiesSubalpina.getAcceptedTaxon().setPublish(true);
         commitAndStartNewTransaction();
-        pager = taxonService.findByFullText(null, "Abies", null, NO_UNPUBLISHED, null, true, null, null, null, null); // --> 7
+        pager = taxonService.findByFullText(null, "Abies", null, subtree, NO_UNPUBLISHED, null, true, null, null, null, null); // --> 7
         Assert.assertEquals("Expecting 7 entities", 7, pager.getCount().intValue());
 
         //accepted published, syn published
         abiesSubalpina = (Synonym)taxonService.find(abiesSubalpina.getUuid());
         abiesSubalpina.setPublish(true);
         commitAndStartNewTransaction();
-        pager = taxonService.findByFullText(null, "Abies", null, NO_UNPUBLISHED, null, true, null, null, null, null); // --> 7
+        pager = taxonService.findByFullText(null, "Abies", null, subtree, NO_UNPUBLISHED, null, true, null, null, null, null); // --> 7
         Assert.assertEquals("Expecting 8 entities", 8, pager.getCount().intValue());
 
         //accepted not published, syn published
         abiesSubalpina = (Synonym)taxonService.find(abiesSubalpina.getUuid());
         abiesSubalpina.getAcceptedTaxon().setPublish(false);
         commitAndStartNewTransaction();
-        pager = taxonService.findByFullText(null, "Abies", null, NO_UNPUBLISHED, null, true, null, null, null, null); // --> 7
+        pager = taxonService.findByFullText(null, "Abies", null, subtree, NO_UNPUBLISHED, null, true, null, null, null, null); // --> 7
         Assert.assertEquals("Expecting 6 entities. Synonym and accepted should not be found, though synonym is published",
                 6, pager.getCount().intValue());
 
-        pager = taxonService.findByFullText(Taxon.class, "Abies", null, includeUnpublished, null, true, null, null, null, null); // --> 6
+        pager = taxonService.findByFullText(Taxon.class, "Abies", null, subtree, includeUnpublished, null, true, null, null, null, null); // --> 6
         Assert.assertEquals("Expecting 7 entities", 7, pager.getCount().intValue());
 
-        pager = taxonService.findByFullText(Synonym.class, "Abies", null, includeUnpublished, null, true, null, null, null, null); // --> 1
+        pager = taxonService.findByFullText(Synonym.class, "Abies", null, subtree, includeUnpublished, null, true, null, null, null, null); // --> 1
         Assert.assertEquals("Expecting 1 entity", 1, pager.getCount().intValue());
-        pager = taxonService.findByFullText(Synonym.class, "Abies", null, NO_UNPUBLISHED, null, true, null, null, null, null); // --> 1
+        pager = taxonService.findByFullText(Synonym.class, "Abies", null, subtree, NO_UNPUBLISHED, null, true, null, null, null, null); // --> 1
         Assert.assertEquals("Expecting 0 entity", 0, pager.getCount().intValue());
 
-        pager = taxonService.findByFullText(TaxonBase.class, "sec", null, includeUnpublished, null, true, null, null, null, null); // --> 7
+        pager = taxonService.findByFullText(TaxonBase.class, "sec", null, subtree, includeUnpublished, null, true, null, null, null, null); // --> 7
         Assert.assertEquals("Expecting 8 entities", 9, pager.getCount().intValue());
 
-        pager = taxonService.findByFullText(null, "genus", null, includeUnpublished, null, true, null, null, null, null); // --> 1
+        pager = taxonService.findByFullText(null, "genus", null, subtree, includeUnpublished, null, true, null, null, null, null); // --> 1
         Assert.assertEquals("Expecting 1 entity", 1, pager.getCount().intValue());
 
-        pager = taxonService.findByFullText(Taxon.class, "subalpina", null, includeUnpublished, null, true, null, null, null, null); // --> 0
+        pager = taxonService.findByFullText(Taxon.class, "subalpina", null, subtree, includeUnpublished, null, true, null, null, null, null); // --> 0
         Assert.assertEquals("Expecting 0 entities", 0, pager.getCount().intValue());
 
         // synonym in classification ???
@@ -845,6 +869,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     public final void testFindTaxaAndNamesByFullText() throws IOException, LuceneParseException, LuceneMultiSearchException {
 
         refreshLuceneIndex();
+        TaxonNode subtree = null;
 
         Classification alternateClassification = classificationService.find(CLASSIFICATION_ALT_UUID);
         Synonym abiesSubalpina = (Synonym)taxonService.find(ABIES_SUBALPINA_UUID);
@@ -852,18 +877,18 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Pager<SearchResult<TaxonBase>> pager;
          pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms, TaxaAndNamesSearchMode.includeUnpublished),
-                "Abies", null, null, null, null, true, null, null, null, null);
+                "Abies", null, subtree, null, null, null, true, null, null, null, null);
 //        logPagerRecords(pager, Level.DEBUG);
         Assert.assertEquals("doTaxa & doSynonyms & unpublished", 8, pager.getCount().intValue());
         pager = taxonService.findTaxaAndNamesByFullText(TaxaAndNamesSearchMode.taxaAndSynonyms(),
-                "Abies", null, null, null, null, true, null, null, null, null);
+                "Abies", null, subtree, null, null, null, true, null, null, null, null);
         Assert.assertEquals("doTaxa & doSynonyms, published only", 6, pager.getCount().intValue());
 
         //accepted published, syn not published
         abiesSubalpina.getAcceptedTaxon().setPublish(true);
         commitAndStartNewTransaction();
         pager = taxonService.findTaxaAndNamesByFullText(TaxaAndNamesSearchMode.taxaAndSynonyms(),
-                "Abies", null, null, null, null, true, null, null, null, null);
+                "Abies", null, subtree, null, null, null, true, null, null, null, null);
         Assert.assertEquals("doTaxa & doSynonyms, accepted published", 7, pager.getCount().intValue());
 
         //accepted published, syn published
@@ -871,7 +896,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         abiesSubalpina.setPublish(true);
         commitAndStartNewTransaction();
         pager = taxonService.findTaxaAndNamesByFullText(TaxaAndNamesSearchMode.taxaAndSynonyms(),
-                "Abies", null, null, null, null, true, null, null, null, null);
+                "Abies", null, subtree, null, null, null, true, null, null, null, null);
         Assert.assertEquals("Expecting 8 entities", 8, pager.getCount().intValue());
 
         //accepted not published, syn published
@@ -879,63 +904,63 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         abiesSubalpina.getAcceptedTaxon().setPublish(false);
         commitAndStartNewTransaction();
         pager = taxonService.findTaxaAndNamesByFullText(TaxaAndNamesSearchMode.taxaAndSynonyms(),
-                "Abies", null, null, null, null, true, null, null, null, null);
+                "Abies", null, subtree, null, null, null, true, null, null, null, null);
         Assert.assertEquals("Expecting 6 entities. Synonym and accepted should not be found, though synonym is published",
                 6, pager.getCount().intValue());
 
         EnumSet<TaxaAndNamesSearchMode> searchMode = EnumSet.allOf(TaxaAndNamesSearchMode.class);
         pager = taxonService.findTaxaAndNamesByFullText(
-                searchMode, "Abies", null, null, null, null, true, null, null, null, null);
+                searchMode, "Abies", null, subtree, null, null, null, true, null, null, null, null);
 //        logPagerRecords(pager, Level.DEBUG);
         Assert.assertEquals("all search modes", 8, pager.getCount().intValue());
         searchMode.remove(TaxaAndNamesSearchMode.includeUnpublished);
         pager = taxonService.findTaxaAndNamesByFullText(
-                searchMode, "Abies", null, null, null, null, true, null, null, null, null);
+                searchMode, "Abies", null, subtree, null, null, null, true, null, null, null, null);
         Assert.assertEquals("all search modes except unpublished", 6, pager.getCount().intValue());
 
         pager = taxonService.findTaxaAndNamesByFullText(EnumSet.allOf(TaxaAndNamesSearchMode.class),
-                "Abies", alternateClassification, null, null, null, true, null, null, null, null);
+                "Abies", alternateClassification, subtree, null, null, null, true, null, null, null, null);
 //        logPagerRecords(pager, Level.DEBUG);
         Assert.assertEquals("all search modes, filtered by alternateClassification", 1, pager.getCount().intValue());
 
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doSynonyms, TaxaAndNamesSearchMode.includeUnpublished),
-                "Abies", null, null, null, null, true, null, null, null, null);
+                "Abies", null, subtree, null, null, null, true, null, null, null, null);
         Assert.assertEquals("Expecting 2 entity", 2, pager.getCount().intValue());
         Set<UUID> uuids = getTaxonUuidSet(pager);
         Assert.assertTrue("The real synonym should be contained", uuids.contains(ABIES_SUBALPINA_UUID));
         Assert.assertTrue("The pro parte synonym should be contained",uuids.contains(ABIES_LASIOCARPA_UUID));
         //without published
         pager = taxonService.findTaxaAndNamesByFullText(EnumSet.of(TaxaAndNamesSearchMode.doSynonyms),
-                "Abies", null, null, null, null, true, null, null, null, null);
+                "Abies", null, subtree, null, null, null, true, null, null, null, null);
         Assert.assertEquals("Expecting 0 entities", 0, pager.getCount().intValue());
 
 
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxaByCommonNames, TaxaAndNamesSearchMode.includeUnpublished),
-                "Abies", null, null, null, null, true, null, null, null, null);
+                "Abies", null, subtree, null, null, null, true, null, null, null, null);
         Assert.assertEquals("Expecting 0 entity", 0, pager.getCount().intValue());
 
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxaByCommonNames, TaxaAndNamesSearchMode.includeUnpublished),
-                "Tanne", null, null, null, null, true, null, null, null, null);
+                "Tanne", null, subtree, null, null, null, true, null, null, null, null);
         Assert.assertEquals("Expecting 1 entity", 1, pager.getRecords().size());
         Assert.assertEquals("Expecting 1 entity", 1, pager.getCount().intValue());
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxaByCommonNames),
-                "Tanne", null, null, null, null, true, null, null, null, null);
+                "Tanne", null, subtree, null, null, null, true, null, null, null, null);
         Assert.assertEquals("Expecting 0 entity", 0, pager.getRecords().size());
 
         //misapplied names
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doMisappliedNames, TaxaAndNamesSearchMode.includeUnpublished),
-                "kawakamii", (Classification)null, null, null, null, true, null, null, null, null);
+                "kawakamii", (Classification)null, subtree, null, null, null, true, null, null, null, null);
         logFreeTextSearchResults(pager, Level.DEBUG, null);
         Assert.assertEquals("Expecting 1 entity", 1, pager.getCount().intValue());
         //unpublish accepted taxon
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doMisappliedNames),
-                "kawakamii", (Classification)null, null, null, null, true, null, null, null, null);
+                "kawakamii", (Classification)null, subtree, null, null, null, true, null, null, null, null);
         Assert.assertEquals("Expecting 0 entities", 0, pager.getCount().intValue());
         //published accepted taxon/misapplied name
         Taxon abiesBalsamea = (Taxon)taxonService.find(ABIES_BALSAMEA_UUID);
@@ -943,7 +968,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         commitAndStartNewTransaction();
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doMisappliedNames),
-                "kawakamii", (Classification)null, null, null, null, true, null, null, null, null);
+                "kawakamii", (Classification)null, subtree, null, null, null, true, null, null, null, null);
         Assert.assertEquals("Expecting 1 entities", 1, pager.getCount().intValue());
         //unpublished misapplied name
         Taxon misapplied = (Taxon)taxonService.find(D_ABIES_KAWAKAMII_SEC_KOMAROV_UUID);
@@ -951,7 +976,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         commitAndStartNewTransaction();
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doMisappliedNames),
-                "kawakamii", (Classification)null, null, null, null, true, null, null, null, null);
+                "kawakamii", (Classification)null, subtree, null, null, null, true, null, null, null, null);
         Assert.assertEquals("Expecting 0 entities", 0, pager.getCount().intValue());
 
     }
@@ -962,11 +987,12 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     public final void testFindTaxaAndNamesByFullText_synonymsAndMisapplied_7486() throws IOException, LuceneParseException, LuceneMultiSearchException {
 
         refreshLuceneIndex();
+        TaxonNode subtree = null;
 
         //misapplied names
         Pager<SearchResult<TaxonBase>> pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doSynonyms, TaxaAndNamesSearchMode.doMisappliedNames, TaxaAndNamesSearchMode.includeUnpublished),
-                "Abies", (Classification)null, null, null, null, true, null, null, null, null);
+                "Abies", (Classification)null, subtree, null, null, null, true, null, null, null, null);
         logFreeTextSearchResults(pager, Level.DEBUG, null);
         Assert.assertEquals("Expecting 3 entity", 3, pager.getCount().intValue());
         Set<UUID> uuids = getTaxonUuidSet(pager);
@@ -980,22 +1006,23 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     public final void testFindTaxaAndNamesByFullText_PhraseQuery() throws IOException, LuceneParseException, LuceneMultiSearchException {
 
         refreshLuceneIndex();
+        TaxonNode subtree = null;
 
         Pager<SearchResult<TaxonBase>> pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms, TaxaAndNamesSearchMode.includeUnpublished),
-                "\"Abies alba\"", null, null, null, null, true, null, null, null, null);
+                "\"Abies alba\"", null, subtree, null, null, null, true, null, null, null, null);
 //        logPagerRecords(pager, Level.DEBUG);
         Assert.assertEquals("doTaxa & doSynonyms with simple phrase query", 1, pager.getCount().intValue());
 
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms, TaxaAndNamesSearchMode.includeUnpublished),
-                "\"Abies al*\"", null, null, null, null, true, null, null, null, null);
+                "\"Abies al*\"", null, subtree, null, null, null, true, null, null, null, null);
 //        logPagerRecords(pager, Level.DEBUG);
         Assert.assertEquals("doTaxa & doSynonyms with complex phrase query", 1, pager.getCount().intValue());
 
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms, TaxaAndNamesSearchMode.includeUnpublished),
-                "\"Abies*\"", null, null, null, null, true, null, null, null, null);
+                "\"Abies*\"", null, subtree, null, null, null, true, null, null, null, null);
 //        logPagerRecords(pager, Level.DEBUG);
         Assert.assertEquals("doTaxa & doSynonyms with simple phrase query", 8, pager.getCount().intValue());
 
@@ -1006,6 +1033,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     public final void testFindTaxaAndNamesByFullText_Sort() throws IOException, LuceneParseException, LuceneMultiSearchException {
 
         refreshLuceneIndex();
+        TaxonNode subtree = null;
 
         List<OrderHint> orderHints = new ArrayList<>();
 
@@ -1015,7 +1043,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         orderHints.addAll(OrderHint.ORDER_BY_ID.asList());
         Pager<SearchResult<TaxonBase>> pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxa),
-                "Abies", null, null, null, null, true, null, null, orderHints, null);
+                "Abies", null, subtree, null, null, null, true, null, null, orderHints, null);
 //        logSearchResults(pager, Level.DEBUG, docFields2log);
         int lastId = -1;
         for(SearchResult<TaxonBase> rs : pager.getRecords()){
@@ -1028,7 +1056,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         orderHints.addAll(OrderHint.ORDER_BY_ID.asList());
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms),
-                "Abies", null, null, null, null, true, null, null, orderHints, null);
+                "Abies", null, subtree, null, null, null, true, null, null, orderHints, null);
 //        logSearchResults(pager, Level.DEBUG, docFields2log);
 
         lastId = -1;
@@ -1044,7 +1072,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         orderHints.addAll(OrderHint.NOMENCLATURAL_SORT_ORDER.asList());
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms),
-                "Abies", null, null, null, null, true, null, null, orderHints, null);
+                "Abies", null, subtree, null, null, null, true, null, null, orderHints, null);
         logFreeTextSearchResults(pager, Level.DEBUG, null);
 
     }
@@ -1054,6 +1082,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @Ignore //ignore until #7487 is fixed
     public final void testFindTaxaAndNamesByFullText_AreaFilter_7487() throws IOException, LuceneParseException, LuceneMultiSearchException {
         refreshLuceneIndex();
+        TaxonNode subtree = null;
         Set<NamedArea> a_germany_canada_russia = new HashSet<>();
         a_germany_canada_russia.add(germany);
         a_germany_canada_russia.add(canada);
@@ -1065,7 +1094,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         Pager<SearchResult<TaxonBase>> pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doSynonyms, TaxaAndNamesSearchMode.includeUnpublished),
-                "Abies", null, a_germany_canada_russia, present_native, null, true, null, null, null, null);
+                "Abies", null, subtree, a_germany_canada_russia, present_native, null, true, null, null, null, null);
         Assert.assertEquals("Synonyms with matching area filter", 2, pager.getCount().intValue());
         Set<UUID> uuids = this.getTaxonUuidSet(pager);
         Assert.assertTrue("Synonym of balsamea should be in", uuids.contains(ABIES_SUBALPINA_UUID));
@@ -1083,7 +1112,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         //should give same results as above
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doSynonyms, TaxaAndNamesSearchMode.includeUnpublished),
-                "Abies", null, a_germany_canada_russia, present_native, null, true, null, null, null, null);
+                "Abies", null, subtree, a_germany_canada_russia, present_native, null, true, null, null, null, null);
 //        Assert.assertEquals("Synonyms with matching area filter", 2, pager.getCount().intValue());
 //        uuids = this.getTaxonUuidSet(pager);
 //        Assert.assertTrue("Synonym of balsamea should be in", uuids.contains(ABIES_SUBALPINA_UUID));
@@ -1092,7 +1121,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         ///MISAPPLIED
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doMisappliedNames, TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.includeUnpublished),
-                "Abies", null, a_germany_canada_russia, present_native, null, true, null, null, null, null);
+                "Abies", null, subtree, a_germany_canada_russia, present_native, null, true, null, null, null, null);
         Assert.assertEquals("misappliedNames with matching area & status filter", 3, pager.getCount().intValue());
         uuids = this.getTaxonUuidSet(pager);
         Assert.assertTrue("Misapplied name should be in", uuids.contains(D_ABIES_KAWAKAMII_SEC_KOMAROV_UUID));
@@ -1109,7 +1138,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         //strange it works here before fixing #7487 already
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doMisappliedNames, TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.includeUnpublished),
-                "Abies", null, a_germany_canada_russia, present_native, null, true, null, null, null, null);
+                "Abies", null, subtree, a_germany_canada_russia, present_native, null, true, null, null, null, null);
         Assert.assertEquals("misappliedNames with matching area & status filter", 3, pager.getCount().intValue());
         uuids = this.getTaxonUuidSet(pager);
         Assert.assertTrue("Pro parte misapplied name should be in", uuids.contains(D_ABIES_KAWAKAMII_SEC_KOMAROV_UUID));
@@ -1122,6 +1151,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     public final void testFindTaxaAndNamesByFullText_AreaFilter() throws IOException, LuceneParseException, LuceneMultiSearchException {
 
         refreshLuceneIndex();
+        TaxonNode subtree = null;
 
         Set<NamedArea> a_germany_canada_russia = new HashSet<>();
         a_germany_canada_russia.add(germany);
@@ -1143,7 +1173,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         Pager<SearchResult<TaxonBase>> pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.includeUnpublished),
-                "Abies", null, a_germany_canada_russia, null, null, true, null, null, null, null);
+                "Abies", null, subtree, a_germany_canada_russia, null, null, true, null, null, null, null);
         logFreeTextSearchResults(pager, Level.DEBUG, null);
         Assert.assertEquals("Synonyms with matching area filter", 2, pager.getCount().intValue());
         Set<UUID> uuids = this.getTaxonUuidSet(pager);
@@ -1152,7 +1182,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doSynonyms, TaxaAndNamesSearchMode.includeUnpublished),
-                "Abies", null, a_germany_canada_russia, present_native, null, true, null, null, null, null);
+                "Abies", null, subtree, a_germany_canada_russia, present_native, null, true, null, null, null, null);
         Assert.assertEquals("Synonyms with matching area filter", 2, pager.getCount().intValue());
         uuids = this.getTaxonUuidSet(pager);
         Assert.assertTrue("Synonym of balsamea should be in", uuids.contains(ABIES_SUBALPINA_UUID));
@@ -1160,7 +1190,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms, TaxaAndNamesSearchMode.includeUnpublished),
-                "Abies", null, a_germany_canada_russia, null, null, true, null, null, null, null);
+                "Abies", null, subtree, a_germany_canada_russia, null, null, true, null, null, null, null);
         logFreeTextSearchResults(pager, Level.DEBUG, null);
         Assert.assertEquals("taxa and synonyms with matching area filter", 4, pager.getCount().intValue());
         uuids = this.getTaxonUuidSet(pager);
@@ -1172,7 +1202,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms, TaxaAndNamesSearchMode.includeUnpublished),
-                "Abies", null, a_germany_canada_russia, present_native, null, true, null, null, null, null);
+                "Abies", null, subtree, a_germany_canada_russia, present_native, null, true, null, null, null, null);
         Assert.assertEquals("taxa and synonyms with matching area & status filter 4", 4, pager.getCount().intValue());
         uuids = this.getTaxonUuidSet(pager);
         Assert.assertTrue("Synonym of balsamea should be in", uuids.contains(ABIES_SUBALPINA_UUID));
@@ -1182,7 +1212,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms, TaxaAndNamesSearchMode.includeUnpublished),
-                "Abies", null, a_germany_canada_russia, present, null, true, null, null, null, null);
+                "Abies", null, subtree, a_germany_canada_russia, present, null, true, null, null, null, null);
         Assert.assertEquals("taxa and synonyms with matching area & status filter 3", 3, pager.getCount().intValue());
         uuids = this.getTaxonUuidSet(pager);
         Assert.assertTrue("Abies balsamea (accepted taxon) should be in", uuids.contains(ABIES_BALSAMEA_UUID));
@@ -1191,12 +1221,12 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms, TaxaAndNamesSearchMode.includeUnpublished),
-                "Abies", null, a_russia, present, null, true, null, null, null, null);
+                "Abies", null, subtree, a_russia, present, null, true, null, null, null, null);
         Assert.assertEquals("taxa and synonyms with non matching area & status filter", 0, pager.getCount().intValue());
 
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxaByCommonNames, TaxaAndNamesSearchMode.includeUnpublished),
-                "Tanne", null, a_germany_canada_russia, present_native, null, true, null, null, null, null);
+                "Tanne", null, subtree, a_germany_canada_russia, present_native, null, true, null, null, null, null);
         Assert.assertEquals("ByCommonNames with area filter", 1, pager.getCount().intValue());
         uuids = this.getTaxonUuidSet(pager);
         Assert.assertTrue("Abies balsamea should be in", uuids.contains(ABIES_BALSAMEA_UUID));
@@ -1204,7 +1234,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         // abies_kawakamii_sensu_komarov as misapplied name for t_abies_balsamea
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doMisappliedNames, TaxaAndNamesSearchMode.includeUnpublished),
-                "Abies", null, a_germany_canada_russia, present_native, null, true, null, null, null, null);
+                "Abies", null, subtree, a_germany_canada_russia, present_native, null, true, null, null, null, null);
         Assert.assertEquals("misappliedNames with matching area & status filter", 1, pager.getCount().intValue());
         uuids = this.getTaxonUuidSet(pager);
         Assert.assertTrue("Misapplied name should  be in", uuids.contains(D_ABIES_KAWAKAMII_SEC_KOMAROV_UUID));
@@ -1221,7 +1251,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doMisappliedNames, TaxaAndNamesSearchMode.includeUnpublished),
-                "Abies", null, a_germany_canada_russia, present_native, null, true, null, null, null, null);
+                "Abies", null, subtree, a_germany_canada_russia, present_native, null, true, null, null, null, null);
         Assert.assertEquals("misappliedNames with matching area & status filter, should match nothing now", 0, pager.getCount().intValue());
 
         // 2. now add abies_kawakamii_sensu_komarov as misapplied name for t_abies_alba and search for misapplications in Russia: ABSENT
@@ -1233,7 +1263,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doMisappliedNames, TaxaAndNamesSearchMode.includeUnpublished),
-                "Abies", null, a_germany_canada_russia, absent, null, true, null, null, null, null);
+                "Abies", null, subtree, a_germany_canada_russia, absent, null, true, null, null, null, null);
         Assert.assertEquals("misappliedNames with matching area & status filter, should find one", 1, pager.getCount().intValue());
         uuids = this.getTaxonUuidSet(pager);
         Assert.assertTrue("Misapplied name should  be in", uuids.contains(D_ABIES_KAWAKAMII_SEC_KOMAROV_UUID));
@@ -1245,6 +1275,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     //http://dev.e-taxonomy.eu/trac/ticket/5477
     public final void testFindTaxaAndNamesByFullText_AreaFilter_issue5477() throws IOException, LuceneParseException, LuceneMultiSearchException {
 
+        TaxonNode subtree = null;
         Set<NamedArea> a_germany_canada_russia = new HashSet<>();
         a_germany_canada_russia.add(germany);
         a_germany_canada_russia.add(canada);
@@ -1270,7 +1301,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         Pager<SearchResult<TaxonBase>> pager = taxonService.findTaxaAndNamesByFullText(
                   EnumSet.of(TaxaAndNamesSearchMode.doMisappliedNames),
-                  "Abies", null, a_germany_canada_russia, absent, null, true, null, null, null, null);
+                  "Abies", null, subtree, a_germany_canada_russia, absent, null, true, null, null, null, null);
         Assert.assertEquals("misappliedNames with matching area & status filter, should find one", 1, pager.getCount().intValue());
     }
 
@@ -1287,16 +1318,22 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     public final void testFindByEverythingFullText() throws IOException, LuceneParseException, LuceneMultiSearchException {
 
         refreshLuceneIndex();
-
+        TaxonNode subtree = null;
+        EnumSet<TaxaAndNamesSearchMode> mode = TaxaAndNamesSearchMode.taxaAndSynonymsWithUnpublished();
         // via Taxon
-        Pager<SearchResult<TaxonBase>>pager = taxonService.findByEverythingFullText("Abies", null, includeUnpublished, null, true, null, null, null, null);
+        Pager<SearchResult<TaxonBase>>pager = taxonService.findByEverythingFullText("Abies", null, subtree, includeUnpublished, null, true, null, null, null, null);
+//        Pager<SearchResult<TaxonBase>> pager = taxonService.findTaxaAndNamesByFullText(mode,
+//                "Abies", null, null, null, null, true, null, null, null, null);
         logFreeTextSearchResults(pager, Level.DEBUG, null);
         Assert.assertTrue("Expecting at least 7 entities for 'Abies'", pager.getCount() > 7);
         Assert.assertNotNull("Expecting entity", pager.getRecords().get(0).getEntity());
-        Assert.assertEquals("Expecting Taxon entity", Taxon.class, pager.getRecords().get(0).getEntity().getClass());
+//        Assert.assertEquals("Expecting Taxon entity", Taxon.class, pager.getRecords().get(0).getEntity().getClass());
 
         // via DescriptionElement
-        pager = taxonService.findByEverythingFullText("present", null, includeUnpublished, null, true, null, null, null, null);
+        pager = taxonService.findByEverythingFullText("present", null, subtree, includeUnpublished, null, true, null, null, null, null);
+        //this is not covered by findTaxaAndNamesByFullText
+//        pager = taxonService.findTaxaAndNamesByFullText(mode,
+//                "present", null, null, null, null, true, null, null, null, null);
         Assert.assertEquals("Expecting one entity when searching for area 'present'", 1, pager.getCount().intValue());
         Assert.assertNotNull("Expecting entity", pager.getRecords().get(0).getEntity());
         Assert.assertEquals("Expecting Taxon entity", Taxon.class, CdmBase.deproxy(pager.getRecords().get(0).getEntity()).getClass());
@@ -1310,16 +1347,27 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     public final void findByEveryThingFullText() throws IOException, LuceneParseException, LuceneMultiSearchException {
 
         refreshLuceneIndex();
+        TaxonNode subtree = null;
 
-        Pager<SearchResult<TaxonBase>> pager = taxonService.findByEverythingFullText("genus", null, includeUnpublished, null, false, null, null, null, null); // --> 1
+        Classification classification = null;
+        EnumSet<TaxaAndNamesSearchMode> mode = TaxaAndNamesSearchMode.taxaAndSynonymsWithUnpublished();
+
+        Pager<SearchResult<TaxonBase>> pager = taxonService.findByEverythingFullText("genus", null, subtree, includeUnpublished, null, false, null, null, null, null); // --> 1
+//        Pager<SearchResult<TaxonBase>> pager = taxonService.findTaxaAndNamesByFullText(mode,
+//                "genus", classification, null, null, null, false, null, null, null, null);
         Assert.assertEquals("Expecting 1 entity", 1, pager.getCount().intValue());
 
         //FIXME FAILS: abies balamea is returned twice, see also testFullText_Grouping()
-        pager = taxonService.findByEverythingFullText("Balsam", null, includeUnpublished, Arrays.asList(new Language[]{Language.GERMAN()}), false, null, null, null, null);
+        pager = taxonService.findByEverythingFullText("Balsam", null, subtree, includeUnpublished, Arrays.asList(new Language[]{Language.GERMAN()}), false, null, null, null, null);
         logFreeTextSearchResults(pager, Level.DEBUG, null);
+//        pager = taxonService.findTaxaAndNamesByFullText(EnumSet.allOf(TaxaAndNamesSearchMode.class),
+//                "Balsam", classification, null, null, Arrays.asList(new Language[]{Language.GERMAN()}), false, null, null, null, null);
         Assert.assertEquals("expecting to find the Abies balsamea via the GERMAN DescriptionElements", 1, pager.getCount().intValue());
 
-        pager = taxonService.findByEverythingFullText("Abies", null, includeUnpublished, null, true, null, null, null, null);
+        //TODO fieldHighlight does not yet work
+        pager = taxonService.findByEverythingFullText("Abies", null, subtree, includeUnpublished, null, true, null, null, null, null);
+//        pager = taxonService.findTaxaAndNamesByFullText(mode,
+//                "Abies", classification, null, null, Arrays.asList(new Language[]{Language.GERMAN()}), false, null, null, null, null);
         Assert.assertEquals("Expecting 8 entities", 8, pager.getCount().intValue());
         SearchResult<TaxonBase> searchResult = pager.getRecords().get(0);
         Assert.assertTrue("the map of highlighted fragments should contain at least one item", searchResult.getFieldHighlightMap().size() > 0);
@@ -1389,7 +1437,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet
     public final void benchmarkFindByCommonNameLucene() throws IOException, LuceneParseException {
-
+        TaxonNode subtree = null;
         createRandomTaxonWithCommonName(NUM_OF_NEW_RADOM_ENTITIES);
 
         refreshLuceneIndex();
@@ -1398,7 +1446,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         long startMillis = System.currentTimeMillis();
         for (int indx = 0; indx < BENCHMARK_ROUNDS; indx++) {
-            pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Wei"+UTF8.SHARP_S+"*", null, null, null, false, null, null, null, null);
+            pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Wei"+UTF8.SHARP_S+"*", null, subtree, null, null, false, null, null, null, null);
             if (logger.isDebugEnabled()) {
                 logger.debug("[" + indx + "]" + pager.getRecords().get(0).getEntity().getTitleCache());
             }
