@@ -76,6 +76,9 @@ public class ClassificationController extends AbstractIdentifiableController<Cla
     public void setTaxonNodeService(ITaxonNodeService taxonNodeService) {
         this.taxonNodeService = taxonNodeService;
     }
+    protected ITaxonNodeService getTaxonNodeService() {
+        return this.taxonNodeService;
+    }
 
 
     @InitBinder
@@ -131,14 +134,7 @@ public class ClassificationController extends AbstractIdentifiableController<Cla
             return null;
         }
 
-        TaxonNode subtree = null;
-        if (subtreeUuid != null){
-            subtree = taxonNodeService.find(subtreeUuid);
-            if(subtree == null) {
-                response.sendError(404 , "TaxonNode not found using " + subtreeUuid );
-                return null;
-            }
-        }
+        TaxonNode subtree = getSubtreeOrError(subtreeUuid, taxonNodeService, response);
 
         Rank rank = findRank(rankUuid);
 
@@ -150,6 +146,7 @@ public class ClassificationController extends AbstractIdentifiableController<Cla
 
         return rootNodes;
     }
+
 
     /**
     *

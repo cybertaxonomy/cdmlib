@@ -24,8 +24,10 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
+import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.exception.UnpublishedException;
@@ -62,6 +64,7 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
     public static final Logger logger = Logger.getLogger(ClassificationPortalListController.class);
 
     private ITaxonService taxonService;
+    private ITaxonNodeService taxonNodeService;
 
     private ITermService termService;
 
@@ -83,6 +86,11 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
     @Autowired
     public void setTaxonService(ITaxonService taxonService) {
         this.taxonService = taxonService;
+    }
+
+    @Autowired
+    public void setTaxonNodeService(ITaxonNodeService taxonNodeService) {
+        this.taxonNodeService = taxonNodeService;
     }
 
 
@@ -107,11 +115,12 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
             method = RequestMethod.GET)
     public List<TaxonNode> getChildNodes(
             @PathVariable("treeUuid") UUID treeUuid,
+            @RequestParam(value = "subtreeUuid", required = false) UUID subtreeUuid,
             HttpServletRequest request,
             HttpServletResponse response
             ) throws IOException {
 
-        return getChildNodesAtRank(treeUuid, null, request, response);
+        return getChildNodesAtRank(treeUuid, null, subtreeUuid, request, response);
     }
 
 
@@ -132,25 +141,27 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
     public List<TaxonNode> getChildNodesAtRank(
             @PathVariable("treeUuid") UUID treeUuid,
             @PathVariable("rankUuid") UUID rankUuid,
+            @RequestParam(value = "subtreeUuid", required = false) UUID subtreeUuid,
             HttpServletRequest request,
             HttpServletResponse response
             ) throws IOException {
 
         logger.info("getChildNodesAtRank() " + request.getRequestURI());
-        Classification tree = null;
+        Classification classification = null;
         Rank rank = null;
         if(treeUuid != null){
-            tree = service.find(treeUuid);
-            if(tree == null) {
+            classification = service.find(treeUuid);
+            if(classification == null) {
                 HttpStatusMessage.UUID_NOT_FOUND.send(response, "Classification not found using " + treeUuid);
                 return null;
             }
         }
+        TaxonNode subtree = getSubtreeOrError(subtreeUuid, taxonNodeService, response);
 
         rank = findRank(rankUuid);
         boolean includeUnpublished = NO_UNPUBLISHED;
 //        long start = System.currentTimeMillis();
-        List<TaxonNode> rootNodes = service.listRankSpecificRootNodes(tree, rank, includeUnpublished, null, null, NODE_INIT_STRATEGY);
+        List<TaxonNode> rootNodes = service.listRankSpecificRootNodes(classification, subtree, rank, includeUnpublished, null, null, NODE_INIT_STRATEGY);
 //        System.err.println("service.listRankSpecificRootNodes() " + (System.currentTimeMillis() - start));
         return rootNodes;
     }

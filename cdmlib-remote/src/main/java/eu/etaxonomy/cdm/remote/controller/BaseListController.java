@@ -25,8 +25,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.etaxonomy.cdm.api.service.IService;
+import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.editor.CdmTypePropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
@@ -130,6 +132,20 @@ public abstract class BaseListController <T extends CdmBase, SERVICE extends ISe
         if(limit == null){ limit = PagerParameters.DEFAULT_PAGESIZE;}
         if(limit < 1){ limit = null;}
         return service.list(type, limit, start, null, getInitializationStrategy());
+    }
+
+    // this is a copy from BaseController, should be unified
+    protected TaxonNode getSubtreeOrError(UUID subtreeUuid, ITaxonNodeService taxonNodeService, HttpServletResponse response) throws IOException {
+        TaxonNode subtree = null;
+        if (subtreeUuid != null){
+            subtree = taxonNodeService.find(subtreeUuid);
+            if(subtree == null) {
+                response.sendError(404 , "TaxonNode not found using " + subtreeUuid );
+                //will not happen
+                return null;
+            }
+        }
+        return subtree;
     }
 
   /* TODO

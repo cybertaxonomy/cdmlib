@@ -39,12 +39,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.etaxonomy.cdm.api.service.IService;
+import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IPublishable;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 
@@ -423,6 +425,26 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
             result = null;
         }
         return (S)result;
+    }
+
+
+    /**
+     * @param subtreeUuid
+     * @param response
+     * @return
+     * @throws IOException
+     */
+    protected TaxonNode getSubtreeOrError(UUID subtreeUuid, ITaxonNodeService taxonNodeService, HttpServletResponse response) throws IOException {
+        TaxonNode subtree = null;
+        if (subtreeUuid != null){
+            subtree = taxonNodeService.find(subtreeUuid);
+            if(subtree == null) {
+                response.sendError(404 , "TaxonNode not found using " + subtreeUuid );
+                //will not happen
+                return null;
+            }
+        }
+        return subtree;
     }
 
       /* TODO implement
