@@ -12,8 +12,10 @@ package eu.etaxonomy.cdm.remote.controller;
 import java.io.IOException;
 import java.util.UUID;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,6 +42,8 @@ import io.swagger.annotations.Api;
 @RequestMapping(value = {"/taxonNode/{uuid}"})
 public class TaxonNodeController extends AbstractController<TaxonNode, ITaxonNodeService> {
 
+    public static final Logger logger = Logger.getLogger(TaxonNodeController.class);
+
     @Override
     @Autowired
     public void setService(ITaxonNodeService service) {
@@ -59,10 +63,24 @@ public class TaxonNodeController extends AbstractController<TaxonNode, ITaxonNod
             method = RequestMethod.GET)
     public TaxonNodeDto doGetParent(
             @PathVariable("uuid") UUID uuid,
+            HttpServletRequest request,
             HttpServletResponse response
             ) throws IOException {
 
+        logger.info("doGetParent() " + requestPathAndQuery(request));
         return service.parentDto(uuid);
+    }
+
+    @RequestMapping(
+            method = RequestMethod.GET)
+    public TaxonNodeDto doGet(
+            @PathVariable("uuid") UUID uuid,
+            HttpServletRequest request,
+            HttpServletResponse response
+            ) throws IOException {
+
+        logger.info("doGet() " + requestPathAndQuery(request));
+        return service.dto(uuid);
     }
 
     /**
