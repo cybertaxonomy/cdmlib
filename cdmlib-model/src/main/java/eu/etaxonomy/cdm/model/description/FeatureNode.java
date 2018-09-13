@@ -589,7 +589,14 @@ public class FeatureNode extends VersionableEntity
 	@Override
 	public String treeIndex() {
 		return this.treeIndex;
-	}
+	}    @Override
+    public String treeIndexLike() {
+        return treeIndex + "%";
+    }
+    @Override
+    public String treeIndexWc() {
+        return treeIndex + "*";
+    }
 
 	@Override
 	@Deprecated

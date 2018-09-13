@@ -43,8 +43,12 @@ import org.hibernate.LazyInitializationException;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.ContainedIn;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.annotations.Store;
 
 import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -119,6 +123,7 @@ public class TaxonNode
 
     @XmlElement(name = "treeIndex")
     @Column(length=255)
+    @Field(store = Store.YES, index = Index.YES, analyze = Analyze.NO)
     private String treeIndex;
 
 
@@ -450,6 +455,14 @@ public class TaxonNode
     @Deprecated //for CDM lib internal use only, may be removed in future versions
     public void setTreeIndex(String treeIndex) {
         this.treeIndex = treeIndex;
+    }
+    @Override
+    public String treeIndexLike() {
+        return treeIndex + "%";
+    }
+    @Override
+    public String treeIndexWc() {
+        return treeIndex + "*";
     }
 
 

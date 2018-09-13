@@ -1477,7 +1477,7 @@ public class TaxonServiceImpl
             finalQueryBuilder.add(taxonBaseQueryFactory.newEntityIdQuery("taxonNodes.classification.id", classification), Occur.MUST);
         }
         if(subtree != null){
-            finalQueryBuilder.add(taxonBaseQueryFactory.newTermQuery("taxonNodes.treeIndex", subtree.treeIndex(), true), Occur.MUST);
+            finalQueryBuilder.add(taxonBaseQueryFactory.newTermQuery("taxonNodes.treeIndex", subtree.treeIndexWc(), true), Occur.MUST);
         }
         if(!includeUnpublished)  {
             String accPublishParam = TaxonBase.ACC_TAXON_BRIDGE_PREFIX + AcceptedTaxonBridge.DOC_KEY_PUBLISH_SUFFIX;
@@ -1566,7 +1566,7 @@ public class TaxonServiceImpl
             finalQueryBuilder.add(taxonBaseQueryFactory.newEntityIdQuery("taxonNodes.classification.id", classification), Occur.MUST);
         }
         if(subtree != null){
-            finalQueryBuilder.add(taxonBaseQueryFactory.newTermQuery("taxonNodes.treeIndex", subtree.treeIndex(), true), Occur.MUST);
+            finalQueryBuilder.add(taxonBaseQueryFactory.newTermQuery("taxonNodes.treeIndex", subtree.treeIndexWc(), true), Occur.MUST);
         }
 
         luceneSearch.setQuery(finalQueryBuilder.build());
@@ -2148,7 +2148,7 @@ public class TaxonServiceImpl
             finalQueryBuilder.add(descriptionElementQueryFactory.newEntityIdQuery("inDescription.taxon.taxonNodes.classification.id", classification), Occur.MUST);
         }
         if(subtree != null){
-            finalQueryBuilder.add(descriptionElementQueryFactory.newTermQuery("inDescription.taxon.taxonNodes.treeIndex", subtree.treeIndex(), true), Occur.MUST);
+            finalQueryBuilder.add(descriptionElementQueryFactory.newTermQuery("inDescription.taxon.taxonNodes.treeIndex", subtree.treeIndexWc(), true), Occur.MUST);
         }
 
         // --- IdentifieableEntity fields - by uuid

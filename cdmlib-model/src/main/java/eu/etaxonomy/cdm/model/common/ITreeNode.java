@@ -40,7 +40,21 @@ public interface ITreeNode<T extends ITreeNode<T>> extends ICdmBase {
 	 */
 	public String treeIndex();
 
-	
+	/**
+     * Returns the tree index followed by an SQL wildcard '%'.
+     * @see #treeIndex()
+     * @see #treeIndexWc()
+     */
+    public String treeIndexLike();
+
+    /**
+     * Returns the tree index followed by a asterisk wildcard '*'.
+     * @see #treeIndex()
+     * @see #treeIndexLike()
+     */
+    public String treeIndexWc();
+
+
 	/**
 	 * Returns the parent node of this node.
 	 * Returns <code>null</code> if this
