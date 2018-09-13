@@ -1476,6 +1476,9 @@ public class TaxonServiceImpl
         if(classification != null){
             finalQueryBuilder.add(taxonBaseQueryFactory.newEntityIdQuery("taxonNodes.classification.id", classification), Occur.MUST);
         }
+        if(subtree != null){
+            finalQueryBuilder.add(taxonBaseQueryFactory.newTermQuery("taxonNodes.treeIndex", subtree.treeIndex(), true), Occur.MUST);
+        }
         if(!includeUnpublished)  {
             String accPublishParam = TaxonBase.ACC_TAXON_BRIDGE_PREFIX + AcceptedTaxonBridge.DOC_KEY_PUBLISH_SUFFIX;
             finalQueryBuilder.add(taxonBaseQueryFactory.newBooleanQuery(accPublishParam, true), Occur.MUST);
@@ -1511,7 +1514,7 @@ public class TaxonServiceImpl
      * @throws IOException
      */
     protected LuceneSearch prepareFindByTaxonRelationFullTextSearch(TaxonRelationshipEdge edge, String queryString,
-            Classification classification, boolean includeUnpublished, List<Language> languages,
+            Classification classification, TaxonNode subtree, boolean includeUnpublished, List<Language> languages,
             boolean highlightFragments, SortField[] sortFields) throws IOException {
 
         String fromField;
@@ -1561,6 +1564,9 @@ public class TaxonServiceImpl
 
         if(classification != null){
             finalQueryBuilder.add(taxonBaseQueryFactory.newEntityIdQuery("taxonNodes.classification.id", classification), Occur.MUST);
+        }
+        if(subtree != null){
+            finalQueryBuilder.add(taxonBaseQueryFactory.newTermQuery("taxonNodes.treeIndex", subtree.treeIndex(), true), Occur.MUST);
         }
 
         luceneSearch.setQuery(finalQueryBuilder.build());
@@ -1776,7 +1782,7 @@ public class TaxonServiceImpl
 
             luceneSearches.add(prepareFindByTaxonRelationFullTextSearch(
                     new TaxonRelationshipEdge(relTypes, Direction.relatedTo),
-                    queryString, classification, includeUnpublished, languages, highlightFragments, sortFields));
+                    queryString, classification, subtree, includeUnpublished, languages, highlightFragments, sortFields));
             idFieldMap.put(CdmBaseType.TAXON, "id");
 
             if(addDistributionFilter){
@@ -1832,7 +1838,7 @@ public class TaxonServiceImpl
 
             luceneSearches.add(prepareFindByTaxonRelationFullTextSearch(
                     new TaxonRelationshipEdge(relTypes, Direction.relatedTo),
-                    queryString, classification, includeUnpublished, languages, highlightFragments, sortFields));
+                    queryString, classification, subtree, includeUnpublished, languages, highlightFragments, sortFields));
             idFieldMap.put(CdmBaseType.TAXON, "id");
 
             if(addDistributionFilter){
@@ -2140,6 +2146,9 @@ public class TaxonServiceImpl
 
         if(classification != null){
             finalQueryBuilder.add(descriptionElementQueryFactory.newEntityIdQuery("inDescription.taxon.taxonNodes.classification.id", classification), Occur.MUST);
+        }
+        if(subtree != null){
+            finalQueryBuilder.add(descriptionElementQueryFactory.newTermQuery("inDescription.taxon.taxonNodes.treeIndex", subtree.treeIndex(), true), Occur.MUST);
         }
 
         // --- IdentifieableEntity fields - by uuid
