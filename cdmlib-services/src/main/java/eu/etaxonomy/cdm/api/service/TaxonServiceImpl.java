@@ -579,7 +579,7 @@ public class TaxonServiceImpl
             }
             // filter by includeRelationships
             for (TaxonRelationshipEdge relationshipEdgeFilter : includeRelationships) {
-                if ( relationshipEdgeFilter.getTaxonRelationshipTypes().equals(taxRel.getType()) ) {
+                if ( relationshipEdgeFilter.getRelationshipTypes().equals(taxRel.getType()) ) {
                     if (relationshipEdgeFilter.getDirections().contains(Direction.relatedTo) && !taxa.contains(taxRel.getToTaxon())) {
                         if(logger.isDebugEnabled()){
                             logger.debug(maxDepth + ": " + taxon.getTitleCache() + " --[" + taxRel.getType().getLabel() + "]--> " + taxRel.getToTaxon().getTitleCache());
@@ -1545,7 +1545,7 @@ public class TaxonServiceImpl
 
         Builder joinFromQueryBuilder = new Builder();
         joinFromQueryBuilder.add(taxonBaseQueryFactory.newTermQuery(queryTermField, queryString), Occur.MUST);
-        joinFromQueryBuilder.add(taxonBaseQueryFactory.newEntityIdsQuery("type.id", edge.getTaxonRelationshipTypes()), Occur.MUST);
+        joinFromQueryBuilder.add(taxonBaseQueryFactory.newEntityIdsQuery("type.id", edge.getRelationshipTypes()), Occur.MUST);
         if(!includeUnpublished){
             joinFromQueryBuilder.add(taxonBaseQueryFactory.newBooleanQuery(publishField, true), Occur.MUST);
             joinFromQueryBuilder.add(taxonBaseQueryFactory.newBooleanQuery(publishFieldInvers, true), Occur.MUST);
