@@ -85,8 +85,11 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 @Entity
 @Audited
 @Configurable
-//@Table(appliesTo="Sequence", indexes = { @Index(name = "sequenceTitleCacheIndex", columnNames = { "titleCache" }) })
-public class Sequence extends AnnotatableEntity implements Cloneable{
+//@Table(name="Sequence", indexes = { @Index(name = "sequenceTitleCacheIndex", columnList = "titleCache") })
+public class Sequence
+               extends AnnotatableEntity
+               implements Cloneable{
+
 	private static final long serialVersionUID = 8298983152731241775L;
 	private static final Logger logger = Logger.getLogger(Sequence.class);
 

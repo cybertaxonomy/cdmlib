@@ -25,6 +25,7 @@ import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.OrderColumn;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -41,8 +42,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.LazyInitializationException;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Index;
-import org.hibernate.annotations.Table;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.IndexedEmbedded;
@@ -90,7 +89,7 @@ import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks;
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
 //@Indexed(index = "eu.etaxonomy.cdm.model.taxon.TaxonNode")
 @Audited
-@Table(appliesTo="TaxonNode", indexes = { @Index(name = "taxonNodeTreeIndex", columnNames = { "treeIndex" }) })
+@Table(name="TaxonNode", indexes = { @javax.persistence.Index(name = "taxonNodeTreeIndex", columnList = "treeIndex") })
 @ChildTaxaMustBeLowerRankThanParent(groups = Level3.class)
 @ChildTaxaMustNotSkipRanks(groups = Level3.class)
 @ChildTaxaMustDeriveNameFromParent(groups = Level3.class)

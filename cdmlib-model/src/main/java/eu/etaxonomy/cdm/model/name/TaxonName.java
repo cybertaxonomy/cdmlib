@@ -28,6 +28,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
@@ -47,7 +48,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Table;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
@@ -179,9 +179,9 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
 @Entity
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-@Table(appliesTo="TaxonName", indexes = {
-        @org.hibernate.annotations.Index(name = "taxonNameBaseTitleCacheIndex", columnNames = { "titleCache" }),
-        @org.hibernate.annotations.Index(name = "taxonNameBaseNameCacheIndex", columnNames = { "nameCache" }) })
+@Table(name="TaxonName", indexes = {
+        @javax.persistence.Index(name = "taxonNameBaseTitleCacheIndex", columnList = "titleCache"),
+        @javax.persistence.Index(name = "taxonNameBaseNameCacheIndex", columnList = "nameCache") })
 @NameMustFollowCode
 @CorrectEpithetsForRank(groups = Level2.class)
 @NameMustHaveAuthority(groups = Level2.class)
