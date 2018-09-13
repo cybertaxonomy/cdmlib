@@ -245,12 +245,17 @@ public class ClassificationServiceImpl
 
     }
 
+    @Override
+    public List<TaxonNode> loadTreeBranch(TaxonNode taxonNode, Rank baseRank,
+            boolean includeUnpublished, List<String> propertyPaths) throws UnpublishedException{
+        return loadTreeBranch(taxonNode, null, baseRank, includeUnpublished, propertyPaths);
+    }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<TaxonNode> loadTreeBranch(TaxonNode taxonNode, Rank baseRank,
+    public List<TaxonNode> loadTreeBranch(TaxonNode taxonNode, TaxonNode subtree, Rank baseRank,
             boolean includeUnpublished, List<String> propertyPaths) throws UnpublishedException{
 
         TaxonNode thisNode = taxonNodeDao.load(taxonNode.getUuid(), propertyPaths);
@@ -288,6 +293,9 @@ public class ClassificationServiceImpl
             if(baseRank != null && parentNodeRank != null && baseRank.isLower(parentNodeRank)){
                 break;
             }
+            if((subtree!= null && !subtree.isAncestor(parentNode) )){
+                break;
+            }
 
             pathToRoot.add(parentNode);
             thisNode = parentNode;
@@ -303,14 +311,26 @@ public class ClassificationServiceImpl
     @Override
     public List<TaxonNode> loadTreeBranchToTaxon(Taxon taxon, Classification classification, Rank baseRank,
             boolean includeUnpublished, List<String> propertyPaths) throws UnpublishedException{
+        return loadTreeBranchToTaxon(taxon, classification, null, baseRank, includeUnpublished, propertyPaths);
+    }
+
+    @Override
+    public List<TaxonNode> loadTreeBranchToTaxon(Taxon taxon, Classification classification, TaxonNode subtree,
+            Rank baseRank,
+            boolean includeUnpublished, List<String> propertyPaths) throws UnpublishedException{
 
         UUID nodeUuid = getTaxonNodeUuidByTaxonUuid(classification.getUuid(), taxon.getUuid());
         TaxonNode node = taxonNodeService.find(nodeUuid);
         if(node == null){
             logger.warn("The specified taxon is not found in the given tree.");
             return null;
+        }else if (!node.isDescendant(subtree)){
+            //TODO handle as exception? E.g. FilterException, AccessDeniedException?
+            logger.warn("The specified taxon is not found for the given subtree.");
+            return null;
         }
-        return loadTreeBranch(node, baseRank, includeUnpublished, propertyPaths);
+
+        return loadTreeBranch(node, subtree, baseRank, includeUnpublished, propertyPaths);
     }
 
 
@@ -326,6 +346,12 @@ public class ClassificationServiceImpl
 
     @Override
     public List<TaxonNode> listChildNodesOfTaxon(UUID taxonUuid, UUID classificationUuid,
+            boolean includeUnpublished, Integer pageSize, Integer pageIndex, List<String> propertyPaths){
+        return listChildNodesOfTaxon(taxonUuid, classificationUuid, null, includeUnpublished, pageSize, pageIndex, propertyPaths);
+    }
+
+    @Override
+    public List<TaxonNode> listChildNodesOfTaxon(UUID taxonUuid, UUID classificationUuid, UUID subtreeUuid,
             boolean includeUnpublished, Integer pageSize, Integer pageIndex, List<String> propertyPaths){
 
         Classification classification = dao.load(classificationUuid);

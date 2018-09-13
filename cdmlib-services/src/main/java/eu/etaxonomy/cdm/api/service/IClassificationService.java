@@ -171,6 +171,8 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @throws UnpublishedException
      *            if any of the taxa in the path is unpublished an {@link UnpublishedException} is thrown.
      */
+    public List<TaxonNode> loadTreeBranch(TaxonNode taxonNode, TaxonNode subtree, Rank baseRank, boolean includeUnpublished,
+            List<String> propertyPaths) throws UnpublishedException;
     public List<TaxonNode> loadTreeBranch(TaxonNode taxonNode, Rank baseRank, boolean includeUnpublished,
             List<String> propertyPaths) throws UnpublishedException;
 
@@ -198,11 +200,18 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @throws UnpublishedException
      *            if any of the taxa in the path is unpublished an {@link UnpublishedException} is thrown
      */
-    public List<TaxonNode> loadTreeBranchToTaxon(Taxon taxon, Classification classification, Rank baseRank,
+    public List<TaxonNode> loadTreeBranchToTaxon(Taxon taxon, Classification classification,
+            TaxonNode subtree, Rank baseRank,
+            boolean includeUnpublished, List<String> propertyPaths) throws UnpublishedException;
+    public List<TaxonNode> loadTreeBranchToTaxon(Taxon taxon, Classification classification,
+            Rank baseRank,
             boolean includeUnpublished, List<String> propertyPaths) throws UnpublishedException;
 
     public List<TaxonNode> listChildNodesOfTaxon(UUID taxonUuid, UUID classificationUuid, boolean includeUnpublished,
             Integer pageSize, Integer pageIndex, List<String> propertyPaths);
+    public List<TaxonNode> listChildNodesOfTaxon(UUID taxonUuid, UUID classificationUuid, UUID subtreeUuid, boolean includeUnpublished,
+            Integer pageSize, Integer pageIndex, List<String> propertyPaths);
+
 
     /**
      * @param taxonNode

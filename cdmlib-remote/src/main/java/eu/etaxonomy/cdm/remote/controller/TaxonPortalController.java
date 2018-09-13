@@ -454,22 +454,28 @@ public class TaxonPortalController extends TaxonController{
         return list;
     }
 
-    @Override
     @RequestMapping(value = "taxonNodes", method = RequestMethod.GET)
     public Set<TaxonNode>  doGetTaxonNodes(
             @PathVariable("uuid") UUID uuid,
+            @RequestParam(value = "subtree", required = true) UUID subtreeUuid,  //if subtree does not exist the base class method is used, therefore required
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
         logger.info("doGetTaxonNodes" + requestPathAndQuery(request));
-        TaxonBase<?> taxon = service.load(uuid, NO_UNPUBLISHED, TAXONNODE_INIT_STRATEGY);
-        if(taxon instanceof Taxon){
-            return ((Taxon)taxon).getTaxonNodes();
+        TaxonBase<?> taxonBase;
+        if (subtreeUuid != null){
+            taxonBase = doGet(uuid, subtreeUuid, request, response);
+        }else{
+            taxonBase = service.load(uuid, NO_UNPUBLISHED, TAXONNODE_INIT_STRATEGY);
+        }
+        if(taxonBase instanceof Taxon){
+            return ((Taxon)taxonBase).getTaxonNodes();
         } else {
             HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
             return null;
         }
     }
+
 
 //	@RequestMapping(value = "specimens", method = RequestMethod.GET)
 //	public ModelAndView doGetSpecimens(

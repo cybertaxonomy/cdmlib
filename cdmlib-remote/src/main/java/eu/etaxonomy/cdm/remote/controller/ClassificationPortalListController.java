@@ -190,13 +190,14 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
     public List<TaxonNode> getChildNodesOfTaxon(
             @PathVariable("treeUuid") UUID treeUuid,
             @PathVariable("taxonUuid") UUID taxonUuid,
+            @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
         logger.info("getChildNodesOfTaxon() " + request.getRequestURI());
 
         boolean includeUnpublished = NO_UNPUBLISHED;  //for now we do not allow any remote service to publish unpublished data
 
-        List<TaxonNode> children = service.listChildNodesOfTaxon(taxonUuid, treeUuid,
+        List<TaxonNode> children = service.listChildNodesOfTaxon(taxonUuid, treeUuid, subtreeUuid,
                 includeUnpublished, null, null, NODE_INIT_STRATEGY);
         return children;
 
@@ -244,18 +245,21 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
             @PathVariable("treeUuid") UUID treeUuid,
             @PathVariable("taxonUuid") UUID taxonUuid,
             @PathVariable("rankUuid") UUID rankUuid,
+            @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
         logger.info("getPathFromTaxonToRank() " + request.getRequestURI());
 
         boolean includeUnpublished = NO_UNPUBLISHED;
 
-        Classification tree = service.find(treeUuid);
+        Classification classification = service.find(treeUuid);
+        TaxonNode subtree = getSubtreeOrError(subtreeUuid, taxonNodeService, response);
         Rank rank = findRank(rankUuid);
         Taxon taxon = (Taxon) taxonService.load(taxonUuid);
 
         try {
-            return service.loadTreeBranchToTaxon(taxon, tree, rank, includeUnpublished, NODE_INIT_STRATEGY);
+            List<TaxonNode> result = service.loadTreeBranchToTaxon(taxon, classification, subtree, rank, includeUnpublished, NODE_INIT_STRATEGY);
+            return result;
         } catch (UnpublishedException e) {
             HttpStatusMessage.ACCESS_DENIED.send(response);
             return null;
@@ -283,12 +287,13 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
             value = {"{treeUuid}/pathFrom/{taxonUuid}"},
             method = RequestMethod.GET)
     public List<TaxonNode> getPathFromTaxon(
-            @PathVariable("treeUuid") UUID treeUuid,
+            @PathVariable("treeUuid") UUID classificationUuid,
             @PathVariable("taxonUuid") UUID taxonUuid,
+            @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
-        return getPathFromTaxonToRank(treeUuid, taxonUuid, null, request, response);
+        return getPathFromTaxonToRank(classificationUuid, taxonUuid, null, subtreeUuid, request, response);
     }
 
 

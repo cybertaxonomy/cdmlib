@@ -44,6 +44,7 @@ import eu.etaxonomy.cdm.api.service.dto.IncludedTaxaDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonRelationshipsDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.exception.UnpublishedException;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
@@ -51,6 +52,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -127,6 +129,53 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
 
     protected List<String> getTaxonDescriptionElementInitStrategy() {
         return getInitializationStrategy();
+    }
+
+    @RequestMapping(method = RequestMethod.GET)
+    public TaxonBase<?> doGet(@PathVariable("uuid") UUID uuid,
+            @RequestParam(value = "subtree", required = true) UUID subtreeUuid,  //if subtree does not exist the base class method is used, therefore required
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+        if(request != null) {
+            logger.info("doGet() " + request.getRequestURI());
+        }
+        //TODO do we want to allow Synonyms at all? Maybe needs initialization
+        TaxonBase<?> taxonBase = getCdmBaseInstance(uuid, response, TAXONNODE_INIT_STRATEGY);
+        //TODO we should move subtree check down to service or persistence
+        TaxonNode subtree = getSubtreeOrError(subtreeUuid, nodeService, response);
+        taxonBase = checkExistsSubtreeAndAccess(taxonBase, subtree, NO_UNPUBLISHED, response);
+        return taxonBase;
+    }
+
+    /**
+     * Checks if a {@link TaxonBase taxonBase} is public and belongs to a {@link TaxonNode subtree}
+     * as accepted taxon or synonym.
+     * If not the according {@link HttpStatusMessage http messages} are added to response.
+     * <BR>
+     * Not (yet) checked is the relation to a subtree via a concept relationship.
+     * @param taxonBase
+     * @param includeUnpublished
+     * @param response
+     * @return
+     * @throws IOException
+     */
+    protected <S extends TaxonBase<?>> S checkExistsSubtreeAndAccess(S taxonBase, TaxonNode subtree, boolean includeUnpublished,
+            HttpServletResponse response) throws IOException {
+        taxonBase = checkExistsAndAccess(taxonBase, NO_UNPUBLISHED, response);
+        if (taxonBase != null){
+            //TODO synonyms maybe can not be initialized
+            Taxon taxon = taxonBase.isInstanceOf(Synonym.class)?
+                    CdmBase.deproxy(taxonBase, Synonym.class).getAcceptedTaxon():
+                    CdmBase.deproxy(taxonBase, Taxon.class);
+            //check if taxon has any node that is a descendant of subtree
+            for (TaxonNode taxonNode :taxon.getTaxonNodes()){
+                if (subtree.isAncestor(taxonNode)){
+                    return taxonBase;
+                }
+            }
+            HttpStatusMessage.ACCESS_DENIED.send(response);
+        }
+        return null;
     }
 
 
