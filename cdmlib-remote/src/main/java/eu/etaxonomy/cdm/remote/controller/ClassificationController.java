@@ -106,7 +106,7 @@ public class ClassificationController extends AbstractIdentifiableController<Cla
             method = RequestMethod.GET)
     public List<TaxonNode> getChildNodes(
             @PathVariable("uuid") UUID classificationUuid,
-            @RequestParam(value = "subtreeUuid", required = false) UUID subtreeUuid,
+            @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
             HttpServletRequest request,
             HttpServletResponse response
             ) throws IOException {
@@ -120,7 +120,7 @@ public class ClassificationController extends AbstractIdentifiableController<Cla
     public List<TaxonNode> getChildNodesAtRank(
             @PathVariable("uuid") UUID classificationUuid,
             @PathVariable("rankUuid") UUID rankUuid,
-            @RequestParam(value = "subtreeUuid", required = false) UUID subtreeUuid,
+            @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
             HttpServletRequest request,
             HttpServletResponse response
             ) throws IOException {

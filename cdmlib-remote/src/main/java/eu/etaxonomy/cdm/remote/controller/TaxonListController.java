@@ -157,7 +157,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
     public Pager<SearchResult<TaxonBase>> doSearch(
             @RequestParam(value = "query", required = true) String query,
             @RequestParam(value = "classificationUuid", required = false) UUID classificationUuid,
-            @RequestParam(value = "subtreeUuid", required = false) UUID subtreeUuid,
+            @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
             @RequestParam(value = "area", required = false) DefinedTermBaseList<NamedArea> areaList,
             @RequestParam(value = "status", required = false) PresenceAbsenceTerm[] status,
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,

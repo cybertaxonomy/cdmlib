@@ -115,7 +115,7 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
             method = RequestMethod.GET)
     public List<TaxonNode> getChildNodes(
             @PathVariable("treeUuid") UUID treeUuid,
-            @RequestParam(value = "subtreeUuid", required = false) UUID subtreeUuid,
+            @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
             HttpServletRequest request,
             HttpServletResponse response
             ) throws IOException {
@@ -141,7 +141,7 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
     public List<TaxonNode> getChildNodesAtRank(
             @PathVariable("treeUuid") UUID treeUuid,
             @PathVariable("rankUuid") UUID rankUuid,
-            @RequestParam(value = "subtreeUuid", required = false) UUID subtreeUuid,
+            @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
             HttpServletRequest request,
             HttpServletResponse response
             ) throws IOException {
