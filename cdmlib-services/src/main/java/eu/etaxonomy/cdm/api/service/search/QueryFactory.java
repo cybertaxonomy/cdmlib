@@ -114,8 +114,7 @@ public class QueryFactory {
             queryString = queryString.trim();
             boolean isComplexPhraseQuery = queryString.matches("^\\\".*\\s+.*[\\*].*\\\"$");
             textFieldNames.add(fieldName);
-            // in order to support the full query syntax we must use the parser
-            // here
+            // in order to support the full query syntax we must use the parser here
             try {
                 return toolProvider.getQueryParserFor(cdmBaseType, isComplexPhraseQuery).parse(luceneQueryString);
             } catch (ParseException e) {

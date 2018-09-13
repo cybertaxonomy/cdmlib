@@ -1473,7 +1473,6 @@ public class TaxonServiceImpl
             finalQueryBuilder.add(textQuery, Occur.MUST);
         }
 
-
         if(classification != null){
             finalQueryBuilder.add(taxonBaseQueryFactory.newEntityIdQuery("taxonNodes.classification.id", classification), Occur.MUST);
         }
@@ -1680,7 +1679,8 @@ public class TaxonServiceImpl
             } else if (!searchModes.contains(TaxaAndNamesSearchMode.doTaxa) && searchModes.contains(TaxaAndNamesSearchMode.doSynonyms)) {
                 className = "eu.etaxonomy.cdm.model.taxon.Synonym";
             }
-            luceneSearches.add(prepareFindByFullTextSearch(taxonBaseSubclass, queryString, classification, subtree, className,
+            luceneSearches.add(prepareFindByFullTextSearch(taxonBaseSubclass,
+                    queryString, classification, subtree, className,
                     includeUnpublished, languages, highlightFragments, sortFields));
             idFieldMap.put(CdmBaseType.TAXON, "id");
             /* A) does not work!!!!
@@ -2096,8 +2096,10 @@ public class TaxonServiceImpl
      * @param descriptionElementQueryFactory
      * @return
      */
-    private BooleanQuery createByDescriptionElementFullTextQuery(String queryString, Classification classification,
-            TaxonNode subtree, List<Feature> features, List<Language> languages, QueryFactory descriptionElementQueryFactory) {
+    private BooleanQuery createByDescriptionElementFullTextQuery(String queryString,
+            Classification classification, TaxonNode subtree, List<Feature> features,
+            List<Language> languages, QueryFactory descriptionElementQueryFactory) {
+
         Builder finalQueryBuilder = new Builder();
         Builder textQueryBuilder = new Builder();
         textQueryBuilder.add(descriptionElementQueryFactory.newTermQuery("titleCache", queryString), Occur.SHOULD);

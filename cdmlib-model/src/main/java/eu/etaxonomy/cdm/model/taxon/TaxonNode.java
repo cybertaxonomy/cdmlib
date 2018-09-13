@@ -94,7 +94,10 @@ import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks;
 @ChildTaxaMustBeLowerRankThanParent(groups = Level3.class)
 @ChildTaxaMustNotSkipRanks(groups = Level3.class)
 @ChildTaxaMustDeriveNameFromParent(groups = Level3.class)
-public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITreeNode<TaxonNode>, Cloneable{
+public class TaxonNode
+            extends AnnotatableEntity
+            implements ITaxonTreeNode, ITreeNode<TaxonNode>, Cloneable{
+
     private static final long serialVersionUID = -4743289894926587693L;
     private static final Logger logger = Logger.getLogger(TaxonNode.class);
 
@@ -959,10 +962,11 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
      */
     @Transient
     public boolean isDescendant(TaxonNode possibleParent){
-    	if (this.treeIndex() == null || possibleParent.treeIndex() == null) {
+    	if (possibleParent == null || this.treeIndex() == null
+    	        || possibleParent.treeIndex() == null) {
     		return false;
     	}
-    	return possibleParent == null ? false : this.treeIndex().startsWith(possibleParent.treeIndex() );
+    	return this.treeIndex().startsWith(possibleParent.treeIndex() );
     }
 
     /**
@@ -973,11 +977,11 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
      */
     @Transient
     public boolean isAncestor(TaxonNode possibleChild){
-    	if (this.treeIndex() == null || possibleChild.treeIndex() == null) {
+    	if (possibleChild == null || this.treeIndex() == null || possibleChild.treeIndex() == null) {
     		return false;
     	}
        // return possibleChild == null ? false : possibleChild.getAncestors().contains(this);
-        return possibleChild == null ? false : possibleChild.treeIndex().startsWith(this.treeIndex());
+        return  possibleChild.treeIndex().startsWith(this.treeIndex());
     }
 
     /**
@@ -990,7 +994,6 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     public boolean hasChildNodes(){
         return childNodes.size() > 0;
     }
-
 
     public boolean hasTaxon() {
         return (taxon!= null);
