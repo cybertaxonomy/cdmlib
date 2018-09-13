@@ -959,18 +959,10 @@ public class TaxonNode
     }
 
     /**
-     * Whether this TaxonNode is a descendant of the given TaxonNode
-     *
-     * Caution: use this method with care on big branches. -> performance and memory hungry
-     *
-     * Protip: Try solving your problem with the isAscendant method which traverses the tree in the
-     * other direction (up). It will always result in a rather small set of consecutive parents beeing
-     * generated.
-     *
-     * TODO implement more efficiently without generating the set of descendants first
+     * Whether this TaxonNode is a descendant of (or equal to) the given TaxonNode
      *
      * @param possibleParent
-     * @return true if this is a descendant
+     * @return <code>true</code> if <b>this</b> is a descendant
      */
     @Transient
     public boolean isDescendant(TaxonNode possibleParent){
@@ -982,10 +974,11 @@ public class TaxonNode
     }
 
     /**
-     * Whether this TaxonNode is an ascendant of the given TaxonNode
+     * Whether this TaxonNode is an ascendant of (or equal to) the given TaxonNode.
+     *
      *
      * @param possibleChild
-     * @return true if there are ascendants
+     * @return <code>true</code> if <b>this</b> is a ancestor of the given child parameter
      */
     @Transient
     public boolean isAncestor(TaxonNode possibleChild){

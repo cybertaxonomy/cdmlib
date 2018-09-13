@@ -323,6 +323,7 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
             HttpServletResponse response, List<String> pathProperties)
             throws IOException {
 
+        @SuppressWarnings("unused")
         boolean includeUnpublished = NO_UNPUBLISHED;
         CDM_BASE cdmBaseObject;
 //        if (service instanceof IPublishableService){

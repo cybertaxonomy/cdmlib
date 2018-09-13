@@ -624,11 +624,11 @@ public class TaxonDaoHibernateImpl
      * @param areaQuery
      */
     private void expandNamedAreas(Collection<NamedArea> namedAreas, Set<NamedArea> areasExpanded, Query areaQuery) {
-        List<NamedArea> childAreas;
         for(NamedArea a : namedAreas){
             areasExpanded.add(a);
             areaQuery.setParameter("area", a);
-            childAreas = areaQuery.list();
+            @SuppressWarnings("unchecked")
+            List<NamedArea> childAreas = areaQuery.list();
             if(childAreas.size() > 0){
                 areasExpanded.addAll(childAreas);
                 expandNamedAreas(childAreas, areasExpanded, areaQuery);
