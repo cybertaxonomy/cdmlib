@@ -140,7 +140,7 @@ public abstract class BaseListController <T extends CdmBase, SERVICE extends ISe
         if (subtreeUuid != null){
             subtree = taxonNodeService.find(subtreeUuid);
             if(subtree == null) {
-                response.sendError(404 , "TaxonNode not found using " + subtreeUuid );
+                response.sendError(404 , "Taxon node for subtree not found: " + subtreeUuid );
                 //will not happen
                 return null;
             }
