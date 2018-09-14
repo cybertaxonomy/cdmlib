@@ -856,6 +856,31 @@ public class Taxon
     }
 
     /**
+     * Returns the boolean value indicating whether <i>this</i> taxon is a invalid designation
+     * for at least one other taxon.
+     */
+    // TODO cache as for #hasTaxonomicChildren
+    @Transient
+    public boolean isInvalidDesignation(){
+        return computeInvalidDesignationRelations() > 0;
+    }
+
+    /**
+     * Counts the number of invalid designation relationships where this taxon represents the
+     * invalid designation for another taxon.
+     * @return
+     */
+    private int computeInvalidDesignationRelations(){
+        int count = 0;
+        for (TaxonRelationship rel: this.getRelationsFromThisTaxon()){
+            if (rel.getType().equals(TaxonRelationshipType.INVALID_DESIGNATION_FOR())){
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
      * Returns the boolean value indicating whether <i>this</i> taxon is a related
      * concept for at least one other taxon.
      */
