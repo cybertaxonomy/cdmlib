@@ -454,8 +454,8 @@ public class TaxonPortalController extends TaxonController{
         return list;
     }
 
-    @RequestMapping(value = "taxonNodesFiltered", method = RequestMethod.GET)
-    public Set<TaxonNode>  doGetTaxonNodesFiltered(
+    @RequestMapping(value = "taxonNodes", params="subtree", method = RequestMethod.GET)
+    public Set<TaxonNode>  doGetTaxonNodes(
             @PathVariable("uuid") UUID uuid,
             @RequestParam(value = "subtree", required = true) UUID subtreeUuid,  //if subtree does not exist the base class method is used, therefore required
             HttpServletRequest request,
@@ -464,7 +464,7 @@ public class TaxonPortalController extends TaxonController{
         logger.info("doGetTaxonNodes" + requestPathAndQuery(request));
         TaxonBase<?> taxonBase;
         if (subtreeUuid != null){
-            taxonBase = doGetFiltered(uuid, subtreeUuid, request, response);
+            taxonBase = doGet(uuid, subtreeUuid, request, response);
         }else{
             taxonBase = service.load(uuid, NO_UNPUBLISHED, TAXONNODE_INIT_STRATEGY);
         }
