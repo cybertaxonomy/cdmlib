@@ -43,6 +43,7 @@ import eu.etaxonomy.cdm.api.service.pager.PagerUtils;
 import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.exception.FilterException;
 import eu.etaxonomy.cdm.exception.UnpublishedException;
 import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -347,18 +348,26 @@ public class ClassificationServiceImpl
     @Override
     public List<TaxonNode> listChildNodesOfTaxon(UUID taxonUuid, UUID classificationUuid,
             boolean includeUnpublished, Integer pageSize, Integer pageIndex, List<String> propertyPaths){
-        return listChildNodesOfTaxon(taxonUuid, classificationUuid, null, includeUnpublished, pageSize, pageIndex, propertyPaths);
+        try {
+            return listChildNodesOfTaxon(taxonUuid, classificationUuid, null, includeUnpublished, pageSize, pageIndex, propertyPaths);
+        } catch (FilterException e) {
+            throw new RuntimeException(e);  //this should not happen as filter is null
+        }
     }
 
     @Override
     public List<TaxonNode> listChildNodesOfTaxon(UUID taxonUuid, UUID classificationUuid, UUID subtreeUuid,
-            boolean includeUnpublished, Integer pageSize, Integer pageIndex, List<String> propertyPaths){
+            boolean includeUnpublished, Integer pageSize, Integer pageIndex, List<String> propertyPaths) throws FilterException{
 
         Classification classification = dao.load(classificationUuid);
         Taxon taxon = (Taxon) taxonDao.load(taxonUuid);
+        TaxonNode subtree = taxonNodeDao.load(subtreeUuid);
+        if (subtreeUuid != null && subtree == null){
+            throw new FilterException("Taxon node for subtree filter can not be found in database", true);
+        }
 
         List<TaxonNode> results = dao.listChildrenOf(
-                taxon, classification, includeUnpublished, pageSize, pageIndex, propertyPaths);
+                taxon, classification, subtree, includeUnpublished, pageSize, pageIndex, propertyPaths);
         Collections.sort(results, taxonNodeComparator); // FIXME this is only a HACK, order during the hibernate query in the dao
         return results;
     }

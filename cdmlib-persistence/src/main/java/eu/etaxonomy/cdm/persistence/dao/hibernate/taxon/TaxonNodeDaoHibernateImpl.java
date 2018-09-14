@@ -275,7 +275,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     		defaultBeanInitializer.initializeAll(results, propertyPaths);
     		return results;
     	}else{
-    		return classificationDao.listChildrenOf(node.getTaxon(), node.getClassification(),
+    		return classificationDao.listChildrenOf(node.getTaxon(), node.getClassification(), null,
     		       includeUnpublished, pageSize, pageIndex, propertyPaths);
     	}
 
@@ -291,7 +291,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     		return ((Integer)crit.uniqueResult().hashCode()).longValue();
 		}else{
 			return classificationDao.countChildrenOf(
-			        node.getTaxon(), classification, includeUnpublished);
+			        node.getTaxon(), classification, null, includeUnpublished);
 		}
 	}
     /**

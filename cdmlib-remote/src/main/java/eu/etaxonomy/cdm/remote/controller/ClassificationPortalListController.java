@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.exception.FilterException;
 import eu.etaxonomy.cdm.exception.UnpublishedException;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -197,8 +198,14 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
 
         boolean includeUnpublished = NO_UNPUBLISHED;  //for now we do not allow any remote service to publish unpublished data
 
-        List<TaxonNode> children = service.listChildNodesOfTaxon(taxonUuid, treeUuid, subtreeUuid,
-                includeUnpublished, null, null, NODE_INIT_STRATEGY);
+        List<TaxonNode> children;
+        try {
+            children = service.listChildNodesOfTaxon(taxonUuid, treeUuid, subtreeUuid,
+                    includeUnpublished, null, null, NODE_INIT_STRATEGY);
+        } catch (FilterException e) {
+            HttpStatusMessage.SUBTREE_FILTER_INVALID.send(response);
+            return null;
+        }
         return children;
 
     }

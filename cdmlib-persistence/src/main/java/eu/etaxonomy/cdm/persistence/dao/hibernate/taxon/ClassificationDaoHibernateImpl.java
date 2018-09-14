@@ -196,9 +196,9 @@ public class ClassificationDaoHibernateImpl
     }
 
     @Override
-    public List<TaxonNode> listChildrenOf(Taxon taxon, Classification classification, boolean includeUnpublished,
+    public List<TaxonNode> listChildrenOf(Taxon taxon, Classification classification, TaxonNode subtree, boolean includeUnpublished,
             Integer pageSize, Integer pageIndex, List<String> propertyPaths){
-    	 Query query = prepareListChildrenOf(taxon, classification, false, includeUnpublished);
+    	 Query query = prepareListChildrenOf(taxon, classification, subtree, false, includeUnpublished);
 
          setPagingParameter(query, pageSize, pageIndex);
 
@@ -250,9 +250,9 @@ public class ClassificationDaoHibernateImpl
 
 
     @Override
-    public Long countChildrenOf(Taxon taxon, Classification classification,
+    public Long countChildrenOf(Taxon taxon, Classification classification, TaxonNode subtree,
             boolean includeUnpublished){
-        Query query = prepareListChildrenOf(taxon, classification, true, includeUnpublished);
+        Query query = prepareListChildrenOf(taxon, classification, subtree, true, includeUnpublished);
         Long count = (Long) query.uniqueResult();
         return count;
     }
@@ -264,7 +264,7 @@ public class ClassificationDaoHibernateImpl
         return count;
     }
 
-    private Query prepareListChildrenOf(Taxon taxon, Classification classification,
+    private Query prepareListChildrenOf(Taxon taxon, Classification classification, TaxonNode subtree,
             boolean doCount, boolean includeUnpublished){
 
     	 String selectWhat = doCount ? "COUNT(cn)" : "cn";
@@ -279,11 +279,17 @@ public class ClassificationDaoHibernateImpl
          if (!includeUnpublished){
              hql += "  AND cn.taxon.publish = :publish ";
          }
+         if (subtree != null){
+             hql += "  AND tn.treeIndex like :treeIndexLike ";
+         }
          Query query = getSession().createQuery(hql);
          query.setParameter("taxon", taxon);
          query.setParameter("classification", classification);
          if (!includeUnpublished){
              query.setBoolean("publish", Boolean.TRUE);
+         }
+         if (subtree != null){
+             query.setParameter("treeIndexLike", subtree.treeIndexLike());
          }
          return query;
     }
