@@ -131,8 +131,9 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
         return getInitializationStrategy();
     }
 
-    @RequestMapping(method = RequestMethod.GET)
-    public TaxonBase<?> doGet(@PathVariable("uuid") UUID uuid,
+    @RequestMapping(value = "getFiltered", method = RequestMethod.GET)
+
+    public TaxonBase<?> doGetFiltered(@PathVariable("uuid") UUID uuid,
             @RequestParam(value = "subtree", required = true) UUID subtreeUuid,  //if subtree does not exist the base class method is used, therefore required
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
