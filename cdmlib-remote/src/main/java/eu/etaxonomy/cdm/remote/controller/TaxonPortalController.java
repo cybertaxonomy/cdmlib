@@ -38,7 +38,6 @@ import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
-import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -226,12 +225,6 @@ public class TaxonPortalController extends TaxonController{
     protected static final List<String> TAXONNODE_WITHTAXON_INIT_STRATEGY = Arrays.asList(new String []{
             "childNodes.taxon",
     });
-
-    protected static final List<String> TAXONNODE_INIT_STRATEGY = Arrays.asList(new String []{
-            "taxonNodes.classification"
-    });
-
-
 
     private static final String featureTreeUuidPattern = "^/taxon(?:(?:/)([^/?#&\\.]+))+.*";
 
@@ -452,28 +445,6 @@ public class TaxonPortalController extends TaxonController{
         List<NameRelationship> list = nameService.listNameRelationships(taxonBase.getName(), Direction.relatedFrom, null, null, 0, null, NAMERELATIONSHIP_INIT_STRATEGY);
 
         return list;
-    }
-
-    @RequestMapping(value = "taxonNodes", params="subtree", method = RequestMethod.GET)
-    public Set<TaxonNode>  doGetTaxonNodes(
-            @PathVariable("uuid") UUID uuid,
-            @RequestParam(value = "subtree", required = true) UUID subtreeUuid,  //if subtree does not exist the base class method is used, therefore required
-            HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
-
-        logger.info("doGetTaxonNodes" + requestPathAndQuery(request));
-        TaxonBase<?> taxonBase;
-        if (subtreeUuid != null){
-            taxonBase = doGet(uuid, subtreeUuid, request, response);
-        }else{
-            taxonBase = service.load(uuid, NO_UNPUBLISHED, TAXONNODE_INIT_STRATEGY);
-        }
-        if(taxonBase instanceof Taxon){
-            return ((Taxon)taxonBase).getTaxonNodes();
-        } else {
-            HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
-            return null;
-        }
     }
 
 

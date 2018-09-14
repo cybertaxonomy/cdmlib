@@ -96,7 +96,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
     private ITermService termService;
 
     protected static final List<String> TAXONNODE_INIT_STRATEGY = Arrays.asList(new String []{
-            "taxonNodes"
+            "taxonNodes.classification"
     });
 
     public TaxonController(){
@@ -137,7 +137,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
         if(request != null) {
-            logger.info("doGet() " + request.getRequestURI());
+            logger.info("doGet() " + requestPathAndQuery(request));
         }
         //TODO do we want to allow Synonyms at all? Maybe needs initialization
         TaxonBase<?> taxonBase = getCdmBaseInstance(uuid, response, TAXONNODE_INIT_STRATEGY);
@@ -236,12 +236,19 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
     @RequestMapping(value = "taxonNodes", method = RequestMethod.GET)
     public Set<TaxonNode>  doGetTaxonNodes(
             @PathVariable("uuid") UUID uuid,
+            @RequestParam(value = "subtree", required = true) UUID subtreeUuid,  //if subtree does not exist the base class method is used, therefore required
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
-        TaxonBase<?> tb = service.load(uuid, NO_UNPUBLISHED, TAXONNODE_INIT_STRATEGY);
-        if(tb instanceof Taxon){
-            return ((Taxon)tb).getTaxonNodes();
+        logger.info("doGetTaxonNodes" + requestPathAndQuery(request));
+        TaxonBase<?> taxonBase;
+        if (subtreeUuid != null){
+            taxonBase = doGet(uuid, subtreeUuid, request, response);
+        }else{
+            taxonBase = service.load(uuid, NO_UNPUBLISHED, TAXONNODE_INIT_STRATEGY);
+        }
+        if(taxonBase instanceof Taxon){
+            return ((Taxon)taxonBase).getTaxonNodes();
         } else {
             HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
             return null;
