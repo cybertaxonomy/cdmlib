@@ -464,7 +464,7 @@ public class TaxonPortalController extends TaxonController{
         logger.info("doGetTaxonNodes" + requestPathAndQuery(request));
         TaxonBase<?> taxonBase;
         if (subtreeUuid != null){
-            taxonBase = doGet(uuid, subtreeUuid, request, response);
+            taxonBase = doGetFiltered(uuid, subtreeUuid, request, response);
         }else{
             taxonBase = service.load(uuid, NO_UNPUBLISHED, TAXONNODE_INIT_STRATEGY);
         }
