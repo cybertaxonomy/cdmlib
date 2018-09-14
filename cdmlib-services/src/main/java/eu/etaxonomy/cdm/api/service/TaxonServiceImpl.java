@@ -22,7 +22,7 @@ import java.util.UUID;
 
 import javax.persistence.EntityNotFoundException;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.BooleanClause.Occur;
@@ -1460,7 +1460,7 @@ public class TaxonServiceImpl
         // ---- search criteria
         luceneSearch.setCdmTypRestriction(clazz);
 
-        if(!queryString.isEmpty() && !queryString.equals("*") && !queryString.equals("?") ) {
+        if(!StringUtils.isEmpty(queryString) && !queryString.equals("*") && !queryString.equals("?") ) {
             textQueryBuilder.add(taxonBaseQueryFactory.newTermQuery("titleCache", queryString), Occur.SHOULD);
             textQueryBuilder.add(taxonBaseQueryFactory.newDefinedTermQuery("name.rank", queryString, languages), Occur.SHOULD);
         }
@@ -1546,7 +1546,9 @@ public class TaxonServiceImpl
         QueryFactory taxonBaseQueryFactory = luceneIndexToolProvider.newQueryFactoryFor(TaxonBase.class);
 
         Builder joinFromQueryBuilder = new Builder();
-        joinFromQueryBuilder.add(taxonBaseQueryFactory.newTermQuery(queryTermField, queryString), Occur.MUST);
+        if(!StringUtils.isEmpty(queryString)){
+            joinFromQueryBuilder.add(taxonBaseQueryFactory.newTermQuery(queryTermField, queryString), Occur.MUST);
+        }
         joinFromQueryBuilder.add(taxonBaseQueryFactory.newEntityIdsQuery("type.id", edge.getRelationshipTypes()), Occur.MUST);
         if(!includeUnpublished){
             joinFromQueryBuilder.add(taxonBaseQueryFactory.newBooleanQuery(publishField, true), Occur.MUST);
@@ -2108,41 +2110,47 @@ public class TaxonServiceImpl
 
         Builder finalQueryBuilder = new Builder();
         Builder textQueryBuilder = new Builder();
-        textQueryBuilder.add(descriptionElementQueryFactory.newTermQuery("titleCache", queryString), Occur.SHOULD);
 
-        // common name
-        Builder nameQueryBuilder = new Builder();
-        if(languages == null || languages.size() == 0){
-            nameQueryBuilder.add(descriptionElementQueryFactory.newTermQuery("name", queryString), Occur.MUST);
-        } else {
-            Builder languageSubQueryBuilder = new Builder();
-            for(Language lang : languages){
-                languageSubQueryBuilder.add(descriptionElementQueryFactory.newTermQuery("language.uuid",  lang.getUuid().toString(), false), Occur.SHOULD);
+        if(!StringUtils.isEmpty(queryString)){
+
+            textQueryBuilder.add(descriptionElementQueryFactory.newTermQuery("titleCache", queryString), Occur.SHOULD);
+
+            // common name
+            Builder nameQueryBuilder = new Builder();
+            if(languages == null || languages.size() == 0){
+                nameQueryBuilder.add(descriptionElementQueryFactory.newTermQuery("name", queryString), Occur.MUST);
+            } else {
+                Builder languageSubQueryBuilder = new Builder();
+                for(Language lang : languages){
+                    languageSubQueryBuilder.add(descriptionElementQueryFactory.newTermQuery("language.uuid",  lang.getUuid().toString(), false), Occur.SHOULD);
+                }
+                nameQueryBuilder.add(descriptionElementQueryFactory.newTermQuery("name", queryString), Occur.MUST);
+                nameQueryBuilder.add(languageSubQueryBuilder.build(), Occur.MUST);
             }
-            nameQueryBuilder.add(descriptionElementQueryFactory.newTermQuery("name", queryString), Occur.MUST);
-            nameQueryBuilder.add(languageSubQueryBuilder.build(), Occur.MUST);
+            textQueryBuilder.add(nameQueryBuilder.build(), Occur.SHOULD);
+
+
+            // text field from TextData
+            textQueryBuilder.add(descriptionElementQueryFactory.newMultilanguageTextQuery("text", queryString, languages), Occur.SHOULD);
+
+            // --- TermBase fields - by representation ----
+            // state field from CategoricalData
+            textQueryBuilder.add(descriptionElementQueryFactory.newDefinedTermQuery("stateData.state", queryString, languages), Occur.SHOULD);
+
+            // state field from CategoricalData
+            textQueryBuilder.add(descriptionElementQueryFactory.newDefinedTermQuery("stateData.modifyingText", queryString, languages), Occur.SHOULD);
+
+            // area field from Distribution
+            textQueryBuilder.add(descriptionElementQueryFactory.newDefinedTermQuery("area", queryString, languages), Occur.SHOULD);
+
+            // status field from Distribution
+            textQueryBuilder.add(descriptionElementQueryFactory.newDefinedTermQuery("status", queryString, languages), Occur.SHOULD);
+
+            finalQueryBuilder.add(textQueryBuilder.build(), Occur.MUST);
+
         }
-        textQueryBuilder.add(nameQueryBuilder.build(), Occur.SHOULD);
-
-
-        // text field from TextData
-        textQueryBuilder.add(descriptionElementQueryFactory.newMultilanguageTextQuery("text", queryString, languages), Occur.SHOULD);
-
-        // --- TermBase fields - by representation ----
-        // state field from CategoricalData
-        textQueryBuilder.add(descriptionElementQueryFactory.newDefinedTermQuery("stateData.state", queryString, languages), Occur.SHOULD);
-
-        // state field from CategoricalData
-        textQueryBuilder.add(descriptionElementQueryFactory.newDefinedTermQuery("stateData.modifyingText", queryString, languages), Occur.SHOULD);
-
-        // area field from Distribution
-        textQueryBuilder.add(descriptionElementQueryFactory.newDefinedTermQuery("area", queryString, languages), Occur.SHOULD);
-
-        // status field from Distribution
-        textQueryBuilder.add(descriptionElementQueryFactory.newDefinedTermQuery("status", queryString, languages), Occur.SHOULD);
-
-        finalQueryBuilder.add(textQueryBuilder.build(), Occur.MUST);
         // --- classification ----
+
 
         if(classification != null){
             finalQueryBuilder.add(descriptionElementQueryFactory.newEntityIdQuery("inDescription.taxon.taxonNodes.classification.id", classification), Occur.MUST);

@@ -54,7 +54,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -638,7 +637,9 @@ public interface ITaxonService
      *            Additional filter criterion: If a taxonomic classification
      *            three is specified here the result set will only contain taxa
      *            of the given classification
+     * @param subtree
      * @param namedAreas
+     * @param distributionStatus
      * @param languages
      *            Additional filter criterion: Search only in these languages.
      *            Not all text fields in the cdm model are multilingual, thus

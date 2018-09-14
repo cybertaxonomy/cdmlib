@@ -994,6 +994,58 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet
+    public final void testFindTaxaAndNamesByFullText_wildcard() throws IOException, LuceneParseException, LuceneMultiSearchException {
+
+        refreshLuceneIndex();
+        TaxonNode subtree = null;
+
+        Pager<SearchResult<TaxonBase>> pager;
+         pager = taxonService.findTaxaAndNamesByFullText(TaxaAndNamesSearchMode.taxaAndSynonyms(),
+                "Abi*", null, subtree, null, null, null, true, null, null, null, null);
+//      logFreeTextSearchResults(pager, Level.DEBUG, null);
+        Assert.assertEquals("doTaxa & doSynonyms published only", 6, pager.getCount().intValue());
+        pager = taxonService.findTaxaAndNamesByFullText(TaxaAndNamesSearchMode.taxaAndSynonyms(),
+                "*bies", null, subtree, null, null, null, true, null, null, null, null);
+        Assert.assertEquals("doTaxa & doSynonyms, published only", 6, pager.getCount().intValue());
+        // logFreeTextSearchResults(pager, Level.ERROR, null);
+        pager = taxonService.findTaxaAndNamesByFullText(TaxaAndNamesSearchMode.taxaAndSynonyms(),
+                "?bies", null, subtree, null, null, null, true, null, null, null, null);
+        Assert.assertEquals("doTaxa & doSynonyms, published only", 6, pager.getCount().intValue());
+        // logFreeTextSearchResults(pager, Level.ERROR, null);
+        pager = taxonService.findTaxaAndNamesByFullText(TaxaAndNamesSearchMode.taxaAndSynonyms(),
+                "*", null, subtree, null, null, null, true, null, null, null, null);
+        Assert.assertEquals("doTaxa & doSynonyms, published only", 7, pager.getCount().intValue());
+    }
+
+    @Test
+    @DataSet
+    // @Ignore // FIXME: fails due  org.apache.lucene.queryparser.classic.ParseException: Cannot parse 'relatedFrom.titleCache:()': Encountered " ")" ") "" at line 1, column 24.
+    public final void testFindTaxaAndNamesByFullText_empty_querString() throws IOException, LuceneParseException, LuceneMultiSearchException {
+
+        refreshLuceneIndex();
+        TaxonNode subtree = null;
+
+        Pager<SearchResult<TaxonBase>> pager;
+        pager = taxonService.findTaxaAndNamesByFullText(EnumSet.of(TaxaAndNamesSearchMode.doTaxa),
+                "", null, subtree, null, null, null, true, null, null, null, null);
+        Assert.assertEquals("doTaxa, published only", 7, pager.getCount().intValue());
+
+        pager = taxonService.findTaxaAndNamesByFullText(TaxaAndNamesSearchMode.taxaAndSynonyms(),
+                "", null, subtree, null, null, null, true, null, null, null, null);
+        Assert.assertEquals("doTaxa & doSynonyms, published only", 7, pager.getCount().intValue());
+
+        pager = taxonService.findTaxaAndNamesByFullText(EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doMisappliedNames),
+                null, null, subtree, null, null, null, true, null, null, null, null);
+        Assert.assertEquals("doTaxa & doMisappliedNames published only", 7, pager.getCount().intValue());
+
+        pager = taxonService.findTaxaAndNamesByFullText(EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doMisappliedNames, TaxaAndNamesSearchMode.doTaxaByCommonNames),
+                null, null, subtree, null, null, null, true, null, null, null, null);
+        Assert.assertEquals("doTaxa & doMisappliedNames & doTaxaByCommonNames , published only", 7, pager.getCount().intValue());
+        // logFreeTextSearchResults(pager, Level.ERROR, null);
+    }
+
+    @Test
+    @DataSet
     //test for https://dev.e-taxonomy.eu/redmine/issues/7486
     public final void testFindTaxaAndNamesByFullText_synonymsAndMisapplied_7486() throws IOException, LuceneParseException, LuceneMultiSearchException {
 
@@ -1030,6 +1082,12 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
                 "\"Abies al*\"", null, subtree, null, null, null, true, null, null, null, null);
 //        logPagerRecords(pager, Level.DEBUG);
         Assert.assertEquals("doTaxa & doSynonyms with complex phrase query", 1, pager.getCount().intValue());
+
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms, TaxaAndNamesSearchMode.includeUnpublished),
+                "\"Abies*\"", null, subtree, null, null, null, true, null, null, null, null);
+//        logPagerRecords(pager, Level.DEBUG);
+        Assert.assertEquals("doTaxa & doSynonyms with simple phrase query", 8, pager.getCount().intValue());
 
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms, TaxaAndNamesSearchMode.includeUnpublished),
