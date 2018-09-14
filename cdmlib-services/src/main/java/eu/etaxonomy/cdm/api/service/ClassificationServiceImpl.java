@@ -316,8 +316,8 @@ public class ClassificationServiceImpl
     }
 
     @Override
-    public List<TaxonNode> loadTreeBranchToTaxon(Taxon taxon, Classification classification, TaxonNode subtree,
-            Rank baseRank,
+    public List<TaxonNode> loadTreeBranchToTaxon(Taxon taxon, Classification classification,
+            TaxonNode subtree, Rank baseRank,
             boolean includeUnpublished, List<String> propertyPaths) throws UnpublishedException{
 
         UUID nodeUuid = getTaxonNodeUuidByTaxonUuid(classification.getUuid(), taxon.getUuid());
@@ -325,7 +325,7 @@ public class ClassificationServiceImpl
         if(node == null){
             logger.warn("The specified taxon is not found in the given tree.");
             return null;
-        }else if (!node.isDescendant(subtree)){
+        }else if (subtree != null && !node.isDescendant(subtree)){
             //TODO handle as exception? E.g. FilterException, AccessDeniedException?
             logger.warn("The specified taxon is not found for the given subtree.");
             return null;
