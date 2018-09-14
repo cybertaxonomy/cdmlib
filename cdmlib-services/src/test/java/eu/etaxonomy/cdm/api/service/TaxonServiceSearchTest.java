@@ -120,10 +120,11 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @SpringBeanByType
     private INameService nameService;
     @SpringBeanByType
-    private ICdmMassIndexer indexer;
+    private ITaxonNodeService nodeService;
 
     @SpringBeanByType
-    private ITaxonNodeService nodeService;
+    private ICdmMassIndexer indexer;
+
 
     private static final int BENCHMARK_ROUNDS = 300;
 
@@ -854,6 +855,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         pager = taxonService.findByFullText(Taxon.class, "subalpina", null, subtree, includeUnpublished, null, true, null, null, null, null); // --> 0
         Assert.assertEquals("Expecting 0 entities", 0, pager.getCount().intValue());
+
 
         // synonym in classification ???
     }
