@@ -236,7 +236,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
     @RequestMapping(value = "taxonNodes", method = RequestMethod.GET)
     public Set<TaxonNode>  doGetTaxonNodes(
             @PathVariable("uuid") UUID uuid,
-            @RequestParam(value = "subtree", required = true) UUID subtreeUuid,  //if subtree does not exist the base class method is used, therefore required
+            @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
