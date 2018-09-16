@@ -1608,7 +1608,7 @@ public class Taxon
     public List<Taxon> getInvalidDesignations(){
         List<Taxon> result = new ArrayList<>();
         for (TaxonRelationship rel : this.getRelationsToThisTaxon()){
-            if (rel.getType().equals(TaxonRelationshipType.INVALID_DESIGNATION_FOR()) ){
+            if (rel.getType().isInvalidDesignation()){
                 result.add(rel.getFromTaxon());
             }
         }
