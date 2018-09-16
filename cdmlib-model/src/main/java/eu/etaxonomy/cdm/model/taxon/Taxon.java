@@ -873,7 +873,7 @@ public class Taxon
     private int computeInvalidDesignationRelations(){
         int count = 0;
         for (TaxonRelationship rel: this.getRelationsFromThisTaxon()){
-            if (rel.getType().equals(TaxonRelationshipType.INVALID_DESIGNATION_FOR())){
+            if (rel.getType().isInvalidDesignation()){
                 count++;
             }
         }

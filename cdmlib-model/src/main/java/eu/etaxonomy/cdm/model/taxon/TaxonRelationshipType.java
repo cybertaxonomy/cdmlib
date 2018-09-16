@@ -171,7 +171,20 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	public boolean isMisappliedNameOrInvalidDesignation(){
         if (this.isAnyMisappliedName()){
             return true;
-        }else if (this.equals(INVALID_DESIGNATION_FOR())){
+        }else if (isInvalidDesignation()){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * <code>true</code> if this relationship type is an
+     * {@link #INVALID_DESIGNATION_FOR() invalid designation}
+     *
+     * @see #isAnyMisappliedName()()
+     */
+    public boolean isInvalidDesignation(){
+        if (this.equals(INVALID_DESIGNATION_FOR())){
             return true;
         }
         return false;
