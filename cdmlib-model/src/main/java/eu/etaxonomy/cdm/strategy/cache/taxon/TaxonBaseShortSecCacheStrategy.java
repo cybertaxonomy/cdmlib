@@ -216,7 +216,7 @@ public class TaxonBaseShortSecCacheStrategy<T extends TaxonBase>
                 if (StringUtils.isNotBlank(year) && ! authorTags.isEmpty()){
                     tags.add(new TaggedText(TagEnum.separator, "("));
                     tags.add(new TaggedText(TagEnum.year, year));
-                    tags.add(new TaggedText(TagEnum.separator, ")"));
+                    tags.add(new TaggedText(TagEnum.postSeparator, ")"));
                 }
             }else{
 
