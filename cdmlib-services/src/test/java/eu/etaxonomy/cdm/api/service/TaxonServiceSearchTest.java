@@ -870,7 +870,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         areaFilter.add(canada);
         areaFilter.add(russia);
 
-        Pager<SearchResult<TaxonBase>> pager = taxonService.findByDistribution(areaFilter, statusFilter, null, 20, 0, null, null);
+        Pager<SearchResult<TaxonBase>> pager = taxonService.findByDistribution(areaFilter, statusFilter, null, null, 20, 0, null, null);
         Assert.assertEquals("Expecting 2 entities", Integer.valueOf(2), Integer.valueOf(pager.getRecords().size()));
 
     }
