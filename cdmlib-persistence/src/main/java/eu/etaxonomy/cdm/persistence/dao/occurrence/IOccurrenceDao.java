@@ -8,6 +8,7 @@ package eu.etaxonomy.cdm.persistence.dao.occurrence;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.dao.DataAccessException;
@@ -34,6 +35,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
+import eu.etaxonomy.cdm.persistence.query.AssignmentStatus;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -112,6 +114,13 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
      *            etc.
      * @param associatedTaxonName
      *            the taxon name that the specimens have been determined as
+     * @param assignmentStates set of {@link AssignmentStatus} to determine how the
+     * specimen is linked to the taxon:
+     * <ul>
+     * <li>IndividualsAssociation</li>
+     * <li>type designation</li>
+     * <li>determination</li>
+     * </ul>
      * @param matchmode
      *            determines how the query string should be matched
      * @param limit
@@ -127,7 +136,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
      */
     public <T extends SpecimenOrObservationBase> List<T> findOccurrences(Class<T> clazz, String queryString,
             String significantIdentifier, SpecimenOrObservationType type, Taxon determinedAs,
-            TaxonName associatedTaxonName, MatchMode matchmode, Integer limit, Integer start,
+            TaxonName associatedTaxonName, Set<AssignmentStatus> assignmentStates, MatchMode matchmode, Integer limit, Integer start,
             List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
@@ -148,7 +157,9 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
     public <T extends SpecimenOrObservationBase> List<UuidAndTitleCache<SpecimenOrObservationBase>> findOccurrencesUuidAndTitleCache(
             Class<T> clazz, String queryString,
             String significantIdentifier, SpecimenOrObservationType type, Taxon determinedAs,
-            TaxonName associatedTaxonName, MatchMode matchmode, Integer limit, Integer start,
+            TaxonName associatedTaxonName,
+            Set<AssignmentStatus> assignmentStates,
+            MatchMode matchmode, Integer limit, Integer start,
             List<OrderHint> orderHints);
 
     /**
@@ -170,6 +181,13 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
      *            etc.
      * @param associatedTaxonName
      *            the taxon name that the specimens have been determined as
+     * @param assignmentStates set of {@link AssignmentStatus} to determine how the
+     * specimen is linked to the taxon:
+     * <ul>
+     * <li>IndividualsAssociation</li>
+     * <li>type designation</li>
+     * <li>determination</li>
+     * </ul>
      * @param matchmode
      *            determines how the query string should be matched
      * @param limit
@@ -184,7 +202,8 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
      */
     public <T extends SpecimenOrObservationBase> long countOccurrences(Class<T> clazz, String queryString,
             String significantIdentifier, SpecimenOrObservationType recordBasis, Taxon associatedTaxon,
-            TaxonName associatedTaxonName, MatchMode matchmode, Integer limit, Integer start,
+            TaxonName associatedTaxonName,
+            Set<AssignmentStatus> assignmentStates, MatchMode matchmode, Integer limit, Integer start,
             List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
@@ -287,6 +306,13 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	 * @param <T>
 	 * @param type
 	 * @param associatedTaxon
+	 * @param assignmentStates set of {@link AssignmentStatus} to determine how the
+     * specimen is linked to the taxon:
+     * <ul>
+     * <li>IndividualsAssociation</li>
+     * <li>type designation</li>
+     * <li>determination</li>
+     * </ul>
 	 * @param limit
 	 * @param start
 	 * @param orderHints
@@ -294,6 +320,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	 * @return
 	 */
 	public <T extends SpecimenOrObservationBase> List<T> listByAssociatedTaxon(Class<T> type, Taxon associatedTaxon,
+	        Set<AssignmentStatus> assignmentStates,
 			Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
@@ -307,11 +334,11 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	 * @return
 	 */
 	public <T extends SpecimenOrObservationBase> List<UuidAndTitleCache<SpecimenOrObservationBase>> listUuidAndTitleCacheByAssociatedTaxon(Class<T> type, Taxon associatedTaxon,
-	        Integer limit, Integer start, List<OrderHint> orderHints);
+	        Set<AssignmentStatus> assignmentStates, Integer limit, Integer start, List<OrderHint> orderHints);
 
     /**
      * The method will search for specimen associated with the taxon nodes.<br>
-     * It will search for 3 possible association types:
+     * It will search for 3 possible association types depending on the assignemnt states:
      * : <br>
      *  - via IndividualAssociations of the taxon<br>
      *  - via TypeDesignations of the taxon name<br>
@@ -320,13 +347,20 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
      *  (more are covered in
      * {@link IOccurrenceDao#findOccurrences(Class, String, String, SpecimenOrObservationType, Taxon, TaxonName, MatchMode, Integer, Integer, List, List)}
      * @param taxonNodeUuids a list of {@link UUID}s of the taxon nodes
+     * @param assignmentStates set of {@link AssignmentStatus} to determine how the
+     * specimen is linked to the taxon:
+     * <ul>
+     * <li>IndividualsAssociation</li>
+     * <li>type designation</li>
+     * <li>determination</li>
+     * </ul>
      * @param limit
      * @param start
      * @return a collection of {@link SpecimenNodeWrapper} containing the {@link TaxonNode}
      * and the corresponding {@link UuidAndTitleCache}  object for the specimen found for this taxon node
      */
 	public Collection<SpecimenNodeWrapper> listUuidAndTitleCacheByAssociatedTaxon(List<UUID> taxonNodeUuids,
-            Integer limit, Integer start);
+	        Set<AssignmentStatus> assignmentStates, Integer limit, Integer start);
 
     /**
      * Retrieves all {@link IndividualsAssociation} with the given specimen.<br>

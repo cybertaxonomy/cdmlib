@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.api.service.config;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -29,13 +31,16 @@ public class FindOccurrencesConfigurator extends IdentifiableServiceConfigurator
     private String significantIdentifier;
     private boolean retrieveIndirectlyAssociatedSpecimens;
 
-    private AssignmentStatus assignmentStatus = AssignmentStatus.ALL_SPECIMENS;
+    private Set<AssignmentStatus> assignmentStates;
 
-    public void setAssignmentStatus(AssignmentStatus assignmentStatus) {
-        this.assignmentStatus = assignmentStatus;
+    public void addAssignmentStatus(AssignmentStatus assignmentStatus) {
+        if(assignmentStates==null){
+            assignmentStates = new HashSet<>();
+        }
+        this.assignmentStates.add(assignmentStatus);
     }
-    public AssignmentStatus getAssignmentStatus() {
-        return assignmentStatus;
+    public Set<AssignmentStatus> getAssignmentStates() {
+        return assignmentStates;
     }
 
     public String getSignificantIdentifier() {

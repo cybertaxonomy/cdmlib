@@ -801,7 +801,7 @@ public class TaxonServiceImpl
             Set<SpecimenOrObservationBase> specimensOrObservations = new HashSet<>();
             // --- Specimens
             for (Taxon t : taxa) {
-                specimensOrObservations.addAll(occurrenceDao.listByAssociatedTaxon(null, t, null, null, null, null));
+                specimensOrObservations.addAll(occurrenceDao.listByAssociatedTaxon(null, t, null, null, null, null, null));
             }
             for (SpecimenOrObservationBase<?> occurrence : specimensOrObservations) {
 

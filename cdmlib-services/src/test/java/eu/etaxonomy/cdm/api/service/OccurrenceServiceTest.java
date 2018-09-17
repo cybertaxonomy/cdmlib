@@ -1113,20 +1113,35 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         assertTrue(specimensOrObservations.contains(derivedUnit1));
 
         //test assignment status
-        //all specimen
+        //all specimens 1 (either null for AssignmentStatus)
         config = new FindOccurrencesConfigurator();
-        config.setAssignmentStatus(AssignmentStatus.ALL_SPECIMENS);
         assertEquals(5, occurrenceService.countOccurrences(config));
-        List<SpecimenOrObservationBase> allSpecimens = occurrenceService.findByTitle(config).getRecords();
-        assertEquals(5, allSpecimens.size());
-        assertTrue(allSpecimens.contains(derivedUnit1));
-        assertTrue(allSpecimens.contains(derivedUnit2));
-        assertTrue(allSpecimens.contains(tissue));
-        assertTrue(allSpecimens.contains(dnaSample));
+        List<SpecimenOrObservationBase> allSpecimens1 = occurrenceService.findByTitle(config).getRecords();
+        assertEquals(5, allSpecimens1.size());
+        assertTrue(allSpecimens1.contains(derivedUnit1));
+        assertTrue(allSpecimens1.contains(derivedUnit2));
+        assertTrue(allSpecimens1.contains(tissue));
+        assertTrue(allSpecimens1.contains(dnaSample));
+
+        //all specimens 2 (or all enum values for AssignmentStatus))
+        config = new FindOccurrencesConfigurator();
+        config.addAssignmentStatus(AssignmentStatus.DETERMINATION);
+        config.addAssignmentStatus(AssignmentStatus.INDIVIDUALS_ASSOCIATION);
+        config.addAssignmentStatus(AssignmentStatus.TYPE_DESIGNATION);
+        config.addAssignmentStatus(AssignmentStatus.NONE);
+        assertEquals(5, occurrenceService.countOccurrences(config));
+        List<SpecimenOrObservationBase> allSpecimens2 = occurrenceService.findByTitle(config).getRecords();
+        assertEquals(5, allSpecimens2.size());
+        assertTrue(allSpecimens2.contains(derivedUnit1));
+        assertTrue(allSpecimens2.contains(derivedUnit2));
+        assertTrue(allSpecimens2.contains(tissue));
+        assertTrue(allSpecimens2.contains(dnaSample));
 
         //assigned specimen
         config = new FindOccurrencesConfigurator();
-        config.setAssignmentStatus(AssignmentStatus.ASSIGNED_SPECIMENS);
+        config.addAssignmentStatus(AssignmentStatus.DETERMINATION);
+        config.addAssignmentStatus(AssignmentStatus.INDIVIDUALS_ASSOCIATION);
+        config.addAssignmentStatus(AssignmentStatus.TYPE_DESIGNATION);
         assertEquals(2, occurrenceService.countOccurrences(config));
         List<SpecimenOrObservationBase> assignedSpecimens = occurrenceService.findByTitle(config).getRecords();
         assertEquals(2, assignedSpecimens.size());
@@ -1135,7 +1150,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 
         //unassigned specimen
         config = new FindOccurrencesConfigurator();
-        config.setAssignmentStatus(AssignmentStatus.UNASSIGNED_SPECIMENS);
+        config.addAssignmentStatus(AssignmentStatus.NONE);
         assertEquals(3, occurrenceService.countOccurrences(config));
         List<SpecimenOrObservationBase> unAssignedSpecimens = occurrenceService.findByTitle(config).getRecords();
         assertEquals(3, unAssignedSpecimens.size());
@@ -1145,7 +1160,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         //ignore assignment status because taxon uuid is set
         config = new FindOccurrencesConfigurator();
         config.setAssociatedTaxonUuid(taxon.getUuid());
-        config.setAssignmentStatus(AssignmentStatus.UNASSIGNED_SPECIMENS);
+        config.addAssignmentStatus(AssignmentStatus.NONE);
         assertEquals(2, occurrenceService.countOccurrences(config));
         List<SpecimenOrObservationBase> ignoreAssignmentStatusSpecimens = occurrenceService.findByTitle(config).getRecords();
         assertEquals(2, ignoreAssignmentStatusSpecimens.size());

@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.persistence.query;
 import java.util.UUID;
 
 /**
- * Enum to indicate if the retrieved specimens are associated to a taxon. Default is <code>ALL_SPECIMEN</code>.<br>
+ * Enum to indicate how the retrieved specimens are associated to a taxon.
  * <br>
  * <b>Note:</b>This status is <b>ignored</b> if the configurator has either a name
  * or a taxon set via {@link #setAssociatedTaxonNameUuid(UUID)} or
@@ -20,7 +20,8 @@ import java.util.UUID;
  * @author pplitzner
  */
 public enum AssignmentStatus{
-    ALL_SPECIMENS,
-    ASSIGNED_SPECIMENS,
-    UNASSIGNED_SPECIMENS
+    INDIVIDUALS_ASSOCIATION,
+    TYPE_DESIGNATION,
+    DETERMINATION,
+    NONE
 }

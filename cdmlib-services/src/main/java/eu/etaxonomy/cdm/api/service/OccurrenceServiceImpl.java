@@ -115,7 +115,6 @@ import eu.etaxonomy.cdm.persistence.dao.initializer.AbstractBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
-import eu.etaxonomy.cdm.persistence.query.AssignmentStatus;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
@@ -360,7 +359,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     @Override
     public Collection<SpecimenNodeWrapper> listUuidAndTitleCacheByAssociatedTaxon(List<UUID> taxonNodeUuids,
             Integer limit, Integer start) {
-        return dao.listUuidAndTitleCacheByAssociatedTaxon(taxonNodeUuids, limit, start);
+        return dao.listUuidAndTitleCacheByAssociatedTaxon(taxonNodeUuids, null, limit, start);
         }
 
     @Override
@@ -804,7 +803,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         taxa.add(associatedTaxon);
 
         for (Taxon taxon : taxa) {
-            List<T> perTaxonOccurrences = dao.listByAssociatedTaxon(type, taxon, null, null, orderHints, propertyPaths);
+            List<T> perTaxonOccurrences = dao.listByAssociatedTaxon(type, taxon, null, null, null, orderHints, propertyPaths);
             for (SpecimenOrObservationBase<?> o : perTaxonOccurrences) {
                 occurrenceIds.add(o.getId());
             }
@@ -852,7 +851,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         taxa.add(associatedTaxon);
 
         for (Taxon taxon : taxa) {
-            List<SpecimenOrObservationBase> perTaxonOccurrences = dao.listByAssociatedTaxon(null,taxon, null, null, null, null);
+            List<SpecimenOrObservationBase> perTaxonOccurrences = dao.listByAssociatedTaxon(null, taxon, null, null, null, null, null);
             for (SpecimenOrObservationBase<?> o : perTaxonOccurrences) {
                 if (o.isInstanceOf(DerivedUnit.class)){
                     DerivedUnit derivedUnit;
@@ -1552,11 +1551,12 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
              * significantly slow down this method as we have to retreive the entities instead of
              * the just the amount.
              */
-            if(occurrenceConfig.isRetrieveIndirectlyAssociatedSpecimens() || !occurrenceConfig.getAssignmentStatus().equals(AssignmentStatus.ALL_SPECIMENS)){
+            if(occurrenceConfig.isRetrieveIndirectlyAssociatedSpecimens() || !occurrenceConfig.getAssignmentStates().isEmpty()){
                 List<SpecimenOrObservationBase> occurrences = new ArrayList<>();
                 occurrences.addAll(dao.findOccurrences(occurrenceConfig.getClazz(),
                         occurrenceConfig.getTitleSearchStringSqlized(), occurrenceConfig.getSignificantIdentifier(),
-                        occurrenceConfig.getSpecimenType(), taxon, taxonName, occurrenceConfig.getMatchMode(), null, null,
+                        occurrenceConfig.getSpecimenType(), taxon, taxonName, occurrenceConfig.getAssignmentStates(),
+                        occurrenceConfig.getMatchMode(), null, null,
                         occurrenceConfig.getOrderHints(), occurrenceConfig.getPropertyPaths()));
                 occurrences = filterOccurencesByAssignmentAndHierarchy(occurrenceConfig, occurrences, taxon, taxonName);
                 return occurrences.size();
@@ -1564,7 +1564,8 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
             return dao.countOccurrences(occurrenceConfig.getClazz(),
                     occurrenceConfig.getTitleSearchStringSqlized(), occurrenceConfig.getSignificantIdentifier(),
-                    occurrenceConfig.getSpecimenType(), taxon, taxonName, occurrenceConfig.getMatchMode(), null, null,
+                    occurrenceConfig.getSpecimenType(), taxon, taxonName, occurrenceConfig.getAssignmentStates(),
+                    occurrenceConfig.getMatchMode(), null, null,
                     occurrenceConfig.getOrderHints(), occurrenceConfig.getPropertyPaths());
         }
         else{
@@ -1589,7 +1590,8 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         }
         occurrences.addAll(dao.findOccurrencesUuidAndTitleCache(config.getClazz(),
                 config.getTitleSearchString(), config.getSignificantIdentifier(),
-                config.getSpecimenType(), taxon, taxonName, config.getMatchMode(), null, null,
+                config.getSpecimenType(), taxon, taxonName, config.getAssignmentStates(),
+                config.getMatchMode(), null, null,
                 config.getOrderHints()));
 
         return new DefaultPagerImpl<>(config.getPageNumber(), occurrences.size(), config.getPageSize(), occurrences);
@@ -1614,7 +1616,8 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             }
             List<? extends SpecimenOrObservationBase> foundOccurrences = dao.findOccurrences(occurrenceConfig.getClazz(),
                     occurrenceConfig.getTitleSearchString(), occurrenceConfig.getSignificantIdentifier(),
-                    occurrenceConfig.getSpecimenType(), taxon, taxonName, occurrenceConfig.getMatchMode(), null, null,
+                    occurrenceConfig.getSpecimenType(), taxon, taxonName, occurrenceConfig.getAssignmentStates(),
+                    occurrenceConfig.getMatchMode(), null, null,
                     occurrenceConfig.getOrderHints(), occurrenceConfig.getPropertyPaths());
             occurrences.addAll(foundOccurrences);
             occurrences = filterOccurencesByAssignmentAndHierarchy(occurrenceConfig, occurrences, taxon, taxonName);
@@ -1627,27 +1630,27 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     private List<SpecimenOrObservationBase> filterOccurencesByAssignmentAndHierarchy(
             FindOccurrencesConfigurator occurrenceConfig, List<SpecimenOrObservationBase> occurrences, Taxon taxon,
             TaxonName taxonName) {
-        //filter out (un-)assigned specimens
-        if(taxon==null && taxonName==null){
-            AssignmentStatus assignmentStatus = occurrenceConfig.getAssignmentStatus();
-            List<SpecimenOrObservationBase> specimenWithAssociations = new ArrayList<>();
-            if(!assignmentStatus.equals(AssignmentStatus.ALL_SPECIMENS)){
-                for (SpecimenOrObservationBase specimenOrObservationBase : occurrences) {
-                    boolean includeUnpublished = true;  //TODO not sure if this is correct, maybe we have to propagate publish flag to higher methods.
-                    Collection<TaxonBase<?>> associatedTaxa = listAssociatedTaxa(specimenOrObservationBase,
-                            includeUnpublished, null, null, null, null);
-                    if(!associatedTaxa.isEmpty()){
-                        specimenWithAssociations.add(specimenOrObservationBase);
-                    }
-                }
-            }
-            if(assignmentStatus.equals(AssignmentStatus.UNASSIGNED_SPECIMENS)){
-                occurrences.removeAll(specimenWithAssociations);
-            }
-            if(assignmentStatus.equals(AssignmentStatus.ASSIGNED_SPECIMENS)){
-                occurrences = new ArrayList<>(specimenWithAssociations);
-            }
-        }
+//        //filter out (un-)assigned specimens
+//        if(taxon==null && taxonName==null){
+//            AssignmentStatus assignmentStatus = occurrenceConfig.getAssignmentStatus();
+//            List<SpecimenOrObservationBase> specimenWithAssociations = new ArrayList<>();
+//            if(!assignmentStatus.equals(AssignmentStatus.ALL_SPECIMENS)){
+//                for (SpecimenOrObservationBase specimenOrObservationBase : occurrences) {
+//                    boolean includeUnpublished = true;  //TODO not sure if this is correct, maybe we have to propagate publish flag to higher methods.
+//                    Collection<TaxonBase<?>> associatedTaxa = listAssociatedTaxa(specimenOrObservationBase,
+//                            includeUnpublished, null, null, null, null);
+//                    if(!associatedTaxa.isEmpty()){
+//                        specimenWithAssociations.add(specimenOrObservationBase);
+//                    }
+//                }
+//            }
+//            if(assignmentStatus.equals(AssignmentStatus.UNASSIGNED_SPECIMENS)){
+//                occurrences.removeAll(specimenWithAssociations);
+//            }
+//            if(assignmentStatus.equals(AssignmentStatus.ASSIGNED_SPECIMENS)){
+//                occurrences = new ArrayList<>(specimenWithAssociations);
+//            }
+//        }
         // indirectly associated specimens
         if(occurrenceConfig.isRetrieveIndirectlyAssociatedSpecimens()){
             List<SpecimenOrObservationBase> indirectlyAssociatedOccurrences = new ArrayList<>(occurrences);
