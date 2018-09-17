@@ -810,7 +810,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         //subtree
         subtree = nodeService.find(ROOTNODE_CLASSIFICATION_5000);
         pager = taxonService.findByFullText(null, "Abies", null, subtree, includeUnpublished, null, true, null, null, null, null); // --> 0
-        Assert.assertEquals("Expecting 1 entities", 1, pager.getCount().intValue());
+        Assert.assertEquals("Expecting 2 entities", 2, pager.getCount().intValue());
         subtree = null;
 
         pager = taxonService.findByFullText(null, "Abies", null, subtree, NO_UNPUBLISHED, null, true, null, null, null, null); // --> 7
@@ -877,6 +877,52 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet
+    public final void testFindTaxaAndNamesByFullText_synonymClassificationSubtree() throws IOException, LuceneParseException, LuceneMultiSearchException {
+
+        refreshLuceneIndex();
+        Classification classification = null;
+        TaxonNode subtree = null;
+
+        //
+        Pager<SearchResult<TaxonBase>> pager;
+        EnumSet<TaxaAndNamesSearchMode> taxaAndSynonyms = EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms, TaxaAndNamesSearchMode.includeUnpublished);
+        pager = taxonService.findTaxaAndNamesByFullText(
+                taxaAndSynonyms, "Abies", classification, subtree, null, null, null, true, null, null, null, null);
+        Assert.assertEquals("doTaxa & doSynonyms & unpublished", 8, pager.getCount().intValue());
+
+        EnumSet<TaxaAndNamesSearchMode> taxaOnly = EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.includeUnpublished);
+
+        //classification
+        classification = classificationService.find(CLASSIFICATION_UUID);
+        pager = taxonService.findTaxaAndNamesByFullText(
+                taxaAndSynonyms, "Abies", classification, subtree, null, null, null, true, null, null, null, null);
+        Assert.assertEquals("doTaxa & doSynonyms & unpublished", 2, pager.getCount().intValue());
+            //taxa only
+        pager = taxonService.findTaxaAndNamesByFullText(
+                taxaOnly, "Abies", classification, subtree, null, null, null, true, null, null, null, null);
+        Assert.assertEquals("doTaxa & unpublished", 1, pager.getCount().intValue());
+            //synonyms only
+        pager = taxonService.findTaxaAndNamesByFullText(
+                taxaOnly, "Abies", classification, subtree, null, null, null, true, null, null, null, null);
+        Assert.assertEquals("doSynonyms & unpublished", 1, pager.getCount().intValue());
+
+        classification = null;
+
+        //subtree
+       subtree = nodeService.find(ROOTNODE_CLASSIFICATION_5000);
+       pager = taxonService.findTaxaAndNamesByFullText(
+               taxaAndSynonyms, "Abies", classification, subtree, null, null, null, true, null, null, null, null);
+       Assert.assertEquals("doTaxa & doSynonyms & unpublished", 2, pager.getCount().intValue());
+         //taxa only
+       pager = taxonService.findTaxaAndNamesByFullText(
+               taxaOnly, "Abies", classification, subtree, null, null, null, true, null, null, null, null);
+       Assert.assertEquals("doTaxa & unpublished", 1, pager.getCount().intValue());
+       subtree = null;
+
+    }
+
+    @Test
+    @DataSet
     public final void testFindTaxaAndNamesByFullText() throws IOException, LuceneParseException, LuceneMultiSearchException {
 
         refreshLuceneIndex();
@@ -886,11 +932,13 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Synonym abiesSubalpina = (Synonym)taxonService.find(ABIES_SUBALPINA_UUID);
 
         Pager<SearchResult<TaxonBase>> pager;
-         pager = taxonService.findTaxaAndNamesByFullText(
-                EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms, TaxaAndNamesSearchMode.includeUnpublished),
-                "Abies", null, subtree, null, null, null, true, null, null, null, null);
-//        logPagerRecords(pager, Level.DEBUG);
+        EnumSet<TaxaAndNamesSearchMode> modes = EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms, TaxaAndNamesSearchMode.includeUnpublished);
+        pager = taxonService.findTaxaAndNamesByFullText(
+                modes, "Abies", null, subtree, null, null, null, true, null, null, null, null);
         Assert.assertEquals("doTaxa & doSynonyms & unpublished", 8, pager.getCount().intValue());
+//      logPagerRecords(pager, Level.DEBUG);
+
+         //unpublished
         pager = taxonService.findTaxaAndNamesByFullText(TaxaAndNamesSearchMode.taxaAndSynonyms(),
                 "Abies", null, subtree, null, null, null, true, null, null, null, null);
         Assert.assertEquals("doTaxa & doSynonyms, published only", 6, pager.getCount().intValue());
