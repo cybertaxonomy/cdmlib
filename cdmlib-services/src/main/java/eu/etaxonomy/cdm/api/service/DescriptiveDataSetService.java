@@ -135,7 +135,7 @@ public class DescriptiveDataSetService
             }
             RowWrapperDTO rowWrapper = null;
             if(HibernateProxyHelper.isInstanceOf(description, TaxonDescription.class)){
-                rowWrapper = createTaxonRowWrapper(HibernateProxyHelper.deproxy(description, TaxonDescription.class), descriptiveDataSet);
+                rowWrapper = createTaxonRowWrapper(description.getUuid(), descriptiveDataSet.getUuid());
             }
             else if (HibernateProxyHelper.isInstanceOf(description, SpecimenDescription.class)){
                 rowWrapper = createSpecimenRowWrapper(HibernateProxyHelper.deproxy(description, SpecimenDescription.class), descriptiveDataSet, false);
@@ -180,10 +180,12 @@ public class DescriptiveDataSetService
     }
 
     @Override
-    public TaxonRowWrapperDTO createTaxonRowWrapper(TaxonDescription description,
-            DescriptiveDataSet descriptiveDataSet) {
+    public TaxonRowWrapperDTO createTaxonRowWrapper(UUID taxonDescriptionUuid, UUID descriptiveDataSetUuid) {
         TaxonNode taxonNode = null;
         Classification classification = null;
+        TaxonDescription description = (TaxonDescription) descriptionService.load(taxonDescriptionUuid,
+                Arrays.asList("taxon", "descriptionElements", "descriptionElements.feature"));
+        DescriptiveDataSet descriptiveDataSet = load(descriptiveDataSetUuid);
         Optional<TaxonNode> first = descriptiveDataSet.getTaxonSubtreeFilter().stream()
                 .filter(node->node.getClassification()!=null).findFirst();
         Optional<Classification> classificationOptional = first.map(node->node.getClassification());
@@ -254,7 +256,7 @@ public class DescriptiveDataSetService
         TaxonDescription defaultTaxonDescription = findDefaultTaxonDescription(descriptiveDataSet.getUuid(),
                 taxonNode.getUuid(), createDefaultTaxonDescription);
         TaxonRowWrapperDTO taxonRowWrapper = defaultTaxonDescription != null
-                ? createTaxonRowWrapper(defaultTaxonDescription, descriptiveDataSet) : null;
+                ? createTaxonRowWrapper(defaultTaxonDescription.getUuid(), descriptiveDataSet.getUuid()) : null;
         return new SpecimenRowWrapperDTO(description, taxonNode, fieldUnit, identifier, country, taxonRowWrapper);
 	}
 
@@ -437,7 +439,7 @@ public class DescriptiveDataSetService
         });
         dataSet.addDescription(newTaxonDescription);
 
-        return createTaxonRowWrapper(newTaxonDescription, dataSet);
+        return createTaxonRowWrapper(newTaxonDescription.getUuid(), dataSet.getUuid());
     }
 
     @Override
