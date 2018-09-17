@@ -297,7 +297,7 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
         ModelAndView resultObject = null;
         try {
             resultObject = taxonPortalController
-                    .doGetSynonymy(uuid, null, null);
+                    .doGetSynonymy(uuid, null, null, null);
         } catch (IOException e) {
             monitor.warning(e.getLocalizedMessage(), e);
             logger.error(e);
