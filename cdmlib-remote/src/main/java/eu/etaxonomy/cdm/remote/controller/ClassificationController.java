@@ -76,6 +76,9 @@ public class ClassificationController extends AbstractIdentifiableController<Cla
     public void setTaxonNodeService(ITaxonNodeService taxonNodeService) {
         this.taxonNodeService = taxonNodeService;
     }
+    protected ITaxonNodeService getTaxonNodeService() {
+        return this.taxonNodeService;
+    }
 
 
     @InitBinder
@@ -103,11 +106,12 @@ public class ClassificationController extends AbstractIdentifiableController<Cla
             method = RequestMethod.GET)
     public List<TaxonNode> getChildNodes(
             @PathVariable("uuid") UUID classificationUuid,
+            @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
             HttpServletRequest request,
             HttpServletResponse response
             ) throws IOException {
 
-        return getChildNodesAtRank(classificationUuid, null, request, response);
+        return getChildNodesAtRank(classificationUuid, null, subtreeUuid, request, response);
     }
 
     @RequestMapping(
@@ -116,6 +120,7 @@ public class ClassificationController extends AbstractIdentifiableController<Cla
     public List<TaxonNode> getChildNodesAtRank(
             @PathVariable("uuid") UUID classificationUuid,
             @PathVariable("rankUuid") UUID rankUuid,
+            @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
             HttpServletRequest request,
             HttpServletResponse response
             ) throws IOException {
@@ -128,15 +133,20 @@ public class ClassificationController extends AbstractIdentifiableController<Cla
             response.sendError(404 , "Classification not found using " + classificationUuid );
             return null;
         }
+
+        TaxonNode subtree = getSubtreeOrError(subtreeUuid, taxonNodeService, response);
+
         Rank rank = findRank(rankUuid);
 
         boolean includeUnpublished = NO_UNPUBLISHED;
 //        long start = System.currentTimeMillis();
-        List<TaxonNode> rootNodes = service.listRankSpecificRootNodes(classification, rank, includeUnpublished, null, null, NODE_INIT_STRATEGY());
+        List<TaxonNode> rootNodes = service.listRankSpecificRootNodes(classification, subtree, rank,
+                includeUnpublished, null, null, NODE_INIT_STRATEGY());
 //        System.err.println("service.listRankSpecificRootNodes() " + (System.currentTimeMillis() - start));
 
         return rootNodes;
     }
+
 
     /**
     *

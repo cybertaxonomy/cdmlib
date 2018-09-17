@@ -25,6 +25,7 @@ import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.OrderColumn;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -41,11 +42,13 @@ import org.apache.log4j.Logger;
 import org.hibernate.LazyInitializationException;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Index;
-import org.hibernate.annotations.Table;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.ContainedIn;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.annotations.Store;
 
 import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -90,11 +93,14 @@ import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks;
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
 //@Indexed(index = "eu.etaxonomy.cdm.model.taxon.TaxonNode")
 @Audited
-@Table(appliesTo="TaxonNode", indexes = { @Index(name = "taxonNodeTreeIndex", columnNames = { "treeIndex" }) })
+@Table(name="TaxonNode", indexes = { @javax.persistence.Index(name = "taxonNodeTreeIndex", columnList = "treeIndex") })
 @ChildTaxaMustBeLowerRankThanParent(groups = Level3.class)
 @ChildTaxaMustNotSkipRanks(groups = Level3.class)
 @ChildTaxaMustDeriveNameFromParent(groups = Level3.class)
-public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITreeNode<TaxonNode>, Cloneable{
+public class TaxonNode
+            extends AnnotatableEntity
+            implements ITaxonTreeNode, ITreeNode<TaxonNode>, Cloneable{
+
     private static final long serialVersionUID = -4743289894926587693L;
     private static final Logger logger = Logger.getLogger(TaxonNode.class);
 
@@ -117,6 +123,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 
     @XmlElement(name = "treeIndex")
     @Column(length=255)
+    @Field(store = Store.YES, index = Index.YES, analyze = Analyze.NO)
     private String treeIndex;
 
 
@@ -448,6 +455,14 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     @Deprecated //for CDM lib internal use only, may be removed in future versions
     public void setTreeIndex(String treeIndex) {
         this.treeIndex = treeIndex;
+    }
+    @Override
+    public String treeIndexLike() {
+        return treeIndex + "%";
+    }
+    @Override
+    public String treeIndexWc() {
+        return treeIndex + "*";
     }
 
 
@@ -944,40 +959,34 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     }
 
     /**
-     * Whether this TaxonNode is a descendant of the given TaxonNode
-     *
-     * Caution: use this method with care on big branches. -> performance and memory hungry
-     *
-     * Protip: Try solving your problem with the isAscendant method which traverses the tree in the
-     * other direction (up). It will always result in a rather small set of consecutive parents beeing
-     * generated.
-     *
-     * TODO implement more efficiently without generating the set of descendants first
+     * Whether this TaxonNode is a descendant of (or equal to) the given TaxonNode
      *
      * @param possibleParent
-     * @return true if this is a descendant
+     * @return <code>true</code> if <b>this</b> is a descendant
      */
     @Transient
     public boolean isDescendant(TaxonNode possibleParent){
-    	if (this.treeIndex() == null || possibleParent.treeIndex() == null) {
+    	if (possibleParent == null || this.treeIndex() == null
+    	        || possibleParent.treeIndex() == null) {
     		return false;
     	}
-    	return possibleParent == null ? false : this.treeIndex().startsWith(possibleParent.treeIndex() );
+    	return this.treeIndex().startsWith(possibleParent.treeIndex() );
     }
 
     /**
-     * Whether this TaxonNode is an ascendant of the given TaxonNode
+     * Whether this TaxonNode is an ascendant of (or equal to) the given TaxonNode.
+     *
      *
      * @param possibleChild
-     * @return true if there are ascendants
+     * @return <code>true</code> if <b>this</b> is a ancestor of the given child parameter
      */
     @Transient
     public boolean isAncestor(TaxonNode possibleChild){
-    	if (this.treeIndex() == null || possibleChild.treeIndex() == null) {
+    	if (possibleChild == null || this.treeIndex() == null || possibleChild.treeIndex() == null) {
     		return false;
     	}
        // return possibleChild == null ? false : possibleChild.getAncestors().contains(this);
-        return possibleChild == null ? false : possibleChild.treeIndex().startsWith(this.treeIndex());
+        return  possibleChild.treeIndex().startsWith(this.treeIndex());
     }
 
     /**
@@ -990,7 +999,6 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     public boolean hasChildNodes(){
         return childNodes.size() > 0;
     }
-
 
     public boolean hasTaxon() {
         return (taxon!= null);

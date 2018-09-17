@@ -19,6 +19,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -32,7 +33,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Table;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.springframework.util.Assert;
@@ -61,10 +61,11 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 @Entity
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-@Table(appliesTo="OriginalSourceBase")
+@Table(name="OriginalSourceBase")
 public abstract class OriginalSourceBase<T extends ISourceable>
         extends ReferencedEntityBase
         implements IOriginalSource<T>, IIntextReferenceTarget,Cloneable {
+
 	private static final long serialVersionUID = -1972959999261181462L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(OriginalSourceBase.class);

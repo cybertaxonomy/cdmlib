@@ -38,7 +38,6 @@ import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
-import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -226,12 +225,6 @@ public class TaxonPortalController extends TaxonController{
     protected static final List<String> TAXONNODE_WITHTAXON_INIT_STRATEGY = Arrays.asList(new String []{
             "childNodes.taxon",
     });
-
-    protected static final List<String> TAXONNODE_INIT_STRATEGY = Arrays.asList(new String []{
-            "taxonNodes.classification"
-    });
-
-
 
     private static final String featureTreeUuidPattern = "^/taxon(?:(?:/)([^/?#&\\.]+))+.*";
 
@@ -454,22 +447,6 @@ public class TaxonPortalController extends TaxonController{
         return list;
     }
 
-    @Override
-    @RequestMapping(value = "taxonNodes", method = RequestMethod.GET)
-    public Set<TaxonNode>  doGetTaxonNodes(
-            @PathVariable("uuid") UUID uuid,
-            HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
-
-        logger.info("doGetTaxonNodes" + requestPathAndQuery(request));
-        TaxonBase<?> taxon = service.load(uuid, NO_UNPUBLISHED, TAXONNODE_INIT_STRATEGY);
-        if(taxon instanceof Taxon){
-            return ((Taxon)taxon).getTaxonNodes();
-        } else {
-            HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
-            return null;
-        }
-    }
 
 //	@RequestMapping(value = "specimens", method = RequestMethod.GET)
 //	public ModelAndView doGetSpecimens(

@@ -34,15 +34,11 @@ import org.apache.lucene.search.QueryWrapperFilter;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
-import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.search.join.JoinUtil;
 import org.apache.lucene.search.join.ScoreMode;
 import org.hibernate.search.engine.ProjectionConstants;
-import org.hibernate.search.spatial.impl.Point;
 import org.hibernate.search.spatial.impl.Rectangle;
 
-import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
-import eu.etaxonomy.cdm.hibernate.search.MultilanguageTextFieldBridge;
 import eu.etaxonomy.cdm.hibernate.search.NotNullAwareIdBridge;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -97,6 +93,15 @@ public class QueryFactory {
      * Creates a new Term query. Depending on whether <code>isTextField</code> is set true or not the
      * supplied <code>queryString</code> will be parsed by using the according analyzer or not.
      * Setting <code>isTextField</code> to <code>false</code> is useful for searching for uuids etc.
+     * <p>
+     * The appropriate query type is determined by the query strnig:
+     * <ul>
+     * <li>Lactuca ==> TermQuery.class </li>
+     * <li>Lactuca perennis ==> BooleanQuery.class </li>
+     * <li>Lactu* ==> PrefixQuery.class</li>
+     * <li>"Lactuca perennis" ==> PhraseQuery.class</li>
+     * </ul>
+     *
      *
      * @param fieldName
      * @param queryString
@@ -112,12 +117,13 @@ public class QueryFactory {
         String luceneQueryString = fieldName + ":(" + queryString + ")";
         if (isTextField) {
             queryString = queryString.trim();
-            boolean isComplexPhraseQuery = queryString.matches("^\\\".*\\s+.*[\\*].*\\\"$");
+            // ^\"(.*\s+.*[\*].*|.*[\*].*\s+.*)\"$ matches phrase query strings with wildcards like '"Lactuca per*"'
+            boolean isComplexPhraseQuery = queryString.matches("^\\\"(.*\\s+.*[\\*].*|.*[\\*].*\\s+.*)\\\"$");
             textFieldNames.add(fieldName);
-            // in order to support the full query syntax we must use the parser
-            // here
+            // in order to support the full query syntax we must use the parser here
             try {
-                return toolProvider.getQueryParserFor(cdmBaseType, isComplexPhraseQuery).parse(luceneQueryString);
+                Query termQuery = toolProvider.getQueryParserFor(cdmBaseType, isComplexPhraseQuery).parse(luceneQueryString);
+                return termQuery;
             } catch (ParseException e) {
                 logger.error(e);
             }

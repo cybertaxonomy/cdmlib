@@ -8,12 +8,15 @@
  */
 package eu.etaxonomy.cdm.cache;
 
+import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import javax.management.MBeanServer;
 
 import org.apache.log4j.Logger;
 
@@ -27,6 +30,7 @@ import net.sf.ehcache.Element;
 import net.sf.ehcache.Status;
 import net.sf.ehcache.config.CacheConfiguration;
 import net.sf.ehcache.config.SizeOfPolicyConfiguration;
+import net.sf.ehcache.management.ManagementService;
 import net.sf.ehcache.statistics.LiveCacheStatistics;
 
 /**
@@ -64,6 +68,8 @@ public class CdmTransientEntityCacher implements ICdmCacher {
     //map for volatile entities (id=0)
     private final Map<UUID, CdmBase> newEntitiesMap = new HashMap<>();
 
+    private static volatile boolean managementBeansConfigured = false;
+
 // ********************* CONSTRUCTOR **********************************/
 
     public CdmTransientEntityCacher(String cacheId) {
@@ -71,8 +77,8 @@ public class CdmTransientEntityCacher implements ICdmCacher {
 
         cache = new Cache(getEntityCacheConfiguration(cacheId));
 
-        CacheManager.create().removeCache(cache.getName());
-        CacheManager.create().addCache(cache);
+        createCacheManager().removeCache(cache.getName());
+        createCacheManager().addCache(cache);
 
         cacheLoader = new CacheLoader(this);
     }
@@ -124,7 +130,27 @@ public class CdmTransientEntityCacher implements ICdmCacher {
      * @return
      */
     private Cache getCache() {
-        return  CacheManager.create().getCache(cacheId);
+        return  createCacheManager().getCache(cacheId);
+    }
+
+    /**
+     * @return
+     */
+    protected CacheManager createCacheManager() {
+
+        CacheManager cacheManager = CacheManager.create();
+
+        if(!managementBeansConfigured){
+            MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
+            boolean registerCacheManager = false;
+            boolean registerCaches = true;
+            boolean registerCacheConfigurations = false;
+            boolean registerCacheStatistics = true;
+            ManagementService.registerMBeans(cacheManager, mBeanServer, registerCacheManager, registerCaches, registerCacheConfigurations, registerCacheStatistics);
+            managementBeansConfigured = true;
+        }
+
+        return cacheManager;
     }
 
     public <T extends Object> T load(T obj, boolean update) {
@@ -316,10 +342,9 @@ public class CdmTransientEntityCacher implements ICdmCacher {
     }
 
     public void dispose() {
-        CacheManager.create().removeCache(cache.getName());
+        createCacheManager().removeCache(cache.getName());
         cache.dispose();
         newEntitiesMap.clear();
-
     }
 
 

@@ -72,6 +72,8 @@ public class RegistrationController extends BaseController<Registration, IRegist
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
+        logger.info("doGet() " + requestPathAndQuery(request));
+
         Registration reg = super.doGet(uuid, request, response);
         if(reg != null){
             if(userHelper.userIsAutheticated() && userHelper.userIsAnnonymous() && !reg.getStatus().equals(RegistrationStatus.PUBLISHED)) {

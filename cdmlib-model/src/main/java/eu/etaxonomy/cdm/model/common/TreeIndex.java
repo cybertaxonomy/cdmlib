@@ -36,6 +36,19 @@ public class TreeIndex {
 
 
     /**
+     * @param subtree
+     * @return
+     */
+    public static TreeIndex NewInstance(TaxonNode node) {
+        if (node == null){
+            return null;
+        }else{
+            return new TreeIndex(node.treeIndex());
+        }
+    }
+
+
+    /**
      * @param stringList
      * @return
      */
@@ -47,6 +60,8 @@ public class TreeIndex {
         return result;
     }
 
+    //regEx, we also allow the tree itself to have a tree index (e.g. #t1#)
+    //this may change in future as not necessarily needed
     private static String regEx = "#[a-z](\\d+#)+";
     private static Pattern pattern = Pattern.compile(regEx);
 
@@ -86,6 +101,26 @@ public class TreeIndex {
             //it is not a valid treeindex anymore
             return null;
         }
+    }
+
+    public boolean isTreeRoot(){
+        int count = 0;
+        for (char c : this.treeIndex.toCharArray()){
+            if (c == '#') {
+                count++;
+            }
+        }
+        return count == 3;
+    }
+
+    public boolean isTree(){
+        int count = 0;
+        for (char c : this.treeIndex.toCharArray()){
+            if (c == '#') {
+                count++;
+            }
+        }
+        return count == 2;
     }
 
 // ********************** STATIC METHODS  *****************************/
@@ -185,5 +220,7 @@ public class TreeIndex {
         }
         return result;
     }
+
+
 
 }

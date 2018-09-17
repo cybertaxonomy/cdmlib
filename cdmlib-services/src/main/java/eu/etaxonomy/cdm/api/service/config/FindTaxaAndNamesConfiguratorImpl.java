@@ -16,6 +16,7 @@ import java.util.Set;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.NameSearchOrder;
 
@@ -43,12 +44,14 @@ public class FindTaxaAndNamesConfiguratorImpl extends IdentifiableServiceConfigu
 	private boolean doMisappliedNames = false;
 	private boolean doIncludeAuthors = false;
 	private Classification classification = null;
-	private List<String> taxonPropertyPath;
+	private TaxonNode subtree = null;
+    private List<String> taxonPropertyPath;
 	private List<String> synonymPropertyPath;
 	private List<String> taxonNamePropertyPath;
 	private List<String> commonNamePropertyPath;
 	private Set<NamedArea> namedAreas;
 	private NameSearchOrder order;
+
 
     /**
 	 * @return the taxonNamePropertyPath
@@ -215,6 +218,15 @@ public class FindTaxaAndNamesConfiguratorImpl extends IdentifiableServiceConfigu
     @Override
     public void setIncludeUnpublished(boolean includeUnpublished) {
         this.includeUnpublished = includeUnpublished;
+    }
+
+    @Override
+    public TaxonNode getSubtree() {
+        return subtree;
+    }
+    @Override
+    public void setSubtree(TaxonNode subtree) {
+        this.subtree = subtree;
     }
 
 }

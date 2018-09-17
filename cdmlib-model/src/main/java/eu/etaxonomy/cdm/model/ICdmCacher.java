@@ -61,4 +61,6 @@ public interface ICdmCacher {
      */
     public boolean exists(CdmBase cdmBase);
 
+    public void dispose();
+
 }

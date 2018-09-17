@@ -35,6 +35,7 @@ public class HttpStatusMessage {
     public final static HttpStatusMessage INTERNAL_ERROR = new HttpStatusMessage(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "internal server error");
 
     public final static HttpStatusMessage ACCESS_DENIED = new HttpStatusMessage(HttpServletResponse.SC_FORBIDDEN, "access denied");
+    public final static HttpStatusMessage SUBTREE_FILTER_INVALID = new HttpStatusMessage(HttpServletResponse.SC_NOT_FOUND, "invalid uuid for subtree filter");
 
 
     private int statusCode;

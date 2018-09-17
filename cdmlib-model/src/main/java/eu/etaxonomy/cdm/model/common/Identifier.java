@@ -11,7 +11,9 @@ package eu.etaxonomy.cdm.model.common;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -21,8 +23,6 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.hibernate.annotations.Index;
-import org.hibernate.annotations.Table;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 
@@ -40,9 +40,12 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 })
 @Entity
 @Audited
-@Table(appliesTo="Identifier", indexes = { @Index(name = "identifierIndex", columnNames = { "identifier" }) })
-public class Identifier<T extends IdentifiableEntity<?>> extends AnnotatableEntity implements Cloneable {
-	private static final long serialVersionUID = 3337567049024506936L;
+@Table(name="Identifier", indexes = { @Index(name = "identifierIndex", columnList = "identifier") })
+public class Identifier<T extends IdentifiableEntity<?>>
+            extends AnnotatableEntity
+            implements Cloneable {
+
+    private static final long serialVersionUID = 3337567049024506936L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Identifier.class);
 

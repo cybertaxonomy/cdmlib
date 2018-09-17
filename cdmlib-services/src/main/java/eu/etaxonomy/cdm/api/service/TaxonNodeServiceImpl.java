@@ -248,6 +248,15 @@ public class TaxonNodeServiceImpl
     }
 
     @Override
+    public TaxonNodeDto dto(UUID taxonNodeUuid) {
+        TaxonNode taxonNode = dao.load(taxonNodeUuid);
+        if(taxonNode.getParent() != null) {
+            return new TaxonNodeDto(taxonNode);
+        }
+        return null;
+    }
+
+    @Override
     @Autowired
     protected void setDao(ITaxonNodeDao dao) {
         this.dao = dao;

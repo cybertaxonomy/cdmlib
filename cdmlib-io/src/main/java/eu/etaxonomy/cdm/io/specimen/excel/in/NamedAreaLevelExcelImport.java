@@ -152,7 +152,7 @@ public class NamedAreaLevelExcelImport
 	}
 
 	@Override
-    protected String getWorksheetName() {
+    protected String getWorksheetName(SpecimenCdmExcelImportConfigurator config) {
 		return WORKSHEET_NAME;
 	}
 

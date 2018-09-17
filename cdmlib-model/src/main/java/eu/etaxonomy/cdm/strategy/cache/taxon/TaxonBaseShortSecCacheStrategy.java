@@ -18,6 +18,7 @@ import org.apache.commons.lang.StringUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -75,7 +76,7 @@ public class TaxonBaseShortSecCacheStrategy<T extends TaxonBase>
 			if (sec.getAuthorship() != null){
 
 				if (sec.getAuthorship().isInstanceOf(Team.class)){
-					Team authorTeam = HibernateProxyHelper.deproxy(sec.getAuthorship(), Team.class);
+					Team authorTeam = CdmBase.deproxy(sec.getAuthorship(), Team.class);
 					if (authorTeam.getTeamMembers().size() > 2){
 						if (authorTeam.getTeamMembers().get(0).getFamilyName() != null){
 					        result = authorTeam.getTeamMembers().get(0).getFamilyName() + " & al.";

@@ -163,7 +163,7 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
         Object resultObject = null;
         try {
             if (EntityType.CLASSIFICATION.equals(entityType)) {
-                resultObject = classificationController.getChildNodes(uuid,
+                resultObject = classificationController.getChildNodes(uuid, null,
                         null, null);
             } else if (EntityType.TAXON_NODE.equals(entityType)) {
                 resultObject = taxonNodePrintAppController

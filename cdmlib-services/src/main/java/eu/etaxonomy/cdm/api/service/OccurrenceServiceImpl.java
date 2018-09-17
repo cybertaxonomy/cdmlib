@@ -593,7 +593,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             Set<TaxonName> typifiedNames = specimenTypeDesignation.getTypifiedNames();
             List<String> typedTaxaNames = new ArrayList<>();
             for (TaxonName taxonName : typifiedNames) {
-                typedTaxaNames.add(taxonName.getNameCache());
+                typedTaxaNames.add(taxonName.getTitleCache());
             }
             preservedSpecimenDTO.addTypes(typeStatus!=null?typeStatus.getLabel():"", typedTaxaNames);
         }

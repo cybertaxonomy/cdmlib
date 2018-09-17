@@ -343,4 +343,10 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      */
     public TaxonNodeDto findCommonParentDto(Collection<TaxonNodeDto> nodes);
 
+    /**
+     * @param taxonNodeUuid
+     * @return
+     */
+    TaxonNodeDto dto(UUID taxonNodeUuid);
+
 }
