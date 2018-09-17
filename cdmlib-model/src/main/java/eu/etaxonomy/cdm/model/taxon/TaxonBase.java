@@ -15,7 +15,9 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -29,8 +31,6 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Index;
-import org.hibernate.annotations.Table;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.ClassBridge;
@@ -90,14 +90,14 @@ import eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynony
 @Entity
 @Audited
 //@PreFilter("hasPermission(filterObject, 'edit')")
-@Table(appliesTo="TaxonBase", indexes = { @Index(name = "taxonBaseTitleCacheIndex", columnNames = { "titleCache" }) })
+@Table(name="TaxonBase", indexes = { @Index(name = "taxonBaseTitleCacheIndex", columnList = "titleCache") })
 @TaxonNameCannotBeAcceptedAndSynonym(groups = Level3.class)
 @ClassBridges({
     @ClassBridge(name="classInfo",
             index = org.hibernate.search.annotations.Index.YES,
             store = Store.YES,
             impl = ClassInfoBridge.class),
-    @ClassBridge(name="accTaxon", // TODO rename to acceptedTaxon, since we are usually not using abbreviations for field names, see also ACC_TAXON_BRIDGE_PREFIX
+    @ClassBridge(name=AcceptedTaxonBridge.ACC_TAXON, // TODO rename to acceptedTaxon, since we are usually not using abbreviations for field names, see also ACC_TAXON_BRIDGE_PREFIX
             index = org.hibernate.search.annotations.Index.YES,
             store = Store.YES,
             impl = AcceptedTaxonBridge.class),

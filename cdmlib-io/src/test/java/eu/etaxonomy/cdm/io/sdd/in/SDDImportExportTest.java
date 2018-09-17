@@ -114,7 +114,7 @@ public class SDDImportExportTest extends CdmTransactionalIntegrationTest {
 
         sddImport.doInvoke(new SDDImportState(importConfigurator));
 
-        logger.setLevel(Level.DEBUG);
+        //logger.setLevel(Level.DEBUG);
         commitAndStartNewTransaction(new String[]{"DEFINEDTERMBASE"});
         logger.setLevel(Level.DEBUG);
 

@@ -19,6 +19,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -145,6 +146,7 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
 	//@Autowired
 	private DataSource dataSource;
 	@Autowired
+	@Lazy
 	private ProviderManager authenticationManager;
 	@Autowired
 	private IUserService userService;

@@ -17,6 +17,7 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -24,6 +25,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.OrderColumn;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -37,8 +39,6 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Index;
-import org.hibernate.annotations.Table;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
@@ -72,7 +72,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 @XmlRootElement(name = "FeatureNode")
 @Entity
 @Audited
-@Table(appliesTo="FeatureNode", indexes = { @Index(name = "featureNodeTreeIndex", columnNames = { "treeIndex" }) })
+@Table(name="FeatureNode", indexes = { @Index(name = "featureNodeTreeIndex", columnList = "treeIndex") })
 public class FeatureNode extends VersionableEntity
             implements ITreeNode<FeatureNode>, Cloneable {
 	private static final Logger logger = Logger.getLogger(FeatureNode.class);
@@ -589,7 +589,14 @@ public class FeatureNode extends VersionableEntity
 	@Override
 	public String treeIndex() {
 		return this.treeIndex;
-	}
+	}    @Override
+    public String treeIndexLike() {
+        return treeIndex + "%";
+    }
+    @Override
+    public String treeIndexWc() {
+        return treeIndex + "*";
+    }
 
 	@Override
 	@Deprecated

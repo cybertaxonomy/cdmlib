@@ -539,7 +539,7 @@ public interface ITaxonService
      */
     @Deprecated
     public Pager<SearchResult<TaxonBase>> findByEverythingFullText(String queryString,
-            Classification classification, boolean includeUnpublished, List<Language> languages, boolean highlightFragments,
+            Classification classification, TaxonNode subtree, boolean includeUnpublished, List<Language> languages, boolean highlightFragments,
             Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws IOException, LuceneParseException, LuceneMultiSearchException;
 
     /**
@@ -585,9 +585,11 @@ public interface ITaxonService
      * @throws LuceneParseException
      */
     public Pager<SearchResult<TaxonBase>> findByFullText(Class<? extends TaxonBase> clazz, String queryString,
-            Classification classification, boolean includeUnpublished, List<Language> languages,
-            boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
-            List<String> propertyPaths) throws IOException, LuceneParseException;
+            Classification classification, TaxonNode subtree,
+            boolean includeUnpublished, List<Language> languages,
+            boolean highlightFragments, Integer pageSize, Integer pageNumber,
+            List<OrderHint> orderHints, List<String> propertyPaths)
+                    throws IOException, LuceneParseException;
 
 
     /**
@@ -616,8 +618,9 @@ public interface ITaxonService
      * @throws IOException
      * @throws LuceneParseException
      */
+    //TODO needed? currently only used in test
     public Pager<SearchResult<TaxonBase>> findByDistribution(List<NamedArea> areaFilter, List<PresenceAbsenceTerm> statusFilter,
-            Classification classification,
+            Classification classification, TaxonNode subtree,
             Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints, List<String> propertyPaths) throws IOException, LuceneParseException;
 
@@ -636,7 +639,9 @@ public interface ITaxonService
      *            Additional filter criterion: If a taxonomic classification
      *            three is specified here the result set will only contain taxa
      *            of the given classification
+     * @param subtree
      * @param namedAreas
+     * @param distributionStatus
      * @param languages
      *            Additional filter criterion: Search only in these languages.
      *            Not all text fields in the cdm model are multilingual, thus
@@ -668,7 +673,8 @@ public interface ITaxonService
      */
     public Pager<SearchResult<TaxonBase>> findTaxaAndNamesByFullText(
             EnumSet<TaxaAndNamesSearchMode> searchModes,
-            String queryString, Classification classification, Set<NamedArea> namedAreas, Set<PresenceAbsenceTerm> distributionStatus,
+            String queryString, Classification classification, TaxonNode subtree,
+            Set<NamedArea> namedAreas, Set<PresenceAbsenceTerm> distributionStatus,
             List<Language> languages, boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths) throws IOException, LuceneParseException, LuceneMultiSearchException;
 
@@ -684,14 +690,18 @@ public interface ITaxonService
      *            the query string to filter by
      * @param classification
      *            Additional filter criterion: If a taxonomic classification
-     *            three is specified here the result set will only contain taxa
+     *            tree is specified here the result set will only contain taxa
      *            of the given classification
+     * @param subtree
+     *            Additional filter criterion: If a taxonomic classification
+     *            subtree is specified here the result set will only contain taxa
+     *            of the given subtree
      * @param features
      *            TODO
      * @param languages
      *            Additional filter criterion: Search only in these languages.
-     *            Not all text fields in the cdm model are multilingual, thus
-     *            this setting will only apply to the multilingiual fields.
+     *            Not all text fields in the CDM model are multi-lingual, thus
+     *            this setting will only apply to the multi-lingual fields.
      *            Other fields are searched nevertheless if this parameter is
      *            set or not.
      * @param highlightFragments
@@ -715,7 +725,8 @@ public interface ITaxonService
      * @throws LuceneCorruptIndexException
      * @throws LuceneParseException
      */
-    public Pager<SearchResult<TaxonBase>> findByDescriptionElementFullText(Class<? extends DescriptionElementBase> clazz, String queryString, Classification classification, List<Feature> features, List<Language> languages, boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws IOException, LuceneParseException;
+    public Pager<SearchResult<TaxonBase>> findByDescriptionElementFullText(Class<? extends DescriptionElementBase> clazz,
+            String queryString, Classification classification, TaxonNode subtree, List<Feature> features, List<Language> languages, boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws IOException, LuceneParseException;
 
     /**
      * Lists all Media found in an any TaxonDescription associated with this

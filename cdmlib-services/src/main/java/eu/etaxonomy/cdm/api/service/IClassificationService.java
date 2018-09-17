@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.GroupedTaxonDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonInContextDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.exception.FilterException;
 import eu.etaxonomy.cdm.exception.UnpublishedException;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
@@ -97,16 +98,29 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * If the <code>rank</code> is null the absolute root nodes will be returned.
 
      * @param classification may be null for all classifications
+     * @param subtree filter on a taxonomic subtree
      * @param rank the set to null for to get the root nodes of classifications
      * @param includeUnpublished if <code>true</code> unpublished taxa are also exported
      * @param pageSize The maximum number of relationships returned (can be null for all relationships)
      * @param pageIndex The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @param propertyPaths
      * @return
+     * @see #pageRankSpecificRootNodes(Classification, TaxonNode, Rank, boolean, Integer, Integer, List)
      *
      */
-    public List<TaxonNode> listRankSpecificRootNodes(Classification classification, Rank rank,
-            boolean includeUnpublished, Integer pageSize, Integer pageIndex, List<String> propertyPaths);
+    public List<TaxonNode> listRankSpecificRootNodes(Classification classification, TaxonNode subtree,
+            Rank rank, boolean includeUnpublished, Integer pageSize, Integer pageIndex,
+            List<String> propertyPaths);
+
+
+    /**
+     * @see #listRankSpecificRootNodes(Classification, TaxonNode, Rank, boolean, Integer, Integer, List)
+     * @deprecated keep this for compatibility to older versions, might be removed in versions >5.3
+     */
+    @Deprecated
+    public List<TaxonNode> listRankSpecificRootNodes(Classification classification,
+            Rank rank, boolean includeUnpublished, Integer pageSize, Integer pageIndex,
+            List<String> propertyPaths);
 
 
     /**
@@ -118,6 +132,7 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * If the <code>rank</code> is null the absolute root nodes will be returned.
      *
      * @param classification may be null for all classifications
+     * @param subtree the taxonomic subtree filter
      * @param rank the set to null for to get the root nodes of classifications
      * @param includeUnpublished if <code>true</code> unpublished taxa are also exported
      * @param pageSize The maximum number of relationships returned (can be null for all relationships)
@@ -125,9 +140,19 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @param propertyPaths
      * @return
      *
+     * @see #listRankSpecificRootNodes(Classification, TaxonNode, Rank, boolean, Integer, Integer, List)
      */
-    public Pager<TaxonNode> pageRankSpecificRootNodes(Classification classification, Rank rank,
-            boolean includeUnpublished, Integer pageSize, Integer pageIndex, List<String> propertyPaths);
+    public Pager<TaxonNode> pageRankSpecificRootNodes(Classification classification, TaxonNode subtree,
+            Rank rank, boolean includeUnpublished, Integer pageSize, Integer pageIndex,
+            List<String> propertyPaths);
+    /**
+     * @see #pageRankSpecificRootNodes(Classification, TaxonNode, Rank, boolean, Integer, Integer, List)
+     * @deprecated keep this for compatibility to older versions, might be removed in versions >5.3
+     */
+    @Deprecated
+    public Pager<TaxonNode> pageRankSpecificRootNodes(Classification classification,
+            Rank rank, boolean includeUnpublished, Integer pageSize, Integer pageIndex,
+            List<String> propertyPaths);
 
     /**
      * @param taxonNode
@@ -147,6 +172,8 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @throws UnpublishedException
      *            if any of the taxa in the path is unpublished an {@link UnpublishedException} is thrown.
      */
+    public List<TaxonNode> loadTreeBranch(TaxonNode taxonNode, TaxonNode subtree, Rank baseRank, boolean includeUnpublished,
+            List<String> propertyPaths) throws UnpublishedException;
     public List<TaxonNode> loadTreeBranch(TaxonNode taxonNode, Rank baseRank, boolean includeUnpublished,
             List<String> propertyPaths) throws UnpublishedException;
 
@@ -174,11 +201,19 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @throws UnpublishedException
      *            if any of the taxa in the path is unpublished an {@link UnpublishedException} is thrown
      */
-    public List<TaxonNode> loadTreeBranchToTaxon(Taxon taxon, Classification classification, Rank baseRank,
+    public List<TaxonNode> loadTreeBranchToTaxon(Taxon taxon, Classification classification,
+            TaxonNode subtree, Rank baseRank,
+            boolean includeUnpublished, List<String> propertyPaths) throws UnpublishedException;
+    public List<TaxonNode> loadTreeBranchToTaxon(Taxon taxon, Classification classification,
+            Rank baseRank,
             boolean includeUnpublished, List<String> propertyPaths) throws UnpublishedException;
 
     public List<TaxonNode> listChildNodesOfTaxon(UUID taxonUuid, UUID classificationUuid, boolean includeUnpublished,
             Integer pageSize, Integer pageIndex, List<String> propertyPaths);
+
+    public List<TaxonNode> listChildNodesOfTaxon(UUID taxonUuid, UUID classificationUuid, UUID subtreeUuid, boolean includeUnpublished,
+            Integer pageSize, Integer pageIndex, List<String> propertyPaths) throws FilterException;
+
 
     /**
      * @param taxonNode

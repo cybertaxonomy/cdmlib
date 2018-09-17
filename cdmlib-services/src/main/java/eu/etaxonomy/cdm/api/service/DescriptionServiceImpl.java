@@ -84,12 +84,9 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 /**
  * @author a.mueller
- * @since 24.06.2008
- * @version 1.0
- */
-/**
  * @author a.kohlbecker
- * @since Dec 5, 2013
+ *
+ * @since 24.06.2008
  *
  */
 @Service
@@ -421,12 +418,13 @@ public class DescriptionServiceImpl
      * move: descriptionElementService.search
      */
     @Override
-    public Pager<DescriptionElementBase> searchElements(Class<? extends DescriptionElementBase> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+//    public Pager<T> searchElements(Class<? extends T> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+    public <S extends DescriptionElementBase> Pager<S> searchElements(Class<S> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         long numberOfResults = descriptionElementDao.count(clazz, queryString);
 
-        List<DescriptionElementBase> results = new ArrayList<>();
+        List<S> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-            results = descriptionElementDao.search(clazz, queryString, pageSize, pageNumber, orderHints, propertyPaths);
+            results = (List<S>)descriptionElementDao.search(clazz, queryString, pageSize, pageNumber, orderHints, propertyPaths);
         }
 
         return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);

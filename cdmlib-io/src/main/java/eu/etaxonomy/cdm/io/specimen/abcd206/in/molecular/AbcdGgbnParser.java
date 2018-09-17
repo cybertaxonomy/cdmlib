@@ -22,7 +22,6 @@ import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportState;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.AbcdParseUtility;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.SpecimenImportReport;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.OrderedTerm;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.molecular.Amplification;
@@ -174,9 +173,9 @@ public class AbcdGgbnParser {
                     if(markerList.item(0)!=null){
                         String amplificationMarker = markerList.item(0).getTextContent();
                         DefinedTerm dnaMarker = null;
-                        List<DefinedTermBase> markersFound = cdmAppController.getTermService().findByTitleWithRestrictions(DefinedTerm.class, amplificationMarker, MatchMode.EXACT, null, null, null, null, null).getRecords();
+                        List<DefinedTerm> markersFound = cdmAppController.getTermService().findByTitleWithRestrictions(DefinedTerm.class, amplificationMarker, MatchMode.EXACT, null, null, null, null, null).getRecords();
                         if(markersFound.size()==1){
-                            dnaMarker = (DefinedTerm) markersFound.get(0);
+                            dnaMarker = markersFound.get(0);
                         }
                         else{
                             dnaMarker = DefinedTerm.NewDnaMarkerInstance(amplificationMarker, amplificationMarker, amplificationMarker);
@@ -198,9 +197,14 @@ public class AbcdGgbnParser {
 
                     //consensus sequence
                     NodeList sequencingsList = amplificationElement.getElementsByTagName(prefix+"Sequencings");
-                    if(sequencingsList.item(0)!=null && sequencingsList.item(0) instanceof Element){
-                        parseAmplificationSequencings((Element)sequencingsList.item(0), amplification, amplificationResult, dnaSample, state);
+                    if(sequencingsList.item(0)!=null) {
+                        if ( sequencingsList.item(0) instanceof Element){
+                            Element el = (Element)sequencingsList.item(0);
+                            parseAmplificationSequencings(el, amplification, amplificationResult, dnaSample, state);
+                        }
                     }
+
+
                     parseAmplificationPrimers(amplificationElement.getElementsByTagName(prefix+"AmplificationPrimers"));
                 }
             }
@@ -245,7 +249,7 @@ public class AbcdGgbnParser {
                 //contig file URL
                 NodeList consensusSequenceChromatogramFileURIList = sequencing.getElementsByTagName(prefix+"consensusSequenceChromatogramFileURI");
                 URI uri = AbcdParseUtility.parseFirstUri(consensusSequenceChromatogramFileURIList, report);
-                if (uri.toString().endsWith("fasta")){
+                if (uri != null && uri.toString().endsWith("fasta")){
                     state.putSequenceDataStableIdentifier(uri);
                 }else{
                     Media contigFile = Media.NewInstance(uri, null, null, null);

@@ -90,6 +90,7 @@ public class LuceneIndexToolProviderImpl implements ILuceneIndexToolProvider {
             if(!queryParsers.containsKey(clazz)){
                 Analyzer analyzer = getAnalyzerFor(clazz);
                 QueryParser parser = new QueryParser(DEFAULT_QURERY_FIELD_NAME, analyzer);
+                parser.setAllowLeadingWildcard(true);
                 queryParsers.put(clazz, parser);
             }
             return queryParsers.get(clazz);
@@ -97,6 +98,7 @@ public class LuceneIndexToolProviderImpl implements ILuceneIndexToolProvider {
             if(!complexPhraseQueryParsers.containsKey(clazz)){
                 Analyzer analyzer = getAnalyzerFor(clazz);
                 QueryParser parser = new ComplexPhraseQueryParser(DEFAULT_QURERY_FIELD_NAME, analyzer);
+                parser.setAllowLeadingWildcard(true);
                 complexPhraseQueryParsers.put(clazz, parser);
             }
             return complexPhraseQueryParsers.get(clazz);

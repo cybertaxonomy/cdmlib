@@ -138,4 +138,21 @@ public class ExportResult extends IoResultBase implements Serializable {
         this.exportType = exportType;
     }
 
+    /**
+     * @param report
+     */
+    @Override
+    protected void addShortDescription(StringBuffer report) {
+        if (this.isSuccess()){
+            report.append("\n" + "Export was successfull.");
+        }
+
+        if (!this.isSuccess()){
+            report.append("\n" + "Export had some problems.");
+        }
+
+    }
+
+
+
 }

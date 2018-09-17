@@ -54,7 +54,6 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * </ul>
  *
  * @author m.doering
- * @version 1.0
  * @since 08-Nov-2007 13:06:57
  */
 @XmlAccessorType(XmlAccessType.FIELD)

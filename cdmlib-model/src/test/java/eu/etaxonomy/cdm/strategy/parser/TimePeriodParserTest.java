@@ -17,11 +17,8 @@ import static org.junit.Assert.assertTrue;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Partial;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.common.UTF8;
@@ -45,20 +42,6 @@ public class TimePeriodParserTest {
 	/**
 	 * @throws java.lang.Exception
 	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 //		onlyStartYear = TimePeriod.NewInstance(1922);
@@ -67,13 +50,6 @@ public class TimePeriodParserTest {
 //		Integer start = null;
 //		Integer end = null;
 //		noStartAndEndYear = TimePeriod.NewInstance(start, end);
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
 	}
 
 
@@ -203,8 +179,13 @@ public class TimePeriodParserTest {
 		Assert.assertEquals(Integer.valueOf(1), tp.getEndMonth());
 		Assert.assertEquals(Integer.valueOf(2), tp.getEndDay());
 
+	}
+
+	@Test
+	public void testSlashPattern() {
+
         String strSlashDate = "31/12/2015 - 2/1/2016";
-        tp = TimePeriodParser.parseString(strSlashDate);
+        TimePeriod tp = TimePeriodParser.parseString(strSlashDate);
         assertNotNull(tp);
         Assert.assertEquals("31.12.2015-2.1.2016", tp.toString());
         Assert.assertEquals("2015-2016", tp.getYear());
@@ -326,6 +307,46 @@ public class TimePeriodParserTest {
         Assert.assertEquals(null, tp.getVerbatimDate());
     }
 
+    @Test
+    public void testParseContinued() {
+        String strDate = "01.12.1957+";
+        TimePeriod tp = TimePeriodParser.parseString(strDate);
+        Assert.assertTrue(tp.isContinued());
+        Assert.assertEquals("1.12.1957+", tp.toString());
+        Assert.assertEquals(Integer.valueOf(1957), tp.getStartYear());
+        Assert.assertEquals(Integer.valueOf(12), tp.getStartMonth());
+        Assert.assertEquals(Integer.valueOf(1), tp.getStartDay());
+        Assert.assertNull(tp.getEnd());
+
+        strDate = "1957+";
+        tp = TimePeriodParser.parseString(strDate);
+        Assert.assertTrue(tp.isContinued());
+        Assert.assertEquals("1957+", tp.toString());
+        Assert.assertEquals(Integer.valueOf(1957), tp.getStartYear());
+        Assert.assertNull(tp.getStartMonth());
+        Assert.assertNull(tp.getStartDay());
+        Assert.assertNull(tp.getEnd());
+
+        strDate = "24 Aug. 1957+";
+        tp = TimePeriodParser.parseString(strDate);
+        Assert.assertEquals("24.8.1957+", tp.toString());
+        Assert.assertTrue(tp.isContinued());
+        Assert.assertEquals("1957+", tp.getYear());
+        Assert.assertEquals(Integer.valueOf(1957), tp.getStartYear());
+        Assert.assertEquals(Integer.valueOf(8), tp.getStartMonth());
+        Assert.assertEquals(Integer.valueOf(24), tp.getStartDay());
+
+        String strSlashDate = "31/12/2015+";
+        tp = TimePeriodParser.parseString(strSlashDate);
+        Assert.assertEquals("31.12.2015+", tp.toString());
+        Assert.assertTrue(tp.isContinued());
+        Assert.assertEquals("2015+", tp.getYear());
+        Assert.assertEquals(Integer.valueOf(2015), tp.getStartYear());
+        Assert.assertEquals(Integer.valueOf(12), tp.getStartMonth());
+        Assert.assertEquals(Integer.valueOf(31), tp.getStartDay());
+        Assert.assertNull(tp.getEnd());
+
+    }
 
 
 }

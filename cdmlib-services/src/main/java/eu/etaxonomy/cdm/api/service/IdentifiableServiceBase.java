@@ -135,10 +135,10 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 
     @Transactional(readOnly = true)
     @Override
-    public Pager<T> findByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+    public <S extends T> Pager<S> findByTitle(Class<S> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
          long numberOfResults = dao.countByTitle(clazz, queryString, matchmode, criteria);
 
-         List<T> results = new ArrayList<>();
+         List<S> results = new ArrayList<>();
          if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
                 results = dao.findByTitle(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
          }
@@ -148,10 +148,10 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 
 	@Transactional(readOnly = true)
 	@Override
-	public Pager<T> findByTitleWithRestrictions(Class<? extends T> clazz, String queryString, MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+	public <S extends T> Pager<S> findByTitleWithRestrictions(Class<S> clazz, String queryString, MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		 long numberOfResults = dao.countByTitleWithRestrictions(clazz, queryString, matchmode, restrictions);
 
-		 List<T> results = new ArrayList<>();
+		 List<S> results = new ArrayList<>();
 		 if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 				results = dao.findByTitleWithRestrictions(clazz, queryString, matchmode, restrictions, pageSize, pageNumber, orderHints, propertyPaths);
 		 }
@@ -162,7 +162,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 
 	@Transactional(readOnly = true)
 	@Override
-	public Pager<T> findByTitle(IIdentifiableEntityServiceConfigurator<T> config){
+	public <S extends T> Pager<S> findByTitle(IIdentifiableEntityServiceConfigurator<S> config){
 
 	    boolean withRestrictions = config.getRestrictions() != null && !config.getRestrictions().isEmpty();
 	    boolean withCriteria = config.getCriteria() != null && !config.getCriteria().isEmpty();
@@ -170,18 +170,18 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 	    if(withCriteria && withRestrictions){
 	        throw new RuntimeException("Restrictions and Criteria can not be used at the same time");
 	    } else if(withRestrictions){
-	        return findByTitleWithRestrictions(config.getClazz(), config.getTitleSearchStringSqlized(), config.getMatchMode(), config.getRestrictions(), config.getPageSize(), config.getPageNumber(), config.getOrderHints(), config.getPropertyPaths());
+	        return findByTitleWithRestrictions((Class<S>)config.getClazz(), config.getTitleSearchStringSqlized(), config.getMatchMode(), config.getRestrictions(), config.getPageSize(), config.getPageNumber(), config.getOrderHints(), config.getPropertyPaths());
 	    } else {
-	        return findByTitle(config.getClazz(), config.getTitleSearchStringSqlized(), config.getMatchMode(), config.getCriteria(), config.getPageSize(), config.getPageNumber(), config.getOrderHints(), config.getPropertyPaths());
+	        return findByTitle((Class<S>) config.getClazz(), config.getTitleSearchStringSqlized(), config.getMatchMode(), config.getCriteria(), config.getPageSize(), config.getPageNumber(), config.getOrderHints(), config.getPropertyPaths());
 	    }
 	}
 
    @Transactional(readOnly = true)
     @Override
-    public List<T> listByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+    public <S extends T> List<S> listByTitle(Class<S> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
          long numberOfResults = dao.countByTitle(clazz, queryString, matchmode, criteria);
 
-         List<T> results = new ArrayList<>();
+         List<S> results = new ArrayList<>();
          if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
                 results = dao.findByTitle(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
          }
@@ -190,10 +190,10 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 
 	@Transactional(readOnly = true)
 	@Override
-	public List<T> listByTitleWithRestrictions(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+	public <S extends T> List<S> listByTitleWithRestrictions(Class<S> clazz, String queryString,MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		 long numberOfResults = dao.countByTitleWithRestrictions(clazz, queryString, matchmode, restrictions);
 
-		 List<T> results = new ArrayList<>();
+		 List<S> results = new ArrayList<>();
 		 if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 				results = dao.findByTitleWithRestrictions(clazz, queryString, matchmode, restrictions, pageSize, pageNumber, orderHints, propertyPaths);
 		 }
@@ -202,10 +202,10 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 
 	@Transactional(readOnly = true)
 	@Override
-	public Pager<T> findTitleCache(Class<? extends T> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, MatchMode matchMode){
+	public <S extends T> Pager<S> findTitleCache(Class<S> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, MatchMode matchMode){
 		long numberOfResults = dao.countTitleCache(clazz, queryString, matchMode);
 
-		 List<T> results = new ArrayList<>();
+		 List<S> results = new ArrayList<>();
 		 if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 				results = dao.findTitleCache(clazz, queryString, pageSize, pageNumber, orderHints, matchMode);
 		 }
@@ -217,10 +217,10 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 
     @Transactional(readOnly = true)
     @Override
-    public List<T> listByReferenceTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+    public <S extends T> List<S> listByReferenceTitle(Class<S> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
          long numberOfResults = dao.countByReferenceTitle(clazz, queryString, matchmode, criteria);
 
-         List<T> results = new ArrayList<>();
+         List<S> results = new ArrayList<>();
          if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
              results = dao.findByReferenceTitle(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
          }
@@ -229,10 +229,10 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 
 	@Transactional(readOnly = true)
 	@Override
-	public List<T> listByReferenceTitleWithRestrictions(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+	public <S extends T> List<S> listByReferenceTitleWithRestrictions(Class<S> clazz, String queryString,MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		 long numberOfResults = dao.countByReferenceTitleWithRestrictions(clazz, queryString, matchmode, restrictions);
 
-		 List<T> results = new ArrayList<>();
+		 List<S> results = new ArrayList<>();
 		 if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 		     results = dao.findByReferenceTitleWithRestrictions(clazz, queryString, matchmode, restrictions, pageSize, pageNumber, orderHints, propertyPaths);
 		 }
@@ -248,6 +248,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 	@Transactional(readOnly = true)
 	@Override
 	public Pager<T> search(Class<? extends T> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+//	public <S extends T> Pager<S> search(Class<S> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         long numberOfResults = dao.count(clazz,queryString);
 
 		List<T> results = new ArrayList<>();
@@ -504,7 +505,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 
 		while (! dedupState.isCompleted){
 			//get x page sizes
-			List<T> objectList = getPages(clazz, dedupState, orderHints);
+			List<? extends T> objectList = getPages(clazz, dedupState, orderHints);
 			//after each page check if any changes took place
 			int nUnEqualPages = handleAllPages(objectList, dedupState, nextGroup, matchStrategy, mergeStrategy);
 			nUnEqualPages = nUnEqualPages + dedupState.pageSize * dedupState.startPage;
@@ -518,7 +519,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 	}
 
 
-	private int handleAllPages(List<T> objectList, DeduplicateState dedupState, List<T> nextGroup, IMatchStrategy matchStrategy, IMergeStrategy mergeStrategy) {
+	private int handleAllPages(List<? extends T> objectList, DeduplicateState dedupState, List<T> nextGroup, IMatchStrategy matchStrategy, IMergeStrategy mergeStrategy) {
 		int nUnEqual = 0;
 		for (T object : objectList){
 			String currentTitleCache = object.getTitleCache();
@@ -538,10 +539,10 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 		return nUnEqual;
 	}
 
-	private List<T> getPages(Class<? extends T> clazz, DeduplicateState dedupState, List<OrderHint> orderHints) {
-		List<T> result = new ArrayList<>();
+	private <S extends T> List<S> getPages(Class<S> clazz, DeduplicateState dedupState, List<OrderHint> orderHints) {
+		List<S> result = new ArrayList<>();
 		for (int pageNo = dedupState.startPage; pageNo < dedupState.startPage + dedupState.nPages; pageNo++){
-			List<T> objectList = listByTitleWithRestrictions(clazz, null, null, null, dedupState.pageSize, pageNo, orderHints, null);
+			List<S> objectList = listByTitleWithRestrictions(clazz, null, null, null, dedupState.pageSize, pageNo, orderHints, null);
 			result.addAll(objectList);
 		}
 		if (result.size()< dedupState.nPages * dedupState.pageSize ){

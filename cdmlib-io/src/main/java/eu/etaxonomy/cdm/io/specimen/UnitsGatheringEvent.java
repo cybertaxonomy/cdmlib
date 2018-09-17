@@ -94,11 +94,14 @@ public class UnitsGatheringEvent {
      * @param collectorNames
      */
     public UnitsGatheringEvent(ITermService termService, String locality, String languageIso, Double longitude,
-            Double latitude, String elevationText, String elevationMin, String elevationMax, String elevationUnit,
+            Double latitude, String errorRadius, String elevationText, String elevationMin, String elevationMax, String elevationUnit,
             String date, String gatheringNotes, String gatheringMethod, ReferenceSystem referenceSystem,
              Abcd206ImportConfigurator config) {
         this.setLocality(termService, locality, languageIso);
-        this.setCoordinates(longitude, latitude, referenceSystem);
+
+        Integer errorRadiusInt = Integer.getInteger(errorRadius);
+
+        this.setCoordinates(longitude, latitude, referenceSystem, errorRadiusInt);
         this.setDate(date);
         this.setNotes(gatheringNotes);
         this.setElevation(elevationText, elevationMin, elevationMax, elevationUnit);
@@ -153,10 +156,10 @@ public class UnitsGatheringEvent {
      * @param: latitude
      */
     public void setCoordinates(Double longitude, Double latitude){
-        setCoordinates(longitude, latitude, null);
+        setCoordinates(longitude, latitude, null, null);
     }
 
-    public void setCoordinates(Double longitude, Double latitude, ReferenceSystem referenceSystem){
+    public void setCoordinates(Double longitude, Double latitude, ReferenceSystem referenceSystem, Integer errorRadius){
         //create coordinates point
         if((longitude == null) || (latitude == null)){
             return;
@@ -168,6 +171,9 @@ public class UnitsGatheringEvent {
         }
         if (latitude != 0.0) {
             coordinates.setLatitude(latitude);
+        }
+        if (errorRadius != 0) {
+            coordinates.setErrorRadius(errorRadius);
         }
         coordinates.setReferenceSystem(referenceSystem);
         this.gatheringEvent.setExactLocation(coordinates);

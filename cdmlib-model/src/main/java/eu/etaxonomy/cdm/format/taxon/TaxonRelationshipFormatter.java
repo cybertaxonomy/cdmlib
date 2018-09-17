@@ -11,9 +11,10 @@ package eu.etaxonomy.cdm.format.taxon;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.codehaus.plexus.util.StringUtils;
+import org.apache.commons.lang.StringUtils;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -38,6 +39,10 @@ import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
  */
 public class TaxonRelationshipFormatter {
 
+    /**
+     *
+     */
+    private static final String DOUBTFUL_TAXON_MARKER = "?" + UTF8.NARROW_NO_BREAK;
     private static final String REL_SEC = ", rel. sec. ";
     private static final String ERR_SEC = ", err. sec. ";
     private static final String SYN_SEC = ", syn. sec. ";
@@ -53,6 +58,12 @@ public class TaxonRelationshipFormatter {
     private static final String UNDEFINED_SYMBOL = "??";  //TODO
 
     public List<TaggedText> getTaggedText(TaxonRelationship taxonRelationship, boolean reverse, List<Language> languages) {
+        return getTaggedText(taxonRelationship, reverse, languages, false);
+    }
+
+
+
+    public List<TaggedText> getTaggedText(TaxonRelationship taxonRelationship, boolean reverse, List<Language> languages, boolean withoutName) {
 
         if (taxonRelationship == null){
             return null;
@@ -69,45 +80,51 @@ public class TaxonRelationshipFormatter {
         if (relatedTaxon == null){
             return null;
         }
-        boolean isDoubtful = taxonRelationship.isDoubtful() || relatedTaxon.isDoubtful();
-        String doubtfulStr = isDoubtful ? "?" : "";
+
+        String doubtfulTaxonStr = relatedTaxon.isDoubtful() ? DOUBTFUL_TAXON_MARKER : "";
+        String doubtfulRelationStr = taxonRelationship.isDoubtful() ? "?" : "";
+
 
         TaxonName name = relatedTaxon.getName();
 
-//        List<TaggedText> tags = new ArrayList<>();
         TaggedTextBuilder builder = new TaggedTextBuilder();
 
         //rel symbol
-        String symbol = getSymbol(type, reverse, languages);
+        String symbol = doubtfulRelationStr + getSymbol(type, reverse, languages);
         builder.add(TagEnum.symbol, symbol);
 
         //name
-        if (isMisapplied){
-            //starting quote
-            String startQuote = " " + doubtfulStr + QUOTE_START;
-            builder.addSeparator(startQuote);// .add(TaggedText.NewSeparatorInstance(startQuote));
+        if (!withoutName){
+            if (isMisapplied){
+                //starting quote
+                String startQuote = " " + doubtfulTaxonStr + QUOTE_START;
+                builder.addSeparator(startQuote);
 
-            //name cache
-            List<TaggedText> nameCacheTags = getNameCacheTags(name);
-            builder.addAll(nameCacheTags);
+                //name cache
+                List<TaggedText> nameCacheTags = getNameCacheTags(name);
+                builder.addAll(nameCacheTags);
 
-            //end quote
-            String endQuote = QUOTE_END;
-            builder.add(TagEnum.postSeparator, endQuote);
+                //end quote
+                String endQuote = QUOTE_END;
+                builder.add(TagEnum.postSeparator, endQuote);
+            }else{
+                builder.addSeparator(" " + doubtfulTaxonStr);
+                //name full title cache
+                List<TaggedText> nameCacheTags = getNameTitleCacheTags(name);
+                builder.addAll(nameCacheTags);
+            }
         }else{
-            builder.addSeparator(" " + doubtfulStr);
-            //name full title cache
-            List<TaggedText> nameCacheTags = getNameTitleCacheTags(name);
-            builder.addAll(nameCacheTags);
+            if (isNotBlank(doubtfulTaxonStr)){
+                builder.addSeparator(" " + doubtfulTaxonStr);
+            }
         }
 
-
-        //sensu (+ Separatoren?)
+        //sec/sensu (+ Separatoren?)
         if (isNotBlank(relatedTaxon.getAppendedPhrase())){
             builder.addWhitespace();
             builder.add(TagEnum.appendedPhrase, relatedTaxon.getAppendedPhrase());
         }
-        List<TaggedText> secTags = getSensuTags(relatedTaxon.getSec(), relatedTaxon.getSecMicroReference(),
+        List<TaggedText> secTags = getReferenceTags(relatedTaxon.getSec(), relatedTaxon.getSecMicroReference(),
                /* isMisapplied,*/ false);
         if (!secTags.isEmpty()) {
             builder.addSeparator(isMisapplied? SENSU_SEPARATOR : SEC_SEPARATOR);
@@ -124,16 +141,13 @@ public class TaxonRelationshipFormatter {
 
 //        //, non author
         if (isMisapplied && name != null){
-            if (name.getCombinationAuthorship() != null && isNotBlank(name.getCombinationAuthorship().getNomenclaturalTitle())){
-                builder.addSeparator(NON_SEPARATOR);
-                builder.add(TagEnum.authors, name.getCombinationAuthorship().getNomenclaturalTitle());
-            }else if (isNotBlank(name.getAuthorshipCache())){
+            if (isNotBlank(name.getAuthorshipCache())){
                 builder.addSeparator(NON_SEPARATOR);
                 builder.add(TagEnum.authors, name.getAuthorshipCache().trim());
             }
         }
 
-        List<TaggedText> relSecTags = getSensuTags(taxonRelationship.getCitation(),
+        List<TaggedText> relSecTags = getReferenceTags(taxonRelationship.getCitation(),
                 taxonRelationship.getCitationMicroReference(),true);
         if (!relSecTags.isEmpty()){
             builder.addSeparator(isSynonym ? SYN_SEC : isMisapplied ? ERR_SEC : REL_SEC);
@@ -143,7 +157,7 @@ public class TaxonRelationshipFormatter {
         return builder.getTaggedText();
     }
 
-    private List<TaggedText> getSensuTags(Reference ref, String detail, /*boolean isSensu,*/ boolean isRelation) {
+    private List<TaggedText> getReferenceTags(Reference ref, String detail, /*boolean isSensu,*/ boolean isRelation) {
         List<TaggedText> result = new ArrayList<>();
         String secRef;
 
@@ -195,7 +209,7 @@ public class TaxonRelationshipFormatter {
             Team team = CdmBase.deproxy(author, Team.class);
             String result = null;
             int n = team.getTeamMembers().size();
-            int index = 0;
+            int index = 1;
             if (team.isHasMoreMembers()){
                 n++;
             }

@@ -9,7 +9,6 @@
 package eu.etaxonomy.cdm.api.service.name;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -20,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.search.hcore.util.impl.HibernateHelper;
@@ -31,6 +31,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -40,11 +41,13 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.ref.EntityReference;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.TaggedTextBuilder;
+import eu.etaxonomy.cdm.strategy.cache.reference.DefaultReferenceCacheStrategy;
 /**
  * Manages a collection of {@link TypeDesignationBase TypeDesignations} for the same typified name.
  *
@@ -78,8 +81,13 @@ public class TypeDesignationSetManager {
     private static final String TYPE_SEPARATOR = "; ";
 
     private static final String TYPE_DESIGNATION_SEPARATOR = ", ";
-
-    private Collection<TypeDesignationBase> typeDesignations;
+    private static final String TYPE_STATUS_SEPARATOR_WITHCITATION = ": ";
+    private static final String TYPE_STATUS_PARENTHESIS_LEFT = " (";
+    private static final String TYPE_STATUS_PARENTHESIS_RIGHT = ")";
+    private static final String REFERENCE_PARENTHESIS_RIGHT = "]";
+    private static final String REFERENCE_PARENTHESIS_LEFT = " [";
+    private static final String REFERENCE_FIDE = "fide ";
+    private Map<UUID,TypeDesignationBase> typeDesignations;
 
     private NameTypeBaseEntityType nameTypeBaseEntityType = NameTypeBaseEntityType.NAME_TYPE_DESIGNATION;
 
@@ -100,6 +108,7 @@ public class TypeDesignationSetManager {
     private List<String> problems = new ArrayList<>();
 
     private boolean printCitation = false;
+    private boolean useShortCitation = false;
 
     private List<TaggedText> taggedText;
 
@@ -110,8 +119,30 @@ public class TypeDesignationSetManager {
      *
      */
     public TypeDesignationSetManager(Collection<TypeDesignationBase> typeDesignations) throws RegistrationValidationException {
-        this.typeDesignations = typeDesignations;
+        if (this.typeDesignations == null){
+            this.typeDesignations = new HashMap();
+        }
+        for (TypeDesignationBase typeDes:typeDesignations){
+            this.typeDesignations.put(typeDes.getUuid(), typeDes);
+        }
         findTypifiedName();
+        mapAndSort();
+    }
+
+    /**
+     * @param containgEntity
+     * @param taxonName
+     * @throws RegistrationValidationException
+     *
+     */
+    public TypeDesignationSetManager(HomotypicalGroup group) throws RegistrationValidationException {
+        if (this.typeDesignations == null){
+            this.typeDesignations = new HashMap();
+        }
+        for (TypeDesignationBase typeDes:group.getTypeDesignations()){
+            this.typeDesignations.put(typeDes.getUuid(), typeDes);
+        }
+        //findTypifiedName();
         mapAndSort();
     }
 
@@ -119,7 +150,7 @@ public class TypeDesignationSetManager {
      * @param typifiedName2
      */
     public TypeDesignationSetManager(TaxonName typifiedName) {
-        this.typeDesignations = new ArrayList<>();
+        this.typeDesignations = new HashMap<>();
         this.typifiedNameRef = new EntityReference(typifiedName.getUuid(), typifiedName.getTitleCache());
     }
 
@@ -131,7 +162,9 @@ public class TypeDesignationSetManager {
      * @param typeDesignations
      */
     public void addTypeDesigations(CdmBase containgEntity, TypeDesignationBase ... typeDesignations){
-       this.typeDesignations.addAll(Arrays.asList(typeDesignations));
+        for (TypeDesignationBase typeDes: typeDesignations){
+            this.typeDesignations.put(typeDes.getUuid(), typeDes);
+        }
        mapAndSort();
     }
 
@@ -143,7 +176,8 @@ public class TypeDesignationSetManager {
     protected void mapAndSort() {
         finalString = null;
         Map<TypedEntityReference, TypeDesignationWorkingSet> byBaseEntityByTypeStatus = new HashMap<>();
-        this.typeDesignations.forEach(td -> mapTypeDesignation(byBaseEntityByTypeStatus, td));
+
+        this.typeDesignations.values().forEach(td -> mapTypeDesignation(byBaseEntityByTypeStatus, td));
         orderedByTypesByBaseEntity = orderByTypeByBaseEntity(byBaseEntityByTypeStatus);
     }
 
@@ -166,13 +200,11 @@ public class TypeDesignationSetManager {
                     td.getUuid(),
                     stringify(td));
 
-            TypeDesignationWorkingSet typedesignationWorkingSet;
             if(!byBaseEntityByTypeStatus.containsKey(baseEntityReference)){
                 byBaseEntityByTypeStatus.put(baseEntityReference, new TypeDesignationWorkingSet(baseEntity, baseEntityReference));
             }
+            byBaseEntityByTypeStatus.get(baseEntityReference).insert(status, typeDesignationEntityReference);
 
-            typedesignationWorkingSet = byBaseEntityByTypeStatus.get(baseEntityReference);
-            typedesignationWorkingSet.insert(status, typeDesignationEntityReference);
         } catch (DataIntegrityException e){
             problems.add(e.getMessage());
         }
@@ -313,9 +345,9 @@ public class TypeDesignationSetManager {
                         workingsetBuilder.add(TagEnum.separator, TYPE_SEPARATOR);
                     }
                     boolean isNameTypeDesignation = false;
-                    if(SpecimenOrObservationBase.class.isAssignableFrom(baseEntityRef.getType())){
+                    if(SpecimenOrObservationBase.class.isAssignableFrom(baseEntityRef.getType()) ){
                         workingsetBuilder.add(TagEnum.label, "Type:");
-                    } else {
+                    } else{
                         workingsetBuilder.add(TagEnum.label, "NameType:");
                         isNameTypeDesignation = true;
                     }
@@ -327,18 +359,26 @@ public class TypeDesignationSetManager {
                     for(TypeDesignationStatusBase<?> typeStatus : typeDesignationWorkingSet.keySet()) {
                         if(typeStatusCount++  > 0){
                             workingsetBuilder.add(TagEnum.separator, TYPE_STATUS_SEPARATOR);
+
                         }
                         boolean isPlural = typeDesignationWorkingSet.get(typeStatus).size() > 1;
                         if(!typeStatus.equals(NULL_STATUS)) {
+
                             workingsetBuilder.add(TagEnum.label, typeStatus.getLabel() + (isPlural ? "s:" : ","));
-                        }
+                         }
+
+
                         int typeDesignationCount = 0;
-                        for(TypedEntityReference typeDesignationEntityReference : typeDesignationWorkingSet.get(typeStatus)) {
+                        for(TypedEntityReference typeDesignationEntityReference : createSortedList(typeDesignationWorkingSet, typeStatus)) {
+
                             if(typeDesignationCount++  > 0){
-                                workingsetBuilder.add(TagEnum.separator, TYPE_DESIGNATION_SEPARATOR);
+                               workingsetBuilder.add(TagEnum.separator, TYPE_DESIGNATION_SEPARATOR);
                             }
+
                             workingsetBuilder.add(TagEnum.typeDesignation, typeDesignationEntityReference.getLabel(), typeDesignationEntityReference);
+
                         }
+
                     }
                     typeDesignationWorkingSet.setRepresentation(workingsetBuilder.toString());
                     finalString += typeDesignationWorkingSet.getRepresentation();
@@ -349,6 +389,88 @@ public class TypeDesignationSetManager {
             taggedText = finalBuilder.getTaggedText();
         }
     }
+
+    public void buildStringWithCitation(){
+
+        if(finalString == null){
+
+            TaggedTextBuilder finalBuilder = new TaggedTextBuilder();
+            finalString = "";
+
+            if(getTypifiedNameCache() != null){
+                finalString += getTypifiedNameCache() + " ";
+                finalBuilder.add(TagEnum.name, getTypifiedNameCache(), new TypedEntityReference<>(TaxonName.class, getTypifiedNameRef().getUuid()));
+            }
+
+            int typeCount = 0;
+            if(orderedByTypesByBaseEntity != null){
+                for(TypedEntityReference baseEntityRef : orderedByTypesByBaseEntity.keySet()) {
+
+                    TaggedTextBuilder workingsetBuilder = new TaggedTextBuilder();
+                    if(typeCount++ > 0){
+                        workingsetBuilder.add(TagEnum.separator, TYPE_SEPARATOR);
+                    }
+                    boolean isNameTypeDesignation = false;
+
+                    if(!baseEntityRef.getLabel().isEmpty()){
+                        workingsetBuilder.add(TagEnum.specimenOrObservation, baseEntityRef.getLabel(), baseEntityRef);
+                    }
+                    TypeDesignationWorkingSet typeDesignationWorkingSet = orderedByTypesByBaseEntity.get(baseEntityRef);
+                    int typeStatusCount = 0;
+                    for(TypeDesignationStatusBase<?> typeStatus : typeDesignationWorkingSet.keySet()) {
+                        if(typeStatusCount++  > 0){
+                            workingsetBuilder.add(TagEnum.separator, TYPE_STATUS_SEPARATOR);
+
+                        }
+                        boolean isPlural = typeDesignationWorkingSet.get(typeStatus).size() > 1;
+                        if(!typeStatus.equals(NULL_STATUS)) {
+                            workingsetBuilder.add(TagEnum.separator, TYPE_STATUS_PARENTHESIS_LEFT);
+                            workingsetBuilder.add(TagEnum.label, typeStatus.getLabel() + (isPlural ? "s:" : ":"));
+                         }
+                        int typeDesignationCount = 0;
+                        for(TypedEntityReference typeDesignationEntityReference : createSortedList(typeDesignationWorkingSet, typeStatus)) {
+                            if(typeDesignationCount++  > 0){
+                               workingsetBuilder.add(TagEnum.separator, TYPE_DESIGNATION_SEPARATOR);
+                            }
+
+                            workingsetBuilder.add(TagEnum.typeDesignation, typeDesignationEntityReference.getLabel(), typeDesignationEntityReference);
+
+                            TypeDesignationBase typeDes =  typeDesignations.get(typeDesignationEntityReference.getUuid());
+                            if (typeDes.getCitation() != null){
+                               // workingsetBuilder.add(TagEnum.separator, REFERENCE_PARENTHESIS_LEFT);
+                                String shortCitation = ((DefaultReferenceCacheStrategy)typeDes.getCitation().getCacheStrategy()).createShortCitation(typeDes.getCitation());
+                                workingsetBuilder.add(TagEnum.reference, shortCitation, typeDesignationEntityReference);
+                                //workingsetBuilder.add(TagEnum.separator, REFERENCE_PARENTHESIS_RIGHT);
+                            }
+
+                            if ((!typeStatus.equals(NULL_STATUS)) &&(typeDesignationCount ==  typeDesignationWorkingSet.get(typeStatus).size())){
+                                workingsetBuilder.add(TagEnum.separator, TYPE_STATUS_PARENTHESIS_RIGHT);
+                            }
+                        }
+
+                    }
+                    typeDesignationWorkingSet.setRepresentation(workingsetBuilder.toString());
+                    finalString += typeDesignationWorkingSet.getRepresentation();
+                    finalBuilder.addAll(workingsetBuilder);
+                }
+            }
+            finalString = finalString.trim();
+            taggedText = finalBuilder.getTaggedText();
+        }
+    }
+
+    /**
+     * @param typeDesignationWorkingSet
+     * @param typeStatus
+     * @return
+     */
+    private List<TypedEntityReference<TypeDesignationBase>> createSortedList(
+            TypeDesignationWorkingSet typeDesignationWorkingSet, TypeDesignationStatusBase<?> typeStatus) {
+        List<TypedEntityReference<TypeDesignationBase>> typeDesignationEntityrReferences = new ArrayList(typeDesignationWorkingSet.get(typeStatus));
+        Collections.sort(typeDesignationEntityrReferences, new TypedEntityComparator());
+        return typeDesignationEntityrReferences;
+    }
+
 
     /**
      * FIXME use the validation framework validators to store the validation problems!!!
@@ -362,7 +484,7 @@ public class TypeDesignationSetManager {
 
         TaxonName typifiedName = null;
 
-        for(TypeDesignationBase<?> typeDesignation : typeDesignations){
+        for(TypeDesignationBase<?> typeDesignation : typeDesignations.values()){
             typeDesignation.getTypifiedNames();
             if(typeDesignation.getTypifiedNames().isEmpty()){
 
@@ -424,7 +546,7 @@ public class TypeDesignationSetManager {
      * @return
      */
     public Collection<TypeDesignationBase> getTypeDesignations() {
-        return typeDesignations;
+        return typeDesignations.values();
     }
 
     /**
@@ -432,13 +554,7 @@ public class TypeDesignationSetManager {
      * @return
      */
     public TypeDesignationBase findTypeDesignation(EntityReference typeDesignationRef) {
-        for(TypeDesignationBase td : typeDesignations){
-            if(td.getUuid().equals(typeDesignationRef.getUuid())){
-                return td;
-            }
-        }
-        // TODO Auto-generated method stub
-        return null;
+        return this.typeDesignations.get(typeDesignationRef.getUuid());
     }
 
 
@@ -519,7 +635,7 @@ public class TypeDesignationSetManager {
                         if(msp.getMediaSpecimen() != null){
                             for(IdentifiableSource source : msp.getMediaSpecimen().getSources()){
                                 String refDetailStr = source.getCitationMicroReference();
-                                String referenceStr = source.getCitation().getTitleCache();
+                                String referenceStr = source.getCitation() == null? "": source.getCitation().getTitleCache();
                                 if(StringUtils.isNotBlank(source.getCitationMicroReference())){
                                     typeSpecimenTitle += refDetailStr;
                                 }
@@ -532,6 +648,7 @@ public class TypeDesignationSetManager {
                     } else {
                         DerivedUnitFacadeCacheStrategy cacheStrategy = new DerivedUnitFacadeCacheStrategy();
                         typeSpecimenTitle += cacheStrategy.getTitleCache(du, true);
+
                     }
 
                     result += (isMediaSpecimen ? "[icon] " : "") + typeSpecimenTitle.trim();
@@ -540,10 +657,12 @@ public class TypeDesignationSetManager {
         }
 
         if(isPrintCitation() && td.getCitation() != null){
-            if(td.getCitation().getAbbrevTitle() != null){
-                result += " " + td.getCitation().getAbbrevTitle();
+            Reference citation = HibernateProxyHelper.deproxy(td.getCitation(), Reference.class);
+            if(citation.getAbbrevTitle() != null){
+
+                result += " " + citation.getAbbrevTitle();
             } else {
-                result += " " + td.getCitation().getTitleCache();
+                result += " " + citation.getTitleCache();
             }
             if(td.getCitationMicroReference() != null){
                 result += " :" + td.getCitationMicroReference();
@@ -605,6 +724,12 @@ public class TypeDesignationSetManager {
         return taggedText;
     }
 
+    public List<TaggedText> toTaggedTextWithCitation() {
+        buildStringWithCitation();
+        return taggedText;
+    }
+
+
     /**
      * @return the printCitation
      */
@@ -632,6 +757,14 @@ public class TypeDesignationSetManager {
 
     public NameTypeBaseEntityType getNameTypeBaseEntityType(){
         return nameTypeBaseEntityType;
+    }
+
+    public boolean isUseShortCitation() {
+        return useShortCitation;
+    }
+
+    public void setUseShortCitation(boolean useShortCitation) {
+        this.useShortCitation = useShortCitation;
     }
 
     /**
@@ -676,6 +809,8 @@ public class TypeDesignationSetManager {
             this.values().forEach(typeDesignationReferences -> typeDesignationReferences.forEach(td -> typeDesignations.add(td)));
             return typeDesignations;
         }
+
+
 
         /**
          * @param status

@@ -23,7 +23,8 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  * @author n.hoffmann
  * @since 03.03.2009
  */
-public class IdentifiableServiceConfiguratorImpl<T extends IIdentifiableEntity> implements IIdentifiableEntityServiceConfigurator<T>{
+public class IdentifiableServiceConfiguratorImpl<T extends IIdentifiableEntity>
+            implements IIdentifiableEntityServiceConfigurator<T>{
 
     private static final long serialVersionUID = -8126736101861741087L;
 

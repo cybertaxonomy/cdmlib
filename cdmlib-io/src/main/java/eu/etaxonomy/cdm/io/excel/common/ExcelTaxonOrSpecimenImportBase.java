@@ -9,8 +9,8 @@
 
 package eu.etaxonomy.cdm.io.excel.common;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -23,7 +23,6 @@ import eu.etaxonomy.cdm.io.excel.common.ExcelRowBase.PostfixTerm;
 import eu.etaxonomy.cdm.io.specimen.excel.in.SpecimenCdmExcelImportState;
 import eu.etaxonomy.cdm.io.specimen.excel.in.SpecimenRow;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -53,7 +52,7 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 	protected static final String LANGUAGE = "(?i)(Language)";
 
 	@Override
-	protected void analyzeRecord(HashMap<String, String> record, STATE state) {
+	protected void analyzeRecord(Map<String, String> record, STATE state) {
 		Set<String> keys = record.keySet();
 
     	ROW row = createDataHolderRow();
@@ -155,7 +154,7 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 	 * @param keyValue
 	 * @return
 	 */
-	protected KeyValue makeKeyValue(HashMap<String, String> record, String originalKey, STATE state) {
+	protected KeyValue makeKeyValue(Map<String, String> record, String originalKey, STATE state) {
 		KeyValue keyValue = new KeyValue();
 		keyValue.originalKey = originalKey;
 		String indexedKey = CdmUtils.removeDuplicateWhitespace(originalKey.trim()).toString();
@@ -269,7 +268,7 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 
 	protected boolean analyzeFeatures(STATE state, KeyValue keyValue) {
 		String key = keyValue.key;
-		Pager<DefinedTermBase> features = getTermService().findByTitleWithRestrictions(Feature.class, key, null, null, null, null, null, null);
+		Pager<Feature> features = getTermService().findByTitleWithRestrictions(Feature.class, key, null, null, null, null, null, null);
 
 		if (features.getCount() > 1){
 			String message = "More than one feature found matching key " + key;
@@ -278,7 +277,7 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 		}else if (features.getCount() == 0){
 			return false;
 		}else{
-			Feature feature = CdmBase.deproxy(features.getRecords().get(0), Feature.class);
+			Feature feature = CdmBase.deproxy(features.getRecords().get(0));
 			ROW row = state.getCurrentRow();
 			if ( keyValue.isKeyData()){
 				row.putFeature(feature.getUuid(), keyValue.index, keyValue.value);

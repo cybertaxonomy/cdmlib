@@ -20,6 +20,7 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetManager;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
@@ -59,7 +60,6 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroupNameComparator;
-import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
@@ -78,6 +78,9 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.strategy.cache.TagEnum;
+import eu.etaxonomy.cdm.strategy.cache.TaggedText;
+import eu.etaxonomy.cdm.strategy.cache.reference.DefaultReferenceCacheStrategy;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 /**
@@ -988,7 +991,7 @@ public class CdmLightClassificationExport
             HomotypicalGroup group =name.getHomotypicalGroup();
 
             if (state.getHomotypicalGroupFromStore(group.getId()) == null){
-                handleHomotypicalGroup(state, group);
+                handleHomotypicalGroup(state, HibernateProxyHelper.deproxy(group, HomotypicalGroup.class));
             }
             csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_FK)] = getId(state, group);
             List<TaxonName> typifiedNames = new ArrayList<>();
@@ -1276,7 +1279,7 @@ public class CdmLightClassificationExport
      */
     private void handleHomotypicalGroup(CdmLightExportState state, HomotypicalGroup group) {
         try {
-            state.addHomotypicalGroupToStore(group);
+           state.addHomotypicalGroupToStore(group);
             CdmLightExportTable table = CdmLightExportTable.HOMOTYPIC_GROUP;
             String[] csvLine = new String[table.getSize()];
 
@@ -1298,18 +1301,55 @@ public class CdmLightClassificationExport
             }else{
                 csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_STRING)] = "";
             }
-            Set<TypeDesignationBase> typeDesigantions = group.getTypeDesignations();
+            Set<TypeDesignationBase> typeDesigantionSet = group.getTypeDesignations();
             List<TypeDesignationBase> designationList = new ArrayList<>();
-            designationList.addAll(typeDesigantions);
+            designationList.addAll(typeDesigantionSet);
             Collections.sort(designationList, new TypeComparator());
             StringBuffer typeDesignationString = new StringBuffer();
-            for (TypeDesignationBase typeDesignation: typeDesigantions){
+            List<TaggedText> list = new ArrayList<TaggedText>();
+            if (!designationList.isEmpty()){
+                TypeDesignationSetManager manager = new TypeDesignationSetManager(group);
+
+                list.addAll( manager.toTaggedTextWithCitation());
+                System.err.println(list.toString());
+            }
+            StringBuffer homotypicalGroupTypeDesignationString = new StringBuffer();
+
+            for (TaggedText text:list){
+                if (text != null && text.getText() != null && (text.getText().equals("Type:") || text.getText().equals("NameType:"))){
+                  //do nothing
+                } else if (text.getType().equals(TagEnum.reference)){
+                    homotypicalGroupTypeDesignationString.append(text.getText());
+                }else if (text.getType().equals(TagEnum.typeDesignation)){
+                    homotypicalGroupTypeDesignationString.append(text.getText().replace(").", "").replace("(", "").replace(")", "") );
+                } else{
+                    homotypicalGroupTypeDesignationString.append(text.getText());
+                }
+            }
+
+
+            String typeDesignations= homotypicalGroupTypeDesignationString.toString();
+            typeDesignations = typeDesignations.trim();
+
+            typeDesignations += ".";
+            typeDesignations = typeDesignations.replace("..", ".");
+            typeDesignations = typeDesignations.replace(". .", ".");
+            if (typeDesignations.equals(".")){
+                typeDesignations = null;
+            }
+            System.err.println(typeDesignations);
+       /*     for (TypeDesignationBase typeDesignation: designationList){
+                //[Vorschlag Soll:]
+               // Sumatra Utara, Kab. Karo, around Sidikalang areas, 1000─1500 m, Dec 11, 2003, Nepenthes Team (Hernawati, P. Akhriadi & I. Petra), NP 354 (‘ANDA’–Holo, BO–Iso) [fide Akhriadi & al. 2004]
                 if (typeDesignation != null && typeDesignation.getTypeStatus() != null){
-                    typeDesignationString.append(typeDesignation.getTypeStatus().getTitleCache() + ": ");
+                    typeDesignationString.append(typeDesignation.getTypeStatus().getTitleCache() + ":");
                 }
                 if (typeDesignation instanceof SpecimenTypeDesignation){
                     if (((SpecimenTypeDesignation)typeDesignation).getTypeSpecimen() != null){
-                        typeDesignationString.append(((SpecimenTypeDesignation)typeDesignation).getTypeSpecimen().getTitleCache());
+                        typeDesignationString.append(" "+((SpecimenTypeDesignation)typeDesignation).getTypeSpecimen().getTitleCache());
+                        if (typeDesignationString.lastIndexOf(".") == typeDesignationString.length()){
+                            typeDesignationString.deleteCharAt(typeDesignationString.lastIndexOf("."));
+                        }
                         handleSpecimen(state, ((SpecimenTypeDesignation)typeDesignation).getTypeSpecimen());
                     }
                 }else{
@@ -1318,7 +1358,7 @@ public class CdmLightClassificationExport
                     }
                 }
                 if(typeDesignation.getCitation() != null ){
-                    typeDesignationString.append(", "+typeDesignation.getCitation().getTitleCache());
+                    typeDesignationString.append(" [fide " + ((DefaultReferenceCacheStrategy)typeDesignation.getCitation().getCacheStrategy()).createShortCitation(typeDesignation.getCitation()) +"]");
                 }
                 //TODO...
                 /*
@@ -1331,16 +1371,21 @@ public class CdmLightClassificationExport
                 Aufbau der Typusinformationen:
                 Land: Lokalität mit Höhe und Koordinaten; Datum; Sammler Nummer (Herbar/Barcode, Typusart; Herbar/Barcode, Typusart …)
 
-                 */
-            }
-            String typeDesignations = typeDesignationString.toString();
+
+            }*/
+           // typeDesignations = typeDesignationString.toString();
             if (typeDesignations != null){
+                if (!typeDesignations.endsWith(".") ){
+                    typeDesignations =typeDesignations + ".";
+                }
                 csvLine[table.getIndex(CdmLightExportTable.TYPE_STRING)] = typeDesignations;
+
             }else{
                 csvLine[table.getIndex(CdmLightExportTable.TYPE_STRING)] = "";
             }
             state.getProcessor().put(table, String.valueOf(group.getId()), csvLine);
         } catch (Exception e) {
+            e.printStackTrace();
             state.getResult().addException(e, "An unexpected error occurred when handling homotypic group " +
                     cdmBaseStr(group) + ": " + e.getMessage());
         }
@@ -1498,7 +1543,7 @@ public class CdmLightClassificationExport
             String[] csvLine = new String[table.getSize()];
             csvLine[table.getIndex(CdmLightExportTable.REFERENCE_ID)] = getId(state, reference);
             //TODO short citations correctly
-            String shortCitation = createShortCitation(reference);  //Should be Author(year) like in Taxon.sec
+            String shortCitation = ((DefaultReferenceCacheStrategy)reference.getCacheStrategy()).createShortCitation(reference);  //Should be Author(year) like in Taxon.sec
             csvLine[table.getIndex(CdmLightExportTable.BIBLIO_SHORT_CITATION)] = shortCitation;
             //TODO get preferred title
             csvLine[table.getIndex(CdmLightExportTable.REF_TITLE)] = reference.getTitle();
@@ -1542,54 +1587,7 @@ public class CdmLightClassificationExport
     }
 
 
-    /**
-     * @param reference
-     * @return
-     */
-    private String createShortCitation(Reference reference) {
-        TeamOrPersonBase<?> authorship = reference.getAuthorship();
-        String shortCitation = "";
-        if (authorship == null) {
-            return null;
-        }
-        authorship = HibernateProxyHelper.deproxy(authorship);
-        if (authorship instanceof Person){
-            shortCitation = ((Person)authorship).getFamilyName();
-            if (StringUtils.isBlank(shortCitation) ){
-                shortCitation = ((Person)authorship).getTitleCache();
-            }
-        }
-        else if (authorship instanceof Team){
 
-            Team authorTeam = HibernateProxyHelper.deproxy(authorship, Team.class);
-            int index = 0;
-
-            for (Person teamMember : authorTeam.getTeamMembers()){
-                index++;
-                if (index == 3){
-                    shortCitation += " & al.";
-                    break;
-                }
-                String concat = concatString(authorTeam, authorTeam.getTeamMembers(), index);
-                if (teamMember.getFamilyName() != null){
-                    shortCitation += concat + teamMember.getFamilyName();
-                }else{
-                    shortCitation += concat + teamMember.getTitleCache();
-                }
-
-            }
-            if (StringUtils.isBlank(shortCitation)){
-                shortCitation = authorTeam.getTitleCache();
-            }
-
-        }
-        if (!StringUtils.isBlank(reference.getDatePublished().getFreeText())){
-            shortCitation = shortCitation + " (" + reference.getDatePublished().getFreeText() + ")";
-        }else if (!StringUtils.isBlank(reference.getYear()) ){
-            shortCitation = shortCitation + " (" + reference.getYear() + ")";
-        }
-        return shortCitation;
-    }
 
     /**
      * @param reference

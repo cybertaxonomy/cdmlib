@@ -15,12 +15,10 @@ import net.sf.ehcache.config.CacheConfiguration.CacheEventListenerFactoryConfigu
 import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
 
 /**
- * CDM Entity Cacher class based on EhCache.
+ * CDM Entity Cacher class based on EhCache using UUID as key.
  * The cacher allows null values to be cached.
  *
  * @author cmathew
- *
- * @param <T>
  */
 
 public abstract class CdmCacher implements ICdmUuidCacher {
@@ -30,7 +28,7 @@ public abstract class CdmCacher implements ICdmUuidCacher {
     @Autowired
     public CacheManager cacheManager;
 
-    public static final String DEFAULT_CACHE_NAME = "defaultCache"; //TODO compare with CacheConfiguration where the name for the default cache is 'default', Why another name here?
+    public static final String DEFAULT_CACHE_NAME = "cdmDefaultCache"; //TODO compare with CacheConfiguration where the name for the default cache is 'default', Why another name here?
 
     /**
      * Constructor which initialises a singleton {@link net.sf.ehcache.CacheManager}
@@ -101,6 +99,11 @@ public abstract class CdmCacher implements ICdmUuidCacher {
             //FIXME write test to check if default config as defined in EhCacheConfiguration is being used
         }
         return defaultCache;
+    }
+
+    @Override
+    public void dispose(){
+        cacheManager.getCache(DEFAULT_CACHE_NAME).dispose();
     }
 
     /**
@@ -188,7 +191,6 @@ public abstract class CdmCacher implements ICdmUuidCacher {
     @Override
     public boolean existsAndIsNotNull(UUID uuid) {
         Element e = getCacheElement(uuid);
-        CdmBase cdmEntity;
         if (e != null) {
             return e.getObjectValue() != null;
         }

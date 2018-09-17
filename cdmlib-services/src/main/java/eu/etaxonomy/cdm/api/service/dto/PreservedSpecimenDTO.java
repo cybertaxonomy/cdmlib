@@ -74,34 +74,27 @@ public class PreservedSpecimenDTO extends DerivateDTO{
      */
     public PreservedSpecimenDTO(DerivedUnit derivedUnit) {
         super(derivedUnit);
-    }
-
-    public static PreservedSpecimenDTO newInstance(DerivedUnit derivedUnit){
-        PreservedSpecimenDTO newInstance = new PreservedSpecimenDTO(derivedUnit);
-
-//        newInstance.setTitleCache(derivedUnit.getTitleCache());
-
-        newInstance.accessionNumber = derivedUnit.getAccessionNumber();
-        newInstance.preferredStableUri = derivedUnit.getPreferredStableUri();
+        accessionNumber = derivedUnit.getAccessionNumber();
+        preferredStableUri = derivedUnit.getPreferredStableUri();
         if (derivedUnit.getCollection() != null){
-            newInstance.setCollectioDTo(new CollectionDTO(HibernateProxyHelper.deproxy(derivedUnit.getCollection())));
+            setCollectioDTo(new CollectionDTO(HibernateProxyHelper.deproxy(derivedUnit.getCollection())));
         }
-        newInstance.setBarcode(derivedUnit.getBarcode());
-        newInstance.setCatalogNumber(derivedUnit.getCatalogNumber());
-        newInstance.listLabel = derivedUnit.getCatalogNumber();
-        newInstance.setCollectorsNumber(derivedUnit.getCollectorsNumber());
+        setBarcode(derivedUnit.getBarcode());
+        setCatalogNumber(derivedUnit.getCatalogNumber());
+        listLabel = derivedUnit.getCatalogNumber();
+        setCollectorsNumber(derivedUnit.getCollectorsNumber());
         if (derivedUnit.getDerivedFrom() != null){
-            newInstance.setDerivationEvent(new DerivationEventDTO(derivedUnit.getDerivedFrom() ));
+            setDerivationEvent(new DerivationEventDTO(derivedUnit.getDerivedFrom() ));
         }
         if (derivedUnit.getPreservation()!= null){
-            newInstance.setPreservationMethod(derivedUnit.getPreservation().getMaterialMethodText());
+            setPreservationMethod(derivedUnit.getPreservation().getMaterialMethodText());
         }
-        newInstance.setRecordBase(derivedUnit.getRecordBasis().getMessage());
-        newInstance.setSources(derivedUnit.getSources());
-        newInstance.setSpecimenTypeDesignations(derivedUnit.getSpecimenTypeDesignations());
-
-        return newInstance;
+        setRecordBase(derivedUnit.getRecordBasis().getMessage());
+        setSources(derivedUnit.getSources());
+        setSpecimenTypeDesignations(derivedUnit.getSpecimenTypeDesignations());
     }
+
+
 
     public String getAccessionNumber() {
         return accessionNumber;

@@ -15,6 +15,7 @@ import java.util.Set;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.query.NameSearchOrder;
 
 /**
@@ -37,6 +38,9 @@ public interface IFindTaxaAndNamesConfigurator extends IIdentifiableEntityServic
 
     public Classification getClassification();
     public void setClassification(Classification classification);
+
+    public TaxonNode getSubtree();
+    public void setSubtree(TaxonNode subtree);
 
     public Set<NamedArea> getNamedAreas();
     public void setNamedAreas(Set<NamedArea> areas);

@@ -1113,6 +1113,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	                name.addTypeDesignation(designation, true);
 	            }
 	        }
+	        save(state.getDerivedUnitBase(), state);
 
 	        for (String[] fullReference : state.getDataHolder().getReferenceList()) {
 

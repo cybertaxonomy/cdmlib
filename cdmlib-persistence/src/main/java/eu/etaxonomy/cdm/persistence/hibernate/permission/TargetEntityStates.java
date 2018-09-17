@@ -60,9 +60,22 @@ public class TargetEntityStates {
         return previousState != null;
     }
 
+    /**
+     * Compares the current state of the entity property (state being persisted) with the previous state
+     * (state to be overwritten in the storage) and returns <code>true</code> in case there is a previous
+     * state and the new state is different.
+     *
+     * @param propertyName
+     * @return
+     */
     public boolean propertyChanged(String propertyName){
         if(propertyNames == null){
             // usually during a save or delete operation
+            return false;
+        }
+        if(!hasPreviousState()){
+            // should be covered by propertyNames == null but this check seems to be nececary in rare situations
+            // see the NPE stack strace in #7702 for an example
             return false;
         }
         int i = 0;

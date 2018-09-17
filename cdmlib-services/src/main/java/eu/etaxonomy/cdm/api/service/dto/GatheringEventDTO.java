@@ -15,7 +15,6 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
-import eu.etaxonomy.cdm.persistence.dto.TermDto;
 
 /**
  * @author k.luther
@@ -27,7 +26,7 @@ public class GatheringEventDTO {
     private String locality;
     private Point exactLocation;
     private String country;
-    private Set<TermDto> collectingAreas;
+    private Set<String> collectingAreas;
     private String collectingMethod;
     private Integer absoluteElevation;
     private Integer absoluteElevationMax;
@@ -55,7 +54,7 @@ public class GatheringEventDTO {
      * @param distanceToWaterSurfaceMax
      * @param distanceToWaterSurfaceText
      */
-    public GatheringEventDTO(String locality, Point exactLocation, String country, Set<TermDto> collectingAreas,
+    public GatheringEventDTO(String locality, Point exactLocation, String country, Set<String> collectingAreas,
             String collectingMethod, String collector, Integer absoluteElevation, Integer absoluteElevationMax,
             String absoluteElevationText, Double distanceToGround, Double distanceToGroundMax,
             String distanceToGroundText, Double distanceToWaterSurface, Double distanceToWaterSurfaceMax,
@@ -131,11 +130,11 @@ public class GatheringEventDTO {
         }
 
         for (NamedArea area: gathering.getCollectingAreas()){
-            TermDto areaDto = TermDto.fromNamedArea(area);
+            String areaString = area.getLabel();
             if (dto.getCollectingAreas() == null){
                 dto.collectingAreas = new HashSet<>();
             }
-            dto.collectingAreas.add(areaDto);
+            dto.collectingAreas.add(areaString);
         }
 
         return dto;
@@ -151,7 +150,7 @@ public class GatheringEventDTO {
     public String getCountry() {
         return country;
     }
-    public Set<TermDto> getCollectingAreas() {
+    public Set<String> getCollectingAreas() {
         return collectingAreas;
     }
     public String getCollectingMethod() {

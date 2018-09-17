@@ -12,8 +12,7 @@ package eu.etaxonomy.cdm.io.excel.common;
 import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -48,7 +47,7 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
 
 	protected static final String SCIENTIFIC_NAME_COLUMN = "ScientificName";
 
-	private ArrayList<HashMap<String, String>> recordList = null;
+	private List<Map<String, String>> recordList = null;
 
 	private ExcelImportConfiguratorBase configurator = null;
 
@@ -82,16 +81,13 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
 		    source = state.getConfig().getSource();
 		}
 
-
-
-		String sheetName = getWorksheetName();
-
+		String sheetName = getWorksheetName(state.getConfig());
 
 		if (data != null){
             try {
                 ByteArrayInputStream stream = new ByteArrayInputStream(data);
                 recordList = ExcelUtils.parseXLS(stream, sheetName);
-            } catch (FileNotFoundException e) {
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }else{
@@ -124,7 +120,7 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
 	private void handleRecordList(STATE state, URI source) {
 		Integer startingLine = 2;
 		if (recordList != null) {
-    		HashMap<String,String> record = null;
+    		Map<String,String> record = null;
 
     		TransactionStatus txStatus = startTransaction();
 
@@ -165,11 +161,14 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
 	}
 
 	/**
-	 * To define a worksheet name override this method. Otherwise the first worksheet is taken.
+	 * To define a worksheet name other then the one defined in the configurator
+	 * override this method with a non <code>null</code> return value.
+	 * If <code>null</code> is returned the first worksheet is taken.
+
 	 * @return worksheet name. <code>null</null> if no worksheet is defined.
 	 */
-	protected String getWorksheetName() {
-		return null;
+	protected String getWorksheetName(CONFIG config) {
+		return config.getWorksheetName();
 	}
 
 	@Override
@@ -185,7 +184,7 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
 	 * @param record
 	 * @return
 	 */
-	protected abstract void analyzeRecord(HashMap<String,String> record, STATE state);
+	protected abstract void analyzeRecord(Map<String,String> record, STATE state);
 
 	protected abstract void firstPass(STATE state);
 	protected abstract void secondPass(STATE state);
@@ -265,7 +264,7 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
             String colNameCache, String colNameTitleCache, String colTaxonTitleCache,
             Class<T> clazz, String line) {
 
-        HashMap<String, String> record = state.getOriginalRecord();
+        Map<String, String> record = state.getOriginalRecord();
         String strUuidTaxon = record.get(colTaxonUuid);
         if (strUuidTaxon != null){
             UUID uuidTaxon;
@@ -293,7 +292,7 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
 
             return CdmBase.deproxy(result, clazz);
         }else{
-            String message = "No taxon identifier found";
+            String message = "No taxon identifier column found";
             state.getResult().addWarning(message, null, line);
             return null;
         }
@@ -304,11 +303,11 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
      * @see #getTaxonByCdmId(ExcelImportState, String, String, String, String, Class, String)
      */
     protected void verifyName(STATE state, String colNameCache, String colNameTitleCache, String colTaxonTitleCache,
-            String line, HashMap<String, String> record, TaxonBase<?> result) {
+            String line, Map<String, String> record, TaxonBase<?> result) {
         //nameCache
         String strExpectedNameCache = record.get(colNameCache);
         String nameCache = result.getName() == null ? null : result.getName().getNameCache();
-        if (isNotBlank(strExpectedNameCache) && (!strExpectedNameCache.equals(nameCache))){
+        if (isNotBlank(strExpectedNameCache) && (!strExpectedNameCache.trim().equals(nameCache))){
             String message = "Name cache (%s) does not match expected name (%s)";
             message = String.format(message, nameCache==null? "null":nameCache, strExpectedNameCache);
             state.getResult().addWarning(message, null, line);
@@ -316,7 +315,7 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
         //name title
         String strExpectedNameTitleCache = record.get(colNameTitleCache);
         String nameTitleCache = result.getName() == null ? null : result.getName().getTitleCache();
-        if (isNotBlank(strExpectedNameTitleCache) && (!strExpectedNameTitleCache.equals(nameTitleCache))){
+        if (isNotBlank(strExpectedNameTitleCache) && (!strExpectedNameTitleCache.trim().equals(nameTitleCache))){
             String message = "Name title cache (%s) does not match expected name (%s)";
             message = String.format(message, nameTitleCache==null? "null":nameTitleCache, strExpectedNameTitleCache);
             state.getResult().addWarning(message, null, line);
@@ -324,7 +323,7 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
         //taxon title cache
         String strExpectedTaxonTitleCache = record.get(colTaxonTitleCache);
         String taxonTitleCache = result.getTitleCache();
-        if (isNotBlank(strExpectedTaxonTitleCache) && (!strExpectedTaxonTitleCache.equals(taxonTitleCache))){
+        if (isNotBlank(strExpectedTaxonTitleCache) && (!strExpectedTaxonTitleCache.trim().equals(taxonTitleCache))){
             String message = "Name cache (%s) does not match expected name (%s)";
             message = String.format(message, taxonTitleCache==null? "null":taxonTitleCache, strExpectedTaxonTitleCache);
             state.getResult().addWarning(message, null, line);

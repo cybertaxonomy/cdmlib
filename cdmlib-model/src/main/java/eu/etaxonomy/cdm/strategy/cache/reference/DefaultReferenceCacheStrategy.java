@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.strategy.cache.reference;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
@@ -17,6 +18,9 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
@@ -274,6 +278,71 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
 
         return stringBuilder.toString();
     }
+
+    /**
+     * @param reference
+     * @return
+     */
+    public String createShortCitation(Reference reference) {
+        TeamOrPersonBase<?> authorship = reference.getAuthorship();
+        String shortCitation = "";
+        if (authorship == null) {
+            return null;
+        }
+        authorship = HibernateProxyHelper.deproxy(authorship);
+        if (authorship instanceof Person){
+            shortCitation = ((Person)authorship).getFamilyName();
+            if (StringUtils.isBlank(shortCitation) ){
+                shortCitation = ((Person)authorship).getTitleCache();
+            }
+        }
+        else if (authorship instanceof Team){
+
+            Team authorTeam = HibernateProxyHelper.deproxy(authorship, Team.class);
+            int index = 0;
+
+            for (Person teamMember : authorTeam.getTeamMembers()){
+                index++;
+                if (index == 3){
+                    shortCitation += " & al.";
+                    break;
+                }
+                String concat = concatString(authorTeam, authorTeam.getTeamMembers(), index, ", ", " & ");
+                if (teamMember.getFamilyName() != null){
+                    shortCitation += concat + teamMember.getFamilyName();
+                }else{
+                    shortCitation += concat + teamMember.getTitleCache();
+                }
+
+            }
+            if (StringUtils.isBlank(shortCitation)){
+                shortCitation = authorTeam.getTitleCache();
+            }
+
+        }
+        if (reference.getDatePublished() != null) {
+            if (!StringUtils.isBlank(reference.getDatePublished().getFreeText())){
+                shortCitation = shortCitation + " (" + reference.getDatePublished().getFreeText() + ")";
+            }else if (!StringUtils.isBlank(reference.getYear()) ){
+                shortCitation = shortCitation + " (" + reference.getYear() + ")";
+            }
+        }
+
+        return shortCitation;
+    }
+
+    private static String concatString(Team team, List<Person> teamMembers, int i, String std_team_concatination, String final_team_concatination) {
+        String concat;
+        if (i <= 1){
+            concat = "";
+        }else if (i < teamMembers.size() || ( team.isHasMoreMembers() && i == teamMembers.size())){
+            concat = std_team_concatination;
+        }else{
+            concat = final_team_concatination;
+        }
+        return concat;
+    }
+
 
     @Override
     public String getNomenclaturalCache(Reference reference) {

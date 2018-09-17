@@ -64,7 +64,8 @@ public class EhCacheConfiguration implements DisposableBean {
 
 
     /**
-     * Returns the default cache configuration.
+     * Returns the default cache configuration for the cache
+     * named {@link CdmCacher#DEFAULT_CACHE_NAME "cdmDefaultCache"}
      *
      * @return
      */
@@ -77,6 +78,7 @@ public class EhCacheConfiguration implements DisposableBean {
 
         CacheConfiguration cc = new CacheConfiguration(CdmCacher.DEFAULT_CACHE_NAME, 500)
                 .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LFU)
+                .maxEntriesLocalHeap(10) // avoid ehache consuming too much heap
                 .eternal(false)
                 // default ttl and tti set to 2 hours
                 .timeToLiveSeconds(60*60*2)

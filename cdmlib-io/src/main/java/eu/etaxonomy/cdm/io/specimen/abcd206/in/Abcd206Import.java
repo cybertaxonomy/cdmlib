@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -27,6 +28,7 @@ import org.w3c.dom.NodeList;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
+import eu.etaxonomy.cdm.common.StreamUtils;
 import eu.etaxonomy.cdm.ext.occurrence.bioCase.BioCaseQueryServiceWrapper;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
@@ -53,6 +55,8 @@ import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.media.Rights;
+import eu.etaxonomy.cdm.model.media.RightsType;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
@@ -66,6 +70,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author p.kelbert
@@ -296,11 +301,19 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         } finally {
             state.getReport().printReport(state.getConfig().getReportUri());
         }
-
         if (state.getConfig().isDownloadSequenceData()) {
-            // download fasta files for imported sequences
-            // TODO: where to store the files and how to create the new Blast DB
+            for (URI uri:state.getSequenceDataStableIdentifier()){
+                // Files.createDirectories(file.getParent()); // optional, make sure parent dir exists
+                try {
+                    StreamUtils.downloadFile(uri.toURL(), "temp");
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
+            }
         }
+
         return;
     }
 
@@ -489,7 +502,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             // gathering event
             UnitsGatheringEvent unitsGatheringEvent = new UnitsGatheringEvent(cdmAppController.getTermService(),
                     state.getDataHolder().locality, state.getDataHolder().languageIso, state.getDataHolder().longitude,
-                    state.getDataHolder().latitude, state.getDataHolder().getGatheringElevationText(),
+                    state.getDataHolder().latitude, state.getDataHolder().getGatheringCoordinateErrorMethod() , state.getDataHolder().getGatheringElevationText(),
                     state.getDataHolder().getGatheringElevationMin(), state.getDataHolder().getGatheringElevationMax(),
                     state.getDataHolder().getGatheringElevationUnit(), state.getDataHolder().getGatheringDateText(),
                     state.getDataHolder().getGatheringNotes(), state.getDataHolder().getGatheringMethod(),
@@ -614,6 +627,28 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                             }
 
                         }
+                        if (attributes.containsKey("CreateDate")) {
+                            String createDate = attributes.get("CreateDate");
+
+                            if (createDate != null) {
+
+                               media.setMediaCreated(TimePeriodParser.parseString(createDate));
+                            }
+
+                        }
+
+
+                        if (attributes.containsKey("License")) {
+                            String licence = attributes.get("License");
+
+                            if (licence != null) {
+                               Rights right = Rights.NewInstance(licence, Language.ENGLISH(), RightsType.LICENSE());
+                               media.addRights(right);
+                            }
+
+                        }
+
+
 
                         derivedUnitFacade.addDerivedUnitMedia(media);
                         if (state.getConfig().isAddMediaAsMediaSpecimen()) {
@@ -1133,7 +1168,13 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 type = SpecimenOrObservationType.PreservedSpecimen;
             } else if (state.getDataHolder().getRecordBasis().toLowerCase().startsWith("o")
                     || state.getDataHolder().getRecordBasis().toLowerCase().indexOf("observation") > -1) {
-                type = SpecimenOrObservationType.Observation;
+                if (state.getDataHolder().getRecordBasis().toLowerCase().contains("machine") && state.getDataHolder().getRecordBasis().toLowerCase().contains("observation")){
+                    type = SpecimenOrObservationType.MachineObservation;
+                }else if (state.getDataHolder().getRecordBasis().toLowerCase().contains("human") && state.getDataHolder().getRecordBasis().toLowerCase().contains("observation")){
+                    type = SpecimenOrObservationType.HumanObservation;
+                }else{
+                    type = SpecimenOrObservationType.Observation;
+                }
             } else if (state.getDataHolder().getRecordBasis().toLowerCase().indexOf("fossil") > -1) {
                 type = SpecimenOrObservationType.Fossil;
             } else if (state.getDataHolder().getRecordBasis().toLowerCase().indexOf("materialsample") > -1) {

@@ -540,6 +540,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 collectionKey, FormatKey.SPACE,
                 FormatKey.MOST_SIGNIFICANT_IDENTIFIER, FormatKey.SPACE });
         if(CdmUtils.isBlank(specimenIdentifier)){
+            specimenIdentifier = derivedUnit.getTitleCache();
+        }
+        if(CdmUtils.isBlank(specimenIdentifier)){
             specimenIdentifier = derivedUnit.getUuid().toString();
         }
         preservedSpecimenDTO.setAccessionNumber(specimenIdentifier);
@@ -587,15 +590,12 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 fieldUnitDTO.setHasType(true);
             }
             TypeDesignationStatusBase<?> typeStatus = specimenTypeDesignation.getTypeStatus();
-            if (typeStatus != null) {
-                List<String> typedTaxaNames = new ArrayList<>();
-                String label = typeStatus.getLabel();
-                Set<TaxonName> typifiedNames = specimenTypeDesignation.getTypifiedNames();
-                for (TaxonName taxonName : typifiedNames) {
-                    typedTaxaNames.add(taxonName.getNameCache());
-                }
-                preservedSpecimenDTO.addTypes(label, typedTaxaNames);
+            Set<TaxonName> typifiedNames = specimenTypeDesignation.getTypifiedNames();
+            List<String> typedTaxaNames = new ArrayList<>();
+            for (TaxonName taxonName : typifiedNames) {
+                typedTaxaNames.add(taxonName.getTitleCache());
             }
+            preservedSpecimenDTO.addTypes(typeStatus!=null?typeStatus.getLabel():"", typedTaxaNames);
         }
 
         // individuals associations
@@ -747,7 +747,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                     if (derivative instanceof DnaSample) {
                         dto = new DNASampleDTO(derivative);
                     } else {
-                        dto = PreservedSpecimenDTO.newInstance(derivative);
+                        dto = new PreservedSpecimenDTO(derivative);
                     }
                     alreadyCollectedSpecimen.put(dto.getUuid(), dto);
                     dto.addAllDerivates(getDerivedUnitDTOsFor(dto, derivative, alreadyCollectedSpecimen));
@@ -862,7 +862,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                         derivedUnitDTO = new DNASampleDTO(derivedUnit);
                     } else {
                         derivedUnit = HibernateProxyHelper.deproxy(o, DerivedUnit.class);
-                        derivedUnitDTO = PreservedSpecimenDTO.newInstance(derivedUnit);
+                        derivedUnitDTO = new PreservedSpecimenDTO(derivedUnit);
                     }
                     if (alreadyCollectedSpecimen.get(derivedUnitDTO.getUuid()) == null){
                         alreadyCollectedSpecimen.put(derivedUnitDTO.getUuid(), derivedUnitDTO);
@@ -1034,7 +1034,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 if (specimen instanceof DnaSample){
                     originalDTO = new DNASampleDTO((DnaSample)specimen);
                 } else {
-                    originalDTO = PreservedSpecimenDTO.newInstance((DerivedUnit)specimen);
+                    originalDTO = new PreservedSpecimenDTO((DerivedUnit)specimen);
                 }
                 originalDTO.addDerivate(derivedUnitDTO);
                 fieldUnitDto = findFieldUnitDTO(originalDTO, fieldUnits, alreadyCollectedSpecimen);
@@ -1596,8 +1596,8 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     @Override
-    public Pager<SpecimenOrObservationBase> findByTitle(
-            IIdentifiableEntityServiceConfigurator<SpecimenOrObservationBase> config) {
+    public <S extends SpecimenOrObservationBase> Pager<S> findByTitle(
+            IIdentifiableEntityServiceConfigurator<S> config) {
         if (config instanceof FindOccurrencesConfigurator) {
             FindOccurrencesConfigurator occurrenceConfig = (FindOccurrencesConfigurator) config;
             List<SpecimenOrObservationBase> occurrences = new ArrayList<>();
@@ -1612,13 +1612,14 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             if(occurrenceConfig.getAssociatedTaxonNameUuid()!=null){
                 taxonName = nameService.load(occurrenceConfig.getAssociatedTaxonNameUuid());
             }
-            occurrences.addAll(dao.findOccurrences(occurrenceConfig.getClazz(),
+            List<? extends SpecimenOrObservationBase> foundOccurrences = dao.findOccurrences(occurrenceConfig.getClazz(),
                     occurrenceConfig.getTitleSearchString(), occurrenceConfig.getSignificantIdentifier(),
                     occurrenceConfig.getSpecimenType(), taxon, taxonName, occurrenceConfig.getMatchMode(), null, null,
-                    occurrenceConfig.getOrderHints(), occurrenceConfig.getPropertyPaths()));
+                    occurrenceConfig.getOrderHints(), occurrenceConfig.getPropertyPaths());
+            occurrences.addAll(foundOccurrences);
             occurrences = filterOccurencesByAssignmentAndHierarchy(occurrenceConfig, occurrences, taxon, taxonName);
 
-            return new DefaultPagerImpl<>(config.getPageNumber(), occurrences.size(), config.getPageSize(), occurrences);
+            return new DefaultPagerImpl<>(config.getPageNumber(), occurrences.size(), config.getPageSize(), (List<S>)occurrences);
         }
         return super.findByTitle(config);
     }
@@ -1629,9 +1630,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         //filter out (un-)assigned specimens
         if(taxon==null && taxonName==null){
             AssignmentStatus assignmentStatus = occurrenceConfig.getAssignmentStatus();
-            List<SpecimenOrObservationBase<?>> specimenWithAssociations = new ArrayList<>();
+            List<SpecimenOrObservationBase> specimenWithAssociations = new ArrayList<>();
             if(!assignmentStatus.equals(AssignmentStatus.ALL_SPECIMENS)){
-                for (SpecimenOrObservationBase<?> specimenOrObservationBase : occurrences) {
+                for (SpecimenOrObservationBase specimenOrObservationBase : occurrences) {
                     boolean includeUnpublished = true;  //TODO not sure if this is correct, maybe we have to propagate publish flag to higher methods.
                     Collection<TaxonBase<?>> associatedTaxa = listAssociatedTaxa(specimenOrObservationBase,
                             includeUnpublished, null, null, null, null);

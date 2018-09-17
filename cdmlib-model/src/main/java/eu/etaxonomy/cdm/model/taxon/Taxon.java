@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.model.taxon;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -855,6 +856,31 @@ public class Taxon
     }
 
     /**
+     * Returns the boolean value indicating whether <i>this</i> taxon is a invalid designation
+     * for at least one other taxon.
+     */
+    // TODO cache as for #hasTaxonomicChildren
+    @Transient
+    public boolean isInvalidDesignation(){
+        return computeInvalidDesignationRelations() > 0;
+    }
+
+    /**
+     * Counts the number of invalid designation relationships where this taxon represents the
+     * invalid designation for another taxon.
+     * @return
+     */
+    private int computeInvalidDesignationRelations(){
+        int count = 0;
+        for (TaxonRelationship rel: this.getRelationsFromThisTaxon()){
+            if (rel.getType().isInvalidDesignation()){
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
      * Returns the boolean value indicating whether <i>this</i> taxon is a related
      * concept for at least one other taxon.
      */
@@ -1551,6 +1577,88 @@ public class Taxon
 
         Collections.sort(result, comparator);
         return result;
+    }
+
+    /**
+     * @param comparator
+     * @return
+     *
+     * @see     #getSynonymsGroups()
+     */
+    @Transient
+    public List<Taxon> getAllMisappliedNames(){
+        List<Taxon> result = new ArrayList<>();
+
+        for (TaxonRelationship rel : this.getRelationsToThisTaxon()){
+            if (rel.getType().isAnyMisappliedName() ){
+                result.add(rel.getFromTaxon());
+            }
+        }
+        sortBySimpleTitleCacheComparator(result);
+        return result;
+    }
+
+    /**
+     * @param comparator
+     * @return
+     *
+     * @see     #getSynonymsGroups()
+     */
+    @Transient
+    public List<Taxon> getInvalidDesignations(){
+        List<Taxon> result = new ArrayList<>();
+        for (TaxonRelationship rel : this.getRelationsToThisTaxon()){
+            if (rel.getType().isInvalidDesignation()){
+                result.add(rel.getFromTaxon());
+            }
+        }
+        sortBySimpleTitleCacheComparator(result);
+        return result;
+    }
+
+    /**
+     * @param comparator
+     * @return
+     *
+     * @see     #getSynonymsGroups()
+     */
+    @Transient
+    public List<Taxon> getAllProParteSynonyms(){
+        List<Taxon> result = new ArrayList<>();
+
+        for (TaxonRelationship rel : this.getRelationsToThisTaxon()){
+            if (rel.getType().isAnySynonym()){
+                result.add(rel.getFromTaxon());
+            }
+        }
+        sortBySimpleTitleCacheComparator(result);
+        return result;
+    }
+    /**
+     * @param result
+     */
+    private void sortBySimpleTitleCacheComparator(List<Taxon> result) {
+
+        Comparator<Taxon> taxonComparator = new Comparator<Taxon>(){
+
+            @Override
+            public int compare(Taxon o1, Taxon o2) {
+
+                if (o1.getTitleCache() == o2.getTitleCache()){
+                    return 0;
+                }
+                if (o1.getTitleCache() == null){
+                    return -1;
+                }
+                if (o2.getTitleCache() == null){
+                    return 1;
+                }
+                return o1.getTitleCache().compareTo(o2.getTitleCache());
+
+            }
+
+        };
+        Collections.sort(result, taxonComparator);
     }
 
 

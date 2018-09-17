@@ -61,11 +61,15 @@ import eu.etaxonomy.cdm.strategy.cache.common.TimePeriodPartialFormatter;
 public class TimePeriod implements Cloneable, Serializable {
     private static final long serialVersionUID = 3405969418194981401L;
     private static final Logger logger = Logger.getLogger(TimePeriod.class);
-    public static final DateTimeFieldType MONTH_TYPE = DateTimeFieldType.monthOfYear();
     public static final DateTimeFieldType YEAR_TYPE = DateTimeFieldType.year();
+    public static final DateTimeFieldType MONTH_TYPE = DateTimeFieldType.monthOfYear();
     public static final DateTimeFieldType DAY_TYPE = DateTimeFieldType.dayOfMonth();
     public static final DateTimeFieldType HOUR_TYPE = DateTimeFieldType.hourOfDay();
     public static final DateTimeFieldType MINUTE_TYPE = DateTimeFieldType.minuteOfHour();
+
+    public static final Partial CONTINUED = new Partial
+            (new DateTimeFieldType[]{YEAR_TYPE, MONTH_TYPE, DAY_TYPE},
+             new int[]{9999, 11, 30});
 
     @XmlElement(name = "Start")
     @XmlJavaTypeAdapter(value = PartialAdapter.class)
@@ -82,7 +86,6 @@ public class TimePeriod implements Cloneable, Serializable {
     @FieldBridge(impl = PartialBridge.class)
     @JsonIgnore // currently used for swagger model scanner
     private Partial end;
-
 
     @XmlElement(name = "FreeText")
     private String freeText;
@@ -289,8 +292,8 @@ public class TimePeriod implements Cloneable, Serializable {
         start=startDate;
     }
     public TimePeriod(Partial startDate, Partial endDate) {
-        start=startDate;
-        end=endDate;
+        start = startDate;
+        end = endDate;
     }
 
 //******************* GETTER / SETTER ************************************/
@@ -308,7 +311,7 @@ public class TimePeriod implements Cloneable, Serializable {
 
     @JsonIgnore // currently used for swagger model scanner
     public Partial getEnd() {
-        return end;
+        return isContinued() ? null : end;
     }
 
     public void setEnd(Partial end) {
@@ -334,6 +337,29 @@ public class TimePeriod implements Cloneable, Serializable {
      */
     public void setFreeText(String freeText) {
         this.freeText = freeText;
+    }
+
+
+    /**
+     * Returns the continued flag (internally stored as a constant
+     * far away date. {@link #CONTINUED}
+     * @return
+     */
+    public boolean isContinued() {
+        return CONTINUED.equals(end);
+    }
+    /**
+     * Sets the (virtual) continued flag.<BR><BR>
+     * NOTE: setting the flag to true, will remove an
+     * existing end date.
+     * @param isContinued
+     */
+    public void setContinued(boolean isContinued) {
+        if (isContinued == true){
+            this.end = CONTINUED;
+        }else if (isContinued()){
+            this.end = null;
+        }
     }
 
 
@@ -368,23 +394,6 @@ public class TimePeriod implements Cloneable, Serializable {
     }
 
 
-
-    @Transient
-    public String getYear(){
-        String result = "";
-        if (getStartYear() != null){
-            result += String.valueOf(getStartYear());
-            if (getEndYear() != null){
-                result += "-" + String.valueOf(getEndYear());
-            }
-        }else{
-            if (getEndYear() != null){
-                result += String.valueOf(getEndYear());
-            }
-        }
-        return result;
-    }
-
     @Transient
     public Integer getStartYear(){
         return getPartialValue(start, YEAR_TYPE);
@@ -402,17 +411,17 @@ public class TimePeriod implements Cloneable, Serializable {
 
     @Transient
     public Integer getEndYear(){
-        return getPartialValue(end, YEAR_TYPE);
+        return getPartialValue(getEnd(), YEAR_TYPE);
     }
 
     @Transient
     public Integer getEndMonth(){
-        return getPartialValue(end, MONTH_TYPE);
+        return getPartialValue(getEnd(), MONTH_TYPE);
     }
 
     @Transient
     public Integer getEndDay(){
-        return getPartialValue(end, DAY_TYPE);
+        return getPartialValue(getEnd(), DAY_TYPE);
     }
 
     public TimePeriod setStartYear(Integer year){
@@ -462,7 +471,7 @@ public class TimePeriod implements Cloneable, Serializable {
     @Transient
     private TimePeriod setEndField(Integer value, DateTimeFieldType type)
             throws IndexOutOfBoundsException{
-        end = setPartialField(end, value, type);
+        end = setPartialField(getEnd(), value, type);
         return this;
     }
 
@@ -512,7 +521,6 @@ public class TimePeriod implements Cloneable, Serializable {
     @Override
     public String toString(){
         String result = null;
-//        DateTimeFormatter formatter = TimePeriodPartialFormatter.NewInstance();
         if ( StringUtils.isNotBlank(this.getFreeText())){
             result = this.getFreeText();
         }else{
@@ -523,15 +531,37 @@ public class TimePeriod implements Cloneable, Serializable {
 
     /**
      * Returns the concatenation of <code>start</code> and <code>end</code>
-     *
      */
     public String getTimePeriod(){
         String result = null;
         DateTimeFormatter formatter = TimePeriodPartialFormatter.NewInstance();
         String strStart = start != null ? start.toString(formatter): null;
-        String strEnd = end != null ? end.toString(formatter): null;
-        result = CdmUtils.concat("-", strStart, strEnd);
+        if (isContinued()){
+            result = CdmUtils.concat("", strStart, "+");
+        }else{
+            String strEnd = end != null ? end.toString(formatter): null;
+            result = CdmUtils.concat("-", strStart, strEnd);
+        }
 
+        return result;
+    }
+
+    @Transient
+    public String getYear(){
+        String result = "";
+        if (getStartYear() != null){
+            result += String.valueOf(getStartYear());
+            if (getEndYear() != null){
+                result += "-" + String.valueOf(getEndYear());
+            }
+        }else{
+            if (getEndYear() != null){
+                result += String.valueOf(getEndYear());
+            }
+        }
+        if (isContinued()){
+            result += "+";
+        }
         return result;
     }
 
@@ -571,9 +601,9 @@ public class TimePeriod implements Cloneable, Serializable {
     public int hashCode() {
         int hashCode = 7;
         hashCode = 29*hashCode +
-                    (start== null? 33: start.hashCode()) +
-                    (end== null? 39: end.hashCode()) +
-                    (freeText== null? 41: freeText.hashCode());
+                    (start == null? 33: start.hashCode()) +
+                    (end == null? 39: end.hashCode()) +
+                    (freeText == null? 41: freeText.hashCode());
         return hashCode;
     }
 
@@ -601,6 +631,5 @@ public class TimePeriod implements Cloneable, Serializable {
         target.setEnd(origin.end);
         target.setFreeText(origin.freeText);
     }
-
 
 }

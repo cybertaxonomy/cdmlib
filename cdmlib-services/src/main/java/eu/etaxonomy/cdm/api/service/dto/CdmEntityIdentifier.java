@@ -20,9 +20,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 public class CdmEntityIdentifier implements Serializable {
 
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1479948194282284147L;
 
 

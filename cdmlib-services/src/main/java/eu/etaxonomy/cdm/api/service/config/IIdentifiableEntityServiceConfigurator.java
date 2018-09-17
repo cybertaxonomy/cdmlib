@@ -47,10 +47,10 @@ public interface IIdentifiableEntityServiceConfigurator<T extends IIdentifiableE
 
 	public Integer getPageNumber();
 	public void setPageNumber(Integer pageNumber);
-    
+
 	public List<Criterion> getCriteria();
     public void setCriteria(List<Criterion> criteria);
-    
+
 	public List<Restriction<?>> getRestrictions();
 	public void setRestrictions(List<Restriction<?>> restrictions);
 

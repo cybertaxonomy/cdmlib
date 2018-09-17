@@ -34,7 +34,6 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * One nomenclatural status can be assigned to several taxon names.
  *
  * @author m.doering
- * @version 1.0
  * @since 08-Nov-2007 13:06:39
  */
 @XmlAccessorType(XmlAccessType.FIELD)

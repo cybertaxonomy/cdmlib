@@ -96,6 +96,7 @@ public interface ITaxonDao
      * @param doSynonyms
      * @param queryString
      * @param classification TODO
+     * @param subtree
      * @param matchMode
      * @param namedAreas TODO
      * @param pageSize
@@ -104,7 +105,7 @@ public interface ITaxonDao
      * @return list of found taxa
      */
     public List<TaxonBase> getTaxaByName(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames, boolean doCommonNames,
-            boolean includeAuthors, String queryString, Classification classification,
+            boolean includeAuthors, String queryString, Classification classification, TaxonNode subtree,
             MatchMode matchMode, Set<NamedArea> namedAreas, boolean includeUnpublished,
             NameSearchOrder order, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
@@ -113,6 +114,7 @@ public interface ITaxonDao
      * @param doSynonyms
      * @param queryString
      * @param classification TODO
+     * @param subtree
      * @param matchMode
      * @param namedAreas
      * @param pageSize
@@ -121,27 +123,9 @@ public interface ITaxonDao
      * @return
      */
     public long countTaxaByName(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames, boolean doCommonNames,
-            boolean doIncludeAuthors, String queryString, Classification classification,
+            boolean doIncludeAuthors, String queryString, Classification classification, TaxonNode subtree,
             MatchMode matchMode, Set<NamedArea> namedAreas, boolean includeUnpublished);
 
-//	/**
-//	 * @param queryString
-//	 * @param matchMode
-//	 * @param accepted
-//	 * @return
-//	 */
-//	public Integer countTaxaByName(String queryString, MatchMode matchMode,
-//			Boolean accepted);
-
-//	/**
-//	 * Returns a count of TaxonBase instances where the
-//	 * taxon.name properties match the parameters passed.
-//	 *
-//	 * @param queryString search string
-//	 * @param matchMode way how search string shall be matched: exact, beginning, or anywhere
-//	 * @param selectModel all taxon base, taxa, or synonyms
-//	 */
-//	public Integer countTaxaByName(String queryString, MatchMode matchMode, SelectMode selectMode);
 
     /**
      * Returns a count of TaxonBase instances where the
@@ -201,7 +185,7 @@ public interface ITaxonDao
      * @return
      */
     public List<TaxonBase> findByNameTitleCache(boolean doTaxa, boolean doSynonyms, boolean includeUnpublished,
-            String queryString, Classification classification, MatchMode matchMode, Set<NamedArea> namedAreas,
+            String queryString, Classification classification, TaxonNode subtree, MatchMode matchMode, Set<NamedArea> namedAreas,
             NameSearchOrder order, Integer pageNumber, Integer pageSize, List<String> propertyPaths) ;
 
     /**
@@ -368,7 +352,7 @@ public interface ITaxonDao
 
     public List<UuidAndTitleCache<? extends IdentifiableEntity>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doNamesWithoutTaxa,
             boolean doMisappliedNames, boolean doCommonNames, boolean includeUnpublished,
-            String queryString, Classification classification,
+            String queryString, Classification classification, TaxonNode subtree,
             MatchMode matchMode, Set<NamedArea> namedAreas, NameSearchOrder order);
 
     public List<String> taxaByNameNotInDB(List<String> taxonNames);

@@ -119,6 +119,7 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
 
     @Override
     public List<DescriptionElementBase> search(Class<? extends DescriptionElementBase> clazz, String queryString, Integer pageSize,	Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+//    public <S extends DescriptionElementBase> List<S> search(Class<S> clazz, String queryString, Integer pageSize,  Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         checkNotInPriorView("DescriptionElementDaoImpl.searchTextData(String queryString, Integer pageSize,	Integer pageNumber)");
         QueryParser queryParser = new QueryParser(defaultField, new StandardAnalyzer());
 

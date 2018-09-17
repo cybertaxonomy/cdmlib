@@ -7,9 +7,6 @@
     http://www.springframework.org/schema/context
     http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
-    <!-- enable processing of annotations such as @Autowired and @Configuration -->
-    <context:annotation-config/>
-
     <bean class="eu.etaxonomy.cdm.opt.config.DataSourceConfigurer" >
     </bean>
 

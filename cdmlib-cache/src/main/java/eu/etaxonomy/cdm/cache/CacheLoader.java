@@ -28,7 +28,6 @@ import net.sf.ehcache.Element;
 /**
  * @author cmathew
  * @since 19 Feb 2015
- *
  */
 public class CacheLoader {
     private static final Logger logger = Logger.getLogger(CacheLoader.class);
@@ -40,11 +39,9 @@ public class CacheLoader {
     private final Cache cdmlibModelCache;
 
 
-
     public CacheLoader(ICdmCacher cdmCacher) {
         this.cdmCacher = cdmCacher;
         this.cdmlibModelCache = CdmRemoteCacheManager.getInstance().getCdmModelGetMethodsCache();
-
     }
 
 
@@ -69,7 +66,7 @@ public class CacheLoader {
         } else if (obj instanceof Collection) {
             return (T) load((Collection<T>)obj, recursive, update);
         } else if(obj instanceof Pager) {
-        	load(((Pager)obj).getRecords(), recursive, update);
+            load(((Pager)obj).getRecords(), recursive, update);
             return obj;
         } else if(obj instanceof MergeResult) {
             return (T) load((MergeResult<CdmBase>)obj, recursive, update);
@@ -93,21 +90,19 @@ public class CacheLoader {
             return (T) loadRecursive((MergeResult)obj, alreadyVisitedEntities, update);
         }
 
-
-        logger.info("No caching yet for type " + obj.getClass().getName());
+        if (logger.isInfoEnabled()){logger.info("No caching yet for type " + obj.getClass().getName());}
 
         return obj;
     }
 
     public <T extends Object> Map<T,T> load(Map<T,T> map, boolean recursive, boolean update){
 
-
         if(isRecursiveEnabled && recursive) {
-            logger.debug("---- starting recursive load for cdm entity map");
-            List<Object> alreadyVisitedEntities = new ArrayList<Object>();
+            if (logger.isDebugEnabled()){logger.debug("---- starting recursive load for cdm entity map");}
+            List<Object> alreadyVisitedEntities = new ArrayList<>();
             Map<T,T> cachedMap = load(map, alreadyVisitedEntities, update);
             alreadyVisitedEntities.clear();
-            logger.debug("---- ending recursive load for cdm entity map \n");
+            if (logger.isDebugEnabled()){logger.debug("---- ending recursive load for cdm entity map \n");}
             return cachedMap;
         } else {
             return load(map, null, update);
@@ -116,18 +111,18 @@ public class CacheLoader {
 
 
     private <T extends Object> Map<T,T> load(Map<T,T> map, List<Object> alreadyVisitedEntities, boolean update){
-        //map = (Map<T,T>)deproxy(map);
 
         if(map == null || map.isEmpty()) {
             return map;
         }
 
-        int originalMapSize = map.size();
         Object[] result = new Object[ map.size() * 2 ];
         Iterator<Map.Entry<T,T>> iter = map.entrySet().iterator();
         int i=0;
         // to avoid ConcurrentModificationException
-        alreadyVisitedEntities.add(map);
+        if (alreadyVisitedEntities != null){
+            alreadyVisitedEntities.add(map);
+        }
         while ( iter.hasNext() ) {
             Map.Entry<T,T> e = iter.next();
             result[i++] = e.getKey();
@@ -155,11 +150,11 @@ public class CacheLoader {
 
         Collection<T> loadedCollection;
         if(isRecursiveEnabled && recursive) {
-            logger.debug("---- starting recursive load for cdm entity collection");
-            List<Object> alreadyVisitedEntities = new ArrayList<Object>();
+            if (logger.isDebugEnabled()){logger.debug("---- starting recursive load for cdm entity collection");}
+            List<Object> alreadyVisitedEntities = new ArrayList<>();
             Collection<T> cachedCollection = load(collection, alreadyVisitedEntities, update);
             alreadyVisitedEntities.clear();
-            logger.debug("---- ending recursive load for cdm entity collection \n");
+            if (logger.isDebugEnabled()){logger.debug("---- ending recursive load for cdm entity collection \n");}
             loadedCollection = cachedCollection;
         } else {
             loadedCollection = load(collection, null, update);
@@ -170,8 +165,6 @@ public class CacheLoader {
     @SuppressWarnings("unchecked")
     private <T extends Object> Collection<T> load(Collection<T> collection, List<Object> alreadyVisitedEntities, boolean update) {
 
-
-
         if(collection == null || collection.isEmpty()) {
             return collection;
         }
@@ -180,7 +173,9 @@ public class CacheLoader {
         Iterator<T> collectionItr = collection.iterator();
         int count = 0;
         // to avoid ConcurrentModificationException
-        alreadyVisitedEntities.add(collection);
+        if (alreadyVisitedEntities != null){
+            alreadyVisitedEntities.add(collection);
+        }
         while(collectionItr.hasNext()) {
             Object obj = collectionItr.next();
             if(alreadyVisitedEntities == null) {
@@ -205,13 +200,13 @@ public class CacheLoader {
     public MergeResult<CdmBase> load(MergeResult<CdmBase> mergeResult, boolean recursive, boolean update) {
         CdmBase cdmBase = load(mergeResult.getMergedEntity(), recursive, update);
         load(mergeResult.getNewEntities(), recursive, update);
-        return new MergeResult(cdmBase, mergeResult.getNewEntities());
+        return new MergeResult<>(cdmBase, mergeResult.getNewEntities());
     }
 
     public MergeResult<CdmBase> loadRecursive(MergeResult<CdmBase> mergeResult,List<Object> alreadyVisitedEntities, boolean update) {
         CdmBase cdmBase = loadRecursive(mergeResult.getMergedEntity(), alreadyVisitedEntities, update);
         loadRecursive(mergeResult.getNewEntities(), alreadyVisitedEntities, update);
-        return new MergeResult(cdmBase, mergeResult.getNewEntities());
+        return new MergeResult<>(cdmBase, mergeResult.getNewEntities());
     }
 
     /**
@@ -252,23 +247,23 @@ public class CacheLoader {
             }
         }
 
-        CdmBase loadedCdmBase;
+        T loadedCdmBase;
         if(isRecursiveEnabled && recursive) {
             logger.debug("---- starting recursive load for cdm entity " + cdmEntity.getClass().getName() + " with id " + cdmEntity.getId());
             List<Object> alreadyVisitedEntities = new ArrayList<Object>();
-            CdmBase cb =  loadRecursive(cdmEntity, alreadyVisitedEntities, update);
+            T cb =  loadRecursive(cdmEntity, alreadyVisitedEntities, update);
             alreadyVisitedEntities.clear();
             logger.debug("---- ending recursive load for cdm entity " + cdmEntity.getClass().getName() + " with id " + cdmEntity.getId() + "\n");
             loadedCdmBase =  cb;
         } else {
             loadedCdmBase = load(cdmEntity);
         }
-        return (T) loadedCdmBase;
+        return loadedCdmBase;
 
     }
 
 
-    protected CdmBase load(CdmBase cdmEntity) {
+    protected <T extends CdmBase> T load(T cdmEntity) {
         logger.debug("loading object of type " + cdmEntity.getClass().getName() + " with id " + cdmEntity.getId());
         cdmCacher.put((CdmBase)ProxyUtils.deproxy(cdmEntity));
         return cdmCacher.getFromCache(cdmEntity);
@@ -293,21 +288,22 @@ public class CacheLoader {
      *            them to the value of the cdm entity being loaded
      * @return
      */
-    private CdmBase loadRecursive(CdmBase cdmEntity,  List<Object> alreadyVisitedEntities, boolean update) {
+    private <T extends CdmBase> T loadRecursive(T cdmEntity,  List<Object> alreadyVisitedEntities, boolean update) {
 
-        CdmBase cachedCdmEntity = load(cdmEntity);
+        T cachedCdmEntity = load(cdmEntity);
 
         // we want to recursive through the cdmEntity (and not the cachedCdmEntity)
         // since there could be new or deleted objects in the cdmEntity sub-graph
 
         // start by getting the fields from the cdm entity
-        CdmBase deproxiedEntity = (CdmBase)ProxyUtils.deproxyOrNull(cdmEntity);
+        //TODO improve generics for deproxyOrNull, probably need to split the method
+        T deproxiedEntity = (T)ProxyUtils.deproxyOrNull(cdmEntity);
         if(deproxiedEntity != null){
             String className = deproxiedEntity.getClass().getName();
-            CdmModelFieldPropertyFromClass cmgmfc = getFromCdmlibModelCache(className);
-            if(cmgmfc != null) {
+            CdmModelFieldPropertyFromClass cmfpfc = getFromCdmlibModelCache(className);
+            if(cmfpfc != null) {
                 alreadyVisitedEntities.add(cdmEntity);
-                List<String> fields = cmgmfc.getFields();
+                List<String> fields = cmfpfc.getFields();
                 for(String field : fields) {
                     // retrieve the actual object corresponding to the field.
                     // this object will be either a CdmBase or a Collection / Map
@@ -328,7 +324,7 @@ public class CacheLoader {
                 throw new CdmClientCacheException("CdmEntity with class " + cdmEntity.getClass().getName() + " is not found in the cdmlib model cache. " +
                         "The cache may be corrupted or not in sync with the latest model version" );
             }
-        } else {
+        } else { //deproxiedEntity == null
             logger.debug("ignoring uninitlialized proxy " + cdmEntity.getClass() + "#" + cdmEntity.getId());
         }
 

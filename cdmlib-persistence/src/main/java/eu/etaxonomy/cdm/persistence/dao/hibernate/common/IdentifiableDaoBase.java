@@ -88,21 +88,28 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
         return results;
     }
 
+    /**
+     * FIXME candidate for removal
+     * @deprecated use {@link #findTitleCache(Class, String, Integer, Integer, List, MatchMode)} instead (or other methods)
+     */
     @Override
+    @Deprecated
     public List<T> findByTitleAndClass(String queryString, Class<T> clazz) {
         checkNotInPriorView("IdentifiableDaoBase.findByTitleAndClass(String queryString, Class<T> clazz)");
         Criteria crit = getSession().createCriteria(clazz);
         crit.add(Restrictions.ilike("titleCache", queryString));
+        @SuppressWarnings("unchecked")
         List<T> results = crit.list();
         return results;
     }
 
     @Override
-    public List<T> findTitleCache(Class<? extends T> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, MatchMode matchMode){
+    public <S extends T> List<S> findTitleCache(Class<S> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, MatchMode matchMode){
 
         Query query = prepareFindTitleCache(clazz, queryString, pageSize,
                 pageNumber, matchMode, false);
-        List<T> result = query.list();
+        @SuppressWarnings("unchecked")
+        List<S> result = query.list();
         return result;
     }
 
@@ -149,22 +156,22 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
     }
 
     @Override
-    public List<T> findByTitle(Class<? extends T> clazz, String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+    public <S extends T> List<S> findByTitle(Class<S> clazz, String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         return findByParam(clazz, "titleCache", queryString, matchmode, criterion, pageSize, pageNumber, orderHints, propertyPaths);
     }
 
     @Override
-    public List<T> findByReferenceTitle(Class<? extends T> clazz, String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+    public <S extends T> List<S> findByReferenceTitle(Class<S> clazz, String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         return findByParam(clazz, "title", queryString, matchmode, criterion, pageSize, pageNumber, orderHints, propertyPaths);
     }
 
     @Override
-    public List<T> findByTitleWithRestrictions(Class<? extends T> clazz, String queryString, MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+    public <S extends T> List<S> findByTitleWithRestrictions(Class<S> clazz, String queryString, MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         return findByParamWithRestrictions(clazz, "titleCache", queryString, matchmode, restrictions, pageSize, pageNumber, orderHints, propertyPaths);
     }
 
     @Override
-    public List<T> findByReferenceTitleWithRestrictions(Class<? extends T> clazz, String queryString, MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+    public <S extends T> List<S> findByReferenceTitleWithRestrictions(Class<S> clazz, String queryString, MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         return findByParamWithRestrictions(clazz, "title", queryString, matchmode, restrictions, pageSize, pageNumber, orderHints, propertyPaths);
     }
 

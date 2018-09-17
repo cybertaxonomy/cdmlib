@@ -45,8 +45,19 @@ public class QueryFactoryTest extends CdmIntegrationTest {
     public void testNewTermQuery_textfield_complex(){
 
         QueryFactory qf = new QueryFactory(luceneIndexToolProvider, Taxon.class);
+        Assert.assertEquals("ComplexPhraseQuery", qf.newTermQuery("titleCache", "\"Lact* *ennis\"", true).getClass().getSimpleName());
         Assert.assertEquals("ComplexPhraseQuery", qf.newTermQuery("titleCache", "\"Lactuca per*\"", true).getClass().getSimpleName());
+        Assert.assertEquals("ComplexPhraseQuery", qf.newTermQuery("titleCache", "\"Lact* perennis\"", true).getClass().getSimpleName());
+        Assert.assertEquals("ComplexPhraseQuery", qf.newTermQuery("titleCache", "\"Lact* per*\"", true).getClass().getSimpleName());
+        Assert.assertEquals("ComplexPhraseQuery", qf.newTermQuery("titleCache", "\"Lac*ca per*\"", true).getClass().getSimpleName());
+        Assert.assertEquals("ComplexPhraseQuery", qf.newTermQuery("titleCache", "\"Lac*ca perennis\"", true).getClass().getSimpleName());
+        Assert.assertEquals("ComplexPhraseQuery", qf.newTermQuery("titleCache", "\"Lactuca p*ennis\"", true).getClass().getSimpleName());
+        Assert.assertEquals("ComplexPhraseQuery", qf.newTermQuery("titleCache", "\"*ctuca perennis\"", true).getClass().getSimpleName());
+        Assert.assertEquals("ComplexPhraseQuery", qf.newTermQuery("titleCache", "\"*ctu* perennis\"", true).getClass().getSimpleName());
+        Assert.assertEquals("ComplexPhraseQuery", qf.newTermQuery("titleCache", "\"*ctu* *enn*\"", true).getClass().getSimpleName());
+        Assert.assertEquals("ComplexPhraseQuery", qf.newTermQuery("titleCache", "\"*ctuca per*\"", true).getClass().getSimpleName());
     }
+
 
     /**
      * {@inheritDoc}

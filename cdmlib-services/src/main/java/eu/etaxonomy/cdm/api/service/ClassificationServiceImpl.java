@@ -43,6 +43,7 @@ import eu.etaxonomy.cdm.api.service.pager.PagerUtils;
 import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.exception.FilterException;
 import eu.etaxonomy.cdm.exception.UnpublishedException;
 import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -179,19 +180,32 @@ public class ClassificationServiceImpl
     	}
     }
 
+    @Override
+    public List<TaxonNode> listRankSpecificRootNodes(Classification classification, Rank rank,
+            boolean includeUnpublished, Integer pageSize, Integer pageIndex, List<String> propertyPaths) {
+        return listRankSpecificRootNodes(classification, null, rank, includeUnpublished, pageSize, pageIndex, propertyPaths);
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<TaxonNode> listRankSpecificRootNodes(Classification classification, Rank rank,
+    public List<TaxonNode> listRankSpecificRootNodes(Classification classification,
+            TaxonNode subtree, Rank rank,
             boolean includeUnpublished, Integer pageSize, Integer pageIndex, List<String> propertyPaths) {
-        return pageRankSpecificRootNodes(classification, rank, includeUnpublished, pageSize, pageIndex, propertyPaths).getRecords();
+        return pageRankSpecificRootNodes(classification, subtree, rank, includeUnpublished, pageSize, pageIndex, propertyPaths).getRecords();
     }
 
     @Override
     public Pager<TaxonNode> pageRankSpecificRootNodes(Classification classification, Rank rank,
             boolean includeUnpublished, Integer pageSize, Integer pageIndex, List<String> propertyPaths) {
-        long[] numberOfResults = dao.countRankSpecificRootNodes(classification, includeUnpublished, rank);
+        return pageRankSpecificRootNodes(classification, null, rank, includeUnpublished, pageSize, pageIndex, propertyPaths);
+    }
+
+    @Override
+    public Pager<TaxonNode> pageRankSpecificRootNodes(Classification classification, TaxonNode subtree, Rank rank,
+            boolean includeUnpublished, Integer pageSize, Integer pageIndex, List<String> propertyPaths) {
+        long[] numberOfResults = dao.countRankSpecificRootNodes(classification, subtree, includeUnpublished, rank);
         long totalNumberOfResults = numberOfResults[0] + (numberOfResults.length > 1 ? numberOfResults[1] : 0);
 
         List<TaxonNode> results = new ArrayList<>();
@@ -211,7 +225,8 @@ public class ClassificationServiceImpl
                 }
 
                 List<TaxonNode> perQueryResults = dao.listRankSpecificRootNodes(classification,
-                        rank, includeUnpublished, remainingLimit, start, propertyPaths, queryIndex);
+                        subtree, rank, includeUnpublished, remainingLimit,
+                        start, propertyPaths, queryIndex);
                 results.addAll(perQueryResults);
                 if(remainingLimit != null ){
                     remainingLimit = remainingLimit - results.size();
@@ -231,12 +246,17 @@ public class ClassificationServiceImpl
 
     }
 
+    @Override
+    public List<TaxonNode> loadTreeBranch(TaxonNode taxonNode, Rank baseRank,
+            boolean includeUnpublished, List<String> propertyPaths) throws UnpublishedException{
+        return loadTreeBranch(taxonNode, null, baseRank, includeUnpublished, propertyPaths);
+    }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<TaxonNode> loadTreeBranch(TaxonNode taxonNode, Rank baseRank,
+    public List<TaxonNode> loadTreeBranch(TaxonNode taxonNode, TaxonNode subtree, Rank baseRank,
             boolean includeUnpublished, List<String> propertyPaths) throws UnpublishedException{
 
         TaxonNode thisNode = taxonNodeDao.load(taxonNode.getUuid(), propertyPaths);
@@ -274,6 +294,9 @@ public class ClassificationServiceImpl
             if(baseRank != null && parentNodeRank != null && baseRank.isLower(parentNodeRank)){
                 break;
             }
+            if((subtree!= null && !subtree.isAncestor(parentNode) )){
+                break;
+            }
 
             pathToRoot.add(parentNode);
             thisNode = parentNode;
@@ -289,14 +312,26 @@ public class ClassificationServiceImpl
     @Override
     public List<TaxonNode> loadTreeBranchToTaxon(Taxon taxon, Classification classification, Rank baseRank,
             boolean includeUnpublished, List<String> propertyPaths) throws UnpublishedException{
+        return loadTreeBranchToTaxon(taxon, classification, null, baseRank, includeUnpublished, propertyPaths);
+    }
+
+    @Override
+    public List<TaxonNode> loadTreeBranchToTaxon(Taxon taxon, Classification classification,
+            TaxonNode subtree, Rank baseRank,
+            boolean includeUnpublished, List<String> propertyPaths) throws UnpublishedException{
 
         UUID nodeUuid = getTaxonNodeUuidByTaxonUuid(classification.getUuid(), taxon.getUuid());
         TaxonNode node = taxonNodeService.find(nodeUuid);
         if(node == null){
             logger.warn("The specified taxon is not found in the given tree.");
             return null;
+        }else if (subtree != null && !node.isDescendant(subtree)){
+            //TODO handle as exception? E.g. FilterException, AccessDeniedException?
+            logger.warn("The specified taxon is not found for the given subtree.");
+            return null;
         }
-        return loadTreeBranch(node, baseRank, includeUnpublished, propertyPaths);
+
+        return loadTreeBranch(node, subtree, baseRank, includeUnpublished, propertyPaths);
     }
 
 
@@ -313,12 +348,26 @@ public class ClassificationServiceImpl
     @Override
     public List<TaxonNode> listChildNodesOfTaxon(UUID taxonUuid, UUID classificationUuid,
             boolean includeUnpublished, Integer pageSize, Integer pageIndex, List<String> propertyPaths){
+        try {
+            return listChildNodesOfTaxon(taxonUuid, classificationUuid, null, includeUnpublished, pageSize, pageIndex, propertyPaths);
+        } catch (FilterException e) {
+            throw new RuntimeException(e);  //this should not happen as filter is null
+        }
+    }
+
+    @Override
+    public List<TaxonNode> listChildNodesOfTaxon(UUID taxonUuid, UUID classificationUuid, UUID subtreeUuid,
+            boolean includeUnpublished, Integer pageSize, Integer pageIndex, List<String> propertyPaths) throws FilterException{
 
         Classification classification = dao.load(classificationUuid);
         Taxon taxon = (Taxon) taxonDao.load(taxonUuid);
+        TaxonNode subtree = taxonNodeDao.load(subtreeUuid);
+        if (subtreeUuid != null && subtree == null){
+            throw new FilterException("Taxon node for subtree filter can not be found in database", true);
+        }
 
         List<TaxonNode> results = dao.listChildrenOf(
-                taxon, classification, includeUnpublished, pageSize, pageIndex, propertyPaths);
+                taxon, classification, subtree, includeUnpublished, pageSize, pageIndex, propertyPaths);
         Collections.sort(results, taxonNodeComparator); // FIXME this is only a HACK, order during the hibernate query in the dao
         return results;
     }

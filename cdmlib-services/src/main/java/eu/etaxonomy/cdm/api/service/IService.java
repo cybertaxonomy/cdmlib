@@ -445,9 +445,9 @@ public interface IService<T extends ICdmBase>{
      */
     public MergeResult<T> merge(T newInstance, boolean returnTransientEntity);
 
-    public Pager<T> page(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths);
+    public <S extends T> Pager<S> page(Class<S> clazz, String param, String queryString, MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths);
 
-    public Pager<T> pageByRestrictions(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageIndex, List<OrderHint> orderHints,
+    public <S extends T> Pager<S> pageByRestrictions(Class<S> clazz, String param, String queryString, MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageIndex, List<OrderHint> orderHints,
             List<String> propertyPaths);
 
 }
