@@ -150,7 +150,7 @@ public class TaxonBaseShortSecCacheStrategy<T extends TaxonBase>
             return null;
         }
 
-        List<TaggedText> tags = new ArrayList<TaggedText>();
+        List<TaggedText> tags = new ArrayList<>();
 
         if (taxonBase.isProtectedTitleCache()){
             //protected title cache
@@ -192,7 +192,7 @@ public class TaxonBaseShortSecCacheStrategy<T extends TaxonBase>
      * @param ref
      */
     private List<TaggedText> getSecReferenceTags(Reference sec) {
-        List<TaggedText> tags = new ArrayList<TaggedText>();
+        List<TaggedText> tags = new ArrayList<>();
 
         if (sec.isProtectedTitleCache()){
             tags.add(new TaggedText(TagEnum.reference, sec.getTitleCache()));
@@ -227,7 +227,7 @@ public class TaxonBaseShortSecCacheStrategy<T extends TaxonBase>
     }
 
     private List<TaggedText>  handlePerson(Reference sec) {
-        List<TaggedText> tags = new ArrayList<TaggedText>();
+        List<TaggedText> tags = new ArrayList<>();
 
         Person author = HibernateProxyHelper.deproxy(sec.getAuthorship(), Person.class);
         String authorStr;
@@ -241,7 +241,7 @@ public class TaxonBaseShortSecCacheStrategy<T extends TaxonBase>
     }
 
     private List<TaggedText> handleTeam(Reference sec) {
-        List<TaggedText> tags = new ArrayList<TaggedText>();
+        List<TaggedText> tags = new ArrayList<>();
 
         Team authorTeam = HibernateProxyHelper.deproxy(sec.getAuthorship(), Team.class);
         if (authorTeam.isProtectedTitleCache() || authorTeam.getTeamMembers().isEmpty()){
