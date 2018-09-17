@@ -38,6 +38,7 @@ import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
+import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -251,16 +252,6 @@ public class TaxonPortalController extends TaxonController{
         binder.registerCustomEditor(DefinedTermBaseList.class, new TermBaseListPropertyEditor<>(termService));
 
     }
-
-
-    /*   @Override
-    @RequestMapping(method = RequestMethod.GET)
-    public TaxonBase doGet(HttpServletRequest request, HttpServletResponse response)throws IOException {
-        logger.info("doGet()");
-        TaxonBase tb = getCdmBase(request, response, TAXON_INIT_STRATEGY, TaxonBase.class);
-        return tb;
-    }
-     */
 
 
 
