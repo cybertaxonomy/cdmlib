@@ -280,7 +280,9 @@ public class TaxonPortalController extends TaxonController{
             value = {"synonymy"},
             method = RequestMethod.GET)
     public ModelAndView doGetSynonymy(@PathVariable("uuid") UUID uuid,
-            HttpServletRequest request, HttpServletResponse response)throws IOException {
+            @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
+            HttpServletRequest request,
+            HttpServletResponse response)throws IOException {
 
         boolean includeUnpublished = NO_UNPUBLISHED;
         if(request != null){
@@ -288,6 +290,9 @@ public class TaxonPortalController extends TaxonController{
         }
         ModelAndView mv = new ModelAndView();
         Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
+        TaxonNode subtree = getSubtreeOrError(subtreeUuid, taxonNodeService, response);
+        taxon = checkExistsSubtreeAndAccess(taxon, subtree, NO_UNPUBLISHED, response);
+
         Map<String, List<?>> synonymy = new Hashtable<>();
 
         //new

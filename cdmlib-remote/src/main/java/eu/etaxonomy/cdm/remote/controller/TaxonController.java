@@ -159,10 +159,11 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
      * @return
      * @throws IOException
      */
-    protected <S extends TaxonBase<?>> S checkExistsSubtreeAndAccess(S taxonBase, TaxonNode subtree, boolean includeUnpublished,
+    protected <S extends TaxonBase<?>> S checkExistsSubtreeAndAccess(S taxonBase,
+            TaxonNode subtree, boolean includeUnpublished,
             HttpServletResponse response) throws IOException {
         taxonBase = checkExistsAndAccess(taxonBase, NO_UNPUBLISHED, response);
-        if (taxonBase != null){
+        if (subtree != null && taxonBase != null){
             //TODO synonyms maybe can not be initialized
             Taxon taxon = taxonBase.isInstanceOf(Synonym.class)?
                     CdmBase.deproxy(taxonBase, Synonym.class).getAcceptedTaxon():
