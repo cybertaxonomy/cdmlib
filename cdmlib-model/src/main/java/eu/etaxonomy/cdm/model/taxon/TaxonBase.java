@@ -97,7 +97,7 @@ import eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynony
             index = org.hibernate.search.annotations.Index.YES,
             store = Store.YES,
             impl = ClassInfoBridge.class),
-    @ClassBridge(name="accTaxon", // TODO rename to acceptedTaxon, since we are usually not using abbreviations for field names, see also ACC_TAXON_BRIDGE_PREFIX
+    @ClassBridge(name=AcceptedTaxonBridge.ACC_TAXON, // TODO rename to acceptedTaxon, since we are usually not using abbreviations for field names, see also ACC_TAXON_BRIDGE_PREFIX
             index = org.hibernate.search.annotations.Index.YES,
             store = Store.YES,
             impl = AcceptedTaxonBridge.class),

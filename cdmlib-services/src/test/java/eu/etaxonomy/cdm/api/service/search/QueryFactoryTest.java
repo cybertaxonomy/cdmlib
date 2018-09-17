@@ -55,7 +55,9 @@ public class QueryFactoryTest extends CdmIntegrationTest {
         Assert.assertEquals("ComplexPhraseQuery", qf.newTermQuery("titleCache", "\"*ctuca perennis\"", true).getClass().getSimpleName());
         Assert.assertEquals("ComplexPhraseQuery", qf.newTermQuery("titleCache", "\"*ctu* perennis\"", true).getClass().getSimpleName());
         Assert.assertEquals("ComplexPhraseQuery", qf.newTermQuery("titleCache", "\"*ctu* *enn*\"", true).getClass().getSimpleName());
+        Assert.assertEquals("ComplexPhraseQuery", qf.newTermQuery("titleCache", "\"*ctuca per*\"", true).getClass().getSimpleName());
     }
+
 
     /**
      * {@inheritDoc}

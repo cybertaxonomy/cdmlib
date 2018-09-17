@@ -156,7 +156,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
     @RequestMapping(method = RequestMethod.GET, value={"search"})
     public Pager<SearchResult<TaxonBase>> doSearch(
             @RequestParam(value = "query", required = true) String query,
-            @RequestParam(value = "classificationUuid", required = false) UUID classificationUuid,
+            @RequestParam(value = "tree", required = false) UUID classificationUuid,
             @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
             @RequestParam(value = "area", required = false) DefinedTermBaseList<NamedArea> areaList,
             @RequestParam(value = "status", required = false) PresenceAbsenceTerm[] status,
@@ -203,7 +203,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
             searchModes.add(TaxaAndNamesSearchMode.includeUnpublished);
         }
 
-        Classification classification = classificationService.load(classificationUuid);
+        Classification classification = getClassificationOrError(classificationUuid, classificationService, response);
         TaxonNode subtree = getSubtreeOrError(subtreeUuid, taxonNodeService, response);
 
         Set<PresenceAbsenceTerm> statusSet = null;

@@ -67,7 +67,15 @@ public class DescriptionBaseClassBridge extends AbstractClassBridge {
 
                     for(TaxonNode node : taxon.getTaxonNodes()){
                         if(node.getClassification() != null){
-                            idFieldBridge.set(name + "taxon.taxonNodes.classification.id", node.getClassification().getId(), document, idFieldOptions);
+                            idFieldBridge.set(name + "taxon.taxonNodes.classification.id",
+                                    node.getClassification().getId(), document, idFieldOptions);
+                        }
+                        if(node.treeIndex() != null){
+                            Field treeIndexField = new StringField("inDescription.taxon.taxonNodes.treeIndex",
+                                    node.treeIndex(),
+                                    Store.YES
+                                    );
+                            document.add(treeIndexField);
                         }
                     }
                 }

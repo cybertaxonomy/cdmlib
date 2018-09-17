@@ -17,6 +17,7 @@ import org.hibernate.search.bridge.LuceneOptions;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
  * Lucene index class bridge which sets the uuids of the accepted taxon for the
@@ -37,18 +38,22 @@ public class AcceptedTaxonBridge implements FieldBridge { // TODO inherit from A
     public final static String DOC_KEY_UUID_SUFFIX = ".uuid";
     public static final String DOC_KEY_ID_SUFFIX = ".id";
     public final static String DOC_KEY_PUBLISH_SUFFIX = ".publish";
-
+    public final static String DOC_KEY_TREEINDEX = "taxonNodes.treeIndex";
+    public final static String DOC_KEY_CLASSIFICATION_ID = "taxonNodes.classification.id";
+    public final static String ACC_TAXON = "accTaxon"; //there are probably still some places not using this constant, but for renaming in future we should try to use it everywhere
 
     @Override
     public void set(String name, Object value, Document document,
             LuceneOptions luceneOptions) {
         String accTaxonUuid = "";
 
+        boolean isSynonym = false;
         Taxon accTaxon;
         if(value instanceof Taxon){
             accTaxon = (Taxon)value;
         }else if (value instanceof Synonym){
             accTaxon = ((Synonym)value).getAcceptedTaxon();
+            isSynonym = true;
         }else{
             throw new RuntimeException("Unhandled taxon base class: " + value.getClass().getSimpleName());
         }
@@ -77,6 +82,30 @@ public class AcceptedTaxonBridge implements FieldBridge { // TODO inherit from A
                     luceneOptions.getStore()
                     );
             document.add(accPublishField);
+
+            //treeIndex + Classification
+            if (isSynonym && ACC_TAXON.equals(name)){
+                for (TaxonNode node : accTaxon.getTaxonNodes()){
+                    //treeIndex
+                    Field treeIndexField;
+                    if (node.treeIndex()!= null){  //TODO find out why this happens in TaxonServiceSearchTest.testFindByDescriptionElementFullText_modify_Classification
+                        treeIndexField = new StringField(DOC_KEY_TREEINDEX,
+                                node.treeIndex(),
+                                luceneOptions.getStore()
+                                );
+                        document.add(treeIndexField);
+                    }
+
+                    //classification
+                    if (node.getClassification() != null){  //should never be null, but who knows
+                        Field classificationIdField = new StringField(DOC_KEY_CLASSIFICATION_ID,
+                                Integer.toString(node.getClassification().getId()),
+                                luceneOptions.getStore()
+                                );
+                        document.add(classificationIdField);
+                    }
+                }
+            }
         }
     }
 }

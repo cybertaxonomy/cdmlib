@@ -1403,11 +1403,11 @@ public class TaxonServiceImpl
 
     @Override
     public Pager<SearchResult<TaxonBase>> findByDistribution(List<NamedArea> areaFilter, List<PresenceAbsenceTerm> statusFilter,
-            Classification classification,
+            Classification classification, TaxonNode subtree,
             Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints, List<String> propertyPaths) throws IOException, LuceneParseException {
 
-        LuceneSearch luceneSearch = prepareByDistributionSearch(areaFilter, statusFilter, classification);
+        LuceneSearch luceneSearch = prepareByDistributionSearch(areaFilter, statusFilter, classification, subtree);
 
         // --- execute search
         TopGroups<BytesRef> topDocsResultSet;
@@ -1474,10 +1474,10 @@ public class TaxonServiceImpl
         }
 
         if(classification != null){
-            finalQueryBuilder.add(taxonBaseQueryFactory.newEntityIdQuery("taxonNodes.classification.id", classification), Occur.MUST);
+            finalQueryBuilder.add(taxonBaseQueryFactory.newEntityIdQuery(AcceptedTaxonBridge.DOC_KEY_CLASSIFICATION_ID, classification), Occur.MUST);
         }
         if(subtree != null){
-            finalQueryBuilder.add(taxonBaseQueryFactory.newTermQuery("taxonNodes.treeIndex", subtree.treeIndexWc(), true), Occur.MUST);
+            finalQueryBuilder.add(taxonBaseQueryFactory.newTermQuery(AcceptedTaxonBridge.DOC_KEY_TREEINDEX, subtree.treeIndexWc(), true), Occur.MUST);
         }
         if(!includeUnpublished)  {
             String accPublishParam = TaxonBase.ACC_TAXON_BRIDGE_PREFIX + AcceptedTaxonBridge.DOC_KEY_PUBLISH_SUFFIX;
@@ -1565,10 +1565,10 @@ public class TaxonServiceImpl
         finalQueryBuilder.add(joinQuery, Occur.MUST);
 
         if(classification != null){
-            finalQueryBuilder.add(taxonBaseQueryFactory.newEntityIdQuery("taxonNodes.classification.id", classification), Occur.MUST);
+            finalQueryBuilder.add(taxonBaseQueryFactory.newEntityIdQuery(AcceptedTaxonBridge.DOC_KEY_CLASSIFICATION_ID, classification), Occur.MUST);
         }
         if(subtree != null){
-            finalQueryBuilder.add(taxonBaseQueryFactory.newTermQuery("taxonNodes.treeIndex", subtree.treeIndexWc(), true), Occur.MUST);
+            finalQueryBuilder.add(taxonBaseQueryFactory.newTermQuery(AcceptedTaxonBridge.DOC_KEY_TREEINDEX, subtree.treeIndexWc(), true), Occur.MUST);
         }
 
         luceneSearch.setQuery(finalQueryBuilder.build());
@@ -1964,7 +1964,7 @@ public class TaxonServiceImpl
      */
     protected LuceneSearch prepareByDistributionSearch(
             List<NamedArea> namedAreaList, List<PresenceAbsenceTerm> distributionStatusList,
-            Classification classification) throws IOException {
+            Classification classification, TaxonNode subtree) throws IOException {
 
         Builder finalQueryBuilder = new Builder();
 
@@ -1982,7 +1982,10 @@ public class TaxonServiceImpl
         finalQueryBuilder.add(byAreaQuery, Occur.MUST);
 
         if(classification != null){
-            finalQueryBuilder.add(taxonQueryFactory.newEntityIdQuery("taxonNodes.classification.id", classification), Occur.MUST);
+            finalQueryBuilder.add(taxonQueryFactory.newEntityIdQuery(AcceptedTaxonBridge.DOC_KEY_CLASSIFICATION_ID, classification), Occur.MUST);
+        }
+        if(subtree != null){
+            finalQueryBuilder.add(taxonQueryFactory.newTermQuery(AcceptedTaxonBridge.DOC_KEY_TREEINDEX, subtree.treeIndexWc(), true), Occur.MUST);
         }
         BooleanQuery finalQuery = finalQueryBuilder.build();
         logger.info("prepareByAreaSearch() query: " + finalQuery.toString());

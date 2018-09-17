@@ -24,10 +24,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.editor.CdmTypePropertyEditor;
@@ -146,6 +148,21 @@ public abstract class BaseListController <T extends CdmBase, SERVICE extends ISe
             }
         }
         return subtree;
+    }
+
+    // this is a copy from BaseController, should be unified
+    protected Classification getClassificationOrError(UUID classificationUuid,
+            IClassificationService classificationService, HttpServletResponse response) throws IOException {
+        Classification classification = null;
+        if (classificationUuid != null){
+            classification = classificationService.find(classificationUuid);
+            if(classification == null) {
+                response.sendError(404 , "Classification not found: " + classificationUuid );
+                //will not happen
+                return null;
+            }
+        }
+        return classification;
     }
 
   /* TODO
