@@ -52,6 +52,7 @@ public class MarkerType extends DefinedTermBase<MarkerType> {
 	private static final UUID uuidUse = UUID.fromString("2e6e42d9-e92a-41f4-899b-03c0ac64f039");
 	private static final UUID uuidComputed = UUID.fromString("5cc15a73-2947-44e3-9319-85dd20736e55");
     private static final UUID uuidNomenclaturalRelevant = UUID.fromString("d520ffd4-4a59-453d-b2a1-cbaa50136439");
+    private static final UUID uuidCommonNameReference = UUID.fromString("ad315454-5fdc-492d-8c8c-5d98a5ec4b7f");
 
 	protected static Map<UUID, MarkerType> termMap = null;
 
@@ -165,6 +166,11 @@ public class MarkerType extends DefinedTermBase<MarkerType> {
     // added in preparation for #7466
     public static final MarkerType NOMENCLATURAL_RELEVANT(){
         return getTermByUuid(uuidNomenclaturalRelevant);
+    }
+
+
+    public static final MarkerType COMMON_NAME_REFERENCE(){
+        return getTermByUuid(uuidCommonNameReference);
     }
 
 	@Override
