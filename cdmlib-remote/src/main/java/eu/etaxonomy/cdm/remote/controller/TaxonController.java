@@ -150,7 +150,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
     /**
      * Checks if a {@link TaxonBase taxonBase} is public and belongs to a {@link TaxonNode subtree}
      * as accepted taxon or synonym.
-     * If not the according {@link HttpStatusMessage http messages} are added to response.
+     * If not the according {@link HttpStatusMessage http messages} are send to response.
      * <BR>
      * Not (yet) checked is the relation to a subtree via a concept relationship.
      * @param taxonBase
