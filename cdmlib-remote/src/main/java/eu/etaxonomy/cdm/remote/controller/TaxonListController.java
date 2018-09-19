@@ -345,17 +345,16 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
              highlighting = false;
          }
 
-         Classification classification = null;
-         if(treeUuid != null){
-            classification = classificationService.find(treeUuid);
-         }
+         Classification classification = getClassificationOrError(treeUuid, classificationService, response);
          TaxonNode subtree = getSubtreeOrError(subtreeUuid, taxonNodeService, response);
 
          List<Feature> features = null;
          if(featureUuids != null){
             features = new ArrayList<>(featureUuids.size());
             for(UUID uuid : featureUuids){
-                features.add((Feature) termService.find(uuid));
+                //TODO error if null
+                Feature feature = (Feature) termService.find(uuid);
+                features.add(feature);
             }
          }
 
