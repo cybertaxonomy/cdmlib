@@ -443,7 +443,7 @@ public class DescriptiveDataSetService
     }
 
     @Override
-    public SpecimenDescription findSpecimenDescription(UUID descriptiveDataSetUuid, UUID specimenUuid){
+    public SpecimenDescription findSpecimenDescription(UUID descriptiveDataSetUuid, UUID specimenUuid, boolean addDatasetSource){
         DescriptiveDataSet dataSet = load(descriptiveDataSetUuid);
         SpecimenOrObservationBase specimen = occurrenceService.load(specimenUuid);
 
@@ -525,7 +525,7 @@ public class DescriptiveDataSetService
                     }
                 });
             } catch (CloneNotSupportedException e) {
-//                MessagingUtils.error(CharacterMatrix.class, e);
+                //nothing
             }
         }
 
@@ -546,6 +546,16 @@ public class DescriptiveDataSetService
                     newDesription.addElement(QuantitativeData.NewInstance(wsFeature));
                 }
             }
+        }
+        //add sources of data set
+        if(addDatasetSource){
+            dataSet.getSources().forEach(source->{
+                try {
+                    newDesription.addSource((IdentifiableSource) source.clone());
+                } catch (CloneNotSupportedException e) {
+                    //nothing
+                }
+            });
         }
         return newDesription;
 

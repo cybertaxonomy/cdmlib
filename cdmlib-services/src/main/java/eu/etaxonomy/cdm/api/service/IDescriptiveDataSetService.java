@@ -108,9 +108,11 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      * will be returned. A new one will be created otherwise.
      * @param descriptiveDataSetUuid the uuid of the dataset defining the features
      * @param specimenUuid the uuid of the specimen
+     * @param addDatasetSource if <code>true</code> the source(s) of the descriptive dataset
+     * will be added to the description <b>if</b> a new one is created
      * @return either the found specimen description or a newly created one
      */
-    public SpecimenDescription findSpecimenDescription(UUID descriptiveDataSetUuid, UUID specimenUuid);
+    public SpecimenDescription findSpecimenDescription(UUID descriptiveDataSetUuid, UUID specimenUuid, boolean addDatasetSource);
 
     /**
      * Returns a {@link TaxonDescription} for a given taxon node with corresponding
