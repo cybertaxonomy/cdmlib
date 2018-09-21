@@ -70,6 +70,8 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
     private INameService nameService;
 
 
+
+
     /**
      * {@inheritDoc}
      */
@@ -77,6 +79,10 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
     @Transactional(readOnly = true)
     public Pager<Registration> page(Optional<Reference> reference, Collection<RegistrationStatus> includedStatus,
             Integer pageSize, Integer pageIndex, List<String> propertyPaths) {
+
+        if( !userHelper.userIsAutheticated() || userHelper.userIsAnnonymous() ) {
+            includedStatus = Arrays.asList(RegistrationStatus.PUBLISHED);
+        }
 
         long numberOfResults = dao.count(reference, includedStatus);
 
