@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  */
 public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportStateBase<?,?>, CDM_BASE extends CdmBase> extends CdmSingleAttributeMapperBase implements IDbImportMapper<STATE, CDM_BASE>  {
 	private static final Logger logger = Logger.getLogger(DbSingleAttributeImportMapperBase.class);
-	
+
 	protected DbImportMapperBase<STATE> importMapperHelper = new DbImportMapperBase<STATE>();
 //	private Integer precision = null;
 	protected boolean obligatory = true;
@@ -37,7 +37,7 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 
 	protected Method destinationMethod = null;
 	protected Class<?> targetClass;
-	
+
 	/**
 	 * @param dbAttributString
 	 * @param cdmAttributeString
@@ -45,8 +45,8 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 	protected DbSingleAttributeImportMapperBase(String dbAttributString, String cdmAttributeString) {
 		super(dbAttributString, cdmAttributeString);
 	}
-	
-	
+
+
 	/**
 	 * @param dbAttributString
 	 * @param cdmAttributeString
@@ -54,7 +54,7 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 	protected DbSingleAttributeImportMapperBase(String dbAttributString, String cdmAttributeString, Object defaultValue) {
 		super(dbAttributString, cdmAttributeString, defaultValue);
 	}
-	
+
 	/**
 	 * @param dbAttributString
 	 * @param cdmAttributeString
@@ -63,11 +63,10 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 		super(dbAttributeString, cdmAttributeString, defaultValue);
 		this.obligatory = obligatory;
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.IDbImportMapper#initialize(eu.etaxonomy.cdm.io.common.DbImportStateBase, java.lang.String)
-	 */
-	public void initialize(STATE state, Class<? extends CdmBase> destinationClass) {
+
+
+	@Override
+    public void initialize(STATE state, Class<? extends CdmBase> destinationClass) {
 		importMapperHelper.initialize(state, destinationClass);
 		try {
 			targetClass = getTargetClass(destinationClass);
@@ -85,9 +84,9 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 	/**
 	 * @param destinationClass
 	 * @return
-		 * @throws NoSuchMethodException 
-		 * @throws SecurityException 
-		 * @throws NoSuchMethodException 
+		 * @throws NoSuchMethodException
+		 * @throws SecurityException
+		 * @throws NoSuchMethodException
 	 */
 	protected Class getTargetClass(Class<?> destinationClass) throws SecurityException, NoSuchMethodException{
 		Class result = destinationClass;
@@ -96,7 +95,7 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 			return null;
 		}
 		String[] splits = destinationAttribute.split("\\.");
-		//for all prefixes 
+		//for all prefixes
 		for (int i = 0; i < splits.length - 1; i++){
 			String split = splits[i];
 			String castedResultClass = getCastedResultClass(split);
@@ -118,7 +117,7 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
 					//result = null;
-				} 
+				}
 			}
 		}
 		return result;
@@ -157,7 +156,7 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 
 
 	/**
-	 * @param clazz 
+	 * @param clazz
 	 * @return
 	 */
 	private String getMethodName(Class clazz) {
@@ -184,16 +183,17 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.IDbExportMapper#invoke(eu.etaxonomy.cdm.model.common.CdmBase)
 	 */
-	public CDM_BASE invoke(ResultSet rs, CDM_BASE cdmBase) throws SQLException {
+	@Override
+    public CDM_BASE invoke(ResultSet rs, CDM_BASE cdmBase) throws SQLException {
 		if (ignore){
 			return cdmBase;
 		}
 		Object dbValue = getValue(rs);
-		
+
 //		String dbValue = rs.getString(getSourceAttribute());
 		return doInvoke(cdmBase, dbValue);
 	}
-	
+
 	protected CDM_BASE doInvoke(CDM_BASE cdmBase, Object value) throws SQLException {
 		Method method = getMethod();
 		try {
@@ -217,15 +217,15 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 		}
 		throw new RuntimeException("Problems when invoking target method");
 	}
-	
+
 	/**
 	 * @param cdmBase
 	 * @return
-	 * @throws NoSuchMethodException 
-	 * @throws SecurityException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalAccessException 
-	 * @throws IllegalArgumentException 
+	 * @throws NoSuchMethodException
+	 * @throws SecurityException
+	 * @throws InvocationTargetException
+	 * @throws IllegalAccessException
+	 * @throws IllegalArgumentException
 	 */
 	private Object getObjectToInvoke(CDM_BASE cdmBase) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 		Object objectToInvoke = cdmBase;
@@ -257,7 +257,7 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 	protected Object getValue(ResultSet rs) throws SQLException{
 		return getDbValue(rs);
 	}
-	
+
 	/**
 	 * Returns the database value for the attribute
 	 * @param rs
@@ -270,29 +270,29 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 		return value;
 	}
 
-	
+
 //	/**
 //	 * @return the index
 //	 */
 //	public int getIndex() {
 //		return exportMapperHelper.getIndex();
 //	}
-	
+
 	/**
 	 * @return the state
 	 */
 	protected STATE getState() {
 		return importMapperHelper.getState();
 	}
-	
-	
+
+
 	/**
 	 * @return the state
 	 */
 	protected String getTableName() {
 		return importMapperHelper.getTableName();
 	}
-	
+
 	protected boolean checkDbColumnExists() throws DatabaseTypeNotSupportedException{
 //		//TODO remove cast
 //		Source source = (Source)getState().getConfig().getSource();
@@ -302,21 +302,21 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 		//TODO not possible as long as tableName is not initialized
 		return true;
 	}
-	
+
 //	protected int getPrecision(){
 //		return this.precision;
 //	}
-	
+
 	protected int getDbColumnIntegerInfo(String selectPart){
 		//TODO remove cast
-		Source source = (Source)getState().getConfig().getSource();
+		Source source = getState().getConfig().getSource();
 		String strQuery = "SELECT  " + selectPart + " as result" +
 				" FROM sysobjects AS t " +
 				" INNER JOIN syscolumns AS c ON t.id = c.id " +
-				" WHERE (t.xtype = 'U') AND " + 
-				" (t.name = '" + getTableName() + "') AND " + 
+				" WHERE (t.xtype = 'U') AND " +
+				" (t.name = '" + getTableName() + "') AND " +
 				" (c.name = '" + getSourceAttribute() + "')";
-		ResultSet rs = source.getResultSet(strQuery) ;		
+		ResultSet rs = source.getResultSet(strQuery) ;
 		int n;
 		try {
 			rs.next();
@@ -326,9 +326,9 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 			e.printStackTrace();
 			return -1;
 		}
-			
+
 	}
-	
+
 
 	/**
 	 * @param rs
@@ -345,5 +345,5 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 //		String destAtt = CdmUtils.Nz(getDestinationAttribute());
 //		return this.getClass().getSimpleName() +"[" + sourceAtt + "->" + destAtt + "]";
 //	}
-	
+
 }

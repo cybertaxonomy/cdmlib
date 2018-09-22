@@ -303,11 +303,11 @@ public abstract class CdmIoBase<STATE extends IoStateBase, RESULT extends IoResu
         fire(event);
     }
 
-    protected boolean isBlank(String str){
+    protected static boolean isBlank(String str){
         return StringUtils.isBlank(str);
     }
 
-    protected boolean isNotBlank(String str){
+    protected static boolean isNotBlank(String str){
         return StringUtils.isNotBlank(str);
     }
 
