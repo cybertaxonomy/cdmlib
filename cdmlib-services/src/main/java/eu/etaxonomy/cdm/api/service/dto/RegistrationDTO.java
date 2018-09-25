@@ -24,6 +24,7 @@ import org.joda.time.DateTime;
 import eu.etaxonomy.cdm.api.service.exception.RegistrationValidationException;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetManager;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetManager.TypeDesignationWorkingSet;
+import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.Registration;
@@ -221,6 +222,10 @@ public class RegistrationDTO{
      */
     public DateTime getRegistrationDate() {
         return reg.getRegistrationDate();
+    }
+
+    public Institution getInstitution(){
+        return reg.getInstitution();
     }
 
     /**
