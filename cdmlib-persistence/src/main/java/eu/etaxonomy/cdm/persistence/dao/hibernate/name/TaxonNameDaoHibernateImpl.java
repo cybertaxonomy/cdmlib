@@ -1002,7 +1002,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
         if(doCount){
             hql.append("select count(n.id) ");
         } else {
-            hql.append("select new eu.etaxonomy.cdm.persistence.dto.TaxonNameParts(n.id, n.rank, n.genusOrUninomial, n.infraGenericEpithet, n.specificEpithet, n.infraSpecificEpithet) ");
+            hql.append("select new eu.etaxonomy.cdm.persistence.dto.TaxonNameParts(n.id, n.uuid, n.rank, n.genusOrUninomial, n.infraGenericEpithet, n.specificEpithet, n.infraSpecificEpithet) ");
         }
         hql.append("from TaxonName n where 1 = 1 ");
 

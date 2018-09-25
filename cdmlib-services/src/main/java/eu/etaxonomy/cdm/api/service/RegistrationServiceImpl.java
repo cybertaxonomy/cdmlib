@@ -12,7 +12,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -202,6 +204,50 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
         return regPager;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Registration save(Registration newInstance) {
+        return assureIsPersisted(newInstance);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UUID saveOrUpdate(Registration transientObject) {
+        transientObject = assureIsPersisted(transientObject);
+        return super.saveOrUpdate(transientObject);
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Map<UUID, Registration> save(Collection<Registration> newInstances) {
+        Map<UUID, Registration> regs = new HashMap<>();
+        for(Registration newInstance : newInstances) {
+            Registration reg = save(newInstance);
+            regs.put(reg.getUuid(), reg);
+        }
+        return regs;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Map<UUID, Registration> saveOrUpdate(Collection<Registration> transientInstances) {
+        Map<UUID, Registration> regs = new HashMap<>();
+        for(Registration transientInstance : transientInstances) {
+            UUID uuid = saveOrUpdate(transientInstance);
+            regs.put(uuid, transientInstance);
+        }
+        return regs;
+    }
+
     // ============= functionality to be moved into a "RegistrationManagerBean" ==================
 
 
@@ -255,7 +301,7 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
         }
 
         prepareForSave(reg);
-        reg = save(reg);
+        reg = super.save(reg);
         userHelper.createAuthorityForCurrentUser(Registration.class, reg.getUuid(), Operation.UPDATE, RegistrationStatus.PREPARATION.name());
 
         return reg;
@@ -315,6 +361,8 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
         }
         return false;
     }
+
+
 
     // =============================================================================================
 

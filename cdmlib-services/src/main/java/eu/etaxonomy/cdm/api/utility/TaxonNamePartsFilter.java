@@ -39,7 +39,7 @@ public class TaxonNamePartsFilter extends TaxonNameParts {
      */
     public TaxonNamePartsFilter(Rank rank, String genusOrUninomial, String infraGenericEpithet,
             String specificEpithet, String infraSpecificEpithet) {
-        super(null, rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet);
+        super(null, null, rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet);
     }
 
     public TaxonNamePartsFilter(){
