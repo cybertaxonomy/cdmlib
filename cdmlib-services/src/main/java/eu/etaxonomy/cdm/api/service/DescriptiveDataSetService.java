@@ -54,7 +54,6 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptiveDataSetDao;
-import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -78,9 +77,6 @@ public class DescriptiveDataSetService
 
     @Autowired
     private ITaxonNodeService taxonNodeService;
-
-    @Autowired
-    private ITaxonNodeDao taxonNodeDao;
 
     @Autowired
     private IProgressMonitorService progressMonitorService;
@@ -210,14 +206,15 @@ public class DescriptiveDataSetService
         Set<TaxonNode> taxonSubtreeFilter = descriptiveDataSet.getTaxonSubtreeFilter();
         for (TaxonNode node : taxonSubtreeFilter) {
             //check for node
-            node = taxonNodeService.load(node.getId(), Arrays.asList("taxon"));
+            List<String> taxonNodePropertyPath = Arrays.asList("taxon", "taxon.descriptions", "taxon.descriptions.markers");
+            node = taxonNodeService.load(node.getId(), taxonNodePropertyPath);
             taxonNode = findTaxonNodeForDescription(node, specimen);
             if(taxonNode!=null){
                 break;
             }
             else{
                 //check for child nodes
-                List<TaxonNode> allChildren = taxonNodeService.loadChildNodesOfTaxonNode(node, Arrays.asList("taxon"), true, true, null);
+                List<TaxonNode> allChildren = taxonNodeService.loadChildNodesOfTaxonNode(node, taxonNodePropertyPath, true, true, null);
                 for (TaxonNode child : allChildren) {
                     taxonNode = findTaxonNodeForDescription(child, specimen);
                     if(taxonNode!=null){
@@ -253,8 +250,8 @@ public class DescriptiveDataSetService
             country = fieldUnit.getGatheringEvent().getCountry();
         }
         //get default taxon description
-        TaxonDescription defaultTaxonDescription = findDefaultTaxonDescription(descriptiveDataSet.getUuid(),
-                taxonNode.getUuid(), createDefaultTaxonDescription);
+        TaxonDescription defaultTaxonDescription = findDefaultTaxonDescription(descriptiveDataSet,
+                taxonNode, createDefaultTaxonDescription);
         TaxonRowWrapperDTO taxonRowWrapper = defaultTaxonDescription != null
                 ? createTaxonRowWrapper(defaultTaxonDescription.getUuid(), descriptiveDataSet.getUuid()) : null;
         return new SpecimenRowWrapperDTO(description, taxonNode, fieldUnit, identifier, country, taxonRowWrapper);
@@ -269,11 +266,19 @@ public class DescriptiveDataSetService
         }
         super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
     }
-
-    @Override
-    public TaxonDescription findDefaultTaxonDescription(UUID descriptiveDataSetUuid, UUID taxonNodeUuid, boolean create){
-        DescriptiveDataSet dataSet = load(descriptiveDataSetUuid);
-        TaxonNode taxonNode = taxonNodeService.load(taxonNodeUuid, Arrays.asList("taxon", "taxon.descriptions", "taxon.descriptions.markers"));
+  
+    /**
+     * Returns a {@link TaxonDescription} for a given taxon node with corresponding
+     * features according to the {@link DescriptiveDataSet}.<br>
+     * If a description is found that matches all features of the data set this description
+     * will be returned. Otherwise a new one will be created if specified.
+     * @param descriptiveDataSetUuid the uuid of the dataset defining the features
+     * @param taxonNodeUuid the uuid of the taxon node that links to the taxon
+     * @param create if <code>true</code> a new description will be created
+     * if none could be found
+     * @return either the found taxon description or a newly created one
+     */
+    private TaxonDescription findDefaultTaxonDescription(DescriptiveDataSet dataSet, TaxonNode taxonNode, boolean create){
         Set<DescriptionBase> dataSetDescriptions = dataSet.getDescriptions();
         //filter out COMPUTED descriptions
         List<TaxonDescription> nonComputedDescriptions = taxonNode.getTaxon().getDescriptions().stream()
@@ -291,7 +296,7 @@ public class DescriptiveDataSetService
         if(!create){
             return null;
         }
-        TaxonRowWrapperDTO taxonRowWrapperDTO = createTaxonDescription(descriptiveDataSetUuid, taxonNodeUuid, MarkerType.USE(), true);
+        TaxonRowWrapperDTO taxonRowWrapperDTO = createTaxonDescription(dataSet.getUuid(), taxonNode.getUuid(), MarkerType.USE(), true);
         TaxonDescription newTaxonDescription = taxonRowWrapperDTO.getDescription();
         return newTaxonDescription;
     }
@@ -307,7 +312,7 @@ public class DescriptiveDataSetService
         result.setCdmEntity(taxon);
 
         //get all "computed" descriptions from all sub nodes
-        List<TaxonNode> childNodes = taxonNodeDao.listChildrenOf(node, null, null, true, false, null);
+        List<TaxonNode> childNodes = taxonNodeService.listChildrenOf(node, null, null, true, false, null);
         List<TaxonDescription> computedDescriptions = new ArrayList<>();
 
         childNodes.stream().map(childNode -> childNode.getTaxon())
