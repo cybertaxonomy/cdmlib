@@ -21,7 +21,14 @@ import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextImpl;
 import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.config.IdentifiableServiceConfiguratorFactory;
@@ -80,6 +87,24 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
     @SpringBeanByType
     private ITermService termService;
+
+    @SpringBeanByName
+    private AuthenticationManager authenticationManager;
+
+    private void setAuthentication(AbstractAuthenticationToken token) {
+       Authentication authentication = authenticationManager.authenticate(token);
+
+       SecurityContextImpl secureContext = new SecurityContextImpl();
+       SecurityContextHolder.setContext(secureContext);
+       secureContext.setAuthentication(authentication);
+    }
+
+    private void unsetAuthentication() {
+
+        SecurityContextImpl secureContext = new SecurityContextImpl();
+        SecurityContextHolder.setContext(secureContext);
+        secureContext.setAuthentication(null);
+     }
 
 
 /* ******************** TESTS ********************************************/
@@ -803,10 +828,14 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         desigs3 = name3.getTypeDesignations();
 
         NameTypeDesignation desigNew = NameTypeDesignation.NewInstance();
+
+        UsernamePasswordAuthenticationToken submiterToken = new UsernamePasswordAuthenticationToken("admin","sPePhAz6");
+        setAuthentication(submiterToken);
         Registration registration = Registration.NewInstance("abc", "abc", name3, null);
         registration.addTypeDesignation(desigNew);
-
         UUID uuidReg = registrationService.saveOrUpdate(registration);
+        unsetAuthentication();
+
         commitAndStartNewTransaction(tableNames);
 
         name3 = nameService.load(name3.getUuid());
