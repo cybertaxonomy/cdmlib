@@ -11,8 +11,8 @@ package eu.etaxonomy.cdm.strategy.cache.description;
 
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 public class TaxonDescriptionDefaultCacheStrategy extends DescriptionBaseDefaultCacheStrategy<TaxonDescription>{
 
@@ -27,25 +27,22 @@ public class TaxonDescriptionDefaultCacheStrategy extends DescriptionBaseDefault
 
 	@Override
     public String getTitleCache(TaxonDescription taxonDescription) {
-		String title;
-		Taxon taxon = taxonDescription.getTaxon();
-		if (taxon == null){
-			title = getFirstPart(taxonDescription);
-			title = title.replace(" for ", "");
-		}else{
-			title = taxon.getTitleCache();
-			int secPos = title.indexOf("sec.");
-			if (secPos > 2){
-				title = title.substring(0, secPos).trim();
-			}
-			title = getFirstPart(taxonDescription) + title;
+		String title = super.getTitleCache(taxonDescription);
+		int secPos = title.indexOf("sec.");
+		if (secPos > 2){
+		    title = title.substring(0, secPos).trim();
 		}
 		return title;
 	}
 
 	@Override
 	protected String getDescriptionName() {
-	    return "Factual Data Set";
+	    return "Factual data set";
+	}
+
+	@Override
+	protected IdentifiableEntity getDescriptionEntity(TaxonDescription description) {
+	    return description.getTaxon();
 	}
 
 }

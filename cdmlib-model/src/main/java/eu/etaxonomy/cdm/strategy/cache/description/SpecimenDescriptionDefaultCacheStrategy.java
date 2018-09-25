@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.strategy.cache.description;
 
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 
 public class SpecimenDescriptionDefaultCacheStrategy extends DescriptionBaseDefaultCacheStrategy<SpecimenDescription> {
@@ -26,6 +27,11 @@ public class SpecimenDescriptionDefaultCacheStrategy extends DescriptionBaseDefa
 	@Override
 	protected String getDescriptionName() {
 	    return "Specimen description";
+	}
+
+	@Override
+	protected IdentifiableEntity getDescriptionEntity(SpecimenDescription description) {
+	    return description.getDescribedSpecimenOrObservation();
 	}
 
 }
