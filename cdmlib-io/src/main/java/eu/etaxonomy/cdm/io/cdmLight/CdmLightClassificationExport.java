@@ -544,7 +544,6 @@ public class CdmLightClassificationExport
                             }else{
                                 //field units are not supported
                                 state.getResult().addError("The associated Specimen of taxon " + taxon.getUuid() + " is not an DerivedUnit. Could not be exported.");
-
                             }
                         }
                     }
@@ -1511,12 +1510,13 @@ public class CdmLightClassificationExport
                 nomAuthorString += " " +split;
             }
         }
-        if (StringUtils.isBlank(nomAuthorString.trim())){
+        if (isBlank(nomAuthorString.trim())){
             if (teamMember.getTitleCache() != null) {
                 String titleCacheString = teamMember.getTitleCache().replaceAll("\\.", "\\. ");
                 splittedAuthorString = titleCacheString.split("\\s");
+            }else{
+                splittedAuthorString = new String[0];
             }
-
 
             int index = 0;
             for (String split: splittedAuthorString){
@@ -1769,20 +1769,6 @@ public class CdmLightClassificationExport
         }
 
         return mediaUriString;
-    }
-
-    /**
-     * @param state
-     * @param gathering
-     */
-    private void addCollectingAreas(CdmLightExportState state, GatheringEvent gathering) {
-        // TODO implement !!!
-
-        if (!gathering.getCollectingAreas().isEmpty()){
-            state.getResult().addWarning("Collecting areas not yet implemented but gathering " +
-                    cdmBaseStr(gathering) + " has collecting areas.");
-        }
-
     }
 
     /**

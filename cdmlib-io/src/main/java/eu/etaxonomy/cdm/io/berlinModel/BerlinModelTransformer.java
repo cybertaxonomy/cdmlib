@@ -29,7 +29,6 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.RankClass;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
-import eu.etaxonomy.cdm.model.reference.ISection;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -821,11 +820,6 @@ public class BerlinModelTransformer {
         }else if (key.equalsIgnoreCase("2000-Habitat en El Salvador*")){ return uuidFeatureHabitatSalvador;
 
 
-
-
-
-
-
 		}else{
 			return null;
 		}
@@ -1041,12 +1035,10 @@ public class BerlinModelTransformer {
 		if (ref == null){
 			return null;
 		}
-		else if (ref.getType().equals(ReferenceType.Article)){		return REF_ARTICLE;}
-		else if (ref instanceof ISection){	return REF_PART_OF_OTHER_TITLE;}
-		else if (ref.getType().equals(ReferenceType.Book)){	return REF_BOOK;}
-		else if (ref.getType().equals(ReferenceType.Database)){	return REF_DATABASE;}
-//		else if (ref instanceof SectionBas){	return REF_INFORMAL;}
-//		else if (ref instanceof SectionBas){	return REF_NOT_APPLICABLE;}
+		else if (ref.getType().equals(ReferenceType.Article)){ return REF_ARTICLE;}
+		else if (ref.getType().equals(ReferenceType.Section)){ return REF_PART_OF_OTHER_TITLE;}
+		else if (ref.getType().equals(ReferenceType.Book)){	   return REF_BOOK;}
+		else if (ref.getType().equals(ReferenceType.Database)){return REF_DATABASE;}
 		else if (ref.getType().equals(ReferenceType.WebPage)){	return REF_WEBSITE;}
 		else if (ref.getType().equals(ReferenceType.CdDvd)){	return REF_CD;}
 		else if (ref.getType().equals(ReferenceType.Journal)){	return REF_JOURNAL;}

@@ -572,7 +572,7 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 
 	@Override
 	protected void setDefaultTerms(TermVocabulary<PresenceAbsenceTerm> termVocabulary) {
-		termMap = new HashMap<UUID, PresenceAbsenceTerm>();
+		termMap = new HashMap<>();
 		for (PresenceAbsenceTerm term : termVocabulary.getTerms()){
 			termMap.put(term.getUuid(), term);
 		}
