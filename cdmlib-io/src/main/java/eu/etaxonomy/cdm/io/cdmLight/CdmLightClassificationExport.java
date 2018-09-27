@@ -537,8 +537,7 @@ public class CdmLightClassificationExport
                         if (state.getSpecimenFromStore(indAssociation.getAssociatedSpecimenOrObservation().getId()) == null){
                             SpecimenOrObservationBase<?> specimenBase = HibernateProxyHelper.deproxy(indAssociation.getAssociatedSpecimenOrObservation(), SpecimenOrObservationBase.class);
 
-                            SpecimenOrObservationBase derivedUnit = specimenBase;
-                            handleSpecimen(state, derivedUnit);
+                            handleSpecimen(state, specimenBase);
                             csvLine[table.getIndex(CdmLightExportTable.SPECIMEN_FK)] = getId(state, indAssociation.getAssociatedSpecimenOrObservation());
 
                         }
