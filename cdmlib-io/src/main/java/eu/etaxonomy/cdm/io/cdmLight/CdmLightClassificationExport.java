@@ -535,16 +535,12 @@ public class CdmLightClassificationExport
                         continue;
                     }else{
                         if (state.getSpecimenFromStore(indAssociation.getAssociatedSpecimenOrObservation().getId()) == null){
-                            SpecimenOrObservationBase<?> specimenBase = HibernateProxyHelper.deproxy(indAssociation.getAssociatedSpecimenOrObservation());
+                            SpecimenOrObservationBase<?> specimenBase = HibernateProxyHelper.deproxy(indAssociation.getAssociatedSpecimenOrObservation(), SpecimenOrObservationBase.class);
 
-                            if (specimenBase instanceof SpecimenOrObservationBase){
-                                SpecimenOrObservationBase derivedUnit = specimenBase;
-                                handleSpecimen(state, derivedUnit);
-                                csvLine[table.getIndex(CdmLightExportTable.SPECIMEN_FK)] = getId(state, indAssociation.getAssociatedSpecimenOrObservation());
-                            }else{
-                                //field units are not supported
-                                state.getResult().addError("The associated Specimen of taxon " + taxon.getUuid() + " is not an DerivedUnit. Could not be exported.");
-                            }
+                            SpecimenOrObservationBase derivedUnit = specimenBase;
+                            handleSpecimen(state, derivedUnit);
+                            csvLine[table.getIndex(CdmLightExportTable.SPECIMEN_FK)] = getId(state, indAssociation.getAssociatedSpecimenOrObservation());
+
                         }
                     }
                 } else if (element instanceof TextData){
@@ -1734,6 +1730,8 @@ public class CdmLightClassificationExport
                             }
                         }
                     }
+                }else{
+                    state.getResult().addError("The specimen with uuid " + specimen.getUuid() + " is not an DerivedUnit. Could not be exported.");
                 }
             }
 
