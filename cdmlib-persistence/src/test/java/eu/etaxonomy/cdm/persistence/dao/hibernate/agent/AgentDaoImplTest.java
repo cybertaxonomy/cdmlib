@@ -264,7 +264,7 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertNotNull("list() should return a list",result);
         Assert.assertEquals("list() should return 9 AgentBase entities in the current view", 9 ,result.size());
 
-        List<AgentBase>  personResults = agentDao.list(Person.class, restrictions, (Integer)null, (Integer)null, null, null);
+        List<Person>  personResults = agentDao.list(Person.class, restrictions, (Integer)null, (Integer)null, null, null);
         Assert.assertEquals("list() should return 5 Persons entities", 5, personResults.size());
 
         Restriction<String> givenNameExact = new Restriction<>("givenName", MatchMode.EXACT);

@@ -57,9 +57,7 @@ public class CdmDataChangeEvent extends AbstractEvent{
     private final Serializable id;
     protected final EventType eventType;
 
-    /**
-     * @param source
-     */
+
     private CdmDataChangeEvent(
             CdmBase entity,
             Serializable id,
