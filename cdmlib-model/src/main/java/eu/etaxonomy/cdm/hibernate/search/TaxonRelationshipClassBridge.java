@@ -77,7 +77,7 @@ public class TaxonRelationshipClassBridge extends AbstractClassBridge {
             }
 
             Field relfield = new StringField(
-                    name + "relation." + rel.getType().getUuid().toString() + directionName + "id",
+                    name + "relation." + (rel.getType() != null ? rel.getType().getUuid().toString() : "NULL") + directionName + "id",
                     Integer.toString(relTaxon.getId()),
                     idFieldOptions.getStore());
             relfield.setBoost(idFieldOptions.getBoost());
