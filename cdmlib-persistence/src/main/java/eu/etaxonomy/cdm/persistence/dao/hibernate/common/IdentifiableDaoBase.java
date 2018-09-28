@@ -657,11 +657,19 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
 
 
         queryString += " AND mks.markerType = :type";
+        if (pattern != null){
+            queryString += " AND c.titleCache like :pattern";
+            pattern = pattern.replace("*", "%");
+            pattern = pattern.replace("?", "_");
+            pattern = pattern + "%";
 
+        }
 
 
         Query query = getSession().createQuery(queryString);
-
+        if (pattern != null){
+            query.setParameter("pattern", pattern);
+        }
         //parameters
         query.setEntity("type", markerType);
         query.setMaxResults(limit);
