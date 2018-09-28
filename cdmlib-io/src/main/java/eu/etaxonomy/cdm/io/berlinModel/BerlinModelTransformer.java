@@ -763,9 +763,9 @@ public class BerlinModelTransformer {
 			case 340: return PresenceAbsenceTerm.NATIVE_DOUBTFULLY_NATIVE();
 			case 350: return PresenceAbsenceTerm.NATIVE();
 			case 999: {
-					logger.info("endemic for EM can not be transformed in legal status. Used 'PRESENT' instead");
+//					logger.info("endemic for EM can not be transformed in legal status. Used 'PRESENT' instead");
 					//TODO preliminary
-					return PresenceAbsenceTerm.PRESENT();
+					return PresenceAbsenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA();
 				}
 			default: {
 				throw new UnknownCdmTypeException("Unknown occurrence status  (id=" + Integer.valueOf(occStatusId).toString() + ")");

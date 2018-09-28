@@ -93,6 +93,9 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 	private static final UUID uuidIC=UUID.fromString("fac8c347-8262-44a1-b0a4-db4de451c021");
 	private static final UUID uuidE=UUID.fromString("c3ee7048-15b7-4be1-b687-9ce9c1a669d6");
 
+	private static final UUID uuidNotE=UUID.fromString("2fda5393-7423-4076-814c-1fa7678d7d33");
+	private static final UUID uuidUnkE = UUID.fromString("094aa2e4-8048-4086-aca1-2d671a05a86e");
+
 	//	private static final UUID uuidNa=UUID.fromString("4e04990a-66fe-4fdf-856c-f40772fbcf0a");
 	private static final UUID uuidNI=UUID.fromString("dc536e3d-a753-4bbe-a386-dd8aff35c234");
 
@@ -250,6 +253,31 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
      */
     public static final PresenceAbsenceTerm ENDEMIC_FOR_THE_RELEVANT_AREA(){
         return getTermByUuid(uuidE);
+    }
+
+    /**
+     * The taxon is present but not endemic for the given area.
+     * @see #PRESENT()
+     * @see #NATIVE()
+     * @see #ENDEMIC_FOR_THE_RELEVANT_AREA()
+     * @see #ENDEMIC_DOUBTFULLY_PRESENT()
+     * @see #ENDEMIC_REPORTED_IN_ERROR()
+     */
+    public static final PresenceAbsenceTerm NOT_ENDEMIC_FOR_THE_RELEVANT_AREA(){
+        return getTermByUuid(uuidNotE);
+    }
+
+    /**
+     * The taxon is present but with unknown endemism for the given area.
+     * @see #PRESENT()
+     * @see #NATIVE()
+     * @see #ENDEMIC_FOR_THE_RELEVANT_AREA()
+     * @see #ENDEMIC_DOUBTFULLY_PRESENT()
+     * @see #ENDEMIC_REPORTED_IN_ERROR()
+     * @see #NOT_ENDEMIC_FOR_THE_RELEVANT_AREA()
+     */
+    public static final PresenceAbsenceTerm ENDEMISM_UNKNOWN(){
+        return getTermByUuid(uuidUnkE);
     }
 
     /**

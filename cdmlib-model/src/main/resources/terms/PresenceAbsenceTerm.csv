@@ -1,5 +1,7 @@
 "adbbbe15-c4d3-47b7-80a8-c7d104e53a05",,"Presence Absence Term","Presence Absence Term","PAT","1"
 "c3ee7048-15b7-4be1-b687-9ce9c1a669d6",,"endemic","endemic for the relevant area","e","●","77ed6f","0"
+"2fda5393-7423-4076-814c-1fa7678d7d33",,"not endemic","present but not endemic for the relevant area","ne","","375d6f","0"
+"094aa2e4-8048-4086-aca1-2d671a05a86e",,"unknown endemism","present but with unknown endemism for the relevant area","ue","","a75dff","0"
 "cef81d25-501c-48d8-bbea-542ec50de2c2",,"present","present","p","","8dd3c7","0"
 "ddeac4f2-d8fa-43b8-ad7e-ca13abdd32c7",,"native","native","n","","ffffb3","0"
 "310373bf-7df4-4d02-8cb3-bcc7448805fc",,"native: doubtfully native","native: doubtfully native","nd","d","80b1d3","0"
