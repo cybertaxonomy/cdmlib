@@ -103,7 +103,6 @@ public class BerlinModelTransformer {
 	public static final UUID uuidCaucasia = UUID.fromString("ebfd3fd1-3859-4e5e-95c7-f66010599d7e");
 
 
-
 	//E+M areas
 	public static UUID uuidVocEuroMedAreas = UUID.fromString("625a4962-c211-4597-816e-5804083efe26");
 	public static UUID uuidEM = UUID.fromString("111BDF38-7A32-440A-9808-8AF1C9E54B51");
