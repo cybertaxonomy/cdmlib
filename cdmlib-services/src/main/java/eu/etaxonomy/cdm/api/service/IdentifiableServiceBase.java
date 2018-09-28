@@ -692,6 +692,22 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
         return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, result);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<UuidAndTitleCache<T>> findUuidAndTitleCacheByMarker(Integer limit, String pattern,
+            MarkerType markerType){
+
+        Long numberOfResults = dao.countByMarker(null, markerType, null);
+        List<UuidAndTitleCache<T>> daoResults = new ArrayList<>();
+        if(numberOfResults > 0) { // no point checking again
+            daoResults = dao.getUuidAndTitleCacheByMarker(limit, pattern, markerType);
+        }
+
+
+        return daoResults;
+    }
+
+
 
 }
 
