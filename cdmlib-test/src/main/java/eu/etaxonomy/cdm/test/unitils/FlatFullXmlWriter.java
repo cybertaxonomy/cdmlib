@@ -19,7 +19,6 @@ import org.dbunit.dataset.stream.IDataSetConsumer;
 import org.dbunit.util.xml.XmlWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.unitils.dbunit.util.MultiSchemaXmlDataSetReader;
 
 /**
  * This is a variant of the {@link org.dbunit.dataset.xml.FlatXmlWriter}, which in
@@ -48,10 +47,16 @@ public class FlatFullXmlWriter implements IDataSetConsumer
     private int _activeRowCount;
     private boolean _includeEmptyTable = false;
     private String _systemId = null;
+    private boolean writeNullValues = true;
 
     public FlatFullXmlWriter(OutputStream out) throws IOException
     {
-        this(out, null);
+        this(out, null, true);
+    }
+
+    public FlatFullXmlWriter(OutputStream out, boolean writeNullValues) throws IOException
+    {
+        this(out, null, writeNullValues);
     }
 
     /**
@@ -60,11 +65,12 @@ public class FlatFullXmlWriter implements IDataSetConsumer
      * Can be null. See {@link XmlWriter#XmlWriter(OutputStream, String)}.
      * @throws UnsupportedEncodingException
      */
-    public FlatFullXmlWriter(OutputStream outputStream, String encoding)
+    public FlatFullXmlWriter(OutputStream outputStream, String encoding, boolean writeNullValues)
     throws UnsupportedEncodingException
     {
         _xmlWriter = new XmlWriter(outputStream, encoding);
         _xmlWriter.enablePrettyPrint(true);
+        this.writeNullValues = writeNullValues;
     }
 
     public FlatFullXmlWriter(Writer writer)
@@ -199,14 +205,18 @@ public class FlatFullXmlWriter implements IDataSetConsumer
 
                 try
                 {
-                	String stringValue;
+                	String stringValue = null;
                 	if (value == null)
                 	{
-                		stringValue = "[null]";
+                	    if(writeNullValues){
+                	        stringValue = "[null]";
+                	    }
                 	} else {
                 		stringValue = DataType.asString(value);
                 	}
-                    _xmlWriter.writeAttribute(columnName, stringValue, true);
+                	if(stringValue != null){
+                	    _xmlWriter.writeAttribute(columnName, stringValue, true);
+                	}
                 }
                 catch (TypeCastException e)
                 {

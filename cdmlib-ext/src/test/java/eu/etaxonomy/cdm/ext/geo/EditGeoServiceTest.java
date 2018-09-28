@@ -444,7 +444,7 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
                 "DESCRIPTIONBASE", "DESCRIPTIONELEMENTBASE",
                 "HIBERNATE_SEQUENCES" // IMPORTANT!!!
                 },
-                "getDistributionServiceRequestParameterString" );
+                "getDistributionServiceRequestParameterString", true );
 
     }
 

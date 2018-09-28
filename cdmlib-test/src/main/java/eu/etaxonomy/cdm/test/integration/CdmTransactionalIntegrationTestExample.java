@@ -77,7 +77,7 @@ public class CdmTransactionalIntegrationTestExample extends CdmTransactionalInte
             "CLASSIFICATION", "TAXONNODE",
             "HIBERNATE_SEQUENCES" // IMPORTANT!!!
             },
-            fileNameAppendix );
+            fileNameAppendix, true );
   }
 
 }

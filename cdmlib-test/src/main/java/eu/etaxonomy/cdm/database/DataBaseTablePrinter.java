@@ -166,6 +166,13 @@ public class DataBaseTablePrinter {
     public void printDataSetWithNull(OutputStream out, Boolean excludeTermLoadingTables,
             ITableFilterSimple excludeFilterOrig, String[] includeTableNames) {
 
+        printDataSet(out, excludeTermLoadingTables, excludeFilterOrig, includeTableNames, true);
+
+    }
+
+    public void printDataSet(OutputStream out, Boolean excludeTermLoadingTables,
+                ITableFilterSimple excludeFilterOrig, String[] includeTableNames, boolean withNull) {
+
         ITableFilterSimple excludeFilter = excludeFilterOrig;
         if(excludeTermLoadingTables != null && excludeTermLoadingTables.equals(true)){
             ExcludeTableFilter excludeTableFilter = new ExcludeTableFilter();
@@ -192,7 +199,7 @@ public class DataBaseTablePrinter {
                 }
                 dataSet = new DatabaseDataSet(connection, false, excludeFilter);
             }
-            FlatFullXmlWriter writer = new FlatFullXmlWriter(out);
+            FlatFullXmlWriter writer = new FlatFullXmlWriter(out, withNull);
             writer.write(dataSet);
         } catch (Exception e) {
             logger.error("Error on writing dataset:", e);
@@ -396,7 +403,7 @@ public class DataBaseTablePrinter {
      *
      */
     public void writeDbUnitDataSetFile(String[] includeTableNames, Class<?> testClass) throws FileNotFoundException {
-        writeDbUnitDataSetFile(includeTableNames, testClass, null);
+        writeDbUnitDataSetFile(includeTableNames, testClass, null, true);
     }
 
     /**
@@ -407,7 +414,7 @@ public class DataBaseTablePrinter {
      * @param methodName the appendix of the generated DbUnit dataset file
      * @see {@link #writeDbUnitDataSetFile(String[], Class)}
      */
-    public void writeDbUnitDataSetFile(String[] includeTableNames, Class<?> testClass, String methodName) throws FileNotFoundException {
+    public void writeDbUnitDataSetFile(String[] includeTableNames, Class<?> testClass, String methodName, boolean withNullValues) throws FileNotFoundException {
 
         String pathname = "src" + File.separator + "test" + File.separator + "resources" + File.separator + testClass.getName().replace(".", File.separator);
         if(methodName!=null){
@@ -427,12 +434,13 @@ public class DataBaseTablePrinter {
             file.getParentFile().mkdirs();
         }
 
-        printDataSetWithNull(
-            new FileOutputStream(file),
-            false,
-            null,
-            includeTableNames
-         );
+        printDataSet(
+                new FileOutputStream(file),
+                false,
+                null,
+                includeTableNames,
+                withNullValues
+             );
     }
 
     /**

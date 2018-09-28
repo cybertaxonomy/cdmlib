@@ -1250,7 +1250,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
             "LANGUAGESTRING",
             "HIBERNATE_SEQUENCES" // IMPORTANT!!!
             },
-            fileNameAppendix );
+            fileNameAppendix, true );
     }
 
 

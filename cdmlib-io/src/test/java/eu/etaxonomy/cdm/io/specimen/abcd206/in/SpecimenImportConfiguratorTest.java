@@ -746,7 +746,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
                     "TaxonNode",
                     "Classification",
                     "LanguageString"
-            }, "testImportTwoUnitsOfSameTaxonIntoExistingClassification");
+            }, "testImportTwoUnitsOfSameTaxonIntoExistingClassification", true);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

@@ -341,7 +341,7 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 		        "CLASSIFICATION", "TAXONNODE",
 		        "HOMOTYPICALGROUP",
 		        "TERMVOCABULARY"
-		 }, "xxxx");
+		 }, "xxxx", true);
 
     }
 

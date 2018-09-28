@@ -395,7 +395,7 @@ public class AdvancedBeanInitializerTest extends CdmTransactionalIntegrationTest
             "",
             "HIBERNATE_SEQUENCES" // IMPORTANT!!!
             },
-            fileNameAppendix );
+            fileNameAppendix, true );
 
     }
 
