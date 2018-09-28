@@ -66,6 +66,7 @@ import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
+import eu.etaxonomy.cdm.persistence.dto.TaxonGraphEdgeDTO;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.NameSearchOrder;
@@ -1968,6 +1969,35 @@ public class TaxonDaoHibernateImpl
             list.add(new UuidAndTitleCache<TaxonBase>((UUID) object[0],(Integer) object[1], (String) object[2]));
         }
         return list;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<TaxonGraphEdgeDTO> getTaxonGraphEdgeDTOs(UUID fromTaxonUuid, UUID toTaxonUuid, TaxonRelationshipType type,
+            boolean includeUnpublished) {
+
+        Session session = getSession();
+        String hql = "select new eu.etaxonomy.cdm.persistence.dto.TaxonGraphEdgeDTO(fromT.uuid, fromT.titleCache, toT.uuid, toT.titleCache, c.uuid, c.titleCache) "
+                + "FROM TaxonRelationship as tr "
+                + "JOIN tr.relatedTo as toT "
+                + "JOIN tr.relatedFrom as fromT "
+                + "JOIN tr.citation as c "
+                + "WHERE tr.type = :reltype AND toT.uuid = :toTaxonUuid AND fromT.uuid = :fromTaxonUuid";
+
+        if(!includeUnpublished){
+            hql += " AND toT.publish is true AND fromT.publish is true";
+        }
+
+        Query query = session.createQuery(hql);
+        query.setParameter("reltype", type);
+        query.setParameter("fromTaxonUuid", fromTaxonUuid);
+        query.setParameter("toTaxonUuid", toTaxonUuid);
+
+        List<TaxonGraphEdgeDTO> result = query.list();
+
+        return result;
     }
 
 
