@@ -2099,7 +2099,6 @@ public class TaxonName
     @Override
     @Transient
     public Set<TaxonName> getBasionyms(){
-
         return getRelatedNames(Direction.relatedTo, NameRelationshipType.BASIONYM());
     }
 
@@ -2110,7 +2109,6 @@ public class TaxonName
      * @return
      */
     public Set<TaxonName> getRelatedNames(Direction direction, NameRelationshipType type) {
-
         return getRelatedNames(relationsWithThisName(direction), type);
     }
 

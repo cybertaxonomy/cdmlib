@@ -107,7 +107,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @XmlJavaTypeAdapter(FormattedTextAdapter.class)
     @Column(name="titleCache", length=800) //see #1592
     @Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.ALL)
-    @NotEmpty(groups = Level2.class) // implictly NotNull
+    @NotEmpty(groups = Level2.class) // implicitly NotNull
     @Fields({
         @Field(store=Store.YES),
         //  If the field is only needed for sorting and nothing else, you may configure it as

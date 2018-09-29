@@ -129,7 +129,7 @@ public class MediaExcelImport
         String dateStr = record.get(COL_DATE);
         if (isNotBlank(dateStr)){
             TimePeriod timePeriod = TimePeriodParser.parseString(dateStr);
-            if (timePeriod.getFreeText()!=  null){
+            if (timePeriod.getFreeText() !=  null){
                 String message = "Date could not be parsed: %s";
                 message = String.format(message, dateStr);
                 state.getResult().addWarning(message, null, line);
@@ -142,7 +142,6 @@ public class MediaExcelImport
         List<URI> uris = getUrls(state, line);
         for (URI uri : uris){
             handleUri(state, uri, media, line);
-
         }
 
 
