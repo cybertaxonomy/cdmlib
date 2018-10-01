@@ -445,7 +445,29 @@ public interface ITaxonDao
             Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints, List<String> propertyPaths);
 
-    List<TaxonGraphEdgeDTO> getTaxonGraphEdgeDTOs(UUID fromTaxonUuid, UUID toTaxonUuid, TaxonRelationshipType type,
+    /**
+     *
+     * @param fromTaxonUuid
+     *  Can be <code>null</code> to retrieve all edges having the toName as target.
+     * @param toTaxonUuid
+     *  Can be <code>null</code> to retrieve all edges originating from the fromName as target.
+     * @param type
+     * @param includeUnpublished
+     * @return
+     */
+    List<TaxonGraphEdgeDTO> listTaxonGraphEdgeDTOs(UUID fromTaxonUuid, UUID toTaxonUuid, TaxonRelationshipType type,
+            boolean includeUnpublished, Integer pageSize, Integer pageIndex);
+
+    /**
+     * @param fromTaxonUuid
+     *  Can be <code>null</code> to retrieve all edges having the toName as target.
+     * @param toTaxonUuid
+     *  Can be <code>null</code> to retrieve all edges originating from the fromName as target.
+     * @param type
+     * @param includeUnpublished
+     * @return
+     */
+    long countTaxonGraphEdgeDTOs(UUID fromTaxonUuid, UUID toTaxonUuid, TaxonRelationshipType type,
             boolean includeUnpublished);
 
 

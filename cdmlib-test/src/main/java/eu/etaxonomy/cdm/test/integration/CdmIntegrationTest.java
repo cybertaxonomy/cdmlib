@@ -288,7 +288,7 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      * @param includeTableNames
      * 		the names of tables to print (should be in upper case letters)
      */
-    public void printDataSet(OutputStream out, String[] includeTableNames) {
+    public void printDataSet(OutputStream out, String ... includeTableNames) {
         dbTablePrinter.printDataSet(out, includeTableNames);
 
     }

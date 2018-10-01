@@ -50,7 +50,7 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 @Transactional(readOnly = true)
 public class TaxonGraphService implements ITaxonGraphService {
 
-    protected static final TaxonRelationshipType RELTYPE = TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN();
+    private TaxonRelationshipType relType = TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN();
 
     private EnumSet<ReferenceType> referenceSectionTypes = EnumSet.of(ReferenceType.Section, ReferenceType.BookSection);
 
@@ -75,7 +75,15 @@ public class TaxonGraphService implements ITaxonGraphService {
         secReferenceUUID = uuid;
     }
 
+    protected TaxonRelationshipType relType() {
+        if(relType == null){
+            relType = TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN();
+        }
+        return relType;
+    }
+
     @Override
+    @Transactional(readOnly = false)
     public void onNewTaxonName(TaxonName taxonName) throws TaxonGraphException {
         onNameOrRankChange(taxonName);
     }
@@ -84,6 +92,7 @@ public class TaxonGraphService implements ITaxonGraphService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional(readOnly = false)
     public void onNameOrRankChange(TaxonName taxonName) throws TaxonGraphException {
         Taxon taxon = assureSingleTaxon(taxonName);
         boolean isNotDeleted = taxonService.getSession().contains(taxonName) && taxonName.isPersited();
@@ -94,6 +103,7 @@ public class TaxonGraphService implements ITaxonGraphService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public void onNomReferenceChange(TaxonName taxonName, Reference oldNomReference) throws TaxonGraphException {
         if(oldNomReference == null){
             onNewTaxonName(taxonName);
@@ -111,7 +121,6 @@ public class TaxonGraphService implements ITaxonGraphService {
      */
     private void updateEdges(Taxon taxon) throws TaxonGraphException {
 
-        Session session = taxonService.getSession();
         List<TaxonName> relatedHigherNames = relatedHigherNames(taxon.getName());
         Reference conceptReference = conceptReference(taxon.getName().getNomenclaturalReference());
         if(conceptReference != null){
@@ -128,7 +137,7 @@ public class TaxonGraphService implements ITaxonGraphService {
 
             for(TaxonName name : relatedHigherNamesWithoutRels){
                 Taxon toTaxon = assureSingleTaxon(name);
-                session.merge(taxon.addTaxonRelation(toTaxon, RELTYPE, conceptReference, null));
+                taxon.addTaxonRelation(toTaxon, relType(), conceptReference, null);
             }
         }
     }
@@ -236,13 +245,17 @@ public class TaxonGraphService implements ITaxonGraphService {
      */
     protected Taxon assureSingleTaxon(TaxonName taxonName) throws TaxonGraphException {
 
-        // TODO check algo regarding deleted names
-        TaxonName taxonNamePersisted = taxonService.getSession().load(TaxonName.class, taxonName.getId());
+        Session session = taxonService.getSession();
+        TaxonName taxonNamePersisted = session.load(TaxonName.class, taxonName.getId());
         Taxon taxon;
         if(taxonName.getTaxa().size() == 0){
+            if(taxonNamePersisted != null){
             Reference secRef = referenceService.load(secReferenceUUID);
-            taxon = Taxon.NewInstance(taxonNamePersisted, secRef);
-            taxonService.saveOrUpdate(taxon);
+                taxon = Taxon.NewInstance(taxonNamePersisted, secRef);
+                session.saveOrUpdate(taxon);
+            } else {
+                throw new TaxonGraphException("Can't create taxon for deleted name: " + taxonName);
+            }
         } else if(taxonName.getTaxa().size() == 1){
             taxon = taxonName.getTaxa().iterator().next();
             if(!secReferenceUUID.equals(taxon.getSec().getUuid())){
@@ -275,14 +288,20 @@ public class TaxonGraphService implements ITaxonGraphService {
 
     @Override
     public List<TaxonGraphEdgeDTO> edges(TaxonName fromName, TaxonName toName, boolean includeUnpublished) throws TaxonGraphException{
-        Taxon fromTaxon = assureSingleTaxon(fromName);
-        Taxon toTaxon = assureSingleTaxon(toName);
-        return taxonDao.getTaxonGraphEdgeDTOs(fromTaxon.getUuid(), toTaxon.getUuid(), RELTYPE, includeUnpublished);
+        UUID fromTaxonUUID = null;
+        UUID toTaxonUUID = null;
+        if(fromName != null){
+            fromTaxonUUID = assureSingleTaxon(fromName).getUuid();
+        }
+        if(toName != null){
+            toTaxonUUID = assureSingleTaxon(toName).getUuid();
+        }
+        return taxonDao.listTaxonGraphEdgeDTOs(fromTaxonUUID, toTaxonUUID, relType(), includeUnpublished, null, null);
     }
 
     @Override
     public List<TaxonGraphEdgeDTO> edges(UUID fromtaxonUuid, UUID toTaxonUuid, boolean includeUnpublished) throws TaxonGraphException{
-        return taxonDao.getTaxonGraphEdgeDTOs(fromtaxonUuid, toTaxonUuid, RELTYPE, includeUnpublished);
+        return taxonDao.listTaxonGraphEdgeDTOs(fromtaxonUuid, toTaxonUuid, relType(), includeUnpublished, null, null);
     }
 
     /**
@@ -290,7 +309,7 @@ public class TaxonGraphService implements ITaxonGraphService {
      */
     protected List<TaxonRelationship> taxonGraphRelationsFrom(Taxon taxon, Reference citation) {
         // TODO optimize by creating filterable listToTaxonRelationships method
-        List<TaxonRelationship> relations = taxonService.listToTaxonRelationships(taxon, RELTYPE, true, null, null, null, null);
+        List<TaxonRelationship> relations = taxonService.listFromTaxonRelationships(taxon, relType(), true, null, null, null, null);
         List<TaxonRelationship> includedInRelations = new ArrayList<>();
         for(TaxonRelationship taxonRel : relations){
             if(citation.equals(taxonRel.getCitation())){
@@ -305,7 +324,7 @@ public class TaxonGraphService implements ITaxonGraphService {
      */
     protected List<TaxonRelationship> taxonGraphRelationsTo(Taxon taxon, Reference citation) {
         // TODO optimize by creating filterable listToTaxonRelationships method
-        List<TaxonRelationship> relations = taxonService.listFromTaxonRelationships(taxon, RELTYPE, true, null, null, null, null);
+        List<TaxonRelationship> relations = taxonService.listToTaxonRelationships(taxon, relType(), true, null, null, null, null);
         List<TaxonRelationship> includedInRelations = new ArrayList<>();
         for(TaxonRelationship taxonRel : relations){
             if(citation.equals(taxonRel.getCitation())){

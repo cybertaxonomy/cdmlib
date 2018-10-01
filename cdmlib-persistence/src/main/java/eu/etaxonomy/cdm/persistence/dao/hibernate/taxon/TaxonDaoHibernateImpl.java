@@ -889,8 +889,8 @@ public class TaxonDaoHibernateImpl
     }
 
     @Override
-    public List<TaxonBase> findTaxaByName(Class<? extends TaxonBase> clazz, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, String authorship, Rank rank, Integer pageSize,	Integer pageNumber) {
-        checkNotInPriorView("TaxonDaoHibernateImpl.findTaxaByName(Boolean accepted, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, String authorship, Rank rank, Integer pageSize,	Integer pageNumber)");
+    public List<TaxonBase> findTaxaByName(Class<? extends TaxonBase> clazz, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, String authorship, Rank rank, Integer pageSize,Integer pageNumber) {
+        checkNotInPriorView("TaxonDaoHibernateImpl.findTaxaByName(Boolean accepted, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, String authorship, Rank rank, Integer pageSize,Integer pageNumber)");
         Criteria criteria = getCriteria(clazz);
 
         criteria.setFetchMode( "name", FetchMode.JOIN );
@@ -1975,29 +1975,79 @@ public class TaxonDaoHibernateImpl
      * {@inheritDoc}
      */
     @Override
-    public List<TaxonGraphEdgeDTO> getTaxonGraphEdgeDTOs(UUID fromTaxonUuid, UUID toTaxonUuid, TaxonRelationshipType type,
+    public List<TaxonGraphEdgeDTO> listTaxonGraphEdgeDTOs(UUID fromTaxonUuid, UUID toTaxonUuid, TaxonRelationshipType type,
+            boolean includeUnpublished, Integer pageSize, Integer pageIndex) {
+
+        Query query = prepareTaxonGraphEdgeDTOs(fromTaxonUuid, toTaxonUuid, type, includeUnpublished, false);
+
+        if(pageSize != null) {
+            query.setMaxResults(pageSize);
+            if(pageIndex != null) {
+                query.setFirstResult(pageIndex * pageSize);
+            } else {
+                query.setFirstResult(0);
+            }
+        }
+
+        @SuppressWarnings("unchecked")
+        List<TaxonGraphEdgeDTO> result = query.list();
+
+        return result;
+    }
+
+    @Override
+    public long countTaxonGraphEdgeDTOs(UUID fromTaxonUuid, UUID toTaxonUuid, TaxonRelationshipType type,
             boolean includeUnpublished) {
 
-        Session session = getSession();
-        String hql = "select new eu.etaxonomy.cdm.persistence.dto.TaxonGraphEdgeDTO(fromT.uuid, fromT.titleCache, toT.uuid, toT.titleCache, c.uuid, c.titleCache) "
-                + "FROM TaxonRelationship as tr "
-                + "JOIN tr.relatedTo as toT "
-                + "JOIN tr.relatedFrom as fromT "
-                + "JOIN tr.citation as c "
-                + "WHERE tr.type = :reltype AND toT.uuid = :toTaxonUuid AND fromT.uuid = :fromTaxonUuid";
+        Query query = prepareTaxonGraphEdgeDTOs(fromTaxonUuid, toTaxonUuid, type, includeUnpublished, true);
+        Long count = (Long) query.uniqueResult();
+        return count;
+    }
 
-        if(!includeUnpublished){
-            hql += " AND toT.publish is true AND fromT.publish is true";
+    /**
+     * @param fromTaxonUuid
+     * @param toTaxonUuid
+     * @param type
+     * @param includeUnpublished
+     * @return
+     */
+    protected Query prepareTaxonGraphEdgeDTOs(UUID fromTaxonUuid, UUID toTaxonUuid, TaxonRelationshipType type,
+            boolean includeUnpublished, boolean doCount) {
+        Session session = getSession();
+        String hql = "";
+        if(doCount){
+            hql = "COUNT(tr.id)";
+        } else {
+            hql += "SELECT new eu.etaxonomy.cdm.persistence.dto.TaxonGraphEdgeDTO(fromT.uuid, fromT.titleCache, toT.uuid, toT.titleCache, c.uuid, c.titleCache)";
+        }
+        hql += " FROM TaxonRelationship as tr "
+                + " JOIN tr.citation as c"
+                + " JOIN tr.relatedFrom as fromT"
+                + " JOIN tr.relatedTo as toT"
+                + " WHERE tr.type = :reltype";
+
+        if(fromTaxonUuid != null){
+            hql += " AND fromT.uuid = :fromTaxonUuid";
+            if(!includeUnpublished){
+                hql += " AND fromT.publish is true";
+            }
+        }
+        if(toTaxonUuid != null){
+            hql += " AND toT.uuid = :toTaxonUuid";
+            if(!includeUnpublished){
+                hql += " AND toT.publish is true";
+            }
         }
 
         Query query = session.createQuery(hql);
         query.setParameter("reltype", type);
-        query.setParameter("fromTaxonUuid", fromTaxonUuid);
-        query.setParameter("toTaxonUuid", toTaxonUuid);
-
-        List<TaxonGraphEdgeDTO> result = query.list();
-
-        return result;
+        if(fromTaxonUuid != null){
+            query.setParameter("fromTaxonUuid", fromTaxonUuid);
+        }
+        if(toTaxonUuid != null){
+            query.setParameter("toTaxonUuid", toTaxonUuid);
+        }
+        return query;
     }
 
 
