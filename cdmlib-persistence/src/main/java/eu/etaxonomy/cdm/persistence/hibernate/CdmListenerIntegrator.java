@@ -56,6 +56,10 @@ public class CdmListenerIntegrator implements Integrator {
 //		eventRegistry.appendListeners(EventType.POST_UPDATE, new CdmPostDataChangeObservableListener(), l2Listener, l3Listener);
 //		eventRegistry.appendListeners(EventType.POST_DELETE, new CdmPostDataChangeObservableListener(), l3Listener);
 //without validation
+
+		eventRegistry.appendListeners(EventType.POST_INSERT, TaxonGraphHibernateListener.instance());
+		eventRegistry.appendListeners(EventType.POST_UPDATE, TaxonGraphHibernateListener.instance());
+
 		eventRegistry.appendListeners(EventType.POST_INSERT, new CdmPostDataChangeObservableListener());
 		eventRegistry.appendListeners(EventType.POST_UPDATE, new CdmPostDataChangeObservableListener());
 		eventRegistry.appendListeners(EventType.POST_DELETE, new CdmPostDataChangeObservableListener());
