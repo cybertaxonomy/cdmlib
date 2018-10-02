@@ -91,6 +91,9 @@ public class TaxonGraphDaoHibernateImpl implements ITaxonGraphDao {
                     logger.error(e);
                 }
             }
+            if(uuid == null){
+                logger.error("missing cdm property: " + TaxonGraphDaoHibernateImpl.CDM_PREF_KEY_SEC_REF_UUID.getSubject() + TaxonGraphDaoHibernateImpl.CDM_PREF_KEY_SEC_REF_UUID.getPredicate());
+            }
             return uuid;
         }
     }

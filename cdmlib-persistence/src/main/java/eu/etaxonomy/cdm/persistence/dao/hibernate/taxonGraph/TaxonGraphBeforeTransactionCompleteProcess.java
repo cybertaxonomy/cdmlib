@@ -97,6 +97,9 @@ public class TaxonGraphBeforeTransactionCompleteProcess implements BeforeTransac
                     logger.error(e);
                 }
             }
+            if(uuid == null){
+                logger.error("missing cdm property: " + TaxonGraphDaoHibernateImpl.CDM_PREF_KEY_SEC_REF_UUID.getSubject() + TaxonGraphDaoHibernateImpl.CDM_PREF_KEY_SEC_REF_UUID.getPredicate());
+            }
             return uuid;
         }
     }
@@ -408,7 +411,12 @@ public class TaxonGraphBeforeTransactionCompleteProcess implements BeforeTransac
             }
         } else if(taxonName.getTaxa().size() == 1){
             taxon = taxonName.getTaxa().iterator().next();
-            if(!secRefUuid.equals(taxon.getSec().getUuid())){
+            if(taxon.getSec() == null){
+                taxon = temporarySession.load(Taxon.class, taxon.getId());
+                taxon.setSec(secReference);
+                temporarySession.saveOrUpdate(taxon);
+                return taxon;
+            } else if(!secRefUuid.equals(taxon.getSec().getUuid())){
                 throw new TaxonGraphException("The taxon for a name to be used in a taxon graph must have the default sec reference [secRef uuid: "+ secRefUuid.toString() +"]");
             }
         } else {
