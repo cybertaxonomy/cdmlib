@@ -11,6 +11,10 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.taxonGraph;
 import java.io.FileNotFoundException;
 import java.util.List;
 
+import org.hibernate.SessionFactory;
+import org.hibernate.event.service.spi.EventListenerRegistry;
+import org.hibernate.event.spi.EventType;
+import org.hibernate.internal.SessionFactoryImpl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +30,7 @@ import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.taxonGraph.ITaxonGraphDao;
 import eu.etaxonomy.cdm.persistence.dao.taxonGraph.TaxonGraphException;
 import eu.etaxonomy.cdm.persistence.dto.TaxonGraphEdgeDTO;
+import eu.etaxonomy.cdm.persistence.hibernate.TaxonGraphHibernateListener;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
@@ -42,6 +47,11 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
     @SpringBeanByType
     private ITaxonNameDao nameDao;
 
+    @SpringBeanByType
+    private SessionFactory sessionFactory;
+
+    private static boolean isRegistered;
+
     @Before
     public void setSecRef(){
         taxonGraphDao.setSecReferenceUUID(TaxonGraphTest.uuid_secRef);
@@ -49,7 +59,12 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
 
     @Before
     public void registerListener() {
-        taxonGraphDao.enableHibernateListener(true);
+        if(!TaxonGraphHibernateListenerTest.isRegistered){
+            EventListenerRegistry listenerRegistry = ((SessionFactoryImpl) sessionFactory).getServiceRegistry().getService(EventListenerRegistry.class);
+            listenerRegistry.appendListeners(EventType.POST_UPDATE, new TaxonGraphHibernateListener());
+            listenerRegistry.appendListeners(EventType.POST_INSERT, new TaxonGraphHibernateListener());
+            TaxonGraphHibernateListenerTest.isRegistered = true;
+        }
     }
 
     @Test

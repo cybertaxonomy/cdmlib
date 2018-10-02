@@ -73,8 +73,13 @@ public class TaxonGraphBeforeTransactionCompleteProcess implements BeforeTransac
 
     private boolean isInsertEvent;
 
-    public void setSecReferenceUUID(UUID uuid){
-        // FIXME: get secRefUUID from cdmProperties
+    /**
+     * MUST ONLY BE USED IN TESTS
+     *
+     * @param uuid
+     */
+    @Deprecated
+    protected void setSecReferenceUUID(UUID uuid){
         secReferenceUUID = uuid;
     }
 

@@ -33,7 +33,6 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxonGraph.ITaxonGraphDao;
 import eu.etaxonomy.cdm.persistence.dao.taxonGraph.TaxonGraphException;
 import eu.etaxonomy.cdm.persistence.dto.TaxonGraphEdgeDTO;
-import eu.etaxonomy.cdm.persistence.hibernate.TaxonGraphHibernateListener;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
@@ -69,29 +68,11 @@ public class TaxonGraphDaoHibernateImpl implements ITaxonGraphDao {
 
     private UUID secReferenceUUID;
 
-    static boolean isListenerEnabled = false;
 
     @Override
     public void setSecReferenceUUID(UUID uuid){
         // FIXME: get secRefUUID from cdmProperties
         secReferenceUUID = uuid;
-    }
-
-    @Override
-    public void enableHibernateListener(boolean doEnable) {
-        if(doEnable && !isListenerEnabled){
-            TaxonGraphHibernateListener.instance().setTaxonGraphDao(this);
-            isListenerEnabled = true;
-        }
-        if(!doEnable && isListenerEnabled){
-            TaxonGraphHibernateListener.instance().setTaxonGraphDao(null);
-            isListenerEnabled = false;
-        }
-    }
-
-    @Override
-    public boolean isListenerEnabled(){
-        return isListenerEnabled;
     }
 
 
