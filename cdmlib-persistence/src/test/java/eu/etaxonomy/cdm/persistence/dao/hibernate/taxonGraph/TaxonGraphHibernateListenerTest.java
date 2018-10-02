@@ -21,11 +21,14 @@ import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.model.metadata.CdmPreference;
+import eu.etaxonomy.cdm.model.metadata.CdmPreference.PrefKey;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.persistence.dao.common.IPreferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.taxonGraph.ITaxonGraphDao;
 import eu.etaxonomy.cdm.persistence.dao.taxonGraph.TaxonGraphException;
@@ -48,18 +51,24 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
     private ITaxonNameDao nameDao;
 
     @SpringBeanByType
+    private IPreferenceDao prefDao;
+
+
+    @SpringBeanByType
     private SessionFactory sessionFactory;
 
     private static boolean isRegistered;
 
-    @Before
-    public void setSecRef(){
-        taxonGraphDao.setSecReferenceUUID(TaxonGraphTest.uuid_secRef);
-    }
+//    @Before
+//    public void setSecRef(){
+//        taxonGraphDao.setSecReferenceUUID(TaxonGraphTest.uuid_secRef);
+//    }
 
     @Before
     public void registerListener() {
         if(!TaxonGraphHibernateListenerTest.isRegistered){
+            PrefKey key = TaxonGraphDaoHibernateImpl.CDM_PREF_KEY_SEC_REF_UUID;
+            prefDao.set(new CdmPreference(key.getSubject(), key.getPredicate(), TaxonGraphTest.uuid_secRef.toString()));
             EventListenerRegistry listenerRegistry = ((SessionFactoryImpl) sessionFactory).getServiceRegistry().getService(EventListenerRegistry.class);
             listenerRegistry.appendListeners(EventType.POST_UPDATE, new TaxonGraphHibernateListener());
             listenerRegistry.appendListeners(EventType.POST_INSERT, new TaxonGraphHibernateListener());

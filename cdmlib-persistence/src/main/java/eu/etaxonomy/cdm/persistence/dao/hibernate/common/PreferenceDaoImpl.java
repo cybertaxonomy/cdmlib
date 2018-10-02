@@ -16,6 +16,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.metadata.CdmPreference;
@@ -23,13 +24,14 @@ import eu.etaxonomy.cdm.model.metadata.CdmPreference.PrefKey;
 import eu.etaxonomy.cdm.model.metadata.PreferenceSubject;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.common.IPreferenceDao;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.taxonGraph.CdmPreferenceLookup;
 
 /**
  * @author a.mueller
  * @since 2013-09-09
  */
 @Repository
-public class PreferenceDaoImpl extends DaoBase implements IPreferenceDao  {
+public class PreferenceDaoImpl extends DaoBase implements IPreferenceDao, InitializingBean  {
 
     private static final String TAXON_NODE_FILTER_START = PreferenceSubject.ROOT + "TaxonNode[";
 
@@ -111,6 +113,15 @@ public class PreferenceDaoImpl extends DaoBase implements IPreferenceDao  {
         @SuppressWarnings("unchecked")
         List<CdmPreference> result = crit.list();
         return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        CdmPreferenceLookup.instance().setIPreferenceDao(this);
+
     }
 
 }

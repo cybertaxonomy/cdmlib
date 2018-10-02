@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.name.TaxonName;
-import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.persistence.dto.TaxonGraphEdgeDTO;
 
 /**
@@ -22,20 +21,12 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonGraphEdgeDTO;
  */
 public interface ITaxonGraphDao {
 
-    void onNameOrRankChange(TaxonName taxonName) throws TaxonGraphException;
 
     /**
-     * @param taxonName
-     * @throws TaxonGraphException
+     * ONLY for tests!!!
+     * @param uuid
      */
-    void onNomReferenceChange(TaxonName taxonName, Reference oldNomReference) throws TaxonGraphException;
-
-    /**
-     * @param taxonName
-     * @throws TaxonGraphException
-     */
-    void onNewTaxonName(TaxonName taxonName) throws TaxonGraphException;
-
+    @Deprecated
     void setSecReferenceUUID(UUID uuid);
 
     List<TaxonGraphEdgeDTO> edges(UUID fromtaxonUuid, UUID toTaxonUuid, boolean includeUnpublished) throws TaxonGraphException;

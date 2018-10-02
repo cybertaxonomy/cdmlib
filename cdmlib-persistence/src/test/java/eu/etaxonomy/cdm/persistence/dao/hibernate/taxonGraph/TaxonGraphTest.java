@@ -49,7 +49,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @since Sep 27, 2018
  *
  */
-@Ignore // Does no longer work due to test setup problems, but is in 100% covered by TaxonGraphHibernateListenerTest
+@Ignore // Does no longer work due to test setup problems, but is 100% covered by TaxonGraphHibernateListenerTest
 public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
 
     enum EventType{
@@ -90,12 +90,10 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
     protected static UUID uuid_t_trachelomonas_s  = UUID.fromString("5dce8a09-c809-4027-a9ce-b70901e7b820");
     protected static UUID uuid_t_trachelomonas_s_var_a = UUID.fromString("3f14c528-e191-4a6f-b2a9-36c9a3fc7eee");
 
-
     @Before
     public void setSecRef(){
         taxonGraphDao.setSecReferenceUUID(uuid_secRef);
     }
-
 
     public TaxonGraphBeforeTransactionCompleteProcess taxonGraphProcess(TaxonName name, EventType type){
         // just use some persister, it is not used during these tests
