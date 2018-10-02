@@ -45,9 +45,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
 
     @SpringBeanByType
-    private ITaxonGraphDao taxonGraphDao;
-
-    // private TaxonGraphHibernateListener taxonGraphObserver;
+    protected ITaxonGraphDao taxonGraphDao;
 
     @SpringBeanByType
     private IReferenceDao referenceDao;
@@ -78,20 +76,10 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
     protected static UUID uuid_t_trachelomonas_s  = UUID.fromString("5dce8a09-c809-4027-a9ce-b70901e7b820");
     protected static UUID uuid_t_trachelomonas_s_var_a = UUID.fromString("3f14c528-e191-4a6f-b2a9-36c9a3fc7eee");
 
-//    static boolean isObserverRegistred = false;
-
-//    public void registerObserver() {
-//        if(!isObserverRegistred){
-//            CdmPostDataChangeObservableListener.getDefault().register(taxonGraphObserver);
-//            isObserverRegistred = true;
-//        }
-//    }
-
     @Before
     public void setSecRef(){
         taxonGraphDao.setSecReferenceUUID(uuid_secRef);
     }
-
 
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
@@ -123,7 +111,7 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
         TaxonName n_trachelomonas_a = nameDao.load(uuid_n_trachelomonas_a);
         Reference oldNomReference = n_trachelomonas_a.getNomenclaturalReference();
         n_trachelomonas_a.setNomenclaturalReference(refX);
-        n_trachelomonas_a = nameDao.save(n_trachelomonas_a);
+        nameDao.saveOrUpdate(n_trachelomonas_a);
         taxonGraphDao.onNomReferenceChange(n_trachelomonas_a, oldNomReference);
 
 //        Logger.getLogger("org.hibernate.SQL").setLevel(Level.TRACE);
@@ -146,7 +134,7 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
 
         n_trachelomonas_o_var_d.setRank(Rank.SPECIES());
         nameDao.saveOrUpdate(n_trachelomonas_o_var_d);
-        taxonGraphDao.onNameOrRankChange(nameDao.load(uuid_n_trachelomonas_o_var_d)); // TODO reloading needed?
+        taxonGraphDao.onNameOrRankChange(n_trachelomonas_o_var_d);
         commitAndStartNewTransaction();
 
         // printDataSet(System.err,"TaxonRelationship");
@@ -171,7 +159,7 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
 
         n_trachelomonas_o_var_d.setGenusOrUninomial("Euglena");
         nameDao.saveOrUpdate(n_trachelomonas_o_var_d);
-        taxonGraphDao.onNameOrRankChange(nameDao.load(uuid_n_trachelomonas_o_var_d)); // TODO reloading needed?
+        taxonGraphDao.onNameOrRankChange(n_trachelomonas_o_var_d);
         commitAndStartNewTransaction();
 
         // printDataSet(System.err,"TaxonRelationship");
@@ -196,7 +184,7 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
 
         n_trachelomonas_o_var_d.setSpecificEpithet("alabamensis");
         nameDao.saveOrUpdate(n_trachelomonas_o_var_d);
-        taxonGraphDao.onNameOrRankChange(nameDao.load(uuid_n_trachelomonas_o_var_d)); // TODO reloading needed?
+        taxonGraphDao.onNameOrRankChange(n_trachelomonas_o_var_d);
         commitAndStartNewTransaction();
 
         // printDataSet(System.err,"TaxonRelationship");

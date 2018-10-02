@@ -9,7 +9,6 @@
 package eu.etaxonomy.cdm.persistence.hibernate;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.log4j.Logger;
 import org.hibernate.event.spi.PostInsertEvent;
 import org.hibernate.event.spi.PostInsertEventListener;
 import org.hibernate.event.spi.PostUpdateEvent;
@@ -17,9 +16,8 @@ import org.hibernate.event.spi.PostUpdateEventListener;
 import org.hibernate.persister.entity.EntityPersister;
 
 import eu.etaxonomy.cdm.model.name.TaxonName;
-import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.taxonGraph.TaxonGraphBeforeTransactionCompleteProcess;
 import eu.etaxonomy.cdm.persistence.dao.taxonGraph.ITaxonGraphDao;
-import eu.etaxonomy.cdm.persistence.dao.taxonGraph.TaxonGraphException;
 
 /**
  * @author a.kohlbecker
@@ -69,18 +67,61 @@ public class TaxonGraphHibernateListener implements PostInsertEventListener, Pos
         if(taxonGraphDao == null){
             return;
         }
-        try {
-            if(event.getEntity() instanceof TaxonName){
-                if(checkStateChange(event, NAMEPARTS_OR_RANK_PROPS) > -1){
-                    taxonGraphDao.onNameOrRankChange((TaxonName) event.getEntity());
-                }
-                int changedNomRefIndex = checkStateChange(event, NOMREF_PROP);
-                if(changedNomRefIndex > -1){
-                    taxonGraphDao.onNomReferenceChange((TaxonName) event.getEntity(), (Reference)event.getOldState()[changedNomRefIndex]);
-                }
+        if(event.getEntity() instanceof TaxonName){
+            event.getSession().getActionQueue().registerProcess(new TaxonGraphBeforeTransactionCompleteProcess(event));
+            /*
+            if(checkStateChange(event, NAMEPARTS_OR_RANK_PROPS) > -1){
+                event.getSession().getActionQueue().registerProcess(
+                        new BeforeTransactionCompletionProcess() {
+                            @Override
+                            public void doBeforeTransactionCompletion(SessionImplementor session) {
+                                Session temporarySession = null;
+
+                                try {
+                                    temporarySession = ((Session) session).sessionWithOptions().transactionContext().autoClose( false )
+                                            .connectionReleaseMode( ConnectionReleaseMode.AFTER_TRANSACTION )
+                                            .openSession();
+                                    taxonGraphDao.onNameOrRankChange((TaxonName) event.getEntity());
+                                    temporarySession.flush();
+                                } catch (TaxonGraphException e) {
+                                    throw new HibernateException(e);
+                                }
+                                finally {
+                                    if ( temporarySession != null ) {
+                                        temporarySession.close();
+                                    }
+                                }
+
+                        }
+                    });
             }
-        } catch (TaxonGraphException e) {
-            Logger.getLogger(this.getClass()).error(e);
+            int changedNomRefIndex = checkStateChange(event, NOMREF_PROP);
+            if(changedNomRefIndex > -1){
+                event.getSession().getActionQueue().registerProcess(
+                    new BeforeTransactionCompletionProcess() {
+                        @Override
+                        public void doBeforeTransactionCompletion(SessionImplementor session) {
+                            Session temporarySession = null;
+
+                            try {
+//                                temporarySession = ((Session) session).sessionWithOptions().transactionContext().autoClose( false )
+//                                        .connectionReleaseMode( ConnectionReleaseMode.AFTER_TRANSACTION )
+//                                        .openSession();
+                                Logger.getLogger("org.hibernate.SQL").setLevel(Level.TRACE);
+                                taxonGraphDao.onNomReferenceChange((TaxonName) event.getEntity(), (Reference)event.getOldState()[changedNomRefIndex]);
+                                ((Session) session).saveOrUpdate(event.getEntity());
+                            } catch (TaxonGraphException e) {
+                                throw new HibernateException(e);
+                            }
+//                            finally {
+//                                if ( temporarySession != null ) {
+//                                    temporarySession.close();
+//                                }
+//                            }
+                        }
+                    });
+            }
+             */
         }
 
     }
@@ -90,13 +131,14 @@ public class TaxonGraphHibernateListener implements PostInsertEventListener, Pos
         if(taxonGraphDao == null){
             return;
         }
-        try {
+//        try {
             if(event.getEntity() instanceof TaxonName){
-                taxonGraphDao.onNewTaxonName((TaxonName) event.getEntity());
+                event.getSession().getActionQueue().registerProcess(new TaxonGraphBeforeTransactionCompleteProcess(event));
+//                taxonGraphDao.onNewTaxonName((TaxonName) event.getEntity());
             }
-        } catch (TaxonGraphException e) {
-            Logger.getLogger(this.getClass()).error(e);
-        }
+//        } catch (TaxonGraphException e) {
+//            Logger.getLogger(this.getClass()).error(e);
+//        }
     }
 
     @Override

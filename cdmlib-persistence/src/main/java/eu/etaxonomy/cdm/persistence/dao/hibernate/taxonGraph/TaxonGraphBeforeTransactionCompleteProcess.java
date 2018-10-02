@@ -13,12 +13,19 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.Session;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+import org.hibernate.Transaction;
+import org.hibernate.action.spi.BeforeTransactionCompletionProcess;
+import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.event.spi.PostInsertEvent;
+import org.hibernate.event.spi.PostUpdateEvent;
 
+import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -26,74 +33,50 @@ import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
-import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
-import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
-import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
-import eu.etaxonomy.cdm.persistence.dao.taxonGraph.ITaxonGraphDao;
 import eu.etaxonomy.cdm.persistence.dao.taxonGraph.TaxonGraphException;
-import eu.etaxonomy.cdm.persistence.dto.TaxonGraphEdgeDTO;
-import eu.etaxonomy.cdm.persistence.hibernate.TaxonGraphHibernateListener;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
- * Provides the business logic to manage multiple classifications as
- * classification fragments in a graph of
- * {@link eu.etaxonomy.cdm.model.taxon.Taxon Taxa} and {@link eu.etaxonomy.cdm.model.taxon.TaxonRelationship TaxonRelationships}.
- *
- * For further details on the concept and related discussion see https://dev.e-taxonomy.eu/redmine/issues/6173
- *
- *
  * @author a.kohlbecker
  * @since Sep 26, 2018
  *
  */
-@Repository
-@Transactional(readOnly = true)
-public class TaxonGraphDaoHibernateImpl implements ITaxonGraphDao {
+public class TaxonGraphBeforeTransactionCompleteProcess implements BeforeTransactionCompletionProcess {
 
     private TaxonRelationshipType relType = TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN();
 
+    private String[] NAMEPARTS_OR_RANK_PROPS = new String[]{"genusOrUninomial", "specificEpithet", "rank"};
+    private String[] NOMREF_PROP = new String[]{"nomenclaturalReference"};
+
     private EnumSet<ReferenceType> referenceSectionTypes = EnumSet.of(ReferenceType.Section, ReferenceType.BookSection);
 
-    private static final Logger logger = Logger.getLogger(TaxonGraphDaoHibernateImpl.class);
-
-    @Autowired
-    private ITaxonDao taxonDao;
-
-    @Autowired
-    private IReferenceDao referenceDao;
-
-    @Autowired
-    private ITaxonNameDao nameDao;
+    private static final Logger logger = Logger.getLogger(TaxonGraphBeforeTransactionCompleteProcess.class);
 
     private UUID secReferenceUUID;
 
-    static boolean isListenerEnabled = false;
+    private Reference secReference = null;
 
-    @Override
+    private Session temporarySession;
+
+    private Level origLoggerLevel;
+
+    private Session parentSession;
+
+    private Transaction txState;
+
+    private TaxonName entity;
+
+    private String[] propertyNames;
+
+    private Object[] oldState;
+
+    private Object[] state;
+
+    private boolean isInsertEvent;
+
     public void setSecReferenceUUID(UUID uuid){
         // FIXME: get secRefUUID from cdmProperties
         secReferenceUUID = uuid;
     }
-
-    @Override
-    public void enableHibernateListener(boolean doEnable) {
-        if(doEnable && !isListenerEnabled){
-            TaxonGraphHibernateListener.instance().setTaxonGraphDao(this);
-            isListenerEnabled = true;
-        }
-        if(!doEnable && isListenerEnabled){
-            TaxonGraphHibernateListener.instance().setTaxonGraphDao(null);
-            isListenerEnabled = false;
-        }
-    }
-
-    @Override
-    public boolean isListenerEnabled(){
-        return isListenerEnabled;
-    }
-
 
     protected TaxonRelationshipType relType() {
         if(relType == null){
@@ -102,37 +85,130 @@ public class TaxonGraphDaoHibernateImpl implements ITaxonGraphDao {
         return relType;
     }
 
-    @Override
-    @Transactional(readOnly = false)
-    public void onNewTaxonName(TaxonName taxonName) throws TaxonGraphException {
-        onNameOrRankChange(taxonName);
+    public TaxonGraphBeforeTransactionCompleteProcess(PostUpdateEvent event){
+        entity = (TaxonName) event.getEntity();
+        propertyNames = event.getPersister().getPropertyNames();
+        oldState = event.getOldState();
+        state = event.getState();
+        secReferenceUUID = TaxonGraphTest.uuid_secRef; // FIXME !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    }
+
+    public TaxonGraphBeforeTransactionCompleteProcess(PostInsertEvent event){
+        isInsertEvent = true;
+        entity = (TaxonName) event.getEntity();
+        propertyNames = event.getPersister().getPropertyNames();
+        oldState = null;
+        state = event.getState();
+        secReferenceUUID = TaxonGraphTest.uuid_secRef; // FIXME !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    @Transactional(readOnly = false)
-    public void onNameOrRankChange(TaxonName taxonName) throws TaxonGraphException {
-        Taxon taxon = assureSingleTaxon(taxonName);
-        boolean isNotDeleted = taxonDao.getSession().contains(taxonName) && taxonName.isPersited();
-        // TODO use audit event to check for deletion?
-        if(isNotDeleted){
-            updateEdges(taxon);
+    public void doBeforeTransactionCompletion(SessionImplementor session) {
+
+        try {
+            if(isInsertEvent){
+                createTempSession(session);
+                onNewTaxonName(entity);
+                temporarySession.flush();
+            } else {
+                if(checkStateChange(NAMEPARTS_OR_RANK_PROPS) > -1){
+                    createTempSession(session);
+                    onNameOrRankChange(entity);
+                    temporarySession.flush();
+                }
+                int changedNomRefIndex = checkStateChange(NOMREF_PROP);
+                if(changedNomRefIndex > -1){
+                    createTempSession(session);
+                    onNomReferenceChange(entity, (Reference)oldState[changedNomRefIndex]);
+                    temporarySession.flush();
+                }
+            }
+      } catch (TaxonGraphException e) {
+          throw new HibernateException(e);
+      }
+      finally {
+          if (temporarySession != null ) {
+              // temporarySession.close(); // no need to close the session since the session is configured for auto close, see createTempSession()
+              if(origLoggerLevel != null){
+                  Logger.getLogger("org.hibernate.SQL").setLevel(origLoggerLevel);
+              }
+          }
+      }
+
+    }
+
+    private int checkStateChange(String[] propertyNamesToCheck){
+
+        if(oldState == null){
+            return -1;
+        }
+        int propsCheckedCnt = 0;
+        for(int i = 0; i < propertyNames.length; i++){
+            if(ArrayUtils.contains(propertyNamesToCheck, propertyNames[i])){
+                propsCheckedCnt++;
+                if(!oldState[i].equals(state[i])){
+                    return i;
+                }
+                if(propsCheckedCnt == propertyNamesToCheck.length){
+                    return -1;
+                }
+            }
+        }
+        // this exception should be raised during the unit tests already and thus will never occur in production
+        throw new RuntimeException("TaxonName class misses at least one property of: " + ArrayUtils.toString(propertyNamesToCheck));
+    }
+
+    /**
+     * Concept of creation of sub-sessions found in AuditProcess.doBeforeTransactionCompletion(SessionImplementor session)
+     * and adapted to make it work for this case.
+     *
+     * @param session
+     */
+    protected void createTempSession(SessionImplementor session) {
+        if(temporarySession == null){
+            parentSession = (Session)session;
+            temporarySession = ((Session) session)
+                      .sessionWithOptions().transactionContext()
+                      // in contrast to AuditProcess.doBeforeTransactionCompletion we need the session to close automatically,
+                      // otherwise the hibernate search indexer will suffer from LazyInitializationExceptions
+                      .autoClose(true)
+                      // in contrast to AuditProcess.doBeforeTransactionCompletion, the ConnectionReleaseMode.AFTER_TRANSACTION causes problems for us:
+                      //.connectionReleaseMode( ConnectionReleaseMode.AFTER_TRANSACTION )
+                      .openSession();
+//            origLoggerLevel = Logger.getLogger("org.hibernate.SQL").getLevel();
+//            Logger.getLogger("org.hibernate.SQL").setLevel(Level.TRACE);
         }
     }
 
-    @Override
-    @Transactional(readOnly = false)
+    public void onNewTaxonName(TaxonName taxonName) throws TaxonGraphException {
+        onNameOrRankChange(taxonName);
+    }
+
+
+    public void onNameOrRankChange(TaxonName taxonName) throws TaxonGraphException {
+        Taxon taxon = assureSingleTaxon(taxonName);
+        boolean isNotDeleted = parentSession.contains(taxonName) && taxonName.isPersited();
+        // TODO use audit event to check for deletion?
+        if(isNotDeleted){
+            updateEdges(taxon);
+            temporarySession.saveOrUpdate(taxon);
+        }
+    }
+
+
     public void onNomReferenceChange(TaxonName taxonName, Reference oldNomReference) throws TaxonGraphException {
         if(oldNomReference == null){
             onNewTaxonName(taxonName);
         }
         Taxon taxon = assureSingleTaxon(taxonName);
-        boolean isNotDeleted = taxonDao.getSession().contains(taxonName) && taxonName.isPersited();
+        boolean isNotDeleted = parentSession.contains(taxonName) && taxonName.isPersited();
         // TODO use audit event to check for deletion?
         if(isNotDeleted){
             updateConceptReferenceInEdges(taxon, oldNomReference);
+            temporarySession.saveOrUpdate(taxon);
         }
     }
 
@@ -209,9 +285,36 @@ public class TaxonGraphDaoHibernateImpl implements ITaxonGraphDao {
             boolean isRelToHigherName = relatedHigherNames.contains(rel.getToTaxon().getName());
             if(isRelToHigherName){
                 rel.setCitation(conceptReference);
-                taxonDao.getSession().saveOrUpdate(rel);
+                temporarySession.saveOrUpdate(rel);
             }
         }
+    }
+
+    private List<TaxonName> listNames(Rank rank, String genusOrUninomial, String specificEpithet){
+        String hql = "SELECT n FROM TaxonName n WHERE n.rank = :rank AND n.genusOrUninomial = :genusOrUninomial";
+        if(specificEpithet != null){
+            hql += " AND n.specificEpithet = :specificEpithet";
+        }
+        Query q = temporarySession.createQuery(hql);
+
+        q.setParameter("rank", rank);
+        q.setParameter("genusOrUninomial", genusOrUninomial);
+        if(specificEpithet != null){
+            q.setParameter("specificEpithet", specificEpithet);
+        }
+
+        List<TaxonName> result = q.list();
+        return result;
+    }
+
+    private List<TaxonRelationship> getTaxonRelationships(Taxon relatedTaxon, TaxonRelationshipType type, Reference citation, Direction direction){
+        String hql = "SELECT rel FROM TaxonRelationship rel WHERE rel."+direction+" = :relatedTaxon AND rel.type = :type AND rel.citation = :citation";
+        Query q = temporarySession.createQuery(hql);
+        q.setParameter("relatedTaxon", relatedTaxon);
+        q.setParameter("type", type);
+        q.setParameter("citation", citation);
+        List<TaxonRelationship> rels = q.list();
+        return rels;
     }
 
     /**
@@ -224,10 +327,7 @@ public class TaxonGraphDaoHibernateImpl implements ITaxonGraphDao {
 
         if(name.getRank().isSpecies() || name.getRank().isInfraSpecific()){
             if(name.getGenusOrUninomial() != null){
-                List<Restriction<?>> restrictions = new ArrayList<>();
-                restrictions.add(new Restriction<Rank>("rank", MatchMode.EXACT, Rank.GENUS()));
-                restrictions.add(new Restriction<String>("genusOrUninomial", MatchMode.EXACT, name.getGenusOrUninomial()));
-                List<TaxonName> names = nameDao.list(TaxonName.class, restrictions , 2, 0, null, null);
+                List<TaxonName> names = listNames(Rank.GENUS(), name.getGenusOrUninomial(), null);
                 if(names.size() == 0){
                     logger.error("Genus entity missing for \"" + name.getGenusOrUninomial() + "\"");
                 } else {
@@ -240,11 +340,7 @@ public class TaxonGraphDaoHibernateImpl implements ITaxonGraphDao {
         }
         if(name.getRank().isInfraSpecific()){
             if(name.getGenusOrUninomial() != null && name.getSpecificEpithet() != null){
-                List<Restriction<?>> restrictions = new ArrayList<>();
-                restrictions.add(new Restriction<Rank>("rank", MatchMode.EXACT, Rank.SPECIES()));
-                restrictions.add(new Restriction<String>("specificEpithet", MatchMode.EXACT, name.getSpecificEpithet()));
-                restrictions.add(new Restriction<String>("genusOrUninomial", MatchMode.EXACT, name.getGenusOrUninomial()));
-                List<TaxonName> names = nameDao.list(TaxonName.class, restrictions , 2, 0, null, null);
+                List<TaxonName> names = listNames(Rank.SPECIES(), name.getGenusOrUninomial(), name.getSpecificEpithet());
                 if(names.size() == 0){
                     logger.error("Genus entity missing for \"" + name.getGenusOrUninomial() + " " + name.getSpecificEpithet() + "\"");
                 } else {
@@ -259,6 +355,15 @@ public class TaxonGraphDaoHibernateImpl implements ITaxonGraphDao {
         return relatedNames;
     }
 
+    private Reference secReference(){
+        if(secReference == null){
+            Query q = temporarySession.createQuery("SELECT r FROM Reference r WHERE r.uuid = :uuid");
+            q.setParameter("uuid", secReferenceUUID);
+            secReference = (Reference) q.uniqueResult();
+        }
+        return secReference;
+    }
+
     /**
      * @param taxonName
      * @return
@@ -266,14 +371,14 @@ public class TaxonGraphDaoHibernateImpl implements ITaxonGraphDao {
      */
     protected Taxon assureSingleTaxon(TaxonName taxonName) throws TaxonGraphException {
 
-        Session session = taxonDao.getSession();
-        TaxonName taxonNamePersisted = session.load(TaxonName.class, taxonName.getId());
+        TaxonName taxonNamePersisted = temporarySession.load(TaxonName.class, taxonName.getId());
         Taxon taxon;
         if(taxonName.getTaxa().size() == 0){
             if(taxonNamePersisted != null){
-            Reference secRef = referenceDao.load(secReferenceUUID);
+            Reference secRef = secReference();
                 taxon = Taxon.NewInstance(taxonNamePersisted, secRef);
-                session.saveOrUpdate(taxon);
+                temporarySession.saveOrUpdate(taxon);
+                return taxon;
             } else {
                 throw new TaxonGraphException("Can't create taxon for deleted name: " + taxonName);
             }
@@ -290,7 +395,7 @@ public class TaxonGraphDaoHibernateImpl implements ITaxonGraphDao {
             }
             throw new TaxonGraphException("A name to be used in a taxon graph must only have one taxon with the default sec reference [secRef uuid: "+ secReferenceUUID.toString() +"]");
         }
-        return taxon;
+        return temporarySession.load(Taxon.class, taxon.getId());
     }
 
     /**
@@ -307,53 +412,20 @@ public class TaxonGraphDaoHibernateImpl implements ITaxonGraphDao {
         return conceptRef;
     }
 
-    @Override
-    public List<TaxonGraphEdgeDTO> edges(TaxonName fromName, TaxonName toName, boolean includeUnpublished) throws TaxonGraphException{
-        UUID fromTaxonUUID = null;
-        UUID toTaxonUUID = null;
-        if(fromName != null){
-            fromTaxonUUID = assureSingleTaxon(fromName).getUuid();
-        }
-        if(toName != null){
-            toTaxonUUID = assureSingleTaxon(toName).getUuid();
-        }
-        return taxonDao.listTaxonGraphEdgeDTOs(fromTaxonUUID, toTaxonUUID, relType(), includeUnpublished, null, null);
-    }
-
-    @Override
-    public List<TaxonGraphEdgeDTO> edges(UUID fromtaxonUuid, UUID toTaxonUuid, boolean includeUnpublished) throws TaxonGraphException{
-        return taxonDao.listTaxonGraphEdgeDTOs(fromtaxonUuid, toTaxonUuid, relType(), includeUnpublished, null, null);
-    }
 
     /**
      * @param taxon
      */
     protected List<TaxonRelationship> taxonGraphRelationsFrom(Taxon taxon, Reference citation) {
-        // TODO optimize by creating filterable getTaxonRelationships method
-        List<TaxonRelationship> relations = taxonDao.
-                getTaxonRelationships(taxon, relType(), true, null, null, null, null, TaxonRelationship.Direction.relatedFrom);
-        List<TaxonRelationship> includedInRelations = new ArrayList<>();
-        for(TaxonRelationship taxonRel : relations){
-            if(citation.equals(taxonRel.getCitation())){
-                includedInRelations.add(taxonRel);
-            }
-        }
-        return includedInRelations;
+        List<TaxonRelationship> relations = getTaxonRelationships(taxon, relType(), citation, TaxonRelationship.Direction.relatedFrom);
+        return relations;
     }
 
     /**
      * @param taxon
      */
     protected List<TaxonRelationship> taxonGraphRelationsTo(Taxon taxon, Reference citation) {
-        // TODO optimize by creating filterable getTaxonRelationships method
-        List<TaxonRelationship> relations = taxonDao.
-                getTaxonRelationships(taxon, relType(), true, null, null, null, null, TaxonRelationship.Direction.relatedTo);
-        List<TaxonRelationship> includedInRelations = new ArrayList<>();
-        for(TaxonRelationship taxonRel : relations){
-            if(citation.equals(taxonRel.getCitation())){
-                includedInRelations.add(taxonRel);
-            }
-        }
-        return includedInRelations;
+        List<TaxonRelationship> relations = getTaxonRelationships(taxon, relType(), citation, TaxonRelationship.Direction.relatedTo);
+        return relations;
     }
 }

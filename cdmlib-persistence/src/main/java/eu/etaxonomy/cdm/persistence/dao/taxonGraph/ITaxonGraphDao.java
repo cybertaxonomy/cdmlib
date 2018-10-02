@@ -42,4 +42,8 @@ public interface ITaxonGraphDao {
 
     List<TaxonGraphEdgeDTO> edges(TaxonName fromName, TaxonName toName, boolean includeUnpublished) throws TaxonGraphException;
 
+    void enableHibernateListener(boolean doEnable);
+
+    boolean isListenerEnabled();
+
 }
