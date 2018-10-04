@@ -22,6 +22,7 @@ import org.hibernate.internal.SessionImpl;
 import org.hibernate.persister.entity.EntityPersister;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -48,7 +49,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @since Sep 27, 2018
  *
  */
-//@Ignore // Does no longer work due to test setup problems, but is 100% covered by TaxonGraphHibernateListenerTest
+@Ignore // Does no longer work due to test setup problems, but is 100% covered by TaxonGraphHibernateListenerTest
 public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
 
     enum EventType{
