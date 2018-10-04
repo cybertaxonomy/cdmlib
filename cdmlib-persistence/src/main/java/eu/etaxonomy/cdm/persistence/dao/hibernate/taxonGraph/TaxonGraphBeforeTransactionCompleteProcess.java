@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.taxonGraph;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.UUID;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Level;
@@ -25,7 +24,6 @@ import org.hibernate.event.spi.PostInsertEvent;
 import org.hibernate.event.spi.PostUpdateEvent;
 
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
-import eu.etaxonomy.cdm.model.metadata.CdmPreference;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -40,7 +38,7 @@ import eu.etaxonomy.cdm.persistence.dao.taxonGraph.TaxonGraphException;
  * @since Sep 26, 2018
  *
  */
-public class TaxonGraphBeforeTransactionCompleteProcess implements BeforeTransactionCompletionProcess {
+public class TaxonGraphBeforeTransactionCompleteProcess extends AbstractHibernateTaxonGraphProcessor implements BeforeTransactionCompletionProcess {
 
     private TaxonRelationshipType relType = TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN();
 
@@ -51,13 +49,6 @@ public class TaxonGraphBeforeTransactionCompleteProcess implements BeforeTransac
 
     private static final Logger logger = Logger.getLogger(TaxonGraphBeforeTransactionCompleteProcess.class);
 
-    /**
-     * MUST ONLY BE USED IN TESTS
-     */
-    @Deprecated
-    private UUID secReferenceUUID;
-
-    private Reference secReference = null;
 
     private Session temporarySession;
 
@@ -74,35 +65,6 @@ public class TaxonGraphBeforeTransactionCompleteProcess implements BeforeTransac
     private Object[] state;
 
     private boolean isInsertEvent;
-
-    /**
-     * MUST ONLY BE USED IN TESTS
-     */
-    @Deprecated
-    protected void setSecReferenceUUID(UUID uuid){
-        secReferenceUUID = uuid;
-    }
-
-    public UUID getSecReferenceUUID(){
-        if(secReferenceUUID != null){
-            return secReferenceUUID;
-        } else {
-            CdmPreference pref = CdmPreferenceLookup.instance().get(TaxonGraphDaoHibernateImpl.CDM_PREF_KEY_SEC_REF_UUID);
-            UUID uuid = null;
-            if(pref != null && pref.getValue() != null){
-                try {
-                    uuid = UUID.fromString(pref.getValue());
-                } catch (Exception e) {
-                    // TODO is logging only ok?
-                    logger.error(e);
-                }
-            }
-            if(uuid == null){
-                logger.error("missing cdm property: " + TaxonGraphDaoHibernateImpl.CDM_PREF_KEY_SEC_REF_UUID.getSubject() + TaxonGraphDaoHibernateImpl.CDM_PREF_KEY_SEC_REF_UUID.getPredicate());
-            }
-            return uuid;
-        }
-    }
 
     protected TaxonRelationshipType relType() {
         if(relType == null){
@@ -136,25 +98,25 @@ public class TaxonGraphBeforeTransactionCompleteProcess implements BeforeTransac
             if(isInsertEvent){
                 createTempSession(session);
                 onNewTaxonName(entity);
-                temporarySession.flush();
+                getSession().flush();
             } else {
                 if(checkStateChange(NAMEPARTS_OR_RANK_PROPS) > -1){
                     createTempSession(session);
                     onNameOrRankChange(entity);
-                    temporarySession.flush();
+                    getSession().flush();
                 }
                 int changedNomRefIndex = checkStateChange(NOMREF_PROP);
                 if(changedNomRefIndex > -1){
                     createTempSession(session);
                     onNomReferenceChange(entity, (Reference)oldState[changedNomRefIndex]);
-                    temporarySession.flush();
+                    getSession().flush();
                 }
             }
       } catch (TaxonGraphException e) {
           throw new HibernateException(e);
       }
       finally {
-          if (temporarySession != null ) {
+          if (getSession() != null ) {
               // temporarySession.close(); // no need to close the session since the session is configured for auto close, see createTempSession()
               if(origLoggerLevel != null){
                   Logger.getLogger("org.hibernate.SQL").setLevel(origLoggerLevel);
@@ -192,7 +154,7 @@ public class TaxonGraphBeforeTransactionCompleteProcess implements BeforeTransac
      * @param session
      */
     protected void createTempSession(SessionImplementor session) {
-        if(temporarySession == null){
+        if(getSession() == null){
             parentSession = (Session)session;
             temporarySession = ((Session) session)
                       .sessionWithOptions().transactionContext()
@@ -218,7 +180,7 @@ public class TaxonGraphBeforeTransactionCompleteProcess implements BeforeTransac
         // TODO use audit event to check for deletion?
         if(isNotDeleted){
             updateEdges(taxon);
-            temporarySession.saveOrUpdate(taxon);
+            getSession().saveOrUpdate(taxon);
         }
     }
 
@@ -232,7 +194,7 @@ public class TaxonGraphBeforeTransactionCompleteProcess implements BeforeTransac
         // TODO use audit event to check for deletion?
         if(isNotDeleted){
             updateConceptReferenceInEdges(taxon, oldNomReference);
-            temporarySession.saveOrUpdate(taxon);
+            getSession().saveOrUpdate(taxon);
         }
     }
 
@@ -309,7 +271,7 @@ public class TaxonGraphBeforeTransactionCompleteProcess implements BeforeTransac
             boolean isRelToHigherName = relatedHigherNames.contains(rel.getToTaxon().getName());
             if(isRelToHigherName){
                 rel.setCitation(conceptReference);
-                temporarySession.saveOrUpdate(rel);
+                getSession().saveOrUpdate(rel);
             }
         }
     }
@@ -319,7 +281,7 @@ public class TaxonGraphBeforeTransactionCompleteProcess implements BeforeTransac
         if(specificEpithet != null){
             hql += " AND n.specificEpithet = :specificEpithet";
         }
-        Query q = temporarySession.createQuery(hql);
+        Query q = getSession().createQuery(hql);
 
         q.setParameter("rank", rank);
         q.setParameter("genusOrUninomial", genusOrUninomial);
@@ -333,7 +295,7 @@ public class TaxonGraphBeforeTransactionCompleteProcess implements BeforeTransac
 
     private List<TaxonRelationship> getTaxonRelationships(Taxon relatedTaxon, TaxonRelationshipType type, Reference citation, Direction direction){
         String hql = "SELECT rel FROM TaxonRelationship rel WHERE rel."+direction+" = :relatedTaxon AND rel.type = :type AND rel.citation = :citation";
-        Query q = temporarySession.createQuery(hql);
+        Query q = getSession().createQuery(hql);
         q.setParameter("relatedTaxon", relatedTaxon);
         q.setParameter("type", type);
         q.setParameter("citation", citation);
@@ -379,55 +341,14 @@ public class TaxonGraphBeforeTransactionCompleteProcess implements BeforeTransac
         return relatedNames;
     }
 
-    private Reference secReference(){
-        if(secReference == null){
-            Query q = temporarySession.createQuery("SELECT r FROM Reference r WHERE r.uuid = :uuid");
-            q.setParameter("uuid", getSecReferenceUUID());
-            secReference = (Reference) q.uniqueResult();
-        }
-        return secReference;
-    }
+
 
     /**
-     * FIXME: this is a duplicate implementation of the same method as in {@link TaxonGraphDaoHibernateImpl}
-     *
-     * @param taxonName
      * @return
-     * @throws TaxonGraphException
      */
-    public Taxon assureSingleTaxon(TaxonName taxonName) throws TaxonGraphException {
-
-        UUID secRefUuid = getSecReferenceUUID();
-        TaxonName taxonNamePersisted = temporarySession.load(TaxonName.class, taxonName.getId());
-        Taxon taxon;
-        if(taxonName.getTaxa().size() == 0){
-            if(taxonNamePersisted != null){
-            Reference secRef = secReference();
-                taxon = Taxon.NewInstance(taxonNamePersisted, secRef);
-                temporarySession.saveOrUpdate(taxon);
-                return taxon;
-            } else {
-                throw new TaxonGraphException("Can't create taxon for deleted name: " + taxonName);
-            }
-        } else if(taxonName.getTaxa().size() == 1){
-            taxon = taxonName.getTaxa().iterator().next();
-            if(taxon.getSec() == null){
-                taxon = temporarySession.load(Taxon.class, taxon.getId());
-                taxon.setSec(secReference);
-                temporarySession.saveOrUpdate(taxon);
-                return taxon;
-            } else if(!secRefUuid.equals(taxon.getSec().getUuid())){
-                throw new TaxonGraphException("The taxon for a name to be used in a taxon graph must have the default sec reference [secRef uuid: "+ secRefUuid.toString() +"]");
-            }
-        } else {
-            for(Taxon t : taxonName.getTaxa()){
-                if(secRefUuid.equals(t.getSec().getUuid())){
-                    taxon = t;
-                }
-            }
-            throw new TaxonGraphException("A name to be used in a taxon graph must only have one taxon with the default sec reference [secRef uuid: "+ secRefUuid.toString() +"]");
-        }
-        return temporarySession.load(Taxon.class, taxon.getId());
+    @Override
+    protected Session getSession() {
+        return temporarySession;
     }
 
     /**

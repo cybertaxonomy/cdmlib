@@ -23,9 +23,7 @@ import eu.etaxonomy.cdm.model.metadata.CdmPreference.PrefKey;
 import eu.etaxonomy.cdm.model.metadata.PreferencePredicate;
 import eu.etaxonomy.cdm.model.metadata.PreferenceSubject;
 import eu.etaxonomy.cdm.model.name.TaxonName;
-import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
@@ -48,7 +46,7 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonGraphEdgeDTO;
  */
 @Repository
 @Transactional(readOnly = true)
-public class TaxonGraphDaoHibernateImpl implements ITaxonGraphDao {
+public class TaxonGraphDaoHibernateImpl extends AbstractHibernateTaxonGraphProcessor implements ITaxonGraphDao {
 
     private TaxonRelationshipType relType = TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN();
 
@@ -69,79 +67,12 @@ public class TaxonGraphDaoHibernateImpl implements ITaxonGraphDao {
 
     private UUID secReferenceUUID;
 
-
-    @Override
-    @Deprecated
-    public void setSecReferenceUUID(UUID uuid){
-        // ONLY for tests
-        secReferenceUUID = uuid;
-    }
-
-    public UUID getSecReferenceUUID(){
-        if(secReferenceUUID != null){
-            return secReferenceUUID;
-        } else {
-            CdmPreference pref = CdmPreferenceLookup.instance().get(CDM_PREF_KEY_SEC_REF_UUID);
-            UUID uuid = null;
-            if(pref != null && pref.getValue() != null){
-                try {
-                    uuid = UUID.fromString(pref.getValue());
-                } catch (Exception e) {
-                    // TODO is logging only ok?
-                    logger.error(e);
-                }
-            }
-            if(uuid == null){
-                logger.error("missing cdm property: " + TaxonGraphDaoHibernateImpl.CDM_PREF_KEY_SEC_REF_UUID.getSubject() + TaxonGraphDaoHibernateImpl.CDM_PREF_KEY_SEC_REF_UUID.getPredicate());
-            }
-            return uuid;
-        }
-    }
-
     protected TaxonRelationshipType relType() {
         if(relType == null){
             relType = TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN();
         }
         return relType;
     }
-
-    /**
-     * FIXME: this is a duplicate implementation of the same method as in {@link TaxonGraphBeforeTransactionCompleteProcess}
-     *
-     * @param taxonName
-     * @return
-     * @throws TaxonGraphException
-     */
-    protected Taxon assureSingleTaxon(TaxonName taxonName) throws TaxonGraphException {
-
-        UUID secRefUUID = getSecReferenceUUID();
-        Session session = taxonDao.getSession();
-        TaxonName taxonNamePersisted = session.load(TaxonName.class, taxonName.getId());
-        Taxon taxon;
-        if(taxonName.getTaxa().size() == 0){
-            if(taxonNamePersisted != null){
-            Reference secRef = referenceDao.load(secRefUUID);
-                taxon = Taxon.NewInstance(taxonNamePersisted, secRef);
-                session.saveOrUpdate(taxon);
-            } else {
-                throw new TaxonGraphException("Can't create taxon for deleted name: " + taxonName);
-            }
-        } else if(taxonName.getTaxa().size() == 1){
-            taxon = taxonName.getTaxa().iterator().next();
-            if(!secRefUUID.equals(taxon.getSec().getUuid())){
-                throw new TaxonGraphException("The taxon for a name to be used in a taxon graph must have the default sec reference [secRef uuid: "+ secRefUUID.toString() +"]");
-            }
-        } else {
-            for(Taxon t : taxonName.getTaxa()){
-                if(secRefUUID.equals(t.getSec().getUuid())){
-                    taxon = t;
-                }
-            }
-            throw new TaxonGraphException("A name to be used in a taxon graph must only have one taxon with the default sec reference [secRef uuid: "+ secRefUUID.toString() +"]");
-        }
-        return taxon;
-    }
-
 
     @Override
     public List<TaxonGraphEdgeDTO> edges(TaxonName fromName, TaxonName toName, boolean includeUnpublished) throws TaxonGraphException{
@@ -159,6 +90,14 @@ public class TaxonGraphDaoHibernateImpl implements ITaxonGraphDao {
     @Override
     public List<TaxonGraphEdgeDTO> edges(UUID fromtaxonUuid, UUID toTaxonUuid, boolean includeUnpublished) throws TaxonGraphException{
         return taxonDao.listTaxonGraphEdgeDTOs(fromtaxonUuid, toTaxonUuid, relType(), includeUnpublished, null, null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    Session getSession() {
+        return taxonDao.getSession();
     }
 
 

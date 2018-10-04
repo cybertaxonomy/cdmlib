@@ -92,7 +92,7 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
 
     @Before
     public void setSecRef(){
-        taxonGraphDao.setSecReferenceUUID(uuid_secRef);
+        ((AbstractHibernateTaxonGraphProcessor)taxonGraphDao).setSecReferenceUUID(uuid_secRef);
     }
 
     public TaxonGraphBeforeTransactionCompleteProcess taxonGraphProcess(TaxonName name, EventType type){

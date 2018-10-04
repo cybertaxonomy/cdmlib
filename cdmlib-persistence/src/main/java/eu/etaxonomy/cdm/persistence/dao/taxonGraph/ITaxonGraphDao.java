@@ -21,17 +21,8 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonGraphEdgeDTO;
  */
 public interface ITaxonGraphDao {
 
-
-    /**
-     * ONLY for tests!!!
-     * @param uuid
-     */
-    @Deprecated
-    void setSecReferenceUUID(UUID uuid);
-
     List<TaxonGraphEdgeDTO> edges(UUID fromtaxonUuid, UUID toTaxonUuid, boolean includeUnpublished) throws TaxonGraphException;
 
     List<TaxonGraphEdgeDTO> edges(TaxonName fromName, TaxonName toName, boolean includeUnpublished) throws TaxonGraphException;
-
 
 }
