@@ -44,7 +44,7 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonGraphEdgeDTO;
  * @since Sep 26, 2018
  *
  */
-@Repository
+@Repository("taxonGraphDao")
 @Transactional(readOnly = true)
 public class TaxonGraphDaoHibernateImpl extends AbstractHibernateTaxonGraphProcessor implements ITaxonGraphDao {
 
