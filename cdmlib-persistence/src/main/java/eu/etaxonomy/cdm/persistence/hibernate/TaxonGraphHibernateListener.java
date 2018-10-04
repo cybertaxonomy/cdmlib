@@ -26,10 +26,12 @@ public class TaxonGraphHibernateListener implements PostInsertEventListener, Pos
 
     private static final long serialVersionUID = 5062518307839173935L;
 
+    private  boolean isActivated = true;
+
     @Override
     public void onPostUpdate(PostUpdateEvent event) {
 
-        if(event.getEntity() instanceof TaxonName){
+        if(isActivated && event.getEntity() instanceof TaxonName){
             event.getSession().getActionQueue().registerProcess(new TaxonGraphBeforeTransactionCompleteProcess(event));
         }
     }
@@ -37,7 +39,7 @@ public class TaxonGraphHibernateListener implements PostInsertEventListener, Pos
     @Override
     public void onPostInsert(PostInsertEvent event) {
 
-        if(event.getEntity() instanceof TaxonName){
+        if(isActivated && event.getEntity() instanceof TaxonName){
             event.getSession().getActionQueue().registerProcess(new TaxonGraphBeforeTransactionCompleteProcess(event));
         }
     }
@@ -45,6 +47,22 @@ public class TaxonGraphHibernateListener implements PostInsertEventListener, Pos
     @Override
     public boolean requiresPostCommitHanding(EntityPersister persister) {
         return true;
+    }
+
+    /**
+     * @return the isActivated
+     */
+    protected boolean isActivated() {
+        return isActivated;
+    }
+
+    /**
+     * SHOULD ONLY BE USED IN TESTS
+     *
+     * @param isActivated the isActivated to set
+     */
+    protected void setActive(boolean isActivated) {
+        this.isActivated = isActivated;
     }
 
 }

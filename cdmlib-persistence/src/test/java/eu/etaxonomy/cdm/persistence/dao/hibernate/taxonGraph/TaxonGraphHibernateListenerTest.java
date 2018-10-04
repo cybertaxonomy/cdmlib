@@ -15,6 +15,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.event.service.spi.EventListenerRegistry;
 import org.hibernate.event.spi.EventType;
 import org.hibernate.internal.SessionFactoryImpl;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,15 +59,24 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
 
     private static boolean isRegistered;
 
+    private static TaxonGraphHibernateListener taxonGraphHibernateListener = new TaxonGraphHibernateListener();
+
     @Before
     public void registerListener() {
 
         if(!TaxonGraphHibernateListenerTest.isRegistered){
             EventListenerRegistry listenerRegistry = ((SessionFactoryImpl) sessionFactory).getServiceRegistry().getService(EventListenerRegistry.class);
-            listenerRegistry.appendListeners(EventType.POST_UPDATE, new TaxonGraphHibernateListener());
-            listenerRegistry.appendListeners(EventType.POST_INSERT, new TaxonGraphHibernateListener());
+            listenerRegistry.appendListeners(EventType.POST_UPDATE, taxonGraphHibernateListener);
+            listenerRegistry.appendListeners(EventType.POST_INSERT, taxonGraphHibernateListener);
             TaxonGraphHibernateListenerTest.isRegistered = true;
         }
+        taxonGraphHibernateListener.setActive(true);
+    }
+
+
+    @After
+    public void inactivateListener() {
+        taxonGraphHibernateListener.setActive(false);
     }
 
     /**
@@ -112,7 +122,6 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
 
             Reference refX = ReferenceFactory.newBook();
             refX.setTitleCache("Ref-X", true);
-
 
             // printDataSet(System.err,"TaxonRelationship");
             TaxonName n_trachelomonas_a = nameDao.load(TaxonGraphTest.uuid_n_trachelomonas_a);
