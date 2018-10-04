@@ -22,7 +22,6 @@ import org.hibernate.internal.SessionImpl;
 import org.hibernate.persister.entity.EntityPersister;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -49,7 +48,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @since Sep 27, 2018
  *
  */
-@Ignore // Does no longer work due to test setup problems, but is 100% covered by TaxonGraphHibernateListenerTest
+//@Ignore // Does no longer work due to test setup problems, but is 100% covered by TaxonGraphHibernateListenerTest
 public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
 
     enum EventType{
@@ -229,7 +228,7 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
 
 
     @Override
-     // @Test
+    // @Test
     public void createTestDataSet() throws FileNotFoundException {
 
         TaxonRelationshipType relType = TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN();
@@ -278,9 +277,9 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
         n_trachelomonas_o.setUuid(uuid_n_trachelomonas_o);
         TaxonName n_trachelomonas_o_var_d = TaxonNameFactory.NewBotanicalInstance(Rank.VARIETY(), "Trachelomonas", null, "oviformis", "duplex", null, refD, null, null);
         n_trachelomonas_o_var_d.setUuid(uuid_n_trachelomonas_o_var_d);
-        TaxonName n_trachelomonas_s = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(), "Trachelomonas", null, "alabamensis",  null, null, refE, null, null);
+        TaxonName n_trachelomonas_s = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(), "Trachelomonas", null, "sydneyensis",  null, null, refE, null, null);
         n_trachelomonas_s.setUuid(uuid_n_trachelomonas_s);
-        TaxonName n_trachelomonas_s_var_a = TaxonNameFactory.NewBotanicalInstance(Rank.VARIETY(), "Trachelomonas", null, "alabamensis",  "acuminata", null, refG, null, null);
+        TaxonName n_trachelomonas_s_var_a = TaxonNameFactory.NewBotanicalInstance(Rank.VARIETY(), "Trachelomonas", null, "sydneyensis",  "acuminata", null, refG, null, null);
         n_trachelomonas_s_var_a.setUuid(uuid_n_trachelomonas_s_var_a);
 
         Taxon t_euglenophyceae = Taxon.NewInstance(n_euglenophyceae, secRef);

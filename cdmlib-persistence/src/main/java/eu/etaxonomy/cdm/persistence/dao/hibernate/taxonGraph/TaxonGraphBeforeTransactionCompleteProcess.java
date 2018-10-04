@@ -353,7 +353,7 @@ public class TaxonGraphBeforeTransactionCompleteProcess implements BeforeTransac
             if(name.getGenusOrUninomial() != null){
                 List<TaxonName> names = listNames(Rank.GENUS(), name.getGenusOrUninomial(), null);
                 if(names.size() == 0){
-                    logger.error("Genus entity missing for \"" + name.getGenusOrUninomial() + "\"");
+                    logger.warn("Genus entity with \"" + name.getGenusOrUninomial() + "\" missing");
                 } else {
                     if(names.size() > 1){
                         logger.warn("Duplicate genus entities found for \"" + name.getGenusOrUninomial() + "\", will create taxon graph relation to all of them!");
@@ -366,7 +366,7 @@ public class TaxonGraphBeforeTransactionCompleteProcess implements BeforeTransac
             if(name.getGenusOrUninomial() != null && name.getSpecificEpithet() != null){
                 List<TaxonName> names = listNames(Rank.SPECIES(), name.getGenusOrUninomial(), name.getSpecificEpithet());
                 if(names.size() == 0){
-                    logger.error("Genus entity missing for \"" + name.getGenusOrUninomial() + " " + name.getSpecificEpithet() + "\"");
+                    logger.warn("Species entity with \"" + name.getGenusOrUninomial() + " " + name.getSpecificEpithet() + "\" missing");
                 } else {
                     if(names.size() > 1){
                         logger.warn("Duplicate species entities found for \"" + name.getGenusOrUninomial() + " " + name.getSpecificEpithet() + "\", will create taxon graph relation to all of them!");

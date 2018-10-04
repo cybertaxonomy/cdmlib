@@ -53,16 +53,10 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
     @SpringBeanByType
     private IPreferenceDao prefDao;
 
-
     @SpringBeanByType
     private SessionFactory sessionFactory;
 
     private static boolean isRegistered;
-
-//    @Before
-//    public void setSecRef(){
-//        taxonGraphDao.setSecReferenceUUID(TaxonGraphTest.uuid_secRef);
-//    }
 
     @Before
     public void registerListener() {
@@ -87,7 +81,6 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
         n_t_argentinensis = nameDao.save(n_t_argentinensis);
         commitAndStartNewTransaction();
 
-         // printDataSet(System.err,"TaxonRelationship");
         n_t_argentinensis = nameDao.load(n_t_argentinensis.getUuid());
         Assert.assertTrue("a taxon should have been created", n_t_argentinensis.getTaxa().size() > 0);
 
@@ -104,13 +97,13 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
         refX.setTitleCache("Ref-X", true);
 
 
-        printDataSet(System.err,"TaxonRelationship");
+        // printDataSet(System.err,"TaxonRelationship");
         TaxonName n_trachelomonas_a = nameDao.load(TaxonGraphTest.uuid_n_trachelomonas_a);
         n_trachelomonas_a.setNomenclaturalReference(refX);
         nameDao.saveOrUpdate(n_trachelomonas_a);
         commitAndStartNewTransaction();
 
-        printDataSet(System.err,"TaxonRelationship");
+        // printDataSet(System.err,"TaxonRelationship");
 
         List<TaxonGraphEdgeDTO> edges = taxonGraphDao.edges(n_trachelomonas_a, nameDao.load(TaxonGraphTest.uuid_n_trachelomonas), true);
         Assert.assertEquals(1, edges.size());
@@ -166,6 +159,7 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonGraphTest.xml")
     public void testChangeSepcificEpithet() throws TaxonGraphException{
+
 
         TaxonName n_trachelomonas_o_var_d = nameDao.load(TaxonGraphTest.uuid_n_trachelomonas_o_var_d);
 
