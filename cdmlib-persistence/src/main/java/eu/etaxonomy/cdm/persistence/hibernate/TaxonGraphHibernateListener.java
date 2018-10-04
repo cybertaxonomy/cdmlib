@@ -61,7 +61,7 @@ public class TaxonGraphHibernateListener implements PostInsertEventListener, Pos
      *
      * @param isActivated the isActivated to set
      */
-    protected void setActive(boolean isActivated) {
+    public void setActive(boolean isActivated) {
         this.isActivated = isActivated;
     }
 
