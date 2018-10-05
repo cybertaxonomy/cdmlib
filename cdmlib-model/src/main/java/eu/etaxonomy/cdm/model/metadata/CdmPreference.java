@@ -179,6 +179,14 @@ public final class CdmPreference implements Serializable {
             }
         }
 
+        public String getSubject() {
+            return subject;
+        }
+
+        public String getPredicate() {
+            return predicate;
+        }
+
     }
 
 //****************** CONSTRUCTOR **********************/

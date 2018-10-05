@@ -34,7 +34,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IPublishableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
-import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.NameSearchOrder;
@@ -444,6 +443,7 @@ public interface ITaxonDao
     public List<TaxonRelationship> getTaxonRelationships(Set<TaxonRelationshipType> types,
             Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints, List<String> propertyPaths);
+
 
 
 }

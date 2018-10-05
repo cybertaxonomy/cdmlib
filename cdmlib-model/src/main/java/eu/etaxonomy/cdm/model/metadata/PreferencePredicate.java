@@ -24,6 +24,8 @@ public enum PreferencePredicate  implements IEnumTerm<PreferencePredicate>{
     Test(UUID.fromString("b71214ab-2524-4b5d-8e2b-0581767ac839"), "Test", "Test"),
     //model
     NomenclaturalCode(UUID.fromString("39c5cb91-9370-4803-abf7-fa01e7dbe4e2"), "Nomenclatural code", "model.name.NC"),
+    //taxonGraph
+    TaxonGraphSecRefUuid(UUID.fromString("86ba874c-7491-4f4a-a3b4-aa2d1ea9c411"), "TaxonGraph SecReference Uuid", "model.taxonGraph.secRefUuid"),
 	//editor
     TaxonNodeOrder(UUID.fromString("ce06bd8e-4371-4ee5-8f57-cf23930cfd12"), "Taxon node order", "model.taxon.TNO"),
 	NameDetailsView(UUID.fromString("3c4ec5f5-feb5-44a8-8533-c3c3484a6869"), "NameDetailsView", "model.editor.NDV"),
