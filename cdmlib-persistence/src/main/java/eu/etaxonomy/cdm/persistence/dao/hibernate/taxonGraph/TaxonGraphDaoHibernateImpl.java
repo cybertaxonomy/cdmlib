@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.model.metadata.CdmPreference;
 import eu.etaxonomy.cdm.model.metadata.CdmPreference.PrefKey;
 import eu.etaxonomy.cdm.model.metadata.PreferencePredicate;
 import eu.etaxonomy.cdm.model.metadata.PreferenceSubject;
+import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
@@ -123,7 +124,12 @@ public class TaxonGraphDaoHibernateImpl extends AbstractHibernateTaxonGraphProce
                 + " JOIN toT.name as toN"
                 + " JOIN fromN.rank as fromN_R"
                 + " JOIN toN.rank as toN_R"
-                + " WHERE tr.type = :reltype";
+                + " LEFT OUTER JOIN toN.registrations as toN_Reg"
+                + " LEFT OUTER JOIN fromN.registrations as fromN_Reg"
+                + " WHERE tr.type = :reltype"
+                + " AND (fromN_Reg IS NULL OR fromN_Reg.status = :regStatus)"
+                + " AND (toN_Reg IS NULL OR toN_Reg.status = :regStatus) "
+                ;
 
         if(fromTaxonUuid != null){
             hql += " AND fromT.uuid = :fromTaxonUuid";
@@ -140,6 +146,7 @@ public class TaxonGraphDaoHibernateImpl extends AbstractHibernateTaxonGraphProce
 
         Query query = session.createQuery(hql);
         query.setParameter("reltype", type);
+        query.setParameter("regStatus", RegistrationStatus.PUBLISHED);
         if(fromTaxonUuid != null){
             query.setParameter("fromTaxonUuid", fromTaxonUuid);
         }
