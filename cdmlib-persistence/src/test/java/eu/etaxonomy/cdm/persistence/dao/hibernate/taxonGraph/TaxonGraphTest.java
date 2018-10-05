@@ -11,22 +11,16 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.taxonGraph;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.hibernate.Session;
-import org.hibernate.engine.spi.SessionImplementor;
-import org.hibernate.event.spi.PostInsertEvent;
-import org.hibernate.event.spi.PostUpdateEvent;
-import org.hibernate.internal.SessionImpl;
-import org.hibernate.persister.entity.EntityPersister;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.model.metadata.CdmPreference;
+import eu.etaxonomy.cdm.model.metadata.CdmPreference.PrefKey;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
@@ -35,6 +29,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.persistence.dao.common.IPreferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
@@ -49,7 +44,6 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @since Sep 27, 2018
  *
  */
-@Ignore // Does no longer work due to test setup problems, but is 100% covered by TaxonGraphHibernateListenerTest
 public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
 
     enum EventType{
@@ -68,7 +62,8 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
     @SpringBeanByType
     private ITaxonDao taxonDao;
 
-    private TaxonGraphBeforeTransactionCompleteProcess taxonGraphProcess;
+    @SpringBeanByType
+    private IPreferenceDao prefDao;
 
     protected static UUID uuid_secRef = UUID.fromString("34e1ff99-63c4-4296-81b6-b20afb98902e");
 
@@ -90,38 +85,39 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
     protected static UUID uuid_t_trachelomonas_s  = UUID.fromString("5dce8a09-c809-4027-a9ce-b70901e7b820");
     protected static UUID uuid_t_trachelomonas_s_var_a = UUID.fromString("3f14c528-e191-4a6f-b2a9-36c9a3fc7eee");
 
-    @Before
-    public void setSecRef(){
-        ((AbstractHibernateTaxonGraphProcessor)taxonGraphDao).setSecReferenceUUID(uuid_secRef);
+    public AbstractHibernateTaxonGraphProcessor taxonGraphProcessor(){
+        AbstractHibernateTaxonGraphProcessor processor = new AbstractHibernateTaxonGraphProcessor() {
+
+            @Override
+            public Session getSession() {
+                return nameDao.getSession();
+            }
+        };
+
+        return processor;
     }
 
-    public TaxonGraphBeforeTransactionCompleteProcess taxonGraphProcess(TaxonName name, EventType type){
-        // just use some persister, it is not used during these tests
-        Entry<String, EntityPersister> persister = ((SessionImpl)nameDao.getSession()).getFactory().getEntityPersisters().entrySet().iterator().next();
-        switch (type){
-        case INSERT:
-            taxonGraphProcess = new TaxonGraphBeforeTransactionCompleteProcess(new PostInsertEvent(name, name.getId(), new Object[]{}, persister.getValue(), null));
-            break;
-        case UPDATE:
-            taxonGraphProcess = new TaxonGraphBeforeTransactionCompleteProcess(new PostUpdateEvent(name, name.getId(), new Object[]{}, new Object[]{}, new int[]{}, persister.getValue(), null));
-            break;
 
-        }
-        taxonGraphProcess.setSecReferenceUUID(uuid_secRef);
-        taxonGraphProcess.createTempSession((SessionImplementor) nameDao.getSession());
-        return taxonGraphProcess;
-    }
+   protected void setUuidPref() {
+       PrefKey key = TaxonGraphDaoHibernateImpl.CDM_PREF_KEY_SEC_REF_UUID;
+       prefDao.set(new CdmPreference(key.getSubject(), key.getPredicate(), TaxonGraphTest.uuid_secRef.toString()));
+       commitAndStartNewTransaction();
+   }
 
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
     public void testnewTaxonName() throws TaxonGraphException{
+
+        setUuidPref();
 
         Reference refX = ReferenceFactory.newBook();
         refX.setTitleCache("Ref-X", true);
 
         TaxonName n_t_argentinensis = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(), "Trachelomonas", null, "argentinensis", null, null, refX, null, null);
         n_t_argentinensis = nameDao.save(n_t_argentinensis);
-        taxonGraphProcess(n_t_argentinensis, EventType.INSERT).onNewTaxonName(n_t_argentinensis);
+        AbstractHibernateTaxonGraphProcessor processor = taxonGraphProcessor();
+        Taxon singleTaxon = processor.assureSingleTaxon(n_t_argentinensis);
+        processor.updateEdges(singleTaxon);
         commitAndStartNewTransaction();
 
          // printDataSet(System.err,"TaxonRelationship");
@@ -136,6 +132,8 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
     public void testChangeNomRef() throws TaxonGraphException{
 
+        setUuidPref();
+
         Reference refX = ReferenceFactory.newBook();
         refX.setTitleCache("Ref-X", true);
 
@@ -143,7 +141,9 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
         Reference oldNomReference = n_trachelomonas_a.getNomenclaturalReference();
         n_trachelomonas_a.setNomenclaturalReference(refX);
         nameDao.saveOrUpdate(n_trachelomonas_a);
-        taxonGraphProcess(n_trachelomonas_a, EventType.UPDATE).onNomReferenceChange(n_trachelomonas_a, oldNomReference);
+        AbstractHibernateTaxonGraphProcessor processor = taxonGraphProcessor();
+        Taxon singleTaxon = processor.assureSingleTaxon(n_trachelomonas_a);
+        processor.updateReferenceInEdges(singleTaxon, refX, oldNomReference);
 
 //        Logger.getLogger("org.hibernate.SQL").setLevel(Level.TRACE);
         commitAndStartNewTransaction();
@@ -158,6 +158,8 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
     public void testChangeRank() throws TaxonGraphException{
 
+        setUuidPref();
+
         TaxonName n_trachelomonas_o_var_d = nameDao.load(uuid_n_trachelomonas_o_var_d);
 
         List<TaxonGraphEdgeDTO> edges = taxonGraphDao.edges(n_trachelomonas_o_var_d, nameDao.load(uuid_n_trachelomonas), true);
@@ -165,7 +167,9 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
 
         n_trachelomonas_o_var_d.setRank(Rank.SPECIES());
         nameDao.saveOrUpdate(n_trachelomonas_o_var_d);
-        taxonGraphProcess(n_trachelomonas_o_var_d, EventType.UPDATE).onNameOrRankChange(n_trachelomonas_o_var_d);
+        AbstractHibernateTaxonGraphProcessor processor = taxonGraphProcessor();
+        Taxon singleTaxon = processor.assureSingleTaxon(n_trachelomonas_o_var_d);
+        processor.updateEdges(singleTaxon);
         commitAndStartNewTransaction();
 
         // printDataSet(System.err,"TaxonRelationship");
@@ -179,6 +183,8 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
     public void testChangeGenus() throws TaxonGraphException{
 
+        setUuidPref();
+
         TaxonName n_trachelomonas_o_var_d = nameDao.load(uuid_n_trachelomonas_o_var_d);
 
         List<TaxonGraphEdgeDTO> edges = taxonGraphDao.edges(n_trachelomonas_o_var_d, nameDao.load(uuid_n_trachelomonas), true);
@@ -190,7 +196,9 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
 
         n_trachelomonas_o_var_d.setGenusOrUninomial("Euglena");
         nameDao.saveOrUpdate(n_trachelomonas_o_var_d);
-        taxonGraphProcess(n_trachelomonas_o_var_d, EventType.UPDATE).onNameOrRankChange(n_trachelomonas_o_var_d);
+        AbstractHibernateTaxonGraphProcessor processor = taxonGraphProcessor();
+        Taxon singleTaxon = processor.assureSingleTaxon(n_trachelomonas_o_var_d);
+        processor.updateEdges(singleTaxon);
         commitAndStartNewTransaction();
 
         // printDataSet(System.err,"TaxonRelationship");
@@ -206,6 +214,8 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
     public void testChangeSepcificEpithet() throws TaxonGraphException{
 
+        setUuidPref();
+
         TaxonName n_trachelomonas_o_var_d = nameDao.load(uuid_n_trachelomonas_o_var_d);
 
         List<TaxonGraphEdgeDTO> edges = taxonGraphDao.edges(n_trachelomonas_o_var_d, nameDao.load(uuid_n_trachelomonas), true);
@@ -215,7 +225,9 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
 
         n_trachelomonas_o_var_d.setSpecificEpithet("alabamensis");
         nameDao.saveOrUpdate(n_trachelomonas_o_var_d);
-        taxonGraphProcess(n_trachelomonas_o_var_d, EventType.UPDATE).onNameOrRankChange(n_trachelomonas_o_var_d);
+        AbstractHibernateTaxonGraphProcessor processor = taxonGraphProcessor();
+        Taxon singleTaxon = processor.assureSingleTaxon(n_trachelomonas_o_var_d);
+        processor.updateEdges(singleTaxon);
         commitAndStartNewTransaction();
 
         // printDataSet(System.err,"TaxonRelationship");
