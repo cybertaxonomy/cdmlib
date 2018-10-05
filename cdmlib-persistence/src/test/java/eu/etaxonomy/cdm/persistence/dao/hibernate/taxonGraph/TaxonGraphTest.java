@@ -75,6 +75,8 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
     protected static UUID uuid_n_trachelomonas_o_var_d  = UUID.fromString("d8a0e3ad-2a4d-45ed-b874-f96616015f91");
     protected static UUID uuid_n_trachelomonas_s  = UUID.fromString("5b90bd58-7f76-45c4-9966-7f65e7bf0bb0");
     protected static UUID uuid_n_trachelomonas_s_var_a = UUID.fromString("192ad8a1-55ca-4379-87a1-3bbd04e8b880");
+    protected static UUID uuid_n_trachelomonas_r_s = UUID.fromString("2d6e68bf-aba7-433d-8325-ea15f3e567f4");
+    protected static UUID uuid_n_phacus_s = UUID.fromString("d59b8715-1b98-4da4-a42d-efcbe85b323c");
 
     protected static UUID uuid_t_euglenophyceae = UUID.fromString("4ea17d7a-17a3-41f0-8de6-e924494ecbae");
     protected static UUID uuid_t_euglena = UUID.fromString("1c69afd4-ae58-4913-8706-5c89729d38f4");
@@ -212,7 +214,7 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
-    public void testChangeSepcificEpithet() throws TaxonGraphException{
+    public void testChangeSpecificEpithet_of_InfraSpecific() throws TaxonGraphException{
 
         setUuidPref();
 
@@ -241,7 +243,7 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
 
 
     @Override
-    // @Test
+    @Test
     public void createTestDataSet() throws FileNotFoundException {
 
         TaxonRelationshipType relType = TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN();
@@ -257,6 +259,7 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
         //       +-- +-- Trachelomonas oviformis var. duplex Ref-D in Ref-C
         //       +-- Trachelomonas sydneyensis Ref-E
         //       +-- +-- Trachelomonas sydneyensis var. acuminata Ref-F
+
 
         Reference secRef = ReferenceFactory.newDatabase();
         secRef.setTitleCache("secRef", true);
@@ -294,6 +297,10 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
         n_trachelomonas_s.setUuid(uuid_n_trachelomonas_s);
         TaxonName n_trachelomonas_s_var_a = TaxonNameFactory.NewBotanicalInstance(Rank.VARIETY(), "Trachelomonas", null, "sydneyensis",  "acuminata", null, refG, null, null);
         n_trachelomonas_s_var_a.setUuid(uuid_n_trachelomonas_s_var_a);
+        TaxonName n_trachelomonas_r_s = TaxonNameFactory.NewBotanicalInstance(Rank.VARIETY(), "Trachelomonas", null, "robusta", "sparsiornata", null, refG, null, null);
+        n_trachelomonas_r_s.setUuid(uuid_n_trachelomonas_r_s);
+        TaxonName n_phacus_s = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(), "Phacus", null, "smulkowskianus", null, null, refG, null, null);
+        n_phacus_s.setUuid(uuid_n_phacus_s);
 
         Taxon t_euglenophyceae = Taxon.NewInstance(n_euglenophyceae, secRef);
         t_euglenophyceae.setUuid(uuid_t_euglenophyceae);
@@ -315,6 +322,8 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
         for(Object cdm : new Object[]{
                 // refs:
                 secRef, refA, refB, refC, refD, refE, refF,
+                // names without taxa
+                n_phacus_s, n_trachelomonas_r_s,
                 // taxa:
                 t_euglenophyceae, t_euglena, t_trachelomonas, t_trachelomonas_a, t_trachelomonas_o, t_trachelomonas_o_var_d,
                 t_trachelomonas_s, t_trachelomonas_s_var_a}) {

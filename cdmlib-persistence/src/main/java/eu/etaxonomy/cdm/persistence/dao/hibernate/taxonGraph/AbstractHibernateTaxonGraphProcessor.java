@@ -107,12 +107,14 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
      */
     public void updateEdges(Taxon taxon) throws TaxonGraphException {
 
-        List<TaxonName> relatedHigherNames = relatedHigherNames(taxon.getName());
         Reference conceptReference = conceptReference(taxon.getName().getNomenclaturalReference());
+
         if(conceptReference != null){
-            List<TaxonRelationship> relations = taxonGraphRelationsFrom(taxon, conceptReference);
+            // update edges to higher names
+            List<TaxonName> relatedHigherNames = relatedHigherNames(taxon.getName());
+            List<TaxonRelationship> relationsFrom = taxonGraphRelationsFrom(taxon, conceptReference);
             List<TaxonName> relatedHigherNamesWithoutRels = new ArrayList<>(relatedHigherNames);
-            for(TaxonRelationship rel : relations){
+            for(TaxonRelationship rel : relationsFrom){
                 boolean isRelToHigherName = relatedHigherNames.contains(rel.getToTaxon().getName());
                 if(isRelToHigherName){
                     relatedHigherNamesWithoutRels.remove(rel.getToTaxon().getName());
@@ -120,10 +122,26 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
                     taxon.removeTaxonRelation(rel);
                 }
             }
-
             for(TaxonName name : relatedHigherNamesWithoutRels){
                 Taxon toTaxon = assureSingleTaxon(name);
                 taxon.addTaxonRelation(toTaxon, relType(), conceptReference, null);
+            }
+
+            // update edges to lower names
+            List<TaxonName> relatedLowerNames = relatedLowerNames(taxon.getName());
+            List<TaxonRelationship> relationsTo = taxonGraphRelationsTo(taxon, conceptReference);
+            List<TaxonName> relatedLowerNamesWithoutRels = new ArrayList<>(relatedLowerNames);
+            for(TaxonRelationship rel : relationsTo){
+                boolean isRelFromLowerName = relatedLowerNames.contains(rel.getFromTaxon().getName());
+                if(isRelFromLowerName){
+                    relatedLowerNamesWithoutRels.remove(rel.getFromTaxon().getName());
+                } else {
+                    taxon.removeTaxonRelation(rel);
+                }
+            }
+            for(TaxonName name : relatedLowerNamesWithoutRels){
+                Taxon fromTaxon = assureSingleTaxon(name);
+                fromTaxon.addTaxonRelation(taxon, relType(), conceptReference, null);
             }
         }
     }
@@ -241,7 +259,7 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
 
         if(name.getRank().isSpecies() || name.getRank().isInfraSpecific()){
             if(name.getGenusOrUninomial() != null){
-                List<TaxonName> names = listNames(Rank.GENUS(), name.getGenusOrUninomial(), null);
+                List<TaxonName> names = listNamesAtRank(Rank.GENUS(), name.getGenusOrUninomial(), null);
                 if(names.size() == 0){
                     logger.warn("Genus entity with \"" + name.getGenusOrUninomial() + "\" missing");
                 } else {
@@ -254,7 +272,7 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
         }
         if(name.getRank().isInfraSpecific()){
             if(name.getGenusOrUninomial() != null && name.getSpecificEpithet() != null){
-                List<TaxonName> names = listNames(Rank.SPECIES(), name.getGenusOrUninomial(), name.getSpecificEpithet());
+                List<TaxonName> names = listNamesAtRank(Rank.SPECIES(), name.getGenusOrUninomial(), name.getSpecificEpithet());
                 if(names.size() == 0){
                     logger.warn("Species entity with \"" + name.getGenusOrUninomial() + " " + name.getSpecificEpithet() + "\" missing");
                 } else {
@@ -268,6 +286,43 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
 
         return relatedNames;
     }
+
+    /**
+     * @param name
+     * @return
+     */
+    protected List<TaxonName> relatedLowerNames(TaxonName name) {
+
+        List<TaxonName> relatedNames = new ArrayList<>();
+
+        if(name.getRank().isGenus()){
+            if(name.getGenusOrUninomial() != null){
+                List<TaxonName> names = listNamesAtRank(Rank.SPECIES(), name.getGenusOrUninomial(), null);
+                if(names.size() == 0){
+                    logger.debug("No species entity with \"" + name.getGenusOrUninomial() + " *\" found");
+                } else {
+                    logger.debug(names.size() + " species entities found with \"" + name.getGenusOrUninomial() + " *\"");
+                    relatedNames.addAll(names);
+                }
+            }
+        }
+        if(name.getRank().isSpecies()){
+            if(name.getGenusOrUninomial() != null && name.getSpecificEpithet() != null){
+                List<TaxonName> names = listNamesBelowRank(Rank.SPECIES(), name.getGenusOrUninomial(), name.getSpecificEpithet());
+                if(names.size() == 0){
+                    logger.warn("No infraspecific entity with \"" + name.getGenusOrUninomial() + " " + name.getSpecificEpithet() + "*\" found");
+                } else {
+                    if(names.size() > 1){
+                        logger.warn(names.size() + " infraspecific entities found with \"" + name.getGenusOrUninomial() + " " + name.getSpecificEpithet() + "*\"found");
+                    }
+                    relatedNames.addAll(names);
+                }
+            }
+         }
+
+        return relatedNames;
+    }
+
 
     /**
      * @param taxon
@@ -285,7 +340,7 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
         return relations;
     }
 
-    protected List<TaxonName> listNames(Rank rank, String genusOrUninomial, String specificEpithet){
+    protected List<TaxonName> listNamesAtRank(Rank rank, String genusOrUninomial, String specificEpithet){
         String hql = "SELECT n FROM TaxonName n WHERE n.rank = :rank AND n.genusOrUninomial = :genusOrUninomial";
         if(specificEpithet != null){
             hql += " AND n.specificEpithet = :specificEpithet";
@@ -301,6 +356,24 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
         List<TaxonName> result = q.list();
         return result;
     }
+
+    protected List<TaxonName> listNamesBelowRank(Rank rank, String genusOrUninomial, String specificEpithet){
+        String hql = "SELECT n FROM TaxonName n WHERE n.rank.orderIndex > :rankOrderIndex AND n.genusOrUninomial = :genusOrUninomial";
+        if(specificEpithet != null){
+            hql += " AND n.specificEpithet = :specificEpithet";
+        }
+        Query q = getSession().createQuery(hql);
+
+        q.setParameter("rankOrderIndex", rank.getOrderIndex());
+        q.setParameter("genusOrUninomial", genusOrUninomial);
+        if(specificEpithet != null){
+            q.setParameter("specificEpithet", specificEpithet);
+        }
+
+        List<TaxonName> result = q.list();
+        return result;
+    }
+
 
     protected List<TaxonRelationship> getTaxonRelationships(Taxon relatedTaxon, TaxonRelationshipType type, Reference citation, Direction direction){
         String hql = "SELECT rel FROM TaxonRelationship rel WHERE rel."+direction+" = :relatedTaxon AND rel.type = :type AND rel.citation = :citation";

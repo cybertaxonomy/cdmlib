@@ -90,7 +90,7 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
 
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonGraphTest.xml")
-    public void testnewTaxonName() throws TaxonGraphException{
+    public void testNewTaxonName() throws TaxonGraphException{
 
         try{
             setUuidPref();
@@ -106,6 +106,32 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
             Assert.assertTrue("a taxon should have been created", n_t_argentinensis.getTaxa().size() > 0);
 
             List<TaxonGraphEdgeDTO> edges = taxonGraphDao.edges(n_t_argentinensis, nameDao.load(TaxonGraphTest.uuid_n_trachelomonas), true);
+            Assert.assertEquals(1, edges.size());
+            Assert.assertEquals(refX.getUuid(), edges.get(0).getCitationUuid());
+
+        } finally {
+            rollback();
+        }
+    }
+
+    @Test
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonGraphTest.xml")
+    public void testNewGenusName() throws TaxonGraphException{
+
+        try{
+            setUuidPref();
+
+            Reference refX = ReferenceFactory.newBook();
+            refX.setTitleCache("Ref-X", true);
+
+            TaxonName n_phacus = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS(), "Phacus", null, null, null, null, refX, null, null);
+            nameDao.save(n_phacus);
+            commitAndStartNewTransaction();
+
+            n_phacus = nameDao.load(n_phacus.getUuid());
+            Assert.assertTrue("a taxon should have been created", n_phacus.getTaxa().size() > 0);
+
+            List<TaxonGraphEdgeDTO> edges = taxonGraphDao.edges(nameDao.load(TaxonGraphTest.uuid_n_phacus_s), n_phacus, true);
             Assert.assertEquals(1, edges.size());
             Assert.assertEquals(refX.getUuid(), edges.get(0).getCitationUuid());
 
@@ -202,7 +228,7 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
 
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonGraphTest.xml")
-    public void testChangeSepcificEpithet() throws TaxonGraphException{
+    public void testChangeSpecificEpithet_of_InfraSpecific() throws TaxonGraphException{
 
         try {
             setUuidPref();
@@ -225,6 +251,38 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
             Assert.assertEquals("The edge to Trachelomonas oviformis should have been deleted", 0, edges.size());
             edges = taxonGraphDao.edges(n_trachelomonas_o_var_d, nameDao.load(TaxonGraphTest.uuid_n_trachelomonas_a), true);
             Assert.assertEquals("The edge to Trachelomonas alabamensis should have been created", 1, edges.size());
+
+        } finally {
+            rollback();
+        }
+    }
+
+    @Test
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonGraphTest.xml")
+    public void testChangeSpecificEpithet_of_Species() throws TaxonGraphException{
+
+        try {
+            setUuidPref();
+
+            TaxonName n_trachelomonas_o = nameDao.load(TaxonGraphTest.uuid_n_trachelomonas_o);
+
+            List<TaxonGraphEdgeDTO> edges = taxonGraphDao.edges(nameDao.load(TaxonGraphTest.uuid_n_trachelomonas_o_var_d), n_trachelomonas_o, true);
+            Assert.assertEquals("One edge from 'Trachelomonas oviformis var. duplex' to 'Trachelomonas oviformis' expected", 1, edges.size());
+            edges = taxonGraphDao.edges(n_trachelomonas_o, nameDao.load(TaxonGraphTest.uuid_n_trachelomonas) , true);
+            Assert.assertEquals("One edge from 'Trachelomonas oviformis' to 'Trachelomonas' expected", 1, edges.size());
+
+            n_trachelomonas_o.setSpecificEpithet("robusta");
+            nameDao.saveOrUpdate(n_trachelomonas_o);
+            commitAndStartNewTransaction();
+            n_trachelomonas_o = nameDao.load(n_trachelomonas_o.getUuid());
+
+            // printDataSet(System.err,"TaxonRelationship");
+            edges = taxonGraphDao.edges(n_trachelomonas_o, nameDao.load(TaxonGraphTest.uuid_n_trachelomonas) , true);
+            Assert.assertEquals("The edge to Trachelomonas should still exist", 1, edges.size());
+            edges = taxonGraphDao.edges(nameDao.load(TaxonGraphTest.uuid_n_trachelomonas_o_var_d), n_trachelomonas_o, true);
+            Assert.assertEquals("The edge from 'Trachelomonas oviformis var. duplex' should have been deleted", 0, edges.size());
+            edges = taxonGraphDao.edges(nameDao.load(TaxonGraphTest.uuid_n_trachelomonas_r_s), n_trachelomonas_o, true);
+            Assert.assertEquals("The edge to 'Trachelomonas robusta var. sparsiornata' should have been created", 1, edges.size());
 
         } finally {
             rollback();
