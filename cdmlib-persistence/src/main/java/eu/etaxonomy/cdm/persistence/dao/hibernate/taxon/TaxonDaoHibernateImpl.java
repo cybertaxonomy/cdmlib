@@ -66,7 +66,6 @@ import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
-import eu.etaxonomy.cdm.persistence.dto.TaxonGraphEdgeDTO;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.NameSearchOrder;
@@ -1969,93 +1968,6 @@ public class TaxonDaoHibernateImpl
             list.add(new UuidAndTitleCache<TaxonBase>((UUID) object[0],(Integer) object[1], (String) object[2]));
         }
         return list;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<TaxonGraphEdgeDTO> listTaxonGraphEdgeDTOs(UUID fromTaxonUuid, UUID toTaxonUuid, TaxonRelationshipType type,
-            boolean includeUnpublished, Integer pageSize, Integer pageIndex) {
-
-        Query query = prepareTaxonGraphEdgeDTOs(fromTaxonUuid, toTaxonUuid, type, includeUnpublished, false);
-
-        if(pageSize != null) {
-            query.setMaxResults(pageSize);
-            if(pageIndex != null) {
-                query.setFirstResult(pageIndex * pageSize);
-            } else {
-                query.setFirstResult(0);
-            }
-        }
-
-        @SuppressWarnings("unchecked")
-        List<TaxonGraphEdgeDTO> result = query.list();
-
-        return result;
-    }
-
-    @Override
-    public long countTaxonGraphEdgeDTOs(UUID fromTaxonUuid, UUID toTaxonUuid, TaxonRelationshipType type,
-            boolean includeUnpublished) {
-
-        Query query = prepareTaxonGraphEdgeDTOs(fromTaxonUuid, toTaxonUuid, type, includeUnpublished, true);
-        Long count = (Long) query.uniqueResult();
-        return count;
-    }
-
-    /**
-     * @param fromTaxonUuid
-     * @param toTaxonUuid
-     * @param type
-     * @param includeUnpublished
-     * @return
-     */
-    protected Query prepareTaxonGraphEdgeDTOs(UUID fromTaxonUuid, UUID toTaxonUuid, TaxonRelationshipType type,
-            boolean includeUnpublished, boolean doCount) {
-        Session session = getSession();
-        String hql = "";
-        if(doCount){
-            hql = "COUNT(tr.id)";
-        } else {
-            hql += "SELECT new eu.etaxonomy.cdm.persistence.dto.TaxonGraphEdgeDTO("
-                    + "fromT.uuid, fromN.titleCache, fromN_R.idInVocabulary, "
-                    + "toT.uuid, toN.titleCache, toN_R.idInVocabulary, "
-                    + "c.uuid, c.titleCache"
-                    + ")";
-        }
-        hql += " FROM TaxonRelationship as tr "
-                + " JOIN tr.citation as c"
-                + " JOIN tr.relatedFrom as fromT"
-                + " JOIN tr.relatedTo as toT"
-                + " JOIN fromT.name as fromN"
-                + " JOIN toT.name as toN"
-                + " JOIN fromN.rank as fromN_R"
-                + " JOIN toN.rank as toN_R"
-                + " WHERE tr.type = :reltype";
-
-        if(fromTaxonUuid != null){
-            hql += " AND fromT.uuid = :fromTaxonUuid";
-            if(!includeUnpublished){
-                hql += " AND fromT.publish is true";
-            }
-        }
-        if(toTaxonUuid != null){
-            hql += " AND toT.uuid = :toTaxonUuid";
-            if(!includeUnpublished){
-                hql += " AND toT.publish is true";
-            }
-        }
-
-        Query query = session.createQuery(hql);
-        query.setParameter("reltype", type);
-        if(fromTaxonUuid != null){
-            query.setParameter("fromTaxonUuid", fromTaxonUuid);
-        }
-        if(toTaxonUuid != null){
-            query.setParameter("toTaxonUuid", toTaxonUuid);
-        }
-        return query;
     }
 
 

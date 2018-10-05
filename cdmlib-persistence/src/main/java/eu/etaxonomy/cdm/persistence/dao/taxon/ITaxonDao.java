@@ -34,7 +34,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IPublishableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
-import eu.etaxonomy.cdm.persistence.dto.TaxonGraphEdgeDTO;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.NameSearchOrder;
@@ -445,30 +444,6 @@ public interface ITaxonDao
             Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints, List<String> propertyPaths);
 
-    /**
-     *
-     * @param fromTaxonUuid
-     *  Can be <code>null</code> to retrieve all edges having the toName as target.
-     * @param toTaxonUuid
-     *  Can be <code>null</code> to retrieve all edges originating from the fromName as target.
-     * @param type
-     * @param includeUnpublished
-     * @return
-     */
-    List<TaxonGraphEdgeDTO> listTaxonGraphEdgeDTOs(UUID fromTaxonUuid, UUID toTaxonUuid, TaxonRelationshipType type,
-            boolean includeUnpublished, Integer pageSize, Integer pageIndex);
-
-    /**
-     * @param fromTaxonUuid
-     *  Can be <code>null</code> to retrieve all edges having the toName as target.
-     * @param toTaxonUuid
-     *  Can be <code>null</code> to retrieve all edges originating from the fromName as target.
-     * @param type
-     * @param includeUnpublished
-     * @return
-     */
-    long countTaxonGraphEdgeDTOs(UUID fromTaxonUuid, UUID toTaxonUuid, TaxonRelationshipType type,
-            boolean includeUnpublished);
 
 
 }

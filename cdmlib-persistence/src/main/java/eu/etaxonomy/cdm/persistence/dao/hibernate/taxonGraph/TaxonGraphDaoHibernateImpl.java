@@ -8,11 +8,10 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.taxonGraph;
 
-import java.util.EnumSet;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -23,10 +22,7 @@ import eu.etaxonomy.cdm.model.metadata.CdmPreference.PrefKey;
 import eu.etaxonomy.cdm.model.metadata.PreferencePredicate;
 import eu.etaxonomy.cdm.model.metadata.PreferenceSubject;
 import eu.etaxonomy.cdm.model.name.TaxonName;
-import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
-import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxonGraph.ITaxonGraphDao;
 import eu.etaxonomy.cdm.persistence.dao.taxonGraph.TaxonGraphException;
@@ -50,22 +46,12 @@ public class TaxonGraphDaoHibernateImpl extends AbstractHibernateTaxonGraphProce
 
     private TaxonRelationshipType relType = TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN();
 
-    private EnumSet<ReferenceType> referenceSectionTypes = EnumSet.of(ReferenceType.Section, ReferenceType.BookSection);
-
-    private static final Logger logger = Logger.getLogger(TaxonGraphDaoHibernateImpl.class);
+    // private static final Logger logger = Logger.getLogger(TaxonGraphDaoHibernateImpl.class);
 
     public static final PrefKey CDM_PREF_KEY_SEC_REF_UUID = CdmPreference.NewKey(PreferenceSubject.NewDatabaseInstance(), PreferencePredicate.TaxonGraphSecRefUuid);
 
     @Autowired
     private ITaxonDao taxonDao;
-
-    @Autowired
-    private IReferenceDao referenceDao;
-
-    @Autowired
-    private ITaxonNameDao nameDao;
-
-    private UUID secReferenceUUID;
 
     @Override
     protected TaxonRelationshipType relType() {
@@ -74,6 +60,95 @@ public class TaxonGraphDaoHibernateImpl extends AbstractHibernateTaxonGraphProce
         }
         return relType;
     }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<TaxonGraphEdgeDTO> listTaxonGraphEdgeDTOs(UUID fromTaxonUuid, UUID toTaxonUuid, TaxonRelationshipType type,
+            boolean includeUnpublished, Integer pageSize, Integer pageIndex) {
+
+        Query query = prepareTaxonGraphEdgeDTOs(fromTaxonUuid, toTaxonUuid, type, includeUnpublished, false);
+
+        if(pageSize != null) {
+            query.setMaxResults(pageSize);
+            if(pageIndex != null) {
+                query.setFirstResult(pageIndex * pageSize);
+            } else {
+                query.setFirstResult(0);
+            }
+        }
+
+        @SuppressWarnings("unchecked")
+        List<TaxonGraphEdgeDTO> result = query.list();
+
+        return result;
+    }
+
+    @Override
+    public long countTaxonGraphEdgeDTOs(UUID fromTaxonUuid, UUID toTaxonUuid, TaxonRelationshipType type,
+            boolean includeUnpublished) {
+
+        Query query = prepareTaxonGraphEdgeDTOs(fromTaxonUuid, toTaxonUuid, type, includeUnpublished, true);
+        Long count = (Long) query.uniqueResult();
+        return count;
+    }
+
+    /**
+     * @param fromTaxonUuid
+     * @param toTaxonUuid
+     * @param type
+     * @param includeUnpublished
+     * @return
+     */
+    protected Query prepareTaxonGraphEdgeDTOs(UUID fromTaxonUuid, UUID toTaxonUuid, TaxonRelationshipType type,
+            boolean includeUnpublished, boolean doCount) {
+        Session session = getSession();
+        String hql = "";
+        if(doCount){
+            hql = "COUNT(tr.id)";
+        } else {
+            hql += "SELECT new eu.etaxonomy.cdm.persistence.dto.TaxonGraphEdgeDTO("
+                    + "fromT.uuid, fromN.titleCache, fromN_R.idInVocabulary, "
+                    + "toT.uuid, toN.titleCache, toN_R.idInVocabulary, "
+                    + "c.uuid, c.titleCache"
+                    + ")";
+        }
+        hql += " FROM TaxonRelationship as tr "
+                + " JOIN tr.citation as c"
+                + " JOIN tr.relatedFrom as fromT"
+                + " JOIN tr.relatedTo as toT"
+                + " JOIN fromT.name as fromN"
+                + " JOIN toT.name as toN"
+                + " JOIN fromN.rank as fromN_R"
+                + " JOIN toN.rank as toN_R"
+                + " WHERE tr.type = :reltype";
+
+        if(fromTaxonUuid != null){
+            hql += " AND fromT.uuid = :fromTaxonUuid";
+            if(!includeUnpublished){
+                hql += " AND fromT.publish is true";
+            }
+        }
+        if(toTaxonUuid != null){
+            hql += " AND toT.uuid = :toTaxonUuid";
+            if(!includeUnpublished){
+                hql += " AND toT.publish is true";
+            }
+        }
+
+        Query query = session.createQuery(hql);
+        query.setParameter("reltype", type);
+        if(fromTaxonUuid != null){
+            query.setParameter("fromTaxonUuid", fromTaxonUuid);
+        }
+        if(toTaxonUuid != null){
+            query.setParameter("toTaxonUuid", toTaxonUuid);
+        }
+        return query;
+    }
+
 
     @Override
     public List<TaxonGraphEdgeDTO> edges(TaxonName fromName, TaxonName toName, boolean includeUnpublished) throws TaxonGraphException{
@@ -85,12 +160,12 @@ public class TaxonGraphDaoHibernateImpl extends AbstractHibernateTaxonGraphProce
         if(toName != null){
             toTaxonUUID = assureSingleTaxon(toName).getUuid();
         }
-        return taxonDao.listTaxonGraphEdgeDTOs(fromTaxonUUID, toTaxonUUID, relType(), includeUnpublished, null, null);
+        return listTaxonGraphEdgeDTOs(fromTaxonUUID, toTaxonUUID, relType(), includeUnpublished, null, null);
     }
 
     @Override
     public List<TaxonGraphEdgeDTO> edges(UUID fromtaxonUuid, UUID toTaxonUuid, boolean includeUnpublished) throws TaxonGraphException{
-        return taxonDao.listTaxonGraphEdgeDTOs(fromtaxonUuid, toTaxonUuid, relType(), includeUnpublished, null, null);
+        return listTaxonGraphEdgeDTOs(fromtaxonUuid, toTaxonUuid, relType(), includeUnpublished, null, null);
     }
 
     /**
