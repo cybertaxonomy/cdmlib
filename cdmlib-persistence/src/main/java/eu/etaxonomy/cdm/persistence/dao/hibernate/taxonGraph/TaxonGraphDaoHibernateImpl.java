@@ -67,6 +67,7 @@ public class TaxonGraphDaoHibernateImpl extends AbstractHibernateTaxonGraphProce
 
     private UUID secReferenceUUID;
 
+    @Override
     protected TaxonRelationshipType relType() {
         if(relType == null){
             relType = TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN();
@@ -96,7 +97,7 @@ public class TaxonGraphDaoHibernateImpl extends AbstractHibernateTaxonGraphProce
      * {@inheritDoc}
      */
     @Override
-    Session getSession() {
+    public Session getSession() {
         return taxonDao.getSession();
     }
 

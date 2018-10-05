@@ -2018,7 +2018,11 @@ public class TaxonDaoHibernateImpl
         if(doCount){
             hql = "COUNT(tr.id)";
         } else {
-            hql += "SELECT new eu.etaxonomy.cdm.persistence.dto.TaxonGraphEdgeDTO(fromT.uuid, fromN.titleCache, toT.uuid, toN.titleCache, c.uuid, c.titleCache)";
+            hql += "SELECT new eu.etaxonomy.cdm.persistence.dto.TaxonGraphEdgeDTO("
+                    + "fromT.uuid, fromN.titleCache, fromN_R.idInVocabulary, "
+                    + "toT.uuid, toN.titleCache, toN_R.idInVocabulary, "
+                    + "c.uuid, c.titleCache"
+                    + ")";
         }
         hql += " FROM TaxonRelationship as tr "
                 + " JOIN tr.citation as c"
@@ -2026,6 +2030,8 @@ public class TaxonDaoHibernateImpl
                 + " JOIN tr.relatedTo as toT"
                 + " JOIN fromT.name as fromN"
                 + " JOIN toT.name as toN"
+                + " JOIN fromN.rank as fromN_R"
+                + " JOIN toN.rank as toN_R"
                 + " WHERE tr.type = :reltype";
 
         if(fromTaxonUuid != null){

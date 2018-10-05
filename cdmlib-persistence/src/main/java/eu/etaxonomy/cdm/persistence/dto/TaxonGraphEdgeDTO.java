@@ -37,11 +37,11 @@ public class TaxonGraphEdgeDTO {
         this.citationTitleCache = citationTitleCache;
     }
 
-    public TaxonGraphEdgeDTO(UUID fromTaxonUuid, String fromTaxonTitleCache, UUID toTaxonUuid, String toTaxonTitleCache, UUID citationUuid,
+    public TaxonGraphEdgeDTO(UUID fromTaxonUuid, String fromName, String fromRank, UUID toTaxonUuid, String toName, String toRank, UUID citationUuid,
             String citationTitleCache) {
         super();
-        this.from = new TaxonGraphNodeDTO(null, fromTaxonUuid, fromTaxonTitleCache);
-        this.to = new TaxonGraphNodeDTO(null, toTaxonUuid, toTaxonTitleCache);
+        this.from = new TaxonGraphNodeDTO(null, fromTaxonUuid, fromName, fromRank);
+        this.to = new TaxonGraphNodeDTO(null, toTaxonUuid, toName, toRank);
         this.citationUuid = citationUuid;
         this.citationTitleCache = citationTitleCache;
     }

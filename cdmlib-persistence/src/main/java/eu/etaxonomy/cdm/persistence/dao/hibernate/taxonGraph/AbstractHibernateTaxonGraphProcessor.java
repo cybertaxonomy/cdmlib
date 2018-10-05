@@ -87,11 +87,14 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
         }
     }
 
-    protected Reference secReference(){
+    public Reference secReference(){
         if(secReference == null){
             Query q = getSession().createQuery("SELECT r FROM Reference r WHERE r.uuid = :uuid");
             q.setParameter("uuid", getSecReferenceUUID());
             secReference = (Reference) q.uniqueResult();
+        } else {
+            // make sure the entity is still in the current session
+            secReference = getSession().load(Reference.class, secReference.getId());
         }
         return secReference;
     }
@@ -102,7 +105,7 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
      *
      * @param taxonName
      */
-    protected void updateEdges(Taxon taxon) throws TaxonGraphException {
+    public void updateEdges(Taxon taxon) throws TaxonGraphException {
 
         List<TaxonName> relatedHigherNames = relatedHigherNames(taxon.getName());
         Reference conceptReference = conceptReference(taxon.getName().getNomenclaturalReference());
@@ -131,7 +134,7 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
      * @param taxon
      * @param oldConceptReference
      */
-    protected void removeEdges(Taxon taxon, Reference conceptReference) {
+    public void removeEdges(Taxon taxon, Reference conceptReference) {
         List<TaxonRelationship> relations = taxonGraphRelationsFrom(taxon, conceptReference);
         List<TaxonName> relatedHigherNames = relatedHigherNames(taxon.getName());
         for(TaxonRelationship rel : relations){
@@ -145,7 +148,7 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
     /**
      * @param taxon
      */
-    protected void updateConceptReferenceInEdges(Taxon taxon, Reference oldNomReference) throws TaxonGraphException {
+    public void updateConceptReferenceInEdges(Taxon taxon, Reference oldNomReference) throws TaxonGraphException {
 
         Reference conceptReference = conceptReference(taxon.getName().getNomenclaturalReference());
         Reference oldConceptReference = conceptReference(oldNomReference);
@@ -179,7 +182,7 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
         }
     }
 
-    abstract Session getSession();
+    abstract public Session getSession();
 
     public Taxon assureSingleTaxon(TaxonName taxonName) throws TaxonGraphException {
 

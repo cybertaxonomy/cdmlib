@@ -182,7 +182,7 @@ public class TaxonGraphBeforeTransactionCompleteProcess extends AbstractHibernat
      * @return
      */
     @Override
-    protected Session getSession() {
+    public Session getSession() {
         return temporarySession;
     }
 
