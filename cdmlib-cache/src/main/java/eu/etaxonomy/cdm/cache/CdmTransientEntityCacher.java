@@ -266,13 +266,21 @@ public class CdmTransientEntityCacher implements ICdmCacher {
                 newEntity.setId(cdmEntity.getId());
                 cdmEntityToCache = newEntity;
             }
-            getCache().put(new Element(key, cdmEntityToCache));
+            putToCache(key, cdmEntityToCache);
             cdmEntityToCache.initListener();
             newEntitiesMap.remove(cdmEntity.getUuid());
             if (logger.isDebugEnabled()){logger.debug(" - object of type " + cdmEntityToCache.getClass().getName() + " with id " + cdmEntityToCache.getId() + " put in cache");}
             return;
         }
         logger.debug(" - object of type " + cdmEntity.getClass().getName() + " with id " + cdmEntity.getId() + " already exists");
+    }
+
+    /**
+     * @param key
+     * @param cdmEntityToCache
+     */
+    protected void putToCache(CdmEntityCacheKey<?> key, CdmBase cdmEntityToCache) {
+        getCache().put(new Element(key, cdmEntityToCache));
     }
 
 

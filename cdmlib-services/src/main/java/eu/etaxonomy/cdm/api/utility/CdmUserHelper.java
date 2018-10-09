@@ -32,6 +32,7 @@ import org.springframework.transaction.TransactionStatus;
 import eu.etaxonomy.cdm.api.application.CdmRepository;
 import eu.etaxonomy.cdm.api.application.RunAsAuthenticator;
 import eu.etaxonomy.cdm.database.PermissionDeniedException;
+import eu.etaxonomy.cdm.model.ICdmEntityUuidCacher;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.model.common.User;
@@ -59,7 +60,7 @@ public class CdmUserHelper implements UserHelper, Serializable {
     @Autowired
     @Lazy
     @Qualifier("cdmRepository")
-    private CdmRepository repo;
+    protected CdmRepository repo;
 
     AuthenticationProvider runAsAuthenticationProvider;
 
@@ -76,6 +77,20 @@ public class CdmUserHelper implements UserHelper, Serializable {
 
     public CdmUserHelper(){
         super();
+    }
+
+    /**
+     * @return
+     */
+    protected ICdmPermissionEvaluator permissionEvaluator() {
+        return permissionEvaluator;
+    }
+
+    /**
+     * @return
+     */
+    protected CdmRepository repo() {
+        return repo;
     }
 
     @Override
@@ -137,19 +152,24 @@ public class CdmUserHelper implements UserHelper, Serializable {
     public boolean userHasPermission(CdmBase entity, Object ... args){
         EnumSet<CRUD> crudSet = crudSetFromArgs(args);
         try {
-            return permissionEvaluator.hasPermission(getAuthentication(), entity, crudSet);
+            return permissionEvaluator().hasPermission(getAuthentication(), entity, crudSet);
         } catch (PermissionDeniedException e){
             //IGNORE
         }
         return false;
     }
 
+    /**
+     * @deprecated not performance optimized by using the cache,
+     * use {@link #userHasPermission(Class, UUID, Object...)} instead
+     */
     @Override
+    @Deprecated
     public boolean userHasPermission(Class<? extends CdmBase> cdmType, Integer entitiyId, Object ... args){
         EnumSet<CRUD> crudSet = crudSetFromArgs(args);
         try {
-            CdmBase entity = repo.getCommonService().find(cdmType, entitiyId);
-            return permissionEvaluator.hasPermission(getAuthentication(), entity, crudSet);
+            CdmBase entity = repo().getCommonService().find(cdmType, entitiyId);
+            return permissionEvaluator().hasPermission(getAuthentication(), entity, crudSet);
         } catch (PermissionDeniedException e){
             //IGNORE
         }
@@ -160,19 +180,35 @@ public class CdmUserHelper implements UserHelper, Serializable {
     public boolean userHasPermission(Class<? extends CdmBase> cdmType, UUID entitiyUuid, Object ... args){
         EnumSet<CRUD> crudSet = crudSetFromArgs(args);
         try {
-            CdmBase entity = repo.getCommonService().find(cdmType, entitiyUuid);
-            return permissionEvaluator.hasPermission(getAuthentication(), entity, crudSet);
+            CdmBase entity = entity(cdmType, entitiyUuid);
+            return permissionEvaluator().hasPermission(getAuthentication(), entity, crudSet);
         } catch (PermissionDeniedException e){
             //IGNORE
         }
         return false;
     }
 
+    /**
+     * @param cdmType
+     * @param entitiyUuid
+     * @return
+     */
+    protected CdmBase entity(Class<? extends CdmBase> cdmType, UUID entitiyUuid) {
+        CdmBase entity = entityFromCache(cdmType, entitiyUuid);
+        if(entity == null){
+            entity = repo().getCommonService().find(cdmType, entitiyUuid);
+            if(getCache() != null && entity != null){
+                getCache().put(entity);
+            }
+        }
+        return entity;
+    }
+
     @Override
     public boolean userHasPermission(Class<? extends CdmBase> cdmType, Object ... args){
         EnumSet<CRUD> crudSet = crudSetFromArgs(args);
         try {
-            return permissionEvaluator.hasPermission(getAuthentication(), cdmType, crudSet);
+            return permissionEvaluator().hasPermission(getAuthentication(), cdmType, crudSet);
         } catch (PermissionDeniedException e){
             //IGNORE
         }
@@ -222,8 +258,8 @@ public class CdmUserHelper implements UserHelper, Serializable {
     @Override
     public CdmAuthority createAuthorityFor(String username, CdmBase cdmEntity, EnumSet<CRUD> crud, String property) {
 
-        TransactionStatus txStatus = repo.startTransaction();
-        UserDetails userDetails = repo.getUserService().loadUserByUsername(username);
+        TransactionStatus txStatus = repo().startTransaction();
+        UserDetails userDetails = repo().getUserService().loadUserByUsername(username);
         boolean newAuthorityAdded = false;
         CdmAuthority authority = null;
         User user = (User)userDetails;
@@ -232,7 +268,7 @@ public class CdmUserHelper implements UserHelper, Serializable {
                 getRunAsAutheticator().runAsAuthentication(Role.ROLE_USER_MANAGER);
                 authority = new CdmAuthority(cdmEntity, property, crud);
                 try {
-                    GrantedAuthorityImpl grantedAuthority = repo.getGrantedAuthorityService().findAuthorityString(authority.toString());
+                    GrantedAuthorityImpl grantedAuthority = repo().getGrantedAuthorityService().findAuthorityString(authority.toString());
                     if(grantedAuthority == null){
                         grantedAuthority = authority.asNewGrantedAuthority();
                     }
@@ -240,7 +276,7 @@ public class CdmUserHelper implements UserHelper, Serializable {
                 } catch (CdmAuthorityParsingException e) {
                     throw new RuntimeException(e);
                 }
-                repo.getSession().flush();
+                repo().getSession().flush();
             } finally {
                 // in any case restore the previous authentication
                 getRunAsAutheticator().restoreAuthentication();
@@ -250,7 +286,7 @@ public class CdmUserHelper implements UserHelper, Serializable {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             logger.debug("security context refreshed with user " + username);
         }
-        repo.commitTransaction(txStatus);
+        repo().commitTransaction(txStatus);
         return newAuthorityAdded ? authority : null;
 
     }
@@ -261,11 +297,14 @@ public class CdmUserHelper implements UserHelper, Serializable {
      * @param entitiyId
      * @param crud
      * @return
+     * @deprecated not performance optimized by using the cache,
+     * use {@link #createAuthorityFor(String, Class, UUID, EnumSet, String)} instead
      */
     @Override
+    @Deprecated
     public CdmAuthority createAuthorityFor(String username, Class<? extends CdmBase> cdmType, Integer entitiyId, EnumSet<CRUD> crud, String property) {
 
-        CdmBase cdmEntity = repo.getCommonService().find(cdmType, entitiyId);
+        CdmBase cdmEntity = repo().getCommonService().find(cdmType, entitiyId);
         return createAuthorityFor(username, cdmEntity, crud, property);
     }
 
@@ -279,7 +318,7 @@ public class CdmUserHelper implements UserHelper, Serializable {
     @Override
     public CdmAuthority createAuthorityFor(String username, Class<? extends CdmBase> cdmType, UUID entitiyUuid, EnumSet<CRUD> crud, String property) {
 
-        CdmBase cdmEntity = repo.getCommonService().find(cdmType, entitiyUuid);
+        CdmBase cdmEntity = entity(cdmType, entitiyUuid);
         return createAuthorityFor(username, cdmEntity, crud, property);
     }
 
@@ -329,12 +368,12 @@ public class CdmUserHelper implements UserHelper, Serializable {
     @Override
     public void removeAuthorityForCurrentUser(String username, CdmAuthority cdmAuthority) {
 
-        UserDetails userDetails = repo.getUserService().loadUserByUsername(username);
+        UserDetails userDetails = repo().getUserService().loadUserByUsername(username);
         if(userDetails != null){
             getRunAsAutheticator().runAsAuthentication(Role.ROLE_USER_MANAGER);
             User user = (User)userDetails;
             user.getGrantedAuthorities().remove(cdmAuthority);
-            repo.getSession().flush();
+            repo().getSession().flush();
             getRunAsAutheticator().restoreAuthentication();
             Authentication authentication = new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -386,6 +425,67 @@ public class CdmUserHelper implements UserHelper, Serializable {
           throw new RuntimeException("RunAsAuthenticator is missing! The application needs to be configured with security context.");
         }
         return runAsAutheticator;
+    }
+
+    /**
+     * @return the cache
+     */
+    public ICdmEntityUuidCacher getCache() {
+        return null;
+    }
+
+    /**
+     * @param cdmType
+     * @param entitiyUuid
+     * @return
+     */
+    private CdmBase entityFromCache(Class<? extends CdmBase> cdmType, UUID entitiyUuid) {
+        CdmBase entity = null;
+        if(getCache() != null){
+           entity = getCache().getFromCache(entitiyUuid);
+           if(entity != null && !cdmType.isAssignableFrom(entity.getClass())){
+               logger.error("Entity with " +  entitiyUuid + " does not match the required type");
+               entity = null;
+           }
+        }
+        return entity;
+    }
+
+    @Override
+    public CdmUserHelper withCache(ICdmEntityUuidCacher cache){
+
+        return new CachingCdmUserHelper(cache);
+    }
+
+    class CachingCdmUserHelper extends CdmUserHelper{
+
+
+        private static final long serialVersionUID = -5010082174809972831L;
+
+        private ICdmEntityUuidCacher cache;
+
+        public CachingCdmUserHelper(ICdmEntityUuidCacher cache){
+            this.cache = cache;
+        }
+
+        /**
+         * @return the cache
+         */
+        @Override
+        public ICdmEntityUuidCacher getCache() {
+            return cache;
+        }
+
+        @Override
+        protected CdmRepository repo() {
+            return CdmUserHelper.this.repo;
+        }
+
+        @Override
+        protected ICdmPermissionEvaluator permissionEvaluator() {
+            return CdmUserHelper.this.permissionEvaluator;
+        }
+
     }
 
 }
