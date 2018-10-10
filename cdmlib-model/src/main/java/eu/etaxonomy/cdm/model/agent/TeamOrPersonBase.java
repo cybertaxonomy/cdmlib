@@ -113,7 +113,11 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<T>>
     public String getFullTitle() {
         @SuppressWarnings("unchecked")
         T agent = (T)this;
-        return this.getCacheStrategy().getFullTitle(agent);
+        if (agent.isProtectedTitleCache()){
+            return agent.getTitleCache();
+        }else{
+            return this.getCacheStrategy().getFullTitle(agent);
+        }
     }
 
     /**
