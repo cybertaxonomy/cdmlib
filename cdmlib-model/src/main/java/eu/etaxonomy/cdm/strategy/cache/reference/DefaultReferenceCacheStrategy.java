@@ -591,7 +591,7 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
     public String getNomenclaturalCitation(Reference reference, String microReference) {
         if (reference.isProtectedAbbrevTitleCache()){
             String cache = reference.getAbbrevTitleCache();
-            return handleDetailAndYearForPreliminary(reference, cache, microReference);
+            return handleDetailAndYearForProtected(reference, cache, microReference);
 
         }
         String result = getTokenizedNomenclaturalTitel(reference);
@@ -600,7 +600,7 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
         //we need to think about handling protected not separate for abbrevTitleCache  and titleCache
         if (result.equals(INomenclaturalReference.MICRO_REFERENCE_TOKEN) && reference.isProtectedTitleCache() ){
             String cache = reference.getTitleCache();
-            return handleDetailAndYearForPreliminary(reference, cache, microReference);
+            return handleDetailAndYearForProtected(reference, cache, microReference);
         }
 
         microReference = Nz(microReference);
@@ -622,7 +622,7 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
      * @param microRef
      * @return
      */
-    private String handleDetailAndYearForPreliminary(Reference nomenclaturalReference, String cache, String microReference) {
+    private String handleDetailAndYearForProtected(Reference nomenclaturalReference, String cache, String microReference) {
         String microRef = isNotBlank(microReference) ? getBeforeMicroReference() + microReference : "";
         if (cache == null){
             logger.warn("Cache is null. This should never be the case.");

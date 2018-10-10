@@ -280,12 +280,12 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
                 .filter(matchFilter)
                 .findAny();
     }
-    private TeamOrPersonBase<?> getTeamOrPerson(TeamOrPersonBase<?> agent){
-        TeamOrPersonBase<?> result = agent;
+    private <T extends TeamOrPersonBase<?>> T getTeamOrPerson(T agent){
+        T result = agent;
         if (agent.isInstanceOf(Person.class)){
-            result = getMatchingPerson(CdmBase.deproxy(agent, Person.class)).orElse(null) ; // personMap.get(title);
+            result = (T)getMatchingPerson(CdmBase.deproxy(agent, Person.class)).orElse(null) ; // personMap.get(title);
         }else if (agent.isInstanceOf(Team.class)) {
-            result = getMatchingTeam(CdmBase.deproxy(agent, Team.class)).orElse(null); // teamMap.get(title);
+            result = (T)getMatchingTeam(CdmBase.deproxy(agent, Team.class)).orElse(null); // teamMap.get(title);
         }
         return result;
     }
@@ -420,13 +420,13 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
      * @param combAuthor
      * @return
      */
-    public TeamOrPersonBase<?> getExistingAuthor(STATE state,
-            TeamOrPersonBase<?> author) {
+    public <T extends TeamOrPersonBase<?>> T getExistingAuthor(STATE state,
+            T author) {
         if (author == null){
             return null;
         }else{
             initAgentMap(state);
-            TeamOrPersonBase<?> result = getTeamOrPerson(author);
+            T result = getTeamOrPerson(author);
             if (result == null){
                 putAgentBase(author.getTitleCache(), author);
                 if (author.isInstanceOf(Team.class)){
