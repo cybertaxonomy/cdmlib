@@ -31,15 +31,19 @@ public enum PreferencePredicate  implements IEnumTerm<PreferencePredicate>{
 	NameDetailsView(UUID.fromString("3c4ec5f5-feb5-44a8-8533-c3c3484a6869"), "NameDetailsView", "model.editor.NDV"),
 	IsRedList(UUID.fromString("aaf79c57-b2a9-48a6-b037-fc1b4a75a6e9"), "isRedList", "model.editor.RL"),
 	DeterminationOnlyForFieldUnits(UUID.fromString("91b9224b-6610-4cf1-b3da-d60d6f9d59b1"), "DeterminationOnlyForFieldUnit", "model.editor.DOFU"),
+
+	//specimen
+	ShowSpecimen(UUID.fromString("a925f874-b953-429f-9db7-f28e3beb576f"), "ShowSpecimen", "model.editor.specimen"),
 	ShowCollectingAreasInGeneralSection(UUID.fromString("578a1195-64ce-4dfb-9be9-6f2823288678"), "ShowCollectingAreaInGeneralSection", "model.editor.SCAGS"),
 	ShowTaxonAssociations(UUID.fromString("849c24f9-b62b-4f70-b0a0-1b02182b3433"), "ShowTaxonAssociations", "model.editor.STA"),
 	ShowLifeForm(UUID.fromString("85870e7d-a6a3-4c9b-97d6-eb27e6516860"), "ShowLifeForm", "model.editor.SLF"),
 	AvailableDistributionAreaTerms(UUID.fromString("34469acc-9e23-4f95-92d4-1695e02cb5a0"), "Available Distribution Area Terms", "model.editor.distribution.area.terms"),
 	DefaultBehaviourForPublishFlag(UUID.fromString("24e636fc-ef3b-4a2c-8c9e-018143e66949"), "Default behaviour for publish flag", "model.taxon.PF"),
 	//import
+	ShowImportExportMenu(UUID.fromString("92839352-beee-4d66-b078-77fd4f500ab4"), "ShowImportExport", "model.io.showMenu"),
 	AbcdImportConfig(UUID.fromString("65380375-d041-458c-8275-c36cdc1f34df"), "AbcdImportConfig", "model.import.ABCD"),
 	BioCaseProvider(UUID.fromString("bd22c85c-f4e8-4771-ae7b-5750868762c4"), "BioCaseProvider", "model.import.BP"),
-	//vaadin
+	//vaadin + distribution editor
 	AvailableDistributionStatus(UUID.fromString("6721599e-686b-460e-9d57-cfd364f4b626"), "Available Distribution Status", "model.distribution.status.term"),
 	AvailableDistributionAreaVocabularies(UUID.fromString("dd1f35d5-dbf3-426b-9ed3-8b5992cb2e27"), "Available Distribution Area Vocabularies", "model.distribution.area.voc"),
 
@@ -49,6 +53,9 @@ public enum PreferencePredicate  implements IEnumTerm<PreferencePredicate>{
     ShowRankInDistributionEditor(UUID.fromString("fb13b4f2-2d82-4fd3-8abe-2b955a695245"), "Distribution Editor: Show Rank", "editor.distribution.SHR"),
     ShowSymbol(UUID.fromString("1ee6b945-0a81-4f05-b867-f9d105882249"), "Distribution Editor: Show Symbol", "editor.distribution.SS"),
     ShowIdInVocabulary(UUID.fromString("7b671bba-1b7f-4cb9-bbac-c914518a4bf8"), "Distribution Editor: Show ID in Vocabulary", "editor.distribution.SIV"),
+
+    //common name area vocabularies
+    CommonNameAreaVocabularies(UUID.fromString("59d68062-b4ff-4c3a-b29d-66bf850c1d82"), "Common Names: Available Vocabularies for Areas of Common Names", "model.commonname.area.voc"),
 
     //name details view
     SimpleDetailsViewActivated(UUID.fromString("78666fde-9ee5-4c09-923b-be98604aace6"), "Name Details: Activated", "editor.nameDetails.activated"),
