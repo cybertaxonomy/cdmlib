@@ -70,13 +70,13 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
             listenerRegistry.appendListeners(EventType.POST_INSERT, taxonGraphHibernateListener);
             TaxonGraphHibernateListenerTest.isRegistered = true;
         }
-        taxonGraphHibernateListener.setActive(true);
+        taxonGraphHibernateListener.registerProcessClass(TaxonGraphBeforeTransactionCompleteProcess.class);
     }
 
 
     @After
     public void inactivateListener() {
-        taxonGraphHibernateListener.setActive(false);
+        taxonGraphHibernateListener.unRegisterProcessClass(TaxonGraphBeforeTransactionCompleteProcess.class);
     }
 
     /**
