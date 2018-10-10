@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import eu.etaxonomy.cdm.api.service.ITaxonGraphService;
+import eu.etaxonomy.cdm.api.service.taxonGraph.ITaxonGraphService;
 import eu.etaxonomy.cdm.persistence.dao.taxonGraph.TaxonGraphException;
 import eu.etaxonomy.cdm.persistence.dto.TaxonGraphEdgeDTO;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;

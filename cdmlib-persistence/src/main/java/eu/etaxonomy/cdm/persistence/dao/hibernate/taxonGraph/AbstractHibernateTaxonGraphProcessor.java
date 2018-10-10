@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmPreferenceLookup;
 import eu.etaxonomy.cdm.persistence.dao.taxonGraph.TaxonGraphException;
 
 /**

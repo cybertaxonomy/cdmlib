@@ -24,7 +24,6 @@ import eu.etaxonomy.cdm.model.metadata.CdmPreference.PrefKey;
 import eu.etaxonomy.cdm.model.metadata.PreferenceSubject;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.common.IPreferenceDao;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.taxonGraph.CdmPreferenceLookup;
 
 /**
  * @author a.mueller
