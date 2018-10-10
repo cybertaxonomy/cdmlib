@@ -114,7 +114,11 @@ public class PersonDefaultCacheStrategy
 
 	private String addGivenNamePrefixSuffix(String oldString, Person person) {
 		String result = oldString;
-		result = CdmUtils.concat(" ", person.getGivenName(), result);
+		if (isNotBlank(person.getGivenName())){
+		    result = CdmUtils.concat(" ", person.getGivenName(), result);
+		}else{
+		    result = CdmUtils.concat(" ", person.getInitials(), result);
+	    }
 		result = CdmUtils.concat(" ", person.getPrefix(), result);
 		result = CdmUtils.concat(" ", result, person.getSuffix());
 		return result;
