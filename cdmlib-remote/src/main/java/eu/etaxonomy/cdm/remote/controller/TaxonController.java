@@ -394,9 +394,8 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
      * @return
      * @throws IOException
      */
-
     @RequestMapping(value = { "includedTaxa" }, method = { RequestMethod.GET })
-    public ModelAndView doGetIncludedTaxa(
+    public IncludedTaxaDTO doGetIncludedTaxa(
             @PathVariable("uuid") UUID uuid,
             @RequestParam(value="classificationFilter", required=false) final List<String> classificationStringList,
             @RequestParam(value="includeDoubtful", required=false) final boolean includeDoubtful,
@@ -404,12 +403,11 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             HttpServletResponse response,
             HttpServletRequest request) throws IOException {
 
-        ModelAndView mv = new ModelAndView();
-        /**
-         * List<UUID> classificationFilter,
-         * boolean includeDoubtful,
-         * boolean onlyCongruent)
-         */
+
+        if(request != null){
+            logger.info("doGetIncludedTaxa()" + requestPathAndQuery(request));
+        }
+
         List<UUID> classificationFilter = null;
         if( classificationStringList != null ){
             classificationFilter = new ArrayList<>();
@@ -420,8 +418,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
         IncludedTaxonConfiguration configuration =
                 new IncludedTaxonConfiguration(classificationFilter, includeDoubtful, onlyCongruent);
         IncludedTaxaDTO listIncludedTaxa = service.listIncludedTaxa(uuid, configuration);
-        mv.addObject(listIncludedTaxa);
-        return mv;
+        return listIncludedTaxa;
     }
 
     // TODO ================================================================================ //
