@@ -31,7 +31,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
  */
 public class RunAsAuthenticator {
 
-    public static final Logger logger = Logger.getLogger(FirstDataInserter.class);
+    public static final Logger logger = Logger.getLogger(RunAsAuthenticator.class);
 
     /**
      * must match the key in eu/etaxonomy/cdm/services_security.xml
