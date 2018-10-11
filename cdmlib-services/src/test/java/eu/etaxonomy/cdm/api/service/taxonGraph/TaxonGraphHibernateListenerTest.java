@@ -23,6 +23,8 @@ import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.application.IRunAs;
+import eu.etaxonomy.cdm.api.application.RunAsAdmin;
 import eu.etaxonomy.cdm.model.metadata.CdmPreference;
 import eu.etaxonomy.cdm.model.metadata.CdmPreference.PrefKey;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -86,7 +88,7 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
     private static TaxonGraphHibernateListener taxonGraphHibernateListener = new TaxonGraphHibernateListener();
 
     @Before
-    public void registerListener() {
+    public void registerListener() throws NoSuchMethodException, SecurityException {
 
         if(!TaxonGraphHibernateListenerTest.isRegistered){
             EventListenerRegistry listenerRegistry = ((SessionFactoryImpl) sessionFactory).getServiceRegistry().getService(EventListenerRegistry.class);
@@ -94,7 +96,8 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
             listenerRegistry.appendListeners(EventType.POST_INSERT, taxonGraphHibernateListener);
             TaxonGraphHibernateListenerTest.isRegistered = true;
         }
-        taxonGraphHibernateListener.registerProcessClass(TaxonGraphBeforeTransactionCompleteProcess.class);
+        //
+        taxonGraphHibernateListener.registerProcessClass(TaxonGraphBeforeTransactionCompleteProcess.class, new Object[]{new RunAsAdmin()}, new Class[]{IRunAs.class});
     }
 
 
@@ -113,7 +116,7 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="xml")
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonGraphTest.xml")
     public void testNewTaxonName() throws TaxonGraphException{
 
         try{
@@ -139,7 +142,7 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="xml")
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonGraphTest.xml")
     public void testNewGenusName() throws TaxonGraphException{
 
         try{
@@ -165,7 +168,7 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="xml")
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonGraphTest.xml")
     public void testChangeNomRef() throws TaxonGraphException{
         try {
             setUuidPref();
@@ -181,7 +184,7 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
 
             // printDataSet(System.err,"TaxonRelationship");
 
-            List<TaxonGraphEdgeDTO> edges = taxonGraphDao.edges(n_trachelomonas_a, nameDao.load(uuid_n_trachelomonas), true);
+            List<TaxonGraphEdgeDTO> edges = taxonGraphDao.edges(nameDao.load(uuid_n_trachelomonas_a), nameDao.load(uuid_n_trachelomonas), true);
             Assert.assertEquals(1, edges.size());
             Assert.assertEquals(refX.getUuid(), edges.get(0).getCitationUuid());
 
@@ -191,7 +194,7 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="xml")
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonGraphTest.xml")
     public void testChangeRank() throws TaxonGraphException{
 
         try {
@@ -218,7 +221,7 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="xml")
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonGraphTest.xml")
     public void testChangeGenus() throws TaxonGraphException{
 
         try {
@@ -251,7 +254,7 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="xml")
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonGraphTest.xml")
     public void testChangeSpecificEpithet_of_InfraSpecific() throws TaxonGraphException{
 
         try {
@@ -282,7 +285,7 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="xml")
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonGraphTest.xml")
     public void testChangeSpecificEpithet_of_Species() throws TaxonGraphException{
 
         try {

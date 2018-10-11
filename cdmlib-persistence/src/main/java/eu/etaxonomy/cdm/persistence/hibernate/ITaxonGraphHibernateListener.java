@@ -31,8 +31,9 @@ public interface ITaxonGraphHibernateListener extends PostInsertEventListener, P
     @Override
     void onPostUpdate(PostUpdateEvent event);
 
-    boolean unRegisterProcessClass(Class<? extends BeforeTransactionCompletionProcess> processClass);
+    void registerProcessClass(Class<? extends BeforeTransactionCompletionProcess> processClass, Object[] constructorArgs, Class<?>[] paramterTypes) throws NoSuchMethodException, SecurityException;
 
-    boolean registerProcessClass(Class<? extends BeforeTransactionCompletionProcess> processClass);
+    void unRegisterProcessClass(Class<? extends BeforeTransactionCompletionProcess> processClass);
+
 
 }

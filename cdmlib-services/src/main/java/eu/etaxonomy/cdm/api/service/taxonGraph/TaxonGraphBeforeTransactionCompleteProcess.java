@@ -18,6 +18,7 @@ import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.event.spi.PostInsertEvent;
 import org.hibernate.event.spi.PostUpdateEvent;
 
+import eu.etaxonomy.cdm.api.application.IRunAs;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -54,19 +55,23 @@ public class TaxonGraphBeforeTransactionCompleteProcess extends AbstractHibernat
 
     private boolean isInsertEvent;
 
-    public TaxonGraphBeforeTransactionCompleteProcess(PostUpdateEvent event){
+    private IRunAs runAs = null;
+
+    public TaxonGraphBeforeTransactionCompleteProcess(PostUpdateEvent event, IRunAs runAs){
         entity = (TaxonName) event.getEntity();
         propertyNames = event.getPersister().getPropertyNames();
         oldState = event.getOldState();
         state = event.getState();
+        this.runAs = runAs;
     }
 
-    public TaxonGraphBeforeTransactionCompleteProcess(PostInsertEvent event){
+    public TaxonGraphBeforeTransactionCompleteProcess(PostInsertEvent event, IRunAs runAs){
         isInsertEvent = true;
         entity = (TaxonName) event.getEntity();
         propertyNames = event.getPersister().getPropertyNames();
         oldState = null;
         state = event.getState();
+        this.runAs = runAs;
     }
 
     /**
@@ -159,8 +164,14 @@ public class TaxonGraphBeforeTransactionCompleteProcess extends AbstractHibernat
         boolean isNotDeleted = parentSession.contains(taxonName) && taxonName.isPersited();
         // TODO use audit event to check for deletion?
         if(isNotDeleted){
+            if(runAs != null){
+                runAs.apply();
+            }
             updateEdges(taxon);
             getSession().saveOrUpdate(taxon);
+            if(runAs != null){
+                runAs.restore();
+            }
         }
     }
 
@@ -173,8 +184,14 @@ public class TaxonGraphBeforeTransactionCompleteProcess extends AbstractHibernat
         boolean isNotDeleted = parentSession.contains(taxonName) && taxonName.isPersited();
         // TODO use audit event to check for deletion?
         if(isNotDeleted){
+            if(runAs != null){
+                runAs.apply();
+            }
             updateConceptReferenceInEdges(taxon, oldNomReference);
             getSession().saveOrUpdate(taxon);
+            if(runAs != null){
+                runAs.restore();
+            }
         }
     }
 

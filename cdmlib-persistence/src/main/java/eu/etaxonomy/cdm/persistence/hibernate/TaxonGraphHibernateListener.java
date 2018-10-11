@@ -8,9 +8,10 @@
 */
 package eu.etaxonomy.cdm.persistence.hibernate;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.hibernate.action.spi.BeforeTransactionCompletionProcess;
@@ -29,28 +30,32 @@ public class TaxonGraphHibernateListener implements ITaxonGraphHibernateListener
 
     private static final long serialVersionUID = 5062518307839173935L;
 
-    private Set<Class<? extends BeforeTransactionCompletionProcess>> beforeTransactionCompletionProcessTypes = new HashSet<>();
+    private Map<Class<? extends BeforeTransactionCompletionProcess>, ProcessConstructorData<? extends BeforeTransactionCompletionProcess>> beforeTransactionCompletionProcessTypes = new HashMap<>();
 
     @Override
-    public boolean registerProcessClass(Class<? extends BeforeTransactionCompletionProcess> processClass){
-       return beforeTransactionCompletionProcessTypes.add(processClass);
+    public void registerProcessClass(Class<? extends BeforeTransactionCompletionProcess> processClass, Object[] constructorArgs, Class<?>[] paramterTypes) throws NoSuchMethodException, SecurityException{
+        if(constructorArgs == null){
+            constructorArgs = new Object[]{};
+        }
+       beforeTransactionCompletionProcessTypes.put(processClass, new ProcessConstructorData(processClass, constructorArgs, paramterTypes));
     }
 
     @Override
-    public boolean unRegisterProcessClass(Class<? extends BeforeTransactionCompletionProcess> processClass){
-        return beforeTransactionCompletionProcessTypes.remove(processClass);
+    public void unRegisterProcessClass(Class<? extends BeforeTransactionCompletionProcess> processClass){
+        beforeTransactionCompletionProcessTypes.remove(processClass);
     }
 
     @Override
     public void onPostUpdate(PostUpdateEvent event) {
 
         if(event.getEntity() instanceof TaxonName){
-            for(Class<? extends BeforeTransactionCompletionProcess> type : beforeTransactionCompletionProcessTypes){
+            for(Class<? extends BeforeTransactionCompletionProcess> type : beforeTransactionCompletionProcessTypes.keySet()){
                 try {
-                    BeforeTransactionCompletionProcess processorInstance = type.getConstructor(PostUpdateEvent.class).newInstance(event);
+                    ProcessConstructorData<? extends BeforeTransactionCompletionProcess> pcd = beforeTransactionCompletionProcessTypes.get(type);
+                    BeforeTransactionCompletionProcess processorInstance = pcd.postUpdateEventConstructor.newInstance(pcd.buildConstructorArgs(event));
                     event.getSession().getActionQueue().registerProcess(processorInstance);
                 } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-                        | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+                        | InvocationTargetException | SecurityException e) {
                     Logger.getLogger(TaxonGraphHibernateListener.class).error("Error creating new instance of " + type.toString(), e);
                 }
             }
@@ -61,12 +66,13 @@ public class TaxonGraphHibernateListener implements ITaxonGraphHibernateListener
     public void onPostInsert(PostInsertEvent event) {
 
         if(event.getEntity() instanceof TaxonName){
-            for(Class<? extends BeforeTransactionCompletionProcess> type : beforeTransactionCompletionProcessTypes){
+            for(Class<? extends BeforeTransactionCompletionProcess> type : beforeTransactionCompletionProcessTypes.keySet()){
                 try {
-                    BeforeTransactionCompletionProcess processorInstance = type.getConstructor(PostInsertEvent.class).newInstance(event);
+                    ProcessConstructorData<? extends BeforeTransactionCompletionProcess> pcd = beforeTransactionCompletionProcessTypes.get(type);
+                    BeforeTransactionCompletionProcess processorInstance = pcd.postInsertEventConstructor.newInstance(pcd.buildConstructorArgs(event));
                     event.getSession().getActionQueue().registerProcess(processorInstance);
                 } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-                        | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+                        | InvocationTargetException | SecurityException e) {
                     Logger.getLogger(TaxonGraphHibernateListener.class).error("Error creating new instance of " + type.toString(), e);
                 }
             }
@@ -77,5 +83,47 @@ public class TaxonGraphHibernateListener implements ITaxonGraphHibernateListener
     public boolean requiresPostCommitHanding(EntityPersister persister) {
         return true;
     }
+
+    class ProcessConstructorData<T extends BeforeTransactionCompletionProcess> {
+
+        Constructor<T> postInsertEventConstructor;
+
+        Constructor<T> postUpdateEventConstructor;
+
+        Object[] constructorArgs;
+        /**
+         * @param constructor
+         * @param constructorArgs
+         */
+        public ProcessConstructorData(Class<T> type, Object[] constructorArgs, Class<?>[] paramterTypes) throws NoSuchMethodException, SecurityException {
+
+            this.constructorArgs = constructorArgs;
+
+            Class<?>[] postInsertEventConstructorArgTypes = new Class<?>[constructorArgs.length + 1];
+            Class<?>[] postUpdateEventConstructorArgTypes = new Class<?>[constructorArgs.length + 1];
+            postInsertEventConstructorArgTypes[0] = PostInsertEvent.class;
+            postUpdateEventConstructorArgTypes[0] = PostUpdateEvent.class;
+            int i = 1;
+            for(Class<?> ptype : paramterTypes){
+                postInsertEventConstructorArgTypes[i] = ptype;
+                postUpdateEventConstructorArgTypes[i] = ptype;
+            }
+            postInsertEventConstructor = type.getConstructor(postInsertEventConstructorArgTypes);
+            postUpdateEventConstructor = type.getConstructor(postUpdateEventConstructorArgTypes);
+        }
+
+        public Object[] buildConstructorArgs(Object firstArg){
+            Object[] cargs = new Object[constructorArgs.length + 1];
+            cargs[0] = firstArg;
+            int i = 1;
+            for(Object arg : constructorArgs){
+                cargs[i++] = arg;
+            }
+            return cargs;
+        }
+
+    }
+
+
 
 }
