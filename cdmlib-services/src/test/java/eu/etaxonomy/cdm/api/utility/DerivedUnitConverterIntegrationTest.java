@@ -61,10 +61,10 @@ public class DerivedUnitConverterIntegrationTest extends CdmTransactionalIntegra
         DerivedUnitConverter<MediaSpecimen> converter = new DerivedUnitConverter<MediaSpecimen>(std);
         SpecimenTypeDesignation newDu = converter.convertTo(MediaSpecimen.class, SpecimenOrObservationType.StillImage);
         assertEquals(du, converter.oldDerivedUnit());
-        printDataSet(System.err, new String[]{"SpecimenOrObservationBase", "TypeDesignationBase"});
+//        printDataSet(System.err, new String[]{"SpecimenOrObservationBase", "TypeDesignationBase"});
         service.saveOrUpdate(newDu.getTypeSpecimen());
         service.delete(du);
-        printDataSet(System.err, new String[]{"SpecimenOrObservationBase", "TypeDesignationBase"});
+//        printDataSet(System.err, new String[]{"SpecimenOrObservationBase", "TypeDesignationBase"});
         assertEquals(1, service.list(null, null, null, null, null).size());
         assertEquals(1, service.list(MediaSpecimen.class, null, null, null, null).size());
     }
@@ -97,8 +97,8 @@ public class DerivedUnitConverterIntegrationTest extends CdmTransactionalIntegra
      * Test with DerivedUnit which is used in a couple of associations to prevent from
      * org.hibernate.ObjectDeletedException: deleted object would be re-saved by cascade ...
      */
-    @DataSet("DerivedUnitConverterIntegrationTest.cascadeDelete.xml")
     @Test
+    @DataSet("DerivedUnitConverterIntegrationTest.cascadeDelete.xml")
     public void cascadeDelete() throws DerivedUnitConversionException{
 
         // NOTE:

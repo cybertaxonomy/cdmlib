@@ -65,11 +65,11 @@ public class PersonDefaultCacheStrategy
             return result;
         }else{
             result = person.getNomenclaturalTitle();
-            if (StringUtils.isNotBlank(result)){
+            if (isNotBlank(result)){
                 return result;
             }
             result = addInitials("", person);
-            if (StringUtils.isNotBlank(result)){
+            if (isNotBlank(result)){
                 return result;
             }
         }
