@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.api.service.taxonGraph;
 
+import java.util.Objects;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -123,7 +125,7 @@ public class TaxonGraphBeforeTransactionCompleteProcess extends AbstractHibernat
         for(int i = 0; i < propertyNames.length; i++){
             if(ArrayUtils.contains(propertyNamesToCheck, propertyNames[i])){
                 propsCheckedCnt++;
-                if(!oldState[i].equals(state[i])){
+                if(!Objects.equals(oldState[i], state[i])){
                     return i;
                 }
                 if(propsCheckedCnt == propertyNamesToCheck.length){
