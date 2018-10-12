@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.application;
 
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.GrantedAuthority;
 
 import eu.etaxonomy.cdm.persistence.hibernate.permission.Role;
@@ -18,6 +19,13 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.Role;
  *
  */
 public class RunAsAdmin extends AbstractRunAs {
+
+    /**
+     * @param authProvider
+     */
+    public RunAsAdmin(AuthenticationProvider authProvider) {
+        setRunAsAuthenticationProvider(authProvider);
+    }
 
     @Override
     public GrantedAuthority runAsGrantedAuthority() {

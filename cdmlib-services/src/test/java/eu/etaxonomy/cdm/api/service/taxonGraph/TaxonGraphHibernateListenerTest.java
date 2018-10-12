@@ -20,7 +20,9 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.application.IRunAs;
@@ -39,7 +41,7 @@ import eu.etaxonomy.cdm.persistence.dao.taxonGraph.ITaxonGraphDao;
 import eu.etaxonomy.cdm.persistence.dao.taxonGraph.TaxonGraphException;
 import eu.etaxonomy.cdm.persistence.dto.TaxonGraphEdgeDTO;
 import eu.etaxonomy.cdm.persistence.hibernate.TaxonGraphHibernateListener;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTestWithSecurity;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
@@ -47,7 +49,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @since Oct 1, 2018
  *
  */
-public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegrationTest {
+public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegrationTestWithSecurity {
 
     @SpringBeanByType
     protected ITaxonGraphDao taxonGraphDao;
@@ -57,6 +59,9 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
 
     @SpringBeanByType
     private IPreferenceDao prefDao;
+
+    @SpringBeanByName
+    private AuthenticationProvider runAsAuthenticationProvider;
 
     @SpringBeanByType
     private SessionFactory sessionFactory;
@@ -97,7 +102,7 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
             TaxonGraphHibernateListenerTest.isRegistered = true;
         }
         //
-        taxonGraphHibernateListener.registerProcessClass(TaxonGraphBeforeTransactionCompleteProcess.class, new Object[]{new RunAsAdmin()}, new Class[]{IRunAs.class});
+        taxonGraphHibernateListener.registerProcessClass(TaxonGraphBeforeTransactionCompleteProcess.class, new Object[]{new RunAsAdmin(runAsAuthenticationProvider)}, new Class[]{IRunAs.class});
     }
 
 

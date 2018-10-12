@@ -160,13 +160,13 @@ public class TaxonGraphBeforeTransactionCompleteProcess extends AbstractHibernat
     }
 
     public void onNameOrRankChange(TaxonName taxonName) throws TaxonGraphException {
-        Taxon taxon = assureSingleTaxon(taxonName);
         boolean isNotDeleted = parentSession.contains(taxonName) && taxonName.isPersited();
         // TODO use audit event to check for deletion?
         if(isNotDeleted){
             if(runAs != null){
                 runAs.apply();
             }
+            Taxon taxon = assureSingleTaxon(taxonName);
             updateEdges(taxon);
             getSession().saveOrUpdate(taxon);
             if(runAs != null){
@@ -180,13 +180,13 @@ public class TaxonGraphBeforeTransactionCompleteProcess extends AbstractHibernat
         if(oldNomReference == null){
             onNewTaxonName(taxonName);
         }
-        Taxon taxon = assureSingleTaxon(taxonName);
         boolean isNotDeleted = parentSession.contains(taxonName) && taxonName.isPersited();
         // TODO use audit event to check for deletion?
         if(isNotDeleted){
             if(runAs != null){
                 runAs.apply();
             }
+            Taxon taxon = assureSingleTaxon(taxonName);
             updateConceptReferenceInEdges(taxon, oldNomReference);
             getSession().saveOrUpdate(taxon);
             if(runAs != null){
