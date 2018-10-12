@@ -211,7 +211,7 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
         Taxon taxon;
         if(taxonName.getTaxa().size() == 0){
             if(taxonNamePersisted != null){
-            Reference secRef = secReference();
+                Reference secRef = secReference();
                 taxon = Taxon.NewInstance(taxonNamePersisted, secRef);
                 session.saveOrUpdate(taxon);
                 return taxon;
@@ -371,6 +371,7 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
             q.setParameter("specificEpithet", specificEpithet);
         }
 
+        @SuppressWarnings("unchecked")
         List<TaxonName> result = q.list();
         return result;
     }
@@ -382,6 +383,7 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
         q.setParameter("relatedTaxon", relatedTaxon);
         q.setParameter("type", type);
         q.setParameter("citation", citation);
+        @SuppressWarnings("unchecked")
         List<TaxonRelationship> rels = q.list();
         return rels;
     }
