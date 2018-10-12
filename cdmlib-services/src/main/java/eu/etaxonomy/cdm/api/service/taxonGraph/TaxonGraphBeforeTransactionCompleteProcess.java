@@ -26,6 +26,8 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.taxonGraph.AbstractHibernateTa
 import eu.etaxonomy.cdm.persistence.dao.taxonGraph.TaxonGraphException;
 
 /**
+ * see https://dev.e-taxonomy.eu/redmine/issues/7648
+ *
  * @author a.kohlbecker
  * @since Sep 26, 2018
  *

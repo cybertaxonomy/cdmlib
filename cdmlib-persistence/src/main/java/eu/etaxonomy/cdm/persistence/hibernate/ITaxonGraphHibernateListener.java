@@ -16,6 +16,8 @@ import org.hibernate.event.spi.PostUpdateEventListener;
 import org.hibernate.persister.entity.EntityPersister;
 
 /**
+ * see https://dev.e-taxonomy.eu/redmine/issues/7648
+ *
  * @author a.kohlbecker
  * @since Oct 10, 2018
  *

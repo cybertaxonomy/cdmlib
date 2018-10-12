@@ -22,6 +22,8 @@ import org.hibernate.persister.entity.EntityPersister;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 
 /**
+ * see https://dev.e-taxonomy.eu/redmine/issues/7648
+ *
  * @author a.kohlbecker
  * @since Sep 27, 2018
  *
