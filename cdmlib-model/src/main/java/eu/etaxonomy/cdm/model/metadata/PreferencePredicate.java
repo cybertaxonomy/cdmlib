@@ -51,9 +51,10 @@ public enum PreferencePredicate  implements IEnumTerm<PreferencePredicate>{
 	DistributionEditorActivated(UUID.fromString("733e9bce-4394-4fae-97d3-1b7dfc48ee3c"), "Distribution Editor Is activated", "editor.distribution.ACT"),
     AreasSortedByIdInVocabulary(UUID.fromString("513d7de9-fec4-432c-b4dd-75f9f6e74ad0"), "Distribution Editor: Areas sorted by ID in Vocabulary", "editor.distribution.sorted"),
     ShowRankInDistributionEditor(UUID.fromString("fb13b4f2-2d82-4fd3-8abe-2b955a695245"), "Distribution Editor: Show Rank", "editor.distribution.SHR"),
-    ShowSymbol(UUID.fromString("1ee6b945-0a81-4f05-b867-f9d105882249"), "Distribution Editor: Show Symbol", "editor.distribution.SS"),
-    ShowIdInVocabulary(UUID.fromString("7b671bba-1b7f-4cb9-bbac-c914518a4bf8"), "Distribution Editor: Show ID in Vocabulary", "editor.distribution.SIV"),
-
+    ShowSymbolForStatus(UUID.fromString("1ee6b945-0a81-4f05-b867-f9d105882249"), "Distribution Editor: Show Symbol for Status", "editor.distribution.SS"),
+    ShowIdInVocabulary(UUID.fromString("7b671bba-1b7f-4cb9-bbac-c914518a4bf8"), "Distribution Editor: Show ID in Vocabulary for Areas", "editor.distribution.SIV"),
+    ShowSymbol1(UUID.fromString("aca6210e-75e8-4744-9000-c1e6740a5f66"), "Distribution Editor: Show Symbol1 for Areas", "editor.distribution.SS1"),
+    ShowSymbol2(UUID.fromString("6043723f-3141-4350-b3b8-4b6fa02eb519"), "Distribution Editor: Show Symbol2 for Areas", "editor.distribution.SS2"),
     //common name area vocabularies
     CommonNameAreaVocabularies(UUID.fromString("59d68062-b4ff-4c3a-b29d-66bf850c1d82"), "Common Names: Available Vocabularies for Areas of Common Names", "model.commonname.area.voc"),
 
@@ -76,6 +77,7 @@ public enum PreferencePredicate  implements IEnumTerm<PreferencePredicate>{
     ShowHybrid(UUID.fromString("f58a4e82-8162-4d2e-905d-466d40069df8"), "Name Details: Show Hybrid Section", "editor.nameDetails.hybrids"),
 
     ShowMediaView(UUID.fromString("ba7ba1bb-47e3-4b68-bc44-c5ac45775db4"), "Show Media View", "editor.views.showMediaView"),
+    ShowTaxonNodeWizard(UUID.fromString("af06fbec-635b-4676-8b60-0b98aefda6aa"), "Show TaxonNode Wizard", "editor.views.showTaxonNodeWizard"),
     ShowChecklistPerspective(UUID.fromString("6058762b-893c-4330-bfe7-45d5717d02b2"), "Show Checklist Perspective as Default", "editor.perspective.checklist"),
     ;
 
