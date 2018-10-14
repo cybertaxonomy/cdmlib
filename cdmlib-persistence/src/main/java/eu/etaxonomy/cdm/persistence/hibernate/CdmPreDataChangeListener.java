@@ -93,8 +93,6 @@ public class CdmPreDataChangeListener
         }
     }
 
-
-
     private static void cacheDeterminationNames(Object entity) {
         if (entity instanceof DeterminationEvent) {
             DeterminationEvent detEv = (DeterminationEvent)entity;
@@ -134,14 +132,15 @@ public class CdmPreDataChangeListener
                     if (! teamOrPerson.isProtectedTitleCache()){
                         teamOrPerson.setTitleCache(titleCache, false);
                     }
+                    //if this is changed in future, change also in ImportDeduplicationHelper
 
-                    //reference caches
                 }else if(Reference.class.isAssignableFrom(entityClazz)){
+                    //reference caches
                     Reference ref = (Reference)entity;
                     ref.getAbbrevTitleCache();
                     ref.getTitleCache();
-                //specimen
                 }else if (SpecimenOrObservationBase.class.isAssignableFrom(entityClazz)){
+                    //specimen
                     SpecimenOrObservationBase<?> specimen = (SpecimenOrObservationBase<?>)entity;
                     if (!specimen.isProtectedTitleCache()){
                         specimen.setTitleCache(specimen.generateTitle(), false);

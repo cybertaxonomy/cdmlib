@@ -426,6 +426,7 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
             return null;
         }else{
             initAgentMap(state);
+            initAuthorTitleCaches(author);
             T result = getTeamOrPerson(author);
             if (result == null){
                 putAgentBase(author.getTitleCache(), author);
@@ -435,6 +436,25 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
                 result = author;
             }
             return result;
+        }
+    }
+
+    /**
+     * @param author
+     */
+    private <T extends TeamOrPersonBase<?>> void initAuthorTitleCaches(T author) {
+        //more or less copy from CdmPreDataChangeListener
+        String nomTitle = author.getNomenclaturalTitle();
+        if (author instanceof Team){
+            Team team = (Team)author;
+            //nomTitle is not necessarily cached when it is created
+            team.setNomenclaturalTitle(nomTitle, team.isProtectedNomenclaturalTitleCache());
+        }else{
+            author.setNomenclaturalTitle(nomTitle);
+        }
+        String titleCache = author.getTitleCache();
+        if (! author.isProtectedTitleCache()){
+            author.setTitleCache(titleCache, false);
         }
     }
 
