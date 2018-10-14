@@ -234,8 +234,6 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
                 throw new RuntimeException(e);
             }
         };
-        newReference.getAbbrevTitleCache(); //TODO better do via matching strategy  (newReference might be null)
-        newReference.getTitleCache(); //TODO better do via matching strategy  (newReference might be null)
         return Optional.ofNullable(getReferences(newReference.getTitleCache()))
                 .orElse(new HashSet<>())
                 .stream()
@@ -458,6 +456,13 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
         }
     }
 
+    private void initReferenceCaches(Reference ref) {
+        ////TODO better do via matching strategy  (newReference might have caches == null)
+        //more or less copy from CdmPreDataChangeListener
+        ref.getAbbrevTitleCache();
+        ref.getTitleCache();
+   }
+
     public AgentBase<?> getExistingAgent(STATE state,
             AgentBase<?> agent) {
         if (agent == null){
@@ -556,6 +561,7 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
            return null;
        }else{
            initRerenceMap(state);
+           initReferenceCaches(ref);
            Reference result = getMatchingReference(ref).orElse(null);
            if (result == null){
                result = ref;
