@@ -118,7 +118,7 @@ public class DescriptiveDataSetService
                 rowWrapper = createTaxonRowWrapper(description.getUuid(), descriptiveDataSet.getUuid());
             }
             else if (HibernateProxyHelper.isInstanceOf(description, SpecimenDescription.class)){
-                rowWrapper = createSpecimenRowWrapper(HibernateProxyHelper.deproxy(description, SpecimenDescription.class), descriptiveDataSet, false);
+                rowWrapper = createSpecimenRowWrapper(HibernateProxyHelper.deproxy(description, SpecimenDescription.class), descriptiveDataSet);
             }
             if(rowWrapper!=null){
                 wrappers.add(rowWrapper);
@@ -178,8 +178,7 @@ public class DescriptiveDataSetService
     }
 
     @Override
-    public SpecimenRowWrapperDTO createSpecimenRowWrapper(SpecimenDescription description, DescriptiveDataSet descriptiveDataSet,
-            boolean createDefaultTaxonDescription){
+    public SpecimenRowWrapperDTO createSpecimenRowWrapper(SpecimenDescription description, DescriptiveDataSet descriptiveDataSet){
 	    SpecimenOrObservationBase specimen = description.getDescribedSpecimenOrObservation();
 	    TaxonNode taxonNode = null;
         FieldUnit fieldUnit = null;
@@ -235,7 +234,7 @@ public class DescriptiveDataSetService
         }
         //get default taxon description
         TaxonDescription defaultTaxonDescription = findDefaultTaxonDescription(descriptiveDataSet,
-                taxonNode, createDefaultTaxonDescription);
+                taxonNode);
         TaxonRowWrapperDTO taxonRowWrapper = defaultTaxonDescription != null
                 ? createTaxonRowWrapper(defaultTaxonDescription.getUuid(), descriptiveDataSet.getUuid()) : null;
         return new SpecimenRowWrapperDTO(description, taxonNode, fieldUnit, identifier, country, taxonRowWrapper);
@@ -255,14 +254,13 @@ public class DescriptiveDataSetService
      * Returns a {@link TaxonDescription} for a given taxon node with corresponding
      * features according to the {@link DescriptiveDataSet}.<br>
      * If a description is found that matches all features of the data set this description
-     * will be returned. Otherwise a new one will be created if specified.
+     * will be returned.
      * @param descriptiveDataSetUuid the uuid of the dataset defining the features
      * @param taxonNodeUuid the uuid of the taxon node that links to the taxon
-     * @param create if <code>true</code> a new description will be created
      * if none could be found
-     * @return either the found taxon description or a newly created one
+     * @return the found taxon description or <code>null</code>
      */
-    private TaxonDescription findDefaultTaxonDescription(DescriptiveDataSet dataSet, TaxonNode taxonNode, boolean create){
+    private TaxonDescription findDefaultTaxonDescription(DescriptiveDataSet dataSet, TaxonNode taxonNode){
         Set<DescriptionBase> dataSetDescriptions = dataSet.getDescriptions();
         //filter out COMPUTED descriptions
         List<TaxonDescription> nonComputedDescriptions = taxonNode.getTaxon().getDescriptions().stream()
@@ -277,13 +275,8 @@ public class DescriptiveDataSetService
                 }
             }
         }
-        if(!create){
             return null;
         }
-        TaxonRowWrapperDTO taxonRowWrapperDTO = createTaxonDescription(dataSet.getUuid(), taxonNode.getUuid(), MarkerType.USE(), true);
-        TaxonDescription newTaxonDescription = taxonRowWrapperDTO.getDescription();
-        return newTaxonDescription;
-    }
 
     @Override
     @Transactional(readOnly=false)
