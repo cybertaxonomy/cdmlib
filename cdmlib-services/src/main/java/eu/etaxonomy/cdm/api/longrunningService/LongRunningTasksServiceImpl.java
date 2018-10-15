@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.api.service.config.PublishForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitorThread;
+import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 
 /**
  * @author k.luther
@@ -43,6 +44,21 @@ public class LongRunningTasksServiceImpl implements ILongRunningTasksService{
     @Autowired
     IProgressMonitorService progressMonitorService;
 
+
+
+    @Override
+    public UUID monitGetRowWrapper(DescriptiveDataSet descriptiveDataSet) {
+        RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
+            @Override
+            public Serializable doRun(IRemotingProgressMonitor monitor) {
+                return descriptiveDataSetService.getRowWrapper(descriptiveDataSet, monitor);
+            }
+        };
+        UUID uuid = progressMonitorService.registerNewRemotingMonitor(monitorThread);
+        monitorThread.setPriority(3);
+        monitorThread.start();
+        return uuid;
+    }
 
     @Override
     public UUID aggregateComputedTaxonDescriptions(UUID taxonNodeUuid, UUID descriptiveDataSetUuid){

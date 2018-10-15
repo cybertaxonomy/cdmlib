@@ -1,5 +1,6 @@
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -56,14 +57,7 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      * @param the progress monitor
      * @return a list of row wrapper objects
      */
-    public Collection<RowWrapperDTO> getRowWrapper(DescriptiveDataSet descriptiveDataSet, IProgressMonitor monitor);
-
-    /**
-     * Monitored invocation of {@link IDescriptiveDataSetService#getRowWrapper(DescriptiveDataSet, IProgressMonitor)}
-     * @param descriptiveDataSet the working set for which getRowWrapper() is invoked
-     * @return the uuid of the monitor
-     */
-    public UUID monitGetRowWrapper(DescriptiveDataSet descriptiveDataSet);
+    public ArrayList<RowWrapperDTO> getRowWrapper(DescriptiveDataSet descriptiveDataSet, IProgressMonitor monitor);
 
     /**
      * Loads all available specimens wrapped in a {@link SpecimenNodeWrapper} object for

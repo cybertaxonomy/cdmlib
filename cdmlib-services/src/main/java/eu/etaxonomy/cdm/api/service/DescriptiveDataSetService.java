@@ -104,22 +104,6 @@ public class DescriptiveDataSetService
         return dao.getDescriptiveDataSetUuidAndTitleCache( limitOfInitialElements, pattern);
     }
 
-
-    @Override
-    @Transactional
-    public UUID monitGetRowWrapper(DescriptiveDataSet descriptiveDataSet) {
-        RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
-            @Override
-            public Serializable doRun(IRemotingProgressMonitor monitor) {
-                return getRowWrapper(descriptiveDataSet, monitor);
-            }
-        };
-        UUID uuid = progressMonitorService.registerNewRemotingMonitor(monitorThread);
-        monitorThread.setPriority(3);
-        monitorThread.start();
-        return uuid;
-    }
-
 	@Override
 	public ArrayList<RowWrapperDTO> getRowWrapper(DescriptiveDataSet descriptiveDataSet, IProgressMonitor monitor) {
 	    monitor.beginTask("Load row wrapper", descriptiveDataSet.getDescriptions().size());
