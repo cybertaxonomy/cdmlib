@@ -1,6 +1,5 @@
 package eu.etaxonomy.cdm.api.service;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -23,7 +22,6 @@ import eu.etaxonomy.cdm.api.service.dto.SpecimenRowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonRowWrapperDTO;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
-import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitorThread;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -59,7 +57,7 @@ import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 @Service
-@Transactional(readOnly = false)
+@Transactional(readOnly=true)
 public class DescriptiveDataSetService
         extends IdentifiableServiceBase<DescriptiveDataSet, IDescriptiveDataSetDao>
         implements IDescriptiveDataSetService {
@@ -165,7 +163,7 @@ public class DescriptiveDataSetService
         Classification classification = null;
         TaxonDescription description = (TaxonDescription) descriptionService.load(taxonDescriptionUuid,
                 Arrays.asList("taxon", "descriptionElements", "descriptionElements.feature"));
-        DescriptiveDataSet descriptiveDataSet = load(descriptiveDataSetUuid);
+        DescriptiveDataSet descriptiveDataSet = dao.load(descriptiveDataSetUuid, null);
         Optional<TaxonNode> first = descriptiveDataSet.getTaxonSubtreeFilter().stream()
                 .filter(node->node.getClassification()!=null).findFirst();
         Optional<Classification> classificationOptional = first.map(node->node.getClassification());
@@ -249,7 +247,7 @@ public class DescriptiveDataSetService
         }
         super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
     }
-  
+
     /**
      * Returns a {@link TaxonDescription} for a given taxon node with corresponding
      * features according to the {@link DescriptiveDataSet}.<br>
@@ -275,8 +273,8 @@ public class DescriptiveDataSetService
                 }
             }
         }
-            return null;
-        }
+        return null;
+    }
 
     @Override
     @Transactional(readOnly=false)
@@ -394,6 +392,7 @@ public class DescriptiveDataSetService
     }
 
     @Override
+    @Transactional(readOnly=false)
     public TaxonRowWrapperDTO createTaxonDescription(UUID dataSetUuid, UUID taxonNodeUuid, MarkerType markerType, boolean markerFlag){
         DescriptiveDataSet dataSet = load(dataSetUuid);
         TaxonNode taxonNode = taxonNodeService.load(taxonNodeUuid, Arrays.asList("taxon"));
@@ -425,6 +424,7 @@ public class DescriptiveDataSetService
     }
 
     @Override
+    @Transactional(readOnly=false)
     public SpecimenDescription findSpecimenDescription(UUID descriptiveDataSetUuid, UUID specimenUuid, boolean addDatasetSource){
         DescriptiveDataSet dataSet = load(descriptiveDataSetUuid);
         SpecimenOrObservationBase specimen = occurrenceService.load(specimenUuid);

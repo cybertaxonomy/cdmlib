@@ -80,12 +80,9 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      * Creates a specimen row wrapper object for the given description
      * @param description the specimen description for which the wrapper should be created
      * @param descriptiveDataSet the data set it should be used in
-     * @param if <code>true</code> a default taxon description will be created for the taxon
-     * this wrapper belongs to
      * @return the created row wrapper
      */
-    public SpecimenRowWrapperDTO createSpecimenRowWrapper(SpecimenDescription description, DescriptiveDataSet descriptiveDataSet,
-            boolean createDefaultTaxonDescription);
+    public SpecimenRowWrapperDTO createSpecimenRowWrapper(SpecimenDescription description, DescriptiveDataSet descriptiveDataSet);
 
     /**
      * Creates a taxon row wrapper object for the given description
