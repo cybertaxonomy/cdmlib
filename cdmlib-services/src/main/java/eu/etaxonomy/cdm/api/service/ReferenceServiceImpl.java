@@ -175,9 +175,8 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<Reference,IRef
             daoResults = dao.findByIdentifierAbbrev( identifier, identifierType,
                     matchmode,  limit);
         }
-        //if(numberOfResultsTitle > 0) {
-            daoResultsTitle = dao.getUuidAndAbbrevTitleCache(100, identifier, null);
-        //}
+        daoResultsTitle = dao.getUuidAndAbbrevTitleCache(100, identifier, null);
+
         List<IdentifiedEntityDTO<Reference>> result = new ArrayList<>();
         for (Object[] daoObj : daoResults){
             result.add(new IdentifiedEntityDTO<Reference>((DefinedTerm)daoObj[0], (String)daoObj[1], (UUID)daoObj[2], (String)daoObj[3],(String)daoObj[4]));
