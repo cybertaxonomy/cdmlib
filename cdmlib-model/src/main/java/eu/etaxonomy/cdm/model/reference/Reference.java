@@ -298,7 +298,7 @@ public class Reference
 	private VerbatimTimePeriod datePublished = VerbatimTimePeriod.NewVerbatimInstance();
 
     //#5258
-    @XmlElement (name = "Accessed", type= String.class)
+    @XmlElement(name = "Accessed", type= String.class)
     @XmlJavaTypeAdapter(DateTimeAdapter.class)
     @Type(type="dateTimeUserType")
     @Basic(fetch = FetchType.LAZY)

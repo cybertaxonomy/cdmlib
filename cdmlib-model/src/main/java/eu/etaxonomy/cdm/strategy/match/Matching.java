@@ -52,7 +52,7 @@ public class Matching {
 	 * @return the fieldMatchers
 	 */
 	public List<FieldMatcher> getFieldMatchers(boolean includeTemporary) {
-		List<FieldMatcher> result = new ArrayList<FieldMatcher>();
+		List<FieldMatcher> result = new ArrayList<>();
 		for (FieldMatcher fieldMatcher : fieldMatchers.values()){
 			result.add(fieldMatcher);
 		}
@@ -83,7 +83,7 @@ public class Matching {
 	}
 
 	public void deleteTemporaryMatchers(){
-		tmpFieldMatchers = new TreeMap<String, FieldMatcher>();
+		tmpFieldMatchers = new TreeMap<>();
 	}
 
 

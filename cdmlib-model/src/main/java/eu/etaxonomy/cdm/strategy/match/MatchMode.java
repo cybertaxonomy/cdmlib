@@ -9,9 +9,8 @@
 
 package eu.etaxonomy.cdm.strategy.match;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-
-import eu.etaxonomy.cdm.common.CdmUtils;
 
 
 /**
@@ -53,7 +52,7 @@ public enum MatchMode {
 		}else if(this == MATCH_OR_SECOND_NULL){
 			return matchesMatchOrSecondNull(obj1, obj2, matchStrategy);
 		}else if(this == CACHE){
-			return matchesEqualRequired(obj1, obj2) && CdmUtils.isNotEmpty((String)obj1);
+			return matchesEqualRequired(obj1, obj2) && StringUtils.isNotBlank((String)obj1);
 		}else {
 			throw new MatchException("Match mode not handled yet: " + this);
 		}
