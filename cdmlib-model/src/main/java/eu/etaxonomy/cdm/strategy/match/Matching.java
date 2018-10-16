@@ -29,11 +29,11 @@ public class Matching {
 	private List<CacheMatcher> cacheMatchers = new ArrayList<CacheMatcher>();
 
 
-	public Matching setFieldMatcher(FieldMatcher fieldMatcher){
-		return setFieldMatcher(fieldMatcher, false);
+	public Matching addFieldMatcher(FieldMatcher fieldMatcher){
+		return addFieldMatcher(fieldMatcher, false);
 	}
 
-	public Matching setFieldMatcher(FieldMatcher fieldMatcher,boolean temporary){
+	public Matching addFieldMatcher(FieldMatcher fieldMatcher, boolean temporary){
 		String propertyName = fieldMatcher.getPropertyName();
 		if (temporary && ! fieldMatchers.containsKey(propertyName)){
 			tmpFieldMatchers.put(propertyName, fieldMatcher);

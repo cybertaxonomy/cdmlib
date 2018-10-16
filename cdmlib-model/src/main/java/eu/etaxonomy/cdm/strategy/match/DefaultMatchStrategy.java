@@ -92,13 +92,19 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 	@Override
     public void setMatchMode(String propertyName, MatchMode matchMode)
 			throws MatchException {
-		if (matchFields.containsKey(propertyName)){
-			FieldMatcher fieldMatcher = FieldMatcher.NewInstance(matchFields.get(propertyName), matchMode);
-			matching.setFieldMatcher(fieldMatcher);
-		}else{
-			throw new MatchException("The class " + matchClass.getName() + " does not contain a field named " + propertyName);
-		}
+	    setMatchMode(propertyName, matchMode, null);
 	}
+
+    @Override
+    public void setMatchMode(String propertyName, MatchMode matchMode, IMatchStrategy matchStrategy)
+            throws MatchException {
+        if (matchFields.containsKey(propertyName)){
+            FieldMatcher fieldMatcher = FieldMatcher.NewInstance(matchFields.get(propertyName), matchMode, matchStrategy);
+            matching.addFieldMatcher(fieldMatcher);
+        }else{
+            throw new MatchException("The class " + matchClass.getName() + " does not contain a field named " + propertyName);
+        }
+    }
 
 	@Override
     public MatchMode getMatchMode(String propertyName) {
@@ -161,74 +167,114 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 		try {
 			Map<String, List<MatchMode>> replaceMatchers = new HashMap<>();
 			for (CacheMatcher cacheMatcher: matching.getCacheMatchers()){
-				Field protectedField = cacheMatcher.getProtectedField(matching);
-				boolean protected1 = protectedField.getBoolean(matchFirst);
-				boolean protected2 = protectedField.getBoolean(matchFirst);
-				if (protected1 != protected2){
-					return false;
-				}else if (protected1 == false){
-					//ignore
-				}else{
-					String cache1 = (String)cacheMatcher.getField().get(matchFirst);
-					String cache2 = (String)cacheMatcher.getField().get(matchSecond);
-					result = cacheMatcher.getMatchMode().matches(cache1, cache2, null);
-					if (result == false){
-						return false;
-					}
-					List<DoubleResult<String, MatchMode>> replacementModes = cacheMatcher.getReplaceMatchModes(matching);
-					for (DoubleResult<String, MatchMode> replacementMode: replacementModes ){
-						String propertyName = replacementMode.getFirstResult();
-						List<MatchMode> replaceMatcherList = replaceMatchers.get(propertyName);
-						if (replaceMatcherList == null){
-							replaceMatcherList = new ArrayList<>();
-							replaceMatchers.put(propertyName, replaceMatcherList);
-						}
-						replaceMatcherList.add(replacementMode.getSecondResult());
-					}
+				result = matchSingleCache(matchFirst, matchSecond, result, replaceMatchers, cacheMatcher);
+				if (result == false){
+				    return false;
 				}
 			}
 			for (FieldMatcher fieldMatcher : matching.getFieldMatchers(true)){
-				Field field = fieldMatcher.getField();
-				List<MatchMode> replaceModeList = replaceMatchers.get(fieldMatcher.getPropertyName());
-				if (replaceModeList == null){
-					replaceModeList = new ArrayList<>();
+				result = matchSingleField(matchFirst, matchSecond, result, replaceMatchers, fieldMatcher);
+				if (result == false){
+				    break;
 				}
-				Class<?> fieldType = field.getType();
-				logger.debug(field.getName() + ": ");
-				if (isPrimitive(fieldType)){
-					result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList);
-				}else if (fieldType == String.class ){
-					result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList);
-				}else if (fieldType == Integer.class ){
-					result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList);
-				}else if(isUserType(fieldType)){
-					result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList);
-				}else if(fieldType == UUID.class){
-					//result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList);
-				}else if(fieldType == URI.class){
-					result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList);
-				}else if(fieldType == DOI.class){
-					result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList);
-				}else if(isSingleCdmBaseObject(fieldType)){
-					result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList);
-				}else if (isCollection(fieldType)){
-					result &= matchCollectionField(matchFirst, matchSecond, fieldMatcher, replaceModeList);
-				}else if(fieldType.isInterface()){
-					result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList);
-				}else if(fieldType.isEnum()){
-					result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList);
-				}else{
-					throw new RuntimeException("Unknown Object type for matching: " + fieldType);
-				}
-//				if (result == false){
-//					return result;
-//				}
 			}
 		} catch (Exception e) {
 			throw new MatchException("Match Exception in invoke", e);
 		}
 		return result;
 	}
+
+    /**
+     * @param matchFirst
+     * @param matchSecond
+     * @param result
+     * @param replaceMatchers
+     * @param cacheMatcher
+     * @return
+     * @throws IllegalAccessException
+     * @throws MatchException
+     */
+    protected <T extends IMatchable> boolean matchSingleCache(T matchFirst, T matchSecond, boolean result,
+            Map<String, List<MatchMode>> replaceMatchers, CacheMatcher cacheMatcher)
+            throws IllegalAccessException, MatchException {
+        Field protectedField = cacheMatcher.getProtectedField(matching);
+        boolean protected1 = protectedField.getBoolean(matchFirst);
+        boolean protected2 = protectedField.getBoolean(matchFirst);
+        if (protected1 != protected2){
+        	return false;
+        }else if (protected1 == false){
+        	//ignore
+        }else{
+        	String cache1 = (String)cacheMatcher.getField().get(matchFirst);
+        	String cache2 = (String)cacheMatcher.getField().get(matchSecond);
+        	result &= cacheMatcher.getMatchMode().matches(cache1, cache2, null);
+			if (result == false){
+				return false;
+			}
+        	List<DoubleResult<String, MatchMode>> replacementModes = cacheMatcher.getReplaceMatchModes(matching);
+        	for (DoubleResult<String, MatchMode> replacementMode: replacementModes ){
+        		String propertyName = replacementMode.getFirstResult();
+        		List<MatchMode> replaceMatcherList = replaceMatchers.get(propertyName);
+        		if (replaceMatcherList == null){
+        			replaceMatcherList = new ArrayList<>();
+        			replaceMatchers.put(propertyName, replaceMatcherList);
+        		}
+        		replaceMatcherList.add(replacementMode.getSecondResult());
+        	}
+        }
+        return result;
+    }
+
+    /**
+     * @param matchFirst
+     * @param matchSecond
+     * @param result
+     * @param replaceMatchers
+     * @param fieldMatcher
+     * @return
+     * @throws Exception
+     */
+    protected <T extends IMatchable> boolean matchSingleField(T matchFirst, T matchSecond, boolean result,
+            Map<String, List<MatchMode>> replaceMatchers, FieldMatcher fieldMatcher) throws Exception {
+        Field field = fieldMatcher.getField();
+        List<MatchMode> replaceModeList = replaceMatchers.get(fieldMatcher.getPropertyName());
+        if (replaceModeList == null){
+        	replaceModeList = new ArrayList<>();
+        }
+        Class<?> fieldType = field.getType();
+        logger.debug(field.getName() + ": ");
+        if (isPrimitive(fieldType)){
+        	result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList);
+        }else if (fieldType == String.class ){
+        	result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList);
+        }else if (fieldType == Integer.class ){
+        	result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList);
+        }else if(isUserType(fieldType)){
+        	result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList);
+        }else if(fieldType == UUID.class){
+        	//result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList);
+        }else if(fieldType == URI.class){
+        	result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList);
+        }else if(fieldType == DOI.class){
+        	result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList);
+        }else if(isSingleCdmBaseObject(fieldType)){
+        	result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList);
+        }else if (isCollection(fieldType)){
+        	result &= matchCollectionField(matchFirst, matchSecond, fieldMatcher, replaceModeList);
+        }else if(fieldType.isInterface()){
+        	result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList);
+        }else if(fieldType.isEnum()){
+        	result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList);
+        }else{
+        	throw new RuntimeException("Unknown Object type for matching: " + fieldType);
+        }
+        if (result == false){
+//					System.out.println(field.getName());
+        	return result;
+//				    return result;
+        }
+        return result;
+    }
 
 
 	/**
@@ -449,7 +495,7 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 					matching.addCacheMatcher(CacheMatcher.NewInstance(field, replaceMode, cachePropertyReplaces, replaceMatchMode));
 
 				}else{
-					matching.setFieldMatcher(FieldMatcher.NewInstance(field, matchMode), temporary);
+					matching.addFieldMatcher(FieldMatcher.NewInstance(field, matchMode), temporary);
 				}
 			}
 		}
@@ -457,11 +503,11 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 		if (matchMode == null){
 			if (isCollection(fieldType)){
 				matchMode = defaultCollectionMatchMode;
-				matching.setFieldMatcher(FieldMatcher.NewInstance(field, matchMode), temporary);
+				matching.addFieldMatcher(FieldMatcher.NewInstance(field, matchMode), temporary);
 			}else if (fieldType.isInterface()){
 				//TODO could be handled more sophisticated
 				matchMode = defaultMatchMatchMode;
-				matching.setFieldMatcher(FieldMatcher.NewInstance(field, matchMode, matchStrategy), temporary);
+				matching.addFieldMatcher(FieldMatcher.NewInstance(field, matchMode, matchStrategy), temporary);
 			}else if (isSingleCdmBaseObject(fieldType)){
 				if (IMatchable.class.isAssignableFrom(fieldType)){
 					matchMode = defaultMatchMatchMode;
@@ -472,14 +518,14 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 							matchStrategy = DefaultMatchStrategy.NewInstance(fieldType);
 						}
 					}
-					matching.setFieldMatcher(FieldMatcher.NewInstance(field, matchMode, matchStrategy), temporary);
+					matching.addFieldMatcher(FieldMatcher.NewInstance(field, matchMode, matchStrategy), temporary);
 				}else{
 					matchMode = defaultMatchMode;
-					matching.setFieldMatcher(FieldMatcher.NewInstance(field, matchMode), temporary);
+					matching.addFieldMatcher(FieldMatcher.NewInstance(field, matchMode), temporary);
 				}
 			}else{
 				matchMode = defaultMatchMode;
-				matching.setFieldMatcher(FieldMatcher.NewInstance(field, matchMode), temporary);
+				matching.addFieldMatcher(FieldMatcher.NewInstance(field, matchMode), temporary);
 			}
 		}
 	}

@@ -29,8 +29,21 @@ public interface IMatchStrategy {
 	 * @param propertyName
 	 * @param mergeMode
 	 * @throws MatchException
+	 * @see {@link #setMatchMode(String, MatchMode, IMatchStrategy)}
 	 */
 	public void setMatchMode(String propertyName, MatchMode matchMode) throws MatchException;
+
+
+    /**
+     * Sets the match mode for property propertyName using the given match strategy.
+     * The match strategy has no effect if {@link MatchMode match mode} is none of
+     * the 4 MATCH* match modes like {@link MatchMode#MATCH} or {@link MatchMode#MATCH_REQUIRED}.
+     * @param propertyName
+     * @param matchStrategy
+     * @throws MatchException
+     * @see {@link #setMatchMode(String, MatchMode)}
+     */
+    void setMatchMode(String propertyName, MatchMode matchMode, IMatchStrategy matchStrategy) throws MatchException;
 
 	/**
 	 * Invokes the match check.
