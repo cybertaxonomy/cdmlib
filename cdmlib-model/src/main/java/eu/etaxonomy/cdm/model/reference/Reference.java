@@ -326,6 +326,7 @@ public class Reference
 	//nomenclatural reference in a name this flag should be automatically set
 	@XmlElement(name = "IsNomenclaturallyRelevant")
 	@Merge(MergeMode.OR)
+	@Match(MatchMode.IGNORE)
 	private boolean nomenclaturallyRelevant;
 
 	@XmlElement(name = "Authorship")
