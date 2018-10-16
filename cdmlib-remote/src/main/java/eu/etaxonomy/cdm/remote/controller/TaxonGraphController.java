@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -49,6 +50,7 @@ public class TaxonGraphController {
         binder.registerCustomEditor(UUID.class, new UUIDPropertyEditor());
     }
 
+    @CrossOrigin
     @RequestMapping(method = RequestMethod.GET, value="edges")
     public List<TaxonGraphEdgeDTO> doEdges(
             @RequestParam(value = "fromTaxonUuid", required = false) UUID fromTaxonUuid,
