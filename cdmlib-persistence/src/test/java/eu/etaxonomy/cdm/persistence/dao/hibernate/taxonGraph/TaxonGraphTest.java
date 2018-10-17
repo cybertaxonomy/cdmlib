@@ -264,6 +264,9 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
         Reference secRef = ReferenceFactory.newDatabase();
         secRef.setTitleCache("secRef", true);
 
+        Reference otherSecRef = ReferenceFactory.newDatabase();
+        otherSecRef.setTitleCache("Other sec ref", true);
+
         secRef.setUuid(uuid_secRef);
         Reference refA = ReferenceFactory.newBook();
         refA.setTitleCache("Ref-A", true);
@@ -307,6 +310,7 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
         Taxon t_euglena = Taxon.NewInstance(n_euglena, secRef);
         t_euglena.setUuid(uuid_t_euglena);
         Taxon t_trachelomonas = Taxon.NewInstance(n_trachelomonas, secRef);
+        Taxon other_t_trachelomonas = Taxon.NewInstance(n_trachelomonas, otherSecRef);
         t_trachelomonas.setUuid(uuid_t_trachelomonas);
         Taxon t_trachelomonas_a = Taxon.NewInstance(n_trachelomonas_a, secRef);
         t_trachelomonas_a.setUuid(uuid_t_trachelomonas_a);
@@ -325,7 +329,7 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
                 // names without taxa
                 n_phacus_s, n_trachelomonas_r_s,
                 // taxa:
-                t_euglenophyceae, t_euglena, t_trachelomonas, t_trachelomonas_a, t_trachelomonas_o, t_trachelomonas_o_var_d,
+                t_euglenophyceae, t_euglena, t_trachelomonas, other_t_trachelomonas, t_trachelomonas_a, t_trachelomonas_o, t_trachelomonas_o_var_d,
                 t_trachelomonas_s, t_trachelomonas_s_var_a}) {
             session.save(cdm);
         }

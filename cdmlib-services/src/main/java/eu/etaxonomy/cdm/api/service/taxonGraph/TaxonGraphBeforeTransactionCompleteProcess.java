@@ -167,14 +167,17 @@ public class TaxonGraphBeforeTransactionCompleteProcess extends AbstractHibernat
         boolean isNotDeleted = parentSession.contains(taxonName) && taxonName.isPersited();
         // TODO use audit event to check for deletion?
         if(isNotDeleted){
-            if(runAs != null){
-                runAs.apply();
-            }
-            Taxon taxon = assureSingleTaxon(taxonName);
-            updateEdges(taxon);
-            getSession().saveOrUpdate(taxon);
-            if(runAs != null){
-                runAs.restore();
+            try{
+                if(runAs != null){
+                    runAs.apply();
+                }
+                Taxon taxon = assureSingleTaxon(taxonName);
+                updateEdges(taxon);
+                getSession().saveOrUpdate(taxon);
+            } finally {
+                if(runAs != null){
+                    runAs.restore();
+                }
             }
         }
     }
@@ -187,14 +190,17 @@ public class TaxonGraphBeforeTransactionCompleteProcess extends AbstractHibernat
         boolean isNotDeleted = parentSession.contains(taxonName) && taxonName.isPersited();
         // TODO use audit event to check for deletion?
         if(isNotDeleted){
-            if(runAs != null){
-                runAs.apply();
-            }
-            Taxon taxon = assureSingleTaxon(taxonName);
-            updateConceptReferenceInEdges(taxon, oldNomReference);
-            getSession().saveOrUpdate(taxon);
-            if(runAs != null){
-                runAs.restore();
+            try {
+                if(runAs != null){
+                    runAs.apply();
+                }
+                Taxon taxon = assureSingleTaxon(taxonName);
+                updateConceptReferenceInEdges(taxon, oldNomReference);
+                getSession().saveOrUpdate(taxon);
+            } finally {
+                if(runAs != null){
+                    runAs.restore();
+                }
             }
         }
     }

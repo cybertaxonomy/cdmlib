@@ -10,7 +10,9 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.taxonGraph;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -128,9 +130,9 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
                 taxon.addTaxonRelation(toTaxon, relType(), conceptReference, null);
             }
 
-            // update edges to lower names
+            // update edges from lower names
             List<TaxonName> relatedLowerNames = relatedLowerNames(taxon.getName());
-            List<TaxonRelationship> relationsTo = taxonGraphRelationsTo(taxon, conceptReference);
+            List<TaxonRelationship> relationsTo = taxonGraphRelationsTo(taxon, null);
             List<TaxonName> relatedLowerNamesWithoutRels = new ArrayList<>(relatedLowerNames);
             for(TaxonRelationship rel : relationsTo){
                 boolean isRelFromLowerName = relatedLowerNames.contains(rel.getFromTaxon().getName());
@@ -208,32 +210,27 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
         UUID secRefUuid = getSecReferenceUUID();
         Session session = getSession();
         TaxonName taxonNamePersisted = session.load(TaxonName.class, taxonName.getId());
+
+        // filter by secRefUuid
         Taxon taxon;
-        if(taxonName.getTaxa().size() == 0){
+        Set<Taxon> taxa = new HashSet<>();
+        for(Taxon t : taxonName.getTaxa()){
+            if(t.getSec().getUuid().equals(secRefUuid)){
+                taxa.add(t);
+            }
+        }
+
+        if(taxa.size() == 0){
             if(taxonNamePersisted != null){
                 Reference secRef = secReference();
                 taxon = Taxon.NewInstance(taxonNamePersisted, secRef);
                 session.saveOrUpdate(taxon);
-                return taxon;
             } else {
                 throw new TaxonGraphException("Can't create taxon for deleted name: " + taxonName);
             }
-        } else if(taxonName.getTaxa().size() == 1){
-            taxon = taxonName.getTaxa().iterator().next();
-            if(taxon.getSec() == null){
-                taxon = session.load(Taxon.class, taxon.getId());
-                taxon.setSec(secReference());
-                session.saveOrUpdate(taxon);
-                return taxon;
-            } else if(!secRefUuid.equals(taxon.getSec().getUuid())){
-                throw new TaxonGraphException("The taxon for a name to be used in a taxon graph must have the default sec reference [secRef uuid: "+ secRefUuid.toString() +"]");
-            }
+        } else if(taxa.size() == 1){
+            taxon = taxa.iterator().next();
         } else {
-            for(Taxon t : taxonName.getTaxa()){
-                if(secRefUuid.equals(t.getSec().getUuid())){
-                    taxon = t;
-                }
-            }
             throw new TaxonGraphException("A name to be used in a taxon graph must only have one taxon with the default sec reference [secRef uuid: "+ secRefUuid.toString() +"]");
         }
         return session.load(Taxon.class, taxon.getId());
@@ -376,13 +373,26 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
         return result;
     }
 
-
+    /**
+     *
+     * @param relatedTaxon required
+     * @param type required
+     * @param citation can be null
+     * @param direction required
+     * @return
+     */
     protected List<TaxonRelationship> getTaxonRelationships(Taxon relatedTaxon, TaxonRelationshipType type, Reference citation, Direction direction){
-        String hql = "SELECT rel FROM TaxonRelationship rel WHERE rel."+direction+" = :relatedTaxon AND rel.type = :type AND rel.citation = :citation";
+
+        String hql = "SELECT rel FROM TaxonRelationship rel WHERE rel." + direction + " = :relatedTaxon AND rel.type = :type";
+        if(citation != null){
+            hql += " AND rel.citation = :citation";
+        }
         Query q = getSession().createQuery(hql);
         q.setParameter("relatedTaxon", relatedTaxon);
         q.setParameter("type", type);
+        if(citation != null){
         q.setParameter("citation", citation);
+        }
         @SuppressWarnings("unchecked")
         List<TaxonRelationship> rels = q.list();
         return rels;
