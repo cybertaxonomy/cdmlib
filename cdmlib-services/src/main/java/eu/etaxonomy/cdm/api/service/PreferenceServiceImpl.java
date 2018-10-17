@@ -66,6 +66,12 @@ public class PreferenceServiceImpl implements IPreferenceService {
         return find(key);
     }
 
+    @Override
+    public CdmPreference findTaxEditor(PreferencePredicate predicate){
+        PrefKey key = CdmPreference.NewKey(PreferenceSubject.NewTaxEditorInstance(), predicate);
+        return find(key);
+    }
+
 
 	@Override
     @Transactional(readOnly = false)
