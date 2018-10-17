@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.name;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -957,14 +958,17 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
     @Override
     public List<TaxonNameParts> findTaxonNameParts(Optional<String> genusOrUninomial,
             Optional<String> infraGenericEpithet, Optional<String> specificEpithet,
-            Optional<String> infraSpecificEpithet, Rank rank, Integer pageSize, Integer pageIndex, List<OrderHint> orderHints) {
+            Optional<String> infraSpecificEpithet, Rank rank, Collection<TaxonName> excludedNames, Integer pageSize, Integer pageIndex, List<OrderHint> orderHints) {
 
         StringBuilder hql = prepareFindTaxonNameParts(false, genusOrUninomial, infraGenericEpithet,
-                specificEpithet, infraSpecificEpithet, rank);
+                specificEpithet, infraSpecificEpithet, rank, excludedNames);
         addOrder(hql, "n", orderHints);
         Query query = getSession().createQuery(hql.toString());
         if(rank != null){
             query.setParameter("rank", rank);
+        }
+        if(excludedNames != null && excludedNames.size() > 0){
+            query.setParameterList("excludedNames", excludedNames);
         }
         setPagingParameter(query, pageSize, pageIndex);
         @SuppressWarnings("unchecked")
@@ -979,12 +983,15 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
      */
     @Override
     public long countTaxonNameParts(Optional<String> genusOrUninomial, Optional<String> infraGenericEpithet,
-            Optional<String> specificEpithet, Optional<String> infraSpecificEpithet, Rank rank) {
+            Optional<String> specificEpithet, Optional<String> infraSpecificEpithet, Rank rank, Collection<TaxonName> excludedNames) {
 
-        StringBuilder hql = prepareFindTaxonNameParts(true, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, rank);
+        StringBuilder hql = prepareFindTaxonNameParts(true, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, rank, excludedNames);
         Query query = getSession().createQuery(hql.toString());
         if(rank != null){
             query.setParameter("rank", rank);
+        }
+        if(excludedNames != null && excludedNames.size() > 0){
+            query.setParameterList("excludedNames", excludedNames);
         }
 
         Object count = query.uniqueResult();
@@ -996,7 +1003,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
      */
     private StringBuilder prepareFindTaxonNameParts(boolean doCount, Optional<String> genusOrUninomial,
             Optional<String> infraGenericEpithet, Optional<String> specificEpithet,
-            Optional<String> infraSpecificEpithet, Rank rank) {
+            Optional<String> infraSpecificEpithet, Rank rank, Collection<TaxonName> excludedNames) {
 
         StringBuilder hql = new StringBuilder();
         if(doCount){
@@ -1008,6 +1015,9 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
 
         if(rank != null){
             hql.append("and n.rank = :rank ");
+        }
+        if(excludedNames != null && excludedNames.size() > 0){
+            hql.append("and n not in ( :excludedNames ) ");
         }
 
         addFieldPredicate(hql, "n.genusOrUninomial", genusOrUninomial);

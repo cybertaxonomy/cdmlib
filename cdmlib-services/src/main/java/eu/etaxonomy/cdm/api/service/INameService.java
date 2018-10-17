@@ -15,9 +15,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
-import org.apache.lucene.index.CorruptIndexException;
 import org.hibernate.criterion.Criterion;
 
 import eu.etaxonomy.cdm.api.service.config.NameDeletionConfigurator;
@@ -40,13 +40,11 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
-import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
-import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 public interface INameService
         extends IIdentifiableEntityService<TaxonName> {
@@ -153,11 +151,14 @@ public interface INameService
      * @param infraSpecificEpithet
      * @param rank
      *     Only names having the specified rank are taken into account.
+     * @param excludedNames
+     *     Names to be excluded from the result set
      * @return
      */
 	public Pager<TaxonNameParts> findTaxonNameParts(Optional<String> genusOrUninomial,
             Optional<String> infraGenericEpithet, Optional<String> specificEpithet,
-            Optional<String> infraSpecificEpithet, Rank rank, Integer pageSize, Integer pageIndex, List<OrderHint> orderHints);
+            Optional<String> infraSpecificEpithet, Rank rank, Set<TaxonName> excludedNames,
+            Integer pageSize, Integer pageIndex, List<OrderHint> orderHints);
 
 	/**
      * <b>This method behaves differently compared to {@link #findTaxonNameParts(Optional, Optional, Optional, Optional, Rank, Integer, Integer, List)}!</b>
