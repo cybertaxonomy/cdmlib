@@ -156,9 +156,10 @@ public final class CdmPreference implements Serializable {
             if (predicate.length() > 255) {
                 throw new IllegalArgumentException("Predicate must not be longer then 255 for preference");
             }
-            if (!subject.matches(PreferenceSubject.ROOT + "(([A-Za-z]+\\[.*\\]|"+PreferenceSubject.VAADIN+")"+PreferenceSubject.SEP+")?")){
+            if (!(subject.matches(PreferenceSubject.ROOT + "(([A-Za-z]+\\[.*\\]|"+PreferenceSubject.VAADIN+")"+PreferenceSubject.SEP+")?") || subject.matches(PreferenceSubject.ROOT + "(([A-Za-z]+\\[.*\\]|"+PreferenceSubject.TAX_EDITOR+")"+PreferenceSubject.SEP+")?"))){
                 throw new IllegalArgumentException("Subject does not follow the required syntax");
             }
+
 
 
             this.subject = subject;
