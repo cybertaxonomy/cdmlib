@@ -77,8 +77,12 @@ public enum PreferencePredicate  implements IEnumTerm<PreferencePredicate>{
     ShowNameRelations(UUID.fromString("7173817e-c15f-4618-8dea-2035b84f7757"), "Name Details: Show Namerelationships", "editor.nameDetails.NRS"),
     ShowHybrid(UUID.fromString("f58a4e82-8162-4d2e-905d-466d40069df8"), "Name Details: Show Hybrid Section", "editor.nameDetails.hybrids"),
 
+    ShowIdInSource(UUID.fromString("de291d1b-d89e-42ee-a7b5-15f306f50785"), "Source Details: Show ID in Source", "sourceDetails.IdInSource"),
+    ShowNameInSource(UUID.fromString("f2e881bb-03a1-4bf9-aff1-7bfd4d355a7c"), "Source Details: Show Name in Source", "sourceDetails.NameInSource"),
+
     ShowMediaView(UUID.fromString("ba7ba1bb-47e3-4b68-bc44-c5ac45775db4"), "Show Media View", "views.showMediaView"),
     ShowTaxonNodeWizard(UUID.fromString("af06fbec-635b-4676-8b60-0b98aefda6aa"), "Show TaxonNode Wizard", "views.showTaxonNodeWizard"),
+    DisableMultiClassification(UUID.fromString("abdf7e40-afe6-4131-9af3-c6b6779ee6be"), "Disable Multi Classification Functionality", "menu.disableMultiClassification"),
     ShowChecklistPerspective(UUID.fromString("6058762b-893c-4330-bfe7-45d5717d02b2"), "Show Checklist Perspective as Default", "perspective.checklist"),
     ;
 
