@@ -1,5 +1,5 @@
---- springfox.orig.js	2016-11-06 18:08:34.000000000 +0100
-+++ springfox.js	2018-10-18 18:45:02.381106203 +0200
+--- /home/andreas/spring-fox/2.6.1/META-INF/resources/webjars/springfox-swagger-ui/springfox.orig.js	2016-11-06 18:08:34.000000000 +0100
++++ springfox.js	2018-10-18 19:58:56.530758949 +0200
 @@ -1,7 +1,7 @@
  $(function() {
    var springfox = {
@@ -37,7 +37,7 @@
  
    function initializeBaseUrl() {
      var relativeLocation = springfox.baseUrl();
-@@ -106,15 +116,28 @@
+@@ -106,15 +116,30 @@
  
      $.getJSON(relativeLocation + "/swagger-resources", function(data) {
  
@@ -59,7 +59,9 @@
 +          $menulist.append(option);
 +      });
 +      $('#select_baseUrl a').click(function(event) {
-+            event.preventDefault()
++            event.preventDefault();
++            $('#select_baseUrl li.active').removeClass('active');
++            $(this).parent().addClass('active');
 +            window.swaggerUi.headerView.trigger(
 +                    'update-swagger-ui', 
 +                    {url: $(event.target).attr('href')}

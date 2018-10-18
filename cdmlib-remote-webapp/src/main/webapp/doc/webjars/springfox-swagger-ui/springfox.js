@@ -128,7 +128,9 @@ $(function() {
           $menulist.append(option);
       });
       $('#select_baseUrl a').click(function(event) {
-            event.preventDefault()
+            event.preventDefault();
+            $('#select_baseUrl li.active').removeClass('active');
+            $(this).parent().addClass('active');
             window.swaggerUi.headerView.trigger(
                     'update-swagger-ui', 
                     {url: $(event.target).attr('href')}

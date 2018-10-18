@@ -33,13 +33,12 @@ cp ./webjars/springfox-swagger-ui/springfox-orig.js
 
 Now **MANUALLY** apply the chnages recorded in the diffs `index.html.diff` and  `springfox.js.diff`. Patching the files with the diff might not work since the diffs have been made from the last version.
 
-Once you are ready and the swagger UI is is working properly with the updated version you need to create the diffs for the next update to come:
-
+Once you are ready and the swagger UI is is working properly with the updated version you need to create the unified diffs for the next update to come:
 
 ~~~
-diff index-orig.html index.html > index.html.diff
+diff -u index-orig.html index.html > index.html.diff
 cd ./webjars/springfox-swagger-ui/
-diff springfox-last.js springfox.js > springfox.js.diff
+diff -u springfox-last.js springfox.js > springfox.js.diff
 ~~~
 
 **Congratulations, your are done and you can commit your work.**

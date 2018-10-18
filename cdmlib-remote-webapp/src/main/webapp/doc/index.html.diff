@@ -1,4 +1,4 @@
---- swagger-ui.html	2016-10-27 09:08:52.000000000 +0200
+--- /home/andreas/spring-fox/2.6.1/META-INF/resources/swagger-ui.html	2016-10-27 09:08:52.000000000 +0200
 +++ index.html	2018-10-18 18:58:35.504819565 +0200
 @@ -3,11 +3,13 @@
  <head>
