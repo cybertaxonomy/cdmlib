@@ -57,6 +57,7 @@ public enum PreferencePredicate  implements IEnumTerm<PreferencePredicate>{
     ShowSymbol2(UUID.fromString("6043723f-3141-4350-b3b8-4b6fa02eb519"), "Distribution Editor: Show Symbol2 for Areas", "distribution.editor.areas.showSymbol2"),
     //common name area vocabularies
     CommonNameAreaVocabularies(UUID.fromString("59d68062-b4ff-4c3a-b29d-66bf850c1d82"), "Common Names: Available Vocabularies for Areas of Common Names", "commonname.area.voc"),
+    UseOnlyReferencesWithCommonNameMarker(UUID.fromString("41402495-96a8-47be-9129-cf9b2a4bc189"), "Common Names: Use only References with Common Name Marker", "commonname.reference.useMarked"),
 
     //name details view
     SimpleDetailsViewActivated(UUID.fromString("78666fde-9ee5-4c09-923b-be98604aace6"), "Name Details: Activated", "editor.nameDetails.activated"),
