@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -29,6 +30,7 @@ import eu.etaxonomy.cdm.api.service.idminter.RegistrationIdentifierMinter;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.api.service.taxonGraph.ITaxonGraphService;
 import eu.etaxonomy.cdm.api.utility.UserHelper;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.name.Registration;
@@ -50,7 +52,8 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  */
 @Service
 @Transactional(readOnly = true)
-public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration, IRegistrationDao> implements IRegistrationService {
+public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration, IRegistrationDao>
+    implements IRegistrationService {
 
     /**
      * {@inheritDoc}
@@ -67,9 +70,11 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
     @Autowired
     private UserHelper userHelper;
 
-
     @Autowired
     private INameService nameService;
+
+    @Autowired
+    private ITaxonGraphService taxonGraphService;
 
 
 
@@ -165,6 +170,55 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
         }
         if(typeDesignationStatusUuids != null){
             restrictions.add(new Restriction<>("typeDesignations.typeStatus.uuid", null, typeDesignationStatusUuids.toArray(new UUID[typeDesignationStatusUuids.size()])));
+        }
+
+        long numberOfResults = dao.count(Registration.class, restrictions);
+
+        List<Registration> results = new ArrayList<>();
+        if(pageIndex == null){
+            pageIndex = 0;
+        }
+        Integer [] limitStart = AbstractPagerImpl.limitStartforRange(numberOfResults, pageIndex, pageSize);
+        if(limitStart != null) {
+            results = dao.list(Registration.class, restrictions, limitStart[0], limitStart[1], orderHints, propertyPaths);
+        }
+
+        return new DefaultPagerImpl<>(pageIndex, numberOfResults, pageSize, results);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Pager<Registration> pageTaxomicInclusion(UUID submitterUuid, Collection<RegistrationStatus> includedStatus,
+            String taxonNameFilterPattern, MatchMode matchMode,
+            Integer pageSize, Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths) {
+
+        List<TaxonName> includedNames = taxonGraphService.listIncludedNames(taxonNameFilterPattern, matchMode);
+        Set<UUID> includedNamesUuids = includedNames.stream().map(TaxonName::getUuid).collect(Collectors.toSet());
+
+        return page(submitterUuid, includedStatus, includedNamesUuids, pageSize, pageIndex, orderHints, propertyPaths);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Pager<Registration> page(UUID submitterUuid, Collection<RegistrationStatus> includedStatus,
+            Collection<UUID> taxonNameUUIDs,
+            Integer pageSize, Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths) {
+
+        List<Restriction<? extends Object>> restrictions = new ArrayList<>();
+
+        if( !userHelper.userIsAutheticated() || userHelper.userIsAnnonymous() ) {
+            includedStatus = Arrays.asList(RegistrationStatus.PUBLISHED);
+        }
+
+        if(submitterUuid != null){
+            restrictions.add(new Restriction<>("submitter.uuid", null, submitterUuid));
+        }
+        if(includedStatus != null && !includedStatus.isEmpty()){
+            restrictions.add(new Restriction<>("status", null, includedStatus.toArray(new RegistrationStatus[includedStatus.size()])));
+        }
+
+        if(taxonNameUUIDs != null){
+            restrictions.add(new Restriction<>("name.uuid", null , taxonNameUUIDs.toArray(new UUID[taxonNameUUIDs.size()])));
         }
 
         long numberOfResults = dao.count(Registration.class, restrictions);

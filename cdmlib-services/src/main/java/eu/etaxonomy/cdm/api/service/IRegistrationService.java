@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -133,6 +134,14 @@ public interface IRegistrationService extends IAnnotatableService<Registration> 
     Pager<Registration> page(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, String identifierFilterPattern,
             String taxonNameFilterPattern, Collection<UUID> typeDesignationStatusUuids, Integer pageSize,
             Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths);
+
+    public Pager<Registration> page(UUID submitterUuid, Collection<RegistrationStatus> includedStatus,
+            Collection<UUID> taxonNameUUIDs,
+            Integer pageSize, Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths);
+
+    public Pager<Registration> pageTaxomicInclusion(UUID submitterUuid, Collection<RegistrationStatus> includedStatus,
+            String taxonNameFilterPattern, MatchMode matchMode,
+            Integer pageSize, Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths);
 
     // ============= functionality to be moved into a "RegistrationManagerBean" ==================
 

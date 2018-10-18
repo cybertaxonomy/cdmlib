@@ -206,13 +206,17 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
     abstract public Session getSession();
 
     public Taxon assureSingleTaxon(TaxonName taxonName) throws TaxonGraphException {
+        return assureSingleTaxon(taxonName, true);
+    }
+
+    public Taxon assureSingleTaxon(TaxonName taxonName, boolean createMissing) throws TaxonGraphException {
 
         UUID secRefUuid = getSecReferenceUUID();
         Session session = getSession();
         TaxonName taxonNamePersisted = session.load(TaxonName.class, taxonName.getId());
 
         // filter by secRefUuid
-        Taxon taxon;
+        Taxon taxon = null;
         Set<Taxon> taxa = new HashSet<>();
         for(Taxon t : taxonName.getTaxa()){
             if(t.getSec().getUuid().equals(secRefUuid)){
@@ -221,19 +225,25 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
         }
 
         if(taxa.size() == 0){
-            if(taxonNamePersisted != null){
-                Reference secRef = secReference();
-                taxon = Taxon.NewInstance(taxonNamePersisted, secRef);
-                session.saveOrUpdate(taxon);
+            if(createMissing){
+                if(taxonNamePersisted != null){
+                    Reference secRef = secReference();
+                    taxon = Taxon.NewInstance(taxonNamePersisted, secRef);
+                    session.saveOrUpdate(taxon);
+                } else {
+                    throw new TaxonGraphException("Can't create taxon for deleted name: " + taxonName);
+                }
             } else {
-                throw new TaxonGraphException("Can't create taxon for deleted name: " + taxonName);
+                if(logger.isDebugEnabled()){
+                    logger.debug("No taxon found for " + taxonName);
+                }
             }
         } else if(taxa.size() == 1){
             taxon = taxa.iterator().next();
         } else {
             throw new TaxonGraphException("A name to be used in a taxon graph must only have one taxon with the default sec reference [secRef uuid: "+ secRefUuid.toString() +"]");
         }
-        return session.load(Taxon.class, taxon.getId());
+        return taxon != null ? session.load(Taxon.class, taxon.getId()) : null;
     }
 
     protected Reference conceptReference(Reference nomenclaturalReference) {

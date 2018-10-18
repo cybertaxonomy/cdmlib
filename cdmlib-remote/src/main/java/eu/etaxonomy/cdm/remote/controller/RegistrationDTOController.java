@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.remote.controller;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,6 +36,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.registration.IRegistrationWorkingSetService;
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
@@ -57,6 +59,11 @@ import io.swagger.annotations.ApiOperation;
 @Api("registration")
 public class RegistrationDTOController extends AbstractController<Registration, IRegistrationService>
 {
+
+
+    private static final List<OrderHint> ORDER_BY_IDENTIFIER = Arrays.asList(new OrderHint("specificIdentifier", SortOrder.ASCENDING));
+
+    private static final List<OrderHint> ORDER_BY_SUMMARY = Arrays.asList(new OrderHint("summary", SortOrder.ASCENDING));
 
     public static final Logger logger = Logger.getLogger(RegistrationDTOController.class);
 
@@ -156,7 +163,7 @@ public class RegistrationDTOController extends AbstractController<Registration, 
         }
         Pager<RegistrationDTO> pager = registrationWorkingSetService.pageDTOs(submitterUuid, statusSet,
                 identifierFilterPattern, taxonNameFilterPattern, typeDesignationStatusUuids,
-                pageSize, pageIndex, Arrays.asList(new OrderHint("specificIdentifier", SortOrder.ASCENDING)));
+                pageSize, pageIndex, ORDER_BY_IDENTIFIER);
         return pager;
     }
 
@@ -172,5 +179,26 @@ public class RegistrationDTOController extends AbstractController<Registration, 
         RegistrationWorkingSet workingset = registrationWorkingSetService.loadWorkingSetByReferenceUuid(referenceUuid, true);
 
         return workingset;
+    }
+
+
+    @RequestMapping(value="/registrationDTO/findInTaxonGraph", method = RequestMethod.GET)
+    public Pager<RegistrationDTO> doPageByTaxomicInclusion(
+            @RequestParam(value = "taxonNameFilter", required = true) String taxonNameFilterPattern,
+            @RequestParam(value = "matchMode", required = false) MatchMode matchMode,
+            @RequestParam(value = "pageNumber", required = false, defaultValue="0") Integer pageIndex,
+            @RequestParam(value = "pageSize", required = false, defaultValue="30" /*AbstractController.DEFAULT_PAGE_SIZE_VALUE*/ ) Integer pageSize,
+            HttpServletRequest request,
+            HttpServletResponse response) {
+
+        logger.info("findInTaxonGraph() " + requestPathAndQuery(request));
+
+        Collection<RegistrationStatus> includedStatus = Arrays.asList(RegistrationStatus.PUBLISHED);
+
+        Pager<RegistrationDTO> regPager = registrationWorkingSetService.findInTaxonGraph(null, includedStatus,
+                taxonNameFilterPattern, matchMode,
+                pageSize, pageIndex, ORDER_BY_IDENTIFIER);
+
+        return regPager;
     }
 }

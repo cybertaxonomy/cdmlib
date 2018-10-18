@@ -183,5 +183,4 @@ public class TaxonGraphDaoHibernateImpl extends AbstractHibernateTaxonGraphProce
         return taxonDao.getSession();
     }
 
-
 }

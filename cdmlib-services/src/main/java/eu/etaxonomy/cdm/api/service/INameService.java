@@ -132,7 +132,7 @@ public interface INameService
 	 * using the given match mode and initialization strategy
 	 *
 	 * @param name
-	 * @param matchMode
+	 * @param matchMode must not be <code>NULL</code>
 	 * @param propertyPaths
 	 * @return
 	 */

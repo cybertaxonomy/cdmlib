@@ -11,8 +11,10 @@ package eu.etaxonomy.cdm.api.service.taxonGraph;
 import java.util.List;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.persistence.dao.taxonGraph.TaxonGraphException;
 import eu.etaxonomy.cdm.persistence.dto.TaxonGraphEdgeDTO;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
  * @author a.kohlbecker
@@ -21,6 +23,8 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonGraphEdgeDTO;
  */
 public interface ITaxonGraphService {
 
-    List<TaxonGraphEdgeDTO> edges(UUID fromtaxonUuid, UUID toTaxonUuid, boolean includeUnpublished) throws TaxonGraphException;
+    public List<TaxonGraphEdgeDTO> edges(UUID fromtaxonUuid, UUID toTaxonUuid, boolean includeUnpublished) throws TaxonGraphException;
+
+    public List<TaxonName> listIncludedNames(String queryString, MatchMode matchMode);
 
 }

@@ -44,6 +44,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 
@@ -254,6 +255,19 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
             }
             return dtoPager;
 
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Pager<RegistrationDTO> findInTaxonGraph(UUID submitterUuid, Collection<RegistrationStatus> includedStatus,
+            String taxonNameFilterPattern, MatchMode matchMode,
+            Integer pageSize, Integer pageIndex, List<OrderHint> orderHints) {
+
+        Pager<Registration> regPager = repo.getRegistrationService().pageTaxomicInclusion(null, includedStatus,
+            taxonNameFilterPattern, matchMode,
+            pageSize, pageIndex, orderHints, REGISTRATION_DTO_INIT_STRATEGY);
+
+        return convertToDTOPager(regPager);
     }
 
 

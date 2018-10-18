@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.dto.TaxonGraphEdgeDTO;
 
@@ -32,7 +33,7 @@ public interface ITaxonGraphDao {
     * @param includeUnpublished
     * @return
     */
-   List<TaxonGraphEdgeDTO> listTaxonGraphEdgeDTOs(UUID fromTaxonUuid, UUID toTaxonUuid, TaxonRelationshipType type,
+    public List<TaxonGraphEdgeDTO> listTaxonGraphEdgeDTOs(UUID fromTaxonUuid, UUID toTaxonUuid, TaxonRelationshipType type,
            boolean includeUnpublished, Integer pageSize, Integer pageIndex);
 
    /**
@@ -44,11 +45,15 @@ public interface ITaxonGraphDao {
     * @param includeUnpublished
     * @return
     */
-   long countTaxonGraphEdgeDTOs(UUID fromTaxonUuid, UUID toTaxonUuid, TaxonRelationshipType type,
+    public long countTaxonGraphEdgeDTOs(UUID fromTaxonUuid, UUID toTaxonUuid, TaxonRelationshipType type,
            boolean includeUnpublished);
 
-    List<TaxonGraphEdgeDTO> edges(UUID fromtaxonUuid, UUID toTaxonUuid, boolean includeUnpublished) throws TaxonGraphException;
+    public List<TaxonGraphEdgeDTO> edges(UUID fromtaxonUuid, UUID toTaxonUuid, boolean includeUnpublished) throws TaxonGraphException;
 
-    List<TaxonGraphEdgeDTO> edges(TaxonName fromName, TaxonName toName, boolean includeUnpublished) throws TaxonGraphException;
+    public List<TaxonGraphEdgeDTO> edges(TaxonName fromName, TaxonName toName, boolean includeUnpublished) throws TaxonGraphException;
+
+    public Taxon assureSingleTaxon(TaxonName taxonName) throws TaxonGraphException;
+
+    public Taxon assureSingleTaxon(TaxonName taxonName, boolean createMissing) throws TaxonGraphException;
 
 }
