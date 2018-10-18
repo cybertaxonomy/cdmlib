@@ -87,6 +87,15 @@ public final class CdmPreference implements Serializable {
         return new CdmPreference(PreferenceSubject.NewVaadinInstance(), predicate, value);
     }
 
+    /**
+     * @param predicate
+     * @param value
+     * @return
+     */
+    public static CdmPreference NewTaxEditorInstance(PreferencePredicate predicate, String value) {
+        return new CdmPreference(PreferenceSubject.NewTaxEditorInstance(), predicate, value);
+    }
+
     public static PrefKey NewKey(PreferenceSubject subject, PreferencePredicate predicate){
       return new PrefKey(subject, predicate);
     }
