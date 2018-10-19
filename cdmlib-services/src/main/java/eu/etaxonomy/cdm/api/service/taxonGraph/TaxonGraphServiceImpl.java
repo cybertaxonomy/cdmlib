@@ -76,11 +76,13 @@ public class TaxonGraphServiceImpl implements ITaxonGraphService {
             }
             try {
                 Taxon graphTaxon = taxonGraphDao.assureSingleTaxon(name, false);
-                IncludedTaxaDTO includedTaxaDTO = taxonService.listIncludedTaxa(graphTaxon.getUuid(), configuration);
-                List<UUID> includedTaxaUUIDs = includedTaxaDTO.getIncludedTaxa().stream().map(IncludedTaxon::getTaxonUuid).collect(Collectors.toList());
-                List<TaxonBase> includedTaxa = taxonService.load(includedTaxaUUIDs, null);
-                List<TaxonName> iclNames = includedTaxa.stream().map(TaxonBase::getName).collect(Collectors.toList());
-                includedNames.addAll(iclNames);
+                if(graphTaxon != null){
+                    IncludedTaxaDTO includedTaxaDTO = taxonService.listIncludedTaxa(graphTaxon.getUuid(), configuration);
+                    List<UUID> includedTaxaUUIDs = includedTaxaDTO.getIncludedTaxa().stream().map(IncludedTaxon::getTaxonUuid).collect(Collectors.toList());
+                    List<TaxonBase> includedTaxa = taxonService.load(includedTaxaUUIDs, null);
+                    List<TaxonName> iclNames = includedTaxa.stream().map(TaxonBase::getName).collect(Collectors.toList());
+                    includedNames.addAll(iclNames);
+                }
 
             } catch(TaxonGraphException e){
                 logger.error(e.getMessage());
