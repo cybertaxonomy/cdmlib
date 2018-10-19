@@ -104,7 +104,7 @@ public class StaticSwaggerApiDoc {
         if(groupConfig == null) {
             HttpStatusMessage.create("Unknown swagger group name.", 400).send(response);
         }
-        InputStream staticDocStream = getClass().getClassLoader().getResourceAsStream(SWAGGER_STATIC + "/api-docs/" + groupConfig.name());
+        InputStream staticDocStream = getClass().getClassLoader().getResourceAsStream(SWAGGER_STATIC + "/api-docs/" + groupConfig.name() + JSON);
         if(staticDocStream == null) {
             HttpStatusMessage.create("Static swagger api doc file for group '" + group + "' not found.", 500).send(response);
         } else {
