@@ -195,7 +195,11 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
         List<TaxonName> includedNames = taxonGraphService.listIncludedNames(taxonNameFilterPattern, matchMode);
         Set<UUID> includedNamesUuids = includedNames.stream().map(TaxonName::getUuid).collect(Collectors.toSet());
 
-        return page(submitterUuid, includedStatus, includedNamesUuids, pageSize, pageIndex, orderHints, propertyPaths);
+        if(includedNames.size() > 0){
+            return page(submitterUuid, includedStatus, includedNamesUuids, pageSize, pageIndex, orderHints, propertyPaths);
+        } else {
+            return new DefaultPagerImpl<>(pageIndex, 0l, pageSize, new ArrayList<Registration>());
+        }
     }
 
     @Override
