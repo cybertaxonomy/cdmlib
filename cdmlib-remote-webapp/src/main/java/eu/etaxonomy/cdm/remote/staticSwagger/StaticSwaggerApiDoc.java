@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -41,6 +42,7 @@ import eu.etaxonomy.cdm.remote.controller.HttpStatusMessage;
 public class StaticSwaggerApiDoc {
 
     public static final String SWAGGER_STATIC = "swagger-static";
+    public static final String JSON = ".json";
     public static final String HOST = "{HOST}";
     public static final String HOST_REGEX = "\\{HOST\\}";
     public static final String BASE_PATH = "{BASE_PATH}";
@@ -60,10 +62,28 @@ public class StaticSwaggerApiDoc {
              HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
-
-        InputStream staticDocStream = getClass().getClassLoader().getResourceAsStream(SWAGGER_STATIC + "/swagger-resources");
+        String resourceFile = SWAGGER_STATIC + "/swagger-resources" + JSON;
+        InputStream staticDocStream = getClass().getClassLoader().getResourceAsStream(SWAGGER_STATIC + "/swagger-resources" + JSON);
         if(staticDocStream == null) {
-            HttpStatusMessage.create("Static swagger-resources not found.", 500).send(response);
+            HttpStatusMessage.create("Static swagger recource file not found: " + resourceFile, 500).send(response);
+        } else {
+            response.addHeader("Content-Type", "application/json;charset=utf-8");
+            IOUtils.copy(staticDocStream,  response.getOutputStream());
+            staticDocStream.close();
+        }
+    }
+
+    @RequestMapping(value = "swagger-resources/configuration/{filename}", method = RequestMethod.GET)
+    public void swaggerResourcesConfiguration(
+            @PathVariable("filename") String filename,
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+
+
+        String resourceFile = SWAGGER_STATIC + "/swagger-resources/configuration/" + filename + JSON;
+        InputStream staticDocStream = getClass().getClassLoader().getResourceAsStream(resourceFile);
+        if(staticDocStream == null) {
+            HttpStatusMessage.create("Static swagger recource file not found: " + resourceFile, 500).send(response);
         } else {
             response.addHeader("Content-Type", "application/json;charset=utf-8");
             IOUtils.copy(staticDocStream,  response.getOutputStream());
@@ -84,7 +104,7 @@ public class StaticSwaggerApiDoc {
         if(groupConfig == null) {
             HttpStatusMessage.create("Unknown swagger group name.", 400).send(response);
         }
-        InputStream staticDocStream = getClass().getClassLoader().getResourceAsStream(SWAGGER_STATIC + "/api-docs/" + groupConfig.name());
+        InputStream staticDocStream = getClass().getClassLoader().getResourceAsStream(SWAGGER_STATIC + "/api-docs/" + groupConfig.name() + JSON);
         if(staticDocStream == null) {
             HttpStatusMessage.create("Static swagger api doc file for group '" + group + "' not found.", 500).send(response);
         } else {
