@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.utility;
 
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -32,7 +33,7 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
  */
 public class TaxonNamePartsFilter extends TaxonNameParts {
 
-    private Set<UUID> exludedNamesUuids;
+    private Set<UUID> exludedNamesUuids = new HashSet<>();
 
     /**
      * @param taxonNameId
