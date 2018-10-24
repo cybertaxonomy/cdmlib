@@ -548,7 +548,7 @@ public class CdmUtils {
      * @return
      */
     public static Map<String, Field> getAllFields(Class clazz, Class highestClass, boolean includeStatic, boolean includeTransient, boolean makeAccessible, boolean includeHighestClass) {
-        Map<String, Field> result = new HashMap<String, Field>();
+        Map<String, Field> result = new HashMap<>();
         if ( highestClass.isAssignableFrom(clazz) && (clazz != highestClass || includeHighestClass)){
             //exclude static
             for (Field field: clazz.getDeclaredFields()){
