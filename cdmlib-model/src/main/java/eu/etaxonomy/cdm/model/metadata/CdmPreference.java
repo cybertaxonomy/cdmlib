@@ -118,7 +118,7 @@ public final class CdmPreference implements Serializable {
     //if false, the preference should not be overridden by local preferences,
 	//if true existing local preferences override database preferences
 	    //and the database preference only defines the default.
-    private boolean allowOverride = false;
+    private boolean allowOverride = true;
 
     @Embeddable
     public static class PrefKey implements Serializable{
