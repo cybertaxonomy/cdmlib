@@ -51,7 +51,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 @Entity
 public final class CdmPreference implements Serializable {
 
-    private static final int VALUE_LENGTH = 2047;
+    private static final int VALUE_LENGTH = 1023;
 
     private static final long serialVersionUID = 4307599154287181582L;
 
