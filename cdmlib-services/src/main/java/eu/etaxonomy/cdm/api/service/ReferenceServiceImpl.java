@@ -25,7 +25,6 @@ import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -38,8 +37,6 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<Reference,IRef
 
     static Logger logger = Logger.getLogger(ReferenceServiceImpl.class);
 
-    @Autowired
-    private ICdmGenericDao genericDao;
     /**
      * Constructor
      */
