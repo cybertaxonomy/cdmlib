@@ -2992,15 +2992,13 @@ public class TaxonServiceImpl
     }
 
     /**
-     * Computes all children and conceptually congruent and included taxa and adds them to the existingTaxa
-     * data structure.
-     * @return the set of conceptually related taxa for further use
-     */
-    /**
      * @param uncheckedTaxa
      * @param existingTaxa
      * @param config
-     * @return
+     *
+     * Computes all children and conceptually congruent and included taxa and adds them to the existingTaxa
+     * data structure.
+     * @return the set of conceptually related taxa for further use
      */
     private Set<Taxon> makeRelatedIncluded(Set<Taxon> uncheckedTaxa, IncludedTaxaDTO existingTaxa, IncludedTaxonConfiguration config) {
 
@@ -3057,10 +3055,13 @@ public class TaxonServiceImpl
                 if (config.includeDoubtful == false && fromRel.isDoubtful()){
                     continue;
                 }
-                if (fromRel.getType().equals(TaxonRelationshipType.CONGRUENT_TO()) ||
-                        !config.onlyCongruent && fromRel.getType().equals(TaxonRelationshipType.INCLUDES()) ||
-                        !config.onlyCongruent && fromRel.getType().equals(TaxonRelationshipType.CONGRUENT_OR_INCLUDES())
-                        ){
+                TaxonRelationshipType fromRelType = fromRel.getType();
+                if (fromRelType.equals(TaxonRelationshipType.CONGRUENT_TO()) ||
+                        !config.onlyCongruent && (
+                            fromRelType.equals(TaxonRelationshipType.INCLUDES()) ||
+                            fromRelType.equals(TaxonRelationshipType.CONGRUENT_OR_INCLUDES())
+                        )
+                    ){
                     result.add(fromRel.getToTaxon());
                 }
             }
@@ -3069,7 +3070,9 @@ public class TaxonServiceImpl
                 if (config.includeDoubtful == false && toRel.isDoubtful()){
                     continue;
                 }
-                if (toRel.getType().equals(TaxonRelationshipType.CONGRUENT_TO())){
+                TaxonRelationshipType fromRelType = toRel.getType();
+                if (fromRelType.equals(TaxonRelationshipType.CONGRUENT_TO()) ||
+                        !config.includeDoubtful && fromRelType.equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN())){
                     result.add(toRel.getFromTaxon());
                 }
             }

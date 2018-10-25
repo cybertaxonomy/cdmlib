@@ -146,7 +146,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
         //secMicroReference
         if (StringUtils.isNotBlank(taxonBase.getSecMicroReference())){
             tags.add(new TaggedText(TagEnum.separator, ": "));
-            tags.add(new TaggedText(TagEnum.secReference, taxonBase.getSecMicroReference()));
+            tags.add(new TaggedText(TagEnum.secMicroReference, taxonBase.getSecMicroReference()));
 
         }
         return tags;

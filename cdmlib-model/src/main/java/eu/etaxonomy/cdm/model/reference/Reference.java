@@ -298,7 +298,7 @@ public class Reference
 	private VerbatimTimePeriod datePublished = VerbatimTimePeriod.NewVerbatimInstance();
 
     //#5258
-    @XmlElement (name = "Accessed", type= String.class)
+    @XmlElement(name = "Accessed", type= String.class)
     @XmlJavaTypeAdapter(DateTimeAdapter.class)
     @Type(type="dateTimeUserType")
     @Basic(fetch = FetchType.LAZY)
@@ -326,6 +326,7 @@ public class Reference
 	//nomenclatural reference in a name this flag should be automatically set
 	@XmlElement(name = "IsNomenclaturallyRelevant")
 	@Merge(MergeMode.OR)
+	@Match(MatchMode.IGNORE)
 	private boolean nomenclaturallyRelevant;
 
 	@XmlElement(name = "Authorship")
@@ -1182,9 +1183,10 @@ public class Reference
 	@Override
 	public String toString() {
 		if (type != null){
-			String result = "Reference [type=" + type + ", id= " + this.getId() + ", uuid=" + this.uuid ;
+			String result = "Reference [type=" + type  ;
 			result += title == null ? "" : ", title=" + title;
 			result += abbrevTitle == null ? "" : ", abbrevTitle=" + abbrevTitle;
+			result += ", id= " + this.getId() + ", uuid=" + this.uuid;
 			result += "]";
 			return result;
 		}else{

@@ -435,7 +435,7 @@ public class ClassificationDaoHibernateImplTest extends CdmTransactionalIntegrat
 	        "LANGUAGESTRING",
 	        "HIBERNATE_SEQUENCES" // IMPORTANT!!!
 	        },
-	        fileNameAppendix );
+	        fileNameAppendix, true );
   }
 
 }

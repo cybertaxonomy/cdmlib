@@ -62,12 +62,12 @@ public enum RegistrationStatus implements IEnumTerm<RegistrationStatus>{
     ;
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(RegistrationStatus.class);
+    private final Logger logger = Logger.getLogger(RegistrationStatus.class);
 
 
     private RegistrationStatus(UUID uuid, String defaultString, String key){
         this(uuid, defaultString, key, null);
-        System.out.println("SpecimenOrObservationType hierarchie not yet fully implemented");
+        logger.debug("SpecimenOrObservationType hierarchie not yet fully implemented");
     }
 
     @SuppressWarnings("unchecked")

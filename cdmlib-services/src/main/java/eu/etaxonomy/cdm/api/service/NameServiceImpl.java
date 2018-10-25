@@ -347,15 +347,16 @@ public class NameServiceImpl
     @Override
     public Pager<TaxonNameParts> findTaxonNameParts(Optional<String> genusOrUninomial,
             Optional<String> infraGenericEpithet, Optional<String> specificEpithet,
-            Optional<String> infraSpecificEpithet, Rank rank, Integer pageSize, Integer pageIndex, List<OrderHint> orderHints) {
+            Optional<String> infraSpecificEpithet, Rank rank, Set<UUID> excludedNamesUuids,
+            Integer pageSize, Integer pageIndex, List<OrderHint> orderHints) {
 
 
-        long count = dao.countTaxonNameParts(genusOrUninomial, infraGenericEpithet, specificEpithet, infraGenericEpithet, rank);
+        long count = dao.countTaxonNameParts(genusOrUninomial, infraGenericEpithet, specificEpithet, infraGenericEpithet, rank, excludedNamesUuids);
 
         List<TaxonNameParts> results;
         if(AbstractPagerImpl.hasResultsInRange(count, pageIndex, pageSize)){
             results = dao.findTaxonNameParts(genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet,
-                    rank,
+                    rank, excludedNamesUuids,
                     pageSize, pageIndex, orderHints);
         } else {
             results = new ArrayList<>();
@@ -377,6 +378,7 @@ public class NameServiceImpl
                 filter.specificEpithet(namePartQueryString),
                 filter.infraspecificEpithet(namePartQueryString),
                 filter.getRank(),
+                filter.getExludedNamesUuids(),
                 pageSize, pageIndex, orderHints);
     }
 

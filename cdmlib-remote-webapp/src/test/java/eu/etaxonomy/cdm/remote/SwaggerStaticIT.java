@@ -19,6 +19,8 @@ import eu.etaxonomy.cdm.remote.config.SwaggerGroupsConfig;
 import eu.etaxonomy.cdm.remote.staticSwagger.StaticSwaggerApiDoc;
 
 /**
+ * The resources produced by this tests are delivered by the {@link StaticSwaggerApiDoc} controller.
+ *
  * @author a.kohlbecker
  * @since Mar 3, 2014
  *
@@ -28,27 +30,36 @@ public class SwaggerStaticIT extends WebServiceTestBase {
 
     public static final Logger logger = Logger.getLogger(SwaggerStaticIT.class);
 
+    private String[] swaggerResourcesPaths = new String[]{"", "/configuration/ui", "/configuration/security" };
+
 
     @Test
-    public void fetchSwaggerResources(){
+    public void fetchSwaggerResources() {
 
         String swagger2Endpoint= "/swagger-resources";
 
         String staticResourcesFolder = "./target/classes/"+ StaticSwaggerApiDoc.SWAGGER_STATIC + "/swagger-resources";
 
+        logger.info("clearing old content ...");
+        FileUtils.deleteQuietly(new File(staticResourcesFolder));
+        FileUtils.deleteQuietly(new File(staticResourcesFolder + StaticSwaggerApiDoc.JSON));
+
         staticResourcesFolder.replace("/", File.separator);
 
-        logger.info("fetching swagger-resources");
-        String response =  httpGetJson(swagger2Endpoint, null);
-        try {
-            FileUtils.write(new File(staticResourcesFolder), response);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        for(String path : swaggerResourcesPaths){
+            String resourcePath = swagger2Endpoint + path;
+            logger.info("fetching swagger-resources file from " + resourcePath);
+            String response =  httpGetJson(resourcePath, null);
+            try {
+                File targetFile = new File(staticResourcesFolder + path + StaticSwaggerApiDoc.JSON);
+                new File(targetFile.getParent()).mkdirs();
+                FileUtils.write(targetFile, response);
+                logger.info(response.length() + " characters of swagger-resources written to " + targetFile.getAbsolutePath());
+            } catch (IOException e) {
+                logger.error(e);
+            }
         }
 
-//        File pwd = new File("pom.xml");
-//        System.err.println(pwd.getAbsolutePath());
     }
 
 
@@ -69,7 +80,7 @@ public class SwaggerStaticIT extends WebServiceTestBase {
             response = response.replaceAll(",\"host\":\"([^\"]*)", ",\"host\":\"" + StaticSwaggerApiDoc.HOST);
             response = response.replaceAll(",\"basePath\":\"([^\"]*)", ",\"basePath\":\"" + StaticSwaggerApiDoc.BASE_PATH);
             try {
-                FileUtils.write(new File(staticApiDocFolder + group.name()), response);
+                FileUtils.write(new File(staticApiDocFolder + group.name() + StaticSwaggerApiDoc.JSON), response);
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

@@ -223,6 +223,10 @@ public class RegistrationDTO{
         return reg.getRegistrationDate();
     }
 
+    public String getInstitutionTitleCache(){
+        return reg.getInstitution() != null ? reg.getInstitution().getName() : null;
+    }
+
     /**
      * @return the registrationDate
      */

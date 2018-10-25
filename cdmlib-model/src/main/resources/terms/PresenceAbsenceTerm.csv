@@ -21,6 +21,8 @@
 "73f75493-1185-4a3e-af1e-9a1f2e8dadb7",,"casual: presence questionable","introduced: adventive (casual): presence questionable","iaq","?a","fded61","0"
 "83eb0aa0-1a45-495a-a3ca-bf6958b74366",,"introduced: presence questionable","introduced: presence questionable","iq","?","bc80bd","0"
 "4f31bfc8-3058-4d83-aea5-3a1fe9773f9f",,"cultivated, presence questionable","cultivated, presence questionable","cq","?c","93de69","0"
+"2fda5393-7423-4076-814c-1fa7678d7d33",,"not endemic","present but not endemic for the relevant area","ne","","375d6f","0"
+"094aa2e4-8048-4086-aca1-2d671a05a86e",,"unknown endemism","present but with unknown endemism for the relevant area","ue","","a75dff","0"
 "59709861-f7d9-41f9-bb21-92559cedd598",,"absent","absent","a","–","ffffff","1"
 "5c397f7b-59ef-4c11-a33c-45691ceda91b",,"native: formerly native","native: formerly native","ne","ne","ccb462","1"
 "679b215d-c231-4ee2-ae12-3ffc3dd528ad",,"endemic: reported in error","endemic: reported in error","-e","–●","fef1ff","1"

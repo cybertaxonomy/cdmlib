@@ -29,7 +29,6 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.RankClass;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
-import eu.etaxonomy.cdm.model.reference.ISection;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -102,7 +101,6 @@ public class BerlinModelTransformer {
 	public static UUID uuidBalticStates = UUID.fromString("bf9d64f6-3183-4fa5-8e90-73090e7a2282");
 	public static final UUID uuidTurkey = UUID.fromString("d344ee2c-14c8-438d-b03d-11538edb1268");
 	public static final UUID uuidCaucasia = UUID.fromString("ebfd3fd1-3859-4e5e-95c7-f66010599d7e");
-
 
 
 	//E+M areas
@@ -258,9 +256,11 @@ public class BerlinModelTransformer {
 	//Salvador
 	public static UUID uuidSalvadorAreas = UUID.fromString("8ef90ca3-77d7-4adc-8bbc-1eb354e61b65");
 
-	//language areas
-//	public static final UUID uuidUkraineAndCrimea = UUID.fromString("99d4d1c2-09f6-416e-86a3-bdde5cae52af");
-	public static final UUID uuidAzerbaijanNakhichevan = UUID.fromString("232fbef0-9f4a-4cab-8ac1-e14c717e9de6");
+	//E+M PresenceAbsenceStatus
+	public static UUID uuidStatusUndefined = UUID.fromString("bdb46487-01f8-451d-bf7b-d3e0fd44938e");
+
+	//Annotation Type
+	public static final UUID uuidAnnoTypeDistributionStatus = UUID.fromString("b7c4db51-7089-440b-92e2-4006611238f0");
 
 	//Marker Types
 	public static final UUID uuidVocEMMarkerType = UUID.fromString("7c3d5674-87bf-462a-9cd9-d4a51d2f2a77");
@@ -280,6 +280,7 @@ public class BerlinModelTransformer {
 	public static final UUID uuidIsoCode = UUID.fromString("048b8153-e3ee-451c-a72c-f1c8bc291c3e");
 	public static final UUID uuidTdwgAreaCode = UUID.fromString("73ad0288-b71b-4a14-9c2e-7f81f1e64a36");
 	public static final UUID uuidMclCode = UUID.fromString("aa27083a-6a96-42aa-a2f8-5541cf057067");
+	public static final UUID PARENTAL_SPECIES_EXT_UUID = UUID.fromString("fee3138a-0084-4571-8e32-56bd14a4b0a8");
 
 	//Area Level
 	public static final UUID uuidEuroMedAreaLevelTop = UUID.fromString("190d5758-4b96-4016-9412-6dc9c36ef5fd");
@@ -763,9 +764,9 @@ public class BerlinModelTransformer {
 			case 340: return PresenceAbsenceTerm.NATIVE_DOUBTFULLY_NATIVE();
 			case 350: return PresenceAbsenceTerm.NATIVE();
 			case 999: {
-					logger.info("endemic for EM can not be transformed in legal status. Used 'PRESENT' instead");
+//					logger.info("endemic for EM can not be transformed in legal status. Used 'PRESENT' instead");
 					//TODO preliminary
-					return PresenceAbsenceTerm.PRESENT();
+					return PresenceAbsenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA();
 				}
 			default: {
 				throw new UnknownCdmTypeException("Unknown occurrence status  (id=" + Integer.valueOf(occStatusId).toString() + ")");
@@ -818,11 +819,6 @@ public class BerlinModelTransformer {
         }else if (key.equalsIgnoreCase("1800-Notas de muestras*")){ return uuidFeatureSpecimenNotes;
         }else if (key.equalsIgnoreCase("1900-Notas editoriales*")){ return uuidFeatureEditorialNotes;
         }else if (key.equalsIgnoreCase("2000-Habitat en El Salvador*")){ return uuidFeatureHabitatSalvador;
-
-
-
-
-
 
 
 		}else{
@@ -1040,12 +1036,10 @@ public class BerlinModelTransformer {
 		if (ref == null){
 			return null;
 		}
-		else if (ref.getType().equals(ReferenceType.Article)){		return REF_ARTICLE;}
-		else if (ref instanceof ISection){	return REF_PART_OF_OTHER_TITLE;}
-		else if (ref.getType().equals(ReferenceType.Book)){	return REF_BOOK;}
-		else if (ref.getType().equals(ReferenceType.Database)){	return REF_DATABASE;}
-//		else if (ref instanceof SectionBas){	return REF_INFORMAL;}
-//		else if (ref instanceof SectionBas){	return REF_NOT_APPLICABLE;}
+		else if (ref.getType().equals(ReferenceType.Article)){ return REF_ARTICLE;}
+		else if (ref.getType().equals(ReferenceType.Section)){ return REF_PART_OF_OTHER_TITLE;}
+		else if (ref.getType().equals(ReferenceType.Book)){	   return REF_BOOK;}
+		else if (ref.getType().equals(ReferenceType.Database)){return REF_DATABASE;}
 		else if (ref.getType().equals(ReferenceType.WebPage)){	return REF_WEBSITE;}
 		else if (ref.getType().equals(ReferenceType.CdDvd)){	return REF_CD;}
 		else if (ref.getType().equals(ReferenceType.Journal)){	return REF_JOURNAL;}

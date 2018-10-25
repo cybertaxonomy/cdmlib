@@ -82,17 +82,25 @@ public interface IPreferenceService {
 
      /**
       * Retrieve the database wide preference for the given predicate.
-      * @param key
+      * @param predicate
       * @return
       */
      public CdmPreference findDatabase(PreferencePredicate predicate);
 
      /**
       * Retrieve the vaadin wide preference for the given predicate.
-      * @param key
+      * @param predicate
       * @return
       */
      public CdmPreference findVaadin(PreferencePredicate predicate);
+
+
+     /**
+      * Retrieve the TaxEditor wide preference for the given predicate.
+      * @param predicate
+      * @return
+      */
+     public CdmPreference findTaxEditor(PreferencePredicate predicate);
 
      /**
       * Returns the best matching preference that matches the given
@@ -130,6 +138,7 @@ public interface IPreferenceService {
       * @param preference
       */
      public void set(CdmPreference preference);
+
 
 
      //we need to decide if we want to keep this method

@@ -24,7 +24,6 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @since Dec 13, 2017
  *
  */
-@DataSet("RegistrationIdentifierMinterTest.xml")
 public class RegistrationIdentifierMinterTest extends CdmTransactionalIntegrationTest {
 
     @SpringBeanByType

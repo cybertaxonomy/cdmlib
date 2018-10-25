@@ -14,6 +14,7 @@ import java.util.UUID;
 
 import org.springframework.security.core.Authentication;
 
+import eu.etaxonomy.cdm.model.ICdmEntityUuidCacher;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
@@ -28,6 +29,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
  */
 public interface UserHelper {
 
+    @Deprecated
     boolean userHasPermission(Class<? extends CdmBase> cdmType, Integer entitiyId, Object ... args);
 
     boolean userHasPermission(Class<? extends CdmBase> cdmType, UUID entitiyUUID, Object ... args);
@@ -143,6 +145,8 @@ public interface UserHelper {
      * @return
      */
     public Authentication getAuthentication();
+
+    public CdmUserHelper withCache(ICdmEntityUuidCacher iCdmCacher);
 
 
 }

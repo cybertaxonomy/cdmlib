@@ -49,13 +49,13 @@ public class TaxonDescriptionDefaultCacheStrategyTest {
 		sec.setTitleCache("My sec", true);
 		Taxon taxon = Taxon.NewInstance(botName, sec);
 		TaxonDescription taxonDescription = TaxonDescription.NewInstance(taxon);
-		Assert.assertEquals("Wrong title cache for description", "Factual data for Genus species", taxonDescription.getTitleCache());
+		Assert.assertEquals("Wrong title cache for description", "Factual data set for Genus species", taxonDescription.generateTitle());
 		taxonDescription.setImageGallery(true);
-		Assert.assertEquals("Wrong title cache for description", "Image gallery for Genus species", taxonDescription.getTitleCache());
+		Assert.assertEquals("Wrong title cache for description", "Image gallery for Genus species", taxonDescription.generateTitle());
 		taxonDescription = TaxonDescription.NewInstance();
-		Assert.assertEquals("Wrong title cache for description", "Factual data", taxonDescription.getTitleCache());
+		Assert.assertEquals("Wrong title cache for description", "Factual data set", taxonDescription.generateTitle());
 		taxonDescription.setImageGallery(true);
-		Assert.assertEquals("Wrong title cache for description", "Image gallery", taxonDescription.getTitleCache());
+		Assert.assertEquals("Wrong title cache for description", "Image gallery", taxonDescription.generateTitle());
 
 	}
 

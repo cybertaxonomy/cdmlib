@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
@@ -130,7 +131,7 @@ public class ClassificationController extends AbstractIdentifiableController<Cla
         Classification classification = service.find(classificationUuid);
 
         if(classification == null) {
-            response.sendError(404 , "Classification not found using " + classificationUuid );
+            HttpStatusMessage.UUID_NOT_FOUND.send(response, "Classification not found using " + classificationUuid);
             return null;
         }
 
@@ -313,6 +314,15 @@ public class ClassificationController extends AbstractIdentifiableController<Cla
            HttpStatusMessage.UUID_NOT_FOUND.send(response);
            return null;
        }
+   }
+
+   @RequestMapping(value = { "classificationRootNode" }, method = RequestMethod.GET)
+   public ModelAndView getClassificationRootNode(@PathVariable("uuid") UUID uuid, HttpServletRequest request,
+           HttpServletResponse response) throws IOException {
+
+       ModelAndView mv = new ModelAndView();
+       mv.addObject(service.getRootNode(uuid));
+       return mv;
    }
 
 

@@ -71,7 +71,9 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
         cryptocoryneGriffithiiUuid = UUID.fromString("497a9955-5c5a-4f2b-b08c-2135d336d633");
         acherontiaUuid = UUID.fromString("c2cab2ad-3e3a-47b8-8aa8-d9e1c0857647");
         acherontiaLachesisUuid = UUID.fromString("7969821b-a2cf-4d01-95ec-6a5ed0ca3f69");
+        // Atropos Agassiz, 1846
         atroposUuid = UUID.fromString("27004fcc-14d4-47d4-a3e1-75750fdb5b79");
+
     }
 
     @Test
@@ -186,7 +188,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 
         List<TaxonNameParts> resuls = taxonNameDao.findTaxonNameParts(
                 Optional.of("Atropos"), null, null, null,
-                Rank.GENUS(),
+                Rank.GENUS(), null,
                 pageSize, pageIndex, Arrays.asList(new OrderHint("genusOrUninomial", SortOrder.ASCENDING)));
 
         assertNotNull("searchNames should return a list",resuls);
@@ -201,16 +203,26 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 
         List<TaxonNameParts> results = taxonNameDao.findTaxonNameParts(
                 Optional.of("Atro*"), null, null, null,
-                Rank.GENUS(),
+                Rank.GENUS(), null,
                 pageSize, pageIndex, Arrays.asList(new OrderHint("genusOrUninomial", SortOrder.ASCENDING)));
 
         assertNotNull(results);
         assertFalse(results.isEmpty());
         assertEquals(3, results.size());
 
+        TaxonName n_atropos_agassiz = taxonNameDao.load(atroposUuid);
         results = taxonNameDao.findTaxonNameParts(
                 Optional.of("Atro*"), null, null, null,
-                Rank.SPECIES(),
+                Rank.GENUS(), Arrays.asList(n_atropos_agassiz.getUuid()),
+                pageSize, pageIndex, Arrays.asList(new OrderHint("genusOrUninomial", SortOrder.ASCENDING)));
+
+        assertNotNull(results);
+        assertFalse(results.isEmpty());
+        assertEquals(2, results.size());
+
+        results = taxonNameDao.findTaxonNameParts(
+                Optional.of("Atro*"), null, null, null,
+                Rank.SPECIES(), null,
                 pageSize, pageIndex, Arrays.asList(new OrderHint("genusOrUninomial", SortOrder.ASCENDING)));
 
         assertNotNull(results);
@@ -226,7 +238,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
         // Manduca bergarmatipes
         List<TaxonNameParts> results = taxonNameDao.findTaxonNameParts(
                 Optional.of("Manduca"), null, Optional.of("*"), null,
-                Rank.SPECIES(),
+                Rank.SPECIES(), null,
                 pageSize, pageIndex, Arrays.asList(new OrderHint("specificEpithet", SortOrder.ASCENDING)));
 
         assertEquals(3, results.size());
@@ -236,7 +248,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 
         results = taxonNameDao.findTaxonNameParts(
                 Optional.of("Manduca"), null, Optional.of("chin*"), null,
-                Rank.SPECIES(),
+                Rank.SPECIES(), null,
                 pageSize, pageIndex, null);
 
         assertEquals(1, results.size());
@@ -252,7 +264,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
         // Cryptocoryne cordata var. zonata
         List<TaxonNameParts> results = taxonNameDao.findTaxonNameParts(
                 Optional.of("Cryptocoryne"), null, null, Optional.of("borneo*"),
-                Rank.VARIETY(),
+                Rank.VARIETY(), null,
                 pageSize, pageIndex, Arrays.asList(new OrderHint("specificEpithet", SortOrder.ASCENDING)));
 
         assertEquals(1, results.size());
@@ -260,7 +272,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
         // now also with "infraGenericEpithet is null AND specificEpithet = purpurea"
         results = taxonNameDao.findTaxonNameParts(
                 Optional.of("Cryptocoryne"), Optional.empty(), Optional.of("purpurea"), Optional.of("borneo*"),
-                Rank.VARIETY(),
+                Rank.VARIETY(), null,
                 pageSize, pageIndex, Arrays.asList(new OrderHint("specificEpithet", SortOrder.ASCENDING)));
 
         assertEquals(1, results.size());

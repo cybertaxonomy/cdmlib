@@ -690,7 +690,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         try {
             writeDbUnitDataSetFile(new String[] {
                     "SpecimenOrObservationBase",
-            }, "testAttachDnaSampleToDerivedUnit");
+            }, "testAttachDnaSampleToDerivedUnit", true);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

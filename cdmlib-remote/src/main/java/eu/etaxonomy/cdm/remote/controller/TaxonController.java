@@ -150,7 +150,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
     /**
      * Checks if a {@link TaxonBase taxonBase} is public and belongs to a {@link TaxonNode subtree}
      * as accepted taxon or synonym.
-     * If not the according {@link HttpStatusMessage http messages} are added to response.
+     * If not the according {@link HttpStatusMessage http messages} are send to response.
      * <BR>
      * Not (yet) checked is the relation to a subtree via a concept relationship.
      * @param taxonBase
@@ -159,10 +159,13 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
      * @return
      * @throws IOException
      */
-    protected <S extends TaxonBase<?>> S checkExistsSubtreeAndAccess(S taxonBase, TaxonNode subtree, boolean includeUnpublished,
+    protected <S extends TaxonBase<?>> S checkExistsSubtreeAndAccess(S taxonBase,
+            TaxonNode subtree, boolean includeUnpublished,
             HttpServletResponse response) throws IOException {
         taxonBase = checkExistsAndAccess(taxonBase, NO_UNPUBLISHED, response);
-        if (taxonBase != null){
+        if (subtree == null){
+            return taxonBase;
+        }else if(taxonBase != null){
             //TODO synonyms maybe can not be initialized
             Taxon taxon = taxonBase.isInstanceOf(Synonym.class)?
                     CdmBase.deproxy(taxonBase, Synonym.class).getAcceptedTaxon():
@@ -391,9 +394,8 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
      * @return
      * @throws IOException
      */
-
     @RequestMapping(value = { "includedTaxa" }, method = { RequestMethod.GET })
-    public ModelAndView doGetIncludedTaxa(
+    public IncludedTaxaDTO doGetIncludedTaxa(
             @PathVariable("uuid") UUID uuid,
             @RequestParam(value="classificationFilter", required=false) final List<String> classificationStringList,
             @RequestParam(value="includeDoubtful", required=false) final boolean includeDoubtful,
@@ -401,12 +403,11 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             HttpServletResponse response,
             HttpServletRequest request) throws IOException {
 
-        ModelAndView mv = new ModelAndView();
-        /**
-         * List<UUID> classificationFilter,
-         * boolean includeDoubtful,
-         * boolean onlyCongruent)
-         */
+
+        if(request != null){
+            logger.info("doGetIncludedTaxa()" + requestPathAndQuery(request));
+        }
+
         List<UUID> classificationFilter = null;
         if( classificationStringList != null ){
             classificationFilter = new ArrayList<>();
@@ -417,8 +418,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
         IncludedTaxonConfiguration configuration =
                 new IncludedTaxonConfiguration(classificationFilter, includeDoubtful, onlyCongruent);
         IncludedTaxaDTO listIncludedTaxa = service.listIncludedTaxa(uuid, configuration);
-        mv.addObject(listIncludedTaxa);
-        return mv;
+        return listIncludedTaxa;
     }
 
     // TODO ================================================================================ //

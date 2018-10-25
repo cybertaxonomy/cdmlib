@@ -12,10 +12,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -27,6 +30,7 @@ import eu.etaxonomy.cdm.api.service.idminter.RegistrationIdentifierMinter;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.api.service.taxonGraph.ITaxonGraphService;
 import eu.etaxonomy.cdm.api.utility.UserHelper;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.name.Registration;
@@ -48,7 +52,8 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  */
 @Service
 @Transactional(readOnly = true)
-public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration, IRegistrationDao> implements IRegistrationService {
+public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration, IRegistrationDao>
+    implements IRegistrationService {
 
     /**
      * {@inheritDoc}
@@ -65,9 +70,13 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
     @Autowired
     private UserHelper userHelper;
 
-
     @Autowired
     private INameService nameService;
+
+    @Autowired
+    private ITaxonGraphService taxonGraphService;
+
+
 
 
     /**
@@ -77,6 +86,10 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
     @Transactional(readOnly = true)
     public Pager<Registration> page(Optional<Reference> reference, Collection<RegistrationStatus> includedStatus,
             Integer pageSize, Integer pageIndex, List<String> propertyPaths) {
+
+        if( !userHelper.userIsAutheticated() || userHelper.userIsAnnonymous() ) {
+            includedStatus = Arrays.asList(RegistrationStatus.PUBLISHED);
+        }
 
         long numberOfResults = dao.count(reference, includedStatus);
 
@@ -173,6 +186,59 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
         return new DefaultPagerImpl<>(pageIndex, numberOfResults, pageSize, results);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Pager<Registration> pageTaxomicInclusion(UUID submitterUuid, Collection<RegistrationStatus> includedStatus,
+            String taxonNameFilterPattern, MatchMode matchMode,
+            Integer pageSize, Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths) {
+
+        List<TaxonName> includedNames = taxonGraphService.listIncludedNames(taxonNameFilterPattern, matchMode);
+        Set<UUID> includedNamesUuids = includedNames.stream().map(TaxonName::getUuid).collect(Collectors.toSet());
+
+        if(includedNames.size() > 0){
+            return page(submitterUuid, includedStatus, includedNamesUuids, pageSize, pageIndex, orderHints, propertyPaths);
+        } else {
+            return new DefaultPagerImpl<>(pageIndex, 0l, pageSize, new ArrayList<Registration>());
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Pager<Registration> page(UUID submitterUuid, Collection<RegistrationStatus> includedStatus,
+            Collection<UUID> taxonNameUUIDs,
+            Integer pageSize, Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths) {
+
+        List<Restriction<? extends Object>> restrictions = new ArrayList<>();
+
+        if( !userHelper.userIsAutheticated() || userHelper.userIsAnnonymous() ) {
+            includedStatus = Arrays.asList(RegistrationStatus.PUBLISHED);
+        }
+
+        if(submitterUuid != null){
+            restrictions.add(new Restriction<>("submitter.uuid", null, submitterUuid));
+        }
+        if(includedStatus != null && !includedStatus.isEmpty()){
+            restrictions.add(new Restriction<>("status", null, includedStatus.toArray(new RegistrationStatus[includedStatus.size()])));
+        }
+
+        if(taxonNameUUIDs != null){
+            restrictions.add(new Restriction<>("name.uuid", null , taxonNameUUIDs.toArray(new UUID[taxonNameUUIDs.size()])));
+        }
+
+        long numberOfResults = dao.count(Registration.class, restrictions);
+
+        List<Registration> results = new ArrayList<>();
+        if(pageIndex == null){
+            pageIndex = 0;
+        }
+        Integer [] limitStart = AbstractPagerImpl.limitStartforRange(numberOfResults, pageIndex, pageSize);
+        if(limitStart != null) {
+            results = dao.list(Registration.class, restrictions, limitStart[0], limitStart[1], orderHints, propertyPaths);
+        }
+
+        return new DefaultPagerImpl<>(pageIndex, numberOfResults, pageSize, results);
+    }
+
     /**
      * @param identifier
      * @param validateUniqueness
@@ -194,6 +260,50 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
 
 
         return regPager;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Registration save(Registration newInstance) {
+        return assureIsPersisted(newInstance);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UUID saveOrUpdate(Registration transientObject) {
+        transientObject = assureIsPersisted(transientObject);
+        return super.saveOrUpdate(transientObject);
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Map<UUID, Registration> save(Collection<Registration> newInstances) {
+        Map<UUID, Registration> regs = new HashMap<>();
+        for(Registration newInstance : newInstances) {
+            Registration reg = save(newInstance);
+            regs.put(reg.getUuid(), reg);
+        }
+        return regs;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Map<UUID, Registration> saveOrUpdate(Collection<Registration> transientInstances) {
+        Map<UUID, Registration> regs = new HashMap<>();
+        for(Registration transientInstance : transientInstances) {
+            UUID uuid = saveOrUpdate(transientInstance);
+            regs.put(uuid, transientInstance);
+        }
+        return regs;
     }
 
     // ============= functionality to be moved into a "RegistrationManagerBean" ==================
@@ -249,7 +359,7 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
         }
 
         prepareForSave(reg);
-        reg = save(reg);
+        reg = super.save(reg);
         userHelper.createAuthorityForCurrentUser(Registration.class, reg.getUuid(), Operation.UPDATE, RegistrationStatus.PREPARATION.name());
 
         return reg;
@@ -309,6 +419,8 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
         }
         return false;
     }
+
+
 
     // =============================================================================================
 

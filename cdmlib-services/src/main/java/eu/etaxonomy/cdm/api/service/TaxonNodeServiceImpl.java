@@ -132,6 +132,12 @@ public class TaxonNodeServiceImpl
         return childNodes;
     }
 
+    @Override
+    public List<TaxonNode> listChildrenOf(TaxonNode node, Integer pageSize, Integer pageIndex,
+            boolean recursive, boolean includeUnpublished, List<String> propertyPaths){
+        return dao.listChildrenOf(node, pageSize, pageIndex, recursive, includeUnpublished, propertyPaths);
+    }
+
     /**
      * {@inheritDoc}
      */

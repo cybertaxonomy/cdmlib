@@ -535,17 +535,11 @@ public class CdmLightClassificationExport
                         continue;
                     }else{
                         if (state.getSpecimenFromStore(indAssociation.getAssociatedSpecimenOrObservation().getId()) == null){
-                            SpecimenOrObservationBase<?> specimenBase = HibernateProxyHelper.deproxy(indAssociation.getAssociatedSpecimenOrObservation());
+                            SpecimenOrObservationBase<?> specimenBase = HibernateProxyHelper.deproxy(indAssociation.getAssociatedSpecimenOrObservation(), SpecimenOrObservationBase.class);
 
-                            if (specimenBase instanceof SpecimenOrObservationBase){
-                                SpecimenOrObservationBase derivedUnit = specimenBase;
-                                handleSpecimen(state, derivedUnit);
-                                csvLine[table.getIndex(CdmLightExportTable.SPECIMEN_FK)] = getId(state, indAssociation.getAssociatedSpecimenOrObservation());
-                            }else{
-                                //field units are not supported
-                                state.getResult().addError("The associated Specimen of taxon " + taxon.getUuid() + " is not an DerivedUnit. Could not be exported.");
+                            handleSpecimen(state, specimenBase);
+                            csvLine[table.getIndex(CdmLightExportTable.SPECIMEN_FK)] = getId(state, indAssociation.getAssociatedSpecimenOrObservation());
 
-                            }
                         }
                     }
                 } else if (element instanceof TextData){
@@ -930,7 +924,7 @@ public class CdmLightClassificationExport
 
                     TeamOrPersonBase<?> author = inReference.getAuthorship();
                     if (author != null && (nomRef.isOfType(ReferenceType.BookSection) || nomRef.isOfType(ReferenceType.Section))){
-                        csvLine[table.getIndex(CdmLightExportTable.ABBREV_REF_AUTHOR)] = CdmUtils.Nz(author.getNomenclaturalTitle());
+                        csvLine[table.getIndex(CdmLightExportTable.ABBREV_REF_AUTHOR)] = author.isProtectedTitleCache()? author.getTitleCache(): CdmUtils.Nz(author.getNomenclaturalTitle());
                         csvLine[table.getIndex(CdmLightExportTable.FULL_REF_AUTHOR)] = CdmUtils.Nz(author.getTitleCache());
                     }else{
                         csvLine[table.getIndex(CdmLightExportTable.ABBREV_REF_AUTHOR)] = "";
@@ -949,7 +943,7 @@ public class CdmLightClassificationExport
                     }
                     TeamOrPersonBase<?> author = nomRef.getAuthorship();
                     if (author != null ){
-                        csvLine[table.getIndex(CdmLightExportTable.ABBREV_REF_AUTHOR)] = CdmUtils.Nz(author.getNomenclaturalTitle());
+                        csvLine[table.getIndex(CdmLightExportTable.ABBREV_REF_AUTHOR)] = author.isProtectedTitleCache()? author.getTitleCache(): CdmUtils.Nz(author.getNomenclaturalTitle());
                         csvLine[table.getIndex(CdmLightExportTable.FULL_REF_AUTHOR)] = CdmUtils.Nz(author.getTitleCache());
                     }else{
                         csvLine[table.getIndex(CdmLightExportTable.ABBREV_REF_AUTHOR)] = "";
@@ -1183,7 +1177,7 @@ public class CdmLightClassificationExport
             String[] csvLineRel = new String[tableAuthorRel.getSize()];
             String[] csvLineMember = new String[table.getSize()];
             csvLine[table.getIndex(CdmLightExportTable.AUTHOR_ID)] = getId(state, author);
-            csvLine[table.getIndex(CdmLightExportTable.ABBREV_AUTHOR)] = author.getNomenclaturalTitle();
+            csvLine[table.getIndex(CdmLightExportTable.ABBREV_AUTHOR)] = author.isProtectedTitleCache()? author.getTitleCache(): author.getNomenclaturalTitle();
             csvLine[table.getIndex(CdmLightExportTable.AUTHOR_TITLE)] = author.getTitleCache();
             author = HibernateProxyHelper.deproxy(author);
             if (author instanceof Person){
@@ -1208,7 +1202,7 @@ public class CdmLightClassificationExport
                         state.addAuthorToStore(member);
                         csvLineMember = new String[table.getSize()];
                         csvLineMember[table.getIndex(CdmLightExportTable.AUTHOR_ID)] = getId(state, member);
-                        csvLineMember[table.getIndex(CdmLightExportTable.ABBREV_AUTHOR)] = member.getNomenclaturalTitle();
+                        csvLineMember[table.getIndex(CdmLightExportTable.ABBREV_AUTHOR)] = member.isProtectedTitleCache()? member.getTitleCache(): member.getNomenclaturalTitle();
                         csvLineMember[table.getIndex(CdmLightExportTable.AUTHOR_TITLE)] = member.getTitleCache();
                         csvLineMember[table.getIndex(CdmLightExportTable.AUTHOR_GIVEN_NAME)] = member.getGivenName();
                         csvLineMember[table.getIndex(CdmLightExportTable.AUTHOR_FAMILY_NAME)] = member.getFamilyName();
@@ -1511,12 +1505,13 @@ public class CdmLightClassificationExport
                 nomAuthorString += " " +split;
             }
         }
-        if (StringUtils.isBlank(nomAuthorString.trim())){
+        if (isBlank(nomAuthorString.trim())){
             if (teamMember.getTitleCache() != null) {
                 String titleCacheString = teamMember.getTitleCache().replaceAll("\\.", "\\. ");
                 splittedAuthorString = titleCacheString.split("\\s");
+            }else{
+                splittedAuthorString = new String[0];
             }
-
 
             int index = 0;
             for (String split: splittedAuthorString){
@@ -1539,15 +1534,15 @@ public class CdmLightClassificationExport
         try {
             state.addReferenceToStore(reference);
             CdmLightExportTable table = CdmLightExportTable.REFERENCE;
-
+            reference = HibernateProxyHelper.deproxy(reference,Reference.class);
             String[] csvLine = new String[table.getSize()];
             csvLine[table.getIndex(CdmLightExportTable.REFERENCE_ID)] = getId(state, reference);
             //TODO short citations correctly
             String shortCitation = ((DefaultReferenceCacheStrategy)reference.getCacheStrategy()).createShortCitation(reference);  //Should be Author(year) like in Taxon.sec
             csvLine[table.getIndex(CdmLightExportTable.BIBLIO_SHORT_CITATION)] = shortCitation;
             //TODO get preferred title
-            csvLine[table.getIndex(CdmLightExportTable.REF_TITLE)] = reference.getTitle();
-            csvLine[table.getIndex(CdmLightExportTable.ABBREV_REF_TITLE)] = reference.getAbbrevTitle();
+            csvLine[table.getIndex(CdmLightExportTable.REF_TITLE)] = reference.isProtectedTitleCache()? reference.getTitleCache() : reference.getTitle();
+            csvLine[table.getIndex(CdmLightExportTable.ABBREV_REF_TITLE)] = reference.isProtectedAbbrevTitleCache()? reference.getAbbrevTitleCache(): reference.getAbbrevTitle();
             csvLine[table.getIndex(CdmLightExportTable.DATE_PUBLISHED)] = reference.getDatePublishedString();
             //TBC
             csvLine[table.getIndex(CdmLightExportTable.EDITION)] = reference.getEdition();
@@ -1706,7 +1701,7 @@ public class CdmLightClassificationExport
                                 if (gathering.getLocality() != null){ csvLine[table.getIndex(CdmLightExportTable.LOCALITY)] = gathering.getLocality().getText();}
                                 if (gathering.getCountry() != null){csvLine[table.getIndex(CdmLightExportTable.COUNTRY)] = gathering.getCountry().getLabel();}
                                 csvLine[table.getIndex(CdmLightExportTable.COLLECTOR_STRING)] = createCollectorString(state, gathering, fieldUnit);
-                                addCollectingAreas(state, gathering);
+
                                 if (gathering.getGatheringDate() != null){csvLine[table.getIndex(CdmLightExportTable.COLLECTION_DATE)] = gathering.getGatheringDate().toString();}
                                 if (!gathering.getCollectingAreas().isEmpty()){
                                     int index = 0;
@@ -1734,6 +1729,8 @@ public class CdmLightClassificationExport
                             }
                         }
                     }
+                }else{
+                    state.getResult().addError("The specimen with uuid " + specimen.getUuid() + " is not an DerivedUnit. Could not be exported.");
                 }
             }
 
@@ -1769,20 +1766,6 @@ public class CdmLightClassificationExport
         }
 
         return mediaUriString;
-    }
-
-    /**
-     * @param state
-     * @param gathering
-     */
-    private void addCollectingAreas(CdmLightExportState state, GatheringEvent gathering) {
-        // TODO implement !!!
-
-        if (!gathering.getCollectingAreas().isEmpty()){
-            state.getResult().addWarning("Collecting areas not yet implemented but gathering " +
-                    cdmBaseStr(gathering) + " has collecting areas.");
-        }
-
     }
 
     /**

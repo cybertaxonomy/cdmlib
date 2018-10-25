@@ -196,12 +196,12 @@ public enum SpecimenOrObservationType implements IEnumTerm<SpecimenOrObservation
 	;
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(SpecimenOrObservationType.class);
+	private final Logger logger = Logger.getLogger(SpecimenOrObservationType.class);
 
 
 	private SpecimenOrObservationType(UUID uuid, String defaultString, String key){
 		this(uuid, defaultString, key, null);
-		System.out.println("SpecimenOrObservationType hierarchie not yet fully implemented");
+		logger.info("SpecimenOrObservationType hierarchie not yet fully implemented");
 	}
 
 	@SuppressWarnings("unchecked")

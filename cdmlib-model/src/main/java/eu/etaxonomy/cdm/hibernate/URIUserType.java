@@ -24,7 +24,7 @@ import org.hibernate.usertype.UserType;
 import org.jadira.usertype.dateandtime.shared.spi.AbstractUserType;
 
 /**
- * This class maps java.net.URI to varchar(255)
+ * This class maps java.net.URI to Types.CLOB
  * @author a.mueller
  *
  */

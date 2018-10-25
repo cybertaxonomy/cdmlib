@@ -165,20 +165,7 @@ public interface IImportConfigurator extends IIoConfigurator {
 
     public Class<ICdmImport>[] getIoClassList();
 
-//	public String[] getIoBeans();
-//	public void setIoBeans(String[] ioBeans);
-
-    /**
-     * Returns a <code>CdmApplicationController</code> created by the values of this configuration.
-     * If a controller was already created before the last created controller is returned.
-     * @return
-     */
-//	public CdmApplicationController getCdmAppController();
-//	public CdmApplicationController getCdmAppController(boolean createNew, boolean omitTermLoading);
-//
     public Object getSourceSecId();
-
-
 
      /**
       * If this import implicitly represents a classification in the destination CDM database
@@ -186,7 +173,7 @@ public interface IImportConfigurator extends IIoConfigurator {
       * functionality otherwise it will have no effect.
       * @return
       */
-     public UUID getClassificationUuid();
+    public UUID getClassificationUuid();
     public void setClassificationUuid(UUID treeUuid);
 
     /**

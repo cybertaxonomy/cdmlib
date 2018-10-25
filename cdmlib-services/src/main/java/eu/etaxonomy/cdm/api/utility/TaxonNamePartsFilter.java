@@ -8,9 +8,13 @@
 */
 package eu.etaxonomy.cdm.api.utility;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
 
 /**
@@ -29,6 +33,8 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
  */
 public class TaxonNamePartsFilter extends TaxonNameParts {
 
+    private Set<UUID> exludedNamesUuids = new HashSet<>();
+
     /**
      * @param taxonNameId
      * @param rank
@@ -38,8 +44,9 @@ public class TaxonNamePartsFilter extends TaxonNameParts {
      * @param infraSpecificEpithet
      */
     public TaxonNamePartsFilter(Rank rank, String genusOrUninomial, String infraGenericEpithet,
-            String specificEpithet, String infraSpecificEpithet) {
-        super(null, rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet);
+            String specificEpithet, String infraSpecificEpithet, Set<TaxonName> exludedNames) {
+        super(null, null, rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet);
+        this.setExludedNames(exludedNames);
     }
 
     public TaxonNamePartsFilter(){
@@ -92,10 +99,28 @@ public class TaxonNamePartsFilter extends TaxonNameParts {
     }
 
     private String appendWildcard(String query){
-        if(!query.endsWith("*")){
+        if(query == null){
+            query = "*";
+        } else if(!query.endsWith("*")){
             return query + "*";
         }
         return query;
 
+    }
+
+    /**
+     * @return the exludedNames
+     */
+    public Set<UUID> getExludedNamesUuids() {
+        return exludedNamesUuids;
+    }
+
+    /**
+     * @param exludedNames the exludedNames to set
+     */
+    public void setExludedNames(Set<TaxonName> exludedNames) {
+        for(TaxonName name : exludedNames){
+            exludedNamesUuids.add(name.getUuid());
+        }
     }
 }

@@ -4,6 +4,10 @@ body.swagger-section #header , body.swagger-section #description{
   background-color:#F4F7E7;
 }
 
+body.swagger-section #header{
+  height: auto;
+}
+
 body.swagger-section #content {
   padding:0 50px;
 }
@@ -11,6 +15,8 @@ body.swagger-section #content {
 #swagger-ui-container {
   clear: both;
 }
+
+
 
 #header #banner, #header #menu{
   margin-left:auto;

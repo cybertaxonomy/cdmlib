@@ -162,6 +162,6 @@ public class PreferenceDaoTest  extends CdmTransactionalIntegrationTest {
             "HOMOTYPICALGROUP",
             "HIBERNATE_SEQUENCES" // IMPORTANT!!!
             },
-            fileNameAppendix );
+            fileNameAppendix, true );
     }
 }

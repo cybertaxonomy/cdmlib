@@ -1,0 +1,77 @@
+--- /home/andreas/spring-fox/2.6.1/META-INF/resources/webjars/springfox-swagger-ui/springfox.orig.js	2016-11-06 18:08:34.000000000 +0100
++++ springfox.js	2018-10-18 19:58:56.530758949 +0200
+@@ -1,7 +1,7 @@
+ $(function() {
+   var springfox = {
+     "baseUrl": function() {
+-      var urlMatches = /(.*)\/swagger-ui.html.*/.exec(window.location.href);
++      var urlMatches = /(.*)\/doc\/.*/.exec(window.location.href); 
+       return urlMatches[1];
+     },
+     "securityConfig": function(cb) {
+@@ -16,8 +16,8 @@
+     }
+   };
+   window.springfox = springfox;
+-  window.oAuthRedirectUrl = springfox.baseUrl() + '/webjars/springfox-swagger-ui/o2c.html';
+-
++  window.oAuthRedirectUrl = springfox.baseUrl() + 'doc//webjars/springfox-swagger-ui/o2c.html'
++  
+   window.springfox.uiConfig(function(data) {
+     window.swaggerUi = new SwaggerUi({
+       dom_id: "swagger-ui-container",
+@@ -98,6 +98,16 @@
+     }
+     return withRelativePath + location;
+   }
++  
++  function getUrlParam(key){
++      key = key.replace(/[*+?^$.\[\]{}()|\\\/]/g, "\\$&"); // escape RegEx meta chars
++      var match = location.search.match(new RegExp("[?&]"+key+"=([^&]+)(&|$)"));
++      return match && decodeURIComponent(match[1].replace(/\+/g, " "));
++  }
++
++  function menuItemId(groupName){
++      return 'menu_' + groupName.replace(/\s/g, "_");
++  }
+ 
+   function initializeBaseUrl() {
+     var relativeLocation = springfox.baseUrl();
+@@ -106,15 +116,30 @@
+ 
+     $.getJSON(relativeLocation + "/swagger-resources", function(data) {
+ 
+-      var $urlDropdown = $('#select_baseUrl');
+-      $urlDropdown.empty();
++      var $menulist = $('#select_baseUrl');
++      $menulist.empty();
+       $.each(data, function(i, resource) {
+-        var option = $('<option></option>')
+-            .attr("value", maybePrefix(resource.location, relativeLocation))
+-            .text(resource.name + " (" + resource.location + ")");
+-        $urlDropdown.append(option);
++          //  example markup : <li id="menu_Generic_REST_API"><a href="?group=Generic+REST+API">Generic REST API</a></li>
++          var id = menuItemId(resource.name);
++          var link = $('<a></a>')
++                  .attr("href", maybePrefix(resource.location, relativeLocation))
++                  .text(resource.name);
++          var option = $('<li></li>').attr("id", id).append(link);
++          $menulist.append(option);
++      });
++      $('#select_baseUrl a').click(function(event) {
++            event.preventDefault();
++            $('#select_baseUrl li.active').removeClass('active');
++            $(this).parent().addClass('active');
++            window.swaggerUi.headerView.trigger(
++                    'update-swagger-ui', 
++                    {url: $(event.target).attr('href')}
++            );  
+       });
+-      $urlDropdown.change();
++      var initialGroup = getUrlParam('group');
++      if(initialGroup) {
++        $('#' + menuItemId(initialGroup) + " a").click();
++      }
+     });
+ 
+   }

@@ -29,11 +29,11 @@ public class Matching {
 	private List<CacheMatcher> cacheMatchers = new ArrayList<CacheMatcher>();
 
 
-	public Matching setFieldMatcher(FieldMatcher fieldMatcher){
-		return setFieldMatcher(fieldMatcher, false);
+	public Matching addFieldMatcher(FieldMatcher fieldMatcher){
+		return addFieldMatcher(fieldMatcher, false);
 	}
 
-	public Matching setFieldMatcher(FieldMatcher fieldMatcher,boolean temporary){
+	public Matching addFieldMatcher(FieldMatcher fieldMatcher, boolean temporary){
 		String propertyName = fieldMatcher.getPropertyName();
 		if (temporary && ! fieldMatchers.containsKey(propertyName)){
 			tmpFieldMatchers.put(propertyName, fieldMatcher);
@@ -52,7 +52,7 @@ public class Matching {
 	 * @return the fieldMatchers
 	 */
 	public List<FieldMatcher> getFieldMatchers(boolean includeTemporary) {
-		List<FieldMatcher> result = new ArrayList<FieldMatcher>();
+		List<FieldMatcher> result = new ArrayList<>();
 		for (FieldMatcher fieldMatcher : fieldMatchers.values()){
 			result.add(fieldMatcher);
 		}
@@ -83,7 +83,7 @@ public class Matching {
 	}
 
 	public void deleteTemporaryMatchers(){
-		tmpFieldMatchers = new TreeMap<String, FieldMatcher>();
+		tmpFieldMatchers = new TreeMap<>();
 	}
 
 

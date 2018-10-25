@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -31,20 +30,15 @@ import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
-import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
-import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.model.description.CategoricalData;
-import eu.etaxonomy.cdm.model.description.Character;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
@@ -52,10 +46,7 @@ import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
-import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
-import eu.etaxonomy.cdm.model.description.StateData;
-import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -65,8 +56,6 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
@@ -99,6 +88,7 @@ public class DescriptionServiceImpl
 
     protected IDescriptionElementDao descriptionElementDao;
     protected IFeatureTreeDao featureTreeDao;
+    protected IDescriptiveDataSetDao descriptiveDataSetDao;
     protected IFeatureNodeDao featureNodeDao;
     protected IFeatureDao featureDao;
     protected ITermVocabularyDao vocabularyDao;
@@ -117,6 +107,11 @@ public class DescriptionServiceImpl
     @Autowired
     protected void setFeatureTreeDao(IFeatureTreeDao featureTreeDao) {
         this.featureTreeDao = featureTreeDao;
+    }
+
+    @Autowired
+    protected void setDescriptiveDataSetDao(IDescriptiveDataSetDao descriptiveDataSetDao) {
+        this.descriptiveDataSetDao = descriptiveDataSetDao;
     }
 
     @Autowired
@@ -849,109 +844,6 @@ public class DescriptionServiceImpl
        // dao.merge(description);
         return result;
 
-    }
-
-    @Override
-    @Transactional(readOnly=false)
-    public UpdateResult aggregateTaxonDescription(UUID taxonNodeUuid, IRemotingProgressMonitor monitor){
-        UpdateResult result = new UpdateResult();
-
-        TaxonNode node = taxonNodeDao.load(taxonNodeUuid);
-        Taxon taxon = HibernateProxyHelper.deproxy(taxonDao.load(node.getTaxon().getUuid()), Taxon.class);
-        result.setCdmEntity(taxon);
-
-        //get all "computed" descriptions from all sub nodes
-        List<TaxonNode> childNodes = taxonNodeDao.listChildrenOf(node, null, null, true, false, null);
-        List<TaxonDescription> computedDescriptions = new ArrayList<>();
-
-        childNodes.stream().map(childNode -> childNode.getTaxon())
-                .forEach(childTaxon -> childTaxon.getDescriptions().stream()
-                        // filter out non-computed descriptions
-                        .filter(description -> description.getMarkers().stream()
-                                .anyMatch(marker -> marker.getMarkerType().equals(MarkerType.COMPUTED())))
-                        // add them to the list
-                        .forEach(computedDescription -> computedDescriptions.add(computedDescription)));
-
-        UpdateResult aggregateDescription = aggregateDescription(taxon, computedDescriptions,
-                "[Taxon Descriptions]"+taxon.getTitleCache());
-        result.includeResult(aggregateDescription);
-        result.setCdmEntity(aggregateDescription.getCdmEntity());
-        aggregateDescription.setCdmEntity(null);
-        return result;
-    }
-
-    @Override
-    public UpdateResult aggregateDescription(UUID taxonUuid, List<UUID> descriptionUuids, String descriptionTitle) {
-        UpdateResult result = new UpdateResult();
-
-        TaxonBase taxonBase = taxonDao.load(taxonUuid);
-        if(!(taxonBase instanceof Taxon)){
-            result.addException(new ClassCastException("The given taxonUUID does not belong to a taxon"));
-            result.setError();
-            return result;
-        }
-        Taxon taxon = (Taxon)taxonBase;
-
-        List<DescriptionBase> descriptions = load(descriptionUuids, null);
-
-        UpdateResult aggregateDescriptionResult = aggregateDescription(taxon, descriptions, descriptionTitle);
-        result.setCdmEntity(aggregateDescriptionResult.getCdmEntity());
-        aggregateDescriptionResult.setCdmEntity(null);
-        result.includeResult(aggregateDescriptionResult);
-        return result;
-    }
-
-    @SuppressWarnings("unchecked")
-    private UpdateResult aggregateDescription(Taxon taxon, List<? extends DescriptionBase> descriptions, String descriptionTitle) {
-        UpdateResult result = new UpdateResult();
-        Map<Character, List<DescriptionElementBase>> featureToElementMap = new HashMap<>();
-
-        //extract all character description elements
-        descriptions.forEach(description->{
-            description.getElements()
-            .stream()
-            //filter out elements that do not have a Characters as Feature
-            .filter(element->HibernateProxyHelper.isInstanceOf(((DescriptionElementBase)element).getFeature(), Character.class))
-            .forEach(ele->{
-                DescriptionElementBase descriptionElement = (DescriptionElementBase)ele;
-                List<DescriptionElementBase> list = featureToElementMap.get(descriptionElement.getFeature());
-                if(list==null){
-                    list = new ArrayList<>();
-                }
-                list.add(descriptionElement);
-                featureToElementMap.put(HibernateProxyHelper.deproxy(descriptionElement.getFeature(), Character.class), list);
-            });
-        });
-
-        TaxonDescription description = TaxonDescription.NewInstance(taxon);
-        description.setTitleCache("[Aggregation] "+descriptionTitle, true);
-        description.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
-        IdentifiableSource source = IdentifiableSource.NewInstance(OriginalSourceType.Aggregation);
-        description.addSource(source);
-
-        featureToElementMap.forEach((feature, elements)->{
-            //aggregate categorical data
-            if(feature.isSupportsCategoricalData()){
-                CategoricalData aggregate = CategoricalData.NewInstance(feature);
-                elements.stream()
-                .filter(element->element instanceof CategoricalData)
-                .forEach(categoricalData->((CategoricalData)categoricalData).getStateData()
-                        .forEach(stateData->aggregate.addStateData((StateData) stateData.clone())));
-                description.addElement(aggregate);
-            }
-            //aggregate quantitative data
-            else if(feature.isSupportsQuantitativeData()){
-                QuantitativeData aggregate = QuantitativeData.NewInstance(feature);
-                elements.stream()
-                .filter(element->element instanceof QuantitativeData)
-                .forEach(categoricalData->((QuantitativeData)categoricalData).getStatisticalValues()
-                        .forEach(statisticalValue->aggregate.addStatisticalValue((StatisticalMeasurementValue) statisticalValue.clone())));
-                description.addElement(aggregate);
-            }
-        });
-        result.addUpdatedObject(taxon);
-        result.setCdmEntity(description);
-        return result;
     }
 
 }

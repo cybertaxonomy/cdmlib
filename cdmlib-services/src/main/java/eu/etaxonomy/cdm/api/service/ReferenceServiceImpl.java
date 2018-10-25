@@ -25,7 +25,6 @@ import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -38,8 +37,6 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<Reference,IRef
 
     static Logger logger = Logger.getLogger(ReferenceServiceImpl.class);
 
-    @Autowired
-    private ICdmGenericDao genericDao;
     /**
      * Constructor
      */
@@ -157,6 +154,33 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<Reference,IRef
         for (Object[] daoObj : daoResults){
             result.add(new IdentifiedEntityDTO<Reference>((DefinedTerm)daoObj[0], (String)daoObj[1], (UUID)daoObj[2], (String)daoObj[3],(String)daoObj[4]));
 
+        }
+        return result;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<IdentifiedEntityDTO<Reference>> listByIdentifierAndTitleCacheAbbrev(
+            String identifier, DefinedTerm identifierType, MatchMode matchmode,
+            Integer limit) {
+
+        long numberOfResults = dao.countByIdentifier(Reference.class, identifier, identifierType, matchmode);
+        long numberOfResultsTitle = dao.countByTitle(identifier);
+        List<Object[]> daoResults = new ArrayList<Object[]>();
+        List<UuidAndTitleCache<Reference>> daoResultsTitle = new ArrayList();
+        if(numberOfResults > 0) { // no point checking again
+            daoResults = dao.findByIdentifierAbbrev( identifier, identifierType,
+                    matchmode,  limit);
+        }
+        daoResultsTitle = dao.getUuidAndAbbrevTitleCache(100, identifier, null);
+
+        List<IdentifiedEntityDTO<Reference>> result = new ArrayList<>();
+        for (Object[] daoObj : daoResults){
+            result.add(new IdentifiedEntityDTO<Reference>((DefinedTerm)daoObj[0], (String)daoObj[1], (UUID)daoObj[2], (String)daoObj[3],(String)daoObj[4]));
+
+        }
+        for (UuidAndTitleCache<Reference> uuidAndTitleCache: daoResultsTitle){
+            result.add(new IdentifiedEntityDTO<>(null, null, uuidAndTitleCache.getUuid(), uuidAndTitleCache.getTitleCache(), uuidAndTitleCache.getAbbrevTitleCache()));
         }
         return result;
     }

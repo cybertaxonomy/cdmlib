@@ -21,6 +21,7 @@ public class PreferenceSubject {
     public static final String ROOT = "/";
     public static final String SEP = "/";
     public static final String VAADIN = "vaadin";
+    public static final String TAX_EDITOR = "taxeditor";
 
     private String subject;
 
@@ -39,6 +40,10 @@ public class PreferenceSubject {
 
     public static PreferenceSubject NewVaadinInstance(){
         return new PreferenceSubject(ROOT +  VAADIN + SEP);
+    }
+
+    public static PreferenceSubject NewTaxEditorInstance(){
+        return new PreferenceSubject(ROOT +  TAX_EDITOR + SEP);
     }
 
 

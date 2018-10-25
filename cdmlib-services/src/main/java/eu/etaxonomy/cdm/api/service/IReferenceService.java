@@ -132,4 +132,14 @@ public interface IReferenceService extends IIdentifiableEntityService<Reference>
      */
     List<UuidAndTitleCache<Reference>> getUuidAndTitleCacheForUUIDS(Set<UUID> uuids);
 
+    /**
+     * @param identifier
+     * @param identifierType
+     * @param matchmode
+     * @param limit
+     * @return
+     */
+    List<IdentifiedEntityDTO<Reference>> listByIdentifierAndTitleCacheAbbrev(String identifier,
+            DefinedTerm identifierType, MatchMode matchmode, Integer limit);
+
 }

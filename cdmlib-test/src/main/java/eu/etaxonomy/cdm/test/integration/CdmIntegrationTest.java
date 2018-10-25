@@ -26,7 +26,6 @@ import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.filter.ITableFilterSimple;
-import org.dbunit.dataset.xml.FlatXmlDataSet;
 import org.dbunit.ext.h2.H2DataTypeFactory;
 import org.h2.tools.Server;
 import org.junit.Before;
@@ -34,14 +33,12 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.database.annotations.TestDataSource;
-import org.unitils.dbunit.util.MultiSchemaXmlDataSetReader;
 import org.unitils.orm.hibernate.annotation.HibernateSessionFactory;
 import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.database.DataBaseTablePrinter;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.test.unitils.FlatFullXmlWriter;
 
 /**
  * Abstract base class for integration testing a spring / hibernate application using
@@ -291,7 +288,7 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      * @param includeTableNames
      * 		the names of tables to print (should be in upper case letters)
      */
-    public void printDataSet(OutputStream out, String[] includeTableNames) {
+    public void printDataSet(OutputStream out, String ... includeTableNames) {
         dbTablePrinter.printDataSet(out, includeTableNames);
 
     }
@@ -376,8 +373,8 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      * @throws FileNotFoundException
      * @see #writeDbUnitDataSetFile(String[])
      */
-    public void writeDbUnitDataSetFile(String[] includeTableNames, String fileAppendix) throws FileNotFoundException {
-        dbTablePrinter.writeDbUnitDataSetFile(includeTableNames, this.getClass(), fileAppendix);
+    public void writeDbUnitDataSetFile(String[] includeTableNames, String fileAppendix, boolean withNullValues) throws FileNotFoundException {
+        dbTablePrinter.writeDbUnitDataSetFile(includeTableNames, this.getClass(), fileAppendix, withNullValues);
     }
 
     /**

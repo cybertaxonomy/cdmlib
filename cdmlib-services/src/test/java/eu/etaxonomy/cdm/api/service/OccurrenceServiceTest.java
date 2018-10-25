@@ -1667,7 +1667,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
                   "TeamOrPersonBase",
                   "LanguageString",
                   "DeterminationEvent"
-          }, "testAllKindsOfSpecimenAssociations");
+          }, "testAllKindsOfSpecimenAssociations", true);
       } catch (FileNotFoundException e) {
           e.printStackTrace();
       }

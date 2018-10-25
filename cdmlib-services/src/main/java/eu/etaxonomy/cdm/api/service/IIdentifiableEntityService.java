@@ -397,4 +397,14 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity>
      * @see #getUuidAndTitleCache(Class, Integer, String)
      */
     public List<UuidAndTitleCache<T>> getUuidAndTitleCache(Integer limit, String pattern);
+
+    /**
+     * @param limit
+     * @param pattern
+     * @param markerType
+     *
+     * @return
+     */
+    public List<UuidAndTitleCache<T>> findUuidAndTitleCacheByMarker(Integer limit, String pattern,
+            MarkerType markerType);
 }

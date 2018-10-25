@@ -644,6 +644,49 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
     }
 
     @Override
+    public List<UuidAndTitleCache<T>> getUuidAndTitleCacheByMarker(Integer limit, String pattern, MarkerType markerType){
+
+        if (markerType == null){
+            return new ArrayList<UuidAndTitleCache<T>>();
+        }
+
+        String queryString = "SELECT c.uuid, c.titleCache FROM %s as c " +
+                " INNER JOIN c.markers as mks " +
+                " WHERE (1=1) ";
+        queryString = String.format(queryString, type.getSimpleName());
+
+
+        queryString += " AND mks.markerType = :type";
+        if (pattern != null){
+            queryString += " AND c.titleCache like :pattern";
+            pattern = pattern.replace("*", "%");
+            pattern = pattern.replace("?", "_");
+            pattern = pattern + "%";
+
+        }
+
+
+        Query query = getSession().createQuery(queryString);
+        if (pattern != null){
+            query.setParameter("pattern", pattern);
+        }
+        //parameters
+        query.setEntity("type", markerType);
+        query.setMaxResults(limit);
+
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> results = query.list();
+        List<UuidAndTitleCache<T>> uuidAndTitleCacheResult = new ArrayList<>();
+        for (Object[] result:results){
+            uuidAndTitleCacheResult.add(new UuidAndTitleCache<T>((UUID)result[0], (String)result[1]));
+        }
+
+        return uuidAndTitleCacheResult;
+
+    }
+
+    @Override
     public List<UuidAndTitleCache<T>> getUuidAndTitleCache(Integer limit, String pattern){
         return getUuidAndTitleCache(type, limit, pattern);
     }

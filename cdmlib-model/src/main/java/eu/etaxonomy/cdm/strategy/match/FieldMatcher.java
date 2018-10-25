@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -16,22 +16,21 @@ import org.apache.log4j.Logger;
 /**
  * @author a.mueller
  * @since 07.08.2009
- * @version 1.0
  */
 public class FieldMatcher extends FieldMatcherBase{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FieldMatcher.class);
-	
+
 	private IMatchStrategy matchStrategy;
-	
+
 	public static FieldMatcher NewInstance(Field field, MatchMode matchMode, IMatchStrategy matchStrategy){
 		return new FieldMatcher(field.getName(), field, matchMode, matchStrategy);
 	}
-	
+
 	public static FieldMatcher NewInstance(Field field, MatchMode matchMode){
 		return new FieldMatcher(field.getName(), field, matchMode, null);
 	}
-	
+
 	private FieldMatcher (String propertyname, Field field, MatchMode matchMode, IMatchStrategy matchStrategy){
 		super(propertyname, field, matchMode);
 		this.matchStrategy = matchStrategy;
@@ -51,5 +50,5 @@ public class FieldMatcher extends FieldMatcherBase{
 		this.matchStrategy = matchStrategy;
 	}
 
-	
+
 }

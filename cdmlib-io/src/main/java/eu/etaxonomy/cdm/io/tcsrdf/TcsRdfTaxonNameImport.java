@@ -190,7 +190,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 
 			TaxonName nameBase = nomCode.getNewTaxonNameInstance(rank);
 
-			Set<String> omitAttributes = null;
+			//Set<String> omitAttributes = null;
 			//makeStandardMapper(nameAbout, nameBase, omitAttributes, standardMappers);
 
 			prop = nameAbout.getModel().getProperty(config.getTnNamespaceURIString()+"nameComplete");
@@ -204,18 +204,18 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 				nomRef.setTitleCache(strPublishedIn, true);
 				nameBase.setNomenclaturalReference(nomRef);
 				try{
-				prop =  nameAbout.getModel().getProperty(config.getTnNamespaceURIString()+"year");
-				String strYear = nameAbout.getProperty(prop).getString();
-				Integer year = null;
-				if (strYear != null){
-					try {
-						year = Integer.valueOf(strYear);
-						VerbatimTimePeriod timeP = VerbatimTimePeriod.NewVerbatimInstance(year);
-						nomRef.setDatePublished(timeP);
-					} catch (RuntimeException e) {
-						logger.warn("year could not be parsed");
-					}
-				}
+    				prop =  nameAbout.getModel().getProperty(config.getTnNamespaceURIString()+"year");
+    				String strYear = nameAbout.getProperty(prop).getString();
+    				Integer year = null;
+    				if (strYear != null){
+    					try {
+    						year = Integer.valueOf(strYear);
+    						VerbatimTimePeriod timeP = VerbatimTimePeriod.NewVerbatimInstance(year);
+    						nomRef.setDatePublished(timeP);
+    					} catch (RuntimeException e) {
+    						logger.warn("year could not be parsed");
+    					}
+    				}
 				}catch(NullPointerException e){
 				}
 				if (config.isPublishReferences()){

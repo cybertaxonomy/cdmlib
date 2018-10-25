@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import eu.etaxonomy.cdm.api.service.IDescriptionService;
+import eu.etaxonomy.cdm.api.service.IDescriptiveDataSetService;
 import eu.etaxonomy.cdm.api.service.IProgressMonitorService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.UpdateResult;
@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.api.service.config.PublishForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitorThread;
+import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 
 /**
  * @author k.luther
@@ -38,18 +39,33 @@ public class LongRunningTasksServiceImpl implements ILongRunningTasksService{
     ITaxonNodeService taxonNodeService;
 
     @Autowired
-    IDescriptionService descriptionService;
+    IDescriptiveDataSetService descriptiveDataSetService;
 
     @Autowired
     IProgressMonitorService progressMonitorService;
 
 
+
     @Override
-    public UUID aggregateComputedTaxonDescriptions(UUID taxonNodeUuid){
+    public UUID monitGetRowWrapper(DescriptiveDataSet descriptiveDataSet) {
         RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
             @Override
             public Serializable doRun(IRemotingProgressMonitor monitor) {
-                UpdateResult updateResult = descriptionService.aggregateTaxonDescription(taxonNodeUuid, monitor);
+                return descriptiveDataSetService.getRowWrapper(descriptiveDataSet, monitor);
+            }
+        };
+        UUID uuid = progressMonitorService.registerNewRemotingMonitor(monitorThread);
+        monitorThread.setPriority(3);
+        monitorThread.start();
+        return uuid;
+    }
+
+    @Override
+    public UUID aggregateComputedTaxonDescriptions(UUID taxonNodeUuid, UUID descriptiveDataSetUuid){
+        RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
+            @Override
+            public Serializable doRun(IRemotingProgressMonitor monitor) {
+                UpdateResult updateResult = descriptiveDataSetService.aggregateTaxonDescription(taxonNodeUuid, descriptiveDataSetUuid, monitor);
                 for(Exception e : updateResult.getExceptions()) {
                     monitor.addReport(e.getMessage());
                 }

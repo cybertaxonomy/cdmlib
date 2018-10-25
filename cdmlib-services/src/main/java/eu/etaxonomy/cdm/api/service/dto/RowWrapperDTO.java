@@ -23,9 +23,6 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.State;
-import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
-import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
@@ -33,31 +30,23 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @since 16.04.2018
  *
  */
-public class RowWrapperDTO implements Serializable {
+public abstract class RowWrapperDTO <T extends DescriptionBase> implements Serializable {
 
     private static final long serialVersionUID = -7817164423660563673L;
 
-    private DescriptionBase description;
+    protected T description;
 
-    private SpecimenOrObservationBase specimen;
     private TaxonNode taxonNode;
-    private FieldUnit fieldUnit;
-    private String identifier;
-    private NamedArea country;
     private Map<Feature, DescriptionElementBase> featureToElementMap;
 
-    public RowWrapperDTO(DescriptionBase description, SpecimenOrObservationBase specimen, TaxonNode taxonNode, FieldUnit fieldUnit, String identifier,
-                NamedArea country) {
+    public RowWrapperDTO(T description, TaxonNode taxonNode) {
         this.taxonNode = taxonNode;
-        this.fieldUnit = fieldUnit;
-        this.identifier = identifier;
-        this.country = country;
         this.featureToElementMap = new HashMap<>();
-        if(description!=null){
-            setDescription(description);
-        }
-        else if(specimen!=null){
-            this.specimen = specimen;
+        this.description = description;
+        Set<DescriptionElementBase> elements = description.getElements();
+        for (DescriptionElementBase descriptionElementBase : elements) {
+            Feature feature = descriptionElementBase.getFeature();
+            featureToElementMap.put(feature, descriptionElementBase);
         }
     }
 
@@ -75,38 +64,12 @@ public class RowWrapperDTO implements Serializable {
         return data;
     }
 
-    public DescriptionBase getSpecimenDescription() {
+    public T getDescription() {
         return description;
-    }
-
-    public SpecimenOrObservationBase getSpecimen() {
-        return specimen;
     }
 
     public TaxonNode getTaxonNode() {
         return taxonNode;
-    }
-
-    public FieldUnit getFieldUnit() {
-        return fieldUnit;
-    }
-
-    public String getIdentifier() {
-        return identifier;
-    }
-
-    public NamedArea getCountry() {
-        return country;
-    }
-
-    public void setDescription(DescriptionBase description) {
-        this.description = description;
-        this.specimen = description.getDescribedSpecimenOrObservation();
-        Set<DescriptionElementBase> elements = description.getElements();
-        for (DescriptionElementBase descriptionElementBase : elements) {
-            Feature feature = descriptionElementBase.getFeature();
-            featureToElementMap.put(feature, descriptionElementBase);
-        }
     }
 
     public DescriptionElementBase getDataValueForFeature(Feature feature){
@@ -125,4 +88,51 @@ public class RowWrapperDTO implements Serializable {
             categoricalData.setStateDataOnly(new ArrayList<>((Collection<State>) newValue));
         }
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((description == null) ? 0 : description.hashCode());
+        result = prime * result + ((featureToElementMap == null) ? 0 : featureToElementMap.hashCode());
+        result = prime * result + ((taxonNode == null) ? 0 : taxonNode.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        RowWrapperDTO other = (RowWrapperDTO) obj;
+        if (description == null) {
+            if (other.description != null) {
+                return false;
+            }
+        } else if (!description.equals(other.description)) {
+            return false;
+        }
+        if (featureToElementMap == null) {
+            if (other.featureToElementMap != null) {
+                return false;
+            }
+        } else if (!featureToElementMap.equals(other.featureToElementMap)) {
+            return false;
+        }
+        if (taxonNode == null) {
+            if (other.taxonNode != null) {
+                return false;
+            }
+        } else if (!taxonNode.equals(other.taxonNode)) {
+            return false;
+        }
+        return true;
+    }
+
 }

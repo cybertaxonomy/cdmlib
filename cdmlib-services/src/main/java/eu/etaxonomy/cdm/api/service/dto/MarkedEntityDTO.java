@@ -23,7 +23,9 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 //might extend AnnotatableEntity in future
 public class MarkedEntityDTO<T extends IdentifiableEntity> extends EntityDTOBase<T> {
 
-	public class Marker{
+    private static final long serialVersionUID = -6633266304860008601L;
+
+    public class Marker{
 		UUID typeUuid;
 		String typeLabel;
 		Boolean flag;

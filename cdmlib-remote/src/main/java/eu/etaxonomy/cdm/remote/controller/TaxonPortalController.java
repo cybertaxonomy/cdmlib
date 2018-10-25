@@ -38,6 +38,7 @@ import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
+import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -253,16 +254,6 @@ public class TaxonPortalController extends TaxonController{
     }
 
 
-    /*   @Override
-    @RequestMapping(method = RequestMethod.GET)
-    public TaxonBase doGet(HttpServletRequest request, HttpServletResponse response)throws IOException {
-        logger.info("doGet()");
-        TaxonBase tb = getCdmBase(request, response, TAXON_INIT_STRATEGY, TaxonBase.class);
-        return tb;
-    }
-     */
-
-
 
     /**
      * Get the synonymy for a taxon identified by the <code>{taxon-uuid}</code>.
@@ -289,7 +280,9 @@ public class TaxonPortalController extends TaxonController{
             value = {"synonymy"},
             method = RequestMethod.GET)
     public ModelAndView doGetSynonymy(@PathVariable("uuid") UUID uuid,
-            HttpServletRequest request, HttpServletResponse response)throws IOException {
+            @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
+            HttpServletRequest request,
+            HttpServletResponse response)throws IOException {
 
         boolean includeUnpublished = NO_UNPUBLISHED;
         if(request != null){
@@ -297,6 +290,9 @@ public class TaxonPortalController extends TaxonController{
         }
         ModelAndView mv = new ModelAndView();
         Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
+        TaxonNode subtree = getSubtreeOrError(subtreeUuid, taxonNodeService, response);
+        taxon = checkExistsSubtreeAndAccess(taxon, subtree, NO_UNPUBLISHED, response);
+
         Map<String, List<?>> synonymy = new Hashtable<>();
 
         //new

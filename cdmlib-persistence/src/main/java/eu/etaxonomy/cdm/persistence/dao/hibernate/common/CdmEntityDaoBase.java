@@ -515,7 +515,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
      * {@inheritDoc}
      */
     @Override
-    public List<T> list(Class<? extends T> type, List<Restriction<?>> restrictions, Integer limit, Integer start,
+    public <S extends T> List<S> list(Class<S> type, List<Restriction<?>> restrictions, Integer limit, Integer start,
             List<OrderHint> orderHints, List<String> propertyPaths) {
 
         Criteria criteria = createCriteria(type, restrictions, false);
@@ -524,7 +524,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         addOrder(criteria, orderHints);
 
         @SuppressWarnings("unchecked")
-        List<T> result = criteria.list();
+        List<S> result = criteria.list();
         defaultBeanInitializer.initializeAll(result, propertyPaths);
         return result;
     }

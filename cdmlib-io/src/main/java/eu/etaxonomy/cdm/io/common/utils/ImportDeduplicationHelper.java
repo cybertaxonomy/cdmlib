@@ -234,8 +234,6 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
                 throw new RuntimeException(e);
             }
         };
-        newReference.getAbbrevTitleCache(); //TODO better do via matching strategy  (newReference might be null)
-        newReference.getTitleCache(); //TODO better do via matching strategy  (newReference might be null)
         return Optional.ofNullable(getReferences(newReference.getTitleCache()))
                 .orElse(new HashSet<>())
                 .stream()
@@ -280,12 +278,12 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
                 .filter(matchFilter)
                 .findAny();
     }
-    private TeamOrPersonBase<?> getTeamOrPerson(TeamOrPersonBase<?> agent){
-        TeamOrPersonBase<?> result = agent;
+    private <T extends TeamOrPersonBase<?>> T getTeamOrPerson(T agent){
+        T result = agent;
         if (agent.isInstanceOf(Person.class)){
-            result = getMatchingPerson(CdmBase.deproxy(agent, Person.class)).orElse(null) ; // personMap.get(title);
+            result = (T)getMatchingPerson(CdmBase.deproxy(agent, Person.class)).orElse(null) ; // personMap.get(title);
         }else if (agent.isInstanceOf(Team.class)) {
-            result = getMatchingTeam(CdmBase.deproxy(agent, Team.class)).orElse(null); // teamMap.get(title);
+            result = (T)getMatchingTeam(CdmBase.deproxy(agent, Team.class)).orElse(null); // teamMap.get(title);
         }
         return result;
     }
@@ -420,13 +418,14 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
      * @param combAuthor
      * @return
      */
-    public TeamOrPersonBase<?> getExistingAuthor(STATE state,
-            TeamOrPersonBase<?> author) {
+    public <T extends TeamOrPersonBase<?>> T getExistingAuthor(STATE state,
+            T author) {
         if (author == null){
             return null;
         }else{
             initAgentMap(state);
-            TeamOrPersonBase<?> result = getTeamOrPerson(author);
+            initAuthorTitleCaches(author);
+            T result = getTeamOrPerson(author);
             if (result == null){
                 putAgentBase(author.getTitleCache(), author);
                 if (author.isInstanceOf(Team.class)){
@@ -437,6 +436,32 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
             return result;
         }
     }
+
+    /**
+     * @param author
+     */
+    private <T extends TeamOrPersonBase<?>> void initAuthorTitleCaches(T author) {
+        //more or less copy from CdmPreDataChangeListener
+        String nomTitle = author.getNomenclaturalTitle();
+        if (author instanceof Team){
+            Team team = (Team)author;
+            //nomTitle is not necessarily cached when it is created
+            team.setNomenclaturalTitle(nomTitle, team.isProtectedNomenclaturalTitleCache());
+        }else{
+            author.setNomenclaturalTitle(nomTitle);
+        }
+        String titleCache = author.getTitleCache();
+        if (! author.isProtectedTitleCache()){
+            author.setTitleCache(titleCache, false);
+        }
+    }
+
+    private void initReferenceCaches(Reference ref) {
+        ////TODO better do via matching strategy  (newReference might have caches == null)
+        //more or less copy from CdmPreDataChangeListener
+        ref.getAbbrevTitleCache();
+        ref.getTitleCache();
+   }
 
     public AgentBase<?> getExistingAgent(STATE state,
             AgentBase<?> agent) {
@@ -536,6 +561,7 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
            return null;
        }else{
            initRerenceMap(state);
+           initReferenceCaches(ref);
            Reference result = getMatchingReference(ref).orElse(null);
            if (result == null){
                result = ref;

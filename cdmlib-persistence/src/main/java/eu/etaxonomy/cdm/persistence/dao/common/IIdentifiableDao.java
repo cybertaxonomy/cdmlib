@@ -323,4 +323,15 @@ public interface IIdentifiableDao <T extends IdentifiableEntity> extends IAnnota
      */
     public List<UuidAndTitleCache<T>> getUuidAndTitleCache();
 
+    /**
+     *
+     * Like {@link #getUuidAndTitleCache(Integer, String)} but searching only for elements with a marker of markertype
+     * matching the given parameter
+     * @param limit
+     * @param pattern
+     * @param markerType
+     * @return
+     */
+    List<UuidAndTitleCache<T>> getUuidAndTitleCacheByMarker(Integer limit, String pattern, MarkerType markerType);
+
 }

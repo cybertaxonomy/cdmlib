@@ -126,16 +126,18 @@ public class TaxonNameParts {
 
     /**
      * @param taxonNameId
+     * @param taxonNameUuid
      * @param rank
      * @param uninomial
      * @param infraGenericEpithet
      * @param specificEpithet
      * @param infraSpecificEpithet
      */
-    public TaxonNameParts(Integer taxonNameId, Rank rank, String genusOrUninomial, String infraGenericEpithet,
+    public TaxonNameParts(Integer taxonNameId, UUID taxonNameUuid, Rank rank, String genusOrUninomial, String infraGenericEpithet,
             String specificEpithet, String infraSpecificEpithet) {
         super();
         this.taxonNameId = taxonNameId;
+        this.taxonNameUuid = taxonNameUuid;
         this.rank = rank;
         this.genusOrUninomial = genusOrUninomial;
         this.infraGenericEpithet = infraGenericEpithet;
@@ -169,6 +171,14 @@ public class TaxonNameParts {
             return getInfraSpecificEpithet();
         }
         return "-- ERROR: INVALID OR UNSUPPORTED RANK (" + rank.getLabel() + ") --";
+    }
+
+
+    /**
+     * @return the taxonNameUuid
+     */
+    public UUID getTaxonNameUuid() {
+        return taxonNameUuid;
     }
 
 }

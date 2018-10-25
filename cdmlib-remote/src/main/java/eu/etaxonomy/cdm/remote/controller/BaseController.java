@@ -254,7 +254,8 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
      * @throws IOException
      */
     @SuppressWarnings("unchecked")
-    protected final <SUB_T extends T> SUB_T getCdmBaseInstance(Class<SUB_T> clazz, UUID uuid, HttpServletResponse response, List<String> pathProperties)
+    protected final <SUB_T extends T> SUB_T getCdmBaseInstance(Class<SUB_T> clazz,
+            UUID uuid, HttpServletResponse response, List<String> pathProperties)
             throws IOException {
 
         CdmBase cdmBaseObject = getCdmBaseInstance(uuid, response, pathProperties);

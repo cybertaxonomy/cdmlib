@@ -503,7 +503,7 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
             "LANGUAGESTRING", "HOMOTYPICALGROUP",
             "HIBERNATE_SEQUENCES" // IMPORTANT!!!
             },
-            fileNameAppendix );
+            fileNameAppendix, true );
 
     }
 }

@@ -11,7 +11,10 @@ package eu.etaxonomy.cdm.api.longrunningService;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.api.service.IDescriptiveDataSetService;
 import eu.etaxonomy.cdm.api.service.config.ForSubtreeConfiguratorBase;
+import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 
 /**
  * @author cmathew
@@ -39,5 +42,12 @@ public interface ILongRunningTasksService {
     UUID monitLongRunningTask(Set<UUID> movingUuids, UUID targetTreeNodeUuid, int movingType);
 
 
-    public UUID aggregateComputedTaxonDescriptions(UUID taxonNodeUuid);
+    public UUID aggregateComputedTaxonDescriptions(UUID taxonNodeUuid, UUID descriptiveDataSetUuid);
+
+    /**
+     * Monitored invocation of {@link IDescriptiveDataSetService#getRowWrapper(DescriptiveDataSet, IProgressMonitor)}
+     * @param descriptiveDataSet the working set for which getRowWrapper() is invoked
+     * @return the uuid of the monitor
+     */
+    public UUID monitGetRowWrapper(DescriptiveDataSet descriptiveDataSet);
 }

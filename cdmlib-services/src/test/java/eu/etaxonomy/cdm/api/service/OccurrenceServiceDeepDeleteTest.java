@@ -503,7 +503,7 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
                     "TaxonName",
                     "TaxonName_TypeDesignationBase",
                     "HomotypicalGroup"
-            }, "testDeepDelete_SingleRead");
+            }, "testDeepDelete_SingleRead", true);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
