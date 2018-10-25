@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.api.utility;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -32,7 +33,7 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
  */
 public class TaxonNamePartsFilter extends TaxonNameParts {
 
-    private Set<TaxonName> exludedNames = new HashSet<>();
+    private Set<UUID> exludedNamesUuids = new HashSet<>();
 
     /**
      * @param taxonNameId
@@ -110,14 +111,16 @@ public class TaxonNamePartsFilter extends TaxonNameParts {
     /**
      * @return the exludedNames
      */
-    public Set<TaxonName> getExludedNames() {
-        return exludedNames;
+    public Set<UUID> getExludedNamesUuids() {
+        return exludedNamesUuids;
     }
 
     /**
      * @param exludedNames the exludedNames to set
      */
     public void setExludedNames(Set<TaxonName> exludedNames) {
-        this.exludedNames = exludedNames;
+        for(TaxonName name : exludedNames){
+            exludedNamesUuids.add(name.getUuid());
+        }
     }
 }

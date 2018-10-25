@@ -50,7 +50,10 @@ import eu.etaxonomy.cdm.common.CdmUtils;
  */
 @Entity
 public final class CdmPreference implements Serializable {
-	private static final long serialVersionUID = 4307599154287181582L;
+
+    private static final int VALUE_LENGTH = 1023;
+
+    private static final long serialVersionUID = 4307599154287181582L;
 
     public static final CdmPreference NewInstance(PreferenceSubject subject,
             PreferencePredicate predicate, String value){
@@ -112,13 +115,13 @@ public final class CdmPreference implements Serializable {
 	@EmbeddedId
 	private PrefKey key;
 
-	@Column(length=1023)
+	@Column(length=VALUE_LENGTH)
 	private String value;
 
     //if false, the preference should not be overridden by local preferences,
 	//if true existing local preferences override database preferences
 	    //and the database preference only defines the default.
-    private boolean allowOverride = false;
+    private boolean allowOverride = true;
 
     @Embeddable
     public static class PrefKey implements Serializable{
@@ -238,8 +241,8 @@ public final class CdmPreference implements Serializable {
 	public CdmPreference(String subject, String predicate, String value){
 		this.key = new PrefKey(subject, predicate);
 		//TODO are null values allowed?		assert predicate != null : "value must not be null for preference";
-		if (value != null && value.length() > 1023) {throw new IllegalArgumentException(
-			String.format("value must not be longer then 1023 characters for preference. Value = %s", value));
+		if (value != null && value.length() > VALUE_LENGTH) {throw new IllegalArgumentException(
+			String.format("value must not be longer then "+VALUE_LENGTH+" characters for preference. Value = %s", value));
 		}
 		this.value = value;
 

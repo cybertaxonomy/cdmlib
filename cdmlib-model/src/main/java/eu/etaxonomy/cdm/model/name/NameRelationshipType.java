@@ -132,9 +132,6 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 
 //************************** METHODS ********************************
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
-	 */
 	@Override
 	public void resetTerms(){
 		termMap = null;

@@ -348,12 +348,12 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 	 * @param infraSpecificEpithet
 	 * @param rank
 	 *     Only name having the specified rank are taken into account.
-	 * @param excludedNames
+	 * @param excludedNamesUuids
      *     Names to be excluded from the result set
 	 * @return
 	 */
 	public List<TaxonNameParts> findTaxonNameParts(Optional<String> genusOrUninomial, Optional<String> infraGenericEpithet, Optional<String> specificEpithet,
-	        Optional<String> infraSpecificEpithet, Rank rank, Collection<TaxonName> excludedNames, Integer pageSize, Integer pageIndex, List<OrderHint> orderHints);
+	        Optional<String> infraSpecificEpithet, Rank rank, Collection<UUID> excludedNamesUuids, Integer pageSize, Integer pageIndex, List<OrderHint> orderHints);
     /**
      * Count method complementing {@link #findTaxonNameParts(Optional, Optional, Optional, Optional, Rank)}
      *
@@ -363,10 +363,10 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
      * @param infraSpecificEpithet
      * @param rank
      *     Only name having the specified rank are taken into account.
-     * @param excludedNames
+     * @param excludedNamesUuids
      *     Names to be excluded from the result set
      * @return
      */
     public long countTaxonNameParts(Optional<String> genusOrUninomial, Optional<String> infraGenericEpithet, Optional<String> specificEpithet, Optional<String> infraSpecificEpithet,
-            Rank rank, Collection<TaxonName> excludedNames);
+            Rank rank, Collection<UUID> excludedNames);
 }

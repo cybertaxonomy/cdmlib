@@ -21,6 +21,7 @@ public class TaxonGraphNodeDTO {
     private UUID taxonUuid;
     private String name;
     private String rank;
+    private int rankOrderId;
 
 
 
@@ -30,11 +31,12 @@ public class TaxonGraphNodeDTO {
      * @param taxonUuid
      * @param titleCache
      */
-    public TaxonGraphNodeDTO(UUID nameUuid, UUID taxonUuid, String name, String rank) {
+    public TaxonGraphNodeDTO(UUID nameUuid, UUID taxonUuid, String name, String rank, int rankOrderId) {
         this.nameUuid = nameUuid;
         this.taxonUuid = taxonUuid;
         this.name = name;
         this.rank = rank;
+        this.setRankOrderId(rankOrderId);
     }
 
     /**
@@ -76,6 +78,20 @@ public class TaxonGraphNodeDTO {
 
     public void setRank(String rank) {
         this.rank = rank;
+    }
+
+    /**
+     * @return the rankOrderId
+     */
+    public int getRankOrderId() {
+        return rankOrderId;
+    }
+
+    /**
+     * @param rankOrderId the rankOrderId to set
+     */
+    public void setRankOrderId(int rankOrderId) {
+        this.rankOrderId = rankOrderId;
     }
 
 }

@@ -213,7 +213,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
         TaxonName n_atropos_agassiz = taxonNameDao.load(atroposUuid);
         results = taxonNameDao.findTaxonNameParts(
                 Optional.of("Atro*"), null, null, null,
-                Rank.GENUS(), Arrays.asList(n_atropos_agassiz),
+                Rank.GENUS(), Arrays.asList(n_atropos_agassiz.getUuid()),
                 pageSize, pageIndex, Arrays.asList(new OrderHint("genusOrUninomial", SortOrder.ASCENDING)));
 
         assertNotNull(results);

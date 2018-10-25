@@ -32,8 +32,10 @@ public class IdentifiedEntityDTO<T extends IdentifiableEntity> extends EntityDTO
 		String typeLabel;
 		String identifier;
 		public AlternativeIdentifier(DefinedTerm identifierType, String identifier) {
-			this.typeUuid = identifierType.getUuid();
-			this.typeLabel = identifierType.getTitleCache();
+			if (identifierType != null){
+			    this.typeUuid = identifierType.getUuid();
+			    this.typeLabel = identifierType.getTitleCache();
+			}
 			this.identifier = identifier;
 		}
 		public UUID getTypeUuid() {return typeUuid;}
@@ -49,7 +51,8 @@ public class IdentifiedEntityDTO<T extends IdentifiableEntity> extends EntityDTO
 	    this.identifier = new AlternativeIdentifier(identifierType, identifier);
 	}
 
-	public IdentifiedEntityDTO(DefinedTerm identifierType, String identifier, UUID entityUuid, String titleCache, String abbrevTitleCache){
+	public IdentifiedEntityDTO(DefinedTerm identifierType, String identifier,
+	        UUID entityUuid, String titleCache, String abbrevTitleCache){
 	    super(entityUuid, titleCache, abbrevTitleCache);
 	    this.identifier = new AlternativeIdentifier(identifierType, identifier);
 	}

@@ -1183,9 +1183,10 @@ public class Reference
 	@Override
 	public String toString() {
 		if (type != null){
-			String result = "Reference [type=" + type + ", id= " + this.getId() + ", uuid=" + this.uuid ;
+			String result = "Reference [type=" + type  ;
 			result += title == null ? "" : ", title=" + title;
 			result += abbrevTitle == null ? "" : ", abbrevTitle=" + abbrevTitle;
+			result += ", id= " + this.getId() + ", uuid=" + this.uuid;
 			result += "]";
 			return result;
 		}else{

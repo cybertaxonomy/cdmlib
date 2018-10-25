@@ -111,8 +111,8 @@ public class TaxonGraphDaoHibernateImpl extends AbstractHibernateTaxonGraphProce
             hql = "COUNT(tr.id)";
         } else {
             hql += "SELECT new eu.etaxonomy.cdm.persistence.dto.TaxonGraphEdgeDTO("
-                    + "fromT.uuid, fromN.titleCache, fromN_R.idInVocabulary, "
-                    + "toT.uuid, toN.titleCache, toN_R.idInVocabulary, "
+                    + "fromT.uuid, fromN.titleCache, fromN_R.idInVocabulary, fromN_R.orderIndex, "
+                    + "toT.uuid, toN.titleCache, toN_R.idInVocabulary, toN_R.orderIndex, "
                     + "c.uuid, c.titleCache"
                     + ")";
         }

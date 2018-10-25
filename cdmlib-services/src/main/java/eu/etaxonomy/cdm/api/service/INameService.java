@@ -151,13 +151,13 @@ public interface INameService
      * @param infraSpecificEpithet
      * @param rank
      *     Only names having the specified rank are taken into account.
-     * @param excludedNames
+     * @param excludedNamesUuids
      *     Names to be excluded from the result set
      * @return
      */
 	public Pager<TaxonNameParts> findTaxonNameParts(Optional<String> genusOrUninomial,
             Optional<String> infraGenericEpithet, Optional<String> specificEpithet,
-            Optional<String> infraSpecificEpithet, Rank rank, Set<TaxonName> excludedNames,
+            Optional<String> infraSpecificEpithet, Rank rank, Set<UUID> excludedNamesUuids,
             Integer pageSize, Integer pageIndex, List<OrderHint> orderHints);
 
 	/**
