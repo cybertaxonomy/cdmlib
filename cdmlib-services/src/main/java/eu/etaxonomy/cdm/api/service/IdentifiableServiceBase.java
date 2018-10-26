@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -30,6 +31,8 @@ import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.ISourceable;
@@ -380,6 +383,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 		String oldNameCache = null;
 		String oldFullTitleCache = null;
 		String oldAbbrevTitleCache = null;
+        String oldNomenclaturalTitle = null;
 		if (entity instanceof TaxonName ){
 		    if (((TaxonName) entity).isNonViral()) {
                 try{
@@ -405,7 +409,18 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 				oldAbbrevTitleCache = ref.getAbbrevTitleCache();
 				ref.setProtectedAbbrevTitleCache(false);
 			}
-		}
+		} else if (entity instanceof Team){
+            Team team = (Team) entity;
+            if(!team.isProtectedTitleCache()){
+                team.setProtectedNomenclaturalTitleCache(true);
+                oldNomenclaturalTitle = team.getNomenclaturalTitle();
+                team.setProtectedNomenclaturalTitleCache(false);
+            }
+        } else if (entity instanceof Person){
+            // Person has no flag so for for protecting the nomenclaturalTitle
+            Person person = (Person) entity;
+            oldNomenclaturalTitle = person.getNomenclaturalTitle();
+        }
 		setOtherCachesNull(entity);
 		String newTitleCache= null;
 		INonViralName nvn = null; //TODO find better solution
@@ -454,7 +469,19 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 			if ( (oldAbbrevTitleCache == null && !ref.isProtectedAbbrevTitleCache() ) || (oldAbbrevTitleCache != null && !oldAbbrevTitleCache.equals(newAbbrevTitleCache))){
 				entitiesToUpdate.add(entity);
 			}
-		}
+		}else if (entity instanceof Team){
+		    Team team = (Team) entity;
+            String newNomenclaturalTitle = team.getNomenclaturalTitle();
+            if ( (oldNomenclaturalTitle == null && !team.isProtectedNomenclaturalTitleCache() ) || !Objects.equals(oldNomenclaturalTitle, newNomenclaturalTitle)){
+                entitiesToUpdate.add(entity);
+            }
+        }else if (entity instanceof Person){
+            Person person = (Person) entity;
+            String newNomenclaturalTitle = person.getNomenclaturalTitle();
+            if (!Objects.equals(oldNomenclaturalTitle, newNomenclaturalTitle)){
+                entitiesToUpdate.add(entity);
+            }
+        }
 	}
 
 
