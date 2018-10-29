@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.persistence.dao.common;
 
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -18,6 +19,7 @@ import java.util.UUID;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
@@ -101,5 +103,12 @@ public interface ITermVocabularyDao extends IIdentifiableDao<TermVocabulary> {
 	public void missingTermUuids(Map<UUID, Set<UUID>> uuidsRequested,
 			Map<UUID, Set<UUID>> uuidsRepsonse,
 			Map<UUID, TermVocabulary<?>> vocabularyResponse);
+
+    /**
+     * Loads all top level terms, i.e. terms that have no parent terms, for the given vocabulary
+     * @param vocabularyId the id of the vocabulary
+     * @return a collection of top level terms
+     */
+    public Collection<UuidAndTitleCache<DefinedTermBase>> getTopLevelTerms(int vocabularyId);
 
 }

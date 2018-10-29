@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,6 +26,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
@@ -84,5 +86,11 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
 
 		return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
 	}
+
+
+    @Override
+    public Collection<UuidAndTitleCache<DefinedTermBase>> getTopLevelTerms(int vocabularyId) {
+        return dao.getTopLevelTerms(vocabularyId);
+    }
 
 }

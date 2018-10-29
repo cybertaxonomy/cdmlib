@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -106,7 +107,7 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 	    	return result;
 		} else {
 			@SuppressWarnings("unchecked")
-            AuditQuery query = makeAuditQuery((Class)clazz, auditEvent);
+            AuditQuery query = makeAuditQuery(clazz, auditEvent);
 			query.add(AuditEntity.property("termSourceUri").eq(termSourceUri));
 
 			@SuppressWarnings("unchecked")
@@ -241,5 +242,36 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 
 		return;
 	}
+
+    @Override
+    public Collection<UuidAndTitleCache<DefinedTermBase>> getTopLevelTerms(int vocabularyId) {
+        String queryString = ""
+                + "select t.uuid, t.id, t.titleCache, t.partOf.id, t.kindOf.id "
+                + "from TermVocabulary v, DefinedTermBase t "
+                + "where v.id = :vocabularyId "
+                + "and t.vocabulary.id = v.id "
+                + "and t.partOf is null "
+                + "and t.kindOf is null";
+        Query query =  getSession().createQuery(queryString);
+        query.setParameter("vocabularyId", vocabularyId);
+        List<UuidAndTitleCache<DefinedTermBase>> list = new ArrayList<>();
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> result = query.list();
+
+        for(Object[] object : result){
+            UUID uuid = (UUID) object[0];
+            Integer id = (Integer) object[1];
+            String taxonTitleCache = (String) object[2];
+            String classificationTitleCache = (String) object[3];
+            if(taxonTitleCache!=null){
+                list.add(new UuidAndTitleCache<>(uuid,id, taxonTitleCache));
+            }
+            else{
+                list.add(new UuidAndTitleCache<>(uuid,id, classificationTitleCache));
+            }
+        }
+        return list;
+    }
 
 }

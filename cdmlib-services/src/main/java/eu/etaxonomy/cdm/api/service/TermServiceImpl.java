@@ -460,5 +460,21 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
         return result;
     }
 
+    @Override
+    public UuidAndTitleCache<DefinedTermBase> getParentUuidAndTitleCache(UuidAndTitleCache<DefinedTermBase> childTerm) {
+        return dao.getParentUuidAndTitleCache(childTerm);
+    }
+
+    @Override
+    public Collection<UuidAndTitleCache<DefinedTermBase>> getIncludesAsUuidAndTitleCache(
+            UuidAndTitleCache<DefinedTermBase> parentTerm) {
+        return dao.getIncludesAsUuidAndTitleCache(parentTerm);
+    }
+
+    @Override
+    public Collection<UuidAndTitleCache<DefinedTermBase>> getKindOfsAsUuidAndTitleCache(
+            UuidAndTitleCache<DefinedTermBase> parentTerm) {
+        return dao.getKindOfsAsUuidAndTitleCache(parentTerm);
+    }
 
 }

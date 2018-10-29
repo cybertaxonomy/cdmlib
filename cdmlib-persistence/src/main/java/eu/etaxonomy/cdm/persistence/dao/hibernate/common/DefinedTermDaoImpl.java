@@ -63,6 +63,7 @@ import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -663,6 +664,77 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
         @SuppressWarnings("unchecked")
         List<NamedArea> result = query.list();
         return result;
+    }
+
+    @Override
+    public UuidAndTitleCache<DefinedTermBase> getParentUuidAndTitleCache(UuidAndTitleCache<DefinedTermBase> childTerm) {
+        String parentQueryString = ""
+                + "select distinct t1.uuid, t1.id, t1.titleCache "
+                + "from DefinedTermBase t1, DefinedTermBase t2 "
+                + "where t1.id = t2.partOf.id "
+                + "and t2.id = :childTerm";
+        Query query =  getSession().createQuery(parentQueryString);
+        query.setParameter("childTerm", childTerm.getId());
+        List<UuidAndTitleCache<DefinedTermBase>> list = new ArrayList<>();
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> result = query.list();
+
+        if(result.size()==1){
+            Object[] object = result.get(0);
+            UUID uuid = (UUID) object[0];
+            Integer id = (Integer) object[1];
+            String titleCache = (String) object[2];
+            return new UuidAndTitleCache<>(uuid,id, titleCache);
+        }
+        return null;
+    }
+
+    @Override
+    public List<UuidAndTitleCache<DefinedTermBase>> getIncludesAsUuidAndTitleCache(
+            UuidAndTitleCache<DefinedTermBase> parentTerm) {
+        String queryString = ""
+                + "select distinct t2.uuid, t2.id, t2.titleCache "
+                + "from DefinedTermBase t1, DefinedTermBase t2 "
+                + "where t2.partOf.id = :parentId";
+        Query query =  getSession().createQuery(queryString);
+        query.setParameter("parentId", parentTerm.getId());
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> result = query.list();
+
+        List<UuidAndTitleCache<DefinedTermBase>> list = generateUuidAndTitleCache(result);
+        return list;
+    }
+
+    @Override
+    public List<UuidAndTitleCache<DefinedTermBase>> getKindOfsAsUuidAndTitleCache(
+            UuidAndTitleCache<DefinedTermBase> parentTerm) {
+        String queryString = ""
+                + "select distinct t2.uuid, t2.id, t2.titleCache "
+                + "from DefinedTermBase t1, DefinedTermBase t2 "
+                + "where t2.kindOf.id = :parentId";
+        Query query =  getSession().createQuery(queryString);
+        query.setParameter("parentId", parentTerm.getId());
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> result = query.list();
+
+        List<UuidAndTitleCache<DefinedTermBase>> list = generateUuidAndTitleCache(result);
+        return list;
+    }
+
+    private List<UuidAndTitleCache<DefinedTermBase>> generateUuidAndTitleCache(List<Object[]> result){
+        List<UuidAndTitleCache<DefinedTermBase>> list = new ArrayList<>();
+        for(Object[] object : result){
+            UUID uuid = (UUID) object[0];
+            Integer id = (Integer) object[1];
+            String titleCache = (String) object[2];
+            if(titleCache!=null){
+                list.add(new UuidAndTitleCache<>(uuid,id, titleCache));
+            }
+        }
+        return list;
     }
 
 

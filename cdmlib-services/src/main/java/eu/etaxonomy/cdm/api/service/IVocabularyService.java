@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.Collection;
 import java.util.List;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -16,6 +17,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public interface IVocabularyService extends IIdentifiableEntityService<TermVocabulary> {
@@ -67,5 +69,12 @@ public interface IVocabularyService extends IIdentifiableEntityService<TermVocab
 	 * @return a list of vocabularies
 	 */
 	public <T extends DefinedTermBase> List<TermVocabulary<T>> findByTermType(TermType termType, List<String> propertyPaths);
+
+	/**
+	 * Loads all top level terms, i.e. terms that have no parent terms, for the given vocabulary
+	 * @param vocabularyId the id of the vocabulary
+	 * @return a collection of top level terms
+	 */
+	public Collection<UuidAndTitleCache<DefinedTermBase>> getTopLevelTerms(int vocabularyId);
 
 }

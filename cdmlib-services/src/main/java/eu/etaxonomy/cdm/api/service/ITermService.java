@@ -192,4 +192,26 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
      */
     List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCache(List<TermVocabulary> vocs, Integer limit, String pattern,
             Language lang);
+
+    /**
+     * Returns the parent term of the given term
+     * @param childTerm the child term
+     * @return the parent term
+     */
+    public UuidAndTitleCache<DefinedTermBase> getParentUuidAndTitleCache(UuidAndTitleCache<DefinedTermBase> childTerm);
+
+    /**
+     * Returns all terms that are included in the given parent term resp. a part of the given term.
+     * @param parentTerm the parent term
+     * @return a collection of included terms
+     */
+    public Collection<UuidAndTitleCache<DefinedTermBase>> getIncludesAsUuidAndTitleCache(UuidAndTitleCache<DefinedTermBase> parentTerm);
+
+    /**
+     * Returns all terms that the given term is a generalization of resp. that are a kind of the given term
+     * @param parentTerm the parent term
+     * @return a collection of included terms
+     */
+    public Collection<UuidAndTitleCache<DefinedTermBase>> getKindOfsAsUuidAndTitleCache(UuidAndTitleCache<DefinedTermBase> parentTerm);
+
 }
