@@ -66,11 +66,15 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String singleYear = "\\b" + "(?:17|18|19|20)" + "\\d{2}" + "\\b";                      // word boundary followed by either 17,18,19, or 20 (not captured) followed by 2 digits
     protected static String correctYearPhrase = singleYear + "("+ fWs + "-" + fWs + singleYear + ")?" ;
     								//+ "(" + month + ")?)" ;                 // optional month
-    //!! also used by TimePeriodParser
-    public static String incorrectYearPhrase = "(\"" + correctYearPhrase + "\"|" + correctYearPhrase + "|"
-            + UTF8.QUOT_DBL_LOW9 + correctYearPhrase + UTF8.QUOT_DBL_HIGH_REV9 + ")"
-			+ fWs + "\\[" + singleYear + "\\]"  ;
-    protected static String yearPhrase = "(" + correctYearPhrase + "|" + incorrectYearPhrase + ")";
+
+
+    public static String verbStart = TimePeriodParser.verbatimStart;
+    public static String verbEnd = TimePeriodParser.verbatimEnd;
+
+    public static String verbatimYearPhrase = "(" + verbStart + correctYearPhrase + verbEnd + fWs + "\\[" + singleYear + "\\]" +"|"
+            + correctYearPhrase + oWs+  "publ\\.?" + fWs + correctYearPhrase + ")" ;
+    public static String undefinedYearPhrase = correctYearPhrase + fWs + "\\[" + correctYearPhrase + "\\]";
+    protected static String yearPhrase = "(" + correctYearPhrase + "|" + verbatimYearPhrase + "|" + undefinedYearPhrase + ")";
 
     protected static String yearSeperator = "\\." + oWs;
     protected static String detailSeparator = ":" + oWs;

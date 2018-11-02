@@ -1924,6 +1924,18 @@ public class NonViralNameParserImplTest {
 
     }
 
+
+    @Test
+    public final void testDatePublished(){
+
+        INonViralName name = parser.parseReferencedName("Calamintha transsilvanica (J\u00e1v.) So\u00f3 in Acta Bot. Acad. Sci. Hung. 23: 382. 1977 publ. 1978");
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        Reference nomRef = name.getNomenclaturalReference();
+        assertEquals(ReferenceType.Article, nomRef.getType());
+        assertEquals("1978 [\"1977\"]", nomRef.getDatePublished().toString());
+    }
+
+
     @Test
     public final void testExistingProblems(){
         //Canabio, issue with space
@@ -2091,7 +2103,7 @@ public class NonViralNameParserImplTest {
         assertEquals("29(1\u20134)", nomRef.getVolume());
         assertEquals("16, f. 1\u20132, t. 1-8", name.getNomenclaturalMicroReference());
         assertEquals("1983 [1984]", nomRef.getDatePublishedString());
-        assertEquals("1984", nomRef.getYear());
+//        assertEquals("1984", nomRef.getYear()); //was like this, but is not necessarily correct, see #7429
 
         //incorrect year with \u201e \u201f  (s. eu.etaxonomy.cdm.common.UTF8.ENGLISH_QUOT_START
         name = parser.parseReferencedName("Javorkaea Borhidi & Jarai-Koml."
