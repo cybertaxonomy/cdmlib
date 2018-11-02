@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -26,11 +27,12 @@ import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
+import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
-import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
+import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -244,34 +246,36 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 	}
 
     @Override
-    public Collection<UuidAndTitleCache<DefinedTermBase>> getTopLevelTerms(int vocabularyId) {
+    public Collection<TermDto> getTopLevelTerms(int vocabularyId) {
         String queryString = ""
-                + "select t.uuid, t.id, t.titleCache, t.partOf.id, t.kindOf.id "
-                + "from TermVocabulary v, DefinedTermBase t "
+                + "select a.uuid, r, p.uuid, v.uuid, a.orderIndex "
+                + "from DefinedTermBase as a LEFT JOIN a.partOf as p LEFT JOIN a.representations AS r LEFT JOIN a.vocabulary as v "
                 + "where v.id = :vocabularyId "
-                + "and t.vocabulary.id = v.id "
-                + "and t.partOf is null "
-                + "and t.kindOf is null";
+                + "and a.partOf is null "
+                + "and a.kindOf is null";
         Query query =  getSession().createQuery(queryString);
         query.setParameter("vocabularyId", vocabularyId);
-        List<UuidAndTitleCache<DefinedTermBase>> list = new ArrayList<>();
 
         @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
 
-        for(Object[] object : result){
-            UUID uuid = (UUID) object[0];
-            Integer id = (Integer) object[1];
-            String taxonTitleCache = (String) object[2];
-            String classificationTitleCache = (String) object[3];
-            if(taxonTitleCache!=null){
-                list.add(new UuidAndTitleCache<>(uuid,id, taxonTitleCache));
-            }
-            else{
-                list.add(new UuidAndTitleCache<>(uuid,id, classificationTitleCache));
+        Map<UUID, TermDto> dtoMap = new HashMap<>(result.size());
+        for (Object[] elements : result) {
+            UUID uuid = (UUID)elements[0];
+            if(dtoMap.containsKey(uuid)){
+                dtoMap.get(uuid).addRepresentation((Representation)elements[1]);
+            } else {
+                Set<Representation> representations;
+                if(elements[1] instanceof Representation) {
+                    representations = new HashSet<Representation>(1);
+                    representations.add((Representation)elements[1]);
+                } else {
+                    representations = (Set<Representation>)elements[1];
+                }
+                dtoMap.put(uuid, new TermDto(uuid, representations, (UUID)elements[2], (UUID)elements[3], (Integer)elements[4]));
             }
         }
-        return list;
+        return new ArrayList<>(dtoMap.values());
     }
 
 }

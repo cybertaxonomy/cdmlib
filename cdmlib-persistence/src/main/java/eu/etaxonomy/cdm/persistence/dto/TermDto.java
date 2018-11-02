@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.persistence.dto;
 
+import java.io.Serializable;
 import java.util.Set;
 import java.util.UUID;
 
@@ -19,9 +20,9 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
  * @since Mar 25, 2015
  *
  */
-public class TermDto {
+public class TermDto implements Serializable{
 
-
+    private static final long serialVersionUID = 5627308906985438034L;
     private final UUID uuid;
     private UUID partOfUuid = null;
     private UUID vocabularyUuid = null;
@@ -143,6 +144,34 @@ public class TermDto {
         this.orderIndex = orderIndex;
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
+        return result;
+    }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        TermDto other = (TermDto) obj;
+        if (uuid == null) {
+            if (other.uuid != null) {
+                return false;
+            }
+        } else if (!uuid.equals(other.uuid)) {
+            return false;
+        }
+        return true;
+    }
 
 }

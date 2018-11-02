@@ -53,6 +53,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringBaseDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IRepresentationDao;
+import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -461,19 +462,19 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
     }
 
     @Override
-    public UuidAndTitleCache<DefinedTermBase> getParentUuidAndTitleCache(UuidAndTitleCache<DefinedTermBase> childTerm) {
+    public TermDto getParentUuidAndTitleCache(TermDto childTerm) {
         return dao.getParentUuidAndTitleCache(childTerm);
     }
 
     @Override
-    public Collection<UuidAndTitleCache<DefinedTermBase>> getIncludesAsUuidAndTitleCache(
-            UuidAndTitleCache<DefinedTermBase> parentTerm) {
+    public Collection<TermDto> getIncludesAsUuidAndTitleCache(
+            TermDto parentTerm) {
         return dao.getIncludesAsUuidAndTitleCache(parentTerm);
     }
 
     @Override
-    public Collection<UuidAndTitleCache<DefinedTermBase>> getKindOfsAsUuidAndTitleCache(
-            UuidAndTitleCache<DefinedTermBase> parentTerm) {
+    public Collection<TermDto> getKindOfsAsUuidAndTitleCache(
+            TermDto parentTerm) {
         return dao.getKindOfsAsUuidAndTitleCache(parentTerm);
     }
 

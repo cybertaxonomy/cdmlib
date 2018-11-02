@@ -13,9 +13,12 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -38,6 +41,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
@@ -63,7 +67,7 @@ import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
-import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
+import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -667,75 +671,75 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
     }
 
     @Override
-    public UuidAndTitleCache<DefinedTermBase> getParentUuidAndTitleCache(UuidAndTitleCache<DefinedTermBase> childTerm) {
-        String parentQueryString = ""
-                + "select distinct t1.uuid, t1.id, t1.titleCache "
-                + "from DefinedTermBase t1, DefinedTermBase t2 "
-                + "where t1.id = t2.partOf.id "
-                + "and t2.id = :childTerm";
-        Query query =  getSession().createQuery(parentQueryString);
-        query.setParameter("childTerm", childTerm.getId());
-        List<UuidAndTitleCache<DefinedTermBase>> list = new ArrayList<>();
+    public TermDto getParentUuidAndTitleCache(TermDto childTerm) {
+
+        String queryString = "select p.uuid, r, p.partOf.uuid, v.uuid, p.orderIndex "
+                + "from DefinedTermBase as a LEFT JOIN a.vocabulary as v LEFT JOIN a.partOf as p LEFT JOIN p.representations AS r "
+                + "where a.uuid = :childUuid";
+
+        Query query =  getSession().createQuery(queryString);
+        query.setParameter("childUuid", childTerm.getUuid());
 
         @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
 
-        if(result.size()==1){
-            Object[] object = result.get(0);
-            UUID uuid = (UUID) object[0];
-            Integer id = (Integer) object[1];
-            String titleCache = (String) object[2];
-            return new UuidAndTitleCache<>(uuid,id, titleCache);
+        List<TermDto> list = termDtoListFrom(result);
+        if(list.size()==1){
+            return list.get(0);
         }
         return null;
     }
 
     @Override
-    public List<UuidAndTitleCache<DefinedTermBase>> getIncludesAsUuidAndTitleCache(
-            UuidAndTitleCache<DefinedTermBase> parentTerm) {
-        String queryString = ""
-                + "select distinct t2.uuid, t2.id, t2.titleCache "
-                + "from DefinedTermBase t1, DefinedTermBase t2 "
-                + "where t2.partOf.id = :parentId";
+    public Collection<TermDto> getIncludesAsUuidAndTitleCache(
+            TermDto parentTerm) {
+        String queryString = "select a.uuid, r, p.uuid, v.uuid, a.orderIndex "
+                + "from DefinedTermBase as a LEFT JOIN a.partOf as p LEFT JOIN a.representations AS r LEFT JOIN a.vocabulary as v "
+                + "where a.partOf.uuid = :parentUuid";
         Query query =  getSession().createQuery(queryString);
-        query.setParameter("parentId", parentTerm.getId());
+        query.setParameter("parentUuid", parentTerm.getUuid());
 
         @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
 
-        List<UuidAndTitleCache<DefinedTermBase>> list = generateUuidAndTitleCache(result);
+        List<TermDto> list = termDtoListFrom(result);
         return list;
     }
 
     @Override
-    public List<UuidAndTitleCache<DefinedTermBase>> getKindOfsAsUuidAndTitleCache(
-            UuidAndTitleCache<DefinedTermBase> parentTerm) {
-        String queryString = ""
-                + "select distinct t2.uuid, t2.id, t2.titleCache "
-                + "from DefinedTermBase t1, DefinedTermBase t2 "
-                + "where t2.kindOf.id = :parentId";
+    public Collection<TermDto> getKindOfsAsUuidAndTitleCache(
+            TermDto parentTerm) {
+        String queryString = "select t.uuid, r, p.uuid, v.uuid, t.orderIndex "
+                + "from DefinedTermBase as t LEFT JOIN t.partOf as p LEFT JOIN t.representations AS r LEFT JOIN t.vocabulary as v "
+                + "where t.kindOf.uuid = :parentUuid";
         Query query =  getSession().createQuery(queryString);
-        query.setParameter("parentId", parentTerm.getId());
+        query.setParameter("parentUuid", parentTerm.getUuid());
 
         @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
 
-        List<UuidAndTitleCache<DefinedTermBase>> list = generateUuidAndTitleCache(result);
+        List<TermDto> list = termDtoListFrom(result);
         return list;
     }
 
-    private List<UuidAndTitleCache<DefinedTermBase>> generateUuidAndTitleCache(List<Object[]> result){
-        List<UuidAndTitleCache<DefinedTermBase>> list = new ArrayList<>();
-        for(Object[] object : result){
-            UUID uuid = (UUID) object[0];
-            Integer id = (Integer) object[1];
-            String titleCache = (String) object[2];
-            if(titleCache!=null){
-                list.add(new UuidAndTitleCache<>(uuid,id, titleCache));
+    private List<TermDto> termDtoListFrom(List<Object[]> results) {
+        Map<UUID, TermDto> dtoMap = new HashMap<>(results.size());
+        for (Object[] elements : results) {
+            UUID uuid = (UUID)elements[0];
+            if(dtoMap.containsKey(uuid)){
+                dtoMap.get(uuid).addRepresentation((Representation)elements[1]);
+            } else {
+                Set<Representation> representations;
+                if(elements[1] instanceof Representation) {
+                    representations = new HashSet<Representation>(1);
+                    representations.add((Representation)elements[1]);
+                } else {
+                    representations = (Set<Representation>)elements[1];
+                }
+                dtoMap.put(uuid, new TermDto(uuid, representations, (UUID)elements[2], (UUID)elements[3], (Integer)elements[4]));
             }
         }
-        return list;
+        return new ArrayList<>(dtoMap.values());
     }
-
 
 }

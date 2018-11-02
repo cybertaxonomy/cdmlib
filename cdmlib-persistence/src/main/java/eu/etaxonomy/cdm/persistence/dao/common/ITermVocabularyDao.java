@@ -19,7 +19,7 @@ import java.util.UUID;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
+import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
@@ -109,6 +109,6 @@ public interface ITermVocabularyDao extends IIdentifiableDao<TermVocabulary> {
      * @param vocabularyId the id of the vocabulary
      * @return a collection of top level terms
      */
-    public Collection<UuidAndTitleCache<DefinedTermBase>> getTopLevelTerms(int vocabularyId);
+    public Collection<TermDto> getTopLevelTerms(int vocabularyId);
 
 }

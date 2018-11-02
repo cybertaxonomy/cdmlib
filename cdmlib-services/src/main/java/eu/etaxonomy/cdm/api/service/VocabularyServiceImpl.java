@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
-import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
+import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
@@ -89,7 +89,7 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
 
 
     @Override
-    public Collection<UuidAndTitleCache<DefinedTermBase>> getTopLevelTerms(int vocabularyId) {
+    public Collection<TermDto> getTopLevelTerms(int vocabularyId) {
         return dao.getTopLevelTerms(vocabularyId);
     }
 
