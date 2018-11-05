@@ -34,6 +34,9 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 @Transactional(readOnly = true)
 public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabulary,ITermVocabularyDao>  implements IVocabularyService {
 
+    @Autowired
+    private ITermService termService;
+
 	@Override
     @Autowired
 	protected void setDao(ITermVocabularyDao dao) {
@@ -91,6 +94,21 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
     @Override
     public Collection<TermDto> getTopLevelTerms(int vocabularyId) {
         return dao.getTopLevelTerms(vocabularyId);
+    }
+
+    @Override
+    public Collection<TermDto> getCompleteTermHierarchy(int vocabularyId) {
+        Collection<TermDto> topLevelTerms = dao.getTopLevelTerms(vocabularyId);
+        for (TermDto termDto : topLevelTerms) {
+            initializeIncludes(termDto);
+        }
+        return topLevelTerms;
+    }
+
+    private void initializeIncludes(TermDto parentTerm){
+        Collection<TermDto> includes = termService.getIncludesAsUuidAndTitleCache(parentTerm);
+        parentTerm.setIncludes(includes);
+        includes.forEach(include->initializeIncludes(include));
     }
 
 }

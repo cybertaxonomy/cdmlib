@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.persistence.dto;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
 
@@ -30,6 +31,7 @@ public class TermDto implements Serializable{
     private final Set<Representation> representations;
     private String representation_L10n = null;
     private String representation_L10n_abbreviatedLabel = null;
+    private Collection<TermDto> includes;
 
     public TermDto(UUID uuid, Set<Representation> representations, Integer orderIndex) {
         this.representations = representations;
@@ -142,6 +144,17 @@ public class TermDto implements Serializable{
      */
     public void setOrderIndex(Integer orderIndex) {
         this.orderIndex = orderIndex;
+    }
+
+    public Collection<TermDto> getIncludes() {
+        return includes;
+    }
+
+    /**
+     * @param includes the includes to set
+     */
+    public void setIncludes(Collection<TermDto> includes) {
+        this.includes = includes;
     }
 
     @Override

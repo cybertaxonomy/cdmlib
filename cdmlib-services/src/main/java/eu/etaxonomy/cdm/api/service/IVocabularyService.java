@@ -77,4 +77,6 @@ public interface IVocabularyService extends IIdentifiableEntityService<TermVocab
 	 */
 	public Collection<TermDto> getTopLevelTerms(int vocabularyId);
 
+    public Collection<TermDto> getCompleteTermHierarchy(int vocabularyId);
+
 }
