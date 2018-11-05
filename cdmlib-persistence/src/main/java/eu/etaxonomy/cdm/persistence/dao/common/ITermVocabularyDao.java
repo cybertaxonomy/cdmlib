@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
+import eu.etaxonomy.cdm.persistence.dto.TermVocabularyDto;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
@@ -106,9 +107,17 @@ public interface ITermVocabularyDao extends IIdentifiableDao<TermVocabulary> {
 
     /**
      * Loads all top level terms, i.e. terms that have no parent terms, for the given vocabulary
-     * @param vocabularyId the id of the vocabulary
+     * @param vocabularyUuid the id of the vocabulary
      * @return a collection of top level terms
      */
-    public Collection<TermDto> getTopLevelTerms(int vocabularyId);
+    public Collection<TermDto> getTopLevelTerms(UUID vocabularyUuid);
+
+    /**
+     * Returns term vocabularies that contain terms of a certain {@link TermType} e.g. Feature, Modifier, State.
+     *
+     * @param termType the {@link TermType} of the terms in the vocabulary and of the vocabulary
+     * @return a list of term vocabularies
+     */
+    public List<TermVocabularyDto> findVocabularyDtoByTermType(TermType termType);
 
 }

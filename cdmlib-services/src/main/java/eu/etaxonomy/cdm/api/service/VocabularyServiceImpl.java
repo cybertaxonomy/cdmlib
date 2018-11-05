@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
+import eu.etaxonomy.cdm.persistence.dto.TermVocabularyDto;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
@@ -92,13 +93,13 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
 
 
     @Override
-    public Collection<TermDto> getTopLevelTerms(int vocabularyId) {
-        return dao.getTopLevelTerms(vocabularyId);
+    public Collection<TermDto> getTopLevelTerms(UUID vocabularyUuid) {
+        return dao.getTopLevelTerms(vocabularyUuid);
     }
 
     @Override
-    public Collection<TermDto> getCompleteTermHierarchy(int vocabularyId) {
-        Collection<TermDto> topLevelTerms = dao.getTopLevelTerms(vocabularyId);
+    public Collection<TermDto> getCompleteTermHierarchy(UUID vocabularyUuid) {
+        Collection<TermDto> topLevelTerms = dao.getTopLevelTerms(vocabularyUuid);
         for (TermDto termDto : topLevelTerms) {
             initializeIncludes(termDto);
         }
@@ -109,6 +110,11 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
         Collection<TermDto> includes = termService.getIncludesAsUuidAndTitleCache(parentTerm);
         parentTerm.setIncludes(includes);
         includes.forEach(include->initializeIncludes(include));
+    }
+
+    @Override
+    public List<TermVocabularyDto> findVocabularyDtoByTermType(TermType termType) {
+        return dao.findVocabularyDtoByTermType(termType);
     }
 
 }
