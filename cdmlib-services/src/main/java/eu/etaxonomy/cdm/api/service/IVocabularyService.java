@@ -77,6 +77,12 @@ public interface IVocabularyService extends IIdentifiableEntityService<TermVocab
 	 */
 	public Collection<TermDto> getTopLevelTerms(int vocabularyId);
 
+	/**
+	 * Initializes the complete term hierarchy consisting of {@link TermDto}s
+	 * for the given vocabulary
+	 * @param vocabularyId the id of the {@link TermVocabulary}
+	 * @return a the top level elements for this vocabulary
+	 */
     public Collection<TermDto> getCompleteTermHierarchy(int vocabularyId);
 
 }
