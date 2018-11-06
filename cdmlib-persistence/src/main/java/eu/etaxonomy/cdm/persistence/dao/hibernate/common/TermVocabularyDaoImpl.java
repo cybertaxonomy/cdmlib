@@ -248,9 +248,7 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 
     @Override
     public Collection<TermDto> getTopLevelTerms(UUID vocabularyUuid) {
-        String queryString = ""
-                + "select a.uuid, r, p.uuid, v.uuid, a.orderIndex "
-                + "from DefinedTermBase as a LEFT JOIN a.partOf as p LEFT JOIN a.representations AS r LEFT JOIN a.vocabulary as v "
+        String queryString = TermDto.getTermDtoSelect()
                 + "where v.uuid = :vocabularyUuid "
                 + "and a.partOf is null "
                 + "and a.kindOf is null";
@@ -260,23 +258,8 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
         @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
 
-        Map<UUID, TermDto> dtoMap = new HashMap<>(result.size());
-        for (Object[] elements : result) {
-            UUID uuid = (UUID)elements[0];
-            if(dtoMap.containsKey(uuid)){
-                dtoMap.get(uuid).addRepresentation((Representation)elements[1]);
-            } else {
-                Set<Representation> representations;
-                if(elements[1] instanceof Representation) {
-                    representations = new HashSet<Representation>(1);
-                    representations.add((Representation)elements[1]);
-                } else {
-                    representations = (Set<Representation>)elements[1];
-                }
-                dtoMap.put(uuid, new TermDto(uuid, representations, (UUID)elements[2], (UUID)elements[3], (Integer)elements[4]));
-            }
-        }
-        return new ArrayList<>(dtoMap.values());
+        List<TermDto> list = TermDto.termDtoListFrom(result);
+        return list;
     }
 
     @Override

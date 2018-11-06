@@ -13,12 +13,9 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -41,7 +38,6 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
@@ -672,9 +668,7 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 
     @Override
     public TermDto getParentUuidAndTitleCache(TermDto childTerm) {
-
-        String queryString = "select p.uuid, r, p.partOf.uuid, v.uuid, p.orderIndex "
-                + "from DefinedTermBase as a LEFT JOIN a.vocabulary as v LEFT JOIN a.partOf as p LEFT JOIN p.representations AS r "
+        String queryString = TermDto.getTermDtoSelect()
                 + "where a.uuid = :childUuid";
 
         Query query =  getSession().createQuery(queryString);
@@ -683,7 +677,7 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
         @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
 
-        List<TermDto> list = termDtoListFrom(result);
+        List<TermDto> list = TermDto.termDtoListFrom(result);
         if(list.size()==1){
             return list.get(0);
         }
@@ -693,8 +687,7 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
     @Override
     public Collection<TermDto> getIncludesAsUuidAndTitleCache(
             TermDto parentTerm) {
-        String queryString = "select a.uuid, r, p.uuid, v.uuid, a.orderIndex "
-                + "from DefinedTermBase as a LEFT JOIN a.partOf as p LEFT JOIN a.representations AS r LEFT JOIN a.vocabulary as v "
+        String queryString = TermDto.getTermDtoSelect()
                 + "where a.partOf.uuid = :parentUuid";
         Query query =  getSession().createQuery(queryString);
         query.setParameter("parentUuid", parentTerm.getUuid());
@@ -702,15 +695,14 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
         @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
 
-        List<TermDto> list = termDtoListFrom(result);
+        List<TermDto> list = TermDto.termDtoListFrom(result);
         return list;
     }
 
     @Override
     public Collection<TermDto> getKindOfsAsUuidAndTitleCache(
             TermDto parentTerm) {
-        String queryString = "select t.uuid, r, p.uuid, v.uuid, t.orderIndex "
-                + "from DefinedTermBase as t LEFT JOIN t.partOf as p LEFT JOIN t.representations AS r LEFT JOIN t.vocabulary as v "
+        String queryString = TermDto.getTermDtoSelect()
                 + "where t.kindOf.uuid = :parentUuid";
         Query query =  getSession().createQuery(queryString);
         query.setParameter("parentUuid", parentTerm.getUuid());
@@ -718,28 +710,8 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
         @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
 
-        List<TermDto> list = termDtoListFrom(result);
+        List<TermDto> list = TermDto.termDtoListFrom(result);
         return list;
-    }
-
-    private List<TermDto> termDtoListFrom(List<Object[]> results) {
-        Map<UUID, TermDto> dtoMap = new HashMap<>(results.size());
-        for (Object[] elements : results) {
-            UUID uuid = (UUID)elements[0];
-            if(dtoMap.containsKey(uuid)){
-                dtoMap.get(uuid).addRepresentation((Representation)elements[1]);
-            } else {
-                Set<Representation> representations;
-                if(elements[1] instanceof Representation) {
-                    representations = new HashSet<Representation>(1);
-                    representations.add((Representation)elements[1]);
-                } else {
-                    representations = (Set<Representation>)elements[1];
-                }
-                dtoMap.put(uuid, new TermDto(uuid, representations, (UUID)elements[2], (UUID)elements[3], (Integer)elements[4]));
-            }
-        }
-        return new ArrayList<>(dtoMap.values());
     }
 
 }

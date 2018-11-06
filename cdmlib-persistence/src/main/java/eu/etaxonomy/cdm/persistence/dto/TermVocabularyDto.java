@@ -9,7 +9,6 @@
 */
 package eu.etaxonomy.cdm.persistence.dto;
 
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -21,7 +20,7 @@ import eu.etaxonomy.cdm.model.common.Representation;
  * @date 05.11.2018
  *
  */
-public class TermVocabularyDto extends AbstractTermDto implements Serializable {
+public class TermVocabularyDto extends AbstractTermDto {
 
     private static final long serialVersionUID = 6053392236860675874L;
 
