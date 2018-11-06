@@ -33,7 +33,7 @@ public class TermDto extends AbstractTermDto{
     private UUID partOfUuid = null;
     private UUID vocabularyUuid = null;
     private Integer orderIndex = null;
-    private Integer idInVocabulary = null;
+    private String idInVocabulary = null;
     private Collection<TermDto> includes;
 
     public TermDto(UUID uuid, Set<Representation> representations, Integer orderIndex) {
@@ -45,7 +45,7 @@ public class TermDto extends AbstractTermDto{
         this(uuid, representations, partOfUuid, null, vocabularyUuid, orderIndex, null);
     }
 
-    public TermDto(UUID uuid, Set<Representation> representations, UUID partOfUuid, UUID kindOfUuid, UUID vocabularyUuid, Integer orderIndex, Integer idInVocabulary) {
+    public TermDto(UUID uuid, Set<Representation> representations, UUID partOfUuid, UUID kindOfUuid, UUID vocabularyUuid, Integer orderIndex, String idInVocabulary) {
         super(uuid, representations);
         this.partOfUuid = partOfUuid;
         this.kindOfUuid = kindOfUuid;
@@ -83,11 +83,11 @@ public class TermDto extends AbstractTermDto{
         this.orderIndex = orderIndex;
     }
 
-    public Integer getIdInVocabulary() {
+    public String getIdInVocabulary() {
         return idInVocabulary;
     }
 
-    public void setIdInVocabulary(Integer idInVocabulary) {
+    public void setIdInVocabulary(String idInVocabulary) {
         this.idInVocabulary = idInVocabulary;
     }
 
@@ -101,7 +101,7 @@ public class TermDto extends AbstractTermDto{
 
     public static String getTermDtoSelect(){
         return ""
-                + "select a.uuid, r, p.uuid, k.uuid, v.uuid, a.idInVocabulary, a.orderIndex "
+                + "select a.uuid, r, p.uuid, k.uuid, v.uuid, a.orderIndex, a.idInVocabulary "
                 + "from DefinedTermBase as a "
                 + "LEFT JOIN a.partOf as p "
                 + "LEFT JOIN a.kindOf as k "
@@ -123,7 +123,7 @@ public class TermDto extends AbstractTermDto{
                 } else {
                     representations = (Set<Representation>)elements[1];
                 }
-                dtoMap.put(uuid, new TermDto(uuid, representations, (UUID)elements[2], (UUID)elements[3], (UUID)elements[4], (Integer)elements[5], (Integer)elements[6]));
+                dtoMap.put(uuid, new TermDto(uuid, representations, (UUID)elements[2], (UUID)elements[3], (UUID)elements[4], (Integer)elements[5], (String)elements[6]));
             }
         }
         return new ArrayList<>(dtoMap.values());
