@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -65,6 +66,9 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 	private static final Logger logger = Logger.getLogger(TermServiceImpl.class);
 
 	private ILanguageStringDao languageStringDao;
+
+	@Autowired
+	private IVocabularyService vocabularyService;
 
 	@Autowired
 	@Qualifier("langStrBaseDao")
@@ -481,13 +485,34 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
     @Transactional(readOnly = false)
     @Override
     public void moveTerm(UUID termUuuid, UUID parentUUID, boolean isKindOf) {
-        DefinedTermBase term = dao.load(termUuuid);
+        DefinedTermBase term = dao.load(termUuuid, Arrays.asList("vocabulary"));
+        TermVocabulary vocabulary = term.getVocabulary();
+        if(vocabulary!=null){
+            vocabulary.removeTerm(term);
+        }
+
         DefinedTermBase parent = dao.load(parentUUID);
-        if(isKindOf){
-            parent.addGeneralizationOf(term);
+        if(parent!=null){
+            //new parent is a term
+            if(isKindOf){
+                parent.addGeneralizationOf(term);
+            }
+            else{
+                parent.addIncludes(term);
+            }
+            parent.getVocabulary().addTerm(term);
+            dao.saveOrUpdate(parent);
         }
         else{
-            parent.addIncludes(term);
+            //new parent is a vocabulary
+            TermVocabulary parentVocabulary = vocabularyService.load(parentUUID);
+            if(parentVocabulary!=null){
+                parentVocabulary.removeTerm(term);
+                term.setKindOf(null);
+                term.setPartOf(null);
+                parentVocabulary.addTerm(term);
+            }
+            vocabularyService.saveOrUpdate(parentVocabulary);
         }
     }
 
