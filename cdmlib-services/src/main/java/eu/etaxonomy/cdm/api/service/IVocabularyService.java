@@ -95,4 +95,12 @@ public interface IVocabularyService extends IIdentifiableEntityService<TermVocab
      */
     public List<TermVocabularyDto> findVocabularyDtoByTermType(TermType termType);
 
+    /**
+     * Creates a new term as a direct child of the given vocabulary.
+     * @param termType the {@link TermType} of the term to create
+     * @param vocabularyUUID the {@link UUID} of the vocabulary
+     * kindOf relation. Otherwise it will added via a partOf relation
+     */
+    public void addNewTerm(TermType termType, UUID vocabularyUUID);
+
 }

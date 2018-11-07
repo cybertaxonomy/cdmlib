@@ -117,4 +117,13 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
         return dao.findVocabularyDtoByTermType(termType);
     }
 
+    @Transactional(readOnly = false)
+    @Override
+    public void addNewTerm(TermType termType, UUID vocabularyUUID) {
+        DefinedTermBase term = termType.getEmptyDefinedTermBase();
+        termService.save(term);
+        TermVocabulary vocabulary = dao.load(vocabularyUUID);
+        vocabulary.addTerm(term);
+        dao.saveOrUpdate(vocabulary);
+    }
 }
