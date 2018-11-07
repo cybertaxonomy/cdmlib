@@ -28,7 +28,9 @@ public class EntityInitStrategy {
 
 
     public EntityInitStrategy(List<String> propertyPaths){
-        this.propertyPaths.addAll(propertyPaths);
+        if(propertyPaths != null){
+            this.propertyPaths.addAll(propertyPaths);
+        }
     }
 
     public void extend(String basePath, List<String> extensions, boolean basePathIsCollection){

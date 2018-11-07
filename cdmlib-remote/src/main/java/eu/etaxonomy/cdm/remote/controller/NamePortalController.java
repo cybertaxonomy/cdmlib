@@ -91,6 +91,10 @@ public class NamePortalController extends BaseController<TaxonName, INameService
     protected <CDM_BASE extends CdmBase> List<String> complementInitStrategy(Class<CDM_BASE> clazz,
             List<String> pathProperties) {
 
+        if(pathProperties == null){
+            return pathProperties;
+        }
+
         EntityInitStrategy initStrategy = new EntityInitStrategy(pathProperties);
 
         if(pathProperties.contains("nameRelations")){
