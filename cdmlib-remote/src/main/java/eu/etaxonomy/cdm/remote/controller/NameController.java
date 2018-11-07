@@ -30,10 +30,12 @@ import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
+import eu.etaxonomy.cdm.persistence.dao.initializer.EntityInitStrategy;
 import io.swagger.annotations.Api;
 
 /**
@@ -77,6 +79,32 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
     @Override
     public void setService(INameService service) {
         this.service = service;
+    }
+
+
+    @Override
+    protected <CDM_BASE extends CdmBase> List<String> complementInitStrategy(Class<CDM_BASE> clazz,
+            List<String> pathProperties) {
+
+        EntityInitStrategy initStrategy = new EntityInitStrategy(pathProperties);
+
+        if(pathProperties.contains("nameRelations")){
+            // nameRelations is a transient property!
+            initStrategy.getPropertyPaths().remove("nameRelations");
+            initStrategy.extend("relationsFromThisName", TaxonPortalController.NAMERELATIONSHIP_INIT_STRATEGY, true);
+            initStrategy.extend("relationsToThisName", TaxonPortalController.NAMERELATIONSHIP_INIT_STRATEGY, true);
+        } else {
+            if(pathProperties.contains("relationsFromThisName")){
+                initStrategy.getPropertyPaths().remove("relationsFromThisName");
+                initStrategy.extend("relationsFromThisName", TaxonPortalController.NAMERELATIONSHIP_INIT_STRATEGY, true);
+            }
+            if(pathProperties.contains("relationsToThisName")){
+                initStrategy.getPropertyPaths().remove("relationsToThisName");
+                initStrategy.extend("relationsToThisName", TaxonPortalController.NAMERELATIONSHIP_INIT_STRATEGY, true);
+            }
+        }
+
+        return initStrategy.getPropertyPaths();
     }
 
 
@@ -157,6 +185,5 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
         }
         return null;
     }
-
 
 }
