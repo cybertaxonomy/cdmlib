@@ -478,4 +478,33 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
         return dao.getKindOfsAsUuidAndTitleCache(parentTerm);
     }
 
+    @Transactional(readOnly = false)
+    @Override
+    public void moveTerm(UUID termUuuid, UUID parentUUID, boolean isKindOf) {
+        DefinedTermBase term = dao.load(termUuuid);
+        DefinedTermBase parent = dao.load(parentUUID);
+        if(isKindOf){
+            parent.addGeneralizationOf(term);
+        }
+        else{
+            parent.addIncludes(term);
+        }
+    }
+
+    @Transactional(readOnly = false)
+    @Override
+    public void addNewTerm(TermType termType, UUID parentUUID, boolean isKindOf) {
+        DefinedTermBase term = termType.getEmptyDefinedTermBase();
+        dao.save(term);
+        DefinedTermBase parent = dao.load(parentUUID);
+        if(isKindOf){
+            parent.addGeneralizationOf(term);
+        }
+        else{
+            parent.addIncludes(term);
+        }
+        parent.getVocabulary().addTerm(term);
+        dao.saveOrUpdate(parent);
+    }
+
 }

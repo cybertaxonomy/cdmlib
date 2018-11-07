@@ -215,4 +215,20 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
      */
     public Collection<TermDto> getKindOfsAsUuidAndTitleCache(TermDto parentTerm);
 
+    /**
+     * Move the given term to the given parent
+     * @param termUuuid the {@link UUID} of the term to move
+     * @param parentUUID the {@link UUID} of the new parent term
+     */
+    public void moveTerm(UUID termUuuid, UUID parentUUID, boolean isKindOf);
+
+    /**
+     * Creates a new term as a child of the given parent.
+     * @param termType the {@link TermType} of the term to create
+     * @param parentUUID the {@link UUID} of the parent term
+     * @param isKindOf if <code>true</code> the term will be added via a
+     * kindOf relation. Otherwise it will added via a partOf relation
+     */
+    public void addNewTerm(TermType termType, UUID parentUUID, boolean isKindOf);
+
 }
