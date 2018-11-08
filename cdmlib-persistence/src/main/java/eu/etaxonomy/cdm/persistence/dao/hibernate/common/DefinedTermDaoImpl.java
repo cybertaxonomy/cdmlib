@@ -703,7 +703,7 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
     public Collection<TermDto> getKindOfsAsUuidAndTitleCache(
             TermDto parentTerm) {
         String queryString = TermDto.getTermDtoSelect()
-                + "where t.kindOf.uuid = :parentUuid";
+                + "where a.kindOf.uuid = :parentUuid";
         Query query =  getSession().createQuery(queryString);
         query.setParameter("parentUuid", parentTerm.getUuid());
 
