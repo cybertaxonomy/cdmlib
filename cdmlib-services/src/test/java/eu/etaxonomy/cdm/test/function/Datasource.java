@@ -14,10 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -29,11 +26,8 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
-import eu.etaxonomy.cdm.api.service.TaxaAndNamesSearchMode;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.GroupedTaxonDTO;
-import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.common.AccountStore;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
@@ -60,14 +54,8 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
-/**
- * This class is purely for function testing. Not used in production or testing frameworks.
- *
- * @author a.mueller
- */
 public class Datasource {
 	private static final Logger logger = Logger.getLogger(Datasource.class);
 
@@ -86,43 +74,37 @@ public class Datasource {
 		dataSource = lsDataSources.get(1);
 //		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 
-//		server = "localhost";
-////		database = "cdm36";
-//		database = "cdm_edaphobase";
-//		username = "edit";
+//		String server = "localhost";
+//		database = "cdm36";
+////		database = "cdm_production_edaphobase";
+//		String username = "edit";
 //		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
-       server = "160.45.63.175";
-       database = "cdm_cyprus";
-       username = "edit";
-       dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
-
-
-//		server = "160.45.63.171";
-//		database = "cdm_production_cichorieae";
-//		username = "edit";
+//		String server = "160.45.63.171";
+//		String database = "cdm_production_xxx";
+//		String username = "edit";
 //		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
 
-//		server = "test.e-taxonomy.eu";
-//		database = "cdm_test1";
-////		String database = "cdm_edit_flora_malesiana";
-//		username = "edit";
+//		String server = "test.e-taxonomy.eu";
+////		String database = "cdm_test";
+//		String database = "cdm_edit_flora_malesiana";
+//		String username = "edit";
 //		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
-//		server = "localhost";
-//		database = "testCDM";
-//		username = "postgres";
+//		String server = "localhost";
+//		String database = "testCDM";
+//		String username = "postgres";
 //		dataSource = CdmDataSource.NewInstance(DatabaseTypeEnum.PostgreSQL, server, database, DatabaseTypeEnum.PostgreSQL.getDefaultPort(), username, AccountStore.readOrStorePassword(server, database, username, null));
 
 
-//		//SQLServer
-//		server = "BGBM-PESISQL";
-//		database = "cdm36";
-//		int port = 1433;
-//		username = "cdmupdater";
-//		dataSource = CdmDataSource.NewSqlServer2012Instance(server, database, port, username, AccountStore.readOrStorePassword(server, database, username, null));
-////
+		//SQLServer
+		server = "BGBM-PESISQL";
+		database = "cdm36";
+		int port = 1433;
+		username = "cdmupdater";
+		dataSource = CdmDataSource.NewSqlServer2012Instance(server, database, port, username, AccountStore.readOrStorePassword(server, database, username, null));
+//
 //		//H2
 //        String path = "C:\\Users\\a.mueller\\.cdmLibrary\\writableResources\\h2\\LocalH2";
 ////		String path = "C:\\Users\\pesiimport\\.cdmLibrary\\writableResources\\h2\\LocalH2";
@@ -151,66 +133,6 @@ public class Datasource {
 		//CdmPersistentDataSource.save(dataSource.getName(), dataSource);
 		CdmApplicationController appCtr;
 		appCtr = CdmApplicationController.NewInstance(dataSource, schema);
-
-		EnumSet<TaxaAndNamesSearchMode> searchModes = EnumSet.noneOf(TaxaAndNamesSearchMode.class);
-        searchModes.add(TaxaAndNamesSearchMode.doTaxa);
-        searchModes.add(TaxaAndNamesSearchMode.doSynonyms);
-
-        UUID classificationUUID = UUID.fromString("0c2b5d25-7b15-4401-8b51-dd4be0ee5cab");
-        Classification classification = appCtr.getClassificationService().find(classificationUUID);
-        UUID subtreeUUID = UUID.fromString("e993df74-671c-4a03-9c4c-be4a6447a0f2");
-        TaxonNode subtree = appCtr.getTaxonNodeService().find(subtreeUUID);
-        NamedArea area = (NamedArea)appCtr.getTermService().find(UUID.fromString("fbf21230-4a42-4f4c-9af8-5da52123c264"));
-
-        Set<NamedArea> namedAreas = new HashSet<>();
-        namedAreas.add(area);
-        Set<PresenceAbsenceTerm> distributionStatus = null;
-        int pageSize = 25;
-        int pageNumber = 0;
-
-        try {
-            Pager<SearchResult<TaxonBase>> result = appCtr.getTaxonService().findTaxaAndNamesByFullText(searchModes, "Phyla can*",
-                    classification, subtree,
-                    namedAreas, distributionStatus, null, false, pageSize, pageNumber, null, null);
-
-            result = appCtr.getTaxonService().findTaxaAndNamesByFullText(searchModes, "Phyla can*",
-                    classification, subtree,
-                    namedAreas, distributionStatus, null, false, pageSize, pageNumber, null, null);
-
-            result = appCtr.getTaxonService().findTaxaAndNamesByFullText(searchModes, "Phyla can*",
-                    classification, subtree,
-                    namedAreas, distributionStatus, null, false, pageSize, pageNumber, null, null);
-
-            result = appCtr.getTaxonService().findTaxaAndNamesByFullText(searchModes, "Phyla can*",
-                    classification, subtree,
-                    namedAreas, distributionStatus, null, false, pageSize, pageNumber, null, null);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-//	    List<String> DEFAULT_INIT_STRATEGY = Arrays.asList(new String []{
-//	            "$"
-//	    });
-//		IFindTaxaAndNamesConfigurator config = FindTaxaAndNamesConfiguratorImpl.NewInstance();
-//        config.setIncludeUnpublished(false);
-//        config.setPageNumber(0);
-//        config.setPageSize(25);
-//        config.setTitleSearchString("Lapsana communis");
-//        config.setDoTaxa(true );
-//        config.setDoSynonyms(true);
-//        config.setDoMisappliedNames(true);
-//        config.setDoTaxaByCommonNames(true);
-//        config.setMatchMode(MatchMode.BEGINNING);
-//        config.setTaxonPropertyPath(DEFAULT_INIT_STRATEGY);
-//        config.setNamedAreas(null);
-//        config.setDoIncludeAuthors(false);
-//        config.setOrder(null);
-//        UUID treeUuid = UUID.fromString("534e190f-3339-49ba-95d9-fa27d5493e3e");
-//        Classification classification = appCtr.getClassificationService().find(treeUuid);
-//        config.setClassification(classification);
-//
-//		Pager<IdentifiableEntity> result = appCtr.getTaxonService().findTaxaAndNames(config);
 //		Classification classification = appCtr.getClassificationService().list(null, null, null, null, null).get(0);
 //		logger.warn(classification.getMicroReference());
 //        logger.warn(classification.getName());

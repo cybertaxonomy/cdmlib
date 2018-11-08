@@ -46,7 +46,7 @@ public class FieldMatcher extends FieldMatcherBase{
 	/**
 	 * @param matchStrategy the matchStrategy to set
 	 */
-	public void setMatchStrategy(IMatchStrategyEqual matchStrategy) {
+	public void setMatchStrategy(IMatchStrategy matchStrategy) {
 		this.matchStrategy = matchStrategy;
 	}
 

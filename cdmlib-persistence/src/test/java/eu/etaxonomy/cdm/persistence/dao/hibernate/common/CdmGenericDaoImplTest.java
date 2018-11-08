@@ -160,7 +160,7 @@ import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.strategy.match.DefaultMatchStrategy;
-import eu.etaxonomy.cdm.strategy.match.IMatchStrategyEqual;
+import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.MatchException;
 import eu.etaxonomy.cdm.strategy.merge.DefaultMergeStrategy;
 import eu.etaxonomy.cdm.strategy.merge.IMergeStrategy;
@@ -1041,7 +1041,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		cdmGenericDao.saveOrUpdate((Reference)book2);
 		cdmGenericDao.saveOrUpdate((Reference)book3);
 
-		IMatchStrategyEqual matchStrategy = DefaultMatchStrategy.NewInstance(Reference.class);
+		IMatchStrategy matchStrategy = DefaultMatchStrategy.NewInstance(Reference.class);
 
 		try {
 			List<IBook> matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
@@ -1107,8 +1107,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 			book2.setAuthorship(person1);
 			book3.setAuthorship(person1);
 
-			boolean m = matchStrategy.invoke(book1, book3).isSuccessful();
-			boolean m2 = matchStrategy.invoke(book2, book3).isSuccessful();
+			boolean m = matchStrategy.invoke(book1, book3);
+			boolean m2 = matchStrategy.invoke(book2, book3);
 
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
 			Assert.assertEquals("Resultlist must have 2 entries", 2, matchResult.size());
@@ -1168,7 +1168,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		cdmGenericDao.saveOrUpdate(team2);
 
 
-		IMatchStrategyEqual matchStrategy = DefaultMatchStrategy.NewInstance(Reference.class);
+		IMatchStrategy matchStrategy = DefaultMatchStrategy.NewInstance(Reference.class);
 
 		try {
 			List<IBook> matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
@@ -1196,8 +1196,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 			Assert.assertEquals("Resultlist must have 1 entries", 1, matchResult.size());
 			Assert.assertTrue("Resultlist must contain book 1", matchResult.contains(book1));
 
-			IMatchStrategyEqual teamMatcher = DefaultMatchStrategy.NewInstance(Team.class);
-			boolean teamsMatch = teamMatcher.invoke(team1, team2).isSuccessful();
+			IMatchStrategy teamMatcher = DefaultMatchStrategy.NewInstance(Team.class);
+			boolean teamsMatch = teamMatcher.invoke(team1, team2);
 			Assert.assertTrue("Team1 and team2 should match" ,teamsMatch);
 
 			book3.setAuthorship(team2);
@@ -1217,7 +1217,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 			Assert.assertTrue("Resultlist must contain book 2", matchResult.contains(book2));
 
 			team2.setTitleCache("team2", true);
-			teamsMatch = teamMatcher.invoke(team1, team2).isSuccessful();
+			teamsMatch = teamMatcher.invoke(team1, team2);
 			Assert.assertFalse("Team1 and team2 should not match" ,teamsMatch);
 
 			book3.setAuthorship(team1);

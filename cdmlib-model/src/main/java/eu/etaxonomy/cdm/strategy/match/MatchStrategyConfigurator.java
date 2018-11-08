@@ -28,7 +28,7 @@ public class MatchStrategyConfigurator {
         Reference
     }
 
-    public static IMatchStrategyEqual getMatchStrategy(MatchStrategy strategy) throws MatchException {
+    public static IMatchStrategy getMatchStrategy(MatchStrategy strategy) throws MatchException {
         switch(strategy) {
         case NonViralName :
             return NonViralNameMatchStrategy();
@@ -44,9 +44,9 @@ public class MatchStrategyConfigurator {
 	 * <p>NonViralNameMatchStrategy</p>
 	 *
 	 * @throws eu.etaxonomy.cdm.strategy.match.MatchException if any.
-	 * @return a {@link eu.etaxonomy.cdm.strategy.match.IMatchStrategyEqual} object.
+	 * @return a {@link eu.etaxonomy.cdm.strategy.match.IMatchStrategy} object.
 	 */
-	public static IMatchStrategyEqual NonViralNameMatchStrategy() throws MatchException{
+	public static IMatchStrategy NonViralNameMatchStrategy() throws MatchException{
 		return getDefaultNonViralNameMatchStrategy();// PreferencesUtil.getMatchStrategy(NonViralName.class);
 	}
 
@@ -54,9 +54,9 @@ public class MatchStrategyConfigurator {
 	 * <p>TeamOrPersonMatchStrategy</p>
 	 *
 	 * @throws eu.etaxonomy.cdm.strategy.match.MatchException if any.
-	 * @return a {@link eu.etaxonomy.cdm.strategy.match.IMatchStrategyEqual} object.
+	 * @return a {@link eu.etaxonomy.cdm.strategy.match.IMatchStrategy} object.
 	 */
-	public static IMatchStrategyEqual TeamOrPersonMatchStrategy() throws MatchException{
+	public static IMatchStrategy TeamOrPersonMatchStrategy() throws MatchException{
 		return getDefaultTeamOrPersonMatchStrategy();// PreferencesUtil.getMatchStrategy(TeamOrPersonBase.class);
 	}
 
@@ -64,9 +64,9 @@ public class MatchStrategyConfigurator {
 	 * <p>ReferenceMatchStrategy</p>
 	 *
 	 * @throws eu.etaxonomy.cdm.strategy.match.MatchException if any.
-	 * @return a {@link eu.etaxonomy.cdm.strategy.match.IMatchStrategyEqual} object.
+	 * @return a {@link eu.etaxonomy.cdm.strategy.match.IMatchStrategy} object.
 	 */
-	public static IMatchStrategyEqual ReferenceMatchStrategy() throws MatchException{
+	public static IMatchStrategy ReferenceMatchStrategy() throws MatchException{
 		return getDefaultReferenceMatchStrategy();// PreferencesUtil.getMatchStrategy(ReferenceBase.class);
 	}
 
@@ -74,10 +74,10 @@ public class MatchStrategyConfigurator {
 	 * <p>getDefaultNonViralNameMatchStrategy</p>
 	 *
 	 * @throws eu.etaxonomy.cdm.strategy.match.MatchException if any.
-	 * @return a {@link eu.etaxonomy.cdm.strategy.match.IMatchStrategyEqual} object.
+	 * @return a {@link eu.etaxonomy.cdm.strategy.match.IMatchStrategy} object.
 	 */
-	public static IMatchStrategyEqual getDefaultNonViralNameMatchStrategy() throws MatchException{
-		IMatchStrategyEqual strategy = DefaultMatchStrategy.NewInstance(TaxonName.class);
+	public static IMatchStrategy getDefaultNonViralNameMatchStrategy() throws MatchException{
+		IMatchStrategy strategy = DefaultMatchStrategy.NewInstance(TaxonName.class);
 
 		strategy.setMatchMode("nomenclaturalReference", MatchMode.IGNORE);
 		strategy.setMatchMode("combinationAuthorship", MatchMode.IGNORE);
@@ -91,11 +91,11 @@ public class MatchStrategyConfigurator {
 	/**
 	 * <p>getDefaultTeamOrPersonMatchStrategy</p>
 	 *
-	 * @return a {@link eu.etaxonomy.cdm.strategy.match.IMatchStrategyEqual} object.
+	 * @return a {@link eu.etaxonomy.cdm.strategy.match.IMatchStrategy} object.
 	 * @throws eu.etaxonomy.cdm.strategy.match.MatchException if any.
 	 */
-	public static IMatchStrategyEqual getDefaultTeamOrPersonMatchStrategy() throws MatchException{
-		IMatchStrategyEqual strategy = DefaultMatchStrategy.NewInstance(TeamOrPersonBase.class);
+	public static IMatchStrategy getDefaultTeamOrPersonMatchStrategy() throws MatchException{
+		IMatchStrategy strategy = DefaultMatchStrategy.NewInstance(TeamOrPersonBase.class);
 
 		return strategy;
 	}
@@ -104,11 +104,11 @@ public class MatchStrategyConfigurator {
 	/**
 	 * <p>getDefaultReferenceMatchStrategy</p>
 	 *
-	 * @return a {@link eu.etaxonomy.cdm.strategy.match.IMatchStrategyEqual} object.
+	 * @return a {@link eu.etaxonomy.cdm.strategy.match.IMatchStrategy} object.
 	 * @throws eu.etaxonomy.cdm.strategy.match.MatchException if any.
 	 */
-	public static IMatchStrategyEqual getDefaultReferenceMatchStrategy() throws MatchException{
-		IMatchStrategyEqual strategy = DefaultMatchStrategy.NewInstance(Reference.class);
+	public static IMatchStrategy getDefaultReferenceMatchStrategy() throws MatchException{
+		IMatchStrategy strategy = DefaultMatchStrategy.NewInstance(Reference.class);
 
 		strategy.setMatchMode("title", MatchMode.EQUAL);
 		strategy.setMatchMode("inReference", MatchMode.IGNORE);

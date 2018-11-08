@@ -16,7 +16,6 @@ package eu.etaxonomy.cdm.model.reference;
  * This class corresponds, according to the TDWG ontology, to the publication type
  * term (from PublicationTypeTerm): "Journal".
  */
-//TODO inheriting getAuthorship() and datePublished() from IReference is not correct
 public interface IJournal extends IPublicationBase{
 
 	/**

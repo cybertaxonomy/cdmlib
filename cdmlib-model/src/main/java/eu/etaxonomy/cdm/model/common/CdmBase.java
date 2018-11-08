@@ -59,7 +59,7 @@ import eu.etaxonomy.cdm.hibernate.search.UuidBridge;
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
 import eu.etaxonomy.cdm.model.NewEntityListener;
-import eu.etaxonomy.cdm.strategy.match.IMatchStrategyEqual;
+import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
@@ -353,7 +353,7 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
      * <BR><BR>
      *
      * If one wants to compare 2 CdmBase entities content wise you may use e.g. a
-     * {@link IMatchStrategyEqual match strategy} and make sure
+     * {@link IMatchStrategy match strategy} and make sure
      * {@link IMatchable matching} is implemented for the respective CdmBase subclass.
      * You may adapt your match strategy to your own needs.
      *
