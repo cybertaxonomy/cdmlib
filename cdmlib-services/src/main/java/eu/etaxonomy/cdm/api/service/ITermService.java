@@ -18,12 +18,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.api.service.TermServiceImpl.TermMovePosition;
 import eu.etaxonomy.cdm.api.service.config.TermDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.LanguageStringBase;
+import eu.etaxonomy.cdm.model.common.OrderedTermBase;
+import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -214,6 +217,14 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
      * @return a collection of included terms
      */
     public Collection<TermDto> getKindOfsAsUuidAndTitleCache(TermDto parentTerm);
+
+    /**
+     * Move the given term to the given parent
+     * @param termUuuid the {@link UUID} of the term to move
+     * @param parentUUID the {@link UUID} of the new parent term
+     * @param termMovePosition enum to specify the position for {@link OrderedTermBase}s in an {@link OrderedTermVocabulary}
+     */
+    public void moveTerm(UUID termUuuid, UUID parentUUID, boolean isKindOf, TermMovePosition termMovePosition);
 
     /**
      * Move the given term to the given parent

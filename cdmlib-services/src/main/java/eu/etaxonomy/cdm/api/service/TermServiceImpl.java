@@ -37,11 +37,14 @@ import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableExcepti
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.LanguageStringBase;
+import eu.etaxonomy.cdm.model.common.OrderedTermBase;
+import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.common.TermType;
@@ -485,23 +488,56 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
     @Transactional(readOnly = false)
     @Override
     public void moveTerm(UUID termUuuid, UUID parentUUID, boolean isKindOf) {
-        DefinedTermBase term = dao.load(termUuuid, Arrays.asList("vocabulary"));
-        TermVocabulary vocabulary = term.getVocabulary();
-        if(vocabulary!=null){
-            vocabulary.removeTerm(term);
-        }
+        moveTerm(termUuuid, parentUUID, isKindOf, null);
+    }
 
-        DefinedTermBase parent = dao.load(parentUUID);
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @Transactional(readOnly = false)
+    @Override
+    public void moveTerm(UUID termUuuid, UUID parentUUID, boolean isKindOf, TermMovePosition termMovePosition) {
+        DefinedTermBase term = dao.load(termUuuid, Arrays.asList("vocabulary"));
+        DefinedTermBase parent = dao.load(parentUUID, Arrays.asList("vocabulary"));
         if(parent!=null){
             //new parent is a term
-            if(isKindOf){
-                parent.addGeneralizationOf(term);
+            if(parent.isInstanceOf(OrderedTermBase.class)
+                    && term.isInstanceOf(OrderedTermBase.class)
+                    && termMovePosition!=null
+                    && HibernateProxyHelper.deproxy(parent, OrderedTermBase.class).getVocabulary().isInstanceOf(OrderedTermVocabulary.class)) {
+                //new parent is an ordered term
+                OrderedTermBase orderedTerm = HibernateProxyHelper.deproxy(term, OrderedTermBase.class);
+                OrderedTermBase targetOrderedDefinedTerm = HibernateProxyHelper.deproxy(parent, OrderedTermBase.class);
+                OrderedTermVocabulary otVoc = HibernateProxyHelper.deproxy(targetOrderedDefinedTerm.getVocabulary(), OrderedTermVocabulary.class);
+                if(termMovePosition.equals(TermMovePosition.BEFORE)) {
+                    orderedTerm.getVocabulary().removeTerm(orderedTerm);
+                    otVoc.addTermAbove(orderedTerm, targetOrderedDefinedTerm);
+                    if (targetOrderedDefinedTerm.getPartOf() != null){
+                        targetOrderedDefinedTerm.getPartOf().addIncludes(orderedTerm);
+                    }
+                }
+                else if(termMovePosition.equals(TermMovePosition.AFTER)) {
+                    orderedTerm.getVocabulary().removeTerm(orderedTerm);
+                    otVoc.addTermBelow(orderedTerm, targetOrderedDefinedTerm);
+                    if (targetOrderedDefinedTerm.getPartOf() != null){
+                        targetOrderedDefinedTerm.getPartOf().addIncludes(orderedTerm);
+                    }
+                }
+                else if(termMovePosition.equals(TermMovePosition.ON)) {
+                    orderedTerm.getVocabulary().removeTerm(orderedTerm);
+                    targetOrderedDefinedTerm.addIncludes(orderedTerm);
+                    targetOrderedDefinedTerm.getVocabulary().addTerm(orderedTerm);
+                }
             }
             else{
-                parent.addIncludes(term);
+                term.getVocabulary().removeTerm(term);
+                if(isKindOf){
+                    parent.addGeneralizationOf(term);
+                }
+                else{
+                    parent.addIncludes(term);
+                }
+                parent.getVocabulary().addTerm(term);
             }
-            parent.getVocabulary().addTerm(term);
-            dao.saveOrUpdate(parent);
+            vocabularyService.saveOrUpdate(parent.getVocabulary());
         }
         else{
             //new parent is a vocabulary
@@ -510,12 +546,15 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
                 parentVocabulary.removeTerm(term);
                 term.setKindOf(null);
                 term.setPartOf(null);
+
+                term.getVocabulary().removeTerm(term);
                 parentVocabulary.addTerm(term);
             }
             vocabularyService.saveOrUpdate(parentVocabulary);
         }
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Transactional(readOnly = false)
     @Override
     public void addNewTerm(TermType termType, UUID parentUUID, boolean isKindOf) {
@@ -530,6 +569,12 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
         }
         parent.getVocabulary().addTerm(term);
         dao.saveOrUpdate(parent);
+    }
+
+    public enum TermMovePosition{
+        BEFORE,
+        AFTER,
+        ON
     }
 
 }
