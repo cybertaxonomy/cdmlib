@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.match.DefaultMatchStrategy;
-import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
+import eu.etaxonomy.cdm.strategy.match.IMatchStrategyEqual;
 import eu.etaxonomy.cdm.strategy.match.MatchException;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
 
@@ -74,11 +74,11 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
     private Map<String, Set<Collection>> collectionMap = new HashMap<>();
 
 
-    private IMatchStrategy referenceMatcher = DefaultMatchStrategy.NewInstance(Reference.class);
+    private IMatchStrategyEqual referenceMatcher = DefaultMatchStrategy.NewInstance(Reference.class);
 //    private IMatchStrategy collectionMatcher = DefaultMatchStrategy.NewInstance(Collection.class);
-    private IMatchStrategy nameMatcher = DefaultMatchStrategy.NewInstance(TaxonName.class);
-    private IMatchStrategy personMatcher = DefaultMatchStrategy.NewInstance(Person.class);
-    private IMatchStrategy teamMatcher = DefaultMatchStrategy.NewInstance(Team.class);
+    private IMatchStrategyEqual nameMatcher = DefaultMatchStrategy.NewInstance(TaxonName.class);
+    private IMatchStrategyEqual personMatcher = DefaultMatchStrategy.NewInstance(Person.class);
+    private IMatchStrategyEqual teamMatcher = DefaultMatchStrategy.NewInstance(Team.class);
 
 
  // ************************** FACTORY *******************************/
@@ -229,7 +229,7 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
     private Optional<Reference> getMatchingReference(Reference newReference){
         Predicate<Reference> matchFilter = reference ->{
             try {
-                return referenceMatcher.invoke(reference, newReference);
+                return referenceMatcher.invoke(reference, newReference).isSuccessful();
             } catch (MatchException e) {
                 throw new RuntimeException(e);
             }
@@ -266,7 +266,7 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
         Person newPersonDeproxy = CdmBase.deproxy(newPerson);
         Predicate<Person> matchFilter = (person) ->{
             try {
-                return personMatcher.invoke(person, newPersonDeproxy);
+                return personMatcher.invoke(person, newPersonDeproxy).isSuccessful();
             } catch (MatchException e) {
                 throw new RuntimeException(e);
             }
@@ -292,7 +292,7 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
         Team newTeamDeproxy = CdmBase.deproxy(newTeam);
         Predicate<Team> matchFilter = (team) ->{
             try {
-                return teamMatcher.invoke(team, newTeamDeproxy);
+                return teamMatcher.invoke(team, newTeamDeproxy).isSuccessful();
             } catch (MatchException e) {
                 throw new RuntimeException(e);
             }
@@ -328,7 +328,7 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
     private Optional<INonViralName> getMatchingName(INonViralName existing){
         Predicate<INonViralName> matchFilter = name ->{
             try {
-                return nameMatcher.invoke(name, existing);
+                return nameMatcher.invoke(name, existing).isSuccessful();
             } catch (MatchException e) {
                 throw new RuntimeException(e);
             }

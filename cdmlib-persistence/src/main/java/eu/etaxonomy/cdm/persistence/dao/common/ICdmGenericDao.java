@@ -20,7 +20,7 @@ import org.springframework.dao.DataAccessException;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
-import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
+import eu.etaxonomy.cdm.strategy.match.IMatchStrategyEqual;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.match.MatchException;
 import eu.etaxonomy.cdm.strategy.merge.IMergeStrategy;
@@ -122,7 +122,7 @@ public interface ICdmGenericDao {
 	 * @return
 	 * @throws MatchException
 	 */
-	public <T extends IMatchable> List<T> findMatching(T objectToMatch, IMatchStrategy matchStrategy) throws MatchException;
+	public <T extends IMatchable> List<T> findMatching(T objectToMatch, IMatchStrategyEqual matchStrategy) throws MatchException;
 
 
 	/**

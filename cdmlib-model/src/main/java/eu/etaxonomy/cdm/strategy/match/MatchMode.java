@@ -30,29 +30,33 @@ public enum MatchMode {
 	MATCH,//matches if parameter match (parameters must implement IMatchable)
 	CACHE
 	;
+    //a possible further MatchMode could be NULL, saying that all instances of the given type should have a null
+    //value, otherwise dirty data which should not be matched
+    //e.g. NewParsedJournalInstance-authorship
+
 	private static final Logger logger = Logger.getLogger(MatchMode.class);
 
-	public boolean matches(Object obj1, Object obj2, IMatchStrategy matchStrategy) throws MatchException{
+	public MatchResult matches(Object obj1, Object obj2, IMatchStrategy matchStrategy, String fieldName, boolean failAll) throws MatchException{
 		if (this == EQUAL_REQUIRED){
-			return matchesEqualRequired(obj1, obj2);
+			return matchesEqualRequired(obj1, obj2, fieldName);
 		}else if(this == EQUAL){
-			return matchesEqual(obj1, obj2);
+			return matchesEqual(obj1, obj2, fieldName);
 		}else if (this == EQUAL_OR_ONE_NULL){
-			return matchesEqualOrOneNull(obj1, obj2);
+			return matchesEqualOrOneNull(obj1, obj2, fieldName);
 		}else if (this == EQUAL_OR_SECOND_NULL){
-			return matchesEqualOrSecondNull(obj1, obj2);
+			return matchesEqualOrSecondNull(obj1, obj2, fieldName);
 		}else if(this == IGNORE){
 			return matchesIgnore(obj1, obj2);
 		}else if(this == MATCH){
-			return matchesMatch(obj1, obj2, matchStrategy);
+			return matchesMatch(obj1, obj2, matchStrategy, fieldName, failAll);
 		}else if(this == MATCH_REQUIRED){
-			return matchesMatchRequired(obj1, obj2, matchStrategy);
+			return matchesMatchRequired(obj1, obj2, matchStrategy, fieldName, failAll);
 		}else if(this == MATCH_OR_ONE_NULL){
-			return matchesMatchOrOneNull(obj1, obj2, matchStrategy);
+			return matchesMatchOrOneNull(obj1, obj2, matchStrategy, fieldName, failAll);
 		}else if(this == MATCH_OR_SECOND_NULL){
-			return matchesMatchOrSecondNull(obj1, obj2, matchStrategy);
+			return matchesMatchOrSecondNull(obj1, obj2, matchStrategy, fieldName, failAll);
 		}else if(this == CACHE){
-			return matchesEqualRequired(obj1, obj2) && StringUtils.isNotBlank((String)obj1);
+			return matchCache(obj1, obj2, fieldName);
 		}else {
 			throw new MatchException("Match mode not handled yet: " + this);
 		}
@@ -61,23 +65,38 @@ public enum MatchMode {
 
 
 	/**
+     * @param obj1
+     * @param obj2
+     * @return
+     */
+    private MatchResult matchCache(Object obj1, Object obj2, String fieldName) {
+        if (StringUtils.isBlank((String)obj1)){
+            return MatchResult.NewInstance(fieldName, this,obj1, obj2);
+        }else{
+            return matchesEqualRequired(obj1, obj2, fieldName);
+        }
+    }
+
+
+
+    /**
 	 * @param obj1
 	 * @param obj2
 	 * @param matchStrategy
 	 * @return
 	 * @throws MatchException
 	 */
-	private boolean matchesMatchRequired(Object obj1, Object obj2, IMatchStrategy matchStrategy) throws MatchException {
+	private MatchResult matchesMatchRequired(Object obj1, Object obj2, IMatchStrategy matchStrategy, String fieldName, boolean failAll) throws MatchException {
 		if (obj1 == null || obj2 == null ){
-			return false;
+			return MatchResult.NewInstance(fieldName, this, obj1, obj2);
 		}else if (! (obj1 instanceof IMatchable  && obj2 instanceof IMatchable) ){
 			logger.warn("Match objects are not of type IMatchable");
-			return matchesEqualRequired(obj1, obj2);
+			return matchesEqualRequired(obj1, obj2, fieldName);
 		}else{
 			if (matchStrategy == null){
 				matchStrategy = DefaultMatchStrategy.NewInstance((Class<? extends IMatchable>) obj1.getClass());
 			}
-			return matchStrategy.invoke((IMatchable)obj1, (IMatchable)obj2);
+			return matchStrategy.invoke((IMatchable)obj1, (IMatchable)obj2, failAll);
 		}
 	}
 
@@ -88,11 +107,12 @@ public enum MatchMode {
 	 * @return
 	 * @throws MatchException
 	 */
-	private boolean matchesMatchOrOneNull(Object obj1, Object obj2, IMatchStrategy matchStrategy) throws MatchException {
+	private MatchResult matchesMatchOrOneNull(Object obj1, Object obj2,
+	        IMatchStrategy matchStrategy, String fieldName, boolean failAll) throws MatchException {
 		if (obj1 == null || obj2 == null ){
-			return true;
+			return MatchResult.SUCCESS();
 		}else {
-			return matchesMatchRequired(obj1, obj2, matchStrategy);
+			return matchesMatchRequired(obj1, obj2, matchStrategy, fieldName, failAll);
 		}
 	}
 
@@ -102,11 +122,12 @@ public enum MatchMode {
 	 * @return
 	 * @throws MatchException
 	 */
-	private boolean matchesMatchOrSecondNull(Object obj1, Object obj2, IMatchStrategy matchStrategy) throws MatchException {
-		if (obj1 == null ){
-			return true;
+	private MatchResult matchesMatchOrSecondNull(Object obj1, Object obj2,
+	        IMatchStrategy matchStrategy, String fieldName, boolean failAll) throws MatchException {
+		if (obj2 == null ){
+		    return MatchResult.SUCCESS();
 		}else {
-			return matchesMatchRequired(obj1, obj2, matchStrategy);
+			return matchesMatchRequired(obj1, obj2, matchStrategy, fieldName, failAll);
 		}
 	}
 
@@ -118,11 +139,12 @@ public enum MatchMode {
 	 * @return
 	 * @throws MatchException
 	 */
-	private boolean matchesMatch(Object obj1, Object obj2, IMatchStrategy matchStrategy) throws MatchException {
+	private MatchResult matchesMatch(Object obj1, Object obj2,
+	        IMatchStrategy matchStrategy, String fieldName, boolean failAll) throws MatchException {
 		if (obj1 == null && obj2 == null ){
-			return true;
+			return MatchResult.SUCCESS();
 		}else {
-			return matchesMatchRequired(obj1, obj2, matchStrategy);
+			return matchesMatchRequired(obj1, obj2, matchStrategy, fieldName, failAll);
 		}
 	}
 
@@ -131,8 +153,8 @@ public enum MatchMode {
 	 * @param obj2
 	 * @return
 	 */
-	private boolean matchesIgnore(Object obj1, Object obj2) {
-		return true;
+	private MatchResult matchesIgnore(Object obj1, Object obj2) {
+		return MatchResult.SUCCESS();
 	}
 
 
@@ -141,25 +163,13 @@ public enum MatchMode {
 	 * @param obj2
 	 * @return
 	 */
-	private boolean matchesEqualRequired(Object obj1, Object obj2) {
-		if (obj1 == null || obj2 == null || ! obj1.equals(obj2)){
-			return false;
-		}else{
-			return true;
-		}
-	}
-
-
-	/**
-	 * @param obj1
-	 * @param obj2
-	 * @return
-	 */
-	private boolean matchesEqualOrOneNull(Object obj1, Object obj2) {
+	private MatchResult matchesEqualRequired(Object obj1, Object obj2, String fieldName) {
 		if (obj1 == null || obj2 == null){
-			return true;
+		    return MatchResult.NewInstance(fieldName, this, obj1, obj2);
+		}else if (! obj1.equals(obj2)) {
+		    return MatchResult.NewInstance(fieldName, this, obj1, obj2);
 		}else{
-			return matchesEqualRequired(obj1, obj2);
+			return MatchResult.SUCCESS();
 		}
 	}
 
@@ -169,11 +179,25 @@ public enum MatchMode {
 	 * @param obj2
 	 * @return
 	 */
-	private boolean matchesEqualOrSecondNull(Object obj1, Object obj2) {
+	private MatchResult matchesEqualOrOneNull(Object obj1, Object obj2, String fieldName) {
+		if (obj1 == null || obj2 == null){
+			return MatchResult.SUCCESS();
+		}else{
+			return matchesEqualRequired(obj1, obj2, fieldName);
+		}
+	}
+
+
+	/**
+	 * @param obj1
+	 * @param obj2
+	 * @return
+	 */
+	private MatchResult matchesEqualOrSecondNull(Object obj1, Object obj2, String fieldName) {
 		if (obj2 == null){
-			return true;
+			return MatchResult.SUCCESS();
 		}else{
-			return matchesEqual(obj1, obj2);
+			return matchesEqual(obj1, obj2, fieldName);
 		}
 	}
 
@@ -183,11 +207,11 @@ public enum MatchMode {
 	 * @param obj2
 	 * @return
 	 */
-	private boolean matchesEqual(Object obj1, Object obj2) {
+	private MatchResult matchesEqual(Object obj1, Object obj2, String fieldName) {
 		if (obj1 == null && obj2 == null){
-			return true;
+			return MatchResult.SUCCESS();
 		}else {
-			return matchesEqualRequired(obj1, obj2);
+			return matchesEqualRequired(obj1, obj2, fieldName);
 		}
 	}
 

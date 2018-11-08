@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.strategy.match;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -40,7 +39,7 @@ import eu.etaxonomy.cdm.strategy.StrategyBase;
  * @since 15.10.2018
  */
 public class SubClassMatchStrategy<T extends IMatchable> extends StrategyBase
-        implements IMatchStrategy {
+        implements IMatchStrategyEqual, IParsedMatchStrategy {
 
     private static final long serialVersionUID = 6546363555888196628L;
 
@@ -124,17 +123,17 @@ public class SubClassMatchStrategy<T extends IMatchable> extends StrategyBase
         return uuid;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public MatchMode getMatchMode(String propertyName) {
-        //Copied from DefaultMatchStrategy
-        //We could also implement by iterating over strategies
-        //TODO is this needed at all?
-        FieldMatcher fieldMatcher = matching.getFieldMatcher(propertyName);
-        return fieldMatcher == null ? defaultMatchMode : fieldMatcher.getMatchMode();
-    }
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    public MatchMode getMatchMode(String propertyName) {
+//        //Copied from DefaultMatchStrategy
+//        //We could also implement by iterating over strategies
+//        //TODO is this needed at all?
+//        FieldMatcher fieldMatcher = matching.getFieldMatcher(propertyName);
+//        return fieldMatcher == null ? DEFAULT_MATCH_MODE : fieldMatcher.getMatchMode();
+//    }
 
     /**
      * {@inheritDoc}
@@ -155,7 +154,7 @@ public class SubClassMatchStrategy<T extends IMatchable> extends StrategyBase
 
     /**
      * {@inheritDoc}
-     * * @deprecated deprecated in this class, use {@link #setMatchMode(String, MatchMode, IMatchStrategy)}
+     * * @deprecated deprecated in this class, use {@link #setMatchMode(String, MatchMode, IMatchStrategyEqual)}
      * instead.
      */
     @Deprecated
@@ -164,7 +163,7 @@ public class SubClassMatchStrategy<T extends IMatchable> extends StrategyBase
             throws MatchException {
         boolean exists = false;
         for (IMatchStrategy strategy : strategies.values()){
-            if (strategy.getMatchFieldPropertyNames().contains(propertyName)){
+            if (strategy.getMatching().exists(propertyName)){
                 try {
                     strategy.setMatchMode(propertyName, matchMode, matchStrategy);
                 } catch (Exception e) {
@@ -183,7 +182,7 @@ public class SubClassMatchStrategy<T extends IMatchable> extends StrategyBase
      * {@inheritDoc}
      * @throws MatchException
      */
-    public void setMatchMode(Class<? extends T> clazz, String propertyName, MatchMode matchMode, IMatchStrategy matchStrategy) throws MatchException{
+    public void setMatchMode(Class<? extends T> clazz, String propertyName, MatchMode matchMode, IMatchStrategyEqual matchStrategy) throws MatchException{
         getBestMatchingStrategy(clazz).setMatchMode(propertyName, matchMode, matchStrategy);
     }
 
@@ -203,14 +202,34 @@ public class SubClassMatchStrategy<T extends IMatchable> extends StrategyBase
      * {@inheritDoc}
      */
     @Override
-    public <S extends IMatchable> boolean invoke(S matchFirst, S matchSecond) throws MatchException {
+    public <S extends IMatchable> MatchResult invoke(S matchFirst, S matchSecond) throws MatchException {
+        return invoke(matchFirst, matchSecond, false);
+    }
+
+
+    @Override
+    public <T extends IMatchable> MatchResult invoke(T matchFirst, T matchSecond, boolean failAll)
+            throws MatchException {
+        MatchResult matchResult = new MatchResult();
+        invoke(matchFirst, matchSecond, matchResult, false);
+        return matchResult;
+    }
+
+    @Override
+    public <S extends IMatchable> void invoke(S matchFirst, S matchSecond,
+            MatchResult matchResult, boolean failAll) throws MatchException {
         matchFirst = CdmBase.deproxy(matchFirst); //just in case
         Class<? extends IMatchable> clazz = matchFirst.getClass();
         IMatchStrategy strategy = strategies.get(clazz);
         if (strategy == null){
             strategy = getBaseClassStrategy();
+            matchResult.addClass(baseClass);
+        }else{
+            matchResult.addClass(clazz);
         }
-        return strategy.invoke(matchFirst, matchSecond);
+
+
+        strategy.invoke(matchFirst, matchSecond, matchResult, failAll);
     }
 
     /**
@@ -229,23 +248,49 @@ public class SubClassMatchStrategy<T extends IMatchable> extends StrategyBase
         throw new RuntimeException("getMatching not yet implemented in " + getClass().getName());
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class getMatchClass() {
-        //TODO or always return Set<Class>?
-        //TODO needed at all?
-        return baseClass;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Set<String> getMatchFieldPropertyNames() {
-        //preliminary not implemented. Simply aggregate, or change signature to xxx(clazz), or .. ?
-        throw new RuntimeException("getMatchFieldPropertyNames not yet implemented in " + getClass().getName());
-    }
+//    public Class getMatchClass() {
+//        //TODO or always return Set<Class>?
+//        //TODO needed at all?
+//        return baseClass;
+//    }
+//
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    public Set<String> getMatchFieldPropertyNames() {
+//        //preliminary not implemented. Simply aggregate, or change signature to xxx(clazz), or .. ?
+//        throw new RuntimeException("getMatchFieldPropertyNames not yet implemented in " + getClass().getName());
+//    }
+//
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    public void setDefaultMatchMode(MatchMode defaultMatchMode) {
+//        for (IMatchStrategy matchStrategy : strategies.values()){
+//            matchStrategy.setDefaultMatchMode(defaultMatchMode);
+//        }
+//    }
+//
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    public void setDefaultCollectionMatchMode(MatchMode defaultCollectionMatchMode) {
+//        for (IMatchStrategy matchStrategy : strategies.values()){
+//            matchStrategy.setDefaultCollectionMatchMode(defaultCollectionMatchMode);
+//        }
+//    }
+//
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    public void setDefaultMatchMatchMode(MatchMode defaultMatchMatchMode) {
+//        for (IMatchStrategy matchStrategy : strategies.values()){
+//            matchStrategy.setDefaultMatchMatchMode(defaultMatchMatchMode);
+//        }
+//    }
 
 }
