@@ -289,7 +289,11 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 	@Transient
 	private SortedSet<T> getSortedSetOfTerms(){
 		SortedSet<T> sortedSet = new TreeSet<T>();
-		sortedSet.addAll(terms);
+		for (DefinedTermBase<?> termUnproxied : terms){
+            @SuppressWarnings("unchecked")
+            T term = (T)CdmBase.deproxy(termUnproxied, OrderedTermBase.class);
+            sortedSet.add(term);
+        }
 		return sortedSet;
 	}
 
