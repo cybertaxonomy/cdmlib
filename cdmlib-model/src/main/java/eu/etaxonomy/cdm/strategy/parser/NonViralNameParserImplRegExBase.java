@@ -169,7 +169,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     //TODO
     // protected static String pSpecialDetail = "(in err|in tab|sine pag|add\\. & emend|Emend|""\\d{3}"" \\[\\d{3}\\])";
  // protected static String pSpecialDetail = "(in err|in tab|sine pag|add\\. & emend|Emend|""\\d{3}"" \\[\\d{3}\\])";
-    protected static String pSpecialDetail = "(in err|in tab|sine pag|add\\.)";
+    protected static String pSpecialDetail = "(in err|in tab|sine pag|add\\.|s.p.?)";
 
 
 //    Const romI = "[Ii]{0,3}"
@@ -182,24 +182,26 @@ public abstract class NonViralNameParserImplRegExBase  {
 //    romTen = "([Ll]?" & romX & or_ & "(XL|xl)" & or_ & "(XC|xc)" & ")"
 //    romHun = "([Dd]?" & romC & or_ & "(CD|cd)" & or_ & "(CM|cm)" & ")"
 //    romNr = "(?=[MDCLXVImdclxvi])(((" & romM & ")?" & romHun & ")?" & romTen & ")?" & romOne
+    protected static String simpleRoman = "([IVXLC]+|[ivxlc]+)";
+
     protected static String pRomNr = "ljfweffaflas"; //TODO rom number have to be tested first
 
 //    "(,\\s*" + pTabFigPl + ")?" +
     protected static String pDetailAlternatives = "(" + pPages + "|" + pPageSpecial + "|" + pStrNo + "|" + pBracketNr +
     			"|" + pTabFigPl + "(,\\s*" + pTabFigPl + ")?" + "|" + pTabSpecial + "|" + pFolBracket + "|" + pCouv + "|" + pRomNr + "|" +
-    			pSpecialGardDict + "|" + pSpecialDetail + "|" + pPagesTabFig + ")";
+    			pSpecialGardDict + "|" + pSpecialDetail + "|" + pPagesTabFig + "|" + simpleRoman +  ")";
 
     protected static String detail = pDetailAlternatives;
 
     //reference
-    protected static String volume = nr4 + "[a-z]?" + fWs + "(\\("+ nr4 + "[a-z]?"  + "([-\u2013]" + nr4 + ")?\\))?" + "(\\(((Suppl|Beibl|App|Beil|Misc|Vorabdr)\\.|Heft\\s*\\d{1,4})\\))?";
+    protected static String volume = nr4 + "[A-Za-z]?" + fWs + "(\\("+ nr4 + "[A-Za-z]?"  + "([-\u2013]" + nr4 + ")?\\)|[-\u2013]"+nr4+")?" + "(\\(((Suppl|Beibl|App|Beil|Misc|Vorabdr)\\.(\\s*\\d{1,4})?|Heft\\s*\\d{1,4})\\))?";
     //this line caused problem https://dev.e-taxonomy.eu/trac/ticket/1556 in its original form: "([\u005E:\\.]" + fWs + ")";
     protected static String anySepChar = "([\u005E:a-zA-Z]" + fWs + ")"; //all characters except for the detail separator, a stricter version would be [,\\-\\&] and some other characters
 //  protected static String anySepChar = "([,\\-\\&\\.\\+\\']" + fWs + ")";
 
     protected static int authorSeparatorMaxPosition = 3;  //author may have a maximum of 2 words
     protected static String pTitleWordSeparator = "(\\."+ fWs+"|" + oWs + "|\\.?[-\u2013])";
-    protected static String pSeriesPart = ",?" + fWs + "[sS]er(\\.)?" + oWs + "\\d{1,2},?";
+    protected static String pSeriesPart = ",?" + fWs + "([sS][e\u00E9]r("+oWs+"|\\."+fWs+")\\d{1,2}|[na]\\.s\\.),?";
 
     protected static String referenceTitleFirstPart = "(" + apostropheWord + pTitleWordSeparator + "|" + twoCapitalDotWord + fWs + ")";
     protected static String referenceTitle = referenceTitleFirstPart + "*" + "("+ dotWord + "|" + uppercaseWord + "|" + pSeriesPart + ")";  //reference title may have words separated by whitespace or dot. The last word may not have a whitespace at the end. There must be at least one word
@@ -216,7 +218,7 @@ public abstract class NonViralNameParserImplRegExBase  {
 
     protected static String pVolPart = volumeSeparator +  volume;
     protected static String pEditionPart = editionSeparator +  pEdition;
-    protected static String pEditionVolPart = editionSeparator +  pEdition + fWs + "," + volumeSeparator +  volume;
+    protected static String pEditionVolPart = editionSeparator +  pEdition + fWs + "," + volumeSeparator + volume;
     protected static String pEditionVolAlternative = "(" + pEditionPart + "|" + pVolPart + "|" + pEditionVolPart + ")?";
 
 //    protected static String pVolRefTitle = referenceTitle + "(" + pVolPart + ")?";

@@ -24,6 +24,7 @@ public enum UTF8 {
 	POLISH_L("\u0142"),
 	SMALL_A_ACUTE("\u00E1"),
     SMALL_O_ACUTE("\u00F3"),
+    SMALL_E_ACUTE("\u00E9"),
     QUOT_SINGLE_RIGHT("\u2019"), // Right single quotation mark
 	QUOT_SINGLE_HIGH_REV9("\u201b"), // Left high single quotation mark
     QUOT_DBL_LEFT("\u201c"),  //LEFT DOUBLE QUOTATION MARK Left English quotation mark
