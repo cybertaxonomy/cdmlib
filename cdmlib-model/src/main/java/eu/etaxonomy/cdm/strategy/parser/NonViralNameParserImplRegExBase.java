@@ -201,7 +201,7 @@ public abstract class NonViralNameParserImplRegExBase  {
 
     protected static int authorSeparatorMaxPosition = 3;  //author may have a maximum of 2 words
     protected static String pTitleWordSeparator = "(\\."+ fWs+"|" + oWs + "|\\.?[-\u2013])";
-    protected static String pSeriesPart = ",?" + fWs + "([sS][e\u00E9]r("+oWs+"|\\."+fWs+")\\d{1,2}|[na]\\.s\\.),?";
+    protected static String pSeriesPart = ",?" + fWs + "([sS][e\u00E9]r("+oWs+"|\\."+fWs+")(\\d{1,2}|[A-Z])|[na]\\.s\\.),?";
 
     protected static String referenceTitleFirstPart = "(" + apostropheWord + pTitleWordSeparator + "|" + twoCapitalDotWord + fWs + ")";
     protected static String referenceTitle = referenceTitleFirstPart + "*" + "("+ dotWord + "|" + uppercaseWord + "|" + pSeriesPart + ")";  //reference title may have words separated by whitespace or dot. The last word may not have a whitespace at the end. There must be at least one word
