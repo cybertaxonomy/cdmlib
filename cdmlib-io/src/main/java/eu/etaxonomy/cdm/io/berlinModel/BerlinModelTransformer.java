@@ -282,6 +282,9 @@ public class BerlinModelTransformer {
 	public static final UUID uuidMclCode = UUID.fromString("aa27083a-6a96-42aa-a2f8-5541cf057067");
 	public static final UUID PARENTAL_SPECIES_EXT_UUID = UUID.fromString("fee3138a-0084-4571-8e32-56bd14a4b0a8");
 
+	//Identifier Type
+	public static final UUID uuidEMReferenceSourceNumber = UUID.fromString("06b02bbd-bf22-485c-9fd1-fad9175f0d53");
+
 	//Area Level
 	public static final UUID uuidEuroMedAreaLevelTop = UUID.fromString("190d5758-4b96-4016-9412-6dc9c36ef5fd");
 	public static final UUID uuidEuroMedAreaLevelFirst = UUID.fromString("d21503e3-875e-4abc-82ec-f812e3cfea84");

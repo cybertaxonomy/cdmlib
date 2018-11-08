@@ -56,7 +56,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.DefaultMatchStrategy;
-import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
+import eu.etaxonomy.cdm.strategy.match.IMatchStrategyEqual;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.match.MatchException;
 import eu.etaxonomy.cdm.strategy.merge.IMergable;
@@ -504,7 +504,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 
 	@Override
 	@Transactional(readOnly = false)
-	public int deduplicate(Class<? extends T> clazz, IMatchStrategy matchStrategy, IMergeStrategy mergeStrategy) {
+	public int deduplicate(Class<? extends T> clazz, IMatchStrategyEqual matchStrategy, IMergeStrategy mergeStrategy) {
 		DeduplicateState dedupState = new DeduplicateState();
 
 		if (clazz == null){
@@ -546,7 +546,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 	}
 
 
-	private int handleAllPages(List<? extends T> objectList, DeduplicateState dedupState, List<T> nextGroup, IMatchStrategy matchStrategy, IMergeStrategy mergeStrategy) {
+	private int handleAllPages(List<? extends T> objectList, DeduplicateState dedupState, List<T> nextGroup, IMatchStrategyEqual matchStrategy, IMergeStrategy mergeStrategy) {
 		int nUnEqual = 0;
 		for (T object : objectList){
 			String currentTitleCache = object.getTitleCache();
@@ -578,7 +578,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 		return result;
 	}
 
-	private int handleLastGroup(List<T> group, IMatchStrategy matchStrategy, IMergeStrategy mergeStrategy) {
+	private int handleLastGroup(List<T> group, IMatchStrategyEqual matchStrategy, IMergeStrategy mergeStrategy) {
 		int result = 0;
 		int size = group.size();
 		Set<Integer> exclude = new HashSet<>();  //set to collect all objects, that have been merged already
@@ -594,7 +594,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 				T secondObject = group.get(j);
 
 				try {
-					if (matchStrategy.invoke((IMatchable)firstObject, (IMatchable)secondObject)){
+					if (matchStrategy.invoke((IMatchable)firstObject, (IMatchable)secondObject).isSuccessful()){
 						commonService.merge((IMergable)firstObject, (IMergable)secondObject, mergeStrategy);
 						exclude.add(j);
 						result++;

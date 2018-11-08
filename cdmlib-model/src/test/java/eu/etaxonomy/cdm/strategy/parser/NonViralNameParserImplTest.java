@@ -1828,8 +1828,12 @@ public class NonViralNameParserImplTest {
         matcher = seriesPattern.matcher("a.s.");
         Assert.assertTrue("", matcher.matches());
 
+        //do NOT match edition
         matcher = seriesPattern.matcher("ed. 4");
         Assert.assertFalse("", matcher.matches());
+
+        matcher = seriesPattern.matcher("Ser. C");
+        Assert.assertTrue("", matcher.matches());
 
     }
 

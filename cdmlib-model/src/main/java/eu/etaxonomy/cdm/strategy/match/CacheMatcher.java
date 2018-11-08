@@ -43,10 +43,13 @@ public class CacheMatcher extends FieldMatcherBase {
 	}
 
 	public Field getProtectedField(Matching matching){
-		String protectedPropertyName = getProtectedPropertyName();
-		FieldMatcher fieldMatcher = matching.getFieldMatcher(protectedPropertyName);
+		FieldMatcher fieldMatcher = getProtectedFieldMatcher(matching);
 		return fieldMatcher.getField();
 	}
+    public FieldMatcher getProtectedFieldMatcher(Matching matching){
+        String protectedPropertyName = getProtectedPropertyName();
+        return matching.getFieldMatcher(protectedPropertyName);
+    }
 
 	/**
 	 * @return
