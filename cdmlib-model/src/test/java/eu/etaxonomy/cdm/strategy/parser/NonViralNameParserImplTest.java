@@ -1726,7 +1726,7 @@ public class NonViralNameParserImplTest {
         assertEquals(name.getNomenclaturalMicroReference(), "s.p.");
 
         //roman
-        parseStr = "Ophrys lutea subsp. pseudospeculum (DC.) Kerguélen, Collect. Partim. Nat. 8: xv. 1993";
+        parseStr = "Ophrys lutea subsp. pseudospeculum (DC.) Kergu\u00e9len, Collect. Partim. Nat. 8: xv. 1993";
         name = parser.parseReferencedName(parseStr);
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         nomRef = name.getNomenclaturalReference();
