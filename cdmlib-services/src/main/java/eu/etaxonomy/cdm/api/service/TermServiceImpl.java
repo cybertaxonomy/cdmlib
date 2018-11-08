@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -487,17 +486,32 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 
     @Transactional(readOnly = false)
     @Override
-    public void moveTerm(UUID termUuuid, UUID parentUUID, boolean isKindOf) {
-        moveTerm(termUuuid, parentUUID, isKindOf, null);
+    public void moveTerm(TermDto termDto, UUID parentUUID) {
+        moveTerm(termDto, parentUUID, null);
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Transactional(readOnly = false)
     @Override
-    public void moveTerm(UUID termUuuid, UUID parentUUID, boolean isKindOf, TermMovePosition termMovePosition) {
-        DefinedTermBase term = dao.load(termUuuid, Arrays.asList("vocabulary"));
-        DefinedTermBase parent = dao.load(parentUUID, Arrays.asList("vocabulary"));
-        if(parent!=null){
+    public void moveTerm(TermDto termDto, UUID parentUuid, TermMovePosition termMovePosition) {
+        boolean isKindOf = termDto.getKindOfUuid()!=null && termDto.getKindOfUuid().equals(parentUuid);
+        TermVocabulary vocabulary = HibernateProxyHelper.deproxy(vocabularyService.load(termDto.getVocabularyUuid()));
+        DefinedTermBase parent = HibernateProxyHelper.deproxy(dao.load(parentUuid));
+        if(parent==null){
+            //new parent is a vocabulary
+            TermVocabulary parentVocabulary = HibernateProxyHelper.deproxy(vocabularyService.load(parentUuid));
+            DefinedTermBase term = HibernateProxyHelper.deproxy(dao.load(termDto.getUuid()));
+            if(parentVocabulary!=null){
+                term.setKindOf(null);
+                term.setPartOf(null);
+
+                vocabulary.removeTerm(term);
+                parentVocabulary.addTerm(term);
+            }
+            vocabularyService.saveOrUpdate(parentVocabulary);
+        }
+        else {
+            DefinedTermBase term = HibernateProxyHelper.deproxy(dao.load(termDto.getUuid()));
             //new parent is a term
             if(parent.isInstanceOf(OrderedTermBase.class)
                     && term.isInstanceOf(OrderedTermBase.class)
@@ -528,7 +542,7 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
                 }
             }
             else{
-                term.getVocabulary().removeTerm(term);
+                vocabulary.removeTerm(term);
                 if(isKindOf){
                     parent.addGeneralizationOf(term);
                 }
@@ -538,18 +552,6 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
                 parent.getVocabulary().addTerm(term);
             }
             vocabularyService.saveOrUpdate(parent.getVocabulary());
-        }
-        else{
-            //new parent is a vocabulary
-            TermVocabulary parentVocabulary = vocabularyService.load(parentUUID);
-            if(parentVocabulary!=null){
-                term.setKindOf(null);
-                term.setPartOf(null);
-
-                term.getVocabulary().removeTerm(term);
-                parentVocabulary.addTerm(term);
-            }
-            vocabularyService.saveOrUpdate(parentVocabulary);
         }
     }
 

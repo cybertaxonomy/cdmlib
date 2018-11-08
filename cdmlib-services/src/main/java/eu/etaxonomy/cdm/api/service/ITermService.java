@@ -220,26 +220,26 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
 
     /**
      * Move the given term to the given parent
-     * @param termUuuid the {@link UUID} of the term to move
-     * @param parentUUID the {@link UUID} of the new parent term
+     * @param termDto the {@link TermDto} of the term to move
+     * @param parentUuid the {@link UUID} of the new parent term
      * @param termMovePosition enum to specify the position for {@link OrderedTermBase}s in an {@link OrderedTermVocabulary}
      */
-    public void moveTerm(UUID termUuuid, UUID parentUUID, boolean isKindOf, TermMovePosition termMovePosition);
+    public void moveTerm(TermDto termDto, UUID parentUuid, TermMovePosition termMovePosition);
 
     /**
      * Move the given term to the given parent
-     * @param termUuuid the {@link UUID} of the term to move
-     * @param parentUUID the {@link UUID} of the new parent term
+     * @param termDto the {@link TermDto} of the term to move
+     * @param parentUuid the {@link UUID} of the new parent term
      */
-    public void moveTerm(UUID termUuuid, UUID parentUUID, boolean isKindOf);
+    public void moveTerm(TermDto termDto, UUID parentUuid);
 
     /**
      * Creates a new term as a child of the given parent.
      * @param termType the {@link TermType} of the term to create
-     * @param parentUUID the {@link UUID} of the parent term
+     * @param parentUuid the {@link UUID} of the parent term
      * @param isKindOf if <code>true</code> the term will be added via a
      * kindOf relation. Otherwise it will added via a partOf relation
      */
-    public void addNewTerm(TermType termType, UUID parentUUID, boolean isKindOf);
+    public void addNewTerm(TermType termType, UUID parentUuid, boolean isKindOf);
 
 }
