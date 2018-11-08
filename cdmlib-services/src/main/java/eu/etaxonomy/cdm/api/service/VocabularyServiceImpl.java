@@ -102,8 +102,15 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
         Collection<TermDto> topLevelTerms = dao.getTopLevelTerms(vocabularyUuid);
         for (TermDto termDto : topLevelTerms) {
             initializeIncludes(termDto);
+            initializeGeneralizationOf(termDto);
         }
         return topLevelTerms;
+    }
+
+    private void initializeGeneralizationOf(TermDto parentTerm){
+        Collection<TermDto> generalizationOf = termService.getKindOfsAsUuidAndTitleCache(parentTerm);
+        parentTerm.setGeneralizationOf(generalizationOf);
+        generalizationOf.forEach(include->initializeGeneralizationOf(include));
     }
 
     private void initializeIncludes(TermDto parentTerm){

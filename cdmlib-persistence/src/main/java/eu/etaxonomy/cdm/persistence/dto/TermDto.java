@@ -35,6 +35,7 @@ public class TermDto extends AbstractTermDto{
     private Integer orderIndex = null;
     private String idInVocabulary = null;
     private Collection<TermDto> includes;
+    private Collection<TermDto> generalizationOf;
 
     public TermDto(UUID uuid, Set<Representation> representations, Integer orderIndex) {
         super(uuid, representations);
@@ -97,6 +98,14 @@ public class TermDto extends AbstractTermDto{
 
     public void setIncludes(Collection<TermDto> includes) {
         this.includes = includes;
+    }
+
+    public Collection<TermDto> getGeneralizationOf() {
+        return generalizationOf;
+    }
+
+    public void setGeneralizationOf(Collection<TermDto> generalizationOf) {
+        this.generalizationOf = generalizationOf;
     }
 
     public static String getTermDtoSelect(){
