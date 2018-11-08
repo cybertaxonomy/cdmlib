@@ -543,7 +543,6 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
             //new parent is a vocabulary
             TermVocabulary parentVocabulary = vocabularyService.load(parentUUID);
             if(parentVocabulary!=null){
-                parentVocabulary.removeTerm(term);
                 term.setKindOf(null);
                 term.setPartOf(null);
 
