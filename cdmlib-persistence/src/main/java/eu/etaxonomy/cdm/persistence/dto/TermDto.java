@@ -125,7 +125,7 @@ public class TermDto extends AbstractTermDto{
             if(dtoMap.containsKey(uuid)){
                 dtoMap.get(uuid).addRepresentation((Representation)elements[1]);
             } else {
-                Set<Representation> representations;
+                Set<Representation> representations = new HashSet<>();
                 if(elements[1] instanceof Representation) {
                     representations = new HashSet<Representation>(1);
                     representations.add((Representation)elements[1]);
