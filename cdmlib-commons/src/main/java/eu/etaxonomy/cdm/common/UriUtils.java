@@ -94,7 +94,7 @@ public class UriUtils {
     public static InputStream getInputStream(URI uri, Map<String, String> requestHeaders) throws IOException, HttpException{
 
         if(requestHeaders == null){
-            requestHeaders = new HashMap<String, String>();
+            requestHeaders = new HashMap<>();
         }
 
         if (uri.getScheme().equals("http") || uri.getScheme().equals("https")){

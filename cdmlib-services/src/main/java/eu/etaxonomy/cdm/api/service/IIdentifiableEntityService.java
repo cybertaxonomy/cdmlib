@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
-import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
+import eu.etaxonomy.cdm.strategy.match.IMatchStrategyEqual;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.merge.IMergable;
 import eu.etaxonomy.cdm.strategy.merge.IMergeStrategy;
@@ -295,7 +295,7 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity>
      * @param mergeStrategy
      * @return the number of merges performed during deduplication
      */
-    public int deduplicate(Class<? extends T> clazz, IMatchStrategy matchStrategy, IMergeStrategy mergeStrategy);
+    public int deduplicate(Class<? extends T> clazz, IMatchStrategyEqual matchStrategy, IMergeStrategy mergeStrategy);
 
 
     /**

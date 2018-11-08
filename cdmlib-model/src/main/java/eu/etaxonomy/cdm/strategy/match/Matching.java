@@ -24,9 +24,9 @@ public class Matching {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Matching.class);
 
-	private SortedMap<String, FieldMatcher> fieldMatchers = new TreeMap<String, FieldMatcher>();
-	private SortedMap<String, FieldMatcher> tmpFieldMatchers = new TreeMap<String, FieldMatcher>();
-	private List<CacheMatcher> cacheMatchers = new ArrayList<CacheMatcher>();
+	private SortedMap<String, FieldMatcher> fieldMatchers = new TreeMap<>();
+	private SortedMap<String, FieldMatcher> tmpFieldMatchers = new TreeMap<>();
+	private List<CacheMatcher> cacheMatchers = new ArrayList<>();
 
 
 	public Matching addFieldMatcher(FieldMatcher fieldMatcher){

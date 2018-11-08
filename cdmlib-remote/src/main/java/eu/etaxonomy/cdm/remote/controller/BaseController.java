@@ -332,12 +332,26 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 //        if (service instanceof IPublishableService){
 //            cdmBaseObject = ((IPublishableService<CDM_BASE>)service).load(uuid, includeUnpublished, pathProperties);
 //        }else{
+            pathProperties = complementInitStrategy(clazz, pathProperties);
             cdmBaseObject = service.load(uuid, pathProperties);
 //        }
         if (cdmBaseObject == null) {
             HttpStatusMessage.UUID_NOT_FOUND.send(response);
         }
         return cdmBaseObject;
+    }
+
+    /**
+     * Implementations of the BaseController can override this method to
+     * extend the <code>pathProperties</code> to for example avoid
+     * <code>LazyInitializationExceptions</code> which can happen when
+     * {@link #doGetMethod(UUID, Integer, Integer, Integer, Integer, HttpServletRequest, HttpServletResponse)} is being used.
+     *
+     * @param clazz
+     * @param pathProperties
+     */
+    protected  <CDM_BASE extends CdmBase> List<String> complementInitStrategy(@SuppressWarnings("unused") Class<CDM_BASE> clazz, List<String> pathProperties) {
+        return pathProperties;
     }
 
     /**

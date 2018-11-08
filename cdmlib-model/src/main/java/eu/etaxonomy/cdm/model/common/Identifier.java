@@ -68,7 +68,7 @@ public class Identifier<T extends IdentifiableEntity<?>>
     	return new Identifier<T>(identifier, type);
     }
 
-    public static <T extends IdentifiableEntity<?>> Identifier<T> NewInstance(IdentifiableEntity identifiableEntity,
+    public static <T extends IdentifiableEntity<?>> Identifier<T> NewInstance(T identifiableEntity,
             String identifier, DefinedTerm type){
         Identifier<T> result = new Identifier<T>(identifier, type);
         identifiableEntity.addIdentifier(result);

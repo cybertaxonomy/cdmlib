@@ -38,7 +38,6 @@ import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
-import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -165,7 +164,7 @@ public class TaxonPortalController extends TaxonController{
             "toTaxon.name"
     });
 
-    private static final List<String> NAMERELATIONSHIP_INIT_STRATEGY = Arrays.asList(new String []{
+    public static final List<String> NAMERELATIONSHIP_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
             "type.inverseRepresentations",
             "toName.$",
