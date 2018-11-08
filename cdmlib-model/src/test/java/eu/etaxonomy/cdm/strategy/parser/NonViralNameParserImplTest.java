@@ -1801,6 +1801,22 @@ public class NonViralNameParserImplTest {
     }
 
     @Test
+    public final void testTitleBrackets(){
+        //Bot. Zhurn. (Moscow & Leningrad)
+        String parseStr = "Juncus subcompressus Zakirov & Novopokr. in Bot. Zhurn. (Moscow & Leningrad) 36(1): 77. 1951";
+        TaxonName name = parser.parseReferencedName(parseStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        Reference nomRef = name.getNomenclaturalReference();
+        Assert.assertFalse("nom.ref. should be parsable", nomRef.isProtectedTitleCache());
+        assertEquals(ReferenceType.Article, nomRef.getType());
+        assertEquals("Bot. Zhurn. (Moscow & Leningrad)", nomRef.getInReference().getAbbrevTitle());
+        assertNull(nomRef.getEdition());
+        assertEquals("36(1)", nomRef.getVolume());
+    }
+
+
+
+    @Test
     public final void testSeriesPart(){
         Pattern seriesPattern = Pattern.compile(NonViralNameParserImplRegExBase.pSeriesPart);
         Matcher matcher = seriesPattern.matcher("ser. 2");
