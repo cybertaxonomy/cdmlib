@@ -1890,7 +1890,7 @@ public class NonViralNameParserImplTest {
     @Test
     public final void testTitleSpecials(){
         //Pt. 2  (currently handled as series part, may change in future
-        String parseStr = "Iris pumila subsp. sintenisiiformis Prodán in Ann. Sci. Univ. Jassy, Pt. 2, Sci. Nat. 27: 89. 1941";
+        String parseStr = "Iris pumila subsp. sintenisiiformis Prod\u00E1n in Ann. Sci. Univ. Jassy, Pt. 2, Sci. Nat. 27: 89. 1941";
         TaxonName name = parser.parseReferencedName(parseStr);
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         Reference nomRef = name.getNomenclaturalReference();
