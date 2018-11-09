@@ -63,6 +63,7 @@ import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
+import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -665,5 +666,52 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
         return result;
     }
 
+    @Override
+    public TermDto getParentAsDto(TermDto childTerm) {
+        String queryString = TermDto.getTermDtoSelect()
+                + "where a.uuid = :childUuid";
+
+        Query query =  getSession().createQuery(queryString);
+        query.setParameter("childUuid", childTerm.getUuid());
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> result = query.list();
+
+        List<TermDto> list = TermDto.termDtoListFrom(result);
+        if(list.size()==1){
+            return list.get(0);
+        }
+        return null;
+    }
+
+    @Override
+    public Collection<TermDto> getIncludesAsDto(
+            TermDto parentTerm) {
+        String queryString = TermDto.getTermDtoSelect()
+                + "where a.partOf.uuid = :parentUuid";
+        Query query =  getSession().createQuery(queryString);
+        query.setParameter("parentUuid", parentTerm.getUuid());
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> result = query.list();
+
+        List<TermDto> list = TermDto.termDtoListFrom(result);
+        return list;
+    }
+
+    @Override
+    public Collection<TermDto> getKindOfsAsDto(
+            TermDto parentTerm) {
+        String queryString = TermDto.getTermDtoSelect()
+                + "where a.kindOf.uuid = :parentUuid";
+        Query query =  getSession().createQuery(queryString);
+        query.setParameter("parentUuid", parentTerm.getUuid());
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> result = query.list();
+
+        List<TermDto> list = TermDto.termDtoListFrom(result);
+        return list;
+    }
 
 }

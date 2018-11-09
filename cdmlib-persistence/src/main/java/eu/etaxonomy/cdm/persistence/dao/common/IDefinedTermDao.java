@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
+import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
@@ -205,4 +206,26 @@ public interface IDefinedTermDao extends IIdentifiableDao<DefinedTermBase>, ITit
      */
     public List<NamedArea> getUuidAndTitleCache(List<TermVocabulary> vocs, Integer limit,
             String pattern);
+
+    /**
+     * Returns the parent term of the given term
+     * @param childTerm the child term
+     * @return the parent term
+     */
+    public TermDto getParentAsDto(TermDto childTerm);
+
+    /**
+     * Returns all terms that are included in the given parent term resp. a part of the given term.
+     * @param parentTerm the parent term
+     * @return a collection of included terms
+     */
+    public Collection<TermDto> getIncludesAsDto(TermDto parentTerm);
+
+    /**
+     * Returns all terms that the given term is a generalization of resp. that are a kind of the given term
+     * @param parentTerm the parent term
+     * @return a collection of included terms
+     */
+    public Collection<TermDto> getKindOfsAsDto(TermDto parentTerm);
+
 }
