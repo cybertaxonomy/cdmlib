@@ -1964,7 +1964,7 @@ public class NonViralNameParserImplTest {
         Assert.assertTrue("pSoftArticleReference", matches);
         //only for debugging end
 
-        parseStr = "Corallorhiza trifida subsp. virescens (Drejer) Løjtnant in Fl. & Fauna (Esbjerg) 101: 71. 1996";
+        parseStr = "Corallorhiza trifida subsp. virescens (Drejer) L\u00F8jtnant in Fl. & Fauna (Esbjerg) 101: 71. 1996";
         name = parser.parseReferencedName(parseStr);
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         nomRef = name.getNomenclaturalReference();
@@ -2016,7 +2016,7 @@ public class NonViralNameParserImplTest {
         matcher = seriesPattern.matcher("Ser. C");
         Assert.assertTrue("", matcher.matches());
 
-        matcher = seriesPattern.matcher("Sér. B 1");
+        matcher = seriesPattern.matcher("S\u00E9r. B 1");
         Assert.assertTrue("", matcher.matches());
 
         matcher = seriesPattern.matcher("Jerusalem Ser.");
