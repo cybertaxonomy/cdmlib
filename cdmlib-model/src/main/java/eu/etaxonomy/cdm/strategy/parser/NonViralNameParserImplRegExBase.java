@@ -129,25 +129,28 @@ public abstract class NonViralNameParserImplRegExBase  {
     //details
     //TODO still not all parsed
 
+
+    protected static String simpleRoman = "([IVXLC]+|[ivxlc]+)";
+
     protected static String nr2 = "\\d{1,2}";
     protected static String nr4 = "\\d{1,4}";
     protected static String nr5 = "\\d{1,5}";
 
 
     protected static String pPage = nr5 + "[a-zA-Z]?";
-    protected static String pStrNo = "n\u00B0" + fWs + "(" + nr4 + ")";
+    protected static String pStrNo = "("+capitalWord + oWs + ")?n[o\u00B0]?\\.?" + fWs + "(" + nr4 + ")";
 
     protected static String pBracketNr = "\\[" + nr4 + "\\]";
     protected static String pFolBracket = "\\[fol\\." + fWs + "\\d{1,2}(-\\d{1,2})?\\]";  //maybe merge with pTabFigPlate (see below)
 
 
     protected static String pRangeSep = "[-\u2013]";
-    protected static String pRangeSepCo = "[-\u2013,]";
+    protected static String pRangeSepCo = "[-\u2013,/]";
 
     protected static String pTabFigPlateStart = "([tT](abs?)?|[fF](igs?)?|[pP]l?s?)(\\.|\\s|$)";   //$ for only 'f'
-    protected static String pAbcNr = "[a-zA-Z\u00DF]";
-    protected static String pTabFigPlateNumber = "(" + nr4 + "|" + pAbcNr + "|" + nr4 + fWs + pAbcNr + ")" + "("+ pRangeSepCo + fWs + pAbcNr + ")?";
-    protected static String pTabFigPlateNumbers = "(" + pTabFigPlateNumber + "(" + pRangeSepCo + fWs + pTabFigPlateNumber + ")?)";
+    protected static String pAbcNr = "([a-zA-Z\u00DF]|bis)";
+    protected static String pTabFigPlateNumber = "(" + nr4 + "|" + pAbcNr + "|" + nr4 + fWs + pAbcNr + "|" + simpleRoman + ")("+ pRangeSepCo + fWs + pAbcNr + ")?";
+    protected static String pTabFigPlateNumbers = "(" + pTabFigPlateNumber + "(" + pRangeSepCo + fWs + pTabFigPlateNumber + ")?|s.n.)";
 
     protected static String pTabFigPlate = pTabFigPlateStart + fWs + pTabFigPlateNumbers + "?";
     protected static String pTabFigPl = pTabFigPlate;
@@ -169,49 +172,37 @@ public abstract class NonViralNameParserImplRegExBase  {
     //TODO
     // protected static String pSpecialDetail = "(in err|in tab|sine pag|add\\. & emend|Emend|""\\d{3}"" \\[\\d{3}\\])";
  // protected static String pSpecialDetail = "(in err|in tab|sine pag|add\\. & emend|Emend|""\\d{3}"" \\[\\d{3}\\])";
-    protected static String pSpecialDetail = "(in err|in tab|sine pag|add\\.|s.p.?)";
+    protected static String pSpecialDetail = "(in err|in tab|sine pag|add\\.|s.p.?|errata)";
 
-
-//    Const romI = "[Ii]{0,3}"
-//    	Const romX = "[Xx]{0,3}"
-//    	Const romC = "[Cc]{0,3}"
-//    	Const romM = "[Mm]{0,3}"
-//    ' roman numbers
-//    ' !! includes empty string: ""
-//    romOne = "([Vv]?" & romI & or_ & "(IV|iv)" & or_ & "(IX|ix)" & ")"
-//    romTen = "([Ll]?" & romX & or_ & "(XL|xl)" & or_ & "(XC|xc)" & ")"
-//    romHun = "([Dd]?" & romC & or_ & "(CD|cd)" & or_ & "(CM|cm)" & ")"
-//    romNr = "(?=[MDCLXVImdclxvi])(((" & romM & ")?" & romHun & ")?" & romTen & ")?" & romOne
-    protected static String simpleRoman = "([IVXLC]+|[ivxlc]+)";
-
-    protected static String pRomNr = "ljfweffaflas"; //TODO rom number have to be tested first
 
 //    "(,\\s*" + pTabFigPl + ")?" +
     protected static String pDetailAlternatives = "(" + pPages + "|" + pPageSpecial + "|" + pStrNo + "|" + pBracketNr +
-    			"|" + pTabFigPl + "(,\\s*" + pTabFigPl + ")?" + "|" + pTabSpecial + "|" + pFolBracket + "|" + pCouv + "|" + pRomNr + "|" +
+    			"|" + pTabFigPl + "(,\\s*" + pTabFigPl + ")?" + "|" + pTabSpecial + "|" + pFolBracket + "|" + pCouv + "|" +
     			pSpecialGardDict + "|" + pSpecialDetail + "|" + pPagesTabFig + "|" + simpleRoman +  ")";
 
     protected static String detail = pDetailAlternatives;
 
     //reference
-    protected static String volume = nr4 + "[A-Za-z]?" + fWs + "(\\("+ nr4 + "[A-Za-z]?"  + "([-\u2013]" + nr4 + ")?\\)|[-\u2013]"+nr4+")?" + "(\\(((Suppl|Beibl|App|Beil|Misc|Vorabdr)\\.(\\s*\\d{1,4})?|Heft\\s*\\d{1,4})\\))?";
+    protected static String volume =     nr4 + "[A-Za-z]?" + fWs + "(\\("+ nr4 + "[A-Za-z]?"  + "([-\u2013]" + nr4 + ")?\\)|[-\u2013]"+nr4+")?" + "(\\(((\\d{1,2},\\s*)?(Suppl|Beibl|App|Beil|Misc|Vorabdr|Erg)\\.(\\s*\\d{1,4})?|Heft\\s*\\d{1,4})\\))?";
+    protected static String volume_old = nr4 + "[A-Za-z]?" + fWs + "(\\("+ nr4 + "[A-Za-z]?"  + "([-\u2013]" + nr4 + ")?\\)|[-\u2013]"+nr4+")?" + "(\\(((d{1,2}\\s*)?(Suppl|Beibl|App|Beil|Misc|Vorabdr|Erg)\\.(\\s*\\d{1,4})?|Heft\\s*\\d{1,4})\\))?";
     //this line caused problem https://dev.e-taxonomy.eu/trac/ticket/1556 in its original form: "([\u005E:\\.]" + fWs + ")";
-    protected static String anySepChar = "([\u005E:a-zA-Z]" + fWs + ")"; //all characters except for the detail separator, a stricter version would be [,\\-\\&] and some other characters
+    protected static String anySepChar = "([\u005E:a-zA-Z]" + fWs + "|" +oWs + "&" + oWs + ")"; //all characters except for the detail separator, a stricter version would be [,\\-\\&] and some other characters
 //  protected static String anySepChar = "([,\\-\\&\\.\\+\\']" + fWs + ")";
+    protected static String quotations = "\""+capitalDotWord + "(" + oWs + capitalDotWord +")*\"";
 
     protected static int authorSeparatorMaxPosition = 3;  //author may have a maximum of 2 words
-    protected static String pTitleWordSeparator = "(\\."+ fWs+"|" + oWs + "|\\.?[-\u2013])";
-    protected static String pSeriesPart = ",?" + fWs + "([sS][e\u00E9]r("+oWs+"|\\."+fWs+")(\\d{1,2}|[A-Z])|[na]\\.s\\.),?";
+    protected static String pTitleWordSeparator = "(\\."+ fWs+"|" + oWs + "|\\.?[-\u2013]"+fWs+"|\\.?" + oWs + "&" + oWs + ")";
+    protected static String pSeriesPart = ",?" + fWs + "([sS][e\u00E9]r("+oWs+"|\\."+fWs+")(\\d{1,2}|[A-Z](\\s*\\d{1,2})?)|n(ov)?\\.\\s*[sS](er)?\\.|Jerusalem Ser\\.|Pt\\.\\s*\\d{1,2}),?";  //Pt. (Part) currently handled as series part, may be handled different later
 
     protected static String referenceTitleFirstPart = "(" + apostropheWord + pTitleWordSeparator + "|" + twoCapitalDotWord + fWs + ")";
-    protected static String referenceTitle = referenceTitleFirstPart + "*" + "("+ dotWord + "|" + uppercaseWord + "|" + pSeriesPart + ")";  //reference title may have words separated by whitespace or dot. The last word may not have a whitespace at the end. There must be at least one word
+    protected static String referenceTitle = referenceTitleFirstPart + "*" + "("+ dotWord + "|" + uppercaseWord + "|" + quotations + "|" + pSeriesPart + ")";  //reference title may have words separated by whitespace or dot. The last word may not have a whitespace at the end. There must be at least one word
     protected static String referenceTitleWithSepCharacters = "(((" + referenceTitle +"|\\(.+\\))"  + anySepChar + ")*" + referenceTitle + ")"; //,?
     //TODO test performance ??
     protected static String referenceTitleWithSepCharactersAndBrackets = referenceTitleWithSepCharacters + fWs + "(\\(" + referenceTitleWithSepCharacters + "\\)"+fWs+ ")?(" + referenceTitleWithSepCharacters +")?"  ;
 
-    protected static String referenceTitleWithoutAuthor = "(" + referenceTitleFirstPart + ")" + "{"+ (authorSeparatorMaxPosition -1) +",}" + dotWord +
+    protected static String referenceTitleWithoutAuthor = "(" + referenceTitleFirstPart + "){"+ (authorSeparatorMaxPosition -1) +",}" + dotWord +
     			anySepChar + referenceTitleWithSepCharactersAndBrackets ;   //separators exist and first separator appears at position authorSeparatorMaxPosition or later
-    protected static String referenceTitleWithPlaceBracket = referenceTitle + "(" + oWs + "\\(" + capitalWord + "(" + oWs + "(& )?" +  capitalWord + ")?" + "\\))?" ;
+    protected static String referenceTitleWithPlaceBracket = referenceTitle + "(" + oWs + "\\(" + capitalWord + "(" + oWs + "(&\\s+)?" +  capitalWord + ")?" + "\\))?" ;
 
     protected static String editionSeparator = "(" + oWs + "|," + fWs + ")ed\\.?" + oWs;  //
     protected static String pEdition = nr2;
