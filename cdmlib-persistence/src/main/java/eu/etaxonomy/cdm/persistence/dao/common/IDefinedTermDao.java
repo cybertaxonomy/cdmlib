@@ -212,20 +212,20 @@ public interface IDefinedTermDao extends IIdentifiableDao<DefinedTermBase>, ITit
      * @param childTerm the child term
      * @return the parent term
      */
-    public TermDto getParentUuidAndTitleCache(TermDto childTerm);
+    public TermDto getParentAsDto(TermDto childTerm);
 
     /**
      * Returns all terms that are included in the given parent term resp. a part of the given term.
      * @param parentTerm the parent term
      * @return a collection of included terms
      */
-    public Collection<TermDto> getIncludesAsUuidAndTitleCache(TermDto parentTerm);
+    public Collection<TermDto> getIncludesAsDto(TermDto parentTerm);
 
     /**
      * Returns all terms that the given term is a generalization of resp. that are a kind of the given term
      * @param parentTerm the parent term
      * @return a collection of included terms
      */
-    public Collection<TermDto> getKindOfsAsUuidAndTitleCache(TermDto parentTerm);
+    public Collection<TermDto> getKindOfsAsDto(TermDto parentTerm);
 
 }

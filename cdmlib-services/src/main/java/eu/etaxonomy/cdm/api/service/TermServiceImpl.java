@@ -468,20 +468,20 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
     }
 
     @Override
-    public TermDto getParentUuidAndTitleCache(TermDto childTerm) {
-        return dao.getParentUuidAndTitleCache(childTerm);
+    public TermDto getParentAsDto(TermDto childTerm) {
+        return dao.getParentAsDto(childTerm);
     }
 
     @Override
-    public Collection<TermDto> getIncludesAsUuidAndTitleCache(
+    public Collection<TermDto> getIncludesAsDto(
             TermDto parentTerm) {
-        return dao.getIncludesAsUuidAndTitleCache(parentTerm);
+        return dao.getIncludesAsDto(parentTerm);
     }
 
     @Override
-    public Collection<TermDto> getKindOfsAsUuidAndTitleCache(
+    public Collection<TermDto> getKindOfsAsDto(
             TermDto parentTerm) {
-        return dao.getKindOfsAsUuidAndTitleCache(parentTerm);
+        return dao.getKindOfsAsDto(parentTerm);
     }
 
     @Transactional(readOnly = false)

@@ -667,7 +667,7 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
     }
 
     @Override
-    public TermDto getParentUuidAndTitleCache(TermDto childTerm) {
+    public TermDto getParentAsDto(TermDto childTerm) {
         String queryString = TermDto.getTermDtoSelect()
                 + "where a.uuid = :childUuid";
 
@@ -685,7 +685,7 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
     }
 
     @Override
-    public Collection<TermDto> getIncludesAsUuidAndTitleCache(
+    public Collection<TermDto> getIncludesAsDto(
             TermDto parentTerm) {
         String queryString = TermDto.getTermDtoSelect()
                 + "where a.partOf.uuid = :parentUuid";
@@ -700,7 +700,7 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
     }
 
     @Override
-    public Collection<TermDto> getKindOfsAsUuidAndTitleCache(
+    public Collection<TermDto> getKindOfsAsDto(
             TermDto parentTerm) {
         String queryString = TermDto.getTermDtoSelect()
                 + "where a.kindOf.uuid = :parentUuid";
