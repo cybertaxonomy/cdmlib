@@ -23,6 +23,7 @@ import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.application.CdmRepository;
@@ -57,7 +58,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
  *
  */
 @Service("registrationWorkingSetService")
-@Transactional(readOnly=true)
+@Transactional(readOnly=true, propagation=Propagation.REQUIRES_NEW)
 public class RegistrationWorkingSetService implements IRegistrationWorkingSetService {
 
     public static final List<String> REGISTRATION_DTO_INIT_STRATEGY = Arrays.asList(new String []{
@@ -170,7 +171,6 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
      * @return
      */
     @Override
-    @Transactional(readOnly=true)
     public RegistrationDTO loadDtoByUuid(UUID uuid) {
         Registration reg = repo.getRegistrationService().load(uuid, REGISTRATION_DTO_INIT_STRATEGY);
         inititializeSpecimen(reg);
@@ -178,7 +178,6 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
     }
 
     @Override
-    @Transactional(readOnly=true)
     public Pager<RegistrationDTO> pageDTOs(String identifier, Integer pageIndex,  Integer pageSize) throws IOException {
 
         Pager<Registration> regPager = repo.getRegistrationService().pageByIdentifier(identifier, pageIndex, pageSize, REGISTRATION_DTO_INIT_STRATEGY);
@@ -258,7 +257,6 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Pager<RegistrationDTO> findInTaxonGraph(UUID submitterUuid, Collection<RegistrationStatus> includedStatus,
             String taxonNameFilterPattern, MatchMode matchMode,
             Integer pageSize, Integer pageIndex, List<OrderHint> orderHints) {
@@ -370,7 +368,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
     /**
      * @param regs
      */
-    public void initializeSpecimens(List<Registration> regs) {
+    private void initializeSpecimens(List<Registration> regs) {
         for(Registration reg : regs){
             inititializeSpecimen(reg);
         }
@@ -381,7 +379,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
     /**
      * @param reg
      */
-    public void inititializeSpecimen(Registration reg) {
+    private void inititializeSpecimen(Registration reg) {
 
         for(TypeDesignationBase<?> td : reg.getTypeDesignations()){
             if(td instanceof SpecimenTypeDesignation){
