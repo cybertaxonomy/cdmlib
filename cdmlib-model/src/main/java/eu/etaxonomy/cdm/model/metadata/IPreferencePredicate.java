@@ -17,11 +17,11 @@ import eu.etaxonomy.cdm.model.common.Language;
  * @since 12.11.2018
  *
  */
-public interface IPreferencePredicate {
+public interface IPreferencePredicate<T extends Object> {
 
     public String getKey();
 
-    public Object getDefaultValue();
+    public T getDefaultValue();
 
     public String getMessage();
 
