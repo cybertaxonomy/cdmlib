@@ -642,7 +642,7 @@ public class NonViralNameParserImpl
 	}
 
 	private String makeEdition(IBook book, String strReference){
-		//volume
+
 		String editionPart = null;
 		Matcher editionPhraseMatcher = getMatcher(pEditionPart, strReference);
 
@@ -658,6 +658,12 @@ public class NonViralNameParserImpl
 			}
 			strReference = strReference.substring(0, pos) + strReference.substring(posEnd);
 			editionPart = editionPart.replaceFirst(pStart + editionSeparator, "").trim();
+			if (editionPart.startsWith(",")){
+			    //, jubilee ed. case
+			    editionPart = editionPart.substring(1).trim();
+			}else if (!editionPart.matches(pEdition)){
+			    editionPart = "ed. " + editionPart;
+			}
 			book.setEdition(editionPart);
 		}
 		return strReference;

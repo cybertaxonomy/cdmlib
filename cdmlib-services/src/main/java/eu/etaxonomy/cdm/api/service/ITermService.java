@@ -18,12 +18,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.api.service.TermServiceImpl.TermMovePosition;
 import eu.etaxonomy.cdm.api.service.config.TermDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.LanguageStringBase;
+import eu.etaxonomy.cdm.model.common.OrderedTermBase;
+import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -32,6 +35,7 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
+import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -192,4 +196,44 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
      */
     List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCache(List<TermVocabulary> vocs, Integer limit, String pattern,
             Language lang);
+
+    /**
+     * Returns all terms that are included in the given parent term resp. a part of the given term.
+     * @param parentTerm the parent term
+     * @return a collection of included terms
+     */
+    public Collection<TermDto> getIncludesAsDto(TermDto parentTerm);
+
+    /**
+     * Returns all terms that the given term is a generalization of resp. that are a kind of the given term
+     * @param parentTerm the parent term
+     * @return a collection of included terms
+     */
+    public Collection<TermDto> getKindOfsAsDto(TermDto parentTerm);
+
+    /**
+     * Move the given term to the given parent
+     * @param termDto the {@link TermDto} of the term to move
+     * @param parentUuid the {@link UUID} of the new parent term
+     * @param termMovePosition enum to specify the position for {@link OrderedTermBase}s in an {@link OrderedTermVocabulary}
+     */
+    public void moveTerm(TermDto termDto, UUID parentUuid, TermMovePosition termMovePosition);
+
+    /**
+     * Move the given term to the given parent
+     * @param termDto the {@link TermDto} of the term to move
+     * @param parentUuid the {@link UUID} of the new parent term
+     */
+    public void moveTerm(TermDto termDto, UUID parentUuid);
+
+    /**
+     * Creates a new term as a child of the given parent.
+     * @param termType the {@link TermType} of the term to create
+     * @param parentUuid the {@link UUID} of the parent term
+     * @param isKindOf if <code>true</code> the term will be added via a
+     * kindOf relation. Otherwise it will added via a partOf relation
+     * @return the new term
+     */
+    public TermDto addNewTerm(TermType termType, UUID parentUuid, boolean isKindOf);
+
 }

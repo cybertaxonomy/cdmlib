@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,12 +26,17 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
+import eu.etaxonomy.cdm.persistence.dto.TermDto;
+import eu.etaxonomy.cdm.persistence.dto.TermVocabularyDto;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 @Service
 @Transactional(readOnly = true)
 public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabulary,ITermVocabularyDao>  implements IVocabularyService {
+
+    @Autowired
+    private ITermService termService;
 
 	@Override
     @Autowired
@@ -85,4 +91,53 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
 		return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
 	}
 
+
+    @Override
+    public Collection<TermDto> getTopLevelTerms(UUID vocabularyUuid) {
+        return dao.getTopLevelTerms(vocabularyUuid);
+    }
+
+    @Override
+    public Collection<TermDto> getCompleteTermHierarchy(UUID vocabularyUuid) {
+        Collection<TermDto> topLevelTerms = dao.getTopLevelTerms(vocabularyUuid);
+        for (TermDto termDto : topLevelTerms) {
+            initializeIncludes(termDto);
+            initializeGeneralizationOf(termDto);
+        }
+        return topLevelTerms;
+    }
+
+    private void initializeGeneralizationOf(TermDto parentTerm){
+        Collection<TermDto> generalizationOf = termService.getKindOfsAsDto(parentTerm);
+        parentTerm.setGeneralizationOf(generalizationOf);
+        generalizationOf.forEach(generalization->{
+            generalization.setKindOfDto(parentTerm);
+            initializeGeneralizationOf(generalization);
+        });
+    }
+
+    private void initializeIncludes(TermDto parentTerm){
+        Collection<TermDto> includes = termService.getIncludesAsDto(parentTerm);
+        parentTerm.setIncludes(includes);
+        includes.forEach(include->{
+            initializeIncludes(include);
+            include.setPartOfDto(parentTerm);
+        });
+    }
+
+    @Override
+    public List<TermVocabularyDto> findVocabularyDtoByTermType(TermType termType) {
+        return dao.findVocabularyDtoByTermType(termType);
+    }
+
+    @Transactional(readOnly = false)
+    @Override
+    public TermDto addNewTerm(TermType termType, UUID vocabularyUUID) {
+        DefinedTermBase term = termType.getEmptyDefinedTermBase();
+        termService.save(term);
+        TermVocabulary vocabulary = dao.load(vocabularyUUID);
+        vocabulary.addTerm(term);
+        dao.saveOrUpdate(vocabulary);
+        return TermDto.fromTerm(term, true);
+    }
 }

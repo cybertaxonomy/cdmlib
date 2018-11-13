@@ -39,8 +39,7 @@ public class TimePeriodParser {
 	//patter for first year in string;
 	private static final Pattern firstYearPattern =  Pattern.compile("\\d{4}");
 	//case "1806"[1807];
-	private static final Pattern uncorrectYearPatter = Pattern.compile(NonViralNameParserImplRegExBase.incorrectYearPhrase);
-//OLD	        Pattern.compile("[\""+UTF8.ENGLISH_QUOT_START+"]\\d{4}[\""+UTF8.ENGLISH_QUOT_END+"]\\s*\\[\\d{4}\\]");
+//	private static final Pattern uncorrectYearPatter = Pattern.compile(NonViralNameParserImplRegExBase.incorrectYearPhrase);
 
 	//case fl. 1806 or c. 1806 or fl. 1806?
 	private static final Pattern prefixedYearPattern =  Pattern.compile("(fl|c)\\.\\s*\\d{4}(\\s*-\\s*\\d{4})?\\??");
@@ -73,14 +72,15 @@ public class TimePeriodParser {
 		result.setFreeText(null);
 
 		//case "1806"[1807];  => TODO this should (and is?) handled in parse verbatim, should be removed here
-		if (uncorrectYearPatter.matcher(periodString).matches()){
-			result.setFreeText(periodString);
-			String realYear = periodString.split("\\[")[1];
-			realYear = realYear.replace("]", "");
-			result.setStartYear(Integer.valueOf(realYear));
-			result.setFreeText(periodString);
+//		if (uncorrectYearPatter.matcher(periodString).matches()){
+//			result.setFreeText(periodString);
+//			String realYear = periodString.split("\\[")[1];
+//			realYear = realYear.replace("]", "");
+//			result.setStartYear(Integer.valueOf(realYear));
+//			result.setFreeText(periodString);
+//	    }else
 		//case fl. 1806 or c. 1806 or fl. 1806?  => TODO questionable if this should really be handled here, fl. probably stands for flowering and is not part of the date but of the date  context. What stands "c." for? Used by Markup import?
-		}else if(prefixedYearPattern.matcher(periodString).matches()){
+		if(prefixedYearPattern.matcher(periodString).matches()){
 			result.setFreeText(periodString);
 			Matcher yearMatcher = firstYearPattern.matcher(periodString);
 			yearMatcher.find();
@@ -444,9 +444,12 @@ public class TimePeriodParser {
     static Pattern patVerbatim2;
     static Pattern patVerbatim3;
 
+    public static String verbatimStart;
+    public static String verbatimEnd;
+
     static {
-        String verbatimStart = "[\"'" + UTF8.QUOT_DBL_LEFT + UTF8.QUOT_SINGLE_HIGH_REV9 + UTF8.QUOT_DBL_LOW9 + "]";
-        String verbatimEnd = "[\"'" + UTF8.QUOT_DBL_RIGHT + UTF8.QUOT_SINGLE_RIGHT + UTF8.QUOT_DBL_HIGH_REV9 + "]";
+        verbatimStart = "[\"'" + UTF8.QUOT_DBL_LEFT + UTF8.QUOT_SINGLE_HIGH_REV9 + UTF8.QUOT_DBL_LOW9 + "]";
+        verbatimEnd = "[\"'" + UTF8.QUOT_DBL_RIGHT + UTF8.QUOT_SINGLE_RIGHT + UTF8.QUOT_DBL_HIGH_REV9 + "]";
         String fWs = "\\s*"; //facultative whitespace
         String oWs = "\\s+"; //obligate whitespace
         String anyDate = "([^\"]+)";
@@ -494,9 +497,9 @@ public class TimePeriodParser {
 
         matcher = patVerbatim3.matcher(strPeriod);
         if (matcher.matches()){
-            String verbatimDate = matcher.group(3);
+            String verbatimDate = matcher.group(1).trim();
             timePeriod.setVerbatimDate(verbatimDate);
-            strPeriod = matcher.group(1).trim();
+            strPeriod = matcher.group(3).trim();
         }
         return strPeriod;
     }

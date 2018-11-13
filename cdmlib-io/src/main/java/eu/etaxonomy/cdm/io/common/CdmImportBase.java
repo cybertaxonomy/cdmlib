@@ -449,7 +449,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			//TODO matching still experimental
 			if (namedArea == null && (matchMode.equals(TermMatchMode.UUID_LABEL) || matchMode.equals(TermMatchMode.UUID_LABEL_ABBREVLABEL ))){
 				//TODO test
-				Pager<NamedArea> areaPager = (Pager)getTermService().findByTitleWithRestrictions(clazz, label, null, null, null, null, null, null);
+				Pager<NamedArea> areaPager = getTermService().findByTitleWithRestrictions(clazz, label, null, null, null, null, null, null);
 				namedArea = findBestMatchingArea(areaPager, uuid, label, text, labelAbbrev, vocabularyPreference);
 			}
 			if (namedArea == null && (matchMode.equals(TermMatchMode.UUID_ABBREVLABEL) || matchMode.equals(TermMatchMode.UUID_LABEL_ABBREVLABEL))){
@@ -1332,7 +1332,8 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @throws MalformedURLException
 	 */
 	protected Media getImageMedia(String uriString, String uriStrThumb, boolean readMediaData) throws MalformedURLException {
-		if( uriString == null){
+
+	    if( uriString == null){
 			return null;
 		} else {
 			uriString = uriString.replace(" ", "%20");  //replace whitespace

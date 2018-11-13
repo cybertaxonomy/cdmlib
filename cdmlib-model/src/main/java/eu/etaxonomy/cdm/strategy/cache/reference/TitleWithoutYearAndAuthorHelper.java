@@ -15,6 +15,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.reference.IJournal;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
+import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImplRegExBase;
 
 /**
  * @author a.mueller
@@ -238,7 +239,7 @@ public class TitleWithoutYearAndAuthorHelper {
         String editionPart = "";
         if (StringUtils.isNotBlank(edition)){
             editionPart = edition;
-            if (isNumeric(edition)){
+            if (edition.matches(NonViralNameParserImplRegExBase.pEdition)){
                 editionPart = prefixEditionGeneric + blank + editionPart;
             }
             needsComma = true;

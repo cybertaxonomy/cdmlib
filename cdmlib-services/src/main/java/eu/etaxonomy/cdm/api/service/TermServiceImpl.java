@@ -36,11 +36,14 @@ import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableExcepti
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.LanguageStringBase;
+import eu.etaxonomy.cdm.model.common.OrderedTermBase;
+import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.common.TermType;
@@ -53,6 +56,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringBaseDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IRepresentationDao;
+import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -64,6 +68,9 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 	private static final Logger logger = Logger.getLogger(TermServiceImpl.class);
 
 	private ILanguageStringDao languageStringDao;
+
+	@Autowired
+	private IVocabularyService vocabularyService;
 
 	@Autowired
 	@Qualifier("langStrBaseDao")
@@ -460,5 +467,111 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
         return result;
     }
 
+    @Override
+    public Collection<TermDto> getIncludesAsDto(
+            TermDto parentTerm) {
+        return dao.getIncludesAsDto(parentTerm);
+    }
+
+    @Override
+    public Collection<TermDto> getKindOfsAsDto(
+            TermDto parentTerm) {
+        return dao.getKindOfsAsDto(parentTerm);
+    }
+
+    @Transactional(readOnly = false)
+    @Override
+    public void moveTerm(TermDto termDto, UUID parentUUID) {
+        moveTerm(termDto, parentUUID, null);
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @Transactional(readOnly = false)
+    @Override
+    public void moveTerm(TermDto termDto, UUID parentUuid, TermMovePosition termMovePosition) {
+        boolean isKindOf = termDto.getKindOfUuid()!=null && termDto.getKindOfUuid().equals(parentUuid);
+        TermVocabulary vocabulary = HibernateProxyHelper.deproxy(vocabularyService.load(termDto.getVocabularyUuid()));
+        DefinedTermBase parent = HibernateProxyHelper.deproxy(dao.load(parentUuid));
+        if(parent==null){
+            //new parent is a vocabulary
+            TermVocabulary parentVocabulary = HibernateProxyHelper.deproxy(vocabularyService.load(parentUuid));
+            DefinedTermBase term = HibernateProxyHelper.deproxy(dao.load(termDto.getUuid()));
+            if(parentVocabulary!=null){
+                term.setKindOf(null);
+                term.setPartOf(null);
+
+                vocabulary.removeTerm(term);
+                parentVocabulary.addTerm(term);
+            }
+            vocabularyService.saveOrUpdate(parentVocabulary);
+        }
+        else {
+            DefinedTermBase term = HibernateProxyHelper.deproxy(dao.load(termDto.getUuid()));
+            //new parent is a term
+            if(parent.isInstanceOf(OrderedTermBase.class)
+                    && term.isInstanceOf(OrderedTermBase.class)
+                    && termMovePosition!=null
+                    && HibernateProxyHelper.deproxy(parent, OrderedTermBase.class).getVocabulary().isInstanceOf(OrderedTermVocabulary.class)) {
+                //new parent is an ordered term
+                OrderedTermBase orderedTerm = HibernateProxyHelper.deproxy(term, OrderedTermBase.class);
+                OrderedTermBase targetOrderedDefinedTerm = HibernateProxyHelper.deproxy(parent, OrderedTermBase.class);
+                OrderedTermVocabulary otVoc = HibernateProxyHelper.deproxy(targetOrderedDefinedTerm.getVocabulary(), OrderedTermVocabulary.class);
+                if(termMovePosition.equals(TermMovePosition.BEFORE)) {
+                    orderedTerm.getVocabulary().removeTerm(orderedTerm);
+                    otVoc.addTermAbove(orderedTerm, targetOrderedDefinedTerm);
+                    if (targetOrderedDefinedTerm.getPartOf() != null){
+                        targetOrderedDefinedTerm.getPartOf().addIncludes(orderedTerm);
+                    }
+                }
+                else if(termMovePosition.equals(TermMovePosition.AFTER)) {
+                    orderedTerm.getVocabulary().removeTerm(orderedTerm);
+                    otVoc.addTermBelow(orderedTerm, targetOrderedDefinedTerm);
+                    if (targetOrderedDefinedTerm.getPartOf() != null){
+                        targetOrderedDefinedTerm.getPartOf().addIncludes(orderedTerm);
+                    }
+                }
+                else if(termMovePosition.equals(TermMovePosition.ON)) {
+                    orderedTerm.getVocabulary().removeTerm(orderedTerm);
+                    targetOrderedDefinedTerm.addIncludes(orderedTerm);
+                    targetOrderedDefinedTerm.getVocabulary().addTerm(orderedTerm);
+                }
+            }
+            else{
+                vocabulary.removeTerm(term);
+                if(isKindOf){
+                    parent.addGeneralizationOf(term);
+                }
+                else{
+                    parent.addIncludes(term);
+                }
+                parent.getVocabulary().addTerm(term);
+            }
+            vocabularyService.saveOrUpdate(parent.getVocabulary());
+        }
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @Transactional(readOnly = false)
+    @Override
+    public TermDto addNewTerm(TermType termType, UUID parentUUID, boolean isKindOf) {
+        DefinedTermBase term = termType.getEmptyDefinedTermBase();
+        dao.save(term);
+        DefinedTermBase parent = dao.load(parentUUID);
+        if(isKindOf){
+            parent.addGeneralizationOf(term);
+        }
+        else{
+            parent.addIncludes(term);
+        }
+        parent.getVocabulary().addTerm(term);
+        dao.saveOrUpdate(parent);
+        return TermDto.fromTerm(term, true);
+    }
+
+    public enum TermMovePosition{
+        BEFORE,
+        AFTER,
+        ON
+    }
 
 }

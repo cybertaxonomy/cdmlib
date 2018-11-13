@@ -68,8 +68,7 @@ public class TaxonRelationshipsDTO {
                 this.typeUuid = relType.getUuid();
 //                TODO there must be a better DTO which also includes
                 Set<Representation> representations = direction.isDirect() ? relType.getRepresentations() : relType.getInverseRepresentations();
-                UUID vocUuid = relType.getVocabulary() != null ? relType.getVocabulary().getUuid(): null;
-                TermDto termDto = new TermDto(relType.getUuid(), representations, null, vocUuid, relType.getOrderIndex());
+                TermDto termDto = TermDto.fromTerm(relType, representations);
                 this.type = termDto;
 //                TODO localize
 //                termDto.localize(representation_L10n);

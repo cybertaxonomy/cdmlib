@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -449,7 +450,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 					String message = "LSID is malformed and can't be handled as LSID: %s";
 					message = String.format(message, identifier);
 					fireWarningEvent(message, csvTaxonRecord, 4);
-					Identifier.NewInstance(taxonBase, identifier, DefinedTerm.getTermByClassAndUUID(DefinedTerm.class, DefinedTerm.uuidLsid));
+					Identifier.NewInstance(taxonBase, identifier, DefinedTermBase.getTermByClassAndUUID(DefinedTerm.class, DefinedTerm.uuidLsid));
 				}
 			}else{
 				Identifier.NewInstance(taxonBase, identifier, null);

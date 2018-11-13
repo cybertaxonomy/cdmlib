@@ -13,7 +13,7 @@ import java.util.List;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.metadata.CdmPreference;
 import eu.etaxonomy.cdm.model.metadata.CdmPreference.PrefKey;
-import eu.etaxonomy.cdm.model.metadata.PreferencePredicate;
+import eu.etaxonomy.cdm.model.metadata.IPreferencePredicate;
 import eu.etaxonomy.cdm.model.metadata.PreferenceSubject;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
@@ -85,14 +85,14 @@ public interface IPreferenceService {
       * @param predicate
       * @return
       */
-     public CdmPreference findDatabase(PreferencePredicate predicate);
+     public CdmPreference findDatabase(IPreferencePredicate predicate);
 
      /**
       * Retrieve the vaadin wide preference for the given predicate.
       * @param predicate
       * @return
       */
-     public CdmPreference findVaadin(PreferencePredicate predicate);
+     public CdmPreference findVaadin(IPreferencePredicate predicate);
 
 
      /**
@@ -100,7 +100,7 @@ public interface IPreferenceService {
       * @param predicate
       * @return
       */
-     public CdmPreference findTaxEditor(PreferencePredicate predicate);
+     public CdmPreference findTaxEditor(IPreferencePredicate predicate);
 
      /**
       * Returns the best matching preference that matches the given
@@ -112,7 +112,7 @@ public interface IPreferenceService {
       */
      public Object find(TaxonNode taxonNode, String predicate);
 
-     public CdmPreference find(TaxonNode taxonNode, PreferencePredicate predicate);
+     public CdmPreference find(TaxonNode taxonNode, IPreferencePredicate predicate);
 
      /**
       * Returns the best matching preference that matches the given

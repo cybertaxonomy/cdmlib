@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.metadata.CdmPreference;
 import eu.etaxonomy.cdm.model.metadata.CdmPreference.PrefKey;
-import eu.etaxonomy.cdm.model.metadata.PreferencePredicate;
+import eu.etaxonomy.cdm.model.metadata.IPreferencePredicate;
 import eu.etaxonomy.cdm.model.metadata.PreferenceSubject;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.common.IPreferenceDao;
@@ -52,7 +52,7 @@ public class PreferenceServiceImpl implements IPreferenceService {
      * {@inheritDoc}
      */
     @Override
-    public CdmPreference findDatabase(PreferencePredicate predicate){
+    public CdmPreference findDatabase(IPreferencePredicate predicate){
         PrefKey key = CdmPreference.NewKey(PreferenceSubject.NewDatabaseInstance(), predicate);
         return find(key);
     }
@@ -61,13 +61,13 @@ public class PreferenceServiceImpl implements IPreferenceService {
      * {@inheritDoc}
      */
     @Override
-    public CdmPreference findVaadin(PreferencePredicate predicate){
+    public CdmPreference findVaadin(IPreferencePredicate predicate){
         PrefKey key = CdmPreference.NewKey(PreferenceSubject.NewVaadinInstance(), predicate);
         return find(key);
     }
 
     @Override
-    public CdmPreference findTaxEditor(PreferencePredicate predicate){
+    public CdmPreference findTaxEditor(IPreferencePredicate predicate){
         PrefKey key = CdmPreference.NewKey(PreferenceSubject.NewTaxEditorInstance(), predicate);
         return find(key);
     }
@@ -95,7 +95,7 @@ public class PreferenceServiceImpl implements IPreferenceService {
     }
 
     @Override
-    public CdmPreference find(TaxonNode taxonNode, PreferencePredicate predicate){
+    public CdmPreference find(TaxonNode taxonNode, IPreferencePredicate predicate){
         return dao.find(taxonNode, predicate.getKey());
     }
 

@@ -119,8 +119,10 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 
 	public SortedSet<T> getHigherTerms(T otb) {
 		SortedSet<T> result = getHigherAndEqualTerms(otb);
-		for (T setObject : terms){
-			if (setObject.compareTo(otb) == 0){
+		for (DefinedTermBase<?> setObjectUnproxied : terms){
+		    @SuppressWarnings("unchecked")
+            T setObject = (T)CdmBase.deproxy(setObjectUnproxied, OrderedTermBase.class);
+            if (setObject.compareTo(otb) == 0){
 				result.remove(setObject);
 			}
 		}
@@ -134,8 +136,10 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 
 		result.addAll( sortedSet.headSet(otb));*/
 		//getLowerTerms Returns a view of the portion of this set whose elements are STRICTLY less than toElement
-		for (T setObject : terms){
-			if (setObject.compareTo(otb) == 0){
+		for (DefinedTermBase<?> setObjectUnproxied : terms){
+		    @SuppressWarnings("unchecked")
+            T setObject = (T)CdmBase.deproxy(setObjectUnproxied, OrderedTermBase.class);
+            if (setObject.compareTo(otb) == 0){
 				result.add(setObject);
 			}
 		}
@@ -158,7 +162,9 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 
 	public SortedSet<T> getEqualTerms(T otb) {
 		SortedSet<T> result = new TreeSet<>();
-		for (T setObject : terms){
+		for (DefinedTermBase<?> setObjectUnproxied : terms){  //use Unproxied to avoid ClassCastException in certain contexts
+		    @SuppressWarnings("unchecked")
+            T setObject = (T)CdmBase.deproxy(setObjectUnproxied, OrderedTermBase.class);
 			if (setObject.compareTo(otb) == 0){
 				result.add(setObject);
 			}
@@ -283,7 +289,11 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 	@Transient
 	private SortedSet<T> getSortedSetOfTerms(){
 		SortedSet<T> sortedSet = new TreeSet<T>();
-		sortedSet.addAll(terms);
+		for (DefinedTermBase<?> termUnproxied : terms){
+            @SuppressWarnings("unchecked")
+            T term = (T)CdmBase.deproxy(termUnproxied, OrderedTermBase.class);
+            sortedSet.add(term);
+        }
 		return sortedSet;
 	}
 

@@ -86,9 +86,6 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
             }
     );
 
-   /**
-    *
-    */
     public  List<String> DERIVEDUNIT_INIT_STRATEGY = Arrays.asList(new String[]{
            "*", // initialize all related entities to allow DerivedUnit conversion, see DerivedUnitConverter.copyPropertiesTo()
            "derivedFrom.$",
@@ -98,9 +95,6 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
            "mediaSpecimen.sources"
    });
 
-   /**
-   *
-   */
    public List<String> FIELDUNIT_INIT_STRATEGY = Arrays.asList(new String[]{
           "$",
           "annotations.*", // * is needed as log as we are using a table in FilterableAnnotationsField
@@ -170,7 +164,6 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
      * @return
      */
     @Override
-    @Transactional(readOnly=true)
     public RegistrationDTO loadDtoByUuid(UUID uuid) {
         Registration reg = repo.getRegistrationService().load(uuid, REGISTRATION_DTO_INIT_STRATEGY);
         inititializeSpecimen(reg);
@@ -178,7 +171,6 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
     }
 
     @Override
-    @Transactional(readOnly=true)
     public Pager<RegistrationDTO> pageDTOs(String identifier, Integer pageIndex,  Integer pageSize) throws IOException {
 
         Pager<Registration> regPager = repo.getRegistrationService().pageByIdentifier(identifier, pageIndex, pageSize, REGISTRATION_DTO_INIT_STRATEGY);
@@ -258,7 +250,6 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Pager<RegistrationDTO> findInTaxonGraph(UUID submitterUuid, Collection<RegistrationStatus> includedStatus,
             String taxonNameFilterPattern, MatchMode matchMode,
             Integer pageSize, Integer pageIndex, List<OrderHint> orderHints) {
