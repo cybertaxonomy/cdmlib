@@ -100,7 +100,8 @@ public interface IVocabularyService extends IIdentifiableEntityService<TermVocab
      * @param termType the {@link TermType} of the term to create
      * @param vocabularyUUID the {@link UUID} of the vocabulary
      * kindOf relation. Otherwise it will added via a partOf relation
+     * @return the new term
      */
-    public void addNewTerm(TermType termType, UUID vocabularyUUID);
+    public TermDto addNewTerm(TermType termType, UUID vocabularyUUID);
 
 }

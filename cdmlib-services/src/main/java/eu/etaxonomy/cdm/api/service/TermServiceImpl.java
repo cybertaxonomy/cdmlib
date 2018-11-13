@@ -553,7 +553,7 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Transactional(readOnly = false)
     @Override
-    public void addNewTerm(TermType termType, UUID parentUUID, boolean isKindOf) {
+    public TermDto addNewTerm(TermType termType, UUID parentUUID, boolean isKindOf) {
         DefinedTermBase term = termType.getEmptyDefinedTermBase();
         dao.save(term);
         DefinedTermBase parent = dao.load(parentUUID);
@@ -565,6 +565,7 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
         }
         parent.getVocabulary().addTerm(term);
         dao.saveOrUpdate(parent);
+        return TermDto.fromTerm(term, true);
     }
 
     public enum TermMovePosition{

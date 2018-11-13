@@ -232,7 +232,8 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
      * @param parentUuid the {@link UUID} of the parent term
      * @param isKindOf if <code>true</code> the term will be added via a
      * kindOf relation. Otherwise it will added via a partOf relation
+     * @return the new term
      */
-    public void addNewTerm(TermType termType, UUID parentUuid, boolean isKindOf);
+    public TermDto addNewTerm(TermType termType, UUID parentUuid, boolean isKindOf);
 
 }
