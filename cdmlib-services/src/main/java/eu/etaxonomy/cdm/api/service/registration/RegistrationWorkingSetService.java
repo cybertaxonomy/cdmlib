@@ -23,7 +23,6 @@ import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.application.CdmRepository;
@@ -58,7 +57,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
  *
  */
 @Service("registrationWorkingSetService")
-@Transactional(readOnly=true, propagation=Propagation.REQUIRES_NEW)
+@Transactional(readOnly=true)
 public class RegistrationWorkingSetService implements IRegistrationWorkingSetService {
 
     public static final List<String> REGISTRATION_DTO_INIT_STRATEGY = Arrays.asList(new String []{
@@ -87,9 +86,6 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
             }
     );
 
-   /**
-    *
-    */
     public  List<String> DERIVEDUNIT_INIT_STRATEGY = Arrays.asList(new String[]{
            "*", // initialize all related entities to allow DerivedUnit conversion, see DerivedUnitConverter.copyPropertiesTo()
            "derivedFrom.$",
@@ -99,9 +95,6 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
            "mediaSpecimen.sources"
    });
 
-   /**
-   *
-   */
    public List<String> FIELDUNIT_INIT_STRATEGY = Arrays.asList(new String[]{
           "$",
           "annotations.*", // * is needed as log as we are using a table in FilterableAnnotationsField
@@ -368,7 +361,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
     /**
      * @param regs
      */
-    private void initializeSpecimens(List<Registration> regs) {
+    public void initializeSpecimens(List<Registration> regs) {
         for(Registration reg : regs){
             inititializeSpecimen(reg);
         }
@@ -379,7 +372,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
     /**
      * @param reg
      */
-    private void inititializeSpecimen(Registration reg) {
+    public void inititializeSpecimen(Registration reg) {
 
         for(TypeDesignationBase<?> td : reg.getTypeDesignations()){
             if(td instanceof SpecimenTypeDesignation){
