@@ -468,11 +468,6 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
     }
 
     @Override
-    public TermDto getParentAsDto(TermDto childTerm) {
-        return dao.getParentAsDto(childTerm);
-    }
-
-    @Override
     public Collection<TermDto> getIncludesAsDto(
             TermDto parentTerm) {
         return dao.getIncludesAsDto(parentTerm);

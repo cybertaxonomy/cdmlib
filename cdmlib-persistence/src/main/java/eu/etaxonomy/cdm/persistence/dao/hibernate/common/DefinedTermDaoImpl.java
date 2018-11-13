@@ -667,24 +667,6 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
     }
 
     @Override
-    public TermDto getParentAsDto(TermDto childTerm) {
-        String queryString = TermDto.getTermDtoSelect()
-                + "where a.uuid = :childUuid";
-
-        Query query =  getSession().createQuery(queryString);
-        query.setParameter("childUuid", childTerm.getUuid());
-
-        @SuppressWarnings("unchecked")
-        List<Object[]> result = query.list();
-
-        List<TermDto> list = TermDto.termDtoListFrom(result);
-        if(list.size()==1){
-            return list.get(0);
-        }
-        return null;
-    }
-
-    @Override
     public Collection<TermDto> getIncludesAsDto(
             TermDto parentTerm) {
         String queryString = TermDto.getTermDtoSelect()

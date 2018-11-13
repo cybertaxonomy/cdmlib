@@ -208,13 +208,6 @@ public interface IDefinedTermDao extends IIdentifiableDao<DefinedTermBase>, ITit
             String pattern);
 
     /**
-     * Returns the parent term of the given term
-     * @param childTerm the child term
-     * @return the parent term
-     */
-    public TermDto getParentAsDto(TermDto childTerm);
-
-    /**
      * Returns all terms that are included in the given parent term resp. a part of the given term.
      * @param parentTerm the parent term
      * @return a collection of included terms
