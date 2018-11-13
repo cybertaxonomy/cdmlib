@@ -110,13 +110,19 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
     private void initializeGeneralizationOf(TermDto parentTerm){
         Collection<TermDto> generalizationOf = termService.getKindOfsAsDto(parentTerm);
         parentTerm.setGeneralizationOf(generalizationOf);
-        generalizationOf.forEach(include->initializeGeneralizationOf(include));
+        generalizationOf.forEach(generalization->{
+            generalization.setKindOfDto(parentTerm);
+            initializeGeneralizationOf(generalization);
+        });
     }
 
     private void initializeIncludes(TermDto parentTerm){
         Collection<TermDto> includes = termService.getIncludesAsDto(parentTerm);
         parentTerm.setIncludes(includes);
-        includes.forEach(include->initializeIncludes(include));
+        includes.forEach(include->{
+            initializeIncludes(include);
+            include.setPartOfDto(parentTerm);
+        });
     }
 
     @Override
