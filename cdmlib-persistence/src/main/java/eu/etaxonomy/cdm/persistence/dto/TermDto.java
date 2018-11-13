@@ -20,6 +20,7 @@ import java.util.UUID;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
  * @author andreas
@@ -33,6 +34,9 @@ public class TermDto extends AbstractTermDto{
     private UUID kindOfUuid = null;
     private UUID partOfUuid = null;
     private UUID vocabularyUuid = null;
+    private TermDto kindOfDto = null;
+    private TermDto partOfDto = null;
+    private TermVocabularyDto vocabularyDto = null;
     private Integer orderIndex = null;
     private String idInVocabulary = null;
     private Collection<TermDto> includes;
@@ -48,19 +52,63 @@ public class TermDto extends AbstractTermDto{
     }
 
     static public TermDto fromTerm(DefinedTermBase term) {
-        return fromTerm(term, null);
+        return fromTerm(term, null, false);
+    }
+
+    static public TermDto fromTerm(DefinedTermBase term, boolean initializeToTop) {
+        return fromTerm(term, null, initializeToTop);
     }
 
     static public TermDto fromTerm(DefinedTermBase term, Set<Representation> representations) {
+        return fromTerm(term, representations, false);
+    }
+
+    static public TermDto fromTerm(DefinedTermBase term, Set<Representation> representations, boolean initializeToTop) {
+        DefinedTermBase partOf = term.getPartOf();
+        DefinedTermBase kindOf = term.getKindOf();
+        TermVocabulary vocabulary = term.getVocabulary();
         TermDto dto = new TermDto(
                 term.getUuid(),
                 representations!=null?representations:term.getRepresentations(),
-                (term.getPartOf()!=null?term.getPartOf().getUuid():null),
-                (term.getKindOf()!=null?term.getKindOf().getUuid():null),
-                term.getVocabulary().getUuid(),
+                (partOf!=null?partOf.getUuid():null),
+                (kindOf!=null?kindOf.getUuid():null),
+                vocabulary.getUuid(),
                 (term instanceof OrderedTermBase)?((OrderedTermBase) term).getOrderIndex():null,
                 term.getIdInVocabulary());
+        if(initializeToTop){
+            if(partOf!=null){
+                dto.setPartOfDto(fromTerm(partOf, initializeToTop));
+            }
+            if(kindOf!=null){
+                dto.setKindOfDto(fromTerm(kindOf, initializeToTop));
+            }
+            dto.setVocabularyDto(new TermVocabularyDto(vocabulary.getUuid(), vocabulary.getRepresentations()));
+        }
         return dto;
+    }
+
+    public void setPartOfDto(TermDto partOfDto) {
+        this.partOfDto = partOfDto;
+    }
+
+    public TermDto getPartOfDto() {
+        return partOfDto;
+    }
+
+    public void setKindOfDto(TermDto kindOfDto) {
+        this.kindOfDto = kindOfDto;
+    }
+
+    public TermDto getKindOfDto() {
+        return kindOfDto;
+    }
+
+    public void setVocabularyDto(TermVocabularyDto vocabularyDto) {
+        this.vocabularyDto = vocabularyDto;
+    }
+
+    public TermVocabularyDto getVocabularyDto() {
+        return vocabularyDto;
     }
 
     public UUID getVocabularyUuid() {
