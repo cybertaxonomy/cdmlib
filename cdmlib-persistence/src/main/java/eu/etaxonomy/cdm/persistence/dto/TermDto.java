@@ -17,8 +17,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.Representation;
-import eu.etaxonomy.cdm.model.location.NamedArea;
 
 /**
  * @author andreas
@@ -37,16 +38,7 @@ public class TermDto extends AbstractTermDto{
     private Collection<TermDto> includes;
     private Collection<TermDto> generalizationOf;
 
-    public TermDto(UUID uuid, Set<Representation> representations, Integer orderIndex) {
-        super(uuid, representations);
-        this.setOrderIndex(orderIndex);
-    }
-
-    public TermDto(UUID uuid, Set<Representation> representations, UUID partOfUuid, UUID vocabularyUuid, Integer orderIndex) {
-        this(uuid, representations, partOfUuid, null, vocabularyUuid, orderIndex, null);
-    }
-
-    public TermDto(UUID uuid, Set<Representation> representations, UUID partOfUuid, UUID kindOfUuid, UUID vocabularyUuid, Integer orderIndex, String idInVocabulary) {
+    private TermDto(UUID uuid, Set<Representation> representations, UUID partOfUuid, UUID kindOfUuid, UUID vocabularyUuid, Integer orderIndex, String idInVocabulary) {
         super(uuid, representations);
         this.partOfUuid = partOfUuid;
         this.kindOfUuid = kindOfUuid;
@@ -55,8 +47,19 @@ public class TermDto extends AbstractTermDto{
         this.idInVocabulary = idInVocabulary;
     }
 
-    static public TermDto fromNamedArea(NamedArea namedArea) {
-        TermDto dto = new TermDto(namedArea.getUuid(), namedArea.getRepresentations(), namedArea.getOrderIndex());
+    static public TermDto fromTerm(DefinedTermBase term) {
+        return fromTerm(term, null);
+    }
+
+    static public TermDto fromTerm(DefinedTermBase term, Set<Representation> representations) {
+        TermDto dto = new TermDto(
+                term.getUuid(),
+                representations!=null?representations:term.getRepresentations(),
+                (term.getPartOf()!=null?term.getPartOf().getUuid():null),
+                (term.getKindOf()!=null?term.getKindOf().getUuid():null),
+                term.getVocabulary().getUuid(),
+                (term instanceof OrderedTermBase)?((OrderedTermBase) term).getOrderIndex():null,
+                term.getIdInVocabulary());
         return dto;
     }
 
@@ -109,9 +112,13 @@ public class TermDto extends AbstractTermDto{
     }
 
     public static String getTermDtoSelect(){
+        return getTermDtoSelect("DefinedTermBase");
+    }
+
+    public static String getTermDtoSelect(String fromTable){
         return ""
                 + "select a.uuid, r, p.uuid, k.uuid, v.uuid, a.orderIndex, a.idInVocabulary "
-                + "from DefinedTermBase as a "
+                + "from "+fromTable+" as a "
                 + "LEFT JOIN a.partOf as p "
                 + "LEFT JOIN a.kindOf as k "
                 + "LEFT JOIN a.representations AS r "
