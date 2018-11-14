@@ -76,6 +76,11 @@
  		<groupId>org.apache.jena</groupId>
  		<artifactId>jena-tdb</artifactId>	
 	</dependency>
+    <dependency>
+    <groupId>org.odftoolkit</groupId>
+    <artifactId>odfdom-java</artifactId>
+    <version>0.8.7</version>
+</dependency>
   </dependencies>
 </project>
 

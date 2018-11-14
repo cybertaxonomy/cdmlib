@@ -10,18 +10,11 @@ package eu.etaxonomy.cdm.io.descriptive.word.out;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
-import java.math.BigInteger;
-import java.util.List;
 
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.usermodel.XWPFParagraph;
-import org.apache.poi.xwpf.usermodel.XWPFRun;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTBody;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTDocument1;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPageSz;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSectPr;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.STPageOrientation;
+import org.odftoolkit.odfdom.doc.OdfTextDocument;
+import org.odftoolkit.odfdom.dom.OdfContentDom;
+import org.odftoolkit.odfdom.dom.element.office.OfficeTextElement;
+import org.odftoolkit.odfdom.incubator.doc.text.OdfTextHeading;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
@@ -42,8 +35,6 @@ public class WordExport extends CdmExportBase<WordExportConfigurator, WordExport
 
     private static final long serialVersionUID = 3197379920692366008L;
 
-    private static final String TAB = "\t";
-
     @Override
     protected boolean doCheck(WordExportState state) {
         return false;
@@ -58,21 +49,10 @@ public class WordExport extends CdmExportBase<WordExportConfigurator, WordExport
         featureTree = getFeatureTreeService().load(featureTree.getUuid());
         FeatureNode rootNode = featureTree.getRoot();
 
-        XWPFDocument doc = new XWPFDocument();
-
-        setOrientation(doc);
-
-        XWPFParagraph paragraph = doc.createParagraph();
-        XWPFRun run = paragraph.createRun();
-        run.setText(featureTree.getTitleCache());
-        addChildNode(rootNode, doc, 1);
-
         try {
-            exportStream = new ByteArrayOutputStream();
-            doc.write(exportStream);
+            exportStream = generateODFDocument(rootNode);
             state.getResult().addExportData(getByteArray());
-            doc.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -81,45 +61,31 @@ public class WordExport extends CdmExportBase<WordExportConfigurator, WordExport
         return;
     }
 
-    private void setOrientation(XWPFDocument doc) {
-        CTDocument1 document = doc.getDocument();
-        CTBody body = document.getBody();
-        if (!body.isSetSectPr()) {
-             body.addNewSectPr();
-        }
-        CTSectPr section = body.getSectPr();
-        if(!section.isSetPgSz()) {
-            section.addNewPgSz();
-        }
-        CTPageSz pageSize = section.getPgSz();
-        pageSize.setOrient(STPageOrientation.LANDSCAPE);
-        pageSize.setW(BigInteger.valueOf(842 * 20));
-        pageSize.setH(BigInteger.valueOf(595 * 20));
+    private ByteArrayOutputStream generateODFDocument(FeatureNode rootNode) throws Exception {
+        OdfTextDocument outputOdt;
+        outputOdt = OdfTextDocument.loadDocument(new java.io.File(System.getProperty("user.dir") + "/template.odt"));
+
+        addChildNode(rootNode, outputOdt, 1);
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        outputOdt.save(out);
+        return out;
     }
 
-    private void addChildNode(FeatureNode node, XWPFDocument document, int indent){
+    private void addChildNode(FeatureNode node, OdfTextDocument outputOdt, int indent) throws Exception{
+        String strStyleId = "Heading "+indent;
 
-        List<FeatureNode> childNodes = node.getChildNodes();
-        for (FeatureNode child : childNodes) {
-            Feature feature = child.getFeature();
-            XWPFParagraph paragraph = document.createParagraph();
-            XWPFRun run = paragraph.createRun();
-            String indentString = "";
-            for(int i=0;i<indent;i++){
-                indentString += TAB;
-            }
-            run.setText(indentString+featureToText(feature));
+        OfficeTextElement officeText = outputOdt.getContentRoot();
+        OdfContentDom contentDom = outputOdt.getContentDom();
 
-            addChildNode(child, document, indent+1);
+        for (FeatureNode childNode : node.getChildNodes()) {
+            OdfTextHeading heading = new OdfTextHeading(contentDom, strStyleId);
+            Feature feature = childNode.getFeature();
+            heading.addContent(feature.getLabel());
+            officeText.appendChild(heading);
+            addChildNode(childNode, outputOdt, indent+1);
         }
-    }
 
-    private String featureToText(Feature feature){
-        String text = feature.getLabel();
-        if(feature.getUri()!=null){
-            text += "("+feature.getUri()+")";
-        }
-        return text;
     }
 
     @Override
