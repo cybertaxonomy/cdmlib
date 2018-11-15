@@ -35,6 +35,8 @@ import org.hibernate.annotations.ListIndexBase;
 import org.hibernate.envers.Audited;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import eu.etaxonomy.cdm.model.EntityCollectionSetterAdapter;
+import eu.etaxonomy.cdm.model.EntityCollectionSetterAdapter.SetterAdapterException;
 import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
@@ -94,6 +96,8 @@ public class Team extends TeamOrPersonBase<Team> {
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	@Match(MatchMode.MATCH)
 	private List<Person> teamMembers;
+    @Transient
+    private EntityCollectionSetterAdapter<Team, Person> teamMembersSetterAdapter = new EntityCollectionSetterAdapter<Team, Person>(Team.class, Person.class, "teamMembers");
 
     @XmlElement(name = "hasMoreMembers")
 	private boolean hasMoreMembers;
@@ -169,10 +173,14 @@ public class Team extends TeamOrPersonBase<Team> {
 		return this.teamMembers;
 	}
 
-	protected void setTeamMembers(List<Person> teamMembers) {
+	protected void _setTeamMembers(List<Person> teamMembers) {
 		this.teamMembers = teamMembers;
 		addListenersToMembers();
 	}
+
+	public void setTeamMembers(List<Person> teamMembers) throws SetterAdapterException {
+	    teamMembersSetterAdapter.setCollection(this, teamMembers);
+    }
 
 	/**
 	 * Adds a new {@link Person person} to <i>this</i> team at the end of the members' list.
