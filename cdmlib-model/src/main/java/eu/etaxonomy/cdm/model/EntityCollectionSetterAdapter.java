@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  */
 public class EntityCollectionSetterAdapter<CDM extends CdmBase, T extends CdmBase> {
 
-    private Class<T> propertyType;
+    private Class<T> propertyItemType;
     private Method getMethod;
     private Method addMethod;
     private Method removeMethod;
@@ -42,30 +42,30 @@ public class EntityCollectionSetterAdapter<CDM extends CdmBase, T extends CdmBas
     private Exception addMethodException;
     private Exception removeMethodException;
 
-    public EntityCollectionSetterAdapter(Class<CDM> beanClass, Class<T> propertyType, String propertyName){
+    public EntityCollectionSetterAdapter(Class<CDM> beanClass, Class<T> propertyItemType, String propertyName){
         this(beanClass,
-             propertyType,
+             propertyItemType,
              propertyName,
              "add" + StringUtils.capitalize(propertyName.substring(0, propertyName.length() - 1)),
              "remove" + StringUtils.capitalize(propertyName.substring(0, propertyName.length() - 1))
              );
     }
 
-    public EntityCollectionSetterAdapter(Class<CDM> beanClass, Class<T> propertyType, String propertyName, String addMethodName, String removMethodName){
+    public EntityCollectionSetterAdapter(Class<CDM> beanClass, Class<T> propertyItemType, String propertyName, String addMethodName, String removMethodName){
 
-        this.propertyType = propertyType;
+        this.propertyItemType = propertyItemType;
         try {
             getMethod = beanClass.getDeclaredMethod("get" + StringUtils.capitalize(propertyName));
         } catch (NoSuchMethodException | SecurityException e) {
             getMethodException = e;
         }
         try {
-            addMethod = beanClass.getDeclaredMethod(addMethodName, propertyType);
+            addMethod = beanClass.getDeclaredMethod(addMethodName, propertyItemType);
         } catch (NoSuchMethodException | SecurityException e) {
             addMethodException = e;
         }
         try {
-            removeMethod = beanClass.getDeclaredMethod(removMethodName, propertyType);
+            removeMethod = beanClass.getDeclaredMethod(removMethodName, propertyItemType);
         } catch (NoSuchMethodException | SecurityException e) {
             removeMethodException = e;
         }
@@ -102,7 +102,7 @@ public class EntityCollectionSetterAdapter<CDM extends CdmBase, T extends CdmBas
                 }
         }
         } catch(ClassCastException e){
-            throw new SetterAdapterException("getter return type (" + getMethod.getReturnType() + ") incompatible with expeceted type", e);
+            throw new SetterAdapterException("getter return type (" + getMethod.getReturnType() + ") incompatible with expected  property type " + propertyItemType, e);
         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
             throw new SetterAdapterException("error invoking method", e);
         }
