@@ -118,7 +118,7 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<FeatureNode, 
 	     FeatureNode childNode = FeatureNode.NewInstance(featureChild);
 	     node.addChild(childNode);
 	     result.addUpdatedObject(node);
-	     result.setCdmEntity(node.getFeatureTree());
+	     result.setCdmEntity(childNode);
 	     return result;
 	 }
 
