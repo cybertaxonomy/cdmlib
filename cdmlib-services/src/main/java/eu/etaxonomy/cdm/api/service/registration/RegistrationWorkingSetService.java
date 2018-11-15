@@ -92,7 +92,8 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
            "derivedFrom.type", // TODO remove?
            "derivedFrom.originals.derivationEvents", // important!!
            "specimenTypeDesignations.typifiedNames.typeDesignations", // important!!
-           "mediaSpecimen.sources"
+           "mediaSpecimen.sources",
+           "collection.institute"// see CollectionCaptionGenerator
    });
 
    public List<String> FIELDUNIT_INIT_STRATEGY = Arrays.asList(new String[]{
