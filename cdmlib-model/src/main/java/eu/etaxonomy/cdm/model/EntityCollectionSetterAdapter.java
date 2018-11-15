@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.model;
 
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -43,7 +44,9 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @since Nov 15, 2018
  *
  */
-public class EntityCollectionSetterAdapter<CDM extends CdmBase, T extends CdmBase> {
+public class EntityCollectionSetterAdapter<CDM extends CdmBase, T extends CdmBase> implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Class<T> propertyItemType;
     private Method getMethod;
@@ -130,9 +133,6 @@ public class EntityCollectionSetterAdapter<CDM extends CdmBase, T extends CdmBas
         public SetterAdapterException(String message, Throwable cause) {
             super(message, cause);
         }
-
-
-
     }
 
 }
