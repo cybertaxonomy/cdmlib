@@ -26,6 +26,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
@@ -97,6 +98,7 @@ public class Team extends TeamOrPersonBase<Team> {
 	@Match(MatchMode.MATCH)
 	private List<Person> teamMembers;
     @Transient
+    @XmlTransient
     private EntityCollectionSetterAdapter<Team, Person> teamMembersSetterAdapter = new EntityCollectionSetterAdapter<Team, Person>(Team.class, Person.class, "teamMembers");
 
     @XmlElement(name = "hasMoreMembers")
