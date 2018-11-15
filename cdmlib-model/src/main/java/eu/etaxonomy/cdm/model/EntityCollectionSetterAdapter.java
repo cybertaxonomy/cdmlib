@@ -26,6 +26,17 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * The {{@link #setCollection(CdmBase, Collection)} method uses the add*() and remove*() methods
  * in order to update the collection field of the bean.
  * <p>
+ * Usage example:
+ * <pre>
+ *   &#64;Transient
+ *   &#64;Transient
+ *   private EntityCollectionSetterAdapter<Team, Person> teamMembersSetterAdapter = new EntityCollectionSetterAdapter<Team, Person>(Team.class, Person.class, "teamMembers");
+ *
+ *   public void setTeamMembers(List<Person> teamMembers) throws SetterAdapterException {
+ *       teamMembersSetterAdapter.setCollection(this, teamMembers);
+ *   }
+ </pre>
+ *
  * see https://dev.e-taxonomy.eu/redmine/issues/7600
  *
  * @author a.kohlbecker
