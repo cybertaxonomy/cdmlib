@@ -443,17 +443,23 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                     continue;
                 }
                 // collect accession numbers for citation
-                String mostSignificantIdentifier = getMostSignificantIdentifier(derivedUnit);
-                if (mostSignificantIdentifier != null) {
-                    preservedSpecimenAccessionNumbers.add(mostSignificantIdentifier);
-                }
+                String identifier = getMostSignificantIdentifier(derivedUnit);
                 // collect collections for herbaria column
-                if (derivedUnit.getCollection() != null) {
-                    Integer herbariumCount = collectionToCountMap.get(derivedUnit.getCollection());
+                eu.etaxonomy.cdm.model.occurrence.Collection collection = derivedUnit.getCollection();
+                if (collection != null) {
+                    //combine collection with identifier
+                    if (identifier != null) {
+                        if(collection.getCode()!=null){
+                            identifier = (collection.getCode()!=null?collection.getCode():"[no collection]")+" "+identifier;
+                        }
+                        preservedSpecimenAccessionNumbers.add(identifier);
+                    }
+
+                    Integer herbariumCount = collectionToCountMap.get(collection);
                     if (herbariumCount == null) {
                         herbariumCount = 0;
                     }
-                    collectionToCountMap.put(derivedUnit.getCollection(), herbariumCount + 1);
+                    collectionToCountMap.put(collection, herbariumCount + 1);
                 }
                 if (derivedUnit.getRecordBasis().equals(SpecimenOrObservationType.PreservedSpecimen)) {
                     PreservedSpecimenDTO preservedSpecimenDTO = assemblePreservedSpecimenDTO(derivedUnit, fieldUnitDTO);
