@@ -10,7 +10,10 @@ package eu.etaxonomy.cdm.io.descriptive.word.out;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.InputStream;
 
+import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
+import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
 import org.odftoolkit.odfdom.doc.OdfTextDocument;
 import org.odftoolkit.odfdom.dom.OdfContentDom;
 import org.odftoolkit.odfdom.dom.element.office.OfficeTextElement;
@@ -50,7 +53,8 @@ public class WordExport extends CdmExportBase<WordExportConfigurator, WordExport
         FeatureNode rootNode = featureTree.getRoot();
 
         try {
-            exportStream = generateODFDocument(rootNode);
+//            exportStream = generateODFDocument(rootNode);
+            exportStream = generateDocx4JDocument(rootNode);
             state.getResult().addExportData(getByteArray());
         } catch (Exception e) {
             e.printStackTrace();
@@ -61,29 +65,72 @@ public class WordExport extends CdmExportBase<WordExportConfigurator, WordExport
         return;
     }
 
-    private ByteArrayOutputStream generateODFDocument(FeatureNode rootNode) throws Exception {
-        OdfTextDocument outputOdt;
-        outputOdt = OdfTextDocument.loadDocument(new java.io.File(System.getProperty("user.dir") + "/template.odt"));
+    private ByteArrayOutputStream generateDocx4JDocument(FeatureNode rootNode) throws Exception {
+        InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("eu/etaxonomy/cdm/io/word/out/template.docx");
+        WordprocessingMLPackage wordPackage = WordprocessingMLPackage.load(resourceAsStream);
+        MainDocumentPart mainDocumentPart = wordPackage.getMainDocumentPart();
 
-        addChildNode(rootNode, outputOdt, 1);
+        addChildNode(rootNode, mainDocumentPart, 1);
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        wordPackage.save(out);
+        return out;
+    }
+
+    private ByteArrayOutputStream generateODFDocument(FeatureNode rootNode) throws Exception {
+
+        OdfTextDocument outputOdt;
+        InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("eu/etaxonomy/cdm/io/word/out/template.odt");
+        outputOdt = OdfTextDocument.loadDocument(resourceAsStream);
+
+        addChildNodeOdf(rootNode, outputOdt, 1);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         outputOdt.save(out);
         return out;
     }
 
-    private void addChildNode(FeatureNode node, OdfTextDocument outputOdt, int indent) throws Exception{
-        String strStyleId = "Heading "+indent;
+    private void addChildNode(FeatureNode node, MainDocumentPart mainDocumentPart, int indent) throws Exception{
+        String styleId = "Heading"+indent;
+
+        for (FeatureNode childNode : node.getChildNodes()) {
+            Feature feature = childNode.getFeature();
+            mainDocumentPart.addStyledParagraphOfText(styleId, feature.getLabel());
+            if(feature.getDescription()!=null){
+                mainDocumentPart.addParagraphOfText("Description");
+                mainDocumentPart.addParagraphOfText(feature.getDescription());
+            }
+            if(feature.getUri()!=null){
+                mainDocumentPart.addParagraphOfText("URI");
+                mainDocumentPart.addParagraphOfText(feature.getUri().toString());
+            }
+            addChildNode(childNode, mainDocumentPart, indent+1);
+        }
+
+    }
+
+    private void addChildNodeOdf(FeatureNode node, OdfTextDocument outputOdt, int indent) throws Exception{
+        String strStyleId = "Heading"+indent;
 
         OfficeTextElement officeText = outputOdt.getContentRoot();
         OdfContentDom contentDom = outputOdt.getContentDom();
+        contentDom = outputOdt.getContentDom();
+
 
         for (FeatureNode childNode : node.getChildNodes()) {
             OdfTextHeading heading = new OdfTextHeading(contentDom, strStyleId);
             Feature feature = childNode.getFeature();
             heading.addContent(feature.getLabel());
             officeText.appendChild(heading);
-            addChildNode(childNode, outputOdt, indent+1);
+            if(feature.getDescription()!=null){
+                outputOdt.newParagraph("Description");
+                outputOdt.newParagraph(feature.getDescription());
+            }
+            if(feature.getUri()!=null){
+                outputOdt.newParagraph("URI");
+                outputOdt.newParagraph(feature.getDescription());
+            }
+            addChildNodeOdf(childNode, outputOdt, indent+1);
         }
 
     }
