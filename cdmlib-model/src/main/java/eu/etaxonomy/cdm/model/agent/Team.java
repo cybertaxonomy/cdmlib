@@ -26,7 +26,6 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
@@ -97,9 +96,6 @@ public class Team extends TeamOrPersonBase<Team> {
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	@Match(MatchMode.MATCH)
 	private List<Person> teamMembers;
-    @Transient
-    @XmlTransient
-    private EntityCollectionSetterAdapter<Team, Person> teamMembersSetterAdapter = new EntityCollectionSetterAdapter<Team, Person>(Team.class, Person.class, "teamMembers");
 
     @XmlElement(name = "hasMoreMembers")
 	private boolean hasMoreMembers;
@@ -181,7 +177,7 @@ public class Team extends TeamOrPersonBase<Team> {
 	}
 
 	public void setTeamMembers(List<Person> teamMembers) throws SetterAdapterException {
-	    teamMembersSetterAdapter.setCollection(this, teamMembers);
+	    new EntityCollectionSetterAdapter<Team, Person>(Team.class, Person.class, "teamMembers").setCollection(this, teamMembers);
     }
 
 	/**
