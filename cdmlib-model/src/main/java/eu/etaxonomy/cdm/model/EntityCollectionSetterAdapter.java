@@ -48,13 +48,17 @@ public class EntityCollectionSetterAdapter<CDM extends CdmBase, T extends CdmBas
 
     private static final long serialVersionUID = 1L;
 
+    private static final String GETTER_PREFIX = "get";
+
     private Class<T> propertyItemType;
-    private Method getMethod;
-    private Method addMethod;
-    private Method removeMethod;
-    private Exception getMethodException;
-    private Exception addMethodException;
-    private Exception removeMethodException;
+
+    private Class<CDM> beanClass;
+
+    private String propertyName;
+    private String addMethodName;
+    private String removMethodName;
+
+
 
     public EntityCollectionSetterAdapter(Class<CDM> beanClass, Class<T> propertyItemType, String propertyName){
         this(beanClass,
@@ -67,38 +71,26 @@ public class EntityCollectionSetterAdapter<CDM extends CdmBase, T extends CdmBas
 
     public EntityCollectionSetterAdapter(Class<CDM> beanClass, Class<T> propertyItemType, String propertyName, String addMethodName, String removMethodName){
 
+        this.beanClass = beanClass;
         this.propertyItemType = propertyItemType;
-        try {
-            getMethod = beanClass.getDeclaredMethod("get" + StringUtils.capitalize(propertyName));
-        } catch (NoSuchMethodException | SecurityException e) {
-            getMethodException = e;
-        }
-        try {
-            addMethod = beanClass.getDeclaredMethod(addMethodName, propertyItemType);
-        } catch (NoSuchMethodException | SecurityException e) {
-            addMethodException = e;
-        }
-        try {
-            removeMethod = beanClass.getDeclaredMethod(removMethodName, propertyItemType);
-        } catch (NoSuchMethodException | SecurityException e) {
-            removeMethodException = e;
-        }
+
+        this.propertyName = propertyName;
+        this.addMethodName = addMethodName;
+        this.removMethodName = removMethodName;
     }
 
     public void setCollection(CDM bean, Collection<T> items) throws SetterAdapterException {
 
-        if(getMethodException != null){
-            throw new SetterAdapterException("No getter method due to previous exception.", getMethodException);
-        }
-        if(addMethodException != null){
-            throw new SetterAdapterException("No add method due to previous exception.", addMethodException);
-        }
-        if(removeMethodException != null){
-            throw new SetterAdapterException("No remove method due to previous exception.", removeMethodException);
-        }
+        Method getterMethod = null;
+        Method addMethod;
+        Method removeMethod;
 
         try{
-            Collection<T> getterCollection = (Collection<T>) getMethod.invoke(bean);
+            getterMethod = beanClass.getDeclaredMethod(GETTER_PREFIX + StringUtils.capitalize(propertyName));
+            addMethod = beanClass.getDeclaredMethod(addMethodName, propertyItemType);
+            removeMethod = beanClass.getDeclaredMethod(removMethodName, propertyItemType);
+
+            Collection<T> getterCollection = (Collection<T>) getterMethod.invoke(bean);
             List<T> currentItems = new ArrayList<>(getterCollection);
             List<T> itemsSeen = new ArrayList<>();
             for(T a : items){
@@ -116,9 +108,11 @@ public class EntityCollectionSetterAdapter<CDM extends CdmBase, T extends CdmBas
                 }
         }
         } catch(ClassCastException e){
-            throw new SetterAdapterException("getter return type (" + getMethod.getReturnType() + ") incompatible with expected  property type " + propertyItemType, e);
+            throw new SetterAdapterException("getter return type (" + (getterMethod != null ? getterMethod.getReturnType() : "NULL") + ") incompatible with expected  property type " + propertyItemType, e);
         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
             throw new SetterAdapterException("error invoking method", e);
+        } catch (NoSuchMethodException | SecurityException e) {
+            throw new SetterAdapterException("Property related method not found", e);
         }
     }
 
