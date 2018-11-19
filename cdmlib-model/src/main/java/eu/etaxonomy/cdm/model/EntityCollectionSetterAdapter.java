@@ -29,14 +29,10 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * <p>
  * Usage example:
  * <pre>
- *   &#64;Transient
- *   &#64;Transient
- *   private EntityCollectionSetterAdapter<Team, Person> teamMembersSetterAdapter = new EntityCollectionSetterAdapter<Team, Person>(Team.class, Person.class, "teamMembers");
- *
  *   public void setTeamMembers(List<Person> teamMembers) throws SetterAdapterException {
- *       teamMembersSetterAdapter.setCollection(this, teamMembers);
+ *      new EntityCollectionSetterAdapter<Team, Person>(Team.class, Person.class, "teamMembers").setCollection(this, teamMembers);
  *   }
- </pre>
+ * </pre>
  *
  * see https://dev.e-taxonomy.eu/redmine/issues/7600
  *

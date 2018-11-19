@@ -16,12 +16,10 @@ import java.util.UUID;
 import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
@@ -64,10 +62,6 @@ public abstract class AnnotatableEntity extends VersionableEntity implements IAn
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 	@Merge(MergeMode.ADD_CLONE)
 	protected Set<Annotation> annotations = new HashSet<>();
-	@Transient
-	@XmlTransient
-    private EntityCollectionSetterAdapter<AnnotatableEntity, Annotation> annotationsSetterAdapter = new EntityCollectionSetterAdapter<AnnotatableEntity, Annotation>(AnnotatableEntity.class, Annotation.class, "annotations");
-
 
 	protected AnnotatableEntity() {
 		super();
@@ -132,7 +126,7 @@ public abstract class AnnotatableEntity extends VersionableEntity implements IAn
 	}
 
 	 public void setAnnotations(Set<Annotation> annotations) throws SetterAdapterException {
-	     annotationsSetterAdapter.setCollection(this, annotations);
+	     new EntityCollectionSetterAdapter<AnnotatableEntity, Annotation>(AnnotatableEntity.class, Annotation.class, "annotations").setCollection(this, annotations);
     }
 
 //********************** CLONE *****************************************/
