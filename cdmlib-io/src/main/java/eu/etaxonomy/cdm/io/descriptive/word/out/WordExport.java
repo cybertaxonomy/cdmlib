@@ -14,10 +14,6 @@ import java.io.InputStream;
 
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
-import org.odftoolkit.odfdom.doc.OdfTextDocument;
-import org.odftoolkit.odfdom.dom.OdfContentDom;
-import org.odftoolkit.odfdom.dom.element.office.OfficeTextElement;
-import org.odftoolkit.odfdom.incubator.doc.text.OdfTextHeading;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
@@ -53,7 +49,6 @@ public class WordExport extends CdmExportBase<WordExportConfigurator, WordExport
         FeatureNode rootNode = featureTree.getRoot();
 
         try {
-//            exportStream = generateODFDocument(rootNode);
             exportStream = generateDocx4JDocument(rootNode);
             state.getResult().addExportData(getByteArray());
         } catch (Exception e) {
@@ -70,25 +65,50 @@ public class WordExport extends CdmExportBase<WordExportConfigurator, WordExport
         WordprocessingMLPackage wordPackage = WordprocessingMLPackage.load(resourceAsStream);
         MainDocumentPart mainDocumentPart = wordPackage.getMainDocumentPart();
 
+
         addChildNode(rootNode, mainDocumentPart, 1);
+
+//        createTOC(mainDocumentPart);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         wordPackage.save(out);
         return out;
     }
 
-    private ByteArrayOutputStream generateODFDocument(FeatureNode rootNode) throws Exception {
-
-        OdfTextDocument outputOdt;
-        InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("eu/etaxonomy/cdm/io/word/out/template.odt");
-        outputOdt = OdfTextDocument.loadDocument(resourceAsStream);
-
-        addChildNodeOdf(rootNode, outputOdt, 1);
-
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        outputOdt.save(out);
-        return out;
-    }
+//    public void createTOC(MainDocumentPart mainDocumentPart) throws Exception {
+//
+//        ObjectFactory factory = Context.getWmlObjectFactory();
+//
+//
+//        P p = factory.createP();
+//        R r = factory.createR();
+//
+//        FldChar fldchar = factory.createFldChar();
+//        fldchar.setFldCharType(org.docx4j.wml.STFldCharType.BEGIN);
+//        r.getContent().add(getWrappedFldChar(fldchar));
+//        p.getContent().add(r);
+//
+//        R r1 = factory.createR();
+//        Text txt = new Text();
+//        txt.setSpace("preserve");
+//        txt.setValue("TOC \\o \"1-3\" \\h \\z \\u \\h");
+//        r.getContent().add(factory.createRInstrText(txt) );
+//        p.getContent().add(r1);
+//
+//        FldChar fldcharend = factory.createFldChar();
+//        fldcharend.setFldCharType(org.docx4j.wml.STFldCharType.END);
+//        R r2 = factory.createR();
+//        r2.getContent().add(getWrappedFldChar(fldcharend));
+//        p.getContent().add(r2);
+//
+//        mainDocumentPart.addObject(p);
+//
+//    }
+//
+//    @SuppressWarnings("unchecked")
+//    public JAXBElement getWrappedFldChar(FldChar fldchar) {
+//        return new JAXBElement( new QName(Namespaces.NS_WORD12, "fldChar"), org.docx4j.wml.FldChar.class, fldchar);
+//    }
 
     private void addChildNode(FeatureNode node, MainDocumentPart mainDocumentPart, int indent) throws Exception{
         String styleId = "Heading"+indent;
@@ -105,32 +125,6 @@ public class WordExport extends CdmExportBase<WordExportConfigurator, WordExport
                 mainDocumentPart.addParagraphOfText(feature.getUri().toString());
             }
             addChildNode(childNode, mainDocumentPart, indent+1);
-        }
-
-    }
-
-    private void addChildNodeOdf(FeatureNode node, OdfTextDocument outputOdt, int indent) throws Exception{
-        String strStyleId = "Heading"+indent;
-
-        OfficeTextElement officeText = outputOdt.getContentRoot();
-        OdfContentDom contentDom = outputOdt.getContentDom();
-        contentDom = outputOdt.getContentDom();
-
-
-        for (FeatureNode childNode : node.getChildNodes()) {
-            OdfTextHeading heading = new OdfTextHeading(contentDom, strStyleId);
-            Feature feature = childNode.getFeature();
-            heading.addContent(feature.getLabel());
-            officeText.appendChild(heading);
-            if(feature.getDescription()!=null){
-                outputOdt.newParagraph("Description");
-                outputOdt.newParagraph(feature.getDescription());
-            }
-            if(feature.getUri()!=null){
-                outputOdt.newParagraph("URI");
-                outputOdt.newParagraph(feature.getDescription());
-            }
-            addChildNodeOdf(childNode, outputOdt, indent+1);
         }
 
     }
