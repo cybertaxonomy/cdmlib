@@ -38,6 +38,7 @@ public class ReferencePropertyDefinitions {
     private static Map<String, String> iJournal = new HashMap<>();
     private static Map<String, String> iPrintSeries = new HashMap<>();
     private static Map<String, String> iThesis = new HashMap<>();
+    private static Map<String, String> iReport = new HashMap<>();
     private static Map<String, String> all = new HashMap<>();
 
     static {
@@ -47,7 +48,7 @@ public class ReferencePropertyDefinitions {
         map = iReference;
         put(map, "uri");
         put(map, "datePublished");
-        put(map, "abbrevTitle");
+        // put(map, "abbrevTitle"); // this is uses as nomenclatural title, so it makes no sense having this field in general, moved to iPrintedUnitBase
         put(map, "title");
         put(map, "authorship");
         put(map, "type");
@@ -69,47 +70,61 @@ public class ReferencePropertyDefinitions {
 
         iPrintedUnitBase = merge(iPublicationBase, iSection, iVolumeReference);
         map = iPrintedUnitBase;
+        put(map, "title");
+        put(map, "abbrevTitle");
         put(map, "inReference", "inSeries");
         put(map, "editor");
-        put(map, "seriesPart");
+//        put(map, "seriesPart");
+        put(map, "doi");
 
         iArticle = merge(iSection, iVolumeReference);
         map = iArticle;
-        put(map, "seriesPart");
+//        put(map, "seriesPart");
         put(map, "inReference", "inJournal");
+        put(map, "doi");
 
         iBook = merge(iPrintedUnitBase);
         map = iBook;
+        put(map, "inReference", "inSeries");
         put(map, "edition");
         put(map, "isbn");
 
         iBookSection = merge(iSection);
         map = iBookSection;
         put(map, "inReference", "inBook");
+        put(map, "doi");
 
         iProceedings = merge(iPrintedUnitBase);
         map = iProceedings;
         put(map, "organization");
+        put(map, "doi");
+        put(map, "isbn");
 
         iJournal = merge(iPublicationBase);
         map = iJournal;
+        remove(map, "authorship");
         put(map, "issn");
 
         iInProceedings = merge(iSection);
         map = iInProceedings;
-        put(map, "seriesPart");
+        remove(map, "series");
         put(map, "inReference", "inJournal");
         put(map, "doi");
 
         iPrintSeries = merge(iPublicationBase);
         map = iPrintSeries;
+        remove(map, "authorship");
+        remove(map, "doi");
         put(map, "publisher");
         put(map, "placePublished");
-        put(map, "doi");
 
         iThesis = merge(iPublicationBase);
         map = iThesis;
         put(map, "school");
+
+        iReport = merge(iPublicationBase);
+        map = iReport;
+        put(map, "institution");
 
         all = merge(iThesis, iPrintSeries, iInProceedings, iJournal, iArticle, iBook, iBookSection, iProceedings, iPrintedUnitBase, iVolumeReference);
 
@@ -185,13 +200,15 @@ public class ReferencePropertyDefinitions {
 
     private static void put(Map<String, String> fieldPropertyMap, String fieldName, String propertyName) {
         fieldPropertyMap.put(fieldName, propertyName);
+    }
 
+    private static void remove(Map<String, String> fieldPropertyMap, String fieldName) {
+        fieldPropertyMap.remove(fieldName);
     }
 
 
    private static void put(Map<String, String> fieldPropertyMap, String fieldName) {
        put(fieldPropertyMap, fieldName, fieldName);
-
    }
 
    public static class UnimplemetedCaseException extends Exception{
