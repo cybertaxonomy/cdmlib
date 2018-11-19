@@ -1305,7 +1305,6 @@ public class CdmLightClassificationExport
                 TypeDesignationSetManager manager = new TypeDesignationSetManager(group);
 
                 list.addAll( manager.toTaggedTextWithCitation());
-                System.err.println(list.toString());
             }
             StringBuffer homotypicalGroupTypeDesignationString = new StringBuffer();
 
@@ -1331,7 +1330,7 @@ public class CdmLightClassificationExport
             if (typeDesignations.equals(".")){
                 typeDesignations = null;
             }
-            System.err.println(typeDesignations);
+
        /*     for (TypeDesignationBase typeDesignation: designationList){
                 //[Vorschlag Soll:]
                // Sumatra Utara, Kab. Karo, around Sidikalang areas, 1000─1500 m, Dec 11, 2003, Nepenthes Team (Hernawati, P. Akhriadi & I. Petra), NP 354 (‘ANDA’–Holo, BO–Iso) [fide Akhriadi & al. 2004]

@@ -591,6 +591,9 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	        }
 	        FindOccurrencesConfigurator config = new FindOccurrencesConfigurator();
 	        config.setSignificantIdentifier(unitId);
+	        List<String> propertyPaths = new ArrayList<>();
+	        propertyPaths.add("derivedFrom.*");
+	        config.setPropertyPaths(propertyPaths);
 	        Pager<SpecimenOrObservationBase> existingSpecimens = cdmAppController.getOccurrenceService().findByTitle(config);
 	        if(!existingSpecimens.getRecords().isEmpty()){
 	            if(existingSpecimens.getRecords().size()==1){
@@ -1074,6 +1077,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	        }
 
 	        DeterminationEvent determinationEvent = DeterminationEvent.NewInstance();
+	        //determinationEvent.setTaxon(taxon);
 	        determinationEvent.setTaxonName(taxon.getName());
 	        determinationEvent.setPreferredFlag(preferredFlag);
 
