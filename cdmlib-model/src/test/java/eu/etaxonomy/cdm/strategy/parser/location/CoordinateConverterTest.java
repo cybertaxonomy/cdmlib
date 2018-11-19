@@ -99,7 +99,7 @@ public class CoordinateConverterTest {
         Assert.assertTrue("Pattern with acute accent must be recognised", conversionResults.patternRecognised);
         Assert.assertTrue("Pattern with acute accent must be recognised", conversionResults.conversionSuccessful);
 
-        conversionResults = coordinateConverter.tryConvert("35" + DEGREE_SIGN + "1" + ACUTE_ACCENT + "34" + ACUTE_ACCENT + "" + ACUTE_ACCENT + "W");
+        conversionResults = coordinateConverter.tryConvert("35" + DEGREE_SIGN + "1" + ACUTE_ACCENT + "34" + ACUTE_ACCENT + ACUTE_ACCENT + "W");
         Assert.assertTrue("Pattern with acute accent for seconds must be recognised", conversionResults.patternRecognised);
         Assert.assertTrue("Pattern with acute accent for seconds  must be recognised", conversionResults.conversionSuccessful);
 
@@ -148,6 +148,22 @@ public class CoordinateConverterTest {
         Assert.assertTrue("Pattern with right double quotation and whitespace must be recognised", conversionResults.patternRecognised);
         Assert.assertTrue("Pattern with right double quotation and whitespace must be successful", conversionResults.conversionSuccessful);
 	}
+
+	@Test
+    public void testIssue7217() {
+	    // 49°13'39.0''N
+	    ConversionResults conversionResults = coordinateConverter.tryConvert("49" + DEGREE_SIGN + "13" + APOSTROPHE +"39.0" + APOSTROPHE + APOSTROPHE + "N");
+        Assert.assertTrue(conversionResults.conversionComments, conversionResults.patternRecognised);
+        Assert.assertTrue("Pattern with APOSTROPHE for minute must be recognised", conversionResults.patternRecognised);
+        Assert.assertTrue("Pattern with APOSTROPHE end for minute  must be successful", conversionResults.conversionSuccessful);
+
+        // 20°00'31.5''E
+        conversionResults = coordinateConverter.tryConvert("20" + DEGREE_SIGN + "00" + APOSTROPHE +"31.5" + APOSTROPHE + APOSTROPHE + "E");
+        Assert.assertTrue(conversionResults.conversionComments, conversionResults.patternRecognised);
+        Assert.assertTrue("Pattern with APOSTROPHE for minute and second must be recognised", conversionResults.patternRecognised);
+        Assert.assertTrue("Pattern with APOSTROPHE for minute and second must be successful", conversionResults.conversionSuccessful);
+	}
+
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.strategy.parser.location.CoordinateConverter#addCustomPattern(eu.etaxonomy.cdm.strategy.parser.location.CoordinateConverter.CustomPatternIn)}.
