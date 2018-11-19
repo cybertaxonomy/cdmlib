@@ -14,6 +14,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.strategy.parser.location.CoordinateConverter.ConversionResults;
 
 /**
@@ -27,14 +28,14 @@ public class CoordinateConverterTest {
 	private CoordinateConverter coordinateConverter;
 
 	// Unicode constants
-	private static final char DEGREE_SIGN = '\u00B0';
+	private static final String DEGREE_SIGN = UTF8.DEGREE_SIGN.toString();
 	private static final char MASCULINE_ORDINAL_INDICATOR = '\u00BA';
 
-	private static final char APOSTROPHE = 0x0027;
-	private static final char QUOTATION_MARK = '\u0022';
-	private static final char ACUTE_ACCENT = '\u00B4';
-	private static final char RIGHT_SINGLE_QUOTATION_MARK = '\u2019';
-	private static final char RIGHT_DOUBLE_QUOTATION_MARK = '\u201D';
+	private static final String APOSTROPHE = "'";
+	private static final String QUOTATION_MARK = "\"";
+	private static final String ACUTE_ACCENT = UTF8.ACUTE_ACCENT.toString();
+	private static final String RIGHT_SINGLE_QUOTATION_MARK = UTF8.QUOT_SINGLE_RIGHT.toString();
+	private static final String RIGHT_DOUBLE_QUOTATION_MARK = UTF8.QUOT_DBL_RIGHT.toString();
 
 	/**
 	 * @throws java.lang.Exception

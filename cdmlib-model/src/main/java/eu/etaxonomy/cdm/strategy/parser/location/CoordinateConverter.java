@@ -36,7 +36,7 @@ public class CoordinateConverter {
     private List<CoordinatePattern> patterns;
 
     private static String minuteUtf8 = "\u02B9|\u00B4|\u02CA|\u0301|\u0374|\u2019";
-    private static String secondUtf8 = "\u02BA|\u030B|\u2033|\u00B4\u00B4|\u201D";
+    private static String secondUtf8 = "\u02BA|\u030B|\u2033|\u00B4\u00B4|\u201D|''";
 
 
     private class CoordinatePattern{
@@ -135,11 +135,15 @@ public class CoordinateConverter {
     }
 
 
-    //tests if a string matches one of the defined patterns
+    /**
+     * tests if a string matches one of the defined patterns, returns -1 if no pattern matches
+     * @param str
+     * @return
+     */
     private int matchPattern(String str){
         int recognised = -1;
 
-        //match the string against each available patern
+        //match the string against each available pattern
         for (int i = 0; i < patterns.size(); i++){
 
         	CoordinatePattern pattern = patterns.get(i);
@@ -510,7 +514,7 @@ public class CoordinateConverter {
              * what is the second notation
             */
 
-        	//Sets pattern machted, successful, pattern type and pattern info
+        	//Sets pattern matched, successful, pattern type and pattern info
         	initializeResult(results, pattern);
 
             //get sign
@@ -526,7 +530,7 @@ public class CoordinateConverter {
             str = removeWhiteSpace(str);
 
             //remove second symbol (s is removed by the get sign method)
-            //double apostrophe is not removed here as single apostrphe may mark minutes!
+            //double apostrophe is not removed here as single apostrophe may mark minutes!
             //it's taken care of later after extracting the decimal part
             str = str.replaceAll("("+secondUtf8+"|\")", "");
 
