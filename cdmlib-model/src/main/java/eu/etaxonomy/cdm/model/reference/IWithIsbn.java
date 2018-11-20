@@ -9,6 +9,8 @@
 package eu.etaxonomy.cdm.model.reference;
 
 /**
+ * Interface representing all {@link Reference references} which have
+ * a {@link Reference#getType() type} allowing an authorship.
  * @author a.mueller
  * @since 20.11.2018
  *
