@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This class contains provides the set of applicable  {@link Reference} fields per {@link ReferenceType}
+ * This class provides the set of applicable  {@link Reference} fields per {@link ReferenceType}
  * together with the type specific name of the getter.
  * <p>
  * All this information can in principle be generically retrieved from the reference interfaces. Creating and applying annotations
