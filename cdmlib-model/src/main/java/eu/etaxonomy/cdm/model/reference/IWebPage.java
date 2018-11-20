@@ -17,7 +17,7 @@ import org.joda.time.DateTime;
  * This class corresponds, according to the TDWG ontology, to the publication type
  * term (from PublicationTypeTerm): "WebPage".
  */
-public interface IWebPage extends IPublicationBase {
+public interface IWebPage extends IAuthoredPublicationBase {
 
 
 	/**

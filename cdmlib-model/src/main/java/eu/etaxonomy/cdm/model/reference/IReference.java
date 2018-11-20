@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.model.reference;
 import java.beans.Transient;
 import java.net.URI;
 
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -53,15 +52,6 @@ public interface IReference
 	 */
 	public boolean isOfType(ReferenceType type);
 
-	/**
-	 * Returns the references author(s)
-	 */
-	public TeamOrPersonBase getAuthorship();
-
-	/**
-	 * Sets the references author(s)
-	 */
-	public void setAuthorship(TeamOrPersonBase authorship);
 
 	/**
 	 * Returns the references title
@@ -77,7 +67,7 @@ public interface IReference
 
 
     /**
-     * The abbreviated title is the short form for the titlle. It is usually used
+     * The abbreviated title is the short form for the title. It is usually used
      * as a representation of the title of references used in a nomenclatural
      * context.
      * @return
