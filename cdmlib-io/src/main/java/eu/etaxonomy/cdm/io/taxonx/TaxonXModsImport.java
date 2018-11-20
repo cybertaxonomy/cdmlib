@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
+import eu.etaxonomy.cdm.model.reference.IAuthoredPublicationBase;
 import eu.etaxonomy.cdm.model.reference.IPublicationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -133,7 +134,7 @@ public class TaxonXModsImport extends CdmImportBase<TaxonXImportConfigurator, Ta
 
 			VerbatimTimePeriod datePublished = TimePeriodParser.parseStringVerbatim(dateIssued);
 			if (ref.getType().isPublication()){
-				((IPublicationBase)ref).setDatePublished(datePublished );
+				((IAuthoredPublicationBase)ref).setDatePublished(datePublished );
 			}else{
 				logger.warn("Reference has issue date but is not of type publication base. Date was not set");
 			}

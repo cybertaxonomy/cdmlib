@@ -135,7 +135,7 @@ public class DefaultReferenceCacheStrategyTest {
 	@Test
 	public void testArticleGetTitleCache(){
 		journal1.setTitle("My journal");
-		journal1.setAuthorship(articleTeam2);
+		((Reference)journal1).setAuthorship(articleTeam2);  //incorrect use anyway
 		article1.setTitle("My article");
 		article1.setInJournal(journal1);
 		article1.setAuthorship(articleTeam1);
@@ -152,7 +152,7 @@ public class DefaultReferenceCacheStrategyTest {
 	//This test is just to show that setInJournal(null) now resets caches  #1815
 	public void testArticleGetTitleCache2(){
 		journal1.setTitle("My journal");
-		journal1.setAuthorship(articleTeam2);
+		((Reference)journal1).setAuthorship(articleTeam2);
 		article1.setTitle("My article");
 		article1.setInJournal(journal1);
 		article1.setAuthorship(articleTeam1);
@@ -167,7 +167,7 @@ public class DefaultReferenceCacheStrategyTest {
     @Test
     public void testArticleGetTitleCacheWithPages(){
         journal1.setTitle("My journal");
-        journal1.setAuthorship(articleTeam2);
+        ((Reference)journal1).setAuthorship(articleTeam2);
         article1.setTitle("My article");
         article1.setInJournal(journal1);
         article1.setAuthorship(articleTeam1);
@@ -189,7 +189,7 @@ public class DefaultReferenceCacheStrategyTest {
 
 		journal1.setTitle("My journal");
 		journal1.setTitle("M. Journ.");
-		journal1.setAuthorship(articleTeam2);
+		((Reference)journal1).setAuthorship(articleTeam2);
 		article1.setTitle("My article");
 		article1.setInJournal(journal1);
 		article1.setAuthorship(articleTeam1);
@@ -207,7 +207,7 @@ public class DefaultReferenceCacheStrategyTest {
 	public void testArticleGetNomenclaturalCitation(){
 		journal1.setTitle("My journal");
 		journal1.setTitle("M. J.");
-		journal1.setAuthorship(articleTeam2);
+		((Reference)journal1).setAuthorship(articleTeam2);
 		article1.setTitle("My article");
 		article1.setInJournal(journal1);
 		article1.setAuthorship(articleTeam1);
@@ -231,7 +231,7 @@ public class DefaultReferenceCacheStrategyTest {
 		article1.setInJournal(journal1);
 		article1.setVolume("22");
 		journal1.setAbbrevTitle("J. Pl. Eur.");
-		journal1.setAuthorship(articleTeam2);
+		((Reference)journal1).setAuthorship(articleTeam2);
 		article1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1975));
 		//no ser, sect, abt
 		Assert.assertEquals("in J. Pl. Eur. 22: 55. 1975", article1.getNomenclaturalCitation(detail1));
@@ -269,7 +269,7 @@ public class DefaultReferenceCacheStrategyTest {
 	@Test
 	public void testArticleGetTitleWithoutYearAndAuthor(){
 		journal1.setTitle("My journal");
-		journal1.setAuthorship(articleTeam2);
+		((Reference)journal1).setAuthorship(articleTeam2);
 		article1.setTitle("My article");
 		article1.setInJournal(journal1);
 		article1.setAuthorship(articleTeam1);
@@ -283,7 +283,7 @@ public class DefaultReferenceCacheStrategyTest {
 	@Test
 	public void testArticleOldExistingBugs(){
 		journal1.setTitle("Univ. Calif. Publ. Bot.");
-		journal1.setAuthorship(null);
+		((Reference)journal1).setAuthorship(null);
 
 		Team articleAuthor = Team.NewTitledInstance("Babc. & Stebbins", "Babc. & Stebbins");
 		article1.setTitle("");
