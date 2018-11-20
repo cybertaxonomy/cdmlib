@@ -77,8 +77,14 @@ import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
 
 /**
  * The class for references (information sources). Originally
- * an abstract class with many subclasses. Not it is only
- * one class implementing many interfaces for safe use.
+ * an abstract class with many subclasses. Now it is only
+ * one class implementing many interfaces for safe use of different
+ * types of references. E.g. if you want to edit a journal
+ * you create a journal with {@link ReferenceFactory#newJournal()}
+ * which returns an IJournal. Though this instance is an ordinary instance
+ * of {@link Reference} by using IJournal you may not use attributes
+ * not allowed for journals.<p>
+ * References can be created via {@link ReferenceFactory} methods.
  * <P>
  * This class corresponds to: <ul>
  * <li> PublicationCitation according to the TDWG ontology
