@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.common.Language;
  * @since 2013-09-09
  *
  */
-public enum PreferencePredicate implements IEnumTerm<PreferencePredicate>, IPreferencePredicate{
+public enum PreferencePredicate implements IEnumTerm<PreferencePredicate>, IPreferencePredicate<Object>{
     Test(UUID.fromString("b71214ab-2524-4b5d-8e2b-0581767ac839"), "Test", "Test", "Test"),
 
     //names
