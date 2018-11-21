@@ -195,5 +195,19 @@ public enum ReferenceType implements IEnumTerm<ReferenceType>, Serializable{
 	public static ReferenceType getByKey(String key){return delegateVoc.getByKey(key);}
     public static ReferenceType getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
 
+    /**
+     * @return
+     */
+    public boolean isArticle() {
+        return this == Article;
+    }
+    public boolean isBook() {
+        return this == Book;
+    }
+    public boolean isBookSection() {
+        return this == BookSection;
+    }
+    //TBC
+
 
 }

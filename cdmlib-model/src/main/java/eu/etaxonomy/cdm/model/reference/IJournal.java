@@ -37,11 +37,12 @@ public interface IJournal extends IPublicationBase{
      */
     public static boolean guessIsJournalName(String publicationName) {
         String rgEx =
-                "(.*((J|Bull|Mag|Centralbl|Newsl(ett)?|Trans|Chron)\\.|"    //abbrev titles
-                + "Zeitung|Journal|).*|"  //non-abbrev titles
-                + "Blumea|Flora)";     //full title (no other title parts exist)
+                "(.*((J|By?ull?|Mag|Centralbl|Newsl(ett)?|Trans|Chron|Cas|Giorn|Zhurn)\\.|"    //abbrev titles
+                  + "Zeitung|Journal).*|"  //non-abbrev titles
+                + "Blumea|Flora|Haussknechtia)";     //full title (no other title parts exist)
         //Trans. ??
-        return publicationName.matches(rgEx);
+        boolean matches = publicationName.matches(rgEx);
+        return matches;
     }
 
 }

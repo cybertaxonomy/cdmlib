@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
  * @author m.doering
  * @since 08-Nov-2007 13:06:29
  */
-public interface INomenclaturalReference  extends IReference{
+public interface INomenclaturalReference  extends IReference, IWithAuthorAndDate{
 
 	public final String MICRO_REFERENCE_TOKEN = "@@MicroReference";
 

@@ -12,11 +12,8 @@ package eu.etaxonomy.cdm.model.reference;
 import java.beans.Transient;
 import java.net.URI;
 
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IParsable;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.merge.IMergable;
@@ -53,15 +50,6 @@ public interface IReference
 	 */
 	public boolean isOfType(ReferenceType type);
 
-	/**
-	 * Returns the references author(s)
-	 */
-	public TeamOrPersonBase getAuthorship();
-
-	/**
-	 * Sets the references author(s)
-	 */
-	public void setAuthorship(TeamOrPersonBase authorship);
 
 	/**
 	 * Returns the references title
@@ -77,7 +65,7 @@ public interface IReference
 
 
     /**
-     * The abbreviated title is the short form for the titlle. It is usually used
+     * The abbreviated title is the short form for the title. It is usually used
      * as a representation of the title of references used in a nomenclatural
      * context.
      * @return
@@ -90,33 +78,6 @@ public interface IReference
      */
     public void setAbbrevTitle(String abbrevTitle);
 
-
-	/**
-	 * Returns the date when the reference was published as a {@link TimePeriod}
-	 */
-	public VerbatimTimePeriod getDatePublished();
-
-	/**
-	 * Sets the date when the reference was published.
-	 */
-    public void setDatePublished(VerbatimTimePeriod datePublished);
-
-
-    /**
-     * Sets the date when the reference was published.
-     * <BR>
-     * Note: The time period will be internally converted to
-     * a VerbatimTimePeriod so later changes to it will not
-     * be reflected in the reference time period.
-     * @return the new converted VerbatimTimePeriod
-     * @param datePublished the not yet converted TimePeriod
-     * @deprecated only for compatibility with older versions
-     * but may create problems in certain contexts therefore
-     * will be removed soon.
-     */
-    @Transient
-    @Deprecated
-    public VerbatimTimePeriod setDatePublished(TimePeriod datePublished);
 
 	/**
 	 * Returns the Uniform Resource Identifier (URI) corresponding to <i>this</i>

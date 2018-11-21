@@ -567,7 +567,7 @@ public class MatchStrategyFactoryTest {
         IJournal journal = ReferenceFactory.newJournal();
         journal.setAbbrevTitle("Fl. Hell.");
 //        journal.setAuthorship(getDefaultParsedTeam());  //journals should not have authors
-        journal.setDatePublished(TimePeriodParser.parseStringVerbatim("1992-04-03"));
+//        ((Reference)journal).setDatePublished(TimePeriodParser.parseStringVerbatim("1992-04-03")); //journals should not have date published
         journal.getTitleCache();  //not sure if enough
         return journal;
     }

@@ -12,10 +12,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This class contains provides the set of applicable  {@link Reference} fields per {@link ReferenceType}
+ * This class provides the set of applicable  {@link Reference} fields per {@link ReferenceType}
  * together with the type specific name of the getter.
  * <p>
- * All this information can in principle be generically retrieved from the reference interfaces. Creating and applying annotations
+ * All this information can in principle be generically retrieved from the reference interfaces.
+ * Creating and applying annotations
  * to refer to the actual field names could help in this case.
  * <p>
  *
@@ -26,6 +27,7 @@ import java.util.Map;
 public class ReferencePropertyDefinitions {
 
     private static Map<String, String> iPublicationBase = new HashMap<>();
+    private static Map<String, String> iWithAuthorAndDate = new HashMap<>();
     private static Map<String, String> iReference = new HashMap<>();
     private static Map<String, String> iVolumeReference = new HashMap<>();
     private static Map<String, String> iSection = new HashMap<>();
@@ -42,92 +44,70 @@ public class ReferencePropertyDefinitions {
     private static Map<String, String> all = new HashMap<>();
 
     static {
+        put(iReference, "uri");
+        put(iReference, "title");
+        put(iReference, "type");
 
-        Map<String, String> map;
-
-        map = iReference;
-        put(map, "uri");
-        put(map, "datePublished");
-        // put(map, "abbrevTitle"); // this is uses as nomenclatural title, so it makes no sense having this field in general, moved to iPrintedUnitBase
-        put(map, "title");
-        put(map, "authorship");
-        put(map, "type");
+        put(iWithAuthorAndDate, "authorship");
+        put(iWithAuthorAndDate, "datePublished");
 
         iPublicationBase = merge(iReference);
-        map = iPublicationBase;
-        put(map, "publisher");
-        put(map, "placePublished");
-        put(map, "doi");
+        put(iPublicationBase, "publisher");
+        put(iPublicationBase, "placePublished");
+        put(iPublicationBase, "doi");
 
         iSection = merge(iReference);
-        map = iSection;
-        put(map, "pages");
-        put(map, "inReference");
+        put(iSection, "pages");
+        put(iSection, "inReference");
 
-        iVolumeReference = merge(iReference);
-        map = iVolumeReference;
-        put(map, "volume");
+        iVolumeReference = merge(iReference, iWithAuthorAndDate);
+        put(iVolumeReference, "volume");
 
         iPrintedUnitBase = merge(iPublicationBase, iSection, iVolumeReference);
-        map = iPrintedUnitBase;
-        put(map, "title");
-        put(map, "abbrevTitle");
-        put(map, "inReference", "inSeries");
-        put(map, "editor");
-//        put(map, "seriesPart");
-        put(map, "doi");
+        put(iPrintedUnitBase, "title");
+        put(iPrintedUnitBase, "abbrevTitle");
+        put(iPrintedUnitBase, "inReference", "inSeries");
+        put(iPrintedUnitBase, "editor");
+        put(iPrintedUnitBase, "doi");
 
         iArticle = merge(iSection, iVolumeReference);
-        map = iArticle;
-//        put(map, "seriesPart");
-        put(map, "inReference", "inJournal");
-        put(map, "doi");
+        put(iArticle, "inReference", "inJournal");
+        put(iArticle, "doi");
 
         iBook = merge(iPrintedUnitBase);
-        map = iBook;
-        put(map, "inReference", "inSeries");
-        put(map, "edition");
-        put(map, "isbn");
+        put(iArticle, "inReference", "inSeries");
+        put(iArticle, "edition");
+        put(iArticle, "isbn");
 
         iBookSection = merge(iSection);
-        map = iBookSection;
-        put(map, "inReference", "inBook");
-        put(map, "doi");
+        put(iBookSection, "inReference", "inBook");
+        put(iBookSection, "doi");
 
         iProceedings = merge(iPrintedUnitBase);
-        map = iProceedings;
-        put(map, "organization");
-        put(map, "doi");
-        put(map, "isbn");
+        put(iProceedings, "organization");
+        put(iProceedings, "doi");
+        put(iProceedings, "isbn");
 
         iJournal = merge(iPublicationBase);
-        map = iJournal;
-        remove(map, "authorship");
-        put(map, "issn");
+        put(iJournal, "issn");
 
         iInProceedings = merge(iSection);
-        map = iInProceedings;
-        remove(map, "series");
-        put(map, "inReference", "inJournal");
-        put(map, "doi");
+        remove(iInProceedings, "series");
+        put(iInProceedings, "inReference", "In proceedings");
+        put(iInProceedings, "doi");
 
         iPrintSeries = merge(iPublicationBase);
-        map = iPrintSeries;
-        remove(map, "authorship");
-        remove(map, "doi");
-        put(map, "publisher");
-        put(map, "placePublished");
+        remove(iPrintSeries, "doi");
+        put(iPrintSeries, "publisher");
+        put(iPrintSeries, "placePublished");
 
         iThesis = merge(iPublicationBase);
-        map = iThesis;
-        put(map, "school");
+        put(iThesis, "school");
 
         iReport = merge(iPublicationBase);
-        map = iReport;
-        put(map, "institution");
+        put(iReport, "institution");
 
         all = merge(iThesis, iPrintSeries, iInProceedings, iJournal, iArticle, iBook, iBookSection, iProceedings, iPrintedUnitBase, iVolumeReference, iReport);
-
     }
 
     /**
@@ -184,7 +164,6 @@ public class ReferencePropertyDefinitions {
 
     }
 
-
     @SafeVarargs
     private static Map<String, String> merge(Map<String, String> ... maps) {
 
@@ -212,7 +191,6 @@ public class ReferencePropertyDefinitions {
    }
 
    public static class UnimplemetedCaseException extends Exception{
-
 
         private static final long serialVersionUID = 1L;
 
