@@ -103,7 +103,9 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
           "gatheringEvent.country",
           "gatheringEvent.collectingAreas",
           "gatheringEvent.actor",
-          "derivationEvents.derivatives" // important, otherwise the DerivedUnits are not included into the graph of initialized entities!!!
+          "gatheringEvent.exactLocation.$",
+          "derivationEvents.derivatives", // important, otherwise the DerivedUnits are not included into the graph of initialized entities!!!
+
   });
 
   public static final List<String> BLOCKING_REGISTRATION_INIT_STRATEGY = Arrays.asList(new String []{
