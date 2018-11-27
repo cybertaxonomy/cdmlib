@@ -75,8 +75,8 @@ public abstract class OrderedTermBase<T extends OrderedTermBase<?>> extends Defi
     protected OrderedTermBase(TermType type) {
         super(type);
     }
-    public OrderedTermBase(TermType type, String term, String label, String labelAbbrev) {
-        super(type, term, label, labelAbbrev);
+    public OrderedTermBase(TermType type, String description, String label, String labelAbbrev) {
+        super(type, description, label, labelAbbrev);
     }
 
 // **************************** METHODS ******************************/

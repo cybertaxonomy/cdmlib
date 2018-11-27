@@ -38,6 +38,7 @@ import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
+import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -118,7 +119,7 @@ public class TaxonPortalController extends TaxonController{
 
             });
 
-    private static final List<String> TAXON_WITH_NODES_INIT_STRATEGY = Arrays.asList(new String []{
+    private static final List<String> TAXON_WITH_CHILDNODES_INIT_STRATEGY = Arrays.asList(new String []{
             "taxonNodes.$",
             "taxonNodes.classification.$",
             "taxonNodes.childNodes.$"
@@ -222,7 +223,7 @@ public class TaxonPortalController extends TaxonController{
             "typeStatus"
     });
 
-    protected static final List<String> TAXONNODE_WITHTAXON_INIT_STRATEGY = Arrays.asList(new String []{
+    protected static final List<String> TAXONNODE_WITH_CHILDNODES_INIT_STRATEGY = Arrays.asList(new String []{
             "childNodes.taxon",
     });
 
@@ -268,7 +269,7 @@ public class TaxonPortalController extends TaxonController{
      *
      * @param request
      * @param response
-     * @return a Map with to entries which are mapped by the following keys:
+     * @return a Map with two entries which are mapped by the following keys:
      *         "homotypicSynonymsByHomotypicGroup", "heterotypicSynonymyGroups",
      *         containing lists of {@link Synonym}s which are initialized using the
      *         following initialization strategy: {@link #SYNONYMY_INIT_STRATEGY}
@@ -278,7 +279,7 @@ public class TaxonPortalController extends TaxonController{
     @RequestMapping(
             value = {"synonymy"},
             method = RequestMethod.GET)
-    public ModelAndView doGetSynonymy(@PathVariable("uuid") UUID uuid,
+    public ModelAndView doGetSynonymy(@PathVariable("uuid") UUID taxonUuid,
             @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
             HttpServletRequest request,
             HttpServletResponse response)throws IOException {
@@ -551,7 +552,7 @@ public class TaxonPortalController extends TaxonController{
 
         logger.info("doGetSubtreeMedia() " + requestPathAndQuery(request));
 
-        Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, TAXON_WITH_NODES_INIT_STRATEGY);
+        Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, TAXON_WITH_CHILDNODES_INIT_STRATEGY);
         taxon = checkExistsAndAccess(taxon, includeUnpublished, response);
 
         Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(relationshipUuids, relationshipInversUuids, termService);
@@ -570,7 +571,7 @@ public class TaxonPortalController extends TaxonController{
             node = iterator.next();
             //Check if TaxonNode belongs to the current tree
 
-            node = taxonNodeService.load(node.getUuid(), TAXONNODE_WITHTAXON_INIT_STRATEGY);
+            node = taxonNodeService.load(node.getUuid(), TAXONNODE_WITH_CHILDNODES_INIT_STRATEGY);
             List<TaxonNode> children = node.getChildNodes();
             Taxon childTaxon;
             for (TaxonNode child : children){
