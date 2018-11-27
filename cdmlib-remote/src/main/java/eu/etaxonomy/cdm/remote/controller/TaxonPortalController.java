@@ -289,7 +289,8 @@ public class TaxonPortalController extends TaxonController{
             logger.info("doGetSynonymy() " + requestPathAndQuery(request));
         }
         ModelAndView mv = new ModelAndView();
-        Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
+
+        Taxon taxon = getCdmBaseInstance(Taxon.class, taxonUuid, response, TAXONNODE_INIT_STRATEGY);
         TaxonNode subtree = getSubtreeOrError(subtreeUuid, taxonNodeService, response);
         taxon = checkExistsSubtreeAndAccess(taxon, subtree, NO_UNPUBLISHED, response);
 

@@ -96,7 +96,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
     private ITermService termService;
 
     protected static final List<String> TAXONNODE_INIT_STRATEGY = Arrays.asList(new String []{
-            "taxonNodes.classification"
+            "taxonNodes.classification","acceptedTaxon.taxonNodes.classification"
     });
 
     public TaxonController(){
