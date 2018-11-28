@@ -17,6 +17,6 @@ package eu.etaxonomy.cdm.model.reference;
  * This class corresponds, according to the TDWG ontology, to the publication type
  * term (from PublicationTypeTerm): "Patent".
  */
-public interface IPatent extends IReference, IWithAuthorAndDate {
+public interface IPatent extends IReference, IWithAuthorAndDate, IWithDoi {
 
 }

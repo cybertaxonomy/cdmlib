@@ -14,10 +14,9 @@ package eu.etaxonomy.cdm.model.reference;
  * Interface for all references that support set/getVolume().
  *
  * @author a.mueller
- * @version 1.0
  * @since 24-Nov-2008 21:06:29
  */
-public interface IVolumeReference extends IReference, IWithAuthorAndDate {
+public interface IVolumeReference extends IReference, IWithAuthorAndDate, IWithDoi {
 
 	/**
 	 * Returns the volume of a reference.

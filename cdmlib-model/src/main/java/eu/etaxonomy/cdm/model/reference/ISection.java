@@ -16,7 +16,7 @@ package eu.etaxonomy.cdm.model.reference;
  * This class corresponds, according to the TDWG ontology, to the publication type
  * term (from PublicationTypeTerm): "SubReference".
  */
-public interface ISection extends IReference, IWithAuthorAndDate, INomenclaturalReference {
+public interface ISection extends IReference, IWithAuthorAndDate, IWithDoi, INomenclaturalReference {
 
 	/**
 	 * Returns the pages this reference covers in its in-reference.

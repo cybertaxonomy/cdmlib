@@ -13,6 +13,8 @@ package eu.etaxonomy.cdm.model.reference;
  * @since 20.11.2018
  *
  */
-public interface IAuthoredPublicationBase extends IPublicationBase, IWithAuthorAndDate{
+public interface IAuthoredPublicationBase
+       extends IPublicationBase, IWithAuthorAndDate, IWithDoi{
+
 
 }

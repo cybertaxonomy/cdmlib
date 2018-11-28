@@ -34,8 +34,6 @@ public interface IWithAuthorAndDate {
      */
     public void setAuthorship(TeamOrPersonBase authorship);
 
-
-
     /**
      * Returns the date when the reference was published as a {@link TimePeriod}
      */
@@ -43,6 +41,7 @@ public interface IWithAuthorAndDate {
 
     /**
      * Sets the date when the reference was published.
+     * @see #getDatePublished()
      */
     public void setDatePublished(VerbatimTimePeriod datePublished);
 
