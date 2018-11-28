@@ -95,6 +95,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     private static final UUID ABIES_LASIOCARPA_UUID = UUID.fromString("9ce1fecf-c1ad-4127-be01-85d5d9f847ce");
 
     private static final UUID ROOTNODE_CLASSIFICATION_5000 = UUID.fromString("a8266e45-091f-432f-87ae-c625e6aa9bbc");
+    private static final UUID ROOTNODE_CLASSIFICATION_5001 = UUID.fromString("1ff4255d-7c6c-4d01-aaae-7acc2cd3dda1");
 
     private static final UUID DESC_ABIES_BALSAMEA_UUID = UUID.fromString("900108d8-e6ce-495e-b32e-7aad3099135e");
     private static final UUID DESC_ABIES_ALBA_UUID = UUID.fromString("ec8bba03-d993-4c85-8472-18b14942464b");
@@ -211,6 +212,28 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Wei"+UTF8.SHARP_S+"tanne", null, subtree, null,
                 Arrays.asList(new Language[] { Language.RUSSIAN() }), false, null, null, null, null);
         Assert.assertEquals("Expecting no entity when searching in Russian", 0, pager.getCount().intValue());
+
+        //subtree
+//        subtree = nodeService.find(ROOTNODE_CLASSIFICATION_5000);
+        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class,
+                "Balsam", null, subtree, null, null,
+                false, null, null, null, null);
+        Assert.assertEquals("Expecting one entity when searching for CommonTaxonName", 1,
+                pager.getCount().intValue());
+
+        subtree = nodeService.find(ROOTNODE_CLASSIFICATION_5000);
+        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class,
+                "Balsam", null, subtree, null, null,
+                false, null, null, null, null);
+        Assert.assertEquals("Expecting one entity when searching for CommonTaxonName", 1,
+                pager.getCount().intValue());
+
+        subtree = nodeService.find(ROOTNODE_CLASSIFICATION_5001);
+        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class,
+                "Balsam", null, subtree, null, null,
+                false, null, null, null, null);
+        Assert.assertEquals("Matching common name is not in the given classification", 0,
+                pager.getCount().intValue());
 
     }
 
