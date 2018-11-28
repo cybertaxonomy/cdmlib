@@ -540,7 +540,7 @@ public class NonViralNameParserImpl
 			if (bookMatcher.matches() ){
 				result = parseBook(strReference);
 			}else{
-				logger.info("Non-InRef must be book but does not match book: "+ strReference);
+				logger.warn("Non-InRef must be book but does not match book: "+ strReference);
 				result = ReferenceFactory.newBook();
 				makeUnparsableRefTitle(result, strReference);
 			}

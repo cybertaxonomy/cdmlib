@@ -201,58 +201,6 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
 
     }
 
-    @Test
-    @DataSet
-    public final void testListRankSpecificRootNodes_withSubtree(){
-        Classification classification = service.find(UUID.fromString("6c2bc8d9-ee62-4222-be89-4a8e31770878"));
-
-        // classification, see  createTestDataSet()
-
-        // ClassificationRoot
-        // |- Acacia N.Jacobsen, Bastm. & Yuji Sasaki                          [Genus]
-        // |  |-- Acacia subg. Aculeiferum Pedley                              [Subgenus]
-        // |  |-- Acacia subg. Phyllodineae N.Jacobsen, Bastm. & Yuji Sasaki   [Subgenus]
-        // |  |  |-- Acacia sect. Botrycephalae Yuji Sasaki                    [Section (Botany)]
-        // |  |------- Acacia cuspidifolia Maslin                              [Species]
-        // |  |------- Acacia mearnsii Benth                                   [Species]
-        // |---------- Acacia acicularis Willd.                                [Species]
-        //             |-- ×Acacia acicularis Willd. subsp. acicularis         [Subspecies]
-        //
-        // for more historic Acacia taxonomy see http://lexikon.freenet.de/Akazien
-
-        TaxonNode subtree = taxonNodeService.find(UUID.fromString("bcdf945f-1f02-423e-883d-fe89e0af93e4"));
-
-
-        List<TaxonNode> taxonNodes = service.listRankSpecificRootNodes(null, subtree, null, includeUnpublished, null, null, NODE_INIT_STRATEGY);
-        Assert.assertEquals(2, taxonNodes.size());
-
-        taxonNodes = service.listRankSpecificRootNodes(classification, null, null, includeUnpublished, null, null, NODE_INIT_STRATEGY);
-        Assert.assertEquals(2, taxonNodes.size());
-
-        taxonNodes = service.listRankSpecificRootNodes(classification, null, Rank.SECTION_BOTANY(), includeUnpublished, null, null, NODE_INIT_STRATEGY);
-        Assert.assertEquals(4, taxonNodes.size());
-
-        // also test if the pager works
-        taxonNodes = service.listRankSpecificRootNodes(classification, null, Rank.SECTION_BOTANY(), includeUnpublished, 10, 0, NODE_INIT_STRATEGY);
-        Assert.assertEquals(4, taxonNodes.size());
-        taxonNodes = service.listRankSpecificRootNodes(classification, null, Rank.SECTION_BOTANY(), includeUnpublished, 2, 0, NODE_INIT_STRATEGY);
-        Assert.assertEquals(2, taxonNodes.size());
-        taxonNodes = service.listRankSpecificRootNodes(classification, null, Rank.SECTION_BOTANY(), includeUnpublished, 2, 1, NODE_INIT_STRATEGY);
-        Assert.assertEquals(2, taxonNodes.size());
-        taxonNodes = service.listRankSpecificRootNodes(classification, null, Rank.SECTION_BOTANY(), includeUnpublished, 2, 2, NODE_INIT_STRATEGY);
-        Assert.assertEquals(0, taxonNodes.size());
-
-        taxonNodes = service.listRankSpecificRootNodes(classification, null, Rank.SPECIES(), includeUnpublished, null, null, NODE_INIT_STRATEGY);
-        Assert.assertEquals(3, taxonNodes.size());
-
-        // also test if the pager works
-        taxonNodes = service.listRankSpecificRootNodes(classification, null, Rank.SPECIES(), includeUnpublished, 10, 0, NODE_INIT_STRATEGY);
-        Assert.assertEquals(3, taxonNodes.size());
-        taxonNodes = service.listRankSpecificRootNodes(classification, null, Rank.SPECIES(), includeUnpublished, 2, 1, NODE_INIT_STRATEGY);
-        Assert.assertEquals(1, taxonNodes.size());
-    }
-
-
     /**
      * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#loadTreeBranch(eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.name.Rank, java.util.List)}.
      */

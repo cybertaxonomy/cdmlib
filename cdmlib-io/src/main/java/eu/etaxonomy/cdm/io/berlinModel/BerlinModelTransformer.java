@@ -253,65 +253,6 @@ public class BerlinModelTransformer {
 	public static UUID uuidBt = UUID.fromString("EE13FB74-F3AC-46B1-9F23-6A25AC504446");
 	public static UUID uuidTcs = UUID.fromString("904C3980-B98D-422E-A195-95F4F41FC734");
 
-	//Caucasus area
-	public static UUID uuidVocCaucasusAreas = UUID.fromString("3ef82b77-23cb-4b60-a4b3-edc7e4775ddb");
-	public static UUID uuidCauc1 = UUID.fromString("4fa53820-a416-4bcb-b816-3b0867a6dfec");
-	public static UUID uuidCauc1a = UUID.fromString("092c2165-a203-4bce-bfe6-efd78b2fabf5");
-	public static UUID uuidCauc1b = UUID.fromString("b42f7566-6886-411d-acc6-056eb6845e14");
-	public static UUID uuidCauc2 = UUID.fromString("0b05c6ee-d130-4b12-b1b0-1b6986a3badf");
-	public static UUID uuidCauc2a = UUID.fromString("75f5604b-c985-482e-aefd-5abe46478b55");
-	public static UUID uuidCauc2b = UUID.fromString("b1f46148-1fe0-41f7-b276-a2b3020c513e");
-	public static UUID uuidCauc2c = UUID.fromString("3017b469-42d2-4e7e-8551-e2ee3a1cf403");
-	public static UUID uuidCauc3 = UUID.fromString("0a295a9f-443b-490f-8960-6db9e09bbc6e");
-	public static UUID uuidCauc3a = UUID.fromString("033695d9-4c95-4178-aa0e-45a7bae5a667");
-	public static UUID uuidCauc3b = UUID.fromString("fa289ce5-bf06-4629-8fb6-f2cbdc88ab46");
-	public static UUID uuidCauc3c = UUID.fromString("a6ce69d0-bd0a-4a45-889d-50dfd6c460ea");
-	public static UUID uuidCauc3d = UUID.fromString("c19ad80b-b9c0-487e-8087-89f7ba8871e1");
-	public static UUID uuidCauc4 = UUID.fromString("2633f644-1a50-4770-bd23-e746cd25a261");
-	public static UUID uuidCauc4a = UUID.fromString("b3c8cdfb-4b7a-4936-8b20-72d287621e8d");
-	public static UUID uuidCauc4b = UUID.fromString("a416e238-8893-4ae1-80dd-3a11d8be7bea");
-	public static UUID uuidCauc4c = UUID.fromString("eaf20fcc-a532-4d02-8db7-99e73504a9d8");
-	public static UUID uuidCauc5 = UUID.fromString("92f4fbd6-3eb9-42df-9e03-21aa0e15bf6d");
-	public static UUID uuidCauc5a = UUID.fromString("262fcc45-434d-40f7-8317-f9ad46229cdd");
-	public static UUID uuidCauc5b = UUID.fromString("15add738-963e-4b2c-bf31-aa43a48139c1");
-	public static UUID uuidCauc5c = UUID.fromString("5441359c-acb8-45ea-85a2-bd509b5fb677");
-	public static UUID uuidCauc5d = UUID.fromString("3fc5c58f-43aa-461d-aeaf-b8be2beb4d45");
-	public static UUID uuidCauc6 = UUID.fromString("ef33a819-e022-44f9-8001-53383528c245");
-	public static UUID uuidCauc6a = UUID.fromString("6b4785c5-34d2-400f-9b3d-5f38b01766d1");
-	public static UUID uuidCauc6b = UUID.fromString("eaa10e80-6bdc-404a-9d9e-e653745d2f9f");
-	public static UUID uuidCauc7 = UUID.fromString("c1cf286d-681f-49c9-8066-70473640eeb1");
-	public static UUID uuidCauc7a = UUID.fromString("ff378de7-e367-4611-a4e6-52f8e6883711");
-	public static UUID uuidCauc7b = UUID.fromString("78c86e36-abce-4dfb-b445-8c85f820d199");
-	public static UUID uuidCauc7c = UUID.fromString("4bee620f-fe54-40c1-a161-baf54c89dbb4");
-	public static UUID uuidCauc7d = UUID.fromString("00f89bb2-eefa-4d20-9ca2-27d859423488");
-	public static UUID uuidCauc7e = UUID.fromString("7f303133-3dd1-4dcd-9592-f30e8f3d201b");
-	public static UUID uuidCauc8 = UUID.fromString("07e91d7a-daa3-4096-ae14-eac737821dc7");
-	public static UUID uuidCauc8a = UUID.fromString("d0ed61d1-ae46-42dc-92bf-f72c5e30ecd3");
-	public static UUID uuidCauc8b = UUID.fromString("98158bf1-f58b-4782-948b-e047b8e7c10a");
-	public static UUID uuidCauc8c = UUID.fromString("2d966527-298a-45ed-96da-0dc74eaec23a");
-	public static UUID uuidCauc9 = UUID.fromString("eacd9881-38f4-4323-8b5d-7a80299a2821");
-	public static UUID uuidCauc9a = UUID.fromString("05c357cc-74a7-403c-be4a-667217555e12");
-	public static UUID uuidCauc9b = UUID.fromString("39224e9e-0e92-43df-9554-e7de7311f0a9");
-	public static UUID uuidCauc9c = UUID.fromString("3b6a0540-5a75-41a5-bcdb-6d54042bc864");
-	public static UUID uuidCauc9d = UUID.fromString("6e2d2a39-debe-4f9a-b47d-0d69c0b2624c");
-	public static UUID uuidCauc9e = UUID.fromString("cf648e63-1794-4ec5-9872-f43ab42ac303");
-	public static UUID uuidCauc9f = UUID.fromString("547ace9d-8f69-471f-8bf3-cd547c7682a1");
-	public static UUID uuidCauc10 = UUID.fromString("e92833d5-8573-4c10-97b0-fef972c33c97");
-	public static UUID uuidCauc10a = UUID.fromString("6b6e7e7b-a398-4a9a-81b1-70c4c9f36e9d");
-	public static UUID uuidCauc10b = UUID.fromString("8ca869d0-8fff-4217-8357-f4866af5fa38");
-	public static UUID uuidCauc10c = UUID.fromString("37f06734-45c5-4339-88c7-750a7f912703");
-	public static UUID uuidCauc11 = UUID.fromString("cecc54bc-1f56-416a-bff5-e84de0a58c96");
-	public static UUID uuidCauc11a = UUID.fromString("c949f59c-cf7a-4117-88fa-7b0f8690c110");
-	public static UUID uuidCauc11b = UUID.fromString("0aa6c4fd-fbe5-4eb4-8f01-cb5f186ff4a6");
-	public static UUID uuidCauc11c = UUID.fromString("2922d3ce-2b02-4739-b986-2b7f2944f384");
-	public static UUID uuidCauc11d = UUID.fromString("99d574d8-1c15-4f5f-a530-0a6bdcc9634f");
-	public static UUID uuidCauc11e = UUID.fromString("b995f2c2-05c4-4cca-adee-fd300d887929");
-	public static UUID uuidCauc11f = UUID.fromString("2aaa9b08-be28-41a8-8985-9d06ca9789e0");
-	public static UUID uuidCauc11g = UUID.fromString("72f3fd82-0e4c-4037-a4c9-5ff7fafe27af");
-	public static UUID uuidCauc12 = UUID.fromString("f352e4f0-d2e4-4a0d-a457-539840dfb9b3");
-
-
-
 	//Salvador
 	public static UUID uuidSalvadorAreas = UUID.fromString("8ef90ca3-77d7-4adc-8bbc-1eb354e61b65");
 
@@ -348,8 +289,6 @@ public class BerlinModelTransformer {
 	public static final UUID uuidEuroMedAreaLevelTop = UUID.fromString("190d5758-4b96-4016-9412-6dc9c36ef5fd");
 	public static final UUID uuidEuroMedAreaLevelFirst = UUID.fromString("d21503e3-875e-4abc-82ec-f812e3cfea84");
 	public static final UUID uuidEuroMedAreaLevelSecond = UUID.fromString("97ac0bf5-b31c-487a-8ed5-a576f46c902c");
-	public static final UUID uuidCaucasusAreaLevelFirst = UUID.fromString("1899cb19-c59e-425a-892f-6a4f9b115e4a");
-    public static final UUID uuidCaucasusAreaLevelSecond = UUID.fromString("ccfd15bc-6e05-41c7-b839-f7241f518fe1");
 
 	//languages
 	public static final UUID uuidLangMajorcan = UUID.fromString("82d696d7-cb4e-49de-ac89-63a0e12ca766");

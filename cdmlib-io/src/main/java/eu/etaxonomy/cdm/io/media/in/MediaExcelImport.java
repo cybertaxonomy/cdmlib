@@ -93,7 +93,7 @@ public class MediaExcelImport
         //description
         String description = record.get(COL_DESCRIPTION);
         if (isNotBlank(description)){
-            Language descriptionLanguage = Language.ENGLISH();  //  state.getConfig().getDescriptionLanguage();
+            Language descriptionLanguage = state.getConfig().getDescriptionLanguage();
             descriptionLanguage = descriptionLanguage == null? Language.UNKNOWN_LANGUAGE(): descriptionLanguage;
             media.putDescription(descriptionLanguage, description);
         }
@@ -104,7 +104,7 @@ public class MediaExcelImport
             title = makeTitle(state, taxon, line);
         }
         if (isNotBlank(title)){
-            Language titleLanguage = Language.LATIN(); // state.getConfig().getTitleLanguage();
+            Language titleLanguage = state.getConfig().getTitleLanguage();
             titleLanguage = titleLanguage == null? Language.UNKNOWN_LANGUAGE(): titleLanguage;
             media.putTitle(titleLanguage, title);
         }
