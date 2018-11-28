@@ -9,12 +9,16 @@
 package eu.etaxonomy.cdm.model.reference;
 
 /**
+ * Interface for all publications that are published at a certain date in time
+ * and a have an author. This excludes {@link IJournal journals} and
+ * {@link IPrintSeries print series} which are published during a certain period
+ * and may have authors changing over time. They are
  * @author a.mueller
  * @since 20.11.2018
  *
  */
 public interface IAuthoredPublicationBase
-       extends IPublicationBase, IWithAuthorAndDate, IWithDoi{
+       extends IPublicationBase, IWithAuthorAndDate{
 
 
 }
