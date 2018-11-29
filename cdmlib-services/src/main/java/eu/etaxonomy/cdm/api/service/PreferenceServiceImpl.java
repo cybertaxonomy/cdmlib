@@ -52,7 +52,7 @@ public class PreferenceServiceImpl implements IPreferenceService {
      * {@inheritDoc}
      */
     @Override
-    public CdmPreference findDatabase(IPreferencePredicate predicate){
+    public CdmPreference findDatabase(IPreferencePredicate<?> predicate){
         PrefKey key = CdmPreference.NewKey(PreferenceSubject.NewDatabaseInstance(), predicate);
         return find(key);
     }
@@ -61,13 +61,13 @@ public class PreferenceServiceImpl implements IPreferenceService {
      * {@inheritDoc}
      */
     @Override
-    public CdmPreference findVaadin(IPreferencePredicate predicate){
+    public CdmPreference findVaadin(IPreferencePredicate<?> predicate){
         PrefKey key = CdmPreference.NewKey(PreferenceSubject.NewVaadinInstance(), predicate);
         return find(key);
     }
 
     @Override
-    public CdmPreference findTaxEditor(IPreferencePredicate predicate){
+    public CdmPreference findTaxEditor(IPreferencePredicate<?> predicate){
         PrefKey key = CdmPreference.NewKey(PreferenceSubject.NewTaxEditorInstance(), predicate);
         return find(key);
     }
@@ -95,7 +95,7 @@ public class PreferenceServiceImpl implements IPreferenceService {
     }
 
     @Override
-    public CdmPreference find(TaxonNode taxonNode, IPreferencePredicate predicate){
+    public CdmPreference find(TaxonNode taxonNode, IPreferencePredicate<?> predicate){
         return dao.find(taxonNode, predicate.getKey());
     }
 

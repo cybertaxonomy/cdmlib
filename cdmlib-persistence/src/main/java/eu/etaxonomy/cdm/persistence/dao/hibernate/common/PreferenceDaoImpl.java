@@ -63,12 +63,24 @@ public class PreferenceDaoImpl extends DaoBase implements IPreferenceDao, Initia
 //		}
 	}
 
+    @Override
+    public List<CdmPreference> list(IPreferencePredicate<?> predicate){
+
+        String hql = "FROM CdmPreference pref "
+                + " WHERE pref.key.predicate = :predicate "
+                ;
+        Query query = getSession().createQuery(hql);
+        query.setParameter("predicate", predicate.getKey());
+        @SuppressWarnings("unchecked")
+        List<CdmPreference> allPreferences = query.list();
+        return allPreferences;
+    }
 
 	@Override
 	public CdmPreference find(TaxonNode taxonNode, String predicate){
 	    String treeIndex = taxonNode.treeIndex();
 	    String[] splits = treeIndex == null ? new String[]{}: treeIndex.split("#");
-	    List<String> filterStrings = new ArrayList<String>();
+	    List<String> filterStrings = new ArrayList<>();
 	    filterStrings.add(PreferenceSubject.ROOT);
 	    String rootSplit = "";
 	    for (String split : splits){

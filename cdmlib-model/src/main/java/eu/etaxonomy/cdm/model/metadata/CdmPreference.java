@@ -56,19 +56,19 @@ public final class CdmPreference implements Serializable {
     private static final long serialVersionUID = 4307599154287181582L;
 
     public static final CdmPreference NewInstance(PreferenceSubject subject,
-            IPreferencePredicate predicate, String value){
+            IPreferencePredicate<?> predicate, String value){
         return new CdmPreference(subject, predicate, value);
     }
 
 
-    public static final CdmPreference NewInstance(PreferenceSubject subject, IPreferencePredicate predicate, List<UUID> value){
+    public static final CdmPreference NewInstance(PreferenceSubject subject, IPreferencePredicate<?> predicate, List<UUID> value){
         return new CdmPreference(subject, predicate, uuidListStr(value));
     }
-    public static final CdmPreference NewInstance(PreferenceSubject subject, IPreferencePredicate predicate, UUID ... value){
+    public static final CdmPreference NewInstance(PreferenceSubject subject, IPreferencePredicate<?> predicate, UUID ... value){
         return new CdmPreference(subject, predicate, uuidListStr(Arrays.asList(value)));
     }
 
-    public static final CdmPreference NewInstance(PreferenceSubject subject, IPreferencePredicate predicate, UUID value){
+    public static final CdmPreference NewInstance(PreferenceSubject subject, IPreferencePredicate<?> predicate, UUID value){
         return new CdmPreference(subject, predicate, value.toString());
     }
 
@@ -77,7 +77,7 @@ public final class CdmPreference implements Serializable {
      * @param value
      * @return
      */
-    public static CdmPreference NewDatabaseInstance(IPreferencePredicate predicate, String value) {
+    public static CdmPreference NewDatabaseInstance(IPreferencePredicate<?> predicate, String value) {
         return new CdmPreference(PreferenceSubject.NewDatabaseInstance(), predicate, value);
     }
 
@@ -86,7 +86,7 @@ public final class CdmPreference implements Serializable {
      * @param value
      * @return
      */
-    public static CdmPreference NewVaadinInstance(IPreferencePredicate predicate, String value) {
+    public static CdmPreference NewVaadinInstance(IPreferencePredicate<?> predicate, String value) {
         return new CdmPreference(PreferenceSubject.NewVaadinInstance(), predicate, value);
     }
 
@@ -95,11 +95,11 @@ public final class CdmPreference implements Serializable {
      * @param value
      * @return
      */
-    public static CdmPreference NewTaxEditorInstance(IPreferencePredicate predicate, String value) {
+    public static CdmPreference NewTaxEditorInstance(IPreferencePredicate<?> predicate, String value) {
         return new CdmPreference(PreferenceSubject.NewTaxEditorInstance(), predicate, value);
     }
 
-    public static PrefKey NewKey(PreferenceSubject subject, IPreferencePredicate predicate){
+    public static PrefKey NewKey(PreferenceSubject subject, IPreferencePredicate<?> predicate){
       return new PrefKey(subject, predicate);
     }
 
@@ -139,7 +139,7 @@ public final class CdmPreference implements Serializable {
         //for hibernate use only
         private PrefKey(){}
 
-        private PrefKey(PreferenceSubject subject, IPreferencePredicate predicate){
+        private PrefKey(PreferenceSubject subject, IPreferencePredicate<?> predicate){
             this(subject.toString(), predicate.getKey());
         }
 //      private PrefKey(PreferenceSubjectEnum subject, PreferencePredicate predicate){
@@ -210,7 +210,7 @@ public final class CdmPreference implements Serializable {
 	private CdmPreference(){}
 
 
-	private CdmPreference(PreferenceSubject subject, IPreferencePredicate predicate, String value){
+	private CdmPreference(PreferenceSubject subject, IPreferencePredicate<?> predicate, String value){
 		this.key = new PrefKey(subject, predicate);
 		//TODO are null values allowed?		assert predicate != null : "value must not be null for preference";
 		if (value != null && value.length() > 1023) {throw new IllegalArgumentException(

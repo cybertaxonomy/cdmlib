@@ -85,14 +85,14 @@ public interface IPreferenceService {
       * @param predicate
       * @return
       */
-     public CdmPreference findDatabase(IPreferencePredicate predicate);
+     public CdmPreference findDatabase(IPreferencePredicate<?> predicate);
 
      /**
       * Retrieve the vaadin wide preference for the given predicate.
       * @param predicate
       * @return
       */
-     public CdmPreference findVaadin(IPreferencePredicate predicate);
+     public CdmPreference findVaadin(IPreferencePredicate<?> predicate);
 
 
      /**
@@ -100,7 +100,7 @@ public interface IPreferenceService {
       * @param predicate
       * @return
       */
-     public CdmPreference findTaxEditor(IPreferencePredicate predicate);
+     public CdmPreference findTaxEditor(IPreferencePredicate<?> predicate);
 
      /**
       * Returns the best matching preference that matches the given
@@ -112,7 +112,7 @@ public interface IPreferenceService {
       */
      public Object find(TaxonNode taxonNode, String predicate);
 
-     public CdmPreference find(TaxonNode taxonNode, IPreferencePredicate predicate);
+     public CdmPreference find(TaxonNode taxonNode, IPreferencePredicate<?> predicate);
 
      /**
       * Returns the best matching preference that matches the given
