@@ -43,7 +43,7 @@ public class CdmPreferenceTest {
 	@Test
 	public void testCdmPreferences() {
 		CdmPreference prefs = new CdmPreference(subject, predicate, value);
-		Assert.assertEquals(subject, prefs.getSubject());
+		Assert.assertEquals(subject, prefs.getSubjectString());
 		Assert.assertEquals(predicate, prefs.getPredicate());
 		Assert.assertEquals(value, prefs.getValue());
 
@@ -88,7 +88,7 @@ public class CdmPreferenceTest {
 
 		try {
 			prefs = new CdmPreference(subject, predicate, null);
-	         Assert.assertEquals(subject, prefs.getSubject());
+	         Assert.assertEquals(subject, prefs.getSubjectString());
 	         Assert.assertEquals(predicate, prefs.getPredicate());
 	         Assert.assertNull(value, null);
 		} catch (Exception e) {
@@ -110,7 +110,7 @@ public class CdmPreferenceTest {
         try {
             subject2 = "/TaxonNode[#t1#18681#6392#5358#9#2#]/";
             prefs = new CdmPreference(subject2, predicate, value);
-            Assert.assertEquals(subject2, prefs.getSubject());
+            Assert.assertEquals(subject2, prefs.getSubjectString());
             Assert.assertEquals(predicate, prefs.getPredicate());
             Assert.assertEquals(value, prefs.getValue());
         } catch (Exception e) {

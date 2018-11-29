@@ -21,6 +21,7 @@ import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.metadata.CdmPreference;
 import eu.etaxonomy.cdm.model.metadata.CdmPreference.PrefKey;
+import eu.etaxonomy.cdm.model.metadata.IPreferencePredicate;
 import eu.etaxonomy.cdm.model.metadata.PreferenceSubject;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.common.IPreferenceDao;
@@ -103,7 +104,8 @@ public class PreferenceDaoImpl extends DaoBase implements IPreferenceDao, Initia
         List<CdmPreference> allPreferences = query.list();
         CdmPreference result = null;
         for (CdmPreference pref : allPreferences){
-            if (result == null || result.getSubject().length() < pref.getSubject().length()){
+            //FIXME this is problematci
+            if (result == null || result.getSubjectString().length() < pref.getSubjectString().length()){
                 result = pref;
             }
         }

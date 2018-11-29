@@ -14,6 +14,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.metadata.CdmPreference;
 import eu.etaxonomy.cdm.model.metadata.CdmPreference.PrefKey;
 import eu.etaxonomy.cdm.model.metadata.IPreferencePredicate;
+import eu.etaxonomy.cdm.model.metadata.PreferenceResolver;
 import eu.etaxonomy.cdm.model.metadata.PreferenceSubject;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
@@ -45,6 +46,15 @@ public interface IPreferenceService {
       */
      public List<CdmPreference> list();
 
+     /**
+     * Returns all matching preferences for the given predicate. Use
+     * {@link #find(PrefKey)} to find the best matching preference
+     * or use {@link PreferenceResolver} to resolve the best matching
+     * preference on client side.
+     * @param predicate
+     * @return
+     */
+    public List<CdmPreference> list(IPreferencePredicate<?> predicate);
 
      /**
      * Retrieve all matching values for the given preference key.
@@ -61,6 +71,13 @@ public interface IPreferenceService {
       * @return
       */
      public CdmPreference find(PrefKey key);
+
+    /**
+     * Retrieve the preference that has a key exactly matching the given key.
+     * @param key
+     * @return
+     */
+    public CdmPreference findExact(PrefKey key);
 
 
   // Can not yet be created as we allow only PreferencePredicate for predicate key creation now.

@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.io.FileNotFoundException;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -20,6 +21,7 @@ import eu.etaxonomy.cdm.model.metadata.CdmPreference;
 import eu.etaxonomy.cdm.model.metadata.CdmPreference.PrefKey;
 import eu.etaxonomy.cdm.model.metadata.PreferencePredicate;
 import eu.etaxonomy.cdm.model.metadata.PreferenceSubject;
+import eu.etaxonomy.cdm.model.metadata.PreferenceSubjectEnum;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 /**
@@ -57,14 +59,28 @@ public class PreferenceServiceImplTest  extends CdmIntegrationTest {
     @DataSet
     public void testCount() {
     	 long countStart = service.count();
-         Assert.assertEquals("There should be 1 preference in the CDM store", 1, countStart);
+         Assert.assertEquals("There should be 3 preference in the CDM store", 3, countStart);
+    }
+
+    @Test
+    @DataSet
+    public void testPedicate() {
+        List<CdmPreference> list = service.list(PreferencePredicate.Test);
+        long n = list.size();
+        Assert.assertEquals("There should be 2 test preferences in the CDM store", 2, n);
+
+        PreferenceSubject editordistrSubject = PreferenceSubject.NewTaxEditorInstance()
+                .with(PreferenceSubjectEnum.DistributionEditor);
+        PrefKey key = CdmPreference.NewKey(editordistrSubject, PreferencePredicate.Test);
+        CdmPreference pref = service.find(key);
+        Assert.assertEquals("testForDistribution", pref.getValue());
     }
 
     @Test
     @DataSet
     public void testSet() {
     	long countStart = service.count();
-        Assert.assertEquals(1, countStart);
+        Assert.assertEquals(3, countStart);
 
     	CdmPreference pref = CdmPreference.NewDatabaseInstance(PreferencePredicate.Test, "200");
     	service.set(pref);

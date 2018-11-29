@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.api.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -21,6 +20,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.metadata.CdmPreference;
 import eu.etaxonomy.cdm.model.metadata.CdmPreference.PrefKey;
 import eu.etaxonomy.cdm.model.metadata.IPreferencePredicate;
+import eu.etaxonomy.cdm.model.metadata.PreferenceResolver;
 import eu.etaxonomy.cdm.model.metadata.PreferenceSubject;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.common.IPreferenceDao;
@@ -40,13 +40,16 @@ public class PreferenceServiceImpl implements IPreferenceService {
     private IPreferenceDao dao;
 
 	@Override
-	public CdmPreference find(PrefKey key) {
-		List<PrefKey> keys = new ArrayList<>();
-		keys.add(key);
-//		while(key.)  TODO
-
+	public CdmPreference findExact(PrefKey key) {
 		return dao.get(key);
 	}
+
+    @Override
+    public CdmPreference find(PrefKey key) {
+        List<CdmPreference> prefs = dao.list();
+        CdmPreference pref = PreferenceResolver.resolve(prefs, key);
+        return pref;
+    }
 
     /**
      * {@inheritDoc}
@@ -87,6 +90,12 @@ public class PreferenceServiceImpl implements IPreferenceService {
 	@Override
     public List<CdmPreference> list() {
         return dao.list();
+    }
+
+
+    @Override
+    public List<CdmPreference> list(IPreferencePredicate<?> predicate) {
+        return dao.list(predicate);
     }
 
     @Override
