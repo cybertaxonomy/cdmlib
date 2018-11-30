@@ -86,7 +86,8 @@ public class Character extends Feature {
      * @see #Feature()
      */
     public static Character NewInstance(FeatureNode structure, FeatureNode property){
-        return new Character(structure, property, null, null, null);
+        String label = structure.getFeature().generateTitle()+" "+property.getFeature().generateTitle(); //$NON-NLS-1$
+        return new Character(structure, property, "", label, label);//$NON-NLS-1$
     }
 
 
