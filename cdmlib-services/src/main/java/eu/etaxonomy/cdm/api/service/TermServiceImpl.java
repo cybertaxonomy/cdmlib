@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -45,7 +44,6 @@ import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.Representation;
-import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -278,12 +276,9 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 		if (config == null){
 			config = new TermDeletionConfigurator();
 		}
-//		boolean isInternal = config.isInternal();
-
 		Set<DefinedTermBase> termsToSave = new HashSet<DefinedTermBase>();
 
 		DeleteResult result = isDeletable(term.getUuid(), config);
-		//CdmBase.deproxy(dao.merge(term), DefinedTermBase.class);
 		try {
 			//generalization of
 			Set<DefinedTermBase> specificTerms = term.getGeneralizationOf();
@@ -340,45 +335,34 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 			//included in
 			Set<DefinedTermBase> includedTerms = term.getIncludes();
 			if (includedTerms.size()> 0){
-//				if (config.isDeleteIncludedTerms()){
-//					for (DefinedTermBase includedTerm: includedTerms){
-//						config.setCheck(true);
-//						DeleteResult includedResult = this.delete(includedTerm, config);
-////						config.setCheck(isCheck);
-//						result.includeResult(includedResult);
-//					}
-//				}else
-					if (config.isDeleteIncludedRelations()){
-					DefinedTermBase parent = term.getPartOf();
-					for (DefinedTermBase includedTerm: includedTerms){
-						term.removeIncludes(includedTerm);
-						if (parent != null){
-							parent.addIncludes(includedTerm);
-							termsToSave.add(parent);
-						}
-					}
-				}else{
-					//TODO Exception type
-					String message = "This term includes other terms. Move or delete included terms prior to delete or change delete configuration.";
-					result.addRelatedObjects(includedTerms);
-					result.setAbort();
-					Exception ex = new DataChangeNoRollbackException(message);
-					result.addException(ex);
-				}
+			    if (config.isDeleteIncludedRelations()){
+			        DefinedTermBase parent = term.getPartOf();
+			        for (DefinedTermBase includedTerm: includedTerms){
+			            term.removeIncludes(includedTerm);
+			            if (parent != null){
+			                parent.addIncludes(includedTerm);
+			                termsToSave.add(parent);
+			            }
+			        }
+			    }else{
+			        //TODO Exception type
+			        String message = "This term includes other terms. Move or delete included terms prior to delete or change delete configuration.";
+			        result.addRelatedObjects(includedTerms);
+			        result.setAbort();
+			        Exception ex = new DataChangeNoRollbackException(message);
+			        result.addException(ex);
+			    }
 			}
 
 			//part of
 			if (parentTerm != null){
-				if (config.isDeletePartOfRelations()){
-					parentTerm.removeIncludes(term);
-					termsToSave.add(parentTerm);
-				}else{
-					//handelede before "included in"
-				}
+			    if (config.isDeletePartOfRelations()){
+			        parentTerm.removeIncludes(term);
+			        termsToSave.add(parentTerm);
+			    }else{
+			        //handled before "included in"
+			    }
 			}
-
-//			relatedObjects;
-
 
 			if (result.isOk()){
 				TermVocabulary voc = term.getVocabulary();
@@ -386,17 +370,10 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 					voc.removeTerm(term);
 				}
 				//TODO save voc
-				if (true /*!config.isInternal()*/){
+				if (true){
 					dao.delete(term);
 					result.addDeletedObject(term);
 					dao.saveOrUpdateAll(termsToSave);
-//					for (DeleteResult.PersistPair persistPair : result.getObjectsToDelete()){
-//						persistPair.dao.delete(persistPair.objectToPersist);
-//					}
-//					for (DeleteResult.PersistPair persistPair : result.getObjectsToSave()){
-//						persistPair.dao.saveOrUpdate(persistPair.objectToPersist);
-//					}
-
 				}
 			}
 		} catch (DataChangeNoRollbackException e) {
@@ -423,26 +400,52 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 
 	@Override
     public DeleteResult isDeletable(UUID termUuid, DeleteConfiguratorBase config){
-        DeleteResult result = new DeleteResult();
-        TermBase term = load(termUuid);
+	    TermDeletionConfigurator termConfig = null;
+	    if(config instanceof TermDeletionConfigurator){
+	        termConfig = (TermDeletionConfigurator) config;
+	    }
+	    DeleteResult result = new DeleteResult();
+	    DefinedTermBase term = load(termUuid);
+
+	    if(termConfig!=null){
+	        //generalization of
+	        Set<DefinedTermBase> specificTerms = term.getGeneralizationOf();
+	        if (!specificTerms.isEmpty() && !termConfig.isDeleteGeneralizationOfRelations()){
+	            result.getRelatedObjects().addAll(specificTerms);
+	            result.setAbort();
+	        }
+	        //kind of
+	        DefinedTermBase generalTerm = term.getKindOf();
+	        if (generalTerm != null && !termConfig.isDeleteKindOfRelations()){
+	            result.setAbort();
+	            result.getRelatedObjects().add(generalTerm);
+	        }
+	        //part of
+	        DefinedTermBase parentTerm = term.getPartOf();
+	        if (parentTerm != null && !termConfig.isDeletePartOfRelations()){
+	            result.setAbort();
+	            result.getRelatedObjects().add(parentTerm);
+	        }
+	        //included in
+	        Set<DefinedTermBase> includedTerms = term.getIncludes();
+	        if (!includedTerms.isEmpty() && !termConfig.isDeleteIncludedRelations()){
+	            result.setAbort();
+	            result.getRelatedObjects().addAll(includedTerms);
+	        }
+	    }
+
+	    //gather remaining referenced objects
         Set<CdmBase> references = commonService.getReferencingObjectsForDeletion(term);
-        if (references != null){
-            result.addRelatedObjects(references);
-            Iterator<CdmBase> iterator = references.iterator();
-            CdmBase ref;
-            while (iterator.hasNext()){
-                ref = iterator.next();
-                if (ref instanceof TermVocabulary){
-                    result.getRelatedObjects().remove(ref);
-                }else{
-
-                    String message = "An object of " + ref.getClass().getName() + " with ID " + ref.getId() + " is referencing the object" ;
-                    result.addException(new ReferencedObjectUndeletableException(message));
-                    result.setAbort();
-                }
-
+        for (CdmBase cdmBase : references) {
+            if(result.getRelatedObjects().contains(cdmBase)){
+                result.getRelatedObjects().remove(cdmBase);
             }
         }
+        result.getRelatedObjects().forEach(relatedObject->{
+            String message = "An object of " + relatedObject.getClass().getName() + " with ID " + relatedObject.getId() + " is referencing the object" ;
+            result.addException(new ReferencedObjectUndeletableException(message));
+            result.setAbort();
+        });
         return result;
     }
 
