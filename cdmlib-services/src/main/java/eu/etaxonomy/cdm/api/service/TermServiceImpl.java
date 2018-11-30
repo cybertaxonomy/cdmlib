@@ -406,46 +406,41 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 	    }
 	    DeleteResult result = new DeleteResult();
 	    DefinedTermBase term = load(termUuid);
+        Set<CdmBase> references = commonService.getReferencingObjectsForDeletion(term);
 
 	    if(termConfig!=null){
 	        //generalization of
 	        Set<DefinedTermBase> specificTerms = term.getGeneralizationOf();
-	        if (!specificTerms.isEmpty() && !termConfig.isDeleteGeneralizationOfRelations()){
-	            result.getRelatedObjects().addAll(specificTerms);
-	            result.setAbort();
+	        if (!specificTerms.isEmpty() && termConfig.isDeleteGeneralizationOfRelations()){
+	            result.getRelatedObjects().removeAll(specificTerms);
 	        }
 	        //kind of
 	        DefinedTermBase generalTerm = term.getKindOf();
-	        if (generalTerm != null && !termConfig.isDeleteKindOfRelations()){
-	            result.setAbort();
-	            result.getRelatedObjects().add(generalTerm);
+	        if (generalTerm != null && termConfig.isDeleteKindOfRelations()){
+	            result.getRelatedObjects().remove(generalTerm);
 	        }
 	        //part of
 	        DefinedTermBase parentTerm = term.getPartOf();
-	        if (parentTerm != null && !termConfig.isDeletePartOfRelations()){
-	            result.setAbort();
-	            result.getRelatedObjects().add(parentTerm);
+	        if (parentTerm != null && termConfig.isDeletePartOfRelations()){
+	            result.getRelatedObjects().remove(parentTerm);
 	        }
 	        //included in
 	        Set<DefinedTermBase> includedTerms = term.getIncludes();
-	        if (!includedTerms.isEmpty() && !termConfig.isDeleteIncludedRelations()){
-	            result.setAbort();
-	            result.getRelatedObjects().addAll(includedTerms);
+	        if (!includedTerms.isEmpty() && termConfig.isDeleteIncludedRelations()){
+	            result.getRelatedObjects().removeAll(includedTerms);
 	        }
 	    }
 
 	    //gather remaining referenced objects
-        Set<CdmBase> references = commonService.getReferencingObjectsForDeletion(term);
-        for (CdmBase cdmBase : references) {
-            if(result.getRelatedObjects().contains(cdmBase)){
-                result.getRelatedObjects().remove(cdmBase);
+        for (CdmBase relatedObject : references) {
+            if(relatedObject instanceof TermVocabulary){
+                continue;
             }
-        }
-        result.getRelatedObjects().forEach(relatedObject->{
+            result.getRelatedObjects().add(relatedObject);
             String message = "An object of " + relatedObject.getClass().getName() + " with ID " + relatedObject.getId() + " is referencing the object" ;
             result.addException(new ReferencedObjectUndeletableException(message));
             result.setAbort();
-        });
+        }
         return result;
     }
 
