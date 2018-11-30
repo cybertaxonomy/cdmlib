@@ -24,7 +24,6 @@ import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandlin
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
@@ -102,21 +101,16 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<FeatureNode, 
 
 	 @Override
 	 public UpdateResult createChildFeatureNode(FeatureNode node, Feature featureChild){
-	     DefinedTermBase feature = termService.save(featureChild);
-	     FeatureNode childNode = FeatureNode.NewInstance(featureChild);
-	     save(childNode);
-	     UpdateResult result = new UpdateResult();
-	     node.addChild(childNode);
-	     result.addUpdatedObject(node);
-	     result.setCdmEntity(node.getFeatureTree());
-	     return result;
+	     Feature feature = (Feature) termService.save(featureChild);
+	     return addChildFeatureNode(node, feature);
 	 }
 
 	 @Override
 	 public UpdateResult addChildFeatureNode(FeatureNode node, Feature featureChild){
-	     UpdateResult result = new UpdateResult();
 	     FeatureNode childNode = FeatureNode.NewInstance(featureChild);
+	     UpdateResult result = new UpdateResult();
 	     node.addChild(childNode);
+	     save(childNode);
 	     result.addUpdatedObject(node);
 	     result.setCdmEntity(childNode);
 	     return result;
