@@ -506,7 +506,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             herbariaString += SEPARATOR_STRING;
         }
         herbariaString = removeTail(herbariaString, SEPARATOR_STRING);
-        fieldUnitDTO.setHerbarium(herbariaString);
+        fieldUnitDTO.setCollection(herbariaString);
 
         return fieldUnitDTO;
     }

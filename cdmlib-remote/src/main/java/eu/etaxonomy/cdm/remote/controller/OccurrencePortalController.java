@@ -57,6 +57,7 @@ public class OccurrencePortalController extends OccurrenceController
             "derivedFrom.originals.determinations.taxon",
             "derivedFrom.originals.gatheringEvent.exactLocation.$",
             "derivedFrom.gatheringEvent.exactLocation.$",
+            "derivationEvents.derivatives.$",
             "specimenTypeDesignations.*",
             "specimenTypeDesignations.citation.*",
             "specimenTypeDesignations.homotypicalGroup.*",
@@ -66,7 +67,9 @@ public class OccurrencePortalController extends OccurrenceController
             "gatheringEvent.$",
             "gatheringEvent.exactLocation.referenceSystem", // TODO implement auto initializer?
             "gatheringEvent.collectingAreas",
-            "descriptions"
+            "annotations",
+            "descriptions",
+            "collection.institute.$"
     });
 
     @Autowired
@@ -125,7 +128,8 @@ public class OccurrencePortalController extends OccurrenceController
         if(sob instanceof DerivedUnit){
             DerivedUnit derivedUnit = (DerivedUnit) sob;
             if(derivedUnit.isPublish()){
-                return service.assemblePreservedSpecimenDTO(derivedUnit);
+                PreservedSpecimenDTO dto = service.assemblePreservedSpecimenDTO(derivedUnit);
+                return dto;
             }
         }
         return null;

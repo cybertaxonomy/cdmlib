@@ -43,7 +43,7 @@ public class DNASampleDTO extends PreservedSpecimenDTO{
         }
         this.setSequences(seqDtos);
         this.amplificationResults = dnaSample.getAmplificationResults();
-        this.dnaQuality = dnaSample.getDnaQuality();
+        this.dnaQuality = HibernateProxyHelper.deproxy(dnaSample.getDnaQuality(), DnaQuality.class);
     }
 
 

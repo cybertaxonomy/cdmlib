@@ -172,7 +172,7 @@ public class UnitsGatheringEvent {
         if (latitude != 0.0) {
             coordinates.setLatitude(latitude);
         }
-        if (errorRadius != 0) {
+        if (errorRadius != null && errorRadius != 0) {
             coordinates.setErrorRadius(errorRadius);
         }
         coordinates.setReferenceSystem(referenceSystem);

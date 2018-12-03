@@ -407,7 +407,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 
     /**
     *
-    * Returns {@link DerivedUNit} that has the accession number
+    * Returns {@link DerivedUnit} that has the accession number and is determined to a taxon
     * @param accessionNumber
     * @param propertyPaths
     * @return a derived unit

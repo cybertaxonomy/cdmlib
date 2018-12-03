@@ -294,6 +294,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
         config.setNamedAreas(areas);
         config.setDoIncludeAuthors(includeAuthors != null ? includeAuthors : Boolean.FALSE);
         config.setOrder(order);
+
         if(classificationUuid != null){
             Classification classification = classificationService.find(classificationUuid);
             config.setClassification(classification);
