@@ -212,6 +212,14 @@ public String toString(){
       result.append(":");
       result.append(this.isMoveNewTaxaToDefaultClassification());
       result.append(";");
+      result.append("getSiblings");
+      result.append(":");
+      result.append(this.isGetSiblings());
+      result.append(";");
+      result.append("removeCountryFromLocalityText");
+      result.append(":");
+      result.append(this.isRemoveCountryFromLocalityText());
+      result.append(";");
 
       result.append("mapUnitIdToCatalogNumber");
       result.append(":");
