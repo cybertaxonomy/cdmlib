@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -75,7 +74,8 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
 
     private final String treeIndex;
     private final Integer sortIndex;
-    private Rank rank;
+
+    private Integer rankOrderIndex;
 
 
 
@@ -96,10 +96,11 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
             taggedTitle = taxon.getName() != null? taxon.getName().getTaggedName() : taxon.getTaggedTitle();
             rankLabel = taxon.getNullSafeRank() != null ? taxon.getNullSafeRank().getLabel() : null;
             this.setAbbrevTitleCache(taxon.getTitleCache());
-            rank = taxon.getName() != null? taxon.getName().getRank() : null;
+            rankOrderIndex = taxon.getName() != null && taxon.getName().getRank() != null? taxon.getName().getRank().getOrderIndex() : null;
+
         }else{
             setTitleCache(taxonNode.getClassification().getTitleCache());
-            rank = null;
+            rankOrderIndex = null;
         }
         taxonomicChildrenCount = taxonNode.getCountChildren();
         unplaced = taxonNode.isUnplaced();
@@ -208,13 +209,10 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
         return sortIndex;
     }
 
-    public Rank getRank() {
-        return rank;
+    public Integer getRankOrderIndex() {
+        return rankOrderIndex;
     }
 
-    public void setRank(Rank rank) {
-        this.rank = rank;
-    }
 
     public String getTaxonTitleCache(){
         return getAbbrevTitleCache();
