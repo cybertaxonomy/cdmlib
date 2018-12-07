@@ -26,9 +26,12 @@ import java.util.Map;
  */
 public class ReferencePropertyDefinitions {
 
+    private static Map<String, String> iReference = new HashMap<>();
     private static Map<String, String> iPublicationBase = new HashMap<>();
     private static Map<String, String> iWithAuthorAndDate = new HashMap<>();
-    private static Map<String, String> iReference = new HashMap<>();
+    private static Map<String, String> iWithDoi = new HashMap<>();
+    private static Map<String, String> iAuthoredPublicationBase = new HashMap<>();
+    private static Map<String, String> iNomenclaturalReference = new HashMap<>();
     private static Map<String, String> iVolumeReference = new HashMap<>();
     private static Map<String, String> iSection = new HashMap<>();
     private static Map<String, String> iPrintedUnitBase = new HashMap<>();
@@ -51,16 +54,22 @@ public class ReferencePropertyDefinitions {
         put(iWithAuthorAndDate, "authorship");
         put(iWithAuthorAndDate, "datePublished");
 
+        put(iWithDoi, "doi");
+
         iPublicationBase = merge(iReference);
         put(iPublicationBase, "publisher");
         put(iPublicationBase, "placePublished");
-        put(iPublicationBase, "doi");
 
-        iSection = merge(iReference);
+        // put(iNomenclaturalReference, "year");
+        // put(iNomenclaturalReference, "nomenclaturalCitation");
+
+        iAuthoredPublicationBase = merge(iPublicationBase , iWithAuthorAndDate, iWithDoi);
+
+        iSection = merge(iReference, iWithAuthorAndDate, iWithDoi, iNomenclaturalReference);
         put(iSection, "pages");
         put(iSection, "inReference");
 
-        iVolumeReference = merge(iReference, iWithAuthorAndDate);
+        iVolumeReference = merge(iReference, iWithAuthorAndDate, iWithDoi);
         put(iVolumeReference, "volume");
 
         iPrintedUnitBase = merge(iPublicationBase, iSection, iVolumeReference);
@@ -68,24 +77,20 @@ public class ReferencePropertyDefinitions {
         put(iPrintedUnitBase, "abbrevTitle");
         put(iPrintedUnitBase, "inReference", "inSeries");
         put(iPrintedUnitBase, "editor");
-        put(iPrintedUnitBase, "doi");
 
         iArticle = merge(iSection, iVolumeReference);
         put(iArticle, "inReference", "inJournal");
-        put(iArticle, "doi");
 
         iBook = merge(iPrintedUnitBase);
-        put(iArticle, "inReference", "inSeries");
-        put(iArticle, "edition");
-        put(iArticle, "isbn");
+        put(iBook, "inReference", "inSeries");
+        put(iBook, "edition");
+        put(iBook, "isbn");
 
         iBookSection = merge(iSection);
         put(iBookSection, "inReference", "inBook");
-        put(iBookSection, "doi");
 
         iProceedings = merge(iPrintedUnitBase);
         put(iProceedings, "organization");
-        put(iProceedings, "doi");
         put(iProceedings, "isbn");
 
         iJournal = merge(iPublicationBase);
@@ -94,10 +99,8 @@ public class ReferencePropertyDefinitions {
         iInProceedings = merge(iSection);
         remove(iInProceedings, "series");
         put(iInProceedings, "inReference", "In proceedings");
-        put(iInProceedings, "doi");
 
         iPrintSeries = merge(iPublicationBase);
-        remove(iPrintSeries, "doi");
         put(iPrintSeries, "publisher");
         put(iPrintSeries, "placePublished");
 
