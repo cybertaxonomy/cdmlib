@@ -67,6 +67,7 @@ import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IStatisticalMeasurementValueDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
+import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -461,6 +462,16 @@ public class DescriptionServiceImpl
     @Transactional(readOnly = false)
     public Map<UUID, DescriptionElementBase> saveDescriptionElement(Collection<DescriptionElementBase> descriptionElements) {
         return descriptionElementDao.saveAll(descriptionElements);
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public List<MergeResult<DescriptionElementBase>> mergeDescriptionElements(Collection<DescriptionElementBase> descriptionElements, boolean returnTransientEntity) {
+        List<MergeResult<DescriptionElementBase>> mergedObjects = new ArrayList<MergeResult<DescriptionElementBase>>();
+        for(DescriptionElementBase obj : descriptionElements) {
+            mergedObjects.add(descriptionElementDao.merge(obj, returnTransientEntity));
+        }
+        return mergedObjects;
     }
 
     /**

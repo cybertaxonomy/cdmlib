@@ -37,6 +37,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
+import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -607,5 +608,13 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      * @return
      */
     public UpdateResult moveTaxonDescription(UUID descriptionUuid, UUID targetTaxonUuid);
+
+    /**
+     * @param descriptionElements
+     * @param returnTransientEntity
+     * @return
+     */
+    public List<MergeResult<DescriptionElementBase>> mergeDescriptionElements(Collection<DescriptionElementBase> descriptionElements,
+            boolean returnTransientEntity);
 
 }
