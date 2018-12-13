@@ -591,7 +591,11 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
                         logger.debug("addRestrictions() predicate with " + propertyName + " " + (restriction.getMatchMode() == null ? "=" : restriction.getMatchMode().name()) + " " + v.toString());
                     }
                 }
-                perProperty.add(new CriterionWithOperator(restriction.getOperator(), Restrictions.or(predicates)));
+                if(restriction.getOperator() == Operator.AND_NOT){
+                    perProperty.add(new CriterionWithOperator(restriction.getOperator(), Restrictions.and(predicates)));
+                } else {
+                    perProperty.add(new CriterionWithOperator(restriction.getOperator(), Restrictions.or(predicates)));
+                }
             } // check has values
         } // loop over restrictions
 
