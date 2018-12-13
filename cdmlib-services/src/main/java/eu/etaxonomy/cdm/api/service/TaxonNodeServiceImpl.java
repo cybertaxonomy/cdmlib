@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.api.service.config.SecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.CdmEntityIdentifier;
+import eu.etaxonomy.cdm.api.service.dto.TaxonDistributionDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.PagerUtils;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
@@ -1046,21 +1047,19 @@ public class TaxonNodeServiceImpl
         return commonParent;
     }
 
-//    @Override
-//    @Transactional(readOnly=false)
-//    public UUID monitSetSecundum(final SecundumForSubtreeConfigurator configurator) {
-//        RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
-//            @Override
-//            public Serializable doRun(IRemotingProgressMonitor monitor) {
-//                configurator.setMonitor(monitor);
-//                UpdateResult result = setSecundumForSubtree(configurator);
-//                return result;
-//            }
-//        };
-//        UUID uuid = progressMonitorService.registerNewRemotingMonitor(monitorThread);
-//        monitorThread.setPriority(3);
-//        monitorThread.start();
-//        return uuid;
-//    }
+    @Override
+    public List<TaxonDistributionDTO> getTaxonDistributionDTOForSubtree(UUID parentNodeUuid, List<String> propertyPaths){
+        List<TaxonNode> nodes = listChildrenOf(load(parentNodeUuid), null, null,
+               true, true, propertyPaths);
+        List<TaxonDistributionDTO> result = new ArrayList<>();
+        for(TaxonNode node:nodes){
+            TaxonDistributionDTO dto = new TaxonDistributionDTO(node.getTaxon());
+            result.add(dto);
+        }
+
+        return result;
+    }
+
+
 
 }

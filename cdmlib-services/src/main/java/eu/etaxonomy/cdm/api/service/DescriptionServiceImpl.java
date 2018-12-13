@@ -468,9 +468,21 @@ public class DescriptionServiceImpl
     @Transactional(readOnly = false)
     public List<MergeResult<DescriptionElementBase>> mergeDescriptionElements(Collection<DescriptionElementBase> descriptionElements, boolean returnTransientEntity) {
         List<MergeResult<DescriptionElementBase>> mergedObjects = new ArrayList<MergeResult<DescriptionElementBase>>();
+        List<Distribution> toDelete = new ArrayList<>();
         for(DescriptionElementBase obj : descriptionElements) {
-            mergedObjects.add(descriptionElementDao.merge(obj, returnTransientEntity));
+            if (obj instanceof Distribution){
+                Distribution distribution = (Distribution)obj;
+                PresenceAbsenceTerm status = distribution.getStatus();
+                if (status == null){
+                   // toDelete.add(distribution);
+                    deleteDescriptionElement(distribution);
+                }else{
+                    mergedObjects.add(descriptionElementDao.merge(obj, returnTransientEntity));
+                }
+            }
+
         }
+
         return mergedObjects;
     }
 

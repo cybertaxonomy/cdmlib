@@ -40,7 +40,10 @@ public class TaxonDistributionDTO implements Serializable{
 
     public TaxonDistributionDTO(Taxon taxon){
         this.taxonUuid = taxon.getUuid();
-        this.nameCache = taxon.getName().getNameCache();
+        this.nameCache = taxon.getName().getNameCache() != null ? taxon.getName().getNameCache(): taxon.getName().getTitleCache();
+        if (nameCache == null){
+            nameCache = taxon.getTitleCache();
+        }
         this.descriptionsWrapper = new TaxonDescriptionDTO(taxon);
         for (TaxonDescription desc: descriptionsWrapper.descriptions){
             for (DescriptionElementBase descElement: desc.getElements()){
