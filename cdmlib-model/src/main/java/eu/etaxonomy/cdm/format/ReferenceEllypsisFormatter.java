@@ -9,8 +9,11 @@
 package eu.etaxonomy.cdm.format;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
+
+import org.apache.commons.lang3.StringUtils;
 
 import eu.etaxonomy.cdm.model.reference.Reference;
 
@@ -64,9 +67,9 @@ public class ReferenceEllypsisFormatter extends AbstractEllypsisFormatter<Refere
     }
 
     private LabelType labelType;
-    private int maxAuthorCharsVisible = 20;
-    private int maxTitleCharsVisible = 20;
+    private int maxCharsVisible = 20;
     private int minNumOfWords = 1;
+    private int numOfPreservedEndWords = 3;
 
     public ReferenceEllypsisFormatter(LabelType labelType){
         this.labelType = labelType;
@@ -78,10 +81,10 @@ public class ReferenceEllypsisFormatter extends AbstractEllypsisFormatter<Refere
      * @return
      */
     @Override
-    protected EllipsisData entityEllypsis(Reference entity, String filterString) {
+    protected EllipsisData entityEllypsis(Reference entity, String preserveString) {
 
         String label = "";
-        String authors = entity.getAuthorship() != null ? entity.getAuthorship().getTitleCache() : "";
+        String authors = entity.getAuthorship() != null ? entity.getAuthorship().getTitleCache() : null;
         String title = null;
         String titleCache;
 
@@ -109,52 +112,69 @@ public class ReferenceEllypsisFormatter extends AbstractEllypsisFormatter<Refere
                 break;
         }
 
-        Pattern pattern = Pattern.compile("(" + filterString +")", Pattern.CASE_INSENSITIVE);
+        Pattern pattern = Pattern.compile("(" + preserveString +")", Pattern.CASE_INSENSITIVE);
 
-        if(authors != null){
-            String authorsEllipsed = authors;
-            if(authorsEllipsed.length() > maxAuthorCharsVisible) {
-                authorsEllipsed = stringEllypsis(authors, maxAuthorCharsVisible, minNumOfWords);
-                authorsEllipsed = preserveString(filterString, authors, pattern, authorsEllipsed);
-            }
-            label = titleCache.replace(authors, authorsEllipsed);
+        LinkedList<EllipsisData> edList = new LinkedList<EllipsisData>();
+        // the titleCache as initial element
+        edList.add(new EllipsisData(titleCache, null));
+
+        if(!StringUtils.isEmpty(authors)){
+            String authorsEllipsed = stringEllypsis(authors, maxCharsVisible, minNumOfWords);
+            authorsEllipsed = preserveString(preserveString, authors, pattern, authorsEllipsed);
+            applyAndSplit(edList, authors, authorsEllipsed);
         }
-
-        if(title != null){
-            String titleEllipsed = title;
-            if(titleEllipsed.length() > maxTitleCharsVisible) {
-                titleEllipsed = stringEllypsis(title, maxTitleCharsVisible, minNumOfWords);
-                titleEllipsed = preserveString(filterString, title, pattern, titleEllipsed);
-            }
-            label = label.replace(title, titleEllipsed);
+        if(!StringUtils.isEmpty(title)){
+            String titleEllipsed = stringEllypsis(title, maxCharsVisible, minNumOfWords);
+            titleEllipsed = preserveString(preserveString, title, pattern, titleEllipsed);
+            applyAndSplit(edList, title, titleEllipsed);
         }
-
 
         if(entity.getInReference() != null){
-            EllipsisData inRefEd = entityEllypsis(entity.getInReference(), filterString);
-            label = label.replace(inRefEd.original, inRefEd.truncated);
+            EllipsisData inRefEd = entityEllypsis(entity.getInReference(), preserveString);
+            inRefEd.original = "in " + inRefEd.original;
+            inRefEd.truncated = "in " + inRefEd.truncated;
+            applyAndSplit(edList, inRefEd.original, inRefEd.truncated);
         }
 
-        EllipsisData ed = new EllipsisData(titleCache, label);
+        // ellypsis for all text parts which haven not been processed yet
+        for(EllipsisData ed : edList){
+            if(ed.truncated == null){
+                if(edList.getLast().equals(ed)){
+                    // special handling for last one
+                    List<String> tokens = Arrays.asList(ed.original.split(" "));
+                    if(tokens.size() > numOfPreservedEndWords){
+                        // unpreservedParts part may need ellipsis
+                        String unpreservedPart = String.join(" ", tokens.subList(0, tokens.size() - numOfPreservedEndWords));
+                        String unpreservedPartEllypsis = stringEllypsis(unpreservedPart, maxCharsVisible, minNumOfWords);
+                        unpreservedPartEllypsis = preserveString(preserveString, unpreservedPart, pattern, unpreservedPartEllypsis);
+                        String preservedPart = String.join(" ", tokens.subList(tokens.size() - numOfPreservedEndWords, tokens.size()));
+                        ed.truncated = unpreservedPartEllypsis + " " + preservedPart;
+                    } else {
+                        // only preserved words -> do not change
+                        ed.truncated = ed.original;
+                    }
+                } else {
+                    ed.truncated = stringEllypsis(ed.original, maxCharsVisible, minNumOfWords);
+                    ed.truncated = preserveString(preserveString, ed.original, pattern, ed.truncated);
+                }
+            }
+            label += ed.truncated;
+        }
 
+
+        EllipsisData ed = new EllipsisData(titleCache, label);
         return ed;
     }
 
-    public int getMaxAuthorCharsVisible() {
-        return maxAuthorCharsVisible;
+
+    public int getMaxCharsVisible() {
+        return maxCharsVisible;
     }
 
-    public void setMaxAuthorCharsVisible(int maxAuthorCharsVisible) {
-        this.maxAuthorCharsVisible = maxAuthorCharsVisible;
+    public void setMaxCharsVisible(int maxAuthorCharsVisible) {
+        this.maxCharsVisible = maxAuthorCharsVisible;
     }
 
-    public int getMaxTitleCharsVisible() {
-        return maxTitleCharsVisible;
-    }
-
-    public void setMaxTitleCharsVisible(int maxTitleCharsVisible) {
-        this.maxTitleCharsVisible = maxTitleCharsVisible;
-    }
 
     public int getMinNumOfWords() {
         return minNumOfWords;
