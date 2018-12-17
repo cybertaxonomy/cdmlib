@@ -674,6 +674,7 @@ public class Abcd206XMLFieldGetter {
             getHierarchie(group.item(0));
             dataHolder.knownABCDelements.add(path);
             path = "";
+            Node node = group.item(0);
             dataHolder.longitude = Double.valueOf(group.item(0).getTextContent());
         } catch (NullPointerException e) {
             dataHolder.longitude = null;
@@ -696,7 +697,7 @@ public class Abcd206XMLFieldGetter {
             path = "";
             dataHolder.setGatheringCoordinateErrorMethod(group.item(0).getTextContent());
         } catch (NullPointerException e) {
-            dataHolder.latitude = null;
+            dataHolder.setGatheringCoordinateErrorMethod(null);
         }
         try {
             group = root.getElementsByTagName(prefix + "Country");
