@@ -235,7 +235,7 @@ public class DescriptiveDataSetService
                 taxonNode);
         TaxonRowWrapperDTO taxonRowWrapper = defaultTaxonDescription != null
                 ? createTaxonRowWrapper(defaultTaxonDescription.getUuid(), descriptiveDataSet.getUuid()) : null;
-        return new SpecimenRowWrapperDTO(description, taxonNode, fieldUnit, identifier, country, taxonRowWrapper);
+        return new SpecimenRowWrapperDTO(description, taxonNode, fieldUnit, identifier, country);
 	}
 
     @Override
