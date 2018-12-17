@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.api.service.dto.RowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenRowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonRowWrapperDTO;
@@ -388,6 +389,24 @@ public class DescriptiveDataSetService
         });
         result.addUpdatedObject(taxon);
         result.setCdmEntity(description);
+        return result;
+    }
+
+    @Override
+    @Transactional(readOnly=false)
+    public DeleteResult removeDescription(UUID descriptionUuid, UUID descriptiveDataSetUuid) {
+        DeleteResult result = new DeleteResult();
+        DescriptiveDataSet dataSet = load(descriptiveDataSetUuid);
+        DescriptionBase descriptionBase = descriptionService.load(descriptionUuid);
+        if(dataSet==null || descriptionBase==null){
+            result.setError();
+        }
+        else{
+            boolean success = dataSet.removeDescription(descriptionBase);
+            result.addDeletedObject(descriptionBase);
+            result.addUpdatedObject(dataSet);
+            result.setStatus(success?Status.OK:Status.ERROR);
+        }
         return result;
     }
 

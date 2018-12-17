@@ -117,6 +117,14 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
     public TaxonRowWrapperDTO createTaxonDescription(UUID dataSetUuid, UUID taxonNodeUuid, MarkerType markerType, boolean markerFlag);
 
     /**
+     * Removes the description specified by the given {@link UUID} from the given {@link DescriptiveDataSet}.
+     * @param descriptionUuid the UUID of the description to delete
+     * @param descriptiveDataSetUuid the UUID of the data set to delete
+     * @return the result of the operation
+     */
+    public DeleteResult removeDescription(UUID descriptionUuid, UUID descriptiveDataSetUuid);
+
+    /**
      * Loads all taxon nodes that match the filter set defined in the
      * {@link DescriptiveDataSet} given.
      * @param the data set which defined the taxon node filter
