@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 public class TaxonDistributionDTO implements Serializable{
 
     private static final long serialVersionUID = -6565463192135410612L;
-    UUID taxonUuid;
+    Taxon taxon;
     String nameCache;
     Rank rank;
     TaxonDescriptionDTO descriptionsWrapper;
@@ -39,7 +39,7 @@ public class TaxonDistributionDTO implements Serializable{
 
 
     public TaxonDistributionDTO(Taxon taxon){
-        this.taxonUuid = taxon.getUuid();
+        this.taxon = taxon;
         this.nameCache = taxon.getName().getNameCache() != null ? taxon.getName().getNameCache(): taxon.getName().getTitleCache();
         if (nameCache == null){
             nameCache = taxon.getTitleCache();
@@ -67,14 +67,21 @@ public class TaxonDistributionDTO implements Serializable{
      * @return the taxonUuid
      */
     public UUID getTaxonUuid() {
-        return taxonUuid;
+        return taxon.getUuid();
+    }
+    /**
+     * @return the taxon
+     */
+    public Taxon getTaxon() {
+        return taxon;
     }
 
+
     /**
-     * @param taxonUuid the taxonUuid to set
+     * @param taxon the taxon to set
      */
-    public void setTaxonUuid(UUID taxonUuid) {
-        this.taxonUuid = taxonUuid;
+    public void setTaxon(Taxon taxon) {
+        this.taxon = taxon;
     }
 
     /**
