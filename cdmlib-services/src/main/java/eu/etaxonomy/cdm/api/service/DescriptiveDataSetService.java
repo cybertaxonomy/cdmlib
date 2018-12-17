@@ -54,6 +54,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptiveDataSetDao;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
+import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
@@ -173,7 +174,7 @@ public class DescriptiveDataSetService
             Taxon taxon = (Taxon) taxonService.load(description.getTaxon().getId(), Arrays.asList("taxonNodes", "taxonNodes.classification"));
             taxonNode = taxon.getTaxonNode(classification);
         }
-        return new TaxonRowWrapperDTO(description, taxonNode);
+        return new TaxonRowWrapperDTO(description, new TaxonNodeDto(taxonNode));
     }
 
     @Override
@@ -236,7 +237,7 @@ public class DescriptiveDataSetService
                 taxonNode);
         TaxonRowWrapperDTO taxonRowWrapper = defaultTaxonDescription != null
                 ? createTaxonRowWrapper(defaultTaxonDescription.getUuid(), descriptiveDataSet.getUuid()) : null;
-        return new SpecimenRowWrapperDTO(description, taxonNode, fieldUnit, identifier, country);
+        return new SpecimenRowWrapperDTO(description, new TaxonNodeDto(taxonNode), fieldUnit, identifier, country);
 	}
 
     @Override
