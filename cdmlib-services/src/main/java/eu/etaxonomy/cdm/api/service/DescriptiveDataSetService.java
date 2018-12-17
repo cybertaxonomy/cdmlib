@@ -419,7 +419,8 @@ public class DescriptiveDataSetService
         TaxonDescription newTaxonDescription = TaxonDescription.NewInstance(taxonNode.getTaxon());
         String tag = "";
         if(markerFlag){
-            if(markerType.equals(MarkerType.USE())){
+            //FIXME: Add specific MarkerTypes to enum (see #7957)
+            if(markerType.equals(MarkerType.TO_BE_CHECKED())){
                 tag = "[Default]";
             }
             else if(markerType.equals(MarkerType.IN_BIBLIOGRAPHY())){
