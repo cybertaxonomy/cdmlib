@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,6 +79,9 @@ public class DescriptiveDataSetService
 
     @Autowired
     private IProgressMonitorService progressMonitorService;
+
+    //FIXME: Use actual MarkerType for default descriptions when implemented #7957
+    private MarkerType MARKER_DEFAULT = MarkerType.TO_BE_CHECKED();
 
 	@Override
 	@Autowired
@@ -233,8 +235,8 @@ public class DescriptiveDataSetService
             country = fieldUnit.getGatheringEvent().getCountry();
         }
         //get default taxon description
-        TaxonDescription defaultTaxonDescription = findDefaultTaxonDescription(descriptiveDataSet,
-                taxonNode);
+        TaxonDescription defaultTaxonDescription = findTaxonDescriptionByMarkerType(descriptiveDataSet.getUuid(),
+                taxonNode.getUuid(), MARKER_DEFAULT);
         TaxonRowWrapperDTO taxonRowWrapper = defaultTaxonDescription != null
                 ? createTaxonRowWrapper(defaultTaxonDescription.getUuid(), descriptiveDataSet.getUuid()) : null;
         return new SpecimenRowWrapperDTO(description, new TaxonNodeDto(taxonNode), fieldUnit, identifier, country);
@@ -250,30 +252,19 @@ public class DescriptiveDataSetService
         super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
     }
 
-    /**
-     * Returns a {@link TaxonDescription} for a given taxon node with corresponding
-     * features according to the {@link DescriptiveDataSet}.<br>
-     * If a description is found that matches all features of the data set this description
-     * will be returned.
-     * @param descriptiveDataSetUuid the uuid of the dataset defining the features
-     * @param taxonNodeUuid the uuid of the taxon node that links to the taxon
-     * if none could be found
-     * @return the found taxon description or <code>null</code>
-     */
-    private TaxonDescription findDefaultTaxonDescription(DescriptiveDataSet dataSet, TaxonNode taxonNode){
+    @Override
+    public TaxonDescription findTaxonDescriptionByMarkerType(UUID dataSetUuid, UUID taxonNodeUuid, MarkerType markerType){
+        DescriptiveDataSet dataSet = load(dataSetUuid);
+        TaxonNode taxonNode = taxonNodeService.load(taxonNodeUuid);
         Set<DescriptionBase> dataSetDescriptions = dataSet.getDescriptions();
-        //filter out COMPUTED descriptions
-        List<TaxonDescription> nonComputedDescriptions = taxonNode.getTaxon().getDescriptions().stream()
-                .filter(desc -> desc.getMarkers().stream()
-                        .noneMatch(marker -> marker.getMarkerType().equals(MarkerType.COMPUTED())))
-                .collect(Collectors.toList());
-        for (TaxonDescription taxonDescription : nonComputedDescriptions) {
-            for (DescriptionBase description : dataSetDescriptions) {
-                if(description.getUuid().equals(taxonDescription.getUuid())){
-                    return HibernateProxyHelper.deproxy(descriptionService.load(taxonDescription.getUuid(),
-                            Arrays.asList("taxon", "descriptionElements", "descriptionElements.feature")), TaxonDescription.class);
-                }
-            }
+        //filter by DEFAULT descriptions
+        Optional<TaxonDescription> first = taxonNode.getTaxon().getDescriptions().stream()
+                .filter(desc -> desc.getMarkers().stream().anyMatch(marker -> marker.getMarkerType().equals(markerType)))
+                .filter(defaultDescription->dataSetDescriptions.contains(defaultDescription))
+                .findFirst();
+        if(first.isPresent()){
+            return HibernateProxyHelper.deproxy(descriptionService.load(first.get().getUuid(),
+                  Arrays.asList("taxon", "descriptionElements", "descriptionElements.feature")), TaxonDescription.class);
         }
         return null;
     }
@@ -420,7 +411,7 @@ public class DescriptiveDataSetService
         String tag = "";
         if(markerFlag){
             //FIXME: Add specific MarkerTypes to enum (see #7957)
-            if(markerType.equals(MarkerType.TO_BE_CHECKED())){
+            if(markerType.equals(MARKER_DEFAULT)){
                 tag = "[Default]";
             }
             else if(markerType.equals(MarkerType.IN_BIBLIOGRAPHY())){
