@@ -9,16 +9,8 @@
 package eu.etaxonomy.cdm.api.service.dto;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
-import eu.etaxonomy.cdm.model.description.Distribution;
-import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
@@ -32,9 +24,10 @@ public class TaxonDistributionDTO implements Serializable{
     private static final long serialVersionUID = -6565463192135410612L;
     Taxon taxon;
     String nameCache;
-    Rank rank;
+    Integer rankOrderIndex;
+    String rankLabel;
     TaxonDescriptionDTO descriptionsWrapper;
-    Map<NamedArea,Set<DescriptionElementBase>> distributionMap = new HashMap();
+//    Map<NamedArea,Set<DescriptionElementBase>> distributionMap = new HashMap();
 
 
 
@@ -44,20 +37,10 @@ public class TaxonDistributionDTO implements Serializable{
         if (nameCache == null){
             nameCache = taxon.getTitleCache();
         }
+        this.rankOrderIndex = taxon.getName() != null ? taxon.getName().getRank().getOrderIndex(): null;
+        this.rankLabel = taxon.getName() != null ? taxon.getName().getRank().getLabel(): null;
         this.descriptionsWrapper = new TaxonDescriptionDTO(taxon);
-        for (TaxonDescription desc: descriptionsWrapper.descriptions){
-            for (DescriptionElementBase descElement: desc.getElements()){
-                if (descElement instanceof Distribution){
-                    Set<DescriptionElementBase> distributions = distributionMap.get(((Distribution)descElement).getArea());
-                    if (distributions == null){
-                        distributions = new HashSet();
-                        distributionMap.put(((Distribution)descElement).getArea(), distributions);
-                    }
-                    distributions.add(descElement);
 
-                }
-            }
-        }
 
     }
 
@@ -102,21 +85,24 @@ public class TaxonDistributionDTO implements Serializable{
      * @return the rankString
      */
     public String getRankString() {
-        return rank.getLabel();
+        return rankLabel;
     }
 
     /**
      * @return the rank
      */
-    public Rank getRank() {
-        return rank;
+    public Integer getRankOrderIndex() {
+        return rankOrderIndex;
     }
 
     /**
      * @param rank the rank to set
      */
     public void setRank(Rank rank) {
-        this.rank = rank;
+        if (rank != null){
+            this.rankOrderIndex = rank.getOrderIndex();
+            this.rankLabel = rank.getLabel();
+        }
     }
 
 
@@ -134,18 +120,18 @@ public class TaxonDistributionDTO implements Serializable{
         this.descriptionsWrapper = descriptionsWrapper;
     }
 
-    /**
-     * @return the distributionMap
-     */
-    public Map<NamedArea, Set<DescriptionElementBase>> getDistributionMap() {
-        return distributionMap;
-    }
-
-    /**
-     * @param distributionMap the distributionMap to set
-     */
-    public void setDistributionMap(Map<NamedArea, Set<DescriptionElementBase>> distributionMap) {
-        this.distributionMap = distributionMap;
-    }
+//    /**
+//     * @return the distributionMap
+//     */
+//    public Map<NamedArea, Set<DescriptionElementBase>> getDistributionMap() {
+//        return distributionMap;
+//    }
+//
+//    /**
+//     * @param distributionMap the distributionMap to set
+//     */
+//    public void setDistributionMap(Map<NamedArea, Set<DescriptionElementBase>> distributionMap) {
+//        this.distributionMap = distributionMap;
+//    }
 
 }

@@ -26,11 +26,11 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 public class TaxonDescriptionDTO implements Serializable{
 
     private static final long serialVersionUID = -4440059497898077690L;
-    Taxon taxon;
+    UUID taxonUUID;
     Set<TaxonDescription> descriptions = new HashSet();
 
     public TaxonDescriptionDTO(Taxon taxon){
-        this.taxon = taxon;
+      //  this.taxon = taxon;
         for (TaxonDescription desc: taxon.getDescriptions()){
             for (DescriptionElementBase element: desc.getElements()){
                 if (element instanceof Distribution){
@@ -41,28 +41,8 @@ public class TaxonDescriptionDTO implements Serializable{
         }
     }
 
-    /**
-     * @return the taxonUuid
-     */
-    public UUID getTaxonUuid() {
-        return taxon.getUuid();
-    }
 
 
-    /**
-     * @return the taxon
-     */
-    public Taxon getTaxon() {
-        return taxon;
-    }
-
-
-    /**
-     * @param taxonUuid the taxonUuid to set
-     */
-    public void setTaxon(Taxon taxon) {
-        this.taxon = taxon;
-    }
 
     /**
      * @return the descriptions
@@ -77,5 +57,24 @@ public class TaxonDescriptionDTO implements Serializable{
     public void setDescriptions(Set<TaxonDescription> descriptions) {
         this.descriptions = descriptions;
     }
+
+    /**
+     * @return the taxonUUID
+     */
+    public UUID getTaxonUUID() {
+        return taxonUUID;
+    }
+
+    /**
+     * @param taxonUUID the taxonUUID to set
+     */
+    public void setTaxonUUID(UUID taxonUUID) {
+        this.taxonUUID = taxonUUID;
+    }
+
+
+
+
+
 
 }
