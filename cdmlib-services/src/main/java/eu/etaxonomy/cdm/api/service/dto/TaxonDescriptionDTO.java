@@ -30,7 +30,7 @@ public class TaxonDescriptionDTO implements Serializable{
     Set<TaxonDescription> descriptions = new HashSet();
 
     public TaxonDescriptionDTO(Taxon taxon){
-      //  this.taxon = taxon;
+       this.taxonUUID = taxon.getUuid();
         for (TaxonDescription desc: taxon.getDescriptions()){
             for (DescriptionElementBase element: desc.getElements()){
                 if (element instanceof Distribution){

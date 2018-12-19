@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.api.service.dto.TaxonDistributionDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
 import eu.etaxonomy.cdm.model.common.Annotation;
@@ -614,7 +615,9 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      * @param returnTransientEntity
      * @return
      */
-    public List<MergeResult<DescriptionElementBase>> mergeDescriptionElements(Collection<DescriptionElementBase> descriptionElements,
+    public List<MergeResult<DescriptionBase>> mergeDescriptionElements(Collection<TaxonDistributionDTO> descriptionElements,
             boolean returnTransientEntity);
+
+
 
 }

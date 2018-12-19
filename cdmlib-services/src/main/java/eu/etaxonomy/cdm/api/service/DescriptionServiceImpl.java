@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.dto.TaxonDistributionDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
@@ -466,20 +467,24 @@ public class DescriptionServiceImpl
 
     @Override
     @Transactional(readOnly = false)
-    public List<MergeResult<DescriptionElementBase>> mergeDescriptionElements(Collection<DescriptionElementBase> descriptionElements, boolean returnTransientEntity) {
-        List<MergeResult<DescriptionElementBase>> mergedObjects = new ArrayList<MergeResult<DescriptionElementBase>>();
+    public List<MergeResult<DescriptionBase>> mergeDescriptionElements(Collection<TaxonDistributionDTO> descriptionElements, boolean returnTransientEntity) {
+        List<MergeResult<DescriptionBase>> mergedObjects = new ArrayList();
         List<Distribution> toDelete = new ArrayList<>();
-        for(DescriptionElementBase obj : descriptionElements) {
-            if (obj instanceof Distribution){
-                Distribution distribution = (Distribution)obj;
-                PresenceAbsenceTerm status = distribution.getStatus();
-                if (status == null){
-                   // toDelete.add(distribution);
-                    deleteDescriptionElement(distribution);
+        for(TaxonDistributionDTO obj : descriptionElements) {
+            Taxon taxon = HibernateProxyHelper.deproxy(taxonDao.load(obj.getTaxonUuid()), Taxon.class);
+            Iterator<TaxonDescription> iterator = obj.getDescriptionsWrapper().getDescriptions().iterator();
+            while (iterator.hasNext()){
+                TaxonDescription desc = iterator.next();
+                if (desc.getTaxon() == null){
+                    taxon.addDescription(desc);
+                    //taxonDao.merge(taxon, returnTransientEntity);
+                    //mergedObjects.add(dao.merge(desc, returnTransientEntity));
                 }else{
-                    mergedObjects.add(descriptionElementDao.merge(obj, returnTransientEntity));
+                    mergedObjects.add(dao.merge(desc, returnTransientEntity));
                 }
+
             }
+
 
         }
 
@@ -868,5 +873,6 @@ public class DescriptionServiceImpl
         return result;
 
     }
+
 
 }
