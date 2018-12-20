@@ -184,7 +184,7 @@ public enum ReferenceType implements IEnumTerm<ReferenceType>, Serializable{
 	 *     The type of the part for which the possible in-refrence types are to be returned.
 	 * @return a set, may be empty, never <code>null</code>
 	 */
-	public Set<ReferenceType> inReferenceContraints(ReferenceType subReferenceType){
+	public static Set<ReferenceType> inReferenceContraints(ReferenceType subReferenceType){
 	    Set<ReferenceType> inRefTypes = new HashSet<>();
 
         if(subReferenceType != null && !subReferenceType.equals(ReferenceType.Generic)){
