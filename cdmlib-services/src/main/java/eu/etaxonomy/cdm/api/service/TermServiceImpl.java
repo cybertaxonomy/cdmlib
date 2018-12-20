@@ -279,6 +279,11 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 		Set<DefinedTermBase> termsToSave = new HashSet<DefinedTermBase>();
 
 		DeleteResult result = isDeletable(term.getUuid(), config);
+		if (result.isAbort()) {
+            return result;
+        }
+		//CdmBase.deproxy(dao.merge(term), DefinedTermBase.class);
+
 		try {
 			//generalization of
 			Set<DefinedTermBase> specificTerms = term.getGeneralizationOf();
@@ -412,22 +417,22 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 	        //generalization of
 	        Set<DefinedTermBase> specificTerms = term.getGeneralizationOf();
 	        if (!specificTerms.isEmpty() && termConfig.isDeleteGeneralizationOfRelations()){
-	            result.getRelatedObjects().removeAll(specificTerms);
+	            references.removeAll(specificTerms);
 	        }
 	        //kind of
 	        DefinedTermBase generalTerm = term.getKindOf();
 	        if (generalTerm != null && termConfig.isDeleteKindOfRelations()){
-	            result.getRelatedObjects().remove(generalTerm);
+	            references.remove(generalTerm);
 	        }
 	        //part of
 	        DefinedTermBase parentTerm = term.getPartOf();
 	        if (parentTerm != null && termConfig.isDeletePartOfRelations()){
-	            result.getRelatedObjects().remove(parentTerm);
+	            references.remove(parentTerm);
 	        }
 	        //included in
 	        Set<DefinedTermBase> includedTerms = term.getIncludes();
 	        if (!includedTerms.isEmpty() && termConfig.isDeleteIncludedRelations()){
-	            result.getRelatedObjects().removeAll(includedTerms);
+	            references.removeAll(includedTerms);
 	        }
 	    }
 
