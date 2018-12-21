@@ -409,6 +409,26 @@ public class CdmUserHelper implements UserHelper, Serializable {
         return matches;
     }
 
+    // @Override
+    public <T extends CdmBase> Collection<CdmAuthority> findUserPermissions(Class<T> cdmType, EnumSet<CRUD> crud) {
+        Set<CdmAuthority> matches = new HashSet<>();
+        CdmPermissionClass permissionClass = CdmPermissionClass.getValueOf(cdmType);
+        Collection<? extends GrantedAuthority> authorities = getAuthentication().getAuthorities();
+        for(GrantedAuthority ga : authorities){
+            try {
+                CdmAuthority cdmAuthority = CdmAuthority.fromGrantedAuthority(ga);
+                if(cdmAuthority.getPermissionClass().equals(permissionClass)){
+                    if(cdmAuthority.getOperation().containsAll(crud)){
+                        matches.add(cdmAuthority);
+                    }
+                }
+            } catch (CdmAuthorityParsingException e) {
+                continue;
+            }
+        }
+        return matches;
+    }
+
     /**
      * @param securityContextAccess the securityContextAccess to set
      */

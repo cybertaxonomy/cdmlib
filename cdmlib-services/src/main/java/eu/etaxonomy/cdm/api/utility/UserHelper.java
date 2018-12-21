@@ -124,6 +124,15 @@ public interface UserHelper {
     public Collection<CdmAuthority> findUserPermissions(CdmBase cdmEntity, EnumSet<CRUD> crud);
 
     /**
+     * Scans the currently authenticated user for CdmAuthorities which match the given parameters
+     *
+     * @param cdmType
+     * @param crud
+     * @return
+     */
+    public <T extends CdmBase> Collection<CdmAuthority> findUserPermissions(Class<T> cdmType, EnumSet<CRUD> crud);
+
+    /**
      * @param newAuthority
      */
     public void removeAuthorityForCurrentUser(CdmAuthority newAuthority);
