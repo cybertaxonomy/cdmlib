@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.api.service.dto.RegistrationDTO;
 import eu.etaxonomy.cdm.api.service.dto.RegistrationWorkingSet;
 import eu.etaxonomy.cdm.api.service.exception.RegistrationValidationException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.database.PermissionDeniedException;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
@@ -55,6 +56,7 @@ public interface IRegistrationWorkingSetService {
      *
      * @return
      */
+    @Deprecated
     public RegistrationWorkingSet loadWorkingSetByReferenceID(Integer referenceID, boolean resolveSections) throws RegistrationValidationException;
 
     /**
@@ -63,7 +65,7 @@ public interface IRegistrationWorkingSetService {
      *  use the inReference which is the journal article.
      * @return
      */
-    public RegistrationWorkingSet loadWorkingSetByReferenceUuid(UUID referenceUuid, boolean resolveSections) throws RegistrationValidationException;
+    public RegistrationWorkingSet loadWorkingSetByReferenceUuid(UUID referenceUuid, boolean resolveSections) throws RegistrationValidationException, PermissionDeniedException;
 
     public Set<RegistrationDTO> loadBlockingRegistrations(UUID blockedRegistrationUuid);
 

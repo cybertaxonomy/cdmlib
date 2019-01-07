@@ -20,6 +20,8 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
+import org.joda.time.DateTime;
+import org.joda.time.Partial;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,8 @@ import eu.etaxonomy.cdm.api.service.dto.RegistrationWorkingSet;
 import eu.etaxonomy.cdm.api.service.exception.RegistrationValidationException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.api.utility.UserHelper;
+import eu.etaxonomy.cdm.database.PermissionDeniedException;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.name.Registration;
@@ -44,6 +48,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
@@ -141,6 +146,9 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
     @Autowired
     @Qualifier("cdmRepository")
     private CdmRepository repo;
+
+    @Autowired
+    private UserHelper userHelper;
 
     @Autowired
     protected IBeanInitializer defaultBeanInitializer;
@@ -270,18 +278,73 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
      * @throws RegistrationValidationException
      */
     @Override
-    public RegistrationWorkingSet loadWorkingSetByReferenceUuid(UUID referenceUuid, boolean resolveSections) throws RegistrationValidationException {
+    public RegistrationWorkingSet loadWorkingSetByReferenceUuid(UUID referenceUuid, boolean resolveSections) throws RegistrationValidationException, PermissionDeniedException {
 
         Reference reference = repo.getReferenceService().load(referenceUuid); // needed to use load to avoid the problem described in #7331
         if(resolveSections){
             reference = resolveSection(reference);
         }
 
+        checkPermissions(reference);
+
         Pager<Registration> pager = repo.getRegistrationService().page(Optional.of(reference), null, null, null, REGISTRATION_DTO_INIT_STRATEGY);
 
         /* for debugging https://dev.e-taxonomy.eu/redmine/issues/7331 */
         // debugIssue7331(pager);
         return new RegistrationWorkingSet(makeDTOs(pager.getRecords()));
+    }
+
+
+    /**
+     * @param reference
+     */
+    private void checkPermissions(Reference reference) throws PermissionDeniedException {
+
+        boolean permissionDenied = isPermissionDenied(reference);
+        if(permissionDenied) {
+            throw new PermissionDeniedException("Access to the workingset is denied for the current user.");
+        }
+    }
+
+
+    /**
+     * @param reference
+     * @return
+     */
+    public boolean isPermissionDenied(Reference reference) {
+        boolean permissionDenied = false;
+        if(!checkReferencePublished(reference)){
+            permissionDenied = !userHelper.userHasPermission(reference, CRUD.UPDATE);
+        }
+        return permissionDenied;
+    }
+
+
+    /**
+     * @param reference
+     * @return
+     */
+    public boolean checkReferencePublished(Reference reference) {
+
+        if(reference.getDatePublished() == null){
+            return false;
+        }
+        Partial pubPartial = null;
+        if(reference.getDatePublished().getStart() != null){
+            pubPartial = reference.getDatePublished().getStart();
+        } else {
+            pubPartial = reference.getDatePublished().getEnd();
+        }
+        if(pubPartial == null){
+            return !reference.getDatePublished().getFreeText().isEmpty();
+        }
+
+        DateTime nowLocal = new DateTime();
+        //LocalDateTime nowUTC = nowLocal.withZone(DateTimeZone.UTC).toLocalDateTime();
+
+        DateTime pubDateTime = pubPartial.toDateTime(null);
+        return nowLocal.isAfter(pubDateTime);
+
     }
 
 
@@ -302,12 +365,15 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
      * @throws RegistrationValidationException
      */
     @Override
-    public RegistrationWorkingSet loadWorkingSetByReferenceID(Integer referenceID, boolean resolveSections) throws RegistrationValidationException {
+    public RegistrationWorkingSet loadWorkingSetByReferenceID(Integer referenceID, boolean resolveSections) throws RegistrationValidationException, PermissionDeniedException {
 
         Reference reference = repo.getReferenceService().find(referenceID);
         if(resolveSections){
             reference = resolveSection(reference);
         }
+
+        checkPermissions(reference);
+
         repo.getReferenceService().load(reference.getUuid()); // needed to avoid the problem described in #7331
 
         Pager<Registration> pager = repo.getRegistrationService().page(Optional.of(reference), null, null, null, REGISTRATION_DTO_INIT_STRATEGY);
