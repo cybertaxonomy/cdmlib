@@ -96,7 +96,7 @@ public class CdmUserHelper implements UserHelper, Serializable {
     @Override
     public boolean userIsAutheticated() {
         Authentication authentication = getAuthentication();
-        if(authentication != null){
+        if(authentication != null && !AnonymousAuthenticationToken.class.equals(authentication.getClass())){
             return authentication.isAuthenticated();
         }
         return false;
@@ -410,6 +410,7 @@ public class CdmUserHelper implements UserHelper, Serializable {
     }
 
     // @Override
+    @Override
     public <T extends CdmBase> Collection<CdmAuthority> findUserPermissions(Class<T> cdmType, EnumSet<CRUD> crud) {
         Set<CdmAuthority> matches = new HashSet<>();
         CdmPermissionClass permissionClass = CdmPermissionClass.getValueOf(cdmType);
