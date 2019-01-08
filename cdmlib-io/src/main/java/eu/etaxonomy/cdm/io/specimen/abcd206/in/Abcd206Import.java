@@ -902,9 +902,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     UnitAssociationParser unitAssociationParser = new UnitAssociationParser(currentPrefix,
                             state.getReport(), state.getCdmRepository());
                     UnitAssociationWrapper associationWrapper = unitAssociationParser.parse(unitAssociation);
-
-                    state.setActualAccessPoint(associationWrapper.getAccesPoint());
                     if (associationWrapper != null) {
+                        state.setActualAccessPoint(associationWrapper.getAccesPoint());
                         NodeList associatedUnits = associationWrapper.getAssociatedUnits();
                         if (associatedUnits != null) {
                             for (int m = 0; m < associatedUnits.getLength(); m++) {
