@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.api.service;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -118,6 +119,8 @@ public interface IRegistrationService extends IAnnotatableService<Registration> 
             Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths);
 
     Pager<Registration> pageByIdentifier(String identifier, Integer pageIndex, Integer pageSize, List<String> propertyPaths) throws IOException;
+
+    public Map<UUID, RegistrationStatus> statusByIdentifier(String identifier) throws IOException;
 
     /**
      * @param submitterUuid

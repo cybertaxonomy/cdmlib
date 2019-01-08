@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IRegistrationService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -108,6 +110,38 @@ public class RegistrationController extends BaseController<Registration, IRegist
             return null; // never reached, due to previous send()
         } else {
             return null;
+        }
+    }
+
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "identifier", value = "The persitent identifier of the Registration.", required = true, dataType = "string", paramType = "path"),
+    })
+    @ApiOperation(value = "Finds status of a Registration by persitent identifier.",
+        notes = "The identifier passed as paramter must be unique in the database otherwise the server will responde with the HTTP error code: " + HttpServletResponse.SC_PRECONDITION_FAILED
+    )
+    @RequestMapping(value="identifier/**/status", method = RequestMethod.GET)
+    public ModelAndView doStatusByIdentifier(
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+
+        logger.info("doStatusByIdentifier() " + requestPathAndQuery(request));
+
+        String identifier = readPathParameter(request, "/registration/identifier/");
+        identifier = identifier.replace("/status", "");
+
+        Map<UUID, RegistrationStatus> map = service.statusByIdentifier(identifier);
+
+        ModelAndView mv = new ModelAndView();
+
+        if(map.size() == 1){
+            String status = map.values().iterator().next().name();
+            mv.addObject(status);
+            return mv;
+        } else if(map.size() > 1){
+            HttpStatusMessage.create("The identifier " + identifier + " refrences multiple registrations", HttpServletResponse.SC_PRECONDITION_FAILED).send(response);
+            return mv; // never reached, due to previous send()
+        } else {
+            return mv;
         }
     }
 

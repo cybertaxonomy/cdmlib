@@ -262,6 +262,21 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
         return regPager;
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Map<UUID, RegistrationStatus> statusByIdentifier(String identifier) throws IOException {
+
+        Pager<Registration> regPager = pageByRestrictions(Registration.class, "identifier", identifier, MatchMode.EXACT,
+                null, null, null, null, Arrays.asList("status"));
+
+        Map<UUID, RegistrationStatus> map = new HashMap<>();
+        for(Registration reg : regPager.getRecords()){
+            map.put(reg.getUuid(), reg.getStatus());
+        }
+
+        return map;
+    }
+
     /**
      * {@inheritDoc}
      */

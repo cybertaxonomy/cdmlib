@@ -115,8 +115,11 @@ public class RegistrationDTOController extends AbstractController<Registration, 
 
         Pager<RegistrationDTO> regPager = registrationWorkingSetService.pageDTOs(identifier, 0, 2);
 
-        if(regPager.getCount() > 0){
+        if(regPager.getCount() == 1){
             return regPager.getRecords().get(0);
+        } else if(regPager.getCount() > 1){
+            HttpStatusMessage.create("The identifier " + identifier + " refrences multiple registrations", HttpServletResponse.SC_PRECONDITION_FAILED).send(response);
+            return null; // never reached, due to previous send()
         } else {
             return null;
         }
