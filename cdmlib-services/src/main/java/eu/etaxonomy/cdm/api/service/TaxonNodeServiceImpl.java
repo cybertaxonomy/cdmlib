@@ -1053,8 +1053,11 @@ public class TaxonNodeServiceImpl
                true, true, propertyPaths);
         List<TaxonDistributionDTO> result = new ArrayList<>();
         for(TaxonNode node:nodes){
-            TaxonDistributionDTO dto = new TaxonDistributionDTO(node.getTaxon());
-            result.add(dto);
+            if (node.getTaxon() != null){
+                TaxonDistributionDTO dto = new TaxonDistributionDTO(node.getTaxon());
+                result.add(dto);
+            }
+
         }
 
         return result;
