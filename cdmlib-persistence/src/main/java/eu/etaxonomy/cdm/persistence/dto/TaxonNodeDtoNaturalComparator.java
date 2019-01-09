@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.persistence.dto;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -17,7 +18,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  *
  * @author k.luther
  */
-public class TaxonNodeDtoNaturalComparator implements Comparator<TaxonNodeDto> {
+public class TaxonNodeDtoNaturalComparator implements Serializable, Comparator<TaxonNodeDto> {
 
     public TaxonNodeDtoNaturalComparator(){
 		super();
