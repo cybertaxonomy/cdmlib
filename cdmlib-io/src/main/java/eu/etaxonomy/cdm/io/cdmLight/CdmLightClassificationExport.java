@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.cdmLight;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -169,7 +170,10 @@ public class CdmLightClassificationExport
               //create sortIndex for nodes
                 for(Entry<Integer, List<TaxonNodeDto>> entry :state.getNodeChildrenMap().entrySet()){
                     List<TaxonNodeDto> children = entry.getValue();
-                    TaxonNodeDtoByRankAndNameComparator comp = new TaxonNodeDtoByRankAndNameComparator();
+                    Comparator<TaxonNodeDto> comp = state.getConfig().getComparator();
+                    if (comp == null){
+                        comp = new TaxonNodeDtoByRankAndNameComparator();
+                    }
                     Collections.sort(children, comp);
                     int index = 0;
                     for (TaxonNodeDto child:children) {

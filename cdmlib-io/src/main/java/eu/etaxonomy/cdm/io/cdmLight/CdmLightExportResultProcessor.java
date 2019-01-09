@@ -105,6 +105,7 @@ public class CdmLightExportResultProcessor {
             state.setHomotypicalGroupStore(new HashMap<>());
             state.setReferenceStore(new HashMap<>());
             state.setSpecimenStore(new HashMap<>());
+            state.setNodeChildrenMap(new HashMap<>());
             //Replace quotes by double quotes
             for (CdmLightExportTable table: result.keySet()){
                 //schreibe jede Tabelle in einen Stream...
