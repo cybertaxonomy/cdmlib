@@ -37,22 +37,22 @@ public class PreferenceResolverTest {
     @Before
     public void setUp() throws Exception {
         pref1 = CdmPreference.NewInstance(PreferenceSubject.NewInstance("/taxeditor/distributionEditor/"),
-                PreferencePredicate.AvailableDistributionAreaTerms,
+                PreferencePredicate.AvailableDistributionAreaVocabularies,
                 "abc");
         pref2 = CdmPreference.NewInstance(PreferenceSubject.NewInstance("/"),
-                PreferencePredicate.AvailableDistributionAreaTerms,
+                PreferencePredicate.AvailableDistributionAreaVocabularies,
                 "abc");
         pref3 = CdmPreference.NewInstance(PreferenceSubject.NewInstance("/distributionEditor/"),
-                PreferencePredicate.AvailableDistributionAreaTerms,
+                PreferencePredicate.AvailableDistributionAreaVocabularies,
                 "abc");
         pref3b = CdmPreference.NewInstance(PreferenceSubject.NewInstance("/distributionEditor/"),
-                PreferencePredicate.AvailableDistributionAreaTerms,
+                PreferencePredicate.AvailableDistributionAreaVocabularies,
                 "def");
         pref4 = CdmPreference.NewInstance(PreferenceSubject.NewInstance("/vaadin/distributionEditor/areas/"),
-                PreferencePredicate.AvailableDistributionAreaTerms,
+                PreferencePredicate.AvailableDistributionAreaVocabularies,
                 "abc");
         key = CdmPreference.NewKey(PreferenceSubject.NewInstance("/taxeditor/distributionEditor/areas/"),
-                PreferencePredicate.AvailableDistributionAreaTerms);
+                PreferencePredicate.AvailableDistributionAreaVocabularies);
     }
 
     @Test
