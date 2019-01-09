@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.io.cdmLight;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import eu.etaxonomy.cdm.io.common.ExportResult;
@@ -21,6 +22,7 @@ import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 
 /**
  * @author k.luther
@@ -41,7 +43,7 @@ public class CdmLightExportState
 
     private Map<Integer, SpecimenOrObservationBase> specimenStore = new HashMap<>();
     private Map<Integer, Reference> referenceStore = new HashMap<>();
-
+    private Map<Integer,List<TaxonNodeDto>> nodeChildrenMap = new HashMap<>();
     /**
      * @param config
      */
@@ -188,6 +190,20 @@ public class CdmLightExportState
      */
     public Map<Integer, Reference> getReferenceStore() {
         return referenceStore;
+    }
+
+    /**
+     * @return the nodeChildrenMap
+     */
+    public Map<Integer, List<TaxonNodeDto>> getNodeChildrenMap() {
+        return nodeChildrenMap;
+    }
+
+    /**
+     * @param nodeChildrenMap the nodeChildrenMap to set
+     */
+    public void setNodeChildrenMap(Map<Integer, List<TaxonNodeDto>> nodeChildrenMap) {
+        this.nodeChildrenMap = nodeChildrenMap;
     }
 
 }

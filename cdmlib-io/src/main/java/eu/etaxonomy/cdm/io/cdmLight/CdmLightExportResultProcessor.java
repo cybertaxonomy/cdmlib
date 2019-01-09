@@ -80,6 +80,10 @@ public class CdmLightExportResultProcessor {
         }
     }
 
+    public  String[] getRecord(CdmLightExportTable table, String id){
+        return result.get(table).get(id);
+
+    }
 
     /**
      * @param table
@@ -87,7 +91,7 @@ public class CdmLightExportResultProcessor {
      * @param csvLine
      */
     public void put(CdmLightExportTable table, ICdmBase cdmBase, String[] csvLine) {
-       this.put(table, String.valueOf(cdmBase.getId()), csvLine);
+       this.put(table, cdmBase.getUuid().toString(), csvLine);
     }
 
 
