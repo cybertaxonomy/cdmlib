@@ -471,18 +471,10 @@ public class DescriptionServiceImpl
         List<MergeResult<DescriptionBase>> mergedObjects = new ArrayList();
         List<Distribution> toDelete = new ArrayList<>();
         for(TaxonDistributionDTO obj : descriptionElements) {
-            Taxon taxon = HibernateProxyHelper.deproxy(taxonDao.load(obj.getTaxonUuid()), Taxon.class);
             Iterator<TaxonDescription> iterator = obj.getDescriptionsWrapper().getDescriptions().iterator();
             while (iterator.hasNext()){
                 TaxonDescription desc = iterator.next();
-                if (desc.getTaxon() == null){
-                    taxon.addDescription(desc);
-                    //taxonDao.merge(taxon, returnTransientEntity);
-                    //mergedObjects.add(dao.merge(desc, returnTransientEntity));
-                }else{
-                    mergedObjects.add(dao.merge(desc, returnTransientEntity));
-                }
-
+                mergedObjects.add(dao.merge(desc, returnTransientEntity));
             }
 
 
