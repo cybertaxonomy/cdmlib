@@ -61,7 +61,7 @@ public class RegistrationDTOController extends AbstractController<Registration, 
 {
 
 
-    private static final List<OrderHint> ORDER_BY_IDENTIFIER = Arrays.asList(new OrderHint("specificIdentifier", SortOrder.ASCENDING));
+    private static final List<OrderHint> ORDER_BY_IDENTIFIER = Arrays.asList(new OrderHint("specificIdentifier", SortOrder.DESCENDING));
 
     private static final List<OrderHint> ORDER_BY_SUMMARY = Arrays.asList(new OrderHint("summary", SortOrder.ASCENDING));
 
