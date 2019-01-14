@@ -130,7 +130,7 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 		if (refType != null || pattern != null){
 		    queryString += " WHERE (1=1) ";
 		    if (refType != null ){
-		        queryString += " AND (r.type = :type OR r.type = :genericType) " ;
+		        queryString += " AND (r.type = :type) ";// OR r.type = :genericType) " ;
 		    }
 		    if (pattern != null){
 		        queryString += " AND (r.titleCache LIKE :pattern) ";
@@ -155,7 +155,7 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 	    }
 		if (refType != null){
 		    query.setParameter("type", refType);
-		    query.setParameter("genericType", ReferenceType.Generic);
+		   // query.setParameter("genericType", ReferenceType.Generic);
 		}
 		@SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
