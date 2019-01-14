@@ -141,7 +141,7 @@ public class DbImportAnnotationMapper extends DbSingleAttributeImportMapperBase<
 	@Override
 	protected AnnotatableEntity doInvoke(AnnotatableEntity annotatableEntity, Object dbValue){
 		String strAnnotation = (String)dbValue;
-		if (CdmUtils.isNotEmpty(strAnnotation));{
+		if (StringUtils.isNotBlank(strAnnotation)){
 			Annotation annotation = Annotation.NewInstance(strAnnotation, annotationType, language);
 			if (annotatableEntity != null){
 				annotatableEntity.addAnnotation(annotation);
