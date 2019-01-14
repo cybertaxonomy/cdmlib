@@ -7,6 +7,11 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
 
+/**
+ * @author k.luther
+ * @since 2011
+ *
+ */
 public class ReferenceCheckValidator implements ConstraintValidator<ReferenceCheck, Reference>{
 
     @Override

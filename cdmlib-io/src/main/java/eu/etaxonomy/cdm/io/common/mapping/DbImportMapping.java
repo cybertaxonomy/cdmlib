@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -23,27 +23,26 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 /**
  * @author a.mueller
  * @since 12.05.2009
- * @version 1.0
  */
 public class DbImportMapping<STATE extends DbImportStateBase, CONFIG extends IImportConfigurator> extends CdmIoMapping {
 	private static final Logger logger = Logger.getLogger(DbImportMapping.class);
-	
-	private boolean isInitialized = false;;
+
+	private boolean isInitialized = false;
 	private Class<? extends CdmBase> destinationClass;
 	private DbImportMapping<STATE, CONFIG> secondPathMapping;
 	private boolean blankToNull = false;
-	
+
 	public DbImportMapping(){
 //		this.dbTableName = tableName;
 	}
-	
-	public boolean initialize(DbImportStateBase state, Class<? extends CdmBase> destinationClass){
+
+	public boolean initialize(DbImportStateBase<?,?> state, Class<? extends CdmBase> destinationClass){
 		if (!isInitialized){
 			//	this.dbTableName = tableName;
 			this.destinationClass = destinationClass;
 			for (CdmMapperBase mapper: this.mapperList){
 				if (mapper instanceof IDbImportMapper){
-					((IDbImportMapper) mapper).initialize(state, destinationClass);
+					((IDbImportMapper<DbImportStateBase<?,?>,? extends CdmBase>) mapper ).initialize(state, destinationClass);
 				}else{
 					logger.warn("Mapper type " + mapper.getClass().getSimpleName() + " not yet implemented for DB import mapping");
 				}
@@ -56,13 +55,14 @@ public class DbImportMapping<STATE extends DbImportStateBase, CONFIG extends IIm
 		return true;
 	}
 
-	public void addMapper(CdmAttributeMapperBase mapper){
+	@Override
+    public void addMapper(CdmAttributeMapperBase mapper){
 		super.addMapper(mapper);
 		if (mapper instanceof DbStringMapper){
 			((DbStringMapper)mapper).setBlankToNull(isBlankToNull());
 		}
 	}
-	
+
 	/**
 	 * Invokes the second path mapping if one has been defined
 	 * @param rs
@@ -72,8 +72,8 @@ public class DbImportMapping<STATE extends DbImportStateBase, CONFIG extends IIm
 	 */
 	public boolean invoke(ResultSet rs, Set<CdmBase> objectsToSave) throws SQLException{
 		return invoke(rs, objectsToSave, false);
-	}	
-	
+	}
+
 	/**
 	 * Invokes the mapping. If secondPath is true, the secondPath mapping is invoked if it exists.
 	 * @param rs
@@ -91,12 +91,13 @@ public class DbImportMapping<STATE extends DbImportStateBase, CONFIG extends IIm
 			//		try {
 			for (CdmMapperBase mapper : this.mapperList){
 				if (mapper instanceof IDbImportMapper){
-					IDbImportMapper<DbImportStateBase<?,?>,CdmBase> dbMapper = (IDbImportMapper)mapper;
+					@SuppressWarnings("unchecked")
+                    IDbImportMapper<DbImportStateBase<?,?>,CdmBase> dbMapper = (IDbImportMapper<DbImportStateBase<?,?>,CdmBase>)mapper;
 					try {
 						objectToSave = dbMapper.invoke(rs, objectToSave);
 					} catch (Exception e) {
 						result = false;
-						logger.error("Error occurred in mapping.invoke of mapper " + this.toString());
+						logger.error("Error occurred in mapping.invoke of mapper " + dbMapper.toString());
 						e.printStackTrace();
 						continue;
 					}
@@ -112,8 +113,8 @@ public class DbImportMapping<STATE extends DbImportStateBase, CONFIG extends IIm
 			return result;
 	}
 	}
-	
-	public void setSecondPathMapping(DbImportMapping secondPathMapping){
+
+	public void setSecondPathMapping(DbImportMapping<STATE, CONFIG> secondPathMapping){
 		this.secondPathMapping = secondPathMapping;
 	}
 
@@ -147,11 +148,11 @@ public class DbImportMapping<STATE extends DbImportStateBase, CONFIG extends IIm
 //		this.dbTableName = dbTableName;
 //	}
 //
-//	
+//
 //	protected List<CdmAttributeMapperBase> getAttributeMapperList(){
 //		List<CdmAttributeMapperBase> list = this.mapperList;
 //		return list;
 //	}
-	
-	
+
+
 }

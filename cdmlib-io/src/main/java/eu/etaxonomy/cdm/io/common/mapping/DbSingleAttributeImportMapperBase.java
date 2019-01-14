@@ -25,15 +25,14 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 /**
  * @author a.mueller
  * @since 12.05.2009
- * @version 1.0
  */
 public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportStateBase<?,?>, CDM_BASE extends CdmBase> extends CdmSingleAttributeMapperBase implements IDbImportMapper<STATE, CDM_BASE>  {
 	private static final Logger logger = Logger.getLogger(DbSingleAttributeImportMapperBase.class);
 
-	protected DbImportMapperBase<STATE> importMapperHelper = new DbImportMapperBase<STATE>();
+	protected DbImportMapperBase<STATE> importMapperHelper = new DbImportMapperBase<>();
 //	private Integer precision = null;
 	protected boolean obligatory = true;
-	protected boolean ignore = false;;
+	protected boolean ignore = false;
 
 	protected Method destinationMethod = null;
 	protected Class<?> targetClass;
@@ -179,10 +178,6 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 		return result;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.IDbExportMapper#invoke(eu.etaxonomy.cdm.model.common.CdmBase)
-	 */
 	@Override
     public CDM_BASE invoke(ResultSet rs, CDM_BASE cdmBase) throws SQLException {
 		if (ignore){
