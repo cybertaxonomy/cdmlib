@@ -2,7 +2,6 @@ package eu.etaxonomy.cdm.persistence.hibernate.permission;
 
 import java.util.UUID;
 
-import org.springframework.security.access.vote.RoleVoter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.util.Assert;
 
@@ -32,6 +31,7 @@ public class Role implements GrantedAuthority, IGrantedAuthorityConverter {
     public final static Role ROLE_PROJECT_MANAGER = new Role(UUID.fromString("9eabd2c6-0590-4a1e-95f5-99cc58b63aa7"), "ROLE_PROJECT_MANAGER");
     public final static Role ROLE_USER_MANAGER = new Role(UUID.fromString("9eabd2c6-0590-4a1e-95f5-99cc58b63aa7"), "ROLE_USER_MANAGER");
     public final static Role ROLE_PUBLISH = new Role(UUID.fromString("9ffa7879-cc67-4592-a14a-b251cccde1a7"), "ROLE_PUBLISH");
+    public final static Role ROLE_REMOTING = new Role(UUID.fromString("be004bf6-0498-48e3-9f06-ff93fc9cdc9a"), "ROLE_REMOTING");
 
     private final UUID uuid;
 
