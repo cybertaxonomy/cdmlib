@@ -252,13 +252,10 @@ public class DescriptiveDataSetService
         super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
     }
 
-    @Override
-    public TaxonDescription findTaxonDescriptionByMarkerType(UUID dataSetUuid, UUID taxonNodeUuid, MarkerType markerType){
-        DescriptiveDataSet dataSet = load(dataSetUuid);
-        TaxonNode taxonNode = taxonNodeService.load(taxonNodeUuid);
+    private TaxonDescription findTaxonDescriptionByMarkerType(DescriptiveDataSet dataSet, Taxon taxon, MarkerType markerType){
         Set<DescriptionBase> dataSetDescriptions = dataSet.getDescriptions();
         //filter by DEFAULT descriptions
-        Optional<TaxonDescription> first = taxonNode.getTaxon().getDescriptions().stream()
+        Optional<TaxonDescription> first = taxon.getDescriptions().stream()
                 .filter(desc -> desc.getMarkers().stream().anyMatch(marker -> marker.getMarkerType().equals(markerType)))
                 .filter(defaultDescription->dataSetDescriptions.contains(defaultDescription))
                 .findFirst();
@@ -267,6 +264,13 @@ public class DescriptiveDataSetService
                   Arrays.asList("taxon", "descriptionElements", "descriptionElements.feature")), TaxonDescription.class);
         }
         return null;
+    }
+
+    @Override
+    public TaxonDescription findTaxonDescriptionByMarkerType(UUID dataSetUuid, UUID taxonNodeUuid, MarkerType markerType){
+        DescriptiveDataSet dataSet = load(dataSetUuid);
+        TaxonNode taxonNode = taxonNodeService.load(taxonNodeUuid);
+        return findTaxonDescriptionByMarkerType(dataSet, taxonNode.getTaxon(), markerType);
     }
 
     @Override
@@ -352,6 +356,11 @@ public class DescriptiveDataSetService
             });
         });
 
+        // delete existing aggregation description, if present
+        TaxonDescription aggregation = findTaxonDescriptionByMarkerType(dataSet, taxon, MarkerType.COMPUTED());
+        removeDescription(aggregation.getUuid(), descriptiveDataSetUuid);
+
+        // create new aggregation
         TaxonDescription description = TaxonDescription.NewInstance(taxon);
         description.setTitleCache("[Aggregation] "+descriptionTitle, true);
         description.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
