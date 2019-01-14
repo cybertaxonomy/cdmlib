@@ -231,10 +231,9 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 		int orderInd = lowerTerm.orderIndex;
 		termToBeAdded.orderIndex = orderInd;
 		//increment all orderIndexes of terms below
-		Iterator<T> iterator = terms.iterator();
-		while(iterator.hasNext()){
-			T term = iterator.next();
-			if (term.orderIndex >= orderInd){  //should always be true
+		Set<T> myTerms = getSortedSetOfTerms();
+		for(T term : myTerms){
+		    if (term.orderIndex >= orderInd){  //should always be true
 				term.orderIndex++;
 			}
 		}
