@@ -179,7 +179,16 @@ public class Registration extends AnnotatableEntity {
     public void setSpecificIdentifier(String specificIdentifier) {this.specificIdentifier = specificIdentifier;}
 
     public RegistrationStatus getStatus() {return status;}
-    public void setStatus(RegistrationStatus status) {this.status = status;}
+    public void setStatus(RegistrationStatus status) {
+        if(status != this.status){
+            if(status == RegistrationStatus.PUBLISHED){
+                setRegistrationDate(DateTime.now());
+            } else if(this.status == RegistrationStatus.PUBLISHED){
+                setRegistrationDate(null);
+            }
+            this.status = status;
+        }
+    }
 
     public DateTime getRegistrationDate() {return registrationDate;}
     public void setRegistrationDate(DateTime registrationDate) {this.registrationDate = registrationDate;}
