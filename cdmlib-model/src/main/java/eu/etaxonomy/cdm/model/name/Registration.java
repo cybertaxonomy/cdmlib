@@ -179,6 +179,13 @@ public class Registration extends AnnotatableEntity {
     public void setSpecificIdentifier(String specificIdentifier) {this.specificIdentifier = specificIdentifier;}
 
     public RegistrationStatus getStatus() {return status;}
+    /**
+     * Sets the RegistrationStatus. Also manages the registrationDate by setting it to <code>now</code> when the
+     * registration is set to {@link RegistrationStatus#PUBLISHED}. Removal of the
+     * published state will also cause the the registrationDate to be reset to <code>null</code>.
+     *
+     * @param status
+     */
     public void setStatus(RegistrationStatus status) {
         if(status != this.status){
             if(status == RegistrationStatus.PUBLISHED){
