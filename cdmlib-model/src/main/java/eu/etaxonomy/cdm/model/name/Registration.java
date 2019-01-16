@@ -179,21 +179,36 @@ public class Registration extends AnnotatableEntity {
     public void setSpecificIdentifier(String specificIdentifier) {this.specificIdentifier = specificIdentifier;}
 
     public RegistrationStatus getStatus() {return status;}
+
     /**
-     * Sets the RegistrationStatus. Also manages the registrationDate by setting it to <code>now</code> when the
-     * registration is set to {@link RegistrationStatus#PUBLISHED}. Removal of the
-     * published state will also cause the the registrationDate to be reset to <code>null</code>.
+     * Sets the status to the passed value.
+     * <p>
+     * In most situations where the registration is controlled in a strict
+     * workflow you may want to use {@link #updateStatusAndDate(RegistrationStatus)} instead.
      *
      * @param status
      */
-    public void setStatus(RegistrationStatus status) {
+    public void setStatus(RegistrationStatus status) {this.status = status;}
+    /**
+     * Sets the {@link RegistrationStatus} of the registration and manages the {@link #registrationDate}
+     * at the same time:
+     * <ul>
+     * <li>It will be set to <code>now</code> when the
+     * {@link #status} is set to {@link RegistrationStatus#PUBLISHED}.</li>
+     * <li>Removal of the
+     * <code>PUBLISHED</code> state will cause the the registrationDate to be reset to <code>null</code>.</li>
+     * </ul>
+     *
+     * @param status
+     */
+    public void updateStatusAndDate(RegistrationStatus status) {
         if(status != this.status){
             if(status == RegistrationStatus.PUBLISHED){
                 setRegistrationDate(DateTime.now());
             } else if(this.status == RegistrationStatus.PUBLISHED){
                 setRegistrationDate(null);
             }
-            this.status = status;
+            setStatus(status);
         }
     }
 
