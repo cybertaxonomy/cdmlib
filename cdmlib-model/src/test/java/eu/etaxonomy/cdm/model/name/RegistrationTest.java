@@ -80,19 +80,19 @@ public class RegistrationTest {
      * see https://dev.e-taxonomy.eu/redmine/issues/7995
      */
     @Test
-    public void testSetStatus() {
+    public void testUpdateStatusAndDate() {
         Registration registration = Registration.NewInstance();
 
         registration.setStatus(RegistrationStatus.CURATION);
         assertNull(registration.getRegistrationDate());
 
         DateTime before = DateTime.now();
-        registration.setStatus(RegistrationStatus.PUBLISHED);
+        registration.updateStatusAndDate(RegistrationStatus.PUBLISHED);
         assertNotNull(registration.getRegistrationDate());
         assertTrue(registration.getRegistrationDate().isAfter(registration.getRegistrationDate()) || registration.getRegistrationDate().isEqual(before) );
         assertTrue(registration.getRegistrationDate().isBeforeNow() || registration.getRegistrationDate().isEqual(before));
 
-        registration.setStatus(RegistrationStatus.CURATION);
+        registration.updateStatusAndDate(RegistrationStatus.CURATION);
         assertNull(registration.getRegistrationDate());
     }
 
