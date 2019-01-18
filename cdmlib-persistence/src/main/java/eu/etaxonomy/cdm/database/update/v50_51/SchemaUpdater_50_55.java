@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ColumnRemover;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
@@ -75,6 +76,13 @@ public class SchemaUpdater_50_55 extends SchemaUpdaterBase {
         stepList.add(step);
 
         //TODO remove proparte and partial columns
+
+        //#8004 add sortindex to description element
+        stepName = "Add sortindex to description element";
+        tableName = "DescriptionElementBase";
+        newColumnName = "sortIndex";
+        step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, null, !NOT_NULL);
+        stepList.add(step);
 
         return stepList;
 
