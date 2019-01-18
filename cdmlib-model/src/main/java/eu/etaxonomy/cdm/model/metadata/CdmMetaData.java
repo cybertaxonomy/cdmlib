@@ -58,9 +58,9 @@ public class CdmMetaData extends CdmBase{
 	 * be handled by SCHEMA_VALIDATION.UPDATE
 	 * The last number represents the date of change.
 	 */
-//	private static final String dbSchemaVersion = "4.1.0.0.201607300000";
+	private static final String dbSchemaVersion = "5.5.0.0.20190122";
 //  private static final String dbSchemaVersion = "4.7.0.0.201710040000";
-     private static final String dbSchemaVersion = "5.0.0.0.20180514";
+//  private static final String dbSchemaVersion = "5.0.0.0.20180514";
 
 
 	/* END OF CONFUSION */

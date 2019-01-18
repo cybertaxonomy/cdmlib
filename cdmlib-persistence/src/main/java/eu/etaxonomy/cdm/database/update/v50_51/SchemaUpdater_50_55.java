@@ -27,24 +27,24 @@ import eu.etaxonomy.cdm.database.update.v47_50.SchemaUpdater_47_50;
  * @date 09.06.2017
  *
  */
-public class SchemaUpdater_50_51 extends SchemaUpdaterBase {
+public class SchemaUpdater_50_55 extends SchemaUpdaterBase {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(SchemaUpdater_50_51.class);
+	private static final Logger logger = Logger.getLogger(SchemaUpdater_50_55.class);
 	private static final String startSchemaVersion = "5.0.0.0.20180514";
-	private static final String endSchemaVersion = "5.1.0.0.20180614";
+	private static final String endSchemaVersion = "5.5.0.0.20190122";
 
 	// ********************** FACTORY METHOD *************************************
 
-	public static SchemaUpdater_50_51 NewInstance() {
-		return new SchemaUpdater_50_51();
+	public static SchemaUpdater_50_55 NewInstance() {
+		return new SchemaUpdater_50_55();
 	}
 
 	/**
 	 * @param startSchemaVersion
 	 * @param endSchemaVersion
 	 */
-	protected SchemaUpdater_50_51() {
+	protected SchemaUpdater_50_55() {
 		super(startSchemaVersion, endSchemaVersion);
 	}
 
