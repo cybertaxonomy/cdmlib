@@ -205,7 +205,9 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
     @DataSet
     public final void testListRankSpecificRootNodes_withSubtree(){
         Classification classification = service.find(UUID.fromString("6c2bc8d9-ee62-4222-be89-4a8e31770878"));
+
         // classification, see  createTestDataSet()
+
         // ClassificationRoot
         // |- Acacia N.Jacobsen, Bastm. & Yuji Sasaki                          [Genus]
         // |  |-- Acacia subg. Aculeiferum Pedley                              [Subgenus]
