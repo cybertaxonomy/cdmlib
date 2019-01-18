@@ -201,140 +201,53 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
 
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#loadTreeBranch(eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.name.Rank, java.util.List)}.
-     */
-//    @Test
-    public final void testLoadTreeBranch() {
-//		fail("Not yet implemented");
-    }
+    @Test
+    @DataSet
+    public final void testListRankSpecificRootNodes_withSubtree(){
+        Classification classification = service.find(UUID.fromString("6c2bc8d9-ee62-4222-be89-4a8e31770878"));
+        // classification, see  createTestDataSet()
+        // ClassificationRoot
+        // |- Acacia N.Jacobsen, Bastm. & Yuji Sasaki                          [Genus]
+        // |  |-- Acacia subg. Aculeiferum Pedley                              [Subgenus]
+        // |  |-- Acacia subg. Phyllodineae N.Jacobsen, Bastm. & Yuji Sasaki   [Subgenus]
+        // |  |  |-- Acacia sect. Botrycephalae Yuji Sasaki                    [Section (Botany)]
+        // |  |------- Acacia cuspidifolia Maslin                              [Species]
+        // |  |------- Acacia mearnsii Benth                                   [Species]
+        // |---------- Acacia acicularis Willd.                                [Species]
+        //             |-- ×Acacia acicularis Willd. subsp. acicularis         [Subspecies]
+        //
+        // for more historic Acacia taxonomy see http://lexikon.freenet.de/Akazien
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#loadTreeBranchToTaxon(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.Classification, eu.etaxonomy.cdm.model.name.Rank, java.util.List)}.
-     */
-//    @Test
-    public final void testLoadTreeBranchToTaxon() {
-//		fail("Not yet implemented");
-    }
+        TaxonNode subtree = taxonNodeService.find(UUID.fromString("bcdf945f-1f02-423e-883d-fe89e0af93e4"));
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#loadChildNodesOfTaxonNode(eu.etaxonomy.cdm.model.taxon.TaxonNode, java.util.List)}.
-     */
-//    @Test
-    public final void testLoadChildNodesOfTaxonNode() {
-//		fail("Not yet implemented");
-    }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#loadChildNodesOfTaxon(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.Classification, java.util.List)}.
-     */
-//    @Test
-    public final void testLoadChildNodesOfTaxon() {
-//		fail("Not yet implemented");
-    }
+        List<TaxonNode> taxonNodes = service.listRankSpecificRootNodes(null, subtree, null, includeUnpublished, null, null, NODE_INIT_STRATEGY);
+        Assert.assertEquals(2, taxonNodes.size());
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#getTaxonNodeByUuid(java.util.UUID)}.
-     */
-//    @Test
-    public final void testGetTaxonNodeByUuid() {
-//		fail("Not yet implemented");
-    }
+        taxonNodes = service.listRankSpecificRootNodes(classification, null, null, includeUnpublished, null, null, NODE_INIT_STRATEGY);
+        Assert.assertEquals(2, taxonNodes.size());
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#getTreeNodeByUuid(java.util.UUID)}.
-     */
-//    @Test
-    public final void testGetTreeNodeByUuid() {
-//		fail("Not yet implemented");
-    }
+        taxonNodes = service.listRankSpecificRootNodes(classification, null, Rank.SECTION_BOTANY(), includeUnpublished, null, null, NODE_INIT_STRATEGY);
+        Assert.assertEquals(4, taxonNodes.size());
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#listClassifications(java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)}.
-     */
-//    @Test
-    public final void testListClassifications() {
-//		fail("Not yet implemented");
-    }
+        // also test if the pager works
+        taxonNodes = service.listRankSpecificRootNodes(classification, null, Rank.SECTION_BOTANY(), includeUnpublished, 10, 0, NODE_INIT_STRATEGY);
+        Assert.assertEquals(4, taxonNodes.size());
+        taxonNodes = service.listRankSpecificRootNodes(classification, null, Rank.SECTION_BOTANY(), includeUnpublished, 2, 0, NODE_INIT_STRATEGY);
+        Assert.assertEquals(2, taxonNodes.size());
+        taxonNodes = service.listRankSpecificRootNodes(classification, null, Rank.SECTION_BOTANY(), includeUnpublished, 2, 1, NODE_INIT_STRATEGY);
+        Assert.assertEquals(2, taxonNodes.size());
+        taxonNodes = service.listRankSpecificRootNodes(classification, null, Rank.SECTION_BOTANY(), includeUnpublished, 2, 2, NODE_INIT_STRATEGY);
+        Assert.assertEquals(0, taxonNodes.size());
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#getClassificationByUuid(java.util.UUID)}.
-     */
-//    @Test
-    public final void testGetClassificationByUuid() {
-//		fail("Not yet implemented");
-    }
+        taxonNodes = service.listRankSpecificRootNodes(classification, null, Rank.SPECIES(), includeUnpublished, null, null, NODE_INIT_STRATEGY);
+        Assert.assertEquals(3, taxonNodes.size());
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#removeTaxonNode(eu.etaxonomy.cdm.model.taxon.TaxonNode)}.
-     */
-//    @Test
-    public final void testRemoveTaxonNode() {
-//		fail("Not yet implemented");
-    }
-
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#removeTreeNode(eu.etaxonomy.cdm.model.taxon.ITreeNode)}.
-     */
-//    @Test
-    public final void testRemoveTreeNode() {
-//		fail("Not yet implemented");
-    }
-
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#saveTaxonNode(eu.etaxonomy.cdm.model.taxon.TaxonNode)}.
-     */
-//    @Test
-    public final void testSaveTaxonNode() {
-//		fail("Not yet implemented");
-    }
-
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#saveTaxonNodeAll(java.util.Collection)}.
-     */
-//    @Test
-    public final void testSaveTaxonNodeAll() {
-//		fail("Not yet implemented");
-    }
-
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#saveTreeNode(eu.etaxonomy.cdm.model.taxon.ITreeNode)}.
-     */
-//    @Test
-    public final void testSaveTreeNode() {
-//		fail("Not yet implemented");
-    }
-
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(eu.etaxonomy.cdm.model.taxon.Classification)}.
-     */
-//    @Test
-    public final void testGetTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification() {
-//		fail("Not yet implemented");
-    }
-
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#getUuidAndTitleCache()}.
-     */
-//    @Test
-    public final void testGetUuidAndTitleCache() {
-//		fail("Not yet implemented");
-    }
-
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#getAllMediaForChildNodes(eu.etaxonomy.cdm.model.taxon.TaxonNode, java.util.List, int, int, int, java.lang.String[])}.
-     */
-//    @Test
-    public final void testGetAllMediaForChildNodesTaxonNodeListOfStringIntIntIntStringArray() {
-//		fail("Not yet implemented");
-    }
-
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#getAllMediaForChildNodes(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.Classification, java.util.List, int, int, int, java.lang.String[])}.
-     */
-//    @Test
-    public final void testGetAllMediaForChildNodesTaxonClassificationListOfStringIntIntIntStringArray() {
-//		fail("Not yet implemented");
+        // also test if the pager works
+        taxonNodes = service.listRankSpecificRootNodes(classification, null, Rank.SPECIES(), includeUnpublished, 10, 0, NODE_INIT_STRATEGY);
+        Assert.assertEquals(3, taxonNodes.size());
+        taxonNodes = service.listRankSpecificRootNodes(classification, null, Rank.SPECIES(), includeUnpublished, 2, 1, NODE_INIT_STRATEGY);
+        Assert.assertEquals(1, taxonNodes.size());
     }
 
     /**
