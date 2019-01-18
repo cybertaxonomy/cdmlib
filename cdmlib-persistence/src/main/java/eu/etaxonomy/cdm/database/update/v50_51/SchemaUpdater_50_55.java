@@ -84,6 +84,13 @@ public class SchemaUpdater_50_55 extends SchemaUpdaterBase {
         step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, null, !NOT_NULL);
         stepList.add(step);
 
+        //7682 update Point.precision from 0 to null
+        stepName = "update Point.precision from 0 to null";
+        query = "UPDATE @@GatheringEvent@@ SET exactLocation_errorRadius = null WHERE exactLocation_errorRadius = 0 ";
+        tableName = "GatheringEvent";
+        step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, tableName, -99);
+        stepList.add(step);
+
         return stepList;
 
 	}
