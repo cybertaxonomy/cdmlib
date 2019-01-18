@@ -135,7 +135,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     @OrderColumn(name="sortIndex")
     @ListIndexBase(value=0)  //not really needed as this is the default
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
-    private List<Media> media = new ArrayList<Media>();
+    private List<Media> media = new ArrayList<>();
 
     @XmlElement(name = "InDescription")
     @XmlIDREF
@@ -154,6 +154,9 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @Merge(MergeMode.ADD_CLONE)
     private Set<DescriptionElementSource> sources = new HashSet<>();
+
+    //#8004 optional sortIndex
+    private Integer sortIndex = null;
 
 
 
@@ -465,14 +468,22 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
         this.sources.remove(source);
     }
 
+
+    public Integer getSortIndex() {
+        return sortIndex;
+    }
+    public void setSortIndex(Integer sortIndex) {
+        this.sortIndex = sortIndex;
+    }
+
 // ******************* METHODS *************************************************************/
 
     protected Map<TermVocabulary, List<DefinedTerm>> makeModifierMap(){
-        Map<TermVocabulary, List<DefinedTerm>> result = new HashMap<TermVocabulary, List<DefinedTerm>>();
+        Map<TermVocabulary, List<DefinedTerm>> result = new HashMap<>();
         for (DefinedTerm modifier : getModifiers()){
             TermVocabulary<DefinedTerm> voc = modifier.getVocabulary();
             if (result.get(voc) == null){
-                result.put(voc, new ArrayList<DefinedTerm>());
+                result.put(voc, new ArrayList<>());
             }
             result.get(voc).add(modifier);
         }
@@ -482,7 +493,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     public List<DefinedTerm> getModifiers(TermVocabulary voc){
         List<DefinedTerm> result = makeModifierMap().get(voc);
         if (result == null){
-            result = new ArrayList<DefinedTerm>();
+            result = new ArrayList<>();
         }
         return result;
     }
