@@ -54,7 +54,7 @@ public class SchemaUpdater_30_301 extends SchemaUpdaterBase {
 	@Override
 	protected List<ISchemaUpdaterStep> getUpdaterList() {
 
-		List<ISchemaUpdaterStep> stepList = new ArrayList<ISchemaUpdaterStep>();
+		List<ISchemaUpdaterStep> stepList = new ArrayList<>();
 
 		//drop unique index for DefinedTermBase_media.media_id
 		ISchemaUpdaterStep step = UniqueIndexDropper.NewInstance("DefinedTermBase_media", "media_id", ! INCLUDE_AUDIT);
