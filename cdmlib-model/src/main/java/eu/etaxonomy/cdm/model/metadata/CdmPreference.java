@@ -18,6 +18,7 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -43,7 +44,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
  *  create a unique key.
  *
  *  Size of single fields may be enlarged in future versions. "Value" may
- *  become a CLOB.
+ *  become a CLOB #7859.
  *
  * @author a.mueller
  * @since 03.07.2013
@@ -51,7 +52,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 @Entity
 public final class CdmPreference implements Serializable {
 
-    private static final int VALUE_LENGTH = 1023;
+    private static final int VALUE_LENGTH = 65536; //= CdmBase.CLOB_LENGTH;
 
     private static final long serialVersionUID = 4307599154287181582L;
 
@@ -116,6 +117,7 @@ public final class CdmPreference implements Serializable {
 	private PrefKey key;
 
 	@Column(length=VALUE_LENGTH)
+	@Lob
 	private String value;
 
     //if false, the preference should not be overridden by local preferences,

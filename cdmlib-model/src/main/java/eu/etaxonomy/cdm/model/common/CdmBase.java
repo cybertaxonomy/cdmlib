@@ -91,6 +91,8 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(CdmBase.class);
 
+    protected static final int CLOB_LENGTH = 65536;
+
     @Transient
     @XmlTransient
     private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);

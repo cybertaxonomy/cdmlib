@@ -15,6 +15,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
+import eu.etaxonomy.cdm.database.update.ColumnNameChanger;
 import eu.etaxonomy.cdm.database.update.ColumnRemover;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
@@ -89,6 +90,15 @@ public class SchemaUpdater_50_55 extends SchemaUpdaterBase {
         query = "UPDATE @@GatheringEvent@@ SET exactLocation_errorRadius = null WHERE exactLocation_errorRadius = 0 ";
         tableName = "GatheringEvent";
         step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, tableName, -99);
+        stepList.add(step);
+
+        //#7859 CdmPreference.value as CLOB
+        stepName = "Make CdmPreference.value a CLOB";
+        String columnName = "value";
+        tableName = "CdmPreference";
+        // TODO check non MySQL and with existing data (probably does not exist)
+        step = ColumnNameChanger.NewClobInstance(stepName, tableName,
+                columnName, columnName, INCLUDE_AUDIT);
         stepList.add(step);
 
         return stepList;
