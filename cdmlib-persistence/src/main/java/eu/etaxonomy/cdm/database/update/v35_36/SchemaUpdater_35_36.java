@@ -64,7 +64,7 @@ public class SchemaUpdater_35_36 extends SchemaUpdaterBase {
 		String columnTypes[];
 //		boolean includeCdmBaseAttributes = false;
 
-		List<ISchemaUpdaterStep> stepList = new ArrayList<ISchemaUpdaterStep>();
+		List<ISchemaUpdaterStep> stepList = new ArrayList<>();
 
         //#4843
         //Allow NULL for DefinedTermBase_SupportedCategoricalEnumeration
