@@ -163,7 +163,7 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<FeatureNode, 
         if(parent!=null){
             result.addUpdatedObject(parent);
         }
-        result.setCdmEntity(targetNode.getFeatureTree());
+        result.setCdmEntity(movedNode);
         return result;
     }
 
