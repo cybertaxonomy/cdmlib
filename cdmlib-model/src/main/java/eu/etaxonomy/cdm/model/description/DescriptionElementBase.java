@@ -90,7 +90,8 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
     "modifiers",
     "modifyingText",
     "media",
-    "sources"
+    "sources",
+    "sortIndex"
 })
 @Entity
 @Audited
