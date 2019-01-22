@@ -95,12 +95,13 @@ public class CdmPreferenceTest {
 			Assert.fail("Currently null values are allowed in preferences");
 
 		}
-		try {
-			prefs = new CdmPreference(subject, predicate, veryLongText1200);
-			Assert.fail("Value must not be longer then 1023");
-		} catch (Exception e) {
-			//ok
-		}
+		//commented as we allow >65k length now
+//		try {
+//			prefs = new CdmPreference(subject, predicate, veryLongText1200);
+//			Assert.fail("Value must not be longer then 1023");
+//		} catch (Exception e) {
+//			//ok
+//		}
 	}
 
     @Test
