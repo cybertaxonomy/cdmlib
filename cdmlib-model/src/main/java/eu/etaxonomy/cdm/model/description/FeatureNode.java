@@ -289,7 +289,9 @@ public class FeatureNode extends VersionableEntity
 		}
 		child.setSortIndex(index);
 	}
-	/**
+
+
+    /**
 	 * Removes the given feature node from the list of {@link #getChildNodes() children}
 	 * of <i>this</i> feature node.
 	 *
@@ -572,7 +574,7 @@ public class FeatureNode extends VersionableEntity
 		FeatureNode result;
 		try {
 			result = (FeatureNode)super.clone();
-			result.children = new ArrayList<FeatureNode>();
+			result.children = new ArrayList<>();
 			return result;
 		}catch (CloneNotSupportedException e) {
 			logger.warn("Object does not implement cloneable");

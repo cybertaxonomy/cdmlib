@@ -18,13 +18,13 @@ import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 public class FeatureTreeTest {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FeatureTreeTest.class);
-	
+
 	private FeatureTree testTree;
 	private FeatureNode node1;
 	private FeatureNode node2;
 	private FeatureNode node3;
 	private FeatureNode node4;
-	
+
 	@BeforeClass
 	public static void setUpBeforeClass() {
 		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
@@ -65,14 +65,14 @@ public class FeatureTreeTest {
 		FeatureNode node21 = FeatureNode.NewInstance();
 		node21.setFeature(Feature.ANATOMY());
 		node1.addChild(node21, 1);
-		
+
 		assertEquals(node1.getChildNodes().size(), 2);
 		assertEquals(node1.getChildNodes().get(1), node21);
-		
-		
+
+
 		assertEquals(node21.getParent(), node1);
-		
-		
+
+
 	}
 	@Test
 	public void testClone(){
@@ -91,6 +91,6 @@ public class FeatureTreeTest {
 		assertEquals(children.get(0).getChildAt(0).getFeature(), node3.getFeature());
 		assertNotSame(children.get(0).getChildAt(0), node3);
 	}
-	
-	
+
+
 }
