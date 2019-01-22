@@ -1,11 +1,11 @@
 "15db0cf7-7afc-4a86-a7d4-221c73b0c9ac",,"Taxon Relationship Type","Taxon Relationship Type","TRT","1"
-"d13fecdf-eb44-4dd7-9244-26679c05df1c",,"Taxonomically Included in","Taxonomically Included in","⊂","Taxonomically Includes","Taxonomically Includes","⊃",FALSE,TRUE
-"1ed87175-59dd-437e-959e-0d71583d8417",,"Misapplied Name for","Misapplied Name for","––","Has Misapplied Name","Has Misapplied Name","–",FALSE,FALSE
-"b59b4bd2-11ff-45d1-bae2-146efdeee206",,"Pro parte Misapplied Name for","Pro parte Misapplied Name for","––(p.p.)","Has pro parte misapplied name","Has pro parte misapplied name","-(p.p.)",FALSE,FALSE
-"859fb615-b0e8-440b-866e-8a19f493cd36",,"Partial Misapplied Name for","Partial Misapplied Name for","––(part.)","Has partial misapplied name","Has partial misapplied name","-(part.)",FALSE,FALSE
-"605b1d01-f2b1-4544-b2e0-6f08def3d6ed",,"Invalid Designation for","Invalid Designation for","–","Has Invalid Designation","Has Invalid Designation",,FALSE,FALSE
-"8a896603-0fa3-44c6-9cd7-df2d8792e577",,"Pro parte synonym for","Pro parte synonym for","⊃p.p.","Has pro parte synonym","Has pro parte synonym","p.p.",FALSE,FALSE
-"9d7a5e56-973c-474c-b6c3-a1cb00833a3c",,"Partial synonym for","Partial synonym for","⊃part.","Has partial synonym","Has partial synonym","part.",FALSE,FALSE
+"d13fecdf-eb44-4dd7-9244-26679c05df1c",,"is taxonomically included in","is taxonomically included in","⊂","taxonomically includes","taxonomically includes","⊃",FALSE,TRUE
+"1ed87175-59dd-437e-959e-0d71583d8417",,"is misapplied name for","is misapplied name for","––","has misapplied name","has misapplied name","–",FALSE,FALSE
+"b59b4bd2-11ff-45d1-bae2-146efdeee206",,"is pro parte misapplied name for","is pro parte misapplied name for","––(p.p.)","has pro parte misapplied name","has pro parte misapplied name","-(p.p.)",FALSE,FALSE
+"859fb615-b0e8-440b-866e-8a19f493cd36",,"is partial misapplied name for","is partial misapplied name for","––(part.)","has partial misapplied name","has partial misapplied name","-(part.)",FALSE,FALSE
+"605b1d01-f2b1-4544-b2e0-6f08def3d6ed",,"is invalid designation for","is invalid designation for","–","has invalid designation","has invalid designation",,FALSE,FALSE
+"8a896603-0fa3-44c6-9cd7-df2d8792e577",,"is pro parte synonym for","is pro parte synonym for","⊃p.p.","has pro parte synonym","has pro parte synonym","p.p.",FALSE,FALSE
+"9d7a5e56-973c-474c-b6c3-a1cb00833a3c",,"is partial synonym for","is partial synonym for","⊃part.","has partial synonym","has partial synonym","part.",FALSE,FALSE
 "a8f03491-2ad6-4fae-a04c-2a4c117a2e9b",,"Contradiction","Contradiction","∅","Contradiction","Contradiction","∅",TRUE,FALSE
 "60974c98-64ab-4574-bb5c-c110f6db634d",,"Congruent to","Congruent to","≜","Congruent to","Congruent to","≜",TRUE,FALSE
 "0501c385-cab1-4fbe-b945-fc747419bb13",,"Includes","Includes","⊃","Included in","Included in","⊂",FALSE,TRUE
@@ -31,4 +31,4 @@
 "6c16c33b-cfc5-4a00-92bd-a9f9e448f389",,"Not Congruent to","Not Congruent to","⊂⊃⊕!","Not Congruent to","Not Congruent to","⊂⊃⊕!",TRUE,FALSE
 "831fcd88-e5c9-49e0-b06e-bbb67d1c05c9",,"All Relationships","All Relationships","≜⊂⊃⊕!","All Relationships","All Relationships","≜⊂⊃⊕!",TRUE,FALSE
 "4c48ba25-c1d0-4bdd-9260-c1fa2e42a5d3",,"Unclear","Unclear","??","Unclear","Unclear","??",TRUE,FALSE
-"8d47e59a-790d-428f-8060-01d443519166",,"Not yet worked on","Not yet worked on","⌛","Unclear","Unclear","⌛",TRUE,FALSE
+"8d47e59a-790d-428f-8060-01d443519166",,"Not yet worked on","Not yet worked on","⌛","Not yet worked on","Not yet worked on","⌛",TRUE,FALSE
