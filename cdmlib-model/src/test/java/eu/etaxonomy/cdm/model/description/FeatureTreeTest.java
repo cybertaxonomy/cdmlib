@@ -59,7 +59,7 @@ public class FeatureTreeTest {
 	@Test
 	public void testAddChild(){
 		FeatureNode node21 = FeatureNode.NewInstance();
-		node21.setFeature(Feature.ANATOMY());
+		node21.setTerm(Feature.ANATOMY());
 		node1.addChild(node21, 1);
 
 		assertEquals(node1.getChildNodes().size(), 2);
@@ -73,10 +73,10 @@ public class FeatureTreeTest {
 	@Test
 	public void testClone(){
 		FeatureNode node21 = FeatureNode.NewInstance();
-		node21.setFeature(Feature.ADDITIONAL_PUBLICATION());
+		node21.setTerm(Feature.ADDITIONAL_PUBLICATION());
 		node1.addChild(node21, 1);
 		FeatureTree clone = (FeatureTree) testTree.clone();
-		assertEquals (clone.getRoot().getFeature(), testTree.getRoot().getFeature());
+		assertEquals (clone.getRoot().getTerm(), testTree.getRoot().getTerm());
 		assertNotSame(clone.getRoot(), testTree.getRoot());
 		List<FeatureNode> children = clone.getRootChildren();
 
@@ -87,9 +87,9 @@ public class FeatureTreeTest {
 
 		assertEquals(children.get(0).getTerm(), node2.getTerm());
 		assertNotSame(children.get(0), node2);
-		assertEquals(children.get(1).getFeature(), node21.getFeature());
+		assertEquals(children.get(1).getTerm(), node21.getTerm());
 		assertNotSame(children.get(1), node21);
-		assertEquals(children.get(0).getChildAt(0).getFeature(), node3.getFeature());
+		assertEquals(children.get(0).getChildAt(0).getTerm(), node3.getTerm());
 		assertNotSame(children.get(0).getChildAt(0), node3);
 	}
 

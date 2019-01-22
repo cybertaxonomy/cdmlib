@@ -15,13 +15,16 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -30,10 +33,13 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.model.common.IHasTermType;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 /**
@@ -59,15 +65,20 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "FeatureTree", propOrder = {
     "root",
-    "representations",
-    "allowDuplicates"
+    "termType",
+    "allowDuplicates",
+    "representations"
+
 })
 @XmlRootElement(name = "FeatureTree")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
 //@Indexed(index = "eu.etaxonomy.cdm.model.description.FeatureTree")
 @Audited
-public class FeatureTree extends IdentifiableEntity<IIdentifiableEntityCacheStrategy> implements Cloneable{
+public class FeatureTree
+            extends IdentifiableEntity<IIdentifiableEntityCacheStrategy>
+            implements IHasTermType, Cloneable{
+
 	private static final long serialVersionUID = -6713834139003172735L;
 	private static final Logger logger = Logger.getLogger(FeatureTree.class);
 
@@ -76,6 +87,17 @@ public class FeatureTree extends IdentifiableEntity<IIdentifiableEntityCacheStra
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private FeatureNode root;
 
+    /**
+     * The {@link TermType type} of this term collection. All nodes in the graph must refer to a term of the same type.
+     */
+    @XmlAttribute(name ="TermType")
+    @Column(name="termType")
+    @NotNull
+    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
+        parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.common.TermType")}
+    )
+    @Audited
+    private TermType termType;
 
     // TODO needed? FeatureTree was a TermBase until v3.3 but was removed from
 	//it as TermBase got the termType which does not apply to FeatureTree.
@@ -98,6 +120,14 @@ public class FeatureTree extends IdentifiableEntity<IIdentifiableEntityCacheStra
 
 //******************** FACTORY METHODS ******************************************/
 
+    /**
+     * Creates a new term collection instance for the given term type
+     * with an empty {@link #getRoot() root node}.
+     * @param termType the {@link TermType term type}, must not be null
+     */
+    public static FeatureTree NewInstance(@NotNull TermType termType){
+        return new FeatureTree(termType);
+    }
 
     /**
 	 * Creates a new feature tree instance with an empty {@link #getRoot() root node}.
@@ -106,7 +136,7 @@ public class FeatureTree extends IdentifiableEntity<IIdentifiableEntityCacheStra
 	 * @see #NewInstance(List)
 	 */
 	public static FeatureTree NewInstance(){
-		return new FeatureTree();
+		return new FeatureTree(TermType.Feature);
 	}
 
 	/**
@@ -119,7 +149,7 @@ public class FeatureTree extends IdentifiableEntity<IIdentifiableEntityCacheStra
 	 * @see 			#NewInstance(List)
 	 */
 	public static FeatureTree NewInstance(UUID uuid){
-		FeatureTree result =  new FeatureTree();
+		FeatureTree result =  new FeatureTree(TermType.Feature);
 		result.setUuid(uuid);
 		return result;
 	}
@@ -136,7 +166,7 @@ public class FeatureTree extends IdentifiableEntity<IIdentifiableEntityCacheStra
 	 * @see 				#NewInstance(UUID)
 	 */
 	public static FeatureTree NewInstance(List<Feature> featureList){
-		FeatureTree result =  new FeatureTree();
+		FeatureTree result =  new FeatureTree(TermType.Feature);
 		FeatureNode root = result.getRoot();
 
 		for (Feature feature : featureList){
@@ -150,19 +180,28 @@ public class FeatureTree extends IdentifiableEntity<IIdentifiableEntityCacheStra
 
 // ******************** CONSTRUCTOR *************************************/
 
+    //for JAXB only, TODO needed?
+    @Deprecated
+    protected FeatureTree(){}
+
 	/**
 	 * Class constructor: creates a new feature tree instance with an empty
 	 * {@link #getRoot() root node}.
 	 */
-	protected FeatureTree() {
-		super();
-		root = FeatureNode.NewInstance();
+	protected FeatureTree(TermType termType) {
+        this.termType = termType;
+        checkTermType(this);
+		root = FeatureNode.NewInstance(termType);
 		root.setFeatureTree(this);
 	}
 
 // ****************** GETTER / SETTER **********************************/
 
-	/**
+	@Override
+    public TermType getTermType() {
+        return termType;
+    }
+    /**
 	 * Returns the topmost {@link FeatureNode feature node} (root node) of <i>this</i>
 	 * feature tree. The root node does not have any parent. Since feature nodes
 	 * recursively point to their child nodes the complete feature tree is
@@ -197,6 +236,15 @@ public class FeatureTree extends IdentifiableEntity<IIdentifiableEntityCacheStra
     }
     public void setAllowDuplicates(boolean allowDuplicates) {
         this.allowDuplicates = allowDuplicates;
+    }
+
+    /**
+     * Throws {@link IllegalArgumentException} if the given
+     * term has not the same term type as this term or if term type is null.
+     * @param term
+     */
+    private void checkTermType(IHasTermType term) {
+        IHasTermType.checkTermTypes(term, this);
     }
 
 //******************** METHODS ***********************************************/
@@ -242,5 +290,6 @@ public class FeatureTree extends IdentifiableEntity<IIdentifiableEntityCacheStra
 		return result;
 
 	}
+
 
 }
