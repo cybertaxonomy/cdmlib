@@ -120,6 +120,13 @@ public class SchemaUpdater_50_55 extends SchemaUpdaterBase {
         //8006
         updateTaxonRelationshipLabels(stepList);
 
+        //#7372
+        stepName = "Add allowDuplicates to feature tree";
+        tableName = "FeatureTree";
+        newColumnName = "allowDuplicates";
+        step = ColumnAdder.NewBooleanInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
+        stepList.add(step);
+
         return stepList;
 
 	}
