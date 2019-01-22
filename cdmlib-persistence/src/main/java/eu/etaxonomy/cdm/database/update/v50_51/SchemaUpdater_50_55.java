@@ -114,13 +114,65 @@ public class SchemaUpdater_50_55 extends SchemaUpdaterBase {
         step = ColumnTypeChanger.NewStringSizeInstance(stepName, tableName, columnName, 36, !INCLUDE_AUDIT);
         stepList.add(step);
 
+        //7514 change symbols for pro parte synonyms and misapplied name relationship types
+        updateConceptRelationshipSymbols(stepList);
 
         return stepList;
 
 	}
 
 
-	//7857 update name realtionships
+	//7514
+    private void updateConceptRelationshipSymbols(List<ISchemaUpdaterStep> stepList) {
+
+        //Update misapplied name symbols
+        String stepName = "Update misapplied name symbols";
+        String query = "UPDATE @@DefinedTermBase@@ "
+                + " SET symbol='––' , inverseSymbol = '-' "
+                + " WHERE uuid = '1ed87175-59dd-437e-959e-0d71583d8417' ";
+        String tableName = "DefinedTermBase";
+        ISchemaUpdaterStep step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, tableName, -99);
+        stepList.add(step);
+
+        //Update pro parte misapplied name symbols
+        stepName = "Update pro parte misapplied name symbols";
+        query = "UPDATE @@DefinedTermBase@@ "
+                + " SET symbol='––(p.p.)' , inverseSymbol = '-(p.p.)' "
+                + " WHERE uuid = 'b59b4bd2-11ff-45d1-bae2-146efdeee206' ";
+        tableName = "DefinedTermBase";
+        step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, tableName, -99);
+        stepList.add(step);
+
+        //Update partial misapplied name symbols
+        stepName = "Update partial misapplied name symbols";
+        query = "UPDATE @@DefinedTermBase@@ "
+                + " SET symbol='––(part.)' , inverseSymbol = '-(part.)' "
+                + " WHERE uuid = '859fb615-b0e8-440b-866e-8a19f493cd36' ";
+        tableName = "DefinedTermBase";
+        step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, tableName, -99);
+        stepList.add(step);
+
+        //Update pro parte synonym symbols
+        stepName = "Update pro parte synonym symbols";
+        query = "UPDATE @@DefinedTermBase@@ "
+                + " SET symbol='⊃p.p.' , inverseSymbol = 'p.p.' "
+                + " WHERE uuid = '8a896603-0fa3-44c6-9cd7-df2d8792e577' ";
+        tableName = "DefinedTermBase";
+        step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, tableName, -99);
+        stepList.add(step);
+
+        //Update partial synonym symbols
+        stepName = "Update partial synonym symbols";
+        query = "UPDATE @@DefinedTermBase@@ "
+                + " SET symbol='⊃part.' , inverseSymbol = 'part.' "
+                + " WHERE uuid = '9d7a5e56-973c-474c-b6c3-a1cb00833a3c' ";
+        tableName = "DefinedTermBase";
+        step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, tableName, -99);
+        stepList.add(step);
+
+    }
+
+    //7857 update name realtionships
     private void updateNameRelationships(List<ISchemaUpdaterStep> stepList) {
 
         //7857 Update symmetrical for name relationships
