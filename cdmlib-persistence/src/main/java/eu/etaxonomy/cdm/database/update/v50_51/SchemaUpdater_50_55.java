@@ -117,9 +117,133 @@ public class SchemaUpdater_50_55 extends SchemaUpdaterBase {
         //7514 change symbols for pro parte synonyms and misapplied name relationship types
         updateConceptRelationshipSymbols(stepList);
 
+        //8006
+        updateTaxonRelationshipLabels(stepList);
+
         return stepList;
 
 	}
+
+    //8006 update taxon realtionships
+    private void updateTaxonRelationshipLabels(List<ISchemaUpdaterStep> stepList) {
+
+//        //7857 Update symmetrical for name relationships
+//        String stepName = "Update symmetrical for name relationships";
+//        String query = "UPDATE @@DefinedTermBase@@ "
+//                + " SET symmetrical=0 "
+//                + " WHERE uuid IN ('049c6358-1094-4765-9fae-c9972a0e7780', '6e23ad45-3f2a-462b-ad87-d2389cd6e26c', "
+//                + " 'c6f9afcb-8287-4a2b-a6f6-4da3a073d5de', 'eeaea868-c4c1-497f-b9fe-52c9fc4aca53') ";
+//        String tableName = "DefinedTermBase";
+//        ISchemaUpdaterStep step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, tableName, -99);
+//        stepList.add(step);
+
+        //Taxonomically Included in
+        String stepName = "Taxonomically Included in => is taxonomically included in";
+        UUID uuidTerm = UUID.fromString("d13fecdf-eb44-4dd7-9244-26679c05df1c");
+        UUID uuidLanguage = UUID.fromString("e9f8cdb7-6819-44e8-95d3-e2d0690c3523");
+        String label = "is taxonomically included in";
+        ISchemaUpdaterStep step = TermRepresentationUpdater.NewInstanceWithTitleCache(stepName, uuidTerm,
+                label, label, null, uuidLanguage);
+        stepList.add(step);
+
+        stepName = "taxonomically includes => taxonomically includes";
+        label = "taxonomically includes";
+        step = TermRepresentationUpdater.NewReverseInstance(stepName, uuidTerm,
+                label, label, null, uuidLanguage);
+        stepList.add(step);
+
+        //Misapplied Name for
+        stepName = "Misapplied Name for => is misapplied name for";
+        uuidTerm = UUID.fromString("1ed87175-59dd-437e-959e-0d71583d8417");
+        label = "is misapplied name for";
+        step = TermRepresentationUpdater.NewInstanceWithTitleCache(stepName, uuidTerm,
+                label, label, null, uuidLanguage);
+        stepList.add(step);
+
+        stepName = "Has Misapplied Name => has misapplied name";
+        label = "has misapplied name";
+        step = TermRepresentationUpdater.NewReverseInstance(stepName, uuidTerm,
+                label, label, null, uuidLanguage);
+        stepList.add(step);
+
+        //Pro parte Misapplied Name for
+        stepName = "Pro parte Misapplied Name for => is pro parte misapplied name for";
+        uuidTerm = UUID.fromString("b59b4bd2-11ff-45d1-bae2-146efdeee206");
+        label = "is pro parte misapplied name for";
+        step = TermRepresentationUpdater.NewInstanceWithTitleCache(stepName, uuidTerm,
+                label, label, null, uuidLanguage);
+        stepList.add(step);
+
+        stepName = "Has Pro parte Misapplied Name => has pro parte misapplied name";
+        label = "has pro parte misapplied name";
+        step = TermRepresentationUpdater.NewReverseInstance(stepName, uuidTerm,
+                label, label, null, uuidLanguage);
+        stepList.add(step);
+
+        //Partial Misapplied Name for
+        stepName = "Partial Misapplied Name for => is partial misapplied name for";
+        uuidTerm = UUID.fromString("859fb615-b0e8-440b-866e-8a19f493cd36");
+        label = "is partial misapplied name for";
+        step = TermRepresentationUpdater.NewInstanceWithTitleCache(stepName, uuidTerm,
+                label, label, null, uuidLanguage);
+        stepList.add(step);
+
+        stepName = "Has Partial Misapplied Name => has partial misapplied name";
+        label = "has partial misapplied name";
+        step = TermRepresentationUpdater.NewReverseInstance(stepName, uuidTerm,
+                label, label, null, uuidLanguage);
+        stepList.add(step);
+
+        //Pro parte Synonym for
+        stepName = "Pro parte Synonym for => is pro parte synonym for";
+        uuidTerm = UUID.fromString("8a896603-0fa3-44c6-9cd7-df2d8792e577");
+        label = "is pro parte synonym for";
+        step = TermRepresentationUpdater.NewInstanceWithTitleCache(stepName, uuidTerm,
+                label, label, null, uuidLanguage);
+        stepList.add(step);
+
+        stepName = "Has Pro parte Synonym => has pro parte synonym";
+        label = "has pro parte synonym";
+        step = TermRepresentationUpdater.NewReverseInstance(stepName, uuidTerm,
+                label, label, null, uuidLanguage);
+        stepList.add(step);
+
+        //Partial Synonym for
+        stepName = "Partial Synonym for => is partial synonym for";
+        uuidTerm = UUID.fromString("9d7a5e56-973c-474c-b6c3-a1cb00833a3c");
+        label = "is partial synonym for";
+        step = TermRepresentationUpdater.NewInstanceWithTitleCache(stepName, uuidTerm,
+                label, label, null, uuidLanguage);
+        stepList.add(step);
+
+        stepName = "Has Partial Synonym => has partial synonym";
+        label = "has partial synonym";
+        step = TermRepresentationUpdater.NewReverseInstance(stepName, uuidTerm,
+                label, label, null, uuidLanguage);
+        stepList.add(step);
+
+        //Invalid Designation for
+        stepName = "Invalid Designation for => is invalid designation for";
+        uuidTerm = UUID.fromString("605b1d01-f2b1-4544-b2e0-6f08def3d6ed");
+        label = "is invalid designation for";
+        step = TermRepresentationUpdater.NewInstanceWithTitleCache(stepName, uuidTerm,
+                label, label, null, uuidLanguage);
+        stepList.add(step);
+
+        stepName = "Has Invalid Designation => has invalid designation";
+        label = "has invalid designation";
+        step = TermRepresentationUpdater.NewReverseInstance(stepName, uuidTerm,
+                label, label, null, uuidLanguage);
+        stepList.add(step);
+
+        //Not yet worked on
+        stepName = "Unclear => Not yet worked on";
+        label = "Not yet worked on";
+        uuidTerm = UUID.fromString("8d47e59a-790d-428f-8060-01d443519166");
+        step = TermRepresentationUpdater.NewReverseInstance(stepName, uuidTerm,
+                label, label, null, uuidLanguage);
+        stepList.add(step);
+    }
 
 
 	//7514
