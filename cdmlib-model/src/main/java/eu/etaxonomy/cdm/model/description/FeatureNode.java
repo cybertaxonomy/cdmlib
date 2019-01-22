@@ -27,8 +27,10 @@ import javax.persistence.OrderBy;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
@@ -39,10 +41,15 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
+import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.IHasTermType;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
 /**
@@ -61,6 +68,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "FeatureNode", propOrder = {
 		"featureTree",
+		"termType",
 		"feature",
 		"parent",
 		"treeIndex",
@@ -74,7 +82,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 @Audited
 @Table(name="FeatureNode", indexes = { @Index(name = "featureNodeTreeIndex", columnList = "treeIndex") })
 public class FeatureNode extends VersionableEntity
-            implements ITreeNode<FeatureNode>, Cloneable {
+            implements ITreeNode<FeatureNode>, IHasTermType, Cloneable {
 	private static final Logger logger = Logger.getLogger(FeatureNode.class);
 
     //This is the main key a node belongs to. Although other keys may also reference
@@ -88,11 +96,25 @@ public class FeatureNode extends VersionableEntity
 //    @NotNull
 	private FeatureTree featureTree;
 
-	@XmlElement(name = "Feature")
+    /**
+     * The {@link TermType type} of this term node.
+     * Must be the same type as for the {@link FeatureTree term collection}
+     * this node belongs to and as the term type of the term this node links to.
+     */
+    @XmlAttribute(name ="TermType")
+    @Column(name="termType")
+    @NotNull
+    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
+        parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.common.TermType")}
+    )
+    @Audited
+    private TermType termType;
+
+    @XmlElement(name = "Feature")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-	private Feature feature;
+	private DefinedTermBase feature;
 
     @XmlElement(name = "Parent")
     @XmlIDREF
@@ -140,12 +162,21 @@ public class FeatureNode extends VersionableEntity
 // ***************************** FACTORY *********************************/
 
 	/**
+     * Creates a new empty term node instance.
+     *
+     * @see #NewInstance(Feature)
+     */
+    public static FeatureNode NewInstance(TermType termType){
+        return new FeatureNode(termType);
+    }
+
+	/**
 	 * Creates a new empty feature node instance.
 	 *
 	 * @see #NewInstance(Feature)
 	 */
 	public static FeatureNode NewInstance(){
-		return new FeatureNode();
+		return new FeatureNode(TermType.Feature);
 	}
 
 	/**
@@ -156,21 +187,29 @@ public class FeatureNode extends VersionableEntity
 	 * @see 			#NewInstance()
 	 */
 	public static FeatureNode NewInstance(Feature feature){
-		FeatureNode result = new FeatureNode();
-		result.setFeature(feature);
+		FeatureNode result = new FeatureNode(TermType.Feature);
+		result.setTerm(feature);
 		return result;
 	}
 
 // ******************** CONSTRUCTOR ***************************************/
 
+	//TODO needed?
+    @Deprecated
+    protected FeatureNode(){}
 
 	/**
 	 * Class constructor: creates a new empty feature node instance.
 	 */
-	protected FeatureNode() {
-		super();
+	protected FeatureNode(TermType termType) {
+	    this.termType = termType;
+	    IHasTermType.checkTermTypeNull(this);
 	}
 
+    @Override
+    public TermType getTermType() {
+        return termType;
+    }
 
 //*************************** TREE ************************************/
 
@@ -179,7 +218,8 @@ public class FeatureNode extends VersionableEntity
 	}
 
 	protected void setFeatureTree(FeatureTree featureTree) {
-		this.featureTree = featureTree;
+		checkTermType(featureTree);
+	    this.featureTree = featureTree;
 	}
 
 //** ********************** FEATURE ******************************/
@@ -187,15 +227,32 @@ public class FeatureNode extends VersionableEntity
 	/**
 	 * Returns the {@link Feature feature} <i>this</i> feature node is based on.
 	 */
+	@Deprecated
 	public Feature getFeature() {
-		return feature;
+		return CdmBase.deproxy(feature, Feature.class);
 	}
 	/**
 	 * @see	#getFeature()
 	 */
+	@Deprecated
 	public void setFeature(Feature feature) {
+	    checkTermType(feature);
 		this.feature = feature;
 	}
+
+	   /**
+     * Returns the {@link Feature feature} <i>this</i> feature node is based on.
+     */
+    public DefinedTermBase getTerm() {
+        return feature;
+    }
+    /**
+     * @see #getFeature()
+     */
+    public void setTerm(DefinedTermBase term) {
+        checkTermType(term);
+        this.feature = term;
+    }
 
 //** ********************** PARENT ******************************/
 
@@ -217,7 +274,8 @@ public class FeatureNode extends VersionableEntity
 	 * @see				#getParent()
 	 */
 	protected void setParent(FeatureNode parent) {
-		this.parent = parent;
+		checkTermType(parent);
+	    this.parent = parent;
 	}
 
 //** ********************** CHILDREN ******************************/
@@ -273,6 +331,7 @@ public class FeatureNode extends VersionableEntity
 	 * @see				#removeChild(int)
 	 */
 	public void addChild(FeatureNode child, int index){
+	    checkTermType(child);
 	    List<FeatureNode> children = this.getChildNodes();
 		if (index < 0 || index > children.size() + 1){
 			throw new IndexOutOfBoundsException("Wrong index: " + index);
@@ -519,6 +578,15 @@ public class FeatureNode extends VersionableEntity
 //		}
 //		return null;
 //	}
+
+	/**
+     * Throws {@link IllegalArgumentException} if the given
+     * term has not the same term type as this term or if term type is null.
+     * @param term
+     */
+    private void checkTermType(IHasTermType term) {
+        IHasTermType.checkTermTypes(term, this);
+    }
 
 	/**
 	 * Returns all features that are contained in this node or a child node

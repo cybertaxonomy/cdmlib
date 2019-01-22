@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TermRepresentationUpdater;
 import eu.etaxonomy.cdm.database.update.v47_50.SchemaUpdater_47_50;
+import eu.etaxonomy.cdm.model.common.TermType;
 
 /**
 /**
@@ -126,6 +127,23 @@ public class SchemaUpdater_50_55 extends SchemaUpdaterBase {
         newColumnName = "allowDuplicates";
         step = ColumnAdder.NewBooleanInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
         stepList.add(step);
+
+        //#6794 add term type to feature tree
+        stepName = "Add termType to feature tree";
+        tableName = "FeatureTree";
+        newColumnName = "termType";
+        step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, 255, TermType.Feature.getKey(), INCLUDE_AUDIT)
+                .setNotNull(NOT_NULL);
+        stepList.add(step);
+
+        //#6794 add term type to feature node
+        stepName = "Add termType to feature node";
+        tableName = "FeatureNode";
+        newColumnName = "termType";
+        step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, 255, TermType.Feature.getKey(), INCLUDE_AUDIT)
+                .setNotNull(NOT_NULL);
+        stepList.add(step);
+
 
         return stepList;
 
