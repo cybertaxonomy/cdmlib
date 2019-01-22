@@ -3,7 +3,6 @@ package eu.etaxonomy.cdm.model.description;
 
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 
 import java.util.List;
@@ -37,29 +36,26 @@ public class FeatureTreeTest {
 	@Before
 	public void setUp() throws Exception {
 		testTree = FeatureTree.NewInstance();
-		node1 = FeatureNode.NewInstance();
-		node1.setFeature(Feature.ANATOMY());
-		node2 = FeatureNode.NewInstance();
-		node2.setFeature(Feature.BIOLOGY_ECOLOGY());
-		node3 = FeatureNode.NewInstance();
-		node3.setFeature(Feature.DESCRIPTION());
-		node4 = FeatureNode.NewInstance();
-		node4.setFeature(Feature.DISCUSSION());
-		
-		testTree.setRoot(node1);
+
+		node1 = FeatureNode.NewInstance(Feature.ANATOMY());
+		node2 = FeatureNode.NewInstance(Feature.BIOLOGY_ECOLOGY());
+		node3 = FeatureNode.NewInstance(Feature.DESCRIPTION());
+		node4 = FeatureNode.NewInstance(Feature.DISCUSSION());
+
+		testTree.getRoot().addChild(node1);
 		node1.addChild(node2);
 		node2.addChild(node3);
 		node3.addChild(node4);
-		
-		
-		
+
+
+
 	}
-	@Test
-	public void testSetRoot(){
-		testTree.setRoot(node2);
-		assertNotNull(testTree.getRoot());
-		assertEquals(testTree.getRoot(), node2);
-	}
+//	@Test
+//	public void testSetRoot(){
+//		testTree.setRoot(node2);
+//		assertNotNull(testTree.getRoot());
+//		assertEquals(testTree.getRoot(), node2);
+//	}
 	@Test
 	public void testAddChild(){
 		FeatureNode node21 = FeatureNode.NewInstance();
@@ -83,8 +79,13 @@ public class FeatureTreeTest {
 		assertEquals (clone.getRoot().getFeature(), testTree.getRoot().getFeature());
 		assertNotSame(clone.getRoot(), testTree.getRoot());
 		List<FeatureNode> children = clone.getRootChildren();
-		
-		assertEquals(children.get(0).getFeature(), node2.getFeature());
+
+
+		assertEquals(children.get(0).getTerm(), node1.getTerm());
+	    assertNotSame(children.get(0), node1);
+	    children = children.get(0).getChildNodes();
+
+		assertEquals(children.get(0).getTerm(), node2.getTerm());
 		assertNotSame(children.get(0), node2);
 		assertEquals(children.get(1).getFeature(), node21.getFeature());
 		assertNotSame(children.get(1), node21);

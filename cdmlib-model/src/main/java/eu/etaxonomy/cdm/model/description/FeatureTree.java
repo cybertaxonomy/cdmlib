@@ -171,12 +171,15 @@ public class FeatureTree extends IdentifiableEntity<IIdentifiableEntityCacheStra
 	public FeatureNode getRoot() {
 		return root;
 	}
-	/**
-	 * @see	#getRoot()
-	 */
-	public void setRoot(FeatureNode root) {
-		this.root = root;
-	}
+
+    /**
+     * @deprecated this method is only for internal use when deleting a {@link FeatureTree}
+     * from a database. It should never be called for other reasons.
+     */
+    @Deprecated
+    public void removeRootNode() {
+        this.root = null;
+    }
 
 	/**
 	 * Returns the (ordered) list of {@link FeatureNode feature nodes} which are immediate

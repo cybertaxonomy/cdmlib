@@ -124,11 +124,11 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree,
         DeleteResult result = new DeleteResult();
         FeatureTree tree = dao.load(featureTreeUuid);
 
-        FeatureNode rootNode = HibernateProxyHelper.deproxy(tree.getRoot(), FeatureNode.class);
+        FeatureNode rootNode = HibernateProxyHelper.deproxy(tree.getRoot());
         FeatureNodeDeletionConfigurator config = new FeatureNodeDeletionConfigurator();
         config.setChildHandling(ChildHandling.DELETE);
         result =featureNodeService.deleteFeatureNode(rootNode.getUuid(), config);
-        tree.setRoot(null);
+        tree.removeRootNode();
         if (result.isOk()){
           dao.delete(tree);
           result.addDeletedObject(tree);
