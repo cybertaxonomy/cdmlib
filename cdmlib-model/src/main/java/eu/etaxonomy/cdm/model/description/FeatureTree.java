@@ -59,7 +59,8 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "FeatureTree", propOrder = {
     "root",
-    "representations"
+    "representations",
+    "allowDuplicates"
 })
 @XmlRootElement(name = "FeatureTree")
 @Entity
@@ -92,6 +93,8 @@ public class FeatureTree extends IdentifiableEntity<IIdentifiableEntityCacheStra
 	private Set<Representation> getRepresentations() {return representations;}
     private void setRepresentations(Set<Representation> representations) {this.representations = representations;}
 
+    //#7372 indicates if this tree/graph allows duplicated terms/features
+    private boolean allowDuplicates = false;
 
 //******************** FACTORY METHODS ******************************************/
 
@@ -181,10 +184,19 @@ public class FeatureTree extends IdentifiableEntity<IIdentifiableEntityCacheStra
 	 */
 	@Transient
 	public List<FeatureNode> getRootChildren(){
-		List<FeatureNode> result = new ArrayList<FeatureNode>();
+		List<FeatureNode> result = new ArrayList<>();
 		result.addAll(root.getChildNodes());
 		return result;
 	}
+
+    public boolean isAllowDuplicates() {
+        return allowDuplicates;
+    }
+    public void setAllowDuplicates(boolean allowDuplicates) {
+        this.allowDuplicates = allowDuplicates;
+    }
+
+//******************** METHODS ***********************************************/
 
 	/**
 	 * Computes a set of distinct features that are present in this feature tree
@@ -227,4 +239,5 @@ public class FeatureTree extends IdentifiableEntity<IIdentifiableEntityCacheStra
 		return result;
 
 	}
+
 }
