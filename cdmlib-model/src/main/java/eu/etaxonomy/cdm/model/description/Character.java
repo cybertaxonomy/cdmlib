@@ -27,14 +27,11 @@ import eu.etaxonomy.cdm.model.common.Language;
 
 /**
  * A subclass of the Feature class that is meant for handling
- * Features/Characters for desriptions in the narrow sense of describing
+ * Features/Characters for descriptions in the narrow sense of describing
  * an object.
  *
  * @author a.mueller
  * @since 04.05.2017
- *
- * @deprecated This class is still experimental. It may be changed
- * or even deleted in future without notice.
  */
 
 @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -45,7 +42,6 @@ import eu.etaxonomy.cdm.model.common.Language;
 @XmlRootElement(name = "Feature")
 @Entity
 @Audited
-@Deprecated
 public class Character extends Feature {
 
     private static final long serialVersionUID = -5631282599057455256L;
