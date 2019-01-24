@@ -588,8 +588,8 @@ public class CsvNameExport extends CsvNameExportBase {
         }
         nameRecord.put("fullName", name.getNameCache());
         nameRecord.put("fullTitleCache",  name.getFullTitleCache());
-        Set<TypeDesignationBase> typeDesSet =  name.getTypeDesignations();
-        Iterator<TypeDesignationBase> it = typeDesSet.iterator();
+        Set<TypeDesignationBase<?>> typeDesSet =  name.getTypeDesignations();
+        Iterator<TypeDesignationBase<?>> it = typeDesSet.iterator();
         String typeNameString = NOT_DESIGNATED;
         String statusString = null;
         if (it.hasNext()){

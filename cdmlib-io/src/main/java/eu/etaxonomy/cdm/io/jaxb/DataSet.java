@@ -231,7 +231,7 @@ public class DataSet implements IExportData {
     	@XmlElement(name = "NameTypeDesignation", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = NameTypeDesignation.class),
     	@XmlElement(name = "SpecimenTypeDesignation", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = SpecimenTypeDesignation.class)
     })
-    protected List<TypeDesignationBase> typeDesignations = new ArrayList<>();
+    protected List<TypeDesignationBase<?>> typeDesignations = new ArrayList<>();
 
     @XmlElementWrapper(name = "TaxonomicNames")
     @XmlElements({
@@ -702,7 +702,7 @@ public class DataSet implements IExportData {
      *     {@link List<TypeDesignationBase> }
      *
      */
-    public List<TypeDesignationBase> getTypeDesignations() {
+    public List<TypeDesignationBase<?>> getTypeDesignations() {
     	return typeDesignations;
     }
 
@@ -714,7 +714,7 @@ public class DataSet implements IExportData {
      *     {@link List<TypeDesignationBase> }
      *
      */
-	public void addTypeDesignations(List<TypeDesignationBase> typeDesignations) {
+	public void addTypeDesignations(List<TypeDesignationBase<?>> typeDesignations) {
 		this.typeDesignations.addAll(typeDesignations);
 	}
 

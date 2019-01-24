@@ -70,6 +70,11 @@ public class SpecimenTypeDesignation
 	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private DerivedUnit typeSpecimen;
 
+
+    public static SpecimenTypeDesignation NewInstance() {
+        return new SpecimenTypeDesignation();
+    }
+
 //	/**
 //	 * Creates a new specimen type designation instance
 //	 * (including its {@link reference.Reference reference source} and eventually
@@ -93,8 +98,7 @@ public class SpecimenTypeDesignation
 //		return specTypeDesig;
 //	}
 
-
-	// ************* CONSTRUCTORS *************/
+// ************* CONSTRUCTORS *************/
 	/**
 	 * Class constructor: creates a new empty specimen type designation.
 	 *
@@ -104,9 +108,6 @@ public class SpecimenTypeDesignation
 	protected SpecimenTypeDesignation(){
 	}
 
-	public static SpecimenTypeDesignation NewInstance() {
-		return new SpecimenTypeDesignation();
-	}
 
 	/**
 	 * Class constructor: creates a new specimen type designation instance
@@ -137,12 +138,8 @@ public class SpecimenTypeDesignation
 		this.setTypeStatus(status);
 	}
 
-	//********* METHODS **************************************/
+//********* METHODS **************************************/
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.name.TypeDesignationBase#removeType()
-	 */
 	@Override
 	public void removeType() {
 		this.setTypeSpecimen(null);

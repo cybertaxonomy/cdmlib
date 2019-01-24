@@ -95,9 +95,9 @@ public abstract class DwcaDataExportBase extends DwcaExportBase{
         return result;
     }
 
-    protected String getSources2(Set<DescriptionElementSource> set, DwcaTaxExportConfigurator config) {
+    protected String getSources2(Set<DescriptionElementSource> sources, DwcaTaxExportConfigurator config) {
         String result = "";
-        for(DescriptionElementSource source: set){
+        for(DescriptionElementSource source: sources){
             if (StringUtils.isBlank(source.getIdInSource())){//idInSource indicates that this source is only data provenance, may be changed in future
                 if (source.getCitation() != null){
                     String ref = source.getCitation().getTitleCache();

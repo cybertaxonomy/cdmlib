@@ -92,9 +92,6 @@ public class NameTypeDesignationStatus extends TypeDesignationStatusBase<NameTyp
 
 //************************** METHODS ********************************
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
-	 */
 	@Override
 	public void resetTerms(){
 		termMap = null;
@@ -229,4 +226,5 @@ public class NameTypeDesignationStatus extends TypeDesignationStatusBase<NameTyp
 			return false;
 		}
 	}
+
 }

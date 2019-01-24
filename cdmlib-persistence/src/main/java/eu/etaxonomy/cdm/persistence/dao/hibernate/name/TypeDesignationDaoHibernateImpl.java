@@ -35,7 +35,7 @@ public class TypeDesignationDaoHibernateImpl<T extends TypeDesignationBase>
 
 	//TODO limit start
 	@Override
-    public List<TypeDesignationBase> getAllTypeDesignations(Integer limit, Integer start) {
+    public List<TypeDesignationBase<?>> getAllTypeDesignations(Integer limit, Integer start) {
 		Criteria crit = getSession().createCriteria(TypeDesignationBase.class);
 		if(limit != null){
 		    crit.setMaxResults(limit);
@@ -43,7 +43,8 @@ public class TypeDesignationDaoHibernateImpl<T extends TypeDesignationBase>
 		if(start != null){
 		    crit.setFirstResult(start);
 		}
-		List<TypeDesignationBase> results = crit.list();
+		@SuppressWarnings("unchecked")
+        List<TypeDesignationBase<?>> results = crit.list();
 		return results;
 	}
 
