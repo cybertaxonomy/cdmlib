@@ -221,4 +221,6 @@ public interface IDefinedTermDao extends IIdentifiableDao<DefinedTermBase>, ITit
      */
     public Collection<TermDto> getKindOfsAsDto(TermDto parentTerm);
 
+    public Collection<TermDto> findByTitleAsDto(String title);
+
 }

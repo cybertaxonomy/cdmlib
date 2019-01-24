@@ -236,4 +236,6 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
      */
     public TermDto addNewTerm(TermType termType, UUID parentUuid, boolean isKindOf);
 
+    public Collection<TermDto> findByTitleAsDto(String title);
+
 }

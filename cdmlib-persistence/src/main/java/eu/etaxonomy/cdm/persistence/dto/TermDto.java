@@ -41,14 +41,24 @@ public class TermDto extends AbstractTermDto{
     private String idInVocabulary = null;
     private Collection<TermDto> includes;
     private Collection<TermDto> generalizationOf;
+    private Set<Representation> vocRepresentations = null;
+    private String vocRepresentation_L10n = null;
+    private String vocRepresentation_L10n_abbreviatedLabel = null;
 
-    private TermDto(UUID uuid, Set<Representation> representations, UUID partOfUuid, UUID kindOfUuid, UUID vocabularyUuid, Integer orderIndex, String idInVocabulary) {
+    private TermDto(UUID uuid, Set<Representation> representations, UUID partOfUuid, UUID kindOfUuid,
+            UUID vocabularyUuid, Integer orderIndex, String idInVocabulary) {
+        this(uuid, representations, partOfUuid, kindOfUuid, vocabularyUuid, orderIndex, idInVocabulary, null);
+    }
+
+    private TermDto(UUID uuid, Set<Representation> representations, UUID partOfUuid, UUID kindOfUuid,
+            UUID vocabularyUuid, Integer orderIndex, String idInVocabulary, Set<Representation> vocRepresentations) {
         super(uuid, representations);
         this.partOfUuid = partOfUuid;
         this.kindOfUuid = kindOfUuid;
         this.vocabularyUuid = vocabularyUuid;
         this.orderIndex = orderIndex;
         this.idInVocabulary = idInVocabulary;
+        this.vocRepresentations = vocRepresentations;
     }
 
     static public TermDto fromTerm(DefinedTermBase term) {
@@ -85,6 +95,36 @@ public class TermDto extends AbstractTermDto{
             dto.setVocabularyDto(new TermVocabularyDto(vocabulary.getUuid(), vocabulary.getRepresentations()));
         }
         return dto;
+    }
+
+    @Override
+    public void localize(ITermRepresentation_L10n representation_L10n) {
+        if(vocRepresentations!=null){
+            representation_L10n.localize(vocRepresentations);
+            if (representation_L10n.getLabel() != null) {
+                setVocRepresentation_L10n(representation_L10n.getLabel());
+            }
+            if (representation_L10n.getAbbreviatedLabel() != null) {
+                setVocRepresentation_L10n_abbreviatedLabel(representation_L10n.getAbbreviatedLabel());
+            }
+        }
+        super.localize(representation_L10n);
+    }
+
+    public void setVocRepresentation_L10n(String vocRepresentation_L10n) {
+        this.vocRepresentation_L10n = vocRepresentation_L10n;
+    }
+
+    public String getVocRepresentation_L10n() {
+        return vocRepresentation_L10n;
+    }
+
+    public void setVocRepresentation_L10n_abbreviatedLabel(String vocRepresentation_L10n_abbreviatedLabel) {
+        this.vocRepresentation_L10n_abbreviatedLabel = vocRepresentation_L10n_abbreviatedLabel;
+    }
+
+    public String getVocRepresentation_L10n_abbreviatedLabel() {
+        return vocRepresentation_L10n_abbreviatedLabel;
     }
 
     public void setPartOfDto(TermDto partOfDto) {
@@ -165,12 +205,13 @@ public class TermDto extends AbstractTermDto{
 
     public static String getTermDtoSelect(String fromTable){
         return ""
-                + "select a.uuid, r, p.uuid, k.uuid, v.uuid, a.orderIndex, a.idInVocabulary "
+                + "select a.uuid, r, p.uuid, k.uuid, v.uuid, a.orderIndex, a.idInVocabulary, voc_rep "
                 + "from "+fromTable+" as a "
                 + "LEFT JOIN a.partOf as p "
                 + "LEFT JOIN a.kindOf as k "
                 + "LEFT JOIN a.representations AS r "
-                + "LEFT JOIN a.vocabulary as v ";
+                + "LEFT JOIN a.vocabulary as v "
+                + "LEFT JOIN v.representations as voc_rep ";
     }
 
     public static List<TermDto> termDtoListFrom(List<Object[]> results) {
@@ -187,7 +228,14 @@ public class TermDto extends AbstractTermDto{
                 } else {
                     representations = (Set<Representation>)elements[1];
                 }
-                dtoMap.put(uuid, new TermDto(uuid, representations, (UUID)elements[2], (UUID)elements[3], (UUID)elements[4], (Integer)elements[5], (String)elements[6]));
+                Set<Representation> vocRepresentations = new HashSet<>();
+                if(elements[7] instanceof Representation) {
+                    vocRepresentations = new HashSet<Representation>(7);
+                    vocRepresentations.add((Representation)elements[7]);
+                } else {
+                    vocRepresentations = (Set<Representation>)elements[7];
+                }
+                dtoMap.put(uuid, new TermDto(uuid, representations, (UUID)elements[2], (UUID)elements[3], (UUID)elements[4], (Integer)elements[5], (String)elements[6], vocRepresentations));
             }
         }
         return new ArrayList<>(dtoMap.values());
