@@ -451,7 +451,7 @@ public class TestCdmDbComparator {
 //		List<TaxonName> taxonNames = appCtr.getNameService().getAllNames(MAX_ROWS, 0);
 		//List<TaxonRelationship> taxonRelationships = appCtr.getTaxonService().getAllTaxonRelationships(MAX_ROWS, 0);
 		List<TermVocabulary> termVocabularies = appCtr.getVocabularyService().list(null,MAX_ROWS, 0,null,null);
-		List<TypeDesignationBase> typeDesignationBases = appCtr.getNameService().getAllTypeDesignations(MAX_ROWS, 0);
+		List<TypeDesignationBase<?>> typeDesignationBases = appCtr.getNameService().getAllTypeDesignations(MAX_ROWS, 0);
 
 		return tables;
 	}

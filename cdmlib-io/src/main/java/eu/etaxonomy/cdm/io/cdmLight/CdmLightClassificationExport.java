@@ -1321,12 +1321,12 @@ public class CdmLightClassificationExport
             }else{
                 csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_STRING)] = "";
             }
-            Set<TypeDesignationBase> typeDesigantionSet = group.getTypeDesignations();
-            List<TypeDesignationBase> designationList = new ArrayList<>();
+            Set<TypeDesignationBase<?>> typeDesigantionSet = group.getTypeDesignations();
+            List<TypeDesignationBase<?>> designationList = new ArrayList<>();
             designationList.addAll(typeDesigantionSet);
             Collections.sort(designationList, new TypeComparator());
             StringBuffer typeDesignationString = new StringBuffer();
-            List<TaggedText> list = new ArrayList<TaggedText>();
+            List<TaggedText> list = new ArrayList<>();
             if (!designationList.isEmpty()){
                 TypeDesignationSetManager manager = new TypeDesignationSetManager(group);
 

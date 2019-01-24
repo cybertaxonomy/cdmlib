@@ -193,7 +193,7 @@ public class NameServiceImpl
 
     @Override
     @Transactional
-    public DeleteResult deleteTypeDesignation(TaxonName name, TypeDesignationBase typeDesignation){
+    public DeleteResult deleteTypeDesignation(TaxonName name, TypeDesignationBase<?> typeDesignation){
     	if(typeDesignation != null && typeDesignation .isPersited()){
     		typeDesignation = HibernateProxyHelper.deproxy(referencedEntityDao.load(typeDesignation.getUuid()), TypeDesignationBase.class);
     	}
@@ -206,7 +206,7 @@ public class NameServiceImpl
             removeSingleDesignation(name, typeDesignation);
         }else if (name != null){
             @SuppressWarnings("rawtypes")
-            Set<TypeDesignationBase> designationSet = new HashSet<>(name.getTypeDesignations());
+            Set<TypeDesignationBase<?>> designationSet = new HashSet<>(name.getTypeDesignations());
             for (TypeDesignationBase<?> desig : designationSet){
                 desig = CdmBase.deproxy(desig);
                 removeSingleDesignation(name, desig);
@@ -238,7 +238,8 @@ public class NameServiceImpl
      * @param typeDesignation
      */
     @Transactional
-    private void removeSingleDesignation(TaxonName name, TypeDesignationBase typeDesignation) {
+    private void removeSingleDesignation(TaxonName name, TypeDesignationBase<?> typeDesignation) {
+
         name.removeTypeDesignation(typeDesignation);
         if (typeDesignation.getTypifiedNames().isEmpty()){
             typeDesignation.removeType();
@@ -249,6 +250,7 @@ public class NameServiceImpl
                     }
                 }
             }
+
             typeDesignationDao.delete(typeDesignation);
 
         }
@@ -398,7 +400,7 @@ public class NameServiceImpl
      */
     @Override
     @Transactional(readOnly = false)
-    public Map<UUID, TypeDesignationBase> saveTypeDesignationAll(Collection<TypeDesignationBase> typeDesignationCollection){
+    public Map<UUID, TypeDesignationBase<?>> saveTypeDesignationAll(Collection<TypeDesignationBase<?>> typeDesignationCollection){
         return typeDesignationDao.saveAll(typeDesignationCollection);
     }
 
@@ -426,17 +428,17 @@ public class NameServiceImpl
      * new name getTypeDesignations
      */
     @Override
-    public List<TypeDesignationBase> getAllTypeDesignations(int limit, int start){
+    public List<TypeDesignationBase<?>> getAllTypeDesignations(int limit, int start){
         return typeDesignationDao.getAllTypeDesignations(limit, start);
     }
 
     @Override
-    public TypeDesignationBase loadTypeDesignation(int id, List<String> propertyPaths){
+    public TypeDesignationBase<?> loadTypeDesignation(int id, List<String> propertyPaths){
         return typeDesignationDao.load(id, propertyPaths);
     }
 
     @Override
-    public TypeDesignationBase loadTypeDesignation(UUID uuid, List<String> propertyPaths){
+    public TypeDesignationBase<?> loadTypeDesignation(UUID uuid, List<String> propertyPaths){
         return typeDesignationDao.load(uuid, propertyPaths);
     }
 

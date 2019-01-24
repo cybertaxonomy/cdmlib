@@ -74,20 +74,22 @@ public class TypeDesignationDaoHibernateImplTest extends CdmTransactionalIntegra
 	@Test
 	@DataSet
 	public void testGetAllTypeDesignations() {
-		List<TypeDesignationBase> typeDesignations = typeDesignationDao.getAllTypeDesignations(100, 0);
+		List<TypeDesignationBase<?>> typeDesignations = typeDesignationDao.getAllTypeDesignations(100, 0);
 		assertEquals(2, typeDesignations.size());
 		SpecimenTypeDesignation specTypeDesig = null;
-		for (TypeDesignationBase typeDesignation : typeDesignations) {
-			if (typeDesignation.isInstanceOf(NameTypeDesignation.class)) {
-				assertTrue(typeDesignation.getTypeStatus().isInstanceOf(NameTypeDesignationStatus.class));
-			} else if (typeDesignation.isInstanceOf(SpecimenTypeDesignation.class)) {
+		for (TypeDesignationBase<?> typeDesignation : typeDesignations) {
+		    typeDesignation= CdmBase.deproxy(typeDesignation);
+			if (typeDesignation instanceof NameTypeDesignation) {
+				assertTrue(((NameTypeDesignation)typeDesignation).getTypeStatus().isInstanceOf(NameTypeDesignationStatus.class));
+			} else if (typeDesignation instanceof SpecimenTypeDesignation) {
 				Assert.assertNull("There should be only 1 specimen type designation but this is already the second", specTypeDesig);
-				TypeDesignationStatusBase typeDesignationStatus = typeDesignation.getTypeStatus();
+				TypeDesignationStatusBase<?> typeDesignationStatus = ((SpecimenTypeDesignation)typeDesignation).getTypeStatus();
 				assertTrue(typeDesignationStatus.isInstanceOf(SpecimenTypeDesignationStatus.class));
 				specTypeDesig = CdmBase.deproxy(typeDesignation,SpecimenTypeDesignation.class);
 			}
 		}
-		Set<TaxonName> names = specTypeDesig.getTypifiedNames();
+		@SuppressWarnings("null")
+        Set<TaxonName> names = specTypeDesig.getTypifiedNames();
 		Assert.assertEquals("There should be exactly 1 typified name for the the specimen type designation", 1, names.size());
 		TaxonName singleName = names.iterator().next();
 		Assert.assertEquals("", UUID.fromString("61b1dcae-8aa6-478a-bcd6-080cf0eb6ad7"), singleName.getUuid());
@@ -100,10 +102,10 @@ public class TypeDesignationDaoHibernateImplTest extends CdmTransactionalIntegra
 	@DataSet
 	@ExpectedDataSet  //not yet necessary with current test
 	public void testSaveTypeDesignations() {
-		List<TypeDesignationBase> typeDesignations = typeDesignationDao.getAllTypeDesignations(100, 0);
+		List<TypeDesignationBase<?>> typeDesignations = typeDesignationDao.getAllTypeDesignations(100, 0);
 		assertEquals(typeDesignations.size(), 2);
 		SpecimenTypeDesignation specTypeDesig = null;
-		for (TypeDesignationBase typeDesignation : typeDesignations) {
+		for (TypeDesignationBase<?> typeDesignation : typeDesignations) {
 			if (typeDesignation.isInstanceOf(SpecimenTypeDesignation.class)) {
 				specTypeDesig = CdmBase.deproxy(typeDesignation,SpecimenTypeDesignation.class);
 			}

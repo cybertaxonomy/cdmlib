@@ -124,24 +124,24 @@ public class SDDDataSet {
 
     @XmlElementWrapper(name = "AgentData")
     @XmlElements({
-    @XmlElement(name = "Address", namespace = "http://etaxonomy.eu/cdm/model/agent/1.0", type = Address.class),
-    @XmlElement(name = "Contact", namespace = "http://etaxonomy.eu/cdm/model/agent/1.0", type = Contact.class),
-    @XmlElement(name = "InstitutionalMembership", namespace = "http://etaxonomy.eu/cdm/model/agent/1.0", type = InstitutionalMembership.class)
+        @XmlElement(name = "Address", namespace = "http://etaxonomy.eu/cdm/model/agent/1.0", type = Address.class),
+        @XmlElement(name = "Contact", namespace = "http://etaxonomy.eu/cdm/model/agent/1.0", type = Contact.class),
+        @XmlElement(name = "InstitutionalMembership", namespace = "http://etaxonomy.eu/cdm/model/agent/1.0", type = InstitutionalMembership.class)
     })
     protected List<VersionableEntity> agentData;
 
     @XmlElementWrapper(name = "FeatureData")
-    @XmlElements({
-    @XmlElement(name = "FeatureNode", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = FeatureNode.class),
-    @XmlElement(name = "FeatureTree", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = FeatureTree.class)
+        @XmlElements({
+        @XmlElement(name = "FeatureNode", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = FeatureNode.class),
+        @XmlElement(name = "FeatureTree", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = FeatureTree.class)
     })
 //    protected List<VersionableEntity> featureData;
     protected List<VersionableEntity> featureData;
 
     @XmlElementWrapper(name = "LanguageData")
-    @XmlElements({
-    @XmlElement(name = "Representation", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = Representation.class),
-    @XmlElement(name = "LanguageString", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = LanguageString.class)
+        @XmlElements({
+        @XmlElement(name = "Representation", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = Representation.class),
+        @XmlElement(name = "LanguageString", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = LanguageString.class)
     })
     protected List<LanguageStringBase> languageData;
 

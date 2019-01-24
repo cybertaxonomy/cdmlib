@@ -40,11 +40,13 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
+import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
+import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 public interface INameService
         extends IIdentifiableEntityService<TaxonName> {
@@ -69,7 +71,7 @@ public interface INameService
 	 * @param name
 	 * @return
 	 */
-	public DeleteResult deleteTypeDesignation(TaxonName name, TypeDesignationBase typeDesignation);
+	public DeleteResult deleteTypeDesignation(TaxonName name, TypeDesignationBase<?> typeDesignation);
 
 	/**
 	 * Removes the given type designation from the given taxon name and deletes it from
@@ -89,7 +91,7 @@ public interface INameService
 	 * @param typeDesignationCollection
 	 * @return
 	 */
-	public Map<UUID, TypeDesignationBase> saveTypeDesignationAll(Collection<TypeDesignationBase> typeDesignationCollection);
+	public Map<UUID, TypeDesignationBase<?>> saveTypeDesignationAll(Collection<TypeDesignationBase<?>> typeDesignationCollection);
 
 	public Map<UUID, ReferencedEntityBase> saveReferencedEntitiesAll(Collection<ReferencedEntityBase> referencedEntityCollection);
 
@@ -114,11 +116,11 @@ public interface INameService
 	 * @param start
 	 * @return
 	 */
-	public List<TypeDesignationBase> getAllTypeDesignations(int limit, int start);
+	public List<TypeDesignationBase<?>> getAllTypeDesignations(int limit, int start);
 
-    public TypeDesignationBase loadTypeDesignation(int id, List<String> propertyPaths);
+    public TypeDesignationBase<?> loadTypeDesignation(int id, List<String> propertyPaths);
 
-    public TypeDesignationBase loadTypeDesignation(UUID uuid, List<String> propertyPaths);
+    public TypeDesignationBase<?> loadTypeDesignation(UUID uuid, List<String> propertyPaths);
 
 	/**
 	 * Returns all NonViralNames with a name cache that matches the given string
@@ -199,9 +201,8 @@ public interface INameService
 	 * @param propertyPaths
 	 * @param maxNoOfResults
 	 * @return
-	 * @throws CorruptIndexException
 	 * @throws IOException
-	 * @throws ParseException
+	 * @throws LuceneParseException
 	 */
 	public List<SearchResult<TaxonName>> findByNameFuzzySearch(
             String name,
@@ -224,9 +225,8 @@ public interface INameService
 	 * @param highlightFragments
 	 * @param maxNoOfResults
 	 * @return
-	 * @throws CorruptIndexException
 	 * @throws IOException
-	 * @throws ParseException
+	 * @throws LuceneParseException
 	 */
     public List<DocumentSearchResult> findByNameFuzzySearch(
             String name,
@@ -245,9 +245,8 @@ public interface INameService
 	 * @param highlightFragments
 	 * @param maxNoOfResults
 	 * @return
-	 * @throws CorruptIndexException
 	 * @throws IOException
-	 * @throws ParseException
+	 * @throws LuceneParseException
 	 */
     public List<DocumentSearchResult> findByFuzzyNameCacheSearch(
             String name,
@@ -269,9 +268,8 @@ public interface INameService
 	 * @param highlightFragments
 	 * @param maxNoOfResults
 	 * @return
-	 * @throws CorruptIndexException
 	 * @throws IOException
-	 * @throws ParseException
+	 * @throws LuceneParseException
 	 */
 
     public List<DocumentSearchResult> findByNameExactSearch(

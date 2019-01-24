@@ -323,11 +323,11 @@ public class RegistrationDTO{
      * @param ref
      * @return
      */
-    private TypeDesignationBase findTypeDesignation(EntityReference ref) {
+    private TypeDesignationBase<?> findTypeDesignation(EntityReference ref) {
         return typeDesignationManager != null ? typeDesignationManager.findTypeDesignation(ref) : null;
     }
 
-    public Collection<TypeDesignationBase> typeDesignations() {
+    public Collection<TypeDesignationBase<?>> typeDesignations() {
         return typeDesignationManager != null ? typeDesignationManager.getTypeDesignations() : null;
     }
 
@@ -368,7 +368,7 @@ public class RegistrationDTO{
             } else {
                 bibliographicCitationString = citation.generateTitle();
             }
-    
+
         }
     }
 

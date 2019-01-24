@@ -96,7 +96,8 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 @Entity
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public abstract class DescriptionElementBase extends AnnotatableEntity implements ISourceable<DescriptionElementSource>, IModifiable, IMultiLanguageTextHolder{
+public abstract class DescriptionElementBase extends AnnotatableEntity
+        implements ISourceable<DescriptionElementSource>, IModifiable, IMultiLanguageTextHolder{
     private static final long serialVersionUID = 5000910777835755905L;
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(DescriptionElementBase.class);
@@ -392,9 +393,6 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
         return this.modifyingText.remove(language);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.ISourceable#getSources()
-     */
     @Override
     public Set<DescriptionElementSource> getSources() {
         return this.sources;
@@ -500,6 +498,19 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     }
 
 
+    /**
+     * Is this description item of a class type which is considere to
+     * represent character data? These classes are {@link QuantitativeData}
+     * and {@link CategoricalData}.
+     * To be overriden by these classes.
+     */
+    @Transient
+    @XmlTransient
+    public boolean isCharacterData() {
+        return false;
+    }
+
+
 
 //************************** CLONE **********************************************************/
 
@@ -554,18 +565,5 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
         description.addElement(result);
         return result;
     }
-
-    /**
-     * Is this description item of a class type which is considere to
-     * represent character data? These classes are {@link QuantitativeData}
-     * and {@link CategoricalData}.
-     * To be overriden by these classes.
-     */
-    @Transient
-    @XmlTransient
-    public boolean isCharacterData() {
-        return false;
-    }
-
 
 }
