@@ -69,9 +69,6 @@ public class AnnotationType extends DefinedTermBase<AnnotationType> {
 
 //************************** METHODS ********************************
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
-	 */
 	@Override
 	public void resetTerms(){
 		termMap = null;
@@ -96,7 +93,7 @@ public class AnnotationType extends DefinedTermBase<AnnotationType> {
 
 	@Override
     protected void setDefaultTerms(TermVocabulary<AnnotationType> termVocabulary) {
-		termMap = new HashMap<UUID, AnnotationType>();
+		termMap = new HashMap<>();
 		for (AnnotationType term : termVocabulary.getTerms()){
 			termMap.put(term.getUuid(), term);
 		}

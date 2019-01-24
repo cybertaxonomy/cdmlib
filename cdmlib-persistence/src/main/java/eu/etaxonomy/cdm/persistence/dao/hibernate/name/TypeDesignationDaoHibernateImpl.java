@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.persistence.dao.name.ITypeDesignationDao;
  *
  */
 @Repository
-public class TypeDesignationDaoHibernateImpl<T extends TypeDesignationBase<?>>
+public class TypeDesignationDaoHibernateImpl
 			extends SourcedEntityDaoImpl<TypeDesignationBase<?>>
             implements ITypeDesignationDao {
 
@@ -32,7 +32,7 @@ public class TypeDesignationDaoHibernateImpl<T extends TypeDesignationBase<?>>
 	private static final Logger logger = Logger.getLogger(TypeDesignationDaoHibernateImpl.class);
 
 	public TypeDesignationDaoHibernateImpl() {
-		super(TypeDesignationBase.class);
+		super((Class)(TypeDesignationBase.class));
 	}
 
 	//TODO limit start
