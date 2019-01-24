@@ -30,8 +30,10 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 	})
 @Entity
 @Audited
-public class IdentifiableSource extends OriginalSourceBase<IdentifiableEntity>{
-	private static final long serialVersionUID = -8487673428764273806L;
+public class IdentifiableSource
+        extends OriginalSourceBase<IdentifiableEntity<?>>{
+
+    private static final long serialVersionUID = -8487673428764273806L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(IdentifiableSource.class);
 
@@ -59,14 +61,22 @@ public class IdentifiableSource extends OriginalSourceBase<IdentifiableEntity>{
 		return result;
 	}
 
-	public static IdentifiableSource NewInstance(OriginalSourceType type, String id, String idNamespace, Reference citation, String microCitation){
+	public static IdentifiableSource NewInstance(OriginalSourceType type, String id, String idNamespace, Reference
+	        reference, String microReference){
 		IdentifiableSource result = NewInstance(type);
 		result.setIdInSource(id);
 		result.setIdNamespace(idNamespace);
-		result.setCitation(citation);
-		result.setCitationMicroReference(microCitation);
+		result.setCitation(reference);
+		result.setCitationMicroReference(microReference);
 		return result;
 	}
+
+   public static IdentifiableSource NewInstance(OriginalSourceType type, String id, String idNamespace, Reference
+            reference, String microReference, String originalInfo){
+        IdentifiableSource result = NewInstance(type, id, idNamespace, reference, microReference);
+        result.setOriginalNameString(originalInfo);
+        return result;
+    }
 
 	public static IdentifiableSource NewPrimarySourceInstance(Reference citation, String microCitation){
 		IdentifiableSource result = NewInstance(OriginalSourceType.PrimaryTaxonomicSource);

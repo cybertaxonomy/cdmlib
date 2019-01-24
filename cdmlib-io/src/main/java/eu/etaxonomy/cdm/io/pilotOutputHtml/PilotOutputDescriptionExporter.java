@@ -223,7 +223,7 @@ public class PilotOutputDescriptionExporter
 		if (sddExpConfig.isDoReferencedEntities() == true) {
 			logger.info("# Referenced Entities");
 			sddDataSet.setReferencedEntities(getNameService().getAllNomenclaturalStatus(MAX_ROWS, 0));
-			sddDataSet.addReferencedEntities(getNameService().getAllTypeDesignations(MAX_ROWS, 0));
+			sddDataSet.addSourcedEntities(getNameService().getAllTypeDesignations(MAX_ROWS, 0));
 		}
 
 		if (sddExpConfig.isDoOccurrence() == true) {
