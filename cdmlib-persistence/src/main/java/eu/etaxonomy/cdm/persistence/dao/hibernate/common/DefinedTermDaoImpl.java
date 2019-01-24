@@ -696,4 +696,18 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
         return list;
     }
 
+    @Override
+    public Collection<TermDto> findByTitleAsDto(String title) {
+        String queryString = TermDto.getTermDtoSelect()
+                + "where a.titleCache like :title";
+        Query query =  getSession().createQuery(queryString);
+        query.setParameter("title", "%"+title+"%");
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> result = query.list();
+
+        List<TermDto> list = TermDto.termDtoListFrom(result);
+        return list;
+    }
+
 }
