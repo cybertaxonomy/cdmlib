@@ -406,16 +406,6 @@ public class NameServiceImpl
 
     /**
      * TODO candidate for harmonization
-     * new name saveReferencedEntities
-     */
-    @Override
-    @Transactional(readOnly = false)
-    public Map<UUID, ReferencedEntityBase> saveReferencedEntitiesAll(Collection<ReferencedEntityBase> referencedEntityCollection){
-        return referencedEntityDao.saveAll(referencedEntityCollection);
-    }
-
-    /**
-     * TODO candidate for harmonization
      * new name getNomenclaturalStatus
      */
     @Override
