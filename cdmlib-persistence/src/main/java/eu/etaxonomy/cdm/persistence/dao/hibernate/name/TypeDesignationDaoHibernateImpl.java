@@ -16,7 +16,7 @@ import org.hibernate.Criteria;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.common.ReferencedEntityDaoImpl;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.SourcedEntityDaoImpl;
 import eu.etaxonomy.cdm.persistence.dao.name.ITypeDesignationDao;
 
 /**
@@ -24,9 +24,11 @@ import eu.etaxonomy.cdm.persistence.dao.name.ITypeDesignationDao;
  *
  */
 @Repository
-public class TypeDesignationDaoHibernateImpl<T extends TypeDesignationBase>
-			extends ReferencedEntityDaoImpl<TypeDesignationBase> implements ITypeDesignationDao {
-	@SuppressWarnings("unused")
+public class TypeDesignationDaoHibernateImpl<T extends TypeDesignationBase<?>>
+			extends SourcedEntityDaoImpl<TypeDesignationBase<?>>
+            implements ITypeDesignationDao {
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TypeDesignationDaoHibernateImpl.class);
 
 	public TypeDesignationDaoHibernateImpl() {

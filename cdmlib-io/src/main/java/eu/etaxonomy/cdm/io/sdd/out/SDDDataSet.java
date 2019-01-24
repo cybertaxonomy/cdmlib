@@ -41,6 +41,7 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.common.SourcedEntityBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -202,10 +203,15 @@ public class SDDDataSet {
     @XmlElementWrapper(name = "ReferencedEntities")
     @XmlElements({
     	@XmlElement(name = "NomenclaturalStatus", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = NomenclaturalStatus.class),
-    	@XmlElement(name = "NameTypeDesignation", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = NameTypeDesignation.class),
-    	@XmlElement(name = "SpecimenTypeDesignation", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = SpecimenTypeDesignation.class)
     })
     protected List<ReferencedEntityBase> referencedEntities;
+
+    @XmlElementWrapper(name = "SourcedEntities")
+    @XmlElements({
+        @XmlElement(name = "NameTypeDesignation", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = NameTypeDesignation.class),
+        @XmlElement(name = "SpecimenTypeDesignation", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = SpecimenTypeDesignation.class)
+    })
+    protected List<SourcedEntityBase> sourcedEntities;
 
 
     @XmlElementWrapper(name = "TaxonomicNames")
@@ -228,7 +234,7 @@ public class SDDDataSet {
      	@XmlElement(name = "NameRelationship", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = NameRelationship.class),
     	@XmlElement(name = "HybridRelationship", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = HybridRelationship.class)
     })
-    protected Set<RelationshipBase> relationshipsX;
+    protected Set<RelationshipBase> relationships;
 
     @XmlElementWrapper(name = "Media_")
     @XmlElement(name = "Media", namespace = "http://etaxonomy.eu/cdm/model/media/1.0")
@@ -244,7 +250,6 @@ public class SDDDataSet {
 
 		agents = new ArrayList<>();
 		agentData = new ArrayList<>();
-//		featureData = new ArrayList<VersionableEntity>();
 		featureData = new ArrayList<>();
 		languageData = new ArrayList<>();
 		terms = new ArrayList<>();
@@ -259,254 +264,102 @@ public class SDDDataSet {
 		homotypicalGroups = new ArrayList<>();
 	}
 
-    /**
-     * Gets the value of the agents property.
-     *
-     * @return
-     *     possible object is
-     *     {@link List<Agent> }
-     *
-     */
     public List<? extends AgentBase> getAgents() {
         return agents;
     }
-
-    /**
-     * Sets the value of the agents property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link List<Agent> }
-     *
-     */
     public void setAgents(List<? extends AgentBase> value) {
         this.agents = value;
     }
 
-    /**
-     * Gets the value of the agentData property.
-     *
-     * @return
-     *     possible object is
-     *     {@link List<VersionableEntity> }
-     *
-     */
+
     public List<VersionableEntity> getAgentData() {
         return agentData;
     }
-
-    /**
-     * Sets the value of the agentData property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link List<VersionableEntity> }
-     *
-     */
     public void setAgentData(List<VersionableEntity> value) {
         this.agentData = value;
     }
-
-    /**
-     * Gets the value of the terms property.
-     *
-     * @return
-     *     possible object is
-     *     {@link List<TermBase> }
-     *
-     */
 
     //public List<? extends TermBase> getTerms() {
     public List<DefinedTermBase> getTerms() {
         return terms;
     }
 
-    /**
-     * Sets the value of the terms property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link List<TermBase> }
-     *
-     */
     //public void setTerms(List<? extends TermBase> value) {
     public void setTerms(List<DefinedTermBase> value) {
         this.terms = value;
     }
 
-    /**
-     * Gets the value of the term vocabularies property.
-     *
-     * @return
-     *     possible object is
-     *     {@link List<TermVocabulary> }
-     *
-     */
-
     public List<TermVocabulary<DefinedTermBase>> getTermVocabularies() {
         return termVocabularies;
     }
 
-    /**
-     * Sets the value of the term vocabularies property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link List<TermVocabulary> }
-     *
-     */
     public void setTermVocabularies(List<TermVocabulary<DefinedTermBase>> value) {
         this.termVocabularies = value;
     }
 
-    /**
-     * Gets the value of the taxonomicNames property.
-     *
-     * @return
-     *     possible object is
-     *     {@link List<axonNameBase> }
-     *
-     */
     public List<TaxonName> getTaxonomicNames() {
         return taxonomicNames;
     }
-
-    /**
-     * Sets the value of the taxonomicNames property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link List<TaxonName> }
-     *
-     */
     public void setTaxonomicNames(List<TaxonName> value) {
         this.taxonomicNames = value;
     }
 
-    /**
-     * Gets the value of the references property.
-     *
-     * @return
-     *     possible object is
-     *     {@link List<SpecimenOrObservationBase> }
-     *
-     */
     public List<SpecimenOrObservationBase> getOccurrences() {
         return occurrences;
     }
 
-    /**
-     * Sets the value of the references property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link List<SpecimenOrObservationBase> }
-     *
-     */
     public void setOccurrences(List<SpecimenOrObservationBase> value) {
         this.occurrences = value;
     }
 
-    /**
-     * Gets the value of the references property.
-     *
-     * @return
-     *     possible object is
-     *     {@link List<Reference> }
-     *
-     */
     public List<Reference> getReferences() {
         return references;
     }
-
-    /**
-     * Sets the value of the references property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link List<Reference> }
-     *
-     */
     public void setReferences(List<Reference> value) {
         this.references = value;
     }
 
-    /**
-     * Adds the referenced entities in value to the referenced entity property list.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link Collection<ReferencedEntityBase> }
-     *
-     */
     public <T extends ReferencedEntityBase> void addReferencedEntities(Collection<T> value) {
     	for (T referencedEntity: value) {
     		this.referencedEntities.add(referencedEntity);
     	}
     }
-
-    /**
-     * Gets the value of the  property.
-     *
-     * @return
-     *     possible object is
-     *     {@link List<ReferencedEntityBase> }
-     *
-     */
     public List<ReferencedEntityBase> getReferencedEntities() {
         return referencedEntities;
     }
-
-    /**
-     * Sets the value of the referencedEntities property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link List<ReferencedEntityBase> }
-     *
-     */
     public void setReferencedEntities(List<? extends ReferencedEntityBase> value) {
-        this.referencedEntities = new ArrayList<ReferencedEntityBase>();
+        this.referencedEntities = new ArrayList<>();
         referencedEntities.addAll(value);
     }
 
-    /**
-     * Adds the features in value to the feature data property list.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link Collection<VersionableEntity> }
-     *
-     */
+    public <T extends SourcedEntityBase> void addSourcedEntities(Collection<T> value) {
+        if (sourcedEntities == null){
+            this.sourcedEntities = new ArrayList<>();
+        }
+        for (T sourcedEntity: value) {
+            this.sourcedEntities.add(sourcedEntity);
+        }
+    }
+
+    public List<SourcedEntityBase> getSourcedEntities() {
+        return sourcedEntities;
+    }
+    public void setSourcedEntities(List<? extends SourcedEntityBase> value) {
+        this.sourcedEntities = new ArrayList<>();
+        sourcedEntities.addAll(value);
+    }
+
     public <T extends VersionableEntity> void addFeatureData(Collection<T> value) {
     	for (T featureItem: value) {
     		this.featureData.add(featureItem);
     	}
     }
-
-    /**
-     * Gets the value of the feature data property.
-     *
-     * @return
-     *     possible object is
-     *     {@link List<VersionableEntity> }
-     *
-     */
 //    public List<VersionableEntity> getFeatureData() {
     public List<VersionableEntity> getFeatureData() {
         return featureData;
     }
-
-    /**
-     * Sets the value of the feature data property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link List<VersionableEntity> }
-     *
-     */
     public <T extends VersionableEntity> void setFeatureData(List<T> value) {
-        featureData = new ArrayList<VersionableEntity>();
+        featureData = new ArrayList<>();
     	for (T featureItem: value) {
     		this.featureData.add(featureItem);
     	}
@@ -519,79 +372,25 @@ public class SDDDataSet {
     //    featureData.addAll(value);
     //}
 
-    /**
-     * Adds the features in value to the language data property list.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link Collection<LanguageStringBase> }
-     *
-     */
     public <T extends LanguageStringBase> void addLanguageData(Collection<T> value) {
     	for (T languageItem: value) {
     		this.languageData.add(languageItem);
     	}
     }
-
-    /**
-     * Gets the value of the language data property.
-     *
-     * @return
-     *     possible object is
-     *     {@link List<LanguageStringBase> }
-     *
-     */
     public List<LanguageStringBase> getLanguageData() {
         return languageData;
     }
-
-    /**
-     * Sets the value of the feature data property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link List<LanguageStringBase> }
-     *
-     */
     public void setLanguageData(List<? extends LanguageStringBase> value) {
-        this.languageData = new ArrayList<LanguageStringBase>();
+        this.languageData = new ArrayList<>();
         languageData.addAll(value);
     }
 
-    /**
-     * Adds the taxa in value to the taxa property list.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link Collection<Taxon> }
-     *
-     */
     public void addTaxa(Collection<Taxon> value) {
     	for (Taxon taxon: value) {
     		this.taxa.add(taxon);
     	}
     }
 
-    /**
-     * Gets the value of the taxa property.
-     *
-     * @return
-     *     possible object is
-     *     {@link List<Taxon> }
-     *
-     */
-//    public List<Taxon> getTaxa() {
-//        return taxa;
-//    }
-
-    /**
-     * Gets the value of the taxa property as {@link Collection<TaxonBase> }
-     *
-     * @return
-     *     possible object is
-     *     {@link Collection<TaxonBase> }
-     *
-     */
     public Collection<? extends TaxonBase> getTaxa() {
 
     	//TODO can be deleted when everything works
@@ -603,7 +402,7 @@ public class SDDDataSet {
 
     public Collection<TaxonBase> getTaxonBases() {
 
-    	Collection<TaxonBase> result = new HashSet<TaxonBase>();;
+    	Collection<TaxonBase> result = new HashSet<>();
     	if (taxa != null) {
         	result.addAll(taxa);
     	}
@@ -613,136 +412,48 @@ public class SDDDataSet {
         return result;
     }
 
-    /**
-     * Sets the value of the taxa property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link List<Taxon> }
-     *
-     */
     public void setTaxa(List<Taxon> value) {
         this.taxa = value;
     }
-
-    /**
-     * Adds the taxon in value to the taxa property list.
-     *
-     * @param value
-     *
-     */
     public void addTaxon(Taxon value) {
     		this.taxa.add(value);
     }
 
-
-    /**
-     * Gets the value of the synonyms property.
-     *
-     * @return
-     *     possible object is
-     *     {@link List<Synonym> }
-     *
-     */
     public List<Synonym> getSynonyms() {
         return synonyms;
     }
-
-    /**
-     * Sets the value of the synonyms property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link List<Synonym> }
-     *
-     */
     public void setSynonyms(List<Synonym> value) {
         this.synonyms = value;
     }
 
-    /**
-     * Adds the synonym in value to the taxa property list.
-     *
-     * @param value
-     *
-     */
     public void addSynonym(Synonym value) {
     		this.synonyms.add(value);
     }
-
-    /**
-     * Adds the synonym in value to the synonyms property list.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link Collection<Synonym> }
-     *
-     */
     public void addSynonyms(Collection<Synonym> value) {
     	for (Synonym synonym: value) {
     		this.synonyms.add(synonym);
     	}
     }
 
-    /**
-     * Adds the media in value to the media property list.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link Collection<VersionableEntity> }
-     *
-     */
     public <T extends VersionableEntity> void addMedia(Collection<T> value) {
     	for (T medium: value) {
     		this.media.add(medium);
     	}
     }
 
-    /**
-     * Gets the value of the  property.
-     *
-     * @return
-     *     possible object is
-     *     {@link List<ReferencedEntityBase> }
-     *
-     */
     public List<VersionableEntity> getMedia() {
         return media;
     }
 
-    /**
-     * Sets the value of the referencedEntities property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link List<ReferencedEntityBase> }
-     *
-     */
     public void setMedia(List<? extends VersionableEntity> value) {
-        this.media = new ArrayList<VersionableEntity>();
+        this.media = new ArrayList<>();
         media.addAll(value);
     }
 
-    /**
-     * Gets the value of the synonyms property.
-     *
-     * @return
-     *     possible object is
-     *     {@link List<Synonym> }
-     *
-     */
     public List<HomotypicalGroup> getHomotypicalGroups() {
         return homotypicalGroups;
     }
 
-    /**
-     * Sets the value of the synonyms property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link List<Synonym> }
-     *
-     */
     public void setHomotypicalGroups(List<HomotypicalGroup> value) {
         this.homotypicalGroups = value;
     }
