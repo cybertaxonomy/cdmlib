@@ -277,8 +277,8 @@ public class TypeDesignationSetManager {
         @Override
         public int compare(TypedEntityReference<?> o1, TypedEntityReference<?> o2) {
 
-            Class type1 = o1.getType();
-            Class type2 = o2.getType();
+            Class<?> type1 = o1.getType();
+            Class<?> type2 = o2.getType();
 
             if(!type1.equals(type2)) {
                 if(type1.equals(FieldUnit.class) || type2.equals(FieldUnit.class)){
