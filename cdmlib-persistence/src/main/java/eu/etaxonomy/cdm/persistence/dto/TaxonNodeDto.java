@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
  */
 public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
 
+    private static final long serialVersionUID = -7169646913528213604L;
 
     /**
      * count of the direct taxonomic children
