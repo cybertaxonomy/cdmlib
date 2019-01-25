@@ -844,6 +844,40 @@ public class TaxonNodeServiceImpl
         return result;
 
     }
+
+
+    @Override
+    @Transactional
+    public UpdateResult saveNewTaxonNode(TaxonNode newTaxonNode){
+        UpdateResult result = new UpdateResult();
+        if (newTaxonNode.getTaxon().getName().getId() != 0){
+            TaxonName name = nameService.load(newTaxonNode.getTaxon().getName().getUuid());
+            newTaxonNode.getTaxon().setName(name);
+        }else{
+            for (HybridRelationship rel : newTaxonNode.getTaxon().getName().getHybridChildRelations()){
+                if (!rel.getHybridName().isPersited()) {
+                    nameService.save(rel.getHybridName());
+                }
+                if (!rel.getParentName().isPersited()) {
+                    nameService.save(rel.getParentName());
+                }
+            }
+        }
+        UUID taxonUUID = taxonService.saveOrUpdate(newTaxonNode.getTaxon());
+        UUID childUUID = dao.saveOrUpdate(newTaxonNode);
+
+        TaxonNode parent = dao.load(newTaxonNode.getParent().getUuid());
+        TaxonNode child = dao.load(childUUID);
+        result.addUpdatedObject(parent);
+        if (child != null){
+            result.setCdmEntity(child);
+        }
+        return result;
+
+    }
+
+
+
     @Override
     @Transactional
     public UpdateResult createNewTaxonNode(UUID parentNodeUuid, UUID taxonUuid, Reference ref, String microref){
