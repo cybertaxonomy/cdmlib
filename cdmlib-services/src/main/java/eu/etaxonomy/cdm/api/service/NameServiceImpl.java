@@ -57,6 +57,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
+import eu.etaxonomy.cdm.model.common.SourcedEntityBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
@@ -76,6 +77,7 @@ import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IOrderedTermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IReferencedEntityDao;
+import eu.etaxonomy.cdm.persistence.dao.common.ISourcedEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.name.INomenclaturalStatusDao;
@@ -104,6 +106,9 @@ public class NameServiceImpl
     @Autowired
     @Qualifier("refEntDao")
     protected IReferencedEntityDao<ReferencedEntityBase> referencedEntityDao;
+    @Autowired
+    @Qualifier("sourcedEntityDao")
+    protected ISourcedEntityDao<SourcedEntityBase<?>> sourcedEntityDao;
     @Autowired
     private INomenclaturalStatusDao nomStatusDao;
     @Autowired
@@ -195,7 +200,7 @@ public class NameServiceImpl
     @Transactional
     public DeleteResult deleteTypeDesignation(TaxonName name, TypeDesignationBase<?> typeDesignation){
     	if(typeDesignation != null && typeDesignation .isPersited()){
-    		typeDesignation = HibernateProxyHelper.deproxy(referencedEntityDao.load(typeDesignation.getUuid()), TypeDesignationBase.class);
+    		typeDesignation = HibernateProxyHelper.deproxy(sourcedEntityDao.load(typeDesignation.getUuid()), TypeDesignationBase.class);
     	}
 
         DeleteResult result = new DeleteResult();
@@ -229,7 +234,7 @@ public class NameServiceImpl
     @Transactional(readOnly = false)
     public DeleteResult deleteTypeDesignation(UUID nameUuid, UUID typeDesignationUuid){
         TaxonName nameBase = load(nameUuid);
-        TypeDesignationBase<?> typeDesignation = HibernateProxyHelper.deproxy(referencedEntityDao.load(typeDesignationUuid), TypeDesignationBase.class);
+        TypeDesignationBase<?> typeDesignation = HibernateProxyHelper.deproxy(sourcedEntityDao.load(typeDesignationUuid), TypeDesignationBase.class);
         return deleteTypeDesignation(nameBase, typeDesignation);
     }
 
