@@ -80,7 +80,9 @@ public class TypeDesignationDaoHibernateImplTest extends CdmTransactionalIntegra
 		for (TypeDesignationBase<?> typeDesignation : typeDesignations) {
 		    typeDesignation= CdmBase.deproxy(typeDesignation);
 			if (typeDesignation instanceof NameTypeDesignation) {
-				assertTrue(((NameTypeDesignation)typeDesignation).getTypeStatus().isInstanceOf(NameTypeDesignationStatus.class));
+			    NameTypeDesignation ntd = (NameTypeDesignation)typeDesignation;
+			    NameTypeDesignationStatus status = ntd.getTypeStatus();
+			    assertTrue(status.isInstanceOf(NameTypeDesignationStatus.class));
 			} else if (typeDesignation instanceof SpecimenTypeDesignation) {
 				Assert.assertNull("There should be only 1 specimen type designation but this is already the second", specTypeDesig);
 				TypeDesignationStatusBase<?> typeDesignationStatus = ((SpecimenTypeDesignation)typeDesignation).getTypeStatus();

@@ -33,6 +33,7 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.SourcedEntityBase;
@@ -65,7 +66,7 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTypeDesignation;
 @XmlSeeAlso({
     NameTypeDesignation.class,
     SpecimenTypeDesignation.class,
-    TextTypeDesignation.class
+    TextualTypeDesignation.class
 })
 @Entity
 @Audited
@@ -178,7 +179,7 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
      * specimen type designation.
      */
     public T getTypeStatus(){
-        return this.typeStatus;
+        return (CdmBase.deproxy(this.typeStatus));  //otherwise for some error we get an error in TypeDesignationDaoHibernateImplTest
     }
     /**
      * @see  #getTypeStatus()

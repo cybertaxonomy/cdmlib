@@ -29,12 +29,14 @@ import eu.etaxonomy.cdm.api.service.exception.RegistrationValidationException;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.name.TextualTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -571,9 +573,21 @@ public class TypeDesignationSetManager {
 
         if(td instanceof NameTypeDesignation){
             return stringify((NameTypeDesignation)td);
-        } else {
+        } else if (td instanceof TextualTypeDesignation){
+            return stringify((TextualTypeDesignation)td);
+        } else if (td instanceof SpecimenTypeDesignation){
             return stringify((SpecimenTypeDesignation)td, false);
+        }else{
+            throw new RuntimeException("Unknown TypeDesignation type");
         }
+    }
+
+    protected String stringify(TextualTypeDesignation td) {
+        String result = td.getPreferredText(Language.DEFAULT());
+        if (td.isVerbatim()){
+            result = "\"" + result + "\"";  //TODO which character to use?
+        }
+        return result;
     }
 
 
