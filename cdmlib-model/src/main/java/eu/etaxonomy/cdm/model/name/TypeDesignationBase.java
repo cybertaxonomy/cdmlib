@@ -55,9 +55,11 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTypeDesignation;
  */
 @XmlRootElement(name = "TypeDesignationBase")
 @XmlType(name = "TypeDesignationBase", propOrder = {
-    "typifiedNames",
-    "notDesignated",
     "typeStatus",
+    "notDesignated",
+    "typifiedNames",
+    "citation",
+    "citationMicroReference",
     "registrations",
 })
 @XmlSeeAlso({

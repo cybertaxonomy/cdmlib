@@ -82,8 +82,7 @@ import eu.etaxonomy.cdm.validation.Level2;
     "credits",
     "extensions",
     "identifiers",
-    "rights",
-    "sources"
+    "rights"
 })
 @Audited
 @MappedSuperclass

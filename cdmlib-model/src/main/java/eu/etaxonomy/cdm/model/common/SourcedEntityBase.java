@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SourcedEntityBase", propOrder = {
-
+        "sources"
 })
 @XmlRootElement(name = "SourcedEntityBase")
 @MappedSuperclass
