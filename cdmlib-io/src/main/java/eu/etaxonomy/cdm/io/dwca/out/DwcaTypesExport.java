@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
-import eu.etaxonomy.cdm.model.name.TextTypeDesignation;
+import eu.etaxonomy.cdm.model.name.TextualTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
@@ -156,8 +156,8 @@ public class DwcaTypesExport extends DwcaDataExportBase {
            TypeDesignationBase<?> designation, TaxonBase<?> taxonBase,
            DwcaTaxExportConfigurator config) {
        designation = CdmBase.deproxy(designation);
-       if (designation instanceof TextTypeDesignation){
-           return handleTextualType(state, record, (TextTypeDesignation)designation, taxonBase, config);
+       if (designation instanceof TextualTypeDesignation){
+           return handleTextualType(state, record, (TextualTypeDesignation)designation, taxonBase, config);
        }else if (designation instanceof TypeDesignationBase){
            return handleSpecimen(state, record, null, designation, taxonBase, config);
        }else{
@@ -166,7 +166,7 @@ public class DwcaTypesExport extends DwcaDataExportBase {
    }
 
 	private boolean handleTextualType(DwcaTaxExportState state, DwcaTypesRecord record,
-	            TextTypeDesignation designation, TaxonBase<?> taxonBase,
+	            TextualTypeDesignation designation, TaxonBase<?> taxonBase,
 	            DwcaTaxExportConfigurator config) {
 
 	        if (designation == null){
