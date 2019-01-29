@@ -29,8 +29,10 @@ import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
 import eu.etaxonomy.cdm.api.service.dto.PreservedSpecimenDTO;
+import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
+import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import io.swagger.annotations.Api;
 
@@ -130,6 +132,25 @@ public class OccurrencePortalController extends OccurrenceController
             if(derivedUnit.isPublish()){
                 PreservedSpecimenDTO dto = service.assemblePreservedSpecimenDTO(derivedUnit);
                 return dto;
+            }
+        }
+        return null;
+    }
+
+    @RequestMapping(value = { "mediaSpecimen" }, method = RequestMethod.GET)
+    public Media doGetMediaSpecimen(
+            @PathVariable("uuid") UUID uuid,
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+
+        logger.info("doGetMediaSpecimen() " + requestPathAndQuery(request));
+
+
+        SpecimenOrObservationBase sob = service.load(uuid, Arrays.asList("mediaSpecimen.sources.citation", "mediaSpecimen.representations.parts"));
+        if(sob instanceof MediaSpecimen){
+            MediaSpecimen mediaSpecimen = (MediaSpecimen) sob;
+            if(mediaSpecimen.isPublish()){
+                return mediaSpecimen.getMediaSpecimen();
             }
         }
         return null;
