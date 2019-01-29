@@ -291,7 +291,13 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
 
         /* for debugging https://dev.e-taxonomy.eu/redmine/issues/7331 */
         // debugIssue7331(pager);
-        return new RegistrationWorkingSet(makeDTOs(pager.getRecords()));
+        RegistrationWorkingSet registrationWorkingSet;
+        if(pager.getCount() > 0) {
+            registrationWorkingSet = new RegistrationWorkingSet(makeDTOs(pager.getRecords()));
+        } else {
+            registrationWorkingSet = new RegistrationWorkingSet(reference);
+        }
+        return registrationWorkingSet;
     }
 
 
