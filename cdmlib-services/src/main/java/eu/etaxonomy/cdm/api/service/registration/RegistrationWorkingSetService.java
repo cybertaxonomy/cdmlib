@@ -81,7 +81,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
             // name
             "name.$",
             "name.nomenclaturalReference.authorship.$",
-            "name.nomenclaturalReference.inReference",
+            "name.nomenclaturalReference.inReference.authorship.$",
             "name.rank",
             "name.homotypicalGroup.typifiedNames",
             "name.status.type",
@@ -97,7 +97,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
            "derivedFrom.type", // TODO remove?
            "derivedFrom.originals.derivationEvents", // important!!
            "specimenTypeDesignations.typifiedNames.typeDesignations", // important!!
-           "mediaSpecimen.sources",
+           "mediaSpecimen.sources.citation",
            "collection.institute"// see CollectionCaptionGenerator
    });
 
