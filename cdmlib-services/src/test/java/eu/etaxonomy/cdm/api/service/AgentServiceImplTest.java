@@ -9,8 +9,15 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.FileNotFoundException;
+import java.lang.reflect.Field;
 import java.net.URI;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.junit.Assert;
@@ -22,6 +29,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -175,6 +183,48 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
 //    	Assert.assertNull("Contact must not be copied", person.getContact());
     	Assert.assertEquals("person must be combination author now", person, name.getCombinationAuthorship());
     }
+
+
+    @Test
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="AgentServiceImplTest.testUpdateTitleCache.xml")
+    public final void testUpdateNomTitle() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+
+        Field nomenclaturalTitleField = TeamOrPersonBase.class.getDeclaredField("nomenclaturalTitle");
+        nomenclaturalTitleField.setAccessible(true);
+
+        Person turland = (Person) service.load(UUID.fromString("a598ab3f-b33b-4b4b-b237-d616fcb6b5b1"));
+        Person monro = (Person) service.load(UUID.fromString("e7206bc5-61ab-468e-a9f5-dec118b46b7f"));
+
+        Team turland_monro_protected = (Team) service.load(UUID.fromString("5bff55de-f7cc-44d9-baac-908f52ad0cb8"));
+        Team turland_monro = (Team) service.load(UUID.fromString("30ca93d6-b543-4bb9-b6ff-e9ededa65af7"));
+        Team turland_monro_null = (Team) service.load(UUID.fromString("a4ca0d37-d78b-4bcc-875e-d4ea5a031089"));
+
+        // Person has no flag for protecting the nomenclaturalTitle
+        assertNull(nomenclaturalTitleField.get(turland));
+        assertEquals("A.M. Monro", nomenclaturalTitleField.get(monro).toString());
+
+        // Team has a flag for protectedNomenclaturalTitle flag
+        assertEquals("Turland, Monro", nomenclaturalTitleField.get(turland_monro_protected));
+        assertTrue(turland_monro_protected.isProtectedNomenclaturalTitleCache());
+        assertEquals("--to be updated--", nomenclaturalTitleField.get(turland_monro).toString());
+        assertFalse(turland_monro.isProtectedNomenclaturalTitleCache());
+        assertNull(nomenclaturalTitleField.get(turland_monro_null));
+        assertFalse(turland_monro_null.isProtectedNomenclaturalTitleCache());
+
+        service.updateTitleCache();
+
+        turland_monro_protected = (Team) service.load(UUID.fromString("5bff55de-f7cc-44d9-baac-908f52ad0cb8"));
+        turland_monro = (Team) service.load(UUID.fromString("30ca93d6-b543-4bb9-b6ff-e9ededa65af7"));
+
+        assertEquals("Expecting nomenclaturalTitle to be set since it was NULL", "Turland, N.J.", nomenclaturalTitleField.get(turland));
+        assertEquals("Expecting nomenclaturalTitle to be unchanged", "A.M. Monro", nomenclaturalTitleField.get(monro).toString());
+
+        assertEquals("Turland, Monro", nomenclaturalTitleField.get(turland_monro_protected));
+        assertEquals("Turland, N.J. & A.M. Monro", nomenclaturalTitleField.get(turland_monro).toString());
+        assertEquals("Expecting nomenclaturalTitle to be set since it was NULL", "Turland, N.J. & A.M. Monro", nomenclaturalTitleField.get(turland_monro_null).toString());
+
+    }
+
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}

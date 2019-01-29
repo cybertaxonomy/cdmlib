@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.ISourceable;
@@ -293,7 +294,8 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 			List<T> entitiesToUpdate = new ArrayList<>();
 			for (T entity : list){
 				HibernateProxyHelper.deproxy(entity, clazz);
-				if (entity.isProtectedTitleCache() == false){
+				if (entity.isProtectedTitleCache() == false || TeamOrPersonBase.class.isAssignableFrom(entity.getClass())){
+				    // always execute for TeamOrPersonBase to allow updating the nomenclaturalTitle
 					updateTitleCacheForSingleEntity(cacheStrategy, entitiesToUpdate, entity);
 				}
 				worked++;
@@ -411,13 +413,13 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 			}
 		} else if (entity instanceof Team){
             Team team = (Team) entity;
-            if(!team.isProtectedTitleCache()){
+            if(!team.isProtectedNomenclaturalTitleCache()){
                 team.setProtectedNomenclaturalTitleCache(true);
                 oldNomenclaturalTitle = team.getNomenclaturalTitle();
                 team.setProtectedNomenclaturalTitleCache(false);
             }
         } else if (entity instanceof Person){
-            // Person has no flag so for for protecting the nomenclaturalTitle
+            // Person has no flag for protecting the nomenclaturalTitle
             Person person = (Person) entity;
             oldNomenclaturalTitle = person.getNomenclaturalTitle();
         }
