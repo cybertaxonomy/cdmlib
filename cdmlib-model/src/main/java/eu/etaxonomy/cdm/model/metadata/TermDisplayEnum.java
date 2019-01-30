@@ -14,10 +14,10 @@ package eu.etaxonomy.cdm.model.metadata;
  *
  */
 public enum TermDisplayEnum {
-    IdInVocabulary("IdInVocabulary", "Show IdInVocabulary"),
-    Symbol1("Symbol1", "Show Symbol 1"),
-    Symbol2("Symbol2", "Show Symbol 2"),
-    Title("Title", "Show Title");
+    IdInVocabulary("IdInVocabulary", "ID in Vocabulary"),
+    Symbol1("Symbol1", "Symbol 1"),
+    Symbol2("Symbol2", "Symbol 2"),
+    Title("Label", "Label");
 
     String label;
     String key;
