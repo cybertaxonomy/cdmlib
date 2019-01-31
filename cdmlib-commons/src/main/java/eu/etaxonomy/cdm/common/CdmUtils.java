@@ -468,6 +468,27 @@ public class CdmUtils {
     }
 
     /**
+     * Removes all non-word character (i.e. *, @, %, line breaks, etc.)
+     * from the given string
+     * @param string the string which should be trimmed
+     * @return the trimmed string
+     */
+    static public String trimNonWordCharacters(String string){
+        return replaceNonWordCharacters(string, "");
+    }
+
+    /**
+     * Replaces all non-word character (i.e. *, @, %, line breaks, etc.)
+     * with the given replacement string
+     * @param string the string which should be trimmed
+     * @param replacement the replacement for the non-word characters
+     * @return the trimmed string
+     */
+    static public String replaceNonWordCharacters(String string, String replacement){
+        return string.replaceAll("\\W", replacement);
+    }
+
+    /**
      * Returns <code>false</code> if string is null, "" or string.trim() is ""
      * @see isNotEmpty(String string)
      * @param string
