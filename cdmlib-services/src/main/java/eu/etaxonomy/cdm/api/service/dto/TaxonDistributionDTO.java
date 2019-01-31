@@ -36,7 +36,9 @@ public class TaxonDistributionDTO implements Serializable{
     public TaxonDistributionDTO(Taxon taxon){
         this.taxonUUID = taxon.getUuid();
         taxon = HibernateProxyHelper.deproxy(taxon);
-        this.nameCache = taxon.getName() != null ? taxon.getName().getNameCache(): taxon.getTitleCache();
+        if (taxon.getName() != null){
+            this.nameCache = taxon.getName().getNameCache();
+        }
         if (nameCache == null){
             nameCache = taxon.getTitleCache();
         }
