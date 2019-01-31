@@ -205,6 +205,7 @@ public enum ReferenceType implements IEnumTerm<ReferenceType>, Serializable{
                 inRefTypes.add(ReferenceType.Report);
                 inRefTypes.add(ReferenceType.WebPage);
                 inRefTypes.add(ReferenceType.InProceedings);
+                inRefTypes.add(ReferenceType.BookSection);
             }
         }
 
