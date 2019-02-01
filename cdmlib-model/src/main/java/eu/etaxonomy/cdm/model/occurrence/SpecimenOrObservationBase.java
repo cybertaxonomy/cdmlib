@@ -359,8 +359,8 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
      */
     @Transient
     public Set<SpecimenDescription> getSpecimenDescriptions(boolean includeImageGallery) {
-        Set<SpecimenDescription> specimenDescriptions = new HashSet<SpecimenDescription>();
-        for (DescriptionBase descriptionBase : getDescriptions()){
+        Set<SpecimenDescription> specimenDescriptions = new HashSet<>();
+        for (DescriptionBase<?> descriptionBase : getDescriptions()){
             if (descriptionBase.isInstanceOf(SpecimenDescription.class)){
                 if (includeImageGallery || descriptionBase.isImageGallery() == false){
                     specimenDescriptions.add(descriptionBase.deproxy(descriptionBase, SpecimenDescription.class));
@@ -378,8 +378,8 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
      */
     @Transient
     public Set<SpecimenDescription> getSpecimenDescriptionImageGallery() {
-        Set<SpecimenDescription> specimenDescriptions = new HashSet<SpecimenDescription>();
-        for (DescriptionBase descriptionBase : getDescriptions()){
+        Set<SpecimenDescription> specimenDescriptions = new HashSet<>();
+        for (DescriptionBase<?> descriptionBase : getDescriptions()){
             if (descriptionBase.isInstanceOf(SpecimenDescription.class)){
                 if (descriptionBase.isImageGallery() == true){
                     specimenDescriptions.add(descriptionBase.deproxy(descriptionBase, SpecimenDescription.class));
@@ -417,7 +417,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 
     public Set<DerivationEvent> getDerivationEvents() {
         if(derivationEvents == null) {
-            this.derivationEvents = new HashSet<DerivationEvent>();
+            this.derivationEvents = new HashSet<>();
         }
         return this.derivationEvents;
     }
@@ -438,7 +438,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 
     public Set<DeterminationEvent> getDeterminations() {
         if(determinations == null) {
-            this.determinations = new HashSet<DeterminationEvent>();
+            this.determinations = new HashSet<>();
         }
         return this.determinations;
     }
@@ -585,11 +585,6 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 
 //******************** CLONE **********************************************/
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity#clone()
-     * @see eu.etaxonomy.cdm.model.common.IdentifiableEntity#clone()
-     * @see java.lang.Object#clone()
-     */
     @Override
     public Object clone() throws CloneNotSupportedException {
         SpecimenOrObservationBase<S> result = (SpecimenOrObservationBase<S>)super.clone();
