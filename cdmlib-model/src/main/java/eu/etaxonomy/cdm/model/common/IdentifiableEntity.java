@@ -267,6 +267,14 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         return this.titleCache == null || "".equals(this.titleCache);
     }
 
+    /**
+     * Returns true if any of the caches is not protected. Needs to be overriden
+     * by subclass if other caches exist.
+     */
+    public boolean hasUnprotectedCache(){
+        return !this.protectedTitleCache;
+    }
+
 //**************************************************************************************
 
     @Override

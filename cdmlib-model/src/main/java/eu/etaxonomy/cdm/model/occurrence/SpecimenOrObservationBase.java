@@ -581,7 +581,11 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
         return states;
     }
 
-
+    @Override
+    public boolean hasUnprotectedCache(){
+        return super.hasUnprotectedCache()
+                || !this.protectedIdentityCache;
+    }
 
 //******************** CLONE **********************************************/
 

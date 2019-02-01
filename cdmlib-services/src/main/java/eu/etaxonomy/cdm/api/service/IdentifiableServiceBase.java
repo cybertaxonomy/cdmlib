@@ -33,7 +33,6 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.ISourceable;
@@ -294,7 +293,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 			List<T> entitiesToUpdate = new ArrayList<>();
 			for (T entity : list){
 				HibernateProxyHelper.deproxy(entity, clazz);
-				if (entity.isProtectedTitleCache() == false || TeamOrPersonBase.class.isAssignableFrom(entity.getClass())){
+				if (entity.hasUnprotectedCache()){
 				    // always execute for TeamOrPersonBase to allow updating the nomenclaturalTitle
 					updateTitleCacheForSingleEntity(cacheStrategy, entitiesToUpdate, entity);
 				}
