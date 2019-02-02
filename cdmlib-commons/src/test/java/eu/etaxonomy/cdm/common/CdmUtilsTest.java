@@ -14,6 +14,7 @@ import static org.junit.Assert.assertNotNull;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -107,48 +108,41 @@ public class CdmUtilsTest {
 
     }
 
+    @Test
+    public void testquoteRegExWithWildcard(){
+        String regExBase = ".(*$[ms^";
+        String regEx = CdmUtils.quoteRegExWithWildcard(regExBase);
+        Assert.assertEquals("\\Q.(\\E.*\\Q$[ms^\\E", regEx);
+        boolean matches = ".(*$[ms^".matches(regEx);
+        Assert.assertTrue(matches);
+        matches = ".(aaaaaa$[ms^".matches(regEx);
+        Assert.assertTrue(matches);
+        matches = "b(aaaaaa$[ms^".matches(regEx);
+        Assert.assertFalse(matches);
+
+        regEx = CdmUtils.quoteRegExWithWildcard("*abc*");
+        Assert.assertEquals(".*\\Qabc\\E.*", regEx);
+        Assert.assertTrue("abc".matches(regEx));
+        Assert.assertTrue("a80/(--e*wabc?äe".matches(regEx));
+
+    }
+
     /**
      * This test can be used for functional testing of any task but should
      * never be committed when failing.
      */
     @Test
     public void testSomething(){
-       String MCL = "MCL[0-9]{1,3}(\\-[0-9]{1,4}(\\-[0-9]{1,4}(\\-[0-9]{1,3}(\\-[0-9]{1,3})?)?)?)?";
-//        String MCL = "a{1,3}";
-        String filter = "Acc "+MCL;
-
-       String notes = "Acc: 0x is Hieracium djimilense subsp. neotericum Zahn MCL293-3140-00-630";
-       String result;
-       if (notes.matches("Acc:.*")){
-           if (notes.matches("Acc: .*\\$$") || (notes.matches("Acc: .*"+MCL))){
-               result = null;
-           }else if (notes.matches("Acc: .*(\\$|"+MCL+")\\s*\\{.*\\}")){
-               notes = notes.substring(notes.indexOf("{")+1, notes.length()-1);
-               result = notes;
-           }else if (notes.matches("Acc: .*(\\$|"+MCL+")\\s*\\[.*\\]")){
-               notes = notes.substring(notes.indexOf("[")+1, notes.length()-1);
-               result = notes;
-           }else{
-               logger.warn("Namenote: " + notes);
-               result = notes;
-           }
-       }else if (notes.matches("Syn:.*")){
-           if (notes.matches("Syn: .*\\$$") || (notes.matches("Syn: .*"+MCL))){
-               result = null;
-           }else if (notes.matches("Syn: .*(\\$|"+MCL+")\\s*\\{.*\\}")){
-               notes = notes.substring(notes.indexOf("{")+1, notes.length()-1);
-               result = notes;
-           }else if (notes.matches("Syn: .*(\\$|"+MCL+")\\s*\\[.*\\]")){
-               notes = notes.substring(notes.indexOf("[")+1, notes.length()-1);
-               result = notes;
-           }else{
-               logger.warn("Namenote: " + notes);
-               result = notes;
-           }
-       }else{
-           result = notes;
-       }
-       System.out.println(result);
+        String str = ".(*$[ms^";
+        String patQuote = Pattern.quote("str");
+//        System.out.println(patQuote);
+//        String matchQuote = Matcher.quoteReplacement(str);
+//        System.out.println(matchQuote);
+//        System.out.println(CdmUtils.quoteRegExWithWildcard(str));
     }
+
+
+
+
 
 }
