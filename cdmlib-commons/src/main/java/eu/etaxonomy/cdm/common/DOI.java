@@ -77,7 +77,7 @@ public final class DOI implements java.io.Serializable{
 
 
 // ******************************* CONSTRUCTOR ************************************/
-	private DOI(){}; //empty constructor required for JAXB
+	private DOI(){} //empty constructor required for JAXB
 
 
     /**
@@ -174,6 +174,10 @@ public final class DOI implements java.io.Serializable{
 		}
 		//suffix
 		String suffix = doi.replaceFirst(registrant + sep,"");
+		if (suffix.equals("")){
+            String message = "Suffix must not be empty";
+            throw new IllegalArgumentException(message);
+        }
 		if (! suffix.matches("\\p{Print}+")){
 			String message = "Suffix should only include printable characters";
 			throw new IllegalArgumentException(message);

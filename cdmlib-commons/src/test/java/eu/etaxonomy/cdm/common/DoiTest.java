@@ -74,7 +74,7 @@ public class DoiTest {
 		testInvalid(invalidDoi);
 		invalidDoi = "10.1a02/12345";  //registrant code must include only number and dots (to separate sub codes)
 		testInvalid(invalidDoi);
-		invalidDoi = "10.1002:12345";  //column separator is only allowed (+required) in URNs
+		invalidDoi = "10.1002:12345";  //colon separator is only allowed (+required) in URNs
 		testInvalid(invalidDoi);
 		invalidDoi = "10.1002/";  //doi must always have a suffix length > 0 (if this should changed in future, please do adapt equals and hashCode)
 		testInvalid(invalidDoi);
@@ -94,7 +94,7 @@ public class DoiTest {
 		Assert.assertEquals("10.1002", doi.getPrefix());
 		Assert.assertEquals("1234", doi.getSuffix());
 
-		validDoi = "http://doi.org/urn:doi:10.123:456ABC%2Fzyz";
+		validDoi = "http://doi.org/urn:doi:10.123:456ABC%2Fzyz";   //colon separator only in URNs (see above)
 		doi = DOI.fromString(validDoi);
 		Assert.assertEquals("10.123", doi.getPrefix());
 		Assert.assertEquals("456ABC/zyz", doi.getSuffix());  //urn must be percentage encoded ( / -> %2F)
@@ -108,6 +108,16 @@ public class DoiTest {
         doi = DOI.fromString(validDoi);
         Assert.assertEquals("10.123", doi.getPrefix());
         Assert.assertEquals("456ABC/zyz", doi.getSuffix());  //urn must be percentage encoded ( / -> %2F)
+
+        validDoi = "doi.org/10.1002/1234";
+        doi = DOI.fromString(validDoi);
+        Assert.assertEquals("10.1002", doi.getPrefix());
+        Assert.assertEquals("1234", doi.getSuffix());
+
+        validDoi = "dx.doi.org/10.1002/1234";
+        doi = DOI.fromString(validDoi);
+        Assert.assertEquals("10.1002", doi.getPrefix());
+        Assert.assertEquals("1234", doi.getSuffix());
 
 	}
 
