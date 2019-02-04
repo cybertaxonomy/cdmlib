@@ -425,7 +425,8 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
      * @param regs
      * @return
      */
-    private List<RegistrationDTO> makeDTOs(List<Registration> regs) {
+    @Override
+    public List<RegistrationDTO> makeDTOs(Collection<Registration> regs) {
         initializeSpecimens(regs);
         List<RegistrationDTO> dtos = new ArrayList<>(regs.size());
         regs.forEach(reg -> {dtos.add(new RegistrationDTO(reg));});
@@ -436,7 +437,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
     /**
      * @param regs
      */
-    public void initializeSpecimens(List<Registration> regs) {
+    public void initializeSpecimens(Collection<Registration> regs) {
         for(Registration reg : regs){
             inititializeSpecimen(reg);
         }

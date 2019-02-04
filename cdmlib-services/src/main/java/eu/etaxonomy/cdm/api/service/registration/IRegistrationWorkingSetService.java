@@ -72,7 +72,9 @@ public interface IRegistrationWorkingSetService {
 
     public Set<RegistrationDTO> loadBlockingRegistrations(UUID blockedRegistrationUuid);
 
-    Pager<RegistrationDTO> convertToDTOPager(Pager<Registration> regPager);
+    public Pager<RegistrationDTO> convertToDTOPager(Pager<Registration> regPager);
+
+    public List<RegistrationDTO> makeDTOs(Collection<Registration> regs);
 
     Pager<RegistrationDTO> pageDTOs(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, String identifierFilterPattern, String taxonNameFilterPattern, Collection<UUID> typeDesignationStatusUuids, Integer pageSize, Integer pageIndex,
             List<OrderHint> orderHints);

@@ -375,7 +375,7 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
 
         prepareForSave(reg);
         reg = super.save(reg);
-        userHelper.createAuthorityForCurrentUser(Registration.class, reg.getUuid(), Operation.UPDATE, RegistrationStatus.PREPARATION.name());
+        userHelper.createAuthorityForCurrentUser(reg, Operation.UPDATE, RegistrationStatus.PREPARATION.name());
 
         return reg;
     }
