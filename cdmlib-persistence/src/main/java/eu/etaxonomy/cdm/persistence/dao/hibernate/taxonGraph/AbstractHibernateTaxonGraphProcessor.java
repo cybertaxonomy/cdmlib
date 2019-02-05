@@ -219,7 +219,7 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
         Taxon taxon = null;
         Set<Taxon> taxa = new HashSet<>();
         for(Taxon t : taxonName.getTaxa()){
-            if(t.getSec().getUuid().equals(secRefUuid)){
+            if(t.getSec() != null && t.getSec().getUuid().equals(secRefUuid)){
                 taxa.add(t);
             }
         }
