@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.model.metadata.CdmPreference;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
@@ -95,6 +96,19 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
             Query q = getSession().createQuery("SELECT r FROM Reference r WHERE r.uuid = :uuid");
             q.setParameter("uuid", getSecReferenceUUID());
             secReference = (Reference) q.uniqueResult();
+            if(secReference == null){
+                Reference missingRef = ReferenceFactory.newGeneric();
+                UUID uuid = getSecReferenceUUID();
+                if(uuid != null){
+                    missingRef.setUuid(uuid);
+                } else {
+                    throw new RuntimeException("cdm preference " + TaxonGraphDaoHibernateImpl.CDM_PREF_KEY_SEC_REF_UUID.getSubject() + TaxonGraphDaoHibernateImpl.CDM_PREF_KEY_SEC_REF_UUID.getPredicate() + " missing, can not recover");
+                }
+                missingRef.setTitle("Autocreated missing reference for cdm property" + TaxonGraphDaoHibernateImpl.CDM_PREF_KEY_SEC_REF_UUID.getSubject() + TaxonGraphDaoHibernateImpl.CDM_PREF_KEY_SEC_REF_UUID.getPredicate());
+                logger.warn("A reference with " + getSecReferenceUUID() + " does not exist in the database, and thus will be created now with the title "
+                        + "\"" + missingRef.getTitle() + "\"");
+                getSession().merge(missingRef);
+            }
         } else {
             // make sure the entity is still in the current session
             secReference = getSession().load(Reference.class, secReference.getId());
