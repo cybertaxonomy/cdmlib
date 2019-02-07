@@ -59,7 +59,7 @@ public class PreferenceDaoImpl extends DaoBase implements IPreferenceDao, Initia
 		IPreferencePredicate<?> predicate = PreferencePredicate.getByKey(preference.getPredicate());
 		if (predicate == null ||
 		        !preference.isAllowOverride() ||
-		        !CdmUtils.nullSafeEqual(predicate.getDefaultValue().toString(), preference.getValue())){
+		        !CdmUtils.nullSafeEqual(nullOrToString(predicate.getDefaultValue()), preference.getValue())){
 		    //do not save is value is default value with allow override
 		    getSession().save(preference);
 		}
@@ -71,6 +71,15 @@ public class PreferenceDaoImpl extends DaoBase implements IPreferenceDao, Initia
 //			getSessionFactory().openStatelessSession().update(preference);
 //		}
 	}
+
+    /**
+     * Return null if obj is null, obj.toString otherwise
+     * @param defaultValue
+     * @return
+     */
+    private Object nullOrToString(Object obj) {
+        return obj == null? null: obj.toString();
+    }
 
     @Override
     public List<CdmPreference> list(IPreferencePredicate<?> predicate){
