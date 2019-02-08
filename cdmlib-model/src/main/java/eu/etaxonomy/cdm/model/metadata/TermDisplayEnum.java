@@ -35,10 +35,7 @@ public enum TermDisplayEnum {
         return key;
     }
 
-    public TermDisplayEnum byKey(String key){
-        if (key == null){
-            return null;
-        }
+    public static TermDisplayEnum byKey(String key){
         for (TermDisplayEnum termDisplay : values()){
             if (termDisplay.key.equals(key)){
                 return termDisplay;
