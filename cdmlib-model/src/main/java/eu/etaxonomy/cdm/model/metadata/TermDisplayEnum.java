@@ -34,4 +34,16 @@ public enum TermDisplayEnum {
     public String getKey(){
         return key;
     }
+
+    public TermDisplayEnum byKey(String key){
+        if (key == null){
+            return null;
+        }
+        for (TermDisplayEnum termDisplay : values()){
+            if (termDisplay.key.equals(key)){
+                return termDisplay;
+            }
+        }
+        return null;
+    }
 }
