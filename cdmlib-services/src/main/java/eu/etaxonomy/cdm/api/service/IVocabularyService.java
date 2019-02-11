@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.dto.TermVocabularyDto;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public interface IVocabularyService extends IIdentifiableEntityService<TermVocabulary> {
@@ -103,5 +104,26 @@ public interface IVocabularyService extends IIdentifiableEntityService<TermVocab
      * @return the new term
      */
     public TermDto addNewTerm(TermType termType, UUID vocabularyUUID);
+
+    /**
+     *
+     * Like {@link #getUuidAndTitleCache(Class, Integer, String)} but filtering
+     * the results by {@link TermType} of the vocabularies.
+     *
+     *
+     * @param clazz
+     *            the (sub)class
+     * @param termType
+     *            the {@link TermType} of the vocabularies to be retrieved
+     * @param limit
+     *            max number of results
+     * @param pattern
+     *            search pattern
+     * @return a list of {@link UuidAndTitleCache}
+     *
+     * @see #getUuidAndTitleCache(Class, Integer, String))
+     */
+    public <S extends TermVocabulary> List<UuidAndTitleCache<S>> getUuidAndTitleCache(Class<S> clazz, TermType termType,
+            Integer limit, String pattern);
 
 }

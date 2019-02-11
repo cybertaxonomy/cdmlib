@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.dto.TermVocabularyDto;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
@@ -139,5 +140,11 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
         vocabulary.addTerm(term);
         dao.saveOrUpdate(vocabulary);
         return TermDto.fromTerm(term, true);
+    }
+
+    @Override
+    public <S extends TermVocabulary> List<UuidAndTitleCache<S>> getUuidAndTitleCache(Class<S> clazz, TermType termType,
+            Integer limit, String pattern) {
+        return dao.getUuidAndTitleCache(clazz, termType, limit, pattern);
     }
 }
