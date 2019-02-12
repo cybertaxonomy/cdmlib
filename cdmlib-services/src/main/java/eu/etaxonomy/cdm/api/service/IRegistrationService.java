@@ -158,6 +158,12 @@ public interface IRegistrationService extends IAnnotatableService<Registration> 
 
     public void addTypeDesignation(UUID registrationUUID, UUID typeDesignationUuid);
 
+    /**
+     * @param registration
+     * @param typeDesignationUuid
+     */
+    public void addTypeDesignation(Registration registration, UUID typeDesignationUuid);
+
     // ============================================================================================
 
 }

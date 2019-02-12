@@ -360,4 +360,11 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      */
     List<TaxonDistributionDTO> getTaxonDistributionDTOForSubtree(UUID parentNodeUuid, List<String> propertyPaths);
 
+    /**
+     * @param parentNodeUuid
+     * @param newTaxonNode
+     * @return
+     */
+    UpdateResult saveNewTaxonNode(TaxonNode newTaxonNode);
+
 }

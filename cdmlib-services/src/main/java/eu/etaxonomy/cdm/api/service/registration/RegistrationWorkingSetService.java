@@ -81,7 +81,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
             // name
             "name.$",
             "name.nomenclaturalReference.authorship.$",
-            "name.nomenclaturalReference.inReference",
+            "name.nomenclaturalReference.inReference.authorship.$",
             "name.rank",
             "name.homotypicalGroup.typifiedNames",
             "name.status.type",
@@ -97,7 +97,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
            "derivedFrom.type", // TODO remove?
            "derivedFrom.originals.derivationEvents", // important!!
            "specimenTypeDesignations.typifiedNames.typeDesignations", // important!!
-           "mediaSpecimen.sources",
+           "mediaSpecimen.sources.citation",
            "collection.institute"// see CollectionCaptionGenerator
    });
 
@@ -291,7 +291,13 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
 
         /* for debugging https://dev.e-taxonomy.eu/redmine/issues/7331 */
         // debugIssue7331(pager);
-        return new RegistrationWorkingSet(makeDTOs(pager.getRecords()));
+        RegistrationWorkingSet registrationWorkingSet;
+        if(pager.getCount() > 0) {
+            registrationWorkingSet = new RegistrationWorkingSet(makeDTOs(pager.getRecords()));
+        } else {
+            registrationWorkingSet = new RegistrationWorkingSet(reference);
+        }
+        return registrationWorkingSet;
     }
 
 
@@ -419,7 +425,8 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
      * @param regs
      * @return
      */
-    private List<RegistrationDTO> makeDTOs(List<Registration> regs) {
+    @Override
+    public List<RegistrationDTO> makeDTOs(Collection<Registration> regs) {
         initializeSpecimens(regs);
         List<RegistrationDTO> dtos = new ArrayList<>(regs.size());
         regs.forEach(reg -> {dtos.add(new RegistrationDTO(reg));});
@@ -430,7 +437,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
     /**
      * @param regs
      */
-    public void initializeSpecimens(List<Registration> regs) {
+    public void initializeSpecimens(Collection<Registration> regs) {
         for(Registration reg : regs){
             inititializeSpecimen(reg);
         }

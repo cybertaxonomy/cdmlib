@@ -293,7 +293,8 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 			List<T> entitiesToUpdate = new ArrayList<>();
 			for (T entity : list){
 				HibernateProxyHelper.deproxy(entity, clazz);
-				if (entity.isProtectedTitleCache() == false){
+				if (entity.hasUnprotectedCache()){
+				    // always execute for TeamOrPersonBase to allow updating the nomenclaturalTitle
 					updateTitleCacheForSingleEntity(cacheStrategy, entitiesToUpdate, entity);
 				}
 				worked++;
@@ -411,13 +412,13 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 			}
 		} else if (entity instanceof Team){
             Team team = (Team) entity;
-            if(!team.isProtectedTitleCache()){
+            if(!team.isProtectedNomenclaturalTitleCache()){
                 team.setProtectedNomenclaturalTitleCache(true);
                 oldNomenclaturalTitle = team.getNomenclaturalTitle();
                 team.setProtectedNomenclaturalTitleCache(false);
             }
         } else if (entity instanceof Person){
-            // Person has no flag so for for protecting the nomenclaturalTitle
+            // Person has no flag for protecting the nomenclaturalTitle
             Person person = (Person) entity;
             oldNomenclaturalTitle = person.getNomenclaturalTitle();
         }

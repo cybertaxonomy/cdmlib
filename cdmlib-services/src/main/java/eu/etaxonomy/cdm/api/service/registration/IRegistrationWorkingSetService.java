@@ -60,7 +60,10 @@ public interface IRegistrationWorkingSetService {
     public RegistrationWorkingSet loadWorkingSetByReferenceID(Integer referenceID, boolean resolveSections) throws RegistrationValidationException;
 
     /**
-     * @param referenceID
+     * Loads the working set specified by the <code>referenceUuid</code> from the database. The list of {@link RegistrationDTO}s can be empty in case
+     * there is no registration which is related to the reference.
+     *
+     * @param referenceUuid
      * @param resolveSections resolve the higher publication unit and build the RegistrationWorkingSet for that reference. E.e. For journal sections the
      *  use the inReference which is the journal article.
      * @return
@@ -69,7 +72,9 @@ public interface IRegistrationWorkingSetService {
 
     public Set<RegistrationDTO> loadBlockingRegistrations(UUID blockedRegistrationUuid);
 
-    Pager<RegistrationDTO> convertToDTOPager(Pager<Registration> regPager);
+    public Pager<RegistrationDTO> convertToDTOPager(Pager<Registration> regPager);
+
+    public List<RegistrationDTO> makeDTOs(Collection<Registration> regs);
 
     Pager<RegistrationDTO> pageDTOs(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, String identifierFilterPattern, String taxonNameFilterPattern, Collection<UUID> typeDesignationStatusUuids, Integer pageSize, Integer pageIndex,
             List<OrderHint> orderHints);

@@ -87,10 +87,11 @@ import eu.etaxonomy.cdm.validation.Level2;
 })
 @Audited
 @MappedSuperclass
-public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrategy> extends AnnotatableEntity
+public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrategy>
+        extends AnnotatableEntity
         implements IIdentifiableEntity /*, ISourceable<IdentifiableSource> */ {
-    private static final long serialVersionUID = 7912083412108359559L;
 
+    private static final long serialVersionUID = 7912083412108359559L;
     private static final Logger logger = Logger.getLogger(IdentifiableEntity.class);
 
     @XmlTransient
@@ -264,6 +265,14 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
      */
     public boolean hasEmptyTitleCache(){
         return this.titleCache == null || "".equals(this.titleCache);
+    }
+
+    /**
+     * Returns true if any of the caches is not protected. Needs to be overriden
+     * by subclass if other caches exist.
+     */
+    public boolean hasUnprotectedCache(){
+        return !this.protectedTitleCache;
     }
 
 //**************************************************************************************

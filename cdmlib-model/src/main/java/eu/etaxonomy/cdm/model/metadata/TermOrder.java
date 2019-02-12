@@ -10,19 +10,20 @@ package eu.etaxonomy.cdm.model.metadata;
 
 /**
  * @author k.luther
- * @since 09.01.2019
+ * @since 6 Feb 2019
  *
  */
-public enum TermDisplayEnum {
-    IdInVocabulary("IdInVocabulary", "ID in Vocabulary"),
-    Symbol1("Symbol1", "Symbol 1"),
-    Symbol2("Symbol2", "Symbol 2"),
-    Title("Label", "Label");
+public enum TermOrder {
+
+    IdInVoc("IdInVoc", "Id in Vocabulary"),
+    Title("Title", "Title"),
+    Natural("Natural", "Natural");
+
 
     String label;
     String key;
 
-    private TermDisplayEnum(String key, String label){
+    private TermOrder(String key, String label){
         this.label = label;
         this.key = key;
     }
@@ -33,14 +34,5 @@ public enum TermDisplayEnum {
 
     public String getKey(){
         return key;
-    }
-
-    public static TermDisplayEnum byKey(String key){
-        for (TermDisplayEnum termDisplay : values()){
-            if (termDisplay.key.equals(key)){
-                return termDisplay;
-            }
-        }
-        return null;
     }
 }

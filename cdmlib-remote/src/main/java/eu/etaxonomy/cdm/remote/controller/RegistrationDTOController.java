@@ -61,7 +61,10 @@ public class RegistrationDTOController extends AbstractController<Registration, 
 {
 
 
-    private static final List<OrderHint> ORDER_BY_IDENTIFIER = Arrays.asList(new OrderHint("specificIdentifier", SortOrder.DESCENDING));
+    private static final List<OrderHint> ORDER_BY_DATE_AND_ID = Arrays.asList(
+            new OrderHint("registrationDate", SortOrder.DESCENDING),
+            new OrderHint("specificIdentifier", SortOrder.DESCENDING)
+            );
 
     private static final List<OrderHint> ORDER_BY_SUMMARY = Arrays.asList(new OrderHint("summary", SortOrder.ASCENDING));
 
@@ -166,7 +169,7 @@ public class RegistrationDTOController extends AbstractController<Registration, 
         }
         Pager<RegistrationDTO> pager = registrationWorkingSetService.pageDTOs(submitterUuid, statusSet,
                 identifierFilterPattern, taxonNameFilterPattern, typeDesignationStatusUuids,
-                pageSize, pageIndex, ORDER_BY_IDENTIFIER);
+                pageSize, pageIndex, ORDER_BY_DATE_AND_ID);
         return pager;
     }
 
@@ -200,7 +203,7 @@ public class RegistrationDTOController extends AbstractController<Registration, 
 
         Pager<RegistrationDTO> regPager = registrationWorkingSetService.findInTaxonGraph(null, includedStatus,
                 taxonNameFilterPattern, matchMode,
-                pageSize, pageIndex, ORDER_BY_IDENTIFIER);
+                pageSize, pageIndex, ORDER_BY_DATE_AND_ID);
 
         return regPager;
     }

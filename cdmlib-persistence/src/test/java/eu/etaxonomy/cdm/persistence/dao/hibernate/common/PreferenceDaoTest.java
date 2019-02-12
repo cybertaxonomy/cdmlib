@@ -91,16 +91,27 @@ public class PreferenceDaoTest  extends CdmTransactionalIntegrationTest {
 
          CdmPreference pref = CdmPreference.NewInstance(PreferenceSubject.NewDatabaseInstance(), PreferencePredicate.Test, "200");
 //         CdmPreference pref = CdmPreference.NewInstance(PreferenceSubjectEnum.Database, PreferencePredicate.Test, "200");
+        int addedPrefs = 1;
         dao.set(pref);
 	   	long count = dao.count();
-	    Assert.assertEquals("There should be 1 new preference", countStart + 1, count);
+	    Assert.assertEquals("There should be 1 new preference", countStart + addedPrefs, count);
 
 	    pref = CdmPreference.NewInstance(PreferenceSubject.NewDatabaseInstance(), PreferencePredicate.NomenclaturalCode, "ICZN");
 //        pref = CdmPreference.NewInstance(PreferenceSubjectEnum.Database, PreferencePredicate.NomenclaturalCode, "ICZN");
         dao.set(pref);
 
 	   	count = dao.count();
-	    Assert.assertEquals("There should be only 1 new preference", countStart + 1, count);
+	    Assert.assertEquals("There should still be only 1 new preference", countStart + addedPrefs, count);
+
+	    //delete default values
+	    pref = CdmPreference.NewInstance(PreferenceSubject.NewDatabaseInstance(), PreferencePredicate.NomenclaturalCode, PreferencePredicate.NomenclaturalCode.getDefaultValue().toString());
+	    pref.setAllowOverride(true);
+	    dao.set(pref);
+	    count = dao.count();
+        Assert.assertEquals("There should be only 1 preference left. Nomenclatural Code should be delete", addedPrefs, count);
+
+        pref = dao.get(CdmPreference.NewKey(PreferenceSubject.NewDatabaseInstance(), PreferencePredicate.NomenclaturalCode));
+        Assert.assertNull(pref);
     }
 
     @Test

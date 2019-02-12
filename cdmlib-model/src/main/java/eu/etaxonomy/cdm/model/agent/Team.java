@@ -171,11 +171,6 @@ public class Team extends TeamOrPersonBase<Team> {
 		return this.teamMembers;
 	}
 
-	protected void _setTeamMembers(List<Person> teamMembers) {
-		this.teamMembers = teamMembers;
-		addListenersToMembers();
-	}
-
 	public void setTeamMembers(List<Person> teamMembers) throws SetterAdapterException {
 	    new EntityCollectionSetterAdapter<Team, Person>(Team.class, Person.class, "teamMembers").setCollection(this, teamMembers);
     }
@@ -344,6 +339,13 @@ public class Team extends TeamOrPersonBase<Team> {
 	public void setHasMoreMembers(boolean hasMoreMembers) {
 		this.hasMoreMembers = hasMoreMembers;
 	}
+
+    @Override
+    public boolean hasUnprotectedCache(){
+        return super.hasUnprotectedCache()
+                || !this.protectedNomenclaturalTitleCache
+                || !this.protectedCollectorTitleCache;
+    }
 
 //*********************** CLONE ********************************************************/
 

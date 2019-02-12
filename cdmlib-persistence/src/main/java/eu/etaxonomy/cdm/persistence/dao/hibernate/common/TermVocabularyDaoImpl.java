@@ -20,6 +20,7 @@ import java.util.UUID;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
@@ -34,6 +35,7 @@ import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.dto.TermVocabularyDto;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -292,6 +294,37 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
             }
         }
         return new ArrayList<>(dtoMap.values());
+    }
+
+    @Override
+    public <S extends TermVocabulary> List<UuidAndTitleCache<S>> getUuidAndTitleCache(Class<S> clazz, TermType termType,
+            Integer limit, String pattern) {
+        if(termType==null){
+            return getUuidAndTitleCache(clazz, limit, pattern);
+        }
+        Session session = getSession();
+        Query query = null;
+        if (pattern != null){
+            query = session.createQuery(
+                      " SELECT uuid, id, titleCache "
+                    + " FROM " + clazz.getSimpleName()
+                    + " WHERE titleCache LIKE :pattern "
+                    + " AND termType = :termType");
+            pattern = pattern.replace("*", "%");
+            pattern = pattern.replace("?", "_");
+            pattern = pattern + "%";
+            query.setParameter("pattern", pattern);
+        } else {
+            query = session.createQuery(
+                      " SELECT uuid, id, titleCache "
+                    + " FROM  " + clazz.getSimpleName()
+                    + " WHERE termType = :termType");
+        }
+        query.setParameter("termType", termType);
+        if (limit != null){
+           query.setMaxResults(limit);
+        }
+        return getUuidAndTitleCache(query);
     }
 
 }

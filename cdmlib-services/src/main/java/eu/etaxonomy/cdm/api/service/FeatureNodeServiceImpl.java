@@ -107,21 +107,36 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<FeatureNode, 
 
 	 @Override
 	 public UpdateResult addChildFeatureNode(FeatureNode node, Feature featureChild){
-	     FeatureNode childNode = FeatureNode.NewInstance(featureChild);
-	     UpdateResult result = new UpdateResult();
-	     node.addChild(childNode);
-	     save(childNode);
-	     result.addUpdatedObject(node);
-	     result.setCdmEntity(childNode);
-	     return result;
+	     return addChildFeatureNode(node, featureChild, 0);
 	 }
 
+     @Override
+     public UpdateResult addChildFeatureNode(UUID nodeUUID, UUID featureChildUuid){
+         return addChildFeatureNode(nodeUUID, featureChildUuid, 0);
+     }
+
 	 @Override
-	 public UpdateResult addChildFeatureNode(UUID nodeUUID, UUID featureChildUuid){
+	 public UpdateResult addChildFeatureNode(UUID nodeUUID, UUID featureChildUuid, int position){
 	     FeatureNode node = load(nodeUUID);
-	     Feature child = HibernateProxyHelper.deproxy(termService.load(featureChildUuid), Feature.class);
-	     return addChildFeatureNode(node, child);
+         Feature child = HibernateProxyHelper.deproxy(termService.load(featureChildUuid), Feature.class);
+         return addChildFeatureNode(node, child, position);
 	 }
+
+     @Override
+     public UpdateResult addChildFeatureNode(FeatureNode node, Feature featureChild, int position){
+         FeatureNode childNode = FeatureNode.NewInstance(featureChild);
+         UpdateResult result = new UpdateResult();
+         if(position<0) {
+             node.addChild(childNode);
+         }
+         else{
+             node.addChild(childNode, position);
+         }
+         save(childNode);
+         result.addUpdatedObject(node);
+         result.setCdmEntity(childNode);
+         return result;
+     }
 
 	 @Override
 	 public DeleteResult isDeletable(FeatureNode node, FeatureNodeDeletionConfigurator config){

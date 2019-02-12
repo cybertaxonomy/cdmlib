@@ -822,6 +822,14 @@ public class TaxonName
         }
     }
 
+    @Override
+    public boolean hasUnprotectedCache(){
+        return super.hasUnprotectedCache()
+                || !this.protectedNameCache
+                || !this.protectedAuthorshipCache
+                || !this.protectedFullTitleCache;
+    }
+
 // ****************** GETTER / SETTER ****************************/
 
     @Override

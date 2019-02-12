@@ -265,6 +265,11 @@ public class CdmUserHelper implements UserHelper, Serializable {
         User user = (User)userDetails;
         if(userDetails != null){
             try{
+                // flush all pending transactions before changing the authentication,
+                // see https://dev.e-taxonomy.eu/redmine/issues/8066 for discussion
+                // in case of problems we may want to use another transaction propagation level
+                // instead (PROPAGATION_REQUIRES_NEW) which would require to reload the cdm entity.
+                repo().getSession().flush();
                 getRunAsAutheticator().runAsAuthentication(Role.ROLE_USER_MANAGER);
                 authority = new CdmAuthority(cdmEntity, property, crud);
                 try {
@@ -274,6 +279,7 @@ public class CdmUserHelper implements UserHelper, Serializable {
                     }
                     newAuthorityAdded = user.getGrantedAuthorities().add(grantedAuthority);
                 } catch (CdmAuthorityParsingException e) {
+                    getRunAsAutheticator().restoreAuthentication();
                     throw new RuntimeException(e);
                 }
                 repo().getSession().flush();

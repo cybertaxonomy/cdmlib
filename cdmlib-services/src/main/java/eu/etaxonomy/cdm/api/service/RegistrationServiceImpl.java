@@ -375,7 +375,7 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
 
         prepareForSave(reg);
         reg = super.save(reg);
-        userHelper.createAuthorityForCurrentUser(Registration.class, reg.getUuid(), Operation.UPDATE, RegistrationStatus.PREPARATION.name());
+        userHelper.createAuthorityForCurrentUser(reg, Operation.UPDATE, RegistrationStatus.PREPARATION.name());
 
         return reg;
     }
@@ -390,6 +390,24 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
         if(registration == null){
             registration = newRegistration();
             registration = assureIsPersisted(registration);
+        }
+        TypeDesignationBase<?> nameTypeDesignation = nameService.loadTypeDesignation(typeDesignationUuid, Arrays.asList(""));
+        registration.getTypeDesignations().add(nameTypeDesignation);
+    }
+
+    @Override
+    @Transactional(readOnly=false)
+    public void addTypeDesignation(Registration registration, UUID typeDesignationUuid){
+
+        if(registration == null){
+            registration = newRegistration();
+            registration = assureIsPersisted(registration);
+        } else {
+            if(registration.isPersited()){
+                // make sure the the typeDesignations are loaded with the registration so that typified names can not be twice in detached sessions
+                // otherwise multiple representation problems might occur
+                registration.getTypeDesignations();
+            }
         }
         TypeDesignationBase<?> nameTypeDesignation = nameService.loadTypeDesignation(typeDesignationUuid, Arrays.asList(""));
         registration.getTypeDesignations().add(nameTypeDesignation);
