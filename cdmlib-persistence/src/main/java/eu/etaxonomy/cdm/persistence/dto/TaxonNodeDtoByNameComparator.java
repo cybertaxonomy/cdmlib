@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.persistence.dto;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.StringTokenizer;
 
@@ -23,7 +24,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNodeByNameComparator;
  * @since 09.03.2018
  *
  */
-public class TaxonNodeDtoByNameComparator extends AbstractStringComparator<TaxonNodeDto> implements Comparator<TaxonNodeDto>, ITaxonNodeComparator<TaxonNodeDto>{
+public class TaxonNodeDtoByNameComparator extends AbstractStringComparator<TaxonNodeDto> implements Serializable, Comparator<TaxonNodeDto>, ITaxonNodeComparator<TaxonNodeDto>{
+
+    private static final long serialVersionUID = -5939529760454590279L;
 
     private static final String HYBRID_SIGN = UTF8.HYBRID.toString();
 
