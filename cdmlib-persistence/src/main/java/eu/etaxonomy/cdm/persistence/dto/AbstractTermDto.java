@@ -32,6 +32,7 @@ public class AbstractTermDto implements Serializable {
     private final Set<Representation> representations;
     private String representation_L10n = null;
     private String representation_L10n_abbreviatedLabel = null;
+    private String representation_L10n_text = null;
 
     public AbstractTermDto(UUID uuid, Set<Representation> representations) {
         this.representations = representations;
@@ -51,6 +52,9 @@ public class AbstractTermDto implements Serializable {
         }
         if (representation_L10n.getAbbreviatedLabel() != null) {
             setRepresentation_L10n_abbreviatedLabel(representation_L10n.getAbbreviatedLabel());
+        }
+        if (representation_L10n.getText() != null) {
+            setRepresentation_L10n_text(representation_L10n.getText());
         }
     }
 
@@ -90,6 +94,15 @@ public class AbstractTermDto implements Serializable {
     public void setRepresentation_L10n_abbreviatedLabel(String representation_L10n_abbreviatedLabel) {
         this.representation_L10n_abbreviatedLabel = representation_L10n_abbreviatedLabel;
     }
+
+    public String getRepresentation_L10n_text() {
+        return representation_L10n_text;
+    }
+
+    public void setRepresentation_L10n_text(String representation_L10n_text) {
+        this.representation_L10n_text = representation_L10n_text;
+    }
+
 
     public UUID getUuid() {
         return uuid;

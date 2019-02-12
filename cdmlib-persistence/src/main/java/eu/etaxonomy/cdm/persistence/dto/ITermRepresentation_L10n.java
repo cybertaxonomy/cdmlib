@@ -20,15 +20,11 @@ import eu.etaxonomy.cdm.model.common.TermBase;
  */
 public interface ITermRepresentation_L10n {
 
-    /**
-     * @return the label
-     */
     public abstract String getLabel();
 
-    /**
-     * @return the abbreviatedLabel
-     */
     public abstract String getAbbreviatedLabel();
+
+    public abstract String getText();
 
     public String getLanguageIso();
 
@@ -43,9 +39,6 @@ public interface ITermRepresentation_L10n {
      */
     public abstract void localize(TermBase term, boolean useInverseRepresentation);
 
-    /**
-     * @param representations
-     */
     void localize(Set<Representation> representations);
 
 }

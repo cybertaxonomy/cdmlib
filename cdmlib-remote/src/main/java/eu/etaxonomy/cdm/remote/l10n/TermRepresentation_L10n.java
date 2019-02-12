@@ -33,6 +33,7 @@ public class TermRepresentation_L10n implements ITermRepresentation_L10n {
 
     String label = null;
     String abbreviatedLabel = null;
+    String text = null;
     String languageIso = null;
     String languageUuid = null;
 
@@ -92,6 +93,8 @@ public class TermRepresentation_L10n implements ITermRepresentation_L10n {
 
             abbreviatedLabel = representation.getAbbreviatedLabel();
 
+            text = representation.getText();
+
             Language lang = representation.getLanguage();
             if (lang != null){
                 this.languageIso = lang.getIso639_2();
@@ -127,6 +130,16 @@ public class TermRepresentation_L10n implements ITermRepresentation_L10n {
         this.abbreviatedLabel = abbreviatedLabel;
     }
 
+    @Override
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    @Override
     public String getLanguageIso() {
         return languageIso;
     }
@@ -135,6 +148,7 @@ public class TermRepresentation_L10n implements ITermRepresentation_L10n {
         this.languageIso = languageIso;
     }
 
+    @Override
     public String getLanguageUuid() {
         return languageUuid;
     }
