@@ -194,6 +194,9 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
 
         Person turland = (Person) service.load(UUID.fromString("a598ab3f-b33b-4b4b-b237-d616fcb6b5b1"));
         Person monro = (Person) service.load(UUID.fromString("e7206bc5-61ab-468e-a9f5-dec118b46b7f"));
+        // TODO Add Assertion Person "Ehrenberg" must not be member of a team.
+        Person ehrenberg = (Person) service.load(UUID.fromString("6363ae88-ec57-4b23-8235-6c86fbe59446"));
+
 
         Team turland_monro_protected = (Team) service.load(UUID.fromString("5bff55de-f7cc-44d9-baac-908f52ad0cb8"));
         Team turland_monro = (Team) service.load(UUID.fromString("30ca93d6-b543-4bb9-b6ff-e9ededa65af7"));
@@ -201,6 +204,8 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
 
         // Person has no flag for protecting the nomenclaturalTitle
         assertNull(nomenclaturalTitleField.get(turland));
+        assertNull(nomenclaturalTitleField.get(ehrenberg));
+        assertTrue(ehrenberg.isProtectedTitleCache());
         assertEquals("A.M. Monro", nomenclaturalTitleField.get(monro).toString());
 
         // Team has a flag for protectedNomenclaturalTitle flag
@@ -217,6 +222,8 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
         turland_monro = (Team) service.load(UUID.fromString("30ca93d6-b543-4bb9-b6ff-e9ededa65af7"));
 
         assertEquals("Expecting nomenclaturalTitle to be set since it was NULL", "Turland, N.J.", nomenclaturalTitleField.get(turland));
+        assertEquals("Expecting nomenclaturalTitle to be set since it was NULL", "Ehrenberg, C.G.", nomenclaturalTitleField.get(ehrenberg));
+        assertEquals("Expecting titleChache to be unchaged since it was protecetd", "Ehrenb.", ehrenberg.getTitleCache());
         assertEquals("Expecting nomenclaturalTitle to be unchanged", "A.M. Monro", nomenclaturalTitleField.get(monro).toString());
 
         assertEquals("Turland, Monro", nomenclaturalTitleField.get(turland_monro_protected));
