@@ -1088,6 +1088,11 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         assertEquals("AuthorCache should be the persisted one", null, authorCacheField.get(name2));
         assertEquals("FullTitleCache should be the persisted one", "", fullTitleCacheField.get(name2));
 
+        assertEquals("TitleCache should be the persisted one", "Name3", titleCacheField.get(name3));
+        assertEquals("NameCache should be the persisted one", "", nameCacheField.get(name3));
+        assertEquals("AuthorCache should be the persisted one", "No-author", authorCacheField.get(name3));
+        assertEquals("FullTitleCache should be the persisted one", "", fullTitleCacheField.get(name3));
+
         nameService.updateTitleCache();
 
         assertEquals("Expecting titleCache to be updated", "First name Turl.", titleCacheField.get(name1));
@@ -1100,6 +1105,10 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         assertEquals("Expecting authorshipCache to be updated", "", authorCacheField.get(name2));
         assertEquals("Expecting fullTitleCache to be updated", "Protected name", fullTitleCacheField.get(name2));
 
+        assertEquals("Expecting titleCache to be updated", "Name3", titleCacheField.get(name3));
+        assertEquals("Expecting nameCache to be updated", "Third", nameCacheField.get(name3));
+        assertEquals("Expecting authorshipCache to be updated", "No-author", authorCacheField.get(name3));
+        assertEquals("Expecting fullTitleCache to be updated", "Name3", fullTitleCacheField.get(name3));
     }
 
     private Rank getSpeciesRank() {
