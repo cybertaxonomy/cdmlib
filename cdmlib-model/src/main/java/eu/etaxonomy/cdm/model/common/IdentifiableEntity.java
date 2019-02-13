@@ -288,7 +288,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @Override
     public Set<Rights> getRights() {
         if(rights == null) {
-            this.rights = new HashSet<Rights>();
+            this.rights = new HashSet<>();
         }
         return this.rights;
     }
@@ -306,7 +306,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @Override
     public List<Credit> getCredits() {
         if(credits == null) {
-            this.credits = new ArrayList<Credit>();
+            this.credits = new ArrayList<>();
         }
         return this.credits;
     }
@@ -346,7 +346,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @Override
     public List<Identifier> getIdentifiers(){
         if(this.identifiers == null) {
-            this.identifiers = new ArrayList<Identifier>();
+            this.identifiers = new ArrayList<>();
         }
         return this.identifiers;
     }
@@ -362,7 +362,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
      * @return a set of identifier value strings
      */
     public Set<String> getIdentifiers(UUID identifierTypeUuid){
-        Set<String> result = new HashSet<String>();
+        Set<String> result = new HashSet<>();
         for (Identifier<?> identifier : getIdentifiers()){
             if (identifier.getType().getUuid().equals(identifierTypeUuid)){
                 result.add(identifier.getIdentifier());
@@ -423,7 +423,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @Override
     public Set<Extension> getExtensions(){
         if(extensions == null) {
-            this.extensions = new HashSet<Extension>();
+            this.extensions = new HashSet<>();
         }
         return this.extensions;
     }
@@ -506,7 +506,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @Override
     public Set<IdentifiableSource> getSources() {
         if(sources == null) {
-            this.sources = new HashSet<IdentifiableSource>();
+            this.sources = new HashSet<>();
         }
         return this.sources;
     }

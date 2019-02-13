@@ -1062,9 +1062,6 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         return (Rank)termService.find(Rank.uuidGenus);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
 

@@ -1587,8 +1587,8 @@ public class TaxonName
     }
 
     /**
-     * Generates and returns a concatenated and formated authorteams string
-     * including basionym and combination authors of <i>this</i> non viral taxon name
+     * Generates and returns a concatenated and formated author team string
+     * including basionym and combination authors of <i>this</i> taxon name
      * according to the strategy defined in
      * {@link eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy#getAuthorshipCache(TaxonName) INonViralNameCacheStrategy}.
      *

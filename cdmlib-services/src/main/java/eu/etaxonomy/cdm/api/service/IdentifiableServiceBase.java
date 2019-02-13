@@ -268,7 +268,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 		updateTitleCache(null, null, null, null);
 	}
 
-	@Transactional(readOnly = false)  //TODO check transactional behaviour, e.g. what happens with the session if count is very large
+	@Transactional(readOnly = false)  //TODO check transactional behavior, e.g. what happens with the session if count is very large
 	protected <S extends T > void updateTitleCacheImpl(Class<S> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<T> cacheStrategy, IProgressMonitor monitor) {
 		if (stepSize == null){
 			stepSize = UPDATE_TITLE_CACHE_DEFAULT_STEP_SIZE;
@@ -278,7 +278,8 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 		}
 
 		long count = dao.count(clazz);
-		monitor.beginTask("update titles", Long.valueOf(count).intValue());
+		long countUpdated = 0;
+		monitor.beginTask("update titles for " + clazz.getSimpleName(), Long.valueOf(count).intValue());
 		int worked = 0;
 		for(int i = 0 ; i < count ; i = i + stepSize){
 			// not sure if such strict ordering is necessary here, but for safety reasons I do it

@@ -396,7 +396,7 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 	@Override
 	@Transactional(readOnly = false)
     public void updateTitleCache(Class<? extends DefinedTermBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<DefinedTermBase> cacheStrategy, IProgressMonitor monitor) {
-		//TODO shouldnt this be TermBase instead of DefinedTermBase
+		//TODO shouldn't this be TermBase instead of DefinedTermBase
 		if (clazz == null){
 			clazz = DefinedTermBase.class;
 		}

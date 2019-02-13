@@ -45,6 +45,11 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  */
 public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
 
+    /**
+     *
+     */
+    private static final UUID UUID_EHRENBERG = UUID.fromString("6363ae88-ec57-4b23-8235-6c86fbe59446");
+
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AgentServiceImplTest.class);
 
@@ -195,7 +200,7 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
         Person turland = (Person) service.load(UUID.fromString("a598ab3f-b33b-4b4b-b237-d616fcb6b5b1"));
         Person monro = (Person) service.load(UUID.fromString("e7206bc5-61ab-468e-a9f5-dec118b46b7f"));
         // TODO Add Assertion Person "Ehrenberg" must not be member of a team.
-        Person ehrenberg = (Person) service.load(UUID.fromString("6363ae88-ec57-4b23-8235-6c86fbe59446"));
+        Person ehrenberg = (Person) service.load(UUID_EHRENBERG);
 
 
         Team turland_monro_protected = (Team) service.load(UUID.fromString("5bff55de-f7cc-44d9-baac-908f52ad0cb8"));
@@ -220,6 +225,7 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
 
         turland_monro_protected = (Team) service.load(UUID.fromString("5bff55de-f7cc-44d9-baac-908f52ad0cb8"));
         turland_monro = (Team) service.load(UUID.fromString("30ca93d6-b543-4bb9-b6ff-e9ededa65af7"));
+        ehrenberg = (Person)service.load(UUID_EHRENBERG);
 
         assertEquals("Expecting nomenclaturalTitle to be set since it was NULL", "Turland, N.J.", nomenclaturalTitleField.get(turland));
         assertEquals("Expecting nomenclaturalTitle to be set since it was NULL", "Ehrenberg, C.G.", nomenclaturalTitleField.get(ehrenberg));

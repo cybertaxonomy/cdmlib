@@ -70,7 +70,6 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<Reference,IRef
 
     @Override
     public List<UuidAndTitleCache<Reference>> getUuidAndTitle() {
-
         return dao.getUuidAndTitle();
     }
 
@@ -81,15 +80,12 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<Reference,IRef
 
     @Override
     public List<Reference> getAllNomenclaturalReferences() {
-
         return dao.getAllNomenclaturalReferences();
     }
 
     @Override
     public List<TaxonBase> listCoveredTaxa(Reference reference, boolean includeSubordinateReferences, List<String> propertyPaths) {
-
         List<TaxonBase> taxonList = dao.listCoveredTaxa(reference, includeSubordinateReferences, null, propertyPaths);
-
         return taxonList;
     }
 
@@ -166,7 +162,7 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<Reference,IRef
 
         long numberOfResults = dao.countByIdentifier(Reference.class, identifier, identifierType, matchmode);
         long numberOfResultsTitle = dao.countByTitle(identifier);
-        List<Object[]> daoResults = new ArrayList<Object[]>();
+        List<Object[]> daoResults = new ArrayList<>();
         List<UuidAndTitleCache<Reference>> daoResultsTitle = new ArrayList();
         if(numberOfResults > 0) { // no point checking again
             daoResults = dao.findByIdentifierAbbrev( identifier, identifierType,

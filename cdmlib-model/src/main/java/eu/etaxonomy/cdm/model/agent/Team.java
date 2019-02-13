@@ -340,6 +340,7 @@ public class Team extends TeamOrPersonBase<Team> {
 		this.hasMoreMembers = hasMoreMembers;
 	}
 
+
     @Override
     public boolean hasUnprotectedCache(){
         return super.hasUnprotectedCache()
