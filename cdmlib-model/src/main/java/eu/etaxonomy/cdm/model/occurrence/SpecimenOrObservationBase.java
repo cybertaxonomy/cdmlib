@@ -275,10 +275,17 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
         return identityCache;
     }
     /**
-     * @param identityCache the identityCache to set
+     * @Deprecated For special use only.
+     * Use {@link #setIdentityCache(String, boolean)} instead
      */
+    @Deprecated
     public void setIdentityCache(String identityCache) {
         this.identityCache = identityCache;
+    }
+
+    public void setIdentityCache(String identityCache, boolean isProtected) {
+        this.protectedIdentityCache = isProtected;
+        setIdentityCache(identityCache);
     }
 
     /**
@@ -582,9 +589,27 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
     }
 
     @Override
-    public boolean hasUnprotectedCache(){
-        return super.hasUnprotectedCache()
-                || !this.protectedIdentityCache;
+    public boolean updateCaches(){
+        boolean result = super.updateCaches();
+//        if (this.protectedIdentityCache == false){
+//            String oldIdentityCache = this.identityCache;
+//
+//            String newIdentityCache = cacheStrategy.getIdentityCache(this);
+//
+//            if ( oldIdentityCache == null   || ! oldIdentityCache.equals(newIdentityCache) ){
+//                 this.setIdentityCache(null, false);
+//                 String newCache = this.getIdentityCache();
+//
+//                 if (newCache == null){
+//                     logger.warn("New identityCache should never be null");
+//                 }
+//                 if (oldIdentityCache == null){
+//                     logger.info("Old abbrevTitleCache should never be null");
+//                 }
+//                 result = true;
+//             }
+//         }
+        return result;
     }
 
 //******************** CLONE **********************************************/

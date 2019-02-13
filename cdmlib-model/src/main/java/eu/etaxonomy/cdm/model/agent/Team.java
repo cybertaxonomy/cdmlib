@@ -342,11 +342,29 @@ public class Team extends TeamOrPersonBase<Team> {
 
 
     @Override
-    public boolean hasUnprotectedCache(){
-        return super.hasUnprotectedCache()
-                || !this.protectedNomenclaturalTitleCache
-                || !this.protectedCollectorTitleCache;
-    }
+    public boolean updateCaches(){
+        boolean result = super.updateCaches();
+        if (this.protectedNomenclaturalTitleCache == false){
+            String oldNomTitleCache = this.nomenclaturalTitle;
+            this.protectedNomenclaturalTitleCache = false;
+
+            String newAbbrevTitleCache = cacheStrategy.getTitleCache(this);
+
+            if ( oldNomTitleCache == null   || ! oldNomTitleCache.equals(newAbbrevTitleCache) ){
+                 this.setNomenclaturalTitle(null, false);
+                 String newCache = this.getNomenclaturalTitle();
+
+                 if (newCache == null){
+                     logger.warn("New nomTitleCache should never be null");
+                 }
+                 if (oldNomTitleCache == null){
+                     logger.info("Old nomTitleCache should never be null");
+                 }
+                 result = true;
+             }
+         }
+        return result;
+     }
 
 //*********************** CLONE ********************************************************/
 

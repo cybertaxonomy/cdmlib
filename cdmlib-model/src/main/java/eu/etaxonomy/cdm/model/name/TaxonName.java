@@ -822,14 +822,6 @@ public class TaxonName
         }
     }
 
-    @Override
-    public boolean hasUnprotectedCache(){
-        return super.hasUnprotectedCache()
-                || !this.protectedNameCache
-                || !this.protectedAuthorshipCache
-                || !this.protectedFullTitleCache;
-    }
-
 // ****************** GETTER / SETTER ****************************/
 
     @Override
@@ -1542,21 +1534,7 @@ public class TaxonName
 
 
 
-    /**
-     * Updates the authorship cache if any changes appeared in the authors nomenclatural caches.
-     * Deletes the titleCache and the fullTitleCache if not protected and if any change has happened
-     * @return
-     */
-    private void updateAuthorshipCache() {
-        //updates the authorship cache if necessary and via the listener updates all higher caches
-        if (protectedAuthorshipCache == false){
-            String oldCache = this.authorshipCache;
-            String newCache = this.getAuthorshipCache();
-            if ( (oldCache == null && newCache != null)  ||  CdmUtils.nullSafeEqual(oldCache,newCache)){
-                this.setAuthorshipCache(this.getAuthorshipCache(), false);
-            }
-        }
-    }
+
 
 
     /**
@@ -3591,6 +3569,68 @@ public class TaxonName
     @Override
     public boolean isViral() {
         return nameType.isViral();
+    }
+
+// *********************** CACHES ***************************************************/
+
+
+    @Override
+    public boolean updateCaches() {
+        boolean result = updateAuthorshipCache();
+        result |= updateNameCache();
+        result |= super.updateCaches();
+        result |= updateFullTitleCache();
+        return result;
+    }
+
+    /**
+     * Updates the authorship cache if any changes appeared in the authors nomenclatural caches.
+     * Deletes the titleCache and the fullTitleCache if not protected and if any change has happened.
+     * @return <code>true</code> if something changed
+     */
+    private boolean updateAuthorshipCache() {
+        //updates the authorship cache if necessary and via the listener updates all higher caches
+        if (protectedAuthorshipCache == false){
+            String oldCache = this.authorshipCache;
+            String newCache = this.getAuthorshipCache();
+            if (!CdmUtils.nullSafeEqual(oldCache, newCache)){
+                this.setAuthorshipCache(this.getAuthorshipCache(), false);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @return
+     */
+    private boolean updateNameCache() {
+        //updates the name cache if necessary and via the listener updates all higher caches
+        if (protectedNameCache == false){
+            String oldCache = this.nameCache;
+            String newCache = this.getNameCache();
+            if (!CdmUtils.nullSafeEqual(oldCache, newCache)){
+                this.setNameCache(this.getNameCache(), false);
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * @return
+     */
+    private boolean updateFullTitleCache() {
+        if (protectedFullTitleCache == false){
+            String oldCache = this.fullTitleCache;
+            String newCache = this.getFullTitleCache();
+            if (!CdmUtils.nullSafeEqual(oldCache, newCache)){
+                this.setFullTitleCache(this.getFullTitleCache(), false);
+                return true;
+            }
+        }
+        return false;
     }
 
 

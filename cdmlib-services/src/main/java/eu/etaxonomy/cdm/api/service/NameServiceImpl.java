@@ -847,20 +847,6 @@ public class NameServiceImpl
 
 
     @Override
-    protected void setOtherCachesNull(TaxonName name) {
-         if (! name.isProtectedNameCache()){
-             name.setNameCache(null, false);
-        }
-        if (! name.isProtectedAuthorshipCache()){
-            name.setAuthorshipCache(null, false);
-        }
-        if (! name.isProtectedFullTitleCache()){
-            name.setFullTitleCache(null, false);
-        }
-
-    }
-
-    @Override
     public List<TaggedText> getTaggedName(UUID uuid) {
         TaxonName taxonName = dao.load(uuid);
         List<TaggedText> taggedName = taxonName.getTaggedName();

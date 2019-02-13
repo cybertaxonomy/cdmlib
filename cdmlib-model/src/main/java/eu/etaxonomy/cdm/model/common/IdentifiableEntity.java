@@ -267,12 +267,39 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         return this.titleCache == null || "".equals(this.titleCache);
     }
 
+    public boolean updateCaches(){
+        if (this.protectedTitleCache == false){
+            String oldTitleCache = this.titleCache;
+
+            String newTitleCache = cacheStrategy.getTitleCache(this);
+
+            if ( oldTitleCache == null   || ! oldTitleCache.equals(newTitleCache) ){
+                this.setTitleCache(null, false);
+                String newCache = this.getTitleCache();
+
+                if (newCache == null){
+                    logger.warn("newCache should never be null");
+                }
+                if (oldTitleCache == null){
+                    logger.info("oldTitleCache should never be null");
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
-     * Returns true if any of the caches is not protected. Needs to be overriden
-     * by subclass if other caches exist.
+     * Updates the caches with the given cache strategy
+     * @param entityCacheStrategy
+     * @return <code>true</code> if some cache was updated, <code>false</code> otherwise
      */
-    public boolean hasUnprotectedCache(){
-        return !this.protectedTitleCache;
+    public boolean updateCaches(S entityCacheStrategy){
+        S oldCacheStrategy = this.getCacheStrategy();
+        this.cacheStrategy = entityCacheStrategy != null? entityCacheStrategy : this.getCacheStrategy();
+        boolean result = this.updateCaches();
+        this.cacheStrategy = oldCacheStrategy;
+        return result;
     }
 
 //**************************************************************************************

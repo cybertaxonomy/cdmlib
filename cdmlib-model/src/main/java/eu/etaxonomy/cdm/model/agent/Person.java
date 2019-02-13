@@ -370,6 +370,20 @@ public class Person extends TeamOrPersonBase<Person>{
 		this.lifespan = lifespan;
 	}
 
+    @Override
+    public boolean updateCaches(){
+        boolean result = false;
+        result |= super.updateCaches();
+        if (this.nomenclaturalTitle == null){
+            this.nomenclaturalTitle = this.getTitleCache();
+            if ( this.nomenclaturalTitle != null ){
+                 result = true;
+            }
+         }
+
+         return result;
+     }
+
 //*********************** CLONE ********************************************************/
 
 	/**

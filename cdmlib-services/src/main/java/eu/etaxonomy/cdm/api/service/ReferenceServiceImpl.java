@@ -53,15 +53,6 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<Reference,IRef
         super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
     }
 
-
-    @Override
-    protected void setOtherCachesNull(Reference ref) {
-        if (! ref.isProtectedAbbrevTitleCache()){
-            ref.setAbbrevTitleCache(null, false);
-        }
-    }
-
-
     @Override
     @Autowired
     protected void setDao(IReferenceDao dao) {

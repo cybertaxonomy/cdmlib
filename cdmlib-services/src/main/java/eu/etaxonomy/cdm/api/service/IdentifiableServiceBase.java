@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -31,8 +30,6 @@ import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
-import eu.etaxonomy.cdm.model.agent.Person;
-import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.ISourceable;
@@ -41,11 +38,6 @@ import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.media.Rights;
-import eu.etaxonomy.cdm.model.name.INonViralName;
-import eu.etaxonomy.cdm.model.name.ITaxonName;
-import eu.etaxonomy.cdm.model.name.TaxonName;
-import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.HibernateBeanInitializer;
@@ -293,21 +285,13 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 
 			List<T> entitiesToUpdate = new ArrayList<>();
 			for (T entity : list){
-				HibernateProxyHelper.deproxy(entity, clazz);
-				if (entity.hasUnprotectedCache()){
-				    // always execute for TeamOrPersonBase to allow updating the nomenclaturalTitle
-					updateTitleCacheForSingleEntity(cacheStrategy, entitiesToUpdate, entity);
-				}
+				entity = HibernateProxyHelper.deproxy(entity);
+			    if (entity.updateCaches(cacheStrategy)){
+			        countUpdated++;
+			    }
 				worked++;
 			}
-			for (T entity: entitiesToUpdate){
-				if (entity.getTitleCache() != null){
-					//System.err.println(entity.getTitleCache());
-				}else{
-				    //System.err.println("no titleCache" + ((TaxonName)entity).getNameCache());
-				}
-			}
-			saveOrUpdate(entitiesToUpdate);
+
 			monitor.worked(list.size());
 			if (monitor.isCanceled()){
 				monitor.done();
@@ -340,159 +324,6 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 		Map<Class<? extends CdmBase>, AutoPropertyInitializer<CdmBase>> map = new HashMap<>();
 		initializer.setBeanAutoInitializers(map);
 		return oldAutoInitializers;
-	}
-
-	/**
-	 * @param cacheStrategy
-	 * @param entitiesToUpdate
-	 * @param entity
-	 */
-	@SuppressWarnings("unchecked")
-	private void updateTitleCacheForSingleEntity(
-			IIdentifiableEntityCacheStrategy<T> cacheStrategy,
-			List<T> entitiesToUpdate,
-			T entity) {
-
-		//assert (entity.isProtectedTitleCache() == false );
-	    entity = CdmBase.deproxy(entity);
-
-		//exclude recursive inreferences
-		if (entity.isInstanceOf(Reference.class)){
-			Reference ref = (Reference)entity;
-			if (ref.getInReference() != null && ref.getInReference().equals(ref)){
-				return;
-			}
-		}
-
-		//define the correct cache strategy
-		IIdentifiableEntityCacheStrategy entityCacheStrategy = cacheStrategy;
-		if (entityCacheStrategy == null){
-			entityCacheStrategy = entity.getCacheStrategy();
-			//FIXME find out why the wrong cache strategy is loaded here, see #1876
-			if (entity instanceof Reference){
-				entityCacheStrategy = ReferenceFactory.newReference(((Reference)entity).getType()).getCacheStrategy();
-			}
-		}
-
-
-		//old titleCache
-		entity.setProtectedTitleCache(true);
-
-		String oldTitleCache = entity.getTitleCache();
-		entity.setTitleCache(oldTitleCache, false);   //before we had entity.setProtectedTitleCache(false) but this deleted the titleCache itself
-		entity.setCacheStrategy(entityCacheStrategy);
-		//NonViralNames and Reference have more caches //TODO handle in NameService
-		String oldNameCache = null;
-		String oldFullTitleCache = null;
-		String oldAbbrevTitleCache = null;
-        String oldNomenclaturalTitle = null;
-		if (entity instanceof TaxonName ){
-		    if (((TaxonName) entity).isNonViral()) {
-                try{
-                	INonViralName nvn = (INonViralName) entity;
-                	if (!nvn.isProtectedNameCache()){
-                	    nvn.setProtectedNameCache(true);
-                		oldNameCache = nvn.getNameCache();
-                		nvn.setProtectedNameCache(false);
-                	}
-                	if (!nvn.isProtectedFullTitleCache()){
-                	    nvn.setProtectedFullTitleCache(true);
-                		oldFullTitleCache = nvn.getFullTitleCache();
-                		nvn.setProtectedFullTitleCache(false);
-                	}
-                }catch(ClassCastException e){
-                	System.out.println("entity: " + entity.getTitleCache());
-                }
-            }
-		}else if (entity instanceof Reference){
-			Reference ref = (Reference) entity;
-			if (!ref.isProtectedAbbrevTitleCache()){
-				ref.setProtectedAbbrevTitleCache(true);
-				oldAbbrevTitleCache = ref.getAbbrevTitleCache();
-				ref.setProtectedAbbrevTitleCache(false);
-			}
-		} else if (entity instanceof Team){
-            Team team = (Team) entity;
-            if(!team.isProtectedNomenclaturalTitleCache()){
-                team.setProtectedNomenclaturalTitleCache(true);
-                oldNomenclaturalTitle = team.getNomenclaturalTitle();
-                team.setProtectedNomenclaturalTitleCache(false);
-            }
-        } else if (entity instanceof Person){
-            // Person has no flag for protecting the nomenclaturalTitle
-            Person person = (Person) entity;
-            oldNomenclaturalTitle = person.getNomenclaturalTitle();
-        }
-		setOtherCachesNull(entity);
-		String newTitleCache= null;
-		INonViralName nvn = null; //TODO find better solution
-		try{
-			if (entity instanceof TaxonName){
-				nvn = (ITaxonName) entity;
-				newTitleCache = entityCacheStrategy.getTitleCache(nvn);
-			} else{
-				 newTitleCache = entityCacheStrategy.getTitleCache(entity);
-			}
-		}catch (ClassCastException e){
-			nvn = HibernateProxyHelper.deproxy(entity, TaxonName.class);
-			newTitleCache = entityCacheStrategy.getTitleCache(nvn);
-		}
-
-		if ( oldTitleCache == null   || ! oldTitleCache.equals(newTitleCache) ){
-			entity.setTitleCache(null, false);
-			String newCache = entity.getTitleCache();
-
-			if (newCache == null){
-				logger.warn("newCache should never be null");
-			}
-			if (oldTitleCache == null){
-				logger.info("oldTitleCache should never be null");
-			}
-			if (nvn != null){
-				nvn.getNameCache();
-				nvn.getFullTitleCache();
-			}
-			if (entity instanceof Reference){
-				Reference ref = (Reference) entity;
-				ref.getAbbrevTitleCache();
-			}
-			entitiesToUpdate.add(entity);
-		}else if (nvn != null){
-			String newNameCache = nvn.getNameCache();
-			String newFullTitleCache = nvn.getFullTitleCache();
-			if ((oldNameCache == null && !nvn.isProtectedNameCache()) || (oldNameCache != null && !oldNameCache.equals(newNameCache))){
-				entitiesToUpdate.add(entity);
-			}else if ((oldFullTitleCache == null && !nvn.isProtectedFullTitleCache()) || (oldFullTitleCache != null && !oldFullTitleCache.equals(newFullTitleCache))){
-				entitiesToUpdate.add(entity);
-			}
-		}else if (entity instanceof Reference){
-			Reference ref = (Reference) entity;
-			String newAbbrevTitleCache = ref.getAbbrevTitleCache();
-			if ( (oldAbbrevTitleCache == null && !ref.isProtectedAbbrevTitleCache() ) || (oldAbbrevTitleCache != null && !oldAbbrevTitleCache.equals(newAbbrevTitleCache))){
-				entitiesToUpdate.add(entity);
-			}
-		}else if (entity instanceof Team){
-		    Team team = (Team) entity;
-            String newNomenclaturalTitle = team.getNomenclaturalTitle();
-            if ( (oldNomenclaturalTitle == null && !team.isProtectedNomenclaturalTitleCache() ) || !Objects.equals(oldNomenclaturalTitle, newNomenclaturalTitle)){
-                entitiesToUpdate.add(entity);
-            }
-        }else if (entity instanceof Person){
-            Person person = (Person) entity;
-            String newNomenclaturalTitle = person.getNomenclaturalTitle();
-            if (!Objects.equals(oldNomenclaturalTitle, newNomenclaturalTitle)){
-                entitiesToUpdate.add(entity);
-            }
-        }
-	}
-
-
-	/**
-	 * Needs override if not only the title cache should be set to null to
-	 * generate the correct new title cache
-	 */
-	protected void setOtherCachesNull(T entity) {
-		return;
 	}
 
 	private class DeduplicateState{
