@@ -281,7 +281,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
                     logger.warn("newCache should never be null");
                 }
                 if (oldTitleCache == null){
-                    logger.info("oldTitleCache should never be null");
+                    logger.info("oldTitleCache was illegaly null and has been fixed");
                 }
                 return true;
             }

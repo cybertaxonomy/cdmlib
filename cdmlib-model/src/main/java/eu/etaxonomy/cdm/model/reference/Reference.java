@@ -1181,7 +1181,7 @@ public class Reference
                     logger.warn("New abbrevCache should never be null");
                 }
                 if (oldAbbrevTitleCache == null){
-                    logger.info("Old abbrevTitleCache should never be null");
+                    logger.info("oldAbbrevTitleCache was illegaly null and has been fixed");
                 }
                 result = true;
             }

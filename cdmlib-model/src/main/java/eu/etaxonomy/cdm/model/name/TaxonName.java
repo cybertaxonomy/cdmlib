@@ -3592,9 +3592,10 @@ public class TaxonName
         //updates the authorship cache if necessary and via the listener updates all higher caches
         if (protectedAuthorshipCache == false){
             String oldCache = this.authorshipCache;
-            String newCache = this.getAuthorshipCache();
+            String newCache = cacheStrategy.getAuthorshipCache(this);
             if (!CdmUtils.nullSafeEqual(oldCache, newCache)){
-                this.setAuthorshipCache(this.getAuthorshipCache(), false);
+                this.setAuthorshipCache(null, false);
+                this.getAuthorshipCache();
                 return true;
             }
         }
@@ -3608,9 +3609,10 @@ public class TaxonName
         //updates the name cache if necessary and via the listener updates all higher caches
         if (protectedNameCache == false){
             String oldCache = this.nameCache;
-            String newCache = this.getNameCache();
+            String newCache = cacheStrategy.getNameCache(this);
             if (!CdmUtils.nullSafeEqual(oldCache, newCache)){
-                this.setNameCache(this.getNameCache(), false);
+                this.setNameCache(null, false);
+                this.getNameCache();
                 return true;
             }
         }
@@ -3624,9 +3626,10 @@ public class TaxonName
     private boolean updateFullTitleCache() {
         if (protectedFullTitleCache == false){
             String oldCache = this.fullTitleCache;
-            String newCache = this.getFullTitleCache();
+            String newCache = cacheStrategy.getFullTitleCache(this);
             if (!CdmUtils.nullSafeEqual(oldCache, newCache)){
-                this.setFullTitleCache(this.getFullTitleCache(), false);
+                this.setFullTitleCache(null, false);
+                this.getFullTitleCache();
                 return true;
             }
         }
@@ -3642,7 +3645,7 @@ public class TaxonName
      * modifying only some of the attributes.<BR><BR>
      * Usages of this name in a taxon concept are <b>not</b> cloned.<BR>
      * <b>The name gets a newly created homotypical group</b><BR>
-     * (CAUTION: this behaviour needs to be discussed and may change in future).<BR><BR>
+     * (CAUTION: this behavior needs to be discussed and may change in future).<BR><BR>
      * {@link TaxonNameDescription Name descriptions} are cloned and not reused.<BR>
      * {@link TypeDesignationBase Type designations} are cloned and not reused.<BR>
      *
