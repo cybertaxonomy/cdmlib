@@ -152,7 +152,7 @@ public class AbstractTermDto implements Serializable, Comparable<AbstractTermDto
                 return -1;
             }
             else{
-                return representation_L10n.compareTo(o.getRepresentation_L10n());
+                return representation_L10n.toLowerCase().compareTo(o.getRepresentation_L10n().toLowerCase());
             }
         }
         else if(representation_L10n!=null){
