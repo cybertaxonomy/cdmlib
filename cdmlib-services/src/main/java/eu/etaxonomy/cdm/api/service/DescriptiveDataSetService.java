@@ -244,12 +244,12 @@ public class DescriptiveDataSetService
 
     @Override
     @Transactional(readOnly = false)
-    public void updateTitleCache(Class<? extends DescriptiveDataSet> clazz, Integer stepSize,
+    public void updateCaches(Class<? extends DescriptiveDataSet> clazz, Integer stepSize,
             IIdentifiableEntityCacheStrategy<DescriptiveDataSet> cacheStrategy, IProgressMonitor monitor) {
         if (clazz == null) {
             clazz = DescriptiveDataSet.class;
         }
-        super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
+        super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
     }
 
     private TaxonDescription findTaxonDescriptionByMarkerType(DescriptiveDataSet dataSet, Taxon taxon, MarkerType markerType){

@@ -822,14 +822,6 @@ public class TaxonName
         }
     }
 
-    @Override
-    public boolean hasUnprotectedCache(){
-        return super.hasUnprotectedCache()
-                || !this.protectedNameCache
-                || !this.protectedAuthorshipCache
-                || !this.protectedFullTitleCache;
-    }
-
 // ****************** GETTER / SETTER ****************************/
 
     @Override
@@ -1542,21 +1534,7 @@ public class TaxonName
 
 
 
-    /**
-     * Updates the authorship cache if any changes appeared in the authors nomenclatural caches.
-     * Deletes the titleCache and the fullTitleCache if not protected and if any change has happened
-     * @return
-     */
-    private void updateAuthorshipCache() {
-        //updates the authorship cache if necessary and via the listener updates all higher caches
-        if (protectedAuthorshipCache == false){
-            String oldCache = this.authorshipCache;
-            String newCache = this.getAuthorshipCache();
-            if ( (oldCache == null && newCache != null)  ||  CdmUtils.nullSafeEqual(oldCache,newCache)){
-                this.setAuthorshipCache(this.getAuthorshipCache(), false);
-            }
-        }
-    }
+
 
 
     /**
@@ -1587,8 +1565,8 @@ public class TaxonName
     }
 
     /**
-     * Generates and returns a concatenated and formated authorteams string
-     * including basionym and combination authors of <i>this</i> non viral taxon name
+     * Generates and returns a concatenated and formated author team string
+     * including basionym and combination authors of <i>this</i> taxon name
      * according to the strategy defined in
      * {@link eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy#getAuthorshipCache(TaxonName) INonViralNameCacheStrategy}.
      *
@@ -3593,6 +3571,71 @@ public class TaxonName
         return nameType.isViral();
     }
 
+// *********************** CACHES ***************************************************/
+
+
+    @Override
+    public boolean updateCaches() {
+        boolean result = updateAuthorshipCache();
+        result |= updateNameCache();
+        result |= super.updateCaches();
+        result |= updateFullTitleCache();
+        return result;
+    }
+
+    /**
+     * Updates the authorship cache if any changes appeared in the authors nomenclatural caches.
+     * Deletes the titleCache and the fullTitleCache if not protected and if any change has happened.
+     * @return <code>true</code> if something changed
+     */
+    private boolean updateAuthorshipCache() {
+        //updates the authorship cache if necessary and via the listener updates all higher caches
+        if (protectedAuthorshipCache == false){
+            String oldCache = this.authorshipCache;
+            String newCache = cacheStrategy.getAuthorshipCache(this);
+            if (!CdmUtils.nullSafeEqual(oldCache, newCache)){
+                this.setAuthorshipCache(null, false);
+                this.getAuthorshipCache();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @return
+     */
+    private boolean updateNameCache() {
+        //updates the name cache if necessary and via the listener updates all higher caches
+        if (protectedNameCache == false){
+            String oldCache = this.nameCache;
+            String newCache = cacheStrategy.getNameCache(this);
+            if (!CdmUtils.nullSafeEqual(oldCache, newCache)){
+                this.setNameCache(null, false);
+                this.getNameCache();
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * @return
+     */
+    private boolean updateFullTitleCache() {
+        if (protectedFullTitleCache == false){
+            String oldCache = this.fullTitleCache;
+            String newCache = cacheStrategy.getFullTitleCache(this);
+            if (!CdmUtils.nullSafeEqual(oldCache, newCache)){
+                this.setFullTitleCache(null, false);
+                this.getFullTitleCache();
+                return true;
+            }
+        }
+        return false;
+    }
+
 
 //*********************** CLONE ********************************************************/
 
@@ -3602,7 +3645,7 @@ public class TaxonName
      * modifying only some of the attributes.<BR><BR>
      * Usages of this name in a taxon concept are <b>not</b> cloned.<BR>
      * <b>The name gets a newly created homotypical group</b><BR>
-     * (CAUTION: this behaviour needs to be discussed and may change in future).<BR><BR>
+     * (CAUTION: this behavior needs to be discussed and may change in future).<BR><BR>
      * {@link TaxonNameDescription Name descriptions} are cloned and not reused.<BR>
      * {@link TypeDesignationBase Type designations} are cloned and not reused.<BR>
      *

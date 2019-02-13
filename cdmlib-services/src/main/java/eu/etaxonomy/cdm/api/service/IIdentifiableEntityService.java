@@ -41,21 +41,21 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity>
             extends IAnnotatableService<T> {
 
     /**
-     * (Re-)generate the title caches for all objects of this concrete IdentifiableEntity class.
+     * (Re-)generate the caches (e.g. title cache) for all objects of this concrete IdentifiableEntity class.
      * Uses default values.
-     * @see #updateTitleCache(Class, Integer, IIdentifiableEntityCacheStrategy, IProgressMonitor)
+     * @see #updateCaches(Class, Integer, IIdentifiableEntityCacheStrategy, IProgressMonitor)
      */
-    public void updateTitleCache();
+    public void updateCaches();
 
     /**
-     * (Re-)generate the title caches for all objects of this concrete IdentifiableEntity class
+     * (Re-)generate the caches for all objects of this concrete IdentifiableEntity class
      *
      * @param clazz class of objects to be updated
      * @param stepSize number of objects loaded per step. If <code>null</code> use default.
-     * @param cacheStrategy cachestrategy used for title cache. If <code>null</code> use default.
+     * @param cacheStrategy cache strategy used for cache generation. If <code>null</code> use default.
      * @param monitor progress monitor. If <code>null</code> use default.
      */
-    public void updateTitleCache(Class<? extends T> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<T> cacheStrategy, IProgressMonitor monitor);
+    public void updateCaches(Class<? extends T> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<T> cacheStrategy, IProgressMonitor monitor);
 
     /**
      * Finds an object with a given LSID. If the object does not currently exist in the current view, then

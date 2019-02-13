@@ -838,27 +838,13 @@ public class NameServiceImpl
 
     @Override
     @Transactional(readOnly = false)
-    public void updateTitleCache(Class<? extends TaxonName> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<TaxonName> cacheStrategy, IProgressMonitor monitor) {
+    public void updateCaches(Class<? extends TaxonName> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<TaxonName> cacheStrategy, IProgressMonitor monitor) {
         if (clazz == null){
             clazz = TaxonName.class;
         }
-        super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
+        super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
     }
 
-
-    @Override
-    protected void setOtherCachesNull(TaxonName name) {
-         if (! name.isProtectedNameCache()){
-             name.setNameCache(null, false);
-        }
-        if (! name.isProtectedAuthorshipCache()){
-            name.setAuthorshipCache(null, false);
-        }
-        if (! name.isProtectedFullTitleCache()){
-            name.setFullTitleCache(null, false);
-        }
-
-    }
 
     @Override
     public List<TaggedText> getTaggedName(UUID uuid) {

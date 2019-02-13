@@ -1158,6 +1158,36 @@ public class Reference
 		this.cacheStrategy = referenceCacheStrategy;
 	}
 
+   @Override
+   public boolean updateCaches(){
+       //TODO shouldn't this be moved to the cache strategy?
+       if (this.equals(this.getInReference())){
+           String message = "-- invalid inreference (self-referencing) --";
+           String oldTitleCache = this.titleCache;
+           this.titleCache = message;
+           return !message.equals(oldTitleCache);
+       }
+       boolean result = super.updateCaches();
+       if (this.protectedAbbrevTitleCache == false){
+           String oldAbbrevTitleCache = this.abbrevTitleCache;
+
+           String newAbbrevTitleCache = cacheStrategy.getFullAbbrevTitleString(this);
+
+           if ( oldAbbrevTitleCache == null   || ! oldAbbrevTitleCache.equals(newAbbrevTitleCache) ){
+                this.setAbbrevTitleCache(null, false);
+                String newCache = this.getAbbrevTitleCache();
+
+                if (newCache == null){
+                    logger.warn("New abbrevCache should never be null");
+                }
+                if (oldAbbrevTitleCache == null){
+                    logger.info("oldAbbrevTitleCache was illegaly null and has been fixed");
+                }
+                result = true;
+            }
+        }
+        return result;
+    }
 
 
 //*********************** CLONE ********************************************************/

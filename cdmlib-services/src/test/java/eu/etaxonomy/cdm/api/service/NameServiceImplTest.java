@@ -12,6 +12,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -36,6 +37,7 @@ import eu.etaxonomy.cdm.api.service.config.IdentifiableServiceConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.config.NameDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -71,7 +73,12 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  *
  */
 public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
+
     private static final Logger logger = Logger.getLogger(NameServiceImplTest.class);
+
+    private static final UUID NAME1_UUID = UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384");
+    private static final UUID NAME2_UUID = UUID.fromString("f9e9c13f-5fa5-48d3-88cf-712c921a099e");
+    private static final UUID NAME3_UUID = UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28");
 
     @SpringBeanByType
     private INameService nameService;
@@ -1054,6 +1061,56 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
     }
 
+    @Test  //7874 //8030
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="NameServiceImplTest.testUpdateCaches.xml")
+    public void testUpdateCaches() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException{
+
+        Field titleCacheField = IdentifiableEntity.class.getDeclaredField("titleCache");
+        titleCacheField.setAccessible(true);
+        Field nameCacheField = TaxonName.class.getDeclaredField("nameCache");
+        nameCacheField.setAccessible(true);
+        Field authorCacheField = TaxonName.class.getDeclaredField("authorshipCache");
+        authorCacheField.setAccessible(true);
+        Field fullTitleCacheField = TaxonName.class.getDeclaredField("fullTitleCache");
+        fullTitleCacheField.setAccessible(true);
+
+        TaxonName name1 = nameService.load(NAME1_UUID);
+        TaxonName name2 = nameService.load(NAME2_UUID);
+        TaxonName name3 = nameService.load(NAME3_UUID);
+
+        assertEquals("TitleCache should be the persisted one", "Name1", titleCacheField.get(name1));
+        assertEquals("NameCache should be the persisted one", "", nameCacheField.get(name1));
+        assertEquals("AuthorCache should be the persisted one", "", authorCacheField.get(name1));
+        assertEquals("FullTitleCache should be the persisted one", "", fullTitleCacheField.get(name1));
+
+        assertEquals("TitleCache should be the persisted one", "Name2", titleCacheField.get(name2));
+        assertEquals("NameCache should be the persisted one", "Protected name", nameCacheField.get(name2));
+        assertEquals("AuthorCache should be the persisted one", null, authorCacheField.get(name2));
+        assertEquals("FullTitleCache should be the persisted one", "", fullTitleCacheField.get(name2));
+
+        assertEquals("TitleCache should be the persisted one", "Name3", titleCacheField.get(name3));
+        assertEquals("NameCache should be the persisted one", "", nameCacheField.get(name3));
+        assertEquals("AuthorCache should be the persisted one", "No-author", authorCacheField.get(name3));
+        assertEquals("FullTitleCache should be the persisted one", "", fullTitleCacheField.get(name3));
+
+        nameService.updateCaches();
+
+        assertEquals("Expecting titleCache to be updated", "First name Turl.", titleCacheField.get(name1));
+        assertEquals("Expecting nameCache to be updated", "First name", nameCacheField.get(name1));
+        assertEquals("Expecting authorshipCache to be updated", "Turl.", authorCacheField.get(name1));
+        assertEquals("Expecting fullTitleCache to be updated", "First name Turl.", fullTitleCacheField.get(name1));
+
+        assertEquals("Expecting titleCache to be updated", "Protected name", titleCacheField.get(name2));
+        assertEquals("Expecting nameCache to not be updated", "Protected name", nameCacheField.get(name2));
+        assertEquals("Expecting authorshipCache to be updated", "", authorCacheField.get(name2));
+        assertEquals("Expecting fullTitleCache to be updated", "Protected name", fullTitleCacheField.get(name2));
+
+        assertEquals("Expecting titleCache to be updated", "Name3", titleCacheField.get(name3));
+        assertEquals("Expecting nameCache to be updated", "Third", nameCacheField.get(name3));
+        assertEquals("Expecting authorshipCache to be updated", "No-author", authorCacheField.get(name3));
+        assertEquals("Expecting fullTitleCache to be updated", "Name3", fullTitleCacheField.get(name3));
+    }
+
     private Rank getSpeciesRank() {
         return (Rank)termService.find(Rank.uuidSpecies);
     }
@@ -1062,9 +1119,6 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         return (Rank)termService.find(Rank.uuidGenus);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
 

@@ -173,11 +173,11 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
     @Override
     @Transactional(readOnly = false)
-    public void updateTitleCache(Class<? extends SpecimenOrObservationBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<SpecimenOrObservationBase> cacheStrategy, IProgressMonitor monitor) {
+    public void updateCaches(Class<? extends SpecimenOrObservationBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<SpecimenOrObservationBase> cacheStrategy, IProgressMonitor monitor) {
         if (clazz == null) {
             clazz = SpecimenOrObservationBase.class;
         }
-        super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
+        super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
     }
 
     /**

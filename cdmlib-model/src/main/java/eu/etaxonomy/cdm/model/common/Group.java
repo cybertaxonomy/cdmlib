@@ -90,7 +90,7 @@ public class Group extends CdmBase {
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "groups")
     @Cascade({CascadeType.REFRESH, CascadeType.MERGE}) // see #2414 (Group updating doesn't work)
-    protected Set<User> members = new HashSet<User>();
+    protected Set<User> members = new HashSet<>();
 
     @XmlElementWrapper(name = "GrantedAuthorities")
     @XmlElement(name = "GrantedAuthority", type = GrantedAuthorityImpl.class)
@@ -161,12 +161,12 @@ public class Group extends CdmBase {
         Group result;
         try{
             result = (Group)super.clone();
-            result.grantedAuthorities = new HashSet<GrantedAuthority>();
+            result.grantedAuthorities = new HashSet<>();
             for (GrantedAuthority grantedauthority: this.grantedAuthorities){
                 result.addGrantedAuthority(grantedauthority);
             }
 
-            result.members = new HashSet<User>();
+            result.members = new HashSet<>();
             for (User member: this.members){
                 result.addMember(member);
             }
