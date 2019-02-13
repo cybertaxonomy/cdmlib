@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.common.TermType;
  * @date 05.11.2018
  *
  */
-public class AbstractTermDto implements Serializable {
+public class AbstractTermDto implements Serializable, Comparable<AbstractTermDto> {
 
     private static final long serialVersionUID = -7160319884811828125L;
 
@@ -140,6 +140,25 @@ public class AbstractTermDto implements Serializable {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public int compareTo(AbstractTermDto o) {
+        if(o == null){
+            return 1;
+        }
+        if(o.getRepresentation_L10n()!=null){
+            if(representation_L10n==null){
+                return -1;
+            }
+            else{
+                return representation_L10n.compareTo(o.getRepresentation_L10n());
+            }
+        }
+        else if(representation_L10n!=null){
+            return 1;
+        }
+        return uuid.compareTo(o.getUuid());
     }
 
 }
