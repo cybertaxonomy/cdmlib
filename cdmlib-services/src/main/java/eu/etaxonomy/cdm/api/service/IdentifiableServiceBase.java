@@ -261,7 +261,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 	}
 
 	@Transactional(readOnly = false)  //TODO check transactional behavior, e.g. what happens with the session if count is very large
-	protected <S extends T > void updateTitleCacheImpl(Class<S> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<T> cacheStrategy, IProgressMonitor monitor) {
+	protected <S extends T > void updateCachesImpl(Class<S> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<T> cacheStrategy, IProgressMonitor monitor) {
 		if (stepSize == null){
 			stepSize = UPDATE_TITLE_CACHE_DEFAULT_STEP_SIZE;
 		}

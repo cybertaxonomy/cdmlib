@@ -842,7 +842,7 @@ public class NameServiceImpl
         if (clazz == null){
             clazz = TaxonName.class;
         }
-        super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
+        super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
     }
 
 

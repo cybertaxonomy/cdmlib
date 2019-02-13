@@ -531,7 +531,7 @@ public class ClassificationServiceImpl
         if (clazz == null){
             clazz = Classification.class;
         }
-        super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
+        super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
     }
 
     /**

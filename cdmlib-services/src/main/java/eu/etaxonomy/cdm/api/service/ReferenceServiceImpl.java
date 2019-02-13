@@ -50,7 +50,7 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<Reference,IRef
         if (clazz == null){
             clazz = Reference.class;
         }
-        super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
+        super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
     }
 
     @Override

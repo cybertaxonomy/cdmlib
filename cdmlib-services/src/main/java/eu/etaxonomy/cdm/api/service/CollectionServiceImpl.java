@@ -43,7 +43,7 @@ public class CollectionServiceImpl
 		if (clazz == null){
 			clazz = Collection.class;
 		}
-		super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
+		super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
 	}
 
 

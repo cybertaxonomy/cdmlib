@@ -60,7 +60,7 @@ public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<Polytomous
 		if (clazz == null){
 			clazz = PolytomousKey.class;
 		}
-		super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
+		super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
 	}
 
 	@Override

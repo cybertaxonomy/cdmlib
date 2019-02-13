@@ -400,7 +400,7 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 		if (clazz == null){
 			clazz = DefinedTermBase.class;
 		}
-		super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
+		super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
 	}
 
 	@Override

@@ -52,7 +52,7 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
 		if (clazz == null){
 			clazz = TermVocabulary.class;
 		}
-		super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
+		super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
 	}
 
 

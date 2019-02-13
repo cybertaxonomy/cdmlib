@@ -180,7 +180,7 @@ public class DescriptionServiceImpl
         if (clazz == null){
             clazz = DescriptionBase.class;
         }
-        super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
+        super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
     }
 
 
