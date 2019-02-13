@@ -228,7 +228,7 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
         ehrenberg = (Person)service.load(UUID_EHRENBERG);
 
         assertEquals("Expecting nomenclaturalTitle to be set since it was NULL", "Turland, N.J.", nomenclaturalTitleField.get(turland));
-        assertEquals("Expecting nomenclaturalTitle to be set since it was NULL", "Ehrenberg, C.G.", nomenclaturalTitleField.get(ehrenberg));
+        assertEquals("Expecting nomenclaturalTitle to be set since it was NULL", "Ehrenb.", nomenclaturalTitleField.get(ehrenberg));
         assertEquals("Expecting titleChache to be unchaged since it was protecetd", "Ehrenb.", ehrenberg.getTitleCache());
         assertEquals("Expecting nomenclaturalTitle to be unchanged", "A.M. Monro", nomenclaturalTitleField.get(monro).toString());
 
