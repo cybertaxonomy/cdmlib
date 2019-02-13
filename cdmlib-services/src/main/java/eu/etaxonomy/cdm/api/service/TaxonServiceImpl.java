@@ -396,7 +396,7 @@ public class TaxonServiceImpl
 
     @Override
     @Transactional(readOnly = false)
-    public void updateTitleCache(Class<? extends TaxonBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<TaxonBase> cacheStrategy, IProgressMonitor monitor) {
+    public void updateCaches(Class<? extends TaxonBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<TaxonBase> cacheStrategy, IProgressMonitor monitor) {
         if (clazz == null){
             clazz = TaxonBase.class;
         }

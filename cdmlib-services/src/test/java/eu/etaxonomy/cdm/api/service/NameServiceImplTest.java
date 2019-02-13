@@ -1093,7 +1093,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         assertEquals("AuthorCache should be the persisted one", "No-author", authorCacheField.get(name3));
         assertEquals("FullTitleCache should be the persisted one", "", fullTitleCacheField.get(name3));
 
-        nameService.updateTitleCache();
+        nameService.updateCaches();
 
         assertEquals("Expecting titleCache to be updated", "First name Turl.", titleCacheField.get(name1));
         assertEquals("Expecting nameCache to be updated", "First name", nameCacheField.get(name1));

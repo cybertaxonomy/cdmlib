@@ -96,32 +96,32 @@ public class CacheUpdater extends CdmImportBase<CacheUpdaterConfigurator, Defaul
 		try {
 			//TermBase
 			if (DefinedTermBase.class.isAssignableFrom(clazz)){
-				getTermService().updateTitleCache((Class) clazz, null, null, null);
+				getTermService().updateCaches((Class) clazz, null, null, null);
 			}else if (FeatureTree.class.isAssignableFrom(clazz)){
-				getFeatureTreeService().updateTitleCache((Class) clazz, null, null, null);
+				getFeatureTreeService().updateCaches((Class) clazz, null, null, null);
 			}else if (TermVocabulary.class.isAssignableFrom(clazz)){
-				getVocabularyService().updateTitleCache((Class) clazz, null, null, null);
+				getVocabularyService().updateCaches((Class) clazz, null, null, null);
 			}
 			//DescriptionBase
 			else if (DescriptionBase.class.isAssignableFrom(clazz)){
-				getDescriptionService().updateTitleCache((Class) clazz, null, null, null);
+				getDescriptionService().updateCaches((Class) clazz, null, null, null);
 			}
 			//Media
 			else if (Media.class.isAssignableFrom(clazz)){
-				getMediaService().updateTitleCache((Class) clazz, null, null, null);
+				getMediaService().updateCaches((Class) clazz, null, null, null);
 			}//TaxonBase
 			else if (TaxonBase.class.isAssignableFrom(clazz)){
-				getTaxonService().updateTitleCache((Class) clazz, null, null, null);
+				getTaxonService().updateCaches((Class) clazz, null, null, null);
 			}
 			//IdentifiableMediaEntity
 			else if (AgentBase.class.isAssignableFrom(clazz)){
-				getAgentService().updateTitleCache((Class) clazz, null, null, null);
+				getAgentService().updateCaches((Class) clazz, null, null, null);
 			}else if (Collection.class.isAssignableFrom(clazz)){
-				getCollectionService().updateTitleCache((Class) clazz, null, null, null);
+				getCollectionService().updateCaches((Class) clazz, null, null, null);
 			}else if (Reference.class.isAssignableFrom(clazz)){
-				getReferenceService().updateTitleCache((Class) clazz, null, null, null);
+				getReferenceService().updateCaches((Class) clazz, null, null, null);
 			}else if (SpecimenOrObservationBase.class.isAssignableFrom(clazz)){
-				getOccurrenceService().updateTitleCache((Class) clazz, null, null, null);
+				getOccurrenceService().updateCaches((Class) clazz, null, null, null);
 			}
 //			//Sequence  //currently not identifiable and therefore has not caches
 //			else if (Sequence.class.isAssignableFrom(clazz)){
@@ -130,15 +130,15 @@ public class CacheUpdater extends CdmImportBase<CacheUpdaterConfigurator, Defaul
 //			}
 			//TaxonName
 			else if (TaxonName.class.isAssignableFrom(clazz)){
-				getNameService().updateTitleCache((Class) clazz, null, null, null);
+				getNameService().updateCaches((Class) clazz, null, null, null);
 			}
 			//Classification
 			else if (Classification.class.isAssignableFrom(clazz)){
-				getClassificationService().updateTitleCache((Class) clazz, null, null, null);
+				getClassificationService().updateCaches((Class) clazz, null, null, null);
 			}
 			//Polytomous Key
             else if (PolytomousKey.class.isAssignableFrom(clazz)){
-                getPolytomousKeyService().updateTitleCache((Class) clazz, null, null, null);
+                getPolytomousKeyService().updateCaches((Class) clazz, null, null, null);
             }
 			//unknown class
 			else {

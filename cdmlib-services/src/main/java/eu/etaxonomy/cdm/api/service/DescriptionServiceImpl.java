@@ -176,7 +176,7 @@ public class DescriptionServiceImpl
 
     @Override
     @Transactional(readOnly = false)
-    public void updateTitleCache(Class<? extends DescriptionBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<DescriptionBase> cacheStrategy, IProgressMonitor monitor) {
+    public void updateCaches(Class<? extends DescriptionBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<DescriptionBase> cacheStrategy, IProgressMonitor monitor) {
         if (clazz == null){
             clazz = DescriptionBase.class;
         }

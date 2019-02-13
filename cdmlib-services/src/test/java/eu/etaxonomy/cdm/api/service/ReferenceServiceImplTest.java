@@ -70,7 +70,7 @@ public class ReferenceServiceImplTest extends CdmTransactionalIntegrationTest {
 
         assertEquals("TitleCache should be the persisted one", "Inref", titleCacheField.get(ref4));
 
-        service.updateTitleCache();
+        service.updateCaches();
 
         assertEquals("Expecting titleCache to be updated", "Species plantarum", titleCacheField.get(ref1));
         assertEquals("Expecting nameCache to be updated", "Sp. Pl.", abbrevCacheField.get(ref1));

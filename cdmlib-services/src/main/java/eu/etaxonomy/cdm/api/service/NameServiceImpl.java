@@ -838,7 +838,7 @@ public class NameServiceImpl
 
     @Override
     @Transactional(readOnly = false)
-    public void updateTitleCache(Class<? extends TaxonName> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<TaxonName> cacheStrategy, IProgressMonitor monitor) {
+    public void updateCaches(Class<? extends TaxonName> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<TaxonName> cacheStrategy, IProgressMonitor monitor) {
         if (clazz == null){
             clazz = TaxonName.class;
         }

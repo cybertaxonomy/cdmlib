@@ -54,57 +54,57 @@ public class CacheUpdaterWithNewCacheStrategy extends CacheUpdater {
 		try {
 			//TermBase
 			if (DefinedTermBase.class.isAssignableFrom(clazz)){
-				getTermService().updateTitleCache((Class) clazz, null, null, null);
+				getTermService().updateCaches((Class) clazz, null, null, null);
 			}else if (FeatureTree.class.isAssignableFrom(clazz)){
-				getFeatureTreeService().updateTitleCache((Class) clazz, null, null, null);
+				getFeatureTreeService().updateCaches((Class) clazz, null, null, null);
 			}else if (TermVocabulary.class.isAssignableFrom(clazz)){
-				getVocabularyService().updateTitleCache((Class) clazz, null, null, null);
+				getVocabularyService().updateCaches((Class) clazz, null, null, null);
 			}
 			//DescriptionBase
 			else if (DescriptionBase.class.isAssignableFrom(clazz)){
-				getDescriptionService().updateTitleCache((Class) clazz, null, null, null);
+				getDescriptionService().updateCaches((Class) clazz, null, null, null);
 			}
 			//Media
 			else if (Media.class.isAssignableFrom(clazz)){
-				getMediaService().updateTitleCache((Class) clazz, null, null, null);
+				getMediaService().updateCaches((Class) clazz, null, null, null);
 			}//TaxonBase
 			else if (TaxonBase.class.isAssignableFrom(clazz)){
 				TaxonBaseShortSecCacheStrategy<TaxonBase> cacheStrategy = new TaxonBaseShortSecCacheStrategy<TaxonBase>();
-				getTaxonService().updateTitleCache((Class) clazz, null,cacheStrategy , null);
+				getTaxonService().updateCaches((Class) clazz, null,cacheStrategy , null);
 			}
 			//IdentifiableMediaEntity
 			else if (AgentBase.class.isAssignableFrom(clazz)){
-				getAgentService().updateTitleCache((Class) clazz, null, null, null);
+				getAgentService().updateCaches((Class) clazz, null, null, null);
 			}else if (Collection.class.isAssignableFrom(clazz)){
-				getCollectionService().updateTitleCache((Class) clazz, null, null, null);
+				getCollectionService().updateCaches((Class) clazz, null, null, null);
 			}else if (Reference.class.isAssignableFrom(clazz)){
-				getReferenceService().updateTitleCache((Class) clazz, null, null, null);
+				getReferenceService().updateCaches((Class) clazz, null, null, null);
 			}else if (SpecimenOrObservationBase.class.isAssignableFrom(clazz)){
-				getOccurrenceService().updateTitleCache((Class) clazz, null, null, null);
+				getOccurrenceService().updateCaches((Class) clazz, null, null, null);
 			}
 			//Sequence
 			else if (Sequence.class.isAssignableFrom(clazz)){
 				//TODO misuse TaxonServic for sequence update, use sequence service when it exists
-				getTaxonService().updateTitleCache((Class) clazz, null, null, null);
+				getTaxonService().updateCaches((Class) clazz, null, null, null);
 			}
 			//TaxonName
 			else if (TaxonName.class.isAssignableFrom(clazz)){
-				getNameService().updateTitleCache((Class) clazz, null, null, null);
+				getNameService().updateCaches((Class) clazz, null, null, null);
 			}
 			//Classification
 			else if (Classification.class.isAssignableFrom(clazz)){
-				getClassificationService().updateTitleCache((Class) clazz, null, null, null);
+				getClassificationService().updateCaches((Class) clazz, null, null, null);
 			}
 			//unknown class
 			else {
-				String warning = "Unknown identifable entity subclass + " + clazz == null ? "null" : clazz.getName();
+				String warning = "Unknown identifable entity subclass + " + clazz.getName();
 				logger.error(warning);
 				return false;
 				//getTaxonService().updateTitleCache((Class) clazz);
 			}
 			return true;
 		} catch (Exception e) {
-			String warning = "Exception occurred when trying to update class + " + clazz == null ? "null" : clazz.getName();
+			String warning = "Exception occurred when trying to update class + " + clazz.getName();
 			warning += " Exception was: " + e.getMessage();
 			logger.error(warning);
 			e.printStackTrace();

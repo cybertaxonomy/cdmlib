@@ -527,7 +527,7 @@ public class ClassificationServiceImpl
 
     @Override
     @Transactional(readOnly = false)
-    public void updateTitleCache(Class<? extends Classification> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<Classification> cacheStrategy, IProgressMonitor monitor) {
+    public void updateCaches(Class<? extends Classification> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<Classification> cacheStrategy, IProgressMonitor monitor) {
         if (clazz == null){
             clazz = Classification.class;
         }

@@ -32,7 +32,6 @@ import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.description.IIdentificationKeyDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IPolytomousKeyDao;
-import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 @Service
@@ -40,7 +39,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<PolytomousKey, IPolytomousKeyDao> implements IPolytomousKeyService {
 
 	private IIdentificationKeyDao identificationKeyDao;
-	private ITaxonDao taxonDao;
+
 	@Autowired
 	private IPolytomousKeyNodeService nodeService;
 
@@ -56,29 +55,14 @@ public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<Polytomous
 		this.identificationKeyDao = identificationKeyDao;
 	}
 
-	@Autowired
-	protected void setDao(ITaxonDao taxonDao) {
-		this.taxonDao = taxonDao;
-	}
-
-
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache(java.lang.Integer, eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy)
-	 */
 	@Override
-	public void updateTitleCache(Class<? extends PolytomousKey> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<PolytomousKey> cacheStrategy, IProgressMonitor monitor) {
+	public void updateCaches(Class<? extends PolytomousKey> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<PolytomousKey> cacheStrategy, IProgressMonitor monitor) {
 		if (clazz == null){
 			clazz = PolytomousKey.class;
 		}
 		super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IFeatureTreeService#loadWithNodes(java.util.UUID, java.util.List, java.util.List)
-	 */
 	@Override
     public PolytomousKey loadWithNodes(UUID uuid, List<String> propertyPaths, List<String> nodePaths) {
 
@@ -112,10 +96,6 @@ public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<Polytomous
 		return super.load(uuid, propertyPaths);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IPolytomousKeyService#findByTaxonomicScope(eu.etaxonomy.cdm.model.taxon.TaxonBase, java.lang.Class, java.lang.Integer, java.lang.Integer, java.util.List)
-	 */
 	@Override
 	public Pager<PolytomousKey> findByTaxonomicScope(
 			TaxonBase taxon, Integer pageSize,

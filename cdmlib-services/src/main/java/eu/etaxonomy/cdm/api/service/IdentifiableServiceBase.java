@@ -256,8 +256,8 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 
 	@Override
 	@Transactional(readOnly = false)
-	public void updateTitleCache() {
-		updateTitleCache(null, null, null, null);
+	public void updateCaches() {
+		updateCaches(null, null, null, null);
 	}
 
 	@Transactional(readOnly = false)  //TODO check transactional behavior, e.g. what happens with the session if count is very large

@@ -38,9 +38,6 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree,
     private IFeatureNodeDao featureNodeDao;
 
     @Autowired
-    private IVocabularyService vocabularyService;
-
-    @Autowired
     private IFeatureNodeService featureNodeService;
 
     @Override
@@ -54,48 +51,30 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree,
         this.featureNodeDao = featureNodeDao;
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache(java.lang.Integer, eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy)
-     */
     @Override
     @Transactional(readOnly = false)
-    public void updateTitleCache(Class<? extends FeatureTree> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<FeatureTree> cacheStrategy, IProgressMonitor monitor) {
+    public void updateCaches(Class<? extends FeatureTree> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<FeatureTree> cacheStrategy, IProgressMonitor monitor) {
         if (clazz == null){
             clazz = FeatureTree.class;
         }
         super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IFeatureTreeService#getFeatureNodesAll()
-     */
     @Override
     public List<FeatureNode> getFeatureNodesAll() {
         return featureNodeDao.list();
     }
 
-    /*
-     * (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IFeatureTreeService#saveFeatureNodesAll(java.util.Collection)
-     */
     @Override
     public Map<UUID, FeatureNode> saveFeatureNodesAll(Collection<FeatureNode> featureNodeCollection) {
         return featureNodeDao.saveAll(featureNodeCollection);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IFeatureTreeService#saveOrUpdateFeatureNodesAll(java.util.Collection)
-     */
     @Override
     public Map<UUID, FeatureNode> saveOrUpdateFeatureNodesAll(Collection<FeatureNode> featureNodeCollection) {
         return featureNodeDao.saveOrUpdateAll(featureNodeCollection);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IFeatureTreeService#loadWithNodes(java.util.UUID, java.util.List, java.util.List)
-     */
     @Override
     public FeatureTree loadWithNodes(UUID uuid, List<String> propertyPaths, List<String> nodePaths) {
 
@@ -135,9 +114,6 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree,
         return super.load(uuid, propertyPaths);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IFeatureTreeService#createTransientDefaultFeatureTree()
-     */
     @Override
     public FeatureTree createTransientDefaultFeatureTree() {
         return load(IFeatureTreeDao.DefaultFeatureTreeUuid);
@@ -160,7 +136,4 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree,
         return result;
 
     }
-
-
-
 }

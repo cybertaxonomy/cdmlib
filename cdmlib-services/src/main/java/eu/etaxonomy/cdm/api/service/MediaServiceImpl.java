@@ -89,8 +89,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
 
 	@Override
 	@Transactional(readOnly = false)
-    public void updateTitleCache(Class<? extends Media> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<Media> cacheStrategy, IProgressMonitor monitor) {
-		//IIdentifiableEntityCacheStrategy<Media> cacheStrategy = MediaDefaultCacheStrategy();
+    public void updateCaches(Class<? extends Media> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<Media> cacheStrategy, IProgressMonitor monitor) {
 		if (clazz == null){
 			clazz = Media.class;
 		}

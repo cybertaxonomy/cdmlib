@@ -221,7 +221,7 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
         assertNull(nomenclaturalTitleField.get(turland_monro_null));
         assertFalse(turland_monro_null.isProtectedNomenclaturalTitleCache());
 
-        service.updateTitleCache();
+        service.updateCaches();
 
         turland_monro_protected = (Team) service.load(UUID.fromString("5bff55de-f7cc-44d9-baac-908f52ad0cb8"));
         turland_monro = (Team) service.load(UUID.fromString("30ca93d6-b543-4bb9-b6ff-e9ededa65af7"));

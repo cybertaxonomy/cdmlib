@@ -46,7 +46,7 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<Reference,IRef
 
     @Override
     @Transactional(readOnly = false)
-    public void updateTitleCache(Class<? extends Reference> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<Reference> cacheStrategy, IProgressMonitor monitor) {
+    public void updateCaches(Class<? extends Reference> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<Reference> cacheStrategy, IProgressMonitor monitor) {
         if (clazz == null){
             clazz = Reference.class;
         }

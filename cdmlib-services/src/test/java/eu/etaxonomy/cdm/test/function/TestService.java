@@ -199,7 +199,7 @@ public class TestService {
 
 	public void regenerateTaxonTitleCache(){
 		ITaxonService taxonService = appCtr.getTaxonService();
-		taxonService.updateTitleCache();
+		taxonService.updateCaches();
 	}
 
 	private void test(){
