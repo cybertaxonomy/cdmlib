@@ -697,11 +697,13 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
     }
 
     @Override
-    public Collection<TermDto> findByTitleAsDto(String title) {
+    public Collection<TermDto> findByTitleAsDto(String title, TermType termType) {
         String queryString = TermDto.getTermDtoSelect()
-                + "where a.titleCache like :title";
+                + " where a.titleCache like :title "
+                + " and a.termType = :termType ";
         Query query =  getSession().createQuery(queryString);
         query.setParameter("title", "%"+title+"%");
+        query.setParameter("termType", termType);
 
         @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
