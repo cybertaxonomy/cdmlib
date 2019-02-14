@@ -72,11 +72,11 @@ public class AgentServiceImpl
 
 	@Override
 	@Transactional(readOnly = false)
-    public void updateTitleCache(Class<? extends AgentBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<AgentBase> cacheStrategy, IProgressMonitor monitor) {
+    public void updateCaches(Class<? extends AgentBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<AgentBase> cacheStrategy, IProgressMonitor monitor) {
 		if (clazz == null){
 			clazz = AgentBase.class;
 		}
-		super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
+		super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
 	}
 
 	@Override

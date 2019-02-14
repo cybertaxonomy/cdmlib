@@ -143,17 +143,17 @@ public class RegistrationWorkingSet {
     }
 
     /**
-     * Calculates the total count of messages in the registrations contained
+     * Calculates the total count of validation problems in the registrations contained
      * in the working set.
      *
      * @return
      */
-    public int messagesCount() {
-        int messagesCount = 0;
+    public int validationProblemsCount() {
+        int validationProblemsCount = 0;
         for(RegistrationDTO dto : getRegistrationDTOs()) {
-            messagesCount = messagesCount + dto.getValidationProblems().size();
+            validationProblemsCount = validationProblemsCount + dto.getValidationProblems().size();
         }
-        return messagesCount;
+        return validationProblemsCount;
     }
 
     /**

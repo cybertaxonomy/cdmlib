@@ -40,7 +40,6 @@ import org.hibernate.search.annotations.Spatial;
 import org.hibernate.search.annotations.SpatialMode;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.strategy.parser.location.CoordinateConverter;
 import eu.etaxonomy.cdm.strategy.parser.location.CoordinateConverter.ConversionResults;
 import eu.etaxonomy.cdm.validation.Level2;
@@ -480,7 +479,7 @@ public class Point implements Cloneable, Serializable {
 
     public static Double parseLatitude(String string) throws ParseException{
         try{
-            if (string == null){
+            if (string == null || string.isEmpty()){
                 return null;
             }
             string = setCurrentDoubleSeparator(string);
@@ -508,7 +507,7 @@ public class Point implements Cloneable, Serializable {
 
     public static Double parseLongitude(String string) throws ParseException{
         try {
-            if (string == null){
+            if (string == null || string.isEmpty()){
                 return null;
             }
             string = setCurrentDoubleSeparator(string);

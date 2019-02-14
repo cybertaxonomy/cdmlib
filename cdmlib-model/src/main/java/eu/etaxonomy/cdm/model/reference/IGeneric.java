@@ -25,7 +25,7 @@ package eu.etaxonomy.cdm.model.reference;
  * <li> "SubReference"
  * </ul>
  */
-public interface IGeneric extends IPublicationBase, INomenclaturalReference, IVolumeReference{
+public interface IGeneric extends IAuthoredPublicationBase, INomenclaturalReference, IVolumeReference{
 
 	/**
 	 * Returns the editor of this generic reference

@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.ref.EntityReference;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
@@ -62,6 +63,12 @@ public class RegistrationDTO{
     private Set<TypedEntityReference<Registration>> blockedBy;
 
     private List<TaggedText> summaryTaggedText;
+
+    private String nomenclaturalCitationString;
+
+    private String bibliographicCitationString;
+
+    private String bibliographicInRefCitationString;
 
 
     /**
@@ -116,8 +123,8 @@ public class RegistrationDTO{
             break;
         }
 
-        // trigger initialization of the reference
-        getNomenclaturalCitationString();
+        makeBibliographicCitationStrings();
+        makeNomenclaturalCitationString();
 
     }
 
@@ -134,6 +141,8 @@ public class RegistrationDTO{
         citation = publication;
         // create a TypeDesignationSetManager with only a reference to the typifiedName for validation
         typeDesignationManager = new TypeDesignationSetManager(typifiedName);
+        makeBibliographicCitationStrings();
+        makeNomenclaturalCitationString();
     }
 
     /**
@@ -251,6 +260,8 @@ public class RegistrationDTO{
         } else {
             throw new Exception("Can not set the citation on a non emtpy RegistrationDTO");
         }
+        makeBibliographicCitationStrings();
+        makeNomenclaturalCitationString();
     }
 
 
@@ -279,7 +290,6 @@ public class RegistrationDTO{
      */
     public TypeDesignationWorkingSet getTypeDesignationWorkingSet(TypedEntityReference baseEntityReference) {
         return typeDesignationManager != null ? typeDesignationManager.getOrderdTypeDesignationWorkingSets().get(baseEntityReference) : null;
-
     }
 
     /**
@@ -321,37 +331,82 @@ public class RegistrationDTO{
         return typeDesignationManager != null ? typeDesignationManager.getTypeDesignations() : null;
     }
 
-    /**
-     * @return the citationString
-     */
-    public String getNomenclaturalCitationString() {
+    private void makeNomenclaturalCitationString() {
         if(citation == null){
-            return null;
-        }
-        if(INomenclaturalReference.class.isAssignableFrom(citation.getClass())){
-            return ((INomenclaturalReference)citation).getNomenclaturalCitation(citationDetail);
+            nomenclaturalCitationString = null;
         } else {
-            logger.error("The citation is not a NomenclaturalReference");
-            return citation.generateTitle();
+            if(INomenclaturalReference.class.isAssignableFrom(citation.getClass())){
+                nomenclaturalCitationString = ((INomenclaturalReference)citation).getNomenclaturalCitation(citationDetail);
+            } else {
+                logger.error("The citation is not a NomenclaturalReference");
+                nomenclaturalCitationString = citation.generateTitle();
+            }
+        }
+    }
+
+    private void makeBibliographicCitationStrings() {
+        if(citation == null){
+            bibliographicCitationString = null;
+        } else {
+            Reference bibliographicCitation;
+            String bibliographicCitationDetail = citationDetail;
+            if((citation.getType() == ReferenceType.Section || citation.getType() == ReferenceType.BookSection) && citation.getInReference() != null){
+                bibliographicCitation = citation.getInReference();
+                bibliographicCitationDetail = null; // can possibly be known once https://dev.e-taxonomy.eu/redmine/issues/6623 is solved
+            } else {
+                bibliographicCitation = citation;
+            }
+            if(StringUtils.isNotEmpty(bibliographicCitationDetail)){
+                // TODO see https://dev.e-taxonomy.eu/redmine/issues/6623
+                bibliographicInRefCitationString = bibliographicCitation.generateTitle().replaceAll("\\.$", "") + (StringUtils.isNotEmpty(bibliographicCitationDetail) ? ": " + bibliographicCitationDetail : "");
+            } else {
+                bibliographicInRefCitationString = bibliographicCitation.generateTitle();
+            }
+            if(StringUtils.isNotEmpty(citationDetail)){
+                // TODO see https://dev.e-taxonomy.eu/redmine/issues/6623
+                bibliographicCitationString = citation.generateTitle().replaceAll("\\.$", "") + (StringUtils.isNotEmpty(citationDetail) ? ": " + citationDetail : "");
+            } else {
+                bibliographicCitationString = citation.generateTitle();
+            }
+    
         }
     }
 
     /**
-     * @return the citationString
+     * The nomenclatural citation is always the nomenclaturalCitation of the reference which is directly
+     * associated with the registration.
+     * <p>
+     * <b>Note:</b>Compare with {@link #getBibliographicCitationString()}
+     *
+     * @return the nomenclaturalCitationString
+     */
+    public String getNomenclaturalCitationString() {
+        return nomenclaturalCitationString;
+    }
+
+    /**
+     * The bibliographic in-reference citation is either taken from the reference which is directly
+     * associated with the registration. In case this reference is a {@link eu.etaxonomy.cdm.model.reference.ReferenceType#Section} or
+     * {@link eu.etaxonomy.cdm.model.reference.ReferenceType#BookSection} the inReference will be taken instead.
+     * <p>
+     * <b>Note:</b>Compare with {@link #getBibliographicCitationString()}
+     *
+     * @return the bibliographicInRefCitationString
+     */
+    public String getBibliographicInRefCitationString() {
+       return bibliographicInRefCitationString;
+    }
+
+    /**
+     * The bibliographic citation is either reference which is directly
+     * associated with the registration.
+     * <p>
+     * <b>Note:</b>Compare with {@link #getBibliographicInRefCitationString()}
+     *
+     * @return the bibliographicCitationString
      */
     public String getBibliographicCitationString() {
-        if(citation == null){
-            return null;
-        } else {
-            if(StringUtils.isNotEmpty(citationDetail)){
-                // TODO see https://dev.e-taxonomy.eu/redmine/issues/6623
-                return citation.generateTitle().replaceAll("\\.$", "") + (StringUtils.isNotEmpty(citationDetail) ? ": " + citationDetail : "");
-            } else {
-                return citation.generateTitle();
-
-            }
-
-        }
+        return bibliographicCitationString;
     }
 
     public boolean isBlocked() {

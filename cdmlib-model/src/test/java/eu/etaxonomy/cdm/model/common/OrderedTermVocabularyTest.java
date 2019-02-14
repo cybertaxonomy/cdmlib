@@ -146,13 +146,10 @@ public class OrderedTermVocabularyTest extends EntityTestBase {
 		assertEquals(1, oVoc1.getEqualTerms(otb1).size());
 		assertEquals(1, oVoc1.getEqualTerms(otb2).size());
 		assertEquals(1, oVoc1.getEqualTerms(otb3).size());
-		try {
-			oVoc1.addTermEqualLevel(otbFree, otb2);
-			assertEquals(4, oVoc1.size());
-			assertEquals(2, oVoc1.getEqualTerms(otb2).size());
-		} catch (WrongTermTypeException e) {
-			fail();
-		}
+		oVoc1.addTermEqualLevel(otbFree, otb2);
+		assertEquals(4, oVoc1.size());
+		assertEquals(2, oVoc1.getEqualTerms(otb2).size());
+
 		//as long as orderedTermVocabulary.terms is a set
 		//this won't work because terms.add() will not result
 		//in adding the term
@@ -205,12 +202,9 @@ public class OrderedTermVocabularyTest extends EntityTestBase {
 
 	@Test
 	public final void testAddTermEqualLevel() {
-		try {
-			System.out.println(otb2.orderIndex);
-			oVoc1.addTermEqualLevel(otbFree, otb2);
-		} catch (WrongTermTypeException e) {
-			fail();
-		}
+		System.out.println(otb2.orderIndex);
+		oVoc1.addTermEqualLevel(otbFree, otb2);
+
 		assertEquals(1, oVoc1.getLowerTerms(otbFree).size());
 		assertEquals(2, oVoc1.getLowerAndEqualTerms(otbFree).size());
 		assertEquals(otb1.getLabel(), oVoc1.getNextHigherTerm(otbFree).getLabel());

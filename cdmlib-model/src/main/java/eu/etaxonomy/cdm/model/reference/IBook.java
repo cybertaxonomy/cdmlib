@@ -19,7 +19,7 @@ package eu.etaxonomy.cdm.model.reference;
  * <li> "EditedBook"
  * </ul>
  */
-public interface IBook extends IPrintedUnitBase, INomenclaturalReference{
+public interface IBook extends IPrintedUnitBase, IWithIsbn, INomenclaturalReference{
 
 	/**
 	 * Returns this books edition
@@ -31,18 +31,6 @@ public interface IBook extends IPrintedUnitBase, INomenclaturalReference{
 	 * @param edition
 	 */
 	public void setEdition(String edition);
-
-
-	/**
-	 * Returns this books isbn (international standard book number)
-	 */
-	public String getIsbn();
-
-	/**
-	 * Sets this books isbn (international standard book number)
-	 * @param isbn
-	 */
-	public void setIsbn(String isbn);
 
 
 }

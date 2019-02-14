@@ -665,4 +665,14 @@ public class CdmUtils {
         return true;
     }
 
+    /**
+     * Transforms a search string which allows wildcard "*" into a
+     * java regular expression such that all other characters are handled as normal text.
+     * @param regEx
+     * @return
+     */
+    public static String quoteRegExWithWildcard(String regEx){
+        return Pattern.quote(regEx).replace("*", "\\E.*\\Q").replace("\\Q\\E", "");
+    }
+
 }

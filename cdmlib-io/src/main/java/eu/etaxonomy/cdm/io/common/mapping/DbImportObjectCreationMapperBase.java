@@ -53,9 +53,6 @@ public abstract class DbImportObjectCreationMapperBase<CREATE extends Versionabl
 
 //************************************ METHODS *******************************************/
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.IDbImportMapper#invoke(java.sql.ResultSet, eu.etaxonomy.cdm.model.common.CdmBase)
-	 */
 	@Override
     public CREATE invoke(ResultSet rs, CREATE noObject) throws SQLException {
 		CREATE result = createObject(rs);
@@ -91,7 +88,7 @@ public abstract class DbImportObjectCreationMapperBase<CREATE extends Versionabl
 				return;
 			}
 			IOriginalSource source;
-			ISourceable sourceable = (ISourceable)cdmBase;
+			ISourceable sourceable = (ISourceable<?>)cdmBase;
 			Object id = rs.getObject(dbIdAttribute);
 			String strId = String.valueOf(id);
 			String idNamespace = this.objectToCreateNamespace;
@@ -110,9 +107,6 @@ public abstract class DbImportObjectCreationMapperBase<CREATE extends Versionabl
 			sourceable.addSource(source);
 		}
 	}
-
-
-
 
 	/**
 	 * Returns the transformer from the configuration

@@ -88,9 +88,9 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 	@ExpectedDataSet
 	public final void testUpdateTitleCache() {
 		Assert.assertEquals("There should be 5 TaxonNames in the data set", 5, nameService.count(TaxonName.class));
-		Class clazz = TaxonName.class;
+		Class<TaxonName> clazz = TaxonName.class;
 		int stepSize = 2;
-		nameService.updateTitleCache(clazz, stepSize, null, null);
+		nameService.updateCaches(clazz, stepSize, null, null);
 		commit();
 //		commitAndStartNewTransaction(new String[]{"TaxonName","TaxonName_AUD"});
 	}

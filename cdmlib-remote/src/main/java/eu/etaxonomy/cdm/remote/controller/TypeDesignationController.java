@@ -17,6 +17,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -89,6 +90,24 @@ public class TypeDesignationController extends AbstractController<TaxonName, INa
 
         }
         return dtos;
+    }
+
+    @RequestMapping(method = RequestMethod.GET)
+    public TypeDesignationBase<?> doGetMethod(
+            @PathVariable("uuid") UUID uuid,
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+
+        String servletPath = request.getServletPath();
+        String propertyName = FilenameUtils.getBaseName(servletPath);
+
+        logger.info("doGet() - " + requestPathAndQuery(request));
+
+        TypeDesignationBase<?> dtb = service.loadTypeDesignation(uuid, Arrays.asList("$"));
+        if(dtb == null){
+            HttpStatusMessage.UUID_NOT_FOUND.send(response);
+        }
+        return dtb;
     }
 
 }

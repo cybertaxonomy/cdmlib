@@ -69,7 +69,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.strategy.match.CacheMatcher;
 import eu.etaxonomy.cdm.strategy.match.DefaultMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.FieldMatcher;
-import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
+import eu.etaxonomy.cdm.strategy.match.IMatchStrategyEqual;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.match.MatchException;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
@@ -280,8 +280,8 @@ public class CdmGenericDaoImpl
 	 */
 	private void handleReferenceHolder(CdmBase referencedCdmBase,
 			Set<CdmBase> result, ReferenceHolder refHolder, boolean limited) {
-		boolean isCollection = refHolder.isCollection();
 
+	    boolean isCollection = refHolder.isCollection();
 		if (isCollection){
 		    if (limited){
 		        result.addAll(getCdmBasesWithItemInCollection(refHolder.itemClass, refHolder.otherClass, refHolder.propertyName, referencedCdmBase, 100));
@@ -362,7 +362,6 @@ public class CdmGenericDaoImpl
 			SessionFactory sessionFactory, Class<? extends CdmBase> cdmClass,
 			Type propertyType, String propertyName, boolean isCollection)
 				throws ClassNotFoundException, NoSuchFieldException {
-
 
 		if (propertyType.isEntityType()){
 			EntityType entityType = (EntityType)propertyType;
@@ -461,7 +460,7 @@ public class CdmGenericDaoImpl
 				EnumUserType.class,
 				DOIUserType.class
 				};
-		Set<String> classNames = new HashSet<String>();
+		Set<String> classNames = new HashSet<>();
 		for (Class<?> clazz: classes){
 			classNames.add(clazz.getCanonicalName());
 			if (clazz == propertyType.getClass()){
@@ -559,7 +558,7 @@ public class CdmGenericDaoImpl
 
 	@Override
 	public <T extends IMatchable> List<T> findMatching(T objectToMatch,
-			IMatchStrategy matchStrategy) throws MatchException {
+			IMatchStrategyEqual matchStrategy) throws MatchException {
 
 		getSession().flush();
 		try {
@@ -579,7 +578,7 @@ public class CdmGenericDaoImpl
 		}
 	}
 
-	private <T extends IMatchable> List<T> findMatchingNullSafe(T objectToMatch,	IMatchStrategy matchStrategy) throws IllegalArgumentException, IllegalAccessException, MatchException {
+	private <T extends IMatchable> List<T> findMatchingNullSafe(T objectToMatch,	IMatchStrategyEqual matchStrategy) throws IllegalArgumentException, IllegalAccessException, MatchException {
 		List<T> result = new ArrayList<T>();
 		Session session = getSession();
 		Class<?> matchClass = objectToMatch.getClass();
@@ -593,7 +592,7 @@ public class CdmGenericDaoImpl
             List<T> matchCandidates = criteria.list();
 			matchCandidates.remove(objectToMatch);
 			for (T matchCandidate : matchCandidates ){
-				if (matchStrategy.invoke(objectToMatch, matchCandidate)){
+				if (matchStrategy.invoke(objectToMatch, matchCandidate).isSuccessful()){
 					result.add(matchCandidate);
 				}else{
 					logger.warn("Match candidate did not match: " + matchCandidate);
@@ -614,7 +613,7 @@ public class CdmGenericDaoImpl
 	 * @throws MatchException
 	 */
 	private <T> boolean makeCriteria(T objectToMatch,
-			IMatchStrategy matchStrategy, ClassMetadata classMetaData,
+			IMatchStrategyEqual matchStrategy, ClassMetadata classMetaData,
 			Criteria criteria) throws IllegalAccessException, MatchException {
 		Matching matching = matchStrategy.getMatching();
 		boolean noMatch = false;
@@ -730,7 +729,7 @@ public class CdmGenericDaoImpl
 					Criteria matchCriteria = criteria.createCriteria(propertyName, joinType).add(Restrictions.isNotNull("id"));
 					Class matchClass = value.getClass();
 					if (IMatchable.class.isAssignableFrom(matchClass)){
-						IMatchStrategy valueMatchStrategy = DefaultMatchStrategy.NewInstance(matchClass);
+						IMatchStrategyEqual valueMatchStrategy = DefaultMatchStrategy.NewInstance(matchClass);
 						ClassMetadata valueClassMetaData = getSession().getSessionFactory().getClassMetadata(matchClass.getCanonicalName());;
 						noMatch = makeCriteria(value, valueMatchStrategy, valueClassMetaData, matchCriteria);
 					}else{

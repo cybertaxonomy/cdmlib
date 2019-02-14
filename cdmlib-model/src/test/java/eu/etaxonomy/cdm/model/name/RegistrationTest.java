@@ -8,6 +8,11 @@
 */
 package eu.etaxonomy.cdm.model.name;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -69,6 +74,26 @@ public class RegistrationTest {
         Assert.assertTrue(name1.getRegistrations().contains(registration));
         Assert.assertTrue(name1.getRegistrations().contains(registration2));
 
+    }
+
+    /**
+     * see https://dev.e-taxonomy.eu/redmine/issues/7995
+     */
+    @Test
+    public void testUpdateStatusAndDate() {
+        Registration registration = Registration.NewInstance();
+
+        registration.setStatus(RegistrationStatus.CURATION);
+        assertNull(registration.getRegistrationDate());
+
+        DateTime before = DateTime.now();
+        registration.updateStatusAndDate(RegistrationStatus.PUBLISHED);
+        assertNotNull(registration.getRegistrationDate());
+        assertTrue(registration.getRegistrationDate().isAfter(registration.getRegistrationDate()) || registration.getRegistrationDate().isEqual(before) );
+        assertTrue(registration.getRegistrationDate().isBeforeNow() || registration.getRegistrationDate().isEqual(before));
+
+        registration.updateStatusAndDate(RegistrationStatus.CURATION);
+        assertNull(registration.getRegistrationDate());
     }
 
 }

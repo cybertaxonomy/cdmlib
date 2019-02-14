@@ -251,7 +251,7 @@ public class TaxonNode
     public Taxon getTaxon() {
         return taxon;
     }
-    protected void setTaxon(Taxon taxon) {
+    public void setTaxon(Taxon taxon) {
         this.taxon = taxon;
         if (taxon != null){
             taxon.addTaxonNode(this);

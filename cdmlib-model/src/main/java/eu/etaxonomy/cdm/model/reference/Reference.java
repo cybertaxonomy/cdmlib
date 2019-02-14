@@ -77,8 +77,14 @@ import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
 
 /**
  * The class for references (information sources). Originally
- * an abstract class with many subclasses. Not it is only
- * one class implementing many interfaces for safe use.
+ * an abstract class with many subclasses. Now it is only
+ * one class implementing many interfaces for safe use of different
+ * types of references. E.g. if you want to edit a journal
+ * you create a journal with {@link ReferenceFactory#newJournal()}
+ * which returns an IJournal. Though this instance is an ordinary instance
+ * of {@link Reference} by using IJournal you may not use attributes
+ * not allowed for journals.<p>
+ * References can be created via {@link ReferenceFactory} methods.
  * <P>
  * This class corresponds to: <ul>
  * <li> PublicationCitation according to the TDWG ontology
@@ -1152,6 +1158,36 @@ public class Reference
 		this.cacheStrategy = referenceCacheStrategy;
 	}
 
+   @Override
+   public boolean updateCaches(){
+       //TODO shouldn't this be moved to the cache strategy?
+       if (this.equals(this.getInReference())){
+           String message = "-- invalid inreference (self-referencing) --";
+           String oldTitleCache = this.titleCache;
+           this.titleCache = message;
+           return !message.equals(oldTitleCache);
+       }
+       boolean result = super.updateCaches();
+       if (this.protectedAbbrevTitleCache == false){
+           String oldAbbrevTitleCache = this.abbrevTitleCache;
+
+           String newAbbrevTitleCache = cacheStrategy.getFullAbbrevTitleString(this);
+
+           if ( oldAbbrevTitleCache == null   || ! oldAbbrevTitleCache.equals(newAbbrevTitleCache) ){
+                this.setAbbrevTitleCache(null, false);
+                String newCache = this.getAbbrevTitleCache();
+
+                if (newCache == null){
+                    logger.warn("New abbrevCache should never be null");
+                }
+                if (oldAbbrevTitleCache == null){
+                    logger.info("oldAbbrevTitleCache was illegaly null and has been fixed");
+                }
+                result = true;
+            }
+        }
+        return result;
+    }
 
 
 //*********************** CLONE ********************************************************/

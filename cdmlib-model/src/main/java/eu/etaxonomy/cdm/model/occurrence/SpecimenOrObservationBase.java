@@ -275,10 +275,17 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
         return identityCache;
     }
     /**
-     * @param identityCache the identityCache to set
+     * @Deprecated For special use only.
+     * Use {@link #setIdentityCache(String, boolean)} instead
      */
+    @Deprecated
     public void setIdentityCache(String identityCache) {
         this.identityCache = identityCache;
+    }
+
+    public void setIdentityCache(String identityCache, boolean isProtected) {
+        this.protectedIdentityCache = isProtected;
+        setIdentityCache(identityCache);
     }
 
     /**
@@ -359,8 +366,8 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
      */
     @Transient
     public Set<SpecimenDescription> getSpecimenDescriptions(boolean includeImageGallery) {
-        Set<SpecimenDescription> specimenDescriptions = new HashSet<SpecimenDescription>();
-        for (DescriptionBase descriptionBase : getDescriptions()){
+        Set<SpecimenDescription> specimenDescriptions = new HashSet<>();
+        for (DescriptionBase<?> descriptionBase : getDescriptions()){
             if (descriptionBase.isInstanceOf(SpecimenDescription.class)){
                 if (includeImageGallery || descriptionBase.isImageGallery() == false){
                     specimenDescriptions.add(descriptionBase.deproxy(descriptionBase, SpecimenDescription.class));
@@ -378,8 +385,8 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
      */
     @Transient
     public Set<SpecimenDescription> getSpecimenDescriptionImageGallery() {
-        Set<SpecimenDescription> specimenDescriptions = new HashSet<SpecimenDescription>();
-        for (DescriptionBase descriptionBase : getDescriptions()){
+        Set<SpecimenDescription> specimenDescriptions = new HashSet<>();
+        for (DescriptionBase<?> descriptionBase : getDescriptions()){
             if (descriptionBase.isInstanceOf(SpecimenDescription.class)){
                 if (descriptionBase.isImageGallery() == true){
                     specimenDescriptions.add(descriptionBase.deproxy(descriptionBase, SpecimenDescription.class));
@@ -417,7 +424,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 
     public Set<DerivationEvent> getDerivationEvents() {
         if(derivationEvents == null) {
-            this.derivationEvents = new HashSet<DerivationEvent>();
+            this.derivationEvents = new HashSet<>();
         }
         return this.derivationEvents;
     }
@@ -438,7 +445,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 
     public Set<DeterminationEvent> getDeterminations() {
         if(determinations == null) {
-            this.determinations = new HashSet<DeterminationEvent>();
+            this.determinations = new HashSet<>();
         }
         return this.determinations;
     }
@@ -581,15 +588,32 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
         return states;
     }
 
-
+    @Override
+    public boolean updateCaches(){
+        boolean result = super.updateCaches();
+//        if (this.protectedIdentityCache == false){
+//            String oldIdentityCache = this.identityCache;
+//
+//            String newIdentityCache = cacheStrategy.getIdentityCache(this);
+//
+//            if ( oldIdentityCache == null   || ! oldIdentityCache.equals(newIdentityCache) ){
+//                 this.setIdentityCache(null, false);
+//                 String newCache = this.getIdentityCache();
+//
+//                 if (newCache == null){
+//                     logger.warn("New identityCache should never be null");
+//                 }
+//                 if (oldIdentityCache == null){
+//                     logger.info("Old abbrevTitleCache should never be null");
+//                 }
+//                 result = true;
+//             }
+//         }
+        return result;
+    }
 
 //******************** CLONE **********************************************/
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity#clone()
-     * @see eu.etaxonomy.cdm.model.common.IdentifiableEntity#clone()
-     * @see java.lang.Object#clone()
-     */
     @Override
     public Object clone() throws CloneNotSupportedException {
         SpecimenOrObservationBase<S> result = (SpecimenOrObservationBase<S>)super.clone();

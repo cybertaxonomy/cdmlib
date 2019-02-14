@@ -156,6 +156,16 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
     private static final String SEPARATOR_STRING = ", ";
 
+    private static final List<String> DERIVED_UNIT_INIT_STRATEGY =  Arrays.asList(new String []{
+            "derivedFrom.derivatives",
+            "derivedFrom.originals",
+            "specimenTypeDesignations.*",
+            "specimenTypeDesignations.citation.*",
+            "specimenTypeDesignations.homotypicalGroup.*",
+            "specimenTypeDesignations.typifiedNames",
+            "collection.$"
+    });
+
     public OccurrenceServiceImpl() {
         logger.debug("Load OccurrenceService Bean");
     }
@@ -163,11 +173,11 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
     @Override
     @Transactional(readOnly = false)
-    public void updateTitleCache(Class<? extends SpecimenOrObservationBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<SpecimenOrObservationBase> cacheStrategy, IProgressMonitor monitor) {
+    public void updateCaches(Class<? extends SpecimenOrObservationBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<SpecimenOrObservationBase> cacheStrategy, IProgressMonitor monitor) {
         if (clazz == null) {
             clazz = SpecimenOrObservationBase.class;
         }
-        super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
+        super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
     }
 
     /**
@@ -443,17 +453,23 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                     continue;
                 }
                 // collect accession numbers for citation
-                String mostSignificantIdentifier = getMostSignificantIdentifier(derivedUnit);
-                if (mostSignificantIdentifier != null) {
-                    preservedSpecimenAccessionNumbers.add(mostSignificantIdentifier);
-                }
+                String identifier = getMostSignificantIdentifier(derivedUnit);
                 // collect collections for herbaria column
-                if (derivedUnit.getCollection() != null) {
-                    Integer herbariumCount = collectionToCountMap.get(derivedUnit.getCollection());
+                eu.etaxonomy.cdm.model.occurrence.Collection collection = derivedUnit.getCollection();
+                if (collection != null) {
+                    //combine collection with identifier
+                    if (identifier != null) {
+                        if(collection.getCode()!=null){
+                            identifier = (collection.getCode()!=null?collection.getCode():"[no collection]")+" "+identifier;
+                        }
+                        preservedSpecimenAccessionNumbers.add(identifier);
+                    }
+
+                    Integer herbariumCount = collectionToCountMap.get(collection);
                     if (herbariumCount == null) {
                         herbariumCount = 0;
                     }
-                    collectionToCountMap.put(derivedUnit.getCollection(), herbariumCount + 1);
+                    collectionToCountMap.put(collection, herbariumCount + 1);
                 }
                 if (derivedUnit.getRecordBasis().equals(SpecimenOrObservationType.PreservedSpecimen)) {
                     PreservedSpecimenDTO preservedSpecimenDTO = assemblePreservedSpecimenDTO(derivedUnit, fieldUnitDTO);
@@ -500,7 +516,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             herbariaString += SEPARATOR_STRING;
         }
         herbariaString = removeTail(herbariaString, SEPARATOR_STRING);
-        fieldUnitDTO.setHerbarium(herbariaString);
+        fieldUnitDTO.setCollection(herbariaString);
 
         return fieldUnitDTO;
     }
@@ -852,7 +868,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         taxa.add(associatedTaxon);
 
         for (Taxon taxon : taxa) {
-            List<SpecimenOrObservationBase> perTaxonOccurrences = dao.listByAssociatedTaxon(null,taxon, null, null, null, null);
+            List<SpecimenOrObservationBase> perTaxonOccurrences = dao.listByAssociatedTaxon(null,taxon, null, null, null, DERIVED_UNIT_INIT_STRATEGY);
             for (SpecimenOrObservationBase<?> o : perTaxonOccurrences) {
                 if (o.isInstanceOf(DerivedUnit.class)){
                     DerivedUnit derivedUnit;

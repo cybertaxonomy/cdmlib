@@ -884,6 +884,7 @@ public class OccurrenceDaoHibernateImpl
     }
 
     /**
+     *
      * {@inheritDoc}
      */
     @Override
@@ -892,9 +893,27 @@ public class OccurrenceDaoHibernateImpl
         Query query = getSession().createQuery(queryString);
         query.setParameter("accessionNumberString", accessionNumberString);
         @SuppressWarnings("unchecked")
-        List<DerivedUnit> results = query.list();
-        defaultBeanInitializer.initializeAll(results, propertyPaths);
+        List<DerivedUnit> dnaSamples = query.list();
+        defaultBeanInitializer.initializeAll(dnaSamples, propertyPaths);
+        List<DerivedUnit> results = new ArrayList<>();
+        for (DerivedUnit sample:dnaSamples){
+            extractDeterminedOriginals(sample, results);
+        }
+
         return results;
+    }
+
+    /**
+     * @param dnaSamples
+     * @param results
+     */
+    private void extractDeterminedOriginals(DerivedUnit sample, List<DerivedUnit> results) {
+
+        if (sample.getDeterminations() != null){
+            results.add(sample);
+        }else{
+            extractDeterminedOriginals(sample, results);
+        }
     }
 
     /**

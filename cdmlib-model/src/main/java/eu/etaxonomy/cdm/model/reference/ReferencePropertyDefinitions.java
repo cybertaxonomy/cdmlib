@@ -12,10 +12,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This class contains provides the set of applicable  {@link Reference} fields per {@link ReferenceType}
+ * This class provides the set of applicable  {@link Reference} fields per {@link ReferenceType}
  * together with the type specific name of the getter.
  * <p>
- * All this information can in principle be generically retrieved from the reference interfaces. Creating and applying annotations
+ * All this information can in principle be generically retrieved from the reference interfaces.
+ * Creating and applying annotations
  * to refer to the actual field names could help in this case.
  * <p>
  *
@@ -25,8 +26,12 @@ import java.util.Map;
  */
 public class ReferencePropertyDefinitions {
 
-    private static Map<String, String> iPublicationBase = new HashMap<>();
     private static Map<String, String> iReference = new HashMap<>();
+    private static Map<String, String> iPublicationBase = new HashMap<>();
+    private static Map<String, String> iWithAuthorAndDate = new HashMap<>();
+    private static Map<String, String> iWithDoi = new HashMap<>();
+    private static Map<String, String> iAuthoredPublicationBase = new HashMap<>();
+    private static Map<String, String> iNomenclaturalReference = new HashMap<>();
     private static Map<String, String> iVolumeReference = new HashMap<>();
     private static Map<String, String> iSection = new HashMap<>();
     private static Map<String, String> iPrintedUnitBase = new HashMap<>();
@@ -38,81 +43,74 @@ public class ReferencePropertyDefinitions {
     private static Map<String, String> iJournal = new HashMap<>();
     private static Map<String, String> iPrintSeries = new HashMap<>();
     private static Map<String, String> iThesis = new HashMap<>();
+    private static Map<String, String> iReport = new HashMap<>();
     private static Map<String, String> all = new HashMap<>();
 
     static {
+        put(iReference, "uri");
+        put(iReference, "title");
+        put(iReference, "type");
 
-        Map<String, String> map;
+        put(iWithAuthorAndDate, "authorship");
+        put(iWithAuthorAndDate, "datePublished");
 
-        map = iReference;
-        put(map, "uri");
-        put(map, "datePublished");
-        put(map, "abbrevTitle");
-        put(map, "title");
-        put(map, "authorship");
-        put(map, "type");
+        put(iWithDoi, "doi");
 
         iPublicationBase = merge(iReference);
-        map = iPublicationBase;
-        put(map, "publisher");
-        put(map, "placePublished");
-        put(map, "doi");
+        put(iPublicationBase, "publisher");
+        put(iPublicationBase, "placePublished");
 
-        iSection = merge(iReference);
-        map = iSection;
-        put(map, "pages");
-        put(map, "inReference");
+        // put(iNomenclaturalReference, "year");
+        // put(iNomenclaturalReference, "nomenclaturalCitation");
 
-        iVolumeReference = merge(iReference);
-        map = iVolumeReference;
-        put(map, "volume");
+        iAuthoredPublicationBase = merge(iPublicationBase , iWithAuthorAndDate, iWithDoi);
+
+        iSection = merge(iReference, iWithAuthorAndDate, iWithDoi, iNomenclaturalReference);
+        put(iSection, "pages");
+        put(iSection, "inReference");
+
+        iVolumeReference = merge(iReference, iWithAuthorAndDate, iWithDoi);
+        put(iVolumeReference, "volume");
 
         iPrintedUnitBase = merge(iPublicationBase, iSection, iVolumeReference);
-        map = iPrintedUnitBase;
-        put(map, "inReference", "inSeries");
-        put(map, "editor");
-        put(map, "seriesPart");
+        put(iPrintedUnitBase, "title");
+        put(iPrintedUnitBase, "abbrevTitle");
+        put(iPrintedUnitBase, "inReference", "inSeries");
+        put(iPrintedUnitBase, "editor");
 
         iArticle = merge(iSection, iVolumeReference);
-        map = iArticle;
-        put(map, "seriesPart");
-        put(map, "inReference", "inJournal");
+        put(iArticle, "inReference", "inJournal");
 
         iBook = merge(iPrintedUnitBase);
-        map = iBook;
-        put(map, "edition");
-        put(map, "isbn");
+        put(iBook, "inReference", "inSeries");
+        put(iBook, "edition");
+        put(iBook, "isbn");
 
         iBookSection = merge(iSection);
-        map = iBookSection;
-        put(map, "inReference", "inBook");
+        put(iBookSection, "inReference", "inBook");
 
         iProceedings = merge(iPrintedUnitBase);
-        map = iProceedings;
-        put(map, "organization");
+        put(iProceedings, "organization");
+        put(iProceedings, "isbn");
 
         iJournal = merge(iPublicationBase);
-        map = iJournal;
-        put(map, "issn");
+        put(iJournal, "issn");
 
         iInProceedings = merge(iSection);
-        map = iInProceedings;
-        put(map, "seriesPart");
-        put(map, "inReference", "inJournal");
-        put(map, "doi");
+        remove(iInProceedings, "series");
+        put(iInProceedings, "inReference", "In proceedings");
 
         iPrintSeries = merge(iPublicationBase);
-        map = iPrintSeries;
-        put(map, "publisher");
-        put(map, "placePublished");
-        put(map, "doi");
+        put(iPrintSeries, "publisher");
+        put(iPrintSeries, "placePublished");
 
         iThesis = merge(iPublicationBase);
-        map = iThesis;
-        put(map, "school");
+        put(iThesis, "school");
 
-        all = merge(iThesis, iPrintSeries, iInProceedings, iJournal, iArticle, iBook, iBookSection, iProceedings, iPrintedUnitBase, iVolumeReference);
+        iReport = merge(iPublicationBase);
+        put(iReport, "institution");
 
+        all = merge(iThesis, iPrintSeries, iInProceedings, iJournal, iArticle, iBook, iBookSection, iProceedings, iPrintedUnitBase, iVolumeReference, iReport);
     }
 
     /**
@@ -169,7 +167,6 @@ public class ReferencePropertyDefinitions {
 
     }
 
-
     @SafeVarargs
     private static Map<String, String> merge(Map<String, String> ... maps) {
 
@@ -185,17 +182,18 @@ public class ReferencePropertyDefinitions {
 
     private static void put(Map<String, String> fieldPropertyMap, String fieldName, String propertyName) {
         fieldPropertyMap.put(fieldName, propertyName);
+    }
 
+    private static void remove(Map<String, String> fieldPropertyMap, String fieldName) {
+        fieldPropertyMap.remove(fieldName);
     }
 
 
    private static void put(Map<String, String> fieldPropertyMap, String fieldName) {
        put(fieldPropertyMap, fieldName, fieldName);
-
    }
 
    public static class UnimplemetedCaseException extends Exception{
-
 
         private static final long serialVersionUID = 1L;
 

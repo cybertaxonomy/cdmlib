@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.reference;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -159,6 +160,58 @@ public enum ReferenceType implements IEnumTerm<ReferenceType>, Serializable{
 		return this == Section || isKindOf(Section);
 	}
 
+	/**
+	 * Provides the set of type which are applicable as in-references for
+	 * the <code>subReferenceType</code> passed to this method:
+	 *
+	 * The type specific rules are:
+	 * <ul>
+     *     <li>Article -> Journal</li>
+     *     <li>Book -> PrintSeries | Journal<br>(Journal is needed here to cover historic
+     *     situations: In Ehrenberg's times (Phycology) some articles (prior to publication in a journal)
+     *     were printed and delivered to colleagues and libraries (published preprints). Therefore it necessary to allow these as (small)
+     *     books being a part of a Journal.)</li>
+     *     <li>BookSection -> Book</li>
+     *     <li>InProceedings -> Proceedings</li>
+     *     <li>Section -> Article | Book | Thesis | Patent | Report | Webpage | inProceedings</li>
+     * </ul>
+     * In case the passed <code>subReferenceType</code> matches none of the above rules the returned set will be empty.
+     * <p>
+     * NOTE: If these constraints are being used in UI contexts, it might be sensible in specific situations to add {@link #Generic} and <code>null</code>
+     * to the list in case it was not empty.
+     *
+	 * @param subReferenceType
+	 *     The type of the part for which the possible in-refrence types are to be returned.
+	 * @return a set, may be empty, never <code>null</code>
+	 */
+	public static Set<ReferenceType> inReferenceContraints(ReferenceType subReferenceType){
+	    Set<ReferenceType> inRefTypes = new HashSet<>();
+
+        if(subReferenceType != null && !subReferenceType.equals(ReferenceType.Generic)){
+            if(subReferenceType.isArticle()){
+                inRefTypes.add(ReferenceType.Journal);
+            } else if (subReferenceType == ReferenceType.BookSection) {
+                inRefTypes.add(ReferenceType.Book);
+            } else if (subReferenceType.isBook()) {
+                inRefTypes.add(ReferenceType.PrintSeries);
+                inRefTypes.add(ReferenceType.Journal);
+            } else if (subReferenceType == ReferenceType.InProceedings) {
+                inRefTypes.add(ReferenceType.Proceedings);
+            } else if (subReferenceType == ReferenceType.Section) {
+                inRefTypes.add(ReferenceType.Article);
+                inRefTypes.add(ReferenceType.Book);
+                inRefTypes.add(ReferenceType.Thesis);
+                inRefTypes.add(ReferenceType.Patent);
+                inRefTypes.add(ReferenceType.Report);
+                inRefTypes.add(ReferenceType.WebPage);
+                inRefTypes.add(ReferenceType.InProceedings);
+                inRefTypes.add(ReferenceType.BookSection);
+            }
+        }
+
+        return inRefTypes;
+    }
+
 // *************************** DELEGATE **************************************/
 
 	private static EnumeratedTermVoc<ReferenceType> delegateVoc;
@@ -194,6 +247,20 @@ public enum ReferenceType implements IEnumTerm<ReferenceType>, Serializable{
 
 	public static ReferenceType getByKey(String key){return delegateVoc.getByKey(key);}
     public static ReferenceType getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
+
+    /**
+     * @return
+     */
+    public boolean isArticle() {
+        return this == Article;
+    }
+    public boolean isBook() {
+        return this == Book;
+    }
+    public boolean isBookSection() {
+        return this == BookSection;
+    }
+    //TBC
 
 
 }

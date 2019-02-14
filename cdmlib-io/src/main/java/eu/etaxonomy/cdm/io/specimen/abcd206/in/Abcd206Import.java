@@ -270,6 +270,9 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 state.setDescriptionRefs(new ArrayList<>());
                 state.setDerivedUnitSources(new ArrayList<>());
                 for (int i = 0; i < unitsList.getLength(); i++) {
+                    commitTransaction(state.getTx());
+                    state.setTx(startTransaction());
+
                     if (state.getConfig().getProgressMonitor().isCanceled()) {
                         break;
                     }
@@ -286,6 +289,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     this.handleSingleUnit(state, item, true);
 
                 }
+                commitTransaction(state.getTx());
+                state.setTx(startTransaction());
                 if (state.getConfig().isDeduplicateReferences()) {
                     getReferenceService().deduplicate(Reference.class, null, null);
                 }
@@ -395,7 +400,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                         }
                         // parent-child relation:
                         if (associationType.contains("individual") || associationType.contains("culture")
-                                || associationType.contains("sample")) {
+                                || associationType.contains("sample") ||  associationType.contains("isolated")) {
                             DerivationEvent updatedDerivationEvent = DerivationEvent.NewSimpleInstance(currentUnit,
                                     associatedUnit, DerivationEventType.ACCESSIONING());
 
@@ -592,61 +597,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 for (String multimediaObject : state.getDataHolder().getMultimediaObjects().keySet()) {
                     Media media;
                     try {
-                        media = getImageMedia(multimediaObject, READ_MEDIA_DATA);
-                        Map<String, String> attributes = state.getDataHolder().getMultimediaObjects()
-                                .get(multimediaObject);
-                        if (attributes.containsKey("Context")) {
-                            LanguageString description = LanguageString.NewInstance(attributes.get("Context"),
-                                    Language.ENGLISH());
-                            media.addDescription(description);
-                        }
-                        if (attributes.containsKey("Comment")) {
-                            LanguageString description = LanguageString.NewInstance(attributes.get("Comment"),
-                                    Language.ENGLISH());
-                            media.addDescription(description);
-                        }
-                        if (attributes.containsKey("Creators")) {
-                            String creators = attributes.get("Creators");
-                            Person artist;
-                            Team artistTeam;
-                            String[] artists;
-                            if (creators != null) {
-                                if (creators.contains("&")) {
-                                    artists = creators.split("&");
-                                    artistTeam = new Team();
-                                    for (String creator : artists) {
-                                        artist = Person.NewTitledInstance(creator);
-                                        artistTeam.addTeamMember(artist);
-                                    }
-                                    media.setArtist(artistTeam);
-                                } else {
-
-                                    artist = Person.NewTitledInstance(creators);
-                                    media.setArtist(artist);
-                                }
-                            }
-
-                        }
-                        if (attributes.containsKey("CreateDate")) {
-                            String createDate = attributes.get("CreateDate");
-
-                            if (createDate != null) {
-
-                               media.setMediaCreated(TimePeriodParser.parseString(createDate));
-                            }
-
-                        }
-
-
-                        if (attributes.containsKey("License")) {
-                            String licence = attributes.get("License");
-
-                            if (licence != null) {
-                               Rights right = Rights.NewInstance(licence, Language.ENGLISH(), RightsType.LICENSE());
-                               media.addRights(right);
-                            }
-
-                        }
+                        media = extractMedia(state, multimediaObject);
 
 
 
@@ -679,42 +630,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 for (String multimediaObject : state.getDataHolder().getGatheringMultimediaObjects().keySet()) {
                     Media media;
                     try {
-                        media = getImageMedia(multimediaObject, READ_MEDIA_DATA);
-                        Map<String, String> attributes = state.getDataHolder().getGatheringMultimediaObjects()
-                                .get(multimediaObject);
-                        if (attributes.containsKey("Context")) {
-                            LanguageString description = LanguageString.NewInstance(attributes.get("Context"),
-                                    Language.ENGLISH());
-                            media.addDescription(description);
-                        }
-                        if (attributes.containsKey("Comment")) {
-                            LanguageString description = LanguageString.NewInstance(attributes.get("Comment"),
-                                    Language.ENGLISH());
-                            media.addDescription(description);
-                        }
-                        if (attributes.containsKey("Creators")) {
-                            String creators = attributes.get("Creators");
-                            Person artist;
-                            Team artistTeam;
-                            String[] artists;
-                            if (creators != null) {
-                                if (creators.contains("&")) {
-                                    artists = creators.split("&");
-                                    artistTeam = new Team();
-                                    for (String creator : artists) {
-                                        artist = Person.NewTitledInstance(creator);
-                                        artistTeam.addTeamMember(artist);
-                                    }
-                                    media.setArtist(artistTeam);
-                                } else {
-
-                                    artist = Person.NewTitledInstance(creators);
-                                    media.setArtist(artist);
-                                }
-                            }
-
-                        }
-
+                        media = extractMedia(state, multimediaObject);
                         derivedUnitFacade.addFieldObjectMedia(media);
 
                     } catch (MalformedURLException e) {
@@ -878,13 +794,14 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             if (derivedUnitFacade.getType() != null
                     && (derivedUnitFacade.getType().equals(SpecimenOrObservationType.LivingSpecimen)
                             || derivedUnitFacade.getType().equals(SpecimenOrObservationType.TissueSample)
-                            || derivedUnitFacade.getType().equals(SpecimenOrObservationType.OtherSpecimen))
+                            || derivedUnitFacade.getType().equals(SpecimenOrObservationType.OtherSpecimen)
+                            || derivedUnitFacade.getType().equals(SpecimenOrObservationType.MaterialSample))
                     && state.getConfig().isGetSiblings()) {
                 getSiblings(state, item, derivedUnitFacade);
             }
 
         } catch (Exception e) {
-            String message = "Error when reading record!";
+            String message = "Error when reading record! " + itemObject.toString();
             logger.warn(message);
             state.getReport().addException(message, e);
             e.printStackTrace();
@@ -892,6 +809,72 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         }
 
         return;
+    }
+
+    /**
+     * @param state
+     * @param multimediaObject
+     * @return
+     * @throws MalformedURLException
+     */
+    private Media extractMedia(Abcd206ImportState state, String multimediaObject) throws MalformedURLException {
+        Media media;
+        media = getImageMedia(multimediaObject, READ_MEDIA_DATA);
+        Map<String, String> attributes = state.getDataHolder().getMultimediaObjects()
+                .get(multimediaObject);
+        if (attributes.containsKey("Context")) {
+            LanguageString description = LanguageString.NewInstance(attributes.get("Context"),
+                    Language.ENGLISH());
+            media.addDescription(description);
+        }
+        if (attributes.containsKey("Comment")) {
+            LanguageString description = LanguageString.NewInstance(attributes.get("Comment"),
+                    Language.ENGLISH());
+            media.addDescription(description);
+        }
+        if (attributes.containsKey("Creators")) {
+            String creators = attributes.get("Creators");
+            Person artist;
+            Team artistTeam;
+            String[] artists;
+            if (creators != null) {
+                if (creators.contains("&")) {
+                    artists = creators.split("&");
+                    artistTeam = new Team();
+                    for (String creator : artists) {
+                        artist = Person.NewTitledInstance(creator);
+                        artistTeam.addTeamMember(artist);
+                    }
+                    media.setArtist(artistTeam);
+                } else {
+
+                    artist = Person.NewTitledInstance(creators);
+                    media.setArtist(artist);
+                }
+            }
+
+        }
+        if (attributes.containsKey("CreateDate")) {
+            String createDate = attributes.get("CreateDate");
+
+            if (createDate != null) {
+
+               media.setMediaCreated(TimePeriodParser.parseString(createDate));
+            }
+
+        }
+
+
+        if (attributes.containsKey("License")) {
+            String licence = attributes.get("License");
+
+            if (licence != null) {
+               Rights right = Rights.NewInstance(licence, Language.ENGLISH(), RightsType.LICENSE());
+               media.addRights(right);
+            }
+
+        }
+        return media;
     }
 
     @Override
@@ -919,9 +902,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     UnitAssociationParser unitAssociationParser = new UnitAssociationParser(currentPrefix,
                             state.getReport(), state.getCdmRepository());
                     UnitAssociationWrapper associationWrapper = unitAssociationParser.parse(unitAssociation);
-
-                    state.setActualAccessPoint(associationWrapper.getAccesPoint());
                     if (associationWrapper != null) {
+                        state.setActualAccessPoint(associationWrapper.getAccesPoint());
                         NodeList associatedUnits = associationWrapper.getAssociatedUnits();
                         if (associatedUnits != null) {
                             for (int m = 0; m < associatedUnits.getLength(); m++) {

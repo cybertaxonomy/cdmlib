@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.api.service.dto.RegistrationDTO;
 import eu.etaxonomy.cdm.api.service.dto.RegistrationWorkingSet;
 import eu.etaxonomy.cdm.api.service.exception.RegistrationValidationException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.database.PermissionDeniedException;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
@@ -55,19 +56,25 @@ public interface IRegistrationWorkingSetService {
      *
      * @return
      */
+    @Deprecated
     public RegistrationWorkingSet loadWorkingSetByReferenceID(Integer referenceID, boolean resolveSections) throws RegistrationValidationException;
 
     /**
-     * @param referenceID
+     * Loads the working set specified by the <code>referenceUuid</code> from the database. The list of {@link RegistrationDTO}s can be empty in case
+     * there is no registration which is related to the reference.
+     *
+     * @param referenceUuid
      * @param resolveSections resolve the higher publication unit and build the RegistrationWorkingSet for that reference. E.e. For journal sections the
      *  use the inReference which is the journal article.
      * @return
      */
-    public RegistrationWorkingSet loadWorkingSetByReferenceUuid(UUID referenceUuid, boolean resolveSections) throws RegistrationValidationException;
+    public RegistrationWorkingSet loadWorkingSetByReferenceUuid(UUID referenceUuid, boolean resolveSections) throws RegistrationValidationException, PermissionDeniedException;
 
     public Set<RegistrationDTO> loadBlockingRegistrations(UUID blockedRegistrationUuid);
 
-    Pager<RegistrationDTO> convertToDTOPager(Pager<Registration> regPager);
+    public Pager<RegistrationDTO> convertToDTOPager(Pager<Registration> regPager);
+
+    public List<RegistrationDTO> makeDTOs(Collection<Registration> regs);
 
     Pager<RegistrationDTO> pageDTOs(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, String identifierFilterPattern, String taxonNameFilterPattern, Collection<UUID> typeDesignationStatusUuids, Integer pageSize, Integer pageIndex,
             List<OrderHint> orderHints);
@@ -83,7 +90,7 @@ public interface IRegistrationWorkingSetService {
      * @param propertyPaths
      * @return
      */
-    Pager<RegistrationDTO> findInTaxonGraph(UUID submitterUuid, Collection<RegistrationStatus> includedStatus,
+    public Pager<RegistrationDTO> findInTaxonGraph(UUID submitterUuid, Collection<RegistrationStatus> includedStatus,
             String taxonNameFilterPattern, MatchMode matchMode, Integer pageSize, Integer pageIndex,
             List<OrderHint> orderHints);
 

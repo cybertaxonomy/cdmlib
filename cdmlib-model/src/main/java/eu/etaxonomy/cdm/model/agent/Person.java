@@ -203,7 +203,7 @@ public class Person extends TeamOrPersonBase<Person>{
 	 */
 	public Set<InstitutionalMembership> getInstitutionalMemberships(){
 		if(institutionalMemberships == null) {
-			this.institutionalMemberships = new HashSet<InstitutionalMembership>();
+			this.institutionalMemberships = new HashSet<>();
 		}
 		return this.institutionalMemberships;
 	}
@@ -214,7 +214,6 @@ public class Person extends TeamOrPersonBase<Person>{
 			logger.warn("Institutional membership's person has to be changed for adding it to person: " + this);
 			ims.getPerson().removeInstitutionalMembership(ims);
 			ims.setPerson(this);
-
 		}
 	}
 
@@ -370,6 +369,20 @@ public class Person extends TeamOrPersonBase<Person>{
 		}
 		this.lifespan = lifespan;
 	}
+
+    @Override
+    public boolean updateCaches(){
+        boolean result = false;
+        result |= super.updateCaches();
+        if (this.nomenclaturalTitle == null){
+            this.nomenclaturalTitle = this.getTitleCache();
+            if ( this.nomenclaturalTitle != null ){
+                 result = true;
+            }
+         }
+
+         return result;
+     }
 
 //*********************** CLONE ********************************************************/
 

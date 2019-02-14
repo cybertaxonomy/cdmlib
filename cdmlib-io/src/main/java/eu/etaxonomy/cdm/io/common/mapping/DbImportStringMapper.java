@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -19,13 +19,12 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 /**
  * @author a.mueller
  * @since 24.02.2010
- * @version 1.0
  */
 public class DbImportStringMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, CdmBase>{
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbImportStringMapper.class);
-	
+
 	/**
 	 * @param dbAttributString
 	 * @param cdmAttributeString
@@ -36,8 +35,7 @@ public class DbImportStringMapper extends DbSingleAttributeImportMapperBase<DbIm
 		Object defaultValue = null;
 		return DbImportStringMapper.NewInstance(dbAttributeString, cdmAttributeString, defaultValue, obligatory);
 	}
-	
-	
+
 	/**
 	 * @param cdmAttributeString
 	 * @param dbAttributString
@@ -57,8 +55,6 @@ public class DbImportStringMapper extends DbSingleAttributeImportMapperBase<DbIm
 		return new  DbImportStringMapper(dbAttributeString, cdmAttributeString, defaultValue, obligatory);
 	}
 
-	
-	
 	/**
 	 * @param cdmAttributeString
 	 * @param dbAttributString
@@ -68,22 +64,15 @@ public class DbImportStringMapper extends DbSingleAttributeImportMapperBase<DbIm
 		super(dbAttributeString, cdmAttributeString, defaultValue, obligatory);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.DbSingleAttributeImportMapperBase#doInvoke(eu.etaxonomy.cdm.model.common.CdmBase)
-	 */
 	@Override
 	protected CdmBase doInvoke(CdmBase cdmBase, Object value) throws SQLException {
 		return super.doInvoke(cdmBase, value);
 	}
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase#getTypeClass()
-	 */
 	@Override
 	public Class getTypeClass() {
 		return String.class;
 	}
-	
 
 }

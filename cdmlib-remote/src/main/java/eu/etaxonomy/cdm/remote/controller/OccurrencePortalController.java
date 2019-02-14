@@ -29,8 +29,10 @@ import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
 import eu.etaxonomy.cdm.api.service.dto.PreservedSpecimenDTO;
+import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
+import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import io.swagger.annotations.Api;
 
@@ -57,6 +59,7 @@ public class OccurrencePortalController extends OccurrenceController
             "derivedFrom.originals.determinations.taxon",
             "derivedFrom.originals.gatheringEvent.exactLocation.$",
             "derivedFrom.gatheringEvent.exactLocation.$",
+            "derivationEvents.derivatives.$",
             "specimenTypeDesignations.*",
             "specimenTypeDesignations.citation.*",
             "specimenTypeDesignations.homotypicalGroup.*",
@@ -66,7 +69,9 @@ public class OccurrencePortalController extends OccurrenceController
             "gatheringEvent.$",
             "gatheringEvent.exactLocation.referenceSystem", // TODO implement auto initializer?
             "gatheringEvent.collectingAreas",
-            "descriptions"
+            "annotations",
+            "descriptions",
+            "collection.institute.$"
     });
 
     @Autowired
@@ -125,7 +130,27 @@ public class OccurrencePortalController extends OccurrenceController
         if(sob instanceof DerivedUnit){
             DerivedUnit derivedUnit = (DerivedUnit) sob;
             if(derivedUnit.isPublish()){
-                return service.assemblePreservedSpecimenDTO(derivedUnit);
+                PreservedSpecimenDTO dto = service.assemblePreservedSpecimenDTO(derivedUnit);
+                return dto;
+            }
+        }
+        return null;
+    }
+
+    @RequestMapping(value = { "mediaSpecimen" }, method = RequestMethod.GET)
+    public Media doGetMediaSpecimen(
+            @PathVariable("uuid") UUID uuid,
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+
+        logger.info("doGetMediaSpecimen() " + requestPathAndQuery(request));
+
+
+        SpecimenOrObservationBase sob = service.load(uuid, Arrays.asList("mediaSpecimen.sources.citation", "mediaSpecimen.representations.parts"));
+        if(sob instanceof MediaSpecimen){
+            MediaSpecimen mediaSpecimen = (MediaSpecimen) sob;
+            if(mediaSpecimen.isPublish()){
+                return mediaSpecimen.getMediaSpecimen();
             }
         }
         return null;

@@ -6,8 +6,9 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.api.service;
+package eu.etaxonomy.cdm.persistence.dto;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.StringTokenizer;
 
@@ -17,14 +18,15 @@ import eu.etaxonomy.cdm.common.AbstractStringComparator;
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.taxon.ITaxonNodeComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeByNameComparator;
-import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 
 /**
  * @author k.luther/a.kohlbecker
  * @since 09.03.2018
  *
  */
-public class TaxonNodeDtoByNameComparator extends AbstractStringComparator<TaxonNodeDto> implements Comparator<TaxonNodeDto>, ITaxonNodeComparator<TaxonNodeDto>{
+public class TaxonNodeDtoByNameComparator extends AbstractStringComparator<TaxonNodeDto> implements Serializable, Comparator<TaxonNodeDto>, ITaxonNodeComparator<TaxonNodeDto>{
+
+    private static final long serialVersionUID = -5939529760454590279L;
 
     private static final String HYBRID_SIGN = UTF8.HYBRID.toString();
 

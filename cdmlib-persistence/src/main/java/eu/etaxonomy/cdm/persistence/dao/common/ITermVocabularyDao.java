@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.persistence.dao.common;
 
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -18,6 +19,9 @@ import java.util.UUID;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.persistence.dto.TermDto;
+import eu.etaxonomy.cdm.persistence.dto.TermVocabularyDto;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
@@ -102,4 +106,39 @@ public interface ITermVocabularyDao extends IIdentifiableDao<TermVocabulary> {
 			Map<UUID, Set<UUID>> uuidsRepsonse,
 			Map<UUID, TermVocabulary<?>> vocabularyResponse);
 
+    /**
+     * Loads all top level terms, i.e. terms that have no parent terms, for the given vocabulary
+     * @param vocabularyUuid the id of the vocabulary
+     * @return a collection of top level terms
+     */
+    public Collection<TermDto> getTopLevelTerms(UUID vocabularyUuid);
+
+    /**
+     * Returns term vocabularies that contain terms of a certain {@link TermType} e.g. Feature, Modifier, State.
+     *
+     * @param termType the {@link TermType} of the terms in the vocabulary and of the vocabulary
+     * @return a list of term vocabularies
+     */
+    public List<TermVocabularyDto> findVocabularyDtoByTermType(TermType termType);
+
+    /**
+     *
+     * Like {@link #getUuidAndTitleCache(Class, Integer, String)} but filtering
+     * the results by {@link TermType} of the vocabularies.
+     *
+     *
+     * @param clazz
+     *            the (sub)class
+     * @param termType
+     *            the {@link TermType} of the vocabularies to be retrieved
+     * @param limit
+     *            max number of results
+     * @param pattern
+     *            search pattern
+     * @return a list of {@link UuidAndTitleCache}
+     *
+     * @see #getUuidAndTitleCache(Class, Integer, String))
+     */
+    public <S extends TermVocabulary> List<UuidAndTitleCache<S>> getUuidAndTitleCache(Class<S> clazz, TermType termType,
+            Integer limit, String pattern);
 }

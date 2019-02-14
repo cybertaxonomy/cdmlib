@@ -170,12 +170,12 @@ public class ResultSetPartitioner<STATE extends IPartitionedState> {
 	 * @return
 	 * @throws SQLException
 	 */
-	public boolean nextPartition() throws SQLException{
+    public boolean nextPartition() throws SQLException{
 		boolean result = false;
 		ResultSetMetaData metaData = idResultSet.getMetaData();
 		int nOfIdColumns = metaData.getColumnCount();
 		currentPartition++;
-		currentIdLists = new List[nOfIdColumns];
+		currentIdLists = new ArrayList[nOfIdColumns];
 		currentIdListType = new int[nOfIdColumns];
 
 		for (int col = 0; col< currentIdLists.length; col++){

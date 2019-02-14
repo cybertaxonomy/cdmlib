@@ -9,9 +9,7 @@
 
 package eu.etaxonomy.cdm.model.common;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -29,6 +27,8 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.model.EntityCollectionSetterAdapter;
+import eu.etaxonomy.cdm.model.EntityCollectionSetterAdapter.SetterAdapterException;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 
@@ -125,23 +125,8 @@ public abstract class AnnotatableEntity extends VersionableEntity implements IAn
 		}
 	}
 
-	 public void setAnnotations(Set<Annotation> annotations) {
-        List<Annotation> currentAnnotations = new ArrayList<>(annotations);
-        List<Annotation> annotationsSeen = new ArrayList<>();
-        for(Annotation a : annotations){
-            if(a == null){
-                continue;
-            }
-            if(!currentAnnotations.contains(a)){
-                addAnnotation(a);
-            }
-            annotationsSeen.add(a);
-        }
-        for(Annotation a : currentAnnotations){
-            if(!annotationsSeen.contains(a)){
-                removeAnnotation(a);
-            }
-        }
+	 public void setAnnotations(Set<Annotation> annotations) throws SetterAdapterException {
+	     new EntityCollectionSetterAdapter<AnnotatableEntity, Annotation>(AnnotatableEntity.class, Annotation.class, "annotations").setCollection(this, annotations);
     }
 
 //********************** CLONE *****************************************/

@@ -181,6 +181,7 @@ public class FirstDataInserter extends AbstractDataInserter {
             logger.info("inserting first data");
             checkAdminUser();
             checkDefaultGroups();
+            assureRole_REMOTING_forEditors();
             checkMetadata();
             firstDataInserted = true;
 
@@ -286,6 +287,29 @@ public class FirstDataInserter extends AbstractDataInserter {
         return admin;
     }
 
+    /**
+     * Assures the {@link Role#ROLE_REMOTING} exists.
+     * <p>
+     * If the role is missing in the db it will be created and added to the Groups <code>Editor</code> and <code>EditorExtendedCreate</code>.
+     * <p>
+     * The role will however not be added to the editor groups in case the role exist but is missing from one of these groups. This allows removal
+     * of the role from the editor groups to withdraw the remote editing permission from editors in general for a project.
+     * <p>
+     * see https://dev.e-taxonomy.eu/redmine/issues/7972
+     */
+    private void assureRole_REMOTING_forEditors(){
+
+        if(!roleExists(Role.ROLE_REMOTING)){
+            GrantedAuthorityImpl roleRemoting = assureRole(Role.ROLE_REMOTING);
+            Group groupEditor = groupService.load(Group.GROUP_EDITOR_UUID);
+            groupEditor.addGrantedAuthority(roleRemoting);
+            groupService.saveOrUpdate(groupEditor);
+            Group groupEditorExtendedCreate = groupService.load(Group.GROUP_EDITOR_EXTENDED_CREATE_UUID);
+            groupEditorExtendedCreate.addGrantedAuthority(roleRemoting);
+            groupService.saveOrUpdate(groupEditorExtendedCreate);
+        }
+    }
+
     private void checkAdminRole(User admin) {
         Set<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
 
@@ -301,7 +325,7 @@ public class FirstDataInserter extends AbstractDataInserter {
         }
 
         if(!hasRoleAdmin){
-            authorities.add(getRoleAdmin());
+            authorities.add(assureRole(Role.ROLE_ADMIN));
             admin.setGrantedAuthorities(authorities);
             progressMonitor.subTask("Creating Admins Role");
             userService.saveOrUpdate(admin);
@@ -312,12 +336,17 @@ public class FirstDataInserter extends AbstractDataInserter {
     /**
      * @return
      */
-    private GrantedAuthorityImpl getRoleAdmin() {
-        GrantedAuthorityImpl role_admin = grantedAuthorityService.find(Role.ROLE_ADMIN.getUuid());
-        if(role_admin == null){
-            role_admin = Role.ROLE_ADMIN.asNewGrantedAuthority();
+    private GrantedAuthorityImpl assureRole(Role role) {
+        GrantedAuthorityImpl roleLoaded = grantedAuthorityService.find(role.getUuid());
+        if(roleLoaded == null){
+            roleLoaded = grantedAuthorityService.save(role.asNewGrantedAuthority());
         }
-        return role_admin;
+        return roleLoaded;
+    }
+
+    private boolean roleExists(Role role) {
+        GrantedAuthorityImpl roleLoaded = grantedAuthorityService.find(role.getUuid());
+        return roleLoaded != null;
     }
 
     private void createMetadata(){

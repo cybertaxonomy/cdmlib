@@ -11,7 +11,8 @@ package eu.etaxonomy.cdm.api.service.dto;
 import java.util.HashSet;
 import java.util.Set;
 
-import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
@@ -86,8 +87,10 @@ public class GatheringEventDTO {
 
     public static GatheringEventDTO newInstance(GatheringEvent gathering){
         GatheringEventDTO dto = new GatheringEventDTO();
+        gathering = HibernateProxyHelper.deproxy(gathering);
         if (gathering.getLocality() != null){
-            dto.locality = gathering.getLocality().getLanguageLabel(Language.DEFAULT());
+            LanguageString locality = HibernateProxyHelper.deproxy(gathering.getLocality());
+            dto.locality = locality.getText();
             }
         if (gathering.getExactLocation() != null){
             dto.exactLocation = gathering.getExactLocation();

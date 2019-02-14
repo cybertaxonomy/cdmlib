@@ -11,10 +11,12 @@ package eu.etaxonomy.cdm.io.cdmLight;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -78,6 +80,8 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
+import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDtoByRankAndNameComparator;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.reference.DefaultReferenceCacheStrategy;
@@ -163,6 +167,24 @@ public class CdmLightClassificationExport
                     handleTaxonNode(state, node);
                     node = partitioner.next();
                 }
+              //create sortIndex for nodes
+                for(Entry<Integer, List<TaxonNodeDto>> entry :state.getNodeChildrenMap().entrySet()){
+                    List<TaxonNodeDto> children = entry.getValue();
+                    Comparator<TaxonNodeDto> comp = state.getConfig().getComparator();
+                    if (comp == null){
+                        comp = new TaxonNodeDtoByRankAndNameComparator();
+                    }
+                    Collections.sort(children, comp);
+                    int index = 0;
+                    for (TaxonNodeDto child:children) {
+                        if (state.getProcessor().hasRecord(CdmLightExportTable.TAXON, child.getTaxonUuid().toString())){
+                            String[] csvLine = state.getProcessor().getRecord(CdmLightExportTable.TAXON,child.getTaxonUuid().toString());
+                            csvLine[CdmLightExportTable.TAXON.getIndex(CdmLightExportTable.SORT_INDEX)] =  String.valueOf(index);
+                            index++;
+                        }
+
+                    }
+               }
 
 
 //            for (LogicFilter<TaxonNode> taxonNodeFilter : config.getTaxonNodeFilter().getTaxonNodesFilter()){
@@ -189,13 +211,17 @@ public class CdmLightClassificationExport
             }else{
                 try {
                     TaxonNode root = taxonNode;
+                    List<TaxonNodeDto> childNodes;
+                    if (root.hasChildNodes()){
+                        childNodes = new ArrayList();
+                        for (TaxonNode child: root.getChildNodes()){
+                            childNodes.add(new TaxonNodeDto(child));
+                        }
+                        state.getNodeChildrenMap().put(root.getId(),childNodes);
+                    }
                     if (root.hasTaxon()){
                         handleTaxon(state, root);
-                    }else{
-    //                    for (TaxonNode child : root.getChildNodes()){
-    //                        handleTaxon(state, child);
-    //                        //TODO progress monitor
-    //                    }
+
                     }
                 } catch (Exception e) {
                     state.getResult().addException(e, "An unexpected error occurred when handling classification " +
@@ -1305,7 +1331,6 @@ public class CdmLightClassificationExport
                 TypeDesignationSetManager manager = new TypeDesignationSetManager(group);
 
                 list.addAll( manager.toTaggedTextWithCitation());
-                System.err.println(list.toString());
             }
             StringBuffer homotypicalGroupTypeDesignationString = new StringBuffer();
 
@@ -1331,7 +1356,7 @@ public class CdmLightClassificationExport
             if (typeDesignations.equals(".")){
                 typeDesignations = null;
             }
-            System.err.println(typeDesignations);
+
        /*     for (TypeDesignationBase typeDesignation: designationList){
                 //[Vorschlag Soll:]
                // Sumatra Utara, Kab. Karo, around Sidikalang areas, 1000─1500 m, Dec 11, 2003, Nepenthes Team (Hernawati, P. Akhriadi & I. Petra), NP 354 (‘ANDA’–Holo, BO–Iso) [fide Akhriadi & al. 2004]

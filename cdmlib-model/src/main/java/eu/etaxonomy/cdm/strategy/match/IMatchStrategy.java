@@ -1,37 +1,32 @@
 /**
- * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy
- * http://www.e-taxonomy.eu
- *
- * The contents of this file are subject to the Mozilla Public License Version 1.1
- * See LICENSE.TXT at the top of this package for the full license terms.
- */
-
+* Copyright (C) 2018 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.strategy.match;
-
-import java.util.Set;
-
 
 /**
  * @author a.mueller
- * @since 31.07.2009
+ * @since 20.10.2018
+ *
  */
 public interface IMatchStrategy {
 
-	public static MatchMode defaultMatchMode = MatchMode.EQUAL;
-	public static MatchMode defaultCollectionMatchMode = MatchMode.IGNORE;
-	public static MatchMode defaultMatchMatchMode = MatchMode.MATCH;
+    public static MatchMode DEFAULT_MATCH_MODE = MatchMode.EQUAL;
+    public static MatchMode DEFAULT_COLLECTION_MATCH_MODE = MatchMode.IGNORE;
+    public static MatchMode DEFAULT_MATCH_MATCH_MODE = MatchMode.MATCH;
 
-	public MatchMode getMatchMode(String propertyName);
-
-	/**
-	 * Sets the match mode for property propertyName
-	 * @param propertyName
-	 * @param mergeMode
-	 * @throws MatchException
-	 * @see {@link #setMatchMode(String, MatchMode, IMatchStrategy)}
-	 */
-	public void setMatchMode(String propertyName, MatchMode matchMode) throws MatchException;
+    /**
+     * Sets the match mode for property propertyName
+     * @param propertyName
+     * @param mergeMode
+     * @throws MatchException
+     * @see {@link #setMatchMode(String, MatchMode, IMatchStrategy)}
+     */
+    public void setMatchMode(String propertyName, MatchMode matchMode) throws MatchException;
 
 
     /**
@@ -45,32 +40,32 @@ public interface IMatchStrategy {
      */
     void setMatchMode(String propertyName, MatchMode matchMode, IMatchStrategy matchStrategy) throws MatchException;
 
-	/**
-	 * Invokes the match check.
-	 * If two objects match this method returns true, false otherwise
-	 * @param <T>
-	 * @param mergeFirst
-	 * @param mergeSecond
-	 * @throws MatchException
-	 */
-	public <T extends IMatchable> boolean invoke(T matchFirst, T matchSecond) throws MatchException;
+    /**
+     * Invokes the match check.
+     * If two objects match this method returns true, false otherwise
+     * @param <T>
+     * @param mergeFirst
+     * @param mergeSecond
+     * @throws MatchException
+     */
+    public <T extends IMatchable> MatchResult invoke(T matchFirst, T matchSecond) throws MatchException;
+
+    public  <T extends IMatchable> MatchResult invoke(T matchFirst, T matchSecond, boolean failAll) throws MatchException;
 
 
-	/**
-	 * Returns the Matching of this match strategy
-	 * @return
-	 */
-	public Matching getMatching();
+    /**
+     * @param matchFirst
+     * @param matchSecond
+     * @param matchResult
+     * @param failAll
+     * @throws MatchException
+     */
+    <T extends IMatchable> void invoke(T matchFirst, T matchSecond, MatchResult matchResult, boolean failAll) throws MatchException;
 
-	/**
-	 * Returns the class this match strategy matches for
-	 * @return
-	 */
-	public Class getMatchClass();
+    /**
+     * Returns the Matching of this match strategy
+     * @return
+     */
+    public Matching getMatching();
 
-	/**
-	 * Returns a map containing all fields this match strategy defines match modes for
-	 * @return
-	 */
-	public Set<String> getMatchFieldPropertyNames();
 }

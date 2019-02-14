@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.description;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +31,6 @@ import org.springframework.stereotype.Repository;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -884,8 +882,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 
             // NOTE can't use "select new TermDto(distinct a.uuid, r , a.vocabulary.uuid) since we will get multiple
             // rows for a term with multiple representations
-            String parentAreasQueryStr = "select a.uuid, r, p.uuid, v.uuid, a.orderIndex "
-                    + "from NamedArea as a LEFT JOIN a.partOf as p LEFT JOIN a.representations AS r LEFT JOIN a.vocabulary as v "
+            String parentAreasQueryStr = TermDto.getTermDtoSelect("NamedArea")
                     + "where a.id in (:allAreaIds) order by a.idInVocabulary";
             query = getSession().createQuery(parentAreasQueryStr);
             query.setParameterList("allAreaIds", allAreaIds);
@@ -897,35 +894,9 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
             }
             parentResults = query.list();
         }
-        List<TermDto> dtoList = termDtoListFrom(parentResults);
+        List<TermDto> dtoList = TermDto.termDtoListFrom(parentResults);
 
         return dtoList;
     }
-
-    /**
-     * @param results
-     * @return
-     */
-    private List<TermDto> termDtoListFrom(List<Object[]> results) {
-        Map<UUID, TermDto> dtoMap = new HashMap<>(results.size());
-        for (Object[] elements : results) {
-            UUID uuid = (UUID)elements[0];
-            if(dtoMap.containsKey(uuid)){
-                dtoMap.get(uuid).addRepresentation((Representation)elements[1]);
-            } else {
-                Set<Representation> representations;
-                if(elements[1] instanceof Representation) {
-                    representations = new HashSet<Representation>(1);
-                    representations.add((Representation)elements[1]);
-                } else {
-                    representations = (Set<Representation>)elements[1];
-                }
-                dtoMap.put(uuid, new TermDto(uuid, representations, (UUID)elements[2], (UUID)elements[3], (Integer)elements[4]));
-            }
-        }
-        return new ArrayList<>(dtoMap.values());
-    }
-
-
 
 }

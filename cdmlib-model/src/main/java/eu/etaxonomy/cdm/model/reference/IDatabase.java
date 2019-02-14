@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.model.reference;
 
@@ -16,6 +16,6 @@ package eu.etaxonomy.cdm.model.reference;
  * This class corresponds, according to the TDWG ontology, partially to the
  * publication type term (from PublicationTypeTerm): "ComputerProgram".
  */
-public interface IDatabase extends IPublicationBase{
+public interface IDatabase extends IAuthoredPublicationBase{
 
 }

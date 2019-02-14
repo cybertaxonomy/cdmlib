@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.persistence.dao.common;
 import java.util.List;
 
 import eu.etaxonomy.cdm.model.metadata.CdmPreference;
+import eu.etaxonomy.cdm.model.metadata.IPreferencePredicate;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
@@ -42,6 +43,10 @@ public interface IPreferenceDao {
      * @return
      */
     public List<CdmPreference> list();
+
+    public List<CdmPreference> list(IPreferencePredicate<?> predicate);
+
+
 
     /**
      * Retrieves the best matching CdmPreference for the given

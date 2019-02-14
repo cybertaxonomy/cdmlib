@@ -40,7 +40,7 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<DbImpor
 	public static DbImportTaxIncludedInMapper<?> NewInstance(String dbChildAttribute, String dbChildNamespace, String dbParentAttribute, String parentNamespace, String dbAlternativeParentAttribute, String alternativeParentNamespace, String dbTreeAttribute){
 		String citationNamespace = null;
 		String citationAttribute = null;
-		return new DbImportTaxIncludedInMapper(dbChildAttribute, dbChildNamespace, dbParentAttribute, parentNamespace, dbAlternativeParentAttribute, alternativeParentNamespace, dbTreeAttribute, citationAttribute, citationNamespace);
+		return new DbImportTaxIncludedInMapper<>(dbChildAttribute, dbChildNamespace, dbParentAttribute, parentNamespace, dbAlternativeParentAttribute, alternativeParentNamespace, dbTreeAttribute, citationAttribute, citationNamespace);
 	}
 
 //******************************* ATTRIBUTES ***************************************/
@@ -80,10 +80,6 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<DbImpor
 
 //************************************ METHODS *******************************************/
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.IDbImportMapper#invoke(java.sql.ResultSet, eu.etaxonomy.cdm.model.common.CdmBase)
-	 */
 	@Override
     public CdmBase invoke(ResultSet rs, CdmBase cdmBase) throws SQLException {
 		STATE state = getState();

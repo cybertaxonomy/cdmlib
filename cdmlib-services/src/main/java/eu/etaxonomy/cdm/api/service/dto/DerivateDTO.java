@@ -81,6 +81,8 @@ public abstract class DerivateDTO extends TypedEntityReference{
                 setSpecimenTypeDesignations(derivedUnit.getSpecimenTypeDesignations());
             }
         }
+
+
     }
     public String getTitleCache() {
         return getLabel();
@@ -135,7 +137,11 @@ public abstract class DerivateDTO extends TypedEntityReference{
     }
 
     public void setSpecimenTypeDesignations(Set<SpecimenTypeDesignation> specimenTypeDesignations) {
-        this.specimenTypeDesignations = specimenTypeDesignations;
+        this.specimenTypeDesignations = new HashSet();
+        for (SpecimenTypeDesignation typeDes: specimenTypeDesignations){
+            this.specimenTypeDesignations.add(typeDes);
+        }
+
     }
 
 
@@ -270,7 +276,7 @@ public abstract class DerivateDTO extends TypedEntityReference{
     /**
      * @return the collection
      */
-    public String getHerbarium() {
+    public String getCollection() {
         if (collection != null){
             return collection.getCode();
         } else {
@@ -280,7 +286,7 @@ public abstract class DerivateDTO extends TypedEntityReference{
     /**
      * @param collection the collection to set
      */
-    public void setHerbarium(String herbarium) {
+    public void setCollection(String herbarium) {
         if (collection == null){
             collection = new CollectionDTO(herbarium, null, null, null);
         }else{

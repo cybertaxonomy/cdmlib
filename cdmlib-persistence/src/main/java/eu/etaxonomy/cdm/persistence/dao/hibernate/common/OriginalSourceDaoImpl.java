@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -31,7 +31,6 @@ import eu.etaxonomy.cdm.persistence.dao.common.IOriginalSourceDao;
 /**
  * @author a.mueller
  * @since 17.07.2008
- * @version 1.0
  */
 @Repository
 public class OriginalSourceDaoImpl extends CdmEntityDaoBase<OriginalSourceBase> implements	IOriginalSourceDao {
@@ -39,14 +38,11 @@ public class OriginalSourceDaoImpl extends CdmEntityDaoBase<OriginalSourceBase> 
 	private static final Logger logger = Logger.getLogger(OriginalSourceDaoImpl.class);
 
 	public OriginalSourceDaoImpl() {
-		super(OriginalSourceBase.class); 
+		super(OriginalSourceBase.class);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.common.IOriginalSourceDao#findOriginalSourcesByIdInSource(java.lang.Class, java.util.List, java.lang.String)
-	 */
-	public Map<String, ISourceable> findOriginalSourcesByIdInSource(Class clazz, Set<String> idInSourceSet, String idNamespace) {
+	@Override
+    public Map<String, ISourceable> findOriginalSourcesByIdInSource(Class clazz, Set<String> idInSourceSet, String idNamespace) {
 		Session session = getSession();
 		String idInSourceString = "";
 		for (String idInSource : idInSourceSet){
@@ -57,46 +53,41 @@ public class OriginalSourceDaoImpl extends CdmEntityDaoBase<OriginalSourceBase> 
 		Query q = session.createQuery(
                 "SELECT source.idInSource, c FROM " + clazz.getSimpleName() + " AS c " +
                 "INNER JOIN c.sources AS source " +
-                "WHERE source.idInSource IN ( " + idInSourceString + " )" + 
+                "WHERE source.idInSource IN ( " + idInSourceString + " )" +
                 	" AND source.idNamespace = :idNamespace"
             );
 		q.setString("idNamespace", idNamespace);
-		//TODO integrate reference in where 
-		
-		Map<String, ISourceable> result = new HashMap<String, ISourceable>();
-		
+		//TODO integrate reference in where
+
+		Map<String, ISourceable> result = new HashMap<>();
+
 		List<Object[]> list = q.list();
 		for (Object[] pair : list){
 			result.put((String)pair[0], (ISourceable)pair[1]);
 		}
-		
+
 		return result;
 	}
-	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.common.IOriginalSourceDao#findOriginalSourceByIdInSource(java.lang.Class, java.lang.String, java.lang.String)
-	 */
-	public List<IdentifiableEntity> findOriginalSourceByIdInSource(Class clazz, String idInSource, String idNamespace) {
+
+	@Override
+    public List<IdentifiableEntity> findOriginalSourceByIdInSource(Class clazz, String idInSource, String idNamespace) {
 		Session session = getSession();
 		Query q = session.createQuery(
                 "Select c from " + clazz.getSimpleName() + " as c " +
                 "inner join c.sources as source " +
-                "where source.idInSource = :idInSource " + 
+                "where source.idInSource = :idInSource " +
                 	" AND source.idNamespace = :idNamespace"
             );
 		q.setString("idInSource", idInSource);
 		q.setString("idNamespace", idNamespace);
-		//TODO integrate reference in where 
+		//TODO integrate reference in where
 		List<IdentifiableEntity> results = q.list();
-		
+
 		return results;
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.common.IOriginalSourceDao#findOriginalSourceByIdInSource(java.lang.String, java.lang.String)
-	 */
-	public List<OriginalSourceBase> findOriginalSourceByIdInSource(String idInSource, String idNamespace) {
+
+	@Override
+    public List<OriginalSourceBase> findOriginalSourceByIdInSource(String idInSource, String idNamespace) {
 		Session session = getSession();
 		Criteria crit = session.createCriteria(type);
 		crit.add(Restrictions.eq("idInSource", idInSource));
@@ -107,9 +98,7 @@ public class OriginalSourceDaoImpl extends CdmEntityDaoBase<OriginalSourceBase> 
 		}
 		crit.addOrder(Order.desc("created"));
 		List<OriginalSourceBase> results = crit.list();
-		
+
 		return results;
 	}
-
-
 }

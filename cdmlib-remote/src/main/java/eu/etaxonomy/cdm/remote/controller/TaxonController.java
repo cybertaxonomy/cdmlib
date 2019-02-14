@@ -96,7 +96,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
     private ITermService termService;
 
     protected static final List<String> TAXONNODE_INIT_STRATEGY = Arrays.asList(new String []{
-            "taxonNodes.classification"
+            "taxonNodes.classification","acceptedTaxon.taxonNodes.classification"
     });
 
     public TaxonController(){
@@ -238,7 +238,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
 
     @RequestMapping(value = "taxonNodes", method = RequestMethod.GET)
     public Set<TaxonNode>  doGetTaxonNodes(
-            @PathVariable("uuid") UUID uuid,
+            @PathVariable("uuid") UUID taxonUuid,
             @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
@@ -246,9 +246,9 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
         logger.info("doGetTaxonNodes" + requestPathAndQuery(request));
         TaxonBase<?> taxonBase;
         if (subtreeUuid != null){
-            taxonBase = doGet(uuid, subtreeUuid, request, response);
+            taxonBase = doGet(taxonUuid, subtreeUuid, request, response);
         }else{
-            taxonBase = service.load(uuid, NO_UNPUBLISHED, TAXONNODE_INIT_STRATEGY);
+            taxonBase = service.load(taxonUuid, NO_UNPUBLISHED, TAXONNODE_INIT_STRATEGY);
         }
         if(taxonBase instanceof Taxon){
             return ((Taxon)taxonBase).getTaxonNodes();

@@ -155,9 +155,10 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
      * Factory method
      * @return
      */
-    public static NamedArea NewInstance(String term, String label, String labelAbbrev){
-        return new NamedArea(term, label, labelAbbrev);
+    public static NamedArea NewInstance(String description, String label, String labelAbbrev){
+        return new NamedArea(description, label, labelAbbrev);
     }
+
 
 //**************************** VARIABLES *******************************/
 
@@ -190,8 +191,8 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
     	super(TermType.NamedArea);
     }
 
-    protected NamedArea(String term, String label, String labelAbbrev) {
-        super(TermType.NamedArea, term, label, labelAbbrev);
+    protected NamedArea(String description, String label, String labelAbbrev) {
+        super(TermType.NamedArea, description, label, labelAbbrev);
     }
 
 //********************************* GETTER /SETTER *********************************************/

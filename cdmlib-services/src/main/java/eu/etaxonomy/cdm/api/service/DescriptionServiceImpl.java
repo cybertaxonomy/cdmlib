@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.dto.TaxonDistributionDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
@@ -67,6 +68,7 @@ import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IStatisticalMeasurementValueDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
+import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -174,11 +176,11 @@ public class DescriptionServiceImpl
 
     @Override
     @Transactional(readOnly = false)
-    public void updateTitleCache(Class<? extends DescriptionBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<DescriptionBase> cacheStrategy, IProgressMonitor monitor) {
+    public void updateCaches(Class<? extends DescriptionBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<DescriptionBase> cacheStrategy, IProgressMonitor monitor) {
         if (clazz == null){
             clazz = DescriptionBase.class;
         }
-        super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
+        super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
     }
 
 
@@ -461,6 +463,24 @@ public class DescriptionServiceImpl
     @Transactional(readOnly = false)
     public Map<UUID, DescriptionElementBase> saveDescriptionElement(Collection<DescriptionElementBase> descriptionElements) {
         return descriptionElementDao.saveAll(descriptionElements);
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public List<MergeResult<DescriptionBase>> mergeDescriptionElements(Collection<TaxonDistributionDTO> descriptionElements, boolean returnTransientEntity) {
+        List<MergeResult<DescriptionBase>> mergedObjects = new ArrayList();
+        List<Distribution> toDelete = new ArrayList<>();
+        for(TaxonDistributionDTO obj : descriptionElements) {
+            Iterator<TaxonDescription> iterator = obj.getDescriptionsWrapper().getDescriptions().iterator();
+            while (iterator.hasNext()){
+                TaxonDescription desc = iterator.next();
+                mergedObjects.add(dao.merge(desc, returnTransientEntity));
+            }
+
+
+        }
+
+        return mergedObjects;
     }
 
     /**
@@ -845,5 +865,6 @@ public class DescriptionServiceImpl
         return result;
 
     }
+
 
 }

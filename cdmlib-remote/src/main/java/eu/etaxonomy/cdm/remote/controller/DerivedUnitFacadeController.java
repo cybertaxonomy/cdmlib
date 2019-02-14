@@ -109,7 +109,7 @@ public class DerivedUnitFacadeController extends AbstractController<SpecimenOrOb
         ModelAndView mv = new ModelAndView();
 //        DerivedUnitFacade duf = newFacadeFrom(occurrenceUuid, response,Arrays.asList(new String []{
 //                "fieldObjectMedia", "fieldObjectMedia.title"}));
-        SpecimenOrObservationBase sob = service.load(occurrenceUuid, Arrays.asList(new String []{"descriptions", "kindOfUnit"}));
+        SpecimenOrObservationBase sob = service.load(occurrenceUuid, Arrays.asList(new String []{"descriptions", "descriptions.descriptionElements.$", "descriptions.descriptionElements.media", "kindOfUnit","gatheringEvent.*"}));
         FieldUnitDTO dto;
         if (sob instanceof FieldUnit){
             dto = FieldUnitDTO.newInstance((FieldUnit)sob);

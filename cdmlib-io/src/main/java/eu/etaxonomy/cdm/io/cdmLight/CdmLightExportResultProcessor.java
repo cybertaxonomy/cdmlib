@@ -80,6 +80,10 @@ public class CdmLightExportResultProcessor {
         }
     }
 
+    public  String[] getRecord(CdmLightExportTable table, String id){
+        return result.get(table).get(id);
+
+    }
 
     /**
      * @param table
@@ -87,7 +91,7 @@ public class CdmLightExportResultProcessor {
      * @param csvLine
      */
     public void put(CdmLightExportTable table, ICdmBase cdmBase, String[] csvLine) {
-       this.put(table, String.valueOf(cdmBase.getId()), csvLine);
+       this.put(table, cdmBase.getUuid().toString(), csvLine);
     }
 
 
@@ -101,6 +105,7 @@ public class CdmLightExportResultProcessor {
             state.setHomotypicalGroupStore(new HashMap<>());
             state.setReferenceStore(new HashMap<>());
             state.setSpecimenStore(new HashMap<>());
+            state.setNodeChildrenMap(new HashMap<>());
             //Replace quotes by double quotes
             for (CdmLightExportTable table: result.keySet()){
                 //schreibe jede Tabelle in einen Stream...

@@ -65,7 +65,7 @@ public class MultiWebSecurityConfiguration {
                 http
              .anonymous().disable()
              .antMatcher("/remoting/**")
-                 .authorizeRequests().anyRequest().fullyAuthenticated()
+                 .authorizeRequests().anyRequest().access("hasAnyRole('ROLE_ADMIN', 'ROLE_PROJECT_MANAGER', 'ROLE_REMOTING')")
                  .and()
              .csrf().disable()
              .httpBasic();

@@ -96,7 +96,7 @@ public class CdmUserHelper implements UserHelper, Serializable {
     @Override
     public boolean userIsAutheticated() {
         Authentication authentication = getAuthentication();
-        if(authentication != null){
+        if(authentication != null && !AnonymousAuthenticationToken.class.equals(authentication.getClass())){
             return authentication.isAuthenticated();
         }
         return false;
@@ -265,6 +265,11 @@ public class CdmUserHelper implements UserHelper, Serializable {
         User user = (User)userDetails;
         if(userDetails != null){
             try{
+                // flush all pending transactions before changing the authentication,
+                // see https://dev.e-taxonomy.eu/redmine/issues/8066 for discussion
+                // in case of problems we may want to use another transaction propagation level
+                // instead (PROPAGATION_REQUIRES_NEW) which would require to reload the cdm entity.
+                repo().getSession().flush();
                 getRunAsAutheticator().runAsAuthentication(Role.ROLE_USER_MANAGER);
                 authority = new CdmAuthority(cdmEntity, property, crud);
                 try {
@@ -274,6 +279,7 @@ public class CdmUserHelper implements UserHelper, Serializable {
                     }
                     newAuthorityAdded = user.getGrantedAuthorities().add(grantedAuthority);
                 } catch (CdmAuthorityParsingException e) {
+                    getRunAsAutheticator().restoreAuthentication();
                     throw new RuntimeException(e);
                 }
                 repo().getSession().flush();
@@ -400,6 +406,27 @@ public class CdmUserHelper implements UserHelper, Serializable {
                         } else {
                             matches.add(cdmAuthority);
                         }
+                    }
+                }
+            } catch (CdmAuthorityParsingException e) {
+                continue;
+            }
+        }
+        return matches;
+    }
+
+    // @Override
+    @Override
+    public <T extends CdmBase> Collection<CdmAuthority> findUserPermissions(Class<T> cdmType, EnumSet<CRUD> crud) {
+        Set<CdmAuthority> matches = new HashSet<>();
+        CdmPermissionClass permissionClass = CdmPermissionClass.getValueOf(cdmType);
+        Collection<? extends GrantedAuthority> authorities = getAuthentication().getAuthorities();
+        for(GrantedAuthority ga : authorities){
+            try {
+                CdmAuthority cdmAuthority = CdmAuthority.fromGrantedAuthority(ga);
+                if(cdmAuthority.getPermissionClass().equals(permissionClass)){
+                    if(cdmAuthority.getOperation().containsAll(crud)){
+                        matches.add(cdmAuthority);
                     }
                 }
             } catch (CdmAuthorityParsingException e) {

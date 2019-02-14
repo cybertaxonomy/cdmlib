@@ -119,8 +119,10 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 
 	public SortedSet<T> getHigherTerms(T otb) {
 		SortedSet<T> result = getHigherAndEqualTerms(otb);
-		for (T setObject : terms){
-			if (setObject.compareTo(otb) == 0){
+		for (DefinedTermBase<?> setObjectUnproxied : terms){
+		    @SuppressWarnings("unchecked")
+            T setObject = (T)CdmBase.deproxy(setObjectUnproxied, OrderedTermBase.class);
+            if (setObject.compareTo(otb) == 0){
 				result.remove(setObject);
 			}
 		}
@@ -134,8 +136,10 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 
 		result.addAll( sortedSet.headSet(otb));*/
 		//getLowerTerms Returns a view of the portion of this set whose elements are STRICTLY less than toElement
-		for (T setObject : terms){
-			if (setObject.compareTo(otb) == 0){
+		for (DefinedTermBase<?> setObjectUnproxied : terms){
+		    @SuppressWarnings("unchecked")
+            T setObject = (T)CdmBase.deproxy(setObjectUnproxied, OrderedTermBase.class);
+            if (setObject.compareTo(otb) == 0){
 				result.add(setObject);
 			}
 		}
@@ -149,7 +153,7 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 				result.remove(setObject);
 			}
 		}*/
-	    SortedSet<T> result = new TreeSet<T>();
+	    SortedSet<T> result = new TreeSet<>();
         SortedSet<T> sortedSet = getSortedSetOfTerms();
         //headSet Returns a view of the portion of this set whose elements are STRICTLY less than toElement
         result.addAll( sortedSet.headSet(otb));
@@ -158,7 +162,9 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 
 	public SortedSet<T> getEqualTerms(T otb) {
 		SortedSet<T> result = new TreeSet<>();
-		for (T setObject : terms){
+		for (DefinedTermBase<?> setObjectUnproxied : terms){  //use Unproxied to avoid ClassCastException in certain contexts
+		    @SuppressWarnings("unchecked")
+            T setObject = (T)CdmBase.deproxy(setObjectUnproxied, OrderedTermBase.class);
 			if (setObject.compareTo(otb) == 0){
 				result.add(setObject);
 			}
@@ -225,10 +231,9 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 		int orderInd = lowerTerm.orderIndex;
 		termToBeAdded.orderIndex = orderInd;
 		//increment all orderIndexes of terms below
-		Iterator<T> iterator = terms.iterator();
-		while(iterator.hasNext()){
-			T term = iterator.next();
-			if (term.orderIndex >= orderInd){  //should always be true
+		Set<T> myTerms = getSortedSetOfTerms();
+		for(T term : myTerms){
+		    if (term.orderIndex >= orderInd){  //should always be true
 				term.orderIndex++;
 			}
 		}
@@ -249,7 +254,7 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 		super.addTerm(termToBeAdded);
 	}
 
-	public void addTermEqualLevel(T termToBeAdded, T equalLevelTerm) throws WrongTermTypeException {
+	public void addTermEqualLevel(T termToBeAdded, T equalLevelTerm) {
 		int orderInd = equalLevelTerm.orderIndex;
 		termToBeAdded.orderIndex = orderInd;
 		super.addTerm(termToBeAdded);
@@ -282,8 +287,12 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 
 	@Transient
 	private SortedSet<T> getSortedSetOfTerms(){
-		SortedSet<T> sortedSet = new TreeSet<T>();
-		sortedSet.addAll(terms);
+		SortedSet<T> sortedSet = new TreeSet<>();
+		for (DefinedTermBase<?> termUnproxied : terms){
+            @SuppressWarnings("unchecked")
+            T term = (T)CdmBase.deproxy(termUnproxied, OrderedTermBase.class);
+            sortedSet.add(term);
+        }
 		return sortedSet;
 	}
 

@@ -87,10 +87,11 @@ import eu.etaxonomy.cdm.validation.Level2;
 })
 @Audited
 @MappedSuperclass
-public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrategy> extends AnnotatableEntity
+public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrategy>
+        extends AnnotatableEntity
         implements IIdentifiableEntity /*, ISourceable<IdentifiableSource> */ {
-    private static final long serialVersionUID = 7912083412108359559L;
 
+    private static final long serialVersionUID = 7912083412108359559L;
     private static final Logger logger = Logger.getLogger(IdentifiableEntity.class);
 
     @XmlTransient
@@ -266,6 +267,41 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         return this.titleCache == null || "".equals(this.titleCache);
     }
 
+    public boolean updateCaches(){
+        if (this.protectedTitleCache == false){
+            String oldTitleCache = this.titleCache;
+
+            String newTitleCache = cacheStrategy.getTitleCache(this);
+
+            if ( oldTitleCache == null   || ! oldTitleCache.equals(newTitleCache) ){
+                this.setTitleCache(null, false);
+                String newCache = this.getTitleCache();
+
+                if (newCache == null){
+                    logger.warn("newCache should never be null");
+                }
+                if (oldTitleCache == null){
+                    logger.info("oldTitleCache was illegaly null and has been fixed");
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Updates the caches with the given cache strategy
+     * @param entityCacheStrategy
+     * @return <code>true</code> if some cache was updated, <code>false</code> otherwise
+     */
+    public boolean updateCaches(S entityCacheStrategy){
+        S oldCacheStrategy = this.getCacheStrategy();
+        this.cacheStrategy = entityCacheStrategy != null? entityCacheStrategy : this.getCacheStrategy();
+        boolean result = this.updateCaches();
+        this.cacheStrategy = oldCacheStrategy;
+        return result;
+    }
+
 //**************************************************************************************
 
     @Override
@@ -279,7 +315,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @Override
     public Set<Rights> getRights() {
         if(rights == null) {
-            this.rights = new HashSet<Rights>();
+            this.rights = new HashSet<>();
         }
         return this.rights;
     }
@@ -297,7 +333,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @Override
     public List<Credit> getCredits() {
         if(credits == null) {
-            this.credits = new ArrayList<Credit>();
+            this.credits = new ArrayList<>();
         }
         return this.credits;
     }
@@ -337,7 +373,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @Override
     public List<Identifier> getIdentifiers(){
         if(this.identifiers == null) {
-            this.identifiers = new ArrayList<Identifier>();
+            this.identifiers = new ArrayList<>();
         }
         return this.identifiers;
     }
@@ -353,7 +389,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
      * @return a set of identifier value strings
      */
     public Set<String> getIdentifiers(UUID identifierTypeUuid){
-        Set<String> result = new HashSet<String>();
+        Set<String> result = new HashSet<>();
         for (Identifier<?> identifier : getIdentifiers()){
             if (identifier.getType().getUuid().equals(identifierTypeUuid)){
                 result.add(identifier.getIdentifier());
@@ -414,7 +450,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @Override
     public Set<Extension> getExtensions(){
         if(extensions == null) {
-            this.extensions = new HashSet<Extension>();
+            this.extensions = new HashSet<>();
         }
         return this.extensions;
     }
@@ -497,7 +533,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @Override
     public Set<IdentifiableSource> getSources() {
         if(sources == null) {
-            this.sources = new HashSet<IdentifiableSource>();
+            this.sources = new HashSet<>();
         }
         return this.sources;
     }

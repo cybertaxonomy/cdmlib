@@ -35,6 +35,8 @@ import org.hibernate.annotations.ListIndexBase;
 import org.hibernate.envers.Audited;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import eu.etaxonomy.cdm.model.EntityCollectionSetterAdapter;
+import eu.etaxonomy.cdm.model.EntityCollectionSetterAdapter.SetterAdapterException;
 import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
@@ -169,10 +171,9 @@ public class Team extends TeamOrPersonBase<Team> {
 		return this.teamMembers;
 	}
 
-	protected void setTeamMembers(List<Person> teamMembers) {
-		this.teamMembers = teamMembers;
-		addListenersToMembers();
-	}
+	public void setTeamMembers(List<Person> teamMembers) throws SetterAdapterException {
+	    new EntityCollectionSetterAdapter<Team, Person>(Team.class, Person.class, "teamMembers").setCollection(this, teamMembers);
+    }
 
 	/**
 	 * Adds a new {@link Person person} to <i>this</i> team at the end of the members' list.
@@ -338,6 +339,32 @@ public class Team extends TeamOrPersonBase<Team> {
 	public void setHasMoreMembers(boolean hasMoreMembers) {
 		this.hasMoreMembers = hasMoreMembers;
 	}
+
+
+    @Override
+    public boolean updateCaches(){
+        boolean result = super.updateCaches();
+        if (this.protectedNomenclaturalTitleCache == false){
+            String oldNomTitleCache = this.nomenclaturalTitle;
+            this.protectedNomenclaturalTitleCache = false;
+
+            String newAbbrevTitleCache = cacheStrategy.getTitleCache(this);
+
+            if ( oldNomTitleCache == null   || ! oldNomTitleCache.equals(newAbbrevTitleCache) ){
+                 this.setNomenclaturalTitle(null, false);
+                 String newCache = this.getNomenclaturalTitle();
+
+                 if (newCache == null){
+                     logger.warn("New nomTitleCache should never be null");
+                 }
+                 if (oldNomTitleCache == null){
+                     logger.info("Old nomTitleCache should never be null");
+                 }
+                 result = true;
+             }
+         }
+        return result;
+     }
 
 //*********************** CLONE ********************************************************/
 

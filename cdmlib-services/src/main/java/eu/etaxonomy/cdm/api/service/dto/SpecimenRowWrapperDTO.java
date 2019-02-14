@@ -13,7 +13,7 @@ import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 
 /**
  * @author pplitzner
@@ -24,19 +24,17 @@ public class SpecimenRowWrapperDTO extends RowWrapperDTO<SpecimenDescription> {
 
     private static final long serialVersionUID = 5198447592554976471L;
 
-    private TaxonRowWrapperDTO defaultTaxonDescription;
     private SpecimenOrObservationBase specimen;
     private FieldUnit fieldUnit;
     private String identifier;
     private NamedArea country;
 
-    public SpecimenRowWrapperDTO(SpecimenDescription description, TaxonNode taxonNode, FieldUnit fieldUnit, String identifier,
-                NamedArea country, TaxonRowWrapperDTO defaultTaxonDescription) {
+    public SpecimenRowWrapperDTO(SpecimenDescription description, TaxonNodeDto taxonNode, FieldUnit fieldUnit, String identifier,
+                NamedArea country) {
         super(description, taxonNode);
         this.fieldUnit = fieldUnit;
         this.identifier = identifier;
         this.country = country;
-        this.defaultTaxonDescription = defaultTaxonDescription;
         this.specimen = description.getDescribedSpecimenOrObservation();
     }
 
@@ -56,7 +54,4 @@ public class SpecimenRowWrapperDTO extends RowWrapperDTO<SpecimenDescription> {
         return country;
     }
 
-    public TaxonRowWrapperDTO getDefaultTaxonDescription() {
-        return defaultTaxonDescription;
-    }
 }

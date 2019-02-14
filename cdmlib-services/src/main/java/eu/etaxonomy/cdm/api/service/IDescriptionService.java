@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.api.service.dto.TaxonDistributionDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
 import eu.etaxonomy.cdm.model.common.Annotation;
@@ -37,6 +38,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
+import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -607,5 +609,15 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      * @return
      */
     public UpdateResult moveTaxonDescription(UUID descriptionUuid, UUID targetTaxonUuid);
+
+    /**
+     * @param descriptionElements
+     * @param returnTransientEntity
+     * @return
+     */
+    public List<MergeResult<DescriptionBase>> mergeDescriptionElements(Collection<TaxonDistributionDTO> descriptionElements,
+            boolean returnTransientEntity);
+
+
 
 }

@@ -6,19 +6,19 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.api.service;
+package eu.etaxonomy.cdm.persistence.dto;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 
 /**
  * Comparator to compare {@link TaxonNode taxon nodes} by its user defined ordering
  *
  * @author k.luther
  */
-public class TaxonNodeDtoNaturalComparator implements Comparator<TaxonNodeDto> {
+public class TaxonNodeDtoNaturalComparator implements Serializable, Comparator<TaxonNodeDto> {
 
     public TaxonNodeDtoNaturalComparator(){
 		super();

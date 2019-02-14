@@ -96,6 +96,7 @@ public class Abcd206XMLFieldGetter {
         }
         NodeList results, preps, ntds, ntd;
         String prep;
+        String item;
         results = result.getChildNodes();
 
         try {
@@ -110,10 +111,16 @@ public class Abcd206XMLFieldGetter {
                             for (int m = 0; m < ntds.getLength(); m++) {
                                 if (ntds.item(m).getNodeName().equals(prefix+ "preparation")) {
                                     ntd = ntds.item(m).getChildNodes();
+                                    prep = "";
+
                                     for (int n = 0; n < ntd.getLength(); n++) {
+
+                                        //Fix me: now only the type or the agent is imported because it is overwritten
                                         if (ntd.item(n).getNodeName().equals(prefix + "preparationType"))
                                         {
-                                            prep = ntd.item(n).getTextContent();
+                                            item = ntd.item(n).getTextContent().trim();
+                                            prep += " Preparation Type: "+item +System.lineSeparator();
+
                                             if(DEBUG) {
                                                 logger.info("ADD "+prep);
                                             }
@@ -125,7 +132,8 @@ public class Abcd206XMLFieldGetter {
                                         }
                                         if (ntd.item(n).getNodeName().equals(prefix + "preparationAgent"))
                                         {
-                                            prep = ntd.item(n).getTextContent();
+                                            item = ntd.item(n).getTextContent().trim();
+                                            prep += " Preparation Agent: "+item;
                                             if(DEBUG) {
                                                 logger.info("ADD "+prep);
                                             }
@@ -666,6 +674,7 @@ public class Abcd206XMLFieldGetter {
             getHierarchie(group.item(0));
             dataHolder.knownABCDelements.add(path);
             path = "";
+            Node node = group.item(0);
             dataHolder.longitude = Double.valueOf(group.item(0).getTextContent());
         } catch (NullPointerException e) {
             dataHolder.longitude = null;
@@ -688,7 +697,7 @@ public class Abcd206XMLFieldGetter {
             path = "";
             dataHolder.setGatheringCoordinateErrorMethod(group.item(0).getTextContent());
         } catch (NullPointerException e) {
-            dataHolder.latitude = null;
+            dataHolder.setGatheringCoordinateErrorMethod(null);
         }
         try {
             group = root.getElementsByTagName(prefix + "Country");
@@ -977,13 +986,13 @@ public class Abcd206XMLFieldGetter {
                             }
                         }
                     }else{
-                        System.err.println(iprNodes.item(l).getNodeName());
+                        //System.err.println(iprNodes.item(l).getNodeName());
                     }
 
                 }
 
             } else{
-                System.err.println(multimedia.item(k).getNodeName());
+               // System.err.println(multimedia.item(k).getNodeName());
             }
 
         }

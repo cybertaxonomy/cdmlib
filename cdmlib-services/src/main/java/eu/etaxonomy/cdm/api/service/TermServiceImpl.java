@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -36,13 +35,15 @@ import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableExcepti
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.LanguageStringBase;
+import eu.etaxonomy.cdm.model.common.OrderedTermBase;
+import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.Representation;
-import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -53,6 +54,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringBaseDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IRepresentationDao;
+import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -64,6 +66,9 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 	private static final Logger logger = Logger.getLogger(TermServiceImpl.class);
 
 	private ILanguageStringDao languageStringDao;
+
+	@Autowired
+	private IVocabularyService vocabularyService;
 
 	@Autowired
 	@Qualifier("langStrBaseDao")
@@ -271,12 +276,14 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 		if (config == null){
 			config = new TermDeletionConfigurator();
 		}
-//		boolean isInternal = config.isInternal();
-
 		Set<DefinedTermBase> termsToSave = new HashSet<DefinedTermBase>();
 
 		DeleteResult result = isDeletable(term.getUuid(), config);
+		if (result.isAbort()) {
+            return result;
+        }
 		//CdmBase.deproxy(dao.merge(term), DefinedTermBase.class);
+
 		try {
 			//generalization of
 			Set<DefinedTermBase> specificTerms = term.getGeneralizationOf();
@@ -333,45 +340,34 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 			//included in
 			Set<DefinedTermBase> includedTerms = term.getIncludes();
 			if (includedTerms.size()> 0){
-//				if (config.isDeleteIncludedTerms()){
-//					for (DefinedTermBase includedTerm: includedTerms){
-//						config.setCheck(true);
-//						DeleteResult includedResult = this.delete(includedTerm, config);
-////						config.setCheck(isCheck);
-//						result.includeResult(includedResult);
-//					}
-//				}else
-					if (config.isDeleteIncludedRelations()){
-					DefinedTermBase parent = term.getPartOf();
-					for (DefinedTermBase includedTerm: includedTerms){
-						term.removeIncludes(includedTerm);
-						if (parent != null){
-							parent.addIncludes(includedTerm);
-							termsToSave.add(parent);
-						}
-					}
-				}else{
-					//TODO Exception type
-					String message = "This term includes other terms. Move or delete included terms prior to delete or change delete configuration.";
-					result.addRelatedObjects(includedTerms);
-					result.setAbort();
-					Exception ex = new DataChangeNoRollbackException(message);
-					result.addException(ex);
-				}
+			    if (config.isDeleteIncludedRelations()){
+			        DefinedTermBase parent = term.getPartOf();
+			        for (DefinedTermBase includedTerm: includedTerms){
+			            term.removeIncludes(includedTerm);
+			            if (parent != null){
+			                parent.addIncludes(includedTerm);
+			                termsToSave.add(parent);
+			            }
+			        }
+			    }else{
+			        //TODO Exception type
+			        String message = "This term includes other terms. Move or delete included terms prior to delete or change delete configuration.";
+			        result.addRelatedObjects(includedTerms);
+			        result.setAbort();
+			        Exception ex = new DataChangeNoRollbackException(message);
+			        result.addException(ex);
+			    }
 			}
 
 			//part of
 			if (parentTerm != null){
-				if (config.isDeletePartOfRelations()){
-					parentTerm.removeIncludes(term);
-					termsToSave.add(parentTerm);
-				}else{
-					//handelede before "included in"
-				}
+			    if (config.isDeletePartOfRelations()){
+			        parentTerm.removeIncludes(term);
+			        termsToSave.add(parentTerm);
+			    }else{
+			        //handled before "included in"
+			    }
 			}
-
-//			relatedObjects;
-
 
 			if (result.isOk()){
 				TermVocabulary voc = term.getVocabulary();
@@ -379,17 +375,10 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 					voc.removeTerm(term);
 				}
 				//TODO save voc
-				if (true /*!config.isInternal()*/){
+				if (true){
 					dao.delete(term);
 					result.addDeletedObject(term);
 					dao.saveOrUpdateAll(termsToSave);
-//					for (DeleteResult.PersistPair persistPair : result.getObjectsToDelete()){
-//						persistPair.dao.delete(persistPair.objectToPersist);
-//					}
-//					for (DeleteResult.PersistPair persistPair : result.getObjectsToSave()){
-//						persistPair.dao.saveOrUpdate(persistPair.objectToPersist);
-//					}
-
 				}
 			}
 		} catch (DataChangeNoRollbackException e) {
@@ -406,35 +395,56 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 
 	@Override
 	@Transactional(readOnly = false)
-    public void updateTitleCache(Class<? extends DefinedTermBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<DefinedTermBase> cacheStrategy, IProgressMonitor monitor) {
-		//TODO shouldnt this be TermBase instead of DefinedTermBase
+    public void updateCaches(Class<? extends DefinedTermBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<DefinedTermBase> cacheStrategy, IProgressMonitor monitor) {
+		//TODO shouldn't this be TermBase instead of DefinedTermBase
 		if (clazz == null){
 			clazz = DefinedTermBase.class;
 		}
-		super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
+		super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
 	}
 
 	@Override
     public DeleteResult isDeletable(UUID termUuid, DeleteConfiguratorBase config){
-        DeleteResult result = new DeleteResult();
-        TermBase term = load(termUuid);
+	    TermDeletionConfigurator termConfig = null;
+	    if(config instanceof TermDeletionConfigurator){
+	        termConfig = (TermDeletionConfigurator) config;
+	    }
+	    DeleteResult result = new DeleteResult();
+	    DefinedTermBase term = load(termUuid);
         Set<CdmBase> references = commonService.getReferencingObjectsForDeletion(term);
-        if (references != null){
-            result.addRelatedObjects(references);
-            Iterator<CdmBase> iterator = references.iterator();
-            CdmBase ref;
-            while (iterator.hasNext()){
-                ref = iterator.next();
-                if (ref instanceof TermVocabulary){
-                    result.getRelatedObjects().remove(ref);
-                }else{
 
-                    String message = "An object of " + ref.getClass().getName() + " with ID " + ref.getId() + " is referencing the object" ;
-                    result.addException(new ReferencedObjectUndeletableException(message));
-                    result.setAbort();
-                }
+	    if(termConfig!=null){
+	        //generalization of
+	        Set<DefinedTermBase> specificTerms = term.getGeneralizationOf();
+	        if (!specificTerms.isEmpty() && termConfig.isDeleteGeneralizationOfRelations()){
+	            references.removeAll(specificTerms);
+	        }
+	        //kind of
+	        DefinedTermBase generalTerm = term.getKindOf();
+	        if (generalTerm != null && termConfig.isDeleteKindOfRelations()){
+	            references.remove(generalTerm);
+	        }
+	        //part of
+	        DefinedTermBase parentTerm = term.getPartOf();
+	        if (parentTerm != null && termConfig.isDeletePartOfRelations()){
+	            references.remove(parentTerm);
+	        }
+	        //included in
+	        Set<DefinedTermBase> includedTerms = term.getIncludes();
+	        if (!includedTerms.isEmpty() && termConfig.isDeleteIncludedRelations()){
+	            references.removeAll(includedTerms);
+	        }
+	    }
 
+	    //gather remaining referenced objects
+        for (CdmBase relatedObject : references) {
+            if(relatedObject instanceof TermVocabulary){
+                continue;
             }
+            result.getRelatedObjects().add(relatedObject);
+            String message = "An object of " + relatedObject.getClass().getName() + " with ID " + relatedObject.getId() + " is referencing the object" ;
+            result.addException(new ReferencedObjectUndeletableException(message));
+            result.setAbort();
         }
         return result;
     }
@@ -460,5 +470,111 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
         return result;
     }
 
+    @Override
+    public Collection<TermDto> getIncludesAsDto(
+            TermDto parentTerm) {
+        return dao.getIncludesAsDto(parentTerm);
+    }
+
+    @Override
+    public Collection<TermDto> getKindOfsAsDto(
+            TermDto parentTerm) {
+        return dao.getKindOfsAsDto(parentTerm);
+    }
+
+    @Transactional(readOnly = false)
+    @Override
+    public void moveTerm(TermDto termDto, UUID parentUUID) {
+        moveTerm(termDto, parentUUID, null);
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @Transactional(readOnly = false)
+    @Override
+    public void moveTerm(TermDto termDto, UUID parentUuid, TermMovePosition termMovePosition) {
+        boolean isKindOf = termDto.getKindOfUuid()!=null && termDto.getKindOfUuid().equals(parentUuid);
+        TermVocabulary vocabulary = HibernateProxyHelper.deproxy(vocabularyService.load(termDto.getVocabularyUuid()));
+        DefinedTermBase parent = HibernateProxyHelper.deproxy(dao.load(parentUuid));
+        if(parent==null){
+            //new parent is a vocabulary
+            TermVocabulary parentVocabulary = HibernateProxyHelper.deproxy(vocabularyService.load(parentUuid));
+            DefinedTermBase term = HibernateProxyHelper.deproxy(dao.load(termDto.getUuid()));
+            if(parentVocabulary!=null){
+                term.setKindOf(null);
+                term.setPartOf(null);
+
+                vocabulary.removeTerm(term);
+                parentVocabulary.addTerm(term);
+            }
+            vocabularyService.saveOrUpdate(parentVocabulary);
+        }
+        else {
+            DefinedTermBase term = HibernateProxyHelper.deproxy(dao.load(termDto.getUuid()));
+            //new parent is a term
+            if(parent.isInstanceOf(OrderedTermBase.class)
+                    && term.isInstanceOf(OrderedTermBase.class)
+                    && termMovePosition!=null
+                    && HibernateProxyHelper.deproxy(parent, OrderedTermBase.class).getVocabulary().isInstanceOf(OrderedTermVocabulary.class)) {
+                //new parent is an ordered term
+                OrderedTermBase orderedTerm = HibernateProxyHelper.deproxy(term, OrderedTermBase.class);
+                OrderedTermBase targetOrderedDefinedTerm = HibernateProxyHelper.deproxy(parent, OrderedTermBase.class);
+                OrderedTermVocabulary otVoc = HibernateProxyHelper.deproxy(targetOrderedDefinedTerm.getVocabulary(), OrderedTermVocabulary.class);
+                if(termMovePosition.equals(TermMovePosition.BEFORE)) {
+                    orderedTerm.getVocabulary().removeTerm(orderedTerm);
+                    otVoc.addTermAbove(orderedTerm, targetOrderedDefinedTerm);
+                    if (targetOrderedDefinedTerm.getPartOf() != null){
+                        targetOrderedDefinedTerm.getPartOf().addIncludes(orderedTerm);
+                    }
+                }
+                else if(termMovePosition.equals(TermMovePosition.AFTER)) {
+                    orderedTerm.getVocabulary().removeTerm(orderedTerm);
+                    otVoc.addTermBelow(orderedTerm, targetOrderedDefinedTerm);
+                    if (targetOrderedDefinedTerm.getPartOf() != null){
+                        targetOrderedDefinedTerm.getPartOf().addIncludes(orderedTerm);
+                    }
+                }
+                else if(termMovePosition.equals(TermMovePosition.ON)) {
+                    orderedTerm.getVocabulary().removeTerm(orderedTerm);
+                    targetOrderedDefinedTerm.addIncludes(orderedTerm);
+                    targetOrderedDefinedTerm.getVocabulary().addTerm(orderedTerm);
+                }
+            }
+            else{
+                vocabulary.removeTerm(term);
+                if(isKindOf){
+                    parent.addGeneralizationOf(term);
+                }
+                else{
+                    parent.addIncludes(term);
+                }
+                parent.getVocabulary().addTerm(term);
+            }
+            vocabularyService.saveOrUpdate(parent.getVocabulary());
+        }
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @Transactional(readOnly = false)
+    @Override
+    public TermDto addNewTerm(TermType termType, UUID parentUUID, boolean isKindOf) {
+        DefinedTermBase term = termType.getEmptyDefinedTermBase();
+        dao.save(term);
+        DefinedTermBase parent = dao.load(parentUUID);
+        if(isKindOf){
+            parent.addGeneralizationOf(term);
+        }
+        else{
+            parent.addIncludes(term);
+        }
+        parent.getVocabulary().addTerm(term);
+        dao.saveOrUpdate(parent);
+        return TermDto.fromTerm(term, true);
+    }
+
+    public enum TermMovePosition{
+        BEFORE,
+        AFTER,
+        ON
+    }
 
 }

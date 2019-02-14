@@ -25,8 +25,10 @@ import eu.etaxonomy.cdm.model.common.Language;
 public enum PreferenceSubjectEnum implements IEnumTerm<PreferenceSubjectEnum>{
 	Database(UUID.fromString("50b25ae6-62fe-46a1-830e-545702e895f7"), "Database", "DB", null),
 	Classification(UUID.fromString("1e103ff5-c58f-4e40-8a60-6a36c32c08cf"),"Classification","CL", Database),
-	TaxonSubTree(UUID.fromString("2f2c0fd4-9c49-4584-89ba-53f8d201d37c"),"Taxonomic Subtree","TST", Classification)
-	;
+	TaxonSubTree(UUID.fromString("2f2c0fd4-9c49-4584-89ba-53f8d201d37c"),"Taxonomic Subtree","TST", Classification),
+	TaxEditor(UUID.fromString("b41354b1-ebf7-4259-a3c6-87ef65ba453c"),"Taxonomic Editor","taxeditor",Database),
+	DistributionEditor(UUID.fromString("052ca3b2-155e-4b95-a294-82e8af4e9b59"),"Distribution Editor","distributionEditor",Database)
+    ;
 
 	private PreferenceSubjectEnum(UUID uuid, String defaultString, String key, PreferenceSubjectEnum parent){
 		delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, defaultString, key, parent);

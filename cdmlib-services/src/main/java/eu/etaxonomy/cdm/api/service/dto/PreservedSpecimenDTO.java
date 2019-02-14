@@ -18,6 +18,7 @@ import java.util.UUID;
 import org.hibernate.envers.tools.Pair;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
@@ -84,7 +85,7 @@ public class PreservedSpecimenDTO extends DerivateDTO{
         listLabel = derivedUnit.getCatalogNumber();
         setCollectorsNumber(derivedUnit.getCollectorsNumber());
         if (derivedUnit.getDerivedFrom() != null){
-            setDerivationEvent(new DerivationEventDTO(derivedUnit.getDerivedFrom() ));
+            setDerivationEvent(new DerivationEventDTO(HibernateProxyHelper.deproxy(derivedUnit.getDerivedFrom(), DerivationEvent.class )));
         }
         if (derivedUnit.getPreservation()!= null){
             setPreservationMethod(derivedUnit.getPreservation().getMaterialMethodText());

@@ -9,11 +9,13 @@
 package eu.etaxonomy.cdm.io.cdmLight;
 
 import java.io.File;
+import java.util.Comparator;
 
 import eu.etaxonomy.cdm.io.common.CsvIOConfigurator;
 import eu.etaxonomy.cdm.io.common.ExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.ExportResultType;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
+import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 
 /**
  * @author k.luther
@@ -38,6 +40,8 @@ public class CdmLightExportConfigurator
     private boolean createZipFile = false;
 
     private boolean isFilterIntextReferences = true;
+
+    private Comparator<TaxonNodeDto> comparator;
 
     /**
      * @param transformer
@@ -133,6 +137,22 @@ public class CdmLightExportConfigurator
 
     public void setRemoveIntextReferences(boolean isRemoveIntextReferences) {
         this.isFilterIntextReferences = isRemoveIntextReferences;
+    }
+
+
+    /**
+     * @return the comparator
+     */
+    public Comparator<TaxonNodeDto> getComparator() {
+        return comparator;
+    }
+
+
+    /**
+     * @param comparator the comparator to set
+     */
+    public void setComparator(Comparator<TaxonNodeDto> comparator) {
+        this.comparator = comparator;
     }
 
 

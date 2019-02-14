@@ -10,7 +10,7 @@
 package eu.etaxonomy.cdm.api.service.dto;
 
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 
 /**
  * @author pplitzner
@@ -22,7 +22,7 @@ public class TaxonRowWrapperDTO extends RowWrapperDTO<TaxonDescription> {
     private static final long serialVersionUID = 5198447592554976471L;
 
 
-    public TaxonRowWrapperDTO(TaxonDescription description, TaxonNode taxonNode) {
+    public TaxonRowWrapperDTO(TaxonDescription description, TaxonNodeDto taxonNode) {
         super(description, taxonNode);
     }
 

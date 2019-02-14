@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.State;
-import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 
 /**
  * @author pplitzner
@@ -36,10 +36,10 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
 
     protected T description;
 
-    private TaxonNode taxonNode;
+    private TaxonNodeDto taxonNode;
     private Map<Feature, DescriptionElementBase> featureToElementMap;
 
-    public RowWrapperDTO(T description, TaxonNode taxonNode) {
+    public RowWrapperDTO(T description, TaxonNodeDto taxonNode) {
         this.taxonNode = taxonNode;
         this.featureToElementMap = new HashMap<>();
         this.description = description;
@@ -68,7 +68,7 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
         return description;
     }
 
-    public TaxonNode getTaxonNode() {
+    public TaxonNodeDto getTaxonNode() {
         return taxonNode;
     }
 

@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ import java.util.UUID;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
@@ -26,10 +28,14 @@ import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
+import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
+import eu.etaxonomy.cdm.persistence.dto.TermDto;
+import eu.etaxonomy.cdm.persistence.dto.TermVocabularyDto;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -106,7 +112,7 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 	    	return result;
 		} else {
 			@SuppressWarnings("unchecked")
-            AuditQuery query = makeAuditQuery((Class)clazz, auditEvent);
+            AuditQuery query = makeAuditQuery(clazz, auditEvent);
 			query.add(AuditEntity.property("termSourceUri").eq(termSourceUri));
 
 			@SuppressWarnings("unchecked")
@@ -241,5 +247,84 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 
 		return;
 	}
+
+    @Override
+    public Collection<TermDto> getTopLevelTerms(UUID vocabularyUuid) {
+        String queryString = TermDto.getTermDtoSelect()
+                + "where v.uuid = :vocabularyUuid "
+                + "and a.partOf is null "
+                + "and a.kindOf is null";
+        Query query =  getSession().createQuery(queryString);
+        query.setParameter("vocabularyUuid", vocabularyUuid);
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> result = query.list();
+
+        List<TermDto> list = TermDto.termDtoListFrom(result);
+        return list;
+    }
+
+    @Override
+    public List<TermVocabularyDto> findVocabularyDtoByTermType(TermType termType) {
+        String queryString = ""
+                + "select v.uuid, r "
+                + "from TermVocabulary as v LEFT JOIN v.representations AS r "
+                + "where v.termType = :termType "
+                ;
+        Query query =  getSession().createQuery(queryString);
+        query.setParameter("termType", termType);
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> result = query.list();
+
+        Map<UUID, TermVocabularyDto> dtoMap = new HashMap<>(result.size());
+        for (Object[] elements : result) {
+            UUID uuid = (UUID)elements[0];
+            if(dtoMap.containsKey(uuid)){
+                dtoMap.get(uuid).addRepresentation((Representation)elements[1]);
+            } else {
+                Set<Representation> representations = new HashSet<>();
+                if(elements[1] instanceof Representation) {
+                    representations = new HashSet<Representation>(1);
+                    representations.add((Representation)elements[1]);
+                } else {
+                    representations = (Set<Representation>)elements[1];
+                }
+                dtoMap.put(uuid, new TermVocabularyDto(uuid, representations));
+            }
+        }
+        return new ArrayList<>(dtoMap.values());
+    }
+
+    @Override
+    public <S extends TermVocabulary> List<UuidAndTitleCache<S>> getUuidAndTitleCache(Class<S> clazz, TermType termType,
+            Integer limit, String pattern) {
+        if(termType==null){
+            return getUuidAndTitleCache(clazz, limit, pattern);
+        }
+        Session session = getSession();
+        Query query = null;
+        if (pattern != null){
+            query = session.createQuery(
+                      " SELECT uuid, id, titleCache "
+                    + " FROM " + clazz.getSimpleName()
+                    + " WHERE titleCache LIKE :pattern "
+                    + " AND termType = :termType");
+            pattern = pattern.replace("*", "%");
+            pattern = pattern.replace("?", "_");
+            pattern = pattern + "%";
+            query.setParameter("pattern", pattern);
+        } else {
+            query = session.createQuery(
+                      " SELECT uuid, id, titleCache "
+                    + " FROM  " + clazz.getSimpleName()
+                    + " WHERE termType = :termType");
+        }
+        query.setParameter("termType", termType);
+        if (limit != null){
+           query.setMaxResults(limit);
+        }
+        return getUuidAndTitleCache(query);
+    }
 
 }

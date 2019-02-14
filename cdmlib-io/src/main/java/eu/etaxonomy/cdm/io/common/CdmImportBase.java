@@ -449,7 +449,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			//TODO matching still experimental
 			if (namedArea == null && (matchMode.equals(TermMatchMode.UUID_LABEL) || matchMode.equals(TermMatchMode.UUID_LABEL_ABBREVLABEL ))){
 				//TODO test
-				Pager<NamedArea> areaPager = (Pager)getTermService().findByTitleWithRestrictions(clazz, label, null, null, null, null, null, null);
+				Pager<NamedArea> areaPager = getTermService().findByTitleWithRestrictions(clazz, label, null, null, null, null, null, null);
 				namedArea = findBestMatchingArea(areaPager, uuid, label, text, labelAbbrev, vocabularyPreference);
 			}
 			if (namedArea == null && (matchMode.equals(TermMatchMode.UUID_ABBREVLABEL) || matchMode.equals(TermMatchMode.UUID_LABEL_ABBREVLABEL))){
@@ -1332,62 +1332,34 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @throws MalformedURLException
 	 */
 	protected Media getImageMedia(String uriString, String uriStrThumb, boolean readMediaData) throws MalformedURLException {
-		if( uriString == null){
+	    return getImageMedia(uriString, null, uriStrThumb, readMediaData);
+	}
+
+	protected Media getImageMedia(String uriString, String mediumUriString, String uriStrThumb, boolean readMediaData) throws MalformedURLException {
+
+	    if( uriString == null){
 			return null;
 		} else {
-			uriString = uriString.replace(" ", "%20");  //replace whitespace
+
 			try {
-			    ImageInfo imageInfo = null;
-				URI uri = new URI(uriString);
+			    Media media = Media.NewInstance();
 
-                try {
-					if (readMediaData){
-						logger.info("Read media data from: " + uri);
-						imageInfo = ImageInfo.NewInstance(uri, 0);
-					}
-				} catch (Exception e) {
-					String message = "An error occurred when trying to read image meta data for " + uri.toString() + ": " +  e.getMessage();
-					logger.warn(message);
-					fireWarningEvent(message, "unknown location", 2, 0);
-				}
-				ImageFile imageFile = ImageFile.NewInstance(uri, null, imageInfo);
+			    MediaRepresentation representation = makeMediaRepresentation(uriString, readMediaData);
+		        media.addRepresentation(representation);
 
-				MediaRepresentation representation = MediaRepresentation.NewInstance();
 
-				if(imageInfo != null){
-					representation.setMimeType(imageInfo.getMimeType());
-					representation.setSuffix(imageInfo.getSuffix());
-				}
-				representation.addRepresentationPart(imageFile);
-				Media media = Media.NewInstance();
-                media.addRepresentation(representation);
-
+                //thumb
 				if (uriStrThumb != null){
-				    ImageInfo imageInfoThumb = null;
-	                uriStrThumb = uriStrThumb.replace(" ", "%20");  //replace whitespace
-	                URI uriThumb = new URI(uriStrThumb);
-	                try {
-	                    if (readMediaData){
-	                        logger.info("Read media data from: " + uriThumb);
-	                        imageInfoThumb = ImageInfo.NewInstance(uriThumb, 0);
-	                    }
-	                } catch (Exception e) {
-	                    String message = "An error occurred when trying to read image meta data for " + uriThumb.toString() + ": " +  e.getMessage();
-	                    logger.warn(message);
-	                    fireWarningEvent(message, "unknown location", 2, 0);
-	                }
-
-	                ImageFile imageFileFhumb = ImageFile.NewInstance(uriThumb, null, imageInfoThumb);
-				    MediaRepresentation reprThumb = MediaRepresentation.NewInstance();
-				    if(imageInfoThumb != null){
-				        reprThumb.setMimeType(imageInfoThumb.getMimeType());
-				        reprThumb.setSuffix(imageInfoThumb.getSuffix());
-	                }
-				    reprThumb.addRepresentationPart(imageFileFhumb);
-				    media.addRepresentation(reprThumb);
+				    MediaRepresentation thumbRepresentation = makeMediaRepresentation(uriStrThumb, readMediaData);
+	                media.addRepresentation(thumbRepresentation);
 				}
 
-				return media;
+				if (isNotBlank(mediumUriString) ){
+                    MediaRepresentation mediumRepresentation = makeMediaRepresentation(mediumUriString, readMediaData);
+                    media.addRepresentation(mediumRepresentation);
+				}
+                return media;
+
 			} catch (URISyntaxException e1) {
 				String message = "An URISyntaxException occurred when trying to create uri from multimedia objcet string: " +  uriString;
 				logger.warn(message);
@@ -1396,6 +1368,39 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			}
 		}
 	}
+
+    /**
+     * @param uriString
+     * @param readMediaData
+     * @return
+     * @throws URISyntaxException
+     */
+    private MediaRepresentation makeMediaRepresentation(String uriString, boolean readMediaData) throws URISyntaxException {
+        uriString = uriString.replace(" ", "%20");  //replace whitespace
+        ImageInfo imageInfo = null;
+        URI uri = new URI(uriString);
+
+        try {
+        	if (readMediaData){
+        		logger.info("Read media data from: " + uri);
+        		imageInfo = ImageInfo.NewInstance(uri, 0);
+        	}
+        } catch (Exception e) {
+        	String message = "An error occurred when trying to read image meta data for " + uri.toString() + ": " +  e.getMessage();
+        	logger.warn(message);
+        	fireWarningEvent(message, "unknown location", 2, 0);
+        }
+        ImageFile imageFile = ImageFile.NewInstance(uri, null, imageInfo);
+
+        MediaRepresentation representation = MediaRepresentation.NewInstance();
+
+        if(imageInfo != null){
+        	representation.setMimeType(imageInfo.getMimeType());
+        	representation.setSuffix(imageInfo.getSuffix());
+        }
+        representation.addRepresentationPart(imageFile);
+        return representation;
+    }
 
 
 	/**

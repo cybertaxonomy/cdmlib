@@ -225,7 +225,7 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest 
 		journal1.setTitle("My journal");
 		journal1.setUuid(UUID.fromString("a7fdf3b8-acd8-410a-afcd-1768d29d67e9"));
 		journal1.setAbbrevTitle("M. Journ.");
-		journal1.setAuthorship(journalAuthor);
+		((Reference)journal1).setAuthorship(journalAuthor);
 
 		referenceDao.save((Reference)journal1);
 

@@ -51,7 +51,6 @@ import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.IBookSection;
 import eu.etaxonomy.cdm.model.reference.IJournal;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
-import eu.etaxonomy.cdm.model.reference.IReference;
 import eu.etaxonomy.cdm.model.reference.IVolumeReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
@@ -409,9 +408,9 @@ public class NonViralNameParserImplTest {
         assertFalse(multipleAuthorRefName.hasProblem());
         assertTrue("Combination author should be a person", multipleAuthorRefName.getCombinationAuthorship() instanceof Person);
         assertEquals("Combination author should be L.", "L.", ((Person)multipleAuthorRefName.getCombinationAuthorship()).getNomenclaturalTitle());
-        IReference nomRef = multipleAuthorRefName.getNomenclaturalReference();
-        Assert.assertNotNull("nomRef must have inRef", ((Reference)nomRef).getInReference());
-        Reference inRef = ((Reference)nomRef).getInReference();
+        Reference nomRef = multipleAuthorRefName.getNomenclaturalReference();
+        Assert.assertNotNull("nomRef must have inRef", nomRef.getInReference());
+        Reference inRef = nomRef.getInReference();
         String abbrevTitle = inRef.getAbbrevTitle();
         assertEquals("InRef title should be Sp. Pl.", "Sp. Pl.", abbrevTitle);
         assertTrue(inRef.getAuthorship() instanceof Team);
@@ -436,8 +435,8 @@ public class NonViralNameParserImplTest {
         assertEquals(3, team.getTeamMembers().size());
         assertEquals("Second team member should be Aber", "Aber", team.getTeamMembers().get(1).getTitleCache());
         nomRef = multipleAuthorName.getNomenclaturalReference();
-        Assert.assertNotNull("nomRef must have inRef", ((Reference)nomRef).getInReference());
-        inRef = ((Reference)nomRef).getInReference();
+        Assert.assertNotNull("nomRef must have inRef", nomRef.getInReference());
+        inRef = nomRef.getInReference();
         abbrevTitle = inRef.getAbbrevTitle();
         assertEquals("InRef title should be Sp. Pl.", "Sp. Pl.", abbrevTitle);
         assertTrue(inRef.getAuthorship() instanceof Person);
@@ -453,7 +452,7 @@ public class NonViralNameParserImplTest {
         assertEquals(3, team.getTeamMembers().size());
         assertEquals("Second team member should be Aber", "Aber", team.getTeamMembers().get(1).getTitleCache());
         nomRef = multipleAuthorName.getNomenclaturalReference();
-        Assert.assertNull("nomRef must not have inRef as it is a book itself", ((Reference)nomRef).getInReference());
+        Assert.assertNull("nomRef must not have inRef as it is a book itself", nomRef.getInReference());
         abbrevTitle = nomRef.getAbbrevTitle();
         assertEquals("InRef title should be Sp. Pl.", "Sp. Pl.", abbrevTitle);
         assertTrue(nomRef.getAuthorship() instanceof Team);
@@ -1716,10 +1715,383 @@ public class NonViralNameParserImplTest {
     }
 
     @Test
+    public final void testDetails(){
+        //s.p.
+        String parseStr = "Xiphion filifolium var. latifolium Baker, Gard. Chron. 1876: s.p.. 1876";
+        INonViralName name = parser.parseReferencedName(parseStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        Reference nomRef = name.getNomenclaturalReference();
+        assertEquals(ReferenceType.Book, nomRef.getType());
+        assertEquals(name.getNomenclaturalMicroReference(), "s.p.");
+
+        //roman
+        parseStr = "Ophrys lutea subsp. pseudospeculum (DC.) Kergu\u00e9len, Collect. Partim. Nat. 8: xv. 1993";
+        name = parser.parseReferencedName(parseStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        nomRef = name.getNomenclaturalReference();
+        assertEquals(ReferenceType.Book, nomRef.getType());
+        assertEquals(name.getNomenclaturalMicroReference(), "xv");
+
+        //n. 1
+        parseStr = "Olea gallica Mill., Gard. Dict. ed. 8: n. 1. 1768";
+        name = parser.parseReferencedName(parseStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        nomRef = name.getNomenclaturalReference();
+        assertEquals(ReferenceType.Book, nomRef.getType());
+        assertEquals(name.getNomenclaturalMicroReference(), "n. 1");
+
+        parseStr = "Lavandula canariensis Mill., Gard. Dict. ed. 8: Lavandula no. 4. 1768";
+        name = parser.parseReferencedName(parseStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        nomRef = name.getNomenclaturalReference();
+        assertEquals(ReferenceType.Book, nomRef.getType());
+        assertEquals(name.getNomenclaturalMicroReference(), "Lavandula no. 4");
+
+        parseStr = "Aceras anthropomorphum (Pers.) Sm. in Rees, Cycl. 39(1): Aceras n. 2. 1818";
+        name = parser.parseReferencedName(parseStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        nomRef = name.getNomenclaturalReference();
+        assertEquals(ReferenceType.BookSection, nomRef.getType());
+        assertEquals(name.getNomenclaturalMicroReference(), "Aceras n. 2");
+
+        parseStr = "Chlorolepis Nutt. in Trans. Amer. Philos. Soc., n.s., 7: errata. 1841";
+        name = parser.parseReferencedName(parseStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        nomRef = name.getNomenclaturalReference();
+        assertEquals(ReferenceType.Article, nomRef.getType());
+        assertEquals(name.getNomenclaturalMicroReference(), "errata");
+
+        parseStr = "Yermoloffia B\u00e9l., Voy. Indes Or.: t. s.n.. 1846";
+        name = parser.parseReferencedName(parseStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        nomRef = name.getNomenclaturalReference();
+        assertEquals(ReferenceType.Book, nomRef.getType());
+        assertEquals(name.getNomenclaturalMicroReference(), "t. s.n.");
+
+        parseStr = "Gagea mauritanica Durieu, Expl. Sci. Alg\u00e9rie, Atlas: t. 45bis, f. 4. 1850";
+        name = parser.parseReferencedName(parseStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        nomRef = name.getNomenclaturalReference();
+        assertEquals(ReferenceType.Book, nomRef.getType());
+        assertEquals(name.getNomenclaturalMicroReference(), "t. 45bis, f. 4");
+
+        parseStr = "Orchis latifolia f. blyttii Rchb. f. in Reichenbach, Icon. Fl. Germ. Helv. 13-14: 60, t. 59, f. III. 1851";
+        name = parser.parseReferencedName(parseStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        nomRef = name.getNomenclaturalReference();
+        assertEquals(ReferenceType.BookSection, nomRef.getType());
+        assertEquals(name.getNomenclaturalMicroReference(), "60, t. 59, f. III");
+
+        parseStr = "Ephedra alata var. decaisnei Stapf in Denkschr. Kaiserl. Akad. Wiss., Wien. Math.-Naturwiss. Kl. 56(2): t. 1/1. 1889";
+        name = parser.parseReferencedName(parseStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        nomRef = name.getNomenclaturalReference();
+        assertEquals(ReferenceType.Article, nomRef.getType());
+        assertEquals(name.getNomenclaturalMicroReference(), "t. 1/1");
+    }
+
+    @Test
+    public final void testEditionVolumeSeries(){
+        //ed. 2, 2(1)
+        String parseStr = "Sieberia albida (L.) Spreng., Anleit. Kenntn. Gew., ed. 2, 2(1): 282. 1817";
+        INonViralName name = parser.parseReferencedName(parseStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        Reference nomRef = name.getNomenclaturalReference();
+        Assert.assertFalse("nom.ref. should be parsable", nomRef.isProtectedTitleCache());
+        assertEquals(ReferenceType.Book, nomRef.getType());
+        assertEquals("2", nomRef.getEdition());
+        assertEquals("2(1)", nomRef.getVolume());
+
+        parseStr = "Gagea glacialis var. joannis (Grossh.) Grossh., Fl. Kavkaza, ed. 2, 2: 105. 1940";
+        name = parser.parseReferencedName(parseStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        nomRef = name.getNomenclaturalReference();
+        Assert.assertFalse("nom.ref. should be parsable", nomRef.isProtectedTitleCache());
+        assertEquals(ReferenceType.Book, nomRef.getType());
+        assertEquals("2", nomRef.getEdition());
+        assertEquals("2", nomRef.getVolume());
+
+        //14-15
+        parseStr = "Semele gayae (Webb & Berthel.) Svent. & Kunkel, Cuad. Bot. Canaria 14-15: 81. 1972";
+        name = parser.parseReferencedName(parseStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        nomRef = name.getNomenclaturalReference();
+        Assert.assertFalse("nom.ref. should be parsable", nomRef.isProtectedTitleCache());
+        assertEquals(ReferenceType.Book, nomRef.getType());
+        assertEquals("14-15", nomRef.getVolume());
+
+        //35-37(2)
+        parseStr = "Lavandula multifida var. heterotricha Sauvage in Bull. Soc. Sci. Nat. Maroc 35-37(2): 392. 1947";
+        name = parser.parseReferencedName(parseStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        nomRef = name.getNomenclaturalReference();
+        Assert.assertFalse("nom.ref. should be parsable", nomRef.isProtectedTitleCache());
+        assertEquals(ReferenceType.Article, nomRef.getType());
+        assertNull(nomRef.getEdition());
+        assertEquals("35-37(2)", nomRef.getVolume());
+
+        //Sér. 7
+        parseStr = "Oxynepeta involucrata Bunge, M\u00E9m. Acad. Imp. Sci. Saint P\u00E9tersbourg, S\u00E9r. 7, 21(1): 59. 1878";
+        name = parser.parseReferencedName(parseStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        nomRef = name.getNomenclaturalReference();
+        Assert.assertFalse("nom.ref. should be parsable", nomRef.isProtectedTitleCache());
+        assertEquals(ReferenceType.Book, nomRef.getType());
+        assertNull(nomRef.getEdition());
+        assertEquals("21(1)", nomRef.getVolume());
+        //Currently we do not put the series part into the series field, this may change in future
+//        assertEquals("Sér. 7", nomRef.getSeriesPart());
+
+        //Suppl. 1
+        parseStr = "Dissorhynchium Schauer, Nov. Actorum Acad. Caes. Leop.-Carol. Nat. Cur. 19(Suppl. 1): 434. 1843";
+        name = parser.parseReferencedName(parseStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        nomRef = name.getNomenclaturalReference();
+        Assert.assertFalse("nom.ref. should be parsable", nomRef.isProtectedTitleCache());
+        assertEquals(ReferenceType.Book, nomRef.getType());
+        assertNull(nomRef.getEdition());
+        assertEquals("19(Suppl. 1)", nomRef.getVolume());
+
+        //54*B*
+        parseStr = "Thymus chaubardii var. boeoticus (Heinr. Braun) Ronniger in Beih. Bot. Centralbl. 54B: 662. 1936";
+        name = parser.parseReferencedName(parseStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        nomRef = name.getNomenclaturalReference();
+        Assert.assertFalse("nom.ref. should be parsable", nomRef.isProtectedTitleCache());
+        assertEquals(ReferenceType.Article, nomRef.getType());
+        assertNull(nomRef.getEdition());
+        assertEquals("54B", nomRef.getVolume());
+
+
+        //1, Erg.
+        Pattern seriesPattern = Pattern.compile(NonViralNameParserImplRegExBase.volume);
+        Matcher matcher = seriesPattern.matcher("12(1, Erg.)");
+        Assert.assertTrue("12(1, Erg.) should match", matcher.matches());
+
+        parseStr = "Scilla amethystina Vis. in Flora Abt Awer Ser 12(1, Erg.): 11. 1829";
+        name = parser.parseReferencedName(parseStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        nomRef = name.getNomenclaturalReference();
+        Assert.assertFalse("nom.ref. should be parsable", nomRef.isProtectedTitleCache());
+        assertEquals(ReferenceType.Article, nomRef.getType());
+        assertNull(nomRef.getEdition());
+        assertEquals("12(1, Erg.)", nomRef.getVolume());
+
+        // jubilee ed.
+        parseStr = "Orchis sambucina var. bracteata (M. Schulze) Harz, Fl. Deutschl., jubilee ed., 4: 271. 1895";
+        name = parser.parseReferencedName(parseStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        nomRef = name.getNomenclaturalReference();
+        Assert.assertFalse("nom.ref. should be parsable", nomRef.isProtectedTitleCache());
+        assertEquals(ReferenceType.Book, nomRef.getType());
+        assertEquals("jubilee ed.",nomRef.getEdition());
+        assertEquals("4", nomRef.getVolume());
+        assertEquals(parseStr, name.getFullTitleCache());
+
+        //nouv. ed.
+        parseStr = "Fraxinus polemonifolia Poir. in Duhamel du Monceau, Trait\u00E9 Arbr. Arbust., nouv. ed., 4: 66. 1809";
+        name = parser.parseReferencedName(parseStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        nomRef = name.getNomenclaturalReference();
+        Assert.assertFalse("nom.ref. should be parsable", nomRef.isProtectedTitleCache());
+        assertEquals(ReferenceType.BookSection, nomRef.getType());
+        assertEquals("nouv. ed.",nomRef.getInReference().getEdition());
+        assertEquals("4", nomRef.getInReference().getVolume());
+        assertEquals(parseStr, name.getFullTitleCache());
+
+        //ed. 3B
+        parseStr = "Juncus supinus var. kochii (F. W. Schultz) Syme in Smith, Engl. Bot., ed. 3B, 10: 33. 1870";
+        name = parser.parseReferencedName(parseStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        nomRef = name.getNomenclaturalReference();
+        Assert.assertFalse("nom.ref. should be parsable", nomRef.isProtectedTitleCache());
+        assertEquals(ReferenceType.BookSection, nomRef.getType());
+        //maybe we remove ed. for this case in future
+        assertEquals("ed. 3B",nomRef.getInReference().getEdition());
+        assertEquals("10", nomRef.getInReference().getVolume());
+        assertEquals(parseStr, name.getFullTitleCache());
+
+
+//        Epipactis helleborine subsp. ohwii (Fukuy.) H. J. Su in Fl. Taiwan, ed. 2, 5: 861. 2000
+    }
+
+    @Test
+    public final void testTitleBrackets(){
+        //Bot. Zhurn. (Moscow & Leningrad)
+        String parseStr = "Juncus subcompressus Zakirov & Novopokr. in Bot. Zhurn. (Moscow & Leningrad) 36(1): 77. 1951";
+        TaxonName name = parser.parseReferencedName(parseStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        Reference nomRef = name.getNomenclaturalReference();
+        Assert.assertFalse("nom.ref. should be parsable", nomRef.isProtectedTitleCache());
+        assertEquals(ReferenceType.Article, nomRef.getType());
+        assertEquals("Bot. Zhurn. (Moscow & Leningrad)", nomRef.getInReference().getAbbrevTitle());
+        assertNull(nomRef.getEdition());
+        assertEquals("36(1)", nomRef.getVolume());
+    }
+
+    @Test
+    public final void testTitleSpecials(){
+        //Pt. 2  (currently handled as series part, may change in future
+        String parseStr = "Iris pumila subsp. sintenisiiformis Prod\u00E1n in Ann. Sci. Univ. Jassy, Pt. 2, Sci. Nat. 27: 89. 1941";
+        TaxonName name = parser.parseReferencedName(parseStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        Reference nomRef = name.getNomenclaturalReference();
+        Assert.assertFalse("nom.ref. should be parsable", nomRef.isProtectedTitleCache());
+        assertEquals(ReferenceType.Article, nomRef.getType());
+        assertEquals("Ann. Sci. Univ. Jassy, Pt. 2, Sci. Nat.", nomRef.getInReference().getAbbrevTitle());
+        assertNull(nomRef.getEdition());
+        assertEquals("27", nomRef.getVolume());
+
+        //same as Pt. 2, "Sect. xx" handled as series part but may change
+        parseStr = "Quercus boissieri var. microphylla (A. Camus) Zohary in Bull. Res. Council Israel, Sect. D, Bot. 9: 169. 1961";
+        name = parser.parseReferencedName(parseStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        nomRef = name.getNomenclaturalReference();
+        Assert.assertFalse("nom.ref. should be parsable", nomRef.isProtectedTitleCache());
+        assertEquals(ReferenceType.Article, nomRef.getType());
+        assertEquals("Bull. Res. Council Israel, Sect. D, Bot.", nomRef.getInReference().getAbbrevTitle());
+        assertNull(nomRef.getEdition());
+        assertEquals("9", nomRef.getVolume());
+
+        //see above
+        parseStr = "Fimbristylis dichotoma var. annua (All.) T. Koyama in J. Fac. Sci. Univ. Tokyo, Sect. 3, Bot. 8: 111. 1961";
+        name = parser.parseReferencedName(parseStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        nomRef = name.getNomenclaturalReference();
+        Assert.assertFalse("nom.ref. should be parsable", nomRef.isProtectedTitleCache());
+        assertEquals(ReferenceType.Article, nomRef.getType());
+        assertEquals("J. Fac. Sci. Univ. Tokyo, Sect. 3, Bot.", nomRef.getInReference().getAbbrevTitle());
+        assertNull(nomRef.getEdition());
+        assertEquals("8", nomRef.getVolume());
+
+
+        // "- "
+        parseStr = "Theresia tulipilfoia (M. Bieb.) Klatt in Hamburger Garten- Blumenzeitung 16: 438. 1860";
+        name = parser.parseReferencedName(parseStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        nomRef = name.getNomenclaturalReference();
+        Assert.assertFalse("nom.ref. should be parsable", nomRef.isProtectedTitleCache());
+        assertEquals(ReferenceType.Article, nomRef.getType());
+        assertEquals("Hamburger Garten- Blumenzeitung", nomRef.getInReference().getAbbrevTitle());
+        assertNull(nomRef.getEdition());
+        assertEquals("16", nomRef.getVolume());
+
+        parseStr = "Hyssopus officinalis var. pilifer Pant. in Verh. Vereins Natur- Heilk. Presburg, n.s., 2: 61. 1874";
+        name = parser.parseReferencedName(parseStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        nomRef = name.getNomenclaturalReference();
+        Assert.assertFalse("nom.ref. should be parsable", nomRef.isProtectedTitleCache());
+        assertEquals(ReferenceType.Article, nomRef.getType());
+        //, n.s., is not necessarily part of the title in future
+        assertEquals("Verh. Vereins Natur- Heilk. Presburg, n.s.,", nomRef.getInReference().getAbbrevTitle());
+        assertNull(nomRef.getEdition());
+        assertEquals("2", nomRef.getVolume());
+
+          //Note: space in E+M, no space in IPNI; is it really a book?
+        parseStr = "Amaryllis dubia Houtt., Handl. Pl.- Kruidk. 12: 181. 1780";
+        name = parser.parseReferencedName(parseStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        nomRef = name.getNomenclaturalReference();
+        Assert.assertFalse("nom.ref. should be parsable", nomRef.isProtectedTitleCache());
+        assertEquals(ReferenceType.Book, nomRef.getType());
+        assertEquals("Handl. Pl.- Kruidk.", nomRef.getAbbrevTitle());
+        assertNull(nomRef.getEdition());
+        assertEquals("12", nomRef.getVolume());
+
+        // "..."
+        parseStr = "Chamaesyce biramensis (Urb.) Alain in Contr. Ocas. Mus. Hist. Nat. Colegio \"De La Salle\" 11: 12. 1952";
+        name = parser.parseReferencedName(parseStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        nomRef = name.getNomenclaturalReference();
+        Assert.assertFalse("nom.ref. should be parsable", nomRef.isProtectedTitleCache());
+        assertEquals(ReferenceType.Article, nomRef.getType());
+        assertEquals("Contr. Ocas. Mus. Hist. Nat. Colegio \"De La Salle\"", nomRef.getInReference().getAbbrevTitle());
+        assertNull(nomRef.getEdition());
+        assertEquals("11", nomRef.getVolume());
+
+        //' & '
+        parseStr = "Mannaphorus Raf. in Amer. Monthly Mag. & Crit. Rev. 1: 175. 1818";
+        name = parser.parseReferencedName(parseStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        nomRef = name.getNomenclaturalReference();
+        Assert.assertFalse("nom.ref. should be parsable", nomRef.isProtectedTitleCache());
+        assertEquals(ReferenceType.Article, nomRef.getType());
+        assertEquals("Amer. Monthly Mag. & Crit. Rev.", nomRef.getInReference().getAbbrevTitle());
+        assertNull(nomRef.getEdition());
+        assertEquals("1", nomRef.getVolume());
+
+        //only for debugging
+        boolean  matches;
+        matches = "Flo & Amer. Fauna. Ab.".matches (NonViralNameParserImplRegExBase.referenceTitleFirstPart + "*");
+        Assert.assertTrue("referenceTitleFirstPart", matches);
+
+        matches = "Fl. Amer. & Fauna. Ab. 101".matches (NonViralNameParserImplRegExBase.pSoftArticleReference);
+        Assert.assertTrue("pSoftArticleReference", matches);
+        //only for debugging end
+
+        parseStr = "Corallorhiza trifida subsp. virescens (Drejer) L\u00F8jtnant in Fl. & Fauna (Esbjerg) 101: 71. 1996";
+        name = parser.parseReferencedName(parseStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        nomRef = name.getNomenclaturalReference();
+        Assert.assertFalse("nom.ref. should be parsable", nomRef.isProtectedTitleCache());
+        assertEquals(ReferenceType.Article, nomRef.getType());
+        assertEquals("Fl. & Fauna (Esbjerg)", nomRef.getInReference().getAbbrevTitle());
+        assertNull(nomRef.getEdition());
+        assertEquals("101", nomRef.getVolume());
+
+        parseStr = "Crocus isauricus Siehe ex Bowles, Handb. Crocus & Colch.: 126. 1924";
+        name = parser.parseReferencedName(parseStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        nomRef = name.getNomenclaturalReference();
+        Assert.assertFalse("nom.ref. should be parsable", nomRef.isProtectedTitleCache());
+        assertEquals(ReferenceType.Book, nomRef.getType());
+        assertEquals("Handb. Crocus & Colch.", nomRef.getAbbrevTitle());
+        assertNull(nomRef.getEdition());
+        assertNull(nomRef.getVolume());
+
+        parseStr = "Ornithogalum bifolium (L.) Neck. in Hist. & Commentat. Acad. Elect. Sci. Theod.-Palat. 2: 461. 1770";
+        name = parser.parseReferencedName(parseStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        nomRef = name.getNomenclaturalReference();
+        Assert.assertFalse("nom.ref. should be parsable", nomRef.isProtectedTitleCache());
+        assertEquals(ReferenceType.Article, nomRef.getType());
+        assertEquals("Hist. & Commentat. Acad. Elect. Sci. Theod.-Palat.", nomRef.getInReference().getAbbrevTitle());
+        assertNull(nomRef.getEdition());
+        assertEquals("2", nomRef.getVolume());
+
+    }
+
+
+    @Test
     public final void testSeriesPart(){
         Pattern seriesPattern = Pattern.compile(NonViralNameParserImplRegExBase.pSeriesPart);
         Matcher matcher = seriesPattern.matcher("ser. 2");
         Assert.assertTrue("", matcher.matches());
+
+        matcher = seriesPattern.matcher("n.s.");
+        Assert.assertTrue("", matcher.matches());
+
+//        matcher = seriesPattern.matcher("a.s.");
+//        Assert.assertTrue("", matcher.matches());
+
+        //do NOT match edition  //but there are such cases like "Vilm. Blumengärtn. ed. 3" according to TL-2
+        matcher = seriesPattern.matcher("ed. 4");
+        Assert.assertFalse("", matcher.matches());
+
+        matcher = seriesPattern.matcher("Ser. C");
+        Assert.assertTrue("", matcher.matches());
+
+        matcher = seriesPattern.matcher("S\u00E9r. B 1");
+        Assert.assertTrue("", matcher.matches());
+
+        matcher = seriesPattern.matcher("Jerusalem Ser.");
+        Assert.assertTrue("", matcher.matches());
+
+        matcher = seriesPattern.matcher("nov. Ser.");
+        Assert.assertTrue("", matcher.matches());
+
+
+
     }
 
     /**
@@ -1925,6 +2297,97 @@ public class NonViralNameParserImplTest {
     }
 
     @Test
+    public final void testBookSectionAuthors(){
+        INonViralName name;
+        Reference nomRef;
+        String title;
+        String str;
+
+        str = "Pancratium sickenbergeri Asch. & Schweinf. in Barbey-Boissier & Barbey, Herb. Levant: 158. 1882";
+        str = "Pancratium sickenbergeri Asch. & Schweinf. in Barbey-Boissier & Barbey, Herb. Levant: 158. 1882";
+        name = parser.parseReferencedName(str);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        TeamOrPersonBase<?> combinationAuthor = name.getCombinationAuthorship();
+        assertEquals( "Asch. & Schweinf.", combinationAuthor.getNomenclaturalTitle());
+        nomRef = name.getNomenclaturalReference();
+        assertEquals(ReferenceType.BookSection, nomRef.getType());
+        assertEquals( "Barbey-Boissier & Barbey", nomRef.getInReference().getAuthorship().getNomenclaturalTitle());
+        title = nomRef.getInReference().getAbbrevTitle();
+        assertEquals( "Herb. Levant", title);
+
+        name = parser.parseReferencedName("Luzula multiflora subsp. pallescens (Sw.) Reichg. in Van Ooststroom & al., Fl. Neerl. 1: 208. 1964");
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        assertEquals( "Reichg.", name.getCombinationAuthorship().getNomenclaturalTitle());
+        nomRef = name.getNomenclaturalReference();
+        assertEquals(ReferenceType.BookSection, nomRef.getType());
+        assertEquals( "Van Ooststroom & al.", nomRef.getInReference().getAuthorship().getNomenclaturalTitle());
+        title = nomRef.getInReference().getAbbrevTitle();
+        assertEquals( "Fl. Neerl.", title);
+
+        str = "Salvia pratensis var. albiflora T. Durand in De Wildeman & Durand, Prodr. Fl. Belg. 3: 663. 1899";
+        name = parser.parseReferencedName(str);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        assertEquals( "T. Durand", name.getCombinationAuthorship().getNomenclaturalTitle());
+        nomRef = name.getNomenclaturalReference();
+        assertEquals(ReferenceType.BookSection, nomRef.getType());
+        assertEquals( "De Wildeman & Durand", nomRef.getInReference().getAuthorship().getNomenclaturalTitle());
+        title = nomRef.getInReference().getAbbrevTitle();
+        assertEquals( "Prodr. Fl. Belg.", title);
+
+        str = "Bravoa Lex. in La Llave & Lexarza, Nov. Veg. Desc. 1: 6. 1824";
+        name = parser.parseReferencedName(str);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        assertEquals( "Lex.", name.getCombinationAuthorship().getNomenclaturalTitle());
+        nomRef = name.getNomenclaturalReference();
+        assertEquals(ReferenceType.BookSection, nomRef.getType());
+        assertEquals( "La Llave & Lexarza", nomRef.getInReference().getAuthorship().getNomenclaturalTitle());
+        title = nomRef.getInReference().getAbbrevTitle();
+        assertEquals( "Nov. Veg. Desc.", title);
+
+        str = "Thymus trachselianus var. vallicola Heinr. Braun in Dalla Torre & Sarnthein, Fl. Tirol 6(3): 204. 1912";
+        name = parser.parseReferencedName(str);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        nomRef = name.getNomenclaturalReference();
+        assertEquals(ReferenceType.BookSection, nomRef.getType());
+        assertEquals( "Dalla Torre & Sarnthein", nomRef.getInReference().getAuthorship().getNomenclaturalTitle());
+        title = nomRef.getInReference().getAbbrevTitle();
+        assertEquals( "Fl. Tirol", title);
+
+        //see #openIssues
+//        str = "Iris xiphium var. lusitanica (Ker Gawl.) Franco in Amaral Franco & Rocha Afonso, Nova Fl. Portugal 3: 135. 1994";
+//        name = parser.parseReferencedName(str);
+//        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+//        nomRef = name.getNomenclaturalReference();
+//        assertEquals(ReferenceType.BookSection, nomRef.getType());
+//        assertEquals( "Amaral Franco & Rocha Afonso", nomRef.getInReference().getAuthorship().getNomenclaturalTitle());
+//        title = nomRef.getInReference().getAbbrevTitle();
+//        assertEquals( "Nova Fl. Portugal", title);
+//
+//        str = "Fritillaria mutabilis Kamari in Strid & Kit Tan, Mount. Fl. Greece 2: 679. 1991";
+//        name = parser.parseReferencedName(str);
+//        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+//        nomRef = name.getNomenclaturalReference();
+//        assertEquals(ReferenceType.BookSection, nomRef.getType());
+//        assertEquals( "Strid & Kit Tan", nomRef.getInReference().getAuthorship().getNomenclaturalTitle());
+//        title = nomRef.getInReference().getAbbrevTitle();
+//        assertEquals( "Mount. Fl. Greece", title);
+
+
+    }
+
+
+    @Test
+    public final void testDatePublished(){
+
+        INonViralName name = parser.parseReferencedName("Calamintha transsilvanica (J\u00e1v.) So\u00f3 in Acta Bot. Acad. Sci. Hung. 23: 382. 1977 publ. 1978");
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        Reference nomRef = name.getNomenclaturalReference();
+        assertEquals(ReferenceType.Article, nomRef.getType());
+        assertEquals("1978 [\"1977\"]", nomRef.getDatePublished().toString());
+    }
+
+
+    @Test
     public final void testExistingProblems(){
         //Canabio, issue with space
         INonViralName name = parser.parseReferencedName("Machaonia erythrocarpa var. hondurensis (Standl.) Borhidi"
@@ -2091,7 +2554,7 @@ public class NonViralNameParserImplTest {
         assertEquals("29(1\u20134)", nomRef.getVolume());
         assertEquals("16, f. 1\u20132, t. 1-8", name.getNomenclaturalMicroReference());
         assertEquals("1983 [1984]", nomRef.getDatePublishedString());
-        assertEquals("1984", nomRef.getYear());
+//        assertEquals("1984", nomRef.getYear()); //was like this, but is not necessarily correct, see #7429
 
         //incorrect year with \u201e \u201f  (s. eu.etaxonomy.cdm.common.UTF8.ENGLISH_QUOT_START
         name = parser.parseReferencedName("Javorkaea Borhidi & Jarai-Koml."
@@ -2337,6 +2800,23 @@ public class NonViralNameParserImplTest {
         assertEquals("All types of quotation marks should be accepted, though better match it to standard ' afterwards",
                 "Thiede & ´t Hart", name.getCombinationAuthorship().getTitleCache());
 
+        //should be recognized as book section (see testBookSectionAuthors)
+        String str = "Iris xiphium var. lusitanica (Ker Gawl.) Franco in Amaral Franco & Rocha Afonso, Nova Fl. Portugal 3: 135. 1994";
+        name = parser.parseReferencedName(str);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        Reference nomRef = name.getNomenclaturalReference();
+        assertEquals(ReferenceType.BookSection, nomRef.getType());
+        assertEquals( "Amaral Franco & Rocha Afonso", nomRef.getInReference().getAuthorship().getNomenclaturalTitle());
+        assertEquals( "Nova Fl. Portugal", nomRef.getInReference().getAbbrevTitle());
+
+        //same
+        str = "Fritillaria mutabilis Kamari in Strid & Kit Tan, Mount. Fl. Greece 2: 679. 1991";
+        name = parser.parseReferencedName(str);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        nomRef = name.getNomenclaturalReference();
+        assertEquals(ReferenceType.BookSection, nomRef.getType());
+        assertEquals( "Strid & Kit Tan", nomRef.getInReference().getAuthorship().getNomenclaturalTitle());
+        assertEquals( "Mount. Fl. Greece", nomRef.getInReference().getAbbrevTitle());
     }
 
 }

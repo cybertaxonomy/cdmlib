@@ -58,6 +58,10 @@ public class OccurrenceController extends AbstractIdentifiableController<Specime
     private static final List<String> DERIVED_UNIT_INIT_STRATEGY =  Arrays.asList(new String []{
             "derivedFrom.derivatives",
             "derivedFrom.originals",
+            "specimenTypeDesignations.*",
+            "specimenTypeDesignations.citation.*",
+            "specimenTypeDesignations.homotypicalGroup.*",
+            "specimenTypeDesignations.typifiedNames",
             "collection.$"
     });
 

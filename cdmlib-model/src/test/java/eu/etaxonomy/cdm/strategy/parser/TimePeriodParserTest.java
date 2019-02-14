@@ -106,16 +106,18 @@ public class TimePeriodParserTest {
 
 		//"1806"[1807]
 		String strCorrectedPeriod = "\"1806\"[1807]";
-		TimePeriod tpcorrected = TimePeriodParser.parseString(strCorrectedPeriod);
+		VerbatimTimePeriod tpcorrected = TimePeriodParser.parseStringVerbatim(strCorrectedPeriod);
 		assertNotNull(tpcorrected);
-		Assert.assertEquals(strCorrectedPeriod, tpcorrected.getFreeText());
+		Assert.assertEquals(null, tpcorrected.getFreeText());
+		Assert.assertEquals("1806", tpcorrected.getVerbatimDate());
 		Assert.assertEquals("1807", tpcorrected.getYear());
 
 	      //„1806‟[1807]
         String strCorrectedEnPeriod = UTF8.QUOT_DBL_LOW9 + "1806"+UTF8.QUOT_DBL_HIGH_REV9+"[1807]";
-        TimePeriod tpcorrectedEn = TimePeriodParser.parseString(strCorrectedEnPeriod);
+        VerbatimTimePeriod tpcorrectedEn = TimePeriodParser.parseStringVerbatim(strCorrectedEnPeriod);
         assertNotNull(tpcorrectedEn);
-        Assert.assertEquals(strCorrectedEnPeriod, tpcorrectedEn.getFreeText());
+        Assert.assertEquals(null, tpcorrectedEn.getFreeText());
+        Assert.assertEquals("1806", tpcorrected.getVerbatimDate());
         Assert.assertEquals("1807", tpcorrectedEn.getYear());
 
 
@@ -265,10 +267,10 @@ public class TimePeriodParserTest {
         strDate = "1947 publ. 1948";
         tp = TimePeriodParser.parseStringVerbatim(strDate);
         assertNotNull(tp);
-        Assert.assertEquals("1947 [\"1948\"]", tp.toString());
-        Assert.assertEquals("1947", tp.getYear());
-        Assert.assertEquals(Integer.valueOf(1947), tp.getStartYear());
-        Assert.assertEquals("1948", tp.getVerbatimDate());
+        Assert.assertEquals("1948 [\"1947\"]", tp.toString());
+        Assert.assertEquals("1948", tp.getYear());
+        Assert.assertEquals(Integer.valueOf(1948), tp.getStartYear());
+        Assert.assertEquals("1947", tp.getVerbatimDate());
 
         strDate = "\"1884-1885\" [1886]";
         tp = TimePeriodParser.parseStringVerbatim(strDate);

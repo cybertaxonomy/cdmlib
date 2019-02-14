@@ -7,6 +7,11 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
 
+/**
+ * @author k.luther
+ * @since 2011
+ *
+ */
 public class ReferenceCheckValidator implements ConstraintValidator<ReferenceCheck, Reference>{
 
     @Override
@@ -17,9 +22,15 @@ public class ReferenceCheckValidator implements ConstraintValidator<ReferenceChe
 		boolean isValid = true;
 
 		isValid &= validIsbn(value, constraintValidatorContext);
-		if (value.getType() == ReferenceType.Journal && value.getDatePublished() != null) {
-			isValid &= false;
-			constraintValidatorContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.InReference.JournalShouldNotHaveDatePublished.message}").addConstraintViolation();
+		if (value.getType() == ReferenceType.Journal) {
+			if (value.getDatePublished() != null){
+			    isValid &= false;
+			    constraintValidatorContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.InReference.JournalShouldNotHaveDatePublished.message}").addConstraintViolation();
+			}
+	         if (value.getAuthorship() != null){
+	             isValid &= false;
+	             constraintValidatorContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.InReference.JournalShouldNotHaveAnAuthor.message}").addConstraintViolation();
+	         }
 		}
 		if (! isValid){
 		    constraintValidatorContext.disableDefaultConstraintViolation();

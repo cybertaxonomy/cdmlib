@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -13,17 +13,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
@@ -33,11 +34,10 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  * as it does not map to a single attribute
  * @author a.mueller
  * @since 01.03.2010
- * @version 1.0
  */
 public class DbImportAnnotationMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, AnnotatableEntity> implements IDbImportMapper<DbImportStateBase<?,?>,AnnotatableEntity>{
 	private static final Logger logger = Logger.getLogger(DbImportAnnotationMapper.class);
-	
+
 	/**
 	 * FIXME Warning: the annotation type creation is not yet implemented
 	 * @param dbAttributeString
@@ -52,7 +52,7 @@ public class DbImportAnnotationMapper extends DbSingleAttributeImportMapperBase<
 		AnnotationType annotationType = null;
 		return new DbImportAnnotationMapper(dbAttributeString, language, annotationType);
 	}
-	
+
 	/**
 	 * * FIXME Warning: the annotation type creation is not yet implemented
 	 * @param dbAttributeString
@@ -66,7 +66,7 @@ public class DbImportAnnotationMapper extends DbSingleAttributeImportMapperBase<
 		AnnotationType annotationType = null;
 		return new DbImportAnnotationMapper(dbAttributeString, language, annotationType);
 	}
-	
+
 	/**
 	 * @param dbAttributeString
 	 * @param annotationType
@@ -76,7 +76,7 @@ public class DbImportAnnotationMapper extends DbSingleAttributeImportMapperBase<
 		Language language = null;
 		return NewInstance(dbAttributeString, annotationType, language);
 	}
-	
+
 	/**
 	 * @param dbAttributeString
 	 * @param annotationType
@@ -84,14 +84,10 @@ public class DbImportAnnotationMapper extends DbSingleAttributeImportMapperBase<
 	 * @return
 	 */
 	public static DbImportAnnotationMapper NewInstance(String dbAttributeString, AnnotationType annotationType, Language language){
-//		String label = null;
-//		String text = null;
-//		String labelAbbrev = null;
-//		UUID uuid = null;
 		return new DbImportAnnotationMapper(dbAttributeString, language, annotationType);
 	}
 
-	
+
 	private AnnotationType annotationType;
 	private Language language;
 
@@ -108,15 +104,11 @@ public class DbImportAnnotationMapper extends DbSingleAttributeImportMapperBase<
 		this.annotationType = annotationType;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.DbSingleAttributeImportMapperBase#initialize(eu.etaxonomy.cdm.io.common.DbImportStateBase, java.lang.Class)
-	 */
 	@Override
 	public void initialize(DbImportStateBase<?,?> state, Class<? extends CdmBase> destinationClass) {
 		importMapperHelper.initialize(state, destinationClass);
 	}
-	
+
 //	/**
 //	 * @param service
 //	 * @param state
@@ -136,11 +128,7 @@ public class DbImportAnnotationMapper extends DbSingleAttributeImportMapperBase<
 //			//do nothing
 //		}
 //	}
-	
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.DbSingleAttributeImportMapperBase#invoke(java.sql.ResultSet, eu.etaxonomy.cdm.model.common.CdmBase)
-	 */
 	@Override
 	public AnnotatableEntity invoke(ResultSet rs, AnnotatableEntity annotatableEntity) throws SQLException {
 		if (ignore){
@@ -149,14 +137,11 @@ public class DbImportAnnotationMapper extends DbSingleAttributeImportMapperBase<
 		String dbValue = rs.getString(getSourceAttribute());
 		return doInvoke(annotatableEntity, dbValue);
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.DbSingleAttributeImportMapperBase#doInvoke(eu.etaxonomy.cdm.model.common.CdmBase, java.lang.Object)
-	 */
+
 	@Override
 	protected AnnotatableEntity doInvoke(AnnotatableEntity annotatableEntity, Object dbValue){
 		String strAnnotation = (String)dbValue;
-		if (CdmUtils.isNotEmpty(strAnnotation));{
+		if (StringUtils.isNotBlank(strAnnotation)){
 			Annotation annotation = Annotation.NewInstance(strAnnotation, annotationType, language);
 			if (annotatableEntity != null){
 				annotatableEntity.addAnnotation(annotation);
@@ -165,9 +150,6 @@ public class DbImportAnnotationMapper extends DbSingleAttributeImportMapperBase<
 		return annotatableEntity;
 	}
 
-
-	
-	
 	/**
 	 * @param service
 	 * @param uuid
@@ -185,7 +167,8 @@ public class DbImportAnnotationMapper extends DbSingleAttributeImportMapperBase<
 			//set vocabulary //TODO allow user defined vocabularies
 			UUID uuidAnnotationTypeVocabulary = UUID.fromString("ca04609b-1ba0-4d31-9c2e-aa8eb2f4e62d");
 			IVocabularyService vocService = currentImport.getVocabularyService();
-			TermVocabulary voc = vocService.find(uuidAnnotationTypeVocabulary);
+			@SuppressWarnings("unchecked")
+            TermVocabulary<DefinedTermBase<?>> voc = vocService.find(uuidAnnotationTypeVocabulary);
 			if (voc != null){
 				voc.addTerm(annotationType);
 			}else{
@@ -201,12 +184,13 @@ public class DbImportAnnotationMapper extends DbSingleAttributeImportMapperBase<
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase#getTypeClass()
 	 */
-	public Class<String> getTypeClass(){
+	@Override
+    public Class<String> getTypeClass(){
 		return String.class;
 	}
 
 
 
-	
+
 
 }

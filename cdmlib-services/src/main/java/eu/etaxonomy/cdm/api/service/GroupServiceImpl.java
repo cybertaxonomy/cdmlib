@@ -71,9 +71,10 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
 
         Group group = dao.findByUuid(UUID.fromString(groupUUID));
         Iterator<User> it = group.getMembers().iterator();
-        while (it.hasNext()){
-            it.remove();
-        }
+        group.getMembers().clear();
+//        while (it.hasNext()){
+//            it.remove();
+//        }
         dao.delete(group);
 
     }

@@ -122,12 +122,11 @@ public class DbImportSynonymMapper<STATE extends DbImportStateBase<?,?>> extends
 		}
 		Taxon taxon = checkTaxonType(toObject, "Accepted taxon", toId);
 
-
 		if (fromObject.isInstanceOf(Synonym.class)){
 			SynonymType relType = SynonymType.SYNONYM_OF();
 			Synonym synonym = CdmBase.deproxy(fromObject, Synonym.class);
 			taxon.addSynonym(synonym, relType); //citation and micro citation not in use anymore as we do not have synonym relationships anymore
-		}else if (fromObject.isInstanceOf(Taxon.class)  && this.useTaxonRelationship){
+		}else if (fromObject.isInstanceOf(Taxon.class) && this.useTaxonRelationship){
 			TaxonRelationshipType type = relType;
 			Taxon synonymTaxon = CdmBase.deproxy(fromObject, Taxon.class);
 			synonymTaxon.addTaxonRelation(taxon, type, citation, microCitation);
