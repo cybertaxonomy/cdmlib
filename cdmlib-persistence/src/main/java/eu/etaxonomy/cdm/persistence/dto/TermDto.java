@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.persistence.dto;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -20,6 +21,7 @@ import java.util.UUID;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
@@ -85,6 +87,8 @@ public class TermDto extends AbstractTermDto{
                 vocabulary.getUuid(),
                 (term instanceof OrderedTermBase)?((OrderedTermBase) term).getOrderIndex():null,
                 term.getIdInVocabulary());
+        dto.setTermType(term.getTermType());
+        dto.setUri(term.getUri());
         if(initializeToTop){
             if(partOf!=null){
                 dto.setPartOfDto(fromTerm(partOf, initializeToTop));
@@ -205,7 +209,16 @@ public class TermDto extends AbstractTermDto{
 
     public static String getTermDtoSelect(String fromTable){
         return ""
-                + "select a.uuid, r, p.uuid, k.uuid, v.uuid, a.orderIndex, a.idInVocabulary, voc_rep "
+                + "select a.uuid, "
+                + "r, "
+                + "p.uuid, "
+                + "k.uuid, "
+                + "v.uuid, "
+                + "a.orderIndex, "
+                + "a.idInVocabulary, "
+                + "voc_rep,  "
+                + "a.termType,  "
+                + "a.uri  "
                 + "from "+fromTable+" as a "
                 + "LEFT JOIN a.partOf as p "
                 + "LEFT JOIN a.kindOf as k "
@@ -235,7 +248,18 @@ public class TermDto extends AbstractTermDto{
                 } else {
                     vocRepresentations = (Set<Representation>)elements[7];
                 }
-                dtoMap.put(uuid, new TermDto(uuid, representations, (UUID)elements[2], (UUID)elements[3], (UUID)elements[4], (Integer)elements[5], (String)elements[6], vocRepresentations));
+                TermDto termDto = new TermDto(
+                        uuid,
+                        representations,
+                        (UUID)elements[2],
+                        (UUID)elements[3],
+                        (UUID)elements[4],
+                        (Integer)elements[5],
+                        (String)elements[6],
+                        vocRepresentations);
+                termDto.setTermType((TermType)elements[8]);
+                termDto.setUri((URI)elements[9]);
+                dtoMap.put(uuid, termDto);
             }
         }
         return new ArrayList<>(dtoMap.values());
