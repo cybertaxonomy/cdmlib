@@ -681,6 +681,16 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
             FindOccurrencesConfigurator config);
 
     /**
+     * Returns a list of {@link PreservedSpecimenDTO} for the specimens found with the
+     * given configurator
+     * @param config the configurator for the search
+     * @return a list of {@link PreservedSpecimenDTO} object
+     */
+    @Transactional(readOnly = true)
+    public List<PreservedSpecimenDTO> findByTitlePreservedSpecimenDTO(
+            FindOccurrencesConfigurator config);
+
+    /**
      * @param queryString
      * @param propertyPaths
      * @return

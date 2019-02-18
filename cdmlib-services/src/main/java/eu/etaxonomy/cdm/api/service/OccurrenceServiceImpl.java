@@ -1612,6 +1612,30 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     @Override
+    public List<PreservedSpecimenDTO> findByTitlePreservedSpecimenDTO(FindOccurrencesConfigurator config) {
+        Taxon taxon = null;
+        if(config.getAssociatedTaxonUuid()!=null){
+            TaxonBase<?> taxonBase = taxonService.load(config.getAssociatedTaxonUuid());
+            if(taxonBase.isInstanceOf(Taxon.class)){
+                taxon = CdmBase.deproxy(taxonBase, Taxon.class);
+            }
+        }
+        TaxonName taxonName = null;
+        if(config.getAssociatedTaxonNameUuid()!=null){
+            taxonName = nameService.load(config.getAssociatedTaxonNameUuid());
+        }
+        List<DerivedUnit> occurrences = new ArrayList<>();
+        occurrences.addAll(dao.findOccurrences(DerivedUnit.class,
+                config.getTitleSearchString(), config.getSignificantIdentifier(),
+                config.getSpecimenType(), taxon, taxonName, config.getMatchMode(), null, null,
+                config.getOrderHints(), null));
+
+        List<PreservedSpecimenDTO> dtos = new ArrayList<>();
+        occurrences.forEach(derivedUnit->dtos.add(assemblePreservedSpecimenDTO(derivedUnit)));
+        return dtos;
+    }
+
+    @Override
     public <S extends SpecimenOrObservationBase> Pager<S> findByTitle(
             IIdentifiableEntityServiceConfigurator<S> config) {
         if (config instanceof FindOccurrencesConfigurator) {
