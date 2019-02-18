@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.service.dto;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,7 +23,9 @@ import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
  * @since 21.06.2018
  *
  */
-public class GatheringEventDTO {
+public class GatheringEventDTO implements Serializable{
+
+    private static final long serialVersionUID = -4381193272881277448L;
 
     private String locality;
     private Point exactLocation;
