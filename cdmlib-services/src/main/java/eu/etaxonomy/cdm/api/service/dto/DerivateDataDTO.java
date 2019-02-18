@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.service.dto;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,9 @@ import java.util.UUID;
  * @since Mar 26, 2015
  *
  */
-public class DerivateDataDTO {
+public class DerivateDataDTO implements Serializable {
+
+    private static final long serialVersionUID = 8329871164348514709L;
 
     private List<Link> specimenScans;
     private List<MolecularData> molecularDataList;
