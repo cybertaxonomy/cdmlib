@@ -20,6 +20,8 @@ import eu.etaxonomy.cdm.ref.TypedEntityReference;
  */
 public class MediaDTO extends TypedEntityReference<Media> {
 
+    private static final long serialVersionUID = 1981292478312137355L;
+
     private String uri;
 
     private String title_l10n;

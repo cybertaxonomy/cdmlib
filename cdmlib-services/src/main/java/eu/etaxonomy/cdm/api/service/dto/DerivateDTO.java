@@ -39,6 +39,8 @@ import eu.etaxonomy.cdm.ref.TypedEntityReference;
  */
 public abstract class DerivateDTO extends TypedEntityReference{
 
+    private static final long serialVersionUID = -7597690654462090732L;
+
     private TreeSet<Pair<String, String>> characterData;
     private DerivateDataDTO derivateDataDTO;
     protected String taxonName;

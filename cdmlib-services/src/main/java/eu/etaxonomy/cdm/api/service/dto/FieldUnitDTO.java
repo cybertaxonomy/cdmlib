@@ -9,6 +9,9 @@ import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 
 
 public class FieldUnitDTO extends DerivateDTO{
+
+    private static final long serialVersionUID = 3981843956067273220L;
+
     //Row Attributes
 	private String country;
 	private String collectionString;
@@ -53,12 +56,14 @@ public class FieldUnitDTO extends DerivateDTO{
     /**
      * @return the collectionString
      */
+    @Override
     public String getCollection() {
         return collectionString;
     }
     /**
      * @param collectionString the collectionString to set
      */
+    @Override
     public void setCollection(String collection) {
         this.collectionString = collection;
     }
