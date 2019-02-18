@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.ref;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -15,7 +16,10 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 /**
  * @author a.kohlbecker
  */
-public class EntityReference {
+public class EntityReference implements Serializable{
+
+    private static final long serialVersionUID = -8173845668898512626L;
+
     UUID uuid;
     String label;
 

@@ -19,6 +19,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  */
 public class TypedEntityReference<T> extends EntityReference {
 
+    private static final long serialVersionUID = -4619590272174606288L;
 
     private Class<T> type;
 

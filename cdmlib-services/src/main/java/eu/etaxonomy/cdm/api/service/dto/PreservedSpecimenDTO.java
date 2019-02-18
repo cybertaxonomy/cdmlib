@@ -30,6 +30,8 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  */
 public class PreservedSpecimenDTO extends DerivateDTO{
 
+    private static final long serialVersionUID = 2345864166579381295L;
+
     private String accessionNumber;
     private URI preferredStableUri;
 
