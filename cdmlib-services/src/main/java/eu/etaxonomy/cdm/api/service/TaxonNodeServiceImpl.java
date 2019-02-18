@@ -872,7 +872,7 @@ public class TaxonNodeServiceImpl
         newTaxonNode.setTaxon(taxon);
         TaxonNode child = null;
         try{
-            child = parent.addChildNode(newTaxonNode, parent.getReference(), parent.getMicroReference());
+            child = parent.addChildNode(newTaxonNode, newTaxonNode.getReference(), newTaxonNode.getMicroReference());
 
         }catch(Exception e){
             result.addException(e);
