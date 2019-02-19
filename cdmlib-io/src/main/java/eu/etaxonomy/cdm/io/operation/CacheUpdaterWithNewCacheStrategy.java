@@ -25,7 +25,9 @@ import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseShortSecCacheStrategy;
 
 @Component
 public class CacheUpdaterWithNewCacheStrategy extends CacheUpdater {
-	private static final Logger logger = Logger.getLogger(CacheUpdaterWithNewCacheStrategy.class);
+
+    private static final long serialVersionUID = 8720272266844232502L;
+    private static final Logger logger = Logger.getLogger(CacheUpdaterWithNewCacheStrategy.class);
 
 	@Override
 	protected void doInvoke(DefaultImportState<CacheUpdaterConfigurator> state) {

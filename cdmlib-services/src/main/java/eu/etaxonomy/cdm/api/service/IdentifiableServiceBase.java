@@ -294,8 +294,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 
 			monitor.worked(list.size());
 			if (monitor.isCanceled()){
-				monitor.done();
-				return;
+				break;
 			}
 		}
 		monitor.done();
