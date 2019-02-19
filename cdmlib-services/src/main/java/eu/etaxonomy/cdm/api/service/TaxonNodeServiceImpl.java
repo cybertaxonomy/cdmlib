@@ -834,9 +834,9 @@ public class TaxonNodeServiceImpl
             result.setError();
             return result;
         }
-//        child = dao.save(child);
+        child = dao.save(child);
 
-        dao.saveOrUpdate(parent);
+       // dao.saveOrUpdate(parent);
         result.addUpdatedObject(parent);
         if (child != null){
             result.setCdmEntity(child);
@@ -863,16 +863,30 @@ public class TaxonNodeServiceImpl
                 }
             }
         }
-        UUID taxonUUID = taxonService.saveOrUpdate(newTaxonNode.getTaxon());
-        UUID childUUID = dao.saveOrUpdate(newTaxonNode);
+        UUID parentUuid = newTaxonNode.getParent().getUuid();
+        Taxon taxon = newTaxonNode.getTaxon();
+        taxon.removeTaxonNode(newTaxonNode);
+        UUID taxonUUID = taxonService.saveOrUpdate(taxon);
+        taxon = (Taxon) taxonService.load(taxonUUID);
+        TaxonNode parent = dao.load(parentUuid);
+        newTaxonNode.setTaxon(taxon);
+        TaxonNode child = null;
+        try{
+            child = parent.addChildNode(newTaxonNode, newTaxonNode.getReference(), newTaxonNode.getMicroReference());
 
-        TaxonNode parent = dao.load(newTaxonNode.getParent().getUuid());
-        TaxonNode child = dao.load(childUUID);
-        result.addUpdatedObject(parent);
+        }catch(Exception e){
+            result.addException(e);
+            result.setError();
+            return result;
+        }
+        dao.saveOrUpdate(child);
+        //dao.saveOrUpdate(parent);
+        result.addUpdatedObject(child.getParent());
         if (child != null){
             result.setCdmEntity(child);
         }
         return result;
+
 
     }
 
@@ -1088,8 +1102,13 @@ public class TaxonNodeServiceImpl
         List<TaxonDistributionDTO> result = new ArrayList<>();
         for(TaxonNode node:nodes){
             if (node.getTaxon() != null){
-                TaxonDistributionDTO dto = new TaxonDistributionDTO(node.getTaxon());
-                result.add(dto);
+                try{
+                    TaxonDistributionDTO dto = new TaxonDistributionDTO(node.getTaxon());
+                    result.add(dto);
+                }catch(Exception e){
+                    System.err.println(node.getTaxon().getTitleCache());
+                }
+
             }
 
         }

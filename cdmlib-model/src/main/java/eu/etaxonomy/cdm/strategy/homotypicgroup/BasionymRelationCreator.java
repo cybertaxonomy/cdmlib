@@ -136,7 +136,7 @@ public class BasionymRelationCreator extends StrategyBase {
             TaxonName newCombinationCandidate) {
         if (basionymCandidate.isGenusOrSupraGeneric() || newCombinationCandidate.isGenusOrSupraGeneric()){
             return false;
-        }else if (matchFamilyNamePart(basionymCandidate, newCombinationCandidate)){
+        }else if (matchLastNamePart(basionymCandidate, newCombinationCandidate)){
             return true;
         }
         return false;
@@ -198,9 +198,9 @@ public class BasionymRelationCreator extends StrategyBase {
      * @param newCombination
      * @return
      */
-    public static boolean matchFamilyNamePart(TaxonName name1, TaxonName name2) {
-        String familyNamePart1 = name1.getFamilyNamePart();
-        String familyNamePart2 = name2.getFamilyNamePart();
+    public static boolean matchLastNamePart(TaxonName name1, TaxonName name2) {
+        String familyNamePart1 = name1.getLastNamePart();
+        String familyNamePart2 = name2.getLastNamePart();
         if (familyNamePart1 != null && familyNamePart2 != null){
             familyNamePart1 = normalizeBasionymNamePart(familyNamePart1);
             familyNamePart2 = normalizeBasionymNamePart(familyNamePart2);
