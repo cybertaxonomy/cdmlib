@@ -101,7 +101,10 @@ public class DerivateDataDTO implements Serializable {
         detailImageUuids.add(uuid);
     }
 
-    public class MolecularData{
+    public class MolecularData implements Serializable{
+
+        private static final long serialVersionUID = -3509828381796659200L;
+
         private final Link providerLink;
         private List<ContigFile> contigFiles;
 
@@ -129,7 +132,8 @@ public class DerivateDataDTO implements Serializable {
 
     }
 
-    public class ContigFile{
+    public class ContigFile implements Serializable{
+
         private final Link contigLink;
         private List<Link> primerLinks;
 
@@ -154,7 +158,10 @@ public class DerivateDataDTO implements Serializable {
 
     }
 
-    public static class Link{
+    public static class Link implements Serializable{
+
+        private static final long serialVersionUID = 6635385359662624579L;
+
         private String linkText;
         private URI uri;
 
