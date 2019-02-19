@@ -80,7 +80,21 @@ public class ImportResult extends IoResultBase implements Serializable {
      * @param successTaraxacum
      */
     public void merge(ImportResult otherResult) {
-        // TODO implement merge
+        mergeMap(this.deletedRecords, otherResult.deletedRecords);
+        mergeMap(this.updatedRecords, otherResult.updatedRecords);
+        mergeMap(this.newRecords, otherResult.newRecords);
+        this.reports.addAll(otherResult.reports);
+    }
+
+    /**
+     * @param thisMap
+     * @param otherMap
+     */
+    private void mergeMap(Map<String, Integer> thisMap, Map<String, Integer> otherMap) {
+        for (String key: otherMap.keySet()){
+            int existing = thisMap.get(key)== null ? 0 : thisMap.get(key);
+            thisMap.put(key, existing + thisMap.get(key));
+        }
     }
 
     public List<byte[]> getReports() {
