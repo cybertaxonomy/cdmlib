@@ -24,7 +24,6 @@ import eu.etaxonomy.cdm.database.update.v33_34.UsernameConstraintUpdater;
  * @see {@link UsernameConstraintUpdater}
  * @author a.mueller
  * @since 2016-10-18
- *
  */
 public class IndexAdder extends SchemaUpdaterStepBase {
 	private static final Logger logger = Logger.getLogger(IndexAdder.class);
@@ -83,20 +82,20 @@ public class IndexAdder extends SchemaUpdaterStepBase {
 	}
 
 	private String getCreateQuery(ICdmDataSource datasource, CaseType caseType, String tableName, String constraintName, String columnName) {
-			DatabaseTypeEnum type = datasource.getDatabaseType();
-//			String indexName = "_UniqueKey";
-			String updateQuery;
-			if (type.equals(DatabaseTypeEnum.MySQL)){
-				//Maybe MySQL also works with the below syntax. Did not check yet.
-				updateQuery = "ALTER TABLE @@"+ tableName + "@@ ADD INDEX " + constraintName + " ("+columnName+ makeLength()+");";
-			}else if (type.equals(DatabaseTypeEnum.H2) || type.equals(DatabaseTypeEnum.PostgreSQL) || type.equals(DatabaseTypeEnum.SqlServer2005)){
-				updateQuery = "CREATE INDEX " + constraintName + " ON "+tableName+"(" + columnName + ")";
-			}else{
-				throw new IllegalArgumentException("Datasource type not supported yet: " + type.getName());
-			}
-//			updateQuery = updateQuery.replace("@indexName", indexName);
-			updateQuery = caseType.replaceTableNames(updateQuery);
-			return updateQuery;
+		DatabaseTypeEnum type = datasource.getDatabaseType();
+//		String indexName = "_UniqueKey";
+		String updateQuery;
+		if (type.equals(DatabaseTypeEnum.MySQL)){
+			//Maybe MySQL also works with the below syntax. Did not check yet.
+			updateQuery = "ALTER TABLE @@"+ tableName + "@@ ADD INDEX " + constraintName + " ("+columnName+ makeLength()+");";
+		}else if (type.equals(DatabaseTypeEnum.H2) || type.equals(DatabaseTypeEnum.PostgreSQL) || type.equals(DatabaseTypeEnum.SqlServer2005)){
+			updateQuery = "CREATE INDEX " + constraintName + " ON "+tableName+"(" + columnName + ")";
+		}else{
+			throw new IllegalArgumentException("Datasource type not supported yet: " + type.getName());
+		}
+//		updateQuery = updateQuery.replace("@indexName", indexName);
+		updateQuery = caseType.replaceTableNames(updateQuery);
+		return updateQuery;
 	}
 
 	/**
