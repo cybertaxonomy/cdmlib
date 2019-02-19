@@ -89,7 +89,6 @@ public class Group extends CdmBase {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "groups")
-    @Cascade({CascadeType.REFRESH, CascadeType.MERGE}) // see #2414 (Group updating doesn't work)
     protected Set<User> members = new HashSet<>();
 
     @XmlElementWrapper(name = "GrantedAuthorities")
