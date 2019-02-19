@@ -15,6 +15,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
@@ -97,8 +98,6 @@ public class CacheUpdater extends CdmImportBase<CacheUpdaterConfigurator, Defaul
 			//TermBase
 			if (DefinedTermBase.class.isAssignableFrom(clazz)){
 				getTermService().updateCaches((Class) clazz, null, null, null);
-			}else if (FeatureTree.class.isAssignableFrom(clazz)){
-				getFeatureTreeService().updateCaches((Class) clazz, null, null, null);
 			}else if (TermVocabulary.class.isAssignableFrom(clazz)){
 				getVocabularyService().updateCaches((Class) clazz, null, null, null);
 			}
@@ -120,6 +119,7 @@ public class CacheUpdater extends CdmImportBase<CacheUpdaterConfigurator, Defaul
 				getCollectionService().updateCaches((Class) clazz, null, null, null);
 			}else if (Reference.class.isAssignableFrom(clazz)){
 				getReferenceService().updateCaches((Class) clazz, null, null, null);
+			//Occurrence
 			}else if (SpecimenOrObservationBase.class.isAssignableFrom(clazz)){
 				getOccurrenceService().updateCaches((Class) clazz, null, null, null);
 			}
@@ -139,6 +139,14 @@ public class CacheUpdater extends CdmImportBase<CacheUpdaterConfigurator, Defaul
 			//Polytomous Key
             else if (PolytomousKey.class.isAssignableFrom(clazz)){
                 getPolytomousKeyService().updateCaches((Class) clazz, null, null, null);
+            }
+            //DescriptiveDataSet
+            else if (DescriptiveDataSet.class.isAssignableFrom(clazz)){
+                getDescriptiveDataSetService().updateCaches((Class) clazz, null, null, null);
+            }
+            //FeatureTree
+            else if (FeatureTree.class.isAssignableFrom(clazz)){
+                getFeatureTreeService().updateCaches((Class) clazz, null, null, null);
             }
 			//unknown class
 			else {
