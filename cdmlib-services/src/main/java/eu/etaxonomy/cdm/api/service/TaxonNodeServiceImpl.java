@@ -830,7 +830,6 @@ public class TaxonNodeServiceImpl
         }
         child = dao.save(child);
 
-       // dao.saveOrUpdate(parent);
         result.addUpdatedObject(parent);
         if (child != null){
             result.setCdmEntity(child);
