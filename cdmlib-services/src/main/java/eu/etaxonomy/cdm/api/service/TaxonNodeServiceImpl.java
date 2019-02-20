@@ -736,14 +736,8 @@ public class TaxonNodeServiceImpl
             result.addException(new Exception("The moving type "+ movingType +" is not supported."));
         }
 
-
         taxonNode = newParent.addChildNode(taxonNode, sortIndex, taxonNode.getReference(),  taxonNode.getMicroReference());
-//        result.addUpdatedObject(newParent);
         result.addUpdatedObject(taxonNode);
-//        result.setCdmEntity(taxonNode);
-
-
-
 
         return result;
     }
@@ -850,6 +844,19 @@ public class TaxonNodeServiceImpl
     @Transactional
     public UpdateResult saveNewTaxonNode(TaxonNode newTaxonNode){
         UpdateResult result = new UpdateResult();
+        UUID parentUuid = newTaxonNode.getParent().getUuid();
+        TaxonNode parent = dao.load(parentUuid);
+        if (newTaxonNode.getTaxon().getId() != 0){
+            Taxon taxon = (Taxon)taxonService.load(newTaxonNode.getTaxon().getUuid());
+            newTaxonNode.setTaxon(taxon);
+        }else{
+            Taxon taxon = newTaxonNode.getTaxon();
+            taxon.removeTaxonNode(newTaxonNode);
+            UUID taxonUUID = taxonService.saveOrUpdate(taxon);
+            taxon = (Taxon) taxonService.load(taxonUUID);
+            newTaxonNode.setTaxon(taxon);
+        }
+
         if (newTaxonNode.getTaxon().getName().getId() != 0){
             TaxonName name = nameService.load(newTaxonNode.getTaxon().getName().getUuid());
             newTaxonNode.getTaxon().setName(name);
@@ -863,13 +870,7 @@ public class TaxonNodeServiceImpl
                 }
             }
         }
-        UUID parentUuid = newTaxonNode.getParent().getUuid();
-        Taxon taxon = newTaxonNode.getTaxon();
-        taxon.removeTaxonNode(newTaxonNode);
-        UUID taxonUUID = taxonService.saveOrUpdate(taxon);
-        taxon = (Taxon) taxonService.load(taxonUUID);
-        TaxonNode parent = dao.load(parentUuid);
-        newTaxonNode.setTaxon(taxon);
+
         TaxonNode child = null;
         try{
             child = parent.addChildNode(newTaxonNode, newTaxonNode.getReference(), newTaxonNode.getMicroReference());
@@ -880,7 +881,7 @@ public class TaxonNodeServiceImpl
             return result;
         }
         dao.saveOrUpdate(child);
-        //dao.saveOrUpdate(parent);
+
         result.addUpdatedObject(child.getParent());
         if (child != null){
             result.setCdmEntity(child);
