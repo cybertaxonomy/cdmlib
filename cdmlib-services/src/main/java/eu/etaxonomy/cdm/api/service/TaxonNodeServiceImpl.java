@@ -17,6 +17,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 
@@ -44,6 +45,8 @@ import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.TreeIndex;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -822,7 +825,7 @@ public class TaxonNodeServiceImpl
         TaxonNode parent = dao.load(parentNodeUuid);
         TaxonNode child = null;
         try{
-            child = parent.addChildTaxon(newTaxon, parent.getReference(), parent.getMicroReference());
+            child = parent.addChildTaxon(newTaxon,ref, microref);
         }catch(Exception e){
             result.addException(e);
             result.setError();
@@ -844,21 +847,15 @@ public class TaxonNodeServiceImpl
     public UpdateResult saveNewTaxonNode(TaxonNode newTaxonNode){
         UpdateResult result = new UpdateResult();
         UUID parentUuid = newTaxonNode.getParent().getUuid();
-        TaxonNode parent = dao.load(parentUuid);
-        if (newTaxonNode.getTaxon().getId() != 0){
-            Taxon taxon = (Taxon)taxonService.load(newTaxonNode.getTaxon().getUuid());
-            newTaxonNode.setTaxon(taxon);
-        }else{
-            Taxon taxon = newTaxonNode.getTaxon();
-            taxon.removeTaxonNode(newTaxonNode);
-            UUID taxonUUID = taxonService.saveOrUpdate(taxon);
-            taxon = (Taxon) taxonService.load(taxonUUID);
-            newTaxonNode.setTaxon(taxon);
-        }
+        Taxon taxon = null;
 
-        if (newTaxonNode.getTaxon().getName().getId() != 0){
+        if (newTaxonNode.getTaxon().getId() != 0){
+            taxon = (Taxon)taxonService.load(newTaxonNode.getTaxon().getUuid());
+            //newTaxonNode.setTaxon(taxon);
+        }else if (newTaxonNode.getTaxon().getName().getId() != 0){
             TaxonName name = nameService.load(newTaxonNode.getTaxon().getName().getUuid());
-            newTaxonNode.getTaxon().setName(name);
+            taxon = newTaxonNode.getTaxon();
+            taxon.setName(name);
         }else{
             for (HybridRelationship rel : newTaxonNode.getTaxon().getName().getHybridChildRelations()){
                 if (!rel.getHybridName().isPersited()) {
@@ -869,16 +866,38 @@ public class TaxonNodeServiceImpl
                 }
             }
         }
+        if (taxon == null){
+            taxon = newTaxonNode.getTaxon();
+        }
+        taxon.removeTaxonNode(newTaxonNode);
+        if (taxon.getId() == 0){
+            UUID taxonUUID = taxonService.saveOrUpdate(taxon);
+            taxon = (Taxon) taxonService.load(taxonUUID);
 
+        }
+
+
+        TaxonNode parent = dao.load(parentUuid);
         TaxonNode child = null;
         try{
-            child = parent.addChildNode(newTaxonNode, newTaxonNode.getReference(), newTaxonNode.getMicroReference());
+            child = parent.addChildTaxon(taxon, newTaxonNode.getReference(), newTaxonNode.getMicroReference());
 
         }catch(Exception e){
             result.addException(e);
             result.setError();
             return result;
         }
+
+        child.setUnplaced(newTaxonNode.isUnplaced());
+        child.setExcluded(newTaxonNode.isExcluded());
+        for (TaxonNodeAgentRelation agentRel :newTaxonNode.getAgentRelations()){
+            child.addAgentRelation(agentRel.getType(), agentRel.getAgent());
+        }
+        for (Entry<Language, LanguageString> entry: newTaxonNode.getExcludedNote().entrySet()){
+            child.putExcludedNote(entry.getKey(), entry.getValue().getText());
+        }
+
+        newTaxonNode = null;
         dao.saveOrUpdate(child);
 
         result.addUpdatedObject(child.getParent());
