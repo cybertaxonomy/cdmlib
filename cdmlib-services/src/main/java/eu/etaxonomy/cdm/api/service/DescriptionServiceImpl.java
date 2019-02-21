@@ -711,7 +711,8 @@ public class DescriptionServiceImpl
             boolean isCopy) {
 
         UpdateResult result = new UpdateResult();
-        if (descriptionElements.isEmpty() ){
+        if (descriptionElements.isEmpty() || descriptionElements.iterator().next() == null){
+            result.setAbort();
             return result;
         }
 
@@ -764,7 +765,10 @@ public class DescriptionServiceImpl
             boolean isCopy) {
         Set<DescriptionElementBase> descriptionElements = new HashSet<DescriptionElementBase>();
         for(UUID deUuid : descriptionElementUUIDs) {
-            descriptionElements.add(descriptionElementDao.load(deUuid));
+            DescriptionElementBase element = descriptionElementDao.load(deUuid);
+            if (element != null){
+                descriptionElements.add(element);
+            }
         }
         DescriptionBase targetDescription = dao.load(targetDescriptionUuid);
 
