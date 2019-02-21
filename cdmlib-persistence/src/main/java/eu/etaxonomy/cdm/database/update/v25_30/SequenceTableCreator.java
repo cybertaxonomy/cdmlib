@@ -15,8 +15,6 @@ import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 
-import com.mysql.jdbc.exceptions.MySQLSyntaxErrorException;
-
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -137,7 +135,7 @@ public class SequenceTableCreator extends SchemaUpdaterStepBase {
 			try{
 				String query = maxIdQuery.replace("@tableName", tableName);
 				maxId = datasource.getSingleValue(query);
-			}catch(MySQLSyntaxErrorException e){
+			}catch(SQLException e){
 				// table does not have a column id, so it is not an entity table
 				maxId = null;
 			}
