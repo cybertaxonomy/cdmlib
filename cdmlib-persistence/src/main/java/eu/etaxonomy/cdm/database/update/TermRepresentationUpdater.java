@@ -112,7 +112,7 @@ public class TermRepresentationUpdater
 		}
 
 		if (includeTitleCache && label != null){
-		    String sql = "UPDATE '%s' SET titleCache = '%s' WHERE uuid = '%s'";
+		    String sql = "UPDATE %s SET titleCache = '%s' WHERE uuid = '%s'";
 		    sql = String.format(sql, caseType.transformTo("DefinedTermBase"), label, uuidTerm);
 		    datasource.executeUpdate(sql);
 		}
