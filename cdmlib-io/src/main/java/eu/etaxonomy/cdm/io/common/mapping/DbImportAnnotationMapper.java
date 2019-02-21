@@ -181,16 +181,8 @@ public class DbImportAnnotationMapper extends DbSingleAttributeImportMapperBase<
 
 
 	//not used
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase#getTypeClass()
-	 */
 	@Override
     public Class<String> getTypeClass(){
 		return String.class;
 	}
-
-
-
-
-
 }

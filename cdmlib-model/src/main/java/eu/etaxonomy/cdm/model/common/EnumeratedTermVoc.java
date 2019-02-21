@@ -112,7 +112,7 @@ public class EnumeratedTermVoc<T extends IEnumTerm<T>> {
 //******************* DELEGATE CLASS NETHODS ************************
 
 
-	public static <S extends IEnumTerm<?>> IEnumTerm<?> addTerm(Class<? extends IEnumTerm<?>> clazz, S term, UUID uuid, String defaultString, String key, S parent){
+	public static <S extends IEnumTerm<?>> IEnumTerm addTerm(Class<? extends IEnumTerm<?>> clazz, S term, UUID uuid, String defaultString, String key, S parent){
 		if (vocsMap.get(clazz) == null){
 			vocsMap.put(clazz, new EnumeratedTermVoc<>());
 		}
