@@ -119,7 +119,7 @@ public class SchemaUpdater_50_55 extends SchemaUpdaterBase {
         tableName = "CdmPreference";
         // TODO check non MySQL and with existing data (probably does not exist)
         step = ColumnTypeChanger.NewClobInstance(stepName, tableName,
-                columnName, INCLUDE_AUDIT);
+                columnName, !INCLUDE_AUDIT);
         stepList.add(step);
 
         //#7857 update name realtionships
