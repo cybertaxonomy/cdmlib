@@ -16,12 +16,14 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
+import eu.etaxonomy.cdm.database.update.ColumnNameChanger;
 import eu.etaxonomy.cdm.database.update.ColumnRemover;
 import eu.etaxonomy.cdm.database.update.ColumnTypeChanger;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
+import eu.etaxonomy.cdm.database.update.TableNameChanger;
 import eu.etaxonomy.cdm.database.update.TermRepresentationUpdater;
 import eu.etaxonomy.cdm.database.update.v47_50.SchemaUpdater_47_50;
 import eu.etaxonomy.cdm.model.common.TermType;
@@ -80,6 +82,22 @@ public class SchemaUpdater_50_55 extends SchemaUpdaterBase {
         stepList.add(step);
 
         //TODO remove proparte and partial columns
+
+        //#7772 rename TermBase_inverseRepresentation to DefinedTermBase_InverseRepresentation
+        stepName = "Rename TermBase_inverseRepresentation to DefinedTermBase_InverseRepresentation";
+        String oldName = "TermBase_inverseRepresentation";
+        String newName = "DefinedTermBase_InverseRepresentation";
+        step = TableNameChanger.NewInstance(stepName, oldName,
+                newName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //#7772 rename DefinedTermBase_InverseRepresentation.term_id to .definedTermBase_id
+        stepName = "Rename TermBase_inverseRepresentation to DefinedTermBase_InverseRepresentation";
+        tableName = "DefinedTermBase_InverseRepresentation";
+        oldColumnName = "term_id";
+        newColumnName = "definedTermBase_id";
+        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
 
         //#8004 add sortindex to description element
         stepName = "Add sortindex to description element";
