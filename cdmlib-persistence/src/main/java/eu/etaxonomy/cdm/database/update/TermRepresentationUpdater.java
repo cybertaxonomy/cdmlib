@@ -132,7 +132,7 @@ public class TermRepresentationUpdater
 			IProgressMonitor monitor, Integer langId, CaseType caseType) throws SQLException {
 		//representation
 
-		String tableName = isReverse ? "RelationshipTermBase_inverseRepresentation" : "DefinedTermBase_Representation" ;
+		String tableName = isReverse ? "DefinedTermBase_InverseRepresentation" : "DefinedTermBase_Representation" ;
 		String repIdFkCol = isReverse ? "inverserepresentations_id" : "representations_id";
 		String sqlId = " SELECT rep.id " +
 			" FROM @@Representation@@ rep INNER JOIN %s MN ON MN.%s = rep.id " +
