@@ -39,7 +39,7 @@ public class SchemaUpdater_50_55 extends SchemaUpdaterBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SchemaUpdater_50_55.class);
 	private static final String startSchemaVersion = "5.0.0.0.20180514";
-	private static final String endSchemaVersion = "5.5.0.0.20190122";
+	private static final String endSchemaVersion = "5.5.0.0.20190221";
 
 	// ********************** FACTORY METHOD *************************************
 
@@ -106,7 +106,7 @@ public class SchemaUpdater_50_55 extends SchemaUpdaterBase {
         step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, null, !NOT_NULL);
         stepList.add(step);
 
-        //7682 update Point.precision from 0 to null
+        //#7682 update Point.precision from 0 to null
         stepName = "update Point.precision from 0 to null";
         query = "UPDATE @@GatheringEvent@@ SET exactLocation_errorRadius = null WHERE exactLocation_errorRadius = 0 ";
         tableName = "GatheringEvent";
@@ -122,21 +122,20 @@ public class SchemaUpdater_50_55 extends SchemaUpdaterBase {
                 columnName, INCLUDE_AUDIT);
         stepList.add(step);
 
-        //7857 update name realtionships
+        //#7857 update name realtionships
         updateNameRelationships(stepList);
 
         //#7683 allow null for ExternalLink_AUD.uuid
         stepName = "Allow null for ExternalLink_AUD.uuid ";
         columnName = "uuid";
         tableName = "ExternalLink_AUD";
-        // TODO check non MySQL and with existing data (probably does not exist)
         step = ColumnTypeChanger.NewStringSizeInstance(stepName, tableName, columnName, 36, !INCLUDE_AUDIT);
         stepList.add(step);
 
-        //7514 change symbols for pro parte synonyms and misapplied name relationship types
+        //#7514 change symbols for pro parte synonyms and misapplied name relationship types
         updateConceptRelationshipSymbols(stepList);
 
-        //8006
+        //#8006
         updateTaxonRelationshipLabels(stepList);
 
         //#7372

@@ -38,6 +38,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  */
 public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, IdentifiableEntity>
         implements IDbImportMapper<DbImportStateBase<?,?>,IdentifiableEntity>{
+
 	private static final Logger logger = Logger.getLogger(DbImportExtensionMapper.class);
 
 //************************** FACTORY METHODS ***************************************************************/
