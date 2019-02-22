@@ -142,16 +142,19 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase<T>>
 	}
 
 	public Representation getInverseRepresentation(Language lang) {
-		Representation result = null;
+		if (lang == null){
+		    return null;
+		}
+	    Representation result = null;
 		if (this.isSymmetric()){
 			for (Representation repr : this.getRepresentations()){
-				if (lang.equals(repr.getLanguage())){
+				if (repr != null && lang.equals(repr.getLanguage())){
 					result = repr;
 				}
 			}
 		}else{
 			for (Representation repr : this.getInverseRepresentations()){
-				if (lang.equals(repr.getLanguage())){
+				if (repr != null && lang.equals(repr.getLanguage())){
 					result = repr;
 				}
 			}
