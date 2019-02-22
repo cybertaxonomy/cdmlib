@@ -39,11 +39,11 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
- * The class representing a typification of one or several {@link TaxonName taxon names} by text only
- * This is for
- *   1. verbatim type citations
- *   2. rapid data entry
- *   3. type information that can not be atomized with current data model
+ * The class representing a typification of one or several {@link TaxonName taxon names} by text only.<BR>
+ * This is for<BR>
+ *   1. verbatim type citations<BR>
+ *   2. rapid data entry<BR>
+ *   3. type information that can not be atomized with current data model<BR>
  *
  * @author a.mueller
  * @since 23.01.2019
@@ -52,7 +52,6 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 @XmlRootElement(name = "TextualTypeDesignation")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TextualTypeDesignation", propOrder = {
-   // "typeSpecimen"
       "text",
       "isVerbatim"
 })
@@ -169,10 +168,14 @@ public class TextualTypeDesignation extends TypeDesignationBase<SpecimenTypeDesi
         return getText().get(language).getText();
     }
 
+
+    /**
+     * Flag indicating if this textual type designation is a citation (e.g. original citation).
+     * This may have influence on the correct formatting of type designations.
+     */
     public boolean isVerbatim() {
         return isVerbatim;
     }
-
 
     public void setVerbatim(boolean isVerbatim) {
         this.isVerbatim = isVerbatim;
