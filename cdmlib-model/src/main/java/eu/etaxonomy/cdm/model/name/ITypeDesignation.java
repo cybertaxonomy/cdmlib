@@ -14,7 +14,6 @@ import java.util.Set;
 /**
  * @author a.mueller
  * @since 07.08.2008
- * @version 1.0
  */
 public interface ITypeDesignation {
 
