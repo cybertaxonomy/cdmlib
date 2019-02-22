@@ -146,7 +146,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	@XmlElementWrapper(name = "InverseRepresentations")
     @XmlElement(name = "Representation")
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
-    @JoinTable(name="DefinedTermBase_InverseRepresentation",
+    @JoinTable(name="DefinedTermBase_InverseRepresentation",  //see also RelationshipTermBase.inverseRepresentations
         joinColumns=@JoinColumn(name="DefinedTermBase_id")
         //  inverseJoinColumns
     )
