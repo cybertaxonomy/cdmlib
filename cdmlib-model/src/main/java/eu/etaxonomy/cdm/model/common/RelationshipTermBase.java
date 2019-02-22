@@ -79,7 +79,7 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase<T>>
 	@XmlElementWrapper(name = "InverseRepresentations")
 	@XmlElement(name = "Representation")
 	@OneToMany(fetch = FetchType.EAGER, orphanRemoval=true)  //eager loading same as TermBase.representations
-	@JoinTable(name="DefinedTermBase_InverseRepresentation",
+	@JoinTable(name="DefinedTermBase_InverseRepresentation",  //see also Feature.inverseRepresentations
         joinColumns=@JoinColumn(name="DefinedTermBase_id")
 //	    inverseJoinColumns
     )
