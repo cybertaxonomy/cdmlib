@@ -63,7 +63,8 @@ public class TaxonNameTest {
 
 
 	private class TaxonNameTestClass extends TaxonName{
-		public TaxonNameTestClass(Rank rank, HomotypicalGroup hg){super(null, rank, hg);}
+        private static final long serialVersionUID = 1751002250693432251L;
+        public TaxonNameTestClass(Rank rank, HomotypicalGroup hg){super(null, rank, hg);}
 		@Override
 		public void setCacheStrategy(INameCacheStrategy strategy){}
 		@Override
@@ -76,7 +77,6 @@ public class TaxonNameTest {
 		public String generateTitle() {
 			return null;
 		}
-
 	}
 
 
@@ -137,22 +137,6 @@ public class TaxonNameTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#isCodeCompliant()}.
-	 */
-	@Test
-	public void testIsCodeCompliant() {
-		//is abstract
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#getNameRelations()}.
-	 */
-	@Test
-	public void testGetNameRelations() {
-		logger.warn("not yet implemented");
-	}
-
-	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#addRelationshipToName(eu.etaxonomy.cdm.model.name.TaxonName, eu.etaxonomy.cdm.model.name.NameRelationshipType, java.lang.String)}.
 	 */
 	@Test
@@ -189,22 +173,6 @@ public class TaxonNameTest {
 	 */
 	@Test
 	public void testAddRelationship() {
-		logger.warn("not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#getRelationsFromThisName()}.
-	 */
-	@Test
-	public void testGetRelationsFromThisName() {
-		logger.warn("not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#getRelationsToThisName()}.
-	 */
-	@Test
-	public void testGetRelationsToThisName() {
 		logger.warn("not yet implemented");
 	}
 
@@ -285,24 +253,7 @@ public class TaxonNameTest {
 	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#addBasionym(eu.etaxonomy.cdm.model.name.TaxonName, java.lang.String)}.
 	 */
 	@Test
-	public void testAddBasionymTString() {
-		logger.warn("not yet implemented");
-	}
-
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#getCacheStrategy()}.
-	 */
-	@Test
-	public void testGetCacheStrategy() {
-		//is abstract
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#setCacheStrategy(eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy)}.
-	 */
-	@Test
-	public void testSetCacheStrategy() {
+	public void testAddBasionymTaxonNameString() {
 		logger.warn("not yet implemented");
 	}
 
@@ -375,22 +326,6 @@ public class TaxonNameTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#getNameTypeDesignations()}.
-	 */
-	@Test
-	public void testGetNameTypeDesignations() {
-		logger.warn("not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#setNameTypeDesignations(java.util.Set)}.
-	 */
-	@Test
-	public void testSetNameTypeDesignations() {
-		logger.warn("not yet implemented");
-	}
-
-	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#addNameTypeDesignation(eu.etaxonomy.cdm.model.name.TaxonName, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String, java.lang.String, boolean, boolean)}.
 	 */
 	@Test
@@ -403,22 +338,6 @@ public class TaxonNameTest {
 	 */
 	@Test
 	public void testRemoveNameTypeDesignation() {
-		logger.warn("not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#getSpecimenTypeDesignations()}.
-	 */
-	@Test
-	public void testGetSpecimenTypeDesignations() {
-		logger.warn("not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#setSpecimenTypeDesignations(java.util.Set)}.
-	 */
-	@Test
-	public void testSetSpecimenTypeDesignations() {
 		logger.warn("not yet implemented");
 	}
 
@@ -459,22 +378,6 @@ public class TaxonNameTest {
 	 */
 	@Test
 	public void testRemoveTypeDesignation() {
-		logger.warn("not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#getHomotypicalGroup()}.
-	 */
-	@Test
-	public void testGetHomotypicalGroup() {
-		logger.warn("not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#setHomotypicalGroup(eu.etaxonomy.cdm.model.name.HomotypicalGroup)}.
-	 */
-	@Test
-	public void testSetHomotypicalGroup() {
 		logger.warn("not yet implemented");
 	}
 
@@ -528,13 +431,6 @@ public class TaxonNameTest {
 		assertEquals("The taxon name has not properly been removed from the description", null, description.getTaxonName());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#getTaxa()}.
-	 */
-	@Test
-	public void testGetTaxa() {
-		logger.warn("not yet implemented");
-	}
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#getSynonyms()}.
@@ -549,7 +445,6 @@ public class TaxonNameTest {
 		TaxonName name1 = TaxonNameFactory.NewBotanicalInstance(null);
 		TaxonName name2 = TaxonNameFactory.NewBotanicalInstance(null);
 		TaxonName name3 = TaxonNameFactory.NewBotanicalInstance(null);
-		TaxonName name4 = TaxonNameFactory.NewBotanicalInstance(null);
 
 		assertFalse(name1.getHomotypicalGroup().equals(name2.getHomotypicalGroup()));
 		int numberOfTypifiedNames = name1.getHomotypicalGroup().getTypifiedNames().size();
@@ -580,8 +475,6 @@ public class TaxonNameTest {
 		assertTrue(name3.getHomotypicalGroup().getTypifiedNames().contains(name1));
 		assertTrue(name2.getHomotypicalGroup().getTypifiedNames().contains(name3));
 		assertTrue(name3.getHomotypicalGroup().getTypifiedNames().contains(name2));
-
-
 	}
 
 
@@ -589,8 +482,6 @@ public class TaxonNameTest {
 	public void testIsBasionymFor() {
 		TaxonName name1 = TaxonNameFactory.NewBotanicalInstance(null);
 		TaxonName name2 = TaxonNameFactory.NewBotanicalInstance(null);
-		TaxonName name3 = TaxonNameFactory.NewBotanicalInstance(null);
-		TaxonName name4 = TaxonNameFactory.NewBotanicalInstance(null);
 
 		assertFalse(name2.isBasionymFor(name1));
 		assertFalse(name1.isBasionymFor(name2));
@@ -599,9 +490,6 @@ public class TaxonNameTest {
 		assertFalse(name1.isBasionymFor(name2));
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#isHomotypic(eu.etaxonomy.cdm.model.name.TaxonName)}.
-	 */
 	@Test
 	public void testIsHomotypic() {
 		TaxonName name1 = TaxonNameFactory.NewBotanicalInstance(null);
@@ -712,14 +600,10 @@ public class TaxonNameTest {
 		Taxon newTaxon = Taxon.NewInstance(nameBase1, null);
 		assertEquals(1, nameBase1.getTaxonBases().size());
 
-
 		nameBase1.removeTaxonBase(newTaxon);
 		assertEquals(0, nameBase1.getTaxonBases().size());
-
 	}
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#isGenus()}.
-	 */
+
 	@Test
 	public void testIsGenus() {
 		nameBase1.setRank(Rank.FAMILY());
@@ -753,9 +637,6 @@ public class TaxonNameTest {
 		assertFalse(nameBase1.isInfraGeneric());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#isSpecies()}.
-	 */
 	@Test
 	public void testIsSpecies() {
 		nameBase1.setRank(Rank.FAMILY());
@@ -791,14 +672,6 @@ public class TaxonNameTest {
 		assertTrue(nameBase1.isInfraSpecific());
 		nameBase1.setRank(null);
 		assertFalse(nameBase1.isInfraSpecific());
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#getNomenclaturalCode()}.
-	 */
-	@Test
-	public void testGetNomenclaturalCode() {
-		//is abstract
 	}
 
 
