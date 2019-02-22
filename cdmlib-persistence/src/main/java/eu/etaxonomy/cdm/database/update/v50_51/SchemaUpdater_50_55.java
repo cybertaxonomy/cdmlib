@@ -161,6 +161,22 @@ public class SchemaUpdater_50_55 extends SchemaUpdaterBase {
                 .setNotNull(NOT_NULL);
         stepList.add(step);
 
+        //#8120 add structure modifier
+        stepName = "Add structure modifier to Character";
+        tableName = "DefinedTermBase";
+        String referedTableName = "DefinedTermBase";
+        newColumnName = "structureModifier";
+        step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referedTableName);
+        stepList.add(step);
+
+        //#8120 add property modifier
+        stepName = "Add property modifier to Character";
+        tableName = "DefinedTermBase";
+        referedTableName = "DefinedTermBase";
+        newColumnName = "propertyModifier";
+        step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referedTableName);
+        stepList.add(step);
+
 
         return stepList;
 

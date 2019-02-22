@@ -472,6 +472,19 @@ public enum TermType implements IEnumTerm<TermType>{
     @XmlEnumValue("Property")
     Property(UUID.fromString("bbe4730c-4c3f-4d89-9823-d144cc43baf5"), "Property", "PROP", null),
 
+    //39
+    /**
+     * A modifier for {@link #Structure structures} used to define
+     * spatial and maybe other modifiers.
+     * StructureModifier is a specialization of {@link #Modifier}.
+     *
+     * @see Modifier
+     * @see Character#getStructureModifier()
+     * @see Character#getStructure()
+     */
+    @XmlEnumValue("StructureModifier")
+    StructureModifier(UUID.fromString("41617e59-17c9-47f5-8fe6-319e117447ce"), "Structure Modifier", "STMO", Modifier),
+
     ;
 
 
