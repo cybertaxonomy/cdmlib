@@ -42,15 +42,16 @@ public class NameTypeDesignationStatus extends TypeDesignationStatusBase<NameTyp
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(NameTypeDesignationStatus.class);
 
-	private static final UUID uuidAutomatic = UUID.fromString("e89d8b21-615a-4602-913f-1625bf39a69f");
-	private static final UUID uuidMonotypy = UUID.fromString("3fc639b2-9a64-45f8-9a81-657a4043ad74");
-	private static final UUID uuidNotApplicable = UUID.fromString("91a9d6a9-7754-41cd-9f7e-be136f599f7e");
 	private static final UUID uuidOriginalDesignation = UUID.fromString("40032a44-973b-4a64-b25e-76f86c3a753c");
-	private static final UUID uuidPresentDesignation = UUID.fromString("e5f38f5d-995d-4470-a036-1a9792a543fc");
-	private static final UUID uuidSubsequentMonotypy = UUID.fromString("2b5806d8-31b0-406e-a32a-4adac0c89ae4");
-	private static final UUID uuidSubsequentDesignation = UUID.fromString("3e449e7d-a03c-4431-a7d3-aa258406f6b2");
+	private static final UUID uuidMonotypy = UUID.fromString("3fc639b2-9a64-45f8-9a81-657a4043ad74");
+    private static final UUID uuidAutomatic = UUID.fromString("e89d8b21-615a-4602-913f-1625bf39a69f");
+	private static final UUID uuidNotApplicable = UUID.fromString("91a9d6a9-7754-41cd-9f7e-be136f599f7e");
 	private static final UUID uuidTautonymy = UUID.fromString("84521f09-3e10-43f5-aa6f-2173a55a6790");
+
 	private static final UUID uuidLectotype = UUID.fromString("4177c938-b741-40e1-95e5-4c53bd1ed87d");
+	private static final UUID uuidSubsequentMonotypy = UUID.fromString("2b5806d8-31b0-406e-a32a-4adac0c89ae4");
+    private static final UUID uuidSubsequentDesignation = UUID.fromString("3e449e7d-a03c-4431-a7d3-aa258406f6b2");
+    private static final UUID uuidPresentDesignation = UUID.fromString("e5f38f5d-995d-4470-a036-1a9792a543fc");
 
 	/**
 	 * Factory method: creates an additional type designation status instance
@@ -200,16 +201,15 @@ public class NameTypeDesignationStatus extends TypeDesignationStatusBase<NameTyp
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
+	//#8140
 	@Override
     @Transient
 	public boolean isLectotype(){
 		if (
 				this.equals(LECTOTYPE()) ||
 				this.equals(SUBSEQUENT_DESIGNATION()) ||
-				this.equals(PRESENT_DESIGNATION() )
+				this.equals(SUBSEQUENT_MONOTYPY()) ||
+                this.equals(PRESENT_DESIGNATION() )
 				){
 			return true;
 		}else{

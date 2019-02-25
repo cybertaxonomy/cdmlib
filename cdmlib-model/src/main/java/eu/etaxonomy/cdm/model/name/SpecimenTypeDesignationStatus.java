@@ -113,9 +113,6 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 
 //************************** METHODS ********************************
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
-	 */
 	@Override
 	public void resetTerms(){
 		termMap = null;
@@ -130,13 +127,21 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
         }
 	}
 
+	//#8140
 	@Transient
 	@Override
 	public boolean isLectotype(){
 		if (this.equals(LECTOTYPE()) ||
 				this.equals(ISOLECTOTYPE()) ||
 				this.equals(SECOND_STEP_LECTOTYPE()) ||
-				this.equals(PARALECTOTYPE()) ){
+				this.equals(PARALECTOTYPE()) ||
+				//with source but not "lecto"
+				this.equals(EPITYPE()) ||
+				this.equals(ISOEPITYPE()) ||
+				this.equals(NEOTYPE()) ||
+				this.equals(ISONEOTYPE()) ||
+				this.equals(SECOND_STEP_NEOTYPE())
+		        ){
 			return true;
 		}else{
 			return false;
