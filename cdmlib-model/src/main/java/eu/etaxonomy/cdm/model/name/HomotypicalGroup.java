@@ -226,7 +226,7 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	public Set<TypeDesignationBase<?>> getTypeDesignations(){
 		Set<TypeDesignationBase<?>> result = new HashSet<>();
 		for (TaxonName taxonName : typifiedNames){
-			result.addAll(taxonName.getTypeDesignations());
+			result.addAll((Set)taxonName.getTypeDesignations());
 		}
 		return result;
 	}

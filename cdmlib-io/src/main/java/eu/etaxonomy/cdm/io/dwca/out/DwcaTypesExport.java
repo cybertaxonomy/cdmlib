@@ -133,13 +133,13 @@ public class DwcaTypesExport extends DwcaDataExportBase {
 	 * @throws UnsupportedEncodingException
 	 * @throws FileNotFoundException
 	 */
-	private Set<TypeDesignationBase<?>> handleTypeName(DwcaTaxExportState state,
+	private Set<TypeDesignationBase> handleTypeName(DwcaTaxExportState state,
 	        DwcaTaxExportFile file, TaxonBase<?> taxonBase,
 	        INonViralName nvn, DwcaMetaDataRecord metaRecord)
 	        throws FileNotFoundException, UnsupportedEncodingException, IOException {
 
 	    DwcaTaxExportConfigurator config = state.getConfig();
-		Set<TypeDesignationBase<?>> designations = nvn.getTypeDesignations();
+		Set<TypeDesignationBase> designations = nvn.getTypeDesignations();
 		for (TypeDesignationBase<?> designation:designations){
 			DwcaTypesRecord record = new DwcaTypesRecord(metaRecord, config);
 			if (! state.recordExistsUuid(designation)

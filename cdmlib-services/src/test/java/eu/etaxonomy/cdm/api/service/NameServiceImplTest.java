@@ -710,9 +710,9 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         DerivedUnit specimen1 = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("0d19a9ca-21a7-4adb-8640-8d6719e15eea")), DerivedUnit.class);
         DerivedUnit fossil = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("4c48b7c8-4c8d-4e48-b083-0837fe51a0a9")), DerivedUnit.class);
 
-        Set<TypeDesignationBase<?>> desigs1 = name1.getTypeDesignations();
-        Set<TypeDesignationBase<?>> desigs2 = name2.getTypeDesignations();
-        Set<TypeDesignationBase<?>> desigs3 = name3.getTypeDesignations();
+        Set<TypeDesignationBase> desigs1 = name1.getTypeDesignations();
+        Set<TypeDesignationBase> desigs2 = name2.getTypeDesignations();
+        Set<TypeDesignationBase> desigs3 = name3.getTypeDesignations();
 
         Assert.assertEquals("name1 should have 2 type designations", 2, desigs1.size());
         Assert.assertEquals("name2 should have 1 type designations", 1, desigs2.size());
@@ -825,7 +825,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
         TaxonName name3 = this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
 
-        Set<TypeDesignationBase<?>> desigs3 = name3.getTypeDesignations();
+        Set<TypeDesignationBase> desigs3 = name3.getTypeDesignations();
 
         NameTypeDesignation desig3 = (NameTypeDesignation)name3.getTypeDesignations().iterator().next();
         name3.addTypeDesignation(SpecimenTypeDesignation.NewInstance(), false);
@@ -889,9 +889,9 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         DerivedUnit specimen1 = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("0d19a9ca-21a7-4adb-8640-8d6719e15eea")), DerivedUnit.class);
         DerivedUnit fossil = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("4c48b7c8-4c8d-4e48-b083-0837fe51a0a9")), DerivedUnit.class);
 
-        Set<TypeDesignationBase<?>> desigs1 = name1.getTypeDesignations();
-        Set<TypeDesignationBase<?>> desigs2 = name2.getTypeDesignations();
-        Set<TypeDesignationBase<?>> desigs3 = name3.getTypeDesignations();
+        Set<TypeDesignationBase> desigs1 = name1.getTypeDesignations();
+        Set<TypeDesignationBase> desigs2 = name2.getTypeDesignations();
+        Set<TypeDesignationBase> desigs3 = name3.getTypeDesignations();
 
         Assert.assertEquals("name1 should have 2 type designations", 2, desigs1.size());
         Assert.assertEquals("name2 should have 1 type designations", 1, desigs2.size());
