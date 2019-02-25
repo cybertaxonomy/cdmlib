@@ -33,7 +33,6 @@ import eu.etaxonomy.cdm.model.common.TermType;
 /**
  * @author a.mueller
  * @date 09.06.2017
- *
  */
 public class SchemaUpdater_50_55 extends SchemaUpdaterBase {
 
