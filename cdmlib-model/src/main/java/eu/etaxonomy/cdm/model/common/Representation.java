@@ -32,6 +32,7 @@ import org.hibernate.search.annotations.Store;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Representation", propOrder = {
     "label",
+    "plural",
     "abbreviatedLabel"
 })
 @XmlRootElement(name = "Representation")
@@ -50,6 +51,11 @@ public class Representation extends LanguageStringBase {
     @XmlElement(name = "AbbreviatedLabel")
     @Field(store=Store.YES)
     private String abbreviatedLabel;
+
+    //#8142
+    @XmlElement(name = "Plural")
+    @Field(store=Store.YES)
+    private String plural;
 
     /**
      * @param text
