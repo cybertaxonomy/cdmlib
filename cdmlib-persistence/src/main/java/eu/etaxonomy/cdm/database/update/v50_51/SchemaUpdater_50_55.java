@@ -196,7 +196,7 @@ public class SchemaUpdater_50_55 extends SchemaUpdaterBase {
 
 	}
 
-    //8006 update taxon realtionships
+    //8006 update taxon relationships
     private void updateTaxonRelationshipLabels(List<ISchemaUpdaterStep> stepList) {
 
 //        //7857 Update symmetrical for name relationships

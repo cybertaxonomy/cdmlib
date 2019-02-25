@@ -16,15 +16,11 @@ import eu.etaxonomy.cdm.ref.TypedEntityReference;
 /**
  * @author pplitzner
  * @since May 3, 2018
- *
  */
-public class TypedEntityComparator implements Comparator<TypedEntityReference<TypeDesignationBase> >{
-
-
+public class TypedEntityComparator implements Comparator<TypedEntityReference<TypeDesignationBase<?>> >{
 
     @Override
-    @SuppressWarnings("unchecked")
-    public int compare(TypedEntityReference<TypeDesignationBase> o1, TypedEntityReference<TypeDesignationBase> o2) {
+    public int compare(TypedEntityReference<TypeDesignationBase<?>> o1, TypedEntityReference<TypeDesignationBase<?>> o2) {
         if(o1==null){
             return 1;
         }
