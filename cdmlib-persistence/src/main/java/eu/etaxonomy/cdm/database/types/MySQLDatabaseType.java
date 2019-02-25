@@ -25,7 +25,7 @@ public class MySQLDatabaseType extends DatabaseTypeBase {
 	protected String typeName = "MySQL";
 
 	//class
-	protected String classString = "com.mysql.jdbc.Driver";
+	protected String classString = "com.mysql.cj.jdbc.Driver";
 
 	//url
     protected String urlString = "jdbc:mysql://";
