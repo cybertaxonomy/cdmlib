@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.database.update.TableCreator;
 import eu.etaxonomy.cdm.database.update.TableNameChanger;
 import eu.etaxonomy.cdm.database.update.TermRepresentationUpdater;
 import eu.etaxonomy.cdm.database.update.v41_47.SchemaUpdater_41_47;
-import eu.etaxonomy.cdm.database.update.v50_51.SchemaUpdater_50_55;
+import eu.etaxonomy.cdm.database.update.v50_55.SchemaUpdater_50_55;
 
 /**
 /**
