@@ -211,14 +211,14 @@ public class NameServiceImpl
             removeSingleDesignation(name, typeDesignation);
         }else if (name != null){
             @SuppressWarnings("rawtypes")
-            Set<TypeDesignationBase<?>> designationSet = new HashSet<>(name.getTypeDesignations());
+            Set<TypeDesignationBase<?>> designationSet = new HashSet(name.getTypeDesignations());
             for (TypeDesignationBase<?> desig : designationSet){
                 desig = CdmBase.deproxy(desig);
                 removeSingleDesignation(name, desig);
             }
         }else if (typeDesignation != null){
             @SuppressWarnings("unchecked")
-            Set<TaxonName> nameSet = new HashSet<>(typeDesignation.getTypifiedNames());
+            Set<TaxonName> nameSet = new HashSet(typeDesignation.getTypifiedNames());
             for (TaxonName singleName : nameSet){
                 singleName = CdmBase.deproxy(singleName);
                 removeSingleDesignation(singleName, typeDesignation);
