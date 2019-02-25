@@ -159,7 +159,7 @@ public class CdmPersistentDataSourceTest {
 	 */
 	@Test
 	public void testGetDbProperty() {
-		assertEquals("com.mysql.jdbc.Driver", dataSource.getCdmSourceProperty(CdmSourceProperties.DRIVER_CLASS));
+		assertEquals("com.mysql.cj.jdbc.Driver", dataSource.getCdmSourceProperty(CdmSourceProperties.DRIVER_CLASS));
 	}
 
 	/**
@@ -169,13 +169,13 @@ public class CdmPersistentDataSourceTest {
 	public void testGetDatasourceBean() {
 		BeanDefinition beanDef = dataSource.getDatasourceBean();
 		PropertyValues propValues = beanDef.getPropertyValues();
-		String propName =  "driverClassName"; 
-		assertEquals("com.mysql.jdbc.Driver", propValues.getPropertyValue(propName).getValue());
-		propName =  "url"; 
+		String propName =  "driverClassName";
+		assertEquals("com.mysql.cj.jdbc.Driver", propValues.getPropertyValue(propName).getValue());
+		propName =  "url";
 		assertEquals("testUrl", propValues.getPropertyValue(propName).getValue());
-		propName =  "username"; 
+		propName =  "username";
 		assertEquals("testUser", propValues.getPropertyValue(propName).getValue());
-		propName =  "password"; 
+		propName =  "password";
 		assertEquals("testPassword", propValues.getPropertyValue(propName).getValue());
 	}
 
