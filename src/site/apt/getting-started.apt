@@ -65,7 +65,7 @@ applicationContext.xml
 
     <bean id="dataSource"
 			class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
         <property name="url" value="jdbc:mysql://192.168.2.10/cdm_build"/>
         <property name="username" value="cdm_user"/>
         <property name="password" value="why_do_i_need_this"/>
@@ -95,9 +95,9 @@ applicationContext.xml
 
     * Maven 3 commandline tools. Follow the instruction to install maven on your local machine. See {{{https://dev.e-taxonomy.eu/redmine/projects/edit/wiki/GeneralDev#Maven}}} for installation instructions.
 
-    * Subclipse 1.6.x (for convenient subversion access from Eclipse). {{{http://subclipse.tigris.org/}}}
+    * Git
 
-    * Java JDK >= 1.6 (JRE is not enough) and JAVA_HOME is set to JDK path
+    * Java JDK >= 1.8 (JRE is not enough) and JAVA_HOME is set to JDK path
 
 	[]
 
