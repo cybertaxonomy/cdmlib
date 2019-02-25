@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.model.name;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -45,7 +44,6 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @see		TypeDesignationBase
  * @see		SpecimenTypeDesignation
  * @author	m.doering
- * @version 1.0
  * @since 08-Nov-2007 13:06:38
  */
 @XmlRootElement(name = "NameTypeDesignation")
@@ -57,7 +55,9 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 })
 @Entity
 @Audited
-public class NameTypeDesignation extends TypeDesignationBase<NameTypeDesignationStatus> implements ITypeDesignation, Cloneable {
+public class NameTypeDesignation
+        extends TypeDesignationBase<NameTypeDesignationStatus>  {
+
 	private static final long serialVersionUID = 8478663508862210879L;
 	final static Logger logger = Logger.getLogger(NameTypeDesignation.class);
 
@@ -212,14 +212,6 @@ public class NameTypeDesignation extends TypeDesignationBase<NameTypeDesignation
 		this.conservedType = conservedType;
 	}
 
-	@Override
-    @Transient
-	public boolean isLectoType() {
-		if (getTypeStatus() == null) {
-			return false;
-		}
-		return getTypeStatus().isLectotype();
-	}
 
 	/**
 	 * Returns the boolean value "true" if the use of the species {@link TaxonName taxon name}
@@ -230,19 +222,7 @@ public class NameTypeDesignation extends TypeDesignationBase<NameTypeDesignation
 	 *
 	 * @see   ReferencedEntityBase#getCitation()
 	 */
-//	/* (non-Javadoc)
-//	 * @see eu.etaxonomy.cdm.model.name.ITypeDesignation#isLectoType()
-//	 */
-//	public boolean isLectoType() {
-//		return lectoType;
-//	}
-//
-//	/**
-//	 * @see   #isLectoType()
-//	 */
-//	public void setLectoType(boolean lectoType) {
-//		this.lectoType = lectoType;
-//	}
+
 
 //*********************** CLONE ********************************************************/
 

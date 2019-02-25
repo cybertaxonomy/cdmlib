@@ -201,20 +201,10 @@ public class NameTypeDesignationStatus extends TypeDesignationStatusBase<NameTyp
 	}
 
 	/**
-	 * Returns the boolean value indicating whether <i>this</i> type designation
-	 * status is itself "lectotype" or a kind of "lectotype" (true) or not
-	 * (false). Returns false if <i>this</i> type designation status is null.<BR>
-	 * A lectotype is a {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnit specimen or illustration} designated as the
-	 * nomenclatural type, when no holotype was indicated at the time of
-	 * publication of the "type-bringing" {@link TaxonName taxon name}, when the
-	 * holotype is found to be assigned to taxon names belonging to more than
-	 * one {@link HomotypicalGroup homotypical group}, or as long as it is missing.
-	 *
-	 * @see  #LECTOTYPE()
-	 * @see  #HOLOTYPE()
-	 * @see  eu.etaxonomy.cdm.model.common.DefinedTermBase#getKindOf()
+	 * {@inheritDoc}
 	 */
-	@Transient
+	@Override
+    @Transient
 	public boolean isLectotype(){
 		if (
 				this.equals(LECTOTYPE()) ||

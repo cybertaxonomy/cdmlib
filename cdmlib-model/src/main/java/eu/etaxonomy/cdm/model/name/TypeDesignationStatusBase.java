@@ -53,6 +53,7 @@ import eu.etaxonomy.cdm.model.common.TermType;
 @Audited
 public abstract class TypeDesignationStatusBase<T extends TypeDesignationStatusBase<T>>
         extends OrderedTermBase<T> {
+
 	private static final long serialVersionUID = -7204587330204725285L;
 	static Logger logger = Logger.getLogger(TypeDesignationStatusBase.class);
 
@@ -91,4 +92,22 @@ public abstract class TypeDesignationStatusBase<T extends TypeDesignationStatusB
 	protected TypeDesignationStatusBase(TermType type, String term, String label, String labelAbbrev) {
 		super(type, term, label, labelAbbrev);
 	}
+
+    /**
+     * Returns the boolean value indicating whether <i>this</i> type designation
+     * status is itself "lectotype" or a kind of "lectotype" (<code>true</code>) or not
+     * (<code>false</code>).<BR>
+     *
+     * A lectotype is a {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnit specimen or illustration}
+     * or a {@link TaxonName taxon name}
+     * designated as the nomenclatural type, when no holotype was indicated at the time of
+     * publication of the "type-providing" {@link TaxonName taxon name}, when the
+     * holotype is found to be assigned to taxon names belonging to more than
+     * one {@link HomotypicalGroup homotypical group}, or as long as it is missing.
+     *
+     * @see  #LECTOTYPE()
+     * @see  #HOLOTYPE()
+     * @see  eu.etaxonomy.cdm.model.common.DefinedTermBase#getKindOf()
+     */
+    public abstract boolean isLectotype();
 }

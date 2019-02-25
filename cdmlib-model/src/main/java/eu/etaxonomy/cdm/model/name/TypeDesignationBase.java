@@ -18,6 +18,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
@@ -39,6 +40,7 @@ import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.SourcedEntityBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.validation.Level2;
+import eu.etaxonomy.cdm.validation.annotation.ValidLectotypeSource;
 import eu.etaxonomy.cdm.validation.annotation.ValidTypeDesignation;
 
 /**
@@ -72,6 +74,7 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTypeDesignation;
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @ValidTypeDesignation(groups=Level2.class)
+@ValidLectotypeSource(groups=Level2.class)
 public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>>
         extends SourcedEntityBase<IdentifiableSource>
         implements ITypeDesignation {
@@ -279,7 +282,18 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
         return IdentifiableSource.NewInstance(type, idInSource, idNamespace, reference, microReference, originalInfo);
     }
 
+
+    @Override
+    @Transient
+    public boolean isLectoType() {
+        if (getTypeStatus() == null) {
+            return false;
+        }
+        return getTypeStatus().isLectotype();
+    }
+
 //*********************** CLONE ********************************************************/
+
 
     /**
      * Clones <i>this</i> type designation. This is a shortcut that enables to create
