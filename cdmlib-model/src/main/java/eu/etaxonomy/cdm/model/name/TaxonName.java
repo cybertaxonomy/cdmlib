@@ -66,6 +66,7 @@ import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
 import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.common.IRelated;
@@ -73,6 +74,8 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
+import eu.etaxonomy.cdm.model.common.TermType;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.IDescribable;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
@@ -268,7 +271,7 @@ public class TaxonName
     )
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @NotNull
-    private Set<TypeDesignationBase<?>> typeDesignations = new HashSet<>();
+    private Set<TypeDesignationBase> typeDesignations = new HashSet<>();
 
     @XmlElement(name = "HomotypicalGroup")
     @XmlIDREF
@@ -2441,7 +2444,7 @@ public class TaxonName
      * @see     SpecimenTypeDesignation
      */
     @Override
-    public Set<TypeDesignationBase<?>> getTypeDesignations() {
+    public Set<TypeDesignationBase> getTypeDesignations() {
         if(typeDesignations == null) {
             this.typeDesignations = new HashSet<>();
         }
