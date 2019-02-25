@@ -296,7 +296,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         assertEquals("associated specimen is incorrect", associatedFieldUnit,
                 ((IndividualsAssociation) descriptionElement).getAssociatedSpecimenOrObservation());
         // check initial state (Type Designation)
-        Set<TypeDesignationBase<?>> typeDesignations = name.getTypeDesignations();
+        Set<TypeDesignationBase> typeDesignations = name.getTypeDesignations();
         TypeDesignationBase<?> typeDesignation = typeDesignations.iterator().next();
         assertTrue("wrong type of type designation", typeDesignation.isInstanceOf(SpecimenTypeDesignation.class));
         assertEquals("type specimen is incorrect", typeSpecimen,
