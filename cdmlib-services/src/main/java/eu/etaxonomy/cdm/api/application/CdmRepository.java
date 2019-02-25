@@ -502,7 +502,7 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
         try {
             session = factory.getCurrentSession();
         } catch (HibernateException e) {
-            logger.debug("Opening new session in turn of a HibernateException: " + e.getMessage());
+            logger.warn("[#7106] Opening new session in turn of a HibernateException: " + e.getMessage());
             session = factory.openSession();
         }
 

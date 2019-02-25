@@ -104,7 +104,7 @@ public class DatabaseTypeEnumTest {
 	@Test
 	public void testGetAllTypes() {
 		List<DatabaseTypeEnum> typeList = DatabaseTypeEnum.getAllTypes();
-		assertEquals(10, typeList.size());
+		assertEquals(11, typeList.size());
 		assertEquals(DatabaseTypeEnum.HSqlDb, typeList.get(0));
 		assertEquals(DatabaseTypeEnum.MySQL, typeList.get(1));
 		assertEquals(DatabaseTypeEnum.ODBC, typeList.get(2));
@@ -116,6 +116,7 @@ public class DatabaseTypeEnumTest {
 		assertEquals(DatabaseTypeEnum.H2, typeList.get(7));
 		assertEquals(DatabaseTypeEnum.SqlServer2008, typeList.get(8));
         assertEquals(DatabaseTypeEnum.SqlServer2012, typeList.get(9));
+        assertEquals(DatabaseTypeEnum.MariaDB, typeList.get(10));
 
 	}
 

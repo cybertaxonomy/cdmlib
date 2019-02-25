@@ -22,6 +22,7 @@ import org.hibernate.dialect.Dialect;
 import eu.etaxonomy.cdm.database.types.H2DatabaseType;
 import eu.etaxonomy.cdm.database.types.HSqlDbDatabaseType;
 import eu.etaxonomy.cdm.database.types.IDatabaseType;
+import eu.etaxonomy.cdm.database.types.MariaDbDatabaseType;
 import eu.etaxonomy.cdm.database.types.MySQLDatabaseType;
 import eu.etaxonomy.cdm.database.types.OdbcDatabaseType;
 import eu.etaxonomy.cdm.database.types.OracleDatabaseType;
@@ -47,6 +48,7 @@ public enum DatabaseTypeEnum {
 	H2(9),
 	SqlServer2008(10),
     SqlServer2012(11),
+    MariaDB(12),  //not yet tested
     ;
 
 //	/**
@@ -83,8 +85,10 @@ public enum DatabaseTypeEnum {
                 this.dbType = new SqlServer2008DatabaseType(); break;
             case 11:
                 this.dbType = new SqlServer2012DatabaseType(); break;
+            case 12:
+                this.dbType = new MariaDbDatabaseType(); break;
             default:
-                //TODO Exception
+                throw new RuntimeException("Database type not handled");
         }
 	}
 
@@ -250,6 +254,8 @@ public enum DatabaseTypeEnum {
         }
         if (product.toLowerCase().matches("\\.*mysql\\.*")){
             return MySQL;
+        }else if (product.toLowerCase().matches("\\.*mariadb\\.*")) {
+            return MariaDB;
         }else if (product.toLowerCase().matches("\\.*hsqldb\\.*")) {
             return HSqlDb;
         }else if (product.toLowerCase().matches("\\.*oracle\\.*")) {
