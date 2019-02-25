@@ -421,7 +421,7 @@ public interface ITaxonNameBase
      * @see     NameTypeDesignation
      * @see     SpecimenTypeDesignation
      */
-    public Set<TypeDesignationBase<?>> getTypeDesignations();
+    public Set<TypeDesignationBase> getTypeDesignations();
 
     /**
      * Removes one element from the set of {@link TypeDesignationBase type designations} assigned to
