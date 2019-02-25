@@ -123,9 +123,9 @@ public class TypeDesignationSetManager {
      */
     public TypeDesignationSetManager(Collection<TypeDesignationBase> typeDesignations) throws RegistrationValidationException {
         if (this.typeDesignations == null){
-            this.typeDesignations = new HashMap();
+            this.typeDesignations = new HashMap<>();
         }
-        for (TypeDesignationBase typeDes:typeDesignations){
+        for (TypeDesignationBase<?> typeDes:typeDesignations){
             this.typeDesignations.put(typeDes.getUuid(), typeDes);
         }
         findTypifiedName();
@@ -165,7 +165,7 @@ public class TypeDesignationSetManager {
      * @param typeDesignations
      */
     public void addTypeDesigations(CdmBase containgEntity, TypeDesignationBase ... typeDesignations){
-        for (TypeDesignationBase typeDes: typeDesignations){
+        for (TypeDesignationBase<?> typeDes: typeDesignations){
             this.typeDesignations.put(typeDes.getUuid(), typeDes);
         }
        mapAndSort();
@@ -192,7 +192,7 @@ public class TypeDesignationSetManager {
     private void mapTypeDesignation(Map<TypedEntityReference<?>, TypeDesignationWorkingSet> byBaseEntityByTypeStatus,
             TypeDesignationBase<?> td){
 
-        TypeDesignationStatusBase status = td.getTypeStatus();
+        TypeDesignationStatusBase<?> status = td.getTypeStatus();
 
         try {
             final VersionableEntity baseEntity = baseEntity(td);
@@ -341,7 +341,7 @@ public class TypeDesignationSetManager {
 
             int typeCount = 0;
             if(orderedByTypesByBaseEntity != null){
-                for(TypedEntityReference baseEntityRef : orderedByTypesByBaseEntity.keySet()) {
+                for(TypedEntityReference<?> baseEntityRef : orderedByTypesByBaseEntity.keySet()) {
 
                     TaggedTextBuilder workingsetBuilder = new TaggedTextBuilder();
                     if(typeCount++ > 0){
@@ -372,14 +372,13 @@ public class TypeDesignationSetManager {
 
 
                         int typeDesignationCount = 0;
-                        for(TypedEntityReference typeDesignationEntityReference : createSortedList(typeDesignationWorkingSet, typeStatus)) {
+                        for(TypedEntityReference<?> typeDesignationEntityReference : createSortedList(typeDesignationWorkingSet, typeStatus)) {
 
                             if(typeDesignationCount++  > 0){
                                workingsetBuilder.add(TagEnum.separator, TYPE_DESIGNATION_SEPARATOR);
                             }
 
                             workingsetBuilder.add(TagEnum.typeDesignation, typeDesignationEntityReference.getLabel(), typeDesignationEntityReference);
-
                         }
 
                     }
@@ -407,7 +406,7 @@ public class TypeDesignationSetManager {
 
             int typeCount = 0;
             if(orderedByTypesByBaseEntity != null){
-                for(TypedEntityReference baseEntityRef : orderedByTypesByBaseEntity.keySet()) {
+                for(TypedEntityReference<?> baseEntityRef : orderedByTypesByBaseEntity.keySet()) {
 
                     TaggedTextBuilder workingsetBuilder = new TaggedTextBuilder();
                     if(typeCount++ > 0){
@@ -467,11 +466,11 @@ public class TypeDesignationSetManager {
      * @param typeStatus
      * @return
      */
-    private List<TypedEntityReference<TypeDesignationBase>> createSortedList(
+    private List<TypedEntityReference<TypeDesignationBase<?>>> createSortedList(
             TypeDesignationWorkingSet typeDesignationWorkingSet, TypeDesignationStatusBase<?> typeStatus) {
-        List<TypedEntityReference<TypeDesignationBase>> typeDesignationEntityrReferences = new ArrayList(typeDesignationWorkingSet.get(typeStatus));
-        Collections.sort(typeDesignationEntityrReferences, new TypedEntityComparator());
-        return typeDesignationEntityrReferences;
+        List<TypedEntityReference<TypeDesignationBase<?>>> typeDesignationEntityReferences = new ArrayList(typeDesignationWorkingSet.get(typeStatus));
+        Collections.sort(typeDesignationEntityReferences, new TypedEntityComparator());
+        return typeDesignationEntityReferences;
     }
 
 
@@ -892,18 +891,12 @@ public class TypeDesignationSetManager {
     @SuppressWarnings({ "deprecation", "serial" })
     class NullTypeDesignationStatus extends TypeDesignationStatusBase<NullTypeDesignationStatus>{
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
-        public void resetTerms() {
-            // empty
+        public void resetTerms() {}
 
-        }
+        @Override
+        protected void setDefaultTerms(TermVocabulary<NullTypeDesignationStatus> termVocabulary) {}
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected void setDefaultTerms(TermVocabulary<NullTypeDesignationStatus> termVocabulary) {
             // empty
