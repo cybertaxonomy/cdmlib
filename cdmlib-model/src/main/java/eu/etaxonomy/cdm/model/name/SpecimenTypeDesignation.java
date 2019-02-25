@@ -14,7 +14,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -57,8 +56,8 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 @Entity
 @Audited
 public class SpecimenTypeDesignation
-        extends TypeDesignationBase<SpecimenTypeDesignationStatus>
-        implements ITypeDesignation, Cloneable {
+        extends TypeDesignationBase<SpecimenTypeDesignationStatus> {
+
 	private static final long serialVersionUID = 6481627446997275007L;
 	private static final Logger logger = Logger.getLogger(SpecimenTypeDesignation.class);
 
@@ -171,14 +170,6 @@ public class SpecimenTypeDesignation
 		this.typeSpecimen = typeSpecimen;
 	}
 
-	@Override
-    @Transient
-	public boolean isLectoType() {
-		if(getTypeStatus() == null){
-			return false;
-		}
-		return getTypeStatus().isLectotype();
-	}
 
 //*********************** CLONE ********************************************************/
 
