@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.database.update.ColumnRemover;
 import eu.etaxonomy.cdm.database.update.ColumnTypeChanger;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
+import eu.etaxonomy.cdm.database.update.MnTableCreator;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TableNameChanger;
@@ -177,6 +178,19 @@ public class SchemaUpdater_50_55 extends SchemaUpdaterBase {
         step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referedTableName);
         stepList.add(step);
 
+        //#8142 add plural to representations
+        stepName = "Add plural to representations";
+        tableName = "Representation";
+        newColumnName = "plural";
+        step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT);
+        stepList.add(step);
+
+        //#8017 add type designation sources
+        stepName = "Add plural type designation sources";
+        String firstTableName = "TypeDesignationBase";
+        String secondTableName = "OriginalSourceBase";
+        step = MnTableCreator.NewMnInstance(stepName, firstTableName, null, secondTableName, null, "sources", INCLUDE_AUDIT, !IS_LIST, IS_1_TO_M);
+        stepList.add(step);
 
         return stepList;
 
