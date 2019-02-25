@@ -55,6 +55,9 @@ public class ColumnAdder extends AuditedSchemaUpdaterStepBase {
 		return new ColumnAdder(stepName, tableName, newColumnName, "bit", includeAudTable, defaultValue, false, null);
 	}
 
+	/**
+	 * Adds a string column with length 255 and default value <code>null</code>
+	 */
 	public static final ColumnAdder NewStringInstance(String stepName, String tableName, String newColumnName, boolean includeAudTable){
 		return new ColumnAdder(stepName, tableName, newColumnName, "nvarchar(255)", includeAudTable, null, false, null);
 	}
