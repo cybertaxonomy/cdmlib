@@ -68,7 +68,6 @@ public class OwlExportTest  extends CdmTransactionalIntegrationTest{
      */
     public FeatureTree createFeatureTree() {
         FeatureTree tree = FeatureTree.NewInstance();
-        tree.setRoot(FeatureNode.NewInstance());
 
         FeatureNode nodeA = FeatureNode.NewInstance(Feature.NewInstance("A", "A", "A"));
         FeatureNode nodeA1 = FeatureNode.NewInstance(Feature.NewInstance("A1", "A1", "A1"));

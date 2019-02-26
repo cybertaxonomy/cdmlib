@@ -72,7 +72,7 @@ public class Source {
     private static String clsSQLServerDdtek = "com.ddtek.jdbc.sqlserver.SQLServerDriver";
     private static String clsDefault = "com.microsoft.jdbc.sqlserver.SQLServerDriver";
     private static String clsPostgreSQL = "org.postgresql.Driver";
-    private static String clsMySQL = "com.mysql.jdbc.Driver";
+    private static String clsMySQL = "com.mysql.cj.jdbc.Driver";
 
     //url
 //    private static String urlSQLServer = "jdbc:microsoft:sqlserver://";

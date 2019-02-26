@@ -69,7 +69,7 @@ public class TypeDesignationController extends AbstractController<TaxonName, INa
 
         logger.info("doGetMediaUris() - " + requestPathAndQuery(request));
         ArrayList<MediaDTO> dtos = new ArrayList<>();
-        TypeDesignationBase td = service.loadTypeDesignation(uuid, Arrays.asList("typeSpecimen.mediaSpecimen.representations.mediaRepresentationParts"));
+        TypeDesignationBase<?> td = service.loadTypeDesignation(uuid, Arrays.asList("typeSpecimen.mediaSpecimen.representations.mediaRepresentationParts"));
         if(td instanceof SpecimenTypeDesignation){
             SpecimenTypeDesignation std = (SpecimenTypeDesignation)td;
             DerivedUnit du = HibernateProxyHelper.deproxy(std.getTypeSpecimen(), DerivedUnit.class);

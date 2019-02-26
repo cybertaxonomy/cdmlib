@@ -45,9 +45,9 @@ public class ColumnRemover
 			return;
 		} catch ( Exception e) {
 		    String message = e.getMessage();
-			monitor.warning(message, e);
-			logger.error(e);
-            result.addException(e, message, getStepName() + ", ColumnRemove.invokeOnTable");
+			monitor.warning(message);
+			logger.warn(e);
+            result.addWarning(message, this, "invokeOnTable");
             return;
 		}
 	}

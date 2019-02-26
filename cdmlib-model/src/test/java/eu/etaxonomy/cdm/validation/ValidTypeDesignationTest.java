@@ -33,8 +33,6 @@ import eu.etaxonomy.cdm.validation.constraint.TypeDesignationValidator;
  * nomenclatural and taxonomic sense of these words.
  *
  * @author a.mueller
- *
- *
  */
 public class ValidTypeDesignationTest extends ValidationTestBase {
 	@SuppressWarnings("unused")
@@ -55,8 +53,6 @@ public class ValidTypeDesignationTest extends ValidationTestBase {
 		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
 		vocabularyStore.initialize();
 
-
-
 		name1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name1.setNameCache("Aus aus");
 
@@ -64,8 +60,6 @@ public class ValidTypeDesignationTest extends ValidationTestBase {
 	    name2.setNameCache("Aus bus");
 
 	    specimen = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
-
-
 	}
 
 

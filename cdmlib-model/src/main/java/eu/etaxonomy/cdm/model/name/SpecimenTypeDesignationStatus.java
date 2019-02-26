@@ -113,9 +113,6 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 
 //************************** METHODS ********************************
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
-	 */
 	@Override
 	public void resetTerms(){
 		termMap = null;
@@ -130,27 +127,21 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
         }
 	}
 
-
-	/**
-	 * Returns the boolean value indicating whether <i>this</i> type designation
-	 * status is itself "lectotype" or a kind of "lectotype" (true) or not
-	 * (false). Returns false if <i>this</i> type designation status is null.<BR>
-	 * A lectotype is a {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnit specimen or illustration} designated as the
-	 * nomenclatural type, when no holotype was indicated at the time of
-	 * publication of the "type-bringing" {@link TaxonName taxon name}, when the
-	 * holotype is found to be assigned to taxon names belonging to more than
-	 * one {@link HomotypicalGroup homotypical group}, or as long as it is missing.
-	 *
-	 * @see  #LECTOTYPE()
-	 * @see  #HOLOTYPE()
-	 * @see  eu.etaxonomy.cdm.model.common.DefinedTermBase#getKindOf()
-	 */
+	//#8140
 	@Transient
+	@Override
 	public boolean isLectotype(){
 		if (this.equals(LECTOTYPE()) ||
 				this.equals(ISOLECTOTYPE()) ||
 				this.equals(SECOND_STEP_LECTOTYPE()) ||
-				this.equals(PARALECTOTYPE()) ){
+				this.equals(PARALECTOTYPE()) ||
+				//with source but not "lecto"
+				this.equals(EPITYPE()) ||
+				this.equals(ISOEPITYPE()) ||
+				this.equals(NEOTYPE()) ||
+				this.equals(ISONEOTYPE()) ||
+				this.equals(SECOND_STEP_NEOTYPE())
+		        ){
 			return true;
 		}else{
 			return false;

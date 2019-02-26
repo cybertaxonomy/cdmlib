@@ -203,10 +203,6 @@ public class SpecimenTest {
 
 	}
 
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.occurrence.Specimen#clone()}.
-	 */
 	@Test
 	public void testClone() {
 		logger.debug("Start testClone");

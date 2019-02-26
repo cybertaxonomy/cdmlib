@@ -29,12 +29,14 @@ import eu.etaxonomy.cdm.api.service.exception.RegistrationValidationException;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.name.TextualTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -87,7 +89,8 @@ public class TypeDesignationSetManager {
     private static final String REFERENCE_PARENTHESIS_RIGHT = "]";
     private static final String REFERENCE_PARENTHESIS_LEFT = " [";
     private static final String REFERENCE_FIDE = "fide ";
-    private Map<UUID,TypeDesignationBase> typeDesignations;
+
+    private Map<UUID,TypeDesignationBase<?>> typeDesignations;
 
     private NameTypeBaseEntityType nameTypeBaseEntityType = NameTypeBaseEntityType.NAME_TYPE_DESIGNATION;
 
@@ -120,9 +123,9 @@ public class TypeDesignationSetManager {
      */
     public TypeDesignationSetManager(Collection<TypeDesignationBase> typeDesignations) throws RegistrationValidationException {
         if (this.typeDesignations == null){
-            this.typeDesignations = new HashMap();
+            this.typeDesignations = new HashMap<>();
         }
-        for (TypeDesignationBase typeDes:typeDesignations){
+        for (TypeDesignationBase<?> typeDes:typeDesignations){
             this.typeDesignations.put(typeDes.getUuid(), typeDes);
         }
         findTypifiedName();
@@ -137,9 +140,9 @@ public class TypeDesignationSetManager {
      */
     public TypeDesignationSetManager(HomotypicalGroup group) throws RegistrationValidationException {
         if (this.typeDesignations == null){
-            this.typeDesignations = new HashMap();
+            this.typeDesignations = new HashMap<>();
         }
-        for (TypeDesignationBase typeDes:group.getTypeDesignations()){
+        for (TypeDesignationBase<?> typeDes:group.getTypeDesignations()){
             this.typeDesignations.put(typeDes.getUuid(), typeDes);
         }
         //findTypifiedName();
@@ -162,7 +165,7 @@ public class TypeDesignationSetManager {
      * @param typeDesignations
      */
     public void addTypeDesigations(CdmBase containgEntity, TypeDesignationBase ... typeDesignations){
-        for (TypeDesignationBase typeDes: typeDesignations){
+        for (TypeDesignationBase<?> typeDes: typeDesignations){
             this.typeDesignations.put(typeDes.getUuid(), typeDes);
         }
        mapAndSort();
@@ -175,7 +178,7 @@ public class TypeDesignationSetManager {
      */
     protected void mapAndSort() {
         finalString = null;
-        Map<TypedEntityReference, TypeDesignationWorkingSet> byBaseEntityByTypeStatus = new HashMap<>();
+        Map<TypedEntityReference<?>, TypeDesignationWorkingSet> byBaseEntityByTypeStatus = new HashMap<>();
 
         this.typeDesignations.values().forEach(td -> mapTypeDesignation(byBaseEntityByTypeStatus, td));
         orderedByTypesByBaseEntity = orderByTypeByBaseEntity(byBaseEntityByTypeStatus);
@@ -186,7 +189,7 @@ public class TypeDesignationSetManager {
      * @param byBaseEntityByTypeStatus
      * @param td
      */
-    private void mapTypeDesignation(Map<TypedEntityReference, TypeDesignationWorkingSet> byBaseEntityByTypeStatus,
+    private void mapTypeDesignation(Map<TypedEntityReference<?>, TypeDesignationWorkingSet> byBaseEntityByTypeStatus,
             TypeDesignationBase<?> td){
 
         TypeDesignationStatusBase<?> status = td.getTypeStatus();
@@ -195,7 +198,7 @@ public class TypeDesignationSetManager {
             final VersionableEntity baseEntity = baseEntity(td);
             final TypedEntityReference<VersionableEntity> baseEntityReference = makeEntityReference(baseEntity);
 
-            TypedEntityReference typeDesignationEntityReference = new TypedEntityReference(
+            TypedEntityReference<?> typeDesignationEntityReference = new TypedEntityReference<>(
                     HibernateProxyHelper.deproxy(td).getClass(),
                     td.getUuid(),
                     stringify(td));
@@ -259,11 +262,11 @@ public class TypeDesignationSetManager {
 
 
     private LinkedHashMap<TypedEntityReference, TypeDesignationWorkingSet> orderByTypeByBaseEntity(
-            Map<TypedEntityReference, TypeDesignationWorkingSet> stringsByTypeByBaseEntity){
+            Map<TypedEntityReference<?>, TypeDesignationWorkingSet> stringsByTypeByBaseEntity){
 
        // order the FieldUnit TypeName keys
-       List<TypedEntityReference> baseEntityKeyList = new LinkedList<>(stringsByTypeByBaseEntity.keySet());
-       Collections.sort(baseEntityKeyList, new Comparator<TypedEntityReference>(){
+       List<TypedEntityReference<?>> baseEntityKeyList = new LinkedList<>(stringsByTypeByBaseEntity.keySet());
+       Collections.sort(baseEntityKeyList, new Comparator<TypedEntityReference<?>>(){
         /**
          * Sorts the base entities (TypedEntityReference) in the following order:
          *
@@ -274,10 +277,10 @@ public class TypeDesignationSetManager {
          * {@inheritDoc}
          */
         @Override
-        public int compare(TypedEntityReference o1, TypedEntityReference o2) {
+        public int compare(TypedEntityReference<?> o1, TypedEntityReference<?> o2) {
 
-            Class type1 = o1.getType();
-            Class type2 = o2.getType();
+            Class<?> type1 = o1.getType();
+            Class<?> type2 = o2.getType();
 
             if(!type1.equals(type2)) {
                 if(type1.equals(FieldUnit.class) || type2.equals(FieldUnit.class)){
@@ -338,7 +341,7 @@ public class TypeDesignationSetManager {
 
             int typeCount = 0;
             if(orderedByTypesByBaseEntity != null){
-                for(TypedEntityReference baseEntityRef : orderedByTypesByBaseEntity.keySet()) {
+                for(TypedEntityReference<?> baseEntityRef : orderedByTypesByBaseEntity.keySet()) {
 
                     TaggedTextBuilder workingsetBuilder = new TaggedTextBuilder();
                     if(typeCount++ > 0){
@@ -369,14 +372,13 @@ public class TypeDesignationSetManager {
 
 
                         int typeDesignationCount = 0;
-                        for(TypedEntityReference typeDesignationEntityReference : createSortedList(typeDesignationWorkingSet, typeStatus)) {
+                        for(TypedEntityReference<?> typeDesignationEntityReference : createSortedList(typeDesignationWorkingSet, typeStatus)) {
 
                             if(typeDesignationCount++  > 0){
                                workingsetBuilder.add(TagEnum.separator, TYPE_DESIGNATION_SEPARATOR);
                             }
 
                             workingsetBuilder.add(TagEnum.typeDesignation, typeDesignationEntityReference.getLabel(), typeDesignationEntityReference);
-
                         }
 
                     }
@@ -404,7 +406,7 @@ public class TypeDesignationSetManager {
 
             int typeCount = 0;
             if(orderedByTypesByBaseEntity != null){
-                for(TypedEntityReference baseEntityRef : orderedByTypesByBaseEntity.keySet()) {
+                for(TypedEntityReference<?> baseEntityRef : orderedByTypesByBaseEntity.keySet()) {
 
                     TaggedTextBuilder workingsetBuilder = new TaggedTextBuilder();
                     if(typeCount++ > 0){
@@ -428,14 +430,14 @@ public class TypeDesignationSetManager {
                             workingsetBuilder.add(TagEnum.label, typeStatus.getLabel() + (isPlural ? "s:" : ":"));
                          }
                         int typeDesignationCount = 0;
-                        for(TypedEntityReference typeDesignationEntityReference : createSortedList(typeDesignationWorkingSet, typeStatus)) {
+                        for(TypedEntityReference<?> typeDesignationEntityReference : createSortedList(typeDesignationWorkingSet, typeStatus)) {
                             if(typeDesignationCount++  > 0){
                                workingsetBuilder.add(TagEnum.separator, TYPE_DESIGNATION_SEPARATOR);
                             }
 
                             workingsetBuilder.add(TagEnum.typeDesignation, typeDesignationEntityReference.getLabel(), typeDesignationEntityReference);
 
-                            TypeDesignationBase typeDes =  typeDesignations.get(typeDesignationEntityReference.getUuid());
+                            TypeDesignationBase<?> typeDes =  typeDesignations.get(typeDesignationEntityReference.getUuid());
                             if (typeDes.getCitation() != null){
                                // workingsetBuilder.add(TagEnum.separator, REFERENCE_PARENTHESIS_LEFT);
                                 String shortCitation = ((DefaultReferenceCacheStrategy)typeDes.getCitation().getCacheStrategy()).createShortCitation(typeDes.getCitation());
@@ -464,11 +466,11 @@ public class TypeDesignationSetManager {
      * @param typeStatus
      * @return
      */
-    private List<TypedEntityReference<TypeDesignationBase>> createSortedList(
+    private List<TypedEntityReference<TypeDesignationBase<?>>> createSortedList(
             TypeDesignationWorkingSet typeDesignationWorkingSet, TypeDesignationStatusBase<?> typeStatus) {
-        List<TypedEntityReference<TypeDesignationBase>> typeDesignationEntityrReferences = new ArrayList(typeDesignationWorkingSet.get(typeStatus));
-        Collections.sort(typeDesignationEntityrReferences, new TypedEntityComparator());
-        return typeDesignationEntityrReferences;
+        List<TypedEntityReference<TypeDesignationBase<?>>> typeDesignationEntityReferences = new ArrayList(typeDesignationWorkingSet.get(typeStatus));
+        Collections.sort(typeDesignationEntityReferences, new TypedEntityComparator());
+        return typeDesignationEntityReferences;
     }
 
 
@@ -545,7 +547,7 @@ public class TypeDesignationSetManager {
     /**
      * @return
      */
-    public Collection<TypeDesignationBase> getTypeDesignations() {
+    public Collection<TypeDesignationBase<?>> getTypeDesignations() {
         return typeDesignations.values();
     }
 
@@ -553,7 +555,7 @@ public class TypeDesignationSetManager {
      * @param ref
      * @return
      */
-    public TypeDesignationBase findTypeDesignation(EntityReference typeDesignationRef) {
+    public TypeDesignationBase<?> findTypeDesignation(EntityReference typeDesignationRef) {
         return this.typeDesignations.get(typeDesignationRef.getUuid());
     }
 
@@ -566,13 +568,25 @@ public class TypeDesignationSetManager {
      * @param td
      * @return
      */
-    private String stringify(TypeDesignationBase td) {
+    private String stringify(TypeDesignationBase<?> td) {
 
         if(td instanceof NameTypeDesignation){
             return stringify((NameTypeDesignation)td);
-        } else {
+        } else if (td instanceof TextualTypeDesignation){
+            return stringify((TextualTypeDesignation)td);
+        } else if (td instanceof SpecimenTypeDesignation){
             return stringify((SpecimenTypeDesignation)td, false);
+        }else{
+            throw new RuntimeException("Unknown TypeDesignation type");
         }
+    }
+
+    protected String stringify(TextualTypeDesignation td) {
+        String result = td.getPreferredText(Language.DEFAULT());
+        if (td.isVerbatim()){
+            result = "\"" + result + "\"";  //TODO which character to use?
+        }
+        return result;
     }
 
 
@@ -877,21 +891,15 @@ public class TypeDesignationSetManager {
     @SuppressWarnings({ "deprecation", "serial" })
     class NullTypeDesignationStatus extends TypeDesignationStatusBase<NullTypeDesignationStatus>{
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
-        public void resetTerms() {
-            // empty
+        public void resetTerms() {}
 
-        }
-
-        /**
-         * {@inheritDoc}
-         */
         @Override
-        protected void setDefaultTerms(TermVocabulary<NullTypeDesignationStatus> termVocabulary) {
-            // empty
+        protected void setDefaultTerms(TermVocabulary<NullTypeDesignationStatus> termVocabulary) {}
+
+        @Override
+        public boolean isLectotype() {
+            return false;
         }
 
     }

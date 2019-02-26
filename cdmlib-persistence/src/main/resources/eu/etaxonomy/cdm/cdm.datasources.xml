@@ -9,7 +9,7 @@
 
 <!-- JDBC datasource pattern example -->
 <!--  	<bean id="defaultDataSource"  lazy-init="true" class="org.springframework.jdbc.datasource.DriverManagerDataSource">-->
-<!--        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>-->
+<!--        <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>-->
 <!--        <property name="url" value="testUrl"/>-->
 <!--        <property name="username" value="testUser"/>-->
 <!--        <property name="password" value="testPassword"/>-->

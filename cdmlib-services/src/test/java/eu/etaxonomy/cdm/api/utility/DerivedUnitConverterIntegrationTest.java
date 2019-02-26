@@ -117,6 +117,7 @@ public class DerivedUnitConverterIntegrationTest extends CdmTransactionalIntegra
                 "specimenTypeDesignations.annotations",
                 "specimenTypeDesignations.markers",
                 "specimenTypeDesignations.registrations",
+                "specimenTypeDesignations.sources",
                 //
                 "derivedFrom.originals.gatheringEvent.$",
                 "derivedFrom.originals.gatheringEvent.country",

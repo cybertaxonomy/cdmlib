@@ -54,7 +54,10 @@ import eu.etaxonomy.cdm.strategy.cache.common.TermDefaultCacheStrategy;
 })
 @MappedSuperclass
 @Audited
-public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCacheStrategy<TermBase> >{
+public abstract class TermBase
+            extends IdentifiableEntity<IIdentifiableEntityCacheStrategy<TermBase>>
+            implements IHasTermType {
+
     private static final long serialVersionUID = 1471561531632115822L;
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(TermBase.class);
@@ -111,9 +114,11 @@ public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCac
 
 //******************** GETTER /SETTER ********************************/
 
-	public TermType getTermType() {
+	@Override
+    public TermType getTermType() {
 		return termType;
 	}
+	@Deprecated //the term type should never be changed, might be removed in future
 	public void setTermType(TermType termType) {
 		this.termType = termType;
 	}

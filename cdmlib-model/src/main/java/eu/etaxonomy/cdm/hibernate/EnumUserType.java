@@ -88,44 +88,53 @@ public class EnumUserType<E extends Enum<E>>  extends AbstractUserType implement
 		if(val == null) {
 			return null;
 		} else {
-			// TermType
-			if (clazz.equals(TermType.class)){
-				return TermType.getByKey(val);
-			//Reference Type
-			}else if (clazz.equals(ReferenceType.class)){
-					return ReferenceType.getByKey(val);
-			//OriginalSourceType
-			}else if (clazz.equals(OriginalSourceType.class)){
-				return OriginalSourceType.getByKey(val);
-			//NomenclaturalCode
-			}else if (clazz.equals(NomenclaturalCode.class)){
-				return NomenclaturalCode.getByKey(val);
-			//RankClass
-			}else if (clazz.equals(RankClass.class)){
-				return RankClass.getByKey(val);
-			//SpecimenOrObservationType
-			}else if (clazz.equals(SpecimenOrObservationType.class)){
-				return SpecimenOrObservationType.getByKey(val);
-			//SequenceDirection
-			}else if (clazz.equals(SequenceDirection.class)){
-				return SequenceDirection.getByKey(val);
-            //RegistrationStatus
-			}else if (clazz.equals(RegistrationStatus.class)){
-                return RegistrationStatus.getByKey(val);
-            //CdmMetaDataPropertyName
-            }else if (clazz.equals(CdmMetaDataPropertyName.class)){
-                return CdmMetaDataPropertyName.getByKey(val);
-            //EntityAuthority
-            }else if (clazz.equals(AuthorityType.class)){
-                return AuthorityType.getByKey(val);
-            //ExternalLinkType
-            }else if (clazz.equals(ExternalLinkType.class)){
-                return ExternalLinkType.getByKey(val);
-            }else{
-	        	throw new IllegalArgumentException(String.format("EnumType %s not supported by %s.", clazz.getSimpleName(), EnumUserType.class.getSimpleName()));
-	        }
+
+		    return getTerm(clazz, val);
 		}
 	}
+
+    /**
+     * @param val
+     * @return
+     */
+    public static <E extends Enum<E>> IKeyTerm getTerm(Class<E> clazz, String val) {
+        // TermType
+        if (clazz.equals(TermType.class)){
+        	return TermType.getByKey(val);
+        //Reference Type
+        }else if (clazz.equals(ReferenceType.class)){
+        		return ReferenceType.getByKey(val);
+        //OriginalSourceType
+        }else if (clazz.equals(OriginalSourceType.class)){
+        	return OriginalSourceType.getByKey(val);
+        //NomenclaturalCode
+        }else if (clazz.equals(NomenclaturalCode.class)){
+        	return NomenclaturalCode.getByKey(val);
+        //RankClass
+        }else if (clazz.equals(RankClass.class)){
+        	return RankClass.getByKey(val);
+        //SpecimenOrObservationType
+        }else if (clazz.equals(SpecimenOrObservationType.class)){
+        	return SpecimenOrObservationType.getByKey(val);
+        //SequenceDirection
+        }else if (clazz.equals(SequenceDirection.class)){
+        	return SequenceDirection.getByKey(val);
+        //RegistrationStatus
+        }else if (clazz.equals(RegistrationStatus.class)){
+            return RegistrationStatus.getByKey(val);
+        //CdmMetaDataPropertyName
+        }else if (clazz.equals(CdmMetaDataPropertyName.class)){
+            return CdmMetaDataPropertyName.getByKey(val);
+        //EntityAuthority
+        }else if (clazz.equals(AuthorityType.class)){
+            return AuthorityType.getByKey(val);
+        //ExternalLinkType
+        }else if (clazz.equals(ExternalLinkType.class)){
+            return ExternalLinkType.getByKey(val);
+        }else{
+        	throw new IllegalArgumentException(String.format("EnumType %s not supported by %s.", clazz.getSimpleName(), EnumUserType.class.getSimpleName()));
+        }
+    }
 
 	@Override
 	public void nullSafeSet(PreparedStatement statement, Object value, int index, SessionImplementor session)

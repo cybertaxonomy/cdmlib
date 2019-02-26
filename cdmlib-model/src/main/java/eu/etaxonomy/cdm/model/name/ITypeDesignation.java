@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.model.name;
 
 import java.util.Set;
 
+import javax.persistence.Transient;
+
 /**
  * @author a.mueller
  * @since 07.08.2008
@@ -18,21 +20,15 @@ import java.util.Set;
 public interface ITypeDesignation {
 
 
-	/**
-	 * Returns the boolean value indicating whether <i>this</i> type
-	 * designation has a "lectotype" status (true) or not (false).<BR>
-	 * A lectotype is a type designated as the
-	 * nomenclatural type, when no holotype was indicated at the time of
-	 * publication of the "type-bringing" {@link TaxonName taxon name}, when the
-	 * holotype is found to belong to more than one taxon name,
-	 * or as long as it is missing.
-	 *
-	 * @see  SpecimenTypeDesignationStatus#isLectotype()
-	 * @see  SpecimenTypeDesignationStatus#HOLOTYPE()
-	 * @see  NameTypeDesignationStatus#isLectotype()
-	 */
-
-	public boolean isLectoType();
+    /**
+     * Shortcut to retrieve the information if the status of
+     * <i>this</i> is considered to be a "lectotype" status.
+     * For details see Type {@link TypeDesignationStatusBase#isLectotype()}
+     *
+     * @see  TypeDesignationStatusBase#isLectotype()
+     */
+    @Transient
+    public boolean isLectoType();
 
 //	/**
 //	 * Returns the {@link HomotypicalGroup homotypical group} that is typified

@@ -194,7 +194,4 @@ public interface IIdentifiableEntity extends ISourceable<IdentifiableSource>, IA
 
 	void removeSources();
 
-
-
-
 }

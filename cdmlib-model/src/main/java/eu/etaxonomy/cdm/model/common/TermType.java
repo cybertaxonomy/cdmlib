@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
+import eu.etaxonomy.cdm.model.description.Character;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
@@ -33,6 +34,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.molecular.Amplification;
+import eu.etaxonomy.cdm.model.molecular.DnaQuality;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
@@ -438,10 +440,7 @@ public enum TermType implements IEnumTerm<TermType>{
 
     //35
     /**
-     * DNA Quality levels {link DnaQuality#type} . It may often be a global unique identifier such as DOI, LSID, Barcode ....
-     * But also local identifier types such Sample Designation, Catalog Number,
-     * Accession Number, ... are allowed.
-     * {@link DnaQu}
+     * DNA Quality levels {link {@link DnaQuality#getQualityTerm()} .
      */
     @XmlEnumValue("DnaQualityType")
     DnaQualityType(UUID.fromString("18049372-56e6-4d45-85fc-6a403fecb881"), "DNA Quality Type", "DQT", null),
@@ -453,6 +452,38 @@ public enum TermType implements IEnumTerm<TermType>{
      */
     @XmlEnumValue("DnaQualityType")
     TaxonNodeAgentRelationType(UUID.fromString("8e28881a-0744-41ff-a5ed-31246125c424"), "TaxonNode Agent Relation Type", "TART", null),
+
+    //37
+    /**
+     * {@link eu.etaxonomy.cdm.model.description.Character#getStructure() biological structure}.
+     * The physical structure that is part of a describing {@link Character}
+     * @see TermType#Property
+     */
+    @XmlEnumValue("Structure")
+    Structure(UUID.fromString("f9bc1d2d-85e8-4eab-81f0-603816f5e972"), "Structure", "STRU", null),
+
+    //38
+    /**
+     * {@link eu.etaxonomy.cdm.model.description.Character#getProperty() Property} of a descriptive
+     * {@link eu.etaxonomy.cdm.model.description.Character character}.<BR>
+     * The property that together with a biological structure makes up a descriptive {@link Character character}
+     * @see TermType#Property
+     */
+    @XmlEnumValue("Property")
+    Property(UUID.fromString("bbe4730c-4c3f-4d89-9823-d144cc43baf5"), "Property", "PROP", null),
+
+    //39
+    /**
+     * A modifier for {@link #Structure structures} used to define
+     * spatial and maybe other modifiers.
+     * StructureModifier is a specialization of {@link #Modifier}.
+     *
+     * @see Modifier
+     * @see Character#getStructureModifier()
+     * @see Character#getStructure()
+     */
+    @XmlEnumValue("StructureModifier")
+    StructureModifier(UUID.fromString("41617e59-17c9-47f5-8fe6-319e117447ce"), "Structure Modifier", "STMO", Modifier),
 
     ;
 

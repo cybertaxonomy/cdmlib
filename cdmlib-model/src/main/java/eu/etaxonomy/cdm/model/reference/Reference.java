@@ -313,7 +313,7 @@ public class Reference
     private DateTime accessed;
 
     @XmlElement(name ="Abstract" )
-	@Column(length=65536, name="referenceAbstract")
+	@Column(length=CLOB_LENGTH, name="referenceAbstract")
 	@Lob
     @Field
     //TODO Val #3379

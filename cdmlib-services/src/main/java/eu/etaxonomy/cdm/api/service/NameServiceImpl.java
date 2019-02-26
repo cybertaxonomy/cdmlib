@@ -57,6 +57,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
+import eu.etaxonomy.cdm.model.common.SourcedEntityBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
@@ -76,6 +77,7 @@ import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IOrderedTermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IReferencedEntityDao;
+import eu.etaxonomy.cdm.persistence.dao.common.ISourcedEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.name.INomenclaturalStatusDao;
@@ -104,6 +106,9 @@ public class NameServiceImpl
     @Autowired
     @Qualifier("refEntDao")
     protected IReferencedEntityDao<ReferencedEntityBase> referencedEntityDao;
+    @Autowired
+    @Qualifier("sourcedEntityDao")
+    protected ISourcedEntityDao<SourcedEntityBase<?>> sourcedEntityDao;
     @Autowired
     private INomenclaturalStatusDao nomStatusDao;
     @Autowired
@@ -193,9 +198,9 @@ public class NameServiceImpl
 
     @Override
     @Transactional
-    public DeleteResult deleteTypeDesignation(TaxonName name, TypeDesignationBase typeDesignation){
+    public DeleteResult deleteTypeDesignation(TaxonName name, TypeDesignationBase<?> typeDesignation){
     	if(typeDesignation != null && typeDesignation .isPersited()){
-    		typeDesignation = HibernateProxyHelper.deproxy(referencedEntityDao.load(typeDesignation.getUuid()), TypeDesignationBase.class);
+    		typeDesignation = HibernateProxyHelper.deproxy(sourcedEntityDao.load(typeDesignation.getUuid()), TypeDesignationBase.class);
     	}
 
         DeleteResult result = new DeleteResult();
@@ -206,14 +211,14 @@ public class NameServiceImpl
             removeSingleDesignation(name, typeDesignation);
         }else if (name != null){
             @SuppressWarnings("rawtypes")
-            Set<TypeDesignationBase> designationSet = new HashSet<>(name.getTypeDesignations());
+            Set<TypeDesignationBase<?>> designationSet = new HashSet(name.getTypeDesignations());
             for (TypeDesignationBase<?> desig : designationSet){
                 desig = CdmBase.deproxy(desig);
                 removeSingleDesignation(name, desig);
             }
         }else if (typeDesignation != null){
             @SuppressWarnings("unchecked")
-            Set<TaxonName> nameSet = new HashSet<>(typeDesignation.getTypifiedNames());
+            Set<TaxonName> nameSet = new HashSet(typeDesignation.getTypifiedNames());
             for (TaxonName singleName : nameSet){
                 singleName = CdmBase.deproxy(singleName);
                 removeSingleDesignation(singleName, typeDesignation);
@@ -229,7 +234,7 @@ public class NameServiceImpl
     @Transactional(readOnly = false)
     public DeleteResult deleteTypeDesignation(UUID nameUuid, UUID typeDesignationUuid){
         TaxonName nameBase = load(nameUuid);
-        TypeDesignationBase<?> typeDesignation = HibernateProxyHelper.deproxy(referencedEntityDao.load(typeDesignationUuid), TypeDesignationBase.class);
+        TypeDesignationBase<?> typeDesignation = HibernateProxyHelper.deproxy(sourcedEntityDao.load(typeDesignationUuid), TypeDesignationBase.class);
         return deleteTypeDesignation(nameBase, typeDesignation);
     }
 
@@ -238,7 +243,8 @@ public class NameServiceImpl
      * @param typeDesignation
      */
     @Transactional
-    private void removeSingleDesignation(TaxonName name, TypeDesignationBase typeDesignation) {
+    private void removeSingleDesignation(TaxonName name, TypeDesignationBase<?> typeDesignation) {
+
         name.removeTypeDesignation(typeDesignation);
         if (typeDesignation.getTypifiedNames().isEmpty()){
             typeDesignation.removeType();
@@ -249,6 +255,7 @@ public class NameServiceImpl
                     }
                 }
             }
+
             typeDesignationDao.delete(typeDesignation);
 
         }
@@ -398,18 +405,8 @@ public class NameServiceImpl
      */
     @Override
     @Transactional(readOnly = false)
-    public Map<UUID, TypeDesignationBase> saveTypeDesignationAll(Collection<TypeDesignationBase> typeDesignationCollection){
+    public Map<UUID, TypeDesignationBase<?>> saveTypeDesignationAll(Collection<TypeDesignationBase<?>> typeDesignationCollection){
         return typeDesignationDao.saveAll(typeDesignationCollection);
-    }
-
-    /**
-     * TODO candidate for harmonization
-     * new name saveReferencedEntities
-     */
-    @Override
-    @Transactional(readOnly = false)
-    public Map<UUID, ReferencedEntityBase> saveReferencedEntitiesAll(Collection<ReferencedEntityBase> referencedEntityCollection){
-        return referencedEntityDao.saveAll(referencedEntityCollection);
     }
 
     /**
@@ -426,17 +423,17 @@ public class NameServiceImpl
      * new name getTypeDesignations
      */
     @Override
-    public List<TypeDesignationBase> getAllTypeDesignations(int limit, int start){
+    public List<TypeDesignationBase<?>> getAllTypeDesignations(int limit, int start){
         return typeDesignationDao.getAllTypeDesignations(limit, start);
     }
 
     @Override
-    public TypeDesignationBase loadTypeDesignation(int id, List<String> propertyPaths){
+    public TypeDesignationBase<?> loadTypeDesignation(int id, List<String> propertyPaths){
         return typeDesignationDao.load(id, propertyPaths);
     }
 
     @Override
-    public TypeDesignationBase loadTypeDesignation(UUID uuid, List<String> propertyPaths){
+    public TypeDesignationBase<?> loadTypeDesignation(UUID uuid, List<String> propertyPaths){
         return typeDesignationDao.load(uuid, propertyPaths);
     }
 

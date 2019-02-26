@@ -23,35 +23,33 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 
 /**
  * A subclass of the Feature class that is meant for handling
- * Features/Characters for desriptions in the narrow sense of describing
+ * Features/Characters for descriptions in the narrow sense of describing
  * an object.
  *
  * @author a.mueller
  * @since 04.05.2017
- *
- * @deprecated This class is still experimental. It may be changed
- * or even deleted in future without notice.
  */
 
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(name="Feature", factoryMethod="NewInstance", propOrder = {
         "structure",
-        "property"
+        "structureModifier",
+        "property",
+        "propertyModifier"
 })
-@XmlRootElement(name = "Feature")
+@XmlRootElement(name = "Character")
 @Entity
 @Audited
-@Deprecated
 public class Character extends Feature {
 
     private static final long serialVersionUID = -5631282599057455256L;
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(Feature.class);
-
 
     @XmlElement(name = "Structure")
     @XmlIDREF
@@ -61,6 +59,14 @@ public class Character extends Feature {
 //    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private FeatureNode structure;
 
+    //#8120
+    @XmlElement(name = "StructureModifier")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @IndexedEmbedded
+    private DefinedTerm structureModifier;
+
     @XmlElement(name = "Property")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
@@ -69,7 +75,21 @@ public class Character extends Feature {
 //    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private FeatureNode property;
 
+    //#8120
+    /**
+     * @deprecated experimental, may be removed in future
+     */
+    @Deprecated
+    @XmlElement(name = "PropertyModifier")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @IndexedEmbedded
+    private DefinedTerm propertyModifier;
+
 /* ***************** CONSTRUCTOR AND FACTORY METHODS **********************************/
+
+
 
 
     public static Character NewInstance() {
@@ -149,8 +169,39 @@ public class Character extends Feature {
     public FeatureNode getStructure() {
         return structure;
     }
+    public void setStructure(FeatureNode structure) {
+        this.structure = structure;
+    }
 
     public FeatureNode getProperty() {
         return property;
     }
+    public void setProperty(FeatureNode property) {
+        this.property = property;
+    }
+
+    public DefinedTerm getStructureModifier() {
+        return structureModifier;
+    }
+    public void setStructureModifier(DefinedTerm structureModifier) {
+        this.structureModifier = structureModifier;
+    }
+
+    /**
+     * @return
+     * @deprecated experimental, may be removed in future
+     */
+    @Deprecated
+    public DefinedTerm getPropertyModifier() {
+        return propertyModifier;
+    }
+    /**
+     * @param propertyModifier
+     * @deprecated experimental, may be removed in future
+     */
+    @Deprecated
+    public void setPropertyModifier(DefinedTerm propertyModifier) {
+        this.propertyModifier = propertyModifier;
+    }
+
 }

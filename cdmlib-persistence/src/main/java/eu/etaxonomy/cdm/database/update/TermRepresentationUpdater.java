@@ -31,11 +31,14 @@ public class TermRepresentationUpdater
 	private static final Logger logger = Logger.getLogger(TermRepresentationUpdater.class);
 
 	public static final TermRepresentationUpdater NewInstance(String stepName, UUID uuidTerm, String description,  String label, String abbrev, UUID uuidLanguage){
-		return new TermRepresentationUpdater(stepName, uuidTerm, description, label, abbrev, uuidLanguage, false);
+		return new TermRepresentationUpdater(stepName, uuidTerm, description, label, abbrev, uuidLanguage, false, false);
 	}
+    public static final TermRepresentationUpdater NewInstanceWithTitleCache(String stepName, UUID uuidTerm, String description,  String label, String abbrev, UUID uuidLanguage){
+        return new TermRepresentationUpdater(stepName, uuidTerm, description, label, abbrev, uuidLanguage, false, true);
+    }
 
 	public static final TermRepresentationUpdater NewReverseInstance(String stepName, UUID uuidTerm, String description,  String label, String abbrev, UUID uuidLanguage){
-		return new TermRepresentationUpdater(stepName, uuidTerm, description, label, abbrev, uuidLanguage, true);
+		return new TermRepresentationUpdater(stepName, uuidTerm, description, label, abbrev, uuidLanguage, true, false);
 	}
 
 	private UUID uuidTerm ;
@@ -44,8 +47,9 @@ public class TermRepresentationUpdater
 	private String abbrev;
 	private UUID uuidLanguage;
 	private boolean isReverse = false;
+	private boolean includeTitleCache = false;
 
-	private TermRepresentationUpdater(String stepName, UUID uuidTerm, String description, String label, String abbrev, UUID uuidLanguage, boolean isReverse) {
+	private TermRepresentationUpdater(String stepName, UUID uuidTerm, String description, String label, String abbrev, UUID uuidLanguage, boolean isReverse, boolean includeTitleCache) {
 		super(stepName);
 		this.abbrev = abbrev;
 		this.description = description;
@@ -53,9 +57,8 @@ public class TermRepresentationUpdater
 		this.uuidTerm = uuidTerm;
 		this.uuidLanguage = uuidLanguage;
 		this.isReverse = isReverse;
+		this.includeTitleCache = includeTitleCache;
 	}
-
-
 
 	@Override
     public void invoke(ICdmDataSource datasource, IProgressMonitor monitor,
@@ -108,6 +111,12 @@ public class TermRepresentationUpdater
 			datasource.executeUpdate(sqlUpdateRepresentation);
 		}
 
+		if (includeTitleCache && label != null){
+		    String sql = "UPDATE %s SET titleCache = '%s' WHERE uuid = '%s'";
+		    sql = String.format(sql, caseType.transformTo("DefinedTermBase"), label, uuidTerm);
+		    datasource.executeUpdate(sql);
+		}
+
 		return;
 	}
 
@@ -123,7 +132,7 @@ public class TermRepresentationUpdater
 			IProgressMonitor monitor, Integer langId, CaseType caseType) throws SQLException {
 		//representation
 
-		String tableName = isReverse ? "RelationshipTermBase_inverseRepresentation" : "DefinedTermBase_Representation" ;
+		String tableName = isReverse ? "DefinedTermBase_InverseRepresentation" : "DefinedTermBase_Representation" ;
 		String repIdFkCol = isReverse ? "inverserepresentations_id" : "representations_id";
 		String sqlId = " SELECT rep.id " +
 			" FROM @@Representation@@ rep INNER JOIN %s MN ON MN.%s = rep.id " +

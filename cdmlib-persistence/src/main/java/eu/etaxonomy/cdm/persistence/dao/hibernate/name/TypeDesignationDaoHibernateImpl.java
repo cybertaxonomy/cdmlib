@@ -16,7 +16,7 @@ import org.hibernate.Criteria;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.common.ReferencedEntityDaoImpl;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.SourcedEntityDaoImpl;
 import eu.etaxonomy.cdm.persistence.dao.name.ITypeDesignationDao;
 
 /**
@@ -24,18 +24,20 @@ import eu.etaxonomy.cdm.persistence.dao.name.ITypeDesignationDao;
  *
  */
 @Repository
-public class TypeDesignationDaoHibernateImpl<T extends TypeDesignationBase>
-			extends ReferencedEntityDaoImpl<TypeDesignationBase> implements ITypeDesignationDao {
-	@SuppressWarnings("unused")
+public class TypeDesignationDaoHibernateImpl
+			extends SourcedEntityDaoImpl<TypeDesignationBase<?>>
+            implements ITypeDesignationDao {
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TypeDesignationDaoHibernateImpl.class);
 
 	public TypeDesignationDaoHibernateImpl() {
-		super(TypeDesignationBase.class);
+		super((Class)(TypeDesignationBase.class));
 	}
 
 	//TODO limit start
 	@Override
-    public List<TypeDesignationBase> getAllTypeDesignations(Integer limit, Integer start) {
+    public List<TypeDesignationBase<?>> getAllTypeDesignations(Integer limit, Integer start) {
 		Criteria crit = getSession().createCriteria(TypeDesignationBase.class);
 		if(limit != null){
 		    crit.setMaxResults(limit);
@@ -43,7 +45,8 @@ public class TypeDesignationDaoHibernateImpl<T extends TypeDesignationBase>
 		if(start != null){
 		    crit.setFirstResult(start);
 		}
-		List<TypeDesignationBase> results = crit.list();
+		@SuppressWarnings("unchecked")
+        List<TypeDesignationBase<?>> results = crit.list();
 		return results;
 	}
 

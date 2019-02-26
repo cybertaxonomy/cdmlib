@@ -55,8 +55,7 @@ public class NaturalLanguageGeneratorTest extends CdmIntegrationTest {
 		description = TaxonDescription.NewInstance(taxon);
 
 		featureTree= FeatureTree.NewInstance();
-		FeatureNode root = FeatureNode.NewInstance();
-		featureTree.setRoot(root);
+		FeatureNode root = featureTree.getRoot();
 		String[][][] tableStrings = { { {"a","b"} } , { { "a1" , "a2"  } , { "b1" } } };
 		buildBranches(root,tableStrings,0,2,0);
 		for (Iterator<Feature> f = featureSet.iterator() ; f.hasNext() ;){

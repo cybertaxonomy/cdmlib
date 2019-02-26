@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.database;
 
@@ -44,9 +44,9 @@ import eu.etaxonomy.cdm.config.CdmPersistentXMLSource.CdmSourceProperties;
 public class CdmPersistentDataSourceTest {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmPersistentDataSourceTest.class);
-	
+
 	private static CdmPersistentDataSource dataSource;
-	
+
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -96,14 +96,14 @@ public class CdmPersistentDataSourceTest {
 		assertFalse(CdmPersistentDataSource.exists(dataSourceString));
 
 	}
-	
+
 //********************** TESTS ***********************************************/
 
 	@Test
 	public void testDummy() {
 		assertEquals(1,1);
 	}
-	
+
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.database.CdmPersistentDataSource#NewDefaultInstance()}.
 	 */
@@ -159,7 +159,7 @@ public class CdmPersistentDataSourceTest {
 	 */
 	@Test
 	public void testGetDbProperty() {
-		assertEquals("com.mysql.jdbc.Driver", dataSource.getCdmSourceProperty(CdmSourceProperties.DRIVER_CLASS));
+		assertEquals("com.mysql.cj.jdbc.Driver", dataSource.getCdmSourceProperty(CdmSourceProperties.DRIVER_CLASS));
 	}
 
 	/**
@@ -169,13 +169,13 @@ public class CdmPersistentDataSourceTest {
 	public void testGetDatasourceBean() {
 		BeanDefinition beanDef = dataSource.getDatasourceBean();
 		PropertyValues propValues = beanDef.getPropertyValues();
-		String propName =  "driverClassName"; 
-		assertEquals("com.mysql.jdbc.Driver", propValues.getPropertyValue(propName).getValue());
-		propName =  "url"; 
+		String propName =  "driverClassName";
+		assertEquals("com.mysql.cj.jdbc.Driver", propValues.getPropertyValue(propName).getValue());
+		propName =  "url";
 		assertEquals("testUrl", propValues.getPropertyValue(propName).getValue());
-		propName =  "username"; 
+		propName =  "username";
 		assertEquals("testUser", propValues.getPropertyValue(propName).getValue());
-		propName =  "password"; 
+		propName =  "password";
 		assertEquals("testPassword", propValues.getPropertyValue(propName).getValue());
 	}
 
@@ -187,11 +187,11 @@ public class CdmPersistentDataSourceTest {
 		DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 		BeanDefinition beanDef = dataSource.getHibernatePropertiesBean(hbm2dll);
 		PropertyValues propValues = beanDef.getPropertyValues();
-		String propName =  "properties"; 
+		String propName =  "properties";
 		PropertyValue propValue =  propValues.getPropertyValue(propName);
 		assertNotNull(propValue);
 		assertTrue( propValue.getValue() instanceof Properties);
-		
+
 		Properties properties = (Properties)propValue.getValue();
 		assertEquals(hbm2dll.toString(), properties.getProperty("hibernate.hbm2ddl.auto"));
 		assertEquals(dataSource.getDatabaseType().getHibernateDialectCanonicalName(), properties.getProperty("hibernate.dialect"));
@@ -202,11 +202,11 @@ public class CdmPersistentDataSourceTest {
 		//null
 		beanDef = dataSource.getHibernatePropertiesBean(null);
 		propValues = beanDef.getPropertyValues();
-		propName =  "properties"; 
+		propName =  "properties";
 		propValue =  propValues.getPropertyValue(propName);
 		assertNotNull(propValue);
 		assertTrue( propValue.getValue() instanceof Properties);
-		
+
 		properties = (Properties)propValue.getValue();
 		assertEquals(DbSchemaValidation.VALIDATE.toString(), properties.getProperty("hibernate.hbm2ddl.auto"));
 	}
@@ -221,14 +221,14 @@ public class CdmPersistentDataSourceTest {
 		boolean formatSql = false;
 		boolean registerSearchListener = false;
 		Class<? extends RegionFactory> cacheProviderClass = NoCachingRegionFactory.class;
-		
+
 		BeanDefinition beanDef = dataSource.getHibernatePropertiesBean(hbm2dll, showSql, formatSql, registerSearchListener, cacheProviderClass);
 		PropertyValues propValues = beanDef.getPropertyValues();
-		String propName =  "properties"; 
+		String propName =  "properties";
 		PropertyValue propValue =  propValues.getPropertyValue(propName);
 		assertNotNull(propValue);
 		assertTrue( propValue.getValue() instanceof Properties);
-		
+
 		Properties properties = (Properties)propValue.getValue();
 		assertEquals(hbm2dll.toString(), properties.getProperty("hibernate.hbm2ddl.auto"));
 		assertEquals(dataSource.getDatabaseType().getHibernateDialectCanonicalName(), properties.getProperty("hibernate.dialect"));
@@ -254,19 +254,19 @@ public class CdmPersistentDataSourceTest {
 	public void testSaveStringDatabaseTypeEnumStringStringIntStringString() {
 		String dataSourceString = "tmp";
 		assertFalse(CdmPersistentDataSource.exists(dataSourceString));
-		
+
 		DatabaseTypeEnum databaseType = DatabaseTypeEnum.SqlServer2005;
 		String servername = "server";
 		String db = "database";
 		String username = "username";
 		String password = "password";
 		int port = 1234;
-		
+
 		ICdmDataSource dataSource = CdmDataSource.NewInstance(databaseType, servername, db, port, username, password);
-		
+
 		CdmPersistentDataSource.save(dataSourceString, dataSource);
 		assertTrue(CdmPersistentDataSource.exists(dataSourceString));
-		
+
 		CdmPersistentDataSource loadedDataSource = null;
 		try {
 			loadedDataSource = CdmPersistentDataSource.NewInstance(dataSourceString);
@@ -308,7 +308,7 @@ public class CdmPersistentDataSourceTest {
 	 */
 	@Test
 	public void testGetAllDataSources() {
-		//assertEquals(6, CdmPersistentDataSource.getAllDataSources().size());  //does not run for all orders of tests of this class 
+		//assertEquals(6, CdmPersistentDataSource.getAllDataSources().size());  //does not run for all orders of tests of this class
 		assertEquals("default", CdmPersistentDataSource.getAllDataSources().get(0).getName());
 	}
 
@@ -339,7 +339,7 @@ public class CdmPersistentDataSourceTest {
 		} catch (IOException e) {
 			fail("Exception occurred in datasource input stream read");
 		}
-		
+
 	}
 
 	/**

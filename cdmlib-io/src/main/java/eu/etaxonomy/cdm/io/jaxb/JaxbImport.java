@@ -115,7 +115,7 @@ public class JaxbImport
 		List<Reference> references;
 		List<TaxonName> taxonomicNames;
 		List<DescriptionBase> descriptions;
-		List<TypeDesignationBase> typeDesignations;
+		List<TypeDesignationBase<?>> typeDesignations;
 		List<SpecimenOrObservationBase> occurrences;
 		List<FeatureTree> featureTrees;
 		List<FeatureNode> featureNodes;

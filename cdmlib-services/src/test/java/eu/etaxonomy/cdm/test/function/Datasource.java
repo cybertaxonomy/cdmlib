@@ -39,6 +39,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
@@ -236,14 +237,14 @@ public class Datasource {
 		appCtr.getClassificationService().saveOrUpdate(cl);
 
 		FeatureTree ft1 = FeatureTree.NewInstance();
-		FeatureNode fn1 = FeatureNode.NewInstance(null);
+		FeatureNode fn1 = FeatureNode.NewInstance((Feature)null);
 		ft1.getRoot().addChild(fn1);
 		appCtr.getFeatureNodeService().save(fn1);
 
-		FeatureNode fn2 = FeatureNode.NewInstance(null);
+		FeatureNode fn2 = FeatureNode.NewInstance((Feature)null);
 		fn1.addChild(fn2);
 
-		FeatureNode fn3 = FeatureNode.NewInstance(null);
+		FeatureNode fn3 = FeatureNode.NewInstance((Feature)null);
 		fn1.addChild(fn2, 0);
 
 		appCtr.getFeatureNodeService().saveOrUpdate(fn1);

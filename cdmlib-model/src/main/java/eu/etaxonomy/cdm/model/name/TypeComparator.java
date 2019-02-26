@@ -10,18 +10,20 @@ package eu.etaxonomy.cdm.model.name;
 
 import java.util.Comparator;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
+
 /**
  * @author k.luther
  * @since 21.03.2017
  *
  */
-public class TypeComparator implements Comparator<TypeDesignationBase> {
+public class TypeComparator implements Comparator<TypeDesignationBase<?>> {
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public int compare(TypeDesignationBase o1, TypeDesignationBase o2) {
+    public int compare(TypeDesignationBase<?> o1, TypeDesignationBase<?> o2) {
         /*
          * Sortierung:
         1.  Status der Typen: a) holo, lecto, neo, syn, b) epi, paralecto, c) para (wenn überhaupt) – die jeweiligen iso immer direct mit dazu
@@ -44,8 +46,8 @@ public class TypeComparator implements Comparator<TypeDesignationBase> {
             return 1;
         }
 
-        TypeDesignationStatusBase status1 = o1.getTypeStatus();
-        TypeDesignationStatusBase status2 = o2.getTypeStatus();
+        TypeDesignationStatusBase<?> status1 = getStatus(o1);
+        TypeDesignationStatusBase<?> status2 = getStatus(o2);
 
         result = compareStatus(status1, status2);
         if (result != 0){
@@ -65,6 +67,18 @@ public class TypeComparator implements Comparator<TypeDesignationBase> {
 
 
         return result;
+    }
+
+    /**
+     * @param o1
+     * @return
+     */
+    private TypeDesignationStatusBase<?> getStatus(TypeDesignationBase<?> td) {
+        if (td.isInstanceOf(TypeDesignationBase.class)){
+            return CdmBase.deproxy(td, TypeDesignationBase.class).getTypeStatus();
+        }else{
+            return null;
+        }
     }
 
     /**
@@ -187,6 +201,4 @@ public class TypeComparator implements Comparator<TypeDesignationBase> {
              return false;
          }
     }
-
-
 }

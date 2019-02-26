@@ -83,7 +83,9 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
     @ClassBridge(impl=DescriptionBaseClassBridge.class),
     @ClassBridge(impl=GroupByTaxonClassBridge.class)
 })
-public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy> extends IdentifiableEntity<S> {
+public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy>
+        extends IdentifiableEntity<S> {
+
     private static final long serialVersionUID = 5504218413819040193L;
     private static final Logger logger = Logger.getLogger(DescriptionBase.class);
 
