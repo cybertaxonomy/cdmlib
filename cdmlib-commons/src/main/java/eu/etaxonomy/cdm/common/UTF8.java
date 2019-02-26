@@ -13,6 +13,8 @@ public enum UTF8 {
 
 
 	EN_DASH("\u2013"),   // https://de.wikipedia.org/wiki/Halbgeviertstrich
+	EM_DASH("\u2014"),   // https://de.wikipedia.org/wiki/Geviertstrich
+	EM_DASH_DOUBLE("\u2E3A"),   //https://de.wikipedia.org/wiki/Doppelgeviertstrich
 	SPATIUM("\u202F"),   //very short non-breaking space
 	EN_DASH_SPATIUM("\u202F\u2013\u202F"),
 	HYBRID ("\u00D7"),   // hybrid sign
