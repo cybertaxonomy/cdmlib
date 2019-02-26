@@ -26,11 +26,8 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.beans.BeanUtils;
 
@@ -47,7 +44,6 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 /**
  * @author a.mueller
  * @since 01.04.2009
- * @version 1.0
  */
 public class ClassificationTest {
 	private static final Logger logger = Logger.getLogger(ClassificationTest.class);
@@ -74,22 +70,6 @@ public class ClassificationTest {
 	private static Reference ref3;
 	//private ReferenceFactory refFactory;
 
-
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -115,12 +95,6 @@ public class ClassificationTest {
 		//taxonNode1 = new TaxonNode(taxon1, taxonomicView1);
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
 
 //****************************** TESTS *****************************************/
 
@@ -133,8 +107,6 @@ public class ClassificationTest {
 		Synonym synonym = Synonym.NewInstance(synonymName, ref1);
 		TaxonNode taxonNode1 = classification1.addChildTaxon(taxon1, null, null);
 		taxonNode1.setSynonymToBeUsed(synonym);
-
-
 
 		//test root node
 		List<TaxonNode> rootNodes = classification1.getChildNodes();
@@ -157,9 +129,6 @@ public class ClassificationTest {
 
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Classification#isTaxonInView(eu.etaxonomy.cdm.model.taxon.Taxon)}.
-	 */
 	@Test
 	public void testIsTaxonInTree() {
 		classification1.addChildTaxon(taxon1, null, null);
@@ -169,10 +138,6 @@ public class ClassificationTest {
 		assertFalse(classification1.isTaxonInTree(anyTaxon));
 	}
 
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Classification#makeRootChildOfOtherNode(eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.reference.Reference, java.util.String)}.
-	 */
 	@Test
 	public void testMakeRootChildOfOtherNode() {
 		TaxonNode root1 = classification1.addChildTaxon(taxon1, null, null);
@@ -259,9 +224,6 @@ public class ClassificationTest {
 
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Classification#generateTitle()}.
-	 */
 	@Test
 	public void testGenerateTitle() {
 		Classification taxonomicViewLocal = Classification.NewInstance(treeName1);
@@ -269,9 +231,6 @@ public class ClassificationTest {
 		assertEquals(treeName1, taxonomicViewLocal.getTitleCache());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Classification#generateTitle()}.
-	 */
 	@Test
 	public void play() {
 
@@ -341,7 +300,7 @@ public class ClassificationTest {
 
 	private Set<CdmBase> getCdmBasesByFieldAndClass(Field field, Class<?> clazz, CdmBase value){
 		//FIXME make not dummy but use dao
-		Set<CdmBase> result = new HashSet<CdmBase>();
+		Set<CdmBase> result = new HashSet<>();
 
 		//genericDao.getCdmBasesByFieldAndClass(clazz, field.getName(), value);
 

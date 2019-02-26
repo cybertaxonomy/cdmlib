@@ -38,7 +38,6 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 /**
  * @author a.mueller
  * @since 01.04.2009
- * @version 1.0
  */
 public class TaxonNodeTest {
 	@SuppressWarnings("unused")
