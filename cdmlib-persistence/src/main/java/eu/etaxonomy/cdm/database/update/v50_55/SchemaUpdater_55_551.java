@@ -14,9 +14,11 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
+import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 
 /**
 /**
@@ -67,11 +69,43 @@ public class SchemaUpdater_55_551 extends SchemaUpdaterBase {
 
         //TODO remove proparte and partial columns
 
+		updateConceptRelationshipSymbolsAgain(stepList);
 
         return stepList;
 
 	}
 
+    //7514  the update in 50_55 was not yet correct
+    private void updateConceptRelationshipSymbolsAgain(List<ISchemaUpdaterStep> stepList) {
+
+        //Update misapplied name symbols
+        String stepName = "Update misapplied name symbols again";
+        String query = "UPDATE @@DefinedTermBase@@ "
+                + " SET symbol='"+UTF8.EM_DASH_DOUBLE+"' , inverseSymbol = '"+UTF8.EM_DASH+"' "
+                + " WHERE uuid = '1ed87175-59dd-437e-959e-0d71583d8417' ";
+        String tableName = "DefinedTermBase";
+        ISchemaUpdaterStep step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, tableName, -99);
+        stepList.add(step);
+
+        //Update pro parte misapplied name symbols
+        stepName = "Update pro parte misapplied name symbols again";
+        query = "UPDATE @@DefinedTermBase@@ "
+                + " SET symbol='"+UTF8.EM_DASH_DOUBLE+"(p.p.)' , inverseSymbol = '"+UTF8.EM_DASH+"(p.p.)' "
+                + " WHERE uuid = 'b59b4bd2-11ff-45d1-bae2-146efdeee206' ";
+        tableName = "DefinedTermBase";
+        step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, tableName, -99);
+        stepList.add(step);
+
+        //Update partial misapplied name symbols
+        stepName = "Update partial misapplied name symbols again";
+        query = "UPDATE @@DefinedTermBase@@ "
+                + " SET symbol='"+UTF8.EM_DASH_DOUBLE+"(part.)' , inverseSymbol = '"+UTF8.EM_DASH+"(part.)' "
+                + " WHERE uuid = '859fb615-b0e8-440b-866e-8a19f493cd36' ";
+        tableName = "DefinedTermBase";
+        step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, tableName, -99);
+        stepList.add(step);
+
+    }
 
 
     @Override
