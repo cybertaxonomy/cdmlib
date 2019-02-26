@@ -40,10 +40,6 @@ public class H2DatabaseType extends DatabaseTypeBase {
 	//url
 	private final String urlString = "jdbc:h2:";
 
-	//path
-	@SuppressWarnings("unused")
-	private final String path = getDefaultPath();
-
     //port
     private final int defaultPort = 9092;
 
