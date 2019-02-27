@@ -695,20 +695,15 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
     @Override
     public <S extends T> List<UuidAndTitleCache<S>> getUuidAndTitleCache(Class<S> clazz, Integer limit, String pattern){
         Session session = getSession();
-        Query query = null;
-        if (pattern != null){
-            query = session.createQuery(
-                      " SELECT uuid, id, titleCache "
-                    + " FROM " + clazz.getSimpleName()
-                    + " WHERE titleCache LIKE :pattern");
+        Query query = session.createQuery(
+                " SELECT uuid, id, titleCache "
+                        + " FROM " + clazz.getSimpleName()
+                        + (pattern!=null?" WHERE titleCache LIKE :pattern":""));
+        if(pattern!=null){
             pattern = pattern.replace("*", "%");
             pattern = pattern.replace("?", "_");
             pattern = pattern + "%";
             query.setParameter("pattern", pattern);
-        } else {
-            query = session.createQuery(
-                      " SELECT uuid, id, titleCache "
-                    + " FROM  " + clazz.getSimpleName() );
         }
         if (limit != null){
            query.setMaxResults(limit);
