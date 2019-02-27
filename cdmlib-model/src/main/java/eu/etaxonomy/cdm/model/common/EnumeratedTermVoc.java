@@ -16,8 +16,9 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * @author a.mueller
+ * Helper class to handle enumeration terms similar to vocabularies.
  *
+ * @author a.mueller
  */
 public class EnumeratedTermVoc<T extends IEnumTerm<T>> {
 
@@ -34,7 +35,7 @@ public class EnumeratedTermVoc<T extends IEnumTerm<T>> {
 		private final String label;
 		private final UUID uuid;
 		private final String key;
-		private final Set<S> children = new HashSet<S>();
+		private final Set<S> children = new HashSet<>();
 		private final S parent;
 
 

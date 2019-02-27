@@ -20,7 +20,10 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
  * @author m.doering
  * Special array that takes care that all LanguageString elements have a unique language
  */
-public class MultilanguageText extends HashMap<Language, LanguageString> implements Cloneable, IMultiLanguageText {
+public class MultilanguageText
+        extends HashMap<Language, LanguageString>
+        implements Cloneable, IMultiLanguageText {
+
 	private static final long serialVersionUID = 7876604337076705862L;
 	private static final Logger logger = Logger.getLogger(MultilanguageText.class);
 
@@ -42,7 +45,7 @@ public class MultilanguageText extends HashMap<Language, LanguageString> impleme
 		return result;
 	}
 
-	public MultilanguageText(){
+	protected MultilanguageText(){
 		super();
 	}
 
@@ -52,7 +55,7 @@ public class MultilanguageText extends HashMap<Language, LanguageString> impleme
 	 */
 	protected MultilanguageText (LanguageString languageString){
 		super();
-		this.add(languageString);
+		this.put(languageString);
 	}
 
 	public MultilanguageText(int initialCapacity, float loadFactor) {
@@ -69,14 +72,6 @@ public class MultilanguageText extends HashMap<Language, LanguageString> impleme
 		}
 	}
 
-	@Override
-	public LanguageString add(LanguageString languageString){
-		if (languageString == null){
-			return null;
-		}else{
-			return this.put(languageString.getLanguage(), languageString);
-		}
-	}
 
 	@Override
     public LanguageString put(LanguageString languageString){
@@ -121,6 +116,14 @@ public class MultilanguageText extends HashMap<Language, LanguageString> impleme
 		return result;
 	}
 
-
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public LanguageString put(Language language, String text) {
+        LanguageString languageString = new LanguageString(text, language);
+        put(languageString);
+        return languageString;
+    }
 
 }

@@ -132,7 +132,8 @@ public enum OriginalSourceType implements IEnumTerm<OriginalSourceType>, Seriali
 	private static final Logger logger = Logger.getLogger(OriginalSourceType.class);
 
 
-	private OriginalSourceType(UUID uuid, String defaultString, String key, OriginalSourceType parent){
+	@SuppressWarnings("unchecked")
+    private OriginalSourceType(UUID uuid, String defaultString, String key, OriginalSourceType parent){
 		delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, defaultString, key, parent);
 	}
 
