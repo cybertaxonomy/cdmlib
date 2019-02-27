@@ -96,6 +96,13 @@ public class Representation extends LanguageStringBase {
         this.abbreviatedLabel = abbreviatedLabel;
     }
 
+    public String getPlural() {
+        return plural;
+    }
+    public void setPlural(String plural) {
+        this.plural = plural;
+    }
+
     /**
      * Returns the description of this representation
      * see {@link #getText()}
