@@ -25,6 +25,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.TermType;
 
 /**
  * A subclass of the Feature class that is meant for handling
@@ -137,6 +138,7 @@ public class Character extends Feature {
     @Deprecated
     protected Character() {
         super();
+        this.setTermType(TermType.Character);
     }
 
 
@@ -160,6 +162,7 @@ public class Character extends Feature {
      */
     protected Character(FeatureNode structure, FeatureNode property, String term, String label, String labelAbbrev) {
         super(term, label, labelAbbrev);
+        this.setTermType(TermType.Character);
         this.structure = structure;
         this.property = property;
     }

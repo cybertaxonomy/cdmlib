@@ -485,6 +485,19 @@ public enum TermType implements IEnumTerm<TermType>{
     @XmlEnumValue("StructureModifier")
     StructureModifier(UUID.fromString("41617e59-17c9-47f5-8fe6-319e117447ce"), "Structure Modifier", "STMO", Modifier),
 
+
+    //37
+    /**
+     * The type for {@link Character characters}. Is subtype of {@link #Feature}
+     * @see TermType#Feature
+     * @deprecated not yet clear if really needed, might be replaced in future
+     * by {@value TermType#Feature}
+     */
+    @XmlEnumValue("Character")
+    @Deprecated
+    Character(UUID.fromString("70baa056-4a3c-4a79-860f-934765c626c4"), "Character", "CHA", Feature),
+
+
     ;
 
 
@@ -559,6 +572,8 @@ public enum TermType implements IEnumTerm<TermType>{
                 return DefinedTerm.NewInstance(this, null, "Untitled", null);
             case Feature:
                 return eu.etaxonomy.cdm.model.description.Feature.NewInstance(null, "Untitled", null);
+            case Character:
+                return eu.etaxonomy.cdm.model.description.Character.NewInstance(null, null, null, "Untitled", null);
             case State:
                 return eu.etaxonomy.cdm.model.description.State.NewInstance(null, "Untitled", null);
             case MarkerType:
