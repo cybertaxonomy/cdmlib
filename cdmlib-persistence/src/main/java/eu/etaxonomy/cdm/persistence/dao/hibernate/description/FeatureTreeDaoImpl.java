@@ -15,9 +15,12 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VocabularyEnum;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -26,6 +29,7 @@ import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
 /**
  * @author a.mueller
@@ -102,6 +106,31 @@ public class FeatureTreeDaoImpl extends IdentifiableDaoBase<FeatureTree> impleme
         FeatureTree featureTree = FeatureTree.NewInstance(selectedFeatures);
         featureTree.setUuid(DefaultFeatureTreeUuid);
         return featureTree;
+    }
+
+    @Override
+    public <S extends FeatureTree> List<UuidAndTitleCache<S>> getUuidAndTitleCacheByTermType(Class<S> clazz, TermType termType, Integer limit,
+            String pattern) {
+        Session session = getSession();
+        Query query = session.createQuery(
+                " SELECT uuid, id, titleCache "
+                        + " FROM " + clazz.getSimpleName()
+                        + (pattern!=null?" WHERE titleCache LIKE :pattern":" WHERE 1 = 1 ")
+                        + (termType!=null?" AND termType = :termType ":"")
+                );
+        if(pattern!=null){
+            pattern = pattern.replace("*", "%");
+            pattern = pattern.replace("?", "_");
+            pattern = pattern + "%";
+            query.setParameter("pattern", pattern);
+        }
+        if(termType!=null){
+            query.setParameter("termType", termType);
+        }
+        if (limit != null){
+           query.setMaxResults(limit);
+        }
+        return getUuidAndTitleCache(query);
     }
 
 

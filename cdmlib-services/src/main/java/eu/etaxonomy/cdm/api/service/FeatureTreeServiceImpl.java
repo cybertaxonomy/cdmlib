@@ -25,10 +25,12 @@ import eu.etaxonomy.cdm.api.service.config.FeatureNodeDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 @Service
@@ -135,5 +137,11 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree,
         }
         return result;
 
+    }
+
+    @Override
+    public <S extends FeatureTree> List<UuidAndTitleCache<S>> getUuidAndTitleCacheByTermType(Class<S> clazz, TermType termType, Integer limit,
+            String pattern) {
+        return dao.getUuidAndTitleCacheByTermType(clazz, termType, limit, pattern);
     }
 }
