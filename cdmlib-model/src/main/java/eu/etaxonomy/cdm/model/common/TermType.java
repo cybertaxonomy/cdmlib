@@ -546,6 +546,9 @@ public enum TermType implements IEnumTerm<TermType>{
     public DefinedTermBase getEmptyDefinedTermBase() {
         switch(this) {
             case DeterminationModifier:
+            case StructureModifier:
+            case Property:
+            case Structure:
             case Modifier:
             case Scope:
             case Sex:
