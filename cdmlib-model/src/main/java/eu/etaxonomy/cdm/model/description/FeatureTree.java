@@ -257,7 +257,7 @@ public class FeatureTree
 	 */
 	@Transient
 	public Set<Feature> getDistinctFeatures(){
-	    if(termType.equals(TermType.Feature)){
+	    if(termType.equals(TermType.Feature) || termType.isKindOf(TermType.Feature)){
 	        Set<Feature> features = new HashSet<>();
 	        return root.getDistinctFeaturesRecursive(features);
 	    }
