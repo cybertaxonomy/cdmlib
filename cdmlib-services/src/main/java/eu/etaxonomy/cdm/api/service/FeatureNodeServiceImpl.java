@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandlin
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
@@ -54,7 +55,6 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<FeatureNode, 
 	     DeleteResult result = new DeleteResult();
 	     FeatureNode node = HibernateProxyHelper.deproxy(dao.load(nodeUuid), FeatureNode.class);
 	     result = isDeletable(node, config);
-	     Feature feature;
 	     if (result.isOk()){
 	         FeatureNode parent = node.getParent();
              parent = HibernateProxyHelper.deproxy(parent, FeatureNode.class);
@@ -91,40 +91,40 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<FeatureNode, 
 	             result.addUpdatedObject(parent);
 	         }
 	         if (config.isDeleteElement()){
-                 feature = node.getFeature();
-                 termService.delete(feature.getUuid());
-                 result.addDeletedObject(feature);
+	             DefinedTermBase term = node.getTerm();
+                 termService.delete(term.getUuid());
+                 result.addDeletedObject(term);
              }
 	     }
 	     return result;
 	 }
 
 	 @Override
-	 public UpdateResult createChildFeatureNode(FeatureNode node, Feature featureChild){
-	     Feature feature = (Feature) termService.save(featureChild);
+	 public UpdateResult createChildFeatureNode(FeatureNode node, DefinedTermBase term){
+	     Feature feature = (Feature) termService.save(term);
 	     return addChildFeatureNode(node, feature);
 	 }
 
 	 @Override
-	 public UpdateResult addChildFeatureNode(FeatureNode node, Feature featureChild){
+	 public UpdateResult addChildFeatureNode(FeatureNode node, DefinedTermBase featureChild){
 	     return addChildFeatureNode(node, featureChild, 0);
 	 }
 
      @Override
-     public UpdateResult addChildFeatureNode(UUID nodeUUID, UUID featureChildUuid){
-         return addChildFeatureNode(nodeUUID, featureChildUuid, 0);
+     public UpdateResult addChildFeatureNode(UUID nodeUUID, UUID termChildUuid){
+         return addChildFeatureNode(nodeUUID, termChildUuid, 0);
      }
 
 	 @Override
-	 public UpdateResult addChildFeatureNode(UUID nodeUUID, UUID featureChildUuid, int position){
+	 public UpdateResult addChildFeatureNode(UUID nodeUUID, UUID termChildUuid, int position){
 	     FeatureNode node = load(nodeUUID);
-         Feature child = HibernateProxyHelper.deproxy(termService.load(featureChildUuid), Feature.class);
+         Feature child = HibernateProxyHelper.deproxy(termService.load(termChildUuid), Feature.class);
          return addChildFeatureNode(node, child, position);
 	 }
 
      @Override
-     public UpdateResult addChildFeatureNode(FeatureNode node, Feature featureChild, int position){
-         FeatureNode childNode = FeatureNode.NewInstance(featureChild);
+     public UpdateResult addChildFeatureNode(FeatureNode node, DefinedTermBase term, int position){
+         FeatureNode childNode = FeatureNode.NewInstance(term);
          UpdateResult result = new UpdateResult();
          if(position<0) {
              node.addChild(childNode);
