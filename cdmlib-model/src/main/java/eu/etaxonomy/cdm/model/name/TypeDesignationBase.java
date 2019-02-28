@@ -277,7 +277,7 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
      * {@inheritDoc}
      */
     @Override
-    protected IdentifiableSource createNewInstance(OriginalSourceType type, String idInSource, String idNamespace,
+    protected IdentifiableSource createNewSource(OriginalSourceType type, String idInSource, String idNamespace,
             Reference reference, String microReference, String originalInfo) {
         return IdentifiableSource.NewInstance(type, idInSource, idNamespace, reference, microReference, originalInfo);
     }
