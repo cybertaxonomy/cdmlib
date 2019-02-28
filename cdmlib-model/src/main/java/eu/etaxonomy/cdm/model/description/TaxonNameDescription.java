@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.hibernate.search.NotNullAwareIdBridge;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.description.TaxonNameDescriptionDefaultCacheStrategy;
 
 /**
  * This class represents all piece of information (not ruled by a {@link NomenclaturalCode nomenclatural code})
@@ -94,7 +94,7 @@ public class TaxonNameDescription extends DescriptionBase<IIdentifiableEntityCac
      */
     private TaxonNameDescription() {
         super();
-        this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy();
+        this.cacheStrategy = new TaxonNameDescriptionDefaultCacheStrategy();
     }
 
 //************************* GETTER /SETTER ***************************************/
