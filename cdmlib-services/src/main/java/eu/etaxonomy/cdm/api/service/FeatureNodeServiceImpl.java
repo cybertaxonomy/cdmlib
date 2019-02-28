@@ -25,7 +25,6 @@ import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableExcepti
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureNodeDao;
@@ -101,8 +100,8 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<FeatureNode, 
 
 	 @Override
 	 public UpdateResult createChildFeatureNode(FeatureNode node, DefinedTermBase term){
-	     Feature feature = (Feature) termService.save(term);
-	     return addChildFeatureNode(node, feature);
+	     term = termService.save(term);
+	     return addChildFeatureNode(node, term);
 	 }
 
 	 @Override
@@ -118,7 +117,7 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<FeatureNode, 
 	 @Override
 	 public UpdateResult addChildFeatureNode(UUID nodeUUID, UUID termChildUuid, int position){
 	     FeatureNode node = load(nodeUUID);
-         Feature child = HibernateProxyHelper.deproxy(termService.load(termChildUuid), Feature.class);
+	     DefinedTermBase child = HibernateProxyHelper.deproxy(termService.load(termChildUuid), DefinedTermBase.class);
          return addChildFeatureNode(node, child, position);
 	 }
 
