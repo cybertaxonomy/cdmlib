@@ -596,3 +596,4 @@ public enum TermType implements IEnumTerm<TermType>{
     public static TermType getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
 
 }
+
