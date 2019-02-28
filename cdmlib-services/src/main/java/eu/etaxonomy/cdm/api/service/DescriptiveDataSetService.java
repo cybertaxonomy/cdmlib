@@ -358,7 +358,9 @@ public class DescriptiveDataSetService
 
         // delete existing aggregation description, if present
         TaxonDescription aggregation = findTaxonDescriptionByMarkerType(dataSet, taxon, MarkerType.COMPUTED());
-        removeDescription(aggregation.getUuid(), descriptiveDataSetUuid);
+        if(aggregation!=null){
+            removeDescription(aggregation.getUuid(), descriptiveDataSetUuid);
+        }
 
         // create new aggregation
         TaxonDescription description = TaxonDescription.NewInstance(taxon);
