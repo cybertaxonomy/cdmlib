@@ -94,7 +94,7 @@ public class PolytomousKeyTest {
 	public void testPrint() {
 		PrintStream stream = null;
 		String strKey = key1.print(stream);
-		System.out.println(strKey);
+//		System.out.println(strKey);
 		Assert.assertEquals(
 				"",
 				"My Test Key\n  1. Is this Aus bus?\n    a) Yes ... 2, Aus bus L.\n    b) No ... Cus dus Mill.\n  2. Leaf\n    a) Long and wide ... Cus dus subs. rus L., Second Key\n    b) Small and narrow ... Cus dus subs. zus L., Second Key 1\n",
@@ -109,7 +109,7 @@ public class PolytomousKeyTest {
 		assertNotSame(clone.getRoot(), key1.getRoot());
 		assertTrue(clone.getRoot().getChildren().size() == 0);
 		assertTrue(key1.getRoot().getChildren().size()> 0);
-			
+
 	}
 	// @Test
 	// public void testGetChildren() {

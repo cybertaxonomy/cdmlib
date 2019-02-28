@@ -93,7 +93,6 @@ public enum VocabularyEnum {
 	TaxonNodeAgentRelationType("0aa8e0c6-c7b5-42dd-91b7-0bd273a64b2c", DefinedTerm.class)
 	;
 
-
 	private UUID uuid;
 	private Class<? extends DefinedTermBase<?>> clazz;
 
