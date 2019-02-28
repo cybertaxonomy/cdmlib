@@ -324,7 +324,7 @@ public class SchemaUpdater_50_55 extends SchemaUpdaterBase {
         //Update misapplied name symbols
         String stepName = "Update misapplied name symbols";
         String query = "UPDATE @@DefinedTermBase@@ "
-                + " SET symbol='"+UTF8.EM_DASH_DOUBLE+"' , inverseSymbol = '"+UTF8.EM_DASH+"' "
+                + " SET symbol='"+UTF8.EM_DASH_DOUBLE+"' , inverseSymbol = '"+UTF8.EN_DASH+"' "
                 + " WHERE uuid = '1ed87175-59dd-437e-959e-0d71583d8417' ";
         String tableName = "DefinedTermBase";
         ISchemaUpdaterStep step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, tableName, -99);
