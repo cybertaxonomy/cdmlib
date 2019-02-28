@@ -94,7 +94,7 @@ public abstract class SourcedEntityBase<SOURCE extends OriginalSourceBase<? exte
         if (id == null && idNamespace == null && citation == null && microCitation == null){
             return null;
         }
-        SOURCE source = createNewInstance(type, id, idNamespace, citation, microCitation, null);
+        SOURCE source = createNewSource(type, id, idNamespace, citation, microCitation, null);
         addSource(source);
         return source;
     }
@@ -113,7 +113,7 @@ public abstract class SourcedEntityBase<SOURCE extends OriginalSourceBase<? exte
         if (id == null && idNamespace == null && citation == null && microCitation == null){
             return null;
         }
-        SOURCE source = createNewInstance(OriginalSourceType.Import, id, idNamespace, citation, microCitation, null);
+        SOURCE source = createNewSource(OriginalSourceType.Import, id, idNamespace, citation, microCitation, null);
         addSource(source);
         return source;
     }
@@ -123,7 +123,7 @@ public abstract class SourcedEntityBase<SOURCE extends OriginalSourceBase<? exte
         if (citation == null && microCitation == null){
             return null;
         }
-        SOURCE source = createNewInstance(OriginalSourceType.PrimaryTaxonomicSource, null, null, citation, microCitation, null);
+        SOURCE source = createNewSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, citation, microCitation, null);
         addSource(source);
         return source;
     }
@@ -157,7 +157,7 @@ public abstract class SourcedEntityBase<SOURCE extends OriginalSourceBase<? exte
         this.sources.clear();
     }
 
-    protected abstract SOURCE createNewInstance(OriginalSourceType type, String idInSource, String idNamespace, Reference citation, String microReference, String originalNameString);
+    protected abstract SOURCE createNewSource(OriginalSourceType type, String idInSource, String idNamespace, Reference citation, String microReference, String originalNameString);
 
 //****************** CLONE ************************************************/
 

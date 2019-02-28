@@ -158,14 +158,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @NotNull
     private List<Identifier> identifiers = new ArrayList<>();
 
-//    @XmlElementWrapper(name = "Sources", nillable = true)
-//    @XmlElement(name = "IdentifiableSource")
-//    @OneToMany(fetch = FetchType.LAZY)
-//    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
-//    @Merge(MergeMode.ADD_CLONE)
-//    @NotNull
-//    private Set<IdentifiableSource> sources = new HashSet<>();
-
     @XmlTransient
     @Transient
     protected S cacheStrategy;
@@ -549,7 +541,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
      * {@inheritDoc}
      */
     @Override
-    protected IdentifiableSource createNewInstance(OriginalSourceType type, String idInSource, String idNamespace,
+    protected IdentifiableSource createNewSource(OriginalSourceType type, String idInSource, String idNamespace,
             Reference reference, String microReference, String originalInfo) {
         return IdentifiableSource.NewInstance(type, idInSource, idNamespace, reference, microReference, originalInfo);
     }
