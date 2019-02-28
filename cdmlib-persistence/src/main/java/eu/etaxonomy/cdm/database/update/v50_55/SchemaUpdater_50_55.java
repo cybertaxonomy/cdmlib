@@ -333,7 +333,7 @@ public class SchemaUpdater_50_55 extends SchemaUpdaterBase {
         //Update pro parte misapplied name symbols
         stepName = "Update pro parte misapplied name symbols";
         query = "UPDATE @@DefinedTermBase@@ "
-                + " SET symbol='"+UTF8.EM_DASH_DOUBLE+"(p.p.)' , inverseSymbol = '"+UTF8.EM_DASH+"(p.p.)' "
+                + " SET symbol='"+UTF8.EM_DASH_DOUBLE+"(p.p.)' , inverseSymbol = '"+UTF8.EN_DASH+"(p.p.)' "
                 + " WHERE uuid = 'b59b4bd2-11ff-45d1-bae2-146efdeee206' ";
         tableName = "DefinedTermBase";
         step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, tableName, -99);
@@ -342,7 +342,7 @@ public class SchemaUpdater_50_55 extends SchemaUpdaterBase {
         //Update partial misapplied name symbols
         stepName = "Update partial misapplied name symbols";
         query = "UPDATE @@DefinedTermBase@@ "
-                + " SET symbol='"+UTF8.EM_DASH_DOUBLE+"(part.)' , inverseSymbol = '"+UTF8.EM_DASH+"(part.)' "
+                + " SET symbol='"+UTF8.EM_DASH_DOUBLE+"(part.)' , inverseSymbol = '"+UTF8.EN_DASH+"(part.)' "
                 + " WHERE uuid = '859fb615-b0e8-440b-866e-8a19f493cd36' ";
         tableName = "DefinedTermBase";
         step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, tableName, -99);
