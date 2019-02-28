@@ -192,6 +192,20 @@ public class FeatureNode extends VersionableEntity
 		return result;
 	}
 
+	/**
+	 * Creates a new feature node instance only with the given {@link DefinedTermBase term}
+	 * (without parent and children). The termType of the feature node is the termType of
+	 * the given term
+	 *
+	 * @param	term	the term assigned to the new feature node
+	 * @see 			#NewInstance()
+	 */
+	public static FeatureNode NewInstance(DefinedTermBase term){
+	    FeatureNode result = new FeatureNode(term.getTermType());
+	    result.setTerm(term);
+	    return result;
+	}
+
 // ******************** CONSTRUCTOR ***************************************/
 
 	//TODO needed?

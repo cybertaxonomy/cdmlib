@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.config.FeatureNodeDeletionConfigurator;
-import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 
 /**
@@ -23,64 +23,54 @@ import eu.etaxonomy.cdm.model.description.FeatureNode;
 public interface IFeatureNodeService extends IVersionableService<FeatureNode>{
 
 
-    /**
-     * @param node
-     * @param config
-     * @return
-     */
     DeleteResult isDeletable(FeatureNode node, FeatureNodeDeletionConfigurator config);
 
-    /**
-     * @param nodeUuid
-     * @param config
-     * @return
-     */
     DeleteResult deleteFeatureNode(UUID nodeUuid, FeatureNodeDeletionConfigurator config);
 
 
     /**
-     * Adds the specified feature as a child node to the given feature node
-     * @param parentNode the feature node where the new feature should be added
-     * @param featureChild the feature which should be added to the given feature node
+     * Adds the specified term as a child node to the given feature node
+     * @param parentNode the feature node where the new term should be added
+     * @param term the term which should be added to the given feature node
      * @return the result of the operation
      */
-    public UpdateResult addChildFeatureNode(FeatureNode parentNode, Feature featureChild);
+    public UpdateResult addChildFeatureNode(FeatureNode parentNode, DefinedTermBase term);
 
     /**
      * Adds the specified feature as a child node to the given feature node
      * @param parentNode the feature node where the new feature should be added
-     * @param featureChild the feature which should be added to the given feature node
+     * @param term the term which should be added to the given feature node
      * @param position the position where the child node should be added
      * @return the result of the operation
      */
-    public UpdateResult addChildFeatureNode(FeatureNode parentNode, Feature featureChild, int position);
+    public UpdateResult addChildFeatureNode(FeatureNode parentNode, DefinedTermBase term, int position);
 
 
     /**
      * <b>Saves</b> and adds the specified feature as a child node to the given feature node.
-     * @see IFeatureNodeService#addChildFeatureNode(FeatureNode, Feature)
+     * @see IFeatureNodeService#addChildFeatureNode(FeatureNode, DefinedTermBase)
      * @param parentNode the feature node where the new feature should be added
-     * @param featureChild the feature which should be <b>saved</b> and added to the given feature node
+     * @param term the term which should be <b>saved</b> and added to the given feature node
      * @return the result of the operation
      */
-    public UpdateResult createChildFeatureNode(FeatureNode node, Feature featureChild);
+    public UpdateResult createChildFeatureNode(FeatureNode node, DefinedTermBase term);
 
     /**
      * Adds the specified feature as a child node to the given feature node
      * @param parentNodeUUID the UUID of the feature node where the new feature should be added
-     * @param featureChildUuid the UUID of the feature which should be added to the given feature node
+     * @param termChildUuid the UUID of the term which should be added to the given feature node
      * @return the result of the operation
      */
-    public UpdateResult addChildFeatureNode(UUID parentNodeUUID, UUID featureChildUuid);
+    public UpdateResult addChildFeatureNode(UUID parentNodeUUID, UUID termChildUuid);
 
     /**
      * Adds the specified feature as a child node to the given feature node at the given position
      * @param parentNodeUUID the UUID of the feature node where the new feature should be added
-     * @param featureChildUuid the UUID of the feature which should be added to the given feature node
+     * @param termChildUuid the UUID of the term which should be added to the given feature node
      * @param position the position where the child node should be added
      * @return the result of the operation
      */
-    public UpdateResult addChildFeatureNode(UUID parentNodeUUID, UUID featureChildUuid, int position);
+    public UpdateResult addChildFeatureNode(UUID parentNodeUUID, UUID termChildUuid, int position);
 
     /**
      * Moves a given {@link FeatureNode} to the target node at the given position;

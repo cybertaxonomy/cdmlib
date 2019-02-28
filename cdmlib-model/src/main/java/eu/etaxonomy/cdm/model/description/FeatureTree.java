@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.description;
 
+import java.rmi.UnexpectedException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -256,9 +257,13 @@ public class FeatureTree
 	 */
 	@Transient
 	public Set<Feature> getDistinctFeatures(){
-		Set<Feature> features = new HashSet<>();
-
-		return root.getDistinctFeaturesRecursive(features);
+	    if(termType.equals(TermType.Feature)){
+	        Set<Feature> features = new HashSet<>();
+	        return root.getDistinctFeaturesRecursive(features);
+	    }
+	    String message = "FeatureTree is not of type FEATURE.";
+	    logger.warn(message, new UnexpectedException(message));
+	    return new HashSet<>();
 	}
 
 //*********************** CLONE ********************************************************/
