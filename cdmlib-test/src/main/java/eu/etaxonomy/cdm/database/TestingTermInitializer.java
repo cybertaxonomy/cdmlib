@@ -124,10 +124,8 @@ public class TestingTermInitializer extends DefaultTermInitializer {
                 DatabaseOperation.CLEAN_INSERT.execute(connection, dataSet);
 
             } catch (Exception e) {
-                logger.error(e);
-                for(StackTraceElement ste : e.getStackTrace()) {
-                    logger.error(ste);
-                }
+                logger.error(e.getMessage(), e);
+                throw new RuntimeException(e);
             } finally {
 //                try {
 //                    this.transactionManager.commit(txStatus);
