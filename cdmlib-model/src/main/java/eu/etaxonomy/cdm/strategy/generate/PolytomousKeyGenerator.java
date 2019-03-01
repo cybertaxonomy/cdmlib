@@ -806,14 +806,14 @@ public class PolytomousKeyGenerator {
 	 *
 	 * @param node
 	 */
-	private void checkDependencies(FeatureNode node){
+	private void checkDependencies(FeatureNode<Feature> node){
 		if (node.getOnlyApplicableIf()!=null){
 			Set<State> addToOAI = node.getOnlyApplicableIf();
 			for (State state : addToOAI){
 				if (oAIdependencies.containsKey(state)) {
                     oAIdependencies.put(state, new HashSet<Feature>());
                 }
-				oAIdependencies.get(state).add(node.getFeature());
+				oAIdependencies.get(state).add(node.getTerm());
 			}
 		}
 		if (node.getInapplicableIf()!=null){
@@ -822,7 +822,7 @@ public class PolytomousKeyGenerator {
 				if (iIdependencies.containsKey(state)) {
                     iIdependencies.put(state, new HashSet<Feature>());
                 }
-				iIdependencies.get(state).add(node.getFeature());
+				iIdependencies.get(state).add(node.getTerm());
 			}
 		}
 		if (node.getChildNodes()!=null) {
