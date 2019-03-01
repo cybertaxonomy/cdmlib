@@ -26,7 +26,7 @@ public interface IHasTermType {
         if (term != null && term2 != null){
             checkTermTypeNull(term);
             checkTermTypeNull(term2);
-            if (term.getTermType()!= term.getTermType()){
+            if (term.getTermType()!= term2.getTermType()){
                 throw new IllegalArgumentException("Term types must match");
             }
         }
