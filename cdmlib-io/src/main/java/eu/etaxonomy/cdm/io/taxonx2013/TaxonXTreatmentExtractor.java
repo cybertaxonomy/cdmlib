@@ -308,7 +308,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         if (proibiospheretree == null){
             List<FeatureTree> trees = importer.getFeatureTreeService().list(FeatureTree.class, null, null, null, null);
             if (trees.size()==1) {
-                FeatureTree ft = trees.get(0);
+                FeatureTree<Feature> ft = trees.get(0);
                 if (featuresMap==null) {
                     featuresMap=new HashMap<String, Feature>();
                 }
@@ -2145,7 +2145,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                                     //System.out.println("NEW ACCEPTED HERE "+nameToBeFilled);
                                 }
                                 else {
-                                    acceptedTaxon= Taxon.NewInstance(nameToBeFilled,(Reference) nameToBeFilled.getNomenclaturalReference() );//TODO TOFIX reference
+                                    acceptedTaxon= Taxon.NewInstance(nameToBeFilled,nameToBeFilled.getNomenclaturalReference() );//TODO TOFIX reference
                                     //System.out.println("NEW ACCEPTED HERE2 "+nameToBeFilled);
                                 }
 

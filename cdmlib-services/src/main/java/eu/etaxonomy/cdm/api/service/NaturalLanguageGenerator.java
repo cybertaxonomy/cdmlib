@@ -11,6 +11,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.AnnotationType;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -20,14 +23,11 @@ import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.description.TextFormat;
-import eu.etaxonomy.cdm.model.common.Annotation;
-import eu.etaxonomy.cdm.model.common.AnnotationType;
-import eu.etaxonomy.cdm.model.common.Language;
 
 
 /**
  * Generator of natural language descriptions from TaxonDescriptions.
- * 
+ *
  * @author m.venin
  * @since 13.04.2010
  * @version 1.0
@@ -45,7 +45,7 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 	private DescriptionBuilder<CategoricalData> categoricalDescriptionBuilder = new DefaultCategoricalDescriptionBuilder();
 
 	private TextData previousTextData;
-	
+
 	DeltaTextDataProcessor deltaTextDataProcessor = new DeltaTextDataProcessor();
 
 	private Map<String, INaturalLanguageTextDataProcessor> elementProcessors;
@@ -54,7 +54,7 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 
 	/**
 	 * Change the first separator used by generateSingleTextData. By default ",".
-	 * 
+	 *
 	 * @param separator
 	 */
 	public void setFirstSeparator(String separator){
@@ -67,7 +67,7 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 
 	/**
 	 * Change the second separator used by generateSingleTextData. By default ".".
-	 * 
+	 *
 	 * @param separator
 	 */
 	public void setSecondSeparator(String separator){
@@ -103,7 +103,7 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 	 * The keys of the elementProcessors map are regular expressions which are
 	 * being used to identify the those Descriptions to which the mapped
 	 * NaturalLanguageTextDataProcessor is applicable.
-	 * 
+	 *
 	 * @param elementProcessors
 	 */
 	public void setElementProcessors(
@@ -115,7 +115,7 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 	 * Looks for technical annotations, if one matches a regular expression of the element processors
 	 * the associated processor is added to the applicable element processors which will then be applied
 	 * when generating the description.
-	 * 
+	 *
 	 * @param annotations the set of annotations of the description
 	 */
 	private void initNaturalLanguageDescriptionElementProcessors(Set<Annotation> annotations) {
@@ -138,7 +138,7 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 
 	/**
 	 * Applies the list of applicable processors to a TextData.
-	 * 
+	 *
 	 * @param textData the TextData to be modified
 	 * @param previousTextData the TextData corresponding to the feature of the previous level in the tree
 	 */
@@ -151,13 +151,14 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 
 	/**
 	 * The most simple function to generate a description. The language used is the default one.
-	 * 
+	 *
 	 * @param featureTree the FeatureTree holding the order in which features and their states must be printed
 	 * @param description the TaxonDescription with all the data
-	 * 
+	 *
 	 * @return a list of TextData, each one being a basic element of the natural language description
 	 */
-	public List<TextData> generateNaturalLanguageDescription(FeatureTree featureTree,TaxonDescription description) {
+	@Override
+    public List<TextData> generateNaturalLanguageDescription(FeatureTree featureTree,TaxonDescription description) {
 		return generateNaturalLanguageDescription(featureTree,description,Language.DEFAULT());
 	}
 
@@ -165,14 +166,15 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 
 	/**
 	 * Generate a description in a specified language.
-	 * 
+	 *
 	 * @param featureTree the FeatureTree holding the order in which features and their states must be printed
 	 * @param description the TaxonDescription with all the data
 	 * @param language the language in which the description has to be printed
-	 * 
+	 *
 	 * @return a list of TextData, each one being a basic element of the natural language description
 	 */
-	public List<TextData> generateNaturalLanguageDescription(FeatureTree featureTree, TaxonDescription description,	Language language) {
+	@Override
+    public List<TextData> generateNaturalLanguageDescription(FeatureTree featureTree, TaxonDescription description,	Language language) {
 		List<Language> languages = new ArrayList<Language>();
 		languages.add(language);
 		initNaturalLanguageDescriptionElementProcessors(description.getAnnotations());
@@ -181,40 +183,43 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 
 	/**
 	 * Generate a description with a specified list of preferred languages.
-	 * 
+	 *
 	 * @param featureTree the FeatureTree holding the order in which features and their states must be printed
 	 * @param description the TaxonDescription with all the data
 	 * @param languages the ordered list of languages preferred for printing the description
-	 * 
+	 *
 	 * @return a list of TextData, each one being a basic element of the natural language description
 	 */
-	public List<TextData> generatePreferredNaturalLanguageDescription(FeatureTree featureTree,TaxonDescription description, List<Language> languages) {
+	@Override
+    public List<TextData> generatePreferredNaturalLanguageDescription(FeatureTree featureTree,TaxonDescription description, List<Language> languages) {
 		initNaturalLanguageDescriptionElementProcessors(description.getAnnotations());
 		return buildBranchesDescr(featureTree.getRootChildren(), featureTree.getRoot(), description, languages,0);
 	}
 
 	/**
 	 * Generate a description as a single paragraph in a TextData.
-	 * 
+	 *
 	 * @param featureTree the FeatureTree holding the order in which features and their states must be printed
 	 * @param description the TaxonDescription with all the data
-	 * 
+	 *
 	 * @return a TextData in the default language.
 	 */
-	public TextData generateSingleTextData(FeatureTree featureTree, TaxonDescription description) {
+	@Override
+    public TextData generateSingleTextData(FeatureTree featureTree, TaxonDescription description) {
 		return generateSingleTextData(featureTree,description,Language.DEFAULT());
 	}
 
 	/**
 	 * Generate a description as a single paragraph in a TextData.
-	 * 
+	 *
 	 * @param featureTree the FeatureTree holding the order in which features and their states must be printed
 	 * @param description the TaxonDescription with all the data
 	 * @param language the language in which the description has to be printed
-	 * 
+	 *
 	 * @return a TextData in the specified language.
 	 */
-	public TextData generateSingleTextData(FeatureTree featureTree, TaxonDescription description, Language language) {
+	@Override
+    public TextData generateSingleTextData(FeatureTree featureTree, TaxonDescription description, Language language) {
 		List<Language> languages = new ArrayList<Language>();
 		languages.add(language);
 		return generatePreferredSingleTextData(featureTree,description,languages);
@@ -222,14 +227,15 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 
 	/**
 	 * Generate a description with a specified list of preferred languages.
-	 * 
+	 *
 	 * @param featureTree the FeatureTree holding the order in which features and their states must be printed
 	 * @param description the TaxonDescription with all the data
 	 * @param languages the ordered list of languages preferred for printing the description
-	 * 
+	 *
 	 * @return a TextData using the languages (in the given order of preference)
 	 */
-	public TextData generatePreferredSingleTextData(FeatureTree featureTree, TaxonDescription description, List<Language> languages) {
+	@Override
+    public TextData generatePreferredSingleTextData(FeatureTree featureTree, TaxonDescription description, List<Language> languages) {
 		levels.clear(); // before the start, the table containing the levels of each node must be cleared
 		// Note: this is not the most efficient way to keep track of the levels of the nodes but it allows some flexibility
 		List<TextData> texts = generatePreferredNaturalLanguageDescription(featureTree,description, languages);// first get the description as a raw list of TextData
@@ -246,19 +252,26 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 					startSentence=true;
 					firstOne=false;
 					String asString = texts.get(i).getText(Language.DEFAULT()).toString();
-					if (asString.length()>1) descriptionStringBuilder.append(asString.substring(0,1).toUpperCase() + asString.substring(1));
+					if (asString.length()>1) {
+                        descriptionStringBuilder.append(asString.substring(0,1).toUpperCase() + asString.substring(1));
+                    }
 				}
 				i++;
 			}
 			else if (level==0) { // if this node is a leaf
-				if (startSentence) descriptionStringBuilder.append(texts.get(i).getText(Language.DEFAULT()));
-				else descriptionStringBuilder.append(firstSeparator + texts.get(i).getText(Language.DEFAULT()));
+				if (startSentence) {
+                    descriptionStringBuilder.append(texts.get(i).getText(Language.DEFAULT()));
+                } else {
+                    descriptionStringBuilder.append(firstSeparator + texts.get(i).getText(Language.DEFAULT()));
+                }
 				startSentence=false;
 				i++;
 			}
 			else {
 				if (!firstOne && levels.get(j-1).equals(0)){ // if this node corresponds to the states linked to the previous leaf
-					if (i<texts.size()) descriptionStringBuilder.append(texts.get(i).getText(Language.DEFAULT()));
+					if (i<texts.size()) {
+                        descriptionStringBuilder.append(texts.get(i).getText(Language.DEFAULT()));
+                    }
 					i++;
 				}
 			}
@@ -274,7 +287,7 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 
 	/** recursive function that goes through a tree containing the order in which the description has to be generated,
 	 *  if an element of this tree matches one of the TaxonDescription, a DescriptionBuilder is called which returns a TextData with the corresponding description.
-	 * 
+	 *
 	 * @param children the children of the feature node considered
 	 * @param parent the feature node considered
 	 * @param description the TaxonDescription element for which we want a natural language output
@@ -282,20 +295,22 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 	 * @param floor integer to keep track of the level in the tree
 	 * @return a list of TextData elements containing the part of description corresponding to the feature node considered
 	 */
-	private List<TextData> buildBranchesDescr(List<FeatureNode> children, FeatureNode parent, TaxonDescription description, List<Language> languages, int floor) {
+	private List<TextData> buildBranchesDescr(List<FeatureNode> children, FeatureNode<Feature> parent, TaxonDescription description, List<Language> languages, int floor) {
 		List<TextData> listTextData = new ArrayList<TextData>();
 		floor++; // counter to know the current level in the tree
 
 		if (!parent.isLeaf()){ // if this node is not a leaf, continue recursively (only the leaves of a FeatureTree contain states)
 			levels.add(new Integer(floor)); // the level of the different nodes in the tree are kept, thus it is easier to build a structured text out of the List<TextData>
-			Feature feature = parent.getFeature();
+			Feature feature = parent.getTerm();
 			TextData featureName;
 			if (feature!=null && feature.getLabel()!=null){ // if a node is associated to a feature
 				featureName = categoricalDescriptionBuilder.buildTextDataFeature(feature, languages);
 				levels.add(new Integer(-1)); // it is indicated by a '-1' after its level
 				listTextData.add(featureName); // the TextData representing the name of the feature is concatenated to the list
 			}
-			else featureName = new TextData(); // else an empty TextData is created (because we keep track of the features, it is useful to inform when the upper node has no feature attached)
+            else {
+                featureName = new TextData(); // else an empty TextData is created (because we keep track of the features, it is useful to inform when the upper node has no feature attached)
+            }
 
 			for (Iterator<FeatureNode> ifn = children.iterator() ; ifn.hasNext() ;){
 				previousTextData = featureName; // this allows to keep track of the name of the feature one level up in the tree
@@ -304,7 +319,7 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 			}
 		}
 		else { //once a leaf is reached
-			Feature feature = parent.getFeature();
+			Feature feature = parent.getTerm();
 			if (feature!=null && (feature.isSupportsQuantitativeData() || feature.isSupportsCategoricalData())) {
 				Set<DescriptionElementBase> elements = description.getElements();
 				for (Iterator<DescriptionElementBase> deb = elements.iterator() ; deb.hasNext() ;){ // iterates over all the descriptions enclosed in the TaxonDescription
@@ -334,6 +349,6 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 			}
 		}
 		return listTextData;
-	}	
+	}
 
 }

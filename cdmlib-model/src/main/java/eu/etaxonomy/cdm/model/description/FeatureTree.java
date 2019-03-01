@@ -37,6 +37,7 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IHasTermType;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Representation;
@@ -76,7 +77,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
 //@Indexed(index = "eu.etaxonomy.cdm.model.description.FeatureTree")
 @Audited
-public class FeatureTree
+public class FeatureTree <T extends DefinedTermBase>
             extends IdentifiableEntity<IIdentifiableEntityCacheStrategy>
             implements IHasTermType, Cloneable{
 
@@ -84,9 +85,9 @@ public class FeatureTree
 	private static final Logger logger = Logger.getLogger(FeatureTree.class);
 
 	@XmlElement(name = "Root")
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.LAZY, targetEntity=FeatureNode.class)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
-	private FeatureNode root;
+	private FeatureNode<T> root;
 
     /**
      * The {@link TermType type} of this term collection. All nodes in the graph must refer to a term of the same type.
@@ -126,8 +127,8 @@ public class FeatureTree
      * with an empty {@link #getRoot() root node}.
      * @param termType the {@link TermType term type}, must not be null
      */
-    public static FeatureTree NewInstance(@NotNull TermType termType){
-        return new FeatureTree(termType);
+    public static <T extends DefinedTermBase<T>> FeatureTree<T> NewInstance(@NotNull TermType termType){
+        return new FeatureTree<>(termType);
     }
 
     /**
@@ -136,8 +137,8 @@ public class FeatureTree
 	 * @see #NewInstance(UUID)
 	 * @see #NewInstance(List)
 	 */
-	public static FeatureTree NewInstance(){
-		return new FeatureTree(TermType.Feature);
+	public static FeatureTree<Feature> NewInstance(){
+		return new FeatureTree<>(TermType.Feature);
 	}
 
 	/**
@@ -149,8 +150,8 @@ public class FeatureTree
 	 * @see 			#NewInstance()
 	 * @see 			#NewInstance(List)
 	 */
-	public static FeatureTree NewInstance(UUID uuid){
-		FeatureTree result =  new FeatureTree(TermType.Feature);
+	public static <T extends DefinedTermBase<T>> FeatureTree<T> NewInstance(UUID uuid){
+		FeatureTree<T> result =  new FeatureTree<>(TermType.Feature);
 		result.setUuid(uuid);
 		return result;
 	}
@@ -166,12 +167,12 @@ public class FeatureTree
 	 * @see 				#NewInstance()
 	 * @see 				#NewInstance(UUID)
 	 */
-	public static FeatureTree NewInstance(List<Feature> featureList){
-		FeatureTree result =  new FeatureTree(TermType.Feature);
-		FeatureNode root = result.getRoot();
+	public static FeatureTree<Feature> NewInstance(List<Feature> featureList){
+		FeatureTree<Feature> result =  new FeatureTree<>(TermType.Feature);
+		FeatureNode<Feature> root = result.getRoot();
 
 		for (Feature feature : featureList){
-			FeatureNode child = FeatureNode.NewInstance(feature);
+			FeatureNode<Feature> child = FeatureNode.NewInstance(feature);
 			root.addChild(child);
 		}
 
@@ -208,7 +209,7 @@ public class FeatureTree
 	 * recursively point to their child nodes the complete feature tree is
 	 * defined by its root node.
 	 */
-	public FeatureNode getRoot() {
+	public FeatureNode<T> getRoot() {
 		return root;
 	}
 
@@ -226,8 +227,8 @@ public class FeatureTree
 	 * children of the root node of <i>this</i> feature tree.
 	 */
 	@Transient
-	public List<FeatureNode> getRootChildren(){
-		List<FeatureNode> result = new ArrayList<>();
+	public List<FeatureNode<T>> getRootChildren(){
+		List<FeatureNode<T>> result = new ArrayList<>();
 		result.addAll(root.getChildNodes());
 		return result;
 	}
@@ -251,14 +252,14 @@ public class FeatureTree
 //******************** METHODS ***********************************************/
 
 	/**
-	 * Computes a set of distinct features that are present in this feature tree
+	 * Computes a set of distinct terms that are present in this feature tree
 	 *
 	 * @return
 	 */
 	@Transient
-	public Set<Feature> getDistinctFeatures(){
+	public Set<T> getDistinctFeatures(){
 	    if(termType.equals(TermType.Feature) || termType.isKindOf(TermType.Feature)){
-	        Set<Feature> features = new HashSet<>();
+	        Set<T> features = new HashSet<>();
 	        return root.getDistinctFeaturesRecursive(features);
 	    }
 	    String message = "FeatureTree is not of type FEATURE.";
@@ -281,15 +282,15 @@ public class FeatureTree
 	 */
 	@Override
 	public Object clone() {
-		FeatureTree result;
+		FeatureTree<T> result;
 		try {
-			result = (FeatureTree)super.clone();
+			result = (FeatureTree<T>)super.clone();
 		}catch (CloneNotSupportedException e) {
 			logger.warn("Object does not implement cloneable");
 			e.printStackTrace();
 			return null;
 		}
-		FeatureNode rootClone = this.getRoot().cloneDescendants();
+		FeatureNode<T> rootClone = this.getRoot().cloneDescendants();
 		result.root = rootClone;
 
 		return result;

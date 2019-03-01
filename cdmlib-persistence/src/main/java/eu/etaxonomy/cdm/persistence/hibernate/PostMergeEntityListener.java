@@ -102,8 +102,8 @@ public class PostMergeEntityListener implements MergeEventListener {
 
             }   else if(FeatureTree.class.isAssignableFrom(entityClazz)){
 
-                FeatureTree tree = (FeatureTree)entity;
-                for (FeatureNode node:tree.getRootChildren()){
+                FeatureTree<?> tree = (FeatureTree)entity;
+                for (FeatureNode<?> node:tree.getRootChildren()){
                     node.removeNullValueFromChildren();
                     if (node.getChildNodes() != null){
                         for (FeatureNode childNode: node.getChildNodes()){

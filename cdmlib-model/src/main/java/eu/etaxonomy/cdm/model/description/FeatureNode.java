@@ -45,7 +45,6 @@ import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IHasTermType;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
@@ -81,8 +80,8 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 @Entity
 @Audited
 @Table(name="FeatureNode", indexes = { @Index(name = "featureNodeTreeIndex", columnList = "treeIndex") })
-public class FeatureNode extends VersionableEntity
-            implements ITreeNode<FeatureNode>, IHasTermType, Cloneable {
+public class FeatureNode <T extends DefinedTermBase> extends VersionableEntity
+            implements ITreeNode<FeatureNode<T>>, IHasTermType, Cloneable {
 	private static final Logger logger = Logger.getLogger(FeatureNode.class);
 
     //This is the main key a node belongs to. Although other keys may also reference
@@ -90,11 +89,11 @@ public class FeatureNode extends VersionableEntity
 	@XmlElement(name = "FeatureTree")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity=FeatureTree.class)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE}) //TODO this usage is incorrect, needed only for OneToMany, check why it is here, can it be removed??
 	 //TODO Val #3379
 //    @NotNull
-	private FeatureTree featureTree;
+	private FeatureTree<T> featureTree;
 
     /**
      * The {@link TermType type} of this term node.
@@ -113,8 +112,8 @@ public class FeatureNode extends VersionableEntity
     @XmlElement(name = "Feature")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY)
-	private DefinedTermBase feature;
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity=DefinedTermBase.class)
+	private T feature;
 
     @XmlElement(name = "Parent")
     @XmlIDREF
@@ -122,7 +121,7 @@ public class FeatureNode extends VersionableEntity
     @ManyToOne(fetch = FetchType.LAZY, targetEntity=FeatureNode.class)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	@JoinColumn(name="parent_id")
-	private FeatureNode parent;
+	private FeatureNode<T> parent;
 
 
     @XmlElement(name = "treeIndex")
@@ -134,9 +133,9 @@ public class FeatureNode extends VersionableEntity
     //see https://dev.e-taxonomy.eu/trac/ticket/3722
     @OrderColumn(name="sortIndex")
     @OrderBy("sortIndex")
-	@OneToMany(fetch = FetchType.LAZY, mappedBy="parent")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy="parent", targetEntity=FeatureNode.class)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
-	private List<FeatureNode> children = new ArrayList<FeatureNode>();
+	private List<FeatureNode<T>> children = new ArrayList<>();
 
     //see https://dev.e-taxonomy.eu/trac/ticket/3722
     private Integer sortIndex;
@@ -166,8 +165,8 @@ public class FeatureNode extends VersionableEntity
      *
      * @see #NewInstance(Feature)
      */
-    public static FeatureNode NewInstance(TermType termType){
-        return new FeatureNode(termType);
+    public static <T extends DefinedTermBase<T>> FeatureNode<T> NewInstance(TermType termType){
+        return new FeatureNode<>(termType);
     }
 
 	/**
@@ -175,21 +174,8 @@ public class FeatureNode extends VersionableEntity
 	 *
 	 * @see #NewInstance(Feature)
 	 */
-	public static FeatureNode NewInstance(){
-		return new FeatureNode(TermType.Feature);
-	}
-
-	/**
-	 * Creates a new feature node instance only with the given {@link Feature feature}
-	 * (without parent and children).
-	 *
-	 * @param	feature	the feature assigned to the new feature node
-	 * @see 			#NewInstance()
-	 */
-	public static FeatureNode NewInstance(Feature feature){
-		FeatureNode result = new FeatureNode(TermType.Feature);
-		result.setTerm(feature);
-		return result;
+	public static FeatureNode<Feature> NewInstance(){
+		return new FeatureNode<>(TermType.Feature);
 	}
 
 	/**
@@ -200,8 +186,8 @@ public class FeatureNode extends VersionableEntity
 	 * @param	term	the term assigned to the new feature node
 	 * @see 			#NewInstance()
 	 */
-	public static FeatureNode NewInstance(DefinedTermBase term){
-	    FeatureNode result = new FeatureNode(term.getTermType());
+	public static <T extends DefinedTermBase<T>> FeatureNode<T> NewInstance(T term){
+	    FeatureNode<T> result = new FeatureNode<>(term.getTermType());
 	    result.setTerm(term);
 	    return result;
 	}
@@ -227,11 +213,11 @@ public class FeatureNode extends VersionableEntity
 
 //*************************** TREE ************************************/
 
-	public FeatureTree getFeatureTree() {
+	public FeatureTree<T> getFeatureTree() {
 		return featureTree;
 	}
 
-	protected void setFeatureTree(FeatureTree featureTree) {
+	protected void setFeatureTree(FeatureTree<T> featureTree) {
 		checkTermType(featureTree);
 	    this.featureTree = featureTree;
 	}
@@ -239,31 +225,15 @@ public class FeatureNode extends VersionableEntity
 //** ********************** FEATURE ******************************/
 
 	/**
-	 * Returns the {@link Feature feature} <i>this</i> feature node is based on.
-	 */
-	@Deprecated
-	public Feature getFeature() {
-		return CdmBase.deproxy(feature, Feature.class);
-	}
-	/**
-	 * @see	#getFeature()
-	 */
-	@Deprecated
-	public void setFeature(Feature feature) {
-	    checkTermType(feature);
-		this.feature = feature;
-	}
-
-	   /**
      * Returns the {@link Feature feature} <i>this</i> feature node is based on.
      */
-    public DefinedTermBase getTerm() {
+    public T getTerm() {
         return feature;
     }
     /**
      * @see #getFeature()
      */
-    public void setTerm(DefinedTermBase term) {
+    public void setTerm(T term) {
         checkTermType(term);
         this.feature = term;
     }
@@ -276,7 +246,7 @@ public class FeatureNode extends VersionableEntity
 	 * @see	#getChildNodes()
 	 */
 	@Override
-    public FeatureNode getParent() {
+    public FeatureNode<T> getParent() {
 		return parent;
 	}
 	/**
@@ -287,7 +257,7 @@ public class FeatureNode extends VersionableEntity
 	 * @param	parent	the feature node to be set as parent
 	 * @see				#getParent()
 	 */
-	protected void setParent(FeatureNode parent) {
+	protected void setParent(FeatureNode<T> parent) {
 		checkTermType(parent);
 	    this.parent = parent;
 	}
@@ -309,7 +279,7 @@ public class FeatureNode extends VersionableEntity
 	 * <i>this</i> feature node.
 	 */
 	@Override
-    public List<FeatureNode> getChildNodes() {
+    public List<FeatureNode<T>> getChildNodes() {
 	    return children;
 	}
 
@@ -325,7 +295,7 @@ public class FeatureNode extends VersionableEntity
 	 * @see				#removeChild(FeatureNode)
 	 * @see				#removeChild(int)
 	 */
-	public void addChild(FeatureNode child){
+	public void addChild(FeatureNode<T> child){
 		addChild(child, children.size());
 	}
 	/**
@@ -344,9 +314,9 @@ public class FeatureNode extends VersionableEntity
 	 * @see				#removeChild(FeatureNode)
 	 * @see				#removeChild(int)
 	 */
-	public void addChild(FeatureNode child, int index){
+	public void addChild(FeatureNode<T> child, int index){
 	    checkTermType(child);
-	    List<FeatureNode> children = this.getChildNodes();
+	    List<FeatureNode<T>> children = this.getChildNodes();
 		if (index < 0 || index > children.size() + 1){
 			throw new IndexOutOfBoundsException("Wrong index: " + index);
 		}
@@ -374,7 +344,7 @@ public class FeatureNode extends VersionableEntity
 	 * @see				#addChild(FeatureNode)
 	 * @see				#removeChild(int)
 	 */
-	public void removeChild(FeatureNode child){
+	public void removeChild(FeatureNode<T> child){
 
 	    int index = children.indexOf(child);
 		if (index >= 0){
@@ -394,14 +364,14 @@ public class FeatureNode extends VersionableEntity
 	 * @see				#removeChild(FeatureNode)
 	 */
 	public void removeChild(int index){
-	   FeatureNode child = children.get(index);
+	   FeatureNode<T> child = children.get(index);
 	   if (child != null){
 			children.remove(index);
 			child.setParent(null);
 			child.setFeatureTree(null);
 			//TODO workaround (see sortIndex doc)
 			for(int i = 0; i < children.size(); i++){
-				FeatureNode childAt = children.get(i);
+				FeatureNode<T> childAt = children.get(i);
 				childAt.setSortIndex(i);
 			}
 			child.setSortIndex(null);
@@ -418,7 +388,7 @@ public class FeatureNode extends VersionableEntity
 	 * @see					#addChild(FeatureNode, int)
 	 * @see					#removeChild(int)
 	 */
-	public FeatureNode getChildAt(int childIndex) {
+	public FeatureNode<T> getChildAt(int childIndex) {
 	    return children.get(childIndex);
 	}
 
@@ -441,7 +411,7 @@ public class FeatureNode extends VersionableEntity
 	 * @see			#addChild(FeatureNode, int)
 	 * @see			#removeChild(int)
 	 */
-	public int getIndex(FeatureNode node) {
+	public int getIndex(FeatureNode<T> node) {
 	    if (! children.contains(node)){
 			return -1;
 		}else{
@@ -603,34 +573,34 @@ public class FeatureNode extends VersionableEntity
     }
 
 	/**
-	 * Returns all features that are contained in this node or a child node
+	 * Returns all terms that are contained in this node or a child node
 	 *
 	 * @param featureNode
 	 * @param features
 	 * @return
 	 */
 	@Transient
-	public Set<Feature> getDistinctFeaturesRecursive(Set<Feature> features){
-		Feature feature = this.getFeature();
+	public Set<T> getDistinctFeaturesRecursive(Set<T> features){
+		T term = this.getTerm();
 
-		if(feature!=null){
-		    features.add(feature);
+		if(term!=null){
+		    features.add(term);
 		}
 
-		for(FeatureNode childNode : this.getChildNodes()){
+		for(FeatureNode<T> childNode : this.getChildNodes()){
 			features.addAll(childNode.getDistinctFeaturesRecursive(features));
 		}
 
 		return features;
 	}
 
-	public FeatureNode cloneDescendants(){
-		FeatureNode clone = (FeatureNode)this.clone();
-		FeatureNode childClone;
+	public FeatureNode<T> cloneDescendants(){
+		FeatureNode<T> clone = (FeatureNode<T>)this.clone();
+		FeatureNode<T> childClone;
 
-		for(FeatureNode childNode : this.getChildNodes()){
-			childClone = (FeatureNode) childNode.clone();
-			for (FeatureNode childChild:childNode.getChildNodes()){
+		for(FeatureNode<T> childNode : this.getChildNodes()){
+			childClone = (FeatureNode<T>) childNode.clone();
+			for (FeatureNode<T> childChild:childNode.getChildNodes()){
 				childClone.addChild(childChild.cloneDescendants());
 			}
 			clone.addChild(childClone);
@@ -653,9 +623,9 @@ public class FeatureNode extends VersionableEntity
 	 */
 	@Override
 	public Object clone() {
-		FeatureNode result;
+		FeatureNode<T> result;
 		try {
-			result = (FeatureNode)super.clone();
+			result = (FeatureNode<T>)super.clone();
 			result.children = new ArrayList<>();
 			return result;
 		}catch (CloneNotSupportedException e) {

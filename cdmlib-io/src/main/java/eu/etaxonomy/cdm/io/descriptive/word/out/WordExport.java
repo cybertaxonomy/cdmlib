@@ -110,7 +110,7 @@ public class WordExport extends CdmExportBase<WordExportConfigurator, WordExport
 //        return new JAXBElement( new QName(Namespaces.NS_WORD12, "fldChar"), org.docx4j.wml.FldChar.class, fldchar);
 //    }
 
-    private void addChildNode(FeatureNode node, MainDocumentPart mainDocumentPart, int indent) throws Exception{
+    private void addChildNode(FeatureNode<?> node, MainDocumentPart mainDocumentPart, int indent) throws Exception{
         String styleId = "Heading"+indent;
 
         for (FeatureNode childNode : node.getChildNodes()) {
