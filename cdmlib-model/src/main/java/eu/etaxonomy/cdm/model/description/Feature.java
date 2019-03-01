@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.model.description;
 
 
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -124,7 +123,7 @@ public class Feature extends DefinedTermBase<Feature> {
 
 	private boolean supportsCommonTaxonName;
 
-	private EnumSet supportedClasses = EnumSet<Enum<E>>.of(null);
+//	private EnumSet supportedClasses = EnumSet<Enum<E>>.of(null);
 
     /* for M:M see #4843 */
 	@ManyToMany(fetch = FetchType.LAZY)
