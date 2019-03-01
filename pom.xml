@@ -201,11 +201,6 @@
     </profile>
   </profiles>
   <repositories>
-    <!-- sun repository -->
-    <repository>
-      <id>java.net</id>
-      <url>http://download.java.net/maven/1/</url>
-    </repository>
     <!-- the cdm internal repository -->
     <repository>
       <id>EditRepository</id>
