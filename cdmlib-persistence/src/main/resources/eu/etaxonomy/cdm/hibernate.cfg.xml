@@ -206,6 +206,7 @@
       <mapping class="eu.etaxonomy.cdm.model.term.OrderedTermVocabulary"/>
       <mapping class="eu.etaxonomy.cdm.model.term.Representation"/>
       <mapping class="eu.etaxonomy.cdm.model.term.TermVocabulary"/>
+      <mapping class="eu.etaxonomy.cdm.model.term.TermRelationshipType"/>
       
       <!-- Validation Package -->
       <mapping class="eu.etaxonomy.cdm.model.validation.EntityValidation"/>

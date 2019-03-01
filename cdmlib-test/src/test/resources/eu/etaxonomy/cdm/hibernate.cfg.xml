@@ -196,6 +196,9 @@
       <mapping class="eu.etaxonomy.cdm.model.taxon.Classification"/>
       <mapping class="eu.etaxonomy.cdm.model.taxon.TaxonRelationship"/>
       <mapping class="eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType"/>
+            
+      <!-- Term Package -->
+      <mapping class="eu.etaxonomy.cdm.model.term.TermRelationshipType"/>
       
       <!-- Term Package -->
       <mapping class="eu.etaxonomy.cdm.model.term.DefinedTerm"/>

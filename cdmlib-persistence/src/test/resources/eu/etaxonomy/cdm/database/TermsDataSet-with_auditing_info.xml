@@ -13342,7 +13342,6 @@
   <REPRESENTATION ID="2186" CREATED="2017-11-24 10:40:36.0" UUID="c527aa5e-29fc-4b9a-a5cf-23f9e214de1b" TEXT="Metabolic inactive cuture" ABBREVIATEDLABEL="" LABEL="Metabolic inactive cuture" LANGUAGE_ID="406"/>
   <!-- End of eu.etaxonomy.cdm.vaadin.model.registration.KindOfUnitTerms
        ====================================================================================================== -->
-  
   <!-- 
       HIBERNATE_SEQUENCES must not be added to this dataset, rather increase the initial_value 
       of eu.etaxonomy.cdm.persistence.hibernate.TableGeneratorGlobalOverride which is set
