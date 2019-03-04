@@ -66,7 +66,7 @@ public class CategoricalDataTest {
         TaxonDescription desc = TaxonDescription.NewInstance();
         CategoricalData data = CategoricalData.NewInstance();
         desc.addElement(data);
-        TermVocabulary<State> useCategoryVocabulary = TermVocabulary.NewInstance(TermType.Feature, "Use category vocabulary", "use categories", null, null);
+        TermVocabulary<State> useCategoryVocabulary = TermVocabulary.NewInstance(TermType.State, "Use category vocabulary", "use categories", null, null);
         State useCategory1 = State.NewInstance("My first use category", "use category 1", null);
         useCategoryVocabulary.addTerm(useCategory1);
         State useCategory2 = State.NewInstance("My favorite use category", "use category 2", null);
@@ -91,7 +91,7 @@ public class CategoricalDataTest {
         TaxonDescription desc = TaxonDescription.NewInstance();
         CategoricalData data = CategoricalData.NewInstance();
         desc.addElement(data);
-        TermVocabulary<State> useCategoryVocabulary = TermVocabulary.NewInstance(TermType.Feature,"Use category vocabulary", "use categories", null, null);
+        TermVocabulary<State> useCategoryVocabulary = TermVocabulary.NewInstance(TermType.State, "Use category vocabulary", "use categories", null, null);
         State useCategory1 = State.NewInstance("My first use category", "use category 1", null);
         useCategoryVocabulary.addTerm(useCategory1);
         data.addStateData(useCategory1);
