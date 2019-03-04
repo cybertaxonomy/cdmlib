@@ -13,13 +13,13 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
-import eu.etaxonomy.cdm.model.common.EnumeratedTermVoc;
-import eu.etaxonomy.cdm.model.common.IEnumTerm;
+import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
+import eu.etaxonomy.cdm.model.term.IEnumTerm;
 
 /**
  * This PropertyEditor translates concatenated lists string identifiers into
- * {@link eu.etaxonomy.cdm.model.common.IEnumTerm} instances. The instances can be identified by the value of the
- * {@link eu.etaxonomy.cdm.model.common.IKeyTerm#getKey() key} property. The separator for concatenations is the colon: ','
+ * {@link eu.etaxonomy.cdm.model.term.IEnumTerm} instances. The instances can be identified by the value of the
+ * {@link eu.etaxonomy.cdm.model.term.IKeyTerm#getKey() key} property. The separator for concatenations is the colon: ','
  *
  * @author a.kohlbecker
  * @since Jun 25, 2013

@@ -30,6 +30,10 @@ import org.hibernate.envers.Audited;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
  * list of languages according to current internet best practices as given by IANA
@@ -43,7 +47,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 @XmlRootElement(name = "Language")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
+//@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
 public class Language extends DefinedTermBase<Language> {
     private static final long serialVersionUID = -5030610079904074217L;

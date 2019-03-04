@@ -37,11 +37,11 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.IHasTermType;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.common.Representation;
-import eu.etaxonomy.cdm.model.common.TermType;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.IHasTermType;
+import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 /**
@@ -277,7 +277,7 @@ public class FeatureTree <T extends DefinedTermBase>
 	 * the new FeatureTree
 	 *
 	 *
-	 * @see eu.etaxonomy.cdm.model.common.TermBase#clone()
+	 * @see eu.etaxonomy.cdm.model.term.TermBase#clone()
 	 * @see java.lang.Object#clone()
 	 */
 	@Override

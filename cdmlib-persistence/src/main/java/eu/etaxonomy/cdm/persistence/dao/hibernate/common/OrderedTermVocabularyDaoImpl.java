@@ -11,8 +11,8 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 import org.springframework.stereotype.Repository;
 
-import eu.etaxonomy.cdm.model.common.OrderedTermBase;
-import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
+import eu.etaxonomy.cdm.model.term.OrderedTermBase;
+import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.common.IOrderedTermVocabularyDao;
 
 /**

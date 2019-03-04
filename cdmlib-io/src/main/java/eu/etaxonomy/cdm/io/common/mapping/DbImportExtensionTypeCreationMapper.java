@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 
 /**
  * This class retrives or creates an existing or a new extension type.
- * 
+ *
  * @see DbImportDefinedTermCreationMapperBase
  * @author a.mueller
  * @since 11.03.2010
@@ -33,9 +33,9 @@ public class DbImportExtensionTypeCreationMapper<STATE extends DbImportStateBase
 
 //******************************** FACTORY METHOD ***************************************************/
 
-	
+
 	/**
-	 * 
+	 *
 	 * @param dbIdAttribute
 	 * @parem extensionTypeNamespace
 	 * @param dbTermAttribute
@@ -46,10 +46,10 @@ public class DbImportExtensionTypeCreationMapper<STATE extends DbImportStateBase
 	public static DbImportExtensionTypeCreationMapper<?> NewInstance(String dbIdAttribute, String extensionTypeNamespace, String dbTermAttribute, String dbLabelAttribute, String dbLabelAbbrevAttribute){
 		return new DbImportExtensionTypeCreationMapper(dbIdAttribute, extensionTypeNamespace, dbTermAttribute, dbLabelAttribute, dbLabelAbbrevAttribute);
 	}
-	
-	
+
+
 //	/**
-//	 * Creates a Distribution with status <code>status</code> and adds it to the description of a taxon. 
+//	 * Creates a Distribution with status <code>status</code> and adds it to the description of a taxon.
 //	 * @param dbIdAttribute
 //	 * @param objectToCreateNamespace
 //	 * @param dbTaxonFkAttribute
@@ -60,10 +60,10 @@ public class DbImportExtensionTypeCreationMapper<STATE extends DbImportStateBase
 //	public static DbImportFeatureCreationMapper<?> NewInstance(String dbIdAttribute, String dbTermAttribute, String dbLabelAttribute, String dbLabelAbbrevAttribute){
 //		return new DbImportFeatureCreationMapper(dbIdAttribute, objectToCreateNamespace, dbTaxonFkAttribute, taxonNamespace, dbTextAttribute, language, feature, format);
 //	}
-	
+
 //******************************* ATTRIBUTES ***************************************/
 
-	
+
 //********************************* CONSTRUCTOR ****************************************/
 
 	/**
@@ -79,47 +79,28 @@ public class DbImportExtensionTypeCreationMapper<STATE extends DbImportStateBase
 
 //************************************ METHODS *******************************************/
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.DbImportDefinedTermCreationMapperBase#getTermFromState(java.lang.String)
-	 */
 	@Override
 	protected ExtensionType getTermFromState(UUID uuid) {
 		return getState().getExtensionType(uuid);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.DbImportDefinedTermCreationMapperBase#getTermFromTransformer(java.sql.ResultSet)
-	 */
 	@Override
 	protected ExtensionType getTermFromTransformer(String key, IInputTransformer transformer) throws UndefinedTransformerMethodException {
 		return transformer.getExtensionTypeByKey(key);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.DbImportDefinedTermCreationMapperBase#getUuidFromTransformer(java.sql.ResultSet)
-	 */
 	@Override
 	protected UUID getUuidFromTransformer(String key, IInputTransformer transformer) throws UndefinedTransformerMethodException {
 		UUID uuid = transformer.getExtensionTypeUuid(key);
 		return uuid;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.DbImportDefinedTermCreationMapperBase#saveTermToState(java.lang.String, eu.etaxonomy.cdm.model.common.DefinedTermBase)
-	 */
 	@Override
 	protected void saveTermToState(ExtensionType extensionType) {
 		getState().putExtensionType(extensionType);
-		
+
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.DbImportDefinedTermCreationMapperBase#createDefinedTerm(java.sql.ResultSet)
-	 */
 	@Override
 	protected ExtensionType createDefinedTerm(ResultSet rs) throws SQLException {
 		String term = this.getStringDbValue(rs, dbTermAttribute);
@@ -131,8 +112,6 @@ public class DbImportExtensionTypeCreationMapper<STATE extends DbImportStateBase
 		}else{
 			return null;
 		}
-	
+
 	}
-
-
 }

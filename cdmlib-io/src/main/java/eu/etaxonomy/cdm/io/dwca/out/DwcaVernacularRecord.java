@@ -14,9 +14,9 @@ import java.net.URISyntaxException;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.stream.terms.TermUri;
-import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
 
 /**
  * @author a.mueller

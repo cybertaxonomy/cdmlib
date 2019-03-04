@@ -6,13 +6,13 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
-import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
 
 public class MicroFormatCategoricalDescriptionBuilder extends AbstractCategoricalDescriptionBuilder{
 

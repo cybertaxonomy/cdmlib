@@ -18,7 +18,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
+import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 
 public class PresenceAbsenceTermTest {
 	private static final Logger logger = Logger.getLogger(PresenceAbsenceTermTest.class);

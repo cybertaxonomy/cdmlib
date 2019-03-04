@@ -11,8 +11,8 @@ package eu.etaxonomy.cdm.strategy.cache.description;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
+import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
 
 /**

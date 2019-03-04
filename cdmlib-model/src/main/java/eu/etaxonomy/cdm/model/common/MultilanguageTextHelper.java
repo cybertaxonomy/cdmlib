@@ -23,10 +23,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+import eu.etaxonomy.cdm.model.term.TermBase;
+
 /**
  * @author a.babadshanjan
  * @since 15.09.2008
- * @version 1.0
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "MultilanguageTextHelper", propOrder = {

@@ -22,11 +22,11 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.TermType;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
  * @author m.doering
@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 @XmlRootElement(name = "DerivationEventType")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
+//@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
 public class DerivationEventType extends DefinedTermBase<DerivationEventType> {
 	private static final long serialVersionUID = 6895093454763415279L;
@@ -199,7 +199,7 @@ public class DerivationEventType extends DefinedTermBase<DerivationEventType> {
 
 	@Override
 	protected void setDefaultTerms(TermVocabulary<DerivationEventType> termVocabulary) {
-		termMap = new HashMap<UUID, DerivationEventType>();
+		termMap = new HashMap<>();
 		for (DerivationEventType term : termVocabulary.getTerms()){
 			termMap.put(term.getUuid(), term);
 		}

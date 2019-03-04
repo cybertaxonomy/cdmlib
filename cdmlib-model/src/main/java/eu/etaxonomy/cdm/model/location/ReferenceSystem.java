@@ -23,16 +23,16 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.TermType;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
  * Reference systems for coordinates also according to OGC (Open Geographical
  * Consortium) The list should be extensible at runtime through configuration.
  * This needs to be investigated.
+ *
  * @author m.doering
- * @version 1.0
  * @since 08-Nov-2007 13:06:49
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @XmlRootElement(name = "ReferenceSystem")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
+//@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
 public class ReferenceSystem extends DefinedTermBase<ReferenceSystem> {
 	private static final long serialVersionUID = -9060720949197749047L;
@@ -88,15 +88,10 @@ public class ReferenceSystem extends DefinedTermBase<ReferenceSystem> {
 
 // ************************************* MTEHODS ***************************************************/
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
-	 */
 	@Override
 	public void resetTerms(){
 		termMap = null;
 	}
-
-
 
 	protected static ReferenceSystem getTermByUuid(UUID uuid){
         if (termMap == null || termMap.isEmpty()){
@@ -124,7 +119,7 @@ public class ReferenceSystem extends DefinedTermBase<ReferenceSystem> {
 
 	@Override
 	protected void setDefaultTerms(TermVocabulary<ReferenceSystem> termVocabulary){
-		termMap = new HashMap<UUID, ReferenceSystem>();
+		termMap = new HashMap<>();
 		for (ReferenceSystem term : termVocabulary.getTerms()){
 			termMap.put(term.getUuid(), term);
 		}

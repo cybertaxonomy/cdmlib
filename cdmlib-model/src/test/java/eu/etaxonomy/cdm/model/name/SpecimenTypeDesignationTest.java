@@ -22,8 +22,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.beans.BeanUtils;
 
-import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 
 /**
  * @author a.babadshanjan

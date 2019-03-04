@@ -16,7 +16,7 @@ import java.util.UUID;
 import org.apache.commons.lang.StringUtils;
 
 import eu.etaxonomy.cdm.api.service.ITermService;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 
 /**
  * This PropertyEditor translates concatenated lists string identifiers into

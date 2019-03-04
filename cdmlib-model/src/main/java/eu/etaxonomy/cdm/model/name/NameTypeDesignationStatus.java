@@ -22,8 +22,8 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.model.common.TermType;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
  * The terms in this class define the status of a {@link NameTypeDesignation name type designation}.
@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @XmlType(name = "NameTypeDesignationStatus")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
+//@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
 public class NameTypeDesignationStatus extends TypeDesignationStatusBase<NameTypeDesignationStatus> {
 	private static final long serialVersionUID = -8801837496688711907L;

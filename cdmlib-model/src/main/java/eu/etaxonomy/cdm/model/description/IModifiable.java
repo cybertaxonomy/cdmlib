@@ -11,8 +11,8 @@ package eu.etaxonomy.cdm.model.description;
 
 import java.util.Set;
 
-import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IVersionableEntity;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
 
 /**
  * @author n.hoffmann

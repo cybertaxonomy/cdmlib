@@ -12,7 +12,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.springframework.stereotype.Repository;
 
-import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.persistence.dao.common.IRepresentationDao;
 
 /**

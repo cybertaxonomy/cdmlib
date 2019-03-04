@@ -45,6 +45,11 @@ import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.OrderedTermBase;
+import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermBase;
+import eu.etaxonomy.cdm.model.term.TermType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "RelationshipTermBase", propOrder = {
@@ -272,10 +277,6 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase<T>>
 	}
 	//*********************************** CLONE *********************************************************/
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#clone()
-	 * @see java.lang.Object#clone()
-	 */
 	@Override
 	public Object clone() {
 		RelationshipTermBase<?> result = (RelationshipTermBase<?>)super.clone();

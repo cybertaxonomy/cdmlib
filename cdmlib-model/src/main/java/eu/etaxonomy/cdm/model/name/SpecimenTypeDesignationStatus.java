@@ -25,8 +25,8 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.model.common.TermType;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
  * The class representing status (categories) of {@link SpecimenTypeDesignation specimen type designations}
@@ -54,7 +54,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @XmlType(name = "SpecimenTypeDesignationStatus")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
+//@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
 public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<SpecimenTypeDesignationStatus> {
 	private static final long serialVersionUID = -7918261741824966182L;
@@ -397,11 +397,10 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 
 	@Override
 	protected void setDefaultTerms(TermVocabulary<SpecimenTypeDesignationStatus> termVocabulary) {
-		termMap = new HashMap<UUID, SpecimenTypeDesignationStatus>();
+		termMap = new HashMap<>();
 		for (SpecimenTypeDesignationStatus term : termVocabulary.getTerms()){
 			termMap.put(term.getUuid(), term);
 		}
-
 	}
 
 }

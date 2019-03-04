@@ -5,8 +5,8 @@ import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 
-import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
+import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 
 /**
  * Holds a RelationshipType ({@link RelationshipTermBase}) of type {@code <T>}

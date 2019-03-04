@@ -24,8 +24,8 @@ import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
-import eu.etaxonomy.cdm.model.common.TermType;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
  * The class representing the categories of {@link HybridRelationship hybrid relationships}
@@ -46,7 +46,6 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  * </ul>
  *
  * @author m.doering
- * @version 1.0
  * @since 08-Nov-2007 13:06:27
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -54,7 +53,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @XmlRootElement(name = "HybridRelationshipType")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
+//@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
 public class HybridRelationshipType extends RelationshipTermBase<HybridRelationshipType> {
 	private static final long serialVersionUID = 5225908742890437668L;
@@ -105,14 +104,10 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 
 //************************** METHODS ********************************
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
-	 */
 	@Override
 	public void resetTerms(){
 		termMap = null;
 	}
-
 
 	protected static HybridRelationshipType getTermByUuid(UUID uuid){
         if (termMap == null || termMap.isEmpty()){
@@ -221,7 +216,7 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 	 * For nomenclature purposes a "major parent" is also a "second parent".
 	 * Major and minor parent relationships are usually represented in a
 	 * hybrid formula with a "greater than" symbol (>). It replaces the multiplication
-	 * symbol which is generally used for hybrid fromulas.
+	 * symbol which is generally used for hybrid formulas.
 	 *
 	 * @see	#SECOND_PARENT()
 	 */
@@ -242,10 +237,5 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 			termMap.put(term.getUuid(), term);
 		}
 	}
-
-//	@Override
-//	public HybridRelationshipType readCsvLine(Class<HybridRelationshipType> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
-//		return super.readCsvLine(termClass, csvLine, terms);
-//	}
 
 }

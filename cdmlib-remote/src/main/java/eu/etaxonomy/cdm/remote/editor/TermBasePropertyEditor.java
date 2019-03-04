@@ -12,7 +12,7 @@ import java.beans.PropertyEditorSupport;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.ITermService;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 
 /**
  * This PropertyEditor translates a single string identifiers into a

@@ -19,9 +19,9 @@ import eu.etaxonomy.cdm.io.stream.mapping.IImportMapping;
 import eu.etaxonomy.cdm.io.stream.mapping.InMemoryMapping;
 import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 
 
 /**

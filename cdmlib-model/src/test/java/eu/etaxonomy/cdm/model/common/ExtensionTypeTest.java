@@ -22,6 +22,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.util.Assert;
 
+import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
+
 
 /**
  * @author a.mueller
