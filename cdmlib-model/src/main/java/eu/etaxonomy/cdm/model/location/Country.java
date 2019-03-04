@@ -41,6 +41,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
@@ -590,6 +591,7 @@ public class Country extends NamedArea {
   	//for hibernate use only
   	@Deprecated
   	protected Country() {
+  	    super(); //sets the term type to TermType.NamedAreas
 	}
 	private Country(String term, String label, String labelAbbrev) {
 		super(term, label, labelAbbrev);
@@ -626,10 +628,11 @@ public class Country extends NamedArea {
 	}
 
 	@Override
-	public NamedArea readCsvLine(Class<NamedArea> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
+	public NamedArea readCsvLine(Class<NamedArea> termClass, List<String> csvLine, TermType termType,
+	        Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
 		try {
 			Language lang= Language.DEFAULT();
-			Country newInstance = Country.class.newInstance();
+			Country newInstance = NewInstance();
 			newInstance.setUuid(UUID.fromString(csvLine.get(0)));
 			String uriStr = CdmUtils.Ne(csvLine.get(1));
 	        newInstance.setUri(uriStr == null? null: URI.create(uriStr));

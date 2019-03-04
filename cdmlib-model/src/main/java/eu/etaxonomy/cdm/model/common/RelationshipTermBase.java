@@ -244,8 +244,8 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase<T>>
 //**************** CSV *************************/
 
 	@Override
-	public T readCsvLine(Class<T> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
-		T newInstance = super.readCsvLine(termClass, csvLine, terms, abbrevAsId);
+	public T readCsvLine(Class<T> termClass, List<String> csvLine, TermType termType, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
+		T newInstance = super.readCsvLine(termClass, csvLine, termType, terms, abbrevAsId);
 
 		String inverseText = CdmUtils.Ne(csvLine.get(6).trim());
 		String inverseLabel = csvLine.get(5).trim();

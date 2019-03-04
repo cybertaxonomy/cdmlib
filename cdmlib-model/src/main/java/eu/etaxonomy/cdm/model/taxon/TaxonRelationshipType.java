@@ -625,8 +625,9 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	}
 
     @Override
-    public TaxonRelationshipType readCsvLine(Class<TaxonRelationshipType> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
-        TaxonRelationshipType newInstance = super.readCsvLine(termClass, csvLine, terms, abbrevAsId);
+    public TaxonRelationshipType readCsvLine(Class<TaxonRelationshipType> termClass, List<String> csvLine, TermType termType,
+            Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
+        TaxonRelationshipType newInstance = super.readCsvLine(termClass, csvLine, termType, terms, abbrevAsId);
 
         newInstance.setSymbol(newInstance.getIdInVocabulary());
         String inverseLabelAbbrev = csvLine.get(7).trim();
