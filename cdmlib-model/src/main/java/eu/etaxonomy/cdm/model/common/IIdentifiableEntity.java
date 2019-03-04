@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 import eu.etaxonomy.cdm.model.media.Rights;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
 
 public interface IIdentifiableEntity extends ISourceable<IdentifiableSource>, IAnnotatableEntity{
 

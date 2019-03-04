@@ -18,8 +18,8 @@ import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.H2Mode;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName;
+import eu.etaxonomy.cdm.model.term.init.TermNotFoundException;
 
 /**
  * Service interface which provides functionality to directly access database

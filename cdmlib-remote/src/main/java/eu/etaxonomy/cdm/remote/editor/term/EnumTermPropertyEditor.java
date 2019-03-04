@@ -10,13 +10,13 @@ package eu.etaxonomy.cdm.remote.editor.term;
 
 import java.beans.PropertyEditorSupport;
 
-import eu.etaxonomy.cdm.model.common.EnumeratedTermVoc;
-import eu.etaxonomy.cdm.model.common.IEnumTerm;
+import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
+import eu.etaxonomy.cdm.model.term.IEnumTerm;
 
 /**
- * This PropertyEditor translates a single string into a {@link eu.etaxonomy.cdm.model.common.IEnumTerm} instance.
+ * This PropertyEditor translates a single string into a {@link eu.etaxonomy.cdm.model.term.IEnumTerm} instance.
  * The instance can be identified by the value of the
- * {@link eu.etaxonomy.cdm.model.common.IKeyTerm#getKey() key} property.
+ * {@link eu.etaxonomy.cdm.model.term.IKeyTerm#getKey() key} property.
  *
  * @author a.kohlbecker
  * @since Jun 25, 2013

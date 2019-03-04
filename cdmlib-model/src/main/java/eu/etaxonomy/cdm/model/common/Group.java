@@ -152,7 +152,7 @@ public class Group extends CdmBase {
      * a new instance that differs only slightly from <i>this</i> group by
      * modifying only some of the attributes.
      *
-     * @see eu.etaxonomy.cdm.model.common.TermBase#clone()
+     * @see eu.etaxonomy.cdm.model.term.TermBase#clone()
      * @see java.lang.Object#clone()
      */
     @Override

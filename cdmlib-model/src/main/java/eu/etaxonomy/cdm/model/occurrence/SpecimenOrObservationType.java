@@ -17,11 +17,11 @@ import javax.xml.bind.annotation.XmlEnumValue;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.model.common.EnumeratedTermVoc;
-import eu.etaxonomy.cdm.model.common.IEnumTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
+import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
+import eu.etaxonomy.cdm.model.term.IEnumTerm;
 
 
 /**

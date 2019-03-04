@@ -17,9 +17,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.location.Point.Direction;
 import eu.etaxonomy.cdm.model.location.Point.Sexagesimal;
+import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 
 /**
  * @author a.mueller

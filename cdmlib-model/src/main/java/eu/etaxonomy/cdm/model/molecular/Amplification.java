@@ -33,11 +33,11 @@ import org.hibernate.search.annotations.NumericField;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.Institution;
-import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.EventBase;
-import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.MaterialOrMethodEvent;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.TermType;
 
 /**
  * The physical process of amplification (also called PCR) extracts and replicates parts of the DNA of

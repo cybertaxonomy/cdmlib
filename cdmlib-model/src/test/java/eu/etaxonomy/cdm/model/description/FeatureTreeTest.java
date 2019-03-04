@@ -12,7 +12,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
+import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 
 public class FeatureTreeTest {
 	@SuppressWarnings("unused")

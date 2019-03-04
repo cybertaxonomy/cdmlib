@@ -24,9 +24,9 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 
-import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.EventBase;
 import eu.etaxonomy.cdm.model.occurrence.MaterialOrMethodEvent;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
 
 /**
  * Cloning is a method used in {@link Amplification DNA amplification} for multiplying the base

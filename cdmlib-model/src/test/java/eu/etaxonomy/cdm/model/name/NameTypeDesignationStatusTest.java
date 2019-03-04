@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
+import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 /**

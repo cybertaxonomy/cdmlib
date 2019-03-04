@@ -20,7 +20,6 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.jaxb.CdmMarshallerListener;
 import eu.etaxonomy.cdm.io.sdd.out.SDDDataSet;
-import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -33,6 +32,7 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.term.Representation;
 
 /**
  * Writes the SDD XML file.

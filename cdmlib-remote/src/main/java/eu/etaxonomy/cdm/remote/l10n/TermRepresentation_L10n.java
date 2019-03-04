@@ -14,12 +14,12 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
 
-import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
-import eu.etaxonomy.cdm.model.common.Representation;
-import eu.etaxonomy.cdm.model.common.TermBase;
-import eu.etaxonomy.cdm.model.common.TermType;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermBase;
+import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.persistence.dto.ITermRepresentation_L10n;
 
 /**

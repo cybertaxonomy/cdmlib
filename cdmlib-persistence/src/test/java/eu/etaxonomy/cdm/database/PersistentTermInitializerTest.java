@@ -22,8 +22,8 @@ import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 @Ignore
@@ -47,7 +47,7 @@ public class PersistentTermInitializerTest extends CdmIntegrationTest {
 //	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.DefaultTermInitializer#initialize()}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.term.DefaultTermInitializer#initialize()}.
 	 */
 	@Test
 	@Ignore // does not run yet in a test suite as the Language.DEFAULT() is not null then

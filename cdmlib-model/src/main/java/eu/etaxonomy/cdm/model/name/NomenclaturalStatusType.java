@@ -26,12 +26,12 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.OrderedTermBase;
-import eu.etaxonomy.cdm.model.common.Representation;
-import eu.etaxonomy.cdm.model.common.TermType;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.OrderedTermBase;
+import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 /**
@@ -61,7 +61,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 @XmlType(name = "NomenclaturalStatusType")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
+//@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
 public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatusType> {
 
@@ -205,7 +205,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 *
 	 * @see  #VALID()
 	 * @see  #isIllegitimateType()
-	 * @see  eu.etaxonomy.cdm.model.common.DefinedTermBase#getKindOf()
+	 * @see  eu.etaxonomy.cdm.model.term.DefinedTermBase#getKindOf()
 	 */
 	@Transient
 	public boolean isInvalidType(){
@@ -234,7 +234,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 *
 	 * @see  #isInvalidType()
 	 * @see  #isIllegitimateType()
-	 * @see  eu.etaxonomy.cdm.model.common.DefinedTermBase#getKindOf()
+	 * @see  eu.etaxonomy.cdm.model.term.DefinedTermBase#getKindOf()
 	 */
 	@Transient
 	public boolean isLegitimateType(){
@@ -268,7 +268,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @see  #ILLEGITIMATE()
 	 * @see  #CONSERVED()
 	 * @see  #SANCTIONED()
-	 * @see  eu.etaxonomy.cdm.model.common.DefinedTermBase#getKindOf()
+	 * @see  eu.etaxonomy.cdm.model.term.DefinedTermBase#getKindOf()
 	 */
 	@Transient
 	public boolean isIllegitimateType(){
@@ -903,13 +903,13 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * Fills <i>this</i> nomenclatural status type with contents (uuid, uri,
 	 * description text, label and label abbreviation) coming from a csv line.
 	 * The implicit language for the description text is "latin".
-	 * This method overrides the method of {@link eu.etaxonomy.cdm.model.common.DefinedTermBase DefinedTermBase}.
+	 * This method overrides the method of {@link eu.etaxonomy.cdm.model.term.DefinedTermBase DefinedTermBase}.
 	 *
 	 * @param	csvLine 	the (ordered) list of substrings from a csv string
 	 * 						to be used to fill <i>this</i> nomenclatural status type
 	 * @see					#NomenclaturalStatusType(String, String, String)
 	 * @see					#readCsvLine(List, Language)
-	 * @see					eu.etaxonomy.cdm.model.common.DefinedTermBase#readCsvLine(List)
+	 * @see					eu.etaxonomy.cdm.model.term.DefinedTermBase#readCsvLine(List)
 	 */
 
 	@Override
@@ -951,7 +951,6 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 
 	public static void initDefaultTerms() {
         TermVocabulary<NomenclaturalStatusType> vocabulary = getTermByUuid(uuidDoubtful).getVocabulary();
-
         (new NomenclaturalStatusType()).setDefaultTerms(vocabulary);
     }
 
@@ -986,8 +985,6 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 
 	}
 
-
-
 	/**
 	 * NomenclaturalStatusType should always be shown in latin, therefore the only existing representation
 	 * is the latin one. In case we pass in another Language to this method it will return a <code>null</code> representation.
@@ -1005,6 +1002,4 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 
 		return representation;
 	}
-
-
 }

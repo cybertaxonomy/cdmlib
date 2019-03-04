@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.TermType;
+import eu.etaxonomy.cdm.model.term.TermType;
 
 /**
  * @author a.mueller

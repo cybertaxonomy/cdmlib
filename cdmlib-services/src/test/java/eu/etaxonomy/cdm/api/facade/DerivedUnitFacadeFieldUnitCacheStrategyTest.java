@@ -15,7 +15,6 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -34,6 +33,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 import eu.etaxonomy.cdm.test.TermTestBase;
 

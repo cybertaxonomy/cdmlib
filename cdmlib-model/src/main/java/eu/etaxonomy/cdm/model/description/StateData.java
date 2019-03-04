@@ -41,14 +41,14 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.hibernate.search.MultilanguageTextFieldBridge;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
-import eu.etaxonomy.cdm.model.common.DefinedTerm;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IMultiLanguageTextHolder;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
  * This class represents the assignment of values ({@link State state terms}) to {@link Feature features}

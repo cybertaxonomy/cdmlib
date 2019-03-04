@@ -14,8 +14,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
-
 /**
  * @author m.doering
  * Special array that takes care that all LanguageString elements have a unique language
@@ -49,10 +47,7 @@ public class MultilanguageText
 		super();
 	}
 
-
-	/**
-	 * Constructor
-	 */
+//******************* CONSTRUCTOR ****************************************/
 	protected MultilanguageText (LanguageString languageString){
 		super();
 		this.put(languageString);
@@ -62,6 +57,7 @@ public class MultilanguageText
 		super(initialCapacity, loadFactor);
 	}
 
+//************************ GETTER/SETTER ***********************************/
     @Override
 	public String getText(Language language){
 		LanguageString languageString = super.get(language);
@@ -93,10 +89,7 @@ public class MultilanguageText
 	 * Clones <i>this</i> multi-language text. This is a shortcut that enables to
 	 * create a new instance that differs only slightly from <i>this</i> multi-language text
 	 * by modifying only some of the attributes.<BR>
-	 * This method overrides the clone method from {@link DerivedUnit DerivedUnit}.
 	 *
-	 * @see DerivedUnit#clone()
-	 * @see eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
 	@Override

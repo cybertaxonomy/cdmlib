@@ -20,9 +20,9 @@ import org.hibernate.validator.internal.constraintvalidators.bv.NotNullValidator
 import org.junit.Before;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
+import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 
 
 /**

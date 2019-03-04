@@ -22,10 +22,10 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.TermType;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
 /**
@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @XmlRootElement(name = "StatisticalMeasure")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
+//@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
 public class StatisticalMeasure extends DefinedTermBase<StatisticalMeasure> {
 	private static final long serialVersionUID = 9168097283660941430L;
@@ -109,9 +109,6 @@ public class StatisticalMeasure extends DefinedTermBase<StatisticalMeasure> {
 
 //************************** METHODS ********************************
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
-	 */
 	@Override
 	public void resetTerms(){
 		termMap = null;

@@ -11,9 +11,9 @@ package eu.etaxonomy.cdm.model.metadata;
 import java.util.Set;
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.model.common.EnumeratedTermVoc;
-import eu.etaxonomy.cdm.model.common.IEnumTerm;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
+import eu.etaxonomy.cdm.model.term.IEnumTerm;
 
 /**
  * UNDER CONSTRUCTION

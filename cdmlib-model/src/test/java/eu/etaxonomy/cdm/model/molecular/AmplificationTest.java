@@ -16,7 +16,7 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
-import eu.etaxonomy.cdm.model.common.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 public class AmplificationTest {

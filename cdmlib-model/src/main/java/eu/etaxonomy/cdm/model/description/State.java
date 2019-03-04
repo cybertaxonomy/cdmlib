@@ -24,9 +24,9 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.OrderedTermBase;
-import eu.etaxonomy.cdm.model.common.TermType;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.term.OrderedTermBase;
+import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
  * This class represents terms describing different states (like "oval" or
@@ -34,7 +34,6 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  * categorical values (like for instance shapes).
  *
  * @author m.doering
- * @version 1.0
  * @since 08-Nov-2007 13:06:53
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -42,7 +41,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @XmlRootElement(name = "State")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
+//@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
 public class State extends OrderedTermBase<State> {
 	private static final long serialVersionUID = -4816292463790262516L;
@@ -102,9 +101,6 @@ public class State extends OrderedTermBase<State> {
 
 //************************** METHODS ********************************
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
-	 */
 	@Override
 	public void resetTerms(){
 		termMap = null;
@@ -113,7 +109,7 @@ public class State extends OrderedTermBase<State> {
 
 	@Override
 	protected void setDefaultTerms(TermVocabulary<State> termVocabulary){
-		termMap = new HashMap<UUID, State>();
+		termMap = new HashMap<>();
 		for (State term : termVocabulary.getTerms()){
 			termMap.put(term.getUuid(), term);
 		}

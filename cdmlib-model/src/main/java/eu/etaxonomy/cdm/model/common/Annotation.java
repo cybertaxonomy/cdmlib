@@ -186,10 +186,6 @@ public class Annotation extends LanguageStringBase implements Cloneable, IIntext
 
 // ***************************** TO STRING ***********************************
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.CdmBase#toString()
-	 */
 	@Override
 	public String toString() {
 		if (StringUtils.isNotBlank(this.text)){
@@ -217,7 +213,7 @@ public class Annotation extends LanguageStringBase implements Cloneable, IIntext
 			//do nothing
 		}
 		//IntextReferences
-		result.intextReferences = new HashSet<IntextReference>();
+		result.intextReferences = new HashSet<>();
 		for (IntextReference intextReference : getIntextReferences()){
 			IntextReference newIntextReference = (IntextReference)intextReference.clone();
 			result.addIntextReference(newIntextReference);

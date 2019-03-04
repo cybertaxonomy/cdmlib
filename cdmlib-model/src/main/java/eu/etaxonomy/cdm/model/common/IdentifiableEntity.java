@@ -55,6 +55,7 @@ import eu.etaxonomy.cdm.jaxb.FormattedTextAdapter;
 import eu.etaxonomy.cdm.jaxb.LSIDAdapter;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.Match.ReplaceMode;

@@ -26,6 +26,8 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 /**

@@ -19,6 +19,8 @@ import javax.xml.bind.annotation.XmlEnumValue;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
+import eu.etaxonomy.cdm.model.term.IEnumTerm;
 
 
 

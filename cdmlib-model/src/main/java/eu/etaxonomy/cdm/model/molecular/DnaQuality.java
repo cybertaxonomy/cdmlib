@@ -34,12 +34,12 @@ import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.hibernate.search.DateTimeBridge;
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
-import eu.etaxonomy.cdm.model.common.OrderedTerm;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.MaterialOrMethodEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
+import eu.etaxonomy.cdm.model.term.OrderedTerm;
 
 /**
  * A DNA Quality describes the quality of a {@link SpecimenOrObservationType#DnaSample}

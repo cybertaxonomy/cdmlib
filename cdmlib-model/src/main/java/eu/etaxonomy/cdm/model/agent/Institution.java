@@ -35,7 +35,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import eu.etaxonomy.cdm.model.common.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.strategy.cache.agent.InstitutionDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
@@ -126,7 +126,7 @@ public class Institution extends AgentBase<IIdentifiableEntityCacheStrategy<Inst
 	/**
 	 * Returns the set of institution types (categories)
 	 * used to describe or circumscribe <i>this</i> institution's activities.
-	 * Institution types are items of a controlled {@link eu.etaxonomy.cdm.model.common.TermVocabulary vocabulary}.
+	 * Institution types are items of a controlled {@link eu.etaxonomy.cdm.model.term.TermVocabulary vocabulary}.
 	 *
 	 * @return	the set of institution types
 	 */
@@ -138,7 +138,7 @@ public class Institution extends AgentBase<IIdentifiableEntityCacheStrategy<Inst
 	}
 
 	/**
-	 * Adds a new institutional type (from the corresponding {@link eu.etaxonomy.cdm.model.common.TermVocabulary vocabulary})
+	 * Adds a new institutional type (from the corresponding {@link eu.etaxonomy.cdm.model.term.TermVocabulary vocabulary})
 	 * to the set of institution types of <i>this</i> institution.
 	 *
 	 * @param  t  any type of institution

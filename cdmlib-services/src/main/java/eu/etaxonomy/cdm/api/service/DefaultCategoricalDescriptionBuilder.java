@@ -4,12 +4,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
 
 public class DefaultCategoricalDescriptionBuilder extends AbstractCategoricalDescriptionBuilder{
 

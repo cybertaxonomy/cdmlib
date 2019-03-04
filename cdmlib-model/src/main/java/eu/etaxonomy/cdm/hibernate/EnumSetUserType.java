@@ -28,7 +28,7 @@ import org.hibernate.usertype.ParameterizedType;
 import org.hibernate.usertype.UserType;
 import org.jadira.usertype.dateandtime.shared.spi.AbstractUserType;
 
-import eu.etaxonomy.cdm.model.common.IKeyTerm;
+import eu.etaxonomy.cdm.model.term.IKeyTerm;
 
 /**
  * User type for EnumSet

@@ -13,7 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.term.Representation;
 
 /**
  * @author pplitzner

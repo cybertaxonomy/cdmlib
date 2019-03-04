@@ -3,10 +3,10 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.List;
 
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.term.Representation;
 
 /**
  * Abstract class that defines the basic element for constructing natural language descriptions.

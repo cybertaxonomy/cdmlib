@@ -26,10 +26,10 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.NumericField;
 
-import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.EventBase;
-import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.molecular.Cloning;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.TermType;
 
 /**
  * This class is a specialization of {@link MaterialOrMethodEvent} which allows to
@@ -51,7 +51,7 @@ import eu.etaxonomy.cdm.model.molecular.Cloning;
 })
 @XmlRootElement(name = "PreservationMethod")
 @Entity
-//TODO @Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
+//TODO @Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
 public class PreservationMethod extends MaterialOrMethodEvent implements Cloneable {
 	private static final long serialVersionUID = 2366116167028862401L;

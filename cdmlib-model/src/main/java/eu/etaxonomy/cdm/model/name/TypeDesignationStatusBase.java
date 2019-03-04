@@ -18,8 +18,8 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.model.common.OrderedTermBase;
-import eu.etaxonomy.cdm.model.common.TermType;
+import eu.etaxonomy.cdm.model.term.OrderedTermBase;
+import eu.etaxonomy.cdm.model.term.TermType;
 
 /**
  * The class representing status (categories) of {@link SpecimenTypeDesignation specimen type designations}
@@ -107,7 +107,7 @@ public abstract class TypeDesignationStatusBase<T extends TypeDesignationStatusB
      *
      * @see  #LECTOTYPE()
      * @see  #HOLOTYPE()
-     * @see  eu.etaxonomy.cdm.model.common.DefinedTermBase#getKindOf()
+     * @see  eu.etaxonomy.cdm.model.term.DefinedTermBase#getKindOf()
      */
     public abstract boolean isLectotype();
 }

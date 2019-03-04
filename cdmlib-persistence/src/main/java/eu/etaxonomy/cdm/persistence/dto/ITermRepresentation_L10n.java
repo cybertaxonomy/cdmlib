@@ -10,8 +10,8 @@ package eu.etaxonomy.cdm.persistence.dto;
 
 import java.util.Set;
 
-import eu.etaxonomy.cdm.model.common.Representation;
-import eu.etaxonomy.cdm.model.common.TermBase;
+import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermBase;
 
 /**
  * @author andreas

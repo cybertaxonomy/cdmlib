@@ -36,12 +36,12 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import org.joda.time.Partial;
 
 import eu.etaxonomy.cdm.model.agent.AgentBase;
-import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.EventBase;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
 
 /**
  * @author m.doering

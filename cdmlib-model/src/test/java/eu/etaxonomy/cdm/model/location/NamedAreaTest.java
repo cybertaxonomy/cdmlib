@@ -17,10 +17,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.location.NamedArea.LevelNode;
 import eu.etaxonomy.cdm.model.location.NamedArea.NamedAreaNode;
+import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 
 /**
  * @author a.mueller

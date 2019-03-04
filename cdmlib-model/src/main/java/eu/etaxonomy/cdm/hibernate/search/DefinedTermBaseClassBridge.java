@@ -17,8 +17,8 @@ import org.apache.lucene.document.TextField;
 import org.hibernate.search.bridge.LuceneOptions;
 import org.hibernate.search.bridge.ParameterizedBridge;
 
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.Representation;
 
 /**
  * @author Andreas Kohlbecker

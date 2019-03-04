@@ -25,6 +25,10 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
+
 /**
  * Marker types similar to dynamically defined attributes. These  content types
  * like "IS_DOUBTFUL", "COMPLETE"  or specific local flags.
@@ -35,7 +39,7 @@ import org.hibernate.search.annotations.Field;
 @XmlType(name = "MarkerType")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
+//@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
 public class MarkerType extends DefinedTermBase<MarkerType> {
 	private static final long serialVersionUID = -9117424749919907396L;
@@ -106,10 +110,6 @@ public class MarkerType extends DefinedTermBase<MarkerType> {
 
 //***************************** TERMS **************************************/
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
-	 */
 	@Override
 	public void resetTerms(){
 		termMap = null;

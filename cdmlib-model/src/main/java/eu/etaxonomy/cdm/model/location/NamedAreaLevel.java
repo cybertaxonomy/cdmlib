@@ -22,9 +22,9 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.model.common.OrderedTermBase;
-import eu.etaxonomy.cdm.model.common.TermType;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.term.OrderedTermBase;
+import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
  * Controlled vocabulary to differentiate levels of areas such as province, state,
@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @XmlRootElement(name = "NamedAreaLevel")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
+//@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
 public class NamedAreaLevel extends OrderedTermBase<NamedAreaLevel> {
 	private static final long serialVersionUID = -7977901140330659208L;
@@ -180,16 +180,10 @@ public class NamedAreaLevel extends OrderedTermBase<NamedAreaLevel> {
 		return result;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
-	 */
 	@Override
 	public void resetTerms(){
 		termMap = null;
 	}
-
-
 
 	@Override
 	protected void setDefaultTerms(TermVocabulary<NamedAreaLevel> termVocabulary) {

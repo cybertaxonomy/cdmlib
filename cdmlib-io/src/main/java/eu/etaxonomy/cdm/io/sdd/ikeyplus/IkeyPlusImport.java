@@ -21,8 +21,6 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
-import eu.etaxonomy.cdm.model.common.TermType;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.KeyStatement;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
@@ -30,6 +28,8 @@ import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
+import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import fr.lis.ikeyplus.IO.SDDSaxParser;
 import fr.lis.ikeyplus.model.DataSet;
 import fr.lis.ikeyplus.model.ICharacter;

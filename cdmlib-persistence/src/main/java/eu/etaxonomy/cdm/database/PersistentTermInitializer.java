@@ -27,12 +27,12 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
-import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.Representation;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.model.common.VocabularyEnum;
-import eu.etaxonomy.cdm.model.common.init.TermLoader;
+import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
+import eu.etaxonomy.cdm.model.term.VocabularyEnum;
+import eu.etaxonomy.cdm.model.term.init.TermLoader;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
 
 /**

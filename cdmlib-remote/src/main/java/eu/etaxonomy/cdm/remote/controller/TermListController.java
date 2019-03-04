@@ -13,7 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import eu.etaxonomy.cdm.api.service.ITermService;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import io.swagger.annotations.Api;
 
 /**

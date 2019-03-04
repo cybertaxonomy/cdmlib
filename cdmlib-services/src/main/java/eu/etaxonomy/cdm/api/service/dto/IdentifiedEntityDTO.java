@@ -11,8 +11,8 @@ package eu.etaxonomy.cdm.api.service.dto;
 import java.io.Serializable;
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
 
 /**
  * @author a.mueller

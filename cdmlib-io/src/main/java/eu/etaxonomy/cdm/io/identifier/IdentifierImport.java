@@ -23,11 +23,11 @@ import org.springframework.transaction.TransactionStatus;
 import au.com.bytecode.opencsv.CSVReader;
 import eu.etaxonomy.cdm.io.common.SimpleImport;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DefinedTerm;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Identifier;
-import eu.etaxonomy.cdm.model.common.TermType;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.TermType;
 
 /**
  * Imports identifiers for a certain {@link IdentifiableEntity} class from a csv

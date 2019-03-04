@@ -9,8 +9,8 @@
 
 package eu.etaxonomy.cdm.persistence.dao.common;
 
-import eu.etaxonomy.cdm.model.common.OrderedTermBase;
-import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
+import eu.etaxonomy.cdm.model.term.OrderedTermBase;
+import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 
 
 /**

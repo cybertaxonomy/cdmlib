@@ -46,11 +46,11 @@ import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.IHasTermType;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
-import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.IHasTermType;
+import eu.etaxonomy.cdm.model.term.TermType;
 
 /**
  * The class for tree nodes within a {@link FeatureTree feature tree} structure.

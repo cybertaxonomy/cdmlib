@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.persistence.dao.initializer;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
-import eu.etaxonomy.cdm.model.common.TermBase;
+import eu.etaxonomy.cdm.model.term.TermBase;
 
 /**
  * Note: Probably not really needed as we are currently loading representations and inverse representations eager.
