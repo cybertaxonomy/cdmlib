@@ -141,6 +141,7 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 	}
 
 	public void addTerm(T term) {
+	    checkTermType(term);
 		term.setVocabulary(this);
 		this.terms.add(term);
 	}
@@ -219,6 +220,15 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 
 		return this;
 	}
+
+	/**
+     * Throws {@link IllegalArgumentException} if the given
+     * term has not the same term type as this term or if term type is null.
+     * @param term
+     */
+    private void checkTermType(IHasTermType term) {
+        IHasTermType.checkTermTypes(term, this);
+    }
 
 //*********************** CLONE ********************************************************/
 
