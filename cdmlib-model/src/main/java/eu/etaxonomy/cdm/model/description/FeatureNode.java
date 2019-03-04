@@ -45,6 +45,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IHasTermType;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
@@ -228,7 +229,7 @@ public class FeatureNode <T extends DefinedTermBase> extends VersionableEntity
      * Returns the {@link Feature feature} <i>this</i> feature node is based on.
      */
     public T getTerm() {
-        return feature;
+        return CdmBase.deproxy(feature);
     }
     /**
      * @see #getFeature()
