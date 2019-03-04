@@ -239,6 +239,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
       }
 
       public void addGeneralizationOf(T generalization) {
+          checkTermType(generalization);
           generalization.setKindOf(this);
           this.generalizationOf.add(generalization);
       }
@@ -293,6 +294,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
        * @see #getIncludes()
        */
       public void addIncludes(T includes) {
+          checkTermType(includes);
           includes.setPartOf(this);
           this.includes.add(includes);
       }
@@ -469,6 +471,15 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
     @Transient
     public T getByUuid(UUID uuid){
         return this.vocabulary.findTermByUuid(uuid);
+    }
+
+    /**
+     * Throws {@link IllegalArgumentException} if the given
+     * term has not the same term type as this term or if term type is null.
+     * @param term
+     */
+    private void checkTermType(IHasTermType term) {
+        IHasTermType.checkTermTypes(term, this);
     }
 
 
