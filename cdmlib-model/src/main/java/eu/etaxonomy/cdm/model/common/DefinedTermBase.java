@@ -393,9 +393,9 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
 
 
     @Override
-    public T readCsvLine(Class<T> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
+    public T readCsvLine(Class<T> termClass, List<String> csvLine, TermType termType, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
         try {
-            T newInstance = getInstance(termClass);
+            T newInstance = getInstance(termClass, termType);
             readCsvLine(newInstance, csvLine, Language.CSV_LANGUAGE(), abbrevAsId);
             readIsPartOf(newInstance, csvLine, terms);
             return newInstance;
@@ -448,11 +448,12 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
     }
 
 
-    private  <T extends DefinedTermBase> T getInstance(Class<? extends DefinedTermBase> termClass) {
+    private  <T extends DefinedTermBase> T getInstance(Class<? extends DefinedTermBase> termClass, TermType termType) {
         try {
             Constructor<T> c = ((Class<T>)termClass).getDeclaredConstructor();
             c.setAccessible(true);
             T termInstance = c.newInstance();
+            termInstance.setTermType(termType);
             return termInstance;
         } catch (Exception e) {
             throw new RuntimeException(e);

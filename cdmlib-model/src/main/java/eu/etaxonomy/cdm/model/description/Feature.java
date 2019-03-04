@@ -655,8 +655,9 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * @see     		#NewInstance(String, String, String)
 	 */
 	@Override
-	public Feature readCsvLine(Class<Feature> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
-		Feature newInstance = super.readCsvLine(termClass, csvLine, terms, abbrevAsId);
+	public Feature readCsvLine(Class<Feature> termClass, List<String> csvLine, TermType termType,
+	        Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
+		Feature newInstance = super.readCsvLine(termClass, csvLine, termType, terms, abbrevAsId);
 		String text = csvLine.get(4);
 		if (text != null && text.length() >= 6){
 			if ("1".equals(text.substring(0, 1))){newInstance.setSupportsTextData(true);}

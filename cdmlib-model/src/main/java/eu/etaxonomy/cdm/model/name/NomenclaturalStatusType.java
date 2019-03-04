@@ -913,9 +913,11 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 */
 
 	@Override
-    public NomenclaturalStatusType readCsvLine(Class<NomenclaturalStatusType> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {   //TODO should be List<String> but makes error for some strange reason
+    public NomenclaturalStatusType readCsvLine(Class<NomenclaturalStatusType> termClass, List<String> csvLine, TermType termType,
+            Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {   //TODO should be List<String> but makes error for some strange reason
 		try {
 			NomenclaturalStatusType newInstance = termClass.newInstance();
+			newInstance.setTermType(termType);
 			DefinedTermBase.readCsvLine(newInstance, csvLine, Language.LATIN(), abbrevAsId);
 			return newInstance;
 		} catch (Exception e) {

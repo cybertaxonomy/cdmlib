@@ -607,8 +607,9 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 	}
 
     @Override
-    public PresenceAbsenceTerm readCsvLine(Class<PresenceAbsenceTerm> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId){
-    	PresenceAbsenceTerm newInstance = super.readCsvLine(termClass, csvLine, terms, abbrevAsId);
+    public PresenceAbsenceTerm readCsvLine(Class<PresenceAbsenceTerm> termClass, List<String> csvLine, TermType termType,
+            Map<UUID,DefinedTermBase> terms, boolean abbrevAsId){
+    	PresenceAbsenceTerm newInstance = super.readCsvLine(termClass, csvLine, termType, terms, abbrevAsId);
         String abbreviatedLabel = csvLine.get(4);
 //		String uuid = (String)csvLine.get(0);
 //		map.put(abbreviatedLabel, UUID.fromString(uuid));

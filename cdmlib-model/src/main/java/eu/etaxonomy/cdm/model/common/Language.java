@@ -1201,9 +1201,9 @@ public class Language extends DefinedTermBase<Language> {
 //    }
 
     @Override
-    public Language readCsvLine(Class<Language> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
+    public Language readCsvLine(Class<Language> termClass, List<String> csvLine, TermType termType, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
         try {
-            Language newInstance =  Language.class.newInstance();
+            Language newInstance =  Language.NewInstance();  //term type not needed is added in constructor anyway
             if ( UUID.fromString(csvLine.get(0).toString()).equals(Language.uuidEnglish)){
                 DefinedTermBase.readCsvLine(newInstance, csvLine, newInstance, abbrevAsId);
             }else{

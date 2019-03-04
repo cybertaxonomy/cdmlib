@@ -340,8 +340,9 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
     }
 
     @Override
-    public NamedArea readCsvLine(Class<NamedArea> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
-        NamedArea newInstance = super.readCsvLine(termClass, csvLine, terms, abbrevAsId);
+    public NamedArea readCsvLine(Class<NamedArea> termClass, List<String> csvLine, TermType termType,
+            Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
+        NamedArea newInstance = super.readCsvLine(termClass, csvLine, termType, terms, abbrevAsId);
 
         String levelString = csvLine.get(6);
 

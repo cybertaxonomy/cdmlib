@@ -22,7 +22,7 @@ public interface ILoadableTerm<T extends IDefinedTerm>{
 	 * the csvLine attributes are merged into the existing default language and the default Language is returned.
 	 * @return
 	 */
-	public T readCsvLine(Class<T> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId);
+	public T readCsvLine(Class<T> termClass, List<String> csvLine, TermType termType, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId);
 
 	public  void writeCsvLine(CSVWriter writer, T term);
 }

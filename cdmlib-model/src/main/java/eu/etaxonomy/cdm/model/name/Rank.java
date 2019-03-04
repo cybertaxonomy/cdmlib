@@ -993,8 +993,8 @@ public class Rank extends OrderedTermBase<Rank> {
 
 
     @Override
-    public Rank readCsvLine(Class<Rank> termClass, List<String> csvLine, Map<UUID, DefinedTermBase> terms, boolean abbrevAsId) {
-        Rank rank = super.readCsvLine(termClass, csvLine, terms, abbrevAsId);
+    public Rank readCsvLine(Class<Rank> termClass, List<String> csvLine, TermType termType, Map<UUID, DefinedTermBase> terms, boolean abbrevAsId) {
+        Rank rank = super.readCsvLine(termClass, csvLine, termType, terms, abbrevAsId);
         RankClass rankClass = RankClass.getByKey(csvLine.get(5));
         assert rankClass != null: "XXXXXXXXXXXXXXXXXXXXX  Rank class must not be null: " + csvLine ;
         rank.setRankClass(rankClass);

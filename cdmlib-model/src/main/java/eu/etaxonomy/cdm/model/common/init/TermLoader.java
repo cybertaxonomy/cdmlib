@@ -142,8 +142,7 @@ public class TermLoader implements ITermLoader {
 			Class<? extends DefinedTermBase> termClass,
 			TermVocabulary<T> voc, boolean abbrevAsId,
 			T classDefiningTermInstance) {
-		T term = (T) classDefiningTermInstance.readCsvLine(termClass,arrayedLine(csvLine), terms, abbrevAsId);
-		term.setTermType(voc.getTermType());
+		T term = (T) classDefiningTermInstance.readCsvLine(termClass,arrayedLine(csvLine), voc.getTermType(), terms, abbrevAsId);
 		voc.addTerm(term);
 		terms.put(term.getUuid(), term);
 		return term;
