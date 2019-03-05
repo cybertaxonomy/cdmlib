@@ -96,7 +96,7 @@ public class FeatureTree <T extends DefinedTermBase>
     @Column(name="termType")
     @NotNull
     @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-        parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.common.TermType")}
+        parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.term.TermType")}
     )
     @Audited
     private TermType termType;

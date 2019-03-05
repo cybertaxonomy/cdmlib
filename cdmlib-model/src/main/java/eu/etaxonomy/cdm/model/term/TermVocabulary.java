@@ -61,7 +61,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 @XmlRootElement(name = "TermVocabulary")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.common.TermVocabulary")
+//@Indexed(index = "eu.etaxonomy.cdm.model.term.TermVocabulary")
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public class TermVocabulary<T extends DefinedTermBase> extends TermBase implements Iterable<T> {

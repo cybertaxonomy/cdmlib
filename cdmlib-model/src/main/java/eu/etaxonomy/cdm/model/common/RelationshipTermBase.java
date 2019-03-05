@@ -207,7 +207,7 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase<T>>
 
 	/*
 	 * Inverse representation convenience methods similar to TermBase.xxx
-	 * @see eu.etaxonomy.cdm.model.common.TermBase#getLabel()
+	 * @see eu.etaxonomy.cdm.model.term.TermBase#getLabel()
 	 */
 	@Transient
 	public String getInverseLabel() {
