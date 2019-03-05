@@ -10,12 +10,12 @@
 package eu.etaxonomy.cdm.persistence.dao.common;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
+import eu.etaxonomy.cdm.model.reference.ISourceable;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import eu.etaxonomy.cdm.model.common.ISourceable;
 
 
 public interface IOriginalSourceDao extends ICdmEntityDao<OriginalSourceBase>{

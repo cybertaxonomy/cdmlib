@@ -15,13 +15,15 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
- * This class represents an {@link eu.etaxonomy.cdm.model.common.IOriginalSource IOriginalSource}
+ * This class represents an {@link eu.etaxonomy.cdm.model.reference.IOriginalSource IOriginalSource}
  * that can be used with {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity identifiable entity}.
  *
- * @see eu.etaxonomy.cdm.model.common.IOriginalSource
+ * @see eu.etaxonomy.cdm.model.reference.IOriginalSource
  *
  * @author a.mueller
  * @since 18.09.2009

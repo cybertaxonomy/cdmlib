@@ -46,7 +46,7 @@ import javassist.compiler.ast.Keyword;
  * taxonomic and/or geographical {@link Keyword specialization}.
  * For a short abbreviated name the inherited attribute {@link TeamOrPersonBase#getNomenclaturalTitle() nomenclaturalTitle}
  * is to be used.<BR>
- * For other alternative (string-)names {@link eu.etaxonomy.cdm.model.common.OriginalSourceBase OriginalSource} instances must be created
+ * For other alternative (string-)names {@link eu.etaxonomy.cdm.model.reference.OriginalSourceBase OriginalSource} instances must be created
  * and the inherited attribute {@link eu.etaxonomy.cdm.model.common.ReferencedEntityBase#getOriginalNameString() originalNameString} must be used.
  * <P>
  * This class corresponds to: <ul>

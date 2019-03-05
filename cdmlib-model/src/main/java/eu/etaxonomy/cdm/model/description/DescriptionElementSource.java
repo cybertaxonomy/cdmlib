@@ -22,14 +22,14 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
-import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
- * This class represents an {@link eu.etaxonomy.cdm.model.common.IOriginalSource IOriginalSource}
+ * This class represents an {@link eu.etaxonomy.cdm.model.reference.IOriginalSource IOriginalSource}
  * that can be used with {@link eu.etaxonomy.cdm.model.description.DescriptionElementBase description elements}.
  * Additionally to the core functionally of IOriginalSource a {@link eu.etaxonomy.cdm.model.name.TaxonName taxon name}
  * can be stored that points to the name used in the source. This is needed because description always belong
