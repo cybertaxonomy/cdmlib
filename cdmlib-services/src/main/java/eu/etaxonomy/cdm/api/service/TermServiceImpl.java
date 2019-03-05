@@ -56,6 +56,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IRepresentationDao;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
@@ -395,12 +396,12 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 
 	@Override
 	@Transactional(readOnly = false)
-    public void updateCaches(Class<? extends DefinedTermBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<DefinedTermBase> cacheStrategy, IProgressMonitor monitor) {
+    public UpdateResult updateCaches(Class<? extends DefinedTermBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<DefinedTermBase> cacheStrategy, IProgressMonitor monitor) {
 		//TODO shouldn't this be TermBase instead of DefinedTermBase
 		if (clazz == null){
 			clazz = DefinedTermBase.class;
 		}
-		super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
+		return super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
 	}
 
 	@Override
@@ -469,6 +470,27 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 
         return result;
     }
+
+//    @Override
+//    @Transactional(readOnly = true)
+//    public List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCache(List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern, Language lang, MatchMode matchMode) {
+//        List<NamedArea> areas = dao.getUuidAndTitleCache(vocs, pageNumber, limit, pattern, matchMode);
+//
+//        List<UuidAndTitleCache<NamedArea>> result = new ArrayList();
+//        UuidAndTitleCache<NamedArea> uuidAndTitleCache;
+//        for (NamedArea area: areas){
+//            uuidAndTitleCache = new UuidAndTitleCache<>(area.getUuid(), area.getId(), area.labelWithLevel(area, lang));
+//            result.add(uuidAndTitleCache);
+//        }
+//
+//        return result;
+//    }
+//
+//    @Override
+//    public long count(List<TermVocabulary> vocs, String pattern, Language lang) {
+//        long count = dao.count(vocs, pattern);
+//        return count;
+//    }
 
     @Override
     public Collection<TermDto> getIncludesAsDto(
