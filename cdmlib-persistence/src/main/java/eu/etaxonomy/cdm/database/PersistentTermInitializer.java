@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.model.term.VocabularyEnum;
 import eu.etaxonomy.cdm.model.term.init.TermLoader;
-import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
+import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
 
 /**
  * Spring bean class to initialize the {@link IVocabularyStore IVocabularyStore}.

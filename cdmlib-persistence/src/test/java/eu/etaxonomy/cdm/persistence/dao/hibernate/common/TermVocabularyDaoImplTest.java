@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
-import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
+import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 /**

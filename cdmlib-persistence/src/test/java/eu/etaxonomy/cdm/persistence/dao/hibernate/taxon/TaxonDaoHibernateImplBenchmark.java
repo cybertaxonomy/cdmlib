@@ -23,10 +23,10 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.model.view.context.AuditEventContextHolder;
-import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
+import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**

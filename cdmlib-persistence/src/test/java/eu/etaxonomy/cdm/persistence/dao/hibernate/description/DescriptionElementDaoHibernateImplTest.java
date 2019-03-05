@@ -30,10 +30,10 @@ import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
-import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
+import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 

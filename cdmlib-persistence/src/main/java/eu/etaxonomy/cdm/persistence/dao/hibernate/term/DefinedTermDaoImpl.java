@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
+package eu.etaxonomy.cdm.persistence.dao.hibernate.term;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -62,7 +62,8 @@ import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
-import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
+import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;

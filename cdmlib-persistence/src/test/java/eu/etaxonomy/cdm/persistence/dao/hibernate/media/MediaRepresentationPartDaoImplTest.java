@@ -26,8 +26,8 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
-import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.media.IMediaRepresentationPartDao;
+import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 @DataSet

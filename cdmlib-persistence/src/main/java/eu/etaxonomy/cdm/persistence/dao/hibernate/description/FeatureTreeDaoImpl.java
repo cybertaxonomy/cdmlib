@@ -26,9 +26,9 @@ import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.model.term.VocabularyEnum;
-import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
+import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
 /**

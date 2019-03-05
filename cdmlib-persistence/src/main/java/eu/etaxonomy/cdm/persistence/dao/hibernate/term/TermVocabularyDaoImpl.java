@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
+package eu.etaxonomy.cdm.persistence.dao.hibernate.term;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,7 +32,8 @@ import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
-import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
+import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.dto.TermVocabularyDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;

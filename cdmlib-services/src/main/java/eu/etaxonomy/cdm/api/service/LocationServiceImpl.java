@@ -27,9 +27,9 @@ import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
-import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
-import eu.etaxonomy.cdm.persistence.dao.common.IOrderedTermVocabularyDao;
-import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
+import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
+import eu.etaxonomy.cdm.persistence.dao.term.IOrderedTermVocabularyDao;
+import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
 
 /**
  * Quick and dirty implementation of a location service as needed by the editor.

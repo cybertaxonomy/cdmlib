@@ -30,9 +30,9 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.model.description.MediaKey;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.media.IMediaDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
+import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 @DataSet
