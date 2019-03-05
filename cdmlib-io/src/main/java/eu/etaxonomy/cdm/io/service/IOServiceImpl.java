@@ -36,8 +36,6 @@ import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.ImportResult;
 import eu.etaxonomy.cdm.io.distribution.excelupdate.ExcelDistributionUpdateConfigurator;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
-import eu.etaxonomy.cdm.io.operation.config.CacheUpdaterConfigurator;
-import eu.etaxonomy.cdm.io.operation.config.SortIndexUpdaterConfigurator;
 import eu.etaxonomy.cdm.io.reference.ris.in.RisReferenceImportConfigurator;
 import eu.etaxonomy.cdm.io.specimen.SpecimenImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportConfigurator;
@@ -224,27 +222,27 @@ public class IOServiceImpl implements IIOService {
     }
 
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ImportResult updateSortIndex(SortIndexUpdaterConfigurator config) {
-        ImportResult result = new ImportResult();
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    public ImportResult updateSortIndex(SortIndexUpdaterConfigurator config) {
+//        ImportResult result = new ImportResult();
+//
+//        result = cdmImport.invoke(config);
+//        return result;
+//    }
 
-        result = cdmImport.invoke(config);
-        return result;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ImportResult updateCaches(CacheUpdaterConfigurator config) {
-        ImportResult result = new ImportResult();
-
-        result = cdmImport.invoke(config);
-        return result;
-    }
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    public ImportResult updateCaches(CacheUpdaterConfigurator config) {
+//        ImportResult result = new ImportResult();
+//
+//        result = cdmImport.invoke(config);
+//        return result;
+//    }
 
 
     /**

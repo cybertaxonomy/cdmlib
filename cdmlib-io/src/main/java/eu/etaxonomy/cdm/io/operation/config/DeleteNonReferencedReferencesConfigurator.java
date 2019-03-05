@@ -2,6 +2,7 @@ package eu.etaxonomy.cdm.io.operation.config;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.api.service.config.CacheUpdaterConfigurator;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.DefaultImportState;

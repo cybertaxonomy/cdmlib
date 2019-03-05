@@ -176,11 +176,11 @@ public class DescriptionServiceImpl
 
     @Override
     @Transactional(readOnly = false)
-    public void updateCaches(Class<? extends DescriptionBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<DescriptionBase> cacheStrategy, IProgressMonitor monitor) {
+    public UpdateResult updateCaches(Class<? extends DescriptionBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<DescriptionBase> cacheStrategy, IProgressMonitor monitor) {
         if (clazz == null){
             clazz = DescriptionBase.class;
         }
-        super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
+        return super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
     }
 
 

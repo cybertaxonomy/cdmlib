@@ -55,11 +55,11 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree,
 
     @Override
     @Transactional(readOnly = false)
-    public void updateCaches(Class<? extends FeatureTree> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<FeatureTree> cacheStrategy, IProgressMonitor monitor) {
+    public UpdateResult updateCaches(Class<? extends FeatureTree> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<FeatureTree> cacheStrategy, IProgressMonitor monitor) {
         if (clazz == null){
             clazz = FeatureTree.class;
         }
-        super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
+        return super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
     }
 
     @Override

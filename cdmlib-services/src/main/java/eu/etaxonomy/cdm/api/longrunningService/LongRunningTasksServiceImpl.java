@@ -20,9 +20,13 @@ import eu.etaxonomy.cdm.api.service.IDescriptiveDataSetService;
 import eu.etaxonomy.cdm.api.service.IProgressMonitorService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.UpdateResult;
+import eu.etaxonomy.cdm.api.service.config.CacheUpdaterConfigurator;
 import eu.etaxonomy.cdm.api.service.config.ForSubtreeConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.PublishForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SecundumForSubtreeConfigurator;
+import eu.etaxonomy.cdm.api.service.config.SortIndexUpdaterConfigurator;
+import eu.etaxonomy.cdm.api.service.util.CacheUpdater;
+import eu.etaxonomy.cdm.api.service.util.SortIndexUpdaterWrapper;
 import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitorThread;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
@@ -44,7 +48,11 @@ public class LongRunningTasksServiceImpl implements ILongRunningTasksService{
     @Autowired
     IProgressMonitorService progressMonitorService;
 
+    @Autowired
+    CacheUpdater updater;
 
+    @Autowired
+    SortIndexUpdaterWrapper sortIndexUpdater;
 
     @Override
     public UUID monitGetRowWrapper(DescriptiveDataSet descriptiveDataSet) {
@@ -124,6 +132,58 @@ public class LongRunningTasksServiceImpl implements ILongRunningTasksService{
                     remotingMonitor.addReport(e.getMessage());
                 }
                 remotingMonitor.setResult(result);
+                return result;
+            }
+        };
+        UUID uuid = progressMonitorService.registerNewRemotingMonitor(monitorThread);
+        monitorThread.setPriority(2);
+        monitorThread.start();
+        return uuid;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UUID monitLongRunningTask(CacheUpdaterConfigurator configurator) {
+        RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
+            @Override
+            public Serializable doRun(IRemotingProgressMonitor monitor) {
+                UpdateResult result;
+                configurator.setMonitor(monitor);
+
+                result = updater.doInvoke(configurator);
+
+                for(Exception e : result.getExceptions()) {
+                    monitor.addReport(e.getMessage());
+                }
+                monitor.setResult(result);
+                return result;
+            }
+        };
+        UUID uuid = progressMonitorService.registerNewRemotingMonitor(monitorThread);
+        monitorThread.setPriority(2);
+        monitorThread.start();
+        return uuid;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UUID monitLongRunningTask(SortIndexUpdaterConfigurator configurator) {
+        RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
+            @Override
+            public Serializable doRun(IRemotingProgressMonitor monitor) {
+                UpdateResult result;
+                configurator.setMonitor(monitor);
+
+                result = sortIndexUpdater.doInvoke(configurator);
+
+                for(Exception e : result.getExceptions()) {
+                    monitor.addReport(e.getMessage());
+                }
+                monitor.setResult(result);
                 return result;
             }
         };

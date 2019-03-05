@@ -12,7 +12,9 @@ import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.IDescriptiveDataSetService;
+import eu.etaxonomy.cdm.api.service.config.CacheUpdaterConfigurator;
 import eu.etaxonomy.cdm.api.service.config.ForSubtreeConfiguratorBase;
+import eu.etaxonomy.cdm.api.service.config.SortIndexUpdaterConfigurator;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 
@@ -30,6 +32,11 @@ public interface ILongRunningTasksService {
      */
     public UUID monitLongRunningTask(ForSubtreeConfiguratorBase configurator);
 
+    /**
+     * @param configurator
+     * @return
+     */
+    public UUID monitLongRunningTask(CacheUpdaterConfigurator configurator);
 
 
     /**
@@ -50,4 +57,10 @@ public interface ILongRunningTasksService {
      * @return the uuid of the monitor
      */
     public UUID monitGetRowWrapper(DescriptiveDataSet descriptiveDataSet);
+
+    /**
+     * @param configurator
+     * @return
+     */
+    UUID monitLongRunningTask(SortIndexUpdaterConfigurator configurator);
 }

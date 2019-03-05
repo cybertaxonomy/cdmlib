@@ -6,41 +6,35 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.io.operation.config;
+package eu.etaxonomy.cdm.api.service.config;
 
-import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.io.common.DefaultImportState;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
-import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
-import eu.etaxonomy.cdm.io.common.ImportStateBase;
-import eu.etaxonomy.cdm.io.operation.SortIndexUpdaterWrapper;
-import eu.etaxonomy.cdm.model.reference.Reference;
+import java.io.Serializable;
+
+import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 
 /**
  * @author k.luther
  * @since 08.07.2016
  *
  */
-public class SortIndexUpdaterConfigurator
-        extends ImportConfiguratorBase<DefaultImportState<SortIndexUpdaterConfigurator>, Object>
-        implements IImportConfigurator{
+public class SortIndexUpdaterConfigurator implements Serializable{
 
 
     private boolean doTaxonNode = true;
     private boolean doFeatureNode = true;
     private boolean doPolytomousKeyNode = true;
+    private IProgressMonitor monitor;
 
-    private SortIndexUpdaterConfigurator(ICdmDataSource destination){
-        super(null);
-        this.setDestination(destination);
+    private SortIndexUpdaterConfigurator(){
+
     }
 
     /**
      * @param destination
      * @return
      */
-    public static SortIndexUpdaterConfigurator NewInstance(ICdmDataSource destination) {
-        SortIndexUpdaterConfigurator result = new SortIndexUpdaterConfigurator(destination);
+    public static SortIndexUpdaterConfigurator NewInstance() {
+        SortIndexUpdaterConfigurator result = new SortIndexUpdaterConfigurator();
         return result;
     }
 
@@ -48,8 +42,8 @@ public class SortIndexUpdaterConfigurator
      * @param destination
      * @return
      */
-    public static SortIndexUpdaterConfigurator NewInstance(ICdmDataSource destination, boolean doTaxonNode, boolean doFeatureNode, boolean doPolytomousKeyNode) {
-        SortIndexUpdaterConfigurator result = new SortIndexUpdaterConfigurator(destination);
+    public static SortIndexUpdaterConfigurator NewInstance(boolean doTaxonNode, boolean doFeatureNode, boolean doPolytomousKeyNode) {
+        SortIndexUpdaterConfigurator result = new SortIndexUpdaterConfigurator();
         result.doFeatureNode = doFeatureNode;
         result.doTaxonNode = doTaxonNode;
         result.doPolytomousKeyNode = doPolytomousKeyNode;
@@ -97,31 +91,15 @@ public class SortIndexUpdaterConfigurator
         this.doFeatureNode = doFeatureNode;
     }
 
-    @Override
-    public <STATE extends ImportStateBase> STATE getNewState() {
-        return (STATE) new DefaultImportState(this);
+    public IProgressMonitor getMonitor() {
+        return monitor;
+    }
+
+    public void setMonitor(IProgressMonitor monitor) {
+        this.monitor = monitor;
     }
 
 
-    @Override
-    protected void makeIoClassList() {
-        ioClassList = new Class[]{
-                SortIndexUpdaterWrapper.class
-        };
-    }
-
-
-    @Override
-    public Reference getSourceReference() {
-        return null;
-    }
-
-
-    @Override
-    public boolean isValid() {
-        //as no source needs to exist
-        return true;
-    }
 
 
 }
