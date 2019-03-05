@@ -23,10 +23,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
-import eu.etaxonomy.cdm.model.common.TermType;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 
 /**
@@ -83,7 +80,7 @@ public class TermRelationshipType extends RelationshipTermBase<TermRelationshipT
   	 */
   	@Deprecated
   	protected TermRelationshipType() {
-		super(TermType.TermRelationshipType);
+		super(TermType.TermRelationType);
 	}
 	/**
 	 * Class constructor: creates an additional term relationship type
@@ -187,9 +184,9 @@ public class TermRelationshipType extends RelationshipTermBase<TermRelationshipT
 
     @Override
     public TermRelationshipType readCsvLine(Class<TermRelationshipType> termClass,
-            List<String> csvLine, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
+            List<String> csvLine, TermType termType, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
 
-        TermRelationshipType newInstance = super.readCsvLine(termClass, csvLine, terms, abbrevAsId);
+        TermRelationshipType newInstance = super.readCsvLine(termClass, csvLine, termType, terms, abbrevAsId);
         newInstance.setSymbol(newInstance.getIdInVocabulary());
         String inverseLabelAbbrev = csvLine.get(7).trim();
         newInstance.setInverseSymbol(inverseLabelAbbrev);

@@ -496,6 +496,12 @@ public enum TermType implements IEnumTerm<TermType>{
     @Deprecated
     Character(UUID.fromString("70baa056-4a3c-4a79-860f-934765c626c4"), "Character", "CHA", Feature),
 
+    //41
+    /**
+     * The type for term relationships.
+     **/
+    @XmlEnumValue("TermRelationType")
+    TermRelationType(UUID.fromString(""), "Term relation type", "TERT", null),
 
     ;
 
