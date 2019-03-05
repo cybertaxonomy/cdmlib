@@ -52,7 +52,6 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
-import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 
 /**
  * Class implementing the business logic for creating the map service string for
@@ -67,16 +66,6 @@ public class EditGeoServiceUtilities {
     private static final Logger logger = Logger.getLogger(EditGeoServiceUtilities.class);
 
     private static final int INT_MAX_LENGTH = String.valueOf(Integer.MAX_VALUE).length();
-
-    private static IDefinedTermDao termDao;
-
-    /**
-     * @param termDao
-     */
-    public static void setTermDao(IDefinedTermDao termDao) {
-        EditGeoServiceUtilities.termDao= termDao;
-    }
-
 
     private static HashMap<SpecimenOrObservationType, Color> defaultSpecimenOrObservationTypeColors = null;
 
