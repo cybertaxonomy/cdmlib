@@ -7,11 +7,12 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.persistence.dao.common;
+package eu.etaxonomy.cdm.persistence.dao.reference;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.reference.ISourceable;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
+import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 
 import java.util.List;
 import java.util.Map;
