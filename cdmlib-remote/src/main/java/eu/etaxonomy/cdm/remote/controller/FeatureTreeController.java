@@ -21,15 +21,13 @@ import io.swagger.annotations.Api;
 /**
  * @author n.hoffmann
  * @since Aug 6, 2010
- * @version 1.0
  */
 @Controller
 @Api("featureTree")
 @RequestMapping(value = {"/featureTree/{uuid}"})
 public class FeatureTreeController extends AbstractIdentifiableController<FeatureTree, IFeatureTreeService> {
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger
-            .getLogger(FeatureTreeController.class);
+    private static final Logger logger = Logger.getLogger(FeatureTreeController.class);
 
     @Override
     @Autowired
