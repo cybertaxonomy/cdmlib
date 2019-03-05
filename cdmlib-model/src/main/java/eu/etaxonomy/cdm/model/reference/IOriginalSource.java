@@ -7,9 +7,7 @@
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
 
-package eu.etaxonomy.cdm.model.common;
-
-import eu.etaxonomy.cdm.model.reference.Reference;
+package eu.etaxonomy.cdm.model.reference;
 
 /**
  * An original source can be used in different ways.<BR>

@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.model.common;
+package eu.etaxonomy.cdm.model.reference;
 
 
 import java.util.HashSet;
@@ -38,13 +38,15 @@ import org.hibernate.envers.Audited;
 import org.springframework.util.Assert;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
+import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.media.ExternalLink;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 
 /**
- * Abstract base class for classes implementing {@link eu.etaxonomy.cdm.model.common.IOriginalSource IOriginalSource}.
- * @see eu.etaxonomy.cdm.model.common.IOriginalSource
+ * Abstract base class for classes implementing {@link eu.etaxonomy.cdm.model.reference.IOriginalSource IOriginalSource}.
+ * @see eu.etaxonomy.cdm.model.reference.IOriginalSource
  *
  * @author m.doering
  * @since 08-Nov-2007 13:06:22
