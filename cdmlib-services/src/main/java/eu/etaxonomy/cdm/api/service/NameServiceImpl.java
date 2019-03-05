@@ -835,11 +835,11 @@ public class NameServiceImpl
 
     @Override
     @Transactional(readOnly = false)
-    public void updateCaches(Class<? extends TaxonName> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<TaxonName> cacheStrategy, IProgressMonitor monitor) {
+    public UpdateResult updateCaches(Class<? extends TaxonName> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<TaxonName> cacheStrategy, IProgressMonitor monitor) {
         if (clazz == null){
             clazz = TaxonName.class;
         }
-        super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
+        return super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
     }
 
 
