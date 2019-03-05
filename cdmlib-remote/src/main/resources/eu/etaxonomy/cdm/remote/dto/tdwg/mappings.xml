@@ -14,7 +14,7 @@
     </mapping> 
      <!-- common package -->
      <mapping> 
-        <class-a>eu.etaxonomy.cdm.model.common.DefinedTermBase</class-a>
+        <class-a>eu.etaxonomy.cdm.model.term.DefinedTermBase</class-a>
         <class-b>eu.etaxonomy.cdm.remote.dto.tdwg.DefinedTerm</class-b>
         <field>
           <a>uri</a>

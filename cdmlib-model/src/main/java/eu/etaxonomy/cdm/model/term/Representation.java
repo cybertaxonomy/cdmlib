@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 @XmlRootElement(name = "Representation")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.common.Representation")
+//@Indexed(index = "eu.etaxonomy.cdm.model.term.Representation")
 @Audited
 public class Representation extends LanguageStringBase {
     private static final long serialVersionUID = -4202420199587324532L;

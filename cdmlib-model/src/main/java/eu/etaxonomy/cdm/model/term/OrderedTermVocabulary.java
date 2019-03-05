@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 @XmlRootElement(name = "OrderedTermVocabulary")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.common.TermVocabulary")
+//@Indexed(index = "eu.etaxonomy.cdm.model.term.TermVocabulary")
 @Audited
 public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabulary<T> {
 	private static final long serialVersionUID = 7871741306306371242L;

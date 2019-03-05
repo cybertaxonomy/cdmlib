@@ -123,7 +123,7 @@
         <entry key="org.hibernate.proxy.HibernateProxy">
           <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.HibernateProxyBeanProcessor" />
         </entry>
-        <entry key="eu.etaxonomy.cdm.model.common.TermBase">
+        <entry key="eu.etaxonomy.cdm.model.term.TermBase">
           <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TermBaseBeanProcessor">
              <property name="excludes">
                <set value-type="java.lang.String">
@@ -134,7 +134,7 @@
             </property>
            </bean>
          </entry>
-         <entry key="eu.etaxonomy.cdm.model.common.Representation">
+         <entry key="eu.etaxonomy.cdm.model.term.Representation">
           <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.RepresentationBeanProcessor"/>
          </entry>
          <entry key="eu.etaxonomy.cdm.model.media.Media">
@@ -367,7 +367,7 @@
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.bean.TaxonRelationshipBeanProcessor" />
         </entry>
-        <entry key="eu.etaxonomy.cdm.model.common.TermBase">
+        <entry key="eu.etaxonomy.cdm.model.term.TermBase">
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.bean.TermBaseBeanProcessor">
             <property name="replaceRepresentations" value="true" />
