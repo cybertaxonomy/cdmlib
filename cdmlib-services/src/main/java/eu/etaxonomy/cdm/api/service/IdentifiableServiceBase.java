@@ -23,6 +23,7 @@ import org.hibernate.criterion.Criterion;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
+import eu.etaxonomy.cdm.api.service.dto.CdmEntityIdentifier;
 import eu.etaxonomy.cdm.api.service.dto.IdentifiedEntityDTO;
 import eu.etaxonomy.cdm.api.service.dto.MarkedEntityDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -256,23 +257,24 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 
 	@Override
 	@Transactional(readOnly = false)
-	public void updateCaches() {
-		updateCaches(null, null, null, null);
+	public UpdateResult updateCaches() {
+		return updateCaches(null, null, null, null);
 	}
 
 	@Transactional(readOnly = false)  //TODO check transactional behavior, e.g. what happens with the session if count is very large
-	protected <S extends T > void updateCachesImpl(Class<S> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<T> cacheStrategy, IProgressMonitor monitor) {
+	protected <S extends T > UpdateResult updateCachesImpl(Class<S> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<T> cacheStrategy, IProgressMonitor monitor) {
 		if (stepSize == null){
 			stepSize = UPDATE_TITLE_CACHE_DEFAULT_STEP_SIZE;
 		}
 		if (monitor == null){
 			monitor = DefaultProgressMonitor.NewInstance();
 		}
-
+		UpdateResult result = new UpdateResult();
 		long count = dao.count(clazz);
 		long countUpdated = 0;
 		monitor.beginTask("update titles for " + clazz.getSimpleName(), Long.valueOf(count).intValue());
 		int worked = 0;
+		Set<CdmEntityIdentifier> updatedCdmIds = new HashSet();
 		for(int i = 0 ; i < count ; i = i + stepSize){
 			// not sure if such strict ordering is necessary here, but for safety reasons I do it
 			ArrayList<OrderHint> orderHints = new ArrayList<>();
@@ -288,16 +290,20 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 				entity = HibernateProxyHelper.deproxy(entity);
 			    if (entity.updateCaches(cacheStrategy)){
 			        countUpdated++;
+			        updatedCdmIds.add(new CdmEntityIdentifier(entity.getId(), clazz));
 			    }
 				worked++;
+				monitor.internalWorked(1);
 			}
 
-			monitor.worked(list.size());
+
 			if (monitor.isCanceled()){
 				break;
 			}
 		}
 		monitor.done();
+		result.addUpdatedCdmIds(updatedCdmIds);
+		return result;
 	}
 
 	/**

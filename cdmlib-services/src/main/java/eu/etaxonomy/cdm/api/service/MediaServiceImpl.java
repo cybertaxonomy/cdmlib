@@ -89,11 +89,11 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
 
 	@Override
 	@Transactional(readOnly = false)
-    public void updateCaches(Class<? extends Media> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<Media> cacheStrategy, IProgressMonitor monitor) {
+    public UpdateResult updateCaches(Class<? extends Media> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<Media> cacheStrategy, IProgressMonitor monitor) {
 		if (clazz == null){
 			clazz = Media.class;
 		}
-		super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
+		return super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
 	}
 
     @Override

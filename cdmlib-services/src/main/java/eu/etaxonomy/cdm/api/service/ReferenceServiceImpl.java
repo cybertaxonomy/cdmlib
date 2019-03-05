@@ -46,11 +46,11 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<Reference,IRef
 
     @Override
     @Transactional(readOnly = false)
-    public void updateCaches(Class<? extends Reference> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<Reference> cacheStrategy, IProgressMonitor monitor) {
+    public UpdateResult updateCaches(Class<? extends Reference> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<Reference> cacheStrategy, IProgressMonitor monitor) {
         if (clazz == null){
             clazz = Reference.class;
         }
-        super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
+        return super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
     }
 
     @Override

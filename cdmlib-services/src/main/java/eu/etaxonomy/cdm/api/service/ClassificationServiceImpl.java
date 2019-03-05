@@ -527,11 +527,11 @@ public class ClassificationServiceImpl
 
     @Override
     @Transactional(readOnly = false)
-    public void updateCaches(Class<? extends Classification> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<Classification> cacheStrategy, IProgressMonitor monitor) {
+    public UpdateResult updateCaches(Class<? extends Classification> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<Classification> cacheStrategy, IProgressMonitor monitor) {
         if (clazz == null){
             clazz = Classification.class;
         }
-        super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
+        return super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
     }
 
     /**
