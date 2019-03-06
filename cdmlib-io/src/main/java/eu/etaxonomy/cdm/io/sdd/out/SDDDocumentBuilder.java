@@ -78,10 +78,10 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.TermTreeNode;
-import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermBase;
+import eu.etaxonomy.cdm.model.term.TermTree;
+import eu.etaxonomy.cdm.model.term.TermTreeNode;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
@@ -89,9 +89,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
  *
  * @author h.fradin
  * @since 10.12.2008
- * @version 1.0
  */
-
 public class SDDDocumentBuilder {
 
 	private final DocumentImpl document;

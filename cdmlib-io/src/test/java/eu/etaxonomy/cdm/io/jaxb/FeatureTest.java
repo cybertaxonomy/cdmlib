@@ -18,8 +18,8 @@ import java.net.URI;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.term.TermTreeNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
+import eu.etaxonomy.cdm.model.term.TermTreeNode;
 
 //@Ignore  //does not work anymore since FeatureNode + Tree was moved to term package
 public class FeatureTest {

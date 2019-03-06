@@ -128,6 +128,4 @@ public class TermTreeDaoImpl extends IdentifiableDaoBase<TermTree> implements IF
         }
         return getUuidAndTitleCache(query);
     }
-
-
 }

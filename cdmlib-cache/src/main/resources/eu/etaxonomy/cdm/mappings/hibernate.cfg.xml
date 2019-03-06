@@ -209,6 +209,7 @@ Difference are to be found in
       <!-- Term Package -->
       <mapping class="eu.etaxonomy.cdm.model.term.DefinedTerm"/>
       <mapping class="eu.etaxonomy.cdm.model.term.DefinedTermBase"/>
+      <mapping class="eu.etaxonomy.cdm.model.term.FeatureTree"/>
       <mapping class="eu.etaxonomy.cdm.model.term.OrderedTerm"/>
       <mapping class="eu.etaxonomy.cdm.model.term.OrderedTermBase"/>
       <mapping class="eu.etaxonomy.cdm.model.term.OrderedTermVocabulary"/>

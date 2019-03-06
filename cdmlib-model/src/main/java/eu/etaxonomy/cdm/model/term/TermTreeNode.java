@@ -664,5 +664,4 @@ public class TermTreeNode <T extends DefinedTermBase>
 	    updateSortIndex();
 	}
 
-
 }

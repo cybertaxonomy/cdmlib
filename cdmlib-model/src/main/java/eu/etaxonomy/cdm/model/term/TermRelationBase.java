@@ -121,7 +121,6 @@ public abstract class TermRelationBase<TERM extends DefinedTermBase, REL extends
     public GRAPH getGraph() {
         return graph;
     }
-
     protected void setGraph(GRAPH graph) {
         checkTermType(graph);
         this.graph = graph;
