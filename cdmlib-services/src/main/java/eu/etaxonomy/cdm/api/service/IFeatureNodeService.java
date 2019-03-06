@@ -12,8 +12,8 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.config.FeatureNodeDeletionConfigurator;
-import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.FeatureNode;
 
 /**
  * @author n.hoffmann

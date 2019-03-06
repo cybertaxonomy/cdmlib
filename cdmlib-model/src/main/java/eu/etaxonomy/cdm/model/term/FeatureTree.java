@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.model.description;
+package eu.etaxonomy.cdm.model.term;
 
 import java.rmi.UnexpectedException;
 import java.util.ArrayList;
@@ -38,10 +38,9 @@ import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.IHasTermType;
-import eu.etaxonomy.cdm.model.term.Representation;
-import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.MediaKey;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 /**
@@ -75,7 +74,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 @XmlRootElement(name = "FeatureTree")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.description.FeatureTree")
+//@Indexed(index = "eu.etaxonomy.cdm.model.term.FeatureTree")
 @Audited
 public class FeatureTree <T extends DefinedTermBase>
             extends IdentifiableEntity<IIdentifiableEntityCacheStrategy>

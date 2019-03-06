@@ -43,7 +43,6 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -56,6 +55,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.FeatureTree;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
@@ -584,10 +584,6 @@ public class DescriptionServiceImpl
         return new DefaultPagerImpl<T>(pageNumber, count, pageSize, descriptionElements);
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IDescriptionService#generateNaturalLanguageDescription(eu.etaxonomy.cdm.model.description.FeatureTree, eu.etaxonomy.cdm.model.description.TaxonDescription, eu.etaxonomy.cdm.model.common.Language, java.util.List)
-     */
     @Override
     public String generateNaturalLanguageDescription(FeatureTree featureTree,
             TaxonDescription description, List<Language> preferredLanguages, String separator) {

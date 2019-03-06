@@ -7,7 +7,7 @@
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
 
-package eu.etaxonomy.cdm.model.description;
+package eu.etaxonomy.cdm.model.term;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -48,9 +48,9 @@ import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
-import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.IHasTermType;
-import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.model.description.CategoricalData;
+import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.State;
 
 /**
  * The class for tree nodes within a {@link FeatureTree feature tree} structure.
