@@ -662,4 +662,8 @@ public class TermTreeNode <T extends DefinedTermBase>
 	    HHH_9751_Util.removeAllNull(children);
 	    updateSortIndex();
 	}
+<<<<<<< HEAD
+=======
+
+>>>>>>> ref #6794 add TermRelation and rename FeatureNode -> TermTreeNode
 }
