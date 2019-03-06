@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../service/dataset.xsd">
+<dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../database/schema/dataset.xsd">
     <CLASSIFICATION ID="1" UUID="6c2bc8d9-ee62-4222-be89-4a8e31770878"  PROTECTEDTITLECACHE="true" ROOTNODE_ID="1"/>
     <CLASSIFICATION ID="2" UUID="43d67247-936f-42a3-a739-bbcde372e334"  PROTECTEDTITLECACHE="true" ROOTNODE_ID="8"/>
 
