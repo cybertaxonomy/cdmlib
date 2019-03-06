@@ -83,7 +83,8 @@ import eu.etaxonomy.cdm.model.description.State;
 @Table(name="FeatureNode", indexes = { @Index(name = "featureNodeTreeIndex", columnList = "treeIndex") })
 public class FeatureNode <T extends DefinedTermBase> extends VersionableEntity
             implements ITreeNode<FeatureNode<T>>, IHasTermType, Cloneable {
-	private static final Logger logger = Logger.getLogger(FeatureNode.class);
+
+    private static final Logger logger = Logger.getLogger(FeatureNode.class);
 
     //This is the main key a node belongs to. Although other keys may also reference
 	//<code>this</code> node, a node usually belongs to a given key.

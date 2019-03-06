@@ -33,20 +33,20 @@ public class FeatureTest {
 	        URI uri = new URI(URIEncoder.encode(this.getClass().getResource(resource).toString()));
 	        DataSet dataSet = cdmDocumentBuilder.unmarshal(DataSet.class, new InputStreamReader(this.getClass().getResourceAsStream(resource)),uri.toString());
 
-			FeatureTree featureTree = dataSet.getFeatureTrees().get(0);
+			FeatureTree<Feature> featureTree = dataSet.getFeatureTrees().get(0);
 			Feature feature = (Feature)dataSet.getTerms().get(1);
 
-			assertNotNull("FeatureTree must not be null",featureTree);
-			assertNotNull("Feature must not be null",feature);
+			assertNotNull("FeatureTree must not be null", featureTree);
+			assertNotNull("Feature must not be null", feature);
 
-			assertNotNull("FeatureTree.root must not be null",featureTree.getRoot());
-			FeatureNode featureNode = featureTree.getRoot();
-			assertNotNull("FeatureNode.feature must not be null",featureNode.getTerm());
-			assertEquals("FeatureNode.feature must equal Feature",feature,featureNode.getTerm());
+			assertNotNull("FeatureTree.root must not be null", featureTree.getRoot());
+			FeatureNode<Feature> root = featureTree.getRoot();
+			assertNotNull("FeatureNode.feature must not be null", root.getTerm());
+			assertEquals("FeatureNode.feature must equal Feature", feature, root.getTerm());
 
-			assertNotNull("FeatureNode.children must not be null",featureNode.getChildNodes());
-			assertFalse("FeatureNode.children must not be empty",featureNode.getChildNodes().isEmpty());
-			assertEquals("FeatureNode.children must have 4 child nodes",4,featureNode.getChildNodes().size());
+			assertNotNull("FeatureNode.children must not be null", root.getChildNodes());
+			assertFalse("FeatureNode.children must not be empty", root.getChildNodes().isEmpty());
+			assertEquals("FeatureNode.children must have 4 child nodes", 4, root.getChildNodes().size());
 
 	    }
 }

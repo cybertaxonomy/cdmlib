@@ -38,23 +38,26 @@ public class JaxbExportConfigurator
 
 	private boolean doUsers = true;
 	private boolean doAgentData = true;
+	private boolean doAuthors = true;
 	private boolean doLanguageData = true;
 	private boolean doFeatureData = true;
 	private boolean doDescriptions = true;
 	private boolean doMedia = true;
 	private boolean doOccurrence = true;
-//	private boolean doReferences = true;
+	private DO_REFERENCES doReferences = DO_REFERENCES.ALL;
 	private boolean doReferencedEntities = true;
 //	private boolean doRelationships = true;
 	private boolean doSynonyms = true;
-//	private boolean doTaxonNames = true;
-//	private boolean doTaxa = true;
+	private boolean doTaxonNames = true;
+	private boolean doTaxa = true;
 	private boolean doTerms = true;
 	private boolean doTermVocabularies = true;
 	private boolean doHomotypicalGroups = true;
 
 	private boolean doTypeDesignations = true;
 	private boolean doClassificationData = true;
+
+
 
 	//TODO
 	private static IExportTransformer defaultTransformer = null;
@@ -67,9 +70,6 @@ public class JaxbExportConfigurator
         this.setResultType(ExportResultType.BYTE_ARRAY);
     }
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IExportConfigurator#getNewState()
-	 */
 	@Override
     public JaxbExportState getNewState() {
 		return new JaxbExportState(this);
@@ -192,7 +192,7 @@ public class JaxbExportConfigurator
 	}
 
 
-//	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 	@Override
     protected void makeIoClassList() {
 		ioClassList = new Class[] {
@@ -251,13 +251,7 @@ public class JaxbExportConfigurator
 		this.doOccurrence = doOccurrence;
 	}
 
-	private boolean doAuthors = true;
-	//references
-	private DO_REFERENCES doReferences = DO_REFERENCES.ALL;
-	//names
-	private boolean doTaxonNames = true;
-	//taxa
-	private boolean doTaxa = true;
+
 
 	public boolean isDoAuthors() {
 		return doAuthors;
