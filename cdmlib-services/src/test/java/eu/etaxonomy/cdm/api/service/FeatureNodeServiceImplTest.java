@@ -63,7 +63,6 @@ public class FeatureNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 	private TermTreeNode<Feature> node3;
 	private TermTreeNode<Feature> node2;
 
-
 	@Before
 	public void setUp() throws Exception {}
 

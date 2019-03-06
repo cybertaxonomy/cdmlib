@@ -605,7 +605,6 @@ public class TermTreeNode <T extends DefinedTermBase>
 		}
 	}
 
-
     public TermTreeNode<T> cloneDescendants(){
         TermTreeNode<T> clone = (TermTreeNode<T>)this.clone();
         TermTreeNode<T> childClone;
@@ -663,6 +662,5 @@ public class TermTreeNode <T extends DefinedTermBase>
 	    HHH_9751_Util.removeAllNull(children);
 	    updateSortIndex();
 	}
-
 
 }

@@ -1,7 +1,5 @@
 package eu.etaxonomy.cdm.model.term;
 
-
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 
@@ -13,7 +11,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.description.Feature;
-
 
 public class FeatureTreeTest {
 	@SuppressWarnings("unused")
@@ -55,22 +52,16 @@ public class FeatureTreeTest {
 		TermTreeNode<Feature> node21 = node1.addChild(Feature.ANATOMY(), 1);
 		assertEquals(node1.getChildNodes().size(), 2);
 		assertEquals(node1.getChildNodes().get(1), node21);
-
-
 		assertEquals(node21.getParent(), node1);
-
-
 	}
 	@Test
 	public void testClone(){
-
         TermTreeNode<Feature> node21 = node1.addChild(Feature.ADDITIONAL_PUBLICATION(), 1);
 		TermTree<Feature> clone = (TermTree<Feature>) testTree.clone();
 
 		assertEquals (clone.getRoot().getTerm(), testTree.getRoot().getTerm());
 		assertNotSame(clone.getRoot(), testTree.getRoot());
 		List<TermTreeNode<Feature>> children = clone.getRootChildren();
-
 
 		assertEquals(children.get(0).getTerm(), node1.getTerm());
 	    assertNotSame(children.get(0), node1);
@@ -83,6 +74,4 @@ public class FeatureTreeTest {
 		assertEquals(children.get(0).getChildAt(0).getTerm(), node3.getTerm());
 		assertNotSame(children.get(0).getChildAt(0), node3);
 	}
-
-
 }

@@ -18,7 +18,6 @@ import eu.etaxonomy.cdm.api.service.IFeatureNodeService;
 import eu.etaxonomy.cdm.model.term.TermTreeNode;
 import io.swagger.annotations.Api;
 
-
 /**
  * @author n.hoffmann
  * @since Aug 6, 2010

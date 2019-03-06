@@ -115,7 +115,6 @@ public abstract class TermRelationBase<TERM extends DefinedTermBase, REL extends
         this.term = term;
     }
 
-
 //*************************** GRAPH ************************************/
 
     public GRAPH getGraph() {

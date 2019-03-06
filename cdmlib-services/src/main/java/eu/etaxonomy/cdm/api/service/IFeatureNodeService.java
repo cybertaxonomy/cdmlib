@@ -21,7 +21,6 @@ import eu.etaxonomy.cdm.model.term.TermTreeNode;
  */
 public interface IFeatureNodeService extends IVersionableService<TermTreeNode>{
 
-
     DeleteResult isDeletable(UUID nodeUuid, FeatureNodeDeletionConfigurator config);
 
     DeleteResult deleteFeatureNode(UUID nodeUuid, FeatureNodeDeletionConfigurator config);
@@ -36,7 +35,6 @@ public interface IFeatureNodeService extends IVersionableService<TermTreeNode>{
      * @return the result of the operation
      */
     public UpdateResult createChildFeatureNode(UUID parentNodeUuid, DefinedTermBase term, UUID vocabularyUuid);
-
 
     /**
      * Adds the specified feature as a child node to the given feature node

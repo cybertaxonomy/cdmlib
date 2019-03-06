@@ -103,7 +103,7 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<TermTreeNode,
 	 }
 
 	 @Override
-	 public UpdateResult createChildFeatureNode(UUID parentNodeUuid, DefinedTermBase term, UUID vocabularyUuid){
+     public UpdateResult createChildFeatureNode(UUID parentNodeUuid, DefinedTermBase term, UUID vocabularyUuid){
 	     TermVocabulary vocabulary = vocabularyService.load(vocabularyUuid);
 
 	     vocabulary.addTerm(term);
@@ -137,7 +137,7 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<TermTreeNode,
 
 	 @Override
 	 public DeleteResult isDeletable(UUID nodeUuid, FeatureNodeDeletionConfigurator config){
-	     TermTreeNode node = load(nodeUuid);
+	     TermTreeNode<Feature> node = load(nodeUuid);
 	     DeleteResult result = new DeleteResult();
 	     Set<CdmBase> references = commonService.getReferencingObjectsForDeletion(node);
 	     for (CdmBase ref:references){
@@ -145,7 +145,7 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<TermTreeNode,
 	             break;
 	         }
 	         if (ref instanceof TermTree){
-	             TermTree refTree = HibernateProxyHelper.deproxy(ref, TermTree.class);
+	             TermTree<Feature> refTree = HibernateProxyHelper.deproxy(ref, TermTree.class);
 	             if (node.getGraph().equals((refTree))){
 	                 break;
 	             }

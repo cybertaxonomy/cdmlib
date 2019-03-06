@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermTreeNode;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
-@Ignore //FIXME Remove @Ignore once maximes code is completely comitted
+@Ignore //FIXME Remove @Ignore once maximes code is completely committed
 public class NaturalLanguageGeneratorTest extends CdmIntegrationTest {
 
 	@SuppressWarnings("unused")
@@ -55,7 +55,7 @@ public class NaturalLanguageGeneratorTest extends CdmIntegrationTest {
 		description = TaxonDescription.NewInstance(taxon);
 
 		featureTree= TermTree.NewInstance();
-		TermTreeNode root = featureTree.getRoot();
+		TermTreeNode<Feature> root = featureTree.getRoot();
 		String[][][] tableStrings = { { {"a","b"} } , { { "a1" , "a2"  } , { "b1" } } };
 		buildBranches(root,tableStrings,0,2,0);
 		for (Iterator<Feature> f = featureSet.iterator() ; f.hasNext() ;){
