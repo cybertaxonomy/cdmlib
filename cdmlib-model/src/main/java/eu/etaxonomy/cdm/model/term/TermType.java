@@ -501,7 +501,7 @@ public enum TermType implements IEnumTerm<TermType>{
      * The type for term relationships.
      **/
     @XmlEnumValue("TermRelationType")
-    TermRelationType(UUID.fromString(""), "Term relation type", "TERT", null),
+    TermRelationType(UUID.fromString("2541032f-3d24-4ce0-a414-f028054f98ef"), "Term relation type", "TERT", null),
 
     ;
 

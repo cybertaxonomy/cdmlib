@@ -110,7 +110,7 @@ public class TestCdmDbComparator {
 //			"DeterminationEvent_Annotation",
 //			"DeterminationEvent_Marker",
 //			"Extension",
-			"FeatureNode",
+			"TernRelation",
 			"FeatureTree",
 //			"FeatureTree_Representation",
 //			"GatheringEvent",

@@ -48,7 +48,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  * determination process and for systematical output arrangement of
  * {@link DescriptionElementBase description elements} according to different goals
  * but may also be used to define flat feature subsets for filtering purposes.<BR>
- * A feature tree is build on {@link FeatureNode feature nodes}.
+ * A feature tree is build on {@link TermTreeNode feature nodes}.
  * <P>
  * This class corresponds partially to ConceptTreeDefType according to the SDD
  * schema.
@@ -83,9 +83,9 @@ public class FeatureTree <T extends DefinedTermBase>
 	private static final Logger logger = Logger.getLogger(FeatureTree.class);
 
 	@XmlElement(name = "Root")
-	@OneToOne(fetch = FetchType.LAZY, targetEntity=FeatureNode.class)
+	@OneToOne(fetch = FetchType.LAZY, targetEntity=TermTreeNode.class)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
-	private FeatureNode<T> root;
+	private TermTreeNode<T> root;
 
     /**
      * The {@link TermType type} of this term collection. All nodes in the graph must refer to a term of the same type.
@@ -158,7 +158,7 @@ public class FeatureTree <T extends DefinedTermBase>
 	 * Creates a new feature tree instance with a {@link #getRoot() root node}
 	 * the children of which are the feature nodes build on the base of the
 	 * given list of {@link Feature features}. This corresponds to a flat feature tree.
-	 * For each feature within the list a new {@link FeatureNode feature node} without
+	 * For each feature within the list a new {@link TermTreeNode feature node} without
 	 * children nodes will be created.
 	 *
 	 * @param	featureList	the feature list
@@ -167,7 +167,7 @@ public class FeatureTree <T extends DefinedTermBase>
 	 */
 	public static FeatureTree<Feature> NewInstance(List<Feature> featureList){
 		FeatureTree<Feature> result =  new FeatureTree<>(TermType.Feature);
-		FeatureNode<Feature> root = result.getRoot();
+		TermTreeNode<Feature> root = result.getRoot();
 
 		for (Feature feature : featureList){
 			root.addChild(feature);
@@ -190,7 +190,7 @@ public class FeatureTree <T extends DefinedTermBase>
 	protected FeatureTree(TermType termType) {
         this.termType = termType;
         checkTermType(this);  //check not null
-		root = new FeatureNode<>(termType);
+		root = new TermTreeNode<>(termType);
 		root.setFeatureTree(this);
 	}
 
@@ -201,12 +201,12 @@ public class FeatureTree <T extends DefinedTermBase>
         return termType;
     }
     /**
-	 * Returns the topmost {@link FeatureNode feature node} (root node) of <i>this</i>
+	 * Returns the topmost {@link TermTreeNode feature node} (root node) of <i>this</i>
 	 * feature tree. The root node does not have any parent. Since feature nodes
 	 * recursively point to their child nodes the complete feature tree is
 	 * defined by its root node.
 	 */
-	public FeatureNode<T> getRoot() {
+	public TermTreeNode<T> getRoot() {
 		return root;
 	}
 
@@ -220,12 +220,12 @@ public class FeatureTree <T extends DefinedTermBase>
     }
 
 	/**
-	 * Returns the (ordered) list of {@link FeatureNode feature nodes} which are immediate
+	 * Returns the (ordered) list of {@link TermTreeNode feature nodes} which are immediate
 	 * children of the root node of <i>this</i> feature tree.
 	 */
 	@Transient
-	public List<FeatureNode<T>> getRootChildren(){
-		List<FeatureNode<T>> result = new ArrayList<>();
+	public List<TermTreeNode<T>> getRootChildren(){
+		List<TermTreeNode<T>> result = new ArrayList<>();
 		result.addAll(root.getChildNodes());
 		return result;
 	}
@@ -262,11 +262,12 @@ public class FeatureTree <T extends DefinedTermBase>
 //*********************** CLONE ********************************************************/
 
 	/**
-	 * Clones <i>this</i> FeatureTree. This is a shortcut that enables to create
-	 * a new instance that differs only slightly from <i>this</i> FeatureTree by
+	 * Clones <i>this</i> {@link FeatureTree}. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> tree by
 	 * modifying only some of the attributes.
-	 * FeatureNodes always belong only to one tree, so all FeatureNodes are cloned to build
-	 * the new FeatureTree
+	 * {@link TermTreeNode tree nodes} always belong only to one tree, so all
+	 * {@link TermTreeNode tree nodes} are cloned to build
+	 * the new {@link FeatureTree}
 	 *
 	 *
 	 * @see eu.etaxonomy.cdm.model.term.TermBase#clone()
@@ -282,7 +283,7 @@ public class FeatureTree <T extends DefinedTermBase>
 			e.printStackTrace();
 			return null;
 		}
-		FeatureNode<T> rootClone = this.getRoot().cloneDescendants();
+		TermTreeNode<T> rootClone = this.getRoot().cloneDescendants();
 		result.root = rootClone;
 
 		return result;

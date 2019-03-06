@@ -61,7 +61,7 @@ import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptiveDataSetDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureDao;
-import eu.etaxonomy.cdm.persistence.dao.description.IFeatureNodeDao;
+import eu.etaxonomy.cdm.persistence.dao.description.ITermTreeNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IStatisticalMeasurementValueDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
@@ -93,7 +93,7 @@ public class DescriptionServiceImpl
     protected IDescriptionElementDao descriptionElementDao;
     protected IFeatureTreeDao featureTreeDao;
     protected IDescriptiveDataSetDao descriptiveDataSetDao;
-    protected IFeatureNodeDao featureNodeDao;
+    protected ITermTreeNodeDao featureNodeDao;
     protected IFeatureDao featureDao;
     protected ITermVocabularyDao vocabularyDao;
     protected IDefinedTermDao definedTermDao;
@@ -121,7 +121,7 @@ public class DescriptionServiceImpl
     }
 
     @Autowired
-    protected void setFeatureNodeDao(IFeatureNodeDao featureNodeDao) {
+    protected void setFeatureNodeDao(ITermTreeNodeDao featureNodeDao) {
         this.featureNodeDao = featureNodeDao;
     }
 

@@ -29,8 +29,8 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.term.FeatureNode;
 import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermTreeNode;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 @Ignore //FIXME Remove @Ignore once maximes code is completely comitted
@@ -55,7 +55,7 @@ public class NaturalLanguageGeneratorTest extends CdmIntegrationTest {
 		description = TaxonDescription.NewInstance(taxon);
 
 		featureTree= FeatureTree.NewInstance();
-		FeatureNode root = featureTree.getRoot();
+		TermTreeNode root = featureTree.getRoot();
 		String[][][] tableStrings = { { {"a","b"} } , { { "a1" , "a2"  } , { "b1" } } };
 		buildBranches(root,tableStrings,0,2,0);
 		for (Iterator<Feature> f = featureSet.iterator() ; f.hasNext() ;){
@@ -95,27 +95,20 @@ public class NaturalLanguageGeneratorTest extends CdmIntegrationTest {
 		System.out.println(stringBuilder.toString());
 	}
 
-	public void buildBranches(FeatureNode parent, String[][][] children, int level, int depth, int nodeNumber) {
+	public void buildBranches(TermTreeNode parent, String[][][] children, int level, int depth, int nodeNumber) {
 		int i = nodeNumber;
 		int j;
 				for (j=0; j<children[level][i].length ; j++) {
 					Feature feature = Feature.NewInstance(null, children[level][i][j], null);
 					featureSet.add(feature);
-					FeatureNode<Feature> child = parent.addChild(feature);
+                    TermTreeNode<Feature> child = parent.addChild(feature);
 					if (level<depth-1) {
 						buildBranches(child, children,level+1,depth, j);
 					}
 			}
-
 	}
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 
 }

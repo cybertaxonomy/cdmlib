@@ -17,10 +17,10 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.model.term.FeatureNode;
+import eu.etaxonomy.cdm.model.term.TermTreeNode;
 
 /**
- * A class to handle tree indexes as used in {@link TaxonNode}, {@link FeatureNode}
+ * A class to handle tree indexes as used in {@link TaxonNode}, {@link TermTreeNode}
  * etc.<BR>
  * Might be come a hibernate user type in future.
  *

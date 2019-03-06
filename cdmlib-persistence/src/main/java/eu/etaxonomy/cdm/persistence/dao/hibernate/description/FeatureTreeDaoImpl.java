@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.term.FeatureNode;
+import eu.etaxonomy.cdm.model.term.TermTreeNode;
 import eu.etaxonomy.cdm.model.term.FeatureTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
@@ -58,12 +58,12 @@ public class FeatureTreeDaoImpl extends IdentifiableDaoBase<FeatureTree> impleme
     }
 
     @Override
-    public void deepLoadNodes(List<FeatureNode> nodes, List<String> nodePaths) {
+    public void deepLoadNodes(List<TermTreeNode> nodes, List<String> nodePaths) {
 
         defaultBeanInitializer.initializeAll(nodes, nodePaths);
 
-        List<FeatureNode> childrenOfChildren = new ArrayList<FeatureNode>();
-        for(FeatureNode node : nodes) {
+        List<TermTreeNode> childrenOfChildren = new ArrayList<TermTreeNode>();
+        for(TermTreeNode node : nodes) {
             if(node.getChildCount() > 0){
                 childrenOfChildren.addAll(node.getChildNodes());
             }

@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.term.FeatureNode;
+import eu.etaxonomy.cdm.model.term.TermTreeNode;
 
 /**
  * @author a.mueller
@@ -51,7 +51,7 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	private UnmatchedLeads unmatchedLeads;
 	private boolean onlyNumberedTaxaExist; //attribute in <key>
 
-	private Set<FeatureNode> featureNodesToSave = new HashSet<FeatureNode>();
+	private Set<TermTreeNode> featureNodesToSave = new HashSet<TermTreeNode>();
 
 	private Set<PolytomousKeyNode> polytomousKeyNodesToSave = new HashSet<>();
 
@@ -115,7 +115,7 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	 * @see MarkupImportConfigurator#getNewState()
 	 */
 	protected void reset(){
-		featureNodesToSave = new HashSet<FeatureNode>();
+		featureNodesToSave = new HashSet<TermTreeNode>();
 		polytomousKeyNodesToSave = new HashSet<PolytomousKeyNode>();
 		currentKey = null;
 		defaultLanguage = null;
@@ -154,11 +154,11 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 		this.unmatchedLeads = unmatchedKeys;
 	}
 
-	public void setFeatureNodesToSave(Set<FeatureNode> featureNodesToSave) {
+	public void setFeatureNodesToSave(Set<TermTreeNode> featureNodesToSave) {
 		this.featureNodesToSave = featureNodesToSave;
 	}
 
-	public Set<FeatureNode> getFeatureNodesToSave() {
+	public Set<TermTreeNode> getFeatureNodesToSave() {
 		return featureNodesToSave;
 	}
 

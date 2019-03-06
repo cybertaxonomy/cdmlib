@@ -139,10 +139,20 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  */
 @SuppressWarnings("serial")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "PolytomousKeyNode", propOrder = { "key", "parent", "children",
-		"sortIndex", "nodeNumber", "statement", "question", "feature", "taxon",
-		"subkey", "otherNode", "modifyingText" })
-@XmlRootElement(name = "FeatureNode")
+@XmlType(name = "PolytomousKeyNode", propOrder = {
+        "key",
+        "parent",
+        "children",
+		"sortIndex",
+		"nodeNumber",
+		"statement",
+		"question",
+		"feature",
+		"taxon",
+		"subkey",
+		"otherNode",
+		"modifyingText" })
+@XmlRootElement(name = "FeaPolytomousKeyNodetureNode")
 @Entity
 @Audited
 public class PolytomousKeyNode extends VersionableEntity implements IMultiLanguageTextHolder {
@@ -161,7 +171,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	@XmlElementWrapper(name = "Children")
 	@XmlElement(name = "Child")
 	// @OrderColumn("sortIndex") //JPA 2.0 same as @IndexColumn
-	// @IndexColumn does not work because not every FeatureNode has a parent.
+	// @IndexColumn does not work because not every PolytomousKeyNode has a parent.
 	// But only NotNull will solve the problem (otherwise
 	// we will need a join table
 	// http://stackoverflow.com/questions/2956171/jpa-2-0-ordercolumn-annotation-in-hibernate-3-5
@@ -174,7 +184,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	@OrderBy("sortIndex")
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
 	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE })
-	private List<PolytomousKeyNode> children = new ArrayList<PolytomousKeyNode>();
+	private List<PolytomousKeyNode> children = new ArrayList<>();
 
 
 

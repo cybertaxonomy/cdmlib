@@ -63,8 +63,8 @@ import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.model.term.FeatureNode;
 import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermTreeNode;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -321,8 +321,8 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             proibiospheretree = FeatureTree.NewInstance();
             proibiospheretree.setUuid(proIbioTreeUUID);
         }
-        //        FeatureNode root = proibiospheretree.getRoot();
-        FeatureNode root2 = proibiospheretree.getRoot();
+
+        TermTreeNode root2 = proibiospheretree.getRoot();
         if (root2 != null){
             int nbChildren = root2.getChildCount()-1;
             while (nbChildren>-1){

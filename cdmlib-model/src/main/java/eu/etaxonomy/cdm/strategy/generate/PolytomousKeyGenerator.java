@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.term.FeatureNode;
+import eu.etaxonomy.cdm.model.term.TermTreeNode;
 import eu.etaxonomy.cdm.model.term.FeatureTree;
 
 /**
@@ -806,7 +806,7 @@ public class PolytomousKeyGenerator {
 	 *
 	 * @param node
 	 */
-	private void checkDependencies(FeatureNode<Feature> node){
+	private void checkDependencies(TermTreeNode<Feature> node){
 		if (node.getOnlyApplicableIf()!=null){
 			Set<State> addToOAI = node.getOnlyApplicableIf();
 			for (State state : addToOAI){
@@ -826,7 +826,7 @@ public class PolytomousKeyGenerator {
 			}
 		}
 		if (node.getChildNodes()!=null) {
-			for (FeatureNode fn : node.getChildNodes()){
+			for (TermTreeNode fn : node.getChildNodes()){
 				checkDependencies(fn);
 			}
 		}

@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.term;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -17,7 +18,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -25,12 +25,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.OrderColumn;
-import javax.persistence.Table;
 import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
@@ -41,19 +38,16 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
-import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.State;
 
 /**
- * The class for tree nodes within a {@link FeatureTree feature tree} structure.
+ * The class for tree nodes within a {@link TermTree feature tree} structure.
  * Feature nodes are the elementary components of such a tree since they might
  * be related to other nodes as a parent or as a child. A feature node belongs
  * at most to one feature tree. It cannot have more than one parent node but
@@ -66,10 +60,7 @@ import eu.etaxonomy.cdm.model.description.State;
  */
 @SuppressWarnings("serial")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "FeatureNode", propOrder = {
-		"featureTree",
-		"termType",
-		"feature",
+@XmlType(name = "TermTreeNode", propOrder = {
 		"parent",
 		"treeIndex",
 		"sortIndex",
@@ -77,53 +68,23 @@ import eu.etaxonomy.cdm.model.description.State;
 		"onlyApplicableIf",
 		"inapplicableIf"
 })
-@XmlRootElement(name = "FeatureNode")
+@XmlRootElement(name = "TermTreeNode")
 @Entity
 @Audited
-@Table(name="FeatureNode", indexes = { @Index(name = "featureNodeTreeIndex", columnList = "treeIndex") })
-public class FeatureNode <T extends DefinedTermBase> extends VersionableEntity
-            implements ITreeNode<FeatureNode<T>>, IHasTermType, Cloneable {
+public class TermTreeNode <T extends DefinedTermBase>
+            extends TermRelationBase<T>
+            implements ITreeNode<TermTreeNode<T>> {
 
-    private static final Logger logger = Logger.getLogger(FeatureNode.class);
+    private static final Logger logger = Logger.getLogger(TermTreeNode.class);
 
-    //This is the main key a node belongs to. Although other keys may also reference
-	//<code>this</code> node, a node usually belongs to a given key.
-	@XmlElement(name = "FeatureTree")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity=FeatureTree.class)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE}) //TODO this usage is incorrect, needed only for OneToMany, check why it is here, can it be removed??
-	 //TODO Val #3379
-//    @NotNull
-	private FeatureTree<T> featureTree;
-
-    /**
-     * The {@link TermType type} of this term node.
-     * Must be the same type as for the {@link FeatureTree term collection}
-     * this node belongs to and as the term type of the term this node links to.
-     */
-    @XmlAttribute(name ="TermType")
-    @Column(name="termType")
-    @NotNull
-    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-        parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.term.TermType")}
-    )
-    @Audited
-    private TermType termType;
-
-    @XmlElement(name = "Feature")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity=DefinedTermBase.class)
-	private T feature;
 
     @XmlElement(name = "Parent")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity=FeatureNode.class)
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity=TermTreeNode.class)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	@JoinColumn(name="parent_id")
-	private FeatureNode<T> parent;
+	private TermTreeNode<T> parent;
 
 
     @XmlElement(name = "treeIndex")
@@ -135,9 +96,9 @@ public class FeatureNode <T extends DefinedTermBase> extends VersionableEntity
     //see https://dev.e-taxonomy.eu/trac/ticket/3722
     @OrderColumn(name="sortIndex")
     @OrderBy("sortIndex")
-	@OneToMany(fetch = FetchType.LAZY, mappedBy="parent", targetEntity=FeatureNode.class)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy="parent", targetEntity=TermTreeNode.class)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
-	private List<FeatureNode<T>> children = new ArrayList<>();
+	private List<TermTreeNode<T>> children = new ArrayList<>();
 
     //see https://dev.e-taxonomy.eu/trac/ticket/3722
     private Integer sortIndex;
@@ -148,7 +109,7 @@ public class FeatureNode <T extends DefinedTermBase> extends VersionableEntity
 	@XmlSchemaType(name="IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
 //	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})  remove cascade #5755
-	@JoinTable(name="FeatureNode_DefinedTermBase_OnlyApplicable")
+	@JoinTable(name="TermTreeNode_DefinedTermBase_OnlyApplicable")
 	private final Set<State> onlyApplicableIf = new HashSet<>();
 
 	@XmlElementWrapper(name = "InapplicableIf")
@@ -157,7 +118,7 @@ public class FeatureNode <T extends DefinedTermBase> extends VersionableEntity
 	@XmlSchemaType(name="IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
 //	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})  remove cascade #5755
-	@JoinTable(name="FeatureNode_DefinedTermBase_InapplicableIf")
+	@JoinTable(name="TermTreeNode_DefinedTermBase_InapplicableIf")
 	private final Set<State> inapplicableIf = new HashSet<>();
 
 // ***************************** FACTORY *********************************/
@@ -169,49 +130,16 @@ public class FeatureNode <T extends DefinedTermBase> extends VersionableEntity
 
 	//TODO needed?
     @Deprecated
-    protected FeatureNode(){}
+    protected TermTreeNode(){}
 
 	/**
 	 * Class constructor: creates a new empty feature node instance.
 	 */
-	protected FeatureNode(TermType termType) {
-	    this.termType = termType;
-	    IHasTermType.checkTermTypeNull(this);
+	protected TermTreeNode(TermType termType) {
+	    super(termType);
 	}
 
-    @Override
-    public TermType getTermType() {
-        return termType;
-    }
-
-//*************************** TREE ************************************/
-
-	public FeatureTree<T> getFeatureTree() {
-		return featureTree;
-	}
-
-	protected void setFeatureTree(FeatureTree<T> featureTree) {
-	    checkTermType(featureTree);
-	    this.featureTree = featureTree;
-	}
-
-//** ********************** FEATURE ******************************/
-
-	/**
-     * Returns the {@link Feature feature} <i>this</i> feature node is based on.
-     */
-    public T getTerm() {
-        return CdmBase.deproxy(feature);
-    }
-    /**
-     * @see #getFeature()
-     */
-    public void setTerm(T term) {
-        checkTermTypeKindOf(term);
-        this.feature = term;
-    }
-
-//** ********************** PARENT ******************************/
+//************************* PARENT ******************************/
 
 	/**
 	 * Returns the feature node <i>this</i> feature node is a child of.
@@ -219,7 +147,7 @@ public class FeatureNode <T extends DefinedTermBase> extends VersionableEntity
 	 * @see	#getChildNodes()
 	 */
 	@Override
-    public FeatureNode<T> getParent() {
+    public TermTreeNode<T> getParent() {
 		return parent;
 	}
 	/**
@@ -230,8 +158,7 @@ public class FeatureNode <T extends DefinedTermBase> extends VersionableEntity
 	 * @param	parent	the feature node to be set as parent
 	 * @see				#getParent()
 	 */
-	protected void setParent(FeatureNode<T> parent) {
-	    checkTermType(parent);
+	protected void setParent(TermTreeNode<T> parent) {
 	    this.parent = parent;
 	}
 
@@ -252,7 +179,7 @@ public class FeatureNode <T extends DefinedTermBase> extends VersionableEntity
 	 * <i>this</i> feature node.
 	 */
 	@Override
-    public List<FeatureNode<T>> getChildNodes() {
+    public List<TermTreeNode<T>> getChildNodes() {
 	    return children;
 	}
 
@@ -264,11 +191,11 @@ public class FeatureNode <T extends DefinedTermBase> extends VersionableEntity
 	 * @param	child	the feature node to be added
 	 * @see				#getChildNodes()
 	 * @see				#setChildren(List)
-	 * @see				#addChild(FeatureNode, int)
-	 * @see				#removeChild(FeatureNode)
+	 * @see				#addChild(TermTreeNode, int)
+	 * @see				#removeChild(TermTreeNode)
 	 * @see				#removeChild(int)
 	 */
-	public void addChild(FeatureNode<T> child){
+	public void addChild(TermTreeNode<T> child){
 		addChild(child, children.size());
 	}
 
@@ -284,7 +211,7 @@ public class FeatureNode <T extends DefinedTermBase> extends VersionableEntity
      * @see             #removeChild(FeatureNode)
      * @see             #removeChild(int)
      */
-    public FeatureNode<T> addChild(){
+    public TermTreeNode<T> addChild(){
         return addChild((T)null, children.size());
     }
 
@@ -301,7 +228,7 @@ public class FeatureNode <T extends DefinedTermBase> extends VersionableEntity
 	 * @see				#removeChild(FeatureNode)
 	 * @see				#removeChild(int)
 	 */
-	public FeatureNode<T> addChild(T term){
+	public TermTreeNode<T> addChild(T term){
 	    return addChild(term, children.size());
 	}
 
@@ -318,19 +245,19 @@ public class FeatureNode <T extends DefinedTermBase> extends VersionableEntity
      * @see             #removeChild(FeatureNode)
      * @see             #removeChild(int)
      */
-	public FeatureNode<T> addChild(T term, int index){
-	    FeatureNode<T> child = new FeatureNode<>(termType);
+	public TermTreeNode<T> addChild(T term, int index){
+	    TermTreeNode<T> child = new TermTreeNode<>(getTermType());
 	    if(term!=null){
 	        child.setTerm(term);
 	    }
 	    checkTermType(child);
 
-	    List<FeatureNode<T>> children = this.getChildNodes();
+	    List<TermTreeNode<T>> children = this.getChildNodes();
 	    if (index < 0 || index > children.size() + 1){
 	        throw new IndexOutOfBoundsException("Wrong index: " + index);
 	    }
 	    child.setParent(this);
-	    child.setFeatureTree(this.getFeatureTree());
+	    child.setGraph(this.getGraph());
 	    children.add(index, child);
 	    //TODO workaround (see sortIndex doc)
 	    for(int i = 0; i < children.size(); i++){
@@ -352,13 +279,13 @@ public class FeatureNode <T extends DefinedTermBase> extends VersionableEntity
 	 * 					should be added
 	 * @see				#getChildNodes()
 	 * @see				#setChildren(List)
-	 * @see				#addChild(FeatureNode)
-	 * @see				#removeChild(FeatureNode)
+	 * @see				#addChild(TermTreeNode)
+	 * @see				#removeChild(TermTreeNode)
 	 * @see				#removeChild(int)
 	 */
-	public void addChild(FeatureNode<T> child, int index){
+	public void addChild(TermTreeNode<T> child, int index){
 	    checkTermType(child);
-	    List<FeatureNode<T>> children = this.getChildNodes();
+	    List<TermTreeNode<T>> children = this.getChildNodes();
 		if (index < 0 || index > children.size() + 1){
 			throw new IndexOutOfBoundsException("Wrong index: " + index);
 		}
@@ -366,7 +293,7 @@ public class FeatureNode <T extends DefinedTermBase> extends VersionableEntity
 			child.getParent().removeChild(child);
 		}
 		child.setParent(this);
-		child.setFeatureTree(this.getFeatureTree());
+		child.setGraph(this.getGraph());
 		children.add(index, child);
 		//TODO workaround (see sortIndex doc)
 		for(int i = 0; i < children.size(); i++){
@@ -382,11 +309,11 @@ public class FeatureNode <T extends DefinedTermBase> extends VersionableEntity
 	 *
 	 * @param  child	the feature node which should be removed
 	 * @see     		#getChildNodes()
-	 * @see				#addChild(FeatureNode, int)
-	 * @see				#addChild(FeatureNode)
+	 * @see				#addChild(TermTreeNode, int)
+	 * @see				#addChild(TermTreeNode)
 	 * @see				#removeChild(int)
 	 */
-	public void removeChild(FeatureNode<T> child){
+	public void removeChild(TermTreeNode<T> child){
 
 	    int index = children.indexOf(child);
 		if (index >= 0){
@@ -401,19 +328,19 @@ public class FeatureNode <T extends DefinedTermBase> extends VersionableEntity
 	 * @param  index	the integer indicating the position of the feature node to
 	 * 					be removed
 	 * @see     		#getChildNodes()
-	 * @see				#addChild(FeatureNode, int)
-	 * @see				#addChild(FeatureNode)
-	 * @see				#removeChild(FeatureNode)
+	 * @see				#addChild(TermTreeNode, int)
+	 * @see				#addChild(TermTreeNode)
+	 * @see				#removeChild(TermTreeNode)
 	 */
 	public void removeChild(int index){
-	   FeatureNode<T> child = children.get(index);
+	   TermTreeNode<T> child = children.get(index);
 	   if (child != null){
 			children.remove(index);
 			child.setParent(null);
-			child.setFeatureTree(null);
+			child.setGraph(null);
 			//TODO workaround (see sortIndex doc)
 			for(int i = 0; i < children.size(); i++){
-				FeatureNode<T> childAt = children.get(i);
+				TermTreeNode<T> childAt = children.get(i);
 				childAt.setSortIndex(i);
 			}
 			child.setSortIndex(null);
@@ -427,10 +354,10 @@ public class FeatureNode <T extends DefinedTermBase> extends VersionableEntity
 	 *
 	 * @param  childIndex	the integer indicating the position of the feature node
 	 * @see     			#getChildNodes()
-	 * @see					#addChild(FeatureNode, int)
+	 * @see					#addChild(TermTreeNode, int)
 	 * @see					#removeChild(int)
 	 */
-	public FeatureNode<T> getChildAt(int childIndex) {
+	public TermTreeNode<T> getChildAt(int childIndex) {
 	    return children.get(childIndex);
 	}
 
@@ -450,10 +377,10 @@ public class FeatureNode <T extends DefinedTermBase> extends VersionableEntity
 	 * If the list does not contain this node then -1 will be returned.
 	 *
 	 * @param  node	the feature node the position of which is being searched
-	 * @see			#addChild(FeatureNode, int)
+	 * @see			#addChild(TermTreeNode, int)
 	 * @see			#removeChild(int)
 	 */
-	public int getIndex(FeatureNode<T> node) {
+	public int getIndex(TermTreeNode<T> node) {
 	    if (! children.contains(node)){
 			return -1;
 		}else{
@@ -475,14 +402,14 @@ public class FeatureNode <T extends DefinedTermBase> extends VersionableEntity
 	}
 
 	/**
-	 * Whether <code>this</code> node is the root node of the associated {@link FeatureTree feature tree}.
+	 * Whether <code>this</code> node is the root node of the associated {@link TermTree feature tree}.
 	 *
 	 * @return <code>true</code> if <code>this</code> is the feature trees root node, <code>false</code> if not
 	 */
 	@Transient
 	public boolean isRoot(){
-		if(getFeatureTree() != null){
-			return this.equals(getFeatureTree().getRoot());
+		if(getGraph() != null){
+			return this.equals(getGraph().getRoot());
 		}
 		return false;
 	}
@@ -605,14 +532,6 @@ public class FeatureNode <T extends DefinedTermBase> extends VersionableEntity
 //		return null;
 //	}
 
-	/**
-     * Throws {@link IllegalArgumentException} if the given
-     * term has not the same term type as this term or if term type is null.
-     * @param term
-     */
-    private void checkTermType(IHasTermType term) {
-        IHasTermType.checkTermTypes(term, this);
-    }
 
     /**
      * Throws {@link IllegalArgumentException} if the given
@@ -624,50 +543,50 @@ public class FeatureNode <T extends DefinedTermBase> extends VersionableEntity
         IHasTermType.checkTermTypeEqualOrDescendant(this, descendant);
     }
 
+//*********************** Terms ************************************/
+
 	/**
 	 * Returns all terms that are contained in this node or a child node
 	 *
-	 * @param featureNode
-	 * @param features
+	 * @param terms
 	 * @return
 	 */
 	@Transient
-	public Set<T> getDistinctFeaturesRecursive(Set<T> features){
+	public Set<T> getDistinctTermsRecursive(Set<T> terms){
 		T term = this.getTerm();
-
-		if(term!=null){
-		    features.add(term);
+		if(term != null){
+		    terms.add(term);
 		}
-
-		for(FeatureNode<T> childNode : this.getChildNodes()){
-			features.addAll(childNode.getDistinctFeaturesRecursive(features));
+		for(TermTreeNode<T> childNode : this.getChildNodes()){
+			terms.addAll(childNode.getDistinctTermsRecursive(terms));
 		}
-
-		return features;
+		return terms;
 	}
 
-	public FeatureNode<T> cloneDescendants(){
-		FeatureNode<T> clone = (FeatureNode<T>)this.clone();
-		FeatureNode<T> childClone;
+    /**
+     * @return a list of terms which includes first the
+     * term of this node and then recursively the list
+     * of all children and grandChildren
+     */
+    public Collection<? extends T> asTermListRecursive(List<T> terms) {
+        T term = this.getTerm();
+        if(term != null){
+            terms.add(term);
+        }
+        for(TermTreeNode<T> childNode : this.getChildNodes()){
+            terms.addAll(childNode.asTermListRecursive(terms));
+        }
+        return terms;
+    }
 
-		for(FeatureNode<T> childNode : this.getChildNodes()){
-			childClone = (FeatureNode<T>) childNode.clone();
-			for (FeatureNode<T> childChild:childNode.getChildNodes()){
-				childClone.addChild(childChild.cloneDescendants());
-			}
-			clone.addChild(childClone);
-
-		}
-		return clone;
-	}
 
 //*********************** CLONE ********************************************************/
 
 	/**
-	 * Clones <i>this</i> FeatureNode. This is a shortcut that enables to create
-	 * a new instance that differs only slightly from <i>this</i> FeatureNode by
+	 * Clones <i>this</i> {@link TermTreeNode}. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> tree node by
 	 * modifying only some of the attributes.
-	 * The parent, the feature and the featureTree are the are the same as for the original feature node
+	 * The parent, the feature and the featureTree are the same as for the original feature node
 	 * the children are removed
 	 *
 	 * @see eu.etaxonomy.cdm.model.common.VersionableEntity#clone()
@@ -675,9 +594,9 @@ public class FeatureNode <T extends DefinedTermBase> extends VersionableEntity
 	 */
 	@Override
 	public Object clone() {
-		FeatureNode<T> result;
+		TermTreeNode<T> result;
 		try {
-			result = (FeatureNode<T>)super.clone();
+			result = (TermTreeNode<T>)super.clone();
 			result.children = new ArrayList<>();
 			return result;
 		}catch (CloneNotSupportedException e) {
@@ -685,10 +604,23 @@ public class FeatureNode <T extends DefinedTermBase> extends VersionableEntity
 			e.printStackTrace();
 			return null;
 		}
-
-
-
 	}
+
+
+    public TermTreeNode<T> cloneDescendants(){
+        TermTreeNode<T> clone = (TermTreeNode<T>)this.clone();
+        TermTreeNode<T> childClone;
+
+        for(TermTreeNode<T> childNode : this.getChildNodes()){
+            childClone = (TermTreeNode<T>) childNode.clone();
+            for (TermTreeNode<T> childChild:childNode.getChildNodes()){
+                childClone.addChild(childChild.cloneDescendants());
+            }
+            clone.addChild(childClone);
+
+        }
+        return clone;
+    }
 
 // ********************** TREE NODE METHODS ******************************/
 
@@ -714,10 +646,10 @@ public class FeatureNode <T extends DefinedTermBase> extends VersionableEntity
 	@Override
 	@Deprecated
 	public int treeId() {
-		if (this.featureTree == null){
+		if (this.getGraph() == null){
 			return -1;
 		}else{
-			return this.featureTree.getId();
+			return this.getGraph().getId();
 		}
 	}
 

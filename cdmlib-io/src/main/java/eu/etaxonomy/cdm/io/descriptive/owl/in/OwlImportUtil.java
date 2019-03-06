@@ -35,8 +35,8 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.FeatureNode;
 import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermTreeNode;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
@@ -112,14 +112,14 @@ public class OwlImportUtil {
         // import structure
         Statement structureStatement = termResource.getProperty(OwlUtil.propCharacterHasStructure);
         Resource structureResource = model.createResource(structureStatement.getObject().toString());
-        FeatureNode structureNode = findNode(structureResource, repo, model, state);
+        TermTreeNode structureNode = findNode(structureResource, repo, model, state);
         if(structureNode!=null){
             character.setStructure(structureNode);
         }
         // import property
         Statement propertyStatement = termResource.getProperty(OwlUtil.propCharacterHasProperty);
         Resource propertyResource = model.createResource(propertyStatement.getObject().toString());
-        FeatureNode propertyNode = findNode(propertyResource, repo, model, state);
+        TermTreeNode propertyNode = findNode(propertyResource, repo, model, state);
         if(propertyNode!=null){
             character.setProperty(propertyNode);
         }
@@ -189,7 +189,7 @@ public class OwlImportUtil {
         return repo.getVocabularyService().find(termUuid);
     }
 
-    private static FeatureNode findNode(Resource termResource, ICdmRepository repo, Model model, StructureTreeOwlImportState state){
+    private static TermTreeNode findNode(Resource termResource, ICdmRepository repo, Model model, StructureTreeOwlImportState state){
         UUID uuid = UUID.fromString(termResource.getProperty(OwlUtil.propUuid).getString());
         return repo.getFeatureNodeService().find(uuid);
     }

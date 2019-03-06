@@ -103,8 +103,6 @@ Difference are to be found in
       <mapping class="eu.etaxonomy.cdm.model.description.Distribution"/>
       <mapping class="eu.etaxonomy.cdm.model.description.Feature"/>
       <mapping class="eu.etaxonomy.cdm.model.description.Character"/>
-      <mapping class="eu.etaxonomy.cdm.model.term.FeatureNode"/>
-      <mapping class="eu.etaxonomy.cdm.model.term.FeatureTree"/>
       <mapping class="eu.etaxonomy.cdm.model.description.KeyStatement"/>
       <mapping class="eu.etaxonomy.cdm.model.description.MediaKey"/>
       <mapping class="eu.etaxonomy.cdm.model.description.IndividualsAssociation"/>
@@ -211,10 +209,13 @@ Difference are to be found in
       <!-- Term Package -->
       <mapping class="eu.etaxonomy.cdm.model.term.DefinedTerm"/>
       <mapping class="eu.etaxonomy.cdm.model.term.DefinedTermBase"/>
+      <mapping class="eu.etaxonomy.cdm.model.term.FeatureTree"/>
       <mapping class="eu.etaxonomy.cdm.model.term.OrderedTerm"/>
       <mapping class="eu.etaxonomy.cdm.model.term.OrderedTermBase"/>
       <mapping class="eu.etaxonomy.cdm.model.term.OrderedTermVocabulary"/>
       <mapping class="eu.etaxonomy.cdm.model.term.Representation"/>
+      <mapping class="eu.etaxonomy.cdm.model.term.TermRelationshipType"/>
+      <mapping class="eu.etaxonomy.cdm.model.term.TermTreeNode"/>
       <mapping class="eu.etaxonomy.cdm.model.term.TermVocabulary"/>
       
       <!-- Validation Package -->

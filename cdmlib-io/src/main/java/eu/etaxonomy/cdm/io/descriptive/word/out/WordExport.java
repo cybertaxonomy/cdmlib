@@ -20,7 +20,7 @@ import org.springframework.transaction.TransactionStatus;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.FeatureNode;
+import eu.etaxonomy.cdm.model.term.TermTreeNode;
 import eu.etaxonomy.cdm.model.term.FeatureTree;
 
 /**
@@ -46,7 +46,7 @@ public class WordExport extends CdmExportBase<WordExportConfigurator, WordExport
 
         FeatureTree featureTree = state.getConfig().getFeatureTree();
         featureTree = getFeatureTreeService().load(featureTree.getUuid());
-        FeatureNode rootNode = featureTree.getRoot();
+        TermTreeNode rootNode = featureTree.getRoot();
 
         try {
             exportStream = generateDocx4JDocument(rootNode);
@@ -60,7 +60,7 @@ public class WordExport extends CdmExportBase<WordExportConfigurator, WordExport
         return;
     }
 
-    private ByteArrayOutputStream generateDocx4JDocument(FeatureNode rootNode) throws Exception {
+    private ByteArrayOutputStream generateDocx4JDocument(TermTreeNode rootNode) throws Exception {
         InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("eu/etaxonomy/cdm/io/word/out/template.docx");
         WordprocessingMLPackage wordPackage = WordprocessingMLPackage.load(resourceAsStream);
         MainDocumentPart mainDocumentPart = wordPackage.getMainDocumentPart();
@@ -110,10 +110,10 @@ public class WordExport extends CdmExportBase<WordExportConfigurator, WordExport
 //        return new JAXBElement( new QName(Namespaces.NS_WORD12, "fldChar"), org.docx4j.wml.FldChar.class, fldchar);
 //    }
 
-    private void addChildNode(FeatureNode<?> node, MainDocumentPart mainDocumentPart, int indent) throws Exception{
+    private void addChildNode(TermTreeNode<?> node, MainDocumentPart mainDocumentPart, int indent) throws Exception{
         String styleId = "Heading"+indent;
 
-        for (FeatureNode childNode : node.getChildNodes()) {
+        for (TermTreeNode childNode : node.getChildNodes()) {
             DefinedTermBase term = childNode.getTerm();
             mainDocumentPart.addStyledParagraphOfText(styleId, term.getLabel());
             if(term.getDescription()!=null){

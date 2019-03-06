@@ -14,14 +14,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.model.term.FeatureNode;
+import eu.etaxonomy.cdm.model.term.TermTreeNode;
 import eu.etaxonomy.cdm.model.term.FeatureTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
 public interface IFeatureTreeService extends IIdentifiableEntityService<FeatureTree> {
 
-	public List<FeatureNode> getFeatureNodesAll();
+	public List<TermTreeNode> getFeatureNodesAll();
 
 	/**
 	 * Loads a feature tree including all of its nodes (all the way down to the tips of the tree).
@@ -34,9 +34,9 @@ public interface IFeatureTreeService extends IIdentifiableEntityService<FeatureT
 	 */
 	public FeatureTree loadWithNodes(UUID uuid, List<String> propertyPaths, List<String> nodePaths);
 
-	public Map<UUID, FeatureNode> saveFeatureNodesAll(Collection<FeatureNode> featureNodeCollection);
+	public Map<UUID, TermTreeNode> saveFeatureNodesAll(Collection<TermTreeNode> featureNodeCollection);
 
-	public Map<UUID, FeatureNode> saveOrUpdateFeatureNodesAll(Collection<FeatureNode> featureNodeCollection);
+	public Map<UUID, TermTreeNode> saveOrUpdateFeatureNodesAll(Collection<TermTreeNode> featureNodeCollection);
 
 	public FeatureTree createTransientDefaultFeatureTree();
 

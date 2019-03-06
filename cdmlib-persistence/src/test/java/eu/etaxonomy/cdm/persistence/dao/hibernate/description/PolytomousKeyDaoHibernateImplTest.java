@@ -74,7 +74,6 @@ public class PolytomousKeyDaoHibernateImplTest extends CdmTransactionalIntegrati
 //		Assert.assertNotSame(child1.getUuid(), children.get(0).getUuid());
 
 //		printDataSet(System.out, new String[]{"PolytomousKeyNode", "KeyStatement", "KeyStatement_LanguageString", "LanguageString"});
-		System.out.println("End test1");
 	}
 
 	@Test
@@ -87,8 +86,8 @@ public class PolytomousKeyDaoHibernateImplTest extends CdmTransactionalIntegrati
 
 		commitAndStartNewTransaction(null);
 
-		try {if (true){printDataSet(System.out, new String[]{"POLYTOMOUSKEY", "POLYTOMOUSKEYNODE"});}
-		} catch(Exception e) { logger.warn(e);}
+//		try {if (true){printDataSet(System.out, new String[]{"POLYTOMOUSKEY", "POLYTOMOUSKEYNODE"});}
+//		} catch(Exception e) { logger.warn(e);}
 
 		PolytomousKey nonExistingKey = polytomousKeyDao.findByUuid(uuid);
 		Assert.assertNull("", nonExistingKey);

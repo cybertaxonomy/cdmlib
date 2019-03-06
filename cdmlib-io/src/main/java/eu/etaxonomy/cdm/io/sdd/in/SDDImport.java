@@ -83,10 +83,10 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.FeatureNode;
 import eu.etaxonomy.cdm.model.term.FeatureTree;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermBase;
+import eu.etaxonomy.cdm.model.term.TermTreeNode;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
@@ -106,7 +106,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
     private Map<String,String> citations = new HashMap<>();
     private Map<String,String> defaultUnitPrefixes = new HashMap<>();
     private Map<String,Person> editors = new HashMap<>();
-    private Map<String,FeatureNode<Feature>> featureNodes = new HashMap<>();
+    private Map<String,TermTreeNode<Feature>> featureNodes = new HashMap<>();
     private Map<String,Feature> features = new HashMap<>();
     private Map<String,String> locations = new HashMap<>();
     private Map<String,List<CdmBase>> mediaObject_ListCdmBase = new HashMap<>();
@@ -1753,7 +1753,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 
 					FeatureTree featureTree =  FeatureTree.NewInstance();
 					importRepresentation(elCharacterTree, sddNamespace, featureTree, "", cdmState);
-					FeatureNode<Feature> root = featureTree.getRoot();
+					TermTreeNode<Feature> root = featureTree.getRoot();
 					List<Element> listeOfNodes = elCharacterTree.getChildren("Nodes", sddNamespace);
 
 					//Nodes of CharacterTrees in SDD always refer to DescriptiveConcepts
@@ -1785,12 +1785,12 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 	 * @param root
 	 * @param elNodes
 	 */
-	private void handleCharacterNodes(Namespace sddNamespace, FeatureNode<Feature> root, Element elNodes) {
+	private void handleCharacterNodes(Namespace sddNamespace, TermTreeNode<Feature> root, Element elNodes) {
 		List<Element> listNodes = elNodes.getChildren("Node", sddNamespace);
 		if (listNodes != null) {
 			for (Element elNode : listNodes){
 				String idN = elNode.getAttributeValue("id");
-				FeatureNode<Feature> fn = null;
+				TermTreeNode<Feature> fn = null;
 				Feature dc = null;
 				if (idN!=null) {
 					// DescriptiveConcepts are used as nodes in CharacterTrees
@@ -1804,7 +1804,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 					if (elParent!=null){
 						String refP = elParent.getAttributeValue("ref");
 						if (refP!=null) {
-							FeatureNode<Feature> parent = featureNodes.get(refP);
+							TermTreeNode<Feature> parent = featureNodes.get(refP);
 							if (parent==null){
 							    // if no parent found or the reference is broken, add the node to the root of the tree
 							    fn = (dc==null)?root.addChild():root.addChild(dc);
@@ -1831,12 +1831,12 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 				Element elParent = elCharNode.getChild("Parent", sddNamespace);
 				Element elCharacter = elCharNode.getChild("Character", sddNamespace);
 				Element elDependencyRules = elCharNode.getChild("DependencyRules", sddNamespace);
-				FeatureNode<Feature> fn = null;
+				TermTreeNode<Feature> fn = null;
 
                 if (elParent!=null){
                     String refP = elParent.getAttributeValue("ref");
                     if ((refP!=null)&&(!refP.equals(""))) {
-                        FeatureNode<Feature> parent = featureNodes.get(refP);
+                        TermTreeNode<Feature> parent = featureNodes.get(refP);
                         if (parent==null){
                             parent = root; // if no parent found or the reference is broken, add the node to the root of the tree
                         }

@@ -31,8 +31,8 @@ import eu.etaxonomy.cdm.io.common.IExportConfigurator.TARGET;
 import eu.etaxonomy.cdm.io.descriptive.owl.out.StructureTreeOwlExportConfigurator;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.term.FeatureNode;
 import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermTreeNode;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -81,27 +81,27 @@ public class OwlExportTest  extends CdmTransactionalIntegrationTest{
 
         Feature featureA = Feature.NewInstance("A", "A", "A");
         voc.addTerm(featureA);
-        FeatureNode nodeA = tree.getRoot().addChild(featureA);
+        TermTreeNode<Feature> nodeA = tree.getRoot().addChild(featureA);
 
         Feature featureA1 = Feature.NewInstance("A1", "A1", "A1");
         voc.addTerm(featureA1);
-        FeatureNode nodeA1 = nodeA.addChild(featureA1);
+        TermTreeNode<Feature> nodeA1 = nodeA.addChild(featureA1);
 
         Feature featureA2 = Feature.NewInstance("A2", "A2", "A2");
         voc.addTerm(featureA2);
-        FeatureNode nodeA2 = nodeA.addChild(featureA2);
+        TermTreeNode<Feature> nodeA2 = nodeA.addChild(featureA2);
 
         Feature featureB = Feature.NewInstance("B", "B", "B");
         voc.addTerm(featureB);
-        FeatureNode nodeB = tree.getRoot().addChild(featureB);
+        TermTreeNode<Feature> nodeB = tree.getRoot().addChild(featureB);
 
         Feature featureB1 = Feature.NewInstance("B", "B1", "B1");
         voc.addTerm(featureB1);
-        FeatureNode nodeB1 = nodeB.addChild(featureB1);
+        TermTreeNode<Feature> nodeB1 = nodeB.addChild(featureB1);
 
         Feature featureC = Feature.NewInstance("C", "C", "C");
         voc.addTerm(featureC);
-        FeatureNode nodeC = tree.getRoot().addChild(featureC);
+        TermTreeNode<Feature> nodeC = tree.getRoot().addChild(featureC);
 
         featureTreeService.save(tree);
         return Collections.singletonList(tree.getUuid());

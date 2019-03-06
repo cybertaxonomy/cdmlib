@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.description.TextFormat;
-import eu.etaxonomy.cdm.model.term.FeatureNode;
+import eu.etaxonomy.cdm.model.term.TermTreeNode;
 import eu.etaxonomy.cdm.model.term.FeatureTree;
 
 
@@ -295,7 +295,7 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 	 * @param floor integer to keep track of the level in the tree
 	 * @return a list of TextData elements containing the part of description corresponding to the feature node considered
 	 */
-	private List<TextData> buildBranchesDescr(List<FeatureNode> children, FeatureNode<Feature> parent, TaxonDescription description, List<Language> languages, int floor) {
+	private List<TextData> buildBranchesDescr(List<TermTreeNode> children, TermTreeNode<Feature> parent, TaxonDescription description, List<Language> languages, int floor) {
 		List<TextData> listTextData = new ArrayList<TextData>();
 		floor++; // counter to know the current level in the tree
 
@@ -312,9 +312,9 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
                 featureName = new TextData(); // else an empty TextData is created (because we keep track of the features, it is useful to inform when the upper node has no feature attached)
             }
 
-			for (Iterator<FeatureNode> ifn = children.iterator() ; ifn.hasNext() ;){
+			for (Iterator<TermTreeNode> ifn = children.iterator() ; ifn.hasNext() ;){
 				previousTextData = featureName; // this allows to keep track of the name of the feature one level up in the tree
-				FeatureNode fn = ifn.next();
+				TermTreeNode fn = ifn.next();
 				listTextData.addAll(buildBranchesDescr(fn.getChildNodes(),fn,description, languages, floor));
 			}
 		}

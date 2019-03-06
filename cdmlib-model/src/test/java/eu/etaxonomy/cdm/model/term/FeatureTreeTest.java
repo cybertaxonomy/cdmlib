@@ -19,10 +19,10 @@ public class FeatureTreeTest {
 	private static final Logger logger = Logger.getLogger(FeatureTreeTest.class);
 
 	private FeatureTree testTree;
-	private FeatureNode node1;
-	private FeatureNode node2;
-	private FeatureNode node3;
-	private FeatureNode node4;
+	private TermTreeNode node1;
+	private TermTreeNode node2;
+	private TermTreeNode node3;
+	private TermTreeNode node4;
 
 	@BeforeClass
 	public static void setUpBeforeClass() {
@@ -51,8 +51,7 @@ public class FeatureTreeTest {
 //	}
 	@Test
 	public void testAddChild(){
-		FeatureNode node21 = node1.addChild(Feature.ANATOMY(), 1);
-
+		TermTreeNode<Feature> node21 = node1.addChild(Feature.ANATOMY(), 1);
 		assertEquals(node1.getChildNodes().size(), 2);
 		assertEquals(node1.getChildNodes().get(1), node21);
 
@@ -63,11 +62,12 @@ public class FeatureTreeTest {
 	}
 	@Test
 	public void testClone(){
-		FeatureNode node21 = node1.addChild(Feature.ADDITIONAL_PUBLICATION(), 1);
+
+        TermTreeNode<Feature> node21 = node1.addChild(Feature.ADDITIONAL_PUBLICATION(), 1);
 		FeatureTree clone = (FeatureTree) testTree.clone();
 		assertEquals (clone.getRoot().getTerm(), testTree.getRoot().getTerm());
 		assertNotSame(clone.getRoot(), testTree.getRoot());
-		List<FeatureNode> children = clone.getRootChildren();
+		List<TermTreeNode> children = clone.getRootChildren();
 
 
 		assertEquals(children.get(0).getTerm(), node1.getTerm());
