@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.term.FeatureNode;
 import eu.etaxonomy.cdm.model.term.FeatureTree;
 
-@Ignore
+@Ignore  //does not work anymore since FeatureNode + Tree was moved to term package
 public class FeatureTest {
 
 	    private String resource = "/eu/etaxonomy/cdm/io/jaxb/FeatureTest.xml";
