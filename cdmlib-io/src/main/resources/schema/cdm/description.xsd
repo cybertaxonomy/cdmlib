@@ -35,7 +35,7 @@ xmlns:name="http://etaxonomy.eu/cdm/model/name/1.0">
 
   <xs:element name="Feature" type="description:Feature"/>
 
-  <xs:element name="FeatureNode" type="description:FeatureNode"/>
+  <xs:element name="TermTreeNode" type="description:FeatureNode"/>
 
   <xs:element name="FeatureTree" type="description:FeatureTree"/>
   
@@ -109,7 +109,7 @@ xmlns:name="http://etaxonomy.eu/cdm/model/name/1.0">
     <xs:complexContent>
       <xs:extension base="common:VersionableEntity">
         <xs:sequence>
-          <xs:element name="Feature" minOccurs="0" type="xs:IDREF"/>
+          <xs:element name="Term" minOccurs="0" type="xs:IDREF"/>
           <xs:element name="Parent" type="xs:IDREF" minOccurs="0"/>
           <xs:element name="Children" minOccurs="0">
             <xs:complexType>

@@ -273,50 +273,50 @@
            <common:TitleCache>Feature Tree</common:TitleCache>
            <common:ProtectedTitleCache>true</common:ProtectedTitleCache>
             <description:Root  uuid="urn-uuid-a137ed36-383f-49a9-8d84-976361188bcc">
-              <description:Feature>urn-uuid-e40912a5-3e36-4d1e-aee9-dc57a83fa81c</description:Feature>
+              <description:Term>urn-uuid-e40912a5-3e36-4d1e-aee9-dc57a83fa81c</description:Term>
               <description:Children>
                 <description:Child  uuid="urn-uuid-38beaff6-00b9-4f32-8f70-d33153b8fe0f">
-                  <description:Feature>urn-uuid-98cd50c9-3938-471b-b4d7-fe61b2f19efd</description:Feature>
+                  <description:Term>urn-uuid-98cd50c9-3938-471b-b4d7-fe61b2f19efd</description:Term>
                   <description:Parent>urn-uuid-a137ed36-383f-49a9-8d84-976361188bcc</description:Parent>
                 </description:Child>
                 <description:Child  uuid="urn-uuid-a5700c2f-8630-46e7-a900-59c9a612fbaf">
-                  <description:Feature>urn-uuid-0a9af077-0927-4655-9892-3a4bb3233513</description:Feature>
+                  <description:Term>urn-uuid-0a9af077-0927-4655-9892-3a4bb3233513</description:Term>
                   <description:Parent>urn-uuid-a137ed36-383f-49a9-8d84-976361188bcc</description:Parent>
                   <description:Children>
                     <description:Child  uuid="urn-uuid-4438f658-8b78-4e33-af36-584e088703d2">
-                      <description:Feature>urn-uuid-c015b086-f5a9-4132-afa8-e6de6ec8406d</description:Feature>
+                      <description:Term>urn-uuid-c015b086-f5a9-4132-afa8-e6de6ec8406d</description:Term>
                       <description:Parent>urn-uuid-a5700c2f-8630-46e7-a900-59c9a612fbaf</description:Parent>
                     </description:Child>
                     <description:Child  uuid="urn-uuid-d458aef3-40f2-47c3-bc64-0a8191428df0">
-                      <description:Feature>urn-uuid-92534c0b-bb6c-415d-9ebf-96402ea2413a</description:Feature>
+                      <description:Term>urn-uuid-92534c0b-bb6c-415d-9ebf-96402ea2413a</description:Term>
                       <description:Parent>urn-uuid-a5700c2f-8630-46e7-a900-59c9a612fbaf</description:Parent>
                     </description:Child>
                   </description:Children>
                 </description:Child>
                 <description:Child  uuid="urn-uuid-20070dea-4455-444e-b7be-fd771370b85a">
-                  <description:Feature>urn-uuid-c64b38a9-e8a9-4e32-8aba-69f2c83496c7</description:Feature>
+                  <description:Term>urn-uuid-c64b38a9-e8a9-4e32-8aba-69f2c83496c7</description:Term>
                   <description:Parent>urn-uuid-a137ed36-383f-49a9-8d84-976361188bcc</description:Parent>
                   <description:Children>
                     <description:Child  uuid="urn-uuid-588e66df-eba4-4c00-a05d-e604fa9994a5">
-                      <description:Feature>urn-uuid-3baf0225-619d-48d8-9017-bd673ca23dd3</description:Feature>
+                      <description:Term>urn-uuid-3baf0225-619d-48d8-9017-bd673ca23dd3</description:Term>
                       <description:Parent>urn-uuid-20070dea-4455-444e-b7be-fd771370b85a</description:Parent>
                     </description:Child>
                     <description:Child  uuid="urn-uuid-f3f4617c-0a02-47a4-92f9-4790ff1156ee">
-                      <description:Feature>urn-uuid-4d2c9e16-20b7-4a87-958f-57c9ffaa6c0a</description:Feature>
+                      <description:Term>urn-uuid-4d2c9e16-20b7-4a87-958f-57c9ffaa6c0a</description:Term>
                       <description:Parent>urn-uuid-20070dea-4455-444e-b7be-fd771370b85a</description:Parent>
                     </description:Child>
                   </description:Children>
                 </description:Child>
                 <description:Child  uuid="urn-uuid-0ae5afe1-a0c4-4585-be09-d0cf295b671c">
-                  <description:Feature>urn-uuid-2d69a75b-7557-4c8d-b212-0bd8e59a2775</description:Feature>
+                  <description:Term>urn-uuid-2d69a75b-7557-4c8d-b212-0bd8e59a2775</description:Term>
                   <description:Parent>urn-uuid-a137ed36-383f-49a9-8d84-976361188bcc</description:Parent>
                   <description:Children>
                     <description:Child  uuid="urn-uuid-b92df49d-2a58-4684-b478-397d506aea18">
-                      <description:Feature>urn-uuid-4dab37e3-80a2-4c86-9b60-eba4d4578967</description:Feature>
+                      <description:Term>urn-uuid-4dab37e3-80a2-4c86-9b60-eba4d4578967</description:Term>
                       <description:Parent>urn-uuid-0ae5afe1-a0c4-4585-be09-d0cf295b671c</description:Parent>
                     </description:Child>
                     <description:Child  uuid="urn-uuid-c9e61521-b474-4558-9a74-fd5731f52447">
-                      <description:Feature>urn-uuid-1aeb4db9-0496-4632-9d6c-471f65d717e6</description:Feature>
+                      <description:Term>urn-uuid-1aeb4db9-0496-4632-9d6c-471f65d717e6</description:Term>
                       <description:Parent>urn-uuid-0ae5afe1-a0c4-4585-be09-d0cf295b671c</description:Parent>
                     </description:Child>
                   </description:Children>

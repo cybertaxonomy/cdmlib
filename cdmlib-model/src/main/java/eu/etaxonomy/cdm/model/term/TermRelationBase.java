@@ -12,6 +12,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Index;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -46,6 +48,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 @Entity
 @Audited
 @Table(name="TermRelation", indexes = { @Index(name = "termTreeNodeTreeIndex", columnList = "treeIndex") })  //was feature NodeTreeIndex before
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class TermRelationBase<T extends DefinedTermBase>
         extends VersionableEntity
         implements IHasTermType {
