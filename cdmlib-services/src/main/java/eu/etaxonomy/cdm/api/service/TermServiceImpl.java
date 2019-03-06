@@ -56,7 +56,6 @@ import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.term.IRepresentationDao;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
@@ -507,7 +506,7 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
     @Transactional(readOnly = false)
     @Override
     public void moveTerm(TermDto termDto, UUID parentUUID) {
-        moveTerm(termDto, parentUUID, null);
+        moveTerm(termDto, parentUUID, TermMovePosition.ON);
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
