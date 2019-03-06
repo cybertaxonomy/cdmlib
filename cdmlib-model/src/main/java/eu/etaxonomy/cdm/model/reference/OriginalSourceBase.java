@@ -81,7 +81,7 @@ public abstract class OriginalSourceBase<T extends ISourceable>
 	@Column(name="sourceType")
 	@NotNull
     @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-    	parameters = {@org.hibernate.annotations.Parameter(name="enumClass", value="eu.etaxonomy.cdm.model.common.OriginalSourceType")}
+    	parameters = {@org.hibernate.annotations.Parameter(name="enumClass", value="eu.etaxonomy.cdm.model.reference.OriginalSourceType")}
     )
 	@Audited
 	private OriginalSourceType type;
