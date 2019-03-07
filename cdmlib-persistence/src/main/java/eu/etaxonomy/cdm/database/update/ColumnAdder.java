@@ -62,6 +62,10 @@ public class ColumnAdder extends AuditedSchemaUpdaterStepBase {
 		return new ColumnAdder(stepName, tableName, newColumnName, "nvarchar(255)", includeAudTable, null, false, null);
 	}
 
+    public static final ColumnAdder NewDTYPEInstance(String stepName, String tableName, String defaultValue, boolean includeAudTable){
+        return new ColumnAdder(stepName, tableName, "DTYPE", "nvarchar(31)", includeAudTable, defaultValue, true, null);
+    }
+
 	public static final ColumnAdder NewStringInstance(String stepName, String tableName, String newColumnName, int length, boolean includeAudTable){
 		return new ColumnAdder(stepName, tableName, newColumnName, "nvarchar("+length+")", includeAudTable, null, false, null);
 	}
