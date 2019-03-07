@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.model.term;
 
-
 import java.net.URI;
 import java.util.HashSet;
 import java.util.List;

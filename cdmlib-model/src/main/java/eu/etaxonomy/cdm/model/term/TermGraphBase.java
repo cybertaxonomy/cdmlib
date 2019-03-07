@@ -36,7 +36,6 @@ public abstract class TermGraphBase<TERM extends DefinedTermBase, REL extends Te
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(TermGraphBase.class);
 
-
  // ******************** CONSTRUCTOR *************************************/
 
     @Deprecated

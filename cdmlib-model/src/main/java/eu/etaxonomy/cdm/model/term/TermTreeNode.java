@@ -662,6 +662,4 @@ public class TermTreeNode <T extends DefinedTermBase>
 	    HHH_9751_Util.removeAllNull(children);
 	    updateSortIndex();
 	}
-
-
 }
