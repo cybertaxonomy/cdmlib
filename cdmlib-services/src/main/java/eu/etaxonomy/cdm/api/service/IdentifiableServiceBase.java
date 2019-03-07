@@ -262,47 +262,55 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 	}
 
 	@Transactional(readOnly = false)  //TODO check transactional behavior, e.g. what happens with the session if count is very large
-	protected <S extends T > UpdateResult updateCachesImpl(Class<S> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<T> cacheStrategy, IProgressMonitor monitor) {
+	protected <S extends T > UpdateResult updateCachesImpl(Class<S> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<T> cacheStrategy, IProgressMonitor subMonitor) {
 		if (stepSize == null){
 			stepSize = UPDATE_TITLE_CACHE_DEFAULT_STEP_SIZE;
 		}
-		if (monitor == null){
-			monitor = DefaultProgressMonitor.NewInstance();
+		if (subMonitor == null){
+		    subMonitor = DefaultProgressMonitor.NewInstance();
 		}
 		UpdateResult result = new UpdateResult();
 		long count = dao.count(clazz);
 		long countUpdated = 0;
-		monitor.beginTask("update titles for " + clazz.getSimpleName(), Long.valueOf(count).intValue());
-		int worked = 0;
-		Set<CdmEntityIdentifier> updatedCdmIds = new HashSet();
-		for(int i = 0 ; i < count ; i = i + stepSize){
-			// not sure if such strict ordering is necessary here, but for safety reasons I do it
-			ArrayList<OrderHint> orderHints = new ArrayList<>();
-			orderHints.add( new OrderHint("id", OrderHint.SortOrder.ASCENDING));
+
+		try {
+		    subMonitor.beginTask("update titles for " + clazz.getSimpleName(), Long.valueOf(count).intValue());
 
 
-			Map<Class<? extends CdmBase>, AutoPropertyInitializer<CdmBase>> oldAutoInit = switchOfAutoinitializer();
-			List<S> list = this.list(clazz, stepSize, i, orderHints, null);
-			switchOnOldAutoInitializer(oldAutoInit);
-
-			List<T> entitiesToUpdate = new ArrayList<>();
-			for (T entity : list){
-				entity = HibernateProxyHelper.deproxy(entity);
-			    if (entity.updateCaches(cacheStrategy)){
-			        countUpdated++;
-			        updatedCdmIds.add(new CdmEntityIdentifier(entity.getId(), clazz));
-			    }
-				worked++;
-				monitor.internalWorked(1);
-			}
+    		//SubProgressMonitor subMonitor = monitor.("update titles for " + clazz.getSimpleName(), Long.valueOf(count).intValue());
+    		int worked = 0;
+    		Set<CdmEntityIdentifier> updatedCdmIds = new HashSet();
+    		for(int i = 0 ; i < count ; i = i + stepSize){
+    			// not sure if such strict ordering is necessary here, but for safety reasons I do it
+    			ArrayList<OrderHint> orderHints = new ArrayList<>();
+    			orderHints.add( new OrderHint("id", OrderHint.SortOrder.ASCENDING));
 
 
-			if (monitor.isCanceled()){
-				break;
-			}
-		}
-		monitor.done();
-		result.addUpdatedCdmIds(updatedCdmIds);
+    			Map<Class<? extends CdmBase>, AutoPropertyInitializer<CdmBase>> oldAutoInit = switchOfAutoinitializer();
+    			List<S> list = this.list(clazz, stepSize, i, orderHints, null);
+    			switchOnOldAutoInitializer(oldAutoInit);
+
+    			List<T> entitiesToUpdate = new ArrayList<>();
+    			for (T entity : list){
+    				entity = HibernateProxyHelper.deproxy(entity);
+    			    if (entity.updateCaches(cacheStrategy)){
+    			        countUpdated++;
+    			        updatedCdmIds.add(new CdmEntityIdentifier(entity.getId(), clazz));
+    			    }
+    				worked++;
+    				subMonitor.internalWorked(1);
+    			}
+
+
+    			if (subMonitor.isCanceled()){
+    				break;
+    			}
+    		}
+    		result.addUpdatedCdmIds(updatedCdmIds);
+    	} finally {
+            subMonitor.done();
+        }
+
 		return result;
 	}
 
