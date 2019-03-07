@@ -78,6 +78,11 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+<<<<<<< HEAD
+=======
+import eu.etaxonomy.cdm.model.term.TermTreeNode;
+import eu.etaxonomy.cdm.model.term.TermTree;
+>>>>>>> ref #6794 change FeatureTree to TermTree
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermBase;
 import eu.etaxonomy.cdm.model.term.TermTree;

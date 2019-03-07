@@ -14,6 +14,7 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.description.Feature;
 
+
 public class FeatureTreeTest {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FeatureTreeTest.class);

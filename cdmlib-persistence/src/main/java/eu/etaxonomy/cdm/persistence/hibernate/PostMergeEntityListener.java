@@ -25,7 +25,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermTreeNode;
 
-
 /**
  * @author cmathew
  * @since 23 Sep 2015
