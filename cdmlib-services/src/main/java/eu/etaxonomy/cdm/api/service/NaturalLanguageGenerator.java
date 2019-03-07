@@ -29,7 +29,6 @@ import eu.etaxonomy.cdm.model.term.TermTreeNode;
  *
  * @author m.venin
  * @since 13.04.2010
- * @version 1.0
  */
 @Component
 public class NaturalLanguageGenerator implements INaturalLanguageGenerator {

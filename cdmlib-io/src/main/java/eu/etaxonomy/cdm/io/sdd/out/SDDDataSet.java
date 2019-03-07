@@ -132,7 +132,7 @@ public class SDDDataSet {
     protected List<VersionableEntity> agentData;
 
     @XmlElementWrapper(name = "FeatureData")
-        @XmlElements({
+    @XmlElements({
         @XmlElement(name = "FeatureNode", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = TermTreeNode.class),
         @XmlElement(name = "FeatureTree", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = TermTree.class)
     })
