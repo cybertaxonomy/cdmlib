@@ -83,7 +83,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
@@ -183,9 +183,9 @@ public class DataSet implements IExportData {
 
     @XmlElementWrapper(name = "FeatureTrees")
     @XmlElements({
-      @XmlElement(name = "FeatureTree", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = FeatureTree.class)
+      @XmlElement(name = "FeatureTree", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = TermTree.class)
     })
-    protected List<FeatureTree> featureTrees = new ArrayList<>();
+    protected List<TermTree> featureTrees = new ArrayList<>();
 
     @XmlElementWrapper(name = "PolytomousKeys")
     @XmlElements({
@@ -334,7 +334,7 @@ public class DataSet implements IExportData {
         this.references = value;
     }
 
-    public List<FeatureTree> getFeatureTrees() {
+    public List<TermTree> getFeatureTrees() {
         return featureTrees;
     }
 
@@ -356,7 +356,7 @@ public class DataSet implements IExportData {
         return taxonNodes;
     }
 
-    public void setFeatureTrees(List<FeatureTree> value) {
+    public void setFeatureTrees(List<TermTree> value) {
     	this.featureTrees = value;
     }
 

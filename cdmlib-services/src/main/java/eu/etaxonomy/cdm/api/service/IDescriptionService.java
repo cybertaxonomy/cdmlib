@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
@@ -522,7 +522,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
       * @param separator
       * @return
       */
-    public String generateNaturalLanguageDescription(FeatureTree featureTree,TaxonDescription description, List<Language> preferredLanguages, String separator);
+    public String generateNaturalLanguageDescription(TermTree featureTree,TaxonDescription description, List<Language> preferredLanguages, String separator);
 
     /**
      * Preliminary method to test whether a description contains structured data.

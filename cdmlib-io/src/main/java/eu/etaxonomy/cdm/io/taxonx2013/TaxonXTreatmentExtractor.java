@@ -63,7 +63,7 @@ import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermTreeNode;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -94,7 +94,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 
     private  String treatmentMainName,originalTreatmentName;
 
-    private final HashMap<String,Map<String,String>> namesMap = new HashMap<String, Map<String,String>>();
+    private final HashMap<String,Map<String,String>> namesMap = new HashMap<>();
 
 
     private final Pattern keypattern = Pattern.compile("^(\\d+.*|-\\d+.*)");
@@ -142,7 +142,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
     @SuppressWarnings({ "rawtypes", "unused" })
 
     protected void extractTreatment(Node treatmentnode, Reference refMods, URI sourceName) {        logger.info("extractTreatment");
-        List<TaxonName> namesToSave = new ArrayList<TaxonName>();
+        List<TaxonName> namesToSave = new ArrayList<>();
         NodeList children = treatmentnode.getChildNodes();
         Taxon acceptedTaxon =null;
         boolean hasRefgroup=false;
@@ -304,21 +304,21 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
      */
     private void buildFeatureTree() {
         logger.info("buildFeatureTree");
-        FeatureTree proibiospheretree = importer.getFeatureTreeService().find(proIbioTreeUUID);
+        TermTree proibiospheretree = importer.getFeatureTreeService().find(proIbioTreeUUID);
         if (proibiospheretree == null){
-            List<FeatureTree> trees = importer.getFeatureTreeService().list(FeatureTree.class, null, null, null, null);
+            List<TermTree> trees = importer.getFeatureTreeService().list(TermTree.class, null, null, null, null);
             if (trees.size()==1) {
-                FeatureTree<Feature> ft = trees.get(0);
+                TermTree<Feature> ft = trees.get(0);
                 if (featuresMap==null) {
-                    featuresMap=new HashMap<String, Feature>();
+                    featuresMap=new HashMap<>();
                 }
-                for (Feature feature: ft.getDistinctFeatures()){
+                for (Feature feature: ft.getDistinctTerms()){
                     if(feature!=null) {
                         featuresMap.put(feature.getTitleCache(), feature);
                     }
                 }
             }
-            proibiospheretree = FeatureTree.NewInstance();
+            proibiospheretree = TermTree.NewInstance();
             proibiospheretree.setUuid(proIbioTreeUUID);
         }
 
@@ -550,8 +550,8 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         logger.info("extractDistribution");
         //        logger.info("acceptedTaxon: "+acceptedTaxon);
         NodeList children = distribution.getChildNodes();
-        Map<Integer,List<MySpecimenOrObservation>> specimenOrObservations = new HashMap<Integer, List<MySpecimenOrObservation>>();
-        Map<Integer,String> descriptionsFulltext = new HashMap<Integer,String>();
+        Map<Integer,List<MySpecimenOrObservation>> specimenOrObservations = new HashMap<>();
+        Map<Integer,String> descriptionsFulltext = new HashMap<>();
 
         for (int i=0;i<children.getLength();i++){
             if (children.item(i).getNodeName().equalsIgnoreCase("tax:p")){
@@ -1099,7 +1099,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
      * @param refMods: the current reference extracted from the MODS
      * @param featureName: the feature name
      */
-    @SuppressWarnings({ "unused", "rawtypes" })
+    @SuppressWarnings({ "unused"})
     private String extractSpecificFeatureNotStructured(Node description, Taxon acceptedTaxon, Taxon defaultTaxon,
             List<TaxonName> nameToSave, Reference refMods, String featureName ) {
         logger.info("extractSpecificFeatureNotStructured " + featureName);
@@ -2352,7 +2352,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         String fullName = "";
         String newName="";
         String identifier="";
-        HashMap<String, String> atomisedMap = new HashMap<String, String>();
+        HashMap<String, String> atomisedMap = new HashMap<>();
         List<String> atomisedName= new ArrayList<String>();
 
         String rankStr = "";
@@ -2498,8 +2498,8 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         String fullName = "";
         String newName = "";
         String identifier = "";
-        HashMap<String, String> atomisedMap = new HashMap<String, String>();
-        List<String> atomisedNameList= new ArrayList<String>();
+        HashMap<String, String> atomisedMap = new HashMap<>();
+        List<String> atomisedNameList= new ArrayList<>();
 
         String status= extractStatus(children);
 
@@ -3667,7 +3667,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                             classification.addChildTaxon((Taxon)tmpTaxonBase, refMods, null);
                         }
                     } else{
-                        hierarchy = new HashMap<Rank, Taxon>();
+                        hierarchy = new HashMap<>();
                         //System.out.println("LOOK FOR PARENT "+taxonname.toString()+", "+tmptaxonbase.toString());
                         if (!isSynonym){
                             lookForParentNode(taxonName,(Taxon)tmpTaxonBase, refMods,this);
@@ -4931,7 +4931,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         return costs[s2.length()];
     }
 
-    Map<Rank, Taxon> hierarchy = new HashMap<Rank, Taxon>();
+    Map<Rank, Taxon> hierarchy = new HashMap<>();
     /**
      * @param taxonName
      */

@@ -5,7 +5,7 @@ import java.util.List;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermTree;
 
 
 
@@ -18,15 +18,15 @@ import eu.etaxonomy.cdm.model.term.FeatureTree;
 
 public interface INaturalLanguageGenerator {
 	
-	public List<TextData> generateNaturalLanguageDescription(FeatureTree featureTree, TaxonDescription descriptions);
+	public List<TextData> generateNaturalLanguageDescription(TermTree featureTree, TaxonDescription descriptions);
 	
-	public List<TextData> generateNaturalLanguageDescription(FeatureTree featureTree,TaxonDescription description, Language language);
+	public List<TextData> generateNaturalLanguageDescription(TermTree featureTree,TaxonDescription description, Language language);
 	
-	public List<TextData> generatePreferredNaturalLanguageDescription(FeatureTree featureTree, TaxonDescription description, List<Language> languages);
+	public List<TextData> generatePreferredNaturalLanguageDescription(TermTree featureTree, TaxonDescription description, List<Language> languages);
 
-	public TextData generateSingleTextData(FeatureTree featureTree, TaxonDescription description);
+	public TextData generateSingleTextData(TermTree featureTree, TaxonDescription description);
 	
-	public TextData generateSingleTextData(FeatureTree featureTree, TaxonDescription description, Language language);
+	public TextData generateSingleTextData(TermTree featureTree, TaxonDescription description, Language language);
 	
-	public TextData generatePreferredSingleTextData(FeatureTree featureTree, TaxonDescription description, List<Language> languages);
+	public TextData generatePreferredSingleTextData(TermTree featureTree, TaxonDescription description, List<Language> languages);
 }

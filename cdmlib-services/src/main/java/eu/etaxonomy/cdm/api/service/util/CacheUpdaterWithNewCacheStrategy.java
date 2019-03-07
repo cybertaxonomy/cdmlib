@@ -14,7 +14,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseShortSecCacheStrategy;
 
@@ -31,7 +31,7 @@ public class CacheUpdaterWithNewCacheStrategy extends CacheUpdater {
 			//TermBase
 			if (DefinedTermBase.class.isAssignableFrom(clazz)){
 				termService.updateCaches((Class) clazz, null, null, null);
-			}else if (FeatureTree.class.isAssignableFrom(clazz)){
+			}else if (TermTree.class.isAssignableFrom(clazz)){
 				featureTreeService.updateCaches((Class) clazz, null, null, null);
 			}else if (TermVocabulary.class.isAssignableFrom(clazz)){
 				vocabularyService.updateCaches((Class) clazz, null, null, null);

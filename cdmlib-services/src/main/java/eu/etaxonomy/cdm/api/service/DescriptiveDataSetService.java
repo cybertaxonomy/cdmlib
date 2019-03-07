@@ -433,7 +433,7 @@ public class DescriptiveDataSetService
         if(markerType!=null){
             newTaxonDescription.addMarker(Marker.NewInstance(markerType, markerFlag));
         }
-        dataSet.getDescriptiveSystem().getDistinctFeatures().forEach(wsFeature->{
+        dataSet.getDescriptiveSystem().getDistinctTerms().forEach(wsFeature->{
             if(wsFeature.isSupportsCategoricalData()){
                 newTaxonDescription.addElement(CategoricalData.NewInstance(wsFeature));
             }
@@ -452,7 +452,7 @@ public class DescriptiveDataSetService
         DescriptiveDataSet dataSet = load(descriptiveDataSetUuid);
         SpecimenOrObservationBase specimen = occurrenceService.load(specimenUuid);
 
-        Set<Character> datasetFeatures = dataSet.getDescriptiveSystem().getDistinctFeatures();
+        Set<Character> datasetFeatures = dataSet.getDescriptiveSystem().getDistinctTerms();
         List<DescriptionElementBase> matchingDescriptionElements = new ArrayList<>();
 
         for (SpecimenDescription specimenDescription : (Set<SpecimenDescription>) specimen.getDescriptions()) {

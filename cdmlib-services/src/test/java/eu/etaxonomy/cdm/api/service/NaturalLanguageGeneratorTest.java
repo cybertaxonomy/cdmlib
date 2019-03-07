@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermTreeNode;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
@@ -42,7 +42,7 @@ public class NaturalLanguageGeneratorTest extends CdmIntegrationTest {
 	@SpringBeanByType
 	private INaturalLanguageGenerator generator;
 
-    private FeatureTree featureTree;
+    private TermTree featureTree;
     private TaxonDescription description;
     Set<Feature> featureSet  = new HashSet<Feature>();
 
@@ -54,7 +54,7 @@ public class NaturalLanguageGeneratorTest extends CdmIntegrationTest {
 		Taxon taxon = Taxon.NewInstance(tnb, null);
 		description = TaxonDescription.NewInstance(taxon);
 
-		featureTree= FeatureTree.NewInstance();
+		featureTree= TermTree.NewInstance();
 		TermTreeNode root = featureTree.getRoot();
 		String[][][] tableStrings = { { {"a","b"} } , { { "a1" , "a2"  } , { "b1" } } };
 		buildBranches(root,tableStrings,0,2,0);

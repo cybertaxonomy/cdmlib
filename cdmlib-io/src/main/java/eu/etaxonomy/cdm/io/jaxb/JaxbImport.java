@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermTreeNode;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
@@ -117,7 +117,7 @@ public class JaxbImport
 		List<DescriptionBase> descriptions;
 		List<TypeDesignationBase<?>> typeDesignations;
 		List<SpecimenOrObservationBase> occurrences;
-		List<FeatureTree> featureTrees;
+		List<TermTree> featureTrees;
 		List<TermTreeNode> featureNodes;
 		List<Media> media;
 		List<LanguageStringBase> languageData;

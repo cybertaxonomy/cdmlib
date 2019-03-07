@@ -79,7 +79,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermTreeNode;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermBase;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
@@ -1189,8 +1189,8 @@ public class SDDDocumentBuilder {
 
 			for (int i = 0; i < cdmSource.getFeatureData().size(); i++) {
 				VersionableEntity featu = cdmSource.getFeatureData().get(i);
-				if (featu instanceof FeatureTree) {
-					FeatureTree ft = (FeatureTree) featu;
+				if (featu instanceof TermTree) {
+					TermTree ft = (TermTree) featu;
 					ElementImpl elChartree = new ElementImpl(document,
 							CHARACTER_TREE);
 					chartreeCount = buildReference(featu, featuretrees, ID,

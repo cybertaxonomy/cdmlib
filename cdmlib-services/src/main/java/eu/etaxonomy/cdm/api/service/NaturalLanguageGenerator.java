@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.description.TextFormat;
 import eu.etaxonomy.cdm.model.term.TermTreeNode;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermTree;
 
 
 /**
@@ -158,7 +158,7 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 	 * @return a list of TextData, each one being a basic element of the natural language description
 	 */
 	@Override
-    public List<TextData> generateNaturalLanguageDescription(FeatureTree featureTree,TaxonDescription description) {
+    public List<TextData> generateNaturalLanguageDescription(TermTree featureTree,TaxonDescription description) {
 		return generateNaturalLanguageDescription(featureTree,description,Language.DEFAULT());
 	}
 
@@ -174,7 +174,7 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 	 * @return a list of TextData, each one being a basic element of the natural language description
 	 */
 	@Override
-    public List<TextData> generateNaturalLanguageDescription(FeatureTree featureTree, TaxonDescription description,	Language language) {
+    public List<TextData> generateNaturalLanguageDescription(TermTree featureTree, TaxonDescription description,	Language language) {
 		List<Language> languages = new ArrayList<Language>();
 		languages.add(language);
 		initNaturalLanguageDescriptionElementProcessors(description.getAnnotations());
@@ -191,7 +191,7 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 	 * @return a list of TextData, each one being a basic element of the natural language description
 	 */
 	@Override
-    public List<TextData> generatePreferredNaturalLanguageDescription(FeatureTree featureTree,TaxonDescription description, List<Language> languages) {
+    public List<TextData> generatePreferredNaturalLanguageDescription(TermTree featureTree,TaxonDescription description, List<Language> languages) {
 		initNaturalLanguageDescriptionElementProcessors(description.getAnnotations());
 		return buildBranchesDescr(featureTree.getRootChildren(), featureTree.getRoot(), description, languages,0);
 	}
@@ -205,7 +205,7 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 	 * @return a TextData in the default language.
 	 */
 	@Override
-    public TextData generateSingleTextData(FeatureTree featureTree, TaxonDescription description) {
+    public TextData generateSingleTextData(TermTree featureTree, TaxonDescription description) {
 		return generateSingleTextData(featureTree,description,Language.DEFAULT());
 	}
 
@@ -219,7 +219,7 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 	 * @return a TextData in the specified language.
 	 */
 	@Override
-    public TextData generateSingleTextData(FeatureTree featureTree, TaxonDescription description, Language language) {
+    public TextData generateSingleTextData(TermTree featureTree, TaxonDescription description, Language language) {
 		List<Language> languages = new ArrayList<Language>();
 		languages.add(language);
 		return generatePreferredSingleTextData(featureTree,description,languages);
@@ -235,7 +235,7 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 	 * @return a TextData using the languages (in the given order of preference)
 	 */
 	@Override
-    public TextData generatePreferredSingleTextData(FeatureTree featureTree, TaxonDescription description, List<Language> languages) {
+    public TextData generatePreferredSingleTextData(TermTree featureTree, TaxonDescription description, List<Language> languages) {
 		levels.clear(); // before the start, the table containing the levels of each node must be cleared
 		// Note: this is not the most efficient way to keep track of the levels of the nodes but it allows some flexibility
 		List<TextData> texts = generatePreferredNaturalLanguageDescription(featureTree,description, languages);// first get the description as a raw list of TextData

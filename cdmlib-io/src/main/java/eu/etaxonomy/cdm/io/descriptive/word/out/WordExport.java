@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermTreeNode;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermTree;
 
 /**
  *
@@ -44,7 +44,7 @@ public class WordExport extends CdmExportBase<WordExportConfigurator, WordExport
 
         TransactionStatus txStatus = startTransaction(true);
 
-        FeatureTree featureTree = state.getConfig().getFeatureTree();
+        TermTree featureTree = state.getConfig().getFeatureTree();
         featureTree = getFeatureTreeService().load(featureTree.getUuid());
         TermTreeNode rootNode = featureTree.getRoot();
 

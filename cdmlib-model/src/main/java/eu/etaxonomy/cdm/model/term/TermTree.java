@@ -36,11 +36,8 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.MediaKey;
-import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 /**
  * The class to arrange {@link Feature features} (characters) in a tree structure.
@@ -57,30 +54,34 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  * nothing in common with the possible hierarchical structure of features
  * depending on their grade of precision.
  *
- * @see		MediaKey
- *
  * @author  m.doering
  * @since 08-Nov-2007 13:06:16
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "FeatureTree", propOrder = {
+@XmlType(name = "TermTree", propOrder = {
     "root",
     "termType",
     "allowDuplicates",
     "representations"
 
 })
-@XmlRootElement(name = "FeatureTree")
+@XmlRootElement(name = "TermTree")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.term.FeatureTree")
+//@Indexed(index = "eu.etaxonomy.cdm.model.term.TermTree")
 @Audited
-public class FeatureTree <T extends DefinedTermBase>
-            extends IdentifiableEntity<IIdentifiableEntityCacheStrategy>
-            implements IHasTermType, Cloneable{
+public class TermTree <T extends DefinedTermBase>
+            extends TermGraphBase<T, TermTreeNode> {
 
 	private static final long serialVersionUID = -6713834139003172735L;
-	private static final Logger logger = Logger.getLogger(FeatureTree.class);
+	private static final Logger logger = Logger.getLogger(TermTree.class);
+
+
+    // TODO representations needed? FeatureTree was a TermBase until v3.3 but was removed from
+    //it as TermBase got the termType which does not apply to FeatureTree.
+    //We need to check how far representations and uri is still required
+    //or can be deleted. Current implementations seem all to use the title cache
+    //instead of representation. This may not be correct.
 
 	@XmlElement(name = "Root")
 	@OneToOne(fetch = FetchType.LAZY, targetEntity=TermTreeNode.class)
@@ -125,8 +126,8 @@ public class FeatureTree <T extends DefinedTermBase>
      * with an empty {@link #getRoot() root node}.
      * @param termType the {@link TermType term type}, must not be null
      */
-    public static <T extends DefinedTermBase<T>> FeatureTree<T> NewInstance(@NotNull TermType termType){
-        return new FeatureTree<>(termType);
+    public static <T extends DefinedTermBase<T>> TermTree<T> NewInstance(@NotNull TermType termType){
+        return new TermTree<>(termType);
     }
 
     /**
@@ -135,8 +136,8 @@ public class FeatureTree <T extends DefinedTermBase>
 	 * @see #NewInstance(UUID)
 	 * @see #NewInstance(List)
 	 */
-	public static FeatureTree<Feature> NewInstance(){
-		return new FeatureTree<>(TermType.Feature);
+	public static TermTree<Feature> NewInstance(){
+		return new TermTree<>(TermType.Feature);
 	}
 
 	/**
@@ -148,8 +149,8 @@ public class FeatureTree <T extends DefinedTermBase>
 	 * @see 			#NewInstance()
 	 * @see 			#NewInstance(List)
 	 */
-	public static <T extends DefinedTermBase<T>> FeatureTree<T> NewInstance(UUID uuid){
-		FeatureTree<T> result =  new FeatureTree<>(TermType.Feature);
+	public static <T extends DefinedTermBase<T>> TermTree<T> NewInstance(UUID uuid){
+		TermTree<T> result =  new TermTree<>(TermType.Feature);
 		result.setUuid(uuid);
 		return result;
 	}
@@ -165,8 +166,8 @@ public class FeatureTree <T extends DefinedTermBase>
 	 * @see 				#NewInstance()
 	 * @see 				#NewInstance(UUID)
 	 */
-	public static FeatureTree<Feature> NewInstance(List<Feature> featureList){
-		FeatureTree<Feature> result =  new FeatureTree<>(TermType.Feature);
+	public static TermTree<Feature> NewInstance(List<Feature> featureList){
+		TermTree<Feature> result =  new TermTree<>(TermType.Feature);
 		TermTreeNode<Feature> root = result.getRoot();
 
 		for (Feature feature : featureList){
@@ -181,13 +182,13 @@ public class FeatureTree <T extends DefinedTermBase>
 
     //for JAXB only, TODO needed?
     @Deprecated
-    protected FeatureTree(){}
+    protected TermTree(){}
 
 	/**
 	 * Class constructor: creates a new feature tree instance with an empty
 	 * {@link #getRoot() root node}.
 	 */
-	protected FeatureTree(TermType termType) {
+	protected TermTree(TermType termType) {
         this.termType = termType;
         checkTermType(this);  //check not null
 		root = new TermTreeNode<>(termType);
@@ -211,7 +212,7 @@ public class FeatureTree <T extends DefinedTermBase>
 	}
 
     /**
-     * @deprecated this method is only for internal use when deleting a {@link FeatureTree}
+     * @deprecated this method is only for internal use when deleting a {@link TermTree}
      * from a database. It should never be called for other reasons.
      */
     @Deprecated
@@ -230,44 +231,40 @@ public class FeatureTree <T extends DefinedTermBase>
 		return result;
 	}
 
-    public boolean isAllowDuplicates() {
-        return allowDuplicates;
-    }
-    public void setAllowDuplicates(boolean allowDuplicates) {
-        this.allowDuplicates = allowDuplicates;
-    }
 
-    /**
-     * Throws {@link IllegalArgumentException} if the given
-     * term has not the same term type as this term or if term type is null.
-     * @param term
-     */
-    private void checkTermType(IHasTermType term) {
-        IHasTermType.checkTermTypes(term, this);
-    }
 
 //******************** METHODS ***********************************************/
 
 	/**
-	 * Computes a set of distinct terms that are present in this feature tree
+	 * Computes a set of distinct terms that are present in this term tree
 	 *
 	 * @return
 	 */
-	@Transient
-	public Set<T> getDistinctFeatures(){
+    @Override
+    @Transient
+	public Set<T> getDistinctTerms(){
 	    Set<T> features = new HashSet<>();
-	    return root.getDistinctFeaturesRecursive(features);
+	    return root.getDistinctTermsRecursive(features);
 	}
+
+    public List<T> asTermList() {
+        List<T> result = new ArrayList<>();
+        for (TermTreeNode<T> node : getRootChildren()){
+            result.add(node.getTerm());
+            result.addAll(node.asTermListRecursive(result));
+        }
+        return result;
+    }
 
 //*********************** CLONE ********************************************************/
 
 	/**
-	 * Clones <i>this</i> {@link FeatureTree}. This is a shortcut that enables to create
+	 * Clones <i>this</i> {@link TermTree}. This is a shortcut that enables to create
 	 * a new instance that differs only slightly from <i>this</i> tree by
 	 * modifying only some of the attributes.
 	 * {@link TermTreeNode tree nodes} always belong only to one tree, so all
 	 * {@link TermTreeNode tree nodes} are cloned to build
-	 * the new {@link FeatureTree}
+	 * the new {@link TermTree}
 	 *
 	 *
 	 * @see eu.etaxonomy.cdm.model.term.TermBase#clone()
@@ -275,9 +272,9 @@ public class FeatureTree <T extends DefinedTermBase>
 	 */
 	@Override
 	public Object clone() {
-		FeatureTree<T> result;
+		TermTree<T> result;
 		try {
-			result = (FeatureTree<T>)super.clone();
+			result = (TermTree<T>)super.clone();
 		}catch (CloneNotSupportedException e) {
 			logger.warn("Object does not implement cloneable");
 			e.printStackTrace();

@@ -114,7 +114,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.OrderedTerm;
 import eu.etaxonomy.cdm.model.term.OrderedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
@@ -159,7 +159,7 @@ public class ReferencedObjTypeUpdater extends SchemaUpdaterStepBase{
 			    DescriptionElementSource.class,
 			    Distribution.class,
 			    Feature.class,
-			    FeatureTree.class,
+			    TermTree.class,
 			    IndividualsAssociation.class,
 			    MeasurementUnit.class,
 			    MediaKey.class,

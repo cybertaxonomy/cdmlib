@@ -83,9 +83,9 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermBase;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermTreeNode;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
@@ -142,7 +142,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 
 	private Set<StatisticalMeasure> statisticalMeasures = new HashSet<>();
 	private Set<VersionableEntity> featureData = new HashSet<>();
-	private Set<FeatureTree> featureTrees = new HashSet<>();
+	private Set<TermTree> featureTrees = new HashSet<>();
 	private Set<Classification> classifications = new HashSet<>();
 
 	private final UUID uuidAnnotationTypeLocation = UUID.fromString("a3737e07-72e3-46d2-986d-fa4cf5de0b63");
@@ -675,7 +675,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 			getReferenceService().save(source);
 		}
 
-		for (FeatureTree featureTree : featureTrees) {
+		for (TermTree featureTree : featureTrees) {
 			getFeatureTreeService().save(featureTree);
 		}
 		getDescriptiveDataSetService().save(descriptiveDataSet);
@@ -1751,7 +1751,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 					String label = (String)ImportHelper.getXmlInputValue(elRepresentation,"Label",sddNamespace);
 					//Element elDesignedFor = elCharacterTree.getChild("DesignedFor",sddNamespace);//TODO ?
 
-					FeatureTree featureTree =  FeatureTree.NewInstance();
+					TermTree featureTree =  TermTree.NewInstance();
 					importRepresentation(elCharacterTree, sddNamespace, featureTree, "", cdmState);
 					TermTreeNode<Feature> root = featureTree.getRoot();
 					List<Element> listeOfNodes = elCharacterTree.getChildren("Nodes", sddNamespace);

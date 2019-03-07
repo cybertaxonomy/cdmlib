@@ -19,7 +19,7 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.term.TermTreeNode;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermTree;
 
 //@Ignore  //does not work anymore since FeatureNode + Tree was moved to term package
 public class FeatureTest {
@@ -32,7 +32,7 @@ public class FeatureTest {
 	        URI uri = new URI(URIEncoder.encode(this.getClass().getResource(resource).toString()));
 	        DataSet dataSet = cdmDocumentBuilder.unmarshal(DataSet.class, new InputStreamReader(this.getClass().getResourceAsStream(resource)),uri.toString());
 
-			FeatureTree<Feature> featureTree = dataSet.getFeatureTrees().get(0);
+			TermTree<Feature> featureTree = dataSet.getFeatureTrees().get(0);
 			Feature feature = (Feature)dataSet.getTerms().get(1);
 
 			assertNotNull("FeatureTree must not be null", featureTree);

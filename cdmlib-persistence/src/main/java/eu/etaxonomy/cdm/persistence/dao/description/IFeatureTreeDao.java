@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.term.TermTreeNode;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
@@ -23,8 +23,8 @@ import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
  * @since 10.07.2008
  * @version 1.0
  */
-public interface IFeatureTreeDao extends IIdentifiableDao<FeatureTree> {
-    public List<FeatureTree> list();
+public interface IFeatureTreeDao extends IIdentifiableDao<TermTree> {
+    public List<TermTree> list();
 
     public UUID DefaultFeatureTreeUuid = UUID.fromString("ac8d4e58-926d-4f81-ac77-cebdd295df7c");
 
@@ -35,6 +35,6 @@ public interface IFeatureTreeDao extends IIdentifiableDao<FeatureTree> {
      */
     public void deepLoadNodes(List<TermTreeNode> nodes, List<String> nodePaths);
 
-    public <S extends FeatureTree> List<UuidAndTitleCache<S>> getUuidAndTitleCacheByTermType(Class<S> clazz, TermType termType, Integer limit,
+    public <S extends TermTree> List<UuidAndTitleCache<S>> getUuidAndTitleCacheByTermType(Class<S> clazz, TermType termType, Integer limit,
             String pattern);
 }

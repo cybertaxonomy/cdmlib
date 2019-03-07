@@ -14,10 +14,10 @@ import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermTree;
 
 /**
- * The role of the descriptive system of type {@link FeatureTree}.<BR>
+ * The role of the descriptive system of type {@link TermTree}.<BR>
  * A descriptive systeme may play different roles within a working set. 
  * The roles may be 
  * <li>

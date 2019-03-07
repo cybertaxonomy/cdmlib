@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandlin
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermTreeNode;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
@@ -72,7 +72,7 @@ public class FeatureNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
 	@Test
 	public final void testIndexCreatRoot() {
-		FeatureTree<Feature> featureTree = FeatureTree.NewInstance();
+        TermTree<Feature> featureTree = TermTree.NewInstance();
 		featureTreeService.save(featureTree);
 
 		Feature feature = (Feature)termService.find(914);
@@ -108,7 +108,7 @@ public class FeatureNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 	@DataSet(value="FeatureNodeServiceImplTest-indexing.xml")
 	public final void testIndexMoveNode() {
 		//in feature tree
-		FeatureTree<Feature> featureTree = featureTreeService.load(featureTreeUuid);
+        TermTree<Feature> featureTree = featureTreeService.load(featureTreeUuid);
 		node2 = featureNodeService.load(node2Uuid);
 		node3 = featureNodeService.load(node3Uuid);
 		node3.addChild(node2);
@@ -118,7 +118,7 @@ public class FeatureNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		Assert.assertEquals("Node6 treeindex is not correct", node3.treeIndex() + "2#4#6#", node6.treeIndex());
 
 		//root of new feature tree
-		FeatureTree<Feature> featureTree2 = featureTreeService.load(featureTree2Uuid);
+		TermTree<Feature> featureTree2 = featureTreeService.load(featureTree2Uuid);
 		node2 = featureNodeService.load(node2Uuid);
 		featureTree2.getRoot().addChild(node2);
 		featureNodeService.saveOrUpdate(node2);
@@ -151,7 +151,7 @@ public class FeatureNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         config.setChildHandling(ChildHandling.MOVE_TO_PARENT);
         DeleteResult result = featureNodeService.deleteFeatureNode(node2Uuid, config);
         commitAndStartNewTransaction(new String[]{"TaxonNode"});
-        FeatureTree tree1 = featureTreeService.load(featureTreeUuid);
+        TermTree tree1 = featureTreeService.load(featureTreeUuid);
         assertNotNull(tree1);
         node2 = featureNodeService.load(node2Uuid);
         assertNull(node2);
@@ -169,7 +169,7 @@ public class FeatureNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         TermTreeNode node6 = featureNodeService.load(node6Uuid);
         assertNull(node6);
 
-		HibernateProxyHelper.deproxy(tree1, FeatureTree.class);
+		HibernateProxyHelper.deproxy(tree1, TermTree.class);
 		TermTreeNode rootNode = HibernateProxyHelper.deproxy(tree1.getRoot(), TermTreeNode.class);
 		assertNotNull(tree1);
 		featureTreeService.delete(tree1.getUuid());

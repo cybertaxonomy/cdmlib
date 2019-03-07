@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.TermTreeNode;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermTree;
 
 /**
  * @author cmathew
@@ -100,9 +100,9 @@ public class PostMergeEntityListener implements MergeEventListener {
 
                 }
 
-            }   else if(FeatureTree.class.isAssignableFrom(entityClazz)){
+            }   else if(TermTree.class.isAssignableFrom(entityClazz)){
 
-                FeatureTree<?> tree = (FeatureTree)entity;
+                TermTree<?> tree = (TermTree)entity;
                 for (TermTreeNode<?> node:tree.getRootChildren()){
                     node.removeNullValueFromChildren();
                     if (node.getChildNodes() != null){

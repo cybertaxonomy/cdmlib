@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import io.swagger.annotations.Api;
 
 /**
@@ -55,13 +55,13 @@ public class FeatureTreePortalController extends FeatureTreeController {
 
     @Override
     @RequestMapping(method = RequestMethod.GET)
-    public FeatureTree doGet(@PathVariable("uuid") UUID uuid,
+    public TermTree doGet(@PathVariable("uuid") UUID uuid,
                 HttpServletRequest request,
                 HttpServletResponse response) throws IOException {
         if(request != null) {
             logger.info("doGet() " + request.getRequestURI());
         }
-        FeatureTree featureTree = null;
+        TermTree featureTree = null;
         try {
             featureTree = service.loadWithNodes(uuid, getInitializationStrategy(), featuretreeNodeInitStrategy);
         } catch(EntityNotFoundException e){

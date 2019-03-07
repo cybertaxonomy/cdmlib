@@ -128,8 +128,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
 import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermTreeNode;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
@@ -412,7 +412,7 @@ public class FullCoverageDataGenerator {
 
 
 		//Feature Tree
-		FeatureTree<Feature> featureTree = FeatureTree.NewInstance();
+		TermTree<Feature> featureTree = TermTree.NewInstance();
 //		featureTree
         TermTreeNode<Feature> descriptionFeatureNode = featureTree.getRoot().addChild(Feature.DESCRIPTION());
         TermTreeNode<Feature> leaveLengthNode = descriptionFeatureNode.addChild(leaveLength);

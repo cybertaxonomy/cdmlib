@@ -45,7 +45,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
@@ -67,7 +67,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
  * ("generalization of") features. "Kind of" / "generalization of" relations
  * are bidirectional (a feature F1 is a "Kind of" a feature F2 if and only
  * if the feature F2 is a "generalization of" the feature F1. This hierarchical
- * structure has nothing in common with {@link FeatureTree feature trees} used for determination.
+ * structure has nothing in common with {@link TermTree feature trees} used for determination.
  * <P>
  * A standard set of feature instances will be automatically
  * created as the project starts. But this class allows to extend this standard

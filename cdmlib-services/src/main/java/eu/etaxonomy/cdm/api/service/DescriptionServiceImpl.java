@@ -55,7 +55,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
@@ -589,7 +589,7 @@ public class DescriptionServiceImpl
     }
 
     @Override
-    public String generateNaturalLanguageDescription(FeatureTree featureTree,
+    public String generateNaturalLanguageDescription(TermTree featureTree,
             TaxonDescription description, List<Language> preferredLanguages, String separator) {
 
         Language lang = preferredLanguages.size() > 0 ? preferredLanguages.get(0) : Language.DEFAULT();

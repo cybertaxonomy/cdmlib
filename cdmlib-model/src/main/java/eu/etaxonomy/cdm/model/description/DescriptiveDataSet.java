@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.strategy.cache.description.DescriptiveDataSetDefaultCacheStrategy;
 
@@ -83,7 +83,7 @@ public class DescriptiveDataSet extends IdentifiableEntity<DescriptiveDataSetDef
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-	private FeatureTree<Character> descriptiveSystem;
+	private TermTree<Character> descriptiveSystem;
 
 	@XmlElementWrapper(name = "Descriptions")
 	@XmlElement(name = "Description")
@@ -307,10 +307,10 @@ public class DescriptiveDataSet extends IdentifiableEntity<DescriptiveDataSetDef
 		}
 	}
 
-	public FeatureTree<Character> getDescriptiveSystem() {
+	public TermTree<Character> getDescriptiveSystem() {
 		return descriptiveSystem;
 	}
-	public void setDescriptiveSystem(FeatureTree<Character> descriptiveSystem) {
+	public void setDescriptiveSystem(TermTree<Character> descriptiveSystem) {
 		this.descriptiveSystem = descriptiveSystem;
 	}
 

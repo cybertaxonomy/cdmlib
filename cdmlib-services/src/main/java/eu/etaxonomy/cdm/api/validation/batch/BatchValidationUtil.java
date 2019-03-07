@@ -47,7 +47,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermTreeNode;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
@@ -79,7 +79,7 @@ class BatchValidationUtil {
 //        services.add(new EntityValidationUnit(OriginalSourceBase.class, appConfig.getCommonService()));
         services.add(new EntityValidationUnit(DescriptionBase.class, appConfig.getDescriptionService()));
         services.add(new EntityValidationUnit(TermTreeNode.class, appConfig.getFeatureNodeService()));
-        services.add(new EntityValidationUnit(FeatureTree.class, appConfig.getFeatureTreeService()));
+        services.add(new EntityValidationUnit(TermTree.class, appConfig.getFeatureTreeService()));
         services.add(new EntityValidationUnit(Group.class, appConfig.getGroupService()));
         // Causes some AOP-related error when calling list() method on it
         //services.add(new EntityValidationUnit(DefinedTermBase.class, appConfig.getLocationService()));

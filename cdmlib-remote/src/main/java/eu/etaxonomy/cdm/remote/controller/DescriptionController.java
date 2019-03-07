@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.remote.editor.DefinedTermBaseList;
 import eu.etaxonomy.cdm.remote.editor.NamedAreaLevelPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.TermBaseListPropertyEditor;
@@ -149,7 +149,7 @@ public class DescriptionController extends AbstractIdentifiableController<Descri
             // will terminate thread
         }
 
-        FeatureTree featureTree = featureTreeService.load(featureTreeUuid, null);
+        TermTree featureTree = featureTreeService.load(featureTreeUuid, null);
         if(featureTree == null){
             HttpStatusMessage.UUID_NOT_FOUND.send(response);
             // will terminate thread

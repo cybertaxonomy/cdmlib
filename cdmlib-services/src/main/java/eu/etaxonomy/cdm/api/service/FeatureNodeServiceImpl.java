@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermTreeNode;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.description.ITermTreeNodeDao;
@@ -144,9 +144,9 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<TermTreeNode,
 	         if (ref instanceof TermTreeNode){
 	             break;
 	         }
-	         if (ref instanceof FeatureTree){
-	             FeatureTree refTree = HibernateProxyHelper.deproxy(ref, FeatureTree.class);
-	             if (node.getFeatureTree().equals((refTree))){
+	         if (ref instanceof TermTree){
+	             TermTree refTree = HibernateProxyHelper.deproxy(ref, TermTree.class);
+	             if (node.getGraph().equals((refTree))){
 	                 break;
 	             }
 	         }

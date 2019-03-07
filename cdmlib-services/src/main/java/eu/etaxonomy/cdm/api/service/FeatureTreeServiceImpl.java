@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandlin
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.term.TermTreeNode;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.persistence.dao.description.ITermTreeNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 @Service
 @Transactional(readOnly = false)
-public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree, IFeatureTreeDao> implements IFeatureTreeService {
+public class FeatureTreeServiceImpl extends IdentifiableServiceBase<TermTree, IFeatureTreeDao> implements IFeatureTreeService {
 
     private ITermTreeNodeDao featureNodeDao;
 
@@ -55,9 +55,9 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree,
 
     @Override
     @Transactional(readOnly = false)
-    public UpdateResult updateCaches(Class<? extends FeatureTree> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<FeatureTree> cacheStrategy, IProgressMonitor monitor) {
+    public UpdateResult updateCaches(Class<? extends TermTree> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<TermTree> cacheStrategy, IProgressMonitor monitor) {
         if (clazz == null){
-            clazz = FeatureTree.class;
+            clazz = TermTree.class;
         }
         return super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
     }
@@ -78,7 +78,7 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree,
     }
 
     @Override
-    public FeatureTree loadWithNodes(UUID uuid, List<String> propertyPaths, List<String> nodePaths) {
+    public TermTree loadWithNodes(UUID uuid, List<String> propertyPaths, List<String> nodePaths) {
 
         if(nodePaths==null){
             nodePaths = new ArrayList<>();
@@ -98,7 +98,7 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree,
             rootPaths.addAll(propertyPaths);
         }
 
-        FeatureTree featureTree = load(uuid, rootPaths);
+        TermTree featureTree = load(uuid, rootPaths);
         if(featureTree == null){
             throw new EntityNotFoundException("No FeatureTree entity found for " + uuid);
         }
@@ -116,19 +116,19 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree,
      * @see eu.etaxonomy.cdm.api.service.ServiceBase#load(java.util.UUID, java.util.List)
      */
     @Override
-    public FeatureTree load(UUID uuid, List<String> propertyPaths) {
+    public TermTree load(UUID uuid, List<String> propertyPaths) {
         return super.load(uuid, propertyPaths);
     }
 
     @Override
-    public FeatureTree createTransientDefaultFeatureTree() {
+    public TermTree createTransientDefaultFeatureTree() {
         return load(IFeatureTreeDao.DefaultFeatureTreeUuid);
     }
 
     @Override
     public DeleteResult delete(UUID featureTreeUuid){
         DeleteResult result = new DeleteResult();
-        FeatureTree tree = dao.load(featureTreeUuid);
+        TermTree tree = dao.load(featureTreeUuid);
 
         TermTreeNode rootNode = HibernateProxyHelper.deproxy(tree.getRoot());
         FeatureNodeDeletionConfigurator config = new FeatureNodeDeletionConfigurator();
@@ -144,7 +144,7 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree,
     }
 
     @Override
-    public <S extends FeatureTree> List<UuidAndTitleCache<S>> getUuidAndTitleCacheByTermType(Class<S> clazz, TermType termType, Integer limit,
+    public <S extends TermTree> List<UuidAndTitleCache<S>> getUuidAndTitleCacheByTermType(Class<S> clazz, TermType termType, Integer limit,
             String pattern) {
         return dao.getUuidAndTitleCacheByTermType(clazz, termType, limit, pattern);
     }

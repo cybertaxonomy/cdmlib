@@ -15,11 +15,11 @@ import java.util.Map;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.term.TermTreeNode;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
-public interface IFeatureTreeService extends IIdentifiableEntityService<FeatureTree> {
+public interface IFeatureTreeService extends IIdentifiableEntityService<TermTree> {
 
 	public List<TermTreeNode> getFeatureNodesAll();
 
@@ -32,14 +32,14 @@ public interface IFeatureTreeService extends IIdentifiableEntityService<FeatureT
 	 * to initialize (e.g. feature).
 	 *
 	 */
-	public FeatureTree loadWithNodes(UUID uuid, List<String> propertyPaths, List<String> nodePaths);
+	public TermTree loadWithNodes(UUID uuid, List<String> propertyPaths, List<String> nodePaths);
 
 	public Map<UUID, TermTreeNode> saveFeatureNodesAll(Collection<TermTreeNode> featureNodeCollection);
 
 	public Map<UUID, TermTreeNode> saveOrUpdateFeatureNodesAll(Collection<TermTreeNode> featureNodeCollection);
 
-	public FeatureTree createTransientDefaultFeatureTree();
+	public TermTree createTransientDefaultFeatureTree();
 
-	public <S extends FeatureTree> List<UuidAndTitleCache<S>> getUuidAndTitleCacheByTermType(Class<S> clazz, TermType termType, Integer limit,
+	public <S extends TermTree> List<UuidAndTitleCache<S>> getUuidAndTitleCacheByTermType(Class<S> clazz, TermType termType, Integer limit,
             String pattern);
 }

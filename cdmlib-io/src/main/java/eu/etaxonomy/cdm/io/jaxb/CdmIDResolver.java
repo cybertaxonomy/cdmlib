@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 public class CdmIDResolver extends IDResolver {
@@ -168,7 +168,7 @@ public class CdmIDResolver extends IDResolver {
 					  return resolveObject(uuid, targetType, vocabularyService);
 				  } else if(DescriptionBase.class.isAssignableFrom(targetType)) {
 					  return resolveObject(uuid, targetType, descriptionService);
-				  } else if(FeatureTree.class.isAssignableFrom(targetType)) {
+				  } else if(TermTree.class.isAssignableFrom(targetType)) {
 					  return resolveObject(uuid, targetType, featureTreeService);
 				  } else if(Media.class.isAssignableFrom(targetType)) {
 					  return resolveObject(uuid, targetType, mediaService);

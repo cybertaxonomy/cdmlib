@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermTree;
 
 /**
  * @author a.babadshanjan
@@ -51,14 +51,10 @@ public class JaxbExport
             implements ICdmExport<JaxbExportConfigurator, JaxbExportState> {
 
     private static final long serialVersionUID = -525533131708894145L;
-
     private static final Logger logger = Logger.getLogger(JaxbExport.class);
 
     private DataSet dataSet;
 
-    /**
-     *
-     */
     public JaxbExport() {
         super();
     }
@@ -120,9 +116,7 @@ public class JaxbExport
         }
 
         commitTransaction(txStatus);
-
         return;
-
     }
 
     public static void writeToFile(File file, DataSet dataSet) throws UnsupportedEncodingException, FileNotFoundException {
@@ -164,19 +158,15 @@ public class JaxbExport
             logger.info("# User");
             List<User> users = getUserService().list(null, UserRows, 0, null, null);
 
-
             for (User user: users){
                 dataSet.addUser(HibernateProxyHelper.deproxy(user));
             }
-
         }
         if (jaxbExpConfig.isDoTermVocabularies() == true) {
             if (termVocabularyRows == 0) { termVocabularyRows = MAX_ROWS; }
             logger.info("# TermVocabulary");
             dataSet.setTermVocabularies((List)getVocabularyService().list(null,termVocabularyRows, 0, null, null));
         }
-
-
 
         //		if (jaxbExpConfig.isDoLanguageData() == true) {
         //			if (languageDataRows == 0) { languageDataRows = MAX_ROWS; }
@@ -199,8 +189,6 @@ public class JaxbExport
             dataSet.setAgents(getAgentService().list(null,agentRows, 0,null,null));
         }
 
-
-
         if (jaxbExpConfig.getDoReferences() != IExportConfigurator.DO_REFERENCES.NONE) {
             if (referenceBaseRows == 0) { referenceBaseRows = getReferenceService().count(Reference.class); }
             logger.info("# Reference: " + referenceBaseRows);
@@ -219,8 +207,6 @@ public class JaxbExport
             //logger.info("    # Taxon: " + getNameService().count(BotanicalName.class));
             dataSet.setTaxonomicNames(getNameService().list(null,taxonNameRows, 0,null,null));
         }
-
-
 
         if (jaxbExpConfig.isDoTaxa() == true) {
             if (taxonBaseRows == 0) { taxonBaseRows = getTaxonService().count(TaxonBase.class); }
@@ -265,8 +251,6 @@ public class JaxbExport
             dataSet.addTypeDesignations(getNameService().getAllTypeDesignations(MAX_ROWS, 0));
         }
 
-
-
         if (jaxbExpConfig.isDoMedia() == true) {
             if (mediaRows == 0) { mediaRows = MAX_ROWS; }
             logger.info("# Media");
@@ -278,20 +262,18 @@ public class JaxbExport
         if (jaxbExpConfig.isDoFeatureData() == true) {
             if (featureDataRows == 0) { featureDataRows = MAX_ROWS; }
             logger.info("# Feature Tree, Feature Node");
-            List<FeatureTree> featureTrees = new ArrayList<FeatureTree>();
+            List<TermTree> featureTrees = new ArrayList<>();
             featureTrees= getFeatureTreeService().list(null,featureDataRows, 0, null, null);
-            List<FeatureTree> taxTreesdeproxy = new ArrayList<FeatureTree>();
-            for (FeatureTree featureTree : featureTrees){
+            List<TermTree> taxTreesdeproxy = new ArrayList<>();
+            for (TermTree featureTree : featureTrees){
                 HibernateProxyHelper.deproxy(featureTree);
                 taxTreesdeproxy.add(featureTree);
             }
-
             dataSet.setFeatureTrees(getFeatureTreeService().list(null,null,null,null,null));
         }
         if (jaxbExpConfig.isDoClassificationData() == true) {
             if (classificationDataRows == 0) { classificationDataRows = MAX_ROWS; }
             logger.info("# Classification");
-
 
             List<Classification> taxTrees = new ArrayList<Classification>();
             taxTrees= getClassificationService().list(null,classificationDataRows, 0, null, null);
@@ -301,9 +283,9 @@ public class JaxbExport
                 HibernateProxyHelper.deproxy(taxTree);
                 taxTreesdeproxy.add(taxTree);
             }
-            List<TaxonNode> taxNodes = new ArrayList<TaxonNode>();
+            List<TaxonNode> taxNodes = new ArrayList<>();
             taxNodes= getClassificationService().getAllNodes();
-            List<TaxonNode> taxNodesdeproxy = new ArrayList<TaxonNode>();
+            List<TaxonNode> taxNodesdeproxy = new ArrayList<>();
             for (TaxonNode taxNode : taxNodes){
                 HibernateProxyHelper.deproxy(taxNode);
                 taxNodesdeproxy.add(taxNode);
@@ -316,7 +298,6 @@ public class JaxbExport
         dataSet.setLanguageStrings(null);
     }
 
-
     @Override
     protected boolean doCheck(JaxbExportState state) {
         boolean result = true;
@@ -324,12 +305,8 @@ public class JaxbExport
         return result;
     }
 
-
     @Override
     protected boolean isIgnore(JaxbExportState state) {
         return false;
     }
-
-
-
 }

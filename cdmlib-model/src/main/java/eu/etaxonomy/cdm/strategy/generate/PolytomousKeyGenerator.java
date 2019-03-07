@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.term.TermTreeNode;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermTree;
 
 /**
  * @author m.venin
@@ -37,7 +37,7 @@ public class PolytomousKeyGenerator {
 
 	private boolean merge=true; // if this boolean is set to true, branches of the tree will be merged if the corresponding states can be used together without decreasing their score
 
-	private FeatureTree dependenciesTree; // the tree containing the dependencies between states and features (InapplicableIf and OnlyApplicableIf)
+	private TermTree dependenciesTree; // the tree containing the dependencies between states and features (InapplicableIf and OnlyApplicableIf)
 	private Map<State,Set<Feature>> iIdependencies = new HashMap<>(); // map of a set of Features (value) inapplicables if a State (key) is present
 	private Map<State,Set<Feature>> oAIdependencies = new HashMap<>(); // map of a set of Features (value) only applicables if a State (key) is present
 	private Map<Feature,Set<Feature>> featureDependencies = new HashMap<>(); // map of all the sets of features (values) which have dependencies with states of other features (keys)
@@ -74,7 +74,7 @@ public class PolytomousKeyGenerator {
 	 *
 	 * @param tree
 	 */
-	public void setDependencies(FeatureTree tree){
+	public void setDependencies(TermTree tree){
 		this.dependenciesTree = tree;
 	}
 

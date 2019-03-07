@@ -40,8 +40,8 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
 import eu.etaxonomy.cdm.model.term.TermBase;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 
@@ -142,7 +142,7 @@ public class CacheUpdater implements Serializable {
 			return handleClassList(list, monitor);
 		}else if (clazz.isAssignableFrom(TermBase.class)){
 			@SuppressWarnings("rawtypes")
-            List list = Arrays.asList(new Class[]{DefinedTermBase.class, FeatureTree.class, TermVocabulary.class });
+            List list = Arrays.asList(new Class[]{DefinedTermBase.class, TermTree.class, TermVocabulary.class });
 			return handleClassList(list, monitor);
 		}else{
 		   return null;
@@ -161,9 +161,8 @@ public class CacheUpdater implements Serializable {
 		try {
 			//TermBase
 			if (DefinedTermBase.class.isAssignableFrom(clazz)){
-
 			    result.includeResult(termService.updateCaches((Class) clazz, null, null, subMonitor));
-			}else if (FeatureTree.class.isAssignableFrom(clazz)){
+			}else if (TermTree.class.isAssignableFrom(clazz)){
 			    result.includeResult(featureTreeService.updateCaches((Class) clazz, null, null, subMonitor));
 			}else if (TermVocabulary.class.isAssignableFrom(clazz)){
 			    result.includeResult(vocabularyService.updateCaches((Class) clazz, null, null, subMonitor));

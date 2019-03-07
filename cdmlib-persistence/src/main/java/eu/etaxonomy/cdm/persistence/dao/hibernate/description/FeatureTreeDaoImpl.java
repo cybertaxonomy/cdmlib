@@ -22,7 +22,7 @@ import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.term.TermTreeNode;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.model.term.VocabularyEnum;
@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
  * @version 1.0
  */
 @Repository
-public class FeatureTreeDaoImpl extends IdentifiableDaoBase<FeatureTree> implements IFeatureTreeDao{
+public class FeatureTreeDaoImpl extends IdentifiableDaoBase<TermTree> implements IFeatureTreeDao{
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(FeatureTreeDaoImpl.class);
 
@@ -45,14 +45,14 @@ public class FeatureTreeDaoImpl extends IdentifiableDaoBase<FeatureTree> impleme
     private ITermVocabularyDao termVocabularyDao;
 
     public FeatureTreeDaoImpl() {
-        super(FeatureTree.class);
+        super(TermTree.class);
         indexedClasses = new Class[1];
-        indexedClasses[0] = FeatureTree.class;
+        indexedClasses[0] = TermTree.class;
 //		indexedClasses[1] = PolytomousKey.class;
     }
 
     @Override
-    public List<FeatureTree> list() {
+    public List<TermTree> list() {
         Criteria crit = getSession().createCriteria(type);
         return crit.list();
     }
@@ -74,7 +74,7 @@ public class FeatureTreeDaoImpl extends IdentifiableDaoBase<FeatureTree> impleme
     }
 
     @Override
-    public FeatureTree load(UUID uuid, List<String> propertyPaths) {
+    public TermTree load(UUID uuid, List<String> propertyPaths) {
         if (uuid.equals(DefaultFeatureTreeUuid) || count() == 0){
             return createDefaultFeatureTree();
         }
@@ -82,7 +82,7 @@ public class FeatureTreeDaoImpl extends IdentifiableDaoBase<FeatureTree> impleme
     }
 
     @Override
-    public FeatureTree load(UUID uuid) {
+    public TermTree load(UUID uuid) {
         if (uuid.equals(DefaultFeatureTreeUuid) || count() == 0){
             return createDefaultFeatureTree();
         }
@@ -92,7 +92,7 @@ public class FeatureTreeDaoImpl extends IdentifiableDaoBase<FeatureTree> impleme
     /**
      *
      */
-    private FeatureTree createDefaultFeatureTree() {
+    private TermTree createDefaultFeatureTree() {
 
         TermVocabulary featureVocabulary = termVocabularyDao.findByUuid(VocabularyEnum.Feature.getUuid());
 
@@ -103,13 +103,13 @@ public class FeatureTreeDaoImpl extends IdentifiableDaoBase<FeatureTree> impleme
                 selectedFeatures.add(feature);
             }
         }
-        FeatureTree featureTree = FeatureTree.NewInstance(selectedFeatures);
+        TermTree featureTree = TermTree.NewInstance(selectedFeatures);
         featureTree.setUuid(DefaultFeatureTreeUuid);
         return featureTree;
     }
 
     @Override
-    public <S extends FeatureTree> List<UuidAndTitleCache<S>> getUuidAndTitleCacheByTermType(Class<S> clazz, TermType termType, Integer limit,
+    public <S extends TermTree> List<UuidAndTitleCache<S>> getUuidAndTitleCacheByTermType(Class<S> clazz, TermType termType, Integer limit,
             String pattern) {
         Session session = getSession();
         Query query = session.createQuery(
