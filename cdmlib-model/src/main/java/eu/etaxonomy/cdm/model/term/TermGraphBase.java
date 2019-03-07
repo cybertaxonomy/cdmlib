@@ -24,7 +24,6 @@ import org.hibernate.envers.Audited;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TermGraph", propOrder = {
-
 })
 @Entity
 @Audited
@@ -38,7 +37,6 @@ public abstract class TermGraphBase<TERM extends DefinedTermBase, REL extends Te
     private static final Logger logger = Logger.getLogger(TermGraphBase.class);
 
 
-
  // ******************** CONSTRUCTOR *************************************/
 
     @Deprecated
@@ -48,10 +46,10 @@ public abstract class TermGraphBase<TERM extends DefinedTermBase, REL extends Te
         super(termType);
     }
 
-
     @Override
     public Set<REL> getTermRelations() {
         return super.termRelations();
+
     }
     /**
      * For now protected to avoid type checking etc. Might become
@@ -62,7 +60,6 @@ public abstract class TermGraphBase<TERM extends DefinedTermBase, REL extends Te
     protected void setTermRelations(Set<REL> termRelations) {
         super.termRelations(termRelations);
     }
-
 
     public abstract Set<TERM> getDistinctTerms();
 }

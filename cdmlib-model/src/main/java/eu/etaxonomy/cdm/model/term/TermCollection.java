@@ -50,7 +50,6 @@ public abstract class TermCollection<TERM extends DefinedTermBase, REL extends T
 
     private static final long serialVersionUID = 6102175902060054329L;
 
-
     @XmlElementWrapper(name = "TermRelations")
     @XmlElement(name = "TermRelation")
     @XmlIDREF
@@ -118,7 +117,5 @@ public abstract class TermCollection<TERM extends DefinedTermBase, REL extends T
     protected void termRelations(Set<REL> termRelations) {
         this.termRelations = termRelations;
     }
-
-
 
 }
