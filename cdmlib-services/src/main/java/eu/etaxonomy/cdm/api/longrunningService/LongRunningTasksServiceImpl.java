@@ -150,6 +150,7 @@ public class LongRunningTasksServiceImpl implements ILongRunningTasksService{
             @Override
             public Serializable doRun(IRemotingProgressMonitor monitor) {
                 UpdateResult result;
+
                 configurator.setMonitor(monitor);
 
                 result = updater.doInvoke(configurator);
