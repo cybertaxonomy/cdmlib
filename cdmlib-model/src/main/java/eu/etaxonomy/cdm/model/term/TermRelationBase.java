@@ -49,7 +49,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 @Audited
 @Table(name="TermRelation", indexes = { @Index(name = "termTreeNodeTreeIndex", columnList = "treeIndex") })  //was feature NodeTreeIndex before
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public abstract class TermRelationBase<T extends DefinedTermBase>
+public abstract class TermRelationBase<TERM extends DefinedTermBase, REL extends TermRelationBase, GRAPH extends TermGraphBase>
         extends VersionableEntity
         implements IHasTermType {
 
@@ -57,18 +57,18 @@ public abstract class TermRelationBase<T extends DefinedTermBase>
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(TermRelationBase.class);
 
-    @XmlElement(name = "TermTree")
+    @XmlElement(name = "TermGraph")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity=FeatureTree.class)
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity=TermTree.class)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE}) //TODO this usage is incorrect, needed only for OneToMany, check why it is here, can it be removed??
      //TODO Val #3379
 //    @NotNull
-    private FeatureTree<T> termTree;
+    private GRAPH graph;
 
     /**
      * The {@link TermType type} of this term relation.
-     * Must be the same type as for the {@link FeatureTree term collection}
+     * Must be the same type as for the {@link TermTree term collection}
      * this node belongs to and as the term type of the term this node links to.
      */
     @XmlAttribute(name ="TermType")
@@ -84,7 +84,7 @@ public abstract class TermRelationBase<T extends DefinedTermBase>
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY, targetEntity=DefinedTermBase.class)
-    private T term;
+    private TERM term;
 
  // ******************** CONSTRUCTOR ***************************************/
 
@@ -107,24 +107,24 @@ public abstract class TermRelationBase<T extends DefinedTermBase>
     /**
      * Returns the {@link DefinedTermBase term} <i>this</i> term tree node is based on.
      */
-    public T getTerm() {
+    public TERM getTerm() {
         return CdmBase.deproxy(term);
     }
-    public void setTerm(T term) {
+    public void setTerm(TERM term) {
         checkTermType(term);
         this.term = term;
     }
 
 
-//*************************** TREE ************************************/
+//*************************** GRAPH ************************************/
 
-    public FeatureTree<T> getFeatureTree() {
-        return termTree;
+    public GRAPH getGraph() {
+        return graph;
     }
 
-    protected void setFeatureTree(FeatureTree<T> featureTree) {
-        checkTermType(featureTree);
-        this.termTree = featureTree;
+    protected void setGraph(GRAPH graph) {
+        checkTermType(graph);
+        this.graph = graph;
     }
 
 
@@ -142,8 +142,8 @@ public abstract class TermRelationBase<T extends DefinedTermBase>
     @SuppressWarnings("unchecked")
     @Override
     public Object clone() throws CloneNotSupportedException{
-        TermRelationBase<T> result;
-        result = (TermRelationBase<T>)super.clone();
+        TermRelationBase<TERM, REL, GRAPH> result;
+        result = (TermRelationBase<TERM, REL, GRAPH>)super.clone();
         return result;
     }
 }

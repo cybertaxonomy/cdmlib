@@ -25,7 +25,6 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -66,20 +65,22 @@ import eu.etaxonomy.cdm.model.common.Language;
 @Audited
 @Table(name="TermCollection")
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public class TermVocabulary<T extends DefinedTermBase> extends TermBase implements Iterable<T> {
-	private static final long serialVersionUID = 1925052321596648672L;
+public class TermVocabulary<T extends DefinedTermBase>
+        extends TermCollection<T>
+        implements Iterable<T> {
+
+    private static final long serialVersionUID = 1925052321596648672L;
 	private static final Logger logger = Logger.getLogger(TermVocabulary.class);
 
-	//The vocabulary source (e.g. ontology) defining the terms to be loaded when a database is created for the first time.
-	// Software can go and grap these terms incl labels and description.
+	//The vocabulary source (e.g. ontology) defining the terms to be loaded when a database
+	//is created for the first time.
+	// Software can go and grap these terms incl. labels and description.
 	// UUID needed? Further vocs can be setup through our own ontology.
 	@XmlElement(name = "TermSourceURI")
 	@Type(type="uriUserType")
 	@Field(analyze = Analyze.NO)
 	private URI termSourceUri;
 
-
-	//TODO Changed
 	@XmlElementWrapper(name = "Terms")
 	@XmlElement(name = "Term")
     @XmlIDREF
@@ -88,7 +89,7 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 	@Type(type="DefinedTermBase")
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	@IndexedEmbedded(depth = 2)
-	protected Set<T> terms = getNewTermSet();
+	protected Set<T> terms = newTermSet();
 
 // ********************************* FACTORY METHODS *****************************************/
 
@@ -123,6 +124,10 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 	}
 
 
+	protected Set<T> newTermSet(){
+	    return new HashSet<>();
+	}
+
 // ******************* METHODS *************************************************/
 
 	public T findTermByUuid(UUID uuid){
@@ -134,10 +139,6 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 		return null;
 	}
 
-	@Transient
-	Set<T> getNewTermSet() {
-		return new HashSet<T>();
-	}
 
 	public Set<T> getTerms() {
 		return terms;

@@ -72,11 +72,10 @@ import eu.etaxonomy.cdm.model.description.State;
 @Entity
 @Audited
 public class TermTreeNode <T extends DefinedTermBase>
-            extends TermRelationBase<T>
+            extends TermRelationBase<T, TermTreeNode<T>, TermTree>
             implements ITreeNode<TermTreeNode<T>> {
 
     private static final Logger logger = Logger.getLogger(TermTreeNode.class);
-
 
     @XmlElement(name = "Parent")
     @XmlIDREF

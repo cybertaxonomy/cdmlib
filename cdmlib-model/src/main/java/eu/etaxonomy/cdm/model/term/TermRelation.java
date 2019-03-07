@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 @Entity
 @Audited
 public abstract class TermRelation<T extends DefinedTermBase>
-        extends TermRelationBase<T> {
+        extends TermRelationBase<T, TermRelation<T>, TermGraph<T>> {
 
     private static final long serialVersionUID = -7835146268318871033L;
 
