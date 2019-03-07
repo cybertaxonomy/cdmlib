@@ -30,8 +30,9 @@ public class SchemaUpdater_55_551 extends SchemaUpdaterBase {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SchemaUpdater_55_551.class);
+
 	private static final String startSchemaVersion = "5.5.0.0.20190221";
-	private static final String endSchemaVersion = "5.5.1.0.20190301";
+	private static final String endSchemaVersion = "5.5.1.0.201903015";
 
 	// ********************** FACTORY METHOD *************************************
 
