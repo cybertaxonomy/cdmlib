@@ -61,7 +61,7 @@ public class OwlExportTest  extends CdmTransactionalIntegrationTest{
 
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/BlankDataSet.xml")
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public void testEmptyData(){
         File destinationFolder = null;
         StructureTreeOwlExportConfigurator config = StructureTreeOwlExportConfigurator.NewInstance();

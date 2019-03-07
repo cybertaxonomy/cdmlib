@@ -81,7 +81,7 @@ public class TropicosNameImportTest extends CdmTransactionalIntegrationTest{
 //***************************** TESTS *************************************//
 
     @Test
-    @DataSet( value="/eu/etaxonomy/cdm/database/BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
     //@Ignore
     public void testShort() {
         configShort.setCreateTaxa(true);
@@ -107,7 +107,7 @@ public class TropicosNameImportTest extends CdmTransactionalIntegrationTest{
     }
 
     @Test
-    @DataSet( value="/eu/etaxonomy/cdm/database/BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
     //@Ignore
     public void testShortCreateTaxa() {
         configShort.setCreateTaxa(true);

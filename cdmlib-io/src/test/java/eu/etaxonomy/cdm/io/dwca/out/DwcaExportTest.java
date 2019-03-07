@@ -71,7 +71,7 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
 
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/BlankDataSet.xml")
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public void testEmptyData(){
         File destinationFolder = null;
         DwcaTaxExportConfigurator config = DwcaTaxExportConfigurator.NewInstance(null, destinationFolder, null);
@@ -113,7 +113,7 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/BlankDataSet.xml")
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public void testSubTree(){
         createFullTestDataSet();
         File destinationFolder = null;
@@ -180,7 +180,7 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/BlankDataSet.xml")
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public void testFullData(){
         createFullTestDataSet();
         File destinationFolder = null;
@@ -257,7 +257,7 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/BlankDataSet.xml")
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public void testUnpublished(){
         createFullTestDataSet();
         File destinationFolder = null;
@@ -280,7 +280,7 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/BlankDataSet.xml")
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public void testNoHeader(){
         createFullTestDataSet();
         File destinationFolder = null;

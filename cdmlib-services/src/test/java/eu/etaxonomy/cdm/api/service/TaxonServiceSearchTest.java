@@ -1577,7 +1577,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
      */
     @Override
     //    @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="BlankDataSet.xml")
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="ClearDBDataSet.xml")
     public final void createTestDataSet() throws FileNotFoundException {
 
         Classification europeanAbiesClassification = Classification.NewInstance("European Abies");

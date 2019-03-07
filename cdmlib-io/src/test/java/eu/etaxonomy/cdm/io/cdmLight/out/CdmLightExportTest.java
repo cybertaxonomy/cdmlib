@@ -99,7 +99,7 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
 
 
         @Test
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/BlankDataSet.xml")
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
         public void testSubTree(){
 
 
@@ -156,7 +156,7 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
         }
 
         @Test
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/BlankDataSet.xml")
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
         public void testFullTreeWithUnpublished(){
 
             CdmLightExportConfigurator config = new CdmLightExportConfigurator(null);
@@ -238,7 +238,7 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
         }
 
         @Test
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/BlankDataSet.xml")
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
         public void testFullData(){
 
             CdmLightExportConfigurator config = new CdmLightExportConfigurator(null);

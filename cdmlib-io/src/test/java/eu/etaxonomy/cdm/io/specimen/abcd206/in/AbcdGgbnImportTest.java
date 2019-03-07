@@ -94,7 +94,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	 * @throws ParseException
 	 */
 	@Test
-	@DataSet( value="/eu/etaxonomy/cdm/database/BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+	@DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
 	public void testImportTwoDnaUnitsWithTwoTaxa() throws ParseException {
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_2taxa.xml";
         URL url = this.getClass().getResource(inputFile);
@@ -143,7 +143,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	 * SEQUENCE_REFERENCE which makes no sense.
 	 */
     @Test
-    @DataSet( value="/eu/etaxonomy/cdm/database/BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
     public void testImportTwoSequencesWithSameReference() {
         String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_DNA_CAM_90-91.xml";
         URL url = this.getClass().getResource(inputFile);
@@ -167,7 +167,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	 * Tests import import of 59 DNA unit
 	 */
 	@Test
-	@DataSet( value="/eu/etaxonomy/cdm/database/BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+	@DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
 	@Ignore
 	public void testImport59Units() {
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_59taxa.xml";
@@ -197,7 +197,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	 * @throws ParseException
 	 */
 	@Test
-    @DataSet( value="/eu/etaxonomy/cdm/database/BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
     public void testImportGgbn() throws ParseException {
         String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6_without_association.xml";
         URL url = this.getClass().getResource(inputFile);
@@ -342,7 +342,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	 * @throws ParseException
 	 */
 	@Test
-	@DataSet( value="/eu/etaxonomy/cdm/database/BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+	@DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
 	public void testImportAssociatedSpecimenSameIndividual() throws ParseException {
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6_parent_child_association.xml";
 	    URL url = this.getClass().getResource(inputFile);
@@ -397,7 +397,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	 * @throws ParseException
 	 */
 	@Test
-	@DataSet( value="/eu/etaxonomy/cdm/database/BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+	@DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
 @Ignore
 	public void testImportAssociatedSpecimenSamePopulation() throws ParseException {
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6_sibling_association.xml";
@@ -458,7 +458,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
      */
 	@Test
     @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/BlankDataSet.xml"),
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml"),
         @DataSet( value="AbcdGgbnImportTest.testAttachDnaSampleToDerivedUnit.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
     })
 
@@ -513,7 +513,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	 */
 	@Test
 	@DataSets({
-	    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/BlankDataSet.xml"),
+	    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml"),
 	    @DataSet( value="AbcdGgbnImportTest.testAttachDnaSampleToDerivedUnit.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
 	})
 
@@ -604,7 +604,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	 */
 	@Test
     @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/BlankDataSet.xml"),
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml"),
         @DataSet( value="AbcdGgbnImportTest.testNoAttachDnaSampleToDerivedUnit.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
     })
 	public void testNoAttachDnaSampleToDerivedUnit(){

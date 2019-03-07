@@ -80,7 +80,7 @@ public class RisReferenceImportTest extends CdmTransactionalIntegrationTest {
 //***************************** TESTS *************************************//
 
 	@Test
-	@DataSet( value="/eu/etaxonomy/cdm/database/BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+	@DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
 	//@Ignore
     public void testShort() {
 

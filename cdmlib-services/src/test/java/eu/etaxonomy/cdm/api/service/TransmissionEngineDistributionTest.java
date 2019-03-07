@@ -155,7 +155,7 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
         @DataSet(value="TransmissionEngineDistributionTest.xml"),
     })
-//  @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class) //, value="./BlankDataSet.xml")
+//  @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class) //, value="./ClearDBDataSet.xml")
     public void test_ignore() throws JvmLimitsException {
 
         addDistributions(
