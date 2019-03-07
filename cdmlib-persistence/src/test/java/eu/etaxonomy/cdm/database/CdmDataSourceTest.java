@@ -13,14 +13,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import org.apache.log4j.Logger;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.beans.factory.config.BeanDefinition;
-
-import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
 /**
  * @author a.mueller
@@ -43,12 +39,6 @@ public class CdmDataSourceTest {
 	public static void setUpBeforeClass() throws Exception {
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
 
 	/**
 	 * @throws java.lang.Exception
@@ -61,21 +51,11 @@ public class CdmDataSourceTest {
 		pwd = "myPassword";
 		port = 80;
 		datasource = CdmDataSource.NewMySqlInstance(server, database, port, username, pwd);
-
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
 
 //*************** TESTS ***********************************************
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#NewMySqlInstance(java.lang.String, java.lang.String, java.lang.String, java.lang.String, NomenclaturalCode)}.
-	 */
 	@Test
 	public void testNewMySqlInstanceStringStringStringString() {
 		ICdmDataSource ds = CdmDataSource.NewMySqlInstance(server, database, username, pwd);
@@ -87,9 +67,6 @@ public class CdmDataSourceTest {
 		assertEquals(DatabaseTypeEnum.MySQL, ds.getDatabaseType());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#NewMySqlInstance(java.lang.String, java.lang.String, int, java.lang.String)}.
-	 */
 	@Test
 	public void testNewMySqlInstanceStringStringIntStringString() {
 		ICdmDataSource ds = CdmDataSource.NewMySqlInstance(server, database, port, username, pwd);
@@ -102,9 +79,6 @@ public class CdmDataSourceTest {
 		assertEquals(DatabaseTypeEnum.MySQL, ds.getDatabaseType());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#NewSqlServer2005Instance(java.lang.String, java.lang.String, java.lang.String, java.lang.String)}.
-	 */
 	@Test
 	public void testNewSqlServer2005InstanceStringStringStringString() {
 		ICdmDataSource ds = CdmDataSource.NewSqlServer2005Instance(server, database, -1, username, pwd);
@@ -116,9 +90,6 @@ public class CdmDataSourceTest {
 		assertEquals(DatabaseTypeEnum.SqlServer2005, ds.getDatabaseType());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#NewSqlServer2005Instance(java.lang.String, java.lang.String, int, java.lang.String, java.lang.String)}.
-	 */
 	@Test
 	public void testNewSqlServer2005InstanceStringStringIntStringString() {
 		ICdmDataSource ds = CdmDataSource.NewSqlServer2005Instance(server, database, port, username, pwd);
@@ -131,9 +102,6 @@ public class CdmDataSourceTest {
 		assertEquals(DatabaseTypeEnum.SqlServer2005, ds.getDatabaseType());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#NewH2EmbeddedInstance(java.lang.String, java.lang.String, java.lang.String)}.
-	 */
 	@Test
 	public void testNewH2EmbeddedInstanceStringStringString() {
 		ICdmDataSource ds = CdmDataSource.NewH2EmbeddedInstance(database, username, pwd, null);
@@ -145,9 +113,6 @@ public class CdmDataSourceTest {
 		assertEquals(DatabaseTypeEnum.H2, ds.getDatabaseType());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#NewH2InMemoryInstance()}.
-	 */
 	@Test
 	public void testNewH2InMemoryInstance() {
 		ICdmDataSource ds = CdmDataSource.NewH2InMemoryInstance();
@@ -160,9 +125,6 @@ public class CdmDataSourceTest {
 		assertEquals(DatabaseTypeEnum.H2, ds.getDatabaseType());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#CdmDataSource(eu.etaxonomy.cdm.database.DatabaseTypeEnum, java.lang.String, java.lang.String, int, java.lang.String, java.lang.String, java.lang.String, eu.etaxonomy.cdm.database.H2Mode)}.
-	 */
 	@Test
 	public void testCdmDataSource() {
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
@@ -172,40 +134,18 @@ public class CdmDataSourceTest {
 		assertNotNull("new datasource() should not be null", ds);
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#getName()}.
-	 */
 	@Test
 	public void testGetName() {
 		assertNotNull("datasource should not be null", datasource);
 		assertEquals(database, datasource.getName());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#getDatasourceBean()}.
-	 */
 	@Test
 	public void testGetDatasourceBean() {
 		BeanDefinition bean = datasource.getDatasourceBean();
 		assertNotNull(bean);
 		assertEquals("the bean definition should have 4 properties: url, driverClassname, username, password", 4, bean.getPropertyValues().size());
 		//TODO to be continued
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#getHibernatePropertiesBean(eu.etaxonomy.cdm.database.DbSchemaValidation)}.
-	 */
-	@Test
-	public void testGetHibernatePropertiesBeanDbSchemaValidation() {
-		logger.warn("Not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#getHibernatePropertiesBean(eu.etaxonomy.cdm.database.DbSchemaValidation, java.lang.Boolean, java.lang.Boolean, java.lang.Class)}.
-	 */
-	@Test
-	public void testGetHibernatePropertiesBeanDbSchemaValidationBooleanBooleanClassOfQextendsCacheProvider() {
-		logger.warn("Not yet implemented");
 	}
 
 	/**
@@ -234,26 +174,16 @@ public class CdmDataSourceTest {
 		assertEquals(null, ((CdmDataSource)datasource).getDestroyMethodName());
 	}
 
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#getDatabase()}.
-	 */
 	@Test
 	public void testGetDatabase() {
 		assertEquals(database, datasource.getDatabase());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#getDatabaseType()}.
-	 */
 	@Test
 	public void testGetDatabaseType() {
 		assertEquals(DatabaseTypeEnum.MySQL, datasource.getDatabaseType());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#getFilePath()}.
-	 */
 	@Test
 	public void testGetFilePath() {
 		assertEquals(null, datasource.getFilePath());
@@ -263,25 +193,16 @@ public class CdmDataSourceTest {
 		assertEquals(filePath, ds.getFilePath());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#getPort()}.
-	 */
 	@Test
 	public void testGetPort() {
 		assertEquals(port, datasource.getPort());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#getServer()}.
-	 */
 	@Test
 	public void testGetServer() {
 		assertEquals(server, datasource.getServer());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#getMode()}.
-	 */
 	@Test
 	public void testGetMode() {
 		assertEquals(null, datasource.getFilePath());
@@ -292,25 +213,16 @@ public class CdmDataSourceTest {
 		assertEquals(mode, ds.getMode());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#getPassword()}.
-	 */
 	@Test
 	public void testGetPassword() {
 		assertEquals(pwd, datasource.getPassword());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#getUserName()}.
-	 */
 	@Test
 	public void testGetUsername() {
 		assertEquals(username, datasource.getUsername());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSourceBase#testConnection()}.
-	 */
 	@Test
 	public void testTestConnection() {
 		logger.warn("Not yet implemented");
