@@ -21,10 +21,7 @@ import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -63,8 +60,6 @@ import eu.etaxonomy.cdm.model.common.Language;
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
 //@Indexed(index = "eu.etaxonomy.cdm.model.term.TermVocabulary")
 @Audited
-@Table(name="TermCollection")
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public class TermVocabulary<T extends DefinedTermBase>
         extends TermCollection<T>
         implements Iterable<T> {
