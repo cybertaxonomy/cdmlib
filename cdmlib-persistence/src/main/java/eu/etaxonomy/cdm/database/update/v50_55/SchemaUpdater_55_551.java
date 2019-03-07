@@ -24,10 +24,8 @@ import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TableNameChanger;
 
 /**
-/**
  * @author a.mueller
- * @date 09.06.2017
- *
+ * @date 01.03.2019
  */
 public class SchemaUpdater_55_551 extends SchemaUpdaterBase {
 
@@ -85,15 +83,15 @@ public class SchemaUpdater_55_551 extends SchemaUpdaterBase {
        step = ColumnAdder.NewDTYPEInstance(stepName, tableName, "TermTreeNode", INCLUDE_AUDIT) ;
        stepList.add(step);
 
-       //#6794 change featuretree_id to termtree_id
-       stepName = "change featuretree_id to termtree_id";
+       //#6794 change featuretree_id to graph_id
+       stepName = "change featuretree_id to graph_id";
        tableName = "TermRelation";
        String oldColumnName = "featureTree_id";
-       newColumnName = "termTree_id";
+       newColumnName = "graph_id";
        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
        stepList.add(step);
 
-       //#6794 change featuretree_id to termtree_id
+       //#6794 change feature_id to term_id
        stepName = "change feature_id to term_id";
        tableName = "TermRelation";
        oldColumnName = "feature_id";
@@ -205,9 +203,13 @@ public class SchemaUpdater_55_551 extends SchemaUpdaterBase {
        step = TableNameChanger.NewInstance(stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
        stepList.add(step);
 
-
-
-        return stepList;
+       //#6794 add root_id column to TermCollection
+       stepName = "add root_id column to TermCollection";
+       tableName = "TermCollection";
+       newColumnName = "root_id";
+       step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, "TermRelation");
+       stepList.add(step);
+       return stepList;
 
 	}
 
@@ -240,6 +242,7 @@ public class SchemaUpdater_55_551 extends SchemaUpdaterBase {
         tableName = "DefinedTermBase";
         step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, tableName, -99);
         stepList.add(step);
+
 
     }
 
