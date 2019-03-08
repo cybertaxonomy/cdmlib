@@ -57,29 +57,23 @@ public class WrappedCdmDataSource implements ICdmDataSource {
 		this.datasource = datasource;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Connection getConnection() throws SQLException {
-		Connection existingConnection = getExistingConnection();
-		if (existingConnection != null){
-			return existingConnection;
-		}else{
-			return datasource.getConnection();
+		if (this.connection == null){
+		    this.connection = datasource.getConnection();
 		}
-	}
-
-	public Connection getExistingConnection(){
 		return this.connection;
 	}
 
-
 	@Override
 	public Connection getConnection(String username, String password) throws SQLException {
-		Connection existingConnection = getExistingConnection();
-		if (existingConnection != null){
-			return existingConnection;
-		}else{
-			return datasource.getConnection(username, password);
-		}
+		if (this.connection == null){
+            this.connection = datasource.getConnection(username, password);
+        }
+		return connection;
 	}
 
 	@Override
