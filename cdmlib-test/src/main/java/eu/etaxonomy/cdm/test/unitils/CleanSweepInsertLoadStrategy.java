@@ -24,10 +24,9 @@ import org.unitils.thirdparty.org.apache.commons.io.IOUtils;
 import org.unitils.util.FileUtils;
 
 /**
- * will clear all data in the DataSet except all term related tables
+ * Will clear all data in the DataSet except all term related tables
    before doing a CLEAN_INSERT:
  * @author Andreas Kohlbecker
- *
  */
 public class CleanSweepInsertLoadStrategy extends CleanInsertLoadStrategy {
 
@@ -51,12 +50,12 @@ public class CleanSweepInsertLoadStrategy extends CleanInsertLoadStrategy {
         // before doing a CLEAN_INSERT:
         MultiSchemaDataSet multiSchemaDataset = null;
         URL fileUrl = null;
+        MultiSchemaXmlDataSetFactory dataSetFactory = new MultiSchemaXmlDataSetFactory();
+        fileUrl = getClass().getClassLoader().getResource(clearDataResource);
+        if (fileUrl == null) {
+            throw new RuntimeException("the Resource " + clearDataResource + " could not be found");
+        }
         try {
-            MultiSchemaXmlDataSetFactory dataSetFactory = new MultiSchemaXmlDataSetFactory();
-            fileUrl = getClass().getClassLoader().getResource(clearDataResource);
-            if (fileUrl == null) {
-                throw new IOException("the Resource " + clearDataResource + " could not be found");
-            }
             File file;
             logger.debug("fileUrl:" + fileUrl.toString() + "; protocol: " +  fileUrl.getProtocol());
             if(fileUrl.toString().startsWith("jar:file:")){
@@ -72,7 +71,7 @@ public class CleanSweepInsertLoadStrategy extends CleanInsertLoadStrategy {
         }
 
         if(multiSchemaDataset != null){
-               for (String name : multiSchemaDataset.getSchemaNames()) {
+            for (String name : multiSchemaDataset.getSchemaNames()) {
                 IDataSet clearDataSet = multiSchemaDataset.getDataSetForSchema(name);
                 logger.debug("doing CLEAN_INSERT with dataset '" + name + "'");
                 DatabaseOperation.CLEAN_INSERT.execute(dbUnitDatabaseConnection, clearDataSet);

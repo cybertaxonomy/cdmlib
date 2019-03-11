@@ -81,7 +81,7 @@ public class FeatureNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
 		featureNodeService.saveOrUpdate(newNode);
 
-		commitAndStartNewTransaction(new String[]{"FeatureNode"});
+		commitAndStartNewTransaction(/*new String[]{"FeatureNode"}*/);
 		newNode = featureNodeService.load(newNode.getUuid());
 		Assert.assertEquals("", sep + pref+featureTree.getId()+sep + featureTree.getRoot().getId()+ sep  + newNode.getId() + sep, newNode.treeIndex());
 	}
@@ -145,13 +145,13 @@ public class FeatureNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 	@DataSet(value="FeatureNodeServiceImplTest-indexing.xml")
 	public final void testIndexDeleteNode() {
 		node2 = featureNodeService.load(node2Uuid);
-		TermTreeNode root = node2.getParent();
+		TermTreeNode<Feature> root = node2.getParent();
 		FeatureNodeDeletionConfigurator config = new FeatureNodeDeletionConfigurator();
 		config.setDeleteElement(false);
         config.setChildHandling(ChildHandling.MOVE_TO_PARENT);
         DeleteResult result = featureNodeService.deleteFeatureNode(node2Uuid, config);
         commitAndStartNewTransaction(new String[]{"TaxonNode"});
-        TermTree tree1 = featureTreeService.load(featureTreeUuid);
+        TermTree<Feature> tree1 = featureTreeService.load(featureTreeUuid);
         assertNotNull(tree1);
         node2 = featureNodeService.load(node2Uuid);
         assertNull(node2);

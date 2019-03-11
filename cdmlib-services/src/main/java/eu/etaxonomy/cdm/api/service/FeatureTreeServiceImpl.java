@@ -25,11 +25,11 @@ import eu.etaxonomy.cdm.api.service.config.FeatureNodeDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
-import eu.etaxonomy.cdm.model.term.TermTreeNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
+import eu.etaxonomy.cdm.model.term.TermTreeNode;
 import eu.etaxonomy.cdm.model.term.TermType;
-import eu.etaxonomy.cdm.persistence.dao.description.ITermTreeNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
+import eu.etaxonomy.cdm.persistence.dao.description.ITermTreeNodeDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
@@ -88,7 +88,7 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<TermTree, IF
             nodePaths.add("children");
         }
 
-        List<String> rootPaths = new ArrayList<String>();
+        List<String> rootPaths = new ArrayList<>();
         rootPaths.add("root");
         for(String path : nodePaths) {
             rootPaths.add("root." + path);
@@ -102,7 +102,7 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<TermTree, IF
         if(featureTree == null){
             throw new EntityNotFoundException("No FeatureTree entity found for " + uuid);
         }
-        dao.deepLoadNodes(featureTree.getRoot().getChildNodes() ,nodePaths);
+        dao.deepLoadNodes(featureTree.getRoot().getChildNodes(), nodePaths);
         return featureTree;
     }
 

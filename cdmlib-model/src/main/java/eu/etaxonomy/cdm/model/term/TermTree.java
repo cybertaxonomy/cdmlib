@@ -152,7 +152,7 @@ public class TermTree <T extends DefinedTermBase>
 	protected TermTree(TermType termType) {
         super(termType);
 		root = new TermTreeNode<>(termType);
-		root.setGraph((TermTree)this);
+		root.setGraph(this);
 	}
 
 // ****************** GETTER / SETTER **********************************/
