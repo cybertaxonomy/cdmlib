@@ -348,9 +348,9 @@ public class Team extends TeamOrPersonBase<Team> {
             String oldNomTitleCache = this.nomenclaturalTitle;
             this.protectedNomenclaturalTitleCache = false;
 
-            String newAbbrevTitleCache = cacheStrategy.getTitleCache(this);
+            String newNomTitleCache = cacheStrategy.getNomenclaturalTitle(this);
 
-            if ( oldNomTitleCache == null   || ! oldNomTitleCache.equals(newAbbrevTitleCache) ){
+            if ( oldNomTitleCache == null   || ! oldNomTitleCache.equals(newNomTitleCache) ){
                  this.setNomenclaturalTitle(null, false);
                  String newCache = this.getNomenclaturalTitle();
 
