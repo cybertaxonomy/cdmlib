@@ -12,6 +12,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
+import org.springframework.test.context.ActiveProfiles;
 
 /**
  * @author a.kohlbecker
@@ -20,6 +21,7 @@ import org.springframework.context.annotation.Profile;
  */
 //@EnableWebMvc // do not add this since we are overriding WebMvcConfigurationSupport directly
 @Profile("!swagger")
+@ActiveProfiles("remoting")
 @Configuration
 @Import(value={PreloadedBeans.class}) // can not be replaced by @DependsOn("...") ?
 //@DependsOn("objectMapperConfigurer")
