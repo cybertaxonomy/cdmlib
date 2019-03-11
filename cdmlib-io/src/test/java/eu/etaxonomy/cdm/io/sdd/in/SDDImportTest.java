@@ -28,12 +28,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 /**
  * @author b.clark
  * @since 20.01.2009
- * @version 1.0
  */
-
-//@Ignore // we ignore this test at the moment because it does not run with maven
-//org.hibernate.PropertyAccessException: Null value was assigned to a property of primitive type setter of eu.etaxonomy.cdm.model.common.Language.protectedTitleCache
-//...at eu.etaxonomy.cdm.persistence.dao.hibernate.common.DefinedTermDaoImpl.getLanguageByIso(DefinedTermDaoImpl.java:286)
 public class SDDImportTest extends CdmTransactionalIntegrationTest {
 
     @SpringBeanByType
@@ -62,7 +57,7 @@ public class SDDImportTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(/*loadStrategy=CleanSweepInsertLoadStrategy.class, */value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+    @DataSet(/*loadStrategy=CleanSweepInsertLoadStrategy.class,*/ value="/eu/etaxonomy/cdm/database/BlankDataSet.xml")
 	public void testDoInvoke() {
         sddImport.doInvoke(new SDDImportState(configurator));
         this.setComplete();
