@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.model.term;
 
 import java.net.URI;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
@@ -61,8 +60,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 //@Indexed(index = "eu.etaxonomy.cdm.model.term.TermVocabulary")
 @Audited
 public class TermVocabulary<T extends DefinedTermBase>
-        extends TermCollection<T>
-        implements Iterable<T> {
+        extends TermCollection<T,TermTreeNode> {
 
     private static final long serialVersionUID = 1925052321596648672L;
 	private static final Logger logger = Logger.getLogger(TermVocabulary.class);
@@ -171,15 +169,9 @@ public class TermVocabulary<T extends DefinedTermBase>
         return null;
     }
 
-	@Override
-    public Iterator<T> iterator() {
-		return terms.iterator();  // OLD: new TermIterator<T>(this.terms);
-	}
-
 	public int size(){
 		return terms.size();
 	}
-
 
 	/**
 	 * Returns all terms of this vocabulary sorted by their representation defined by the given language.
@@ -188,10 +180,10 @@ public class TermVocabulary<T extends DefinedTermBase>
 	 * @return
 	 */
 	public SortedSet<T> getTermsOrderedByLabels(Language language){
-		TermLanguageComparator<T> comp = new TermLanguageComparator<T>();
+		TermLanguageComparator<T> comp = new TermLanguageComparator<>();
 		comp.setCompareLanguage(language);
 
-		SortedSet<T> result = new TreeSet<T>(comp);
+		SortedSet<T> result = new TreeSet<>(comp);
 		result.addAll(getTerms());
 		return result;
 	}

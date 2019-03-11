@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TermRelationBase", propOrder = {
-        "termTree",
+        "graph",
         "termType",
         "term"
 })
