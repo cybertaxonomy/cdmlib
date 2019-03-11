@@ -19,6 +19,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.dbunit.datasetloadstrategy.impl.RefreshLoadStrategy;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.config.FeatureNodeDeletionConfigurator;
@@ -59,16 +60,11 @@ public class FeatureNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 	private static final UUID node5Uuid = UUID.fromString("c4d5170a-7967-4dac-ab76-ae2019eefde5");
 	private static final UUID node6Uuid = UUID.fromString("b419ba5e-9c8b-449c-ad86-7abfca9a7340");
 
-//	private Synonym s1;
 	private TermTreeNode<Feature> node3;
 	private TermTreeNode<Feature> node2;
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
-	public void setUp() throws Exception {
-	}
+	public void setUp() throws Exception {}
 
 	@Test
 	public final void testIndexCreatRoot() {
@@ -88,9 +84,10 @@ public class FeatureNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
 
 	@Test
-	@DataSet(value="FeatureNodeServiceImplTest-indexing.xml")
+	@DataSet(loadStrategy=RefreshLoadStrategy.class, value="FeatureNodeServiceImplTest-indexing.xml")
 	public final void testIndexCreateNode() {
-		Feature feature = (Feature)termService.find(914);
+
+	    Feature feature = (Feature)termService.find(914);
 
 		node2 = featureNodeService.load(node2Uuid);
 		String oldTreeIndex = node2.treeIndex();
@@ -105,9 +102,11 @@ public class FeatureNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
 
 	@Test
-	@DataSet(value="FeatureNodeServiceImplTest-indexing.xml")
+    @DataSet(loadStrategy=RefreshLoadStrategy.class ,value="FeatureNodeServiceImplTest-indexing.xml")
+	//this may fail in single test if it is the first test as long as #8174 is not fixed
 	public final void testIndexMoveNode() {
 		//in feature tree
+        @SuppressWarnings("unused")
         TermTree<Feature> featureTree = featureTreeService.load(featureTreeUuid);
 		node2 = featureNodeService.load(node2Uuid);
 		node3 = featureNodeService.load(node3Uuid);
@@ -124,9 +123,9 @@ public class FeatureNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		featureNodeService.saveOrUpdate(node2);
 		commitAndStartNewTransaction(new String[]{"TaxonNode"});
 		node2 = featureNodeService.load(node2Uuid);
-		Assert.assertEquals("Node2 treeindex is not correct", "#t2#7#2#", node2.treeIndex());
+		Assert.assertEquals("Node2 treeindex is not correct", "#t5002#7#2#", node2.treeIndex());
 		node6 = featureNodeService.load(node6Uuid);
-		Assert.assertEquals("Node6 treeindex is not correct", "#t2#7#2#4#6#", node6.treeIndex());
+		Assert.assertEquals("Node6 treeindex is not correct", "#t5002#7#2#4#6#", node6.treeIndex());
 
 		//into new classification
 		node3 = featureNodeService.load(node3Uuid);
@@ -135,14 +134,14 @@ public class FeatureNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		featureNodeService.saveOrUpdate(node5);
 		commitAndStartNewTransaction(new String[]{"TaxonNode"});
 		node3 = featureNodeService.load(node3Uuid);
-		Assert.assertEquals("Node3 treeindex is not correct", "#t2#7#2#5#3#", node3.treeIndex());
+		Assert.assertEquals("Node3 treeindex is not correct", "#t5002#7#2#5#3#", node3.treeIndex());
 
 	}
 
 	@Test  //here we may have a test for testing delete of a node and attaching the children
 	//to its parents, however this depends on the way delete is implemented and therefore needs
 	//to wait until this is finally done
-	@DataSet(value="FeatureNodeServiceImplTest-indexing.xml")
+	@DataSet(loadStrategy=RefreshLoadStrategy.class, value="FeatureNodeServiceImplTest-indexing.xml")
 	public final void testIndexDeleteNode() {
 		node2 = featureNodeService.load(node2Uuid);
 		TermTreeNode<Feature> root = node2.getParent();
