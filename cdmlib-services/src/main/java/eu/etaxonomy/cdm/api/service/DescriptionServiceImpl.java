@@ -64,6 +64,8 @@ import eu.etaxonomy.cdm.persistence.dao.description.IFeatureDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IStatisticalMeasurementValueDao;
+import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
+import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
@@ -97,6 +99,8 @@ public class DescriptionServiceImpl
     protected IDefinedTermDao definedTermDao;
     protected IStatisticalMeasurementValueDao statisticalMeasurementValueDao;
     protected ITaxonDao taxonDao;
+    protected ITaxonNameDao nameDao;
+    protected IOccurrenceDao occurrenceDao;
     protected ITaxonNodeDao taxonNodeDao;
     protected IDescriptiveDataSetDao dataSetDao;
 
@@ -700,7 +704,7 @@ public class DescriptionServiceImpl
 
 
     @Override
-    @Transactional(readOnly = false)
+   // @Transactional(readOnly = false)
     public UpdateResult moveDescriptionElementsToDescription(
             Collection<DescriptionElementBase> descriptionElements,
             DescriptionBase targetDescription,
@@ -711,6 +715,8 @@ public class DescriptionServiceImpl
             result.setAbort();
             return result;
         }
+
+
 
         if (! isCopy && descriptionElements == descriptionElements.iterator().next().getInDescription().getElements()){
             //if the descriptionElements collection is the elements set of a description, put it in a separate set before to avoid concurrent modification exceptions
@@ -770,6 +776,44 @@ public class DescriptionServiceImpl
 
         return moveDescriptionElementsToDescription(descriptionElements, targetDescription, isCopy);
     }
+
+    @Override
+    @Transactional(readOnly = false)
+    public UpdateResult moveDescriptionElementsToDescription(
+            Set<UUID> descriptionElementUUIDs,
+            DescriptionBase targetDescription,
+            boolean isCopy) {
+        Set<DescriptionElementBase> descriptionElements = new HashSet<DescriptionElementBase>();
+        for(UUID deUuid : descriptionElementUUIDs) {
+            DescriptionElementBase element = descriptionElementDao.load(deUuid);
+            if (element != null){
+                descriptionElements.add(element);
+            }
+        }
+        DescriptionBase newTargetDescription;
+        if (targetDescription.isPersited()){
+            newTargetDescription = dao.load(targetDescription.getUuid());
+        }else{
+            if (targetDescription instanceof TaxonDescription){
+                Taxon taxon = (Taxon)taxonDao.load(((TaxonDescription)targetDescription).getTaxon().getUuid());
+
+                newTargetDescription = TaxonDescription.NewInstance(taxon, targetDescription.isImageGallery());
+
+            }else if (targetDescription instanceof TaxonNameDescription){
+                TaxonName name = nameDao.load(((TaxonNameDescription)targetDescription).getTaxonName().getUuid());
+                newTargetDescription = TaxonNameDescription.NewInstance(name);
+            }else {
+                SpecimenOrObservationBase specimen = occurrenceDao.load(((SpecimenDescription)targetDescription).getDescribedSpecimenOrObservation().getUuid());
+                newTargetDescription = SpecimenDescription.NewInstance(specimen);
+            }
+
+            newTargetDescription.addSources(targetDescription.getSources());
+            newTargetDescription.setTitleCache(targetDescription.getTitleCache(), targetDescription.isProtectedTitleCache());
+
+        }
+        return moveDescriptionElementsToDescription(descriptionElements, newTargetDescription, isCopy);
+    }
+
 
     @Override
     @Transactional(readOnly = false)

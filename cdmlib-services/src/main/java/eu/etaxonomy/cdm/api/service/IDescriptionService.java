@@ -618,6 +618,15 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
     public List<MergeResult<DescriptionBase>> mergeDescriptionElements(Collection<TaxonDistributionDTO> descriptionElements,
             boolean returnTransientEntity);
 
+    /**
+     * @param descriptionElementUUIDs
+     * @param targetDescription
+     * @param isCopy
+     * @return
+     */
+    UpdateResult moveDescriptionElementsToDescription(Set<UUID> descriptionElementUUIDs,
+            DescriptionBase targetDescription, boolean isCopy);
+
 
 
 }
