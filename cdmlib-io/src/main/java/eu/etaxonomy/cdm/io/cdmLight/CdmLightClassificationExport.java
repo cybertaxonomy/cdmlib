@@ -353,9 +353,8 @@ public class CdmLightClassificationExport
             for (TaxonNameDescription description: descriptions){
                 if (description.getElements() != null){
                     for (DescriptionElementBase element: description.getElements()){
-                        if (!element.getFeature().equals(Feature.PROTOLOGUE())){
-                            simpleFacts.add(element);
-                        }
+                        simpleFacts.add(element);
+
                     }
                 }
              }
