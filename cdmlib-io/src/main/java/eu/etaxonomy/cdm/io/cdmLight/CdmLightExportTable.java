@@ -32,7 +32,8 @@ public enum CdmLightExportTable {
     COMMON_NAME_FACT("CommonNameFact", commonNameFactsColumns()),
     FACT_SOURCES("FactSources", factSourcesColumns()),
     IDENTIFIER("Identifier", identifierColumns()),
-    MEDIA("Media", mediaColumns())
+    MEDIA("Media", mediaColumns()),
+    NAME_FACT("NameFact", nameFactColumns())
     ;
 
     //Taxon/Synonym
@@ -214,17 +215,18 @@ public enum CdmLightExportTable {
 
 
 
-    /**
-     * @return
-     */
-    private static String[] identifierColumns() {
+
+    final static String[] nameFactColumns() {
+        return new String[]{FACT_ID, NAME_FK, FACT_TEXT, LANGUAGE, MEDIA_URI, FACT_CATEGORY};
+    }
+
+
+    final static String[] identifierColumns() {
 
         return new String[]{ NAME_FK, IDENTIFIER_IDS, IDENTIFIER_TYPE};
     }
-    /**
-     * @return
-     */
-    private static String[] mediaColumns() {
+
+    final static String[] mediaColumns() {
         return new String[]{ FACT_ID, TAXON_FK, NAME_FK, MEDIA_URI};
     }
 
@@ -246,7 +248,7 @@ public enum CdmLightExportTable {
 
     }
     final static String[] simpleFactsColumns() {
-        return new String[]{FACT_ID, TAXON_FK, NAME_FK, FACT_TEXT, LANGUAGE, MEDIA_URI, FACT_CATEGORY};
+        return new String[]{FACT_ID, TAXON_FK, FACT_TEXT, LANGUAGE, MEDIA_URI, FACT_CATEGORY};
 
     }
    final static String[] nomenclaturalAuthorColumns() {
