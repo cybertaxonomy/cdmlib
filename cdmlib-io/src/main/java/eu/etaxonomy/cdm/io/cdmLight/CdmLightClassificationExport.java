@@ -395,7 +395,12 @@ public class CdmLightClassificationExport
     private void handleSimpleFacts(CdmLightExportState state, CdmBase cdmBase,
             List<DescriptionElementBase> simpleFacts) {
         try {
-            CdmLightExportTable table = CdmLightExportTable.SIMPLE_FACT;
+            CdmLightExportTable table;
+            if (cdmBase instanceof TaxonName){
+                table = CdmLightExportTable.NAME_FACT;
+            }else{
+                table = CdmLightExportTable.SIMPLE_FACT;
+            }
             CdmLightExportTable tableMedia = CdmLightExportTable.MEDIA;
             for (DescriptionElementBase element: simpleFacts){
                 if (element.getModifyingText().isEmpty() && !element.getMedia().isEmpty()){
