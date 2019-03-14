@@ -76,6 +76,7 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IReferencedEntityDao;
@@ -108,7 +109,7 @@ public class NameServiceImpl
     @Autowired
     protected IOrderedTermVocabularyDao orderedVocabularyDao;
     @Autowired
-    protected IOccurrenceDao occurrenceDao;
+    protected IOccurrenceService occurrenceService;
     @Autowired
     @Qualifier("refEntDao")
     protected IReferencedEntityDao<ReferencedEntityBase> referencedEntityDao;
@@ -208,9 +209,15 @@ public class NameServiceImpl
             String accessionNumber, eu.etaxonomy.cdm.model.occurrence.Collection collection, SpecimenTypeDesignationStatus typeStatus){
         UpdateResult result = new UpdateResult();
 
-        DerivedUnit baseSpecimen = (DerivedUnit) occurrenceDao.load(baseDesignation.getTypeSpecimen().getUuid());
+        DerivedUnit baseSpecimen = (DerivedUnit) occurrenceService.load(baseDesignation.getTypeSpecimen().getUuid());
         DerivedUnit duplicate = DerivedUnit.NewInstance(baseSpecimen.getRecordBasis());
         DerivationEvent derivedFrom = baseSpecimen.getDerivedFrom();
+        Collection<FieldUnit> fieldUnits = occurrenceService.findFieldUnits(baseSpecimen.getUuid(), null);
+        if(fieldUnits.size()!=1){
+            result.addException(new Exception("More than one or no field unit found for specimen"));
+            result.setError();
+            return result;
+        }
         for (SpecimenOrObservationBase original : derivedFrom.getOriginals()) {
             DerivationEvent.NewSimpleInstance(original, duplicate, derivedFrom.getType());
         }
