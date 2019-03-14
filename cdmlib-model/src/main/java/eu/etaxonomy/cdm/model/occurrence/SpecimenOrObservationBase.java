@@ -626,17 +626,20 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
         //life stage
         result.setLifeStage(this.lifeStage);
 
+        result.descriptions = new HashSet<>();
         //Descriptions
         for(DescriptionBase<S> description : this.descriptions) {
-            result.addDescription(description);
+            result.addDescription((SpecimenDescription)description.clone());
         }
 
+        result.determinations = new HashSet<>();
         //DeterminationEvent FIXME should clone() the determination
         // as the relationship is OneToMany
         for(DeterminationEvent determination : this.determinations) {
-            result.addDetermination(determination);
+            result.addDetermination(determination.clone());
         }
 
+        result.derivationEvents = new HashSet<>();
         //DerivationEvent
         for(DerivationEvent derivationEvent : this.derivationEvents) {
             result.addDerivationEvent(derivationEvent);
