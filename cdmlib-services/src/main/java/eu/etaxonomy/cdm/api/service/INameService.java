@@ -36,9 +36,11 @@ import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
@@ -59,6 +61,21 @@ public interface INameService
 	 *
 	 */
 	public DeleteResult delete(UUID nameUUID, NameDeletionConfigurator config);
+
+	/**
+	 * Creates specimen duplicate based on the given type specimen which will be assigned as a type
+	 * of the given name.<br>
+	 * The specimen will only differ in accession number, collection and type status and will be attached
+	 * to the same {@link FieldUnit}
+	 * @param name the name where this type designation will be added to
+	 * @param baseDesignation the type specimen of this designation is cloned to create the new specimen
+ 	 * @param accessionNumber the accession number of the clones specimen
+	 * @param collection the collection the cloned specimen belongs to
+	 * @param typeStatus the type status of the cloned specimen
+	 * @return an {@link UpdateResult}
+	 */
+    public UpdateResult cloneTypeDesignation(TaxonName name, SpecimenTypeDesignation baseDesignation,
+            String accessionNumber, eu.etaxonomy.cdm.model.occurrence.Collection collection, SpecimenTypeDesignationStatus typeStatus);
 
 	/**
 	 * Removes the given type designation from the given taxon name and deletes it from

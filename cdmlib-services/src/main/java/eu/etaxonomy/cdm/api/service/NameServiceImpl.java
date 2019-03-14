@@ -69,11 +69,14 @@ import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.Registration;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
+import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IReferencedEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ISourcedEntityDao;
@@ -81,6 +84,7 @@ import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.name.INomenclaturalStatusDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITypeDesignationDao;
+import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.dao.term.IOrderedTermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
@@ -103,6 +107,8 @@ public class NameServiceImpl
     protected ITermVocabularyDao vocabularyDao;
     @Autowired
     protected IOrderedTermVocabularyDao orderedVocabularyDao;
+    @Autowired
+    protected IOccurrenceDao occurrenceDao;
     @Autowired
     @Qualifier("refEntDao")
     protected IReferencedEntityDao<ReferencedEntityBase> referencedEntityDao;
@@ -194,6 +200,30 @@ public class NameServiceImpl
 
         TaxonName name = dao.load(nameUUID);
         return delete(name, config);
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public UpdateResult cloneTypeDesignation(TaxonName name, SpecimenTypeDesignation baseDesignation,
+            String accessionNumber, eu.etaxonomy.cdm.model.occurrence.Collection collection, SpecimenTypeDesignationStatus typeStatus){
+        UpdateResult result = new UpdateResult();
+
+        DerivedUnit baseSpecimen = (DerivedUnit) occurrenceDao.load(baseDesignation.getTypeSpecimen().getUuid());
+        DerivedUnit duplicate = DerivedUnit.NewInstance(baseSpecimen.getRecordBasis());
+        DerivationEvent derivedFrom = baseSpecimen.getDerivedFrom();
+        for (SpecimenOrObservationBase original : derivedFrom.getOriginals()) {
+            DerivationEvent.NewSimpleInstance(original, duplicate, derivedFrom.getType());
+        }
+        duplicate.setAccessionNumber(accessionNumber);
+        duplicate.setCollection(collection);
+        SpecimenTypeDesignation typeDesignation = SpecimenTypeDesignation.NewInstance();
+        typeDesignation.setTypeSpecimen(duplicate);
+        typeDesignation.setTypeStatus(typeStatus);
+        name.getTypeDesignations().add(typeDesignation);
+
+        result.setCdmEntity(typeDesignation);
+        result.addUpdatedObject(name);
+        return result;
     }
 
     @Override
