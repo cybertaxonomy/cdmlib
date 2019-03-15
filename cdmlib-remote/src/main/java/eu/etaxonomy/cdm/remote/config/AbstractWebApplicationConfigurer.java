@@ -66,7 +66,7 @@ public abstract class AbstractWebApplicationConfigurer {
         if(WebApplicationContext.class.isAssignableFrom(applicationContext.getClass())) {
             this.webApplicationContext = (WebApplicationContext)applicationContext;
         } else {
-            logger.error("The " + this.getClass().getSimpleName() + " only can be used within a WebApplicationContext");
+            throw new RuntimeException("The " + this.getClass().getSimpleName() + " only can be used within a WebApplicationContext");
         }
     }
 
