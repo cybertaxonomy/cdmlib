@@ -31,8 +31,10 @@ import eu.etaxonomy.cdm.persistence.dao.common.AuditEventSort;
 import eu.etaxonomy.cdm.persistence.dao.common.IVersionableDao;
 
 public abstract class VersionableServiceBase<T extends VersionableEntity, DAO extends IVersionableDao<T>> extends ServiceBase<T,DAO> implements IVersionableService<T> {
-	@Autowired
+
+    @Autowired
     protected ICommonService commonService;
+
 	@Override
     @Transactional(readOnly = true)
 	public Pager<AuditEventRecord<T>> pageAuditEvents(T t, Integer pageSize,	Integer pageNumber, AuditEventSort sort, List<String> propertyPaths) {
@@ -76,6 +78,7 @@ public abstract class VersionableServiceBase<T extends VersionableEntity, DAO ex
      */
 
     @Override
+    @Transactional(readOnly = true)
     public DeleteResult isDeletable(UUID baseUUID, DeleteConfiguratorBase config){
     	DeleteResult result = new DeleteResult();
     	T base = this.find(baseUUID);
