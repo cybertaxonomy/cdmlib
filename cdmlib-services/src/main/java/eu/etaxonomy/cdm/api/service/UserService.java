@@ -18,6 +18,7 @@ import java.util.UUID;
 import org.hibernate.NonUniqueResultException;
 import org.hibernate.criterion.Criterion;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.security.access.AccessDeniedException;
@@ -85,6 +86,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
     }
 
     @Autowired(required= false)
+    @Lazy // avoid dependency cycle coming from OAuth2ServerConfiguration.AuthorizationServerConfiguration.authenticationManager
     public void setAuthenticationManager(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
     }
