@@ -130,13 +130,13 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree,
         FeatureNodeDeletionConfigurator config = new FeatureNodeDeletionConfigurator();
         config.setChildHandling(ChildHandling.DELETE);
         result =featureNodeService.deleteFeatureNode(rootNode.getUuid(), config);
+        //FIXME test if this is necessary
         tree.removeRootNode();
         if (result.isOk()){
           dao.delete(tree);
           result.addDeletedObject(tree);
         }
         return result;
-
     }
 
     @Override

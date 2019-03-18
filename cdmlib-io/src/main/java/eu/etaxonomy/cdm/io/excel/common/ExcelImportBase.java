@@ -231,7 +231,7 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
      * @param originalKey
      * @return the value
      */
-    protected String getValue(Map<String, String> record, String originalKey) {
+    protected static String getValue(Map<String, String> record, String originalKey) {
         String value = record.get(originalKey);
         if (! StringUtils.isBlank(value)) {
             if (logger.isDebugEnabled()) { logger.debug(originalKey + ": " + value); }

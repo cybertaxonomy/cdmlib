@@ -84,14 +84,10 @@ public class FloraCubaCondensedDistributionComposerOld extends CondensedDistribu
 
         boolean isFirstAfterInternalArea = false;
         for (NamedArea area : areaList){
-
             if (area.getPartOf() != null){
                 continue;  //subarea are handled later
             }
-
             StringBuilder areaStatusString = new StringBuilder();
-
-
 
             Distribution distribution = getDistribution(area, filteredDistributions);
             if (distribution == null){

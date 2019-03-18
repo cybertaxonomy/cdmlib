@@ -218,7 +218,7 @@ public class TaxonNode
     }
 
     /**
-     * to create nodes either use {@link Classification#addChildTaxon(Taxon, Reference, String, Synonym)}
+     * To create nodes either use {@link Classification#addChildTaxon(Taxon, Reference, String, Synonym)}
      * or {@link TaxonNode#addChildTaxon(Taxon, Reference, String, Synonym)}
      *
      * @param taxon

@@ -633,8 +633,6 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
         }
 
         result.determinations = new HashSet<>();
-        //DeterminationEvent FIXME should clone() the determination
-        // as the relationship is OneToMany
         for(DeterminationEvent determination : this.determinations) {
             result.addDetermination(determination.clone());
         }
@@ -642,6 +640,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
         result.derivationEvents = new HashSet<>();
         //DerivationEvent
         for(DerivationEvent derivationEvent : this.derivationEvents) {
+            //TODO should we clone this?
             result.addDerivationEvent(derivationEvent);
         }
 

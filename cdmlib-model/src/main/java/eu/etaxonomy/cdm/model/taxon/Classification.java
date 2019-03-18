@@ -317,7 +317,7 @@ public class Classification
 
     /**
      * Checks if the given taxon is part of <b>this</b> tree. If so the according TaxonNode is returned.
-     * Otherwise null is returned.
+     * Otherwise <code>null</code> is returned.
      * @param taxon
      * @return
      */
@@ -327,7 +327,7 @@ public class Classification
         }
 
         for (TaxonNode taxonNode: taxon.getTaxonNodes()){
-        	Classification classification = HibernateProxyHelper.deproxy(taxonNode.getClassification(), Classification.class);
+        	Classification classification = deproxy(taxonNode.getClassification(), Classification.class);
             if (classification.equals(this)){
                 return taxonNode;
             }
@@ -346,8 +346,8 @@ public class Classification
 
 
     /**
-     * Checks if the taxon is a direct child of <b>this</b> tree and returns the according node if true.
-     * Returns null otherwise.
+     * Checks if the taxon is a direct child of the root of <b>this</b> tree and returns the according node if true.
+     * Returns <code>null</code> otherwise.
      * @param taxon
      * @return
      */

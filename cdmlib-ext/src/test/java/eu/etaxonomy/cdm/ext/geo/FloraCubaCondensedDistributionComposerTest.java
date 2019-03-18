@@ -190,8 +190,6 @@ public class FloraCubaCondensedDistributionComposerTest extends TermTestBase {
         //TODO work in progress
     }
 
-
-
     private static boolean makeAreas(){
 
         //vocabulary

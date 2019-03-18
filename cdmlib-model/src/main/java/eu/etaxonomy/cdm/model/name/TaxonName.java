@@ -2778,7 +2778,7 @@ public class TaxonName
     @Override
     public Set<TaxonBase> getTaxonBases() {
         if(taxonBases == null) {
-            this.taxonBases = new HashSet<TaxonBase>();
+            this.taxonBases = new HashSet<>();
         }
         return this.taxonBases;
     }

@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
 
 /**
  * Quick and dirty implementation of a location service as needed by the editor.
- * 
+ *
  * NOTE: Current implementation does not support the IService methods like {@link #save(DefinedTermBase)}
  * as no base dao is loaded by autowiring.
  *
@@ -60,7 +60,7 @@ public class LocationServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTer
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ServiceBase#setDao(eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao)
      */
-    @Override 
+    @Override
     protected void setDao(IDefinedTermDao dao) {
         this.dao = dao;
     }
@@ -72,6 +72,7 @@ public class LocationServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTer
      * FIXME Candidate for harmonization
      * is this method a duplicate of termService.getVocabulary(VocabularyEnum.PresenceTerm)
      */
+    @Override
     public OrderedTermVocabulary<PresenceAbsenceTerm> getPresenceAbsenceTermVocabulary() {
         String uuidString = "adbbbe15-c4d3-47b7-80a8-c7d104e53a05";
         UUID uuid = UUID.fromString(uuidString);
@@ -83,6 +84,7 @@ public class LocationServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTer
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ILocationService#getNamedAreaVocabularyTypes()
      */
+    @Override
     public List<NamedAreaVocabularyType> getNamedAreaVocabularyTypes() {
         List<NamedAreaVocabularyType> result = new ArrayList<NamedAreaVocabularyType>(3);
         result.add(NamedAreaVocabularyType.TDWG_AREA);
@@ -95,6 +97,7 @@ public class LocationServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTer
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ILocationService#getNamedAreas(java.lang.Object)
      */
+    @Override
     public OrderedTermVocabulary<NamedArea> getNamedAreaVocabulary(NamedAreaVocabularyType vocabularyType) {
 
         UUID namedAreaVocabularyUuid = null;
@@ -117,6 +120,7 @@ public class LocationServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTer
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ILocationService#getNamedAreaLevelVocabulary()
      */
+    @Override
     public OrderedTermVocabulary<NamedAreaLevel> getNamedAreaLevelVocabulary() {
         // TODO return namedAreaLevel filtered by NamedAreaVocabularyType
         String uuidString = "49034253-27c8-4219-97e8-f8d987d3d122";
@@ -132,6 +136,7 @@ public class LocationServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTer
      * FIXME Candidate for harmonization
      * is this method a duplicate of termService.getVocabulary(VocabularyEnum.NamedAreaType)
      */
+    @Override
     public TermVocabulary<NamedAreaType> getNamedAreaTypeVocabulary() {
         String uuidString = "e51d52d6-965b-4f7d-900f-4ba9c6f5dd33";
         UUID uuid = UUID.fromString(uuidString);
@@ -140,6 +145,7 @@ public class LocationServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTer
         return namedAreaTypeVocabulary;
     }
 
+    @Override
     public List<NamedArea> getTopLevelNamedAreasByVocabularyType(NamedAreaVocabularyType vocabularyType){
 
         OrderedTermVocabulary<NamedArea> vocabulary = getNamedAreaVocabulary(vocabularyType);
