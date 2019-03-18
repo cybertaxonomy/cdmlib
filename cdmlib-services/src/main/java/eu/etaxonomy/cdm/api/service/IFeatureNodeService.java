@@ -51,9 +51,10 @@ public interface IFeatureNodeService extends IVersionableService<FeatureNode>{
      * @see IFeatureNodeService#addChildFeatureNode(FeatureNode, DefinedTermBase)
      * @param parentNode the feature node where the new feature should be added
      * @param term the term which should be <b>saved</b> and added to the given feature node
+     * @param vocabularyUuid the UUID of the vocabulary where the term should be saved
      * @return the result of the operation
      */
-    public UpdateResult createChildFeatureNode(FeatureNode node, DefinedTermBase term);
+    public UpdateResult createChildFeatureNode(FeatureNode node, DefinedTermBase term, UUID vocabularyUuid);
 
     /**
      * Adds the specified feature as a child node to the given feature node
