@@ -40,6 +40,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 //@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
 public class AnnotationType extends DefinedTermBase<AnnotationType> {
+
 	private static final long serialVersionUID = 49629121282854575L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AnnotationType.class);

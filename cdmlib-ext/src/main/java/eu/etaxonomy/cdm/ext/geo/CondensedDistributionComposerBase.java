@@ -106,7 +106,7 @@ public abstract class CondensedDistributionComposerBase implements ICondensedDis
 
         protected final NamedArea area;
         protected AreaNode parent = null;
-        protected final Set<AreaNode> subAreas = new HashSet<AreaNode>();
+        protected final Set<AreaNode> subAreas = new HashSet<>();
 
         /**
          * @param area

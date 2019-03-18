@@ -276,7 +276,7 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 		if (config == null){
 			config = new TermDeletionConfigurator();
 		}
-		Set<DefinedTermBase> termsToSave = new HashSet<DefinedTermBase>();
+		Set<DefinedTermBase> termsToSave = new HashSet<>();
 
 		DeleteResult result = isDeletable(term.getUuid(), config);
 		if (result.isAbort()) {

@@ -232,7 +232,7 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 
 	@Override
 	protected void setDefaultTerms(TermVocabulary<HybridRelationshipType> termVocabulary) {
-		termMap = new HashMap<UUID, HybridRelationshipType>();
+		termMap = new HashMap<>();
 		for (HybridRelationshipType term : termVocabulary.getTerms()){
 			termMap.put(term.getUuid(), term);
 		}
