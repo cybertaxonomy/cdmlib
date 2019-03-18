@@ -17,7 +17,6 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 
 /**
  * @author a.mueller
- *
  */
 public class MySQLDatabaseType extends DatabaseTypeBase {
 
@@ -43,13 +42,13 @@ public class MySQLDatabaseType extends DatabaseTypeBase {
     //connection String
 	@Override
     public String getConnectionString(ICdmDataSource ds, int port){
-        return urlString + ds.getServer() + ":" + port + dbSeparator + ds.getDatabase() + "?useUnicode=true&characterEncoding=utf8" + "&zeroDateTimeBehavior=convertToNull";
+        String result = urlString + ds.getServer() + ":" + port + dbSeparator + ds.getDatabase() + "?useUnicode=true&characterEncoding=utf8" + "&zeroDateTimeBehavior=convertToNull";
+        //&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+//        result += "&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=CET";
+        return result;
         //return urlString + ds.getServer() + ":" + port + "/" + ds.getDatabase() + "?useUnicode=true&characterEncoding=utf8&connectionCollation=utf8_general_ci&characterSetResults=utf8&jdbcCompliantTruncation=false";
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.database.types.DatabaseTypeBase#getServerNameByConnectionString(java.lang.String)
-     */
     @Override
     public String getDatabaseNameByConnectionString(String connectionString){
     	String result;
@@ -70,6 +69,4 @@ public class MySQLDatabaseType extends DatabaseTypeBase {
     public MySQLDatabaseType() {
     	init (typeName, classString, urlString, defaultPort,  hibernateDialect );
 	}
-
-
 }
