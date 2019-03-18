@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.FeatureNode;
 import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureNodeDao;
 
 /**
@@ -47,6 +48,9 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<FeatureNode, 
 
 	@Autowired
     private ITermService termService;
+
+	@Autowired
+	private IVocabularyService vocabularyService;
 
 	 @Override
 	 @Transactional(readOnly = false)
@@ -99,8 +103,10 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<FeatureNode, 
 	 }
 
 	 @Override
-	 public UpdateResult createChildFeatureNode(FeatureNode node, DefinedTermBase term){
-	     term = termService.save(term);
+	 public UpdateResult createChildFeatureNode(FeatureNode node, DefinedTermBase term, UUID vocabularyUuid){
+	     TermVocabulary vocabulary = vocabularyService.load(vocabularyUuid);
+	     vocabulary.addTerm(term);
+	     vocabularyService.save(vocabulary);
 	     return addChildFeatureNode(node, term);
 	 }
 
