@@ -79,12 +79,9 @@ public class TermLoader implements ITermLoader {
 	@Override
 	public <T extends DefinedTermBase> TermVocabulary<T> loadTerms(VocabularyEnum vocType, Map<UUID,DefinedTermBase> terms) {
 
-
 		try {
 			CSVReader reader = getCsvReader(vocType);
-
 			String [] nextLine = reader.readNext();
-
 
 			Class<? extends DefinedTermBase> termClass = vocType.getClazz();
 
@@ -115,7 +112,6 @@ public class TermLoader implements ITermLoader {
 
 				handleSingleTerm(nextLine, terms, termClass, voc,
 						abbrevAsId, classDefiningTermInstance);
-
 			}
 			return voc;
 		} catch (Exception e) {
@@ -125,7 +121,6 @@ public class TermLoader implements ITermLoader {
 			}
 			throw new RuntimeException(e);
 		}
-
 	}
 
 	/**
@@ -162,11 +157,9 @@ public class TermLoader implements ITermLoader {
 				throw new IllegalStateException("Vocabularies in csv file and vocabulary must be equal");
 			}
 
-
-
 			boolean abbrevAsId = (arrayedLine(nextLine).get(5).equals("1"));
 			T classDefiningTermInstance = getInstance(termClass);// ((Class<T>)termClass).newInstance();
-			Map<UUID,DefinedTermBase> allVocTerms = new HashMap<UUID, DefinedTermBase>();
+			Map<UUID,DefinedTermBase> allVocTerms = new HashMap<>();
 			for (T term:voc.getTerms()){
 				allVocTerms.put(term.getUuid(), term);
 			}
@@ -220,7 +213,7 @@ public class TermLoader implements ITermLoader {
 	}
 
 	private List<String> arrayedLine(String [] nextLine){
-		ArrayList<String> csvTermAttributeList = new ArrayList<String>(15);
+		ArrayList<String> csvTermAttributeList = new ArrayList<>(15);
 		for (String col : nextLine){
 			csvTermAttributeList.add(col);
 		}
