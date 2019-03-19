@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
@@ -170,7 +171,7 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 
 
 	@Override
-    public List<UuidAndTitleCache<AgentBase>> getUuidAndAbbrevTitleCache(Integer limit, String pattern, Class clazz){
+    public List<UuidAndTitleCache<AgentBase>> getUuidAndAbbrevTitleCache(Class clazz, Integer limit, String pattern){
         Session session = getSession();
         String clazzString = "";
         if (clazz == null){
@@ -181,6 +182,8 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
             clazzString = "dtype = 'Person'";
         }  else if (clazz.equals(Institution.class)){
             clazzString = "dtype = 'Institution'";
+        } else if (clazz.equals(TeamOrPersonBase.class)){
+            clazzString = "dtype != 'Institution'";
         }
 
         Query query = null;
