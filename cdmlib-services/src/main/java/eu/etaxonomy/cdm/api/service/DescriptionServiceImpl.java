@@ -717,7 +717,6 @@ public class DescriptionServiceImpl
         }
 
 
-
         if (! isCopy && descriptionElements == descriptionElements.iterator().next().getInDescription().getElements()){
             //if the descriptionElements collection is the elements set of a description, put it in a separate set before to avoid concurrent modification exceptions
             descriptionElements = new HashSet<DescriptionElementBase>(descriptionElements);
@@ -726,6 +725,7 @@ public class DescriptionServiceImpl
         }
         for (DescriptionElementBase element : descriptionElements){
             DescriptionBase<?> description = element.getInDescription();
+            description = dao.load(description.getUuid());
             try {
                 DescriptionElementBase newElement = (DescriptionElementBase)element.clone();
                 targetDescription.addElement(newElement);
@@ -743,10 +743,10 @@ public class DescriptionServiceImpl
                    }
                     dao.delete(description);
 
-                }else{
-                    dao.saveOrUpdate(description);
-                    result.addUpdatedObject(description);
-                }
+                }//else{
+//                    dao.saveOrUpdate(description);
+//                    result.addUpdatedObject(description);
+//                }
             }
 
 
