@@ -291,7 +291,7 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
                 } else {
                     representations = (Set<Representation>)elements[1];
                 }
-                dtoMap.put(uuid, new TermVocabularyDto(uuid, representations));
+                dtoMap.put(uuid, new TermVocabularyDto(uuid, representations, termType));
             }
         }
         return new ArrayList<>(dtoMap.values());

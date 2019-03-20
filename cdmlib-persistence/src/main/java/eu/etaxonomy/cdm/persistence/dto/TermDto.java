@@ -47,12 +47,12 @@ public class TermDto extends AbstractTermDto{
     private String vocRepresentation_L10n = null;
     private String vocRepresentation_L10n_abbreviatedLabel = null;
 
-    private TermDto(UUID uuid, Set<Representation> representations, UUID partOfUuid, UUID kindOfUuid,
+    private TermDto(UUID uuid, Set<Representation> representations, TermType termType, UUID partOfUuid, UUID kindOfUuid,
             UUID vocabularyUuid, Integer orderIndex, String idInVocabulary) {
-        this(uuid, representations, partOfUuid, kindOfUuid, vocabularyUuid, orderIndex, idInVocabulary, null);
+        this(uuid, representations, termType, partOfUuid, kindOfUuid, vocabularyUuid, orderIndex, idInVocabulary, null);
     }
 
-    private TermDto(UUID uuid, Set<Representation> representations, UUID partOfUuid, UUID kindOfUuid,
+    private TermDto(UUID uuid, Set<Representation> representations, TermType termType, UUID partOfUuid, UUID kindOfUuid,
             UUID vocabularyUuid, Integer orderIndex, String idInVocabulary, Set<Representation> vocRepresentations) {
         super(uuid, representations);
         this.partOfUuid = partOfUuid;
@@ -61,6 +61,7 @@ public class TermDto extends AbstractTermDto{
         this.orderIndex = orderIndex;
         this.idInVocabulary = idInVocabulary;
         this.vocRepresentations = vocRepresentations;
+        setTermType(termType);
     }
 
     static public TermDto fromTerm(DefinedTermBase term) {
@@ -80,14 +81,14 @@ public class TermDto extends AbstractTermDto{
         DefinedTermBase kindOf = term.getKindOf();
         TermVocabulary vocabulary = term.getVocabulary();
         TermDto dto = new TermDto(
-                term.getUuid(),
-                representations!=null?representations:term.getRepresentations(),
-                (partOf!=null?partOf.getUuid():null),
-                (kindOf!=null?kindOf.getUuid():null),
-                vocabulary.getUuid(),
-                (term instanceof OrderedTermBase)?((OrderedTermBase) term).getOrderIndex():null,
-                term.getIdInVocabulary());
-        dto.setTermType(term.getTermType());
+                        term.getUuid(),
+                        representations!=null?representations:term.getRepresentations(),
+                        term.getTermType(),
+                        (partOf!=null?partOf.getUuid():null),
+                        (kindOf!=null?kindOf.getUuid():null),
+                        vocabulary.getUuid(),
+                        (term instanceof OrderedTermBase)?((OrderedTermBase) term).getOrderIndex():null,
+                         term.getIdInVocabulary());
         dto.setUri(term.getUri());
         if(initializeToTop){
             if(partOf!=null){
@@ -96,7 +97,7 @@ public class TermDto extends AbstractTermDto{
             if(kindOf!=null){
                 dto.setKindOfDto(fromTerm(kindOf, initializeToTop));
             }
-            dto.setVocabularyDto(new TermVocabularyDto(vocabulary.getUuid(), vocabulary.getRepresentations()));
+            dto.setVocabularyDto(new TermVocabularyDto(vocabulary.getUuid(), vocabulary.getRepresentations(), term.getTermType()));
         }
         return dto;
     }
@@ -251,13 +252,13 @@ public class TermDto extends AbstractTermDto{
                 TermDto termDto = new TermDto(
                         uuid,
                         representations,
+                        (TermType)elements[8],
                         (UUID)elements[2],
                         (UUID)elements[3],
                         (UUID)elements[4],
                         (Integer)elements[5],
                         (String)elements[6],
                         vocRepresentations);
-                termDto.setTermType((TermType)elements[8]);
                 termDto.setUri((URI)elements[9]);
                 dtoMap.put(uuid, termDto);
             }
