@@ -200,12 +200,6 @@ public class CdmUtils {
         return result;
     }
 
-    static public String testMe(){
-        String message = "This is a test";
-        System.out.println(message);
-        return message;
-    }
-
     static public String readInputLine(String inputQuestion){
         try {
 
