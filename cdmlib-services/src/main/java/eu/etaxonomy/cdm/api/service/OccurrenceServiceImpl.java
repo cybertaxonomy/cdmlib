@@ -426,7 +426,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 collectionString += (fieldNumber != null ? fieldNumber : "");
                 collectionString.trim();
             }
-            fieldUnitDTO.setCollection(collectionString);
+            fieldUnitDTO.setCollectingString(collectionString);
             // Date
             Partial gatheringDate = gatheringEvent.getGatheringDate();
             String dateString = null;

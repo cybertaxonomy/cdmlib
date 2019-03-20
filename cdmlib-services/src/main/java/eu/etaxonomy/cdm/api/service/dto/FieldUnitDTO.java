@@ -14,8 +14,9 @@ public class FieldUnitDTO extends DerivateDTO{
 
     //Row Attributes
 	private String country;
-	private String collectionString;
+	private String collectingString;
 	private String date;
+	private String collectionString;
 
 	private boolean hasType;
 	private List<UUID> taxonRelatedDerivedUnits = new ArrayList<>();
@@ -67,6 +68,21 @@ public class FieldUnitDTO extends DerivateDTO{
     public void setCollection(String collection) {
         this.collectionString = collection;
     }
+
+    /**
+     * @return the collectionString
+     */
+
+    public String getCollectingString() {
+        return collectingString;
+    }
+    /**
+     * @param collectionString the collectionString to set
+     */
+    public void setCollectingString(String collectingString) {
+        this.collectingString = collectingString;
+    }
+
     /**
      * @return the date
      */
