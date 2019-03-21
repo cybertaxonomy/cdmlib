@@ -21,7 +21,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.web.context.WebApplicationContext;
 
-import eu.etaxonomy.cdm.common.ConfigFileUtil;
+import eu.etaxonomy.cdm.config.ConfigFileUtil;
 
 /**
  * @author a.kohlbecker

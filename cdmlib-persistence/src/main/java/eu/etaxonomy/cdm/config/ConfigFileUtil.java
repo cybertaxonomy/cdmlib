@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.common;
+package eu.etaxonomy.cdm.config;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -20,6 +20,8 @@ import java.util.Properties;
 import org.apache.log4j.Logger;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
+
+import eu.etaxonomy.cdm.common.CdmUtils;
 
 /**
  *
@@ -56,8 +58,6 @@ public class ConfigFileUtil implements EnvironmentAware {
 
     static final String MUST_EXIST_FILE = "MUST-EXIST.txt";
 
-    //folder separator
-    static String folderSeparator;
 
     protected Environment env;
 
@@ -71,6 +71,8 @@ public class ConfigFileUtil implements EnvironmentAware {
         }
     }
 
+    //folder separator
+    static String folderSeparator;
 
     /**
      * @return

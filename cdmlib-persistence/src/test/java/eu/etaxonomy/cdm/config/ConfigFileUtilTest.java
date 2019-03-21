@@ -7,7 +7,7 @@
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
 
-package eu.etaxonomy.cdm.common;
+package eu.etaxonomy.cdm.config;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -18,6 +18,8 @@ import java.io.InputStream;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import eu.etaxonomy.cdm.common.CdmUtils;
 
 
 public class ConfigFileUtilTest {
