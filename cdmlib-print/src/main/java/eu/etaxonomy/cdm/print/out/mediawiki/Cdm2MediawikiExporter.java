@@ -24,7 +24,7 @@ import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 import org.jdom.xpath.XPath;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.ConfigFileUtil;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.print.IXMLEntityFactory;
 import eu.etaxonomy.cdm.print.PublishConfigurator;
@@ -34,11 +34,11 @@ import eu.etaxonomy.cdm.print.out.IPublishOutputModule;
 /**
  * fill in all parameters and you get a complete export from a cdm database to a
  * mediawiki
- * 
+ *
  * TODO would we move this class somewhere else and/or rename it?
- * 
+ *
  * @author s.buers, l.morris
- * 
+ *
  */
 public class Cdm2MediawikiExporter {
 
@@ -62,7 +62,7 @@ public class Cdm2MediawikiExporter {
 			.getLogger(Cdm2MediawikiExporter.class);
 
 	private PublishConfigurator configurator = PublishConfigurator.NewRemoteInstance();
-			
+
 	private IXMLEntityFactory factory;
 
 	// where the mediawiki xml code is stored
@@ -80,7 +80,7 @@ public class Cdm2MediawikiExporter {
 
 	private List<String> localImages;
 
-	
+
 	public void export(String serviceUrl, UUID taxonNodeUuid, UUID treeNodeUuid,  String wikiUrl,
 			String wikiLoginUid, String passwd, String wikiPageNamespace,
 			boolean import2Mediawiki, boolean deleteOutputFiles,
@@ -92,7 +92,7 @@ public class Cdm2MediawikiExporter {
 	/**
 	 * does the whole export process: runs cdm export to mediawiki xml-file and
 	 * wiki import of this file
-	 * 
+	 *
 	 * @param serviceUrl
 	 * @param taxonName
 	 * @param wikiUrl
@@ -105,7 +105,7 @@ public class Cdm2MediawikiExporter {
 	 *            - prefix that, will be added to all pages null or "" will make
 	 *            no prefix
 	 * @throws MalformedURLException
-	 * 
+	 *
 	 *             TODO: make passwd "unplain" MAYDO: pass more parameters e.g.:
 	 *             alternative stylesheet layout parameters (that may force the
 	 *             use of different stylesheet) export folder - we use a
@@ -124,17 +124,17 @@ public class Cdm2MediawikiExporter {
 				// setup configurator
 		setupConfigurator(serviceUrl);
 		configurator.addSelectedTaxonNodeElements(factory.getTaxonNodesByName(taxonName, classificationName));
-		
-		
+
+
 		export(portalUrl, serviceUrl, wikiUrl, wikiLoginUid, passwd,
 				wikiPageNamespace, import2Mediawiki, deleteOutputFiles,
 				importImages, true);
 	}
 	/**
-	 * if you already have a cdm xml export in some file you put it in here 
+	 * if you already have a cdm xml export in some file you put it in here
 	 * the mediawiki xml is created and imported to an mediawiki
 	 * does step 2 and 3 out of all 3 export steps
-	 * 
+	 *
 	 * @param filename
 	 * @param serviceUrl
 	 * @param taxonName
@@ -156,9 +156,9 @@ public class Cdm2MediawikiExporter {
 
 		//put the document to a field:
 		externalDocument = getDocument(filename);
-		
+
 //		setupConfigurator(serviceUrl);
-		
+
 		// and run export with usePublisher=false:
 		export(portalUrl, serviceUrl, wikiUrl, wikiLoginUid, passwd,
 				wikiPageNamespace, import2Mediawiki, deleteOutputFiles,
@@ -191,7 +191,7 @@ public class Cdm2MediawikiExporter {
 		// page
 		// then it will be the same as the username that is used for the actual
 		// mediawiki import.
-		((MediawikiOutputModule) wikiOutputModule).setUsername(wikiLoginUid);
+		wikiOutputModule.setUsername(wikiLoginUid);
 
 		// if we actually export from the cdm and not from a file we run the
 		// Publisher
@@ -215,7 +215,7 @@ public class Cdm2MediawikiExporter {
 		}
 
 		// we get the whole filename that the wikiOutputModule created
-		mediawikiFileWithPath = ((MediawikiOutputModule) wikiOutputModule)
+		mediawikiFileWithPath = wikiOutputModule
 				.getFilePath();
 
 		logger.info("mediawiki xml file created and saved to"+mediawikiFileWithPath);
@@ -224,7 +224,7 @@ public class Cdm2MediawikiExporter {
 		if ((usePublisher && !deleteOutputFiles) || importImages) {
 			// the cdm output where we want to fetch the urls of the
 			// images:
-			cdmOutputDocument = ((MediawikiOutputModule) wikiOutputModule)
+			cdmOutputDocument = wikiOutputModule
 					.getInputDocument();
 		}
 
@@ -245,11 +245,11 @@ public class Cdm2MediawikiExporter {
 		else{
 			logger.info("did not get images!");
 		}
-		
+
 		if (import2Mediawiki && importImages && !(localImages.isEmpty())) {
 			uploadImagesToMediawiki(wikiUrl, wikiLoginUid, passwd);
 		}
-		
+
 		if (deleteOutputFiles) {
 			deleteOutputFiles();
 			logger.info("deleted temporary file(s)");
@@ -257,10 +257,10 @@ public class Cdm2MediawikiExporter {
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	private void createTemporaryExportFolder() {
-		temporaryExportFolder = CdmUtils.getCdmHomeSubDir(MEDIAWIKI_CDM_SUB_DIR);
+		temporaryExportFolder = ConfigFileUtil.getCdmHomeSubDir(MEDIAWIKI_CDM_SUB_DIR);
 		if (temporaryExportFolder != null) {
 			logger.info("using " + temporaryExportFolder.getAbsolutePath()
 					+ " as temporary directory.");
@@ -277,15 +277,15 @@ public class Cdm2MediawikiExporter {
 	 */
 	private void setupConfigurator(String serviceUrl)
 			throws MalformedURLException {
-		
+
 		createTemporaryExportFolder();
-		
+
 		configurator.setWebserviceUrl(serviceUrl);
 		factory = configurator.getFactory();
 
 		// get feature tree from taxon name/taxon node and pass it to the
 		// configurator:
-		// TODO, get a feature tree name or uuid as method parameters 
+		// TODO, get a feature tree name or uuid as method parameters
 		String featureTree = getDefaultFeatureTree();
 		configurator.setFeatureTree(UUID.fromString(featureTree));
 
@@ -324,12 +324,12 @@ public class Cdm2MediawikiExporter {
 		//JDOMParseException Invalid byte 2 of 3-byte UTF-8 sequence which occurs for e.g.
 		//with German umlauts and French accents on characters
 		format.setEncoding("ISO-8859-1");//"UTF-8");
-		XMLOutputter xmlOutput = new XMLOutputter(format);	
-		xmlOutput.setFormat(format);		
+		XMLOutputter xmlOutput = new XMLOutputter(format);
+		xmlOutput.setFormat(format);
 
 		try {
-			xmlOutput.output(cdmOutputDocument, new FileWriter(cdm_output_file));			
-                    
+			xmlOutput.output(cdmOutputDocument, new FileWriter(cdm_output_file));
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -353,7 +353,7 @@ public class Cdm2MediawikiExporter {
 	/**
 	 * uploads a given mediawiki xml file to a mediawiki - does only third (last) step
 	 * of the whole export process
-	 * 
+	 *
 	 * @param inputFilePath
 	 * @param wikiUrl
 	 * @param wikiUser
@@ -372,10 +372,10 @@ public class Cdm2MediawikiExporter {
 	private void uploadToMediawiki(String wikiUrl, String wikiLoginUid, String passwd) {
 
 		// login to mediawiki
-		
+
 		WikiBot myBot = getBotAndLogin(wikiUrl, wikiLoginUid, passwd);
 
-		
+
 		try {
 
 			// parse wiki xml file and import pages one by one
@@ -437,15 +437,15 @@ public class Cdm2MediawikiExporter {
 	private void downloadImages() {
 		org.jdom.Document document = wikiOutputModule.getInputDocument();
 		localImages = new ArrayList<String>();
-		
+
 		try {
 			List<Element> media_uris = XPath.selectNodes(document, "//Taxon/media/e/representations/e/parts/e/uri");
-		
+
 			if(media_uris.isEmpty()){
 				logger.info("there are no images in the data.");
 				return;
 			}
-			
+
 			for (Element urlEl : media_uris) {
 				String url=urlEl.getValue();
 				URL imageUrl = new URL(url);
@@ -456,11 +456,11 @@ public class Cdm2MediawikiExporter {
 				String filePath = temporaryExportFolder.getAbsolutePath()
 						+FILESEPARATOR + IMAGES_FOLDER +FILESEPARATOR+ filename;
 				logger.info("downloading image " + url+" to "+filePath);
-				
+
 				FileUtils.copyURLToFile(imageUrl, new File(filePath));
 				localImages.add(filePath);
 			}
-		
+
 		} catch (JDOMException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -471,16 +471,16 @@ public class Cdm2MediawikiExporter {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	private void uploadImagesToMediawiki(String wikiUrl, String wikiLoginUid, String passwd) {
-		WikiBot myBot = getBotAndLogin(wikiUrl, wikiLoginUid, passwd); 
+		WikiBot myBot = getBotAndLogin(wikiUrl, wikiLoginUid, passwd);
 		// get published output file
-		
 
-			for(String localUri : localImages){						
-				
+
+			for(String localUri : localImages){
+
 				try {
 					uploadImage(myBot, localUri);
 				} catch (MalformedURLException e) {
@@ -492,7 +492,7 @@ public class Cdm2MediawikiExporter {
 				}
 			}
 
-			// logout		
+			// logout
 		myBot.logout();
 		logger.info("all images uploaded to mediawiki "+wikiUrl+" and logged out.");
 	}
@@ -517,10 +517,10 @@ public class Cdm2MediawikiExporter {
 ////		System.out.println(filePath);
 //		File imageFile = new File(filePath);
 //		logger.info("downloading image " + url);
-		
+
 //		FileUtils.copyURLToFile(imageUrl, new File(filePath));
-		
-		
+
+
 		File imageFile = new File(filePath);
 		String[] arr = filePath.split("/");
 		String filename = arr[arr.length - 1];
@@ -536,8 +536,8 @@ public class Cdm2MediawikiExporter {
 	}
 
 	private Document getDocument(String filePath) {
-		SAXBuilder saxBuilder = new SAXBuilder();		
-		
+		SAXBuilder saxBuilder = new SAXBuilder();
+
 		File file = new File(filePath);
 		Document document = null;
 		FileInputStream fileis;
@@ -546,9 +546,9 @@ public class Cdm2MediawikiExporter {
 		try {
 			//document = saxBuilder.build(file);
 			fileis = new FileInputStream(file);
-			BufferedInputStream in = new BufferedInputStream(fileis); 
+			BufferedInputStream in = new BufferedInputStream(fileis);
 			document = saxBuilder.build(in);
-			
+
 		} catch (JDOMException e) {
 			// TODO Auto-generated catch block
 			logger.error(e.getCause().getMessage());

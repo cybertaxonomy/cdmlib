@@ -25,7 +25,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.ConfigFileUtil;
 
 /**
  *
@@ -135,7 +135,7 @@ public class MultiWebSecurityConfiguration {
         // Add an inMemoryUserManager to  enable access to the global ROLE_MANAGE_CLIENTs.
         // This is the casue for the need to do the configuration explicitly.
         InMemoryUserDetailsManagerConfigurer<AuthenticationManagerBuilder> inMemoryAuthConf = auth.inMemoryAuthentication();
-        File managingUsersFile = new File(CdmUtils.getCdmHomeDir(), MANAGING_USERS_PROPERTIES);
+        File managingUsersFile = new File(ConfigFileUtil.getCdmHomeDir(), MANAGING_USERS_PROPERTIES);
         if(!managingUsersFile.exists()){
             makeManagingUsersPropertiesFile(managingUsersFile);
         }

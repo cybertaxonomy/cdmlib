@@ -21,7 +21,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.web.context.WebApplicationContext;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.ConfigFileUtil;
 
 /**
  * @author a.kohlbecker
@@ -51,7 +51,7 @@ public abstract class AbstractWebApplicationConfigurer {
             userDefinedProperties = new Properties();
             try {
                 InputStream in = new FileInputStream(
-                            CdmUtils.perUserCdmFolder
+                            ConfigFileUtil.perUserCdmFolder()
                             + java.io.File.separator
                             + CDMLIB_REMOTE_PROPERTIES
                     );

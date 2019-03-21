@@ -9,11 +9,6 @@
 
 package eu.etaxonomy.cdm.common;
 
-import static org.junit.Assert.assertNotNull;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Level;
@@ -41,27 +36,6 @@ public class CdmUtilsTest {
 	}
 
 /************************** TESTS ****************************************/
-
-	@Test
-	public void testGetReadableResourceStream() {
-		String resourceFileName = CdmUtils.MUST_EXIST_FILE;
-		try {
-			InputStream inputStream = CdmUtils.getReadableResourceStream(resourceFileName);
-			assertNotNull(inputStream);
-		} catch (IOException e) {
-			Assert.fail("IOException");
-		}
-	}
-
-	@Test
-	public void testGetFolderSeperator() {
-		Assert.assertEquals(File.separator, CdmUtils.getFolderSeperator());
-	}
-
-	@Test
-	public void testGetHomeDir() {
-		//Assert.assertEquals("", CdmUtils.getHomeDir());
-	}
 
 	@Test
 	public void testFindLibrary() {

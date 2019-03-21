@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 
 import au.com.bytecode.opencsv.CSVReader;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.ConfigFileUtil;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.CaseType;
@@ -66,7 +67,7 @@ public class TermVocabularyRepresentationUpdater
 			for(VocabularyEnum vocabularyEnum : VocabularyEnum.values()) {
 				//read vocabulary from terms files
 				String filename = vocabularyEnum.name()+".csv";
-				CSVReader reader = new CSVReader(CdmUtils.getUtf8ResourceReader("terms" + CdmUtils.getFolderSeperator() + filename));
+				CSVReader reader = new CSVReader(CdmUtils.getUtf8ResourceReader("terms" + ConfigFileUtil.getFolderSeperator() + filename));
 				String [] nextLine = reader.readNext();
 				TermVocabulary<?> voc = TermVocabulary.NewInstance(TermType.Unknown);
 				voc.readCsvLine(arrayedLine(nextLine));

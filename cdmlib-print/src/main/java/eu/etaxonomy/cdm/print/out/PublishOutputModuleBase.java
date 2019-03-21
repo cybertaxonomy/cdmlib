@@ -25,14 +25,14 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.jdom.Document;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.ConfigFileUtil;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 
 /**
  * This abstract implementation of the {@link IPublishOutputModule} contains
  * convenience methods for file path generation. Clients should consider
  * extending this class.
- * 
+ *
  * @author n.hoffmann
  * @since Apr 20, 2010
  * @version 1.0
@@ -61,7 +61,7 @@ public abstract class PublishOutputModuleBase implements IPublishOutputModule {
 	/**
 	 * Generates a string containing the current date followed by the given
 	 * name.
-	 * 
+	 *
 	 * @param name
 	 *            a string.
 	 * @return a string containing the current date followed by the given name.
@@ -95,21 +95,21 @@ public abstract class PublishOutputModuleBase implements IPublishOutputModule {
 		 */
 		if (filePath == null) {
 			filePath = getNewFilePath(outputFolder);
-		} 
+		}
 			return filePath;
 	}
 
 	/**
-	 * @return the complete path to the output file 
+	 * @return the complete path to the output file
 	 * @author s.buers
 	 */
 	public String getFilePath() {
 		return filePath;
 	}
-	
+
 	/**
 	 * creates new name for the output file based on the given output
-	 * folder and actual timestamp. 
+	 * folder and actual timestamp.
 	 * @author s.buers
 	 * @param outputFolder
 	 * @return
@@ -125,12 +125,13 @@ public abstract class PublishOutputModuleBase implements IPublishOutputModule {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * eu.etaxonomy.printpublisher.out.IPublishOutputModule#output(org.jdom.
 	 * Document, java.io.File)
 	 */
-	public void output(Document document, File exportFolder,
+	@Override
+    public void output(Document document, File exportFolder,
 			IProgressMonitor progressMonitor) {
 		if (progressMonitor == null) {
 			throw new IllegalArgumentException(
@@ -173,7 +174,7 @@ public abstract class PublishOutputModuleBase implements IPublishOutputModule {
 		locationList.add(shippedStylesheetsDir);
 
 		// TODO this should be configured in a central place, see #2387
-		File userdir = new File(CdmUtils.perUserCdmFolder + l + "stylesheets"
+		File userdir = new File(ConfigFileUtil.perUserCdmFolder() + l + "stylesheets"
 				+ l + getOutputFileSuffix());
 		locationList.add(userdir);
 

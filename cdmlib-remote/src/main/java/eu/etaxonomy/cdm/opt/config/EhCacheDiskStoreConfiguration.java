@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.ConfigFileUtil;
 import net.sf.ehcache.config.DiskStoreConfiguration;
 
 /**
@@ -35,7 +35,7 @@ public class EhCacheDiskStoreConfiguration {
     public DiskStoreConfiguration diskStoreConfiguration(){
 
         DiskStoreConfiguration diskStoreConfiguration = new DiskStoreConfiguration();
-        File ehcacheFolder = CdmUtils.getCdmHomeSubDir("ehcache");
+        File ehcacheFolder = ConfigFileUtil.getCdmHomeSubDir("ehcache");
         String instanceName = dataSourceProperties.getCurrentDataSourceId();
         File instanceCacheFolder = new File(ehcacheFolder, instanceName);
         logger.debug("Setting ehcache diskstore location to " + instanceCacheFolder.getAbsolutePath());

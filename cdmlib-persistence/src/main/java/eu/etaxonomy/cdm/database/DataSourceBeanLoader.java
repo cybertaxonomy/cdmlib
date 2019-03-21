@@ -8,7 +8,7 @@ import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.ConfigFileUtil;
 
 @Component
 public class DataSourceBeanLoader {
@@ -16,7 +16,7 @@ public class DataSourceBeanLoader {
     private static final Logger logger = Logger.getLogger(DataSourceBeanLoader.class);
 
     private static final String DATASOURCE_BEANDEF_FILE = "datasources.xml";
-    private static final String DATASOURCE_BEANDEF_PATH = CdmUtils.getCdmHomeDir().getPath();
+    private static final String DATASOURCE_BEANDEF_PATH = ConfigFileUtil.getCdmHomeDir().getPath();
 
     private static String userdefinedBeanDefinitionFile = null;
 
@@ -41,7 +41,7 @@ public class DataSourceBeanLoader {
             T datasource = beanFactory.getBean(beanName, requiredType);
             dataSources.put(beanName, datasource);
         }
-        return (Map<String, T>) dataSources;
+        return dataSources;
     }
 
 }

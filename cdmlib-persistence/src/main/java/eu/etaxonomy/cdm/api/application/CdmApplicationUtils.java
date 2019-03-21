@@ -18,6 +18,7 @@ import java.net.URL;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.ConfigFileUtil;
 import eu.etaxonomy.cdm.common.FileCopy;
 import eu.etaxonomy.cdm.config.CdmPersistentXMLSource;
 
@@ -51,7 +52,7 @@ public class CdmApplicationUtils {
                 if (file.exists()){
                     fileResourceDir = file.getParentFile();
                 }else{
-                    file = new File(CdmUtils.getCdmHomeDir(), "writableResources" );
+                    file = new File(ConfigFileUtil.getCdmHomeDir(), "writableResources" );
 
                     file.mkdirs();
                     copyResources(file);

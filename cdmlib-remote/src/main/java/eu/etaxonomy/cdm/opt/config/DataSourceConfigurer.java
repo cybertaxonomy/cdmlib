@@ -40,7 +40,7 @@ import org.springframework.jndi.JndiObjectFactoryBean;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 import eu.etaxonomy.cdm.api.config.CdmConfigurationKeys;
-import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.ConfigFileUtil;
 import eu.etaxonomy.cdm.database.WrappedCdmDataSource;
 import eu.etaxonomy.cdm.database.update.CdmUpdater;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
@@ -125,7 +125,7 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
      */
     public static final String ATTRIBUTE_FORCE_SCHEMA_UPDATE = "cdm.forceSchemaUpdate";
 
-    protected static final String DATASOURCE_BEANDEF_DEFAULT = CdmUtils.getCdmHomeDir().getPath() + File.separator + "datasources.xml";
+    protected static final String DATASOURCE_BEANDEF_DEFAULT = ConfigFileUtil.getCdmHomeDir().getPath() + File.separator + "datasources.xml";
 
     protected static String beanDefinitionFile = DATASOURCE_BEANDEF_DEFAULT;
 
@@ -345,7 +345,7 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
     public Properties hibernateProperties(){
         Properties props = getHibernateProperties();
         props.setProperty(HIBERNATE_DIALECT, inferHibernateDialectName());
-        String searchPath = CdmUtils.getCdmHomeSubDir(CdmUtils.SUBFOLDER_WEBAPP).getPath();
+        String searchPath = ConfigFileUtil.getCdmHomeSubDir(ConfigFileUtil.SUBFOLDER_WEBAPP).getPath();
         props.setProperty(HIBERNATE_SEARCH_DEFAULT_INDEX_BASE,
                 searchPath +
                 "/index/".replace("/", File.separator) +
