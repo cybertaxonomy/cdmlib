@@ -27,7 +27,7 @@ public enum CdmLightExportTable {
     SYNONYM("Synonym", synonymColumns()),
     REFERENCE("Reference", referenceColumns()),
     SIMPLE_FACT("SimpleFact", simpleFactsColumns()),
-    TAXON_INTERACTION_FACT("SimpleFact", taxonInteractionFactsColumns()),
+    TAXON_INTERACTION_FACT("TaxonInteractionFact", taxonInteractionFactsColumns()),
     SPECIMEN_FACT("SpecimenFact", specimenFactsColumns()),
     GEOGRAPHIC_AREA_FACT("GeographicAreaFact", geographicAreaFactsColumns()),
     COMMON_NAME_FACT("CommonNameFact", commonNameFactsColumns()),
