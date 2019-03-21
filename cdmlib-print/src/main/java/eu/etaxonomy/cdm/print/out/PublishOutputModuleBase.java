@@ -25,8 +25,8 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.jdom.Document;
 
-import eu.etaxonomy.cdm.common.ConfigFileUtil;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.config.ConfigFileUtil;
 
 /**
  * This abstract implementation of the {@link IPublishOutputModule} contains

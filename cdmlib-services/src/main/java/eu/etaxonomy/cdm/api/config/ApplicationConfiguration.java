@@ -18,7 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.common.ConfigFileUtil;
+import eu.etaxonomy.cdm.config.ConfigFileUtil;
 
 /**
  * @author a.kohlbecker

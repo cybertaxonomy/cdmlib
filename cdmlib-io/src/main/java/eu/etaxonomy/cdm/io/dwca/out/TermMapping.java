@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
 
 import au.com.bytecode.opencsv.CSVReader;
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.common.ConfigFileUtil;
+import eu.etaxonomy.cdm.config.ConfigFileUtil;
 
 /**
  * @author a.mueller

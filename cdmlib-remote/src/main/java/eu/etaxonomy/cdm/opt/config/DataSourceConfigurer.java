@@ -40,7 +40,7 @@ import org.springframework.jndi.JndiObjectFactoryBean;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 import eu.etaxonomy.cdm.api.config.CdmConfigurationKeys;
-import eu.etaxonomy.cdm.common.ConfigFileUtil;
+import eu.etaxonomy.cdm.config.ConfigFileUtil;
 import eu.etaxonomy.cdm.database.WrappedCdmDataSource;
 import eu.etaxonomy.cdm.database.update.CdmUpdater;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData;

@@ -18,9 +18,9 @@ import java.net.URL;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.common.ConfigFileUtil;
 import eu.etaxonomy.cdm.common.FileCopy;
 import eu.etaxonomy.cdm.config.CdmPersistentXMLSource;
+import eu.etaxonomy.cdm.config.ConfigFileUtil;
 
 public class CdmApplicationUtils {
     private static final Logger logger = Logger.getLogger(CdmApplicationUtils.class);
