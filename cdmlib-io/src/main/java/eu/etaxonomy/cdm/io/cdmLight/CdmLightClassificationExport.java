@@ -53,6 +53,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.description.TaxonInteraction;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -129,29 +130,6 @@ public class CdmLightClassificationExport
             IProgressMonitor monitor = state.getConfig().getProgressMonitor();
             CdmLightExportConfigurator config = state.getConfig();
             config.setFieldsTerminatedBy(",");
-
-//            if (config.getTaxonNodeFilter().getTaxonNodesFilter().isEmpty() && config.getTaxonNodeFilter().getClassificationFilter().isEmpty()){
-//                //TODO
-//                state.setEmptyData();
-//                return;
-//            }
-
-
-
-//            for (LogicFilter<Classification> classificationFilter : config.getTaxonNodeFilter().getClassificationFilter()){
-//                UUID classificationUuid = classificationFilter.getUuid();
-//                Classification classification = getClassificationService().find(classificationUuid);
-//                if (classification == null){
-//                    String message = String.format("Classification for given classification UUID not found. No data imported for %s", classificationUuid.toString());
-//                    state.getResult().addWarning(message);
-//                }else{
-//                    TaxonNode root = classification.getRootNode();
-//                    UUID uuid = root.getUuid();
-//                    root = getTaxonNodeService().load(uuid);
-//                    handleSingleClassification(state, root.getUuid());
-//                }
-//            }
-
 
             @SuppressWarnings("unchecked")
             TaxonNodeOutStreamPartitioner<XmlExportState> partitioner
@@ -316,6 +294,7 @@ public class CdmLightClassificationExport
             List<DescriptionElementBase> simpleFacts = new ArrayList<>();
             List<DescriptionElementBase> specimenFacts = new ArrayList<>();
             List<DescriptionElementBase> distributionFacts = new ArrayList<>();
+            List<DescriptionElementBase> taxonInteractionsFacts = new ArrayList<>();
             List<DescriptionElementBase> commonNameFacts = new ArrayList<>();
             List<DescriptionElementBase> usageFacts = new ArrayList<>();
             for (TaxonDescription description: descriptions){
@@ -328,6 +307,8 @@ public class CdmLightClassificationExport
                             distributionFacts.add(element);
                         }else if (element instanceof IndividualsAssociation || isSpecimenFeature(element.getFeature())){
                             specimenFacts.add(element);
+                        }else if (element.getFeature().isSupportsTaxonInteraction()){
+                            taxonInteractionsFacts.add(element);
                         }else{
                             simpleFacts.add(element);
                         }
@@ -345,6 +326,9 @@ public class CdmLightClassificationExport
             }
             if (!simpleFacts.isEmpty()){
                 handleSimpleFacts(state, taxon, simpleFacts);
+            }
+            if (!taxonInteractionsFacts.isEmpty()){
+                handleTaxonInteractionsFacts(state, taxon, taxonInteractionsFacts);
             }
         } else if (cdmBase instanceof TaxonName){
             TaxonName name = CdmBase.deproxy(cdmBase, TaxonName.class);
@@ -414,6 +398,35 @@ public class CdmLightClassificationExport
                     cdmBaseStr(cdmBase) + ": " + e.getMessage());
         }
     }
+
+    /**
+     * @param state
+     * @param taxon
+     * @param simpleFacts
+     */
+    private void handleTaxonInteractionsFacts(CdmLightExportState state, CdmBase cdmBase,
+            List<DescriptionElementBase> taxonInteractionsFacts) {
+        CdmLightExportTable table = CdmLightExportTable.TAXON_INTERACTION_FACT;
+        for (DescriptionElementBase element: taxonInteractionsFacts){
+            try {
+
+                    String[] csvLine = new  String[table.getSize()];
+
+                    csvLine[table.getIndex(CdmLightExportTable.FACT_ID)] = getId(state, element);
+                    handleSource(state, element, table);
+                    csvLine[table.getIndex(CdmLightExportTable.TAXON_FK)] = getId(state, cdmBase);
+                    csvLine[table.getIndex(CdmLightExportTable.TAXON2_FK)] = getId(state, ((TaxonInteraction)element).getTaxon2());
+                    csvLine[table.getIndex(CdmLightExportTable.DESCRIPTION)] =  createMultilanguageString(((TaxonInteraction)element).getDescription());
+                    state.getProcessor().put(table, element, csvLine);
+
+            } catch (Exception e) {
+                state.getResult().addException(e, "An unexpected error occurred when handling taxon interaction" +
+                        cdmBaseStr(element) + ": " + e.getMessage());
+            }
+        }
+
+    }
+
 
     /**
      * @param state
