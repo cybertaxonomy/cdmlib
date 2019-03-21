@@ -493,9 +493,9 @@ public class CdmLightClassificationExport
                csvLine[table.getIndex(CdmLightExportTable.FACT_ID)] = getId(state, element);
                if (cdmBase instanceof Taxon){
                    csvLine[table.getIndex(CdmLightExportTable.TAXON_FK)] = getId(state, cdmBase);
-                   csvLine[table.getIndex(CdmLightExportTable.NAME_FK)] = "";
+                   //csvLine[table.getIndex(CdmLightExportTable.NAME_FK)] = "";
                }else if (cdmBase instanceof TaxonName){
-                   csvLine[table.getIndex(CdmLightExportTable.TAXON_FK)] = "";
+                   //csvLine[table.getIndex(CdmLightExportTable.TAXON_FK)] = "";
                    csvLine[table.getIndex(CdmLightExportTable.NAME_FK)] = getId(state, cdmBase);
                }
                csvLine[table.getIndex(CdmLightExportTable.FACT_CATEGORY)] = textData.getFeature().getLabel();
