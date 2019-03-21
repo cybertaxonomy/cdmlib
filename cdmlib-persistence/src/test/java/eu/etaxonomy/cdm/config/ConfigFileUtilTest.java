@@ -17,7 +17,6 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 
-
 public class ConfigFileUtilTest {
 
 
@@ -29,8 +28,10 @@ public class ConfigFileUtilTest {
 	@Test
 	@Ignore
 	public void testGetHomeDir() {
-		Assert.assertEquals("", ConfigFileUtil.getCdmHomeDir());
+	    String userHome = System.getProperty("user.home");
+		Assert.assertEquals(userHome, ConfigFileUtil.getCdmHomeDir());
 	}
+
 
 
 }
