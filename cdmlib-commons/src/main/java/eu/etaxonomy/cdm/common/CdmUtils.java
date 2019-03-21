@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.common;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -32,7 +33,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 /**
- * Util class for consistent access to and creation of per instance application configuration files.
  *
  * @author a.mueller
  * @author a.kohlbecker
@@ -40,6 +40,37 @@ import org.apache.log4j.Logger;
 public class CdmUtils {
 
     private static final Logger logger = Logger.getLogger(CdmUtils.class);
+
+    //folder separator
+    static String folderSeparator;
+
+    static final String MUST_EXIST_FILE = "MUST-EXIST.txt";
+
+
+    /**
+     * @return
+     */
+    static public String getFolderSeperator(){
+        if (folderSeparator == null){
+            URL url = CdmUtils.class.getResource("/"+ MUST_EXIST_FILE);
+            if ( url != null && ! urlIsJarOrBundle(url) ){
+                folderSeparator =  File.separator;
+            }else{
+                folderSeparator = "/";
+            }
+        }
+        return folderSeparator;
+    }
+
+
+    /**
+     * @param url
+     * @return
+     */
+    static private boolean urlIsJarOrBundle(URL url){
+        return url.getProtocol().startsWith("jar") || url.getProtocol().startsWith("bundleresource");
+    }
+
 
     /**
      * Returns the an InputStream for a read-only source

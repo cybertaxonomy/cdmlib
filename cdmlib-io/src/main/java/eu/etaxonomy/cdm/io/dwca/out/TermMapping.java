@@ -19,7 +19,6 @@ import org.apache.log4j.Logger;
 
 import au.com.bytecode.opencsv.CSVReader;
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.config.ConfigFileUtil;
 
 /**
  * @author a.mueller
@@ -45,7 +44,7 @@ public class TermMapping {
 
 
 	private void readMapping(String filename) throws IOException {
-		String strResourceFileName = "mapping" + ConfigFileUtil.getFolderSeperator() + filename;
+		String strResourceFileName = "mapping" + CdmUtils.getFolderSeperator() + filename;
 		InputStreamReader isr = CdmUtils.getUtf8ResourceReader(strResourceFileName);
 		CSVReader reader = new CSVReader(isr, separator);
 
