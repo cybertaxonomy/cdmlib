@@ -26,13 +26,12 @@ import org.hibernate.dialect.H2CorrectedDialect;
 import org.hibernate.dialect.MySQL5MyISAMUtf8Dialect;
 import org.hibernate.dialect.PostgreSQL82Dialect;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.core.io.FileSystemResource;
@@ -85,6 +84,9 @@ import eu.etaxonomy.cdm.remote.config.AbstractWebApplicationConfigurer;
  *
  */
 @Configuration
+// cdmlib-remote.properties is used by developers to define the datasource bean to use from
+// the datasources.xml. It is not relevant for production systems.
+@PropertySource("file:${user.home}/.cdmLibrary/cdmlib-remote.properties")
 public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
 
     public static final Logger logger = Logger.getLogger(DataSourceConfigurer.class);
@@ -137,9 +139,6 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
     public void setBeanDefinitionFile(String filename){
         beanDefinitionFile = filename;
     }
-
-    @Autowired
-    private ConfigurableEnvironment env;
 
     private String dataSourceId = null;
 

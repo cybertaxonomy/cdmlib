@@ -18,6 +18,7 @@ import java.util.Properties;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.web.context.WebApplicationContext;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -30,6 +31,9 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 public abstract class AbstractWebApplicationConfigurer {
 
     public static final Logger logger = Logger.getLogger(AbstractWebApplicationConfigurer.class);
+
+    @Autowired
+    protected ConfigurableEnvironment env;
 
     private static final String CDMLIB_REMOTE_PROPERTIES = "cdmlib-remote.properties";
 
@@ -47,7 +51,7 @@ public abstract class AbstractWebApplicationConfigurer {
             userDefinedProperties = new Properties();
             try {
                 InputStream in = new FileInputStream(
-                            CdmUtils.PER_USER_CDM_FOLDER
+                            CdmUtils.perUserCdmFolder
                             + java.io.File.separator
                             + CDMLIB_REMOTE_PROPERTIES
                     );
@@ -87,24 +91,21 @@ public abstract class AbstractWebApplicationConfigurer {
      * @return
      */
     protected String findProperty(String property, boolean required) {
-        // 1. look for the property in the ServletContext
-        Object obj = webApplicationContext.getServletContext().getAttribute(property);
-        String value = (String)obj;
-        // 2. look for the property in environment variables of the OS
-        if(value == null){
-            value = System.getProperty(property);
-        }
-        if(value == null && userDefinedProperties != null){
-            value = userDefinedProperties.getProperty(property);
-        }
-        if(value == null && required){
-            logger.error("property {" + property + "} not found.");
-            logger.error("--> This property can be set in three optional ways:");
-            logger.error("--> 		1. as attribute to the ServletContext");
-            logger.error("--> 		2. as system property e.g. -D" + property);
-            logger.error("--> 		3. in ~/.cdmLibrary/cdmlib-remote.properties");
-            logger.error("Stopping application ...");
-            System.exit(-1);
+        String value = null;
+        if(required){
+            try {
+                value = env.getRequiredProperty(property);
+            } catch (IllegalStateException e) {
+                logger.error("property {" + property + "} not found.");
+                logger.error("--> This property can be set in three optional ways:");
+                logger.error("--> 		1. as attribute to the ServletContext");
+                logger.error("--> 		2. as system property e.g. -D" + property);
+                // logger.error("--> 		3. in ~/.cdmLibrary/cdmlib-remote.properties");
+                logger.error("Stopping application ...");
+                System.exit(-1);
+            }
+        } else {
+            value = env.getProperty(property);
         }
         return value;
     }

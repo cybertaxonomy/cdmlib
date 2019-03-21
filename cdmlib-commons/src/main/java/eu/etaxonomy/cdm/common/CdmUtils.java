@@ -31,6 +31,8 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.context.EnvironmentAware;
+import org.springframework.core.env.Environment;
 
 /**
  * Util class for consistent access to and creation of per instance application configuration files.
@@ -38,13 +40,13 @@ import org.apache.log4j.Logger;
  * @author a.mueller
  * @author a.kohlbecker
  */
-public class CdmUtils {
+public class CdmUtils implements EnvironmentAware {
 
     private static final Logger logger = Logger.getLogger(CdmUtils.class);
 
     // ============= TODO externalize into CdmFileUtils class ? ========== //
 
-    private static final String USER_HOME = System.getProperty("user.home");
+    private static String userHome = null;
 
     /**
      * The per user cdm folder name: ".cdmLibrary"
@@ -54,7 +56,7 @@ public class CdmUtils {
     /**
      * The per user cdm folder "~/.cdmLibrary"
      */
-    public final static File PER_USER_CDM_FOLDER = new File(USER_HOME + File.separator + CDM_FOLDER_NAME );
+    public static File perUserCdmFolder = null;
 
     /**
      * suggested sub folder for web app related data and configurations.
@@ -68,8 +70,20 @@ public class CdmUtils {
     //folder separator
     static String folderSeparator;
 
+    protected Environment env;
+
+    @Override
+    public void setEnvironment(Environment environment) {
+        this.env = environment;
+        if(userHome == null){
+            CdmUtils.userHome = env.getRequiredProperty("user.home");
+            CdmUtils.perUserCdmFolder = new File(userHome + File.separator + CDM_FOLDER_NAME );
+            logger.info("user.home is set to " + CdmUtils.userHome);
+        }
+    }
+
     public static File getCdmHomeDir() {
-        return new File(PER_USER_CDM_FOLDER + File.separator);
+        return new File(perUserCdmFolder + File.separator);
     }
 
 	/**
@@ -668,5 +682,6 @@ public class CdmUtils {
     public static String quoteRegExWithWildcard(String regEx){
         return Pattern.quote(regEx).replace("*", "\\E.*\\Q").replace("\\Q\\E", "");
     }
+
 
 }
