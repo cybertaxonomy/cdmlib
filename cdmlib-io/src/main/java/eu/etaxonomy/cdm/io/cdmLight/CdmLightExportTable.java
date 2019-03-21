@@ -27,6 +27,7 @@ public enum CdmLightExportTable {
     SYNONYM("Synonym", synonymColumns()),
     REFERENCE("Reference", referenceColumns()),
     SIMPLE_FACT("SimpleFact", simpleFactsColumns()),
+    TAXON_INTERACTION_FACT("SimpleFact", taxonInteractionFactsColumns()),
     SPECIMEN_FACT("SpecimenFact", specimenFactsColumns()),
     GEOGRAPHIC_AREA_FACT("GeographicAreaFact", geographicAreaFactsColumns()),
     COMMON_NAME_FACT("CommonNameFact", commonNameFactsColumns()),
@@ -191,6 +192,10 @@ public enum CdmLightExportTable {
     protected static final String SPECIMEN_NOTES = "Specimen Notes";
     protected static final String SPECIMEN_DESCRIPTION = "Specimen Description";
 
+    // TaxonInteraction Facts
+    protected static final String TAXON2_FK = "Taxon2_FK";
+    protected static final String DESCRIPTION = "Description";
+
 
     //Geographic Area Facts
     protected static final String AREA_LABEL = "AreaLabel";
@@ -219,7 +224,9 @@ public enum CdmLightExportTable {
     final static String[] nameFactColumns() {
         return new String[]{FACT_ID, NAME_FK, FACT_TEXT, LANGUAGE, MEDIA_URI, FACT_CATEGORY};
     }
-
+    final static String[] taxonInteractionFactsColumns(){
+        return new String[]{FACT_ID, TAXON_FK, TAXON2_FK, DESCRIPTION};
+    }
 
     final static String[] identifierColumns() {
 
