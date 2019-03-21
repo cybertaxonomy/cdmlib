@@ -13,8 +13,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.util.Properties;
+
+import org.apache.log4j.Logger;
+import org.springframework.context.EnvironmentAware;
+import org.springframework.core.env.Environment;
 
 /**
  *
@@ -22,11 +27,134 @@ import java.util.Properties;
  * @since May 8, 2017
  *
  */
-public class ConfigFileUtil {
+public class ConfigFileUtil implements EnvironmentAware {
+
+    private static final Logger logger = Logger.getLogger(ConfigFileUtil.class);
+
+    private static String userHome = null;
 
     /**
-     *
+     * The per user cdm folder name: ".cdmLibrary"
      */
+    private static final String CDM_FOLDER_NAME = ".cdmLibrary";
+
+    /**
+     * The per user cdm folder "~/.cdmLibrary"
+     */
+    private static File perUserCdmFolder = null;
+
+    public static File perUserCdmFolder() {
+        return perUserCdmFolder;
+    }
+
+    /**
+     * suggested sub folder for web app related data and configurations.
+     * Each webapp instance should use a dedicated subfolder or file
+     * which is named by the data source bean id.
+     */
+    public static final String SUBFOLDER_WEBAPP = "remote-webapp";
+
+    static final String MUST_EXIST_FILE = "MUST-EXIST.txt";
+
+    //folder separator
+    static String folderSeparator;
+
+    protected Environment env;
+
+    @Override
+    public void setEnvironment(Environment environment) {
+        this.env = environment;
+        if(userHome == null){
+            ConfigFileUtil.userHome = env.getRequiredProperty("user.home");
+            ConfigFileUtil.perUserCdmFolder = new File(userHome + File.separator + CDM_FOLDER_NAME );
+            logger.info("user.home is set to " + ConfigFileUtil.userHome);
+        }
+    }
+
+
+    /**
+     * @return
+     */
+    static public String getFolderSeperator(){
+        if (folderSeparator == null){
+            URL url = CdmUtils.class.getResource("/"+ MUST_EXIST_FILE);
+            if ( url != null && ! urlIsJarOrBundle(url) ){
+                folderSeparator =  File.separator;
+            }else{
+                folderSeparator = "/";
+            }
+        }
+        return folderSeparator;
+    }
+
+
+    /**
+     * @param url
+     * @return
+     */
+    static private boolean urlIsJarOrBundle(URL url){
+        return url.getProtocol().startsWith("jar") || url.getProtocol().startsWith("bundleresource");
+    }
+
+
+    public static File getCdmHomeDir() {
+        return new File(perUserCdmFolder + File.separator);
+    }
+
+    /**
+     * Returns specified the sub folder of  {@link #CDM_FOLDER_NAME}.
+     * If the sub folder does not exist it will be created.
+     *
+     * @param subFolderName
+     * @return the sub folder or null in case the folder did not exist ant the attempt to create it has failed.
+     *
+     * @see {@link #SUBFOLDER_WEBAPP}
+     */
+    public static File getCdmHomeSubDir(String subFolderName) {
+
+        File parentFolder = getCdmHomeDir();
+        return ensureSubfolderExists(parentFolder, subFolderName);
+    }
+
+    /**
+     * Returns an instance specific folder folder in  {@link #CDM_FOLDER_NAME}/<code>subFolderName</code>
+     * Non existing folders will be created.
+     *
+     * @param subFolderName
+     *      The name of a subfolded. In most cases this will be {@link #SUBFOLDER_WEBAPP}
+     * @param instanceName
+     *      The name of the application instance. The name should be related to the data source id.
+     * @return the sub folder or null in case the folder did not exist ant the attempt to create it has failed.
+     *
+     * @see {@link #SUBFOLDER_WEBAPP}
+     */
+    public static File getCdmInstanceSubDir(String subFolderName, String instanceName) {
+
+        File subfolder = ensureSubfolderExists(getCdmHomeDir(), subFolderName);
+        return ensureSubfolderExists(subfolder, instanceName);
+    }
+
+    /**
+     * @param subFolderName
+     * @param parentFolder
+     * @return
+     */
+    private static File ensureSubfolderExists(File parentFolder, String subFolderName) {
+        if (!parentFolder.exists()){
+            if (!parentFolder.mkdir()) {
+                throw new RuntimeException("Parent folder could not be created: " + parentFolder.getAbsolutePath());
+            }
+        }
+
+        File subfolder = new File(parentFolder, subFolderName);
+        // if the directory does not exist, create it
+        if (!subfolder.exists()) {
+            if (!subfolder.mkdir()) {
+                throw new RuntimeException("Subfolder could not be created: " + subfolder.getAbsolutePath());
+            }
+        }
+        return subfolder;
+    }
     public static final String CDM_CONFIGFILE_OVERRIDE = "cdm.configfile.override.";
 
     private Properties props = null;
@@ -70,7 +198,7 @@ public class ConfigFileUtil {
         if(override != null){
             return new File(override);
         } else {
-            File configFolder = CdmUtils.getCdmInstanceSubDir(CdmUtils.SUBFOLDER_WEBAPP, instanceName);
+            File configFolder = ConfigFileUtil.getCdmInstanceSubDir(ConfigFileUtil.SUBFOLDER_WEBAPP, instanceName);
             return new File(configFolder, propertiesSet + ".properties");
         }
     }

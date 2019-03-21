@@ -15,7 +15,6 @@ import java.util.List;
 
 import org.jdom.Document;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 
 
@@ -49,7 +48,7 @@ public interface IPublishOutputModule {
 
     /**
      * Returns all available stylesheets for this output module.
-     * Search path will include the users {@link CdmUtils.perUserCdmFolder} directory to allow for custom stylesheets
+     * Search path will include the users {@link ConfigFileUtil.perUserCdmFolder()} directory to allow for custom stylesheets
      *
      * @return a set of xsl files
      * @throws IOException TODO

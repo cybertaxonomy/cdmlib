@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.common;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -31,8 +30,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.springframework.context.EnvironmentAware;
-import org.springframework.core.env.Environment;
 
 /**
  * Util class for consistent access to and creation of per instance application configuration files.
@@ -40,108 +37,9 @@ import org.springframework.core.env.Environment;
  * @author a.mueller
  * @author a.kohlbecker
  */
-public class CdmUtils implements EnvironmentAware {
+public class CdmUtils {
 
     private static final Logger logger = Logger.getLogger(CdmUtils.class);
-
-    // ============= TODO externalize into CdmFileUtils class ? ========== //
-
-    private static String userHome = null;
-
-    /**
-     * The per user cdm folder name: ".cdmLibrary"
-     */
-    private static final String CDM_FOLDER_NAME = ".cdmLibrary";
-
-    /**
-     * The per user cdm folder "~/.cdmLibrary"
-     */
-    public static File perUserCdmFolder = null;
-
-    /**
-     * suggested sub folder for web app related data and configurations.
-     * Each webapp instance should use a dedicated subfolder or file
-     * which is named by the data source bean id.
-     */
-    public static final String SUBFOLDER_WEBAPP = "remote-webapp";
-
-    static final String MUST_EXIST_FILE = "MUST-EXIST.txt";
-
-    //folder separator
-    static String folderSeparator;
-
-    protected Environment env;
-
-    @Override
-    public void setEnvironment(Environment environment) {
-        this.env = environment;
-        if(userHome == null){
-            CdmUtils.userHome = env.getRequiredProperty("user.home");
-            CdmUtils.perUserCdmFolder = new File(userHome + File.separator + CDM_FOLDER_NAME );
-            logger.info("user.home is set to " + CdmUtils.userHome);
-        }
-    }
-
-    public static File getCdmHomeDir() {
-        return new File(perUserCdmFolder + File.separator);
-    }
-
-	/**
-	 * Returns specified the sub folder of  {@link #CDM_FOLDER_NAME}.
-	 * If the sub folder does not exist it will be created.
-	 *
-	 * @param subFolderName
-	 * @return the sub folder or null in case the folder did not exist ant the attempt to create it has failed.
-	 *
-	 * @see {@link #SUBFOLDER_WEBAPP}
-	 */
-	public static File getCdmHomeSubDir(String subFolderName) {
-
-		File parentFolder = getCdmHomeDir();
-        return ensureSubfolderExists(parentFolder, subFolderName);
-	}
-
-	/**
-     * Returns an instance specific folder folder in  {@link #CDM_FOLDER_NAME}/<code>subFolderName</code>
-     * Non existing folders will be created.
-     *
-     * @param subFolderName
-     *      The name of a subfolded. In most cases this will be {@link #SUBFOLDER_WEBAPP}
-     * @param instanceName
-     *      The name of the application instance. The name should be related to the data source id.
-     * @return the sub folder or null in case the folder did not exist ant the attempt to create it has failed.
-     *
-     * @see {@link #SUBFOLDER_WEBAPP}
-     */
-    public static File getCdmInstanceSubDir(String subFolderName, String instanceName) {
-
-        File subfolder = ensureSubfolderExists(getCdmHomeDir(), subFolderName);
-        return ensureSubfolderExists(subfolder, instanceName);
-    }
-
-    /**
-     * @param subFolderName
-     * @param parentFolder
-     * @return
-     */
-    private static File ensureSubfolderExists(File parentFolder, String subFolderName) {
-        if (!parentFolder.exists()){
-            if (!parentFolder.mkdir()) {
-                throw new RuntimeException("Parent folder could not be created: " + parentFolder.getAbsolutePath());
-            }
-        }
-
-        File subfolder = new File(parentFolder, subFolderName);
-		// if the directory does not exist, create it
-		if (!subfolder.exists()) {
-			if (!subfolder.mkdir()) {
-				throw new RuntimeException("Subfolder could not be created: " + subfolder.getAbsolutePath());
-			}
-		}
-		return subfolder;
-    }
-
-	// ============= END of CdmFileUtils ========== //
 
     /**
      * Returns the an InputStream for a read-only source
@@ -169,29 +67,6 @@ public class CdmUtils implements EnvironmentAware {
     }
 
 
-    /**
-     * @return
-     */
-    static public String getFolderSeperator(){
-        if (folderSeparator == null){
-            URL url = CdmUtils.class.getResource("/"+ MUST_EXIST_FILE);
-            if ( url != null && ! urlIsJarOrBundle(url) ){
-                folderSeparator =  File.separator;
-            }else{
-                folderSeparator = "/";
-            }
-        }
-        return folderSeparator;
-    }
-
-
-    /**
-     * @param url
-     * @return
-     */
-    static private boolean urlIsJarOrBundle(URL url){
-        return url.getProtocol().startsWith("jar") || url.getProtocol().startsWith("bundleresource");
-    }
 
     /**
      * Returns the file name for the file in which 'clazz' is to be found (helps finding according libraries)

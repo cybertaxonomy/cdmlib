@@ -24,6 +24,7 @@ import org.springframework.stereotype.Component;
 
 import au.com.bytecode.opencsv.CSVReader;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.ConfigFileUtil;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
@@ -196,7 +197,7 @@ public class TermLoader implements ITermLoader {
 	 */
 	private CSVReader getCsvReader(VocabularyEnum vocType) throws IOException {
 		String filename = vocType.name()+".csv";
-		String strResourceFileName = "terms" + CdmUtils.getFolderSeperator() + filename;
+		String strResourceFileName = "terms" + ConfigFileUtil.getFolderSeperator() + filename;
 		if (logger.isDebugEnabled()){logger.debug("strResourceFileName is " + strResourceFileName);}
 		CSVReader reader = new CSVReader(CdmUtils.getUtf8ResourceReader(strResourceFileName));
 		return reader;
