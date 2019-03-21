@@ -220,7 +220,11 @@ public class FeatureNode <T extends DefinedTermBase> extends VersionableEntity
 	}
 
 	protected void setFeatureTree(FeatureTree<T> featureTree) {
-		checkTermType(featureTree);
+	    IHasTermType.checkTermTypeNull(featureTree);
+        if (this.getTermType() != featureTree.getTermType()
+                && !this.getTermType().isKindOf(featureTree.getTermType())){
+            throw new IllegalArgumentException("Term types must match");
+        }
 	    this.featureTree = featureTree;
 	}
 
@@ -236,7 +240,7 @@ public class FeatureNode <T extends DefinedTermBase> extends VersionableEntity
      * @see #getFeature()
      */
     public void setTerm(T term) {
-        checkTermType(term);
+        checkEqualTermType(term);
         this.feature = term;
     }
 
@@ -260,7 +264,7 @@ public class FeatureNode <T extends DefinedTermBase> extends VersionableEntity
 	 * @see				#getParent()
 	 */
 	protected void setParent(FeatureNode<T> parent) {
-		checkTermType(parent);
+	    checkTermType(parent);
 	    this.parent = parent;
 	}
 
@@ -570,8 +574,23 @@ public class FeatureNode <T extends DefinedTermBase> extends VersionableEntity
      * term has not the same term type as this term or if term type is null.
      * @param term
      */
-    private void checkTermType(IHasTermType term) {
+    private void checkEqualTermType(IHasTermType term) {
         IHasTermType.checkTermTypes(term, this);
+    }
+
+    /**
+     * Throws {@link IllegalArgumentException} if the given
+     * term has not the same term type as this term or if it is no sub or super type
+     * or if term type is null.
+     * @param term
+     */
+    private void checkTermType(IHasTermType term) {
+        IHasTermType.checkTermTypeNull(term);
+        if (this.getTermType() != term.getTermType()
+                && !this.getTermType().isKindOf(term.getTermType())
+                && !term.getTermType().isKindOf(this.getTermType())){
+            throw new IllegalArgumentException("Term types must match");
+        }
     }
 
 	/**
