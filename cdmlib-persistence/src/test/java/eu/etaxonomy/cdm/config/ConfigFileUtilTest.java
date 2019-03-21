@@ -9,11 +9,7 @@
 
 package eu.etaxonomy.cdm.config;
 
-import static org.junit.Assert.assertNotNull;
-
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -24,20 +20,10 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 
 public class ConfigFileUtilTest {
 
-	@Test
-	public void testGetReadableResourceStream() {
-		String resourceFileName = ConfigFileUtil.MUST_EXIST_FILE;
-		try {
-			InputStream inputStream = CdmUtils.getReadableResourceStream(resourceFileName);
-			assertNotNull(inputStream);
-		} catch (IOException e) {
-			Assert.fail("IOException");
-		}
-	}
 
 	@Test
 	public void testGetFolderSeperator() {
-		Assert.assertEquals(File.separator, ConfigFileUtil.getFolderSeperator());
+		Assert.assertEquals(File.separator, CdmUtils.getFolderSeperator());
 	}
 
 	@Test

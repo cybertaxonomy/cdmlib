@@ -13,7 +13,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.util.Properties;
 
@@ -21,13 +20,11 @@ import org.apache.log4j.Logger;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
-
 /**
+ * Utility class for consistent access to and creation of per instance application configuration files.
  *
+ * @author a.mueller
  * @author a.kohlbecker
- * @since May 8, 2017
- *
  */
 public class ConfigFileUtil implements EnvironmentAware {
 
@@ -56,9 +53,6 @@ public class ConfigFileUtil implements EnvironmentAware {
      */
     public static final String SUBFOLDER_WEBAPP = "remote-webapp";
 
-    static final String MUST_EXIST_FILE = "MUST-EXIST.txt";
-
-
     protected Environment env;
 
     @Override
@@ -69,33 +63,6 @@ public class ConfigFileUtil implements EnvironmentAware {
             ConfigFileUtil.perUserCdmFolder = new File(userHome + File.separator + CDM_FOLDER_NAME );
             logger.info("user.home is set to " + ConfigFileUtil.userHome);
         }
-    }
-
-    //folder separator
-    static String folderSeparator;
-
-    /**
-     * @return
-     */
-    static public String getFolderSeperator(){
-        if (folderSeparator == null){
-            URL url = CdmUtils.class.getResource("/"+ MUST_EXIST_FILE);
-            if ( url != null && ! urlIsJarOrBundle(url) ){
-                folderSeparator =  File.separator;
-            }else{
-                folderSeparator = "/";
-            }
-        }
-        return folderSeparator;
-    }
-
-
-    /**
-     * @param url
-     * @return
-     */
-    static private boolean urlIsJarOrBundle(URL url){
-        return url.getProtocol().startsWith("jar") || url.getProtocol().startsWith("bundleresource");
     }
 
 

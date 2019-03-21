@@ -9,6 +9,10 @@
 
 package eu.etaxonomy.cdm.common;
 
+import static org.junit.Assert.assertNotNull;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Level;
@@ -113,6 +117,17 @@ public class CdmUtilsTest {
 //        String matchQuote = Matcher.quoteReplacement(str);
 //        System.out.println(matchQuote);
 //        System.out.println(CdmUtils.quoteRegExWithWildcard(str));
+    }
+
+    @Test
+    public void testGetReadableResourceStream() {
+        String resourceFileName = CdmUtils.MUST_EXIST_FILE;
+        try {
+            InputStream inputStream = CdmUtils.getReadableResourceStream(resourceFileName);
+            assertNotNull(inputStream);
+        } catch (IOException e) {
+            Assert.fail("IOException");
+        }
     }
 
 
