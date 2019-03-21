@@ -86,7 +86,7 @@ import eu.etaxonomy.cdm.remote.config.AbstractWebApplicationConfigurer;
 @Configuration
 // cdmlib-remote.properties is used by developers to define the datasource bean to use from
 // the datasources.xml. It is not relevant for production systems.
-@PropertySource("file:${user.home}/.cdmLibrary/cdmlib-remote.properties")
+@PropertySource(value="file:${user.home}/.cdmLibrary/cdmlib-remote.properties", ignoreResourceNotFound=true)
 public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
 
     public static final Logger logger = Logger.getLogger(DataSourceConfigurer.class);
