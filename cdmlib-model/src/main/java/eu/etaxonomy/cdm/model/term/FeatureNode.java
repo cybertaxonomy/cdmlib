@@ -220,13 +220,7 @@ public class FeatureNode <T extends DefinedTermBase> extends VersionableEntity
 	}
 
 	protected void setFeatureTree(FeatureTree<T> featureTree) {
-	    if(featureTree!=null){
-	        IHasTermType.checkTermTypeNull(featureTree);
-	        if (this.getTermType() != featureTree.getTermType()
-	                && !this.getTermType().isKindOf(featureTree.getTermType())){
-	            throw new IllegalArgumentException("Term types must match");
-	        }
-	    }
+	    checkTermType(featureTree);
 	    this.featureTree = featureTree;
 	}
 
@@ -242,7 +236,7 @@ public class FeatureNode <T extends DefinedTermBase> extends VersionableEntity
      * @see #getFeature()
      */
     public void setTerm(T term) {
-        checkEqualTermType(term);
+        checkTermTypeKindOf(term);
         this.feature = term;
     }
 
@@ -266,9 +260,7 @@ public class FeatureNode <T extends DefinedTermBase> extends VersionableEntity
 	 * @see				#getParent()
 	 */
 	protected void setParent(FeatureNode<T> parent) {
-	    if(parent!=null){
-	        checkTermType(parent);
-	    }
+	    checkTermType(parent);
 	    this.parent = parent;
 	}
 
@@ -578,7 +570,7 @@ public class FeatureNode <T extends DefinedTermBase> extends VersionableEntity
      * term has not the same term type as this term or if term type is null.
      * @param term
      */
-    private void checkEqualTermType(IHasTermType term) {
+    private void checkTermType(IHasTermType term) {
         IHasTermType.checkTermTypes(term, this);
     }
 
@@ -588,13 +580,8 @@ public class FeatureNode <T extends DefinedTermBase> extends VersionableEntity
      * or if term type is null.
      * @param term
      */
-    private void checkTermType(IHasTermType term) {
-        IHasTermType.checkTermTypeNull(term);
-        if (this.getTermType() != term.getTermType()
-                && !this.getTermType().isKindOf(term.getTermType())
-                && !term.getTermType().isKindOf(this.getTermType())){
-            throw new IllegalArgumentException("Term types must match");
-        }
+    private void checkTermTypeKindOf(IHasTermType descendant) {
+        IHasTermType.checkTermTypeEqualOrDescendant(this, descendant);
     }
 
 	/**
