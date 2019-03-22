@@ -65,7 +65,6 @@ public class ConfigFileUtil implements EnvironmentAware {
         }
     }
 
-
     public static File getCdmHomeDir() {
         return new File(perUserCdmFolder + File.separator);
     }
@@ -131,7 +130,7 @@ public class ConfigFileUtil implements EnvironmentAware {
     private String defaultContent = "";
 
     public ConfigFileUtil(){
-
+        super();
     }
 
     public ConfigFileUtil setDefaultContent(String content) {

@@ -125,19 +125,26 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
      */
     public static final String ATTRIBUTE_FORCE_SCHEMA_UPDATE = "cdm.forceSchemaUpdate";
 
-    protected static final String DATASOURCE_BEANDEF_DEFAULT = ConfigFileUtil.getCdmHomeDir().getPath() + File.separator + "datasources.xml";
-
-    protected static String beanDefinitionFile = DATASOURCE_BEANDEF_DEFAULT;
+    private static String beanDefinitionFile = null;
 
 
     /**
      * The file to load the {@link DataSource} beans from.
-     * This file is usually {@code ./.cdmLibrary/datasources.xml}
+     * This file is usually {@code ${user.home}/.cdmLibrary/datasources.xml}
+     * The variable <code>${user.home}</code>is determined by {@link ConfigFileUtil.getCdmHomeDir()}
+     *
      *
      * @param filename
      */
     public void setBeanDefinitionFile(String filename){
         beanDefinitionFile = filename;
+    }
+
+    public String getBeanDefinitionFile(){
+        if(beanDefinitionFile == null){
+            beanDefinitionFile = ConfigFileUtil.getCdmHomeDir().getPath() + File.separator + "datasources.xml";
+        }
+        return beanDefinitionFile;
     }
 
     private String dataSourceId = null;
@@ -299,11 +306,8 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
      */
     private DataSource loadDataSourceBean(String beanName) {
 
-        File f = new File("./");
-        System.err.println(f.getAbsolutePath());
-
         String beanDefinitionFileFromProperty = findProperty(CDM_BEAN_DEFINITION_FILE, false);
-        String path = (beanDefinitionFileFromProperty != null ? beanDefinitionFileFromProperty : beanDefinitionFile);
+        String path = (beanDefinitionFileFromProperty != null ? beanDefinitionFileFromProperty : getBeanDefinitionFile());
         logger.info("loading DataSourceBean '" + beanName + "' from: " + path);
         FileSystemResource file = new FileSystemResource(path);
         XmlBeanFactory beanFactory  = new XmlBeanFactory(file);
@@ -327,7 +331,7 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
     private DataSourceProperties loadDataSourceProperties() {
 
         String beanDefinitionFileFromProperty = findProperty(CDM_BEAN_DEFINITION_FILE, false);
-        String path = (beanDefinitionFileFromProperty != null ? beanDefinitionFileFromProperty : beanDefinitionFile);
+        String path = (beanDefinitionFileFromProperty != null ? beanDefinitionFileFromProperty : getBeanDefinitionFile());
         logger.info("loading dataSourceProperties from: " + path);
         FileSystemResource file = new FileSystemResource(path);
         XmlBeanFactory beanFactory  = new XmlBeanFactory(file);
