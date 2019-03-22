@@ -305,7 +305,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
             descriptionService.saveOrUpdate(description);
         }
 
-        commitAndStartNewTransaction(new String[]{"TAXONBASE"});
+        commitAndStartNewTransaction(new String[]{/*"TAXONBASE"*/});
         refreshLuceneIndex();
 
         int pageSize = 10;
