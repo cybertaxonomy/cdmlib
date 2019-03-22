@@ -56,8 +56,9 @@ public interface IHasTermType {
      * @see #checkTermTypes(IHasTermType, IHasTermType)
      */
     public static void checkTermTypeEqualOrDescendant(IHasTermType ancestor, IHasTermType descendant){
-        checkTermTypes(ancestor, descendant);
-        if (!descendant.getTermType().isKindOf(ancestor.getTermType())){
+        checkTermTypeNull(ancestor);
+        checkTermTypeNull(descendant);
+        if (ancestor.getTermType()!= descendant.getTermType() && !descendant.getTermType().isKindOf(ancestor.getTermType())){
             throw new IllegalStateException("Term types must match ");
         }
     }
