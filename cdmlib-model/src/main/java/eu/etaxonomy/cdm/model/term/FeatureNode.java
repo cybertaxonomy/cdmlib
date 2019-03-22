@@ -220,11 +220,13 @@ public class FeatureNode <T extends DefinedTermBase> extends VersionableEntity
 	}
 
 	protected void setFeatureTree(FeatureTree<T> featureTree) {
-	    IHasTermType.checkTermTypeNull(featureTree);
-        if (this.getTermType() != featureTree.getTermType()
-                && !this.getTermType().isKindOf(featureTree.getTermType())){
-            throw new IllegalArgumentException("Term types must match");
-        }
+	    if(featureTree!=null){
+	        IHasTermType.checkTermTypeNull(featureTree);
+	        if (this.getTermType() != featureTree.getTermType()
+	                && !this.getTermType().isKindOf(featureTree.getTermType())){
+	            throw new IllegalArgumentException("Term types must match");
+	        }
+	    }
 	    this.featureTree = featureTree;
 	}
 
@@ -264,7 +266,9 @@ public class FeatureNode <T extends DefinedTermBase> extends VersionableEntity
 	 * @see				#getParent()
 	 */
 	protected void setParent(FeatureNode<T> parent) {
-	    checkTermType(parent);
+	    if(parent!=null){
+	        checkTermType(parent);
+	    }
 	    this.parent = parent;
 	}
 
