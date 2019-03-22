@@ -26,6 +26,7 @@ import org.hibernate.dialect.H2CorrectedDialect;
 import org.hibernate.dialect.MySQL5MyISAMUtf8Dialect;
 import org.hibernate.dialect.PostgreSQL82Dialect;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -95,6 +96,9 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
     protected static final String HIBERNATE_SEARCH_DEFAULT_INDEX_BASE = "hibernate.search.default.indexBase";
     protected static final String CDM_BEAN_DEFINITION_FILE = "cdm.beanDefinitionFile";
 
+    @Autowired // Important!!!!
+    private ConfigFileUtil configFileUtil;
+
     /**
      * key for the spring environment to the datasource bean id aka instance name
      * @deprecated use CdmConfigurationKeys.CDM_DATA_SOURCE_ID instead
@@ -142,7 +146,7 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
 
     public String getBeanDefinitionFile(){
         if(beanDefinitionFile == null){
-            beanDefinitionFile = ConfigFileUtil.getCdmHomeDir().getPath() + File.separator + "datasources.xml";
+            beanDefinitionFile = configFileUtil.getCdmHomeDir().getPath() + File.separator + "datasources.xml";
         }
         return beanDefinitionFile;
     }
