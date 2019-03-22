@@ -191,6 +191,7 @@ public class FeatureTree <T extends DefinedTermBase>
 	 */
 	protected FeatureTree(TermType termType) {
         this.termType = termType;
+        checkTermType(this);  //check not null
 		root = FeatureNode.NewInstance(termType);
 		root.setFeatureTree(this);
 	}
