@@ -102,6 +102,8 @@ public abstract class AbstractWebApplicationConfigurer {
                 logger.error("--> 		2. as system property e.g. -D" + property);
                 // logger.error("--> 		3. in ~/.cdmLibrary/cdmlib-remote.properties");
                 logger.error("Stopping application ...");
+                RuntimeException re = new RuntimeException();
+                re.printStackTrace(System.err);
                 System.exit(-1);
             }
         } else {
