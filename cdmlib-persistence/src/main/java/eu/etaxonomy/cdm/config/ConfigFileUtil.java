@@ -47,6 +47,25 @@ public class ConfigFileUtil implements EnvironmentAware {
     }
 
     /**
+     * Provides the <code>${user.home}./cdmLibrary</code> folder without taking
+     * additional property sources into account which could be configured in
+     * the Spring application context.
+     * <p>
+     * This method can be used if an application context is not (yet) available, but
+     * should be used with caution, since this location might differ from the location
+     * used by other components of the application which make use of the
+     * {@link #perUserCdmFolder()} method.
+     *
+     * @deprecated Marked as deprecated as warning sign in the hope developers will
+     * read the java doc for this method when using it.
+     *
+     */
+    @Deprecated
+    public static File perUserCdmFolderFallback() {
+        return new File(System.getProperty("user.home"), CDM_FOLDER_NAME);
+    }
+
+    /**
      * suggested sub folder for web app related data and configurations.
      * Each webapp instance should use a dedicated subfolder or file
      * which is named by the data source bean id.
