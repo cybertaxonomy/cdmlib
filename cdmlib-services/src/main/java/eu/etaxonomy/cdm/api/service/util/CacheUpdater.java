@@ -117,6 +117,7 @@ public class CacheUpdater implements Serializable {
 
 			if (multipleResult == null){
 			    SubProgressMonitor subMonitor= new SubProgressMonitor(monitor, ticksForSubTasks);
+			    subMonitor.setTaskName("Update " + clazz.getSimpleName());
 				result.includeResult(this.handleSingleTableClass(clazz, subMonitor));
 			}else{
 			    result.includeResult(multipleResult);
