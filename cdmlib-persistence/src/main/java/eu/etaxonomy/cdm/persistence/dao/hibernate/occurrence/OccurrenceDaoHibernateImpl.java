@@ -904,6 +904,22 @@ public class OccurrenceDaoHibernateImpl
     }
 
     /**
+    *
+    * {@inheritDoc}
+    */
+   @Override
+   public long countByGeneticAccessionNumber(String accessionNumberString) {
+       String queryString = "SELECT count(dnaSample) FROM DnaSample dnaSample JOIN dnaSample.sequences sequence WHERE sequence.geneticAccessionNumber LIKE :accessionNumberString";
+       Query query = getSession().createQuery(queryString);
+       query.setParameter("accessionNumberString", accessionNumberString);
+       @SuppressWarnings("unchecked")
+       List<DerivedUnit> dnaSamples = query.list();
+       long result = (long)query.uniqueResult();
+
+       return result;
+   }
+
+    /**
      * @param dnaSamples
      * @param results
      */

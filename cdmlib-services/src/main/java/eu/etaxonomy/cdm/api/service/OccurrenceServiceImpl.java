@@ -897,14 +897,15 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
 
     @Override
-    public  List<DerivedUnit> findByAccessionNumber(
+    public  Pager<DerivedUnit> findByAccessionNumber(
             String accessionNumberString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths)  {
 
         List<DerivedUnit> records = new ArrayList<>();
         records = dao.findByGeneticAccessionNumber(accessionNumberString, propertyPaths);
+        long count = dao.countByGeneticAccessionNumber(accessionNumberString);
 
-        return records;
+        return new DefaultPagerImpl<>(pageNumber, Long.valueOf(count), pageSize, records);
 
     }
 
