@@ -52,7 +52,12 @@ public class CdmApplicationUtils {
                 if (file.exists()){
                     fileResourceDir = file.getParentFile();
                 }else{
-                    file = new File(ConfigFileUtil.getCdmHomeDir(), "writableResources" );
+                    File homeDir = ConfigFileUtil.getCdmHomeDir();
+                    if (homeDir.getPath().equals("null")){
+                        //no application context available
+                        homeDir = ConfigFileUtil.getCdmHomeDirFallback();
+                    }
+                    file = new File(homeDir, "writableResources" );
 
                     file.mkdirs();
                     copyResources(file);
