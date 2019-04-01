@@ -129,7 +129,8 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<FeatureNode, 
 
      @Override
      public UpdateResult addChildFeatureNode(FeatureNode node, DefinedTermBase term, int position){
-         FeatureNode childNode = FeatureNode.NewInstance(term);
+         FeatureNode childNode = FeatureNode.NewInstance(node.getTermType());
+         childNode.setTerm(term);
          UpdateResult result = new UpdateResult();
          if(position<0) {
              node.addChild(childNode);
