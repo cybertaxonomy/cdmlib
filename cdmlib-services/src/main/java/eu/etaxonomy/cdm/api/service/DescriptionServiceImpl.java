@@ -734,16 +734,16 @@ public class DescriptionServiceImpl
             }
             if (! isCopy){
                 description.removeElement(element);
-                if (description.getElements().isEmpty()){
-                   if (description instanceof TaxonDescription){
-                       TaxonDescription taxDescription = HibernateProxyHelper.deproxy(description, TaxonDescription.class);
-                       if (taxDescription.getTaxon() != null){
-                           taxDescription.getTaxon().removeDescription((TaxonDescription)description);
-                       }
-                   }
-                    dao.delete(description);
-
-                }//else{
+//                if (description.getElements().isEmpty()){
+//                   if (description instanceof TaxonDescription){
+//                       TaxonDescription taxDescription = HibernateProxyHelper.deproxy(description, TaxonDescription.class);
+//                       if (taxDescription.getTaxon() != null){
+//                           taxDescription.getTaxon().removeDescription((TaxonDescription)description);
+//                       }
+//                   }
+//                    dao.delete(description);
+//
+//                }//else{
 //                    dao.saveOrUpdate(description);
 //                    result.addUpdatedObject(description);
 //                }
