@@ -85,8 +85,8 @@ public class TypeDesignationSetManager {
     private static final String TYPE_DESIGNATION_SEPARATOR = ", ";
     private static final String TYPE_STATUS_SEPARATOR_WITHCITATION = ": ";
     private static final String TYPE_STATUS_PARENTHESIS_LEFT = " (";
-    private static final String TYPE_STATUS_PARENTHESIS_RIGHT = ")";
-    private static final String REFERENCE_PARENTHESIS_RIGHT = "]";
+    private static final String TYPE_STATUS_PARENTHESIS_RIGHT = ") ";
+    private static final String REFERENCE_PARENTHESIS_RIGHT = "] ";
     private static final String REFERENCE_PARENTHESIS_LEFT = " [";
     private static final String REFERENCE_FIDE = "fide ";
 
@@ -427,7 +427,7 @@ public class TypeDesignationSetManager {
                         boolean isPlural = typeDesignationWorkingSet.get(typeStatus).size() > 1;
                         if(!typeStatus.equals(NULL_STATUS)) {
                             workingsetBuilder.add(TagEnum.separator, TYPE_STATUS_PARENTHESIS_LEFT);
-                            workingsetBuilder.add(TagEnum.label, typeStatus.getLabel() + (isPlural ? "s:" : ":"));
+                            workingsetBuilder.add(TagEnum.label, typeStatus.getLabel() + (isPlural ? "s: " : ": "));
                          }
                         int typeDesignationCount = 0;
                         for(TypedEntityReference<?> typeDesignationEntityReference : createSortedList(typeDesignationWorkingSet, typeStatus)) {
@@ -439,10 +439,11 @@ public class TypeDesignationSetManager {
 
                             TypeDesignationBase<?> typeDes =  typeDesignations.get(typeDesignationEntityReference.getUuid());
                             if (typeDes.getCitation() != null){
-                               // workingsetBuilder.add(TagEnum.separator, REFERENCE_PARENTHESIS_LEFT);
+                                workingsetBuilder.add(TagEnum.separator, REFERENCE_PARENTHESIS_LEFT);
+                                workingsetBuilder.add(TagEnum.separator, REFERENCE_FIDE);
                                 String shortCitation = ((DefaultReferenceCacheStrategy)typeDes.getCitation().getCacheStrategy()).createShortCitation(typeDes.getCitation());
                                 workingsetBuilder.add(TagEnum.reference, shortCitation, typeDesignationEntityReference);
-                                //workingsetBuilder.add(TagEnum.separator, REFERENCE_PARENTHESIS_RIGHT);
+                                workingsetBuilder.add(TagEnum.separator, REFERENCE_PARENTHESIS_RIGHT);
                             }
 
                             if ((!typeStatus.equals(NULL_STATUS)) &&(typeDesignationCount ==  typeDesignationWorkingSet.get(typeStatus).size())){
