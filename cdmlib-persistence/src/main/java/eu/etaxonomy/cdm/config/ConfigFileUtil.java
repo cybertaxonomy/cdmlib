@@ -85,8 +85,14 @@ public class ConfigFileUtil implements EnvironmentAware {
     }
 
     public static File getCdmHomeDir() {
-        return new File(perUserCdmFolder + File.separator);
+       return new File(perUserCdmFolder + File.separator);
     }
+
+    @Deprecated
+    public static File getCdmHomeDirFallback() {
+        return new File(System.getProperty("user.home") + File.separator + CDM_FOLDER_NAME  + File.separator);
+     }
+
 
     /**
      * Returns specified the sub folder of  {@link #CDM_FOLDER_NAME}.
@@ -98,9 +104,13 @@ public class ConfigFileUtil implements EnvironmentAware {
      * @see {@link #SUBFOLDER_WEBAPP}
      */
     public static File getCdmHomeSubDir(String subFolderName) {
-
-        File parentFolder = getCdmHomeDir();
-        return ensureSubfolderExists(parentFolder, subFolderName);
+        try{
+            File parentFolder = getCdmHomeDir();
+            return ensureSubfolderExists(parentFolder, subFolderName);
+        }catch(Exception e){
+            File parentFolder = perUserCdmFolderFallback();
+            return ensureSubfolderExists(parentFolder, subFolderName);
+        }
     }
 
     /**
