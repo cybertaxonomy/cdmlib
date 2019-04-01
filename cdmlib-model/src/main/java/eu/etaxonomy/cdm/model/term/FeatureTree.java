@@ -171,7 +171,8 @@ public class FeatureTree <T extends DefinedTermBase>
 		FeatureNode<Feature> root = result.getRoot();
 
 		for (Feature feature : featureList){
-			FeatureNode<Feature> child = FeatureNode.NewInstance(feature);
+			FeatureNode<Feature> child = FeatureNode.NewInstance(TermType.Feature);
+			child.setTerm(feature);
 			root.addChild(child);
 		}
 
