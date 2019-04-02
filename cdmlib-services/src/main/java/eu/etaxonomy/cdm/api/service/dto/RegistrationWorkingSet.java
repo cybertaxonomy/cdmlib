@@ -217,4 +217,11 @@ public class RegistrationWorkingSet {
         return created;
     }
 
+    @Override
+    public String toString(){
+        StringBuilder str = new StringBuilder();
+        registrationDTOs.forEach(dto -> str.append(dto.getIdentifier() + " : " + dto.getSummary()).append("\n"));
+        return str.toString();
+    }
+
 }
