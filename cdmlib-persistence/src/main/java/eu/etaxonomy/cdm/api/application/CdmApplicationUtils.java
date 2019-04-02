@@ -53,7 +53,7 @@ public class CdmApplicationUtils {
                     fileResourceDir = file.getParentFile();
                 }else{
                     File homeDir = ConfigFileUtil.getCdmHomeDir();
-                    if (homeDir.getPath().equals("null")){
+                    if (homeDir == null){
                         //no application context available
                         homeDir = ConfigFileUtil.getCdmHomeDirFallback();
                     }
