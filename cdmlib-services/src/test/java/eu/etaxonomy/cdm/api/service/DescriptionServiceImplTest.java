@@ -204,6 +204,7 @@ public class DescriptionServiceImplTest extends CdmTransactionalIntegrationTest 
     }
 
     @Test
+   // @Ignore
     public void testMoveDescriptionElementsToTaxonAndResaveDeletedDescription(){
 
       //Create data
@@ -234,12 +235,14 @@ public class DescriptionServiceImplTest extends CdmTransactionalIntegrationTest 
 
         TaxonDescription targetDescription = (TaxonDescription)this.service.find(targetDescriptionData.getId());
         service.moveDescriptionElementsToDescription(sourceDescription.getElements(), targetDescription, false);
-        TaxonDescription removedDescription = (TaxonDescription) this.service.find(sourceDescription.getUuid());
-        assertNull(removedDescription);
+        //the description is not removed anymore to avoid deletion of not persisted description elements
+
+//        TaxonDescription removedDescription = (TaxonDescription) this.service.find(sourceDescription.getUuid());
+//        assertNull(removedDescription);
         this.service.save(targetDescription);
 
-        removedDescription = (TaxonDescription) this.service.find(targetDescription.getUuid());
-        assertNotNull(removedDescription);
+        targetDescription = (TaxonDescription) this.service.find(targetDescription.getUuid());
+        assertNotNull(targetDescription);
     }
 
     @Override
