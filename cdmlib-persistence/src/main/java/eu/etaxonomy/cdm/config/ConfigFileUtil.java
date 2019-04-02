@@ -85,12 +85,12 @@ public class ConfigFileUtil implements EnvironmentAware {
     }
 
     public static File getCdmHomeDir() {
-       return new File(perUserCdmFolder + File.separator);
+       return perUserCdmFolder;
     }
 
     @Deprecated
     public static File getCdmHomeDirFallback() {
-        return new File(System.getProperty("user.home") + File.separator + CDM_FOLDER_NAME  + File.separator);
+        return new File(perUserCdmFolder, CDM_FOLDER_NAME);
      }
 
 
