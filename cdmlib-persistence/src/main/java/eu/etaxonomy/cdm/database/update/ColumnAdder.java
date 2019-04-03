@@ -155,7 +155,7 @@ public class ColumnAdder extends AuditedSchemaUpdaterStepBase {
 			monitor.warning(warning);
 			throw new DatabaseTypeNotSupportedException(warning);
 		}
-		if (isNotNull){
+		if (isNotNull && !isAuditing){
 			updateQuery += " NOT NULL";
 		}
 		updateQuery = updateQuery.replace("@tableName", tableName);
