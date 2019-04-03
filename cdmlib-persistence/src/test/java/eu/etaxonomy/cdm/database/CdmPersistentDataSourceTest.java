@@ -41,6 +41,7 @@ import eu.etaxonomy.cdm.config.CdmPersistentXMLSource.CdmSourceProperties;
  * @author a.mueller
  *
  */
+@Ignore
 public class CdmPersistentDataSourceTest {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmPersistentDataSourceTest.class);

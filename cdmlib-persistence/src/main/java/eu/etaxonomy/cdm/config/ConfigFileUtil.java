@@ -47,6 +47,14 @@ public class ConfigFileUtil implements EnvironmentAware {
     }
 
     /**
+     * @deprecated use {@link #perUserCdmFolder()} instead
+     */
+    @Deprecated
+    public static File getCdmHomeDir() {
+        return perUserCdmFolder;
+    }
+
+    /**
      * Provides the <code>${user.home}./cdmLibrary</code> folder without taking
      * additional property sources into account which could be configured in
      * the Spring application context.
@@ -66,6 +74,14 @@ public class ConfigFileUtil implements EnvironmentAware {
     }
 
     /**
+     * @deprecated use {@link #perUserCdmFolderFallback()} instead
+     */
+    @Deprecated
+    public static File getCdmHomeDirFallback() {
+        return perUserCdmFolderFallback();
+    }
+
+    /**
      * suggested sub folder for web app related data and configurations.
      * Each webapp instance should use a dedicated subfolder or file
      * which is named by the data source bean id.
@@ -79,19 +95,10 @@ public class ConfigFileUtil implements EnvironmentAware {
         this.env = environment;
         if(userHome == null){
             ConfigFileUtil.userHome = env.getRequiredProperty("user.home");
-            ConfigFileUtil.perUserCdmFolder = new File(userHome + File.separator + CDM_FOLDER_NAME );
+            ConfigFileUtil.perUserCdmFolder = new File(userHome, CDM_FOLDER_NAME);
             logger.info("user.home is set to " + ConfigFileUtil.userHome);
         }
     }
-
-    public static File getCdmHomeDir() {
-       return perUserCdmFolder;
-    }
-
-    @Deprecated
-    public static File getCdmHomeDirFallback() {
-        return new File(perUserCdmFolder, CDM_FOLDER_NAME);
-     }
 
 
     /**
@@ -104,13 +111,30 @@ public class ConfigFileUtil implements EnvironmentAware {
      * @see {@link #SUBFOLDER_WEBAPP}
      */
     public static File getCdmHomeSubDir(String subFolderName) {
-        try{
-            File parentFolder = getCdmHomeDir();
-            return ensureSubfolderExists(parentFolder, subFolderName);
-        }catch(Exception e){
-            File parentFolder = perUserCdmFolderFallback();
-            return ensureSubfolderExists(parentFolder, subFolderName);
-        }
+
+        File parentFolder = getCdmHomeDir();
+        return ensureSubfolderExists(parentFolder, subFolderName);
+    }
+
+    /**
+     * Provides subfolders of <code>${user.home}./cdmLibrary</code> folder without taking
+     * additional property sources into account which could be configured in
+     * the Spring application context.
+     * <p>
+     * This method can be used if an application context is not (yet) available, but
+     * should be used with caution, since this location might differ from the location
+     * used by other components of the application which make use of the
+     * {@link #perUserCdmFolder()} method.
+     *
+     * @deprecated Marked as deprecated as warning sign in the hope developers will
+     * read the java doc for this method when using it.
+     *
+     */
+    @Deprecated
+    public static File getCdmHomeSubDirFallback(String subFolderName) {
+
+        File parentFolder = perUserCdmFolderFallback();
+        return ensureSubfolderExists(parentFolder, subFolderName);
     }
 
     /**
