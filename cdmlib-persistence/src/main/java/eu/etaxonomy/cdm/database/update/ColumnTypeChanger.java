@@ -24,9 +24,6 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 public class ColumnTypeChanger
         extends AuditedSchemaUpdaterStepBase {
 
-    /**
-     *
-     */
     private static final String _OLDXXX = "_oldxxx";
 
     private static final Logger logger = Logger.getLogger(ColumnTypeChanger.class);
@@ -162,7 +159,7 @@ public class ColumnTypeChanger
 			monitor.warning(warning);
 			throw new DatabaseTypeNotSupportedException(warning);
 		}
-		if (isNotNull){
+		if (isNotNull && !isAuditing){
 			if (datasource.getDatabaseType().equals(DatabaseTypeEnum.PostgreSQL)){
 				logger.warn("NOT NULL not implementd for POSTGRES");
 			}else{
