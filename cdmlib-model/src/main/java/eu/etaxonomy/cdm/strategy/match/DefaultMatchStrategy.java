@@ -41,6 +41,12 @@ import eu.etaxonomy.cdm.strategy.StrategyBase;
 import eu.etaxonomy.cdm.strategy.match.Match.ReplaceMode;
 
 /**
+ * Default match strategy that can be used to test if 2 instances of a class do match (are
+ * more or less duplicates). The matching strategies are usually taken from default
+ * matching rules, explicit matching rules defined via annotations on fields in classes
+ * or can be explicitly defined via setMatchMode() if another match rule is wanted.
+ * The strategy is generic and can be used for any model class.
+ *
  * @author a.mueller
  * @since 06.08.2009
  */
