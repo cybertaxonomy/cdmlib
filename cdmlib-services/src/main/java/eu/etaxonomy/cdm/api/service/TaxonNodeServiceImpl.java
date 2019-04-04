@@ -88,6 +88,9 @@ public class TaxonNodeServiceImpl
     private ITaxonService taxonService;
 
     @Autowired
+    private IReferenceService referenceService;
+
+    @Autowired
     private IDescriptiveDataSetService dataSetService;
 
     @Autowired
@@ -870,6 +873,10 @@ public class TaxonNodeServiceImpl
             taxon = newTaxonNode.getTaxon();
         }
         taxon.removeTaxonNode(newTaxonNode);
+        if (taxon.getSec().isPersited()){
+            Reference sec = referenceService.load(taxon.getSec().getUuid());
+            taxon.setSec(sec);
+        }
         if (taxon.getId() == 0){
             UUID taxonUUID = taxonService.saveOrUpdate(taxon);
             taxon = (Taxon) taxonService.load(taxonUUID);
