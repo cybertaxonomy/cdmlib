@@ -807,14 +807,18 @@ public class Reference
 	 * any longer using this reference as a nomenclatural reference. How does the
 	 * reference get informed about the fact that it is not nomenclaturally relevant
 	 * anymore?
+	 * @deprecated currently not supported and not in use, may be removed in future
 	 */
-	public boolean isNomenclaturallyRelevant(){
+	@Deprecated
+    public boolean isNomenclaturallyRelevant(){
 		return this.nomenclaturallyRelevant;
 	}
 
 	/**
 	 * @see #isNomenclaturallyRelevant()
+	 * @deprecated currently not supported and not in use, may be removed in future
 	 */
+	@Deprecated
 	public void setNomenclaturallyRelevant(boolean nomenclaturallyRelevant){
 		this.nomenclaturallyRelevant = nomenclaturallyRelevant;
 	}
