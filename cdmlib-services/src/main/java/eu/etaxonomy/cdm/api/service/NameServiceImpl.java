@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -85,7 +86,6 @@ import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.name.INomenclaturalStatusDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITypeDesignationDao;
-import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.dao.term.IOrderedTermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
@@ -110,6 +110,8 @@ public class NameServiceImpl
     protected IOrderedTermVocabularyDao orderedVocabularyDao;
     @Autowired
     protected IOccurrenceService occurrenceService;
+    @Autowired
+    protected ICollectionService collectionService;
     @Autowired
     @Qualifier("refEntDao")
     protected IReferencedEntityDao<ReferencedEntityBase> referencedEntityDao;
@@ -205,11 +207,11 @@ public class NameServiceImpl
 
     @Override
     @Transactional(readOnly = false)
-    public UpdateResult cloneTypeDesignation(TaxonName name, SpecimenTypeDesignation baseDesignation,
-            String accessionNumber, eu.etaxonomy.cdm.model.occurrence.Collection collection, SpecimenTypeDesignationStatus typeStatus){
+    public UpdateResult cloneTypeDesignation(UUID nameUuid, SpecimenTypeDesignation baseDesignation,
+            String accessionNumber, UUID collectionUuid, SpecimenTypeDesignationStatus typeStatus){
         UpdateResult result = new UpdateResult();
 
-        DerivedUnit baseSpecimen = (DerivedUnit) occurrenceService.load(baseDesignation.getTypeSpecimen().getUuid());
+        DerivedUnit baseSpecimen = HibernateProxyHelper.deproxy(occurrenceService.load(baseDesignation.getTypeSpecimen().getUuid(), Arrays.asList("collection")), DerivedUnit.class);
         DerivedUnit duplicate = DerivedUnit.NewInstance(baseSpecimen.getRecordBasis());
         DerivationEvent derivedFrom = baseSpecimen.getDerivedFrom();
         Collection<FieldUnit> fieldUnits = occurrenceService.findFieldUnits(baseSpecimen.getUuid(), null);
@@ -222,10 +224,12 @@ public class NameServiceImpl
             DerivationEvent.NewSimpleInstance(original, duplicate, derivedFrom.getType());
         }
         duplicate.setAccessionNumber(accessionNumber);
-        duplicate.setCollection(collection);
+        duplicate.setCollection(collectionService.load(collectionUuid));
         SpecimenTypeDesignation typeDesignation = SpecimenTypeDesignation.NewInstance();
         typeDesignation.setTypeSpecimen(duplicate);
         typeDesignation.setTypeStatus(typeStatus);
+
+        TaxonName name = load(nameUuid);
         name.getTypeDesignations().add(typeDesignation);
 
         result.setCdmEntity(typeDesignation);
