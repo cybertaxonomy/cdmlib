@@ -70,12 +70,12 @@ public interface INameService
 	 * @param name the name where this type designation will be added to
 	 * @param baseDesignation the type specimen of this designation is cloned to create the new specimen
  	 * @param accessionNumber the accession number of the clones specimen
-	 * @param collection the collection the cloned specimen belongs to
+	 * @param collectionUuid the collection the cloned specimen belongs to
 	 * @param typeStatus the type status of the cloned specimen
 	 * @return an {@link UpdateResult}
 	 */
-    public UpdateResult cloneTypeDesignation(TaxonName name, SpecimenTypeDesignation baseDesignation,
-            String accessionNumber, eu.etaxonomy.cdm.model.occurrence.Collection collection, SpecimenTypeDesignationStatus typeStatus);
+    public UpdateResult cloneTypeDesignation(UUID nameUuid, SpecimenTypeDesignation baseDesignation,
+            String accessionNumber, UUID collectionUuid, SpecimenTypeDesignationStatus typeStatus);
 
 	/**
 	 * Removes the given type designation from the given taxon name and deletes it from
