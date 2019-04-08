@@ -3626,7 +3626,7 @@ public class TaxonName
     private boolean updateFullTitleCache() {
         if (protectedFullTitleCache == false){
             String oldCache = this.fullTitleCache;
-            String newCache = cacheStrategy.getFullTitleCache(this);
+            String newCache = getTruncatedCache(cacheStrategy.getFullTitleCache(this));
             if (!CdmUtils.nullSafeEqual(oldCache, newCache)){
                 this.setFullTitleCache(null, false);
                 this.getFullTitleCache();
