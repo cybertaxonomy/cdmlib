@@ -873,7 +873,8 @@ public class TaxonNodeServiceImpl
             taxon = newTaxonNode.getTaxon();
         }
         taxon.removeTaxonNode(newTaxonNode);
-        if (taxon.getSec().isPersited()){
+
+        if (taxon.getSec() != null && taxon.getSec().isPersited()){
             Reference sec = referenceService.load(taxon.getSec().getUuid());
             taxon.setSec(sec);
         }
