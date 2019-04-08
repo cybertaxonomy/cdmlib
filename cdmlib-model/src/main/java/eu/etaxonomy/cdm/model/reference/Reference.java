@@ -1175,7 +1175,10 @@ public class Reference
        if (this.protectedAbbrevTitleCache == false){
            String oldAbbrevTitleCache = this.abbrevTitleCache;
 
-           String newAbbrevTitleCache = cacheStrategy.getFullAbbrevTitleString(this);
+           String newAbbrevTitleCache = getTruncatedCache(cacheStrategy.getFullAbbrevTitleString(this));
+           if (newAbbrevTitleCache.equals("")){
+               newAbbrevTitleCache = cacheStrategy.getTitleCache(this);
+           }
 
            if ( oldAbbrevTitleCache == null   || ! oldAbbrevTitleCache.equals(newAbbrevTitleCache) ){
                 this.setAbbrevTitleCache(null, false);
