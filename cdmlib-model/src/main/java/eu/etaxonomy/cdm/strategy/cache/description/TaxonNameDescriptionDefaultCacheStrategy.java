@@ -37,7 +37,7 @@ public class TaxonNameDescriptionDefaultCacheStrategy extends DescriptionBaseDef
 
     @Override
     protected String getDescriptionName() {
-        return "Factual data set";
+        return "Name facts";
     }
 
     @Override
