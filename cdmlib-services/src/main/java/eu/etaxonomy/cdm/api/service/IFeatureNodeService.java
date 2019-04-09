@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.term.FeatureNode;
 public interface IFeatureNodeService extends IVersionableService<FeatureNode>{
 
 
-    DeleteResult isDeletable(FeatureNode node, FeatureNodeDeletionConfigurator config);
+    DeleteResult isDeletable(UUID nodeUuid, FeatureNodeDeletionConfigurator config);
 
     DeleteResult deleteFeatureNode(UUID nodeUuid, FeatureNodeDeletionConfigurator config);
 
@@ -32,11 +32,11 @@ public interface IFeatureNodeService extends IVersionableService<FeatureNode>{
      * <b>Saves</b> and adds the specified feature as a child node to the given feature node.
      * @see IFeatureNodeService#addChildFeatureNode(FeatureNode, DefinedTermBase)
      * @param parentNodeUuid the feature node where the new feature should be added
-     * @param termUuid the term which should be <b>saved</b> and added to the given feature node
+     * @param term the term which should be <b>saved</b> and added to the given feature node
      * @param vocabularyUuid the UUID of the vocabulary where the term should be saved
      * @return the result of the operation
      */
-    public UpdateResult createChildFeatureNode(UUID parentNodeUuid, UUID termUuid, UUID vocabularyUuid);
+    public UpdateResult createChildFeatureNode(UUID parentNodeUuid, DefinedTermBase term, UUID vocabularyUuid);
 
     /**
      * Adds the specified feature as a child node to the given feature node

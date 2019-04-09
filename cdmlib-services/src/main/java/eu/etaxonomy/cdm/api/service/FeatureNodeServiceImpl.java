@@ -57,7 +57,7 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<FeatureNode, 
 	 public DeleteResult deleteFeatureNode(UUID nodeUuid, FeatureNodeDeletionConfigurator config) {
 	     DeleteResult result = new DeleteResult();
 	     FeatureNode node = HibernateProxyHelper.deproxy(dao.load(nodeUuid), FeatureNode.class);
-	     result = isDeletable(node, config);
+	     result = isDeletable(nodeUuid, config);
 	     if (result.isOk()){
 	         FeatureNode parent = node.getParent();
              parent = HibernateProxyHelper.deproxy(parent, FeatureNode.class);
@@ -103,13 +103,12 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<FeatureNode, 
 	 }
 
 	 @Override
-	 public UpdateResult createChildFeatureNode(UUID parentNodeUuid, UUID termUuid, UUID vocabularyUuid){
+	 public UpdateResult createChildFeatureNode(UUID parentNodeUuid, DefinedTermBase term, UUID vocabularyUuid){
 	     TermVocabulary vocabulary = vocabularyService.load(vocabularyUuid);
-	     DefinedTermBase term = HibernateProxyHelper.deproxy(termService.load(termUuid), DefinedTermBase.class);
 
 	     vocabulary.addTerm(term);
 	     vocabularyService.save(vocabulary);
-	     return addChildFeatureNode(parentNodeUuid, termUuid);
+	     return addChildFeatureNode(parentNodeUuid, term.getUuid());
 	 }
 
      @Override
@@ -138,7 +137,8 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<FeatureNode, 
      }
 
 	 @Override
-	 public DeleteResult isDeletable(FeatureNode node, FeatureNodeDeletionConfigurator config){
+	 public DeleteResult isDeletable(UUID nodeUuid, FeatureNodeDeletionConfigurator config){
+	     FeatureNode node = load(nodeUuid);
 	     DeleteResult result = new DeleteResult();
 	     Set<CdmBase> references = commonService.getReferencingObjectsForDeletion(node);
 	     for (CdmBase ref:references){
