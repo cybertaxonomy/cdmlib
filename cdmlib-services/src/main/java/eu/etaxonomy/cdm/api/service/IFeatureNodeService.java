@@ -29,32 +29,14 @@ public interface IFeatureNodeService extends IVersionableService<FeatureNode>{
 
 
     /**
-     * Adds the specified term as a child node to the given feature node
-     * @param parentNode the feature node where the new term should be added
-     * @param term the term which should be added to the given feature node
-     * @return the result of the operation
-     */
-    public UpdateResult addChildFeatureNode(FeatureNode parentNode, DefinedTermBase term);
-
-    /**
-     * Adds the specified feature as a child node to the given feature node
-     * @param parentNode the feature node where the new feature should be added
-     * @param term the term which should be added to the given feature node
-     * @param position the position where the child node should be added
-     * @return the result of the operation
-     */
-    public UpdateResult addChildFeatureNode(FeatureNode parentNode, DefinedTermBase term, int position);
-
-
-    /**
      * <b>Saves</b> and adds the specified feature as a child node to the given feature node.
      * @see IFeatureNodeService#addChildFeatureNode(FeatureNode, DefinedTermBase)
-     * @param parentNode the feature node where the new feature should be added
-     * @param term the term which should be <b>saved</b> and added to the given feature node
+     * @param parentNodeUuid the feature node where the new feature should be added
+     * @param termUuid the term which should be <b>saved</b> and added to the given feature node
      * @param vocabularyUuid the UUID of the vocabulary where the term should be saved
      * @return the result of the operation
      */
-    public UpdateResult createChildFeatureNode(FeatureNode node, DefinedTermBase term, UUID vocabularyUuid);
+    public UpdateResult createChildFeatureNode(UUID parentNodeUuid, UUID termUuid, UUID vocabularyUuid);
 
     /**
      * Adds the specified feature as a child node to the given feature node

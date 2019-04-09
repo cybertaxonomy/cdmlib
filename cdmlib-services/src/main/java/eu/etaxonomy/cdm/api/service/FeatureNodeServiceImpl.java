@@ -103,16 +103,13 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<FeatureNode, 
 	 }
 
 	 @Override
-	 public UpdateResult createChildFeatureNode(FeatureNode node, DefinedTermBase term, UUID vocabularyUuid){
+	 public UpdateResult createChildFeatureNode(UUID parentNodeUuid, UUID termUuid, UUID vocabularyUuid){
 	     TermVocabulary vocabulary = vocabularyService.load(vocabularyUuid);
+	     DefinedTermBase term = HibernateProxyHelper.deproxy(termService.load(termUuid), DefinedTermBase.class);
+
 	     vocabulary.addTerm(term);
 	     vocabularyService.save(vocabulary);
-	     return addChildFeatureNode(node, term);
-	 }
-
-	 @Override
-	 public UpdateResult addChildFeatureNode(FeatureNode node, DefinedTermBase featureChild){
-	     return addChildFeatureNode(node, featureChild, 0);
+	     return addChildFeatureNode(parentNodeUuid, termUuid);
 	 }
 
      @Override
@@ -124,13 +121,9 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<FeatureNode, 
 	 public UpdateResult addChildFeatureNode(UUID nodeUUID, UUID termChildUuid, int position){
 	     FeatureNode node = load(nodeUUID);
 	     DefinedTermBase child = HibernateProxyHelper.deproxy(termService.load(termChildUuid), DefinedTermBase.class);
-         return addChildFeatureNode(node, child, position);
-	 }
 
-     @Override
-     public UpdateResult addChildFeatureNode(FeatureNode node, DefinedTermBase term, int position){
-         FeatureNode childNode = FeatureNode.NewInstance(node.getTermType());
-         childNode.setTerm(term);
+	     FeatureNode childNode = FeatureNode.NewInstance(node.getTermType());
+         childNode.setTerm(child);
          UpdateResult result = new UpdateResult();
          if(position<0) {
              node.addChild(childNode);
