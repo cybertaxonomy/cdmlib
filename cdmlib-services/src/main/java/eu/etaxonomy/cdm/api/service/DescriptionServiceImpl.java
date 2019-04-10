@@ -893,7 +893,7 @@ public class DescriptionServiceImpl
 
         Taxon sourceTaxon = description.getTaxon();
         String moveMessage = String.format("Description moved from %s", sourceTaxon);
-        if(!description.isProtectedTitleCache()){
+        if(description.isProtectedTitleCache()){
             String separator = "";
             if(!StringUtils.isBlank(description.getTitleCache())){
                 separator = " - ";
