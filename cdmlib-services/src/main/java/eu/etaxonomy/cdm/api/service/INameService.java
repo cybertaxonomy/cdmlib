@@ -69,13 +69,16 @@ public interface INameService
 	 * to the same {@link FieldUnit}
 	 * @param name the name where this type designation will be added to
 	 * @param baseDesignation the type specimen of this designation is cloned to create the new specimen
- 	 * @param accessionNumber the accession number of the clones specimen
+ 	 * @param accessionNumber the accession number of the cloned specimen
+ 	 * @param barcode the barcode of the cloned specimen
+ 	 * @param catalogNumber the catalog number of the cloned specimen
 	 * @param collectionUuid the collection the cloned specimen belongs to
 	 * @param typeStatus the type status of the cloned specimen
 	 * @return an {@link UpdateResult}
 	 */
     public UpdateResult cloneTypeDesignation(UUID nameUuid, SpecimenTypeDesignation baseDesignation,
-            String accessionNumber, UUID collectionUuid, SpecimenTypeDesignationStatus typeStatus);
+            String accessionNumber, String barcode, String catalogNumber,
+            UUID collectionUuid, SpecimenTypeDesignationStatus typeStatus);
 
 	/**
 	 * Removes the given type designation from the given taxon name and deletes it from

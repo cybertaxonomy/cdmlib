@@ -208,7 +208,8 @@ public class NameServiceImpl
     @Override
     @Transactional(readOnly = false)
     public UpdateResult cloneTypeDesignation(UUID nameUuid, SpecimenTypeDesignation baseDesignation,
-            String accessionNumber, UUID collectionUuid, SpecimenTypeDesignationStatus typeStatus){
+            String accessionNumber, String barcode, String catalogNumber,
+            UUID collectionUuid, SpecimenTypeDesignationStatus typeStatus){
         UpdateResult result = new UpdateResult();
 
         DerivedUnit baseSpecimen = HibernateProxyHelper.deproxy(occurrenceService.load(baseDesignation.getTypeSpecimen().getUuid(), Arrays.asList("collection")), DerivedUnit.class);
@@ -224,6 +225,8 @@ public class NameServiceImpl
             DerivationEvent.NewSimpleInstance(original, duplicate, derivedFrom.getType());
         }
         duplicate.setAccessionNumber(accessionNumber);
+        duplicate.setBarcode(barcode);
+        duplicate.setCatalogNumber(catalogNumber);
         duplicate.setCollection(collectionService.load(collectionUuid));
         SpecimenTypeDesignation typeDesignation = SpecimenTypeDesignation.NewInstance();
         typeDesignation.setTypeSpecimen(duplicate);
