@@ -734,6 +734,8 @@ public class DescriptionServiceImpl
             }
             if (! isCopy){
                 description.removeElement(element);
+                dao.saveOrUpdate(description);
+                result.addUpdatedObject(description);
 //                if (description.getElements().isEmpty()){
 //                   if (description instanceof TaxonDescription){
 //                       TaxonDescription taxDescription = HibernateProxyHelper.deproxy(description, TaxonDescription.class);
