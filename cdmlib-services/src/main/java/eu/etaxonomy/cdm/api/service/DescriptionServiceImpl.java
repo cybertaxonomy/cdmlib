@@ -866,12 +866,15 @@ public class DescriptionServiceImpl
 
     private TaxonDescription prepareDescriptionForMove(TaxonDescription description, Taxon sourceTaxon){
         String moveMessage = String.format("Description moved from %s", sourceTaxon);
-        if(!description.isProtectedTitleCache()){
+        if(description.isProtectedTitleCache()){
             String separator = "";
             if(!StringUtils.isBlank(description.getTitleCache())){
                 separator = " - ";
             }
             description.setTitleCache(description.getTitleCache() + separator + moveMessage, true);
+        }
+        else{
+            description.setTitleCache(moveMessage, true);
         }
         Annotation annotation = Annotation.NewInstance(moveMessage, Language.getDefaultLanguage());
         annotation.setAnnotationType(AnnotationType.TECHNICAL());
