@@ -854,26 +854,29 @@ public class DescriptionServiceImpl
     @Override
     @Transactional(readOnly = false)
     public UpdateResult moveTaxonDescriptions(Taxon sourceTaxon, Taxon targetTaxon) {
-        List<TaxonDescription> descriptions = new ArrayList(sourceTaxon.getDescriptions());
+        List<TaxonDescription> descriptions = new ArrayList<>(sourceTaxon.getDescriptions());
         UpdateResult result = new UpdateResult();
         result.addUpdatedObject(sourceTaxon);
         result.addUpdatedObject(targetTaxon);
         for(TaxonDescription description : descriptions){
-
-            String moveMessage = String.format("Description moved from %s", sourceTaxon);
-            if(description.isProtectedTitleCache()){
-                String separator = "";
-                if(!StringUtils.isBlank(description.getTitleCache())){
-                    separator = " - ";
-                }
-                description.setTitleCache(description.getTitleCache() + separator + moveMessage, true);
-            }
-            Annotation annotation = Annotation.NewInstance(moveMessage, Language.getDefaultLanguage());
-            annotation.setAnnotationType(AnnotationType.TECHNICAL());
-            description.addAnnotation(annotation);
-            targetTaxon.addDescription(description);
+            targetTaxon.addDescription(prepareDescriptionForMove(description, sourceTaxon));
         }
         return result;
+    }
+
+    private TaxonDescription prepareDescriptionForMove(TaxonDescription description, Taxon sourceTaxon){
+        String moveMessage = String.format("Description moved from %s", sourceTaxon);
+        if(!description.isProtectedTitleCache()){
+            String separator = "";
+            if(!StringUtils.isBlank(description.getTitleCache())){
+                separator = " - ";
+            }
+            description.setTitleCache(description.getTitleCache() + separator + moveMessage, true);
+        }
+        Annotation annotation = Annotation.NewInstance(moveMessage, Language.getDefaultLanguage());
+        annotation.setAnnotationType(AnnotationType.TECHNICAL());
+        description.addAnnotation(annotation);
+        return description;
     }
 
     @Override
@@ -888,26 +891,14 @@ public class DescriptionServiceImpl
     @Override
     @Transactional(readOnly = false)
     public UpdateResult moveTaxonDescription(UUID descriptionUuid, UUID targetTaxonUuid){
-        UpdateResult result = new UpdateResult();
         TaxonDescription description = HibernateProxyHelper.deproxy(dao.load(descriptionUuid), TaxonDescription.class);
-
-        Taxon sourceTaxon = description.getTaxon();
-        String moveMessage = String.format("Description moved from %s", sourceTaxon);
-        if(description.isProtectedTitleCache()){
-            String separator = "";
-            if(!StringUtils.isBlank(description.getTitleCache())){
-                separator = " - ";
-            }
-            description.setTitleCache(description.getTitleCache() + separator + moveMessage, true);
-        }
-        Annotation annotation = Annotation.NewInstance(moveMessage, Language.getDefaultLanguage());
-        annotation.setAnnotationType(AnnotationType.TECHNICAL());
-        description.addAnnotation(annotation);
         Taxon targetTaxon = HibernateProxyHelper.deproxy(taxonDao.load(targetTaxonUuid), Taxon.class);
-        targetTaxon.addDescription(description);
-        result.addUpdatedObject(targetTaxon);
+        Taxon sourceTaxon = description.getTaxon();
+        UpdateResult result = new UpdateResult();
         result.addUpdatedObject(sourceTaxon);
-       // dao.merge(description);
+        result.addUpdatedObject(targetTaxon);
+
+        targetTaxon.addDescription(prepareDescriptionForMove(description, sourceTaxon));
         return result;
 
     }
