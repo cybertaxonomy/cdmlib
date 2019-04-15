@@ -22,6 +22,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
+import eu.etaxonomy.cdm.io.descriptive.owl.OwlConstants;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.FeatureNode;
 import eu.etaxonomy.cdm.model.term.FeatureTree;
@@ -35,11 +36,6 @@ import eu.etaxonomy.cdm.model.term.FeatureTree;
 public class OwlExport extends CdmExportBase<OwlExportConfigurator, OwlExportState, IExportTransformer, File> {
 
     private static final long serialVersionUID = 3197379920692366008L;
-
-    private static final String BASE_URI = "http://cybertaxonomy.eu/";
-    private static final String RESOURCE_URI = BASE_URI+"resource/";
-    private static final String PROPERTY_BASE_URI = BASE_URI+"property/";
-    private static final String NODE_BASE_URI = RESOURCE_URI+"node/";
 
     @Override
     protected boolean doCheck(OwlExportState state) {
@@ -58,18 +54,21 @@ public class OwlExport extends CdmExportBase<OwlExportConfigurator, OwlExportSta
         FeatureNode rootNode = featureTree.getRoot();
 
         Model model = ModelFactory.createDefaultModel();
-        Property propHasSubStructure = model.createProperty(PROPERTY_BASE_URI+"hasSubStructure");
-        Property propUuid = model.createProperty(PROPERTY_BASE_URI+"uuid");
-        Property propLabel = model.createProperty(PROPERTY_BASE_URI+"label");
+        Property propHasSubStructure = model.createProperty(OwlConstants.PROPERTY_HAS_SUBSTRUCTURE);
+        Property propUuid = model.createProperty(OwlConstants.PROPERTY_UUID);
+        Property propLabel = model.createProperty(OwlConstants.PROPERTY_LABEL);
+        Property propIsA = model.createProperty(OwlConstants.PROPERTY_IS_A);
 
-        Resource resourceRootNode = model.createResource(NODE_BASE_URI + rootNode.getUuid().toString());
+        Resource resourceRootNode = model.createResource(OwlConstants.RESOURCE_NODE + rootNode.getUuid().toString());
+        resourceRootNode.addProperty(propIsA, OwlConstants.NODE);
 
-        model.createResource(RESOURCE_URI+"featureTree/"+featureTree.getUuid().toString())
+        model.createResource(OwlConstants.RESOURCE_FEATURE_TREE+featureTree.getUuid().toString())
                 .addProperty(propUuid, featureTree.getUuid().toString())
                 .addProperty(propLabel, featureTree.getTitleCache())
-                .addProperty(model.createProperty(PROPERTY_BASE_URI + "hasRootNode"),
+                .addProperty(model.createProperty(OwlConstants.PROPERTY_HAS_ROOT_NODE),
                         resourceRootNode
-                        .addProperty(propUuid, rootNode.getUuid().toString()));
+                        .addProperty(propUuid, rootNode.getUuid().toString()))
+                .addProperty(propIsA, OwlConstants.TREE);
 
         addChildNode(rootNode, resourceRootNode, propHasSubStructure, propUuid, propLabel, model);
 
@@ -84,7 +83,7 @@ public class OwlExport extends CdmExportBase<OwlExportConfigurator, OwlExportSta
         List<FeatureNode> childNodes = node.getChildNodes();
         for (FeatureNode child : childNodes) {
             DefinedTermBase term = child.getTerm();
-            Resource childResourceNode = model.createResource(NODE_BASE_URI+term.getUuid().toString());
+            Resource childResourceNode = model.createResource(OwlConstants.RESOURCE_NODE+term.getUuid().toString());
             resourceNode.addProperty(propHasSubStructure, childResourceNode
                     .addProperty(propUuid, term.getUuid().toString())
                     .addProperty(propLabel, term.getLabel())
