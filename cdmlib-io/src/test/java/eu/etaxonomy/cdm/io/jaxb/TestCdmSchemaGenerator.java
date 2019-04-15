@@ -26,13 +26,7 @@ public class TestCdmSchemaGenerator extends CdmTransactionalIntegrationTest {
 		cdmSchemaGenerator.writeSchema();
 	}
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-        
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 
 }

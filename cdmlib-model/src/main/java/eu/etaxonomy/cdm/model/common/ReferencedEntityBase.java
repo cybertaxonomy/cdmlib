@@ -48,15 +48,15 @@ public abstract class ReferencedEntityBase extends AnnotatableEntity implements 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ReferencedEntityBase.class);
 
-	//Details of the reference. These are mostly (implicitly) pages but can also be tables or any other element of a
-	//publication. {if the citationMicroReference exists then there must be also a reference}
-    @XmlElement(name = "Citation")
+	@XmlElement(name = "Citation")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private Reference citation;
 
+	//Details of the reference. These are mostly (implicitly) pages but can also be tables or any other element of a
+    //publication. {if the citationMicroReference exists then there must be also a reference}
     @XmlElement(name = "CitationMicroReference")
 	private String citationMicroReference;
 
@@ -74,7 +74,6 @@ public abstract class ReferencedEntityBase extends AnnotatableEntity implements 
 
 	public ReferencedEntityBase(Reference citation, String citationMicroReference,
 			String originalNameString) {
-		super();
 		this.citationMicroReference = citationMicroReference;
 		this.originalNameString = originalNameString;
 		this.citation = citation;

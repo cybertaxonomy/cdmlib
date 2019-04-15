@@ -11,9 +11,9 @@ package eu.etaxonomy.cdm.model.metadata;
 import java.util.Set;
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.model.common.EnumeratedTermVoc;
-import eu.etaxonomy.cdm.model.common.IEnumTerm;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
+import eu.etaxonomy.cdm.model.term.IEnumTerm;
 
 /**
  * @author a.mueller
@@ -37,6 +37,7 @@ public enum PreferencePredicate implements IEnumTerm<PreferencePredicate>, IPref
     //vaadin + distribution editor
 	AvailableDistributionStatus(UUID.fromString("6721599e-686b-460e-9d57-cfd364f4b626"), "Available Distribution Status", "distribution.status.term", null),
 	AvailableDistributionAreaVocabularies(UUID.fromString("dd1f35d5-dbf3-426b-9ed3-8b5992cb2e27"), "Available Distribution Area Vocabularies", "distribution.area.voc", null),
+	AvailableDistributionPerAreaStatus(UUID.fromString("b2f0c066-d5a4-4a91-9e19-0e58ec2849aa"), "Available Distribution Status Per Area", "distribution.status.area.term", null),
 
 
     //common name area vocabularies
@@ -105,8 +106,8 @@ public enum PreferencePredicate implements IEnumTerm<PreferencePredicate>, IPref
     ShowLifeForm(UUID.fromString("85870e7d-a6a3-4c9b-97d6-eb27e6516860"), "Show Life Form", "showLifeForm", Boolean.FALSE),
 
 
-    DefaultBehaviourForPublishFlag(UUID.fromString("24e636fc-ef3b-4a2c-8c9e-018143e66949"), "Default behaviour for publish flag", "defaultBehaviourForPublishFlag", PublishEnum.InheritFromParent)
-
+    DefaultBehaviourForPublishFlag(UUID.fromString("24e636fc-ef3b-4a2c-8c9e-018143e66949"), "Default behaviour for publish flag", "defaultBehaviourForPublishFlag", PublishEnum.InheritFromParent),
+    CommonNameLanguages(UUID.fromString("860b0395-09ad-42f5-9dc7-a277ebc034ea"), "Common name languages", "CommonNameLanguages", null)
 
 
 

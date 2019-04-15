@@ -22,8 +22,8 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.model.common.TermType;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
  * The terms in this class define the status of a {@link NameTypeDesignation name type designation}.
@@ -35,22 +35,23 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @XmlType(name = "NameTypeDesignationStatus")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
+//@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
 public class NameTypeDesignationStatus extends TypeDesignationStatusBase<NameTypeDesignationStatus> {
 	private static final long serialVersionUID = -8801837496688711907L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(NameTypeDesignationStatus.class);
 
-	private static final UUID uuidAutomatic = UUID.fromString("e89d8b21-615a-4602-913f-1625bf39a69f");
-	private static final UUID uuidMonotypy = UUID.fromString("3fc639b2-9a64-45f8-9a81-657a4043ad74");
-	private static final UUID uuidNotApplicable = UUID.fromString("91a9d6a9-7754-41cd-9f7e-be136f599f7e");
 	private static final UUID uuidOriginalDesignation = UUID.fromString("40032a44-973b-4a64-b25e-76f86c3a753c");
-	private static final UUID uuidPresentDesignation = UUID.fromString("e5f38f5d-995d-4470-a036-1a9792a543fc");
-	private static final UUID uuidSubsequentMonotypy = UUID.fromString("2b5806d8-31b0-406e-a32a-4adac0c89ae4");
-	private static final UUID uuidSubsequentDesignation = UUID.fromString("3e449e7d-a03c-4431-a7d3-aa258406f6b2");
+	private static final UUID uuidMonotypy = UUID.fromString("3fc639b2-9a64-45f8-9a81-657a4043ad74");
+    private static final UUID uuidAutomatic = UUID.fromString("e89d8b21-615a-4602-913f-1625bf39a69f");
+	private static final UUID uuidNotApplicable = UUID.fromString("91a9d6a9-7754-41cd-9f7e-be136f599f7e");
 	private static final UUID uuidTautonymy = UUID.fromString("84521f09-3e10-43f5-aa6f-2173a55a6790");
+
 	private static final UUID uuidLectotype = UUID.fromString("4177c938-b741-40e1-95e5-4c53bd1ed87d");
+	private static final UUID uuidSubsequentMonotypy = UUID.fromString("2b5806d8-31b0-406e-a32a-4adac0c89ae4");
+    private static final UUID uuidSubsequentDesignation = UUID.fromString("3e449e7d-a03c-4431-a7d3-aa258406f6b2");
+    private static final UUID uuidPresentDesignation = UUID.fromString("e5f38f5d-995d-4470-a036-1a9792a543fc");
 
 	/**
 	 * Factory method: creates an additional type designation status instance
@@ -92,9 +93,6 @@ public class NameTypeDesignationStatus extends TypeDesignationStatusBase<NameTyp
 
 //************************** METHODS ********************************
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
-	 */
 	@Override
 	public void resetTerms(){
 		termMap = null;
@@ -203,30 +201,20 @@ public class NameTypeDesignationStatus extends TypeDesignationStatusBase<NameTyp
 		}
 	}
 
-	/**
-	 * Returns the boolean value indicating whether <i>this</i> type designation
-	 * status is itself "lectotype" or a kind of "lectotype" (true) or not
-	 * (false). Returns false if <i>this</i> type designation status is null.<BR>
-	 * A lectotype is a {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnit specimen or illustration} designated as the
-	 * nomenclatural type, when no holotype was indicated at the time of
-	 * publication of the "type-bringing" {@link TaxonName taxon name}, when the
-	 * holotype is found to be assigned to taxon names belonging to more than
-	 * one {@link HomotypicalGroup homotypical group}, or as long as it is missing.
-	 *
-	 * @see  #LECTOTYPE()
-	 * @see  #HOLOTYPE()
-	 * @see  eu.etaxonomy.cdm.model.common.DefinedTermBase#getKindOf()
-	 */
-	@Transient
+	//#8140
+	@Override
+    @Transient
 	public boolean isLectotype(){
 		if (
 				this.equals(LECTOTYPE()) ||
 				this.equals(SUBSEQUENT_DESIGNATION()) ||
-				this.equals(PRESENT_DESIGNATION() )
+				this.equals(SUBSEQUENT_MONOTYPY()) ||
+                this.equals(PRESENT_DESIGNATION() )
 				){
 			return true;
 		}else{
 			return false;
 		}
 	}
+
 }

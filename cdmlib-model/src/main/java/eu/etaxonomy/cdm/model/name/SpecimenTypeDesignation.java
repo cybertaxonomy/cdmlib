@@ -14,7 +14,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -57,8 +56,8 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 @Entity
 @Audited
 public class SpecimenTypeDesignation
-        extends TypeDesignationBase<SpecimenTypeDesignationStatus>
-        implements ITypeDesignation, Cloneable {
+        extends TypeDesignationBase<SpecimenTypeDesignationStatus> {
+
 	private static final long serialVersionUID = 6481627446997275007L;
 	private static final Logger logger = Logger.getLogger(SpecimenTypeDesignation.class);
 
@@ -69,6 +68,11 @@ public class SpecimenTypeDesignation
 	@JoinColumn(name="typeSpecimen_id")
 	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private DerivedUnit typeSpecimen;
+
+
+    public static SpecimenTypeDesignation NewInstance() {
+        return new SpecimenTypeDesignation();
+    }
 
 //	/**
 //	 * Creates a new specimen type designation instance
@@ -93,8 +97,7 @@ public class SpecimenTypeDesignation
 //		return specTypeDesig;
 //	}
 
-
-	// ************* CONSTRUCTORS *************/
+// ************* CONSTRUCTORS *************/
 	/**
 	 * Class constructor: creates a new empty specimen type designation.
 	 *
@@ -104,9 +107,6 @@ public class SpecimenTypeDesignation
 	protected SpecimenTypeDesignation(){
 	}
 
-	public static SpecimenTypeDesignation NewInstance() {
-		return new SpecimenTypeDesignation();
-	}
 
 	/**
 	 * Class constructor: creates a new specimen type designation instance
@@ -137,12 +137,8 @@ public class SpecimenTypeDesignation
 		this.setTypeStatus(status);
 	}
 
-	//********* METHODS **************************************/
+//********* METHODS **************************************/
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.name.TypeDesignationBase#removeType()
-	 */
 	@Override
 	public void removeType() {
 		this.setTypeSpecimen(null);
@@ -174,14 +170,6 @@ public class SpecimenTypeDesignation
 		this.typeSpecimen = typeSpecimen;
 	}
 
-	@Override
-    @Transient
-	public boolean isLectoType() {
-		if(getTypeStatus() == null){
-			return false;
-		}
-		return getTypeStatus().isLectotype();
-	}
 
 //*********************** CLONE ********************************************************/
 

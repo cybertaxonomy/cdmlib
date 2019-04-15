@@ -60,7 +60,7 @@ public class SchemaUpdater_36_40 extends SchemaUpdaterBase {
 		String newColumnName;
 		String oldColumnName;
 
-		List<ISchemaUpdaterStep> stepList = new ArrayList<ISchemaUpdaterStep>();
+		List<ISchemaUpdaterStep> stepList = new ArrayList<>();
 
         //#5606
         //Add preferred stable URI to SpecimenOrObservation

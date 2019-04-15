@@ -12,8 +12,8 @@ package eu.etaxonomy.cdm.test.function;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.common.AccountStore;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
+import eu.etaxonomy.cdm.config.AccountStore;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
@@ -44,10 +44,10 @@ public class TestModelUpdate {
 	private void testSelectedDb(){
 		DbSchemaValidation schema = DbSchemaValidation.VALIDATE;
 
-		DatabaseTypeEnum dbType = DatabaseTypeEnum.H2;
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 
 
-		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm47" : "cdm50");
+		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm50" : "cdm55");
 		CdmDataSource dataSource = getDatasource(dbType, database);
 
 
@@ -188,11 +188,12 @@ public class TestModelUpdate {
 
 
 	private void test(){
-		System.out.println("Start Datasource");
+		System.out.println("Start TestModelUpdate");
 		testSelectedDb();
 
-//		updateRemoteWebappTestH2();  //also updates vaadin and taxedtior model
+//		updateRemoteWebappTestH2();  //also updates vaadin and taxeditor model
 //      updateEdaphobasePostgres();
+
 		System.out.println("\nEnd Datasource");
 	}
 

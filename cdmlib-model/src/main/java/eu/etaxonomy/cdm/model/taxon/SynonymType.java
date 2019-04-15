@@ -23,8 +23,8 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
-import eu.etaxonomy.cdm.model.common.TermType;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
  * The class representing categories of {@link Synonym synonyms}
@@ -47,7 +47,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @XmlType(name = "SynonymType")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
+//@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
 public class SynonymType extends RelationshipTermBase<SynonymType> {
 	private static final long serialVersionUID = -3775216614202923889L;
@@ -94,9 +94,6 @@ public class SynonymType extends RelationshipTermBase<SynonymType> {
 
 //************************** METHODS ********************************
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
-	 */
 	@Override
 	public void resetTerms(){
 		termMap = null;
@@ -186,14 +183,9 @@ public class SynonymType extends RelationshipTermBase<SynonymType> {
 	}
 
 
-//	@Override
-//	public SynonymType readCsvLine(Class<SynonymType> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
-//		return super.readCsvLine(termClass, csvLine, terms);
-//	}
-
 	@Override
 	protected void setDefaultTerms(TermVocabulary<SynonymType> termVocabulary) {
-		termMap = new HashMap<UUID, SynonymType>();
+		termMap = new HashMap<>();
 		for (SynonymType term : termVocabulary.getTerms()){
 			termMap.put(term.getUuid(), term);
 		}

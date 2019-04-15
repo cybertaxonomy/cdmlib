@@ -59,7 +59,7 @@ public class DatabaseTypeEnumTest {
 	 */
 	@Test
 	public void testGetDriverClassName() {
-		assertEquals("com.mysql.jdbc.Driver", DatabaseTypeEnumTest.dbEnum.getDriverClassName());
+		assertEquals("com.mysql.cj.jdbc.Driver", DatabaseTypeEnumTest.dbEnum.getDriverClassName());
 	}
 
 	/**
@@ -104,7 +104,7 @@ public class DatabaseTypeEnumTest {
 	@Test
 	public void testGetAllTypes() {
 		List<DatabaseTypeEnum> typeList = DatabaseTypeEnum.getAllTypes();
-		assertEquals(10, typeList.size());
+		assertEquals(11, typeList.size());
 		assertEquals(DatabaseTypeEnum.HSqlDb, typeList.get(0));
 		assertEquals(DatabaseTypeEnum.MySQL, typeList.get(1));
 		assertEquals(DatabaseTypeEnum.ODBC, typeList.get(2));
@@ -116,6 +116,7 @@ public class DatabaseTypeEnumTest {
 		assertEquals(DatabaseTypeEnum.H2, typeList.get(7));
 		assertEquals(DatabaseTypeEnum.SqlServer2008, typeList.get(8));
         assertEquals(DatabaseTypeEnum.SqlServer2012, typeList.get(9));
+        assertEquals(DatabaseTypeEnum.MariaDB, typeList.get(10));
 
 	}
 
@@ -129,7 +130,7 @@ public class DatabaseTypeEnumTest {
 		//does not work anymore as SQLServer driver is ambigous
 		//assertEquals(DatabaseTypeEnum.SqlServer2000, DatabaseTypeEnum.getDatabaseEnumByDriverClass("com.microsoft.sqlserver.jdbc.SQLServerDriver"));
 		//assertEquals(DatabaseTypeEnum.SqlServer2005, DatabaseTypeEnum.getDatabaseEnumByDriverClass("com.microsoft.sqlserver.jdbc.SQLServerDriver"));
-		assertEquals(DatabaseTypeEnum.MySQL, DatabaseTypeEnum.byDriverClass("com.mysql.jdbc.Driver"));
+		assertEquals(DatabaseTypeEnum.MySQL, DatabaseTypeEnum.byDriverClass("com.mysql.cj.jdbc.Driver"));
 		assertEquals(null, DatabaseTypeEnum.byDriverClass("com.microsoft.xxx"));
 	}
 

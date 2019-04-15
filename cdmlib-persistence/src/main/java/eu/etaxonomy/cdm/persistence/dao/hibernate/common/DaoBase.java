@@ -55,10 +55,13 @@ public abstract class DaoBase {
     protected Session getSession(){
         Session session ;
         try {
-
             session = factory.getCurrentSession();
         } catch (HibernateException e) {
-            logger.error("Opening new session in turn of a HibernateException", e);
+            String stackTrace = "";
+            for(StackTraceElement stackTraceElement : Thread.currentThread().getStackTrace()) {
+                stackTrace = stackTrace + System.lineSeparator() + stackTraceElement.toString();
+            }
+            logger.warn("[#7106] Opening new session in turn of a HibernateException: " + e.getMessage() + System.lineSeparator() + stackTrace);
             session = factory.openSession();
         }
         return session;

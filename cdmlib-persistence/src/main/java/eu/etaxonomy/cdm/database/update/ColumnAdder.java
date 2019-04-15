@@ -55,6 +55,9 @@ public class ColumnAdder extends AuditedSchemaUpdaterStepBase {
 		return new ColumnAdder(stepName, tableName, newColumnName, "bit", includeAudTable, defaultValue, false, null);
 	}
 
+	/**
+	 * Adds a string column with length 255 and default value <code>null</code>
+	 */
 	public static final ColumnAdder NewStringInstance(String stepName, String tableName, String newColumnName, boolean includeAudTable){
 		return new ColumnAdder(stepName, tableName, newColumnName, "nvarchar(255)", includeAudTable, null, false, null);
 	}
@@ -62,6 +65,9 @@ public class ColumnAdder extends AuditedSchemaUpdaterStepBase {
 	public static final ColumnAdder NewStringInstance(String stepName, String tableName, String newColumnName, int length, boolean includeAudTable){
 		return new ColumnAdder(stepName, tableName, newColumnName, "nvarchar("+length+")", includeAudTable, null, false, null);
 	}
+    public static final ColumnAdder NewStringInstance(String stepName, String tableName, String newColumnName, int length, String defaultValue, boolean includeAudTable){
+        return new ColumnAdder(stepName, tableName, newColumnName, "nvarchar("+length+")", includeAudTable, defaultValue, false, null);
+    }
 
 	public static final ColumnAdder NewClobInstance(String stepName, String tableName, String newColumnName, boolean includeAudTable){
 		return new ColumnAdder(stepName, tableName, newColumnName, "clob", includeAudTable, null, false, null);
@@ -103,6 +109,11 @@ public class ColumnAdder extends AuditedSchemaUpdaterStepBase {
 				defaultValueQuery = defaultValueQuery.replace("@tableName", tableName);
 				defaultValueQuery = defaultValueQuery.replace("@columnName", newColumnName);
 				datasource.executeUpdate(defaultValueQuery);
+            }else if (defaultValue instanceof String){
+                String defaultValueQuery = "UPDATE @tableName SET @columnName = " + (defaultValue == null ? "NULL" : "'" + defaultValue + "'");
+                defaultValueQuery = defaultValueQuery.replace("@tableName", tableName);
+                defaultValueQuery = defaultValueQuery.replace("@columnName", newColumnName);
+                datasource.executeUpdate(defaultValueQuery);
 			}else if (defaultValue != null){
 				logger.warn("Default Value not implemented for type " + defaultValue.getClass().getName());
 			}
@@ -144,7 +155,7 @@ public class ColumnAdder extends AuditedSchemaUpdaterStepBase {
 			monitor.warning(warning);
 			throw new DatabaseTypeNotSupportedException(warning);
 		}
-		if (isNotNull){
+		if (isNotNull && !isAuditing){
 			updateQuery += " NOT NULL";
 		}
 		updateQuery = updateQuery.replace("@tableName", tableName);

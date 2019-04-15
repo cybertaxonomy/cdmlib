@@ -39,11 +39,11 @@ public class CollectionServiceImpl
 
 	@Override
 	@Transactional(readOnly = false)
-    public void updateCaches(Class<? extends Collection> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<Collection> cacheStrategy, IProgressMonitor monitor) {
+    public UpdateResult updateCaches(Class<? extends Collection> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<Collection> cacheStrategy, IProgressMonitor monitor) {
 		if (clazz == null){
 			clazz = Collection.class;
 		}
-		super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
+		return super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
 	}
 
 

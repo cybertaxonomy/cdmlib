@@ -18,9 +18,9 @@ import java.util.UUID;
 import org.hibernate.Session;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName;
+import eu.etaxonomy.cdm.model.reference.ISourceable;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.match.IMatchStrategyEqual;

@@ -19,13 +19,13 @@ import eu.etaxonomy.cdm.api.service.dto.IdentifiedEntityDTO;
 import eu.etaxonomy.cdm.api.service.dto.MarkedEntityDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
-import eu.etaxonomy.cdm.model.common.DefinedTerm;
-import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.media.Rights;
+import eu.etaxonomy.cdm.model.reference.ISourceable;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
@@ -45,7 +45,7 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity>
      * Uses default values.
      * @see #updateCaches(Class, Integer, IIdentifiableEntityCacheStrategy, IProgressMonitor)
      */
-    public void updateCaches();
+    public UpdateResult updateCaches();
 
     /**
      * (Re-)generate the caches for all objects of this concrete IdentifiableEntity class
@@ -55,7 +55,7 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity>
      * @param cacheStrategy cache strategy used for cache generation. If <code>null</code> use default.
      * @param monitor progress monitor. If <code>null</code> use default.
      */
-    public void updateCaches(Class<? extends T> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<T> cacheStrategy, IProgressMonitor monitor);
+    public UpdateResult updateCaches(Class<? extends T> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<T> cacheStrategy, IProgressMonitor monitor);
 
     /**
      * Finds an object with a given LSID. If the object does not currently exist in the current view, then

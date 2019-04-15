@@ -30,6 +30,10 @@ import org.hibernate.envers.Audited;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
  * list of languages according to current internet best practices as given by IANA
@@ -43,7 +47,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 @XmlRootElement(name = "Language")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
+//@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
 public class Language extends DefinedTermBase<Language> {
     private static final long serialVersionUID = -5030610079904074217L;
@@ -595,14 +599,16 @@ public class Language extends DefinedTermBase<Language> {
     @Deprecated
     protected Language() {
    		super(TermType.Language);
-    };
+    }
 
     public Language(UUID uuid) {
-        super(TermType.Language);
+        this();
     	this.setUuid(uuid);
     }
+
+    //TODO is this really needed and correct? What stands iso639_x2 for?
     public Language(String iso639_1, String iso639_x2, String englishLabel, String frenchLabel) throws Exception {
-        super(TermType.Language);
+        this();
         if(iso639_1 != null && iso639_1.length() != 2){
             logger.warn("iso639_1 is not of size 2: "+iso639_1.toString());
         }
@@ -612,32 +618,33 @@ public class Language extends DefinedTermBase<Language> {
         this.iso639_1=iso639_1;
 //        this.iso639_2=iso639_2;
         String textEnglish = englishLabel;
-        String textFrench = englishLabel;
+        String textFrench = frenchLabel;
         String label = iso639_x2;
         String labelAbbrev = null;
         this.addRepresentation(new Representation(textEnglish, label, labelAbbrev, Language.ENGLISH()));
         this.addRepresentation(new Representation(textFrench, label, labelAbbrev, Language.FRENCH()));
     }
-    public Language(String text, String label, String labelAbbrev, Language lang) {
-        super(TermType.Language);
-    	this.addRepresentation(new Representation(text,label,labelAbbrev, lang));
-    }
+
     public Language(String label, String text, String labelAbbrev) {
         this(label,text,labelAbbrev, DEFAULT());
     }
 
+    public Language(String text, String label, String labelAbbrev, Language lang) {
+        super(TermType.Language);
+        if (StringUtils.isNotBlank(label) || StringUtils.isNotBlank(labelAbbrev) || lang != null){
+            this.addRepresentation(new Representation(text,label,labelAbbrev, lang));
+        }
+    }
+
+
 //********************************** METHODS *********************************************************/
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
-     */
     @Override
     public void resetTerms(){
         termMap = null;
         defaultLanguage = null;
         csvLanguage = null;
     }
-
 
     protected static Language getTermByUuid(UUID uuid){
         if (termMap == null || termMap.isEmpty()){
@@ -646,9 +653,6 @@ public class Language extends DefinedTermBase<Language> {
             return termMap.get(uuid);
         }
     }
-
-
-
 
     public static final Language ENGLISH(){/*@*/ return getTermByUuid(uuidEnglish);/*@*/}
     public static final Language AFAR(){/*@*/ return getTermByUuid(uuidAfar);/*@*/}
@@ -1201,9 +1205,9 @@ public class Language extends DefinedTermBase<Language> {
 //    }
 
     @Override
-    public Language readCsvLine(Class<Language> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
+    public Language readCsvLine(Class<Language> termClass, List<String> csvLine, TermType termType, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
         try {
-            Language newInstance =  Language.class.newInstance();
+            Language newInstance =  Language.NewInstance();  //term type not needed is added in constructor anyway
             if ( UUID.fromString(csvLine.get(0).toString()).equals(Language.uuidEnglish)){
                 DefinedTermBase.readCsvLine(newInstance, csvLine, newInstance, abbrevAsId);
             }else{

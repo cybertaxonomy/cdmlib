@@ -46,7 +46,7 @@ import eu.etaxonomy.cdm.model.common.IMultiLanguageTextHolder;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageTextHelper;
-import eu.etaxonomy.cdm.model.common.TermBase;
+import eu.etaxonomy.cdm.model.term.TermBase;
 
 
 /**

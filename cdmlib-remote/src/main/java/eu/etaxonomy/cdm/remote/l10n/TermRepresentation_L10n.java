@@ -14,12 +14,12 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
 
-import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
-import eu.etaxonomy.cdm.model.common.Representation;
-import eu.etaxonomy.cdm.model.common.TermBase;
-import eu.etaxonomy.cdm.model.common.TermType;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermBase;
+import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.persistence.dto.ITermRepresentation_L10n;
 
 /**
@@ -33,6 +33,7 @@ public class TermRepresentation_L10n implements ITermRepresentation_L10n {
 
     String label = null;
     String abbreviatedLabel = null;
+    String text = null;
     String languageIso = null;
     String languageUuid = null;
 
@@ -92,6 +93,8 @@ public class TermRepresentation_L10n implements ITermRepresentation_L10n {
 
             abbreviatedLabel = representation.getAbbreviatedLabel();
 
+            text = representation.getText();
+
             Language lang = representation.getLanguage();
             if (lang != null){
                 this.languageIso = lang.getIso639_2();
@@ -127,6 +130,16 @@ public class TermRepresentation_L10n implements ITermRepresentation_L10n {
         this.abbreviatedLabel = abbreviatedLabel;
     }
 
+    @Override
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    @Override
     public String getLanguageIso() {
         return languageIso;
     }
@@ -135,6 +148,7 @@ public class TermRepresentation_L10n implements ITermRepresentation_L10n {
         this.languageIso = languageIso;
     }
 
+    @Override
     public String getLanguageUuid() {
         return languageUuid;
     }

@@ -14,15 +14,15 @@ import java.net.URI;
 import java.util.Set;
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.model.common.Representation;
-import eu.etaxonomy.cdm.model.common.TermType;
+import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermType;
 
 /**
  * @author pplitzner
  * @date 05.11.2018
  *
  */
-public class AbstractTermDto implements Serializable {
+public class AbstractTermDto implements Serializable, Comparable<AbstractTermDto> {
 
     private static final long serialVersionUID = -7160319884811828125L;
 
@@ -32,6 +32,7 @@ public class AbstractTermDto implements Serializable {
     private final Set<Representation> representations;
     private String representation_L10n = null;
     private String representation_L10n_abbreviatedLabel = null;
+    private String representation_L10n_text = null;
 
     public AbstractTermDto(UUID uuid, Set<Representation> representations) {
         this.representations = representations;
@@ -51,6 +52,9 @@ public class AbstractTermDto implements Serializable {
         }
         if (representation_L10n.getAbbreviatedLabel() != null) {
             setRepresentation_L10n_abbreviatedLabel(representation_L10n.getAbbreviatedLabel());
+        }
+        if (representation_L10n.getText() != null) {
+            setRepresentation_L10n_text(representation_L10n.getText());
         }
     }
 
@@ -91,6 +95,15 @@ public class AbstractTermDto implements Serializable {
         this.representation_L10n_abbreviatedLabel = representation_L10n_abbreviatedLabel;
     }
 
+    public String getRepresentation_L10n_text() {
+        return representation_L10n_text;
+    }
+
+    public void setRepresentation_L10n_text(String representation_L10n_text) {
+        this.representation_L10n_text = representation_L10n_text;
+    }
+
+
     public UUID getUuid() {
         return uuid;
     }
@@ -127,6 +140,25 @@ public class AbstractTermDto implements Serializable {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public int compareTo(AbstractTermDto o) {
+        if(o == null){
+            return 1;
+        }
+        if(o.getRepresentation_L10n()!=null){
+            if(representation_L10n==null){
+                return -1;
+            }
+            else{
+                return representation_L10n.toLowerCase().compareTo(o.getRepresentation_L10n().toLowerCase());
+            }
+        }
+        else if(representation_L10n!=null){
+            return 1;
+        }
+        return uuid.compareTo(o.getUuid());
     }
 
 }

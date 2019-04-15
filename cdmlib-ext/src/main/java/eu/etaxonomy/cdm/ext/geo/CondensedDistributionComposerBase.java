@@ -16,9 +16,9 @@ import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.term.Representation;
 
 /**
  * Base class for Distribution Composers
@@ -106,7 +106,7 @@ public abstract class CondensedDistributionComposerBase implements ICondensedDis
 
         protected final NamedArea area;
         protected AreaNode parent = null;
-        protected final Set<AreaNode> subAreas = new HashSet<AreaNode>();
+        protected final Set<AreaNode> subAreas = new HashSet<>();
 
         /**
          * @param area

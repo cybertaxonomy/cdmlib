@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.strategy.parser;
 
 import org.apache.commons.lang.StringUtils;
 
-import eu.etaxonomy.cdm.model.common.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 /**

@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.FileCopy;
 import eu.etaxonomy.cdm.config.CdmPersistentXMLSource;
+import eu.etaxonomy.cdm.config.ConfigFileUtil;
 
 public class CdmApplicationUtils {
     private static final Logger logger = Logger.getLogger(CdmApplicationUtils.class);
@@ -51,7 +52,12 @@ public class CdmApplicationUtils {
                 if (file.exists()){
                     fileResourceDir = file.getParentFile();
                 }else{
-                    file = new File(CdmUtils.getCdmHomeDir(), "writableResources" );
+                    File homeDir = ConfigFileUtil.getCdmHomeDir();
+                    if (homeDir == null){
+                        //no application context available
+                        homeDir = ConfigFileUtil.getCdmHomeDirFallback();
+                    }
+                    file = new File(homeDir, "writableResources" );
 
                     file.mkdirs();
                     copyResources(file);

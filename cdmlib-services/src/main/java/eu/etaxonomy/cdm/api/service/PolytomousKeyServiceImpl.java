@@ -56,11 +56,11 @@ public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<Polytomous
 	}
 
 	@Override
-	public void updateCaches(Class<? extends PolytomousKey> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<PolytomousKey> cacheStrategy, IProgressMonitor monitor) {
+	public UpdateResult updateCaches(Class<? extends PolytomousKey> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<PolytomousKey> cacheStrategy, IProgressMonitor monitor) {
 		if (clazz == null){
 			clazz = PolytomousKey.class;
 		}
-		super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
+		return super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
 	}
 
 	@Override

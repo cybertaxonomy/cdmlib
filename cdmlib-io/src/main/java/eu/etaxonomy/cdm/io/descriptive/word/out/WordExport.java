@@ -19,9 +19,9 @@ import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
-import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.FeatureNode;
-import eu.etaxonomy.cdm.model.description.FeatureTree;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.FeatureNode;
+import eu.etaxonomy.cdm.model.term.FeatureTree;
 
 /**
  *
@@ -110,17 +110,17 @@ public class WordExport extends CdmExportBase<WordExportConfigurator, WordExport
 //        return new JAXBElement( new QName(Namespaces.NS_WORD12, "fldChar"), org.docx4j.wml.FldChar.class, fldchar);
 //    }
 
-    private void addChildNode(FeatureNode node, MainDocumentPart mainDocumentPart, int indent) throws Exception{
+    private void addChildNode(FeatureNode<?> node, MainDocumentPart mainDocumentPart, int indent) throws Exception{
         String styleId = "Heading"+indent;
 
         for (FeatureNode childNode : node.getChildNodes()) {
-            Feature feature = childNode.getFeature();
-            mainDocumentPart.addStyledParagraphOfText(styleId, feature.getLabel());
-            if(feature.getDescription()!=null){
-                mainDocumentPart.addParagraphOfText("Description: "+feature.getDescription());
+            DefinedTermBase term = childNode.getTerm();
+            mainDocumentPart.addStyledParagraphOfText(styleId, term.getLabel());
+            if(term.getDescription()!=null){
+                mainDocumentPart.addParagraphOfText("Description: "+term.getDescription());
             }
-            if(feature.getUri()!=null){
-                mainDocumentPart.addParagraphOfText("URI: "+feature.getUri().toString());
+            if(term.getUri()!=null){
+                mainDocumentPart.addParagraphOfText("URI: "+term.getUri().toString());
             }
             addChildNode(childNode, mainDocumentPart, indent+1);
         }

@@ -72,11 +72,11 @@ public class AgentServiceImpl
 
 	@Override
 	@Transactional(readOnly = false)
-    public void updateCaches(Class<? extends AgentBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<AgentBase> cacheStrategy, IProgressMonitor monitor) {
+    public UpdateResult updateCaches(Class<? extends AgentBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<AgentBase> cacheStrategy, IProgressMonitor monitor) {
 		if (clazz == null){
 			clazz = AgentBase.class;
 		}
-		super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
+		return super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
 	}
 
 	@Override
@@ -137,7 +137,7 @@ public class AgentServiceImpl
 
 	@Override
 	public List<UuidAndTitleCache<AgentBase>> getInstitutionUuidAndTitleCache(Integer limit, String pattern) {
-		return dao.getUuidAndAbbrevTitleCache(limit, pattern, Institution.class);
+		return dao.getUuidAndAbbrevTitleCache(Institution.class, limit, pattern);
 	}
 
 	@Override
@@ -255,8 +255,8 @@ public class AgentServiceImpl
      * @see eu.etaxonomy.cdm.api.service.IAgentService#getUuidAndAbbrevTitleCache()
      */
     @Override
-    public List<UuidAndTitleCache<AgentBase>> getUuidAndAbbrevTitleCache(Integer limit, String pattern, Class clazz) {
-        return dao.getUuidAndAbbrevTitleCache(null, pattern, clazz);
+    public List<UuidAndTitleCache<AgentBase>> getUuidAndAbbrevTitleCache(Class clazz, Integer limit, String pattern) {
+        return dao.getUuidAndAbbrevTitleCache(clazz, null, pattern);
     }
 
 }

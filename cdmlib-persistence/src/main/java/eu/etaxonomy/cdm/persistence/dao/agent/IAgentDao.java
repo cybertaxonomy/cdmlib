@@ -107,9 +107,10 @@ public interface IAgentDao extends IIdentifiableDao<AgentBase> {
 	public List<UuidAndTitleCache<Institution>> getInstitutionUuidAndTitleCache(Integer limit, String pattern);
 
     /**
+     * @param clazz
      * @param limit
      * @param pattern
      * @return
      */
-    List<UuidAndTitleCache<AgentBase>> getUuidAndAbbrevTitleCache(Integer limit, String pattern, Class clazz);
+    List<UuidAndTitleCache<AgentBase>> getUuidAndAbbrevTitleCache(Class clazz, Integer limit, String pattern);
 }

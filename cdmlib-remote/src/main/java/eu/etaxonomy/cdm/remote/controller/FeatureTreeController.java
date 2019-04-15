@@ -15,21 +15,19 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
-import eu.etaxonomy.cdm.model.description.FeatureTree;
+import eu.etaxonomy.cdm.model.term.FeatureTree;
 import io.swagger.annotations.Api;
 
 /**
  * @author n.hoffmann
  * @since Aug 6, 2010
- * @version 1.0
  */
 @Controller
 @Api("featureTree")
 @RequestMapping(value = {"/featureTree/{uuid}"})
 public class FeatureTreeController extends AbstractIdentifiableController<FeatureTree, IFeatureTreeService> {
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger
-            .getLogger(FeatureTreeController.class);
+    private static final Logger logger = Logger.getLogger(FeatureTreeController.class);
 
     @Override
     @Autowired

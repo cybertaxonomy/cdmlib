@@ -76,8 +76,6 @@ import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DefinedTerm;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
@@ -110,9 +108,11 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.persistence.dao.initializer.AbstractBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
+import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.AssignmentStatus;
@@ -173,11 +173,11 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
     @Override
     @Transactional(readOnly = false)
-    public void updateCaches(Class<? extends SpecimenOrObservationBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<SpecimenOrObservationBase> cacheStrategy, IProgressMonitor monitor) {
+    public UpdateResult updateCaches(Class<? extends SpecimenOrObservationBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<SpecimenOrObservationBase> cacheStrategy, IProgressMonitor monitor) {
         if (clazz == null) {
             clazz = SpecimenOrObservationBase.class;
         }
-        super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
+        return super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
     }
 
     /**
@@ -426,7 +426,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 collectionString += (fieldNumber != null ? fieldNumber : "");
                 collectionString.trim();
             }
-            fieldUnitDTO.setCollection(collectionString);
+            fieldUnitDTO.setCollectingString(collectionString);
             // Date
             Partial gatheringDate = gatheringEvent.getGatheringDate();
             String dateString = null;
@@ -897,14 +897,15 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
 
     @Override
-    public  List<DerivedUnit> findByAccessionNumber(
+    public  Pager<DerivedUnit> findByAccessionNumber(
             String accessionNumberString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths)  {
 
         List<DerivedUnit> records = new ArrayList<>();
         records = dao.findByGeneticAccessionNumber(accessionNumberString, propertyPaths);
+        long count = dao.countByGeneticAccessionNumber(accessionNumberString);
 
-        return records;
+        return new DefaultPagerImpl<>(pageNumber, Long.valueOf(count), pageSize, records);
 
     }
 
@@ -1609,6 +1610,30 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 config.getOrderHints()));
 
         return new DefaultPagerImpl<>(config.getPageNumber(), occurrences.size(), config.getPageSize(), occurrences);
+    }
+
+    @Override
+    public List<PreservedSpecimenDTO> findByTitlePreservedSpecimenDTO(FindOccurrencesConfigurator config) {
+        Taxon taxon = null;
+        if(config.getAssociatedTaxonUuid()!=null){
+            TaxonBase<?> taxonBase = taxonService.load(config.getAssociatedTaxonUuid());
+            if(taxonBase.isInstanceOf(Taxon.class)){
+                taxon = CdmBase.deproxy(taxonBase, Taxon.class);
+            }
+        }
+        TaxonName taxonName = null;
+        if(config.getAssociatedTaxonNameUuid()!=null){
+            taxonName = nameService.load(config.getAssociatedTaxonNameUuid());
+        }
+        List<DerivedUnit> occurrences = new ArrayList<>();
+        occurrences.addAll(dao.findOccurrences(DerivedUnit.class,
+                config.getTitleSearchString(), config.getSignificantIdentifier(),
+                config.getSpecimenType(), taxon, taxonName, config.getMatchMode(), null, null,
+                config.getOrderHints(), null));
+
+        List<PreservedSpecimenDTO> dtos = new ArrayList<>();
+        occurrences.forEach(derivedUnit->dtos.add(assemblePreservedSpecimenDTO(derivedUnit)));
+        return dtos;
     }
 
     @Override

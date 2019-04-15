@@ -10,9 +10,9 @@ package eu.etaxonomy.cdm.model.metadata;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.model.common.IKeyTerm;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.TermType;
+import eu.etaxonomy.cdm.model.term.IKeyTerm;
+import eu.etaxonomy.cdm.model.term.TermType;
 
 public enum CdmMetaDataPropertyName implements IKeyTerm{
 	DB_SCHEMA_VERSION("Schema Version","SCHEMA_VERSION", 0),

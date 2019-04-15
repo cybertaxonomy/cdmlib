@@ -9,13 +9,12 @@
 package eu.etaxonomy.cdm.api.service.dto;
 
 import java.net.URI;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-import org.hibernate.envers.tools.Pair;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
@@ -30,10 +29,12 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  */
 public class PreservedSpecimenDTO extends DerivateDTO{
 
+    private static final long serialVersionUID = 2345864166579381295L;
+
     private String accessionNumber;
     private URI preferredStableUri;
 
-    private List<Pair<UUID, String>> associatedTaxa;
+    private List<AbstractMap.SimpleEntry<UUID, String>> associatedTaxa;
     private Map<String, List<String>> types;
 
 
@@ -114,14 +115,14 @@ public class PreservedSpecimenDTO extends DerivateDTO{
         types.put(typeStatus, typedTaxa);
     }
 
-    public List<Pair<UUID, String>> getAssociatedTaxa() {
+    public List<AbstractMap.SimpleEntry<UUID, String>> getAssociatedTaxa() {
         return associatedTaxa;
     }
     public void addAssociatedTaxon(Taxon taxon){
         if(associatedTaxa==null){
-            associatedTaxa = new ArrayList<Pair<UUID, String>>();
+            associatedTaxa = new ArrayList<AbstractMap.SimpleEntry<UUID, String>>();
         }
-        associatedTaxa.add(new Pair<UUID, String>(taxon.getUuid(), taxon.getTitleCache()));
+        associatedTaxa.add(new AbstractMap.SimpleEntry<UUID, String>(taxon.getUuid(), taxon.getTitleCache()));
     }
 
     public void setPreferredStableUri(URI preferredStableUri) {

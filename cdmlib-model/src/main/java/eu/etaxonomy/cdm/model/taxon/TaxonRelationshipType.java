@@ -25,10 +25,10 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
-import eu.etaxonomy.cdm.model.common.TermType;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 
 /**
@@ -53,7 +53,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @XmlRootElement(name = "TaxonRelationshipType")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
+//@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
 public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshipType> {
 	private static final long serialVersionUID = 6575652105931691670L;
@@ -612,7 +612,7 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 
 	@Override
     protected void setDefaultTerms(TermVocabulary<TaxonRelationshipType> termVocabulary) {
-		termMap = new HashMap<UUID, TaxonRelationshipType>();
+		termMap = new HashMap<>();
 		for (TaxonRelationshipType term : termVocabulary.getTerms()){
 			termMap.put(term.getUuid(), term);
 		}
@@ -625,8 +625,9 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	}
 
     @Override
-    public TaxonRelationshipType readCsvLine(Class<TaxonRelationshipType> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
-        TaxonRelationshipType newInstance = super.readCsvLine(termClass, csvLine, terms, abbrevAsId);
+    public TaxonRelationshipType readCsvLine(Class<TaxonRelationshipType> termClass, List<String> csvLine, TermType termType,
+            Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
+        TaxonRelationshipType newInstance = super.readCsvLine(termClass, csvLine, termType, terms, abbrevAsId);
 
         newInstance.setSymbol(newInstance.getIdInVocabulary());
         String inverseLabelAbbrev = csvLine.get(7).trim();

@@ -313,7 +313,7 @@ public class Reference
     private DateTime accessed;
 
     @XmlElement(name ="Abstract" )
-	@Column(length=65536, name="referenceAbstract")
+	@Column(length=CLOB_LENGTH, name="referenceAbstract")
 	@Lob
     @Field
     //TODO Val #3379
@@ -807,14 +807,18 @@ public class Reference
 	 * any longer using this reference as a nomenclatural reference. How does the
 	 * reference get informed about the fact that it is not nomenclaturally relevant
 	 * anymore?
+	 * @deprecated currently not supported and not in use, may be removed in future
 	 */
-	public boolean isNomenclaturallyRelevant(){
+	@Deprecated
+    public boolean isNomenclaturallyRelevant(){
 		return this.nomenclaturallyRelevant;
 	}
 
 	/**
 	 * @see #isNomenclaturallyRelevant()
+	 * @deprecated currently not supported and not in use, may be removed in future
 	 */
+	@Deprecated
 	public void setNomenclaturallyRelevant(boolean nomenclaturallyRelevant){
 		this.nomenclaturallyRelevant = nomenclaturallyRelevant;
 	}
@@ -1171,7 +1175,10 @@ public class Reference
        if (this.protectedAbbrevTitleCache == false){
            String oldAbbrevTitleCache = this.abbrevTitleCache;
 
-           String newAbbrevTitleCache = cacheStrategy.getFullAbbrevTitleString(this);
+           String newAbbrevTitleCache = getTruncatedCache(cacheStrategy.getFullAbbrevTitleString(this));
+           if (newAbbrevTitleCache.equals("")){
+               newAbbrevTitleCache = cacheStrategy.getTitleCache(this);
+           }
 
            if ( oldAbbrevTitleCache == null   || ! oldAbbrevTitleCache.equals(newAbbrevTitleCache) ){
                 this.setAbbrevTitleCache(null, false);

@@ -20,5 +20,4 @@ package eu.etaxonomy.cdm.model.reference;
 public interface IAuthoredPublicationBase
        extends IPublicationBase, IWithAuthorAndDate{
 
-
 }

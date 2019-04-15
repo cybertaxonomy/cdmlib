@@ -35,17 +35,14 @@ import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -57,8 +54,9 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
-import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptiveDataSetDao;
@@ -66,8 +64,12 @@ import eu.etaxonomy.cdm.persistence.dao.description.IFeatureDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IStatisticalMeasurementValueDao;
+import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
+import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
+import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
+import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -97,6 +99,8 @@ public class DescriptionServiceImpl
     protected IDefinedTermDao definedTermDao;
     protected IStatisticalMeasurementValueDao statisticalMeasurementValueDao;
     protected ITaxonDao taxonDao;
+    protected ITaxonNameDao nameDao;
+    protected IOccurrenceDao occurrenceDao;
     protected ITaxonNodeDao taxonNodeDao;
     protected IDescriptiveDataSetDao dataSetDao;
 
@@ -176,11 +180,11 @@ public class DescriptionServiceImpl
 
     @Override
     @Transactional(readOnly = false)
-    public void updateCaches(Class<? extends DescriptionBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<DescriptionBase> cacheStrategy, IProgressMonitor monitor) {
+    public UpdateResult updateCaches(Class<? extends DescriptionBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<DescriptionBase> cacheStrategy, IProgressMonitor monitor) {
         if (clazz == null){
             clazz = DescriptionBase.class;
         }
-        super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
+        return super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
     }
 
 
@@ -584,10 +588,6 @@ public class DescriptionServiceImpl
         return new DefaultPagerImpl<T>(pageNumber, count, pageSize, descriptionElements);
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IDescriptionService#generateNaturalLanguageDescription(eu.etaxonomy.cdm.model.description.FeatureTree, eu.etaxonomy.cdm.model.description.TaxonDescription, eu.etaxonomy.cdm.model.common.Language, java.util.List)
-     */
     @Override
     public String generateNaturalLanguageDescription(FeatureTree featureTree,
             TaxonDescription description, List<Language> preferredLanguages, String separator) {
@@ -704,16 +704,18 @@ public class DescriptionServiceImpl
 
 
     @Override
-    @Transactional(readOnly = false)
+   // @Transactional(readOnly = false)
     public UpdateResult moveDescriptionElementsToDescription(
             Collection<DescriptionElementBase> descriptionElements,
             DescriptionBase targetDescription,
             boolean isCopy) {
 
         UpdateResult result = new UpdateResult();
-        if (descriptionElements.isEmpty() ){
+        if (descriptionElements.isEmpty() || descriptionElements.iterator().next() == null){
+            result.setAbort();
             return result;
         }
+
 
         if (! isCopy && descriptionElements == descriptionElements.iterator().next().getInDescription().getElements()){
             //if the descriptionElements collection is the elements set of a description, put it in a separate set before to avoid concurrent modification exceptions
@@ -723,6 +725,7 @@ public class DescriptionServiceImpl
         }
         for (DescriptionElementBase element : descriptionElements){
             DescriptionBase<?> description = element.getInDescription();
+            description = dao.load(description.getUuid());
             try {
                 DescriptionElementBase newElement = (DescriptionElementBase)element.clone();
                 targetDescription.addElement(newElement);
@@ -731,19 +734,21 @@ public class DescriptionServiceImpl
             }
             if (! isCopy){
                 description.removeElement(element);
-                if (description.getElements().isEmpty()){
-                   if (description instanceof TaxonDescription){
-                       TaxonDescription taxDescription = HibernateProxyHelper.deproxy(description, TaxonDescription.class);
-                       if (taxDescription.getTaxon() != null){
-                           taxDescription.getTaxon().removeDescription((TaxonDescription)description);
-                       }
-                   }
-                    dao.delete(description);
-
-                }else{
-                    dao.saveOrUpdate(description);
-                    result.addUpdatedObject(description);
-                }
+                dao.saveOrUpdate(description);
+                result.addUpdatedObject(description);
+//                if (description.getElements().isEmpty()){
+//                   if (description instanceof TaxonDescription){
+//                       TaxonDescription taxDescription = HibernateProxyHelper.deproxy(description, TaxonDescription.class);
+//                       if (taxDescription.getTaxon() != null){
+//                           taxDescription.getTaxon().removeDescription((TaxonDescription)description);
+//                       }
+//                   }
+//                    dao.delete(description);
+//
+//                }//else{
+//                    dao.saveOrUpdate(description);
+//                    result.addUpdatedObject(description);
+//                }
             }
 
 
@@ -764,12 +769,53 @@ public class DescriptionServiceImpl
             boolean isCopy) {
         Set<DescriptionElementBase> descriptionElements = new HashSet<DescriptionElementBase>();
         for(UUID deUuid : descriptionElementUUIDs) {
-            descriptionElements.add(descriptionElementDao.load(deUuid));
+            DescriptionElementBase element = descriptionElementDao.load(deUuid);
+            if (element != null){
+                descriptionElements.add(element);
+            }
         }
         DescriptionBase targetDescription = dao.load(targetDescriptionUuid);
 
         return moveDescriptionElementsToDescription(descriptionElements, targetDescription, isCopy);
     }
+
+    @Override
+    @Transactional(readOnly = false)
+    public UpdateResult moveDescriptionElementsToDescription(
+            Set<UUID> descriptionElementUUIDs,
+            DescriptionBase targetDescription,
+            boolean isCopy) {
+        Set<DescriptionElementBase> descriptionElements = new HashSet<DescriptionElementBase>();
+        for(UUID deUuid : descriptionElementUUIDs) {
+            DescriptionElementBase element = descriptionElementDao.load(deUuid);
+            if (element != null){
+                descriptionElements.add(element);
+            }
+        }
+        DescriptionBase newTargetDescription;
+        if (targetDescription.isPersited()){
+            newTargetDescription = dao.load(targetDescription.getUuid());
+        }else{
+            if (targetDescription instanceof TaxonDescription){
+                Taxon taxon = (Taxon)taxonDao.load(((TaxonDescription)targetDescription).getTaxon().getUuid());
+
+                newTargetDescription = TaxonDescription.NewInstance(taxon, targetDescription.isImageGallery());
+
+            }else if (targetDescription instanceof TaxonNameDescription){
+                TaxonName name = nameDao.load(((TaxonNameDescription)targetDescription).getTaxonName().getUuid());
+                newTargetDescription = TaxonNameDescription.NewInstance(name);
+            }else {
+                SpecimenOrObservationBase specimen = occurrenceDao.load(((SpecimenDescription)targetDescription).getDescribedSpecimenOrObservation().getUuid());
+                newTargetDescription = SpecimenDescription.NewInstance(specimen);
+            }
+
+            newTargetDescription.addSources(targetDescription.getSources());
+            newTargetDescription.setTitleCache(targetDescription.getTitleCache(), targetDescription.isProtectedTitleCache());
+
+        }
+        return moveDescriptionElementsToDescription(descriptionElements, newTargetDescription, isCopy);
+    }
+
 
     @Override
     @Transactional(readOnly = false)
@@ -808,26 +854,32 @@ public class DescriptionServiceImpl
     @Override
     @Transactional(readOnly = false)
     public UpdateResult moveTaxonDescriptions(Taxon sourceTaxon, Taxon targetTaxon) {
-        List<TaxonDescription> descriptions = new ArrayList(sourceTaxon.getDescriptions());
+        List<TaxonDescription> descriptions = new ArrayList<>(sourceTaxon.getDescriptions());
         UpdateResult result = new UpdateResult();
         result.addUpdatedObject(sourceTaxon);
         result.addUpdatedObject(targetTaxon);
         for(TaxonDescription description : descriptions){
-
-            String moveMessage = String.format("Description moved from %s", sourceTaxon);
-            if(description.isProtectedTitleCache()){
-                String separator = "";
-                if(!StringUtils.isBlank(description.getTitleCache())){
-                    separator = " - ";
-                }
-                description.setTitleCache(description.getTitleCache() + separator + moveMessage, true);
-            }
-            Annotation annotation = Annotation.NewInstance(moveMessage, Language.getDefaultLanguage());
-            annotation.setAnnotationType(AnnotationType.TECHNICAL());
-            description.addAnnotation(annotation);
-            targetTaxon.addDescription(description);
+            targetTaxon.addDescription(prepareDescriptionForMove(description, sourceTaxon));
         }
         return result;
+    }
+
+    private TaxonDescription prepareDescriptionForMove(TaxonDescription description, Taxon sourceTaxon){
+        String moveMessage = String.format("Description moved from %s", sourceTaxon);
+        if(description.isProtectedTitleCache()){
+            String separator = "";
+            if(!StringUtils.isBlank(description.getTitleCache())){
+                separator = " - ";
+            }
+            description.setTitleCache(description.getTitleCache() + separator + moveMessage, true);
+        }
+        else{
+            description.setTitleCache(moveMessage, true);
+        }
+        Annotation annotation = Annotation.NewInstance(moveMessage, Language.getDefaultLanguage());
+        annotation.setAnnotationType(AnnotationType.TECHNICAL());
+        description.addAnnotation(annotation);
+        return description;
     }
 
     @Override
@@ -842,26 +894,14 @@ public class DescriptionServiceImpl
     @Override
     @Transactional(readOnly = false)
     public UpdateResult moveTaxonDescription(UUID descriptionUuid, UUID targetTaxonUuid){
-        UpdateResult result = new UpdateResult();
         TaxonDescription description = HibernateProxyHelper.deproxy(dao.load(descriptionUuid), TaxonDescription.class);
-
-        Taxon sourceTaxon = description.getTaxon();
-        String moveMessage = String.format("Description moved from %s", sourceTaxon);
-        if(description.isProtectedTitleCache()){
-            String separator = "";
-            if(!StringUtils.isBlank(description.getTitleCache())){
-                separator = " - ";
-            }
-            description.setTitleCache(description.getTitleCache() + separator + moveMessage, true);
-        }
-        Annotation annotation = Annotation.NewInstance(moveMessage, Language.getDefaultLanguage());
-        annotation.setAnnotationType(AnnotationType.TECHNICAL());
-        description.addAnnotation(annotation);
         Taxon targetTaxon = HibernateProxyHelper.deproxy(taxonDao.load(targetTaxonUuid), Taxon.class);
-        targetTaxon.addDescription(description);
-        result.addUpdatedObject(targetTaxon);
+        Taxon sourceTaxon = description.getTaxon();
+        UpdateResult result = new UpdateResult();
         result.addUpdatedObject(sourceTaxon);
-       // dao.merge(description);
+        result.addUpdatedObject(targetTaxon);
+
+        targetTaxon.addDescription(prepareDescriptionForMove(description, sourceTaxon));
         return result;
 
     }

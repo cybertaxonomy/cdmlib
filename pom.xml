@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>eu.etaxonomy</groupId>
   <artifactId>cdmlib-parent</artifactId>
-  <version>5.5.2</version>
+  <version>5.6.0</version>
   <name>CDM Library</name>
   <description>The Java implementation of the Common Data Model (CDM), the data model for EDIT's internet platform for cybertaxonomy.</description>
   <url>http://cybertaxonomy.eu/cdmlib/</url>
@@ -201,11 +201,6 @@
     </profile>
   </profiles>
   <repositories>
-    <!-- sun repository -->
-    <repository>
-      <id>java.net</id>
-      <url>http://download.java.net/maven/1/</url>
-    </repository>
     <!-- the cdm internal repository -->
     <repository>
       <id>EditRepository</id>
@@ -1155,7 +1150,7 @@
           <!-- used in eu.etaxonomy.cdm.io.markup and for swagger -->
           <groupId>com.google.guava</groupId>
           <artifactId>guava</artifactId>
-          <version>19.0</version>
+          <version>23.0</version>
       </dependency>
       <dependency>
         <groupId>jaxen</groupId>
@@ -1492,7 +1487,12 @@
       <dependency>
         <groupId>mysql</groupId>
         <artifactId>mysql-connector-java</artifactId>
-        <version>5.1.38</version>
+        <version>8.0.15</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mariadb.jdbc</groupId>
+        <artifactId>mariadb-java-client</artifactId>
+        <version>2.4.0</version>
       </dependency>
       <dependency>
          <groupId>org.postgresql</groupId>

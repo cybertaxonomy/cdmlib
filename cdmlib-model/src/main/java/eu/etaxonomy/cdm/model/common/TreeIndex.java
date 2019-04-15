@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.term.FeatureNode;
 
 /**
  * A class to handle tree indexes as used in {@link TaxonNode}, {@link FeatureNode}

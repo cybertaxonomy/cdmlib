@@ -27,25 +27,25 @@ import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.model.common.DefinedTerm;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.Representation;
-import eu.etaxonomy.cdm.model.common.TermType;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author a.mueller
  * @since 27.05.2008
- * @version 1.0
  */
 public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
     @SuppressWarnings("unused")
@@ -207,46 +207,43 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
                 "DefinedTermBase","Representation"};
 
     	commitAndStartNewTransaction(tableNames);
-    	TermVocabulary<DefinedTerm> vocs = TermVocabulary.NewInstance(TermType.Feature, "TestFeatures", null, null, null);
-    	vocs.addTerm(DefinedTerm.NewInstance(TermType.State, "green", "green", "gn"));
-    	vocs= vocabularyService.save(vocs);
+    	TermVocabulary<State> vocStates = TermVocabulary.NewInstance(TermType.State, "Test States", null, null, null);
+    	vocStates.addTerm(State.NewInstance("green", "green", "gn"));
+    	vocabularyService.save(vocStates);
     	Pager<DefinedTermBase> term = termService.findByRepresentationText("green", DefinedTermBase.class, null, null);
     	if (term.getCount() != 0){
-
     		DeleteResult result = termService.delete(term.getRecords().get(0));
     		assertTrue(result.isOk());
     		commitAndStartNewTransaction(tableNames);
        	}
-    	TermVocabulary<DefinedTerm> voc = TermVocabulary.NewInstance(TermType.Feature, "TestFeatures", null, null, null);
-    	voc.addTerm(DefinedTerm.NewDnaMarkerInstance("test", "marker", "t"));
-    	UUID vocUUID = vocabularyService.save(voc).getUuid();
+    	TermVocabulary<DefinedTerm> vocDna = TermVocabulary.NewInstance(TermType.DnaMarker, "Test DNA marker", null, null, null);
+    	vocDna.addTerm(DefinedTerm.NewDnaMarkerInstance("test", "marker", "t"));
+    	vocabularyService.save(vocDna);
 
-    	voc = vocabularyService.find(vocUUID);
-    	Set<DefinedTerm> terms = voc.getTerms();
-    	DefinedTermBase termBase =terms.iterator().next();
-    	UUID termUUID = termBase.getUuid();
+    	vocDna = vocabularyService.find(vocDna.getUuid());
+    	Set<DefinedTerm> terms = vocDna.getTerms();
+    	DefinedTerm termBase =terms.iterator().next();
     	termService.delete(termBase, null);
     	//commitAndStartNewTransaction(tableNames);
-    	termBase =  termService.load(termUUID);
+    	termBase =  (DefinedTerm)termService.load(termBase.getUuid());
     	assertNull(termBase);
 
 
     	//TermVocabulary<DefinedTerm> voc = TermVocabulary.NewInstance(TermType.Feature, "TestFeatures", null, null, null);
-        voc.addTerm(DefinedTerm.NewDnaMarkerInstance("test", "marker", "t"));
-        vocUUID = vocabularyService.save(voc).getUuid();
+        vocDna.addTerm(DefinedTerm.NewDnaMarkerInstance("test", "marker", "t"));
+        vocabularyService.save(vocDna);
 
-        voc = vocabularyService.find(vocUUID);
-        terms = voc.getTerms();
+        vocDna = vocabularyService.find(vocDna.getUuid());
+        terms = vocDna.getTerms();
         termBase =terms.iterator().next();
-        termUUID = termBase.getUuid();
-        termBase = termService.load(termUUID);
+        termBase = (DefinedTerm)termService.load(termBase.getUuid());
         IBotanicalName testName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         Taxon testTaxon = Taxon.NewInstance(testName,null);
-        testTaxon.addIdentifier("Test", (DefinedTerm) termBase);
+        testTaxon.addIdentifier("Test", termBase);
         taxonService.save(testTaxon);
         termService.delete(termBase, null);
         //commitAndStartNewTransaction(tableNames);
-        termBase =  termService.load(termUUID);
+        termBase =  (DefinedTerm)termService.load(termBase.getUuid());
         assertNotNull(termBase);
     }
 

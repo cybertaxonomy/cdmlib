@@ -66,25 +66,25 @@ import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
 import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
-import eu.etaxonomy.cdm.model.common.TermType;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.IDescribable;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.name.CacheUpdate;
 import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
@@ -2459,7 +2459,7 @@ public class TaxonName
      */
     @Override
     @SuppressWarnings("deprecation")
-    public void removeTypeDesignation(TypeDesignationBase typeDesignation) {
+    public void removeTypeDesignation(TypeDesignationBase<?> typeDesignation) {
         this.typeDesignations.remove(typeDesignation);
         typeDesignation.removeTypifiedName(this);
     }
@@ -2498,10 +2498,10 @@ public class TaxonName
     @Override
     @Transient
     public Set<NameTypeDesignation> getNameTypeDesignations() {
-        Set<NameTypeDesignation> result = new HashSet<NameTypeDesignation>();
-        for (TypeDesignationBase typeDesignation : this.typeDesignations){
-            if (typeDesignation instanceof NameTypeDesignation){
-                result.add((NameTypeDesignation)typeDesignation);
+        Set<NameTypeDesignation> result = new HashSet<>();
+        for (TypeDesignationBase<?> typeDesignation : this.typeDesignations){
+            if (typeDesignation.isInstanceOf(NameTypeDesignation.class)){
+                result.add(CdmBase.deproxy(typeDesignation, NameTypeDesignation.class));
             }
         }
         return result;
@@ -2580,10 +2580,10 @@ public class TaxonName
     @Override
     @Transient
     public Set<SpecimenTypeDesignation> getSpecimenTypeDesignations() {
-        Set<SpecimenTypeDesignation> result = new HashSet<SpecimenTypeDesignation>();
-        for (TypeDesignationBase typeDesignation : this.typeDesignations){
-            if (typeDesignation instanceof SpecimenTypeDesignation){
-                result.add((SpecimenTypeDesignation)typeDesignation);
+        Set<SpecimenTypeDesignation> result = new HashSet<>();
+        for (TypeDesignationBase<?> typeDesignation : this.typeDesignations){
+            if (typeDesignation.isInstanceOf(SpecimenTypeDesignation.class)){
+                result.add(CdmBase.deproxy(typeDesignation, SpecimenTypeDesignation.class));
             }
         }
         return result;
@@ -2641,7 +2641,7 @@ public class TaxonName
      *
      */
     @Override
-    public boolean addTypeDesignation(TypeDesignationBase typeDesignation, boolean addToAllNames){
+    public boolean addTypeDesignation(TypeDesignationBase<?> typeDesignation, boolean addToAllNames){
         //currently typeDesignations are not persisted with the homotypical group
         //so explicit adding to the homotypical group is not necessary.
         if (typeDesignation != null){
@@ -2664,7 +2664,7 @@ public class TaxonName
      * Throws an Exception this type designation already has typified names from another homotypical group.
      * @param typeDesignation
      */
-    private void checkHomotypicalGroup(TypeDesignationBase typeDesignation) {
+    private void checkHomotypicalGroup(TypeDesignationBase<?> typeDesignation) {
         if(typeDesignation.getTypifiedNames().size() > 0){
             Set<HomotypicalGroup> groups = new HashSet<>();
             Set<TaxonName> names = typeDesignation.getTypifiedNames();
@@ -2778,7 +2778,7 @@ public class TaxonName
     @Override
     public Set<TaxonBase> getTaxonBases() {
         if(taxonBases == null) {
-            this.taxonBases = new HashSet<TaxonBase>();
+            this.taxonBases = new HashSet<>();
         }
         return this.taxonBases;
     }
@@ -3407,7 +3407,7 @@ public class TaxonName
      * @return the first not blank name part in reverse order
      */
     @Override
-    public String getFamilyNamePart() {
+    public String getLastNamePart() {
         String result =
                 StringUtils.isNotBlank(this.getInfraSpecificEpithet())?
                     this.getInfraSpecificEpithet() :
@@ -3626,7 +3626,7 @@ public class TaxonName
     private boolean updateFullTitleCache() {
         if (protectedFullTitleCache == false){
             String oldCache = this.fullTitleCache;
-            String newCache = cacheStrategy.getFullTitleCache(this);
+            String newCache = getTruncatedCache(cacheStrategy.getFullTitleCache(this));
             if (!CdmUtils.nullSafeEqual(oldCache, newCache)){
                 this.setFullTitleCache(null, false);
                 this.getFullTitleCache();

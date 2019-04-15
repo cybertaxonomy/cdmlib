@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.api.service.dto;
 
+import java.io.Serializable;
+
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 
@@ -16,7 +18,10 @@ import eu.etaxonomy.cdm.model.occurrence.Collection;
  * @since 21.06.2018
  *
  */
-public class CollectionDTO {
+public class CollectionDTO implements Serializable{
+
+    private static final long serialVersionUID = -1840237876297997573L;
+
     private String code;
     private String codeStandard;
     private String institute;

@@ -54,7 +54,10 @@ import eu.etaxonomy.cdm.hibernate.search.StripHtmlBridge;
 import eu.etaxonomy.cdm.jaxb.FormattedTextAdapter;
 import eu.etaxonomy.cdm.jaxb.LSIDAdapter;
 import eu.etaxonomy.cdm.model.media.Rights;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.Match.ReplaceMode;
@@ -82,13 +85,12 @@ import eu.etaxonomy.cdm.validation.Level2;
     "credits",
     "extensions",
     "identifiers",
-    "rights",
-    "sources"
+    "rights"
 })
 @Audited
 @MappedSuperclass
 public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrategy>
-        extends AnnotatableEntity
+        extends SourcedEntityBase<IdentifiableSource>
         implements IIdentifiableEntity /*, ISourceable<IdentifiableSource> */ {
 
     private static final long serialVersionUID = 7912083412108359559L;
@@ -158,14 +160,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @Merge(MergeMode.ADD_CLONE)
     @NotNull
     private List<Identifier> identifiers = new ArrayList<>();
-
-    @XmlElementWrapper(name = "Sources", nillable = true)
-    @XmlElement(name = "IdentifiableSource")
-    @OneToMany(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
-    @Merge(MergeMode.ADD_CLONE)
-    @NotNull
-    private Set<IdentifiableSource> sources = new HashSet<>();
 
     @XmlTransient
     @Transient
@@ -529,15 +523,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         }
     }
 
-
-    @Override
-    public Set<IdentifiableSource> getSources() {
-        if(sources == null) {
-            this.sources = new HashSet<>();
-        }
-        return this.sources;
-    }
-
     @Override
     public void addSource(IdentifiableSource source) {
         if (source != null){
@@ -554,51 +539,14 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         }
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void removeSources() {
-       this.sources.clear();
-    }
-
-    @Override
-    public IdentifiableSource addSource(OriginalSourceType type, String id, String idNamespace, Reference citation, String microCitation) {
-        if (id == null && idNamespace == null && citation == null && microCitation == null){
-            return null;
-        }
-        IdentifiableSource source = IdentifiableSource.NewInstance(type, id, idNamespace, citation, microCitation);
-        addSource(source);
-        return source;
-    }
-
-
-    @Override
-    public IdentifiableSource addImportSource(String id, String idNamespace, Reference citation, String microCitation) {
-        if (id == null && idNamespace == null && citation == null && microCitation == null){
-            return null;
-        }
-        IdentifiableSource source = IdentifiableSource.NewInstance(OriginalSourceType.Import, id, idNamespace, citation, microCitation);
-        addSource(source);
-        return source;
-    }
-
-    @Override
-    public IdentifiableSource addPrimaryTaxonomicSource(Reference citation, String microCitation) {
-        if (citation == null && microCitation == null){
-            return null;
-        }
-        IdentifiableSource source = IdentifiableSource.NewPrimarySourceInstance(citation, microCitation);
-        addSource(source);
-        return source;
-    }
-
-    @Override
-    public IdentifiableSource addPrimaryTaxonomicSource(Reference citation) {
-        return addPrimaryTaxonomicSource(citation, null);
-    }
-
-
-    @Override
-    public void removeSource(IdentifiableSource source) {
-        getSources().remove(source);
+    protected IdentifiableSource createNewSource(OriginalSourceType type, String idInSource, String idNamespace,
+            Reference reference, String microReference, String originalInfo) {
+        return IdentifiableSource.NewInstance(type, idInSource, idNamespace, reference, microReference, originalInfo);
     }
 
 //******************************** TO STRING *****************************************************/
@@ -664,19 +612,11 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
             result.addIdentifier(newIdentifier);
         }
 
-        //OriginalSources
-        result.sources = new HashSet<>();
-        for (IdentifiableSource source : getSources()){
-            IdentifiableSource newSource = (IdentifiableSource)source.clone();
-            result.addSource(newSource);
-        }
-
         //Rights  - reusable since #5762
         result.rights = new HashSet<>();
         for(Rights right : getRights()) {
             result.addRights(right);
         }
-
 
         //Credits
         result.credits = new ArrayList<>();

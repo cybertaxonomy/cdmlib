@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.GroupedTaxonDTO;
-import eu.etaxonomy.cdm.common.AccountStore;
+import eu.etaxonomy.cdm.config.AccountStore;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
@@ -36,11 +36,8 @@ import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.agent.Person;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.description.Distribution;
-import eu.etaxonomy.cdm.model.description.FeatureNode;
-import eu.etaxonomy.cdm.model.description.FeatureTree;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -55,6 +52,10 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.FeatureNode;
+import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.init.TermNotFoundException;
 
 public class Datasource {
 	private static final Logger logger = Logger.getLogger(Datasource.class);
@@ -236,14 +237,14 @@ public class Datasource {
 		appCtr.getClassificationService().saveOrUpdate(cl);
 
 		FeatureTree ft1 = FeatureTree.NewInstance();
-		FeatureNode fn1 = FeatureNode.NewInstance(null);
+		FeatureNode fn1 = FeatureNode.NewInstance((Feature)null);
 		ft1.getRoot().addChild(fn1);
 		appCtr.getFeatureNodeService().save(fn1);
 
-		FeatureNode fn2 = FeatureNode.NewInstance(null);
+		FeatureNode fn2 = FeatureNode.NewInstance((Feature)null);
 		fn1.addChild(fn2);
 
-		FeatureNode fn3 = FeatureNode.NewInstance(null);
+		FeatureNode fn3 = FeatureNode.NewInstance((Feature)null);
 		fn1.addChild(fn2, 0);
 
 		appCtr.getFeatureNodeService().saveOrUpdate(fn1);

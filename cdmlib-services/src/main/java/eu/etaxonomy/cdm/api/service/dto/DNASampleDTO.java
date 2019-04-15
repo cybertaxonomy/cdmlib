@@ -25,6 +25,8 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
  */
 public class DNASampleDTO extends PreservedSpecimenDTO{
 
+    private static final long serialVersionUID = -1050277075084265067L;
+
     private Set<SequenceDTO> sequences = new HashSet<SequenceDTO>();
 
     private Set<AmplificationResult> amplificationResults = new HashSet<AmplificationResult>();

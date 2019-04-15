@@ -15,15 +15,15 @@ import org.junit.runners.Suite;
 
 import eu.etaxonomy.cdm.aspectj.PropertyChangeTest;
 import eu.etaxonomy.cdm.model.common.CdmBaseTest;
-import eu.etaxonomy.cdm.model.common.DefinedTermBaseTest;
 import eu.etaxonomy.cdm.model.common.MarkerTypeTest;
-import eu.etaxonomy.cdm.model.common.OrderedTermBaseTest;
-import eu.etaxonomy.cdm.model.common.OrderedTermVocabularyTest;
-import eu.etaxonomy.cdm.model.common.TermVocabularyTest;
-import eu.etaxonomy.cdm.model.common.init.TermLoaderTest;
 import eu.etaxonomy.cdm.model.description.TextDataTest;
 import eu.etaxonomy.cdm.model.name.BotanicalNameTest;
 import eu.etaxonomy.cdm.model.taxon.TaxonTest;
+import eu.etaxonomy.cdm.model.term.DefinedTermBaseTest;
+import eu.etaxonomy.cdm.model.term.OrderedTermBaseTest;
+import eu.etaxonomy.cdm.model.term.OrderedTermVocabularyTest;
+import eu.etaxonomy.cdm.model.term.TermVocabularyTest;
+import eu.etaxonomy.cdm.model.term.init.TermLoaderTest;
 import eu.etaxonomy.cdm.strategy.cache.name.BotanicNameCacheStrategyTest;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImplTest;
 

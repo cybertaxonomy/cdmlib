@@ -38,10 +38,11 @@ import org.hibernate.envers.Audited;
 import au.com.bytecode.opencsv.CSVWriter;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.Representation;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
  * +/- current ISO codes. year given with each entry
@@ -58,7 +59,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @XmlRootElement(name = "Country")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
+//@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
 public class Country extends NamedArea {
 	private static final long serialVersionUID = -6791671976199722843L;
@@ -590,6 +591,7 @@ public class Country extends NamedArea {
   	//for hibernate use only
   	@Deprecated
   	protected Country() {
+  	    super(); //sets the term type to TermType.NamedAreas
 	}
 	private Country(String term, String label, String labelAbbrev) {
 		super(term, label, labelAbbrev);
@@ -626,10 +628,11 @@ public class Country extends NamedArea {
 	}
 
 	@Override
-	public NamedArea readCsvLine(Class<NamedArea> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
+	public NamedArea readCsvLine(Class<NamedArea> termClass, List<String> csvLine, TermType termType,
+	        Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
 		try {
 			Language lang= Language.DEFAULT();
-			Country newInstance = Country.class.newInstance();
+			Country newInstance = NewInstance();
 			newInstance.setUuid(UUID.fromString(csvLine.get(0)));
 			String uriStr = CdmUtils.Ne(csvLine.get(1));
 	        newInstance.setUri(uriStr == null? null: URI.create(uriStr));
@@ -731,17 +734,11 @@ public class Country extends NamedArea {
 		return (Country)termMap.get(uuid);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
-	 */
 	@Override
 	public void resetTerms(){
 		termMap = null;
 		labelMap = null;
 	}
-
-
 
 	@Override
 	protected void setDefaultTerms(TermVocabulary<NamedArea> termVocabulary) {

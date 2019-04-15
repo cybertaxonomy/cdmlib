@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
@@ -29,8 +30,8 @@ import net.sf.ehcache.Element;
 
 
 /**
- * This class serializing and deserializing the CDM model for performance purposes.
- * To serialize it see the comments on {@link #main(String[])} and on
+ * This class is serializing and deserializing the CDM model for performance purposes.
+ * To serialize see comments on {@link #main(String[])} and on
  * https://dev.e-taxonomy.eu/redmine/projects/edit/wiki/TaxonomicEditorDevelopersGuide#Model-Change-Actions
  *
  * @author c.mathew
@@ -39,6 +40,7 @@ import net.sf.ehcache.Element;
  */
 public class CdmModelCacher {
 
+    private static final Logger logger = Logger.getLogger(CdmModelCacher.class);
 
     public static String HB_CONFIG_FILE_PATH= "/eu/etaxonomy/cdm/mappings/hibernate.cfg.xml";
 
@@ -100,14 +102,14 @@ public class CdmModelCacher {
 //        	Metadata metadata = new MetadataSources( registry ).getMetadataBuilder().applyImplicitNamingStrategy( ImplicitNamingStrategyJpaCompliantImpl.INSTANCE ).build();
 
 
-            for(ClassMetadata classMetaData :classMetaDataMap.values()) {
+            for(ClassMetadata classMetaData : classMetaDataMap.values()) {
             	Class<?> mappedClass = classMetaData.getMappedClass();
 
                 String mappedClassName = mappedClass.getName();
 
-                PersistentClass persistentClass =metadata.getEntityBinding(mappedClassName);
+                PersistentClass persistentClass = metadata.getEntityBinding(mappedClassName);
                 CdmModelFieldPropertyFromClass cmgmfc = new CdmModelFieldPropertyFromClass(mappedClassName);
-                System.out.println("Adding class : " + mappedClassName + " to cache");
+                logger.warn("Adding class : " + mappedClassName + " to cache");
                 addGetters(persistentClass, cmgmfc);
                 modelClassMap.put(mappedClassName, cmgmfc);
             }

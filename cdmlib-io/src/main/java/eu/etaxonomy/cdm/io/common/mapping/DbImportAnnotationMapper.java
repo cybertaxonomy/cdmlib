@@ -24,9 +24,9 @@ import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
  * This class maps a database attribute to CDM annotation added to the target class
@@ -181,16 +181,8 @@ public class DbImportAnnotationMapper extends DbSingleAttributeImportMapperBase<
 
 
 	//not used
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase#getTypeClass()
-	 */
 	@Override
     public Class<String> getTypeClass(){
 		return String.class;
 	}
-
-
-
-
-
 }

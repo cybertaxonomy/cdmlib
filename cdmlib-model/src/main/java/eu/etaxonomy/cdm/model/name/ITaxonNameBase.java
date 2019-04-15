@@ -429,7 +429,7 @@ public interface ITaxonNameBase
      *
      * @param  typeDesignation  the type designation which should be deleted
      */
-    public void removeTypeDesignation(TypeDesignationBase typeDesignation);
+    public void removeTypeDesignation(TypeDesignationBase<? >typeDesignation);
 
     /**
      * Returns the set of {@link SpecimenTypeDesignation specimen type designations} assigned
@@ -539,13 +539,13 @@ public interface ITaxonNameBase
      * @param addToAllNames             the boolean indicating whether the type designation should be
      *                                  added to all taxon names of the homotypical group the typified
      *                                  taxon name belongs to
-     * @return                          true if the operation was succesful
+     * @return                          true if the operation was successful
      *
      * @throws IllegalArgumentException if the type designation already has typified names, an {@link IllegalArgumentException exception}
      *                                  is thrown. We do this to prevent a type designation to be used for multiple taxon names.
      *
      */
-    public boolean addTypeDesignation(TypeDesignationBase typeDesignation, boolean addToAllNames);
+    public boolean addTypeDesignation(TypeDesignationBase<?> typeDesignation, boolean addToAllNames);
 
     /**
      * Returns the {@link HomotypicalGroup homotypical group} to which

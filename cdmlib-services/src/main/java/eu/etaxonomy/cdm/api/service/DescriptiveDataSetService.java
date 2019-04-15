@@ -28,7 +28,6 @@ import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.Character;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
@@ -47,6 +46,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -244,12 +244,12 @@ public class DescriptiveDataSetService
 
     @Override
     @Transactional(readOnly = false)
-    public void updateCaches(Class<? extends DescriptiveDataSet> clazz, Integer stepSize,
+    public UpdateResult updateCaches(Class<? extends DescriptiveDataSet> clazz, Integer stepSize,
             IIdentifiableEntityCacheStrategy<DescriptiveDataSet> cacheStrategy, IProgressMonitor monitor) {
         if (clazz == null) {
             clazz = DescriptiveDataSet.class;
         }
-        super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
+        return super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
     }
 
     private TaxonDescription findTaxonDescriptionByMarkerType(DescriptiveDataSet dataSet, Taxon taxon, MarkerType markerType){
@@ -358,7 +358,9 @@ public class DescriptiveDataSetService
 
         // delete existing aggregation description, if present
         TaxonDescription aggregation = findTaxonDescriptionByMarkerType(dataSet, taxon, MarkerType.COMPUTED());
-        removeDescription(aggregation.getUuid(), descriptiveDataSetUuid);
+        if(aggregation!=null){
+            removeDescription(aggregation.getUuid(), descriptiveDataSetUuid);
+        }
 
         // create new aggregation
         TaxonDescription description = TaxonDescription.NewInstance(taxon);
@@ -450,7 +452,7 @@ public class DescriptiveDataSetService
         DescriptiveDataSet dataSet = load(descriptiveDataSetUuid);
         SpecimenOrObservationBase specimen = occurrenceService.load(specimenUuid);
 
-        Set<Feature> datasetFeatures = dataSet.getDescriptiveSystem().getDistinctFeatures();
+        Set<Character> datasetFeatures = dataSet.getDescriptiveSystem().getDistinctFeatures();
         List<DescriptionElementBase> matchingDescriptionElements = new ArrayList<>();
 
         for (SpecimenDescription specimenDescription : (Set<SpecimenDescription>) specimen.getDescriptions()) {

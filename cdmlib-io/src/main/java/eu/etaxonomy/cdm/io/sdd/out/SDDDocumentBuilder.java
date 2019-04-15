@@ -44,22 +44,15 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
-import eu.etaxonomy.cdm.model.common.DefinedTerm;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.Marker;
-import eu.etaxonomy.cdm.model.common.Representation;
-import eu.etaxonomy.cdm.model.common.TermBase;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.FeatureNode;
-import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
@@ -83,6 +76,13 @@ import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.FeatureNode;
+import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermBase;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
  * Writes the SDD XML file.
@@ -1272,9 +1272,9 @@ public class SDDDocumentBuilder {
 		}
 	}
 
-	public void buildBranches(FeatureNode parent, ElementImpl element,
+	public void buildBranches(FeatureNode<Feature> parent, ElementImpl element,
 			boolean isRoot) {
-		List<FeatureNode> children = parent.getChildNodes();
+		List<FeatureNode<Feature>> children = parent.getChildNodes();
 		if (!parent.isLeaf()) {
 			ElementImpl elCharNode = new ElementImpl(document, NODE);
 			charnodeCount = buildReference(parent, featuretrees, ID,
@@ -1288,12 +1288,12 @@ public class SDDDocumentBuilder {
 			}
 			ElementImpl elDescriptiveConcept = new ElementImpl(document,
 					DESCRIPTIVE_CONCEPT);
-			Feature fref = parent.getFeature();
+			Feature fref = parent.getTerm();
 			descriptiveConceptCount = buildReference(fref, descriptiveConcepts,
 					REF, elDescriptiveConcept, "dc", descriptiveConceptCount);
 			elCharNode.appendChild(elDescriptiveConcept);
 			element.appendChild(elCharNode);
-			for (Iterator<FeatureNode> ifn = children.iterator(); ifn.hasNext();) {
+			for (Iterator<FeatureNode<Feature>> ifn = children.iterator(); ifn.hasNext();) {
 				FeatureNode fn = ifn.next();
 				buildBranches(fn, element, false);
 			}
@@ -1306,7 +1306,7 @@ public class SDDDocumentBuilder {
 			charnodeCount = buildReference(parent, featuretrees, ID,
 					elCharNode, "cn", charnodeCount);
 			ElementImpl elCharacter = new ElementImpl(document, CHARACTER);
-			Feature fref = parent.getFeature();
+			Feature fref = parent.getTerm();
 			boolean dependencies = false;
 			ElementImpl elDependecyRules = new ElementImpl(document,
 					"DependecyRules");

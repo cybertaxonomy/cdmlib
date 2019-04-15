@@ -44,7 +44,6 @@ import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.TreeIndex;
@@ -64,6 +63,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeFilterDao;
@@ -86,6 +86,9 @@ public class TaxonNodeServiceImpl
 
     @Autowired
     private ITaxonService taxonService;
+
+    @Autowired
+    private IReferenceService referenceService;
 
     @Autowired
     private IDescriptiveDataSetService dataSetService;
@@ -870,6 +873,11 @@ public class TaxonNodeServiceImpl
             taxon = newTaxonNode.getTaxon();
         }
         taxon.removeTaxonNode(newTaxonNode);
+
+        if (taxon.getSec() != null && taxon.getSec().isPersited()){
+            Reference sec = referenceService.load(taxon.getSec().getUuid());
+            taxon.setSec(sec);
+        }
         if (taxon.getId() == 0){
             UUID taxonUUID = taxonService.saveOrUpdate(taxon);
             taxon = (Taxon) taxonService.load(taxonUUID);

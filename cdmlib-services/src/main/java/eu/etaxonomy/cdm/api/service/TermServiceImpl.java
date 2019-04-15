@@ -37,23 +37,23 @@ import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.LanguageStringBase;
-import eu.etaxonomy.cdm.model.common.OrderedTermBase;
-import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
-import eu.etaxonomy.cdm.model.common.Representation;
-import eu.etaxonomy.cdm.model.common.TermType;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.OrderedTermBase;
+import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
+import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringBaseDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringDao;
-import eu.etaxonomy.cdm.persistence.dao.common.IRepresentationDao;
+import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
+import eu.etaxonomy.cdm.persistence.dao.term.IRepresentationDao;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -276,7 +276,7 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 		if (config == null){
 			config = new TermDeletionConfigurator();
 		}
-		Set<DefinedTermBase> termsToSave = new HashSet<DefinedTermBase>();
+		Set<DefinedTermBase> termsToSave = new HashSet<>();
 
 		DeleteResult result = isDeletable(term.getUuid(), config);
 		if (result.isAbort()) {
@@ -395,12 +395,12 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 
 	@Override
 	@Transactional(readOnly = false)
-    public void updateCaches(Class<? extends DefinedTermBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<DefinedTermBase> cacheStrategy, IProgressMonitor monitor) {
+    public UpdateResult updateCaches(Class<? extends DefinedTermBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<DefinedTermBase> cacheStrategy, IProgressMonitor monitor) {
 		//TODO shouldn't this be TermBase instead of DefinedTermBase
 		if (clazz == null){
 			clazz = DefinedTermBase.class;
 		}
-		super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
+		return super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
 	}
 
 	@Override
@@ -470,6 +470,27 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
         return result;
     }
 
+//    @Override
+//    @Transactional(readOnly = true)
+//    public List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCache(List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern, Language lang, MatchMode matchMode) {
+//        List<NamedArea> areas = dao.getUuidAndTitleCache(vocs, pageNumber, limit, pattern, matchMode);
+//
+//        List<UuidAndTitleCache<NamedArea>> result = new ArrayList();
+//        UuidAndTitleCache<NamedArea> uuidAndTitleCache;
+//        for (NamedArea area: areas){
+//            uuidAndTitleCache = new UuidAndTitleCache<>(area.getUuid(), area.getId(), area.labelWithLevel(area, lang));
+//            result.add(uuidAndTitleCache);
+//        }
+//
+//        return result;
+//    }
+//
+//    @Override
+//    public long count(List<TermVocabulary> vocs, String pattern, Language lang) {
+//        long count = dao.count(vocs, pattern);
+//        return count;
+//    }
+
     @Override
     public Collection<TermDto> getIncludesAsDto(
             TermDto parentTerm) {
@@ -485,7 +506,7 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
     @Transactional(readOnly = false)
     @Override
     public void moveTerm(TermDto termDto, UUID parentUUID) {
-        moveTerm(termDto, parentUUID, null);
+        moveTerm(termDto, parentUUID, TermMovePosition.ON);
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -569,6 +590,11 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
         parent.getVocabulary().addTerm(term);
         dao.saveOrUpdate(parent);
         return TermDto.fromTerm(term, true);
+    }
+
+    @Override
+    public Collection<TermDto> findByTitleAsDto(String title, TermType termType){
+        return dao.findByTitleAsDto(title, termType);
     }
 
     public enum TermMovePosition{

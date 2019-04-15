@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.api.service.dto;
 
+import java.io.Serializable;
+
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 
 /**
@@ -15,8 +17,9 @@ import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
  * @since 22.06.2018
  *
  */
-public class DerivationEventDTO {
+public class DerivationEventDTO implements Serializable {
 
+    private static final long serialVersionUID = 6338657672281702600L;
 
     private String derivationEventType;
     private String derivationEventActor;

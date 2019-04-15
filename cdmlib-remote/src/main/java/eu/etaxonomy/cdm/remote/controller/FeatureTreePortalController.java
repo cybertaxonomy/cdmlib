@@ -8,8 +8,6 @@
 */
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,7 +24,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import eu.etaxonomy.cdm.model.description.FeatureTree;
+import eu.etaxonomy.cdm.model.term.FeatureTree;
+import io.swagger.annotations.Api;
 
 /**
  * @author a.kohlbecker
@@ -51,9 +50,8 @@ public class FeatureTreePortalController extends FeatureTreeController {
     public FeatureTreePortalController() {
         setInitializationStrategy(FEATURETREE_INIT_STRATEGY);
 
-        featuretreeNodeInitStrategy = new ArrayList<String>(2);
-//        featuretreeNodeInitStrategy.add("representations");
-        featuretreeNodeInitStrategy.add("feature.representations");
+        featuretreeNodeInitStrategy = new ArrayList<>(2);
+        featuretreeNodeInitStrategy.add("term.representations");
     }
 
     @Override

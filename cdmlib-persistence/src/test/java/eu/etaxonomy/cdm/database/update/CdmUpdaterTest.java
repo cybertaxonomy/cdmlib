@@ -19,7 +19,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.common.AccountStore;
+import eu.etaxonomy.cdm.config.AccountStore;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -67,14 +67,6 @@ public class CdmUpdaterTest {
 		cdmUpdater.updateToCurrentVersion(datasource, null);
 	}
 
-	private static ICdmDataSource cdm_test_andreasM(){
-		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
-		String cdmServer = "192.168.2.10";
-		String cdmDB = "cdm_test_andreasM";
-		String cdmUserName = "edit";
-		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
-	}
-
 	private static ICdmDataSource cdm_test_algaterra(){
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		String cdmServer = "160.45.63.201";
@@ -82,14 +74,6 @@ public class CdmUpdaterTest {
 		String cdmUserName = "edit";
 		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
-
-//	private static ICdmDataSource cdm_import(){
-//		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
-//		String cdmServer = "160.45.63.151";
-//		String cdmDB = "cdm_production_campanulaceae";
-//		String cdmUserName = "edit";
-//		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
-//	}
 
 	private static ICdmDataSource makeDestination(DatabaseTypeEnum dbType, String cdmServer, String cdmDB, int port, String cdmUserName, String pwd ){
 		//establish connection

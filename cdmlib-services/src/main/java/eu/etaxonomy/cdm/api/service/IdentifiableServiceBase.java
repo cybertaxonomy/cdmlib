@@ -23,6 +23,7 @@ import org.hibernate.criterion.Criterion;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
+import eu.etaxonomy.cdm.api.service.dto.CdmEntityIdentifier;
 import eu.etaxonomy.cdm.api.service.dto.IdentifiedEntityDTO;
 import eu.etaxonomy.cdm.api.service.dto.MarkedEntityDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -31,13 +32,13 @@ import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DefinedTerm;
-import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.media.Rights;
+import eu.etaxonomy.cdm.model.reference.ISourceable;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.HibernateBeanInitializer;
@@ -256,49 +257,61 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 
 	@Override
 	@Transactional(readOnly = false)
-	public void updateCaches() {
-		updateCaches(null, null, null, null);
+	public UpdateResult updateCaches() {
+		return updateCaches(null, null, null, null);
 	}
 
 	@Transactional(readOnly = false)  //TODO check transactional behavior, e.g. what happens with the session if count is very large
-	protected <S extends T > void updateCachesImpl(Class<S> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<T> cacheStrategy, IProgressMonitor monitor) {
+	protected <S extends T > UpdateResult updateCachesImpl(Class<S> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<T> cacheStrategy, IProgressMonitor subMonitor) {
 		if (stepSize == null){
 			stepSize = UPDATE_TITLE_CACHE_DEFAULT_STEP_SIZE;
 		}
-		if (monitor == null){
-			monitor = DefaultProgressMonitor.NewInstance();
+		if (subMonitor == null){
+		    subMonitor = DefaultProgressMonitor.NewInstance();
 		}
-
+		UpdateResult result = new UpdateResult();
 		long count = dao.count(clazz);
 		long countUpdated = 0;
-		monitor.beginTask("update titles for " + clazz.getSimpleName(), Long.valueOf(count).intValue());
-		int worked = 0;
-		for(int i = 0 ; i < count ; i = i + stepSize){
-			// not sure if such strict ordering is necessary here, but for safety reasons I do it
-			ArrayList<OrderHint> orderHints = new ArrayList<>();
-			orderHints.add( new OrderHint("id", OrderHint.SortOrder.ASCENDING));
+
+		try {
+		    subMonitor.beginTask("update titles for " + clazz.getSimpleName(), Long.valueOf(count).intValue());
 
 
-			Map<Class<? extends CdmBase>, AutoPropertyInitializer<CdmBase>> oldAutoInit = switchOfAutoinitializer();
-			List<S> list = this.list(clazz, stepSize, i, orderHints, null);
-			switchOnOldAutoInitializer(oldAutoInit);
+    		//SubProgressMonitor subMonitor = monitor.("update titles for " + clazz.getSimpleName(), Long.valueOf(count).intValue());
+    		int worked = 0;
+    		Set<CdmEntityIdentifier> updatedCdmIds = new HashSet();
+    		for(int i = 0 ; i < count ; i = i + stepSize){
+    			// not sure if such strict ordering is necessary here, but for safety reasons I do it
+    			ArrayList<OrderHint> orderHints = new ArrayList<>();
+    			orderHints.add( new OrderHint("id", OrderHint.SortOrder.ASCENDING));
 
-			List<T> entitiesToUpdate = new ArrayList<>();
-			for (T entity : list){
-				entity = HibernateProxyHelper.deproxy(entity);
-			    if (entity.updateCaches(cacheStrategy)){
-			        countUpdated++;
-			    }
-				worked++;
-			}
 
-			monitor.worked(list.size());
-			if (monitor.isCanceled()){
-				monitor.done();
-				return;
-			}
-		}
-		monitor.done();
+    			Map<Class<? extends CdmBase>, AutoPropertyInitializer<CdmBase>> oldAutoInit = switchOfAutoinitializer();
+    			List<S> list = this.list(clazz, stepSize, i, orderHints, null);
+    			switchOnOldAutoInitializer(oldAutoInit);
+
+    			List<T> entitiesToUpdate = new ArrayList<>();
+    			for (T entity : list){
+    				entity = HibernateProxyHelper.deproxy(entity);
+    			    if (entity.updateCaches(cacheStrategy)){
+    			        countUpdated++;
+    			        updatedCdmIds.add(new CdmEntityIdentifier(entity.getId(), clazz));
+    			    }
+    				worked++;
+    				subMonitor.internalWorked(1);
+    			}
+
+
+    			if (subMonitor.isCanceled()){
+    				break;
+    			}
+    		}
+    		result.addUpdatedCdmIds(updatedCdmIds);
+    	} finally {
+            subMonitor.done();
+        }
+
+		return result;
 	}
 
 	/**

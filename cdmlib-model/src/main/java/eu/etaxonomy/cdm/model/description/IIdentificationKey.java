@@ -11,9 +11,9 @@ package eu.etaxonomy.cdm.model.description;
 
 import java.util.Set;
 
-import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
 
 /**
  * A common interface for all identification keys.

@@ -28,12 +28,12 @@ import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.OrderedTermBase;
-import eu.etaxonomy.cdm.model.common.Representation;
-import eu.etaxonomy.cdm.model.common.TermType;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.OrderedTermBase;
+import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 /**
@@ -59,7 +59,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 @XmlType(name = "Rank")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
+//@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
 public class Rank extends OrderedTermBase<Rank> {
     private static final long serialVersionUID = -8648081681348758485L;
@@ -215,9 +215,6 @@ public class Rank extends OrderedTermBase<Rank> {
 
 //********* METHODS **************************************/
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
-     */
     @Override
     public void resetTerms(){
         termMap = null;
@@ -993,8 +990,8 @@ public class Rank extends OrderedTermBase<Rank> {
 
 
     @Override
-    public Rank readCsvLine(Class<Rank> termClass, List<String> csvLine, Map<UUID, DefinedTermBase> terms, boolean abbrevAsId) {
-        Rank rank = super.readCsvLine(termClass, csvLine, terms, abbrevAsId);
+    public Rank readCsvLine(Class<Rank> termClass, List<String> csvLine, TermType termType, Map<UUID, DefinedTermBase> terms, boolean abbrevAsId) {
+        Rank rank = super.readCsvLine(termClass, csvLine, termType, terms, abbrevAsId);
         RankClass rankClass = RankClass.getByKey(csvLine.get(5));
         assert rankClass != null: "XXXXXXXXXXXXXXXXXXXXX  Rank class must not be null: " + csvLine ;
         rank.setRankClass(rankClass);
@@ -1058,7 +1055,7 @@ public class Rank extends OrderedTermBase<Rank> {
      * It is necessary to skip the vocabulary check, otherwise we would have
      * problems in some CacheStrategies, due to uninitialized Vocabularies.
      *
-     * @see eu.etaxonomy.cdm.model.common.OrderedTermBase#compareTo(eu.etaxonomy.cdm.model.common.OrderedTermBase)
+     * @see eu.etaxonomy.cdm.model.term.OrderedTermBase#compareTo(eu.etaxonomy.cdm.model.term.OrderedTermBase)
      */
     @Override
     public int compareTo(Rank orderedTerm) {

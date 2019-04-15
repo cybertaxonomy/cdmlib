@@ -26,8 +26,8 @@ import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandlin
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.FeatureNode;
-import eu.etaxonomy.cdm.model.description.FeatureTree;
+import eu.etaxonomy.cdm.model.term.FeatureNode;
+import eu.etaxonomy.cdm.model.term.FeatureTree;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
@@ -59,8 +59,6 @@ public class FeatureNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 	private static final UUID node5Uuid = UUID.fromString("c4d5170a-7967-4dac-ab76-ae2019eefde5");
 	private static final UUID node6Uuid = UUID.fromString("b419ba5e-9c8b-449c-ad86-7abfca9a7340");
 
-	private Feature t1;
-	private Feature t2;
 //	private Synonym s1;
 	private FeatureNode node3;
 	private FeatureNode node2;
@@ -178,22 +176,12 @@ public class FeatureNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		FeatureNode rootNode = HibernateProxyHelper.deproxy(tree1.getRoot(), FeatureNode.class);
 		assertNotNull(tree1);
 		featureTreeService.delete(tree1.getUuid());
-		commitAndStartNewTransaction(new String[]{"TaxonNode"});
+		commitAndStartNewTransaction(/*new String[]{"TaxonNode"}*/);
 		tree1 = featureTreeService.load(featureTreeUuid);
 		assertNull(tree1);
 
 	}
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-    }
-
-
-
-
-
+    public void createTestDataSet() throws FileNotFoundException {}
 }

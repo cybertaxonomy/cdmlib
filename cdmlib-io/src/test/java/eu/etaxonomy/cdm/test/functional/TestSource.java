@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.test.functional;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import eu.etaxonomy.cdm.common.AccountStore;
+import eu.etaxonomy.cdm.config.AccountStore;
 import eu.etaxonomy.cdm.io.common.Source;
 
 /**

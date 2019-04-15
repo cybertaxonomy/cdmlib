@@ -23,6 +23,10 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
+
 /**
  * Annotation types ...
  * @author a.mueller
@@ -33,9 +37,10 @@ import org.hibernate.envers.Audited;
 @XmlRootElement(name = "AnnotationType")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
+//@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
 public class AnnotationType extends DefinedTermBase<AnnotationType> {
+
 	private static final long serialVersionUID = 49629121282854575L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AnnotationType.class);
@@ -69,9 +74,6 @@ public class AnnotationType extends DefinedTermBase<AnnotationType> {
 
 //************************** METHODS ********************************
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
-	 */
 	@Override
 	public void resetTerms(){
 		termMap = null;
@@ -96,7 +98,7 @@ public class AnnotationType extends DefinedTermBase<AnnotationType> {
 
 	@Override
     protected void setDefaultTerms(TermVocabulary<AnnotationType> termVocabulary) {
-		termMap = new HashMap<UUID, AnnotationType>();
+		termMap = new HashMap<>();
 		for (AnnotationType term : termVocabulary.getTerms()){
 			termMap.put(term.getUuid(), term);
 		}

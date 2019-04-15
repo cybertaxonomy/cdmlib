@@ -8,7 +8,7 @@ package eu.etaxonomy.cdm.persistence.dao.description;
 
 import java.util.List;
 
-import eu.etaxonomy.cdm.model.description.FeatureNode;
+import eu.etaxonomy.cdm.model.term.FeatureNode;
 import eu.etaxonomy.cdm.persistence.dao.common.IVersionableDao;
 
 /**

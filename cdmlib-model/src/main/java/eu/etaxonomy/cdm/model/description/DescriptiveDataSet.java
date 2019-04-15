@@ -38,10 +38,11 @@ import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.strategy.cache.description.DescriptiveDataSetDefaultCacheStrategy;
 
 /**
@@ -82,7 +83,7 @@ public class DescriptiveDataSet extends IdentifiableEntity<DescriptiveDataSetDef
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-	private FeatureTree descriptiveSystem;
+	private FeatureTree<Character> descriptiveSystem;
 
 	@XmlElementWrapper(name = "Descriptions")
 	@XmlElement(name = "Description")
@@ -306,10 +307,10 @@ public class DescriptiveDataSet extends IdentifiableEntity<DescriptiveDataSetDef
 		}
 	}
 
-	public FeatureTree getDescriptiveSystem() {
+	public FeatureTree<Character> getDescriptiveSystem() {
 		return descriptiveSystem;
 	}
-	public void setDescriptiveSystem(FeatureTree descriptiveSystem) {
+	public void setDescriptiveSystem(FeatureTree<Character> descriptiveSystem) {
 		this.descriptiveSystem = descriptiveSystem;
 	}
 

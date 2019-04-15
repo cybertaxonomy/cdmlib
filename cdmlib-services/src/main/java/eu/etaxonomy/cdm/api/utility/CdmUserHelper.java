@@ -374,18 +374,24 @@ public class CdmUserHelper implements UserHelper, Serializable {
     @Override
     public void removeAuthorityForCurrentUser(String username, CdmAuthority cdmAuthority) {
 
+        TransactionStatus txStatus = repo().startTransaction();
         UserDetails userDetails = repo().getUserService().loadUserByUsername(username);
+        User user = (User)userDetails;
         if(userDetails != null){
-            getRunAsAutheticator().runAsAuthentication(Role.ROLE_USER_MANAGER);
-            User user = (User)userDetails;
-            user.getGrantedAuthorities().remove(cdmAuthority);
-            repo().getSession().flush();
-            getRunAsAutheticator().restoreAuthentication();
+            try {
+                getRunAsAutheticator().runAsAuthentication(Role.ROLE_USER_MANAGER);
+                user.getGrantedAuthorities().remove(cdmAuthority);
+                repo().getSession().flush();
+                logger.debug("security context refreshed with user " + username);
+            } finally {
+                getRunAsAutheticator().restoreAuthentication();
+            }
+            logger.debug("authority removed from " + username + ": " + cdmAuthority.toString());
             Authentication authentication = new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
             logger.debug("security context refreshed with user " + username);
         }
-
+        repo().commitTransaction(txStatus);
     }
 
     /**

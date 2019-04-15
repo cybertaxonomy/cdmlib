@@ -30,9 +30,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.core.io.FileSystemResource;
@@ -41,7 +41,7 @@ import org.springframework.jndi.JndiObjectFactoryBean;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 import eu.etaxonomy.cdm.api.config.CdmConfigurationKeys;
-import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.config.ConfigFileUtil;
 import eu.etaxonomy.cdm.database.WrappedCdmDataSource;
 import eu.etaxonomy.cdm.database.update.CdmUpdater;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
@@ -85,6 +85,9 @@ import eu.etaxonomy.cdm.remote.config.AbstractWebApplicationConfigurer;
  *
  */
 @Configuration
+// cdmlib-remote.properties is used by developers to define the datasource bean to use from
+// the datasources.xml. It is not relevant for production systems.
+@PropertySource(value="file:${user.home}/.cdmLibrary/cdmlib-remote.properties", ignoreResourceNotFound=true)
 public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
 
     public static final Logger logger = Logger.getLogger(DataSourceConfigurer.class);
@@ -92,6 +95,9 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
     protected static final String HIBERNATE_DIALECT = "hibernate.dialect";
     protected static final String HIBERNATE_SEARCH_DEFAULT_INDEX_BASE = "hibernate.search.default.indexBase";
     protected static final String CDM_BEAN_DEFINITION_FILE = "cdm.beanDefinitionFile";
+
+    @Autowired // Important!!!!
+    private ConfigFileUtil configFileUtil;
 
     /**
      * key for the spring environment to the datasource bean id aka instance name
@@ -123,14 +129,14 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
      */
     public static final String ATTRIBUTE_FORCE_SCHEMA_UPDATE = "cdm.forceSchemaUpdate";
 
-    protected static final String DATASOURCE_BEANDEF_DEFAULT = CdmUtils.getCdmHomeDir().getPath() + File.separator + "datasources.xml";
-
-    protected static String beanDefinitionFile = DATASOURCE_BEANDEF_DEFAULT;
+    private static String beanDefinitionFile = null;
 
 
     /**
      * The file to load the {@link DataSource} beans from.
-     * This file is usually {@code ./.cdmLibrary/datasources.xml}
+     * This file is usually {@code ${user.home}/.cdmLibrary/datasources.xml}
+     * The variable <code>${user.home}</code>is determined by {@link ConfigFileUtil.getCdmHomeDir()}
+     *
      *
      * @param filename
      */
@@ -138,8 +144,12 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
         beanDefinitionFile = filename;
     }
 
-    @Autowired
-    private ConfigurableEnvironment env;
+    public String getBeanDefinitionFile(){
+        if(beanDefinitionFile == null){
+            beanDefinitionFile = configFileUtil.getCdmHomeDir().getPath() + File.separator + "datasources.xml";
+        }
+        return beanDefinitionFile;
+    }
 
     private String dataSourceId = null;
 
@@ -300,11 +310,8 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
      */
     private DataSource loadDataSourceBean(String beanName) {
 
-        File f = new File("./");
-        System.err.println(f.getAbsolutePath());
-
         String beanDefinitionFileFromProperty = findProperty(CDM_BEAN_DEFINITION_FILE, false);
-        String path = (beanDefinitionFileFromProperty != null ? beanDefinitionFileFromProperty : beanDefinitionFile);
+        String path = (beanDefinitionFileFromProperty != null ? beanDefinitionFileFromProperty : getBeanDefinitionFile());
         logger.info("loading DataSourceBean '" + beanName + "' from: " + path);
         FileSystemResource file = new FileSystemResource(path);
         XmlBeanFactory beanFactory  = new XmlBeanFactory(file);
@@ -328,7 +335,7 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
     private DataSourceProperties loadDataSourceProperties() {
 
         String beanDefinitionFileFromProperty = findProperty(CDM_BEAN_DEFINITION_FILE, false);
-        String path = (beanDefinitionFileFromProperty != null ? beanDefinitionFileFromProperty : beanDefinitionFile);
+        String path = (beanDefinitionFileFromProperty != null ? beanDefinitionFileFromProperty : getBeanDefinitionFile());
         logger.info("loading dataSourceProperties from: " + path);
         FileSystemResource file = new FileSystemResource(path);
         XmlBeanFactory beanFactory  = new XmlBeanFactory(file);
@@ -346,7 +353,7 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
     public Properties hibernateProperties(){
         Properties props = getHibernateProperties();
         props.setProperty(HIBERNATE_DIALECT, inferHibernateDialectName());
-        String searchPath = CdmUtils.getCdmHomeSubDir(CdmUtils.SUBFOLDER_WEBAPP).getPath();
+        String searchPath = ConfigFileUtil.getCdmHomeSubDir(ConfigFileUtil.SUBFOLDER_WEBAPP).getPath();
         props.setProperty(HIBERNATE_SEARCH_DEFAULT_INDEX_BASE,
                 searchPath +
                 "/index/".replace("/", File.separator) +

@@ -114,6 +114,7 @@ public class OAuth2ServerConfiguration {
         private UserApprovalHandler userApprovalHandler;
 
         @Autowired
+        @Lazy // avoid dependency cycle coming from UserService.authenticationManager
         private AuthenticationManager authenticationManager;
 
         @Bean

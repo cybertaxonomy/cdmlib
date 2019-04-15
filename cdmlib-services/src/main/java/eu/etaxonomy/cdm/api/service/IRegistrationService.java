@@ -152,6 +152,12 @@ public interface IRegistrationService extends IAnnotatableService<Registration> 
 
     Registration assureIsPersisted(Registration reg);
 
+    /**
+     * Create and persist a new Registration for the name having the supplied UUID.
+     *
+     * @param taxonNameUuid
+     * @return
+     */
     Registration createRegistrationForName(UUID taxonNameUuid);
 
     boolean checkRegistrationExistsFor(TaxonName name);

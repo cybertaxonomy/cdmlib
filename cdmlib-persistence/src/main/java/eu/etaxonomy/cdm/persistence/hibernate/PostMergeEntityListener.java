@@ -20,10 +20,10 @@ import org.hibernate.event.spi.MergeEvent;
 import org.hibernate.event.spi.MergeEventListener;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.description.FeatureNode;
-import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.term.FeatureNode;
+import eu.etaxonomy.cdm.model.term.FeatureTree;
 
 /**
  * @author cmathew
@@ -102,8 +102,8 @@ public class PostMergeEntityListener implements MergeEventListener {
 
             }   else if(FeatureTree.class.isAssignableFrom(entityClazz)){
 
-                FeatureTree tree = (FeatureTree)entity;
-                for (FeatureNode node:tree.getRootChildren()){
+                FeatureTree<?> tree = (FeatureTree)entity;
+                for (FeatureNode<?> node:tree.getRootChildren()){
                     node.removeNullValueFromChildren();
                     if (node.getChildNodes() != null){
                         for (FeatureNode childNode: node.getChildNodes()){

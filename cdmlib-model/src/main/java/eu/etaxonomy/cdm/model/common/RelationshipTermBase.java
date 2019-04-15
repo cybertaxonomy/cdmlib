@@ -45,6 +45,11 @@ import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.OrderedTermBase;
+import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermBase;
+import eu.etaxonomy.cdm.model.term.TermType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "RelationshipTermBase", propOrder = {
@@ -79,8 +84,9 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase<T>>
 	@XmlElementWrapper(name = "InverseRepresentations")
 	@XmlElement(name = "Representation")
 	@OneToMany(fetch = FetchType.EAGER, orphanRemoval=true)  //eager loading same as TermBase.representations
-	@JoinTable(name="TermBase_inverseRepresentation",
-        joinColumns=@JoinColumn(name="term_id")
+	@JoinTable(name="DefinedTermBase_InverseRepresentation",  //see also Feature.inverseRepresentations
+        joinColumns=@JoinColumn(name="DefinedTermBase_id")
+//	    inverseJoinColumns
     )
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 	@IndexedEmbedded(depth = 2)
@@ -142,16 +148,19 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase<T>>
 	}
 
 	public Representation getInverseRepresentation(Language lang) {
-		Representation result = null;
+		if (lang == null){
+		    return null;
+		}
+	    Representation result = null;
 		if (this.isSymmetric()){
 			for (Representation repr : this.getRepresentations()){
-				if (lang.equals(repr.getLanguage())){
+				if (repr != null && lang.equals(repr.getLanguage())){
 					result = repr;
 				}
 			}
 		}else{
 			for (Representation repr : this.getInverseRepresentations()){
-				if (lang.equals(repr.getLanguage())){
+				if (repr != null && lang.equals(repr.getLanguage())){
 					result = repr;
 				}
 			}
@@ -198,7 +207,7 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase<T>>
 
 	/*
 	 * Inverse representation convenience methods similar to TermBase.xxx
-	 * @see eu.etaxonomy.cdm.model.common.TermBase#getLabel()
+	 * @see eu.etaxonomy.cdm.model.term.TermBase#getLabel()
 	 */
 	@Transient
 	public String getInverseLabel() {
@@ -240,8 +249,8 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase<T>>
 //**************** CSV *************************/
 
 	@Override
-	public T readCsvLine(Class<T> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
-		T newInstance = super.readCsvLine(termClass, csvLine, terms, abbrevAsId);
+	public T readCsvLine(Class<T> termClass, List<String> csvLine, TermType termType, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
+		T newInstance = super.readCsvLine(termClass, csvLine, termType, terms, abbrevAsId);
 
 		String inverseText = CdmUtils.Ne(csvLine.get(6).trim());
 		String inverseLabel = csvLine.get(5).trim();
@@ -268,10 +277,6 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase<T>>
 	}
 	//*********************************** CLONE *********************************************************/
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#clone()
-	 * @see java.lang.Object#clone()
-	 */
 	@Override
 	public Object clone() {
 		RelationshipTermBase<?> result = (RelationshipTermBase<?>)super.clone();

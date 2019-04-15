@@ -407,12 +407,21 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 
     /**
     *
-    * Returns {@link DerivedUnit} that has the accession number and is determined to a taxon
+    * Returns count of derivedUnits that has a sequence with the accession number and is determined to a taxon
     * @param accessionNumber
     * @param propertyPaths
     * @return a derived unit
     */
-   public List<DerivedUnit> findByGeneticAccessionNumber(String accessionNumberString, List<String> propertyPaths);
+   public long countByGeneticAccessionNumber(String accessionNumberString);
+
+   /**
+   *
+   * Returns {@link DerivedUnit} that has the accession number and is determined to a taxon
+   * @param accessionNumber
+   * @param propertyPaths
+   * @return a derived unit
+   */
+  public List<DerivedUnit> findByGeneticAccessionNumber(String accessionNumberString, List<String> propertyPaths);
 
     /**
      * @param derivedUnitUuid

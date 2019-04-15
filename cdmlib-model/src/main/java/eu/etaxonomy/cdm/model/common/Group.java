@@ -89,7 +89,6 @@ public class Group extends CdmBase {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "groups")
-    @Cascade({CascadeType.REFRESH, CascadeType.MERGE}) // see #2414 (Group updating doesn't work)
     protected Set<User> members = new HashSet<>();
 
     @XmlElementWrapper(name = "GrantedAuthorities")
@@ -153,7 +152,7 @@ public class Group extends CdmBase {
      * a new instance that differs only slightly from <i>this</i> group by
      * modifying only some of the attributes.
      *
-     * @see eu.etaxonomy.cdm.model.common.TermBase#clone()
+     * @see eu.etaxonomy.cdm.model.term.TermBase#clone()
      * @see java.lang.Object#clone()
      */
     @Override

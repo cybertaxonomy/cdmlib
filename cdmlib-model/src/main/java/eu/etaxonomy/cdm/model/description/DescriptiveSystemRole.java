@@ -14,6 +14,7 @@ import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.term.FeatureTree;
 
 /**
  * The role of the descriptive system of type {@link FeatureTree}.<BR>

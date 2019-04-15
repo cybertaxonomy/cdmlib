@@ -35,10 +35,8 @@ import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO.InfoPart;
 import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
 import eu.etaxonomy.cdm.api.utility.DistributionOrder;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -52,10 +50,12 @@ import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
-import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
-import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
+import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
+import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
 
 /**
  * @author a.kohlbecker
@@ -76,18 +76,14 @@ public class EditGeoService implements IEditGeoService {
     @Autowired
     private ITermVocabularyDao vocabDao;
 
-    private IDefinedTermDao termDao;
     @Autowired
-    public void setTermDao(IDefinedTermDao termDao) {
-        this.termDao = termDao;
-        EditGeoServiceUtilities.setTermDao(termDao);
-    }
+    private IDefinedTermDao termDao;
 
     @Autowired
     private IOccurrenceDao occurrenceDao;
 
     private Set<Feature> getDistributionFeatures() {
-        Set<Feature> distributionFeature = new HashSet<Feature>();
+        Set<Feature> distributionFeature = new HashSet<>();
         Feature feature = (Feature) termDao.findByUuid(Feature.DISTRIBUTION().getUuid());
         distributionFeature.add(feature);
         return distributionFeature;
@@ -98,7 +94,7 @@ public class EditGeoService implements IEditGeoService {
      * @return
      */
     private Set<Distribution> getDistributionsOf(List<TaxonDescription> taxonDescriptions) {
-        Set<Distribution> result = new HashSet<Distribution>();
+        Set<Distribution> result = new HashSet<>();
 
         Set<Feature> features = getDistributionFeatures();
         for (TaxonDescription taxonDescription : taxonDescriptions) {
@@ -187,7 +183,7 @@ public class EditGeoService implements IEditGeoService {
             Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
             List<Language> langs) {
 
-        List<TaxonDescription> taxonDescriptions = new ArrayList<TaxonDescription>();
+        List<TaxonDescription> taxonDescriptions = new ArrayList<>();
         taxonDescriptions.add(taxonDescription);
 
         return getDistributionServiceRequestParameterString(taxonDescriptions,

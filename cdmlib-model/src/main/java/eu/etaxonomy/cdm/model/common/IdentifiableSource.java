@@ -15,13 +15,15 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
- * This class represents an {@link eu.etaxonomy.cdm.model.common.IOriginalSource IOriginalSource}
+ * This class represents an {@link eu.etaxonomy.cdm.model.reference.IOriginalSource IOriginalSource}
  * that can be used with {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity identifiable entity}.
  *
- * @see eu.etaxonomy.cdm.model.common.IOriginalSource
+ * @see eu.etaxonomy.cdm.model.reference.IOriginalSource
  *
  * @author a.mueller
  * @since 18.09.2009
@@ -30,8 +32,10 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 	})
 @Entity
 @Audited
-public class IdentifiableSource extends OriginalSourceBase<IdentifiableEntity>{
-	private static final long serialVersionUID = -8487673428764273806L;
+public class IdentifiableSource
+        extends OriginalSourceBase<IdentifiableEntity<?>>{
+
+    private static final long serialVersionUID = -8487673428764273806L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(IdentifiableSource.class);
 
@@ -59,14 +63,22 @@ public class IdentifiableSource extends OriginalSourceBase<IdentifiableEntity>{
 		return result;
 	}
 
-	public static IdentifiableSource NewInstance(OriginalSourceType type, String id, String idNamespace, Reference citation, String microCitation){
+	public static IdentifiableSource NewInstance(OriginalSourceType type, String id, String idNamespace, Reference
+	        reference, String microReference){
 		IdentifiableSource result = NewInstance(type);
 		result.setIdInSource(id);
 		result.setIdNamespace(idNamespace);
-		result.setCitation(citation);
-		result.setCitationMicroReference(microCitation);
+		result.setCitation(reference);
+		result.setCitationMicroReference(microReference);
 		return result;
 	}
+
+   public static IdentifiableSource NewInstance(OriginalSourceType type, String id, String idNamespace, Reference
+            reference, String microReference, String originalInfo){
+        IdentifiableSource result = NewInstance(type, id, idNamespace, reference, microReference);
+        result.setOriginalNameString(originalInfo);
+        return result;
+    }
 
 	public static IdentifiableSource NewPrimarySourceInstance(Reference citation, String microCitation){
 		IdentifiableSource result = NewInstance(OriginalSourceType.PrimaryTaxonomicSource);

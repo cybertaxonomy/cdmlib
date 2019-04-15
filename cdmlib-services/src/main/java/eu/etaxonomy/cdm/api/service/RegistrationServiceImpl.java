@@ -321,7 +321,7 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
         return regs;
     }
 
-    // ============= functionality to be moved into a "RegistrationManagerBean" ==================
+    // ============= functionality to be moved into a "RegistrationManagerBean" => RegistrationServiceImpl ? ==================
 
 
     /**

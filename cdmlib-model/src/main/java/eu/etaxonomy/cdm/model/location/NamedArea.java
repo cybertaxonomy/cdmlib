@@ -46,15 +46,15 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.OrderedTermBase;
-import eu.etaxonomy.cdm.model.common.Representation;
-import eu.etaxonomy.cdm.model.common.TermType;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.OrderedTermBase;
+import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
  * @author m.doering
@@ -79,7 +79,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 })
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
+//@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
 @ClassBridge(impl=DefinedTermBaseClassBridge.class, params={
     @Parameter(name="includeParentTerms", value="true")
@@ -340,8 +340,9 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
     }
 
     @Override
-    public NamedArea readCsvLine(Class<NamedArea> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
-        NamedArea newInstance = super.readCsvLine(termClass, csvLine, terms, abbrevAsId);
+    public NamedArea readCsvLine(Class<NamedArea> termClass, List<String> csvLine, TermType termType,
+            Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
+        NamedArea newInstance = super.readCsvLine(termClass, csvLine, termType, terms, abbrevAsId);
 
         String levelString = csvLine.get(6);
 
@@ -850,7 +851,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
      * a new instance that differs only slightly from <i>this</i> NamedArea by
      * modifying only some of the attributes.
      *
-     * @see eu.etaxonomy.cdm.model.common.OrderedTermBase#clone()
+     * @see eu.etaxonomy.cdm.model.term.OrderedTermBase#clone()
      * @see java.lang.Object#clone()
      */
     @Override

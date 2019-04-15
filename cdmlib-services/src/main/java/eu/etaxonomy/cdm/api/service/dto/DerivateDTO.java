@@ -8,14 +8,14 @@
 */
 package eu.etaxonomy.cdm.api.service.dto;
 
+import java.io.Serializable;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-
-import org.hibernate.envers.tools.Pair;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
@@ -39,7 +39,9 @@ import eu.etaxonomy.cdm.ref.TypedEntityReference;
  */
 public abstract class DerivateDTO extends TypedEntityReference{
 
-    private TreeSet<Pair<String, String>> characterData;
+    private static final long serialVersionUID = -7597690654462090732L;
+
+    private TreeSet<AbstractMap.SimpleEntry<String, String>> characterData;
     private DerivateDataDTO derivateDataDTO;
     protected String taxonName;
     protected String listLabel;
@@ -137,7 +139,7 @@ public abstract class DerivateDTO extends TypedEntityReference{
     }
 
     public void setSpecimenTypeDesignations(Set<SpecimenTypeDesignation> specimenTypeDesignations) {
-        this.specimenTypeDesignations = new HashSet();
+        this.specimenTypeDesignations = new HashSet<>();
         for (SpecimenTypeDesignation typeDes: specimenTypeDesignations){
             this.specimenTypeDesignations.add(typeDes);
         }
@@ -171,30 +173,34 @@ public abstract class DerivateDTO extends TypedEntityReference{
     /**
      * @return the characterData
      */
-    public TreeSet<Pair<String, String>> getCharacterData() {
+    public TreeSet<AbstractMap.SimpleEntry<String, String>> getCharacterData() {
         return characterData;
     }
 
     public void addCharacterData(String character, String state){
       if(characterData==null){
-          characterData = new TreeSet<Pair<String,String>>(new Comparator<Pair<String,String>>() {
-
-            @Override
-            public int compare(Pair<String, String> o1, Pair<String, String> o2) {
-                if(o1==null && o2!=null){
-                    return -1;
-                }
-                if(o1!=null && o2==null){
-                    return 1;
-                }
-                if(o1!=null && o2!=null){
-                    return o1.getFirst().compareTo(o2.getFirst());
-                }
-                return 0;
-            }
-        });
+          characterData = new TreeSet<AbstractMap.SimpleEntry<String,String>>(new PairComparator());
       }
-      characterData.add(new Pair<String, String>(character, state));
+      characterData.add(new AbstractMap.SimpleEntry<>(character, state));
+    }
+
+    private class PairComparator implements Comparator<AbstractMap.SimpleEntry<String,String>>, Serializable {
+
+        private static final long serialVersionUID = -8589392050761963540L;
+
+        @Override
+        public int compare(AbstractMap.SimpleEntry<String, String> o1, AbstractMap.SimpleEntry<String, String> o2) {
+            if(o1==null && o2!=null){
+                return -1;
+            }
+            if(o1!=null && o2==null){
+                return 1;
+            }
+            if(o1!=null && o2!=null){
+                return o1.getKey().compareTo(o2.getKey());
+            }
+            return 0;
+        }
     }
 
     /**

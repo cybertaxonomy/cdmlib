@@ -37,9 +37,9 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.hibernate.search.NotNullAwareIdBridge;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.description.TaxonDescriptionDefaultCacheStrategy;
 import javafx.stage.Stage;
@@ -73,6 +73,7 @@ import javafx.stage.Stage;
 public class TaxonDescription
             extends DescriptionBase<IIdentifiableEntityCacheStrategy<TaxonDescription>>
             implements Cloneable{
+
     private static final long serialVersionUID = 8065879180505546803L;
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(TaxonDescription.class);
@@ -266,13 +267,13 @@ public class TaxonDescription
         result = (TaxonDescription)super.clone();
 
         //scopes
-        result.scopes = new HashSet<DefinedTerm>();
+        result.scopes = new HashSet<>();
         for (DefinedTerm scope : getScopes()){
             result.scopes.add(scope);
         }
 
         //geo-scopes
-        result.geoScopes = new HashSet<NamedArea>();
+        result.geoScopes = new HashSet<>();
         for (NamedArea namedArea : getGeoScopes()){
             result.geoScopes.add(namedArea);
         }
@@ -280,6 +281,4 @@ public class TaxonDescription
         //no changes to: taxon
         return result;
     }
-
-
 }

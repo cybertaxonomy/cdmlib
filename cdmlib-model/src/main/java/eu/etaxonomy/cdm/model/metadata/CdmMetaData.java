@@ -25,9 +25,9 @@ import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.TermType;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
  * @author a.mueller
@@ -58,9 +58,9 @@ public class CdmMetaData extends CdmBase{
 	 * be handled by SCHEMA_VALIDATION.UPDATE
 	 * The last number represents the date of change.
 	 */
-//	private static final String dbSchemaVersion = "4.1.0.0.201607300000";
+	private static final String dbSchemaVersion = "5.5.0.0.20190221";
 //  private static final String dbSchemaVersion = "4.7.0.0.201710040000";
-     private static final String dbSchemaVersion = "5.0.0.0.20180514";
+//  private static final String dbSchemaVersion = "5.0.0.0.20180514";
 
 
 	/* END OF CONFUSION */

@@ -38,16 +38,17 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.model.common.DefinedTerm;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.Representation;
-import eu.etaxonomy.cdm.model.common.TermType;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 
 /**
@@ -100,7 +101,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @XmlRootElement(name = "Feature")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
+//@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
 public class Feature extends DefinedTermBase<Feature> {
 	private static final long serialVersionUID = 6754598791831848704L;
@@ -146,8 +147,9 @@ public class Feature extends DefinedTermBase<Feature> {
 	@XmlElementWrapper(name = "InverseRepresentations")
     @XmlElement(name = "Representation")
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
-    @JoinTable(name="TermBase_inverseRepresentation",
-        joinColumns=@JoinColumn(name="term_id")
+    @JoinTable(name="DefinedTermBase_InverseRepresentation",  //see also RelationshipTermBase.inverseRepresentations
+        joinColumns=@JoinColumn(name="DefinedTermBase_id")
+        //  inverseJoinColumns
     )
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 //    @IndexedEmbedded(depth = 2)
@@ -608,7 +610,7 @@ public class Feature extends DefinedTermBase<Feature> {
     }
     /*
      * Inverse representation convenience methods similar to TermBase.xxx
-     * @see eu.etaxonomy.cdm.model.common.TermBase#getLabel()
+     * @see eu.etaxonomy.cdm.model.term.TermBase#getLabel()
      */
     @Transient
     public String getInverseLabel() {
@@ -654,8 +656,9 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * @see     		#NewInstance(String, String, String)
 	 */
 	@Override
-	public Feature readCsvLine(Class<Feature> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
-		Feature newInstance = super.readCsvLine(termClass, csvLine, terms, abbrevAsId);
+	public Feature readCsvLine(Class<Feature> termClass, List<String> csvLine, TermType termType,
+	        Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
+		Feature newInstance = super.readCsvLine(termClass, csvLine, termType, terms, abbrevAsId);
 		String text = csvLine.get(4);
 		if (text != null && text.length() >= 6){
 			if ("1".equals(text.substring(0, 1))){newInstance.setSupportsTextData(true);}

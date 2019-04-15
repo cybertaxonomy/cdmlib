@@ -4,7 +4,7 @@
   <parent>
     <artifactId>cdmlib-parent</artifactId>
     <groupId>eu.etaxonomy</groupId>
-    <version>5.5.2</version>
+    <version>5.6.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -209,7 +209,7 @@
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
-        <version>9.4.1.v20170120</version>
+        <version>9.4.15.v20190215</version>
         <configuration>
           <stopKey>stop</stopKey>
           <stopPort>9199</stopPort>

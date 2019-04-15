@@ -32,13 +32,13 @@ import org.hibernate.search.SearchFactory;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Credit;
-import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IAnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.media.Rights;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.persistence.dao.QueryParseException;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
@@ -695,20 +695,15 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
     @Override
     public <S extends T> List<UuidAndTitleCache<S>> getUuidAndTitleCache(Class<S> clazz, Integer limit, String pattern){
         Session session = getSession();
-        Query query = null;
-        if (pattern != null){
-            query = session.createQuery(
-                      " SELECT uuid, id, titleCache "
-                    + " FROM " + clazz.getSimpleName()
-                    + " WHERE titleCache LIKE :pattern");
+        Query query = session.createQuery(
+                " SELECT uuid, id, titleCache "
+                        + " FROM " + clazz.getSimpleName()
+                        + (pattern!=null?" WHERE titleCache LIKE :pattern":""));
+        if(pattern!=null){
             pattern = pattern.replace("*", "%");
             pattern = pattern.replace("?", "_");
             pattern = pattern + "%";
             query.setParameter("pattern", pattern);
-        } else {
-            query = session.createQuery(
-                      " SELECT uuid, id, titleCache "
-                    + " FROM  " + clazz.getSimpleName() );
         }
         if (limit != null){
            query.setMaxResults(limit);

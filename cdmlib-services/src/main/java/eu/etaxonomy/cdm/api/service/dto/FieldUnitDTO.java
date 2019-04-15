@@ -9,10 +9,14 @@ import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 
 
 public class FieldUnitDTO extends DerivateDTO{
+
+    private static final long serialVersionUID = 3981843956067273220L;
+
     //Row Attributes
 	private String country;
-	private String collectionString;
+	private String collectingString;
 	private String date;
+	private String collectionString;
 
 	private boolean hasType;
 	private List<UUID> taxonRelatedDerivedUnits = new ArrayList<>();
@@ -53,15 +57,32 @@ public class FieldUnitDTO extends DerivateDTO{
     /**
      * @return the collectionString
      */
+    @Override
     public String getCollection() {
         return collectionString;
     }
     /**
      * @param collectionString the collectionString to set
      */
+    @Override
     public void setCollection(String collection) {
         this.collectionString = collection;
     }
+
+    /**
+     * @return the collectionString
+     */
+
+    public String getCollectingString() {
+        return collectingString;
+    }
+    /**
+     * @param collectionString the collectionString to set
+     */
+    public void setCollectingString(String collectingString) {
+        this.collectingString = collectingString;
+    }
+
     /**
      * @return the date
      */

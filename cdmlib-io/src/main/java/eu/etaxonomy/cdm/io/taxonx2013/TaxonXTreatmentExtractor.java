@@ -41,10 +41,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.FeatureNode;
-import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
@@ -57,6 +54,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -65,6 +63,8 @@ import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.term.FeatureNode;
+import eu.etaxonomy.cdm.model.term.FeatureTree;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -308,7 +308,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         if (proibiospheretree == null){
             List<FeatureTree> trees = importer.getFeatureTreeService().list(FeatureTree.class, null, null, null, null);
             if (trees.size()==1) {
-                FeatureTree ft = trees.get(0);
+                FeatureTree<Feature> ft = trees.get(0);
                 if (featuresMap==null) {
                     featuresMap=new HashMap<String, Feature>();
                 }
@@ -2145,7 +2145,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                                     //System.out.println("NEW ACCEPTED HERE "+nameToBeFilled);
                                 }
                                 else {
-                                    acceptedTaxon= Taxon.NewInstance(nameToBeFilled,(Reference) nameToBeFilled.getNomenclaturalReference() );//TODO TOFIX reference
+                                    acceptedTaxon= Taxon.NewInstance(nameToBeFilled,nameToBeFilled.getNomenclaturalReference() );//TODO TOFIX reference
                                     //System.out.println("NEW ACCEPTED HERE2 "+nameToBeFilled);
                                 }
 

@@ -18,6 +18,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
@@ -33,9 +34,13 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
-import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
+import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.common.SourcedEntityBase;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.validation.Level2;
+import eu.etaxonomy.cdm.validation.annotation.ValidLectotypeSource;
 import eu.etaxonomy.cdm.validation.annotation.ValidTypeDesignation;
 
 /**
@@ -53,30 +58,52 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTypeDesignation;
  */
 @XmlRootElement(name = "TypeDesignationBase")
 @XmlType(name = "TypeDesignationBase", propOrder = {
-    "typifiedNames",
-    "notDesignated",
     "typeStatus",
+    "notDesignated",
+    "typifiedNames",
+    "citation",
+    "citationMicroReference",
     "registrations",
 })
 @XmlSeeAlso({
     NameTypeDesignation.class,
-    SpecimenTypeDesignation.class
+    SpecimenTypeDesignation.class,
+    TextualTypeDesignation.class
 })
 @Entity
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @ValidTypeDesignation(groups=Level2.class)
+@ValidLectotypeSource(groups=Level2.class)
 public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>>
-        extends ReferencedEntityBase
+        extends SourcedEntityBase<IdentifiableSource>
         implements ITypeDesignation {
 
-    private static final long serialVersionUID = 8622351017235131355L;
+    private static final long serialVersionUID = 4838214337140859787L;
 
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(TypeDesignationBase.class);
 
     @XmlElement(name = "IsNotDesignated")
     private boolean notDesignated;
+
+    @XmlElement(name = "TypeStatus")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = TypeDesignationStatusBase.class)
+    private T typeStatus;
+
+    //the lectotype (or similar) reference
+    @XmlElement(name = "Citation")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    private Reference citation;
+
+    //Details of the lectotype reference.
+    @XmlElement(name = "CitationMicroReference")
+    private String citationMicroReference;
 
     @XmlElementWrapper(name = "TypifiedNames")
     @XmlElement(name = "TypifiedName")
@@ -85,12 +112,6 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
     @ManyToMany(fetch = FetchType.LAZY , mappedBy="typeDesignations")
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private Set<TaxonName> typifiedNames = new HashSet<>();
-
-    @XmlElement(name = "TypeStatus")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = TypeDesignationStatusBase.class)
-    private T typeStatus;
 
     //******* REGISTRATION *****************/
 
@@ -107,11 +128,6 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
 
 // **************** CONSTRUCTOR *************************************/
 
-    /**
-     * Class constructor: creates a new empty type designation.
-     *
-     * @see	#TypeDesignationBase(Reference, String, String, Boolean)
-     */
     protected TypeDesignationBase(){
         super();
     }
@@ -149,8 +165,10 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
      * @see							TaxonName#getTypeDesignations()
      */
     protected TypeDesignationBase(Reference citation, String citationMicroReference, String originalNameString, boolean notDesignated){
-        super(citation, citationMicroReference, originalNameString);
+        super();
         this.notDesignated = notDesignated;
+        this.citationMicroReference = citationMicroReference;
+        this.citation = citation;
     }
 
 
@@ -164,23 +182,13 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
      * specimen type designation.
      */
     public T getTypeStatus(){
-        return this.typeStatus;
+        return (CdmBase.deproxy(this.typeStatus));  //otherwise for some error we get an error in TypeDesignationDaoHibernateImplTest
     }
     /**
      * @see  #getTypeStatus()
      */
     public void setTypeStatus(T typeStatus){
         this.typeStatus = typeStatus;
-    }
-
-    /**
-     * Returns the set of {@link TaxonName taxon names} typified in <i>this</i>
-     * type designation. This is a subset of the taxon names belonging to the
-     * corresponding {@link #getHomotypicalGroup() homotypical group}.
-     */
-    @Override
-    public Set<TaxonName> getTypifiedNames() {
-        return typifiedNames;
     }
 
     /**
@@ -201,12 +209,48 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
     public boolean isNotDesignated() {
         return notDesignated;
     }
-
     /**
      * @see   #isNotDesignated()
      */
     public void setNotDesignated(boolean notDesignated) {
         this.notDesignated = notDesignated;
+    }
+
+    public String getCitationMicroReference(){
+        return this.citationMicroReference;
+    }
+    public void setCitationMicroReference(String citationMicroReference){
+        this.citationMicroReference = citationMicroReference;
+    }
+
+    public Reference getCitation(){
+        return this.citation;
+    }
+    public void setCitation(Reference citation) {
+        this.citation = citation;
+    }
+
+    /**
+     * Returns the {@link Registration registrations} available for this
+     * type designation.
+     */
+    public Set<Registration> getRegistrations() {
+        return this.registrations;
+    }
+
+    /**
+     * Remove the type (specimen or name) from this type designation
+     */
+    public abstract void removeType();
+
+    /**
+     * Returns the set of {@link TaxonName taxon names} typified in <i>this</i>
+     * type designation. This is a subset of the taxon names belonging to the
+     * corresponding {@link #getHomotypicalGroup() homotypical group}.
+     */
+    @Override
+    public Set<TaxonName> getTypifiedNames() {
+        return typifiedNames;
     }
 
     /**
@@ -228,17 +272,28 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
         }
     }
 
+
     /**
-     * Returns the {@link Registration registrations} available for this
-     * type designation.
+     * {@inheritDoc}
      */
-    public Set<Registration> getRegistrations() {
-        return this.registrations;
+    @Override
+    protected IdentifiableSource createNewSource(OriginalSourceType type, String idInSource, String idNamespace,
+            Reference reference, String microReference, String originalInfo) {
+        return IdentifiableSource.NewInstance(type, idInSource, idNamespace, reference, microReference, originalInfo);
     }
 
-    public abstract void removeType();
+
+    @Override
+    @Transient
+    public boolean isLectoType() {
+        if (getTypeStatus() == null) {
+            return false;
+        }
+        return getTypeStatus().isLectotype();
+    }
 
 //*********************** CLONE ********************************************************/
+
 
     /**
      * Clones <i>this</i> type designation. This is a shortcut that enables to create
@@ -261,16 +316,17 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
     public Object clone() throws CloneNotSupportedException {
         TypeDesignationBase<?> result = (TypeDesignationBase<?>)super.clone();
 
-        //typified names
-        result.typifiedNames = new HashSet<>();
-		for (TaxonName taxonName : getTypifiedNames()){
-		    taxonName.addTypeDesignation(result, false);
-		}
 		//registrations
 		result.registrations = new HashSet<>();
 		for (Registration registration : registrations){
 		    registration.addTypeDesignation(result);
 		}
+
+        //typified names
+        result.typifiedNames = new HashSet<>();
+        for (TaxonName taxonName : getTypifiedNames()){
+            taxonName.addTypeDesignation(result, false);
+        }
 
         //no changes to: notDesignated, typeStatus, homotypicalGroup
         return result;

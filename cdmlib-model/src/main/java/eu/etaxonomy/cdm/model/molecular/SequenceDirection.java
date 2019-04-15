@@ -10,8 +10,8 @@ package eu.etaxonomy.cdm.model.molecular;
 
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.model.common.IKeyTerm;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.term.IKeyTerm;
 
 /**
  * A Sequence Direction defines the direction in which a DNA part was read by a {@link Primer}

@@ -10,8 +10,8 @@ package eu.etaxonomy.cdm.persistence.dto;
 
 import java.util.Set;
 
-import eu.etaxonomy.cdm.model.common.Representation;
-import eu.etaxonomy.cdm.model.common.TermBase;
+import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermBase;
 
 /**
  * @author andreas
@@ -20,15 +20,11 @@ import eu.etaxonomy.cdm.model.common.TermBase;
  */
 public interface ITermRepresentation_L10n {
 
-    /**
-     * @return the label
-     */
     public abstract String getLabel();
 
-    /**
-     * @return the abbreviatedLabel
-     */
     public abstract String getAbbreviatedLabel();
+
+    public abstract String getText();
 
     public String getLanguageIso();
 
@@ -43,9 +39,6 @@ public interface ITermRepresentation_L10n {
      */
     public abstract void localize(TermBase term, boolean useInverseRepresentation);
 
-    /**
-     * @param representations
-     */
     void localize(Set<Representation> representations);
 
 }

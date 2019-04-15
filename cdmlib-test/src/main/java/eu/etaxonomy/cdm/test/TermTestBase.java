@@ -10,8 +10,8 @@ package eu.etaxonomy.cdm.test;
 
 import org.junit.BeforeClass;
 
-import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 
 /**
  * @author a.kohlbecker

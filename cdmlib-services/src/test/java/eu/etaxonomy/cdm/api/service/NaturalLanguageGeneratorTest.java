@@ -18,8 +18,6 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.FeatureNode;
-import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.State;
@@ -31,6 +29,8 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.term.FeatureNode;
+import eu.etaxonomy.cdm.model.term.FeatureTree;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 @Ignore //FIXME Remove @Ignore once maximes code is completely comitted
@@ -55,8 +55,7 @@ public class NaturalLanguageGeneratorTest extends CdmIntegrationTest {
 		description = TaxonDescription.NewInstance(taxon);
 
 		featureTree= FeatureTree.NewInstance();
-		FeatureNode root = FeatureNode.NewInstance();
-		featureTree.setRoot(root);
+		FeatureNode root = featureTree.getRoot();
 		String[][][] tableStrings = { { {"a","b"} } , { { "a1" , "a2"  } , { "b1" } } };
 		buildBranches(root,tableStrings,0,2,0);
 		for (Iterator<Feature> f = featureSet.iterator() ; f.hasNext() ;){

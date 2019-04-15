@@ -21,13 +21,13 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.model.common.DefinedTerm;
-import eu.etaxonomy.cdm.model.common.OriginalSourceType;
-import eu.etaxonomy.cdm.model.common.TermType;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
  * @author a.mueller
@@ -66,7 +66,7 @@ public class CategoricalDataTest {
         TaxonDescription desc = TaxonDescription.NewInstance();
         CategoricalData data = CategoricalData.NewInstance();
         desc.addElement(data);
-        TermVocabulary<State> useCategoryVocabulary = TermVocabulary.NewInstance(TermType.Feature, "Use category vocabulary", "use categories", null, null);
+        TermVocabulary<State> useCategoryVocabulary = TermVocabulary.NewInstance(TermType.State, "Use category vocabulary", "use categories", null, null);
         State useCategory1 = State.NewInstance("My first use category", "use category 1", null);
         useCategoryVocabulary.addTerm(useCategory1);
         State useCategory2 = State.NewInstance("My favorite use category", "use category 2", null);
@@ -91,7 +91,7 @@ public class CategoricalDataTest {
         TaxonDescription desc = TaxonDescription.NewInstance();
         CategoricalData data = CategoricalData.NewInstance();
         desc.addElement(data);
-        TermVocabulary<State> useCategoryVocabulary = TermVocabulary.NewInstance(TermType.Feature,"Use category vocabulary", "use categories", null, null);
+        TermVocabulary<State> useCategoryVocabulary = TermVocabulary.NewInstance(TermType.State, "Use category vocabulary", "use categories", null, null);
         State useCategory1 = State.NewInstance("My first use category", "use category 1", null);
         useCategoryVocabulary.addTerm(useCategory1);
         data.addStateData(useCategory1);

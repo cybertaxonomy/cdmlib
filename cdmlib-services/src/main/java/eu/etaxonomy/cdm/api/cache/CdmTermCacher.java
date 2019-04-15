@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 
 /**
  * CDM Entity Cacher class which handles the caching of Defined Terms.

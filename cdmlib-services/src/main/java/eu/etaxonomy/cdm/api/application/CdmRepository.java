@@ -492,21 +492,26 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
     }
 
     /**
-     * Returns the current session.
-     * A new Session will be opened in case of a HiernateExecption occurs when getting the current Session.
+     * Returns the current session as obtained from the session factory.
      *
-     * @return
+     * @throws HibernateException
+     *             In case a session bound to the current thread cannot be found
+     * @return the session bound to the current thread
      */
-    public Session getSession(){
-        Session session ;
+    public Session getSession() throws HibernateException {
+        return factory.getCurrentSession();
+    }
+
+    /**
+     * clears the current Session
+     */
+    public void clearSession() {
         try {
-            session = factory.getCurrentSession();
+            getSession().clear();
         } catch (HibernateException e) {
-            logger.debug("Opening new session in turn of a HibernateException: " + e.getMessage());
-            session = factory.openSession();
+            // no current session: nothing to clear!
         }
 
-        return session;
     }
 
 }

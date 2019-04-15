@@ -35,12 +35,12 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
  *
  * @author n.hoffman
  * @since 12.05.2009
- * @version 1.0
  */
 @Ignore
 public class TestLocationServiceImpl  extends CdmIntegrationTest{
-	private static final Logger logger = Logger
-			.getLogger(TestLocationServiceImpl.class);
+
+    @SuppressWarnings("unused")
+    private static final Logger logger = Logger.getLogger(TestLocationServiceImpl.class);
 
 	@SpringBeanByType
 	private ILocationService locationService;
@@ -92,6 +92,6 @@ public class TestLocationServiceImpl  extends CdmIntegrationTest{
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
+
     }
 }

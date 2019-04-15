@@ -26,7 +26,6 @@ public abstract class RemotingProgressMonitorThread extends Thread {
             new ConcurrentHashMap<IRemotingProgressMonitor, RemotingProgressMonitorThread>();
 
     private IRemotingProgressMonitor monitor;
-    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(RemotingProgressMonitorThread.class);
 
     public void setMonitor(IRemotingProgressMonitor monitor) {

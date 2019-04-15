@@ -25,10 +25,12 @@ import eu.etaxonomy.cdm.api.service.config.FeatureNodeDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
-import eu.etaxonomy.cdm.model.description.FeatureNode;
-import eu.etaxonomy.cdm.model.description.FeatureTree;
+import eu.etaxonomy.cdm.model.term.FeatureNode;
+import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 @Service
@@ -53,11 +55,11 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree,
 
     @Override
     @Transactional(readOnly = false)
-    public void updateCaches(Class<? extends FeatureTree> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<FeatureTree> cacheStrategy, IProgressMonitor monitor) {
+    public UpdateResult updateCaches(Class<? extends FeatureTree> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<FeatureTree> cacheStrategy, IProgressMonitor monitor) {
         if (clazz == null){
             clazz = FeatureTree.class;
         }
-        super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
+        return super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
     }
 
     @Override
@@ -124,16 +126,22 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree,
         DeleteResult result = new DeleteResult();
         FeatureTree tree = dao.load(featureTreeUuid);
 
-        FeatureNode rootNode = HibernateProxyHelper.deproxy(tree.getRoot(), FeatureNode.class);
+        FeatureNode rootNode = HibernateProxyHelper.deproxy(tree.getRoot());
         FeatureNodeDeletionConfigurator config = new FeatureNodeDeletionConfigurator();
         config.setChildHandling(ChildHandling.DELETE);
         result =featureNodeService.deleteFeatureNode(rootNode.getUuid(), config);
-        tree.setRoot(null);
+        //FIXME test if this is necessary
+        tree.removeRootNode();
         if (result.isOk()){
           dao.delete(tree);
           result.addDeletedObject(tree);
         }
         return result;
+    }
 
+    @Override
+    public <S extends FeatureTree> List<UuidAndTitleCache<S>> getUuidAndTitleCacheByTermType(Class<S> clazz, TermType termType, Integer limit,
+            String pattern) {
+        return dao.getUuidAndTitleCacheByTermType(clazz, termType, limit, pattern);
     }
 }

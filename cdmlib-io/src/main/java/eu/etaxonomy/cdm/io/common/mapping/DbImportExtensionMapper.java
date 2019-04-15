@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
  * This class maps a database attribute to CDM extension added to the target class
@@ -38,6 +38,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  */
 public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, IdentifiableEntity>
         implements IDbImportMapper<DbImportStateBase<?,?>,IdentifiableEntity>{
+
 	private static final Logger logger = Logger.getLogger(DbImportExtensionMapper.class);
 
 //************************** FACTORY METHODS ***************************************************************/

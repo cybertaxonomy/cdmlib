@@ -42,9 +42,6 @@ import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.Representation;
-import eu.etaxonomy.cdm.model.common.TermType;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.Country;
@@ -52,7 +49,9 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
-import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
+import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
  * Class implementing the business logic for creating the map service string for
@@ -67,16 +66,6 @@ public class EditGeoServiceUtilities {
     private static final Logger logger = Logger.getLogger(EditGeoServiceUtilities.class);
 
     private static final int INT_MAX_LENGTH = String.valueOf(Integer.MAX_VALUE).length();
-
-    private static IDefinedTermDao termDao;
-
-    /**
-     * @param termDao
-     */
-    public static void setTermDao(IDefinedTermDao termDao) {
-        EditGeoServiceUtilities.termDao= termDao;
-    }
-
 
     private static HashMap<SpecimenOrObservationType, Color> defaultSpecimenOrObservationTypeColors = null;
 

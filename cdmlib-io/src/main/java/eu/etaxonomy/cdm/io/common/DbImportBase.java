@@ -25,9 +25,9 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
-import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.User;
+import eu.etaxonomy.cdm.model.reference.ISourceable;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**

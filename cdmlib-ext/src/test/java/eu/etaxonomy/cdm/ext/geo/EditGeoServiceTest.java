@@ -46,11 +46,8 @@ import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
 import eu.etaxonomy.cdm.common.StreamUtils;
 import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.common.TermType;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -61,7 +58,9 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
@@ -73,9 +72,6 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
 
     private static final String EDIT_MAPSERVICE_URI_STING = "http://edit.africamuseum.be/edit_wp5/v1.2/rest_gen.php";
     private static URI editMapServiceUri;
-
-    @SpringBeanByType
-    private IDefinedTermDao termDao;
 
     @SpringBeanByType
     private ITermService termService;
@@ -98,7 +94,6 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
      */
     @Before
     public void setUp() throws Exception {
-        EditGeoServiceUtilities.setTermDao(termDao);
         System.setProperty("ONLY-A-TEST", "TRUE"); // allows EditGeoServiceUtilities to skip some line of code
         editMapServiceUri = new URI(EDIT_MAPSERVICE_URI_STING);
     }
@@ -107,8 +102,8 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
 //******************************************** TESTS**************
 
     @Test
-    public void testGetWebServiceUrlCountry() throws MalformedURLException, IOException {
-        Set<Distribution> distributions = new HashSet<Distribution>();
+    public void testGetWebServiceUrlCountry() {
+        Set<Distribution> distributions = new HashSet<>();
         Country germany = termService.findByIdInVocabulary("DEU", Country.uuidCountryVocabulary, Country.class);
 //        germany = (Country)termService.find(665);
 //        germany = (Country)termService.find(UUID.fromString("cbe7ce69-2952-4309-85dd-0d7d4a4830a1"));

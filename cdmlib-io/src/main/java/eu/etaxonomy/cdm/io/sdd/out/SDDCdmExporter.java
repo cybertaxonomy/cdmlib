@@ -30,13 +30,13 @@ import eu.etaxonomy.cdm.io.common.ICdmExport;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 
 /**
  * @author h.fradin (from a.babadshanjan)
@@ -281,7 +281,7 @@ public class SDDCdmExporter
 		if (sddExpConfig.isDoReferencedEntities() == true) {
 			logger.info("# Referenced Entities");
 			sddDataSet.setReferencedEntities(getNameService().getAllNomenclaturalStatus(MAX_ROWS, 0));
-			sddDataSet.addReferencedEntities(getNameService().getAllTypeDesignations(MAX_ROWS, 0));
+			sddDataSet.addSourcedEntities(getNameService().getAllTypeDesignations(MAX_ROWS, 0));
 		}
 
 		if (sddExpConfig.isDoOccurrence() == true) {

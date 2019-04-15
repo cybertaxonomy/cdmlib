@@ -13,7 +13,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermType;
 
 /**
  * @author pplitzner
@@ -26,9 +27,10 @@ public class TermVocabularyDto extends AbstractTermDto {
 
     private Set<TermDto> terms;
 
-    public TermVocabularyDto(UUID uuid, Set<Representation> representations) {
+    public TermVocabularyDto(UUID uuid, Set<Representation> representations, TermType termType) {
         super(uuid, representations);
         terms = new HashSet<>();
+        setTermType(termType);
     }
 
     public Set<TermDto> getTerms() {

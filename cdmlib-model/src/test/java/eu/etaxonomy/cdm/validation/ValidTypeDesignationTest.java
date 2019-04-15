@@ -13,7 +13,6 @@ import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -22,6 +21,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
+import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 import eu.etaxonomy.cdm.validation.constraint.TypeDesignationValidator;
 
 
@@ -33,8 +33,6 @@ import eu.etaxonomy.cdm.validation.constraint.TypeDesignationValidator;
  * nomenclatural and taxonomic sense of these words.
  *
  * @author a.mueller
- *
- *
  */
 public class ValidTypeDesignationTest extends ValidationTestBase {
 	@SuppressWarnings("unused")
@@ -55,8 +53,6 @@ public class ValidTypeDesignationTest extends ValidationTestBase {
 		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
 		vocabularyStore.initialize();
 
-
-
 		name1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name1.setNameCache("Aus aus");
 
@@ -64,8 +60,6 @@ public class ValidTypeDesignationTest extends ValidationTestBase {
 	    name2.setNameCache("Aus bus");
 
 	    specimen = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
-
-
 	}
 
 

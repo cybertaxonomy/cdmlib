@@ -20,12 +20,14 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.name.TextualTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
@@ -91,7 +93,7 @@ public class DwcaTypesExport extends DwcaDataExportBase {
             	for (DescriptionElementBase el : description.getElements()){
             		if (el.isInstanceOf(IndividualsAssociation.class)){
             			DwcaTypesRecord record = new DwcaTypesRecord(metaRecord, config);
-            			IndividualsAssociation individualAssociation = CdmBase.deproxy(el,IndividualsAssociation.class);
+            			IndividualsAssociation individualAssociation = CdmBase.deproxy(el, IndividualsAssociation.class);
             			if (! state.recordExistsUuid(individualAssociation)
             			        && handleSpecimen(state, record, individualAssociation, null, taxon, config)){
             			    PrintWriter writer = createPrintWriter(state, file);
@@ -135,12 +137,13 @@ public class DwcaTypesExport extends DwcaDataExportBase {
 	        DwcaTaxExportFile file, TaxonBase<?> taxonBase,
 	        INonViralName nvn, DwcaMetaDataRecord metaRecord)
 	        throws FileNotFoundException, UnsupportedEncodingException, IOException {
+
 	    DwcaTaxExportConfigurator config = state.getConfig();
 		Set<TypeDesignationBase> designations = nvn.getTypeDesignations();
 		for (TypeDesignationBase<?> designation:designations){
 			DwcaTypesRecord record = new DwcaTypesRecord(metaRecord, config);
 			if (! state.recordExistsUuid(designation)
-			        && handleSpecimen(state, record, null, designation, taxonBase, config)){
+			        && handleType(state, record, designation, taxonBase, config)){
 			    PrintWriter writer = createPrintWriter(state, file);
                 record.write(state, writer);
 				state.addExistingRecordUuid(designation);
@@ -149,9 +152,46 @@ public class DwcaTypesExport extends DwcaDataExportBase {
 		return designations;
 	}
 
+   private boolean handleType(DwcaTaxExportState state, DwcaTypesRecord record,
+           TypeDesignationBase<?> designation, TaxonBase<?> taxonBase,
+           DwcaTaxExportConfigurator config) {
+       designation = CdmBase.deproxy(designation);
+       if (designation instanceof TextualTypeDesignation){
+           return handleTextualType(state, record, (TextualTypeDesignation)designation, taxonBase, config);
+       }else if (designation instanceof TypeDesignationBase){
+           return handleSpecimen(state, record, null, designation, taxonBase, config);
+       }else{
+           throw new RuntimeException ("TypeDesignation type not handled");
+       }
+   }
 
-	private boolean handleSpecimen(DwcaTaxExportState state, DwcaTypesRecord record, IndividualsAssociation individualsAssociation, TypeDesignationBase<?> designation, TaxonBase<?> taxonBase, DwcaTaxExportConfigurator config) {
-		TypeDesignationStatusBase<?> status = null;
+	private boolean handleTextualType(DwcaTaxExportState state, DwcaTypesRecord record,
+	            TextualTypeDesignation designation, TaxonBase<?> taxonBase,
+	            DwcaTaxExportConfigurator config) {
+
+	        if (designation == null){
+	            return false;
+	        }
+
+	        record.setId(taxonBase.getId());
+	        record.setUuid(taxonBase.getUuid());
+	        record.setBibliographicCitation(designation.getPreferredText(Language.DEFAULT()));
+
+	        //TODO ???
+
+//	        record.setSource(getSources3(facade.innerDerivedUnit(), config));
+//	        record.setDescriptionSource(source2);
+
+	        //TODO missing
+	        record.setVerbatimLabel(designation.getPreferredText(Language.DEFAULT()));
+
+	        return true;
+	    }
+
+	private boolean handleSpecimen(DwcaTaxExportState state, DwcaTypesRecord record, IndividualsAssociation individualsAssociation,
+	        TypeDesignationBase<?> designation, TaxonBase<?> taxonBase, DwcaTaxExportConfigurator config) {
+
+	    TypeDesignationStatusBase<?> status = null;
 		DerivedUnitFacade facade = null;
 		if (individualsAssociation != null){
 			facade = getFacadeFromAssociation(state, individualsAssociation);

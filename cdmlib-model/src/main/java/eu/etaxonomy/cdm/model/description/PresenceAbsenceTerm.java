@@ -27,13 +27,13 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.OrderedTermBase;
-import eu.etaxonomy.cdm.model.common.TermType;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.OrderedTermBase;
+import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 
 /**
@@ -70,7 +70,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @XmlRootElement(name = "PresenceAbsenceTerm")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
+//@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
 public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 	private static final long serialVersionUID = 1036807546935584396L;
@@ -607,8 +607,9 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 	}
 
     @Override
-    public PresenceAbsenceTerm readCsvLine(Class<PresenceAbsenceTerm> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId){
-    	PresenceAbsenceTerm newInstance = super.readCsvLine(termClass, csvLine, terms, abbrevAsId);
+    public PresenceAbsenceTerm readCsvLine(Class<PresenceAbsenceTerm> termClass, List<String> csvLine, TermType termType,
+            Map<UUID,DefinedTermBase> terms, boolean abbrevAsId){
+    	PresenceAbsenceTerm newInstance = super.readCsvLine(termClass, csvLine, termType, terms, abbrevAsId);
         String abbreviatedLabel = csvLine.get(4);
 //		String uuid = (String)csvLine.get(0);
 //		map.put(abbreviatedLabel, UUID.fromString(uuid));

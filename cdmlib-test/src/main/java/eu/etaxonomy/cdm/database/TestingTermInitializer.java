@@ -31,11 +31,11 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
-import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.Representation;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.model.common.VocabularyEnum;
+import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
+import eu.etaxonomy.cdm.model.term.VocabularyEnum;
 
 public class TestingTermInitializer extends DefaultTermInitializer {
     private static final Logger logger = Logger.getLogger(TestingTermInitializer.class);
@@ -124,10 +124,8 @@ public class TestingTermInitializer extends DefaultTermInitializer {
                 DatabaseOperation.CLEAN_INSERT.execute(connection, dataSet);
 
             } catch (Exception e) {
-                logger.error(e);
-                for(StackTraceElement ste : e.getStackTrace()) {
-                    logger.error(ste);
-                }
+                logger.error(e.getMessage(), e);
+                throw new RuntimeException(e);
             } finally {
 //                try {
 //                    this.transactionManager.commit(txStatus);

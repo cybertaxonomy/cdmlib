@@ -89,7 +89,6 @@ public class ExternalLink extends VersionableEntity implements Cloneable{
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
     @MapKeyJoinColumn(name="description_mapkey_id")
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE })
-//    @JoinTable(name = "ExternalLink_LanguageString")
     private Map<Language,LanguageString> description = new HashMap<>();
 
     // the exptected size, mostly relevant for Files, can be null

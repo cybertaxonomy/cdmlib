@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.service.dto;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashSet;
@@ -24,7 +25,9 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @since 02.08.2018
  *
  */
-public class SequenceDTO {
+public class SequenceDTO implements Serializable{
+
+    private static final long serialVersionUID = 4532272104416494517L;
 
     private Media contigFile;
 

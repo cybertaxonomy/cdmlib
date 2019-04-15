@@ -59,7 +59,6 @@ import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.hibernate.search.StripHtmlBridge;
 import eu.etaxonomy.cdm.jaxb.FormattedTextAdapter;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
-import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
 import eu.etaxonomy.cdm.model.common.IMultiLanguageTextHolder;
 import eu.etaxonomy.cdm.model.common.IPublishable;
@@ -67,13 +66,14 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
-import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.IDescribable;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.Match.ReplaceMode;
@@ -626,19 +626,21 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
         //life stage
         result.setLifeStage(this.lifeStage);
 
+        result.descriptions = new HashSet<>();
         //Descriptions
         for(DescriptionBase<S> description : this.descriptions) {
-            result.addDescription(description);
+            result.addDescription((SpecimenDescription)description.clone());
         }
 
-        //DeterminationEvent FIXME should clone() the determination
-        // as the relationship is OneToMany
+        result.determinations = new HashSet<>();
         for(DeterminationEvent determination : this.determinations) {
-            result.addDetermination(determination);
+            result.addDetermination(determination.clone());
         }
 
+        result.derivationEvents = new HashSet<>();
         //DerivationEvent
         for(DerivationEvent derivationEvent : this.derivationEvents) {
+            //TODO should we clone this?
             result.addDerivationEvent(derivationEvent);
         }
 
