@@ -249,6 +249,21 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 		return;
 	}
 
+	@Override
+	public Collection<TermDto> getTerms(UUID vocabularyUuid) {
+	    String queryString = TermDto.getTermDtoSelect()
+	            + "where v.uuid = :vocabularyUuid "
+	            + "order by a.titleCache";
+	    Query query =  getSession().createQuery(queryString);
+	    query.setParameter("vocabularyUuid", vocabularyUuid);
+
+	    @SuppressWarnings("unchecked")
+	    List<Object[]> result = query.list();
+
+	    List<TermDto> list = TermDto.termDtoListFrom(result);
+	    return list;
+	}
+
     @Override
     public Collection<TermDto> getTopLevelTerms(UUID vocabularyUuid) {
         String queryString = TermDto.getTermDtoSelect()
