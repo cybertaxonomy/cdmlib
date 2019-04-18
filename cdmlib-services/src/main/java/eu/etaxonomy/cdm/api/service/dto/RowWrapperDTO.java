@@ -10,9 +10,8 @@
 package eu.etaxonomy.cdm.api.service.dto;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -77,15 +76,15 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
         return descriptionElementBase;
     }
 
-    public void setDataValueForFeature(Feature feature, Object newValue){
+    public void setDataValueForFeature(Feature feature, List<State> states){
         /* Only CategoricalData is handled here because for QuantitativeData the value
          * is set in the ModifyListener of the swt.Text in the CellEditor
          * for each StatisticalMeasure. So no need to set it again here.
          */
         DescriptionElementBase descriptionElementBase = featureToElementMap.get(feature);
-        if(descriptionElementBase!=null && descriptionElementBase.isInstanceOf(CategoricalData.class) && newValue instanceof Collection){
+        if(descriptionElementBase!=null && descriptionElementBase.isInstanceOf(CategoricalData.class)){
             CategoricalData categoricalData = HibernateProxyHelper.deproxy(descriptionElementBase, CategoricalData.class);
-            categoricalData.setStateDataOnly(new ArrayList<>((Collection<State>) newValue));
+            categoricalData.setStateDataOnly(states);
         }
     }
 
