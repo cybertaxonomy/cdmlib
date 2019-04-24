@@ -25,6 +25,8 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Disjunction;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
@@ -67,6 +69,7 @@ import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+
 
 /**
  * @author a.kohlbecker
@@ -640,15 +643,74 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 
 
     @Override
-    public List<NamedArea> getUuidAndTitleCache(List<TermVocabulary> vocs, Integer limit, String pattern){
+    public List<NamedArea> getUuidAndTitleCache(List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern, MatchMode matchmode){
+        Session session = getSession();
+//        Query query = null;
+//        if (pattern != null){
+//            if (vocs != null && !vocs.isEmpty()){
+//                query = session.createQuery("from NamedArea where titleCache like :pattern and vocabulary in :vocs ORDER BY titleCache");
+//                query.setParameterList("vocs", vocs);
+//            }else{
+//                query = session.createQuery("from NamedArea where titleCache like :pattern ORDER BY titleCache");
+//            }
+//            pattern = pattern.replace("*", "%");
+//            pattern = pattern.replace("?", "_");
+//            pattern = pattern + "%";
+//            query.setParameter("pattern", pattern);
+//
+//        } else {
+//            query = session.createQuery("FROM NamedArea WHERE vocabulary IN :vocs ORDER BY titleCache");
+//            query.setParameterList("vocs", vocs);
+//        }
+//        if (limit != null && limit > 0){
+//           query.setMaxResults(limit);
+//        }
+
+        Criteria crit = getSession().createCriteria(type, "namedArea");
+        if (!StringUtils.isBlank(pattern)){
+            if (matchmode == MatchMode.EXACT) {
+                crit.add(Restrictions.eq("titleCache", matchmode.queryStringFrom(pattern)));
+            } else {
+    //          crit.add(Restrictions.ilike("titleCache", matchmode.queryStringFrom(queryString)));
+                crit.add(Restrictions.like("titleCache", matchmode.queryStringFrom(pattern)));
+            }
+        }
+        if (limit != null && limit >= 0) {
+            crit.setMaxResults(limit);
+        }
+
+        if (vocs != null &&!vocs.isEmpty()){
+            crit.createAlias("namedArea.vocabulary", "voc");
+            Disjunction or = Restrictions.disjunction();
+            for (TermVocabulary voc: vocs){
+                Criterion criterion = Restrictions.eq("voc.id", voc.getId());
+                or.add(criterion);
+            }
+            crit.add(or);
+        }
+
+        crit.addOrder(Order.asc("titleCache"));
+        if (limit == null){
+            limit = 1;
+        }
+        int firstItem = (pageNumber - 1) * limit;
+
+        crit.setFirstResult(0);
+        @SuppressWarnings("unchecked")
+        List<NamedArea> results = crit.list();
+        return results;
+    }
+
+    @Override
+    public long count(List<TermVocabulary> vocs, String pattern){
         Session session = getSession();
         Query query = null;
         if (pattern != null){
             if (vocs != null && !vocs.isEmpty()){
-                query = session.createQuery("from NamedArea where titleCache like :pattern and vocabulary in :vocs");
+                query = session.createQuery("SELECT COUNT(*) FROM NamedArea WHERE titleCache LIKE :pattern AND vocabulary IN :vocs");
                 query.setParameterList("vocs", vocs);
             }else{
-                query = session.createQuery("from NamedArea where titleCache like :pattern ");
+                query = session.createQuery("SELECT COUNT(*) FROM NamedArea WHERE titleCache LIKE :pattern ");
             }
             pattern = pattern.replace("*", "%");
             pattern = pattern.replace("?", "_");
@@ -656,14 +718,13 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
             query.setParameter("pattern", pattern);
 
         } else {
-            query = session.createQuery("FROM NamedArea WHERE vocabulary IN :vocs");
+            query = session.createQuery("SELECT COUNT(*) FROM NamedArea WHERE vocabulary IN :vocs");
             query.setParameterList("vocs", vocs);
         }
-        if (limit != null){
-           query.setMaxResults(limit);
-        }
+
+
         @SuppressWarnings("unchecked")
-        List<NamedArea> result = query.list();
+        Long result = (Long) query.uniqueResult();
         return result;
     }
 
@@ -697,6 +758,7 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
         return list;
     }
 
+
     @Override
     public Collection<TermDto> findByTitleAsDto(String title, TermType termType) {
         String queryString = TermDto.getTermDtoSelect()
@@ -713,6 +775,16 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 
         List<TermDto> list = TermDto.termDtoListFrom(result);
         return list;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<NamedArea> getUuidAndTitleCache(List<TermVocabulary> vocs, Integer limit, String pattern) {
+
+        return getUuidAndTitleCache(vocs, 0, limit, pattern, MatchMode.BEGINNING);
+
     }
 
 }

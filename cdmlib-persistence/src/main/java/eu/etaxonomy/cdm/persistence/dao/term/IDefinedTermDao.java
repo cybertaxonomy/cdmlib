@@ -30,7 +30,9 @@ import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+
 
 
 public interface IDefinedTermDao extends IIdentifiableDao<DefinedTermBase>, ITitledDao<DefinedTermBase>{
@@ -223,6 +225,27 @@ public interface IDefinedTermDao extends IIdentifiableDao<DefinedTermBase>, ITit
      */
     public Collection<TermDto> getKindOfsAsDto(TermDto parentTerm);
 
+
     public Collection<TermDto> findByTitleAsDto(String title, TermType termType);
+
+    /**
+     * Returns the number of terms in the vocabularies vocs filteres by the given pattern
+     * @param vocs
+     * @param pattern
+     * @return
+     */
+    public long count(List<TermVocabulary> vocs, String pattern);
+
+    /**
+     * @param vocs
+     * @param pageNumber
+     * @param limit
+     * @param pattern
+     * @return
+     */
+    public List<NamedArea> getUuidAndTitleCache(List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern, MatchMode matchMode);
+
+
+
 
 }
