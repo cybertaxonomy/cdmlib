@@ -122,6 +122,13 @@ public interface ITermVocabularyDao extends IIdentifiableDao<TermVocabulary> {
     public Collection<TermDto> getTerms(UUID vocabularyUuid);
 
     /**
+     * Loads all terms for the given vocabularies
+     * @param vocabularyUuids the ids of the vocabularies
+     * @return a collection of terms
+     */
+    public Collection<TermDto> getTerms(List<UUID> vocabularyUuids);
+
+    /**
      * Returns term vocabularies that contain terms of a certain {@link TermType} e.g. Feature, Modifier, State.
      *
      * @param termType the {@link TermType} of the terms in the vocabulary and of the vocabulary
