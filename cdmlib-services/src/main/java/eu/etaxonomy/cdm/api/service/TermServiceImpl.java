@@ -597,6 +597,11 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
         return dao.findByTitleAsDto(title, termType);
     }
 
+    @Override
+    public Collection<TermDto> findByUriAsDto(URI uri, String termLabel, TermType termType){
+        return dao.findByUriAsDto(uri, termLabel, termType);
+    }
+
     public enum TermMovePosition{
         BEFORE,
         AFTER,

@@ -777,6 +777,29 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
         return list;
     }
 
+    @Override
+    public Collection<TermDto> findByUriAsDto(URI uri, String termLabel, TermType termType) {
+        String queryString = TermDto.getTermDtoSelect()
+                + " where a.uri like :uri "
+                + (termType!=null?" and a.termType = :termType ":"")
+                + (termLabel!=null?" and a.titleCache = :termLabel ":"")
+                ;
+        Query query =  getSession().createQuery(queryString);
+        query.setParameter("uri", uri.toString());
+        if(termLabel!=null){
+            query.setParameter("termLabel", "%"+termLabel+"%");
+        }
+        if(termType!=null){
+            query.setParameter("termType", termType);
+        }
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> result = query.list();
+
+        List<TermDto> list = TermDto.termDtoListFrom(result);
+        return list;
+    }
+
     /**
      * {@inheritDoc}
      */

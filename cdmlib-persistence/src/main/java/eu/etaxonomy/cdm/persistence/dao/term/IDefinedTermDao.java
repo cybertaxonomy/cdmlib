@@ -226,7 +226,22 @@ public interface IDefinedTermDao extends IIdentifiableDao<DefinedTermBase>, ITit
     public Collection<TermDto> getKindOfsAsDto(TermDto parentTerm);
 
 
+    /**
+     * Returns a collection of {@link TermDto}s that match the given search parameters.
+     * @param title  the term label that the terms have to match
+     * @param termType the termType that the terms have to match
+     * @return a collection of matching term DTOs
+     */
     public Collection<TermDto> findByTitleAsDto(String title, TermType termType);
+
+    /**
+     * Returns a collection of {@link TermDto}s that match the given search parameters.
+     * @param uri the {@link URI} that the terms have to match
+     * @param termLabel  the term label that the terms have to match
+     * @param termType the termType that the terms have to match
+     * @return a collection of matching term DTOs
+     */
+    public Collection<TermDto> findByUriAsDto(URI uri, String termLabel, TermType termType);
 
     /**
      * Returns the number of terms in the vocabularies vocs filteres by the given pattern
