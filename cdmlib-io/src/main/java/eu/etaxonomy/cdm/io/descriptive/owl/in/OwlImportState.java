@@ -8,10 +8,7 @@
 */
 package eu.etaxonomy.cdm.io.descriptive.owl.in;
 
-import java.util.Collection;
-
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
 
 /**
  * @author pplitzner
@@ -20,18 +17,8 @@ import eu.etaxonomy.cdm.model.term.FeatureTree;
  */
 public class OwlImportState extends ImportStateBase<OwlImportConfigurator, OwlImport> {
 
-    private Collection<FeatureTree> featureTrees;
-
     public OwlImportState(OwlImportConfigurator config) {
         super(config);
-    }
-
-    public Collection<FeatureTree> getFeatureTrees() {
-        return featureTrees;
-    }
-
-    public void setFeatureTrees(Collection<FeatureTree> featureTrees) {
-        this.featureTrees = featureTrees;
     }
 
 }

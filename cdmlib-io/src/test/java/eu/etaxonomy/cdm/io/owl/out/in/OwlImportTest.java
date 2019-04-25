@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.io.owl.out.in;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -16,7 +17,8 @@ import java.io.FileNotFoundException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
@@ -24,6 +26,9 @@ import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
+import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.descriptive.owl.in.OwlImport;
 import eu.etaxonomy.cdm.io.descriptive.owl.in.OwlImportConfigurator;
@@ -32,6 +37,8 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.FeatureNode;
 import eu.etaxonomy.cdm.model.term.FeatureTree;
 import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
@@ -45,7 +52,18 @@ public class OwlImportTest extends CdmTransactionalIntegrationTest {
     @SpringBeanByType
     private OwlImport owlImport;
 
+    @SpringBeanByType
+    private ITermService termService;
+
+    @SpringBeanByType
+    private IFeatureTreeService featureTreeService;
+
+    @SpringBeanByType
+    private IVocabularyService vocabularyService;
+
     private OwlImportConfigurator configurator;
+
+    private FeatureTree tree;
 
     @Before
     public void setUp() throws URISyntaxException {
@@ -68,28 +86,44 @@ public class OwlImportTest extends CdmTransactionalIntegrationTest {
         this.setComplete();
         this.endTransaction();
 
-        Collection<FeatureTree> featureTrees = state.getFeatureTrees();
-        assertTrue("Wrong number of feature trees imported", featureTrees.size()==1);
-        FeatureTree tree = featureTrees.iterator().next();
-        assertTrue("Tree has wrong term type", tree.getTermType().equals(TermType.Structure));
-        assertTrue("Wrong number of distinct features", tree.getDistinctFeatures().size()==4);
+        String treeLabel = "TestStructures";
+        List<FeatureTree> trees = featureTreeService.listByTitle(FeatureTree.class, treeLabel, MatchMode.EXACT, null, null, null, null, null);
+        List<String> nodeProperties = new ArrayList<>();
+        nodeProperties.add("term");
+        tree = featureTreeService.loadWithNodes(trees.iterator().next().getUuid(), null, nodeProperties);
+        assertNotNull("featureTree should not be null", tree);
+
+        assertEquals("Tree has wrong term type", TermType.Structure, tree.getTermType());
+        assertEquals("Wrong number of distinct features", 4, tree.getDistinctFeatures().size());
         List rootChildren = tree.getRootChildren();
-        assertTrue("Wrong number of root children", rootChildren.size()==1);
+        assertEquals("Wrong number of root children", 1, rootChildren.size());
         Object root = rootChildren.iterator().next();
         assertTrue("Root is no feature node", root instanceof FeatureNode);
-        assertTrue("Root node has wrong term type", ((FeatureNode)root).getTermType().equals(TermType.Structure));
+        assertEquals("Root node has wrong term type", TermType.Structure, ((FeatureNode)root).getTermType());
         FeatureNode<DefinedTerm> rootNode = (FeatureNode<DefinedTerm>) root;
         List<FeatureNode<DefinedTerm>> childNodes = rootNode.getChildNodes();
-        assertTrue("Wrong number of children", childNodes.size()==2);
+        assertEquals("Wrong number of children", 2, childNodes.size());
+        DefinedTerm inflorescence = null;
         for (FeatureNode<DefinedTerm> featureNode : childNodes) {
             assertTrue("Child node not found",
                     featureNode.getTerm().getLabel().equals("inflorescence")
                     || featureNode.getTerm().getLabel().equals("Flower"));
             if(featureNode.getTerm().getLabel().equals("inflorescence")){
                 assertTrue("Description not found", CdmUtils.isNotBlank(featureNode.getTerm().getDescription()));
-                assertTrue("Description wrong", featureNode.getTerm().getDescription().equals(" the part of the plant that bears the flowers, including all its bracts  branches and flowers  but excluding unmodified leaves               "));
+                String expectedDescription = " the part of the plant that bears the flowers, including all its bracts  branches and flowers  but excluding unmodified leaves               ";
+                assertEquals("Description wrong", expectedDescription, featureNode.getTerm().getDescription());
+                inflorescence = featureNode.getTerm();
             }
         }
+        assertNotNull("term is null", inflorescence);
+        assertEquals("Wrong term type", TermType.Structure, inflorescence.getTermType());
+
+        List<TermVocabulary> vocs = vocabularyService.findByTitle(TermVocabulary.class, treeLabel, MatchMode.EXACT, null, null, null, null, Arrays.asList("terms")).getRecords();
+        assertEquals("wrong number of vocabularies", 1, vocs.size());
+        TermVocabulary termVoc = vocs.iterator().next();
+        assertEquals("Wrong vocabulary label", treeLabel, termVoc.getTitleCache());
+        assertEquals(4, termVoc.getTerms().size());
+        assertTrue("Term not included in vocabulary", termVoc.getTerms().contains(inflorescence));
 
     }
 
