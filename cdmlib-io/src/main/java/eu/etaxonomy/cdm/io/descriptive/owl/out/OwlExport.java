@@ -40,6 +40,7 @@ public class OwlExport extends CdmExportBase<OwlExportConfigurator, OwlExportSta
     private Property propHasSubStructure;
     private Property propHasRootNode;
     private Property propUuid;
+    private Property propUri;
     private Property propLabel;
     private Property propIsA;
     private Property propType;
@@ -64,6 +65,7 @@ public class OwlExport extends CdmExportBase<OwlExportConfigurator, OwlExportSta
         propHasSubStructure = model.createProperty(OwlConstants.PROPERTY_HAS_SUBSTRUCTURE);
         propHasRootNode = model.createProperty(OwlConstants.PROPERTY_HAS_ROOT_NODE);
         propUuid = model.createProperty(OwlConstants.PROPERTY_UUID);
+        propUri = model.createProperty(OwlConstants.PROPERTY_URI);
         propLabel = model.createProperty(OwlConstants.PROPERTY_LABEL);
         propIsA = model.createProperty(OwlConstants.PROPERTY_IS_A);
         propType = model.createProperty(OwlConstants.PROPERTY_TYPE);
@@ -79,7 +81,8 @@ public class OwlExport extends CdmExportBase<OwlExportConfigurator, OwlExportSta
                 .addProperty(propLabel, featureTree.getTitleCache())
                 .addProperty(propHasRootNode, resourceRootNode)
                 .addProperty(propIsA, OwlConstants.TREE)
-                .addProperty(propType, featureTree.getTermType().getKey());
+                .addProperty(propType, featureTree.getTermType().getKey()
+                        );
 
         addChildNode(rootNode, resourceRootNode, model);
 
@@ -98,9 +101,13 @@ public class OwlExport extends CdmExportBase<OwlExportConfigurator, OwlExportSta
                     .addProperty(propUuid, term.getUuid().toString())
                     .addProperty(propLabel, term.getLabel())
                     .addProperty(propIsA, OwlConstants.NODE)
-                    .addProperty(propType, term.getTermType().getKey());
+                    .addProperty(propType, term.getTermType().getKey()
+                            );
             if(term.getDescription()!=null){
                 childResourceNode.addProperty(propDescription, term.getDescription());
+            }
+            if(term.getUri()!=null){
+                childResourceNode.addProperty(propUri, term.getUri().toString());
             }
             resourceNode.addProperty(propHasSubStructure, childResourceNode);
             addChildNode(child, childResourceNode, model);

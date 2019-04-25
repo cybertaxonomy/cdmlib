@@ -29,11 +29,12 @@ public interface OwlConstants {
      */
     public static final String PROPERTY_BASE_URI = BASE_URI+"property/";
     public static final String PROPERTY_HAS_ROOT_NODE = PROPERTY_BASE_URI + "hasRootNode";
+    public static final String PROPERTY_UUID = PROPERTY_BASE_URI+"uuid";
+    public static final String PROPERTY_URI = PROPERTY_BASE_URI+"uri";
     public static final String PROPERTY_LABEL = PROPERTY_BASE_URI+"label";
     public static final String PROPERTY_LABEL_ABBREV = PROPERTY_BASE_URI+"label_abbrev";
     public static final String PROPERTY_DESCRIPTION = PROPERTY_BASE_URI+"description";
     public static final String PROPERTY_IS_A = PROPERTY_BASE_URI+"is_a";
-    public static final String PROPERTY_UUID = PROPERTY_BASE_URI+"uuid";
     public static final String PROPERTY_HAS_SUBSTRUCTURE = PROPERTY_BASE_URI+"hasSubStructure";
     public static final String PROPERTY_TYPE = PROPERTY_BASE_URI+"type";
 
