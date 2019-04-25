@@ -9,6 +9,8 @@
 package eu.etaxonomy.cdm.io.descriptive.owl.in;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.stereotype.Component;
 
@@ -65,8 +67,8 @@ public class OwlImport extends CdmImportBase<OwlImportConfigurator, OwlImportSta
         propDescription = model.createProperty(OwlConstants.PROPERTY_DESCRIPTION);
 
         model.read(source.toString());
-        model.write(System.out);
 
+        List<FeatureTree> featureTrees = new ArrayList<>();
         //get all trees
         ResIterator iterator = model.listResourcesWithProperty(propertyHasRootNode);
         while(iterator.hasNext()){
@@ -77,7 +79,10 @@ public class OwlImport extends CdmImportBase<OwlImportConfigurator, OwlImportSta
 
             Resource rootNode = tree.getProperty(propertyHasRootNode).getResource();
             rootNode.listProperties(propHasSubStructure).forEachRemaining(prop->createNode(featureTree.getRoot(), prop, model));
+
+            featureTrees.add(featureTree);
         }
+        state.setFeatureTrees(featureTrees);
     }
 
     private void createNode(FeatureNode parent, Statement nodeStatement, Model model) {
