@@ -39,6 +39,9 @@ public class OwlImportConfigurator extends ImportConfiguratorBase<OwlImportState
 
     @Override
     protected void makeIoClassList() {
+        ioClassList = new Class[] {
+                OwlImport.class
+        };
     }
 
     @Override
