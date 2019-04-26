@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.io.descriptive.owl.in;
 import java.net.URI;
 
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
-import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.term.TermType;
@@ -41,8 +40,8 @@ public class OwlImportConfigurator extends ImportConfiguratorBase<OwlImportState
     }
 
     @Override
-    public <STATE extends ImportStateBase> STATE getNewState() {
-        return null;
+    public OwlImportState getNewState() {
+        return new OwlImportState(this);
     }
 
     @Override

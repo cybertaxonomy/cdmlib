@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.io.common.ImportStateBase;
  */
 public class OwlImportState extends ImportStateBase<OwlImportConfigurator, OwlImport> {
 
-    public OwlImportState(OwlImportConfigurator config) {
+    protected OwlImportState(OwlImportConfigurator config) {
         super(config);
     }
 

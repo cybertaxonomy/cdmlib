@@ -81,7 +81,7 @@ public class OwlImportTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet(value="/eu/etaxonomy/cdm/database/BlankDataSet.xml")
 	public void testDoInvoke() {
-        OwlImportState state = new OwlImportState(configurator);
+        OwlImportState state = configurator.getNewState();
         owlImport.doInvoke(state);
         this.setComplete();
         this.endTransaction();

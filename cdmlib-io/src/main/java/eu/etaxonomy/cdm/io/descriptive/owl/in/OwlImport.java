@@ -57,7 +57,8 @@ public class OwlImport extends CdmImportBase<OwlImportConfigurator, OwlImportSta
 
     @Override
     protected boolean doCheck(OwlImportState state) {
-        return false;
+        logger.warn("Checking not yet implemented for " + this.getClass().getSimpleName());
+        return true;
     }
 
     @Override
