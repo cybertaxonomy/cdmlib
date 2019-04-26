@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.model.term;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.Entity;
@@ -79,6 +80,18 @@ public class DefinedTerm extends DefinedTermBase<DefinedTerm> implements Compara
 		}
 	}
 
+	public static DefinedTerm NewInstance(TermType termType, Set<Representation> representations){
+	    DefinedTerm term = null;
+	    for (Representation representation : representations) {
+            if(term==null){
+                term = new DefinedTerm(termType, representation.getDescription(), representation.getLabel(), representation.getAbbreviatedLabel());
+            }
+            else{
+                term.addRepresentation(representation);
+            }
+        }
+	    return term;
+	}
 
 	public static DefinedTerm NewInstance(TermType termType, String description, String label, String labelAbbrev){
 		return new DefinedTerm(termType, description, label, labelAbbrev);
