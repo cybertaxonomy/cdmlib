@@ -33,9 +33,11 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.descriptive.owl.in.OwlImport;
 import eu.etaxonomy.cdm.io.descriptive.owl.in.OwlImportConfigurator;
 import eu.etaxonomy.cdm.io.descriptive.owl.in.OwlImportState;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.FeatureNode;
 import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -109,10 +111,16 @@ public class OwlImportTest extends CdmTransactionalIntegrationTest {
                     featureNode.getTerm().getLabel().equals("inflorescence")
                     || featureNode.getTerm().getLabel().equals("Flower"));
             if(featureNode.getTerm().getLabel().equals("inflorescence")){
-                assertTrue("Description not found", CdmUtils.isNotBlank(featureNode.getTerm().getDescription()));
-                String expectedDescription = " the part of the plant that bears the flowers, including all its bracts  branches and flowers  but excluding unmodified leaves               ";
-                assertEquals("Description wrong", expectedDescription, featureNode.getTerm().getDescription());
                 inflorescence = featureNode.getTerm();
+
+                assertTrue("Description not found", CdmUtils.isNotBlank(inflorescence.getDescription()));
+                String expectedDescription = " the part of the plant that bears the flowers, including all its bracts  branches and flowers  but excluding unmodified leaves               ";
+                assertEquals("Description wrong", expectedDescription, inflorescence.getDescription());
+                assertEquals("wrong number of representations", 2, inflorescence.getRepresentations().size());
+                Representation germanRepresentation = inflorescence.getRepresentation(Language.GERMAN());
+                assertNotNull("Representation is null", germanRepresentation);
+                assertEquals("wrong description", "Der Teil der Pflanze, der die Bluete traegt", germanRepresentation.getDescription());
+                assertEquals("wrong label", "Infloreszenz", germanRepresentation.getLabel());
             }
         }
         assertNotNull("term is null", inflorescence);
