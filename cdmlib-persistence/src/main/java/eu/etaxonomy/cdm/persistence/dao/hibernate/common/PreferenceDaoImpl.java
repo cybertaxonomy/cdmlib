@@ -60,7 +60,7 @@ public class PreferenceDaoImpl extends DaoBase implements IPreferenceDao, Initia
 		if (predicate == null ||
 		        !preference.isAllowOverride() ||
 		        !CdmUtils.nullSafeEqual(nullOrToString(predicate.getDefaultValue()), preference.getValue())){
-		    //do not save is value is default value with allow override
+		    //do not save if value is default value with allow override
 		    getSession().save(preference);
 		}
 

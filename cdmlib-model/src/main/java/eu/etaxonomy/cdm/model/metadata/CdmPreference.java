@@ -60,6 +60,11 @@ public final class CdmPreference implements Serializable {
             IPreferencePredicate<?> predicate, String value){
         return new CdmPreference(subject, predicate, value);
     }
+    
+    public static final CdmPreference NewInstance(PrefKey key, String value){
+        return new CdmPreference(key.subject, key.predicate, value);
+    }
+
 
 
     public static final CdmPreference NewInstance(PreferenceSubject subject, IPreferencePredicate<?> predicate, List<UUID> value){
@@ -162,7 +167,8 @@ public final class CdmPreference implements Serializable {
                 throw new IllegalArgumentException("Predicate must not be longer then 255 for preference");
             }
             if (!(subject.matches(PreferenceSubject.ROOT + "(([A-Za-z]+(\\[.*\\])?|"+PreferenceSubject.VAADIN+")"+PreferenceSubject.SEP+")*")
-                    || subject.matches(PreferenceSubject.ROOT + "(([A-Za-z]+(\\[.*\\])?|"+PreferenceSubject.TAX_EDITOR+")"+PreferenceSubject.SEP+")*"))){
+                    || subject.matches(PreferenceSubject.ROOT + "(([A-Za-z]+(\\[.*\\])?|"+PreferenceSubject.TAX_EDITOR+")"+PreferenceSubject.SEP+")*")
+                    || subject.matches(PreferenceSubject.ROOT + "(([A-Za-z]+(\\[.*\\])?|"+PreferenceSubject.DISTR_EDITOR+")"+PreferenceSubject.SEP+")*|(.*)"))){
                 throw new IllegalArgumentException("Subject does not follow the required syntax");
             }
 
