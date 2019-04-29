@@ -1036,7 +1036,6 @@ public class NameServiceImpl
         for(TypeDesignationStatusBase term : termList){
             TypeDesignationStatusFilter filter = new TypeDesignationStatusFilter(term, preferredLanguages, true);
             String key = filter.getKey();
-            System.err.println(key);
             if(filterMap.containsKey(key)){
                 filterMap.get(key).addStatus(term);
             } else {
