@@ -194,7 +194,7 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
      * @param lang
      * @return
      */
-    List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCache(List<TermVocabulary> vocs, Integer limit, String pattern,
+    List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCacheNamedArea(List<TermVocabulary> vocs, Integer limit, String pattern,
             Language lang);
 
     /**

@@ -208,7 +208,7 @@ public interface IDefinedTermDao extends IIdentifiableDao<DefinedTermBase>, ITit
      * @param pattern
      * @return
      */
-    public List<NamedArea> getUuidAndTitleCache(List<TermVocabulary> vocs, Integer limit,
+    public List<NamedArea> listNamedArea(List<TermVocabulary> vocs, Integer limit,
             String pattern);
 
     /**
@@ -258,7 +258,7 @@ public interface IDefinedTermDao extends IIdentifiableDao<DefinedTermBase>, ITit
      * @param pattern
      * @return
      */
-    public List<NamedArea> getUuidAndTitleCache(List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern, MatchMode matchMode);
+    public List<NamedArea> listNamedArea(List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern, MatchMode matchMode);
 
 
 

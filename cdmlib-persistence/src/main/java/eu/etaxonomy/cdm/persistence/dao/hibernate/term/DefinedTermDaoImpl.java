@@ -643,7 +643,7 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 
 
     @Override
-    public List<NamedArea> getUuidAndTitleCache(List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern, MatchMode matchmode){
+    public List<NamedArea> listNamedArea(List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern, MatchMode matchmode){
         Session session = getSession();
 //        Query query = null;
 //        if (pattern != null){
@@ -804,9 +804,9 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
      * {@inheritDoc}
      */
     @Override
-    public List<NamedArea> getUuidAndTitleCache(List<TermVocabulary> vocs, Integer limit, String pattern) {
+    public List<NamedArea> listNamedArea(List<TermVocabulary> vocs, Integer limit, String pattern) {
 
-        return getUuidAndTitleCache(vocs, 0, limit, pattern, MatchMode.BEGINNING);
+        return listNamedArea(vocs, 0, limit, pattern, MatchMode.BEGINNING);
 
     }
 
