@@ -236,6 +236,7 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
      */
     public TermDto addNewTerm(TermType termType, UUID parentUuid, boolean isKindOf);
 
+
     /**
      * Returns a collection of {@link TermDto}s that match the given search parameters.
      * @param title  the term label that the terms have to match
@@ -252,5 +253,6 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
      * @return a collection of matching term DTOs
      */
     public Collection<TermDto> findByUriAsDto(URI uri, String termLabel, TermType termType);
+
 
 }
