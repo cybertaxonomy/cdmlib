@@ -68,6 +68,7 @@ public class TypeDesignationDaoHibernateImplTest extends CdmTransactionalIntegra
 	public void testInit() {
 		assertNotNull("Instance of ITypeDesignationDao expected", typeDesignationDao);
 	}
+
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.name.TypeDesignationDaoHibernateImpl#getAllTypeDesignations(java.lang.Integer, java.lang.Integer)}.
 	 */
@@ -234,6 +235,15 @@ public class TypeDesignationDaoHibernateImplTest extends CdmTransactionalIntegra
 		commit();
 
 	}
+
+
+	@Test
+	@DataSet
+	public void testGetTypeDesignationStatusInUse() {
+	    List<TypeDesignationStatusBase> statusTerms = typeDesignationDao.getTypeDesignationStatusInUse();
+	    assertEquals(2, statusTerms.size());
+	}
+
 
 	@Test
 //	@ExpectedDataSet

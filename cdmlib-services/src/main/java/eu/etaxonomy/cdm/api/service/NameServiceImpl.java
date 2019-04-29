@@ -37,6 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.NameDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.dto.TypeDesignationStatusFilter;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
@@ -74,6 +75,7 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
+import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
@@ -1021,5 +1023,28 @@ public class NameServiceImpl
 		return dao.getNameRecords();
 
     }
+
+    @Override
+    public List<TypeDesignationStatusBase> getTypeDesignationStatusInUse(){
+        return typeDesignationDao.getTypeDesignationStatusInUse();
+    }
+
+    @Override
+    public Collection<TypeDesignationStatusFilter> getTypeDesignationStatusFilterTerms(List<Language> preferredLanguages){
+        List<TypeDesignationStatusBase> termList = typeDesignationDao.getTypeDesignationStatusInUse();
+        Map<String, TypeDesignationStatusFilter>  filterMap = new HashMap<>();
+        for(TypeDesignationStatusBase term : termList){
+            TypeDesignationStatusFilter filter = new TypeDesignationStatusFilter(term, preferredLanguages, true);
+            String key = filter.getKey();
+            System.err.println(key);
+            if(filterMap.containsKey(key)){
+                filterMap.get(key).addStatus(term);
+            } else {
+                filterMap.put(key, filter);
+            }
+        }
+        return filterMap.values();
+    }
+
 
 }
