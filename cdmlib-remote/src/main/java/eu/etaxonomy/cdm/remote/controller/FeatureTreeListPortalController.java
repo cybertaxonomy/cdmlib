@@ -29,8 +29,8 @@ public class FeatureTreeListPortalController extends FeatureTreeListController {
     private static final List<String> FEATURETREE_INIT_STRATEGY = Arrays.asList(
             new String[]{
                 "representations",
-                "root.feature.representations",
-                "root.childNodes.feature.representations"
+                "root.term.representations",
+                "root.childNodes.term.representations"
             });
 
     public FeatureTreeListPortalController() {
