@@ -31,11 +31,9 @@ import eu.etaxonomy.cdm.remote.editor.MatchModePropertyEditor;
 /**
  * @author a.mueller
  * @since 06 Oct 2016
- *
  */
 public abstract class AbstractIdentifiableController <T extends IdentifiableEntity, SERVICE extends IIdentifiableEntityService<T>>
         extends BaseController<T,SERVICE>  {
-
 
     private static final Logger logger = Logger.getLogger(AbstractIdentifiableController.class);
 

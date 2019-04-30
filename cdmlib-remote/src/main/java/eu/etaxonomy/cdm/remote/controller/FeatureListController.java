@@ -9,18 +9,13 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-
-import java.util.Arrays;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
-import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import io.swagger.annotations.Api;
 
 /**
  * TODO write controller documentation
@@ -32,20 +27,11 @@ import eu.etaxonomy.cdm.model.description.DescriptionBase;
 @Controller
 @Api("feature")
 @RequestMapping(value = {"/feature"}) //FIXME refactor type mappings
-public class FeatureListController extends AbstractIdentifiableListController<DescriptionBase, IDescriptionService>
-{
-    @Autowired
-    private ITermService termService;
+public class FeatureListController extends AbstractIdentifiableListController<DescriptionBase, IDescriptionService>{
 
-    private static final List<String> FEATURE_INIT_STRATEGY = Arrays.asList(new String[]{"representations"});
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu.etaxonomy.cdm.api.service.IService)
-     */
     @Autowired
     @Override
     public void setService(IDescriptionService service) {
         this.service = service;
     }
-
 }
