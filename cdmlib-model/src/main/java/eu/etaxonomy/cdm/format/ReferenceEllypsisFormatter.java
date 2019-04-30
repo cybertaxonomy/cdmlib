@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.format;
 
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -126,11 +127,11 @@ public class ReferenceEllypsisFormatter extends AbstractEllypsisFormatter<Refere
         }
 
         if(!StringUtils.isEmpty(title)){
-            // the titleCompensation helps in cases like journals etc when the reference hat not much additional information than a title.
+            // the titleCompensation helps in cases like journals and when the reference has not much additional information than a title.
             int titleCompensation =
                     (StringUtils.isEmpty(authors) ? 1 : 0)
                     + (entity.getInReference() == null? 1 : 0)
-                    + (entity.getType() == ReferenceType.Journal ? 1 : 0);
+                    + (EnumSet.of(ReferenceType.Journal, ReferenceType.PrintSeries, ReferenceType.Proceedings).contains(entity.getType()) ? 2 : 0);
             String titleEllipsed = stringEllypsis(title, maxCharsVisible * titleCompensation, minNumOfWords * titleCompensation);
             titleEllipsed = preserveString(preserveString, title, pattern, titleEllipsed);
             applyAndSplit(edList, title, titleEllipsed);
