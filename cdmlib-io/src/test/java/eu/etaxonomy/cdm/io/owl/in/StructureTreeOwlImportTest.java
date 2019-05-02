@@ -30,9 +30,9 @@ import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.io.descriptive.owl.in.StructureTreeOwlImport;
 import eu.etaxonomy.cdm.io.descriptive.owl.in.StructureTreeOwlImportConfigurator;
 import eu.etaxonomy.cdm.io.descriptive.owl.in.StructureTreeOwlImportState;
-import eu.etaxonomy.cdm.io.descriptive.owl.in.StructureTreeOwlImport;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.FeatureNode;
@@ -105,20 +105,28 @@ public class StructureTreeOwlImportTest extends CdmTransactionalIntegrationTest 
         FeatureNode<DefinedTerm> rootNode = (FeatureNode<DefinedTerm>) root;
         List<FeatureNode<DefinedTerm>> childNodes = rootNode.getChildNodes();
         assertEquals("Wrong number of children", 2, childNodes.size());
-        DefinedTerm inflorescence = null;
+
+        String inflorescenceLabel = "inflorescence";
+        String inflorescenceDescription = " the part of the plant that bears the flowers, including all its bracts  branches and flowers  but excluding unmodified leaves               ";
+        List<DefinedTerm> records = termService.findByRepresentationText(inflorescenceDescription, DefinedTerm.class, null, null).getRecords();
+        assertEquals("wrong number of terms found for \"inflorescence\"", 1, records.size());
+        DefinedTerm inflorescence = records.iterator().next();
+        assertEquals(inflorescenceLabel, inflorescence.getLabel(Language.ENGLISH()));
+
         for (FeatureNode<DefinedTerm> featureNode : childNodes) {
-            assertTrue("Child node not found",
-                    featureNode.getTerm().getLabel().equals("inflorescence")
-                    || featureNode.getTerm().getLabel().equals("Flower"));
-            if(featureNode.getTerm().getLabel().equals("inflorescence")){
+            assertTrue("Child node not found. Found node with term: "+featureNode.getTerm().getLabel(),
+                    featureNode.getTerm().getUuid().equals(inflorescence.getUuid())
+                    || featureNode.getTerm().getLabel(Language.ENGLISH()).equals("Flower"));
+            if(featureNode.getTerm().getUuid().equals(inflorescence.getUuid())){
+                assertEquals("Term mismatch", inflorescence, featureNode.getTerm());
                 inflorescence = featureNode.getTerm();
 
-                assertTrue("Description not found", CdmUtils.isNotBlank(inflorescence.getDescription()));
-                String expectedDescription = " the part of the plant that bears the flowers, including all its bracts  branches and flowers  but excluding unmodified leaves               ";
-                assertEquals("Description wrong", expectedDescription, inflorescence.getDescription());
+                String englishDescription = inflorescence.getDescription(Language.ENGLISH());
+                assertTrue("Description not found", CdmUtils.isNotBlank(englishDescription));
+                assertEquals("Description wrong", inflorescenceDescription, englishDescription);
                 assertEquals("wrong number of representations", 2, inflorescence.getRepresentations().size());
                 Representation germanRepresentation = inflorescence.getRepresentation(Language.GERMAN());
-                assertNotNull("Representation is null", germanRepresentation);
+                assertNotNull("Representation is null for "+Language.GERMAN(), germanRepresentation);
                 assertEquals("wrong description", "Der Teil der Pflanze, der die Bluete traegt", germanRepresentation.getDescription());
                 assertEquals("wrong label", "Infloreszenz", germanRepresentation.getLabel());
             }
