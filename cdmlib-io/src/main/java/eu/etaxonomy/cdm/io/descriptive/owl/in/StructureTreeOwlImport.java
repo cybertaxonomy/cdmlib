@@ -156,7 +156,10 @@ public class StructureTreeOwlImport extends CdmImportBase<StructureTreeOwlImport
                 }
             }
             else{
-                term = DefinedTerm.NewInstance(termType, representations);
+                term = DefinedTerm.NewInstance(termType);
+                for (Representation representation : representations) {
+                    term.addRepresentation(representation);
+                }
             }
             IdentifiableSource importSource = IdentifiableSource.NewDataImportInstance(termLabel);
             importSource.setCitation(state.getConfig().getSourceReference());
