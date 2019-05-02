@@ -21,33 +21,33 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
  * @since Apr 24, 2019
  *
  */
-public class OwlImportConfigurator extends ImportConfiguratorBase<OwlImportState, URI> {
+public class StructureTreeOwlImportConfigurator extends ImportConfiguratorBase<StructureTreeOwlImportState, URI> {
 
     private static final long serialVersionUID = -7981427548996602252L;
 
     private TermVocabulary vocabulary;
 
-    public static OwlImportConfigurator NewInstance(URI source){
-        return new OwlImportConfigurator(source);
+    public static StructureTreeOwlImportConfigurator NewInstance(URI source){
+        return new StructureTreeOwlImportConfigurator(source);
     }
 
-    protected OwlImportConfigurator(URI source) {
+    protected StructureTreeOwlImportConfigurator(URI source) {
         super(null);
         this.setSource(source);
         Reference reference = ReferenceFactory.newGeneric();
-        reference.setTitle("OWL import from "+source);
+        reference.setTitle("StructureTree import from "+source);
         this.setSourceReference(reference);
     }
 
     @Override
-    public OwlImportState getNewState() {
-        return new OwlImportState(this);
+    public StructureTreeOwlImportState getNewState() {
+        return new StructureTreeOwlImportState(this);
     }
 
     @Override
     protected void makeIoClassList() {
         ioClassList = new Class[] {
-                OwlImport.class
+                StructureTreeOwlImport.class
         };
     }
 

@@ -19,34 +19,36 @@ import eu.etaxonomy.cdm.model.term.FeatureTree;
 
 
 /**
- * @author a.mueller
- * @since 18.04.2011
+ *
+ * @author pplitzner
+ * @since May 2, 2019
+ *
  */
-public class OwlExportConfigurator extends XmlExportConfiguratorBase<OwlExportState> {
+public class StructureTreeOwlExportConfigurator extends XmlExportConfiguratorBase<StructureTreeOwlExportState> {
 
     private static final long serialVersionUID = -4360021755279592592L;
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(OwlExportConfigurator.class);
+	private static final Logger logger = Logger.getLogger(StructureTreeOwlExportConfigurator.class);
 
     private FeatureTree featureTree;
 
 
-    private OwlExportConfigurator(ICdmDataSource source, File destinationFolder, FeatureTree featureTree) {
+    private StructureTreeOwlExportConfigurator(ICdmDataSource source, File destinationFolder, FeatureTree featureTree) {
         super(destinationFolder, source, null);
         this.featureTree = featureTree;
     }
 
-    public static OwlExportConfigurator NewInstance(ICdmDataSource source, File destinationFolder, FeatureTree featureTree) {
-        return new OwlExportConfigurator(source, destinationFolder, featureTree);
+    public static StructureTreeOwlExportConfigurator NewInstance(ICdmDataSource source, File destinationFolder, FeatureTree featureTree) {
+        return new StructureTreeOwlExportConfigurator(source, destinationFolder, featureTree);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public OwlExportState getNewState() {
-        return new OwlExportState(this);
+    public StructureTreeOwlExportState getNewState() {
+        return new StructureTreeOwlExportState(this);
     }
 
     /**
@@ -55,7 +57,7 @@ public class OwlExportConfigurator extends XmlExportConfiguratorBase<OwlExportSt
     @Override
     protected void makeIoClassList() {
         ioClassList = new Class[] {
-                OwlExport.class
+                StructureTreeOwlExport.class
         };
     }
 

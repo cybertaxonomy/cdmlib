@@ -15,9 +15,9 @@ import eu.etaxonomy.cdm.io.common.ImportStateBase;
  * @since Apr 24, 2019
  *
  */
-public class OwlImportState extends ImportStateBase<OwlImportConfigurator, OwlImport> {
+public class StructureTreeOwlImportState extends ImportStateBase<StructureTreeOwlImportConfigurator, StructureTreeOwlImport> {
 
-    protected OwlImportState(OwlImportConfigurator config) {
+    protected StructureTreeOwlImportState(StructureTreeOwlImportConfigurator config) {
         super(config);
     }
 

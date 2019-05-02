@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultExport;
 import eu.etaxonomy.cdm.io.common.ExportDataWrapper;
 import eu.etaxonomy.cdm.io.common.ExportResult;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator.TARGET;
-import eu.etaxonomy.cdm.io.descriptive.owl.out.OwlExportConfigurator;
+import eu.etaxonomy.cdm.io.descriptive.owl.out.StructureTreeOwlExportConfigurator;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.term.FeatureNode;
@@ -42,7 +42,7 @@ public class OwlExportTest  extends CdmTransactionalIntegrationTest{
     private static final Logger logger = Logger.getLogger(OwlExportTest.class);
 
     @SpringBeanByName
-    private CdmApplicationAwareDefaultExport<OwlExportConfigurator> defaultExport;
+    private CdmApplicationAwareDefaultExport<StructureTreeOwlExportConfigurator> defaultExport;
 
     @SpringBeanByType
     private IClassificationService classificationService;
@@ -55,7 +55,7 @@ public class OwlExportTest  extends CdmTransactionalIntegrationTest{
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/BlankDataSet.xml")
     public void testEmptyData(){
         File destinationFolder = null;
-        OwlExportConfigurator config = OwlExportConfigurator.NewInstance(null, destinationFolder, createFeatureTree());
+        StructureTreeOwlExportConfigurator config = StructureTreeOwlExportConfigurator.NewInstance(null, destinationFolder, createFeatureTree());
         config.setTarget(TARGET.EXPORT_DATA);
         ExportResult result = defaultExport.invoke(config);
         System.out.println(result.createReport());

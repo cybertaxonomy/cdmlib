@@ -13,18 +13,20 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.io.common.XmlExportState;
 
 /**
- * @author a.mueller
- * @since 18.04.2011
+ *
+ * @author pplitzner
+ * @since May 2, 2019
+ *
  */
-public class OwlExportState extends XmlExportState<OwlExportConfigurator>{
+public class StructureTreeOwlExportState extends XmlExportState<StructureTreeOwlExportConfigurator>{
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(OwlExportState.class);
+    private static final Logger logger = Logger.getLogger(StructureTreeOwlExportState.class);
 
     /**
      * @param config
      */
-    public OwlExportState(OwlExportConfigurator config) {
+    public StructureTreeOwlExportState(StructureTreeOwlExportConfigurator config) {
         super(config);
     }
 

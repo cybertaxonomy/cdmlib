@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.model.term.Representation;
  *
  */
 @Component
-public class OwlExport extends CdmExportBase<OwlExportConfigurator, OwlExportState, IExportTransformer, File> {
+public class StructureTreeOwlExport extends CdmExportBase<StructureTreeOwlExportConfigurator, StructureTreeOwlExportState, IExportTransformer, File> {
 
     private static final long serialVersionUID = 3197379920692366008L;
 
@@ -52,12 +52,12 @@ public class OwlExport extends CdmExportBase<OwlExportConfigurator, OwlExportSta
     private Property propDescription;
 
     @Override
-    protected boolean doCheck(OwlExportState state) {
+    protected boolean doCheck(StructureTreeOwlExportState state) {
         return false;
     }
 
     @Override
-    protected void doInvoke(OwlExportState state) {
+    protected void doInvoke(StructureTreeOwlExportState state) {
 
         TransactionStatus txStatus = startTransaction(true);
 
@@ -138,7 +138,7 @@ public class OwlExport extends CdmExportBase<OwlExportConfigurator, OwlExportSta
     }
 
     @Override
-    protected boolean isIgnore(OwlExportState state) {
+    protected boolean isIgnore(StructureTreeOwlExportState state) {
         return false;
     }
 

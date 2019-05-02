@@ -24,16 +24,15 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.io.descriptive.owl.in.OwlImport;
-import eu.etaxonomy.cdm.io.descriptive.owl.in.OwlImportConfigurator;
-import eu.etaxonomy.cdm.io.descriptive.owl.in.OwlImportState;
+import eu.etaxonomy.cdm.io.descriptive.owl.in.StructureTreeOwlImportConfigurator;
+import eu.etaxonomy.cdm.io.descriptive.owl.in.StructureTreeOwlImportState;
+import eu.etaxonomy.cdm.io.descriptive.owl.in.StructureTreeOwlImport;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.FeatureNode;
@@ -50,10 +49,10 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @since Apr 24, 2019
  *
  */
-public class OwlImportTest extends CdmTransactionalIntegrationTest {
+public class StructureTreeOwlImportTest extends CdmTransactionalIntegrationTest {
 
     @SpringBeanByType
-    private OwlImport owlImport;
+    private StructureTreeOwlImport structureTreeImport;
 
     @SpringBeanByType
     private ITermService termService;
@@ -64,7 +63,7 @@ public class OwlImportTest extends CdmTransactionalIntegrationTest {
     @SpringBeanByType
     private IVocabularyService vocabularyService;
 
-    private OwlImportConfigurator configurator;
+    private StructureTreeOwlImportConfigurator configurator;
 
     private FeatureTree tree;
 
@@ -73,22 +72,19 @@ public class OwlImportTest extends CdmTransactionalIntegrationTest {
         URL url = this.getClass().getResource("/eu/etaxonomy/cdm/io/owl/in/test_structures.owl");
 		URI uri = url.toURI();
 		assertNotNull(url);
-		configurator = OwlImportConfigurator.NewInstance(uri);
+		configurator = StructureTreeOwlImportConfigurator.NewInstance(uri);
     }
 
     @Test
     public void testInit() {
-        assertNotNull("owlImport should not be null", owlImport);
+        assertNotNull("structureTreeImport should not be null", structureTreeImport);
     }
 
     @Test
-    @DataSets({
-        @DataSet(/*loadStrategy=CleanSweepInsertLoadStrategy.class,*/ value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
-    })
+    @DataSet(value="/eu/etaxonomy/cdm/database/BlankDataSet.xml")
     public void testDoInvoke() {
-        OwlImportState state = configurator.getNewState();
-        owlImport.doInvoke(state);
+        StructureTreeOwlImportState state = configurator.getNewState();
+        structureTreeImport.doInvoke(state);
         this.setComplete();
         this.endTransaction();
 

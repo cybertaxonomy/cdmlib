@@ -45,12 +45,12 @@ import eu.etaxonomy.cdm.persistence.dto.TermDto;
  * @since Apr 24, 2019
  *
  */
-@Component("owlImport")
-public class OwlImport extends CdmImportBase<OwlImportConfigurator, OwlImportState> {
+@Component("structureTreeOwlImport")
+public class StructureTreeOwlImport extends CdmImportBase<StructureTreeOwlImportConfigurator, StructureTreeOwlImportState> {
 
     private static final long serialVersionUID = -3659780404413458511L;
 
-    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(OwlImport.class);
+    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(StructureTreeOwlImport.class);
 
     private Property propHasSubStructure;
     private Property propHasRepresentation;
@@ -66,13 +66,13 @@ public class OwlImport extends CdmImportBase<OwlImportConfigurator, OwlImportSta
     private Property propDescription;
 
     @Override
-    protected boolean doCheck(OwlImportState state) {
+    protected boolean doCheck(StructureTreeOwlImportState state) {
         logger.warn("Checking not yet implemented for " + this.getClass().getSimpleName());
         return true;
     }
 
     @Override
-    public void doInvoke(OwlImportState state) {
+    public void doInvoke(StructureTreeOwlImportState state) {
         URI source = state.getConfig().getSource();
 
         Model model = ModelFactory.createDefaultModel();
@@ -109,7 +109,7 @@ public class OwlImport extends CdmImportBase<OwlImportConfigurator, OwlImportSta
         }
     }
 
-    private void createNode(FeatureNode parent, Statement nodeStatement, String treeLabel, Model model, OwlImportState state) {
+    private void createNode(FeatureNode parent, Statement nodeStatement, String treeLabel, Model model, StructureTreeOwlImportState state) {
         Resource nodeResource = model.createResource(nodeStatement.getObject().toString());
 
         TermType termType = TermType.getByKey(nodeResource.getProperty(propType).getString());
@@ -200,7 +200,7 @@ public class OwlImport extends CdmImportBase<OwlImportConfigurator, OwlImportSta
     }
 
     @Override
-    protected boolean isIgnore(OwlImportState state) {
+    protected boolean isIgnore(StructureTreeOwlImportState state) {
         return false;
     }
 
