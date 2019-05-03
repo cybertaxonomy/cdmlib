@@ -229,7 +229,8 @@ public class TermDto extends AbstractTermDto{
     }
 
     public static List<TermDto> termDtoListFrom(List<Object[]> results) {
-        Map<UUID, TermDto> dtoMap = new HashMap<>(results.size());
+        List<TermDto> dtos = new ArrayList<>(); // list to ensure order
+        Map<UUID, TermDto> dtoMap = new HashMap<>(results.size()); // map to handle multiple representations
         for (Object[] elements : results) {
             UUID uuid = (UUID)elements[0];
             if(dtoMap.containsKey(uuid)){
@@ -260,10 +261,12 @@ public class TermDto extends AbstractTermDto{
                         (String)elements[6],
                         vocRepresentations);
                 termDto.setUri((URI)elements[9]);
+
                 dtoMap.put(uuid, termDto);
+                dtos.add(termDto);
             }
         }
-        return new ArrayList<>(dtoMap.values());
+        return dtos;
     }
 
 }
