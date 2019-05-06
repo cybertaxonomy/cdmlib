@@ -74,6 +74,8 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
             "typeDesignations.typeName.$",
             "typeDesignations.citation",
             "typeDesignations.citation.authorship.$",
+            "typeDesignations.citation.inReference.authorship.$",
+            "typeDesignations.citation.inReference.inReference.authorship.$",
             "typeDesignations.annotations", // needed for AnnotatableEntity.clone() in DerivedUnitConverter.copyPropertiesTo
             "typeDesignations.markers", // needed for AnnotatableEntity.clone() in DerivedUnitConverter.copyPropertiesTo
             "typeDesignations.registrations", // DerivedUnitConverter.copyPropertiesTo(TARGET n)
@@ -97,7 +99,9 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
            "derivedFrom.type", // TODO remove?
            "derivedFrom.originals.derivationEvents", // important!!
            "specimenTypeDesignations.typifiedNames.typeDesignations", // important!!
-           "mediaSpecimen.sources.citation",
+           "mediaSpecimen.sources.citation.authorship.$",
+           "mediaSpecimen.sources.citation.inReference.authorship.$",
+           "mediaSpecimen.sources.citation.inReference.inReference.authorship.$",
            "collection.institute"// see CollectionCaptionGenerator
    });
 

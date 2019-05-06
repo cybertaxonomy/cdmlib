@@ -21,6 +21,7 @@ import java.util.UUID;
 import org.hibernate.criterion.Criterion;
 
 import eu.etaxonomy.cdm.api.service.config.NameDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.dto.TypeDesignationStatusFilter;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.DocumentSearchResult;
 import eu.etaxonomy.cdm.api.service.search.LuceneParseException;
@@ -40,14 +41,12 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
-import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
-import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
+import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
-import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 public interface INameService
         extends IIdentifiableEntityService<TaxonName> {
@@ -531,6 +530,17 @@ public interface INameService
      * @return
      */
     DeleteResult delete(TaxonName name, NameDeletionConfigurator config);
+
+    List<TypeDesignationStatusBase> getTypeDesignationStatusInUse();
+
+    /**
+     * Provides a collection of the TypeDesignationStatusBase terms which are in use.
+     * Terms having the same label are merged into one filter item.
+     *
+     * @param preferredLanguage
+     * @return
+     */
+    Collection<TypeDesignationStatusFilter> getTypeDesignationStatusFilterTerms(List<Language> preferredLanguages);
 
 
 }

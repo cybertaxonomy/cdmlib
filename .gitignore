@@ -49,3 +49,4 @@ cdmlib-services/src/test/resources/eu/etaxonomy/cdm/integrationTest.xml
 !cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/ggbn/.settings
 !cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/data/.settings
 !cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v35_36/.settings
+workbench.xmi

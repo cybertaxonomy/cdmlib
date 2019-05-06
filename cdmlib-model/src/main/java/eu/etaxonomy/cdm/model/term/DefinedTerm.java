@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.model.term;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.Entity;
@@ -79,6 +80,25 @@ public class DefinedTerm extends DefinedTermBase<DefinedTerm> implements Compara
 		}
 	}
 
+	   /**
+     * Creates a new empty {@link DefinedTerm} instance.
+     *
+     * @see #NewInstance(String, String, String)
+     */
+    public static DefinedTerm NewInstance(TermType termType) {
+        return new DefinedTerm(termType);
+    }
+
+	public static DefinedTerm NewInstance(TermType termType, Set<Representation> representations){
+	    DefinedTerm term = null;
+	    for (Representation representation : representations) {
+            if(term==null){
+                term = new DefinedTerm(termType);
+            }
+            term.addRepresentation(representation);
+        }
+	    return term;
+	}
 
 	public static DefinedTerm NewInstance(TermType termType, String description, String label, String labelAbbrev){
 		return new DefinedTerm(termType, description, label, labelAbbrev);
@@ -126,6 +146,10 @@ public class DefinedTerm extends DefinedTermBase<DefinedTerm> implements Compara
 	//for hibernate/javassist use only
 	@Deprecated
 	protected DefinedTerm(){super(TermType.Unknown);}
+
+	protected DefinedTerm(TermType termType){
+	    super(termType);
+	}
 
 	public DefinedTerm(TermType type, String description, String label, String labelAbbrev) {
 		super(type, description, label, labelAbbrev);

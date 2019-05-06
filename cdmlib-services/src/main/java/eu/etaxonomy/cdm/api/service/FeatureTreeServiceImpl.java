@@ -80,6 +80,10 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree,
     @Override
     public FeatureTree loadWithNodes(UUID uuid, List<String> propertyPaths, List<String> nodePaths) {
 
+        if(nodePaths==null){
+            nodePaths = new ArrayList<>();
+        }
+
         if(!nodePaths.contains("children")) {
             nodePaths.add("children");
         }

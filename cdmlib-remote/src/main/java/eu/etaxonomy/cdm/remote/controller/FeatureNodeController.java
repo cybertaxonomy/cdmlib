@@ -9,8 +9,6 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import eu.etaxonomy.cdm.api.service.IFeatureNodeService;
 import eu.etaxonomy.cdm.model.term.FeatureNode;
+import io.swagger.annotations.Api;
 
 /**
  * @author n.hoffmann
@@ -31,9 +30,6 @@ public class FeatureNodeController extends BaseController<FeatureNode, IFeatureN
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(FeatureNodeController.class);
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.controller.BaseController#setService(eu.etaxonomy.cdm.api.service.IService)
-     */
     @Override
     @Autowired
     public void setService(IFeatureNodeService service) {

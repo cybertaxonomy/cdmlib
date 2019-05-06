@@ -21,6 +21,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyService;
@@ -56,7 +57,10 @@ public class IkeyPlusImportTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(/*loadStrategy=CleanSweepInsertLoadStrategy.class, */value="/eu/etaxonomy/cdm/database/BlankDataSet.xml")
+    @DataSets({
+        @DataSet(/*loadStrategy=CleanSweepInsertLoadStrategy.class,*/ value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+    })
     public void testDoInvoke() {
 
     	UUID newKeyUuid = null;

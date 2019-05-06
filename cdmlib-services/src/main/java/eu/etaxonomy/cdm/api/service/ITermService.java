@@ -194,7 +194,7 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
      * @param lang
      * @return
      */
-    List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCache(List<TermVocabulary> vocs, Integer limit, String pattern,
+    List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCacheNamedArea(List<TermVocabulary> vocs, Integer limit, String pattern,
             Language lang);
 
     /**
@@ -236,6 +236,23 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
      */
     public TermDto addNewTerm(TermType termType, UUID parentUuid, boolean isKindOf);
 
+
+    /**
+     * Returns a collection of {@link TermDto}s that match the given search parameters.
+     * @param title  the term label that the terms have to match
+     * @param termType the termType that the terms have to match
+     * @return a collection of matching term DTOs
+     */
     public Collection<TermDto> findByTitleAsDto(String title, TermType termType);
+
+    /**
+     * Returns a collection of {@link TermDto}s that match the given search parameters.
+     * @param uri the {@link URI} that the terms have to match
+     * @param termLabel  the term label that the terms have to match
+     * @param termType the termType that the terms have to match
+     * @return a collection of matching term DTOs
+     */
+    public Collection<TermDto> findByUriAsDto(URI uri, String termLabel, TermType termType);
+
 
 }

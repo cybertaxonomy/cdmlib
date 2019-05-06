@@ -81,6 +81,20 @@ public interface IVocabularyService extends IIdentifiableEntityService<TermVocab
 	public Collection<TermDto> getTopLevelTerms(UUID vocabularyUuid);
 
 	/**
+     * Loads all terms for the given vocabulary
+     * @param vocabularyUuid the id of the vocabulary
+     * @return a collection of terms
+     */
+    public Collection<TermDto> getTerms(UUID vocabularyUuid);
+
+    /**
+     * Loads all terms for the given vocabularies
+     * @param vocabularyUuids the ids of the vocabularies
+     * @return a collection of terms
+     */
+    public Collection<TermDto> getTerms(List<UUID> vocabularyUuids);
+
+	/**
 	 * Initializes the complete term hierarchy consisting of {@link TermDto}s
 	 * for the given vocabulary
 	 * @param vocabularyUuid the UUID of the {@link TermVocabulary}

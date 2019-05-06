@@ -52,7 +52,6 @@ import io.swagger.annotations.Api;
  * @author a.kohlbecker
  * @since 24.03.2009
  */
-
 @Controller
 @Api("description")
 @RequestMapping(value = {"/description/{uuid}", "/description/{uuid_list}"})

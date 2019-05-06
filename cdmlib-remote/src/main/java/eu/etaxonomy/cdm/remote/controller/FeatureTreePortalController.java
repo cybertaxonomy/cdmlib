@@ -30,7 +30,6 @@ import io.swagger.annotations.Api;
 /**
  * @author a.kohlbecker
  * @since Jun 24, 2013
- *
  */
 @Controller
 @Api("portal_featureTree")

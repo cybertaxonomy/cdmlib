@@ -41,6 +41,6 @@ public enum TermDisplayEnum {
                 return termDisplay;
             }
         }
-        return null;
+        throw new IllegalArgumentException();
     }
 }

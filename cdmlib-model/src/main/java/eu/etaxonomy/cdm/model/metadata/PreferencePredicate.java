@@ -37,7 +37,7 @@ public enum PreferencePredicate implements IEnumTerm<PreferencePredicate>, IPref
     //vaadin + distribution editor
 	AvailableDistributionStatus(UUID.fromString("6721599e-686b-460e-9d57-cfd364f4b626"), "Available Distribution Status", "distribution.status.term", null),
 	AvailableDistributionAreaVocabularies(UUID.fromString("dd1f35d5-dbf3-426b-9ed3-8b5992cb2e27"), "Available Distribution Area Vocabularies", "distribution.area.voc", null),
-	AvailableDistributionPerAreaStatus(UUID.fromString("b2f0c066-d5a4-4a91-9e19-0e58ec2849aa"), "Available Distribution Status Per Area", "distribution.status.area.term", null),
+	AvailableDistributionPerAreaStatus(UUID.fromString("b2f0c066-d5a4-4a91-9e19-0e58ec2849aa"), "Available Distribution Status Per Area", "distribution.status.term.area", null),
 
 
     //common name area vocabularies

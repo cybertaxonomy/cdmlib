@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.format;
 
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -16,6 +17,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.reference.ReferenceType;
 
 /**
  * Creates truncated labels for references by applying ellypsis on the reference authors and title for inReferences an
@@ -123,8 +125,14 @@ public class ReferenceEllypsisFormatter extends AbstractEllypsisFormatter<Refere
             authorsEllipsed = preserveString(preserveString, authors, pattern, authorsEllipsed);
             applyAndSplit(edList, authors, authorsEllipsed);
         }
+
         if(!StringUtils.isEmpty(title)){
-            String titleEllipsed = stringEllypsis(title, maxCharsVisible, minNumOfWords);
+            // the titleCompensation helps in cases like journals and when the reference has not much additional information than a title.
+            int titleCompensation =
+                    (StringUtils.isEmpty(authors) ? 1 : 0)
+                    + (entity.getInReference() == null? 1 : 0)
+                    + (EnumSet.of(ReferenceType.Journal, ReferenceType.PrintSeries, ReferenceType.Proceedings).contains(entity.getType()) ? 2 : 0);
+            String titleEllipsed = stringEllypsis(title, maxCharsVisible * titleCompensation, minNumOfWords * titleCompensation);
             titleEllipsed = preserveString(preserveString, title, pattern, titleEllipsed);
             applyAndSplit(edList, title, titleEllipsed);
         }

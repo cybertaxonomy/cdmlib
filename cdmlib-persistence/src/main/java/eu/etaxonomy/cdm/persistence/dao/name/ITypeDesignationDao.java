@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.persistence.dao.name;
 import java.util.List;
 
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
+import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ISourcedEntityDao;
 
 /**
@@ -20,5 +21,9 @@ import eu.etaxonomy.cdm.persistence.dao.common.ISourcedEntityDao;
 public interface ITypeDesignationDao extends ISourcedEntityDao<TypeDesignationBase<?>> {
 
 	public List<TypeDesignationBase<?>> getAllTypeDesignations(Integer limit, Integer start);
+
+
+    public List<TypeDesignationStatusBase> getTypeDesignationStatusInUse();
+
 
 }

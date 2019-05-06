@@ -457,8 +457,8 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 
     @Override
     @Transactional(readOnly = true)
-    public List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCache(List<TermVocabulary> vocs, Integer limit, String pattern, Language lang) {
-        List<NamedArea> areas = dao.getUuidAndTitleCache(vocs, limit, pattern);
+    public List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCacheNamedArea(List<TermVocabulary> vocs, Integer limit, String pattern, Language lang) {
+        List<NamedArea> areas = dao.listNamedArea(vocs, limit, pattern);
 
         List<UuidAndTitleCache<NamedArea>> result = new ArrayList();
         UuidAndTitleCache<NamedArea> uuidAndTitleCache;
@@ -595,6 +595,11 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
     @Override
     public Collection<TermDto> findByTitleAsDto(String title, TermType termType){
         return dao.findByTitleAsDto(title, termType);
+    }
+
+    @Override
+    public Collection<TermDto> findByUriAsDto(URI uri, String termLabel, TermType termType){
+        return dao.findByUriAsDto(uri, termLabel, termType);
     }
 
     public enum TermMovePosition{

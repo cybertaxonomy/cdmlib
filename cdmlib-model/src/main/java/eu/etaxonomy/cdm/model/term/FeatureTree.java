@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.model.term;
 
-import java.rmi.UnexpectedException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -258,13 +257,8 @@ public class FeatureTree <T extends DefinedTermBase>
 	 */
 	@Transient
 	public Set<T> getDistinctFeatures(){
-	    if(termType.equals(TermType.Feature) || termType.isKindOf(TermType.Feature)){
-	        Set<T> features = new HashSet<>();
-	        return root.getDistinctFeaturesRecursive(features);
-	    }
-	    String message = "FeatureTree is not of type FEATURE.";
-	    logger.warn(message, new UnexpectedException(message));
-	    return new HashSet<>();
+	    Set<T> features = new HashSet<>();
+	    return root.getDistinctFeaturesRecursive(features);
 	}
 
 //*********************** CLONE ********************************************************/

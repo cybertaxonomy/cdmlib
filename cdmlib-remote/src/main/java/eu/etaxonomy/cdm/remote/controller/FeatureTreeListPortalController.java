@@ -8,13 +8,13 @@
 */
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-
 import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import io.swagger.annotations.Api;
 
 /**
  * @author a.kohlbecker
@@ -29,8 +29,8 @@ public class FeatureTreeListPortalController extends FeatureTreeListController {
     private static final List<String> FEATURETREE_INIT_STRATEGY = Arrays.asList(
             new String[]{
                 "representations",
-                "root.feature.representations",
-                "root.childNodes.feature.representations"
+                "root.term.representations",
+                "root.childNodes.term.representations"
             });
 
     public FeatureTreeListPortalController() {

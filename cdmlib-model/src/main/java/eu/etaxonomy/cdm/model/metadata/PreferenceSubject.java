@@ -60,7 +60,7 @@ public class PreferenceSubject {
     public static PreferenceSubject NewInstance(PreferenceSubjectEnum subject){
         return new PreferenceSubject(ROOT +  subject.getKey() + SEP);
     }
-    protected static PreferenceSubject NewInstance(String subjectString){
+    public static PreferenceSubject NewInstance(String subjectString){
         return new PreferenceSubject(subjectString);
     }
 

@@ -61,6 +61,11 @@ public final class CdmPreference implements Serializable {
         return new CdmPreference(subject, predicate, value);
     }
 
+    public static final CdmPreference NewInstance(PrefKey key, String value){
+        return new CdmPreference(key.subject, key.predicate, value);
+    }
+
+
 
     public static final CdmPreference NewInstance(PreferenceSubject subject, IPreferencePredicate<?> predicate, List<UUID> value){
         return new CdmPreference(subject, predicate, uuidListStr(value));
@@ -162,7 +167,8 @@ public final class CdmPreference implements Serializable {
                 throw new IllegalArgumentException("Predicate must not be longer then 255 for preference");
             }
             if (!(subject.matches(PreferenceSubject.ROOT + "(([A-Za-z]+(\\[.*\\])?|"+PreferenceSubject.VAADIN+")"+PreferenceSubject.SEP+")*")
-                    || subject.matches(PreferenceSubject.ROOT + "(([A-Za-z]+(\\[.*\\])?|"+PreferenceSubject.TAX_EDITOR+")"+PreferenceSubject.SEP+")*"))){
+                    || subject.matches(PreferenceSubject.ROOT + "(([A-Za-z]+(\\[.*\\])?|"+PreferenceSubject.TAX_EDITOR+")"+PreferenceSubject.SEP+")*")
+                    )){
                 throw new IllegalArgumentException("Subject does not follow the required syntax");
             }
 
@@ -214,25 +220,9 @@ public final class CdmPreference implements Serializable {
 
 	private CdmPreference(PreferenceSubject subject, IPreferencePredicate<?> predicate, String value){
 		this.key = new PrefKey(subject, predicate);
-		//TODO are null values allowed?		assert predicate != null : "value must not be null for preference";
-		if (value != null && value.length() > 1023) {throw new IllegalArgumentException(
-				String.format("value must not be longer then 1023 characters for preference. Value = %s", value));
-		}
+		checkValue(value);
 		this.value = value;
 	}
-
-
-    /**
-     * @param value
-     * @return
-     */
-    protected static String uuidListStr(List<UUID> value) {
-        String valueStr = "";
-        for (UUID uuid : value){
-            valueStr = CdmUtils.concat(",",valueStr, uuid.toString());
-        }
-        return valueStr;
-    }
 
 
 	/**
@@ -243,13 +233,21 @@ public final class CdmPreference implements Serializable {
 	 */
 	public CdmPreference(String subject, String predicate, String value){
 		this.key = new PrefKey(subject, predicate);
-		//TODO are null values allowed?		assert predicate != null : "value must not be null for preference";
-		if (value != null && value.length() > VALUE_LENGTH) {throw new IllegalArgumentException(
-			String.format("value must not be longer then "+VALUE_LENGTH+" characters for preference. Value = %s", value));
-		}
+		checkValue(value);
 		this.value = value;
 
 	}
+
+    /**
+     * @param value
+     */
+    private void checkValue(String value) {
+        //TODO are null values allowed?     assert predicate != null : "value must not be null for preference";
+        if (value != null && value.length() > VALUE_LENGTH -1 ) {
+		    throw new IllegalArgumentException(
+		            String.format("Preference value must not be longer then "+VALUE_LENGTH+" characters for preference. Value = %s", value));
+		}
+    }
 
 //************************ GETTER / SETTER ***************************/
 
@@ -310,6 +308,20 @@ public final class CdmPreference implements Serializable {
             }
 	    }
 	    return result;
+    }
+
+
+
+    /**
+     * @param value
+     * @return
+     */
+    protected static String uuidListStr(List<UUID> value) {
+        String valueStr = "";
+        for (UUID uuid : value){
+            valueStr = CdmUtils.concat(",",valueStr, uuid.toString());
+        }
+        return valueStr;
     }
 
 
