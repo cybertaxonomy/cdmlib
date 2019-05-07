@@ -353,6 +353,8 @@ public class BerlinModelTransformer {
 
 	//languages
 	public static final UUID uuidLangMajorcan = UUID.fromString("82d696d7-cb4e-49de-ac89-63a0e12ca766");
+    public static final UUID uuidLangHighAragonese = UUID.fromString("c6e3f012-1b72-4b9a-a401-5ebe3aea4e0a");
+    public static final UUID uuidLangValencian = UUID.fromString("a926ecb9-3e43-48ad-b5a3-11e7a8609a75");
 
 	//REFERENCES
 	public static int REF_ARTICLE = 1;
