@@ -127,11 +127,21 @@ public class CdmPreferenceTest {
         }
 
         try {
+            subject2 = "/NamedArea[111bdf38-7a32-440a-9808-8af1c9e54b51]/";
+            prefs = new CdmPreference(subject2, predicate, value);
+            Assert.assertEquals(subject2, prefs.getSubjectString());
+            Assert.assertEquals(predicate, prefs.getPredicate());
+            Assert.assertEquals(value, prefs.getValue());
+        } catch (Exception e) {
+            Assert.fail();
+        }
+
+        try {
             subject2 = "/Taxon3Node[#t1#18681#6392#5358#9#2#]";
             prefs = new CdmPreference(subject2, predicate, value);
             Assert.fail("Syntax for " + subject2 + " should fail");
         } catch (Exception e) {
-            //ok
+           //ok
         }
 
         try {

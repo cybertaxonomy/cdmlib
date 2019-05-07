@@ -13,7 +13,7 @@ package eu.etaxonomy.cdm.model.metadata;
  * @since 09.01.2019
  *
  */
-public enum TermDisplayEnum {
+public enum TermDisplayEnum implements IKeyLabel{
     IdInVocabulary("IdInVocabulary", "ID in Vocabulary"),
     Symbol1("Symbol1", "Symbol 1"),
     Symbol2("Symbol2", "Symbol 2"),
@@ -27,10 +27,12 @@ public enum TermDisplayEnum {
         this.key = key;
     }
 
+    @Override
     public String getLabel(){
         return label;
     }
 
+    @Override
     public String getKey(){
         return key;
     }
