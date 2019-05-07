@@ -37,7 +37,6 @@ import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.description.Distribution;
-import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -49,12 +48,9 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
-import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.FeatureNode;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
 import eu.etaxonomy.cdm.model.term.init.TermNotFoundException;
 
 public class Datasource {
@@ -217,42 +213,42 @@ public class Datasource {
 
 	}
 
-	private void insertSomeData(CdmApplicationController appCtr) {
-		Classification cl = Classification.NewInstance("myClass");
-		TaxonNode node1 = cl.addChildTaxon(Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(null), null), null, null);
-		appCtr.getClassificationService().save(cl);
-
-		Taxon t2 = Taxon.NewInstance(null, null);
-		t2.setTitleCache("Taxon2", true);
-		TaxonNode node2 = node1.addChildTaxon(t2, null, null);
-
-		Taxon t3 = Taxon.NewInstance(null, null);
-		t3.setTitleCache("Taxon3", true);
-		TaxonNode node3 = node1.addChildTaxon(t3, 0, null, null);
-
-		appCtr.getTaxonNodeService().saveOrUpdate(node1);
-
-		cl.addChildNode(node3, 0, null, null);
-		appCtr.getTaxonNodeService().saveOrUpdate(node3);
-		appCtr.getClassificationService().saveOrUpdate(cl);
-
-		FeatureTree ft1 = FeatureTree.NewInstance();
-		FeatureNode fn1 = FeatureNode.NewInstance((Feature)null);
-		ft1.getRoot().addChild(fn1);
-		appCtr.getFeatureNodeService().save(fn1);
-
-		FeatureNode fn2 = FeatureNode.NewInstance((Feature)null);
-		fn1.addChild(fn2);
-
-		FeatureNode fn3 = FeatureNode.NewInstance((Feature)null);
-		fn1.addChild(fn2, 0);
-
-		appCtr.getFeatureNodeService().saveOrUpdate(fn1);
-
-		ft1.getRoot().addChild(fn3, 0);
-		appCtr.getFeatureNodeService().saveOrUpdate(fn3);
-		appCtr.getFeatureTreeService().saveOrUpdate(ft1);
-	}
+//	private void insertSomeData(CdmApplicationController appCtr) {
+//		Classification cl = Classification.NewInstance("myClass");
+//		TaxonNode node1 = cl.addChildTaxon(Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(null), null), null, null);
+//		appCtr.getClassificationService().save(cl);
+//
+//		Taxon t2 = Taxon.NewInstance(null, null);
+//		t2.setTitleCache("Taxon2", true);
+//		TaxonNode node2 = node1.addChildTaxon(t2, null, null);
+//
+//		Taxon t3 = Taxon.NewInstance(null, null);
+//		t3.setTitleCache("Taxon3", true);
+//		TaxonNode node3 = node1.addChildTaxon(t3, 0, null, null);
+//
+//		appCtr.getTaxonNodeService().saveOrUpdate(node1);
+//
+//		cl.addChildNode(node3, 0, null, null);
+//		appCtr.getTaxonNodeService().saveOrUpdate(node3);
+//		appCtr.getClassificationService().saveOrUpdate(cl);
+//
+//		FeatureTree ft1 = FeatureTree.NewInstance();
+//		FeatureNode fn1 = FeatureNode.NewInstance((Feature)null);
+//		ft1.getRoot().addChild(fn1);
+//		appCtr.getFeatureNodeService().save(fn1);
+//
+//		FeatureNode fn2 = FeatureNode.NewInstance((Feature)null);
+//		fn1.addChild(fn2);
+//
+//		FeatureNode fn3 = FeatureNode.NewInstance((Feature)null);
+//		fn1.addChild(fn2, 0);
+//
+//		appCtr.getFeatureNodeService().saveOrUpdate(fn1);
+//
+//		ft1.getRoot().addChild(fn3, 0);
+//		appCtr.getFeatureNodeService().saveOrUpdate(fn3);
+//		appCtr.getFeatureTreeService().saveOrUpdate(ft1);
+//	}
 
 	private void testDatabaseChange() throws DataSourceNotFoundException{
 		CdmApplicationController appCtr;

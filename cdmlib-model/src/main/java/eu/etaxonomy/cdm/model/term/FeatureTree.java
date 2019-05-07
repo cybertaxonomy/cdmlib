@@ -170,9 +170,7 @@ public class FeatureTree <T extends DefinedTermBase>
 		FeatureNode<Feature> root = result.getRoot();
 
 		for (Feature feature : featureList){
-			FeatureNode<Feature> child = FeatureNode.NewInstance(TermType.Feature);
-			child.setTerm(feature);
-			root.addChild(child);
+			root.addChild(feature);
 		}
 
 		return result;
@@ -192,7 +190,7 @@ public class FeatureTree <T extends DefinedTermBase>
 	protected FeatureTree(TermType termType) {
         this.termType = termType;
         checkTermType(this);  //check not null
-		root = FeatureNode.NewInstance(termType);
+		root = new FeatureNode<>(termType);
 		root.setFeatureTree(this);
 	}
 

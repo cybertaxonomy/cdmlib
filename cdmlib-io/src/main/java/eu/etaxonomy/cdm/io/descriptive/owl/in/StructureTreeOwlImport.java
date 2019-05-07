@@ -171,8 +171,7 @@ public class StructureTreeOwlImport extends CdmImportBase<StructureTreeOwlImport
             getVocabularyService().saveOrUpdate(vocabulary);
         }
 
-        FeatureNode<?> childNode = FeatureNode.NewInstance(term);
-        parent.addChild(childNode);
+        FeatureNode<?> childNode = parent.addChild(term);
 
         nodeResource.listProperties(propHasSubStructure).forEachRemaining(prop->createNode(childNode, prop, treeLabel, model, state));
     }

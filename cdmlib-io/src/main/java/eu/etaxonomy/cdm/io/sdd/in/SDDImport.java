@@ -1798,10 +1798,6 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 					if (elDescriptiveConcept != null){
 						String refDC = elDescriptiveConcept.getAttributeValue("ref");
 						dc = features.get(refDC);
-						fn = FeatureNode.NewInstance(dc);
-					}
-					if (fn==null){
-						fn = FeatureNode.NewInstance();
 					}
 					Element elParent = elNode.getChild("Parent", sddNamespace);
 					// in SDD links between Nodes are referenced by the <Parent> tag
@@ -1810,15 +1806,17 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 						if (refP!=null) {
 							FeatureNode<Feature> parent = featureNodes.get(refP);
 							if (parent==null){
-								root.addChild(fn); // if no parent found or the reference is broken, add the node to the root of the tree
+							    // if no parent found or the reference is broken, add the node to the root of the tree
+							    fn = (dc==null)?root.addChild():root.addChild(dc);
 							}
 							else {
-								parent.addChild(fn);
+                                fn = (dc==null)?parent.addChild():parent.addChild(dc);
 							}
 						}
 					}
 					else {
-						root.addChild(fn); // if no parent found or the reference is broken, add the node to the root of the tree
+					    // if no parent found or the reference is broken, add the node to the root of the tree
+                        fn = (dc==null)?root.addChild():root.addChild(dc);
 					}
 				}
 				featureNodes.put(idN, fn);

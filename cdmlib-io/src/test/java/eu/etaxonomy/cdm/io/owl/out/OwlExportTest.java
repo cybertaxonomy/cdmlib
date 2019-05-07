@@ -69,19 +69,12 @@ public class OwlExportTest  extends CdmTransactionalIntegrationTest{
     public FeatureTree createFeatureTree() {
         FeatureTree tree = FeatureTree.NewInstance();
 
-        FeatureNode nodeA = FeatureNode.NewInstance(Feature.NewInstance("A", "A", "A"));
-        FeatureNode nodeA1 = FeatureNode.NewInstance(Feature.NewInstance("A1", "A1", "A1"));
-        FeatureNode nodeA2 = FeatureNode.NewInstance(Feature.NewInstance("A2", "A2", "A2"));
-        FeatureNode nodeB = FeatureNode.NewInstance(Feature.NewInstance("B", "B", "B"));
-        FeatureNode nodeB1 = FeatureNode.NewInstance(Feature.NewInstance("B", "B1", "B1"));
-        FeatureNode nodeC = FeatureNode.NewInstance(Feature.NewInstance("C", "C", "C"));
-
-        tree.getRoot().addChild(nodeA);
-        nodeA.addChild(nodeA1);
-        nodeA.addChild(nodeA2);
-        tree.getRoot().addChild(nodeB);
-        nodeB.addChild(nodeB1);
-        tree.getRoot().addChild(nodeC);
+        FeatureNode nodeA = tree.getRoot().addChild(Feature.NewInstance("A", "A", "A"));
+        FeatureNode nodeA1 = nodeA.addChild(Feature.NewInstance("A1", "A1", "A1"));
+        FeatureNode nodeA2 = nodeA.addChild(Feature.NewInstance("A2", "A2", "A2"));
+        FeatureNode nodeB = tree.getRoot().addChild(Feature.NewInstance("B", "B", "B"));
+        FeatureNode nodeB1 = nodeB.addChild(Feature.NewInstance("B", "B1", "B1"));
+        FeatureNode nodeC = tree.getRoot().addChild(Feature.NewInstance("C", "C", "C"));
         return tree;
     }
 

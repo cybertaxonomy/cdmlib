@@ -13,9 +13,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
-import eu.etaxonomy.cdm.model.term.FeatureNode;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
 
 public class FeatureTreeTest {
 	@SuppressWarnings("unused")
@@ -40,17 +37,10 @@ public class FeatureTreeTest {
 	public void setUp() throws Exception {
 		testTree = FeatureTree.NewInstance();
 
-		node1 = FeatureNode.NewInstance(Feature.ANATOMY());
-		node2 = FeatureNode.NewInstance(Feature.BIOLOGY_ECOLOGY());
-		node3 = FeatureNode.NewInstance(Feature.DESCRIPTION());
-		node4 = FeatureNode.NewInstance(Feature.DISCUSSION());
-
-		testTree.getRoot().addChild(node1);
-		node1.addChild(node2);
-		node2.addChild(node3);
-		node3.addChild(node4);
-
-
+		node1 = testTree.getRoot().addChild(Feature.ANATOMY());
+		node2 = node1.addChild(Feature.BIOLOGY_ECOLOGY());
+		node3 = node2.addChild(Feature.DESCRIPTION());
+		node4 = node3.addChild(Feature.DISCUSSION());
 
 	}
 //	@Test
@@ -61,9 +51,7 @@ public class FeatureTreeTest {
 //	}
 	@Test
 	public void testAddChild(){
-		FeatureNode node21 = FeatureNode.NewInstance();
-		node21.setTerm(Feature.ANATOMY());
-		node1.addChild(node21, 1);
+		FeatureNode node21 = node1.addChild(Feature.ANATOMY(), 1);
 
 		assertEquals(node1.getChildNodes().size(), 2);
 		assertEquals(node1.getChildNodes().get(1), node21);
@@ -75,9 +63,7 @@ public class FeatureTreeTest {
 	}
 	@Test
 	public void testClone(){
-		FeatureNode node21 = FeatureNode.NewInstance();
-		node21.setTerm(Feature.ADDITIONAL_PUBLICATION());
-		node1.addChild(node21, 1);
+		FeatureNode node21 = node1.addChild(Feature.ADDITIONAL_PUBLICATION(), 1);
 		FeatureTree clone = (FeatureTree) testTree.clone();
 		assertEquals (clone.getRoot().getTerm(), testTree.getRoot().getTerm());
 		assertNotSame(clone.getRoot(), testTree.getRoot());

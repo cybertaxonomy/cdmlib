@@ -335,7 +335,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         }
 
         for (Feature feature:featuresMap.values()) {
-            root2.addChild(FeatureNode.NewInstance(feature));
+            root2.addChild(feature);
         }
         importer.getFeatureTreeService().saveOrUpdate(proibiospheretree);
 
