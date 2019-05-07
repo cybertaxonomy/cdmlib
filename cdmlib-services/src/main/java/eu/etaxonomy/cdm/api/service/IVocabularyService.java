@@ -97,12 +97,12 @@ public interface IVocabularyService extends IIdentifiableEntityService<TermVocab
 	/**
 	 * Initializes the complete term hierarchy consisting of {@link TermDto}s
 	 * for the given vocabulary
-	 * @param vocabularyUuid the UUID of the {@link TermVocabulary}
+	 * @param vocabularyDto the dto of the term vocabulary
 	 * @return a the top level elements for this vocabulary
 	 */
+	public Collection<TermDto> getCompleteTermHierarchy(TermVocabularyDto vocabularyDto);
 
-	public Collection<TermDto> getCompleteTermHierarchy(UUID vocabularyUuid);
-    /**
+	/**
      * Returns term vocabularies that contain terms of a certain {@link TermType} e.g. Feature, Modifier, State.
      *
      * @param termType the {@link TermType} of the terms in the vocabulary and of the vocabulary

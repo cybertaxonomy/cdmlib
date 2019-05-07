@@ -109,9 +109,10 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
     }
 
     @Override
-    public Collection<TermDto> getCompleteTermHierarchy(UUID vocabularyUuid) {
-        Collection<TermDto> topLevelTerms = dao.getTopLevelTerms(vocabularyUuid);
+    public Collection<TermDto> getCompleteTermHierarchy(TermVocabularyDto vocabularyDto) {
+        Collection<TermDto> topLevelTerms = dao.getTopLevelTerms(vocabularyDto.getUuid());
         for (TermDto termDto : topLevelTerms) {
+            termDto.setVocabularyDto(vocabularyDto);
             initializeIncludes(termDto);
             initializeGeneralizationOf(termDto);
         }
@@ -122,6 +123,7 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
         Collection<TermDto> generalizationOf = termService.getKindOfsAsDto(parentTerm);
         parentTerm.setGeneralizationOf(generalizationOf);
         generalizationOf.forEach(generalization->{
+            generalization.setVocabularyDto(parentTerm.getVocabularyDto());
             generalization.setKindOfDto(parentTerm);
             initializeGeneralizationOf(generalization);
         });
@@ -131,6 +133,7 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
         Collection<TermDto> includes = termService.getIncludesAsDto(parentTerm);
         parentTerm.setIncludes(includes);
         includes.forEach(include->{
+            include.setVocabularyDto(parentTerm.getVocabularyDto());
             initializeIncludes(include);
             include.setPartOfDto(parentTerm);
         });
