@@ -31,7 +31,6 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
 import eu.etaxonomy.cdm.api.service.molecular.ISequenceService;
-import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -1155,11 +1154,11 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 
 
 
-        Pager<DerivedUnit> findByAccessionNumber = occurrenceService.findByAccessionNumber("ACC_DNA", 10, 1, null, null);
+        DerivedUnit findByAccessionNumber = occurrenceService.findByAccessionNumber("ACC_DNA",  null, null);
 
-        assertEquals(1, findByAccessionNumber.getRecords().size());
+        assertNotNull(findByAccessionNumber);
        // assertTrue(findByAccessionNumber.contains(derivedUnit1));
-        assertTrue(findByAccessionNumber.getRecords().contains(dnaSampleWithSequence));
+        assertTrue(findByAccessionNumber.equals(dnaSampleWithSequence));
 
 
     }

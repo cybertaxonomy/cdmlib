@@ -63,6 +63,7 @@ public class OccurrencePortalController extends OccurrenceController
             "specimenTypeDesignations.*",
             "specimenTypeDesignations.citation.*",
             "specimenTypeDesignations.homotypicalGroup.*",
+            "specimenTypeDesignations.typifiedNames",
             "sequences.$",
             "sequences.annotations",
             "markers.markerType",
