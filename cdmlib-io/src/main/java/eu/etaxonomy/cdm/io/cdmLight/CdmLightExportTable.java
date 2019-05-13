@@ -35,6 +35,7 @@ public enum CdmLightExportTable {
     IDENTIFIER("Identifier", identifierColumns()),
     MEDIA("Media", mediaColumns()),
     NAME_FACT("NameFact", nameFactColumns())
+
     ;
 
     //Taxon/Synonym
@@ -226,6 +227,18 @@ public enum CdmLightExportTable {
 
 
 
+    /**
+     * @return
+     */
+    private Object usageFactColumns() {
+        return new String[]{FACT_ID, TAXON_FK, FACT_TEXT, LANGUAGE, MEDIA_URI, FACT_CATEGORY};
+    }
+
+
+
+
+
+
     final static String[] nameFactColumns() {
         return new String[]{FACT_ID, NAME_FK, FACT_TEXT, LANGUAGE, MEDIA_URI, FACT_CATEGORY};
     }
@@ -295,7 +308,7 @@ public enum CdmLightExportTable {
     }
     final static String[] synonymColumns(){
         return new String[]{SYNONYM_ID, TAXON_FK, NAME_FK, SYN_SEC_REFERENCE_FK, SYN_SEC_REFERENCE, SEC_REFERENCE_FK, SEC_REFERENCE,
-                IS_PRO_PARTE, IS_PARTIAL, IS_MISAPPLIED};
+                IS_PRO_PARTE, IS_PARTIAL, IS_MISAPPLIED, PUBLISHED};
     }
     final static String[] referenceColumns(){
         return new String[]{REFERENCE_ID, BIBLIO_SHORT_CITATION, REF_TITLE,ABBREV_REF_TITLE, DATE_PUBLISHED, EDITION, EDITOR, ISBN,ISSN, ORGANISATION, PAGES, PLACE_PUBLISHED, PUBLISHER,
