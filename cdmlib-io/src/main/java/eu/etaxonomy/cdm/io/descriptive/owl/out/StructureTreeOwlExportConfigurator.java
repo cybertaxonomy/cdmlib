@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.io.descriptive.owl.out;
 
 import java.io.File;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -31,29 +32,23 @@ public class StructureTreeOwlExportConfigurator extends XmlExportConfiguratorBas
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(StructureTreeOwlExportConfigurator.class);
 
-    private FeatureTree featureTree;
+    private List<FeatureTree> featureTrees;
 
 
-    private StructureTreeOwlExportConfigurator(ICdmDataSource source, File destinationFolder, FeatureTree featureTree) {
+    private StructureTreeOwlExportConfigurator(ICdmDataSource source, File destinationFolder, List<FeatureTree> featureTrees) {
         super(destinationFolder, source, null);
-        this.featureTree = featureTree;
+        this.featureTrees = featureTrees;
     }
 
-    public static StructureTreeOwlExportConfigurator NewInstance(ICdmDataSource source, File destinationFolder, FeatureTree featureTree) {
-        return new StructureTreeOwlExportConfigurator(source, destinationFolder, featureTree);
+    public static StructureTreeOwlExportConfigurator NewInstance(ICdmDataSource source, File destinationFolder, List<FeatureTree> featureTrees) {
+        return new StructureTreeOwlExportConfigurator(source, destinationFolder, featureTrees);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public StructureTreeOwlExportState getNewState() {
         return new StructureTreeOwlExportState(this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void makeIoClassList() {
         ioClassList = new Class[] {
@@ -61,8 +56,8 @@ public class StructureTreeOwlExportConfigurator extends XmlExportConfiguratorBas
         };
     }
 
-    public FeatureTree getFeatureTree() {
-        return featureTree;
+    public List<FeatureTree> getFeatureTrees() {
+        return featureTrees;
     }
 
 }

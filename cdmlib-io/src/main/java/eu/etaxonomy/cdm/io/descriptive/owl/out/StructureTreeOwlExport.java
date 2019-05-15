@@ -58,14 +58,9 @@ public class StructureTreeOwlExport extends CdmExportBase<StructureTreeOwlExport
 
     @Override
     protected void doInvoke(StructureTreeOwlExportState state) {
-
         TransactionStatus txStatus = startTransaction(true);
 
-        FeatureTree featureTree = state.getConfig().getFeatureTree();
-        featureTree = getFeatureTreeService().load(featureTree.getUuid());
-
-        FeatureNode rootNode = featureTree.getRoot();
-
+        // create model properties
         Model model = ModelFactory.createDefaultModel();
         propHasSubStructure = model.createProperty(OwlConstants.PROPERTY_HAS_SUBSTRUCTURE);
         propHasRepresentation = model.createProperty(OwlConstants.PROPERTY_HAS_REPRESENTATION);
@@ -79,6 +74,22 @@ public class StructureTreeOwlExport extends CdmExportBase<StructureTreeOwlExport
         propIsA = model.createProperty(OwlConstants.PROPERTY_IS_A);
         propType = model.createProperty(OwlConstants.PROPERTY_TYPE);
         propDescription = model.createProperty(OwlConstants.PROPERTY_DESCRIPTION);
+
+        // export feature trees
+        state.getConfig().getFeatureTrees().forEach(tree->exportTree(tree, model, state));
+
+        // write export data to file
+        exportStream = new ByteArrayOutputStream();
+        model.write(exportStream);
+        state.getResult().addExportData(getByteArray());
+
+        commitTransaction(txStatus);
+    }
+
+    private void exportTree(FeatureTree featureTree, Model model, StructureTreeOwlExportState state){
+        featureTree = getFeatureTreeService().load(featureTree.getUuid());
+
+        FeatureNode rootNode = featureTree.getRoot();
 
         Resource resourceRootNode = model.createResource(OwlConstants.RESOURCE_NODE + rootNode.getUuid().toString())
                 .addProperty(propIsA, OwlConstants.NODE)
@@ -95,12 +106,6 @@ public class StructureTreeOwlExport extends CdmExportBase<StructureTreeOwlExport
                 ;
 
         addChildNode(rootNode, resourceRootNode, model);
-
-        exportStream = new ByteArrayOutputStream();
-        model.write(exportStream);
-        state.getResult().addExportData(getByteArray());
-
-        commitTransaction(txStatus);
     }
 
     private void addChildNode(FeatureNode node, Resource resourceNode, Model model){

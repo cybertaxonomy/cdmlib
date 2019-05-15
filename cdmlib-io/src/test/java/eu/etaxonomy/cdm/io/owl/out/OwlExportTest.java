@@ -10,6 +10,8 @@ package eu.etaxonomy.cdm.io.owl.out;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -62,11 +64,7 @@ public class OwlExportTest  extends CdmTransactionalIntegrationTest{
         ExportDataWrapper<?> exportData = result.getExportData();
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
-    public FeatureTree createFeatureTree() {
+    public List<FeatureTree> createFeatureTree() {
         FeatureTree tree = FeatureTree.NewInstance();
 
         FeatureNode nodeA = tree.getRoot().addChild(Feature.NewInstance("A", "A", "A"));
@@ -75,7 +73,7 @@ public class OwlExportTest  extends CdmTransactionalIntegrationTest{
         FeatureNode nodeB = tree.getRoot().addChild(Feature.NewInstance("B", "B", "B"));
         FeatureNode nodeB1 = nodeB.addChild(Feature.NewInstance("B", "B1", "B1"));
         FeatureNode nodeC = tree.getRoot().addChild(Feature.NewInstance("C", "C", "C"));
-        return tree;
+        return Collections.singletonList(tree);
     }
 
     @Override

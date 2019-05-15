@@ -23,9 +23,6 @@ public class StructureTreeOwlExportState extends XmlExportState<StructureTreeOwl
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(StructureTreeOwlExportState.class);
 
-    /**
-     * @param config
-     */
     public StructureTreeOwlExportState(StructureTreeOwlExportConfigurator config) {
         super(config);
     }
