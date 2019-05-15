@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.io.descriptive.owl.out;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -27,6 +28,8 @@ import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.FeatureNode;
 import eu.etaxonomy.cdm.model.term.FeatureTree;
 import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermBase;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
  * @author pplitzner
@@ -40,6 +43,7 @@ public class StructureTreeOwlExport extends CdmExportBase<StructureTreeOwlExport
 
     private Property propHasSubStructure;
     private Property propHasRepresentation;
+    private Property propHasVocabulary;
     private Property propHasRootNode;
     private Property propUuid;
     private Property propUri;
@@ -64,6 +68,7 @@ public class StructureTreeOwlExport extends CdmExportBase<StructureTreeOwlExport
         Model model = ModelFactory.createDefaultModel();
         propHasSubStructure = model.createProperty(OwlConstants.PROPERTY_HAS_SUBSTRUCTURE);
         propHasRepresentation = model.createProperty(OwlConstants.PROPERTY_HAS_REPRESENTATION);
+        propHasVocabulary = model.createProperty(OwlConstants.PROPERTY_HAS_VOCABULARY);
         propHasRootNode = model.createProperty(OwlConstants.PROPERTY_HAS_ROOT_NODE);
         propUuid = model.createProperty(OwlConstants.PROPERTY_UUID);
         propUri = model.createProperty(OwlConstants.PROPERTY_URI);
@@ -76,7 +81,7 @@ public class StructureTreeOwlExport extends CdmExportBase<StructureTreeOwlExport
         propDescription = model.createProperty(OwlConstants.PROPERTY_DESCRIPTION);
 
         // export feature trees
-        state.getConfig().getFeatureTrees().forEach(tree->exportTree(tree, model, state));
+        state.getConfig().getFeatureTrees().forEach(tree->exportTree(tree, model));
 
         // write export data to file
         exportStream = new ByteArrayOutputStream();
@@ -86,8 +91,7 @@ public class StructureTreeOwlExport extends CdmExportBase<StructureTreeOwlExport
         commitTransaction(txStatus);
     }
 
-    private void exportTree(FeatureTree featureTree, Model model, StructureTreeOwlExportState state){
-        featureTree = getFeatureTreeService().load(featureTree.getUuid());
+    private void exportTree(FeatureTree featureTree, Model model){
 
         FeatureNode rootNode = featureTree.getRoot();
 
@@ -112,34 +116,58 @@ public class StructureTreeOwlExport extends CdmExportBase<StructureTreeOwlExport
         List<FeatureNode> childNodes = node.getChildNodes();
         for (FeatureNode child : childNodes) {
             DefinedTermBase term = child.getTerm();
-            Resource childResourceNode = model.createResource(OwlConstants.RESOURCE_NODE+term.getUuid().toString())
+            // create node resource with term
+            Resource termResource = model.createResource(OwlConstants.RESOURCE_NODE+term.getUuid().toString())
                     .addProperty(propUuid, term.getUuid().toString())
                     .addProperty(propIsA, OwlConstants.NODE)
-                    .addProperty(propType, term.getTermType().getKey()
-                            );
+                    .addProperty(propType, term.getTermType().getKey())
+                    ;
             if(term.getUri()!=null){
-                childResourceNode.addProperty(propUri, term.getUri().toString());
+                termResource.addProperty(propUri, term.getUri().toString());
             }
-            resourceNode.addProperty(propHasSubStructure, childResourceNode);
+            // add to parent node
+            resourceNode.addProperty(propHasSubStructure, termResource);
 
             // add term representations
-            for (Representation representation : term.getRepresentations()) {
-                Resource representationResource = model.createResource(OwlConstants.RESOURCE_REPRESENTATION+representation.getUuid())
-                .addProperty(propLabel, representation.getLabel())
-                .addProperty(propLanguage, representation.getLanguage().getTitleCache())
-                .addProperty(propLanguageUuid, representation.getLanguage().getUuid().toString())
-                ;
-                if(representation.getDescription()!=null){
-                    representationResource.addProperty(propDescription, representation.getDescription());
-                }
-                if(representation.getAbbreviatedLabel()!=null){
-                    representationResource.addProperty(propLabelAbbrev, representation.getAbbreviatedLabel());
-                }
-                childResourceNode.addProperty(propHasRepresentation, representationResource);
-            }
+            List<Resource> termRepresentationResources = createRepresentationResources(term, model);
+            termRepresentationResources.forEach(rep->termResource.addProperty(propHasRepresentation, rep));
 
-            addChildNode(child, childResourceNode, model);
+            // create vocabulary resource
+            TermVocabulary vocabulary = term.getVocabulary();
+            Resource vocabularyResource = model.createResource(OwlConstants.RESOURCE_TERM_VOCABULARY+vocabulary.getUuid())
+                    .addProperty(propUuid, vocabulary.getUuid().toString())
+                    .addProperty(propType, vocabulary.getTermType().getKey())
+                    ;
+            if(vocabulary.getUri()!=null){
+                vocabularyResource.addProperty(propUri, vocabulary.getUri().toString());
+            }
+            // add term representations
+            List<Resource> vocabularyRepresentationResources = createRepresentationResources(vocabulary, model);
+            vocabularyRepresentationResources.forEach(rep->vocabularyResource.addProperty(propHasRepresentation, rep));
+            // add vocabulary to term
+            termResource.addProperty(propHasVocabulary, vocabularyResource);
+
+            addChildNode(child, termResource, model);
         }
+    }
+
+    private List<Resource> createRepresentationResources(TermBase termBase, Model model){
+        List<Resource> representations = new ArrayList<>();
+        for (Representation representation : termBase.getRepresentations()) {
+            Resource representationResource = model.createResource(OwlConstants.RESOURCE_REPRESENTATION+representation.getUuid())
+            .addProperty(propLabel, representation.getLabel())
+            .addProperty(propLanguage, representation.getLanguage().getTitleCache())
+            .addProperty(propLanguageUuid, representation.getLanguage().getUuid().toString())
+            ;
+            if(representation.getDescription()!=null){
+                representationResource.addProperty(propDescription, representation.getDescription());
+            }
+            if(representation.getAbbreviatedLabel()!=null){
+                representationResource.addProperty(propLabelAbbrev, representation.getAbbreviatedLabel());
+            }
+            representations.add(representationResource);
+        }
+        return representations;
     }
 
     @Override

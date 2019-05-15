@@ -24,6 +24,7 @@ public interface OwlConstants {
     public static final String RESOURCE_NODE = RESOURCE_URI+"node/";
     public static final String RESOURCE_REPRESENTATION = RESOURCE_URI+"representation/";
     public static final String RESOURCE_FEATURE_TREE = RESOURCE_URI+"featureTree/";
+    public static final String RESOURCE_TERM_VOCABULARY = RESOURCE_URI+"termVocabulary/";
 
     /**
      * property URIs
@@ -34,6 +35,7 @@ public interface OwlConstants {
     public static final String PROPERTY_HAS_ROOT_NODE = PROPERTY_BASE_URI + "hasRootNode";
     public static final String PROPERTY_HAS_SUBSTRUCTURE = PROPERTY_BASE_URI+"hasSubStructure";
     public static final String PROPERTY_HAS_REPRESENTATION = PROPERTY_BASE_URI+"hasRepresentation";
+    public static final String PROPERTY_HAS_VOCABULARY = PROPERTY_BASE_URI+"hasVocabulary";
 
     public static final String PROPERTY_LABEL = PROPERTY_BASE_URI+"label";
     public static final String PROPERTY_LABEL_ABBREV = PROPERTY_BASE_URI+"label_abbrev";
