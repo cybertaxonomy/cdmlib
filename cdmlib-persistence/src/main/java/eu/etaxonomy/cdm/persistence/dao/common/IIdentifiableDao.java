@@ -144,7 +144,7 @@ public interface IIdentifiableDao <T extends IdentifiableEntity> extends IAnnota
 	 * @param matchMode
 	 * @return
 	 */
-	public <S extends T> List<S> findTitleCache(Class<S> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, MatchMode matchMode);
+	public List<String> findTitleCache(Class<? extends T> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, MatchMode matchMode);
     /**
     * Return a List of objects matching the given query string, optionally filtered by class, optionally with a particular MatchMode
     *

@@ -308,7 +308,7 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity>
      * @param matchMode
      * @return
      */
-    public <S extends T> Pager<S> findTitleCache(Class<S> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, MatchMode matchMode);
+    public Pager<String> findTitleCache(Class<? extends T> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, MatchMode matchMode);
 
 
     /**

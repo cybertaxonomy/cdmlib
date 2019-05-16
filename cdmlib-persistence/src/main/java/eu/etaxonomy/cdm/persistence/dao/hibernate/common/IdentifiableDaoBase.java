@@ -104,12 +104,12 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
     }
 
     @Override
-    public <S extends T> List<S> findTitleCache(Class<S> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, MatchMode matchMode){
+    public List<String> findTitleCache(Class<? extends T> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, MatchMode matchMode){
 
         Query query = prepareFindTitleCache(clazz, queryString, pageSize,
                 pageNumber, matchMode, false);
         @SuppressWarnings("unchecked")
-        List<S> result = query.list();
+        List<String> result = query.list();
         return result;
     }
 
