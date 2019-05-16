@@ -131,7 +131,7 @@ import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Audited
-@Table(name="Reference", indexes = { @javax.persistence.Index(name = "ReferenceTitleCacheIndex", columnList = "titleCache") })
+@Table(name="Reference", indexes = { @javax.persistence.Index(name = "referenceTitleCacheIndex", columnList = "titleCache") })
 //@InReference(groups=Level3.class)
 @ReferenceCheck(groups=Level2.class)
 @InReference(groups=Level3.class)
