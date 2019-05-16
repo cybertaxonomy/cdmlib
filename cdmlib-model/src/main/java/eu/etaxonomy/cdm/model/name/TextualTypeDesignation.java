@@ -71,6 +71,7 @@ public class TextualTypeDesignation extends TypeDesignationBase<SpecimenTypeDesi
     @NotNull
     private Map<Language, LanguageString> text = new HashMap<>();
 
+    @Transient
     private boolean isVerbatim;
 
     @XmlTransient
