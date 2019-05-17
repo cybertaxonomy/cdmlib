@@ -100,7 +100,11 @@ public class TypeDesignationStatusFilter {
     public static Set<TypeDesignationStatusBase> toTypeDesignationStatus(Set<TypeDesignationStatusFilter> filterTerms){
         Set<TypeDesignationStatusBase> statusSet = new HashSet<>();
         for(TypeDesignationStatusFilter f : filterTerms){
-            statusSet.addAll(f.status);
+            if(f == null){
+                statusSet.add(null);
+            } else {
+                statusSet.addAll(f.status);
+            }
         }
         return statusSet;
     }
