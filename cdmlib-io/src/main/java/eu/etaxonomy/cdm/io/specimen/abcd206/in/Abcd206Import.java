@@ -1461,7 +1461,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 unit.setUuid(uuid);
                 if (voc == null) {
                     boolean isOrdered = false;
-                    voc = getVocabulary(TermType.KindOfUnit, uuidUserDefinedKindOfUnitVocabulary,
+                    voc = getVocabulary(state, TermType.KindOfUnit, uuidUserDefinedKindOfUnitVocabulary,
                             "User defined vocabulary for kind-of-units", "User Defined Measurement kind-of-units", null,
                             null, isOrdered, unit);
                 }

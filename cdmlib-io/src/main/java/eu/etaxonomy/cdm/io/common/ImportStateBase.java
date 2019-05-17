@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
  * @author a.mueller
@@ -86,7 +87,7 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	private Map<UUID, Rank> rankMap = new HashMap<>();
 	private Map<UUID, DefinedTerm> kindOfUnitMap = new HashMap<>();
 
-
+	private Map<UUID, TermVocabulary<?>> termedVocabularyMap = new HashMap();
 
 	protected IService<CdmBase> service = null;
 
@@ -365,6 +366,16 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 		referenceSystemMap.put(referenceSystem.getUuid(), referenceSystem);
 	}
 
+
+    public  TermVocabulary<?> getTermedVocabulary(UUID uuid) {
+        return termedVocabularyMap.get(uuid);
+    }
+
+    public void putTermedVocabularyMap(TermVocabulary<?> termedVocabulary) {
+        this.termedVocabularyMap.put(termedVocabulary.getUuid(), termedVocabulary);
+    }
+
+
 	public Object getStatusItem(String key){
         return anyStatusItemMap.get(key);
     }
@@ -372,6 +383,7 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
     public void putStatusItem(String key, Object statusItem){
         anyStatusItemMap.put(key, statusItem);
     }
+
 
 
 
