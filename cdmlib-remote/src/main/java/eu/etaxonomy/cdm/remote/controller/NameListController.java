@@ -47,7 +47,7 @@ public class NameListController extends AbstractIdentifiableListController<Taxon
     }
 
     @RequestMapping(method = RequestMethod.GET, value={"findTitleCache"})
-    public Pager<TaxonName> doFindTitleCache(
+    public Pager<String> doFindTitleCache(
             @RequestParam(value = "query", required = true) String query,
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
@@ -61,7 +61,7 @@ public class NameListController extends AbstractIdentifiableListController<Taxon
 
         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
         pagerParams.normalizeAndValidate(response);
-        return service.findByTitle(null, query, matchMode, null, pageSize, pageNumber, null, null);
+        return service.findTitleCache(null, query, pagerParams.getPageSize(), pagerParams.getPageIndex(), null, matchMode);
     }
 
     @RequestMapping(value = "findByName", method = RequestMethod.GET)
