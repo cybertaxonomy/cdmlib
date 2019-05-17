@@ -57,7 +57,7 @@ public class NameListController extends AbstractIdentifiableListController<Taxon
             )
              throws IOException {
 
-        logger.info("doFind : " + request.getRequestURI() + "?" + request.getQueryString() );
+        logger.info("doFindTitleCache() " + requestPathAndQuery(request));
 
         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
         pagerParams.normalizeAndValidate(response);
@@ -71,6 +71,8 @@ public class NameListController extends AbstractIdentifiableListController<Taxon
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             @RequestParam(value = "matchMode", required = false) MatchMode matchMode, HttpServletRequest request, HttpServletResponse response)
             throws IOException {
+
+        logger.info("doFindByName() " + requestPathAndQuery(request));
 
         PagerParameters pagerParameters = new PagerParameters(pageSize, pageNumber);
         pagerParameters.normalizeAndValidate(response);
