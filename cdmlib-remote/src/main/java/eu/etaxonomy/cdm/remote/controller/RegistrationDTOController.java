@@ -95,7 +95,7 @@ public class RegistrationDTOController extends AbstractController<Registration, 
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
-        binder.registerCustomEditor(UuidList.class, new UUIDListPropertyEditor());
+        binder.registerCustomEditor(UuidList.class, new UUIDListPropertyEditor("NULL"));
         binder.registerCustomEditor(RegistrationStatusList.class, new RegistrationStatusList().propertyEditor());
         binder.registerCustomEditor(UUID.class, new UUIDPropertyEditor());
     }

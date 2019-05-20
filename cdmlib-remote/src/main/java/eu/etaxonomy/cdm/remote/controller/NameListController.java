@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
+import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,10 +22,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.etaxonomy.cdm.api.service.INameService;
+import eu.etaxonomy.cdm.api.service.dto.TypeDesignationStatusFilter;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
+import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
 import io.swagger.annotations.Api;
 
 /**
@@ -39,6 +42,10 @@ import io.swagger.annotations.Api;
 public class NameListController extends AbstractIdentifiableListController<TaxonName, INameService> {
 
     private static final Logger logger = Logger.getLogger(NameListController.class);
+
+    @Autowired
+    private LocaleContext localeContext;
+
 
     @Override
     @Autowired
@@ -78,5 +85,16 @@ public class NameListController extends AbstractIdentifiableListController<Taxon
         pagerParameters.normalizeAndValidate(response);
 
         return service.findByTitleWithRestrictions(TaxonName.class, query, matchMode, null, pageSize, pageNumber, null, getInitializationStrategy());
+    }
+
+    @RequestMapping(
+            value = {"typeDesignationStatusFilterTerms"},
+            method = RequestMethod.GET)
+    public Collection<TypeDesignationStatusFilter> doGetTypeDesignationStatusFilterTermsInUse(
+            HttpServletRequest request, HttpServletResponse response)throws IOException {
+
+        logger.info("doGetTypeDesignationStatusFilterTermsInUse() " + requestPathAndQuery(request));
+        return service.getTypeDesignationStatusFilterTerms(localeContext.getLanguages());
+
     }
 }

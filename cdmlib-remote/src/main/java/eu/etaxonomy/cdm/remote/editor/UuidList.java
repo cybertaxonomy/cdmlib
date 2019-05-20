@@ -5,8 +5,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
-
 
 /**
  * @author f.revilla
@@ -24,11 +22,15 @@ public class UuidList extends ArrayList<UUID> {
 
     @Override
     public String toString() {
-        String result = null;
+        String result = "";
         for (UUID uuid : this){
-            result = CdmUtils.concat(",", uuid.toString());
+            if(uuid != null){
+                result +=  (result.isEmpty() ? "": ",") + uuid.toString();
+            } else {
+                result += (result.isEmpty() ? "": ",") + "NULL";
+            }
         }
-        return (result == null)? super.toString():result;
+        return "[" + result + "]";
     }
 
 

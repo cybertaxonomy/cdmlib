@@ -40,6 +40,7 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
+import eu.etaxonomy.cdm.persistence.dao.common.Restriction.Operator;
 import eu.etaxonomy.cdm.persistence.dao.name.IRegistrationDao;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.Operation;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -169,10 +170,18 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
             restrictions.add(new Restriction<>("name.titleCache", MatchMode.LIKE, taxonNameFilterPattern));
         }
         if(typeDesignationStatusUuids != null){
-            restrictions.add(new Restriction<>("typeDesignations.typeStatus.uuid", null, typeDesignationStatusUuids.toArray(new UUID[typeDesignationStatusUuids.size()])));
+            if(typeDesignationStatusUuids.contains(null)){
+                typeDesignationStatusUuids.remove(null);
+                restrictions.add(new Restriction<>("typeDesignations.typeStatus", Operator.AND, null, new Object[]{null}));
+                restrictions.add(new Restriction<>("typeDesignations.typeStatus.uuid", Operator.OR, null, typeDesignationStatusUuids.toArray(new UUID[typeDesignationStatusUuids.size()])));
+            } else {
+                restrictions.add(new Restriction<>("typeDesignations.typeStatus.uuid", null, typeDesignationStatusUuids.toArray(new UUID[typeDesignationStatusUuids.size()])));
+            }
         }
 
+        //Logger.getLogger("org.hibernate.SQL").setLevel(Level.DEBUG);
         long numberOfResults = dao.count(Registration.class, restrictions);
+        //Logger.getLogger("org.hibernate.SQL").setLevel(Level.WARN);
 
         List<Registration> results = new ArrayList<>();
         if(pageIndex == null){

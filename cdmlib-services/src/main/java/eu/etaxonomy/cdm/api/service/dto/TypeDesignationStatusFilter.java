@@ -8,7 +8,10 @@
 */
 package eu.etaxonomy.cdm.api.service.dto;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -81,6 +84,14 @@ public class TypeDesignationStatusFilter {
         }
     }
 
+    public Collection<UUID> getUuids() {
+        List<UUID> uuids = new ArrayList<>();
+        for(TypeDesignationStatusBase sb : status){
+            uuids.add(sb.getUuid());
+        }
+        return Collections.unmodifiableList(uuids);
+    }
+
     @Override
     public String toString(){
         return getLabel();
@@ -112,9 +123,7 @@ public class TypeDesignationStatusFilter {
     public static Set<UUID> toTypeDesignationStatusUuids(Set<TypeDesignationStatusFilter> filterTerms){
         Set<UUID> uuids = new HashSet<>();
         for(TypeDesignationStatusFilter f : filterTerms){
-            for(TypeDesignationStatusBase sb : f.status){
-                uuids.add(sb.getUuid());
-            }
+            uuids.addAll(f.getUuids());
         }
         return uuids;
     }
