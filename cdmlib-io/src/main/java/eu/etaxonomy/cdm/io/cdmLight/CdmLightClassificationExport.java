@@ -152,8 +152,10 @@ public class CdmLightClassificationExport
                     if (comp == null){
                         comp = new TaxonNodeDtoByRankAndNameComparator();
                     }
+                    String id_String = String.valueOf(entry.getKey());
                     Collections.sort(children, comp);
                     int index = 0;
+
                     for (TaxonNodeDto child:children) {
                         if (state.getProcessor().hasRecord(CdmLightExportTable.TAXON, child.getTaxonUuid().toString())){
                             String[] csvLine = state.getProcessor().getRecord(CdmLightExportTable.TAXON,child.getTaxonUuid().toString());
@@ -196,6 +198,21 @@ public class CdmLightClassificationExport
                             childNodes.add(new TaxonNodeDto(child));
                         }
                         state.getNodeChildrenMap().put(root.getId(),childNodes);
+                        //add root to node map
+
+                    }
+                    TaxonNodeDto rootDto = new TaxonNodeDto(root);
+                    int parentID = root.getParent() != null? root.getParent().getId():0;
+
+                    if (state.getNodeChildrenMap().get(parentID) != null &&  !state.getNodeChildrenMap().get(parentID).contains(rootDto)){
+                        List<TaxonNodeDto> nodes = state.getNodeChildrenMap().get(parentID);
+                        boolean contains = state.getNodeChildrenMap().get(parentID).contains(rootDto);
+                        state.getNodeChildrenMap().get(root.getParent().getId()).add(rootDto);
+                    }
+                    if (state.getNodeChildrenMap().get(parentID) == null){
+                        List<TaxonNodeDto> rootList = new ArrayList();
+                        rootList.add(rootDto);
+                        state.getNodeChildrenMap().put(parentID, rootList);
                     }
                     if (root.hasTaxon()){
                         handleTaxon(state, root);
