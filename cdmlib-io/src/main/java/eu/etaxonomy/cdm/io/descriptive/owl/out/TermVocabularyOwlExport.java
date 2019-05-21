@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.io.descriptive.owl.OwlConstants;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermBase;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
@@ -58,18 +59,7 @@ public class TermVocabularyOwlExport extends CdmExportBase<StructureTreeOwlExpor
 
         TermVocabulary vocabulary = getVocabularyService().load(vocUuid);
 
-        // create vocabulary resource
-        Resource vocabularyResource = state.getModel().createResource(OwlConstants.RESOURCE_TERM_VOCABULARY+vocabulary.getUuid())
-                .addProperty(StructureTreeOwlExportState.propUuid, vocabulary.getUuid().toString())
-                .addProperty(StructureTreeOwlExportState.propType, vocabulary.getTermType().getKey())
-                .addProperty(StructureTreeOwlExportState.propIsA, OwlConstants.VOCABULARY)
-                ;
-        if(vocabulary.getUri()!=null){
-            vocabularyResource.addProperty(StructureTreeOwlExportState.propUri, vocabulary.getUri().toString());
-        }
-        // add vocabulary representations
-        List<Resource> vocabularyRepresentationResources = createRepresentationResources(vocabulary, state);
-        vocabularyRepresentationResources.forEach(rep->vocabularyResource.addProperty(StructureTreeOwlExportState.propHasRepresentation, rep));
+        Resource vocabularyResource = createVocabularyResource(vocabulary, state);
 
         getVocabularyService().getTopLevelTerms(vocUuid).forEach(termDto->addTerm(termDto, vocabularyResource, state));
 
@@ -95,12 +85,7 @@ public class TermVocabularyOwlExport extends CdmExportBase<StructureTreeOwlExpor
         }
     }
 
-    /**
-     * @param term
-     * @param state
-     * @return
-     */
-    protected Resource createTermResource(DefinedTerm term, StructureTreeOwlExportState state) {
+    static Resource createTermResource(DefinedTermBase term, StructureTreeOwlExportState state) {
         Resource termResource = state.getModel().createResource(OwlConstants.RESOURCE_TERM+term.getUuid().toString())
                 .addProperty(StructureTreeOwlExportState.propUuid, term.getUuid().toString())
                 .addProperty(StructureTreeOwlExportState.propIsA, OwlConstants.TERM)
@@ -116,7 +101,7 @@ public class TermVocabularyOwlExport extends CdmExportBase<StructureTreeOwlExpor
     }
 
 
-    private List<Resource> createRepresentationResources(TermBase termBase, StructureTreeOwlExportState state){
+    static List<Resource> createRepresentationResources(TermBase termBase, StructureTreeOwlExportState state){
         List<Resource> representations = new ArrayList<>();
         for (Representation representation : termBase.getRepresentations()) {
             Resource representationResource = state.getModel().createResource(OwlConstants.RESOURCE_REPRESENTATION+representation.getUuid())
@@ -133,6 +118,22 @@ public class TermVocabularyOwlExport extends CdmExportBase<StructureTreeOwlExpor
             representations.add(representationResource);
         }
         return representations;
+    }
+
+    static Resource createVocabularyResource(TermVocabulary vocabulary, StructureTreeOwlExportState state) {
+        // create vocabulary resource
+        Resource vocabularyResource = state.getModel().createResource(OwlConstants.RESOURCE_TERM_VOCABULARY+vocabulary.getUuid())
+                .addProperty(StructureTreeOwlExportState.propUuid, vocabulary.getUuid().toString())
+                .addProperty(StructureTreeOwlExportState.propType, vocabulary.getTermType().getKey())
+                .addProperty(StructureTreeOwlExportState.propIsA, OwlConstants.VOCABULARY)
+                ;
+        if(vocabulary.getUri()!=null){
+            vocabularyResource.addProperty(StructureTreeOwlExportState.propUri, vocabulary.getUri().toString());
+        }
+        // add vocabulary representations
+        List<Resource> vocabularyRepresentationResources = createRepresentationResources(vocabulary, state);
+        vocabularyRepresentationResources.forEach(rep->vocabularyResource.addProperty(StructureTreeOwlExportState.propHasRepresentation, rep));
+        return vocabularyResource;
     }
 
     @Override
