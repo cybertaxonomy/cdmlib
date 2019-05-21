@@ -337,6 +337,7 @@ public class BerlinModelTransformer {
 	public static final UUID uuidExpertName = UUID.fromString("24becb79-a90c-47d3-be35-efc87bb48fd3");
 
 	public static final UUID DETAIL_EXT_UUID = UUID.fromString("c3959b4f-d876-4b7a-a739-9260f4cafd1c");
+	public static final UUID SOURCE_ACC_UUID = UUID.fromString("f75ea789-581e-4170-b3f6-2cedfab7fcef");
 	public static final UUID ID_IN_SOURCE_EXT_UUID = UUID.fromString("23dac094-e793-40a4-bad9-649fc4fcfd44");
 	public static final UUID uuidIsoCode = UUID.fromString("048b8153-e3ee-451c-a72c-f1c8bc291c3e");
 	public static final UUID uuidTdwgAreaCode = UUID.fromString("73ad0288-b71b-4a14-9c2e-7f81f1e64a36");
@@ -345,6 +346,7 @@ public class BerlinModelTransformer {
 
 	//Identifier Type
 	public static final UUID uuidEMReferenceSourceNumber = UUID.fromString("06b02bbd-bf22-485c-9fd1-fad9175f0d53");
+	public static final UUID uuidEM_MCLIdentifierType = UUID.fromString("c6873fc6-9bf7-4e78-b4f2-5ab0c0dc1f50");
 
 	//Area Level
 	public static final UUID uuidEuroMedAreaLevelTop = UUID.fromString("190d5758-4b96-4016-9412-6dc9c36ef5fd");
