@@ -29,6 +29,7 @@ public class StructureTreeOwlExportState extends XmlExportState<StructureTreeOwl
     static Property propHasRepresentation;
     static Property propHasVocabulary;
     static Property propHasRootNode;
+    static Property propHasTerm;
     static Property propUuid;
     static Property propUri;
     static Property propLabel;
@@ -38,6 +39,9 @@ public class StructureTreeOwlExportState extends XmlExportState<StructureTreeOwl
     static Property propIsA;
     static Property propType;
     static Property propDescription;
+
+    static Property propTermIsGeneralizationOf;
+    static Property propTermIncludes;
 
     private Model model;
 
@@ -52,6 +56,7 @@ public class StructureTreeOwlExportState extends XmlExportState<StructureTreeOwl
         propHasRepresentation = model.createProperty(OwlConstants.PROPERTY_HAS_REPRESENTATION);
         propHasVocabulary = model.createProperty(OwlConstants.PROPERTY_HAS_VOCABULARY);
         propHasRootNode = model.createProperty(OwlConstants.PROPERTY_HAS_ROOT_NODE);
+        propHasTerm = model.createProperty(OwlConstants.PROPERTY_HAS_TERM);
         propUuid = model.createProperty(OwlConstants.PROPERTY_UUID);
         propUri = model.createProperty(OwlConstants.PROPERTY_URI);
         propLabel = model.createProperty(OwlConstants.PROPERTY_LABEL);
@@ -62,6 +67,8 @@ public class StructureTreeOwlExportState extends XmlExportState<StructureTreeOwl
         propType = model.createProperty(OwlConstants.PROPERTY_TYPE);
         propDescription = model.createProperty(OwlConstants.PROPERTY_DESCRIPTION);
 
+        propTermIsGeneralizationOf = model.createProperty(OwlConstants.PROPERTY_TERM_IS_GENERALIZATION_OF);
+        propTermIncludes = model.createProperty(OwlConstants.PROPERTY_TERM_INCLUDES);
     }
 
     public Model getModel() {

@@ -25,6 +25,7 @@ public interface OwlConstants {
     public static final String RESOURCE_REPRESENTATION = RESOURCE_URI+"representation/";
     public static final String RESOURCE_FEATURE_TREE = RESOURCE_URI+"featureTree/";
     public static final String RESOURCE_TERM_VOCABULARY = RESOURCE_URI+"termVocabulary/";
+    public static final String RESOURCE_TERM = RESOURCE_URI+"term/";
 
     /**
      * property URIs
@@ -36,6 +37,7 @@ public interface OwlConstants {
     public static final String PROPERTY_HAS_SUBSTRUCTURE = PROPERTY_BASE_URI+"hasSubStructure";
     public static final String PROPERTY_HAS_REPRESENTATION = PROPERTY_BASE_URI+"hasRepresentation";
     public static final String PROPERTY_HAS_VOCABULARY = PROPERTY_BASE_URI+"hasVocabulary";
+    public static final String PROPERTY_HAS_TERM = PROPERTY_BASE_URI+"hasTerm";
 
     public static final String PROPERTY_LABEL = PROPERTY_BASE_URI+"label";
     public static final String PROPERTY_LABEL_ABBREV = PROPERTY_BASE_URI+"label_abbrev";
@@ -46,10 +48,15 @@ public interface OwlConstants {
     public static final String PROPERTY_IS_A = PROPERTY_BASE_URI+"is_a";
     public static final String PROPERTY_TYPE = PROPERTY_BASE_URI+"type";
 
+    public static final String PROPERTY_TERM_INCLUDES = PROPERTY_BASE_URI+"term_includes";
+    public static final String PROPERTY_TERM_IS_GENERALIZATION_OF = PROPERTY_BASE_URI+"term_is_generalization_of";
+
     /**
      * types
      */
     public final static String NODE = "node";
     public final static String TREE = "tree";
+    public final static String VOCABULARY = "vocabulary";
+    public final static String TERM = "term";
 
 }

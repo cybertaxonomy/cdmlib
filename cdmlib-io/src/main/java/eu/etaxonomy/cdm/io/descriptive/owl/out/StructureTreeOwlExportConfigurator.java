@@ -63,12 +63,18 @@ public class StructureTreeOwlExportConfigurator extends XmlExportConfiguratorBas
     @Override
     protected void makeIoClassList() {
         ioClassList = new Class[] {
+                // order is important: the last export has to write the model
+                TermVocabularyOwlExport.class,
                 StructureTreeOwlExport.class
         };
     }
 
     public List<FeatureTree> getFeatureTrees() {
         return featureTrees;
+    }
+
+    public List<UUID> getVocabularyUuids() {
+        return vocabularyUuids;
     }
 
 }
