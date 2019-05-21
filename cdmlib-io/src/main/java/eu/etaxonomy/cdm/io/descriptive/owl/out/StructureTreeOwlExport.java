@@ -84,37 +84,38 @@ public class StructureTreeOwlExport extends CdmExportBase<StructureTreeOwlExport
         for (FeatureNode child : childNodes) {
             DefinedTermBase term = child.getTerm();
             // create node resource with term
-            Resource termResource = state.getModel().createResource(OwlConstants.RESOURCE_NODE+term.getUuid().toString())
-                    .addProperty(StructureTreeOwlExportState.propUuid, term.getUuid().toString())
+            Resource nodeResource = state.getModel().createResource(OwlConstants.RESOURCE_NODE+child.getUuid().toString())
+                    .addProperty(StructureTreeOwlExportState.propUuid, child.getUuid().toString())
                     .addProperty(StructureTreeOwlExportState.propIsA, OwlConstants.NODE)
                     .addProperty(StructureTreeOwlExportState.propType, term.getTermType().getKey())
                     ;
             if(term.getUri()!=null){
-                termResource.addProperty(StructureTreeOwlExportState.propUri, term.getUri().toString());
+                nodeResource.addProperty(StructureTreeOwlExportState.propUri, term.getUri().toString());
             }
             // add to parent node
-            resourceNode.addProperty(StructureTreeOwlExportState.propHasSubStructure, termResource);
+            resourceNode.addProperty(StructureTreeOwlExportState.propHasSubStructure, nodeResource);
 
             // add term representations
             List<Resource> termRepresentationResources = createRepresentationResources(term, state);
-            termRepresentationResources.forEach(rep->termResource.addProperty(StructureTreeOwlExportState.propHasRepresentation, rep));
+            termRepresentationResources.forEach(rep->nodeResource.addProperty(StructureTreeOwlExportState.propHasRepresentation, rep));
 
             // create vocabulary resource
             TermVocabulary vocabulary = term.getVocabulary();
             Resource vocabularyResource = state.getModel().createResource(OwlConstants.RESOURCE_TERM_VOCABULARY+vocabulary.getUuid())
                     .addProperty(StructureTreeOwlExportState.propUuid, vocabulary.getUuid().toString())
                     .addProperty(StructureTreeOwlExportState.propType, vocabulary.getTermType().getKey())
+                    .addProperty(StructureTreeOwlExportState.propIsA, OwlConstants.VOCABULARY)
                     ;
             if(vocabulary.getUri()!=null){
                 vocabularyResource.addProperty(StructureTreeOwlExportState.propUri, vocabulary.getUri().toString());
             }
-            // add term representations
+            // add vocabulary representations
             List<Resource> vocabularyRepresentationResources = createRepresentationResources(vocabulary, state);
             vocabularyRepresentationResources.forEach(rep->vocabularyResource.addProperty(StructureTreeOwlExportState.propHasRepresentation, rep));
             // add vocabulary to term
-            termResource.addProperty(StructureTreeOwlExportState.propHasVocabulary, vocabularyResource);
+            nodeResource.addProperty(StructureTreeOwlExportState.propHasVocabulary, vocabularyResource);
 
-            addChildNode(child, termResource, state);
+            addChildNode(child, nodeResource, state);
         }
     }
 
