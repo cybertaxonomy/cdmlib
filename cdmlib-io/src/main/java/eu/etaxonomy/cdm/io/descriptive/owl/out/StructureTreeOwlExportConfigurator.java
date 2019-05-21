@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.descriptive.owl.out;
 
 import java.io.File;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
@@ -33,15 +34,25 @@ public class StructureTreeOwlExportConfigurator extends XmlExportConfiguratorBas
 	private static final Logger logger = Logger.getLogger(StructureTreeOwlExportConfigurator.class);
 
     private List<FeatureTree> featureTrees;
+    private List<UUID> vocabularyUuids;
 
 
-    private StructureTreeOwlExportConfigurator(ICdmDataSource source, File destinationFolder, List<FeatureTree> featureTrees) {
+    private StructureTreeOwlExportConfigurator(
+            ICdmDataSource source,
+            File destinationFolder,
+            List<FeatureTree> featureTrees,
+            List<UUID> vocabularyUuids) {
         super(destinationFolder, source, null);
         this.featureTrees = featureTrees;
+        this.vocabularyUuids = vocabularyUuids;
     }
 
-    public static StructureTreeOwlExportConfigurator NewInstance(ICdmDataSource source, File destinationFolder, List<FeatureTree> featureTrees) {
-        return new StructureTreeOwlExportConfigurator(source, destinationFolder, featureTrees);
+    public static StructureTreeOwlExportConfigurator NewInstance(
+            ICdmDataSource source,
+            File destinationFolder,
+            List<FeatureTree> featureTrees,
+            List<UUID> vocabularyUuids) {
+        return new StructureTreeOwlExportConfigurator(source, destinationFolder, featureTrees, vocabularyUuids);
     }
 
     @Override
