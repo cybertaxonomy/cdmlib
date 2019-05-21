@@ -43,7 +43,7 @@ public class Abcd206ImportConfigurator
 
     private boolean getSiblings = false;
 
-
+    private URI dnaSoure = URI.create("https://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=DNA_Bank");
 
     @Override
     @SuppressWarnings("unchecked")
@@ -137,6 +137,14 @@ public class Abcd206ImportConfigurator
 
 
 
+
+    public URI getDnaSoure() {
+        return dnaSoure;
+    }
+
+    public void setDnaSoure(URI dnaSoure) {
+        this.dnaSoure = dnaSoure;
+    }
 
     @Override
     public Reference getSourceReference() {
