@@ -90,7 +90,9 @@ public class StructureTreeOwlExport extends CdmExportBase<StructureTreeOwlExport
             // create vocabulary resource
             Resource vocabularyResource = OwlExportUtil.createVocabularyResource(child.getTerm().getVocabulary(), state);
             // add vocabulary to term
-            nodeResource.addProperty(StructureTreeOwlExportState.propHasVocabulary, vocabularyResource);
+            termResource.addProperty(StructureTreeOwlExportState.propHasVocabulary, vocabularyResource);
+            // add term to vocabulary
+            vocabularyResource.addProperty(StructureTreeOwlExportState.propHasTerm, termResource);
 
             addChildNode(child, nodeResource, state);
         }

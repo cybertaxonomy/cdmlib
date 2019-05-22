@@ -68,6 +68,8 @@ public class TermVocabularyOwlExport extends CdmExportBase<StructureTreeOwlExpor
         Resource termResource = OwlExportUtil.createTermResource(term, state);
 
         vocabularyResource.addProperty(StructureTreeOwlExportState.propHasTerm, termResource);
+        termResource.addProperty(StructureTreeOwlExportState.propHasVocabulary, vocabularyResource);
+
         Set<DefinedTerm> generalizationOf = term.getGeneralizationOf();
         for (DefinedTerm kindOf : generalizationOf) {
             termResource.addProperty(StructureTreeOwlExportState.propTermIsGeneralizationOf, OwlExportUtil.createTermResource(kindOf, state));
