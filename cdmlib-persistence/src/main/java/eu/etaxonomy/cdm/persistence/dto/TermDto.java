@@ -97,8 +97,8 @@ public class TermDto extends AbstractTermDto{
             if(kindOf!=null){
                 dto.setKindOfDto(fromTerm(kindOf, initializeToTop));
             }
-            dto.setVocabularyDto(new TermVocabularyDto(vocabulary.getUuid(), vocabulary.getRepresentations(), term.getTermType()));
         }
+        dto.setVocabularyDto(new TermVocabularyDto(vocabulary.getUuid(), vocabulary.getRepresentations(), term.getTermType()));
         return dto;
     }
 
