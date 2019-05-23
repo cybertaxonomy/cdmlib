@@ -15,8 +15,8 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.io.common.XmlExportConfiguratorBase;
+import eu.etaxonomy.cdm.io.common.ExportConfiguratorBase;
+import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.term.FeatureTree;
 
 
@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.term.FeatureTree;
  * @since May 2, 2019
  *
  */
-public class StructureTreeOwlExportConfigurator extends XmlExportConfiguratorBase<StructureTreeOwlExportState> {
+public class StructureTreeOwlExportConfigurator extends ExportConfiguratorBase<StructureTreeOwlExportState, IExportTransformer, File> {
 
     private static final long serialVersionUID = -4360021755279592592L;
 
@@ -37,22 +37,12 @@ public class StructureTreeOwlExportConfigurator extends XmlExportConfiguratorBas
     private List<UUID> vocabularyUuids;
 
 
-    private StructureTreeOwlExportConfigurator(
-            ICdmDataSource source,
-            File destinationFolder,
-            List<FeatureTree> featureTrees,
-            List<UUID> vocabularyUuids) {
-        super(destinationFolder, source, null);
-        this.featureTrees = featureTrees;
-        this.vocabularyUuids = vocabularyUuids;
+    private StructureTreeOwlExportConfigurator() {
+        super(null);
     }
 
-    public static StructureTreeOwlExportConfigurator NewInstance(
-            ICdmDataSource source,
-            File destinationFolder,
-            List<FeatureTree> featureTrees,
-            List<UUID> vocabularyUuids) {
-        return new StructureTreeOwlExportConfigurator(source, destinationFolder, featureTrees, vocabularyUuids);
+    public static StructureTreeOwlExportConfigurator NewInstance() {
+        return new StructureTreeOwlExportConfigurator();
     }
 
     @Override
@@ -75,6 +65,19 @@ public class StructureTreeOwlExportConfigurator extends XmlExportConfiguratorBas
 
     public List<UUID> getVocabularyUuids() {
         return vocabularyUuids;
+    }
+
+    public void setFeatureTrees(List<FeatureTree> featureTrees) {
+        this.featureTrees = featureTrees;
+    }
+
+    public void setVocabularyUuids(List<UUID> vocabularyUuids) {
+        this.vocabularyUuids = vocabularyUuids;
+    }
+
+    @Override
+    public String getDestinationNameString() {
+        return null;
     }
 
 }

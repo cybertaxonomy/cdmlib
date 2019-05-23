@@ -8,13 +8,16 @@
 */
 package eu.etaxonomy.cdm.io.descriptive.owl.out;
 
+import java.io.File;
+
 import org.apache.log4j.Logger;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
 
-import eu.etaxonomy.cdm.io.common.XmlExportState;
+import eu.etaxonomy.cdm.io.common.ExportStateBase;
+import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.io.descriptive.owl.OwlConstants;
 
 /**
@@ -23,7 +26,7 @@ import eu.etaxonomy.cdm.io.descriptive.owl.OwlConstants;
  * @since May 2, 2019
  *
  */
-public class StructureTreeOwlExportState extends XmlExportState<StructureTreeOwlExportConfigurator>{
+public class StructureTreeOwlExportState extends ExportStateBase<StructureTreeOwlExportConfigurator, IExportTransformer, File>{
 
     static Property propHasSubStructure;
     static Property propHasRepresentation;

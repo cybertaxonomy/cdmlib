@@ -60,11 +60,10 @@ public class OwlExportTest  extends CdmTransactionalIntegrationTest{
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/BlankDataSet.xml")
     public void testEmptyData(){
         File destinationFolder = null;
-        StructureTreeOwlExportConfigurator config = StructureTreeOwlExportConfigurator.NewInstance(
-                null,
-                destinationFolder,
-                createFeatureTree(),
-                Collections.EMPTY_LIST);
+        StructureTreeOwlExportConfigurator config = StructureTreeOwlExportConfigurator.NewInstance();
+        config.setFeatureTrees(createFeatureTree());
+        config.setVocabularyUuids(Collections.EMPTY_LIST);
+        config.setDestination(destinationFolder);
         config.setTarget(TARGET.EXPORT_DATA);
         ExportResult result = defaultExport.invoke(config);
         System.out.println(result.createReport());
