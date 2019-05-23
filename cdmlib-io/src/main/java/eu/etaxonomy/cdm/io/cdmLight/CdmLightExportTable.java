@@ -131,7 +131,7 @@ public enum CdmLightExportTable {
     //Name Relationship
     protected static final String NAME1_FK = "Name1_Fk";
     protected static final String NAME2_FK = "Name2_Fk";
-    protected static final String NAME_REL_TYPE = "NameRelationship_Type";
+    protected static final String NAME_REL_TYPE = "NameRelationshipType";
 
     //CDM MetaData
     protected static final String INSTANCE_ID = "EditInstance_ID";
