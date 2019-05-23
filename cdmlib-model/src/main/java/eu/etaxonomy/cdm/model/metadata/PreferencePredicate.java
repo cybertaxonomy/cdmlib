@@ -60,8 +60,8 @@ public enum PreferencePredicate implements IEnumTerm<PreferencePredicate>, IPref
 
     //sources
     ShowIdInSource(UUID.fromString("de291d1b-d89e-42ee-a7b5-15f306f50785"), "Source Details: Show ID in Source", "sourceDetails.IdInSource", Boolean.TRUE),
-    //I did rename this "Name"-> "Namespace" (later we should adapt the modelKey similarly
-    ShowNamespaceInSource(UUID.fromString("f2e881bb-03a1-4bf9-aff1-7bfd4d355a7c"), "Source Details: Show Namespace in Source", "sourceDetails.NameInSource", Boolean.TRUE),
+    //I did rename this "Name"-> "ID Namespace" (later we should adapt the modelKey similarly
+    ShowNamespaceInSource(UUID.fromString("f2e881bb-03a1-4bf9-aff1-7bfd4d355a7c"), "Source Details: Show ID Namespace in Source", "sourceDetails.NameInSource", Boolean.TRUE),
 
     //name details view
     SimpleDetailsViewActivated(UUID.fromString("78666fde-9ee5-4c09-923b-be98604aace6"), "Name Details: Activated", "editor.nameDetails.activated", Boolean.FALSE),
