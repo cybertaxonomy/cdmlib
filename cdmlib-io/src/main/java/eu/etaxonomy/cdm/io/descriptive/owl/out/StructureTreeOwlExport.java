@@ -19,7 +19,6 @@ import com.hp.hpl.jena.rdf.model.Resource;
 
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
-import eu.etaxonomy.cdm.io.descriptive.owl.OwlConstants;
 import eu.etaxonomy.cdm.model.term.FeatureNode;
 import eu.etaxonomy.cdm.model.term.FeatureTree;
 
@@ -56,19 +55,10 @@ public class StructureTreeOwlExport extends CdmExportBase<StructureTreeOwlExport
     private void exportTree(FeatureTree featureTree, StructureTreeOwlExportState state){
         FeatureNode rootNode = featureTree.getRoot();
 
-        Resource resourceRootNode = state.getModel().createResource(OwlConstants.RESOURCE_NODE + rootNode.getUuid().toString())
-                .addProperty(StructureTreeOwlExportState.propIsA, OwlConstants.NODE)
-                .addProperty(StructureTreeOwlExportState.propUuid, rootNode.getUuid().toString())
-                .addProperty(StructureTreeOwlExportState.propIsA, OwlConstants.NODE)
-                ;
+        Resource featureTreeResource = OwlExportUtil.createFeatureTreeResource(featureTree, state);
 
-        state.getModel().createResource(OwlConstants.RESOURCE_FEATURE_TREE+featureTree.getUuid().toString())
-                .addProperty(StructureTreeOwlExportState.propUuid, featureTree.getUuid().toString())
-                .addProperty(StructureTreeOwlExportState.propLabel, featureTree.getTitleCache())
-                .addProperty(StructureTreeOwlExportState.propHasRootNode, resourceRootNode)
-                .addProperty(StructureTreeOwlExportState.propIsA, OwlConstants.TREE)
-                .addProperty(StructureTreeOwlExportState.propType, featureTree.getTermType().getKey())
-                ;
+        Resource resourceRootNode = OwlExportUtil.createNodeResource(state, rootNode);
+        featureTreeResource.addProperty(StructureTreeOwlExportState.propHasRootNode, resourceRootNode);
 
         addChildNode(rootNode, resourceRootNode, state);
     }
@@ -77,10 +67,7 @@ public class StructureTreeOwlExport extends CdmExportBase<StructureTreeOwlExport
         List<FeatureNode> childNodes = node.getChildNodes();
         for (FeatureNode child : childNodes) {
             // create node resource with term
-            Resource nodeResource = state.getModel().createResource(OwlConstants.RESOURCE_NODE+child.getUuid().toString())
-                    .addProperty(StructureTreeOwlExportState.propUuid, child.getUuid().toString())
-                    .addProperty(StructureTreeOwlExportState.propIsA, OwlConstants.NODE)
-                    ;
+            Resource nodeResource = OwlExportUtil.createNodeResource(state, child);
             // add term to node
             Resource termResource = OwlExportUtil.createTermResource(child.getTerm(), state);
             resourceNode.addProperty(StructureTreeOwlExportState.propHasTerm, termResource);

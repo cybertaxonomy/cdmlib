@@ -15,6 +15,8 @@ import com.hp.hpl.jena.rdf.model.Resource;
 
 import eu.etaxonomy.cdm.io.descriptive.owl.OwlConstants;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.FeatureNode;
+import eu.etaxonomy.cdm.model.term.FeatureTree;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermBase;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
@@ -74,6 +76,24 @@ public class OwlExportUtil {
         List<Resource> termRepresentationResources = createRepresentationResources(term, state);
         termRepresentationResources.forEach(rep->termResource.addProperty(StructureTreeOwlExportState.propHasRepresentation, rep));
         return termResource;
+    }
+
+    static Resource createFeatureTreeResource(FeatureTree featureTree, StructureTreeOwlExportState state) {
+        Resource featureTreeResource = state.getModel().createResource(OwlConstants.RESOURCE_FEATURE_TREE+featureTree.getUuid().toString())
+                .addProperty(StructureTreeOwlExportState.propUuid, featureTree.getUuid().toString())
+                .addProperty(StructureTreeOwlExportState.propLabel, featureTree.getTitleCache())
+                .addProperty(StructureTreeOwlExportState.propIsA, OwlConstants.TREE)
+                .addProperty(StructureTreeOwlExportState.propType, featureTree.getTermType().getKey())
+                ;
+        return featureTreeResource;
+    }
+
+    static Resource createNodeResource(StructureTreeOwlExportState state, FeatureNode node) {
+        Resource resourceRootNode = state.getModel().createResource(OwlConstants.RESOURCE_NODE + node.getUuid().toString())
+                .addProperty(StructureTreeOwlExportState.propIsA, OwlConstants.NODE)
+                .addProperty(StructureTreeOwlExportState.propUuid, node.getUuid().toString())
+                ;
+        return resourceRootNode;
     }
 
 }
