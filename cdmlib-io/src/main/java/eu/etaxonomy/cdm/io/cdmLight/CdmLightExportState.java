@@ -12,6 +12,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.io.common.ExportResult;
 import eu.etaxonomy.cdm.io.common.ExportResult.ExportResultState;
@@ -22,6 +23,7 @@ import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 
 /**
@@ -43,7 +45,12 @@ public class CdmLightExportState
 
     private Map<Integer, SpecimenOrObservationBase> specimenStore = new HashMap<>();
     private Map<Integer, Reference> referenceStore = new HashMap<>();
-    private Map<Integer,List<TaxonNodeDto>> nodeChildrenMap = new HashMap<>();
+    private Map<UUID,List<TaxonNodeDto>> nodeChildrenMap = new HashMap<>();
+    private Map<UUID, OrderHelper> orderHelperMap = new HashMap();
+    private UUID classificationUUID = null;
+
+    private UUID rootUuid;
+    private int actualOrderIndex;
     /**
      * @param config
      */
@@ -195,15 +202,52 @@ public class CdmLightExportState
     /**
      * @return the nodeChildrenMap
      */
-    public Map<Integer, List<TaxonNodeDto>> getNodeChildrenMap() {
+    public Map<UUID, List<TaxonNodeDto>> getNodeChildrenMap() {
         return nodeChildrenMap;
     }
 
     /**
      * @param nodeChildrenMap the nodeChildrenMap to set
      */
-    public void setNodeChildrenMap(Map<Integer, List<TaxonNodeDto>> nodeChildrenMap) {
+    public void setNodeChildrenMap(Map<UUID, List<TaxonNodeDto>> nodeChildrenMap) {
         this.nodeChildrenMap = nodeChildrenMap;
+    }
+
+    public Map<UUID, OrderHelper> getOrderHelperMap() {
+        return orderHelperMap;
+    }
+
+    public void setOrderHelperMap(Map<UUID, OrderHelper> orderHelperMap) {
+        this.orderHelperMap = orderHelperMap;
+    }
+
+    public UUID getClassificationUUID(TaxonNode root) {
+        if (classificationUUID == null){
+            classificationUUID = root.getClassification().getUuid();
+        }
+        return classificationUUID;
+    }
+
+    public void setClassificationUUID(UUID classificationUUID) {
+        this.classificationUUID = classificationUUID;
+    }
+
+    public UUID getRootId() {
+        return rootUuid;
+    }
+
+    public void setRootId(UUID rootId) {
+        this.rootUuid = rootId;
+    }
+
+    public int getActualOrderIndexAndUpdate() {
+        int returnValue = actualOrderIndex;
+        actualOrderIndex++;
+        return returnValue;
+    }
+
+    public void setActualOrderIndex(int actualOrderIndex) {
+        this.actualOrderIndex = actualOrderIndex;
     }
 
 }
