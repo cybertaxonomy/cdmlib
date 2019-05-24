@@ -17,10 +17,9 @@ import org.springframework.transaction.TransactionStatus;
 
 import com.hp.hpl.jena.rdf.model.Resource;
 
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
-import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 
@@ -60,22 +59,22 @@ public class TermVocabularyOwlExport extends CdmExportBase<StructureTreeOwlExpor
     }
 
     private void addTerm(TermDto termDto, Resource vocabularyResource, StructureTreeOwlExportState state) {
-        DefinedTerm term = HibernateProxyHelper.deproxy(getTermService().load(termDto.getUuid()), DefinedTerm.class);
+        DefinedTermBase term = getTermService().load(termDto.getUuid());
         addTerm(term, vocabularyResource, state);
     }
 
-    private void addTerm(DefinedTerm term, Resource vocabularyResource, StructureTreeOwlExportState state) {
+    private void addTerm(DefinedTermBase term, Resource vocabularyResource, StructureTreeOwlExportState state) {
         Resource termResource = OwlExportUtil.createTermResource(term, state);
 
         vocabularyResource.addProperty(StructureTreeOwlExportState.propHasTerm, termResource);
         termResource.addProperty(StructureTreeOwlExportState.propHasVocabulary, vocabularyResource);
 
-        Set<DefinedTerm> generalizationOf = term.getGeneralizationOf();
-        for (DefinedTerm kindOf : generalizationOf) {
+        Set<DefinedTermBase> generalizationOf = term.getGeneralizationOf();
+        for (DefinedTermBase kindOf : generalizationOf) {
             termResource.addProperty(StructureTreeOwlExportState.propTermIsGeneralizationOf, OwlExportUtil.createTermResource(kindOf, state));
         }
-        Set<DefinedTerm> includes = term.getIncludes();
-        for (DefinedTerm partOf : includes) {
+        Set<DefinedTermBase> includes = term.getIncludes();
+        for (DefinedTermBase partOf : includes) {
             termResource.addProperty(StructureTreeOwlExportState.propTermIncludes, OwlExportUtil.createTermResource(partOf, state));
         }
     }
