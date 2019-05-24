@@ -35,6 +35,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.api.utility.UserHelper;
 import eu.etaxonomy.cdm.database.PermissionDeniedException;
+import eu.etaxonomy.cdm.format.ReferenceEllypsisFormatter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.name.Registration;
@@ -47,6 +48,7 @@ import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
+import eu.etaxonomy.cdm.persistence.dao.initializer.EntityInitStrategy;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -65,7 +67,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 @Transactional(readOnly=true)
 public class RegistrationWorkingSetService implements IRegistrationWorkingSetService {
 
-    public static final List<String> REGISTRATION_DTO_INIT_STRATEGY = Arrays.asList(new String []{
+    public static final EntityInitStrategy REGISTRATION_DTO_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
             "blockedBy",
             // typeDesignation
             "typeDesignations.typeStatus",
@@ -84,6 +86,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
             "name.$",
             "name.nomenclaturalReference.authorship.$",
             "name.nomenclaturalReference.inReference.authorship.$",
+            "name.nomenclaturalReference.inReference.inReference.authorship.$",
             "name.rank",
             "name.homotypicalGroup.typifiedNames",
             "name.status.type",
@@ -91,7 +94,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
             // institution
             "institution",
             }
-    );
+    )).extend("typeDesignations.citation", ReferenceEllypsisFormatter.INIT_STRATEGY, false);
 
     public  List<String> DERIVEDUNIT_INIT_STRATEGY = Arrays.asList(new String[]{
            "*", // initialize all related entities to allow DerivedUnit conversion, see DerivedUnitConverter.copyPropertiesTo()
@@ -168,7 +171,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
      */
     @Override
     public RegistrationDTO loadDtoById(Integer id) {
-        Registration reg = repo.getRegistrationService().load(id, REGISTRATION_DTO_INIT_STRATEGY);
+        Registration reg = repo.getRegistrationService().load(id, REGISTRATION_DTO_INIT_STRATEGY.getPropertyPaths());
         inititializeSpecimen(reg);
         return new RegistrationDTO(reg);
     }
@@ -180,7 +183,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
      */
     @Override
     public RegistrationDTO loadDtoByUuid(UUID uuid) {
-        Registration reg = repo.getRegistrationService().load(uuid, REGISTRATION_DTO_INIT_STRATEGY);
+        Registration reg = repo.getRegistrationService().load(uuid, REGISTRATION_DTO_INIT_STRATEGY.getPropertyPaths());
         inititializeSpecimen(reg);
         return new RegistrationDTO(reg);
     }
@@ -188,7 +191,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
     @Override
     public Pager<RegistrationDTO> pageDTOs(String identifier, Integer pageIndex,  Integer pageSize) throws IOException {
 
-        Pager<Registration> regPager = repo.getRegistrationService().pageByIdentifier(identifier, pageIndex, pageSize, REGISTRATION_DTO_INIT_STRATEGY);
+        Pager<Registration> regPager = repo.getRegistrationService().pageByIdentifier(identifier, pageIndex, pageSize, REGISTRATION_DTO_INIT_STRATEGY.getPropertyPaths());
         return convertToDTOPager(regPager);
     }
 
@@ -226,7 +229,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
         }
 
         Pager<Registration> pager = repo.getRegistrationService().page(submitter, includedStatus, identifierFilterPattern, taxonNameFilterPattern,
-                typeStatusFilter, PAGE_SIZE, pageIndex , orderHints, REGISTRATION_DTO_INIT_STRATEGY);
+                typeStatusFilter, PAGE_SIZE, pageIndex , orderHints, REGISTRATION_DTO_INIT_STRATEGY.getPropertyPaths());
 
         Pager<RegistrationDTO> dtoPager = convertToDTOPager(pager);
         if(logger.isDebugEnabled()){
@@ -252,7 +255,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
 
             Pager<Registration> pager = repo.getRegistrationService().page(submitterUuid, includedStatus,
                     identifierFilterPattern, taxonNameFilterPattern,
-                    typeDesignationStatusUuids, PAGE_SIZE, pageIndex , orderHints, REGISTRATION_DTO_INIT_STRATEGY);
+                    typeDesignationStatusUuids, PAGE_SIZE, pageIndex , orderHints, REGISTRATION_DTO_INIT_STRATEGY.getPropertyPaths());
 
             Pager<RegistrationDTO> dtoPager = convertToDTOPager(pager);
             if(logger.isDebugEnabled()){
@@ -271,7 +274,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
 
         Pager<Registration> regPager = repo.getRegistrationService().pageTaxomicInclusion(null, includedStatus,
             taxonNameFilterPattern, matchMode,
-            pageSize, pageIndex, orderHints, REGISTRATION_DTO_INIT_STRATEGY);
+            pageSize, pageIndex, orderHints, REGISTRATION_DTO_INIT_STRATEGY.getPropertyPaths());
 
         return convertToDTOPager(regPager);
     }
@@ -291,7 +294,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
 
         checkPermissions(reference);
 
-        Pager<Registration> pager = repo.getRegistrationService().page(Optional.of(reference), null, null, null, REGISTRATION_DTO_INIT_STRATEGY);
+        Pager<Registration> pager = repo.getRegistrationService().page(Optional.of(reference), null, null, null, REGISTRATION_DTO_INIT_STRATEGY.getPropertyPaths());
 
         /* for debugging https://dev.e-taxonomy.eu/redmine/issues/7331 */
         // debugIssue7331(pager);
@@ -386,7 +389,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
 
         repo.getReferenceService().load(reference.getUuid()); // needed to avoid the problem described in #7331
 
-        Pager<Registration> pager = repo.getRegistrationService().page(Optional.of(reference), null, null, null, REGISTRATION_DTO_INIT_STRATEGY);
+        Pager<Registration> pager = repo.getRegistrationService().page(Optional.of(reference), null, null, null, REGISTRATION_DTO_INIT_STRATEGY.getPropertyPaths());
 
         /* for debugging https://dev.e-taxonomy.eu/redmine/issues/7331 */
         // debugIssue7331(pager);

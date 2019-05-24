@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.persistence.dao.initializer;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * @author a.kohlbecker
  * @since Nov 6, 2018
@@ -33,15 +35,27 @@ public class EntityInitStrategy {
         }
     }
 
-    public void extend(String basePath, List<String> extensions, boolean basePathIsCollection){
+    /**
+     * Extends the property base bath by all property definitions in the <code>extensions</code>.
+     *
+     * @param basePath can be NUll or empty to just append the extensions to the init strategies.
+     * @param extensions
+     * @param basePathIsCollection
+     */
+    public EntityInitStrategy extend(String basePath, List<String> extensions, boolean basePathIsCollection){
         for(String appendix : extensions){
             if(basePathIsCollection && (appendix.startsWith("$") || appendix.startsWith("*"))){
                 // need to suppress wildcards, see AdvancedBeanInitializer.initializeNodeWildcard()
                 continue;
             }
-            propertyPaths.add(basePath + DOT + appendix);
-            propertyPaths.remove(basePath);
+            if(!StringUtils.isEmpty(basePath)){
+                propertyPaths.add(basePath + DOT + appendix);
+                propertyPaths.remove(basePath);
+            } else {
+                propertyPaths.add(appendix);
+            }
         }
+        return this;
     }
 
 

@@ -61,14 +61,14 @@ public class ReferenceEllypsisFormatter extends AbstractEllypsisFormatter<Refere
      * outside of a hibernate session
      */
     public static List<String> INIT_STRATEGY = Arrays.asList(
-            "authorship.$",
             "type",
+            "authorship.teamMembers",
             "inReference.type",
-            "inReference.authorship.$",
+            "inReference.authorship.teamMembers",
             "inReference.inReference.type",
-            "inReference.inReference.authorship.$",
+            "inReference.inReference.authorship.teamMembers",
             "inReference.inReference.inReference.type",
-            "inReference.inReference.inReference.authorship.$");
+            "inReference.inReference.inReference.authorship.teamMembers");
 
     public enum LabelType {
         NOMENCLATURAL,
