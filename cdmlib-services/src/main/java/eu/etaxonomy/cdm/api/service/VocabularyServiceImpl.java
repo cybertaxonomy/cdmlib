@@ -11,7 +11,9 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -141,7 +143,12 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
 
     @Override
     public List<TermVocabularyDto> findVocabularyDtoByTermType(TermType termType) {
-        return dao.findVocabularyDtoByTermType(termType);
+        return findVocabularyDtoByTermTypes(Collections.singleton(termType));
+    }
+
+    @Override
+    public List<TermVocabularyDto> findVocabularyDtoByTermTypes(Set<TermType> termTypes) {
+        return dao.findVocabularyDtoByTermTypes(termTypes);
     }
 
     @Transactional(readOnly = false)

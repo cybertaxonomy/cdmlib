@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.term;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -296,14 +297,14 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
     }
 
     @Override
-    public List<TermVocabularyDto> findVocabularyDtoByTermType(TermType termType) {
+    public List<TermVocabularyDto> findVocabularyDtoByTermTypes(Set<TermType> termTypes) {
         String queryString = ""
-                + "select v.uuid, r "
+                + "select v.uuid, v.termType, r "
                 + "from TermVocabulary as v LEFT JOIN v.representations AS r "
-                + "where v.termType = :termType "
+                + "where v.termType in (:termTypes) "
                 ;
         Query query =  getSession().createQuery(queryString);
-        query.setParameter("termType", termType);
+        query.setParameterList("termTypes", termTypes);
 
         @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
@@ -311,20 +312,26 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
         Map<UUID, TermVocabularyDto> dtoMap = new HashMap<>(result.size());
         for (Object[] elements : result) {
             UUID uuid = (UUID)elements[0];
+            TermType termType = (TermType)elements[1];
             if(dtoMap.containsKey(uuid)){
-                dtoMap.get(uuid).addRepresentation((Representation)elements[1]);
+                dtoMap.get(uuid).addRepresentation((Representation)elements[2]);
             } else {
                 Set<Representation> representations = new HashSet<>();
-                if(elements[1] instanceof Representation) {
-                    representations = new HashSet<Representation>(1);
-                    representations.add((Representation)elements[1]);
+                if(elements[2] instanceof Representation) {
+                    representations = new HashSet<Representation>();
+                    representations.add((Representation)elements[2]);
                 } else {
-                    representations = (Set<Representation>)elements[1];
+                    representations = (Set<Representation>)elements[2];
                 }
                 dtoMap.put(uuid, new TermVocabularyDto(uuid, representations, termType));
             }
         }
         return new ArrayList<>(dtoMap.values());
+    }
+
+    @Override
+    public List<TermVocabularyDto> findVocabularyDtoByTermType(TermType termType) {
+        return findVocabularyDtoByTermTypes(Collections.singleton(termType));
     }
 
     @Override
