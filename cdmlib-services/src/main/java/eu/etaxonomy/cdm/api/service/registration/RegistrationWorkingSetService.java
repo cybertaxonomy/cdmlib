@@ -75,8 +75,8 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
             "typeDesignations.typeSpecimen",
             "typeDesignations.typeName.$",
             "typeDesignations.citation",
-            "typeDesignations.annotations", // needed for AnnotatableEntity.clone() in DerivedUnitConverter.copyPropertiesTo
-            "typeDesignations.markers",     // needed for AnnotatableEntity.clone() in DerivedUnitConverter.copyPropertiesTo
+            "typeDesignations.annotations",   // needed for AnnotatableEntity.clone() in DerivedUnitConverter.copyPropertiesTo
+            "typeDesignations.markers",       // needed for AnnotatableEntity.clone() in DerivedUnitConverter.copyPropertiesTo
             "typeDesignations.registrations", // DerivedUnitConverter.copyPropertiesTo(TARGET n)
 
             // name
@@ -461,7 +461,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
                             continue;
                         }
                         if(DerivedUnit.class.isAssignableFrom(sob.getClass())) {
-                            defaultBeanInitializer.initialize(sob, DERIVEDUNIT_INIT_STRATEGY);
+                            defaultBeanInitializer.initialize(sob, DERIVEDUNIT_INIT_STRATEGY.getPropertyPaths());
                             nextSobs = ((DerivedUnit)sob).getOriginals();
                         }
                         if(sob instanceof FieldUnit){
