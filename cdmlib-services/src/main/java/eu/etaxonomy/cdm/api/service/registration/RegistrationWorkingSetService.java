@@ -75,18 +75,13 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
             "typeDesignations.typeSpecimen",
             "typeDesignations.typeName.$",
             "typeDesignations.citation",
-            "typeDesignations.citation.authorship.$",
-            "typeDesignations.citation.inReference.authorship.$",
-            "typeDesignations.citation.inReference.inReference.authorship.$",
             "typeDesignations.annotations", // needed for AnnotatableEntity.clone() in DerivedUnitConverter.copyPropertiesTo
-            "typeDesignations.markers", // needed for AnnotatableEntity.clone() in DerivedUnitConverter.copyPropertiesTo
+            "typeDesignations.markers",     // needed for AnnotatableEntity.clone() in DerivedUnitConverter.copyPropertiesTo
             "typeDesignations.registrations", // DerivedUnitConverter.copyPropertiesTo(TARGET n)
 
             // name
             "name.$",
-            "name.nomenclaturalReference.authorship.$",
-            "name.nomenclaturalReference.inReference.authorship.$",
-            "name.nomenclaturalReference.inReference.inReference.authorship.$",
+            "name.nomenclaturalReference",
             "name.rank",
             "name.homotypicalGroup.typifiedNames",
             "name.status.type",
@@ -94,19 +89,19 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
             // institution
             "institution",
             }
-    )).extend("typeDesignations.citation", ReferenceEllypsisFormatter.INIT_STRATEGY, false);
+            ))
+            .extend("typeDesignations.citation", ReferenceEllypsisFormatter.INIT_STRATEGY, false)
+            .extend("name.nomenclaturalReference", ReferenceEllypsisFormatter.INIT_STRATEGY, false);
 
-    public  List<String> DERIVEDUNIT_INIT_STRATEGY = Arrays.asList(new String[]{
+    public  EntityInitStrategy DERIVEDUNIT_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String[]{
            "*", // initialize all related entities to allow DerivedUnit conversion, see DerivedUnitConverter.copyPropertiesTo()
            "derivedFrom.$",
            "derivedFrom.type", // TODO remove?
            "derivedFrom.originals.derivationEvents", // important!!
            "specimenTypeDesignations.typifiedNames.typeDesignations", // important!!
-           "mediaSpecimen.sources.citation.authorship.$",
-           "mediaSpecimen.sources.citation.inReference.authorship.$",
-           "mediaSpecimen.sources.citation.inReference.inReference.authorship.$",
+           "mediaSpecimen.sources.citation",
            "collection.institute"// see CollectionCaptionGenerator
-   });
+   })).extend("mediaSpecimen.sources.citation", ReferenceEllypsisFormatter.INIT_STRATEGY, false);
 
    public List<String> FIELDUNIT_INIT_STRATEGY = Arrays.asList(new String[]{
           "$",
@@ -125,19 +120,11 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
           "blockedBy.blockedBy",
           // typeDesignation
           "blockedBy.typeDesignations.typeStatus",
-//          "typeDesignations.typifiedNames.typeDesignations", // important !!
-//          "typeDesignations.typeSpecimen",
-//          "typeDesignations.typeName.$",
-//          "typeDesignations.citation",
-//          "typeDesignations.citation.authorship.$",
-          // name
+//          "typeDesignations.typifiedNames.typeDesignations", // important !?
 //          "blockedBy.name.$",
           "blockedBy.name.nomenclaturalReference.authorship",
           "blockedBy.name.nomenclaturalReference.inReference",
           "blockedBy.name.rank",
-//          "name.homotypicalGroup.typifiedNames",
-//          "name.status.type",
-//          "name.typeDesignations",
           // institution
           "blockedBy.institution",
           }
