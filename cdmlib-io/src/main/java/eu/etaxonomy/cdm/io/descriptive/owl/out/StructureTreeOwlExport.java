@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.descriptive.owl.out;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
@@ -42,7 +43,7 @@ public class StructureTreeOwlExport extends CdmExportBase<StructureTreeOwlExport
         TransactionStatus txStatus = startTransaction(true);
 
         // export feature trees
-        state.getConfig().getFeatureTrees().forEach(tree->exportTree(tree, state));
+        state.getConfig().getFeatureTreeUuids().forEach(tree->exportTree(tree, state));
 
         // write export data to file
         exportStream = new ByteArrayOutputStream();
@@ -52,7 +53,9 @@ public class StructureTreeOwlExport extends CdmExportBase<StructureTreeOwlExport
         commitTransaction(txStatus);
     }
 
-    private void exportTree(FeatureTree featureTree, StructureTreeOwlExportState state){
+    private void exportTree(UUID featureTreeUuid, StructureTreeOwlExportState state){
+        FeatureTree featureTree = getFeatureTreeService().load(featureTreeUuid);
+
         FeatureNode rootNode = featureTree.getRoot();
 
         Resource featureTreeResource = OwlExportUtil.createFeatureTreeResource(featureTree, state);

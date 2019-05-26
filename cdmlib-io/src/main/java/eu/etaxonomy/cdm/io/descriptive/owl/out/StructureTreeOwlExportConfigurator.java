@@ -17,7 +17,6 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.ExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
 
 
 /**
@@ -33,7 +32,7 @@ public class StructureTreeOwlExportConfigurator extends ExportConfiguratorBase<S
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(StructureTreeOwlExportConfigurator.class);
 
-    private List<FeatureTree> featureTrees;
+    private List<UUID> featureTreeUuids;
     private List<UUID> vocabularyUuids;
 
 
@@ -59,16 +58,16 @@ public class StructureTreeOwlExportConfigurator extends ExportConfiguratorBase<S
         };
     }
 
-    public List<FeatureTree> getFeatureTrees() {
-        return featureTrees;
+    public List<UUID> getFeatureTreeUuids() {
+        return featureTreeUuids;
     }
 
     public List<UUID> getVocabularyUuids() {
         return vocabularyUuids;
     }
 
-    public void setFeatureTrees(List<FeatureTree> featureTrees) {
-        this.featureTrees = featureTrees;
+    public void setFeatureTreeUuids(List<UUID> featureTreeUuids) {
+        this.featureTreeUuids = featureTreeUuids;
     }
 
     public void setVocabularyUuids(List<UUID> vocabularyUuids) {

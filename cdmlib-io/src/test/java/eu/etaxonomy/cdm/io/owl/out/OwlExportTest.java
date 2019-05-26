@@ -22,6 +22,7 @@ import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
+import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultExport;
 import eu.etaxonomy.cdm.io.common.ExportDataWrapper;
@@ -53,6 +54,9 @@ public class OwlExportTest  extends CdmTransactionalIntegrationTest{
     private IClassificationService classificationService;
 
     @SpringBeanByType
+    private IFeatureTreeService featureTreeService;
+
+    @SpringBeanByType
     private ITaxonNodeService taxonNodeService;
 
 
@@ -61,7 +65,7 @@ public class OwlExportTest  extends CdmTransactionalIntegrationTest{
     public void testEmptyData(){
         File destinationFolder = null;
         StructureTreeOwlExportConfigurator config = StructureTreeOwlExportConfigurator.NewInstance();
-        config.setFeatureTrees(createFeatureTree());
+        config.setFeatureTreeUuids(createFeatureTree());
         config.setVocabularyUuids(Collections.EMPTY_LIST);
         config.setDestination(destinationFolder);
         config.setTarget(TARGET.EXPORT_DATA);
@@ -70,7 +74,7 @@ public class OwlExportTest  extends CdmTransactionalIntegrationTest{
         ExportDataWrapper<?> exportData = result.getExportData();
     }
 
-    public List<FeatureTree> createFeatureTree() {
+    public List<UUID> createFeatureTree() {
         FeatureTree tree = FeatureTree.NewInstance();
         TermVocabulary voc = TermVocabulary.NewInstance(TermType.Feature, "voc description", "vocabulary", "voc", URI.create("http://test.voc"));
 
@@ -99,7 +103,8 @@ public class OwlExportTest  extends CdmTransactionalIntegrationTest{
         voc.addTerm(featureC);
         FeatureNode nodeC = tree.getRoot().addChild(featureC);
 
-        return Collections.singletonList(tree);
+        featureTreeService.save(tree);
+        return Collections.singletonList(tree.getUuid());
     }
 
     @Override
