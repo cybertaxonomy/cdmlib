@@ -12,22 +12,19 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.stereotype.Component;
 
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.ResIterator;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
-import eu.etaxonomy.cdm.io.descriptive.owl.OwlConstants;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -52,18 +49,6 @@ public class StructureTreeOwlImport extends CdmImportBase<StructureTreeOwlImport
 
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(StructureTreeOwlImport.class);
 
-    private Property propHasSubStructure;
-    private Property propHasRepresentation;
-    private Property propHasRootNode;
-    private Property propUuid;
-    private Property propUri;
-    private Property propLabel;
-    private Property propLabelAbbrev;
-    private Property propLanguage;
-    private Property propLanguageUuid;
-    private Property propIsA;
-    private Property propType;
-    private Property propDescription;
 
     @Override
     protected boolean doCheck(StructureTreeOwlImportState state) {
@@ -75,35 +60,18 @@ public class StructureTreeOwlImport extends CdmImportBase<StructureTreeOwlImport
     public void doInvoke(StructureTreeOwlImportState state) {
         URI source = state.getConfig().getSource();
 
-        Model model = ModelFactory.createDefaultModel();
-        propHasSubStructure = model.createProperty(OwlConstants.PROPERTY_HAS_SUBSTRUCTURE);
-        propHasRepresentation = model.createProperty(OwlConstants.PROPERTY_HAS_REPRESENTATION);
-        propHasRootNode = model.createProperty(OwlConstants.PROPERTY_HAS_ROOT_NODE);
-        propUuid = model.createProperty(OwlConstants.PROPERTY_UUID);
-        propUri = model.createProperty(OwlConstants.PROPERTY_URI);
-        propLabel = model.createProperty(OwlConstants.PROPERTY_LABEL);
-        propLabelAbbrev = model.createProperty(OwlConstants.PROPERTY_LABEL_ABBREV);
-        propLanguage = model.createProperty(OwlConstants.PROPERTY_LANGUAGE);
-        propLanguageUuid = model.createProperty(OwlConstants.PROPERTY_LANGUAGE_UUID);
-        propIsA = model.createProperty(OwlConstants.PROPERTY_IS_A);
-        propType = model.createProperty(OwlConstants.PROPERTY_TYPE);
-        propDescription = model.createProperty(OwlConstants.PROPERTY_DESCRIPTION);
+        state.getModel().read(source.toString());
 
-        model.read(source.toString());
-
-        List<FeatureTree> featureTrees = new ArrayList<>();
         //get all trees
-        ResIterator iterator = model.listResourcesWithProperty(propHasRootNode);
+        ResIterator iterator = state.getModel().listResourcesWithProperty(StructureTreeOwlImportState.propHasRootNode);
         while(iterator.hasNext()){
             Resource tree = iterator.next();
-            String type = tree.getProperty(propType).getString();
+            String type = tree.getProperty(StructureTreeOwlImportState.propType).getString();
             FeatureTree featureTree = FeatureTree.NewInstance(TermType.getByKey(type));
-            featureTree.setTitleCache(tree.getProperty(propLabel).getString(), true);
+            featureTree.setTitleCache(tree.getProperty(StructureTreeOwlImportState.propLabel).getString(), true);
 
-            Resource rootNode = tree.getProperty(propHasRootNode).getResource();
-            rootNode.listProperties(propHasSubStructure).forEachRemaining(prop->createNode(featureTree.getRoot(), prop, featureTree.getTitleCache(), model, state));
-
-            featureTrees.add(featureTree);
+            Resource rootNode = tree.getProperty(StructureTreeOwlImportState.propHasRootNode).getResource();
+            rootNode.listProperties(StructureTreeOwlImportState.propHasSubStructure).forEachRemaining(prop->createNode(featureTree.getRoot(), prop, featureTree.getTitleCache(), state.getModel(), state));
 
             getFeatureTreeService().save(featureTree);
         }
@@ -112,42 +80,19 @@ public class StructureTreeOwlImport extends CdmImportBase<StructureTreeOwlImport
     private void createNode(FeatureNode parent, Statement nodeStatement, String treeLabel, Model model, StructureTreeOwlImportState state) {
         Resource nodeResource = model.createResource(nodeStatement.getObject().toString());
 
-        TermType termType = TermType.getByKey(nodeResource.getProperty(propType).getString());
-        String uriString = nodeResource.hasProperty(propUri)?nodeResource.getProperty(propUri).toString():null;
-
         Collection<TermDto> dtos = new ArrayList<>();
 
-        // check representations if term already exists
+        // import representations
         Set<Representation> representations = new HashSet<>();
-        nodeResource.listProperties(propHasRepresentation).forEachRemaining(r->representations.add(createRepresentation(r, model)));
+        nodeResource.listProperties(StructureTreeOwlImportState.propHasRepresentation).forEachRemaining(r->representations.add(createRepresentation(r, model)));
         if(representations.isEmpty()){
-            logger.error("No representations found for term: "+nodeResource.getProperty(propUuid));
+            logger.error("No representations found for term: "+nodeResource.getProperty(StructureTreeOwlImportState.propUuid));
             return;
         }
 
-        DefinedTermBase term = null;
-        String termLabel = null;
-        for (Representation representation : representations) {
-            termLabel = representation.getLabel();
-            if(uriString!=null){
-                URI uri = URI.create(uriString);
-                dtos = getTermService().findByUriAsDto(uri, termLabel, termType);
-            }
-            else{
-                dtos = getTermService().findByTitleAsDto(termLabel, termType);
-            }
-            if(dtos.size()>1){
-                logger.warn("More than one term was found for: "+termLabel+"\nUsing the first one found");
-            }
-            if(dtos.size()>=1){
-                term = getTermService().load(dtos.iterator().next().getUuid());
-            }
-            if(term!=null){
-                break;
-            }
-        }
-
+        DefinedTermBase term = getTermService().load(dtos.iterator().next().getUuid());
         if(term==null){
+            TermType termType = TermType.getByKey(nodeResource.getProperty(StructureTreeOwlImportState.propType).getString());
             // create new term
             if(termType.equals(TermType.Feature)){
                 term = Feature.NewInstance();
@@ -161,7 +106,12 @@ public class StructureTreeOwlImport extends CdmImportBase<StructureTreeOwlImport
                     term.addRepresentation(representation);
                 }
             }
-            IdentifiableSource importSource = IdentifiableSource.NewDataImportInstance(termLabel);
+            String uriString = nodeResource.hasProperty(StructureTreeOwlImportState.propUri)?nodeResource.getProperty(StructureTreeOwlImportState.propUri).toString():null;
+            if(CdmUtils.isNotBlank(uriString)){
+                term.setUri(URI.create(uriString));
+            }
+
+            IdentifiableSource importSource = IdentifiableSource.NewDataImportInstance("Import of term tree "+treeLabel);
             importSource.setCitation(state.getConfig().getSourceReference());
             term.addSource(importSource);
             getTermService().save(term);
@@ -173,14 +123,14 @@ public class StructureTreeOwlImport extends CdmImportBase<StructureTreeOwlImport
 
         FeatureNode<?> childNode = parent.addChild(term);
 
-        nodeResource.listProperties(propHasSubStructure).forEachRemaining(prop->createNode(childNode, prop, treeLabel, model, state));
+        nodeResource.listProperties(StructureTreeOwlImportState.propHasSubStructure).forEachRemaining(prop->createNode(childNode, prop, treeLabel, model, state));
     }
 
     private Representation createRepresentation(Statement repr, Model model) {
         Resource repsentationResource = model.createResource(repr.getObject().toString());
 
-        String languageLabel = repsentationResource.getProperty(propLanguage).getString();
-        UUID languageUuid = UUID.fromString(repsentationResource.getProperty(propLanguageUuid).getString());
+        String languageLabel = repsentationResource.getProperty(StructureTreeOwlImportState.propLanguage).getString();
+        UUID languageUuid = UUID.fromString(repsentationResource.getProperty(StructureTreeOwlImportState.propLanguageUuid).getString());
         DefinedTermBase termBase = getTermService().load(languageUuid);
         Language language = null;
         if(termBase.isInstanceOf(Language.class)){
@@ -193,9 +143,9 @@ public class StructureTreeOwlImport extends CdmImportBase<StructureTreeOwlImport
             language = Language.getDefaultLanguage();
         }
 
-        String abbreviatedLabel = repsentationResource.hasProperty(propLabelAbbrev)?repsentationResource.getProperty(propLabelAbbrev).toString():null;
-        String label = repsentationResource.getProperty(propLabel).getString();
-        String description = repsentationResource.hasProperty(propDescription)?repsentationResource.getProperty(propDescription).getString():null;
+        String abbreviatedLabel = repsentationResource.hasProperty(StructureTreeOwlImportState.propLabelAbbrev)?repsentationResource.getProperty(StructureTreeOwlImportState.propLabelAbbrev).toString():null;
+        String label = repsentationResource.getProperty(StructureTreeOwlImportState.propLabel).getString();
+        String description = repsentationResource.hasProperty(StructureTreeOwlImportState.propDescription)?repsentationResource.getProperty(StructureTreeOwlImportState.propDescription).getString():null;
         Representation representation = Representation.NewInstance(description, label, abbreviatedLabel, language);
 
         return representation;
