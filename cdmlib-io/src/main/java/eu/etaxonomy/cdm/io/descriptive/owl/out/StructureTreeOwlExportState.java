@@ -13,12 +13,10 @@ import java.io.File;
 import org.apache.log4j.Logger;
 
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Property;
 
 import eu.etaxonomy.cdm.io.common.ExportStateBase;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
-import eu.etaxonomy.cdm.io.descriptive.owl.OwlConstants;
+import eu.etaxonomy.cdm.io.descriptive.owl.OwlUtil;
 
 /**
  *
@@ -28,24 +26,6 @@ import eu.etaxonomy.cdm.io.descriptive.owl.OwlConstants;
  */
 public class StructureTreeOwlExportState extends ExportStateBase<StructureTreeOwlExportConfigurator, IExportTransformer, File>{
 
-    static Property propHasSubStructure;
-    static Property propHasRepresentation;
-    static Property propHasVocabulary;
-    static Property propHasRootNode;
-    static Property propHasTerm;
-    static Property propUuid;
-    static Property propUri;
-    static Property propLabel;
-    static Property propLabelAbbrev;
-    static Property propLanguage;
-    static Property propLanguageUuid;
-    static Property propIsA;
-    static Property propType;
-    static Property propDescription;
-
-    static Property propTermIsGeneralizationOf;
-    static Property propTermIncludes;
-
     private Model model;
 
     @SuppressWarnings("unused")
@@ -53,25 +33,7 @@ public class StructureTreeOwlExportState extends ExportStateBase<StructureTreeOw
 
     public StructureTreeOwlExportState(StructureTreeOwlExportConfigurator config) {
         super(config);
-        // create model properties
-        model = ModelFactory.createDefaultModel();
-        propHasSubStructure = model.createProperty(OwlConstants.PROPERTY_HAS_SUBSTRUCTURE);
-        propHasRepresentation = model.createProperty(OwlConstants.PROPERTY_HAS_REPRESENTATION);
-        propHasVocabulary = model.createProperty(OwlConstants.PROPERTY_HAS_VOCABULARY);
-        propHasRootNode = model.createProperty(OwlConstants.PROPERTY_HAS_ROOT_NODE);
-        propHasTerm = model.createProperty(OwlConstants.PROPERTY_HAS_TERM);
-        propUuid = model.createProperty(OwlConstants.PROPERTY_UUID);
-        propUri = model.createProperty(OwlConstants.PROPERTY_URI);
-        propLabel = model.createProperty(OwlConstants.PROPERTY_LABEL);
-        propLabelAbbrev = model.createProperty(OwlConstants.PROPERTY_LABEL_ABBREV);
-        propLanguage = model.createProperty(OwlConstants.PROPERTY_LANGUAGE);
-        propLanguageUuid = model.createProperty(OwlConstants.PROPERTY_LANGUAGE_UUID);
-        propIsA = model.createProperty(OwlConstants.PROPERTY_IS_A);
-        propType = model.createProperty(OwlConstants.PROPERTY_TYPE);
-        propDescription = model.createProperty(OwlConstants.PROPERTY_DESCRIPTION);
-
-        propTermIsGeneralizationOf = model.createProperty(OwlConstants.PROPERTY_TERM_IS_GENERALIZATION_OF);
-        propTermIncludes = model.createProperty(OwlConstants.PROPERTY_TERM_INCLUDES);
+        model = OwlUtil.createModel();
     }
 
     public Model getModel() {

@@ -8,12 +8,16 @@
 */
 package eu.etaxonomy.cdm.io.descriptive.owl;
 
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Property;
+
 /**
  * @author pplitzner
  * @since Apr 15, 2019
  *
  */
-public interface OwlConstants {
+public class OwlUtil {
 
     public static final String BASE_URI = "http://cybertaxonomy.eu/";
 
@@ -58,5 +62,48 @@ public interface OwlConstants {
     public final static String TREE = "tree";
     public final static String VOCABULARY = "vocabulary";
     public final static String TERM = "term";
+
+    public static Property propHasSubStructure;
+    public static Property propHasRepresentation;
+    public static Property propHasRootNode;
+    public static Property propUuid;
+    public static Property propUri;
+    public static Property propLabel;
+    public static Property propLabelAbbrev;
+    public static Property propLanguage;
+    public static Property propLanguageUuid;
+    public static Property propIsA;
+    public static Property propType;
+    public static Property propDescription;
+
+    public static Property propHasVocabulary;
+    public static Property propHasTerm;
+
+    public static Property propTermIsGeneralizationOf;
+    public static Property propTermIncludes;
+
+    public static Model createModel(){
+        Model model = ModelFactory.createDefaultModel();
+        propHasSubStructure = model.createProperty(OwlUtil.PROPERTY_HAS_SUBSTRUCTURE);
+        propHasRepresentation = model.createProperty(OwlUtil.PROPERTY_HAS_REPRESENTATION);
+        propHasRootNode = model.createProperty(OwlUtil.PROPERTY_HAS_ROOT_NODE);
+        propUuid = model.createProperty(OwlUtil.PROPERTY_UUID);
+        propUri = model.createProperty(OwlUtil.PROPERTY_URI);
+        propLabel = model.createProperty(OwlUtil.PROPERTY_LABEL);
+        propLabelAbbrev = model.createProperty(OwlUtil.PROPERTY_LABEL_ABBREV);
+        propLanguage = model.createProperty(OwlUtil.PROPERTY_LANGUAGE);
+        propLanguageUuid = model.createProperty(OwlUtil.PROPERTY_LANGUAGE_UUID);
+        propIsA = model.createProperty(OwlUtil.PROPERTY_IS_A);
+        propType = model.createProperty(OwlUtil.PROPERTY_TYPE);
+        propDescription = model.createProperty(OwlUtil.PROPERTY_DESCRIPTION);
+
+        propHasVocabulary = model.createProperty(OwlUtil.PROPERTY_HAS_VOCABULARY);
+        propHasTerm = model.createProperty(OwlUtil.PROPERTY_HAS_TERM);
+
+        propTermIsGeneralizationOf = model.createProperty(OwlUtil.PROPERTY_TERM_IS_GENERALIZATION_OF);
+        propTermIncludes = model.createProperty(OwlUtil.PROPERTY_TERM_INCLUDES);
+
+        return model;
+    }
 
 }

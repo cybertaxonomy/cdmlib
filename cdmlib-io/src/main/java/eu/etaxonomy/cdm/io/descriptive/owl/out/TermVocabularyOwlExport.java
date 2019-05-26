@@ -19,6 +19,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
+import eu.etaxonomy.cdm.io.descriptive.owl.OwlUtil;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
@@ -66,16 +67,16 @@ public class TermVocabularyOwlExport extends CdmExportBase<StructureTreeOwlExpor
     private void addTerm(DefinedTermBase term, Resource vocabularyResource, StructureTreeOwlExportState state) {
         Resource termResource = OwlExportUtil.createTermResource(term, state);
 
-        vocabularyResource.addProperty(StructureTreeOwlExportState.propHasTerm, termResource);
-        termResource.addProperty(StructureTreeOwlExportState.propHasVocabulary, vocabularyResource);
+        vocabularyResource.addProperty(OwlUtil.propHasTerm, termResource);
+        termResource.addProperty(OwlUtil.propHasVocabulary, vocabularyResource);
 
         Set<DefinedTermBase> generalizationOf = term.getGeneralizationOf();
         for (DefinedTermBase kindOf : generalizationOf) {
-            termResource.addProperty(StructureTreeOwlExportState.propTermIsGeneralizationOf, OwlExportUtil.createTermResource(kindOf, state));
+            termResource.addProperty(OwlUtil.propTermIsGeneralizationOf, OwlExportUtil.createTermResource(kindOf, state));
         }
         Set<DefinedTermBase> includes = term.getIncludes();
         for (DefinedTermBase partOf : includes) {
-            termResource.addProperty(StructureTreeOwlExportState.propTermIncludes, OwlExportUtil.createTermResource(partOf, state));
+            termResource.addProperty(OwlUtil.propTermIncludes, OwlExportUtil.createTermResource(partOf, state));
         }
     }
 

@@ -20,6 +20,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
+import eu.etaxonomy.cdm.io.descriptive.owl.OwlUtil;
 import eu.etaxonomy.cdm.model.term.FeatureNode;
 import eu.etaxonomy.cdm.model.term.FeatureTree;
 
@@ -61,7 +62,7 @@ public class StructureTreeOwlExport extends CdmExportBase<StructureTreeOwlExport
         Resource featureTreeResource = OwlExportUtil.createFeatureTreeResource(featureTree, state);
 
         Resource resourceRootNode = OwlExportUtil.createNodeResource(state, rootNode);
-        featureTreeResource.addProperty(StructureTreeOwlExportState.propHasRootNode, resourceRootNode);
+        featureTreeResource.addProperty(OwlUtil.propHasRootNode, resourceRootNode);
 
         addChildNode(rootNode, resourceRootNode, state);
     }
@@ -73,16 +74,16 @@ public class StructureTreeOwlExport extends CdmExportBase<StructureTreeOwlExport
             Resource nodeResource = OwlExportUtil.createNodeResource(state, child);
             // add term to node
             Resource termResource = OwlExportUtil.createTermResource(child.getTerm(), state);
-            resourceNode.addProperty(StructureTreeOwlExportState.propHasTerm, termResource);
+            resourceNode.addProperty(OwlUtil.propHasTerm, termResource);
             // add node to parent node
-            resourceNode.addProperty(StructureTreeOwlExportState.propHasSubStructure, nodeResource);
+            resourceNode.addProperty(OwlUtil.propHasSubStructure, nodeResource);
 
             // create vocabulary resource
             Resource vocabularyResource = OwlExportUtil.createVocabularyResource(child.getTerm().getVocabulary(), state);
             // add vocabulary to term
-            termResource.addProperty(StructureTreeOwlExportState.propHasVocabulary, vocabularyResource);
+            termResource.addProperty(OwlUtil.propHasVocabulary, vocabularyResource);
             // add term to vocabulary
-            vocabularyResource.addProperty(StructureTreeOwlExportState.propHasTerm, termResource);
+            vocabularyResource.addProperty(OwlUtil.propHasTerm, termResource);
 
             addChildNode(child, nodeResource, state);
         }
