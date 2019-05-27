@@ -45,6 +45,7 @@ public class CdmLightExportState
 
     private Map<Integer, SpecimenOrObservationBase> specimenStore = new HashMap<>();
     private Map<Integer, Reference> referenceStore = new HashMap<>();
+    private Map<Integer, UUID> nameStore = new HashMap<>();
     private Map<UUID,List<TaxonNodeDto>> nodeChildrenMap = new HashMap<>();
     private Map<UUID, OrderHelper> orderHelperMap = new HashMap();
     private UUID classificationUUID = null;
@@ -248,6 +249,14 @@ public class CdmLightExportState
 
     public void setActualOrderIndex(int actualOrderIndex) {
         this.actualOrderIndex = actualOrderIndex;
+    }
+
+    public Map<Integer, UUID> getNameStore() {
+        return nameStore;
+    }
+
+    public void setNameStore(Map<Integer, UUID> nameStore) {
+        this.nameStore = nameStore;
     }
 
 }

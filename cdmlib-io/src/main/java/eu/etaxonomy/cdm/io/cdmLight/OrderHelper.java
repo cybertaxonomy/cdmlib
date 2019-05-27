@@ -75,6 +75,9 @@ public class OrderHelper {
      * @param children the children to set
      */
     public void addChildren(List<OrderHelper> children) {
+        if (children == null){
+            return;
+        }
         if (this.children == null){
            this.children = new ArrayList();
         }
