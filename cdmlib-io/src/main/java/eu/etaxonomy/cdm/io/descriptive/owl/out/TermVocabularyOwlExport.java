@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.persistence.dto.TermDto;
  * @since Jul 3, 2017
  *
  */
-@Component
+@Component("termVocabularyOwlExport")
 public class TermVocabularyOwlExport extends CdmExportBase<StructureTreeOwlExportConfigurator, StructureTreeOwlExportState, IExportTransformer, File> {
 
     private static final long serialVersionUID = 3197379920692366008L;

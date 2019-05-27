@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
  * @since May 27, 2019
  *
  */
-@Component("structureTreeOwlImport")
+@Component("termVocabularyOwlImport")
 public class TermVocabularyOwlImport extends CdmImportBase<StructureTreeOwlImportConfigurator, StructureTreeOwlImportState> {
 
     private static final long serialVersionUID = -3659780404413458511L;

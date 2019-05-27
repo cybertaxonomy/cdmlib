@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.term.FeatureTree;
  * @since Jul 3, 2017
  *
  */
-@Component
+@Component("structureTreeOwlExport")
 public class StructureTreeOwlExport extends CdmExportBase<StructureTreeOwlExportConfigurator, StructureTreeOwlExportState, IExportTransformer, File> {
 
     private static final long serialVersionUID = 3197379920692366008L;
