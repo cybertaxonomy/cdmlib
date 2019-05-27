@@ -67,16 +67,16 @@ public class StructureTreeOwlExport extends CdmExportBase<StructureTreeOwlExport
         addChildNode(rootNode, resourceRootNode, state);
     }
 
-    private void addChildNode(FeatureNode node, Resource resourceNode, StructureTreeOwlExportState state){
-        List<FeatureNode> childNodes = node.getChildNodes();
+    private void addChildNode(FeatureNode parentNode, Resource parentResourceNode, StructureTreeOwlExportState state){
+        List<FeatureNode> childNodes = parentNode.getChildNodes();
         for (FeatureNode child : childNodes) {
             // create node resource with term
             Resource nodeResource = OwlExportUtil.createNodeResource(state, child);
             // add term to node
             Resource termResource = OwlExportUtil.createTermResource(child.getTerm(), state);
-            resourceNode.addProperty(OwlUtil.propHasTerm, termResource);
+            nodeResource.addProperty(OwlUtil.propHasTerm, termResource);
             // add node to parent node
-            resourceNode.addProperty(OwlUtil.propHasSubStructure, nodeResource);
+            parentResourceNode.addProperty(OwlUtil.propHasSubStructure, nodeResource);
 
             // create vocabulary resource
             Resource vocabularyResource = OwlExportUtil.createVocabularyResource(child.getTerm().getVocabulary(), state);
