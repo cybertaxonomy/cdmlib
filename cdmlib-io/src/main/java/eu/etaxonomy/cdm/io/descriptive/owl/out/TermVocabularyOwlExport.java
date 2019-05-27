@@ -59,12 +59,12 @@ public class TermVocabularyOwlExport extends CdmExportBase<StructureTreeOwlExpor
 
     }
 
-    private void addTerm(TermDto termDto, Resource vocabularyResource, StructureTreeOwlExportState state) {
+    private Resource addTerm(TermDto termDto, Resource vocabularyResource, StructureTreeOwlExportState state) {
         DefinedTermBase term = getTermService().load(termDto.getUuid());
-        addTerm(term, vocabularyResource, state);
+        return addTerm(term, vocabularyResource, state);
     }
 
-    private void addTerm(DefinedTermBase term, Resource vocabularyResource, StructureTreeOwlExportState state) {
+    private Resource addTerm(DefinedTermBase term, Resource vocabularyResource, StructureTreeOwlExportState state) {
         Resource termResource = OwlExportUtil.createTermResource(term, state);
 
         vocabularyResource.addProperty(OwlUtil.propHasTerm, termResource);
@@ -72,12 +72,15 @@ public class TermVocabularyOwlExport extends CdmExportBase<StructureTreeOwlExpor
 
         Set<DefinedTermBase> generalizationOf = term.getGeneralizationOf();
         for (DefinedTermBase kindOf : generalizationOf) {
-            termResource.addProperty(OwlUtil.propTermIsGeneralizationOf, OwlExportUtil.createTermResource(kindOf, state));
+            Resource kindOfResource = addTerm(kindOf, vocabularyResource, state);
+            termResource.addProperty(OwlUtil.propTermIsGeneralizationOf, kindOfResource);
         }
         Set<DefinedTermBase> includes = term.getIncludes();
         for (DefinedTermBase partOf : includes) {
-            termResource.addProperty(OwlUtil.propTermIncludes, OwlExportUtil.createTermResource(partOf, state));
+            Resource partOfResource = addTerm(partOf, vocabularyResource, state);
+            termResource.addProperty(OwlUtil.propTermIncludes, partOfResource);
         }
+        return termResource;
     }
 
     @Override
