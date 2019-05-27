@@ -19,11 +19,9 @@ import org.hibernate.criterion.Projections;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Repository;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.metadata.CdmPreference;
 import eu.etaxonomy.cdm.model.metadata.CdmPreference.PrefKey;
 import eu.etaxonomy.cdm.model.metadata.IPreferencePredicate;
-import eu.etaxonomy.cdm.model.metadata.PreferencePredicate;
 import eu.etaxonomy.cdm.model.metadata.PreferenceSubject;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.common.IPreferenceDao;
@@ -56,13 +54,10 @@ public class PreferenceDaoImpl extends DaoBase implements IPreferenceDao, Initia
 		if (pref != null){
 			getSession().delete(pref);
 		}
-		IPreferencePredicate<?> predicate = PreferencePredicate.getByKey(preference.getPredicate());
-		if (predicate == null ||
-		        !preference.isAllowOverride() ||
-		        !CdmUtils.nullSafeEqual(nullOrToString(predicate.getDefaultValue()), preference.getValue())){
-		    //do not save if value is default value with allow override
+//		IPreferencePredicate<?> predicate = PreferencePredicate.getByKey(preference.getPredicate());
+//		if (predicate == null ||
+//		        !preference.isAllowOverride()){
 		    getSession().save(preference);
-		}
 
 		//old
 //		if (pref == null){
@@ -71,6 +66,15 @@ public class PreferenceDaoImpl extends DaoBase implements IPreferenceDao, Initia
 //			getSessionFactory().openStatelessSession().update(preference);
 //		}
 	}
+
+	@Override
+    public void remove(PrefKey key){
+        CdmPreference pref = get(key);
+        if (pref != null){
+            getSession().delete(pref);
+        }
+
+    }
 
     /**
      * Return null if obj is null, obj.toString otherwise
