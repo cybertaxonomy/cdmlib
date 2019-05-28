@@ -139,7 +139,7 @@ public class StructureTreeOwlImportTest extends CdmTransactionalIntegrationTest 
         assertEquals("wrong number of vocabularies", 1, vocs.size());
         TermVocabulary termVoc = vocs.iterator().next();
         assertEquals("Wrong vocabulary label", vocLabel, termVoc.getTitleCache());
-        assertEquals(4, termVoc.getTerms().size());
+        assertEquals(3, termVoc.getTerms().size());
         assertTrue("Term not included in vocabulary", termVoc.getTerms().contains(inflorescence));
 
     }
