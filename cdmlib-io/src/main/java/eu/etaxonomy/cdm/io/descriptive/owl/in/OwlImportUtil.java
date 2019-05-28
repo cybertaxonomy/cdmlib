@@ -47,13 +47,14 @@ public class OwlImportUtil {
         else{
             term = DefinedTerm.NewInstance(termType);
         }
-    
+        term.setUuid(UUID.fromString(termResource.getProperty(OwlUtil.propUuid).getString()));
+
         // term URI
         String uriString = termResource.hasProperty(OwlUtil.propUri)?termResource.getProperty(OwlUtil.propUri).toString():null;
         if(CdmUtils.isNotBlank(uriString)){
             term.setUri(URI.create(uriString));
         }
-    
+
         // import representations
         Set<Representation> representations = new HashSet<>();
         termResource.listProperties(OwlUtil.propHasRepresentation).forEachRemaining(r->representations.add(OwlImportUtil.createRepresentation(termService, r, model)));
@@ -61,11 +62,11 @@ public class OwlImportUtil {
             StructureTreeOwlImport.logger.error("No representations found for term: "+termResource.getProperty(OwlUtil.propUuid));
         }
         representations.forEach(rep->term.addRepresentation(rep));
-    
+
         IdentifiableSource importSource = IdentifiableSource.NewDataImportInstance(termResource.getURI());
         importSource.setCitation(state.getConfig().getSourceReference());
         term.addSource(importSource);
-    
+
         return term;
     }
 
@@ -73,13 +74,14 @@ public class OwlImportUtil {
         TermType termType = TermType.getByKey(vocabularyResource.getProperty(OwlUtil.propType).getString());
         // create new vocabulary
         TermVocabulary vocabulary = TermVocabulary.NewInstance(termType);
-    
+        vocabulary.setUuid(UUID.fromString(vocabularyResource.getProperty(OwlUtil.propUuid).getString()));
+
         // voc URI
         String vocUriString = vocabularyResource.hasProperty(OwlUtil.propUri)?vocabularyResource.getProperty(OwlUtil.propUri).toString():null;
         if(CdmUtils.isNotBlank(vocUriString)){
             vocabulary.setUri(URI.create(vocUriString));
         }
-    
+
         // voc representations
         Set<Representation> vocRepresentations = new HashSet<>();
         vocabularyResource.listProperties(OwlUtil.propHasRepresentation).forEachRemaining(r->vocRepresentations.add(OwlImportUtil.createRepresentation(termService, r, model)));
@@ -87,18 +89,18 @@ public class OwlImportUtil {
             StructureTreeOwlImport.logger.error("No representations found for vocabulary: "+vocabularyResource.getProperty(OwlUtil.propUuid));
         }
         vocRepresentations.forEach(rep->vocabulary.addRepresentation(rep));
-    
+
         IdentifiableSource importSource = IdentifiableSource.NewDataImportInstance(vocabularyResource.getURI());
         importSource.setCitation(state.getConfig().getSourceReference());
         vocabulary.addSource(importSource);
-    
-    
+
+
         return vocabulary;
     }
 
     static Representation createRepresentation(ITermService termService, Statement repr, Model model) {
         Resource repsentationResource = model.createResource(repr.getObject().toString());
-    
+
         String languageLabel = repsentationResource.getProperty(OwlUtil.propLanguage).getString();
         UUID languageUuid = UUID.fromString(repsentationResource.getProperty(OwlUtil.propLanguageUuid).getString());
         DefinedTermBase termBase = termService.load(languageUuid);
@@ -112,12 +114,12 @@ public class OwlImportUtil {
         if(language==null){
             language = Language.getDefaultLanguage();
         }
-    
+
         String abbreviatedLabel = repsentationResource.hasProperty(OwlUtil.propLabelAbbrev)?repsentationResource.getProperty(OwlUtil.propLabelAbbrev).toString():null;
         String label = repsentationResource.getProperty(OwlUtil.propLabel).getString();
         String description = repsentationResource.hasProperty(OwlUtil.propDescription)?repsentationResource.getProperty(OwlUtil.propDescription).getString():null;
         Representation representation = Representation.NewInstance(description, label, abbreviatedLabel, language);
-    
+
         return representation;
     }
 
