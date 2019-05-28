@@ -88,7 +88,7 @@ public class StructureTreeOwlImportTest extends CdmTransactionalIntegrationTest 
         this.setComplete();
         this.endTransaction();
 
-        String treeLabel = "TestStructures";
+        String treeLabel = "test_structures";
         List<FeatureTree> trees = featureTreeService.listByTitle(FeatureTree.class, treeLabel, MatchMode.EXACT, null, null, null, null, null);
         List<String> nodeProperties = new ArrayList<>();
         nodeProperties.add("term");
@@ -99,11 +99,11 @@ public class StructureTreeOwlImportTest extends CdmTransactionalIntegrationTest 
         assertEquals("Wrong number of distinct features", 4, tree.getDistinctFeatures().size());
         List rootChildren = tree.getRootChildren();
         assertEquals("Wrong number of root children", 1, rootChildren.size());
-        Object root = rootChildren.iterator().next();
-        assertTrue("Root is no feature node", root instanceof FeatureNode);
-        assertEquals("Root node has wrong term type", TermType.Structure, ((FeatureNode)root).getTermType());
-        FeatureNode<DefinedTerm> rootNode = (FeatureNode<DefinedTerm>) root;
-        List<FeatureNode<DefinedTerm>> childNodes = rootNode.getChildNodes();
+        Object entirePlant = rootChildren.iterator().next();
+        assertTrue("Root is no feature node", entirePlant instanceof FeatureNode);
+        assertEquals("Root node has wrong term type", TermType.Structure, ((FeatureNode)entirePlant).getTermType());
+        FeatureNode<DefinedTerm> entirePlantNode = (FeatureNode<DefinedTerm>) entirePlant;
+        List<FeatureNode<DefinedTerm>> childNodes = entirePlantNode.getChildNodes();
         assertEquals("Wrong number of children", 2, childNodes.size());
 
         String inflorescenceLabel = "inflorescence";
@@ -134,10 +134,11 @@ public class StructureTreeOwlImportTest extends CdmTransactionalIntegrationTest 
         assertNotNull("term is null", inflorescence);
         assertEquals("Wrong term type", TermType.Structure, inflorescence.getTermType());
 
-        List<TermVocabulary> vocs = vocabularyService.findByTitle(TermVocabulary.class, treeLabel, MatchMode.EXACT, null, null, null, null, Arrays.asList("terms")).getRecords();
+        String vocLabel = "03 Generative Structures";
+        List<TermVocabulary> vocs = vocabularyService.findByTitle(TermVocabulary.class, vocLabel, MatchMode.EXACT, null, null, null, null, Arrays.asList("terms")).getRecords();
         assertEquals("wrong number of vocabularies", 1, vocs.size());
         TermVocabulary termVoc = vocs.iterator().next();
-        assertEquals("Wrong vocabulary label", treeLabel, termVoc.getTitleCache());
+        assertEquals("Wrong vocabulary label", vocLabel, termVoc.getTitleCache());
         assertEquals(4, termVoc.getTerms().size());
         assertTrue("Term not included in vocabulary", termVoc.getTerms().contains(inflorescence));
 
