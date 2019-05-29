@@ -24,15 +24,15 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.io.descriptive.owl.in.StructureTreeOwlImport;
+import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.descriptive.owl.in.StructureTreeOwlImportConfigurator;
-import eu.etaxonomy.cdm.io.descriptive.owl.in.StructureTreeOwlImportState;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.FeatureNode;
@@ -51,8 +51,8 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  */
 public class StructureTreeOwlImportTest extends CdmTransactionalIntegrationTest {
 
-    @SpringBeanByType
-    private StructureTreeOwlImport structureTreeImport;
+    @SpringBeanByName
+    private CdmApplicationAwareDefaultImport<?> defaultImport;
 
     @SpringBeanByType
     private ITermService termService;
@@ -63,28 +63,25 @@ public class StructureTreeOwlImportTest extends CdmTransactionalIntegrationTest 
     @SpringBeanByType
     private IVocabularyService vocabularyService;
 
-    private StructureTreeOwlImportConfigurator configurator;
-
-    private FeatureTree tree;
-
     @Before
-    public void setUp() throws URISyntaxException {
-        URL url = this.getClass().getResource("/eu/etaxonomy/cdm/io/owl/in/test_structures.owl");
-		URI uri = url.toURI();
-		assertNotNull(url);
-		configurator = StructureTreeOwlImportConfigurator.NewInstance(uri);
+    public void setUp() {
     }
 
     @Test
     public void testInit() {
-        assertNotNull("structureTreeImport should not be null", structureTreeImport);
+        assertNotNull("import should not be null", defaultImport);
     }
 
     @Test
     @DataSet(value="/eu/etaxonomy/cdm/database/BlankDataSet.xml")
-    public void testDoInvoke() {
-        StructureTreeOwlImportState state = configurator.getNewState();
-        structureTreeImport.doInvoke(state);
+    public void testImportStructureTree() throws URISyntaxException {
+        URL url = this.getClass().getResource("/eu/etaxonomy/cdm/io/owl/in/test_structures.owl");
+        URI uri = url.toURI();
+        assertNotNull(url);
+        StructureTreeOwlImportConfigurator configurator = StructureTreeOwlImportConfigurator.NewInstance(uri);
+
+        boolean result = defaultImport.invoke(configurator).isSuccess();
+        assertTrue("Return value for import.invoke should be true", result);
         this.setComplete();
         this.endTransaction();
 
@@ -92,7 +89,7 @@ public class StructureTreeOwlImportTest extends CdmTransactionalIntegrationTest 
         List<FeatureTree> trees = featureTreeService.listByTitle(FeatureTree.class, treeLabel, MatchMode.EXACT, null, null, null, null, null);
         List<String> nodeProperties = new ArrayList<>();
         nodeProperties.add("term");
-        tree = featureTreeService.loadWithNodes(trees.iterator().next().getUuid(), null, nodeProperties);
+        FeatureTree tree = featureTreeService.loadWithNodes(trees.iterator().next().getUuid(), null, nodeProperties);
         assertNotNull("featureTree should not be null", tree);
 
         assertEquals("Tree has wrong term type", TermType.Structure, tree.getTermType());
@@ -144,6 +141,39 @@ public class StructureTreeOwlImportTest extends CdmTransactionalIntegrationTest 
 
     }
 
+
+    @Test
+    @DataSet(value="/eu/etaxonomy/cdm/database/BlankDataSet.xml")
+    public void testImportPropertyTreeAndVocabulary() throws URISyntaxException {
+        URL url = this.getClass().getResource("/eu/etaxonomy/cdm/io/owl/in/properties.owl");
+        URI uri = url.toURI();
+        assertNotNull(url);
+        StructureTreeOwlImportConfigurator configurator = StructureTreeOwlImportConfigurator.NewInstance(uri);
+
+        boolean result = defaultImport.invoke(configurator).isSuccess();
+        assertTrue("Return value for import.invoke should be true", result);
+        this.setComplete();
+        this.endTransaction();
+
+        String treeLabel = "properties 1.0";
+        List<FeatureTree> trees = featureTreeService.listByTitle(FeatureTree.class, treeLabel, MatchMode.EXACT, null, null, null, null, null);
+        List<String> nodeProperties = new ArrayList<>();
+        nodeProperties.add("term");
+        FeatureTree tree = featureTreeService.loadWithNodes(trees.iterator().next().getUuid(), null, nodeProperties);
+        assertNotNull("featureTree should not be null", tree);
+
+        assertEquals("Tree has wrong term type", TermType.Property, tree.getTermType());
+        assertEquals("Wrong number of distinct features", 12, tree.getDistinctFeatures().size());
+        List rootChildren = tree.getRootChildren();
+
+        String vocLabel = "Plant Glossary Properties";
+        List<TermVocabulary> vocs = vocabularyService.findByTitle(TermVocabulary.class, vocLabel, MatchMode.EXACT, null, null, null, null, Arrays.asList("terms")).getRecords();
+        assertEquals("wrong number of vocabularies", 1, vocs.size());
+        TermVocabulary termVoc = vocs.iterator().next();
+        assertEquals("Wrong vocabulary label", vocLabel, termVoc.getTitleCache());
+        assertEquals(82, termVoc.getTerms().size());
+
+    }
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
 

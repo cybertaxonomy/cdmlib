@@ -1,0 +1,1340 @@
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:j.0="http://cybertaxonomy.eu/property/" > 
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/node/19bcbac1-6530-41f0-90db-997cbdb2e1c7">
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/b7202fe9-8d38-48b3-b51a-87f503fcc54f"/>
+    <j.0:uuid>19bcbac1-6530-41f0-90db-997cbdb2e1c7</j.0:uuid>
+    <j.0:is_a>node</j.0:is_a>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/a91ac91b-d0c7-4de5-9953-9765133f41f3">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/3bd32b70-aace-4d79-bf3b-b0e1d97f9bff"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:divisions</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>a91ac91b-d0c7-4de5-9953-9765133f41f3</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/07994de4-2545-4794-b6b8-7cbbd9200977">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/b7913fdc-f934-4bb0-8ce4-a70ba1cf798c"/>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>07994de4-2545-4794-b6b8-7cbbd9200977</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/6ceaad4f-d0d0-420a-bb6a-6dc35d479ad4">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/497c13ee-377b-4578-bf31-c9fc12c7f764"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:nutrition</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>6ceaad4f-d0d0-420a-bb6a-6dc35d479ad4</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/node/f94e4baa-c328-49a4-a8ee-9d59a9accae0">
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/ac99879c-3175-4c27-9c61-d2773afcd1d6"/>
+    <j.0:uuid>f94e4baa-c328-49a4-a8ee-9d59a9accae0</j.0:uuid>
+    <j.0:is_a>node</j.0:is_a>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/3dc6d7ad-446e-4b81-804c-42b250575e89">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/db4edc53-7cfa-4104-948f-5e57bc22d227"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:structure_subtype</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>3dc6d7ad-446e-4b81-804c-42b250575e89</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/7900e3ed-b43f-445b-b402-31e016ea7fa2">
+    <j.0:description>Mode or sequential pattern of growth or differentiation, e.g. centrifugal, centripetal, well-developed, differentiated.
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>development</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/d08bdecc-97a1-447d-be29-22b04c8afe62">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/1e1340b8-1965-405c-91de-97914b69d774"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:maturation</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>d08bdecc-97a1-447d-be29-22b04c8afe62</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/562994b0-1c03-4037-a27c-16d2ffe3c75a">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/1d340461-6097-449e-83b2-2e677994ee01"/>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>562994b0-1c03-4037-a27c-16d2ffe3c75a</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/f0513df7-3f5a-41a9-b822-d0d2b610ad57">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/0bef23b9-3a9b-41f7-92ce-1fe889d7499d"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:prominence</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>f0513df7-3f5a-41a9-b822-d0d2b610ad57</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0">
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/fb507296-0c5f-4705-858f-c5d5f3203d46"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/0db5ae77-cbe7-4223-9197-3f55bb7c3e01"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/3b31b114-4f78-453f-b7e8-9a88735163ae"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/ec16f0a2-b8a9-4adc-8fc2-4f90fa37199a"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/29f2054b-8ba3-425d-bf6d-5bf615169d8d"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/81c0ceba-6814-497f-b2e6-f6fd1db47992"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/6ceaad4f-d0d0-420a-bb6a-6dc35d479ad4"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/31a85880-f0d2-4dde-8662-bd12587ce241"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/b8d3eb3f-8420-4c35-b5fd-6b3146d91895"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/9bcbc7d5-df7b-468a-b65f-e6f6ef03b69d"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/71c2d267-ae9d-4e6d-99e1-7f961bb3ddf4"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/562994b0-1c03-4037-a27c-16d2ffe3c75a"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/7ba7885b-f230-4f38-aeab-ebda5218d4f6"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/e02d580b-5d55-4207-a4ad-94c347700490"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/58a627ac-5e7f-4b39-bc6b-0baa101fc285"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/1642f198-3a0a-4ad6-ab07-282a295529c6"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/68fa469d-7566-4ea0-8f69-cb1cd74b22f8"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/7ac1194d-0703-4067-9ffb-bdaa574d8bb8"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/b897a71a-e409-423d-b606-5709e800f693"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/03c3fdfd-ca3f-47e3-b8d7-4afefe2862cd"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/c55034fe-8944-43e4-ab1a-30e0caade11a"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/8ae81b28-dfaf-464e-bab8-457b3e1b08ff"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/d1d3a95b-eb2a-4cc3-a5ee-cab039ca63a9"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/225dd738-e817-4be2-a645-89feebffdb25"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/9f734995-51bc-4ef5-a80a-5da803508c05"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/6f999e77-f90a-4aef-99bc-efc44840ea14"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/91a0dd53-7eb9-4761-a5c4-85afbbfb5707"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/d72607c7-e95b-4829-8df9-4ffd751b0d7c"/>
+    <j.0:type>PROP</j.0:type>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/df38d41a-c39e-44a6-8df7-f1052c4d1bbf"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/d87b6019-5337-4108-a874-951dbd90b014"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/2e06cf71-cdf9-4bfa-a19b-4f5b03fa44e5"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/cb40063b-39f6-4398-80e2-743343965c19"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/c4ea03ce-7868-4f2d-9b5d-ed955c6704dc"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/a91ac91b-d0c7-4de5-9953-9765133f41f3"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/07994de4-2545-4794-b6b8-7cbbd9200977"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/5a0ef39b-967a-48df-83ad-a75fdf41dab5"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/b96ab46d-0267-4ddb-8365-f5ced72932ab"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/c87f3882-37ab-4c18-9bd3-6c15ec1e2493"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/100d20de-6349-4240-aa1f-ebe81f091b61"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/83eb342b-c5b2-469b-abbb-af935a874c58"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/060301d5-964a-4b4e-9441-a819e2a99cae"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/314ac5b3-1bb5-4280-8bba-1bc84d62b4a1"/>
+    <j.0:is_a>vocabulary</j.0:is_a>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/94ead8ab-7d80-41b6-adf6-3acf84fc0590"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/ac99879c-3175-4c27-9c61-d2773afcd1d6"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/e9d8d617-c5ab-49eb-91bd-8e6d54e9cd18"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/b7202fe9-8d38-48b3-b51a-87f503fcc54f"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/420ec53d-4051-4097-a7ca-88d3d396333f"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/5c548a05-719d-4045-b7c9-305905cf475d"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/a9d6e984-b109-44c3-ad32-7e7d8effb076"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/f0cabf3c-3a4b-49f4-8542-a83ab3901dca"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/f0513df7-3f5a-41a9-b822-d0d2b610ad57"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/3dc6d7ad-446e-4b81-804c-42b250575e89"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/0a39a0ed-384e-4f85-a69b-a0736fe7337f"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/fa445b0d-a370-45f5-9f22-1c7bdf92e55d"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/2a0ee581-9578-4171-8a6c-004c4e741211"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/ee3bf6fa-545e-4819-bd8b-aa63b6b76635"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/07ff32e1-c978-492d-ab15-4cd4a39d8861"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/f47dcc3e-bcab-41fe-b51c-2ef31bd83bba"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/d08bdecc-97a1-447d-be29-22b04c8afe62"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/41b40cdd-63f2-42b8-bee5-949411e69d50"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/4d86bd02-3d88-4c89-ac97-31e7d91e663a"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/b3fcfd8a-c777-45b0-8c07-75209ca6598c"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/a3c1fb07-861e-4aba-bb1d-3a9a73367b75"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/922c35c5-79fc-47e5-b81e-ef3b3a349b05"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/9e755399-39f0-4188-bebc-527931eb3c10"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/74d2be20-6295-45e9-b1d9-d430ce5829cb"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/3a7900f8-a71c-4c40-954c-51d9c03739a5"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/1eab3c3a-9546-46f8-a276-d8c877d68649"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/71d1428c-84cf-499a-a99f-4422379c2da0"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/c90e3cbb-7233-4171-85a0-63f0f994d783"/>
+    <j.0:uuid>7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0</j.0:uuid>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/21bb6587-655b-47de-85af-f5aebf5c6f89"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/fba60f50-0196-46f6-ba24-ede8a3ae012a"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/7cea86fe-965e-48a5-a1ac-9724a88bc197"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/cf51f55a-ae34-4197-be5c-9fea2efc6c00"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/cfe8d2d5-7b54-42cc-bd60-27f073eec671"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/a11e3d84-54f3-4b4c-942e-0e1b69bfefe7"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/9c9de47a-bfdd-4aa2-902c-fac0a6dca674"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/b940a9f3-ba57-4372-aa97-8ba39d18b805"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/fc7fda1c-ff88-47b7-92eb-49550db8d748"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/3a42476c-b633-451f-8d4c-4a435a2f4604"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/8aced8bc-dcec-4908-9efe-74cd4421c258"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/e2a9b805-26a5-4a4d-86c5-13133f67b810"/>
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/5ba4cf8b-9ecb-4a6d-a376-dd91cde9b9a3"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/bbc8fb79-3051-4de3-8381-3d74b2777e19">
+    <j.0:description>The immediate environment or substrate where an organism occurs, e.g., wetland, lake, roadside. Differentitate this category from Distribution.
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>habitat</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/b96ab46d-0267-4ddb-8365-f5ced72932ab">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/9f0c3a71-eee7-438c-a311-2c9fac7fb0c5"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:taxon_name</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>b96ab46d-0267-4ddb-8365-f5ced72932ab</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/71d1428c-84cf-499a-a99f-4422379c2da0">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/85e9a36d-68fe-49bd-a6eb-0b8b807a65fc"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:variability</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>71d1428c-84cf-499a-a99f-4422379c2da0</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/7f4c539b-8df1-47bc-8b46-0be89ef6060a">
+    <j.0:description>Aspect as to proportion and pattern of incident light reflected from the surface, e.g., glassy, glistening, glittering, glossy, polished. Differentiate this category from Coloration.
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>reflectance</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/64010f84-34b7-4fa8-b63f-ad787e74b58a">
+    <j.0:description>The closeness of a group of similar structures are distributed as mass per unit area/size, e.g., dense, sparse.
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>density</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/3133e03c-3bef-4dff-8e62-628360921d23">
+    <j.0:description>Structure or organism's behavior aggregate of the responses or reactions or movements in a given situation. E.g. sensitive, fast-growing.
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>behavior</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/2a0ee581-9578-4171-8a6c-004c4e741211">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/1444638f-64c5-4237-8b8b-1a293b6db213"/>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>2a0ee581-9578-4171-8a6c-004c4e741211</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/a560e90b-ee2d-4ae6-a8be-c81cdfd9e483">
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>form*</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/f89e7862-0ff9-40f4-96dc-a49e73a1758d">
+    <j.0:description>Physical material existing in a structure or secreted by a structure, such as nector, oil. Differentiate this category from Architecture and Function. Terms describing the presence or absence of a substance, such as starchy or tanniferous should go in Architecture. Terms describing the capability of exudating certain substance, such as oil-secreting go in Function.
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>substance</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/1435825c-387c-4b02-a8db-ac7854c7c29e">
+    <j.0:description>The distance from one side of something to the other side, e.g., wide, broad, narrowed.
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>width</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/b7913fdc-f934-4bb0-8ce4-a70ba1cf798c">
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>lifespan*</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/68fa469d-7566-4ea0-8f69-cb1cd74b22f8">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/be3f5e51-5e5c-4e14-a76c-522bc12acc20"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:coloration</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>68fa469d-7566-4ea0-8f69-cb1cd74b22f8</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/node/a4ebf119-d885-4190-b10f-c62f15f709c2">
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/94ead8ab-7d80-41b6-adf6-3acf84fc0590"/>
+    <j.0:uuid>a4ebf119-d885-4190-b10f-c62f15f709c2</j.0:uuid>
+    <j.0:is_a>node</j.0:is_a>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/db4edc53-7cfa-4104-948f-5e57bc22d227">
+    <j.0:description>words describing the type of a structure, e.g. primary, 
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>structure subtype</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/1444638f-64c5-4237-8b8b-1a293b6db213">
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>pattern*</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/d47f07ea-af3a-423d-a7b6-42649af6212f">
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>ecology*</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/30ebccb9-94c8-456b-99cf-3903d1b8ef38">
+    <j.0:description>The number of sets of chromosomes in the nucleus of a cell, e.g., diploid, hexaploid, haploid. Note,  ""diplods"" goes into Structure, because the term refer to organisms with that character state. 
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>ploidy</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/81c0ceba-6814-497f-b2e6-f6fd1db47992">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/ad5905ae-2a65-42ea-a52c-1c1e546e7053"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:coating</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>81c0ceba-6814-497f-b2e6-f6fd1db47992</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/29f2054b-8ba3-425d-bf6d-5bf615169d8d">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/51a57db2-aea9-44c3-8e42-5437b64ad043"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:aging</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>29f2054b-8ba3-425d-bf6d-5bf615169d8d</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/0db5ae77-cbe7-4223-9197-3f55bb7c3e01">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/20bcbf50-ee38-4822-883a-36c8b1bd259e"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:architecture</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>0db5ae77-cbe7-4223-9197-3f55bb7c3e01</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/9e755399-39f0-4188-bebc-527931eb3c10">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/2a8cad54-0297-4deb-a23e-e38503dd20d4"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:condition</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>9e755399-39f0-4188-bebc-527931eb3c10</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/8411ab9b-faa4-4dc0-ad6e-7c2b2d18b0a4">
+    <j.0:description>Physical connection of homologous or non-homologous structures, e.g., subfree, connate, suppressed, unattached, synconnective. Differentiate this category from Fixiation.
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>fusion</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/c87f3882-37ab-4c18-9bd3-6c15ec1e2493">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/57f136c0-4cab-4e79-a791-ae6626d2f0ed"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:location</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>c87f3882-37ab-4c18-9bd3-6c15ec1e2493</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/fba60f50-0196-46f6-ba24-ede8a3ae012a">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/890858c8-4242-4f7f-b1a0-af10ac3740e9"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:germination</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>fba60f50-0196-46f6-ba24-ede8a3ae012a</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/a3c1fb07-861e-4aba-bb1d-3a9a73367b75">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/8411ab9b-faa4-4dc0-ad6e-7c2b2d18b0a4"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:fusion</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>a3c1fb07-861e-4aba-bb1d-3a9a73367b75</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/dbf4e9af-8d0e-497c-8de8-3c4437ce8c74">
+    <j.0:description>The distance from the bottom to the top of a structure, e.g., tall, taller, short, shorter
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>height</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/c4ea03ce-7868-4f2d-9b5d-ed955c6704dc">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/83aa7e42-9ebd-4b16-ba80-f8385e3df8b4"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:aestivation</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>c4ea03ce-7868-4f2d-9b5d-ed955c6704dc</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/85e9a36d-68fe-49bd-a6eb-0b8b807a65fc">
+    <j.0:description>Disposition to vary or change, e.g., consistent, diverse, varied.
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>variability</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/0ee9086d-72a3-4c24-aa55-542d3df1fb3d">
+    <j.0:description>Overall two- or three – dimensional form or aspect thereof, e.g., rounded, spheroid,  folded,  folding, incurling.
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>shape</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/8d54b0c7-0aab-4ea1-8f41-6dcee10cfef2">
+    <j.0:description>The distance between upper and lower or between dorsal and ventral points of a structur&#xD;
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>depth</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/c55034fe-8944-43e4-ab1a-30e0caade11a">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/b03e48f9-7730-4fde-b997-30fc622d25c3"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:architecture</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>c55034fe-8944-43e4-ab1a-30e0caade11a</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/e02d580b-5d55-4207-a4ad-94c347700490">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/faece97c-0ca8-48f2-997e-5a2a634c796d"/>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>e02d580b-5d55-4207-a4ad-94c347700490</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/7d2c87d3-820c-4deb-a1a4-37e6046fe097">
+    <j.0:description>Action or activity based on a biological process, e.g., digestive, generative, storage, sensory.
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>function</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/d87b6019-5337-4108-a874-951dbd90b014">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/06404eee-f366-47df-9fe7-89855dd7f82f"/>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>d87b6019-5337-4108-a874-951dbd90b014</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/4fd108c6-b6b8-49bb-a579-c215b7b99c43">
+    <j.0:description>Linear, one-dimentional shape of the center line through the length of an axis or vein, e.g. spiraling, straight, zig-zagged.
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>course</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/7ac1194d-0703-4067-9ffb-bdaa574d8bb8">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/64010f84-34b7-4fa8-b63f-ad787e74b58a"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:density</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>7ac1194d-0703-4067-9ffb-bdaa574d8bb8</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/ac99879c-3175-4c27-9c61-d2773afcd1d6">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/d011c147-33c0-43eb-99c3-f72c2f80dcb9"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:growth_form</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>ac99879c-3175-4c27-9c61-d2773afcd1d6</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/d9615d2c-e912-4acf-894d-39ef646ba74a">
+    <j.0:description>The relative position of a structure to a reference point, line, or/and plane in space, e.g., erect, prostrate.
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>orientation</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/2d1e69e9-368c-4090-a32f-9d39d79624f7">
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>geographical terms</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/0071dfe3-911f-40f3-8be3-2b6fae8b9e4b">
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>sex*</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/b8af886c-a53d-4e8f-945f-2ea52e945a8c">
+    <j.0:description>The mode of reproduction or the mode of the development of reproductive organs, including characters of fertility, mating systems, dispersal and pollination strategies, and maturation or distribution of female and/or male flowers. E.g., agamospermous, allogamous, self-fertilizing, polycarpic . Reproductive organs/structures go into Structure.
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>reproduction</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/314ac5b3-1bb5-4280-8bba-1bc84d62b4a1">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/381223c8-2244-42e5-be2f-aa14246df015"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:fixation</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>314ac5b3-1bb5-4280-8bba-1bc84d62b4a1</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/20bcbf50-ee38-4822-883a-36c8b1bd259e">
+    <j.0:description>The organization of parts that conform a complex structure and may dictate the form at a macro or micro-morphological level.  Differentiate this category from Arrangement, Shape, and Structure. Architecture emphasizes the composition of an organ (have or have not a part) and the position of its components in it, e.g. antherless,  bimucronate; Arrangement emphasizes the placement of similar organs in space, e.g. clustered, alternate; Shape is the appearance e.g., linear, incurling are shapes of a leaf. When difficult to determine the best category, put the term in two or all three categories. Nouns such as leaves, flowers go into Structure.  
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>architecture</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/d1d3a95b-eb2a-4cc3-a5ee-cab039ca63a9">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/7d2c87d3-820c-4deb-a1a4-37e6046fe097"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:function</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>d1d3a95b-eb2a-4cc3-a5ee-cab039ca63a9</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/4d86bd02-3d88-4c89-ac97-31e7d91e663a">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/27ad5d65-dd7a-44c6-b3b8-3b542d9c896e"/>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>4d86bd02-3d88-4c89-ac97-31e7d91e663a</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/83aa7e42-9ebd-4b16-ba80-f8385e3df8b4">
+    <j.0:description>Disposition of perianth (undifferentiated), calyx, or corolla members in the bud.</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>aestivation</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/c6e72291-3544-4b24-b285-78702516006f">
+    <j.0:description>General topographic aspect of a surface, e.g., glabrous, sculptured, muricate. Differentiate this category from Pubescence, Coating, and Texture. 
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>relief</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/71c2d267-ae9d-4e6d-99e1-7f961bb3ddf4">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/4d542fd2-f51e-4979-93fd-2e8d0cf82e06"/>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>71c2d267-ae9d-4e6d-99e1-7f961bb3ddf4</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/fc7fda1c-ff88-47b7-92eb-49550db8d748">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/bbc8fb79-3051-4de3-8381-3d74b2777e19"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:habitat</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>fc7fda1c-ff88-47b7-92eb-49550db8d748</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/b4891d8b-60bf-447b-9206-3b579b02e701">
+    <j.0:description>Resistance or capacity of being damage or destroyed, e.g. fragile, sturdy.
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>fragility</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/21bb6587-655b-47de-85af-f5aebf5c6f89">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/b837dfec-4155-415a-aae3-d69de858cdcb"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:structure_in_adjective_form</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>21bb6587-655b-47de-85af-f5aebf5c6f89</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/7a05b068-74af-4167-9b84-100e08d172e7">
+    <j.0:description>A composite chromatic quality composed of hue, saturation and intensity parts.</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>colour</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/85669b95-0eb2-456a-82aa-fd911ca763d0">
+    <j.0:description>External and internal anatomical entities, including parts, spaces, lines, scars, constrictions, derived products, etc. Terms belonging to this category are nouns, e.g., leaves, stems. Adjective form of structure terms go into ""Structure_in_adjective_form"" category.
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>structure</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/node/039604cf-1f35-40a7-a93b-da5dd602e61b">
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/68fa469d-7566-4ea0-8f69-cb1cd74b22f8"/>
+    <j.0:uuid>039604cf-1f35-40a7-a93b-da5dd602e61b</j.0:uuid>
+    <j.0:is_a>node</j.0:is_a>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/72e1e0d5-fbf6-40e0-b7db-f244c8956cae">
+    <j.0:description> The mode of opening of a structure, which permits the escape of the content contained within it, e.g.  stegocarpous, schizogenous, undehisced. Differentiate this category from Architecture, which emphasizes structural composition of the parts of a structure, e.g., triporate [3-pores]. 
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>dehiscence</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/91a0dd53-7eb9-4761-a5c4-85afbbfb5707">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/aa750ed6-3ef2-4e1e-81ae-ffd562d38898"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:duration</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>91a0dd53-7eb9-4761-a5c4-85afbbfb5707</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/b837dfec-4155-415a-aae3-d69de858cdcb">
+    <j.0:description>External and internal anatomical parts, spaces, lines, and derived products. Terms belonging to this category are adjectives, e.g, bracteal, tigmatic.  Structure terms that are nouns go into ""Structure"" category.
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>structure in adjective form</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/ec16f0a2-b8a9-4adc-8fc2-4f90fa37199a">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/c24d8c95-e4b1-4695-b6ce-7425c73b2011"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:season</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>ec16f0a2-b8a9-4adc-8fc2-4f90fa37199a</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/c24d8c95-e4b1-4695-b6ce-7425c73b2011">
+    <j.0:description>One of the four natural divisions of the year, spring, summer, fall and winter in the North and South Temperate zones OR one of the two divisions of the year, rainy and dry, in some tropical regions
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>season</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/5a0ef39b-967a-48df-83ad-a75fdf41dab5">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/30ebccb9-94c8-456b-99cf-3903d1b8ef38"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:ploidy</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>5a0ef39b-967a-48df-83ad-a75fdf41dab5</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/94ab0577-f80b-44f7-8f8d-9d1c92086581">
+    <j.0:description>A reproductive quality inhering in a bearer by virtue of the bearer's initiating, sustaining, or supporting reproduction.</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>fertility</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/5ba4cf8b-9ecb-4a6d-a376-dd91cde9b9a3">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/f5fb5045-ce57-4675-a237-b448e65f23ca"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:size</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>5ba4cf8b-9ecb-4a6d-a376-dd91cde9b9a3</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/0dbf0023-c01c-490a-b29d-e5084c856a81">
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>pollination*</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/b897a71a-e409-423d-b606-5709e800f693">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/93c26e26-b61b-42dc-bdfa-92730f2e0811"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:quantity</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>b897a71a-e409-423d-b606-5709e800f693</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/b22cc8e8-afba-4df3-a5c0-13e90fa09538">
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>habit*</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/8ae81b28-dfaf-464e-bab8-457b3e1b08ff">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/d9615d2c-e912-4acf-894d-39ef646ba74a"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:orientation</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>8ae81b28-dfaf-464e-bab8-457b3e1b08ff</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/1d340461-6097-449e-83b2-2e677994ee01">
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>mechanism*</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/0a39a0ed-384e-4f85-a69b-a0736fe7337f">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/d667e5d8-63f7-4aec-8f15-ac61c2429ddd"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:length</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>0a39a0ed-384e-4f85-a69b-a0736fe7337f</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/03c3fdfd-ca3f-47e3-b8d7-4afefe2862cd">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/8ca7089a-978a-46ee-ae64-0971a5ff48fe"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:toxicity</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>03c3fdfd-ca3f-47e3-b8d7-4afefe2862cd</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/aea6c216-2a8f-489d-8bbb-4819a31990af">
+    <j.0:description>The disposition of similar structures with respect to one another or in respect with a plane or axis. E.g. whorled, distichous.
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>arrangement</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/93c26e26-b61b-42dc-bdfa-92730f2e0811">
+    <j.0:description>The quantity of a structure, e.g. many, few, fewer.
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>quantity</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/83eb342b-c5b2-469b-abbb-af935a874c58">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/0071dfe3-911f-40f3-8be3-2b6fae8b9e4b"/>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>83eb342b-c5b2-469b-abbb-af935a874c58</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/8ca7089a-978a-46ee-ae64-0971a5ff48fe">
+    <j.0:description>Degree of toxicity or the lack of it, e.g., irritating, edible, nontoxic, toxic.
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>toxicity</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/b03e48f9-7730-4fde-b997-30fc622d25c3">
+    <j.0:description>The organization of parts that conform a complex structure and may dictate the form at a macro or micro-morphological level. Differentiate this category from Arrangement, Shape, and Structure. Architecture emphasizes the composition of an organ (have or have not a part) and the position of its components in it, e.g. antherless, bimucronate; Arrangement emphasizes the placement of similar organs in space, e.g. clustered, alternate; Shape is the appearance e.g., linear, incurling are shapes of a leaf. When difficult to determine the best category, put the term in two or all three categories. Nouns such as leaves, flowers go into Structure.&#xD;
+&#xD;
+Notes: Categories were abstracted from 9228 botanical terms used in Flora of North America and Flora of China</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>architecture</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/d667e5d8-63f7-4aec-8f15-ac61c2429ddd">
+    <j.0:description>The distance from one end of a structure to the other end, e.g., long, longer.
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>length</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/cfe8d2d5-7b54-42cc-bd60-27f073eec671">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/6bf5d493-0039-41e3-ab3b-f807cf0ab3a6"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:texture</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>cfe8d2d5-7b54-42cc-bd60-27f073eec671</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/3a42476c-b633-451f-8d4c-4a435a2f4604">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/8f5dd845-bf8c-4b3a-8bf8-a63fc96cc56a"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:smell</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>3a42476c-b633-451f-8d4c-4a435a2f4604</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/2a8cad54-0297-4deb-a23e-e38503dd20d4">
+    <j.0:description>An affecting state or circumstance, often temporary, a structure or organism is in. E.g., frozen, broken, wilty.
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>condition</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/2e06cf71-cdf9-4bfa-a19b-4f5b03fa44e5">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/e180a5ef-bbfe-4884-9410-a1a024201002"/>
+    <j.0:uri>http://purl.obolibrary.org/obo/PATO_0000965</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>2e06cf71-cdf9-4bfa-a19b-4f5b03fa44e5</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/41b40cdd-63f2-42b8-bee5-949411e69d50">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/a560e90b-ee2d-4ae6-a8be-c81cdfd9e483"/>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>41b40cdd-63f2-42b8-bee5-949411e69d50</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/100d20de-6349-4240-aa1f-ebe81f091b61">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/36465d39-93bb-4234-8e30-9a9f32efe1b6"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:character</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>100d20de-6349-4240-aa1f-ebe81f091b61</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/e10fc7c4-dbec-464a-8c3c-6f2d86b9c259">
+    <j.0:description>Collective aspect of hairs, scales or bristles born on a surface, e.g., hairy, scaly, wooly. Differentiate this category from Relief, Coating, and Texture. 
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>pubescence</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/6d86b906-c705-4d74-9c33-c490ce416a9e">
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>generative</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/ac34d52a-7f4a-4163-b932-d91298511e7f">
+    <j.0:description>Life stages or events of a structure or organism, including states after life, e.g. budding, fruiting, dormant, seed-shed, decayed. 
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>life cycle</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/ad5905ae-2a65-42ea-a52c-1c1e546e7053">
+    <j.0:description>A state described as certain substance covering the surface of a structure, e.g, sticky, dusty, greasy. Differentiate this category from Pubescence, Relief, and Texture. 
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>coating</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/346b0314-5a13-4e42-94df-88b6c01e86cc">
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>vernation</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/74d2be20-6295-45e9-b1d9-d430ce5829cb">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/1435825c-387c-4b02-a8db-ac7854c7c29e"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:width</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>74d2be20-6295-45e9-b1d9-d430ce5829cb</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/8aced8bc-dcec-4908-9efe-74cd4421c258">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/e9fc9634-5b95-4788-a3ea-4bf5126ea9a6"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:position</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>8aced8bc-dcec-4908-9efe-74cd4421c258</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/8f5dd845-bf8c-4b3a-8bf8-a63fc96cc56a">
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>smell</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/3b31b114-4f78-453f-b7e8-9a88735163ae">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/0ee9086d-72a3-4c24-aa55-542d3df1fb3d"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:shape</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>3b31b114-4f78-453f-b7e8-9a88735163ae</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/1309a445-f762-42d5-8db4-bc36c1cfc55c">
+    <j.0:description>Olfactory stimulation or the lack of it, e.g.,  scentless, almondy, aromatic, fetid. This category overlap significantly with Taste category.
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>odor</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/890858c8-4242-4f7f-b1a0-af10ac3740e9">
+    <j.0:description>A process wherein a dormant embryo or spore resumes active growth, e.g., cryptocotyloid, germinating, phanerocotyloid.
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>germination</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/e180a5ef-bbfe-4884-9410-a1a024201002">
+    <j.0:description>A pattern quality of inhering in a bearer by virtue of the correspondence in size, shape, and relative position of the bearer's parts on opposite sides of a dividing line or median plane or about a center or axis.</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>symmetry</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/node/237d998d-0067-4349-b1fc-8a38649b0dc9">
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/5c548a05-719d-4045-b7c9-305905cf475d"/>
+    <j.0:uuid>237d998d-0067-4349-b1fc-8a38649b0dc9</j.0:uuid>
+    <j.0:is_a>node</j.0:is_a>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/9f0c3a71-eee7-438c-a311-2c9fac7fb0c5">
+    <j.0:description>Taxon and vernacular names, or fragments of the epithet (genus or species). Do not categorize authorities.
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>taxon name</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/497c13ee-377b-4578-bf31-c9fc12c7f764">
+    <j.0:description>An organism's mode of acquiring nutrients, e.g., autotrophic, mycoparasitic.
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>nutrition</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/f3c68dac-a4f8-4aa2-bfac-3cfd5f96cf01">
+    <j.0:description>Ontogenetic origin, e.g. adenopetalous, andropetalous.
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>derivation</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/07ff32e1-c978-492d-ab15-4cd4a39d8861">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/dbf4e9af-8d0e-497c-8de8-3c4437ce8c74"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:height</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>07ff32e1-c978-492d-ab15-4cd4a39d8861</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/b940a9f3-ba57-4372-aa97-8ba39d18b805">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/d47f07ea-af3a-423d-a7b6-42649af6212f"/>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>b940a9f3-ba57-4372-aa97-8ba39d18b805</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/f0cabf3c-3a4b-49f4-8542-a83ab3901dca">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/c6e72291-3544-4b24-b285-78702516006f"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:relief</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>f0cabf3c-3a4b-49f4-8542-a83ab3901dca</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/a11e3d84-54f3-4b4c-942e-0e1b69bfefe7">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/72e1e0d5-fbf6-40e0-b7db-f244c8956cae"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:dehiscence</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>a11e3d84-54f3-4b4c-942e-0e1b69bfefe7</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/7ba7885b-f230-4f38-aeab-ebda5218d4f6">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/2d1e69e9-368c-4090-a32f-9d39d79624f7"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:geographical_terms</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>7ba7885b-f230-4f38-aeab-ebda5218d4f6</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/node/95ea79bf-cb33-4f05-a785-caa1abe8431e">
+    <j.0:hasSubStructure rdf:resource="http://cybertaxonomy.eu/resource/node/6c2557a2-360f-4f36-ab81-b1e47e57e4f3"/>
+    <j.0:uuid>95ea79bf-cb33-4f05-a785-caa1abe8431e</j.0:uuid>
+    <j.0:hasSubStructure rdf:resource="http://cybertaxonomy.eu/resource/node/19bcbac1-6530-41f0-90db-997cbdb2e1c7"/>
+    <j.0:hasSubStructure rdf:resource="http://cybertaxonomy.eu/resource/node/8cf1c4dc-5442-4536-a3ca-2a9b30503de9"/>
+    <j.0:hasSubStructure rdf:resource="http://cybertaxonomy.eu/resource/node/7b8729b7-64c1-4416-9375-d5224571bf3b"/>
+    <j.0:hasSubStructure rdf:resource="http://cybertaxonomy.eu/resource/node/039604cf-1f35-40a7-a93b-da5dd602e61b"/>
+    <j.0:hasSubStructure rdf:resource="http://cybertaxonomy.eu/resource/node/0d175602-bbe1-4492-a464-ed7e60c27311"/>
+    <j.0:hasSubStructure rdf:resource="http://cybertaxonomy.eu/resource/node/237d998d-0067-4349-b1fc-8a38649b0dc9"/>
+    <j.0:hasSubStructure rdf:resource="http://cybertaxonomy.eu/resource/node/f94e4baa-c328-49a4-a8ee-9d59a9accae0"/>
+    <j.0:hasSubStructure rdf:resource="http://cybertaxonomy.eu/resource/node/3ee93ef4-c3fd-41d2-b595-45a298cead5a"/>
+    <j.0:is_a>node</j.0:is_a>
+    <j.0:hasSubStructure rdf:resource="http://cybertaxonomy.eu/resource/node/a4ebf119-d885-4190-b10f-c62f15f709c2"/>
+    <j.0:hasSubStructure rdf:resource="http://cybertaxonomy.eu/resource/node/5d3bfd74-250f-4d2e-b8ba-265f0bf355d2"/>
+    <j.0:hasSubStructure rdf:resource="http://cybertaxonomy.eu/resource/node/bb286edf-e973-47ee-a37e-b75765d82412"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/node/6c2557a2-360f-4f36-ab81-b1e47e57e4f3">
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/74d2be20-6295-45e9-b1d9-d430ce5829cb"/>
+    <j.0:uuid>6c2557a2-360f-4f36-ab81-b1e47e57e4f3</j.0:uuid>
+    <j.0:is_a>node</j.0:is_a>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/060828eb-8216-48d5-964f-594329f1e11b">
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>series</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/node/7b8729b7-64c1-4416-9375-d5224571bf3b">
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/0a39a0ed-384e-4f85-a69b-a0736fe7337f"/>
+    <j.0:uuid>7b8729b7-64c1-4416-9375-d5224571bf3b</j.0:uuid>
+    <j.0:is_a>node</j.0:is_a>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/e2a9b805-26a5-4a4d-86c5-13133f67b810">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/85669b95-0eb2-456a-82aa-fd911ca763d0"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:structure</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>e2a9b805-26a5-4a4d-86c5-13133f67b810</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/36465d39-93bb-4234-8e30-9a9f32efe1b6">
+    <j.0:description>An attribute of a structure. This category holds the names of attributes,e.g. color, shape. 
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>character</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/0bef23b9-3a9b-41f7-92ce-1fe889d7499d">
+    <j.0:description>The degree or nature of evidence when present within the context in point, e.g., obscure, unremarkable, prominent.
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>prominence</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/27ad5d65-dd7a-44c6-b3b8-3b542d9c896e">
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>homogeneity*</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/6f999e77-f90a-4aef-99bc-efc44840ea14">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/b4891d8b-60bf-447b-9206-3b579b02e701"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:fragility</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>6f999e77-f90a-4aef-99bc-efc44840ea14</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/f47dcc3e-bcab-41fe-b51c-2ef31bd83bba">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/ac34d52a-7f4a-4163-b932-d91298511e7f"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:life_cycle</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>f47dcc3e-bcab-41fe-b51c-2ef31bd83bba</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/57f136c0-4cab-4e79-a791-ae6626d2f0ed">
+    <j.0:description>Position with respects of environmental context, e.g. aerial, submerged. Differentiate this category from Position.
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>location</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/5c548a05-719d-4045-b7c9-305905cf475d">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/53218366-b5fe-4b70-81dc-d62a48f76fd2"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:presence</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>5c548a05-719d-4045-b7c9-305905cf475d</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/58a627ac-5e7f-4b39-bc6b-0baa101fc285">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/b8af886c-a53d-4e8f-945f-2ea52e945a8c"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:reproduction</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>58a627ac-5e7f-4b39-bc6b-0baa101fc285</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/c90e3cbb-7233-4171-85a0-63f0f994d783">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/8d54b0c7-0aab-4ea1-8f41-6dcee10cfef2"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:depth</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>c90e3cbb-7233-4171-85a0-63f0f994d783</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/3bd32b70-aace-4d79-bf3b-b0e1d97f9bff">
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>divisions</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/fb507296-0c5f-4705-858f-c5d5f3203d46">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/7f4c539b-8df1-47bc-8b46-0be89ef6060a"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:reflectance</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>fb507296-0c5f-4705-858f-c5d5f3203d46</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/faece97c-0ca8-48f2-997e-5a2a634c796d">
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>surface texture*</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/featureTree/4c77782b-17df-451e-87ee-d529e4ee1b75">
+    <j.0:hasRootNode rdf:resource="http://cybertaxonomy.eu/resource/node/95ea79bf-cb33-4f05-a785-caa1abe8431e"/>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>tree</j.0:is_a>
+    <j.0:label>properties 1.0</j.0:label>
+    <j.0:uuid>4c77782b-17df-451e-87ee-d529e4ee1b75</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/a9dea3cf-3405-4897-963c-8ba3719d9877">
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>folding</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/060301d5-964a-4b4e-9441-a819e2a99cae">
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>Plant Glossary Properties</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/1642f198-3a0a-4ad6-ab07-282a295529c6">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/94ab0577-f80b-44f7-8f8d-9d1c92086581"/>
+    <j.0:uri>http://purl.obolibrary.org/obo/PATO_0000274</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>1642f198-3a0a-4ad6-ab07-282a295529c6</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/d72607c7-e95b-4829-8df9-4ffd751b0d7c">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/f89e7862-0ff9-40f4-96dc-a49e73a1758d"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:substance</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>d72607c7-e95b-4829-8df9-4ffd751b0d7c</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/node/3ee93ef4-c3fd-41d2-b595-45a298cead5a">
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/225dd738-e817-4be2-a645-89feebffdb25"/>
+    <j.0:uuid>3ee93ef4-c3fd-41d2-b595-45a298cead5a</j.0:uuid>
+    <j.0:is_a>node</j.0:is_a>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/06404eee-f366-47df-9fe7-89855dd7f82f">
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>substrate*</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/b3fcfd8a-c777-45b0-8c07-75209ca6598c">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/4fd108c6-b6b8-49bb-a579-c215b7b99c43"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:course</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>b3fcfd8a-c777-45b0-8c07-75209ca6598c</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/node/5d3bfd74-250f-4d2e-b8ba-265f0bf355d2">
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/8aced8bc-dcec-4908-9efe-74cd4421c258"/>
+    <j.0:uuid>5d3bfd74-250f-4d2e-b8ba-265f0bf355d2</j.0:uuid>
+    <j.0:is_a>node</j.0:is_a>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/node/0d175602-bbe1-4492-a464-ed7e60c27311">
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/3b31b114-4f78-453f-b7e8-9a88735163ae"/>
+    <j.0:uuid>0d175602-bbe1-4492-a464-ed7e60c27311</j.0:uuid>
+    <j.0:is_a>node</j.0:is_a>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/b7a687fe-aa87-4b3b-bad9-cb5d44159fe1">
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>transparency*</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/420ec53d-4051-4097-a7ca-88d3d396333f">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/060828eb-8216-48d5-964f-594329f1e11b"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:series</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>420ec53d-4051-4097-a7ca-88d3d396333f</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/be3f5e51-5e5c-4e14-a76c-522bc12acc20">
+    <j.0:description>A visual appearance with regard to color, including hue, intensity, or pattern of colors, e.g. dark red, spotted. Differentiate this category with Reflectance. 
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>coloration</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/381223c8-2244-42e5-be2f-aa14246df015">
+    <j.0:description>Mode of attachment to a supporting structure, e.g., affixed, adpressed. Differentiate this category from Fusion.
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>fixation</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/df38d41a-c39e-44a6-8df7-f1052c4d1bbf">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/adc41d45-ad10-42bb-80a9-5128974cf540"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:position_relational</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>df38d41a-c39e-44a6-8df7-f1052c4d1bbf</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/a25e2546-47ea-4399-aa9a-6a202d5f51d1">
+    <j.0:description>Gustatory stimulation or the lack of it, e.g., acrid, almondy, fruity, spicy. This category overlaps significantly with Odor category.
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>taste</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/31a85880-f0d2-4dde-8662-bd12587ce241">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/6d86b906-c705-4d74-9c33-c490ce416a9e"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:generative</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>31a85880-f0d2-4dde-8662-bd12587ce241</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/f5fb5045-ce57-4675-a237-b448e65f23ca">
+    <j.0:description>Absolute or relative extent in any one dimension or in an area or volume, e.g., big, medium-sized, small.
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>size</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/51a57db2-aea9-44c3-8e42-5437b64ad043">
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>aging</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/1eab3c3a-9546-46f8-a276-d8c877d68649">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/a25e2546-47ea-4399-aa9a-6a202d5f51d1"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:taste</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>1eab3c3a-9546-46f8-a276-d8c877d68649</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/node/bb286edf-e973-47ee-a37e-b75765d82412">
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/b897a71a-e409-423d-b606-5709e800f693"/>
+    <j.0:uuid>bb286edf-e973-47ee-a37e-b75765d82412</j.0:uuid>
+    <j.0:is_a>node</j.0:is_a>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/e9fc9634-5b95-4788-a3ea-4bf5126ea9a6">
+    <j.0:description>The disposition of a structure with reference to some non-homologous (dissimilar) structures or larger context. E.g., adaxial, antipetalous, apical, axillary, basal. Differentiate this category from Location.
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>position</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/01c5e83c-aec7-4e3d-982b-bde034a23d6f">
+    <j.0:description>Terms that specify the order in which a structure growth in reference to other similar structures. E.g., first, last. Differentiate this category from Development. 
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>growth order</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/6bf5d493-0039-41e3-ab3b-f807cf0ab3a6">
+    <j.0:description>Substantial properties as perceived by visual and tactile senses, e.g. bony, fleshy, leathery, papery, cartilaginous. Differentate this category from Pubescence, Relief, and Coating. 
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>texture</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/1e1340b8-1965-405c-91de-97914b69d774">
+    <j.0:description>Timing of the attaiment of functional maturity, sometimes relative to other structures, sometimes  as to constituent structures relative to each other. E.g. early-maturing, hysteranthours, protandrous.
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>maturation</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/b7202fe9-8d38-48b3-b51a-87f503fcc54f">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/b22cc8e8-afba-4df3-a5c0-13e90fa09538"/>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>b7202fe9-8d38-48b3-b51a-87f503fcc54f</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/7cea86fe-965e-48a5-a1ac-9724a88bc197">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/c2007107-fd95-4ed5-8759-90a3e68e9e9f"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:architecture_ref_taxa</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>7cea86fe-965e-48a5-a1ac-9724a88bc197</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/53218366-b5fe-4b70-81dc-d62a48f76fd2">
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>presence</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/94ead8ab-7d80-41b6-adf6-3acf84fc0590">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/aea6c216-2a8f-489d-8bbb-4819a31990af"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:arrangement</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>94ead8ab-7d80-41b6-adf6-3acf84fc0590</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/fa445b0d-a370-45f5-9f22-1c7bdf92e55d">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/346b0314-5a13-4e42-94df-88b6c01e86cc"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:vernation</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>fa445b0d-a370-45f5-9f22-1c7bdf92e55d</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/967009d6-6a7b-4040-9f4b-974764d03101">
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>appearance*</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/9f734995-51bc-4ef5-a80a-5da803508c05">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/b7a687fe-aa87-4b3b-bad9-cb5d44159fe1"/>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>9f734995-51bc-4ef5-a80a-5da803508c05</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/cf51f55a-ae34-4197-be5c-9fea2efc6c00">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/3e043d66-506b-41c0-af25-732f8fe5aa20"/>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>cf51f55a-ae34-4197-be5c-9fea2efc6c00</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/ee3bf6fa-545e-4819-bd8b-aa63b6b76635">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/a9dea3cf-3405-4897-963c-8ba3719d9877"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:folding</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>ee3bf6fa-545e-4819-bd8b-aa63b6b76635</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/node/8cf1c4dc-5442-4536-a3ca-2a9b30503de9">
+    <j.0:hasTerm rdf:resource="http://cybertaxonomy.eu/resource/term/7ac1194d-0703-4067-9ffb-bdaa574d8bb8"/>
+    <j.0:uuid>8cf1c4dc-5442-4536-a3ca-2a9b30503de9</j.0:uuid>
+    <j.0:is_a>node</j.0:is_a>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/a9d6e984-b109-44c3-ad32-7e7d8effb076">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/1309a445-f762-42d5-8db4-bc36c1cfc55c"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:odor</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>a9d6e984-b109-44c3-ad32-7e7d8effb076</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/c2007107-fd95-4ed5-8759-90a3e68e9e9f">
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>architecture ref taxa</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/922c35c5-79fc-47e5-b81e-ef3b3a349b05">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/967009d6-6a7b-4040-9f4b-974764d03101"/>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>922c35c5-79fc-47e5-b81e-ef3b3a349b05</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/3a7900f8-a71c-4c40-954c-51d9c03739a5">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/0dbf0023-c01c-490a-b29d-e5084c856a81"/>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>3a7900f8-a71c-4c40-954c-51d9c03739a5</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/9bcbc7d5-df7b-468a-b65f-e6f6ef03b69d">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/01c5e83c-aec7-4e3d-982b-bde034a23d6f"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:growth_order</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>9bcbc7d5-df7b-468a-b65f-e6f6ef03b69d</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/d011c147-33c0-43eb-99c3-f72c2f80dcb9">
+    <j.0:description>The general appearance or function of a whole organism (e.g. growth form of a plant). E.g., tree, shrub, shrubby.
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>growth form</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/aa750ed6-3ef2-4e1e-81ae-ffd562d38898">
+    <j.0:description>The extent of lifetime, or persistence and physical state after maturation, e.g., annual, overwintering, deciduous, evergreen.
+</j.0:description>
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>duration</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/9c9de47a-bfdd-4aa2-902c-fac0a6dca674">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/7a05b068-74af-4167-9b84-100e08d172e7"/>
+    <j.0:uri>http://purl.obolibrary.org/obo/PATO_0000014</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>9c9de47a-bfdd-4aa2-902c-fac0a6dca674</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/adc41d45-ad10-42bb-80a9-5128974cf540">
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>position relational</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/cb40063b-39f6-4398-80e2-743343965c19">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/7900e3ed-b43f-445b-b402-31e016ea7fa2"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:development</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>cb40063b-39f6-4398-80e2-743343965c19</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/4d542fd2-f51e-4979-93fd-2e8d0cf82e06">
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>exudation*</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/e9d8d617-c5ab-49eb-91bd-8e6d54e9cd18">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/3133e03c-3bef-4dff-8e62-628360921d23"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:behavior</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>e9d8d617-c5ab-49eb-91bd-8e6d54e9cd18</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/3e043d66-506b-41c0-af25-732f8fe5aa20">
+    <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
+    <j.0:language>English</j.0:language>
+    <j.0:label>lifestyle*</j.0:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/225dd738-e817-4be2-a645-89feebffdb25">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/e10fc7c4-dbec-464a-8c3c-6f2d86b9c259"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:pubescence</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>225dd738-e817-4be2-a645-89feebffdb25</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/b8d3eb3f-8420-4c35-b5fd-6b3146d91895">
+    <j.0:hasVocabulary rdf:resource="http://cybertaxonomy.eu/resource/termVocabulary/7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"/>
+    <j.0:hasRepresentation rdf:resource="http://cybertaxonomy.eu/resource/representation/f3c68dac-a4f8-4aa2-bfac-3cfd5f96cf01"/>
+    <j.0:uri>https://terms.tdwg.org/wiki/ft:derivation</j.0:uri>
+    <j.0:type>PROP</j.0:type>
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:uuid>b8d3eb3f-8420-4c35-b5fd-6b3146d91895</j.0:uuid>
+  </rdf:Description>
+</rdf:RDF>
