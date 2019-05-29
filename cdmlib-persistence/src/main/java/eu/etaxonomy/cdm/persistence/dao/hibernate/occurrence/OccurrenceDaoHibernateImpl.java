@@ -888,19 +888,25 @@ public class OccurrenceDaoHibernateImpl
      * {@inheritDoc}
      */
     @Override
-    public List<DerivedUnit> findByGeneticAccessionNumber(String accessionNumberString, List<String> propertyPaths) {
+    public DnaSample findByGeneticAccessionNumber(String accessionNumberString, List<String> propertyPaths) {
         String queryString = "SELECT dnaSample FROM DnaSample as dnaSample join dnaSample.sequences as sequences WITH sequences.geneticAccessionNumber LIKE :accessionNumberString";
         Query query = getSession().createQuery(queryString);
         query.setParameter("accessionNumberString", accessionNumberString);
         @SuppressWarnings("unchecked")
-        List<DerivedUnit> dnaSamples = query.list();
+        List<DnaSample> dnaSamples = query.list();
         defaultBeanInitializer.initializeAll(dnaSamples, propertyPaths);
-        List<DerivedUnit> results = new ArrayList<>();
-
-        extractDeterminedOriginals(dnaSamples, results);
 
 
-        return results;
+        if (dnaSamples.isEmpty()){
+            return null;
+        }else if (dnaSamples.size() == 1){
+            return dnaSamples.get(0);
+        } else{
+            logger.debug("there are more than one dnaSample for genetic accession number " + accessionNumberString + " this should not happen.");
+            return null;
+        }
+
+
     }
 
     /**
@@ -925,7 +931,7 @@ public class OccurrenceDaoHibernateImpl
      */
     private void extractDeterminedOriginals(List<DerivedUnit> samples, List<DerivedUnit> results) {
         for (DerivedUnit sample:samples){
-            if (sample.getDeterminations() != null){
+            if (sample.getDeterminations() != null && !sample.getDeterminations().isEmpty()){
                 results.add(sample);
             }else{
                 if (sample instanceof DerivedUnit){

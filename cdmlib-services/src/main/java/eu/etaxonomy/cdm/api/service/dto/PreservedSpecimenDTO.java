@@ -14,11 +14,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 
@@ -36,6 +39,8 @@ public class PreservedSpecimenDTO extends DerivateDTO{
 
     private List<AbstractMap.SimpleEntry<UUID, String>> associatedTaxa;
     private Map<String, List<String>> types;
+
+    private List<AbstractMap.SimpleEntry<UUID, String>> determinedNames;
 
 
 
@@ -94,6 +99,7 @@ public class PreservedSpecimenDTO extends DerivateDTO{
         setRecordBase(derivedUnit.getRecordBasis().getMessage());
         setSources(derivedUnit.getSources());
         setSpecimenTypeDesignations(derivedUnit.getSpecimenTypeDesignations());
+        addDeterminedNames(derivedUnit.getDeterminations());
     }
 
 
@@ -123,6 +129,28 @@ public class PreservedSpecimenDTO extends DerivateDTO{
             associatedTaxa = new ArrayList<AbstractMap.SimpleEntry<UUID, String>>();
         }
         associatedTaxa.add(new AbstractMap.SimpleEntry<UUID, String>(taxon.getUuid(), taxon.getTitleCache()));
+    }
+
+    public List<AbstractMap.SimpleEntry<UUID, String>> getDeterminedNames() {
+        return determinedNames;
+    }
+    public void addDeterminedNames(Set<DeterminationEvent> determinations){
+        if(determinedNames==null){
+            determinedNames = new ArrayList<AbstractMap.SimpleEntry<UUID, String>>();
+        }
+        TaxonName preferredName = null;
+        for (DeterminationEvent event:determinations){
+            if (event.getPreferredFlag()){
+                preferredName = event.getTaxonName();
+            }
+        }
+        if (preferredName != null){
+            determinedNames.add(new AbstractMap.SimpleEntry<UUID, String>(preferredName.getUuid(), preferredName.getTitleCache()));
+        }else{
+            for (DeterminationEvent event:determinations){
+                determinedNames.add(new AbstractMap.SimpleEntry<UUID, String>(event.getTaxonName().getUuid(), event.getTaxonName().getTitleCache()));
+            }
+        }
     }
 
     public void setPreferredStableUri(URI preferredStableUri) {

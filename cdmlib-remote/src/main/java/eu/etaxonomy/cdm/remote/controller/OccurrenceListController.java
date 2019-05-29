@@ -35,7 +35,6 @@ import eu.etaxonomy.cdm.api.service.search.LuceneParseException;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -225,20 +224,19 @@ public class OccurrenceListController extends AbstractIdentifiableListController
 //   }
 
     @RequestMapping(method = RequestMethod.GET, value = "byGeneticAccessionNumber" )
-    public DerivedUnit doFindByGeneticAccessionNumber(
+    public FieldUnitDTO doFindByGeneticAccessionNumber(
             @RequestParam("accessionNumber") String accessionNumber,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
         logger.info("doListSpecimensOrObservations() - " + request.getRequestURI());
 
-        ModelAndView mv = new ModelAndView();
         if(accessionNumber == null ) {
             HttpStatusMessage.create("Query must be given", 400).send(response);
             return null;
         }
 
-       DerivedUnit dnaSample = service.findByAccessionNumber(accessionNumber, null,this.initializationStrategy);
-       return dnaSample;
+       FieldUnitDTO fieldUnitDto = service.findByAccessionNumber(accessionNumber, null,this.initializationStrategy);
+       return fieldUnitDto;
     }
 
 

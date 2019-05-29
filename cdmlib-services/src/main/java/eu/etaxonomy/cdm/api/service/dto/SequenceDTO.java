@@ -71,7 +71,9 @@ public class SequenceDTO implements Serializable{
         geneticAccessionNumber = seq.getGeneticAccessionNumber();
         boldProcessId = seq.getBoldProcessId();
         singleReadAlignments = seq.getSingleReadAlignments();
-        dnaMarker = seq.getDnaMarker().getLabel();
+        if (seq.getDnaMarker() != null){
+            dnaMarker = seq.getDnaMarker().getLabel();
+        }
         haplotype = seq.getHaplotype();
         citations = seq.getCitations();
         try{

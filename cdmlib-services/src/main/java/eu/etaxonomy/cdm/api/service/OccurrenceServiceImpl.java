@@ -553,8 +553,8 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             collectionKey = FormatKey.COLLECTION_NAME;
         }
         specimenIdentifier = CdmFormatterFactory.format(derivedUnit, new FormatKey[] {
-                collectionKey, FormatKey.SPACE,
-                FormatKey.MOST_SIGNIFICANT_IDENTIFIER, FormatKey.SPACE });
+                collectionKey, FormatKey.SPACE, FormatKey.OPEN_BRACKET,
+                FormatKey.MOST_SIGNIFICANT_IDENTIFIER, FormatKey.CLOSE_BRACKET });
         if(CdmUtils.isBlank(specimenIdentifier)){
             specimenIdentifier = derivedUnit.getTitleCache();
         }
@@ -897,17 +897,20 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
 
     @Override
-    public  DerivedUnit findByAccessionNumber(
+    public  FieldUnitDTO findByAccessionNumber(
             String accessionNumberString, List<OrderHint> orderHints,
             List<String> propertyPaths)  {
 
-        List<DerivedUnit> records = new ArrayList<>();
-        records = dao.findByGeneticAccessionNumber(accessionNumberString, propertyPaths);
-        if(records.size()>= 1){
-            return records.get(0);
-        }else{
-            return null;
-        }
+        DnaSample dnaSample = dao.findByGeneticAccessionNumber(accessionNumberString, propertyPaths);
+        DerivateDTO derivedUnitDTO;
+        HashMap<UUID, DerivateDTO> alreadyCollectedSpecimen = new HashMap<>();
+        List<FieldUnitDTO> fieldUnitDTOs = new ArrayList<>();
+        derivedUnitDTO = new DNASampleDTO(dnaSample);
+        alreadyCollectedSpecimen.put(derivedUnitDTO.getUuid(), derivedUnitDTO);
+        derivedUnitDTO.addAllDerivates(getDerivedUnitDTOsFor(derivedUnitDTO, dnaSample, alreadyCollectedSpecimen));
+        FieldUnitDTO fieldUnit = this.findFieldUnitDTO(derivedUnitDTO, fieldUnitDTOs, alreadyCollectedSpecimen);
+
+        return fieldUnit;
 
     }
 
@@ -987,7 +990,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         SpecimenOrObservationBase<?> specimen = load(derivedUnitUuid, propertyPaths);
 //        specimen = HibernateProxyHelper.deproxy(specimen, SpecimenOrObservationBase.class);
         Collection<FieldUnit> fieldUnits = new ArrayList<>();
-
+        if (specimen == null){
+            return null;
+        }
         if (specimen.isInstanceOf(FieldUnit.class)) {
             fieldUnits.add(HibernateProxyHelper.deproxy(specimen, FieldUnit.class));
         }

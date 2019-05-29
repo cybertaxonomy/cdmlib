@@ -696,7 +696,7 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @return
      * @throws IOException
      */
-    DerivedUnit findByAccessionNumber(
+    FieldUnitDTO findByAccessionNumber(
              String accessionNumberString, List<OrderHint> orderHints,
             List<String> propertyPaths);
 

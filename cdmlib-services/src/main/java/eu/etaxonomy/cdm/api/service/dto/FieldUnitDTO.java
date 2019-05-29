@@ -34,7 +34,9 @@ public class FieldUnitDTO extends DerivateDTO{
 
     public static FieldUnitDTO newInstance(FieldUnit fieldUnit){
 	    FieldUnitDTO fieldUnitDto = new FieldUnitDTO(fieldUnit);
-	    fieldUnitDto.gatheringEvent = GatheringEventDTO.newInstance(fieldUnit.getGatheringEvent());
+	    if (fieldUnit.getGatheringEvent() != null){
+	        fieldUnitDto.gatheringEvent = GatheringEventDTO.newInstance(fieldUnit.getGatheringEvent());
+	    }
 	    fieldUnitDto.setRecordBase(fieldUnit.getRecordBasis().getMessage());
 	    fieldUnitDto.setListLabel(fieldUnit.getTitleCache());
 
