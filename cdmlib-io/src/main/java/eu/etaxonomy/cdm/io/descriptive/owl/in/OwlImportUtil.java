@@ -50,7 +50,7 @@ public class OwlImportUtil {
         term.setUuid(UUID.fromString(termResource.getProperty(OwlUtil.propUuid).getString()));
 
         // term URI
-        String uriString = termResource.hasProperty(OwlUtil.propUri)?termResource.getProperty(OwlUtil.propUri).toString():null;
+        String uriString = termResource.hasProperty(OwlUtil.propUri)?termResource.getProperty(OwlUtil.propUri).getString():null;
         if(CdmUtils.isNotBlank(uriString)){
             term.setUri(URI.create(uriString));
         }
@@ -77,7 +77,7 @@ public class OwlImportUtil {
         vocabulary.setUuid(UUID.fromString(vocabularyResource.getProperty(OwlUtil.propUuid).getString()));
 
         // voc URI
-        String vocUriString = vocabularyResource.hasProperty(OwlUtil.propUri)?vocabularyResource.getProperty(OwlUtil.propUri).toString():null;
+        String vocUriString = vocabularyResource.hasProperty(OwlUtil.propUri)?vocabularyResource.getProperty(OwlUtil.propUri).getString():null;
         if(CdmUtils.isNotBlank(vocUriString)){
             vocabulary.setUri(URI.create(vocUriString));
         }
@@ -115,7 +115,7 @@ public class OwlImportUtil {
             language = Language.getDefaultLanguage();
         }
 
-        String abbreviatedLabel = repsentationResource.hasProperty(OwlUtil.propLabelAbbrev)?repsentationResource.getProperty(OwlUtil.propLabelAbbrev).toString():null;
+        String abbreviatedLabel = repsentationResource.hasProperty(OwlUtil.propLabelAbbrev)?repsentationResource.getProperty(OwlUtil.propLabelAbbrev).getString():null;
         String label = repsentationResource.getProperty(OwlUtil.propLabel).getString();
         String description = repsentationResource.hasProperty(OwlUtil.propDescription)?repsentationResource.getProperty(OwlUtil.propDescription).getString():null;
         Representation representation = Representation.NewInstance(description, label, abbreviatedLabel, language);
