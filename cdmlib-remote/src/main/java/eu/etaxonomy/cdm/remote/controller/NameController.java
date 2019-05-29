@@ -26,7 +26,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -36,6 +35,7 @@ import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.persistence.dao.initializer.EntityInitStrategy;
+import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import io.swagger.annotations.Api;
 
 /**
@@ -59,6 +59,14 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
             "typeName",
             "citation",
             "citation.authorship.$",
+    });
+
+    private static final List<String> FULL_TITLE_CACHE_INIT_STRATEGY = Arrays.asList(new String []{
+            "$",
+            "relationsFromThisName.$",
+            "relationsToThisName.$",
+            "status.$",
+            "nomenclaturalReference.inReference.inReference.inReference"
     });
 
     private static final List<String> NAME_CACHE_INIT_STRATEGY = Arrays.asList(new String []{
@@ -156,15 +164,23 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
     }
 
     @RequestMapping(value = "taggedName", method = RequestMethod.GET)
-    public ModelAndView doGetTaggedName(
+    public List<TaggedText> doGetTaggedName(
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
         logger.info("doGetDescriptionElementsByType() - " + requestPathAndQuery(request));
+        return service.getTaggedName(uuid);
+    }
 
-        ModelAndView mv = new ModelAndView();
-        mv.addObject(service.getTaggedName(uuid));
-        return mv;
+    @RequestMapping(value = "taggedFullTitle", method = RequestMethod.GET)
+    public List<TaggedText> doGetTaggedFullTitle(
+            @PathVariable("uuid") UUID uuid,
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+        logger.info("doGetTaggedFullTitle() - " + requestPathAndQuery(request));
+
+        TaxonName name = service.load(uuid, FULL_TITLE_CACHE_INIT_STRATEGY);
+        return name.getTaggedFullTitle();
     }
 
     @RequestMapping(

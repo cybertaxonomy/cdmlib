@@ -81,12 +81,6 @@ public class NamePortalController extends BaseController<TaxonName, INameService
             "elements.media",
     });
 
-
-//	public NamePortalController(){
-//		super();
-//		setInitializationStrategy(Arrays.asList(new String[]{"$"})); //TODO required???
-//	}
-
     @Override
     protected <CDM_BASE extends CdmBase> List<String> complementInitStrategy(Class<CDM_BASE> clazz,
             List<String> pathProperties) {
