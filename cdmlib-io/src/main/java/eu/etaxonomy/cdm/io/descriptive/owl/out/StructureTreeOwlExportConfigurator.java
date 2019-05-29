@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.io.descriptive.owl.out;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,8 +33,8 @@ public class StructureTreeOwlExportConfigurator extends ExportConfiguratorBase<S
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(StructureTreeOwlExportConfigurator.class);
 
-    private List<UUID> featureTreeUuids;
-    private List<UUID> vocabularyUuids;
+    private List<UUID> featureTreeUuids = new ArrayList<>();
+    private List<UUID> vocabularyUuids = new ArrayList<>();
 
 
     private StructureTreeOwlExportConfigurator() {
