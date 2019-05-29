@@ -1109,8 +1109,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                             associatedFieldUnit = associatedFieldUnits.iterator().next();
                         }
                         // parent-child relation:
-                        if (associationType.contains("individual") || associationType.contains("culture")
-                                || associationType.contains("sample") ||  associationType.contains("isolated")) {
+                        if (associationType != null && (associationType.contains("individual") || associationType.contains("culture")
+                                || associationType.contains("sample") ||  associationType.contains("isolated"))) {
                             DerivationEvent updatedDerivationEvent = DerivationEvent.NewSimpleInstance(currentUnit,
                                     associatedUnit, DerivationEventType.ACCESSIONING());
 
