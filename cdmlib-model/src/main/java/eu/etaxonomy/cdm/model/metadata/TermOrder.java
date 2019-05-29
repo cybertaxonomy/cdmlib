@@ -37,4 +37,9 @@ public enum TermOrder implements IKeyLabel{
     public String getKey(){
         return key;
     }
+
+    @Override
+    public String toString(){
+        return key;
+    }
 }

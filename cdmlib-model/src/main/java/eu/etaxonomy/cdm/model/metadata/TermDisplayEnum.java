@@ -45,4 +45,9 @@ public enum TermDisplayEnum implements IKeyLabel{
         }
         throw new IllegalArgumentException();
     }
+
+    @Override
+    public String toString(){
+        return key;
+    }
 }
