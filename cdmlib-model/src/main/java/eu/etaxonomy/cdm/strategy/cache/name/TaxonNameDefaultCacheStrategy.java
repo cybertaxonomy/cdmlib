@@ -31,6 +31,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.ref.TypedEntityReference;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -361,7 +362,7 @@ public class TaxonNameDefaultCacheStrategy
             if (includeSeparatorBefore){
                 nomStatusTags.add(new TaggedText(TagEnum.separator, statusSeparator));
             }
-            nomStatusTags.add(new TaggedText(TagEnum.nomStatus, nomStatusStr));
+            nomStatusTags.add(new TaggedText(TagEnum.nomStatus, nomStatusStr, new TypedEntityReference<>(ncStatus.getClass(), ncStatus.getUuid())));
             if (includeSeparatorAfter){
                 nomStatusTags.add(new TaggedText(TagEnum.postSeparator, ","));
             }
