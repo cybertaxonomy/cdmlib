@@ -542,5 +542,12 @@ public interface INameService
      */
     Collection<TypeDesignationStatusFilter> getTypeDesignationStatusFilterTerms(List<Language> preferredLanguages);
 
+    /**
+     * @param uuid
+     * @param propertyPaths
+     * @return
+     */
+    NomenclaturalStatus loadNomenclaturalStatus(UUID uuid, List<String> propertyPaths);
+
 
 }

@@ -464,6 +464,11 @@ public class NameServiceImpl
         return nomStatusDao.list(limit, start);
     }
 
+    @Override
+    public NomenclaturalStatus loadNomenclaturalStatus(UUID uuid,  List<String> propertyPaths){
+        return nomStatusDao.load(uuid, propertyPaths);
+    }
+
     /**
      * TODO candidate for harmonization
      * new name getTypeDesignations
