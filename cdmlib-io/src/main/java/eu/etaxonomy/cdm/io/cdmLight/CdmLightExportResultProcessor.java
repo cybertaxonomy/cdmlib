@@ -40,6 +40,15 @@ public class CdmLightExportResultProcessor {
     public CdmLightExportResultProcessor(CdmLightExportState state) {
         super();
         this.state = state;
+        Map<String,String[]> resultMap;
+        for (CdmLightExportTable table: CdmLightExportTable.values()){
+            resultMap = new HashMap<>();
+            if (state.getConfig().isHasHeaderLines()){
+                resultMap.put(HEADER, table.getColumnNames());
+            }
+            result.put(table, resultMap);
+        }
+
     }
 
 

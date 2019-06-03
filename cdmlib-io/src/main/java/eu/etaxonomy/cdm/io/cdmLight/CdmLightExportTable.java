@@ -19,7 +19,7 @@ public enum CdmLightExportTable {
     SCIENTIFIC_NAME("ScientificName", nameColumns()),
     NAME_RELATIONSHIP("NameRelationship",nameRelationColumns()),
     HOMOTYPIC_GROUP("HomotypicGroup",homotypicGroupColumns()),
-    NOMENCLATURAL_AUTHOR("TeamOrPerson", nomenclaturalAuthorColumns()),
+    NOMENCLATURAL_AUTHOR("PersonOrTeam", nomenclaturalAuthorColumns()),
     NOMENCLATURAL_AUTHOR_TEAM_RELATION("PersonTeamRelation", nomenclaturalAuthorTeamRelColumns()),
     TYPE_DESIGNATION("TypeDesignation", typeDesignationColumns()),
     SPECIMEN("Specimen", specimenColumns()),

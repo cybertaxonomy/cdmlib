@@ -15,6 +15,8 @@ import java.util.UUID;
 import eu.etaxonomy.cdm.model.common.OrderIndexComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.strategy.cache.TagEnum;
+import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 /**
  * @author k.luther
@@ -68,9 +70,22 @@ public class TaxonNodeDtoByRankAndNameComparator implements Serializable, Compar
 		int rankOrder = OrderIndexComparator.instance().compare(rankTax1, rankTax2);
 
 		if (rankOrder == 0) {
-			if (node1.getTitleCache() != null && node2.getTitleCache() != null){
+			if (node1.getTaggedTitle() != null && node2.getTaggedTitle() != null){
 				//same rank, order by name
-				int result = node1.getNameTitleCache().compareTo(node2.getNameTitleCache());
+			    String sortableName1 = "";
+			    for (TaggedText tagged: node1.getTaggedTitle()){
+			        if (tagged.getType().equals(TagEnum.name)){
+			            sortableName1 += " " + tagged.getText();
+			        }
+			    }
+
+			    String sortableName2 = "";
+                for (TaggedText tagged: node2.getTaggedTitle()){
+                    if (tagged.getType().equals(TagEnum.name)){
+                        sortableName2 += " " + tagged.getText();
+                    }
+                }
+				int result = sortableName1.compareTo(sortableName2);
 				if (result == 0){
 					return node1.getTaxonUuid().compareTo(node2.getTaxonUuid());
 				}else{

@@ -38,43 +38,29 @@ public class TaxonNodeByNameComparator extends AbstractStringComparator<TaxonNod
     public int compare(TaxonNode node1, TaxonNode node2) {
         if (node1 == null && node2 == null) {
             return 0;
-        }
-        else if (node1 == null) {
+        } else if (node1 == null) {
             return 1;
-        }
-        else if (node2 == null) {
+        } else if (node2 == null) {
             return -1;
         }
+
         if (node1.equals(node2)){
-        	return 0;
+            return 0;
         }
-        boolean node1Excluded = node1.isExcluded();
-        boolean node2Excluded = node2.isExcluded();
-        boolean node1Unplaced = node1.isUnplaced();
-        boolean node2Unplaced = node2.isUnplaced();
+        int nodeResult = compareNodes(node1, node2);
+        if (nodeResult != 0){
+            return nodeResult;
+        }
+        return compareNames(node1, node2);
+    }
 
-      //They should both be put to the end (first unplaced then excluded)
-        if (node2Excluded && !node1Excluded){
-            return -1;
-        }
-        if (node2Unplaced && !(node1Unplaced || node1Excluded)){
-            return -1;
-        }
 
-        if (node1Excluded && !node2Excluded){
-            return 1;
-        }
-        if (node1Unplaced && !(node2Unplaced || node2Excluded)){
-            return 1;
-        }
-
-        if (node1Unplaced && node2Excluded){
-            return -1;
-        }
-        if (node2Unplaced && node1Excluded){
-            return 1;
-        }
-
+    /**
+     * @param node1
+     * @param node2
+     * @return
+     */
+    protected int compareNames(TaxonNode node1, TaxonNode node2) {
         String titleCache1 = createSortableTitleCache(node1);
         String titleCache2 = createSortableTitleCache(node2);
 
@@ -112,6 +98,43 @@ public class TaxonNodeByNameComparator extends AbstractStringComparator<TaxonNod
         }else{
         	return node1.getUuid().compareTo(node2.getUuid());
         }
+    }
+
+
+    /**
+     * @param node1
+     * @param node2
+     */
+    protected int compareNodes(TaxonNode node1, TaxonNode node2) {
+
+
+        boolean node1Excluded = node1.isExcluded();
+        boolean node2Excluded = node2.isExcluded();
+        boolean node1Unplaced = node1.isUnplaced();
+        boolean node2Unplaced = node2.isUnplaced();
+
+      //They should both be put to the end (first unplaced then excluded)
+        if (node2Excluded && !node1Excluded){
+            return -1;
+        }
+        if (node2Unplaced && !(node1Unplaced || node1Excluded)){
+            return -1;
+        }
+
+        if (node1Excluded && !node2Excluded){
+            return 1;
+        }
+        if (node1Unplaced && !(node2Unplaced || node2Excluded)){
+            return 1;
+        }
+
+        if (node1Unplaced && node2Excluded){
+            return -1;
+        }
+        if (node2Unplaced && node1Excluded){
+            return 1;
+        }
+        return 0;
     }
 
 
