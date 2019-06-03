@@ -328,12 +328,27 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 
     @Override
     @Transactional(readOnly = true)
-    public <S extends T> Pager<S> pageByRestrictions(Class<S> clazz, String param, String queryString, MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths){
+    public <S extends T> Pager<S> pageByParamWithRestrictions(Class<S> clazz, String param, String queryString, MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths){
 
         List<S> records;
         long resultSize = dao.countByParamWithRestrictions(clazz, param, queryString, matchmode, restrictions);
         if(AbstractPagerImpl.hasResultsInRange(resultSize, pageIndex, pageSize)){
             records = dao.findByParamWithRestrictions(clazz, param, queryString, matchmode, restrictions, pageSize, pageIndex, orderHints, propertyPaths);
+        } else {
+            records = new ArrayList<>();
+        }
+        Pager<S> pager = new DefaultPagerImpl<>(pageIndex, resultSize, pageSize, records);
+        return pager;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public <S extends T> Pager<S> page(Class<S> clazz, List<Restriction<?>> restrictions, Integer pageSize, Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths){
+
+        List<S> records;
+        long resultSize = dao.count(clazz, restrictions);
+        if(AbstractPagerImpl.hasResultsInRange(resultSize, pageIndex, pageSize)){
+            records = dao.list(clazz, restrictions, pageSize, pageIndex, orderHints, propertyPaths);
         } else {
             records = new ArrayList<>();
         }

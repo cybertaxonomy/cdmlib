@@ -91,6 +91,7 @@ public interface ITaxonDao
     /**
      * Returns a list of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false)
      * where the taxonBase.name.nameCache property matches the String queryString.
+     *
      * @param doTaxa
      * @param doSynonyms
      * @param queryString

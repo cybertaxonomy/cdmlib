@@ -11,6 +11,7 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,6 +32,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.editor.CdmTypePropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
@@ -83,8 +85,7 @@ public abstract class BaseListController <T extends CdmBase, SERVICE extends ISe
             {
 
         logger.info("doPage() " + requestPathAndQuery(request));
-        PagerParameters pagerParameters = new PagerParameters(pageSize, pageIndex);
-        pagerParameters.normalizeAndValidate(response);
+        PagerParameters pagerParameters = new PagerParameters(pageSize, pageIndex).normalizeAndValidate(response);
 
         if(type != null) {
             orderBy = orderBy.checkSuitableFor(type);
@@ -92,6 +93,32 @@ public abstract class BaseListController <T extends CdmBase, SERVICE extends ISe
         }
         return service.page(type, pagerParameters.getPageSize(), pagerParameters.getPageIndex(), orderBy.orderHints(), getInitializationStrategy());
     }
+
+    @SuppressWarnings("unchecked")
+    @RequestMapping(method = {RequestMethod.GET,RequestMethod.POST}, params={"restriction"})
+    public Pager<T> doPageByRestrictions(
+            @RequestParam(value = "pageNumber", required = false) Integer pageIndex,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize,
+            @RequestParam(value = "class", required = false) Class type,
+            @RequestParam(value = "restriction", required = false) List<Restriction> restrictions,
+            @RequestParam(value = "initStrategy", required = false) List<String> initStrategy,
+            @RequestParam(name="orderBy", defaultValue="BY_TITLE_CACHE_ASC", required=true) OrderHintPreset orderBy,
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException
+            {
+
+        // NOTE: for testing with httpi and jq:
+        // http GET :8080/portal/taxon.json restriction=='{"propertyName":"name.titleCache","matchMode":"EXACT","values":["Eunotia krammeri Metzeltin & Lange-Bert."]}' initStrategy=name.titleCache | jq '.records[].name.titleCache'
+        logger.info("doPageByRestrictions() " + requestPathAndQuery(request));
+        PagerParameters pagerParameters = new PagerParameters(pageSize, pageIndex).normalizeAndValidate(response);
+
+        if(type != null) {
+            orderBy = orderBy.checkSuitableFor(type);
+        }
+        ArrayList<Restriction<?>> restrictions2 = new ArrayList<>(restrictions);
+        return service.page(type, restrictions2, pagerParameters.getPageSize(), pagerParameters.getPageIndex(), orderBy.orderHints(), initStrategy);
+    }
+
 
 //    /**
 //     * Parameter less method to be used as default when request without parameter are made. Otherwise

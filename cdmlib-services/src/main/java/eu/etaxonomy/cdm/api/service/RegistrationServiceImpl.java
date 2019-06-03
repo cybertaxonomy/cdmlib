@@ -264,7 +264,7 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
             restrictions.add(new Restriction<>("status", null, RegistrationStatus.PUBLISHED));
         }
 
-        Pager<Registration> regPager = pageByRestrictions(Registration.class, "identifier", identifier, MatchMode.EXACT,
+        Pager<Registration> regPager = pageByParamWithRestrictions(Registration.class, "identifier", identifier, MatchMode.EXACT,
                 restrictions, pageSize, pageIndex, null, propertyPaths);
 
 
@@ -275,7 +275,7 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
     @Transactional(readOnly = true)
     public Map<UUID, RegistrationStatus> statusByIdentifier(String identifier) throws IOException {
 
-        Pager<Registration> regPager = pageByRestrictions(Registration.class, "identifier", identifier, MatchMode.EXACT,
+        Pager<Registration> regPager = pageByParamWithRestrictions(Registration.class, "identifier", identifier, MatchMode.EXACT,
                 null, null, null, null, Arrays.asList("status"));
 
         Map<UUID, RegistrationStatus> map = new HashMap<>();

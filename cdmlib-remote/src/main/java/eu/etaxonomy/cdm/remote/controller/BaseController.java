@@ -65,11 +65,6 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 
     private static final Logger logger = Logger.getLogger(BaseController.class);
 
-
-/*	protected SERVICE service;
-
-    public abstract void setService(SERVICE service);*/
-
     protected Class<T> baseClass;
 
     @SuppressWarnings("unchecked")

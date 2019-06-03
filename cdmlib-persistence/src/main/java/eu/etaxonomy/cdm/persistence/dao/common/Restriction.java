@@ -41,6 +41,10 @@ public class Restriction<T extends Object> {
 
     private List<T> values = null;
 
+    public Restriction(){
+        super();
+    }
+
     /**
      * @param propertyName
      * @param matchMode is only applied if the <code>value</code> is a <code>String</code> object
