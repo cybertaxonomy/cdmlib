@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.api.service.dto.CdmEntityIdentifier;
 import eu.etaxonomy.cdm.api.service.dto.TaxonDistributionDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.PagerUtils;
+import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -64,11 +65,13 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeFilterDao;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author n.hoffmann
@@ -1143,6 +1146,26 @@ public class TaxonNodeServiceImpl
         return result;
     }
 
+    @Override
+    public <S extends TaxonNode> Pager<S> page(Class<S> clazz, List<Restriction<?>> restrictions, Integer pageSize,
+            Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths) {
+        return page(clazz, restrictions, pageSize, pageIndex, orderHints, propertyPaths, INCLUDE_UNPUBLISHED);
+    }
+
+    @Override
+    public <S extends TaxonNode> Pager<S> page(Class<S> clazz, List<Restriction<?>> restrictions, Integer pageSize,
+            Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths, boolean includeUnpublished) {
+
+        List<S> records;
+        long resultSize = dao.count(clazz, restrictions);
+        if(AbstractPagerImpl.hasResultsInRange(resultSize, pageIndex, pageSize)){
+            records = dao.list(clazz, restrictions, pageSize, pageIndex, orderHints, propertyPaths, includeUnpublished);
+        } else {
+            records = new ArrayList<>();
+        }
+        Pager<S> pager = new DefaultPagerImpl<>(pageIndex, resultSize, pageSize, records);
+        return pager;
+    }
 
 
 }

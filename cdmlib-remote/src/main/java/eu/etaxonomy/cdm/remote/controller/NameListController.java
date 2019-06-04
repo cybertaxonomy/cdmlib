@@ -9,7 +9,9 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,6 +27,7 @@ import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.dto.TypeDesignationStatusFilter;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
@@ -96,5 +99,11 @@ public class NameListController extends AbstractIdentifiableListController<Taxon
         logger.info("doGetTypeDesignationStatusFilterTermsInUse() " + requestPathAndQuery(request));
         return service.getTypeDesignationStatusFilterTerms(localeContext.getLanguages());
 
+    }
+
+    @Override
+    protected Pager<TaxonName> pageByRestrictions(Class<TaxonName> type, List<String> initStrategy, OrderHintPreset orderBy,
+            PagerParameters pagerParameters, ArrayList<Restriction<?>> restrictions) {
+        return service.page(type, restrictions, pagerParameters.getPageSize(), pagerParameters.getPageIndex(), orderBy.orderHints(), initStrategy, false);
     }
 }

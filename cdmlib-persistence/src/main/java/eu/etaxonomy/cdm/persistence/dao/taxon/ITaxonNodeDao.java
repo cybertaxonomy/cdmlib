@@ -23,8 +23,10 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
+import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author a.mueller
@@ -198,8 +200,26 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
     List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
             Classification classification, Integer limit, String pattern, boolean searchForClassifications);
 
+    /**
+     * @param type
+     * @param restrictions
+     * @param limit
+     * @param start
+     * @param orderHints
+     * @param propertyPaths
+     * @param includePublished
+     * @return
+     */
+    public <S extends TaxonNode> List<S> list(Class<S> type, List<Restriction<?>> restrictions, Integer limit, Integer start,
+            List<OrderHint> orderHints, List<String> propertyPaths, boolean includePublished);
 
-
+    /**
+     * @param type
+     * @param restrictions
+     * @param includePublished
+     * @return
+     */
+    long count(Class<? extends TaxonNode> type, List<Restriction<?>> restrictions, boolean includePublished);
 
 
 }

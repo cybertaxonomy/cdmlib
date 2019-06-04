@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IPublishableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
+import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.NameSearchOrder;
@@ -444,6 +445,28 @@ public interface ITaxonDao
     public List<TaxonRelationship> getTaxonRelationships(Set<TaxonRelationshipType> types,
             Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints, List<String> propertyPaths);
+
+
+    /**
+     * @param type
+     * @param restrictions
+     * @param limit
+     * @param start
+     * @param orderHints
+     * @param propertyPaths
+     * @param includePublished
+     * @return
+     */
+    public <S extends TaxonBase> List<S> list(Class<S> type, List<Restriction<?>> restrictions, Integer limit, Integer start,
+            List<OrderHint> orderHints, List<String> propertyPaths, boolean includePublished);
+
+    /**
+     * @param type
+     * @param restrictions
+     * @param includePublished
+     * @return
+     */
+    long count(Class<? extends TaxonBase> type, List<Restriction<?>> restrictions, boolean includePublished);
 
 
 

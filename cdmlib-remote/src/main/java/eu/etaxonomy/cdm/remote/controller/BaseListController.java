@@ -96,7 +96,7 @@ public abstract class BaseListController <T extends CdmBase, SERVICE extends ISe
 
     @SuppressWarnings("unchecked")
     @RequestMapping(method = {RequestMethod.GET,RequestMethod.POST}, params={"restriction"})
-    public Pager<T> doPageByRestrictions(
+    public final Pager<T> doPageByRestrictions(
             @RequestParam(value = "pageNumber", required = false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             @RequestParam(value = "class", required = false) Class type,
@@ -116,7 +116,23 @@ public abstract class BaseListController <T extends CdmBase, SERVICE extends ISe
             orderBy = orderBy.checkSuitableFor(type);
         }
         ArrayList<Restriction<?>> restrictions2 = new ArrayList<>(restrictions);
-        return service.page(type, restrictions2, pagerParameters.getPageSize(), pagerParameters.getPageIndex(), orderBy.orderHints(), initStrategy);
+        return pageByRestrictions(type, initStrategy, orderBy, pagerParameters, restrictions2);
+    }
+
+
+    /**
+     * This method can be overwritten by subclasses, for example to apply additional filtering like for the publish flag.
+     *
+     * @param type
+     * @param initStrategy
+     * @param orderBy
+     * @param pagerParameters
+     * @param restrictions
+     * @return
+     */
+    protected Pager<T> pageByRestrictions(Class<T> type, List<String> initStrategy, OrderHintPreset orderBy,
+            PagerParameters pagerParameters, ArrayList<Restriction<?>> restrictions) {
+        return service.page(type, restrictions, pagerParameters.getPageSize(), pagerParameters.getPageIndex(), orderBy.orderHints(), initStrategy);
     }
 
 

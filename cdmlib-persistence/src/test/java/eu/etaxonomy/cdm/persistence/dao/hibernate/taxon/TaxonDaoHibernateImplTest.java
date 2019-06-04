@@ -18,6 +18,7 @@ import static org.junit.Assert.fail;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -53,6 +54,7 @@ import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.model.view.AuditEventRecord;
 import eu.etaxonomy.cdm.model.view.context.AuditEventContextHolder;
 import eu.etaxonomy.cdm.persistence.dao.common.AuditEventSort;
+import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
@@ -554,6 +556,20 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("1 misapplied name, no pro parte synonym should be returned.", 1, taxa.size());
         assertTrue("Pro parte should exist", existsInCollection(taxa, aus));
 
+    }
+
+    @Test
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonDaoHibernateImplTest.publishFlag.xml")
+    public void testListByRestritionsPublishFlag(){
+        boolean onlyPublished = false;
+        boolean includeUnpublished = true;
+        List<Restriction<?>> restrictions = new ArrayList<>();
+        restrictions.add(new Restriction<>("name.titleCache", MatchMode.BEGINNING, "Acherontia"));
+        List<TaxonBase> taxa = taxonDao.list(TaxonBase.class, restrictions, null, null, null, Arrays.asList("name.titleCache"), includeUnpublished);
+        assertEquals("expeting the published and unpublished taxon", 2, taxa.size());
+        taxa = taxonDao.list(TaxonBase.class, restrictions, null, null, null, Arrays.asList("name.titleCache"), onlyPublished);
+        assertEquals("expeting the unpublished taxon to be excluded", 1, taxa.size());
+        assertTrue(taxa.get(0).isPublish());
     }
 
     @Test

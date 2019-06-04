@@ -63,6 +63,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.UuidAndTitleCacheTaxonComparator;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
+import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
@@ -113,6 +114,48 @@ public class TaxonDaoHibernateImpl
         return result; //(result == null || (!result.isPublish() && !includeUnpublished))? null : result;
     }
 
+    @Override
+    public <S extends TaxonBase> List<S> list(Class<S> type, List<Restriction<?>> restrictions, Integer limit,
+            Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+        return list(type, restrictions, limit, start, orderHints, propertyPaths, INCLUDE_UNPUBLISHED);
+    }
+
+
+    @Override
+    public <S extends TaxonBase> List<S> list(Class<S> type, List<Restriction<?>> restrictions, Integer limit, Integer start,
+            List<OrderHint> orderHints, List<String> propertyPaths, boolean includePublished) {
+
+        Criteria criteria = createCriteria(type, restrictions, false);
+
+        if(!includePublished){
+            criteria.add(Restrictions.eq("publish", true));
+        }
+
+        addLimitAndStart(criteria, limit, start);
+        addOrder(criteria, orderHints);
+
+        @SuppressWarnings("unchecked")
+        List<S> result = criteria.list();
+        defaultBeanInitializer.initializeAll(result, propertyPaths);
+        return result;
+    }
+
+    @Override
+    public long count(Class<? extends TaxonBase> type, List<Restriction<?>> restrictions) {
+        return count(type, restrictions, INCLUDE_UNPUBLISHED);
+    }
+
+
+    @Override
+    public long count(Class<? extends TaxonBase> type, List<Restriction<?>> restrictions, boolean includePublished) {
+
+        Criteria criteria = createCriteria(type, restrictions, false);
+        if(!includePublished){
+            criteria.add(Restrictions.eq("publish", true));
+        }
+        criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
+        return (Long) criteria.uniqueResult();
+    }
 
     @Override
     public List<TaxonBase> getTaxaByName(String queryString, boolean includeUnpublished, Reference sec) {

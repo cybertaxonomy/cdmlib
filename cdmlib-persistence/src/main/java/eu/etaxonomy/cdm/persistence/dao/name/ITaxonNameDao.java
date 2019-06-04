@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
+import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -369,4 +370,25 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
      */
     public long countTaxonNameParts(Optional<String> genusOrUninomial, Optional<String> infraGenericEpithet, Optional<String> specificEpithet, Optional<String> infraSpecificEpithet,
             Rank rank, Collection<UUID> excludedNames);
+
+    /**
+     * @param type
+     * @param restrictions
+     * @param limit
+     * @param start
+     * @param orderHints
+     * @param propertyPaths
+     * @param includePublished
+     * @return
+     */
+    public <S extends TaxonName>List<S> list(Class<S> type, List<Restriction<?>> restrictions, Integer limit, Integer start,
+            List<OrderHint> orderHints, List<String> propertyPaths, boolean includePublished);
+
+    /**
+     * @param type
+     * @param restrictions
+     * @param includePublished
+     * @return
+     */
+    long count(Class<? extends TaxonName> type, List<Restriction<?>> restrictions, boolean includePublished);
 }

@@ -84,6 +84,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IReferencedEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ISourcedEntityDao;
+import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.name.INomenclaturalStatusDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
@@ -1049,6 +1050,28 @@ public class NameServiceImpl
         }
         return filterMap.values();
     }
+
+    @Override
+    public <S extends TaxonName> Pager<S> page(Class<S> clazz, List<Restriction<?>> restrictions, Integer pageSize,
+            Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths) {
+        return page(clazz, restrictions, pageSize, pageIndex, orderHints, propertyPaths, INCLUDE_UNPUBLISHED);
+    }
+
+    @Override
+    public <S extends TaxonName> Pager<S> page(Class<S> clazz, List<Restriction<?>> restrictions, Integer pageSize,
+            Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths, boolean includeUnpublished) {
+
+        List<S> records;
+        long resultSize = dao.count(clazz, restrictions);
+        if(AbstractPagerImpl.hasResultsInRange(resultSize, pageIndex, pageSize)){
+            records = dao.list(clazz, restrictions, pageSize, pageIndex, orderHints, propertyPaths, includeUnpublished);
+        } else {
+            records = new ArrayList<>();
+        }
+        Pager<S> pager = new DefaultPagerImpl<>(pageIndex, resultSize, pageSize, records);
+        return pager;
+    }
+
 
 
 }

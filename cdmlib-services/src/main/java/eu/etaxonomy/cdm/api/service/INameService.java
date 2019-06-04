@@ -42,6 +42,7 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
+import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -548,6 +549,19 @@ public interface INameService
      * @return
      */
     NomenclaturalStatus loadNomenclaturalStatus(UUID uuid, List<String> propertyPaths);
+
+    /**
+     * @param clazz
+     * @param restrictions
+     * @param pageSize
+     * @param pageIndex
+     * @param orderHints
+     * @param propertyPaths
+     * @param includeUnpublished
+     * @return
+     */
+    public <S extends TaxonName> Pager<S> page(Class<S> clazz, List<Restriction<?>> restrictions, Integer pageSize, Integer pageIndex,
+            List<OrderHint> orderHints, List<String> propertyPaths, boolean includeUnpublished);
 
 
 }
