@@ -19,6 +19,7 @@ import java.util.UUID;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionStatus;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.ExcelUtils;
@@ -132,6 +133,19 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
     			state.setOriginalRecord(record);
     			try {
 					firstPass(state);
+					//for debugging only
+//					if (i % 1000 == 0){
+//					    try {
+//                            System.out.println(i);
+//					        getSession().flush();
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//					}
+					DefaultTransactionStatus defStatus = (DefaultTransactionStatus) txStatus;
+			        if (defStatus.isRollbackOnly()){
+			            logger.warn("Rollback only in line: " + i);
+			        }
 				} catch (Exception e) {
 					e.printStackTrace();
 				}finally{
