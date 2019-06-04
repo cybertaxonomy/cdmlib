@@ -86,6 +86,7 @@ public enum PreferencePredicate implements IEnumTerm<PreferencePredicate>, IPref
     AreasSortedInDistributionEditor(UUID.fromString("513d7de9-fec4-432c-b4dd-75f9f6e74ad0"), "Distribution Editor: Areas sorted in Distribution Editor", "distribution.editor.areas.sortedInDistributionEditor", TermOrder.IdInVoc),  //unsure about correct default value, please decide
     //the following 4 should be replaced by termLabelPreferenceEnum , enum should contain label, abbrevLabel, idInVoc, symbol1, symbol2, ...
     DisplayOfStatus(UUID.fromString("1ee6b945-0a81-4f05-b867-f9d105882249"), "Distribution Editor: Display of Status", "distribution.editor.status.display", TermDisplayEnum.Title),
+    DisplayOfStatusInCombo(UUID.fromString("a8ff1763-987f-4935-aaba-910f3a870d07"), "Distribution Editor: Display of Status", "distribution.editor.status.combo_display", TermComboEnum.TermDisplayPlusTitle),
     DisplayOfAreasInDistributionEditor(UUID.fromString("7b671bba-1b7f-4cb9-bbac-c914518a4bf8"), "Distribution Editor: Display of Areas", "distribution.editor.areas.displayAreas",  TermDisplayEnum.Title),
     OwnDescriptionForDistributionEditor(UUID.fromString("38282571-049c-473e-bec3-bde6f65f796a"), "Distribution Editor: Create distribution editor TaxonDescription", "distribution.editor.distributionOwnDescription",  Boolean.FALSE),
     AvailableDistributionAreaTerms(UUID.fromString("34469acc-9e23-4f95-92d4-1695e02cb5a0"), "Available Distribution Area Terms", "distribution.area.terms", null),  //default: all/no filter
@@ -107,8 +108,10 @@ public enum PreferencePredicate implements IEnumTerm<PreferencePredicate>, IPref
 
 
     DefaultBehaviourForPublishFlag(UUID.fromString("24e636fc-ef3b-4a2c-8c9e-018143e66949"), "Default behaviour for publish flag", "defaultBehaviourForPublishFlag", PublishEnum.InheritFromParent),
-    CommonNameLanguages(UUID.fromString("860b0395-09ad-42f5-9dc7-a277ebc034ea"), "Common name languages", "CommonNameLanguages", null)
+    CommonNameLanguages(UUID.fromString("860b0395-09ad-42f5-9dc7-a277ebc034ea"), "Common name languages", "CommonNameLanguages", null),
 
+    AvailableRanks(UUID.fromString("d6559e49-9d05-43bb-b13a-4a70514100af"), "Available Ranks", "AvailableRanks", null),
+    AvailableNomenclaturalStatus(UUID.fromString("fd36dc63-fd98-4d86-9a11-edced6773bd3"), "Available Nomenclatural Status", "AvailableNomenclaturalStatus", null)
 
 
     ;

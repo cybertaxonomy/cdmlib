@@ -10,20 +10,20 @@ package eu.etaxonomy.cdm.model.metadata;
 
 /**
  * @author k.luther
- * @since 6 Feb 2019
+ * @since 03.06.2019
  *
  */
-public enum TermOrder implements IKeyLabel{
-
-    IdInVoc("IdInVoc", "Id in Vocabulary"),
-    Title("Lable", "Lable"),
-    Natural("Natural", "Natural");
-
+public enum TermComboEnum implements IKeyLabel{
+    IdInVocabulary("IdInVocabulary", "ID in Vocabulary"),
+    Symbol1("Symbol1", "Symbol 1"),
+    Symbol2("Symbol2", "Symbol 2"),
+    Title("Label", "Label"),
+    TermDisplayPlusTitle("TermDisplay+Label", "[Term Display] Label");
 
     String label;
     String key;
 
-    private TermOrder(String key, String label){
+    private TermComboEnum(String key, String label){
         this.label = label;
         this.key = key;
     }
@@ -36,6 +36,15 @@ public enum TermOrder implements IKeyLabel{
     @Override
     public String getKey(){
         return key;
+    }
+
+    public static TermComboEnum byKey(String key){
+        for (TermComboEnum termDisplay : values()){
+            if (termDisplay.key.equals(key)){
+                return termDisplay;
+            }
+        }
+        throw new IllegalArgumentException();
     }
 
     @Override
