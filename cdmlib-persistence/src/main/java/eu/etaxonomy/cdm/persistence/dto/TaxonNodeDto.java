@@ -216,4 +216,16 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
     }
 
 
+    @Override
+    public boolean equals(Object node2){
+        if (node2 instanceof TaxonNodeDto){
+            return this.getUuid().equals(((TaxonNodeDto)node2).getUuid());
+        } else{
+            return false;
+        }
+
+
+    }
+
+
 }
