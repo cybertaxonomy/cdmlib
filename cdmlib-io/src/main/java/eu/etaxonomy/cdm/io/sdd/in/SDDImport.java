@@ -1824,13 +1824,28 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		}
 
 		// Leaves of CharacterTrees in SDD are always CharNodes (referring to Characters)
-		List<Element> listCharNodes = elNodes.getChildren("CharNode", sddNamespace);
+		@SuppressWarnings("unchecked")
+        List<Element> listCharNodes = elNodes.getChildren("CharNode", sddNamespace);
 		if (listCharNodes != null) {
 			for (Element elCharNode : listCharNodes){
 				Element elParent = elCharNode.getChild("Parent", sddNamespace);
 				Element elCharacter = elCharNode.getChild("Character", sddNamespace);
 				Element elDependencyRules = elCharNode.getChild("DependencyRules", sddNamespace);
-				FeatureNode<Feature> fn = FeatureNode.NewInstance();
+				FeatureNode<Feature> fn = null;
+
+                if (elParent!=null){
+                    String refP = elParent.getAttributeValue("ref");
+                    if ((refP!=null)&&(!refP.equals(""))) {
+                        FeatureNode<Feature> parent = featureNodes.get(refP);
+                        if (parent==null){
+                            parent = root; // if no parent found or the reference is broken, add the node to the root of the tree
+                        }
+                        fn = parent.addChild();
+                    }
+                }
+                if (fn == null){  //TODO check if correct, added when solving #8257
+                    fn = root.addChild();
+                }
 
 				if (elDependencyRules!=null){
 					Element elInapplicableIf = elCharNode.getChild("InapplicableIf", sddNamespace);
@@ -1857,16 +1872,6 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 					}
 				}
 
-				if (elParent!=null){
-					String refP = elParent.getAttributeValue("ref");
-					if ((refP!=null)&&(!refP.equals(""))) {
-					FeatureNode<Feature> parent = featureNodes.get(refP);
-						if (parent==null){
-						parent = root; // if no parent found or the reference is broken, add the node to the root of the tree
-						}
-						parent.addChild(fn);
-					}
-				}
 				String refC = elCharacter.getAttributeValue("ref");
 				if ((refC!=null)&&(!refC.equals(""))){
 					Feature character = features.get(refC);

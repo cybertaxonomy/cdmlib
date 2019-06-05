@@ -162,16 +162,8 @@ public class FeatureNode <T extends DefinedTermBase> extends VersionableEntity
 
 // ***************************** FACTORY *********************************/
 
-	/**
-	 * Creates a new empty feature node instance.
-	 *
-	 * @see #NewInstance(Feature)
-	 * @deprecated will be removed in future
-	 */
-	@Deprecated
-	public static FeatureNode<Feature> NewInstance(){
-		return new FeatureNode<>(TermType.Feature);
-	}
+	//no factory methods should be provided as FeatureNodes should only
+	//be created as children of their parent node (#8257)
 
 // ******************** CONSTRUCTOR ***************************************/
 
