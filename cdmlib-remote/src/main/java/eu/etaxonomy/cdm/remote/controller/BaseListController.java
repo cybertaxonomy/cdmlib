@@ -95,13 +95,13 @@ public abstract class BaseListController <T extends CdmBase, SERVICE extends ISe
     }
 
     @SuppressWarnings("unchecked")
-    @RequestMapping(method = {RequestMethod.GET,RequestMethod.POST}, params={"restriction"})
-    public final Pager<T> doPageByRestrictions(
+    @RequestMapping(method = {RequestMethod.GET, RequestMethod.POST}, params={"restriction"})
+    public Pager<T> doPageByRestrictions(
             @RequestParam(value = "pageNumber", required = false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             @RequestParam(value = "class", required = false) Class type,
-            @RequestParam(value = "restriction", required = false) List<Restriction<?>> restrictions,
-            @RequestParam(value = "initStrategy", required = false) List<String> initStrategy,
+            @RequestParam(value = "restriction", required = true) List<Restriction<?>> restrictions,
+            @RequestParam(value = "initStrategy", required = true) List<String> initStrategy,
             @RequestParam(name="orderBy", defaultValue="BY_TITLE_CACHE_ASC", required=true) OrderHintPreset orderBy,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException
@@ -115,8 +115,8 @@ public abstract class BaseListController <T extends CdmBase, SERVICE extends ISe
         if(type != null) {
             orderBy = orderBy.checkSuitableFor(type);
         }
-        ArrayList<Restriction<?>> restrictions2 = new ArrayList<>(restrictions);
-        return pageByRestrictions(type, initStrategy, orderBy, pagerParameters, restrictions2);
+
+        return pageByRestrictions(type, initStrategy, orderBy, pagerParameters, new ArrayList<>(restrictions));
     }
 
 
