@@ -54,6 +54,21 @@ public class OwlImportUtil {
         if(CdmUtils.isNotBlank(uriString)){
             term.setUri(URI.create(uriString));
         }
+        // symbol
+        String symbolString = termResource.hasProperty(OwlUtil.propTermSymbol)?termResource.getProperty(OwlUtil.propTermSymbol).getString():null;
+        if(CdmUtils.isNotBlank(symbolString)){
+            term.setSymbol(symbolString);
+        }
+        // symbol2
+        String symbol2String = termResource.hasProperty(OwlUtil.propTermSymbol2)?termResource.getProperty(OwlUtil.propTermSymbol2).getString():null;
+        if(CdmUtils.isNotBlank(symbol2String)){
+            term.setSymbol2(symbol2String);
+        }
+        // idInVocabulary
+        String idInVocabularyString = termResource.hasProperty(OwlUtil.propTermIdInVocabulary)?termResource.getProperty(OwlUtil.propTermIdInVocabulary).getString():null;
+        if(CdmUtils.isNotBlank(idInVocabularyString)){
+            term.setIdInVocabulary(idInVocabularyString);
+        }
 
         // import representations
         Set<Representation> representations = new HashSet<>();

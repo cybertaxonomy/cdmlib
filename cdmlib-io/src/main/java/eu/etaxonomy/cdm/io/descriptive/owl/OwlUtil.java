@@ -27,8 +27,8 @@ public class OwlUtil {
     public static final String RESOURCE_URI = BASE_URI+"resource/";
     public static final String RESOURCE_NODE = RESOURCE_URI+"node/";
     public static final String RESOURCE_REPRESENTATION = RESOURCE_URI+"representation/";
-    public static final String RESOURCE_FEATURE_TREE = RESOURCE_URI+"featureTree/";
-    public static final String RESOURCE_TERM_VOCABULARY = RESOURCE_URI+"termVocabulary/";
+    public static final String RESOURCE_FEATURE_TREE = RESOURCE_URI+"term_tree/";
+    public static final String RESOURCE_TERM_VOCABULARY = RESOURCE_URI+"term_vocabulary/";
     public static final String RESOURCE_TERM = RESOURCE_URI+"term/";
 
     /**
@@ -37,11 +37,11 @@ public class OwlUtil {
     public static final String PROPERTY_BASE_URI = BASE_URI+"property/";
     public static final String PROPERTY_UUID = PROPERTY_BASE_URI+"uuid";
     public static final String PROPERTY_URI = PROPERTY_BASE_URI+"uri";
-    public static final String PROPERTY_HAS_ROOT_NODE = PROPERTY_BASE_URI + "hasRootNode";
-    public static final String PROPERTY_HAS_SUBSTRUCTURE = PROPERTY_BASE_URI+"hasSubStructure";
-    public static final String PROPERTY_HAS_REPRESENTATION = PROPERTY_BASE_URI+"hasRepresentation";
-    public static final String PROPERTY_HAS_VOCABULARY = PROPERTY_BASE_URI+"hasVocabulary";
-    public static final String PROPERTY_HAS_TERM = PROPERTY_BASE_URI+"hasTerm";
+    public static final String PROPERTY_HAS_ROOT_NODE = PROPERTY_BASE_URI + "has_root_node";
+    public static final String PROPERTY_HAS_SUBSTRUCTURE = PROPERTY_BASE_URI+"has_sub_structure";
+    public static final String PROPERTY_HAS_REPRESENTATION = PROPERTY_BASE_URI+"has_representation";
+    public static final String PROPERTY_HAS_VOCABULARY = PROPERTY_BASE_URI+"has_vocabulary";
+    public static final String PROPERTY_HAS_TERM = PROPERTY_BASE_URI+"has_term";
 
     public static final String PROPERTY_LABEL = PROPERTY_BASE_URI+"label";
     public static final String PROPERTY_LABEL_ABBREV = PROPERTY_BASE_URI+"label_abbrev";
@@ -52,8 +52,17 @@ public class OwlUtil {
     public static final String PROPERTY_IS_A = PROPERTY_BASE_URI+"is_a";
     public static final String PROPERTY_TYPE = PROPERTY_BASE_URI+"type";
 
+
+    /**
+     * term properties
+     */
     public static final String PROPERTY_TERM_INCLUDES = PROPERTY_BASE_URI+"term_includes";
     public static final String PROPERTY_TERM_IS_GENERALIZATION_OF = PROPERTY_BASE_URI+"term_is_generalization_of";
+
+    public static final String PROPERTY_TERM_SYMBOL = PROPERTY_BASE_URI+"term_symbol";
+    public static final String PROPERTY_TERM_SYMBOL2 = PROPERTY_BASE_URI+"term_symbol2";
+    public static final String PROPERTY_TERM_ID_IN_VOCABULARY = PROPERTY_BASE_URI+"term_id_in_vocabulary";
+
 
     /**
      * types
@@ -81,6 +90,9 @@ public class OwlUtil {
 
     public static Property propTermIsGeneralizationOf;
     public static Property propTermIncludes;
+    public static Property propTermSymbol;
+    public static Property propTermSymbol2;
+    public static Property propTermIdInVocabulary;
 
     public static Model createModel(){
         Model model = ModelFactory.createDefaultModel();
@@ -102,6 +114,9 @@ public class OwlUtil {
 
         propTermIsGeneralizationOf = model.createProperty(OwlUtil.PROPERTY_TERM_IS_GENERALIZATION_OF);
         propTermIncludes = model.createProperty(OwlUtil.PROPERTY_TERM_INCLUDES);
+        propTermSymbol = model.createProperty(OwlUtil.PROPERTY_TERM_SYMBOL);
+        propTermSymbol2 = model.createProperty(OwlUtil.PROPERTY_TERM_SYMBOL2);
+        propTermIdInVocabulary = model.createProperty(OwlUtil.PROPERTY_TERM_ID_IN_VOCABULARY);
 
         return model;
     }

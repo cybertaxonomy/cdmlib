@@ -118,9 +118,15 @@ public class StructureTreeOwlImportTest extends CdmTransactionalIntegrationTest 
                 assertEquals("Term mismatch", inflorescence, featureNode.getTerm());
                 inflorescence = featureNode.getTerm();
 
+                assertEquals("wrong id in vocabulary", "inflorescence", inflorescence.getIdInVocabulary());
+                assertEquals("wrong symbol", "infloSymbol", inflorescence.getSymbol());
+                assertEquals("wrong symbol2", "infloSymbol2", inflorescence.getSymbol2());
+
                 String englishDescription = inflorescence.getDescription(Language.ENGLISH());
                 assertTrue("Description not found", CdmUtils.isNotBlank(englishDescription));
                 assertEquals("Description wrong", inflorescenceDescription, englishDescription);
+
+                // german representation
                 assertEquals("wrong number of representations", 2, inflorescence.getRepresentations().size());
                 Representation germanRepresentation = inflorescence.getRepresentation(Language.GERMAN());
                 assertNotNull("Representation is null for "+Language.GERMAN(), germanRepresentation);

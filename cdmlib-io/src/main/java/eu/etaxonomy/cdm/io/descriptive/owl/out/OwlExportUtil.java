@@ -13,6 +13,7 @@ import java.util.List;
 
 import com.hp.hpl.jena.rdf.model.Resource;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.descriptive.owl.OwlUtil;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.FeatureNode;
@@ -71,6 +72,15 @@ public class OwlExportUtil {
                 ;
         if(term.getUri()!=null){
             termResource.addProperty(OwlUtil.propUri, term.getUri().toString());
+        }
+        if(CdmUtils.isNotBlank(term.getSymbol())){
+            termResource.addProperty(OwlUtil.propTermSymbol, term.getSymbol());
+        }
+        if(CdmUtils.isNotBlank(term.getSymbol2())){
+            termResource.addProperty(OwlUtil.propTermSymbol2, term.getSymbol2());
+        }
+        if(CdmUtils.isNotBlank(term.getIdInVocabulary())){
+            termResource.addProperty(OwlUtil.propTermIdInVocabulary, term.getIdInVocabulary());
         }
         // add term representations
         List<Resource> termRepresentationResources = createRepresentationResources(term, state);
