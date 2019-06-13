@@ -115,6 +115,8 @@
     <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
     <j.0:language>English</j.0:language>
     <j.0:label>inflorescence</j.0:label>
+    <j.0:label_abbrev>inflo</j.0:label_abbrev>
+    <j.0:label_plural>inflorescences</j.0:label_plural>
   </rdf:Description>
   <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/a8063aed-83d5-422d-b5b2-2777369c45fd">
     <j.0:has_vocabulary rdf:resource="http://cybertaxonomy.eu/resource/term_vocabulary/01b4d3ab-afbe-44f8-8e1c-30a9b7950f62"/>

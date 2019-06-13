@@ -43,22 +43,24 @@ public class OwlUtil {
     public static final String PROPERTY_HAS_VOCABULARY = PROPERTY_BASE_URI+"has_vocabulary";
     public static final String PROPERTY_HAS_TERM = PROPERTY_BASE_URI+"has_term";
 
-    public static final String PROPERTY_LABEL = PROPERTY_BASE_URI+"label";
-    public static final String PROPERTY_LABEL_ABBREV = PROPERTY_BASE_URI+"label_abbrev";
-    public static final String PROPERTY_DESCRIPTION = PROPERTY_BASE_URI+"description";
-    public static final String PROPERTY_LANGUAGE = PROPERTY_BASE_URI+"language";
-    public static final String PROPERTY_LANGUAGE_UUID = PROPERTY_BASE_URI+"language_uuid";
-
     public static final String PROPERTY_IS_A = PROPERTY_BASE_URI+"is_a";
     public static final String PROPERTY_TYPE = PROPERTY_BASE_URI+"type";
 
+    /**
+     * representation properties
+     */
+    public static final String PROPERTY_LABEL = PROPERTY_BASE_URI+"label";
+    public static final String PROPERTY_LABEL_ABBREV = PROPERTY_BASE_URI+"label_abbrev";
+    public static final String PROPERTY_LABEL_PLURAL = PROPERTY_BASE_URI+"label_plural";
+    public static final String PROPERTY_DESCRIPTION = PROPERTY_BASE_URI+"description";
+    public static final String PROPERTY_LANGUAGE = PROPERTY_BASE_URI+"language";
+    public static final String PROPERTY_LANGUAGE_UUID = PROPERTY_BASE_URI+"language_uuid";
 
     /**
      * term properties
      */
     public static final String PROPERTY_TERM_INCLUDES = PROPERTY_BASE_URI+"term_includes";
     public static final String PROPERTY_TERM_IS_GENERALIZATION_OF = PROPERTY_BASE_URI+"term_is_generalization_of";
-
     public static final String PROPERTY_TERM_SYMBOL = PROPERTY_BASE_URI+"term_symbol";
     public static final String PROPERTY_TERM_SYMBOL2 = PROPERTY_BASE_URI+"term_symbol2";
     public static final String PROPERTY_TERM_ID_IN_VOCABULARY = PROPERTY_BASE_URI+"term_id_in_vocabulary";
@@ -79,6 +81,7 @@ public class OwlUtil {
     public static Property propUri;
     public static Property propLabel;
     public static Property propLabelAbbrev;
+    public static Property propLabelPlural;
     public static Property propLanguage;
     public static Property propLanguageUuid;
     public static Property propIsA;
@@ -103,6 +106,7 @@ public class OwlUtil {
         propUri = model.createProperty(OwlUtil.PROPERTY_URI);
         propLabel = model.createProperty(OwlUtil.PROPERTY_LABEL);
         propLabelAbbrev = model.createProperty(OwlUtil.PROPERTY_LABEL_ABBREV);
+        propLabelPlural = model.createProperty(OwlUtil.PROPERTY_LABEL_PLURAL);
         propLanguage = model.createProperty(OwlUtil.PROPERTY_LANGUAGE);
         propLanguageUuid = model.createProperty(OwlUtil.PROPERTY_LANGUAGE_UUID);
         propIsA = model.createProperty(OwlUtil.PROPERTY_IS_A);

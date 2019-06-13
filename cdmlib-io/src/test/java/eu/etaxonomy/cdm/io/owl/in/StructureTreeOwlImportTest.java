@@ -122,9 +122,11 @@ public class StructureTreeOwlImportTest extends CdmTransactionalIntegrationTest 
                 assertEquals("wrong symbol", "infloSymbol", inflorescence.getSymbol());
                 assertEquals("wrong symbol2", "infloSymbol2", inflorescence.getSymbol2());
 
-                String englishDescription = inflorescence.getDescription(Language.ENGLISH());
-                assertTrue("Description not found", CdmUtils.isNotBlank(englishDescription));
-                assertEquals("Description wrong", inflorescenceDescription, englishDescription);
+                Representation englishRepresentation = inflorescence.getRepresentation(Language.ENGLISH());
+                assertTrue("Description not found", CdmUtils.isNotBlank(englishRepresentation.getDescription()));
+                assertEquals("Description wrong", inflorescenceDescription, englishRepresentation.getDescription());
+                assertEquals("wrong plural", "inflorescences", englishRepresentation.getPlural());
+                assertEquals("wrong label abbrev", "inflo", englishRepresentation.getAbbreviatedLabel());
 
                 // german representation
                 assertEquals("wrong number of representations", 2, inflorescence.getRepresentations().size());

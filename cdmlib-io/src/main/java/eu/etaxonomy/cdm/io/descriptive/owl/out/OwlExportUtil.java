@@ -59,6 +59,9 @@ public class OwlExportUtil {
             if(representation.getAbbreviatedLabel()!=null){
                 representationResource.addProperty(OwlUtil.propLabelAbbrev, representation.getAbbreviatedLabel());
             }
+            if(representation.getPlural()!=null){
+                representationResource.addProperty(OwlUtil.propLabelPlural, representation.getPlural());
+            }
             representations.add(representationResource);
         }
         return representations;

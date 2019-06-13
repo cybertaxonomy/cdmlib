@@ -131,9 +131,11 @@ public class OwlImportUtil {
         }
 
         String abbreviatedLabel = repsentationResource.hasProperty(OwlUtil.propLabelAbbrev)?repsentationResource.getProperty(OwlUtil.propLabelAbbrev).getString():null;
+        String plural = repsentationResource.hasProperty(OwlUtil.propLabelPlural)?repsentationResource.getProperty(OwlUtil.propLabelPlural).getString():null;
         String label = repsentationResource.getProperty(OwlUtil.propLabel).getString();
         String description = repsentationResource.hasProperty(OwlUtil.propDescription)?repsentationResource.getProperty(OwlUtil.propDescription).getString():null;
         Representation representation = Representation.NewInstance(description, label, abbreviatedLabel, language);
+        representation.setPlural(plural);
 
         return representation;
     }
