@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.io.descriptive.owl.OwlUtil;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
@@ -111,6 +112,24 @@ public class OwlImportUtil {
 
 
         return vocabulary;
+    }
+
+    static Media createMedia(Resource mediaResource, StructureTreeOwlImportState state){
+        URI mediaUri = URI.create(mediaResource.getProperty(OwlUtil.propMediaUri).getString());
+        // create new media
+        Media media = Media.NewInstance(mediaUri, null, null, null);
+        media.setUuid(UUID.fromString(mediaResource.getProperty(OwlUtil.propUuid).getString()));
+
+        if(mediaResource.hasProperty(OwlUtil.propMediaTitle)){
+            // TODO: support multiple language titles
+            media.putTitle(Language.DEFAULT(), mediaResource.getProperty(OwlUtil.propMediaTitle).getString());
+        }
+
+        IdentifiableSource importSource = IdentifiableSource.NewDataImportInstance(mediaResource.getURI());
+        importSource.setCitation(state.getConfig().getSourceReference());
+        media.addSource(importSource);
+
+        return media;
     }
 
     static Representation createRepresentation(ITermService termService, Statement repr, Model model) {

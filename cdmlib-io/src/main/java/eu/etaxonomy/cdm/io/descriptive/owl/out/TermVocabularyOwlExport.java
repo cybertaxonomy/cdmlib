@@ -20,6 +20,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.io.descriptive.owl.OwlUtil;
+import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
@@ -70,6 +71,14 @@ public class TermVocabularyOwlExport extends CdmExportBase<StructureTreeOwlExpor
         vocabularyResource.addProperty(OwlUtil.propHasTerm, termResource);
         termResource.addProperty(OwlUtil.propHasVocabulary, vocabularyResource);
 
+        // export media
+        Set<Media> media = term.getMedia();
+        for (Media medium : media) {
+            Resource mediaResource = OwlExportUtil.createMediaResource(medium, state);
+            termResource.addProperty(OwlUtil.propTermHasMedia, mediaResource);
+        }
+
+        // export includes and generalizationOf
         Set<DefinedTermBase> generalizationOf = term.getGeneralizationOf();
         for (DefinedTermBase kindOf : generalizationOf) {
             Resource kindOfResource = addTerm(kindOf, vocabularyResource, state);
@@ -80,6 +89,7 @@ public class TermVocabularyOwlExport extends CdmExportBase<StructureTreeOwlExpor
             Resource partOfResource = addTerm(partOf, vocabularyResource, state);
             termResource.addProperty(OwlUtil.propTermIncludes, partOfResource);
         }
+
         return termResource;
     }
 

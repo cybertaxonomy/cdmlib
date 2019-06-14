@@ -15,6 +15,10 @@ import com.hp.hpl.jena.rdf.model.Resource;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.descriptive.owl.OwlUtil;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
+import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.FeatureNode;
 import eu.etaxonomy.cdm.model.term.FeatureTree;
@@ -89,6 +93,24 @@ public class OwlExportUtil {
         List<Resource> termRepresentationResources = createRepresentationResources(term, state);
         termRepresentationResources.forEach(rep->termResource.addProperty(OwlUtil.propHasRepresentation, rep));
         return termResource;
+    }
+
+    static Resource createMediaResource(Media media, StructureTreeOwlExportState state) {
+        Resource mediaResource = state.getModel().createResource(OwlUtil.RESOURCE_MEDIA+media.getUuid().toString())
+                .addProperty(OwlUtil.propUuid, media.getUuid().toString())
+                .addProperty(OwlUtil.propIsA, OwlUtil.MEDIA)
+                ;
+        // TODO: support for multiple languages
+        if(media.getTitle()!=null){
+            mediaResource.addProperty(OwlUtil.propMediaTitle, media.getTitle(Language.DEFAULT()).getText());
+        }
+
+        // TODO: support for multiple media representations
+        MediaRepresentationPart part = MediaUtils.getFirstMediaRepresentationPart(media);
+        if(part!=null){
+            mediaResource.addProperty(OwlUtil.propMediaUri, part.getUri().toString());
+        }
+        return mediaResource;
     }
 
     static Resource createFeatureTreeResource(FeatureTree featureTree, StructureTreeOwlExportState state) {

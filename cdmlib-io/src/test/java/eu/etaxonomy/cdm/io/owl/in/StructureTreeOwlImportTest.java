@@ -20,6 +20,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -34,6 +35,9 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.descriptive.owl.in.StructureTreeOwlImportConfigurator;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
+import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.FeatureNode;
 import eu.etaxonomy.cdm.model.term.FeatureTree;
@@ -89,6 +93,7 @@ public class StructureTreeOwlImportTest extends CdmTransactionalIntegrationTest 
         List<FeatureTree> trees = featureTreeService.listByTitle(FeatureTree.class, treeLabel, MatchMode.EXACT, null, null, null, null, null);
         List<String> nodeProperties = new ArrayList<>();
         nodeProperties.add("term");
+        nodeProperties.add("term.media");
         FeatureTree tree = featureTreeService.loadWithNodes(trees.iterator().next().getUuid(), null, nodeProperties);
         assertNotNull("featureTree should not be null", tree);
 
@@ -121,6 +126,14 @@ public class StructureTreeOwlImportTest extends CdmTransactionalIntegrationTest 
                 assertEquals("wrong id in vocabulary", "inflorescence", inflorescence.getIdInVocabulary());
                 assertEquals("wrong symbol", "infloSymbol", inflorescence.getSymbol());
                 assertEquals("wrong symbol2", "infloSymbol2", inflorescence.getSymbol2());
+
+                Set<Media> mediaSet = inflorescence.getMedia();
+                assertEquals("wrong number of media", 1, mediaSet.size());
+                Media media = mediaSet.iterator().next();
+                MediaRepresentationPart part = MediaUtils.getFirstMediaRepresentationPart(media);
+                assertNotNull("media part not found", part);
+                assertEquals("incorrect URI", URI.create("https://upload.wikimedia.org/wikipedia/commons/8/82/Aloe_hereroensis_Auob_C15.JPG"), part.getUri());
+                assertEquals("incorrect title", "Aloe hereroensis", media.getTitle(Language.DEFAULT()).getText());
 
                 Representation englishRepresentation = inflorescence.getRepresentation(Language.ENGLISH());
                 assertTrue("Description not found", CdmUtils.isNotBlank(englishRepresentation.getDescription()));

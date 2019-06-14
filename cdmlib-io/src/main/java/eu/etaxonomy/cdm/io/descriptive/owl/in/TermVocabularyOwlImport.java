@@ -21,6 +21,7 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
 
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.descriptive.owl.OwlUtil;
+import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
@@ -79,10 +80,20 @@ public class TermVocabularyOwlImport extends CdmImportBase<StructureTreeOwlImpor
 
         UUID termUuid = UUID.fromString(termResource.getProperty(OwlUtil.propUuid).getString());
         DefinedTermBase term = getTermService().load(termUuid);
-        if(term==null){
-            term = OwlImportUtil.createTerm(termResource, getTermService(), model, state);
-            getTermService().saveOrUpdate(term);
-            vocabulary.addTerm(term); // only add term if it does not already exist
+        if(term!=null){
+            return term;
+        }
+
+        term = OwlImportUtil.createTerm(termResource, getTermService(), model, state);
+        getTermService().saveOrUpdate(term);
+        vocabulary.addTerm(term); // only add term if it does not already exist
+
+        //check media
+        StmtIterator mediaIterator = termResource.listProperties(OwlUtil.propTermHasMedia);
+        while(mediaIterator.hasNext()){
+            Resource mediaResource = model.createResource(mediaIterator.next().getObject().toString());
+            Media media = OwlImportUtil.createMedia(mediaResource, state);
+            term.addMedia(media);
         }
 
         // check includes

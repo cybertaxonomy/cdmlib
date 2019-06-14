@@ -30,6 +30,7 @@ public class OwlUtil {
     public static final String RESOURCE_FEATURE_TREE = RESOURCE_URI+"term_tree/";
     public static final String RESOURCE_TERM_VOCABULARY = RESOURCE_URI+"term_vocabulary/";
     public static final String RESOURCE_TERM = RESOURCE_URI+"term/";
+    public static final String RESOURCE_MEDIA = RESOURCE_URI+"media/";
 
     /**
      * property URIs
@@ -61,10 +62,16 @@ public class OwlUtil {
      */
     public static final String PROPERTY_TERM_INCLUDES = PROPERTY_BASE_URI+"term_includes";
     public static final String PROPERTY_TERM_IS_GENERALIZATION_OF = PROPERTY_BASE_URI+"term_is_generalization_of";
+    public static final String PROPERTY_TERM_HAS_MEDIA = PROPERTY_BASE_URI+"term_has_media";
     public static final String PROPERTY_TERM_SYMBOL = PROPERTY_BASE_URI+"term_symbol";
     public static final String PROPERTY_TERM_SYMBOL2 = PROPERTY_BASE_URI+"term_symbol2";
     public static final String PROPERTY_TERM_ID_IN_VOCABULARY = PROPERTY_BASE_URI+"term_id_in_vocabulary";
 
+    /**
+     * media properties
+     */
+    public static final String PROPERTY_MEDIA_URI = PROPERTY_BASE_URI+"media_uri";
+    public static final String PROPERTY_MEDIA_TITLE = PROPERTY_BASE_URI+"media_title";
 
     /**
      * types
@@ -73,6 +80,7 @@ public class OwlUtil {
     public final static String TREE = "tree";
     public final static String VOCABULARY = "vocabulary";
     public final static String TERM = "term";
+    public final static String MEDIA = "media";
 
     public static Property propHasSubStructure;
     public static Property propHasRepresentation;
@@ -93,9 +101,13 @@ public class OwlUtil {
 
     public static Property propTermIsGeneralizationOf;
     public static Property propTermIncludes;
+    public static Property propTermHasMedia;
     public static Property propTermSymbol;
     public static Property propTermSymbol2;
     public static Property propTermIdInVocabulary;
+
+    public static Property propMediaUri;
+    public static Property propMediaTitle;
 
     public static Model createModel(){
         Model model = ModelFactory.createDefaultModel();
@@ -118,9 +130,12 @@ public class OwlUtil {
 
         propTermIsGeneralizationOf = model.createProperty(OwlUtil.PROPERTY_TERM_IS_GENERALIZATION_OF);
         propTermIncludes = model.createProperty(OwlUtil.PROPERTY_TERM_INCLUDES);
+        propTermHasMedia = model.createProperty(OwlUtil.PROPERTY_TERM_HAS_MEDIA);
         propTermSymbol = model.createProperty(OwlUtil.PROPERTY_TERM_SYMBOL);
         propTermSymbol2 = model.createProperty(OwlUtil.PROPERTY_TERM_SYMBOL2);
         propTermIdInVocabulary = model.createProperty(OwlUtil.PROPERTY_TERM_ID_IN_VOCABULARY);
+        propMediaUri = model.createProperty(OwlUtil.PROPERTY_MEDIA_URI);
+        propMediaTitle = model.createProperty(OwlUtil.PROPERTY_MEDIA_TITLE);
 
         return model;
     }

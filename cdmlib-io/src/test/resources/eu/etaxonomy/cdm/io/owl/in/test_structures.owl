@@ -66,6 +66,7 @@
     <j.0:has_representation rdf:resource="http://cybertaxonomy.eu/resource/representation/bf3ac87b-39e8-4360-8fe1-3dd0aeafb600"/>
     <j.0:has_representation rdf:resource="http://cybertaxonomy.eu/resource/representation/25d6e3de-9b31-469b-a3a4-4a971a023379"/>
     <j.0:term_id_in_vocabulary>inflorescence</j.0:term_id_in_vocabulary>
+    <j.0:term_has_media rdf:resource="http://cybertaxonomy.eu/resource/media/f002a25c-d75c-4b58-8f1c-1188d9b11ad0"/>
     <j.0:term_symbol2>infloSymbol2</j.0:term_symbol2>
     <j.0:term_symbol>infloSymbol</j.0:term_symbol>
     <j.0:type>STRU</j.0:type>
@@ -125,5 +126,11 @@
     <j.0:type>STRU</j.0:type>
     <j.0:is_a>term</j.0:is_a>
     <j.0:uuid>a8063aed-83d5-422d-b5b2-2777369c45fd</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/media/f002a25c-d75c-4b58-8f1c-1188d9b11ad0">
+    <j.0:media_uri>https://upload.wikimedia.org/wikipedia/commons/8/82/Aloe_hereroensis_Auob_C15.JPG</j.0:media_uri>
+    <j.0:media_title>Aloe hereroensis</j.0:media_title>
+    <j.0:is_a>media</j.0:is_a>
+    <j.0:uuid>f002a25c-d75c-4b58-8f1c-1188d9b11ad0</j.0:uuid>
   </rdf:Description>
 </rdf:RDF>
