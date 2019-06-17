@@ -9,7 +9,6 @@
 package eu.etaxonomy.cdm.io.descriptive.owl.out;
 
 import java.io.File;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -54,6 +53,9 @@ public class TermVocabularyOwlExport extends CdmExportBase<StructureTreeOwlExpor
 
         // export term vocabularies
         for (UUID uuid : vocabularyUuids) {
+            if(progressMonitor.isCanceled()){
+                break;
+            }
             progressMonitor.worked(1);
             exportVocabulary(uuid, state);
         }

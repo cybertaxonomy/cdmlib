@@ -67,6 +67,9 @@ public class StructureTreeOwlImport extends CdmImportBase<StructureTreeOwlImport
     }
 
     private void createNode(FeatureNode parent, Statement nodeStatement, String treeLabel, Model model, StructureTreeOwlImportState state) {
+        if(state.getConfig().getProgressMonitor().isCanceled()){
+            return;
+        }
         Resource nodeResource = model.createResource(nodeStatement.getObject().toString());
 
         Resource termResource = nodeResource.getPropertyResourceValue(OwlUtil.propHasTerm);
@@ -92,6 +95,8 @@ public class StructureTreeOwlImport extends CdmImportBase<StructureTreeOwlImport
         getVocabularyService().saveOrUpdate(vocabulary);
 
         FeatureNode<?> childNode = parent.addChild(term);
+
+        state.getConfig().getProgressMonitor().worked(1);
 
         nodeResource.listProperties(OwlUtil.propHasSubStructure).forEachRemaining(prop->createNode(childNode, prop, treeLabel, model, state));
     }

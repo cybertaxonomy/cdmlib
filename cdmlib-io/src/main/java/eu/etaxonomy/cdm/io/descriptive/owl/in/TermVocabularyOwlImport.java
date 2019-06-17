@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.io.descriptive.owl.in;
 
 import java.net.URI;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.stereotype.Component;
@@ -19,6 +20,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 
+import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.descriptive.owl.OwlUtil;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -51,6 +53,13 @@ public class TermVocabularyOwlImport extends CdmImportBase<StructureTreeOwlImpor
 
         state.getModel().read(source.toString());
 
+        //calculate total work
+        int nodeCount = state.getModel().listResourcesWithProperty(OwlUtil.propIsA, OwlUtil.NODE).toSet().size();
+        int termCount = state.getModel().listResourcesWithProperty(OwlUtil.propIsA, OwlUtil.TERM).toSet().size();
+        int totalWork = nodeCount+termCount;
+        IProgressMonitor progressMonitor = state.getConfig().getProgressMonitor();
+        progressMonitor.beginTask("Importing terms", totalWork);
+
         //get all vocabularies
         ResIterator iterator = state.getModel().listResourcesWithProperty(OwlUtil.propIsA, OwlUtil.VOCABULARY);
         while(iterator.hasNext()){
@@ -65,9 +74,13 @@ public class TermVocabularyOwlImport extends CdmImportBase<StructureTreeOwlImpor
             }
 
             // import terms
-            StmtIterator termIterator = voc.listProperties(OwlUtil.propHasTerm);
-            while(termIterator.hasNext()){
-                createTerm(vocabulary, termIterator.next(), state.getModel(), state);
+            Set<Statement> terms = voc.listProperties(OwlUtil.propHasTerm).toSet();
+            for (Statement statement : terms) {
+                if(progressMonitor.isCanceled()){
+                    break;
+                }
+                createTerm(vocabulary, statement, state.getModel(), state);
+                progressMonitor.worked(1);
             }
 
             getVocabularyService().saveOrUpdate(vocabulary);
