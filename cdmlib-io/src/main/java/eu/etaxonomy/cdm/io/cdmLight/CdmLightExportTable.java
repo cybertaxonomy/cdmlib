@@ -21,7 +21,7 @@ public enum CdmLightExportTable {
     HOMOTYPIC_GROUP("HomotypicGroup",homotypicGroupColumns()),
     NOMENCLATURAL_AUTHOR("PersonOrTeam", nomenclaturalAuthorColumns()),
     NOMENCLATURAL_AUTHOR_TEAM_RELATION("PersonTeamRelation", nomenclaturalAuthorTeamRelColumns()),
-    TYPE_DESIGNATION("TypeDesignation", typeDesignationColumns()),
+    //TYPE_DESIGNATION("TypeDesignation", typeDesignationColumns()),
     SPECIMEN("Specimen", specimenColumns()),
     TAXON("Taxon", taxonColumns()),
     SYNONYM("Synonym", synonymColumns()),
@@ -33,7 +33,7 @@ public enum CdmLightExportTable {
     COMMON_NAME_FACT("CommonNameFact", commonNameFactsColumns()),
     FACT_SOURCES("FactSources", factSourcesColumns()),
     IDENTIFIER("NameIdentifier", identifierColumns()),
-    MEDIA("Media", mediaColumns()),
+    MEDIA("MediaFact", mediaColumns()),
     NAME_FACT("NameFact", nameFactColumns())
 
     ;

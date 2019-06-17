@@ -16,10 +16,12 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.specimen.SpecimenImportStateBase;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 
 /**
  * @author a.mueller
@@ -40,6 +42,8 @@ public class Abcd206ImportState
 	private URI actualAccessPoint;
 
 	private Set<URI> sequenceDataStableIdentifier = new HashSet<>();
+
+	private List<UUID> fieldUnitUUIDsToDelete = new ArrayList();
 
 
 
@@ -65,6 +69,28 @@ public class Abcd206ImportState
         this.dataHolder = dataHolder;
     }
 
+    /**
+     * @return the fieldUnitsToDelete
+     */
+    public List<UUID> getFieldUnitsToDelete() {
+        return fieldUnitUUIDsToDelete;
+    }
+
+    /**
+     * @param fieldUnitsToDelete the fieldUnitsToDelete to set
+     */
+    public void setFieldUnitsToDelete(List<UUID> fieldUnitsToDelete) {
+        this.fieldUnitUUIDsToDelete = fieldUnitsToDelete;
+    }
+
+    /**
+     * @param fieldUnitsToDelete the fieldUnitsToDelete to set
+     */
+    public void addFieldUnitsToDelete(FieldUnit fieldUnitToDelete) {
+        if (fieldUnitToDelete != null){
+            this.fieldUnitUUIDsToDelete.add(fieldUnitToDelete.getUuid());
+        }
+    }
     public void setPrefix(String prefix) {
         this.prefix = prefix;
     }

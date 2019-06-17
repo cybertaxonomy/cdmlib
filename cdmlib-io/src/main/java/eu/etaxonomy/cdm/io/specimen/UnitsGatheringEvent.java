@@ -246,7 +246,10 @@ public class UnitsGatheringEvent {
             this.gatheringEvent.setDistanceToWaterSurfaceText(depthText);
         }
         else{
-
+            if (depthUnit != null && depthUnit.equals("cm")){
+                depthMin = depthMin/100;
+                depthMax = depthMax/100;
+            }
             if(depthMin!=null){
                 this.gatheringEvent.setDistanceToWaterSurface(depthMin);
             }
@@ -254,6 +257,7 @@ public class UnitsGatheringEvent {
                 this.gatheringEvent.setDistanceToWaterSurfaceMax(depthMax);
             }
             if(depthUnit!=null){
+
                 if (!depthUnit.equals("m")){
                     logger.debug("The unit " + depthUnit + " of the distance to ground is not meter.");
                 }

@@ -66,7 +66,6 @@ import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeComparator;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
@@ -1787,31 +1786,31 @@ public class CdmLightClassificationExport
      *   TypeDesignatedByRef_Fk
      */
 
-    private void handleSpecimenTypeDesignations(CdmLightExportState state, TaxonName name){
-       try {
-           Set<SpecimenTypeDesignation> typeDesignations = name.getSpecimenTypeDesignations();
-           CdmLightExportTable table = CdmLightExportTable.TYPE_DESIGNATION;
-           String nameId = getId(state, name);
-           String[] csvLine = new String[table.getSize()];
-            for (SpecimenTypeDesignation specimenType: typeDesignations){
-                csvLine = new String[table.getSize()];
-                DerivedUnit specimen = specimenType.getTypeSpecimen();
-                if (state.getSpecimenFromStore(specimen.getId()) == null){
-                    handleSpecimen(state, specimen);
-                }
-                csvLine[table.getIndex(CdmLightExportTable.SPECIMEN_FK)] = getId(state, specimenType.getTypeSpecimen());
-                csvLine[table.getIndex(CdmLightExportTable.NAME_FK)] = nameId;
-                csvLine[table.getIndex(CdmLightExportTable.TYPE_VERBATIM_CITATION)] = specimenType.getTypeSpecimen().generateTitle();
-                //TODO: add link to existing Vorcabulary
-                csvLine[table.getIndex(CdmLightExportTable.TYPE_CATEGORY)] = "";
-                csvLine[table.getIndex(CdmLightExportTable.TYPE_DESIGNATED_BY_STRING)] = specimenType.getCitation().getTitleCache();
-                csvLine[table.getIndex(CdmLightExportTable.TYPE_DESIGNATED_BY_REF_FK)] = getId(state, specimenType.getCitation());
-            }
-        } catch (Exception e) {
-            state.getResult().addException(e, "An unexpected error occurred when handling specimen type designations for " +
-                    cdmBaseStr(name) + ": " + e.getMessage());
-        }
-    }
+//    private void handleSpecimenTypeDesignations(CdmLightExportState state, TaxonName name){
+//       try {
+//           Set<SpecimenTypeDesignation> typeDesignations = name.getSpecimenTypeDesignations();
+//           CdmLightExportTable table = CdmLightExportTable.TYPE_DESIGNATION;
+//           String nameId = getId(state, name);
+//           String[] csvLine = new String[table.getSize()];
+//            for (SpecimenTypeDesignation specimenType: typeDesignations){
+//                csvLine = new String[table.getSize()];
+//                DerivedUnit specimen = specimenType.getTypeSpecimen();
+//                if (state.getSpecimenFromStore(specimen.getId()) == null){
+//                    handleSpecimen(state, specimen);
+//                }
+//                csvLine[table.getIndex(CdmLightExportTable.SPECIMEN_FK)] = getId(state, specimenType.getTypeSpecimen());
+//                csvLine[table.getIndex(CdmLightExportTable.NAME_FK)] = nameId;
+//                csvLine[table.getIndex(CdmLightExportTable.TYPE_VERBATIM_CITATION)] = specimenType.getTypeSpecimen().generateTitle();
+//                //TODO: add link to existing Vorcabulary
+//                csvLine[table.getIndex(CdmLightExportTable.TYPE_CATEGORY)] = "";
+//                csvLine[table.getIndex(CdmLightExportTable.TYPE_DESIGNATED_BY_STRING)] = specimenType.getCitation().getTitleCache();
+//                csvLine[table.getIndex(CdmLightExportTable.TYPE_DESIGNATED_BY_REF_FK)] = getId(state, specimenType.getCitation());
+//            }
+//        } catch (Exception e) {
+//            state.getResult().addException(e, "An unexpected error occurred when handling specimen type designations for " +
+//                    cdmBaseStr(name) + ": " + e.getMessage());
+//        }
+//    }
 
     /**
      * @param state

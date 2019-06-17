@@ -594,6 +594,8 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	        List<String> propertyPaths = new ArrayList<>();
 	        propertyPaths.add("derivedFrom.*");
 	        config.setPropertyPaths(propertyPaths);
+	        commitTransaction(state.getTx());
+	        state.setTx(startTransaction());
 	        Pager<SpecimenOrObservationBase> existingSpecimens = cdmAppController.getOccurrenceService().findByTitle(config);
 	        if(!existingSpecimens.getRecords().isEmpty()){
 	            if(existingSpecimens.getRecords().size()==1){
