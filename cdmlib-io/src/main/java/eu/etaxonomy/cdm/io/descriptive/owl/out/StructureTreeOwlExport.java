@@ -46,7 +46,11 @@ public class StructureTreeOwlExport extends CdmExportBase<StructureTreeOwlExport
         TransactionStatus txStatus = startTransaction(true);
 
         // export feature trees
-        state.getConfig().getFeatureTreeUuids().forEach(tree->exportTree(tree, state));
+        List<UUID> featureTreeUuids = state.getConfig().getFeatureTreeUuids();
+        for (UUID uuid : featureTreeUuids) {
+            state.getConfig().getProgressMonitor().worked(1);
+            exportTree(uuid, state);
+        }
 
         // write export data to file
         exportStream = new ByteArrayOutputStream();

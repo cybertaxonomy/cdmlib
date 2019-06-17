@@ -9,6 +9,8 @@
 package eu.etaxonomy.cdm.io.descriptive.owl.out;
 
 import java.io.File;
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -17,6 +19,7 @@ import org.springframework.transaction.TransactionStatus;
 
 import com.hp.hpl.jena.rdf.model.Resource;
 
+import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.io.descriptive.owl.OwlUtil;
@@ -44,8 +47,16 @@ public class TermVocabularyOwlExport extends CdmExportBase<StructureTreeOwlExpor
     protected void doInvoke(StructureTreeOwlExportState state) {
         TransactionStatus txStatus = startTransaction(true);
 
+        IProgressMonitor progressMonitor = state.getConfig().getProgressMonitor();
+        List<UUID> vocabularyUuids = state.getConfig().getVocabularyUuids();
+        int totalWork = vocabularyUuids.size() + state.getConfig().getFeatureTreeUuids().size();
+        progressMonitor.beginTask("Exporting terms", totalWork);
+
         // export term vocabularies
-        state.getConfig().getVocabularyUuids().forEach(vocUuid->exportVocabulary(vocUuid, state));
+        for (UUID uuid : vocabularyUuids) {
+            progressMonitor.worked(1);
+            exportVocabulary(uuid, state);
+        }
 
         commitTransaction(txStatus);
     }
