@@ -431,6 +431,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
         Abcd206ImportConfigurator importConfigurator = null;
         try {
             importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+            importConfigurator.setDnaSoure(null);
         } catch (URISyntaxException e) {
             e.printStackTrace();
             Assert.fail();
@@ -468,6 +469,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	    Abcd206ImportConfigurator importConfigurator = null;
 	    try {
 	        importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+	        importConfigurator.setDnaSoure(null);
 	    } catch (URISyntaxException e) {
 	        e.printStackTrace();
 	        Assert.fail();
