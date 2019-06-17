@@ -48,12 +48,6 @@ public class BerlinModelTransformer {
 	//source Refs
 	public static final UUID uuidSourceRefEuroMed = UUID.fromString("0603a84a-f024-4454-ab92-9e2ac0139126");
 
-	//ranks
-	public static UUID uuidRankCollSpecies = UUID.fromString("e14630ee-9446-4bb4-a7b7-4c3881bc5d94");
-	public static UUID uuidRankProles = UUID.fromString("8810d1ba-6a34-4ae3-a355-919ccd1cd1a5");
-	public static UUID uuidRankRace = UUID.fromString("196dee39-cfd8-4460-8bf0-88b83da27f62");
-	public static UUID uuidRankSublusus = UUID.fromString("1fafa596-a8e7-4e62-a378-3cc8cb3627ca");
-
 	//named areas
 	public static UUID euroMedUuid = UUID.fromString("9fe09988-58c0-4c06-8474-f660a0c50014");
 
@@ -910,7 +904,7 @@ public class BerlinModelTransformer {
 
 			if (collSpeciesRank == null){
 				collSpeciesRank = Rank.NewInstance(RankClass.SpeciesGroup, "Collective species", "Coll. species", "coll.");
-				collSpeciesRank.setUuid(uuidRankCollSpecies);
+				collSpeciesRank.setUuid(Rank.uuidRankCollSpecies);
 				OrderedTermVocabulary<Rank> voc = (OrderedTermVocabulary<Rank>)Rank.SPECIES().getVocabulary();
 				voc.addTermBelow(collSpeciesRank, Rank.SPECIESGROUP());
 			}
