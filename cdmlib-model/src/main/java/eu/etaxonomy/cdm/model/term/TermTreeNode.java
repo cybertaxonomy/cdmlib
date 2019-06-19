@@ -125,6 +125,7 @@ public class TermTreeNode <T extends DefinedTermBase>
 	//no factory methods should be provided as FeatureNodes should only
 	//be created as children of their parent node (#8257)
 
+
 // ******************** CONSTRUCTOR ***************************************/
 
 	//TODO needed?
@@ -547,7 +548,11 @@ public class TermTreeNode <T extends DefinedTermBase>
 	/**
 	 * Returns all terms that are contained in this node or a child node
 	 *
+<<<<<<< HEAD:cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/term/TermTreeNode.java
 	 * @param terms
+=======
+	 * @param features
+>>>>>>> ref #6794 add TermRelation and rename FeatureNode -> TermTreeNode:cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/term/TermTreeNode.java
 	 * @return
 	 */
 	@Transient
@@ -577,7 +582,6 @@ public class TermTreeNode <T extends DefinedTermBase>
         }
         return terms;
     }
-
 
 //*********************** CLONE ********************************************************/
 
@@ -662,8 +666,4 @@ public class TermTreeNode <T extends DefinedTermBase>
 	    HHH_9751_Util.removeAllNull(children);
 	    updateSortIndex();
 	}
-<<<<<<< HEAD
-=======
-
->>>>>>> ref #6794 add TermRelation and rename FeatureNode -> TermTreeNode
 }

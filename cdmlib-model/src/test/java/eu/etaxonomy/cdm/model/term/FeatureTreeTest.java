@@ -39,7 +39,6 @@ public class FeatureTreeTest {
 		node2 = node1.addChild(Feature.BIOLOGY_ECOLOGY());
 		node3 = node2.addChild(Feature.DESCRIPTION());
 		node4 = node3.addChild(Feature.DISCUSSION());
-
 	}
 //	@Test
 //	public void testSetRoot(){

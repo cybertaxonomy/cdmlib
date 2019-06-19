@@ -41,7 +41,6 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 /**
  * @author a.mueller
  * @since 25.06.2017
- *
  */
 public class OwlExportTest  extends CdmTransactionalIntegrationTest{
     @SuppressWarnings("unused")
@@ -77,7 +76,6 @@ public class OwlExportTest  extends CdmTransactionalIntegrationTest{
     public List<UUID> createFeatureTree() {
         TermTree<Feature> tree = TermTree.NewInstance();
         TermVocabulary<Feature> voc = TermVocabulary.NewInstance(TermType.Feature, "voc description", "vocabulary", "voc", URI.create("http://test.voc"));
-
 
         Feature featureA = Feature.NewInstance("A", "A", "A");
         voc.addTerm(featureA);

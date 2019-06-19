@@ -68,11 +68,7 @@ public abstract class TermRelationBase<TERM extends DefinedTermBase, REL extends
 
     /**
      * The {@link TermType type} of this term relation.
-<<<<<<< HEAD
      * Must be the same type as for the {@link TermCollection term collection}
-=======
-     * Must be the same type as for the {@link TermTree term collection}
->>>>>>> ref #6794 add TermCollection and subclasses including TermTree
      * this node belongs to and as the term type of the term this node links to.
      */
     @XmlAttribute(name ="TermType")

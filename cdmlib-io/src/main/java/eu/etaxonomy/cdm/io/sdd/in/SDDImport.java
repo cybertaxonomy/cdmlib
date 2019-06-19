@@ -1776,7 +1776,6 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 				if ((++j % modCount) == 0){ logger.info("CharacterTrees handled: " + j);}
 
 			}
-
 		}
 	}
 
