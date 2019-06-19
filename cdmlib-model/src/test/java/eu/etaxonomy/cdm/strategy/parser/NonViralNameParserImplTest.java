@@ -602,6 +602,14 @@ public class NonViralNameParserImplTest {
         assertEquals( "infraspecific", name.getInfraSpecificEpithet());
         assertEquals( "Unranked rank should be parsed", Rank.INFRASPECIFICTAXON(), name.getRank());
 
+        //'ranglos' infraspecific
+        infraspecificUnranked = "Genus species [ranglos] infraspecific";
+        name = parser.parseFullName(infraspecificUnranked);
+        assertEquals( "Genus", name.getGenusOrUninomial());
+        assertEquals( "species", name.getSpecificEpithet());
+        assertEquals( "infraspecific", name.getInfraSpecificEpithet());
+        assertEquals( "Unranked rank should be parsed", Rank.INFRASPECIFICTAXON(), name.getRank());
+
         //unranked infrageneric
         String infraGenericUnranked = "Genus [unranked] Infragen";
         INonViralName name2 = parser.parseFullName(infraGenericUnranked);
@@ -609,6 +617,56 @@ public class NonViralNameParserImplTest {
         assertEquals( null, name2.getSpecificEpithet());
         assertEquals( "Infragen", name2.getInfraGenericEpithet());
         assertEquals( "Unranked rank should be parsed", Rank.INFRAGENERICTAXON(), name2.getRank());
+
+        //unranked infrageneric
+        infraGenericUnranked = "Genus [ranglos] Infragen";
+         name2 = parser.parseFullName(infraGenericUnranked);
+        assertEquals( "Genus", name2.getGenusOrUninomial());
+        assertEquals( null, name2.getSpecificEpithet());
+        assertEquals( "Infragen", name2.getInfraGenericEpithet());
+        assertEquals( "Ranglos rank should be parsed", Rank.INFRAGENERICTAXON(), name2.getRank());
+
+    }
+
+    /**
+     * Test method for {@link eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl#parseFullName(java.lang.String, eu.etaxonomy.cdm.model.name.Rank)}.
+     */
+    @Test
+    public final void testOldRanks() {
+        try {
+            Method parseMethod = parser.getClass().getDeclaredMethod("parseFullName", String.class, NomenclaturalCode.class, Rank.class);
+            testName_StringNomcodeRank(parseMethod);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+
+        //proles
+        String infraspecificUnranked = "Genus species proles infraspecific";
+        INonViralName name = parser.parseFullName(infraspecificUnranked);
+        assertEquals( "Genus", name.getGenusOrUninomial());
+        assertEquals( "species", name.getSpecificEpithet());
+        assertEquals( "infraspecific", name.getInfraSpecificEpithet());
+        assertEquals( "Proles should be parsed", Rank.PROLES(), name.getRank());
+
+        //sublusus
+        infraspecificUnranked = "Genus species sublusus infraspecific";
+        name = parser.parseFullName(infraspecificUnranked);
+        assertEquals( "Genus", name.getGenusOrUninomial());
+        assertEquals( "species", name.getSpecificEpithet());
+        assertEquals( "infraspecific", name.getInfraSpecificEpithet());
+        assertEquals( "Sublusus should be parsed", Rank.SUBLUSUS(), name.getRank());
+
+
+        //race
+        infraspecificUnranked = "Genus species race infraspecific";
+        name = parser.parseFullName(infraspecificUnranked);
+        assertEquals( "Genus", name.getGenusOrUninomial());
+        assertEquals( "species", name.getSpecificEpithet());
+        assertEquals( "infraspecific", name.getInfraSpecificEpithet());
+        assertEquals( "Race should be parsed", Rank.RACE(), name.getRank());
+
+
 
     }
 
