@@ -147,7 +147,13 @@ public class Reference
     private static final long serialVersionUID = -2034764545042691295L;
 	private static final Logger logger = Logger.getLogger(Reference.class);
 
-	@XmlAttribute(name ="type")
+//  from E+M import (still needed?)
+//	@Column(length=255)
+//  private String refAuthorString;
+//	public String getRefAuthorString() {return refAuthorString;}
+//  public void setRefAuthorString(String refAuthorString) {this.refAuthorString = refAuthorString;}
+
+    @XmlAttribute(name ="type")
 	@Column(name="refType")
 	@NotNull
     @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",

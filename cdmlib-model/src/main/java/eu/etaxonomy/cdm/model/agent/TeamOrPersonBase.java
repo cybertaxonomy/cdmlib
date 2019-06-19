@@ -59,6 +59,11 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<T>>
     @Column(length=255)
     protected String collectorTitle;
 
+//  from E+M import (still needed?)
+//    @Column(length=255)
+//    protected String originalNomenclaturalTitle;
+//    public String getOriginalNomenclaturalTitle() {return originalNomenclaturalTitle;}
+//    public void setOriginalNomenclaturalTitle(String originalNomenclaturalTitle) {this.originalNomenclaturalTitle = originalNomenclaturalTitle;}
 
     @Transient
     @XmlTransient
