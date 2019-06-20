@@ -48,7 +48,7 @@ public class TermVocabularyDaoImplTest extends CdmIntegrationTest {
 	@Before
 	public void setUp() {}
 
-   @Test
+    @Test
     public void testListVocabularyByType() {
         //test class with no subclasses
         List<TermVocabulary> rankVocabularies = dao.listByTermType(TermType.Rank, false, null, null, null, null);
