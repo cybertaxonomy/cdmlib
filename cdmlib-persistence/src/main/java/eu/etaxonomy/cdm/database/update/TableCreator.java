@@ -447,7 +447,7 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase {
 			return this.primaryKeyParams_AUD;
 		}
 
-		if (includeCdmBaseAttributes || ! includeCdmBaseAttributes){ //TODO how to handle not CDMBase includes
+		if (includeCdmBaseAttributes || ! includeCdmBaseAttributes){ //TODO how to handle not CDMBase includes => via this.primaryKeyParams
 			if (! isAudit){
 				result = "id";
 			}else{
@@ -479,13 +479,15 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase {
 		}
 	}
 
-	public void setPrimaryKeyParams(String primaryKeyParams, String primaryKeyParams_AUD) {
+	public TableCreator setPrimaryKeyParams(String primaryKeyParams, String primaryKeyParams_AUD) {
 		this.primaryKeyParams = primaryKeyParams;
 		this.primaryKeyParams_AUD = primaryKeyParams_AUD;
+		return this;
 	}
 
-	public void setUniqueParams(String uniqueParams, String uniqueParams_AUD) {
+	public TableCreator setUniqueParams(String uniqueParams, String uniqueParams_AUD) {
 		this.uniqueParams = uniqueParams;
 		this.uniqueParams_AUD = uniqueParams_AUD;
+		return this;
 	}
 }

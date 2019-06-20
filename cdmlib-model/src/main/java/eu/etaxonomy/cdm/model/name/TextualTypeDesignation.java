@@ -69,10 +69,8 @@ public class TextualTypeDesignation extends TypeDesignationBase<SpecimenTypeDesi
     @Field(name="text", store=Store.YES)
     @FieldBridge(impl=MultilanguageTextFieldBridge.class)
     @NotNull
-    @Transient
     private Map<Language, LanguageString> text = new HashMap<>();
 
-    @Transient
     private boolean isVerbatim;
 
     @XmlTransient
