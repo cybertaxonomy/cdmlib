@@ -150,10 +150,10 @@ public class LocationServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTer
 
         OrderedTermVocabulary<NamedArea> vocabulary = getNamedAreaVocabulary(vocabularyType);
 
-        List<NamedArea> topLevelTerms = new ArrayList<NamedArea>();
+        List<NamedArea> topLevelTerms = new ArrayList<>();
 
 //		for(NamedArea area : vocabulary){
-        Iterator<NamedArea> it = vocabulary.iterator();
+        Iterator<NamedArea> it = vocabulary.getTerms().iterator();
         while(it.hasNext()){
 
             NamedArea area =  HibernateProxyHelper.deproxy(it.next(), NamedArea.class);
