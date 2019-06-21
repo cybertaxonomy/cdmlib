@@ -12,7 +12,6 @@ import java.net.URI;
 
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
  * @author pplitzner
@@ -30,9 +29,6 @@ public class StructureTreeOwlImportConfigurator extends ImportConfiguratorBase<S
     protected StructureTreeOwlImportConfigurator(URI source) {
         super(null);
         this.setSource(source);
-        Reference reference = ReferenceFactory.newGeneric();
-        reference.setTitle("StructureTree import from "+source);
-        this.setSourceReference(reference);
     }
 
     @Override

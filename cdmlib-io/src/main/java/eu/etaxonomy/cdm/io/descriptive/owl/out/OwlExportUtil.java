@@ -15,10 +15,12 @@ import com.hp.hpl.jena.rdf.model.Resource;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.descriptive.owl.OwlUtil;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.FeatureNode;
 import eu.etaxonomy.cdm.model.term.FeatureTree;
@@ -47,6 +49,31 @@ public class OwlExportUtil {
         List<Resource> vocabularyRepresentationResources = OwlExportUtil.createRepresentationResources(vocabulary, state);
         vocabularyRepresentationResources.forEach(rep->vocabularyResource.addProperty(OwlUtil.propHasRepresentation, rep));
         return vocabularyResource;
+    }
+
+    static List<Resource> createSourceResources(TermBase termBase, StructureTreeOwlExportState state){
+        List<Resource> sources = new ArrayList<>();
+        for (IdentifiableSource source : termBase.getSources()) {
+            Resource sourceResource = state.getModel().createResource(OwlUtil.RESOURCE_SOURCE+source.getUuid())
+                    .addProperty(OwlUtil.propSourceType, source.getType().getKey())
+                    ;
+            if(source.getIdInSource()!=null){
+                sourceResource.addProperty(OwlUtil.propSourceIdInSource, source.getIdInSource());
+            }
+            if(source.getCitation()!=null){
+                sourceResource.addProperty(OwlUtil.propSourceHasCitation, createReferenceResource(source.getCitation(), state));
+            }
+            sources.add(sourceResource);
+        }
+        return sources;
+    }
+
+    static Resource createReferenceResource(Reference reference, StructureTreeOwlExportState state) {
+        Resource referenceResource = state.getModel().createResource(OwlUtil.RESOURCE_REFERENCE+reference.getUuid());
+        if(reference.getTitle()!=null){
+            referenceResource.addProperty(OwlUtil.propReferenceTitle, reference.getTitle());
+        }
+        return referenceResource;
     }
 
     static List<Resource> createRepresentationResources(TermBase termBase, StructureTreeOwlExportState state){
@@ -92,6 +119,11 @@ public class OwlExportUtil {
         // add term representations
         List<Resource> termRepresentationResources = createRepresentationResources(term, state);
         termRepresentationResources.forEach(rep->termResource.addProperty(OwlUtil.propHasRepresentation, rep));
+
+        // add term sources
+        List<Resource> termSourceResources = createSourceResources(term, state);
+        termSourceResources.forEach(source->termResource.addProperty(OwlUtil.propTermHasSource, source));
+
         return termResource;
     }
 

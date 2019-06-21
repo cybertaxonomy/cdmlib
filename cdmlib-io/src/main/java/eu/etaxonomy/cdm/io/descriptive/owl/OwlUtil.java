@@ -27,6 +27,8 @@ public class OwlUtil {
     public static final String RESOURCE_URI = BASE_URI+"resource/";
     public static final String RESOURCE_NODE = RESOURCE_URI+"node/";
     public static final String RESOURCE_REPRESENTATION = RESOURCE_URI+"representation/";
+    public static final String RESOURCE_SOURCE = RESOURCE_URI+"source/";
+    public static final String RESOURCE_REFERENCE = RESOURCE_URI+"reference/";
     public static final String RESOURCE_FEATURE_TREE = RESOURCE_URI+"term_tree/";
     public static final String RESOURCE_TERM_VOCABULARY = RESOURCE_URI+"term_vocabulary/";
     public static final String RESOURCE_TERM = RESOURCE_URI+"term/";
@@ -63,6 +65,7 @@ public class OwlUtil {
     public static final String PROPERTY_TERM_INCLUDES = PROPERTY_BASE_URI+"term_includes";
     public static final String PROPERTY_TERM_IS_GENERALIZATION_OF = PROPERTY_BASE_URI+"term_is_generalization_of";
     public static final String PROPERTY_TERM_HAS_MEDIA = PROPERTY_BASE_URI+"term_has_media";
+    public static final String PROPERTY_TERM_HAS_SOURCE = PROPERTY_BASE_URI+"term_has_source";
     public static final String PROPERTY_TERM_SYMBOL = PROPERTY_BASE_URI+"term_symbol";
     public static final String PROPERTY_TERM_SYMBOL2 = PROPERTY_BASE_URI+"term_symbol2";
     public static final String PROPERTY_TERM_ID_IN_VOCABULARY = PROPERTY_BASE_URI+"term_id_in_vocabulary";
@@ -72,6 +75,18 @@ public class OwlUtil {
      */
     public static final String PROPERTY_MEDIA_URI = PROPERTY_BASE_URI+"media_uri";
     public static final String PROPERTY_MEDIA_TITLE = PROPERTY_BASE_URI+"media_title";
+
+    /**
+     * source properties
+     */
+    public static final String PROPERTY_SOURCE_TYPE = PROPERTY_BASE_URI+"source_type";
+    public static final String PROPERTY_SOURCE_ID_IN_SOURCE = PROPERTY_BASE_URI+"source_id_in_source";
+    public static final String PROPERTY_SOURCE_HAS_CITATION = PROPERTY_BASE_URI+"source_has_citation";
+
+    /**
+     * reference properties
+     */
+    public static final String PROPERTY_REFERENCE_TITLE = PROPERTY_BASE_URI+"reference_title";
 
     /**
      * types
@@ -102,12 +117,19 @@ public class OwlUtil {
     public static Property propTermIsGeneralizationOf;
     public static Property propTermIncludes;
     public static Property propTermHasMedia;
+    public static Property propTermHasSource;
     public static Property propTermSymbol;
     public static Property propTermSymbol2;
     public static Property propTermIdInVocabulary;
 
     public static Property propMediaUri;
     public static Property propMediaTitle;
+
+    public static Property propSourceType;
+    public static Property propSourceIdInSource;
+    public static Property propSourceHasCitation;
+
+    public static Property propReferenceTitle;
 
     public static Model createModel(){
         Model model = ModelFactory.createDefaultModel();
@@ -131,11 +153,19 @@ public class OwlUtil {
         propTermIsGeneralizationOf = model.createProperty(OwlUtil.PROPERTY_TERM_IS_GENERALIZATION_OF);
         propTermIncludes = model.createProperty(OwlUtil.PROPERTY_TERM_INCLUDES);
         propTermHasMedia = model.createProperty(OwlUtil.PROPERTY_TERM_HAS_MEDIA);
+        propTermHasSource = model.createProperty(OwlUtil.PROPERTY_TERM_HAS_SOURCE);
         propTermSymbol = model.createProperty(OwlUtil.PROPERTY_TERM_SYMBOL);
         propTermSymbol2 = model.createProperty(OwlUtil.PROPERTY_TERM_SYMBOL2);
         propTermIdInVocabulary = model.createProperty(OwlUtil.PROPERTY_TERM_ID_IN_VOCABULARY);
+
         propMediaUri = model.createProperty(OwlUtil.PROPERTY_MEDIA_URI);
         propMediaTitle = model.createProperty(OwlUtil.PROPERTY_MEDIA_TITLE);
+
+        propSourceType = model.createProperty(OwlUtil.PROPERTY_SOURCE_TYPE);
+        propSourceIdInSource = model.createProperty(OwlUtil.PROPERTY_SOURCE_ID_IN_SOURCE);
+        propSourceHasCitation = model.createProperty(OwlUtil.PROPERTY_SOURCE_HAS_CITATION);
+
+        propReferenceTitle = model.createProperty(OwlUtil.PROPERTY_REFERENCE_TITLE);
 
         return model;
     }
