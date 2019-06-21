@@ -92,7 +92,7 @@ public class TermVocabularyOwlImport extends CdmImportBase<StructureTreeOwlImpor
         Resource termResource = model.createResource(termStatement.getObject().toString());
 
         UUID termUuid = UUID.fromString(termResource.getProperty(OwlUtil.propUuid).getString());
-        DefinedTermBase term = getTermService().load(termUuid);
+        DefinedTermBase term = getTermService().find(termUuid);
         if(term!=null){
             return term;
         }

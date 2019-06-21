@@ -19,7 +19,6 @@ import com.hp.hpl.jena.rdf.model.Statement;
 
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.descriptive.owl.OwlUtil;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -137,11 +136,7 @@ public class OwlImportUtil {
 
         String languageLabel = repsentationResource.getProperty(OwlUtil.propLanguage).getString();
         UUID languageUuid = UUID.fromString(repsentationResource.getProperty(OwlUtil.propLanguageUuid).getString());
-        DefinedTermBase termBase = termService.load(languageUuid);
-        Language language = null;
-        if(termBase.isInstanceOf(Language.class)){
-            language = HibernateProxyHelper.deproxy(termBase, Language.class);
-        }
+        Language language = Language.getLanguageFromUuid(languageUuid);
         if(language==null){
             language = termService.getLanguageByLabel(languageLabel);
         }
