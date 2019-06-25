@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.descriptive.owl.OwlUtil;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.description.Character;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
@@ -43,12 +44,40 @@ public class OwlImportUtil {
 
     static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(OwlImportUtil.class);
 
+    static Feature createFeature(Resource termResource, ITermService termService, Model model, StructureTreeOwlImportState state){
+        Feature feature = Feature.NewInstance();
+        if(termResource.hasProperty(OwlUtil.propFeatureIsCategorical)){
+            feature.setSupportsCategoricalData(termResource.getProperty(OwlUtil.propFeatureIsCategorical).getBoolean());
+        }
+        if(termResource.hasProperty(OwlUtil.propFeatureIsQuantitative)){
+            feature.setSupportsQuantitativeData(termResource.getProperty(OwlUtil.propFeatureIsQuantitative).getBoolean());
+        }
+//        // import measurement units
+//        Set<DefinedTermBase> measurementUnits = new HashSet<>();
+//        List<Statement> measurementUnitStatements = termResource.listProperties(OwlUtil.propFeatureHasRecommendedMeasurementUnit).toList();
+//        for (Statement statement : measurementUnitStatements) {
+//            Resource measurementUnitResource = model.createResource(statement.getObject().toString());
+//            measurementUnits.add(OwlImportUtil.createTerm(measurementUnitResource, termService, model, state));
+//        }
+//        measurementUnits.forEach(unit->feature.addRecommendedMeasurementUnit(unit));
+
+        return feature;
+    }
+
+    static Character createCharacter(Resource termResource, ITermService termService, Model model, StructureTreeOwlImportState state){
+        Character character = Character.NewInstance();
+        return character;
+    }
+
     static DefinedTermBase createTerm(Resource termResource, ITermService termService, Model model, StructureTreeOwlImportState state){
         TermType termType = TermType.getByKey(termResource.getProperty(OwlUtil.propType).getString());
         DefinedTermBase term;
         // create new term
         if(termType.equals(TermType.Feature)){
-            term = Feature.NewInstance();
+            term = createFeature(termResource, termService, model, state);
+        }
+        else if(termType.equals(TermType.Character)){
+            term = createCharacter(termResource, termService, model, state);
         }
         else{
             term = DefinedTerm.NewInstance(termType);
