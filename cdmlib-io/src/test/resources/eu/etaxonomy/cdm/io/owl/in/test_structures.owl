@@ -1,17 +1,11 @@
 <rdf:RDF
     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
     xmlns:j.0="http://cybertaxonomy.eu/property/" > 
-  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/node/ea699e79-1239-4432-9ce3-3e5a23ff180c">
-    <j.0:has_sub_structure rdf:resource="http://cybertaxonomy.eu/resource/node/b474e0d3-2ad0-4066-9d3f-c02464e5849e"/>
-    <j.0:has_term rdf:resource="http://cybertaxonomy.eu/resource/term/4ca7907c-46a7-4721-bab0-6733a73ef544"/>
-    <j.0:uuid>ea699e79-1239-4432-9ce3-3e5a23ff180c</j.0:uuid>
-    <j.0:is_a>node</j.0:is_a>
-  </rdf:Description>
   <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/74ef4971-55b4-4bee-a453-f00f1a158f9c">
+    <j.0:is_a>term</j.0:is_a>
     <j.0:has_vocabulary rdf:resource="http://cybertaxonomy.eu/resource/term_vocabulary/01b4d3ab-afbe-44f8-8e1c-30a9b7950f62"/>
     <j.0:has_representation rdf:resource="http://cybertaxonomy.eu/resource/representation/0a18e1bf-2e6f-425c-be3f-d357cc50cb11"/>
     <j.0:type>STRU</j.0:type>
-    <j.0:is_a>term</j.0:is_a>
     <j.0:uuid>74ef4971-55b4-4bee-a453-f00f1a158f9c</j.0:uuid>
   </rdf:Description>
   <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term_vocabulary/01b4d3ab-afbe-44f8-8e1c-30a9b7950f62">
@@ -30,15 +24,16 @@
     <j.0:type>STRU</j.0:type>
     <j.0:uuid>cb2e5f49-1cc8-4a6e-a476-db9a22de305d</j.0:uuid>
   </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/node/4da61a9a-0557-4e45-b5cc-7b4a7ecb8ba4">
+    <j.0:has_sub_structure rdf:resource="http://cybertaxonomy.eu/resource/node/aae99c0b-5e62-49f7-94ff-d161fea8a08f"/>
+    <j.0:has_term rdf:resource="http://cybertaxonomy.eu/resource/term/4ca7907c-46a7-4721-bab0-6733a73ef544"/>
+    <j.0:uuid>4da61a9a-0557-4e45-b5cc-7b4a7ecb8ba4</j.0:uuid>
+    <j.0:is_a>node</j.0:is_a>
+  </rdf:Description>
   <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/5ddaffb7-921f-4f68-a3b7-9987c3ec7b2e">
     <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
     <j.0:language>English</j.0:language>
     <j.0:label>01 Entire Plant</j.0:label>
-  </rdf:Description>
-  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/node/b474e0d3-2ad0-4066-9d3f-c02464e5849e">
-    <j.0:has_term rdf:resource="http://cybertaxonomy.eu/resource/term/a8063aed-83d5-422d-b5b2-2777369c45fd"/>
-    <j.0:uuid>b474e0d3-2ad0-4066-9d3f-c02464e5849e</j.0:uuid>
-    <j.0:is_a>node</j.0:is_a>
   </rdf:Description>
   <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/e45136c1-9c22-46bf-a8d6-b31d9d21766b">
     <j.0:description> in grasses; the part of the spikelet carrying one flower; its lodicules and glumes; and sometimes the segment of the spikelet rachis adjoining them</j.0:description>
@@ -51,17 +46,19 @@
     <j.0:language>English</j.0:language>
     <j.0:label>Flower</j.0:label>
   </rdf:Description>
-  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/node/d842e1db-407e-4902-af25-dea64410cd34">
-    <j.0:has_sub_structure rdf:resource="http://cybertaxonomy.eu/resource/node/77284bc2-ab3c-4839-a903-4a4f2eb7bdd1"/>
-    <j.0:uuid>d842e1db-407e-4902-af25-dea64410cd34</j.0:uuid>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/node/aae99c0b-5e62-49f7-94ff-d161fea8a08f">
+    <j.0:has_term rdf:resource="http://cybertaxonomy.eu/resource/term/a8063aed-83d5-422d-b5b2-2777369c45fd"/>
+    <j.0:uuid>aae99c0b-5e62-49f7-94ff-d161fea8a08f</j.0:uuid>
     <j.0:is_a>node</j.0:is_a>
   </rdf:Description>
-  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/node/9b921fe2-0276-44b1-b7d6-98639f958fe4">
-    <j.0:has_term rdf:resource="http://cybertaxonomy.eu/resource/term/74ef4971-55b4-4bee-a453-f00f1a158f9c"/>
-    <j.0:uuid>9b921fe2-0276-44b1-b7d6-98639f958fe4</j.0:uuid>
-    <j.0:is_a>node</j.0:is_a>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/source/1b4608ad-d6d9-439e-8ac6-9703d6c18932">
+    <j.0:source_has_citation rdf:resource="http://cybertaxonomy.eu/resource/reference/be70c558-95d7-4f26-a64e-90e11bd9ba06"/>
+    <j.0:source_id_in_source>inflorescence</j.0:source_id_in_source>
+    <j.0:source_type>DIM</j.0:source_type>
   </rdf:Description>
   <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/4ca7907c-46a7-4721-bab0-6733a73ef544">
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:term_has_source rdf:resource="http://cybertaxonomy.eu/resource/source/1b4608ad-d6d9-439e-8ac6-9703d6c18932"/>
     <j.0:has_vocabulary rdf:resource="http://cybertaxonomy.eu/resource/term_vocabulary/01b4d3ab-afbe-44f8-8e1c-30a9b7950f62"/>
     <j.0:has_representation rdf:resource="http://cybertaxonomy.eu/resource/representation/bf3ac87b-39e8-4360-8fe1-3dd0aeafb600"/>
     <j.0:has_representation rdf:resource="http://cybertaxonomy.eu/resource/representation/25d6e3de-9b31-469b-a3a4-4a971a023379"/>
@@ -70,8 +67,17 @@
     <j.0:term_symbol2>infloSymbol2</j.0:term_symbol2>
     <j.0:term_symbol>infloSymbol</j.0:term_symbol>
     <j.0:type>STRU</j.0:type>
-    <j.0:is_a>term</j.0:is_a>
     <j.0:uuid>4ca7907c-46a7-4721-bab0-6733a73ef544</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/source/444407e7-60dc-4c07-af96-5700dfab2754">
+    <j.0:source_has_citation rdf:resource="http://cybertaxonomy.eu/resource/reference/be70c558-95d7-4f26-a64e-90e11bd9ba06"/>
+    <j.0:source_id_in_source>anthecium</j.0:source_id_in_source>
+    <j.0:source_type>DIM</j.0:source_type>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/node/dc8d07e9-5e5b-44ac-adf7-b35c48c0f7f5">
+    <j.0:has_term rdf:resource="http://cybertaxonomy.eu/resource/term/74ef4971-55b4-4bee-a453-f00f1a158f9c"/>
+    <j.0:uuid>dc8d07e9-5e5b-44ac-adf7-b35c48c0f7f5</j.0:uuid>
+    <j.0:is_a>node</j.0:is_a>
   </rdf:Description>
   <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/82406634-44b7-4187-93a9-815f5621098c">
     <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
@@ -85,31 +91,34 @@
     <j.0:language>German</j.0:language>
     <j.0:label>Infloreszenz</j.0:label>
   </rdf:Description>
-  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term_tree/f28536f7-38b4-4dda-addd-c6b0b5a398ec">
-    <j.0:has_root_node rdf:resource="http://cybertaxonomy.eu/resource/node/d842e1db-407e-4902-af25-dea64410cd34"/>
-    <j.0:type>STRU</j.0:type>
-    <j.0:is_a>tree</j.0:is_a>
-    <j.0:label>test_structures</j.0:label>
-    <j.0:uuid>f28536f7-38b4-4dda-addd-c6b0b5a398ec</j.0:uuid>
-  </rdf:Description>
   <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/c957a28f-4377-4fb4-a287-0655ec91b621">
+    <j.0:is_a>term</j.0:is_a>
     <j.0:has_vocabulary rdf:resource="http://cybertaxonomy.eu/resource/term_vocabulary/cb2e5f49-1cc8-4a6e-a476-db9a22de305d"/>
     <j.0:has_representation rdf:resource="http://cybertaxonomy.eu/resource/representation/63dcf1d5-02e2-43a3-8e3a-2cd8f52fe08b"/>
     <j.0:type>STRU</j.0:type>
-    <j.0:is_a>term</j.0:is_a>
     <j.0:uuid>c957a28f-4377-4fb4-a287-0655ec91b621</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/reference/be70c558-95d7-4f26-a64e-90e11bd9ba06">
+    <j.0:reference_title>The Kew Plant Glossary, an illustrated dictionary of plant terms</j.0:reference_title>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term_tree/00769387-b8df-47e2-bdea-b8e47c5a1240">
+    <j.0:has_root_node rdf:resource="http://cybertaxonomy.eu/resource/node/61a19aff-04fd-42b2-b7f0-a7c6a4091824"/>
+    <j.0:type>STRU</j.0:type>
+    <j.0:is_a>tree</j.0:is_a>
+    <j.0:label>test_structures</j.0:label>
+    <j.0:uuid>00769387-b8df-47e2-bdea-b8e47c5a1240</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/node/bd6b6b47-27b8-4bf1-8e22-fc23c5f7036b">
+    <j.0:has_sub_structure rdf:resource="http://cybertaxonomy.eu/resource/node/dc8d07e9-5e5b-44ac-adf7-b35c48c0f7f5"/>
+    <j.0:has_sub_structure rdf:resource="http://cybertaxonomy.eu/resource/node/4da61a9a-0557-4e45-b5cc-7b4a7ecb8ba4"/>
+    <j.0:has_term rdf:resource="http://cybertaxonomy.eu/resource/term/c957a28f-4377-4fb4-a287-0655ec91b621"/>
+    <j.0:uuid>bd6b6b47-27b8-4bf1-8e22-fc23c5f7036b</j.0:uuid>
+    <j.0:is_a>node</j.0:is_a>
   </rdf:Description>
   <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/63dcf1d5-02e2-43a3-8e3a-2cd8f52fe08b">
     <j.0:language_uuid>e9f8cdb7-6819-44e8-95d3-e2d0690c3523</j.0:language_uuid>
     <j.0:language>English</j.0:language>
     <j.0:label>entire plant*</j.0:label>
-  </rdf:Description>
-  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/node/77284bc2-ab3c-4839-a903-4a4f2eb7bdd1">
-    <j.0:has_sub_structure rdf:resource="http://cybertaxonomy.eu/resource/node/9b921fe2-0276-44b1-b7d6-98639f958fe4"/>
-    <j.0:has_sub_structure rdf:resource="http://cybertaxonomy.eu/resource/node/ea699e79-1239-4432-9ce3-3e5a23ff180c"/>
-    <j.0:has_term rdf:resource="http://cybertaxonomy.eu/resource/term/c957a28f-4377-4fb4-a287-0655ec91b621"/>
-    <j.0:uuid>77284bc2-ab3c-4839-a903-4a4f2eb7bdd1</j.0:uuid>
-    <j.0:is_a>node</j.0:is_a>
   </rdf:Description>
   <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/representation/25d6e3de-9b31-469b-a3a4-4a971a023379">
     <j.0:description> the part of the plant that bears the flowers, including all its bracts  branches and flowers  but excluding unmodified leaves               </j.0:description>
@@ -120,12 +129,18 @@
     <j.0:label_plural>inflorescences</j.0:label_plural>
   </rdf:Description>
   <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/term/a8063aed-83d5-422d-b5b2-2777369c45fd">
+    <j.0:is_a>term</j.0:is_a>
+    <j.0:term_has_source rdf:resource="http://cybertaxonomy.eu/resource/source/444407e7-60dc-4c07-af96-5700dfab2754"/>
     <j.0:has_vocabulary rdf:resource="http://cybertaxonomy.eu/resource/term_vocabulary/01b4d3ab-afbe-44f8-8e1c-30a9b7950f62"/>
     <j.0:has_representation rdf:resource="http://cybertaxonomy.eu/resource/representation/e45136c1-9c22-46bf-a8d6-b31d9d21766b"/>
     <j.0:term_id_in_vocabulary>anthecium</j.0:term_id_in_vocabulary>
     <j.0:type>STRU</j.0:type>
-    <j.0:is_a>term</j.0:is_a>
     <j.0:uuid>a8063aed-83d5-422d-b5b2-2777369c45fd</j.0:uuid>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/node/61a19aff-04fd-42b2-b7f0-a7c6a4091824">
+    <j.0:has_sub_structure rdf:resource="http://cybertaxonomy.eu/resource/node/bd6b6b47-27b8-4bf1-8e22-fc23c5f7036b"/>
+    <j.0:uuid>61a19aff-04fd-42b2-b7f0-a7c6a4091824</j.0:uuid>
+    <j.0:is_a>node</j.0:is_a>
   </rdf:Description>
   <rdf:Description rdf:about="http://cybertaxonomy.eu/resource/media/f002a25c-d75c-4b58-8f1c-1188d9b11ad0">
     <j.0:media_uri>https://upload.wikimedia.org/wikipedia/commons/8/82/Aloe_hereroensis_Auob_C15.JPG</j.0:media_uri>

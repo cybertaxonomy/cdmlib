@@ -204,8 +204,7 @@ public class StructureTreeOwlImportTest extends CdmTransactionalIntegrationTest 
             definedTermBase = termService.load(definedTermBase.getUuid(), termProperties);
             Set<IdentifiableSource> sources = definedTermBase.getSources();
             assertTrue("Import source is missing for term: "+definedTermBase, !sources.isEmpty());
-            IdentifiableSource source = sources.iterator().next();
-            assertEquals("wrong source type", OriginalSourceType.Import.getKey(), source.getType());
+            assertTrue("import source type not found", sources.stream().anyMatch(source->OriginalSourceType.Import.getKey().equals(source.getType().getKey())));
         }
 
     }

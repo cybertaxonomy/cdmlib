@@ -32,6 +32,7 @@ public class OwlUtil {
     public static final String RESOURCE_FEATURE_TREE = RESOURCE_URI+"term_tree/";
     public static final String RESOURCE_TERM_VOCABULARY = RESOURCE_URI+"term_vocabulary/";
     public static final String RESOURCE_TERM = RESOURCE_URI+"term/";
+    public static final String RESOURCE_CHARACTER = RESOURCE_URI+"character/";
     public static final String RESOURCE_MEDIA = RESOURCE_URI+"media/";
 
     /**
@@ -71,6 +72,23 @@ public class OwlUtil {
     public static final String PROPERTY_TERM_ID_IN_VOCABULARY = PROPERTY_BASE_URI+"term_id_in_vocabulary";
 
     /**
+     * feature properties
+     */
+    public static final String PROPERTY_FEATURE_IS_QUANTITATIVE = PROPERTY_BASE_URI+"feature_is_quantitative";
+    public static final String PROPERTY_FEATURE_IS_CATEGORICAL = PROPERTY_BASE_URI+"feature_is_categorical";
+    public static final String PROPERTY_FEATURE_HAS_RECOMMENDED_MEASUREMENT_UNIT = PROPERTY_BASE_URI+"feature_has_recommended_measurement_unit";
+    public static final String PROPERTY_FEATURE_HAS_RECOMMENDED_MODIFIER = PROPERTY_BASE_URI+"feature_has_recommended_modifier";
+    public static final String PROPERTY_FEATURE_HAS_RECOMMENDED_STATISTICAL_MEASURE = PROPERTY_BASE_URI+"feature_has_recommended_statistical_measure";
+    public static final String PROPERTY_FEATURE_HAS_SUPPORTED_CATEGORICAL_ENUMERATION = PROPERTY_BASE_URI+"feature_has_supported_categorical_enumeration";
+
+    /**
+     * character properties
+     */
+    public static final String PROPERTY_CHARACTER_HAS_STRUCTURE = PROPERTY_BASE_URI+"character_has_structure";
+    public static final String PROPERTY_CHARACTER_HAS_PROPERTY = PROPERTY_BASE_URI+"character_has_property";
+    public static final String PROPERTY_CHARACTER_HAS_STRUCTURE_MODIFIER = PROPERTY_BASE_URI+"character_has_structure_modifier";
+
+    /**
      * media properties
      */
     public static final String PROPERTY_MEDIA_URI = PROPERTY_BASE_URI+"media_uri";
@@ -95,6 +113,8 @@ public class OwlUtil {
     public final static String TREE = "tree";
     public final static String VOCABULARY = "vocabulary";
     public final static String TERM = "term";
+    public final static String CHARACTER = "character";
+    public final static String FEATURE = "feature";
     public final static String MEDIA = "media";
 
     public static Property propHasSubStructure;
@@ -122,6 +142,17 @@ public class OwlUtil {
     public static Property propTermSymbol2;
     public static Property propTermIdInVocabulary;
 
+    public static Property propFeatureIsQuantitative;
+    public static Property propFeatureIsCategorical;
+    public static Property propFeatureHasRecommendedMeasurementUnit;
+    public static Property propFeatureHasRecommendedModifierEnumeration;
+    public static Property propFeatureHasRecommendedStatisticalMeasure;
+    public static Property propFeatureHasSupportedCategoricalEnumeration;
+
+    public static Property propCharacterHasStructure;
+    public static Property propCharacterHasProperty;
+    public static Property propCharacterHasStructureModfier;
+
     public static Property propMediaUri;
     public static Property propMediaTitle;
 
@@ -133,6 +164,7 @@ public class OwlUtil {
 
     public static Model createModel(){
         Model model = ModelFactory.createDefaultModel();
+
         propHasSubStructure = model.createProperty(OwlUtil.PROPERTY_HAS_SUBSTRUCTURE);
         propHasRepresentation = model.createProperty(OwlUtil.PROPERTY_HAS_REPRESENTATION);
         propHasRootNode = model.createProperty(OwlUtil.PROPERTY_HAS_ROOT_NODE);
@@ -150,6 +182,7 @@ public class OwlUtil {
         propHasVocabulary = model.createProperty(OwlUtil.PROPERTY_HAS_VOCABULARY);
         propHasTerm = model.createProperty(OwlUtil.PROPERTY_HAS_TERM);
 
+        // term
         propTermIsGeneralizationOf = model.createProperty(OwlUtil.PROPERTY_TERM_IS_GENERALIZATION_OF);
         propTermIncludes = model.createProperty(OwlUtil.PROPERTY_TERM_INCLUDES);
         propTermHasMedia = model.createProperty(OwlUtil.PROPERTY_TERM_HAS_MEDIA);
@@ -158,13 +191,29 @@ public class OwlUtil {
         propTermSymbol2 = model.createProperty(OwlUtil.PROPERTY_TERM_SYMBOL2);
         propTermIdInVocabulary = model.createProperty(OwlUtil.PROPERTY_TERM_ID_IN_VOCABULARY);
 
+        // feature
+        propFeatureIsQuantitative = model.createProperty(OwlUtil.PROPERTY_FEATURE_IS_QUANTITATIVE);
+        propFeatureIsCategorical = model.createProperty(OwlUtil.PROPERTY_FEATURE_IS_CATEGORICAL);
+        propFeatureHasRecommendedMeasurementUnit = model.createProperty(OwlUtil.PROPERTY_FEATURE_HAS_RECOMMENDED_MEASUREMENT_UNIT);
+        propFeatureHasRecommendedModifierEnumeration = model.createProperty(OwlUtil.PROPERTY_FEATURE_HAS_RECOMMENDED_MODIFIER);
+        propFeatureHasRecommendedStatisticalMeasure = model.createProperty(OwlUtil.PROPERTY_FEATURE_HAS_RECOMMENDED_STATISTICAL_MEASURE);
+        propFeatureHasSupportedCategoricalEnumeration = model.createProperty(OwlUtil.PROPERTY_FEATURE_HAS_SUPPORTED_CATEGORICAL_ENUMERATION);
+
+        // character
+        propCharacterHasStructure = model.createProperty(OwlUtil.PROPERTY_CHARACTER_HAS_STRUCTURE);
+        propCharacterHasProperty = model.createProperty(OwlUtil.PROPERTY_CHARACTER_HAS_PROPERTY);
+        propCharacterHasStructureModfier = model.createProperty(OwlUtil.PROPERTY_CHARACTER_HAS_STRUCTURE_MODIFIER);
+
+        // media
         propMediaUri = model.createProperty(OwlUtil.PROPERTY_MEDIA_URI);
         propMediaTitle = model.createProperty(OwlUtil.PROPERTY_MEDIA_TITLE);
 
+        // source
         propSourceType = model.createProperty(OwlUtil.PROPERTY_SOURCE_TYPE);
         propSourceIdInSource = model.createProperty(OwlUtil.PROPERTY_SOURCE_ID_IN_SOURCE);
         propSourceHasCitation = model.createProperty(OwlUtil.PROPERTY_SOURCE_HAS_CITATION);
 
+        // reference
         propReferenceTitle = model.createProperty(OwlUtil.PROPERTY_REFERENCE_TITLE);
 
         return model;

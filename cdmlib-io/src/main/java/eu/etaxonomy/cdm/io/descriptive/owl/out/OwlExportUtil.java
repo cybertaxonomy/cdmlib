@@ -10,17 +10,25 @@ package eu.etaxonomy.cdm.io.descriptive.owl.out;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import com.hp.hpl.jena.rdf.model.Resource;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.descriptive.owl.OwlUtil;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.description.Character;
+import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.MeasurementUnit;
+import eu.etaxonomy.cdm.model.description.State;
+import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.FeatureNode;
 import eu.etaxonomy.cdm.model.term.FeatureTree;
@@ -98,10 +106,53 @@ public class OwlExportUtil {
         return representations;
     }
 
+    private static Resource addCharacterResource(Character character, Resource termResource, StructureTreeOwlExportState state) {
+        addFeatureResource(character, termResource, state);
+
+        Resource structureNodeResource = createNodeResource(state, character.getStructure());
+        termResource.addProperty(OwlUtil.propCharacterHasStructure, structureNodeResource);
+        Resource propertyNodeResource = createNodeResource(state, character.getProperty());
+        termResource.addProperty(OwlUtil.propCharacterHasProperty, propertyNodeResource);
+        if(character.getStructureModifier()!=null){
+            Resource structureModifierResource = createTermResource(character.getStructureModifier(), state);
+            termResource.addProperty(OwlUtil.propCharacterHasStructureModfier, structureModifierResource);
+        }
+        return termResource;
+    }
+
+    private static Resource addFeatureResource(Feature feature, Resource termResource, StructureTreeOwlExportState state) {
+        if(feature.isSupportsCategoricalData()){
+            termResource.addLiteral(OwlUtil.propFeatureIsCategorical, true);
+        }
+        if(feature.isSupportsQuantitativeData()){
+            termResource.addLiteral(OwlUtil.propFeatureIsQuantitative, true);
+        }
+        Set<MeasurementUnit> recommendedMeasurementUnits = feature.getRecommendedMeasurementUnits();
+        for (MeasurementUnit measurementUnit : recommendedMeasurementUnits) {
+            Resource measurementUnitResource = createTermResource(measurementUnit, state);
+            termResource.addProperty(OwlUtil.propFeatureHasRecommendedMeasurementUnit, measurementUnitResource);
+        }
+        Set<TermVocabulary<DefinedTerm>> recommendedModifierEnumerations = feature.getRecommendedModifierEnumeration();
+        for (TermVocabulary<DefinedTerm> modifierVocabulary : recommendedModifierEnumerations) {
+            Resource modifierEnumerationResource = createVocabularyResource(modifierVocabulary, state);
+            termResource.addProperty(OwlUtil.propFeatureHasRecommendedModifierEnumeration, modifierEnumerationResource);
+        }
+        Set<StatisticalMeasure> recommendedStatisticalMeasures = feature.getRecommendedStatisticalMeasures();
+        for (StatisticalMeasure statisticalMeasure : recommendedStatisticalMeasures) {
+            Resource statisticalMeasureResource = createTermResource(statisticalMeasure, state);
+            termResource.addProperty(OwlUtil.propFeatureHasRecommendedStatisticalMeasure, statisticalMeasureResource);
+        }
+        Set<TermVocabulary<State>> supportedCategoricalEnumerations = feature.getSupportedCategoricalEnumerations();
+        for (TermVocabulary<State> stateVocabulary : supportedCategoricalEnumerations) {
+            Resource supportedCategoricalEnumerationResource = createVocabularyResource(stateVocabulary, state);
+            termResource.addProperty(OwlUtil.propFeatureHasSupportedCategoricalEnumeration, supportedCategoricalEnumerationResource);
+        }
+        return termResource;
+    }
+
     static Resource createTermResource(DefinedTermBase term, StructureTreeOwlExportState state) {
         Resource termResource = state.getModel().createResource(OwlUtil.RESOURCE_TERM+term.getUuid().toString())
                 .addProperty(OwlUtil.propUuid, term.getUuid().toString())
-                .addProperty(OwlUtil.propIsA, OwlUtil.TERM)
                 .addProperty(OwlUtil.propType, term.getTermType().getKey())
                 ;
         if(term.getUri()!=null){
@@ -120,9 +171,36 @@ public class OwlExportUtil {
         List<Resource> termRepresentationResources = createRepresentationResources(term, state);
         termRepresentationResources.forEach(rep->termResource.addProperty(OwlUtil.propHasRepresentation, rep));
 
+        // create vocabulary resource
+        Resource vocabularyResource = OwlExportUtil.createVocabularyResource(term.getVocabulary(), state);
+        // add vocabulary to term
+        termResource.addProperty(OwlUtil.propHasVocabulary, vocabularyResource);
+        // add term to vocabulary
+        vocabularyResource.addProperty(OwlUtil.propHasTerm, termResource);
+
+        // add media
+        Set<Media> media = term.getMedia();
+        for (Media medium : media) {
+            Resource mediaResource = OwlExportUtil.createMediaResource(medium, state);
+            termResource.addProperty(OwlUtil.propTermHasMedia, mediaResource);
+        }
+
         // add term sources
         List<Resource> termSourceResources = createSourceResources(term, state);
         termSourceResources.forEach(source->termResource.addProperty(OwlUtil.propTermHasSource, source));
+
+        // add term sub class properties
+        if(term.isInstanceOf(eu.etaxonomy.cdm.model.description.Character.class)){
+            termResource.addProperty(OwlUtil.propIsA, OwlUtil.CHARACTER);
+            addCharacterResource(HibernateProxyHelper.deproxy(term, Character.class), termResource, state);
+        }
+        else if(term.isInstanceOf(Feature.class)){
+            termResource.addProperty(OwlUtil.propIsA, OwlUtil.FEATURE);
+            addFeatureResource(HibernateProxyHelper.deproxy(term, Feature.class), termResource, state);
+        }
+        else {
+            termResource.addProperty(OwlUtil.propIsA, OwlUtil.TERM);
+        }
 
         return termResource;
     }
@@ -156,11 +234,16 @@ public class OwlExportUtil {
     }
 
     static Resource createNodeResource(StructureTreeOwlExportState state, FeatureNode node) {
-        Resource resourceRootNode = state.getModel().createResource(OwlUtil.RESOURCE_NODE + node.getUuid().toString())
+        Resource nodeResource = state.getModel().createResource(OwlUtil.RESOURCE_NODE + node.getUuid().toString())
                 .addProperty(OwlUtil.propIsA, OwlUtil.NODE)
                 .addProperty(OwlUtil.propUuid, node.getUuid().toString())
                 ;
-        return resourceRootNode;
+        if(node.getTerm()!=null){
+            // add term to node
+            Resource termResource = OwlExportUtil.createTermResource(node.getTerm(), state);
+            nodeResource.addProperty(OwlUtil.propHasTerm, termResource);
+        }
+        return nodeResource;
     }
 
 }

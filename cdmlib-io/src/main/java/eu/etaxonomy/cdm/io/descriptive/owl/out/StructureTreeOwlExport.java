@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.io.descriptive.owl.out;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.stereotype.Component;
@@ -22,7 +21,6 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.io.descriptive.owl.OwlUtil;
-import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.term.FeatureNode;
 import eu.etaxonomy.cdm.model.term.FeatureTree;
 
@@ -81,26 +79,9 @@ public class StructureTreeOwlExport extends CdmExportBase<StructureTreeOwlExport
         for (FeatureNode child : childNodes) {
             // create node resource with term
             Resource nodeResource = OwlExportUtil.createNodeResource(state, child);
-            // add term to node
-            Resource termResource = OwlExportUtil.createTermResource(child.getTerm(), state);
-            nodeResource.addProperty(OwlUtil.propHasTerm, termResource);
-
-            // export media
-            Set<Media> media = child.getTerm().getMedia();
-            for (Media medium : media) {
-                Resource mediaResource = OwlExportUtil.createMediaResource(medium, state);
-                termResource.addProperty(OwlUtil.propTermHasMedia, mediaResource);
-            }
 
             // add node to parent node
             parentResourceNode.addProperty(OwlUtil.propHasSubStructure, nodeResource);
-
-            // create vocabulary resource
-            Resource vocabularyResource = OwlExportUtil.createVocabularyResource(child.getTerm().getVocabulary(), state);
-            // add vocabulary to term
-            termResource.addProperty(OwlUtil.propHasVocabulary, vocabularyResource);
-            // add term to vocabulary
-            vocabularyResource.addProperty(OwlUtil.propHasTerm, termResource);
 
             addChildNode(child, nodeResource, state);
         }
