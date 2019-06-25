@@ -1857,15 +1857,15 @@ public class CdmLightClassificationExport
                                     csvLine[table.getIndex(CdmLightExportTable.FURTHER_AREAS)] = "0";
                                     for (NamedArea area: gathering.getCollectingAreas()){
                                         if (index == 0){
-                                            csvLine[table.getIndex(CdmLightExportTable.AREA_CATEGORY1)] = area.getTermType().getKey();
+                                            csvLine[table.getIndex(CdmLightExportTable.AREA_CATEGORY1)] = area.getLevel().getLabel();
                                             csvLine[table.getIndex(CdmLightExportTable.AREA_NAME1)] = area.getLabel();
                                         }
                                         if (index == 1){
-                                            csvLine[table.getIndex(CdmLightExportTable.AREA_CATEGORY2)] = area.getTermType().getKey();
+                                            csvLine[table.getIndex(CdmLightExportTable.AREA_CATEGORY2)] = area.getLevel().getLabel();
                                             csvLine[table.getIndex(CdmLightExportTable.AREA_NAME2)] = area.getLabel();
                                         }
                                         if (index == 2){
-                                            csvLine[table.getIndex(CdmLightExportTable.AREA_CATEGORY3)] = area.getTermType().getKey();
+                                            csvLine[table.getIndex(CdmLightExportTable.AREA_CATEGORY3)] = area.getLevel().getLabel();
                                             csvLine[table.getIndex(CdmLightExportTable.AREA_NAME3)] = area.getLabel();
                                         }
                                         if (index == 3){
