@@ -225,7 +225,7 @@ public class OccurrenceListController extends AbstractIdentifiableListController
 
     @RequestMapping(method = RequestMethod.GET, value = "byGeneticAccessionNumber" )
     public FieldUnitDTO doFindByGeneticAccessionNumber(
-            @RequestParam("accessionNumber") String accessionNumber,
+            @RequestParam(value="accessionNumber", required = true) String accessionNumber,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
         logger.info("doListSpecimensOrObservations() - " + request.getRequestURI());
