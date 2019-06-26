@@ -231,11 +231,17 @@ public class OccurrenceListController extends AbstractIdentifiableListController
         logger.info("doListSpecimensOrObservations() - " + request.getRequestURI());
 
         if(accessionNumber == null ) {
+            response.setHeader("Failure", "Query must be given");
             HttpStatusMessage.create("Query must be given", 400).send(response);
             return null;
         }
 
        FieldUnitDTO fieldUnitDto = service.findByAccessionNumber(accessionNumber, null,this.initializationStrategy);
+       if(fieldUnitDto == null ) {
+           response.setHeader("Failure", "No DNA available for accession number ");
+           HttpStatusMessage.create("No DNA available for accession number " + accessionNumber, 400).send(response);
+           return null;
+       }
        return fieldUnitDto;
     }
 
