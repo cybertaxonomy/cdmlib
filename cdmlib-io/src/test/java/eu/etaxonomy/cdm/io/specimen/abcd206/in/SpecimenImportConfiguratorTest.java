@@ -448,6 +448,38 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
         assertTrue(derivedUnits.contains(derivedUnit));
 
     }
+	
+	@Test
+    @DataSet( value="AbcdGgbnImportTest.testAttachDnaSampleToDerivedUnit.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+    public void testIgnoreExistingSpecimensWithDna(){
+        UUID derivedUnit1Uuid = UUID.fromString("eb40cb0f-efb2-4985-819e-a9168f6d61fe");
+
+
+
+        String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_B_10_0066577.xml";
+        URL url = this.getClass().getResource(inputFile);
+        assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+
+        Abcd206ImportConfigurator importConfigurator = null;
+        try {
+            importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+        assertNotNull("Configurator could not be created", importConfigurator);
+        importConfigurator.setIgnoreImportOfExistingSpecimen(true);
+        boolean result = defaultImport.invoke(importConfigurator).isSuccess();
+        assertTrue("Return value for import.invoke should be true", result);
+        assertEquals("Number of derived units is incorrect", 2, occurrenceService.count(DerivedUnit.class));
+        List<DerivedUnit> derivedUnits = occurrenceService.list(DerivedUnit.class, null, null, null, null);
+        assertEquals("Number of derived units is incorrect", 2, derivedUnits.size());
+
+        DerivedUnit derivedUnit = (DerivedUnit) occurrenceService.load(derivedUnit1Uuid);
+        assertTrue(derivedUnits.contains(derivedUnit));
+
+    }
 
 	/**
 	 * Test imports one unit with an already existing taxon and one with a new taxon.
