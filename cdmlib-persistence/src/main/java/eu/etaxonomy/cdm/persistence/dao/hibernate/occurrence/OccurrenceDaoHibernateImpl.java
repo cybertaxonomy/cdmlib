@@ -898,6 +898,7 @@ public class OccurrenceDaoHibernateImpl
 
 
         if (dnaSamples.isEmpty()){
+            logger.debug("there is no dnaSample for genetic accession number " + accessionNumberString + " this should not happen.");
             return null;
         }else if (dnaSamples.size() == 1){
             return dnaSamples.get(0);

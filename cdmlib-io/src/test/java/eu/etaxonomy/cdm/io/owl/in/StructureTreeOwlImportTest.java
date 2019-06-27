@@ -34,11 +34,14 @@ import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.descriptive.owl.in.StructureTreeOwlImportConfigurator;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.FeatureNode;
 import eu.etaxonomy.cdm.model.term.FeatureTree;
 import eu.etaxonomy.cdm.model.term.Representation;
@@ -193,6 +196,16 @@ public class StructureTreeOwlImportTest extends CdmTransactionalIntegrationTest 
         TermVocabulary termVoc = vocs.iterator().next();
         assertEquals("Wrong vocabulary label", vocLabel, termVoc.getTitleCache());
         assertEquals(82, termVoc.getTerms().size());
+
+        Set<DefinedTermBase> terms = termVoc.getTerms();
+        for (DefinedTermBase definedTermBase : terms) {
+            List<String> termProperties = new ArrayList<>();
+            termProperties.add("sources");
+            definedTermBase = termService.load(definedTermBase.getUuid(), termProperties);
+            Set<IdentifiableSource> sources = definedTermBase.getSources();
+            assertTrue("Import source is missing for term: "+definedTermBase, !sources.isEmpty());
+            assertTrue("import source type not found", sources.stream().anyMatch(source->OriginalSourceType.Import.getKey().equals(source.getType().getKey())));
+        }
 
     }
     @Override

@@ -905,12 +905,15 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         DerivateDTO derivedUnitDTO;
         HashMap<UUID, DerivateDTO> alreadyCollectedSpecimen = new HashMap<>();
         List<FieldUnitDTO> fieldUnitDTOs = new ArrayList<>();
-        derivedUnitDTO = new DNASampleDTO(dnaSample);
-        alreadyCollectedSpecimen.put(derivedUnitDTO.getUuid(), derivedUnitDTO);
-        derivedUnitDTO.addAllDerivates(getDerivedUnitDTOsFor(derivedUnitDTO, dnaSample, alreadyCollectedSpecimen));
-        FieldUnitDTO fieldUnit = this.findFieldUnitDTO(derivedUnitDTO, fieldUnitDTOs, alreadyCollectedSpecimen);
+        if (dnaSample != null){
+            derivedUnitDTO = new DNASampleDTO(dnaSample);
+            alreadyCollectedSpecimen.put(derivedUnitDTO.getUuid(), derivedUnitDTO);
+            derivedUnitDTO.addAllDerivates(getDerivedUnitDTOsFor(derivedUnitDTO, dnaSample, alreadyCollectedSpecimen));
+            FieldUnitDTO fieldUnit = this.findFieldUnitDTO(derivedUnitDTO, fieldUnitDTOs, alreadyCollectedSpecimen);
 
-        return fieldUnit;
+            return fieldUnit;
+        }
+        return null;
 
     }
 

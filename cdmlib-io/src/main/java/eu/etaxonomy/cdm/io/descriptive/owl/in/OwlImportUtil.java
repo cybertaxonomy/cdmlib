@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.io.descriptive.owl.in;
 
 import java.net.URI;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -19,12 +20,15 @@ import com.hp.hpl.jena.rdf.model.Statement;
 
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.descriptive.owl.OwlUtil;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.description.Character;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
+import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
@@ -38,12 +42,42 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
  */
 public class OwlImportUtil {
 
+    static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(OwlImportUtil.class);
+
+    static Feature createFeature(Resource termResource, ITermService termService, Model model, StructureTreeOwlImportState state){
+        Feature feature = Feature.NewInstance();
+        if(termResource.hasProperty(OwlUtil.propFeatureIsCategorical)){
+            feature.setSupportsCategoricalData(termResource.getProperty(OwlUtil.propFeatureIsCategorical).getBoolean());
+        }
+        if(termResource.hasProperty(OwlUtil.propFeatureIsQuantitative)){
+            feature.setSupportsQuantitativeData(termResource.getProperty(OwlUtil.propFeatureIsQuantitative).getBoolean());
+        }
+//        // import measurement units
+//        Set<DefinedTermBase> measurementUnits = new HashSet<>();
+//        List<Statement> measurementUnitStatements = termResource.listProperties(OwlUtil.propFeatureHasRecommendedMeasurementUnit).toList();
+//        for (Statement statement : measurementUnitStatements) {
+//            Resource measurementUnitResource = model.createResource(statement.getObject().toString());
+//            measurementUnits.add(OwlImportUtil.createTerm(measurementUnitResource, termService, model, state));
+//        }
+//        measurementUnits.forEach(unit->feature.addRecommendedMeasurementUnit(unit));
+
+        return feature;
+    }
+
+    static Character createCharacter(Resource termResource, ITermService termService, Model model, StructureTreeOwlImportState state){
+        Character character = Character.NewInstance();
+        return character;
+    }
+
     static DefinedTermBase createTerm(Resource termResource, ITermService termService, Model model, StructureTreeOwlImportState state){
         TermType termType = TermType.getByKey(termResource.getProperty(OwlUtil.propType).getString());
         DefinedTermBase term;
         // create new term
         if(termType.equals(TermType.Feature)){
-            term = Feature.NewInstance();
+            term = createFeature(termResource, termService, model, state);
+        }
+        else if(termType.equals(TermType.Character)){
+            term = createCharacter(termResource, termService, model, state);
         }
         else{
             term = DefinedTerm.NewInstance(termType);
@@ -75,15 +109,52 @@ public class OwlImportUtil {
         Set<Representation> representations = new HashSet<>();
         termResource.listProperties(OwlUtil.propHasRepresentation).forEachRemaining(r->representations.add(OwlImportUtil.createRepresentation(termService, r, model)));
         if(representations.isEmpty()){
-            StructureTreeOwlImport.logger.error("No representations found for term: "+termResource.getProperty(OwlUtil.propUuid));
+            logger.error("No representations found for term: "+termResource.getProperty(OwlUtil.propUuid));
         }
         representations.forEach(rep->term.addRepresentation(rep));
 
+        // import sources
+        Set<IdentifiableSource> sources = new HashSet<>();
+        termResource.listProperties(OwlUtil.propTermHasSource).forEachRemaining(sourceStatement->sources.add(OwlImportUtil.createSource(sourceStatement, model)));
+        sources.forEach(source->term.addSource(source));
+
+        // add import source
         IdentifiableSource importSource = IdentifiableSource.NewDataImportInstance(termResource.getURI());
         importSource.setCitation(state.getConfig().getSourceReference());
         term.addSource(importSource);
 
         return term;
+    }
+
+    static IdentifiableSource createSource(Statement sourceStatement, Model model) {
+        Resource sourceResource = model.createResource(sourceStatement.getObject().toString());
+
+        String typeString = sourceResource.getProperty(OwlUtil.propSourceType).getString();
+        IdentifiableSource source = IdentifiableSource.NewInstance(OriginalSourceType.getByKey(typeString));
+
+        if(sourceResource.hasProperty(OwlUtil.propSourceIdInSource)){
+            String idInSource = sourceResource.getProperty(OwlUtil.propSourceIdInSource).getString();
+            source.setIdInSource(idInSource);
+        }
+
+        // import citation
+        List<Statement> citationStatements = sourceResource.listProperties(OwlUtil.propSourceHasCitation).toList();
+        if(citationStatements.size()>1){
+            logger.error("More than one citations found for source. Choosing one arbitrarily. - "+sourceResource.toString());
+        }
+        if(!citationStatements.isEmpty()){
+            Statement citationStatement = citationStatements.iterator().next();
+            source.setCitation(createReference(citationStatement, model));
+        }
+        return source;
+    }
+
+    static Reference createReference(Statement citationStatement, Model model){
+        Resource citationResource = model.createResource(citationStatement.getObject().toString());
+        String titleString = citationResource.getProperty(OwlUtil.propReferenceTitle).getString();
+        Reference citation = ReferenceFactory.newGeneric();
+        citation.setTitle(titleString);
+        return citation;
     }
 
     static TermVocabulary createVocabulary(Resource vocabularyResource, ITermService termService, Model model, StructureTreeOwlImportState state){
@@ -102,7 +173,7 @@ public class OwlImportUtil {
         Set<Representation> vocRepresentations = new HashSet<>();
         vocabularyResource.listProperties(OwlUtil.propHasRepresentation).forEachRemaining(r->vocRepresentations.add(OwlImportUtil.createRepresentation(termService, r, model)));
         if(vocRepresentations.isEmpty()){
-            StructureTreeOwlImport.logger.error("No representations found for vocabulary: "+vocabularyResource.getProperty(OwlUtil.propUuid));
+            logger.error("No representations found for vocabulary: "+vocabularyResource.getProperty(OwlUtil.propUuid));
         }
         vocRepresentations.forEach(rep->vocabulary.addRepresentation(rep));
 
@@ -137,11 +208,7 @@ public class OwlImportUtil {
 
         String languageLabel = repsentationResource.getProperty(OwlUtil.propLanguage).getString();
         UUID languageUuid = UUID.fromString(repsentationResource.getProperty(OwlUtil.propLanguageUuid).getString());
-        DefinedTermBase termBase = termService.load(languageUuid);
-        Language language = null;
-        if(termBase.isInstanceOf(Language.class)){
-            language = HibernateProxyHelper.deproxy(termBase, Language.class);
-        }
+        Language language = Language.getLanguageFromUuid(languageUuid);
         if(language==null){
             language = termService.getLanguageByLabel(languageLabel);
         }

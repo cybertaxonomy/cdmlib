@@ -60,7 +60,9 @@ import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
+import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.INonViralName;
+import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.RankClass;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -1570,6 +1572,20 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
         }
         author.getTitleCache();
         return author;
+    }
+
+    /**
+     * Saves name relations. Needed if a name was parsed and has hybrid parents
+     * which will not be saved via cascade.
+     */
+    protected void saveNameRelations(TaxonName name) {
+        for (HybridRelationship rel: name.getHybridChildRelations()){
+            getNameService().saveOrUpdate(rel.getParentName());
+        }
+        for (NameRelationship rel: name.getNameRelations()){
+            getNameService().saveOrUpdate(rel.getFromName());
+            getNameService().saveOrUpdate(rel.getToName());
+        }
     }
 
 

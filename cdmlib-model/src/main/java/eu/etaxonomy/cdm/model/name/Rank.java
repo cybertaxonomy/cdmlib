@@ -119,9 +119,9 @@ public class Rank extends OrderedTermBase<Rank> {
     private static final UUID uuidSubvariety = UUID.fromString("9a83862a-7aee-480c-a98d-4bceaf8712ca");
     private static final UUID uuidSubsubvariety = UUID.fromString("bff22f84-553a-4429-a4e7-c4b3796c3a18");
 
-    private static final UUID uuidProles = UUID.fromString("8810d1ba-6a34-4ae3-a355-919ccd1cd1a5");
-    private static final UUID uuidRace = UUID.fromString("196dee39-cfd8-4460-8bf0-88b83da27f62");
-    private static final UUID uuidSublusus = UUID.fromString("1fafa596-a8e7-4e62-a378-3cc8cb3627ca");
+    public static final UUID uuidProles = UUID.fromString("8810d1ba-6a34-4ae3-a355-919ccd1cd1a5");
+    public static final UUID uuidRace = UUID.fromString("196dee39-cfd8-4460-8bf0-88b83da27f62");
+    public static final UUID uuidSublusus = UUID.fromString("1fafa596-a8e7-4e62-a378-3cc8cb3627ca");
 
     private static final UUID uuidConvar = UUID.fromString("2cc740c9-cebb-43c8-9b06-1bef79e6a56a");
     private static final UUID uuidForm = UUID.fromString("0461281e-458a-47b9-8d41-19a3d39356d5");
@@ -141,8 +141,8 @@ public class Rank extends OrderedTermBase<Rank> {
     //https://dev.e-taxonomy.eu/redmine/issues/7285
     public static final UUID uuidCohort = UUID.fromString("3e4dc2fa-79e8-4ee7-b7d8-4c02a18fe555");  //edaphobase
     public static final UUID uuidHyporder = UUID.fromString("2a1bdf1f-80fc-4846-b4d7-edcbf664f270");  //edaphobase
-
-
+    //E+M
+    public static UUID uuidRankCollSpecies = UUID.fromString("e14630ee-9446-4bb4-a7b7-4c3881bc5d94");
 
     private static Map<String, UUID> idInVocMap = null;
     private static Map<String, UUID> labelMap = null;

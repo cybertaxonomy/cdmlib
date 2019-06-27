@@ -85,7 +85,7 @@ public class StructureTreeOwlImport extends CdmImportBase<StructureTreeOwlImport
 
         // import term
         UUID termUuid = UUID.fromString(termResource.getProperty(OwlUtil.propUuid).getString());
-        DefinedTermBase term = getTermService().load(termUuid);
+        DefinedTermBase term = getTermService().find(termUuid);
         if(term==null){
             term = OwlImportUtil.createTerm(termResource, getTermService(), model, state);
             getTermService().save(term);

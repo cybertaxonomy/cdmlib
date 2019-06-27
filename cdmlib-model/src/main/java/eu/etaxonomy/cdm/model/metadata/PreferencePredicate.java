@@ -91,6 +91,8 @@ public enum PreferencePredicate implements IEnumTerm<PreferencePredicate>, IPref
     OwnDescriptionForDistributionEditor(UUID.fromString("38282571-049c-473e-bec3-bde6f65f796a"), "Distribution Editor: Create distribution editor TaxonDescription", "distribution.editor.distributionOwnDescription",  Boolean.FALSE),
     AvailableDistributionAreaTerms(UUID.fromString("34469acc-9e23-4f95-92d4-1695e02cb5a0"), "Available Distribution Area Terms", "distribution.area.terms", null),  //default: all/no filter
 
+    //character matrix
+    CharacterMatrixTableState(UUID.fromString("c2b52b1e-3e39-4890-88ce-3bf0abb49709"), "Character Matrix Table State", "character.matrix.table.state",  null),
 
     ShowRankInDistributionEditor(UUID.fromString("fb13b4f2-2d82-4fd3-8abe-2b955a695245"), "Distribution Editor: Show Rank", "distribution.editor.showRank", Boolean.FALSE),
 
