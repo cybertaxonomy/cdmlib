@@ -28,7 +28,10 @@ import org.w3c.dom.NodeList;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
+import eu.etaxonomy.cdm.api.service.DeleteResult;
+import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
 import eu.etaxonomy.cdm.common.StreamUtils;
+import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;
 import eu.etaxonomy.cdm.ext.occurrence.bioCase.BioCaseQueryServiceWrapper;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
@@ -319,6 +322,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
             }
         }
+        	
+        
 
         return;
     }
@@ -389,14 +394,21 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
                         DerivedUnit associatedUnit = state.getDerivedUnitBase();
                         FieldUnit associatedFieldUnit = null;
-                        java.util.Collection<FieldUnit> associatedFieldUnits = state.getCdmRepository()
+                        commitTransaction(state.getTx());
+                        state.setTx(startTransaction());
+                        java.util.Collection<FieldUnit> associatedFieldUnits = null;
+                        try{
+                        associatedFieldUnits = state.getCdmRepository()
                                 .getOccurrenceService().findFieldUnits(associatedUnit.getUuid(), null);
+                        }catch (NullPointerException e){
+                        	logger.error("Search for associated field unit creates a NPE" + e.getMessage());
+                        }
                         // ignore field unit if associated unit has more than
                         // one
-                        if (associatedFieldUnits.size() > 1) {
+                        if (associatedFieldUnits != null && associatedFieldUnits.size() > 1) {
                             state.getReport()
                                     .addInfoMessage(String.format("%s has more than one field unit.", associatedUnit));
-                        } else if (associatedFieldUnits.size() == 1) {
+                        } else if (associatedFieldUnits != null && associatedFieldUnits.size() == 1) {
                             associatedFieldUnit = associatedFieldUnits.iterator().next();
                         }
                         // parent-child relation:
@@ -407,8 +419,19 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
                             updatedDerivationEvent.setDescription(associationType);
                             if (associatedFieldUnit != null && associatedFieldUnit != currentFieldUnit) {
-                                associatedFieldUnit.removeDerivationEvent(updatedDerivationEvent);
-                                state.getCdmRepository().getOccurrenceService().delete(associatedFieldUnit);
+                                //associatedFieldUnit.removeDerivationEvent(updatedDerivationEvent);
+                                //save(associatedFieldUnit, state);
+                               // if (associatedFieldUnit.getDerivationEvents().isEmpty()){
+                            	SpecimenDeleteConfigurator config = new SpecimenDeleteConfigurator();
+                            	config.setDeleteChildren(false);
+                                DeleteResult result = state.getCdmRepository().getOccurrenceService().delete(associatedFieldUnit,config);
+                                if (!result.isOk()) {
+                                	logger.debug("Deletion of field unit " + associatedFieldUnit.getFieldNumber() + " not successfull");
+                                }
+                                state.setFieldUnit(currentFieldUnit);
+                                	
+                                //}
+                               
                             }
                             state.getReport().addDerivate(associatedUnit, currentUnit, state.getConfig());
                         }
@@ -585,6 +608,11 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             // TODO exsiccatum
 
             // add fieldNumber
+            String fieldNumber = null;
+            if (derivedUnitFacade.getFieldUnit(false) != null){
+            	fieldNumber = derivedUnitFacade.getFieldUnit(false).getFieldNumber();
+            }
+            
             derivedUnitFacade.setFieldNumber(NB(state.getDataHolder().getFieldNumber()));
             save(unitsGatheringEvent.getLocality(), state);
 
@@ -898,7 +926,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     @Override
     protected void importAssociatedUnits(Abcd206ImportState state, Object itemObject,
             DerivedUnitFacade derivedUnitFacade) {
-
+    	SpecimenDeleteConfigurator deleteConfig = new SpecimenDeleteConfigurator();
+    	deleteConfig.setDeleteChildren(false);
         Abcd206ImportConfigurator config = state.getConfig();
         // import associated units
         FieldUnit currentFieldUnit = derivedUnitFacade.innerFieldUnit();
@@ -1050,8 +1079,13 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                                                                                                   // deleted
                                     ) {
                                         currentFieldUnit.removeDerivationEvent(currentDerivedFrom);
+                                        
                                         if (currentFieldUnit.getDerivationEvents().isEmpty()){
-                                            state.getCdmRepository().getOccurrenceService().delete(currentFieldUnit);
+                                        	DeleteResult result = state.getCdmRepository().getOccurrenceService().delete(currentFieldUnit, deleteConfig);
+                                        	
+                                        }else{
+                                        	
+                                        	logger.debug("there are still derivation events in fieldUnit " + currentFieldUnit.getId());
                                         }
 
                                     }
@@ -1131,9 +1165,13 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                             updatedDerivationEvent.setDescription(associationType);
                             if (associatedFieldUnit != null && associatedFieldUnit != currentFieldUnit) {
                                 associatedFieldUnit.removeDerivationEvent(updatedDerivationEvent);
-                                if (associatedFieldUnit.getDerivationEvents().isEmpty()){
-                                    state.getCdmRepository().getOccurrenceService().delete(associatedFieldUnit);
-                                }
+//                                if (associatedFieldUnit.getDerivationEvents().isEmpty()){
+                                	SpecimenDeleteConfigurator deleteConfig = new SpecimenDeleteConfigurator();
+                                	deleteConfig.setDeleteChildren(false);
+                                    DeleteResult result = state.getCdmRepository().getOccurrenceService().delete(associatedFieldUnit, deleteConfig);
+                                    state.setFieldUnit(currentFieldUnit);
+                                   
+//                                }
                                 if (updatedDerivationEvent.getOriginals().isEmpty()){
                                    // state.getCdmRepository().getOccurrenceService().deleteDerivationEvent(updatedDerivationEvent);
                                 }

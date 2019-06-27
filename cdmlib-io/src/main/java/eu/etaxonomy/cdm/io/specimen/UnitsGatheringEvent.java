@@ -247,8 +247,12 @@ public class UnitsGatheringEvent {
         }
         else{
             if (depthUnit != null && depthUnit.equals("cm")){
-                depthMin = depthMin/100;
-                depthMax = depthMax/100;
+            	if (depthMin != null) {
+            		depthMin = depthMin/100;
+            	}
+            	if (depthMax != null) {
+            		depthMax = depthMax/100;
+            	}
             }
             if(depthMin!=null){
                 this.gatheringEvent.setDistanceToWaterSurface(depthMin);
