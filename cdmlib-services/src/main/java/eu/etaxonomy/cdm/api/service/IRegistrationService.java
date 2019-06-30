@@ -93,11 +93,11 @@ public interface IRegistrationService extends IAnnotatableService<Registration> 
      *            filters the Registration by the RegistrationStatus. Only
      *            Registration having one of the supplied status will included.
      * @param identifierFilterPattern
-     *            filters the Registration by this pattern, The asterisk can be used
-     *            * as wildcard in any position of the pattern string
+     *            filters the Registration by this pattern, The asterisk '<code>*</code>' can be used
+     *            as wildcard in any position of the pattern string
      * @param taxonNameFilterPattern
-     *            filters the registered taxon name by this pattern, The asterisk can be used
-     *            * as wildcard in any position of the pattern string
+     *            filters the registered taxon name by this pattern, The asterisk '<code>*</code>' can be used
+     *            as wildcard in any position of the pattern string
      * @param typeDesignationStatus
      * @param pageSize
      *            The maximum number of objects returned (can be null for all
@@ -132,9 +132,11 @@ public interface IRegistrationService extends IAnnotatableService<Registration> 
      * @param identifierFilterPattern
      *    Filter by the {@link Registration#getIdentifier() Registration.identifier}.
      *    The method matches Registrations which contain the the passed pattern in the identifier.
+     *    The asterisk '<code>*</code>' can be used as wildcard in any position of the pattern string
      * @param taxonNameFilterPattern
      *    The method matches Registrations which contain the the passed pattern in the
-     *    {@link Registration#getName() Registration.name}
+     *    {@link Registration#getName() Registration.name}. The asterisk '<code>*</code>' can be used
+     *    as wildcard in any position of the pattern string
      * @param typeDesignationStatusUuids
      *    Filter by one or more {@link eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus} or {@link eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus}.
      *    Multiple status will be combined with OR.

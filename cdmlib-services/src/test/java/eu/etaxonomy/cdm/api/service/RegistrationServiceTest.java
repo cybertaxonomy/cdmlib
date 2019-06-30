@@ -126,9 +126,20 @@ public class RegistrationServiceTest extends CdmTransactionalIntegrationTestWith
         pager = repo.getRegistrationService().page((UUID)null, null, null, "Digilalus", null, null, null, null, null);
         assertEquals(pager.getRecords().size(), pager.getCount().intValue());
         assertEquals(3l, pager.getCount().longValue());
-
+        
+        pager = repo.getRegistrationService().page((UUID)null, null, null, "Dig*lus", null, null, null, null, null);
+        assertEquals(pager.getRecords().size(), pager.getCount().intValue());
+        assertEquals(3l, pager.getCount().longValue());
 
         pager = repo.getRegistrationService().page((UUID)null, null, null, "Digilalus prim", null, null, null, null, null);
+        assertEquals(pager.getRecords().size(), pager.getCount().intValue());
+        assertEquals(1l, pager.getCount().longValue());
+
+        pager = repo.getRegistrationService().page((UUID)null, null, null, "Digila*", null, null, null, null, null);
+        assertEquals(pager.getRecords().size(), pager.getCount().intValue());
+        assertEquals(3l, pager.getCount().longValue());
+        
+        pager = repo.getRegistrationService().page((UUID)null, null, null, "*imus", null, null, null, null, null);
         assertEquals(pager.getRecords().size(), pager.getCount().intValue());
         assertEquals(1l, pager.getCount().longValue());
 

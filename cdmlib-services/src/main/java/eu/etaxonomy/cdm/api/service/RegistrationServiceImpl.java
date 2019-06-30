@@ -181,6 +181,7 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
 
         //Logger.getLogger("org.hibernate.SQL").setLevel(Level.DEBUG);
         long numberOfResults = dao.count(Registration.class, restrictions);
+        // long numberOfResults = dao.count(submitterUuid, includedStatus, identifierFilterPattern, taxonNameFilterPattern, typeDesignationStatusUuids);
         //Logger.getLogger("org.hibernate.SQL").setLevel(Level.WARN);
 
         List<Registration> results = new ArrayList<>();
