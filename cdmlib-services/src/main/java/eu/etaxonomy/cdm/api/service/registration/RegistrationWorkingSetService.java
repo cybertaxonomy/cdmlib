@@ -227,6 +227,27 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
         return dtoPager;
     }
 
+    /**
+     * @param submitterUuid
+     *    Filter by the uuid of the {@link User} associated with the Registration as <code>Registration.submitter</code>
+     * @param includedStatus
+     *    Filter by one or more {@link RegistrationStatus}. Multiple status will be combined with OR. In case the current user
+     *    is not authenticated (i.e. the authentication is anonymous) the includedStatus will be set to {@link RegistrationStatus#PUBLISHED}
+     *    to protect all other Registrations from being undisclosed.
+     * @param identifierFilterPattern
+     *    Filter by the {@link Registration#getIdentifier() Registration.identifier}.
+     *    The method matches Registrations which contain the the passed pattern in the identifier.
+     * @param taxonNameFilterPattern
+     *    The method matches Registrations which contain the the passed pattern in the
+     *    {@link Registration#getName() Registration.name}
+     * @param typeDesignationStatusUuids
+     *    Filter by one or more {@link eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus} or {@link eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus}.
+     *    Multiple status will be combined with OR.
+     * @param pageSize
+     * @param pageIndex
+     * @param orderHints
+     * @return
+     */
     @Override
     public Pager<RegistrationDTO> pageDTOs(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, String identifierFilterPattern,
             String taxonNameFilterPattern, Collection<UUID> typeDesignationStatusUuids, Integer pageSize,
