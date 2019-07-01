@@ -71,6 +71,9 @@ public class CdmLightExportResultProcessor {
 
             String[] oldRecord = resultMap.put(id, record);
 
+            String[] newRecord = resultMap.get(id);
+
+
             if (oldRecord != null){
                 String message = "Output processor already has a record for id " + id + ". This should not happen.";
                 state.getResult().addWarning(message);
@@ -136,12 +139,19 @@ public class CdmLightExportResultProcessor {
                             data.add(lineString);
                         }
                     }
+                    if (table.equals(CdmLightExportTable.SIMPLE_FACT) && data.size() == 1){
+                        String[] csvLine = new String[table.getSize()];
+                        csvLine[table.getIndex(CdmLightExportTable.FACT_ID)] = "<UUID>";
+                        csvLine[table.getIndex(CdmLightExportTable.TAXON_FK)]= state.getRootId().toString();
+                        csvLine[table.getIndex(CdmLightExportTable.FACT_TEXT)]= "Dummy";
+                    }
                     IOUtils.writeLines(data,
                             null,exportStream,
                             Charset.forName("UTF-8"));
                 } catch(Exception e){
                     state.getResult().addException(e, e.getMessage());
                 }
+
 
                 state.getResult().putExportData(table.getTableName(), exportStream.toByteArray());
                 state.getResult().setExportType(ExportType.CDM_LIGHT);

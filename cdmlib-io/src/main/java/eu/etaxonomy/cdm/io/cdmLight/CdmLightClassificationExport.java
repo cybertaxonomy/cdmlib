@@ -205,6 +205,8 @@ public class CdmLightClassificationExport
        if (order.getTaxonUuid() != null && state.getProcessor().hasRecord(CdmLightExportTable.TAXON, order.getTaxonUuid().toString())){
             String[] csvLine = state.getProcessor().getRecord(CdmLightExportTable.TAXON,order.getTaxonUuid().toString());
             csvLine[CdmLightExportTable.TAXON.getIndex(CdmLightExportTable.SORT_INDEX)] =  String.valueOf(order.getOrderIndex());
+       }else{
+           state.getResult().addError("Taxon with uuid " + order.getTaxonUuid() + " and order index " + order.getOrderIndex() + "is not in taxon table");
        }
 
        if (order.getChildren() == null){
