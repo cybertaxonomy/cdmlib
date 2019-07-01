@@ -77,11 +77,11 @@ public interface IRegistrationDao
      * @return
      */
     public long count(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, String identifierFilterPattern,
-            String taxonNameFilterPattern, Collection<UUID> typeDesignationStatusUuids);
+            String taxonNameFilterPattern, String referenceFilterPattern, Collection<UUID> typeDesignationStatusUuids);
 
 
     public List<Registration> list(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, String identifierFilterPattern,
-            String taxonNameFilterPattern, Collection<UUID> typeDesignationStatusUuids,
+            String taxonNameFilterPattern, String referenceFilterPattern, Collection<UUID> typeDesignationStatusUuids,
             Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
 }

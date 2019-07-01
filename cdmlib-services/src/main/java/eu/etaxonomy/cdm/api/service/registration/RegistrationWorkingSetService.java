@@ -250,8 +250,8 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
      */
     @Override
     public Pager<RegistrationDTO> pageDTOs(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, String identifierFilterPattern,
-            String taxonNameFilterPattern, Collection<UUID> typeDesignationStatusUuids, Integer pageSize,
-            Integer pageIndex, List<OrderHint> orderHints){
+            String taxonNameFilterPattern, String referenceFilterPattern, Collection<UUID> typeDesignationStatusUuids,
+            Integer pageSize, Integer pageIndex, List<OrderHint> orderHints){
 
             if(pageSize == null){
                 pageSize = PAGE_SIZE;
@@ -263,7 +263,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
 
             Pager<Registration> pager = repo.getRegistrationService().page(submitterUuid, includedStatus,
                     identifierFilterPattern, taxonNameFilterPattern,
-                    typeDesignationStatusUuids, PAGE_SIZE, pageIndex , orderHints, REGISTRATION_DTO_INIT_STRATEGY.getPropertyPaths());
+                    referenceFilterPattern, typeDesignationStatusUuids, PAGE_SIZE , pageIndex, orderHints, REGISTRATION_DTO_INIT_STRATEGY.getPropertyPaths());
 
             Pager<RegistrationDTO> dtoPager = convertToDTOPager(pager);
             if(logger.isDebugEnabled()){

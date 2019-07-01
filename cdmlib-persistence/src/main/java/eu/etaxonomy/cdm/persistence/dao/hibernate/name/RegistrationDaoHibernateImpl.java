@@ -166,9 +166,9 @@ public class RegistrationDaoHibernateImpl
      */
     @Override
     public long count(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, String identifierFilterPattern,
-            String taxonNameFilterPattern, Collection<UUID> typeDesignationStatusUuids) {
+            String taxonNameFilterPattern, String referenceFilterPattern, Collection<UUID> typeDesignationStatusUuids) {
         Query query = makeFilteredSearchQuery(submitterUuid, includedStatus, identifierFilterPattern,
-                taxonNameFilterPattern, typeDesignationStatusUuids, true, null);
+                taxonNameFilterPattern, referenceFilterPattern, typeDesignationStatusUuids, true, null);
         //Logger.getLogger("org.hibernate.SQL").setLevel(Level.DEBUG);
         @SuppressWarnings("unchecked")
         List<Long> list = query.list();
@@ -180,11 +180,11 @@ public class RegistrationDaoHibernateImpl
      */
     @Override
     public List<Registration> list(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, String identifierFilterPattern,
-            String taxonNameFilterPattern, Collection<UUID> typeDesignationStatusUuids, Integer limit, Integer start,
+            String taxonNameFilterPattern, String referenceFilterPattern, Collection<UUID> typeDesignationStatusUuids, Integer limit, Integer start,
             List<OrderHint> orderHints, List<String> propertyPaths) {
 
         Query query = makeFilteredSearchQuery(submitterUuid, includedStatus, identifierFilterPattern,
-                taxonNameFilterPattern, typeDesignationStatusUuids, false, orderHints);
+                taxonNameFilterPattern, referenceFilterPattern, typeDesignationStatusUuids, false, orderHints);
 
         if(limit != null /*&&  !doCount*/) {
             query.setMaxResults(limit);
@@ -213,15 +213,23 @@ public class RegistrationDaoHibernateImpl
      * @return
      */
     private Query makeFilteredSearchQuery(UUID submitterUuid, Collection<RegistrationStatus> includedStatus,
-            String identifierFilterPattern, String taxonNameFilterPattern, Collection<UUID> typeDesignationStatusUuids,
-            boolean isCount, List<OrderHint> orderHints) {
+            String identifierFilterPattern, String taxonNameFilterPattern, String referenceFilterPattern,
+            Collection<UUID> typeDesignationStatusUuids, boolean isCount, List<OrderHint> orderHints) {
 
         Map<String, Object> parameters = new HashMap<>();
+
+        boolean doNameFilter = StringUtils.isNoneBlank(taxonNameFilterPattern);
+        boolean doReferenceFilter = StringUtils.isNoneBlank(referenceFilterPattern);
+        boolean doTypeStatusFilter = typeDesignationStatusUuids != null && typeDesignationStatusUuids.size() > 0;
 
         String select = "SELECT " + (isCount? " count(DISTINCT r) as cn ": "DISTINCT r ");
         String from = " FROM Registration r "
                 + "     LEFT JOIN r.typeDesignations desig "
-                + "     LEFT JOIN r.name n ";
+                + "     LEFT JOIN r.name n "
+                + (doNameFilter ?  " LEFT JOIN desig.typifiedNames typifiedNames ":"")
+                + (doTypeStatusFilter ? " LEFT JOIN desig.typeStatus typeStatus":"")  // without this join hibernate would make a cross join here
+                + (doReferenceFilter ? " LEFT JOIN desig.citation typeDesignationCitation LEFT JOIN n.nomenclaturalReference nomRef":"")
+            ;
         // further JOIN
         String where = " WHERE (1=1) ";
         String orderBy = "";
@@ -242,13 +250,15 @@ public class RegistrationDaoHibernateImpl
             where += " AND r.identifier LIKE :identifierFilterPattern";
             parameters.put("identifierFilterPattern", MatchMode.ANYWHERE.queryStringFrom(identifierFilterPattern));
         }
-        if(StringUtils.isNoneBlank(taxonNameFilterPattern)){
-            from += " LEFT JOIN desig.typifiedNames typifiedNames ";
+        if(doNameFilter){
             where += " AND (r.name.titleCache LIKE :taxonNameFilterPattern OR typifiedNames.titleCache LIKE :taxonNameFilterPattern)";
             parameters.put("taxonNameFilterPattern", MatchMode.ANYWHERE.queryStringFrom(taxonNameFilterPattern));
         }
-        if(typeDesignationStatusUuids != null && typeDesignationStatusUuids.size() > 0){
-            from += "  LEFT JOIN desig.typeStatus typeStatus"; // without this join hibernate would make a cross join here
+        if(doReferenceFilter){
+            where += " AND (typeDesignationCitation.titleCache LIKE :referenceFilterPattern OR nomRef.titleCache LIKE :referenceFilterPattern)";
+            parameters.put("referenceFilterPattern", MatchMode.ANYWHERE.queryStringFrom(referenceFilterPattern));
+        }
+        if(doTypeStatusFilter){
             where += " AND typeStatus.uuid in (:typeDesignationStatusUuids)";
             parameters.put("typeDesignationStatusUuids", typeDesignationStatusUuids);
         }

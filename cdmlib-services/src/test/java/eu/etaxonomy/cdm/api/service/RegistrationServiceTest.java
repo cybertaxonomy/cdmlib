@@ -74,59 +74,59 @@ public class RegistrationServiceTest extends CdmTransactionalIntegrationTestWith
 
         Pager<Registration> pager;
 
-        pager = repo.getRegistrationService().page((UUID)null, null, null, null, null, null, null, null, null);
+        pager = repo.getRegistrationService().page((UUID)null, null, null, null, null, null, null, null, null, null);
         assertEquals(pager.getRecords().size(), pager.getCount().intValue());
         assertEquals("with authenticated user expecting all 4 Registrations", 4l, pager.getCount().longValue());
 
-        pager = repo.getRegistrationService().page(USER1_UUID, null, null, null, null, null, null, null, null);
+        pager = repo.getRegistrationService().page(USER1_UUID, null, null, null, null, null, null, null, null, null);
         assertEquals(2l, pager.getCount().longValue());
 
-        pager = repo.getRegistrationService().page(USER2_UUID, null, null, null, null, null, null, null, null);
+        pager = repo.getRegistrationService().page(USER2_UUID, null, null, null, null, null, null, null, null, null);
         assertEquals(2l, pager.getCount().longValue());
 
         // status filter
-        pager = repo.getRegistrationService().page((UUID)null, Arrays.asList(RegistrationStatus.PREPARATION), null, null, null, null, null, null, null);
+        pager = repo.getRegistrationService().page((UUID)null, Arrays.asList(RegistrationStatus.PREPARATION), null, null, null, null, null, null, null, null);
         assertEquals(1l, pager.getCount().longValue());
         assertEquals(RegistrationStatus.PREPARATION, pager.getRecords().get(0).getStatus());
 
-        pager = repo.getRegistrationService().page((UUID)null, Arrays.asList(RegistrationStatus.PREPARATION, RegistrationStatus.PUBLISHED), null, null, null, null, null, null, null);
+        pager = repo.getRegistrationService().page((UUID)null, Arrays.asList(RegistrationStatus.PREPARATION, RegistrationStatus.PUBLISHED), null, null, null, null, null, null, null, null);
         assertEquals(2l, pager.getCount().longValue());
 
         // status filter with submitter
-        pager = repo.getRegistrationService().page(USER1_UUID, Arrays.asList(RegistrationStatus.PREPARATION, RegistrationStatus.PUBLISHED), null, null, null, null, null, null, null);
+        pager = repo.getRegistrationService().page(USER1_UUID, Arrays.asList(RegistrationStatus.PREPARATION, RegistrationStatus.PUBLISHED), null, null, null, null, null, null, null, null);
         assertEquals(2l, pager.getCount().longValue());
 
-        pager = repo.getRegistrationService().page(USER2_UUID, Arrays.asList(RegistrationStatus.PREPARATION, RegistrationStatus.PUBLISHED), null, null, null, null, null, null, null);
+        pager = repo.getRegistrationService().page(USER2_UUID, Arrays.asList(RegistrationStatus.PREPARATION, RegistrationStatus.PUBLISHED), null, null, null, null, null, null, null, null);
         assertEquals(0l, pager.getCount().longValue());
 
-        pager = repo.getRegistrationService().page(USER2_UUID, Arrays.asList(RegistrationStatus.CURATION), null, null, null, null, null, null, null);
+        pager = repo.getRegistrationService().page(USER2_UUID, Arrays.asList(RegistrationStatus.CURATION), null, null, null, null, null, null, null, null);
         assertEquals(1l, pager.getCount().longValue());
 
         // identifier filter
-        pager = repo.getRegistrationService().page((UUID)null, null, "100", null, null, null, null, null, null);
+        pager = repo.getRegistrationService().page((UUID)null, null, "100", null, null, null, null, null, null, null);
         assertEquals(4l, pager.getCount().longValue());
 
-        pager = repo.getRegistrationService().page((UUID)null, null, "test/1001", null, null, null, null, null, null);
+        pager = repo.getRegistrationService().page((UUID)null, null, "test/1001", null, null, null, null, null, null, null);
         assertEquals(1l, pager.getCount().longValue());
 
         // identifier filter with submitter
-        pager = repo.getRegistrationService().page(USER1_UUID, null, "100", null, null, null, null, null, null);
+        pager = repo.getRegistrationService().page(USER1_UUID, null, "100", null, null, null, null, null, null, null);
         assertEquals(2l, pager.getCount().longValue());
 
-        pager = repo.getRegistrationService().page(USER2_UUID, null, "1002", null, null, null, null, null, null);
+        pager = repo.getRegistrationService().page(USER2_UUID, null, "1002", null, null, null, null, null, null, null);
         assertEquals(1l, pager.getCount().longValue());
 
         // taxon name filter
-        pager = repo.getRegistrationService().page((UUID)null, null, null, "Digitalus", null, null, null, null, null);
+        pager = repo.getRegistrationService().page((UUID)null, null, null, "Digitalus", null, null, null, null, null, null);
         assertEquals(4l, pager.getCount().longValue());
 
-        pager = repo.getRegistrationService().page((UUID)null, null, null, "Dig*lus", null, null, null, null, null);
+        pager = repo.getRegistrationService().page((UUID)null, null, null, "Dig*lus", null, null, null, null, null, null);
         assertEquals(4l, pager.getCount().longValue());
 
-        pager = repo.getRegistrationService().page((UUID)null, null, null, "Digitalus prim", null, null, null, null, null);
+        pager = repo.getRegistrationService().page((UUID)null, null, null, "Digitalus prim", null, null, null, null, null, null);
         assertEquals(1l, pager.getCount().longValue());
 
-        pager = repo.getRegistrationService().page((UUID)null, null, null, "Digitalus secundus", null, null, null, Arrays.asList(orderBySpecificIdentifier), null);
+        pager = repo.getRegistrationService().page((UUID)null, null, null, "Digitalus secundus", null, null, null, null, Arrays.asList(orderBySpecificIdentifier), null);
         assertEquals(2l, pager.getCount().longValue());
 
         assertEquals("test/1001", pager.getRecords().get(0).getIdentifier());
@@ -137,21 +137,21 @@ public class RegistrationServiceTest extends CdmTransactionalIntegrationTestWith
         assertNull("Expecting the registration test/1003 to be without name", pager.getRecords().get(1).getName());
         assertEquals(STD2_UUID, pager.getRecords().get(1).getTypeDesignations().iterator().next().getUuid());
 
-        pager = repo.getRegistrationService().page((UUID)null, null, null, "Digita*", null, null, null, null, null);
+        pager = repo.getRegistrationService().page((UUID)null, null, null, "Digita*", null, null, null, null, null, null);
         assertEquals(4l, pager.getCount().longValue());
 
-        pager = repo.getRegistrationService().page((UUID)null, null, null, "*imus", null, null, null, null, null);
+        pager = repo.getRegistrationService().page((UUID)null, null, null, "*imus", null, null, null, null, null, null);
         assertEquals(1l, pager.getCount().longValue());
 
         // taxon name filter with user
-        pager = repo.getRegistrationService().page(USER2_UUID, null, null, "Digitalus", null, null, null, null, null);
+        pager = repo.getRegistrationService().page(USER2_UUID, null, null, "Digitalus", null, null, null, null, null, null);
         assertEquals(2l, pager.getCount().longValue());
 
         // taxon name filter with user and status
-        pager = repo.getRegistrationService().page(USER1_UUID, Arrays.asList(RegistrationStatus.PREPARATION), null, "Digitalus", null, null, null, null, null);
+        pager = repo.getRegistrationService().page(USER1_UUID, Arrays.asList(RegistrationStatus.PREPARATION), null, "Digitalus", null, null, null, null, null, null);
         assertEquals(1l, pager.getCount().longValue());
 
-        pager = repo.getRegistrationService().page(USER1_UUID, Arrays.asList(RegistrationStatus.PREPARATION, RegistrationStatus.PUBLISHED), "1001", "Digitalus", null, null, null, null, null);
+        pager = repo.getRegistrationService().page(USER1_UUID, Arrays.asList(RegistrationStatus.PREPARATION, RegistrationStatus.PUBLISHED), "1001", "Digitalus", null, null, null, null, null, null);
         assertEquals(1l, pager.getCount().longValue());
 
         // type designation status
@@ -160,18 +160,18 @@ public class RegistrationServiceTest extends CdmTransactionalIntegrationTestWith
         assertNotNull(SpecimenTypeDesignationStatus.HOLOTYPE());
         assertNotNull(NameTypeDesignationStatus.TAUTONYMY());
 
-        pager = repo.getRegistrationService().page((UUID)null, null, null, null, Arrays.asList(SpecimenTypeDesignationStatus.HOLOTYPE().getUuid()),
-                null, null, null, null);
+        pager = repo.getRegistrationService().page((UUID)null, null, null, null, null,
+                Arrays.asList(SpecimenTypeDesignationStatus.HOLOTYPE().getUuid()), null, null, null, null);
         assertEquals(1l, pager.getCount().longValue());
         assertEquals(STD1_UUID, pager.getRecords().get(0).getTypeDesignations().iterator().next().getUuid());
 
-        pager = repo.getRegistrationService().page((UUID)null, null, null, null, Arrays.asList(NameTypeDesignationStatus.TAUTONYMY().getUuid()),
-                null, null, Arrays.asList(orderBySpecificIdentifier), null);
+        pager = repo.getRegistrationService().page((UUID)null, null, null, null, null,
+                Arrays.asList(NameTypeDesignationStatus.TAUTONYMY().getUuid()), null, null, Arrays.asList(orderBySpecificIdentifier), null);
         assertEquals(1l, pager.getCount().longValue());
         assertEquals(NDT1_UUID, pager.getRecords().get(0).getTypeDesignations().iterator().next().getUuid());
 
-        pager = repo.getRegistrationService().page((UUID)null, null, null, null, Arrays.asList(SpecimenTypeDesignationStatus.HOLOTYPE().getUuid(), NameTypeDesignationStatus.TAUTONYMY().getUuid()),
-                null, null, Arrays.asList(orderBySpecificIdentifier), null);
+        pager = repo.getRegistrationService().page((UUID)null, null, null, null, null,
+                Arrays.asList(SpecimenTypeDesignationStatus.HOLOTYPE().getUuid(), NameTypeDesignationStatus.TAUTONYMY().getUuid()), null, null, Arrays.asList(orderBySpecificIdentifier), null);
         assertEquals(2l, pager.getCount().longValue());
         assertEquals("test/1000", pager.getRecords().get(0).getIdentifier());
         assertEquals(STD1_UUID, pager.getRecords().get(0).getTypeDesignations().iterator().next().getUuid());
@@ -179,29 +179,38 @@ public class RegistrationServiceTest extends CdmTransactionalIntegrationTestWith
         assertEquals(NDT1_UUID, pager.getRecords().get(1).getTypeDesignations().iterator().next().getUuid());
 
         // type designation status with user
-        pager = repo.getRegistrationService().page(USER2_UUID, null, null, null, Arrays.asList(SpecimenTypeDesignationStatus.HOLOTYPE().getUuid(), NameTypeDesignationStatus.TAUTONYMY().getUuid()),
-                null, null, null, null);
+        pager = repo.getRegistrationService().page(USER2_UUID, null, null, null, null,
+                Arrays.asList(SpecimenTypeDesignationStatus.HOLOTYPE().getUuid(), NameTypeDesignationStatus.TAUTONYMY().getUuid()), null, null, null, null);
         assertEquals(1l, pager.getCount().longValue());
         assertEquals(NDT1_UUID, pager.getRecords().get(0).getTypeDesignations().iterator().next().getUuid());
 
         // type designation status with name
         pager = repo.getRegistrationService().page((UUID)null, null, null, "Digital",
-                Arrays.asList(SpecimenTypeDesignationStatus.HOLOTYPE().getUuid(), NameTypeDesignationStatus.TAUTONYMY().getUuid()),
-                null, null, Arrays.asList(orderBySpecificIdentifier), null);
+                null,
+                Arrays.asList(SpecimenTypeDesignationStatus.HOLOTYPE().getUuid(), NameTypeDesignationStatus.TAUTONYMY().getUuid()), null, null, Arrays.asList(orderBySpecificIdentifier), null);
         assertEquals(2l, pager.getCount().longValue());
         assertEquals(STD1_UUID, pager.getRecords().get(0).getTypeDesignations().iterator().next().getUuid());
         assertEquals(NDT1_UUID, pager.getRecords().get(1).getTypeDesignations().iterator().next().getUuid());
+
+        // reference
+        pager = repo.getRegistrationService().page((UUID)null, null, null, null,
+                "book1", null, null, null, Arrays.asList(orderBySpecificIdentifier), null);
+        assertEquals(2l, pager.getCount().longValue());
+
+        pager = repo.getRegistrationService().page((UUID)null, null, null, null,
+                "book*", null, null, null, Arrays.asList(orderBySpecificIdentifier), null);
+        assertEquals(4l, pager.getCount().longValue());
     }
 
     @Test
     public void testPage_unautheticated(){
-        Pager<Registration> pager = repo.getRegistrationService().page((UUID)null, null, null, null, null, null, null, null, null);
+        Pager<Registration> pager = repo.getRegistrationService().page((UUID)null, null, null, null, null, null, null, null, null, null);
         assertEquals(pager.getRecords().size(), pager.getCount().intValue());
         assertEquals("expecting only the PUBLISHED Registration, since the user is not authenticated", 1l, pager.getCount().longValue());
     }
 
     @Override
-    @Test
+    // @Test
     public void createTestDataSet() throws FileNotFoundException {
 
         User user1 = User.NewInstance("user1", "00000");
@@ -217,12 +226,12 @@ public class RegistrationServiceTest extends CdmTransactionalIntegrationTestWith
         Reference book1 = ReferenceFactory.newBook();
         book1.setTitle("book1");
         Reference book2 = ReferenceFactory.newBook();
-        book1.setTitle("book2");
+        book2.setTitle("book2");
         repo.getReferenceService().save(book1);
         repo.getReferenceService().save(book2);
 
         TaxonName species1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(), "Digitalus", null, "primus", null, null, book1, "11", null);
-        TaxonName species2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(), "Digitalus", null, "secundus", null, null, book1, "22", null);
+        TaxonName species2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(), "Digitalus", null, "secundus", null, null, book2, "22", null);
         TaxonName genus = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS(), "Digitalus", null, null, null, null, book1, "33", null);
         repo.getNameService().save(Arrays.asList(species1, species2, genus));
 

@@ -168,8 +168,8 @@ public class RegistrationDTOController extends AbstractController<Registration, 
             statusSet = status.asSet();
         }
         Pager<RegistrationDTO> pager = registrationWorkingSetService.pageDTOs(submitterUuid, statusSet,
-                identifierFilterPattern, taxonNameFilterPattern, typeDesignationStatusUuids,
-                pageSize, pageIndex, ORDER_BY_DATE_AND_ID);
+                identifierFilterPattern, taxonNameFilterPattern, null,
+                typeDesignationStatusUuids, pageSize, pageIndex, ORDER_BY_DATE_AND_ID);
         return pager;
     }
 

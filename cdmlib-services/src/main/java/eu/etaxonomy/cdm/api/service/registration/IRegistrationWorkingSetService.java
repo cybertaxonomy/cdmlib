@@ -76,8 +76,9 @@ public interface IRegistrationWorkingSetService {
 
     public List<RegistrationDTO> makeDTOs(Collection<Registration> regs);
 
-    Pager<RegistrationDTO> pageDTOs(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, String identifierFilterPattern, String taxonNameFilterPattern, Collection<UUID> typeDesignationStatusUuids, Integer pageSize, Integer pageIndex,
-            List<OrderHint> orderHints);
+    Pager<RegistrationDTO> pageDTOs(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, String identifierFilterPattern,
+            String taxonNameFilterPattern, String referenceFilterPattern, Collection<UUID> typeDesignationStatusUuids, Integer pageSize,
+            Integer pageIndex, List<OrderHint> orderHints);
 
     /**
      * @param submitterUuid

@@ -137,6 +137,8 @@ public interface IRegistrationService extends IAnnotatableService<Registration> 
      *    The method matches Registrations which contain the the passed pattern in the
      *    {@link Registration#getName() Registration.name}. The asterisk '<code>*</code>' can be used
      *    as wildcard in any position of the pattern string
+     * @param referenceFilterPattern
+     *    The asterisk '<code>*</code>' can be used as wildcard in any position of the pattern string
      * @param typeDesignationStatusUuids
      *    Filter by one or more {@link eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus} or {@link eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus}.
      *    Multiple status will be combined with OR.
@@ -147,8 +149,8 @@ public interface IRegistrationService extends IAnnotatableService<Registration> 
      * @return
      */
     Pager<Registration> page(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, String identifierFilterPattern,
-            String taxonNameFilterPattern, Collection<UUID> typeDesignationStatusUuids, Integer pageSize,
-            Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths);
+            String taxonNameFilterPattern, String referenceFilterPattern, Collection<UUID> typeDesignationStatusUuids,
+            Integer pageSize, Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths);
 
     public Pager<Registration> page(UUID submitterUuid, Collection<RegistrationStatus> includedStatus,
             Collection<UUID> taxonNameUUIDs,
