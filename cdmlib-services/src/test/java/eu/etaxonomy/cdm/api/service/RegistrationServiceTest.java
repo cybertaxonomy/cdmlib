@@ -74,7 +74,6 @@ public class RegistrationServiceTest extends CdmTransactionalIntegrationTestWith
 
         Pager<Registration> pager;
 
-
         pager = repo.getRegistrationService().page((UUID)null, null, null, null, null, null, null, null, null);
         assertEquals(pager.getRecords().size(), pager.getCount().intValue());
         assertEquals("with authenticated user expecting all 4 Registrations", 4l, pager.getCount().longValue());
@@ -118,16 +117,16 @@ public class RegistrationServiceTest extends CdmTransactionalIntegrationTestWith
         assertEquals(1l, pager.getCount().longValue());
 
         // taxon name filter
-        pager = repo.getRegistrationService().page((UUID)null, null, null, "Digilalus", null, null, null, null, null);
+        pager = repo.getRegistrationService().page((UUID)null, null, null, "Digitalus", null, null, null, null, null);
         assertEquals(4l, pager.getCount().longValue());
 
         pager = repo.getRegistrationService().page((UUID)null, null, null, "Dig*lus", null, null, null, null, null);
         assertEquals(4l, pager.getCount().longValue());
 
-        pager = repo.getRegistrationService().page((UUID)null, null, null, "Digilalus prim", null, null, null, null, null);
+        pager = repo.getRegistrationService().page((UUID)null, null, null, "Digitalus prim", null, null, null, null, null);
         assertEquals(1l, pager.getCount().longValue());
 
-        pager = repo.getRegistrationService().page((UUID)null, null, null, "Digilalus secundus", null, null, null, Arrays.asList(orderBySpecificIdentifier), null);
+        pager = repo.getRegistrationService().page((UUID)null, null, null, "Digitalus secundus", null, null, null, Arrays.asList(orderBySpecificIdentifier), null);
         assertEquals(2l, pager.getCount().longValue());
 
         assertEquals("test/1001", pager.getRecords().get(0).getIdentifier());
@@ -138,21 +137,21 @@ public class RegistrationServiceTest extends CdmTransactionalIntegrationTestWith
         assertNull("Expecting the registration test/1003 to be without name", pager.getRecords().get(1).getName());
         assertEquals(STD2_UUID, pager.getRecords().get(1).getTypeDesignations().iterator().next().getUuid());
 
-        pager = repo.getRegistrationService().page((UUID)null, null, null, "Digila*", null, null, null, null, null);
+        pager = repo.getRegistrationService().page((UUID)null, null, null, "Digita*", null, null, null, null, null);
         assertEquals(4l, pager.getCount().longValue());
 
         pager = repo.getRegistrationService().page((UUID)null, null, null, "*imus", null, null, null, null, null);
         assertEquals(1l, pager.getCount().longValue());
 
         // taxon name filter with user
-        pager = repo.getRegistrationService().page(USER2_UUID, null, null, "Digilalus", null, null, null, null, null);
+        pager = repo.getRegistrationService().page(USER2_UUID, null, null, "Digitalus", null, null, null, null, null);
         assertEquals(2l, pager.getCount().longValue());
 
         // taxon name filter with user and status
-        pager = repo.getRegistrationService().page(USER1_UUID, Arrays.asList(RegistrationStatus.PREPARATION), null, "Digilalus", null, null, null, null, null);
+        pager = repo.getRegistrationService().page(USER1_UUID, Arrays.asList(RegistrationStatus.PREPARATION), null, "Digitalus", null, null, null, null, null);
         assertEquals(1l, pager.getCount().longValue());
 
-        pager = repo.getRegistrationService().page(USER1_UUID, Arrays.asList(RegistrationStatus.PREPARATION, RegistrationStatus.PUBLISHED), "1001", "Digilalus", null, null, null, null, null);
+        pager = repo.getRegistrationService().page(USER1_UUID, Arrays.asList(RegistrationStatus.PREPARATION, RegistrationStatus.PUBLISHED), "1001", "Digitalus", null, null, null, null, null);
         assertEquals(1l, pager.getCount().longValue());
 
         // type designation status
@@ -186,13 +185,12 @@ public class RegistrationServiceTest extends CdmTransactionalIntegrationTestWith
         assertEquals(NDT1_UUID, pager.getRecords().get(0).getTypeDesignations().iterator().next().getUuid());
 
         // type designation status with name
-        /*
-        pager = repo.getRegistrationService().page((UUID)null, null, null, "Digital", Arrays.asList(SpecimenTypeDesignationStatus.HOLOTYPE().getUuid(), NameTypeDesignationStatus.TAUTONYMY().getUuid()),
+        pager = repo.getRegistrationService().page((UUID)null, null, null, "Digital",
+                Arrays.asList(SpecimenTypeDesignationStatus.HOLOTYPE().getUuid(), NameTypeDesignationStatus.TAUTONYMY().getUuid()),
                 null, null, Arrays.asList(orderBySpecificIdentifier), null);
         assertEquals(2l, pager.getCount().longValue());
         assertEquals(STD1_UUID, pager.getRecords().get(0).getTypeDesignations().iterator().next().getUuid());
         assertEquals(NDT1_UUID, pager.getRecords().get(1).getTypeDesignations().iterator().next().getUuid());
-        */
     }
 
     @Test
@@ -223,9 +221,9 @@ public class RegistrationServiceTest extends CdmTransactionalIntegrationTestWith
         repo.getReferenceService().save(book1);
         repo.getReferenceService().save(book2);
 
-        TaxonName species1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(), "Digilalus", null, "primus", null, null, book1, "11", null);
-        TaxonName species2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(), "Digilalus", null, "secundus", null, null, book1, "22", null);
-        TaxonName genus = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS(), "Digilalus", null, null, null, null, book1, "33", null);
+        TaxonName species1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(), "Digitalus", null, "primus", null, null, book1, "11", null);
+        TaxonName species2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(), "Digitalus", null, "secundus", null, null, book1, "22", null);
+        TaxonName genus = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS(), "Digitalus", null, null, null, null, book1, "33", null);
         repo.getNameService().save(Arrays.asList(species1, species2, genus));
 
         SpecimenTypeDesignation std1 = SpecimenTypeDesignation.NewInstance();

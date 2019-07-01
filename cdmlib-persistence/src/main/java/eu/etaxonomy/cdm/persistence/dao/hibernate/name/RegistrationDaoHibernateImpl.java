@@ -169,8 +169,10 @@ public class RegistrationDaoHibernateImpl
             String taxonNameFilterPattern, Collection<UUID> typeDesignationStatusUuids) {
         Query query = makeFilteredSearchQuery(submitterUuid, includedStatus, identifierFilterPattern,
                 taxonNameFilterPattern, typeDesignationStatusUuids, true, null);
+        //Logger.getLogger("org.hibernate.SQL").setLevel(Level.DEBUG);
         @SuppressWarnings("unchecked")
         List<Long> list = query.list();
+        //Logger.getLogger("org.hibernate.SQL").setLevel(Level.WARN);
         return list.isEmpty()? Long.valueOf(0) : list.get(0);
     }
     /**
@@ -191,10 +193,10 @@ public class RegistrationDaoHibernateImpl
             }
         }
 
-        // Logger.getLogger("org.hibernate.SQL").setLevel(Level.DEBUG);
+        //Logger.getLogger("org.hibernate.SQL").setLevel(Level.DEBUG);
         @SuppressWarnings("unchecked")
         List<Registration> results = query.list();
-        // Logger.getLogger("org.hibernate.SQL").setLevel(Level.WARN);
+        //Logger.getLogger("org.hibernate.SQL").setLevel(Level.WARN);
         defaultBeanInitializer.initializeAll(results, propertyPaths);
 
         return results;
@@ -219,8 +221,7 @@ public class RegistrationDaoHibernateImpl
         String select = "SELECT " + (isCount? " count(DISTINCT r) as cn ": "DISTINCT r ");
         String from = " FROM Registration r "
                 + "     LEFT JOIN r.typeDesignations desig "
-                + "     LEFT JOIN r.name n "
-                + (StringUtils.isNoneBlank(taxonNameFilterPattern) ? " LEFT JOIN desig.typifiedNames typifiedNames " : "");
+                + "     LEFT JOIN r.name n ";
         // further JOIN
         String where = " WHERE (1=1) ";
         String orderBy = "";
@@ -229,7 +230,8 @@ public class RegistrationDaoHibernateImpl
         }
 
         if(submitterUuid != null){
-            where += " AND r.submitter.uuid =:submitterUuid";
+            from += " LEFT JOIN r.submitter submitter "; // without this join hibernate would make a cross join here
+            where += " AND submitter.uuid =:submitterUuid";
             parameters.put("submitterUuid", submitterUuid);
         }
         if(includedStatus != null && includedStatus.size() > 0) {
@@ -241,11 +243,12 @@ public class RegistrationDaoHibernateImpl
             parameters.put("identifierFilterPattern", MatchMode.ANYWHERE.queryStringFrom(identifierFilterPattern));
         }
         if(StringUtils.isNoneBlank(taxonNameFilterPattern)){
+            from += " LEFT JOIN desig.typifiedNames typifiedNames ";
             where += " AND (r.name.titleCache LIKE :taxonNameFilterPattern OR typifiedNames.titleCache LIKE :taxonNameFilterPattern)";
             parameters.put("taxonNameFilterPattern", MatchMode.ANYWHERE.queryStringFrom(taxonNameFilterPattern));
         }
         if(typeDesignationStatusUuids != null && typeDesignationStatusUuids.size() > 0){
-            from += "  LEFT JOIN desig.typeStatus typeStatus"; // without this join hibernate will make a cross join here
+            from += "  LEFT JOIN desig.typeStatus typeStatus"; // without this join hibernate would make a cross join here
             where += " AND typeStatus.uuid in (:typeDesignationStatusUuids)";
             parameters.put("typeDesignationStatusUuids", typeDesignationStatusUuids);
         }

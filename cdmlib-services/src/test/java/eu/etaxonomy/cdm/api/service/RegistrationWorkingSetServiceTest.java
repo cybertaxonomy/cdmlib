@@ -110,26 +110,26 @@ public class RegistrationWorkingSetServiceTest extends CdmTransactionalIntegrati
         assertEquals(1l, pager.getCount().longValue());
 
         // taxon name filter
-        pager = service.pageDTOs((UUID)null, null, null, "Digilalus", null, null, null, null);
+        pager = service.pageDTOs((UUID)null, null, null, "Digitalus", null, null, null, null);
         assertEquals(pager.getRecords().size(), pager.getCount().intValue());
         assertEquals(3l, pager.getCount().longValue());
 
 
-        pager = service.pageDTOs((UUID)null, null, null, "Digilalus prim", null, null, null, null);
+        pager = service.pageDTOs((UUID)null, null, null, "Digitalus prim", null, null, null, null);
         assertEquals(pager.getRecords().size(), pager.getCount().intValue());
         assertEquals(1l, pager.getCount().longValue());
 
         // taxon name filter with user
-        pager = service.pageDTOs(RegistrationServiceTest.USER2_UUID, null, null, "Digilalus", null, null, null, null);
+        pager = service.pageDTOs(RegistrationServiceTest.USER2_UUID, null, null, "Digitalus", null, null, null, null);
         assertEquals(pager.getRecords().size(), pager.getCount().intValue());
         assertEquals(1l, pager.getCount().longValue());
 
         // taxon name filter with user and status
-        pager = service.pageDTOs(RegistrationServiceTest.USER1_UUID, Arrays.asList(RegistrationStatus.PREPARATION), null, "Digilalus", null, null, null, null);
+        pager = service.pageDTOs(RegistrationServiceTest.USER1_UUID, Arrays.asList(RegistrationStatus.PREPARATION), null, "Digitalus", null, null, null, null);
         assertEquals(pager.getRecords().size(), pager.getCount().intValue());
         assertEquals(1l, pager.getCount().longValue());
 
-        pager = service.pageDTOs(RegistrationServiceTest.USER1_UUID, Arrays.asList(RegistrationStatus.PREPARATION, RegistrationStatus.PUBLISHED), "1001", "Digilalus", null, null, null, null);
+        pager = service.pageDTOs(RegistrationServiceTest.USER1_UUID, Arrays.asList(RegistrationStatus.PREPARATION, RegistrationStatus.PUBLISHED), "1001", "Digitalus", null, null, null, null);
         assertEquals(pager.getRecords().size(), pager.getCount().intValue());
         assertEquals(1l, pager.getCount().longValue());
 
