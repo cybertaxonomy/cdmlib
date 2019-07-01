@@ -156,6 +156,7 @@ public class RegistrationDTOController extends AbstractController<Registration, 
             @RequestParam(value = "typeDesignationStatusUuids", required=false) UuidList typeDesignationStatusUuids,
             @RequestParam(value = "identifierFilterPattern", required=false) String identifierFilterPattern,
             @RequestParam(value = "taxonNameFilterPattern", required=false) String taxonNameFilterPattern,
+            @RequestParam(value = "referenceFilterPattern", required=false) String referenceFilterPattern,
             @RequestParam(value = "pageNumber", required=false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             HttpServletRequest request,
@@ -168,7 +169,7 @@ public class RegistrationDTOController extends AbstractController<Registration, 
             statusSet = status.asSet();
         }
         Pager<RegistrationDTO> pager = registrationWorkingSetService.pageDTOs(submitterUuid, statusSet,
-                identifierFilterPattern, taxonNameFilterPattern, null,
+                identifierFilterPattern, taxonNameFilterPattern, referenceFilterPattern,
                 typeDesignationStatusUuids, pageSize, pageIndex, ORDER_BY_DATE_AND_ID);
         return pager;
     }
