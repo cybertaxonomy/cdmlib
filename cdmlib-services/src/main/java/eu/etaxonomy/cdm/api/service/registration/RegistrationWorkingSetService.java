@@ -37,12 +37,10 @@ import eu.etaxonomy.cdm.api.utility.UserHelper;
 import eu.etaxonomy.cdm.database.PermissionDeniedException;
 import eu.etaxonomy.cdm.format.ReferenceEllypsisFormatter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
-import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
-import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -196,35 +194,8 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
     @Override
     public Pager<RegistrationDTO> pageDTOs(Integer pageSize, Integer pageIndex) {
 
-        return pageDTOs((User)null, null, null, null, null, pageSize, pageIndex, null);
-    }
+        return pageDTOs((UUID)null, null, null, null, null, null, pageSize, pageIndex, null);
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Pager<RegistrationDTO> pageDTOs(User submitter, Collection<RegistrationStatus> includedStatus,
-            String identifierFilterPattern, String taxonNameFilterPattern, Set<TypeDesignationStatusBase> typeStatusFilter,
-            Integer pageSize, Integer pageIndex, List<OrderHint> orderHints) {
-
-        if(pageSize == null){
-            pageSize = PAGE_SIZE;
-        }
-
-        if(orderHints == null){
-            orderHints = Arrays.asList(new OrderHint("identifier", SortOrder.ASCENDING));
-        }
-
-        Pager<Registration> pager = repo.getRegistrationService().page(submitter, includedStatus, identifierFilterPattern, taxonNameFilterPattern,
-                typeStatusFilter, PAGE_SIZE, pageIndex , orderHints, REGISTRATION_DTO_INIT_STRATEGY.getPropertyPaths());
-
-        Pager<RegistrationDTO> dtoPager = convertToDTOPager(pager);
-        if(logger.isDebugEnabled()){
-            logger.debug(String.format("pageDTOs() pageIndex: $1%d, pageSize: $2%d, includedStatus: $3%s, identifierFilterPattern: $4%s, taxonNameFilterPattern: $5%s, submitter: $6%s",
-                    pageIndex, pageSize, includedStatus, identifierFilterPattern, taxonNameFilterPattern, submitter));
-            logger.debug("pageDTOs() result: " + pager.toString());
-        }
-        return dtoPager;
     }
 
     /**
@@ -248,6 +219,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
      * @param orderHints
      * @return
      */
+
     @Override
     public Pager<RegistrationDTO> pageDTOs(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, String identifierFilterPattern,
             String taxonNameFilterPattern, String referenceFilterPattern, Collection<UUID> typeDesignationStatusUuids,

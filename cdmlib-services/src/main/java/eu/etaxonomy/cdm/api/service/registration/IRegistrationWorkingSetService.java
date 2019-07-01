@@ -19,10 +19,8 @@ import eu.etaxonomy.cdm.api.service.dto.RegistrationWorkingSet;
 import eu.etaxonomy.cdm.api.service.exception.RegistrationValidationException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.database.PermissionDeniedException;
-import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
-import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -42,10 +40,6 @@ public interface IRegistrationWorkingSetService {
     public RegistrationDTO loadDtoByUuid(UUID uuid);
 
     public Pager<RegistrationDTO> pageDTOs(Integer pageSize, Integer pageIndex);
-
-    public Pager<RegistrationDTO> pageDTOs(User submitter, Collection<RegistrationStatus> includedStatus,
-            String identifierFilterPattern, String taxonNameFilterPattern, Set<TypeDesignationStatusBase> typeStatusFilter,
-            Integer pageSize, Integer pageIndex, List<OrderHint> orderHints);
 
     public Pager<RegistrationDTO> pageDTOs(String identifier, Integer pageIndex,  Integer pageSize) throws IOException;
 

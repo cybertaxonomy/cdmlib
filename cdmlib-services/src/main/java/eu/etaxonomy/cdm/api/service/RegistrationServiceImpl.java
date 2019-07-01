@@ -39,7 +39,6 @@ import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
-import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.name.IRegistrationDao;
@@ -104,47 +103,7 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
         return new DefaultPagerImpl<>(pageIndex, numberOfResults, pageSize, results);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public Pager<Registration> page(User submitter, Collection<RegistrationStatus> includedStatus,
-            String identifierFilterPattern, String taxonNameFilterPattern, Set<TypeDesignationStatusBase> typeDesignationStatus,
-            Integer pageSize, Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths) {
 
-        List<Restriction<? extends Object>> restrictions = new ArrayList<>();
-
-        if( !userHelper.userIsAutheticated() || userHelper.userIsAnnonymous() ) {
-            includedStatus = Arrays.asList(RegistrationStatus.PUBLISHED);
-        }
-
-        if(submitter != null){
-            restrictions.add(new Restriction<>("submitter", MatchMode.EXACT, submitter));
-        }
-        if(includedStatus != null && !includedStatus.isEmpty()){
-            restrictions.add(new Restriction<>("status", MatchMode.EXACT, includedStatus.toArray(new RegistrationStatus[includedStatus.size()])));
-        }
-        if(identifierFilterPattern != null){
-            restrictions.add(new Restriction<>("identifier", MatchMode.LIKE, identifierFilterPattern));
-        }
-        if(taxonNameFilterPattern != null){
-            restrictions.add(new Restriction<>("name.titleCache", MatchMode.LIKE, taxonNameFilterPattern));
-        }
-        if(typeDesignationStatus != null){
-            restrictions.add(new Restriction<>("typeDesignations.typeStatus", null, typeDesignationStatus.toArray(new TypeDesignationStatusBase[typeDesignationStatus.size()])));
-        }
-
-        long numberOfResults = dao.count(Registration.class, restrictions);
-
-        List<Registration> results = new ArrayList<>();
-        Integer [] limitStart = AbstractPagerImpl.limitStartforRange(numberOfResults, pageIndex, pageSize);
-        if(limitStart != null) {
-            results = dao.list(Registration.class, restrictions, limitStart[0], limitStart[1], orderHints, propertyPaths);
-        }
-
-        return new DefaultPagerImpl<>(pageIndex, numberOfResults, pageSize, results);
-    }
 
     @Override
     @Transactional(readOnly = true)
