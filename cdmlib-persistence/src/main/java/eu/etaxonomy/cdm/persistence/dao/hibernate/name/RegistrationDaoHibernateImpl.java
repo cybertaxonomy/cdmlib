@@ -168,7 +168,7 @@ public class RegistrationDaoHibernateImpl
     public long count(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, String identifierFilterPattern,
             String taxonNameFilterPattern, Collection<UUID> typeDesignationStatusUuids) {
         Query query = makeFilteredSearchQuery(submitterUuid, includedStatus, identifierFilterPattern,
-                taxonNameFilterPattern, typeDesignationStatusUuids, true);
+                taxonNameFilterPattern, typeDesignationStatusUuids, true, null);
         @SuppressWarnings("unchecked")
         List<Long> list = query.list();
         return list.isEmpty()? Long.valueOf(0) : list.get(0);
@@ -182,7 +182,7 @@ public class RegistrationDaoHibernateImpl
             List<OrderHint> orderHints, List<String> propertyPaths) {
 
         Query query = makeFilteredSearchQuery(submitterUuid, includedStatus, identifierFilterPattern,
-                taxonNameFilterPattern, typeDesignationStatusUuids, false);
+                taxonNameFilterPattern, typeDesignationStatusUuids, false, orderHints);
 
         if(limit != null /*&&  !doCount*/) {
             query.setMaxResults(limit);
@@ -191,10 +191,10 @@ public class RegistrationDaoHibernateImpl
             }
         }
 
-        //TODO order hints do not work with queries?
-
+        // Logger.getLogger("org.hibernate.SQL").setLevel(Level.DEBUG);
         @SuppressWarnings("unchecked")
         List<Registration> results = query.list();
+        // Logger.getLogger("org.hibernate.SQL").setLevel(Level.WARN);
         defaultBeanInitializer.initializeAll(results, propertyPaths);
 
         return results;
@@ -212,7 +212,7 @@ public class RegistrationDaoHibernateImpl
      */
     private Query makeFilteredSearchQuery(UUID submitterUuid, Collection<RegistrationStatus> includedStatus,
             String identifierFilterPattern, String taxonNameFilterPattern, Collection<UUID> typeDesignationStatusUuids,
-            boolean isCount) {
+            boolean isCount, List<OrderHint> orderHints) {
 
         Map<String, Object> parameters = new HashMap<>();
 
@@ -223,6 +223,10 @@ public class RegistrationDaoHibernateImpl
                 + (StringUtils.isNoneBlank(taxonNameFilterPattern) ? " LEFT JOIN desig.typifiedNames typifiedNames " : "");
         // further JOIN
         String where = " WHERE (1=1) ";
+        String orderBy = "";
+        if(!isCount){
+            orderBy = orderByClause("r", orderHints).toString();
+        }
 
         if(submitterUuid != null){
             where += " AND r.submitter.uuid =:submitterUuid";
@@ -245,7 +249,7 @@ public class RegistrationDaoHibernateImpl
             where += " AND typeStatus.uuid in (:typeDesignationStatusUuids)";
             parameters.put("typeDesignationStatusUuids", typeDesignationStatusUuids);
         }
-        String hql = select + from + where;
+        String hql = select + from + where + orderBy;
         Query query = getSession().createQuery(hql);
 
         for(String paramName : parameters.keySet()){
