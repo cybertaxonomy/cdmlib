@@ -11,11 +11,13 @@ package eu.etaxonomy.cdm.persistence.dao.name;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author a.kohlbecker
@@ -65,5 +67,21 @@ public interface IRegistrationDao
      * @return
      */
     public Long count(Optional<Reference> reference, Collection<RegistrationStatus> includedStatus);
+
+    /**
+     * @param submitterUuid
+     * @param includedStatus
+     * @param identifierFilterPattern
+     * @param taxonNameFilterPattern
+     * @param typeDesignationStatusUuids
+     * @return
+     */
+    public long count(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, String identifierFilterPattern,
+            String taxonNameFilterPattern, Collection<UUID> typeDesignationStatusUuids);
+
+
+    public List<Registration> list(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, String identifierFilterPattern,
+            String taxonNameFilterPattern, Collection<UUID> typeDesignationStatusUuids,
+            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
 }

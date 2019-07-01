@@ -10,9 +10,13 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.name;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
@@ -23,6 +27,8 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoImpl;
 import eu.etaxonomy.cdm.persistence.dao.name.IRegistrationDao;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author a.kohlbecker
@@ -151,6 +157,106 @@ public class RegistrationDaoHibernateImpl
         if (hasStatus){
             query.setParameterList("status", includedStatus);
         }
+        return query;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public long count(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, String identifierFilterPattern,
+            String taxonNameFilterPattern, Collection<UUID> typeDesignationStatusUuids) {
+        Query query = makeFilteredSearchQuery(submitterUuid, includedStatus, identifierFilterPattern,
+                taxonNameFilterPattern, typeDesignationStatusUuids, true);
+        @SuppressWarnings("unchecked")
+        List<Long> list = query.list();
+        return list.isEmpty()? Long.valueOf(0) : list.get(0);
+    }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Registration> list(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, String identifierFilterPattern,
+            String taxonNameFilterPattern, Collection<UUID> typeDesignationStatusUuids, Integer limit, Integer start,
+            List<OrderHint> orderHints, List<String> propertyPaths) {
+
+        Query query = makeFilteredSearchQuery(submitterUuid, includedStatus, identifierFilterPattern,
+                taxonNameFilterPattern, typeDesignationStatusUuids, false);
+
+        if(limit != null /*&&  !doCount*/) {
+            query.setMaxResults(limit);
+            if(start != null) {
+                query.setFirstResult(start);
+            }
+        }
+
+        //TODO order hints do not work with queries?
+
+        @SuppressWarnings("unchecked")
+        List<Registration> results = query.list();
+        defaultBeanInitializer.initializeAll(results, propertyPaths);
+
+        return results;
+    }
+
+
+    /**
+     * @param submitterUuid
+     * @param includedStatus
+     * @param identifierFilterPattern
+     * @param taxonNameFilterPattern
+     * @param typeDesignationStatusUuids
+     * @param isCount
+     * @return
+     */
+    private Query makeFilteredSearchQuery(UUID submitterUuid, Collection<RegistrationStatus> includedStatus,
+            String identifierFilterPattern, String taxonNameFilterPattern, Collection<UUID> typeDesignationStatusUuids,
+            boolean isCount) {
+
+        Map<String, Object> parameters = new HashMap<>();
+
+        String select = "SELECT " + (isCount? " count(DISTINCT r) as cn ": "DISTINCT r ");
+        String from = " FROM Registration r "
+                + "     LEFT JOIN r.typeDesignations desig "
+                + "     LEFT JOIN r.name n "
+                + (StringUtils.isNoneBlank(taxonNameFilterPattern) ? " LEFT JOIN desig.typifiedNames typifiedNames " : "");
+        // further JOIN
+        String where = " WHERE (1=1) ";
+
+        if(submitterUuid != null){
+            where += " AND r.submitter.uuid =:submitterUuid";
+            parameters.put("submitterUuid", submitterUuid);
+        }
+        if(includedStatus != null && includedStatus.size() > 0) {
+            where += " AND r.status in (:includedStatus)";
+            parameters.put("includedStatus", includedStatus);
+        }
+        if(StringUtils.isNoneBlank(identifierFilterPattern)){
+            where += " AND r.identifier LIKE :identifierFilterPattern";
+            parameters.put("identifierFilterPattern", MatchMode.ANYWHERE.queryStringFrom(identifierFilterPattern));
+        }
+        if(StringUtils.isNoneBlank(taxonNameFilterPattern)){
+            where += " AND (r.name.titleCache LIKE :taxonNameFilterPattern OR typifiedNames.titleCache LIKE :taxonNameFilterPattern)";
+            parameters.put("taxonNameFilterPattern", MatchMode.ANYWHERE.queryStringFrom(taxonNameFilterPattern));
+        }
+        if(typeDesignationStatusUuids != null && typeDesignationStatusUuids.size() > 0){
+            from += "  LEFT JOIN desig.typeStatus typeStatus"; // without this join hibernate will make a cross join here
+            where += " AND typeStatus.uuid in (:typeDesignationStatusUuids)";
+            parameters.put("typeDesignationStatusUuids", typeDesignationStatusUuids);
+        }
+        String hql = select + from + where;
+        Query query = getSession().createQuery(hql);
+
+        for(String paramName : parameters.keySet()){
+            Object value = parameters.get(paramName);
+            if(value instanceof Collection){
+                query.setParameterList(paramName, (Collection)value);
+            } else {
+                query.setParameter(paramName, value);
+            }
+        }
+
         return query;
     }
 
