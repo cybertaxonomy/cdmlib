@@ -672,6 +672,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
             case END:
                 restriction = Restrictions.ilike(propertyName, queryString, org.hibernate.criterion.MatchMode.END);
                 break;
+            case ANYWHERE:
             case LIKE:
                 restriction = Restrictions.ilike(propertyName, matchMode.queryStringFrom(queryString), org.hibernate.criterion.MatchMode.ANYWHERE);
                 break;
