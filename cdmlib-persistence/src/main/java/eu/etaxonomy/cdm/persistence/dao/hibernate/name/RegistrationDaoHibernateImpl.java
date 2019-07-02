@@ -259,8 +259,20 @@ public class RegistrationDaoHibernateImpl
             parameters.put("referenceFilterPattern", MatchMode.ANYWHERE.queryStringFrom(referenceFilterPattern));
         }
         if(doTypeStatusFilter){
-            where += " AND typeStatus.uuid in (:typeDesignationStatusUuids)";
-            parameters.put("typeDesignationStatusUuids", typeDesignationStatusUuids);
+            boolean addNullFilter = false;
+            while(typeDesignationStatusUuids.contains(null)){
+                addNullFilter = true;
+                typeDesignationStatusUuids.remove(null);
+            }
+            String typeStatusWhere = "";
+            if(!typeDesignationStatusUuids.isEmpty()){
+                typeStatusWhere += " typeStatus.uuid in (:typeDesignationStatusUuids)";
+                parameters.put("typeDesignationStatusUuids", typeDesignationStatusUuids);
+            }
+            if(addNullFilter){
+                typeStatusWhere += (!typeStatusWhere.isEmpty() ? " OR ":"") + "typeStatus is null";
+            }
+            where += " AND ( " +  typeStatusWhere + ")";
         }
         String hql = select + from + where + orderBy;
         Query query = getSession().createQuery(hql);
