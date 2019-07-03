@@ -124,10 +124,10 @@ public class OwlImportUtil {
             character.setProperty(propertyNode);
         }
         // import structure modifier
-        Statement structureModifierStatement = termResource.getProperty(OwlUtil.propCharacterHasStructureModfier);
-        Resource structureModifierResource = model.createResource(structureModifierStatement.getObject().toString());
-        DefinedTerm structureModifier = findTerm(DefinedTerm.class, structureModifierResource, repo, model, state);
-        if(structureModifier!=null){
+        if(termResource.hasProperty(OwlUtil.propCharacterHasStructureModfier)){
+            Statement structureModifierStatement = termResource.getProperty(OwlUtil.propCharacterHasStructureModfier);
+            Resource structureModifierResource = model.createResource(structureModifierStatement.getObject().toString());
+            DefinedTerm structureModifier = findTerm(DefinedTerm.class, structureModifierResource, repo, model, state);
             character.setStructureModifier(structureModifier);
         }
     }
