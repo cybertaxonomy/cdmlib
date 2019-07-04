@@ -12,45 +12,12 @@ package eu.etaxonomy.cdm.model.term;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.lang.model.element.Modifier;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.model.agent.Institution;
-import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.description.CategoricalData;
-import eu.etaxonomy.cdm.model.description.Character;
-import eu.etaxonomy.cdm.model.description.DescriptionBase;
-import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
-import eu.etaxonomy.cdm.model.description.Distribution;
-import eu.etaxonomy.cdm.model.description.MeasurementUnit;
-import eu.etaxonomy.cdm.model.description.SpecimenDescription;
-import eu.etaxonomy.cdm.model.description.StateData;
-import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
-import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.description.TextData;
-import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.Point;
-import eu.etaxonomy.cdm.model.media.Rights;
-import eu.etaxonomy.cdm.model.molecular.Amplification;
-import eu.etaxonomy.cdm.model.molecular.DnaQuality;
-import eu.etaxonomy.cdm.model.name.HybridRelationship;
-import eu.etaxonomy.cdm.model.name.NameRelationship;
-import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
-import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
-import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
-import eu.etaxonomy.cdm.model.name.TaxonName;
-import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
-import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
-import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 
 
 
@@ -573,6 +540,8 @@ public enum TermType implements IEnumTerm<TermType>{
             case IdentifierType:
             case DnaMarker:
                 return DefinedTerm.NewInstance(this, null, "Untitled", null);
+            case AnnotationType:
+                return eu.etaxonomy.cdm.model.common.AnnotationType.NewInstance(null, "Untitled", null);
             case Feature:
                 return eu.etaxonomy.cdm.model.description.Feature.NewInstance(null, "Untitled", null);
             case Character:
