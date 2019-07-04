@@ -15,6 +15,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
@@ -228,9 +229,17 @@ public class RegistrationServiceTest extends CdmTransactionalIntegrationTestWith
         assertEquals("test/1003", pager.getRecords().get(1).getIdentifier());
     }
 
+    @Test
+    public void testPageByNameUUID_unautheticated(){
+        Collection<UUID> nameUuids = null;
+        Pager<Registration> pager = repo.getRegistrationService().page((UUID)null, null, nameUuids , null, null, null, null);
+        assertEquals(pager.getRecords().size(), pager.getCount().intValue());
+        assertEquals("expecting no Registration, since the user is not authenticated", 0l, pager.getCount().longValue());
+    }
+
 
     @Test
-    public void PageWithPatternFilters_unautheticated(){
+    public void testPageWithPatternFilters_unautheticated(){
         Pager<Registration> pager = repo.getRegistrationService().page((UUID)null, null, null, null, null, null, null, null, null, null);
         assertEquals(pager.getRecords().size(), pager.getCount().intValue());
         assertEquals("expecting only the PUBLISHED Registration, since the user is not authenticated", 1l, pager.getCount().longValue());

@@ -20,8 +20,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -115,9 +113,9 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
             includedStatus = Arrays.asList(RegistrationStatus.PUBLISHED);
         }
 
-      Logger.getLogger("org.hibernate.SQL").setLevel(Level.DEBUG);
+        //Logger.getLogger("org.hibernate.SQL").setLevel(Level.DEBUG);
         long numberOfResults = dao.count(submitterUuid, includedStatus, identifierFilterPattern, taxonNameFilterPattern, referenceFilterPattern, typeDesignationStatusUuids);
-       Logger.getLogger("org.hibernate.SQL").setLevel(Level.WARN);
+        //Logger.getLogger("org.hibernate.SQL").setLevel(Level.WARN);
 
         List<Registration> results = new ArrayList<>();
         if(pageIndex == null){

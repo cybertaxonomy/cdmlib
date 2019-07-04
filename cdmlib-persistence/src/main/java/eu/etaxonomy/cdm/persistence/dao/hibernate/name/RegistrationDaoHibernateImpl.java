@@ -17,7 +17,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
@@ -217,15 +216,16 @@ public class RegistrationDaoHibernateImpl
             }
         }
 
-        Logger.getLogger("org.hibernate.SQL").setLevel(Level.DEBUG);
+        //Logger.getLogger("org.hibernate.SQL").setLevel(Level.DEBUG);
         @SuppressWarnings("unchecked")
         List<Registration> results = query.list();
-        Logger.getLogger("org.hibernate.SQL").setLevel(Level.WARN);
+        //Logger.getLogger("org.hibernate.SQL").setLevel(Level.WARN);
         defaultBeanInitializer.initializeAll(results, propertyPaths);
 
         return results;
     }
 
+    @Override
     public long count(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, Collection<UUID> taxonNameUUIDs) {
         Query query = makeByNameUUIDQuery(submitterUuid, includedStatus, taxonNameUUIDs, true, null);
         //Logger.getLogger("org.hibernate.SQL").setLevel(Level.DEBUG);
