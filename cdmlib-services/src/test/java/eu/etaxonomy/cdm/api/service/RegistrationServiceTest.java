@@ -16,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.UUID;
 
 import org.junit.Test;
@@ -59,13 +60,19 @@ public class RegistrationServiceTest extends CdmTransactionalIntegrationTestWith
 
     public static final UUID STD1_UUID = UUID.fromString("1c29e80a-2611-4be4-9b2f-15bbd15066bf");
 
+    public static final UUID NAME1_UUID = UUID.fromString("6ffa3217-f520-43d9-99d7-755b8c11d049");
+
+    public static final UUID NAME2_UUID = UUID.fromString("c739163e-c1fa-4ea6-b992-78fe050a6d2c");
+
+    public static final UUID NAME3_UUID = UUID.fromString("fdcaf5a8-aa6d-4f5c-86e5-6e3d93dc0c72");
+
     @SpringBeanByType
     @Qualifier("CdmRepository")
     private ICdmRepository repo;
 
     @Test
     @DataSet
-    public void testPage(){
+    public void testPageWithPatternFilters(){
 
         OrderHint orderBySpecificIdentifier = new OrderHint("specificIdentifier", SortOrder.ASCENDING);
         OrderHint orderById = new OrderHint("id", SortOrder.ASCENDING);
@@ -203,7 +210,27 @@ public class RegistrationServiceTest extends CdmTransactionalIntegrationTestWith
     }
 
     @Test
-    public void testPage_unautheticated(){
+    @DataSet
+    public void testPageByNameUUID(){
+
+        OrderHint orderBySpecificIdentifier = new OrderHint("specificIdentifier", SortOrder.ASCENDING);
+        OrderHint orderById = new OrderHint("id", SortOrder.ASCENDING);
+
+        repo.authenticate("user1", "00000");
+
+        Pager<Registration> pager;
+
+        List<UUID> nameUuids = Arrays.asList(NAME2_UUID);
+
+        pager = repo.getRegistrationService().page((UUID)null, null, nameUuids, null, null, Arrays.asList(orderBySpecificIdentifier), null);
+        assertEquals(2l, pager.getCount().longValue());
+        assertEquals("test/1001", pager.getRecords().get(0).getIdentifier());
+        assertEquals("test/1003", pager.getRecords().get(1).getIdentifier());
+    }
+
+
+    @Test
+    public void PageWithPatternFilters_unautheticated(){
         Pager<Registration> pager = repo.getRegistrationService().page((UUID)null, null, null, null, null, null, null, null, null, null);
         assertEquals(pager.getRecords().size(), pager.getCount().intValue());
         assertEquals("expecting only the PUBLISHED Registration, since the user is not authenticated", 1l, pager.getCount().longValue());
@@ -231,8 +258,11 @@ public class RegistrationServiceTest extends CdmTransactionalIntegrationTestWith
         repo.getReferenceService().save(book2);
 
         TaxonName species1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(), "Digitalus", null, "primus", null, null, book1, "11", null);
+        species1.setUuid(NAME1_UUID);
         TaxonName species2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(), "Digitalus", null, "secundus", null, null, book2, "22", null);
+        species2.setUuid(NAME2_UUID);
         TaxonName genus = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS(), "Digitalus", null, null, null, null, book1, "33", null);
+        genus.setUuid(NAME2_UUID);
         repo.getNameService().save(Arrays.asList(species1, species2, genus));
 
         SpecimenTypeDesignation std1 = SpecimenTypeDesignation.NewInstance();

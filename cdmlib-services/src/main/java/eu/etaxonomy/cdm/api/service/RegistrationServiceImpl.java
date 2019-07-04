@@ -154,24 +154,11 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
             Collection<UUID> taxonNameUUIDs,
             Integer pageSize, Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths) {
 
-        List<Restriction<? extends Object>> restrictions = new ArrayList<>();
-
         if( !userHelper.userIsAutheticated() || userHelper.userIsAnnonymous() ) {
             includedStatus = Arrays.asList(RegistrationStatus.PUBLISHED);
         }
 
-        if(submitterUuid != null){
-            restrictions.add(new Restriction<>("submitter.uuid", null, submitterUuid));
-        }
-        if(includedStatus != null && !includedStatus.isEmpty()){
-            restrictions.add(new Restriction<>("status", null, includedStatus.toArray(new RegistrationStatus[includedStatus.size()])));
-        }
-
-        if(taxonNameUUIDs != null){
-            restrictions.add(new Restriction<>("name.uuid", null , taxonNameUUIDs.toArray(new UUID[taxonNameUUIDs.size()])));
-        }
-
-        long numberOfResults = dao.count(Registration.class, restrictions);
+        long numberOfResults = dao.count(submitterUuid, includedStatus, taxonNameUUIDs);
 
         List<Registration> results = new ArrayList<>();
         if(pageIndex == null){
@@ -179,7 +166,7 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
         }
         Integer [] limitStart = AbstractPagerImpl.limitStartforRange(numberOfResults, pageIndex, pageSize);
         if(limitStart != null) {
-            results = dao.list(Registration.class, restrictions, limitStart[0], limitStart[1], orderHints, propertyPaths);
+            results = dao.list(submitterUuid, includedStatus, taxonNameUUIDs, limitStart[0], limitStart[1], orderHints, propertyPaths);
         }
 
         return new DefaultPagerImpl<>(pageIndex, numberOfResults, pageSize, results);

@@ -17,6 +17,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
@@ -175,6 +176,7 @@ public class RegistrationDaoHibernateImpl
         //Logger.getLogger("org.hibernate.SQL").setLevel(Level.WARN);
         return list.isEmpty()? Long.valueOf(0) : list.get(0);
     }
+
     /**
      * {@inheritDoc}
      */
@@ -200,6 +202,93 @@ public class RegistrationDaoHibernateImpl
         defaultBeanInitializer.initializeAll(results, propertyPaths);
 
         return results;
+    }
+
+    @Override
+    public List<Registration> list(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, Collection<UUID> taxonNameUUIDs,
+            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+
+        Query query = makeByNameUUIDQuery(submitterUuid, includedStatus, taxonNameUUIDs, false, orderHints);
+
+        if(limit != null /*&&  !doCount*/) {
+            query.setMaxResults(limit);
+            if(start != null) {
+                query.setFirstResult(start);
+            }
+        }
+
+        Logger.getLogger("org.hibernate.SQL").setLevel(Level.DEBUG);
+        @SuppressWarnings("unchecked")
+        List<Registration> results = query.list();
+        Logger.getLogger("org.hibernate.SQL").setLevel(Level.WARN);
+        defaultBeanInitializer.initializeAll(results, propertyPaths);
+
+        return results;
+    }
+
+    public long count(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, Collection<UUID> taxonNameUUIDs) {
+        Query query = makeByNameUUIDQuery(submitterUuid, includedStatus, taxonNameUUIDs, true, null);
+        //Logger.getLogger("org.hibernate.SQL").setLevel(Level.DEBUG);
+        @SuppressWarnings("unchecked")
+        List<Long> list = query.list();
+        //Logger.getLogger("org.hibernate.SQL").setLevel(Level.WARN);
+        return list.isEmpty()? Long.valueOf(0) : list.get(0);
+    }
+
+
+    /**
+     * @param submitterUuid
+     * @param includedStatus
+     * @param taxonNameUUIDs
+     * @param b
+     * @param orderHints
+     * @return
+     */
+    private Query makeByNameUUIDQuery(UUID submitterUuid, Collection<RegistrationStatus> includedStatus,
+            Collection<UUID> taxonNameUUIDs, boolean isCount, List<OrderHint> orderHints) {
+
+        Map<String, Object> parameters = new HashMap<>();
+
+        String select = "SELECT " + (isCount? " count(DISTINCT r) as cn ": "DISTINCT r ");
+        String from = " FROM Registration r "
+                + "     LEFT JOIN r.typeDesignations desig "
+                + "     LEFT JOIN r.name n "
+                + "     LEFT JOIN desig.typifiedNames typifiedNames "
+                ;
+        String where = " WHERE (1=1) ";
+        String orderBy = "";
+        if(!isCount){
+            orderBy = orderByClause("r", orderHints).toString();
+        }
+
+        if(submitterUuid != null){
+            from += " LEFT JOIN r.submitter submitter "; // without this join hibernate would make a cross join here
+            where += " AND submitter.uuid =:submitterUuid";
+            parameters.put("submitterUuid", submitterUuid);
+        }
+        if(includedStatus != null && includedStatus.size() > 0) {
+            where += " AND r.status in (:includedStatus)";
+            parameters.put("includedStatus", includedStatus);
+        }
+
+        where += " AND (r.name.uuid in(:nameUUIDs) OR typifiedNames.uuid in(:nameUUIDs))";
+        parameters.put("nameUUIDs", taxonNameUUIDs);
+
+
+        String hql = select + from + where + orderBy;
+        Query query = getSession().createQuery(hql);
+
+        for(String paramName : parameters.keySet()){
+            Object value = parameters.get(paramName);
+            if(value instanceof Collection){
+                query.setParameterList(paramName, (Collection)value);
+            } else {
+                query.setParameter(paramName, value);
+            }
+        }
+
+        return query;
+
     }
 
 

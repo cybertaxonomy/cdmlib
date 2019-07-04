@@ -84,4 +84,10 @@ public interface IRegistrationDao
             String taxonNameFilterPattern, String referenceFilterPattern, Collection<UUID> typeDesignationStatusUuids,
             Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
+
+    public List<Registration> list(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, Collection<UUID> taxonNameUUIDs,
+            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
+    public long count(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, Collection<UUID> taxonNameUUIDs);
+
 }
