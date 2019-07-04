@@ -88,7 +88,7 @@ public class StructureTreeOwlImport extends CdmImportBase<StructureTreeOwlImport
         DefinedTermBase term = getTermService().find(termUuid);
         if(term==null){
             term = OwlImportUtil.createTerm(termResource, this, model, state);
-            getTermService().save(term);
+            term = getTermService().save(term);
             vocabulary.addTerm(term); // only add term if it does not already exist
         }
 

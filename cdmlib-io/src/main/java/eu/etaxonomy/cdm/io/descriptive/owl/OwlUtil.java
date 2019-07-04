@@ -61,6 +61,11 @@ public class OwlUtil {
     public static final String PROPERTY_LANGUAGE_UUID = PROPERTY_BASE_URI+"language_uuid";
 
     /**
+     * vocabulary properties
+     */
+    public static final String PROPERTY_VOC_TOP_LEVEL_TERM = PROPERTY_BASE_URI+"voc_top_level_term";
+
+    /**
      * term properties
      */
     public static final String PROPERTY_TERM_INCLUDES = PROPERTY_BASE_URI+"term_includes";
@@ -70,6 +75,7 @@ public class OwlUtil {
     public static final String PROPERTY_TERM_SYMBOL = PROPERTY_BASE_URI+"term_symbol";
     public static final String PROPERTY_TERM_SYMBOL2 = PROPERTY_BASE_URI+"term_symbol2";
     public static final String PROPERTY_TERM_ID_IN_VOCABULARY = PROPERTY_BASE_URI+"term_id_in_vocabulary";
+    public static final String PROPERTY_TERM_IS_TOP_LEVEL = PROPERTY_BASE_URI+"term_is_top_level";
 
     /**
      * feature properties
@@ -134,6 +140,8 @@ public class OwlUtil {
     public static Property propHasVocabulary;
     public static Property propHasTerm;
 
+    public static Property propVocTopLevelTerm;
+
     public static Property propTermIsGeneralizationOf;
     public static Property propTermIncludes;
     public static Property propTermHasMedia;
@@ -141,6 +149,7 @@ public class OwlUtil {
     public static Property propTermSymbol;
     public static Property propTermSymbol2;
     public static Property propTermIdInVocabulary;
+    public static Property propTermIsTopLevel;
 
     public static Property propFeatureIsQuantitative;
     public static Property propFeatureIsCategorical;
@@ -182,6 +191,9 @@ public class OwlUtil {
         propHasVocabulary = model.createProperty(OwlUtil.PROPERTY_HAS_VOCABULARY);
         propHasTerm = model.createProperty(OwlUtil.PROPERTY_HAS_TERM);
 
+        // vocabulary
+        propVocTopLevelTerm = model.createProperty(OwlUtil.PROPERTY_VOC_TOP_LEVEL_TERM);
+
         // term
         propTermIsGeneralizationOf = model.createProperty(OwlUtil.PROPERTY_TERM_IS_GENERALIZATION_OF);
         propTermIncludes = model.createProperty(OwlUtil.PROPERTY_TERM_INCLUDES);
@@ -190,6 +202,7 @@ public class OwlUtil {
         propTermSymbol = model.createProperty(OwlUtil.PROPERTY_TERM_SYMBOL);
         propTermSymbol2 = model.createProperty(OwlUtil.PROPERTY_TERM_SYMBOL2);
         propTermIdInVocabulary = model.createProperty(OwlUtil.PROPERTY_TERM_ID_IN_VOCABULARY);
+        propTermIsTopLevel = model.createProperty(OwlUtil.PROPERTY_TERM_IS_TOP_LEVEL);
 
         // feature
         propFeatureIsQuantitative = model.createProperty(OwlUtil.PROPERTY_FEATURE_IS_QUANTITATIVE);

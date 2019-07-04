@@ -60,14 +60,17 @@ public class OwlExportUtil {
         vocabularyRepresentationResources.forEach(rep->vocabularyResource.addProperty(OwlUtil.propHasRepresentation, rep));
 
         // add terms
-        repo.getVocabularyService().getTopLevelTerms(vocabulary.getUuid()).forEach(termDto->addTerm(termDto, vocabularyResource, repo, state));
+        repo.getVocabularyService().getTopLevelTerms(vocabulary.getUuid()).forEach(termDto->addTopLevelTerm(termDto, vocabularyResource, repo, state));
 
         return vocabularyResource;
     }
 
-    private static Resource addTerm(TermDto termDto, Resource vocabularyResource, ICdmRepository repo, StructureTreeOwlExportState state) {
+    private static Resource addTopLevelTerm(TermDto termDto, Resource vocabularyResource, ICdmRepository repo, StructureTreeOwlExportState state) {
         DefinedTermBase term = repo.getTermService().load(termDto.getUuid());
-        return addTerm(term, vocabularyResource, repo, state);
+        Resource termResource = addTerm(term, vocabularyResource, repo, state);
+        vocabularyResource.addProperty(OwlUtil.propVocTopLevelTerm, termResource);
+        termResource.addLiteral(OwlUtil.propTermIsTopLevel, true);
+        return termResource;
     }
 
     private static Resource addTerm(DefinedTermBase term, Resource vocabularyResource, ICdmRepository repo, StructureTreeOwlExportState state) {
