@@ -135,7 +135,7 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
      * TODO obsolete method?
      */
     @RequestMapping(value = { "typeDesignations" }, method = RequestMethod.GET)
-    public List<TypeDesignationBase> doGetNameTypeDesignations(
+    public List<TypeDesignationBase> doGetTypeDesignations(
             @PathVariable("uuid") UUID uuid, HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 

@@ -23,7 +23,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.INameService;
@@ -135,13 +134,11 @@ public class NamePortalController extends BaseController<TaxonName, INameService
      *         {@link #TYPEDESIGNATION_INIT_STRATEGY}
      * @throws IOException
      */
-    @SuppressWarnings("unchecked")
     @RequestMapping(
             value = {"typeDesignations"},
             method = RequestMethod.GET)
     public List<TypeDesignationBase> doGetTypeDesignations(@PathVariable("uuid") UUID uuid,
             HttpServletRequest request, HttpServletResponse response)throws IOException {
-        ModelAndView mv = new ModelAndView();
         TaxonName tnb = getCdmBaseInstance(uuid, response, (List<String>)null);
         Pager<TypeDesignationBase> p = service.getTypeDesignations(tnb,  null, null, null, TYPEDESIGNATION_INIT_STRATEGY);
         return p.getRecords();
