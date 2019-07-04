@@ -103,7 +103,10 @@ public class TermVocabularyOwlImport extends CdmImportBase<StructureTreeOwlImpor
         StmtIterator mediaIterator = termResource.listProperties(OwlUtil.propTermHasMedia);
         while(mediaIterator.hasNext()){
             Resource mediaResource = model.createResource(mediaIterator.next().getObject().toString());
-            Media media = OwlImportUtil.createMedia(mediaResource, state);
+            Media media = OwlImportUtil.findMedia(mediaResource, this);
+            if(media==null){
+                media = OwlImportUtil.createMedia(mediaResource, state);
+            }
             term.addMedia(media);
         }
 

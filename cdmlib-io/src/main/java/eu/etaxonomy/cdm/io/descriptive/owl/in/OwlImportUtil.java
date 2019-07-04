@@ -166,7 +166,7 @@ public class OwlImportUtil {
 
         // import sources
         Set<IdentifiableSource> sources = new HashSet<>();
-        termResource.listProperties(OwlUtil.propTermHasSource).forEachRemaining(sourceStatement->sources.add(OwlImportUtil.createSource(sourceStatement, model)));
+        termResource.listProperties(OwlUtil.propTermHasSource).forEachRemaining(sourceStatement->sources.add(OwlImportUtil.createSource(sourceStatement, repo, model)));
         sources.forEach(source->term.addSource(source));
 
         // add import source
@@ -192,6 +192,16 @@ public class OwlImportUtil {
     private static FeatureNode findNode(Resource termResource, ICdmRepository repo, Model model, StructureTreeOwlImportState state){
         UUID uuid = UUID.fromString(termResource.getProperty(OwlUtil.propUuid).getString());
         return repo.getFeatureNodeService().find(uuid);
+    }
+
+    private static Reference findReference(Resource resource, ICdmRepository repo){
+        UUID uuid = UUID.fromString(resource.getProperty(OwlUtil.propUuid).getString());
+        return repo.getReferenceService().find(uuid);
+    }
+
+    static Media findMedia(Resource resource, ICdmRepository repo){
+        UUID uuid = UUID.fromString(resource.getProperty(OwlUtil.propUuid).getString());
+        return repo.getMediaService().find(uuid);
     }
 
     static Feature createFeature(Resource termResource, ICdmRepository repo, Model model, StructureTreeOwlImportState state){
@@ -229,7 +239,7 @@ public class OwlImportUtil {
         return term;
     }
 
-    static IdentifiableSource createSource(Statement sourceStatement, Model model) {
+    static IdentifiableSource createSource(Statement sourceStatement, ICdmRepository repo, Model model) {
         Resource sourceResource = model.createResource(sourceStatement.getObject().toString());
 
         String typeString = sourceResource.getProperty(OwlUtil.propSourceType).getString();
@@ -247,13 +257,17 @@ public class OwlImportUtil {
         }
         if(!citationStatements.isEmpty()){
             Statement citationStatement = citationStatements.iterator().next();
-            source.setCitation(createReference(citationStatement, model));
+            Resource citationResource = model.createResource(citationStatement.getObject().toString());
+            Reference reference = findReference(citationResource, repo);
+            if(reference==null){
+                reference = createReference(citationResource, model);
+            }
+            source.setCitation(reference);
         }
         return source;
     }
 
-    static Reference createReference(Statement citationStatement, Model model){
-        Resource citationResource = model.createResource(citationStatement.getObject().toString());
+    static Reference createReference(Resource citationResource, Model model){
         String titleString = citationResource.getProperty(OwlUtil.propReferenceTitle).getString();
         Reference citation = ReferenceFactory.newGeneric();
         citation.setTitle(titleString);
