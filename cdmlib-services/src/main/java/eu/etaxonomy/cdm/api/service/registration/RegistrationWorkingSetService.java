@@ -313,6 +313,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
     }
 
 
+
     /**
      * @param reference
      * @return
@@ -375,6 +376,18 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
         // debugIssue7331(pager);
 
         return new RegistrationWorkingSet(makeDTOs(pager.getRecords()));
+    }
+
+    @Override
+    public Pager<RegistrationDTO> pageWorkingSetsByNameUUID(Collection<UUID> taxonNameUuids, Integer pageIndex, Integer pageSize, List<OrderHint> orderHints) throws RegistrationValidationException, PermissionDeniedException {
+
+        if(orderHints == null){
+            orderHints = Arrays.asList(new OrderHint("identifier", SortOrder.ASCENDING));
+        }
+
+        Pager<Registration> pager = repo.getRegistrationService().page((UUID)null, null, taxonNameUuids, pageSize, pageIndex, orderHints, REGISTRATION_DTO_INIT_STRATEGY.getPropertyPaths());
+
+        return new DefaultPagerImpl<RegistrationDTO>(pager.getCurrentIndex(), pager.getCount(), pager.getPageSize(), makeDTOs(pager.getRecords()));
     }
 
 

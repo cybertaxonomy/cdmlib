@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -33,12 +34,16 @@ import eu.etaxonomy.cdm.api.service.dto.RegistrationDTO;
 import eu.etaxonomy.cdm.api.service.dto.RegistrationWorkingSet;
 import eu.etaxonomy.cdm.api.service.exception.RegistrationValidationException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.api.service.registration.IRegistrationWorkingSetService;
+import eu.etaxonomy.cdm.database.PermissionDeniedException;
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
+import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
+import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
@@ -207,5 +212,26 @@ public class RegistrationDTOController extends AbstractController<Registration, 
                 pageSize, pageIndex, ORDER_BY_DATE_AND_ID);
 
         return regPager;
+    }
+
+    @RequestMapping(value="/registrationDTO", method = RequestMethod.GET, params="nameUuid")
+    public Pager<RegistrationDTO> doGetByNameUUID(
+            @RequestParam(value = "submitterUuid", required=false) UUID submitterUuid,
+            @RequestParam(value = "status", required=false) RegistrationStatusList status,
+            @RequestParam(value = "nameUuid", required=true) Collection<UUID> nameUuids,
+            @RequestParam(value = "pageNumber", required=false) Integer pageIndex,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize,
+            HttpServletRequest request,
+            HttpServletResponse response) throws PermissionDeniedException, RegistrationValidationException {
+
+        logger.info("doGetByNameUUID() " + requestPathAndQuery(request));
+
+        Collection<RegistrationStatus> statusSet = null;
+        if(status != null){
+            statusSet = status.asSet();
+        }
+        Pager<RegistrationDTO> pager = registrationWorkingSetService.pageWorkingSetsByNameUUID(
+                nameUuids, pageSize, pageIndex, ORDER_BY_DATE_AND_ID);
+        return pager;
     }
 }
