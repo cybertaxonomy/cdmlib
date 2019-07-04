@@ -116,6 +116,7 @@ public class OwlExportUtil {
     static Resource createReferenceResource(Reference reference, StructureTreeOwlExportState state) {
         Resource referenceResource = getReferenceResource(reference, state);
         if(reference.getTitle()!=null){
+            referenceResource.addProperty(OwlUtil.propUuid, reference.getUuid().toString());
             referenceResource.addProperty(OwlUtil.propReferenceTitle, reference.getTitle());
         }
         return referenceResource;
