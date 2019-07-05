@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.cdmLight;
 import java.io.File;
 import java.util.Comparator;
 
+import eu.etaxonomy.cdm.ext.geo.CondensedDistributionRecipe;
 import eu.etaxonomy.cdm.io.common.CsvIOConfigurator;
 import eu.etaxonomy.cdm.io.common.ExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.ExportResultType;
@@ -40,6 +41,9 @@ public class CdmLightExportConfigurator
     private boolean createZipFile = false;
 
     private boolean isFilterIntextReferences = true;
+    private boolean isCreateCondensedDistributionString = true;
+    private CondensedDistributionRecipe recipe = CondensedDistributionRecipe.EuroPlusMed;
+    private boolean isFilterImportSources = true;
 
     private Comparator<TaxonNodeDto> comparator;
 
@@ -155,6 +159,41 @@ public class CdmLightExportConfigurator
         this.comparator = comparator;
     }
 
+
+    /**
+     * @return
+     */
+    public boolean isCreateCondensedDistributionString() {
+        return isCreateCondensedDistributionString;
+    }
+
+    public void setCreateCondensedDistributionString(boolean isCreateCondensedDistributionString) {
+        this.isCreateCondensedDistributionString = isCreateCondensedDistributionString;
+    }
+
+
+    /**
+     * @return
+     */
+    public CondensedDistributionRecipe getCondensedDistributionRecipe() {
+        return recipe;
+    }
+
+    public void setCondensedDistributionRecipe(CondensedDistributionRecipe recipe) {
+        this.recipe = recipe;
+    }
+
+
+    /**
+     * @return
+     */
+    public boolean isFilterImportSources() {
+        return isFilterImportSources;
+    }
+
+    public void setFilterImportSources(boolean isFilterImportSources) {
+        this.isFilterImportSources = isFilterImportSources;
+    }
 
 //    public Set<UUID> getTaxonNodeUuids() {
 //        return taxonNodeUuids;

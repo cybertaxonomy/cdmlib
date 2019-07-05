@@ -34,6 +34,7 @@ public enum CdmLightExportTable {
     FACT_SOURCES("FactSources", factSourcesColumns()),
     IDENTIFIER("NameIdentifier", identifierColumns()),
     MEDIA("MediaFact", mediaColumns()),
+    CONDENSED_DISTRIBUTION_FACT("CondensedDistributionFact", compressedDistributionFactColumns()),
     NAME_FACT("NameFact", nameFactColumns())
 
     ;
@@ -224,6 +225,18 @@ public enum CdmLightExportTable {
 
     final static String[] homotypicGroupColumns(){
         return new String[]{HOMOTYPIC_GROUP_ID, HOMOTYPIC_GROUP_STRING, TYPE_STRING};
+    }
+
+
+
+
+
+
+    /**
+     * @return
+     */
+    private static String[] compressedDistributionFactColumns() {
+        return new String[]{FACT_ID, TAXON_FK, FACT_TEXT};
     }
 
 

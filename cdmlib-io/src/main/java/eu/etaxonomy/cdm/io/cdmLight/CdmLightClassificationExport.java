@@ -20,11 +20,14 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetManager;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
@@ -74,6 +77,7 @@ import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -109,7 +113,8 @@ public class CdmLightClassificationExport
     private static final String TROPICOS_NAME_IDENTIFIER = "Tropicos Name Identifier";
     private static final String WFO_NAME_IDENTIFIER = "WFO Name Identifier";
 
-
+    @Autowired
+    IEditGeoService geoService;
 
     public CdmLightClassificationExport() {
         super();
@@ -746,7 +751,7 @@ public class CdmLightClassificationExport
         Set<DescriptionElementSource> sources = element.getSources();
 
         for (DescriptionElementSource source: sources){
-
+            if (!(source.getType().equals(OriginalSourceType.Import) && state.getConfig().isFilterImportSources())){
                 String[] csvLine = new  String[table.getSize()];
                 Reference ref = source.getCitation();
                 if ((ref == null) && (source.getNameUsedInSource() == null)){
@@ -767,6 +772,7 @@ public class CdmLightClassificationExport
                     continue;
                 }
                 state.getProcessor().put(table, source, csvLine);
+            }
 
         }
         } catch (Exception e) {
@@ -782,12 +788,13 @@ public class CdmLightClassificationExport
      */
     private void handleDistributionFacts(CdmLightExportState state, Taxon taxon, List<DescriptionElementBase> distributionFacts) {
         CdmLightExportTable table = CdmLightExportTable.GEOGRAPHIC_AREA_FACT;
-
+        Set<Distribution>distributions = new HashSet();
         for (DescriptionElementBase element: distributionFacts){
             try {
                 if (element instanceof Distribution){
                     String[] csvLine = new  String[table.getSize()];
                     Distribution distribution = (Distribution)element;
+                    distributions.add(distribution);
                     csvLine[table.getIndex(CdmLightExportTable.FACT_ID)] = getId(state, element);
                     handleSource(state, element, table);
                     csvLine[table.getIndex(CdmLightExportTable.TAXON_FK)] = getId(state, taxon);
@@ -806,6 +813,18 @@ public class CdmLightClassificationExport
                         cdmBaseStr(element) + ": " + e.getMessage());
             }
         }
+        if(state.getConfig().isCreateCondensedDistributionString()){
+            List<Language> langs = new ArrayList<Language>();
+            langs.add(Language.ENGLISH());
+
+            CondensedDistribution conDis = geoService.getCondensedDistribution(distributions, true, null,null,state.getConfig().getCondensedDistributionRecipe(), langs );
+            CdmLightExportTable tableCondensed = CdmLightExportTable.CONDENSED_DISTRIBUTION_FACT;
+            String[] csvLine = new  String[table.getSize()];
+            csvLine[tableCondensed.getIndex(CdmLightExportTable.TAXON_FK)] = getId(state, taxon);
+            csvLine[tableCondensed.getIndex(CdmLightExportTable.FACT_TEXT)] = conDis.toString();
+            state.getProcessor().put(tableCondensed, taxon, csvLine);
+        }
+
     }
 
     /**
