@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.io.cdmLight;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,11 +41,12 @@ public class CdmLightExportState
 
     private TaxonBase<?> actualTaxonBase;
 
-    private Map<Integer, HomotypicalGroup> homotypicalGroupStore = new HashMap<>();
+    private ArrayList<UUID> homotypicalGroupStore = new ArrayList();
     private Map<Integer, TeamOrPersonBase<?>> authorStore = new HashMap<>();
 
-    private Map<Integer, SpecimenOrObservationBase> specimenStore = new HashMap<>();
-    private Map<Integer, Reference> referenceStore = new HashMap<>();
+    private List<UUID> specimenStore = new ArrayList();
+    //private Map<Integer, SpecimenOrObservationBase> specimenStore = new HashMap<>();
+    private List<UUID> referenceStore = new ArrayList();
     private Map<Integer, UUID> nameStore = new HashMap<>();
     private Map<UUID,List<TaxonNodeDto>> nodeChildrenMap = new HashMap<>();
     private Map<UUID, OrderHelper> orderHelperMap = new HashMap();
@@ -101,7 +103,7 @@ public class CdmLightExportState
     /**
      * @return the homotypicalGroupStore
      */
-    public Map<Integer, HomotypicalGroup> getHomotypicalGroupStore() {
+    public ArrayList<UUID> getHomotypicalGroupStore() {
         return homotypicalGroupStore;
     }
 
@@ -109,17 +111,17 @@ public class CdmLightExportState
      * @param homotypicalGroupStore the homotypicalGroupStore to set
      */
     public void addHomotypicalGroupToStore(HomotypicalGroup homotypicalGroup) {
-        this.homotypicalGroupStore.put(homotypicalGroup.getId(), homotypicalGroup);
+        this.homotypicalGroupStore.add(homotypicalGroup.getUuid());
     }
 
-    public HomotypicalGroup getHomotypicalGroupFromStore(Integer id){
-        return homotypicalGroupStore.get(id);
+    public boolean containsHomotypicalGroupFromStore(UUID id){
+        return homotypicalGroupStore.contains(id);
     }
 
     /**
      * @return the specimenStore
      */
-    public Map<Integer, SpecimenOrObservationBase> getSpecimenStore() {
+    public List<UUID> getSpecimenStore() {
         return specimenStore;
     }
 
@@ -128,7 +130,7 @@ public class CdmLightExportState
     /**
      * @param specimenStore the specimenStore to set
      */
-    public void setSpecimenStore(Map<Integer, SpecimenOrObservationBase> specimenStore) {
+    public void setSpecimenStore(List<UUID> specimenStore) {
         this.specimenStore = specimenStore;
     }
 
@@ -139,7 +141,7 @@ public class CdmLightExportState
     /**
      * @param homotypicalGroupStore the homotypicalGroupStore to set
      */
-    public void setHomotypicalGroupStore(Map<Integer, HomotypicalGroup> homotypicalGroupStore) {
+    public void setHomotypicalGroupStore(ArrayList<UUID> homotypicalGroupStore) {
         this.homotypicalGroupStore = homotypicalGroupStore;
     }
 
@@ -171,32 +173,25 @@ public class CdmLightExportState
 
 
     public void addSpecimenToStore(SpecimenOrObservationBase specimen) {
-        this.specimenStore.put(specimen.getId(), specimen);
+        this.specimenStore.add(specimen.getUuid());
 
     }
 
 
-    public SpecimenOrObservationBase getSpecimenFromStore(Integer id){
-        return specimenStore.get(id);
-    }
-
-    public Reference getReferenceFromStore(Integer id){
-        return referenceStore.get(id);
-    }
     public void addReferenceToStore(Reference ref) {
-        this.referenceStore.put(ref.getId(), ref);
+        this.referenceStore.add(ref.getUuid());
 
     }
     /**
      * @param referenceStore the referenceStore to set
      */
-    public void setReferenceStore(Map<Integer, Reference> referenceStore) {
+    public void setReferenceStore(List<UUID> referenceStore) {
         this.referenceStore = referenceStore;
     }
     /**
      * @return the referenceStore
      */
-    public Map<Integer, Reference> getReferenceStore() {
+    public List<UUID> getReferenceStore() {
         return referenceStore;
     }
 

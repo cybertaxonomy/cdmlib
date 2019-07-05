@@ -23,7 +23,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetManager;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -344,7 +343,7 @@ public class CdmLightClassificationExport
                     csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE)] = getTitleCache(taxon.getSec());
                 }
                 if (taxon.getSec() != null){
-                    if (state.getReferenceFromStore(taxon.getSec().getId()) == null){
+                    if (!state.getReferenceStore().contains((taxon.getSec().getUuid()))){
                         handleReference(state, taxon.getSec());
                     }
                 }
@@ -681,7 +680,7 @@ public class CdmLightClassificationExport
                         state.getResult().addWarning("There is an individual association with no specimen associated (Taxon "+ taxon.getTitleCache() + "(" + taxon.getUuid() +"). Could not be exported.");
                         continue;
                     }else{
-                        if (state.getSpecimenFromStore(indAssociation.getAssociatedSpecimenOrObservation().getId()) == null){
+                        if (!state.getSpecimenStore().contains((indAssociation.getAssociatedSpecimenOrObservation().getUuid())) ){
                             SpecimenOrObservationBase<?> specimenBase = HibernateProxyHelper.deproxy(indAssociation.getAssociatedSpecimenOrObservation(), SpecimenOrObservationBase.class);
 
                             handleSpecimen(state, specimenBase);
@@ -758,7 +757,7 @@ public class CdmLightClassificationExport
                     continue;
                 }
                 if (ref != null){
-                    if (state.getReferenceFromStore(ref.getId()) == null){
+                    if (!state.getReferenceStore().contains(ref.getUuid()) ){
                         handleReference(state, ref);
 
                     }
@@ -813,17 +812,17 @@ public class CdmLightClassificationExport
                         cdmBaseStr(element) + ": " + e.getMessage());
             }
         }
-        if(state.getConfig().isCreateCondensedDistributionString()){
-            List<Language> langs = new ArrayList<Language>();
-            langs.add(Language.ENGLISH());
-
-            CondensedDistribution conDis = geoService.getCondensedDistribution(distributions, true, null,null,state.getConfig().getCondensedDistributionRecipe(), langs );
-            CdmLightExportTable tableCondensed = CdmLightExportTable.CONDENSED_DISTRIBUTION_FACT;
-            String[] csvLine = new  String[table.getSize()];
-            csvLine[tableCondensed.getIndex(CdmLightExportTable.TAXON_FK)] = getId(state, taxon);
-            csvLine[tableCondensed.getIndex(CdmLightExportTable.FACT_TEXT)] = conDis.toString();
-            state.getProcessor().put(tableCondensed, taxon, csvLine);
-        }
+//        if(state.getConfig().isCreateCondensedDistributionString()){
+//            List<Language> langs = new ArrayList<Language>();
+//            langs.add(Language.ENGLISH());
+//
+//            CondensedDistribution conDis = geoService.getCondensedDistribution(distributions, true, null,null,state.getConfig().getCondensedDistributionRecipe(), langs );
+//            CdmLightExportTable tableCondensed = CdmLightExportTable.CONDENSED_DISTRIBUTION_FACT;
+//            String[] csvLine = new  String[table.getSize()];
+//            csvLine[tableCondensed.getIndex(CdmLightExportTable.TAXON_FK)] = getId(state, taxon);
+//            csvLine[tableCondensed.getIndex(CdmLightExportTable.FACT_TEXT)] = conDis.toString();
+//            state.getProcessor().put(tableCondensed, taxon, csvLine);
+//        }
 
     }
 
@@ -1044,7 +1043,7 @@ public class CdmLightClassificationExport
             Reference nomRef = name.getNomenclaturalReference();
 
             if (nomRef != null){
-                if (state.getReferenceFromStore(nomRef.getId()) == null){
+                if (!state.getReferenceStore().contains(nomRef.getUuid())){
                     handleReference(state, nomRef);
                 }
                 csvLine[table.getIndex(CdmLightExportTable.REFERENCE_FK)] = getId(state, nomRef);
@@ -1152,7 +1151,7 @@ public class CdmLightClassificationExport
 
             HomotypicalGroup group =name.getHomotypicalGroup();
 
-            if (state.getHomotypicalGroupFromStore(group.getId()) == null){
+            if (state.containsHomotypicalGroupFromStore(group.getUuid())){
                 handleHomotypicalGroup(state, HibernateProxyHelper.deproxy(group, HomotypicalGroup.class));
             }
             csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_FK)] = getId(state, group);
@@ -1732,7 +1731,7 @@ public class CdmLightClassificationExport
             }
 
             csvLine[table.getIndex(CdmLightExportTable.IN_REFERENCE)] = getId(state, reference.getInReference());
-            if (reference.getInReference() != null && state.getReferenceFromStore(reference.getInReference().getId()) == null){
+            if (reference.getInReference() != null && !state.getReferenceStore().contains(reference.getInReference().getUuid())){
                 handleReference(state, reference.getInReference());
             }
             if ( reference.getInstitution() != null){ csvLine[table.getIndex(CdmLightExportTable.INSTITUTION)] = reference.getInstitution().getTitleCache();}
