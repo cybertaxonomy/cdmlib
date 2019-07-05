@@ -19,6 +19,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -47,6 +48,7 @@ import eu.etaxonomy.cdm.model.term.FeatureTree;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
+import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
@@ -160,8 +162,8 @@ public class StructureTreeOwlImportTest extends CdmTransactionalIntegrationTest 
         assertEquals("wrong number of vocabularies", 1, vocs.size());
         TermVocabulary termVoc = vocs.iterator().next();
         assertEquals("Wrong vocabulary label", vocLabel, termVoc.getTitleCache());
-        assertEquals(3, termVoc.getTerms().size());
-        assertTrue("Term not included in vocabulary", termVoc.getTerms().contains(inflorescence));
+        Collection<TermDto> topLevelTerms = vocabularyService.getTopLevelTerms(termVoc.getUuid());
+        assertEquals("wrong number of top level terms", 4, topLevelTerms.size());
 
     }
 

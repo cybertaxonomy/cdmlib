@@ -123,7 +123,11 @@ public class TypeDesignationStatusFilter {
     public static Set<UUID> toTypeDesignationStatusUuids(Set<TypeDesignationStatusFilter> filterTerms){
         Set<UUID> uuids = new HashSet<>();
         for(TypeDesignationStatusFilter f : filterTerms){
-            uuids.addAll(f.getUuids());
+            if(f != null){
+                uuids.addAll(f.getUuids());
+            } else {
+                uuids.add(null);
+            }
         }
         return uuids;
     }

@@ -79,7 +79,7 @@ public class StructureTreeOwlImport extends CdmImportBase<StructureTreeOwlImport
         UUID vocUuid = UUID.fromString(vocabularyResource.getProperty(OwlUtil.propUuid).getString());
         TermVocabulary vocabulary = getVocabularyService().load(vocUuid);
         if(vocabulary==null){
-            vocabulary = OwlImportUtil.createVocabulary(vocabularyResource, getTermService(), model, state);
+            vocabulary = OwlImportUtil.createVocabulary(vocabularyResource, this, model, state);
             vocabulary = getVocabularyService().save(vocabulary);
         }
 
@@ -87,8 +87,8 @@ public class StructureTreeOwlImport extends CdmImportBase<StructureTreeOwlImport
         UUID termUuid = UUID.fromString(termResource.getProperty(OwlUtil.propUuid).getString());
         DefinedTermBase term = getTermService().find(termUuid);
         if(term==null){
-            term = OwlImportUtil.createTerm(termResource, getTermService(), model, state);
-            getTermService().save(term);
+            term = OwlImportUtil.createTerm(termResource, this, model, state);
+            term = getTermService().save(term);
             vocabulary.addTerm(term); // only add term if it does not already exist
         }
 

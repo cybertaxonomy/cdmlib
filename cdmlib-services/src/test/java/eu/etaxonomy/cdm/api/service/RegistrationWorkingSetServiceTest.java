@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.FileNotFoundException;
 import java.util.Arrays;
@@ -38,16 +39,6 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTestWithSecu
 public class RegistrationWorkingSetServiceTest extends CdmTransactionalIntegrationTestWithSecurity {
 
 
-    public static final UUID USER2_UUID = UUID.fromString("669f582c-e97f-425b-97f6-bc3b0c08f2a5");
-
-    public static final UUID USER1_UUID = UUID.fromString("68033f81-9947-4b61-b33b-3d05bd438579");
-
-    public static final UUID NDT1_UUID = UUID.fromString("be66964a-ea2b-480e-9dcf-0ee1dd7313eb");
-
-    public static final UUID STD2_UUID = UUID.fromString("8cd056fb-259a-45aa-ab4f-b34033eef2e9");
-
-    public static final UUID STD1_UUID = UUID.fromString("1c29e80a-2611-4be4-9b2f-15bbd15066bf");
-
     @SpringBeanByType
     @Qualifier("CdmRepository")
     protected ICdmRepository repo;
@@ -65,125 +56,134 @@ public class RegistrationWorkingSetServiceTest extends CdmTransactionalIntegrati
 
         repo.authenticate("user1", "00000");
 
-        Pager<RegistrationDTO> pager = service.pageDTOs((UUID)null, null, null, null, null, null, null, null);
+        Pager<RegistrationDTO> pager = service.pageDTOs((UUID)null, null, null, null, null, null, null, null, null);
         assertEquals(pager.getRecords().size(), pager.getCount().intValue());
-        assertEquals("with authenticated user expecting all 3 Registrations", 3l, pager.getCount().longValue());
+        assertEquals("with authenticated user expecting all 3 Registrations", 4l, pager.getCount().longValue());
 
-        pager = service.pageDTOs(USER1_UUID, null, null, null, null, null, null, null);
+        pager = service.pageDTOs(RegistrationServiceTest.USER1_UUID, null, null, null, null, null, null, null, null);
         assertEquals(pager.getRecords().size(), pager.getCount().intValue());
         assertEquals(2l, pager.getCount().longValue());
 
-        pager = service.pageDTOs(USER2_UUID, null, null, null, null, null, null, null);
+        pager = service.pageDTOs(RegistrationServiceTest.USER2_UUID, null, null, null, null, null, null, null, null);
         assertEquals(pager.getRecords().size(), pager.getCount().intValue());
-        assertEquals(1l, pager.getCount().longValue());
+        assertEquals(2l, pager.getCount().longValue());
 
         // status filter
-        pager = service.pageDTOs((UUID)null, Arrays.asList(RegistrationStatus.PREPARATION), null, null, null, null, null, null);
+        pager = service.pageDTOs((UUID)null, Arrays.asList(RegistrationStatus.PREPARATION), null, null, null, null, null, null, null);
         assertEquals(pager.getRecords().size(), pager.getCount().intValue());
         assertEquals(1l, pager.getCount().longValue());
         assertEquals(RegistrationStatus.PREPARATION, pager.getRecords().get(0).getStatus());
 
-        pager = service.pageDTOs((UUID)null, Arrays.asList(RegistrationStatus.PREPARATION, RegistrationStatus.PUBLISHED), null, null, null, null, null, null);
+        pager = service.pageDTOs((UUID)null, Arrays.asList(RegistrationStatus.PREPARATION, RegistrationStatus.PUBLISHED), null, null, null, null, null, null, null);
         assertEquals(pager.getRecords().size(), pager.getCount().intValue());
         assertEquals(2l, pager.getCount().longValue());
 
         // status filter with submitter
-        pager = service.pageDTOs(USER1_UUID, Arrays.asList(RegistrationStatus.PREPARATION, RegistrationStatus.PUBLISHED), null, null, null, null, null, null);
+        pager = service.pageDTOs(RegistrationServiceTest.USER1_UUID, Arrays.asList(RegistrationStatus.PREPARATION, RegistrationStatus.PUBLISHED), null, null, null, null, null, null, null);
         assertEquals(pager.getRecords().size(), pager.getCount().intValue());
         assertEquals(2l, pager.getCount().longValue());
 
-        pager = service.pageDTOs(USER2_UUID, Arrays.asList(RegistrationStatus.PREPARATION, RegistrationStatus.PUBLISHED), null, null, null, null, null, null);
+        pager = service.pageDTOs(RegistrationServiceTest.USER2_UUID, Arrays.asList(RegistrationStatus.PREPARATION, RegistrationStatus.PUBLISHED), null, null, null, null, null, null, null);
         assertEquals(pager.getRecords().size(), pager.getCount().intValue());
         assertEquals(0l, pager.getCount().longValue());
 
-        pager = service.pageDTOs(USER2_UUID, Arrays.asList(RegistrationStatus.CURATION), null, null, null, null, null, null);
+        pager = service.pageDTOs(RegistrationServiceTest.USER2_UUID, Arrays.asList(RegistrationStatus.CURATION), null, null, null, null, null, null, null);
         assertEquals(pager.getRecords().size(), pager.getCount().intValue());
         assertEquals(1l, pager.getCount().longValue());
 
         // identifier filter
-        pager = service.pageDTOs((UUID)null, null, "100", null, null, null, null, null);
+        pager = service.pageDTOs((UUID)null, null, "100", null, null, null, null, null, null);
         assertEquals(pager.getRecords().size(), pager.getCount().intValue());
-        assertEquals(3l, pager.getCount().longValue());
+        assertEquals(4l, pager.getCount().longValue());
 
-        pager = service.pageDTOs((UUID)null, null, "test/1001", null, null, null, null, null);
+        pager = service.pageDTOs((UUID)null, null, "test/1001", null, null, null, null, null, null);
         assertEquals(pager.getRecords().size(), pager.getCount().intValue());
         assertEquals(1l, pager.getCount().longValue());
 
         // identifier filter with submitter
-        pager = service.pageDTOs(USER1_UUID, null, "100", null, null, null, null, null);
+        pager = service.pageDTOs(RegistrationServiceTest.USER1_UUID, null, "100", null, null, null, null, null, null);
         assertEquals(pager.getRecords().size(), pager.getCount().intValue());
         assertEquals(2l, pager.getCount().longValue());
 
-        pager = service.pageDTOs(USER2_UUID, null, "1002", null, null, null, null, null);
+        pager = service.pageDTOs(RegistrationServiceTest.USER2_UUID, null, "1002", null, null, null, null, null, null);
         assertEquals(pager.getRecords().size(), pager.getCount().intValue());
         assertEquals(1l, pager.getCount().longValue());
 
         // taxon name filter
-        pager = service.pageDTOs((UUID)null, null, null, "Digilalus", null, null, null, null);
+        pager = service.pageDTOs((UUID)null, null, null, "Digitalus", null, null, null, null, null);
         assertEquals(pager.getRecords().size(), pager.getCount().intValue());
-        assertEquals(3l, pager.getCount().longValue());
+        assertEquals(4l, pager.getCount().longValue());
 
 
-        pager = service.pageDTOs((UUID)null, null, null, "Digilalus prim", null, null, null, null);
+        pager = service.pageDTOs((UUID)null, null, null, "Digitalus prim", null, null, null, null, null);
         assertEquals(pager.getRecords().size(), pager.getCount().intValue());
         assertEquals(1l, pager.getCount().longValue());
 
         // taxon name filter with user
-        pager = service.pageDTOs(USER2_UUID, null, null, "Digilalus", null, null, null, null);
+        pager = service.pageDTOs(RegistrationServiceTest.USER2_UUID, null, null, "Digitalus", null, null, null, null, null);
         assertEquals(pager.getRecords().size(), pager.getCount().intValue());
-        assertEquals(1l, pager.getCount().longValue());
+        assertEquals(2l, pager.getCount().longValue());
 
         // taxon name filter with user and status
-        pager = service.pageDTOs(USER1_UUID, Arrays.asList(RegistrationStatus.PREPARATION), null, "Digilalus", null, null, null, null);
+        pager = service.pageDTOs(RegistrationServiceTest.USER1_UUID, Arrays.asList(RegistrationStatus.PREPARATION), null, "Digitalus", null, null, null, null, null);
         assertEquals(pager.getRecords().size(), pager.getCount().intValue());
         assertEquals(1l, pager.getCount().longValue());
 
-        pager = service.pageDTOs(USER1_UUID, Arrays.asList(RegistrationStatus.PREPARATION, RegistrationStatus.PUBLISHED), "1001", "Digilalus", null, null, null, null);
+        pager = service.pageDTOs(RegistrationServiceTest.USER1_UUID, Arrays.asList(RegistrationStatus.PREPARATION, RegistrationStatus.PUBLISHED), "1001", "Digitalus", null, null, null, null, null);
         assertEquals(pager.getRecords().size(), pager.getCount().intValue());
         assertEquals(1l, pager.getCount().longValue());
 
-        // type designation status
+         // type designation status
 
-        pager = service.pageDTOs((UUID)null, null, null, null, Arrays.asList(SpecimenTypeDesignationStatus.HOLOTYPE().getUuid()),
-                null, null, Arrays.asList(orderById));
-        assertEquals(pager.getRecords().size(), pager.getCount().intValue());
+        // assure the terms are loaded
+        assertNotNull(SpecimenTypeDesignationStatus.HOLOTYPE());
+        assertNotNull(NameTypeDesignationStatus.TAUTONYMY());
+
+        pager = service.pageDTOs((UUID)null, null, null, null, null,
+                Arrays.asList(SpecimenTypeDesignationStatus.HOLOTYPE().getUuid()), null, null, Arrays.asList(orderById));
         assertEquals(1l, pager.getCount().longValue());
-        assertEquals(STD1_UUID, pager.getRecords().get(0).registration().getTypeDesignations().iterator().next().getUuid());
+        assertEquals(RegistrationServiceTest.STD1_UUID, pager.getRecords().get(0).registration().getTypeDesignations().iterator().next().getUuid());
 
-        pager = service.pageDTOs((UUID)null, null, null, null, Arrays.asList(NameTypeDesignationStatus.TAUTONYMY().getUuid()),
-                null, null, Arrays.asList(orderById));
-        assertEquals(pager.getRecords().size(), pager.getCount().intValue());
+        pager = service.pageDTOs((UUID)null, null, null, null, null,
+                Arrays.asList(NameTypeDesignationStatus.TAUTONYMY().getUuid()), null, null, Arrays.asList(orderById));
         assertEquals(1l, pager.getCount().longValue());
-        assertEquals(NDT1_UUID, pager.getRecords().get(1).registration().getTypeDesignations().iterator().next().getUuid());
+        assertEquals(RegistrationServiceTest.NDT1_UUID, pager.getRecords().get(0).registration().getTypeDesignations().iterator().next().getUuid());
 
-        pager = service.pageDTOs((UUID)null, null, null, null, Arrays.asList(SpecimenTypeDesignationStatus.HOLOTYPE().getUuid(), NameTypeDesignationStatus.TAUTONYMY().getUuid()),
-                null, null, Arrays.asList(orderById));
-        assertEquals(pager.getRecords().size(), pager.getCount().intValue());
+        pager = service.pageDTOs((UUID)null, null, null, null, null,
+                Arrays.asList(SpecimenTypeDesignationStatus.HOLOTYPE().getUuid(), NameTypeDesignationStatus.TAUTONYMY().getUuid()), null, null, Arrays.asList(orderById));
         assertEquals(2l, pager.getCount().longValue());
-        assertEquals(STD1_UUID, pager.getRecords().get(0).registration().getTypeDesignations().iterator().next().getUuid());
-        assertEquals(NDT1_UUID, pager.getRecords().get(1).registration().getTypeDesignations().iterator().next().getUuid());
+        // TODO order is not yet working!
+        assertEquals(RegistrationServiceTest.STD1_UUID, pager.getRecords().get(0).registration().getTypeDesignations().iterator().next().getUuid());
+        assertEquals(RegistrationServiceTest.NDT1_UUID, pager.getRecords().get(1).registration().getTypeDesignations().iterator().next().getUuid());
 
         // type designation status with user
-        pager = service.pageDTOs(USER1_UUID, null, null, null, Arrays.asList(SpecimenTypeDesignationStatus.HOLOTYPE().getUuid(), NameTypeDesignationStatus.TAUTONYMY().getUuid()),
-                null, null, Arrays.asList(orderById));
-        assertEquals(pager.getRecords().size(), pager.getCount().intValue());
+        pager = service.pageDTOs(RegistrationServiceTest.USER2_UUID, null, null, null, null,
+                Arrays.asList(SpecimenTypeDesignationStatus.HOLOTYPE().getUuid(), NameTypeDesignationStatus.TAUTONYMY().getUuid()), null, null, Arrays.asList(orderById));
         assertEquals(1l, pager.getCount().longValue());
-        assertEquals(STD1_UUID, pager.getRecords().get(0).registration().getTypeDesignations().iterator().next().getUuid());
+        assertEquals(RegistrationServiceTest.NDT1_UUID, pager.getRecords().get(0).registration().getTypeDesignations().iterator().next().getUuid());
 
         // type designation status with name
-        pager = service.pageDTOs((UUID)null, null, null, "Digital", Arrays.asList(SpecimenTypeDesignationStatus.HOLOTYPE().getUuid(), NameTypeDesignationStatus.TAUTONYMY().getUuid()),
-                null, null, Arrays.asList(orderById));
-        assertEquals(pager.getRecords().size(), pager.getCount().intValue());
+        pager = service.pageDTOs((UUID)null, null, null, "Digital", null,
+                Arrays.asList(SpecimenTypeDesignationStatus.HOLOTYPE().getUuid(), NameTypeDesignationStatus.TAUTONYMY().getUuid()), null, null, Arrays.asList(orderById));
         assertEquals(2l, pager.getCount().longValue());
-        assertEquals(STD1_UUID, pager.getRecords().get(0).registration().getTypeDesignations().iterator().next().getUuid());
-        assertEquals(NDT1_UUID, pager.getRecords().get(1).registration().getTypeDesignations().iterator().next().getUuid());
+        assertEquals(RegistrationServiceTest.STD1_UUID, pager.getRecords().get(0).registration().getTypeDesignations().iterator().next().getUuid());
+        assertEquals(RegistrationServiceTest.NDT1_UUID, pager.getRecords().get(1).registration().getTypeDesignations().iterator().next().getUuid());
+
+        // reference
+        pager = service.pageDTOs((UUID)null, null, null, null,
+                "book1", null, null, null, Arrays.asList(orderBySpecificIdentifier));
+        assertEquals(2l, pager.getCount().longValue());
+
+        pager = service.pageDTOs((UUID)null, null, null, null,
+                "book*", null, null, null, Arrays.asList(orderBySpecificIdentifier));
+        assertEquals(4l, pager.getCount().longValue());
 
     }
 
     @Test
     @DataSet("RegistrationServiceTest.xml")
     public void testPageDTOs_unautheticated(){
-        Pager<RegistrationDTO> pager = service.pageDTOs((UUID)null, null, null, null, null, null, null, null);
+        Pager<RegistrationDTO> pager = service.pageDTOs((UUID)null, null, null, null, null, null, null, null, null);
         assertEquals(pager.getRecords().size(), pager.getCount().intValue());
         assertEquals("expecting only the PUBLISHED Registration, since the user is not authenticated", 1l, pager.getCount().longValue());
     }

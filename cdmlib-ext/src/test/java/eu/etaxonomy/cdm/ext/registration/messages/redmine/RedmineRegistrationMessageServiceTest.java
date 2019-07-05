@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.unitils.AlternativeUnitilsJUnit4TestClassRunner;
@@ -57,6 +58,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  *
  */
 @RunWith(AlternativeUnitilsJUnit4TestClassRunner.class)
+@Ignore
 public class RedmineRegistrationMessageServiceTest extends CdmTransactionalIntegrationTest {
 
     private static final String CURATOR = "curator";

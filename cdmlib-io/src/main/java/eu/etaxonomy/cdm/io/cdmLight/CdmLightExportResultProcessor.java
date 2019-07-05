@@ -144,6 +144,7 @@ public class CdmLightExportResultProcessor {
                         csvLine[table.getIndex(CdmLightExportTable.FACT_ID)] = "<UUID>";
                         csvLine[table.getIndex(CdmLightExportTable.TAXON_FK)]= state.getRootId().toString();
                         csvLine[table.getIndex(CdmLightExportTable.FACT_TEXT)]= "Dummy";
+                        data.add(createCsvLine(config, csvLine));
                     }
                     IOUtils.writeLines(data,
                             null,exportStream,

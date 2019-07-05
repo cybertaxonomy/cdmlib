@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.io.descriptive.owl.in;
 
 import java.net.URI;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.UUID;
 
@@ -67,24 +68,23 @@ public class TermVocabularyOwlImport extends CdmImportBase<StructureTreeOwlImpor
             String type = voc.getProperty(OwlUtil.propType).getString();
 
             UUID vocUuid = UUID.fromString(voc.getProperty(OwlUtil.propUuid).getString());
-            TermVocabulary vocabulary = getVocabularyService().load(vocUuid);
+            TermVocabulary vocabulary = getVocabularyService().load(vocUuid, Arrays.asList("terms"));
             if(vocabulary==null){
-                vocabulary = OwlImportUtil.createVocabulary(voc, getTermService(), state.getModel(), state);
-                getVocabularyService().save(vocabulary);
+                vocabulary = OwlImportUtil.createVocabulary(voc, this, state.getModel(), state);
+                vocabulary = getVocabularyService().save(vocabulary);
             }
 
             // import terms
-            Set<Statement> terms = voc.listProperties(OwlUtil.propHasTerm).toSet();
+            Set<Statement> terms = voc.listProperties(OwlUtil.propVocTopLevelTerm).toSet();
             for (Statement statement : terms) {
                 if(progressMonitor.isCanceled()){
                     break;
                 }
-                createTerm(vocabulary, statement, state.getModel(), state);
+                DefinedTermBase term = createTerm(vocabulary, statement, state.getModel(), state);
+                vocabulary.addTerm(term);
                 progressMonitor.worked(1);
             }
-
             getVocabularyService().saveOrUpdate(vocabulary);
-
         }
     }
 
@@ -92,20 +92,21 @@ public class TermVocabularyOwlImport extends CdmImportBase<StructureTreeOwlImpor
         Resource termResource = model.createResource(termStatement.getObject().toString());
 
         UUID termUuid = UUID.fromString(termResource.getProperty(OwlUtil.propUuid).getString());
-        DefinedTermBase term = getTermService().find(termUuid);
-        if(term!=null){
-            return term;
+        if(getTermService().exists(termUuid)) {
+            return getTermService().load(termUuid);
         }
-
-        term = OwlImportUtil.createTerm(termResource, getTermService(), model, state);
-        getTermService().saveOrUpdate(term);
+        DefinedTermBase term = OwlImportUtil.createTerm(termResource, this, model, state);
+        term = getTermService().save(term);
         vocabulary.addTerm(term); // only add term if it does not already exist
 
         //check media
         StmtIterator mediaIterator = termResource.listProperties(OwlUtil.propTermHasMedia);
         while(mediaIterator.hasNext()){
             Resource mediaResource = model.createResource(mediaIterator.next().getObject().toString());
-            Media media = OwlImportUtil.createMedia(mediaResource, state);
+            Media media = OwlImportUtil.findMedia(mediaResource, this);
+            if(media==null){
+                media = OwlImportUtil.createMedia(mediaResource, state);
+            }
             term.addMedia(media);
         }
 
@@ -121,6 +122,7 @@ public class TermVocabularyOwlImport extends CdmImportBase<StructureTreeOwlImpor
             DefinedTermBase generalizationOfTerm = createTerm(vocabulary, generalizationOfIterator.next(), model, state);
             term.addGeneralizationOf(generalizationOfTerm);
         }
+        getTermService().saveOrUpdate(term);
         return term;
     }
 

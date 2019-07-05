@@ -59,14 +59,15 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthorityParsingException;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionClass;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.ICdmPermissionEvaluator;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.Operation;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthorityParsingException;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 
-@DataSet
+@DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
 public class SecurityTest extends AbstractSecurityTestBase{
 
 

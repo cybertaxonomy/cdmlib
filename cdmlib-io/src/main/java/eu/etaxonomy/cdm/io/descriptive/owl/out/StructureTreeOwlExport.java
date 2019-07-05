@@ -20,8 +20,6 @@ import com.hp.hpl.jena.rdf.model.Resource;
 
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
-import eu.etaxonomy.cdm.io.descriptive.owl.OwlUtil;
-import eu.etaxonomy.cdm.model.term.FeatureNode;
 import eu.etaxonomy.cdm.model.term.FeatureTree;
 
 /**
@@ -50,7 +48,8 @@ public class StructureTreeOwlExport extends CdmExportBase<StructureTreeOwlExport
                 break;
             }
             state.getConfig().getProgressMonitor().worked(1);
-            exportTree(uuid, state);
+            FeatureTree featureTree = getFeatureTreeService().load(uuid);
+            Resource featureTreeResource = OwlExportUtil.createFeatureTreeResource(featureTree, this, state);
         }
 
         // write export data to file
@@ -59,32 +58,6 @@ public class StructureTreeOwlExport extends CdmExportBase<StructureTreeOwlExport
         state.getResult().addExportData(getByteArray());
 
         commitTransaction(txStatus);
-    }
-
-    private void exportTree(UUID featureTreeUuid, StructureTreeOwlExportState state){
-        FeatureTree featureTree = getFeatureTreeService().load(featureTreeUuid);
-
-        FeatureNode rootNode = featureTree.getRoot();
-
-        Resource featureTreeResource = OwlExportUtil.createFeatureTreeResource(featureTree, state);
-
-        Resource resourceRootNode = OwlExportUtil.createNodeResource(state, rootNode);
-        featureTreeResource.addProperty(OwlUtil.propHasRootNode, resourceRootNode);
-
-        addChildNode(rootNode, resourceRootNode, state);
-    }
-
-    private void addChildNode(FeatureNode parentNode, Resource parentResourceNode, StructureTreeOwlExportState state){
-        List<FeatureNode> childNodes = parentNode.getChildNodes();
-        for (FeatureNode child : childNodes) {
-            // create node resource with term
-            Resource nodeResource = OwlExportUtil.createNodeResource(state, child);
-
-            // add node to parent node
-            parentResourceNode.addProperty(OwlUtil.propHasSubStructure, nodeResource);
-
-            addChildNode(child, nodeResource, state);
-        }
     }
 
     @Override

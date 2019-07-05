@@ -678,6 +678,9 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
             case EXACT:
                 restriction = Restrictions.ilike(propertyName, queryString, org.hibernate.criterion.MatchMode.EXACT);
                 break;
+            case ANYWHERE:
+                restriction = Restrictions.ilike(propertyName, queryString, org.hibernate.criterion.MatchMode.ANYWHERE);
+                break;
             default:
                 throw new RuntimeException("Unknown MatchMode: " + matchMode.name());
             }
