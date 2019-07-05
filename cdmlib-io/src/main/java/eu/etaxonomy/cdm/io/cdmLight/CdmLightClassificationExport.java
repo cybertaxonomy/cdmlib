@@ -1151,7 +1151,7 @@ public class CdmLightClassificationExport
 
             HomotypicalGroup group =name.getHomotypicalGroup();
 
-            if (state.containsHomotypicalGroupFromStore(group.getUuid())){
+            if (!state.containsHomotypicalGroupFromStore(group.getUuid())){
                 handleHomotypicalGroup(state, HibernateProxyHelper.deproxy(group, HomotypicalGroup.class));
             }
             csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_FK)] = getId(state, group);
