@@ -248,8 +248,9 @@ public class AbcdGgbnParser {
                     //TODO: this can be different from the actual length in ABCD but not in CDM!
                     sequence.getConsensusSequence().setLength(consensusSequenceLength.intValue());
                 }
-                //contig file URL
+                //contig file URL geneticAccessionNumberURI
                 NodeList consensusSequenceChromatogramFileURIList = sequencing.getElementsByTagName(prefix+"consensusSequenceChromatogramFileURI");
+                //NodeList consensusSequenceChromatogramFileURIList = sequencing.getElementsByTagName(prefix+"geneticAccessionNumberURI");
                 URI uri = AbcdParseUtility.parseFirstUri(consensusSequenceChromatogramFileURIList, report);
                 if (uri != null && uri.toString().endsWith("fasta")){
                     state.putSequenceDataStableIdentifier(uri);
