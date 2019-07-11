@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
@@ -46,6 +47,7 @@ public class TermDto extends AbstractTermDto{
     private Set<Representation> vocRepresentations = null;
     private String vocRepresentation_L10n = null;
     private String vocRepresentation_L10n_abbreviatedLabel = null;
+    private Collection<UUID> media = null;
 
     private TermDto(UUID uuid, Set<Representation> representations, TermType termType, UUID partOfUuid, UUID kindOfUuid,
             UUID vocabularyUuid, Integer orderIndex, String idInVocabulary) {
@@ -99,6 +101,14 @@ public class TermDto extends AbstractTermDto{
             }
         }
         dto.setVocabularyDto(new TermVocabularyDto(vocabulary.getUuid(), vocabulary.getRepresentations(), term.getTermType()));
+        if(term.getMedia()!=null){
+            Collection<UUID> mediaUuids = new HashSet<>();
+            Set<Media> media = term.getMedia();
+            for (Media medium : media) {
+                mediaUuids.add(medium.getUuid());
+            }
+            dto.setMedia(mediaUuids);
+        }
         return dto;
     }
 
@@ -130,6 +140,10 @@ public class TermDto extends AbstractTermDto{
 
     public String getVocRepresentation_L10n_abbreviatedLabel() {
         return vocRepresentation_L10n_abbreviatedLabel;
+    }
+
+    private void addVocRepresentation(Representation vocRepresentation){
+        this.vocRepresentations.add(vocRepresentation);
     }
 
     public void setPartOfDto(TermDto partOfDto) {
@@ -208,6 +222,18 @@ public class TermDto extends AbstractTermDto{
         return getTermDtoSelect("DefinedTermBase");
     }
 
+    public Collection<UUID> getMedia() {
+        return media;
+    }
+
+    public void setMedia(Collection<UUID> media) {
+        this.media = media;
+    }
+
+    private void addMedia(UUID mediaUuid){
+        this.media.add(mediaUuid);
+    }
+
     public static String getTermDtoSelect(String fromTable){
         return ""
                 + "select a.uuid, "
@@ -219,22 +245,28 @@ public class TermDto extends AbstractTermDto{
                 + "a.idInVocabulary, "
                 + "voc_rep,  "
                 + "a.termType,  "
-                + "a.uri  "
+                + "a.uri,  "
+                + "m  "
                 + "from "+fromTable+" as a "
                 + "LEFT JOIN a.partOf as p "
                 + "LEFT JOIN a.kindOf as k "
+                + "LEFT JOIN a.media as m "
                 + "LEFT JOIN a.representations AS r "
                 + "LEFT JOIN a.vocabulary as v "
-                + "LEFT JOIN v.representations as voc_rep ";
+                + "LEFT JOIN v.representations as voc_rep "
+                ;
     }
 
     public static List<TermDto> termDtoListFrom(List<Object[]> results) {
         List<TermDto> dtos = new ArrayList<>(); // list to ensure order
-        Map<UUID, TermDto> dtoMap = new HashMap<>(results.size()); // map to handle multiple representations
+        // map to handle multiple representations/media/vocRepresentation because of LEFT JOIN
+        Map<UUID, TermDto> dtoMap = new HashMap<>(results.size());
         for (Object[] elements : results) {
             UUID uuid = (UUID)elements[0];
             if(dtoMap.containsKey(uuid)){
                 dtoMap.get(uuid).addRepresentation((Representation)elements[1]);
+                dtoMap.get(uuid).addVocRepresentation((Representation)elements[7]);
+                dtoMap.get(uuid).addMedia(((Media) elements[10]).getUuid());
             } else {
                 Set<Representation> representations = new HashSet<>();
                 if(elements[1] instanceof Representation) {
@@ -242,6 +274,13 @@ public class TermDto extends AbstractTermDto{
                     representations.add((Representation)elements[1]);
                 } else {
                     representations = (Set<Representation>)elements[1];
+                }
+                Set<UUID> mediaUuids = new HashSet<>();
+                if(elements[10] instanceof Media) {
+                    mediaUuids.add(((Media) elements[10]).getUuid());
+                } else if(elements[10] instanceof Collection){
+                    Set<Media> media = (Set<Media>)elements[10];
+                    media.forEach(m->mediaUuids.add(m.getUuid()));
                 }
                 Set<Representation> vocRepresentations = new HashSet<>();
                 if(elements[7] instanceof Representation) {
@@ -261,6 +300,7 @@ public class TermDto extends AbstractTermDto{
                         (String)elements[6],
                         vocRepresentations);
                 termDto.setUri((URI)elements[9]);
+                termDto.setMedia(mediaUuids);
 
                 dtoMap.put(uuid, termDto);
                 dtos.add(termDto);
