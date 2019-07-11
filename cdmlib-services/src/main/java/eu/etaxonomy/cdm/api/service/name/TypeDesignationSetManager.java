@@ -662,7 +662,10 @@ public class TypeDesignationSetManager {
                         }
                     } else {
                         DerivedUnitFacadeCacheStrategy cacheStrategy = new DerivedUnitFacadeCacheStrategy();
-                        typeSpecimenTitle += cacheStrategy.getTitleCache(du, true);
+                        String titleCache = cacheStrategy.getTitleCache(du, true);
+                        // removing parentheses from accesssion number, see https://dev.e-taxonomy.eu/redmine/issues/8365
+                        titleCache = titleCache.replaceAll("[\\(\\)]", "");
+                        typeSpecimenTitle += titleCache;
 
                     }
 
