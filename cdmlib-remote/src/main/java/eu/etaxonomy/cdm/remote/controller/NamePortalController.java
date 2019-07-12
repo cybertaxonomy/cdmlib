@@ -63,15 +63,7 @@ public class NamePortalController extends BaseController<TaxonName, INameService
 
     private static final Logger logger = Logger.getLogger(NamePortalController.class);
 
-    private static final List<String> TYPEDESIGNATION_INIT_STRATEGY = Arrays.asList(new String []{
-            "typeName.$",
-            "typeSpecimen",
-            "typeStatus.representations",
-            "typifiedNames.nomenclaturalReference.authorship",
-            "citation.authorship.$",
-            "typeSpecimen.media",
-            "registrations.institution"
-    });
+    private static final List<String> TYPEDESIGNATION_INIT_STRATEGY = TypeDesignationPortalController.DEFAULT_INIT_STRATEGY;
 
 
     private static final List<String> NAMEDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
