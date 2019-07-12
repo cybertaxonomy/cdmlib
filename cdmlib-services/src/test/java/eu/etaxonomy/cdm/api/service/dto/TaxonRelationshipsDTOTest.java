@@ -13,7 +13,6 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.api.service.dto.TaxonRelationshipsDTO.TaxonRelationDTO;
@@ -39,7 +38,6 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  * @since 15.08.2018
  *
  */
-@Ignore
 public class TaxonRelationshipsDTOTest {
     private TaxonRelationship taxonRel;
     private Reference relSec;
