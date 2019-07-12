@@ -264,30 +264,33 @@ public class TermDto extends AbstractTermDto{
         for (Object[] elements : results) {
             UUID uuid = (UUID)elements[0];
             if(dtoMap.containsKey(uuid)){
-                dtoMap.get(uuid).addRepresentation((Representation)elements[1]);
-                dtoMap.get(uuid).addVocRepresentation((Representation)elements[7]);
-                dtoMap.get(uuid).addMedia(((Media) elements[10]).getUuid());
+                // multiple results for one term -> multiple (voc) representation/media
+                if(elements[1]!=null){
+                    dtoMap.get(uuid).addRepresentation((Representation)elements[1]);
+                }
+                if(elements[7]!=null){
+                    dtoMap.get(uuid).addVocRepresentation((Representation)elements[7]);
+                }
+                if(elements[10]!=null){
+                    dtoMap.get(uuid).addMedia(((Media) elements[10]).getUuid());
+                }
             } else {
+                // term representation
                 Set<Representation> representations = new HashSet<>();
                 if(elements[1] instanceof Representation) {
                     representations = new HashSet<Representation>(1);
                     representations.add((Representation)elements[1]);
-                } else {
-                    representations = (Set<Representation>)elements[1];
                 }
+                // term media
                 Set<UUID> mediaUuids = new HashSet<>();
                 if(elements[10] instanceof Media) {
                     mediaUuids.add(((Media) elements[10]).getUuid());
-                } else if(elements[10] instanceof Collection){
-                    Set<Media> media = (Set<Media>)elements[10];
-                    media.forEach(m->mediaUuids.add(m.getUuid()));
                 }
+                // voc representation
                 Set<Representation> vocRepresentations = new HashSet<>();
                 if(elements[7] instanceof Representation) {
                     vocRepresentations = new HashSet<Representation>(7);
                     vocRepresentations.add((Representation)elements[7]);
-                } else {
-                    vocRepresentations = (Set<Representation>)elements[7];
                 }
                 TermDto termDto = new TermDto(
                         uuid,
