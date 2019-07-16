@@ -15,13 +15,14 @@ import java.util.List;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.ref.EntityReference;
+import eu.etaxonomy.cdm.ref.TypedEntityReference;
 
 /**
  * @author k.luther
  * @since 12.04.2019
  *
  */
-public class SpecimenTypeDesignationDTO  implements Serializable{
+public class SpecimenTypeDesignationDTO extends TypedEntityReference<SpecimenTypeDesignation>  implements Serializable{
     private static final long serialVersionUID = -2397286652498492934L;
 
     private List<EntityReference> names;
@@ -32,7 +33,9 @@ public class SpecimenTypeDesignationDTO  implements Serializable{
      * @param uuid
      * @param label
      */
-    public SpecimenTypeDesignationDTO(SpecimenTypeDesignation typeDesignation, DerivateDTO derivateDTO) {
+    public SpecimenTypeDesignationDTO(SpecimenTypeDesignation typeDesignation, DerivateDTO derivateDTO)  {
+
+        super(SpecimenTypeDesignation.class, typeDesignation.getUuid());
 
         if (typeDesignation.getTypeStatus() != null){
             this.typeStatus = typeDesignation.getTypeStatus().generateTitle();
@@ -44,6 +47,32 @@ public class SpecimenTypeDesignationDTO  implements Serializable{
         this.typeSpecimen = derivateDTO;
 
     }
+
+    public List<EntityReference> getNames() {
+        return names;
+    }
+
+    public void setNames(List<EntityReference> names) {
+        this.names = names;
+    }
+
+    public DerivateDTO getTypeSpecimen() {
+        return typeSpecimen;
+    }
+
+    public void setTypeSpecimen(DerivateDTO typeSpecimen) {
+        this.typeSpecimen = typeSpecimen;
+    }
+
+    public String getTypeStatus() {
+        return typeStatus;
+    }
+
+    public void setTypeStatus(String typeStatus) {
+        this.typeStatus = typeStatus;
+    }
+
+
 
 
 

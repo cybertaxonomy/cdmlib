@@ -307,37 +307,34 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
     }
 
     @RequestMapping(value = "specimensOrObservationDTOs", method = RequestMethod.GET)
-    public ModelAndView doListSpecimensOrObservationDTOs(
+    public List<FieldUnitDTO> doListSpecimensOrObservationDTOs(
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
         logger.info("doListSpecimensOrObservations() - " + request.getRequestURI());
 
-        ModelAndView mv = new ModelAndView();
         List<FieldUnitDTO> fieldUnitDtos = occurrenceService.findFieldUnitDTOByAssociatedTaxon(null, uuid);
            // List<SpecimenOrObservationBase<?>> specimensOrObservations = occurrenceService.listByAssociatedTaxon(null, null, (Taxon)tb, null, null, null, orderHints, null);
-        mv.addObject(fieldUnitDtos);
-        return mv;
+        return fieldUnitDtos;
     }
 
     @RequestMapping(value = "specimensOrObservations", method = RequestMethod.GET)
-    public ModelAndView doListSpecimensOrObservations(
+    public List<SpecimenOrObservationBase<?>> doListSpecimensOrObservations(
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
         logger.info("doListSpecimensOrObservations() - " + request.getRequestURI());
-        ModelAndView mv = new ModelAndView();
+
         TaxonBase<?> tb = service.load(uuid);
         List<OrderHint> orderHints = new ArrayList<>();
         orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
         if(tb instanceof Taxon){
             List<SpecimenOrObservationBase<?>> specimensOrObservations = occurrenceService.listByAssociatedTaxon(null, null, (Taxon)tb, null, null, null, orderHints, null);
-            mv.addObject(specimensOrObservations);
+            return specimensOrObservations;
         } else {
             HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
             return null;
         }
-        return mv;
     }
 
     @RequestMapping(value = "associatedFieldUnits", method = RequestMethod.GET)
