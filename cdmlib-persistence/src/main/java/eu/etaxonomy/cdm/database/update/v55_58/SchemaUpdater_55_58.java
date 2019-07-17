@@ -90,17 +90,18 @@ public class SchemaUpdater_55_58 extends SchemaUpdaterBase {
        stepList.add(step);
 
        //#6794 change featuretree_id to graph_id
-       stepName = "change featuretree_id to graph_id";
-       tableName = "TermRelation";
-       String oldColumnName = "featureTree_id";
-       newColumnName = "graph_id";
-       step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
-       stepList.add(step);
+//       stepName = "change featuretree_id to graph_id";
+//       tableName = "TermRelation";
+//       String oldColumnName = "featureTree_id";
+//       newColumnName = "graph_id";
+//       step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+//       stepList.add(step);
+
 
        //#6794 change feature_id to term_id
        stepName = "change feature_id to term_id";
        tableName = "TermRelation";
-       oldColumnName = "feature_id";
+       String oldColumnName = "feature_id";
        newColumnName = "term_id";
        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
        stepList.add(step);
@@ -140,6 +141,7 @@ public class SchemaUpdater_55_58 extends SchemaUpdaterBase {
        //#6794
        renameTermVocToTermCollection(stepList);
 
+
        //#6794 add root_id column to TermCollection
        stepName = "add root_id column to TermCollection";
        tableName = "TermCollection";
@@ -148,7 +150,32 @@ public class SchemaUpdater_55_58 extends SchemaUpdaterBase {
        stepList.add(step);
 
        //#6794
+       stepName = "add graph_id column to TermRelation";
+       tableName = "TermRelation";
+       newColumnName = "graph_id";
+       step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, "TermCollection");
+       stepList.add(step);
+
+       //#6794
+       stepName = "change descriptiveSystem_id to descriptiveSystemOld_id";
+       tableName = "DescriptiveDataSet";
+       oldColumnName = "descriptiveSystem_id";
+       newColumnName = "descriptiveSystemOld_id";
+       step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+       stepList.add(step);
+
+       //#6794
+       stepName = "add descriptiveSystem_id column to DescriptiveDataSet";
+       tableName = "DescriptiveDataSet";
+       newColumnName = "descriptiveSystem_id";
+       step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, "TermCollection");
+       stepList.add(step);
+
+       //#6794
        addBooleansToTermVocabulary(stepList);
+
+       //#6794
+       FeatureTreeMover.NewInstance(stepList);
 
        //#7470
        updateFreeTextTypeDesignation(stepList);
