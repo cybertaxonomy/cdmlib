@@ -54,6 +54,8 @@ public class ProParteSynonymUpdater extends SchemaUpdaterStepBase {
 		super(stepName);
 	}
 
+//*************************** END *************************/
+
     @Override
     public void invoke(ICdmDataSource datasource, IProgressMonitor monitor,
             CaseType caseType, SchemaUpdateResult result) throws SQLException {
