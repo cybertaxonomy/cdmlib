@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.database.update.CaseType;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdateResult;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
+import eu.etaxonomy.cdm.database.update.TreeIndexUpdater;
 
 /**
  * @author a.mueller
@@ -48,6 +49,22 @@ public class FeatureTreeMover extends SchemaUpdaterStepBase {
         return result;
     }
 
+
+    @Override
+    public List<ISchemaUpdaterStep> getInnerSteps() {
+        List<ISchemaUpdaterStep> result = new ArrayList<>();
+
+        // update tree index for feature node
+        //note: it could also be enough to only replace the first index entry by graph_id as only the graph_id changed
+        String stepName = "Update TermTreeNode treeindex";
+        String tableName = "TermRelation";
+        String treeIdColumnName = "graph_id";
+        ISchemaUpdaterStep step = TreeIndexUpdater.NewInstance(stepName, tableName,
+                treeIdColumnName, "treeIndex", false);  // see comment for TaxonTree
+        result.add(step);
+
+        return result;
+    }
 
     /**
      * {@inheritDoc}
@@ -101,7 +118,8 @@ public class FeatureTreeMover extends SchemaUpdaterStepBase {
         updateDescriptiveSystem(featureTreeId, maxIdTermVoc, datasource, monitor, caseType, result);
         updateTermTreeNode(featureTreeId, maxIdTermVoc, datasource, monitor, caseType, result);
 
-        xx  treeIndex update;
+//        xx  treeIndex update;
+
 
 
         return maxIdTermVoc;
