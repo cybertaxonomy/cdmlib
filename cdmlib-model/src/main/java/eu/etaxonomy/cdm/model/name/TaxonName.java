@@ -1479,6 +1479,13 @@ public class TaxonName
 
     @Override
     @Transient
+    public List<TaggedText> getTaggedFullTitle() {
+        INameCacheStrategy strat = getCacheStrategy();
+        return strat.getTaggedFullTitle(this);
+    }
+
+    @Override
+    @Transient
     public String getFullTitleCache(){
         if (protectedFullTitleCache){
             return this.fullTitleCache;

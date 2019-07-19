@@ -275,12 +275,12 @@ public abstract class DaoBase {
 
         StringBuilder orderString = new StringBuilder();
 
-        StringBuffer aliasPrefix = new StringBuffer(" ");
-        if(aliasName != null && !aliasName.isEmpty()){
-            aliasPrefix.append(aliasName).append(".");
-        }
-
         if(orderHints != null && !orderHints.isEmpty()) {
+            StringBuffer aliasPrefix = new StringBuffer(" ");
+            if(aliasName != null && !aliasName.isEmpty()){
+                aliasPrefix.append(aliasName).append(".");
+            }
+
             for(OrderHint orderHint : orderHints) {
                 orderString.append((orderString.length() < 2) ? " ORDER BY " : "," );
                 orderString.append(aliasPrefix).append(orderHint.toHql());

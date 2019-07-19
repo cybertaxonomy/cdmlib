@@ -629,7 +629,8 @@ public class Abcd206XMLFieldGetter {
             getHierarchie(group.item(0));
             dataHolder.knownABCDelements.add(path);
             path = "";
-            dataHolder.setFieldNumber(group.item(0).getTextContent());
+            String collectorsFieldNumber = group.item(0).getTextContent();
+            dataHolder.setFieldNumber(collectorsFieldNumber);
         } catch (NullPointerException e) {
             dataHolder.setFieldNumber("");
         }

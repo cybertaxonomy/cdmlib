@@ -808,7 +808,7 @@ public class NonViralNameParserImpl
 			 //infra genus
 			 else if (infraGenusPattern.matcher(fullNameString).matches()){
 				Rank infraGenericRank;
-				if ("[unranked]".equals(epi[1])){
+				if ("[unranked]".equals(epi[1])||"[ranglos]".equals(epi[1])){
 					infraGenericRank = Rank.INFRAGENERICTAXON();
 				}else{
 				    String infraGenericRankMarker = epi[1];
@@ -880,7 +880,7 @@ public class NonViralNameParserImpl
 					infraSpecEpi = epi[4];
 				}
 				Rank infraSpecificRank;
-				if ("[unranked]".equals(infraSpecRankMarker)){
+				if ("[unranked]".equals(infraSpecRankMarker)||"[ranglos]".equals(infraSpecRankMarker)){
 					infraSpecificRank = Rank.INFRASPECIFICTAXON();
 				}else{
 					String localInfraSpecRankMarker;
@@ -914,22 +914,27 @@ public class NonViralNameParserImpl
 
 			 }//old infraSpecies
 			 else if (oldInfraSpeciesPattern.matcher(fullNameString).matches()){
-				boolean implemented = false;
+				boolean implemented = true;
 				if (implemented){
-					nameToBeFilled.setRank(Rank.getRankByNameOrIdInVoc(epi[2]));
-					nameToBeFilled.setGenusOrUninomial(epi[0]);
-					nameToBeFilled.setSpecificEpithet(epi[1]);
-					//TODO result.setUnnamedNamePhrase(epi[2] + " " + epi[3]);
-					authorString = fullNameString.substring(epi[0].length()+ 1 + epi[1].length() +1 + epi[2].length() + 1 + epi[3].length());
+				    String infraSpecRankMarker = epi[2];
+	                String infraSpecEpi = epi[3];
+
+	                Rank infraSpecificRank = Rank.getRankByNameOrIdInVoc(infraSpecRankMarker);
+	                nameToBeFilled.setRank(infraSpecificRank);
+	                nameToBeFilled.setGenusOrUninomial(epi[0]);
+	                nameToBeFilled.setSpecificEpithet(epi[1]);
+	                nameToBeFilled.setInfraSpecificEpithet(infraSpecEpi);
+	                authorString = fullNameString.substring(epi[0].length()+ 1 + epi[1].length() +1 + infraSpecRankMarker.length() + 1 + infraSpecEpi.length());
+
 				}else{
 					nameToBeFilled.addParsingProblem(ParserProblem.OldInfraSpeciesNotSupported);
 					nameToBeFilled.setTitleCache(fullNameString, true);
-					// FIXME Quick fix, otherwise search would not deilver results for unparsable names
+					// FIXME Quick fix, otherwise search would not deliver results for unparsable names
 					nameToBeFilled.setNameCache(fullNameString,true);
 					// END
 					logger.info("Name string " + fullNameString + " could not be parsed because UnnnamedNamePhrase is not yet implemented!");
 				}
-			}
+			 }
 		     //hybrid formula
 			 else if (hybridFormulaPattern.matcher(fullNameString).matches()){
 				 Set<HybridRelationship> existingRelations = new HashSet<>();

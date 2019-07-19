@@ -888,19 +888,26 @@ public class OccurrenceDaoHibernateImpl
      * {@inheritDoc}
      */
     @Override
-    public List<DerivedUnit> findByGeneticAccessionNumber(String accessionNumberString, List<String> propertyPaths) {
-        String queryString = "SELECT dnaSample FROM DnaSample dnaSample join dnaSample.sequences sequence WHERE sequence.geneticAccessionNumber LIKE :accessionNumberString";
+    public DnaSample findByGeneticAccessionNumber(String accessionNumberString, List<String> propertyPaths) {
+        String queryString = "SELECT dnaSample FROM DnaSample as dnaSample join dnaSample.sequences as sequences WITH sequences.geneticAccessionNumber LIKE :accessionNumberString";
         Query query = getSession().createQuery(queryString);
         query.setParameter("accessionNumberString", accessionNumberString);
         @SuppressWarnings("unchecked")
-        List<DerivedUnit> dnaSamples = query.list();
+        List<DnaSample> dnaSamples = query.list();
         defaultBeanInitializer.initializeAll(dnaSamples, propertyPaths);
-        List<DerivedUnit> results = new ArrayList<>();
-        for (DerivedUnit sample:dnaSamples){
-            extractDeterminedOriginals(sample, results);
+
+
+        if (dnaSamples.isEmpty()){
+            logger.debug("there is no dnaSample for genetic accession number " + accessionNumberString + " this should not happen.");
+            return null;
+        }else if (dnaSamples.size() == 1){
+            return dnaSamples.get(0);
+        } else{
+            logger.debug("there are more than one dnaSample for genetic accession number " + accessionNumberString + " this should not happen.");
+            return null;
         }
 
-        return results;
+
     }
 
     /**
@@ -923,12 +930,24 @@ public class OccurrenceDaoHibernateImpl
      * @param dnaSamples
      * @param results
      */
-    private void extractDeterminedOriginals(DerivedUnit sample, List<DerivedUnit> results) {
-
-        if (sample.getDeterminations() != null){
-            results.add(sample);
-        }else{
-            extractDeterminedOriginals(sample, results);
+    private void extractDeterminedOriginals(List<DerivedUnit> samples, List<DerivedUnit> results) {
+        for (DerivedUnit sample:samples){
+            if (sample.getDeterminations() != null && !sample.getDeterminations().isEmpty()){
+                results.add(sample);
+            }else{
+                if (sample instanceof DerivedUnit){
+                    Set<SpecimenOrObservationBase> originals = sample.getDerivedFrom().getOriginals();
+                    List<DerivedUnit> originalDerivedUnits = new ArrayList();
+                    for (SpecimenOrObservationBase original:originals){
+                        if (original instanceof DerivedUnit){
+                            originalDerivedUnits.add((DerivedUnit)original);
+                        }
+                    }
+                    if(!originalDerivedUnits.isEmpty()){
+                        extractDeterminedOriginals(originalDerivedUnits, results);
+                    }
+                }
+            }
         }
     }
 

@@ -53,12 +53,12 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Classification;
-import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.NameSearchOrder;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -614,6 +614,11 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
         return result;
     }
 
+    @Override
+    protected Pager<TaxonBase> pageByRestrictions(Class<TaxonBase> type, List<String> initStrategy, OrderHintPreset orderBy,
+            PagerParameters pagerParameters, ArrayList<Restriction<?>> restrictions) {
+        return service.page(type, restrictions, pagerParameters.getPageSize(), pagerParameters.getPageIndex(), orderBy.orderHints(), initStrategy, false);
+    }
 
     private Rank findRank(UUID rankUuid) {
         Rank rank = null;

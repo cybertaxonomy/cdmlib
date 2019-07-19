@@ -40,6 +40,15 @@ public class CdmLightExportResultProcessor {
     public CdmLightExportResultProcessor(CdmLightExportState state) {
         super();
         this.state = state;
+        Map<String,String[]> resultMap;
+        for (CdmLightExportTable table: CdmLightExportTable.values()){
+            resultMap = new HashMap<>();
+            if (state.getConfig().isHasHeaderLines()){
+                resultMap.put(HEADER, table.getColumnNames());
+            }
+            result.put(table, resultMap);
+        }
+
     }
 
 
@@ -61,6 +70,9 @@ public class CdmLightExportResultProcessor {
             record = csvLine;
 
             String[] oldRecord = resultMap.put(id, record);
+
+            String[] newRecord = resultMap.get(id);
+
 
             if (oldRecord != null){
                 String message = "Output processor already has a record for id " + id + ". This should not happen.";
@@ -102,9 +114,9 @@ public class CdmLightExportResultProcessor {
 
         if (!result.isEmpty() ){
             state.setAuthorStore(new HashMap<>());
-            state.setHomotypicalGroupStore(new HashMap<>());
-            state.setReferenceStore(new HashMap<>());
-            state.setSpecimenStore(new HashMap<>());
+            state.setHomotypicalGroupStore(new ArrayList<>());
+            state.setReferenceStore(new ArrayList());
+            state.setSpecimenStore(new ArrayList());
             state.setNodeChildrenMap(new HashMap<>());
             //Replace quotes by double quotes
             for (CdmLightExportTable table: result.keySet()){
@@ -127,12 +139,20 @@ public class CdmLightExportResultProcessor {
                             data.add(lineString);
                         }
                     }
+                    if (table.equals(CdmLightExportTable.SIMPLE_FACT) && data.size() == 1){
+                        String[] csvLine = new String[table.getSize()];
+                        csvLine[table.getIndex(CdmLightExportTable.FACT_ID)] = "<UUID>";
+                        csvLine[table.getIndex(CdmLightExportTable.TAXON_FK)]= state.getRootId().toString();
+                        csvLine[table.getIndex(CdmLightExportTable.FACT_TEXT)]= "Dummy";
+                        data.add(createCsvLine(config, csvLine));
+                    }
                     IOUtils.writeLines(data,
                             null,exportStream,
                             Charset.forName("UTF-8"));
                 } catch(Exception e){
                     state.getResult().addException(e, e.getMessage());
                 }
+
 
                 state.getResult().putExportData(table.getTableName(), exportStream.toByteArray());
                 state.getResult().setExportType(ExportType.CDM_LIGHT);

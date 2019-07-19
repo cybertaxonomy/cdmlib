@@ -12,9 +12,6 @@ import java.net.URI;
 
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
-import eu.etaxonomy.cdm.model.term.TermType;
-import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
  * @author pplitzner
@@ -25,8 +22,6 @@ public class StructureTreeOwlImportConfigurator extends ImportConfiguratorBase<S
 
     private static final long serialVersionUID = -7981427548996602252L;
 
-    private TermVocabulary vocabulary;
-
     public static StructureTreeOwlImportConfigurator NewInstance(URI source){
         return new StructureTreeOwlImportConfigurator(source);
     }
@@ -34,9 +29,6 @@ public class StructureTreeOwlImportConfigurator extends ImportConfiguratorBase<S
     protected StructureTreeOwlImportConfigurator(URI source) {
         super(null);
         this.setSource(source);
-        Reference reference = ReferenceFactory.newGeneric();
-        reference.setTitle("StructureTree import from "+source);
-        this.setSourceReference(reference);
     }
 
     @Override
@@ -47,6 +39,7 @@ public class StructureTreeOwlImportConfigurator extends ImportConfiguratorBase<S
     @Override
     protected void makeIoClassList() {
         ioClassList = new Class[] {
+                TermVocabularyOwlImport.class,
                 StructureTreeOwlImport.class
         };
     }
@@ -54,14 +47,6 @@ public class StructureTreeOwlImportConfigurator extends ImportConfiguratorBase<S
     @Override
     public Reference getSourceReference() {
         return sourceReference;
-    }
-
-    public TermVocabulary getVocabulary(TermType termType, String vocLabel) {
-        if(vocabulary==null){
-            vocabulary = TermVocabulary.NewInstance(termType);
-            vocabulary.setLabel(vocLabel);
-        }
-        return vocabulary;
     }
 
 }

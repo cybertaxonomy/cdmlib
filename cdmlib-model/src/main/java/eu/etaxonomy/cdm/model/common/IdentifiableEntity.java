@@ -54,7 +54,6 @@ import eu.etaxonomy.cdm.hibernate.search.StripHtmlBridge;
 import eu.etaxonomy.cdm.jaxb.FormattedTextAdapter;
 import eu.etaxonomy.cdm.jaxb.LSIDAdapter;
 import eu.etaxonomy.cdm.model.media.Rights;
-import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
@@ -473,7 +472,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     public String getExtensionsConcat(UUID extensionTypeUuid, String separator){
         String result = null;
         for (Extension extension : getExtensions()){
-            if (extension.getType().getUuid().equals(extensionTypeUuid)){
+            if (extension.getType() != null && extension.getType().getUuid().equals(extensionTypeUuid)){
                 result = CdmUtils.concat(separator, result, extension.getValue());
             }
         }

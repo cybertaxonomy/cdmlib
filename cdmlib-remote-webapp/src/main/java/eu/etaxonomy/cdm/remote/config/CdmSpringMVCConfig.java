@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Import;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.http.MediaType;
 import org.springframework.web.accept.ContentNegotiationManager;
 import org.springframework.web.context.support.ServletContextResource;
@@ -31,7 +32,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupp
 import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
 import org.springframework.web.servlet.view.XmlViewResolver;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import eu.etaxonomy.cdm.remote.controller.interceptor.LocaleContextHandlerInterceptor;
+import eu.etaxonomy.cdm.remote.converter.RestrictionConverter;
 import eu.etaxonomy.cdm.remote.view.PatternViewResolver;
 
 /**
@@ -63,6 +67,9 @@ public abstract class CdmSpringMVCConfig extends WebMvcConfigurationSupport  {
 
     @Autowired
     protected ServletContext servletContext;
+
+    @Autowired // is initialized in PreloadedBeans.class
+    private ObjectMapper jsonObjectMapper;
 
     @Autowired // is initialized in PreloadedBeans.class
     private LocaleContextHandlerInterceptor localeContextHandlerInterceptor;
@@ -111,6 +118,8 @@ public abstract class CdmSpringMVCConfig extends WebMvcConfigurationSupport  {
     }
 
 
+
+
     /* (non-Javadoc)
      * @see org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration#addInterceptors(org.springframework.web.servlet.config.annotation.InterceptorRegistry)
      */
@@ -120,6 +129,12 @@ public abstract class CdmSpringMVCConfig extends WebMvcConfigurationSupport  {
         registry.addInterceptor(localeContextHandlerInterceptor);
         logger.debug("addInterceptors");
     }
+
+    @Override
+    public void addFormatters(FormatterRegistry registry) {
+        registry.addConverter(new RestrictionConverter(jsonObjectMapper));
+    }
+
 
     @Override
     protected void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {

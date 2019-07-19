@@ -11,7 +11,9 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,9 +111,10 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
     }
 
     @Override
-    public Collection<TermDto> getCompleteTermHierarchy(UUID vocabularyUuid) {
-        Collection<TermDto> topLevelTerms = dao.getTopLevelTerms(vocabularyUuid);
+    public Collection<TermDto> getCompleteTermHierarchy(TermVocabularyDto vocabularyDto) {
+        Collection<TermDto> topLevelTerms = dao.getTopLevelTerms(vocabularyDto.getUuid());
         for (TermDto termDto : topLevelTerms) {
+            termDto.setVocabularyDto(vocabularyDto);
             initializeIncludes(termDto);
             initializeGeneralizationOf(termDto);
         }
@@ -122,6 +125,7 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
         Collection<TermDto> generalizationOf = termService.getKindOfsAsDto(parentTerm);
         parentTerm.setGeneralizationOf(generalizationOf);
         generalizationOf.forEach(generalization->{
+            generalization.setVocabularyDto(parentTerm.getVocabularyDto());
             generalization.setKindOfDto(parentTerm);
             initializeGeneralizationOf(generalization);
         });
@@ -131,6 +135,7 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
         Collection<TermDto> includes = termService.getIncludesAsDto(parentTerm);
         parentTerm.setIncludes(includes);
         includes.forEach(include->{
+            include.setVocabularyDto(parentTerm.getVocabularyDto());
             initializeIncludes(include);
             include.setPartOfDto(parentTerm);
         });
@@ -138,7 +143,12 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
 
     @Override
     public List<TermVocabularyDto> findVocabularyDtoByTermType(TermType termType) {
-        return dao.findVocabularyDtoByTermType(termType);
+        return findVocabularyDtoByTermTypes(Collections.singleton(termType));
+    }
+
+    @Override
+    public List<TermVocabularyDto> findVocabularyDtoByTermTypes(Set<TermType> termTypes) {
+        return dao.findVocabularyDtoByTermTypes(termTypes);
     }
 
     @Transactional(readOnly = false)

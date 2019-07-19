@@ -240,7 +240,7 @@ public class TypeDesignationSetManagerTest extends CdmTransactionalIntegrationTe
                 typeDesignationManager.addTypeDesigations(null, mtd_IT_unpublished);
 
                 assertEquals("failed after repreating " + i + " times",
-                        "Prionus coriatius L. Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 Holotype, [icon] p.33 in A.K. & W.K (2008) Algae of the BGBM; Isotype, [icon] (B Slide A565656)."
+                        "Prionus coriatius L. Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 Holotype, [icon] p.33 in A.K. & W.K (2008) Algae of the BGBM; Isotype, [icon] B Slide A565656."
                         , typeDesignationManager.print()
                         );
             }

@@ -35,7 +35,6 @@ import eu.etaxonomy.cdm.api.service.search.LuceneParseException;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -191,42 +190,60 @@ public class OccurrenceListController extends AbstractIdentifiableListController
 
     /**
     *
-    * @param clazz
     * @param queryString
-    * @param pageNumber
-    * @param pageSize
     * @param request
     * @param response
     * @return
     * @throws IOException
     * @throws ParseException
     */
-   @RequestMapping(method = RequestMethod.GET, value={"findByGeneticAccessionNumber"})
-   public Pager<DerivedUnit> dofindByGeneticAccessionNumber(
-           @RequestParam(value = "query", required = false) String queryString,
-           @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
-           @RequestParam(value = "pageSize", required = false) Integer pageSize,
-           HttpServletRequest request,
-           HttpServletResponse response
-           )
-            throws IOException {
+//   @RequestMapping(method = RequestMethod.GET, value={"byGeneticAccessionNumber"})
+//   public Pager<DerivedUnit> dofindByGeneticAccessionNumber(
+//           @RequestParam(value = "query", required = false) String queryString,
+//           @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+//           @RequestParam(value = "pageSize", required = false) Integer pageSize,
+//           HttpServletRequest request,
+//           HttpServletResponse response
+//           )
+//            throws IOException {
+//
+//        logger.info("dofindByIdentifier() " + requestPathAndQuery(request) );
+//
+//        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
+//        pagerParams.normalizeAndValidate(response);
+//
+//
+//        if(queryString == null ) {
+//            HttpStatusMessage.create("Query must be given", 400).send(response);
+//            return null;
+//        }
+//
+//       Pager<DerivedUnit> pager = service.findByAccessionNumber(queryString,pageSize, pageNumber, null,this.initializationStrategy);
+//
+//       return pager;
+//   }
 
-        logger.info("dofindByIdentifier() " + requestPathAndQuery(request) );
+    @RequestMapping(method = RequestMethod.GET, value = "byGeneticAccessionNumber" )
+    public FieldUnitDTO doFindByGeneticAccessionNumber(
+            @RequestParam(value="accessionNumber", required = true) String accessionNumber,
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+        logger.info("doListSpecimensOrObservations() - " + request.getRequestURI());
 
-        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
-        pagerParams.normalizeAndValidate(response);
-
-
-        if(queryString == null ) {
+        if(accessionNumber == null ) {
+            response.setHeader("Failure", "Query must be given");
             HttpStatusMessage.create("Query must be given", 400).send(response);
             return null;
         }
 
-       Pager<DerivedUnit> pager = service.findByAccessionNumber(queryString,pageSize, pageNumber, null,this.initializationStrategy);
-
-       return pager;
-   }
-
+       FieldUnitDTO fieldUnitDto = service.findByAccessionNumber(accessionNumber, null,this.initializationStrategy);
+       if(fieldUnitDto == null ) {
+           response.setHeader("Failure", "No DNA available for accession number ");
+           HttpStatusMessage.create("No DNA available for accession number " + accessionNumber, 400).send(response);
+           return null;
+       }
+       return fieldUnitDto;
+    }
 
 
 }

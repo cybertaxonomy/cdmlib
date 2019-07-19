@@ -121,14 +121,13 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<FeatureNode, 
 	     FeatureNode node = load(nodeUUID);
 	     DefinedTermBase child = HibernateProxyHelper.deproxy(termService.load(termChildUuid), DefinedTermBase.class);
 
-	     FeatureNode childNode = FeatureNode.NewInstance(node.getTermType());
-         childNode.setTerm(child);
+	     FeatureNode childNode;
          UpdateResult result = new UpdateResult();
          if(position<0) {
-             node.addChild(childNode);
+             childNode = node.addChild(child);
          }
          else{
-             node.addChild(childNode, position);
+             childNode = node.addChild(child, position);
          }
          save(childNode);
          result.addUpdatedObject(node);

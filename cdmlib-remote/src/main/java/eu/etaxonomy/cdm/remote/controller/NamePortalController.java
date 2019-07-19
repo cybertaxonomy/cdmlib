@@ -23,7 +23,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.INameService;
@@ -64,15 +63,7 @@ public class NamePortalController extends BaseController<TaxonName, INameService
 
     private static final Logger logger = Logger.getLogger(NamePortalController.class);
 
-    private static final List<String> TYPEDESIGNATION_INIT_STRATEGY = Arrays.asList(new String []{
-            "typeName.$",
-            "typeSpecimen",
-            "typeStatus.representations",
-            "typifiedNames.nomenclaturalReference.authorship",
-            "citation.authorship.$",
-            "typeSpecimen.media",
-            "registrations.institution"
-    });
+    private static final List<String> TYPEDESIGNATION_INIT_STRATEGY = TypeDesignationPortalController.DEFAULT_INIT_STRATEGY;
 
 
     private static final List<String> NAMEDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
@@ -80,12 +71,6 @@ public class NamePortalController extends BaseController<TaxonName, INameService
             "elements.multilanguageText",
             "elements.media",
     });
-
-
-//	public NamePortalController(){
-//		super();
-//		setInitializationStrategy(Arrays.asList(new String[]{"$"})); //TODO required???
-//	}
 
     @Override
     protected <CDM_BASE extends CdmBase> List<String> complementInitStrategy(Class<CDM_BASE> clazz,
@@ -141,13 +126,11 @@ public class NamePortalController extends BaseController<TaxonName, INameService
      *         {@link #TYPEDESIGNATION_INIT_STRATEGY}
      * @throws IOException
      */
-    @SuppressWarnings("unchecked")
     @RequestMapping(
             value = {"typeDesignations"},
             method = RequestMethod.GET)
     public List<TypeDesignationBase> doGetTypeDesignations(@PathVariable("uuid") UUID uuid,
             HttpServletRequest request, HttpServletResponse response)throws IOException {
-        ModelAndView mv = new ModelAndView();
         TaxonName tnb = getCdmBaseInstance(uuid, response, (List<String>)null);
         Pager<TypeDesignationBase> p = service.getTypeDesignations(tnb,  null, null, null, TYPEDESIGNATION_INIT_STRATEGY);
         return p.getRecords();

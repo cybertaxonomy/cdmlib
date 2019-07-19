@@ -17,6 +17,7 @@ import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -421,7 +422,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
    * @param propertyPaths
    * @return a derived unit
    */
-  public List<DerivedUnit> findByGeneticAccessionNumber(String accessionNumberString, List<String> propertyPaths);
+  public DnaSample findByGeneticAccessionNumber(String accessionNumberString, List<String> propertyPaths);
 
     /**
      * @param derivedUnitUuid

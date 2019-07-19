@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -97,18 +98,26 @@ public interface IVocabularyService extends IIdentifiableEntityService<TermVocab
 	/**
 	 * Initializes the complete term hierarchy consisting of {@link TermDto}s
 	 * for the given vocabulary
-	 * @param vocabularyUuid the UUID of the {@link TermVocabulary}
+	 * @param vocabularyDto the dto of the term vocabulary
 	 * @return a the top level elements for this vocabulary
 	 */
+	public Collection<TermDto> getCompleteTermHierarchy(TermVocabularyDto vocabularyDto);
 
-	public Collection<TermDto> getCompleteTermHierarchy(UUID vocabularyUuid);
-    /**
+	/**
      * Returns term vocabularies that contain terms of a certain {@link TermType} e.g. Feature, Modifier, State.
      *
      * @param termType the {@link TermType} of the terms in the vocabulary and of the vocabulary
-     * @return a list of term vocabularies
+     * @return a list of term vocabulary DTOs
      */
     public List<TermVocabularyDto> findVocabularyDtoByTermType(TermType termType);
+
+    /**
+     * Returns term vocabularies that contain terms of the given types {@link TermType} e.g. Feature, Modifier, State.
+     *
+     * @param termTypes a set of {@link TermType}s of the terms in the vocabulary and of the vocabulary
+     * @return a list of term vocabulary DTOs
+     */
+    public List<TermVocabularyDto> findVocabularyDtoByTermTypes(Set<TermType> termTypes);
 
     /**
      * Creates a new term as a direct child of the given vocabulary.

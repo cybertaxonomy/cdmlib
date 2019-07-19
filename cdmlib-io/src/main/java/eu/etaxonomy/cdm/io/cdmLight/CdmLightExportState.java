@@ -9,9 +9,11 @@
 package eu.etaxonomy.cdm.io.cdmLight;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.io.common.ExportResult;
 import eu.etaxonomy.cdm.io.common.ExportResult.ExportResultState;
@@ -22,6 +24,7 @@ import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 
 /**
@@ -38,12 +41,19 @@ public class CdmLightExportState
 
     private TaxonBase<?> actualTaxonBase;
 
-    private Map<Integer, HomotypicalGroup> homotypicalGroupStore = new HashMap<>();
+    private ArrayList<UUID> homotypicalGroupStore = new ArrayList();
     private Map<Integer, TeamOrPersonBase<?>> authorStore = new HashMap<>();
 
-    private Map<Integer, SpecimenOrObservationBase> specimenStore = new HashMap<>();
-    private Map<Integer, Reference> referenceStore = new HashMap<>();
-    private Map<Integer,List<TaxonNodeDto>> nodeChildrenMap = new HashMap<>();
+    private List<UUID> specimenStore = new ArrayList();
+    //private Map<Integer, SpecimenOrObservationBase> specimenStore = new HashMap<>();
+    private List<UUID> referenceStore = new ArrayList();
+    private Map<Integer, UUID> nameStore = new HashMap<>();
+    private Map<UUID,List<TaxonNodeDto>> nodeChildrenMap = new HashMap<>();
+    private Map<UUID, OrderHelper> orderHelperMap = new HashMap();
+    private UUID classificationUUID = null;
+
+    private UUID rootUuid;
+    private int actualOrderIndex;
     /**
      * @param config
      */
@@ -93,7 +103,7 @@ public class CdmLightExportState
     /**
      * @return the homotypicalGroupStore
      */
-    public Map<Integer, HomotypicalGroup> getHomotypicalGroupStore() {
+    public ArrayList<UUID> getHomotypicalGroupStore() {
         return homotypicalGroupStore;
     }
 
@@ -101,17 +111,17 @@ public class CdmLightExportState
      * @param homotypicalGroupStore the homotypicalGroupStore to set
      */
     public void addHomotypicalGroupToStore(HomotypicalGroup homotypicalGroup) {
-        this.homotypicalGroupStore.put(homotypicalGroup.getId(), homotypicalGroup);
+        this.homotypicalGroupStore.add(homotypicalGroup.getUuid());
     }
 
-    public HomotypicalGroup getHomotypicalGroupFromStore(Integer id){
-        return homotypicalGroupStore.get(id);
+    public boolean containsHomotypicalGroupFromStore(UUID id){
+        return homotypicalGroupStore.contains(id);
     }
 
     /**
      * @return the specimenStore
      */
-    public Map<Integer, SpecimenOrObservationBase> getSpecimenStore() {
+    public List<UUID> getSpecimenStore() {
         return specimenStore;
     }
 
@@ -120,7 +130,7 @@ public class CdmLightExportState
     /**
      * @param specimenStore the specimenStore to set
      */
-    public void setSpecimenStore(Map<Integer, SpecimenOrObservationBase> specimenStore) {
+    public void setSpecimenStore(List<UUID> specimenStore) {
         this.specimenStore = specimenStore;
     }
 
@@ -131,7 +141,7 @@ public class CdmLightExportState
     /**
      * @param homotypicalGroupStore the homotypicalGroupStore to set
      */
-    public void setHomotypicalGroupStore(Map<Integer, HomotypicalGroup> homotypicalGroupStore) {
+    public void setHomotypicalGroupStore(ArrayList<UUID> homotypicalGroupStore) {
         this.homotypicalGroupStore = homotypicalGroupStore;
     }
 
@@ -163,47 +173,85 @@ public class CdmLightExportState
 
 
     public void addSpecimenToStore(SpecimenOrObservationBase specimen) {
-        this.specimenStore.put(specimen.getId(), specimen);
+        this.specimenStore.add(specimen.getUuid());
 
     }
 
 
-    public SpecimenOrObservationBase getSpecimenFromStore(Integer id){
-        return specimenStore.get(id);
-    }
-
-    public Reference getReferenceFromStore(Integer id){
-        return referenceStore.get(id);
-    }
     public void addReferenceToStore(Reference ref) {
-        this.referenceStore.put(ref.getId(), ref);
+        this.referenceStore.add(ref.getUuid());
 
     }
     /**
      * @param referenceStore the referenceStore to set
      */
-    public void setReferenceStore(Map<Integer, Reference> referenceStore) {
+    public void setReferenceStore(List<UUID> referenceStore) {
         this.referenceStore = referenceStore;
     }
     /**
      * @return the referenceStore
      */
-    public Map<Integer, Reference> getReferenceStore() {
+    public List<UUID> getReferenceStore() {
         return referenceStore;
     }
 
     /**
      * @return the nodeChildrenMap
      */
-    public Map<Integer, List<TaxonNodeDto>> getNodeChildrenMap() {
+    public Map<UUID, List<TaxonNodeDto>> getNodeChildrenMap() {
         return nodeChildrenMap;
     }
 
     /**
      * @param nodeChildrenMap the nodeChildrenMap to set
      */
-    public void setNodeChildrenMap(Map<Integer, List<TaxonNodeDto>> nodeChildrenMap) {
+    public void setNodeChildrenMap(Map<UUID, List<TaxonNodeDto>> nodeChildrenMap) {
         this.nodeChildrenMap = nodeChildrenMap;
+    }
+
+    public Map<UUID, OrderHelper> getOrderHelperMap() {
+        return orderHelperMap;
+    }
+
+    public void setOrderHelperMap(Map<UUID, OrderHelper> orderHelperMap) {
+        this.orderHelperMap = orderHelperMap;
+    }
+
+    public UUID getClassificationUUID(TaxonNode root) {
+        if (classificationUUID == null){
+            classificationUUID = root.getClassification().getUuid();
+        }
+        return classificationUUID;
+    }
+
+    public void setClassificationUUID(UUID classificationUUID) {
+        this.classificationUUID = classificationUUID;
+    }
+
+    public UUID getRootId() {
+        return rootUuid;
+    }
+
+    public void setRootId(UUID rootId) {
+        this.rootUuid = rootId;
+    }
+
+    public int getActualOrderIndexAndUpdate() {
+        int returnValue = actualOrderIndex;
+        actualOrderIndex++;
+        return returnValue;
+    }
+
+    public void setActualOrderIndex(int actualOrderIndex) {
+        this.actualOrderIndex = actualOrderIndex;
+    }
+
+    public Map<Integer, UUID> getNameStore() {
+        return nameStore;
+    }
+
+    public void setNameStore(Map<Integer, UUID> nameStore) {
+        this.nameStore = nameStore;
     }
 
 }

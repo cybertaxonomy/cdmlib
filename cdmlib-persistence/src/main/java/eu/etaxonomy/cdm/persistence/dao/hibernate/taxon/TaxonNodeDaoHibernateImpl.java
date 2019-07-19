@@ -43,12 +43,14 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.model.taxon.UuidAndTitleCacheTaxonComparator;
+import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoImpl;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author a.mueller
@@ -337,6 +339,51 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         }
         return records;
     }
+
+    @Override
+    public <S extends TaxonNode> List<S> list(Class<S> type, List<Restriction<?>> restrictions, Integer limit,
+            Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+        // TODO Auto-generated method stub
+        return list(type, restrictions, limit, start, orderHints, propertyPaths, INCLUDE_UNPUBLISHED);
+    }
+
+    @Override
+    public <S extends TaxonNode> List<S> list(Class<S> type, List<Restriction<?>> restrictions, Integer limit,
+            Integer start, List<OrderHint> orderHints, List<String> propertyPaths, boolean includePublished) {
+
+        Criteria criteria = createCriteria(type, restrictions, false);
+
+        if(!includePublished){
+            criteria.add(Restrictions.eq("taxon.publish", true));
+        }
+
+        addLimitAndStart(criteria, limit, start);
+        addOrder(criteria, orderHints);
+
+        @SuppressWarnings("unchecked")
+        List<S> result = criteria.list();
+        defaultBeanInitializer.initializeAll(result, propertyPaths);
+        return result;
+    }
+
+
+    @Override
+    public long count(Class<? extends TaxonNode> type, List<Restriction<?>> restrictions) {
+        return count(type, restrictions, INCLUDE_UNPUBLISHED);
+    }
+
+
+    @Override
+    public long count(Class<? extends TaxonNode> type, List<Restriction<?>> restrictions, boolean includePublished) {
+
+        Criteria criteria = createCriteria(type, restrictions, false);
+        if(!includePublished){
+            criteria.add(Restrictions.eq("taxon.publish", true));
+        }
+        criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
+        return (Long) criteria.uniqueResult();
+    }
+
 
     /**
      * {@inheritDoc}

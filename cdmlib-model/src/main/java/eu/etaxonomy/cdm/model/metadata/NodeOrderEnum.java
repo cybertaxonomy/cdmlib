@@ -14,7 +14,7 @@ package eu.etaxonomy.cdm.model.metadata;
  * @since 19.11.2018
  *
  */
-public enum NodeOrderEnum {
+public enum NodeOrderEnum implements IKeyLabel{
     AlphabeticalOrder("AlphabeticalOrder", "Alphabetical"), //$NON-NLS-1$
     NaturalOrder("NaturalOrder", "Natural"), //$NON-NLS-1$
     RankAndNameOrder("RankAndNameOrder", "Rank and Name"); //$NON-NLS-1$
@@ -28,11 +28,18 @@ public enum NodeOrderEnum {
         this.key = key;
     }
 
+    @Override
     public String getLabel(){
         return label;
     }
 
+    @Override
     public String getKey(){
+        return key;
+    }
+
+    @Override
+    public String toString(){
         return key;
     }
 }

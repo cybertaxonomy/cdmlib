@@ -19,10 +19,8 @@ import eu.etaxonomy.cdm.api.service.dto.RegistrationWorkingSet;
 import eu.etaxonomy.cdm.api.service.exception.RegistrationValidationException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.database.PermissionDeniedException;
-import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
-import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -42,10 +40,6 @@ public interface IRegistrationWorkingSetService {
     public RegistrationDTO loadDtoByUuid(UUID uuid);
 
     public Pager<RegistrationDTO> pageDTOs(Integer pageSize, Integer pageIndex);
-
-    public Pager<RegistrationDTO> pageDTOs(User submitter, Collection<RegistrationStatus> includedStatus,
-            String identifierFilterPattern, String taxonNameFilterPattern, Set<TypeDesignationStatusBase> typeStatusFilter,
-            Integer pageSize, Integer pageIndex, List<OrderHint> orderHints);
 
     public Pager<RegistrationDTO> pageDTOs(String identifier, Integer pageIndex,  Integer pageSize) throws IOException;
 
@@ -76,8 +70,9 @@ public interface IRegistrationWorkingSetService {
 
     public List<RegistrationDTO> makeDTOs(Collection<Registration> regs);
 
-    Pager<RegistrationDTO> pageDTOs(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, String identifierFilterPattern, String taxonNameFilterPattern, Collection<UUID> typeDesignationStatusUuids, Integer pageSize, Integer pageIndex,
-            List<OrderHint> orderHints);
+    Pager<RegistrationDTO> pageDTOs(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, String identifierFilterPattern,
+            String taxonNameFilterPattern, String referenceFilterPattern, Collection<UUID> typeDesignationStatusUuids, Integer pageSize,
+            Integer pageIndex, List<OrderHint> orderHints);
 
     /**
      * @param submitterUuid
@@ -93,6 +88,8 @@ public interface IRegistrationWorkingSetService {
     public Pager<RegistrationDTO> findInTaxonGraph(UUID submitterUuid, Collection<RegistrationStatus> includedStatus,
             String taxonNameFilterPattern, MatchMode matchMode, Integer pageSize, Integer pageIndex,
             List<OrderHint> orderHints);
+
+    public Pager<RegistrationDTO> pageWorkingSetsByNameUUID(Collection<UUID> taxonNameUuids, Integer pageIndex, Integer pageSize, List<OrderHint> orderHints) throws RegistrationValidationException, PermissionDeniedException;
 
 
 

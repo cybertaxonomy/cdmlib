@@ -64,7 +64,7 @@ public abstract class DerivateDTO extends TypedEntityReference{
     private String preservationMethod;
     private Set<DerivateDTO> derivates;
 
-    private Set<SpecimenTypeDesignation> specimenTypeDesignations;
+    private Set<SpecimenTypeDesignationDTO> specimenTypeDesignations;
 
     private DerivationEventDTO derivationEvent;
 
@@ -134,14 +134,16 @@ public abstract class DerivateDTO extends TypedEntityReference{
         this.preservationMethod = preservationMethod;
     }
 
-    public Set<SpecimenTypeDesignation> getSpecimenTypeDesignations() {
+    public Set<SpecimenTypeDesignationDTO> getSpecimenTypeDesignations() {
         return specimenTypeDesignations;
     }
 
     public void setSpecimenTypeDesignations(Set<SpecimenTypeDesignation> specimenTypeDesignations) {
         this.specimenTypeDesignations = new HashSet<>();
         for (SpecimenTypeDesignation typeDes: specimenTypeDesignations){
-            this.specimenTypeDesignations.add(typeDes);
+            if (typeDes != null){
+                this.specimenTypeDesignations.add(new SpecimenTypeDesignationDTO(typeDes, this));
+            }
         }
 
     }

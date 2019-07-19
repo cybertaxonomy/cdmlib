@@ -101,6 +101,11 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
         String result;
         if (isNotBlank(facade.getAccessionNumber())){
             result = facade.getAccessionNumber();
+            String code = getCode(facade);
+            result = result.trim();
+            if(isNotBlank(code) && result.startsWith(code + " ")){
+                result = result.replaceAll("^" + code + "\\s", "");
+            }
         }else if (isNotBlank(facade.getBarcode())){
             result = facade.getBarcode();
         }else{

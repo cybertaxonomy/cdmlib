@@ -76,8 +76,7 @@ public class FeatureNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		featureTreeService.save(featureTree);
 
 		Feature feature = (Feature)termService.find(914);
-		FeatureNode newNode = FeatureNode.NewInstance(feature);
-		featureTree.getRoot().addChild(newNode);
+		FeatureNode<Feature> newNode = featureTree.getRoot().addChild(feature);
 
 		featureTreeService.save(featureTree);
 
@@ -97,8 +96,7 @@ public class FeatureNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		node2 = featureNodeService.load(node2Uuid);
 		String oldTreeIndex = node2.treeIndex();
 
-		FeatureNode newNode = FeatureNode.NewInstance(feature);
-		node2.addChild(newNode);
+		FeatureNode newNode = node2.addChild(feature);
 		featureNodeService.saveOrUpdate(node2);
 
 		commitAndStartNewTransaction(new String[]{"FeatureNode"});

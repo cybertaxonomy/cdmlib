@@ -60,7 +60,9 @@ import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
+import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.INonViralName;
+import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.RankClass;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -234,7 +236,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				extensionType.setUuid(uuid);
 				if (voc == null){
 					boolean isOrdered = false;
-					voc = getVocabulary(TermType.ExtensionType, uuidUserDefinedExtensionTypeVocabulary, "User defined vocabulary for extension types", "User Defined Extension Types", null, null, isOrdered, extensionType);
+					voc = getVocabulary(state, TermType.ExtensionType, uuidUserDefinedExtensionTypeVocabulary, "User defined vocabulary for extension types", "User Defined Extension Types", null, null, isOrdered, extensionType);
 				}
 				voc.addTerm(extensionType);
 				getTermService().saveOrUpdate(extensionType);
@@ -256,7 +258,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				identifierType.setUuid(uuid);
 				if (voc == null){
 					boolean isOrdered = false;
-					voc = getVocabulary(TermType.IdentifierType, uuidUserDefinedIdentifierTypeVocabulary, "User defined vocabulary for identifier types", "User Defined Identifier Types", null, null, isOrdered, identifierType);
+					voc = getVocabulary(state, TermType.IdentifierType, uuidUserDefinedIdentifierTypeVocabulary, "User defined vocabulary for identifier types", "User Defined Identifier Types", null, null, isOrdered, identifierType);
 				}
 				voc.addTerm(identifierType);
 				getTermService().saveOrUpdate(identifierType);
@@ -317,7 +319,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				markerType.setUuid(uuid);
 				if (voc == null){
 					boolean isOrdered = false;
-					voc = getVocabulary(TermType.MarkerType, uuidUserDefinedMarkerTypeVocabulary, "User defined vocabulary for marker types", "User Defined Marker Types", null, null, isOrdered, markerType);
+					voc = getVocabulary(state, TermType.MarkerType, uuidUserDefinedMarkerTypeVocabulary, "User defined vocabulary for marker types", "User Defined Marker Types", null, null, isOrdered, markerType);
 				}
 				voc.addTerm(markerType);
 				getTermService().save(markerType);
@@ -339,7 +341,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				annotationType.setUuid(uuid);
 				if (voc == null){
 					boolean isOrdered = false;
-					voc = getVocabulary(TermType.AnnotationType, uuidUserDefinedAnnotationTypeVocabulary, "User defined vocabulary for annotation types", "User Defined Annotation Types", null, null, isOrdered, annotationType);
+					voc = getVocabulary(state, TermType.AnnotationType, uuidUserDefinedAnnotationTypeVocabulary, "User defined vocabulary for annotation types", "User Defined Annotation Types", null, null, isOrdered, annotationType);
 				}
 
 				voc.addTerm(annotationType);
@@ -362,7 +364,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				refSystem = ReferenceSystem.NewInstance(text, label, labelAbbrev);
 				if (voc == null){
 					boolean isOrdered = false;
-					voc = getVocabulary(TermType.ReferenceSystem, uuidUserDefinedReferenceSystemVocabulary, "User defined vocabulary for reference systems", "User Defined Reference System", null, null, isOrdered, refSystem);
+					voc = getVocabulary(state, TermType.ReferenceSystem, uuidUserDefinedReferenceSystemVocabulary, "User defined vocabulary for reference systems", "User Defined Reference System", null, null, isOrdered, refSystem);
 				}
 				voc.addTerm(refSystem);
 				refSystem.setUuid(uuid);
@@ -387,7 +389,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				rank = Rank.NewInstance(rankClass, text, label, labelAbbrev);
 				if (voc == null){
 					boolean isOrdered = true;
-					voc = (OrderedTermVocabulary)getVocabulary(TermType.Rank, uuidUserDefinedRankVocabulary, "User defined vocabulary for ranks", "User Defined Reference System", null, null, isOrdered, rank);
+					voc = (OrderedTermVocabulary)getVocabulary(state, TermType.Rank, uuidUserDefinedRankVocabulary, "User defined vocabulary for ranks", "User Defined Reference System", null, null, isOrdered, rank);
 				}
 				if (lowerRank == null){
 					voc.addTerm(rank);
@@ -418,13 +420,14 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		return getNamedArea(state, uuid, label, text, labelAbbrev, areaType, level, null, null);
 	}
 
-	protected NamedArea getNamedArea(STATE state, UUID uuid, String label, String text, String labelAbbrev, NamedAreaType areaType, NamedAreaLevel level, TermVocabulary voc, TermMatchMode matchMode){
+	protected NamedArea getNamedArea(STATE state, UUID uuid, String label, String text, String labelAbbrev, NamedAreaType areaType,
+	        NamedAreaLevel level, TermVocabulary voc, TermMatchMode matchMode){
 		return getNamedArea(state, uuid, label, text, labelAbbrev, areaType, level, voc, matchMode, null);
 	}
 
 
-	protected NamedArea getNamedArea(STATE state, UUID uuid, String label, String text, String labelAbbrev, NamedAreaType areaType, NamedAreaLevel level, TermVocabulary voc, TermMatchMode matchMode,
-			List<TermVocabulary<NamedArea>> vocabularyPreference){
+	protected NamedArea getNamedArea(STATE state, UUID uuid, String label, String text, String labelAbbrev, NamedAreaType areaType,
+	        NamedAreaLevel level, TermVocabulary voc, TermMatchMode matchMode, List<TermVocabulary<NamedArea>> vocabularyPreference){
 		Class<NamedArea> clazz = NamedArea.class;
 		if (uuid == null){
 			uuid = UUID.randomUUID();
@@ -461,7 +464,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				namedArea = NamedArea.NewInstance(text, label, labelAbbrev);
 				if (voc == null){
 					boolean isOrdered = true;
-					voc = getVocabulary(TermType.NamedArea, uuidUserDefinedNamedAreaVocabulary, "User defined vocabulary for named areas", "User Defined Named Areas", null, null, isOrdered, namedArea);
+					voc = getVocabulary(state, TermType.NamedArea, uuidUserDefinedNamedAreaVocabulary, "User defined vocabulary for named areas", "User Defined Named Areas", null, null, isOrdered, namedArea);
 				}
 				voc.addTerm(namedArea);
 				namedArea.setType(areaType);
@@ -561,7 +564,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				namedAreaLevel = NamedAreaLevel.NewInstance(text, label, labelAbbrev);
 				if (voc == null){
 					boolean isOrdered = true;
-					voc = getVocabulary(TermType.NamedAreaLevel, uuidUserDefinedNamedAreaLevelVocabulary, "User defined vocabulary for named area levels", "User Defined Named Area Levels", null, null, isOrdered, namedAreaLevel);
+					voc = getVocabulary(state, TermType.NamedAreaLevel, uuidUserDefinedNamedAreaLevelVocabulary, "User defined vocabulary for named area levels", "User Defined Named Area Levels", null, null, isOrdered, namedAreaLevel);
 				}
 				//FIXME only for debugging
 				Set<NamedAreaLevel> terms = voc.getTerms();
@@ -617,7 +620,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				stateTerm.setUuid(uuid);
 				if (voc == null){
 					boolean isOrdered = true;
-					TermVocabulary<State> orderedVoc = getVocabulary(TermType.State, uuidUserDefinedStateVocabulary, "User defined vocabulary for states used by Categorical Data", "User Defined States", null, null, isOrdered, stateTerm);
+					TermVocabulary<State> orderedVoc = getVocabulary(importState, TermType.State, uuidUserDefinedStateVocabulary, "User defined vocabulary for states used by Categorical Data", "User Defined States", null, null, isOrdered, stateTerm);
 					voc = CdmBase.deproxy(orderedVoc, OrderedTermVocabulary.class);
 				}
 				voc.addTerm(stateTerm);
@@ -665,7 +668,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				feature.setSupportsTextData(true);
 				if (voc == null){
 					boolean isOrdered = false;
-					voc = getVocabulary(TermType.Feature, uuidUserDefinedFeatureVocabulary, "User defined vocabulary for features", "User Defined Features", null, null, isOrdered, feature);
+					voc = getVocabulary(state, TermType.Feature, uuidUserDefinedFeatureVocabulary, "User defined vocabulary for features", "User Defined Features", null, null, isOrdered, feature);
 				}
 				voc.addTerm(feature);
 				getTermService().save(feature);
@@ -687,7 +690,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				unit.setUuid(uuid);
 				if (voc == null){
 					boolean isOrdered = false;
-					voc = getVocabulary(TermType.KindOfUnit, uuidUserDefinedKindOfUnitVocabulary, "User defined vocabulary for kind-of-units", "User Defined Measurement kind-of-units", null, null, isOrdered, unit);
+					voc = getVocabulary(state, TermType.KindOfUnit, uuidUserDefinedKindOfUnitVocabulary, "User defined vocabulary for kind-of-units", "User Defined Measurement kind-of-units", null, null, isOrdered, unit);
 				}
 				voc.addTerm(unit);
 				getTermService().save(unit);
@@ -720,7 +723,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				unit.setUuid(uuid);
 				if (voc == null){
 					boolean isOrdered = false;
-					voc = getVocabulary(TermType.MeasurementUnit, uuidUserDefinedMeasurementUnitVocabulary, "User defined vocabulary for measurement units", "User Defined Measurement Units", null, null, isOrdered, unit);
+					voc = getVocabulary(state, TermType.MeasurementUnit, uuidUserDefinedMeasurementUnitVocabulary, "User defined vocabulary for measurement units", "User Defined Measurement Units", null, null, isOrdered, unit);
 				}
 				voc.addTerm(unit);
 				getTermService().save(unit);
@@ -753,7 +756,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				statisticalMeasure.setUuid(uuid);
 				if (voc == null){
 					boolean isOrdered = false;
-					voc = getVocabulary(TermType.StatisticalMeasure, uuidUserDefinedStatisticalMeasureVocabulary, "User defined vocabulary for statistical measures", "User Defined Statistical Measures", null, null, isOrdered, statisticalMeasure);
+					voc = getVocabulary(state, TermType.StatisticalMeasure, uuidUserDefinedStatisticalMeasureVocabulary, "User defined vocabulary for statistical measures", "User Defined Statistical Measures", null, null, isOrdered, statisticalMeasure);
 				}
 				voc.addTerm(statisticalMeasure);
 				getTermService().save(statisticalMeasure);
@@ -786,7 +789,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				modifier.setUuid(uuid);
 				if (voc == null){
 					boolean isOrdered = false;
-					voc = getVocabulary(TermType.Modifier, uuidUserDefinedModifierVocabulary, "User defined vocabulary for modifier", "User Defined Modifier", null, null, isOrdered, modifier);
+					voc = getVocabulary(state, TermType.Modifier, uuidUserDefinedModifierVocabulary, "User defined vocabulary for modifier", "User Defined Modifier", null, null, isOrdered, modifier);
 				}
 				voc.addTerm(modifier);
 				getTermService().save(modifier);
@@ -819,7 +822,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				relType.setUuid(uuid);
 				if (voc == null){
 					boolean isOrdered = true;
-					voc = getVocabulary(TermType.TaxonRelationshipType, uuidUserDefinedTaxonRelationshipTypeVocabulary, "User defined vocabulary for taxon relationship types", "User Defined Taxon Relationship Types", null, null, isOrdered, relType);
+					voc = getVocabulary(state, TermType.TaxonRelationshipType, uuidUserDefinedTaxonRelationshipTypeVocabulary, "User defined vocabulary for taxon relationship types", "User Defined Taxon Relationship Types", null, null, isOrdered, relType);
 				}
 				voc.addTerm(relType);
 				getTermService().save(relType);
@@ -861,7 +864,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				//set vocabulary ; FIXME use another user-defined vocabulary
 				if (voc == null){
                     boolean isOrdered = true;
-                    voc = getVocabulary(TermType.PresenceAbsenceTerm, uuidUserDefinedPresenceAbsenceVocabulary, "User defined vocabulary for distribution status", "User Defined Distribution Status", null, null, isOrdered, presenceTerm);
+                    voc = getVocabulary(state, TermType.PresenceAbsenceTerm, uuidUserDefinedPresenceAbsenceVocabulary, "User defined vocabulary for distribution status", "User Defined Distribution Status", null, null, isOrdered, presenceTerm);
                 }
 				voc.addTerm(presenceTerm);
 				getTermService().save(presenceTerm);
@@ -898,7 +901,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				if (voc == null){
 					UUID uuidLanguageVoc = uuidUserDefinedLanguageVocabulary;
 					boolean isOrdered = false;
-					voc = getVocabulary(TermType.Language, uuidLanguageVoc, "User defined languages", "User defined languages", "User defined languages", null, isOrdered, language);
+					voc = getVocabulary(state, TermType.Language, uuidLanguageVoc, "User defined languages", "User defined languages", "User defined languages", null, isOrdered, language);
 				}
 				//set vocabulary ; FIXME use another user-defined vocabulary
 
@@ -910,26 +913,26 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		return language;
 	}
 
+    protected <T extends DefinedTermBase> TermVocabulary<T> getVocabulary(STATE state, TermType termType, UUID uuid, String description, String label, String abbrev, URI termSourceUri, boolean isOrdered, T type) {
+        TermVocabulary<T> voc = state != null? state.getTermedVocabulary(uuid): null;
+        if (voc != null){
+            return voc;
+        }
 
-	/**
-	 * @param uuid
-	 * @return
-	 *
-	 */
-	protected <T extends DefinedTermBase> TermVocabulary<T> getVocabulary(TermType termType, UUID uuid, String description, String label, String abbrev, URI termSourceUri, boolean isOrdered, T type) {
-		List<String> propPath = Arrays.asList(new String[]{"terms"});
-		TermVocabulary<T> voc = getVocabularyService().load(uuid, propPath);
-		if (voc == null){
-			if (isOrdered){
-				voc = OrderedTermVocabulary.NewInstance(termType, description, label, abbrev, termSourceUri);
-			}else{
-				voc = TermVocabulary.NewInstance(termType, description, label, abbrev, termSourceUri);
-			}
-			voc.setUuid(uuid);
-			getVocabularyService().save(voc);
-		}
-		return voc;
-	}
+        List<String> propPath = Arrays.asList(new String[]{"terms"});
+        voc = getVocabularyService().load(uuid, propPath);
+        if (voc == null){
+            if (isOrdered){
+                voc = OrderedTermVocabulary.NewInstance(termType, description, label, abbrev, termSourceUri);
+            }else{
+                voc = TermVocabulary.NewInstance(termType, description, label, abbrev, termSourceUri);
+            }
+            voc.setUuid(uuid);
+            getVocabularyService().save(voc);
+        }
+        state.putTermedVocabularyMap(voc);
+        return voc;
+    }
 
 	/**
 	 * Adds an orginal source to a sourceable objects (implemented for Identifiable entity and description element.
@@ -1569,6 +1572,20 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
         }
         author.getTitleCache();
         return author;
+    }
+
+    /**
+     * Saves name relations. Needed if a name was parsed and has hybrid parents
+     * which will not be saved via cascade.
+     */
+    protected void saveNameRelations(TaxonName name) {
+        for (HybridRelationship rel: name.getHybridChildRelations()){
+            getNameService().saveOrUpdate(rel.getParentName());
+        }
+        for (NameRelationship rel: name.getNameRelations()){
+            getNameService().saveOrUpdate(rel.getFromName());
+            getNameService().saveOrUpdate(rel.getToName());
+        }
     }
 
 

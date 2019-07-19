@@ -414,10 +414,8 @@ public class FullCoverageDataGenerator {
 		//Feature Tree
 		FeatureTree featureTree = FeatureTree.NewInstance();
 //		featureTree
-		FeatureNode descriptionFeatureNode = FeatureNode.NewInstance(Feature.DESCRIPTION());
-		FeatureNode leaveLengthNode = FeatureNode.NewInstance(leaveLength);
-		featureTree.getRootChildren().add(descriptionFeatureNode);
-		descriptionFeatureNode.addChild(leaveLengthNode);
+		FeatureNode descriptionFeatureNode = featureTree.getRoot().addChild(Feature.DESCRIPTION());
+		FeatureNode leaveLengthNode = descriptionFeatureNode.addChild(leaveLength);
 		handleIdentifiableEntity(featureTree);
 
 		State inapplicableState = State.NewInstance("inapplicableState", "inapplicableState", null);

@@ -28,8 +28,10 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
 /**
@@ -366,5 +368,18 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      * @return
      */
     UpdateResult saveNewTaxonNode(TaxonNode newTaxonNode);
+
+    /**
+     * @param clazz
+     * @param restrictions
+     * @param pageSize
+     * @param pageIndex
+     * @param orderHints
+     * @param propertyPaths
+     * @param includeUnpublished
+     * @return
+     */
+    public <S extends TaxonNode> Pager<S> page(Class<S> clazz, List<Restriction<?>> restrictions, Integer pageSize, Integer pageIndex,
+            List<OrderHint> orderHints, List<String> propertyPaths, boolean includeUnpublished);
 
 }

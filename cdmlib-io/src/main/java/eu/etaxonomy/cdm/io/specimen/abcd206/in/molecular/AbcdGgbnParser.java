@@ -21,6 +21,8 @@ import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportState;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.AbcdParseUtility;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.SpecimenImportReport;
+import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.molecular.Amplification;
 import eu.etaxonomy.cdm.model.molecular.AmplificationResult;
@@ -246,11 +248,13 @@ public class AbcdGgbnParser {
                     //TODO: this can be different from the actual length in ABCD but not in CDM!
                     sequence.getConsensusSequence().setLength(consensusSequenceLength.intValue());
                 }
-                //contig file URL
+                //contig file URL geneticAccessionNumberURI
                 NodeList consensusSequenceChromatogramFileURIList = sequencing.getElementsByTagName(prefix+"consensusSequenceChromatogramFileURI");
+                //NodeList consensusSequenceChromatogramFileURIList = sequencing.getElementsByTagName(prefix+"geneticAccessionNumberURI");
                 URI uri = AbcdParseUtility.parseFirstUri(consensusSequenceChromatogramFileURIList, report);
                 if (uri != null && uri.toString().endsWith("fasta")){
                     state.putSequenceDataStableIdentifier(uri);
+                    sequence.addAnnotation(Annotation.NewInstance(uri.toString(), Language.DEFAULT()));
                 }else{
                     Media contigFile = Media.NewInstance(uri, null, null, null);
                     sequence.setContigFile(contigFile);

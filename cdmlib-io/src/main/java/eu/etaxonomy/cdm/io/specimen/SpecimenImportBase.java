@@ -594,11 +594,17 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	        List<String> propertyPaths = new ArrayList<>();
 	        propertyPaths.add("derivedFrom.*");
 	        config.setPropertyPaths(propertyPaths);
+	        commitTransaction(state.getTx());
+	        state.setTx(startTransaction());
+	        try{
 	        Pager<SpecimenOrObservationBase> existingSpecimens = cdmAppController.getOccurrenceService().findByTitle(config);
 	        if(!existingSpecimens.getRecords().isEmpty()){
 	            if(existingSpecimens.getRecords().size()==1){
 	                return existingSpecimens.getRecords().iterator().next();
 	            }
+	        }
+	        }catch(NullPointerException e){
+	        	logger.error("searching for existing specimen creates NPE: " + config.getSignificantIdentifier());
 	        }
 	        return null;
 	    }
@@ -1107,7 +1113,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	                if(cdmAppController == null){
 	                    cdmAppController = this;
 	                }
-	                specimenTypeDesignationstatus = (SpecimenTypeDesignationStatus) cdmAppController.getTermService().find(specimenTypeDesignationstatus.getUuid());
+	                specimenTypeDesignationstatus = HibernateProxyHelper.deproxy(cdmAppController.getTermService().find(specimenTypeDesignationstatus.getUuid()), SpecimenTypeDesignationStatus.class);
 	                //Designation
 	                TaxonName name = taxon.getName();
 	                SpecimenTypeDesignation designation = SpecimenTypeDesignation.NewInstance();

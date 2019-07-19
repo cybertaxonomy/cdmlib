@@ -8,14 +8,17 @@
 */
 package eu.etaxonomy.cdm.format;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
+import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 
@@ -58,20 +61,31 @@ public class ReferenceEllypsisFormatter extends AbstractEllypsisFormatter<Refere
      * outside of a hibernate session
      */
     public static List<String> INIT_STRATEGY = Arrays.asList(
-            "authorship",
-            "inReference.authorship",
-            "inReference.inReference.authorship",
-            "inReference.inReference.inReference");
+            "type",
+            "authorship.teamMembers",
+            "inReference.type",
+            "inReference.authorship.teamMembers",
+            "inReference.inReference.type",
+            "inReference.inReference.authorship.teamMembers",
+            "inReference.inReference.inReference.type",
+            "inReference.inReference.inReference.authorship.teamMembers");
 
     public enum LabelType {
         NOMENCLATURAL,
         BIBLIOGRAPHIC;
     }
 
+    private EnumSet<ReferenceType> sectionTypes = EnumSet.of(ReferenceType.Section, ReferenceType.BookSection);
+
     private LabelType labelType;
     private int maxCharsVisible = 20;
     private int minNumOfWords = 1;
     private int numOfPreservedEndWords = 3;
+    /**
+     * see https://dev.e-taxonomy.eu/redmine/issues/8252#note-14
+     */
+    private int maxAutorsVisibleInSection = 4;
+
 
     public ReferenceEllypsisFormatter(LabelType labelType){
         this.labelType = labelType;
@@ -86,9 +100,14 @@ public class ReferenceEllypsisFormatter extends AbstractEllypsisFormatter<Refere
     protected EllipsisData entityEllypsis(Reference entity, String preserveString) {
 
         String label = "";
-        String authors = entity.getAuthorship() != null ? entity.getAuthorship().getTitleCache() : null;
+        String authorsCache = null;
+        List<String> authorTeamCaches = null;
+        Team team = null;
         String title = null;
         String titleCache;
+
+        boolean isSection = sectionTypes.contains(entity.getType());
+        boolean isProtectedAuthorsCache = false;
 
         switch(labelType){
             case NOMENCLATURAL:
@@ -100,6 +119,14 @@ public class ReferenceEllypsisFormatter extends AbstractEllypsisFormatter<Refere
                     }
                 }
                 titleCache = entity.getAbbrevTitleCache();
+                if(entity.getAuthorship() != null){
+                    if(entity.getAuthorship() instanceof Team){
+                        team = (Team)entity.getAuthorship();
+                        authorTeamCaches = team.getTeamMembers().stream().map(topb -> topb.getNomenclaturalTitle()).collect(Collectors.toList());
+                        isProtectedAuthorsCache = team.isProtectedNomenclaturalTitleCache();
+                    }
+                    authorsCache = entity.getAuthorship().getNomenclaturalTitle();
+                }
                 break;
             case BIBLIOGRAPHIC:
             default:
@@ -111,6 +138,17 @@ public class ReferenceEllypsisFormatter extends AbstractEllypsisFormatter<Refere
                     }
                 }
                 titleCache = entity.getTitleCache();
+                if(entity.getAuthorship() != null){
+                    if(entity.getAuthorship() instanceof Team){
+                        team = (Team)entity.getAuthorship();
+                        authorTeamCaches = team.getTeamMembers().stream().map(topb -> topb.getTitleCache()).collect(Collectors.toList());
+                    } else {
+                        authorTeamCaches = new ArrayList<String>();
+                        authorTeamCaches.add(entity.getAuthorship().getTitleCache());
+                    }
+                    authorsCache = entity.getAuthorship().getTitleCache();
+                    isProtectedAuthorsCache = entity.getAuthorship().isProtectedTitleCache();
+                }
                 break;
         }
 
@@ -120,18 +158,35 @@ public class ReferenceEllypsisFormatter extends AbstractEllypsisFormatter<Refere
         // the titleCache as initial element
         edList.add(new EllipsisData(titleCache, null));
 
-        if(!StringUtils.isEmpty(authors)){
-            String authorsEllipsed = stringEllypsis(authors, maxCharsVisible, minNumOfWords);
-            authorsEllipsed = preserveString(preserveString, authors, pattern, authorsEllipsed);
-            applyAndSplit(edList, authors, authorsEllipsed);
+        String authorsEllipsed = null;
+        if(isSection){
+            // for Sections of articles it is crucial to show as much as possible of the author team to
+            // allow the user identify the section by the names of the team members
+            if(isProtectedAuthorsCache || authorTeamCaches == null){
+                // maxAutorsVisibleInSection * 2 is only a vague approximization to the real number of words per author
+                if(!StringUtils.isEmpty(authorsCache)){
+                    authorsEllipsed = stringEllypsis(authorsCache, maxCharsVisible, maxAutorsVisibleInSection * 2);
+                }
+            } else {
+                authorsEllipsed = authorTeamCaches.stream().limit(maxAutorsVisibleInSection).collect(Collectors.joining(", "));
+            }
+        } else {
+            if(!StringUtils.isEmpty(authorsCache)){
+                authorsEllipsed = stringEllypsis(authorsCache, maxCharsVisible, minNumOfWords);
+            }
         }
+        if(authorsEllipsed != null){
+            authorsEllipsed = preserveString(preserveString, authorsCache, pattern, authorsEllipsed);
+            applyAndSplit(edList, authorsCache, authorsEllipsed);
+        }
+
+        int titleCompensation = 1 +
+                (StringUtils.isEmpty(authorsCache) ? 1 : 0)
+                + (entity.getInReference() == null? 1 : 0)
+                + (EnumSet.of(ReferenceType.Journal, ReferenceType.PrintSeries, ReferenceType.Proceedings).contains(entity.getType()) ? 2 : 0);
 
         if(!StringUtils.isEmpty(title)){
             // the titleCompensation helps in cases like journals and when the reference has not much additional information than a title.
-            int titleCompensation =
-                    (StringUtils.isEmpty(authors) ? 1 : 0)
-                    + (entity.getInReference() == null? 1 : 0)
-                    + (EnumSet.of(ReferenceType.Journal, ReferenceType.PrintSeries, ReferenceType.Proceedings).contains(entity.getType()) ? 2 : 0);
             String titleEllipsed = stringEllypsis(title, maxCharsVisible * titleCompensation, minNumOfWords * titleCompensation);
             titleEllipsed = preserveString(preserveString, title, pattern, titleEllipsed);
             applyAndSplit(edList, title, titleEllipsed);
@@ -139,8 +194,8 @@ public class ReferenceEllypsisFormatter extends AbstractEllypsisFormatter<Refere
 
         if(entity.getInReference() != null){
             EllipsisData inRefEd = entityEllypsis(entity.getInReference(), preserveString);
-            inRefEd.original = "in " + inRefEd.original;
-            inRefEd.truncated = "in " + inRefEd.truncated;
+            inRefEd.original = " in " + inRefEd.original;
+            inRefEd.truncated = " in " + inRefEd.truncated;
             applyAndSplit(edList, inRefEd.original, inRefEd.truncated);
         }
 
@@ -153,7 +208,7 @@ public class ReferenceEllypsisFormatter extends AbstractEllypsisFormatter<Refere
                     if(tokens.size() > numOfPreservedEndWords){
                         // unpreservedParts part may need ellipsis
                         String unpreservedPart = String.join(" ", tokens.subList(0, tokens.size() - numOfPreservedEndWords));
-                        String unpreservedPartEllypsis = stringEllypsis(unpreservedPart, maxCharsVisible, minNumOfWords);
+                        String unpreservedPartEllypsis = stringEllypsis(unpreservedPart, maxCharsVisible * titleCompensation, minNumOfWords * titleCompensation);
                         unpreservedPartEllypsis = preserveString(preserveString, unpreservedPart, pattern, unpreservedPartEllypsis);
                         String preservedPart = String.join(" ", tokens.subList(tokens.size() - numOfPreservedEndWords, tokens.size()));
                         ed.truncated = unpreservedPartEllypsis + " " + preservedPart;
@@ -190,6 +245,14 @@ public class ReferenceEllypsisFormatter extends AbstractEllypsisFormatter<Refere
 
     public void setMinNumOfWords(int minNumOfWords) {
         this.minNumOfWords = minNumOfWords;
+    }
+
+    public int getMaxAutorsVisibleInSection() {
+        return maxAutorsVisibleInSection;
+    }
+
+    public void setMaxAutorsVisibleInSection(int maxAutorsVisibleInSection) {
+        this.maxAutorsVisibleInSection = maxAutorsVisibleInSection;
     }
 
 

@@ -13,7 +13,7 @@ package eu.etaxonomy.cdm.model.metadata;
  * @since 19.11.2018
  *
  */
-public enum PublishEnum {
+public enum PublishEnum implements IKeyLabel{
 
     Publish("Publish", "Publish"),
     NotPublish("NotPublish", "Not Publish"),
@@ -28,11 +28,18 @@ public enum PublishEnum {
         this.key = key;
     }
 
+    @Override
     public String getLabel(){
         return label;
     }
 
+    @Override
     public String getKey(){
+        return key;
+    }
+
+    @Override
+    public String toString(){
         return key;
     }
 }

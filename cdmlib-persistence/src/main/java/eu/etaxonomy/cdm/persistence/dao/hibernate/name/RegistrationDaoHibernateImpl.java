@@ -10,9 +10,13 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.name;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
@@ -23,6 +27,8 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoImpl;
 import eu.etaxonomy.cdm.persistence.dao.name.IRegistrationDao;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author a.kohlbecker
@@ -151,6 +157,224 @@ public class RegistrationDaoHibernateImpl
         if (hasStatus){
             query.setParameterList("status", includedStatus);
         }
+        return query;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public long count(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, String identifierFilterPattern,
+            String taxonNameFilterPattern, String referenceFilterPattern, Collection<UUID> typeDesignationStatusUuids) {
+        Query query = makeFilteredSearchQuery(submitterUuid, includedStatus, identifierFilterPattern,
+                taxonNameFilterPattern, referenceFilterPattern, typeDesignationStatusUuids, true, null);
+        //Logger.getLogger("org.hibernate.SQL").setLevel(Level.DEBUG);
+        @SuppressWarnings("unchecked")
+        List<Long> list = query.list();
+        //Logger.getLogger("org.hibernate.SQL").setLevel(Level.WARN);
+        return list.isEmpty()? Long.valueOf(0) : list.get(0);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Registration> list(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, String identifierFilterPattern,
+            String taxonNameFilterPattern, String referenceFilterPattern, Collection<UUID> typeDesignationStatusUuids, Integer limit, Integer start,
+            List<OrderHint> orderHints, List<String> propertyPaths) {
+
+        Query query = makeFilteredSearchQuery(submitterUuid, includedStatus, identifierFilterPattern,
+                taxonNameFilterPattern, referenceFilterPattern, typeDesignationStatusUuids, false, orderHints);
+
+        if(limit != null /*&&  !doCount*/) {
+            query.setMaxResults(limit);
+            if(start != null) {
+                query.setFirstResult(start);
+            }
+        }
+
+        //Logger.getLogger("org.hibernate.SQL").setLevel(Level.DEBUG);
+        @SuppressWarnings("unchecked")
+        List<Registration> results = query.list();
+        //Logger.getLogger("org.hibernate.SQL").setLevel(Level.WARN);
+        defaultBeanInitializer.initializeAll(results, propertyPaths);
+
+        return results;
+    }
+
+    @Override
+    public List<Registration> list(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, Collection<UUID> taxonNameUUIDs,
+            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+
+        Query query = makeByNameUUIDQuery(submitterUuid, includedStatus, taxonNameUUIDs, false, orderHints);
+
+        if(limit != null /*&&  !doCount*/) {
+            query.setMaxResults(limit);
+            if(start != null) {
+                query.setFirstResult(start);
+            }
+        }
+
+        //Logger.getLogger("org.hibernate.SQL").setLevel(Level.DEBUG);
+        @SuppressWarnings("unchecked")
+        List<Registration> results = query.list();
+        //Logger.getLogger("org.hibernate.SQL").setLevel(Level.WARN);
+        defaultBeanInitializer.initializeAll(results, propertyPaths);
+
+        return results;
+    }
+
+    @Override
+    public long count(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, Collection<UUID> taxonNameUUIDs) {
+        Query query = makeByNameUUIDQuery(submitterUuid, includedStatus, taxonNameUUIDs, true, null);
+        //Logger.getLogger("org.hibernate.SQL").setLevel(Level.DEBUG);
+        @SuppressWarnings("unchecked")
+        List<Long> list = query.list();
+        //Logger.getLogger("org.hibernate.SQL").setLevel(Level.WARN);
+        return list.isEmpty()? Long.valueOf(0) : list.get(0);
+    }
+
+
+    /**
+     * @param submitterUuid
+     * @param includedStatus
+     * @param taxonNameUUIDs
+     * @param b
+     * @param orderHints
+     * @return
+     */
+    private Query makeByNameUUIDQuery(UUID submitterUuid, Collection<RegistrationStatus> includedStatus,
+            Collection<UUID> taxonNameUUIDs, boolean isCount, List<OrderHint> orderHints) {
+
+        Map<String, Object> parameters = new HashMap<>();
+
+        String select = "SELECT " + (isCount? " count(DISTINCT r) as cn ": "DISTINCT r ");
+        String from = " FROM Registration r "
+                + "     LEFT JOIN r.typeDesignations desig "
+                + "     LEFT JOIN r.name n "
+                + "     LEFT JOIN desig.typifiedNames typifiedNames "
+                ;
+        String where = " WHERE (1=1) ";
+        String orderBy = "";
+        if(!isCount){
+            orderBy = orderByClause("r", orderHints).toString();
+        }
+
+        if(submitterUuid != null){
+            from += " LEFT JOIN r.submitter submitter "; // without this join hibernate would make a cross join here
+            where += " AND submitter.uuid =:submitterUuid";
+            parameters.put("submitterUuid", submitterUuid);
+        }
+        if(includedStatus != null && includedStatus.size() > 0) {
+            where += " AND r.status in (:includedStatus)";
+            parameters.put("includedStatus", includedStatus);
+        }
+
+        where += " AND (r.name.uuid in(:nameUUIDs) OR typifiedNames.uuid in(:nameUUIDs))";
+        parameters.put("nameUUIDs", taxonNameUUIDs);
+
+
+        String hql = select + from + where + orderBy;
+        Query query = getSession().createQuery(hql);
+
+        for(String paramName : parameters.keySet()){
+            Object value = parameters.get(paramName);
+            if(value instanceof Collection){
+                query.setParameterList(paramName, (Collection)value);
+            } else {
+                query.setParameter(paramName, value);
+            }
+        }
+
+        return query;
+
+    }
+
+
+    /**
+     * @param submitterUuid
+     * @param includedStatus
+     * @param identifierFilterPattern
+     * @param taxonNameFilterPattern
+     * @param typeDesignationStatusUuids
+     * @param isCount
+     * @return
+     */
+    private Query makeFilteredSearchQuery(UUID submitterUuid, Collection<RegistrationStatus> includedStatus,
+            String identifierFilterPattern, String taxonNameFilterPattern, String referenceFilterPattern,
+            Collection<UUID> typeDesignationStatusUuids, boolean isCount, List<OrderHint> orderHints) {
+
+        Map<String, Object> parameters = new HashMap<>();
+
+        boolean doNameFilter = StringUtils.isNoneBlank(taxonNameFilterPattern);
+        boolean doReferenceFilter = StringUtils.isNoneBlank(referenceFilterPattern);
+        boolean doTypeStatusFilter = typeDesignationStatusUuids != null && typeDesignationStatusUuids.size() > 0;
+
+        String select = "SELECT " + (isCount? " count(DISTINCT r) as cn ": "DISTINCT r ");
+        String from = " FROM Registration r "
+                + "     LEFT JOIN r.typeDesignations desig "
+                + "     LEFT JOIN r.name n "
+                + (doNameFilter ?  " LEFT JOIN desig.typifiedNames typifiedNames ":"")
+                + (doTypeStatusFilter ? " LEFT JOIN desig.typeStatus typeStatus":"")  // without this join hibernate would make a cross join here
+                + (doReferenceFilter ? " LEFT JOIN desig.citation typeDesignationCitation LEFT JOIN n.nomenclaturalReference nomRef":"")
+            ;
+        // further JOIN
+        String where = " WHERE (1=1) ";
+        String orderBy = "";
+        if(!isCount){
+            orderBy = orderByClause("r", orderHints).toString();
+        }
+
+        if(submitterUuid != null){
+            from += " LEFT JOIN r.submitter submitter "; // without this join hibernate would make a cross join here
+            where += " AND submitter.uuid =:submitterUuid";
+            parameters.put("submitterUuid", submitterUuid);
+        }
+        if(includedStatus != null && includedStatus.size() > 0) {
+            where += " AND r.status in (:includedStatus)";
+            parameters.put("includedStatus", includedStatus);
+        }
+        if(StringUtils.isNoneBlank(identifierFilterPattern)){
+            where += " AND r.identifier LIKE :identifierFilterPattern";
+            parameters.put("identifierFilterPattern", MatchMode.ANYWHERE.queryStringFrom(identifierFilterPattern));
+        }
+        if(doNameFilter){
+            where += " AND (r.name.titleCache LIKE :taxonNameFilterPattern OR typifiedNames.titleCache LIKE :taxonNameFilterPattern)";
+            parameters.put("taxonNameFilterPattern", MatchMode.ANYWHERE.queryStringFrom(taxonNameFilterPattern));
+        }
+        if(doReferenceFilter){
+            where += " AND (typeDesignationCitation.titleCache LIKE :referenceFilterPattern OR nomRef.titleCache LIKE :referenceFilterPattern)";
+            parameters.put("referenceFilterPattern", MatchMode.ANYWHERE.queryStringFrom(referenceFilterPattern));
+        }
+        if(doTypeStatusFilter){
+            boolean addNullFilter = false;
+            while(typeDesignationStatusUuids.contains(null)){
+                addNullFilter = true;
+                typeDesignationStatusUuids.remove(null);
+            }
+            String typeStatusWhere = "";
+            if(!typeDesignationStatusUuids.isEmpty()){
+                typeStatusWhere += " typeStatus.uuid in (:typeDesignationStatusUuids)";
+                parameters.put("typeDesignationStatusUuids", typeDesignationStatusUuids);
+            }
+            if(addNullFilter){
+                typeStatusWhere += (!typeStatusWhere.isEmpty() ? " OR ":"") + "typeStatus is null";
+            }
+            where += " AND ( " +  typeStatusWhere + ")";
+        }
+        String hql = select + from + where + orderBy;
+        Query query = getSession().createQuery(hql);
+
+        for(String paramName : parameters.keySet()){
+            Object value = parameters.get(paramName);
+            if(value instanceof Collection){
+                query.setParameterList(paramName, (Collection)value);
+            } else {
+                query.setParameter(paramName, value);
+            }
+        }
+
         return query;
     }
 

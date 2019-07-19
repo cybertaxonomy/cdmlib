@@ -665,14 +665,24 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
                 logger.debug("createRestriction() " + propertyName + " " + matchMode.getMatchOperator() + " "
                         + matchMode.queryStringFrom(queryString));
             }
-            if (matchMode == MatchMode.BEGINNING) {
+            switch(matchMode){
+            case BEGINNING:
                 restriction = Restrictions.ilike(propertyName, queryString, org.hibernate.criterion.MatchMode.START);
-            } else if (matchMode == MatchMode.END) {
+                break;
+            case END:
                 restriction = Restrictions.ilike(propertyName, queryString, org.hibernate.criterion.MatchMode.END);
-            } else if (matchMode == MatchMode.EXACT) {
+                break;
+            case LIKE:
+                restriction = Restrictions.ilike(propertyName, matchMode.queryStringFrom(queryString), org.hibernate.criterion.MatchMode.ANYWHERE);
+                break;
+            case EXACT:
                 restriction = Restrictions.ilike(propertyName, queryString, org.hibernate.criterion.MatchMode.EXACT);
-            } else {
+                break;
+            case ANYWHERE:
                 restriction = Restrictions.ilike(propertyName, queryString, org.hibernate.criterion.MatchMode.ANYWHERE);
+                break;
+            default:
+                throw new RuntimeException("Unknown MatchMode: " + matchMode.name());
             }
         }
         return restriction;

@@ -51,7 +51,7 @@ public class TaxonBaseBeanProcessor extends AbstractCdmBeanProcessor<TaxonBase> 
 	@Override
 	public JSONObject processBeanSecondStep(TaxonBase bean, JSONObject json, JsonConfig jsonConfig) {
 	    if(!skipTaggedTitle) {
-	        json.element("taggedTitle", bean.getTaggedTitle());
+	        json.element("taggedTitle", bean.getTaggedTitle(), jsonConfig);
 	    }
 		return json;
 	}

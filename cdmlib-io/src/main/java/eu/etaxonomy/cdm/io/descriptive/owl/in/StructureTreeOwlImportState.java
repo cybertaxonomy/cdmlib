@@ -8,7 +8,10 @@
 */
 package eu.etaxonomy.cdm.io.descriptive.owl.in;
 
+import com.hp.hpl.jena.rdf.model.Model;
+
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
+import eu.etaxonomy.cdm.io.descriptive.owl.OwlUtil;
 
 /**
  * @author pplitzner
@@ -17,8 +20,15 @@ import eu.etaxonomy.cdm.io.common.ImportStateBase;
  */
 public class StructureTreeOwlImportState extends ImportStateBase<StructureTreeOwlImportConfigurator, StructureTreeOwlImport> {
 
+    private Model model;
+
     protected StructureTreeOwlImportState(StructureTreeOwlImportConfigurator config) {
         super(config);
+        model = OwlUtil.createModel();
+    }
+
+    public Model getModel() {
+        return model;
     }
 
 }

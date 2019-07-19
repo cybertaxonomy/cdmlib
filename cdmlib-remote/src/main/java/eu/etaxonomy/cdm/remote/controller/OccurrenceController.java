@@ -121,6 +121,28 @@ public class OccurrenceController extends AbstractIdentifiableController<Specime
         return fieldUnitDto;
     }
 
+//    @RequestMapping(value = { "specimenTypeDesignations" }, method = RequestMethod.GET)
+//    public  List<SpecimenTypeDesignation> doGetTypeDesignations(
+//            @PathVariable("uuid") UUID uuid,
+//            HttpServletRequest request,
+//            HttpServletResponse response) throws IOException {
+//
+//        logger.info("doGetSpecimenTypeDesignations()" + requestPathAndQuery(request));
+//
+//        DerivedUnit sob = (DerivedUnit) getCdmBaseInstance(uuid, response, DERIVED_UNIT_INIT_STRATEGY);
+//
+//        sob = checkExistsAndAccess(sob, NO_UNPUBLISHED, response);
+//
+//        FieldUnitDTO fieldUnitDto = null;
+//        if(sob instanceof DerivedUnit){
+//
+//            fieldUnitDto = service.findFieldUnitDTO(new PreservedSpecimenDTO(sob) , new ArrayList<FieldUnitDTO>(), new HashMap<UUID, DerivateDTO>());
+//
+//        }
+//
+//        return fieldUnitDto;
+//    }
+
     /**
      *
      * @param uuid

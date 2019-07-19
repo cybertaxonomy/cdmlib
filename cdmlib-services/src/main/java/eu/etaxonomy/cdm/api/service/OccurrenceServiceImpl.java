@@ -553,8 +553,8 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             collectionKey = FormatKey.COLLECTION_NAME;
         }
         specimenIdentifier = CdmFormatterFactory.format(derivedUnit, new FormatKey[] {
-                collectionKey, FormatKey.SPACE,
-                FormatKey.MOST_SIGNIFICANT_IDENTIFIER, FormatKey.SPACE });
+                collectionKey, FormatKey.SPACE, FormatKey.OPEN_BRACKET,
+                FormatKey.MOST_SIGNIFICANT_IDENTIFIER, FormatKey.CLOSE_BRACKET });
         if(CdmUtils.isBlank(specimenIdentifier)){
             specimenIdentifier = derivedUnit.getTitleCache();
         }
@@ -897,15 +897,23 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
 
     @Override
-    public  Pager<DerivedUnit> findByAccessionNumber(
-            String accessionNumberString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+    public  FieldUnitDTO findByAccessionNumber(
+            String accessionNumberString, List<OrderHint> orderHints,
             List<String> propertyPaths)  {
 
-        List<DerivedUnit> records = new ArrayList<>();
-        records = dao.findByGeneticAccessionNumber(accessionNumberString, propertyPaths);
-        long count = dao.countByGeneticAccessionNumber(accessionNumberString);
+        DnaSample dnaSample = dao.findByGeneticAccessionNumber(accessionNumberString, propertyPaths);
+        DerivateDTO derivedUnitDTO;
+        HashMap<UUID, DerivateDTO> alreadyCollectedSpecimen = new HashMap<>();
+        List<FieldUnitDTO> fieldUnitDTOs = new ArrayList<>();
+        if (dnaSample != null){
+            derivedUnitDTO = new DNASampleDTO(dnaSample);
+            alreadyCollectedSpecimen.put(derivedUnitDTO.getUuid(), derivedUnitDTO);
+            derivedUnitDTO.addAllDerivates(getDerivedUnitDTOsFor(derivedUnitDTO, dnaSample, alreadyCollectedSpecimen));
+            FieldUnitDTO fieldUnit = this.findFieldUnitDTO(derivedUnitDTO, fieldUnitDTOs, alreadyCollectedSpecimen);
 
-        return new DefaultPagerImpl<>(pageNumber, Long.valueOf(count), pageSize, records);
+            return fieldUnit;
+        }
+        return null;
 
     }
 
@@ -982,10 +990,13 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         //from which this DerivedUnit was derived until all FieldUnits are found.
 
         // FIXME: use HQL queries to increase performance
+    	
         SpecimenOrObservationBase<?> specimen = load(derivedUnitUuid, propertyPaths);
 //        specimen = HibernateProxyHelper.deproxy(specimen, SpecimenOrObservationBase.class);
         Collection<FieldUnit> fieldUnits = new ArrayList<>();
-
+        if (specimen == null){
+            return null;
+        }
         if (specimen.isInstanceOf(FieldUnit.class)) {
             fieldUnits.add(HibernateProxyHelper.deproxy(specimen, FieldUnit.class));
         }

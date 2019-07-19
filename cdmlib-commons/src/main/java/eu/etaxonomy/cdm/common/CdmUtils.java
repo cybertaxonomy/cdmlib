@@ -48,6 +48,8 @@ public class CdmUtils {
 
 
     /**
+     * Returns the folder separator. This depends on the operating system and the
+     * environment. If the system is within a jar the separator is different then in an ordinary folder.
      * @return
      */
     static public String getFolderSeperator(){

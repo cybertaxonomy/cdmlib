@@ -103,11 +103,17 @@ public class PreferenceDaoTest  extends CdmTransactionalIntegrationTest {
 	   	count = dao.count();
 	    Assert.assertEquals("There should still be only 1 new preference", countStart + addedPrefs, count);
 
-	    //delete default values
+	    //delete default values, we decided to keep this in db and delete it when wanted to use the default.
 	    pref = CdmPreference.NewInstance(PreferenceSubject.NewDatabaseInstance(), PreferencePredicate.NomenclaturalCode, PreferencePredicate.NomenclaturalCode.getDefaultValue().toString());
 	    pref.setAllowOverride(true);
 	    dao.set(pref);
 	    count = dao.count();
+        Assert.assertEquals("There should be only 1 preference left. Nomenclatural Code should be delete", countStart + addedPrefs, count);
+
+        pref = CdmPreference.NewInstance(PreferenceSubject.NewDatabaseInstance(), PreferencePredicate.NomenclaturalCode, PreferencePredicate.NomenclaturalCode.getDefaultValue().toString());
+        pref.setAllowOverride(true);
+        dao.remove(pref.getKey());
+        count = dao.count();
         Assert.assertEquals("There should be only 1 preference left. Nomenclatural Code should be delete", addedPrefs, count);
 
         pref = dao.get(CdmPreference.NewKey(PreferenceSubject.NewDatabaseInstance(), PreferencePredicate.NomenclaturalCode));

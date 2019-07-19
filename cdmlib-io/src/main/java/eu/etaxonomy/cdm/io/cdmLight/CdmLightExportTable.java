@@ -19,9 +19,9 @@ public enum CdmLightExportTable {
     SCIENTIFIC_NAME("ScientificName", nameColumns()),
     NAME_RELATIONSHIP("NameRelationship",nameRelationColumns()),
     HOMOTYPIC_GROUP("HomotypicGroup",homotypicGroupColumns()),
-    NOMENCLATURAL_AUTHOR("NomenclaturalAuthor", nomenclaturalAuthorColumns()),
-    NOMENCLATURAL_AUTHOR_TEAM_RELATION("NomenclaturalAuthorTeamRelation", nomenclaturalAuthorTeamRelColumns()),
-    TYPE_DESIGNATION("TypeDesignation", typeDesignationColumns()),
+    NOMENCLATURAL_AUTHOR("PersonOrTeam", nomenclaturalAuthorColumns()),
+    NOMENCLATURAL_AUTHOR_TEAM_RELATION("PersonTeamRelation", nomenclaturalAuthorTeamRelColumns()),
+    //TYPE_DESIGNATION("TypeDesignation", typeDesignationColumns()),
     SPECIMEN("Specimen", specimenColumns()),
     TAXON("Taxon", taxonColumns()),
     SYNONYM("Synonym", synonymColumns()),
@@ -32,24 +32,31 @@ public enum CdmLightExportTable {
     GEOGRAPHIC_AREA_FACT("GeographicAreaFact", geographicAreaFactsColumns()),
     COMMON_NAME_FACT("CommonNameFact", commonNameFactsColumns()),
     FACT_SOURCES("FactSources", factSourcesColumns()),
-    IDENTIFIER("Identifier", identifierColumns()),
-    MEDIA("Media", mediaColumns()),
+    IDENTIFIER("NameIdentifier", identifierColumns()),
+    MEDIA("MediaFact", mediaColumns()),
+    CONDENSED_DISTRIBUTION_FACT("CondensedDistributionFact", compressedDistributionFactColumns()),
     NAME_FACT("NameFact", nameFactColumns())
+
     ;
 
     //Taxon/Synonym
-    protected static final String NAME_FK = "Name_FK";
+    protected static final String NAME_FK = "Name_Fk";
     protected static final String TAXON_ID = "Taxon_ID";
-    protected static final String TAXON_FK = "Taxon_FK";
+    protected static final String TAXON_FK = "Taxon_Fk";
     protected static final String CLASSIFICATION_ID = "Classification_ID";
-    protected static final String CLASSIFICATION_TITLE = "Classification_Name";
+    protected static final String CLASSIFICATION_TITLE = "ClassificationName";
     protected static final String SYNONYM_ID = "Synonym_ID";
-    protected static final String PARENT_FK = "Parent_FK";
-    protected static final String SEC_REFERENCE_FK = "SecReference_FK";
+    protected static final String PARENT_FK = "Parent_Fk";
+    protected static final String SEC_REFERENCE_FK = "SecReference_Fk";
     protected static final String SEC_REFERENCE = "SecReference";
     protected static final String SORT_INDEX = "SortIndex";
+    protected static final String UNPLACED = "Unplaced";
+    protected static final String EXCLUDED = "Excluded";
+    protected static final String PUBLISHED = "Published";
+    protected static final String EXCLUDED_NOTES = "ExcludedNotes";
+
     //pro parte / misapplied
-    protected static final String SYN_SEC_REFERENCE_FK = "SynSecReference_FK";
+    protected static final String SYN_SEC_REFERENCE_FK = "SynSecReference_Fk";
     protected static final String SYN_SEC_REFERENCE = "SynSecReference";
     protected static final String IS_PRO_PARTE = "IsProParteSynonym";
     protected static final String IS_PARTIAL = "IsPartial";
@@ -59,7 +66,7 @@ public enum CdmLightExportTable {
     protected static final String REFERENCE_ID = "Reference_ID";
     protected static final String BIBLIO_SHORT_CITATION = "BibliographicShortCitation";
     protected static final String REF_TITLE = "Title";
-    protected static final String ABBREV_REF_TITLE = "Abbrev. Title";
+    protected static final String ABBREV_REF_TITLE = "AbbrevTitle";
     protected static final String DATE_PUBLISHED = "DatePublished";
     protected static final String EDITION = "Edition";
     protected static final String EDITOR= "Editor";
@@ -67,20 +74,20 @@ public enum CdmLightExportTable {
     protected static final String ISSN = "ISSN";
     protected static final String ORGANISATION = "Organisation";
     protected static final String PAGES = "Pages";
-    protected static final String PLACE_PUBLISHED = "Place Published";
+    protected static final String PLACE_PUBLISHED = "PlacePublished";
     protected static final String PUBLISHER = "Publisher";
-    protected static final String REF_ABSTRACT = "Reference Abstract";
-    protected static final String SERIES_PART = "Series Part";
+    protected static final String REF_ABSTRACT = "ReferenceAbstract";
+    protected static final String SERIES_PART = "SeriesPart";
     protected static final String VOLUME = "Volume";
     protected static final String YEAR = "Year";
-    protected static final String AUTHORSHIP_TITLE = "Authorship";
+    protected static final String AUTHORSHIP_TITLE = "FullAuthor";
 
 
-    protected static final String IN_REFERENCE = "inReference";
+    protected static final String IN_REFERENCE = "InReference";
     protected static final String INSTITUTION = "Institution";
    // protected static final String LSID = "LSID";
     protected static final String SCHOOL = "School";
-    protected static final String REF_TYPE = "Reference Type";
+    protected static final String REF_TYPE = "ReferenceType";
     protected static final String URI = "URI";
 
     //Name
@@ -90,7 +97,7 @@ public enum CdmLightExportTable {
 //    protected static final String WFO_ID = "WorldFloraOnline_ID";
     protected static final String LSID = "LSID";
     protected static final String RANK = "Rank";
-    protected static final String RANK_SEQUENCE = "Rank_Sequence";
+    protected static final String RANK_SEQUENCE = "RankSequence";
     protected static final String FULL_NAME_WITH_AUTHORS = "FullNameWithAuthors";
     protected static final String FULL_NAME_NO_AUTHORS = "FullNameNoAuthors";
     protected static final String GENUS_UNINOMIAL = "GenusOrUninomial";
@@ -111,7 +118,7 @@ public enum CdmLightExportTable {
     protected static final String ABBREV_REF_AUTHOR = "AbbreviatedInRefAuthor";
     protected static final String FULL_REF_AUTHOR = "FullInRefAuthor";
     protected static final String COLLATION = "Collation";
-    protected static final String VOLUME_ISSUE = "Volume_Issue";
+    protected static final String VOLUME_ISSUE = "VolumeIssue";
     protected static final String DETAIL = "Detail";
     protected static final String YEAR_PUBLISHED = "YearPublished";
     protected static final String VERBATIM_DATE = "VerbatimDate";
@@ -120,12 +127,16 @@ public enum CdmLightExportTable {
     protected static final String NOM_STATUS_ABBREV = "NomenclaturalStatusAbbreviation";
     protected static final String HOMOTYPIC_GROUP_FK = "HomotypicGroup_Fk";
     protected static final String HOMOTYPIC_GROUP_SEQ = "HomotypicGroupSequenceNumber";
+    protected static final String PROTOLOGUE_TYPE_STATEMENT = "ProtologueTypeStatement";
+    protected static final String TYPE_SPECIMEN = "TypeSpecimens";
+    protected static final String TYPE_STATEMENT = "TypeStatements";
+
 
 
     //Name Relationship
-    protected static final String NAME1_FK = "Name1_FK";
-    protected static final String NAME2_FK = "Name2_FK";
-    protected static final String NAME_REL_TYPE = "NameRelationship_Type";
+    protected static final String NAME1_FK = "Name1_Fk";
+    protected static final String NAME2_FK = "Name2_Fk";
+    protected static final String NAME_REL_TYPE = "NameRelationshipType";
 
     //CDM MetaData
     protected static final String INSTANCE_ID = "EditInstance_ID";
@@ -137,13 +148,13 @@ public enum CdmLightExportTable {
     protected static final String TYPE_STRING = "TypeString";
 
     //NomenclaturalAuthor
-    protected static final String AUTHOR_ID = "Author_ID";
-    protected static final String ABBREV_AUTHOR = "AbbrevAuthor";
-    protected static final String AUTHOR_TITLE = "AuthorTitle";
-    protected static final String AUTHOR_GIVEN_NAME = "AuthorFirstName";
-    protected static final String AUTHOR_FAMILY_NAME = "AuthorLastName";
-    protected static final String AUTHOR_PREFIX = "AuthorPrefix";
-    protected static final String AUTHOR_SUFFIX = "AuthorSuffix";
+    protected static final String AUTHOR_ID = "PersonOrTeam_ID";
+    protected static final String ABBREV_AUTHOR = "AbbrevNames";
+    protected static final String AUTHOR_TITLE = "FullNames";
+    protected static final String AUTHOR_GIVEN_NAME = "PersonOtherNames";
+    protected static final String AUTHOR_FAMILY_NAME = "PersonFamiliyNames";
+    protected static final String AUTHOR_PREFIX = "PersonPrefix";
+    protected static final String AUTHOR_SUFFIX = "PersonSuffix";
 
   //Nomenclatural Author AuthorTeam Relations
 
@@ -182,15 +193,15 @@ public enum CdmLightExportTable {
 
 
     //SimpleFacts
-    protected static final String FACT_ID = "Fact_Id";
+    protected static final String FACT_ID = "Fact_ID";
     protected static final String FACT_TEXT = "FactText";
     protected static final String LANGUAGE = "Language";
     protected static final String MEDIA_URI = "MediaURI";
     protected static final String FACT_CATEGORY = "FactCategory";
 
     // Specimen Facts
-    protected static final String SPECIMEN_NOTES = "Specimen Notes";
-    protected static final String SPECIMEN_DESCRIPTION = "Specimen Description";
+    protected static final String SPECIMEN_NOTES = "SpecimenNotes";
+    protected static final String SPECIMEN_DESCRIPTION = "SpecimenDescription";
 
     // TaxonInteraction Facts
     protected static final String TAXON2_FK = "Taxon2_FK";
@@ -209,8 +220,8 @@ public enum CdmLightExportTable {
     protected static final String FACT_TYPE = "FactType";
 
   //Identifiers
-    protected static final String IDENTIFIER_IDS = "Identifier_IDs";
-    protected static final String IDENTIFIER_TYPE = "Identifier_Type";
+    protected static final String EXTERNAL_NAME_IDENTIFIER = "ExternalNameIdentifier";
+    protected static final String IDENTIFIER_TYPE = "IdentifierType";
 
     final static String[] homotypicGroupColumns(){
         return new String[]{HOMOTYPIC_GROUP_ID, HOMOTYPIC_GROUP_STRING, TYPE_STRING};
@@ -221,6 +232,25 @@ public enum CdmLightExportTable {
 
 
 
+    /**
+     * @return
+     */
+    private static String[] compressedDistributionFactColumns() {
+        return new String[]{FACT_ID, TAXON_FK, FACT_TEXT};
+    }
+
+
+
+
+
+
+    /**
+     * @return
+     */
+    private Object usageFactColumns() {
+        return new String[]{FACT_ID, TAXON_FK, FACT_TEXT, LANGUAGE, MEDIA_URI, FACT_CATEGORY};
+    }
+
     final static String[] nameFactColumns() {
         return new String[]{FACT_ID, NAME_FK, FACT_TEXT, LANGUAGE, MEDIA_URI, FACT_CATEGORY};
     }
@@ -230,7 +260,7 @@ public enum CdmLightExportTable {
 
     final static String[] identifierColumns() {
 
-        return new String[]{ NAME_FK, IDENTIFIER_IDS, IDENTIFIER_TYPE};
+        return new String[]{ NAME_FK, EXTERNAL_NAME_IDENTIFIER, IDENTIFIER_TYPE};
     }
 
     final static String[] mediaColumns() {
@@ -282,15 +312,15 @@ public enum CdmLightExportTable {
                 ABBREV_REF_AUTHOR, FULL_REF_AUTHOR, COLLATION, VOLUME_ISSUE,
                 DETAIL, DATE_PUBLISHED, YEAR_PUBLISHED, VERBATIM_DATE, PROTOLOGUE_URI,
                 NOM_STATUS, NOM_STATUS_ABBREV, HOMOTYPIC_GROUP_FK,
-                HOMOTYPIC_GROUP_SEQ
+                HOMOTYPIC_GROUP_SEQ, PROTOLOGUE_TYPE_STATEMENT, TYPE_SPECIMEN, TYPE_STATEMENT
         };
     }
     final static String[] taxonColumns(){
-        return new String[]{TAXON_ID, CLASSIFICATION_ID, CLASSIFICATION_TITLE, NAME_FK, PARENT_FK, SEC_REFERENCE_FK, SEC_REFERENCE, SORT_INDEX};
+        return new String[]{TAXON_ID, CLASSIFICATION_ID, CLASSIFICATION_TITLE, NAME_FK, PARENT_FK, SEC_REFERENCE_FK, SEC_REFERENCE, SORT_INDEX, EXCLUDED, EXCLUDED_NOTES, PUBLISHED, UNPLACED};
     }
     final static String[] synonymColumns(){
         return new String[]{SYNONYM_ID, TAXON_FK, NAME_FK, SYN_SEC_REFERENCE_FK, SYN_SEC_REFERENCE, SEC_REFERENCE_FK, SEC_REFERENCE,
-                IS_PRO_PARTE, IS_PARTIAL, IS_MISAPPLIED};
+                IS_PRO_PARTE, IS_PARTIAL, IS_MISAPPLIED, PUBLISHED};
     }
     final static String[] referenceColumns(){
         return new String[]{REFERENCE_ID, BIBLIO_SHORT_CITATION, REF_TITLE,ABBREV_REF_TITLE, DATE_PUBLISHED, EDITION, EDITOR, ISBN,ISSN, ORGANISATION, PAGES, PLACE_PUBLISHED, PUBLISHER,

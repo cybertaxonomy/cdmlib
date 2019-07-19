@@ -13,10 +13,10 @@ package eu.etaxonomy.cdm.model.metadata;
  * @since 6 Feb 2019
  *
  */
-public enum TermOrder {
+public enum TermOrder implements IKeyLabel{
 
     IdInVoc("IdInVoc", "Id in Vocabulary"),
-    Title("Title", "Title"),
+    Title("Lable", "Lable"),
     Natural("Natural", "Natural");
 
 
@@ -28,11 +28,18 @@ public enum TermOrder {
         this.key = key;
     }
 
+    @Override
     public String getLabel(){
         return label;
     }
 
+    @Override
     public String getKey(){
+        return key;
+    }
+
+    @Override
+    public String toString(){
         return key;
     }
 }

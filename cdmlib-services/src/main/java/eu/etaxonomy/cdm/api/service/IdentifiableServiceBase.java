@@ -198,10 +198,10 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 
 	@Transactional(readOnly = true)
 	@Override
-	public <S extends T> Pager<S> findTitleCache(Class<S> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, MatchMode matchMode){
+	public  Pager<String> findTitleCache(Class<? extends T> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, MatchMode matchMode){
 		long numberOfResults = dao.countTitleCache(clazz, queryString, matchMode);
 
-		 List<S> results = new ArrayList<>();
+		 List<String> results = new ArrayList<>();
 		 if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 				results = dao.findTitleCache(clazz, queryString, pageSize, pageNumber, orderHints, matchMode);
 		 }

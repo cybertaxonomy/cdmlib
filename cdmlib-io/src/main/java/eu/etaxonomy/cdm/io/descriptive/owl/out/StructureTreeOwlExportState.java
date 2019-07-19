@@ -8,9 +8,15 @@
 */
 package eu.etaxonomy.cdm.io.descriptive.owl.out;
 
+import java.io.File;
+
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.common.XmlExportState;
+import com.hp.hpl.jena.rdf.model.Model;
+
+import eu.etaxonomy.cdm.io.common.ExportStateBase;
+import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
+import eu.etaxonomy.cdm.io.descriptive.owl.OwlUtil;
 
 /**
  *
@@ -18,18 +24,20 @@ import eu.etaxonomy.cdm.io.common.XmlExportState;
  * @since May 2, 2019
  *
  */
-public class StructureTreeOwlExportState extends XmlExportState<StructureTreeOwlExportConfigurator>{
+public class StructureTreeOwlExportState extends ExportStateBase<StructureTreeOwlExportConfigurator, IExportTransformer, File>{
+
+    private Model model;
 
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(StructureTreeOwlExportState.class);
 
-    /**
-     * @param config
-     */
     public StructureTreeOwlExportState(StructureTreeOwlExportConfigurator config) {
         super(config);
+        model = OwlUtil.createModel();
     }
 
-
+    public Model getModel() {
+        return model;
+    }
 
 }

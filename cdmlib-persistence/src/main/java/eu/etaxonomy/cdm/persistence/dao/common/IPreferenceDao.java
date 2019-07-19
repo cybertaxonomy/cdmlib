@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.persistence.dao.common;
 import java.util.List;
 
 import eu.etaxonomy.cdm.model.metadata.CdmPreference;
+import eu.etaxonomy.cdm.model.metadata.CdmPreference.PrefKey;
 import eu.etaxonomy.cdm.model.metadata.IPreferencePredicate;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
@@ -56,6 +57,11 @@ public interface IPreferenceDao {
      * @return the CdmPreference
      */
     public CdmPreference find(TaxonNode taxonNode, String predicate);
+
+    /**
+     * @param key
+     */
+    void remove(PrefKey key);
 
 
 }

@@ -268,7 +268,14 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
                 Assert.assertTrue("There should be 5 references", count == 6);
                 try{
                     stream = new ByteArrayInputStream(data.get(CdmLightExportTable.SYNONYM.getTableName()));
-                    Assert.fail("There should not be a synonym table, because the only synonym is not public.");
+                    // now there are always all tables also if empty
+                    reader = new BufferedReader(new InputStreamReader(stream, Charset.forName("UTF-8")));
+                    count = 0;
+                    while ((line = reader.readLine()) != null) {
+                        count ++;
+                    }
+                    Assert.assertTrue("There should be 0 synomyms", count == 1);
+//                    Assert.fail("There should not be a synonym table, because the only synonym is not public.");
                 }catch(NullPointerException e){
                     //OK, should be thrown
                 }

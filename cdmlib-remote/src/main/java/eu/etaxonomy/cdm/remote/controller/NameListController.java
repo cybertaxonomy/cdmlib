@@ -9,6 +9,9 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,10 +24,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.etaxonomy.cdm.api.service.INameService;
+import eu.etaxonomy.cdm.api.service.dto.TypeDesignationStatusFilter;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
+import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
 import io.swagger.annotations.Api;
 
 /**
@@ -40,6 +46,10 @@ public class NameListController extends AbstractIdentifiableListController<Taxon
 
     private static final Logger logger = Logger.getLogger(NameListController.class);
 
+    @Autowired
+    private LocaleContext localeContext;
+
+
     @Override
     @Autowired
     public void setService(INameService service) {
@@ -47,7 +57,7 @@ public class NameListController extends AbstractIdentifiableListController<Taxon
     }
 
     @RequestMapping(method = RequestMethod.GET, value={"findTitleCache"})
-    public Pager<TaxonName> doFindTitleCache(
+    public Pager<String> doFindTitleCache(
             @RequestParam(value = "query", required = true) String query,
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
@@ -57,11 +67,10 @@ public class NameListController extends AbstractIdentifiableListController<Taxon
             )
              throws IOException {
 
-        logger.info("doFind : " + request.getRequestURI() + "?" + request.getQueryString() );
+        logger.info("doFindTitleCache() " + requestPathAndQuery(request));
 
         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
         pagerParams.normalizeAndValidate(response);
-
         return service.findTitleCache(null, query, pagerParams.getPageSize(), pagerParams.getPageIndex(), null, matchMode);
     }
 
@@ -73,9 +82,28 @@ public class NameListController extends AbstractIdentifiableListController<Taxon
             @RequestParam(value = "matchMode", required = false) MatchMode matchMode, HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
+        logger.info("doFindByName() " + requestPathAndQuery(request));
+
         PagerParameters pagerParameters = new PagerParameters(pageSize, pageNumber);
         pagerParameters.normalizeAndValidate(response);
 
         return service.findByTitleWithRestrictions(TaxonName.class, query, matchMode, null, pageSize, pageNumber, null, getInitializationStrategy());
+    }
+
+    @RequestMapping(
+            value = {"typeDesignationStatusFilterTerms"},
+            method = RequestMethod.GET)
+    public Collection<TypeDesignationStatusFilter> doGetTypeDesignationStatusFilterTermsInUse(
+            HttpServletRequest request, HttpServletResponse response)throws IOException {
+
+        logger.info("doGetTypeDesignationStatusFilterTermsInUse() " + requestPathAndQuery(request));
+        return service.getTypeDesignationStatusFilterTerms(localeContext.getLanguages());
+
+    }
+
+    @Override
+    protected Pager<TaxonName> pageByRestrictions(Class<TaxonName> type, List<String> initStrategy, OrderHintPreset orderBy,
+            PagerParameters pagerParameters, ArrayList<Restriction<?>> restrictions) {
+        return service.page(type, restrictions, pagerParameters.getPageSize(), pagerParameters.getPageIndex(), orderBy.orderHints(), initStrategy, false);
     }
 }

@@ -157,6 +157,12 @@ public interface IPreferenceService {
      public void set(CdmPreference preference);
 
 
+    /**
+     * @param preference
+     */
+    void remove(PrefKey preference);
+
+
 
      //we need to decide if we want to keep this method
 //     //returns old value

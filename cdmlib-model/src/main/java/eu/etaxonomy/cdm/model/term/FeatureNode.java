@@ -162,37 +162,8 @@ public class FeatureNode <T extends DefinedTermBase> extends VersionableEntity
 
 // ***************************** FACTORY *********************************/
 
-	/**
-     * Creates a new empty term node instance.
-     *
-     * @see #NewInstance(Feature)
-     */
-    public static <T extends DefinedTermBase<T>> FeatureNode<T> NewInstance(TermType termType){
-        return new FeatureNode<>(termType);
-    }
-
-	/**
-	 * Creates a new empty feature node instance.
-	 *
-	 * @see #NewInstance(Feature)
-	 */
-	public static FeatureNode<Feature> NewInstance(){
-		return new FeatureNode<>(TermType.Feature);
-	}
-
-	/**
-	 * Creates a new feature node instance only with the given {@link DefinedTermBase term}
-	 * (without parent and children). The termType of the feature node is the termType of
-	 * the given term
-	 *
-	 * @param	term	the term assigned to the new feature node
-	 * @see 			#NewInstance()
-	 */
-	public static <T extends DefinedTermBase<T>> FeatureNode<T> NewInstance(T term){
-	    FeatureNode<T> result = new FeatureNode<>(term.getTermType());
-	    result.setTerm(term);
-	    return result;
-	}
+	//no factory methods should be provided as FeatureNodes should only
+	//be created as children of their parent node (#8257)
 
 // ******************** CONSTRUCTOR ***************************************/
 
@@ -300,6 +271,75 @@ public class FeatureNode <T extends DefinedTermBase> extends VersionableEntity
 	public void addChild(FeatureNode<T> child){
 		addChild(child, children.size());
 	}
+
+	/**
+     * Creates a new node without a term and adds it to the end of
+     * the list of children of
+     * <i>this</i> node. Due to bidirectionality this method must also
+     * assign <i>this</i> feature node as the parent of the new child.
+     *
+     * @return the newly created child node
+     * @see             #getChildNodes()
+     * @see             #setChildren(List)
+     * @see             #removeChild(FeatureNode)
+     * @see             #removeChild(int)
+     */
+    public FeatureNode<T> addChild(){
+        return addChild((T)null, children.size());
+    }
+
+	/**
+	 * Creates a new node for the given term and adds it to the end of
+	 * the list of children of
+	 * <i>this</i> node. Due to bidirectionality this method must also
+	 * assign <i>this</i> feature node as the parent of the new child.
+	 *
+	 * @param	term	the term to be added
+	 * @return the newly created child node
+	 * @see				#getChildNodes()
+	 * @see				#setChildren(List)
+	 * @see				#removeChild(FeatureNode)
+	 * @see				#removeChild(int)
+	 */
+	public FeatureNode<T> addChild(T term){
+	    return addChild(term, children.size());
+	}
+
+    /**
+     * Creates a new node for the given term and adds it at the
+     * given (index + 1) position of the list of children of
+     * <i>this</i> node. Due to bidirectionality this method must also
+     * assign <i>this</i> feature node as the parent of the new child.
+     *
+     * @param   term    the term to be added
+     * @return the newly created child node
+     * @see             #getChildNodes()
+     * @see             #setChildren(List)
+     * @see             #removeChild(FeatureNode)
+     * @see             #removeChild(int)
+     */
+	public FeatureNode<T> addChild(T term, int index){
+	    FeatureNode<T> child = new FeatureNode<>(termType);
+	    if(term!=null){
+	        child.setTerm(term);
+	    }
+	    checkTermType(child);
+
+	    List<FeatureNode<T>> children = this.getChildNodes();
+	    if (index < 0 || index > children.size() + 1){
+	        throw new IndexOutOfBoundsException("Wrong index: " + index);
+	    }
+	    child.setParent(this);
+	    child.setFeatureTree(this.getFeatureTree());
+	    children.add(index, child);
+	    //TODO workaround (see sortIndex doc)
+	    for(int i = 0; i < children.size(); i++){
+	        children.get(i).setSortIndex(i);
+	    }
+	    child.setSortIndex(index);
+	    return child;
+	}
+
 	/**
 	 * Inserts the given feature node in the list of children of <i>this</i> feature node
 	 * at the given (index + 1) position. If the given index is out of bounds

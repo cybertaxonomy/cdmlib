@@ -54,7 +54,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
-import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
+import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -981,6 +981,19 @@ public interface ITaxonService
             Set<TaxonRelationshipType> directTypes,
             Set<TaxonRelationshipType> inversTypes, Direction direction, boolean groupMisapplications,
             boolean includeUnpublished, Integer pageSize, Integer pageNumber);
+
+    /**
+     * @param clazz
+     * @param restrictions
+     * @param pageSize
+     * @param pageIndex
+     * @param orderHints
+     * @param propertyPaths
+     * @param includeUnpublished
+     * @return
+     */
+    public <S extends TaxonBase> Pager<S> page(Class<S> clazz, List<Restriction<?>> restrictions, Integer pageSize, Integer pageIndex,
+            List<OrderHint> orderHints, List<String> propertyPaths, boolean includeUnpublished);
 
 
 

@@ -48,12 +48,6 @@ public class BerlinModelTransformer {
 	//source Refs
 	public static final UUID uuidSourceRefEuroMed = UUID.fromString("0603a84a-f024-4454-ab92-9e2ac0139126");
 
-	//ranks
-	public static UUID uuidRankCollSpecies = UUID.fromString("e14630ee-9446-4bb4-a7b7-4c3881bc5d94");
-	public static UUID uuidRankProles = UUID.fromString("8810d1ba-6a34-4ae3-a355-919ccd1cd1a5");
-	public static UUID uuidRankRace = UUID.fromString("196dee39-cfd8-4460-8bf0-88b83da27f62");
-	public static UUID uuidRankSublusus = UUID.fromString("1fafa596-a8e7-4e62-a378-3cc8cb3627ca");
-
 	//named areas
 	public static UUID euroMedUuid = UUID.fromString("9fe09988-58c0-4c06-8474-f660a0c50014");
 
@@ -102,6 +96,8 @@ public class BerlinModelTransformer {
 	public static final UUID uuidTurkey = UUID.fromString("d344ee2c-14c8-438d-b03d-11538edb1268");
 	public static final UUID uuidCaucasia = UUID.fromString("ebfd3fd1-3859-4e5e-95c7-f66010599d7e");
 
+    //E+M common name areas
+    public static UUID uuidVocEuroMedCommonNameAreas = UUID.fromString("d3681d0d-aff5-4a27-aa19-1bf6115e4bb4");
 
 	//E+M areas
 	public static UUID uuidVocEuroMedAreas = UUID.fromString("625a4962-c211-4597-816e-5804083efe26");
@@ -335,6 +331,7 @@ public class BerlinModelTransformer {
 	public static final UUID uuidExpertName = UUID.fromString("24becb79-a90c-47d3-be35-efc87bb48fd3");
 
 	public static final UUID DETAIL_EXT_UUID = UUID.fromString("c3959b4f-d876-4b7a-a739-9260f4cafd1c");
+	public static final UUID SOURCE_ACC_UUID = UUID.fromString("f75ea789-581e-4170-b3f6-2cedfab7fcef");
 	public static final UUID ID_IN_SOURCE_EXT_UUID = UUID.fromString("23dac094-e793-40a4-bad9-649fc4fcfd44");
 	public static final UUID uuidIsoCode = UUID.fromString("048b8153-e3ee-451c-a72c-f1c8bc291c3e");
 	public static final UUID uuidTdwgAreaCode = UUID.fromString("73ad0288-b71b-4a14-9c2e-7f81f1e64a36");
@@ -343,6 +340,7 @@ public class BerlinModelTransformer {
 
 	//Identifier Type
 	public static final UUID uuidEMReferenceSourceNumber = UUID.fromString("06b02bbd-bf22-485c-9fd1-fad9175f0d53");
+	public static final UUID uuidEM_MCLIdentifierType = UUID.fromString("c6873fc6-9bf7-4e78-b4f2-5ab0c0dc1f50");
 
 	//Area Level
 	public static final UUID uuidEuroMedAreaLevelTop = UUID.fromString("190d5758-4b96-4016-9412-6dc9c36ef5fd");
@@ -353,6 +351,8 @@ public class BerlinModelTransformer {
 
 	//languages
 	public static final UUID uuidLangMajorcan = UUID.fromString("82d696d7-cb4e-49de-ac89-63a0e12ca766");
+    public static final UUID uuidLangHighAragonese = UUID.fromString("c6e3f012-1b72-4b9a-a401-5ebe3aea4e0a");
+    public static final UUID uuidLangValencian = UUID.fromString("a926ecb9-3e43-48ad-b5a3-11e7a8609a75");
 
 	//REFERENCES
 	public static int REF_ARTICLE = 1;
@@ -904,7 +904,7 @@ public class BerlinModelTransformer {
 
 			if (collSpeciesRank == null){
 				collSpeciesRank = Rank.NewInstance(RankClass.SpeciesGroup, "Collective species", "Coll. species", "coll.");
-				collSpeciesRank.setUuid(uuidRankCollSpecies);
+				collSpeciesRank.setUuid(Rank.uuidRankCollSpecies);
 				OrderedTermVocabulary<Rank> voc = (OrderedTermVocabulary<Rank>)Rank.SPECIES().getVocabulary();
 				voc.addTermBelow(collSpeciesRank, Rank.SPECIESGROUP());
 			}

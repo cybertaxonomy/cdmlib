@@ -114,7 +114,7 @@ public class CdmUserHelper implements UserHelper, Serializable {
     @Override
     public User user() {
         Authentication authentication = getAuthentication();
-        if(authentication != null && authentication.getPrincipal() != null) {
+        if(authentication != null && authentication.getPrincipal() != null && authentication.getPrincipal() instanceof User) {
             return (User) authentication.getPrincipal();
         }
         return null;

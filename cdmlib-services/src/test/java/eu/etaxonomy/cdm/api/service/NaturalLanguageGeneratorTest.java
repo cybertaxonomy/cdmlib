@@ -78,8 +78,7 @@ public class NaturalLanguageGeneratorTest extends CdmIntegrationTest {
 		qd.setUnit(munit);
 		qd.setFeature(qFeature);
 		description.addElement(qd);
-		FeatureNode qNode = FeatureNode.NewInstance(qFeature);
-		root.addChild(qNode);
+		root.addChild(qFeature);
 	}
 
 	@Test
@@ -102,8 +101,7 @@ public class NaturalLanguageGeneratorTest extends CdmIntegrationTest {
 				for (j=0; j<children[level][i].length ; j++) {
 					Feature feature = Feature.NewInstance(null, children[level][i][j], null);
 					featureSet.add(feature);
-					FeatureNode child = FeatureNode.NewInstance(feature);
-					parent.addChild(child);
+					FeatureNode<Feature> child = parent.addChild(feature);
 					if (level<depth-1) {
 						buildBranches(child, children,level+1,depth, j);
 					}

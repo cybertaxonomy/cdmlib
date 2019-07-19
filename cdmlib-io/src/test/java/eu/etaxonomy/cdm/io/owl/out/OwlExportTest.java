@@ -10,6 +10,9 @@ package eu.etaxonomy.cdm.io.owl.out;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.net.URI;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -19,6 +22,7 @@ import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
+import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultExport;
 import eu.etaxonomy.cdm.io.common.ExportDataWrapper;
@@ -29,6 +33,8 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.term.FeatureNode;
 import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
@@ -48,6 +54,9 @@ public class OwlExportTest  extends CdmTransactionalIntegrationTest{
     private IClassificationService classificationService;
 
     @SpringBeanByType
+    private IFeatureTreeService featureTreeService;
+
+    @SpringBeanByType
     private ITaxonNodeService taxonNodeService;
 
 
@@ -55,34 +64,47 @@ public class OwlExportTest  extends CdmTransactionalIntegrationTest{
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/BlankDataSet.xml")
     public void testEmptyData(){
         File destinationFolder = null;
-        StructureTreeOwlExportConfigurator config = StructureTreeOwlExportConfigurator.NewInstance(null, destinationFolder, createFeatureTree());
+        StructureTreeOwlExportConfigurator config = StructureTreeOwlExportConfigurator.NewInstance();
+        config.setFeatureTreeUuids(createFeatureTree());
+        config.setVocabularyUuids(Collections.EMPTY_LIST);
+        config.setDestination(destinationFolder);
         config.setTarget(TARGET.EXPORT_DATA);
         ExportResult result = defaultExport.invoke(config);
         System.out.println(result.createReport());
         ExportDataWrapper<?> exportData = result.getExportData();
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
-    public FeatureTree createFeatureTree() {
+    public List<UUID> createFeatureTree() {
         FeatureTree tree = FeatureTree.NewInstance();
+        TermVocabulary voc = TermVocabulary.NewInstance(TermType.Feature, "voc description", "vocabulary", "voc", URI.create("http://test.voc"));
 
-        FeatureNode nodeA = FeatureNode.NewInstance(Feature.NewInstance("A", "A", "A"));
-        FeatureNode nodeA1 = FeatureNode.NewInstance(Feature.NewInstance("A1", "A1", "A1"));
-        FeatureNode nodeA2 = FeatureNode.NewInstance(Feature.NewInstance("A2", "A2", "A2"));
-        FeatureNode nodeB = FeatureNode.NewInstance(Feature.NewInstance("B", "B", "B"));
-        FeatureNode nodeB1 = FeatureNode.NewInstance(Feature.NewInstance("B", "B1", "B1"));
-        FeatureNode nodeC = FeatureNode.NewInstance(Feature.NewInstance("C", "C", "C"));
 
-        tree.getRoot().addChild(nodeA);
-        nodeA.addChild(nodeA1);
-        nodeA.addChild(nodeA2);
-        tree.getRoot().addChild(nodeB);
-        nodeB.addChild(nodeB1);
-        tree.getRoot().addChild(nodeC);
-        return tree;
+        Feature featureA = Feature.NewInstance("A", "A", "A");
+        voc.addTerm(featureA);
+        FeatureNode nodeA = tree.getRoot().addChild(featureA);
+
+        Feature featureA1 = Feature.NewInstance("A1", "A1", "A1");
+        voc.addTerm(featureA1);
+        FeatureNode nodeA1 = nodeA.addChild(featureA1);
+
+        Feature featureA2 = Feature.NewInstance("A2", "A2", "A2");
+        voc.addTerm(featureA2);
+        FeatureNode nodeA2 = nodeA.addChild(featureA2);
+
+        Feature featureB = Feature.NewInstance("B", "B", "B");
+        voc.addTerm(featureB);
+        FeatureNode nodeB = tree.getRoot().addChild(featureB);
+
+        Feature featureB1 = Feature.NewInstance("B", "B1", "B1");
+        voc.addTerm(featureB1);
+        FeatureNode nodeB1 = nodeB.addChild(featureB1);
+
+        Feature featureC = Feature.NewInstance("C", "C", "C");
+        voc.addTerm(featureC);
+        FeatureNode nodeC = tree.getRoot().addChild(featureC);
+
+        featureTreeService.save(tree);
+        return Collections.singletonList(tree.getUuid());
     }
 
     @Override

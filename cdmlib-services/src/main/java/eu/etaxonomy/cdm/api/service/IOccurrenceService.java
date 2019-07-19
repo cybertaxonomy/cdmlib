@@ -696,8 +696,8 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @return
      * @throws IOException
      */
-    Pager<DerivedUnit> findByAccessionNumber(
-             String accessionNumberString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+    FieldUnitDTO findByAccessionNumber(
+             String accessionNumberString, List<OrderHint> orderHints,
             List<String> propertyPaths);
 
     /**

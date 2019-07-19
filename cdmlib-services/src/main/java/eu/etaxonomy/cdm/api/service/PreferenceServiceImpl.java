@@ -83,6 +83,12 @@ public class PreferenceServiceImpl implements IPreferenceService {
 	}
 
 	@Override
+    @Transactional(readOnly = false)
+    public void remove(PrefKey preference) {
+        dao.remove(preference);
+    }
+
+	@Override
 	public long count() {
 		return dao.count();
 	}

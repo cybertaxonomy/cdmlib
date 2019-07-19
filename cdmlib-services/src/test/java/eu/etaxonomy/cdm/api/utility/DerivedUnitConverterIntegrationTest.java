@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  *
@@ -33,7 +34,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @since Jun 23, 2017
  *
  */
-@DataSet // the dataset cleans up the DerivedUnits created in the tests
+@DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class) // the dataset cleans up the DerivedUnits created in the tests
 public class DerivedUnitConverterIntegrationTest extends CdmTransactionalIntegrationTest {
 
     @SpringBeanByType
@@ -98,7 +99,7 @@ public class DerivedUnitConverterIntegrationTest extends CdmTransactionalIntegra
      * org.hibernate.ObjectDeletedException: deleted object would be re-saved by cascade ...
      */
     @Test
-    @DataSet("DerivedUnitConverterIntegrationTest.cascadeDelete.xml")
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="DerivedUnitConverterIntegrationTest.cascadeDelete.xml")
     public void cascadeDelete() throws DerivedUnitConversionException{
 
         // NOTE:

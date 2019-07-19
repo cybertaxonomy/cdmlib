@@ -137,6 +137,14 @@ public interface ITermVocabularyDao extends IIdentifiableDao<TermVocabulary> {
     public List<TermVocabularyDto> findVocabularyDtoByTermType(TermType termType);
 
     /**
+     * Returns term vocabularies that contain terms of a certain {@link TermType} e.g. Feature, Modifier, State.
+     *
+     * @param termType the {@link TermType} of the terms in the vocabulary and of the vocabulary
+     * @return a list of term vocabularies
+     */
+    public List<TermVocabularyDto> findVocabularyDtoByTermTypes(Set<TermType> termType);
+
+    /**
      *
      * Like {@link #getUuidAndTitleCache(Class, Integer, String)} but filtering
      * the results by {@link TermType} of the vocabularies.

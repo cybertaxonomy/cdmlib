@@ -52,6 +52,7 @@ public class AbcdDnaParser {
         FieldUnit fieldUnit = state.getFieldUnit(state.getDataHolder().getFieldNumber());
         if (fieldUnit == null){
             fieldUnit = FieldUnit.NewInstance();
+            state.setFieldUnit(fieldUnit);
         }
         DnaSample dnaSample = DnaSample.NewInstance();
         DerivationEvent.NewSimpleInstance(fieldUnit, dnaSample, DerivationEventType.DNA_EXTRACTION());

@@ -35,18 +35,18 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.api.utility.UserHelper;
 import eu.etaxonomy.cdm.database.PermissionDeniedException;
+import eu.etaxonomy.cdm.format.ReferenceEllypsisFormatter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
-import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
-import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
+import eu.etaxonomy.cdm.persistence.dao.initializer.EntityInitStrategy;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -65,7 +65,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 @Transactional(readOnly=true)
 public class RegistrationWorkingSetService implements IRegistrationWorkingSetService {
 
-    public static final List<String> REGISTRATION_DTO_INIT_STRATEGY = Arrays.asList(new String []{
+    public static final EntityInitStrategy REGISTRATION_DTO_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
             "blockedBy",
             // typeDesignation
             "typeDesignations.typeStatus",
@@ -73,17 +73,13 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
             "typeDesignations.typeSpecimen",
             "typeDesignations.typeName.$",
             "typeDesignations.citation",
-            "typeDesignations.citation.authorship.$",
-            "typeDesignations.citation.inReference.authorship.$",
-            "typeDesignations.citation.inReference.inReference.authorship.$",
-            "typeDesignations.annotations", // needed for AnnotatableEntity.clone() in DerivedUnitConverter.copyPropertiesTo
-            "typeDesignations.markers", // needed for AnnotatableEntity.clone() in DerivedUnitConverter.copyPropertiesTo
+            "typeDesignations.annotations",   // needed for AnnotatableEntity.clone() in DerivedUnitConverter.copyPropertiesTo
+            "typeDesignations.markers",       // needed for AnnotatableEntity.clone() in DerivedUnitConverter.copyPropertiesTo
             "typeDesignations.registrations", // DerivedUnitConverter.copyPropertiesTo(TARGET n)
 
             // name
             "name.$",
-            "name.nomenclaturalReference.authorship.$",
-            "name.nomenclaturalReference.inReference.authorship.$",
+            "name.nomenclaturalReference",
             "name.rank",
             "name.homotypicalGroup.typifiedNames",
             "name.status.type",
@@ -91,19 +87,19 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
             // institution
             "institution",
             }
-    );
+            ))
+            .extend("typeDesignations.citation", ReferenceEllypsisFormatter.INIT_STRATEGY, false)
+            .extend("name.nomenclaturalReference", ReferenceEllypsisFormatter.INIT_STRATEGY, false);
 
-    public  List<String> DERIVEDUNIT_INIT_STRATEGY = Arrays.asList(new String[]{
+    public  EntityInitStrategy DERIVEDUNIT_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String[]{
            "*", // initialize all related entities to allow DerivedUnit conversion, see DerivedUnitConverter.copyPropertiesTo()
            "derivedFrom.$",
            "derivedFrom.type", // TODO remove?
            "derivedFrom.originals.derivationEvents", // important!!
            "specimenTypeDesignations.typifiedNames.typeDesignations", // important!!
-           "mediaSpecimen.sources.citation.authorship.$",
-           "mediaSpecimen.sources.citation.inReference.authorship.$",
-           "mediaSpecimen.sources.citation.inReference.inReference.authorship.$",
+           "mediaSpecimen.sources.citation",
            "collection.institute"// see CollectionCaptionGenerator
-   });
+   })).extend("mediaSpecimen.sources.citation", ReferenceEllypsisFormatter.INIT_STRATEGY, false);
 
    public List<String> FIELDUNIT_INIT_STRATEGY = Arrays.asList(new String[]{
           "$",
@@ -122,19 +118,11 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
           "blockedBy.blockedBy",
           // typeDesignation
           "blockedBy.typeDesignations.typeStatus",
-//          "typeDesignations.typifiedNames.typeDesignations", // important !!
-//          "typeDesignations.typeSpecimen",
-//          "typeDesignations.typeName.$",
-//          "typeDesignations.citation",
-//          "typeDesignations.citation.authorship.$",
-          // name
+//          "typeDesignations.typifiedNames.typeDesignations", // important !?
 //          "blockedBy.name.$",
           "blockedBy.name.nomenclaturalReference.authorship",
           "blockedBy.name.nomenclaturalReference.inReference",
           "blockedBy.name.rank",
-//          "name.homotypicalGroup.typifiedNames",
-//          "name.status.type",
-//          "name.typeDesignations",
           // institution
           "blockedBy.institution",
           }
@@ -168,7 +156,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
      */
     @Override
     public RegistrationDTO loadDtoById(Integer id) {
-        Registration reg = repo.getRegistrationService().load(id, REGISTRATION_DTO_INIT_STRATEGY);
+        Registration reg = repo.getRegistrationService().load(id, REGISTRATION_DTO_INIT_STRATEGY.getPropertyPaths());
         inititializeSpecimen(reg);
         return new RegistrationDTO(reg);
     }
@@ -180,7 +168,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
      */
     @Override
     public RegistrationDTO loadDtoByUuid(UUID uuid) {
-        Registration reg = repo.getRegistrationService().load(uuid, REGISTRATION_DTO_INIT_STRATEGY);
+        Registration reg = repo.getRegistrationService().load(uuid, REGISTRATION_DTO_INIT_STRATEGY.getPropertyPaths());
         inititializeSpecimen(reg);
         return new RegistrationDTO(reg);
     }
@@ -188,7 +176,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
     @Override
     public Pager<RegistrationDTO> pageDTOs(String identifier, Integer pageIndex,  Integer pageSize) throws IOException {
 
-        Pager<Registration> regPager = repo.getRegistrationService().pageByIdentifier(identifier, pageIndex, pageSize, REGISTRATION_DTO_INIT_STRATEGY);
+        Pager<Registration> regPager = repo.getRegistrationService().pageByIdentifier(identifier, pageIndex, pageSize, REGISTRATION_DTO_INIT_STRATEGY.getPropertyPaths());
         return convertToDTOPager(regPager);
     }
 
@@ -206,41 +194,36 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
     @Override
     public Pager<RegistrationDTO> pageDTOs(Integer pageSize, Integer pageIndex) {
 
-        return pageDTOs((User)null, null, null, null, null, pageSize, pageIndex, null);
+        return pageDTOs((UUID)null, null, null, null, null, null, pageSize, pageIndex, null);
+
     }
 
     /**
-     * {@inheritDoc}
+     * @param submitterUuid
+     *    Filter by the uuid of the {@link User} associated with the Registration as <code>Registration.submitter</code>
+     * @param includedStatus
+     *    Filter by one or more {@link RegistrationStatus}. Multiple status will be combined with OR. In case the current user
+     *    is not authenticated (i.e. the authentication is anonymous) the includedStatus will be set to {@link RegistrationStatus#PUBLISHED}
+     *    to protect all other Registrations from being undisclosed.
+     * @param identifierFilterPattern
+     *    Filter by the {@link Registration#getIdentifier() Registration.identifier}.
+     *    The method matches Registrations which contain the the passed pattern in the identifier.
+     * @param taxonNameFilterPattern
+     *    The method matches Registrations which contain the the passed pattern in the
+     *    {@link Registration#getName() Registration.name}
+     * @param typeDesignationStatusUuids
+     *    Filter by one or more {@link eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus} or {@link eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus}.
+     *    Multiple status will be combined with OR.
+     * @param pageSize
+     * @param pageIndex
+     * @param orderHints
+     * @return
      */
-    @Override
-    public Pager<RegistrationDTO> pageDTOs(User submitter, Collection<RegistrationStatus> includedStatus,
-            String identifierFilterPattern, String taxonNameFilterPattern, Set<TypeDesignationStatusBase> typeStatusFilter,
-            Integer pageSize, Integer pageIndex, List<OrderHint> orderHints) {
-
-        if(pageSize == null){
-            pageSize = PAGE_SIZE;
-        }
-
-        if(orderHints == null){
-            orderHints = Arrays.asList(new OrderHint("identifier", SortOrder.ASCENDING));
-        }
-
-        Pager<Registration> pager = repo.getRegistrationService().page(submitter, includedStatus, identifierFilterPattern, taxonNameFilterPattern,
-                typeStatusFilter, PAGE_SIZE, pageIndex , orderHints, REGISTRATION_DTO_INIT_STRATEGY);
-
-        Pager<RegistrationDTO> dtoPager = convertToDTOPager(pager);
-        if(logger.isDebugEnabled()){
-            logger.debug(String.format("pageDTOs() pageIndex: $1%d, pageSize: $2%d, includedStatus: $3%s, identifierFilterPattern: $4%s, taxonNameFilterPattern: $5%s, submitter: $6%s",
-                    pageIndex, pageSize, includedStatus, identifierFilterPattern, taxonNameFilterPattern, submitter));
-            logger.debug("pageDTOs() result: " + pager.toString());
-        }
-        return dtoPager;
-    }
 
     @Override
     public Pager<RegistrationDTO> pageDTOs(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, String identifierFilterPattern,
-            String taxonNameFilterPattern, Collection<UUID> typeDesignationStatusUuids, Integer pageSize,
-            Integer pageIndex, List<OrderHint> orderHints){
+            String taxonNameFilterPattern, String referenceFilterPattern, Collection<UUID> typeDesignationStatusUuids,
+            Integer pageSize, Integer pageIndex, List<OrderHint> orderHints){
 
             if(pageSize == null){
                 pageSize = PAGE_SIZE;
@@ -252,7 +235,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
 
             Pager<Registration> pager = repo.getRegistrationService().page(submitterUuid, includedStatus,
                     identifierFilterPattern, taxonNameFilterPattern,
-                    typeDesignationStatusUuids, PAGE_SIZE, pageIndex , orderHints, REGISTRATION_DTO_INIT_STRATEGY);
+                    referenceFilterPattern, typeDesignationStatusUuids, PAGE_SIZE , pageIndex, orderHints, REGISTRATION_DTO_INIT_STRATEGY.getPropertyPaths());
 
             Pager<RegistrationDTO> dtoPager = convertToDTOPager(pager);
             if(logger.isDebugEnabled()){
@@ -271,7 +254,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
 
         Pager<Registration> regPager = repo.getRegistrationService().pageTaxomicInclusion(null, includedStatus,
             taxonNameFilterPattern, matchMode,
-            pageSize, pageIndex, orderHints, REGISTRATION_DTO_INIT_STRATEGY);
+            pageSize, pageIndex, orderHints, REGISTRATION_DTO_INIT_STRATEGY.getPropertyPaths());
 
         return convertToDTOPager(regPager);
     }
@@ -291,7 +274,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
 
         checkPermissions(reference);
 
-        Pager<Registration> pager = repo.getRegistrationService().page(Optional.of(reference), null, null, null, REGISTRATION_DTO_INIT_STRATEGY);
+        Pager<Registration> pager = repo.getRegistrationService().page(Optional.of(reference), null, null, null, REGISTRATION_DTO_INIT_STRATEGY.getPropertyPaths());
 
         /* for debugging https://dev.e-taxonomy.eu/redmine/issues/7331 */
         // debugIssue7331(pager);
@@ -328,6 +311,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
         }
         return permissionDenied;
     }
+
 
 
     /**
@@ -386,12 +370,24 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
 
         repo.getReferenceService().load(reference.getUuid()); // needed to avoid the problem described in #7331
 
-        Pager<Registration> pager = repo.getRegistrationService().page(Optional.of(reference), null, null, null, REGISTRATION_DTO_INIT_STRATEGY);
+        Pager<Registration> pager = repo.getRegistrationService().page(Optional.of(reference), null, null, null, REGISTRATION_DTO_INIT_STRATEGY.getPropertyPaths());
 
         /* for debugging https://dev.e-taxonomy.eu/redmine/issues/7331 */
         // debugIssue7331(pager);
 
         return new RegistrationWorkingSet(makeDTOs(pager.getRecords()));
+    }
+
+    @Override
+    public Pager<RegistrationDTO> pageWorkingSetsByNameUUID(Collection<UUID> taxonNameUuids, Integer pageIndex, Integer pageSize, List<OrderHint> orderHints) throws RegistrationValidationException, PermissionDeniedException {
+
+        if(orderHints == null){
+            orderHints = Arrays.asList(new OrderHint("identifier", SortOrder.ASCENDING));
+        }
+
+        Pager<Registration> pager = repo.getRegistrationService().page((UUID)null, null, taxonNameUuids, pageSize, pageIndex, orderHints, REGISTRATION_DTO_INIT_STRATEGY.getPropertyPaths());
+
+        return new DefaultPagerImpl<RegistrationDTO>(pager.getCurrentIndex(), pager.getCount(), pager.getPageSize(), makeDTOs(pager.getRecords()));
     }
 
 
@@ -471,7 +467,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
                             continue;
                         }
                         if(DerivedUnit.class.isAssignableFrom(sob.getClass())) {
-                            defaultBeanInitializer.initialize(sob, DERIVEDUNIT_INIT_STRATEGY);
+                            defaultBeanInitializer.initialize(sob, DERIVEDUNIT_INIT_STRATEGY.getPropertyPaths());
                             nextSobs = ((DerivedUnit)sob).getOriginals();
                         }
                         if(sob instanceof FieldUnit){
