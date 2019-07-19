@@ -76,7 +76,7 @@ public class SchemaUpdater_33_331 extends SchemaUpdaterBase {
 		String treeIdColumnName = "classification_id";
 		columnName = "treeIndex";
 		step = TreeIndexUpdater.NewInstance(stepName, tableName,
-				treeIdColumnName, columnName, ! INCLUDE_AUDIT);   //update does no yet wok for ANSI SQL (e.g. PosGres / H2 with multiple entries for same id in AUD table)
+				treeIdColumnName, columnName, ! INCLUDE_AUDIT);   //update does no yet work for ANSI SQL (e.g. PosGres / H2 with multiple entries for same id in AUD table)
 		stepList.add(step);
 
 		// Drop Classification_TaxonNode table

@@ -26,7 +26,6 @@ import eu.etaxonomy.cdm.model.common.Language;
 /**
  * @author a.mueller
  * @since 13.09.2010
- *
  */
 public abstract class SchemaUpdaterStepBase implements ISchemaUpdaterStep {
 	private static final Logger logger = Logger.getLogger(SchemaUpdaterStepBase.class);
@@ -42,11 +41,9 @@ public abstract class SchemaUpdaterStepBase implements ISchemaUpdaterStep {
 		this.setStepName(stepName);
 	}
 
-
 	@Override
 	public abstract void invoke (ICdmDataSource datasource, IProgressMonitor monitor,
 	        CaseType caseType, SchemaUpdateResult result) throws SQLException;
-
 
 	@Override
 	public void setStepName(String stepName) {
@@ -112,7 +109,7 @@ public abstract class SchemaUpdaterStepBase implements ISchemaUpdaterStep {
 	 */
 	@Override
 	public List<ISchemaUpdaterStep> getInnerSteps(){
-		return new ArrayList<ISchemaUpdaterStep>();
+		return new ArrayList<>();
 	}
 
 	@Override
