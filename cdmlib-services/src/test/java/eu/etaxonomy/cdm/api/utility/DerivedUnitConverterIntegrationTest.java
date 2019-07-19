@@ -59,7 +59,7 @@ public class DerivedUnitConverterIntegrationTest extends CdmTransactionalIntegra
         SpecimenTypeDesignation std = SpecimenTypeDesignation.NewInstance();
         std.setTypeSpecimen(du);
         du = (DerivedUnit) service.save(du); // intermediate save is essential for this test
-        DerivedUnitConverter<MediaSpecimen> converter = new DerivedUnitConverter<MediaSpecimen>(std);
+        DerivedUnitConverter<MediaSpecimen> converter = new DerivedUnitConverter<>(std);
         SpecimenTypeDesignation newDu = converter.convertTo(MediaSpecimen.class, SpecimenOrObservationType.StillImage);
         assertEquals(du, converter.oldDerivedUnit());
 //        printDataSet(System.err, new String[]{"SpecimenOrObservationBase", "TypeDesignationBase"});
@@ -85,7 +85,7 @@ public class DerivedUnitConverterIntegrationTest extends CdmTransactionalIntegra
         du.setTitleCache("test media specimen", true);
         SpecimenTypeDesignation std = SpecimenTypeDesignation.NewInstance();
         std.setTypeSpecimen(du);
-        DerivedUnitConverter<DerivedUnit> duc = new DerivedUnitConverter<DerivedUnit>(std);
+        DerivedUnitConverter<DerivedUnit> duc = new DerivedUnitConverter<>(std);
         du = (MediaSpecimen) service.save(du); // intermediate save is essential for this test
         duc.convertTo(DerivedUnit.class, SpecimenOrObservationType.PreservedSpecimen);
 
