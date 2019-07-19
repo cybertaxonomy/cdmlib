@@ -20,9 +20,10 @@ import com.hp.hpl.jena.rdf.model.Statement;
 
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.descriptive.owl.OwlUtil;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.FeatureNode;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermTree;
+import eu.etaxonomy.cdm.model.term.TermTreeNode;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
@@ -56,7 +57,7 @@ public class StructureTreeOwlImport extends CdmImportBase<StructureTreeOwlImport
         while(iterator.hasNext()){
             Resource tree = iterator.next();
             String type = tree.getProperty(OwlUtil.propType).getString();
-            FeatureTree featureTree = FeatureTree.NewInstance(TermType.getByKey(type));
+            TermTree<Feature> featureTree = TermTree.NewInstance(TermType.getByKey(type));
             featureTree.setTitleCache(tree.getProperty(OwlUtil.propLabel).getString(), true);
 
             Resource rootNode = tree.getProperty(OwlUtil.propHasRootNode).getResource();
@@ -66,7 +67,7 @@ public class StructureTreeOwlImport extends CdmImportBase<StructureTreeOwlImport
         }
     }
 
-    private void createNode(FeatureNode parent, Statement nodeStatement, String treeLabel, Model model, StructureTreeOwlImportState state) {
+    private <T extends DefinedTermBase> void createNode(TermTreeNode<T> parent, Statement nodeStatement, String treeLabel, Model model, StructureTreeOwlImportState state) {
         if(state.getConfig().getProgressMonitor().isCanceled()){
             return;
         }
@@ -85,16 +86,16 @@ public class StructureTreeOwlImport extends CdmImportBase<StructureTreeOwlImport
 
         // import term
         UUID termUuid = UUID.fromString(termResource.getProperty(OwlUtil.propUuid).getString());
-        DefinedTermBase term = getTermService().find(termUuid);
+        T term = (T)getTermService().find(termUuid);
         if(term==null){
-            term = OwlImportUtil.createTerm(termResource, this, model, state);
-            term = getTermService().save(term);
+            term = (T)OwlImportUtil.createTerm(termResource, this, model, state);
+            getTermService().save(term);
             vocabulary.addTerm(term); // only add term if it does not already exist
         }
 
         getVocabularyService().saveOrUpdate(vocabulary);
 
-        FeatureNode<?> childNode = parent.addChild(term);
+        TermTreeNode<?> childNode = parent.addChild(term);
 
         state.getConfig().getProgressMonitor().worked(1);
 

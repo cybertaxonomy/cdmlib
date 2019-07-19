@@ -31,10 +31,10 @@ import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.FeatureNode;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermBase;
+import eu.etaxonomy.cdm.model.term.TermTree;
+import eu.etaxonomy.cdm.model.term.TermTreeNode;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 
@@ -259,7 +259,7 @@ public class OwlExportUtil {
         return mediaResource;
     }
 
-    static Resource createFeatureTreeResource(FeatureTree featureTree, ICdmRepository repo, StructureTreeOwlExportState state) {
+    static Resource createFeatureTreeResource(TermTree featureTree, ICdmRepository repo, StructureTreeOwlExportState state) {
         Resource featureTreeResource = getFeatureTreeResource(featureTree, state)
                 .addProperty(OwlUtil.propUuid, featureTree.getUuid().toString())
                 .addProperty(OwlUtil.propLabel, featureTree.getTitleCache())
@@ -267,7 +267,7 @@ public class OwlExportUtil {
                 .addProperty(OwlUtil.propType, featureTree.getTermType().getKey())
                 ;
 
-        FeatureNode rootNode = featureTree.getRoot();
+        TermTreeNode rootNode = featureTree.getRoot();
 
         Resource resourceRootNode = OwlExportUtil.createNodeResource(rootNode, false, repo, state);
         featureTreeResource.addProperty(OwlUtil.propHasRootNode, resourceRootNode);
@@ -277,9 +277,9 @@ public class OwlExportUtil {
         return featureTreeResource;
     }
 
-    private static void addChildNode(FeatureNode parentNode, Resource parentResourceNode, ICdmRepository repo, StructureTreeOwlExportState state){
-        List<FeatureNode> childNodes = parentNode.getChildNodes();
-        for (FeatureNode child : childNodes) {
+    private static void addChildNode(TermTreeNode parentNode, Resource parentResourceNode, ICdmRepository repo, StructureTreeOwlExportState state){
+        List<TermTreeNode> childNodes = parentNode.getChildNodes();
+        for (TermTreeNode child : childNodes) {
             // create node resource with term
             Resource nodeResource = OwlExportUtil.createNodeResource(child, false, repo, state);
 
@@ -290,9 +290,9 @@ public class OwlExportUtil {
         }
     }
 
-    static Resource createNodeResource(FeatureNode node, boolean initFeatureTree, ICdmRepository repo, StructureTreeOwlExportState state) {
+    static Resource createNodeResource(TermTreeNode<Feature> node, boolean initFeatureTree, ICdmRepository repo, StructureTreeOwlExportState state) {
         if(initFeatureTree){
-            createFeatureTreeResource(node.getFeatureTree(), repo, state);
+            createFeatureTreeResource(node.getGraph(), repo, state);
             return getNodeResource(node, state);
         }
         Resource nodeResource = getNodeResource(node, state)
@@ -333,11 +333,11 @@ public class OwlExportUtil {
         return state.getModel().createResource(OwlUtil.RESOURCE_MEDIA+media.getUuid().toString());
     }
 
-    private static Resource getNodeResource(FeatureNode node, StructureTreeOwlExportState state) {
+    private static Resource getNodeResource(TermTreeNode node, StructureTreeOwlExportState state) {
         return state.getModel().createResource(OwlUtil.RESOURCE_NODE + node.getUuid().toString());
     }
 
-    private static Resource getFeatureTreeResource(FeatureTree featureTree, StructureTreeOwlExportState state) {
+    private static Resource getFeatureTreeResource(TermTree featureTree, StructureTreeOwlExportState state) {
         return state.getModel().createResource(OwlUtil.RESOURCE_FEATURE_TREE+featureTree.getUuid().toString());
     }
 
