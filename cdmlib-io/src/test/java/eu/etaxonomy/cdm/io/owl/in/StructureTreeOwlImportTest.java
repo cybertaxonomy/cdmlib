@@ -121,13 +121,13 @@ public class StructureTreeOwlImportTest extends CdmTransactionalIntegrationTest 
         DefinedTerm inflorescence = records.iterator().next();
         assertEquals(inflorescenceLabel, inflorescence.getLabel(Language.ENGLISH()));
 
-        for (TermNode<DefinedTerm> featureNode : childNodes) {
-            assertTrue("Child node not found. Found node with term: "+featureNode.getTerm().getLabel(),
-                    featureNode.getTerm().getUuid().equals(inflorescence.getUuid())
-                    || featureNode.getTerm().getLabel(Language.ENGLISH()).equals("Flower"));
-            if(featureNode.getTerm().getUuid().equals(inflorescence.getUuid())){
-                assertEquals("Term mismatch", inflorescence, featureNode.getTerm());
-                inflorescence = featureNode.getTerm();
+        for (TermNode<DefinedTerm> termNode : childNodes) {
+            assertTrue("Child node not found. Found node with term: "+termNode.getTerm().getLabel(),
+                    termNode.getTerm().getUuid().equals(inflorescence.getUuid())
+                    || termNode.getTerm().getLabel(Language.ENGLISH()).equals("Flower"));
+            if(termNode.getTerm().getUuid().equals(inflorescence.getUuid())){
+                assertEquals("Term mismatch", inflorescence, termNode.getTerm());
+                inflorescence = termNode.getTerm();
 
                 assertEquals("wrong id in vocabulary", "inflorescence", inflorescence.getIdInVocabulary());
                 assertEquals("wrong symbol", "infloSymbol", inflorescence.getSymbol());

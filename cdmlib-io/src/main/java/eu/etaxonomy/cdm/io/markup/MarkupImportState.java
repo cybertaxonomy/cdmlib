@@ -51,7 +51,7 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	private UnmatchedLeads unmatchedLeads;
 	private boolean onlyNumberedTaxaExist; //attribute in <key>
 
-	private Set<TermNode> featureNodesToSave = new HashSet<TermNode>();
+	private Set<TermNode> termNodesToSave = new HashSet<>();
 
 	private Set<PolytomousKeyNode> polytomousKeyNodesToSave = new HashSet<>();
 
@@ -115,7 +115,7 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	 * @see MarkupImportConfigurator#getNewState()
 	 */
 	protected void reset(){
-		featureNodesToSave = new HashSet<TermNode>();
+		termNodesToSave = new HashSet<TermNode>();
 		polytomousKeyNodesToSave = new HashSet<PolytomousKeyNode>();
 		currentKey = null;
 		defaultLanguage = null;
@@ -154,12 +154,12 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 		this.unmatchedLeads = unmatchedKeys;
 	}
 
-	public void setFeatureNodesToSave(Set<TermNode> featureNodesToSave) {
-		this.featureNodesToSave = featureNodesToSave;
+	public void setTermNodesToSave(Set<TermNode> termNodesToSave) {
+		this.termNodesToSave = termNodesToSave;
 	}
 
-	public Set<TermNode> getFeatureNodesToSave() {
-		return featureNodesToSave;
+	public Set<TermNode> getTermNodesToSave() {
+		return termNodesToSave;
 	}
 
 	public Set<PolytomousKeyNode> getPolytomousKeyNodesToSave() {

@@ -93,7 +93,7 @@ public class DescriptionServiceImpl
     protected IDescriptionElementDao descriptionElementDao;
     protected IFeatureTreeDao featureTreeDao;
     protected IDescriptiveDataSetDao descriptiveDataSetDao;
-    protected ITermNodeDao featureNodeDao;
+    protected ITermNodeDao termNodeDao;
     protected IFeatureDao featureDao;
     protected ITermVocabularyDao vocabularyDao;
     protected IDefinedTermDao definedTermDao;
@@ -122,7 +122,7 @@ public class DescriptionServiceImpl
 
     @Autowired
     protected void setFeatureNodeDao(ITermNodeDao featureNodeDao) {
-        this.featureNodeDao = featureNodeDao;
+        this.termNodeDao = featureNodeDao;
     }
 
     @Autowired

@@ -35,7 +35,7 @@ xmlns:name="http://etaxonomy.eu/cdm/model/name/1.0">
 
   <xs:element name="Feature" type="description:Feature"/>
 
-  <xs:element name="TermNode" type="description:FeatureNode"/>
+  <xs:element name="TermNode" type="description:TermNode"/>
 
   <xs:element name="FeatureTree" type="description:FeatureTree"/>
   
@@ -99,13 +99,13 @@ xmlns:name="http://etaxonomy.eu/cdm/model/name/1.0">
     <xs:complexContent>
       <xs:extension base="common:TermBase">
         <xs:sequence>
-          <xs:element name="Root" type="description:FeatureNode" minOccurs="0"/>
+          <xs:element name="Root" type="description:TermNode" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="FeatureNode">
+  <xs:complexType name="TermNode">
     <xs:complexContent>
       <xs:extension base="common:VersionableEntity">
         <xs:sequence>
@@ -114,7 +114,7 @@ xmlns:name="http://etaxonomy.eu/cdm/model/name/1.0">
           <xs:element name="Children" minOccurs="0">
             <xs:complexType>
               <xs:sequence>
-                <xs:element name="Child" type="description:FeatureNode" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="Child" type="description:TermNode" minOccurs="0" maxOccurs="unbounded"/>
               </xs:sequence>
             </xs:complexType>
           </xs:element>

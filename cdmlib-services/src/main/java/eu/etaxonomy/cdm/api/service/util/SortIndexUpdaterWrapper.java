@@ -72,11 +72,9 @@ public class SortIndexUpdaterWrapper implements Serializable {
             updater = SortIndexUpdater.NewInstance("Update taxonnode sortindex", "TaxonNode", "parent_id", "sortIndex", true);
 
             result.includeResult(update(updater, monitor));
-
-
         }
-        if (config.isDoFeatureNode()){
-            updater = SortIndexUpdater.NewInstance("Update Feature node sortindex", "FeatureNode", "parent_id", "sortIndex", true);
+        if (config.isDoTermNode()){
+            updater = SortIndexUpdater.NewInstance("Update Feature node sortindex", "TermNode", "parent_id", "sortIndex", true);
             result.includeResult(update(updater, monitor));
         }
         if (config.isDoPolytomousKeyNode()){

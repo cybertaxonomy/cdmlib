@@ -18,8 +18,8 @@ import java.net.URI;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
-import eu.etaxonomy.cdm.model.term.TermTreeNode;
 
 //@Ignore  //does not work anymore since FeatureNode + Tree was moved to term package
 public class FeatureTest {
@@ -39,13 +39,13 @@ public class FeatureTest {
 			assertNotNull("Feature must not be null", feature);
 
 			assertNotNull("FeatureTree.root must not be null", featureTree.getRoot());
-			TermTreeNode<Feature> root = featureTree.getRoot();
-			assertNotNull("FeatureNode.feature must not be null", root.getTerm());
-			assertEquals("FeatureNode.feature must equal Feature", feature, root.getTerm());
+			TermNode<Feature> root = featureTree.getRoot();
+			assertNotNull("TermNode.term must not be null", root.getTerm());
+			assertEquals("TermNode.feature must equal Feature", feature, root.getTerm());
 
-			assertNotNull("FeatureNode.children must not be null", root.getChildNodes());
-			assertFalse("FeatureNode.children must not be empty", root.getChildNodes().isEmpty());
-			assertEquals("FeatureNode.children must have 4 child nodes", 4, root.getChildNodes().size());
+			assertNotNull("TermNode.children must not be null", root.getChildNodes());
+			assertFalse("TermNode.children must not be empty", root.getChildNodes().isEmpty());
+			assertEquals("TermNode.children must have 4 child nodes", 4, root.getChildNodes().size());
 
 	    }
 }

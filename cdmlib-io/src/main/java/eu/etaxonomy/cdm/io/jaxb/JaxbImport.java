@@ -118,7 +118,7 @@ public class JaxbImport
 		List<TypeDesignationBase<?>> typeDesignations;
 		List<SpecimenOrObservationBase> occurrences;
 		List<TermTree> featureTrees;
-		List<TermNode> featureNodes;
+		List<TermNode> termNodes;
 		List<Media> media;
 		List<LanguageStringBase> languageData;
 		List<TermVocabulary<DefinedTermBase>> termVocabularies;

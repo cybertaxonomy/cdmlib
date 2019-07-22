@@ -232,15 +232,15 @@ public class Datasource {
 //		appCtr.getTaxonNodeService().saveOrUpdate(node3);
 //		appCtr.getClassificationService().saveOrUpdate(cl);
 //
-//		FeatureTree ft1 = FeatureTree.NewInstance();
-//		FeatureNode fn1 = FeatureNode.NewInstance((Feature)null);
+//		TermTree<Feature> ft1 = TermTree.NewInstance();
+//		FeatureNode fn1 = TermNode.NewInstance((Feature)null);
 //		ft1.getRoot().addChild(fn1);
 //		appCtr.getFeatureNodeService().save(fn1);
 //
-//		FeatureNode fn2 = FeatureNode.NewInstance((Feature)null);
+//		TermNode fn2 = TermNode.NewInstance((Feature)null);
 //		fn1.addChild(fn2);
 //
-//		FeatureNode fn3 = FeatureNode.NewInstance((Feature)null);
+//		TermNode fn3 = TermNode.NewInstance((Feature)null);
 //		fn1.addChild(fn2, 0);
 //
 //		appCtr.getFeatureNodeService().saveOrUpdate(fn1);

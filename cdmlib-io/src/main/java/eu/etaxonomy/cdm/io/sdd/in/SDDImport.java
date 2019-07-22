@@ -106,7 +106,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
     private Map<String,String> citations = new HashMap<>();
     private Map<String,String> defaultUnitPrefixes = new HashMap<>();
     private Map<String,Person> editors = new HashMap<>();
-    private Map<String,TermNode<Feature>> featureNodes = new HashMap<>();
+    private Map<String,TermNode<Feature>> termNodes = new HashMap<>();
     private Map<String,Feature> features = new HashMap<>();
     private Map<String,String> locations = new HashMap<>();
     private Map<String,List<CdmBase>> mediaObject_ListCdmBase = new HashMap<>();
@@ -161,7 +161,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 	    citations = new HashMap<>();
 	    defaultUnitPrefixes = new HashMap<>();
 	    editors = new HashMap<>();
-	    featureNodes = new HashMap<>();
+	    termNodes = new HashMap<>();
 	    features = new HashMap<>();
 	    locations = new HashMap<>();
 	    mediaObject_ListCdmBase = new HashMap<>();
@@ -1803,7 +1803,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 					if (elParent!=null){
 						String refP = elParent.getAttributeValue("ref");
 						if (refP!=null) {
-							TermNode<Feature> parent = featureNodes.get(refP);
+							TermNode<Feature> parent = termNodes.get(refP);
 							if (parent==null){
 							    // if no parent found or the reference is broken, add the node to the root of the tree
 							    fn = (dc==null)?root.addChild():root.addChild(dc);
@@ -1818,7 +1818,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
                         fn = (dc==null)?root.addChild():root.addChild(dc);
 					}
 				}
-				featureNodes.put(idN, fn);
+				termNodes.put(idN, fn);
 			}
 		}
 
@@ -1835,7 +1835,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
                 if (elParent!=null){
                     String refP = elParent.getAttributeValue("ref");
                     if ((refP!=null)&&(!refP.equals(""))) {
-                        TermNode<Feature> parent = featureNodes.get(refP);
+                        TermNode<Feature> parent = termNodes.get(refP);
                         if (parent==null){
                             parent = root; // if no parent found or the reference is broken, add the node to the root of the tree
                         }
@@ -1875,7 +1875,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 				if ((refC!=null)&&(!refC.equals(""))){
 					Feature character = features.get(refC);
 					fn.setTerm(character);
-					featureNodes.put(refC, fn);
+					termNodes.put(refC, fn);
 				}
 			}
 		}

@@ -11,11 +11,12 @@ package eu.etaxonomy.cdm.api.service.config;
 /**
  * @author k.luther
  * @since 05.11.2015
- *
  */
-public class FeatureNodeDeletionConfigurator extends NodeDeletionConfigurator {
+public class TermNodeDeletionConfigurator extends NodeDeletionConfigurator {
 
-    public FeatureNodeDeletionConfigurator(){
+    private static final long serialVersionUID = 3079674487787604884L;
+
+    public TermNodeDeletionConfigurator(){
         deleteElement = false;
     }
 }

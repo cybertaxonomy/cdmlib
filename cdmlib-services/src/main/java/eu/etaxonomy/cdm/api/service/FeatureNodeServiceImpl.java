@@ -19,15 +19,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import eu.etaxonomy.cdm.api.service.config.FeatureNodeDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
+import eu.etaxonomy.cdm.api.service.config.TermNodeDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermNode;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.description.ITermNodeDao;
 
@@ -38,7 +38,9 @@ import eu.etaxonomy.cdm.persistence.dao.description.ITermNodeDao;
 @Service
 @Transactional(readOnly = false)
 public class FeatureNodeServiceImpl extends VersionableServiceBase<TermNode, ITermNodeDao> implements IFeatureNodeService {
-	private static final Logger logger = Logger.getLogger(FeatureNodeServiceImpl.class);
+
+    @SuppressWarnings("unused")
+    private static final Logger logger = Logger.getLogger(FeatureNodeServiceImpl.class);
 
 	@Override
     @Autowired
@@ -54,18 +56,18 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<TermNode, ITe
 
 	 @Override
 	 @Transactional(readOnly = false)
-	 public DeleteResult deleteFeatureNode(UUID nodeUuid, FeatureNodeDeletionConfigurator config) {
+	 public DeleteResult deleteFeatureNode(UUID nodeUuid, TermNodeDeletionConfigurator config) {
 	     DeleteResult result = new DeleteResult();
-         TermNode<Feature> node = HibernateProxyHelper.deproxy(dao.load(nodeUuid), TermNode.class);
+         TermNode<Feature> node = CdmBase.deproxy(dao.load(nodeUuid));
 	     result = isDeletable(nodeUuid, config);
 	     if (result.isOk()){
 	         TermNode<Feature> parent = node.getParent();
-             parent = HibernateProxyHelper.deproxy(parent, TermNode.class);
-	         List<TermNode> children = new ArrayList(node.getChildNodes());
+             parent = CdmBase.deproxy(parent);
+	         List<TermNode<Feature>> children = new ArrayList<>(node.getChildNodes());
 
 	         if (config.getChildHandling().equals(ChildHandling.DELETE)){
 
-	             for (TermNode child: children){
+	             for (TermNode<Feature> child: children){
 	                 deleteFeatureNode(child.getUuid(), config);
 	                // node.removeChild(child);
 	             }
@@ -77,7 +79,7 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<TermNode, ITe
 
 	             if (parent != null){
 	                 parent.removeChild(node);
-	                 for (TermNode child: children){
+	                 for (TermNode<Feature> child: children){
 	                     node.removeChild(child);
 	                     parent.addChild(child);
 	                 }
@@ -94,7 +96,7 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<TermNode, ITe
 	             result.addUpdatedObject(parent);
 	         }
 	         if (config.isDeleteElement()){
-	             DefinedTermBase term = node.getTerm();
+	             DefinedTermBase<?> term = node.getTerm();
                  termService.delete(term.getUuid());
                  result.addDeletedObject(term);
              }
@@ -136,7 +138,7 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<TermNode, ITe
      }
 
 	 @Override
-	 public DeleteResult isDeletable(UUID nodeUuid, FeatureNodeDeletionConfigurator config){
+	 public DeleteResult isDeletable(UUID nodeUuid, TermNodeDeletionConfigurator config){
 	     TermNode<Feature> node = load(nodeUuid);
 	     DeleteResult result = new DeleteResult();
 	     Set<CdmBase> references = commonService.getReferencingObjectsForDeletion(node);

@@ -21,12 +21,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import eu.etaxonomy.cdm.api.service.config.FeatureNodeDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
+import eu.etaxonomy.cdm.api.service.config.TermNodeDeletionConfigurator;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
-import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermNode;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.description.ITermNodeDao;
@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 @Transactional(readOnly = false)
 public class FeatureTreeServiceImpl extends IdentifiableServiceBase<TermTree, IFeatureTreeDao> implements IFeatureTreeService {
 
-    private ITermNodeDao featureNodeDao;
+    private ITermNodeDao termNodeDao;
 
     @Autowired
     private IFeatureNodeService featureNodeService;
@@ -49,8 +49,8 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<TermTree, IF
     }
 
     @Autowired
-    protected void setFeatureNodeDao(ITermNodeDao featureNodeDao) {
-        this.featureNodeDao = featureNodeDao;
+    protected void setTermNodeDao(ITermNodeDao termNodeDao) {
+        this.termNodeDao = termNodeDao;
     }
 
     @Override
@@ -64,17 +64,17 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<TermTree, IF
 
     @Override
     public List<TermNode> getFeatureNodesAll() {
-        return featureNodeDao.list();
+        return termNodeDao.list();
     }
 
     @Override
     public Map<UUID, TermNode> saveFeatureNodesAll(Collection<TermNode> featureNodeCollection) {
-        return featureNodeDao.saveAll(featureNodeCollection);
+        return termNodeDao.saveAll(featureNodeCollection);
     }
 
     @Override
     public Map<UUID, TermNode> saveOrUpdateFeatureNodesAll(Collection<TermNode> featureNodeCollection) {
-        return featureNodeDao.saveOrUpdateAll(featureNodeCollection);
+        return termNodeDao.saveOrUpdateAll(featureNodeCollection);
     }
 
     @Override
@@ -131,7 +131,7 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<TermTree, IF
         TermTree tree = dao.load(featureTreeUuid);
 
         TermNode rootNode = HibernateProxyHelper.deproxy(tree.getRoot());
-        FeatureNodeDeletionConfigurator config = new FeatureNodeDeletionConfigurator();
+        TermNodeDeletionConfigurator config = new TermNodeDeletionConfigurator();
         config.setChildHandling(ChildHandling.DELETE);
         result =featureNodeService.deleteFeatureNode(rootNode.getUuid(), config);
         //FIXME test if this is necessary

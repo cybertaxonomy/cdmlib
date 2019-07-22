@@ -22,7 +22,7 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.datasetloadstrategy.impl.RefreshLoadStrategy;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.api.service.config.FeatureNodeDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.config.TermNodeDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
@@ -146,7 +146,7 @@ public class FeatureNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 	public final void testIndexDeleteNode() {
 		node2 = featureNodeService.load(node2Uuid);
 		TermNode<Feature> root = node2.getParent();
-		FeatureNodeDeletionConfigurator config = new FeatureNodeDeletionConfigurator();
+		TermNodeDeletionConfigurator config = new TermNodeDeletionConfigurator();
 		config.setDeleteElement(false);
         config.setChildHandling(ChildHandling.MOVE_TO_PARENT);
         DeleteResult result = featureNodeService.deleteFeatureNode(node2Uuid, config);
