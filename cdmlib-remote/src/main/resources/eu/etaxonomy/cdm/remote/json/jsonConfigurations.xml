@@ -358,8 +358,13 @@
          </bean>  
         </entry>
         <entry key="eu.etaxonomy.cdm.model.name.TaxonName">
-          <bean
-            class="eu.etaxonomy.cdm.remote.json.processor.bean.TaxonNameBeanProcessor" />
+          <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TaxonNameBeanProcessor">
+            <property name="excludes">
+                <set value-type="java.lang.String">
+                    <value>homotypicalGroup</value>
+                </set>
+            </property>
+          </bean>
         </entry>
         <entry key="eu.etaxonomy.cdm.model.name.NameRelationship">
           <bean

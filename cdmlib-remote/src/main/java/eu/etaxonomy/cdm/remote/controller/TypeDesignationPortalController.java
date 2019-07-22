@@ -30,7 +30,9 @@ public class TypeDesignationPortalController extends TypeDesignationController {
             "typeName.$",
             "typeSpecimen",
             "typeStatus.representations",
-            "typifiedNames.nomenclaturalReference.authorship",
+            "typifiedNames.nomenclaturalReference.authorship.$",
+            "typifiedNames.nomenclaturalReference.inReference.authorship.$",
+            "typifiedNames.nomenclaturalReference.inReference.inReference.authorship.$",
             "citation.authorship.$",
             "typeSpecimen.media",
             "registrations.institution"

@@ -1309,18 +1309,20 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
         while(sourcesItr.hasNext()) {
             IdentifiableSource source = sourcesItr.next();
             Reference ref = source.getCitation();
-            Set<IdentifiableSource> ref_sources = ref.getSources();
-            Iterator<IdentifiableSource> ref_itr = ref_sources.iterator();
-            while(ref_itr.hasNext()) {
-                IdentifiableSource ref_source = ref_itr.next();
-                if(ref_source.getIdNamespace().equals(DWC_DATASET_ID)) {
-                    didname[0] = ref_source.getIdInSource();
+            if(ref != null){
+                Set<IdentifiableSource> ref_sources = ref.getSources();
+                Iterator<IdentifiableSource> ref_itr = ref_sources.iterator();
+                while(ref_itr.hasNext()) {
+                    IdentifiableSource ref_source = ref_itr.next();
+                    if(ref_source.getIdNamespace().equals(DWC_DATASET_ID)) {
+                        didname[0] = ref_source.getIdInSource();
+                        break;
+                    }
+                }
+                if(!didname[0].isEmpty()) {
+                    didname[1] = ref.getTitleCache();
                     break;
                 }
-            }
-            if(!didname[0].isEmpty()) {
-                didname[1] = ref.getTitleCache();
-                break;
             }
         }
         return didname;
