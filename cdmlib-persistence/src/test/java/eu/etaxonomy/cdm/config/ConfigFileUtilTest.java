@@ -21,7 +21,7 @@ public class ConfigFileUtilTest {
 
 
 	@Test
-//	@Ignore
+	@Ignore
 	public void testGetFolderSeperator() {
 		Assert.assertEquals(File.separator, CdmUtils.getFolderSeperator());
 	}
