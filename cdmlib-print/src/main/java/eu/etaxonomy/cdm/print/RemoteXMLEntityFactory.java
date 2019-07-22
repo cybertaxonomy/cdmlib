@@ -242,12 +242,12 @@ public class RemoteXMLEntityFactory extends XmlEntityFactoryBase {
 		return processElementList(result);
 	}
 
-	public Element getFeatureNode(UUID featureNodeUuid) {
+	public Element getTermNode(UUID featureNodeUuid) {
 		Element result = queryService(featureNodeUuid, FEATURENODE);
 		return result;
 	}
 
-	public Element getFeatureForFeatureNode(UUID featureNodeUuid) {
+	public Element getFeatureForTermNode(UUID featureNodeUuid) {
 		Element result = queryService(featureNodeUuid, FEATURENODE_FEATURE);
 		return result;
 	}

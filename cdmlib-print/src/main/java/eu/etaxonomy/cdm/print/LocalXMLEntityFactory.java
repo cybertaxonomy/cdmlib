@@ -81,7 +81,7 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
     private FeatureTreeController featureTreeController;
 
     @Autowired
-    private FeatureNodeController featureNodeController;
+    private FeatureNodeController termNodeController;
 
     @Autowired
     private PolytomousKeyNodeDtoController polytomousKeyNodeDtoController;
@@ -122,7 +122,7 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
     			.getBean("featureTreeListController");
     	featureTreeController = (FeatureTreeController) applicationConfiguration
     			.getBean("featureTreeController");
-    	featureNodeController = (FeatureNodeController) applicationConfiguration
+    	termNodeController = (FeatureNodeController) applicationConfiguration
     			.getBean("featureNodeController");
 
     	taxonPortalController = (TaxonPortalController) applicationConfiguration
@@ -205,11 +205,11 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
     }
 
     @Override
-    public Element getFeatureNode(UUID uuid) {
+    public Element getTermNode(UUID uuid) {
         xmlView.setJsonConfig(jsonConfig);
         Object resultObject = null;
         try {
-            resultObject = featureNodeController.doGet(uuid, null, null);
+            resultObject = termNodeController.doGet(uuid, null, null);
         } catch (IOException e) {
             monitor.warning(e.getLocalizedMessage(), e);
             logger.error(e);
@@ -220,11 +220,11 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
     }
 
     @Override
-    public Element getFeatureForFeatureNode(UUID uuid) {
+    public Element getFeatureForTermNode(UUID uuid) {
         xmlView.setJsonConfig(jsonConfig);
         Object resultObject = null;
         try {
-            resultObject = featureNodeController.getCdmBaseProperty(uuid,
+            resultObject = termNodeController.getCdmBaseProperty(uuid,
                     "feature", null);
         } catch (IOException e) {
             monitor.warning(e.getLocalizedMessage(), e);

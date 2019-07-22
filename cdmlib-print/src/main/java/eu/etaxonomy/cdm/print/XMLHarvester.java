@@ -58,7 +58,7 @@ public class XMLHarvester {
 	private void createSimplifiedFeatureTree(Element featureTreeElement) {
 		Element root = featureTreeElement.getChild("root");
 		
-		Element realRoot = factory.getFeatureNode(XMLHelper.getUuid(root));
+		Element realRoot = factory.getTermNode(XMLHelper.getUuid(root));
 		
 		progressMonitor.subTask("Generating simplified Feature Tree.");
 		simplifiedFeatureTree = featureTreeRecursive(realRoot);
@@ -79,8 +79,8 @@ public class XMLHarvester {
 				for(Element childNode : childFeatureNodes){
 
 					UUID uuid = XMLHelper.getUuid(childNode);
-					Element featureNodeElement = factory.getFeatureNode(uuid);
-					Element featureElement = factory.getFeatureForFeatureNode(uuid);
+					Element featureNodeElement = factory.getTermNode(uuid);
+					Element featureElement = factory.getFeatureForTermNode(uuid);
 
 
 					try {
