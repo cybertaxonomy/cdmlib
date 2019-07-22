@@ -62,7 +62,9 @@ import eu.etaxonomy.cdm.api.service.IRegistrationService;
 import eu.etaxonomy.cdm.api.service.IRightsService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.api.service.ITermNodeService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.ITermTreeService;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.api.service.molecular.IAmplificationService;
@@ -594,6 +596,11 @@ public class CdmApplicationController implements ICdmRepository {
 		return configuration.getFeatureTreeService();
 	}
 
+    @Override
+    public final ITermTreeService getTermTreeService(){
+        return configuration.getTermTreeService();
+    }
+
 	@Override
 	public final IPreferenceService getPreferenceService(){
 	    return configuration.getPreferenceService();
@@ -604,6 +611,11 @@ public class CdmApplicationController implements ICdmRepository {
 	public final IFeatureNodeService getFeatureNodeService(){
 		return configuration.getFeatureNodeService();
 	}
+
+    @Override
+    public final ITermNodeService getTermNodeService(){
+        return configuration.getTermNodeService();
+    }
 
 
 	@Override

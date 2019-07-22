@@ -14,14 +14,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermNode;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
+/**
+* @deprecated use {@link ITermTreeService} instead
+*/
+@Deprecated
 public interface IFeatureTreeService extends IIdentifiableEntityService<TermTree> {
 
-	public List<TermNode> getFeatureNodesAll();
+	/**
+	 * @deprecated use {@link ITermTreeService#list(Class, Integer, Integer, List, List)} instead
+	 */
+	@Deprecated
+    public List<TermNode> getFeatureNodesAll();
 
 	/**
 	 * Loads a feature tree including all of its nodes (all the way down to the tips of the tree).

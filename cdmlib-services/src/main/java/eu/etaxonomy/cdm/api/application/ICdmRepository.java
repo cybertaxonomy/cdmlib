@@ -44,7 +44,9 @@ import eu.etaxonomy.cdm.api.service.IRegistrationService;
 import eu.etaxonomy.cdm.api.service.IRightsService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.api.service.ITermNodeService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.ITermTreeService;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.api.service.molecular.IAmplificationService;
@@ -59,9 +61,8 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.ICdmPermissionEvaluator
  */
 public interface ICdmRepository{
 
-
     /**
-     * Starts a read only Transaction
+     * Starts a read only transaction
      */
     public TransactionStatus startTransaction();
 
@@ -71,233 +72,96 @@ public interface ICdmRepository{
 
 	public Object getBean(String string);
 
-
-	/**
-     * @return
-     */
     public IAnnotationService getAnnotationService();
 
-	/**
-	 * @return
-	 */
 	public INameService getNameService();
 
-
-	/**
-	 * @return
-	 */
 	public ITaxonService getTaxonService();
 
-
-	/**
-	 * @return
-	 */
 	public IClassificationService getClassificationService();
 
-
-	/**
-	 *
-	 * @return
-	 */
 	public ITaxonNodeService getTaxonNodeService();
 
-
-	/**
-	 * @return
-	 */
 	public IReferenceService getReferenceService();
 
-
-	/**
-	 * @return
-	 */
 	public IAgentService getAgentService();
 
-
-	/**
-	 * @return
-	 */
 	public IDescriptionService getDescriptionService();
 
-
-	/**
-	 * @return
-	 */
 	public IOccurrenceService getOccurrenceService();
 
-
-	/**
-	 * @return
-	 */
 	public IPrimerService getPrimerService();
 
-
-	/**
-	 * @return
-	 */
 	public IAmplificationService getAmplificationService();
 
-
-	/**
-	 * @return
-	 */
 	public ISequenceService getSequenceService();
 
 	public IEventBaseService getEventBaseService();
 
-
-	/**
-	 * @return
-	 */
 	public IMediaService getMediaService();
 
-   /**
-     * @return
-     */
     public IMetadataService getMetadataService();
 
-
-	/**
-	 * @return
-	 */
 	public IDatabaseService getDatabaseService();
 
-
-	/**
-	 * @return
-	 */
 	public ITermService getTermService();
 
-
-	/**
-	 * @return
-	 */
 	public ICommonService getCommonService();
 
-
-	/**
-	 *
-	 * @return
-	 */
 	public ILocationService getLocationService();
 
-
-	/**
-	 *
-	 * @return
-	 */
 	public IUserService getUserService();
 
-
-	/**
-	 *
-	 * @return
-	 */
 	public IGroupService getGroupService();
 
-	/**
-    *
-    * @return
-    */
-   public IPreferenceService getPreferenceService();
+    public IPreferenceService getPreferenceService();
 
-	/**
-	 *
-	 * @return
-	 */
 	public IGrantedAuthorityService getGrantedAuthorityService();
 
-
-	/**
-	 * @return
-	 */
 	public IDescriptiveDataSetService getDescriptiveDataSetService();
 
-
-	/**
-	 * @return
-	 */
 	public PlatformTransactionManager getTransactionManager();
 
-
-	/**
-	 *
-	 * @return
-	 */
 	public ProviderManager getAuthenticationManager();
 
-
-	/**
-	 * @return
-	 */
 	public ConversationHolder NewConversation();
 
-
-	/**
-	 *
-	 * @return
-	 */
 	public ICollectionService getCollectionService();
 
+	/**
+	 * @deprecated use {@link #getTermTreeService()} instead
+	 */
+	@Deprecated
+    public IFeatureTreeService getFeatureTreeService();
+
+    public ITermTreeService getTermTreeService();
 
 	/**
-	 *
-	 * @return
+     * @deprecated use {@link #getTermNodeService()} instead
 	 */
-	public IFeatureTreeService getFeatureTreeService();
+	@Deprecated
+    public IFeatureNodeService getFeatureNodeService();
 
+    /**
+     * @return
+     */
+    public ITermNodeService getTermNodeService();
 
-	/**
-	 *
-	 * @return
-	 */
-	public IFeatureNodeService getFeatureNodeService();
-
-
-	/**
-	 *
-	 * @return
-	 */
 	public IVocabularyService getVocabularyService();
 
-
-	/**
-	 * @return
-	 */
 	public IIdentificationKeyService getIdentificationKeyService();
 
-
-	/**
-	 * @return
-	 */
 	public IPolytomousKeyService getPolytomousKeyService();
 
-
-	/**
-	 * @return
-	 */
 	public IPolytomousKeyNodeService getPolytomousKeyNodeService();
 
-	/**
-     * @return
-     */
 	public IProgressMonitorService getProgressMonitorService();
 
-	/**
-	 * @return
-	 */
 	public IEntityValidationService getEntityValidationService();
 
-	/**
-     * @return
-     */
     public IRightsService getRightsService();
 
-	/**
-	 * @return
-	 */
 	public IEntityConstraintViolationService getEntityConstraintViolationService();
-
 
 	/**
 	 * @return the configured PermissionEvaluator, usually the
@@ -305,12 +169,8 @@ public interface ICdmRepository{
 	 */
 	public ICdmPermissionEvaluator getPermissionEvaluator();
 
-
 	void authenticate(String username, String password);
 
-    /**
-     * @return
-     */
-    IRegistrationService getRegistrationService();
+    public IRegistrationService getRegistrationService();
 
 }

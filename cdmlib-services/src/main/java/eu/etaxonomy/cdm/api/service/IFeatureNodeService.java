@@ -11,24 +11,26 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.api.service.config.FeatureNodeDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.config.TermNodeDeletionConfigurator;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermNode;
 
 /**
  * @author n.hoffmann
  * @since Aug 5, 2010
+ * @deprecated use ITermNodeService instead
  */
+@Deprecated
 public interface IFeatureNodeService extends IVersionableService<TermNode>{
 
-    DeleteResult isDeletable(UUID nodeUuid, FeatureNodeDeletionConfigurator config);
+    DeleteResult isDeletable(UUID nodeUuid, TermNodeDeletionConfigurator config);
 
-    DeleteResult deleteFeatureNode(UUID nodeUuid, FeatureNodeDeletionConfigurator config);
+    DeleteResult deleteFeatureNode(UUID nodeUuid, TermNodeDeletionConfigurator config);
 
 
     /**
      * <b>Saves</b> and adds the specified feature as a child node to the given feature node.
-     * @see IFeatureNodeService#addChildFeatureNode(FeatureNode, DefinedTermBase)
+     * @see ITermNodeService#addChildFeatureNode(FeatureNode, DefinedTermBase)
      * @param parentNodeUuid the feature node where the new feature should be added
      * @param term the term which should be <b>saved</b> and added to the given feature node
      * @param vocabularyUuid the UUID of the vocabulary where the term should be saved
