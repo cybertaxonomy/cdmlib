@@ -15,7 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import eu.etaxonomy.cdm.api.service.IFeatureNodeService;
-import eu.etaxonomy.cdm.model.term.TermTreeNode;
+import eu.etaxonomy.cdm.model.term.TermNode;
 import io.swagger.annotations.Api;
 
 /**
@@ -25,7 +25,7 @@ import io.swagger.annotations.Api;
 @Controller
 @Api("featureNode")
 @RequestMapping(value = {"/featureNode/{uuid}"})
-public class FeatureNodeController extends BaseController<TermTreeNode, IFeatureNodeService> {
+public class FeatureNodeController extends BaseController<TermNode, IFeatureNodeService> {
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(FeatureNodeController.class);
 
