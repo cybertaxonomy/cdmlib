@@ -51,7 +51,8 @@ public class DescriptiveDataSetDao
 	        	query.setFirstResult(0);
 	        }
 	    }
-		List<DescriptionBase> descriptions = query.list();
+		@SuppressWarnings("unchecked")
+        List<DescriptionBase> descriptions = query.list();
 		Map<DescriptionBase, Set<DescriptionElementBase>> result = new HashMap<>();
 		for(DescriptionBase description : descriptions) {
 			Criteria criteria = getSession().createCriteria(DescriptionElementBase.class);
@@ -60,7 +61,8 @@ public class DescriptiveDataSetDao
 				criteria.add(Restrictions.in("feature", features));
 			}
 
-			List<DescriptionElementBase> r = criteria.list();
+			@SuppressWarnings("unchecked")
+            List<DescriptionElementBase> r = criteria.list();
 			defaultBeanInitializer.initializeAll(r, propertyPaths);
 			result.put(description, new HashSet<>(r));
 		}

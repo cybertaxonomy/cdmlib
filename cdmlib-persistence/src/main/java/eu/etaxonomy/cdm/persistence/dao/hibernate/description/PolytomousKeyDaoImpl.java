@@ -31,7 +31,9 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
  */
 @Repository
 public class PolytomousKeyDaoImpl extends IdentifiableDaoBase<PolytomousKey> implements IPolytomousKeyDao {
-	private static final Logger logger = Logger.getLogger(PolytomousKeyDaoImpl.class);
+
+    @SuppressWarnings("unused")
+    private static final Logger logger = Logger.getLogger(PolytomousKeyDaoImpl.class);
 
 	@Autowired
 	IPolytomousKeyNodeDao nodeDao;
@@ -46,7 +48,9 @@ public class PolytomousKeyDaoImpl extends IdentifiableDaoBase<PolytomousKey> imp
 	@Override
 	public List<PolytomousKey> list() {
 		Criteria crit = getSession().createCriteria(type);
-		return crit.list();
+		@SuppressWarnings("unchecked")
+        List<PolytomousKey> result = crit.list();
+		return result;
 	}
 
 
