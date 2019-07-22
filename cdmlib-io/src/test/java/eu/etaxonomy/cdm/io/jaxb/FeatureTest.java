@@ -15,13 +15,14 @@ import static org.junit.Assert.assertNotNull;
 import java.io.InputStreamReader;
 import java.net.URI;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
 
-//@Ignore  //does not work anymore since FeatureNode + Tree was moved to term package
+@Ignore  //does not work anymore since TermNode + Tree was moved to term package
 public class FeatureTest {
 
 	    private String resource = "/eu/etaxonomy/cdm/io/jaxb/FeatureTest.xml";
