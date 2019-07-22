@@ -35,7 +35,7 @@ xmlns:name="http://etaxonomy.eu/cdm/model/name/1.0">
 
   <xs:element name="Feature" type="description:Feature"/>
 
-  <xs:element name="TermTreeNode" type="description:FeatureNode"/>
+  <xs:element name="TermNode" type="description:FeatureNode"/>
 
   <xs:element name="FeatureTree" type="description:FeatureTree"/>
   

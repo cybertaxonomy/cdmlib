@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.term.TermTree;
-import eu.etaxonomy.cdm.model.term.TermTreeNode;
+import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
@@ -33,7 +33,7 @@ public interface IFeatureTreeDao extends IIdentifiableDao<TermTree> {
      * @param nodes
      * @param nodePaths
      */
-    public void deepLoadNodes(List<TermTreeNode> nodes, List<String> nodePaths);
+    public void deepLoadNodes(List<TermNode> nodes, List<String> nodePaths);
 
     public <S extends TermTree> List<UuidAndTitleCache<S>> getUuidAndTitleCacheByTermType(Class<S> clazz, TermType termType, Integer limit,
             String pattern);

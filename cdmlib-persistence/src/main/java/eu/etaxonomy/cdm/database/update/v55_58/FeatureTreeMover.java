@@ -56,7 +56,7 @@ public class FeatureTreeMover extends SchemaUpdaterStepBase {
 
         // update tree index for feature node
         //note: it could also be enough to only replace the first index entry by graph_id as only the graph_id changed
-        String stepName = "Update TermTreeNode treeindex";
+        String stepName = "Update TermNode treeindex";
         String tableName = "TermRelation";
         String treeIdColumnName = "graph_id";
         ISchemaUpdaterStep step = TreeIndexUpdater.NewInstance(stepName, tableName,
@@ -116,7 +116,7 @@ public class FeatureTreeMover extends SchemaUpdaterStepBase {
         updateSupplement("RightsInfo", "rights_id", featureTreeId, maxIdTermVoc, datasource, monitor, caseType, result, false);
 
         updateDescriptiveSystem(featureTreeId, maxIdTermVoc, datasource, monitor, caseType, result);
-        updateTermTreeNode(featureTreeId, maxIdTermVoc, datasource, monitor, caseType, result);
+        updateTermNode(featureTreeId, maxIdTermVoc, datasource, monitor, caseType, result);
 
 //        xx  treeIndex update;
 
@@ -134,7 +134,7 @@ public class FeatureTreeMover extends SchemaUpdaterStepBase {
      * @param result
      * @throws SQLException
      */
-    private void updateTermTreeNode(Integer featureTreeId, int maxIdTermVoc, ICdmDataSource datasource,
+    private void updateTermNode(Integer featureTreeId, int maxIdTermVoc, ICdmDataSource datasource,
             IProgressMonitor monitor, CaseType caseType, SchemaUpdateResult result) throws SQLException {
         String update = "UPDATE @@TermRelation@@ "
                 + " SET graph_id = " + maxIdTermVoc

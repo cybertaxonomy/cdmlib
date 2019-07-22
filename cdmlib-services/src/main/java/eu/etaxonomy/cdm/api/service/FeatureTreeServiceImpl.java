@@ -26,10 +26,10 @@ import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandlin
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.term.TermTree;
-import eu.etaxonomy.cdm.model.term.TermTreeNode;
+import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
-import eu.etaxonomy.cdm.persistence.dao.description.ITermTreeNodeDao;
+import eu.etaxonomy.cdm.persistence.dao.description.ITermNodeDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 @Transactional(readOnly = false)
 public class FeatureTreeServiceImpl extends IdentifiableServiceBase<TermTree, IFeatureTreeDao> implements IFeatureTreeService {
 
-    private ITermTreeNodeDao featureNodeDao;
+    private ITermNodeDao featureNodeDao;
 
     @Autowired
     private IFeatureNodeService featureNodeService;
@@ -49,7 +49,7 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<TermTree, IF
     }
 
     @Autowired
-    protected void setFeatureNodeDao(ITermTreeNodeDao featureNodeDao) {
+    protected void setFeatureNodeDao(ITermNodeDao featureNodeDao) {
         this.featureNodeDao = featureNodeDao;
     }
 
@@ -63,17 +63,17 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<TermTree, IF
     }
 
     @Override
-    public List<TermTreeNode> getFeatureNodesAll() {
+    public List<TermNode> getFeatureNodesAll() {
         return featureNodeDao.list();
     }
 
     @Override
-    public Map<UUID, TermTreeNode> saveFeatureNodesAll(Collection<TermTreeNode> featureNodeCollection) {
+    public Map<UUID, TermNode> saveFeatureNodesAll(Collection<TermNode> featureNodeCollection) {
         return featureNodeDao.saveAll(featureNodeCollection);
     }
 
     @Override
-    public Map<UUID, TermTreeNode> saveOrUpdateFeatureNodesAll(Collection<TermTreeNode> featureNodeCollection) {
+    public Map<UUID, TermNode> saveOrUpdateFeatureNodesAll(Collection<TermNode> featureNodeCollection) {
         return featureNodeDao.saveOrUpdateAll(featureNodeCollection);
     }
 
@@ -130,7 +130,7 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<TermTree, IF
         DeleteResult result = new DeleteResult();
         TermTree tree = dao.load(featureTreeUuid);
 
-        TermTreeNode rootNode = HibernateProxyHelper.deproxy(tree.getRoot());
+        TermNode rootNode = HibernateProxyHelper.deproxy(tree.getRoot());
         FeatureNodeDeletionConfigurator config = new FeatureNodeDeletionConfigurator();
         config.setChildHandling(ChildHandling.DELETE);
         result =featureNodeService.deleteFeatureNode(rootNode.getUuid(), config);

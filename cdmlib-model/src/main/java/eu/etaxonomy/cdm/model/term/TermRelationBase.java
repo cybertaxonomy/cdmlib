@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
 /**
- * Common base class for {@link TermTreeNode} and {@link TermRelation}.
+ * Common base class for {@link TermNode} and {@link TermRelation}.
  * @author a.mueller
  * @since 06.03.2019
  */
@@ -47,7 +47,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 })
 @Entity
 @Audited
-@Table(name="TermRelation", indexes = { @Index(name = "termTreeNodeTreeIndex", columnList = "treeIndex") })  //was feature NodeTreeIndex before
+@Table(name="TermRelation", indexes = { @Index(name = "termNodeTreeIndex", columnList = "treeIndex") })  //was feature NodeTreeIndex before
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class TermRelationBase<TERM extends DefinedTermBase, REL extends TermRelationBase, GRAPH extends TermGraphBase>
         extends VersionableEntity

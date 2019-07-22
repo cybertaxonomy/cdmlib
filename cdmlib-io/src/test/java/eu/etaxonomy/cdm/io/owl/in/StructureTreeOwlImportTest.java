@@ -46,7 +46,7 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermTree;
-import eu.etaxonomy.cdm.model.term.TermTreeNode;
+import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
@@ -108,10 +108,10 @@ public class StructureTreeOwlImportTest extends CdmTransactionalIntegrationTest 
         List rootChildren = tree.getRootChildren();
         assertEquals("Wrong number of root children", 1, rootChildren.size());
         Object entirePlant = rootChildren.iterator().next();
-        assertTrue("Root is no feature node", entirePlant instanceof TermTreeNode);
-        assertEquals("Root node has wrong term type", TermType.Structure, ((TermTreeNode)entirePlant).getTermType());
-        TermTreeNode<DefinedTerm> entirePlantNode = (TermTreeNode<DefinedTerm>) entirePlant;
-        List<TermTreeNode<DefinedTerm>> childNodes = entirePlantNode.getChildNodes();
+        assertTrue("Root is no feature node", entirePlant instanceof TermNode);
+        assertEquals("Root node has wrong term type", TermType.Structure, ((TermNode)entirePlant).getTermType());
+        TermNode<DefinedTerm> entirePlantNode = (TermNode<DefinedTerm>) entirePlant;
+        List<TermNode<DefinedTerm>> childNodes = entirePlantNode.getChildNodes();
         assertEquals("Wrong number of children", 2, childNodes.size());
 
         String inflorescenceLabel = "inflorescence";
@@ -121,7 +121,7 @@ public class StructureTreeOwlImportTest extends CdmTransactionalIntegrationTest 
         DefinedTerm inflorescence = records.iterator().next();
         assertEquals(inflorescenceLabel, inflorescence.getLabel(Language.ENGLISH()));
 
-        for (TermTreeNode<DefinedTerm> featureNode : childNodes) {
+        for (TermNode<DefinedTerm> featureNode : childNodes) {
             assertTrue("Child node not found. Found node with term: "+featureNode.getTerm().getLabel(),
                     featureNode.getTerm().getUuid().equals(inflorescence.getUuid())
                     || featureNode.getTerm().getLabel(Language.ENGLISH()).equals("Flower"));

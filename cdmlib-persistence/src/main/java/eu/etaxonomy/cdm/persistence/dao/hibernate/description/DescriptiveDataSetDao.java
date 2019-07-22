@@ -89,7 +89,7 @@ public class DescriptiveDataSetDao
 			List<?> trees = queryTree.list();
 
 
-			String ftSelect = "SELECT feature.id FROM TermTreeNode node join node.feature as feature " +
+			String ftSelect = "SELECT feature.id FROM TermNode node join node.feature as feature " +
 					" WHERE node.featureTree.id in (:trees) ";
 			Query ftQuery = getSession().createQuery(ftSelect);
 			ftQuery.setParameterList("trees", trees);

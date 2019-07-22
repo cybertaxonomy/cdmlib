@@ -130,7 +130,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermTree;
-import eu.etaxonomy.cdm.model.term.TermTreeNode;
+import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
@@ -414,8 +414,8 @@ public class FullCoverageDataGenerator {
 		//Feature Tree
 		TermTree<Feature> featureTree = TermTree.NewInstance();
 //		featureTree
-        TermTreeNode<Feature> descriptionFeatureNode = featureTree.getRoot().addChild(Feature.DESCRIPTION());
-        TermTreeNode<Feature> leaveLengthNode = descriptionFeatureNode.addChild(leaveLength);
+        TermNode<Feature> descriptionTermNode = featureTree.getRoot().addChild(Feature.DESCRIPTION());
+        TermNode<Feature> leaveLengthNode = descriptionTermNode.addChild(leaveLength);
 		handleIdentifiableEntity(featureTree);
 
 		State inapplicableState = State.NewInstance("inapplicableState", "inapplicableState", null);

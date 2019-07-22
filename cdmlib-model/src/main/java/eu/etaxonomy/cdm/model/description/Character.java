@@ -25,7 +25,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
-import eu.etaxonomy.cdm.model.term.TermTreeNode;
+import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermType;
 
 /**
@@ -59,7 +59,7 @@ public class Character extends Feature {
     @ManyToOne(fetch = FetchType.LAZY)
     @IndexedEmbedded
 //    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    private TermTreeNode structure;
+    private TermNode structure;
 
     //#8120
     @XmlElement(name = "StructureModifier")
@@ -75,7 +75,7 @@ public class Character extends Feature {
     @ManyToOne(fetch = FetchType.LAZY)
     @IndexedEmbedded
 //    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    private TermTreeNode property;
+    private TermNode property;
 
     //#8120
     /**
@@ -107,7 +107,7 @@ public class Character extends Feature {
      * @param property The property feature node for this character
      * @see #Feature()
      */
-    public static Character NewInstance(TermTreeNode structure, TermTreeNode property){
+    public static Character NewInstance(TermNode structure, TermNode property){
         return new Character(structure, property, null, null, null);
     }
 
@@ -130,7 +130,7 @@ public class Character extends Feature {
      *            to be created
      * @see #Feature()
      */
-    public static Character NewInstance(TermTreeNode structure, TermTreeNode property, String term, String label, String labelAbbrev){
+    public static Character NewInstance(TermNode structure, TermNode property, String term, String label, String labelAbbrev){
         return new Character(structure, property, term, label, labelAbbrev);
     }
 
@@ -161,7 +161,7 @@ public class Character extends Feature {
      *            to be created
      * @see #Feature()
      */
-    protected Character(TermTreeNode structure, TermTreeNode property, String term, String label, String labelAbbrev) {
+    protected Character(TermNode structure, TermNode property, String term, String label, String labelAbbrev) {
         super(term, label, labelAbbrev);
         this.setTermType(TermType.Character);
         this.structure = structure;
@@ -170,17 +170,17 @@ public class Character extends Feature {
 
  // ****************** GETTER / SETTER *********************************************/
 
-    public TermTreeNode getStructure() {
+    public TermNode getStructure() {
         return structure;
     }
-    public void setStructure(TermTreeNode structure) {
+    public void setStructure(TermNode structure) {
         this.structure = structure;
     }
 
-    public TermTreeNode getProperty() {
+    public TermNode getProperty() {
         return property;
     }
-    public void setProperty(TermTreeNode property) {
+    public void setProperty(TermNode property) {
         this.property = property;
     }
 

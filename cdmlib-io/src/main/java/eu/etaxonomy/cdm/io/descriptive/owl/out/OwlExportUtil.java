@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermBase;
 import eu.etaxonomy.cdm.model.term.TermTree;
-import eu.etaxonomy.cdm.model.term.TermTreeNode;
+import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 
@@ -267,7 +267,7 @@ public class OwlExportUtil {
                 .addProperty(OwlUtil.propType, featureTree.getTermType().getKey())
                 ;
 
-        TermTreeNode rootNode = featureTree.getRoot();
+        TermNode rootNode = featureTree.getRoot();
 
         Resource resourceRootNode = OwlExportUtil.createNodeResource(rootNode, false, repo, state);
         featureTreeResource.addProperty(OwlUtil.propHasRootNode, resourceRootNode);
@@ -277,9 +277,9 @@ public class OwlExportUtil {
         return featureTreeResource;
     }
 
-    private static void addChildNode(TermTreeNode parentNode, Resource parentResourceNode, ICdmRepository repo, StructureTreeOwlExportState state){
-        List<TermTreeNode> childNodes = parentNode.getChildNodes();
-        for (TermTreeNode child : childNodes) {
+    private static void addChildNode(TermNode parentNode, Resource parentResourceNode, ICdmRepository repo, StructureTreeOwlExportState state){
+        List<TermNode> childNodes = parentNode.getChildNodes();
+        for (TermNode child : childNodes) {
             // create node resource with term
             Resource nodeResource = OwlExportUtil.createNodeResource(child, false, repo, state);
 
@@ -290,7 +290,7 @@ public class OwlExportUtil {
         }
     }
 
-    static Resource createNodeResource(TermTreeNode<Feature> node, boolean initFeatureTree, ICdmRepository repo, StructureTreeOwlExportState state) {
+    static Resource createNodeResource(TermNode<Feature> node, boolean initFeatureTree, ICdmRepository repo, StructureTreeOwlExportState state) {
         if(initFeatureTree){
             createFeatureTreeResource(node.getGraph(), repo, state);
             return getNodeResource(node, state);
@@ -333,7 +333,7 @@ public class OwlExportUtil {
         return state.getModel().createResource(OwlUtil.RESOURCE_MEDIA+media.getUuid().toString());
     }
 
-    private static Resource getNodeResource(TermTreeNode node, StructureTreeOwlExportState state) {
+    private static Resource getNodeResource(TermNode node, StructureTreeOwlExportState state) {
         return state.getModel().createResource(OwlUtil.RESOURCE_NODE + node.getUuid().toString());
     }
 

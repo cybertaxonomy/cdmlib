@@ -22,7 +22,7 @@ import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.term.TermTree;
-import eu.etaxonomy.cdm.model.term.TermTreeNode;
+import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.model.term.VocabularyEnum;
@@ -57,12 +57,12 @@ public class TermTreeDaoImpl extends IdentifiableDaoBase<TermTree> implements IF
     }
 
     @Override
-    public void deepLoadNodes(List<TermTreeNode> nodes, List<String> nodePaths) {
+    public void deepLoadNodes(List<TermNode> nodes, List<String> nodePaths) {
 
         defaultBeanInitializer.initializeAll(nodes, nodePaths);
 
-        List<TermTreeNode> childrenOfChildren = new ArrayList<>();
-        for(TermTreeNode node : nodes) {
+        List<TermNode> childrenOfChildren = new ArrayList<>();
+        for(TermNode node : nodes) {
             if(node.getChildCount() > 0){
                 childrenOfChildren.addAll(node.getChildNodes());
             }

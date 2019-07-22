@@ -60,7 +60,7 @@ import eu.etaxonomy.cdm.model.description.State;
  */
 @SuppressWarnings("serial")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "TermTreeNode", propOrder = {
+@XmlType(name = "TermNode", propOrder = {
 		"parent",
 		"treeIndex",
 		"sortIndex",
@@ -68,22 +68,22 @@ import eu.etaxonomy.cdm.model.description.State;
 		"onlyApplicableIf",
 		"inapplicableIf"
 })
-@XmlRootElement(name = "TermTreeNode")
+@XmlRootElement(name = "TermNode")
 @Entity
 @Audited
-public class TermTreeNode <T extends DefinedTermBase>
-            extends TermRelationBase<T, TermTreeNode<T>, TermTree>
-            implements ITreeNode<TermTreeNode<T>> {
+public class TermNode <T extends DefinedTermBase>
+            extends TermRelationBase<T, TermNode<T>, TermTree>
+            implements ITreeNode<TermNode<T>> {
 
-    private static final Logger logger = Logger.getLogger(TermTreeNode.class);
+    private static final Logger logger = Logger.getLogger(TermNode.class);
 
     @XmlElement(name = "Parent")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity=TermTreeNode.class)
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity=TermNode.class)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	@JoinColumn(name="parent_id")
-	private TermTreeNode<T> parent;
+	private TermNode<T> parent;
 
 
     @XmlElement(name = "treeIndex")
@@ -95,9 +95,9 @@ public class TermTreeNode <T extends DefinedTermBase>
     //see https://dev.e-taxonomy.eu/trac/ticket/3722
     @OrderColumn(name="sortIndex")
     @OrderBy("sortIndex")
-	@OneToMany(fetch = FetchType.LAZY, mappedBy="parent", targetEntity=TermTreeNode.class)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy="parent", targetEntity=TermNode.class)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
-	private List<TermTreeNode<T>> children = new ArrayList<>();
+	private List<TermNode<T>> children = new ArrayList<>();
 
     //see https://dev.e-taxonomy.eu/trac/ticket/3722
     private Integer sortIndex;
@@ -108,7 +108,7 @@ public class TermTreeNode <T extends DefinedTermBase>
 	@XmlSchemaType(name="IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
 //	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})  remove cascade #5755
-	@JoinTable(name="TermTreeNode_DefinedTermBase_OnlyApplicable")
+	@JoinTable(name="TermNode_DefinedTermBase_OnlyApplicable")
 	private final Set<State> onlyApplicableIf = new HashSet<>();
 
 	@XmlElementWrapper(name = "InapplicableIf")
@@ -117,12 +117,12 @@ public class TermTreeNode <T extends DefinedTermBase>
 	@XmlSchemaType(name="IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
 //	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})  remove cascade #5755
-	@JoinTable(name="TermTreeNode_DefinedTermBase_InapplicableIf")
+	@JoinTable(name="TermNode_DefinedTermBase_InapplicableIf")
 	private final Set<State> inapplicableIf = new HashSet<>();
 
 // ***************************** FACTORY *********************************/
 
-	//no factory methods should be provided as FeatureNodes should only
+	//no factory methods should be provided as TermNodes should only
 	//be created as children of their parent node (#8257)
 
 
@@ -130,12 +130,12 @@ public class TermTreeNode <T extends DefinedTermBase>
 
 	//TODO needed?
     @Deprecated
-    protected TermTreeNode(){}
+    protected TermNode(){}
 
 	/**
 	 * Class constructor: creates a new empty feature node instance.
 	 */
-	protected TermTreeNode(TermType termType) {
+	protected TermNode(TermType termType) {
 	    super(termType);
 	}
 
@@ -147,7 +147,7 @@ public class TermTreeNode <T extends DefinedTermBase>
 	 * @see	#getChildNodes()
 	 */
 	@Override
-    public TermTreeNode<T> getParent() {
+    public TermNode<T> getParent() {
 		return parent;
 	}
 	/**
@@ -158,7 +158,7 @@ public class TermTreeNode <T extends DefinedTermBase>
 	 * @param	parent	the feature node to be set as parent
 	 * @see				#getParent()
 	 */
-	protected void setParent(TermTreeNode<T> parent) {
+	protected void setParent(TermNode<T> parent) {
 	    this.parent = parent;
 	}
 
@@ -179,7 +179,7 @@ public class TermTreeNode <T extends DefinedTermBase>
 	 * <i>this</i> feature node.
 	 */
 	@Override
-    public List<TermTreeNode<T>> getChildNodes() {
+    public List<TermNode<T>> getChildNodes() {
 	    return children;
 	}
 
@@ -191,11 +191,11 @@ public class TermTreeNode <T extends DefinedTermBase>
 	 * @param	child	the feature node to be added
 	 * @see				#getChildNodes()
 	 * @see				#setChildren(List)
-	 * @see				#addChild(TermTreeNode, int)
-	 * @see				#removeChild(TermTreeNode)
+	 * @see				#addChild(TermNode, int)
+	 * @see				#removeChild(TermNode)
 	 * @see				#removeChild(int)
 	 */
-	public void addChild(TermTreeNode<T> child){
+	public void addChild(TermNode<T> child){
 		addChild(child, children.size());
 	}
 
@@ -208,10 +208,10 @@ public class TermTreeNode <T extends DefinedTermBase>
      * @return the newly created child node
      * @see             #getChildNodes()
      * @see             #setChildren(List)
-     * @see             #removeChild(FeatureNode)
+     * @see             #removeChild(TermNode)
      * @see             #removeChild(int)
      */
-    public TermTreeNode<T> addChild(){
+    public TermNode<T> addChild(){
         return addChild((T)null, children.size());
     }
 
@@ -225,10 +225,10 @@ public class TermTreeNode <T extends DefinedTermBase>
 	 * @return the newly created child node
 	 * @see				#getChildNodes()
 	 * @see				#setChildren(List)
-	 * @see				#removeChild(FeatureNode)
+	 * @see				#removeChild(TermNode)
 	 * @see				#removeChild(int)
 	 */
-	public TermTreeNode<T> addChild(T term){
+	public TermNode<T> addChild(T term){
 	    return addChild(term, children.size());
 	}
 
@@ -242,17 +242,17 @@ public class TermTreeNode <T extends DefinedTermBase>
      * @return the newly created child node
      * @see             #getChildNodes()
      * @see             #setChildren(List)
-     * @see             #removeChild(FeatureNode)
+     * @see             #removeChild(TermNode)
      * @see             #removeChild(int)
      */
-	public TermTreeNode<T> addChild(T term, int index){
-	    TermTreeNode<T> child = new TermTreeNode<>(getTermType());
+	public TermNode<T> addChild(T term, int index){
+	    TermNode<T> child = new TermNode<>(getTermType());
 	    if(term!=null){
 	        child.setTerm(term);
 	    }
 	    checkTermType(child);
 
-	    List<TermTreeNode<T>> children = this.getChildNodes();
+	    List<TermNode<T>> children = this.getChildNodes();
 	    if (index < 0 || index > children.size() + 1){
 	        throw new IndexOutOfBoundsException("Wrong index: " + index);
 	    }
@@ -279,13 +279,13 @@ public class TermTreeNode <T extends DefinedTermBase>
 	 * 					should be added
 	 * @see				#getChildNodes()
 	 * @see				#setChildren(List)
-	 * @see				#addChild(TermTreeNode)
-	 * @see				#removeChild(TermTreeNode)
+	 * @see				#addChild(TermNode)
+	 * @see				#removeChild(TermNode)
 	 * @see				#removeChild(int)
 	 */
-	public void addChild(TermTreeNode<T> child, int index){
+	public void addChild(TermNode<T> child, int index){
 	    checkTermType(child);
-	    List<TermTreeNode<T>> children = this.getChildNodes();
+	    List<TermNode<T>> children = this.getChildNodes();
 		if (index < 0 || index > children.size() + 1){
 			throw new IndexOutOfBoundsException("Wrong index: " + index);
 		}
@@ -309,11 +309,11 @@ public class TermTreeNode <T extends DefinedTermBase>
 	 *
 	 * @param  child	the feature node which should be removed
 	 * @see     		#getChildNodes()
-	 * @see				#addChild(TermTreeNode, int)
-	 * @see				#addChild(TermTreeNode)
+	 * @see				#addChild(TermNode, int)
+	 * @see				#addChild(TermNode)
 	 * @see				#removeChild(int)
 	 */
-	public void removeChild(TermTreeNode<T> child){
+	public void removeChild(TermNode<T> child){
 
 	    int index = children.indexOf(child);
 		if (index >= 0){
@@ -328,19 +328,19 @@ public class TermTreeNode <T extends DefinedTermBase>
 	 * @param  index	the integer indicating the position of the feature node to
 	 * 					be removed
 	 * @see     		#getChildNodes()
-	 * @see				#addChild(TermTreeNode, int)
-	 * @see				#addChild(TermTreeNode)
-	 * @see				#removeChild(TermTreeNode)
+	 * @see				#addChild(TermNode, int)
+	 * @see				#addChild(TermNode)
+	 * @see				#removeChild(TermNode)
 	 */
 	public void removeChild(int index){
-	   TermTreeNode<T> child = children.get(index);
+	   TermNode<T> child = children.get(index);
 	   if (child != null){
 			children.remove(index);
 			child.setParent(null);
 			child.setGraph(null);
 			//TODO workaround (see sortIndex doc)
 			for(int i = 0; i < children.size(); i++){
-				TermTreeNode<T> childAt = children.get(i);
+				TermNode<T> childAt = children.get(i);
 				childAt.setSortIndex(i);
 			}
 			child.setSortIndex(null);
@@ -354,10 +354,10 @@ public class TermTreeNode <T extends DefinedTermBase>
 	 *
 	 * @param  childIndex	the integer indicating the position of the feature node
 	 * @see     			#getChildNodes()
-	 * @see					#addChild(TermTreeNode, int)
+	 * @see					#addChild(TermNode, int)
 	 * @see					#removeChild(int)
 	 */
-	public TermTreeNode<T> getChildAt(int childIndex) {
+	public TermNode<T> getChildAt(int childIndex) {
 	    return children.get(childIndex);
 	}
 
@@ -377,10 +377,10 @@ public class TermTreeNode <T extends DefinedTermBase>
 	 * If the list does not contain this node then -1 will be returned.
 	 *
 	 * @param  node	the feature node the position of which is being searched
-	 * @see			#addChild(TermTreeNode, int)
+	 * @see			#addChild(TermNode, int)
 	 * @see			#removeChild(int)
 	 */
-	public int getIndex(TermTreeNode<T> node) {
+	public int getIndex(TermNode<T> node) {
 	    if (! children.contains(node)){
 			return -1;
 		}else{
@@ -548,11 +548,7 @@ public class TermTreeNode <T extends DefinedTermBase>
 	/**
 	 * Returns all terms that are contained in this node or a child node
 	 *
-<<<<<<< HEAD:cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/term/TermTreeNode.java
 	 * @param terms
-=======
-	 * @param features
->>>>>>> ref #6794 add TermRelation and rename FeatureNode -> TermTreeNode:cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/term/TermTreeNode.java
 	 * @return
 	 */
 	@Transient
@@ -561,7 +557,7 @@ public class TermTreeNode <T extends DefinedTermBase>
 		if(term != null){
 		    terms.add(term);
 		}
-		for(TermTreeNode<T> childNode : this.getChildNodes()){
+		for(TermNode<T> childNode : this.getChildNodes()){
 			terms.addAll(childNode.getDistinctTermsRecursive(terms));
 		}
 		return terms;
@@ -577,7 +573,7 @@ public class TermTreeNode <T extends DefinedTermBase>
         if(term != null){
             terms.add(term);
         }
-        for(TermTreeNode<T> childNode : this.getChildNodes()){
+        for(TermNode<T> childNode : this.getChildNodes()){
             terms.addAll(childNode.asTermListRecursive(terms));
         }
         return terms;
@@ -586,7 +582,7 @@ public class TermTreeNode <T extends DefinedTermBase>
 //*********************** CLONE ********************************************************/
 
 	/**
-	 * Clones <i>this</i> {@link TermTreeNode}. This is a shortcut that enables to create
+	 * Clones <i>this</i> {@link TermNode}. This is a shortcut that enables to create
 	 * a new instance that differs only slightly from <i>this</i> tree node by
 	 * modifying only some of the attributes.
 	 * The parent, the feature and the featureTree are the same as for the original feature node
@@ -597,9 +593,9 @@ public class TermTreeNode <T extends DefinedTermBase>
 	 */
 	@Override
 	public Object clone() {
-		TermTreeNode<T> result;
+		TermNode<T> result;
 		try {
-			result = (TermTreeNode<T>)super.clone();
+			result = (TermNode<T>)super.clone();
 			result.children = new ArrayList<>();
 			return result;
 		}catch (CloneNotSupportedException e) {
@@ -609,13 +605,13 @@ public class TermTreeNode <T extends DefinedTermBase>
 		}
 	}
 
-    public TermTreeNode<T> cloneDescendants(){
-        TermTreeNode<T> clone = (TermTreeNode<T>)this.clone();
-        TermTreeNode<T> childClone;
+    public TermNode<T> cloneDescendants(){
+        TermNode<T> clone = (TermNode<T>)this.clone();
+        TermNode<T> childClone;
 
-        for(TermTreeNode<T> childNode : this.getChildNodes()){
-            childClone = (TermTreeNode<T>) childNode.clone();
-            for (TermTreeNode<T> childChild:childNode.getChildNodes()){
+        for(TermNode<T> childNode : this.getChildNodes()){
+            childClone = (TermNode<T>) childNode.clone();
+            for (TermNode<T> childChild:childNode.getChildNodes()){
                 childClone.addChild(childChild.cloneDescendants());
             }
             clone.addChild(childClone);

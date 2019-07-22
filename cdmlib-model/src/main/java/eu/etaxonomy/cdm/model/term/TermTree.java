@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
  * determination process and for systematical output arrangement of
  * {@link DescriptionElementBase description elements} according to different goals
  * but may also be used to define flat feature subsets for filtering purposes.<BR>
- * A feature tree is build on {@link TermTreeNode feature nodes}.
+ * A feature tree is build on {@link TermNode feature nodes}.
  * <P>
  * This class corresponds partially to ConceptTreeDefType according to the SDD
  * schema.
@@ -62,7 +62,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 //@Indexed(index = "eu.etaxonomy.cdm.model.term.TermTree")
 @Audited
 public class TermTree <T extends DefinedTermBase>
-            extends TermGraphBase<T, TermTreeNode> {
+            extends TermGraphBase<T, TermNode> {
 
 	private static final long serialVersionUID = -6713834139003172735L;
 	private static final Logger logger = Logger.getLogger(TermTree.class);
@@ -75,9 +75,9 @@ public class TermTree <T extends DefinedTermBase>
     //instead of representation. This may not be correct.
 
 	@XmlElement(name = "Root")
-	@OneToOne(fetch = FetchType.LAZY, targetEntity=TermTreeNode.class)
+	@OneToOne(fetch = FetchType.LAZY, targetEntity=TermNode.class)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
-	private TermTreeNode<T> root;
+	private TermNode<T> root;
 
 
 //******************** FACTORY METHODS ******************************************/
@@ -120,7 +120,7 @@ public class TermTree <T extends DefinedTermBase>
 	 * Creates a new feature tree instance with a {@link #getRoot() root node}
 	 * the children of which are the feature nodes build on the base of the
 	 * given list of {@link Feature features}. This corresponds to a flat feature tree.
-	 * For each feature within the list a new {@link TermTreeNode feature node} without
+	 * For each feature within the list a new {@link TermNode feature node} without
 	 * children nodes will be created.
 	 *
 	 * @param	featureList	the feature list
@@ -129,7 +129,7 @@ public class TermTree <T extends DefinedTermBase>
 	 */
 	public static TermTree<Feature> NewInstance(List<Feature> featureList){
 		TermTree<Feature> result =  new TermTree<>(TermType.Feature);
-		TermTreeNode<Feature> root = result.getRoot();
+		TermNode<Feature> root = result.getRoot();
 
 		for (Feature feature : featureList){
 			root.addChild(feature);
@@ -151,19 +151,19 @@ public class TermTree <T extends DefinedTermBase>
 	 */
 	protected TermTree(TermType termType) {
         super(termType);
-		root = new TermTreeNode<>(termType);
+		root = new TermNode<>(termType);
 		root.setGraph(this);
 	}
 
 // ****************** GETTER / SETTER **********************************/
 
     /**
-	 * Returns the topmost {@link TermTreeNode feature node} (root node) of <i>this</i>
+	 * Returns the topmost {@link TermNode feature node} (root node) of <i>this</i>
 	 * feature tree. The root node does not have any parent. Since feature nodes
 	 * recursively point to their child nodes the complete feature tree is
 	 * defined by its root node.
 	 */
-	public TermTreeNode<T> getRoot() {
+	public TermNode<T> getRoot() {
 		return root;
 	}
 
@@ -177,12 +177,12 @@ public class TermTree <T extends DefinedTermBase>
     }
 
 	/**
-	 * Returns the (ordered) list of {@link TermTreeNode feature nodes} which are immediate
+	 * Returns the (ordered) list of {@link TermNode feature nodes} which are immediate
 	 * children of the root node of <i>this</i> feature tree.
 	 */
 	@Transient
-	public List<TermTreeNode<T>> getRootChildren(){
-		List<TermTreeNode<T>> result = new ArrayList<>();
+	public List<TermNode<T>> getRootChildren(){
+		List<TermNode<T>> result = new ArrayList<>();
 		result.addAll(root.getChildNodes());
 		return result;
 	}
@@ -205,7 +205,7 @@ public class TermTree <T extends DefinedTermBase>
 
     public List<T> asTermList() {
         List<T> result = new ArrayList<>();
-        for (TermTreeNode<T> node : getRootChildren()){
+        for (TermNode<T> node : getRootChildren()){
             result.add(node.getTerm());
             result.addAll(node.asTermListRecursive(result));
         }
@@ -218,8 +218,8 @@ public class TermTree <T extends DefinedTermBase>
 	 * Clones <i>this</i> {@link TermTree}. This is a shortcut that enables to create
 	 * a new instance that differs only slightly from <i>this</i> tree by
 	 * modifying only some of the attributes.
-	 * {@link TermTreeNode tree nodes} always belong only to one tree, so all
-	 * {@link TermTreeNode tree nodes} are cloned to build
+	 * {@link TermNode tree nodes} always belong only to one tree, so all
+	 * {@link TermNode tree nodes} are cloned to build
 	 * the new {@link TermTree}
 	 *
 	 *
@@ -236,7 +236,7 @@ public class TermTree <T extends DefinedTermBase>
 			e.printStackTrace();
 			return null;
 		}
-		TermTreeNode<T> rootClone = this.getRoot().cloneDescendants();
+		TermNode<T> rootClone = this.getRoot().cloneDescendants();
 		result.root = rootClone;
 
 		return result;

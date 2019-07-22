@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 @Audited
 public class OrderedTermVocabulary<T extends OrderedTermBase>
         extends TermVocabulary<T>
-        implements ITermGraph<T, TermTreeNode>    {
+        implements ITermGraph<T, TermNode>    {
 
 
 	private static final long serialVersionUID = 7871741306306371242L;
@@ -301,7 +301,7 @@ public class OrderedTermVocabulary<T extends OrderedTermBase>
 	}
 
     @Override
-    public Set<TermTreeNode> getTermRelations() {
+    public Set<TermNode> getTermRelations() {
         return super.termRelations();
     }
     /**
@@ -310,7 +310,7 @@ public class OrderedTermVocabulary<T extends OrderedTermBase>
      * @param termRelations
      */
 //    @Override  //not yet public
-    protected void setTermRelations(Set<TermTreeNode> termRelations) {
+    protected void setTermRelations(Set<TermNode> termRelations) {
         super.termRelations(termRelations);
     }
 

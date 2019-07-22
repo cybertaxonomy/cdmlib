@@ -8,15 +8,15 @@ package eu.etaxonomy.cdm.persistence.dao.description;
 
 import java.util.List;
 
-import eu.etaxonomy.cdm.model.term.TermTreeNode;
+import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.persistence.dao.common.IVersionableDao;
 
 /**
  * @author a.babadshanjan
  * @since 09.09.2008
  */
-public interface ITermTreeNodeDao extends IVersionableDao<TermTreeNode> {
+public interface ITermNodeDao extends IVersionableDao<TermNode> {
 
-	public List<TermTreeNode> list();
+	public List<TermNode> list();
 
 }

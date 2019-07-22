@@ -11,8 +11,8 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.springframework.stereotype.Repository;
 
-import eu.etaxonomy.cdm.model.term.TermTreeNode;
-import eu.etaxonomy.cdm.persistence.dao.description.ITermTreeNodeDao;
+import eu.etaxonomy.cdm.model.term.TermNode;
+import eu.etaxonomy.cdm.persistence.dao.description.ITermNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.VersionableDaoBase;
 
 /**
@@ -20,19 +20,19 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.common.VersionableDaoBase;
  * @since 09.09.2008
  */
 @Repository
-public class TermTreeNodeDaoImpl
-        extends VersionableDaoBase<TermTreeNode>
-        implements ITermTreeNodeDao {
+public class TermNodeDaoImpl
+        extends VersionableDaoBase<TermNode>
+        implements ITermNodeDao {
 
-	public TermTreeNodeDaoImpl() {
-		super(TermTreeNode.class);
+	public TermNodeDaoImpl() {
+		super(TermNode.class);
 	}
 
 	@Override
-    public List<TermTreeNode> list() {
+    public List<TermNode> list() {
 		Criteria crit = getSession().createCriteria(type);
 		@SuppressWarnings("unchecked")
-        List<TermTreeNode> result = crit.list();
+        List<TermNode> result = crit.list();
 		return result;
 	}
 

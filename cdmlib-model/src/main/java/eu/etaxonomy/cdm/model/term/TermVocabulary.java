@@ -59,7 +59,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 //@Indexed(index = "eu.etaxonomy.cdm.model.term.TermVocabulary")
 @Audited
 public class TermVocabulary<T extends DefinedTermBase>
-        extends TermCollection<T,TermTreeNode> {
+        extends TermCollection<T,TermNode> {
 
     private static final long serialVersionUID = 1925052321596648672L;
 	private static final Logger logger = Logger.getLogger(TermVocabulary.class);

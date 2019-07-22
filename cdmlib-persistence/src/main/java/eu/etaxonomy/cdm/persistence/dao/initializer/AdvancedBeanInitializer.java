@@ -624,7 +624,7 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
         if (ownerClass.contains("Description") && param.equals("descriptionElements")){
             return "elements";
         }
-        if (ownerClass.startsWith("TermTreeNode") && param.equals("children")) {
+        if (ownerClass.startsWith("TermNode") && param.equals("children")) {
             return "childNodes";
         }
         if (ownerClass.startsWith("Media") && param.equals("description")) {

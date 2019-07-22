@@ -79,7 +79,7 @@ public class SchemaUpdater_55_58 extends SchemaUpdaterBase {
        //#6794 add DTYPE to TermRelation
        stepName = "add DTYPE to TermRelation";
        tableName = "TermRelation";
-       step = ColumnAdder.NewDTYPEInstance(stepName, tableName, "TermTreeNode", INCLUDE_AUDIT) ;
+       step = ColumnAdder.NewDTYPEInstance(stepName, tableName, "TermNode", INCLUDE_AUDIT) ;
        stepList.add(step);
 
        //#6794 add root_id column to TermCollection
@@ -106,35 +106,35 @@ public class SchemaUpdater_55_58 extends SchemaUpdaterBase {
        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
        stepList.add(step);
 
-       //#6794 rename FeatureNode_DefinedTermBase_InapplicableIf to TermTreeNode_DefinedTermBase_InapplicableIf
-       stepName = "rename FeatureNode_DefinedTermBase_InapplicableIf to TermTreeNode_DefinedTermBase_InapplicableIf";
+       //#6794 rename FeatureNode_DefinedTermBase_InapplicableIf to TermNode_DefinedTermBase_InapplicableIf
+       stepName = "rename FeatureNode_DefinedTermBase_InapplicableIf to TermNode_DefinedTermBase_InapplicableIf";
        oldName = "FeatureNode_DefinedTermBase_InapplicableIf";
-       newName = "TermTreeNode_DefinedTermBase_InapplicableIf";
+       newName = "TermNode_DefinedTermBase_InapplicableIf";
        includeDtype = false;
        step = TableNameChanger.NewInstance(stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
        stepList.add(step);
 
-       //#6794 change FeatureNode_id to TermTreeNode_id in TermTreeNode_DefinedTermBase_InapplicableIf
-       stepName = "change FeatureNode_id to TermTreeNode_id in TermTreeNode_DefinedTermBase_InapplicableIf";
-       tableName = "TermTreeNode_DefinedTermBase_InapplicableIf";
+       //#6794 change FeatureNode_id to TermNode_id in TermNode_DefinedTermBase_InapplicableIf
+       stepName = "change FeatureNode_id to TermNode_id in TermNode_DefinedTermBase_InapplicableIf";
+       tableName = "TermNode_DefinedTermBase_InapplicableIf";
        oldColumnName = "FeatureNode_id";
-       newColumnName = "TermTreeNode_id";
+       newColumnName = "TermNode_id";
        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
        stepList.add(step);
 
-       //#6794 rename FeatureNode_DefinedTermBase_OnlyApplicable to TermTreeNode_DefinedTermBase_OnlyApplicable
-       stepName = "rename FeatureNode_DefinedTermBase_InapplicableIf to TermTreeNode_DefinedTermBase_InapplicableIf";
+       //#6794 rename FeatureNode_DefinedTermBase_OnlyApplicable to TermNode_DefinedTermBase_OnlyApplicable
+       stepName = "rename FeatureNode_DefinedTermBase_InapplicableIf to TermNode_DefinedTermBase_InapplicableIf";
        oldName = "FeatureNode_DefinedTermBase_OnlyApplicable";
-       newName = "TermTreeNode_DefinedTermBase_OnlyApplicable";
+       newName = "TermNode_DefinedTermBase_OnlyApplicable";
        includeDtype = false;
        step = TableNameChanger.NewInstance(stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
        stepList.add(step);
 
-       //#6794 change FeatureNode_id to TermTreeNode_id in TermTreeNode_DefinedTermBase_OnlyApplicable
-       stepName = "change FeatureNode_id to TermTreeNode_id in TermTreeNode_DefinedTermBase_OnlyApplicable";
-       tableName = "TermTreeNode_DefinedTermBase_OnlyApplicable";
+       //#6794 change FeatureNode_id to TermNode_id in TermNode_DefinedTermBase_OnlyApplicable
+       stepName = "change FeatureNode_id to TermNode_id in TermNode_DefinedTermBase_OnlyApplicable";
+       tableName = "TermNode_DefinedTermBase_OnlyApplicable";
        oldColumnName = "FeatureNode_id";
-       newColumnName = "TermTreeNode_id";
+       newColumnName = "TermNode_id";
        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
        stepList.add(step);
 

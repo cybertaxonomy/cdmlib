@@ -13,13 +13,13 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.config.FeatureNodeDeletionConfigurator;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.TermTreeNode;
+import eu.etaxonomy.cdm.model.term.TermNode;
 
 /**
  * @author n.hoffmann
  * @since Aug 5, 2010
  */
-public interface IFeatureNodeService extends IVersionableService<TermTreeNode>{
+public interface IFeatureNodeService extends IVersionableService<TermNode>{
 
     DeleteResult isDeletable(UUID nodeUuid, FeatureNodeDeletionConfigurator config);
 
@@ -54,7 +54,7 @@ public interface IFeatureNodeService extends IVersionableService<TermTreeNode>{
     public UpdateResult addChildFeatureNode(UUID parentNodeUUID, UUID termChildUuid, int position);
 
     /**
-     * Moves a given {@link TermTreeNode} to the target node at the given position;
+     * Moves a given {@link TermNode} to the target node at the given position;
      * @param movedNodeUuid the node to move
      * @param targetNodeUuid the target node
      * @param position the position in the list of children of the target node
@@ -63,7 +63,7 @@ public interface IFeatureNodeService extends IVersionableService<TermTreeNode>{
     public UpdateResult moveFeatureNode(UUID movedNodeUuid, UUID targetNodeUuid, int position);
 
     /**
-     * Moves a given {@link TermTreeNode} to the target node;
+     * Moves a given {@link TermNode} to the target node;
      * @param movedNodeUuid the node to move
      * @param targetNodeUuid the target node
      * @return the result of the operation

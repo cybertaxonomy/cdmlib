@@ -27,9 +27,9 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermTree;
-import eu.etaxonomy.cdm.model.term.TermTreeNode;
+import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
-import eu.etaxonomy.cdm.persistence.dao.description.ITermTreeNodeDao;
+import eu.etaxonomy.cdm.persistence.dao.description.ITermNodeDao;
 
 /**
  * @author n.hoffmann
@@ -37,12 +37,12 @@ import eu.etaxonomy.cdm.persistence.dao.description.ITermTreeNodeDao;
  */
 @Service
 @Transactional(readOnly = false)
-public class FeatureNodeServiceImpl extends VersionableServiceBase<TermTreeNode, ITermTreeNodeDao> implements IFeatureNodeService {
+public class FeatureNodeServiceImpl extends VersionableServiceBase<TermNode, ITermNodeDao> implements IFeatureNodeService {
 	private static final Logger logger = Logger.getLogger(FeatureNodeServiceImpl.class);
 
 	@Override
     @Autowired
-	protected void setDao(ITermTreeNodeDao dao) {
+	protected void setDao(ITermNodeDao dao) {
 		this.dao = dao;
 	}
 
@@ -56,16 +56,16 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<TermTreeNode,
 	 @Transactional(readOnly = false)
 	 public DeleteResult deleteFeatureNode(UUID nodeUuid, FeatureNodeDeletionConfigurator config) {
 	     DeleteResult result = new DeleteResult();
-         TermTreeNode<Feature> node = HibernateProxyHelper.deproxy(dao.load(nodeUuid), TermTreeNode.class);
+         TermNode<Feature> node = HibernateProxyHelper.deproxy(dao.load(nodeUuid), TermNode.class);
 	     result = isDeletable(nodeUuid, config);
 	     if (result.isOk()){
-	         TermTreeNode<Feature> parent = node.getParent();
-             parent = HibernateProxyHelper.deproxy(parent, TermTreeNode.class);
-	         List<TermTreeNode> children = new ArrayList(node.getChildNodes());
+	         TermNode<Feature> parent = node.getParent();
+             parent = HibernateProxyHelper.deproxy(parent, TermNode.class);
+	         List<TermNode> children = new ArrayList(node.getChildNodes());
 
 	         if (config.getChildHandling().equals(ChildHandling.DELETE)){
 
-	             for (TermTreeNode child: children){
+	             for (TermNode child: children){
 	                 deleteFeatureNode(child.getUuid(), config);
 	                // node.removeChild(child);
 	             }
@@ -77,7 +77,7 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<TermTreeNode,
 
 	             if (parent != null){
 	                 parent.removeChild(node);
-	                 for (TermTreeNode child: children){
+	                 for (TermNode child: children){
 	                     node.removeChild(child);
 	                     parent.addChild(child);
 	                 }
@@ -118,10 +118,10 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<TermTreeNode,
 
 	 @Override
 	 public UpdateResult addChildFeatureNode(UUID nodeUUID, UUID termChildUuid, int position){
-	     TermTreeNode node = load(nodeUUID);
+	     TermNode node = load(nodeUUID);
 	     DefinedTermBase child = HibernateProxyHelper.deproxy(termService.load(termChildUuid), DefinedTermBase.class);
 
-	     TermTreeNode childNode;
+	     TermNode childNode;
          UpdateResult result = new UpdateResult();
          if(position<0) {
              childNode = node.addChild(child);
@@ -137,11 +137,11 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<TermTreeNode,
 
 	 @Override
 	 public DeleteResult isDeletable(UUID nodeUuid, FeatureNodeDeletionConfigurator config){
-	     TermTreeNode<Feature> node = load(nodeUuid);
+	     TermNode<Feature> node = load(nodeUuid);
 	     DeleteResult result = new DeleteResult();
 	     Set<CdmBase> references = commonService.getReferencingObjectsForDeletion(node);
 	     for (CdmBase ref:references){
-	         if (ref instanceof TermTreeNode){
+	         if (ref instanceof TermNode){
 	             break;
 	         }
 	         if (ref instanceof TermTree){
@@ -163,9 +163,9 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<TermTreeNode,
     @Override
     public UpdateResult moveFeatureNode(UUID movedNodeUuid, UUID targetNodeUuid, int position) {
         UpdateResult result = new UpdateResult();
-        TermTreeNode<Feature> movedNode = HibernateProxyHelper.deproxy(load(movedNodeUuid), TermTreeNode.class);
-        TermTreeNode<Feature> targetNode = HibernateProxyHelper.deproxy(load(targetNodeUuid), TermTreeNode.class);
-        TermTreeNode<Feature> parent = HibernateProxyHelper.deproxy(movedNode.getParent(), TermTreeNode.class);
+        TermNode<Feature> movedNode = HibernateProxyHelper.deproxy(load(movedNodeUuid), TermNode.class);
+        TermNode<Feature> targetNode = HibernateProxyHelper.deproxy(load(targetNodeUuid), TermNode.class);
+        TermNode<Feature> parent = HibernateProxyHelper.deproxy(movedNode.getParent(), TermNode.class);
         if(position<0){
             targetNode.addChild(movedNode);
         }

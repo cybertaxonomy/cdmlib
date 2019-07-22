@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.io.descriptive.owl.OwlUtil;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermTree;
-import eu.etaxonomy.cdm.model.term.TermTreeNode;
+import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
@@ -67,7 +67,7 @@ public class StructureTreeOwlImport extends CdmImportBase<StructureTreeOwlImport
         }
     }
 
-    private <T extends DefinedTermBase> void createNode(TermTreeNode<T> parent, Statement nodeStatement, String treeLabel, Model model, StructureTreeOwlImportState state) {
+    private <T extends DefinedTermBase> void createNode(TermNode<T> parent, Statement nodeStatement, String treeLabel, Model model, StructureTreeOwlImportState state) {
         if(state.getConfig().getProgressMonitor().isCanceled()){
             return;
         }
@@ -95,7 +95,7 @@ public class StructureTreeOwlImport extends CdmImportBase<StructureTreeOwlImport
 
         getVocabularyService().saveOrUpdate(vocabulary);
 
-        TermTreeNode<?> childNode = parent.addChild(term);
+        TermNode<?> childNode = parent.addChild(term);
 
         state.getConfig().getProgressMonitor().worked(1);
 

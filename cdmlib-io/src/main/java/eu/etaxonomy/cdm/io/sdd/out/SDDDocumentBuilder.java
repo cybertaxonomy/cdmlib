@@ -81,7 +81,7 @@ import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermBase;
 import eu.etaxonomy.cdm.model.term.TermTree;
-import eu.etaxonomy.cdm.model.term.TermTreeNode;
+import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
@@ -101,7 +101,7 @@ public class SDDDocumentBuilder {
 	private final Map<Person, String> agents = new HashMap<>();
 	private final Map<TaxonName, String> taxonNames = new HashMap<>();
 	private final Map<Feature, String> characters = new HashMap<>();
-	private final Map<TermTreeNode, String> featureNodes = new HashMap<>();
+	private final Map<TermNode, String> featureNodes = new HashMap<>();
 	private final Map<Feature, String> descriptiveConcepts = new HashMap<>();
 	private final Map<TaxonDescription, String> codedDescriptions = new HashMap<>();
 	private final Map<Media, String> medias = new HashMap<>();
@@ -1197,10 +1197,10 @@ public class SDDDocumentBuilder {
 					elChartrees.appendChild(elChartree);
 					ElementImpl elNodes = new ElementImpl(document, NODES);
 					elChartree.appendChild(elNodes);
-					List<TermTreeNode> roots = ft.getRootChildren();
-					for (Iterator<TermTreeNode> fn = roots.iterator(); fn
+					List<TermNode> roots = ft.getRootChildren();
+					for (Iterator<TermNode> fn = roots.iterator(); fn
 							.hasNext();) {
-						TermTreeNode featureNode = fn.next();
+						TermNode featureNode = fn.next();
 						buildBranches(featureNode, elNodes, true);
 					}
 				}
@@ -1270,14 +1270,14 @@ public class SDDDocumentBuilder {
 		}
 	}
 
-	public void buildBranches(TermTreeNode<Feature> parent, ElementImpl element,
+	public void buildBranches(TermNode<Feature> parent, ElementImpl element,
 			boolean isRoot) {
-		List<TermTreeNode<Feature>> children = parent.getChildNodes();
+		List<TermNode<Feature>> children = parent.getChildNodes();
 		if (!parent.isLeaf()) {
 			ElementImpl elCharNode = new ElementImpl(document, NODE);
 			charnodeCount = buildReference(parent, featuretrees, ID,
 					elCharNode, "cn", charnodeCount);
-			TermTreeNode grandparent = parent.getParent();
+			TermNode grandparent = parent.getParent();
 			if ((grandparent != null) && (!isRoot)) {
 				ElementImpl elParent = new ElementImpl(document, PARENT);
 				charnodeCount = buildReference(grandparent, featuretrees, REF,
@@ -1291,14 +1291,14 @@ public class SDDDocumentBuilder {
 					REF, elDescriptiveConcept, "dc", descriptiveConceptCount);
 			elCharNode.appendChild(elDescriptiveConcept);
 			element.appendChild(elCharNode);
-			for (Iterator<TermTreeNode<Feature>> ifn = children.iterator(); ifn.hasNext();) {
-				TermTreeNode fn = ifn.next();
+			for (Iterator<TermNode<Feature>> ifn = children.iterator(); ifn.hasNext();) {
+				TermNode fn = ifn.next();
 				buildBranches(fn, element, false);
 			}
 		} else {
 			ElementImpl elCharNode = new ElementImpl(document, CHAR_NODE);
 			ElementImpl elParent = new ElementImpl(document, PARENT);
-			TermTreeNode grandparent = parent.getParent();
+			TermNode grandparent = parent.getParent();
 			charnodeCount = buildReference(grandparent, featuretrees, REF,
 					elParent, "cn", charnodeCount);
 			charnodeCount = buildReference(parent, featuretrees, ID,

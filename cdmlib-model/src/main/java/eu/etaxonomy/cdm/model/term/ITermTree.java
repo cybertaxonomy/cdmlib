@@ -18,10 +18,10 @@ public interface ITermTree<TERM extends DefinedTermBase, REL extends TermRelatio
             extends ITermGraph<TERM, REL> {
 
     /**
-     * Returns the (ordered) list of {@link TermTreeNode feature nodes} which are immediate
+     * Returns the (ordered) list of {@link TermNode feature nodes} which are immediate
      * children of the root node of <i>this</i> term tree.
      */
-    public abstract List<TermTreeNode<TERM>> getRootChildren();
+    public abstract List<TermNode<TERM>> getRootChildren();
 
     public List<TERM> asTermList();
 

@@ -206,7 +206,7 @@
       <mapping class="eu.etaxonomy.cdm.model.term.TermRelationshipType"/>
       <mapping class="eu.etaxonomy.cdm.model.term.TermTree"/>
       <mapping class="eu.etaxonomy.cdm.model.term.TermGraph"/>
-      <mapping class="eu.etaxonomy.cdm.model.term.TermTreeNode"/>
+      <mapping class="eu.etaxonomy.cdm.model.term.TermNode"/>
       <mapping class="eu.etaxonomy.cdm.model.term.TermRelation"/>
       <mapping class="eu.etaxonomy.cdm.model.term.TermVocabulary"/>
       
