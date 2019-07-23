@@ -42,7 +42,7 @@ public class TestModelUpdate {
 
 
 	private void testSelectedDb(){
-		DbSchemaValidation schema = DbSchemaValidation.VALIDATE;
+		DbSchemaValidation schema = DbSchemaValidation.CREATE;
 
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 
