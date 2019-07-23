@@ -198,8 +198,7 @@ public class TaxonName
 
 
     /**
-     * The {@link TermType type} of this term. Needs to be the same type in a {@link DefinedTermBase defined term}
-     * and in it's {@link TermVocabulary vocabulary}.
+     * The {@link NomenclaturalCode nomenclatural code} this taxon name is ruled by.
      */
     @XmlAttribute(name ="NameType")
     @Column(name="nameType", length=15)
