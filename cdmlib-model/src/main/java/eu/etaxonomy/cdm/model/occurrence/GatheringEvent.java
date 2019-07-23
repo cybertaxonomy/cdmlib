@@ -404,9 +404,9 @@ public class GatheringEvent extends EventBase implements Cloneable{
 			LanguageString langString = LanguageString.NewInstance(this.locality.getText(), this.locality.getLanguage());
 			result.setLocality(langString);
 			//exact location
-			result.setExactLocation(this.exactLocation.clone());
+			result.setExactLocation(this.exactLocation==null?null:this.exactLocation.clone());
 			//namedAreas
-			result.collectingAreas = new HashSet<NamedArea>();
+			result.collectingAreas = new HashSet<>();
 			for(NamedArea collectingArea : this.collectingAreas) {
 				result.addCollectingArea(collectingArea);
 			}
