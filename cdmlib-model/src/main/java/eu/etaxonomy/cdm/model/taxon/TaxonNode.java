@@ -177,11 +177,11 @@ public class TaxonNode
     public boolean isUnplaced() {return unplaced;}
     public void setUnplaced(boolean unplaced) {this.unplaced = unplaced;}
 
-//    //#8281 indicates a preliminary placement
-//    @XmlAttribute(name= "doubtful")
-//    private boolean doubtful = false;
-//    public boolean isDoubtful() {return doubtful;}
-//    public void setDoubtful(boolean doubtful) {this.doubtful = doubtful;}
+    //#8281 indicates a preliminary placement
+    @XmlAttribute(name= "doubtful")
+    private boolean doubtful = false;
+    public boolean isDoubtful() {return doubtful;}
+    public void setDoubtful(boolean doubtful) {this.doubtful = doubtful;}
 
     @XmlAttribute(name= "excluded")
     private boolean excluded = false;

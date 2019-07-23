@@ -180,6 +180,13 @@ public class SchemaUpdater_55_58 extends SchemaUpdaterBase {
        //#7470
        updateFreeTextTypeDesignation(stepList);
 
+       //#8281
+       stepName = "Add doubtful to TaxonNode";
+       tableName = "TaxonNode";
+       newColumnName = "doubtful";
+       step = ColumnAdder.NewBooleanInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
+       stepList.add(step);
+
        return stepList;
 	}
 
