@@ -34,6 +34,7 @@ public class TaxonInformation implements RemoteResponse {
 
     public void setResponseTaxon(String title,
             String name,
+            UUID nameUuid,
             String rank,
             String taxonStatus,
             Map<String, String> flags,
@@ -49,6 +50,7 @@ public class TaxonInformation implements RemoteResponse {
         }
         response.setTaxon(title,
                 name,
+                nameUuid,
                 rank,
                 taxonStatus,
                 flags,
@@ -115,8 +117,9 @@ public class TaxonInformation implements RemoteResponse {
             relatedTaxa = new ArrayList<RelatedTaxonInfo>();
         }
 
-        public void setTaxon(String title,
+        private void setTaxon(String title,
                 String name,
+                UUID nameUuid,
                 String rank,
                 String taxonStatus,
                 Map<String, String> flags,
@@ -131,6 +134,7 @@ public class TaxonInformation implements RemoteResponse {
             this.taxon.setTitle(title);
             this.taxon.setName(name);
             this.taxon.setRank(rank);
+            this.taxon.setNameUuid(nameUuid);
             this.taxon.setTaxonStatus(taxonStatus);
             this.taxon.setFlags(flags);
             this.taxon.setLsid(lsid);
@@ -189,13 +193,13 @@ public class TaxonInformation implements RemoteResponse {
         public class TaxonInfo {
             private String title;
             private String name;
-            private UUID nameUUID = null;
-            public UUID getNameUUID() {
-                return nameUUID;
+            private UUID nameUuid = null;
+            public UUID getNameUuid() {
+                return nameUuid;
             }
 
-            public void setNameUUID(UUID nameUUID) {
-                this.nameUUID = nameUUID;
+            public void setNameUuid(UUID nameUuid) {
+                this.nameUuid = nameUuid;
             }
 
             private String rank;

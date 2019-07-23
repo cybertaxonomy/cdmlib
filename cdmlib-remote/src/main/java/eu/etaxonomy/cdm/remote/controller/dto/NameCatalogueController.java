@@ -846,6 +846,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
 
                     ti.setResponseTaxon(tb.getTitleCache(),
                             nvn.getTitleCache(),
+                            nvn.getUuid(),
                             nvn.getRank().getTitleCache(),
                             ACCEPTED_NAME_STATUS,
                             buildFlagMap(tb),
@@ -998,6 +999,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
                     String secTitle = (synonym.getSec() == null) ? "" : synonym.getSec().getTitleCache();
                     ti.setResponseTaxon(synonym.getTitleCache(),
                             nvn.getTitleCache(),
+                            nvn.getUuid(),
                             nvn.getRank().getTitleCache(),
                             SYNONYM_STATUS,
                             buildFlagMap(synonym),
