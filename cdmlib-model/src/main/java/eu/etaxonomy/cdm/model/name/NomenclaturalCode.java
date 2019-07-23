@@ -44,20 +44,27 @@ import eu.etaxonomy.cdm.model.term.IEnumTerm;
 @XmlEnum
 public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode> {
 
+
+    //NonViral
+    @XmlEnumValue("NonViral")
+    NonViral(UUID.fromString("04f88497-a66a-41b1-9b98-0dd22df6307f"), "NonViral","TaxonName", null, null),
+
     //0
     /**
      * International Code of Nomenclature for algae, fungi, and plants
      * Former International Code of Botanical Nomenclature
      */
     @XmlEnumValue("ICNAFP")
-    ICNAFP(UUID.fromString("540fc02a-8a8e-4813-89d2-581dad4dd482"), "ICNAFP","BotanicalName"),
+    ICNAFP(UUID.fromString("540fc02a-8a8e-4813-89d2-581dad4dd482"), "ICNAFP","BotanicalName","Q693148", NonViral),
 
     //1
 	/**
 	 * International Code of Nomenclature of Bacteria
+	 * => now International Code of Nomenclature of Prokaryotes
+	 * TODO rename to ICNP
 	*/
 	@XmlEnumValue("ICNB")
-	ICNB(UUID.fromString("ff4b0979-7abf-4b40-95c0-8b8b1e8a4d5e"), "ICNB","BacterialName"),
+	ICNB(UUID.fromString("ff4b0979-7abf-4b40-95c0-8b8b1e8a4d5e"), "ICNB","BacterialName","Q743780", NonViral),
 
 
 	//2
@@ -65,34 +72,30 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode> {
 	 * International Code of Cultivated Plants
 	 */
 	@XmlEnumValue("ICNCP")
-	ICNCP(UUID.fromString("65a432b5-92b1-4c9a-8090-2a185e423d2e"),"ICNCP","CultivarPlantName"),
+	ICNCP(UUID.fromString("65a432b5-92b1-4c9a-8090-2a185e423d2e"),"ICNCP","CultivarPlantName","Q941761", NonViral),
 
 	//3
 	/**
 	 * International Code of Zoological Nomenclature
 	 */
 	@XmlEnumValue("ICZN")
-	ICZN(UUID.fromString("b584c2f8-dbe5-4454-acad-2b45e63ec11b"), "ICZN","ZoologicalName"),
+	ICZN(UUID.fromString("b584c2f8-dbe5-4454-acad-2b45e63ec11b"), "ICZN","ZoologicalName","Q13011", NonViral),
 
 	//4
 	/**
 	 * International Code for Virus Classification and Nomenclature
 	 */
 	@XmlEnumValue("ICVCN")
-	ICVCN(UUID.fromString("e9d6d6b4-ccb7-4f28-b828-0b1501f8c75a"), "ICVCN","ViralName"),
+	ICVCN(UUID.fromString("e9d6d6b4-ccb7-4f28-b828-0b1501f8c75a"), "ICVCN","ViralName","Q14920640", null),
 //
 //	//Any
 //	@XmlEnumValue("Any")
 //    Any(UUID.fromString("348f2a2f-366f-4c8c-bb15-c90b937886ca"), "Any taxon name","TaxonName"),
 
 
-	//NonViral
-    @XmlEnumValue("NonViral")
-    NonViral(UUID.fromString("04f88497-a66a-41b1-9b98-0dd22df6307f"), "NonViral","TaxonName"),
-
 	//Fungi
     @XmlEnumValue("Fungus")
-	Fungi(UUID.fromString("c6bb280d-2468-4738-bb29-973f74412100"), "Fungus", "BotanicalName"),
+	Fungi(UUID.fromString("c6bb280d-2468-4738-bb29-973f74412100"), "Fungus", "BotanicalName", null, ICNAFP),
 
 //	//Plant
 //    @XmlEnumValue("Plant")
@@ -108,15 +111,17 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode> {
 	@Deprecated
 	private String dtype;
 
-	private NomenclaturalCode(UUID uuid, String titleCache, String dtype){
-		delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, titleCache, titleCache, null);
+	private String wikiDataId;
+
+	private NomenclaturalCode(UUID uuid, String titleCache, String dtype, String wikiDataId, NomenclaturalCode parent){
+		delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, titleCache, titleCache, parent);
 		this.dtype = dtype;
+		this.wikiDataId = wikiDataId;
 	}
 
     public String getTitleCache() {
         return getMessage();
     }
-
 
 	@Override
 	public String toString() {

@@ -47,10 +47,12 @@ public class NomenclaturalStatus extends ReferencedEntityBase implements Cloneab
 	private static final long serialVersionUID = -2451270405173131900L;
 	static Logger logger = Logger.getLogger(NomenclaturalStatus.class);
 
-	//The nomenclatural code rule considered. The article/note/recommendation in the code in question that is commented on in
-	//the note property.
-	@XmlElement(name = "RuleConsidered")
-	private String ruleConsidered;
+//	//The nomenclatural code rule considered. The article/note/recommendation in the code in question that is commented on in
+//	//the note property.
+//	@XmlElement(name = "RuleConsidered")
+//	private String ruleConsidered;
+
+    private RuleConsidered ruleConsidered;
 
 	@XmlElement(name = "NomenclaturalStatusType")
     @XmlIDREF
@@ -114,17 +116,50 @@ public class NomenclaturalStatus extends ReferencedEntityBase implements Cloneab
 	 * {@link NomenclaturalStatusType nomenclatural status type} has been
 	 * assigned to the {@link TaxonName taxon name(s)}.
 	 */
-	public String getRuleConsidered(){
-		return this.ruleConsidered;
-	}
-
-	/**
-	 * @see  #getRuleConsidered()
-	 */
-	public void setRuleConsidered(String ruleConsidered){
-		this.ruleConsidered = ruleConsidered;
-	}
-
+//	public String getRuleConsidered(){
+//		return this.ruleConsidered;
+//	}
+//
+//	/**
+//	 * @see  #getRuleConsidered()
+//	 */
+//	public void setRuleConsidered(String ruleConsidered){
+//		this.ruleConsidered = ruleConsidered;
+//	}
+//
+//    /**
+//     * The {@link NomenclaturalCodeEdition code edition} for the {@link #getRuleConsidered() rule considered}.
+//     */
+//    public NomenclaturalCodeEdition getCodeEdition() {
+//        return codeEdition;
+//    }
+//    public void setCodeEdition(NomenclaturalCodeEdition codeEdition) {
+//        this.codeEdition = codeEdition;
+//    }
+    public String getRuleConsidered(){
+        return this.ruleConsidered().getText();
+    }
+    /**
+     * @see  #getRuleConsidered()
+     */
+    public void setRuleConsidered(String ruleConsidered){
+        this.ruleConsidered().setText(ruleConsidered);
+    }
+    /**
+     * The {@link NomenclaturalCodeEdition code edition} for the {@link #getRuleConsidered() rule considered}.
+     */
+    public NomenclaturalCodeEdition getCodeEdition() {
+        return ruleConsidered().getCodeEdition();
+    }
+    public void setCodeEdition(NomenclaturalCodeEdition codeEdition) {
+        ruleConsidered().setCodeEdition(codeEdition);
+    }
+    private RuleConsidered ruleConsidered(){
+        if(this.ruleConsidered==null){
+            ruleConsidered = new RuleConsidered();
+        }
+        return ruleConsidered;
+    }
 
 //*********************** CLONE ********************************************************/
 
@@ -140,7 +175,8 @@ public class NomenclaturalStatus extends ReferencedEntityBase implements Cloneab
 	public Object clone() {
 		try {
 			NomenclaturalStatus result = (NomenclaturalStatus)super.clone();
-			//no changes to: ruleConsidered, type
+	         result.ruleConsidered = this.ruleConsidered == null? null : this.ruleConsidered.clone();
+			//no changes to: type
 			return result;
 		} catch (CloneNotSupportedException e) {
 			logger.warn("Object does not implement cloneable");

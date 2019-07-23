@@ -59,10 +59,12 @@ public class HybridRelationship
     private static final long serialVersionUID = -78515930138896939L;
     private static final Logger logger = Logger.getLogger(HybridRelationship.class);
 
-	//The nomenclatural code rule considered. The article/note/recommendation in the code in question that is commented on in
-	//the note property.
-	@XmlElement(name = "RuleConsidered")
-	private String ruleConsidered;
+//	//The nomenclatural code rule considered. The article/note/recommendation in the code in question that is commented on in
+//	//the note property.
+//	@XmlElement(name = "RuleConsidered")
+//	private String ruleConsidered;
+
+    private RuleConsidered ruleConsidered;
 
 	@XmlElement(name = "RelatedFrom")
     @XmlIDREF
@@ -174,13 +176,28 @@ public class HybridRelationship
 	 * within <i>this</i> hybrid relationship.
 	 */
 	public String getRuleConsidered(){
-		return this.ruleConsidered;
+		return this.ruleConsidered().getText();
 	}
 	/**
 	 * @see  #getRuleConsidered()
 	 */
 	public void setRuleConsidered(String ruleConsidered){
-		this.ruleConsidered = ruleConsidered;
+		this.ruleConsidered().setText(ruleConsidered);
+	}
+	/**
+     * The {@link NomenclaturalCodeEdition code edition} for the {@link #getRuleConsidered() rule considered}.
+     */
+    public NomenclaturalCodeEdition getCodeEdition() {
+        return ruleConsidered().getCodeEdition();
+    }
+    public void setCodeEdition(NomenclaturalCodeEdition codeEdition) {
+        ruleConsidered().setCodeEdition(codeEdition);
+    }
+	private RuleConsidered ruleConsidered(){
+	    if(this.ruleConsidered==null){
+	        ruleConsidered = new RuleConsidered();
+	    }
+	    return ruleConsidered;
 	}
 
 	@Override
@@ -258,6 +275,7 @@ public class HybridRelationship
 		HybridRelationship result;
 		try {
 			result = (HybridRelationship)super.clone();
+			result.ruleConsidered = this.ruleConsidered == null? null : this.ruleConsidered.clone();
 			//no changes to: relatedFrom, relatedTo, type
 			return result;
 		} catch (CloneNotSupportedException e) {

@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.model.media.ExternalLinkType;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName;
 import eu.etaxonomy.cdm.model.molecular.SequenceDirection;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCodeEdition;
 import eu.etaxonomy.cdm.model.name.RankClass;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
@@ -110,6 +111,9 @@ public class EnumUserType<E extends Enum<E>>  extends AbstractUserType implement
         //NomenclaturalCode
         }else if (clazz.equals(NomenclaturalCode.class)){
         	return NomenclaturalCode.getByKey(val);
+        //NomenclaturalCode
+        }else if (clazz.equals(NomenclaturalCodeEdition.class)){
+            return NomenclaturalCodeEdition.getByKey(val);
         //RankClass
         }else if (clazz.equals(RankClass.class)){
         	return RankClass.getByKey(val);

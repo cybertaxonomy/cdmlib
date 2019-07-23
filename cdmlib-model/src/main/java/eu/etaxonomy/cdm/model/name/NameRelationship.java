@@ -59,10 +59,12 @@ public class NameRelationship
 	private static final long serialVersionUID = -615987333520172043L;
 	private static final Logger logger = Logger.getLogger(NameRelationship.class);
 
-    //The nomenclatural code rule considered. The article/note/recommendation in the code in question that is commented on in
-	//the note property.
-    @XmlElement(name = "RuleConsidered")
-	private String ruleConsidered;
+//    //The nomenclatural code rule considered. The article/note/recommendation in the code in question that is commented on in
+//	//the note property.
+//    @XmlElement(name = "RuleConsidered")
+//	private String ruleConsidered;
+
+    private RuleConsidered ruleConsidered;
 
     @XmlElement(name = "RelatedFrom")
     @XmlIDREF
@@ -171,26 +173,62 @@ public class NameRelationship
 		this.setRelatedTo(toName);
 	}
 
-	/**
-	 * Returns the nomenclatural code rule considered (that is the
-	 * article/note/recommendation in the nomenclatural code ruling
-	 * the  taxon name(s) of this nomenclatural status).
-	 * The considered rule gives the reason why the
-	 * {@link NomenclaturalStatusType nomenclatural status type} has been
-	 * assigned to the {@link TaxonName taxon name(s)}.
-	 */
-	public String getRuleConsidered(){
-		return this.ruleConsidered;
-	}
+
+//	public String getRuleConsidered(){
+//		return this.ruleConsidered;
+//	}
+//
+//	/**
+//	 * @see  #getRuleConsidered()
+//	 */
+//	public void setRuleConsidered(String ruleConsidered){
+//		this.ruleConsidered = ruleConsidered;
+//	}
+//
+//	/**
+//     * The {@link NomenclaturalCodeEdition code edition} for the {@link #getRuleConsidered() rule considered}.
+//	 */
+//	public NomenclaturalCodeEdition getCodeEdition() {
+//        return codeEdition;
+//    }
+//    public void setCodeEdition(NomenclaturalCodeEdition codeEdition) {
+//        this.codeEdition = codeEdition;
+//    }
 
 	/**
-	 * @see  #getRuleConsidered()
-	 */
-	public void setRuleConsidered(String ruleConsidered){
-		this.ruleConsidered = ruleConsidered;
-	}
+     * Returns the nomenclatural code rule considered (that is the
+     * article/note/recommendation in the nomenclatural code ruling
+     * the  taxon name(s) of this nomenclatural status).
+     * The considered rule gives the reason why the
+     * {@link NameRelationshipType name relationship type} has been
+     * assigned to this name relation.
+     */
+    public String getRuleConsidered(){
+        return this.ruleConsidered().getText();
+    }
+    /**
+     * @see  #getRuleConsidered()
+     */
+    public void setRuleConsidered(String ruleConsidered){
+        this.ruleConsidered().setText(ruleConsidered);
+    }
+    /**
+     * The {@link NomenclaturalCodeEdition code edition} for the {@link #getRuleConsidered() rule considered}.
+     */
+    public NomenclaturalCodeEdition getCodeEdition() {
+        return ruleConsidered().getCodeEdition();
+    }
+    public void setCodeEdition(NomenclaturalCodeEdition codeEdition) {
+        ruleConsidered().setCodeEdition(codeEdition);
+    }
+    private RuleConsidered ruleConsidered(){
+        if(this.ruleConsidered==null){
+            ruleConsidered = new RuleConsidered();
+        }
+        return ruleConsidered;
+    }
 
-	// for extra-package access to relatedFrom use getFromName instead
+    // for extra-package access to relatedFrom use getFromName instead
 	@Override
     protected TaxonName getRelatedFrom() {
 		return relatedFrom;
@@ -241,6 +279,7 @@ public class NameRelationship
 		NameRelationship result;
 		try {
 			result = (NameRelationship)super.clone();
+            result.ruleConsidered = this.ruleConsidered == null? null : this.ruleConsidered.clone();
 			//no changes to: relatedFrom, relatedTo, type
 			return result;
 		} catch (CloneNotSupportedException e) {
