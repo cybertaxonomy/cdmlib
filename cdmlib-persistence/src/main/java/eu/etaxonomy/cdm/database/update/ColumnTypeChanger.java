@@ -29,26 +29,27 @@ public class ColumnTypeChanger
     private static final Logger logger = Logger.getLogger(ColumnTypeChanger.class);
 
 	private final String columnName;
-	private final String newColumnType;
+	private final Datatype newColumnType;
+	private final Integer newSize;
 	private final Object defaultValue;
 	private final boolean isNotNull;
 	private final String referencedTable;
 
 
 	public static final ColumnTypeChanger NewStringSizeInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String columnName, int newSize, boolean includeAudTable){
-		return new ColumnTypeChanger(stepList, stepName, tableName, columnName, "nvarchar("+newSize+")", includeAudTable, null, false, null);
+		return new ColumnTypeChanger(stepList, stepName, tableName, columnName, Datatype.VARCHAR, newSize, includeAudTable, null, false, null);
 	}
 
 	public static final ColumnTypeChanger NewClobInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String columnName, boolean includeAudTable){
-		return new ColumnTypeChanger(stepList, stepName, tableName, columnName, "clob", includeAudTable, null, false, null);
+		return new ColumnTypeChanger(stepList, stepName, tableName, columnName, Datatype.CLOB, null, includeAudTable, null, false, null);
 	}
 
 	public static final ColumnTypeChanger NewInt2DoubleInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String columnName, boolean includeAudTable){
-		return new ColumnTypeChanger(stepList, stepName, tableName, columnName, "double", includeAudTable, null, false, null);
+		return new ColumnTypeChanger(stepList, stepName, tableName, columnName, Datatype.DOUBLE, null, includeAudTable, null, false, null);
 	}
 
 	public static final ColumnTypeChanger NewInt2StringInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String columnName, int size, boolean includeAudTable, Integer defaultValue, boolean notNull){
-		return new ColumnTypeChanger(stepList, stepName, tableName, columnName, "nvarchar("+size+")", includeAudTable, defaultValue, notNull, null);
+		return new ColumnTypeChanger(stepList, stepName, tableName, columnName, Datatype.VARCHAR, size, includeAudTable, defaultValue, notNull, null);
 	}
 
 //	public static final ColumnTypeChanger NewChangeAllowNullOnStringChanger(){
@@ -56,10 +57,11 @@ public class ColumnTypeChanger
 //	}
 
 
-	protected ColumnTypeChanger(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String columnName, String newColumnType, boolean includeAudTable, Object defaultValue, boolean notNull, String referencedTable) {
+	protected ColumnTypeChanger(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String columnName, Datatype newColumnType, Integer size, boolean includeAudTable, Object defaultValue, boolean notNull, String referencedTable) {
 		super(stepList, stepName, tableName, includeAudTable);
 		this.columnName = columnName;
 		this.newColumnType = newColumnType;
+		this.newSize = size;
 		this.defaultValue = defaultValue;
 		this.isNotNull = notNull;
 		this.referencedTable = referencedTable;
@@ -142,7 +144,7 @@ public class ColumnTypeChanger
 	public String getUpdateQueryString(String tableName, ICdmDataSource datasource, IProgressMonitor monitor) throws DatabaseTypeNotSupportedException {
 		String updateQuery;
 		DatabaseTypeEnum type = datasource.getDatabaseType();
-		String databaseColumnType = getDatabaseColumnType(datasource, this.newColumnType);
+		String databaseColumnType = getDatabaseColumnType(datasource, this.newColumnType, newSize);
 
 		if (type.equals(DatabaseTypeEnum.SqlServer2005)){
 			//MySQL allows both syntaxes
@@ -194,7 +196,7 @@ public class ColumnTypeChanger
         //
         boolean includeAuditing = false;
         String colNameChanged = this.columnName + _OLDXXX;
-        String databaseColumnType = getDatabaseColumnType(datasource, this.newColumnType);
+        String databaseColumnType = getDatabaseColumnType(datasource, this.newColumnType, newSize);
 
         //change old column name
         //note data type is not relevant for ColumnNameChanger with Postgres
@@ -205,7 +207,7 @@ public class ColumnTypeChanger
         //create new column
 //        step = ColumnAdder.NewStringInstance(this.stepName + " - Add new column", tableName, this.columnName, includeAuditing);
         Object defaultValue = null;
-        step = new ColumnAdder(null, this.stepName + " - Add new column", tableName, this.columnName, newColumnType, includeAuditing, defaultValue, false, null);
+        step = new ColumnAdder(null, this.stepName + " - Add new column", tableName, this.columnName, newColumnType, newSize, includeAuditing, defaultValue, false, null);
         step.invoke(datasource, monitor, caseType, result);
 
         //move data
@@ -227,8 +229,8 @@ public class ColumnTypeChanger
         step.invoke(datasource, monitor, caseType, result);
     }
 
-	private String getDatabaseColumnType(ICdmDataSource datasource, String columnType) {
-		return ColumnAdder.getDatabaseColumnType(datasource, columnType);
+	private String getDatabaseColumnType(ICdmDataSource datasource, Datatype columnType, Integer size) {
+		return columnType.format(datasource, size);
 	}
 
 	public String getReferencedTable() {
