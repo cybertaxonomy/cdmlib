@@ -68,8 +68,8 @@ public class TermTree <T extends DefinedTermBase>
 	private static final Logger logger = Logger.getLogger(TermTree.class);
 
 
-    // TODO representations needed? FeatureTree was a TermBase until v3.3 but was removed from
-    //it as TermBase got the termType which does not apply to FeatureTree.
+    // TODO representations needed? TermTree was a TermBase until v3.3 but was removed from
+    //it as TermBase got the termType which does not apply to TermTree.
     //We need to check how far representations and uri is still required
     //or can be deleted. Current implementations seem all to use the title cache
     //instead of representation. This may not be correct.

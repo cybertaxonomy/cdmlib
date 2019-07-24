@@ -38,10 +38,11 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermTree;
 
 /**
  * The class representing single-access fixed dichotomous or polytomous authored
- * decision keys (as opposed to {@link FeatureTree multiple-access keys}) used to identify
+ * decision keys (as opposed to {@link TermTree multiple-access keys}) used to identify
  * {@link SpecimenOrObservationBase specimens or observations} (this means to assign {@link Taxon taxa} to).
  * The determination process is based on the tree structure of the key and on
  * the statements of its leads.
