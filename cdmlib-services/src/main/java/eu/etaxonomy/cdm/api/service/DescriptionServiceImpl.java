@@ -60,10 +60,9 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptiveDataSetDao;
-import eu.etaxonomy.cdm.persistence.dao.description.IFeatureDao;
-import eu.etaxonomy.cdm.persistence.dao.description.ITermNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IStatisticalMeasurementValueDao;
+import eu.etaxonomy.cdm.persistence.dao.description.ITermNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
@@ -94,7 +93,6 @@ public class DescriptionServiceImpl
     protected IFeatureTreeDao featureTreeDao;
     protected IDescriptiveDataSetDao descriptiveDataSetDao;
     protected ITermNodeDao termNodeDao;
-    protected IFeatureDao featureDao;
     protected ITermVocabularyDao vocabularyDao;
     protected IDefinedTermDao definedTermDao;
     protected IStatisticalMeasurementValueDao statisticalMeasurementValueDao;
@@ -121,13 +119,8 @@ public class DescriptionServiceImpl
     }
 
     @Autowired
-    protected void setFeatureNodeDao(ITermNodeDao featureNodeDao) {
+    protected void setTermNodeDao(ITermNodeDao featureNodeDao) {
         this.termNodeDao = featureNodeDao;
-    }
-
-    @Autowired
-    protected void setFeatureDao(IFeatureDao featureDao) {
-        this.featureDao = featureDao;
     }
 
     @Autowired
