@@ -83,8 +83,6 @@ public class SchemaUpdater_50_55 extends SchemaUpdaterBase {
         step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
         stepList.add(step);
 
-        //TODO remove proparte and partial columns
-
         //#7772 rename TermBase_inverseRepresentation to DefinedTermBase_InverseRepresentation
         stepName = "Rename TermBase_inverseRepresentation to DefinedTermBase_InverseRepresentation";
         String oldName = "TermBase_inverseRepresentation";

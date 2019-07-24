@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ColumnNameChanger;
+import eu.etaxonomy.cdm.database.update.ColumnRemover;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
@@ -185,6 +186,39 @@ public class SchemaUpdater_55_58 extends SchemaUpdaterBase {
        tableName = "TaxonNode";
        newColumnName = "doubtful";
        step = ColumnAdder.NewBooleanInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
+       stepList.add(step);
+
+       //#8398
+       stepName = "Add code edition to nomenclatural status";
+       tableName = "NomenclaturalStatus";
+       newColumnName = "codeEdition";
+       int length = 20;
+       step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
+       stepList.add(step);
+
+       //#8398
+       stepName = "Add code edition to name relations";
+       tableName = "NameRelationship";
+       step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
+       stepList.add(step);
+
+       //#8398
+       stepName = "Add code edition to hybrid relations";
+       tableName = "HybridRelationship";
+       step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
+       stepList.add(step);
+
+       //remove proparte and partial from TaxonBase
+       stepName = "Remove proparte from TaxonBase";
+       tableName = "TaxonBase";
+       oldColumnName = "proParte";
+       step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
+       stepList.add(step);
+
+       stepName = "Remove proparte from TaxonBase";
+       tableName = "TaxonBase";
+       oldColumnName = "partial";
+       step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
        stepList.add(step);
 
        return stepList;
@@ -359,6 +393,7 @@ public class SchemaUpdater_55_58 extends SchemaUpdaterBase {
         newColumnName = "TermCollection_id";
         step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
         stepList.add(step);
+
 
     }
 
