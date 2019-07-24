@@ -84,6 +84,71 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
     @XmlEnumValue("Tokyo")
     ICN_1993_TOKYO(UUID.fromString("5a846761-839f-4f77-b614-7181b9b29355"), "Tokyo", 1993, NomenclaturalCode.ICNAFP, "Q15895201", null),
 
+    //5
+    /**
+     * International Code of Botanical Nomenclature.
+     * Berlin 1987
+     */
+    @XmlEnumValue("Berlin")
+    ICN_1987_BERLIN(UUID.fromString("5702fc16-e194-4ad2-bdaf-4451af523db2"), "Berlin", 1987, NomenclaturalCode.ICNAFP, null, null),
+
+    //6
+    /**
+     * International Code of Botanical Nomenclature.
+     * Sydney 1981
+     */
+    @XmlEnumValue("Sydney")
+    ICN_1981_Sydney(UUID.fromString("f956c556-6d79-4e0f-adeb-ed9d81f2fa24"), "Sydney", 1981, NomenclaturalCode.ICNAFP, null, null),
+
+    //7
+    /**
+     * International Code of Botanical Nomenclature.
+     * Leningrad 1975
+     */
+    @XmlEnumValue("Leningrad")
+    ICN_1975_TOKYO(UUID.fromString("f52e50b4-4c75-42dd-8efe-39cd966da712"), "Leningrad", 1975, NomenclaturalCode.ICNAFP, null, null),
+
+    //8
+    /**
+     * International Code of Botanical Nomenclature.
+     * Seattle 1969
+     */
+    @XmlEnumValue("Seattle")
+    ICN_1969_Seattle(UUID.fromString("2d19b5af-27cc-428e-affb-8a06563ff9cd"), "Seattle", 1969, NomenclaturalCode.ICNAFP, null, null),
+
+    //9
+    /**
+     * International Code of Botanical Nomenclature.
+     * Stockholm 1952
+     */
+    @XmlEnumValue("Stockholm")
+    ICN_1952_Stockholm(UUID.fromString("a0c07e5f-9b2b-4cd7-9f14-acd4729f175a"), "Stockholm", 1952, NomenclaturalCode.ICNAFP, null, null),
+
+    //10
+    /**
+     * International Code of Botanical Nomenclature.
+     * Cambridge Rules 1935
+     */
+    @XmlEnumValue("Cambridge")
+    ICN_1935_CAMBRIDGE(UUID.fromString("e6f7e578-2ce5-434d-9904-aaf2a6e06c43"), "Cambrdige", 1935, NomenclaturalCode.ICNAFP, null, null),
+
+    //11
+    /**
+     * International Code of Botanical Nomenclature.
+     * Vienna Rules 1905
+     */
+    @XmlEnumValue("Vienna 1905")
+    ICN_1905_VIENNA(UUID.fromString("23781153-540f-4c54-a5ae-5d6b6f490332"), "Vienna", 1905, NomenclaturalCode.ICNAFP, null, null),
+
+    //12
+    /**
+     * International Code of Botanical Nomenclature.
+     * Laws of botanical nomenclature 1867
+     */
+    @XmlEnumValue("Laws")
+    ICN_1867_LAWS(UUID.fromString("230314c3-0bb0-4488-8597-f4ef63d27781"), "Laws of botanical nomenclature", 1867, NomenclaturalCode.ICNAFP, null, null),
+
+
     //*** ICZN **/
     //z1
     /**

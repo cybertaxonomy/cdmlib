@@ -103,13 +103,13 @@ public class NomenclaturalCodeEditionTest {
     public void testForCode() {
         List<NomenclaturalCodeEdition> editions = NomenclaturalCodeEdition.forCode(NomenclaturalCode.ICNAFP);
         Assert.assertTrue(editions.contains(NomenclaturalCodeEdition.ICN_2011_MELBOURNE));
-        Assert.assertEquals(5, editions.size());
+        Assert.assertEquals(13, editions.size());
         Assert.assertFalse(editions.contains(NomenclaturalCodeEdition.ICZN_1999));
 
         editions = NomenclaturalCodeEdition.forCode(NomenclaturalCode.NonViral);
         Assert.assertTrue(editions.contains(NomenclaturalCodeEdition.ICN_2011_MELBOURNE));
         Assert.assertTrue(editions.contains(NomenclaturalCodeEdition.ICZN_1999));
-        Assert.assertEquals(15, editions.size());
+        Assert.assertEquals(23, editions.size());
         Assert.assertFalse(editions.contains(NomenclaturalCodeEdition.ICVCN_2018));
 
     }
