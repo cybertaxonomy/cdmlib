@@ -20,7 +20,6 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 /**
  * @author a.mueller
  * @since 16.09.2010
- *
  */
 public class ColumnTypeChanger
         extends AuditedSchemaUpdaterStepBase {
@@ -235,9 +234,5 @@ public class ColumnTypeChanger
 	public String getReferencedTable() {
 		return referencedTable;
 	}
-//
-//	public String getNewColumnName() {
-//		return columnName;
-//	}
 
 }

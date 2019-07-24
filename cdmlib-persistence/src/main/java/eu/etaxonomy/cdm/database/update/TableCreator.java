@@ -145,19 +145,19 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase {
 	 * @param mnTablesStepList, String tableName
 	 */
 	public static void makeMnTables(List<ISchemaUpdaterStep> mnTablesStepList, String tableName, boolean includeAnnotatable, boolean includeIdentifiable) {
-		TableCreator tableCreator;
-		String stepName;
+
+	    String stepName;
 
 		if (includeAnnotatable){
 			//annotations
 			stepName= "Add @tableName annotations";
 			stepName = stepName.replace("@tableName", tableName);
-			tableCreator = MnTableCreator.NewMnInstance(mnTablesStepList, stepName, tableName, "Annotation", SchemaUpdaterBase.INCLUDE_AUDIT, !IS_LIST, IS_1_TO_M);
+			MnTableCreator.NewMnInstance(mnTablesStepList, stepName, tableName, "Annotation", SchemaUpdaterBase.INCLUDE_AUDIT, !IS_LIST, IS_1_TO_M);
 
 			//marker
 			stepName= "Add @tableName marker";
 			stepName = stepName.replace("@tableName", tableName);
-			tableCreator = MnTableCreator.NewMnInstance(mnTablesStepList, stepName, tableName, "Marker", SchemaUpdaterBase.INCLUDE_AUDIT, !IS_LIST, IS_1_TO_M);
+			MnTableCreator.NewMnInstance(mnTablesStepList, stepName, tableName, "Marker", SchemaUpdaterBase.INCLUDE_AUDIT, !IS_LIST, IS_1_TO_M);
 		}
 
 		if (includeIdentifiable){
@@ -165,27 +165,27 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase {
 			//credits
 			stepName= "Add @tableName credits";
 			stepName = stepName.replace("@tableName", tableName);
-			tableCreator = MnTableCreator.NewMnInstance(mnTablesStepList, stepName, tableName, null, "Credit", null, null, SchemaUpdaterBase.INCLUDE_AUDIT, IS_LIST, IS_1_TO_M);
+			MnTableCreator.NewMnInstance(mnTablesStepList, stepName, tableName, null, "Credit", null, null, SchemaUpdaterBase.INCLUDE_AUDIT, IS_LIST, IS_1_TO_M);
 
 			//identifier
 			stepName= "Add @tableName identifiers";
 			stepName = stepName.replace("@tableName", tableName);
-			tableCreator = MnTableCreator.NewMnInstance(mnTablesStepList, stepName, tableName, null, "Identifier", null, null, SchemaUpdaterBase.INCLUDE_AUDIT, IS_LIST, IS_1_TO_M);
+			MnTableCreator.NewMnInstance(mnTablesStepList, stepName, tableName, null, "Identifier", null, null, SchemaUpdaterBase.INCLUDE_AUDIT, IS_LIST, IS_1_TO_M);
 
 			//extensions
 			stepName= "Add @tableName extensions";
 			stepName = stepName.replace("@tableName", tableName);
-			tableCreator = MnTableCreator.NewMnInstance(mnTablesStepList, stepName, tableName, "Extension", SchemaUpdaterBase.INCLUDE_AUDIT, !IS_LIST, IS_1_TO_M);
+			MnTableCreator.NewMnInstance(mnTablesStepList, stepName, tableName, "Extension", SchemaUpdaterBase.INCLUDE_AUDIT, !IS_LIST, IS_1_TO_M);
 
 			//OriginalSourceBase
 			stepName= "Add @tableName sources";
 			stepName = stepName.replace("@tableName", tableName);
-			tableCreator = MnTableCreator.NewMnInstance(mnTablesStepList, stepName, tableName, null, "OriginalSourceBase", null, "sources", SchemaUpdaterBase.INCLUDE_AUDIT, ! IS_LIST, IS_1_TO_M);
+			MnTableCreator.NewMnInstance(mnTablesStepList, stepName, tableName, null, "OriginalSourceBase", null, "sources", SchemaUpdaterBase.INCLUDE_AUDIT, ! IS_LIST, IS_1_TO_M);
 
 			//Rights
 			stepName= "Add @tableName rights";
 			stepName = stepName.replace("@tableName", tableName);
-			tableCreator = MnTableCreator.NewMnInstance(mnTablesStepList, stepName, tableName, null, "RightsInfo", null, "rights", SchemaUpdaterBase.INCLUDE_AUDIT, !IS_LIST, IS_M_TO_M);
+			MnTableCreator.NewMnInstance(mnTablesStepList, stepName, tableName, null, "RightsInfo", null, "rights", SchemaUpdaterBase.INCLUDE_AUDIT, !IS_LIST, IS_M_TO_M);
 		}
 	}
 
