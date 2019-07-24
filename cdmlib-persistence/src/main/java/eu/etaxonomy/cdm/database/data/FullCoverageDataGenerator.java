@@ -880,6 +880,9 @@ public class FullCoverageDataGenerator {
 		SpecimenTypeDesignation specimenDesig = speciesZooName.addSpecimenTypeDesignation(getSpecimen(), SpecimenTypeDesignationStatus.HOLOTYPE(),
 				getReference(), "p,22", "original name", false, true);
 		handleAnnotatableEntity(specimenDesig);
+		speciesZooName.addTextualTypeDesignation("A textual type designation", Language.ENGLISH(), true,
+		        getReference(), "123", "Species orginalus", false);
+
 
 		TaxonName viralName = TaxonNameFactory.NewViralInstance(Rank.GENUS());
 		viralName.setAcronym("acronym");

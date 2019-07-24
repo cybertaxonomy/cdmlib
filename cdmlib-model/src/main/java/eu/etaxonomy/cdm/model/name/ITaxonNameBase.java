@@ -16,6 +16,8 @@ import javax.persistence.Transient;
 import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.common.IRelated;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -24,6 +26,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonComparator;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
 
@@ -531,6 +534,24 @@ public interface ITaxonNameBase
     public SpecimenTypeDesignation addSpecimenTypeDesignation(DerivedUnit typeSpecimen, SpecimenTypeDesignationStatus status,
             Reference citation, String citationMicroReference, String originalNameString, boolean isNotDesignated,
             boolean addToAllHomotypicNames);
+
+    /**
+     * Creates and adds a new {@link TextualTypeDesignation textual type designation}
+     * to <i>this</i> taxon name's set of type designations.
+     *
+     * @param text                      the text
+     * @param language                  the language of the text, if no language is defined {@link Language#UNDETERMINED()} is used
+     * @param isVerbatim                wether or not this the text is a verbatim text from a reference
+     * @param  citation                 the reference for this new specimen type designation
+     * @param  citationMicroReference   the string with the details (generally pages) within the reference
+     * @param  originalNameString       the taxon name used in the reference to assert this designation
+     * @param  addToAllHomotypicNames   the boolean indicating whether the specimen type designation should be
+     * @return
+     */
+    TextualTypeDesignation addTextualTypeDesignation(String text, Language language, boolean isVerbatim,
+            Reference citation, String citationMicroReference, String originalNameString,
+            boolean addToAllHomotypicNames);
+
 
     /**
      * Adds a {@link TypeDesignationBase type designation} to <code>this</code> taxon name's set of type designations

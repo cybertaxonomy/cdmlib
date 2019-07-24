@@ -72,6 +72,7 @@ import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
 import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
@@ -2629,6 +2630,20 @@ public class TaxonName
         SpecimenTypeDesignation specimenTypeDesignation = new SpecimenTypeDesignation(typeSpecimen, status, citation, citationMicroReference, originalNameString, isNotDesignated);
         addTypeDesignation(specimenTypeDesignation, addToAllHomotypicNames);
         return specimenTypeDesignation;
+    }
+
+    @Override
+    public TextualTypeDesignation addTextualTypeDesignation(
+                String text,
+                Language language,
+                boolean isVerbatim,
+                Reference citation,
+                String citationMicroReference,
+                String originalNameString,
+                boolean addToAllHomotypicNames) {
+        TextualTypeDesignation textualTypeDesignation = TextualTypeDesignation.NewInstance(text, language, isVerbatim, citation, citationMicroReference, originalNameString);
+        addTypeDesignation(textualTypeDesignation, addToAllHomotypicNames);
+        return textualTypeDesignation;
     }
 
     //used by merge strategy
