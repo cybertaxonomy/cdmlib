@@ -373,16 +373,11 @@ public class SchemaUpdater_55_58 extends SchemaUpdaterBase {
         String[] columnNames = new String[]{"TextualTypeDesignation_id","text_id","text_mapkey_id"};
         String[] columnTypes = new String[]{"int","int","int"};
         String[] referencedTables = new String[]{"TypeDesignationBase","LanguageString","LanguageString"};
-        TableCreator tableCreator = TableCreator.NewInstance(stepList, stepName, tableName, columnNames, columnTypes, referencedTables,
+        TableCreator.NewInstance(stepList, stepName, tableName, columnNames, columnTypes, referencedTables,
                 INCLUDE_AUDIT, ! INCLUDE_CDM_BASE)
-                .setPrimaryKeyParams("TextualTypeDesignation_id, text_id", "REV, TextualTypeDesignation_id, text_id, text_mapkey_id")
+                .setPrimaryKeyParams("TextualTypeDesignation_id, text_mapkey_id", "REV, TextualTypeDesignation_id, text_id, text_mapkey_id")
                 .setUniqueParams("text_id", null);
 
-
-        //TODO PK on ("TextualTypeDesignation_id","text_id")
-        //TODO Unique key on "text_id")
-
-        stepList.add(tableCreator);
     }
 
     //7514  the update in 50_55 was not yet correct
