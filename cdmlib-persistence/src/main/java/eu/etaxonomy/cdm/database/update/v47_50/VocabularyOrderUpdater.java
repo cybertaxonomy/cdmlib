@@ -40,7 +40,6 @@ public class VocabularyOrderUpdater extends SchemaUpdaterStepBase {
 
 	public static final VocabularyOrderUpdater NewInstance(List<ISchemaUpdaterStep> stepList){
 		VocabularyOrderUpdater result = new VocabularyOrderUpdater(stepList);
-		stepList.add(result);
 		return result;
 	}
 

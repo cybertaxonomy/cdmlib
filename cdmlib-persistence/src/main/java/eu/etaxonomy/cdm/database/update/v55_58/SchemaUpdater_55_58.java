@@ -59,7 +59,6 @@ public class SchemaUpdater_55_58 extends SchemaUpdaterBase {
 		String stepName;
 		String tableName;
 		String newColumnName;
-		String query;
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<>();
 
@@ -89,9 +88,7 @@ public class SchemaUpdater_55_58 extends SchemaUpdaterBase {
 //       tableName = "TermRelation";
 //       String oldColumnName = "featureTree_id";
 //       newColumnName = "graph_id";
-//       step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
-//       stepList.add(step);
-
+//       ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
 
        //#6794 change feature_id to term_id
        stepName = "change feature_id to term_id";
@@ -215,28 +212,24 @@ public class SchemaUpdater_55_58 extends SchemaUpdaterBase {
     private void addBooleansToTermVocabulary(List<ISchemaUpdaterStep> stepList) {
         String stepName;
         String tableName;
-        ISchemaUpdaterStep step;
         String newColumnName;
         //#6794 add allowDuplicates to TermCollection
            stepName = "Add allowDuplicates to TermCollection";
            tableName = "TermCollection";
            newColumnName = "allowDuplicates";
-           step = ColumnAdder.NewBooleanInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
-           stepList.add(step);
+           ColumnAdder.NewBooleanInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
 
            //#6794 add isFlat to TermCollection
            stepName = "Add isFlat to TermCollection";
            tableName = "TermCollection";
            newColumnName = "isFlat";
-           step = ColumnAdder.NewBooleanInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
-           stepList.add(step);
+           ColumnAdder.NewBooleanInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
 
            //#6794 add orderRelevant to TermCollection
            stepName = "Add orderRelevant to TermCollection";
            tableName = "TermCollection";
            newColumnName = "orderRelevant";
-           step = ColumnAdder.NewBooleanInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
-           stepList.add(step);
+           ColumnAdder.NewBooleanInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
     }
 
     /**
@@ -248,128 +241,119 @@ public class SchemaUpdater_55_58 extends SchemaUpdaterBase {
         String oldName = "TermVocabulary";
         String newName = "TermCollection";
         boolean includeDtype = false;
-        ISchemaUpdaterStep step = TableNameChanger.NewInstance(stepList, stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
+        TableNameChanger.NewInstance(stepList, stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
 
         //#6794 rename TermVocabulary_Annotation to TermCollection_Annotation
         stepName = "rename TermVocabulary_Annotation to TermCollection_Annotation";
         oldName = "TermVocabulary_Annotation";
         newName = "TermCollection_Annotation";
         includeDtype = false;
-        step = TableNameChanger.NewInstance(stepList, stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
+        TableNameChanger.NewInstance(stepList, stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
 
         //#6794 rename TermCollection_Annotation.TermVocabulary_id to TermCollection_id
         stepName = "rename TermCollection_Annotation.TermVocabulary_id to TermCollection_id";
         String tableName = "TermCollection_Annotation";
         String oldColumnName = "TermVocabulary_id";
         String newColumnName = "TermCollection_id";
-        step = ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
-        stepList.add(step);
+        ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
 
         //#6794 rename TermVocabulary_Credit to TermCollection_Credit
         stepName = "rename TermVocabulary_Credit to TermCollection_Credit";
         oldName = "TermVocabulary_Credit";
         newName = "TermCollection_Credit";
         includeDtype = false;
-        step = TableNameChanger.NewInstance(stepList, stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
+        TableNameChanger.NewInstance(stepList, stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
 
         //#6794 rename TermCollection_Credit.TermVocabulary_id to TermCollection_id
         stepName = "rename TermCollection_Credit.TermVocabulary_id to TermCollection_id";
         tableName = "TermCollection_Credit";
         oldColumnName = "TermVocabulary_id";
         newColumnName = "TermCollection_id";
-        step = ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
-        stepList.add(step);
+        ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
 
         //#6794 rename TermVocabulary_Extension to TermCollection_Extension
         stepName = "rename TermVocabulary_Extension to TermCollection_Extension";
         oldName = "TermVocabulary_Extension";
         newName = "TermCollection_Extension";
         includeDtype = false;
-        step = TableNameChanger.NewInstance(stepList, stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
+        TableNameChanger.NewInstance(stepList, stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
 
         //#6794 rename TermCollection_Extension.TermVocabulary_id to TermCollection_id
         stepName = "rename TermCollection_Extension.TermVocabulary_id to TermCollection_id";
         tableName = "TermCollection_Extension";
         oldColumnName = "TermVocabulary_id";
         newColumnName = "TermCollection_id";
-        step = ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
-        stepList.add(step);
+        ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
 
         //#6794 rename TermVocabulary_Identifier to TermCollection_Identifier
         stepName = "rename TermVocabulary_Identifier to TermCollection_Identifier";
         oldName = "TermVocabulary_Identifier";
         newName = "TermCollection_Identifier";
         includeDtype = false;
-        step = TableNameChanger.NewInstance(stepList, stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
+        TableNameChanger.NewInstance(stepList, stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
 
         //#6794 rename TermCollection_Identifier.TermVocabulary_id to TermCollection_id
         stepName = "rename TermCollection_Identifier.TermVocabulary_id to TermCollection_id";
         tableName = "TermCollection_Identifier";
         oldColumnName = "TermVocabulary_id";
         newColumnName = "TermCollection_id";
-        step = ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
-        stepList.add(step);
+        ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
 
         //#6794 rename TermVocabulary_Marker to TermCollection_Marker
         stepName = "rename TermVocabulary_Marker to TermCollection_Marker";
         oldName = "TermVocabulary_Marker";
         newName = "TermCollection_Marker";
         includeDtype = false;
-        step = TableNameChanger.NewInstance(stepList, stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
+        TableNameChanger.NewInstance(stepList, stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
 
         //#6794 rename TermCollection_Marker.TermVocabulary_id to TermCollection_id
         stepName = "rename TermCollection_Marker.TermVocabulary_id to TermCollection_id";
         tableName = "TermCollection_Marker";
         oldColumnName = "TermVocabulary_id";
         newColumnName = "TermCollection_id";
-        step = ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
-        stepList.add(step);
+        ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
 
         //#6794 rename TermVocabulary_OriginalSourceBase to TermCollection_OriginalSourceBase
         stepName = "rename TermVocabulary_OriginalSourceBase to TermCollection_OriginalSourceBase";
         oldName = "TermVocabulary_OriginalSourceBase";
         newName = "TermCollection_OriginalSourceBase";
         includeDtype = false;
-        step = TableNameChanger.NewInstance(stepList, stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
+        TableNameChanger.NewInstance(stepList, stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
 
         //#6794 rename TermCollection_OriginalSourceBase.TermVocabulary_id to TermCollection_id
         stepName = "rename TermCollection_OriginalSourceBase.TermVocabulary_id to TermCollection_id";
         tableName = "TermCollection_OriginalSourceBase";
         oldColumnName = "TermVocabulary_id";
         newColumnName = "TermCollection_id";
-        step = ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
-        stepList.add(step);
+        ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
 
         //#6794 rename TermVocabulary_Representation to TermCollection_Representation
         stepName = "rename TermVocabulary_Representation to TermCollection_Representation";
         oldName = "TermVocabulary_Representation";
         newName = "TermCollection_Representation";
         includeDtype = false;
-        step = TableNameChanger.NewInstance(stepList, stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
+        TableNameChanger.NewInstance(stepList, stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
 
         //#6794 rename TermCollection_Representation.TermVocabulary_id to TermCollection_id
         stepName = "rename TermCollection_Representation.TermVocabulary_id to TermCollection_id";
         tableName = "TermCollection_Representation";
         oldColumnName = "TermVocabulary_id";
         newColumnName = "TermCollection_id";
-        step = ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
-        stepList.add(step);
+        ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
 
         //#6794 rename TermVocabulary_RightsInfo to TermCollection_RightsInfo
         stepName = "rename TermVocabulary_RightsInfo to TermCollection_RightsInfo";
         oldName = "TermVocabulary_RightsInfo";
         newName = "TermCollection_RightsInfo";
         includeDtype = false;
-        step = TableNameChanger.NewInstance(stepList, stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
+        TableNameChanger.NewInstance(stepList, stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
 
         //#6794 rename TermCollection_RightsInfo.TermVocabulary_id to TermCollection_id
         stepName = "rename TermCollection_RightsInfo.TermVocabulary_id to TermCollection_id";
         tableName = "TermCollection_RightsInfo";
         oldColumnName = "TermVocabulary_id";
         newColumnName = "TermCollection_id";
-        step = ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
-        stepList.add(step);
-
+        ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
 
     }
 
@@ -381,8 +365,7 @@ public class SchemaUpdater_55_58 extends SchemaUpdaterBase {
 
         String tableName = "TypeDesignationBase";
         String newColumnName = "isVerbatim";
-        ISchemaUpdaterStep step = ColumnAdder.NewBooleanInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
-        stepList.add(step);
+        ColumnAdder.NewBooleanInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
 
         //add TypeDesignationBase_LanguageString
         stepName = "add TypeDesignationBase_LanguageString";
@@ -428,10 +411,7 @@ public class SchemaUpdater_55_58 extends SchemaUpdaterBase {
                 + " WHERE uuid = '859fb615-b0e8-440b-866e-8a19f493cd36' ";
         tableName = "DefinedTermBase";
         SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName, -99);
-
-
     }
-
 
     @Override
 	public ISchemaUpdater getNextUpdater() {
@@ -442,5 +422,4 @@ public class SchemaUpdater_55_58 extends SchemaUpdaterBase {
 	public ISchemaUpdater getPreviousUpdater() {
 		return SchemaUpdater_50_55.NewInstance();
 	}
-
 }

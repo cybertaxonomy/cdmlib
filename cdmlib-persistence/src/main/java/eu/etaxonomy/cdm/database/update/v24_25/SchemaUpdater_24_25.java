@@ -70,8 +70,7 @@ public class SchemaUpdater_24_25 extends SchemaUpdaterBase {
 		//update sortindex on FeatureNode children
 		stepName = "Update sort index on FeatureNode children";
 //		updateQuery = "UPDATE FeatureNode SET sortindex = id WHERE sortindex is null";
-//		SimpleSchemaUpdaterStep updateSortindex = SimpleSchemaUpdaterStep.NewInstance(stepName, updateQuery);
-//		stepList.add(updateSortindex);
+//		SimpleSchemaUpdaterStep.NewInstance(stepList, stepName, updateQuery);
 		SortIndexUpdater.NewInstance(stepList, stepName, "FeatureNode", "parent_fk", "sortindex", INCLUDE_AUDIT);
 
 		//add country to gathering event

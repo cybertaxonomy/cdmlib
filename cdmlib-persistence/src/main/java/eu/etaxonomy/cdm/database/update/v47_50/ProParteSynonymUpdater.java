@@ -45,7 +45,6 @@ public class ProParteSynonymUpdater extends SchemaUpdaterStepBase {
 
 	public static final ProParteSynonymUpdater NewInstance(List<ISchemaUpdaterStep> stepList){
 		ProParteSynonymUpdater result = new ProParteSynonymUpdater(stepList);
-		stepList.add(result);
 
 		return result;
 	}

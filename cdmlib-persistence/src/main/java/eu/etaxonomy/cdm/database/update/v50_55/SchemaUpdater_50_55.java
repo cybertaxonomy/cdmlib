@@ -189,8 +189,7 @@ public class SchemaUpdater_50_55 extends SchemaUpdaterBase {
 //                + " WHERE uuid IN ('049c6358-1094-4765-9fae-c9972a0e7780', '6e23ad45-3f2a-462b-ad87-d2389cd6e26c', "
 //                + " 'c6f9afcb-8287-4a2b-a6f6-4da3a073d5de', 'eeaea868-c4c1-497f-b9fe-52c9fc4aca53') ";
 //        String tableName = "DefinedTermBase";
-//        ISchemaUpdaterStep step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, tableName, -99);
-//        stepList.add(step);
+//        step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName, -99);
 
         //Taxonomically Included in
         String stepName = "Taxonomically Included in => is taxonomically included in";
