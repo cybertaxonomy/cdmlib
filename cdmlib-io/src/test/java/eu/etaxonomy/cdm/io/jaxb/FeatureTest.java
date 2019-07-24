@@ -18,14 +18,14 @@ import java.net.URI;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
 
 @Ignore  //does not work anymore since TermNode + Tree was moved to term package
 public class FeatureTest {
 
-	    private String resource = "/eu/etaxonomy/cdm/io/jaxb/FeatureTest.xml";
+	    private String resource = "/eu/etaxonomy/cdm/io/jaxb/TermTreeTest.xml";
 
 	    @Test
 	    public void testUnmarshalFeatureTree() throws Exception {
@@ -33,16 +33,16 @@ public class FeatureTest {
 	        URI uri = new URI(URIEncoder.encode(this.getClass().getResource(resource).toString()));
 	        DataSet dataSet = cdmDocumentBuilder.unmarshal(DataSet.class, new InputStreamReader(this.getClass().getResourceAsStream(resource)),uri.toString());
 
-			TermTree<Feature> featureTree = dataSet.getFeatureTrees().get(0);
-			Feature feature = (Feature)dataSet.getTerms().get(1);
+			TermTree<DefinedTermBase> termTree = dataSet.getTermTrees().get(0);
+			DefinedTermBase term = dataSet.getTerms().get(1);
 
-			assertNotNull("FeatureTree must not be null", featureTree);
-			assertNotNull("Feature must not be null", feature);
+			assertNotNull("TermTree must not be null", termTree);
+			assertNotNull("Term must not be null", term);
 
-			assertNotNull("FeatureTree.root must not be null", featureTree.getRoot());
-			TermNode<Feature> root = featureTree.getRoot();
+			assertNotNull("TermTree.root must not be null", termTree.getRoot());
+			TermNode<DefinedTermBase> root = termTree.getRoot();
 			assertNotNull("TermNode.term must not be null", root.getTerm());
-			assertEquals("TermNode.feature must equal Feature", feature, root.getTerm());
+			assertEquals("TermNode.feature must equal Feature", term, root.getTerm());
 
 			assertNotNull("TermNode.children must not be null", root.getChildNodes());
 			assertFalse("TermNode.children must not be empty", root.getChildNodes().isEmpty());

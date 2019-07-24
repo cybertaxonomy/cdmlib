@@ -299,8 +299,8 @@
             </reference:DatePublished>
         </reference:Generic>
     </References>
-    <FeatureTrees>
-      <description:FeatureTree id="1" uuid="urn-uuid-6509b4ca-a872-45cc-b743-a0fe50fc8bb7">
+    <TermTrees>
+      <description:TermTree id="1" uuid="urn-uuid-6509b4ca-a872-45cc-b743-a0fe50fc8bb7">
             <description:Root id="1" uuid="urn-uuid-a137ed36-383f-49a9-8d84-976361188bcc">
               <description:Feature>urn-uuid-e40912a5-3e36-4d1e-aee9-dc57a83fa81c</description:Feature>
               <description:Children>
@@ -352,8 +352,8 @@
                 </description:Child>
               </description:Children>
             </description:Root>
-        </description:FeatureTree>
-    </FeatureTrees>
+        </description:TermTree>
+    </TermTrees>
     <TaxonomicNames>
         <name:BotanicalName id="1" uuid="urn-uuid-a9036d14-7be1-42bc-bb74-87be966f3a01" hasProblem="false" problemStarts="-1" problemEnds="-1">
           <common:TitleCache>Aus aus, L. 1758</common:TitleCache>

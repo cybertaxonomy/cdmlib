@@ -37,7 +37,7 @@ xmlns:name="http://etaxonomy.eu/cdm/model/name/1.0">
 
   <xs:element name="TermNode" type="description:TermNode"/>
 
-  <xs:element name="FeatureTree" type="description:FeatureTree"/>
+  <xs:element name="TermTree" type="description:TermTree"/>
   
   <xs:element name="PolytomousKey" type="description:PolytomousKey"/>
 
@@ -95,7 +95,7 @@ xmlns:name="http://etaxonomy.eu/cdm/model/name/1.0">
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="FeatureTree">
+  <xs:complexType name="TermTree">
     <xs:complexContent>
       <xs:extension base="common:TermBase">
         <xs:sequence>
@@ -549,7 +549,7 @@ xmlns:name="http://etaxonomy.eu/cdm/model/name/1.0">
   
   <xs:complexType name="PolytomousKey">
     <xs:complexContent>
-      <xs:extension base="description:FeatureTree">
+      <xs:extension base="description:TermTree">
         <xs:sequence>
           <xs:element name="CoveredTaxa" minOccurs="0">
             <xs:complexType>

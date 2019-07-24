@@ -83,8 +83,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
@@ -100,7 +100,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 		"eventBases",
 	    "references",
 	    "typeDesignations",
-	    "featureTrees",
+	    "termTrees",
 	    "polytomousKeys",
 	    "taxonNodes",
 	    "classifications",
@@ -181,11 +181,11 @@ public class DataSet implements IExportData {
     @XmlElement(name = "Collection", namespace = "http://etaxonomy.eu/cdm/model/occurrence/1.0")
     protected List<eu.etaxonomy.cdm.model.occurrence.Collection> collections = new ArrayList<>();
 
-    @XmlElementWrapper(name = "FeatureTrees")
+    @XmlElementWrapper(name = "TermTrees")
     @XmlElements({
-      @XmlElement(name = "FeatureTree", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = TermTree.class)
+      @XmlElement(name = "TermTree", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = TermTree.class)
     })
-    protected List<TermTree> featureTrees = new ArrayList<>();
+    protected List<TermTree> termTrees = new ArrayList<>();
 
     @XmlElementWrapper(name = "PolytomousKeys")
     @XmlElements({
@@ -334,8 +334,8 @@ public class DataSet implements IExportData {
         this.references = value;
     }
 
-    public List<TermTree> getFeatureTrees() {
-        return featureTrees;
+    public List<TermTree> getTermTrees() {
+        return termTrees;
     }
 
     public List<PolytomousKey> getPolytomousKeys() {
@@ -357,7 +357,7 @@ public class DataSet implements IExportData {
     }
 
     public void setFeatureTrees(List<TermTree> value) {
-    	this.featureTrees = value;
+    	this.termTrees = value;
     }
 
     public void setPolytomousKeys(List<PolytomousKey> value) {

@@ -318,7 +318,7 @@ public class JaxbImport
 		//txStatus = startTransaction();
 		try {
 			if (jaxbImpConfig.isDoFeatureData() == true) {
-				if ((featureTrees = dataSet.getFeatureTrees()).size() > 0) {
+				if ((featureTrees = dataSet.getTermTrees()).size() > 0) {
 					logger.info("Feature data: " + featureTrees.size());
 					getFeatureTreeService().saveOrUpdate(featureTrees);
 				}
