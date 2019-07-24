@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.database.update;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -35,20 +36,20 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase {
 	 * @Deprecated use {@link #NewInstance(String, TermType, UUID, String, String, String, String, UUID, UUID, boolean, UUID)} instead
 	 */
 	@Deprecated
-	public static final SingleTermUpdater NewInstance(String stepName, UUID uuidTerm, String description,  String label, String abbrev, String dtype, UUID uuidVocabulary, UUID uuidLanguage, boolean isOrdered, UUID uuidAfterTerm){
-		return new SingleTermUpdater(stepName, null, uuidTerm, null, null, description, label, abbrev, null, null, null, dtype, uuidVocabulary, uuidLanguage, isOrdered, uuidAfterTerm);
+	public static final SingleTermUpdater NewInstance(List<ISchemaUpdaterStep> stepList, String stepName, UUID uuidTerm, String description,  String label, String abbrev, String dtype, UUID uuidVocabulary, UUID uuidLanguage, boolean isOrdered, UUID uuidAfterTerm){
+		return new SingleTermUpdater(stepList, stepName, null, uuidTerm, null, null, description, label, abbrev, null, null, null, dtype, uuidVocabulary, uuidLanguage, isOrdered, uuidAfterTerm);
 	}
 
-	public static final SingleTermUpdater NewInstance(String stepName, TermType termType, UUID uuidTerm, String idInVocabulary, String symbol,
+	public static final SingleTermUpdater NewInstance(List<ISchemaUpdaterStep> stepList, String stepName, TermType termType, UUID uuidTerm, String idInVocabulary, String symbol,
 	        String description,  String label, String abbrev, String dtype, UUID uuidVocabulary, UUID uuidLanguage, boolean isOrdered, UUID uuidAfterTerm){
-		return new SingleTermUpdater(stepName, termType, uuidTerm, idInVocabulary, symbol,
+		return new SingleTermUpdater(stepList, stepName, termType, uuidTerm, idInVocabulary, symbol,
 		        description, label, abbrev, null, null, null, dtype, uuidVocabulary, uuidLanguage, isOrdered, uuidAfterTerm);
 	}
 
-	   public static final SingleTermUpdater NewReverseInstance(String stepName, TermType termType, UUID uuidTerm, String idInVocabulary, String symbol,
+	   public static final SingleTermUpdater NewReverseInstance(List<ISchemaUpdaterStep> stepList, String stepName, TermType termType, UUID uuidTerm, String idInVocabulary, String symbol,
 	           String description,  String label, String abbrev, String reverseDescription, String reverseLabel, String reverseAbbrev,
 	           String dtype, UUID uuidVocabulary, UUID uuidLanguage, boolean isOrdered, UUID uuidAfterTerm){
-	        return new SingleTermUpdater(stepName, termType, uuidTerm, idInVocabulary,symbol,
+	        return new SingleTermUpdater(stepList, stepName, termType, uuidTerm, idInVocabulary,symbol,
 	                description, label, abbrev, reverseDescription, reverseLabel, reverseAbbrev,
 	                dtype, uuidVocabulary, uuidLanguage, isOrdered, uuidAfterTerm);
 	    }
@@ -75,10 +76,10 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase {
 
 
 
-	private SingleTermUpdater(String stepName, TermType termType, UUID uuidTerm, String idInVocabulary, String symbol,
+	private SingleTermUpdater(List<ISchemaUpdaterStep> stepList, String stepName, TermType termType, UUID uuidTerm, String idInVocabulary, String symbol,
 	        String description, String label, String abbrev, String reverseDescription, String reverseLabel, String reverseAbbrev,
 	        String dtype, UUID uuidVocabulary, UUID uuidLanguage, boolean isOrdered, UUID uuidAfterTerm) {
-		super(stepName);
+		super(null, stepName);
 		this.termType = termType;
 		this.idInVocabulary = idInVocabulary;
 		this.symbol = symbol;

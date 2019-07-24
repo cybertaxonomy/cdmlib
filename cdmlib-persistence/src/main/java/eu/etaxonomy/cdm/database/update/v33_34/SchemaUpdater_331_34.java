@@ -58,44 +58,38 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
 
         String stepName;
         String tableName;
-        ISchemaUpdaterStep step;
         String columnName;
         String newColumnName;
         String oldColumnName;
 
-        List<ISchemaUpdaterStep> stepList = new ArrayList<ISchemaUpdaterStep>();
+        List<ISchemaUpdaterStep> stepList = new ArrayList<>();
 
         //TODO H2 / PostGreSQL / SQL Server
         //UserAccount unique
         stepName = "Update User unique indexes";
         tableName = "UserAccount";
         columnName = "username";
-        step = UsernameConstraintUpdater.NewInstance(stepName, tableName, columnName);
-        stepList.add(step);
+        UsernameConstraintUpdater.NewInstance(stepList, stepName, tableName, columnName);
 
         //TODO H2 / PostGreSQL / SQL Server
         //PermissionGroup unique
         stepName = "Update Group unique indexes";
         tableName = "PermissionGroup";
         columnName = "name";
-        step = UsernameConstraintUpdater.NewInstance(stepName, tableName, columnName);
-        stepList.add(step);
+        UsernameConstraintUpdater.NewInstance(stepList, stepName, tableName, columnName);
 
         //TODO H2 / PostGreSQL / SQL Server
         //GrantedAuthority unique
         stepName = "Update User unique indexes";
         tableName = "GrantedAuthorityImpl";
         columnName = "authority";
-        step = UsernameConstraintUpdater.NewInstance(stepName, tableName, columnName);
-        stepList.add(step);
+        UsernameConstraintUpdater.NewInstance(stepList, stepName, tableName, columnName);
 
         //TODO H2 / PostGreSQL / SQL Server
         stepName = "Add label column to derived unit";
         tableName = "SpecimenOrObservationBase";
         columnName = "originalLabelInfo";
-        step = ColumnAdder.NewClobInstance(stepName, tableName, columnName, INCLUDE_AUDIT);
-        stepList.add(step);
-
+        ColumnAdder.NewClobInstance(stepList, stepName, tableName, columnName, INCLUDE_AUDIT);
 
         //TODO test with data and H2 / PostGreSQL / SQL Server
         //set default value to true where required
@@ -103,9 +97,7 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
         String query = " UPDATE @@TaxonBase@@ " +
                     " SET publish = @TRUE@ " +
                     " WHERE DTYPE IN ('Synonym') AND publish IS NULL ";
-        step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "TaxonBase", 99);
-        stepList.add(step);
-
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "TaxonBase", 99);
 
         addIdentifierTables(stepList);
 
@@ -115,45 +107,38 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
         String sql = " UPDATE Reference r " +
                 " SET r.seriespart = r.series " +
                 " WHERE r.series is NOT NULL AND r.seriesPart IS NULL ";
-        step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, sql, "Reference", 99);
-        stepList.add(step);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, "Reference", 99);
 
         stepName = "Set series to NULL";
         sql = " UPDATE Reference r " +
                 " SET r.series = NULL " +
                 " WHERE r.series = r.seriesPart ";
-        step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, sql, "Reference", 99);
-        stepList.add(step);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, "Reference", 99);
 
         //TODO check all series are null
 
         stepName = "Remove series column";
         tableName = "Reference";
         oldColumnName = "series";
-        step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
-        stepList.add(step);
+        ColumnRemover.NewInstance(stepList, stepName, tableName, oldColumnName, INCLUDE_AUDIT);
 
         //authorTeam -> authorship
         stepName = "Rename Reference.authorTeam column";
         tableName = "Reference";
         oldColumnName = "authorTeam_id";
         newColumnName = "authorship_id";
-        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
-        stepList.add(step);
-//
+        ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+
         //remove CDM_VIEW #4316
         stepName = "Remove CDM_VIEW_CDM_VIEW table";
         tableName = "CDM_VIEW_CDM_VIEW";
         boolean ifExists = true;
-        step = TableDroper.NewInstance(stepName, tableName, ! INCLUDE_AUDIT, ifExists);
-        stepList.add(step);
+        TableDroper.NewInstance(stepList, stepName, tableName, ! INCLUDE_AUDIT, ifExists);
 
         stepName = "Remove CDM_VIEW table";
         tableName = "CDM_VIEW";
         ifExists = true;
-        step = TableDroper.NewInstance(stepName, tableName, ! INCLUDE_AUDIT, ifExists);
-        stepList.add(step);
-
+        TableDroper.NewInstance(stepList, stepName, tableName, ! INCLUDE_AUDIT, ifExists);
 
         //TODO not null on username, groupname and authority  #4382
 
@@ -165,8 +150,7 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
         String[] columnNames = new String[]{"purificationmethod","concentration","ratioofabsorbance260_230", "ratioofabsorbance260_280","qualitycheckdate","concentrationunit_id","qualityterm_id"};
         String[] columnTypes = new String[]{"string_255","double","double","double","datetime","int","int"};
         String[] referencedTables = new String[]{null,null,null,null,null,"DefinedTermBase","DefinedTermBase"};
-        step = TableCreator.NewInstance(stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
-        stepList.add(step);
+        TableCreator.NewInstance(stepList, stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
 
         //DnaQuality in TissueSample
         //TODO H2 / PostGreSQL / SQL Server
@@ -175,8 +159,7 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
         newColumnName = "dnaQuality_id";
         boolean notNull = false;
         String referencedTable = "DnaQuality";
-        step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, notNull, referencedTable);
-        stepList.add(step);
+        ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, notNull, referencedTable);
 
         //time scope for classifications
         //TODO H2 / PostGreSQL / SQL Server
@@ -184,24 +167,21 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
         tableName = "Classification";
         newColumnName = "timeperiod_start";
         int length = 255;
-        step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
-        stepList.add(step);
+        ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
 
         //TODO H2 / PostGreSQL / SQL Server
         stepName = "Add time scope (end) for classifications";
         tableName = "Classification";
         newColumnName = "timeperiod_end";
         length = 255;
-        step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
-        stepList.add(step);
+        ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
 
         //TODO H2 / PostGreSQL / SQL Server
         stepName = "Add time scope (freetext) for classifications";
         tableName = "Classification";
         newColumnName = "timeperiod_freetext";
         length = 255;
-        step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
-        stepList.add(step);
+        ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
 
         //Classification_GeoScope
         stepName = "Create Classification_GeoScope table";
@@ -210,9 +190,8 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
         columnNames = new String[]{"Classification_id","geoScopes_id"};
         columnTypes = new String[]{"int","int"};
         referencedTables = new String[]{"Classification","DefinedTermBase"};
-        TableCreator creator = TableCreator.NewInstance(stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
+        TableCreator creator = TableCreator.NewInstance(stepList, stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
         creator.setPrimaryKeyParams("Classification_id,geoScopes_id", "REV,Classification_id,geoScopes_id");
-        stepList.add(creator);
 
         //Classification_Description
         stepName = "Create Classification_Description table";
@@ -221,17 +200,15 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
         columnNames = new String[]{"Classification_id","description_id","description_mapkey_id"};
         columnTypes = new String[]{"int","int","int"};
         referencedTables = new String[]{"Classification","LanguageString","DefinedTermBase"};
-        creator = TableCreator.NewInstance(stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
+        creator = TableCreator.NewInstance(stepList, stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
         creator.setPrimaryKeyParams("Classification_id", "REV,Classification_id,description_id,description_mapkey_id");
-        stepList.add(creator);
 
         //Primer.sequence type  #4139
         stepName = "Add sequence string column to primer";
         tableName = "Primer";
         newColumnName = "sequence_string";
-        step = ColumnAdder.NewClobInstance(stepName, tableName, newColumnName,
+        ColumnAdder.NewClobInstance(stepList, stepName, tableName, newColumnName,
                 INCLUDE_AUDIT);
-        stepList.add(step);
 
         //Primer.sequence length #4139
         stepName = "Add sequence length column to primer";
@@ -239,8 +216,7 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
         newColumnName = "sequence_length";
         notNull = false;
         referencedTable = null;
-        step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, null, notNull);
-        stepList.add(step);
+        ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, null, notNull);
 
         //EntityValidation
         stepName = "Create EntityValidation table";
@@ -250,8 +226,7 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
                 "validatedentityclass","validatedentityid","validatedentityuuid"};
         columnTypes = new String[]{"string_255","string_255","string_255","string_255","int","string_36"};
         referencedTables = new String[]{null,null,null,null,null,null};
-        creator = TableCreator.NewNonVersionableInstance(stepName, tableName, columnNames, columnTypes, referencedTables);
-        stepList.add(creator);
+        creator = TableCreator.NewNonVersionableInstance(stepList, stepName, tableName, columnNames, columnTypes, referencedTables);
 
         //EntityConstraintViolation
         stepName = "Create EntityConstraintViolation table";
@@ -261,8 +236,7 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
                 "validator","entityvalidationresult_id"};
         columnTypes = new String[]{"string_255","string_255","string_255","string_255","string_255","string_255","int"};
         referencedTables = new String[]{null,null,null,null,null,null,"EntityValidation"};
-        creator = TableCreator.NewNonVersionableInstance(stepName, tableName, columnNames, columnTypes, referencedTables);
-        stepList.add(creator);
+        creator = TableCreator.NewNonVersionableInstance(stepList, stepName, tableName, columnNames, columnTypes, referencedTables);
 
         //make OriginalSourceBase.sourceType allow NULL
         stepName = "Remove NOT NULL from sourceType";
@@ -270,8 +244,7 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
         oldColumnName = "sourceType";
 //		query = "ALTER TABLE OriginalSourceBase_AUD	" +
 //				" CHANGE COLUMN sourceType sourceType VARCHAR(4) NULL ";
-        step = ColumnTypeChanger.NewStringSizeInstance(stepName, tableName, oldColumnName, 4, ! INCLUDE_AUDIT);
-        stepList.add(step);
+        ColumnTypeChanger.NewStringSizeInstance(stepList, stepName, tableName, oldColumnName, 4, ! INCLUDE_AUDIT);
 
 
         //remove sequence_id column  //we do not move data as we do not expect data available yet #4139
@@ -279,8 +252,7 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
         stepName = "Remove sequence_id column from primer";
         tableName = "Primer";
         oldColumnName = "sequence_id";
-        step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
-        stepList.add(step);
+        ColumnRemover.NewInstance(stepList, stepName, tableName, oldColumnName, INCLUDE_AUDIT);
 
 
 //	WE REMOVED THIS FROM THE SCRIPT BECAUSE IT FAILS WITH INNODB
@@ -288,10 +260,8 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
 //		stepName = "Change length of AgentBase_contact_urls.contact_urls_element";
 //		tableName = "AgentBase_contact_urls";
 //		columnName = "contact_urls_element";
-//		step = ColumnTypeChanger.NewStringSizeInstance(stepName, tableName,
+//		ColumnTypeChanger.NewStringSizeInstance(stepList, stepName, tableName,
 //				columnName, 330, INCLUDE_AUDIT);
-////		stepList.add(step);
-
 
         return stepList;
 
@@ -306,8 +276,7 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
         String[] columnNames = new String[]{"identifier","identifiedObj_type", "identifiedObj_id","type_id"};
         String[] columnTypes = new String[]{"string_800","string_255","int","int"};
         String[] referencedTables = new String[]{null,null,null,"DefinedTermBase"};
-        TableCreator step = TableCreator.NewInstance(stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
-        stepList.add(step);
+        TableCreator.NewInstance(stepList, stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
 
         //AgentBase_Identifier
         stepName = "Create AgentBase_Identifier table";
@@ -316,9 +285,8 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
         columnNames = new String[]{"AgentBase_id","identifiers_id","sortIndex"};
         columnTypes = new String[]{"int","int","int"};
         referencedTables = new String[]{"AgentBase","Identifier",null};
-        step = TableCreator.NewInstance(stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
+        TableCreator step = TableCreator.NewInstance(stepList, stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
         step.setPrimaryKeyParams("AgentBase_id,identifiers_id", "REV,AgentBase_id,identifiers_id");
-        stepList.add(step);
 
         //Classification_Identifier
         stepName = "Create Classification_Identifier table";
@@ -327,9 +295,8 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
         columnNames = new String[]{"Classification_id","identifiers_id","sortIndex"};
         columnTypes = new String[]{"int","int","int"};
         referencedTables = new String[]{"Classification","Identifier",null};
-        step = TableCreator.NewInstance(stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
+        step = TableCreator.NewInstance(stepList, stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
         step.setPrimaryKeyParams("Classification_id,identifiers_id", "REV,Classification_id,identifiers_id");
-        stepList.add(step);
 
         //Collection_Identifier
         stepName = "Create Collection_Identifier table";
@@ -338,9 +305,8 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
         columnNames = new String[]{"Collection_id","identifiers_id","sortIndex"};
         columnTypes = new String[]{"int","int","int"};
         referencedTables = new String[]{"Collection","Identifier",null};
-        step = TableCreator.NewInstance(stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
+        step = TableCreator.NewInstance(stepList, stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
         step.setPrimaryKeyParams("Collection_id,identifiers_id", "REV,Collection_id,identifiers_id");
-        stepList.add(step);
 
         //DefinedTermBase_Identifier
         stepName = "Create DefinedTermBase_Identifier table";
@@ -349,9 +315,8 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
         columnNames = new String[]{"DefinedTermBase_id","identifiers_id","sortIndex"};
         columnTypes = new String[]{"int","int","int"};
         referencedTables = new String[]{"DefinedTermBase","Identifier",null};
-        step = TableCreator.NewInstance(stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
+        step = TableCreator.NewInstance(stepList, stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
         step.setPrimaryKeyParams("DefinedTermBase_id,identifiers_id", "REV,DefinedTermBase_id,identifiers_id");
-        stepList.add(step);
 
         //DescriptionBase_Identifier
         stepName = "Create DescriptionBase_Identifier table";
@@ -360,9 +325,8 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
         columnNames = new String[]{"DescriptionBase_id","identifiers_id","sortIndex"};
         columnTypes = new String[]{"int","int","int"};
         referencedTables = new String[]{"DescriptionBase","Identifier",null};
-        step = TableCreator.NewInstance(stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
+        step = TableCreator.NewInstance(stepList, stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
         step.setPrimaryKeyParams("DescriptionBase_id,identifiers_id", "REV,DescriptionBase_id,identifiers_id");
-        stepList.add(step);
 
         //FeatureTree_Identifier
         stepName = "Create FeatureTree_Identifier table";
@@ -371,9 +335,8 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
         columnNames = new String[]{"FeatureTree_id","identifiers_id","sortIndex"};
         columnTypes = new String[]{"int","int","int"};
         referencedTables = new String[]{"FeatureTree","Identifier",null};
-        step = TableCreator.NewInstance(stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
+        step = TableCreator.NewInstance(stepList, stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
         step.setPrimaryKeyParams("FeatureTree_id,identifiers_id", "REV,FeatureTree_id,identifiers_id");
-        stepList.add(step);
 
         //Media_Identifier
         stepName = "Create Media_Identifier table";
@@ -382,9 +345,8 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
         columnNames = new String[]{"Media_id","identifiers_id","sortIndex"};
         columnTypes = new String[]{"int","int","int"};
         referencedTables = new String[]{"Media","Identifier",null};
-        step = TableCreator.NewInstance(stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
+        step = TableCreator.NewInstance(stepList, stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
         step.setPrimaryKeyParams("Media_id,identifiers_id", "REV,Media_id,identifiers_id");
-        stepList.add(step);
 
         //PolytomousKey_Identifier
         stepName = "Create PolytomousKey_Identifier table";
@@ -393,9 +355,8 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
         columnNames = new String[]{"PolytomousKey_id","identifiers_id","sortIndex"};
         columnTypes = new String[]{"int","int","int"};
         referencedTables = new String[]{"PolytomousKey","Identifier",null};
-        step = TableCreator.NewInstance(stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
+        step = TableCreator.NewInstance(stepList, stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
         step.setPrimaryKeyParams("PolytomousKey_id,identifiers_id", "REV,PolytomousKey_id,identifiers_id");
-        stepList.add(step);
 
         //Reference_Identifier
         stepName = "Create Reference_Identifier table";
@@ -404,9 +365,8 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
         columnNames = new String[]{"Reference_id","identifiers_id","sortIndex"};
         columnTypes = new String[]{"int","int","int"};
         referencedTables = new String[]{"Reference","Identifier",null};
-        step = TableCreator.NewInstance(stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
+        step = TableCreator.NewInstance(stepList, stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
         step.setPrimaryKeyParams("Reference_id,identifiers_id", "REV,Reference_id,identifiers_id");
-        stepList.add(step);
 
         //SpecimenOrObservationBase_Identifier
         stepName = "Create SpecimenOrObservationBase_Identifier table";
@@ -415,9 +375,8 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
         columnNames = new String[]{"SpecimenOrObservationBase_id","identifiers_id","sortIndex"};
         columnTypes = new String[]{"int","int","int"};
         referencedTables = new String[]{"SpecimenOrObservationBase","Identifier",null};
-        step = TableCreator.NewInstance(stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
+        step = TableCreator.NewInstance(stepList, stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
         step.setPrimaryKeyParams("SpecimenOrObservationBase_id,identifiers_id", "REV,SpecimenOrObservationBase_id,identifiers_id");
-        stepList.add(step);
 
         //TaxonBase_Identifier
         stepName = "Create TaxonBase_Identifier table";
@@ -426,9 +385,8 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
         columnNames = new String[]{"TaxonBase_id","identifiers_id","sortIndex"};
         columnTypes = new String[]{"int","int","int"};
         referencedTables = new String[]{"TaxonBase","Identifier",null};
-        step = TableCreator.NewInstance(stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
+        step = TableCreator.NewInstance(stepList, stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
         step.setPrimaryKeyParams("TaxonBase_id,identifiers_id", "REV,TaxonBase_id,identifiers_id");
-        stepList.add(step);
 
         //TaxonNameBase_Identifier
         stepName = "Create TaxonNameBase_Identifier table";
@@ -437,9 +395,8 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
         columnNames = new String[]{"TaxonNameBase_id","identifiers_id","sortIndex"};
         columnTypes = new String[]{"int","int","int"};
         referencedTables = new String[]{"TaxonNameBase","Identifier",null};
-        step = TableCreator.NewInstance(stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
+        step = TableCreator.NewInstance(stepList, stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
         step.setPrimaryKeyParams("TaxonNameBase_id,identifiers_id", "REV,TaxonNameBase_id,identifiers_id");
-        stepList.add(step);
 
         //TermVocabulary_Identifier
         stepName = "Create TermVocabulary_Identifier table";
@@ -448,9 +405,8 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
         columnNames = new String[]{"TermVocabulary_id","identifiers_id","sortIndex"};
         columnTypes = new String[]{"int","int","int"};
         referencedTables = new String[]{"TermVocabulary","Identifier",null};
-        step = TableCreator.NewInstance(stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
+        step = TableCreator.NewInstance(stepList, stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
         step.setPrimaryKeyParams("TermVocabulary_id,identifiers_id", "REV,TermVocabulary_id,identifiers_id");
-        stepList.add(step);
 
     }
 

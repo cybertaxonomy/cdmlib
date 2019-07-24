@@ -9,12 +9,14 @@
 package eu.etaxonomy.cdm.database.update.v41_47;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.CaseType;
+import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdateResult;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 
@@ -34,8 +36,8 @@ public class NomStatusInvalidUpdater extends SchemaUpdaterStepBase{
     /**
      * @return
      */
-    public static NomStatusInvalidUpdater NewInstance() {
-        return new NomStatusInvalidUpdater();
+    public static NomStatusInvalidUpdater NewInstance(List<ISchemaUpdaterStep> stepList) {
+        return new NomStatusInvalidUpdater(stepList);
     }
 
     private static final String stepName = "Update 'invalid' status with wrong nomenclatural code";
@@ -43,8 +45,8 @@ public class NomStatusInvalidUpdater extends SchemaUpdaterStepBase{
     /**
      * @param stepName
      */
-    protected NomStatusInvalidUpdater() {
-        super(stepName);
+    protected NomStatusInvalidUpdater(List<ISchemaUpdaterStep> stepList) {
+        super(stepList, stepName);
     }
 
 

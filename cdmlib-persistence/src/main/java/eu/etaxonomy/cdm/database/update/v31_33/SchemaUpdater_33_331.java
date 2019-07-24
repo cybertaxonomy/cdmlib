@@ -53,7 +53,6 @@ public class SchemaUpdater_33_331 extends SchemaUpdaterBase {
 
 		String stepName;
 		String tableName;
-		ISchemaUpdaterStep step;
 		String columnName;
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<ISchemaUpdaterStep>();
@@ -63,44 +62,37 @@ public class SchemaUpdater_33_331 extends SchemaUpdaterBase {
 		tableName = "Classification";
 		columnName = "rootnode_id";
 		String referencedTable = "TaxonNode";
-		step = ColumnAdder.NewIntegerInstance(stepName, tableName, columnName, INCLUDE_AUDIT, false, referencedTable);
-		stepList.add(step);
+		ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, columnName, INCLUDE_AUDIT, false, referencedTable);
 
 		//update rootnode data for classification
-		step = ClassificationRootNodeUpdater.NewInstance();
-		stepList.add(step);
+		ClassificationRootNodeUpdater.NewInstance(stepList);
 
 		// update treeindex for taxon nodes
 		stepName = "Update TaxonNode treeindex";
 		tableName = "TaxonNode";
 		String treeIdColumnName = "classification_id";
 		columnName = "treeIndex";
-		step = TreeIndexUpdater.NewInstance(stepName, tableName,
+		TreeIndexUpdater.NewInstance(stepList, stepName, tableName,
 				treeIdColumnName, columnName, ! INCLUDE_AUDIT);   //update does no yet work for ANSI SQL (e.g. PosGres / H2 with multiple entries for same id in AUD table)
-		stepList.add(step);
 
 		// Drop Classification_TaxonNode table
 		stepName = "Drop Classification_TaxonNode table";
 		tableName = "Classification_TaxonNode";
-		step = TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
-		stepList.add(step);
+		TableDroper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
 
 		//add rootnode column for classification
 		stepName = "Add unknownData column to DescriptionElementBase";
 		tableName = "DescriptionElementBase";
 		columnName = "unknownData";
 		Boolean defaultValue = null;
-		step = ColumnAdder.NewBooleanInstance(stepName, tableName, columnName, INCLUDE_AUDIT, defaultValue);
-		stepList.add(step);
+		ColumnAdder.NewBooleanInstance(stepList, stepName, tableName, columnName, INCLUDE_AUDIT, defaultValue);
 
 		//set default value to false where adaquate
 		stepName = "Set unknownData to default value (false)";
 		String query = " UPDATE @@DescriptionElementBase@@ " +
 					" SET unknownData = @FALSE@ " +
 					" WHERE DTYPE IN ('CategoricalData', 'QuantitativeData') ";
-		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "DescriptionElementBase", 99);
-		stepList.add(step);
-
+		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "DescriptionElementBase", 99);
 
 		return stepList;
 

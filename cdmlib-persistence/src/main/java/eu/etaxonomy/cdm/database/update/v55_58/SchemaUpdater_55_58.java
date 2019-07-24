@@ -57,14 +57,10 @@ public class SchemaUpdater_55_58 extends SchemaUpdaterBase {
 
 		String stepName;
 		String tableName;
-		ISchemaUpdaterStep step;
 		String newColumnName;
 		String query;
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<>();
-
-
-        //TODO remove proparte and partial columns
 
 		updateConceptRelationshipSymbolsAgain(stepList);
 
@@ -74,21 +70,18 @@ public class SchemaUpdater_55_58 extends SchemaUpdaterBase {
        String oldName = "FeatureNode";
        String newName = "TermRelation";
        boolean includeDtype = false;
-       step = TableNameChanger.NewInstance(stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
-       stepList.add(step);
+       TableNameChanger.NewInstance(stepList, stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
 
        //#6794 add DTYPE to TermRelation
        stepName = "add DTYPE to TermRelation";
        tableName = "TermRelation";
-       step = ColumnAdder.NewDTYPEInstance(stepName, tableName, "TermNode", INCLUDE_AUDIT) ;
-       stepList.add(step);
+       ColumnAdder.NewDTYPEInstance(stepList, stepName, tableName, "TermNode", INCLUDE_AUDIT) ;
 
        //#6794 add root_id column to TermCollection
        stepName = "add toTerm_id column to TermRelation";
        tableName = "TermRelation";
        newColumnName = "toTerm_id";
-       step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, "DefinedTermBase");
-       stepList.add(step);
+       ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, "DefinedTermBase");
 
        //#6794 change featuretree_id to graph_id
 //       stepName = "change featuretree_id to graph_id";
@@ -104,40 +97,35 @@ public class SchemaUpdater_55_58 extends SchemaUpdaterBase {
        tableName = "TermRelation";
        String oldColumnName = "feature_id";
        newColumnName = "term_id";
-       step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
-       stepList.add(step);
+       ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
 
        //#6794 rename FeatureNode_DefinedTermBase_InapplicableIf to TermNode_DefinedTermBase_InapplicableIf
        stepName = "rename FeatureNode_DefinedTermBase_InapplicableIf to TermNode_DefinedTermBase_InapplicableIf";
        oldName = "FeatureNode_DefinedTermBase_InapplicableIf";
        newName = "TermNode_DefinedTermBase_InapplicableIf";
        includeDtype = false;
-       step = TableNameChanger.NewInstance(stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
-       stepList.add(step);
+       TableNameChanger.NewInstance(stepList, stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
 
        //#6794 change FeatureNode_id to TermNode_id in TermNode_DefinedTermBase_InapplicableIf
        stepName = "change FeatureNode_id to TermNode_id in TermNode_DefinedTermBase_InapplicableIf";
        tableName = "TermNode_DefinedTermBase_InapplicableIf";
        oldColumnName = "FeatureNode_id";
        newColumnName = "TermNode_id";
-       step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
-       stepList.add(step);
+       ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
 
        //#6794 rename FeatureNode_DefinedTermBase_OnlyApplicable to TermNode_DefinedTermBase_OnlyApplicable
        stepName = "rename FeatureNode_DefinedTermBase_InapplicableIf to TermNode_DefinedTermBase_InapplicableIf";
        oldName = "FeatureNode_DefinedTermBase_OnlyApplicable";
        newName = "TermNode_DefinedTermBase_OnlyApplicable";
        includeDtype = false;
-       step = TableNameChanger.NewInstance(stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
-       stepList.add(step);
+       TableNameChanger.NewInstance(stepList, stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
 
        //#6794 change FeatureNode_id to TermNode_id in TermNode_DefinedTermBase_OnlyApplicable
        stepName = "change FeatureNode_id to TermNode_id in TermNode_DefinedTermBase_OnlyApplicable";
        tableName = "TermNode_DefinedTermBase_OnlyApplicable";
        oldColumnName = "FeatureNode_id";
        newColumnName = "TermNode_id";
-       step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
-       stepList.add(step);
+       ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
 
        //#6794
        renameTermVocToTermCollection(stepList);
@@ -147,30 +135,26 @@ public class SchemaUpdater_55_58 extends SchemaUpdaterBase {
        stepName = "add root_id column to TermCollection";
        tableName = "TermCollection";
        newColumnName = "root_id";
-       step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, "TermRelation");
-       stepList.add(step);
+       ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, "TermRelation");
 
        //#6794
        stepName = "add graph_id column to TermRelation";
        tableName = "TermRelation";
        newColumnName = "graph_id";
-       step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, "TermCollection");
-       stepList.add(step);
+       ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, "TermCollection");
 
        //#6794
        stepName = "change descriptiveSystem_id to descriptiveSystemOld_id";
        tableName = "DescriptiveDataSet";
        oldColumnName = "descriptiveSystem_id";
        newColumnName = "descriptiveSystemOld_id";
-       step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
-       stepList.add(step);
+       ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
 
        //#6794
        stepName = "add descriptiveSystem_id column to DescriptiveDataSet";
        tableName = "DescriptiveDataSet";
        newColumnName = "descriptiveSystem_id";
-       step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, "TermCollection");
-       stepList.add(step);
+       ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, "TermCollection");
 
        //#6794
        addBooleansToTermVocabulary(stepList);
@@ -185,41 +169,35 @@ public class SchemaUpdater_55_58 extends SchemaUpdaterBase {
        stepName = "Add doubtful to TaxonNode";
        tableName = "TaxonNode";
        newColumnName = "doubtful";
-       step = ColumnAdder.NewBooleanInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
-       stepList.add(step);
+       ColumnAdder.NewBooleanInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
 
        //#8398
        stepName = "Add code edition to nomenclatural status";
        tableName = "NomenclaturalStatus";
        newColumnName = "codeEdition";
        int length = 20;
-       step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
-       stepList.add(step);
+       ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
 
        //#8398
        stepName = "Add code edition to name relations";
        tableName = "NameRelationship";
-       step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
-       stepList.add(step);
+       ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
 
        //#8398
        stepName = "Add code edition to hybrid relations";
        tableName = "HybridRelationship";
-       step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
-       stepList.add(step);
+       ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
 
        //remove proparte and partial from TaxonBase
        stepName = "Remove proparte from TaxonBase";
        tableName = "TaxonBase";
        oldColumnName = "proParte";
-       step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
-       stepList.add(step);
+       ColumnRemover.NewInstance(stepList, stepName, tableName, oldColumnName, INCLUDE_AUDIT);
 
        stepName = "Remove proparte from TaxonBase";
        tableName = "TaxonBase";
        oldColumnName = "partial";
-       step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
-       stepList.add(step);
+       ColumnRemover.NewInstance(stepList, stepName, tableName, oldColumnName, INCLUDE_AUDIT);
 
        return stepList;
 	}
@@ -236,21 +214,21 @@ public class SchemaUpdater_55_58 extends SchemaUpdaterBase {
            stepName = "Add allowDuplicates to TermCollection";
            tableName = "TermCollection";
            newColumnName = "allowDuplicates";
-           step = ColumnAdder.NewBooleanInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
+           step = ColumnAdder.NewBooleanInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
            stepList.add(step);
 
            //#6794 add isFlat to TermCollection
            stepName = "Add isFlat to TermCollection";
            tableName = "TermCollection";
            newColumnName = "isFlat";
-           step = ColumnAdder.NewBooleanInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
+           step = ColumnAdder.NewBooleanInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
            stepList.add(step);
 
            //#6794 add orderRelevant to TermCollection
            stepName = "Add orderRelevant to TermCollection";
            tableName = "TermCollection";
            newColumnName = "orderRelevant";
-           step = ColumnAdder.NewBooleanInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
+           step = ColumnAdder.NewBooleanInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
            stepList.add(step);
     }
 
@@ -263,23 +241,21 @@ public class SchemaUpdater_55_58 extends SchemaUpdaterBase {
         String oldName = "TermVocabulary";
         String newName = "TermCollection";
         boolean includeDtype = false;
-        ISchemaUpdaterStep step = TableNameChanger.NewInstance(stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
-        stepList.add(step);
+        ISchemaUpdaterStep step = TableNameChanger.NewInstance(stepList, stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
 
         //#6794 rename TermVocabulary_Annotation to TermCollection_Annotation
         stepName = "rename TermVocabulary_Annotation to TermCollection_Annotation";
         oldName = "TermVocabulary_Annotation";
         newName = "TermCollection_Annotation";
         includeDtype = false;
-        step = TableNameChanger.NewInstance(stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
-        stepList.add(step);
+        step = TableNameChanger.NewInstance(stepList, stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
 
         //#6794 rename TermCollection_Annotation.TermVocabulary_id to TermCollection_id
         stepName = "rename TermCollection_Annotation.TermVocabulary_id to TermCollection_id";
         String tableName = "TermCollection_Annotation";
         String oldColumnName = "TermVocabulary_id";
         String newColumnName = "TermCollection_id";
-        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        step = ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
         stepList.add(step);
 
         //#6794 rename TermVocabulary_Credit to TermCollection_Credit
@@ -287,15 +263,14 @@ public class SchemaUpdater_55_58 extends SchemaUpdaterBase {
         oldName = "TermVocabulary_Credit";
         newName = "TermCollection_Credit";
         includeDtype = false;
-        step = TableNameChanger.NewInstance(stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
-        stepList.add(step);
+        step = TableNameChanger.NewInstance(stepList, stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
 
         //#6794 rename TermCollection_Credit.TermVocabulary_id to TermCollection_id
         stepName = "rename TermCollection_Credit.TermVocabulary_id to TermCollection_id";
         tableName = "TermCollection_Credit";
         oldColumnName = "TermVocabulary_id";
         newColumnName = "TermCollection_id";
-        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        step = ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
         stepList.add(step);
 
         //#6794 rename TermVocabulary_Extension to TermCollection_Extension
@@ -303,15 +278,14 @@ public class SchemaUpdater_55_58 extends SchemaUpdaterBase {
         oldName = "TermVocabulary_Extension";
         newName = "TermCollection_Extension";
         includeDtype = false;
-        step = TableNameChanger.NewInstance(stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
-        stepList.add(step);
+        step = TableNameChanger.NewInstance(stepList, stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
 
         //#6794 rename TermCollection_Extension.TermVocabulary_id to TermCollection_id
         stepName = "rename TermCollection_Extension.TermVocabulary_id to TermCollection_id";
         tableName = "TermCollection_Extension";
         oldColumnName = "TermVocabulary_id";
         newColumnName = "TermCollection_id";
-        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        step = ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
         stepList.add(step);
 
         //#6794 rename TermVocabulary_Identifier to TermCollection_Identifier
@@ -319,15 +293,14 @@ public class SchemaUpdater_55_58 extends SchemaUpdaterBase {
         oldName = "TermVocabulary_Identifier";
         newName = "TermCollection_Identifier";
         includeDtype = false;
-        step = TableNameChanger.NewInstance(stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
-        stepList.add(step);
+        step = TableNameChanger.NewInstance(stepList, stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
 
         //#6794 rename TermCollection_Identifier.TermVocabulary_id to TermCollection_id
         stepName = "rename TermCollection_Identifier.TermVocabulary_id to TermCollection_id";
         tableName = "TermCollection_Identifier";
         oldColumnName = "TermVocabulary_id";
         newColumnName = "TermCollection_id";
-        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        step = ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
         stepList.add(step);
 
         //#6794 rename TermVocabulary_Marker to TermCollection_Marker
@@ -335,15 +308,14 @@ public class SchemaUpdater_55_58 extends SchemaUpdaterBase {
         oldName = "TermVocabulary_Marker";
         newName = "TermCollection_Marker";
         includeDtype = false;
-        step = TableNameChanger.NewInstance(stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
-        stepList.add(step);
+        step = TableNameChanger.NewInstance(stepList, stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
 
         //#6794 rename TermCollection_Marker.TermVocabulary_id to TermCollection_id
         stepName = "rename TermCollection_Marker.TermVocabulary_id to TermCollection_id";
         tableName = "TermCollection_Marker";
         oldColumnName = "TermVocabulary_id";
         newColumnName = "TermCollection_id";
-        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        step = ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
         stepList.add(step);
 
         //#6794 rename TermVocabulary_OriginalSourceBase to TermCollection_OriginalSourceBase
@@ -351,15 +323,14 @@ public class SchemaUpdater_55_58 extends SchemaUpdaterBase {
         oldName = "TermVocabulary_OriginalSourceBase";
         newName = "TermCollection_OriginalSourceBase";
         includeDtype = false;
-        step = TableNameChanger.NewInstance(stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
-        stepList.add(step);
+        step = TableNameChanger.NewInstance(stepList, stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
 
         //#6794 rename TermCollection_OriginalSourceBase.TermVocabulary_id to TermCollection_id
         stepName = "rename TermCollection_OriginalSourceBase.TermVocabulary_id to TermCollection_id";
         tableName = "TermCollection_OriginalSourceBase";
         oldColumnName = "TermVocabulary_id";
         newColumnName = "TermCollection_id";
-        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        step = ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
         stepList.add(step);
 
         //#6794 rename TermVocabulary_Representation to TermCollection_Representation
@@ -367,15 +338,14 @@ public class SchemaUpdater_55_58 extends SchemaUpdaterBase {
         oldName = "TermVocabulary_Representation";
         newName = "TermCollection_Representation";
         includeDtype = false;
-        step = TableNameChanger.NewInstance(stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
-        stepList.add(step);
+        step = TableNameChanger.NewInstance(stepList, stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
 
         //#6794 rename TermCollection_Representation.TermVocabulary_id to TermCollection_id
         stepName = "rename TermCollection_Representation.TermVocabulary_id to TermCollection_id";
         tableName = "TermCollection_Representation";
         oldColumnName = "TermVocabulary_id";
         newColumnName = "TermCollection_id";
-        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        step = ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
         stepList.add(step);
 
         //#6794 rename TermVocabulary_RightsInfo to TermCollection_RightsInfo
@@ -383,15 +353,14 @@ public class SchemaUpdater_55_58 extends SchemaUpdaterBase {
         oldName = "TermVocabulary_RightsInfo";
         newName = "TermCollection_RightsInfo";
         includeDtype = false;
-        step = TableNameChanger.NewInstance(stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
-        stepList.add(step);
+        step = TableNameChanger.NewInstance(stepList, stepName, oldName, newName, INCLUDE_AUDIT, includeDtype);
 
         //#6794 rename TermCollection_RightsInfo.TermVocabulary_id to TermCollection_id
         stepName = "rename TermCollection_RightsInfo.TermVocabulary_id to TermCollection_id";
         tableName = "TermCollection_RightsInfo";
         oldColumnName = "TermVocabulary_id";
         newColumnName = "TermCollection_id";
-        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+        step = ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
         stepList.add(step);
 
 
@@ -405,7 +374,7 @@ public class SchemaUpdater_55_58 extends SchemaUpdaterBase {
 
         String tableName = "TypeDesignationBase";
         String newColumnName = "isVerbatim";
-        ISchemaUpdaterStep step = ColumnAdder.NewBooleanInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
+        ISchemaUpdaterStep step = ColumnAdder.NewBooleanInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
         stepList.add(step);
 
         //add TypeDesignationBase_LanguageString
@@ -414,7 +383,7 @@ public class SchemaUpdater_55_58 extends SchemaUpdaterBase {
         String[] columnNames = new String[]{"TextualTypeDesignation_id","text_id","text_mapkey_id"};
         String[] columnTypes = new String[]{"int","int","int"};
         String[] referencedTables = new String[]{"TypeDesignationBase","LanguageString","LanguageString"};
-        TableCreator tableCreator = TableCreator.NewInstance(stepName, tableName, columnNames, columnTypes, referencedTables,
+        TableCreator tableCreator = TableCreator.NewInstance(stepList, stepName, tableName, columnNames, columnTypes, referencedTables,
                 INCLUDE_AUDIT, ! INCLUDE_CDM_BASE)
                 .setPrimaryKeyParams("TextualTypeDesignation_id, text_id", "REV, TextualTypeDesignation_id, text_id, text_mapkey_id")
                 .setUniqueParams("text_id", null);
@@ -435,8 +404,7 @@ public class SchemaUpdater_55_58 extends SchemaUpdaterBase {
                 + " SET symbol='"+UTF8.EM_DASH_DOUBLE+"' , inverseSymbol = '"+UTF8.EN_DASH+"' "
                 + " WHERE uuid = '1ed87175-59dd-437e-959e-0d71583d8417' ";
         String tableName = "DefinedTermBase";
-        ISchemaUpdaterStep step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, tableName, -99);
-        stepList.add(step);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName, -99);
 
         //Update pro parte misapplied name symbols
         stepName = "Update pro parte misapplied name symbols again";
@@ -444,8 +412,7 @@ public class SchemaUpdater_55_58 extends SchemaUpdaterBase {
                 + " SET symbol='"+UTF8.EM_DASH_DOUBLE+"(p.p.)' , inverseSymbol = '"+UTF8.EN_DASH+"(p.p.)' "
                 + " WHERE uuid = 'b59b4bd2-11ff-45d1-bae2-146efdeee206' ";
         tableName = "DefinedTermBase";
-        step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, tableName, -99);
-        stepList.add(step);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName, -99);
 
         //Update partial misapplied name symbols
         stepName = "Update partial misapplied name symbols again";
@@ -453,8 +420,7 @@ public class SchemaUpdater_55_58 extends SchemaUpdaterBase {
                 + " SET symbol='"+UTF8.EM_DASH_DOUBLE+"(part.)' , inverseSymbol = '"+UTF8.EN_DASH+"(part.)' "
                 + " WHERE uuid = '859fb615-b0e8-440b-866e-8a19f493cd36' ";
         tableName = "DefinedTermBase";
-        step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, tableName, -99);
-        stepList.add(step);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName, -99);
 
 
     }

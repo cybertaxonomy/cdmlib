@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.database.update;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -36,18 +37,18 @@ public class IndexAdder extends SchemaUpdaterStepBase {
 
 // ********************** FACTORY ****************************************/
 
-	public static final IndexAdder NewStringInstance(String stepName, String tableName, String columnName, Integer length){
-		return new IndexAdder(stepName, tableName, columnName, length == null ? 255 : length);
+	public static final IndexAdder NewStringInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String columnName, Integer length){
+		return new IndexAdder(stepList, stepName, tableName, columnName, length == null ? 255 : length);
 	}
 
-    public static final IndexAdder NewIntegerInstance(String stepName, String tableName, String columnName){
-        return new IndexAdder(stepName, tableName, columnName, null);
+    public static final IndexAdder NewIntegerInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String columnName){
+        return new IndexAdder(stepList, stepName, tableName, columnName, null);
     }
 
 // **************************** CONSTRUCTOR *********************************/
 
-	protected IndexAdder(String stepName, String tableName, String columnName, Integer length) {
-		super(stepName);
+	protected IndexAdder(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String columnName, Integer length) {
+		super(stepList, stepName);
 		this.tableName = tableName;
 		this.columnName = columnName;
 		this.length = length;

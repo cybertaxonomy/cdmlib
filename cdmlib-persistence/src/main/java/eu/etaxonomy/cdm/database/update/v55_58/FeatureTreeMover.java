@@ -38,13 +38,12 @@ public class FeatureTreeMover extends SchemaUpdaterStepBase {
     /**
      * @param stepName
      */
-    protected FeatureTreeMover() {
-        super(stepName);
+    protected FeatureTreeMover(List<ISchemaUpdaterStep> stepList) {
+        super(stepList, stepName);
     }
 
     public static final FeatureTreeMover NewInstance(List<ISchemaUpdaterStep> stepList){
-        FeatureTreeMover result = new FeatureTreeMover();
-        stepList.add(result);
+        FeatureTreeMover result = new FeatureTreeMover(stepList);
 
         return result;
     }
@@ -59,9 +58,8 @@ public class FeatureTreeMover extends SchemaUpdaterStepBase {
         String stepName = "Update TermNode treeindex";
         String tableName = "TermRelation";
         String treeIdColumnName = "graph_id";
-        ISchemaUpdaterStep step = TreeIndexUpdater.NewInstance(stepName, tableName,
+        TreeIndexUpdater.NewInstance(result, stepName, tableName,
                 treeIdColumnName, "treeIndex", false);  // see comment for TaxonTree
-        result.add(step);
 
         return result;
     }

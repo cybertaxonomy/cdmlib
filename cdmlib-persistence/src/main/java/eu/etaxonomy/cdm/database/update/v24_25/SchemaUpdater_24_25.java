@@ -60,43 +60,37 @@ public class SchemaUpdater_24_25 extends SchemaUpdaterBase {
 
 	@Override
 	protected List<ISchemaUpdaterStep> getUpdaterList() {
-		List<ISchemaUpdaterStep> stepList = new ArrayList<ISchemaUpdaterStep>();
+		List<ISchemaUpdaterStep> stepList = new ArrayList<>();
 		String stepName;
 
 		//sortIndex on children in FeatureNode
 		stepName = "Add sort index on FeatureNode children";
-		ColumnAdder step = ColumnAdder.NewIntegerInstance(stepName, "FeatureNode", "sortindex", INCLUDE_AUDIT, false, null);
-		stepList.add(step);
+		ColumnAdder.NewIntegerInstance(stepList, stepName, "FeatureNode", "sortindex", INCLUDE_AUDIT, false, null);
 
 		//update sortindex on FeatureNode children
 		stepName = "Update sort index on FeatureNode children";
 //		updateQuery = "UPDATE FeatureNode SET sortindex = id WHERE sortindex is null";
 //		SimpleSchemaUpdaterStep updateSortindex = SimpleSchemaUpdaterStep.NewInstance(stepName, updateQuery);
 //		stepList.add(updateSortindex);
-		SortIndexUpdater updateSortIndex = SortIndexUpdater.NewInstance(stepName, "FeatureNode", "parent_fk", "sortindex", INCLUDE_AUDIT);
-		stepList.add(updateSortIndex);
+		SortIndexUpdater.NewInstance(stepList, stepName, "FeatureNode", "parent_fk", "sortindex", INCLUDE_AUDIT);
 
 		//add country to gathering event
 		stepName = "Add country column to gathering event";
-		step = ColumnAdder.NewIntegerInstance(stepName, "GatheringEvent", "country_id", INCLUDE_AUDIT, false, "DefinedTermBase");
-		stepList.add(step);
+		ColumnAdder.NewIntegerInstance(stepList, stepName, "GatheringEvent", "country_id", INCLUDE_AUDIT, false, "DefinedTermBase");
 
 		//add unplaced and excluded to taxon
 		stepName = "Add unplaced to taxon";
 		Boolean defaultValue = false;
-		step = ColumnAdder.NewBooleanInstance(stepName, "TaxonBase", "unplaced", INCLUDE_AUDIT, defaultValue);
-		stepList.add(step);
+		ColumnAdder.NewBooleanInstance(stepList, stepName, "TaxonBase", "unplaced", INCLUDE_AUDIT, defaultValue);
 
 		//add excluded to taxon
 		stepName = "Add excluded to taxon";
 		defaultValue = false;
-		step = ColumnAdder.NewBooleanInstance(stepName, "TaxonBase", "excluded", INCLUDE_AUDIT, defaultValue);
-		stepList.add(step);
+		ColumnAdder.NewBooleanInstance(stepList, stepName, "TaxonBase", "excluded", INCLUDE_AUDIT, defaultValue);
 
 		//add barcode to derived unit base
 		stepName = "Add barcode to specimen";
-		step = ColumnAdder.NewStringInstance(stepName, "SpecimenOrObservationBase", "barcode", INCLUDE_AUDIT);
-		stepList.add(step);
+		ColumnAdder.NewStringInstance(stepList, stepName, "SpecimenOrObservationBase", "barcode", INCLUDE_AUDIT);
 
 		return stepList;
 	}

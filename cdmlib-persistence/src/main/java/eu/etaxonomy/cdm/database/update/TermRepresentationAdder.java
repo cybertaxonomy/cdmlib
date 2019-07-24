@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.database.update;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -33,12 +34,12 @@ public class TermRepresentationAdder
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TermRepresentationAdder.class);
 
-	public static final TermRepresentationAdder NewInstance(String stepName, UUID uuidTerm, String description,  String label, String abbrev, UUID uuidLanguage){
-		return new TermRepresentationAdder(stepName, uuidTerm, description, label, abbrev, uuidLanguage, false);
+	public static final TermRepresentationAdder NewInstance(List<ISchemaUpdaterStep> stepList, String stepName, UUID uuidTerm, String description,  String label, String abbrev, UUID uuidLanguage){
+		return new TermRepresentationAdder(stepList, stepName, uuidTerm, description, label, abbrev, uuidLanguage, false);
 	}
 
-	public static final TermRepresentationAdder NewReverseInstance(String stepName, UUID uuidTerm, String description,  String label, String abbrev, UUID uuidLanguage){
-		return new TermRepresentationAdder(stepName, uuidTerm, description, label, abbrev, uuidLanguage, true);
+	public static final TermRepresentationAdder NewReverseInstance(List<ISchemaUpdaterStep> stepList, String stepName, UUID uuidTerm, String description,  String label, String abbrev, UUID uuidLanguage){
+		return new TermRepresentationAdder(stepList, stepName, uuidTerm, description, label, abbrev, uuidLanguage, true);
 	}
 
 	private UUID uuidTerm ;
@@ -48,8 +49,8 @@ public class TermRepresentationAdder
 	private UUID uuidLanguage;
 	private boolean isReverse = false;
 
-	private TermRepresentationAdder(String stepName, UUID uuidTerm, String description, String label, String abbrev, UUID uuidLanguage, boolean isReverse) {
-		super(stepName);
+	private TermRepresentationAdder(List<ISchemaUpdaterStep> stepList, String stepName, UUID uuidTerm, String description, String label, String abbrev, UUID uuidLanguage, boolean isReverse) {
+		super(stepList, stepName);
 		this.abbrev = abbrev;
 		this.description = description;
 		this.label = label;

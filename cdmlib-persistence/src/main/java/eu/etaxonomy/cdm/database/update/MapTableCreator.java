@@ -4,6 +4,7 @@
 package eu.etaxonomy.cdm.database.update;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -19,31 +20,31 @@ public class MapTableCreator extends TableCreator {
 	private String secondTableAlias;
 	private String mapKeyTableName;
 
-	public static MapTableCreator NewMapTableInstance(String stepName, String firstTableName, String firstTableAlias, String secondTableName, String secondTableAlias, String mapKeyTableName, boolean includeAudTable){
-		MapTableCreator result = new MapTableCreator(stepName, firstTableName, firstTableAlias, secondTableName, secondTableAlias, mapKeyTableName, includeAudTable);
+	public static MapTableCreator NewMapTableInstance(List<ISchemaUpdaterStep> stepList, String stepName, String firstTableName, String firstTableAlias, String secondTableName, String secondTableAlias, String mapKeyTableName, boolean includeAudTable){
+		MapTableCreator result = new MapTableCreator(stepList, stepName, firstTableName, firstTableAlias, secondTableName, secondTableAlias, mapKeyTableName, includeAudTable);
 		return result;
 	}
 
 
-	protected MapTableCreator(String stepName, String firstTableName, String firstTableAlias, String secondTableName, String secondTableAlias, String mapKeyTableName, boolean includeAudTable) {
-		this(stepName,  firstTableName + "_" + StringUtils.capitalise(secondTableAlias), firstTableName, firstTableAlias, secondTableName, secondTableAlias, mapKeyTableName, includeAudTable);
+	protected MapTableCreator(List<ISchemaUpdaterStep> stepList, String stepName, String firstTableName, String firstTableAlias, String secondTableName, String secondTableAlias, String mapKeyTableName, boolean includeAudTable) {
+		this(stepList, stepName,  firstTableName + "_" + StringUtils.capitalise(secondTableAlias), firstTableName, firstTableAlias, secondTableName, secondTableAlias, mapKeyTableName, includeAudTable);
 	}
 
-	   protected MapTableCreator(String stepName, String MN_tableName, String firstTableName, String firstTableAlias, String secondTableName, String secondTableAlias, String mapKeyTableName, boolean includeAudTable) {
-	        super(stepName, MN_tableName, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<Object>(), new ArrayList<Boolean>(), new ArrayList<String>(), includeAudTable, false, false, false, false);
-	        this.firstTableName = firstTableName;
-	        this.secondTableName = secondTableName;
-	        this.firstTableAlias = (firstTableAlias != null )? firstTableAlias : firstTableName ;
-	        this.secondTableAlias = (secondTableAlias !=  null)? secondTableAlias : secondTableName ;
-	        this.mapKeyTableName = mapKeyTableName;
-	        addMyColumns();
-	    }
+    protected MapTableCreator(List<ISchemaUpdaterStep> stepList, String stepName, String MN_tableName, String firstTableName, String firstTableAlias, String secondTableName, String secondTableAlias, String mapKeyTableName, boolean includeAudTable) {
+	      super(stepList, stepName, MN_tableName, new ArrayList<>(), new ArrayList<>(), new ArrayList<Object>(), new ArrayList<Boolean>(), new ArrayList<String>(), includeAudTable, false, false, false, false);
+	      this.firstTableName = firstTableName;
+	      this.secondTableName = secondTableName;
+	      this.firstTableAlias = (firstTableAlias != null )? firstTableAlias : firstTableName ;
+	      this.secondTableAlias = (secondTableAlias !=  null)? secondTableAlias : secondTableName ;
+	      this.mapKeyTableName = mapKeyTableName;
+	      addMyColumns();
+	}
 
 
 	protected void addMyColumns(){
-		this.columnAdders.add(ColumnAdder.NewIntegerInstance(stepName, tableName, getFirstIdColumn(), false, true, firstTableName));
-		this.columnAdders.add(ColumnAdder.NewIntegerInstance(stepName, tableName, getSecondIdColumn(), false, true, secondTableName));
-		this.columnAdders.add(ColumnAdder.NewIntegerInstance(stepName, tableName, getMapKeyColumn(), false, true, mapKeyTableName));
+		ColumnAdder.NewIntegerInstance(columnAdders, stepName, tableName, getFirstIdColumn(), false, true, firstTableName);
+		ColumnAdder.NewIntegerInstance(columnAdders, stepName, tableName, getSecondIdColumn(), false, true, secondTableName);
+		ColumnAdder.NewIntegerInstance(columnAdders, stepName, tableName, getMapKeyColumn(), false, true, mapKeyTableName);
 	}
 
 	@Override

@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.database.update;
 
 import java.sql.Types;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -35,54 +36,54 @@ public class ColumnAdder extends AuditedSchemaUpdaterStepBase {
 	 * @param referencedTable
 	 * @return
 	 */
-	public static final ColumnAdder NewIntegerInstance(String stepName, String tableName, String newColumnName, boolean includeAudTable, boolean notNull, String referencedTable){
-		return new ColumnAdder(stepName, tableName, newColumnName, "int", includeAudTable, null, notNull, referencedTable);
+	public static final ColumnAdder NewIntegerInstance(List<? extends ISchemaUpdaterStep> stepList, String stepName, String tableName, String newColumnName, boolean includeAudTable, boolean notNull, String referencedTable){
+		return new ColumnAdder(stepList, stepName, tableName, newColumnName, "int", includeAudTable, null, notNull, referencedTable);
 	}
 
-	public static final ColumnAdder NewIntegerInstance(String stepName, String tableName, String newColumnName, boolean includeAudTable, Integer defaultValue, boolean notNull){
-		return new ColumnAdder(stepName, tableName, newColumnName, "int", includeAudTable, defaultValue, notNull, null);
+	public static final ColumnAdder NewIntegerInstance(List<? extends ISchemaUpdaterStep> stepList, String stepName, String tableName, String newColumnName, boolean includeAudTable, Integer defaultValue, boolean notNull){
+		return new ColumnAdder(stepList, stepName, tableName, newColumnName, "int", includeAudTable, defaultValue, notNull, null);
 	}
 
-	public static final ColumnAdder NewTinyIntegerInstance(String stepName, String tableName, String newColumnName, boolean includeAudTable, boolean notNull){
-		return new ColumnAdder(stepName, tableName, newColumnName, "tinyint", includeAudTable, null, notNull, null);
+	public static final ColumnAdder NewTinyIntegerInstance(List<? extends ISchemaUpdaterStep> stepList, String stepName, String tableName, String newColumnName, boolean includeAudTable, boolean notNull){
+		return new ColumnAdder(stepList, stepName, tableName, newColumnName, "tinyint", includeAudTable, null, notNull, null);
 	}
 
-	public static final ColumnAdder NewDoubleInstance(String stepName, String tableName, String newColumnName, boolean includeAudTable, boolean notNull){
-		return new ColumnAdder(stepName, tableName, newColumnName, "double", includeAudTable, null, notNull, null);
+	public static final ColumnAdder NewDoubleInstance(List<? extends ISchemaUpdaterStep> stepList, String stepName, String tableName, String newColumnName, boolean includeAudTable, boolean notNull){
+		return new ColumnAdder(stepList, stepName, tableName, newColumnName, "double", includeAudTable, null, notNull, null);
 	}
 
-	public static final ColumnAdder NewBooleanInstance(String stepName, String tableName, String newColumnName, boolean includeAudTable, Boolean defaultValue){
-		return new ColumnAdder(stepName, tableName, newColumnName, "bit", includeAudTable, defaultValue, false, null);
+	public static final ColumnAdder NewBooleanInstance(List<? extends ISchemaUpdaterStep> stepList, String stepName, String tableName, String newColumnName, boolean includeAudTable, Boolean defaultValue){
+		return new ColumnAdder(stepList, stepName, tableName, newColumnName, "bit", includeAudTable, defaultValue, false, null);
 	}
 
 	/**
 	 * Adds a string column with length 255 and default value <code>null</code>
 	 */
-	public static final ColumnAdder NewStringInstance(String stepName, String tableName, String newColumnName, boolean includeAudTable){
-		return new ColumnAdder(stepName, tableName, newColumnName, "nvarchar(255)", includeAudTable, null, false, null);
+	public static final ColumnAdder NewStringInstance(List<? extends ISchemaUpdaterStep> stepList, String stepName, String tableName, String newColumnName, boolean includeAudTable){
+		return new ColumnAdder(stepList, stepName, tableName, newColumnName, "nvarchar(255)", includeAudTable, null, false, null);
 	}
 
-    public static final ColumnAdder NewDTYPEInstance(String stepName, String tableName, String defaultValue, boolean includeAudTable){
-        return new ColumnAdder(stepName, tableName, "DTYPE", "nvarchar(31)", includeAudTable, defaultValue, true, null);
+    public static final ColumnAdder NewDTYPEInstance(List<? extends ISchemaUpdaterStep> stepList, String stepName, String tableName, String defaultValue, boolean includeAudTable){
+        return new ColumnAdder(stepList, stepName, tableName, "DTYPE", "nvarchar(31)", includeAudTable, defaultValue, true, null);
     }
 
-	public static final ColumnAdder NewStringInstance(String stepName, String tableName, String newColumnName, int length, boolean includeAudTable){
-		return new ColumnAdder(stepName, tableName, newColumnName, "nvarchar("+length+")", includeAudTable, null, false, null);
+	public static final ColumnAdder NewStringInstance(List<? extends ISchemaUpdaterStep> stepList, String stepName, String tableName, String newColumnName, int length, boolean includeAudTable){
+		return new ColumnAdder(stepList, stepName, tableName, newColumnName, "nvarchar("+length+")", includeAudTable, null, false, null);
 	}
-    public static final ColumnAdder NewStringInstance(String stepName, String tableName, String newColumnName, int length, String defaultValue, boolean includeAudTable){
-        return new ColumnAdder(stepName, tableName, newColumnName, "nvarchar("+length+")", includeAudTable, defaultValue, false, null);
+    public static final ColumnAdder NewStringInstance(List<? extends ISchemaUpdaterStep> stepList, String stepName, String tableName, String newColumnName, int length, String defaultValue, boolean includeAudTable){
+        return new ColumnAdder(stepList, stepName, tableName, newColumnName, "nvarchar("+length+")", includeAudTable, defaultValue, false, null);
     }
 
-	public static final ColumnAdder NewClobInstance(String stepName, String tableName, String newColumnName, boolean includeAudTable){
-		return new ColumnAdder(stepName, tableName, newColumnName, "clob", includeAudTable, null, false, null);
+	public static final ColumnAdder NewClobInstance(List<? extends ISchemaUpdaterStep> stepList, String stepName, String tableName, String newColumnName, boolean includeAudTable){
+		return new ColumnAdder(stepList, stepName, tableName, newColumnName, "clob", includeAudTable, null, false, null);
 	}
 
-	public static final ColumnAdder NewDateTimeInstance(String stepName, String tableName, String newColumnName, boolean includeAudTable, boolean notNull){
-		return new ColumnAdder(stepName, tableName, newColumnName, "datetime", includeAudTable, null, notNull, null);
+	public static final ColumnAdder NewDateTimeInstance(List<? extends ISchemaUpdaterStep> stepList, String stepName, String tableName, String newColumnName, boolean includeAudTable, boolean notNull){
+		return new ColumnAdder(stepList, stepName, tableName, newColumnName, "datetime", includeAudTable, null, notNull, null);
 	}
 
-	protected ColumnAdder(String stepName, String tableName, String newColumnName, String columnType, boolean includeAudTable, Object defaultValue, boolean notNull, String referencedTable) {
-		super(stepName, tableName, includeAudTable);
+	protected ColumnAdder(List<? extends ISchemaUpdaterStep> stepList, String stepName, String tableName, String newColumnName, String columnType, boolean includeAudTable, Object defaultValue, boolean notNull, String referencedTable) {
+		super(stepList, stepName, tableName, includeAudTable);
 		this.newColumnName = newColumnName;
 		this.columnType = columnType;
 		this.defaultValue = defaultValue;

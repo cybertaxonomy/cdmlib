@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.database.update.v40_41;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -17,6 +18,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.CaseType;
+import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdateResult;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 
@@ -36,17 +38,18 @@ public class SynonymDeduplicator
     /**
      * @return
      */
-    public static SynonymDeduplicator NewInstance() {
-        return new SynonymDeduplicator();
+    public static SynonymDeduplicator NewInstance(List<ISchemaUpdaterStep> stepList) {
+        return new SynonymDeduplicator(stepList);
     }
 
     private static final String stepName = "Deduplicate synonyms code";
 
     /**
+     * @param stepList
      * @param stepName
      */
-    protected SynonymDeduplicator() {
-        super(stepName);
+    protected SynonymDeduplicator(List<ISchemaUpdaterStep> stepList) {
+        super(stepList, stepName);
     }
 
     String idListSelect = " SELECT sr.uuid, sr.relatedfrom_id ";

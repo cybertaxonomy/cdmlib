@@ -10,12 +10,14 @@ package eu.etaxonomy.cdm.database.update.v25_30;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.CaseType;
+import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdateResult;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 
@@ -33,12 +35,12 @@ public class FeatureNodeTreeColumnUpdater
 	private String nodeTableName;
 	private boolean includeAudTable;
 
-	public static final FeatureNodeTreeColumnUpdater NewInstance(String stepName, boolean includeAudTable){
-		return new FeatureNodeTreeColumnUpdater(stepName, includeAudTable);
+	public static final FeatureNodeTreeColumnUpdater NewInstance(List<ISchemaUpdaterStep> stepList, String stepName, boolean includeAudTable){
+		return new FeatureNodeTreeColumnUpdater(stepList, stepName, includeAudTable);
 	}
 
-	protected FeatureNodeTreeColumnUpdater(String stepName,  boolean includeAudTable) {
-		super(stepName);
+	protected FeatureNodeTreeColumnUpdater(List<ISchemaUpdaterStep> stepList, String stepName,  boolean includeAudTable) {
+		super(stepList, stepName);
 		this.treeTableName = "FeatureTree";
 		this.nodeTableName = "FeatureNode";
 		this.includeAudTable = includeAudTable;

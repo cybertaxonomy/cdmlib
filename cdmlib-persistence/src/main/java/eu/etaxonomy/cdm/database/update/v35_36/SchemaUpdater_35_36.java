@@ -55,7 +55,6 @@ public class SchemaUpdater_35_36 extends SchemaUpdaterBase {
 
 		String stepName;
 		String tableName;
-		ISchemaUpdaterStep step;
 //		String columnName;
 		String newColumnName;
 		String oldColumnName;
@@ -72,8 +71,7 @@ public class SchemaUpdater_35_36 extends SchemaUpdaterBase {
         stepName = "Remove NOT NULL from supportedcategoricalenumerations_id";
         tableName = "DefinedTermBase_SupportedCategoricalEnumeration";
         oldColumnName = "supportedcategoricalenumerations_id";
-        step = UniqueIndexDropper.NewInstance(tableName, oldColumnName, !INCLUDE_AUDIT);
-        stepList.add(step);
+        UniqueIndexDropper.NewInstance(stepList, tableName, oldColumnName, !INCLUDE_AUDIT);
 
         //#4843
         //Allow NULL for DefinedTermBase_RecommendedModifierEnumeration
@@ -81,15 +79,13 @@ public class SchemaUpdater_35_36 extends SchemaUpdaterBase {
         stepName = "Remove NOT NULL from recommendedmodifierenumeration_id";
         tableName = "DefinedTermBase_RecommendedModifierEnumeration";
         oldColumnName = "recommendedmodifierenumeration_id";
-        step = UniqueIndexDropper.NewInstance(tableName, oldColumnName, ! INCLUDE_AUDIT);
-        stepList.add(step);
+        UniqueIndexDropper.NewInstance(stepList, tableName, oldColumnName, ! INCLUDE_AUDIT);
 
         //add hasMoreMembers
         stepName = "Add hasMoreMembers to Team";
         tableName = "AgentBase";
         newColumnName = "hasMoreMembers";
-        step = ColumnAdder.NewBooleanInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
-        stepList.add(step);
+        ColumnAdder.NewBooleanInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
 
         //SingleReadAlignment firstSeqPosition
         stepName = "Add firstSeqPosition";
@@ -97,28 +93,25 @@ public class SchemaUpdater_35_36 extends SchemaUpdaterBase {
         newColumnName = "firstSeqPosition";
         Integer defaultValue = null;
         boolean notNull = false;
-        step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, defaultValue, notNull);
-        stepList.add(step);
+        ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, defaultValue, notNull);
 
         //SingleReadAlignment leftCutPosition
         stepName = "Add leftCutPosition";
         tableName = "SingleReadAlignment";
         newColumnName = "leftCutPosition";
-        step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, defaultValue, notNull);
-        stepList.add(step);
+        ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, defaultValue, notNull);
 
         //SingleReadAlignment rightCutPosition
         stepName = "Add rightCutPosition";
         tableName = "SingleReadAlignment";
         newColumnName = "rightCutPosition";
-        step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, defaultValue, notNull);
-        stepList.add(step);
+        ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, defaultValue, notNull);
 
         //DescriptionElementBase_StateData
         stepName = "Simplify DescriptionElementBase_StateData";
         tableName = "DescriptionElementBase_StateData";
         newColumnName = "categoricaldata_id";
-        step = MnTableRemover.NewInstance(stepName,
+        MnTableRemover.NewInstance(stepList, stepName,
                 tableName,
                 newColumnName,
                 "DescriptionElementBase_id",
@@ -126,13 +119,12 @@ public class SchemaUpdater_35_36 extends SchemaUpdaterBase {
                 "DescriptionElementBase",
                 "StateData",
                 INCLUDE_AUDIT);
-        stepList.add(step);
 
         //DescriptionElementBase_StatisticalMeasurementValue
         stepName = "Simplify DescriptionElementBase_StatisticalMeasurementValue";
         tableName = "DescriptionElementBase_StatisticalMeasurementValue";
         newColumnName = "quantitativedata_id";
-        step = MnTableRemover.NewInstance(stepName,
+        MnTableRemover.NewInstance(stepList, stepName,
                 tableName,
                 newColumnName,
                 "DescriptionElementBase_id",
@@ -140,7 +132,6 @@ public class SchemaUpdater_35_36 extends SchemaUpdaterBase {
                 "DescriptionElementBase",
                 "StatisticalMeasurementValue",
                 INCLUDE_AUDIT);
-        stepList.add(step);
 
         //TaxonNodeAgentRelation
         //#3583
@@ -149,40 +140,35 @@ public class SchemaUpdater_35_36 extends SchemaUpdaterBase {
         columnNames = new String[]{"taxonnode_id","agent_id","type_id"};
         referencedTables = new String[]{"TaxonNode","AgentBase","DefinedTermBase"};
         columnTypes = new String[]{"int","int","int"};
-        step = TableCreator.NewAnnotatableInstance(stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT);
-        stepList.add(step);
+        TableCreator.NewAnnotatableInstance(stepList, stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT);
 
         //authorTeam -> authorship for TaxonName #4332
         stepName = "Rename TaxonNameBase.combinationAuthorTeam_id column";
         tableName = "TaxonNameBase";
         oldColumnName = "combinationAuthorTeam_id";
         newColumnName = "combinationAuthorship_id";
-        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
-        stepList.add(step);
+        ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
 
         //authorTeam -> authorship for TaxonName #4332
         stepName = "Rename TaxonNameBase.exCombinationAuthorTeam_id column";
         tableName = "TaxonNameBase";
         oldColumnName = "exCombinationAuthorTeam_id";
         newColumnName = "exCombinationAuthorship_id";
-        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
-        stepList.add(step);
+        ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
 
         //authorTeam -> authorship for TaxonName #4332
         stepName = "Rename TaxonNameBase.basionymAuthorTeam_id column";
         tableName = "TaxonNameBase";
         oldColumnName = "basionymAuthorTeam_id";
         newColumnName = "basionymAuthorship_id";
-        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
-        stepList.add(step);
+        ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
 
         //authorTeam -> authorship for TaxonName #4332
         stepName = "Rename TaxonNameBase.exBasionymAuthorTeam_id column";
         tableName = "TaxonNameBase";
         oldColumnName = "exBasionymAuthorTeam_id";
         newColumnName = "exBasionymAuthorship_id";
-        step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
-        stepList.add(step);
+        ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
 
 		return stepList;
 	}

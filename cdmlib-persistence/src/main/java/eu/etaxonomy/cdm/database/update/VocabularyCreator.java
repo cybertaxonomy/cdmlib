@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.database.update;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
@@ -31,9 +32,9 @@ public class VocabularyCreator extends SchemaUpdaterStepBase {
 
 // **************************** STATIC METHODS ********************************/
 
-	public static final VocabularyCreator NewVocabularyInstance(UUID uuidVocabulary, String description,  String label, String abbrev, boolean isOrdered, Class<?> termclass, TermType termType){
+	public static final VocabularyCreator NewVocabularyInstance(List<ISchemaUpdaterStep> stepList, UUID uuidVocabulary, String description,  String label, String abbrev, boolean isOrdered, Class<?> termclass, TermType termType){
 		String stepName = makeStepName(label);
-		return new VocabularyCreator(stepName, uuidVocabulary, description, label, abbrev, isOrdered, termclass, termType);
+		return new VocabularyCreator(stepList, stepName, uuidVocabulary, description, label, abbrev, isOrdered, termclass, termType);
 	}
 
 // *************************** VARIABLES *****************************************/
@@ -47,8 +48,8 @@ public class VocabularyCreator extends SchemaUpdaterStepBase {
 
 // ***************************** CONSTRUCTOR ***************************************/
 
-	private VocabularyCreator(String stepName, UUID uuidVocabulary, String description, String label, String abbrev, boolean isOrdered, Class<?> termClass, TermType termType) {
-		super(stepName);
+	private VocabularyCreator(List<ISchemaUpdaterStep> stepList, String stepName, UUID uuidVocabulary, String description, String label, String abbrev, boolean isOrdered, Class<?> termClass, TermType termType) {
+		super(stepList, stepName);
 		this.uuidVocabulary = uuidVocabulary;
 		this.description = description;
 		this.abbrev = abbrev;

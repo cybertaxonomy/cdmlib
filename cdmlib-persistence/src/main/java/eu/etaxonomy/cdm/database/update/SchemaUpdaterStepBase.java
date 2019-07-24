@@ -37,8 +37,11 @@ public abstract class SchemaUpdaterStepBase implements ISchemaUpdaterStep {
 
 //************************ CONSTRUCTOR ***********************************/
 
-	protected SchemaUpdaterStepBase(String stepName){
+	protected <T extends ISchemaUpdaterStep> SchemaUpdaterStepBase(List<T> stepList, String stepName){
 		this.setStepName(stepName);
+		if (stepList != null){
+		    stepList.add((T)this);
+		}
 	}
 
 	@Override

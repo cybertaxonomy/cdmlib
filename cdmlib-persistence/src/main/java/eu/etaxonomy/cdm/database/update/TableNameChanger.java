@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.database.update;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -31,16 +32,16 @@ public class TableNameChanger
 	private boolean includeAudTable;
 	private boolean includeDtype;
 
-	public static final TableNameChanger NewInstance(String stepName, String oldName, String newName, boolean includeAudTable){
-		return new TableNameChanger(stepName, oldName, newName, includeAudTable, false);
+	public static final TableNameChanger NewInstance(List<ISchemaUpdaterStep> stepList, String stepName, String oldName, String newName, boolean includeAudTable){
+		return new TableNameChanger(stepList, stepName, oldName, newName, includeAudTable, false);
 	}
 
-	public static final TableNameChanger NewInstance(String stepName, String oldName, String newName, boolean includeAudTable, boolean includeDtype){
-	    return new TableNameChanger(stepName, oldName, newName, includeAudTable, includeDtype);
+	public static final TableNameChanger NewInstance(List<ISchemaUpdaterStep> stepList, String stepName, String oldName, String newName, boolean includeAudTable, boolean includeDtype){
+	    return new TableNameChanger(stepList, stepName, oldName, newName, includeAudTable, includeDtype);
 	}
 
-	protected TableNameChanger(String stepName, String oldName, String newName, boolean includeAudTable, boolean includeDtype) {
-		super(stepName);
+	protected TableNameChanger(List<ISchemaUpdaterStep> stepList, String stepName, String oldName, String newName, boolean includeAudTable, boolean includeDtype) {
+		super(stepList, stepName);
 		this.oldName = oldName;
 		this.newName = newName;
 		this.includeAudTable = includeAudTable;

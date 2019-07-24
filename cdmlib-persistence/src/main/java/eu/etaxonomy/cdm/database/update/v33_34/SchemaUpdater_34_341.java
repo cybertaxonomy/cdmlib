@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -54,14 +54,13 @@ public class SchemaUpdater_34_341 extends SchemaUpdaterBase {
 
 		String stepName;
 		String tableName;
-		ISchemaUpdaterStep step;
 //		String columnName;
 		String newColumnName;
 		String oldColumnName;
 		String query;
 
-		List<ISchemaUpdaterStep> stepList = new ArrayList<ISchemaUpdaterStep>();
-		
+		List<ISchemaUpdaterStep> stepList = new ArrayList<>();
+
 		//DnaMarker in Primer
 		//TODO H2 / PostGreSQL / SQL Server
 		stepName = "Add foreign key for Primer.dnaMarker";
@@ -69,60 +68,52 @@ public class SchemaUpdater_34_341 extends SchemaUpdaterBase {
 		newColumnName = "dnaMarker_id";
 		boolean notNull = false;
 		String referencedTable = "DefinedTermBase";
-		step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, notNull, referencedTable);
-		stepList.add(step);
-		
+		ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, notNull, referencedTable);
+
 		//Institution for DerivationEvent
 		stepName = "Add foreign key for DerivationEvent.institution";
 		tableName = "DerivationEvent";
 		newColumnName = "institution_id";
 		referencedTable = "AgentBase";
-		step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, notNull, referencedTable);
-		stepList.add(step);
+		ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, notNull, referencedTable);
 
 		//Institution for Amplication
 		stepName = "Add foreign key for Amplification.institution";
 		tableName = "Amplification";
 		newColumnName = "institution_id";
 		referencedTable = "AgentBase";
-		step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, notNull, referencedTable);
-		stepList.add(step);
-		
+		ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, notNull, referencedTable);
+
 		//TaxonName for DeterminationEvent
 		stepName = "Add foreign key for DeterminationEvent.taxonName";
 		tableName = "DeterminationEvent";
 		newColumnName = "taxonname_id";
 		referencedTable = "TaxonNameBase";
-		step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, notNull, referencedTable);
-		stepList.add(step);
-		
+		ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, notNull, referencedTable);
+
 		//TaxonName for DeterminationEvent #3448, #4203, #4518
 		stepName = "Add foreign key for DeterminationEvent.taxonName";
 		tableName = "DnaQuality";
 		newColumnName = "typedPurificationMethod_id";
 		referencedTable = "MaterialOrMethodEvent";
-		step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, notNull, referencedTable);
-		stepList.add(step);
-		
-		
+		ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, notNull, referencedTable);
+
 		//update DerivationEvent.taxonname_id #3448, #4203, #4518
 		stepName = "Update taxon name in derivation event";
 		query = "UPDATE DeterminationEvent " +
-				" SET taxonname_id = (SELECT name_id FROM TaxonBase tb WHERE tb.id = taxon_id) " + 
+				" SET taxonname_id = (SELECT name_id FROM TaxonBase tb WHERE tb.id = taxon_id) " +
 				" WHERE taxon_id IS NOT NULL ";
 		tableName = "DeterminationEvent";
-		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "", -99);
-		stepList.add(step);
- 		
+		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "", -99);
+
 		mergePresenceAbsenceVocs(stepList);
-	
-		
+
+
 		//SingleReadAlignment #4529
 		stepName = "Remove Sequence_SingleRead";  //we assume that this field is not yet used
 		tableName = "Sequence_SingleRead";
-		step = TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT, true);
- 		stepList.add(step);
- 		
+		TableDroper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT, true);
+
  		//Add SingleReadAlignment #4529
  		stepName = "Add SingleReadAlignment";
  		tableName = "SingleReadAlignment";
@@ -130,24 +121,22 @@ public class SchemaUpdater_34_341 extends SchemaUpdaterBase {
  				"consensusalignment_id","singleread_id"};
  		String[] columnTypes = new String[]{"clob","clob","bit","int","int"};
  		String[] referencedTables = new String[]{null, null,null,"Sequence","SingleRead"};
- 		step = TableCreator.NewInstance(stepName, tableName, columnNames, columnTypes, 
+ 		TableCreator.NewInstance(stepList, stepName, tableName, columnNames, columnTypes,
  				referencedTables, INCLUDE_AUDIT, true);
- 		stepList.add(step);
- 		
+
  		//Add labelCache to amplification #4542
  		stepName = "Add column 'labelCache'";
 		tableName = "Amplification";
 		newColumnName = "labelcache";
-		step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT);
-		stepList.add(step);
-		
- 		
+		ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT);
+
+
  		//SPLIT Amplification and Amplification result
- 		
+
  		// Amplification #4541
 		stepName = "Create table 'AmplificationResult'";
 		tableName = "AmplificationResult";
-		step = TableCreator.NewAnnotatableInstance(stepName, tableName,
+		TableCreator.NewAnnotatableInstance(stepList, stepName, tableName,
 				new String[] { "successful", "successText", "dnaSample_id", "amplification_id",
 						"cloning_id", "gelPhoto_id",
 						}, // colNames
@@ -155,73 +144,59 @@ public class SchemaUpdater_34_341 extends SchemaUpdaterBase {
 				new String[] { null, null, "SpecimenOrObservationBase", "Amplification", "MaterialOrMethodEvent",
 						"DefinedTermBase", "Media" }, // referencedTables
 				INCLUDE_AUDIT);
-		stepList.add(step);
-		
+
 //		// amplification result - single reads #4541
 //		stepName = "Add single reads to amplification result";
 //		String firstTable = "AmplificationResult";
 //		String secondTable = "SingleRead";
-//		step = MnTableCreator
-//				.NewMnInstance(stepName, firstTable, null, secondTable, null,
+//		MnTableCreator
+//				.NewMnInstance(stepList, stepName, firstTable, null, secondTable, null,
 //						SchemaUpdaterBase.INCLUDE_AUDIT, false, true);
-//		stepList.add(step);
-		
+
 		//Institution for Amplication
 		stepName = "Add foreign key for SingleRead.amplificationresult";
 		tableName = "SingleRead";
 		newColumnName = "amplificationresult_id";
 		referencedTable = "AmplificationResult";
-		step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, notNull, referencedTable);
-		stepList.add(step);
-
+		ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, notNull, referencedTable);
 
 		//drop Amplification_SingleRead #4541
 		stepName = "Drop Amplification_SingleRead";
 		tableName = "Amplification_SingleRead";
-		step = TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT, true);
-		stepList.add(step);
-		
+		TableDroper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT, true);
+
 		//remove successful, successText, ...
 		stepName = "Remove successful ... from Amplification";
  		tableName = "Amplification";
  		oldColumnName = "successful";
- 		step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
- 		stepList.add(step);
+ 		ColumnRemover.NewInstance(stepList, stepName, tableName, oldColumnName, INCLUDE_AUDIT);
  		oldColumnName = "successText";
- 		step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
- 		stepList.add(step);
+ 		ColumnRemover.NewInstance(stepList, stepName, tableName, oldColumnName, INCLUDE_AUDIT);
  		oldColumnName = "dnaSample_id";
- 		step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
- 		stepList.add(step);
+ 		ColumnRemover.NewInstance(stepList, stepName, tableName, oldColumnName, INCLUDE_AUDIT);
  		oldColumnName = "cloning_id";
- 		step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
- 		stepList.add(step);
+ 		ColumnRemover.NewInstance(stepList, stepName, tableName, oldColumnName, INCLUDE_AUDIT);
  		oldColumnName = "gelPhoto_id";
- 		step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
- 		stepList.add(step);
- 		
+ 		ColumnRemover.NewInstance(stepList, stepName, tableName, oldColumnName, INCLUDE_AUDIT);
+
  		stepName = "Remove amplification_id from SingleRead";
  		tableName = "SingleRead";
 		oldColumnName = "amplification_id";
- 		step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
- 		stepList.add(step);
- 
- 	
- 		
+ 		ColumnRemover.NewInstance(stepList, stepName, tableName, oldColumnName, INCLUDE_AUDIT);
+
+
 		//SpecimenOrObservationBase_Sequence (was incorrect mapping before)
 		stepName = "Remove SpecimenOrObservationBase_Sequence";
 		tableName = "SpecimenOrObservationBase_Sequence";
-		step = TableDroper.NewInstance(stepName, tableName, true, true);
-		stepList.add(step);
-		
+		TableDroper.NewInstance(stepList, stepName, tableName, true, true);
+
 		return stepList;
-		
+
 	}
 
 	private void mergePresenceAbsenceVocs(List<ISchemaUpdaterStep> stepList) {
 		String stepName;
 		String tableName;
-		ISchemaUpdaterStep step;
 		String newColumnName;
 		String query;
 		//PAT
@@ -229,8 +204,7 @@ public class SchemaUpdater_34_341 extends SchemaUpdaterBase {
 		stepName = "Create absenceterm column";
 		tableName = "DefinedTermBase";
 		newColumnName = "absenceterm";
-		step = ColumnAdder.NewBooleanInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, null);
-		stepList.add(step);
+		ColumnAdder.NewBooleanInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, null);
 
  		//set default value
 		stepName ="Update AbsenceTerm vocabulary";
@@ -238,16 +212,15 @@ public class SchemaUpdater_34_341 extends SchemaUpdaterBase {
 		query = " UPDATE @@DefinedTermBase@@ " +
                 " SET absenceterm = @@FALSE@@ " +
                 " WHERE termType = 'PAT' ";
-		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, tableName, 99);
- 		stepList.add(step);
-		
+		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName, 99);
+
  		//vocabulary for absence terms
 		stepName ="Update AbsenceTerm vocabulary";
 		tableName = "DefinedTermBase";
 		query = " UPDATE @@DefinedTermBase@@ " +
                 " SET absenceterm = @@TRUE@@, "
                 	+ " vocabulary_id = "
-                			+ "(SELECT id FROM @@TermVocabulary@@ " 
+                			+ "(SELECT id FROM @@TermVocabulary@@ "
                 			+ " WHERE uuid = 'adbbbe15-c4d3-47b7-80a8-c7d104e53a05'),"
                 	  + " orderindex = orderindex + "
                 	  		+ " (SELECT max(orderindex) FROM "
@@ -255,59 +228,52 @@ public class SchemaUpdater_34_341 extends SchemaUpdaterBase {
                 	  		+ " WHERE dtb2.termtype = 'PAT' AND dtb2.absenceterm = 0 "
                 	  		+ ") as tmp )" +
                 " WHERE DTYPE = 'AbsenceTerm' ";
-		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, tableName, 99);
- 		stepList.add(step);
- 
+		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName, 99);
+
  		//PAT  - DTYPE
  		stepName ="Update PresenceAbsenceTerms DTYPE";
 		tableName = "DefinedTermBase";
 		query = " UPDATE @@DefinedTermBase@@ " +
                 " SET DTYPE = 'PresenceAbsenceTerm' " +
                 " WHERE termType = 'PAT' ";
-		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, tableName, 99);
- 		stepList.add(step);
- 		
+		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName, 99);
+
  		//PAT  - remove absence vocabulary
  		stepName ="Remove Absence Vocabulary I";
 		tableName = "TermVocabulary_Representation";
- 		query = " DELETE FROM TermVocabulary_Representation " + 
+ 		query = " DELETE FROM TermVocabulary_Representation " +
 				" WHERE TermVocabulary_id in (SELECT id FROM TermVocabulary WHERE uuid = '5cd438c8-a8a1-4958-842e-169e83e2ceee') ";
-		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, tableName, 99);
- 		stepList.add(step);
- 		
+		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName, 99);
+
  		//PAT  - remove absence vocabulary
  		stepName ="Remove Absence Vocabulary II";
 		tableName = "TermVocabulary_Representation";
  		query = " DELETE FROM TermVocabulary"
  				+ " WHERE uuid = '5cd438c8-a8a1-4958-842e-169e83e2ceee' ";
-		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, tableName, 99);
- 		stepList.add(step);
+		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName, 99);
 
  		//PAT  - remove absence vocabulary
  		stepName ="Remove Absence Vocabulary III";
 		tableName = "Representation";
  		query = " DELETE FROM Representation "
  				+ " WHERE text = 'AbsenceTerm'  AND label = 'AbsenceTerm' ";
-		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, tableName, 99);
- 		stepList.add(step);
- 		
+		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName, 99);
+
  		//PAT  - update representation
  		stepName ="Update Presence Absence vocabulary representation";
 		tableName = "Representation";
  		query = " UPDATE Representation "
  				+ " SET text = 'Presence Absence Term', label = 'Presence Absence Term' "
  				+ " WHERE text = 'Presence Term'  AND label = 'Presence Term' ";
-		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, tableName, 99);
- 		stepList.add(step);
- 		
+		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName, 99);
+
  		//PAT  - update titlecache
  		stepName ="Update Presence Absence vocabulary titlecache";
 		tableName = "TermVocabulary";
  		query = " UPDATE TermVocabulary "
  				+ " SET titleCache = 'Presence Absence Term' "
  				+ " WHERE uuid = 'adbbbe15-c4d3-47b7-80a8-c7d104e53a05' ";
-		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, tableName, 99);
- 		stepList.add(step);
+		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName, 99);
 	}
 
 

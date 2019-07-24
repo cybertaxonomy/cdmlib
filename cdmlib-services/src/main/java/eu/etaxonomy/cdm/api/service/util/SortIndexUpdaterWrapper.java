@@ -69,16 +69,16 @@ public class SortIndexUpdaterWrapper implements Serializable {
         IProgressMonitor  monitor = config.getMonitor();
 
         if (config.isDoTaxonNode()){
-            updater = SortIndexUpdater.NewInstance("Update taxonnode sortindex", "TaxonNode", "parent_id", "sortIndex", true);
+            updater = SortIndexUpdater.NewInstance(null, "Update taxonnode sortindex", "TaxonNode", "parent_id", "sortIndex", true);
 
             result.includeResult(update(updater, monitor));
         }
         if (config.isDoTermNode()){
-            updater = SortIndexUpdater.NewInstance("Update Feature node sortindex", "TermNode", "parent_id", "sortIndex", true);
+            updater = SortIndexUpdater.NewInstance(null, "Update Feature node sortindex", "TermNode", "parent_id", "sortIndex", true);
             result.includeResult(update(updater, monitor));
         }
         if (config.isDoPolytomousKeyNode()){
-            updater = SortIndexUpdater.NewInstance("Update Polytomouskey node sortindex", "PolytomousKeyNode", "parent_id", "sortindex", true);
+            updater = SortIndexUpdater.NewInstance(null, "Update Polytomouskey node sortindex", "PolytomousKeyNode", "parent_id", "sortindex", true);
             result.includeResult(update(updater, monitor));
         }
         return result;

@@ -37,13 +37,12 @@ public class NomenclaturalCodeUpdater extends SchemaUpdaterStepBase {
 // **************************** STATIC METHODS ********************************/
 
 	public static final NomenclaturalCodeUpdater NewInstance(List<ISchemaUpdaterStep> stepList){
-		NomenclaturalCodeUpdater result = new NomenclaturalCodeUpdater();
-		stepList.add(result);
+		NomenclaturalCodeUpdater result = new NomenclaturalCodeUpdater(stepList);
 		return result;
 	}
 
-	private NomenclaturalCodeUpdater() {
-		super(stepName);
+	private NomenclaturalCodeUpdater(List<ISchemaUpdaterStep> stepList) {
+		super(stepList, stepName);
 	}
 
     @Override

@@ -10,12 +10,14 @@ package eu.etaxonomy.cdm.database.update.v41_47;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.CaseType;
+import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdateResult;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 
@@ -35,8 +37,8 @@ public class OrphanedKeyStatementRemover extends SchemaUpdaterStepBase{
     /**
      * @return
      */
-    public static OrphanedKeyStatementRemover NewInstance() {
-        return new OrphanedKeyStatementRemover();
+    public static OrphanedKeyStatementRemover NewInstance(List<ISchemaUpdaterStep> stepList) {
+        return new OrphanedKeyStatementRemover(stepList);
     }
 
     private static final String stepName = "Remove orphaned key statements";
@@ -44,8 +46,8 @@ public class OrphanedKeyStatementRemover extends SchemaUpdaterStepBase{
     /**
      * @param stepName
      */
-    protected OrphanedKeyStatementRemover() {
-        super(stepName);
+    protected OrphanedKeyStatementRemover(List<ISchemaUpdaterStep> stepList) {
+        super(stepList, stepName);
     }
 
     @Override

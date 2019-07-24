@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.database.update;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -30,13 +31,25 @@ public abstract class AuditedSchemaUpdaterStepBase extends SchemaUpdaterStepBase
 	protected boolean includeAudTable;
 	protected boolean isAuditing;
 
-    protected AuditedSchemaUpdaterStepBase(String stepName, boolean includedAudTable) {
-        super(stepName);
+//    protected AuditedSchemaUpdaterStepBase(String stepName, boolean includedAudTable) {
+//        super(null, stepName);
+//        this.includeAudTable = includedAudTable;
+//    }
+//
+//    protected AuditedSchemaUpdaterStepBase(String stepName, String tableName, boolean includedAudTable) {
+//        super(null, stepName);
+//        this.includeAudTable = includedAudTable;
+//        this.tableName = tableName;
+//    }
+
+
+    protected AuditedSchemaUpdaterStepBase(List<ISchemaUpdaterStep> stepList, String stepName, boolean includedAudTable) {
+        super(stepList, stepName);
         this.includeAudTable = includedAudTable;
     }
 
-    protected AuditedSchemaUpdaterStepBase(String stepName, String tableName, boolean includedAudTable) {
-        super(stepName);
+    protected AuditedSchemaUpdaterStepBase(List<? extends ISchemaUpdaterStep> stepList, String stepName, String tableName, boolean includedAudTable) {
+        super(stepList, stepName);
         this.includeAudTable = includedAudTable;
         this.tableName = tableName;
     }

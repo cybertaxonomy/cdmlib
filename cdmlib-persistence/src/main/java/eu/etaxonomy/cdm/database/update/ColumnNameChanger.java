@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.database.update;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -36,31 +38,31 @@ public class ColumnNameChanger
 		date
 	}
 
-	public static ColumnNameChanger NewIntegerInstance(String stepName, String tableName, String oldColumnName, String newColumnName, boolean includeAudTable){
-		return new ColumnNameChanger(stepName, tableName, oldColumnName, newColumnName, includeAudTable, null, Datatype.integer, null);
+	public static ColumnNameChanger NewIntegerInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String oldColumnName, String newColumnName, boolean includeAudTable){
+		return new ColumnNameChanger(stepList, stepName, tableName, oldColumnName, newColumnName, includeAudTable, null, Datatype.integer, null);
 	}
 
-	public static ColumnNameChanger NewClobInstance(String stepName, String tableName, String oldColumnName,
+	public static ColumnNameChanger NewClobInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String oldColumnName,
 	        String newColumnName, boolean includeAudTable){
-		return new ColumnNameChanger(stepName, tableName, oldColumnName, newColumnName, includeAudTable, null, Datatype.clob, null);
+		return new ColumnNameChanger(stepList, stepName, tableName, oldColumnName, newColumnName, includeAudTable, null, Datatype.clob, null);
 	}
 
-    public static ColumnNameChanger NewVarCharInstance(String stepName, String tableName, String oldColumnName,
+    public static ColumnNameChanger NewVarCharInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String oldColumnName,
             String newColumnName, int size, boolean includeAudTable){
-        return new ColumnNameChanger(stepName, tableName, oldColumnName, newColumnName, includeAudTable, null, Datatype.varchar, size);
+        return new ColumnNameChanger(stepList, stepName, tableName, oldColumnName, newColumnName, includeAudTable, null, Datatype.varchar, size);
     }
 
 
-    public static ColumnNameChanger NewDateTimeInstance(String stepName, String tableName, String oldColumnName,
+    public static ColumnNameChanger NewDateTimeInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String oldColumnName,
             String newColumnName, boolean includeAudTable){
-        return new ColumnNameChanger(stepName, tableName, oldColumnName, newColumnName, includeAudTable, null, Datatype.date, null);
+        return new ColumnNameChanger(stepList, stepName, tableName, oldColumnName, newColumnName, includeAudTable, null, Datatype.date, null);
     }
 
 // **************************************** Constructor ***************************************/
 
-	protected ColumnNameChanger(String stepName, String tableName, String oldColumnName,
+	protected ColumnNameChanger(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String oldColumnName,
 	        String newColumnName, boolean includeAudTable, Object defaultValue, Datatype datatype, Integer size) {
-		super(stepName, tableName, includeAudTable);
+		super(stepList, stepName, tableName, includeAudTable);
 		this.newColumnName = newColumnName;
 		this.oldColumnName = oldColumnName;
 		this.datatype = datatype;

@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.database.update.v41_47;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -18,6 +19,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.CaseType;
+import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdateResult;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 import eu.etaxonomy.cdm.strategy.cache.agent.PersonDefaultCacheStrategy;
@@ -35,8 +37,8 @@ public class InitialsUpdater extends SchemaUpdaterStepBase{
     /**
      * @return
      */
-    public static InitialsUpdater NewInstance() {
-        return new InitialsUpdater();
+    public static InitialsUpdater NewInstance(List<ISchemaUpdaterStep> stepList) {
+        return new InitialsUpdater(stepList);
     }
 
     private static final String stepName = "Make Person initials from firstname";
@@ -44,8 +46,8 @@ public class InitialsUpdater extends SchemaUpdaterStepBase{
     /**
      * @param stepName
      */
-    protected InitialsUpdater() {
-        super(stepName);
+    protected InitialsUpdater(List<ISchemaUpdaterStep> stepList) {
+        super(stepList, stepName);
     }
 
 

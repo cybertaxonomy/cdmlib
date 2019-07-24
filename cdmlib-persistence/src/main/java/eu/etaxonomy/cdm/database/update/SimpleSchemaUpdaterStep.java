@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.database.update;
 
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -44,8 +45,8 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase {
 	 * @param adapt preliminary
 	 * @return
 	 */
-	public static SimpleSchemaUpdaterStep NewNonAuditedInstance(String stepName, String defaultQuery, int adapt){
-		return new SimpleSchemaUpdaterStep(stepName, defaultQuery, false, null, null);
+	public static SimpleSchemaUpdaterStep NewNonAuditedInstance(List<ISchemaUpdaterStep> stepList, String stepName, String defaultQuery, int adapt){
+		return new SimpleSchemaUpdaterStep(stepList, stepName, defaultQuery, false, null, null);
 	}
 
 	/**
@@ -58,9 +59,9 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase {
 	 * @param adapt preliminary
 	 * @return
 	 */
-	public static SimpleSchemaUpdaterStep NewAuditedInstance(String stepName, String defaultQuery, String nonAuditedTableName, int adapt){
+	public static SimpleSchemaUpdaterStep NewAuditedInstance(List<ISchemaUpdaterStep> stepList, String stepName, String defaultQuery, String nonAuditedTableName, int adapt){
 		boolean audit = StringUtils.isNotBlank(nonAuditedTableName);
-		return new SimpleSchemaUpdaterStep(stepName, defaultQuery, audit, nonAuditedTableName, null);
+		return new SimpleSchemaUpdaterStep(stepList, stepName, defaultQuery, audit, nonAuditedTableName, null);
 	}
 
 	/**
@@ -71,16 +72,16 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase {
 	 * @param adapt preliminary
 	 * @return
 	 */
-	public static SimpleSchemaUpdaterStep NewExplicitAuditedInstance(String stepName, String defaultQuery, String defaultQueryForAuditedTables, int adapt){
+	public static SimpleSchemaUpdaterStep NewExplicitAuditedInstance(List<ISchemaUpdaterStep> stepList, String stepName, String defaultQuery, String defaultQueryForAuditedTables, int adapt){
 		boolean audit = StringUtils.isNotBlank(defaultQueryForAuditedTables);
-		return new SimpleSchemaUpdaterStep(stepName, defaultQuery, audit, null, defaultQueryForAuditedTables);
+		return new SimpleSchemaUpdaterStep(stepList, stepName, defaultQuery, audit, null, defaultQueryForAuditedTables);
 	}
 
 
 //************************ CONSTRUCTOR ***********************************/
 
-	private SimpleSchemaUpdaterStep(String stepName, String defaultQuery, boolean includeAudit, String tableName, String defaultQueryForAuditedTables){
-		super(stepName);
+	private SimpleSchemaUpdaterStep(List<ISchemaUpdaterStep> stepList, String stepName, String defaultQuery, boolean includeAudit, String tableName, String defaultQueryForAuditedTables){
+		super(stepList, stepName);
 		this.includeAudit = includeAudit;
 		queryMap.put(null, defaultQuery);
 

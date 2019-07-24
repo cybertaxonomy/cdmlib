@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.database.update.v31_33;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -17,6 +18,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.CaseType;
+import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdateResult;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 
@@ -33,12 +35,12 @@ public class ClassificationRootNodeUpdater extends SchemaUpdaterStepBase {
 
 // **************************** STATIC METHODS ********************************/
 
-	public static final ClassificationRootNodeUpdater NewInstance(){
-		return new ClassificationRootNodeUpdater(stepName);
+	public static final ClassificationRootNodeUpdater NewInstance(List<ISchemaUpdaterStep> stepList){
+		return new ClassificationRootNodeUpdater(stepList, stepName);
 	}
 
-	protected ClassificationRootNodeUpdater(String stepName) {
-		super(stepName);
+	protected ClassificationRootNodeUpdater(List<ISchemaUpdaterStep> stepList, String stepName) {
+		super(stepList, stepName);
 	}
 
 	@Override

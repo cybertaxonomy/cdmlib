@@ -33,8 +33,8 @@ public class SingleTermRemover
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SingleTermRemover.class);
 
-	public static final SingleTermRemover NewInstance(String stepName, String uuidTerm, List<String> checkUsedQueries, int adapt){
-		return new SingleTermRemover(stepName, uuidTerm, checkUsedQueries);
+	public static final SingleTermRemover NewInstance(List<ISchemaUpdaterStep> stepList, String stepName, String uuidTerm, List<String> checkUsedQueries, int adapt){
+		return new SingleTermRemover(stepList, stepName, uuidTerm, checkUsedQueries);
 	}
 
 	/**
@@ -42,10 +42,10 @@ public class SingleTermRemover
 	 * if this term is used at the given place.
 	 * @return
 	 */
-	public static final SingleTermRemover NewInstance(String stepName, String uuidTerm, String firstCheckUsedQuery, int adapt){
-		List<String> checkUsedQueries = new ArrayList<String>();
+	public static final SingleTermRemover NewInstance(List<ISchemaUpdaterStep> stepList, String stepName, String uuidTerm, String firstCheckUsedQuery, int adapt){
+		List<String> checkUsedQueries = new ArrayList<>();
 		checkUsedQueries.add(firstCheckUsedQuery);
-		return new SingleTermRemover(stepName, uuidTerm, checkUsedQueries);
+		return new SingleTermRemover(stepList, stepName, uuidTerm, checkUsedQueries);
 	}
 
 
@@ -53,8 +53,8 @@ public class SingleTermRemover
 	private List<String> checkUsedQueries = new ArrayList<String>();
 
 
-	private SingleTermRemover(String stepName, String uuidTerm, List<String> checkUsedQueries) {
-		super(stepName);
+	private SingleTermRemover(List<ISchemaUpdaterStep> stepList, String stepName, String uuidTerm, List<String> checkUsedQueries) {
+		super(stepList, stepName);
 		this.uuidTerm = uuidTerm;
 		this.checkUsedQueries = checkUsedQueries;
 	}

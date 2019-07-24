@@ -32,14 +32,13 @@ public class RevisionNumberUpdater extends SchemaUpdaterStepBase{
 
 // **************************** STATIC METHODS ********************************/
 
-	public static final RevisionNumberUpdater NewInstance(String stepName, List<ISchemaUpdaterStep> stepList){
-		RevisionNumberUpdater result = new RevisionNumberUpdater(stepName);
-		stepList.add(result);
+	public static final RevisionNumberUpdater NewInstance(List<ISchemaUpdaterStep> stepList, String stepName){
+		RevisionNumberUpdater result = new RevisionNumberUpdater(stepList, stepName);
 		return result;
 	}
 
-	private RevisionNumberUpdater(String stepName) {
-		super(stepName);
+	private RevisionNumberUpdater(List<ISchemaUpdaterStep> stepList, String stepName) {
+		super(stepList, stepName);
 	}
 
     @Override
