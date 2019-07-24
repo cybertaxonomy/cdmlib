@@ -15,6 +15,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.UTF8;
+import eu.etaxonomy.cdm.database.update.AllowNullUpdater;
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ColumnNameChanger;
 import eu.etaxonomy.cdm.database.update.ColumnRemover;
@@ -198,6 +199,12 @@ public class SchemaUpdater_55_58 extends SchemaUpdaterBase {
        tableName = "TaxonBase";
        oldColumnName = "partial";
        ColumnRemover.NewInstance(stepList, stepName, tableName, oldColumnName, INCLUDE_AUDIT);
+
+       //#4884 Allow NULL for Reference_AUD.refType
+       stepName = "Allow NULL for Reference_AUD.refType";
+       tableName = "Reference_AUD";
+       String columnName = "refType";
+       AllowNullUpdater.NewStringInstance(stepList, stepName, tableName, columnName, 255, !INCLUDE_AUDIT);
 
        return stepList;
 	}
