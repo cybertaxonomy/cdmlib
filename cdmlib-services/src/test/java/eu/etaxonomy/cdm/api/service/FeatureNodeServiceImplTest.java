@@ -22,13 +22,13 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.datasetloadstrategy.impl.RefreshLoadStrategy;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.api.service.config.TermNodeDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
+import eu.etaxonomy.cdm.api.service.config.TermNodeDeletionConfigurator;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermNode;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
@@ -69,7 +69,7 @@ public class FeatureNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
 	@Test
 	public final void testIndexCreatRoot() {
-        TermTree<Feature> featureTree = TermTree.NewInstance();
+        TermTree<Feature> featureTree = TermTree.NewFeatureInstance();
 		featureTreeService.save(featureTree);
 
 		Feature feature = (Feature)termService.find(914);

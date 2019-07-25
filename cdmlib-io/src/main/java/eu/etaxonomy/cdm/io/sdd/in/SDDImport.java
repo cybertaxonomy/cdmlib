@@ -85,8 +85,8 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermBase;
-import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermNode;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
@@ -1751,7 +1751,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 					String label = (String)ImportHelper.getXmlInputValue(elRepresentation,"Label",sddNamespace);
 					//Element elDesignedFor = elCharacterTree.getChild("DesignedFor",sddNamespace);//TODO ?
 
-					TermTree featureTree =  TermTree.NewInstance();
+					TermTree featureTree =  TermTree.NewFeatureInstance();
 					importRepresentation(elCharacterTree, sddNamespace, featureTree, "", cdmState);
 					TermNode<Feature> root = featureTree.getRoot();
 					List<Element> listeOfNodes = elCharacterTree.getChildren("Nodes", sddNamespace);

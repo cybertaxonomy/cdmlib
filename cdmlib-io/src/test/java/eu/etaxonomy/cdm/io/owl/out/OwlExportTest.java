@@ -31,8 +31,8 @@ import eu.etaxonomy.cdm.io.common.IExportConfigurator.TARGET;
 import eu.etaxonomy.cdm.io.descriptive.owl.out.StructureTreeOwlExportConfigurator;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermNode;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -74,7 +74,7 @@ public class OwlExportTest  extends CdmTransactionalIntegrationTest{
     }
 
     public List<UUID> createFeatureTree() {
-        TermTree<Feature> tree = TermTree.NewInstance();
+        TermTree<Feature> tree = TermTree.NewFeatureInstance();
         TermVocabulary<Feature> voc = TermVocabulary.NewInstance(TermType.Feature, "voc description", "vocabulary", "voc", URI.create("http://test.voc"));
 
         Feature featureA = Feature.NewInstance("A", "A", "A");

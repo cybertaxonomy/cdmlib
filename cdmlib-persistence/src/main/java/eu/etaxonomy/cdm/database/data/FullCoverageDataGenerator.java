@@ -413,7 +413,7 @@ public class FullCoverageDataGenerator {
 
 
 		//Feature Tree
-		TermTree<Feature> featureTree = TermTree.NewInstance();
+		TermTree<Feature> featureTree = TermTree.NewFeatureInstance();
 //		featureTree
         TermNode<Feature> descriptionTermNode = featureTree.getRoot().addChild(Feature.DESCRIPTION());
         TermNode<Feature> leaveLengthNode = descriptionTermNode.addChild(leaveLength);

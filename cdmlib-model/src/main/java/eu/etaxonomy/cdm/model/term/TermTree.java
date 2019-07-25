@@ -96,10 +96,16 @@ public class TermTree <T extends DefinedTermBase>
 	 *
 	 * @see #NewInstance(UUID)
 	 * @see #NewInstance(List)
+	 * @deprecated since 5.9. Use {@link #NewFeatureInstance()} instead
 	 */
-	public static TermTree<Feature> NewInstance(){
+	@Deprecated
+    public static TermTree<Feature> NewInstance(){
 		return new TermTree<>(TermType.Feature);
 	}
+
+    public static TermTree<Feature> NewFeatureInstance(){
+        return new TermTree<>(TermType.Feature);
+    }
 
 	/**
 	 * Creates a new feature tree instance with an empty {@link #getRoot() root node}

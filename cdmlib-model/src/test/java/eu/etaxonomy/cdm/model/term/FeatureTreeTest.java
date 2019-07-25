@@ -33,7 +33,7 @@ public class FeatureTreeTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		testTree = TermTree.NewInstance();
+		testTree = TermTree.NewFeatureInstance();
 
 		node1 = testTree.getRoot().addChild(Feature.ANATOMY());
 		node2 = node1.addChild(Feature.BIOLOGY_ECOLOGY());

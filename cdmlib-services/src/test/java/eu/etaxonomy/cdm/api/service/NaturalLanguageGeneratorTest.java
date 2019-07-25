@@ -29,8 +29,8 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermNode;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 @Ignore //FIXME Remove @Ignore once maximes code is completely committed
@@ -54,7 +54,7 @@ public class NaturalLanguageGeneratorTest extends CdmIntegrationTest {
 		Taxon taxon = Taxon.NewInstance(tnb, null);
 		description = TaxonDescription.NewInstance(taxon);
 
-		featureTree= TermTree.NewInstance();
+		featureTree= TermTree.NewFeatureInstance();
 		TermNode<Feature> root = featureTree.getRoot();
 		String[][][] tableStrings = { { {"a","b"} } , { { "a1" , "a2"  } , { "b1" } } };
 		buildBranches(root,tableStrings,0,2,0);
