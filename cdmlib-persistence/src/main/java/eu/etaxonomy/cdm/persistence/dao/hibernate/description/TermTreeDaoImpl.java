@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.model.term.VocabularyEnum;
-import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
+import eu.etaxonomy.cdm.persistence.dao.description.ITermTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
  * @since 10.07.2008
  */
 @Repository
-public class TermTreeDaoImpl extends IdentifiableDaoBase<TermTree> implements IFeatureTreeDao{
+public class TermTreeDaoImpl extends IdentifiableDaoBase<TermTree> implements ITermTreeDao{
 
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(TermTreeDaoImpl.class);

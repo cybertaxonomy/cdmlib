@@ -60,7 +60,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptiveDataSetDao;
-import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
+import eu.etaxonomy.cdm.persistence.dao.description.ITermTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IStatisticalMeasurementValueDao;
 import eu.etaxonomy.cdm.persistence.dao.description.ITermNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
@@ -90,7 +90,7 @@ public class DescriptionServiceImpl
     private static final Logger logger = Logger.getLogger(DescriptionServiceImpl.class);
 
     protected IDescriptionElementDao descriptionElementDao;
-    protected IFeatureTreeDao featureTreeDao;
+    protected ITermTreeDao featureTreeDao;
     protected IDescriptiveDataSetDao descriptiveDataSetDao;
     protected ITermNodeDao termNodeDao;
     protected ITermVocabularyDao vocabularyDao;
@@ -109,7 +109,7 @@ public class DescriptionServiceImpl
     private NaturalLanguageGenerator naturalLanguageGenerator;
 
     @Autowired
-    protected void setFeatureTreeDao(IFeatureTreeDao featureTreeDao) {
+    protected void setFeatureTreeDao(ITermTreeDao featureTreeDao) {
         this.featureTreeDao = featureTreeDao;
     }
 

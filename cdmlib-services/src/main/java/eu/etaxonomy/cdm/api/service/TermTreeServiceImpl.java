@@ -29,15 +29,15 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
-import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.description.ITermNodeDao;
+import eu.etaxonomy.cdm.persistence.dao.description.ITermTreeDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 @Service
 @Transactional(readOnly = false)
 public class TermTreeServiceImpl
-            extends IdentifiableServiceBase<TermTree, IFeatureTreeDao>
+            extends IdentifiableServiceBase<TermTree, ITermTreeDao>
             implements ITermTreeService {
 
     private ITermNodeDao termNodeDao;
@@ -47,7 +47,7 @@ public class TermTreeServiceImpl
 
     @Override
     @Autowired
-    protected void setDao(IFeatureTreeDao dao) {
+    protected void setDao(ITermTreeDao dao) {
         this.dao = dao;
     }
 
