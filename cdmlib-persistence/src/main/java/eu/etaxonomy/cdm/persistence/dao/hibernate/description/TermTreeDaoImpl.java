@@ -21,8 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermNode;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.model.term.VocabularyEnum;
@@ -88,9 +88,9 @@ public class TermTreeDaoImpl extends IdentifiableDaoBase<TermTree> implements IT
         return super.load(uuid);
     }
 
-    private TermTree createDefaultFeatureTree() {
+    private TermTree<Feature> createDefaultFeatureTree() {
 
-        TermVocabulary featureVocabulary = termVocabularyDao.findByUuid(VocabularyEnum.Feature.getUuid());
+        TermVocabulary<Feature> featureVocabulary = termVocabularyDao.findByUuid(VocabularyEnum.Feature.getUuid());
 
         List<Feature> featureList = new ArrayList<>(featureVocabulary.getTerms());
         List<Feature> selectedFeatures = new ArrayList<>();
@@ -99,7 +99,7 @@ public class TermTreeDaoImpl extends IdentifiableDaoBase<TermTree> implements IT
                 selectedFeatures.add(feature);
             }
         }
-        TermTree featureTree = TermTree.NewInstance(selectedFeatures);
+        TermTree<Feature> featureTree = TermTree.NewFeatureInstance(selectedFeatures);
         featureTree.setUuid(DefaultFeatureTreeUuid);
         return featureTree;
     }

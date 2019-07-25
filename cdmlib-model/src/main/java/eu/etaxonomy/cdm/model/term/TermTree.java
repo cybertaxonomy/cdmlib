@@ -103,28 +103,44 @@ public class TermTree <T extends DefinedTermBase>
 	 */
 	@Deprecated
     public static TermTree<Feature> NewInstance(){
-		return new TermTree<>(TermType.Feature);
+		return NewFeatureInstance();
 	}
 
     public static TermTree<Feature> NewFeatureInstance(){
         return new TermTree<>(TermType.Feature);
     }
 
-	/**
-	 * Creates a new feature tree instance with an empty {@link #getRoot() root node}
-	 * and assigns to the new feature tree the given
-	 * UUID (universally unique identifier).
-	 *
-	 * @param	uuid	the universally unique identifier
-	 * @see 			#NewInstance()
-	 * @see 			#NewInstance(List)
-	 */
-	public static <T extends DefinedTermBase<T>> TermTree<T> NewInstance(UUID uuid){
-		TermTree<T> result =  new TermTree<>(TermType.Feature);
-		result.setUuid(uuid);
-		return result;
-	}
 
+	/**
+	 * @deprecated since 5.9, use {@link #NewFeatureInstance(UUID)} instead
+	 */
+	@Deprecated
+    public static TermTree<? extends Feature> NewInstance(UUID uuid){
+		return NewFeatureInstance(uuid);
+	}
+	/**
+     * Creates a new feature tree instance with an empty {@link #getRoot() root node}
+     * and assigns to the new feature tree the given
+     * UUID (universally unique identifier).
+     *
+     * @param   uuid    the universally unique identifier
+     * @see             #NewInstance()
+     * @see             #NewInstance(List)
+     */
+    public static <T extends DefinedTermBase<T>> TermTree<T> NewFeatureInstance(UUID uuid){
+        TermTree<T> result =  new TermTree<>(TermType.Feature);
+        result.setUuid(uuid);
+        return result;
+    }
+
+
+    /**
+     * @deprecated sinde 5.9 use {@link #NewFeatureInstance(List)} instead
+     */
+    @Deprecated
+    public static TermTree<Feature> NewInstance(List<Feature> featureList){
+        return NewFeatureInstance(featureList);
+    }
 	/**
 	 * Creates a new feature tree instance with a {@link #getRoot() root node}
 	 * the children of which are the feature nodes build on the base of the
@@ -136,7 +152,7 @@ public class TermTree <T extends DefinedTermBase>
 	 * @see 				#NewInstance()
 	 * @see 				#NewInstance(UUID)
 	 */
-	public static TermTree<Feature> NewInstance(List<Feature> featureList){
+	public static TermTree<Feature> NewFeatureInstance(List<Feature> featureList){
 		TermTree<Feature> result =  new TermTree<>(TermType.Feature);
 		TermNode<Feature> root = result.getRoot();
 
