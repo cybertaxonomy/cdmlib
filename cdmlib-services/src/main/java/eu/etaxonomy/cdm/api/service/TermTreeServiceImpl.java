@@ -25,7 +25,6 @@ import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandlin
 import eu.etaxonomy.cdm.api.service.config.TermNodeDeletionConfigurator;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
@@ -116,11 +115,6 @@ public class TermTreeServiceImpl
     @Override
     public TermTree load(UUID uuid, List<String> propertyPaths) {
         return super.load(uuid, propertyPaths);
-    }
-
-    @Override
-    public TermTree<Feature> createTransientDefaultFeatureTree() {
-        return load(IFeatureTreeDao.DefaultFeatureTreeUuid);
     }
 
     @Override

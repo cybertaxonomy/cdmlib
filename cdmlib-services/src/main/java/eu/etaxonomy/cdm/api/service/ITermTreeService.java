@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
@@ -36,8 +35,6 @@ public interface ITermTreeService extends IIdentifiableEntityService<TermTree> {
 	public Map<UUID, TermNode> saveNodesAll(Collection<TermNode> featureNodeCollection);
 
 	public Map<UUID, TermNode> saveOrUpdateNodesAll(Collection<TermNode> featureNodeCollection);
-
-	public TermTree<Feature> createTransientDefaultFeatureTree();
 
 	public <S extends TermTree> List<UuidAndTitleCache<S>> getUuidAndTitleCacheByTermType(
 	        Class<S> clazz, TermType termType, Integer limit, String pattern);
