@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
 
 @Ignore  //does not work anymore since TermNode + Tree was moved to term package
+//#8407
 public class FeatureTest {
 
 	    private String resource = "/eu/etaxonomy/cdm/io/jaxb/TermTreeTest.xml";
