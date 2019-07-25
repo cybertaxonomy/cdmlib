@@ -250,25 +250,22 @@ public class TermTree <T extends DefinedTermBase>
 	 * {@link TermNode tree nodes} are cloned to build
 	 * the new {@link TermTree}
 	 *
-	 *
 	 * @see eu.etaxonomy.cdm.model.term.TermBase#clone()
 	 * @see java.lang.Object#clone()
 	 */
-	@Override
+    @Override
 	public Object clone() {
-		TermTree<T> result;
 		try {
-			result = (TermTree<T>)super.clone();
+		    @SuppressWarnings("unchecked")
+		    TermTree<T> result = (TermTree<T>)super.clone();
+			TermNode<T> rootClone = this.getRoot().cloneDescendants();
+	        result.root = rootClone;
+	        return result;
 		}catch (CloneNotSupportedException e) {
-			logger.warn("Object does not implement cloneable");
-			e.printStackTrace();
-			return null;
+		    String message = "Clone not possible. Object does not implement cloneable";
+			logger.warn(message);
+			throw new RuntimeException(message);
 		}
-		TermNode<T> rootClone = this.getRoot().cloneDescendants();
-		result.root = rootClone;
-
-		return result;
-
 	}
 
 
