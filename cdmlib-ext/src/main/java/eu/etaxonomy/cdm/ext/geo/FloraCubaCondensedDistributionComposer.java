@@ -54,7 +54,7 @@ public class FloraCubaCondensedDistributionComposer extends CondensedDistributio
         // Mapping as defined in ticket http://dev.e-taxonomy.eu/trac/ticket/5682
         // ==================================================
 
-       statusSymbols = new HashMap<UUID, String> ();
+       statusSymbols = new HashMap<> ();
        //no entries as we handle symbols now on model level
 
     }
@@ -70,7 +70,7 @@ public class FloraCubaCondensedDistributionComposer extends CondensedDistributio
 
 // ***********************************************************************
 
-    /**
+    /*
      * {@inheritDoc}
      * @return
      */
