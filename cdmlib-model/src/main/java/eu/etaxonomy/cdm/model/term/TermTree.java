@@ -35,18 +35,21 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 
 /**
- * The class to arrange {@link Feature features} (characters) in a tree structure.
- * Feature trees are essential as interactive multiple-access keys for
+ * The class to arrange {@link DefinedTermBase terms} in a tree structure.
+ * A term tree is build on {@link TermNode term nodes}.
+ *
+ * Special term trees:
+ *
+ * <B>Feature</B> trees are essential as interactive multiple-access keys for
  * determination process and for systematical output arrangement of
  * {@link DescriptionElementBase description elements} according to different goals
  * but may also be used to define flat feature subsets for filtering purposes.<BR>
- * A feature tree is build on {@link TermNode feature nodes}.
  * <P>
- * This class corresponds partially to ConceptTreeDefType according to the SDD
- * schema.
+ * If used as feature tree this class corresponds partially to ConceptTreeDefType
+ * according to the SDD schema.
  * <P>
- * Note: The tree structure of features used for purposes described above has
- * nothing in common with the possible hierarchical structure of features
+ * Note: The tree structure of terms used for purposes described above has
+ * nothing in common with the possible hierarchical structure of terms
  * depending on their grade of precision.
  *
  * @author  m.doering
