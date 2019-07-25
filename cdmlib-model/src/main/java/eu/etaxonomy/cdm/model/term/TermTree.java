@@ -65,7 +65,8 @@ import eu.etaxonomy.cdm.model.description.Feature;
 //@Indexed(index = "eu.etaxonomy.cdm.model.term.TermTree")
 @Audited
 public class TermTree <T extends DefinedTermBase>
-            extends TermGraphBase<T, TermNode> {
+            extends TermGraphBase<T, TermNode>
+            implements ITermTree<T, TermNode> {
 
 	private static final long serialVersionUID = -6713834139003172735L;
 	private static final Logger logger = Logger.getLogger(TermTree.class);
@@ -208,6 +209,7 @@ public class TermTree <T extends DefinedTermBase>
 	 * Returns the (ordered) list of {@link TermNode feature nodes} which are immediate
 	 * children of the root node of <i>this</i> feature tree.
 	 */
+	@Override
 	@Transient
 	public List<TermNode<T>> getRootChildren(){
 		List<TermNode<T>> result = new ArrayList<>();
@@ -231,6 +233,7 @@ public class TermTree <T extends DefinedTermBase>
 	    return root.getDistinctTermsRecursive(terms);
 	}
 
+    @Override
     public List<T> asTermList() {
         List<T> result = new ArrayList<>();
         for (TermNode<T> node : getRootChildren()){
