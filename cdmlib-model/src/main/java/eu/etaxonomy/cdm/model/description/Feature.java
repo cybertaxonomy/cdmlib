@@ -45,8 +45,8 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
@@ -1038,7 +1038,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	@Override
 	protected void setDefaultTerms(TermVocabulary<Feature> termVocabulary) {
 		if (termMap == null){  //needed because there are multiple feature vocabularies
-			termMap = new HashMap<UUID, Feature>();
+			termMap = new HashMap<>();
 		}
 		for (Feature term : termVocabulary.getTerms()){
 			termMap.put(term.getUuid(), term);

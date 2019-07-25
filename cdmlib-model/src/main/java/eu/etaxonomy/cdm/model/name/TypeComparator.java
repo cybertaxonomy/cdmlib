@@ -15,7 +15,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 /**
  * @author k.luther
  * @since 21.03.2017
- *
  */
 public class TypeComparator implements Comparator<TypeDesignationBase<?>> {
 

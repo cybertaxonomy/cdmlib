@@ -39,7 +39,6 @@ import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
  *
  * @author n.hoffman
  * @since 08.04.2009
- * @version 1.0
  */
 @Service
 @Transactional(readOnly = true)

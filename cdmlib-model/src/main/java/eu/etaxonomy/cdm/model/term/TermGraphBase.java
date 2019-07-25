@@ -61,4 +61,10 @@ public abstract class TermGraphBase<TERM extends DefinedTermBase, REL extends Te
     }
 
     public abstract Set<TERM> getDistinctTerms();
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        TermGraphBase<TERM, REL> result = (TermGraphBase<TERM, REL>)super.clone();
+        return result;
+    }
 }

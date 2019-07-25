@@ -24,9 +24,9 @@ import eu.etaxonomy.cdm.persistence.dao.term.IOrderedTermVocabularyDao;
  * If data exist in the database, it returns a TermVocabulary$CGLIB class created by hibernate
  */
 @Repository
-public class OrderedTermVocabularyDaoImpl extends CdmEntityDaoBase<OrderedTermVocabulary<OrderedTermBase<?>>> implements
-		IOrderedTermVocabularyDao {
-
+public class OrderedTermVocabularyDaoImpl
+        extends CdmEntityDaoBase<OrderedTermVocabulary<OrderedTermBase<?>>>
+        implements IOrderedTermVocabularyDao {
 
 	/**
 	 * @param type
@@ -34,6 +34,4 @@ public class OrderedTermVocabularyDaoImpl extends CdmEntityDaoBase<OrderedTermVo
 	public OrderedTermVocabularyDaoImpl() {
 		super((Class)OrderedTermVocabulary.class);
 	}
-
-
 }

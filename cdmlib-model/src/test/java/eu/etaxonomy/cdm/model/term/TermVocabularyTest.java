@@ -194,14 +194,4 @@ public class TermVocabularyTest extends EntityTestBase {
 //		assertEquals(dtb1.getClass(), voc1.getTermClass());
 	}
 
-//	@Test
-//	public final void testIterator() {
-//		Iterator<DefinedTermBase<?>> it = voc1.iterator();
-//		int i = 0;
-//		while (it.hasNext()){
-//			i++;
-//			assertTrue(voc1.getTerms().contains(it.next()));
-//		}
-//		assertEquals(3, i);
-//	}
 }

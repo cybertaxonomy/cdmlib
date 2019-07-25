@@ -123,19 +123,14 @@ public class TermGraph <T extends DefinedTermBase>
 	 */
 	@Override
 	public Object clone() {
-		TermGraph<T> result;
 		try {
-			result = (TermGraph<T>)super.clone();
-
+		    @SuppressWarnings("unchecked")
+            TermGraph<T> result = (TermGraph<T>)super.clone();
+			return result;
 		}catch (CloneNotSupportedException e) {
-			logger.warn("Object does not implement cloneable");
-			e.printStackTrace();
-			return null;
+            String message = "Clone not possible. Object does not implement cloneable";
+            logger.warn(message);
+            throw new RuntimeException(message);
 		}
-
-		return result;
-
 	}
-
-
 }

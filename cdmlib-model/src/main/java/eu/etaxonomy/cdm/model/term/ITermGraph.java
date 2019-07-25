@@ -13,7 +13,6 @@ import java.util.Set;
 /**
  * @author a.mueller
  * @since 11.03.2019
- *
  */
 public interface ITermGraph<TERM extends DefinedTermBase, REL extends TermRelationBase> {
 

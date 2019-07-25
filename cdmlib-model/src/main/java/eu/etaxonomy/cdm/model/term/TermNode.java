@@ -125,7 +125,6 @@ public class TermNode <T extends DefinedTermBase>
 	//no factory methods should be provided as TermNodes should only
 	//be created as children of their parent node (#8257)
 
-
 // ******************** CONSTRUCTOR ***************************************/
 
 	//TODO needed?
@@ -175,8 +174,8 @@ public class TermNode <T extends DefinedTermBase>
 	}
 
 	/**
-	 * Returns the (ordered) list of feature nodes which are children nodes of
-	 * <i>this</i> feature node.
+     * Returns the (ordered) list of tree nodes which are children nodes of
+     * <i>this</i> node.
 	 */
 	@Override
     public List<TermNode<T>> getChildNodes() {

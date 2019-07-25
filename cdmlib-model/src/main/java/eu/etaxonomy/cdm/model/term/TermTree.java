@@ -261,8 +261,7 @@ public class TermTree <T extends DefinedTermBase>
 		try {
 		    @SuppressWarnings("unchecked")
 		    TermTree<T> result = (TermTree<T>)super.clone();
-			TermNode<T> rootClone = this.getRoot().cloneDescendants();
-	        result.root = rootClone;
+		    result.root = this.getRoot().cloneDescendants();
 	        return result;
 		}catch (CloneNotSupportedException e) {
 		    String message = "Clone not possible. Object does not implement cloneable";
@@ -270,6 +269,4 @@ public class TermTree <T extends DefinedTermBase>
 			throw new RuntimeException(message);
 		}
 	}
-
-
 }
