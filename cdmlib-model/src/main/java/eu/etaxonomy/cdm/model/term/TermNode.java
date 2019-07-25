@@ -184,8 +184,8 @@ public class TermNode <T extends DefinedTermBase>
 
 	/**
      * Adds the given term node at the end of the list of children of
-     * <i>this</i> term node. Due to bidirectionality this method must also
-	 * assign <i>this</i> feature node as the parent of the given child.
+     * <i>this</i> term node. Due to bidirectionality this method must
+	 * also assign <i>this</i> feature node as the parent of the given child.
 	 *
 	 * @param	child	the feature node to be added
 	 * @see				#getChildNodes()
