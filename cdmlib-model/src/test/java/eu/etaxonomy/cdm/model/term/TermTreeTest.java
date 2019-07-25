@@ -6,15 +6,16 @@ import static org.junit.Assert.assertNotSame;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.description.Feature;
 
-public class FeatureTreeTest {
+public class TermTreeTest {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(FeatureTreeTest.class);
+	private static final Logger logger = Logger.getLogger(TermTreeTest.class);
 
 	private TermTree<Feature> testTree;
 	private TermNode<Feature> node1;
@@ -53,6 +54,18 @@ public class FeatureTreeTest {
 		assertEquals(node1.getChildNodes().get(1), node21);
 		assertEquals(node21.getParent(), node1);
 	}
+
+	@SuppressWarnings("unused")
+    @Test
+    public void testTermTreeTermType(){
+	    try {
+            new TermTree<>(null);
+            Assert.fail("Term type must never be null");
+        } catch (Exception e) {
+            //OK
+        }
+	}
+
 	@Test
 	public void testClone(){
         TermNode<Feature> node21 = node1.addChild(Feature.ADDITIONAL_PUBLICATION(), 1);

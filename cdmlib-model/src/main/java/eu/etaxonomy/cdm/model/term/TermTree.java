@@ -76,6 +76,9 @@ public class TermTree <T extends DefinedTermBase>
     //We need to check how far representations and uri is still required
     //or can be deleted. Current implementations seem all to use the title cache
     //instead of representation. This may not be correct.
+	// Note: since model 5.8 representations are back as FeatureTree became TermTree and
+	//inherits from TermBase. Need to check if they are correctly handled. Anyway,
+	//translations should be synchronized all over the system (there is a ticket for this)
 
 	@XmlElement(name = "Root")
 	@OneToOne(fetch = FetchType.LAZY, targetEntity=TermNode.class)
@@ -224,8 +227,8 @@ public class TermTree <T extends DefinedTermBase>
     @Override
     @Transient
 	public Set<T> getDistinctTerms(){
-	    Set<T> features = new HashSet<>();
-	    return root.getDistinctTermsRecursive(features);
+	    Set<T> terms = new HashSet<>();
+	    return root.getDistinctTermsRecursive(terms);
 	}
 
     public List<T> asTermList() {
