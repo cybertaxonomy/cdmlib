@@ -183,8 +183,8 @@ public class TermNode <T extends DefinedTermBase>
 	}
 
 	/**
-	 * Adds the given feature node at the end of the list of children of
-	 * <i>this</i> feature node. Due to bidirectionality this method must also
+     * Adds the given term node at the end of the list of children of
+     * <i>this</i> term node. Due to bidirectionality this method must also
 	 * assign <i>this</i> feature node as the parent of the given child.
 	 *
 	 * @param	child	the feature node to be added
@@ -194,8 +194,8 @@ public class TermNode <T extends DefinedTermBase>
 	 * @see				#removeChild(TermNode)
 	 * @see				#removeChild(int)
 	 */
-	public void addChild(TermNode<T> child){
-		addChild(child, children.size());
+	public TermNode<T> addChild(TermNode<T> child){
+		return addChild(child, children.size());
 	}
 
 	/**
@@ -282,7 +282,7 @@ public class TermNode <T extends DefinedTermBase>
 	 * @see				#removeChild(TermNode)
 	 * @see				#removeChild(int)
 	 */
-	public void addChild(TermNode<T> child, int index){
+	public TermNode<T> addChild(TermNode<T> child, int index){
 	    checkTermType(child);
 	    List<TermNode<T>> children = this.getChildNodes();
 		if (index < 0 || index > children.size() + 1){
@@ -299,6 +299,7 @@ public class TermNode <T extends DefinedTermBase>
 			children.get(i).setSortIndex(i);
 		}
 		child.setSortIndex(index);
+	    return child;
 	}
 
 
