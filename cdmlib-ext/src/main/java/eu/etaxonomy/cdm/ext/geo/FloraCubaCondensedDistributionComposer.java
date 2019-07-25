@@ -79,7 +79,7 @@ public class FloraCubaCondensedDistributionComposer extends CondensedDistributio
             List<Language> languages) {
 
         CondensedDistribution result = new CondensedDistribution();
-//        Collection<NamedArea> allAreas = new HashSet<NamedArea>();
+//      Collection<NamedArea> allAreas = new HashSet<>();
         //we expect every area only to have 1 status  (multiple status should have been filtered beforehand)
         Map<NamedArea, PresenceAbsenceTerm> areaToStatusMap = new HashMap<>();
 
@@ -126,7 +126,7 @@ public class FloraCubaCondensedDistributionComposer extends CondensedDistributio
         }
 
         //3. find root nodes
-        List<AreaNode>topLevelNodes = new ArrayList<AreaNode>();
+        List<AreaNode>topLevelNodes = new ArrayList<>();
         for(AreaNode node : areaNodeMap.values()) {
             if(!node.hasParent() && ! topLevelNodes.contains(node)) {
                 topLevelNodes.add(node);
@@ -184,7 +184,7 @@ public class FloraCubaCondensedDistributionComposer extends CondensedDistributio
             String parentStatusSymbol, String parentLabel,
             Map<NamedArea, PresenceAbsenceTerm> areaToStatusMap, AreaNodeComparator areaNodeComparator) {
 
-        List<String> subAreaLabels = new ArrayList<String>();
+        List<String> subAreaLabels = new ArrayList<>();
 
         List<AreaNode> areaNodes = new ArrayList<>(nodes);
         Collections.sort(areaNodes, areaNodeComparator);
