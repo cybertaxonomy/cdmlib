@@ -452,7 +452,7 @@ public class DescriptiveDataSetService
         DescriptiveDataSet dataSet = load(descriptiveDataSetUuid);
         SpecimenOrObservationBase specimen = occurrenceService.load(specimenUuid);
 
-        Set<Character> datasetFeatures = dataSet.getDescriptiveSystem().getDistinctTerms();
+        Set<? extends Feature> datasetFeatures = dataSet.getDescriptiveSystem().getDistinctTerms();
         List<DescriptionElementBase> matchingDescriptionElements = new ArrayList<>();
 
         for (SpecimenDescription specimenDescription : (Set<SpecimenDescription>) specimen.getDescriptions()) {
