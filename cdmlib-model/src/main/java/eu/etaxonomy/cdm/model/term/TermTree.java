@@ -99,6 +99,15 @@ public class TermTree <T extends DefinedTermBase>
     }
 
     /**
+     * Creates a new term collection instance for the given term type
+     * with an empty {@link #getRoot() root node}.
+     * @param termType the {@link TermType term type}, must not be null
+     */
+    public static <T extends DefinedTermBase> TermTree<T> NewInstance(@NotNull TermType termType, @SuppressWarnings("unused") Class<T> clazz){
+        return new TermTree<>(termType);
+    }
+
+    /**
 	 * Creates a new feature tree instance with an empty {@link #getRoot() root node}.
 	 *
 	 * @see #NewInstance(UUID)

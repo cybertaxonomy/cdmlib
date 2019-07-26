@@ -131,6 +131,19 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 		return new QuantitativeData(feature);
 	}
 
+    /**
+     * Creates a new quantitative data instance of type feature.
+     */
+    public static QuantitativeData NewMinMaxInstance(Feature feature, float min, float max){
+        QuantitativeData result = new QuantitativeData(feature);
+        StatisticalMeasurementValue minValue = StatisticalMeasurementValue.NewInstance(StatisticalMeasure.MIN(),min);
+        result.addStatisticalValue(minValue);
+        StatisticalMeasurementValue maxValue = StatisticalMeasurementValue.NewInstance(StatisticalMeasure.MAX(), max);
+        result.addStatisticalValue(maxValue);
+        return result;
+    }
+
+
 
 // ******************************** CONSTRUCTOR *******************************/
 
