@@ -9,33 +9,39 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
+import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.State;
-import eu.etaxonomy.cdm.model.description.StateData;
-import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
-import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.name.INonViralName;
+import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
+import eu.etaxonomy.cdm.model.term.TermTree;
+import eu.etaxonomy.cdm.model.term.TermType;
 
 /**
  * @author m.venin
  * @since 16.12.2010
  */
 
-public class IdentificationKeyGeneratorTest {
+public class PolytomousKeyGeneratorTest {
 	@SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(IdentificationKeyGeneratorTest.class);
+    private static final Logger logger = Logger.getLogger(PolytomousKeyGeneratorTest.class);
 
-	private Feature feature1;
-	private Feature feature2;
-	private Feature feature3;
-	private Feature feature4;
+	private Feature featureShape;
+	private Feature featurePresence;
+	private Feature featureLength;
+	private Feature featureColour;
 
 	private Taxon taxon1;
 	private Taxon taxon2;
@@ -62,28 +68,31 @@ public class IdentificationKeyGeneratorTest {
 
 	@Before
 	public void setUp() throws Exception {
-		feature1 = Feature.NewInstance("","Shape of the head","");
-		feature2 = Feature.NewInstance("","Presence of wings","");
-		feature3 = Feature.NewInstance("","Length of wings","");
-		feature4 = Feature.NewInstance("","Colour","");
+	    if(Language.DEFAULT() == null){
+            new DefaultTermInitializer().initialize();
+        }
 
-		INonViralName tn1 = TaxonNameFactory.NewNonViralInstance(null);
-		INonViralName tn2 = TaxonNameFactory.NewNonViralInstance(null);
-		INonViralName tn3 = TaxonNameFactory.NewNonViralInstance(null);
-		INonViralName tn4 = TaxonNameFactory.NewNonViralInstance(null);
-		INonViralName tn5 = TaxonNameFactory.NewNonViralInstance(null);
-		INonViralName tn6 = TaxonNameFactory.NewNonViralInstance(null);
-		INonViralName tn7 = TaxonNameFactory.NewNonViralInstance(null);
-		INonViralName tn8 = TaxonNameFactory.NewNonViralInstance(null);
+	    featureShape = Feature.NewInstance("","Shape of the head","");
+	    featureShape.getTitleCache();
+		featurePresence = Feature.NewInstance("","Presence of wings","");
+		featurePresence.getTitleCache();
+		featureLength = Feature.NewInstance("","Length of wings","");
+		featureLength.getTitleCache();
+		featureColour = Feature.NewInstance("","Colour","");
+		featureColour.getTitleCache();
+		featureShape.setSupportsCategoricalData(true);
+		featurePresence.setSupportsCategoricalData(true);
+	    featureLength.setSupportsQuantitativeData(true);
+	    featureColour.setSupportsCategoricalData(true);
 
-		taxon1 = Taxon.NewInstance(tn1, null);
-		taxon2 = Taxon.NewInstance(tn2, null);
-		taxon3 = Taxon.NewInstance(tn3, null);
-		taxon4 = Taxon.NewInstance(tn4, null);
-		taxon5 = Taxon.NewInstance(tn5, null);
-		taxon6 = Taxon.NewInstance(tn6, null);
-		taxon7 = Taxon.NewInstance(tn7, null);
-		taxon8 = Taxon.NewInstance(tn8, null);
+		taxon1 = getTaxon(1);
+		taxon2 = getTaxon(2);
+		taxon3 = getTaxon(3);
+		taxon4 = getTaxon(4);
+		taxon5 = getTaxon(5);
+		taxon6 = getTaxon(6);
+		taxon7 = getTaxon(7);
+		taxon8 = getTaxon(8);
 
 		taxond1 = TaxonDescription.NewInstance(taxon1);
 		taxond2 = TaxonDescription.NewInstance(taxon2);
@@ -93,310 +102,123 @@ public class IdentificationKeyGeneratorTest {
 		taxond6 = TaxonDescription.NewInstance(taxon6);
 		taxond7 = TaxonDescription.NewInstance(taxon7);
 		taxond8 = TaxonDescription.NewInstance(taxon8);
+		taxond1.setTitleCache("td1", true);
+		taxond2.setTitleCache("td2", true);
+		taxond3.setTitleCache("td3", true);
+		taxond4.setTitleCache("td4", true);
+		taxond5.setTitleCache("td5", true);
+		taxond6.setTitleCache("td6", true);
+		taxond7.setTitleCache("td7", true);
+		taxond8.setTitleCache("td8", true);
 
-		CategoricalData catd11 = CategoricalData.NewInstance();
-		catd11.setFeature(feature1);
-		StateData sd11 = StateData.NewInstance();
-		State s11 = State.NewInstance("","Triangular","");
-		State s12 = State.NewInstance("","Circular","");
-		sd11.setState(s11);
-		catd11.addStateData(sd11);
+		State triangular = State.NewInstance("", "Triangular", "");
+		State circular = State.NewInstance("", "Circular", "");
 
-		CategoricalData catd12 = CategoricalData.NewInstance();
-		catd12.setFeature(feature1);
-		StateData sd12 = StateData.NewInstance();
-		sd12.setState(s11);
-		catd12.addStateData(sd12);
+		State yellow = State.NewInstance("", "Yellow", "");
+		State blue = State.NewInstance("","Blue","");
 
-		CategoricalData catd13 = CategoricalData.NewInstance();
-		catd13.setFeature(feature1);
-		StateData sd13 = StateData.NewInstance();
-		sd13.setState(s11);
-		catd13.addStateData(sd13);
+		State yes = State.NewInstance("","Yes","");
+		State no = State.NewInstance("","No","");
 
-		CategoricalData catd14 = CategoricalData.NewInstance();
-		catd14.setFeature(feature1);
-		StateData sd14 = StateData.NewInstance();
-		sd14.setState(s11);
-		catd14.addStateData(sd14);
+		triangular.getTitleCache();
+		circular.getTitleCache();
+		yellow.getTitleCache();
+		blue.getTitleCache();
+		yes.getTitleCache();
+		no.getTitleCache();
 
-		CategoricalData catd15 = CategoricalData.NewInstance();
-		catd15.setFeature(feature1);
-		StateData sd15 = StateData.NewInstance();
-		sd15.setState(s12);
-		catd15.addStateData(sd15);
-
-		CategoricalData catd16 = CategoricalData.NewInstance();
-		catd16.setFeature(feature1);
-		StateData sd16 = StateData.NewInstance();
-		sd16.setState(s12);
-		catd16.addStateData(sd16);
-
-		CategoricalData catd17 = CategoricalData.NewInstance();
-		catd17.setFeature(feature1);
-		StateData sd17 = StateData.NewInstance();
-		sd17.setState(s12);
-		catd17.addStateData(sd17);
-
-		CategoricalData catd18 = CategoricalData.NewInstance();
-		catd18.setFeature(feature1);
-		StateData sd18 = StateData.NewInstance();
-		sd18.setState(s12);
-		catd18.addStateData(sd18);
+		CategoricalData catd11 = CategoricalData.NewInstance(triangular, featureShape);
+		CategoricalData catd12 = CategoricalData.NewInstance(triangular, featureShape);
+		CategoricalData catd13 = CategoricalData.NewInstance(triangular, featureShape);
+		CategoricalData catd14 = CategoricalData.NewInstance(triangular, featureShape);
+		CategoricalData catd15 = CategoricalData.NewInstance(circular, featureShape);
+		CategoricalData catd16 = CategoricalData.NewInstance(circular, featureShape);
+		CategoricalData catd17 = CategoricalData.NewInstance(circular, featureShape);
+		CategoricalData catd18 = CategoricalData.NewInstance(circular, featureShape);
 
 		/*************************/
 
-		CategoricalData catd21 = CategoricalData.NewInstance();
-		catd21.setFeature(feature2);
-		StateData sd21 = StateData.NewInstance();
-		State s21 = State.NewInstance("","Yes","");
-		State s22 = State.NewInstance("","No","");
-		sd21.setState(s21);
-		catd21.addStateData(sd21);
-
-		CategoricalData catd22 = CategoricalData.NewInstance();
-		catd22.setFeature(feature2);
-		StateData sd22 = StateData.NewInstance();
-		sd22.setState(s21);
-		catd22.addStateData(sd22);
-
-		CategoricalData catd23 = CategoricalData.NewInstance();
-		catd23.setFeature(feature2);
-		StateData sd23 = StateData.NewInstance();
-		sd23.setState(s21);
-		catd23.addStateData(sd23);
-
-		CategoricalData catd24 = CategoricalData.NewInstance();
-		catd24.setFeature(feature2);
-		StateData sd24 = StateData.NewInstance();
-		sd24.setState(s21);
-		catd24.addStateData(sd24);
-
-		CategoricalData catd25 = CategoricalData.NewInstance();
-		catd25.setFeature(feature2);
-		StateData sd25 = StateData.NewInstance();
-		sd25.setState(s21);
-		catd25.addStateData(sd25);
-
-		CategoricalData catd26 = CategoricalData.NewInstance();
-		catd26.setFeature(feature2);
-		StateData sd26 = StateData.NewInstance();
-		sd26.setState(s21);
-		catd26.addStateData(sd26);
-
-		CategoricalData catd27 = CategoricalData.NewInstance();
-		catd27.setFeature(feature2);
-		StateData sd27 = StateData.NewInstance();
-		sd27.setState(s21);
-		catd27.addStateData(sd27);
-
-		CategoricalData catd28 = CategoricalData.NewInstance();
-		catd28.setFeature(feature2);
-		StateData sd28 = StateData.NewInstance();
-		sd28.setState(s22);
-		catd28.addStateData(sd28);
+		CategoricalData catd21 = CategoricalData.NewInstance(yes, featurePresence);
+		CategoricalData catd22 = CategoricalData.NewInstance(yes, featurePresence);
+		CategoricalData catd23 = CategoricalData.NewInstance(yes, featurePresence);
+		CategoricalData catd24 = CategoricalData.NewInstance(yes, featurePresence);
+		CategoricalData catd25 = CategoricalData.NewInstance(yes, featurePresence);
+		CategoricalData catd26 = CategoricalData.NewInstance(yes, featurePresence);
+		CategoricalData catd27 = CategoricalData.NewInstance(yes, featurePresence);
+		CategoricalData catd28 = CategoricalData.NewInstance(no, featurePresence);
 
 		/*************************/
 
-		QuantitativeData qtd31 = QuantitativeData.NewInstance();
-		StatisticalMeasurementValue smv311 = StatisticalMeasurementValue.NewInstance();
-		smv311.setValue(0);
-		StatisticalMeasure sm311 = StatisticalMeasure.MIN();
-		smv311.setType(sm311);
-		StatisticalMeasurementValue smv312 = StatisticalMeasurementValue.NewInstance();
-		smv312.setValue(3);
-		StatisticalMeasure sm312 = StatisticalMeasure.MAX();
-		smv312.setType(sm312);
-		qtd31.addStatisticalValue(smv311);
-		qtd31.addStatisticalValue(smv312);
-
-		QuantitativeData qtd32 = QuantitativeData.NewInstance();
-		StatisticalMeasurementValue smv321 = StatisticalMeasurementValue.NewInstance();
-		smv321.setValue(0);
-		StatisticalMeasure sm321 = StatisticalMeasure.MIN();
-		smv321.setType(sm321);
-		StatisticalMeasurementValue smv322 = StatisticalMeasurementValue.NewInstance();
-		smv322.setValue(3);
-		StatisticalMeasure sm322 = StatisticalMeasure.MAX();
-		smv322.setType(sm322);
-		qtd32.addStatisticalValue(smv321);
-		qtd32.addStatisticalValue(smv322);
-
-		QuantitativeData qtd33 = QuantitativeData.NewInstance();
-		StatisticalMeasurementValue smv331 = StatisticalMeasurementValue.NewInstance();
-		smv331.setValue(6);
-		StatisticalMeasure sm331 = StatisticalMeasure.MIN();
-		smv331.setType(sm331);
-		StatisticalMeasurementValue smv332 = StatisticalMeasurementValue.NewInstance();
-		smv332.setValue(9);
-		StatisticalMeasure sm332 = StatisticalMeasure.MAX();
-		smv332.setType(sm332);
-		qtd33.addStatisticalValue(smv331);
-		qtd33.addStatisticalValue(smv332);
-
-		QuantitativeData qtd34 = QuantitativeData.NewInstance();
-		StatisticalMeasurementValue smv341 = StatisticalMeasurementValue.NewInstance();
-		smv341.setValue(6);
-		StatisticalMeasure sm341 = StatisticalMeasure.MIN();
-		smv341.setType(sm341);
-		StatisticalMeasurementValue smv342 = StatisticalMeasurementValue.NewInstance();
-		smv342.setValue(9);
-		StatisticalMeasure sm342 = StatisticalMeasure.MAX();
-		smv342.setType(sm342);
-		qtd34.addStatisticalValue(smv341);
-		qtd34.addStatisticalValue(smv342);
-
-		QuantitativeData qtd35 = QuantitativeData.NewInstance();
-		StatisticalMeasurementValue smv351 = StatisticalMeasurementValue.NewInstance();
-		smv351.setValue(0);
-		StatisticalMeasure sm351 = StatisticalMeasure.MIN();
-		smv351.setType(sm351);
-		StatisticalMeasurementValue smv352 = StatisticalMeasurementValue.NewInstance();
-		smv352.setValue(3);
-		StatisticalMeasure sm352 = StatisticalMeasure.MAX();
-		smv352.setType(sm352);
-		qtd35.addStatisticalValue(smv351);
-		qtd35.addStatisticalValue(smv352);
-
-		QuantitativeData qtd36 = QuantitativeData.NewInstance();
-		StatisticalMeasurementValue smv361 = StatisticalMeasurementValue.NewInstance();
-		smv361.setValue(0);
-		StatisticalMeasure sm361 = StatisticalMeasure.MIN();
-		smv361.setType(sm361);
-		StatisticalMeasurementValue smv362 = StatisticalMeasurementValue.NewInstance();
-		smv362.setValue(3);
-		StatisticalMeasure sm362 = StatisticalMeasure.MAX();
-		smv362.setType(sm362);
-		qtd36.addStatisticalValue(smv361);
-		qtd36.addStatisticalValue(smv362);
-
-		QuantitativeData qtd37 = QuantitativeData.NewInstance();
-		StatisticalMeasurementValue smv371 = StatisticalMeasurementValue.NewInstance();
-		smv371.setValue(6);
-		StatisticalMeasure sm371 = StatisticalMeasure.MIN();
-		smv371.setType(sm371);
-		StatisticalMeasurementValue smv372 = StatisticalMeasurementValue.NewInstance();
-		smv372.setValue(9);
-		StatisticalMeasure sm372 = StatisticalMeasure.MAX();
-		smv372.setType(sm372);
-		qtd37.addStatisticalValue(smv371);
-		qtd37.addStatisticalValue(smv372);
-
-//		QuantitativeData qtd38 = QuantitativeData.NewInstance();
-//		StatisticalMeasurementValue smv381 = StatisticalMeasurementValue.NewInstance();
-//		smv381.setValue(6);
-//		StatisticalMeasure sm381 = StatisticalMeasure.MIN();
-//		smv381.setType(sm381);
-//		StatisticalMeasurementValue smv382 = StatisticalMeasurementValue.NewInstance();
-//		smv382.setValue(9);
-//		StatisticalMeasure sm382 = StatisticalMeasure.MAX();
-//		smv382.setType(sm382);
-//		qtd38.addStatisticalValue(smv381);
-//		qtd38.addStatisticalValue(smv382);
+		QuantitativeData qtd31 = QuantitativeData.NewMinMaxInstance(featureLength, 0, 3);
+		QuantitativeData qtd32 = QuantitativeData.NewMinMaxInstance(featureLength, 0, 3);
+		QuantitativeData qtd33 = QuantitativeData.NewMinMaxInstance(featureLength, 6, 9);
+		QuantitativeData qtd34 = QuantitativeData.NewMinMaxInstance(featureLength, 6, 9);
+		QuantitativeData qtd35 = QuantitativeData.NewMinMaxInstance(featureLength, 0, 3);
+		QuantitativeData qtd36 = QuantitativeData.NewMinMaxInstance(featureLength, 0, 3);
+		QuantitativeData qtd37 = QuantitativeData.NewMinMaxInstance(featureLength, 6, 9);
+//		QuantitativeData qtd38 = QuantitativeData.NewMinMaxInstance(feature3, 6, 9);
 
 		/*************************/
 
-		CategoricalData catd41 = CategoricalData.NewInstance();
-		catd41.setFeature(feature4);
-		StateData sd41 = StateData.NewInstance();
-		State s41 = State.NewInstance("","Blue","");
-		State s42 = State.NewInstance("","Yellow","");
-		sd41.setState(s41);
-		catd41.addStateData(sd41);
-
-		CategoricalData catd42 = CategoricalData.NewInstance();
-		catd42.setFeature(feature4);
-		StateData sd42 = StateData.NewInstance();
-		sd42.setState(s42);
-		catd42.addStateData(sd42);
-
-		CategoricalData catd43 = CategoricalData.NewInstance();
-		catd43.setFeature(feature4);
-		StateData sd43 = StateData.NewInstance();
-		sd43.setState(s41);
-		catd43.addStateData(sd43);
-
-		CategoricalData catd44 = CategoricalData.NewInstance();
-		catd44.setFeature(feature4);
-		StateData sd44 = StateData.NewInstance();
-		sd44.setState(s42);
-		catd44.addStateData(sd44);
-
-		CategoricalData catd45 = CategoricalData.NewInstance();
-		catd45.setFeature(feature4);
-		StateData sd45 = StateData.NewInstance();
-		sd45.setState(s41);
-		catd45.addStateData(sd45);
-
-		CategoricalData catd46 = CategoricalData.NewInstance();
-		catd46.setFeature(feature4);
-		StateData sd46 = StateData.NewInstance();
-		sd46.setState(s41);
-		catd46.addStateData(sd46);
-
-		CategoricalData catd47 = CategoricalData.NewInstance();
-		catd47.setFeature(feature4);
-		StateData sd47 = StateData.NewInstance();
-		sd47.setState(s41);
-		catd47.addStateData(sd47);
-
-		CategoricalData catd48 = CategoricalData.NewInstance();
-		catd48.setFeature(feature4);
-		StateData sd48 = StateData.NewInstance();
-		sd48.setState(s41);
-		catd48.addStateData(sd48);
+		CategoricalData catd41 = CategoricalData.NewInstance(blue, featureColour);
+		CategoricalData catd42 = CategoricalData.NewInstance(yellow, featureColour);
+		CategoricalData catd43 = CategoricalData.NewInstance(blue, featureColour);
+		CategoricalData catd44 = CategoricalData.NewInstance(yellow, featureColour);
+		CategoricalData catd45 = CategoricalData.NewInstance(blue, featureColour);
+		CategoricalData catd46 = CategoricalData.NewInstance(blue, featureColour);
+		CategoricalData catd47 = CategoricalData.NewInstance(blue, featureColour);
+		CategoricalData catd48 = CategoricalData.NewInstance(blue, featureColour);
 
 		/*************************/
+		taxond1.addElement(catd11); //Shape triangular
+		taxond1.addElement(catd21); //present
+		taxond1.addElement(qtd31);  //length 0-3
+		taxond1.addElement(catd41); //color blue
 
-		taxond1.addElement(catd11);
-		taxond1.addElement(catd21);
-		taxond1.addElement(qtd31);
-		taxond1.addElement(catd41);
+		taxond2.addElement(catd12);  //Shape triangular
+		taxond2.addElement(catd22);  //present
+		taxond2.addElement(qtd32);   //length 0-3
+		taxond2.addElement(catd42);  //color yellow
 
-		taxond2.addElement(catd12);
-		taxond2.addElement(catd22);
-		taxond2.addElement(qtd32);
-		taxond2.addElement(catd42);
+		taxond3.addElement(catd13);  //Shape triangular
+		taxond3.addElement(catd23);  //present
+		taxond3.addElement(qtd33);   //length 6-9
+		taxond3.addElement(catd43);  //color blue
 
-		taxond3.addElement(catd13);
-		taxond3.addElement(catd23);
-		taxond3.addElement(qtd33);
-		taxond3.addElement(catd43);
+		taxond4.addElement(catd14);  //Shape triangular
+		taxond4.addElement(catd24);  //present
+		taxond4.addElement(qtd34);   //length 6-9
+		taxond4.addElement(catd44);  //color yellow
 
-		taxond4.addElement(catd14);
-		taxond4.addElement(catd24);
-		taxond4.addElement(qtd34);
-		taxond4.addElement(catd44);
+		taxond5.addElement(catd15);  //Shape circular
+		taxond5.addElement(catd25);  //present
+		taxond5.addElement(qtd35);   //length 0-3
+		taxond5.addElement(catd45);  //color blue
 
-		taxond5.addElement(catd15);
-		taxond5.addElement(catd25);
-		taxond5.addElement(qtd35);
-		taxond5.addElement(catd45);
+		taxond6.addElement(catd16);  //Shape circular
+		taxond6.addElement(catd26);  //present
+		taxond6.addElement(qtd36);   //length 0-3
+		taxond6.addElement(catd46);  //color blue
 
-		taxond6.addElement(catd16);
-		taxond6.addElement(catd26);
-		taxond6.addElement(qtd36);
-		taxond6.addElement(catd46);
+		taxond7.addElement(catd17);  //Shape circular
+		taxond7.addElement(catd27);  //present
+		taxond7.addElement(qtd37);   //length 6-9
+		taxond7.addElement(catd47);  //color blue
 
-		taxond7.addElement(catd17);
-		taxond7.addElement(catd27);
-		taxond7.addElement(qtd37);
-		taxond7.addElement(catd47);
-
-		taxond8.addElement(catd18);
-		taxond8.addElement(catd28);
+		taxond8.addElement(catd18);  //Shape circular
+		taxond8.addElement(catd28);  //absent
 //		taxond8.addElement(qtd38); // This taxon has no wings
-		taxond8.addElement(catd48);
+		taxond8.addElement(catd48);  //color blue
 
 		/*************************/
 
-		features = new ArrayList<Feature>();
-		features.add(feature1);
-		features.add(feature2);
-		features.add(feature3);
-		features.add(feature4);
+		features = new ArrayList<>();
+		features.add(featureShape);
+		features.add(featurePresence);
+		features.add(featureLength);
+		features.add(featureColour);
 
-		taxa = new HashSet<TaxonDescription>();
+		taxa = new HashSet<>();
 		taxa.add(taxond1);
 		taxa.add(taxond2);
 		taxa.add(taxond3);
@@ -408,35 +230,89 @@ public class IdentificationKeyGeneratorTest {
 
 	}
 
+/**
+     * @param i
+     * @return
+     */
+    private Taxon getTaxon(int i) {
+        TaxonName tn = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
+        tn.setGenusOrUninomial("Taxon");
+        tn.setSpecificEpithet(String.valueOf(i));
+        Taxon result = Taxon.NewInstance(tn, ReferenceFactory.newBook());
+        result.getTitleCache();
+        return result;
+    }
+
 //*************************** TESTS *********************** /
 
 
 	@Test
 	public void testInvoke() {
 		generator = new PolytomousKeyGenerator();
-		generator.setFeatures(features);
-		generator.setTaxa(taxa);
-		assertNotNull("Key should exist.",generator.invoke());
+		PolytomousKeyGeneratorConfigurator configurator = new PolytomousKeyGeneratorConfigurator();
+		configurator.setDataSet(createDataSet());
+		configurator.setMerge(false);
+//		generator.setFeatures(features);
+//		generator.setTaxa(taxa);
+		PolytomousKey result = generator.invoke(configurator);
+		result.setTitleCache("No Merge Key", true);
+		assertNotNull("Key should exist.", result);
+	    result.print(System.out);
 	}
 
 	@Test
 	public void testInvokeMergeModeON() {
-//		generator = new IdentificationKeyGenerator();
-//		generator.setFeatures(features);
-//		generator.setTaxa(taxa);
-//		generator.mergeModeON();
-//		generator.invoke();
-//		assertNotNull("Key should exist (merge mode ON).",generator.invoke());;
+		generator = new PolytomousKeyGenerator();
+		PolytomousKeyGeneratorConfigurator configurator = new PolytomousKeyGeneratorConfigurator();
+        configurator.setDataSet(createDataSet());
+		configurator.setMerge(true);
+		PolytomousKey result = generator.invoke(configurator);
+		result.setTitleCache("Merge Key", true);
+        assertNotNull("Key should exist (merge mode ON).", result);
+	    result.print(System.out);
+
 	}
 
-	@Test
-	public void testInvokeWithDependencies() {
-//		generator = new IdentificationKeyGenerator();
+
+    @Test
+    @Ignore
+    public void testInvokeWithDependencies() {
+        generator = new PolytomousKeyGenerator();
+        PolytomousKeyGeneratorConfigurator configurator = new PolytomousKeyGeneratorConfigurator();
+        configurator.setMerge(true);
+
+//        generator.setFeatures(features);
+//        generator.setTaxa(taxa);
+////        generator.setDependencies(tree);// TODO create a tree with dependencies to test this function
+        generator.invoke(configurator);
+        assertNotNull("Key should exist (dependencies are present).",generator.invoke(configurator));
+    }
+
+    /**
+     * @param configurator
+     * @return
+     */
+    private DescriptiveDataSet createDataSet() {
+        DescriptiveDataSet dataset = DescriptiveDataSet.NewInstance();
+        dataset.setDescriptiveSystem(createFeatureTree());
 //		generator.setFeatures(features);
-//		generator.setTaxa(taxa);
-////		generator.setDependencies(tree);// TODO create a tree with dependencies to test this function
-//		generator.invoke();
-//		assertNotNull("Key should exist (dependencies are present).",generator.invoke());;
-	}
+        for (TaxonDescription desc : taxa){
+            dataset.addDescription(desc);
+        }
+//        generator.setTaxa(taxa);
+        return dataset;
+    }
+
+	/**
+     * @return
+     */
+    private TermTree<Feature> createFeatureTree() {
+        TermTree<Feature> result = TermTree.NewInstance(TermType.Feature, Feature.class);
+        for (Feature feature: features) {
+            result.getRoot().addChild(feature);
+        }
+        return result;
+    }
+
 
 }
