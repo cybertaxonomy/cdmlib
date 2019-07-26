@@ -87,7 +87,7 @@ public class CacheLoader {
         } else if (obj instanceof Collection) {
             return (T) load((Collection<T>)obj, alreadyVisitedEntities, update);
         } else if (obj instanceof MergeResult) {
-            return (T) loadRecursive((MergeResult<?>)obj, alreadyVisitedEntities, update);
+            return (T) loadRecursive((MergeResult<CdmBase>)obj, alreadyVisitedEntities, update);
         }
 
         if (logger.isInfoEnabled()){logger.info("No caching yet for type " + obj.getClass().getName());}
@@ -203,7 +203,7 @@ public class CacheLoader {
         return new MergeResult<>(cdmBase, mergeResult.getNewEntities());
     }
 
-    public MergeResult<CdmBase> loadRecursive(MergeResult<CdmBase> mergeResult,List<Object> alreadyVisitedEntities, boolean update) {
+    public MergeResult<CdmBase> loadRecursive(MergeResult<CdmBase> mergeResult, List<Object> alreadyVisitedEntities, boolean update) {
         CdmBase cdmBase = loadRecursive(mergeResult.getMergedEntity(), alreadyVisitedEntities, update);
         loadRecursive(mergeResult.getNewEntities(), alreadyVisitedEntities, update);
         return new MergeResult<>(cdmBase, mergeResult.getNewEntities());
