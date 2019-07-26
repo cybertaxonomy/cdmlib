@@ -22,5 +22,11 @@
       <groupId>eu.etaxonomy</groupId>
       <artifactId>cdmlib-services</artifactId>
     </dependency>
-  </dependencies>
+    <dependency>
+        <groupId>eu.etaxonomy</groupId>
+        <artifactId>cdmlib-test</artifactId>
+        <scope>test</scope>
+    </dependency>
+   </dependencies>
+  
 </project>
