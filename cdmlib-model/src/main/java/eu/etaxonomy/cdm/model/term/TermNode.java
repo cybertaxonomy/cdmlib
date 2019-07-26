@@ -558,15 +558,16 @@ public class TermNode <T extends DefinedTermBase>
      * term of this node and then recursively the list
      * of all children and grandChildren
      */
-    public Collection<? extends T> asTermListRecursive(List<T> terms) {
+    public Collection<? extends T> asTermListRecursive() {
+        List<T> result = new ArrayList<>();
         T term = this.getTerm();
         if(term != null){
-            terms.add(term);
+            result.add(term);
         }
         for(TermNode<T> childNode : this.getChildNodes()){
-            terms.addAll(childNode.asTermListRecursive(terms));
+            result.addAll(childNode.asTermListRecursive());
         }
-        return terms;
+        return result;
     }
 
 //*********************** CLONE ********************************************************/

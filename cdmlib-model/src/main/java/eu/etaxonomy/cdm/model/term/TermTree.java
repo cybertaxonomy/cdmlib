@@ -238,7 +238,9 @@ public class TermTree <T extends DefinedTermBase>
         List<T> result = new ArrayList<>();
         for (TermNode<T> node : getRootChildren()){
             result.add(node.getTerm());
-            result.addAll(node.asTermListRecursive(result));
+            for (TermNode<T> child : node.getChildNodes()){
+                result.addAll(child.asTermListRecursive());
+            }
         }
         return result;
     }
