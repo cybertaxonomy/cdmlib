@@ -533,16 +533,6 @@ public class TermNode <T extends DefinedTermBase>
 //	}
 
 
-    /**
-     * Throws {@link IllegalArgumentException} if the given
-     * term has not the same term type as this term or if it is no sub or super type
-     * or if term type is null.
-     * @param term
-     */
-    private void checkTermTypeKindOf(IHasTermType descendant) {
-        IHasTermType.checkTermTypeEqualOrDescendant(this, descendant);
-    }
-
 //*********************** Terms ************************************/
 
 	/**

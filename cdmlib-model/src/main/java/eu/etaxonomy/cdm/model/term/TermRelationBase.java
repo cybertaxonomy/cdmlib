@@ -111,8 +111,18 @@ public abstract class TermRelationBase<TERM extends DefinedTermBase, REL extends
         return CdmBase.deproxy(term);
     }
     public void setTerm(TERM term) {
-        checkTermType(term);
+        checkTermTypeKindOf(term);
         this.term = term;
+    }
+
+    /**
+     * Throws {@link IllegalArgumentException} if the given
+     * term has not the same term type as this term or if it is no sub or super type
+     * or if term type is null.
+     * @param term
+     */
+    private void checkTermTypeKindOf(IHasTermType descendant) {
+        IHasTermType.checkTermTypeEqualOrDescendant(this, descendant);
     }
 
 //*************************** GRAPH ************************************/
