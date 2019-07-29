@@ -441,6 +441,9 @@ public interface INameService
 	public Pager<TypeDesignationBase> getTypeDesignations(TaxonName name,
 			SpecimenTypeDesignationStatus status, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
+	public List<TypeDesignationBase> getTypeDesignationsInHomotypicalGroup(UUID nameUuid, Integer pageSize,
+	        Integer pageNumber, List<String> propertyPaths);
+
 
 	/**
 	 * Returns a List of TaxonName instances that match the properties passed

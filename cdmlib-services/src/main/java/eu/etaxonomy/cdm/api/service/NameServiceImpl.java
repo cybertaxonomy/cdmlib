@@ -85,6 +85,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IReferencedEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ISourcedEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
+import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.name.INomenclaturalStatusDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
@@ -131,6 +132,9 @@ public class NameServiceImpl
     private ICdmGenericDao genericDao;
     @Autowired
     private ILuceneIndexToolProvider luceneIndexToolProvider;
+    @Autowired
+    // @Qualifier("defaultBeanInitializer")
+    protected IBeanInitializer defaultBeanInitializer;
 
     /**
      * Constructor
@@ -841,8 +845,16 @@ public class NameServiceImpl
         if(AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)) {
             results = dao.getTypeDesignations(name, null, status, pageSize, pageNumber, propertyPaths);
         }
-
         return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
+    }
+
+    @Override
+    public List<TypeDesignationBase> getTypeDesignationsInHomotypicalGroup(UUID nameUuid, Integer pageSize,
+            Integer pageNumber, List<String> propertyPaths){
+        TaxonName name = load(nameUuid, Arrays.asList("nomenclaturalReference.authorship"));
+        Set<TypeDesignationBase<?>> typeDesignations = name.getHomotypicalGroup().getTypeDesignations();
+        List<TypeDesignationBase> result = defaultBeanInitializer.initializeAll(new ArrayList(typeDesignations), propertyPaths);
+        return result;
     }
 
     /**
