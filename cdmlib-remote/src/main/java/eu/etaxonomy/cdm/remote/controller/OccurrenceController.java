@@ -99,13 +99,13 @@ public class OccurrenceController extends AbstractIdentifiableController<Specime
     }
 
 
-    @RequestMapping(value = { "occurrencesDTO" }, method = RequestMethod.GET)
-    public  FieldUnitDTO doGetOccurencesDTO(
+    @RequestMapping(value = { "fieldUnitDTO" }, method = RequestMethod.GET)
+    public  FieldUnitDTO doGetFieldUnitDTO(
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
-        logger.info("doGetDerivedFrom()" + requestPathAndQuery(request));
+        logger.info("doGetFieldUnitDTO()" + requestPathAndQuery(request));
 
         DerivedUnit sob = (DerivedUnit) getCdmBaseInstance(uuid, response, DERIVED_UNIT_INIT_STRATEGY);
 
