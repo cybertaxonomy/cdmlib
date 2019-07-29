@@ -83,7 +83,7 @@ public class DescriptiveDataSet extends IdentifiableEntity<DescriptiveDataSetDef
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
-	private TermTree<? extends Feature> descriptiveSystem;
+	private TermTree<Feature> descriptiveSystem;
 
 	@XmlElementWrapper(name = "Descriptions")
 	@XmlElement(name = "Description")
@@ -307,10 +307,10 @@ public class DescriptiveDataSet extends IdentifiableEntity<DescriptiveDataSetDef
 		}
 	}
 
-	public TermTree<? extends Feature> getDescriptiveSystem() {
+	public TermTree<Feature> getDescriptiveSystem() {
 		return descriptiveSystem;
 	}
-	public void setDescriptiveSystem(TermTree<? extends Feature> descriptiveSystem) {
+	public void setDescriptiveSystem(TermTree<Feature> descriptiveSystem) {
 		this.descriptiveSystem = descriptiveSystem;
 	}
 
