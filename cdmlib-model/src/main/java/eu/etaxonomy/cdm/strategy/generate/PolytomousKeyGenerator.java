@@ -1,11 +1,13 @@
 package eu.etaxonomy.cdm.strategy.generate;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -181,76 +183,137 @@ public class PolytomousKeyGenerator {
         List<State> statesDone = new ArrayList<>(); // the list of states already used
 
         int numberOfStates;
-        for (DescriptionBase<?> td : taxaCovered){
+        Set<State> states = getAllStates(winnerFeature, taxaCovered);
+		// a map is created, the key being the set of taxa that present the state(s) stored in the corresponding value
+		Map<Set<DescriptionBase<?>>,List<State>> taxonStatesMap = determineCategoricalStates(
+		            statesDone, states, winnerFeature, taxaCovered);
+		// if the merge option is ON, branches with the same discriminative power will be merged (see Vignes & Lebbes, 1989)
+		if (config.isMerge()){
+			// creates a map between the different states of the winnerFeature and the sets of states "incompatible" with them
+			Map<State,Set<State>> exclusions = new HashMap<>();
+			featureScoreAndMerge(winnerFeature, taxaCovered, exclusions);
 
-            // first, get the right DescriptionElementBase
-            //TODO what if 2 debs exist
-            DescriptionElementBase debConcerned = getDescriptionElementForFeature(winnerFeature, td);
+			while (!exclusions.isEmpty()){
+				// looks for the largest clique, i.e. the state with less exclusions
+				List<State> clique = returnBestClique(exclusions);
+				// then merges the corresponding branches
+				mergeBranches(clique, taxonStatesMap);
+			}
+		}
 
-        	if (debConcerned!=null) {
-        		// a map is created, the key being the set of taxa that present the state(s) stored in the corresponding value
-        		Map<Set<DescriptionBase<?>>,List<State>> taxonStatesMap = determineCategoricalStates(
-        		            statesDone, (CategoricalData)debConcerned, winnerFeature, taxaCovered);
-        		// if the merge option is ON, branches with the same discriminative power will be merged (see Vignes & Lebbes, 1989)
-        		if (config.isMerge()){
-        			// creates a map between the different states of the winnerFeature and the sets of states "incompatible" with them
-        			Map<State,Set<State>> exclusions = new HashMap<>();
-        			featureScoreAndMerge(winnerFeature, taxaCovered, exclusions);
+		List<Set<DescriptionBase<?>>> sortedKeys = sortKeys(taxonStatesMap);
+		for (Set<DescriptionBase<?>> newTaxaCovered : sortedKeys){
+			List<State> listOfStates = taxonStatesMap.get(newTaxaCovered);
+			if ((newTaxaCovered.size()>0) && !((newTaxaCovered.size()==taxaCovered.size()) && !taxaDiscriminatedInPreviousStep)){ // if the taxa are discriminated compared to those of the father node, a child is created
+				childrenExist = true;
+				PolytomousKeyNode pkNode = PolytomousKeyNode.NewInstance();
+				StringBuilder statementLabel = new StringBuilder();
+				numberOfStates = listOfStates.size()-1;
+				for (State state : listOfStates) {
+					if (config.isUseDependencies()){
+						// if the dependencies are considered, removes and adds the right features from/to the list of features left
+						// these features are stored in order to be put back again when the current branch is finished
+						if (iIdependencies.get(state)!= null) {
+                            innapplicables.addAll(iIdependencies.get(state));
+                        }
+						if (oAIdependencies.get(state)!= null) {
+                            applicables.addAll(oAIdependencies.get(state));
+                        }
+						for (Feature feature : innapplicables) {
+                            featuresLeft.remove(feature);
+                        }
+						for (Feature feature : applicables) {
+                            featuresLeft.add(feature);
+                        }
+					}
+					statementLabel.append(state.getLabel());
+					if (listOfStates.lastIndexOf(state)!=numberOfStates){
+                        statementLabel.append(separator); // append a separator after each state except for the last one
+                    }
+				}
+				// old code used when PolytomousKey extended FeatureTree
+				//									Representation question = new Representation(null, questionLabel.toString(),null, Language.DEFAULT());
+				//									son.addQuestion(question);
+				KeyStatement statement = KeyStatement.NewInstance(statementLabel.toString());
+				pkNode.setStatement(statement);
+				father.setFeature(winnerFeature);
+				father.addChild(pkNode);
+				featuresLeft.remove(winnerFeature); // unlike for quantitative features, once a categorical one has been used, it cannot be reused in the same branch
+				boolean areTheTaxaDiscriminated = !(newTaxaCovered.size() == taxaCovered.size());
+				buildBranches(pkNode, featuresLeft, newTaxaCovered, areTheTaxaDiscriminated);
+			}
+		}
 
-        			while (!exclusions.isEmpty()){
-        				// looks for the largest clique, i.e. the state with less exclusions
-        				List<State> clique = returnBestClique(exclusions);
-        				// then merges the corresponding branches
-        				mergeBranches(clique, taxonStatesMap);
-        			}
-        		}
-        		if (taxonStatesMap!=null && !taxonStatesMap.isEmpty()) {
-        			for (Map.Entry<Set<DescriptionBase<?>>,List<State>> entry : taxonStatesMap.entrySet()){
-        				Set<DescriptionBase<?>> newTaxaCovered = entry.getKey();
-        				List<State> listOfStates = entry.getValue();
-        				if ((newTaxaCovered.size()>0) && !((newTaxaCovered.size()==taxaCovered.size()) && !taxaDiscriminatedInPreviousStep)){ // if the taxa are discriminated compared to those of the father node, a child is created
-        					childrenExist = true;
-        					PolytomousKeyNode pkNode = PolytomousKeyNode.NewInstance();
-        					StringBuilder statementLabel = new StringBuilder();
-        					numberOfStates = listOfStates.size()-1;
-        					for (State state : listOfStates) {
-        						if (config.isUseDependencies()){
-        							// if the dependencies are considered, removes and adds the right features from/to the list of features left
-        							// these features are stored in order to be put back again when the current branch is finished
-        							if (iIdependencies.get(state)!= null) {
-                                        innapplicables.addAll(iIdependencies.get(state));
-                                    }
-        							if (oAIdependencies.get(state)!= null) {
-                                        applicables.addAll(oAIdependencies.get(state));
-                                    }
-        							for (Feature feature : innapplicables) {
-                                        featuresLeft.remove(feature);
-                                    }
-        							for (Feature feature : applicables) {
-                                        featuresLeft.add(feature);
-                                    }
-        						}
-        						statementLabel.append(state.getLabel());
-        						if (listOfStates.lastIndexOf(state)!=numberOfStates){
-                                    statementLabel.append(separator); // append a separator after each state except for the last one
-                                }
-        					}
-        					// old code used when PolytomousKey extended FeatureTree
-        					//									Representation question = new Representation(null, questionLabel.toString(),null, Language.DEFAULT());
-        					//									son.addQuestion(question);
-        					KeyStatement statement = KeyStatement.NewInstance(statementLabel.toString());
-        					pkNode.setStatement(statement);
-        					father.setFeature(winnerFeature);
-        					father.addChild(pkNode);
-        					featuresLeft.remove(winnerFeature); // unlike for quantitative features, once a categorical one has been used, it cannot be reused in the same branch
-        					boolean areTheTaxaDiscriminated = !(newTaxaCovered.size() == taxaCovered.size());
-        					buildBranches(pkNode, featuresLeft, newTaxaCovered, areTheTaxaDiscriminated);
-        				}
-        			}
-        		}
-        	}
-        }
         return childrenExist;
+    }
+
+    /**
+     * @param taxonStatesMap
+     * @return
+     */
+    private List<Set<DescriptionBase<?>>> sortKeys(Map<Set<DescriptionBase<?>>, List<State>> taxonStatesMap) {
+        //for now this is a dummy sorting
+        List<Map.Entry<Set<DescriptionBase<?>>, List<State>>> entries = new ArrayList<>();
+        entries.addAll(taxonStatesMap.entrySet());
+        Comparator<? super Entry<Set<DescriptionBase<?>>, List<State>>> c = (a,b)-> {
+            if (a.getKey().size()!=b.getKey().size()){
+                return a.getKey().size() - b.getKey().size();
+            }else if (a.getValue().size()!= b.getValue().size()){
+                return a.getValue().size() - b.getValue().size();
+            }else{
+                for (int i = 0; i < a.getValue().size(); i++){
+                    State stateA = a.getValue().get(i);
+                    State stateB = b.getValue().get(i);
+                    //TODO use real Term Comparator
+                    if (!stateA.getTitleCache().equals(stateB.getTitleCache())){
+                        return stateA.getTitleCache().compareTo(stateB.getTitleCache());
+                    }
+                    if (stateA.getUuid()!= stateB.getUuid()){
+                        return stateA.getUuid().compareTo(stateB.getUuid());
+                    }
+                }
+                //TODO compare keys (sets of descriptionBase)
+//                for (int i = 0; i < a.getKey().size(); i++){
+//                    Object stateA = a.getKey().getUuid;
+//                    State stateB = a.getKey().get(i);
+//                    //TODO use real Term Comparator
+//                    if (stateA.getUuid()!= stateB.getUuid()){
+//                        return stateA.getUuid().compareTo(stateB.getUuid());
+//                    }
+//                }
+                throw new RuntimeException("Compare for same state lists with different unit descriptions not yet implemented");
+
+            }
+        };
+        entries.sort(c );
+        List<Set<DescriptionBase<?>>> result = new ArrayList<>();
+        for (Map.Entry<Set<DescriptionBase<?>>, List<State>> entry : entries){
+            result.add(entry.getKey());
+        }
+        return result;
+    }
+
+//    private static Comparator<? super Entry<Set<DescriptionBase<?>>, List<State>>> taxonStatesComparator
+
+
+    /**
+     * @param winnerFeature
+     * @param taxaCovered
+     */
+    private Set<State> getAllStates(Feature winnerFeature, Set<DescriptionBase<?>> taxaCovered) {
+        Set<State> states = new HashSet<>();
+        for (DescriptionBase<?> td : taxaCovered){
+            for (DescriptionElementBase deb : td.getElements()) {
+                if (deb.getFeature().equals(winnerFeature)) {
+                    List<StateData> stateDatas = CdmBase.deproxy(deb, CategoricalData.class).getStateData();
+
+                    for (StateData sd : stateDatas){
+                        states.add(sd.getState());
+                    }
+                }
+            }
+        }
+        return states;
     }
 
     /**
@@ -482,22 +545,15 @@ public class PolytomousKeyGenerator {
 	 * fills a map of the sets of taxa (key) presenting the different states (value) for the given feature.
 	 *
 	 * @param statesDone the list of states already done for this feature
-	 * @param categoricalData the element from which the states are extracted
+	 * @param states2 the element from which the states are extracted
 	 * @param feature the feature corresponding to the CategoricalData
 	 * @param taxaCovered the base of taxa considered
 	 * @return
 	 */
 	private Map<Set<DescriptionBase<?>>,List<State>> determineCategoricalStates(List<State> statesDone,
-	        CategoricalData categoricalData, Feature feature, Set<DescriptionBase<?>> taxaCovered){
+	        Set<State> states, Feature feature, Set<DescriptionBase<?>> taxaCovered){
 
 	    Map<Set<DescriptionBase<?>>, List<State>> childrenStatesMap = new HashMap<>();
-
-	    List<StateData> stateDatas = categoricalData.getStateData();
-
-		List<State> states = new ArrayList<>();
-		for (StateData sd : stateDatas){
-			states.add(sd.getState());
-		}
 
 		for (State featureState : states){ // for each state
 			if(!statesDone.contains(featureState)){ // if the state hasn't already be considered
@@ -530,7 +586,7 @@ public class PolytomousKeyGenerator {
 			for (DescriptionElementBase deb : elements){
 				if (deb.isInstanceOf(CategoricalData.class)) {
 					if (deb.getFeature().equals(feature)) {
-						List<StateData> stateDatas = ((CategoricalData)deb).getStateData();
+						List<StateData> stateDatas = CdmBase.deproxy(deb, CategoricalData.class).getStateData();
 						for (StateData sd : stateDatas) {
 							if (sd.getState().equals(featureState)){
 								newCoveredTaxa.add(td);
@@ -587,7 +643,7 @@ public class PolytomousKeyGenerator {
 			for (Feature feature : bestFeatures){
 				if (feature.isSupportsCategoricalData()){
 					Set<State> differentStates = new HashSet<>();
-					for (DescriptionBase td : taxaCovered){
+					for (DescriptionBase<?> td : taxaCovered){
 						Set<DescriptionElementBase> elements = td.getElements();
 						for (DescriptionElementBase deb : elements){
 							if (deb.isInstanceOf(CategoricalData.class)) {
@@ -605,8 +661,8 @@ public class PolytomousKeyGenerator {
 				}else if (feature.isSupportsQuantitativeData()){
 					numberOfDifferentStates=2;
 				}
-				if (lessStates==-1 || numberOfDifferentStates<lessStates){
-					lessStates=numberOfDifferentStates;
+				if (lessStates == -1 || numberOfDifferentStates < lessStates){
+					lessStates = numberOfDifferentStates;
 					bestFeature = feature;
 				}
 			}
@@ -767,12 +823,12 @@ public class PolytomousKeyGenerator {
 		float bestThreshold=0;
 		int difference=allValues.size();
 		int differenceMin = difference;
-		int taxaBefore=0;
-		int taxaAfter=0;
+		int bestTaxaBefore=0;
+		int bestTaxaAfter=0;
 		for (i=0;i<allValues.size()/2;i++) {
 			threshold = allValues.get(i*2+1);
-			taxaBefore=0;
-			taxaAfter=0;
+			int taxaBefore=0;
+			int taxaAfter=0;
 			for (j=0;j<allValues.size()/2;j++) {
 				if (allValues.get(j*2+1)<=threshold){
 					taxaBefore++;
@@ -782,17 +838,19 @@ public class PolytomousKeyGenerator {
 				}
 			}
 			difference = Math.abs(taxaBefore-taxaAfter);
-			if (difference<differenceMin){
-				differenceMin=difference;
+			if (difference < differenceMin){
+				differenceMin = difference;
 				bestThreshold = threshold;
+				bestTaxaBefore = taxaBefore;
+				bestTaxaAfter = taxaAfter;
 			}
 		}
 		quantitativeFeaturesThresholds.put(feature, bestThreshold);
 		int defaultQuantitativeScore=0;
-		for (i=0;i<taxaBefore;i++) {
-			defaultQuantitativeScore += taxaAfter - i;
+		for (i=0; i<bestTaxaBefore; i++) {
+			defaultQuantitativeScore += bestTaxaAfter;
 		}
-		return (defaultQuantitativeScore);
+		return defaultQuantitativeScore;
 	}
 
 

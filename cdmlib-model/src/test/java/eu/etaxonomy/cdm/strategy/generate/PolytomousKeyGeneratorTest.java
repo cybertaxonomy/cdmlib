@@ -41,10 +41,21 @@ public class PolytomousKeyGeneratorTest {
 	@SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(PolytomousKeyGeneratorTest.class);
 
+	private static final boolean QUANTITATIVE = true;
+	private static final boolean CATEGORICAL = false;
+
+
 	private Feature featureShape;
 	private Feature featurePresence;
 	private Feature featureLength;
 	private Feature featureColour;
+
+	private State triangular;
+	private State circular;
+	private State yellow;
+	private State blue;
+	private State yes;
+	private State no;
 
 	private Taxon taxon1;
 	private Taxon taxon2;
@@ -81,14 +92,10 @@ public class PolytomousKeyGeneratorTest {
             new DefaultTermInitializer().initialize();
         }
 
-	    featureShape = createFeature("Shape of the head", uuidFeatureShape, false);
-	    featurePresence = createFeature("Presence of wings", uuidFeaturePresence, false);
-	    featureLength = createFeature("Length of wings", uuidFeatureLength, true);
-	    featureColour = createFeature("Colour", uuidFeatureColour, false);
-	       featureShape.setSupportsCategoricalData(true);
-	        featurePresence.setSupportsCategoricalData(true);
-	        featureLength.setSupportsQuantitativeData(true);
-	        featureColour.setSupportsCategoricalData(true);
+	    featureShape = createFeature("Shape of the head", uuidFeatureShape, CATEGORICAL);
+	    featurePresence = createFeature("Presence of wings", uuidFeaturePresence, CATEGORICAL);
+	    featureLength = createFeature("Length of wings", uuidFeatureLength, QUANTITATIVE);
+	    featureColour = createFeature("Colour", uuidFeatureColour, CATEGORICAL);
 
 
 		taxon1 = getTaxon(1);
@@ -117,14 +124,14 @@ public class PolytomousKeyGeneratorTest {
 		taxond7.setTitleCache("td7", true);
 		taxond8.setTitleCache("td8", true);
 
-		State triangular = State.NewInstance("", "Triangular", "");
-		State circular = State.NewInstance("", "Circular", "");
+		triangular = State.NewInstance("", "Triangular", "");
+		circular = State.NewInstance("", "Circular", "");
 
-		State yellow = State.NewInstance("", "Yellow", "");
-		State blue = State.NewInstance("","Blue","");
+		yellow = State.NewInstance("", "Yellow", "");
+		blue = State.NewInstance("","Blue","");
 
-		State yes = State.NewInstance("","Yes","");
-		State no = State.NewInstance("","No","");
+		yes = State.NewInstance("","Yes","");
+		no = State.NewInstance("","No","");
 
 		triangular.getTitleCache();
 		circular.getTitleCache();
@@ -280,10 +287,36 @@ public class PolytomousKeyGeneratorTest {
 //		generator.setTaxa(taxa);
 		PolytomousKey result = generator.invoke(configurator);
 		result.setTitleCache("No Merge Key", true);
+	    result.print(System.out);
+
+	    //Assertions
 		assertNotNull("Key should exist.", result);
         PolytomousKeyNode root = result.getRoot();
         Assert.assertEquals(featureShape, root.getFeature());
-	    result.print(System.out);
+        //circular
+        PolytomousKeyNode circularNode = root.getChildAt(0);
+        String label = circularNode.getStatement().getLabelText(Language.DEFAULT());
+        Assert.assertEquals(circular.getLabel(), label);
+        Assert.assertEquals(featurePresence, circularNode.getFeature());
+            //no
+            PolytomousKeyNode noNode = circularNode.getChildAt(0);
+            label = noNode.getStatement().getLabelText(Language.DEFAULT());
+            Assert.assertEquals(no.getLabel(), label);
+            Assert.assertTrue(noNode.getChildren().isEmpty());
+            Assert.assertEquals(taxon8, noNode.getTaxon());
+            //yes
+            PolytomousKeyNode yesNode = circularNode.getChildAt(1);
+            label = yesNode.getStatement().getLabelText(Language.DEFAULT());
+            Assert.assertEquals(yes.getLabel(), label);
+            Assert.assertEquals(featureLength, yesNode.getFeature());
+
+
+        //triangular
+        PolytomousKeyNode triangularNode = root.getChildAt(1);
+        label = triangularNode.getStatement().getLabelText(Language.DEFAULT());
+        Assert.assertEquals(triangular.getLabel(), label);
+
+
 	}
 
 	@Test
@@ -295,9 +328,34 @@ public class PolytomousKeyGeneratorTest {
 		PolytomousKey result = generator.invoke(configurator);
 		result.setTitleCache("Merge Key", true);
         assertNotNull("Key should exist (merge mode ON).", result);
-        PolytomousKeyNode root = result.getRoot();
-	    Assert.assertEquals(featureShape, root.getFeature());
         result.print(System.out);
+
+        //Assertions
+        assertNotNull("Key should exist.", result);
+        PolytomousKeyNode root = result.getRoot();
+        Assert.assertEquals(featureShape, root.getFeature());
+        //circular
+        PolytomousKeyNode circularNode = root.getChildAt(0);
+        String label = circularNode.getStatement().getLabelText(Language.DEFAULT());
+        Assert.assertEquals(circular.getLabel(), label);
+        Assert.assertEquals(featurePresence, circularNode.getFeature());
+            //no
+            PolytomousKeyNode noNode = circularNode.getChildAt(0);
+            label = noNode.getStatement().getLabelText(Language.DEFAULT());
+            Assert.assertEquals(no.getLabel(), label);
+            Assert.assertTrue(noNode.getChildren().isEmpty());
+            Assert.assertEquals(taxon8, noNode.getTaxon());
+            //yes
+            PolytomousKeyNode yesNode = circularNode.getChildAt(1);
+            label = yesNode.getStatement().getLabelText(Language.DEFAULT());
+            Assert.assertEquals(yes.getLabel(), label);
+//            Assert.assertEquals(featureLength, circularNode.getFeature());
+
+
+        //triangular
+        PolytomousKeyNode triangularNode = root.getChildAt(1);
+        label = triangularNode.getStatement().getLabelText(Language.DEFAULT());
+        Assert.assertEquals(triangular.getLabel(), label);
 
 	}
 
