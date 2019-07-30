@@ -136,30 +136,30 @@ public class NamePortalController extends BaseController<TaxonName, INameService
         return p.getRecords();
     }
 
-//    /**
-//     * Get the list of {@link TypeDesignationBase}s associated to any name in the same homotypical group to which
-//     * the {@link TaxonName} identified by the <code>{name-uuid}</code> belongs.
-//     * <p>
-//     * URI: <b>&#x002F;{datasource-name}&#x002F;name&#x002F;{name-uuid}&#x002F;typeDesignations</b>
-//     *
-//     * @param request
-//     * @param response
-//     * @return a List of {@link TypeDesignationBase} entities which are initialized
-//     *         using the {@link #TYPEDESIGNATION_INIT_STRATEGY}
-//     * @throws IOException
-//     */
-//    @RequestMapping(value = { "typeDesignationsInHomotypicalGroup" }, method = RequestMethod.GET)
-//    public List<TypeDesignationBase> doGetTypeDesignationsInHomotypicalGroup(
-//            @PathVariable("uuid") UUID uuid, HttpServletRequest request,
-//            HttpServletResponse response) throws IOException {
-//
-//        if (request != null) {
-//            logger.info("doGetTypeDesignationsInHomotypicalGroup()" + requestPathAndQuery(request));
-//        }
-//        List<TypeDesignationBase> result = service.getTypeDesignationsInHomotypicalGroup(uuid,
-//                null, null, TYPEDESIGNATION_INIT_STRATEGY);
-//        return result;
-//    }
+    /**
+     * Get the list of {@link TypeDesignationBase}s associated to any name in the same homotypical group to which
+     * the {@link TaxonName} identified by the <code>{name-uuid}</code> belongs.
+     * <p>
+     * URI: <b>&#x002F;{datasource-name}&#x002F;name&#x002F;{name-uuid}&#x002F;typeDesignations</b>
+     *
+     * @param request
+     * @param response
+     * @return a List of {@link TypeDesignationBase} entities which are initialized
+     *         using the {@link #TYPEDESIGNATION_INIT_STRATEGY}
+     * @throws IOException
+     */
+    @RequestMapping(value = { "typeDesignationsInHomotypicalGroup" }, method = RequestMethod.GET)
+    public List<TypeDesignationBase> doGetTypeDesignationsInHomotypicalGroup(
+            @PathVariable("uuid") UUID uuid, HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+
+        if (request != null) {
+            logger.info("doGetTypeDesignationsInHomotypicalGroup()" + requestPathAndQuery(request));
+        }
+        List<TypeDesignationBase> result = service.getTypeDesignationsInHomotypicalGroup(uuid,
+                null, null, TYPEDESIGNATION_INIT_STRATEGY);
+        return result;
+    }
 
     /**
      * Get the list of {@link TaxonNameDescription}s of the Name associated with the
