@@ -6,8 +6,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -17,6 +19,7 @@ import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
+import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -31,9 +34,9 @@ import eu.etaxonomy.cdm.model.term.TermType;
 
 /**
  * @author m.venin
+ * @author a.mueller
  * @since 16.12.2010
  */
-
 public class PolytomousKeyGeneratorTest {
 	@SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(PolytomousKeyGeneratorTest.class);
@@ -64,6 +67,12 @@ public class PolytomousKeyGeneratorTest {
 	private Set<TaxonDescription> taxa;
 	private List<Feature> features;
 
+	private static UUID uuidFeatureShape = UUID.fromString("a61abb0c-51fb-4af4-aee4-f5894845133f");
+	private static UUID uuidFeaturePresence = UUID.fromString("03cb2744-52a0-4127-be5d-265fe59b426f");
+	private static UUID uuidFeatureLength = UUID.fromString("5de4f981-83fb-41d2-9900-b52cf5782a85");
+	private static UUID uuidFeatureColour = UUID.fromString("7a8deb1a-144f-4be5-ba0d-9e77724697cb");
+
+
 	private PolytomousKeyGenerator generator;
 
 	@Before
@@ -72,18 +81,15 @@ public class PolytomousKeyGeneratorTest {
             new DefaultTermInitializer().initialize();
         }
 
-	    featureShape = Feature.NewInstance("","Shape of the head","");
-	    featureShape.getTitleCache();
-		featurePresence = Feature.NewInstance("","Presence of wings","");
-		featurePresence.getTitleCache();
-		featureLength = Feature.NewInstance("","Length of wings","");
-		featureLength.getTitleCache();
-		featureColour = Feature.NewInstance("","Colour","");
-		featureColour.getTitleCache();
-		featureShape.setSupportsCategoricalData(true);
-		featurePresence.setSupportsCategoricalData(true);
-	    featureLength.setSupportsQuantitativeData(true);
-	    featureColour.setSupportsCategoricalData(true);
+	    featureShape = createFeature("Shape of the head", uuidFeatureShape, false);
+	    featurePresence = createFeature("Presence of wings", uuidFeaturePresence, false);
+	    featureLength = createFeature("Length of wings", uuidFeatureLength, true);
+	    featureColour = createFeature("Colour", uuidFeatureColour, false);
+	       featureShape.setSupportsCategoricalData(true);
+	        featurePresence.setSupportsCategoricalData(true);
+	        featureLength.setSupportsQuantitativeData(true);
+	        featureColour.setSupportsCategoricalData(true);
+
 
 		taxon1 = getTaxon(1);
 		taxon2 = getTaxon(2);
@@ -230,7 +236,25 @@ public class PolytomousKeyGeneratorTest {
 
 	}
 
-/**
+    /**
+     * @param title
+     * @param uuid
+     * @param isQuantitative
+     * @return
+     */
+    private Feature createFeature(String title, UUID uuid, boolean isQuantitative) {
+        Feature result = Feature.NewInstance("",title,"");
+        result.getTitleCache();
+        result.setUuid(uuid);
+        if (isQuantitative){
+            result.setSupportsQuantitativeData(true);
+        }else{
+            result.setSupportsCategoricalData(true);
+        }
+        return result;
+    }
+
+    /**
      * @param i
      * @return
      */
@@ -257,6 +281,8 @@ public class PolytomousKeyGeneratorTest {
 		PolytomousKey result = generator.invoke(configurator);
 		result.setTitleCache("No Merge Key", true);
 		assertNotNull("Key should exist.", result);
+        PolytomousKeyNode root = result.getRoot();
+        Assert.assertEquals(featureShape, root.getFeature());
 	    result.print(System.out);
 	}
 
@@ -269,7 +295,9 @@ public class PolytomousKeyGeneratorTest {
 		PolytomousKey result = generator.invoke(configurator);
 		result.setTitleCache("Merge Key", true);
         assertNotNull("Key should exist (merge mode ON).", result);
-	    result.print(System.out);
+        PolytomousKeyNode root = result.getRoot();
+	    Assert.assertEquals(featureShape, root.getFeature());
+        result.print(System.out);
 
 	}
 
