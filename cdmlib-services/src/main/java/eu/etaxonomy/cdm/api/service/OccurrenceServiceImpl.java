@@ -990,7 +990,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         //from which this DerivedUnit was derived until all FieldUnits are found.
 
         // FIXME: use HQL queries to increase performance
-    	
+
         SpecimenOrObservationBase<?> specimen = load(derivedUnitUuid, propertyPaths);
 //        specimen = HibernateProxyHelper.deproxy(specimen, SpecimenOrObservationBase.class);
         Collection<FieldUnit> fieldUnits = new ArrayList<>();
@@ -1025,6 +1025,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
 
     @Override
+    @Transactional(readOnly=true)
     public FieldUnitDTO findFieldUnitDTO(DerivateDTO derivedUnitDTO, Collection<FieldUnitDTO> fieldUnits, HashMap<UUID, DerivateDTO> alreadyCollectedSpecimen) {
         //It will search recursively over all {@link DerivationEvent}s and get the "originals" ({@link SpecimenOrObservationBase})
         //from which this DerivedUnit was derived until all FieldUnits are found.
@@ -1077,6 +1078,64 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         return fieldUnitDto;
 
     }
+
+    @Override
+    @Transactional(readOnly=true)
+    public FieldUnitDTO loadFieldUnitDTO(UUID derivedUnitUuid) {
+
+        FieldUnitDTO fieldUnitDTO = null;
+        DerivateDTO derivedUnitDTO = null;
+
+        SpecimenOrObservationBase derivative = dao.load(derivedUnitUuid);
+        if(derivative != null){
+            derivedUnitDTO = DerivateDTO.newInstance(derivative);
+            while(true){
+                Set<DerivateDTO> originals = originalDTOs(derivedUnitUuid);
+
+                if(originals.isEmpty()){
+                    break;
+                }
+                if (originals.size() > 1){
+                    logger.debug("The derived unit with uuid " + derivedUnitUuid + "has more than one orginal, ignoring all but the first one.");
+                }
+
+                DerivateDTO originalDTO = originals.iterator().next();
+                if (originalDTO instanceof FieldUnitDTO){
+                    fieldUnitDTO = (FieldUnitDTO)originalDTO;
+                    if(derivedUnitDTO != null){
+                        fieldUnitDTO.addDerivate(derivedUnitDTO);
+                    }
+                    break;
+                }else{
+                    if (derivedUnitDTO == null){
+                        derivedUnitDTO = originalDTO;
+                    } else {
+                        originalDTO.addDerivate(derivedUnitDTO);
+                        derivedUnitDTO = originalDTO;
+                    }
+                }
+            }
+        }
+        return fieldUnitDTO;
+
+    }
+
+    /**
+     * @param originalDTO
+     * @return
+     */
+    private Set<DerivateDTO> originalDTOs(UUID derivativeUuid) {
+
+        Set<DerivateDTO> dtos = new HashSet<>();
+
+        List<SpecimenOrObservationBase> specimens = dao.findOriginalsForDerivedUnit(derivativeUuid, null);
+        for(SpecimenOrObservationBase sob : specimens){
+            dtos.add(DerivateDTO.newInstance(sob));
+        }
+
+        return dtos;
+    }
+
 
     @Override
     @Transactional(readOnly = false)
