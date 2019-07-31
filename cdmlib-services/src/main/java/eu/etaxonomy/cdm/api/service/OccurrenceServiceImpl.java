@@ -1086,6 +1086,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         FieldUnitDTO fieldUnitDTO = null;
         DerivateDTO derivedUnitDTO = null;
 
+        Map<UUID, DerivateDTO> cycleDetectionMap = new HashMap<>();
         SpecimenOrObservationBase derivative = dao.load(derivedUnitUuid);
         if(derivative != null){
             derivedUnitDTO = DerivateDTO.newInstance(derivative);
@@ -1100,6 +1101,30 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 }
 
                 DerivateDTO originalDTO = originals.iterator().next();
+
+                // cycle detection and handling
+                if(cycleDetectionMap.containsKey(originalDTO.getUuid())){
+                    // cycle detected!!!
+                    try {
+                        throw new Exception();
+                    } catch(Exception e){
+                        logger.error("Cycle in derivate graph detected at DerivedUnit with uuid=" + originalDTO.getUuid() , e);
+                    }
+                    // to solve the situation for the output we remove the derivate from the more distant graph node
+                    // by removing it from the derivatives of its original
+                    // but let the derivate to be added to the original which is closer to the FieldUnit (below at originalDTO.addDerivate(derivedUnitDTO);)
+                    for(DerivateDTO seenOriginal: cycleDetectionMap.values()){
+                        for(DerivateDTO derivateDTO : seenOriginal.getDerivates()){
+                            if(derivateDTO.equals(originalDTO)){
+                                seenOriginal.getDerivates().remove(originalDTO);
+                            }
+                        }
+                    }
+                } else {
+                    cycleDetectionMap.put(originalDTO.getUuid(), originalDTO);
+                }
+
+
                 if (originalDTO instanceof FieldUnitDTO){
                     fieldUnitDTO = (FieldUnitDTO)originalDTO;
                     if(derivedUnitDTO != null){
