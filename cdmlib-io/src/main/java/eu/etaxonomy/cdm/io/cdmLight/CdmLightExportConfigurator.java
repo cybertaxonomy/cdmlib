@@ -53,6 +53,7 @@ public class CdmLightExportConfigurator
         super(transformer);
         this.resultType = ExportResultType.MAP_BYTE_ARRAY;
         this.setTarget(TARGET.EXPORT_DATA);
+        setUserFriendlyIOName("Cdm Light Export");
     }
 
 

@@ -205,9 +205,6 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator>
 			return result;
 		}
 
-		System.out.println("Start export from source '" + config.getSourceNameString()
-				+ "' to destination '" + config.getDestinationNameString() + "'");
-
 		ExportStateBase state = config.getNewState();
 		state.initialize(config);
 		state.setResult(result);
@@ -216,7 +213,7 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator>
 
 		List<Integer> stepCounts = countSteps(state, ioList);
 		Integer totalCount = stepCounts.get(stepCounts.size()-1);
-		config.getProgressMonitor().beginTask("Start Export", totalCount);
+		config.getProgressMonitor().beginTask(config.getUserFriendlyIOName() != null? config.getUserFriendlyIOName():"Start Export", totalCount);
 		config.getProgressMonitor().worked(1);
 		IProgressMonitor parentMonitor = SubProgressMonitor
 		        .NewStarted(config.getProgressMonitor(), 99, "Process data", totalCount);

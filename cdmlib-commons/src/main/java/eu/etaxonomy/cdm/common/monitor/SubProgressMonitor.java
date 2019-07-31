@@ -133,9 +133,9 @@ public class SubProgressMonitor extends ProgressMonitorWrapper {
         // this submonitor.
         scale = totalWork <= 0 ? 0 : (double) parentTicks
                 / (double) totalWork;
-        if ((style & PREPEND_MAIN_LABEL_TO_SUBTASK) != 0) {
+        //if ((style & PREPEND_MAIN_LABEL_TO_SUBTASK) != 0) {
             mainTaskLabel = name;
-        }
+        //}
     }
 
     @Override

@@ -60,6 +60,7 @@ public class CdmLightExportState
     protected CdmLightExportState(CdmLightExportConfigurator config) {
         super(config);
         result = ExportResult.NewInstance(config.getResultType());
+
     }
 
     /**
