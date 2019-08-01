@@ -1007,53 +1007,109 @@ public class PolytomousKeyGenerator {
 	 * @param deb2
 	 * @return
 	 */
-	private float defaultCategoricalPower(CategoricalData deb1, CategoricalData deb2){
-		List<StateData> states1 = deb1.getStateData();
-		List<StateData> states2 = deb2.getStateData();
-		boolean bool = false;
-		Iterator<StateData> stateData1Iterator = states1.iterator() ;
-		//		while (!bool && stateData1Iterator.hasNext()) {
-		//			Iterator<StateData> stateData2Iterator = states2.iterator() ;
-		//			StateData stateData1 = stateData1Iterator.next();
-		//			while (!bool && stateData2Iterator.hasNext()) {
-		//				bool = stateData1.getState().equals(stateData2Iterator.next().getState()); // checks if the states are the same
-		//			}
-		//		}
-		// one point each time two taxa can be discriminated for a given feature
+	private float defaultCategoricalPower(CategoricalData cd1, CategoricalData cd2){
+	    //FIXME see defaultCategoricalPower_old for additional code on dependencies
+	    //which has been removed here for now but might be important
 
-		boolean checkFeature = false;
-
-		if (!featureDependencies.containsKey(deb1.getFeature())){
-			featureDependencies.put(deb1.getFeature(), new HashSet<>());
-			checkFeature = true;
-		}
-
-		while (stateData1Iterator.hasNext()) {
-			Iterator<StateData> stateData2Iterator = states2.iterator() ;
-			StateData stateData1 = stateData1Iterator.next();
-			State state1 = stateData1.getState();
-			if (checkFeature){
-				if (iIdependencies.get(state1)!=null) {
-					featureDependencies.get(deb1.getFeature()).addAll(iIdependencies.get(state1));
-				}
-				if (oAIdependencies.get(state1)!=null) {
-					featureDependencies.get(deb1.getFeature()).addAll(oAIdependencies.get(state1));
-				}
-			}
-			while (stateData2Iterator.hasNext()) {
-			    StateData stateData2 = stateData2Iterator.next();
-	            State state2 = stateData2.getState();
-				bool = bool || state1.equals(state2); // checks if the states are the same
-			}
-		}
-
-
-		if (bool) {
+	    //get all states of both categorical data
+        Set<State> states = getStates(cd1, cd2);
+        if (states.size() == 0){
             return 0;
-        } else {
-            return 1;
         }
+
+	    int nDiscriminative = 0;
+	    for (State state : states){
+	        boolean hasState1 = hasState(state, cd1);
+	        boolean hasState2 = hasState(state, cd2);
+	        //if only 1 has the state than the state is discriminative
+	        if (! (hasState1&&hasState2)) {
+	            nDiscriminative++;
+            }
+	    }
+	    return nDiscriminative/states.size();
+
 	}
+
+	   /**
+     * @param cd
+     * @return
+     */
+    private boolean hasState(State state, CategoricalData cd) {
+        boolean result = false;
+        for (StateData stateData:cd.getStateData()){
+            result |= state.equals(stateData.getState());
+        }
+        return result;
+    }
+
+    /**
+     * @param cd1
+     * @param cd2
+     * @return
+     */
+    private Set<State> getStates(CategoricalData cd1, CategoricalData cd2) {
+        Set<State> result = new HashSet<>();
+        List<StateData> states1 = cd1.getStateData();
+        List<StateData> states2 = cd2.getStateData();
+        for (StateData state:states1){
+            result.add(state.getState());
+        }
+        for (StateData state:states2){
+            result.add(state.getState());
+        }
+        return result;
+    }
+
+
+    //keep as long as the handling of featureDependencies is not yet checked or handled in
+    //the new method defaultCategoricalPower()
+    private float defaultCategoricalPower_old(CategoricalData deb1, CategoricalData deb2){
+	        List<StateData> states1 = deb1.getStateData();
+	        List<StateData> states2 = deb2.getStateData();
+	        boolean bool = false;
+	        Iterator<StateData> stateData1Iterator = states1.iterator() ;
+	        //      while (!bool && stateData1Iterator.hasNext()) {
+	        //          Iterator<StateData> stateData2Iterator = states2.iterator() ;
+	        //          StateData stateData1 = stateData1Iterator.next();
+	        //          while (!bool && stateData2Iterator.hasNext()) {
+	        //              bool = stateData1.getState().equals(stateData2Iterator.next().getState()); // checks if the states are the same
+	        //          }
+	        //      }
+	        // one point each time two taxa can be discriminated for a given feature
+
+	        boolean checkFeature = false;
+
+	        if (!featureDependencies.containsKey(deb1.getFeature())){
+	            featureDependencies.put(deb1.getFeature(), new HashSet<>());
+	            checkFeature = true;
+	        }
+
+	        while (stateData1Iterator.hasNext()) {
+	            Iterator<StateData> stateData2Iterator = states2.iterator() ;
+	            StateData stateData1 = stateData1Iterator.next();
+	            State state1 = stateData1.getState();
+	            if (checkFeature){
+	                if (iIdependencies.get(state1)!=null) {
+	                    featureDependencies.get(deb1.getFeature()).addAll(iIdependencies.get(state1));
+	                }
+	                if (oAIdependencies.get(state1)!=null) {
+	                    featureDependencies.get(deb1.getFeature()).addAll(oAIdependencies.get(state1));
+	                }
+	            }
+	            while (stateData2Iterator.hasNext()) {
+	                StateData stateData2 = stateData2Iterator.next();
+	                State state2 = stateData2.getState();
+	                bool = bool || state1.equals(state2); // checks if the states are the same
+	            }
+	        }
+
+
+	        if (bool) {
+	            return 0;
+	        } else {
+	            return 1;
+	        }
+	    }
 
 }
 
