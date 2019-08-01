@@ -26,7 +26,6 @@ import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.term.TermNode;
-import eu.etaxonomy.cdm.model.term.TermTree;
 
 /**
  * @author m.venin
@@ -35,8 +34,6 @@ import eu.etaxonomy.cdm.model.term.TermTree;
 public class PolytomousKeyGenerator {
 
     private PolytomousKeyGeneratorConfigurator config;
-	//TODO include in configurator
-    private TermTree<Feature> dependenciesTree; // the tree containing the dependencies between states and features (InapplicableIf and OnlyApplicableIf)
 
 	private Map<State,Set<Feature>> iAifDependencies = new HashMap<>(); // map of a set of Features (value) inapplicables if a State (key) is present
 	private Map<State,Set<Feature>> oAifDependencies = new HashMap<>(); // map of a set of Features (value) only applicables if a State (key) is present
@@ -50,14 +47,6 @@ public class PolytomousKeyGenerator {
 	private static final String after=">";
 	private static final String separator = " or ";
 
-	/**
-	 * Sets the tree containing the dependencies between states and features.
-	 *
-	 * @param tree
-	 */
-	public void setDependencies(TermTree tree){
-		this.dependenciesTree = tree;
-	}
 
     /**
      * Creates the key and prints it
@@ -68,8 +57,8 @@ public class PolytomousKeyGenerator {
             throw new NullPointerException("PolytomousKeyGeneratorConfigurator must not be null");
         }
         this.config = config;
-        if (this.config.isUseDependencies() && dependenciesTree!=null){
-            checkDependencies(dependenciesTree.getRoot());
+        if (this.config.isUseDependencies()){
+            checkDependencies(config.getDependenciesTree().getRoot());
         }
         PolytomousKey polytomousKey = PolytomousKey.NewInstance();
         PolytomousKeyNode root = polytomousKey.getRoot();
@@ -944,32 +933,22 @@ public class PolytomousKeyGenerator {
 	 * @param node
 	 */
 	private void checkDependencies(TermNode<Feature> node){
-		if (node.getOnlyApplicableIf() != null){
-			Set<State> addToOAI = node.getOnlyApplicableIf();
-			for (State state : addToOAI){
-				if (oAifDependencies.containsKey(state)) {
-                    oAifDependencies.put(state, new HashSet<Feature>());
-                }
-				oAifDependencies.get(state).add(node.getTerm());
-			}
+		for (State state : node.getOnlyApplicableIf()){
+			if (!oAifDependencies.containsKey(state)) {
+                oAifDependencies.put(state, new HashSet<>());
+            }
+			oAifDependencies.get(state).add(node.getTerm());
 		}
-		if (node.getInapplicableIf()!=null){
-			Set<State> addToiI = node.getInapplicableIf();
-			for (State state : addToiI){
-				if (iAifDependencies.containsKey(state)) {
-                    iAifDependencies.put(state, new HashSet<Feature>());
-                }
-				iAifDependencies.get(state).add(node.getTerm());
-			}
+		for (State state : node.getInapplicableIf()){
+			if (!iAifDependencies.containsKey(state)) {
+                iAifDependencies.put(state, new HashSet<>());
+            }
+			iAifDependencies.get(state).add(node.getTerm());
 		}
-		if (node.getChildNodes()!=null) {
-			for (TermNode fn : node.getChildNodes()){
-				checkDependencies(fn);
-			}
+		for (TermNode<Feature> fn : node.getChildNodes()){
+			checkDependencies(fn);
 		}
 	}
-
-
 
 	/**
 	 * This function fills the exclusions map.

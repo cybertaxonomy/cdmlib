@@ -17,6 +17,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.term.TermTree;
 
 /**
  * @author a.mueller
@@ -84,12 +85,13 @@ public class PolytomousKeyGeneratorConfigurator {
         return result;
     }
 
-    /**
-     * @return
-     */
     public List<Feature> getFeatures() {
         List<Feature> result = dataSet.getDescriptiveSystem().asTermList();
         return result;
+    }
+
+    public TermTree<Feature> getDependenciesTree() {
+        return dataSet.getDescriptiveSystem();
     }
 
 }

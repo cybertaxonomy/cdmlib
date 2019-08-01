@@ -2,10 +2,8 @@ package eu.etaxonomy.cdm.strategy.generate;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -30,6 +28,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
+import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 
@@ -98,7 +97,6 @@ public class PolytomousKeyGeneratorTest {
     private QuantitativeData qtd37;
 
 	private Set<TaxonDescription> taxa;
-	private List<Feature> features;
 
 	private static UUID uuidFeatureShape = UUID.fromString("a61abb0c-51fb-4af4-aee4-f5894845133f");
 	private static UUID uuidFeaturePresence = UUID.fromString("03cb2744-52a0-4127-be5d-265fe59b426f");
@@ -243,12 +241,6 @@ public class PolytomousKeyGeneratorTest {
 		taxond8.addElement(catd48);  //color blue
 
 		/*************************/
-
-		features = new ArrayList<>();
-		features.add(featureShape);
-		features.add(featurePresence);
-		features.add(featureLength);
-		features.add(featureColour);
 
 		taxa = new HashSet<>();
 		taxa.add(taxond1);
@@ -550,11 +542,9 @@ public class PolytomousKeyGeneratorTest {
     private DescriptiveDataSet createDataSet() {
         DescriptiveDataSet dataset = DescriptiveDataSet.NewInstance();
         dataset.setDescriptiveSystem(createFeatureTree());
-//		generator.setFeatures(features);
         for (TaxonDescription desc : taxa){
             dataset.addDescription(desc);
         }
-//        generator.setTaxa(taxa);
         return dataset;
     }
 
@@ -563,9 +553,12 @@ public class PolytomousKeyGeneratorTest {
      */
     private TermTree<Feature> createFeatureTree() {
         TermTree<Feature> result = TermTree.NewInstance(TermType.Feature, Feature.class);
-        for (Feature feature: features) {
-            result.getRoot().addChild(feature);
-        }
+        result.getRoot().addChild(featureShape);
+        TermNode<Feature> nodePresence = result.getRoot().addChild(featurePresence);
+        TermNode<Feature> nodeLength = nodePresence.addChild(featureLength);
+        nodeLength.addInapplicableState(no);
+        nodePresence.addChild(featureColour);
+
         return result;
     }
 
