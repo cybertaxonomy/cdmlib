@@ -41,7 +41,7 @@ public class DefaultProgressMonitor implements IProgressMonitor {
     private transient Object feedbackLock;
     private boolean isWaitingForFeedback = false;
     private long feedbackWaitStartTime;
-    private BigDecimal lastPercentage;
+    private BigDecimal lastPercentage = new BigDecimal(0.0);
     private static final long DEFAULT_FEEDBACK_WAIT_TIMEOUT = 1000 * 60 * 60 * 24; // 24 hours
     private long feedbackWaitTimeout = DEFAULT_FEEDBACK_WAIT_TIMEOUT;
 
@@ -100,14 +100,12 @@ public class DefaultProgressMonitor implements IProgressMonitor {
 
     private void computeWorked(double work){
         this.workDone = this.workDone +  work;
-        if (subTask.equals(SUBTASK_DEFAULT)) {
-            if (getPercentageRounded(2) != lastPercentage){
-                if (logger.isInfoEnabled()){ logger.info(getPercentageRounded(2) + "% done (Completed Task: " + subTask + ")");}
-            }
-        }else{
-            if (getPercentageRounded(2) != lastPercentage){
-                if (logger.isInfoEnabled()){ logger.info(getPercentageRounded(2) + "% done (Completed Task: " + subTask + ")");}
-            }
+        if (logger.isInfoEnabled() && getPercentageRounded(2) != lastPercentage){
+            logger.info(getPercentageRounded(2) + "% done (Completed Task: " + subTask + ")");
+            lastPercentage = getPercentageRounded(2);
+        }else if (logger.isDebugEnabled()){
+            logger.debug(getPercentage() + "% done (Completed Task: " + subTask + ")");
+
         }
     }
 
