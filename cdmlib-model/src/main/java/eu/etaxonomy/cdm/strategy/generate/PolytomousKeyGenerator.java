@@ -38,8 +38,8 @@ public class PolytomousKeyGenerator {
 	//TODO include in configurator
     private TermTree dependenciesTree; // the tree containing the dependencies between states and features (InapplicableIf and OnlyApplicableIf)
 
-	private Map<State,Set<Feature>> iIdependencies = new HashMap<>(); // map of a set of Features (value) inapplicables if a State (key) is present
-	private Map<State,Set<Feature>> oAIdependencies = new HashMap<>(); // map of a set of Features (value) only applicables if a State (key) is present
+	private Map<State,Set<Feature>> iAifDependencies = new HashMap<>(); // map of a set of Features (value) inapplicables if a State (key) is present
+	private Map<State,Set<Feature>> oAifDependencies = new HashMap<>(); // map of a set of Features (value) only applicables if a State (key) is present
 	private Map<Feature,Set<Feature>> featureDependencies = new HashMap<>(); // map of all the sets of features (values) which have dependencies with states of other features (keys)
 
 
@@ -213,11 +213,11 @@ public class PolytomousKeyGenerator {
 					if (config.isUseDependencies()){
 						// if the dependencies are considered, removes and adds the right features from/to the list of features left
 						// these features are stored in order to be put back again when the current branch is finished
-						if (iIdependencies.get(state)!= null) {
-                            innapplicables.addAll(iIdependencies.get(state));
+						if (iAifDependencies.get(state)!= null) {
+                            innapplicables.addAll(iAifDependencies.get(state));
                         }
-						if (oAIdependencies.get(state)!= null) {
-                            applicables.addAll(oAIdependencies.get(state));
+						if (oAifDependencies.get(state)!= null) {
+                            applicables.addAll(oAifDependencies.get(state));
                         }
 						for (Feature feature : innapplicables) {
                             featuresLeft.remove(feature);
@@ -900,19 +900,19 @@ public class PolytomousKeyGenerator {
 		if (node.getOnlyApplicableIf()!=null){
 			Set<State> addToOAI = node.getOnlyApplicableIf();
 			for (State state : addToOAI){
-				if (oAIdependencies.containsKey(state)) {
-                    oAIdependencies.put(state, new HashSet<Feature>());
+				if (oAifDependencies.containsKey(state)) {
+                    oAifDependencies.put(state, new HashSet<Feature>());
                 }
-				oAIdependencies.get(state).add(node.getTerm());
+				oAifDependencies.get(state).add(node.getTerm());
 			}
 		}
 		if (node.getInapplicableIf()!=null){
 			Set<State> addToiI = node.getInapplicableIf();
 			for (State state : addToiI){
-				if (iIdependencies.containsKey(state)) {
-                    iIdependencies.put(state, new HashSet<Feature>());
+				if (iAifDependencies.containsKey(state)) {
+                    iAifDependencies.put(state, new HashSet<Feature>());
                 }
-				iIdependencies.get(state).add(node.getTerm());
+				iAifDependencies.get(state).add(node.getTerm());
 			}
 		}
 		if (node.getChildNodes()!=null) {
@@ -1089,11 +1089,11 @@ public class PolytomousKeyGenerator {
 	            StateData stateData1 = stateData1Iterator.next();
 	            State state1 = stateData1.getState();
 	            if (checkFeature){
-	                if (iIdependencies.get(state1)!=null) {
-	                    featureDependencies.get(deb1.getFeature()).addAll(iIdependencies.get(state1));
+	                if (iAifDependencies.get(state1)!=null) {
+	                    featureDependencies.get(deb1.getFeature()).addAll(iAifDependencies.get(state1));
 	                }
-	                if (oAIdependencies.get(state1)!=null) {
-	                    featureDependencies.get(deb1.getFeature()).addAll(oAIdependencies.get(state1));
+	                if (oAifDependencies.get(state1)!=null) {
+	                    featureDependencies.get(deb1.getFeature()).addAll(oAifDependencies.get(state1));
 	                }
 	            }
 	            while (stateData2Iterator.hasNext()) {
