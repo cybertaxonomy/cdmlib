@@ -73,7 +73,7 @@ public class PolytomousKeyGenerator {
         }
         PolytomousKey polytomousKey = PolytomousKey.NewInstance();
         PolytomousKeyNode root = polytomousKey.getRoot();
-        buildBranches(root, config.getFeatures(), config.getDescriptions(), true);
+        buildBranches(root, config.getFeatures(), (Set)config.getTaxonDescriptions(), true);
         return polytomousKey;
     }
 

@@ -8,12 +8,15 @@
 */
 package eu.etaxonomy.cdm.strategy.generate;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
 
 /**
  * @author a.mueller
@@ -67,6 +70,15 @@ public class PolytomousKeyGeneratorConfigurator {
         if (result == null || result.isEmpty()){
             if (dataSet.getTaxonSubtreeFilter() != null){
                 throw new RuntimeException("TaxonSubtreeFilter not yet implemented");
+            }
+        }
+        return result;
+    }
+    public Set<TaxonDescription> getTaxonDescriptions() {
+        Set<TaxonDescription> result = new HashSet<>();
+        for (DescriptionBase<?> desc: getDescriptions()){
+            if (desc.isInstanceOf(TaxonDescription.class)){
+                result.add(CdmBase.deproxy(desc, TaxonDescription.class));
             }
         }
         return result;
