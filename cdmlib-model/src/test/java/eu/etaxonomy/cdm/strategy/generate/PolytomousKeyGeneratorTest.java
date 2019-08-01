@@ -84,6 +84,15 @@ public class PolytomousKeyGeneratorTest {
 	private static UUID uuidFeatureLength = UUID.fromString("5de4f981-83fb-41d2-9900-b52cf5782a85");
 	private static UUID uuidFeatureColour = UUID.fromString("7a8deb1a-144f-4be5-ba0d-9e77724697cb");
 
+	private static UUID uuidTd1 = UUID.fromString("b392720c-8c64-4cbf-8207-992146f51fd5");
+    private static UUID uuidTd2 = UUID.fromString("341d8ef1-fd07-4a91-8d53-dd6e729ad20b");
+    private static UUID uuidTd3 = UUID.fromString("f174180f-86fe-475f-88f4-d0231fa96725");
+    private static UUID uuidTd4 = UUID.fromString("3c90104f-ff81-43eb-a0f1-17eec1e77f49");
+    private static UUID uuidTd5 = UUID.fromString("74b12419-4d2f-424d-9ca7-bba4c338df2e");
+    private static UUID uuidTd6 = UUID.fromString("8df21f07-3bc0-4a88-a270-6c6050509975");
+    private static UUID uuidTd7 = UUID.fromString("fc064338-adef-4657-bc69-34b0a9cc51a6");
+    private static UUID uuidTd8 = UUID.fromString("b0458406-8e76-4f1a-9034-79cc661caf2a");
+
 
 	private PolytomousKeyGenerator generator;
 
@@ -108,22 +117,15 @@ public class PolytomousKeyGeneratorTest {
 		taxon7 = getTaxon(7);
 		taxon8 = getTaxon(8);
 
-		taxond1 = TaxonDescription.NewInstance(taxon1);
-		taxond2 = TaxonDescription.NewInstance(taxon2);
-		taxond3 = TaxonDescription.NewInstance(taxon3);
-		taxond4 = TaxonDescription.NewInstance(taxon4);
-		taxond5 = TaxonDescription.NewInstance(taxon5);
-		taxond6 = TaxonDescription.NewInstance(taxon6);
-		taxond7 = TaxonDescription.NewInstance(taxon7);
-		taxond8 = TaxonDescription.NewInstance(taxon8);
-		taxond1.setTitleCache("td1", true);
-		taxond2.setTitleCache("td2", true);
-		taxond3.setTitleCache("td3", true);
-		taxond4.setTitleCache("td4", true);
-		taxond5.setTitleCache("td5", true);
-		taxond6.setTitleCache("td6", true);
-		taxond7.setTitleCache("td7", true);
-		taxond8.setTitleCache("td8", true);
+
+		taxond1 = createTaxonDescription(taxon1, "td1", uuidTd1);
+		taxond2 = createTaxonDescription(taxon2, "td2", uuidTd2);
+		taxond3 = createTaxonDescription(taxon3, "td3", uuidTd3);
+		taxond4 = createTaxonDescription(taxon4, "td4", uuidTd4);
+		taxond5 = createTaxonDescription(taxon5, "td5", uuidTd5);
+		taxond6 = createTaxonDescription(taxon6, "td6", uuidTd6);
+		taxond7 = createTaxonDescription(taxon7, "td7", uuidTd7);
+		taxond8 = createTaxonDescription(taxon8, "td8", uuidTd8);
 
 		triangular = createState("Triangular");
 		circular = createState("Circular");
@@ -238,6 +240,19 @@ public class PolytomousKeyGeneratorTest {
 		taxa.add(taxond8);
 
 	}
+
+    /**
+     * @param taxon12
+     * @param string
+     * @param uuidTd1
+     * @return
+     */
+    private TaxonDescription createTaxonDescription(Taxon taxon, String title, UUID uuid) {
+        TaxonDescription result = TaxonDescription.NewInstance(taxon);
+        result.setTitleCache(title, true);
+        result.setUuid(uuid);
+        return result;
+    }
 
     /**
      * @param string
@@ -368,7 +383,7 @@ public class PolytomousKeyGeneratorTest {
         //triangular
         PolytomousKeyNode triangularNode = root.getChildAt(1);
         label = triangularNode.getStatement().getLabelText(Language.DEFAULT());
-        Assert.assertEquals("Triangular or Oval", label);
+        Assert.assertEquals("Oval or Triangular", label);
 
 	}
 

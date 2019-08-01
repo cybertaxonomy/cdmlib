@@ -185,7 +185,7 @@ public class PolytomousKeyGenerator {
         int numberOfStates;
         Set<State> states = getAllStates(winnerFeature, taxaCovered);
 		// a map is created, the key being the set of taxa that present the state(s) stored in the corresponding value
-		Map<Set<DescriptionBase<?>>,List<State>> taxonStatesMap = determineCategoricalStates(
+		Map<Set<DescriptionBase<?>>, List<State>> taxonStatesMap = determineCategoricalStates(
 		            statesDone, states, winnerFeature, taxaCovered);
 		// if the merge option is ON, branches with the same discriminative power will be merged (see Vignes & Lebbes, 1989)
 		if (config.isMerge()){
@@ -202,13 +202,28 @@ public class PolytomousKeyGenerator {
 		}
 
 		List<Set<DescriptionBase<?>>> sortedKeys = sortKeys(taxonStatesMap);
+		//for some reason in tests when running under certain conditions (all tests not only 1 test in the test class)
+		//listOfStates = taxonStatesMap.get(newTaxaCovered) sometimes returned null, though it shouldn't
+		//it looks like the sorting or something else somehow manipulated the hash table of the map
+		//therefore we temporarily refill it here until the issue is fixed.
+		taxonStatesMap = renewTaxonStatesMap(sortedKeys, taxonStatesMap);
+
 		for (Set<DescriptionBase<?>> newTaxaCovered : sortedKeys){
 			List<State> listOfStates = taxonStatesMap.get(newTaxaCovered);
+//			if(listOfStates == null){
+//                for(Set<DescriptionBase<?>> key: taxonStatesMap.keySet()){
+//                    List<State> value = taxonStatesMap.get(key);
+//                    System.out.println("Null value for key");
+//                }
+//                System.out.println("List of states is null for " + newTaxaCovered);
+//            }
 			if ((newTaxaCovered.size()>0) && !((newTaxaCovered.size()==taxaCovered.size()) && !taxaDiscriminatedInPreviousStep)){ // if the taxa are discriminated compared to those of the father node, a child is created
 				childrenExist = true;
 				PolytomousKeyNode pkNode = PolytomousKeyNode.NewInstance();
 				StringBuilder statementLabel = new StringBuilder();
+
 				numberOfStates = listOfStates.size()-1;
+				listOfStates.sort(stateComparator);
 				for (State state : listOfStates) {
 					if (config.isUseDependencies()){
 						// if the dependencies are considered, removes and adds the right features from/to the list of features left
@@ -248,52 +263,83 @@ public class PolytomousKeyGenerator {
     }
 
     /**
+     * @param sortedKeys
+     * @param taxonStatesMap
+     * @return
+     */
+    private Map<Set<DescriptionBase<?>>, List<State>> renewTaxonStatesMap(List<Set<DescriptionBase<?>>> sortedKeys,
+            Map<Set<DescriptionBase<?>>, List<State>> taxonStatesMap) {
+        Map<Set<DescriptionBase<?>>, List<State>> result = new HashMap<>();
+        for (Map.Entry<Set<DescriptionBase<?>>, List<State>> entry : taxonStatesMap.entrySet()){
+            result.put(entry.getKey(), entry.getValue());
+        }
+        return result;
+    }
+
+    /**
      * @param taxonStatesMap
      * @return
      */
     private List<Set<DescriptionBase<?>>> sortKeys(Map<Set<DescriptionBase<?>>, List<State>> taxonStatesMap) {
         //for now this is a dummy sorting
-        List<Map.Entry<Set<DescriptionBase<?>>, List<State>>> entries = new ArrayList<>();
-        entries.addAll(taxonStatesMap.entrySet());
-        Comparator<? super Entry<Set<DescriptionBase<?>>, List<State>>> c = (a,b)-> {
-            if (a.getKey().size()!=b.getKey().size()){
-                return a.getKey().size() - b.getKey().size();
-            }else if (a.getValue().size()!= b.getValue().size()){
-                return a.getValue().size() - b.getValue().size();
-            }else{
-                for (int i = 0; i < a.getValue().size(); i++){
-                    State stateA = a.getValue().get(i);
-                    State stateB = b.getValue().get(i);
-                    //TODO use real Term Comparator
-                    if (!stateA.getTitleCache().equals(stateB.getTitleCache())){
-                        return stateA.getTitleCache().compareTo(stateB.getTitleCache());
-                    }
-                    if (stateA.getUuid()!= stateB.getUuid()){
-                        return stateA.getUuid().compareTo(stateB.getUuid());
-                    }
-                }
-                //TODO compare keys (sets of descriptionBase)
-//                for (int i = 0; i < a.getKey().size(); i++){
-//                    Object stateA = a.getKey().getUuid;
-//                    State stateB = a.getKey().get(i);
-//                    //TODO use real Term Comparator
-//                    if (stateA.getUuid()!= stateB.getUuid()){
-//                        return stateA.getUuid().compareTo(stateB.getUuid());
-//                    }
-//                }
-                throw new RuntimeException("Compare for same state lists with different unit descriptions not yet implemented");
+        List<Map.Entry<Set<DescriptionBase<?>>, List<State>>> sortedEntries = new ArrayList<>();
+        sortedEntries.addAll(taxonStatesMap.entrySet());
 
-            }
-        };
-        entries.sort(c );
+        sortedEntries.sort(entryComparator);
         List<Set<DescriptionBase<?>>> result = new ArrayList<>();
-        for (Map.Entry<Set<DescriptionBase<?>>, List<State>> entry : entries){
+        for (Map.Entry<Set<DescriptionBase<?>>, List<State>> entry : sortedEntries){
             result.add(entry.getKey());
         }
         return result;
     }
 
 //    private static Comparator<? super Entry<Set<DescriptionBase<?>>, List<State>>> taxonStatesComparator
+
+
+    //TODO use a general term comparator here
+    private static final Comparator<State> stateComparator = (a,b)-> {
+
+        //TODO use real Term Comparator
+        if (!a.getTitleCache().equals(b.getTitleCache())){
+            return a.getTitleCache().compareTo(b.getTitleCache());
+        }
+        if (a.getUuid()!= b.getUuid()){
+            return a.getUuid().compareTo(b.getUuid());
+        }
+        return 0;
+    };
+
+
+    private static final Comparator<? super Entry<Set<DescriptionBase<?>>, List<State>>> entryComparator =  (a,b)-> {
+        if (a.getKey().size()!=b.getKey().size()){
+            //order by number of taxa covered
+            return a.getKey().size() - b.getKey().size();
+        }else if (a.getValue().size()!= b.getValue().size()){
+            //order by number of states covered
+            return a.getValue().size() - b.getValue().size();
+        }else{
+            //order states alphabetically or by uuid
+            for (int i = 0; i < a.getValue().size(); i++){
+                State stateA = a.getValue().get(i);
+                State stateB = b.getValue().get(i);
+                int result = stateComparator.compare(stateA, stateB);
+                if (result != 0){
+                    return result;
+                }
+            }
+            //TODO compare keys (sets of descriptionBase)
+//            for (int i = 0; i < a.getKey().size(); i++){
+//                Object stateA = a.getKey().getUuid;
+//                State stateB = a.getKey().get(i);
+//                //TODO use real Term Comparator
+//                if (stateA.getUuid()!= stateB.getUuid()){
+//                    return stateA.getUuid().compareTo(stateB.getUuid());
+//                }
+//            }
+            throw new RuntimeException("Compare for same state lists with different unit descriptions not yet implemented");
+
+        }
+    };
 
 
     /**
@@ -868,21 +914,9 @@ public class PolytomousKeyGenerator {
 		float power=0;
 		DescriptionBase<?>[] coveredTaxaArray = coveredTaxa.toArray(new DescriptionBase[coveredTaxa.size()]); // I did not figure a better way to do this
 		for (i=0 ; i<coveredTaxaArray.length; i++){
-			Set<DescriptionElementBase> elements1 = coveredTaxaArray[i].getElements();
-			DescriptionElementBase deb1 = null;
-			for (DescriptionElementBase deb : elements1){
-				if (deb.getFeature().equals(feature)){
-					deb1 = deb; // finds the DescriptionElementBase corresponding to the concerned Feature
-				}
-			}
+			DescriptionElementBase deb1 = getDescriptionElementByFeature(coveredTaxaArray[i], feature);
 			for (j=i+1 ; j< coveredTaxaArray.length ; j++){
-				Set<DescriptionElementBase> elements2 = coveredTaxaArray[j].getElements();
-				DescriptionElementBase deb2 = null;
-				for (DescriptionElementBase deb : elements2){
-					if (deb.getFeature().equals(feature)){
-						deb2 = deb; // finds the DescriptionElementBase corresponding to the concerned Feature
-					}
-				}
+				DescriptionElementBase deb2 = getDescriptionElementByFeature(coveredTaxaArray[j], feature);
 				power = defaultPower(deb1,deb2);
 				score = score + power;
 			}
@@ -938,24 +972,15 @@ public class PolytomousKeyGenerator {
 		float power=0;
 		DescriptionBase<?>[] coveredTaxaArray = coveredTaxa.toArray(new DescriptionBase[coveredTaxa.size()]); // I did not figure a better way to do this
 		for (i=0 ; i<coveredTaxaArray.length; i++){
-			Set<DescriptionElementBase> elements1 = coveredTaxaArray[i].getElements();
-			DescriptionElementBase deb1 = null;
-			for (DescriptionElementBase deb : elements1){
-				if (deb.getFeature().equals(feature)){
-					deb1 = deb; // finds the DescriptionElementBase corresponding to the concerned Feature
-				}
-			}
+			DescriptionElementBase deb1 = getDescriptionElementByFeature(coveredTaxaArray[i], feature);
+
 			for (j=i+1 ; j< coveredTaxaArray.length ; j++){
-				Set<DescriptionElementBase> elements2 = coveredTaxaArray[j].getElements();
-				DescriptionElementBase deb2 = null;
-				for (DescriptionElementBase deb : elements2){
-					if (deb.getFeature().equals(feature)){
-						deb2 = deb; // finds the DescriptionElementBase corresponding to the concerned Feature
-					}
-				}
-				power = defaultPower(deb1,deb2);
+				DescriptionElementBase deb2 = getDescriptionElementByFeature(coveredTaxaArray[j], feature);
+
+//				System.out.println(deb1 + "; " +deb2);
+				power = defaultPower(deb1, deb2);
 				score = score + power;
-				if (power > 0){ // if there is no state in common between deb1 and deb2
+				if (power >= 1.0){ // if there is no state in common between deb1 and deb2
 
 					CategoricalData cat1 = (CategoricalData)deb1;
 					CategoricalData cat2 = (CategoricalData)deb2;
@@ -982,6 +1007,24 @@ public class PolytomousKeyGenerator {
 
 
 	/**
+     * finds the DescriptionElementBase corresponding to the concerned Feature
+     *
+     * FIXME: handle multiple occurrences of a feature in the description
+     *
+     * @param description
+	 * @param feature
+     * @return
+     */
+    private DescriptionElementBase getDescriptionElementByFeature(DescriptionBase<?> description, Feature feature) {
+        for (DescriptionElementBase deb : description.getElements()){
+            if (deb.getFeature().equals(feature)){
+                return deb; // finds the DescriptionElementBase corresponding to the concerned Feature
+            }
+        }
+        return null;
+    }
+
+    /**
 	 * Returns the score between two DescriptionElementBase. If one of them is null, returns -1.
 	 * If they are not of the same type (Categorical) returns 0.
 	 *
@@ -1026,7 +1069,8 @@ public class PolytomousKeyGenerator {
 	            nDiscriminative++;
             }
 	    }
-	    return nDiscriminative/states.size();
+	    float result = (float)nDiscriminative/states.size();
+	    return result;
 
 	}
 
