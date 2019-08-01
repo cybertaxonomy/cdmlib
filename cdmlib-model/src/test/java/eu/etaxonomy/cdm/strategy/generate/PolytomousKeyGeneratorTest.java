@@ -254,59 +254,6 @@ public class PolytomousKeyGeneratorTest {
 
 	}
 
-    /**
-     * @param taxon12
-     * @param string
-     * @param uuidTd1
-     * @return
-     */
-    private TaxonDescription createTaxonDescription(Taxon taxon, String title, UUID uuid) {
-        TaxonDescription result = TaxonDescription.NewInstance(taxon);
-        result.setTitleCache(title, true);
-        result.setUuid(uuid);
-        return result;
-    }
-
-    /**
-     * @param string
-     * @return
-     */
-    private State createState(String label) {
-        State state = State.NewInstance("", label, "");
-        state.getTitleCache();  //for better debugging
-        return state;
-    }
-
-    /**
-     * @param title
-     * @param uuid
-     * @param isQuantitative
-     * @return
-     */
-    private Feature createFeature(String title, UUID uuid, boolean isQuantitative) {
-        Feature result = Feature.NewInstance("",title,"");
-        result.getTitleCache();
-        result.setUuid(uuid);
-        if (isQuantitative){
-            result.setSupportsQuantitativeData(true);
-        }else{
-            result.setSupportsCategoricalData(true);
-        }
-        return result;
-    }
-
-    /**
-     * @param i
-     * @return
-     */
-    private Taxon getTaxon(int i) {
-        TaxonName tn = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
-        tn.setGenusOrUninomial("Taxon");
-        tn.setSpecificEpithet(String.valueOf(i));
-        Taxon result = Taxon.NewInstance(tn, ReferenceFactory.newBook());
-        result.getTitleCache();
-        return result;
-    }
 
 //*************************** TESTS *********************** /
 
@@ -369,8 +316,98 @@ public class PolytomousKeyGeneratorTest {
 
         //oval
         assertSingleTaxon(root.getChildAt(2), taxon1, oval);
-
 	}
+
+
+    @Test
+    public void testInvokeMergeModeON() {
+        generator = new PolytomousKeyGenerator();
+        PolytomousKeyGeneratorConfigurator configurator = new PolytomousKeyGeneratorConfigurator();
+        configurator.setDataSet(createDataSet());
+        configurator.setMerge(true);
+        PolytomousKey result = generator.invoke(configurator);
+        result.setTitleCache("Merge Key", true);
+        assertNotNull("Key should exist (merge mode ON).", result);
+        result.print(System.out);
+
+        //Assertions
+        assertNotNull("Key should exist.", result);
+        PolytomousKeyNode root = result.getRoot();
+        Assert.assertEquals(featureShape, root.getFeature());
+        Assert.assertNull(root.getTaxon());
+
+        //triangular or oval
+        PolytomousKeyNode triangularNode = root.getChildAt(0);
+        assertInnerNode(triangularNode, "Oval or Triangular", featureLength);
+
+            //<3
+            PolytomousKeyNode lessNode = triangularNode.getChildAt(0);
+            assertInnerNode(lessNode, LESS_3 , featureColour);
+                //blue
+                assertSingleTaxon(lessNode.getChildAt(0), taxon1, blue);
+                //yellow
+                assertSingleTaxon(lessNode.getChildAt(1), taxon2, yellow);
+
+            //>3
+            PolytomousKeyNode gtNode = triangularNode.getChildAt(1);
+            assertInnerNode(gtNode, GT_3, featureColour);
+                //blue
+                assertSingleTaxon(gtNode.getChildAt(0), taxon3, blue);
+                //yellow
+                assertSingleTaxon(gtNode.getChildAt(1), taxon4, yellow);
+
+        //circular
+        PolytomousKeyNode circularNode = root.getChildAt(1);
+        assertInnerNode(circularNode, circular, featurePresence);
+
+            //yes
+            PolytomousKeyNode yesNode = circularNode.getChildAt(0);
+            assertInnerNode(yesNode, yes, featureLength);
+
+                //<3
+                assertIsTaxonList(yesNode.getChildAt(0), LESS_3 , taxon5, taxon6);
+
+                //>3
+                assertSingleTaxon(yesNode.getChildAt(1), taxon7, GT_3);
+
+            //no
+            assertSingleTaxon(circularNode.getChildAt(1), taxon8, no);
+    }
+
+    @Test
+    public void testInvokeMergeReuseFeature() {
+        generator = new PolytomousKeyGenerator();
+        PolytomousKeyGeneratorConfigurator configurator = new PolytomousKeyGeneratorConfigurator();
+        configurator.setDataSet(createDataSet());
+        taxond1.removeElement(qtd31);
+        taxond2.removeElement(qtd32);
+        taxond3.removeElement(qtd33);
+        taxond4.removeElement(qtd34);
+        catd12.addStateData(oval);
+        configurator.setMerge(true);
+        PolytomousKey result = generator.invoke(configurator);
+        result.setTitleCache("Merge Key with feature reuse", true);
+        assertNotNull("Key should exist (merge mode with feature reuse).", result);
+        result.print(System.out);
+
+        //Assertions
+        assertNotNull("Key should exist.", result);
+        PolytomousKeyNode root = result.getRoot();
+        Assert.assertEquals(featureShape, root.getFeature());
+
+        //triangular or oval
+        PolytomousKeyNode ovalOrTriangularNode = root.getChildAt(0);
+        Assert.assertEquals("Oval or Triangular", label(ovalOrTriangularNode));
+
+            //blue
+            PolytomousKeyNode blueNode = ovalOrTriangularNode.getChildAt(0);
+            Assert.assertEquals(blue.getLabel(), label(blueNode));
+
+                //triangular or oval
+                PolytomousKeyNode triangularNode = blueNode.getChildAt(0);
+                Assert.assertEquals("Shape of head should be reused in this branch", "Triangular", label(triangularNode));
+    }
+
 
     /**
      * @param circularNode
@@ -430,98 +467,6 @@ public class PolytomousKeyGeneratorTest {
     }
 
     @Test
-	public void testInvokeMergeModeON() {
-		generator = new PolytomousKeyGenerator();
-		PolytomousKeyGeneratorConfigurator configurator = new PolytomousKeyGeneratorConfigurator();
-        configurator.setDataSet(createDataSet());
-		configurator.setMerge(true);
-		PolytomousKey result = generator.invoke(configurator);
-		result.setTitleCache("Merge Key", true);
-        assertNotNull("Key should exist (merge mode ON).", result);
-        result.print(System.out);
-
-        //Assertions
-        assertNotNull("Key should exist.", result);
-        PolytomousKeyNode root = result.getRoot();
-        Assert.assertEquals(featureShape, root.getFeature());
-        Assert.assertNull(root.getTaxon());
-
-        //triangular or oval
-        PolytomousKeyNode triangularNode = root.getChildAt(0);
-        assertInnerNode(triangularNode, "Oval or Triangular", featureLength);
-
-            //<3
-            PolytomousKeyNode lessNode = triangularNode.getChildAt(0);
-            assertInnerNode(lessNode, LESS_3 , featureColour);
-                //blue
-                assertSingleTaxon(lessNode.getChildAt(0), taxon1, blue);
-                //yellow
-                assertSingleTaxon(lessNode.getChildAt(1), taxon2, yellow);
-
-            //>3
-            PolytomousKeyNode gtNode = triangularNode.getChildAt(1);
-            assertInnerNode(gtNode, GT_3, featureColour);
-                //blue
-                assertSingleTaxon(gtNode.getChildAt(0), taxon3, blue);
-                //yellow
-                assertSingleTaxon(gtNode.getChildAt(1), taxon4, yellow);
-
-        //circular
-        PolytomousKeyNode circularNode = root.getChildAt(1);
-        assertInnerNode(circularNode, circular, featurePresence);
-
-            //yes
-            PolytomousKeyNode yesNode = circularNode.getChildAt(0);
-            assertInnerNode(yesNode, yes, featureLength);
-
-                //<3
-                assertIsTaxonList(yesNode.getChildAt(0), LESS_3 , taxon5, taxon6);
-
-                //>3
-                assertSingleTaxon(yesNode.getChildAt(1), taxon7, GT_3);
-
-            //no
-            assertSingleTaxon(circularNode.getChildAt(1), taxon8, no);
-	}
-
-   @Test
-    public void testInvokeMergeReuseFeature() {
-        generator = new PolytomousKeyGenerator();
-        PolytomousKeyGeneratorConfigurator configurator = new PolytomousKeyGeneratorConfigurator();
-        configurator.setDataSet(createDataSet());
-        taxond1.removeElement(qtd31);
-        taxond2.removeElement(qtd32);
-        taxond3.removeElement(qtd33);
-        taxond4.removeElement(qtd34);
-        catd12.addStateData(oval);
-        configurator.setMerge(true);
-        PolytomousKey result = generator.invoke(configurator);
-        result.setTitleCache("Merge Key with feature reuse", true);
-        assertNotNull("Key should exist (merge mode with feature reuse).", result);
-        result.print(System.out);
-
-        //Assertions
-        assertNotNull("Key should exist.", result);
-        PolytomousKeyNode root = result.getRoot();
-        Assert.assertEquals(featureShape, root.getFeature());
-
-        //triangular or oval
-        PolytomousKeyNode ovalOrTriangularNode = root.getChildAt(0);
-        Assert.assertEquals("Oval or Triangular", label(ovalOrTriangularNode));
-
-            //blue
-            PolytomousKeyNode blueNode = ovalOrTriangularNode.getChildAt(0);
-            Assert.assertEquals(blue.getLabel(), label(blueNode));
-
-                //triangular or oval
-                PolytomousKeyNode triangularNode = blueNode.getChildAt(0);
-                Assert.assertEquals("Shape of head should be reused in this branch", "Triangular", label(triangularNode));
-    }
-
-
-
-
-    @Test
     @Ignore
     public void testInvokeWithDependencies() {
         generator = new PolytomousKeyGenerator();
@@ -568,6 +513,61 @@ public class PolytomousKeyGeneratorTest {
      */
     private Object label(PolytomousKeyNode node) {
         return node.getStatement()== null?"no statement":node.getStatement().getLabelText(Language.DEFAULT());
+    }
+
+
+    /**
+     * @param taxon12
+     * @param string
+     * @param uuidTd1
+     * @return
+     */
+    private TaxonDescription createTaxonDescription(Taxon taxon, String title, UUID uuid) {
+        TaxonDescription result = TaxonDescription.NewInstance(taxon);
+        result.setTitleCache(title, true);
+        result.setUuid(uuid);
+        return result;
+    }
+
+    /**
+     * @param string
+     * @return
+     */
+    private State createState(String label) {
+        State state = State.NewInstance("", label, "");
+        state.getTitleCache();  //for better debugging
+        return state;
+    }
+
+    /**
+     * @param title
+     * @param uuid
+     * @param isQuantitative
+     * @return
+     */
+    private Feature createFeature(String title, UUID uuid, boolean isQuantitative) {
+        Feature result = Feature.NewInstance("",title,"");
+        result.getTitleCache();
+        result.setUuid(uuid);
+        if (isQuantitative){
+            result.setSupportsQuantitativeData(true);
+        }else{
+            result.setSupportsCategoricalData(true);
+        }
+        return result;
+    }
+
+    /**
+     * @param i
+     * @return
+     */
+    private Taxon getTaxon(int i) {
+        TaxonName tn = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
+        tn.setGenusOrUninomial("Taxon");
+        tn.setSpecificEpithet(String.valueOf(i));
+        Taxon result = Taxon.NewInstance(tn, ReferenceFactory.newBook());
+        result.getTitleCache();
+        return result;
     }
 
 
