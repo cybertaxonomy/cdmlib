@@ -52,7 +52,8 @@ public class PolytomousKeyGeneratorTest {
 
 	private State triangular;
 	private State circular;
-	private State yellow;
+	private State oval;
+    private State yellow;
 	private State blue;
 	private State yes;
 	private State no;
@@ -124,23 +125,18 @@ public class PolytomousKeyGeneratorTest {
 		taxond7.setTitleCache("td7", true);
 		taxond8.setTitleCache("td8", true);
 
-		triangular = State.NewInstance("", "Triangular", "");
-		circular = State.NewInstance("", "Circular", "");
+		triangular = createState("Triangular");
+		circular = createState("Circular");
+		oval = createState("Oval");
 
-		yellow = State.NewInstance("", "Yellow", "");
-		blue = State.NewInstance("","Blue","");
+		yellow = createState("Yellow");
+		blue = createState("Blue");
 
-		yes = State.NewInstance("","Yes","");
-		no = State.NewInstance("","No","");
-
-		triangular.getTitleCache();
-		circular.getTitleCache();
-		yellow.getTitleCache();
-		blue.getTitleCache();
-		yes.getTitleCache();
-		no.getTitleCache();
+		yes = createState("Yes");
+		no = createState("No");
 
 		CategoricalData catd11 = CategoricalData.NewInstance(triangular, featureShape);
+		catd11.addStateData(oval);
 		CategoricalData catd12 = CategoricalData.NewInstance(triangular, featureShape);
 		CategoricalData catd13 = CategoricalData.NewInstance(triangular, featureShape);
 		CategoricalData catd14 = CategoricalData.NewInstance(triangular, featureShape);
@@ -244,6 +240,16 @@ public class PolytomousKeyGeneratorTest {
 	}
 
     /**
+     * @param string
+     * @return
+     */
+    private State createState(String label) {
+        State state = State.NewInstance("", label, "");
+        state.getTitleCache();  //for better debugging
+        return state;
+    }
+
+    /**
      * @param title
      * @param uuid
      * @param isQuantitative
@@ -293,9 +299,16 @@ public class PolytomousKeyGeneratorTest {
 		assertNotNull("Key should exist.", result);
         PolytomousKeyNode root = result.getRoot();
         Assert.assertEquals(featureShape, root.getFeature());
+
+        //oval
+        PolytomousKeyNode ovalNode = root.getChildAt(0);
+        String label = ovalNode.getStatement().getLabelText(Language.DEFAULT());
+        Assert.assertEquals(oval.getLabel(), label);
+        Assert.assertEquals(taxon1, ovalNode.getTaxon());
+
         //circular
-        PolytomousKeyNode circularNode = root.getChildAt(0);
-        String label = circularNode.getStatement().getLabelText(Language.DEFAULT());
+        PolytomousKeyNode circularNode = root.getChildAt(1);
+        label = circularNode.getStatement().getLabelText(Language.DEFAULT());
         Assert.assertEquals(circular.getLabel(), label);
         Assert.assertEquals(featurePresence, circularNode.getFeature());
             //no
@@ -312,7 +325,7 @@ public class PolytomousKeyGeneratorTest {
 
 
         //triangular
-        PolytomousKeyNode triangularNode = root.getChildAt(1);
+        PolytomousKeyNode triangularNode = root.getChildAt(2);
         label = triangularNode.getStatement().getLabelText(Language.DEFAULT());
         Assert.assertEquals(triangular.getLabel(), label);
 
@@ -355,7 +368,7 @@ public class PolytomousKeyGeneratorTest {
         //triangular
         PolytomousKeyNode triangularNode = root.getChildAt(1);
         label = triangularNode.getStatement().getLabelText(Language.DEFAULT());
-        Assert.assertEquals(triangular.getLabel(), label);
+        Assert.assertEquals("Triangular or Oval", label);
 
 	}
 
