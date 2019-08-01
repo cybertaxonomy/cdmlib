@@ -437,7 +437,7 @@ public class PolytomousKey
         char nextCounter = 'a';
         for (PolytomousKeyNode child : node.getChildren()) {
             String leadNumber = String.valueOf(nextCounter++);
-            if (child.getStatement() != null || child.getTaxon() != null) {
+            if (child.getStatement() != null || child.getTaxon() != null || !child.isLeaf()) {
                 String statement = child.getStatement() == null ? "-":
                                 child.getStatement().getLabelText(Language.DEFAULT());
                 result += identation + "  " + leadNumber + ") "

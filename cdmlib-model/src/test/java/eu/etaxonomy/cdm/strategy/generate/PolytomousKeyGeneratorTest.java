@@ -3,6 +3,7 @@ package eu.etaxonomy.cdm.strategy.generate;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -38,7 +39,17 @@ import eu.etaxonomy.cdm.model.term.TermType;
  * @since 16.12.2010
  */
 public class PolytomousKeyGeneratorTest {
-	@SuppressWarnings("unused")
+	/**
+     *
+     */
+    private static final String GT_3 = " > 3.0";
+
+    /**
+     *
+     */
+    private static final String LESS_3 = " < 3.0";
+
+    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(PolytomousKeyGeneratorTest.class);
 
 	private static final boolean QUANTITATIVE = true;
@@ -322,35 +333,111 @@ public class PolytomousKeyGeneratorTest {
 		assertNotNull("Key should exist.", result);
         PolytomousKeyNode root = result.getRoot();
         Assert.assertEquals(featureShape, root.getFeature());
+        Assert.assertNull(root.getTaxon());
 
         //circular
         PolytomousKeyNode circularNode = root.getChildAt(0);
-        Assert.assertEquals(circular.getLabel(), label(circularNode));
-        Assert.assertEquals(featurePresence, circularNode.getFeature());
+        assertInnerNode(circularNode, circular, featurePresence);
+
             //yes
             PolytomousKeyNode yesNode = circularNode.getChildAt(0);
-            Assert.assertEquals(yes.getLabel(), label(yesNode));
-            Assert.assertEquals(featureLength, yesNode.getFeature());
-            //no
-            PolytomousKeyNode noNode = circularNode.getChildAt(1);
-            Assert.assertEquals(no.getLabel(), label(noNode));
-            Assert.assertTrue(noNode.getChildren().isEmpty());
-            Assert.assertEquals(taxon8, noNode.getTaxon());
+            assertInnerNode(yesNode, yes, featureLength);
 
+                //<3
+                PolytomousKeyNode less3Node = yesNode.getChildAt(0);
+                assertIsTaxonList(less3Node, LESS_3, taxon5, taxon6);
+
+                //>3
+                assertSingleTaxon(yesNode.getChildAt(1), taxon7, GT_3);
+
+            //no
+            assertSingleTaxon(circularNode.getChildAt(1), taxon8, no);
 
         //triangular
         PolytomousKeyNode triangularNode = root.getChildAt(1);
-        Assert.assertEquals(triangular.getLabel(), label(triangularNode));
+        assertInnerNode(triangularNode, triangular, featureLength);
 
+            //<3
+            less3Node = triangularNode.getChildAt(0);
+            assertInnerNode(less3Node, LESS_3, featureColour);
+
+                //blue
+                assertSingleTaxon(less3Node.getChildAt(0), taxon1, blue);
+                //yellow
+                assertSingleTaxon(less3Node.getChildAt(1), taxon2, yellow);
+
+            //>3
+            PolytomousKeyNode gt3Node = triangularNode.getChildAt(1);
+            assertInnerNode(gt3Node, GT_3, featureColour);
+
+                //blue
+                assertSingleTaxon(gt3Node.getChildAt(0), taxon3, blue);
+                //yellow
+                assertSingleTaxon(gt3Node.getChildAt(1), taxon4, yellow);
 
         //oval
-        PolytomousKeyNode ovalNode = root.getChildAt(2);
-        Assert.assertEquals(oval.getLabel(), label(ovalNode));
-        Assert.assertEquals(taxon1, ovalNode.getTaxon());
+        assertSingleTaxon(root.getChildAt(2), taxon1, oval);
 
 	}
 
-	@Test
+    /**
+     * @param circularNode
+     * @param label
+     * @param featurePresence2
+     */
+    private void assertInnerNode(PolytomousKeyNode node, String label, Feature feature) {
+        Assert.assertEquals(label, label(node));
+        Assert.assertEquals(feature, node.getFeature());
+        Assert.assertNull(node.getTaxon());
+    }
+
+    private void assertInnerNode(PolytomousKeyNode node, State state, Feature feature) {
+        assertInnerNode(node, state.getLabel(), feature);
+    }
+
+
+    /**
+     * @param childAt
+     * @param taxon72
+     * @param string
+     */
+    private void assertSingleTaxon(PolytomousKeyNode node, Taxon taxon, String statement) {
+        Assert.assertNotNull(node.getStatement());
+        Assert.assertEquals(statement, label(node));
+        Assert.assertTrue(node.getChildren().isEmpty());
+        Assert.assertEquals(taxon, node.getTaxon());
+
+    }
+
+    /**
+     * @param string
+	 * @param blueNode
+     * @param taxon12
+     */
+    private void assertSingleTaxon(PolytomousKeyNode node, Taxon taxon, State state) {
+        assertSingleTaxon(node, taxon, state.getLabel());
+    }
+
+    /**
+     * @param less3Node
+     * @param taxon52
+     * @param taxon62
+     */
+    private void assertIsTaxonList(PolytomousKeyNode node, String label, Taxon... taxa) {
+        Assert.assertNotNull(node.getStatement());
+        Assert.assertEquals(label, label(node));
+        Assert.assertNull(node.getFeature());
+        Assert.assertNull(node.getTaxon());
+        Assert.assertTrue(node.getChildren().size()>1);
+        for (PolytomousKeyNode child : node.getChildren()){
+            Assert.assertTrue(Arrays.asList(taxa).contains(child.getTaxon()));
+            Assert.assertNull(child.getStatement());
+            Assert.assertTrue(child.getChildren().isEmpty());
+        }
+
+    }
+
+    @Test
 	public void testInvokeMergeModeON() {
 		generator = new PolytomousKeyGenerator();
 		PolytomousKeyGeneratorConfigurator configurator = new PolytomousKeyGeneratorConfigurator();
@@ -365,27 +452,44 @@ public class PolytomousKeyGeneratorTest {
         assertNotNull("Key should exist.", result);
         PolytomousKeyNode root = result.getRoot();
         Assert.assertEquals(featureShape, root.getFeature());
+        Assert.assertNull(root.getTaxon());
 
         //triangular or oval
         PolytomousKeyNode triangularNode = root.getChildAt(0);
-        Assert.assertEquals("Oval or Triangular", label(triangularNode));
+        assertInnerNode(triangularNode, "Oval or Triangular", featureLength);
+
+            //<3
+            PolytomousKeyNode lessNode = triangularNode.getChildAt(0);
+            assertInnerNode(lessNode, LESS_3 , featureColour);
+                //blue
+                assertSingleTaxon(lessNode.getChildAt(0), taxon1, blue);
+                //yellow
+                assertSingleTaxon(lessNode.getChildAt(1), taxon2, yellow);
+
+            //>3
+            PolytomousKeyNode gtNode = triangularNode.getChildAt(1);
+            assertInnerNode(gtNode, GT_3, featureColour);
+                //blue
+                assertSingleTaxon(gtNode.getChildAt(0), taxon3, blue);
+                //yellow
+                assertSingleTaxon(gtNode.getChildAt(1), taxon4, yellow);
 
         //circular
         PolytomousKeyNode circularNode = root.getChildAt(1);
-        Assert.assertEquals(circular.getLabel(), label(circularNode));
-        Assert.assertEquals(featurePresence, circularNode.getFeature());
+        assertInnerNode(circularNode, circular, featurePresence);
 
             //yes
             PolytomousKeyNode yesNode = circularNode.getChildAt(0);
-            Assert.assertEquals(yes.getLabel(), label(yesNode));
-//            Assert.assertEquals(featureLength, circularNode.getFeature());
+            assertInnerNode(yesNode, yes, featureLength);
+
+                //<3
+                assertIsTaxonList(yesNode.getChildAt(0), LESS_3 , taxon5, taxon6);
+
+                //>3
+                assertSingleTaxon(yesNode.getChildAt(1), taxon7, GT_3);
 
             //no
-            PolytomousKeyNode noNode = circularNode.getChildAt(1);
-            Assert.assertEquals(no.getLabel(), label(noNode));
-            Assert.assertTrue(noNode.getChildren().isEmpty());
-            Assert.assertEquals(taxon8, noNode.getTaxon());
-
+            assertSingleTaxon(circularNode.getChildAt(1), taxon8, no);
 	}
 
    @Test
@@ -470,7 +574,7 @@ public class PolytomousKeyGeneratorTest {
      * @return
      */
     private Object label(PolytomousKeyNode node) {
-        return node.getStatement().getLabelText(Language.DEFAULT());
+        return node.getStatement()== null?"no statement":node.getStatement().getLabelText(Language.DEFAULT());
     }
 
 

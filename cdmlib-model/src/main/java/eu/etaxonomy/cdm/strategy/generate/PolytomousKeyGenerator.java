@@ -36,7 +36,7 @@ public class PolytomousKeyGenerator {
 
     private PolytomousKeyGeneratorConfigurator config;
 	//TODO include in configurator
-    private TermTree dependenciesTree; // the tree containing the dependencies between states and features (InapplicableIf and OnlyApplicableIf)
+    private TermTree<Feature> dependenciesTree; // the tree containing the dependencies between states and features (InapplicableIf and OnlyApplicableIf)
 
 	private Map<State,Set<Feature>> iAifDependencies = new HashMap<>(); // map of a set of Features (value) inapplicables if a State (key) is present
 	private Map<State,Set<Feature>> oAifDependencies = new HashMap<>(); // map of a set of Features (value) only applicables if a State (key) is present
@@ -91,7 +91,6 @@ public class PolytomousKeyGenerator {
 	    // boolean indicating if this node has children, if not,
         // it means we reached a leaf and instead of adding a
         // question or statement to it, we must add the list of taxa discriminated at this point
-	    boolean childrenExist = false;
 
 		// These sets respectively store the features inapplicables and applicables at this point in the key
 		Set<Feature> innapplicables = new HashSet<>();
@@ -109,14 +108,14 @@ public class PolytomousKeyGenerator {
 			/************** either the feature supports quantitative data... **************/
 			// NB: in this version, "quantitative features" are dealt with in a dichotomous way
 			if (winnerFeature != null && winnerFeature.isSupportsQuantitativeData()) {
-				childrenExist = handleQuantitativeData(father, featuresLeft, taxaCovered,
-                        childrenExist, quantitativeFeaturesThresholds, winnerFeature, taxaDiscriminatedInPreviousStep);
+				handleQuantitativeData(father, featuresLeft, taxaCovered,
+                        quantitativeFeaturesThresholds, winnerFeature, taxaDiscriminatedInPreviousStep);
 			}
 
 			/************** ...or it supports categorical data. **************/
 			if (winnerFeature!=null && winnerFeature.isSupportsCategoricalData()) {
-			    childrenExist = handleCategorialFeature(father, featuresLeft, taxaCovered,
-                        childrenExist, innapplicables, applicables, winnerFeature,
+			    handleCategorialFeature(father, featuresLeft, taxaCovered,
+                        innapplicables, applicables, winnerFeature,
                         taxaDiscriminatedInPreviousStep);
 			}
 			// the features depending on other features are added/removed to/from the features left once the branch is done
@@ -133,10 +132,7 @@ public class PolytomousKeyGenerator {
 			    featuresLeft.add(winnerFeature);
 			}
 		}
-		// if the node is a leaf, the statement contains the list of taxa to which the current leaf leads.
-		if (!childrenExist){
-			handleLeaf(father, taxaCovered);
-		}
+
 	}
 
     /**
@@ -151,7 +147,7 @@ public class PolytomousKeyGenerator {
             if  (description instanceof TaxonDescription){
                 father.setOrAddTaxon(((TaxonDescription)description).getTaxon());
             }else{
-                //FIXME handle other descriptions better
+                //FIXME handle other descriptions like specimen descriptions better
                 if (fatherStatement!=null){
                     String statementString = fatherStatement.getLabelText(Language.DEFAULT());
                     if (statementString !=null && description != null){
@@ -176,8 +172,8 @@ public class PolytomousKeyGenerator {
      * @param statesDone
      * @return
      */
-    private boolean handleCategorialFeature(PolytomousKeyNode father, List<Feature> featuresLeft,
-            Set<DescriptionBase<?>> taxaCovered, boolean childrenExist,
+    private void handleCategorialFeature(PolytomousKeyNode father, List<Feature> featuresLeft,
+            Set<DescriptionBase<?>> taxaCovered,
             Set<Feature> innapplicables, Set<Feature> applicables, Feature winnerFeature, boolean taxaDiscriminatedInPreviousStep) {
 
         // "categorical features" may present several different states, each one of these might correspond to one child
@@ -189,6 +185,12 @@ public class PolytomousKeyGenerator {
 		// a map is created, the key being the set of taxa that present the state(s) stored in the corresponding value
 		Map<Set<DescriptionBase<?>>, List<State>> taxonStatesMap = determineCategoricalStates(
 		            statesDone, states, winnerFeature, taxaCovered);
+
+		if (taxonStatesMap.size()<=1){
+		    handleLeaf(father, taxaCovered);
+		    return;
+		}
+
 		// if the merge option is ON, branches with the same discriminative power will be merged (see Vignes & Lebbes, 1989)
 		if (config.isMerge()){
 			// creates a map between the different states of the winnerFeature and the sets of states "incompatible" with them
@@ -211,12 +213,15 @@ public class PolytomousKeyGenerator {
 
 
 		for (Set<DescriptionBase<?>> newTaxaCovered : sortedKeys){
+		    boolean areTheTaxaDiscriminated = false;
+			PolytomousKeyNode pkNode = PolytomousKeyNode.NewInstance();
+			father.addChild(pkNode);
+
 			List<State> listOfStates = taxonStatesMap.get(newTaxaCovered);
 			//don't know if we really need the taxaDiscriminatedInPreviousStep, if used we get questions with single statements
-			if ((newTaxaCovered.size()>0) && !((newTaxaCovered.size()==taxaCovered.size()) /*&& !taxaDiscriminatedInPreviousStep*/)){ // if the taxa are discriminated compared to those of the father node, a child is created
-				childrenExist = true;
-				PolytomousKeyNode pkNode = PolytomousKeyNode.NewInstance();
-				StringBuilder statementLabel = new StringBuilder();
+			if ((newTaxaCovered.size()>0) /* && !((newTaxaCovered.size()==taxaCovered.size()) && !taxaDiscriminatedInPreviousStep)*/){ // if the taxa are discriminated compared to those of the father node, a child is created
+				areTheTaxaDiscriminated = newTaxaCovered.size()!=taxaCovered.size();
+			    StringBuilder statementLabel = new StringBuilder();
 
 				numberOfStates = listOfStates.size()-1;
 				listOfStates.sort(stateComparator);
@@ -245,16 +250,22 @@ public class PolytomousKeyGenerator {
 				KeyStatement statement = KeyStatement.NewInstance(statementLabel.toString());
 				pkNode.setStatement(statement);
 				father.setFeature(winnerFeature);
-				father.addChild(pkNode);
+
 				if (reuseWinner.get(newTaxaCovered)== Boolean.TRUE){
 				    featuresLeft.add(winnerFeature);
 				}
-				boolean areTheTaxaDiscriminated = !(newTaxaCovered.size() == taxaCovered.size());
-				buildBranches(pkNode, featuresLeft, newTaxaCovered, areTheTaxaDiscriminated);
+				// if the node is a leaf, the statement contains the list of taxa to which the current leaf leads.
+
+
 			}
+			boolean hasChildren = areTheTaxaDiscriminated && newTaxaCovered.size()>1;
+			if (hasChildren){
+			    buildBranches(pkNode, featuresLeft, newTaxaCovered, areTheTaxaDiscriminated);
+            }else{
+                handleLeaf(pkNode, newTaxaCovered);
+            }
 		}
 
-        return childrenExist;
     }
 
     /**
@@ -382,9 +393,9 @@ public class PolytomousKeyGenerator {
      * @param winnerFeature
      * @return
      */
-    private boolean handleQuantitativeData(PolytomousKeyNode father, List<Feature> featuresLeft,
-            Set<DescriptionBase<?>> taxaCovered, boolean childrenExist,
-            Map<Feature, Float> quantitativeFeaturesThresholds, Feature winnerFeature, boolean taxaDiscriminatedInPreviousStep) {
+    private void handleQuantitativeData(PolytomousKeyNode father, List<Feature> featuresLeft,
+            Set<DescriptionBase<?>> taxaCovered, Map<Feature, Float> quantitativeFeaturesThresholds,
+            Feature winnerFeature, boolean taxaDiscriminatedInPreviousStep) {
 
         // first, get the threshold
         float threshold = quantitativeFeaturesThresholds.get(winnerFeature);
@@ -402,23 +413,22 @@ public class PolytomousKeyGenerator {
         	} else {
         		sign = after; // the second to those after
         	}
-        	if (newTaxaCovered.size()>0 && !((newTaxaCovered.size()==taxaCovered.size()) /* && !taxaDiscriminatedInPreviousStep*/)){ // if the taxa are discriminated compared to those of the father node, a child is created
-        		childrenExist = true;
+        	if (newTaxaCovered.size()>0 /* && !((newTaxaCovered.size()==taxaCovered.size()) && !taxaDiscriminatedInPreviousStep)*/){ // if the taxa are discriminated compared to those of the father node, a child is created
         		PolytomousKeyNode pkNode = PolytomousKeyNode.NewInstance();
         		father.setFeature(winnerFeature);
         		KeyStatement statement = KeyStatement.NewInstance( " " + sign + " " + threshold + unit);
         		pkNode.setStatement(statement);
         		father.addChild(pkNode);
-        		boolean areTheTaxaDiscriminated;
-        		if (newTaxaCovered.size()==taxaCovered.size()) {
-                    areTheTaxaDiscriminated = false;
-                } else {
-                    areTheTaxaDiscriminated = true;
-                }
-        		buildBranches(pkNode, featuresLeft, newTaxaCovered, areTheTaxaDiscriminated);
+        		boolean areTheTaxaDiscriminated = newTaxaCovered.size()<taxaCovered.size();
+        		boolean childrenExist = areTheTaxaDiscriminated && newTaxaCovered.size()>1;
+        		if (childrenExist){
+        		    buildBranches(pkNode, featuresLeft, newTaxaCovered, areTheTaxaDiscriminated);
+        		}else{
+        		    handleLeaf(pkNode, newTaxaCovered);
+        		}
         	}
         }
-        return childrenExist;
+        return;
     }
 
     /**
@@ -932,7 +942,7 @@ public class PolytomousKeyGenerator {
 	 * @param node
 	 */
 	private void checkDependencies(TermNode<Feature> node){
-		if (node.getOnlyApplicableIf()!=null){
+		if (node.getOnlyApplicableIf() != null){
 			Set<State> addToOAI = node.getOnlyApplicableIf();
 			for (State state : addToOAI){
 				if (oAifDependencies.containsKey(state)) {
