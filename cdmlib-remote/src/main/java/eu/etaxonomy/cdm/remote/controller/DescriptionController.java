@@ -28,8 +28,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
-import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.ITermTreeService;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
@@ -60,7 +60,7 @@ public class DescriptionController extends AbstractIdentifiableController<Descri
     private static final Logger logger = Logger.getLogger(DescriptionController.class);
 
     @Autowired
-    private IFeatureTreeService featureTreeService;
+    private ITermTreeService termTreeService;
 
     @Autowired
     private ITermService termService;
@@ -130,10 +130,10 @@ public class DescriptionController extends AbstractIdentifiableController<Descri
     }
     */
 
-    @RequestMapping(value = "naturalLanguageDescription/{featuretree_uuid}", method = RequestMethod.GET) // mapped as absolute path, see CdmAntPathMatcher
+    @RequestMapping(value = "naturalLanguageDescription/{termtree_uuid}", method = RequestMethod.GET) // mapped as absolute path, see CdmAntPathMatcher
     public ModelAndView doGenerateNaturalLanguageDescription(
             @PathVariable("uuid") UUID uuid,
-            @PathVariable("featuretree_uuid") UUID featureTreeUuid,
+            @PathVariable("termtree_uuid") UUID termTreeUuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
         logger.info("doGenerateNaturalLanguageDescription() - " + request.getRequestURI());
@@ -149,14 +149,14 @@ public class DescriptionController extends AbstractIdentifiableController<Descri
             // will terminate thread
         }
 
-        TermTree featureTree = featureTreeService.load(featureTreeUuid, null);
-        if(featureTree == null){
+        TermTree termTree = termTreeService.load(termTreeUuid, null);
+        if(termTree == null){
             HttpStatusMessage.UUID_NOT_FOUND.send(response);
             // will terminate thread
         }
 
         String naturalLanguageDescription = service.generateNaturalLanguageDescription(
-                featureTree,
+                termTree,
                 (TaxonDescription)description,
                 languages,
                 ", ");

@@ -32,25 +32,25 @@ import io.swagger.annotations.Api;
  * @since Jun 24, 2013
  */
 @Controller
-@Api("portal_featureTree")
-@RequestMapping(value = {"/portal/featureTree/{uuid}"})
-public class FeatureTreePortalController extends FeatureTreeController {
+@Api("portal_termTree")
+@RequestMapping(value = {"/portal/featureTree/{uuid}", "/portal/termTree/{uuid}"})
+public class TermTreePortalController extends TermTreeController {
 
-    public static final Logger logger = Logger.getLogger(FeatureTreePortalController.class);
+    public static final Logger logger = Logger.getLogger(TermTreePortalController.class);
 
 
-    private static final List<String> FEATURETREE_INIT_STRATEGY = Arrays.asList(
+    private static final List<String> TERMTREE_INIT_STRATEGY = Arrays.asList(
             new String[]{
                     "representations",
             });
 
-    private List<String> featuretreeNodeInitStrategy = null;
+    private List<String> termTreeNodeInitStrategy = null;
 
-    public FeatureTreePortalController() {
-        setInitializationStrategy(FEATURETREE_INIT_STRATEGY);
+    public TermTreePortalController() {
+        setInitializationStrategy(TERMTREE_INIT_STRATEGY);
 
-        featuretreeNodeInitStrategy = new ArrayList<>(2);
-        featuretreeNodeInitStrategy.add("term.representations");
+        termTreeNodeInitStrategy = new ArrayList<>(2);
+        termTreeNodeInitStrategy.add("term.representations");
     }
 
     @Override
@@ -61,12 +61,12 @@ public class FeatureTreePortalController extends FeatureTreeController {
         if(request != null) {
             logger.info("doGet() " + request.getRequestURI());
         }
-        TermTree featureTree = null;
+        TermTree termTree = null;
         try {
-            featureTree = service.loadWithNodes(uuid, getInitializationStrategy(), featuretreeNodeInitStrategy);
+            termTree = service.loadWithNodes(uuid, getInitializationStrategy(), termTreeNodeInitStrategy);
         } catch(EntityNotFoundException e){
             HttpStatusMessage.UUID_NOT_FOUND.send(response);
         }
-        return featureTree;
+        return termTree;
     }
 }

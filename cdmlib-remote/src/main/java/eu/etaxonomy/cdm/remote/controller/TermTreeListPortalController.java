@@ -22,19 +22,19 @@ import io.swagger.annotations.Api;
  *
  */
 @Controller
-@Api("portal_featureTree")
-@RequestMapping(value = {"/portal/featureTree"})
-public class FeatureTreeListPortalController extends FeatureTreeListController {
+@Api("portal_termTree")
+@RequestMapping(value = {"/portal/featureTree", "/portal/termTree"})
+public class TermTreeListPortalController extends TermTreeListController {
 
-    private static final List<String> FEATURETREE_INIT_STRATEGY = Arrays.asList(
+    private static final List<String> TERMTREE_INIT_STRATEGY = Arrays.asList(
             new String[]{
                 "representations",
                 "root.term.representations",
                 "root.childNodes.term.representations"
             });
 
-    public FeatureTreeListPortalController() {
-        setInitializationStrategy(FEATURETREE_INIT_STRATEGY);
+    public TermTreeListPortalController() {
+        setInitializationStrategy(TERMTREE_INIT_STRATEGY);
     }
 
 }

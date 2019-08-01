@@ -9,29 +9,23 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
+import eu.etaxonomy.cdm.api.service.ITermTreeService;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import io.swagger.annotations.Api;
 
-/**
- * @author n.hoffmann
- * @since Aug 6, 2010
- */
+
 @Controller
-@Api("featureTree")
-@RequestMapping(value = {"/featureTree/{uuid}"})
-public class FeatureTreeController extends AbstractIdentifiableController<TermTree, IFeatureTreeService> {
-    @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(FeatureTreeController.class);
+@Api("termTree")
+@RequestMapping(value = {"/featureTree", "/termTree"})
+public class TermTreeListController extends AbstractIdentifiableListController<TermTree, ITermTreeService> {
 
     @Override
     @Autowired
-    public void setService(IFeatureTreeService service) {
+    public void setService(ITermTreeService service) {
         this.service = service;
     }
 }
