@@ -502,17 +502,17 @@ public class PolytomousKeyGenerator {
 	 * @return
 	 */
 	private List<State> returnBestClique (Map<State,Set<State>> exclusions){
-		int bestNumberOfExclusions=-1;;
+		int bestNumberOfExclusions=-1;
 		int numberOfExclusions;
-		List<State> clique = new ArrayList<State>();
+		List<State> clique = new ArrayList<>();
 
 		// looks for the largest clique, i.e. the state with less exclusions
 		State bestState=null;
 		for (Iterator<Map.Entry<State,Set<State>>> it1 = exclusions.entrySet().iterator() ; it1.hasNext();){
 			Map.Entry<State,Set<State>> pair = it1.next();
 			numberOfExclusions = pair.getValue().size();
-			if ((bestNumberOfExclusions==-1) || numberOfExclusions<bestNumberOfExclusions) {
-				bestNumberOfExclusions=numberOfExclusions;
+			if ((bestNumberOfExclusions == -1) || numberOfExclusions < bestNumberOfExclusions) {
+				bestNumberOfExclusions = numberOfExclusions;
 				bestState = pair.getKey();
 			}
 		}
@@ -955,19 +955,19 @@ public class PolytomousKeyGenerator {
 				}
 				power = defaultPower(deb1,deb2);
 				score = score + power;
-				if (power>0) // if there is no state in common between deb1 and deb2
-				{
+				if (power > 0){ // if there is no state in common between deb1 and deb2
+
 					CategoricalData cat1 = (CategoricalData)deb1;
 					CategoricalData cat2 = (CategoricalData)deb2;
 					for (StateData statedata1 : cat1.getStateData()){
 						State state1 = statedata1.getState();
 						if (!exclusions.containsKey(state1)){
-							exclusions.put(state1, new HashSet<State>());
+							exclusions.put(state1, new HashSet<>());
 						}
 						for (StateData statedata2 : cat2.getStateData()){
 							State state2 = statedata2.getState();
 							if (!exclusions.containsKey(state2)){
-								exclusions.put(state2, new HashSet<State>());
+								exclusions.put(state2, new HashSet<>());
 							}
 							exclusions.get(state1).add(state2);
 							exclusions.get(state2).add(state1);
