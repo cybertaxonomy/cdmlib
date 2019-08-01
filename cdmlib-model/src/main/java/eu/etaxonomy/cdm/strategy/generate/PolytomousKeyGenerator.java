@@ -210,13 +210,6 @@ public class PolytomousKeyGenerator {
 
 		for (Set<DescriptionBase<?>> newTaxaCovered : sortedKeys){
 			List<State> listOfStates = taxonStatesMap.get(newTaxaCovered);
-//			if(listOfStates == null){
-//                for(Set<DescriptionBase<?>> key: taxonStatesMap.keySet()){
-//                    List<State> value = taxonStatesMap.get(key);
-//                    System.out.println("Null value for key");
-//                }
-//                System.out.println("List of states is null for " + newTaxaCovered);
-//            }
 			if ((newTaxaCovered.size()>0) && !((newTaxaCovered.size()==taxaCovered.size()) && !taxaDiscriminatedInPreviousStep)){ // if the taxa are discriminated compared to those of the father node, a child is created
 				childrenExist = true;
 				PolytomousKeyNode pkNode = PolytomousKeyNode.NewInstance();
@@ -504,9 +497,7 @@ public class PolytomousKeyGenerator {
 		List<Set<DescriptionBase<?>>> tdToDelete = new ArrayList<>();
 
 		if (clique.size()>1){
-			Iterator<Map.Entry<Set<DescriptionBase<?>>, List<State>>> it1 = taxonStatesMap.entrySet().iterator();
-			while (it1.hasNext()){
-				Map.Entry<Set<DescriptionBase<?>>,List<State>> branch = it1.next();
+			for (Map.Entry<Set<DescriptionBase<?>>, List<State>> branch : taxonStatesMap.entrySet()){
 				Iterator<State> stateIterator = clique.iterator();
 				stateFound=false;
 				// looks for one state of the clique in this branch
@@ -554,8 +545,7 @@ public class PolytomousKeyGenerator {
 
 		// looks for the largest clique, i.e. the state with less exclusions
 		State bestState=null;
-		for (Iterator<Map.Entry<State,Set<State>>> it1 = exclusions.entrySet().iterator() ; it1.hasNext();){
-			Map.Entry<State,Set<State>> pair = it1.next();
+		for (Map.Entry<State,Set<State>> pair :  exclusions.entrySet()){
 			numberOfExclusions = pair.getValue().size();
 			if ((bestNumberOfExclusions == -1) || numberOfExclusions < bestNumberOfExclusions) {
 				bestNumberOfExclusions = numberOfExclusions;
@@ -568,8 +558,7 @@ public class PolytomousKeyGenerator {
 
 		boolean isNotExcluded;
 		// then starts building the clique by adding the states which do not exclude each other
-		for (Iterator<Map.Entry<State,Set<State>>> iterator = exclusions.entrySet().iterator() ; iterator.hasNext();){
-			Map.Entry<State,Set<State>> pair = iterator.next();
+		for (Map.Entry<State,Set<State>> pair : exclusions.entrySet()){
 			isNotExcluded = true;
 			for (State state : clique) {
 				if (pair.getValue().contains(state)) {
@@ -967,15 +956,15 @@ public class PolytomousKeyGenerator {
 	 * @return
 	 */
 	private float featureScoreAndMerge(Feature feature, Set<DescriptionBase<?>> coveredTaxa, Map<State,Set<State>> exclusions){
-		int i,j;
+		//unclear what the score is fore here
 		float score =0;
 		float power=0;
-		DescriptionBase<?>[] coveredTaxaArray = coveredTaxa.toArray(new DescriptionBase[coveredTaxa.size()]); // I did not figure a better way to do this
-		for (i=0 ; i<coveredTaxaArray.length; i++){
-			DescriptionElementBase deb1 = getDescriptionElementByFeature(coveredTaxaArray[i], feature);
+		DescriptionBase<?>[] fixedOrderTaxa = coveredTaxa.toArray(new DescriptionBase[coveredTaxa.size()]); // I did not figure a better way to do this
+		for (int i=0 ; i<fixedOrderTaxa.length; i++){
+			DescriptionElementBase deb1 = getDescriptionElementByFeature(fixedOrderTaxa[i], feature);
 
-			for (j=i+1 ; j< coveredTaxaArray.length ; j++){
-				DescriptionElementBase deb2 = getDescriptionElementByFeature(coveredTaxaArray[j], feature);
+			for (int j=i+1 ; j< fixedOrderTaxa.length ; j++){
+				DescriptionElementBase deb2 = getDescriptionElementByFeature(fixedOrderTaxa[j], feature);
 
 //				System.out.println(deb1 + "; " +deb2);
 				power = defaultPower(deb1, deb2);
