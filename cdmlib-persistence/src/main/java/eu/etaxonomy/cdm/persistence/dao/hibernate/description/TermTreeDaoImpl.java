@@ -53,7 +53,9 @@ public class TermTreeDaoImpl extends IdentifiableDaoBase<TermTree> implements IT
     @Override
     public List<TermTree> list() {
         Criteria crit = getSession().createCriteria(type);
-        return crit.list();
+        @SuppressWarnings("unchecked")
+        List<TermTree> result = crit.list();
+        return result;
     }
 
     @Override
@@ -62,7 +64,7 @@ public class TermTreeDaoImpl extends IdentifiableDaoBase<TermTree> implements IT
         defaultBeanInitializer.initializeAll(nodes, nodePaths);
 
         List<TermNode> childrenOfChildren = new ArrayList<>();
-        for(TermNode node : nodes) {
+        for(TermNode<?> node : nodes) {
             if(node.getChildCount() > 0){
                 childrenOfChildren.addAll(node.getChildNodes());
             }

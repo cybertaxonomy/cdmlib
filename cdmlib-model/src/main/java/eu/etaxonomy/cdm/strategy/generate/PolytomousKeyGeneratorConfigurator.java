@@ -88,8 +88,7 @@ public class PolytomousKeyGeneratorConfigurator {
      * @return
      */
     public List<Feature> getFeatures() {
-        @SuppressWarnings("unchecked")
-        List<Feature> result = (List<Feature> )dataSet.getDescriptiveSystem().asTermList();
+        List<Feature> result = dataSet.getDescriptiveSystem().asTermList();
         return result;
     }
 

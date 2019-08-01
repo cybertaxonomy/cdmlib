@@ -103,7 +103,7 @@ public class PolytomousKeyGenerator {
 			// this map stores the thresholds giving the best dichotomy of taxa for the corresponding feature supporting quantitative data
 			Map<Feature,Float> quantitativeFeaturesThresholds = new HashMap<>();
 			// the scores of the different features are calculated, the thresholds in the same time
-			System.out.println(featuresLeft);
+			System.out.println("Feature left: " + featuresLeft);
 			Feature winnerFeature = computeScores(featuresLeft, taxaCovered, quantitativeFeaturesThresholds);
 
 			/************** either the feature supports quantitative data... **************/
