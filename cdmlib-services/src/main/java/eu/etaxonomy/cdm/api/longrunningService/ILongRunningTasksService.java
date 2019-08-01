@@ -48,8 +48,12 @@ public interface ILongRunningTasksService {
      */
     UUID monitLongRunningTask(Set<UUID> movingUuids, UUID targetTreeNodeUuid, int movingType);
 
-
-    public UUID aggregateComputedTaxonDescriptions(UUID taxonNodeUuid, UUID descriptiveDataSetUuid);
+    /**
+     * Monitored invocation of {@link IDescriptiveDataSetService#aggregate(UUID)}
+     * @param descriptiveDataSetUuid the data set which should be aggregated
+     * @return the uuid of the monitor
+     */
+    public UUID aggregateDescriptiveDataSet(UUID descriptiveDataSetUuid);
 
     /**
      * Monitored invocation of {@link IDescriptiveDataSetService#getRowWrapper(DescriptiveDataSet, IProgressMonitor)}

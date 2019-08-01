@@ -69,11 +69,12 @@ public class LongRunningTasksServiceImpl implements ILongRunningTasksService{
     }
 
     @Override
-    public UUID aggregateComputedTaxonDescriptions(UUID taxonNodeUuid, UUID descriptiveDataSetUuid){
+    public UUID aggregateDescriptiveDataSet(UUID descriptiveDataSetUuid){
         RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
             @Override
             public Serializable doRun(IRemotingProgressMonitor monitor) {
-                UpdateResult updateResult = descriptiveDataSetService.aggregateTaxonDescription(taxonNodeUuid, descriptiveDataSetUuid, monitor);
+                // TODO add monitor to aggregation method
+                UpdateResult updateResult = descriptiveDataSetService.aggregate(descriptiveDataSetUuid);
                 for(Exception e : updateResult.getExceptions()) {
                     monitor.addReport(e.getMessage());
                 }
