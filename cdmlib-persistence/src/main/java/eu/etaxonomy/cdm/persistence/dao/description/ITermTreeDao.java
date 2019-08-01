@@ -12,8 +12,8 @@ package eu.etaxonomy.cdm.persistence.dao.description;
 import java.util.List;
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermNode;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
@@ -24,9 +24,9 @@ import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
  */
 public interface ITermTreeDao extends IIdentifiableDao<TermTree> {
 
-    public List<TermTree> list();
-
     public UUID DefaultFeatureTreeUuid = UUID.fromString("ac8d4e58-926d-4f81-ac77-cebdd295df7c");
+
+    public List<TermTree> list();
 
     /**
      * Loads nodes and the nodes child nodes recursively
