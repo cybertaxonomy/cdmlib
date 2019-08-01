@@ -11,7 +11,6 @@ import eu.etaxonomy.cdm.api.service.dto.RowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenRowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonRowWrapperDTO;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
-import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -144,27 +143,15 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
     public List<TaxonNode> loadFilteredTaxonNodes(DescriptiveDataSet descriptiveDataSet, List<String> propertyPaths);
 
     /**
-     * Aggregates the character data of the given descriptions and creates a new description
-     * for the given taxon with the aggregated data.
-     * @param taxonUuid the UUID of the taxon where the new description with the
-     * aggregated data will be stored
-     * @param descriptionUuids the uuid of the descriptions that are aggregated
-     * @param descriptionTitle the new title of the description
+     * Aggregates the character data of the given {@link DescriptiveDataSet}.<br>
+     * <br>
+     * For all {@link SpecimenDescription}s belonging to this data set new,
+     * aggregated {@link TaxonDescription}s are created for every taxon the specimens are
+     * directly associated with.
      * @param descriptiveDataSetUuid the uuid of the descriptive data set to which the
-     * aggregated description will be added to
+     * aggregated descriptions will be added to
      * @return the result of the operation
      */
-    public UpdateResult aggregateDescription(UUID taxonUuid, List<UUID> descriptionUuids, String descriptionTitle
-            , UUID descriptiveDataSetUuid);
+    public UpdateResult aggregate(UUID descriptiveDataSetUuid);
 
-    /**
-     * Aggregates all {@link TaxonDescription}s of all sub nodes that have a "computed" marker
-     * @param taxonNodeUuid the parent taxon node
-     * @param descriptiveDataSetUuid the uuid of the descriptive data set to which the
-     * aggregated description will be added to
-     * @param monitor the progress monitor
-     * @return the update result
-     */
-    public UpdateResult aggregateTaxonDescription(UUID taxonNodeUuid, UUID descriptiveDataSetUuid,
-            IRemotingProgressMonitor monitor);
 }
