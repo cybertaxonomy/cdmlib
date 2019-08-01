@@ -309,40 +309,43 @@ public class PolytomousKeyGeneratorTest {
 		PolytomousKey result = generator.invoke(configurator);
 		result.setTitleCache("No Merge Key", true);
 	    result.print(System.out);
+	    String label;
 
 	    //Assertions
 		assertNotNull("Key should exist.", result);
         PolytomousKeyNode root = result.getRoot();
         Assert.assertEquals(featureShape, root.getFeature());
 
-        //oval
-        PolytomousKeyNode ovalNode = root.getChildAt(0);
-        String label = ovalNode.getStatement().getLabelText(Language.DEFAULT());
-        Assert.assertEquals(oval.getLabel(), label);
-        Assert.assertEquals(taxon1, ovalNode.getTaxon());
-
         //circular
-        PolytomousKeyNode circularNode = root.getChildAt(1);
+        PolytomousKeyNode circularNode = root.getChildAt(0);
         label = circularNode.getStatement().getLabelText(Language.DEFAULT());
         Assert.assertEquals(circular.getLabel(), label);
         Assert.assertEquals(featurePresence, circularNode.getFeature());
+            //yes
+            PolytomousKeyNode yesNode = circularNode.getChildAt(0);
+            label = yesNode.getStatement().getLabelText(Language.DEFAULT());
+            Assert.assertEquals(yes.getLabel(), label);
+            Assert.assertEquals(featureLength, yesNode.getFeature());
             //no
-            PolytomousKeyNode noNode = circularNode.getChildAt(0);
+            PolytomousKeyNode noNode = circularNode.getChildAt(1);
             label = noNode.getStatement().getLabelText(Language.DEFAULT());
             Assert.assertEquals(no.getLabel(), label);
             Assert.assertTrue(noNode.getChildren().isEmpty());
             Assert.assertEquals(taxon8, noNode.getTaxon());
-            //yes
-            PolytomousKeyNode yesNode = circularNode.getChildAt(1);
-            label = yesNode.getStatement().getLabelText(Language.DEFAULT());
-            Assert.assertEquals(yes.getLabel(), label);
-            Assert.assertEquals(featureLength, yesNode.getFeature());
 
 
         //triangular
-        PolytomousKeyNode triangularNode = root.getChildAt(2);
+        PolytomousKeyNode triangularNode = root.getChildAt(1);
         label = triangularNode.getStatement().getLabelText(Language.DEFAULT());
         Assert.assertEquals(triangular.getLabel(), label);
+
+
+        //oval
+        PolytomousKeyNode ovalNode = root.getChildAt(2);
+        label = ovalNode.getStatement().getLabelText(Language.DEFAULT());
+        Assert.assertEquals(oval.getLabel(), label);
+        Assert.assertEquals(taxon1, ovalNode.getTaxon());
+
 
 
 	}
@@ -357,33 +360,40 @@ public class PolytomousKeyGeneratorTest {
 		result.setTitleCache("Merge Key", true);
         assertNotNull("Key should exist (merge mode ON).", result);
         result.print(System.out);
+        String label;
 
         //Assertions
         assertNotNull("Key should exist.", result);
         PolytomousKeyNode root = result.getRoot();
         Assert.assertEquals(featureShape, root.getFeature());
+
+        //triangular or oval
+        PolytomousKeyNode triangularNode = root.getChildAt(0);
+        label = triangularNode.getStatement().getLabelText(Language.DEFAULT());
+        Assert.assertEquals("Oval or Triangular", label);
+
         //circular
-        PolytomousKeyNode circularNode = root.getChildAt(0);
-        String label = circularNode.getStatement().getLabelText(Language.DEFAULT());
+        PolytomousKeyNode circularNode = root.getChildAt(1);
+        label = circularNode.getStatement().getLabelText(Language.DEFAULT());
         Assert.assertEquals(circular.getLabel(), label);
         Assert.assertEquals(featurePresence, circularNode.getFeature());
-            //no
-            PolytomousKeyNode noNode = circularNode.getChildAt(0);
-            label = noNode.getStatement().getLabelText(Language.DEFAULT());
-            Assert.assertEquals(no.getLabel(), label);
-            Assert.assertTrue(noNode.getChildren().isEmpty());
-            Assert.assertEquals(taxon8, noNode.getTaxon());
+
             //yes
-            PolytomousKeyNode yesNode = circularNode.getChildAt(1);
+            PolytomousKeyNode yesNode = circularNode.getChildAt(0);
             label = yesNode.getStatement().getLabelText(Language.DEFAULT());
             Assert.assertEquals(yes.getLabel(), label);
 //            Assert.assertEquals(featureLength, circularNode.getFeature());
 
+            //no
+            PolytomousKeyNode noNode = circularNode.getChildAt(1);
+            label = noNode.getStatement().getLabelText(Language.DEFAULT());
+            Assert.assertEquals(no.getLabel(), label);
+            Assert.assertTrue(noNode.getChildren().isEmpty());
+            Assert.assertEquals(taxon8, noNode.getTaxon());
 
-        //triangular
-        PolytomousKeyNode triangularNode = root.getChildAt(1);
-        label = triangularNode.getStatement().getLabelText(Language.DEFAULT());
-        Assert.assertEquals("Oval or Triangular", label);
+
+
+
 
 	}
 

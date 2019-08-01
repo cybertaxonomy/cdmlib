@@ -313,10 +313,10 @@ public class PolytomousKeyGenerator {
     private static final Comparator<? super Entry<Set<DescriptionBase<?>>, List<State>>> entryComparator =  (a,b)-> {
         if (a.getKey().size()!=b.getKey().size()){
             //order by number of taxa covered
-            return a.getKey().size() - b.getKey().size();
+            return b.getKey().size() - a.getKey().size();
         }else if (a.getValue().size()!= b.getValue().size()){
             //order by number of states covered
-            return a.getValue().size() - b.getValue().size();
+            return b.getValue().size() - a.getValue().size();
         }else{
             //order states alphabetically or by uuid
             for (int i = 0; i < a.getValue().size(); i++){
