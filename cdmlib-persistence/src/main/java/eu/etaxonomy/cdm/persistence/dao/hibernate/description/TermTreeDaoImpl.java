@@ -11,12 +11,14 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.description;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -30,6 +32,7 @@ import eu.etaxonomy.cdm.persistence.dao.description.ITermTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author a.mueller
@@ -129,5 +132,28 @@ public class TermTreeDaoImpl extends IdentifiableDaoBase<TermTree> implements IT
            query.setMaxResults(limit);
         }
         return getUuidAndTitleCache(query);
+    }
+
+    //TODO not yet tested
+    @Override
+    public List<TermTree> list(TermType termType, Integer limit, Integer start, List<OrderHint> orderHints,
+            List<String> propertyPaths) {
+
+        Criteria criteria = getSession().createCriteria(type);
+        if (termType != null){
+            Set<TermType> types = termType.getGeneralizationOf(true);
+            types.add(termType);
+            criteria.add(Restrictions.in("termType", types));
+        }
+
+        addLimitAndStart(criteria, limit, start);
+
+        addOrder(criteria, orderHints);
+
+        @SuppressWarnings("unchecked")
+        List<TermTree> results = criteria.list();
+
+        defaultBeanInitializer.initializeAll(results, propertyPaths);
+        return results;
     }
 }

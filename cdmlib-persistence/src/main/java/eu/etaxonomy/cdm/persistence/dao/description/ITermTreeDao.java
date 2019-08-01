@@ -17,6 +17,7 @@ import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author a.mueller
@@ -37,4 +38,16 @@ public interface ITermTreeDao extends IIdentifiableDao<TermTree> {
 
     public <S extends TermTree> List<UuidAndTitleCache<S>> getUuidAndTitleCacheByTermType(Class<S> clazz, TermType termType, Integer limit,
             String pattern);
+
+    /**
+     * @param termType
+     * @param limit
+     * @param start
+     * @param orderHints
+     * @param propertyPaths
+     * @return
+     */
+    public List<TermTree> list(TermType termType, Integer limit, Integer start, List<OrderHint> orderHints,
+            List<String> propertyPaths);
+
 }

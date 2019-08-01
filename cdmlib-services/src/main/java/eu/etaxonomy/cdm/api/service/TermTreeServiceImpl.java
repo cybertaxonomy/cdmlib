@@ -31,6 +31,7 @@ import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.persistence.dao.description.ITermNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.description.ITermTreeDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 @Service
@@ -139,6 +140,12 @@ public class TermTreeServiceImpl
     public <S extends TermTree> List<UuidAndTitleCache<S>> getUuidAndTitleCacheByTermType(Class<S> clazz, TermType termType, Integer limit,
             String pattern) {
         return dao.getUuidAndTitleCacheByTermType(clazz, termType, limit, pattern);
+    }
+
+    @Override
+    public List<TermTree> list(TermType termType, Integer limit, Integer start, List<OrderHint> orderHints,
+            List<String> propertyPaths) {
+        return dao.list(termType, limit, start, orderHints, propertyPaths);
     }
 
 
