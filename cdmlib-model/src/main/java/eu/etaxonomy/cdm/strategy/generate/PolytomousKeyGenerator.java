@@ -253,6 +253,8 @@ public class PolytomousKeyGenerator {
 
 				if (reuseWinner.get(newTaxaCovered)== Boolean.TRUE){
 				    featuresLeft.add(winnerFeature);
+				}else{
+				    featuresLeft.remove(winnerFeature);
 				}
 				// if the node is a leaf, the statement contains the list of taxa to which the current leaf leads.
 
