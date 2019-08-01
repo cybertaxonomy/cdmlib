@@ -247,8 +247,10 @@ public class CategoricalData extends DescriptionElementBase {
 
     @Override
     public String toString() {
-        return "CategoricalData [stateData=" + stateData + ", orderRelevant=" + orderRelevant + ", unknownData="
-                + unknownData + "]";
+        return "[" + stateData +
+                (orderRelevant? ", orderRelevant=" + orderRelevant:"") +
+                (unknownData? ", unknownData=" + unknownData:"")
+                + "]";
     }
 
 

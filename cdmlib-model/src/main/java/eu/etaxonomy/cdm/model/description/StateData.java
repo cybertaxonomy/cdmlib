@@ -299,8 +299,10 @@ public class StateData extends VersionableEntity implements IModifiable, IMultiL
 
     @Override
     public String toString() {
-        return "StateData [state=" + state + ", modifiers=" + modifiers
-                + ", modifyingText=" + modifyingText + "]";
+        return "[" + state
+                + (modifiers.isEmpty()? "": ", modifiers=" + modifiers)
+                + (modifyingText.isEmpty()?"": ", modifyingText=" + modifyingText)
+                + "]";
     }
 
 //*********************************** CLONE *****************************************/
