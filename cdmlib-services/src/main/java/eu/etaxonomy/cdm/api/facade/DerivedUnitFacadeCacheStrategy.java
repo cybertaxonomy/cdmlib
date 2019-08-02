@@ -71,12 +71,10 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 			result = CdmUtils.concat("; ", result, exsiccatum);
 
 			//Herbarium & identifier
-			String code = getCode(facade);
-			String identifier = getUnitNumber(facade /*, code*/);
-            String collectionData = CdmUtils.concat(" ", code, identifier);
-			if (StringUtils.isNotBlank(collectionData)) {
-				result = (result + " (" +  collectionData + ")").trim();
-			}
+			String barcode = getSpecimenLabel(facade);
+	        if (StringUtils.isNotBlank(barcode)) {
+	            result = (result + " (" +  barcode + ")").trim();
+	        }
 
 			//result
 			result = fieldStrategy.addPlantDescription(result, facade);
@@ -92,6 +90,22 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 
 
     /**
+     * Produces the collection barcode which is the combination of the collection code and
+     * accession number.
+     *
+     * @param result
+     * @param facade
+     * @return
+     */
+    public String getSpecimenLabel(DerivedUnitFacade facade) {
+        String code = getCode(facade);
+        String identifier = getUnitNumber(facade /*, code*/);
+        String collectionData = CdmUtils.concat(" ", code, identifier);
+        return collectionData;
+    }
+
+
+    /**
      * Computes the unit number which might be an accession number, barcode, catalogue number, ...
      * In future if the unit number starts with the same string as the barcode
      * it might be replaced.
@@ -101,18 +115,17 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
         String result;
         if (isNotBlank(facade.getAccessionNumber())){
             result = facade.getAccessionNumber();
-            String code = getCode(facade);
-            result = result.trim();
-            if(isNotBlank(code) && result.startsWith(code + " ")){
-                result = result.replaceAll("^" + code + "\\s", "");
-            }
         }else if (isNotBlank(facade.getBarcode())){
             result = facade.getBarcode();
         }else{
             result = facade.getCatalogNumber();
         }
+        String code = getCode(facade);
+        result = result.trim();
+        if(isNotBlank(code) && result.startsWith(code + " ")){
+            result = result.replaceAll("^" + code + "\\s", "");
+        }
         return result;
-
     }
 
 
