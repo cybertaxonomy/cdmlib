@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -23,11 +24,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
 import eu.etaxonomy.cdm.api.service.config.TermNodeDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.description.ITermNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.description.ITermTreeDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
@@ -145,8 +148,14 @@ public class TermTreeServiceImpl
     @Override
     public List<TermTree> list(TermType termType, Integer limit, Integer start, List<OrderHint> orderHints,
             List<String> propertyPaths) {
-        return dao.list(termType, limit, start, orderHints, propertyPaths);
+        return dao.list(null, Arrays.asList(new Restriction<>("termType", null, termType)), limit, start, orderHints, propertyPaths);
     }
+
+    @Override
+    public Pager<TermTree> page(TermType termType, Integer pageSize, Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths) {
+        return page(null, Arrays.asList(new Restriction<>("termType", null, termType)), pageSize, pageIndex, orderHints, propertyPaths);
+    }
+
 
 
 }
