@@ -1287,7 +1287,7 @@ public class DerivedUnitFacade {
 		getGatheringEvent(true).setDescription(description);
 	}
 
-	// gatering period
+	// gathering period
 	@Transient
 	public TimePeriod getGatheringPeriod() {
 		return (hasGatheringEvent() ? getGatheringEvent(true).getTimeperiod()
@@ -1321,7 +1321,7 @@ public class DerivedUnitFacade {
 	}
 
 	/**
-	 * convienience method for {@link #getLocality()}.
+	 * Convenience method for {@link #getLocality()}.
 	 * {@link LanguageString#getLanguage() getLanguage()}
 	 *
 	 * @return
