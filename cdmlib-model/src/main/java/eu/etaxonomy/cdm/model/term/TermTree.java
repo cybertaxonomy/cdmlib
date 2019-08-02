@@ -254,6 +254,12 @@ public class TermTree <T extends DefinedTermBase>
         return result;
     }
 
+
+    public Set<T> independentTerms() {
+        Set<T> terms = root.getIndependentTermsRecursive();
+        return terms;
+    }
+
 //*********************** CLONE ********************************************************/
 
 	/**
@@ -280,4 +286,5 @@ public class TermTree <T extends DefinedTermBase>
 			throw new RuntimeException(message);
 		}
 	}
+
 }

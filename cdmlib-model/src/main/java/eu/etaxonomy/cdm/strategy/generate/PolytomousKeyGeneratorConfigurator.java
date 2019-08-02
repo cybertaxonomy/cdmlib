@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.strategy.generate;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,6 +25,8 @@ import eu.etaxonomy.cdm.model.term.TermTree;
  * @since 26.07.2019
  */
 public class PolytomousKeyGeneratorConfigurator {
+
+    private boolean debug = false;
 
     private boolean merge=true; // if this boolean is set to true, branches of the tree will be merged if the corresponding states can be used together without decreasing their score
 
@@ -86,12 +89,21 @@ public class PolytomousKeyGeneratorConfigurator {
     }
 
     public List<Feature> getFeatures() {
-        List<Feature> result = dataSet.getDescriptiveSystem().asTermList();
+        List<Feature> result;
+        if(!useDependencies){
+            result = dataSet.getDescriptiveSystem().asTermList();
+        }else{
+            result = new ArrayList<>(dataSet.getDescriptiveSystem().independentTerms());
+        }
         return result;
     }
 
     public TermTree<Feature> getDependenciesTree() {
         return dataSet.getDescriptiveSystem();
     }
+
+    public boolean isDebug() {return debug;}
+    public void setDebug(boolean debug) {this.debug = debug;}
+
 
 }

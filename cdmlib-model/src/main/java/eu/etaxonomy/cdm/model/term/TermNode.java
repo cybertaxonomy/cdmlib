@@ -33,6 +33,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
@@ -541,6 +542,9 @@ public class TermNode <T extends DefinedTermBase>
 	 * @param terms
 	 * @return
 	 */
+	//TODO do we need to pass the terms parameter? Maybe a bit more performant
+	// but more difficult to handle. We could use this internally but offer
+	//the method with return value as public
 	@Transient
 	public Set<T> getDistinctTermsRecursive(Set<T> terms){
 		T term = this.getTerm();
@@ -552,6 +556,40 @@ public class TermNode <T extends DefinedTermBase>
 		}
 		return terms;
 	}
+
+    /**
+     * Returns all terms that are contained in this node or a child node
+     * as long as this node or the child nodes are not {@link #isDependend() dependend}
+     * on higher nodes/feature states.
+     * @param terms
+     * @return
+     */
+    @Transient
+    public Set<T> getIndependentTermsRecursive(){
+        Set<T> terms = new HashSet<>();
+        if (!isDependend()){
+            T term = this.getTerm();
+            if(term != null){
+                terms.add(term);
+            }
+            for(TermNode<T> childNode : this.getChildNodes()){
+                terms.addAll(childNode.getIndependentTermsRecursive());
+            }
+        }
+        return terms;
+    }
+
+
+
+    /**
+     * @return <code>true</code> if any of the sets {@link #getInapplicableIf() inapplicableIf}
+     * and {@link #getOnlyApplicableIf() onlyApplicableIf} are not empty
+     */
+    @Transient
+    @XmlTransient
+    public boolean isDependend() {
+        return inapplicableIf.size()>0 || onlyApplicableIf.size()>0;
+    }
 
     /**
      * @return a list of terms which includes first the

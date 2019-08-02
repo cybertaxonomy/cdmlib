@@ -10,7 +10,6 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.Language;
@@ -38,21 +37,18 @@ import eu.etaxonomy.cdm.model.term.TermType;
  * @since 16.12.2010
  */
 public class PolytomousKeyGeneratorTest {
-	/**
-     *
-     */
-    private static final String GT_3 = " > 3.0";
-
-    /**
-     *
-     */
-    private static final String LESS_3 = " < 3.0";
 
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(PolytomousKeyGeneratorTest.class);
 
+
+    private static final String GT_3 = " > 3.0";
+    private static final String LESS_3 = " < 3.0";
+
 	private static final boolean QUANTITATIVE = true;
 	private static final boolean CATEGORICAL = false;
+
+    private static final boolean debug = true;
 
 
 	private Feature featureShape;
@@ -87,7 +83,12 @@ public class PolytomousKeyGeneratorTest {
 	private TaxonDescription taxond8;
 
 
-	private CategoricalData catd12;
+    private CategoricalData catd11;
+    private CategoricalData catd12;
+    private CategoricalData catd13;
+    private CategoricalData catd14;
+    private CategoricalData catd27;
+    private CategoricalData catd28;
 	private QuantitativeData qtd31;
     private QuantitativeData qtd32;
     private QuantitativeData qtd33;
@@ -95,6 +96,7 @@ public class PolytomousKeyGeneratorTest {
     private QuantitativeData qtd35;
     private QuantitativeData qtd36;
     private QuantitativeData qtd37;
+    private QuantitativeData qtd38;
 
 	private Set<TaxonDescription> taxa;
 
@@ -113,7 +115,7 @@ public class PolytomousKeyGeneratorTest {
     private static UUID uuidTd8 = UUID.fromString("b0458406-8e76-4f1a-9034-79cc661caf2a");
 
 
-	private PolytomousKeyGenerator generator;
+	private PolytomousKeyGenerator generator = new PolytomousKeyGenerator();
 
 	@Before
 	public void setUp() throws Exception {
@@ -156,11 +158,11 @@ public class PolytomousKeyGeneratorTest {
 		yes = createState("Yes");
 		no = createState("No");
 
-		CategoricalData catd11 = CategoricalData.NewInstance(triangular, featureShape);
+		catd11 = CategoricalData.NewInstance(triangular, featureShape);
 		catd11.addStateData(oval);
 		catd12 = CategoricalData.NewInstance(triangular, featureShape);
-		CategoricalData catd13 = CategoricalData.NewInstance(triangular, featureShape);
-		CategoricalData catd14 = CategoricalData.NewInstance(triangular, featureShape);
+		catd13 = CategoricalData.NewInstance(triangular, featureShape);
+		catd14 = CategoricalData.NewInstance(triangular, featureShape);
 		CategoricalData catd15 = CategoricalData.NewInstance(circular, featureShape);
 		CategoricalData catd16 = CategoricalData.NewInstance(circular, featureShape);
 		CategoricalData catd17 = CategoricalData.NewInstance(circular, featureShape);
@@ -174,8 +176,8 @@ public class PolytomousKeyGeneratorTest {
 		CategoricalData catd24 = CategoricalData.NewInstance(yes, featurePresence);
 		CategoricalData catd25 = CategoricalData.NewInstance(yes, featurePresence);
 		CategoricalData catd26 = CategoricalData.NewInstance(yes, featurePresence);
-		CategoricalData catd27 = CategoricalData.NewInstance(yes, featurePresence);
-		CategoricalData catd28 = CategoricalData.NewInstance(no, featurePresence);
+		catd27 = CategoricalData.NewInstance(yes, featurePresence);
+		catd28 = CategoricalData.NewInstance(no, featurePresence);
 
 		/*************************/
 
@@ -186,7 +188,7 @@ public class PolytomousKeyGeneratorTest {
 		qtd35 = QuantitativeData.NewMinMaxInstance(featureLength, 0, 3);
 		qtd36 = QuantitativeData.NewMinMaxInstance(featureLength, 0, 3);
 		qtd37 = QuantitativeData.NewMinMaxInstance(featureLength, 6, 9);
-//		QuantitativeData qtd38 = QuantitativeData.NewMinMaxInstance(feature3, 6, 9);
+		qtd38 = QuantitativeData.NewMinMaxInstance(featureLength, 0, 3);
 
 		/*************************/
 
@@ -260,13 +262,11 @@ public class PolytomousKeyGeneratorTest {
 
 	@Test
 	public void testInvokeMergeModeOff() {
-		generator = new PolytomousKeyGenerator();
-		PolytomousKeyGeneratorConfigurator configurator = new PolytomousKeyGeneratorConfigurator();
-		configurator.setDataSet(createDataSet());
+		PolytomousKeyGeneratorConfigurator configurator = createDefaultConfig();
 		configurator.setMerge(false);
 		PolytomousKey result = generator.invoke(configurator);
 		result.setTitleCache("No Merge Key", true);
-	    result.print(System.out);
+        if (debug) {result.print(System.out);}
 
 	    //Assertions
 		assertNotNull("Key should exist.", result);
@@ -321,14 +321,12 @@ public class PolytomousKeyGeneratorTest {
 
     @Test
     public void testInvokeMergeModeON() {
-        generator = new PolytomousKeyGenerator();
-        PolytomousKeyGeneratorConfigurator configurator = new PolytomousKeyGeneratorConfigurator();
-        configurator.setDataSet(createDataSet());
+        PolytomousKeyGeneratorConfigurator configurator = createDefaultConfig();
         configurator.setMerge(true);
         PolytomousKey result = generator.invoke(configurator);
         result.setTitleCache("Merge Key", true);
         assertNotNull("Key should exist (merge mode ON).", result);
-        result.print(System.out);
+        if (debug) {result.print(System.out);}
 
         //Assertions
         assertNotNull("Key should exist.", result);
@@ -376,9 +374,7 @@ public class PolytomousKeyGeneratorTest {
 
     @Test
     public void testInvokeMergeReuseFeature() {
-        generator = new PolytomousKeyGenerator();
-        PolytomousKeyGeneratorConfigurator configurator = new PolytomousKeyGeneratorConfigurator();
-        configurator.setDataSet(createDataSet());
+        PolytomousKeyGeneratorConfigurator configurator = createDefaultConfig();
         taxond1.removeElement(qtd31);
         taxond2.removeElement(qtd32);
         taxond3.removeElement(qtd33);
@@ -388,7 +384,7 @@ public class PolytomousKeyGeneratorTest {
         PolytomousKey result = generator.invoke(configurator);
         result.setTitleCache("Merge Key with feature reuse", true);
         assertNotNull("Key should exist (merge mode with feature reuse).", result);
-        result.print(System.out);
+        if (debug) {result.print(System.out);}
 
         //Assertions
         assertNotNull("Key should exist.", result);
@@ -410,6 +406,96 @@ public class PolytomousKeyGeneratorTest {
 
 
     /**
+     * With dependencies is difficult to check because it only changes the performance
+     * if data is clean. So in this test we first check some dirty data with
+     * dependency check and then without.
+     * In the first run it correctly removes the length of wings check at the end
+     * as length of wings is not applicable if presence of wings = no.
+     * In the second run it does the length of wings check as it does not
+     * use dependency check.
+     */
+    @Test
+    public void testInvokeWithoutDependencies() {
+        generator = new PolytomousKeyGenerator();
+        PolytomousKeyGeneratorConfigurator configurator = createDefaultConfig();
+        configurator.setMerge(true);
+        configurator.setUseDependencies(true);
+        catd27.getStateData().get(0).setState(no);
+        taxond8.addElement(qtd38);
+
+        PolytomousKey result = generator.invoke(configurator);
+        result.setTitleCache("Merge Key with dependency", true);
+        assertNotNull("Key should exist (dependency on)", result);
+        if (debug) {result.print(System.out);}
+
+        //Assertions
+        assertNotNull("Key should exist.", result);
+        PolytomousKeyNode root = result.getRoot();
+        Assert.assertEquals(featureShape, root.getFeature());
+
+        //circular
+        PolytomousKeyNode circularNode = root.getChildAt(1);
+        assertInnerNode(circularNode, circular, featurePresence);
+
+            //no
+            assertIsTaxonList(circularNode.getChildAt(0), no, taxon8, taxon7);
+
+            //yes
+            assertIsTaxonList(circularNode.getChildAt(1), yes, taxon5, taxon6);
+
+        //and now without dependency check
+        configurator.setUseDependencies(false);
+
+        result = generator.invoke(configurator);
+        result.setTitleCache("Merge Key without dependency", true);
+        assertNotNull("Key should exist (dependency off)", result);
+        if (debug) {result.print(System.out);}
+
+        //Assertions
+        assertNotNull("Key should exist.", result);
+        root = result.getRoot();
+        Assert.assertEquals(featureShape, root.getFeature());
+
+        //circular
+        circularNode = root.getChildAt(1);
+        assertInnerNode(circularNode, circular, featurePresence);
+
+            //no
+            PolytomousKeyNode noNode = assertInnerNode(circularNode.getChildAt(0), no, featureLength);
+
+                //as dependency check is switched off we distinguish length, though length should be inapplicable here
+                assertSingleTaxon(noNode.getChildAt(0), taxon8, LESS_3);
+                assertSingleTaxon(noNode.getChildAt(1), taxon7, GT_3);
+
+            //yes
+            assertIsTaxonList(circularNode.getChildAt(1), yes, taxon5, taxon6);
+    }
+
+    @Test
+    public void testDependencyScore() {
+        generator = new PolytomousKeyGenerator();
+        PolytomousKeyGeneratorConfigurator configurator = new PolytomousKeyGeneratorConfigurator();
+        DescriptiveDataSet dataSet = createDataSet();
+        configurator.setDataSet(dataSet);
+        dataSet.getDescriptiveSystem().getRoot().removeChild(0); //remove shape feature
+        configurator.setMerge(true);
+        configurator.setUseDependencies(true);
+
+        PolytomousKey result = generator.invoke(configurator);
+        result.setTitleCache("Test Dependency Score Key", true);
+        if (debug) {result.print(System.out);}
+
+        //Assertions
+        assertNotNull("Key should exist.", result);
+        PolytomousKeyNode root = result.getRoot();
+        Assert.assertEquals("Root feature should be 'presence' as it inherits score from 'length of wings'", featurePresence, root.getFeature());
+        //...otherwise it would be colour, both have a score of 12.0 but presence comes first in list
+
+    }
+
+
+
+    /**
      * @param circularNode
      * @param label
      * @param featurePresence2
@@ -420,8 +506,9 @@ public class PolytomousKeyGeneratorTest {
         Assert.assertNull(node.getTaxon());
     }
 
-    private void assertInnerNode(PolytomousKeyNode node, State state, Feature feature) {
+    private PolytomousKeyNode assertInnerNode(PolytomousKeyNode node, State state, Feature feature) {
         assertInnerNode(node, state.getLabel(), feature);
+        return node;
     }
 
 
@@ -447,11 +534,10 @@ public class PolytomousKeyGeneratorTest {
         assertSingleTaxon(node, taxon, state.getLabel());
     }
 
-    /**
-     * @param less3Node
-     * @param taxon52
-     * @param taxon62
-     */
+    private void assertIsTaxonList(PolytomousKeyNode node, State state, Taxon... taxa) {
+        assertIsTaxonList(node, state.getLabel(), taxa);
+    }
+
     private void assertIsTaxonList(PolytomousKeyNode node, String label, Taxon... taxa) {
         Assert.assertNotNull(node.getStatement());
         Assert.assertEquals(label, label(node));
@@ -463,27 +549,15 @@ public class PolytomousKeyGeneratorTest {
             Assert.assertNull(child.getStatement());
             Assert.assertTrue(child.getChildren().isEmpty());
         }
-
     }
 
-    @Test
-    @Ignore
-    public void testInvokeWithDependencies() {
-        generator = new PolytomousKeyGenerator();
+    private PolytomousKeyGeneratorConfigurator createDefaultConfig() {
         PolytomousKeyGeneratorConfigurator configurator = new PolytomousKeyGeneratorConfigurator();
-        configurator.setMerge(true);
-
-//        generator.setFeatures(features);
-//        generator.setTaxa(taxa);
-////        generator.setDependencies(tree);// TODO create a tree with dependencies to test this function
-        generator.invoke(configurator);
-        assertNotNull("Key should exist (dependencies are present).",generator.invoke(configurator));
+        configurator.setDataSet(createDataSet());
+        configurator.setDebug(debug);
+        return configurator;
     }
 
-    /**
-     * @param configurator
-     * @return
-     */
     private DescriptiveDataSet createDataSet() {
         DescriptiveDataSet dataset = DescriptiveDataSet.NewInstance();
         dataset.setDescriptiveSystem(createFeatureTree());
