@@ -34,13 +34,10 @@ public class PublishForSubtreeConfigurator
         this.publish = publish;
     }
 
-    /**
-     * @param subtreeUuid
-     * @param newSecundum
-     */
-    public PublishForSubtreeConfigurator(UUID subtreeUuid) {
-        super(subtreeUuid);
-        // this.newSecundum = newSecundum;
+    private PublishForSubtreeConfigurator(UUID subtreeUuid, boolean includeAcceptedTaxa, boolean includeSynonyms,
+            boolean includeSharedTaxa, IProgressMonitor monitor, boolean publish) {
+        super(subtreeUuid, includeAcceptedTaxa, includeSynonyms, includeSharedTaxa, monitor);
+        this.publish = publish;
     }
 
 // ******************************* GETTER / SETTER  **************************/

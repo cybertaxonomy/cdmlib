@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.api.service.config.PublishForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.TaxonDistributionDTO;
@@ -283,10 +284,18 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      * @param includeSharedTaxa
      * @param progressMonitor
      * @return
+     * @deprecated use {@link #setPublishForSubtree(PublishForSubtreeConfigurator)} instead
      */
+    @Deprecated
     public UpdateResult setPublishForSubtree(UUID subtreeUuid, boolean publish, boolean includeAcceptedTaxa,
             boolean includeSynonyms, boolean includeSharedTaxa, IProgressMonitor progressMonitor);
 
+    /**
+     * Sets the publish flag for all taxa and/or synonyms of the subtree.
+     * @param configurator
+     * @return
+     */
+    public UpdateResult setPublishForSubtree(PublishForSubtreeConfigurator configurator);
 
     /**
      * Returns a list of taxon node {@link UUID uuids} according to the given filter.

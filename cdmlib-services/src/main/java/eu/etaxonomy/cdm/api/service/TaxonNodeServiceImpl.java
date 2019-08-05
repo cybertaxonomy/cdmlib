@@ -29,6 +29,7 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
+import eu.etaxonomy.cdm.api.service.config.PublishForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator;
@@ -1019,21 +1020,25 @@ public class TaxonNodeServiceImpl
 
     @Override
     @Transactional(readOnly=false)
-    public UpdateResult setPublishForSubtree(UUID subtreeUuid, boolean publish, boolean includeAcceptedTaxa,
-            boolean includeSynonyms, boolean includeSharedTaxa, IProgressMonitor monitor) {
+    public UpdateResult setPublishForSubtree(PublishForSubtreeConfigurator config){
         UpdateResult result = new UpdateResult();
+        IProgressMonitor monitor = config.getMonitor();
         if (monitor == null){
             monitor = DefaultProgressMonitor.NewInstance();
         }
         TreeIndex subTreeIndex = null;
 
-        if (subtreeUuid == null){
+        if (config.getSubtreeUuid() == null){
             result.setError();
             result.addException(new NullPointerException("No subtree given"));
             monitor.done();
             return result;
         }
-        TaxonNode subTree = find(subtreeUuid);
+        TaxonNode subTree = find(config.getSubtreeUuid());
+        boolean includeAcceptedTaxa = config.isIncludeAcceptedTaxa();
+        boolean publish = config.isPublish();
+        boolean includeSynonyms = config.isIncludeSynonyms();
+        boolean includeSharedTaxa = config.isIncludeSharedTaxa();
         if (subTree == null){
             result.setError();
             result.addException(new NullPointerException("Subtree does not exist"));
@@ -1057,11 +1062,24 @@ public class TaxonNodeServiceImpl
             Set<TaxonBase> updatedSynonyms = dao.setPublishForSubtreeSynonyms(subTreeIndex, publish, includeSharedTaxa, monitor);
             result.addUpdatedObjects(updatedSynonyms);
         }
+        if (includeAcceptedTaxa){
+            monitor.subTask("Update Accepted Taxa");
+            Set<TaxonBase> updatedTaxa = dao.setPublishForSubtreeAcceptedTaxa(subTreeIndex, publish, includeSharedTaxa, monitor);
+            result.addUpdatedObjects(updatedTaxa);
+        }
 
         monitor.done();
         return result;
     }
 
+    @Override
+    @Transactional(readOnly=false)
+    @Deprecated
+    public UpdateResult setPublishForSubtree(UUID subtreeUuid, boolean publish, boolean includeAcceptedTaxa,
+            boolean includeSynonyms, boolean includeSharedTaxa, IProgressMonitor monitor) {
+        PublishForSubtreeConfigurator configurator = new PublishForSubtreeConfigurator(subtreeUuid, publish, monitor);
+        return setPublishForSubtree(configurator);
+    }
 
     @Override
     public long count(TaxonNodeFilter filter){

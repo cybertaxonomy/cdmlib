@@ -47,6 +47,19 @@ public abstract class ForSubtreeConfiguratorBase implements Serializable{
         this.subtreeUuid = subtreeUuid;
     }
 
+    protected ForSubtreeConfiguratorBase(UUID subtreeUuid, boolean includeAcceptedTaxa, boolean includeSynonyms,
+            boolean includeSharedTaxa, IProgressMonitor monitor) {
+        super();
+        this.subtreeUuid = subtreeUuid;
+        this.includeAcceptedTaxa = includeAcceptedTaxa;
+        this.includeSynonyms = includeSynonyms;
+        this.includeSharedTaxa = includeSharedTaxa;
+        this.monitor = monitor;
+    }
+
+// ************************** GETTER / SETTER ********************************/
+
+
     public UUID getSubtreeUuid() {
         return subtreeUuid;
     }
