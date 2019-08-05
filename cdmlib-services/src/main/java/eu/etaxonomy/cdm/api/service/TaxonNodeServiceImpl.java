@@ -1062,11 +1062,7 @@ public class TaxonNodeServiceImpl
             Set<TaxonBase> updatedSynonyms = dao.setPublishForSubtreeSynonyms(subTreeIndex, publish, includeSharedTaxa, monitor);
             result.addUpdatedObjects(updatedSynonyms);
         }
-        if (includeAcceptedTaxa){
-            monitor.subTask("Update Accepted Taxa");
-            Set<TaxonBase> updatedTaxa = dao.setPublishForSubtreeAcceptedTaxa(subTreeIndex, publish, includeSharedTaxa, monitor);
-            result.addUpdatedObjects(updatedTaxa);
-        }
+
 
         monitor.done();
         return result;
