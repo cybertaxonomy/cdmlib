@@ -48,8 +48,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.TreeIndex;
-import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
-import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
@@ -298,7 +296,6 @@ public class TaxonNodeServiceImpl
         Classification classification = oldTaxonNode.getClassification();
         Taxon oldTaxon = HibernateProxyHelper.deproxy(oldTaxonNode.getTaxon());
         Taxon newAcceptedTaxon = (Taxon)this.taxonService.find(newAcceptedTaxonNode.getTaxon().getUuid());
-
         newAcceptedTaxon = HibernateProxyHelper.deproxy(newAcceptedTaxon);
         // Move oldTaxon to newTaxon
         //TaxonName synonymName = oldTaxon.getName();
@@ -399,13 +396,6 @@ public class TaxonNodeServiceImpl
             String message = "Description copied from former accepted taxon: %s (Old title: %s)";
             message = String.format(message, oldTaxon.getTitleCache(), description.getTitleCache());
             description.setTitleCache(message, true);
-            for (DescriptionElementBase element: description.getElements()){
-                for (DescriptionElementSource source: element.getSources()){
-                    if (source.getNameUsedInSource() == null){
-                        source.setNameUsedInSource(newSynonymName);
-                    }
-                }
-            }
             //oldTaxon.removeDescription(description, false);
             newAcceptedTaxon.addDescription(description);
         }

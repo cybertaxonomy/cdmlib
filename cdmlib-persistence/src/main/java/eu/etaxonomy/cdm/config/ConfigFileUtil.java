@@ -101,8 +101,6 @@ public class ConfigFileUtil implements EnvironmentAware {
     }
 
 
-
-
     /**
      * Returns specified the sub folder of  {@link #CDM_FOLDER_NAME}.
      * If the sub folder does not exist it will be created.

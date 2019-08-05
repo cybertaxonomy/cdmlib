@@ -81,7 +81,6 @@ import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
-import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IIdentificationKey;
@@ -209,81 +208,17 @@ public class TaxonServiceImpl
         synonymName.removeTaxonBase(synonym);
         TaxonName taxonName = acceptedTaxon.getName();
         taxonName.removeTaxonBase(acceptedTaxon);
-        Taxon newTaxon = Taxon.NewInstance(synonymName, synonym.getSec());
-        List<Synonym> synonyms = new ArrayList<>();
-        for (Synonym syn: acceptedTaxon.getSynonyms()){
-            synonyms.add(syn);
-        }
-        for (Synonym syn: synonyms){
-            newTaxon.addSynonym(syn, syn.getType());
-        }
 
-        //move all data to new taxon
-        //Move Taxon RelationShips to new Taxon
-        for(TaxonRelationship taxonRelationship : acceptedTaxon.getTaxonRelations()){
-            Taxon fromTaxon = HibernateProxyHelper.deproxy(taxonRelationship.getFromTaxon());
-            Taxon toTaxon = HibernateProxyHelper.deproxy(taxonRelationship.getToTaxon());
-            if (fromTaxon == acceptedTaxon){
-                newTaxon.addTaxonRelation(taxonRelationship.getToTaxon(), taxonRelationship.getType(),
-                        taxonRelationship.getCitation(), taxonRelationship.getCitationMicroReference());
-
-            }else if(toTaxon == acceptedTaxon){
-               fromTaxon.addTaxonRelation(newTaxon, taxonRelationship.getType(),
-                        taxonRelationship.getCitation(), taxonRelationship.getCitationMicroReference());
-               saveOrUpdate(fromTaxon);
-
-            }else{
-                logger.warn("Taxon is not part of its own Taxonrelationship");
-            }
-            // Remove old relationships
-
-            fromTaxon.removeTaxonRelation(taxonRelationship);
-            toTaxon.removeTaxonRelation(taxonRelationship);
-            taxonRelationship.setToTaxon(null);
-            taxonRelationship.setFromTaxon(null);
-        }
-
-
-        //Move descriptions to new taxon
-        List<TaxonDescription> descriptions = new ArrayList<TaxonDescription>( acceptedTaxon.getDescriptions()); //to avoid concurrent modification errors (newAcceptedTaxon.addDescription() modifies also oldtaxon.descritpions())
-        for(TaxonDescription description : descriptions){
-            String message = "Description copied from former accepted taxon: %s (Old title: %s)";
-            message = String.format(message, acceptedTaxon.getTitleCache(), description.getTitleCache());
-            description.setTitleCache(message, true);
-            for (DescriptionElementBase element: description.getElements()){
-                for (DescriptionElementSource source: element.getSources()){
-                    if (source.getNameUsedInSource() == null){
-                        source.setNameUsedInSource(taxonName);
-                    }
-                }
-            }
-            //oldTaxon.removeDescription(description, false);
-            newTaxon.addDescription(description);
-        }
-        List<TaxonNode> nodes = new ArrayList(acceptedTaxon.getTaxonNodes());
-        for (TaxonNode node: nodes){
-            node.setTaxon(newTaxon);
-            acceptedTaxon.removeTaxonNode(node);
-        }
-        Synonym newSynonym = Synonym.NewInstance(taxonName, acceptedTaxon.getSec());
-        newTaxon.addSynonym(newSynonym, SynonymType.HETEROTYPIC_SYNONYM_OF());
-//        synonym.setName(taxonName);
-//        synonym.setTitleCache(null, false);
-//        synonym.getTitleCache();
-//        acceptedTaxon.setName(synonymName);
-//        acceptedTaxon.setTitleCache(null, false);
-//        acceptedTaxon.getTitleCache();
-        saveOrUpdate(newSynonym);
-        saveOrUpdate(newTaxon);
-        TaxonDeletionConfigurator conf = new TaxonDeletionConfigurator();
-        conf.setDeleteNameIfPossible(false);
-        SynonymDeletionConfigurator confSyn = new SynonymDeletionConfigurator();
-        confSyn.setDeleteNameIfPossible(false);
-        result.setCdmEntity(newTaxon);
-
-        DeleteResult deleteResult = deleteTaxon(acceptedTaxon.getUuid(), conf, null);
-        deleteResult.includeResult(deleteSynonym(synonym, confSyn));
-        result.includeResult(deleteResult);
+        synonym.setName(taxonName);
+        synonym.setTitleCache(null, false);
+        synonym.getTitleCache();
+        acceptedTaxon.setName(synonymName);
+        acceptedTaxon.setTitleCache(null, false);
+        acceptedTaxon.getTitleCache();
+        saveOrUpdate(synonym);
+        saveOrUpdate(acceptedTaxon);
+        result.addUpdatedObject(acceptedTaxon);
+        result.addUpdatedObject(synonym);
 		return result;
 
         // the accepted taxon needs a new uuid because the concept has changed

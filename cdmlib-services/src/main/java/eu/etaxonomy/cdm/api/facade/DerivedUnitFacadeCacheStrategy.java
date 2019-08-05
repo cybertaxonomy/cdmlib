@@ -75,6 +75,7 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 	        if (StringUtils.isNotBlank(barcode)) {
 	            result = (result + " (" +  barcode + ")").trim();
 	        }
+
 			//result
 			result = fieldStrategy.addPlantDescription(result, facade);
 

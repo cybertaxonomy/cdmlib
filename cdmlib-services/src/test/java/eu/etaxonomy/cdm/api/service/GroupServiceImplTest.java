@@ -62,11 +62,7 @@ public class GroupServiceImplTest extends CdmTransactionalIntegrationTest {
         List<Group> groups = new ArrayList<>();
         groups.add(group);
         groupService.merge(groups, true);
-        String[] tables = new String[3];
-        tables[1] = "UserAccount_PermissionGroup";
-        tables[0] = "PermissionGroup";
-        tables[2] = "UserAccount";
-        commitAndStartNewTransaction(tables);
+        commitAndStartNewTransaction();
 
 
         group = groupService.find(groupUUID);
