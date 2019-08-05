@@ -177,7 +177,6 @@ public class TypeDesignationSetManagerTest extends CdmTransactionalIntegrationTe
                     "Prionus coriatius L. Type: Dreamland, near Kissingen, A.Kohlbecker 66211, 2017 Isotype, M; Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 Holotype, OHA; Isotypes: BER, KEW; NameType: Prionus L. Species Plantarum"
                     , result
                     );
-
             LinkedHashMap<TypedEntityReference, TypeDesignationWorkingSet> orderedTypeDesignations =
                     typeDesignationManager.getOrderdTypeDesignationWorkingSets();
             Iterator<TypeDesignationWorkingSet> byStatusMapIterator = orderedTypeDesignations.values().iterator();
@@ -243,6 +242,8 @@ public class TypeDesignationSetManagerTest extends CdmTransactionalIntegrationTe
                         "Prionus coriatius L. Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 Holotype, [icon] p.33 in A.K. & W.K (2008) Algae of the BGBM; Isotype, [icon] B Slide A565656."
                         , typeDesignationManager.print()
                         );
+
+
             }
 
         }

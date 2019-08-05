@@ -27,7 +27,7 @@ public class CdmModelCacherConnectionProvider extends DatasourceConnectionProvid
 
 	private DataSource getDataSourcePreliminary() {
 		String database = "modelCacher";
-		String path = "C:\\Users\\a.mueller\\.cdmLibrary\\writableResources\\h2\\LocalH2_" + database;
+		String path = "C:\\Users\\k.luther\\.cdmLibrary\\writableResources\\h2\\LocalH2_" + database;
         String username = "sa";
         CdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("cdmTest", username, "", path);
         return dataSource;

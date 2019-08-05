@@ -8,8 +8,6 @@
 */
 package eu.etaxonomy.cdm.persistence.hibernate.permission;
 
-import org.apache.log4j.Logger;
-
 import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
@@ -63,6 +61,7 @@ public enum CdmPermissionClass {
     REFERENCE,
     REGISTRATION,
     REPRESENTATION,
+    ROLE_REMOTING,
     SPECIMENOROBSERVATIONBASE,
     SPECIMENTYPEDESIGNATION,
     TAXONBASE,
@@ -95,7 +94,7 @@ public enum CdmPermissionClass {
 
         CdmPermissionClass permissionClass = _valueOf(o);
         if(permissionClass == null) {
-            Logger.getLogger(CdmPermissionClass.class).error("Permission class support for " + o + " not implemented");
+            //Logger.getLogger(CdmPermissionClass.class).error("Permission class support for " + o + " not implemented");
         }
         return permissionClass;
 

@@ -15,6 +15,7 @@ import org.hibernate.Session;
 import org.hibernate.event.spi.SaveOrUpdateEvent;
 import org.hibernate.event.spi.SaveOrUpdateEventListener;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
 
@@ -51,7 +52,7 @@ public class SaveOrUpdateEntityListener implements SaveOrUpdateEventListener{
      */
     private <T extends ITreeNode> void reindex(T node) {
         String oldChildIndex = node.treeIndex();
-        ITreeNode<?> parent = node.getParent();
+        ITreeNode<?> parent = HibernateProxyHelper.deproxy(node.getParent());
         String parentIndex = (parent == null) ? (sep + pref + node.treeId() + sep)  : parent.treeIndex();  //TODO
         if (node.getId() > 0){   //TODO
             String newChildIndex = parentIndex + node.getId() + sep;

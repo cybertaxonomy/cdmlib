@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @since 06.07.2011
  */
 @Component
-public class CdmPermissionEvaluator implements ICdmPermissionEvaluator {
+public class CdmPermissionEvaluator implements ICdmPermissionEvaluator, Serializable {
 
     protected static final Logger logger = Logger.getLogger(CdmPermissionEvaluator.class);
 

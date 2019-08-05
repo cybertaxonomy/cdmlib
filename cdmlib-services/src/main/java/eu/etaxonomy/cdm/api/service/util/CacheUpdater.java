@@ -99,6 +99,7 @@ public class CacheUpdater implements Serializable {
 			createClassListFromBoolean();
 		}
 		config.getMonitor().beginTask("Update Caches", 100);
+
 		//handle class list
 		result = handleClassList(config.getClassList(), config.getMonitor());
 		config.getMonitor().done();
@@ -117,7 +118,7 @@ public class CacheUpdater implements Serializable {
 
 			if (multipleResult == null){
 			    SubProgressMonitor subMonitor= new SubProgressMonitor(monitor, ticksForSubTasks);
-			    subMonitor.setTaskName("Update " + clazz.getSimpleName());
+			    //subMonitor.setTaskName("Update " + clazz.getSimpleName());
 				result.includeResult(this.handleSingleTableClass(clazz, subMonitor));
 			}else{
 			    result.includeResult(multipleResult);

@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.persistence.hibernate.permission;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -33,7 +34,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @since Oct 11, 2013
  *
  */
-public class UnanimousBasedUnrevokable extends AbstractAccessDecisionManager {
+public class UnanimousBasedUnrevokable extends AbstractAccessDecisionManager implements Serializable{
 
 //    /**
 //     *

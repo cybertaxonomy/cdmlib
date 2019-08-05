@@ -719,6 +719,10 @@ public class DescriptionServiceImpl
         for (DescriptionElementBase element : descriptionElements){
             DescriptionBase<?> description = element.getInDescription();
             description = dao.load(description.getUuid());
+            Taxon taxon;
+            if (description instanceof TaxonDescription){
+                taxon = (Taxon) taxonDao.load(((TaxonDescription)description).getTaxon().getUuid());
+            }
             try {
                 DescriptionElementBase newElement = (DescriptionElementBase)element.clone();
                 targetDescription.addElement(newElement);

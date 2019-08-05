@@ -48,11 +48,11 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.log4j.Logger;
 
 /**
@@ -190,6 +190,16 @@ public class UriUtils {
     }
 
     /**
+     * Gets the statusCode of the given {@link HttpResponse} as an int
+     * @param response the response to get the statusCode for
+     * @return statusCode as an int
+     */
+    public static int getStatusCode(HttpResponse response){
+        StatusLine statusLine = response.getStatusLine();
+        return statusLine.getStatusCode() ;
+    }
+
+    /**
      * Sends a HTTP GET request to the defined URI and returns the {@link HttpResponse}.
      * @param uri the URI of this HTTP request
      * @param requestHeaders the parameters (name-value pairs) of the connection added to the header of the request
@@ -226,14 +236,21 @@ public class UriUtils {
      */
     public static HttpResponse getResponseByType(URI uri, Map<String, String> requestHeaders, HttpMethod httpMethod, HttpEntity entity) throws IOException, ClientProtocolException {
         // Create an instance of HttpClient.
-        HttpClient  client = new DefaultHttpClient();
+       // HttpClient  client = new DefaultHttpClient();
+        HttpClientBuilder clientBuilder = HttpClientBuilder.create();
+        clientBuilder.setRedirectStrategy(new LaxRedirectStrategy());
 
+        HttpClient client;
         try {
             SSLContext sc = SSLContext.getInstance("SSL");
             sc.init(null, getTrustingManager(), new java.security.SecureRandom());
+            clientBuilder.setSSLContext(sc);
+
             SSLSocketFactory socketFactory = new SSLSocketFactory(sc);
-            Scheme sch = new Scheme("https", 443, socketFactory);
-            client.getConnectionManager().getSchemeRegistry().register(sch);
+            clientBuilder.setSSLSocketFactory(socketFactory);
+
+            client = clientBuilder.build();
+
         } catch (KeyManagementException e1) {
             throw new RuntimeException("Registration of ssl support failed", e1);
         } catch (NoSuchAlgorithmException e2) {
