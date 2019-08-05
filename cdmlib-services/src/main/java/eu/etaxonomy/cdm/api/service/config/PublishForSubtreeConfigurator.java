@@ -17,7 +17,6 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
  *
  * @author a.mueller
  * @since 13.09.2017
- *
  */
 public class PublishForSubtreeConfigurator
             extends ForSubtreeConfiguratorBase{
@@ -44,9 +43,12 @@ public class PublishForSubtreeConfigurator
         // this.newSecundum = newSecundum;
     }
 
+// ******************************* GETTER / SETTER  **************************/
+
     public boolean isPublish() {
         return publish;
     }
+
     public void setPublish(boolean publish) {
         this.publish = publish;
     }

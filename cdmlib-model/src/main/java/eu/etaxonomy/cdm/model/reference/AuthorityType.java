@@ -28,7 +28,6 @@ import eu.etaxonomy.cdm.model.term.IEnumTerm;
  * @author a.mueller
  * @since 21.09.2017
  */
-
 @XmlEnum
 public enum AuthorityType implements IEnumTerm<AuthorityType>{
 

@@ -382,4 +382,6 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
     public <S extends TaxonNode> Pager<S> page(Class<S> clazz, List<Restriction<?>> restrictions, Integer pageSize, Integer pageIndex,
             List<OrderHint> orderHints, List<String> propertyPaths, boolean includeUnpublished);
 
+
+
 }

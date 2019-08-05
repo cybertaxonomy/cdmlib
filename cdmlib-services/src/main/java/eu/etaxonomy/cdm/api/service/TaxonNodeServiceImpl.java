@@ -1017,9 +1017,6 @@ public class TaxonNodeServiceImpl
     }
 
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @Transactional(readOnly=false)
     public UpdateResult setPublishForSubtree(UUID subtreeUuid, boolean publish, boolean includeAcceptedTaxa,

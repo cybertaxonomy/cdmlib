@@ -18,11 +18,8 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
  *
  * @author a.mueller
  * @since 06.01.2017
- *
  */
-public abstract class ForSubtreeConfiguratorBase implements Serializable{//<CONFIG extends ImportConfiguratorBase>
-//        extends ImportConfiguratorBase<DefaultImportState<CONFIG>, Object>
-//        implements IImportConfigurator{
+public abstract class ForSubtreeConfiguratorBase implements Serializable{
 
     private static final long serialVersionUID = 2756961021157678305L;
 
@@ -33,18 +30,10 @@ public abstract class ForSubtreeConfiguratorBase implements Serializable{//<CONF
     private IProgressMonitor monitor;
 
     /**
-     * @param monitor the monitor to set
-     */
-    public void setMonitor(IProgressMonitor monitor) {
-        this.monitor = monitor;
-    }
-
-    /**
      * @param subtreeUuid
      * @param newSecundum
      */
-    public ForSubtreeConfiguratorBase(UUID subtreeUuid, IProgressMonitor monitor) {
-//        super(null);
+    protected ForSubtreeConfiguratorBase(UUID subtreeUuid, IProgressMonitor monitor) {
         this.subtreeUuid = subtreeUuid;
         this.monitor = monitor;
     }
@@ -53,7 +42,7 @@ public abstract class ForSubtreeConfiguratorBase implements Serializable{//<CONF
      * @param subtreeUuid
      * @param newSecundum
      */
-    public ForSubtreeConfiguratorBase(UUID subtreeUuid) {
+    protected ForSubtreeConfiguratorBase(UUID subtreeUuid) {
 //        super(null);
         this.subtreeUuid = subtreeUuid;
     }
@@ -87,34 +76,16 @@ public abstract class ForSubtreeConfiguratorBase implements Serializable{//<CONF
         this.includeSharedTaxa = includeSharedTaxa;
     }
 
-    /**
-     * @return
-     */
     public IProgressMonitor getMonitor() {
-
         return monitor;
     }
+    /**
+     * @param monitor the monitor to set
+     */
+    public void setMonitor(IProgressMonitor monitor) {
+        this.monitor = monitor;
+    }
 
-//    /**
-//     * {@inheritDoc}
-//     */
-//    @SuppressWarnings("rawtypes")
-//    @Override
-//    public DefaultImportState getNewState() {
-//      return new DefaultImportState(this);
-//    }
 
-//    /**
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    public Reference getSourceReference() {
-//        return null;
-//    }
-//
-//    @Override
-//    public boolean isValid(){
-//        return true;
-//    }
 
 }
