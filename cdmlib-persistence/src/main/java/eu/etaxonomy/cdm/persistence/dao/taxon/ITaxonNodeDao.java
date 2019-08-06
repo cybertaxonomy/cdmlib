@@ -221,5 +221,4 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
      */
     long count(Class<? extends TaxonNode> type, List<Restriction<?>> restrictions, boolean includePublished);
 
-
 }

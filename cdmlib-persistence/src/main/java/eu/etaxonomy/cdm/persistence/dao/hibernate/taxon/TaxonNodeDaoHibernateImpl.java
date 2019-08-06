@@ -706,9 +706,6 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         return setPublish(publish, queryStr, monitor);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Set<TaxonBase> setPublishForSubtreeSynonyms(TreeIndex subTreeIndex, boolean publish,
             boolean includeSharedTaxa, IProgressMonitor monitor) {
@@ -886,5 +883,6 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
              return list;
          }
     }
+
 
 }
