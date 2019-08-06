@@ -918,7 +918,9 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 //        SecundumForSubtreeConfigurator config = new SetPublishForSubtreeConfigurator(subTreeUuid, newSec, null);
 //        config.setIncludeSynonyms(false);
         boolean publish = false;
-        taxonNodeService.setPublishForSubtree(PublishForSubtreeConfigurator.NewInstance(subTreeUuid,  publish, true, false, true, null));
+        taxonNodeService.setPublishForSubtree(
+                PublishForSubtreeConfigurator.NewInstance(subTreeUuid,  publish, null)
+                .setIncludeAcceptedTaxa(true).setIncludeSynonyms(false).setIncludeSharedTaxa(true));
 
         commitAndStartNewTransaction();
         Assert.assertEquals(publish, taxonService.find(1).isPublish());

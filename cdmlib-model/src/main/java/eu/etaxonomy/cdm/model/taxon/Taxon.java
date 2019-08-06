@@ -93,7 +93,7 @@ import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
 })
 public class Taxon
             extends TaxonBase<ITaxonCacheStrategy<Taxon>>
-            implements IRelated<RelationshipBase>, IDescribable<TaxonDescription>, Cloneable{
+            implements IRelated<RelationshipBase>, IDescribable<TaxonDescription>{
 
     private static final long serialVersionUID = -584946869762749006L;
     private static final Logger logger = Logger.getLogger(Taxon.class);

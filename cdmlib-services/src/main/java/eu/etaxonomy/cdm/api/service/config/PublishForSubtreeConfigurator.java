@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
  * @since 13.09.2017
  */
 public class PublishForSubtreeConfigurator
-            extends ForSubtreeConfiguratorBase{
+            extends ForSubtreeConfiguratorBase<PublishForSubtreeConfigurator>{
 
     private static final long serialVersionUID = 1202667588493272030L;
 
@@ -70,17 +70,17 @@ public class PublishForSubtreeConfigurator
         return publish;
     }
 
-    public void setPublish(boolean publish) {
+    public PublishForSubtreeConfigurator setPublish(boolean publish) {
         this.publish = publish;
+        return this;
     }
 
     public Set<TaxonRelationshipType> getIncludedRelationTypes() {
         return includedRelationTypes;
     }
-    public void setIncludedRelationTypes(Set<TaxonRelationshipType> includedRelationTypes) {
+    public PublishForSubtreeConfigurator setIncludedRelationTypes(Set<TaxonRelationshipType> includedRelationTypes) {
         this.includedRelationTypes = includedRelationTypes;
+        return this;
     }
-
-
 
 }

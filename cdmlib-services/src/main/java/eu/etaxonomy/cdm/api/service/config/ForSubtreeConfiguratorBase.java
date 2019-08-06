@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
  * @author a.mueller
  * @since 06.01.2017
  */
-public abstract class ForSubtreeConfiguratorBase implements Serializable{
+public abstract class ForSubtreeConfiguratorBase<T extends ForSubtreeConfiguratorBase> implements Serializable{
 
     private static final long serialVersionUID = 2756961021157678305L;
 
@@ -71,32 +71,33 @@ public abstract class ForSubtreeConfiguratorBase implements Serializable{
     public boolean isIncludeSynonyms() {
         return includeSynonyms;
     }
-    public void setIncludeSynonyms(boolean includeSynonyms) {
+    public T setIncludeSynonyms(boolean includeSynonyms) {
         this.includeSynonyms = includeSynonyms;
+        return (T)this;
     }
 
     public boolean isIncludeAcceptedTaxa() {
         return includeAcceptedTaxa;
     }
-    public void setIncludeAcceptedTaxa(boolean includeAcceptedTaxa) {
+    public T setIncludeAcceptedTaxa(boolean includeAcceptedTaxa) {
         this.includeAcceptedTaxa = includeAcceptedTaxa;
+        return (T)this;
     }
 
     public boolean isIncludeSharedTaxa() {
         return includeSharedTaxa;
     }
-    public void setIncludeSharedTaxa(boolean includeSharedTaxa) {
+    public T setIncludeSharedTaxa(boolean includeSharedTaxa) {
         this.includeSharedTaxa = includeSharedTaxa;
+        return (T)this;
     }
 
     public IProgressMonitor getMonitor() {
         return monitor;
     }
-    /**
-     * @param monitor the monitor to set
-     */
-    public void setMonitor(IProgressMonitor monitor) {
+    public T setMonitor(IProgressMonitor monitor) {
         this.monitor = monitor;
+        return (T)this;
     }
 
 
