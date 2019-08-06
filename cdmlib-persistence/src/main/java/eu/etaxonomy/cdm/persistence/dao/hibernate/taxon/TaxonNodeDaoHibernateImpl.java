@@ -713,6 +713,16 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         queryStr += " AND syn.publish != :publish ";
         return setPublish(publish, queryStr, monitor);
     }
+    @Override
+    public int countPublishForSubtreeRelatedTaxa(TreeIndex subTreeIndex, boolean publish, boolean includeSharedTaxa) {
+        return 0;
+    }
+    @Override
+    public Set<TaxonBase> setPublishForSubtreeRelatedTaxa(TreeIndex subTreeIndex, boolean publish,
+            boolean includeSharedTaxa, IProgressMonitor monitor) {
+        return new HashSet<>();
+    }
+
 
     private static final int DEFAULT_PARTITION_SIZE = 100;
     /**

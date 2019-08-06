@@ -29,6 +29,7 @@ import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.service.config.PublishForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -891,7 +892,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 //        SecundumForSubtreeConfigurator config = new SetPublishForSubtreeConfigurator(subTreeUuid);
 //        config.setNewSecundum(newSec);
         boolean publish = false;
-        taxonNodeService.setPublishForSubtree(subTreeUuid,  publish, true, true, true, null);
+        taxonNodeService.setPublishForSubtree(PublishForSubtreeConfigurator.NewInstance(subTreeUuid,  publish, true, true, true, null));
 
         commitAndStartNewTransaction(new String[]{});
         Assert.assertEquals(publish, taxonService.find(1).isPublish());
@@ -917,7 +918,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 //        SecundumForSubtreeConfigurator config = new SetPublishForSubtreeConfigurator(subTreeUuid, newSec, null);
 //        config.setIncludeSynonyms(false);
         boolean publish = false;
-        taxonNodeService.setPublishForSubtree(subTreeUuid,  publish, true, false, true, null);
+        taxonNodeService.setPublishForSubtree(PublishForSubtreeConfigurator.NewInstance(subTreeUuid,  publish, true, false, true, null));
 
         commitAndStartNewTransaction();
         Assert.assertEquals(publish, taxonService.find(1).isPublish());
@@ -943,7 +944,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 //        SecundumForSubtreeConfigurator config = new SetPublishForSubtreeConfigurator(subTreeUuid, newSec, null);
 //        config.setIncludeAcceptedTaxa(false);
         boolean publish = false;
-        taxonNodeService.setPublishForSubtree(subTreeUuid, publish, false, true, true, null);
+        taxonNodeService.setPublishForSubtree(PublishForSubtreeConfigurator.NewInstance(subTreeUuid, publish, false, true, true, null));
 
         commitAndStartNewTransaction(new String[]{});
         Assert.assertEquals(true, taxonService.find(1).isPublish());
@@ -970,7 +971,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
      //   SecundumForSubtreeConfigurator config = new SetPublishForSubtreeConfigurator(subTreeUuid, newSec, null);
    //     config.setIncludeSharedTaxa(false);
         boolean publish = false;
-        taxonNodeService.setPublishForSubtree(subTreeUuid, publish, true, true, false, null);
+        taxonNodeService.setPublishForSubtree(PublishForSubtreeConfigurator.NewInstance(subTreeUuid, publish, true, true, false, null));
 
         commitAndStartNewTransaction(new String[]{});
         Assert.assertEquals("Shared taxon must not be set", true, taxonService.find(1).isPublish());

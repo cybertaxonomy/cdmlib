@@ -1048,6 +1048,7 @@ public class TaxonNodeServiceImpl
             subTreeIndex = TreeIndex.NewInstance(subTree.treeIndex());
             int count = includeAcceptedTaxa ? dao.countPublishForSubtreeAcceptedTaxa(subTreeIndex, publish, includeSharedTaxa):0;
             count += includeSynonyms ? dao.countPublishForSubtreeSynonyms(subTreeIndex, publish, includeSharedTaxa):0;
+            count += includeSynonyms ? dao.countPublishForSubtreeRelatedTaxa(subTreeIndex, publish, includeSharedTaxa):0;
             monitor.beginTask("Update publish flag", count);
         }
 
@@ -1062,19 +1063,14 @@ public class TaxonNodeServiceImpl
             Set<TaxonBase> updatedSynonyms = dao.setPublishForSubtreeSynonyms(subTreeIndex, publish, includeSharedTaxa, monitor);
             result.addUpdatedObjects(updatedSynonyms);
         }
-
+        if (includeAcceptedTaxa){
+            monitor.subTask("Update Related Taxa");
+            Set<TaxonBase> updatedTaxa = dao.setPublishForSubtreeRelatedTaxa(subTreeIndex, publish, includeSharedTaxa, monitor);
+            result.addUpdatedObjects(updatedTaxa);
+        }
 
         monitor.done();
         return result;
-    }
-
-    @Override
-    @Transactional(readOnly=false)
-    @Deprecated
-    public UpdateResult setPublishForSubtree(UUID subtreeUuid, boolean publish, boolean includeAcceptedTaxa,
-            boolean includeSynonyms, boolean includeSharedTaxa, IProgressMonitor monitor) {
-        PublishForSubtreeConfigurator configurator = new PublishForSubtreeConfigurator(subtreeUuid, publish, monitor);
-        return setPublishForSubtree(configurator);
     }
 
     @Override

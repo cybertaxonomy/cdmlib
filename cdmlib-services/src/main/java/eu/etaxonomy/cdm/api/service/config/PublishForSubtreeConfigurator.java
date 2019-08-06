@@ -8,9 +8,12 @@
 */
 package eu.etaxonomy.cdm.api.service.config;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 
 /**
  * Configurator for the setPublishForSubtree operation.
@@ -25,17 +28,38 @@ public class PublishForSubtreeConfigurator
 
     private boolean publish = false;
 
+
+    //TODO UUIDs ??
+    private Set<TaxonRelationshipType> includedRelationTypes = new HashSet<>();
+
+
+    public static PublishForSubtreeConfigurator NewInstance(UUID subtreeUuid, boolean publish,
+            IProgressMonitor monitor) {
+        PublishForSubtreeConfigurator result = new PublishForSubtreeConfigurator(subtreeUuid, publish, monitor);
+        return result;
+    }
+
+    public static PublishForSubtreeConfigurator NewInstance(UUID subtreeUuid, boolean publish,
+            boolean includeAcceptedTaxa, boolean includeSynonyms,
+            boolean includeSharedTaxa, IProgressMonitor monitor) {
+        PublishForSubtreeConfigurator result = new PublishForSubtreeConfigurator(subtreeUuid, publish, includeAcceptedTaxa,
+                includeSynonyms, includeSharedTaxa, monitor);
+        return result;
+    }
+
+// ****************************** CONSTRUCTOR ******************************/
+
     /**
      * @param subtreeUuid
      * @param newSecundum
      */
-    public PublishForSubtreeConfigurator(UUID subtreeUuid, boolean publish, IProgressMonitor monitor) {
+    private PublishForSubtreeConfigurator(UUID subtreeUuid, boolean publish, IProgressMonitor monitor) {
         super(subtreeUuid, monitor);
         this.publish = publish;
     }
 
-    private PublishForSubtreeConfigurator(UUID subtreeUuid, boolean includeAcceptedTaxa, boolean includeSynonyms,
-            boolean includeSharedTaxa, IProgressMonitor monitor, boolean publish) {
+    private PublishForSubtreeConfigurator(UUID subtreeUuid, boolean publish, boolean includeAcceptedTaxa, boolean includeSynonyms,
+            boolean includeSharedTaxa, IProgressMonitor monitor) {
         super(subtreeUuid, includeAcceptedTaxa, includeSynonyms, includeSharedTaxa, monitor);
         this.publish = publish;
     }
@@ -48,6 +72,13 @@ public class PublishForSubtreeConfigurator
 
     public void setPublish(boolean publish) {
         this.publish = publish;
+    }
+
+    public Set<TaxonRelationshipType> getIncludedRelationTypes() {
+        return includedRelationTypes;
+    }
+    public void setIncludedRelationTypes(Set<TaxonRelationshipType> includedRelationTypes) {
+        this.includedRelationTypes = includedRelationTypes;
     }
 
 

@@ -275,23 +275,6 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 
     /**
      * Sets the publish flag for all taxa and/or synonyms of the subtree.
-     * @param subtreeUuid
-     * @param publish
-     * @param includeAcceptedTaxa
-     * @param includeSynonyms
-     * @param overwriteExistingAccepted
-     * @param overwriteExistingSynonyms
-     * @param includeSharedTaxa
-     * @param progressMonitor
-     * @return
-     * @deprecated use {@link #setPublishForSubtree(PublishForSubtreeConfigurator)} instead
-     */
-    @Deprecated
-    public UpdateResult setPublishForSubtree(UUID subtreeUuid, boolean publish, boolean includeAcceptedTaxa,
-            boolean includeSynonyms, boolean includeSharedTaxa, IProgressMonitor progressMonitor);
-
-    /**
-     * Sets the publish flag for all taxa and/or synonyms of the subtree.
      * @param configurator
      * @return
      */
