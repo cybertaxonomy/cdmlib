@@ -888,9 +888,6 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         Assert.assertTrue(taxonService.find(4).isPublish());
         Assert.assertTrue(taxonService.find(5).isPublish());
 
-        //set publish
-//        SecundumForSubtreeConfigurator config = new SetPublishForSubtreeConfigurator(subTreeUuid);
-//        config.setNewSecundum(newSec);
         boolean publish = false;
         taxonNodeService.setPublishForSubtree(PublishForSubtreeConfigurator.NewInstance(subTreeUuid,  publish, true, true, true, null));
 
@@ -914,9 +911,6 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         Assert.assertTrue(taxonService.find(4).isPublish());
         Assert.assertTrue(taxonService.find(5).isPublish());
 
-        //set secundum
-//        SecundumForSubtreeConfigurator config = new SetPublishForSubtreeConfigurator(subTreeUuid, newSec, null);
-//        config.setIncludeSynonyms(false);
         boolean publish = false;
         taxonNodeService.setPublishForSubtree(
                 PublishForSubtreeConfigurator.NewInstance(subTreeUuid,  publish, null)
@@ -942,9 +936,6 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         Assert.assertTrue(taxonService.find(4).isPublish());
         Assert.assertTrue(taxonService.find(5).isPublish());
 
-        //set secundum
-//        SecundumForSubtreeConfigurator config = new SetPublishForSubtreeConfigurator(subTreeUuid, newSec, null);
-//        config.setIncludeAcceptedTaxa(false);
         boolean publish = false;
         taxonNodeService.setPublishForSubtree(PublishForSubtreeConfigurator.NewInstance(subTreeUuid, publish, false, true, true, null));
 
@@ -969,18 +960,19 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         Assert.assertTrue(taxonService.find(4).isPublish());
         Assert.assertTrue(taxonService.find(5).isPublish());
 
-        //set secundum
-     //   SecundumForSubtreeConfigurator config = new SetPublishForSubtreeConfigurator(subTreeUuid, newSec, null);
-   //     config.setIncludeSharedTaxa(false);
         boolean publish = false;
-        taxonNodeService.setPublishForSubtree(PublishForSubtreeConfigurator.NewInstance(subTreeUuid, publish, true, true, false, null));
+        taxonNodeService.setPublishForSubtree(PublishForSubtreeConfigurator.NewInstance(
+                subTreeUuid, publish, null)
+                .setIncludeAcceptedTaxa(true)
+                .setIncludeSynonyms(true)
+                .setIncludeSharedTaxa(false));
 
-        commitAndStartNewTransaction(new String[]{});
+        commitAndStartNewTransaction();
         Assert.assertEquals("Shared taxon must not be set", true, taxonService.find(1).isPublish());
-        Assert.assertEquals(true, taxonService.find(2).isPublish());
+        Assert.assertEquals("Taxon2 is not in subtree", true, taxonService.find(2).isPublish());
         Assert.assertEquals("Synonym of shared taxon must not be set", true, taxonService.find(3).isPublish());
-        Assert.assertEquals(true, taxonService.find(4).isPublish());
-        Assert.assertEquals(publish, taxonService.find(5).isPublish());
+        Assert.assertEquals("Synonym4 belongs to Taxon2 which is not in subtree", true, taxonService.find(4).isPublish());
+        Assert.assertEquals("Taxon5 should be set to unpublished. It is in subtree and is not a shared taxon", publish, taxonService.find(5).isPublish());
     }
 
     @Test
