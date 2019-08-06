@@ -116,7 +116,7 @@ public class LongRunningTasksServiceImpl implements ILongRunningTasksService{
         if (config instanceof SecundumForSubtreeConfigurator){
             return taxonNodeService.setSecundumForSubtree((SecundumForSubtreeConfigurator)config);
         }else{
-            return taxonNodeService.setPublishForSubtree(config.getSubtreeUuid(), ((PublishForSubtreeConfigurator)config).isPublish(), ((PublishForSubtreeConfigurator)config).isIncludeAcceptedTaxa(), ((PublishForSubtreeConfigurator)config).isIncludeSynonyms(), ((PublishForSubtreeConfigurator)config).isIncludeSharedTaxa(), config.getMonitor());
+            return taxonNodeService.setPublishForSubtree((PublishForSubtreeConfigurator) config);
         }
     }
 
