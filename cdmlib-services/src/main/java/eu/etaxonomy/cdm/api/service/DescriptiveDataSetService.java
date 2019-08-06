@@ -281,14 +281,22 @@ public class DescriptiveDataSetService
 
     @Override
     @Transactional(readOnly=false)
-    public UpdateResult aggregate(UUID descriptiveDataSetUuid) {
+    public UpdateResult aggregate(UUID descriptiveDataSetUuid, IProgressMonitor monitor) {
+        DescriptiveDataSet dataSet = load(descriptiveDataSetUuid);
+        Set<DescriptionBase> descriptions = dataSet.getDescriptions();
+
+        monitor.beginTask("Aggregate data set", descriptions.size()*2);
+
         UpdateResult result = new UpdateResult();
 
-        DescriptiveDataSet dataSet = load(descriptiveDataSetUuid);
         // sort descriptions by taxa
         Map<UUID, List<UUID>> taxaToSpecimenDescriptionMap = new HashMap<>();
-        Set<DescriptionBase> descriptions = dataSet.getDescriptions();
         for (DescriptionBase descriptionBase : descriptions) {
+            if(monitor.isCanceled()){
+                result.setAbort();
+                return result;
+            }
+
             if(descriptionBase instanceof SpecimenDescription){
                 SpecimenDescription specimenDescription = HibernateProxyHelper.deproxy(descriptionBase, SpecimenDescription.class);
                 TaxonNode taxonNode = findTaxonNodeForDescription(specimenDescription, dataSet);
@@ -302,18 +310,24 @@ public class DescriptiveDataSetService
                     taxaToSpecimenDescriptionMap.put(taxonUuid, specimenDescriptionUuids);
                 }
             }
+            monitor.worked(1);
         }
         // aggregate per taxa
         for (Entry<UUID, List<UUID>> entry: taxaToSpecimenDescriptionMap.entrySet()) {
+            if(monitor.isCanceled()){
+                result.setAbort();
+                return result;
+            }
             UUID taxonUuid = entry.getKey();
             List<UUID> specimenDescriptionUuids = entry.getValue();
-            result.includeResult(aggregateDescription(taxonUuid , specimenDescriptionUuids, descriptiveDataSetUuid));
+            result.includeResult(aggregateDescription(taxonUuid , specimenDescriptionUuids, descriptiveDataSetUuid, monitor));
+            monitor.worked(1);
         }
         return result;
     }
 
     @SuppressWarnings("unchecked")
-    private UpdateResult aggregateDescription(UUID taxonUuid, List<UUID> descriptionUuids, UUID descriptiveDataSetUuid) {
+    private UpdateResult aggregateDescription(UUID taxonUuid, List<UUID> descriptionUuids, UUID descriptiveDataSetUuid, IProgressMonitor monitor) {
         UpdateResult result = new UpdateResult();
 
         TaxonBase taxonBase = taxonService.load(taxonUuid);

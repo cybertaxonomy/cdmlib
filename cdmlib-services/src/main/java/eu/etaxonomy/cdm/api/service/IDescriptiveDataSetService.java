@@ -150,8 +150,9 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      * directly associated with.
      * @param descriptiveDataSetUuid the uuid of the descriptive data set to which the
      * aggregated descriptions will be added to
+     * @param monitor the progress monitor
      * @return the result of the operation
      */
-    public UpdateResult aggregate(UUID descriptiveDataSetUuid);
+    public UpdateResult aggregate(UUID descriptiveDataSetUuid, IProgressMonitor monitor);
 
 }

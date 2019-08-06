@@ -73,8 +73,7 @@ public class LongRunningTasksServiceImpl implements ILongRunningTasksService{
         RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
             @Override
             public Serializable doRun(IRemotingProgressMonitor monitor) {
-                // TODO add monitor to aggregation method
-                UpdateResult updateResult = descriptiveDataSetService.aggregate(descriptiveDataSetUuid);
+                UpdateResult updateResult = descriptiveDataSetService.aggregate(descriptiveDataSetUuid, monitor);
                 for(Exception e : updateResult.getExceptions()) {
                     monitor.addReport(e.getMessage());
                 }

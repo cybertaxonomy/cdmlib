@@ -49,7 +49,7 @@ public interface ILongRunningTasksService {
     UUID monitLongRunningTask(Set<UUID> movingUuids, UUID targetTreeNodeUuid, int movingType);
 
     /**
-     * Monitored invocation of {@link IDescriptiveDataSetService#aggregate(UUID)}
+     * Monitored invocation of {@link IDescriptiveDataSetService#aggregate(UUID, IProgressMonitor)}
      * @param descriptiveDataSetUuid the data set which should be aggregated
      * @return the uuid of the monitor
      */
