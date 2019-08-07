@@ -564,7 +564,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     @Override
     public int countSecundumForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, Reference newSec,
             boolean overwriteExisting, boolean includeSharedTaxa, boolean emptySecundumDetail) {
-        String queryStr = acceptedForSubtreeQueryStr(includeSharedTaxa, subTreeIndex, SelectMode.COUNT);
+        String queryStr = forSubtreeAcceptedQueryStr(includeSharedTaxa, subTreeIndex, SelectMode.COUNT);
         if (!overwriteExisting){
             queryStr += " AND t.sec IS NULL ";
         }
@@ -584,7 +584,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     @Override
     public int countSecundumForSubtreeSynonyms(TreeIndex subTreeIndex, Reference newSec,
             boolean overwriteExisting, boolean includeSharedTaxa, boolean emptySecundumDetail) {
-        String queryStr = synonymForSubtreeQueryStr(includeSharedTaxa, subTreeIndex, SelectMode.COUNT);
+        String queryStr = forSubtreeSynonymQueryStr(includeSharedTaxa, subTreeIndex, SelectMode.COUNT);
         if (!overwriteExisting){
             queryStr += " AND syn.sec IS NULL ";
         }
@@ -612,7 +612,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 //        query.setParameter("newSec", newSec);
 //        int n = query.executeUpdate();
 
-        String queryStr = acceptedForSubtreeQueryStr(includeSharedTaxa, subTreeIndex, SelectMode.ID);
+        String queryStr = forSubtreeAcceptedQueryStr(includeSharedTaxa, subTreeIndex, SelectMode.ID);
         if (!overwriteExisting){
             queryStr += " AND t.sec IS NULL ";
         }
@@ -624,7 +624,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     public Set<TaxonBase> setSecundumForSubtreeSynonyms(TreeIndex subTreeIndex, Reference newSec,
             boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail, IProgressMonitor monitor) {
 
-        String queryStr = synonymForSubtreeQueryStr(includeSharedTaxa, subTreeIndex, SelectMode.ID);
+        String queryStr = forSubtreeSynonymQueryStr(includeSharedTaxa, subTreeIndex, SelectMode.ID);
         if (!overwriteExisting){
             queryStr += " AND syn.sec IS NULL ";
         }
@@ -676,7 +676,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
      */
     @Override
     public int countPublishForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, boolean publish, boolean includeSharedTaxa) {
-        String queryStr = acceptedForSubtreeQueryStr(includeSharedTaxa, subTreeIndex, SelectMode.COUNT);
+        String queryStr = forSubtreeAcceptedQueryStr(includeSharedTaxa, subTreeIndex, SelectMode.COUNT);
         queryStr += " AND t.publish != :publish ";
         Query query = getSession().createQuery(queryStr);
         query.setBoolean("publish", publish);
@@ -688,39 +688,44 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
      */
     @Override
     public int countPublishForSubtreeSynonyms(TreeIndex subTreeIndex, boolean publish, boolean includeSharedTaxa) {
-        String queryStr = synonymForSubtreeQueryStr(includeSharedTaxa, subTreeIndex, SelectMode.COUNT);
+        String queryStr = forSubtreeSynonymQueryStr(includeSharedTaxa, subTreeIndex, SelectMode.COUNT);
         queryStr += " AND syn.publish != :publish ";
         Query query = getSession().createQuery(queryStr);
         query.setBoolean("publish", publish);
         return ((Long)query.uniqueResult()).intValue();
-//      return countResult(queryStr);
     }
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     public Set<TaxonBase> setPublishForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, boolean publish,
             boolean includeSharedTaxa, IProgressMonitor monitor) {
-        String queryStr = acceptedForSubtreeQueryStr(includeSharedTaxa, subTreeIndex, SelectMode.ID);
+        String queryStr = forSubtreeAcceptedQueryStr(includeSharedTaxa, subTreeIndex, SelectMode.ID);
         queryStr += " AND t.publish != :publish ";
-        return setPublish(publish, queryStr, monitor);
+        return setPublish(publish, queryStr, null, monitor);
     }
 
     @Override
     public Set<TaxonBase> setPublishForSubtreeSynonyms(TreeIndex subTreeIndex, boolean publish,
             boolean includeSharedTaxa, IProgressMonitor monitor) {
-        String queryStr = synonymForSubtreeQueryStr(includeSharedTaxa, subTreeIndex, SelectMode.ID);
+        String queryStr = forSubtreeSynonymQueryStr(includeSharedTaxa, subTreeIndex, SelectMode.ID);
         queryStr += " AND syn.publish != :publish ";
-        return setPublish(publish, queryStr, monitor);
+        return setPublish(publish, queryStr, null, monitor);
     }
     @Override
     public int countPublishForSubtreeRelatedTaxa(TreeIndex subTreeIndex, boolean publish, boolean includeSharedTaxa) {
-        return 0;
+        String queryStr = forSubtreeRelatedTaxaQueryStr(includeSharedTaxa, subTreeIndex, SelectMode.COUNT);
+        queryStr += " AND relTax.publish != :publish ";
+        Query query = getSession().createQuery(queryStr);
+        query.setBoolean("publish", publish);
+        return ((Long)query.uniqueResult()).intValue();
     }
     @Override
     public Set<TaxonBase> setPublishForSubtreeRelatedTaxa(TreeIndex subTreeIndex, boolean publish,
-            boolean includeSharedTaxa, IProgressMonitor monitor) {
-        return new HashSet<>();
+            Set<UUID> relationTypes, boolean includeSharedTaxa,
+            IProgressMonitor monitor) {
+        String queryStr = forSubtreeRelatedTaxaQueryStr(includeSharedTaxa, subTreeIndex, SelectMode.ID);
+        queryStr += " AND relTax.publish != :publish ";
+        queryStr += " AND rel.type.uuid IN (:relTypeUuid)";
+        return setPublish(publish, queryStr, relationTypes, monitor);
     }
 
 
@@ -730,10 +735,13 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
      * @param queryStr
      * @return
      */
-    private <T extends TaxonBase<?>> Set<T> setPublish(boolean publish, String queryStr, IProgressMonitor monitor) {
+    private <T extends TaxonBase<?>> Set<T> setPublish(boolean publish, String queryStr, Set<UUID> relTypeUuids, IProgressMonitor monitor) {
         Set<T> result = new HashSet<>();
         Query query = getSession().createQuery(queryStr);
         query.setBoolean("publish", publish);
+        if (relTypeUuids != null && !relTypeUuids.isEmpty()){
+            query.setParameterList("relTypeUuid", relTypeUuids);
+        }
         @SuppressWarnings("unchecked")
         List<List<Integer>> partitionList = splitIdList(query.list(), DEFAULT_PARTITION_SIZE);
         for (List<Integer> taxonIdList : partitionList){
@@ -758,14 +766,44 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
      * @param subTreeIndex
      * @return
      */
-    private String synonymForSubtreeQueryStr(boolean includeSharedTaxa, TreeIndex subTreeIndex, SelectMode mode) {
+    private String forSubtreeSynonymQueryStr(boolean includeSharedTaxa, TreeIndex subTreeIndex, SelectMode mode) {
         String queryStr = "SELECT " + mode.hql("syn")
                 + " FROM TaxonNode tn "
                 + "   JOIN tn.taxon t "
                 + "   JOIN t.synonyms syn"
-                + " WHERE tn.treeIndex LIKE '%s%%' ";
+                + " WHERE tn.treeIndex LIKE '%1$s%%' ";
         if (!includeSharedTaxa){
-            queryStr += " AND t.taxonNodes.size <= 1  ";
+//            queryStr += " AND t.taxonNodes.size <= 1  ";
+            queryStr += " AND NOT EXISTS ("
+                    + "FROM TaxonNode tn2 WHERE tn2.taxon = t AND tn2.treeIndex not like '%1$s%%')  ";
+        }
+        queryStr = String.format(queryStr, subTreeIndex.toString());
+
+        return queryStr;
+    }
+
+    private String forSubtreeRelatedTaxaQueryStr(boolean includeSharedTaxa, TreeIndex subTreeIndex, SelectMode mode) {
+        String queryStr = "SELECT " + mode.hql("relTax")
+                + " FROM TaxonNode tn "
+                + "   JOIN tn.taxon t "
+                + "   JOIN t.relationsToThisTaxon rel"
+                + "   JOIN rel.relatedFrom relTax "
+                + " WHERE tn.treeIndex LIKE '%1$s%%' ";
+        if (!includeSharedTaxa){
+            //toTaxon should only be used in the given subtree
+            queryStr += " AND NOT EXISTS ("
+                    + "FROM TaxonNode tn2 WHERE tn2.taxon = t AND tn2.treeIndex not like '%1$s%%')  ";
+            //from taxon should not be used in another classification
+            queryStr += " AND NOT EXISTS ("
+                    + "FROM TaxonNode tn3 WHERE tn3.taxon = relTax AND tn3.treeIndex not like '%1$s%%')  ";
+            //fromTaxon should not be related as e.g. pro parte synonym or misapplication to
+            //another taxon which is not part of the subtree
+            //TODO and has not the publish state
+            queryStr += " AND NOT EXISTS ("
+                    + "FROM TaxonNode tn4 JOIN tn4.taxon t2 JOIN t2.relationsToThisTaxon rel2  "
+                    + "   WHERE rel2.relatedFrom = relTax AND tn4.treeIndex not like '%1$s%%' "
+                    + "         AND tn4.taxon.publish != :publish ) ";
+
         }
         queryStr = String.format(queryStr, subTreeIndex.toString());
 
@@ -795,12 +833,14 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         }
     }
 
-    private String acceptedForSubtreeQueryStr(boolean includeSharedTaxa, TreeIndex subTreeIndex, SelectMode mode) {
+    private String forSubtreeAcceptedQueryStr(boolean includeSharedTaxa, TreeIndex subTreeIndex, SelectMode mode) {
         String queryStr = "SELECT " + mode.hql("t")
                 + " FROM TaxonNode tn JOIN tn.taxon t "
-                + " WHERE tn.treeIndex like '%s%%' ";
+                + " WHERE tn.treeIndex like '%1$s%%' ";
         if (!includeSharedTaxa){
-            queryStr += " AND t.taxonNodes.size <= 1  ";
+//            queryStr += " AND  t.taxonNodes.size <= 1  ";
+            queryStr += " AND NOT EXISTS ("
+                    + "FROM TaxonNode tn2 WHERE tn2.taxon = t AND tn2.treeIndex not like '%1$s%%')  ";
         }
         queryStr = String.format(queryStr, subTreeIndex.toString());
 

@@ -27,6 +27,12 @@ public class PublishForSubtreeConfigurator
     private static final long serialVersionUID = 1202667588493272030L;
 
     private boolean publish = false;
+    private boolean includeMisapplications = true;
+    private boolean includeProParteSynonyms = true;
+    //TODO move to super class
+    private boolean includeHybrids = true;
+
+
 
 
     //TODO UUIDs ??
@@ -82,5 +88,30 @@ public class PublishForSubtreeConfigurator
         this.includedRelationTypes = includedRelationTypes;
         return this;
     }
+
+    public boolean isIncludeMisapplications() {
+        return includeMisapplications;
+    }
+    public PublishForSubtreeConfigurator setIncludeMisapplications(boolean includeMisapplications) {
+        this.includeMisapplications = includeMisapplications;
+        return this;
+    }
+
+    public boolean isIncludeProParteSynonyms() {
+        return includeProParteSynonyms;
+    }
+    public PublishForSubtreeConfigurator setIncludeProParteSynonyms(boolean includeProParteSynonyms) {
+        this.includeProParteSynonyms = includeProParteSynonyms;
+        return this;
+    }
+
+//    public boolean isIncludeHybrids() {
+//        return includeHybrids;
+//    }
+//
+//    public PublishForSubtreeConfigurator setIncludeHybrids(boolean includeHybrids) {
+//        this.includeHybrids = includeHybrids;
+//        return this;
+//    }
 
 }

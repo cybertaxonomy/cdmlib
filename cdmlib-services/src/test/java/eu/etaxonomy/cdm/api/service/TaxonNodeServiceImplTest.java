@@ -480,7 +480,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
 
 	@Test
-	@DataSet
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
 	public final void testDeleteNodes(){
 		classification = classificationService.load(classificationUuid);
 		node1 = taxonNodeService.load(node1Uuid);
@@ -489,7 +489,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		node2 = HibernateProxyHelper.deproxy(node2);
 		TaxonNode newNode = node1.addChildTaxon(Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES()), null), null, null);
 		UUID uuidNewNode = taxonNodeService.save(newNode).getUuid();
-		List<TaxonNode> treeNodes = new ArrayList<TaxonNode>();
+		List<TaxonNode> treeNodes = new ArrayList<>();
 		treeNodes.add(node1);
 		treeNodes.add(node2);
 
@@ -731,7 +731,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         config.setNewSecundum(newSec);
         taxonNodeService.setSecundumForSubtree(config);
 
-        commitAndStartNewTransaction(new String[]{"TaxonBase","TaxonBase_AUD"});
+        commitAndStartNewTransaction(/*new String[]{"TaxonBase","TaxonBase_AUD"}*/);
         Assert.assertEquals(newSec, taxonService.find(1).getSec());
         Assert.assertNull(taxonService.find(2).getSec());
         Assert.assertEquals(newSec, taxonService.find(3).getSec());
@@ -881,22 +881,25 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
     public void testSetPublishForSubtree(){
         UUID subTreeUuid = UUID.fromString("484a1a77-689c-44be-8e65-347d835f47e8");
 
-        //assert current state
-        Assert.assertTrue(taxonService.find(1).isPublish());
-        Assert.assertTrue(taxonService.find(2).isPublish());
-        Assert.assertTrue(taxonService.find(3).isPublish());
-        Assert.assertTrue(taxonService.find(4).isPublish());
-        Assert.assertTrue(taxonService.find(5).isPublish());
+        assertStartingStateForSetPublish();
 
         boolean publish = false;
-        taxonNodeService.setPublishForSubtree(PublishForSubtreeConfigurator.NewInstance(subTreeUuid,  publish, true, true, true, null));
+        taxonNodeService.setPublishForSubtree(PublishForSubtreeConfigurator.NewInstance(
+                subTreeUuid,  publish, null)
+//                .setIncludeAcceptedTaxa(true)
+//                .setIncludeSynonyms(true)
+//                .setIncludeSharedTaxa(true)
+                );
 
-        commitAndStartNewTransaction(new String[]{});
+        commitAndStartNewTransaction();
         Assert.assertEquals(publish, taxonService.find(1).isPublish());
-        Assert.assertEquals(true, taxonService.find(2).isPublish());
+        Assert.assertEquals("Taxon2 is not in subtree", true, taxonService.find(2).isPublish());
         Assert.assertEquals(publish, taxonService.find(3).isPublish());
-        Assert.assertEquals(true, taxonService.find(4).isPublish());
+        Assert.assertEquals("Synonym4 is not in subtree", true, taxonService.find(4).isPublish());
         Assert.assertEquals(publish, taxonService.find(5).isPublish());
+        Assert.assertEquals(publish, taxonService.find(6).isPublish());
+        Assert.assertEquals(publish, taxonService.find(7).isPublish());
+
     }
 
     @Test
@@ -904,24 +907,38 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
     public void testSetPublishForSubtreeOnlyAccepted(){
         UUID subTreeUuid = UUID.fromString("484a1a77-689c-44be-8e65-347d835f47e8");
 
-        //assert current state
-        Assert.assertTrue(taxonService.find(1).isPublish());
-        Assert.assertTrue(taxonService.find(2).isPublish());
-        Assert.assertTrue(taxonService.find(3).isPublish());
-        Assert.assertTrue(taxonService.find(4).isPublish());
-        Assert.assertTrue(taxonService.find(5).isPublish());
+        assertStartingStateForSetPublish();
+
 
         boolean publish = false;
-        taxonNodeService.setPublishForSubtree(
-                PublishForSubtreeConfigurator.NewInstance(subTreeUuid,  publish, null)
-                .setIncludeAcceptedTaxa(true).setIncludeSynonyms(false).setIncludeSharedTaxa(true));
+        PublishForSubtreeConfigurator config = PublishForSubtreeConfigurator.NewInstance(subTreeUuid,  publish, null)
+         .setIncludeAcceptedTaxa(true)
+         .setIncludeSynonyms(false)
+         .setIncludeMisapplications(false)
+         .setIncludeProParteSynonyms(false)
+         .setIncludeSharedTaxa(true);
+        taxonNodeService.setPublishForSubtree(config);
 
         commitAndStartNewTransaction();
         Assert.assertEquals(publish, taxonService.find(1).isPublish());
-        Assert.assertEquals(true, taxonService.find(2).isPublish());
-        Assert.assertEquals(true, taxonService.find(3).isPublish());
-        Assert.assertEquals(true, taxonService.find(4).isPublish());
-        Assert.assertEquals(publish, taxonService.find(5).isPublish());
+        Assert.assertEquals("Taxon2 not in subtree", true, taxonService.find(2).isPublish());
+        Assert.assertEquals("Synonym3 should not be updated", true, taxonService.find(3).isPublish());
+        Assert.assertEquals("Synonym3 should not be updated", true, taxonService.find(4).isPublish());
+        Assert.assertEquals("Accepted in subtree should be udpated", publish, taxonService.find(5).isPublish());
+        Assert.assertEquals("Misapplied should not be updated", true, taxonService.find(6).isPublish());
+        Assert.assertEquals("Pro parte synonym should not be updated", true, taxonService.find(7).isPublish());
+
+        config.setIncludeMisapplications(true);
+        taxonNodeService.setPublishForSubtree(config);
+        commitAndStartNewTransaction();
+        Assert.assertEquals("Misapplied should be updated now", publish, taxonService.find(6).isPublish());
+        Assert.assertEquals("Pro parte synonym should not yet be updated", true, taxonService.find(7).isPublish());
+
+        config.setIncludeProParteSynonyms(true);
+        taxonNodeService.setPublishForSubtree(config);
+        commitAndStartNewTransaction();
+        Assert.assertEquals("Pro parte synonym should be updated now", publish, taxonService.find(7).isPublish());
+
     }
 
     @Test
@@ -930,14 +947,17 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         UUID subTreeUuid = UUID.fromString("484a1a77-689c-44be-8e65-347d835f47e8");
 
         //assert current state
-        Assert.assertTrue(taxonService.find(1).isPublish());
-        Assert.assertTrue(taxonService.find(2).isPublish());
-        Assert.assertTrue(taxonService.find(3).isPublish());
-        Assert.assertTrue(taxonService.find(4).isPublish());
-        Assert.assertTrue(taxonService.find(5).isPublish());
+        assertStartingStateForSetPublish();
 
         boolean publish = false;
-        taxonNodeService.setPublishForSubtree(PublishForSubtreeConfigurator.NewInstance(subTreeUuid, publish, false, true, true, null));
+        PublishForSubtreeConfigurator config = PublishForSubtreeConfigurator.NewInstance(
+                subTreeUuid, publish, null)
+                .setIncludeAcceptedTaxa(false)
+                .setIncludeSynonyms(true)
+                .setIncludeSharedTaxa(true)
+                .setIncludeMisapplications(false)
+                .setIncludeProParteSynonyms(false);
+        taxonNodeService.setPublishForSubtree(config);
 
         commitAndStartNewTransaction(new String[]{});
         Assert.assertEquals(true, taxonService.find(1).isPublish());
@@ -945,6 +965,33 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         Assert.assertEquals(publish, taxonService.find(3).isPublish());
         Assert.assertEquals(true, taxonService.find(4).isPublish());
         Assert.assertEquals(true, taxonService.find(5).isPublish());
+        Assert.assertEquals(true, taxonService.find(6).isPublish());
+        Assert.assertEquals(true, taxonService.find(7).isPublish());
+
+        config.setIncludeMisapplications(true);
+        taxonNodeService.setPublishForSubtree(config);
+        commitAndStartNewTransaction();
+        Assert.assertEquals("Misapplied should be updated now", publish, taxonService.find(6).isPublish());
+        Assert.assertEquals("Pro parte synonym should not yet be updated", true, taxonService.find(7).isPublish());
+
+        config.setIncludeProParteSynonyms(true);
+        taxonNodeService.setPublishForSubtree(config);
+        commitAndStartNewTransaction();
+        Assert.assertEquals("Pro parte synonym should be updated now", publish, taxonService.find(7).isPublish());
+
+    }
+
+    /**
+     *
+     */
+    private void assertStartingStateForSetPublish() {
+        Assert.assertTrue(taxonService.find(1).isPublish());
+        Assert.assertTrue(taxonService.find(2).isPublish());
+        Assert.assertTrue(taxonService.find(3).isPublish());
+        Assert.assertTrue(taxonService.find(4).isPublish());
+        Assert.assertTrue(taxonService.find(5).isPublish());
+        Assert.assertTrue(taxonService.find(6).isPublish());
+        Assert.assertTrue(taxonService.find(7).isPublish());
     }
 
 
@@ -953,26 +1000,34 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
     public void testSetPublishForSubtreeNoShared(){
         UUID subTreeUuid = UUID.fromString("484a1a77-689c-44be-8e65-347d835f47e8");
 
-        //assert current state
-        Assert.assertTrue(taxonService.find(1).isPublish());
-        Assert.assertTrue(taxonService.find(2).isPublish());
-        Assert.assertTrue(taxonService.find(3).isPublish());
-        Assert.assertTrue(taxonService.find(4).isPublish());
-        Assert.assertTrue(taxonService.find(5).isPublish());
+        assertStartingStateForSetPublish();
 
         boolean publish = false;
-        taxonNodeService.setPublishForSubtree(PublishForSubtreeConfigurator.NewInstance(
+        PublishForSubtreeConfigurator config = PublishForSubtreeConfigurator.NewInstance(
                 subTreeUuid, publish, null)
                 .setIncludeAcceptedTaxa(true)
                 .setIncludeSynonyms(true)
-                .setIncludeSharedTaxa(false));
+                .setIncludeSharedTaxa(false);
+        taxonNodeService.setPublishForSubtree(config);
 
         commitAndStartNewTransaction();
         Assert.assertEquals("Shared taxon must not be set", true, taxonService.find(1).isPublish());
         Assert.assertEquals("Taxon2 is not in subtree", true, taxonService.find(2).isPublish());
         Assert.assertEquals("Synonym of shared taxon must not be set", true, taxonService.find(3).isPublish());
         Assert.assertEquals("Synonym4 belongs to Taxon2 which is not in subtree", true, taxonService.find(4).isPublish());
-        Assert.assertEquals("Taxon5 should be set to unpublished. It is in subtree and is not a shared taxon", publish, taxonService.find(5).isPublish());
+        Assert.assertEquals("Taxon5 is in subtree and not shared => should be set to unpublished", publish, taxonService.find(5).isPublish());
+        Assert.assertEquals("Misapplied exists as taxon in classification 2 and should not be updated"
+                + " though related to taxon 5 which is updated", true, taxonService.find(6).isPublish());
+        Assert.assertEquals("Pro parte synonym7 should not be updated, as it is "
+                + "related to updated taxon5 but also to taxon2 which is not updated because not in subtree",
+                true, taxonService.find(7).isPublish());
+
+        taxonService.find(2).setPublish(false);
+        taxonNodeService.setPublishForSubtree(config);
+        commitAndStartNewTransaction();
+        Assert.assertEquals("Pro parte synonym7 should be updated now, as taxon2 is now unpublished"
+                + " and therefore the noShared function is not relevant anymore",
+                publish, taxonService.find(7).isPublish());
     }
 
     @Test

@@ -65,6 +65,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
@@ -1039,6 +1040,7 @@ public class TaxonNodeServiceImpl
         boolean publish = config.isPublish();
         boolean includeSynonyms = config.isIncludeSynonyms();
         boolean includeSharedTaxa = config.isIncludeSharedTaxa();
+        boolean includeRelatedTaxa = config.isIncludeProParteSynonyms() || config.isIncludeMisapplications();
         if (subTree == null){
             result.setError();
             result.addException(new NullPointerException("Subtree does not exist"));
@@ -1048,7 +1050,7 @@ public class TaxonNodeServiceImpl
             subTreeIndex = TreeIndex.NewInstance(subTree.treeIndex());
             int count = includeAcceptedTaxa ? dao.countPublishForSubtreeAcceptedTaxa(subTreeIndex, publish, includeSharedTaxa):0;
             count += includeSynonyms ? dao.countPublishForSubtreeSynonyms(subTreeIndex, publish, includeSharedTaxa):0;
-            count += includeSynonyms ? dao.countPublishForSubtreeRelatedTaxa(subTreeIndex, publish, includeSharedTaxa):0;
+            count += includeRelatedTaxa ? dao.countPublishForSubtreeRelatedTaxa(subTreeIndex, publish, includeSharedTaxa):0;
             monitor.beginTask("Update publish flag", count);
         }
 
@@ -1063,9 +1065,17 @@ public class TaxonNodeServiceImpl
             Set<TaxonBase> updatedSynonyms = dao.setPublishForSubtreeSynonyms(subTreeIndex, publish, includeSharedTaxa, monitor);
             result.addUpdatedObjects(updatedSynonyms);
         }
-        if (includeAcceptedTaxa){
+        if (includeRelatedTaxa){
             monitor.subTask("Update Related Taxa");
-            Set<TaxonBase> updatedTaxa = dao.setPublishForSubtreeRelatedTaxa(subTreeIndex, publish, includeSharedTaxa, monitor);
+            Set<UUID> relationTypes = new HashSet<>();
+            if (config.isIncludeMisapplications()){
+                relationTypes.addAll(TaxonRelationshipType.misappliedNameUuids());
+            }
+            if (config.isIncludeProParteSynonyms()){
+                relationTypes.addAll(TaxonRelationshipType.proParteOrPartialSynonymUuids());
+            }
+            Set<TaxonBase> updatedTaxa = dao.setPublishForSubtreeRelatedTaxa(subTreeIndex, publish,
+                    relationTypes, includeSharedTaxa, monitor);
             result.addUpdatedObjects(updatedTaxa);
         }
 

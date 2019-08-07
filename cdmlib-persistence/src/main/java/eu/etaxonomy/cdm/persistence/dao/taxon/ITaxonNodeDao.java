@@ -185,15 +185,10 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
     public Set<TaxonBase> setPublishForSubtreeSynonyms(TreeIndex subTreeIndex, boolean publish,
             boolean includeSharedTaxa, IProgressMonitor monitor);
 
-    /**
-     * @param subTreeIndex
-     * @param publish
-     * @param includeSharedTaxa
-     * @return
-     */
     public int countPublishForSubtreeRelatedTaxa(TreeIndex subTreeIndex, boolean publish, boolean includeSharedTaxa);
     public Set<TaxonBase> setPublishForSubtreeRelatedTaxa(TreeIndex subTreeIndex, boolean publish,
-            boolean includeSharedTaxa, IProgressMonitor monitor);
+            Set<UUID> relationTypes, boolean includeSharedTaxa,
+            IProgressMonitor monitor);
 
     /**
      * @param parent
