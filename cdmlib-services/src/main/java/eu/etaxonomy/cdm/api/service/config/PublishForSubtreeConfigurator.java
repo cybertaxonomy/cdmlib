@@ -29,7 +29,7 @@ public class PublishForSubtreeConfigurator
     private boolean publish = false;
     private boolean includeMisapplications = true;
     private boolean includeProParteSynonyms = true;
-    //TODO move to super class
+    //for now, we keep hybrids here, maybe moved to superclass in future
     private boolean includeHybrids = true;
 
 
