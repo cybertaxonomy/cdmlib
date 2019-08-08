@@ -13,6 +13,7 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.IDescriptiveDataSetService;
 import eu.etaxonomy.cdm.api.service.config.CacheUpdaterConfigurator;
+import eu.etaxonomy.cdm.api.service.config.DescriptionAggregationConfiguration;
 import eu.etaxonomy.cdm.api.service.config.ForSubtreeConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.SortIndexUpdaterConfigurator;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -51,9 +52,10 @@ public interface ILongRunningTasksService {
     /**
      * Monitored invocation of {@link IDescriptiveDataSetService#aggregate(UUID, IProgressMonitor)}
      * @param descriptiveDataSetUuid the data set which should be aggregated
+     * @param config the aggregation configuration
      * @return the uuid of the monitor
      */
-    public UUID aggregateDescriptiveDataSet(UUID descriptiveDataSetUuid);
+    public UUID aggregateDescriptiveDataSet(UUID descriptiveDataSetUuid,  DescriptionAggregationConfiguration config);
 
     /**
      * Monitored invocation of {@link IDescriptiveDataSetService#getRowWrapper(DescriptiveDataSet, IProgressMonitor)}

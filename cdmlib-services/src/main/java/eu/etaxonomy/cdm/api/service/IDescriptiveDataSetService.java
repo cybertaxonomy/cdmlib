@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.api.service.config.DescriptionAggregationConfiguration;
 import eu.etaxonomy.cdm.api.service.dto.RowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenRowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonRowWrapperDTO;
@@ -150,9 +151,10 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      * directly associated with.
      * @param descriptiveDataSetUuid the uuid of the descriptive data set to which the
      * aggregated descriptions will be added to
+     * @param config the aggregation configuration
      * @param monitor the progress monitor
      * @return the result of the operation
      */
-    public UpdateResult aggregate(UUID descriptiveDataSetUuid, IProgressMonitor monitor);
+    public UpdateResult aggregate(UUID descriptiveDataSetUuid,  DescriptionAggregationConfiguration config, IProgressMonitor monitor);
 
 }
