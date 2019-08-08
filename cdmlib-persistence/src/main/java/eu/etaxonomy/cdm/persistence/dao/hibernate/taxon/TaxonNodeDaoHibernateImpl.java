@@ -787,10 +787,6 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     private String handleExcludeHybrids(String whereStr, boolean excludeHybrids, String t) {
         if(excludeHybrids){
 
-            //FIXME t.name IS NULL does not yet work
-//            String hybridWhere =  " AND (%1$s.name is NULL OR %1$s.name.uuid IS NULL OR "
-//                    + " (%1$s.name.monomHybrid=0 AND %1$s.name.binomHybrid=0 "
-//                    + "   AND %1$s.name.trinomHybrid=0 AND %1$s.name.hybridFormula=0 )) ";
             String hybridWhere =  " AND (n is NULL OR "
                     + " (n.monomHybrid=0 AND n.binomHybrid=0 "
                     + "   AND n.trinomHybrid=0 AND n.hybridFormula=0 )) ";
