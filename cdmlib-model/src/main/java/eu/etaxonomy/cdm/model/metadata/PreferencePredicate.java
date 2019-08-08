@@ -44,7 +44,7 @@ public enum PreferencePredicate implements IEnumTerm<PreferencePredicate>, IPref
 
     CommonNameAreaVocabularies(UUID.fromString("59d68062-b4ff-4c3a-b29d-66bf850c1d82"), "Common Names: Available Vocabularies for Areas of Common Names", "commonname.area.voc", null),
     CommonNameReferencesWithMarker(UUID.fromString("41402495-96a8-47be-9129-cf9b2a4bc189"), "Common Names: Use only References with Common Name Marker", "commonname.reference.useMarked", Boolean.FALSE),
-
+    CommonNameLanguages(UUID.fromString("860b0395-09ad-42f5-9dc7-a277ebc034ea"), "Common name: Languages", "commonname.languages", null),
     //PreferencePredicates from TaxEditor:
 
     TaxonNodeOrder(UUID.fromString("ce06bd8e-4371-4ee5-8f57-cf23930cfd12"), "Taxon node order", "model.taxon.TNO", NodeOrderEnum.RankAndNameOrder),  //default alphabet + rank
@@ -62,6 +62,10 @@ public enum PreferencePredicate implements IEnumTerm<PreferencePredicate>, IPref
     ShowIdInSource(UUID.fromString("de291d1b-d89e-42ee-a7b5-15f306f50785"), "Source Details: Show ID in Source", "sourceDetails.IdInSource", Boolean.TRUE),
     //I did rename this "Name"-> "ID Namespace" (later we should adapt the modelKey similarly
     ShowNamespaceInSource(UUID.fromString("f2e881bb-03a1-4bf9-aff1-7bfd4d355a7c"), "Source Details: Show ID Namespace in Source", "sourceDetails.NameInSource", Boolean.TRUE),
+
+    ShowUuidAndIdInSupplementalDataView(UUID.fromString("f0b23cde-b52f-4f36-bbfb-b8ba803ceec1"), "Show Uuid And Id In Supplemental DataView", "supplementalData.UuidAndId", Boolean.FALSE),
+    ExtensionTypes(UUID.fromString("412adf43-ad4b-42a9-a4a6-faf96d3e7c02"), "Extension Types", "supplementalData.extension.types", null),
+    MarkerTypes(UUID.fromString("2c080f46-aad0-4420-9af1-fe32f3cea73a"), "Marker Types", "supplementalData.marker.types", null),
 
     //name details view
     SimpleDetailsViewActivated(UUID.fromString("78666fde-9ee5-4c09-923b-be98604aace6"), "Name Details: Activated", "editor.nameDetails.activated", Boolean.FALSE),
@@ -108,12 +112,46 @@ public enum PreferencePredicate implements IEnumTerm<PreferencePredicate>, IPref
     ShowTaxonAssociations(UUID.fromString("849c24f9-b62b-4f70-b0a0-1b02182b3433"), "Show Taxon Associations", "specimen.detail.showTaxonAssociations", Boolean.FALSE),
     ShowLifeForm(UUID.fromString("85870e7d-a6a3-4c9b-97d6-eb27e6516860"), "Show Life Form", "showLifeForm", Boolean.FALSE),
 
-
+    //Taxa
     DefaultBehaviourForPublishFlag(UUID.fromString("24e636fc-ef3b-4a2c-8c9e-018143e66949"), "Default behaviour for publish flag", "defaultBehaviourForPublishFlag", PublishEnum.InheritFromParent),
-    CommonNameLanguages(UUID.fromString("860b0395-09ad-42f5-9dc7-a277ebc034ea"), "Common name languages", "CommonNameLanguages", null),
+    ConceptRelationships(UUID.fromString("04e4c69c-6741-4224-81ef-8df0a03bb81e"), "Concept Relationships", "ConceptRelationships", null),
 
+    ShowExperimentalFeatures(UUID.fromString("ba617c58-1801-4feb-9819-859aea5869a2"), "Show Experimental Features", "editor.experimentalFeatures", Boolean.TRUE),
+
+    //External Services
+    MobotOpenUrlServiceAccessPoint(UUID.fromString("9b956f7c-03c4-47d6-b270-ba14dca8c6ef"), "Mobot Open Url Service Access Point", "externalService.mobotOpenUrlService.accessPoint", "http://www.biodiversitylibrary.org/openurl"),
+    MobotOpenUrlServiceMaxHeight(UUID.fromString("cd905b7e-b719-4a0a-b13b-0763b7e279fd"), "Mobot Open Url Service Max Height", "externalService.mobotOpenUrlService.maxHeight", 1000),
+    MobotOpenUrlServiceMaxWidth(UUID.fromString("f753f495-776e-41f4-b331-9349658075af"), "Mobot Open Url Service Max Width", "externalService.mobotOpenUrlService.maxWidth", 1000),
+    EditMapServiceAccessPoint(UUID.fromString("ec741a66-c7a2-4d7b-b558-54fb2a81327f"), "Edit Map Service Access Point", "externalService.editMapService.accessPoint", "http://edit.africamuseum.be/edit_wp5/v1.2/rest_gen.php"),
+
+    //Facts
+    NamedAreaTypes(UUID.fromString("960088e6-c02f-44c4-9fa1-c4552e030ce3"), "Named Area Types", "facts.namedArea.types", null),
+    NameFeatures(UUID.fromString("ad0dc9f9-7d14-406d-b0e0-478182fca8f6"), "Name Fetaures", "facts.nameFeatures", null),
+    TaxonFeatures(UUID.fromString("ee50e338-4adf-49be-993e-efcbee2c801f"), "Taxon Fetaures", "facts.taxonFeatures", null),
+
+
+    //Names
     AvailableRanks(UUID.fromString("d6559e49-9d05-43bb-b13a-4a70514100af"), "Available Ranks", "AvailableRanks", null),
-    AvailableNomenclaturalStatus(UUID.fromString("fd36dc63-fd98-4d86-9a11-edced6773bd3"), "Available Nomenclatural Status", "AvailableNomenclaturalStatus", null)
+    AvailableNomenclaturalStatus(UUID.fromString("fd36dc63-fd98-4d86-9a11-edced6773bd3"), "Available Nomenclatural Status", "name.nomenclaturalStatus", null),
+    NameRelationships(UUID.fromString("c1830d41-0101-480f-8444-f9c0b07a5f2f"), "Name Relationships", "name.nameRelationships", null),
+    TypeDesignations(UUID.fromString("7b824a7e-49e1-4484-956f-6f6f14628956"), "Type Designations", "name.typeDesignations", null),
+    SpecimenTypeDesignationStatus(UUID.fromString("8a155724-2667-42a7-b789-7d826d0cafc9"), "Specimen Type Designation Status", "name.specimenTypeDesignationStatus", null),
+    NameTypeDesignationStatus(UUID.fromString("6091668a-9bcf-4c79-8c53-7e4b98de1ccb"), "Name Type Designation Status", "name.nameTypeDesignationStatus", null),
+
+    //Language
+    DefaultLanguage(UUID.fromString("0817d7f3-e88c-4064-be09-bc7adf5c2bd7"), "Default Language", "defaultLanguage", Language.ENGLISH()),
+    AvailableLanguages(UUID.fromString("b6851dcb-4138-4a9c-ad56-a3b16f6ee69d"), "Available Languages", "AvailableLanguages", null),
+    MultiLanguageTextEditing(UUID.fromString("373f38ae-981d-492c-a01c-71134034208d"), "Multi Language Text Editing", "MultiLanguageTextEditing", Boolean.FALSE),
+
+    //Search
+    ShowIdInSelectionDialog(UUID.fromString("2b2dbafe-186e-4411-aca0-74348c0946b7"), "Show Id In Selection Dialog", "search.selectionDialog.showId", Boolean.TRUE),
+    SearchForIdentifierAsDefault(UUID.fromString("b059f371-c9ee-4dca-b419-bdf142f14876"), "Search For Identifier As Default", "search.selectionDialog.searchForIdentifierAsDefault", Boolean.FALSE),
+    SearchForIdentifierAndTitleCache(UUID.fromString("5b5c2c6d-071a-4b3c-b645-8db5c704b63b"), "Search For Identifier And TitleCache", "search.selectionDialog.searchForIdentifierAndTitleCache", Boolean.TRUE),
+    SortTaxaByRankAndName(UUID.fromString("2b7e90b2-1722-4bbf-989a-113281fa0b30"), "Sort Taxa By Rank And Name", "search.selectionDialog.sortTaxaByRankAndName", Boolean.FALSE),
+
+
+
+
 
 
     ;
