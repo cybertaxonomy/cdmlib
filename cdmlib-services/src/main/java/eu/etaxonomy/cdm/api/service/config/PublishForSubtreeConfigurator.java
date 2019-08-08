@@ -105,13 +105,13 @@ public class PublishForSubtreeConfigurator
         return this;
     }
 
-//    public boolean isIncludeHybrids() {
-//        return includeHybrids;
-//    }
-//
-//    public PublishForSubtreeConfigurator setIncludeHybrids(boolean includeHybrids) {
-//        this.includeHybrids = includeHybrids;
-//        return this;
-//    }
+    public boolean isIncludeHybrids() {
+        return includeHybrids;
+    }
+
+    public PublishForSubtreeConfigurator setIncludeHybrids(boolean includeHybrids) {
+        this.includeHybrids = includeHybrids;
+        return this;
+    }
 
 }

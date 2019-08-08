@@ -1040,6 +1040,7 @@ public class TaxonNodeServiceImpl
         boolean publish = config.isPublish();
         boolean includeSynonyms = config.isIncludeSynonyms();
         boolean includeSharedTaxa = config.isIncludeSharedTaxa();
+        boolean includeHybrids = config.isIncludeHybrids();
         boolean includeRelatedTaxa = config.isIncludeProParteSynonyms() || config.isIncludeMisapplications();
         if (subTree == null){
             result.setError();
@@ -1048,21 +1049,21 @@ public class TaxonNodeServiceImpl
             return result;
         }else{
             subTreeIndex = TreeIndex.NewInstance(subTree.treeIndex());
-            int count = includeAcceptedTaxa ? dao.countPublishForSubtreeAcceptedTaxa(subTreeIndex, publish, includeSharedTaxa):0;
-            count += includeSynonyms ? dao.countPublishForSubtreeSynonyms(subTreeIndex, publish, includeSharedTaxa):0;
-            count += includeRelatedTaxa ? dao.countPublishForSubtreeRelatedTaxa(subTreeIndex, publish, includeSharedTaxa):0;
+            int count = includeAcceptedTaxa ? dao.countPublishForSubtreeAcceptedTaxa(subTreeIndex, publish, includeSharedTaxa, includeHybrids):0;
+            count += includeSynonyms ? dao.countPublishForSubtreeSynonyms(subTreeIndex, publish, includeSharedTaxa, includeHybrids):0;
+            count += includeRelatedTaxa ? dao.countPublishForSubtreeRelatedTaxa(subTreeIndex, publish, includeSharedTaxa, includeHybrids):0;
             monitor.beginTask("Update publish flag", count);
         }
 
 
         if (includeAcceptedTaxa){
             monitor.subTask("Update Accepted Taxa");
-            Set<TaxonBase> updatedTaxa = dao.setPublishForSubtreeAcceptedTaxa(subTreeIndex, publish, includeSharedTaxa, monitor);
+            Set<TaxonBase> updatedTaxa = dao.setPublishForSubtreeAcceptedTaxa(subTreeIndex, publish, includeSharedTaxa, includeHybrids, monitor);
             result.addUpdatedObjects(updatedTaxa);
         }
         if (includeSynonyms){
             monitor.subTask("Update Synonyms");
-            Set<TaxonBase> updatedSynonyms = dao.setPublishForSubtreeSynonyms(subTreeIndex, publish, includeSharedTaxa, monitor);
+            Set<TaxonBase> updatedSynonyms = dao.setPublishForSubtreeSynonyms(subTreeIndex, publish, includeSharedTaxa, includeHybrids, monitor);
             result.addUpdatedObjects(updatedSynonyms);
         }
         if (includeRelatedTaxa){
@@ -1075,7 +1076,7 @@ public class TaxonNodeServiceImpl
                 relationTypes.addAll(TaxonRelationshipType.proParteOrPartialSynonymUuids());
             }
             Set<TaxonBase> updatedTaxa = dao.setPublishForSubtreeRelatedTaxa(subTreeIndex, publish,
-                    relationTypes, includeSharedTaxa, monitor);
+                    relationTypes, includeSharedTaxa, includeHybrids, monitor);
             result.addUpdatedObjects(updatedTaxa);
         }
 
