@@ -6,6 +6,7 @@ package eu.etaxonomy.cdm.database.data;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.hibernate.Session;
 import org.joda.time.DateTime;
@@ -115,7 +116,10 @@ import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
+import eu.etaxonomy.cdm.model.permission.CdmAuthority;
 import eu.etaxonomy.cdm.model.permission.Group;
+import eu.etaxonomy.cdm.model.permission.Operation;
+import eu.etaxonomy.cdm.model.permission.PermissionClass;
 import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -176,13 +180,24 @@ public class FullCoverageDataGenerator {
 
 		createSupplemental(cdmBases);
 
+		createUserAuthority(cdmBases);
+
 		for (CdmBase cdmBase: cdmBases){
 			session.save(cdmBase);
 		}
 	}
 
 
-	private void createSupplemental(List<CdmBase> cdmBases)  {
+	/**
+     * @param cdmBases
+     */
+    private void createUserAuthority(List<CdmBase> cdmBases) {
+        // TODO Auto-generated method stub
+
+    }
+
+
+    private void createSupplemental(List<CdmBase> cdmBases)  {
 
 		Reference ref = ReferenceFactory.newBook();
 
@@ -210,10 +225,14 @@ public class FullCoverageDataGenerator {
 		User user = User.NewInstance("myUser", "12345");
 		Group group = Group.NewInstance("MyGroup");
 		group.addMember(user);
+		CdmAuthority authority = CdmAuthority.NewInstance(PermissionClass.TAXONNAME,
+		        "a property", Operation.CREATE, UUID.fromString("f1653cb8-5956-429e-852a-4a3b57893f49"));
+		group.addAuthority(authority);
+		user.addAuthority(authority);
 
 		cdmBases.add(user);
 		cdmBases.add(group);
-
+		cdmBases.add(authority);
 
 		cdmBases.add(ref);
 

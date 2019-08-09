@@ -19,7 +19,9 @@ import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 public class GroupServiceImplTest extends CdmTransactionalIntegrationTest {
-	private static final Logger logger = Logger.getLogger(GroupServiceImplTest.class);
+
+    @SuppressWarnings("unused")
+    private static final Logger logger = Logger.getLogger(GroupServiceImplTest.class);
 
     @SpringBeanByType
     IGroupService groupService;
@@ -73,14 +75,7 @@ public class GroupServiceImplTest extends CdmTransactionalIntegrationTest {
 
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 
 }

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.permission.GrantedAuthorityImpl;
-import eu.etaxonomy.cdm.persistence.dao.common.IGrantedAuthorityDao;
+import eu.etaxonomy.cdm.persistence.dao.permission.IGrantedAuthorityDao;
 
 /**
  * @author andreas kohlbecker

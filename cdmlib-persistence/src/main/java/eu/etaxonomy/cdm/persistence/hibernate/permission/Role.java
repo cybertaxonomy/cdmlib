@@ -6,7 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.util.Assert;
 
 import eu.etaxonomy.cdm.model.permission.GrantedAuthorityImpl;
-import eu.etaxonomy.cdm.persistence.dao.common.IGrantedAuthorityDao;
+import eu.etaxonomy.cdm.persistence.dao.permission.IGrantedAuthorityDao;
 
 /**
  * The role prefix 'ROLE_' is defined in the spring security

@@ -86,14 +86,14 @@ public class Group extends CdmBase {
     @Field
     @NotNull
     @Pattern(regexp=User.USERNAME_REGEX)
-    protected String name;
+    private String name;
 
     @XmlElementWrapper(name = "Members")
     @XmlElement(name = "Member")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "groups")
-    protected Set<User> members = new HashSet<>();
+    private Set<User> members = new HashSet<>();
 
     @XmlElementWrapper(name = "GrantedAuthorities")
     @XmlElement(name = "GrantedAuthority", type = GrantedAuthorityImpl.class)
@@ -101,7 +101,15 @@ public class Group extends CdmBase {
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY, targetEntity = GrantedAuthorityImpl.class)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    protected Set <GrantedAuthority> grantedAuthorities = new HashSet<>();
+    private Set <GrantedAuthority> grantedAuthorities = new HashSet<>();
+
+    @XmlElementWrapper(name = "Authorities")
+    @XmlElement(name = "Authority", type = AuthorityBase.class)
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToMany(fetch = FetchType.LAZY, targetEntity = AuthorityBase.class)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    private Set <AuthorityBase> authorities = new HashSet<>();
 
 // ********************* CONSTRUCTOR ************************/
 
@@ -109,37 +117,39 @@ public class Group extends CdmBase {
         super();
     }
 
-// *************** METHODS ***********************************/
+// *************** GETTER / SETTER ***********************************/
 
     public Set<GrantedAuthority> getGrantedAuthorities() {
         return grantedAuthorities;
     }
-
     public boolean addGrantedAuthority(GrantedAuthority grantedAuthority){
         return grantedAuthorities.add(grantedAuthority);
     }
-
     public boolean removeGrantedAuthority(GrantedAuthority grantedAuthority){
         return grantedAuthorities.remove(grantedAuthority);
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public Set<AuthorityBase> getAuthorities() {
+        return authorities;
+    }
+    public boolean addAuthority(AuthorityBase authority){
+        return authorities.add(authority);
+    }
+    public boolean removeAuthority(AuthorityBase authority){
+        return authorities.remove(authority);
     }
 
-    public String getName() {
-        return name;
-    }
+    public String getName() {return name;}
+    public void setName(String name) {this.name = name;}
+
 
     public Set<User> getMembers() {
         return members;
     }
-
     public boolean addMember(User user) {
         user.getGroups().add(this);
         return this.members.add(user);
     }
-
     public boolean removeMember(User user) {
         if(members.contains(user)) {
             user.getGroups().remove(this);

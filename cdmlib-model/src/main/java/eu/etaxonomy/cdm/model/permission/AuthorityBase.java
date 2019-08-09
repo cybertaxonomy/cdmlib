@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.model.permission;
 
 import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -28,7 +29,8 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 @XmlType(name = "AuthorityBase", propOrder = {
         "authority" }
 )
-@XmlRootElement(name = "AuthorityBase")
+@XmlRootElement(name = "Authority")
+@Table(name="Authority")
 @Entity
 public abstract class AuthorityBase extends CdmBase{
 

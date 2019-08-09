@@ -40,9 +40,9 @@ import org.springframework.util.Assert;
 
 import eu.etaxonomy.cdm.model.permission.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.model.permission.User;
-import eu.etaxonomy.cdm.persistence.dao.common.IGrantedAuthorityDao;
-import eu.etaxonomy.cdm.persistence.dao.common.IGroupDao;
-import eu.etaxonomy.cdm.persistence.dao.common.IUserDao;
+import eu.etaxonomy.cdm.persistence.dao.permission.IGrantedAuthorityDao;
+import eu.etaxonomy.cdm.persistence.dao.permission.IGroupDao;
+import eu.etaxonomy.cdm.persistence.dao.permission.IUserDao;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 

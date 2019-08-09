@@ -73,8 +73,6 @@ public class TestCdmDbComparator {
 //			"Agent_OriginalSource",
 //			"Agent_Rights",
 			"Annotation",
-//			"CDM_VIEW",
-//			"CDM_VIEW_CDM_VIEW",
 //			"Collection",
 //			"Collection_Annotation",
 //			"Collection_Extension",

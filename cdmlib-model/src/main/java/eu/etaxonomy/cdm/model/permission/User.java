@@ -73,7 +73,7 @@ public class User extends CdmBase implements UserDetails {
     private static final long serialVersionUID = 6582191171369439163L;
     private static final Logger logger = Logger.getLogger(User.class);
 
-    protected static final String USERNAME_REGEX = "[A-Za-z_\\.\\-]+";
+    protected static final String USERNAME_REGEX = "[A-Za-z0-9_\\.\\-]+";
 
  // **************************** FACTORY *****************************************/
 
@@ -174,7 +174,20 @@ public class User extends CdmBase implements UserDetails {
 
     @XmlTransient
     @Transient
-    private Set<GrantedAuthority> authorities;  //authorities of this user and of all groups the user belongs to
+    private Set<GrantedAuthority> transientGrantedAuthorities;  //authorities of this user and of all groups the user belongs to
+
+    @XmlElementWrapper(name = "Authorities")
+    @XmlElement(name = "Authority", type = AuthorityBase.class)
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToMany(fetch = FetchType.LAZY, targetEntity = AuthorityBase.class)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+    @NotAudited
+    protected Set<AuthorityBase> authorities = new HashSet<>();
+
+    @XmlTransient
+    @Transient
+    private Set<AuthorityBase> transientAuthorities;  //authorities of this user and of all groups the user belongs to
 
 //***************************** Constructor *********************** /
 
@@ -182,7 +195,61 @@ public class User extends CdmBase implements UserDetails {
         super();
     }
 
-// ***************************** METHODS ******************************/
+// ***************************** GETTER / SETTER ******************************/
+
+    public Person getPerson() {return person;}
+    public void setPerson(Person person) {this.person = person;}
+
+    @Override
+    public String getPassword() {return password;}
+    public void setPassword(String password) {this.password = password;}
+
+    @Override
+    public String getUsername() {return username;}
+    public void setUsername(String username) {this.username = username;}
+
+    @Override
+    public boolean isAccountNonLocked() {return accountNonLocked;}
+    public void setAccountNonLocked(boolean accountNonLocked) {this.accountNonLocked = accountNonLocked;}
+
+    @Override
+    public boolean isCredentialsNonExpired() {return credentialsNonExpired;}
+    public void setCredentialsNonExpired(boolean credentialsNonExpired) {this.credentialsNonExpired = credentialsNonExpired;}
+
+    public String getEmailAddress() {return emailAddress;}
+    public void setEmailAddress(String emailAddress) {this.emailAddress = emailAddress;}
+
+    @Override
+    public boolean isEnabled() {return enabled;}
+    public void setEnabled(boolean enabled) {this.enabled = enabled;}
+
+    @Override
+    public boolean isAccountNonExpired() {return accountNonExpired;}
+    public void setAccountNonExpired(boolean accountNonExpired) {this.accountNonExpired = accountNonExpired;}
+
+    protected void setGroups(Set<Group> groups) {
+        this.groups = groups;
+        initAuthorities();
+    }
+    public Set<Group> getGroups() {return groups;}
+
+    public Set<GrantedAuthority> getGrantedAuthorities() {return grantedAuthorities;}
+    public void setGrantedAuthorities(Set<GrantedAuthority> grantedAuthorities) {
+        this.grantedAuthorities = grantedAuthorities;
+        initAuthorities();
+    }
+
+    public Set<AuthorityBase> getAuthoritiesB() {return authorities;}
+    public void setAuthorities(Set<AuthorityBase> authorities) {
+        this.authorities = authorities;
+        initAuthorities();
+    }
+    public void addAuthority(AuthorityBase authority){
+        this.authorities.add(authority);
+        initAuthorities();
+    }
+
+// ************************** METHODS *********************/
 
     /**
      * Initializes or refreshes the collection of authorities, See
@@ -190,10 +257,17 @@ public class User extends CdmBase implements UserDetails {
      */
     //FIXME made public as preliminary solution to #4053 (Transient field User.authorities not refreshed on reloading entity)
     public void initAuthorities() {
-        authorities = new HashSet<>();
-        authorities.addAll(grantedAuthorities);
+        //GrantedAuthority
+        transientGrantedAuthorities = new HashSet<>();
+        transientGrantedAuthorities.addAll(grantedAuthorities);
         for(Group group : groups) {
-            authorities.addAll(group.getGrantedAuthorities());
+            transientGrantedAuthorities.addAll(group.getGrantedAuthorities());
+        }
+        //CdmAuthority
+        transientAuthorities = new HashSet<>();
+        transientAuthorities.addAll(authorities);
+        for(Group group : groups) {
+            transientAuthorities.addAll(group.getAuthorities());
         }
     }
 
@@ -209,99 +283,10 @@ public class User extends CdmBase implements UserDetails {
     @Override
     @Transient
     public Collection<GrantedAuthority> getAuthorities() {
-        if(authorities == null || authorities.size() == 0) {
+        if(transientGrantedAuthorities == null || transientGrantedAuthorities.size() == 0) {
             initAuthorities();
         }
-        return authorities;
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public String getUsername() {
-        return username;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return accountNonExpired;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return accountNonLocked;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return credentialsNonExpired;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public String getEmailAddress() {
-        return emailAddress;
-    }
-
-    public void setEmailAddress(String emailAddress) {
-        this.emailAddress = emailAddress;
-    }
-
-    public Set<GrantedAuthority> getGrantedAuthorities() {
-        return grantedAuthorities;
-    }
-
-    public void setGrantedAuthorities(Set<GrantedAuthority> grantedAuthorities) {
-        this.grantedAuthorities = grantedAuthorities;
-        initAuthorities();
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public void setAccountNonExpired(boolean accountNonExpired) {
-        this.accountNonExpired = accountNonExpired;
-    }
-
-    public void setCredentialsNonExpired(boolean credentialsNonExpired) {
-        this.credentialsNonExpired = credentialsNonExpired;
-    }
-
-    public void setAccountNonLocked(boolean accountNonLocked) {
-        this.accountNonLocked = accountNonLocked;
-    }
-
-    protected void setGroups(Set<Group> groups) {
-        this.groups = groups;
-        initAuthorities();
-    }
-
-    public Set<Group> getGroups() {
-        return groups;
-    }
-
-
-    public Person getPerson() {
-        return person;
-    }
-
-    public void setPerson(Person person) {
-        this.person = person;
+        return transientGrantedAuthorities;
     }
 
     public static User getCurrentAuthenticatedUser() {
