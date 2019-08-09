@@ -116,26 +116,6 @@ public class NomenclaturalStatus extends ReferencedEntityBase implements Cloneab
 	 * {@link NomenclaturalStatusType nomenclatural status type} has been
 	 * assigned to the {@link TaxonName taxon name(s)}.
 	 */
-//	public String getRuleConsidered(){
-//		return this.ruleConsidered;
-//	}
-//
-//	/**
-//	 * @see  #getRuleConsidered()
-//	 */
-//	public void setRuleConsidered(String ruleConsidered){
-//		this.ruleConsidered = ruleConsidered;
-//	}
-//
-//    /**
-//     * The {@link NomenclaturalCodeEdition code edition} for the {@link #getRuleConsidered() rule considered}.
-//     */
-//    public NomenclaturalCodeEdition getCodeEdition() {
-//        return codeEdition;
-//    }
-//    public void setCodeEdition(NomenclaturalCodeEdition codeEdition) {
-//        this.codeEdition = codeEdition;
-//    }
     public String getRuleConsidered(){
         return this.ruleConsidered().getText();
     }
