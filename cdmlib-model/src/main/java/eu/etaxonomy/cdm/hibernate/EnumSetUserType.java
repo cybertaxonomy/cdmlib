@@ -35,7 +35,9 @@ import eu.etaxonomy.cdm.model.term.IKeyTerm;
  * @author a.mueller
  * @since 25-02-2019
  */
-public class EnumSetUserType<E extends Enum<E>>  extends AbstractUserType implements UserType, ParameterizedType {
+public class EnumSetUserType<E extends Enum<E>>
+        extends AbstractUserType
+        implements UserType, ParameterizedType {
 
     private static final long serialVersionUID = 1060802925284271666L;
     @SuppressWarnings("unused")
@@ -120,6 +122,4 @@ public class EnumSetUserType<E extends Enum<E>>  extends AbstractUserType implem
 	public int[] sqlTypes() {
 		return SQL_TYPES;
 	}
-
-
 }

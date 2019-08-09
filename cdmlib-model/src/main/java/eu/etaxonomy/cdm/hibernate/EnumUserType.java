@@ -32,6 +32,8 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCodeEdition;
 import eu.etaxonomy.cdm.model.name.RankClass;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
+import eu.etaxonomy.cdm.model.permission.CRUD;
+import eu.etaxonomy.cdm.model.permission.PermissionClass;
 import eu.etaxonomy.cdm.model.reference.AuthorityType;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
@@ -135,6 +137,10 @@ public class EnumUserType<E extends Enum<E>>  extends AbstractUserType implement
         //ExternalLinkType
         }else if (clazz.equals(ExternalLinkType.class)){
             return ExternalLinkType.getByKey(val);
+        }else if (clazz.equals(PermissionClass.class)){
+            return PermissionClass.getByKey(val);
+        }else if (clazz.equals(CRUD.class)){
+            return CRUD.getByKey(val);
         }else{
         	throw new IllegalArgumentException(String.format("EnumType %s not supported by %s.", clazz.getSimpleName(), EnumUserType.class.getSimpleName()));
         }

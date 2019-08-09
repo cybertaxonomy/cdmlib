@@ -71,8 +71,6 @@
       <mapping class="eu.etaxonomy.cdm.model.common.IdentifiableSource"/>
       <mapping class="eu.etaxonomy.cdm.model.common.Identifier"/>
       <mapping class="eu.etaxonomy.cdm.model.common.IntextReference"/>
-      <mapping class="eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl"/>
-      <mapping class="eu.etaxonomy.cdm.model.common.Group"/>
       <mapping class="eu.etaxonomy.cdm.model.common.Language"/>
       <mapping class="eu.etaxonomy.cdm.model.common.LanguageString"/>
       <mapping class="eu.etaxonomy.cdm.model.common.LSID"/>
@@ -81,7 +79,6 @@
       <mapping class="eu.etaxonomy.cdm.model.common.MarkerType"/>
       <mapping class="eu.etaxonomy.cdm.model.reference.OriginalSourceBase"/>
       <mapping class="eu.etaxonomy.cdm.model.common.RelationshipTermBase"/>
-      <mapping class="eu.etaxonomy.cdm.model.common.User"/>
       
       <!-- Description Package -->
       <mapping class="eu.etaxonomy.cdm.model.description.CategoricalData"/>
@@ -168,7 +165,6 @@
       <mapping class="eu.etaxonomy.cdm.model.name.TextualTypeDesignation"/>
       <mapping class="eu.etaxonomy.cdm.model.name.TypeDesignationBase"/>
       
-      
       <!-- Occurrence Package -->
       <mapping class="eu.etaxonomy.cdm.model.occurrence.Collection"/>
       <mapping class="eu.etaxonomy.cdm.model.occurrence.DerivationEvent"/>
@@ -181,6 +177,14 @@
       <mapping class="eu.etaxonomy.cdm.model.occurrence.GatheringEvent"/>
       <mapping class="eu.etaxonomy.cdm.model.occurrence.PreservationMethod"/>
       <mapping class="eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase"/>
+                  
+      <!-- Permission Package -->
+      <mapping class="eu.etaxonomy.cdm.model.permission.AuthorityBase"/>
+      <mapping class="eu.etaxonomy.cdm.model.permission.CdmAuthority"/>
+      <mapping class="eu.etaxonomy.cdm.model.permission.GrantedAuthorityImpl"/>
+      <mapping class="eu.etaxonomy.cdm.model.permission.Group"/>
+      <mapping class="eu.etaxonomy.cdm.model.permission.Role"/>
+      <mapping class="eu.etaxonomy.cdm.model.permission.User"/>
       
       <!-- Reference Package -->
       <mapping class="eu.etaxonomy.cdm.model.reference.Reference"/>

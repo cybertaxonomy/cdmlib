@@ -16,8 +16,17 @@ import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import org.hibernate.annotations.Type;
+
+import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
  * CDM authority class.<BR>
@@ -29,8 +38,10 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "CdmAuthority", propOrder = {
+        "permissionClass",
         "property",
-        "targetUuid"}
+        "targetUuid",
+        "operations"}
 )
 @XmlRootElement(name = "CdmAuthority")
 @Entity
@@ -38,14 +49,33 @@ public class CdmAuthority extends AuthorityBase {
 
     private static final long serialVersionUID = 3777547489226033333L;
 
+    /**
+     * The {@link TermType type} of this term. Needs to be the same type in a {@link DefinedTermBase defined term}
+     * and in it's {@link TermVocabulary vocabulary}.
+     */
+    @XmlAttribute(name ="PermissionClass")
+    @Column(name="permissionClass")
+    @NotNull
+    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
+        parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.permission.CRUD")}
+    )
     private PermissionClass permissionClass;
 
     @Column(unique = true)
     @NotNull
     private String property;
 
+    @XmlAttribute(name ="Operations")
+    @NotNull
+    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumSetUserType",
+        parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.permission.PermissionClass")}
+    )
     private EnumSet<CRUD> operations = EnumSet.noneOf(CRUD.class);
 
+    @XmlJavaTypeAdapter(UUIDAdapter.class)
+    @Type(type="uuidUserType")
+    @Column(length=36)  //TODO needed? Type UUID will always assure that is exactly 36
+//    @NotNull
     private UUID targetUuid;
 
 // *************************** Factory Methods ********************************/
