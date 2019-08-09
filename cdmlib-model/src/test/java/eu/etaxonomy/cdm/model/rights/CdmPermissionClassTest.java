@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.persistence.hibenate.permission;
+package eu.etaxonomy.cdm.model.rights;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -25,14 +25,13 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.rights.CdmPermissionClass;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionClass;
 
 /**
  * @author a.kohlbecker
  * @since Feb 25, 2014
- *
  */
 public class CdmPermissionClassTest {
 

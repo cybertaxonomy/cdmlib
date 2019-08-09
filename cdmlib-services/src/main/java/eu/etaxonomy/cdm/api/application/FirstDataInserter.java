@@ -33,12 +33,12 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.NullProgressMonitor;
 import eu.etaxonomy.cdm.config.Configuration;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
+import eu.etaxonomy.cdm.model.rights.CdmPermissionClass;
 import eu.etaxonomy.cdm.model.rights.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.model.rights.Group;
 import eu.etaxonomy.cdm.model.rights.User;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionClass;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.Role;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
