@@ -21,6 +21,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -71,6 +72,8 @@ public class User extends CdmBase implements UserDetails {
     private static final long serialVersionUID = 6582191171369439163L;
     private static final Logger logger = Logger.getLogger(User.class);
 
+    protected static final String USERNAME_REGEX = "[A-Za-z_\\.\\-]+";
+
  // **************************** FACTORY *****************************************/
 
     public static User NewInstance(String username, String pwd){
@@ -107,6 +110,7 @@ public class User extends CdmBase implements UserDetails {
     @Column(unique = true)
     @Field(analyze = Analyze.NO)
     @NotNull
+    @Pattern(regexp=USERNAME_REGEX)
     protected String username;
 
     /**
