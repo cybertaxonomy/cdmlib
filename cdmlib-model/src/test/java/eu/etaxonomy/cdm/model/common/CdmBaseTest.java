@@ -32,7 +32,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.model.rights.User;
+import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 

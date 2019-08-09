@@ -16,8 +16,8 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.rights.User;
 
 /**
  * @author a.mueller

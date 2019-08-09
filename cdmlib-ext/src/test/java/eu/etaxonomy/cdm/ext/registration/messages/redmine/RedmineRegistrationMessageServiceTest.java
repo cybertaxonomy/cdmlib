@@ -47,9 +47,9 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
-import eu.etaxonomy.cdm.model.rights.User;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**

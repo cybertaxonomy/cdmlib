@@ -14,7 +14,7 @@ import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.rights.CRUD;
+import eu.etaxonomy.cdm.model.permission.CRUD;
 
 /**
  * @author a.kohlbecker

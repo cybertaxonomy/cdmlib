@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.rights.User;
+import eu.etaxonomy.cdm.model.permission.User;
 
 /**
  * @author a.mueller

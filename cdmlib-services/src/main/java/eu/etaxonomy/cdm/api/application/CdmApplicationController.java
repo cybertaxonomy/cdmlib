@@ -78,7 +78,7 @@ import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.rights.CRUD;
+import eu.etaxonomy.cdm.model.permission.CRUD;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.persistence.hibernate.HibernateConfiguration;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.ICdmPermissionEvaluator;

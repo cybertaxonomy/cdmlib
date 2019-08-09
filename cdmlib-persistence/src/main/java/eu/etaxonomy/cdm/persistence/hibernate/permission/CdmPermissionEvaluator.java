@@ -25,9 +25,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.rights.CRUD;
-import eu.etaxonomy.cdm.model.rights.CdmPermissionClass;
-import eu.etaxonomy.cdm.model.rights.Operation;
+import eu.etaxonomy.cdm.model.permission.CRUD;
+import eu.etaxonomy.cdm.model.permission.CdmPermissionClass;
+import eu.etaxonomy.cdm.model.permission.Operation;
 
 /**
  * @author k.luther

@@ -57,7 +57,7 @@ import org.springframework.util.ReflectionUtils;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IPublishable;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
-import eu.etaxonomy.cdm.model.rights.User;
+import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;

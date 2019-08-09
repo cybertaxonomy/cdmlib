@@ -28,9 +28,9 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.database.PermissionDeniedException;
-import eu.etaxonomy.cdm.model.rights.GrantedAuthorityImpl;
-import eu.etaxonomy.cdm.model.rights.Group;
-import eu.etaxonomy.cdm.model.rights.User;
+import eu.etaxonomy.cdm.model.permission.GrantedAuthorityImpl;
+import eu.etaxonomy.cdm.model.permission.Group;
+import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.Role;
 
 

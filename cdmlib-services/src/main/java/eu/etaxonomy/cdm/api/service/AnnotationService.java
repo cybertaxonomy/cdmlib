@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.rights.User;
+import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotationDaoImpl;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 

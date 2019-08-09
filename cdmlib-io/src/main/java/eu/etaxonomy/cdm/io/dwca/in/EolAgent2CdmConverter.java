@@ -27,8 +27,8 @@ import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.rights.User;
 
 /**
  * @author a.mueller

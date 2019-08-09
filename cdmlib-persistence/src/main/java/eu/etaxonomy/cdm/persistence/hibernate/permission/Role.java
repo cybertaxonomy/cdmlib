@@ -5,7 +5,7 @@ import java.util.UUID;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.util.Assert;
 
-import eu.etaxonomy.cdm.model.rights.GrantedAuthorityImpl;
+import eu.etaxonomy.cdm.model.permission.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.persistence.dao.common.IGrantedAuthorityDao;
 
 /**

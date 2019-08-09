@@ -12,7 +12,7 @@ import java.util.List;
 
 import eu.etaxonomy.cdm.ext.common.ExternalServiceException;
 import eu.etaxonomy.cdm.model.name.Registration;
-import eu.etaxonomy.cdm.model.rights.User;
+import eu.etaxonomy.cdm.model.permission.User;
 
 /**
  * @author a.kohlbecker

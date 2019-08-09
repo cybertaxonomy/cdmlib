@@ -18,8 +18,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.rights.CRUD;
-import eu.etaxonomy.cdm.model.rights.CdmPermissionClass;
+import eu.etaxonomy.cdm.model.permission.CRUD;
+import eu.etaxonomy.cdm.model.permission.CdmPermissionClass;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthorityParsingException;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.TargetEntityStates;

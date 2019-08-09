@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.hibernate.search.NomenclaturalSortOrderBrigde;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.rights.User;
+import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.persistence.dao.common.OperationNotSupportedInPriorViewException;
 
 public class OrderHint implements Serializable {

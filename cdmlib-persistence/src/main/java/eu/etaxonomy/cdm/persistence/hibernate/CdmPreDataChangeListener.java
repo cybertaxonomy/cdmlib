@@ -26,8 +26,8 @@ import eu.etaxonomy.cdm.model.molecular.Amplification;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.rights.User;
 
 /**
  * @author cmathew

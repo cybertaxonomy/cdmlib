@@ -8,8 +8,8 @@ import org.hibernate.HibernateException;
 import org.springframework.security.core.Authentication;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.rights.CRUD;
-import eu.etaxonomy.cdm.model.rights.Operation;
+import eu.etaxonomy.cdm.model.permission.CRUD;
+import eu.etaxonomy.cdm.model.permission.Operation;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.Role;
 
 /**

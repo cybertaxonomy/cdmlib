@@ -11,7 +11,7 @@ import java.util.List;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.rights.User;
+import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 

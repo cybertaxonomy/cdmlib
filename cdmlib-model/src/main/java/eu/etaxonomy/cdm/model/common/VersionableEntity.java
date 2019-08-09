@@ -34,7 +34,7 @@ import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.hibernate.search.DateTimeBridge;
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
-import eu.etaxonomy.cdm.model.rights.User;
+import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
 

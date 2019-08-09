@@ -20,7 +20,7 @@ import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.model.rights.User;
+import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.persistence.dao.common.IUserDao;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;

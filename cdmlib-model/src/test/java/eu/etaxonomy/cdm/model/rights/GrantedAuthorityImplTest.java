@@ -15,7 +15,7 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.model.rights.GrantedAuthorityImpl;
+import eu.etaxonomy.cdm.model.permission.GrantedAuthorityImpl;
 
 /**
  * @author n.hoffmann

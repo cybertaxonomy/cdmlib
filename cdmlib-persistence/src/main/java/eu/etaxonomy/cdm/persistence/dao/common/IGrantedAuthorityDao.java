@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.persistence.dao.common;
 
-import eu.etaxonomy.cdm.model.rights.GrantedAuthorityImpl;
+import eu.etaxonomy.cdm.model.permission.GrantedAuthorityImpl;
 
 public interface IGrantedAuthorityDao extends ICdmEntityDao<GrantedAuthorityImpl> {
 

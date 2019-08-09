@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.model.rights;
+package eu.etaxonomy.cdm.model.permission;
 
 import java.util.Collection;
 import java.util.HashSet;

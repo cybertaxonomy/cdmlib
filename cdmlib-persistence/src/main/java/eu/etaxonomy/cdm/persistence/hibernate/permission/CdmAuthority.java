@@ -22,10 +22,10 @@ import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.core.GrantedAuthority;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.rights.CRUD;
-import eu.etaxonomy.cdm.model.rights.CdmPermissionClass;
-import eu.etaxonomy.cdm.model.rights.GrantedAuthorityImpl;
-import eu.etaxonomy.cdm.model.rights.Operation;
+import eu.etaxonomy.cdm.model.permission.CRUD;
+import eu.etaxonomy.cdm.model.permission.CdmPermissionClass;
+import eu.etaxonomy.cdm.model.permission.GrantedAuthorityImpl;
+import eu.etaxonomy.cdm.model.permission.Operation;
 
 /**
  * A <code>CdmAuthority</code> consists basically of two parts which are separated

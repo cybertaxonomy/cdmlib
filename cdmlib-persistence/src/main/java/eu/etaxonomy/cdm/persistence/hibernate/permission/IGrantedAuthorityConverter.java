@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.persistence.hibernate.permission;
 
-import eu.etaxonomy.cdm.model.rights.GrantedAuthorityImpl;
+import eu.etaxonomy.cdm.model.permission.GrantedAuthorityImpl;
 
 /**
  * @author a.kohlbecker

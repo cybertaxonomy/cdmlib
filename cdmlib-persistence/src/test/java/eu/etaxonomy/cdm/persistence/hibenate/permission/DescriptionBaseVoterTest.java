@@ -15,8 +15,8 @@ import org.junit.Test;
 import org.springframework.security.access.AccessDecisionVoter;
 
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.rights.CRUD;
-import eu.etaxonomy.cdm.model.rights.CdmPermissionClass;
+import eu.etaxonomy.cdm.model.permission.CRUD;
+import eu.etaxonomy.cdm.model.permission.CdmPermissionClass;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.TargetEntityStates;
