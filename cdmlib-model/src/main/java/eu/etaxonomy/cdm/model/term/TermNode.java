@@ -45,6 +45,7 @@ import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.FeatureState;
 import eu.etaxonomy.cdm.model.description.State;
 
 /**
@@ -103,23 +104,39 @@ public class TermNode <T extends DefinedTermBase>
     //see https://dev.e-taxonomy.eu/trac/ticket/3722
     private Integer sortIndex;
 
-	@XmlElementWrapper(name = "OnlyApplicableIf")
+	@XmlElementWrapper(name = "OnlyApplicableIf_old")
 	@XmlElement(name = "OnlyApplicableIf")
 	@XmlIDREF
 	@XmlSchemaType(name="IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
 //	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})  remove cascade #5755
-	@JoinTable(name="TermNode_DefinedTermBase_OnlyApplicable")
-	private final Set<State> onlyApplicableIf = new HashSet<>();
+	@JoinTable(name="TermNode_DefinedTermBase_OnlyApplicable_old")
+	private final Set<State> onlyApplicableIf_old = new HashSet<>();
 
-	@XmlElementWrapper(name = "InapplicableIf")
+	@XmlElementWrapper(name = "InapplicableIf_old")
 	@XmlElement(name = "InapplicableIf")
 	@XmlIDREF
 	@XmlSchemaType(name="IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
 //	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})  remove cascade #5755
-	@JoinTable(name="TermNode_DefinedTermBase_InapplicableIf")
-	private final Set<State> inapplicableIf = new HashSet<>();
+	@JoinTable(name="TermNode_DefinedTermBase_InapplicableIf_old")
+	private final Set<State> inapplicableIf_old = new HashSet<>();
+
+    @XmlElementWrapper(name = "OnlyApplicableIf")
+    @XmlElement(name = "OnlyApplicableIf")
+    @XmlIDREF
+    @XmlSchemaType(name="IDREF")
+    @ManyToMany(fetch = FetchType.LAZY)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+    private final Set<FeatureState> onlyApplicableIf = new HashSet<>();
+
+    @XmlElementWrapper(name = "InapplicableIf")
+    @XmlElement(name = "InapplicableIf")
+    @XmlIDREF
+    @XmlSchemaType(name="IDREF")
+    @ManyToMany(fetch = FetchType.LAZY)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+    private final Set<FeatureState> inapplicableIf = new HashSet<>();
 
 // ***************************** FACTORY *********************************/
 
@@ -416,7 +433,7 @@ public class TermNode <T extends DefinedTermBase>
 	}
 
 	/**
-	 * Returns the set of {@link State states} implying rendering the
+	 * Returns the set of {@link FeatureState feature states} implying rendering the
 	 * concerned {@link Feature feature} applicable.
 	 * If at least one state is present in this set, in a given description
 	 * the {@link Feature feature} in <i>this</i> feature node is inapplicable
@@ -430,7 +447,7 @@ public class TermNode <T extends DefinedTermBase>
 	 * @see    #addApplicableState(State)
 	 * @see    #removeApplicableState(State)
 	 */
-	public Set<State> getOnlyApplicableIf() {
+	public Set<FeatureState> getOnlyApplicableIf() {
 		return onlyApplicableIf;
 	}
 
@@ -442,7 +459,7 @@ public class TermNode <T extends DefinedTermBase>
 	 * @param applicableState	the applicable state to be added to <i>this</i> feature node
 	 * @see    	   								#getApplicableState()
 	 */
-	public void addApplicableState(State applicableState) {
+	public void addApplicableState(FeatureState applicableState) {
 		this.onlyApplicableIf.add(applicableState);
 	}
 
@@ -473,7 +490,7 @@ public class TermNode <T extends DefinedTermBase>
 	 * @see    #addInapplicableState(State)
 	 * @see    #removeInapplicableState(State)
 	 */
-	public Set<State> getInapplicableIf() {
+	public Set<FeatureState> getInapplicableIf() {
 		return inapplicableIf;
 	}
 
@@ -485,7 +502,7 @@ public class TermNode <T extends DefinedTermBase>
 	 * @param inapplicableState	the inapplicable state to be added to <i>this</i> feature node
 	 * @see    	   								#getInapplicableState()
 	 */
-	public void addInapplicableState(State inapplicableState) {
+	public void addInapplicableState(FeatureState inapplicableState) {
 		this.inapplicableIf.add(inapplicableState);
 	}
 
