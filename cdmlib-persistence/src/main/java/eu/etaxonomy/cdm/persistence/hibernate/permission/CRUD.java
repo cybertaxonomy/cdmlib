@@ -8,6 +8,9 @@
 */
 package eu.etaxonomy.cdm.persistence.hibernate.permission;
 
+/**
+ * @author a.kohlbecker
+ */
 public enum CRUD {
     CREATE, READ, UPDATE, DELETE;
 }

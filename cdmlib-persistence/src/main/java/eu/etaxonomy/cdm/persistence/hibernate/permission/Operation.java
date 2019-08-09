@@ -62,7 +62,7 @@ public class Operation {
 
     public static boolean isOperation(Object o){
         try {
-        return o instanceof EnumSet<?> && ALL.containsAll((EnumSet<?>)o);
+            return o instanceof EnumSet<?> && ALL.containsAll((EnumSet<?>)o);
         } catch (Throwable e){
             return false;
         }
