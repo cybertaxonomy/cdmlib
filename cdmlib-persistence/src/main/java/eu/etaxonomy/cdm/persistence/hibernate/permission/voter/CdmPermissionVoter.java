@@ -19,7 +19,7 @@ import org.springframework.security.core.GrantedAuthority;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.permission.CRUD;
-import eu.etaxonomy.cdm.model.permission.CdmPermissionClass;
+import eu.etaxonomy.cdm.model.permission.PermissionClass;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthorityParsingException;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.TargetEntityStates;
@@ -63,7 +63,7 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter <TargetE
         return getResponsibilityClass().isAssignableFrom(securedObject.getClass());
     }
 
-    protected boolean isResponsibleFor(CdmPermissionClass permissionClass) {
+    protected boolean isResponsibleFor(PermissionClass permissionClass) {
         return getResponsibility().equals(permissionClass);
     }
 
@@ -71,8 +71,8 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter <TargetE
      * Get the according CdmPermissionClass matching {@link #getResponsibilityClass()} the cdm class this voter is responsible for.
      * @return
      */
-    protected CdmPermissionClass getResponsibility() {
-        return CdmPermissionClass.getValueOf(getResponsibilityClass());
+    protected PermissionClass getResponsibility() {
+        return PermissionClass.getValueOf(getResponsibilityClass());
     }
 
     @Override
@@ -116,7 +116,7 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter <TargetE
 
                 ValidationResult vr = new ValidationResult();
 
-                boolean isALL = auth.getPermissionClass().equals(CdmPermissionClass.ALL);
+                boolean isALL = auth.getPermissionClass().equals(PermissionClass.ALL);
 
                 vr.isClassMatch = isALL || auth.getPermissionClass().equals(evalPermission.getPermissionClass());
                 vr.isPermissionMatch = auth.getOperation().containsAll(evalPermission.getOperation());

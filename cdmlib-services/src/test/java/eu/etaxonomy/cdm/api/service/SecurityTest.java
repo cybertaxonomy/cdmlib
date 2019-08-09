@@ -49,7 +49,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.permission.CRUD;
-import eu.etaxonomy.cdm.model.permission.CdmPermissionClass;
+import eu.etaxonomy.cdm.model.permission.PermissionClass;
 import eu.etaxonomy.cdm.model.permission.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.model.permission.Operation;
 import eu.etaxonomy.cdm.model.permission.User;
@@ -375,7 +375,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         User taxonEditor = userService.load(TAXON_EDITOR_UUID);
         Set<GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();
         grantedAuthorities.addAll(taxonEditor.getGrantedAuthorities());
-        GrantedAuthorityImpl referenceUpdate_ga = new CdmAuthority(CdmPermissionClass.REFERENCE, null, EnumSet.of(CRUD.UPDATE), null).asNewGrantedAuthority();
+        GrantedAuthorityImpl referenceUpdate_ga = new CdmAuthority(PermissionClass.REFERENCE, null, EnumSet.of(CRUD.UPDATE), null).asNewGrantedAuthority();
         grantedAuthorities.add(referenceUpdate_ga);
         taxonEditor.setGrantedAuthorities(grantedAuthorities);
         userService.saveOrUpdate(taxonEditor);

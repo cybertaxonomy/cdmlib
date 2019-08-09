@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.database.PermissionDeniedException;
 import eu.etaxonomy.cdm.model.ICdmEntityUuidCacher;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.permission.CRUD;
-import eu.etaxonomy.cdm.model.permission.CdmPermissionClass;
+import eu.etaxonomy.cdm.model.permission.PermissionClass;
 import eu.etaxonomy.cdm.model.permission.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
@@ -400,7 +400,7 @@ public class CdmUserHelper implements UserHelper, Serializable {
     @Override
     public Collection<CdmAuthority> findUserPermissions(CdmBase cdmEntity, EnumSet<CRUD> crud) {
         Set<CdmAuthority> matches = new HashSet<>();
-        CdmPermissionClass permissionClass = CdmPermissionClass.getValueOf(cdmEntity);
+        PermissionClass permissionClass = PermissionClass.getValueOf(cdmEntity);
         Collection<? extends GrantedAuthority> authorities = getAuthentication().getAuthorities();
         for(GrantedAuthority ga : authorities){
             try {
@@ -425,7 +425,7 @@ public class CdmUserHelper implements UserHelper, Serializable {
     @Override
     public <T extends CdmBase> Collection<CdmAuthority> findUserPermissions(Class<T> cdmType, EnumSet<CRUD> crud) {
         Set<CdmAuthority> matches = new HashSet<>();
-        CdmPermissionClass permissionClass = CdmPermissionClass.getValueOf(cdmType);
+        PermissionClass permissionClass = PermissionClass.getValueOf(cdmType);
         Collection<? extends GrantedAuthority> authorities = getAuthentication().getAuthorities();
         for(GrantedAuthority ga : authorities){
             try {

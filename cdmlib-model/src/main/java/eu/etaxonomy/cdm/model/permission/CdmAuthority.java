@@ -38,7 +38,7 @@ public class CdmAuthority extends AuthorityBase {
 
     private static final long serialVersionUID = 3777547489226033333L;
 
-    private CdmPermissionClass permissionClass;
+    private PermissionClass permissionClass;
 
     @Column(unique = true)
     @NotNull
@@ -50,7 +50,7 @@ public class CdmAuthority extends AuthorityBase {
 
 // *************************** Factory Methods ********************************/
 
-    public static CdmAuthority NewInstance(CdmPermissionClass permissionClass, String property, EnumSet<CRUD> operations,
+    public static CdmAuthority NewInstance(PermissionClass permissionClass, String property, EnumSet<CRUD> operations,
             UUID targetUuid){
         return new CdmAuthority(permissionClass, property, operations, targetUuid);
     }
@@ -60,7 +60,7 @@ public class CdmAuthority extends AuthorityBase {
     //for hibernate use only
     private CdmAuthority(){}
 
-    private CdmAuthority(CdmPermissionClass permissionClass, String property, EnumSet<CRUD> operations,
+    private CdmAuthority(PermissionClass permissionClass, String property, EnumSet<CRUD> operations,
             UUID targetUuid) {
         super();
         this.permissionClass = permissionClass;
@@ -72,10 +72,10 @@ public class CdmAuthority extends AuthorityBase {
 
     // ********************** GETTER / SETTER **************************/
 
-    public CdmPermissionClass getPermissionClass() {
+    public PermissionClass getPermissionClass() {
         return permissionClass;
     }
-    public void setPermissionClass(CdmPermissionClass permissionClass) {
+    public void setPermissionClass(PermissionClass permissionClass) {
         this.permissionClass = permissionClass;
     }
 

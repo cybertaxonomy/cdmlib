@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @author a.kohlbecker
  * @since 06.07.2011
  */
-public enum CdmPermissionClass {
+public enum PermissionClass {
     ALL,
     AGENTBASE,
     ANNOTATION,
@@ -74,7 +74,7 @@ public enum CdmPermissionClass {
     USER,
     ;
 
-    public static final Logger logger = Logger.getLogger(CdmPermissionClass.class);
+    public static final Logger logger = Logger.getLogger(PermissionClass.class);
 
     /**
      * return the appropriate CdmPermissionClass for the given Object
@@ -82,8 +82,8 @@ public enum CdmPermissionClass {
      * @param cdmBase
      * @return the CdmPermissionClass or null
      */
-    public static CdmPermissionClass getValueOf(CdmBase cdmBase){
-        return CdmPermissionClass.getValueOf(cdmBase.getClass());
+    public static PermissionClass getValueOf(CdmBase cdmBase){
+        return PermissionClass.getValueOf(cdmBase.getClass());
     }
 
     /**
@@ -92,9 +92,9 @@ public enum CdmPermissionClass {
      * @param clazz
      * @return the CdmPermissionClass or null
      */
-    public static CdmPermissionClass getValueOf(Class clazz){
+    public static PermissionClass getValueOf(Class clazz){
 
-        CdmPermissionClass permissionClass = doValueOf(clazz);
+        PermissionClass permissionClass = doValueOf(clazz);
         if(permissionClass == null) {
             logger.error("Permission class support for " + clazz + " not implemented");
         }
@@ -108,10 +108,10 @@ public enum CdmPermissionClass {
      * @param o
      * @return
      */
-    private static CdmPermissionClass doValueOf(Class<?> clazz) {
+    private static PermissionClass doValueOf(Class<?> clazz) {
         try{
             String normalizedName = clazz.getSimpleName().toUpperCase();
-            return CdmPermissionClass.valueOf(normalizedName);
+            return PermissionClass.valueOf(normalizedName);
         } catch(IllegalArgumentException e){
             if (CdmBase.class.isAssignableFrom(clazz)){
                 return doValueOf(clazz.getSuperclass());

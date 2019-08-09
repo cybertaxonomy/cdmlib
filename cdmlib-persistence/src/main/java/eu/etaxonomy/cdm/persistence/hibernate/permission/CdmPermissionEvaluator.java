@@ -26,7 +26,7 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.permission.CRUD;
-import eu.etaxonomy.cdm.model.permission.CdmPermissionClass;
+import eu.etaxonomy.cdm.model.permission.PermissionClass;
 import eu.etaxonomy.cdm.model.permission.Operation;
 
 /**
@@ -139,7 +139,7 @@ public class CdmPermissionEvaluator implements ICdmPermissionEvaluator {
             logUserAndRequirement(authentication, requiredOperations.toString(), targteDomainObjClassText);
         }
 
-        CdmAuthority evalPermission = new CdmAuthority(CdmPermissionClass.getValueOf(targetDomainObjectClass), null, requiredOperations, null);
+        CdmAuthority evalPermission = new CdmAuthority(PermissionClass.getValueOf(targetDomainObjectClass), null, requiredOperations, null);
 
         T instance;
         try {

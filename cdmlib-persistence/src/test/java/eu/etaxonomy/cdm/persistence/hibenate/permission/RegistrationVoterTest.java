@@ -19,7 +19,7 @@ import org.springframework.security.core.Authentication;
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import eu.etaxonomy.cdm.model.permission.CRUD;
-import eu.etaxonomy.cdm.model.permission.CdmPermissionClass;
+import eu.etaxonomy.cdm.model.permission.PermissionClass;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.TargetEntityStates;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.voter.RegistrationVoter;
@@ -70,7 +70,7 @@ public class RegistrationVoterTest extends AbstractCdmPermissionVoterTest {
     public void test1() {
         int vote = voter.vote(auth,
                 new TargetEntityStates(regPREPARATION),
-                Arrays.asList(new CdmAuthority(CdmPermissionClass.REGISTRATION, null, EnumSet.of(CRUD.UPDATE), null)));
+                Arrays.asList(new CdmAuthority(PermissionClass.REGISTRATION, null, EnumSet.of(CRUD.UPDATE), null)));
         assertEquals(AccessDecisionVoter.ACCESS_GRANTED, vote);
     }
 
@@ -79,7 +79,7 @@ public class RegistrationVoterTest extends AbstractCdmPermissionVoterTest {
     public void test2() {
         int vote = voter.vote(auth,
                 new TargetEntityStates(regREADY),
-                Arrays.asList(new CdmAuthority(CdmPermissionClass.REGISTRATION, null, EnumSet.of(CRUD.UPDATE), null)));
+                Arrays.asList(new CdmAuthority(PermissionClass.REGISTRATION, null, EnumSet.of(CRUD.UPDATE), null)));
         assertEquals(AccessDecisionVoter.ACCESS_GRANTED, vote);
     }
 
@@ -88,7 +88,7 @@ public class RegistrationVoterTest extends AbstractCdmPermissionVoterTest {
     public void test3() {
         int vote = voter.vote(auth,
                 new TargetEntityStates(regREJECTED),
-                Arrays.asList(new CdmAuthority(CdmPermissionClass.REGISTRATION, null, EnumSet.of(CRUD.UPDATE), null)));
+                Arrays.asList(new CdmAuthority(PermissionClass.REGISTRATION, null, EnumSet.of(CRUD.UPDATE), null)));
         assertEquals(AccessDecisionVoter.ACCESS_DENIED, vote);
     }
 
@@ -111,13 +111,13 @@ public class RegistrationVoterTest extends AbstractCdmPermissionVoterTest {
         int vote = voter.vote(auth,
                 new TargetEntityStates(regRequired),
                 // the attributes to test for
-                Arrays.asList(new CdmAuthority(CdmPermissionClass.REGISTRATION, null, EnumSet.of(CRUD.UPDATE), regRequired.getUuid())));
+                Arrays.asList(new CdmAuthority(PermissionClass.REGISTRATION, null, EnumSet.of(CRUD.UPDATE), regRequired.getUuid())));
         assertEquals(AccessDecisionVoter.ACCESS_DENIED, vote);
 
         vote = voter.vote(auth,
                 new TargetEntityStates(regGranted),
                 // the attributes to test for
-                Arrays.asList(new CdmAuthority(CdmPermissionClass.REGISTRATION, null, EnumSet.of(CRUD.UPDATE), regGranted.getUuid())));
+                Arrays.asList(new CdmAuthority(PermissionClass.REGISTRATION, null, EnumSet.of(CRUD.UPDATE), regGranted.getUuid())));
         assertEquals(AccessDecisionVoter.ACCESS_GRANTED, vote);
     }
 
