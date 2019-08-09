@@ -17,12 +17,12 @@ import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.model.rights.CRUD;
 import eu.etaxonomy.cdm.model.rights.CdmPermissionClass;
 import eu.etaxonomy.cdm.model.rights.GrantedAuthorityImpl;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
+import eu.etaxonomy.cdm.model.rights.Operation;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthorityParsingException;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.Operation;
 
 /**
  * @author c.mathew

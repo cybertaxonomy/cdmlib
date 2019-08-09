@@ -11,12 +11,13 @@ package eu.etaxonomy.cdm.persistence.hibernate.permission;
 import java.util.EnumSet;
 import java.util.StringTokenizer;
 
+import eu.etaxonomy.cdm.model.rights.CRUD;
+
 
 /**
  *
  * @author k.luther
  * @author a.kohlbecker
- *
  */
 public class Operation {
 
