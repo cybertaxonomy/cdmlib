@@ -59,6 +59,7 @@ import eu.etaxonomy.cdm.hibernate.search.UuidBridge;
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
 import eu.etaxonomy.cdm.model.NewEntityListener;
+import eu.etaxonomy.cdm.model.rights.User;
 import eu.etaxonomy.cdm.strategy.match.IMatchStrategyEqual;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.match.Match;

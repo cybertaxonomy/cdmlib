@@ -25,9 +25,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
-import eu.etaxonomy.cdm.model.common.Group;
-import eu.etaxonomy.cdm.model.common.User;
+import eu.etaxonomy.cdm.model.rights.GrantedAuthorityImpl;
+import eu.etaxonomy.cdm.model.rights.Group;
+import eu.etaxonomy.cdm.model.rights.User;
 import eu.etaxonomy.cdm.persistence.dao.common.IGrantedAuthorityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IUserDao;

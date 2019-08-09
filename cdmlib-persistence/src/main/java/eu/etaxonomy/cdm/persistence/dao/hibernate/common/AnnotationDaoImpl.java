@@ -19,7 +19,7 @@ import org.springframework.stereotype.Repository;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.common.User;
+import eu.etaxonomy.cdm.model.rights.User;
 import eu.etaxonomy.cdm.persistence.dao.common.IAnnotationDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 

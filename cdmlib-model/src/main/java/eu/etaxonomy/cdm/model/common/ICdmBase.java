@@ -17,6 +17,7 @@ import javax.validation.groups.Default;
 
 import org.joda.time.DateTime;
 
+import eu.etaxonomy.cdm.model.rights.User;
 import eu.etaxonomy.cdm.validation.Level2;
 import eu.etaxonomy.cdm.validation.Level3;
 

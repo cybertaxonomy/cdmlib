@@ -16,7 +16,7 @@ import org.hibernate.Query;
 import org.hibernate.criterion.Criterion;
 import org.springframework.stereotype.Repository;
 
-import eu.etaxonomy.cdm.model.common.Group;
+import eu.etaxonomy.cdm.model.rights.Group;
 import eu.etaxonomy.cdm.persistence.dao.common.IGroupDao;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;

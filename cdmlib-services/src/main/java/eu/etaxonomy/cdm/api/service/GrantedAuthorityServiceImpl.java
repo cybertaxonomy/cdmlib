@@ -13,7 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
+import eu.etaxonomy.cdm.model.rights.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.persistence.dao.common.IGrantedAuthorityDao;
 
 /**

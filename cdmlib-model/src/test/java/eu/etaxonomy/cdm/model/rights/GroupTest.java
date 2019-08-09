@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.model.common;
+package eu.etaxonomy.cdm.model.rights;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -15,6 +15,10 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.security.core.GrantedAuthority;
+
+import eu.etaxonomy.cdm.model.rights.GrantedAuthorityImpl;
+import eu.etaxonomy.cdm.model.rights.Group;
+import eu.etaxonomy.cdm.model.rights.User;
 
 /**
  * @author n.hoffmann
@@ -39,7 +43,7 @@ public class GroupTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.Group#NewInstance(java.lang.String)}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.rights.Group#NewInstance(java.lang.String)}.
 	 */
 	@Test
 	public final void testNewInstanceString() {
@@ -49,7 +53,7 @@ public class GroupTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.Group#getGrantedAuthorities()}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.rights.Group#getGrantedAuthorities()}.
 	 */
 	@Test
 	public final void testGetGrantedAuthorities() {
@@ -57,7 +61,7 @@ public class GroupTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.Group#addGrantedAuthority(org.springframework.security.core.GrantedAuthority)}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.rights.Group#addGrantedAuthority(org.springframework.security.core.GrantedAuthority)}.
 	 */
 	@Test
 	public final void testAddGrantedAuthority() {
@@ -68,7 +72,7 @@ public class GroupTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.Group#removeGrantedAuthority(org.springframework.security.core.GrantedAuthority)}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.rights.Group#removeGrantedAuthority(org.springframework.security.core.GrantedAuthority)}.
 	 */
 	@Test
 	public final void testRemoveGrantedAuthority() {
@@ -83,7 +87,7 @@ public class GroupTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.Group#setName(java.lang.String)}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.rights.Group#setName(java.lang.String)}.
 	 */
 	@Test
 	public final void testSetName() {
@@ -93,7 +97,7 @@ public class GroupTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.Group#getName()}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.rights.Group#getName()}.
 	 */
 	@Test
 	public final void testGetName() {
@@ -101,7 +105,7 @@ public class GroupTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.Group#getMembers()}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.rights.Group#getMembers()}.
 	 */
 	@Test
 	public final void testGetMembers() {
@@ -109,7 +113,7 @@ public class GroupTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.Group#addMember(eu.etaxonomy.cdm.model.common.User)}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.rights.Group#addMember(eu.etaxonomy.cdm.model.rights.User)}.
 	 */
 	@Test
 	public final void testAddMember() {
@@ -122,7 +126,7 @@ public class GroupTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.Group#removeMember(eu.etaxonomy.cdm.model.common.User)}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.rights.Group#removeMember(eu.etaxonomy.cdm.model.rights.User)}.
 	 */
 	@Test
 	public final void testRemoveMember() {

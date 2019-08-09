@@ -13,9 +13,9 @@ import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
-import eu.etaxonomy.cdm.model.common.Group;
-import eu.etaxonomy.cdm.model.common.User;
+import eu.etaxonomy.cdm.model.rights.GrantedAuthorityImpl;
+import eu.etaxonomy.cdm.model.rights.Group;
+import eu.etaxonomy.cdm.model.rights.User;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 public class GroupServiceImplTest extends CdmTransactionalIntegrationTest {

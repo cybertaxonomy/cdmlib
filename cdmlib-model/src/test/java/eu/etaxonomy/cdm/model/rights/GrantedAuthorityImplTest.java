@@ -7,13 +7,15 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.model.common;
+package eu.etaxonomy.cdm.model.rights;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import eu.etaxonomy.cdm.model.rights.GrantedAuthorityImpl;
 
 /**
  * @author n.hoffmann
