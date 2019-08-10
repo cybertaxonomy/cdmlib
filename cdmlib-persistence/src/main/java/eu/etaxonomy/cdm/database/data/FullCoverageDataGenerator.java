@@ -120,6 +120,7 @@ import eu.etaxonomy.cdm.model.permission.CdmAuthority;
 import eu.etaxonomy.cdm.model.permission.Group;
 import eu.etaxonomy.cdm.model.permission.Operation;
 import eu.etaxonomy.cdm.model.permission.PermissionClass;
+import eu.etaxonomy.cdm.model.permission.Role;
 import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -228,7 +229,8 @@ public class FullCoverageDataGenerator {
 		CdmAuthority authority = CdmAuthority.NewInstance(PermissionClass.TAXONNAME,
 		        "a property", Operation.CREATE, UUID.fromString("f1653cb8-5956-429e-852a-4a3b57893f49"));
 		group.addAuthority(authority);
-		user.addAuthority(authority);
+		Role role = Role.NewInstance("my role");
+		user.addAuthority(role);
 
 		cdmBases.add(user);
 		cdmBases.add(group);

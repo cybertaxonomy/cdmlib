@@ -57,7 +57,7 @@ public class CdmAuthority extends AuthorityBase {
     @Column(name="permissionClass")
     @NotNull
     @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-        parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.permission.CRUD")}
+        parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.permission.PermissionClass")}
     )
     private PermissionClass permissionClass;
 
@@ -68,7 +68,7 @@ public class CdmAuthority extends AuthorityBase {
     @XmlAttribute(name ="Operations")
     @NotNull
     @Type(type = "eu.etaxonomy.cdm.hibernate.EnumSetUserType",
-        parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.permission.PermissionClass")}
+        parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.permission.CRUD")}
     )
     private EnumSet<CRUD> operations = EnumSet.noneOf(CRUD.class);
 

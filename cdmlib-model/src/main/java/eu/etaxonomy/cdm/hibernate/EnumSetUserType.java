@@ -89,7 +89,11 @@ public class EnumSetUserType<E extends Enum<E>>
 			String[] splits = val.split(SEP);
 			for (String split:splits){
 			    if (StringUtils.isNotEmpty(split)) {
-                    result.add((E)EnumUserType.getTerm(clazz, split));
+			        E term = (E)EnumUserType.getTerm(clazz, split);
+			        if (term == null){
+			            throw new IllegalArgumentException(split + " is not a valid key value for enumeration " + clazz.getCanonicalName());
+			        }
+                    result.add(term);
                 }
 			}
 			EnumSet<E> enumSet = EnumSet.copyOf(result);
