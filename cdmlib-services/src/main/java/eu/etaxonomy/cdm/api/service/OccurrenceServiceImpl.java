@@ -111,6 +111,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.persistence.dao.initializer.AbstractBeanInitializer;
+import eu.etaxonomy.cdm.persistence.dao.initializer.AdvancedBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
@@ -323,18 +324,19 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     @Override
-    public DerivedUnitFacade getDerivedUnitFacade(DerivedUnit derivedUnit, List<String> propertyPaths) throws DerivedUnitFacadeNotSupportedException {
+    public DerivedUnitFacade getDerivedUnitFacade(DerivedUnit derivedUnit, List<String> derivedUnitFacadeInitStrategy) throws DerivedUnitFacadeNotSupportedException {
         derivedUnit = (DerivedUnit) dao.load(derivedUnit.getUuid(), null);
         DerivedUnitFacadeConfigurator config = DerivedUnitFacadeConfigurator.NewInstance();
         config.setThrowExceptionForNonSpecimenPreservationMethodRequest(false);
         DerivedUnitFacade derivedUnitFacade = DerivedUnitFacade.NewInstance(derivedUnit, config);
-        beanInitializer.initialize(derivedUnitFacade, propertyPaths);
+        Logger.getLogger(AdvancedBeanInitializer.class).setLevel(org.apache.log4j.Level.TRACE);
+        beanInitializer.initialize(derivedUnitFacade, derivedUnitFacadeInitStrategy);
         return derivedUnitFacade;
     }
 
     @Override
     public List<DerivedUnitFacade> listDerivedUnitFacades(
-            DescriptionBase description, List<String> propertyPaths) {
+            DescriptionBase description, List<String> derivedUnitFacadeInitStrategy) {
 
         List<DerivedUnitFacade> derivedUnitFacadeList = new ArrayList<>();
         IndividualsAssociation tempIndividualsAssociation;
@@ -354,7 +356,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             }
         }
 
-        beanInitializer.initializeAll(derivedUnitFacadeList, propertyPaths);
+        beanInitializer.initializeAll(derivedUnitFacadeList, derivedUnitFacadeInitStrategy);
 
         return derivedUnitFacadeList;
     }

@@ -52,13 +52,14 @@ public class DerivedUnitFacadeController extends AbstractController<SpecimenOrOb
 
     private IOccurrenceService service;
 
-    private final List<String> ocurrenceInitSrategy = Arrays.asList(new String []{
+    private final List<String> derivedUnitFacadeInitStrategy = Arrays.asList(new String []{
             "$",
-            "titleCache"
+            "titleCache",
+            "collection"
     });
 
     public DerivedUnitFacadeController(){
-        setInitializationStrategy(ocurrenceInitSrategy);
+        setInitializationStrategy(derivedUnitFacadeInitStrategy);
     }
 
     @Override
@@ -194,12 +195,12 @@ public class DerivedUnitFacadeController extends AbstractController<SpecimenOrOb
      * @param occurrenceUuid
      * @param response
      * @param extendedInitStrategy
-     * @return the requesed <code>DerivedUnitFacade</code> instance or <code>null</code>
+     * @return the requested <code>DerivedUnitFacade</code> instance or <code>null</code>
      * @throws IOException
      */
     private DerivedUnitFacade newFacadeFrom(UUID occurrenceUuid, HttpServletResponse response, List<String> extendedInitStrategy)
     throws IOException {
-        List<String> initStrategy = new ArrayList<String>(initializationStrategy);
+        List<String> initStrategy = new ArrayList<String>(getInitializationStrategy());
         if(extendedInitStrategy != null && extendedInitStrategy.size() > 0){
             initStrategy.addAll(extendedInitStrategy);
         }
