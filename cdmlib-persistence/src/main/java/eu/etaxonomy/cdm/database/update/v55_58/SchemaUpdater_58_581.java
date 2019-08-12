@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.database.update.ColumnNameChanger;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
+import eu.etaxonomy.cdm.database.update.TableCreator;
 
 /**
  * @author a.mueller
@@ -63,7 +64,34 @@ public class SchemaUpdater_58_581 extends SchemaUpdaterBase {
 		ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName,
 		        oldColumnName, newColumnName, INCLUDE_AUDIT);
 
-		return stepList;
+		//7099 Make CdmAuthority a persistable class - create 'Authority' table
+		stepName = "Create Authority table ";
+        tableName = "Authority";
+        String[] columnNames = new String[]{"DTYPE", "operations", "permissionClass",
+                "property", "targetUuid", "role"};
+        String[] columnTypes = new String[]{"string_255","string_255","string_255","string_255",
+                "string_36","string_255"};
+        String[] referencedTables = new String[]{null, null, null, null, null, null};
+        TableCreator.NewNonVersionableInstance(stepList, stepName, tableName,
+                columnNames, columnTypes, referencedTables);
+
+        //7099 Make CdmAuthority a persistable class - create PermissionGroup_Authority table
+        stepName = "Create PermissionGroup_Authority table ";
+        tableName = "PermissionGroup_Authority";
+        columnNames = new String[]{"Group_id", "authorities_id"};
+        columnTypes = new String[]{"int","int"};
+        referencedTables = new String[]{"PermissionGroup", "Authority"};
+        TableCreator.NewNonVersionableInstance(stepList, stepName, tableName,
+                columnNames, columnTypes, referencedTables);
+
+        //7099 Make CdmAuthority a persistable class - create UserAccount_Authority table
+        stepName = "Create UserAccount_Authority table ";
+        tableName = "UserAccount_Authority";
+        columnNames = new String[]{"User_id", "authorities_id"};
+        columnTypes = new String[]{"int","int"};
+        referencedTables = new String[]{"UserAccount", "Authority"};
+        TableCreator.NewNonVersionableInstance(stepList, stepName, tableName,
+                columnNames, columnTypes, referencedTables);
 
     }
 
