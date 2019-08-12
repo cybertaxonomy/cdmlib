@@ -71,33 +71,33 @@ public abstract class ForSubtreeConfiguratorBase<T extends ForSubtreeConfigurato
     public boolean isIncludeSynonyms() {
         return includeSynonyms;
     }
-    public T setIncludeSynonyms(boolean includeSynonyms) {
+    public void setIncludeSynonyms(boolean includeSynonyms) {
         this.includeSynonyms = includeSynonyms;
-        return (T)this;
+
     }
 
     public boolean isIncludeAcceptedTaxa() {
         return includeAcceptedTaxa;
     }
-    public T setIncludeAcceptedTaxa(boolean includeAcceptedTaxa) {
+    public void setIncludeAcceptedTaxa(boolean includeAcceptedTaxa) {
         this.includeAcceptedTaxa = includeAcceptedTaxa;
-        return (T)this;
+
     }
 
     public boolean isIncludeSharedTaxa() {
         return includeSharedTaxa;
     }
-    public T setIncludeSharedTaxa(boolean includeSharedTaxa) {
+    public void setIncludeSharedTaxa(boolean includeSharedTaxa) {
         this.includeSharedTaxa = includeSharedTaxa;
-        return (T)this;
+
     }
 
     public IProgressMonitor getMonitor() {
         return monitor;
     }
-    public T setMonitor(IProgressMonitor monitor) {
+    public void setMonitor(IProgressMonitor monitor) {
         this.monitor = monitor;
-        return (T)this;
+
     }
 
 

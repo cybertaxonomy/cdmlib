@@ -884,16 +884,17 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         assertStartingStateForSetPublish();
 
         boolean publish = false;
+
         PublishForSubtreeConfigurator config = PublishForSubtreeConfigurator.NewInstance(
-                subTreeUuid,  publish, null)
-                .setIncludeAcceptedTaxa(true)
-                .setIncludeSynonyms(true)
-                .setIncludeSharedTaxa(true)
-                ;
+                subTreeUuid,  publish, null);
+        config.setIncludeAcceptedTaxa(true);
+        config.setIncludeSynonyms(true);
+        config.setIncludeSharedTaxa(true);
         config.setIncludeHybrids(false);
         taxonNodeService.setPublishForSubtree(config);
 
         commitAndStartNewTransaction();
+
         Assert.assertEquals(publish, taxonService.find(1).isPublish());
         Assert.assertEquals("Taxon2 is not in subtree", true, taxonService.find(2).isPublish());
         Assert.assertEquals("Synonym3 not yet updated because it is hybrid", true, taxonService.find(3).isPublish());
@@ -920,13 +921,14 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         assertStartingStateForSetPublish();
 
         boolean publish = false;
-        PublishForSubtreeConfigurator config = PublishForSubtreeConfigurator.NewInstance(subTreeUuid,  publish, null)
-          .setIncludeAcceptedTaxa(true)
-          .setIncludeSynonyms(false)
-          .setIncludeMisapplications(false)
-          .setIncludeProParteSynonyms(false)
-          .setIncludeSharedTaxa(true);
+        PublishForSubtreeConfigurator config = PublishForSubtreeConfigurator.NewInstance(subTreeUuid,  publish, null);
+        config.setIncludeAcceptedTaxa(true);
+        config.setIncludeSynonyms(false);
+        config.setIncludeMisapplications(false);
+        config.setIncludeProParteSynonyms(false);
+        config.setIncludeSharedTaxa(true);
         taxonNodeService.setPublishForSubtree(config);
+
 
         commitAndStartNewTransaction();
         Assert.assertEquals(publish, taxonService.find(1).isPublish());
@@ -943,7 +945,8 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         Assert.assertEquals("Misapplied should be updated now", publish, taxonService.find(6).isPublish());
         Assert.assertEquals("Pro parte synonym should not yet be updated", true, taxonService.find(7).isPublish());
 
-        config.setIncludeProParteSynonyms(true).setIncludeHybrids(false);
+        config.setIncludeProParteSynonyms(true);
+        config.setIncludeHybrids(false);
         taxonNodeService.setPublishForSubtree(config);
         commitAndStartNewTransaction();
         Assert.assertEquals("Pro parte synonym should not yet be updated because it is a hybrid", true, taxonService.find(7).isPublish());
@@ -964,18 +967,21 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         assertStartingStateForSetPublish();
 
         boolean publish = false;
+
         PublishForSubtreeConfigurator config = PublishForSubtreeConfigurator.NewInstance(
-                subTreeUuid, publish, null)
-                .setIncludeAcceptedTaxa(false)
-                .setIncludeSynonyms(true)
-                .setIncludeSharedTaxa(true)  //should have no effect
-                .setIncludeMisapplications(false)
-                .setIncludeProParteSynonyms(false);
+                subTreeUuid, publish, null);
+        config.setIncludeAcceptedTaxa(false);
+        config.setIncludeSynonyms(true);
+        config.setIncludeSharedTaxa(true);  //should have no effect
+        config.setIncludeMisapplications(false);
+        config.setIncludeProParteSynonyms(false);
         taxonNodeService.setPublishForSubtree(config);
+
 
         commitAndStartNewTransaction(new String[]{});
         Assert.assertEquals(true, taxonService.find(1).isPublish());
         Assert.assertEquals(true, taxonService.find(2).isPublish());
+        //Synonym should be false
         Assert.assertEquals(publish, taxonService.find(3).isPublish());
         Assert.assertEquals(true, taxonService.find(4).isPublish());
         Assert.assertEquals(true, taxonService.find(5).isPublish());
@@ -1018,10 +1024,10 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
         boolean publish = false;
         PublishForSubtreeConfigurator config = PublishForSubtreeConfigurator.NewInstance(
-                subTreeUuid, publish, null)
-                .setIncludeAcceptedTaxa(true)
-                .setIncludeSynonyms(true)
-                .setIncludeSharedTaxa(false);
+                subTreeUuid, publish, null);
+        config.setIncludeAcceptedTaxa(true);
+        config.setIncludeSynonyms(true);
+        config.setIncludeSharedTaxa(false);
         taxonNodeService.setPublishForSubtree(config);
 
         commitAndStartNewTransaction();

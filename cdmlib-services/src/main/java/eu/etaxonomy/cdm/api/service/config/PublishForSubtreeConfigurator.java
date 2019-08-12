@@ -76,9 +76,9 @@ public class PublishForSubtreeConfigurator
         return publish;
     }
 
-    public PublishForSubtreeConfigurator setPublish(boolean publish) {
+    public void setPublish(boolean publish) {
         this.publish = publish;
-        return this;
+
     }
 
     public Set<TaxonRelationshipType> getIncludedRelationTypes() {
@@ -92,26 +92,26 @@ public class PublishForSubtreeConfigurator
     public boolean isIncludeMisapplications() {
         return includeMisapplications;
     }
-    public PublishForSubtreeConfigurator setIncludeMisapplications(boolean includeMisapplications) {
+    public void setIncludeMisapplications(boolean includeMisapplications) {
         this.includeMisapplications = includeMisapplications;
-        return this;
+
     }
 
     public boolean isIncludeProParteSynonyms() {
         return includeProParteSynonyms;
     }
-    public PublishForSubtreeConfigurator setIncludeProParteSynonyms(boolean includeProParteSynonyms) {
+    public void setIncludeProParteSynonyms(boolean includeProParteSynonyms) {
         this.includeProParteSynonyms = includeProParteSynonyms;
-        return this;
+
     }
 
     public boolean isIncludeHybrids() {
         return includeHybrids;
     }
 
-    public PublishForSubtreeConfigurator setIncludeHybrids(boolean includeHybrids) {
+    public void setIncludeHybrids(boolean includeHybrids) {
         this.includeHybrids = includeHybrids;
-        return this;
+
     }
 
 }
