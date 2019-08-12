@@ -148,12 +148,31 @@ public class TermTreeServiceImpl
     @Override
     public List<TermTree> list(TermType termType, Integer limit, Integer start, List<OrderHint> orderHints,
             List<String> propertyPaths) {
-        return dao.list(null, Arrays.asList(new Restriction<>("termType", null, termType)), limit, start, orderHints, propertyPaths);
+        return dao.list(null, buildTermTypeFilterRestrictions(termType), limit, start, orderHints, propertyPaths);
     }
 
     @Override
     public Pager<TermTree> page(TermType termType, Integer pageSize, Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths) {
-        return page(null, Arrays.asList(new Restriction<>("termType", null, termType)), pageSize, pageIndex, orderHints, propertyPaths);
+
+        return page(null, buildTermTypeFilterRestrictions(termType), pageSize, pageIndex, orderHints, propertyPaths);
+    }
+
+    /**
+     * @param termType
+     * @return
+     */
+    @Override
+    public List<Restriction<?>> buildTermTypeFilterRestrictions(TermType termType) {
+        List<Restriction<?>> filterRestrictions = null;
+        if(termType != null){
+            ArrayList<TermType> termTypes = new ArrayList<>(2);
+            termTypes.add(termType);
+            if(termType == TermType.Feature){
+                termTypes.add(TermType.Character);
+            }
+            filterRestrictions = Arrays.asList(new Restriction<>("termType", null, termTypes.toArray()));
+        }
+        return filterRestrictions;
     }
 
 

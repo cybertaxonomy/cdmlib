@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -165,10 +164,7 @@ public class TermTreeListController extends AbstractIdentifiableListController<T
             )
              throws IOException {
 
-        List<Restriction<?>> restrictions = null;
-        if(termType != null){
-            restrictions = Arrays.asList(new Restriction<>("termType", null, termType));
-        }
+        List<Restriction<?>> restrictions = service.buildTermTypeFilterRestrictions(termType);
         String requestPathAndQuery = requestPathAndQuery(request);
 
         logger.info("doFindByTitleByTermType() : " + requestPathAndQuery );
