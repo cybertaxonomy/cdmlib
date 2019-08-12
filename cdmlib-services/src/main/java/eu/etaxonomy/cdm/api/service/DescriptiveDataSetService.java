@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -412,15 +413,15 @@ public class DescriptiveDataSetService
         });
 
         // delete all aggregation description of this dataset (MarkerType.COMPUTED)
-        dataSet.getDescriptions().stream()
+        List<TaxonDescription> toRemove = dataSet.getDescriptions().stream()
         .filter(aggDesc->aggDesc instanceof TaxonDescription)
         .filter(desc -> desc.getMarkers().stream().anyMatch(marker -> marker.getMarkerType().equals(MarkerType.COMPUTED())))
         .map(aggDesc->(TaxonDescription)aggDesc)
-        .forEach(aggregatedDescription->{
-            removeDescription(aggregatedDescription.getUuid(), descriptiveDataSetUuid);
-            taxon.removeDescription(aggregatedDescription);
-            descriptionService.delete(aggregatedDescription);
-        });
+        .collect(Collectors.toList());
+        for (TaxonDescription taxonDescription : toRemove) {
+            dataSet.removeDescription(taxonDescription);
+            taxon.removeDescription(taxonDescription);
+        }
 
         // create new aggregation
         TaxonDescription description = TaxonDescription.NewInstance(taxon);
