@@ -411,11 +411,16 @@ public class DescriptiveDataSetService
             });
         });
 
-        // delete existing aggregation description, if present
-        TaxonDescription aggregation = findTaxonDescriptionByMarkerType(dataSet, taxon, MarkerType.COMPUTED());
-        if(aggregation!=null){
-            removeDescription(aggregation.getUuid(), descriptiveDataSetUuid);
-        }
+        // delete all aggregation description of this dataset (MarkerType.COMPUTED)
+        dataSet.getDescriptions().stream()
+        .filter(aggDesc->aggDesc instanceof TaxonDescription)
+        .filter(desc -> desc.getMarkers().stream().anyMatch(marker -> marker.getMarkerType().equals(MarkerType.COMPUTED())))
+        .map(aggDesc->(TaxonDescription)aggDesc)
+        .forEach(aggregatedDescription->{
+            removeDescription(aggregatedDescription.getUuid(), descriptiveDataSetUuid);
+            taxon.removeDescription(aggregatedDescription);
+            descriptionService.delete(aggregatedDescription);
+        });
 
         // create new aggregation
         TaxonDescription description = TaxonDescription.NewInstance(taxon);
