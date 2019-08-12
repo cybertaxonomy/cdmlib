@@ -99,13 +99,13 @@ public class DeterminationEvent extends EventBase {
 	@XmlElement(name = "PreferredFlag")
 	private boolean preferredFlag;
 
-	@XmlElementWrapper(name = "SetOfReferences")
+	@XmlElementWrapper(name = "References")
 	@XmlElement(name = "Reference")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-	private Set<Reference> setOfReferences = new HashSet<>();
+	private Set<Reference> references = new HashSet<>();
 
 
 
@@ -209,15 +209,15 @@ public class DeterminationEvent extends EventBase {
 	}
 
 	public Set<Reference> getReferences() {
-		return setOfReferences;
+		return references;
 	}
 
 	public void setReferences(Set<Reference> references) {
-		this.setOfReferences = references;
+		this.references = references;
 	}
 
 	public void addReference(Reference reference) {
-		this.setOfReferences.add(reference);
+		this.references.add(reference);
 	}
 
 //*********** CLONE **********************************/
