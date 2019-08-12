@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ColumnNameChanger;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
@@ -92,6 +93,54 @@ public class SchemaUpdater_58_581 extends SchemaUpdaterBase {
         referencedTables = new String[]{"UserAccount", "Authority"};
         TableCreator.NewNonVersionableInstance(stepList, stepName, tableName,
                 columnNames, columnTypes, referencedTables);
+
+        //#8442
+        addExternalDataHandler(stepList, "DefinedTermBase");
+
+        //#8442
+        addExternalDataHandler(stepList, "TermCollection");
+
+        //#8442 / #6663
+        stepName = "Add importMethod to Reference";
+        tableName = "Reference";
+        newColumnName = "importMethod";
+        int length = 30;
+        ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
+
+        //
+        UsernameRegexAdapter.NewInstance(stepList);
+
+        return stepList;
+    }
+
+    /**
+     * @param stepList
+     * @param string
+     */
+    private void addExternalDataHandler(List<ISchemaUpdaterStep> stepList, String tableName) {
+        //Add "lastRetrieved"
+        String stepName = "Add 'lastRetrieved' to " + tableName;
+        String newColumnName = "lastRetrieved";
+        ColumnAdder.NewDateTimeInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL);
+
+        stepName = "Add externalId to DefinedTermBase";
+        newColumnName = "externalId";
+        int length = 255;
+        ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
+
+        stepName = "Add externalLink to DefinedTermBase";
+        newColumnName = "externalLink";
+        ColumnAdder.NewClobInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT);
+
+        stepName = "Add authorityType to DefinedTermBase";
+        newColumnName = "authorityType";
+        length = 10;
+        ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
+
+        stepName = "Add importMethod to DefinedTermBase";
+        newColumnName = "importMethod";
+        length = 30;
+        ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
 
     }
 
