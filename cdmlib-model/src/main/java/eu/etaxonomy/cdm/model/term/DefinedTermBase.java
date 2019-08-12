@@ -51,6 +51,7 @@ import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
 import eu.etaxonomy.cdm.model.ICdmUuidCacher;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
+import eu.etaxonomy.cdm.model.common.ExternallyManaged;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -80,6 +81,7 @@ import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
     "idInVocabulary",
     "symbol",
     "symbol2",
+    "externallyManaged",
 })
 @XmlRootElement(name = "DefinedTermBase")
 @XmlSeeAlso({
@@ -189,6 +191,8 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
     //this term can be changed by the database instance even if the term is not managed by this instance as it is only for representation and has no semantic or identifying character
     //empty string is explicitly allowed and should be distinguished from NULL!
     private String symbol2;
+
+    private ExternallyManaged externallyManaged;
 
 //***************************** CONSTRUCTOR *******************************************/
 

@@ -39,6 +39,7 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.common.ExternallyManaged;
 import eu.etaxonomy.cdm.model.common.Language;
 
 
@@ -51,7 +52,8 @@ import eu.etaxonomy.cdm.model.common.Language;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TermVocabulary", propOrder = {
     "termSourceUri",
-    "terms"
+    "terms",
+    "externallyManaged"
 })
 @XmlRootElement(name = "TermVocabulary")
 @Entity
@@ -82,6 +84,8 @@ public class TermVocabulary<T extends DefinedTermBase>
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	@IndexedEmbedded(depth = 2)
 	protected Set<T> terms = newTermSet();
+
+    private ExternallyManaged externallyManaged;
 
 // ********************************* FACTORY METHODS *****************************************/
 

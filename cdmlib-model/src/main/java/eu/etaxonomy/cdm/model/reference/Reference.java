@@ -56,6 +56,7 @@ import eu.etaxonomy.cdm.hibernate.search.DoiBridge;
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.ExternallyManaged;
 import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
@@ -349,6 +350,8 @@ public class Reference
 	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private TeamOrPersonBase<?> authorship;
 
+    private ExternallyManaged externallyManaged;
+
 	@XmlAttribute
     @Match(MatchMode.IGNORE)
 	private int parsingProblem = 0;
@@ -361,40 +364,6 @@ public class Reference
     @Match(MatchMode.IGNORE)
     private int problemEnds = -1;
 
-    @Transient
-    @XmlAttribute
-    @Match(MatchMode.IGNORE)
-	private boolean cacheStrategyRectified = false;
-
-    //attributes for externally managed
-
-//    @XmlElement (name = "LastRetrieved", type= String.class)
-    @XmlJavaTypeAdapter(DateTimeAdapter.class)
-    @Type(type="dateTimeUserType")
-    //TODO needed??
-    @Basic(fetch = FetchType.LAZY)
-    private DateTime lastRetrieved;
-
-    @XmlElement(name ="ExternalId" )
-//    @Field
-//    @Match(MatchMode.EQUAL)  //TODO check if this is correct
-    @NullOrNotEmpty
-    @Column(length=255)
-    private String externalId;
-
-    //Actionable link on e.g. on a webservice
-    @XmlElement(name = "ExternalLink")
-    @Field(analyze = Analyze.NO)
-    @Type(type="uriUserType")
-    private URI externalLink;
-
-    @XmlAttribute(name ="authority")
-    @Column(name="authorityType", length=10)
-    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-        parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.reference.AuthorityType")}
-    )
-//    @NotNull
-    private AuthorityType authorityType;
 
 // *********************** CONSTRUCTOR ************************/
 
