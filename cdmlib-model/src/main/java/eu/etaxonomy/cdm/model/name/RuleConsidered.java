@@ -70,30 +70,13 @@ public class RuleConsidered implements Cloneable, Serializable{
 
 //********** GETTER / SETTER ***********************************/
 
-    /**
-     * Returns the nomenclatural code rule considered (that is the
-     * article/note/recommendation in the nomenclatural code ruling
-     * the  taxon name(s) of this nomenclatural status).
-     * The considered rule gives the reason why the
-     * {@link NomenclaturalStatusType nomenclatural status type} has been
-     * assigned to the {@link TaxonName taxon name(s)}.
-     *
-     * @see #getCodeEdition()
-     */
     public String getText(){
         return this.text;
     }
-
-    /**
-     * @see  #getText()
-     */
     public void setText(String text){
         this.text = text;
     }
 
-    /**
-     * The {@link NomenclaturalCodeEdition code edition} for the {@link #getText() rule considered}.
-     */
     public NomenclaturalCodeEdition getCodeEdition() {
         return codeEdition;
     }

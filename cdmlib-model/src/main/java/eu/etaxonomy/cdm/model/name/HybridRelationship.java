@@ -54,7 +54,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 @Audited
 public class HybridRelationship
         extends RelationshipBase<INonViralName, INonViralName, HybridRelationshipType>
-        implements Comparable<HybridRelationship>{
+        implements Comparable<HybridRelationship>, IRuleConsidered{
 
     private static final long serialVersionUID = -78515930138896939L;
     private static final Logger logger = Logger.getLogger(HybridRelationship.class);
@@ -175,21 +175,25 @@ public class HybridRelationship
 	 * the string representing the (child) hybrid {@link BotanicalName taxon name}
 	 * within <i>this</i> hybrid relationship.
 	 */
-	public String getRuleConsidered(){
+	@Override
+    public String getRuleConsidered(){
 		return this.ruleConsidered().getText();
 	}
 	/**
 	 * @see  #getRuleConsidered()
 	 */
-	public void setRuleConsidered(String ruleConsidered){
+	@Override
+    public void setRuleConsidered(String ruleConsidered){
 		this.ruleConsidered().setText(ruleConsidered);
 	}
 	/**
      * The {@link NomenclaturalCodeEdition code edition} for the {@link #getRuleConsidered() rule considered}.
      */
+    @Override
     public NomenclaturalCodeEdition getCodeEdition() {
         return ruleConsidered().getCodeEdition();
     }
+    @Override
     public void setCodeEdition(NomenclaturalCodeEdition codeEdition) {
         ruleConsidered().setCodeEdition(codeEdition);
     }

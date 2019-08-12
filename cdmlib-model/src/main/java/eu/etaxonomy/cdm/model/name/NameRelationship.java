@@ -55,7 +55,9 @@ import eu.etaxonomy.cdm.validation.annotation.NamesWithHomotypicRelationshipsMus
 @NamesWithHomotypicRelationshipsMustBelongToSameGroup(groups = Level3.class)
 @BasionymsMustShareEpithetsAndAuthors(groups = Level3.class)
 public class NameRelationship
-            extends RelationshipBase<TaxonName, TaxonName, NameRelationshipType>{
+            extends RelationshipBase<TaxonName, TaxonName, NameRelationshipType>
+            implements IRuleConsidered{
+
 	private static final long serialVersionUID = -615987333520172043L;
 	private static final Logger logger = Logger.getLogger(NameRelationship.class);
 
@@ -203,21 +205,25 @@ public class NameRelationship
      * {@link NameRelationshipType name relationship type} has been
      * assigned to this name relation.
      */
+    @Override
     public String getRuleConsidered(){
         return this.ruleConsidered().getText();
     }
     /**
      * @see  #getRuleConsidered()
      */
+    @Override
     public void setRuleConsidered(String ruleConsidered){
         this.ruleConsidered().setText(ruleConsidered);
     }
     /**
      * The {@link NomenclaturalCodeEdition code edition} for the {@link #getRuleConsidered() rule considered}.
      */
+    @Override
     public NomenclaturalCodeEdition getCodeEdition() {
         return ruleConsidered().getCodeEdition();
     }
+    @Override
     public void setCodeEdition(NomenclaturalCodeEdition codeEdition) {
         ruleConsidered().setCodeEdition(codeEdition);
     }
