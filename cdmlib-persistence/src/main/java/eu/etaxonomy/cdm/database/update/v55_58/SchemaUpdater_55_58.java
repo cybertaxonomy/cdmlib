@@ -83,13 +83,6 @@ public class SchemaUpdater_55_58 extends SchemaUpdaterBase {
        newColumnName = "toTerm_id";
        ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, "DefinedTermBase");
 
-       //#6794 change featuretree_id to graph_id
-//       stepName = "change featuretree_id to graph_id";
-//       tableName = "TermRelation";
-//       String oldColumnName = "featureTree_id";
-//       newColumnName = "graph_id";
-//       ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
-
        //#6794 change feature_id to term_id
        stepName = "change feature_id to term_id";
        tableName = "TermRelation";

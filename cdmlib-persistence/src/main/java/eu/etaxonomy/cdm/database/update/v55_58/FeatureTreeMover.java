@@ -35,17 +35,15 @@ public class FeatureTreeMover extends SchemaUpdaterStepBase {
 
     private static final String stepName = "Move FeatureTree to TermCollection";
 
-    /**
-     * @param stepName
-     */
-    protected FeatureTreeMover(List<ISchemaUpdaterStep> stepList) {
-        super(stepList, stepName);
-    }
 
     public static final FeatureTreeMover NewInstance(List<ISchemaUpdaterStep> stepList){
         FeatureTreeMover result = new FeatureTreeMover(stepList);
 
         return result;
+    }
+
+    protected FeatureTreeMover(List<ISchemaUpdaterStep> stepList) {
+        super(stepList, stepName);
     }
 
 
