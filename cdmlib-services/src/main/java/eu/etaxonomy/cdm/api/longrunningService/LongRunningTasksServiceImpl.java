@@ -30,7 +30,6 @@ import eu.etaxonomy.cdm.api.service.util.CacheUpdater;
 import eu.etaxonomy.cdm.api.service.util.SortIndexUpdaterWrapper;
 import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitorThread;
-import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 
 /**
  * @author k.luther
@@ -56,11 +55,11 @@ public class LongRunningTasksServiceImpl implements ILongRunningTasksService{
     SortIndexUpdaterWrapper sortIndexUpdater;
 
     @Override
-    public UUID monitGetRowWrapper(DescriptiveDataSet descriptiveDataSet) {
+    public UUID monitGetRowWrapper(UUID descriptiveDataSetUuid) {
         RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
             @Override
             public Serializable doRun(IRemotingProgressMonitor monitor) {
-                return descriptiveDataSetService.getRowWrapper(descriptiveDataSet, monitor);
+                return descriptiveDataSetService.getRowWrapper(descriptiveDataSetUuid, monitor);
             }
         };
         UUID uuid = progressMonitorService.registerNewRemotingMonitor(monitorThread);

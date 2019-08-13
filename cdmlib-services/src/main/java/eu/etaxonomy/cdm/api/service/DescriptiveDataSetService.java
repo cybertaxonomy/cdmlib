@@ -109,7 +109,8 @@ public class DescriptiveDataSetService
     }
 
 	@Override
-	public ArrayList<RowWrapperDTO> getRowWrapper(DescriptiveDataSet descriptiveDataSet, IProgressMonitor monitor) {
+	public ArrayList<RowWrapperDTO> getRowWrapper(UUID descriptiveDataSetUuid, IProgressMonitor monitor) {
+	    DescriptiveDataSet descriptiveDataSet = load(descriptiveDataSetUuid);
 	    monitor.beginTask("Load row wrapper", descriptiveDataSet.getDescriptions().size());
 	    ArrayList<RowWrapperDTO> wrappers = new ArrayList<>();
 	    Set<DescriptionBase> descriptions = descriptiveDataSet.getDescriptions();

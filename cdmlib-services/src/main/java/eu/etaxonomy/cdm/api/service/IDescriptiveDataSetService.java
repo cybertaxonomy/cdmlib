@@ -53,11 +53,11 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
     /**
      * Returns a collection of {@link RowWrapperDTO} objects for the given {@link DescriptiveDataSet}.<br>
      * A RowWrapper represents on row in the character matrix.
-     * @param descriptiveDataSet the working set for which the row wrapper objects should be fetched
+     * @param descriptiveDataSetUuid the working set for which the row wrapper objects should be fetched
      * @param the progress monitor
      * @return a list of row wrapper objects
      */
-    public ArrayList<RowWrapperDTO> getRowWrapper(DescriptiveDataSet descriptiveDataSet, IProgressMonitor monitor);
+    public ArrayList<RowWrapperDTO> getRowWrapper(UUID descriptiveDataSetUuid, IProgressMonitor monitor);
 
     /**
      * Loads all available specimens wrapped in a {@link SpecimenNodeWrapper} object for

@@ -59,10 +59,10 @@ public interface ILongRunningTasksService {
 
     /**
      * Monitored invocation of {@link IDescriptiveDataSetService#getRowWrapper(DescriptiveDataSet, IProgressMonitor)}
-     * @param descriptiveDataSet the working set for which getRowWrapper() is invoked
+     * @param descriptiveDataSetUuid the working set for which getRowWrapper() is invoked
      * @return the uuid of the monitor
      */
-    public UUID monitGetRowWrapper(DescriptiveDataSet descriptiveDataSet);
+    public UUID monitGetRowWrapper(UUID descriptiveDataSetUuid);
 
     /**
      * @param configurator
