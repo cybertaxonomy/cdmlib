@@ -410,15 +410,17 @@ public class DescriptiveDataSetService
             });
         });
 
-        // delete all aggregation description of this dataset (MarkerType.COMPUTED)
+        // delete all aggregation description of this dataset for this taxon (MarkerType.COMPUTED)
         List<TaxonDescription> toRemove = dataSet.getDescriptions().stream()
         .filter(aggDesc->aggDesc instanceof TaxonDescription)
         .filter(desc -> desc.getMarkers().stream().anyMatch(marker -> marker.getMarkerType().equals(MarkerType.COMPUTED())))
         .map(aggDesc->(TaxonDescription)aggDesc)
         .collect(Collectors.toList());
         for (TaxonDescription taxonDescription : toRemove) {
-            dataSet.removeDescription(taxonDescription);
-            taxon.removeDescription(taxonDescription);
+            if(taxon.getDescriptions().contains(taxonDescription)){
+                dataSet.removeDescription(taxonDescription);
+                taxon.removeDescription(taxonDescription);
+            }
         }
 
         // create new aggregation
