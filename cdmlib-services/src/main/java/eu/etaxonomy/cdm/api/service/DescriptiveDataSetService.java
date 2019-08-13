@@ -79,9 +79,6 @@ public class DescriptiveDataSetService
     @Autowired
     private ITaxonNodeService taxonNodeService;
 
-    @Autowired
-    private IProgressMonitorService progressMonitorService;
-
     //FIXME: Use actual MarkerType for default descriptions when implemented #7957
     private MarkerType MARKER_DEFAULT = MarkerType.TO_BE_CHECKED();
 
