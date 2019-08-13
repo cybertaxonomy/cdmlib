@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.DOI;
 import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ExternallyManaged;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
@@ -86,7 +87,8 @@ public abstract class StrategyBase implements IStrategy, Serializable {
 				fieldType == LSID.class ||
 				fieldType == Contact.class ||
 				fieldType == URI.class ||
-				fieldType == DOI.class
+				fieldType == DOI.class ||
+				fieldType == ExternallyManaged.class
 			){
 				return true;
 		}else{
