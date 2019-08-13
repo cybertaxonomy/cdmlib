@@ -36,13 +36,6 @@
         <scope>test</scope>
         <version>${project.version}</version>
     </dependency>
-<!--     <dependency> -->
-<!--       <groupId>eu.etaxonomy</groupId> -->
-<!--       <artifactId>cdmlib-persistence</artifactId> -->
-<!--       <type>test-jar</type> -->
-<!--       <scope>test</scope> -->
-<!--       <version>${project.version}</version> -->
-<!--     </dependency> -->
     <dependency>
       <groupId>eu.etaxonomy</groupId>
       <artifactId>cdmlib-ext</artifactId>
@@ -62,7 +55,6 @@
     <dependency>
       <groupId>org.apache.poi</groupId>
       <artifactId>ooxml-schemas</artifactId>
-      <version>1.4</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -79,12 +71,10 @@
     <dependency>
         <groupId>org.docx4j</groupId>
         <artifactId>docx4j</artifactId>
-        <version>6.0.1</version>
     </dependency>
     <dependency> 
         <groupId>javax.xml.bind</groupId>
         <artifactId>jaxb-api</artifactId>
-        <version>2.1</version>
     </dependency>
   </dependencies>
 </project>
