@@ -37,7 +37,6 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.Role;
 /**
  * @author a.kohlbecker
  * @since Feb 4, 2014
- *
  */
 @DataSet(value="SecurityTest.xml")
 public class UserAndGroupServiceImplTest extends AbstractSecurityTestBase {
@@ -59,21 +58,17 @@ public class UserAndGroupServiceImplTest extends AbstractSecurityTestBase {
     @SpringBeanByType
     private ITaxonService taxonService;
 
-
     private Authentication authentication;
-
 
     @Test
     public void testCreateUser() {
-
 
         authentication = authenticationManager.authenticate(tokenForAdmin);
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
 
-
         try{
-            userService.createUser(User.NewInstance("new user 1", "00000"));
+            userService.createUser(User.NewInstance("new_user_1", "00000"));
         }catch(Exception e){
             Assert.fail();
         }
@@ -83,7 +78,7 @@ public class UserAndGroupServiceImplTest extends AbstractSecurityTestBase {
         context.setAuthentication(authentication);
 
         try{
-            userService.createUser(User.NewInstance("new user 2", "00000"));
+            userService.createUser(User.NewInstance("new_user_2", "00000"));
             Assert.fail();
         }catch(Exception e){
             Assert.assertEquals("Access is denied", e.getMessage());
@@ -132,7 +127,6 @@ public class UserAndGroupServiceImplTest extends AbstractSecurityTestBase {
         }catch (Exception e){
             Assert.assertEquals("Access is denied", e.getMessage());
         }
-
     }
 
     @Test
@@ -171,14 +165,12 @@ public class UserAndGroupServiceImplTest extends AbstractSecurityTestBase {
         userService.changePasswordForUser(tokenForAdmin.getName(), "newPassword");
     }
 
-
     @Test
     public void testCreateGroup(){
 
         authentication = authenticationManager.authenticate(tokenForUserManager);
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
-
 
         List<GrantedAuthority> authorityList = new ArrayList<>();
         GrantedAuthorityImpl rolePublishAthotrity = GrantedAuthorityImpl.NewInstance(null);
@@ -194,7 +186,6 @@ public class UserAndGroupServiceImplTest extends AbstractSecurityTestBase {
         List<GrantedAuthority> groupAuthorities = groupService.findGroupAuthorities(publishersGroupName);
 
         Assert.assertEquals(Role.ROLE_PUBLISH.toString(), groupAuthorities.get(0).getAuthority());
-
     }
 
     @Test
@@ -331,19 +322,10 @@ public class UserAndGroupServiceImplTest extends AbstractSecurityTestBase {
             if(group.getName().equals(groupSpecialEditor_Name)){
                 Assert.fail("The user TaxonEditor should no longer be member of this group");
             }
-
         }
-
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 
 }
