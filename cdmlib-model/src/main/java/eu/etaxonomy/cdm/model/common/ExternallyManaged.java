@@ -42,7 +42,8 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
     "lastRetrieved",
     "externalId",
     "externalLink",
-    "authorityType"
+    "authorityType",
+    "importMethod"
 })
 @XmlRootElement(name = "ExternallyManaged")
 @Embeddable
