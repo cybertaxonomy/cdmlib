@@ -56,6 +56,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
     "salt",
     "emailAddress",
     "grantedAuthorities",
+    "authorities",
     "groups",
     "enabled",
     "accountNonExpired",

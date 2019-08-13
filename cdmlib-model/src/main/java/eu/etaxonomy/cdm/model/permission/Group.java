@@ -41,7 +41,8 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 @XmlType(name = "Group", propOrder = {
     "name",
     "members",
-    "grantedAuthorities"
+    "grantedAuthorities",
+    "authorities",
 })
 @XmlRootElement(name = "Group")
 @Entity

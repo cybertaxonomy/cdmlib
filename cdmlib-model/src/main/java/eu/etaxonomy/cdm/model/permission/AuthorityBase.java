@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "AuthorityBase", propOrder = {
-        "authority" }
+         }
 )
 @XmlRootElement(name = "Authority")
 @Table(name="Authority")

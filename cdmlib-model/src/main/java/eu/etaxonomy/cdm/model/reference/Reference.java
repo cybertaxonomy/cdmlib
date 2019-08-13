@@ -123,10 +123,7 @@ import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
     "organization",
     "inReference",
     "accessed",
-    "lastRetrieved",
-    "externalId",
-    "externalLink",
-    "authorityType"
+    "externallyManaged",
 })
 @XmlRootElement(name = "Reference")
 @Entity

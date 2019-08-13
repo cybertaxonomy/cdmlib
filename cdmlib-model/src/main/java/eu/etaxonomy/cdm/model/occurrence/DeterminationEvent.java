@@ -54,7 +54,7 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
     "taxonName",
     "modifier",
     "preferredFlag",
-    "setOfReferences"
+    "references"
 })
 @XmlRootElement(name = "DeterminationEvent")
 @Entity
