@@ -265,11 +265,12 @@ public class User extends CdmBase implements UserDetails {
             transientGrantedAuthorities.addAll(group.getGrantedAuthorities());
         }
         //CdmAuthority
-        transientAuthorities = new HashSet<>();
-        transientAuthorities.addAll(authorities);
-        for(Group group : groups) {
-            transientAuthorities.addAll(group.getAuthorities());
-        }
+        //TODO activating this currently leads to LIE in AuthenticationPresenterTest in Vaadin project
+//        transientAuthorities = new HashSet<>();
+//        transientAuthorities.addAll(authorities);
+//        for(Group group : groups) {
+//            transientAuthorities.addAll(group.getAuthorities());
+//        }
     }
 
     /**
