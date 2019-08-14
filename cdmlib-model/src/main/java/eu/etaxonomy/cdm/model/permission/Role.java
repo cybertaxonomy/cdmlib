@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.model.permission;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -34,7 +35,7 @@ public class Role extends AuthorityBase {
 
     private static final long serialVersionUID = -1897282896233162691L;
 
-    //    @Column(unique = true)
+    @Column(unique = true)
     @NotNull
     private String role;
 

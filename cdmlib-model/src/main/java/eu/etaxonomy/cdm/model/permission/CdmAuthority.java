@@ -61,8 +61,7 @@ public class CdmAuthority extends AuthorityBase {
     )
     private PermissionClass permissionClass;
 
-    @Column(unique = true)
-    @NotNull
+    //Not always needed, therefore not NOTNULL
     private String property;
 
     @XmlAttribute(name ="Operations")
