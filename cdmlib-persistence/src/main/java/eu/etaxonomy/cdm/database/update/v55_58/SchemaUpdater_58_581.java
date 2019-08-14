@@ -58,7 +58,7 @@ public class SchemaUpdater_58_581 extends SchemaUpdaterBase {
 		List<ISchemaUpdaterStep> stepList = new ArrayList<>();
 
 		//#8429
-		stepName = "Rename ";
+		stepName = "Rename DeterminationEvent.setOfReferences";
 		tableName = "DeterminationEvent_Reference";
 		oldColumnName = "setOfReferences_id";
 		newColumnName = "references_id";
@@ -146,7 +146,7 @@ public class SchemaUpdater_58_581 extends SchemaUpdaterBase {
 
     @Override
 	public ISchemaUpdater getNextUpdater() {
-		return null;
+		return SchemaUpdater_581_582.NewInstance();
 	}
 
 	@Override

@@ -575,7 +575,7 @@ public class PolytomousKeyGeneratorTest {
         result.getRoot().addChild(featureShape);
         TermNode<Feature> nodePresence = result.getRoot().addChild(featurePresence);
         TermNode<Feature> nodeLength = nodePresence.addChild(featureLength);
-        nodeLength.addInapplicableState(no);
+        nodeLength.addInapplicableState(featurePresence, no);
         nodePresence.addChild(featureColour);
 
         return result;

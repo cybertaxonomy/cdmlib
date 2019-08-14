@@ -68,7 +68,9 @@ import eu.etaxonomy.cdm.model.description.State;
 		"sortIndex",
 		"children",
 		"onlyApplicableIf",
-		"inapplicableIf"
+		"inapplicableIf",
+		"onlyApplicableIf_old",
+		"inapplicableIf_old"
 })
 @XmlRootElement(name = "TermNode")
 @Entity
@@ -110,7 +112,7 @@ public class TermNode <T extends DefinedTermBase>
 	@XmlSchemaType(name="IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
 //	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})  remove cascade #5755
-	@JoinTable(name="TermNode_DefinedTermBase_OnlyApplicable_old")
+	@JoinTable(name="TermNode_DefinedTermBase_OnlyApplicable")
 	private final Set<State> onlyApplicableIf_old = new HashSet<>();
 
 	@XmlElementWrapper(name = "InapplicableIf_old")
@@ -119,23 +121,25 @@ public class TermNode <T extends DefinedTermBase>
 	@XmlSchemaType(name="IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
 //	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})  remove cascade #5755
-	@JoinTable(name="TermNode_DefinedTermBase_InapplicableIf_old")
+	@JoinTable(name="TermNode_DefinedTermBase_InapplicableIf")
 	private final Set<State> inapplicableIf_old = new HashSet<>();
 
     @XmlElementWrapper(name = "OnlyApplicableIf")
     @XmlElement(name = "OnlyApplicableIf")
     @XmlIDREF
     @XmlSchemaType(name="IDREF")
-    @ManyToMany(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @JoinTable(name="TermNode_OnlyApplicableIf")
     private final Set<FeatureState> onlyApplicableIf = new HashSet<>();
 
     @XmlElementWrapper(name = "InapplicableIf")
     @XmlElement(name = "InapplicableIf")
     @XmlIDREF
     @XmlSchemaType(name="IDREF")
-    @ManyToMany(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @JoinTable(name="TermNode_InapplicableIf")
     private final Set<FeatureState> inapplicableIf = new HashSet<>();
 
 // ***************************** FACTORY *********************************/
@@ -432,6 +436,8 @@ public class TermNode <T extends DefinedTermBase>
 		return false;
 	}
 
+// *************************** APPLICABLE IF ********************************/
+
 	/**
 	 * Returns the set of {@link FeatureState feature states} implying rendering the
 	 * concerned {@link Feature feature} applicable.
@@ -452,16 +458,20 @@ public class TermNode <T extends DefinedTermBase>
 	}
 
 	/**
-	 * Adds an existing {@link State applicable state} to the set of
+	 * Adds an existing {@link FeatureState applicable state} to the set of
 	 * {@link #getOnlyApplicableIf() applicable states} described in
 	 * <i>this</i> feature node.<BR>
 	 *
 	 * @param applicableState	the applicable state to be added to <i>this</i> feature node
-	 * @see    	   								#getApplicableState()
+	 * @see #getOnlyApplicableIf()
 	 */
 	public void addApplicableState(FeatureState applicableState) {
 		this.onlyApplicableIf.add(applicableState);
 	}
+    public void addApplicableState(Feature feature, State applicableState) {
+        FeatureState featureState = FeatureState.NewInstance(feature, applicableState);
+        addApplicableState(featureState);
+    }
 
 	/**
 	 * Removes one element from the set of
@@ -469,16 +479,16 @@ public class TermNode <T extends DefinedTermBase>
 	 * <i>this</i> feature node.<BR>
 	 *
 	 * @param  applicableState   the applicable state which should be removed
-	 * @see    	   								#getApplicableState()
+	 * @see    #getApplicableState()
 	 * @see     		  						#addApplicableState(State)
 	 */
-	public void removeApplicableState(State applicableState) {
+	public void removeApplicableState(FeatureState applicableState) {
 		this.onlyApplicableIf.remove(applicableState);
 	}
 
 	/**
-	 * Returns the set of {@link State states} implying rendering the
-	 * concerned {@link Feature feature} inapplicable.
+	 * Returns the set of {@link FeautreState states belonging to a feature}
+	 * implying rendering the concerned {@link Feature feature} inapplicable.
 	 * If at least one {@link State inapplicable state} is defined in the set,
 	 * in a given description the {@link Feature feature} attribute of
 	 * <i>this</i> feature node is inapplicable when any of the listed
@@ -506,6 +516,11 @@ public class TermNode <T extends DefinedTermBase>
 		this.inapplicableIf.add(inapplicableState);
 	}
 
+    public void addInapplicableState(Feature feature, State inapplicableState) {
+        FeatureState featureState = FeatureState.NewInstance(feature, inapplicableState);
+        addInapplicableState(featureState);
+    }
+
 	/**
 	 * Removes one element from the set of
 	 * {@link #getInapplicableIf() inapplicable states} described in
@@ -515,7 +530,8 @@ public class TermNode <T extends DefinedTermBase>
 	 * @see    	   								#getInapplicableState()
 	 * @see     		  						#addInapplicableState(State)
 	 */
-	public void removeInapplicableState(State inapplicableState) {
+
+	public void removeInapplicableState(FeatureState inapplicableState) {
 		this.inapplicableIf.remove(inapplicableState);
 	}
 

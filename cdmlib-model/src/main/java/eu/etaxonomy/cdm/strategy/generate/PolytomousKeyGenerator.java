@@ -16,6 +16,7 @@ import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.FeatureState;
 import eu.etaxonomy.cdm.model.description.KeyStatement;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
@@ -298,6 +299,7 @@ public class PolytomousKeyGenerator {
      */
     private void addDependentFeatures(List<Feature> featuresLeft, Feature winnerFeature, Set<Feature> featuresAdded,
             List<State> listOfStates) {
+
         Set<Feature> newFeatureCandidates = new HashSet<>(featureDependencies.get(winnerFeature));
         newFeatureCandidates.remove(null);
         for (State state : listOfStates) {
@@ -323,7 +325,7 @@ public class PolytomousKeyGenerator {
      * @param set
      * @return
      */
-    private boolean notEmpty(Set<Feature> set) {
+    private boolean notEmpty(Set<?> set) {
         return (set != null) && !set.isEmpty();
     }
 
@@ -1048,7 +1050,8 @@ public class PolytomousKeyGenerator {
 	    //needs to be checked if it is ok to handle them here
         if (node.isDependend() && !featureDependencies.containsKey(node.getTerm())){
             featureDependencies.put(node.getParent().getTerm(), new HashSet<>());
-            for (State state : node.getOnlyApplicableIf()){
+            for (FeatureState featureState : node.getOnlyApplicableIf()){
+                State state = featureState.getState();
                 if (!oAifDependencies.containsKey(state)) {
                     oAifDependencies.put(state, new HashSet<>());
                 }
@@ -1057,7 +1060,8 @@ public class PolytomousKeyGenerator {
                 //needs to be improved
                 featureDependencies.get(node.getParent().getTerm()).add(node.getTerm());
             }
-            for (State state : node.getInapplicableIf()){
+            for (FeatureState featureState : node.getInapplicableIf()){
+                State state = featureState.getState();
                 if (!iAifDependencies.containsKey(state)) {
                     iAifDependencies.put(state, new HashSet<>());
                 }
@@ -1161,8 +1165,8 @@ public class PolytomousKeyGenerator {
 	/**
 	 * Returns the score of a categorical feature.
 	 *
-	 * @param deb1
-	 * @param deb2
+	 * @param cd1
+	 * @param cd2
 	 * @return
 	 */
 	private float defaultCategoricalPower(CategoricalData cd1, CategoricalData cd2){

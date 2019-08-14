@@ -1852,9 +1852,10 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 						List<Element> listStates = elInapplicableIf.getChildren("State", sddNamespace);
 						for (Element stateElement : listStates) {
 							String refState = stateElement.getAttributeValue("ref");
-							if ((refState!=null)&&(!refState.equals(""))) {
-								State state = states.get(refState);
-								fn.addInapplicableState(state);
+							if (StringUtils.isNotBlank(refState)) {
+	                            State state = states.get(refState);
+								//FIXME handle feature
+								fn.addInapplicableState(null, state);
 							}
 						}
 					}
@@ -1863,9 +1864,10 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 						List<Element> listStates = elInapplicableIf.getChildren("State", sddNamespace);
 						for (Element stateElement : listStates) {
 							String refState = stateElement.getAttributeValue("ref");
-							if ((refState!=null)&&(!refState.equals(""))) {
+							if (StringUtils.isNotBlank(refState)) {
 								State state = states.get(refState);
-								fn.addApplicableState(state);
+								//FIXME handle feature
+								fn.addApplicableState(null, state);
 							}
 						}
 					}

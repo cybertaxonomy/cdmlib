@@ -68,7 +68,7 @@ public class FeatureNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 	public void setUp() throws Exception {}
 
 	@Test
-	public final void testIndexCreatRoot() {
+	public void testIndexCreatRoot() {
         TermTree<Feature> featureTree = TermTree.NewFeatureInstance();
 		featureTreeService.save(featureTree);
 
@@ -105,7 +105,7 @@ public class FeatureNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 	@Test
     @DataSet(loadStrategy=RefreshLoadStrategy.class ,value="FeatureNodeServiceImplTest-indexing.xml")
 	//this may fail in single test if it is the first test as long as #8174 is not fixed
-	public final void testIndexMoveNode() {
+	public void testIndexMoveNode() {
 		//in feature tree
         @SuppressWarnings("unused")
         TermTree<Feature> featureTree = featureTreeService.load(featureTreeUuid);

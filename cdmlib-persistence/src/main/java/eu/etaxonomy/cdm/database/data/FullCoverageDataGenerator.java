@@ -444,8 +444,8 @@ public class FullCoverageDataGenerator {
 		State applicableState = State.NewInstance("only applicable state", "only applicable state", null);
 		cdmBases.add(applicableState);
 		cdmBases.add(inapplicableState);
-		leaveLengthNode.addInapplicableState(inapplicableState);
-		leaveLengthNode.addApplicableState(applicableState);
+		leaveLengthNode.addInapplicableState(leaveLength, inapplicableState);  //this is semantically not correct, should be a parent feature
+		leaveLengthNode.addApplicableState(leaveLength, applicableState);
 		cdmBases.add(featureTree);
 		cdmBases.add(leaveLengthNode);
 

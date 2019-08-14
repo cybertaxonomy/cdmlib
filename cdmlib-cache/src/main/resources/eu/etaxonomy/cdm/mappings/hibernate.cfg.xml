@@ -99,6 +99,7 @@ Difference are to be found in
       <mapping class="eu.etaxonomy.cdm.model.description.DescriptionElementSource"/>
       <mapping class="eu.etaxonomy.cdm.model.description.Distribution"/>
       <mapping class="eu.etaxonomy.cdm.model.description.Feature"/>
+      <mapping class="eu.etaxonomy.cdm.model.description.FeatureState"/>
       <mapping class="eu.etaxonomy.cdm.model.description.Character"/>
       <mapping class="eu.etaxonomy.cdm.model.description.KeyStatement"/>
       <mapping class="eu.etaxonomy.cdm.model.description.MediaKey"/>

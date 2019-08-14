@@ -9,15 +9,24 @@
 package eu.etaxonomy.cdm.model.description;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermNode;
 
 /**
@@ -38,15 +47,29 @@ import eu.etaxonomy.cdm.model.term.TermNode;
 @XmlRootElement(name = "FeatureState")
 @Entity
 @Audited
-public class FeatureState extends CdmBase {
+public class FeatureState extends VersionableEntity {
 
     private static final long serialVersionUID = -421832597710084356L;
+    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(FeatureState.class);
 
+    @XmlElement(name = "Feature")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity=DefinedTermBase.class)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    @NotNull
     private Feature feature;
 
+    @XmlElement(name = "State")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity=DefinedTermBase.class)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    @NotNull
     private State state;
-    /* ***************** CONSTRUCTOR AND FACTORY METHODS **********************************/
+
+//*************** CONSTRUCTOR AND FACTORY METHODS **********************************/
 
     public static FeatureState NewInstance() {
         return new FeatureState();
@@ -84,7 +107,14 @@ public class FeatureState extends CdmBase {
     }
 
 
-//*********************************** CLONE *********************************************************/
+// ******************************* TO STRING *******************************************/
+    @Override
+    public String toString() {
+        return "FeatureState [feature=" + feature + ", state=" + state + "]";
+    }
+
+//*********************************** CLONE ********************************************/
+
 
     @Override
     public Object clone() throws CloneNotSupportedException {
