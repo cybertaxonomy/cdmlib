@@ -275,6 +275,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 
 		try {
 		    subMonitor.beginTask("update titles for " + clazz.getSimpleName(), Long.valueOf(count).intValue());
+		    subMonitor.setTaskName("Update " + clazz.getSimpleName());
 
 
     		//SubProgressMonitor subMonitor = monitor.("update titles for " + clazz.getSimpleName(), Long.valueOf(count).intValue());
