@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.model.term.TermNode;
  * @author a.mueller
  * @since 08.08.2019
  */
-@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name="FeatureState", factoryMethod="NewInstance", propOrder = {
         "feature",
         "state"

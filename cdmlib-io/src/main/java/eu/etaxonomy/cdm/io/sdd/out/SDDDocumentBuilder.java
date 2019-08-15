@@ -53,6 +53,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.FeatureState;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
@@ -80,8 +81,8 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermBase;
-import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermNode;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
@@ -101,7 +102,6 @@ public class SDDDocumentBuilder {
 	private final Map<Person, String> agents = new HashMap<>();
 	private final Map<TaxonName, String> taxonNames = new HashMap<>();
 	private final Map<Feature, String> characters = new HashMap<>();
-	private final Map<TermNode, String> featureNodes = new HashMap<>();
 	private final Map<Feature, String> descriptiveConcepts = new HashMap<>();
 	private final Map<TaxonDescription, String> codedDescriptions = new HashMap<>();
 	private final Map<Media, String> medias = new HashMap<>();
@@ -113,7 +113,6 @@ public class SDDDocumentBuilder {
 	private final Map<NamedArea, String> namedAreas = new HashMap<>();
 	private final Map<DerivedUnit, String> specimens = new HashMap<>();
 
-	private final Map<VersionableEntity, String> features = new HashMap<>();
 	private int agentsCount = 0;
 	private int articlesCount = 0;
 	private int codedDescriptionsCount = 0;
@@ -199,9 +198,7 @@ public class SDDDocumentBuilder {
 	private final String NEWLINE = System.getProperty("line.separator");
 
 	public SDDDocumentBuilder() throws SAXException, IOException {
-
 		document = new DocumentImpl();
-
 	}
 
 	public void marshal(SDDDataSet cdmSource, File sddDestination)
@@ -1309,10 +1306,10 @@ public class SDDDocumentBuilder {
 			ElementImpl elDependecyRules = new ElementImpl(document,
 					"DependecyRules");
 			if (parent.getInapplicableIf() != null) {
-				Set<State> innaplicableIf = parent.getInapplicableIf();
-				ElementImpl elInnaplicableIf = new ElementImpl(document,
-						"InapplicableIf");
-				for (State state : innaplicableIf) {
+				Set<FeatureState> innaplicableIf = parent.getInapplicableIf();
+				ElementImpl elInnaplicableIf = new ElementImpl(document, "InapplicableIf");
+				for (FeatureState featureState : innaplicableIf) {
+				    State state = featureState.getState();
 					ElementImpl elState = new ElementImpl(document, STATE);
 					buildReference(state, states, REF, elState, "State",
 							statesCount);
@@ -1322,12 +1319,13 @@ public class SDDDocumentBuilder {
 				dependencies = true;
 			}
 			if (parent.getOnlyApplicableIf() != null) {
-				Set<State> onlyApplicableIf = parent.getOnlyApplicableIf();
+				Set<FeatureState> onlyApplicableIf = parent.getOnlyApplicableIf();
 				ElementImpl elOnlyApplicableIf = new ElementImpl(document,
 						"OnlyApplicableIf");
-				for (State state : onlyApplicableIf) {
+				for (FeatureState featureState : onlyApplicableIf) {
 					ElementImpl elState = new ElementImpl(document, STATE);
-					buildReference(state, states, REF, elState, "State",
+					State state = featureState.getState();
+                    buildReference(state, states, REF, elState, "State",
 							statesCount);
 					elOnlyApplicableIf.appendChild(elState);
 				}
