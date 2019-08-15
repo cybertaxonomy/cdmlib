@@ -36,8 +36,7 @@ import eu.etaxonomy.cdm.model.term.TermType;
  * @author a.mueller
  * @since 04.05.2017
  */
-
-@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name="Feature", factoryMethod="NewInstance", propOrder = {
         "structure",
         "structureModifier",
