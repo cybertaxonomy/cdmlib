@@ -398,7 +398,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	 */
 	@Test
 	@DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
-@Ignore
+	@Ignore
 	public void testImportAssociatedSpecimenSamePopulation() throws ParseException {
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6_sibling_association.xml";
 	    URL url = this.getClass().getResource(inputFile);
@@ -443,7 +443,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	    assertEquals("Wrong derivation type!", DerivationEventType.DNA_EXTRACTION(), derivedFrom.getType());
 	    assertEquals("Wrong number of originals", 1, derivedFrom.getOriginals().size());
 	    //TODO
-//	    assertTrue(derivedFrom.getOriginals().iterator().next() instanceof FieldUnit);
+	    //assertTrue(derivedFrom.getOriginals().iterator().next() instanceof FieldUnit);
 	    assertEquals("DNA Bank", dnaSample.getCollection().getCode());
 	    assertEquals(SpecimenOrObservationType.DnaSample, dnaSample.getRecordBasis());
 

@@ -31,7 +31,6 @@ import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.service.DeleteResult;
 import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
 import eu.etaxonomy.cdm.common.StreamUtils;
-import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;
 import eu.etaxonomy.cdm.ext.occurrence.bioCase.BioCaseQueryServiceWrapper;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
@@ -322,8 +321,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
             }
         }
-        	
-        
+
+
 
         return;
     }
@@ -429,9 +428,9 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                                 	logger.debug("Deletion of field unit " + associatedFieldUnit.getFieldNumber() + " not successfull");
                                 }
                                 state.setFieldUnit(currentFieldUnit);
-                                	
+
                                 //}
-                               
+
                             }
                             state.getReport().addDerivate(associatedUnit, currentUnit, state.getConfig());
                         }
@@ -612,7 +611,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             if (derivedUnitFacade.getFieldUnit(false) != null){
             	fieldNumber = derivedUnitFacade.getFieldUnit(false).getFieldNumber();
             }
-            
+
             derivedUnitFacade.setFieldNumber(NB(state.getDataHolder().getFieldNumber()));
             save(unitsGatheringEvent.getLocality(), state);
 
@@ -1079,12 +1078,12 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                                                                                                   // deleted
                                     ) {
                                         currentFieldUnit.removeDerivationEvent(currentDerivedFrom);
-                                        
+
                                         if (currentFieldUnit.getDerivationEvents().isEmpty()){
                                         	DeleteResult result = state.getCdmRepository().getOccurrenceService().delete(currentFieldUnit, deleteConfig);
-                                        	
+
                                         }else{
-                                        	
+
                                         	logger.debug("there are still derivation events in fieldUnit " + currentFieldUnit.getId());
                                         }
 
@@ -1170,7 +1169,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                                 	deleteConfig.setDeleteChildren(false);
                                     DeleteResult result = state.getCdmRepository().getOccurrenceService().delete(associatedFieldUnit, deleteConfig);
                                     state.setFieldUnit(currentFieldUnit);
-                                   
+
 //                                }
                                 if (updatedDerivationEvent.getOriginals().isEmpty()){
                                    // state.getCdmRepository().getOccurrenceService().deleteDerivationEvent(updatedDerivationEvent);
@@ -1339,6 +1338,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         DerivedUnitFacade derivedUnitFacade = DerivedUnitFacade.NewInstance(type);
         derivedUnitFacade.setFieldUnit(state.getFieldUnit(state.getDataHolder().getFieldNumber()));
         derivedUnitFacade.setDerivedUnitKindOfUnit(kindOfUnit);
+        derivedUnitFacade.setPreferredStableUri(state.getDataHolder().getPreferredStableUri());
         // derivedUnitFacade.setDerivedUnitKindOfUnit(kindOfUnit);
         return derivedUnitFacade;
     }
