@@ -393,20 +393,19 @@ public class TaxonNodeServiceImpl
             taxonRelationship.setFromTaxon(null);
         }
 
-
         //Move descriptions to new taxon
         List<TaxonDescription> descriptions = new ArrayList<TaxonDescription>( oldTaxon.getDescriptions()); //to avoid concurrent modification errors (newAcceptedTaxon.addDescription() modifies also oldtaxon.descritpions())
         for(TaxonDescription description : descriptions){
             String message = "Description copied from former accepted taxon: %s (Old title: %s)";
             message = String.format(message, oldTaxon.getTitleCache(), description.getTitleCache());
             description.setTitleCache(message, true);
-//            for (DescriptionElementBase element: description.getElements()){
-//                for (DescriptionElementSource source: element.getSources()){
-//                    if (source.getNameUsedInSource() == null){
-//                        source.setNameUsedInSource(newSynonymName);
-//                    }
-//                }
-//            }
+            for (DescriptionElementBase element: description.getElements()){
+                for (DescriptionElementSource source: element.getSources()){
+                    if (source.getNameUsedInSource() == null){
+                        source.setNameUsedInSource(newSynonymName);
+                    }
+                }
+            }
             //oldTaxon.removeDescription(description, false);
             newAcceptedTaxon.addDescription(description);
         }
