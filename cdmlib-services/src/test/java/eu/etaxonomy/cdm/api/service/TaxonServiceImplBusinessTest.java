@@ -99,7 +99,7 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 	public final void testSwapSynonymAndAcceptedTaxon() {
 		t1.addSynonym(s1, homoTypicSynonymType);
 
-		service.swapSynonymAndAcceptedTaxon(s1, t1);
+		service.swapSynonymAndAcceptedTaxon(s1, t1, true);
 	}
 
 	/**

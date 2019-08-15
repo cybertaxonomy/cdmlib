@@ -121,10 +121,11 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	 * @param synonymType
 	 * @param citation
 	 * @param citationMicroReference
+	 * @param setNameInSource
 	 * @return
 	 *
 	 */
-	public DeleteResult makeTaxonNodeASynonymOfAnotherTaxonNode(TaxonNode oldTaxonNode, TaxonNode newAcceptedTaxonNode, SynonymType synonymType, Reference citation, String citationMicroReference) ;
+	public DeleteResult makeTaxonNodeASynonymOfAnotherTaxonNode(TaxonNode oldTaxonNode, TaxonNode newAcceptedTaxonNode, SynonymType synonymType, Reference citation, String citationMicroReference, boolean setNameInSource) ;
 
 	/**
 	 * Changes the taxa associated with the given taxon nodes into synonyms of the new accepted taxon node.
@@ -135,18 +136,20 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	 * @param synonymType
 	 * @param citation
 	 * @param citationMicroReference
+	 * @param setNameInSource
 	 * @return
 	 *
 	 */
 	UpdateResult makeTaxonNodeSynonymsOfAnotherTaxonNode(Set<UUID> oldTaxonNodeUuids, UUID newAcceptedTaxonNodeUUIDs,
-			SynonymType synonymType, Reference citation, String citationMicroReference);
+			SynonymType synonymType, Reference citation, String citationMicroReference, boolean setNameInSource);
 
 
 	public UpdateResult makeTaxonNodeASynonymOfAnotherTaxonNode(UUID oldTaxonNodeUuid,
 	        UUID newAcceptedTaxonNodeUUID,
 	        SynonymType synonymType,
 	        Reference citation,
-	        String citationMicroReference) ;
+	        String citationMicroReference,
+	        boolean setNameInSource) ;
 
 
     /**

@@ -175,7 +175,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         UUID uuidT4 = t4.getUuid();
         t4 = (Taxon) taxonService.find(uuidT4);
         TaxonName name4 = nameService.find(t4.getName().getUuid());
-        result = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node4, node2, synonymType, reference, referenceDetail);
+        result = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node4, node2, synonymType, reference, referenceDetail, true);
         if (result.isError() || result.isAbort()){
             Assert.fail();
         }
@@ -183,7 +183,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         assertNull(t4);
 
 		//Taxon can't be deleted because of the polytomous key node
-		result = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node1, node2, synonymType, reference, referenceDetail);
+		result = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node1, node2, synonymType, reference, referenceDetail, true);
 		if (result.isError() || result.isAbort()){
 			Assert.fail();
 		}
@@ -264,7 +264,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
 		//do it
 		DeleteResult result = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode
-		        (node1, node2, synonymType, reference, referenceDetail);
+		        (node1, node2, synonymType, reference, referenceDetail, true);
 
 		//post conditions
 		if (!result.getUpdatedObjects().iterator().hasNext()){

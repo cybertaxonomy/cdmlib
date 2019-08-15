@@ -544,7 +544,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      * 	old description
      * @return
      */
-    public UpdateResult moveDescriptionElementsToDescription(Collection<DescriptionElementBase> descriptionElements, DescriptionBase targetDescription, boolean isPaste);
+    public UpdateResult moveDescriptionElementsToDescription(Collection<DescriptionElementBase> descriptionElements, DescriptionBase targetDescription, boolean isPaste, boolean setNameInSource);
 
     /**
      * Pager method to get all {@link NamedAreas} instances which are currently used
@@ -574,14 +574,14 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      * @param targetTaxon
      * @return
      */
-    public UpdateResult moveTaxonDescriptions(Taxon sourceTaxon, Taxon targetTaxon);
+    public UpdateResult moveTaxonDescriptions(Taxon sourceTaxon, Taxon targetTaxon, boolean setNameInSource);
 
     /**
      * @param sourceTaxonUuid
      * @param targetTaxonUuid
      * @return
      */
-    public UpdateResult moveTaxonDescriptions(UUID sourceTaxonUuid, UUID targetTaxonUuid);
+    public UpdateResult moveTaxonDescriptions(UUID sourceTaxonUuid, UUID targetTaxonUuid, boolean setNameInSource);
 
 
     /**
@@ -591,7 +591,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      * @return
      */
     public UpdateResult moveDescriptionElementsToDescription(Set<UUID> descriptionElementUUIDs, UUID targetDescriptionUuid,
-            boolean isCopy);
+            boolean isCopy, boolean setNameInSource);
 
     /**
      * @param descriptionElementUUIDs
@@ -601,14 +601,14 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      * @return
      */
     public UpdateResult moveDescriptionElementsToDescription(Set<UUID> descriptionElementUUIDs, UUID targetTaxonUuid,
-            String moveMessage, boolean isCopy);
+            String moveMessage, boolean isCopy, boolean setNameInSource);
 
     /**
      * @param descriptionUUID
      * @param targetTaxonUuid
      * @return
      */
-    public UpdateResult moveTaxonDescription(UUID descriptionUuid, UUID targetTaxonUuid);
+    public UpdateResult moveTaxonDescription(UUID descriptionUuid, UUID targetTaxonUuid, boolean setNameInSource);
 
     /**
      * @param descriptionElements
@@ -625,7 +625,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      * @return
      */
     UpdateResult moveDescriptionElementsToDescription(Set<UUID> descriptionElementUUIDs,
-            DescriptionBase targetDescription, boolean isCopy);
+            DescriptionBase targetDescription, boolean isCopy, boolean setNameInSource);
 
 
 

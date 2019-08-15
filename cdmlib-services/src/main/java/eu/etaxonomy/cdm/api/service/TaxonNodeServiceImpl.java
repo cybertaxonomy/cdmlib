@@ -285,7 +285,7 @@ public class TaxonNodeServiceImpl
     @Override
     @Transactional(readOnly = false)
     public DeleteResult makeTaxonNodeASynonymOfAnotherTaxonNode(TaxonNode oldTaxonNode, TaxonNode newAcceptedTaxonNode,
-            SynonymType synonymType, Reference citation, String citationMicroReference)  {
+            SynonymType synonymType, Reference citation, String citationMicroReference, boolean setNameInSource)  {
 
         // TODO at the moment this method only moves synonym-, concept relations and descriptions to the new accepted taxon
         // in a future version we also want to move cdm data like annotations, marker, so., but we will need a policy for that
@@ -399,10 +399,12 @@ public class TaxonNodeServiceImpl
             String message = "Description copied from former accepted taxon: %s (Old title: %s)";
             message = String.format(message, oldTaxon.getTitleCache(), description.getTitleCache());
             description.setTitleCache(message, true);
-            for (DescriptionElementBase element: description.getElements()){
-                for (DescriptionElementSource source: element.getSources()){
-                    if (source.getNameUsedInSource() == null){
-                        source.setNameUsedInSource(newSynonymName);
+            if (setNameInSource) {
+                for (DescriptionElementBase element: description.getElements()){
+                    for (DescriptionElementSource source: element.getSources()){
+                        if (source.getNameUsedInSource() == null){
+                            source.setNameUsedInSource(newSynonymName);
+                        }
                     }
                 }
             }
@@ -445,10 +447,11 @@ public class TaxonNodeServiceImpl
             UUID newAcceptedTaxonNodeUUIDs,
             SynonymType synonymType,
             Reference citation,
-            String citationMicroReference) {
+            String citationMicroReference,
+            boolean setNameInSource) {
     	UpdateResult result = new UpdateResult();
     	for (UUID nodeUuid: oldTaxonNodeUuids) {
-    		result.includeResult(makeTaxonNodeASynonymOfAnotherTaxonNode(nodeUuid, newAcceptedTaxonNodeUUIDs, synonymType, citation, citationMicroReference));
+    		result.includeResult(makeTaxonNodeASynonymOfAnotherTaxonNode(nodeUuid, newAcceptedTaxonNodeUUIDs, synonymType, citation, citationMicroReference, setNameInSource));
     	}
     	return result;
     }
@@ -459,7 +462,8 @@ public class TaxonNodeServiceImpl
             UUID newAcceptedTaxonNodeUUID,
             SynonymType synonymType,
             Reference citation,
-            String citationMicroReference) {
+            String citationMicroReference,
+            boolean setNameInSource) {
 
         TaxonNode oldTaxonNode = dao.load(oldTaxonNodeUuid);
         TaxonNode oldTaxonParentNode = oldTaxonNode.getParent();
@@ -469,7 +473,7 @@ public class TaxonNodeServiceImpl
                 newTaxonNode,
                 synonymType,
                 citation,
-                citationMicroReference);
+                citationMicroReference, setNameInSource);
         result.addUpdatedCdmId(new CdmEntityIdentifier(oldTaxonParentNode.getId(), TaxonNode.class));
         result.addUpdatedCdmId(new CdmEntityIdentifier(newTaxonNode.getId(), TaxonNode.class));
         result.setCdmEntity(oldTaxonParentNode);

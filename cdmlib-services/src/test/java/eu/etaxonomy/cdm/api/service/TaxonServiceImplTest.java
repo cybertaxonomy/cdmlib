@@ -29,6 +29,7 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.config.IncludedTaxonConfiguration;
+import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
 import eu.etaxonomy.cdm.api.service.config.NameDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
 import eu.etaxonomy.cdm.api.service.config.SynonymDeletionConfigurator;
@@ -250,20 +251,25 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 			e.printStackTrace();
 		}
 
-        service.swapSynonymAndAcceptedTaxon(synonym, taxWithSyn);
+        UpdateResult result = service.swapSynonymAndAcceptedTaxon(synonym, taxWithSyn, true);
 
         // find forces flush
-        Taxon tax = (Taxon)service.find(uuidTaxWithSyn);
-        tax.removeSynonym(synonym);
-        tax.addHomotypicSynonym(synonym);
-        service.saveOrUpdate(tax);
-        TaxonBase<?> syn = service.find(uuidSyn);
+        Taxon tax = (Taxon)service.find(result.getCdmEntity().getUuid());
+        MatchingTaxonConfigurator configurator = MatchingTaxonConfigurator.NewInstance();
+        configurator.setTaxonNameTitle("Test3");
+        List<TaxonBase> synList = service.findTaxaByName(configurator);
+        HomotypicalGroup groupTest2 = null;
+        if (synList.size() > 0){
+            TaxonBase syn = synList.get(0);
+            groupTest2 = syn.getHomotypicGroup();
+            assertTrue(tax.getSynonyms().contains(syn));
+        }else{
+            Assert.fail("There should be a synonym with name Test3");
+        }
 
         assertTrue(tax.getName().getTitleCache().equals("Test2"));
 
-        HomotypicalGroup groupTest = tax.getHomotypicGroup();
-        HomotypicalGroup groupTest2 = syn.getHomotypicGroup();
-        assertEquals(groupTest, groupTest2);
+
 
     }
 
