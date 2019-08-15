@@ -85,6 +85,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
     @Parameter(name="includeParentTerms", value="true")
 })
 public class NamedArea extends OrderedTermBase<NamedArea> {
+
     private static final long serialVersionUID = 6248434369557403036L;
     private static final Logger logger = Logger.getLogger(NamedArea.class);
 
