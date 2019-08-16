@@ -289,6 +289,19 @@ public class DescriptiveDataSetService
 
         UpdateResult result = new UpdateResult();
 
+        // clone specimen descriptions
+        // create a snapshot of those descriptions that were used to create the aggregated descriptions
+        // TODO implement when the clones descriptions can be attached to taxon descriptions as sources
+//        for (DescriptionBase<?> descriptionBase : descriptions) {
+//            if(descriptionBase instanceof SpecimenDescription){
+//                SpecimenDescription specimenDescription = (SpecimenDescription)descriptionBase;
+//                SpecimenOrObservationBase<?> specimenOrObservation = specimenDescription.getDescribedSpecimenOrObservation();
+//                SpecimenDescription clone = (SpecimenDescription) specimenDescription.clone();
+//                clone.setDescriptionType(DescriptionType.AggregationClone);
+//                specimenOrObservation.addDescription(clone);
+//            }
+//        }
+
         // sort descriptions by taxa
         Map<TaxonNode, Set<UUID>> taxonNodeToSpecimenDescriptionMap = new HashMap<>();
         for (DescriptionBase descriptionBase : descriptions) {
