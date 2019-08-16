@@ -27,20 +27,45 @@ import eu.etaxonomy.cdm.model.term.IEnumTerm;
  */
 public enum DescriptionType implements IEnumTerm<DescriptionType>{
 
+    /**
+     * The description has been computed by a machine, e.g. by aggregation or any
+     * other algorithm. Usually such descriptions should not be edited by users manually.
+     * {@link DescriptionType#COMPUTED} is a base type for more specific types such as
+     * {@link DescriptionType#AGGREGATED}
+     */
     @XmlEnumValue("COM")
     COMPUTED(UUID.fromString("7048c64e-9e61-41ed-b561-5765bc8e4ba2"), "Computed", "COM", null),
 
+    /**
+     * The description has been computed by a machine by aggregation of data.
+     * Usually such descriptions should not be edited by users manually.
+     */
     @XmlEnumValue("AGG")
     AGGREGATED(UUID.fromString("d1c02cbf-e27c-49ee-919a-7393d953ef36"), "Aggregated", "AGG", COMPUTED),
 
+    /**
+     * Description is a clone which was used to fix a certain state of data to define
+     * it as a source for e.g. computed data.
+     * E.g. when computing a taxon description the underlying specimen descriptions might
+     * be cloned and locked for editing to keep them as exact source for the computed
+     * taxon description.
+     */
     @XmlEnumValue("CLO")
     CLONE_FOR_SOURCE(UUID.fromString("2d58416f-506b-40c5-bdb6-60b6735c92d3"), "Clone", "CLO", null),
 
+    /**
+     * Kind of a marker to define that data comes from a secondary source. E.g. if
+     * taxon descriptions are computed mostly on primary data (e.g. specimen descriptions)
+     * some data might come from literature though to complete the description.
+     * This literature data then should be marked as "Secondary data"
+     */
     @XmlEnumValue("SEC")
     SECONDARY_DATA(UUID.fromString("382e6b00-9725-4877-bd50-18ee263fe90e"), "Secondary Data", "SEC", null),
 
     /**
-     * If Descriptions are aggregated, these values can be taken as default if explicit values do not exist.
+     * If Descriptions are aggregated for e.g. taxon descriptions, often explicit data for some parameters
+     * are missing as all underlying data have the same value on this parameter.
+     * A description can be defined to hold default values for these parameters.
      */
     @XmlEnumValue("DVA")
     DEFAULT_VALUES_FOR_AGGREGATION(UUID.fromString("e4a51ab3-7040-4f60-9d08-51782c2255a1"), "Default Values for Aggregation", "DVA", null),
