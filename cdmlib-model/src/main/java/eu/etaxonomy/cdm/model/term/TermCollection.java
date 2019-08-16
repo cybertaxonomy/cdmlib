@@ -62,7 +62,7 @@ public abstract class TermCollection<TERM extends DefinedTermBase, REL extends T
     //#7372 indicates if this tree/graph allows duplicated terms/features
     private boolean allowDuplicates = false;
 
-    private boolean orderRelevant = false;
+    private boolean orderRelevant = true;
 
     private boolean isFlat = false;
 
