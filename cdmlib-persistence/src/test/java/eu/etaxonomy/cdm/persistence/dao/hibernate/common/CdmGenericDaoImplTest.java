@@ -212,7 +212,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		List<Reference> list = cdmGenericDao.list(Reference.class, 10, 0, null, null);
 //        System.out.println("ref1: " + ref1Uuid + " ref2: " + ref2Uuid);
         for (Reference ref: list){
-            System.out.println("reference: " + ref.getUuid());
+//            System.out.println("reference: " + ref.getUuid());
         }
 		try {
 			cdmGenericDao.merge(ref2, ref1, null);

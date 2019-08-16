@@ -68,9 +68,16 @@ public class ColumnAdder extends AuditedSchemaUpdaterStepBase {
         return new ColumnAdder(stepList, stepName, tableName, "DTYPE", Datatype.VARCHAR, 31, includeAudTable, defaultValue, true, null);
     }
 
+    /**
+     * Adds a string column with the given length and default value <code>null</code>
+     */
 	public static final ColumnAdder NewStringInstance(List<? extends ISchemaUpdaterStep> stepList, String stepName, String tableName, String newColumnName, int length, boolean includeAudTable){
 		return new ColumnAdder(stepList, stepName, tableName, newColumnName, Datatype.VARCHAR, length, includeAudTable, null, false, null);
 	}
+
+    /**
+     * Adds a string column with the given length and the given default value
+     */
     public static final ColumnAdder NewStringInstance(List<? extends ISchemaUpdaterStep> stepList, String stepName, String tableName, String newColumnName, int length, String defaultValue, boolean includeAudTable){
         return new ColumnAdder(stepList, stepName, tableName, newColumnName, Datatype.VARCHAR, length, includeAudTable, defaultValue, false, null);
     }
