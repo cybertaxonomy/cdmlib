@@ -54,7 +54,7 @@ public class TermVocabularyDaoImplTest extends CdmIntegrationTest {
     @DataSets({
         @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
         @DataSet("/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")}
-  )
+    )
     public void testListVocabularyByType() {
         //test class with no subclasses
         List<TermVocabulary> rankVocabularies = dao.listByTermType(TermType.Rank, false, null, null, null, null);
