@@ -111,9 +111,8 @@ public class TermTreeServiceImpl
      * Returns the featureTree specified by the given <code>uuid</code>.
      * The specified featureTree either can be one of those stored in the CDM database or can be the
      * DefaultFeatureTree (contains all Features in use).
-     * The uuid of the DefaultFeatureTree is defined in {@link IFeatureTreeService#DefaultFeatureTreeUuid}.
-     * The DefaultFeatureTree is also returned if no feature tree at all is stored in the cdm database.
-     *
+     * The uuid of the DefaultFeatureTree is defined in {@link ITermTreeDao#DefaultFeatureTreeUuid}.
+      *
      * @see eu.etaxonomy.cdm.api.service.ServiceBase#load(java.util.UUID, java.util.List)
      */
     @Override
