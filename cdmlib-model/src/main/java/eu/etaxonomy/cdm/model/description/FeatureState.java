@@ -26,7 +26,6 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
-import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermNode;
 
 /**
@@ -56,7 +55,7 @@ public class FeatureState extends VersionableEntity {
     @XmlElement(name = "Feature")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity=DefinedTermBase.class)
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity=Feature.class)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @NotNull
     private Feature feature;
@@ -64,7 +63,7 @@ public class FeatureState extends VersionableEntity {
     @XmlElement(name = "State")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity=DefinedTermBase.class)
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity=State.class)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @NotNull
     private State state;
