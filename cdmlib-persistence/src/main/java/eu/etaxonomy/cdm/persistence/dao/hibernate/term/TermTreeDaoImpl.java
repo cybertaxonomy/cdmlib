@@ -76,7 +76,8 @@ public class TermTreeDaoImpl extends IdentifiableDaoBase<TermTree> implements IT
 
     @Override
     public TermTree load(UUID uuid, List<String> propertyPaths) {
-        if (uuid.equals(DefaultFeatureTreeUuid) || count() == 0){
+        TermTree result = super.load(uuid, propertyPaths);
+        if (result == null && uuid.equals(DefaultFeatureTreeUuid)){
             return createDefaultFeatureTree();
         }
         return super.load(uuid, propertyPaths);
@@ -84,10 +85,7 @@ public class TermTreeDaoImpl extends IdentifiableDaoBase<TermTree> implements IT
 
     @Override
     public TermTree load(UUID uuid) {
-        if (uuid.equals(DefaultFeatureTreeUuid) || count() == 0){
-            return createDefaultFeatureTree();
-        }
-        return super.load(uuid);
+        return load(uuid, null);
     }
 
     private TermTree<Feature> createDefaultFeatureTree() {
