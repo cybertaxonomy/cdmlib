@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
+package eu.etaxonomy.cdm.persistence.dao.hibernate.term;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

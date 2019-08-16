@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
-import eu.etaxonomy.cdm.persistence.dao.description.ITermNodeDao;
+import eu.etaxonomy.cdm.persistence.dao.term.ITermNodeDao;
 
 /**
  * @author n.hoffmann

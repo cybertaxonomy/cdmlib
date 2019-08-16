@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.persistence.dao.description;
+package eu.etaxonomy.cdm.persistence.dao.term;
 
 import java.util.List;
 import java.util.UUID;

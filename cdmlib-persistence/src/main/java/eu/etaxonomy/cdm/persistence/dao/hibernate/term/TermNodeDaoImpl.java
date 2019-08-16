@@ -4,7 +4,7 @@
 * http://www.e-taxonomy.eu
 */
 
-package eu.etaxonomy.cdm.persistence.dao.hibernate.description;
+package eu.etaxonomy.cdm.persistence.dao.hibernate.term;
 
 import java.util.List;
 import java.util.Set;
@@ -15,8 +15,8 @@ import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermType;
-import eu.etaxonomy.cdm.persistence.dao.description.ITermNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.VersionableDaoBase;
+import eu.etaxonomy.cdm.persistence.dao.term.ITermNodeDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**

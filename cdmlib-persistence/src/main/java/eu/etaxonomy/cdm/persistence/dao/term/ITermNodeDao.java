@@ -4,7 +4,7 @@
 * http://www.e-taxonomy.eu
 */
 
-package eu.etaxonomy.cdm.persistence.dao.description;
+package eu.etaxonomy.cdm.persistence.dao.term;
 
 import java.util.List;
 
