@@ -25,6 +25,7 @@ import org.hibernate.usertype.UserType;
 import org.jadira.usertype.dateandtime.shared.spi.AbstractUserType;
 
 import eu.etaxonomy.cdm.model.common.AuthorityType;
+import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.media.ExternalLinkType;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName;
 import eu.etaxonomy.cdm.model.molecular.SequenceDirection;
@@ -141,6 +142,8 @@ public class EnumUserType<E extends Enum<E>>  extends AbstractUserType implement
             return PermissionClass.getByKey(val);
         }else if (clazz.equals(CRUD.class)){
             return CRUD.getByKey(val);
+        }else if (clazz.equals(DescriptionType.class)){
+            return DescriptionType.getByKey(val);
         }else{
         	throw new IllegalArgumentException(String.format("EnumType %s not supported by %s.", clazz.getSimpleName(), EnumUserType.class.getSimpleName()));
         }

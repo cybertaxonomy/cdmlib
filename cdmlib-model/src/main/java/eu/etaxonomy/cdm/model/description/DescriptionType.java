@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.term.IEnumTerm;
  * @since 14.08.2019
  *
  */
-public enum DescriptionState implements IEnumTerm<DescriptionState>{
+public enum DescriptionType implements IEnumTerm<DescriptionType>{
 
     @XmlEnumValue("COM")
     COMPUTED(UUID.fromString("7048c64e-9e61-41ed-b561-5765bc8e4ba2"), "Computed", "COM", null),
@@ -48,20 +48,20 @@ public enum DescriptionState implements IEnumTerm<DescriptionState>{
     ;
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(DescriptionState.class);
+    private static final Logger logger = Logger.getLogger(DescriptionType.class);
 
 
-    private DescriptionState(UUID uuid, String defaultString, String key, DescriptionState parent){
+    private DescriptionType(UUID uuid, String defaultString, String key, DescriptionType parent){
         delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, defaultString, key, parent);
     }
 
 // *************************** DELEGATE **************************************/
 
-    private static EnumeratedTermVoc<DescriptionState> delegateVoc;
-    private IEnumTerm<DescriptionState> delegateVocTerm;
+    private static EnumeratedTermVoc<DescriptionType> delegateVoc;
+    private IEnumTerm<DescriptionType> delegateVocTerm;
 
     static {
-        delegateVoc = EnumeratedTermVoc.getVoc(DescriptionState.class);
+        delegateVoc = EnumeratedTermVoc.getVoc(DescriptionType.class);
     }
 
     @Override
@@ -77,19 +77,19 @@ public enum DescriptionState implements IEnumTerm<DescriptionState>{
     public UUID getUuid() {return delegateVocTerm.getUuid();}
 
     @Override
-    public DescriptionState getKindOf() {return delegateVocTerm.getKindOf();}
+    public DescriptionType getKindOf() {return delegateVocTerm.getKindOf();}
 
     @Override
-    public Set<DescriptionState> getGeneralizationOf() {return delegateVocTerm.getGeneralizationOf();}
+    public Set<DescriptionType> getGeneralizationOf() {return delegateVocTerm.getGeneralizationOf();}
 
     @Override
-    public boolean isKindOf(DescriptionState ancestor) {return delegateVocTerm.isKindOf(ancestor);   }
+    public boolean isKindOf(DescriptionType ancestor) {return delegateVocTerm.isKindOf(ancestor);   }
 
     @Override
-    public Set<DescriptionState> getGeneralizationOf(boolean recursive) {return delegateVocTerm.getGeneralizationOf(recursive);}
+    public Set<DescriptionType> getGeneralizationOf(boolean recursive) {return delegateVocTerm.getGeneralizationOf(recursive);}
 
-    public static DescriptionState getByKey(String key){return delegateVoc.getByKey(key);}
-    public static DescriptionState getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
+    public static DescriptionType getByKey(String key){return delegateVoc.getByKey(key);}
+    public static DescriptionType getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
 
 
     /**
@@ -98,34 +98,34 @@ public enum DescriptionState implements IEnumTerm<DescriptionState>{
      * Note: Computed is a base type. It has children like {@link #AGGREGATED}.
      * Also for them this method returns <code>true</code>.
      */
-    public static boolean isComputed(EnumSet<DescriptionState> set) {
+    public static boolean isComputed(EnumSet<DescriptionType> set) {
         return includesType(set, COMPUTED);
     }
 
-    public static boolean isAggregated(EnumSet<DescriptionState> set) {
+    public static boolean isAggregated(EnumSet<DescriptionType> set) {
         return includesType(set, AGGREGATED);
     }
 
-    public static boolean isCloneForSource(EnumSet<DescriptionState> set) {
-        return includesType(set, DescriptionState.CLONE_FOR_SOURCE);
+    public static boolean isCloneForSource(EnumSet<DescriptionType> set) {
+        return includesType(set, DescriptionType.CLONE_FOR_SOURCE);
     }
 
-    public static boolean isSecondaryData(EnumSet<DescriptionState> set) {
-        return includesType(set, DescriptionState.SECONDARY_DATA);
+    public static boolean isSecondaryData(EnumSet<DescriptionType> set) {
+        return includesType(set, DescriptionType.SECONDARY_DATA);
     }
 
-    public static boolean isDefaultForAggregation(EnumSet<DescriptionState> set) {
-        return includesType(set, DescriptionState.DEFAULT_VALUES_FOR_AGGREGATION);
+    public static boolean isDefaultForAggregation(EnumSet<DescriptionType> set) {
+        return includesType(set, DescriptionType.DEFAULT_VALUES_FOR_AGGREGATION);
     }
 
     /**
      * @param set
      * @return
      */
-    protected static boolean includesType(EnumSet<DescriptionState> set, DescriptionState state) {
-        EnumSet<DescriptionState> all = EnumSet.copyOf(state.getGeneralizationOf(true));
+    protected static boolean includesType(EnumSet<DescriptionType> set, DescriptionType state) {
+        EnumSet<DescriptionType> all = EnumSet.copyOf(state.getGeneralizationOf(true));
         all.add(state);
-        for (DescriptionState st : all){
+        for (DescriptionType st : all){
             if (set.contains(st)){
                 return true;
             }

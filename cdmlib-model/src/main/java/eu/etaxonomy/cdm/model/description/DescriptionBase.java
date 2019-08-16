@@ -145,9 +145,9 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
     @XmlAttribute(name ="Operations")
     @NotNull
     @Type(type = "eu.etaxonomy.cdm.hibernate.EnumSetUserType",
-        parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.description.DescriptionState")}
+        parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.description.DescriptionType")}
     )
-    private EnumSet<DescriptionState> types = EnumSet.noneOf(DescriptionState.class);
+    private EnumSet<DescriptionType> types = EnumSet.noneOf(DescriptionType.class);
 
 //******************************** GETTER / SETTER ***************************/
 
@@ -264,10 +264,10 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
         this.isDefault = isDefault;
     }
 
-    public EnumSet<DescriptionState> getTypes() {
+    public EnumSet<DescriptionType> getTypes() {
         return types;
     }
-    public void setTypes(EnumSet<DescriptionState> types) {
+    public void setTypes(EnumSet<DescriptionType> types) {
         this.types = types;
     }
 
@@ -347,24 +347,24 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
     }
 
     /**
-     * if this is of type {@link DescriptionState#COMPUTED} computed.<BR><BR>
-     * Note: Computed is a base type. It has children like {@link DescriptionState#AGGREGATED}.
+     * if this is of type {@link DescriptionType#COMPUTED} computed.<BR><BR>
+     * Note: Computed is a base type. It has children like {@link DescriptionType#AGGREGATED}.
      * Also for them this method returns <code>true</code>.
      */
     public boolean isComputed() {
-        return DescriptionState.isComputed(types);
+        return DescriptionType.isComputed(types);
     }
     public boolean isAggregated() {
-        return DescriptionState.includesType(types, DescriptionState.AGGREGATED);
+        return DescriptionType.includesType(types, DescriptionType.AGGREGATED);
     }
     public boolean isCloneForSource() {
-        return DescriptionState.includesType(types, DescriptionState.CLONE_FOR_SOURCE);
+        return DescriptionType.includesType(types, DescriptionType.CLONE_FOR_SOURCE);
     }
-    public static boolean isDefaultForAggregation(EnumSet<DescriptionState> set) {
-        return DescriptionState.includesType(set, DescriptionState.DEFAULT_VALUES_FOR_AGGREGATION);
+    public static boolean isDefaultForAggregation(EnumSet<DescriptionType> set) {
+        return DescriptionType.includesType(set, DescriptionType.DEFAULT_VALUES_FOR_AGGREGATION);
     }
-    public static boolean isSecondaryData(EnumSet<DescriptionState> set) {
-        return DescriptionState.includesType(set, DescriptionState.SECONDARY_DATA);
+    public static boolean isSecondaryData(EnumSet<DescriptionType> set) {
+        return DescriptionType.includesType(set, DescriptionType.SECONDARY_DATA);
     }
 
 
