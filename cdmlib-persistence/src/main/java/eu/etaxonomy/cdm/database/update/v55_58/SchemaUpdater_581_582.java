@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ColumnNameChanger;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
@@ -99,11 +100,11 @@ public class SchemaUpdater_581_582 extends SchemaUpdaterBase {
         newColumnName = "onlyApplicableIf_old_id";
         ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
 
-		//DescriptionBase status
-
-
-		//GrantedAuthorities unique
-
+        //#7957 Add type(s) to DescriptionBase
+        stepName = "Add types to DescriptionBase";
+        tableName = "DescriptionBase";
+        newColumnName ="types";
+        ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, 255, "#", INCLUDE_AUDIT);
 
         return stepList;
     }

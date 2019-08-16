@@ -15,9 +15,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.EnumSet;
-import java.util.HashSet;
 import java.util.Properties;
-import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -85,7 +83,7 @@ public class EnumSetUserType<E extends Enum<E>>
 		if(val == null) {
 			return null;
 		} else {
-		    Set<E> result = new HashSet<>();
+		    EnumSet<E> result = EnumSet.noneOf(clazz);
 			String[] splits = val.split(SEP);
 			for (String split:splits){
 			    if (StringUtils.isNotEmpty(split)) {
@@ -96,8 +94,7 @@ public class EnumSetUserType<E extends Enum<E>>
                     result.add(term);
                 }
 			}
-			EnumSet<E> enumSet = EnumSet.copyOf(result);
-			return enumSet;
+			return result;
 		}
 	}
 
