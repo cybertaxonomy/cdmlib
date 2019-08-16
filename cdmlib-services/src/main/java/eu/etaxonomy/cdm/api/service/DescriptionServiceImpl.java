@@ -720,7 +720,7 @@ public class DescriptionServiceImpl
         }
         for (DescriptionElementBase element : descriptionElements){
             DescriptionBase<?> description = element.getInDescription();
-            description = dao.load(description.getUuid());
+            description = HibernateProxyHelper.deproxy(dao.load(description.getUuid()));
             Taxon taxon;
             TaxonName name = null;
             if (description instanceof TaxonDescription){
@@ -735,13 +735,12 @@ public class DescriptionServiceImpl
             try {
                 DescriptionElementBase newElement = (DescriptionElementBase)element.clone();
                 if (setNameInSource) {
-                    for (DescriptionElementBase descElement: descriptionElements){
-                        for (DescriptionElementSource source: element.getSources()){
+                    for (DescriptionElementSource source: newElement.getSources()){
                             if (source.getNameUsedInSource() == null){
                                 source.setNameUsedInSource(name);
                             }
                         }
-                    }
+
                 }
                 targetDescription.addElement(newElement);
             } catch (CloneNotSupportedException e) {
