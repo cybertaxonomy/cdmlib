@@ -104,7 +104,7 @@ public class SchemaUpdater_581_582 extends SchemaUpdaterBase {
         stepName = "Add types to DescriptionBase";
         tableName = "DescriptionBase";
         newColumnName ="types";
-        ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, 255, "#", INCLUDE_AUDIT);
+        ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, 255, "#", INCLUDE_AUDIT).setNotNull(true);
 
         return stepList;
     }
