@@ -25,6 +25,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.common.Language;
@@ -33,6 +34,7 @@ import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author a.babadshanjan
@@ -49,6 +51,10 @@ public class TermVocabularyDaoImplTest extends CdmIntegrationTest {
 	public void setUp() {}
 
     @Test
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+        @DataSet("/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")}
+  )
     public void testListVocabularyByType() {
         //test class with no subclasses
         List<TermVocabulary> rankVocabularies = dao.listByTermType(TermType.Rank, false, null, null, null, null);
@@ -87,17 +93,21 @@ public class TermVocabularyDaoImplTest extends CdmIntegrationTest {
         assertEquals("There should be 2 vocabularies, the empty one and the one that has a language term in", 2, languageVocabulariesAndEmpty.size());
     }
 
-	@Test
+	@Test()
+	@DataSets({
+	      @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+	      @DataSet("/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")}
+	)
 	public void testMissingTermUuids() {
-		Set<UUID> uuidSet = new HashSet<UUID>();
+		Set<UUID> uuidSet = new HashSet<>();
 		uuidSet.add(Language.uuidEnglish);
 		uuidSet.add(Language.uuidFrench);
 		UUID uuidNotExisting = UUID.fromString("e93e8c10-d9d2-4ad6-9907-952da6d139c4");
 		uuidSet.add(uuidNotExisting);
-		Map<UUID, Set<UUID>> uuidVocs = new HashMap<UUID, Set<UUID>>();
+		Map<UUID, Set<UUID>> uuidVocs = new HashMap<>();
 		uuidVocs.put( Language.uuidLanguageVocabulary, uuidSet);
-		Map<UUID, Set<UUID>> notExisting = new HashMap<UUID, Set<UUID>>();
-		Map<UUID, TermVocabulary<?>> vocabularyMap = new HashMap<UUID, TermVocabulary<?>>();
+		Map<UUID, Set<UUID>> notExisting = new HashMap<>();
+		Map<UUID, TermVocabulary<?>> vocabularyMap = new HashMap<>();
 
 		dao.missingTermUuids(uuidVocs, notExisting, vocabularyMap);
 
