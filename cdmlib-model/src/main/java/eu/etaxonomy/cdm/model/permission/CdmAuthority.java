@@ -54,8 +54,7 @@ public class CdmAuthority extends AuthorityBase {
      * and in it's {@link TermVocabulary vocabulary}.
      */
     @XmlAttribute(name ="PermissionClass")
-    @Column(name="permissionClass")
-    @NotNull
+//    @NotNull
     @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
         parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.permission.PermissionClass")}
     )
@@ -65,7 +64,7 @@ public class CdmAuthority extends AuthorityBase {
     private String property;
 
     @XmlAttribute(name ="Operations")
-    @NotNull
+    @NotNull  //an empty operations set will result in "#"
     @Type(type = "eu.etaxonomy.cdm.hibernate.EnumSetUserType",
         parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.permission.CRUD")}
     )
@@ -134,5 +133,19 @@ public class CdmAuthority extends AuthorityBase {
     public void removeOperation(CRUD operation){
         this.operations.remove(operation);
     }
+
+// ************************* CLONE *****************************/
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        CdmAuthority result = (CdmAuthority)super.clone();
+
+        result.operations = this.operations.clone();
+
+        return result;
+    }
+
+
+
 
 }
