@@ -468,9 +468,10 @@ public class TermNode <T extends DefinedTermBase>
 	public void addApplicableState(FeatureState applicableState) {
 		this.onlyApplicableIf.add(applicableState);
 	}
-    public void addApplicableState(Feature feature, State applicableState) {
+    public FeatureState addApplicableState(Feature feature, State applicableState) {
         FeatureState featureState = FeatureState.NewInstance(feature, applicableState);
         addApplicableState(featureState);
+        return featureState;
     }
 
 	/**
@@ -516,9 +517,10 @@ public class TermNode <T extends DefinedTermBase>
 		this.inapplicableIf.add(inapplicableState);
 	}
 
-    public void addInapplicableState(Feature feature, State inapplicableState) {
+    public FeatureState addInapplicableState(Feature feature, State inapplicableState) {
         FeatureState featureState = FeatureState.NewInstance(feature, inapplicableState);
         addInapplicableState(featureState);
+        return featureState;
     }
 
 	/**

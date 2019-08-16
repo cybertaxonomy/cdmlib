@@ -90,7 +90,7 @@ public class FeatureState extends VersionableEntity {
     }
 
 
-/* *************************************************************************************/
+/* *********************************** GETTER /SETTER ***************************************/
 
     public Feature getFeature() {
         return feature;
