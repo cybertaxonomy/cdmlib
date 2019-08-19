@@ -137,7 +137,7 @@ public enum PreferencePredicate implements IEnumTerm<PreferencePredicate>, IPref
     TypeDesignations(UUID.fromString("7b824a7e-49e1-4484-956f-6f6f14628956"), "Type Designations", "name.typeDesignations", null),
     SpecimenTypeDesignationStatus(UUID.fromString("8a155724-2667-42a7-b789-7d826d0cafc9"), "Specimen Type Designation Status", "name.specimenTypeDesignationStatus", null),
     NameTypeDesignationStatus(UUID.fromString("6091668a-9bcf-4c79-8c53-7e4b98de1ccb"), "Name Type Designation Status", "name.nameTypeDesignationStatus", null),
-
+    SortRanksHierarchichally(UUID.fromString("073c34f3-5e20-4dcd-a12b-ca7336f37fb5"), "Sort Ranks Hierarchically", "name.sortRankHierarchically", true),
     //Language
     DefaultLanguage(UUID.fromString("0817d7f3-e88c-4064-be09-bc7adf5c2bd7"), "Default Language", "defaultLanguage", Language.ENGLISH()),
     AvailableLanguages(UUID.fromString("b6851dcb-4138-4a9c-ad56-a3b16f6ee69d"), "Available Languages", "AvailableLanguages", null),
