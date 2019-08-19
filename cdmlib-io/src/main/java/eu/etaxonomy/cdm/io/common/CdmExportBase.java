@@ -12,10 +12,7 @@ package eu.etaxonomy.cdm.io.common;
 import java.io.ByteArrayOutputStream;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import eu.etaxonomy.cdm.api.service.IClassificationService;
-import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -34,13 +31,6 @@ public abstract class CdmExportBase<CONFIG extends ExportConfiguratorBase<STATE,
     private static Logger logger = Logger.getLogger(CdmExportBase.class);
 
     protected ByteArrayOutputStream exportStream;
-
-
-    @Autowired
-    protected IClassificationService classificationService;
-
-    @Autowired
-    protected ITaxonNodeService taxonNodeService;
 
 
 	@Override

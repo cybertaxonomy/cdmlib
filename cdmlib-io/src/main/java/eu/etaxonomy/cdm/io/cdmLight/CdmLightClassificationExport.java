@@ -125,22 +125,18 @@ public class CdmLightClassificationExport
     @Override
     public long countSteps(CdmLightExportState state) {
         TaxonNodeFilter filter = state.getConfig().getTaxonNodeFilter();
-        return taxonNodeService.count(filter);
+        return getTaxonNodeService().count(filter);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void doInvoke(CdmLightExportState state) {
         try {
 
             IProgressMonitor monitor = state.getConfig().getProgressMonitor();
             CdmLightExportConfigurator config = state.getConfig();
-            config.setFieldsTerminatedBy(",");
             if (config.getTaxonNodeFilter().getClassificationFilter() != null
                     && !config.getTaxonNodeFilter().getClassificationFilter().isEmpty()) {
-                Classification classification = this.classificationService
+                Classification classification = getClassificationService()
                         .load(config.getTaxonNodeFilter().getClassificationFilter().get(0).getUuid());
                 state.setRootId(classification.getRootNode().getUuid());
 

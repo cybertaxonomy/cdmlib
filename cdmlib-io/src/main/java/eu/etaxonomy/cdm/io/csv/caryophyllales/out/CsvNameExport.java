@@ -147,7 +147,7 @@ public class CsvNameExport extends CsvNameExportBase {
     @Override
     public long countSteps(CsvNameExportState state) {
         TaxonNodeFilter filter = state.getConfig().getTaxonNodeFilter();
-        return taxonNodeService.count(filter);
+        return getTaxonNodeService().count(filter);
     }
 
 
