@@ -28,12 +28,11 @@ import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.Marker;
-import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.Character;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.DescriptiveSystemRole;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -78,9 +77,6 @@ public class DescriptiveDataSetService
 
     @Autowired
     private ITaxonNodeService taxonNodeService;
-
-    //FIXME: Use actual MarkerType for default descriptions when implemented #7957
-    private MarkerType MARKER_DEFAULT = MarkerType.TO_BE_CHECKED();
 
 	@Override
 	@Autowired
@@ -241,8 +237,8 @@ public class DescriptiveDataSetService
             country = fieldUnit.getGatheringEvent().getCountry();
         }
         //get default taxon description
-        TaxonDescription defaultTaxonDescription = findTaxonDescriptionByMarkerType(descriptiveDataSet.getUuid(),
-                taxonNode.getUuid(), MARKER_DEFAULT);
+        TaxonDescription defaultTaxonDescription = findTaxonDescriptionByDescriptionType(descriptiveDataSet.getUuid(),
+                taxonNode.getUuid(), DescriptionType.DEFAULT_VALUES_FOR_AGGREGATION);
         TaxonRowWrapperDTO taxonRowWrapper = defaultTaxonDescription != null
                 ? createTaxonRowWrapper(defaultTaxonDescription.getUuid(), descriptiveDataSet.getUuid()) : null;
         return new SpecimenRowWrapperDTO(description, new TaxonNodeDto(taxonNode), fieldUnit, identifier, country);
@@ -258,11 +254,11 @@ public class DescriptiveDataSetService
         return super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
     }
 
-    private TaxonDescription findTaxonDescriptionByMarkerType(DescriptiveDataSet dataSet, Taxon taxon, MarkerType markerType){
+    private TaxonDescription findTaxonDescriptionByDescriptionType(DescriptiveDataSet dataSet, Taxon taxon, DescriptionType descriptionType){
         Set<DescriptionBase> dataSetDescriptions = dataSet.getDescriptions();
         //filter by DEFAULT descriptions
         Optional<TaxonDescription> first = taxon.getDescriptions().stream()
-                .filter(desc -> desc.getMarkers().stream().anyMatch(marker -> marker.getMarkerType().equals(markerType)))
+                .filter(desc -> desc.getTypes().stream().anyMatch(type -> type.equals(descriptionType)))
                 .filter(defaultDescription->dataSetDescriptions.contains(defaultDescription))
                 .findFirst();
         if(first.isPresent()){
@@ -273,10 +269,10 @@ public class DescriptiveDataSetService
     }
 
     @Override
-    public TaxonDescription findTaxonDescriptionByMarkerType(UUID dataSetUuid, UUID taxonNodeUuid, MarkerType markerType){
+    public TaxonDescription findTaxonDescriptionByDescriptionType(UUID dataSetUuid, UUID taxonNodeUuid, DescriptionType descriptionType){
         DescriptiveDataSet dataSet = load(dataSetUuid);
         TaxonNode taxonNode = taxonNodeService.load(taxonNodeUuid);
-        return findTaxonDescriptionByMarkerType(dataSet, taxonNode.getTaxon(), markerType);
+        return findTaxonDescriptionByDescriptionType(dataSet, taxonNode.getTaxon(), descriptionType);
     }
 
     @Override
@@ -423,10 +419,10 @@ public class DescriptiveDataSetService
             });
         });
 
-        // delete all aggregation description of this dataset for this taxon (MarkerType.COMPUTED)
+        // delete all aggregation description of this dataset for this taxon (DescriptionType.AGGREGATED)
         List<TaxonDescription> toRemove = dataSet.getDescriptions().stream()
         .filter(aggDesc->aggDesc instanceof TaxonDescription)
-        .filter(desc -> desc.getMarkers().stream().anyMatch(marker -> marker.getMarkerType().equals(MarkerType.COMPUTED())))
+        .filter(desc -> desc.getTypes().stream().anyMatch(type -> type.equals(DescriptionType.AGGREGATED)))
         .map(aggDesc->(TaxonDescription)aggDesc)
         .collect(Collectors.toList());
         for (TaxonDescription taxonDescription : toRemove) {
@@ -439,7 +435,7 @@ public class DescriptiveDataSetService
         // create new aggregation
         TaxonDescription description = TaxonDescription.NewInstance(taxon);
         description.setTitleCache("[Aggregation] "+dataSet.getTitleCache(), true);
-        description.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
+        description.getTypes().add(DescriptionType.AGGREGATED);
         IdentifiableSource source = IdentifiableSource.NewInstance(OriginalSourceType.Aggregation);
         description.addSource(source);
         description.addDescriptiveDataSet(dataSet);
@@ -490,24 +486,20 @@ public class DescriptiveDataSetService
 
     @Override
     @Transactional(readOnly=false)
-    public TaxonRowWrapperDTO createTaxonDescription(UUID dataSetUuid, UUID taxonNodeUuid, MarkerType markerType, boolean markerFlag){
+    public TaxonRowWrapperDTO createTaxonDescription(UUID dataSetUuid, UUID taxonNodeUuid, DescriptionType descriptionType){
         DescriptiveDataSet dataSet = load(dataSetUuid);
         TaxonNode taxonNode = taxonNodeService.load(taxonNodeUuid, Arrays.asList("taxon"));
         TaxonDescription newTaxonDescription = TaxonDescription.NewInstance(taxonNode.getTaxon());
         String tag = "";
-        if(markerFlag){
-            //FIXME: Add specific MarkerTypes to enum (see #7957)
-            if(markerType.equals(MARKER_DEFAULT)){
-                tag = "[Default]";
-            }
-            else if(markerType.equals(MarkerType.IN_BIBLIOGRAPHY())){
-                tag = "[Literature]";
-            }
+        if(descriptionType.equals(DescriptionType.DEFAULT_VALUES_FOR_AGGREGATION)){
+            tag = "[Default]";
+        }
+        else if(descriptionType.equals(DescriptionType.SECONDARY_DATA)){
+            tag = "[Literature]";
         }
         newTaxonDescription.setTitleCache(tag+" "+dataSet.getLabel()+": "+newTaxonDescription.generateTitle(), true); //$NON-NLS-2$
-        if(markerType!=null){
-            newTaxonDescription.addMarker(Marker.NewInstance(markerType, markerFlag));
-        }
+        newTaxonDescription.getTypes().add(descriptionType);
+
         dataSet.getDescriptiveSystem().getDistinctTerms().forEach(wsFeature->{
             if(wsFeature.isSupportsCategoricalData()){
                 newTaxonDescription.addElement(CategoricalData.NewInstance(wsFeature));

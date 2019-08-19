@@ -12,9 +12,9 @@ import eu.etaxonomy.cdm.api.service.dto.RowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenRowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonRowWrapperDTO;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
-import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.DescriptiveSystemRole;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -86,13 +86,13 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
 
     /**
      * Returns a {@link TaxonDescription} for a given taxon node with corresponding
-     * features according to the {@link DescriptiveDataSet} and the having the given {@link MarkerType}.<br>
+     * features according to the {@link DescriptiveDataSet} and the having the given {@link DescriptionType}.<br>
      * @param descriptiveDataSetUuid the uuid of the dataset defining the features
      * @param taxonNodeUuid the uuid of the taxon node that links to the taxon
-     * @param markerType the {@link MarkerType} that the description should have
+     * @param descriptionType the {@link DescriptionType} that the description should have
      * @return the found taxon description or <code>null</code>
      */
-    public TaxonDescription findTaxonDescriptionByMarkerType(UUID dataSetUuid, UUID taxonNodeUuid, MarkerType markerType);
+    public TaxonDescription findTaxonDescriptionByDescriptionType(UUID dataSetUuid, UUID taxonNodeUuid, DescriptionType descriptionType);
 
     /**
      * Creates a taxon row wrapper object for the given description
@@ -120,11 +120,10 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      * taxon associated with the given taxon node.
      * @param descriptiveDataSetUuid the uuid of the dataset defining the features
      * @param taxonNodeUuid the uuid of the taxon node that links to the taxon
-     * @param markerType the type of the description
-     * @param markerFlag the flag of the marker
+     * @param descriptionType the type of the description
      * @return a taxon row wrapper of the description with the features defined in the data set
      */
-    public TaxonRowWrapperDTO createTaxonDescription(UUID dataSetUuid, UUID taxonNodeUuid, MarkerType markerType, boolean markerFlag);
+    public TaxonRowWrapperDTO createTaxonDescription(UUID dataSetUuid, UUID taxonNodeUuid, DescriptionType descriptionType);
 
     /**
      * Removes the description specified by the given {@link UUID} from the given {@link DescriptiveDataSet}.
