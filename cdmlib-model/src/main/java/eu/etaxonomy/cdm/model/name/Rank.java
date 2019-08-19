@@ -142,7 +142,7 @@ public class Rank extends OrderedTermBase<Rank> {
     public static final UUID uuidCohort = UUID.fromString("3e4dc2fa-79e8-4ee7-b7d8-4c02a18fe555");  //edaphobase
     public static final UUID uuidHyporder = UUID.fromString("2a1bdf1f-80fc-4846-b4d7-edcbf664f270");  //edaphobase
     //E+M
-    public static UUID uuidRankCollSpecies = UUID.fromString("e14630ee-9446-4bb4-a7b7-4c3881bc5d94");
+    public static UUID uuidCollSpecies = UUID.fromString("e14630ee-9446-4bb4-a7b7-4c3881bc5d94");
 
     private static Map<String, UUID> idInVocMap = null;
     private static Map<String, UUID> labelMap = null;

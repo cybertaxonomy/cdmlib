@@ -904,7 +904,7 @@ public class BerlinModelTransformer {
 
 			if (collSpeciesRank == null){
 				collSpeciesRank = Rank.NewInstance(RankClass.SpeciesGroup, "Collective species", "Coll. species", "coll.");
-				collSpeciesRank.setUuid(Rank.uuidRankCollSpecies);
+				collSpeciesRank.setUuid(Rank.uuidCollSpecies);
 				OrderedTermVocabulary<Rank> voc = (OrderedTermVocabulary<Rank>)Rank.SPECIES().getVocabulary();
 				voc.addTermBelow(collSpeciesRank, Rank.SPECIESGROUP());
 			}
