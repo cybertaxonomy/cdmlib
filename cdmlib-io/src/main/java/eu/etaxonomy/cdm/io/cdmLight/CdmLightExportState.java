@@ -232,7 +232,6 @@ public class CdmLightExportState
     public UUID getRootId() {
         return rootUuid;
     }
-
     public void setRootId(UUID rootId) {
         this.rootUuid = rootId;
     }
