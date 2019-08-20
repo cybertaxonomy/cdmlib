@@ -279,7 +279,7 @@ public class TaxonNode
     }
     /**
      * THIS METHOD SHOULD NOT BE CALLED!
-     * invisible part of the bidirectional relationship, for public use TaxonomicView.addRoot() or TaxonNode.addChild()
+     * invisible part of the bidirectional relationship, for public use Classification.addRoot() or TaxonNode.addChild()
      * @param classification
      * @deprecated for internal use only
      */
@@ -413,14 +413,9 @@ public class TaxonNode
 
 // ****************** Agent Relations ****************************/
 
-
-    /**
-     * @return
-     */
     public Set<TaxonNodeAgentRelation> getAgentRelations() {
         return this.agentRelations;
     }
-
     public TaxonNodeAgentRelation addAgentRelation(DefinedTerm type, TeamOrPersonBase<?> agent){
         TaxonNodeAgentRelation result = TaxonNodeAgentRelation.NewInstance(this, agent, type);
         return result;

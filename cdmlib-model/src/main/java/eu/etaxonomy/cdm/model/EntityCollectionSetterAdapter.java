@@ -38,7 +38,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  *
  * @author a.kohlbecker
  * @since Nov 15, 2018
- *
  */
 public class EntityCollectionSetterAdapter<CDM extends CdmBase, T extends CdmBase> implements Serializable {
 
@@ -52,6 +51,8 @@ public class EntityCollectionSetterAdapter<CDM extends CdmBase, T extends CdmBas
 
     private String propertyName;
     private String addMethodName;
+
+
     private String removMethodName;
 
 
@@ -102,7 +103,7 @@ public class EntityCollectionSetterAdapter<CDM extends CdmBase, T extends CdmBas
                 if(!itemsSeen.contains(a)){
                     removeMethod.invoke(bean, a);
                 }
-        }
+            }
         } catch(ClassCastException e){
             throw new SetterAdapterException("getter return type (" + (getterMethod != null ? getterMethod.getReturnType() : "NULL") + ") incompatible with expected  property type " + propertyItemType, e);
         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
