@@ -25,6 +25,7 @@ public class OccurenceQuery implements Serializable{
     public  Set<String[]> tripleIds = null;
 
     public String taxonName = null;
+    public String higherTaxon = null;
     public String collector = null;
     public String collectorsNumber = null;
     public String accessionNumber = null;
@@ -39,7 +40,7 @@ public class OccurenceQuery implements Serializable{
 
     public OccurenceQuery(Set<String[]> tripleIds) {
 
-        this(tripleIds, null, null, null, null, null, null, null, null, null, false);
+        this(tripleIds, null, null, null, null, null, null, null, null, null, null, false);
     }
 
     /**
@@ -55,13 +56,13 @@ public class OccurenceQuery implements Serializable{
      */
     public OccurenceQuery(String taxonName, String collector, String collectorsNumber, String accessionNumber,
             String herbarium, String country, String locality, Calendar dateFrom, Calendar dateTo, boolean hasImage) {
-        this(null, taxonName, collector, collectorsNumber, accessionNumber, herbarium, country, locality, dateFrom, dateTo, hasImage);
+        this(null, taxonName, null, collector, collectorsNumber, accessionNumber, herbarium, country, locality, dateFrom, dateTo, hasImage);
     }
 
     /**
      * Constructor to initially set the parameters
      */
-    private OccurenceQuery(Set<String[]> tripleIds, String taxonName, String collector, String collectorsNumber, String accessionNumber, String herbarium, String country, String locality, Calendar dateFrom, Calendar dateTo, boolean hasImage) {
+    private OccurenceQuery(Set<String[]> tripleIds, String taxonName, String higherTaxon, String collector, String collectorsNumber, String accessionNumber, String herbarium, String country, String locality, Calendar dateFrom, Calendar dateTo, boolean hasImage) {
         this.tripleIds = tripleIds;
         this.taxonName = taxonName;
         this.collector = collector;
@@ -98,6 +99,7 @@ public class OccurenceQuery implements Serializable{
         result = prime * result + ((herbarium == null) ? 0 : herbarium.hashCode());
         result = prime * result + ((locality == null) ? 0 : locality.hashCode());
         result = prime * result + ((taxonName == null) ? 0 : taxonName.hashCode());
+        result = prime * result + ((higherTaxon == null) ? 0 : higherTaxon.hashCode());
         result = prime * result + ((tripleIds == null) ? 0 : tripleIds.hashCode());
         return result;
     }
@@ -182,7 +184,15 @@ public class OccurenceQuery implements Serializable{
             }
         } else if (!taxonName.equals(other.taxonName)) {
             return false;
-        } else if (hasImage != other.hasImage) {
+        }
+        if (hasImage != other.hasImage) {
+            return false;
+        }
+        if (higherTaxon == null) {
+            if (other.higherTaxon != null) {
+                return false;
+            }
+        } else if (!higherTaxon.equals(other.higherTaxon)) {
             return false;
         }
         if (tripleIds == null) {

@@ -341,8 +341,11 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 null);
         kindOfUnitsMap = new HashMap<>();
         for (DefinedTerm kindOfUnit : terms) {
-            String kindOfUnitLabel = kindOfUnit.getLabel().toLowerCase();
-            kindOfUnitsMap.put(kindOfUnit.getLabel().toLowerCase(), kindOfUnit);
+            if (kindOfUnit != null && kindOfUnit.getLabel() != null){
+                String kindOfUnitLabel = kindOfUnit.getLabel().toLowerCase();
+                kindOfUnitsMap.put(kindOfUnitLabel, kindOfUnit);
+            }
+
         }
     }
 
