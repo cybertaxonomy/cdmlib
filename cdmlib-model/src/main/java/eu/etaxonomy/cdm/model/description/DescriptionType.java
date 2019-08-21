@@ -148,7 +148,12 @@ public enum DescriptionType implements IEnumTerm<DescriptionType>{
      * @return
      */
     protected static boolean includesType(EnumSet<DescriptionType> set, DescriptionType state) {
-        EnumSet<DescriptionType> all = EnumSet.copyOf(state.getGeneralizationOf(true));
+        EnumSet<DescriptionType> all;
+        if (state.getGeneralizationOf(true).isEmpty()){
+            all = EnumSet.noneOf(DescriptionType.class);
+        }else{
+            all = EnumSet.copyOf(state.getGeneralizationOf(true));
+        }
         all.add(state);
         for (DescriptionType st : all){
             if (set.contains(st)){
