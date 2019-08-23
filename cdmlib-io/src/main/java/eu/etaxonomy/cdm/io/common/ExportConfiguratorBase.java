@@ -98,11 +98,6 @@ public abstract class ExportConfiguratorBase<STATE extends ExportStateBase, TRAN
 		this.destination = destination;
 	}
 
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSourceReference()
-	 */
 //	@Override
 	public IDatabase getSourceReference() {
 		//TODO //needed

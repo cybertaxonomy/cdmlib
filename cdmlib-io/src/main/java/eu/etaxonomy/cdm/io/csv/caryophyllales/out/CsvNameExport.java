@@ -57,6 +57,10 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 
 
+/**
+ * @author k.luther
+ * @since 2015-Apr
+ */
 @Component
 public class CsvNameExport extends CsvNameExportBase {
     private static final long serialVersionUID = 7289805663701807425L;
@@ -64,12 +68,12 @@ public class CsvNameExport extends CsvNameExportBase {
     private static final Logger logger = Logger.getLogger(CsvNameExport.class);
 
     @Autowired
-    IEditGeoService geoService;
+    private IEditGeoService geoService;
 
-    HashMap<UUID, HashMap<String,String>> familyMap = new HashMap();
-    HashMap<UUID, HashMap<String,String>> genusMap = new HashMap();
+    private HashMap<UUID, HashMap<String,String>> familyMap = new HashMap<>();
+    private HashMap<UUID, HashMap<String,String>> genusMap = new HashMap<>();
 
-    List<HashMap<String,String>> nameRecords = new ArrayList<>();
+    private List<HashMap<String,String>> nameRecords = new ArrayList<>();
 
     public CsvNameExport() {
         super();
@@ -79,7 +83,6 @@ public class CsvNameExport extends CsvNameExportBase {
     @Override
     protected void doInvoke(CsvNameExportState state) {
         CsvNameExportConfigurator config = state.getConfig();
-
 
         PrintWriter writer = null;
 
@@ -99,7 +102,6 @@ public class CsvNameExport extends CsvNameExportBase {
                 break;
             default:
                 break;
-
             }
 
             List<HashMap<String, String>> result;
@@ -197,7 +199,7 @@ public class CsvNameExport extends CsvNameExportBase {
 //        findChildren(state, childrenUuids, parentsNodesUUID);
 
         IProgressMonitor monitor = state.getConfig().getProgressMonitor();
-         @SuppressWarnings("unchecked")
+        @SuppressWarnings("unchecked")
         TaxonNodeOutStreamPartitioner<XmlExportState> partitioner
           = TaxonNodeOutStreamPartitioner.NewInstance(
                 this, state, state.getConfig().getTaxonNodeFilter(),

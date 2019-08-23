@@ -31,18 +31,13 @@ public class CsvNameExportConfigurator extends XmlExportConfiguratorBase<CsvName
 	}
 
 	public static CsvNameExportConfigurator NewInstance(ICdmDataSource source, File destinationFolder){
-
 		return new CsvNameExportConfigurator(destinationFolder,source, null);
-
 	}
-
-
 
 	public ByteArrayOutputStream getByteOutputStream() {
 		if (byteOutputStream == null){
 			byteOutputStream = new ByteArrayOutputStream();
 		}
-
 		return byteOutputStream;
 	}
 
@@ -57,24 +52,28 @@ public class CsvNameExportConfigurator extends XmlExportConfiguratorBase<CsvName
 	public void setEncoding(String encoding) {
 		this.csvIOConfig.setEncoding(encoding);
 	}
+
 	public String getLinesTerminatedBy() {
 		return csvIOConfig.getLinesTerminatedBy();
 	}
 	public void setLinesTerminatedBy(String linesTerminatedBy) {
 		this.csvIOConfig.setLinesTerminatedBy(linesTerminatedBy);
 	}
+
 	public String getFieldsEnclosedBy() {
 		return  csvIOConfig.getFieldsEnclosedBy();
 	}
 	public void setFieldsEnclosedBy(String fieldsEnclosedBy) {
 		this.csvIOConfig.setFieldsEnclosedBy(fieldsEnclosedBy);
 	}
+
 	public boolean isHasHeaderLines() {
 		return  csvIOConfig.isHasHeaderLines();
 	}
 	public void setHasHeaderLines(boolean hasHeaderLines) {
 		this.csvIOConfig.setHasHeaderLines(hasHeaderLines);
 	}
+
 	public String getFieldsTerminatedBy() {
 		return  csvIOConfig.getFieldsTerminatedBy();
 	}
@@ -86,6 +85,7 @@ public class CsvNameExportConfigurator extends XmlExportConfiguratorBase<CsvName
 	public CsvNameExportState getNewState() {
 		return new CsvNameExportState(this);
 	}
+
 	@Override
 	@SuppressWarnings("unchecked")
 	protected void makeIoClassList() {
@@ -97,7 +97,6 @@ public class CsvNameExportConfigurator extends XmlExportConfiguratorBase<CsvName
 	public boolean isNamesOnly() {
 		return namesOnly;
 	}
-
 	public void setNamesOnly(boolean namesOnly) {
 		this.namesOnly = namesOnly;
 	}
@@ -105,49 +104,27 @@ public class CsvNameExportConfigurator extends XmlExportConfiguratorBase<CsvName
 	public UUID getClassificationUUID() {
 		return classificationUUID;
 	}
-
 	public void setClassificationUUID(UUID classificationUUID) {
 		this.classificationUUID = classificationUUID;
 	}
 
-    /**
-     * @return the rank
-     */
     public Rank getRank() {
         return rank;
     }
-
-    /**
-     * @param rank the rank to set
-     */
     public void setRank(Rank rank) {
         this.rank = rank;
     }
 
-    /**
-     * @return the condensedDistribution
-     */
     public boolean isCondensedDistribution() {
         return condensedDistribution;
     }
-
-    /**
-     * @param condensedDistribution the condensedDistribution to set
-     */
     public void setCondensedDistribution(boolean condensedDistribution) {
         this.condensedDistribution = condensedDistribution;
     }
 
-    /**
-     * @return the invalidNamesQuoted
-     */
     public boolean isInvalidNamesQuoted() {
         return invalidNamesQuoted;
     }
-
-    /**
-     * @param invalidNamesQuoted the invalidNamesQuoted to set
-     */
     public void setInvalidNamesQuoted(boolean invalidNamesQuoted) {
         this.invalidNamesQuoted = invalidNamesQuoted;
     }

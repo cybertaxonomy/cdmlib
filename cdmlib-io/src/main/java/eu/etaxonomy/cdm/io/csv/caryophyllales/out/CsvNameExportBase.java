@@ -15,12 +15,12 @@ public abstract class CsvNameExportBase
     private static final long serialVersionUID = -8141111132821035857L;
 
     final String NOT_DESIGNATED = "not designated";
-    TransactionStatus txStatus;
+
+    protected TransactionStatus txStatus;
 
     protected void refreshTransaction(){
         commitTransaction(txStatus);
         txStatus = startTransaction();
-
     }
 
 
