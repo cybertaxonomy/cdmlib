@@ -70,7 +70,7 @@ public interface ICdmRepository{
 
     public void commitTransaction(TransactionStatus tx);
 
-    public void rollback(TransactionStatus txStatus);
+    public void rollbackTransaction(TransactionStatus txStatus);
 
 	public Object getBean(String string);
 

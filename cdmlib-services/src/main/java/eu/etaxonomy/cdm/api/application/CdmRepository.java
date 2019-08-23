@@ -486,7 +486,7 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
 	}
 
     @Override
-    public void rollback(TransactionStatus txStatus){
+    public void rollbackTransaction(TransactionStatus txStatus){
         PlatformTransactionManager txManager = getTransactionManager();
         txManager.rollback(txStatus);
         return;

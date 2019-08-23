@@ -173,7 +173,7 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase> {
     private void commitTransaction() {
         if (!txStatus.isCompleted()){
             if (this.readOnly){
-                repository.rollback(txStatus);
+                repository.rollbackTransaction(txStatus);
             }else{
                 repository.commitTransaction(txStatus);
             }

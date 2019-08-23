@@ -757,7 +757,7 @@ public class CdmApplicationController implements ICdmRepository {
 	}
 
     @Override
-    public void rollback(TransactionStatus txStatus){
+    public void rollbackTransaction(TransactionStatus txStatus){
         PlatformTransactionManager txManager = configuration.getTransactionManager();
         txManager.rollback(txStatus);
         return;
