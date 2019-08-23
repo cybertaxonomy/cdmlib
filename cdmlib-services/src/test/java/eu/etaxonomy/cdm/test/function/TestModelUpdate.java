@@ -47,8 +47,8 @@ public class TestModelUpdate {
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 
 		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm55" : "cdm58");
+		database = "cdm_pesi_test_leer2";
 		CdmDataSource dataSource = getDatasource(dbType, database);
-
  		try {
 // 		    int n = dataSource.executeUpdate("UPDATE CdmMetaData SET value = '3.1.0.0.201607300000' WHERE propertyname = 0 ");
 			CdmUpdater updater = new CdmUpdater();
@@ -74,7 +74,7 @@ public class TestModelUpdate {
 
     		if (schema == DbSchemaValidation.CREATE){
     		    System.out.println("fillData");
-    		    appCtr.getCommonService().createFullSampleData();
+//    		    appCtr.getCommonService().createFullSampleData();
     		    appCtr.getNameService().list(null, null, null, null, null);
     		}
 
