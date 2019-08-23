@@ -206,9 +206,6 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         userCache.removeUserFromCache(username);
     }
 
-    /* (non-Javadoc)
-     * @see org.springframework.security.provisioning.UserDetailsManager#updateUser(org.springframework.security.core.userdetails.UserDetails)
-     */
     @Override
     @Transactional(readOnly=false)
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
@@ -219,9 +216,6 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         userCache.removeUserFromCache(user.getUsername());
     }
 
-    /* (non-Javadoc)
-     * @see org.springframework.security.provisioning.UserDetailsManager#userExists(java.lang.String)
-     */
     @Override
     public boolean userExists(String username) {
         Assert.hasText(username);

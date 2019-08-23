@@ -184,19 +184,4 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase> {
         return repository.startTransaction(readOnly);
     }
 
-	/**
-	 * @param recordsPerTransaction
-	 * @param partitionedIO
-	 * @param i
-	 */
-	private TransactionStatus getTransaction(int recordsPerTransaction, IPartitionedIO partitionedIO) {
-		//if (loopNeedsHandling (i, recordsPerTransaction) || txStatus == null) {
-			txStatus = partitionedIO.startTransaction();
-			if(logger.isInfoEnabled()) {
-				logger.debug("currentPartitionNumber = " + currentPartition + " - Transaction started");
-			}
-		//}
-		return txStatus;
-	}
-
 }
