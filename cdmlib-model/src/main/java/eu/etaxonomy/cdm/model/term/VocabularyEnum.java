@@ -37,7 +37,6 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.model.term.TermRelationshipType;
 
 /**
  * @author n.hoffmann
@@ -81,6 +80,7 @@ public enum VocabularyEnum {
 	Scope("109bf76d-6f55-43d5-9ec5-6115d9490faa", DefinedTerm.class),
 	Stage("4d475bea-c3ae-4494-be16-6796f22fabac", DefinedTerm.class),
 	State("ceb65a53-c6cf-42bb-862f-daca7f2fc11d", State.class),
+    PresenceState("849d147c-2a43-4a30-a56e-b21c5d23a8a8", State.class),
 	TextFormat("ac3926d2-5f6b-45a5-9cf9-be2a5a43f9b3", TextFormat.class),
 //	NamedArea("57c25420-ae94-4848-9513-2aff9bdb502c", NamedArea.class),
 	NaturalLanguageTerm("fdaba4b0-5c14-11df-a08a-0800200c9a66", NaturalLanguageTerm.class),
