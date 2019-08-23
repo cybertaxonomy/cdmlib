@@ -126,4 +126,13 @@ public class EntityCollectionSetterAdapter<CDM extends CdmBase, T extends CdmBas
         }
     }
 
+    public void setAddMethodName(String addMethodName) {
+        this.addMethodName = addMethodName;
+    }
+
+    public void setRemovMethodName(String removMethodName) {
+        this.removMethodName = removMethodName;
+    }
+
+
 }
