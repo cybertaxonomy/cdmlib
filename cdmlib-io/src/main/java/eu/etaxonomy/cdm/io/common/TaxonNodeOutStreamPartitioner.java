@@ -149,9 +149,9 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase> {
             commitTransaction();
         }
         txStatus = startTransaction();
-        if (readOnly){
-            txStatus.setRollbackOnly();
-        }
+//        if (readOnly){
+//            txStatus.setRollbackOnly();
+//        }
         while (partList.size() < partitionSize && idIterator.hasNext()){
             partList.add(idIterator.next());
             currentIndex++;
