@@ -51,9 +51,9 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase> {
 	 */
 	private int currentPartition;
 
-
 	private TransactionStatus txStatus;
 
+    private boolean readOnly = true;
 
 //******************
 
@@ -97,8 +97,6 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase> {
 		this.state = state;
 		this.parentMonitor = parentMonitor;
 		this.parentTicks = parentTicks;
-
-
 	}
 
 //************************ METHODS ****************************************************/
@@ -117,12 +115,6 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase> {
 	        monitor.subTask("id iterator created");
 	    }
 	}
-
-
-//    public boolean hasNext() {
-//        initialize();
-//        return idIterator.hasNext()|| idList.size() > 0;
-//    }
 
 	public TaxonNode next(){
 	    int currentIndexAtStart = currentIndex;
@@ -157,6 +149,9 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase> {
             commitTransaction();
         }
         txStatus = startTransaction();
+        if (readOnly){
+            txStatus.setRollbackOnly();
+        }
         while (partList.size() < partitionSize && idIterator.hasNext()){
             partList.add(idIterator.next());
             currentIndex++;
@@ -184,8 +179,6 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase> {
     private TransactionStatus startTransaction() {
         return repository.startTransaction();
     }
-
-
 
 	/**
 	 * @param recordsPerTransaction
