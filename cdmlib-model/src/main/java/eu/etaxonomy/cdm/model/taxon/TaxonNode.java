@@ -420,18 +420,11 @@ public class TaxonNode
         TaxonNodeAgentRelation result = TaxonNodeAgentRelation.NewInstance(this, agent, type);
         return result;
     }
-    /**
-     * @param nodeAgentRelation
-     */
-    protected void addAgentRelation(TaxonNodeAgentRelation agentRelation) {
+    public void addAgentRelation(TaxonNodeAgentRelation agentRelation) {
         agentRelation.setTaxonNode(this);
         this.agentRelations.add(agentRelation);
     }
-
-    /**
-     * @param nodeAgentRelation
-     */
-    public void removeNodeAgent(TaxonNodeAgentRelation agentRelation) {
+    public void removeAgentRelation(TaxonNodeAgentRelation agentRelation) {
         agentRelation.setTaxonNode(this);
         agentRelations.remove(agentRelation);
     }
