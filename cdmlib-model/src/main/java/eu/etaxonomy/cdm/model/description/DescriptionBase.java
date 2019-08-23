@@ -171,7 +171,9 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
 	//TODO bidirectional method should maybe removed as a description should belong to its specimen or taxon
     public void setDescribedSpecimenOrObservation(SpecimenOrObservationBase describedSpecimenOrObservation) {
 		if (describedSpecimenOrObservation == null ){
-			this.describedSpecimenOrObservation.removeDescription(this);
+			if (this.describedSpecimenOrObservation != null){
+			    this.describedSpecimenOrObservation.removeDescription(this);
+			}
 		}else if (! describedSpecimenOrObservation.getDescriptions().contains(this)){
 			describedSpecimenOrObservation.addDescription(this);
 		}

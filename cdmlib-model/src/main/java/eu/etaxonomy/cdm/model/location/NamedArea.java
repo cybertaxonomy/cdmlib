@@ -175,7 +175,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="DefinedTermBase_Country")
-    private final Set<Country> countries = new HashSet<Country>();
+    private final Set<Country> countries = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     private NamedAreaType type;
