@@ -204,7 +204,7 @@ public class CsvNameExport extends CsvNameExportBase {
           = TaxonNodeOutStreamPartitioner.NewInstance(
                 this, state, state.getConfig().getTaxonNodeFilter(),
                 100, monitor, null);
-
+        partitioner.setReadOnly(false);
 
             monitor.subTask("Start partitioning");
 //            List<HashMap<String,String>> nameRecords = new ArrayList<>();

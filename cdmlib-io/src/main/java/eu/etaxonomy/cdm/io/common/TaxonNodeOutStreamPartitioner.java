@@ -34,8 +34,8 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase> {
 
 //************************* STATIC ***************************************************/
 
-	public static <ST  extends XmlExportState>  TaxonNodeOutStreamPartitioner NewInstance(
-	        ICdmRepository repository, IoStateBase state,
+	public static <ST  extends IoStateBase>  TaxonNodeOutStreamPartitioner NewInstance(
+	        ICdmRepository repository, ST state,
             TaxonNodeFilter filter, Integer partitionSize,
             IProgressMonitor parentMonitor, Integer parentTicks){
 
@@ -186,5 +186,13 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase> {
     private TransactionStatus startTransaction() {
         return repository.startTransaction(readOnly);
     }
+
+    public boolean isReadOnly() {
+        return readOnly;
+    }
+    public void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
+    }
+
 
 }
