@@ -172,12 +172,16 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase> {
 
     private void commitTransaction() {
         if (!txStatus.isCompleted()){
-            repository.commitTransaction(txStatus);
+            if (this.readOnly){
+                repository.rollback(txStatus);
+            }else{
+                repository.commitTransaction(txStatus);
+            }
         }
     }
 
     private TransactionStatus startTransaction() {
-        return repository.startTransaction();
+        return repository.startTransaction(readOnly);
     }
 
 	/**
@@ -194,9 +198,5 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase> {
 		//}
 		return txStatus;
 	}
-
-
-
-
 
 }

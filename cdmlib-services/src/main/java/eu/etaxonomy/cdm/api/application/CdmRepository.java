@@ -485,6 +485,13 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
 		return;
 	}
 
+    @Override
+    public void rollback(TransactionStatus txStatus){
+        PlatformTransactionManager txManager = getTransactionManager();
+        txManager.rollback(txStatus);
+        return;
+    }
+
 	@Override
 	public void authenticate(String username, String password){
 		UsernamePasswordAuthenticationToken tokenForUser = new UsernamePasswordAuthenticationToken(username, password);

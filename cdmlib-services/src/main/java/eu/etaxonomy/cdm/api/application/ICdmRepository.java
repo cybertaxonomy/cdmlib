@@ -70,6 +70,8 @@ public interface ICdmRepository{
 
     public void commitTransaction(TransactionStatus tx);
 
+    public void rollback(TransactionStatus txStatus);
+
 	public Object getBean(String string);
 
     public IAnnotationService getAnnotationService();
@@ -172,5 +174,4 @@ public interface ICdmRepository{
 	void authenticate(String username, String password);
 
     public IRegistrationService getRegistrationService();
-
 }
