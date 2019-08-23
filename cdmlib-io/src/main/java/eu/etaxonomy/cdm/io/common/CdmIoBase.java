@@ -168,6 +168,7 @@ public abstract class CdmIoBase<STATE extends IoStateBase, RESULT extends IoResu
 
     //TODO move into super class CdmApplicationDefaultConfiguration#startTransaction(java.lang.Boolean)
     //==> no
+    @Override
     public void rollbackTransaction(TransactionStatus txStatus){
         PlatformTransactionManager txManager = super.getTransactionManager();
         txManager.rollback(txStatus);

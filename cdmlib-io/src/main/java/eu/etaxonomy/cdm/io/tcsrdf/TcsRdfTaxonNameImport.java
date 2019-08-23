@@ -64,10 +64,8 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 	@Override
 	public boolean doCheck(TcsRdfImportState config){
 		boolean result = true;
-		logger.warn("BasionymRelations not yet implemented");
-		logger.warn("Checking for TaxonNames not yet implemented");
-		//result &= checkArticlesWithoutJournal(tcsConfig);
-		//result &= checkPartOfJournal(tcsConfig);
+//		logger.warn("BasionymRelations not yet implemented");
+//		logger.warn("Checking for TaxonNames not yet implemented");
 
 		return result;
 	}
@@ -145,9 +143,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 		return;
 
 	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
-	 */
+
 	@Override
     protected boolean isIgnore(TcsRdfImportState state){
 		return ! state.getConfig().isDoTaxonNames();
@@ -697,8 +693,6 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 		}catch(Exception e){
 			logger.debug("The file was no valid rdf file");
 		}
-
-
 
 		return null;
 	}

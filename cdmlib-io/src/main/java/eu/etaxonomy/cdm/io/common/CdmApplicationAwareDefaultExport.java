@@ -32,7 +32,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @author a.mueller
  * @since 20.06.2008
  */
-
 @Component("defaultExport")
 public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator>
         implements ICdmExporter<T>, ApplicationContextAware {
@@ -56,7 +55,7 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator>
 	private final IService service = null;
 
 	//different type of stores that are used by the known imports
-	Map<String, MapWrapper<? extends CdmBase>> stores = new HashMap<String, MapWrapper<? extends CdmBase>>();
+	Map<String, MapWrapper<? extends CdmBase>> stores = new HashMap<>();
 
 	public CdmApplicationAwareDefaultExport(){
 		stores.put(ICdmIO.TEAM_STORE, new MapWrapper<>(service));

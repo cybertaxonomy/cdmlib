@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  */
 public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase> {
 
+    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(TaxonNodeOutStreamPartitioner.class);
 
 //************************* STATIC ***************************************************/
@@ -37,7 +38,8 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase> {
 	        ICdmRepository repository, IoStateBase state,
             TaxonNodeFilter filter, Integer partitionSize,
             IProgressMonitor parentMonitor, Integer parentTicks){
-		TaxonNodeOutStreamPartitioner<ST> taxonNodePartitioner
+
+	    TaxonNodeOutStreamPartitioner<ST> taxonNodePartitioner
 		        = new TaxonNodeOutStreamPartitioner(repository, state, filter, partitionSize,
 		                parentMonitor, parentTicks);
 		return taxonNodePartitioner;
@@ -57,7 +59,8 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase> {
 
 //******************
 
-	private final ICdmRepository repository;
+
+    private final ICdmRepository repository;
 
 	private final TaxonNodeFilter filter;
 

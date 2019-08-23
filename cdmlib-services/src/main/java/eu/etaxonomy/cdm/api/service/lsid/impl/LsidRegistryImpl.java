@@ -62,7 +62,7 @@ public class LsidRegistryImpl implements LSIDRegistry {
 
 	@PostConstruct
 	public void init() {
-		registry = new HashMap<String,IIdentifiableDao<? extends IdentifiableEntity>>();
+		registry = new HashMap<>();
 		TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
 		for(LSIDAuthority lsidAuthority : lsidAuthorityDao.list(null, null)) {
 			for(String namespace : lsidAuthority.getNamespaces().keySet()) {
