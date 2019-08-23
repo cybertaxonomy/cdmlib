@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.EntityNotFoundException;
@@ -164,12 +165,9 @@ public class TermTreeServiceImpl
     public List<Restriction<?>> buildTermTypeFilterRestrictions(TermType termType) {
         List<Restriction<?>> filterRestrictions = null;
         if(termType != null){
-            ArrayList<TermType> termTypes = new ArrayList<>(2);
-            termTypes.add(termType);
-            if(termType == TermType.Feature){
-                termTypes.add(TermType.Character);
-            }
-            filterRestrictions = Arrays.asList(new Restriction<>("termType", null, termTypes.toArray()));
+           Set<TermType> termTypes = termType.getGeneralizationOf(true);
+           termTypes.add(termType);
+           filterRestrictions = Arrays.asList(new Restriction<>("termType", null, termTypes.toArray()));
         }
         return filterRestrictions;
     }
