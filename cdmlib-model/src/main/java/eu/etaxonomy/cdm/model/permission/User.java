@@ -313,7 +313,9 @@ public class User extends CdmBase implements UserDetails {
     public Object clone() {
         try{
             User result = (User)super.clone();
-            result.setPerson((Person)this.person.clone());
+            if (this.person != null){
+                result.setPerson((Person)this.person.clone());
+            }
             return result;
         } catch (CloneNotSupportedException e){
             logger.warn("Object does not implement cloneable");
