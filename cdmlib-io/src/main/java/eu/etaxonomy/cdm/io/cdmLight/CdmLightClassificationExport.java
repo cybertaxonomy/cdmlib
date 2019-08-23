@@ -134,14 +134,12 @@ public class CdmLightClassificationExport
 
             IProgressMonitor monitor = state.getConfig().getProgressMonitor();
             CdmLightExportConfigurator config = state.getConfig();
-            if (config.getTaxonNodeFilter().getClassificationFilter() != null
-                    && !config.getTaxonNodeFilter().getClassificationFilter().isEmpty()) {
+            if (config.getTaxonNodeFilter().hasClassificationFilter()) {
                 Classification classification = getClassificationService()
                         .load(config.getTaxonNodeFilter().getClassificationFilter().get(0).getUuid());
                 state.setRootId(classification.getRootNode().getUuid());
 
-            } else if (config.getTaxonNodeFilter().getSubtreeFilter() != null
-                    && !config.getTaxonNodeFilter().getSubtreeFilter().isEmpty()) {
+            } else if (config.getTaxonNodeFilter().hasSubtreeFilter()) {
                 state.setRootId(config.getTaxonNodeFilter().getSubtreeFilter().get(0).getUuid());
             }
             @SuppressWarnings("unchecked")
