@@ -364,4 +364,14 @@ public class TaxonNodeFilter implements Serializable{
         return this;
     }
 
+    public boolean hasClassificationFilter(){
+        return getClassificationFilter() != null  //just in case, but should never be null
+                && !getClassificationFilter().isEmpty();
+    }
+
+    public boolean hasSubtreeFilter(){
+        return getSubtreeFilter() != null  //just in case, but should never be null
+                && !getSubtreeFilter().isEmpty();
+    }
+
 }
