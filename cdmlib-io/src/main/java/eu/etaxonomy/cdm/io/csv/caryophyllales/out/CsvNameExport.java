@@ -183,7 +183,7 @@ public class CsvNameExport extends CsvNameExportBase {
 //            rootNode = classification.getRootNode();
 //        }
 //        rootNode = getTaxonNodeService().load(rootNode.getUuid(), propertyPaths);
-//        Set<UUID> childrenUuids = new HashSet<UUID>();
+//        Set<UUID> childrenUuids = new HashSet<>();
 //
 //
 //        rootNode = CdmBase.deproxy(rootNode);
@@ -192,9 +192,9 @@ public class CsvNameExport extends CsvNameExportBase {
 //            child = CdmBase.deproxy(child);
 //            childrenUuids.add(child.getUuid());
 //        }
-//        Set<UUID> parentsNodesUUID = new HashSet<UUID>(childrenUuids);
+//        Set<UUID> parentsNodesUUID = new HashSet<>(childrenUuids);
 //        childrenUuids.clear();
-//        List<TaxonNode> childrenNodes = new ArrayList<TaxonNode>();
+//        List<TaxonNode> childrenNodes = new ArrayList<>();
 //
 //        findChildren(state, childrenUuids, parentsNodesUUID);
 
@@ -460,7 +460,7 @@ public class CsvNameExport extends CsvNameExportBase {
             }
         }
         if (state.getConfig().isCondensedDistribution()){
-            List<Language> langs = new ArrayList<Language>();
+            List<Language> langs = new ArrayList<>();
             langs.add(Language.ENGLISH());
 
             CondensedDistribution conDis = geoService.getCondensedDistribution(distributions, true, null,null,CondensedDistributionRecipe.FloraCuba, langs );

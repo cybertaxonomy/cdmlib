@@ -25,6 +25,7 @@ public abstract class  XmlExportConfiguratorBase<STATE extends XmlExportState<?>
         implements IExportConfigurator<STATE, IExportTransformer>{
 
     private static final long serialVersionUID = 6078292713506530756L;
+
     @SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(XmlExportConfiguratorBase.class);
 
@@ -48,17 +49,9 @@ public abstract class  XmlExportConfiguratorBase<STATE extends XmlExportState<?>
 
 	}
 
-
-	/**
-	 * @return the idType
-	 */
 	public IdType getIdType() {
 		return idType;
 	}
-
-	/**
-	 * @param idType the idType to set
-	 */
 	public void setIdType(IdType idType) {
 		this.idType = idType;
 	}
