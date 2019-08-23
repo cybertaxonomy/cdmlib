@@ -58,6 +58,11 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
     private final boolean excluded;
 
     /**
+     * The doubtful flag of the TaxonNode entity
+     */
+    private final boolean doubtful;
+
+    /**
      * The Rank.label value of the rank to which the associated TaxonName entity is assigned to.
      */
     private String rankLabel = null;
@@ -97,6 +102,7 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
         taxonomicChildrenCount = taxonNode.getCountChildren();
         unplaced = taxonNode.isUnplaced();
         excluded = taxonNode.isExcluded();
+        doubtful = taxonNode.isDoubtful();
 
         status = TaxonStatus.Accepted;
         classificationUUID = taxonNode.getClassification().getUuid();
@@ -118,6 +124,7 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
         taggedTitle = synonym.getName().getTaggedName();
         unplaced = false;
         excluded = false;
+        doubtful = false;
         rankLabel = synonym.getNullSafeRank() != null ? synonym.getNullSafeRank().getLabel() : null;
         rankOrderIndex =synonym.getNullSafeRank() != null ? synonym.getNullSafeRank().getOrderIndex() : null;
         status = isHomotypic ? TaxonStatus.SynonymObjective : TaxonStatus.Synonym;
@@ -173,6 +180,12 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
         return excluded;
     }
 
+    /**
+     * @return the doubtful
+     */
+    public boolean isDoubtful() {
+        return doubtful;
+    }
     /**
      * @return the rankLabel
      */
