@@ -57,6 +57,12 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase> {
 
     private boolean readOnly = true;
 
+    /**
+     * If <code>true</code> the final commit/rollback ist executed only by calling
+     * {@link #close()}
+     */
+    private boolean lastCommitManually = false;
+
 //******************
 
 
@@ -135,7 +141,9 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase> {
 	        }
 	        return result;
 	    }else{
-	        commitTransaction();
+	        if(!lastCommitManually){
+	            commitTransaction();
+	        }
 	        return null;
 	    }
 	}
@@ -162,7 +170,7 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase> {
         List<TaxonNode> partition = new ArrayList<>();
         if (!partList.isEmpty()){
             monitor.subTask(String.format("Reading partition %d/%d", currentPartition + 1, (totalCount / partitionSize) +1 ));
-            List<String> propertyPaths = new ArrayList<String>();
+            List<String> propertyPaths = new ArrayList<>();
             propertyPaths.add("taxon");
             propertyPaths.add("taxon.name");
             partition = repository.getTaxonNodeService().loadByIds(partList, propertyPaths);
@@ -192,6 +200,14 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase> {
     }
     public void setReadOnly(boolean readOnly) {
         this.readOnly = readOnly;
+    }
+
+    public boolean isLastCommitManually() {
+        return lastCommitManually;
+    }
+
+    public void setLastCommitManually(boolean lastCommitManually) {
+        this.lastCommitManually = lastCommitManually;
     }
 
 
