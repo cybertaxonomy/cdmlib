@@ -1213,7 +1213,7 @@ public class CdmLightClassificationExport
                 }
             }
             TypeDesignationSetManager manager = new TypeDesignationSetManager(specimenTypeDesignations);
-            String typeDesignationString = createTypeDesignationString(manager.toTaggedText());
+            String typeDesignationString = createTypeDesignationString(manager.toTaggedText(), false);
             csvLine[table.getIndex(CdmLightExportTable.TYPE_SPECIMEN)] = typeDesignationString;
 
             StringBuilder stringbuilder = new StringBuilder();
@@ -1569,61 +1569,48 @@ public class CdmLightClassificationExport
             List<TypeDesignationBase<?>> designationList = new ArrayList<>();
             designationList.addAll(typeDesigantionSet);
             Collections.sort(designationList, new TypeComparator());
-            StringBuffer typeDesignationString = new StringBuffer();
+            
             List<TaggedText> list = new ArrayList<>();
             if (!designationList.isEmpty()) {
                 TypeDesignationSetManager manager = new TypeDesignationSetManager(group);
                 list.addAll(manager.toTaggedTextWithCitation());
             }
-            String typeDesignations = createTypeDesignationString(list);
-
-            /*
-             * for (TypeDesignationBase typeDesignation: designationList){
-             * //[Vorschlag Soll:] // Sumatra Utara, Kab. Karo, around
-             * Sidikalang areas, 1000─1500 m, Dec 11, 2003, Nepenthes Team
-             * (Hernawati, P. Akhriadi & I. Petra), NP 354 (‘ANDA’–Holo, BO–Iso)
-             * [fide Akhriadi & al. 2004] if (typeDesignation != null &&
-             * typeDesignation.getTypeStatus() != null){
-             * typeDesignationString.append(typeDesignation.getTypeStatus().
-             * getTitleCache() + ":"); } if (typeDesignation instanceof
-             * SpecimenTypeDesignation){ if
-             * (((SpecimenTypeDesignation)typeDesignation).getTypeSpecimen() !=
-             * null){
-             * typeDesignationString.append(" "+((SpecimenTypeDesignation)
-             * typeDesignation).getTypeSpecimen().getTitleCache()); if
-             * (typeDesignationString.lastIndexOf(".") ==
-             * typeDesignationString.length()){
-             * typeDesignationString.deleteCharAt(typeDesignationString.
-             * lastIndexOf(".")); } handleSpecimen(state,
-             * ((SpecimenTypeDesignation)typeDesignation).getTypeSpecimen()); }
-             * }else{ if (((NameTypeDesignation)typeDesignation).getTypeName()
-             * != null){ typeDesignationString.append(((NameTypeDesignation)
-             * typeDesignation).getTypeName().getTitleCache()); } }
-             * if(typeDesignation.getCitation() != null ){
-             * typeDesignationString.append(" [fide " +
-             * ((DefaultReferenceCacheStrategy)typeDesignation.getCitation().
-             * getCacheStrategy()).createShortCitation(typeDesignation.
-             * getCitation()) +"]"); } //TODO... /* Sortierung: 1. Status der
-             * Typen: a) holo, lecto, neo, syn, b) epi, paralecto, c) para (wenn
-             * überhaupt) – die jeweiligen iso immer direct mit dazu 2. Land 3.
-             * Sammler 4. Nummer
-             *
-             * Aufbau der Typusinformationen: Land: Lokalität mit Höhe und
-             * Koordinaten; Datum; Sammler Nummer (Herbar/Barcode, Typusart;
-             * Herbar/Barcode, Typusart …)
-             *
-             *
-             * }
-             */
+            String typeTextDesignations = "";
+            //The typeDesignationManager does not handle the textual typeDesignations
+            for (TypeDesignationBase typeDes: designationList) {
+            	if (typeDes instanceof TextualTypeDesignation) {
+            		typeTextDesignations = typeTextDesignations + ((TextualTypeDesignation)typeDes).getText(Language.getDefaultLanguage());
+            		typeTextDesignations =  typeTextDesignations + "; ";
+            	}
+            	
+            }
+            if (typeTextDesignations.equals("; ")) {
+            	typeTextDesignations = "";
+            }
+            if (StringUtils.isNotBlank(typeTextDesignations)) {
+            	typeTextDesignations = typeTextDesignations.substring(0, typeTextDesignations.length()-2);
+            }
+            String specimenTypeString = !list.isEmpty()? createTypeDesignationString(list, true):"";
+            
+            
             // typeDesignations = typeDesignationString.toString();
-            if (typeDesignations != null) {
-                if (!typeDesignations.endsWith(".")) {
-                    typeDesignations = typeDesignations + ".";
+            if (StringUtils.isNotBlank(specimenTypeString)) {
+                if (!specimenTypeString.endsWith(".")) {
+                	specimenTypeString = specimenTypeString + ".";
                 }
-                csvLine[table.getIndex(CdmLightExportTable.TYPE_STRING)] = typeDesignations;
+                csvLine[table.getIndex(CdmLightExportTable.TYPE_STRING)] = specimenTypeString;
 
             } else {
                 csvLine[table.getIndex(CdmLightExportTable.TYPE_STRING)] = "";
+            }
+            if (StringUtils.isNotBlank(typeTextDesignations)) {
+                if (!typeTextDesignations.endsWith(".")) {
+                	typeTextDesignations = typeTextDesignations + ".";
+                }
+                csvLine[table.getIndex(CdmLightExportTable.TYPE_CACHE)] = typeTextDesignations;
+
+            } else {
+                csvLine[table.getIndex(CdmLightExportTable.TYPE_CACHE)] = "";
             }
             state.getProcessor().put(table, String.valueOf(group.getId()), csvLine);
         } catch (Exception e) {
@@ -1637,16 +1624,16 @@ public class CdmLightClassificationExport
      * @param list
      * @return
      */
-    private String createTypeDesignationString(List<TaggedText> list) {
+    private String createTypeDesignationString(List<TaggedText> list, boolean homotypicGroup) {
         StringBuffer homotypicalGroupTypeDesignationString = new StringBuffer();
 
         for (TaggedText text : list) {
             if (text != null && text.getText() != null
-                    && (text.getText().equals("Type:") || text.getText().equals("NameType:"))) {
+                    && (text.getText().equals("Type:") || text.getText().equals("NameType:") || (text.getType().equals(TagEnum.name) && !homotypicGroup))) {
                 // do nothing
             } else if (text.getType().equals(TagEnum.reference)) {
                 homotypicalGroupTypeDesignationString.append(text.getText());
-            } else if (text.getType().equals(TagEnum.typeDesignation)) {
+            } else if (text.getType().equals(TagEnum.typeDesignation) ) {
                 homotypicalGroupTypeDesignationString
                         .append(text.getText().replace(").", "").replace("(", "").replace(")", ""));
             } else {
@@ -1660,7 +1647,7 @@ public class CdmLightClassificationExport
         typeDesignations += ".";
         typeDesignations = typeDesignations.replace("..", ".");
         typeDesignations = typeDesignations.replace(". .", ".");
-        if (typeDesignations.equals(".")) {
+        if (typeDesignations.trim().equals(".")) {
             typeDesignations = null;
         }
         return typeDesignations;
