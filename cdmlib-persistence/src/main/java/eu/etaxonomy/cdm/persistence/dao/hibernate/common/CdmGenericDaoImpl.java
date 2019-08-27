@@ -81,11 +81,11 @@ import eu.etaxonomy.cdm.strategy.merge.MergeException;
 public class CdmGenericDaoImpl
          extends CdmEntityDaoBase<CdmBase>
          implements ICdmGenericDao{
-	private static final Logger logger = Logger.getLogger(CdmGenericDaoImpl.class);
 
+    private static final Logger logger = Logger.getLogger(CdmGenericDaoImpl.class);
 
 	private Set<Class<? extends CdmBase>> allCdmClasses = null;
-	private final Map<Class<? extends CdmBase>, Set<ReferenceHolder>> referenceMap = new HashMap<Class<? extends CdmBase>, Set<ReferenceHolder>>();
+	private final Map<Class<? extends CdmBase>, Set<ReferenceHolder>> referenceMap = new HashMap<>();
 
 
 	protected class ReferenceHolder{
@@ -960,6 +960,15 @@ public class CdmGenericDaoImpl
 		FullCoverageDataGenerator dataGenerator = new FullCoverageDataGenerator();
 		dataGenerator.fillWithData(getSession());
 	}
+
+    @Override
+    public List<UUID> listUuid(Class<? extends CdmBase> clazz) {
+        String queryString = "SELECT uuid FROM " + clazz.getSimpleName();
+        Query query = getSession().createQuery(queryString);
+        @SuppressWarnings("unchecked")
+        List<UUID> list = query.list();
+        return list;
+    }
 
 
 

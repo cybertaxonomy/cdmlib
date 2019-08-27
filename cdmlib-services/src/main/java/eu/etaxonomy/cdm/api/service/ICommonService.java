@@ -373,5 +373,10 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
      */
     public long getReferencingObjectsCount(CdmBase referencedCdmBase);
 
+    /**
+     * @param clazz
+     */
+    public List<UUID> listUuid(Class<? extends CdmBase> clazz);
+
 
 }
