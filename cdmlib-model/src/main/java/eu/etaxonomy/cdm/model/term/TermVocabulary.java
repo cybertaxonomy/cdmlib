@@ -157,6 +157,11 @@ public class TermVocabulary<T extends DefinedTermBase>
 		this.termSourceUri = vocabularyUri;
 	}
 
+	@Deprecated //deprecated for now as only needed for property path handling; but may become generally public in future
+    public Set<TermNode> getTermRelations() {
+        return super.termRelations();
+    }
+
     /**
      * Returns the first term found having the defined idInVocabulary.
      * If number of terms with given idInVoc > 1 the result is not deterministic.
