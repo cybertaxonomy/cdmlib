@@ -754,7 +754,9 @@ public class TaxonNode
        // this.getParent().removeNullValueFromChildren();
         this.getParent().updateSortIndex(index);
         //only for debugging
-        if (! this.getSortIndex().equals(index)){
+        if (this.getSortIndex() == null){
+            logger.warn("sortindex is null. This should not happen.");
+        }else if (! this.getSortIndex().equals(index)){
         	logger.warn("index and sortindex are not equal: " +  this.getSortIndex() + ";" + index);
         }
 
