@@ -79,9 +79,6 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
     private Taxon taxon5;
     private Taxon taxonUnpublished;
 
-    /**
-     * @throws java.lang.Exception
-     */
     @Before
     public void setUp() throws Exception {
         /*
@@ -131,11 +128,7 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
 
         //taxonNodeDao.save(node5);
 
-
-
         classificationDao.save(classification1);
-
-
     }
 
     @Test

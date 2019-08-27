@@ -554,7 +554,7 @@ public class TaxonNode
         node.setTaxon(null);
 
 
-        ArrayList<TaxonNode> childNodes = new ArrayList<TaxonNode>(node.getChildNodes());
+        ArrayList<TaxonNode> childNodes = new ArrayList<>(node.getChildNodes());
         for(TaxonNode childNode : childNodes){
             HibernateProxyHelper.deproxy(childNode, TaxonNode.class);
             node.deleteChildNode(childNode);
@@ -576,12 +576,12 @@ public class TaxonNode
         node.setTaxon(null);
         taxon.removeTaxonNode(node);
         if (deleteChildren){
-            ArrayList<TaxonNode> childNodes = new ArrayList<TaxonNode>(node.getChildNodes());
+            ArrayList<TaxonNode> childNodes = new ArrayList<>(node.getChildNodes());
             for(TaxonNode childNode : childNodes){
                 node.deleteChildNode(childNode, deleteChildren);
             }
         } else{
-        	ArrayList<TaxonNode> childNodes = new ArrayList<TaxonNode>(node.getChildNodes());
+        	ArrayList<TaxonNode> childNodes = new ArrayList<>(node.getChildNodes());
             for(TaxonNode childNode : childNodes){
              this.addChildNode(childNode, null, null);
             }
