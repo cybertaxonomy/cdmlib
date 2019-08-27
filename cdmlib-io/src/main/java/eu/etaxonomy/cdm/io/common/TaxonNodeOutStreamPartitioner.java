@@ -10,9 +10,12 @@
 package eu.etaxonomy.cdm.io.common;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
@@ -27,10 +30,101 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @author a.mueller
  * @since 01.07.2017
  */
-public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase> {
+public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase>
+        implements ITaxonNodeOutStreamPartitioner {
 
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(TaxonNodeOutStreamPartitioner.class);
+
+
+    private static final List<String> defaultPropertyPaths = Arrays.asList(new String[]{"taxon","taxon.name"});
+
+    public static final List<String> fullPropertyPaths = Arrays.asList(new String[]{
+            "*",
+            "excludedNote.*",
+            "classification.*",
+            "classification.name.*",
+            "classification.description.*",
+            "classification.rootNode.*",
+            "classification.rootNode.excludedNote.*",
+            "parent.*",
+            "agentRelations.*",
+            "agentRelations.agent.*",
+            "agentRelations.agent.sources.*",
+            "agentRelations.agent.sources.citation.*",
+            "agentRelations.agent.contact.*",
+            "agentRelations.agent.institutionalMemberships.*",
+            "agentRelations.agent.institutionalMemberships.institute.*",
+            "agentRelations.agent.institutionalMemberships.institute.contact.*",
+            "agentRelations.type.*",
+            "agentRelations.type.representations.*",
+            "taxon.*",
+            "taxon.extensions.type.*",
+            "taxon.extensions.type.representations.*",
+            "taxon.extensions.type.vocabulary.*",
+            "taxon.extensions.type.vocabulary.representations.*",
+            "taxon.extensions.type.vocabulary.termRelations.*",
+            "taxon.sources.*",
+
+            "taxon.name.*",
+            "taxon.name.relationsFromThisName.*",
+            "taxon.name.relationsToThisName.*",
+            "taxon.name.sources.*",
+            "taxon.name.extensions.type.*",
+            "taxon.name.extensions.type.representations.*",
+            "taxon.name.extensions.type.vocabulary.*",
+            "taxon.name.extensions.type.vocabulary.terms.*",
+            "taxon.name.extensions.type.vocabulary.terms.type.*",
+            "taxon.name.extensions.type.vocabulary.terms.representations.*",
+            "taxon.name.homotypicalGroup.*",
+
+            "taxon.synonyms.*",
+            "taxon.synonyms.name.*",
+            "taxon.synonyms.name.relationsFromThisName.*",
+            "taxon.synonyms.name.relationsToThisName.*",
+            "taxon.synonyms.name.sources.*",
+            "taxon.synonyms.markers.type.*",
+            "taxon.synonyms.markers.type.representations.*",
+            "taxon.synonyms.markers.type.vocabulary.*",
+            "taxon.synonyms.markers.type.vocabulary.terms.*",
+            "taxon.synonyms.markers.type.vocabulary.terms.type.*",
+            "taxon.synonyms.markers.type.vocabulary.terms.representations.*",
+
+
+            "taxon.name.combinationAuthorship.*",
+            "taxon.name.combinationAuthorship.sources.*",
+            "taxon.name.combinationAuthorship.contact.*",
+            "taxon.name.combinationAuthorship.teamMembers.*",
+            "taxon.name.combinationAuthorship.teamMembers.contact.*",
+            "taxon.name.combinationAuthorship.teamMembers.sources.*",
+
+            "taxon.name.exCombinationAuthorship.*",
+            "taxon.name.basionymAuthorship.*",
+            "taxon.name.basionymAuthorship.sources.*",
+            "taxon.name.basionymAuthorship.contact.*",
+            "taxon.name.basionymAuthorship.teamMembers.*",
+            "taxon.name.basionymAuthorship.teamMembers.contact.*",
+            "taxon.name.basionymAuthorship.teamMembers.sources.*",
+            "taxon.name.exBasionymAuthorship.*",
+
+            "taxon.descriptions.*",
+            "taxon.descriptions.elements",
+            "taxon.descriptions.elements.*",
+            "taxon.descriptions.elements.modifyingText.*",
+            "taxon.descriptions.elements.sources.*",
+            "taxon.descriptions.elements.sources.citation.*",
+            "taxon.descriptions.elements.area.*",
+            "taxon.descriptions.elements.area.representations.*",
+            "taxon.descriptions.elements.area.annotations.*",
+            "taxon.descriptions.elements.area.vocabulary.*",
+            "taxon.descriptions.elements.area.vocabulary.terms.*",
+            "taxon.descriptions.elements.area.vocabulary.terms.type.*",
+            "taxon.descriptions.elements.area.vocabulary.terms.annotations.*",
+            "taxon.descriptions.elements.area.vocabulary.terms.representations.*",
+//            "taxon.descriptions.elements.area.vocabulary.terms.representations.annotations.*",
+            "taxon.descriptions.elements.area.vocabulary.representations.*",
+
+    });
 
 //************************* STATIC ***************************************************/
 
@@ -41,9 +135,20 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase> {
 
 	    TaxonNodeOutStreamPartitioner<ST> taxonNodePartitioner
 		        = new TaxonNodeOutStreamPartitioner(repository, state, filter, partitionSize,
-		                parentMonitor, parentTicks);
+		                parentMonitor, parentTicks, null);
 		return taxonNodePartitioner;
 	}
+
+    public static <ST  extends IoStateBase>  TaxonNodeOutStreamPartitioner NewInstance(
+            ICdmRepository repository, ST state,
+            TaxonNodeFilter filter, Integer partitionSize,
+            IProgressMonitor parentMonitor, Integer parentTicks,List<String> propertyPath){
+
+        TaxonNodeOutStreamPartitioner<ST> taxonNodePartitioner
+                = new TaxonNodeOutStreamPartitioner(repository, state, filter, partitionSize,
+                        parentMonitor, parentTicks, propertyPath);
+        return taxonNodePartitioner;
+    }
 
 //*********************** VARIABLES *************************************************/
 
@@ -58,10 +163,14 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase> {
     private boolean readOnly = true;
 
     /**
-     * If <code>true</code> the final commit/rollback ist executed only by calling
+     * If <code>true</code> the final commit/rollback is executed only by calling
      * {@link #close()}
      */
     private boolean lastCommitManually = false;
+
+
+
+    private List<String> propertyPaths = defaultPropertyPaths;
 
 //******************
 
@@ -99,18 +208,21 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase> {
 
 	private TaxonNodeOutStreamPartitioner(ICdmRepository repository, STATE state,
 	        TaxonNodeFilter filter, Integer partitionSize,
-	        IProgressMonitor parentMonitor, Integer parentTicks){
+	        IProgressMonitor parentMonitor, Integer parentTicks, List<String> propertyPaths){
 		this.repository = repository;
 		this.filter = filter;
 		this.partitionSize = partitionSize;
 		this.state = state;
 		this.parentMonitor = parentMonitor;
 		this.parentTicks = parentTicks;
+		if (propertyPaths != null){
+		    this.propertyPaths = propertyPaths;
+		}
 	}
 
 //************************ METHODS ****************************************************/
 
-	public void initialize(){
+    public void initialize(){
 	    if (totalCount < 0){
 
 	        parentMonitor.subTask("Compute total number of records");
@@ -125,7 +237,9 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase> {
 	    }
 	}
 
-	public TaxonNode next(){
+
+	@Override
+    public TaxonNode next(){
 	    int currentIndexAtStart = currentIndex;
 	    initialize();
 	    if(fifo.isEmpty()){
@@ -148,7 +262,8 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase> {
 	    }
 	}
 
-	public void close(){
+	@Override
+    public void close(){
 	    monitor.done();
 	    commitTransaction();
 	}
@@ -159,6 +274,7 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase> {
         if (txStatus != null){
             commitTransaction();
         }
+
         txStatus = startTransaction();
 //        if (readOnly){
 //            txStatus.setRollbackOnly();
@@ -170,9 +286,6 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase> {
         List<TaxonNode> partition = new ArrayList<>();
         if (!partList.isEmpty()){
             monitor.subTask(String.format("Reading partition %d/%d", currentPartition + 1, (totalCount / partitionSize) +1 ));
-            List<String> propertyPaths = new ArrayList<>();
-            propertyPaths.add("taxon");
-            propertyPaths.add("taxon.name");
             partition = repository.getTaxonNodeService().loadByIds(partList, propertyPaths);
             monitor.worked(partition.size());
             currentPartition++;
@@ -195,9 +308,7 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase> {
         return repository.startTransaction(readOnly);
     }
 
-    public boolean isReadOnly() {
-        return readOnly;
-    }
+    @Override
     public void setReadOnly(boolean readOnly) {
         this.readOnly = readOnly;
     }
@@ -209,6 +320,4 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase> {
     public void setLastCommitManually(boolean lastCommitManually) {
         this.lastCommitManually = lastCommitManually;
     }
-
-
 }
