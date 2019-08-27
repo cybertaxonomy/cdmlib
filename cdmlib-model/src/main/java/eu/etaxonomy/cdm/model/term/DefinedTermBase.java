@@ -120,6 +120,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = DefinedTermBase.class)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private T kindOf;
+
     /**
      * FIXME - Hibernate returns this as a collection of CGLibProxy$$DefinedTermBase objects
      * which can't be cast to instances of T - can we explicitly initialize these terms using

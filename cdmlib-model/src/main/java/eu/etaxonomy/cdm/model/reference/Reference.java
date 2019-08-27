@@ -139,8 +139,7 @@ public class Reference
         implements IArticle, IBook, IPatent, IDatabase, IJournal, IBookSection,ICdDvd,
                    IGeneric,IInProceedings, IProceedings, IPrintSeries, IReport,
                    IThesis,IWebPage, IPersonalCommunication,
-                   INomenclaturalReference, IReference, IIntextReferenceTarget,
-                   Cloneable {
+                   INomenclaturalReference, IReference, IIntextReferenceTarget {
 
     private static final long serialVersionUID = -2034764545042691295L;
 	private static final Logger logger = Logger.getLogger(Reference.class);

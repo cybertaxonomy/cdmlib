@@ -44,7 +44,6 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * would not have been adequate.
  *
  * @author m.doering
- * @version 1.0
  * @since 08-Nov-2007 13:06:17
  */
 @XmlAccessorType(XmlAccessType.FIELD)
