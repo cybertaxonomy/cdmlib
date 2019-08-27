@@ -146,6 +146,7 @@ public enum CdmLightExportTable {
     protected static final String HOMOTYPIC_GROUP_ID = "HomotypicGroup_ID";
     protected static final String HOMOTYPIC_GROUP_STRING = "HomotypicGroupString";
     protected static final String TYPE_STRING = "TypeString";
+    protected static final String TYPE_CACHE = "TypeCache";
 
     //NomenclaturalAuthor
     protected static final String AUTHOR_ID = "PersonOrTeam_ID";
@@ -232,7 +233,7 @@ public enum CdmLightExportTable {
     protected static final String IDENTIFIER_TYPE = "IdentifierType";
 
     final static String[] homotypicGroupColumns(){
-        return new String[]{HOMOTYPIC_GROUP_ID, HOMOTYPIC_GROUP_STRING, TYPE_STRING};
+        return new String[]{HOMOTYPIC_GROUP_ID, HOMOTYPIC_GROUP_STRING, TYPE_STRING, TYPE_CACHE};
     }
 
 
