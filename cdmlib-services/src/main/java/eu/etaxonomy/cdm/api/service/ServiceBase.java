@@ -133,13 +133,19 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
     @Override
     @Transactional(readOnly = true)
     public List<T> findById(Set<Integer> idSet) {  //can't be called find(Set<Integer>) as this conflicts with find(Set<UUID)
-        return dao.loadList(idSet, null);
+        return dao.loadList(idSet, null, null);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<T> loadByIds(List<Integer> idList, List<String> propertyPaths){
-        return dao.loadList(idList, propertyPaths);
+        return dao.loadList(idList, null, propertyPaths);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<T> loadByIds(List<Integer> idList, List<OrderHint> orderHints, List<String> propertyPaths){
+        return dao.loadList(idList, orderHints, propertyPaths);
     }
 
     @Override

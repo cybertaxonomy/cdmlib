@@ -463,13 +463,13 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
     }
 
     @Override
-    public List<T> loadList(Collection<Integer> ids, List<String> propertyPaths) throws DataAccessException {
+    public List<T> loadList(Collection<Integer> ids, List<OrderHint> orderHints, List<String> propertyPaths) throws DataAccessException {
 
         if (ids.isEmpty()) {
-            return new ArrayList<T>(0);
+            return new ArrayList<>(0);
         }
 
-        Criteria criteria = prepareList(null, ids, null, null, null, "id");
+        Criteria criteria = prepareList(null, ids, null, null, orderHints, "id");
 
         if (logger.isDebugEnabled()) {
             logger.debug(criteria.toString());

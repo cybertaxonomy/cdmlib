@@ -25,6 +25,8 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 
 /**
  * @author a.mueller
@@ -277,7 +279,7 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase>
 
         txStatus = startTransaction();
 //        if (readOnly){
-//            txStatus.setRollbackOnly();
+//            txStatus.setRollbackOnly();  //unclear if this is correct way to handle rollback, see comment on method
 //        }
         while (partList.size() < partitionSize && idIterator.hasNext()){
             partList.add(idIterator.next());
@@ -286,7 +288,9 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase>
         List<TaxonNode> partition = new ArrayList<>();
         if (!partList.isEmpty()){
             monitor.subTask(String.format("Reading partition %d/%d", currentPartition + 1, (totalCount / partitionSize) +1 ));
-            partition = repository.getTaxonNodeService().loadByIds(partList, propertyPaths);
+            OrderHint orderHint = new OrderHint("treeIndex", SortOrder.ASCENDING);
+            List<OrderHint> orderHints = Arrays.asList(new OrderHint[]{orderHint});
+            partition = repository.getTaxonNodeService().loadByIds(partList, orderHints, propertyPaths);
             monitor.worked(partition.size());
             currentPartition++;
             monitor.subTask(String.format("Writing partition %d/%d", currentPartition, (totalCount / partitionSize) +1 ));

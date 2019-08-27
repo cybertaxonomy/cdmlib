@@ -643,7 +643,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         Query query = getSession().createQuery(queryStr);
         List<List<Integer>> partitionList = splitIdList(query.list(), DEFAULT_PARTITION_SIZE);
         for (List<Integer> taxonIdList : partitionList){
-            List<TaxonBase> taxonList = taxonDao.loadList(taxonIdList, null);
+            List<TaxonBase> taxonList = taxonDao.loadList(taxonIdList, null, null);
             for (TaxonBase taxonBase : taxonList){
                 if (taxonBase != null){
                     taxonBase = taxonDao.load(taxonBase.getUuid());
@@ -740,7 +740,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         @SuppressWarnings("unchecked")
         List<List<Integer>> partitionList = splitIdList(query.list(), DEFAULT_PARTITION_SIZE);
         for (List<Integer> taxonIdList : partitionList){
-            List<TaxonBase> taxonList = taxonDao.loadList(taxonIdList, null);
+            List<TaxonBase> taxonList = taxonDao.loadList(taxonIdList, null, null);
             for (TaxonBase taxonBase : taxonList){
                 if (taxonBase != null){
                     taxonBase.setPublish(publish);

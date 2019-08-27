@@ -102,9 +102,24 @@ public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode>
                 unpublishFilter);
 //        String groupBy = " GROUP BY tn.uuid ";
         String groupBy = "";
-        String fullQuery = select + from + " WHERE " + fullFilter + groupBy;
+        String orderBy = getOrderBy(filter, selectPart);
+        String fullQuery = select + from + " WHERE " + fullFilter + groupBy + orderBy;
+
         return fullQuery;
 
+    }
+
+    /**
+     * @param filter
+     * @param selectPart
+     * @return
+     */
+    private String getOrderBy(TaxonNodeFilter filter, String selectPart) {
+        String orderBy = "";
+        if (filter.getOrderBy()!= null && !selectPart.contains("count")){
+            orderBy = "ORDER BY " + filter.getOrderBy().getHql();
+        }
+        return orderBy;
     }
 
     private String getFrom(TaxonNodeFilter filter){
