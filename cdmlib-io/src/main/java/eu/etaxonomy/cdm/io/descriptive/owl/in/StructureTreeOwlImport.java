@@ -75,6 +75,7 @@ public class StructureTreeOwlImport extends CdmImportBase<StructureTreeOwlImport
             return;
         }
         Resource nodeResource = model.createResource(nodeStatement.getObject().toString());
+        UUID nodeUuid = UUID.fromString(nodeResource.getProperty(OwlUtil.propUuid).getString());
 
         Resource termResource = nodeResource.getPropertyResourceValue(OwlUtil.propHasTerm);
 
@@ -99,6 +100,7 @@ public class StructureTreeOwlImport extends CdmImportBase<StructureTreeOwlImport
         getVocabularyService().saveOrUpdate(vocabulary);
 
         TermNode<?> childNode = parent.addChild(term);
+        childNode.setUuid(nodeUuid);
         // inapplicable if
         StmtIterator inapplicableIterator = nodeResource.listProperties(OwlUtil.propNodeIsInapplicableIf);
         while(inapplicableIterator.hasNext()){
