@@ -62,6 +62,10 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
  */
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(name = "NamedArea", propOrder = {
+    "kindOf",
+    "generalizationOf",
+    "partOf",
+    "includes",
     "validPeriod",
     "shape",
     "pointApproximation",
