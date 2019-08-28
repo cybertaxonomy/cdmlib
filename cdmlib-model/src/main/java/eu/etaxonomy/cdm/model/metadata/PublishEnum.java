@@ -16,8 +16,8 @@ package eu.etaxonomy.cdm.model.metadata;
 public enum PublishEnum implements IKeyLabel{
 
     Publish("Publish", "Publish"),
-    NotPublish("NotPublish", "Not Publish"),
-    InheritFromParent("InheritFromParent", "Inherit from Parent");
+    NotPublish("NotPublish", "Don't publish"),
+    InheritFromParent("InheritFromParent", "Inherit from parent");
 
 
     String label;

@@ -49,8 +49,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 @MappedSuperclass
 @Audited
 public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelated, TYPE extends RelationshipTermBase>
-        extends ReferencedEntityBase
-        implements Cloneable {
+        extends ReferencedEntityBase {
 
     private static final long serialVersionUID = -5030154633820061997L;
     @SuppressWarnings("unused")

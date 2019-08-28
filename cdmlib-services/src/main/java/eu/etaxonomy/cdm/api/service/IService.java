@@ -19,11 +19,14 @@ import java.util.UUID;
 import org.hibernate.LockOptions;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
+import org.hibernate.event.spi.MergeEvent;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
+import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
+import eu.etaxonomy.cdm.persistence.hibernate.PostMergeEntityListener;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -403,6 +406,16 @@ public interface IService<T extends ICdmBase>{
      * @return
      */
     List<T> loadByIds(List<Integer> idSet, List<String> propertyPaths);
+
+    /**
+     * Loads a batch of entities referenced by their ids.
+     * @param idSet
+     * @param orderHints
+     * @param propertyPaths
+     * @return
+     */
+    List<T> loadByIds(List<Integer> idSet, List<OrderHint> orderHints, List<String> propertyPaths);
+
 
     /**
      * This method allows for the possibility of returning the input transient

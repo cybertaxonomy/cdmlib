@@ -25,7 +25,6 @@ import org.hibernate.envers.Audited;
 /**
  * @author a.mueller
  * @since 2013-06-19
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DefinedTerm")

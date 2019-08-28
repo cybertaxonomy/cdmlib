@@ -43,7 +43,6 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTestWithSecu
 
 /**
  * @author a.mueller
- *
  */
 public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSecurity {
 
@@ -64,10 +63,6 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
     private TestingAuthenticationToken testerToken;
 
 
-
-    /**
-     * @throws java.lang.Exception
-     */
     @Before
     public void setUp() throws Exception {
         uuid = UUID.fromString("8d77c380-c76a-11dd-ad8b-0800200c9a66");
@@ -352,9 +347,9 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
         List<OrderHint> orderHints = new ArrayList<OrderHint>();
         orderHints.add(new RandomOrder());
         Integer[] ids = new Integer[]{1, 2};
-        List<TaxonBase> list = cdmEntityDaoBase.loadList(Arrays.asList(ids), null);
+        List<TaxonBase> list = cdmEntityDaoBase.loadList(Arrays.asList(ids), orderHints, null);
         assertNotNull("list() should not return null",list);
-        assertEquals("list() should return a list with two entities in it",list.size(),2);
+        assertEquals("list() should return a list with two entities in it",2,list.size());
     }
 
     /**
@@ -369,12 +364,6 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
         cdmEntityDaoBase.delete(cdmBase);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 }

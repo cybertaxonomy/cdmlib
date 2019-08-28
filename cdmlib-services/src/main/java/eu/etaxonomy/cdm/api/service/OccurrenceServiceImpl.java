@@ -827,7 +827,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 occurrenceIds.add(o.getId());
             }
         }
-        occurrences = (List<T>) dao.loadList(occurrenceIds, propertyPaths);
+        occurrences = (List<T>) dao.loadList(occurrenceIds, null, propertyPaths);
 
         return new DefaultPagerImpl<T>(pageNumber, Long.valueOf(occurrences.size()), pageSize, occurrences);
 
@@ -845,7 +845,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<FieldUnitDTO> findFieldUnitDTOByAssociatedTaxon(Set<TaxonRelationshipEdge> includedRelationships,
             UUID associatedTaxonUuid) {

@@ -960,7 +960,7 @@ public class TaxonServiceImpl
 
     @Override
     public List<TaxonBase> findTaxaByID(Set<Integer> listOfIDs) {
-        return this.dao.loadList(listOfIDs, null);
+        return this.dao.loadList(listOfIDs, null, null);
     }
 
     @Override

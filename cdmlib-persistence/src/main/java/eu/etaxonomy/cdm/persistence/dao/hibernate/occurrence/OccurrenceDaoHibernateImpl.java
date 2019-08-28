@@ -70,7 +70,6 @@ public class OccurrenceDaoHibernateImpl
           extends IdentifiableDaoBase<SpecimenOrObservationBase>
           implements IOccurrenceDao {
 
-    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(TaxonDaoHibernateImpl.class);
 
     @Autowired
@@ -154,7 +153,8 @@ public class OccurrenceDaoHibernateImpl
     }
 
     @Override
-    public List<DeterminationEvent> getDeterminations(SpecimenOrObservationBase occurrence, TaxonBase taxonBase, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+    public List<DeterminationEvent> getDeterminations(SpecimenOrObservationBase occurrence,
+            TaxonBase taxonBase, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
             Criteria criteria = getSession().createCriteria(DeterminationEvent.class);
@@ -191,7 +191,8 @@ public class OccurrenceDaoHibernateImpl
     }
 
     @Override
-    public List<Media> getMedia(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+    public List<Media> getMedia(SpecimenOrObservationBase occurence,
+            Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         checkNotInPriorView("OccurrenceDaoHibernateImpl.getMedia(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths)");
         Query query = getSession().createQuery(
                 "   SELECT media "

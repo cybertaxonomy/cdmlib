@@ -335,8 +335,10 @@ public interface ICdmGenericDao {
      */
     public long getReferencingObjectsCount(CdmBase referencedCdmBase);
 
-
-
-
+    /**
+     * @param clazz
+     * @return
+     */
+    public List<UUID> listUuid(Class<? extends CdmBase> clazz);
 
 }

@@ -443,4 +443,9 @@ public class CommonServiceImpl /*extends ServiceBase<OriginalSourceBase,IOrigina
         return genericDao.isMergeable(cdmBase1, cdmBase2, mergeStrategy);
     }
 
+    @Override
+    public List<UUID> listUuid(Class<? extends CdmBase> clazz) {
+        return genericDao.listUuid(clazz);
+    }
+
 }

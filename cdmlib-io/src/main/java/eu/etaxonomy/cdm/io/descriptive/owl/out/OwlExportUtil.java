@@ -9,10 +9,12 @@
 package eu.etaxonomy.cdm.io.descriptive.owl.out;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.ResourceFactory;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -22,6 +24,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Character;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.FeatureState;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
@@ -33,8 +36,8 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermBase;
-import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermNode;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 
@@ -46,8 +49,13 @@ import eu.etaxonomy.cdm.persistence.dto.TermDto;
 public class OwlExportUtil {
 
     static Resource createVocabularyResource(TermVocabulary vocabulary, ICdmRepository repo, StructureTreeOwlExportState state) {
+        String vocabularyResourceUri = getVocabularyResourceUri(vocabulary, state);
+        //check if vocabulary exists
+        if(state.getModel().containsResource(ResourceFactory.createResource(vocabularyResourceUri))){
+            return state.getModel().createResource(vocabularyResourceUri);
+        }
         // create vocabulary resource
-        Resource vocabularyResource = getVocabularyResource(vocabulary, state)
+        Resource vocabularyResource = state.getModel().createResource(vocabularyResourceUri)
                 .addProperty(OwlUtil.propUuid, vocabulary.getUuid().toString())
                 .addProperty(OwlUtil.propType, vocabulary.getTermType().getKey())
                 .addProperty(OwlUtil.propIsA, OwlUtil.VOCABULARY)
@@ -60,8 +68,13 @@ public class OwlExportUtil {
         vocabularyRepresentationResources.forEach(rep->vocabularyResource.addProperty(OwlUtil.propHasRepresentation, rep));
 
         // add terms
-        repo.getVocabularyService().getTopLevelTerms(vocabulary.getUuid()).forEach(termDto->addTopLevelTerm(termDto, vocabularyResource, repo, state));
-
+        Collection<TermDto> topLevelTerms = repo.getVocabularyService().getTopLevelTerms(vocabulary.getUuid());
+        for (TermDto termDto : topLevelTerms) {
+            if(state.getConfig().getProgressMonitor().isCanceled()){
+                break;
+            }
+            addTopLevelTerm(termDto, vocabularyResource, repo, state);
+        }
         return vocabularyResource;
     }
 
@@ -260,7 +273,12 @@ public class OwlExportUtil {
     }
 
     static Resource createFeatureTreeResource(TermTree featureTree, ICdmRepository repo, StructureTreeOwlExportState state) {
-        Resource featureTreeResource = getFeatureTreeResource(featureTree, state)
+        String featureTreeResourceUri = getFeatureTreeResourceUri(featureTree, state);
+        //check if tree exists
+        if(state.getModel().containsResource(ResourceFactory.createResource(featureTreeResourceUri))){
+            return state.getModel().createResource(featureTreeResourceUri);
+        }
+        Resource featureTreeResource = state.getModel().createResource(featureTreeResourceUri)
                 .addProperty(OwlUtil.propUuid, featureTree.getUuid().toString())
                 .addProperty(OwlUtil.propLabel, featureTree.getTitleCache())
                 .addProperty(OwlUtil.propIsA, OwlUtil.TREE)
@@ -290,7 +308,7 @@ public class OwlExportUtil {
         }
     }
 
-    static Resource createNodeResource(TermNode<Feature> node, boolean initFeatureTree, ICdmRepository repo, StructureTreeOwlExportState state) {
+    static Resource createNodeResource(TermNode<?> node, boolean initFeatureTree, ICdmRepository repo, StructureTreeOwlExportState state) {
         if(initFeatureTree){
             createFeatureTreeResource(node.getGraph(), repo, state);
             return getNodeResource(node, state);
@@ -299,6 +317,28 @@ public class OwlExportUtil {
                 .addProperty(OwlUtil.propIsA, OwlUtil.NODE)
                 .addProperty(OwlUtil.propUuid, node.getUuid().toString())
                 ;
+        //inapplicable if
+        Set<FeatureState> inapplicableIf = node.getInapplicableIf();
+        for (FeatureState featureState : inapplicableIf) {
+            Resource featureStateResource = state.getModel().createResource(OwlUtil.RESOURCE_SOURCE+featureState.getUuid())
+                    .addProperty(OwlUtil.propIsA, OwlUtil.FEATURE_STATE)
+                    .addProperty(OwlUtil.propUuid, featureState.getUuid().toString())
+                    .addProperty(OwlUtil.propFeatureStateHasFeature, createTermResource(featureState.getFeature(), false, repo, state))
+                    .addProperty(OwlUtil.propFeatureStateHasState, createTermResource(featureState.getState(), false, repo, state))
+                    ;
+            nodeResource.addProperty(OwlUtil.propNodeIsInapplicableIf, featureStateResource);
+        }
+        //only applicable if
+        Set<FeatureState> onlyApplicableIf = node.getOnlyApplicableIf();
+        for (FeatureState featureState : onlyApplicableIf) {
+            Resource featureStateResource = state.getModel().createResource(OwlUtil.RESOURCE_SOURCE+featureState.getUuid())
+                    .addProperty(OwlUtil.propIsA, OwlUtil.FEATURE_STATE)
+                    .addProperty(OwlUtil.propUuid, featureState.getUuid().toString())
+                    .addProperty(OwlUtil.propFeatureStateHasFeature, createTermResource(featureState.getFeature(), false, repo, state))
+                    .addProperty(OwlUtil.propFeatureStateHasState, createTermResource(featureState.getState(), false, repo, state))
+                    ;
+            nodeResource.addProperty(OwlUtil.propNodeIsOnlyApplicableIf, featureStateResource);
+        }
         if(node.getTerm()!=null){
             // add term to node
             createVocabularyResource(node.getTerm().getVocabulary(), repo, state);
@@ -308,8 +348,8 @@ public class OwlExportUtil {
         return nodeResource;
     }
 
-    private static Resource getVocabularyResource(TermVocabulary vocabulary, StructureTreeOwlExportState state) {
-        return state.getModel().createResource(OwlUtil.RESOURCE_TERM_VOCABULARY+vocabulary.getUuid());
+    private static String getVocabularyResourceUri(TermVocabulary vocabulary, StructureTreeOwlExportState state) {
+        return OwlUtil.RESOURCE_TERM_VOCABULARY+vocabulary.getUuid();
     }
 
     private static Resource getSourceResource(IdentifiableSource source, StructureTreeOwlExportState state) {
@@ -337,8 +377,8 @@ public class OwlExportUtil {
         return state.getModel().createResource(OwlUtil.RESOURCE_NODE + node.getUuid().toString());
     }
 
-    private static Resource getFeatureTreeResource(TermTree featureTree, StructureTreeOwlExportState state) {
-        return state.getModel().createResource(OwlUtil.RESOURCE_FEATURE_TREE+featureTree.getUuid().toString());
+    private static String getFeatureTreeResourceUri(TermTree featureTree, StructureTreeOwlExportState state) {
+        return OwlUtil.RESOURCE_FEATURE_TREE+featureTree.getUuid().toString();
     }
 
 }

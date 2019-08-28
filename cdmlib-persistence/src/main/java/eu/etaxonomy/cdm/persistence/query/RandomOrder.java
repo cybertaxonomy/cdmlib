@@ -13,17 +13,19 @@ import eu.etaxonomy.cdm.persistence.dao.common.OperationNotSupportedInPriorViewE
 
 
 public class RandomOrder extends OrderHint {
-	private final static String PROPERTY_NAME = "uselessAnyways"; 
+
+    private static final long serialVersionUID = 9013839425292632385L;
+    private final static String PROPERTY_NAME = "uselessAnyways";
 
 	public RandomOrder() {
 		super(RandomOrder.PROPERTY_NAME,SortOrder.ASCENDING);
     }
-	
+
 	@Override
 	public void add(Criteria criteria, Map<String, Criteria> criteriaMap) {
 		criteria.addOrder(new RandomHibernateOrder());
 	}
-    
+
 	public class RandomHibernateOrder extends Order {
 		private static final long serialVersionUID = 8231534219451938847L;
 
@@ -31,7 +33,7 @@ public class RandomOrder extends OrderHint {
 		protected RandomHibernateOrder() {
 			super(RandomOrder.PROPERTY_NAME, true);
 		}
-		
+
 
 		@Override
 		public String toSqlString(Criteria criteria, CriteriaQuery criteriaQuery)
@@ -40,9 +42,9 @@ public class RandomOrder extends OrderHint {
 		fragment.append(" rand()");
 		return StringHelper.replace(fragment.toString(), "{alias}",
 		criteriaQuery.getSQLAlias(criteria));
-		} 
+		}
 	}
-	
+
 	@Override
 	public void add(AuditQuery query) {
 			throw new OperationNotSupportedInPriorViewException("You cannot sort in a random order in the history view");
