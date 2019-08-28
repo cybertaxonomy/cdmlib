@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Character;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.FeatureState;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
@@ -316,6 +317,28 @@ public class OwlExportUtil {
                 .addProperty(OwlUtil.propIsA, OwlUtil.NODE)
                 .addProperty(OwlUtil.propUuid, node.getUuid().toString())
                 ;
+        //inapplicable if
+        Set<FeatureState> inapplicableIf = node.getInapplicableIf();
+        for (FeatureState featureState : inapplicableIf) {
+            Resource featureStateResource = state.getModel().createResource(OwlUtil.RESOURCE_SOURCE+featureState.getUuid())
+                    .addProperty(OwlUtil.propIsA, OwlUtil.FEATURE_STATE)
+                    .addProperty(OwlUtil.propUuid, featureState.getUuid().toString())
+                    .addProperty(OwlUtil.propFeatureStateHasFeature, createTermResource(featureState.getFeature(), false, repo, state))
+                    .addProperty(OwlUtil.propFeatureStateHasState, createTermResource(featureState.getState(), false, repo, state))
+                    ;
+            nodeResource.addProperty(OwlUtil.propNodeIsInapplicableIf, featureStateResource);
+        }
+        //only applicable if
+        Set<FeatureState> onlyApplicableIf = node.getOnlyApplicableIf();
+        for (FeatureState featureState : onlyApplicableIf) {
+            Resource featureStateResource = state.getModel().createResource(OwlUtil.RESOURCE_SOURCE+featureState.getUuid())
+                    .addProperty(OwlUtil.propIsA, OwlUtil.FEATURE_STATE)
+                    .addProperty(OwlUtil.propUuid, featureState.getUuid().toString())
+                    .addProperty(OwlUtil.propFeatureStateHasFeature, createTermResource(featureState.getFeature(), false, repo, state))
+                    .addProperty(OwlUtil.propFeatureStateHasState, createTermResource(featureState.getState(), false, repo, state))
+                    ;
+            nodeResource.addProperty(OwlUtil.propNodeIsOnlyApplicableIf, featureStateResource);
+        }
         if(node.getTerm()!=null){
             // add term to node
             createVocabularyResource(node.getTerm().getVocabulary(), repo, state);

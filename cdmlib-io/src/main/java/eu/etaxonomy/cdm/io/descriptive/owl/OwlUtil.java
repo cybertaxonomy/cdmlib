@@ -34,6 +34,7 @@ public class OwlUtil {
     public static final String RESOURCE_TERM = RESOURCE_URI+"term/";
     public static final String RESOURCE_CHARACTER = RESOURCE_URI+"character/";
     public static final String RESOURCE_MEDIA = RESOURCE_URI+"media/";
+    public static final String RESOURCE_FEATURE_STATE = RESOURCE_URI+"feature_state/";
 
     /**
      * property URIs
@@ -76,6 +77,18 @@ public class OwlUtil {
     public static final String PROPERTY_TERM_SYMBOL2 = PROPERTY_BASE_URI+"term_symbol2";
     public static final String PROPERTY_TERM_ID_IN_VOCABULARY = PROPERTY_BASE_URI+"term_id_in_vocabulary";
     public static final String PROPERTY_TERM_IS_TOP_LEVEL = PROPERTY_BASE_URI+"term_is_top_level";
+
+    /**
+     * node properties
+     */
+    public static final String PROPERTY_NODE_IS_INAPPLICABLE_IF = PROPERTY_BASE_URI+"node_is_inapplicable_if";
+    public static final String PROPERTY_NODE_IS_ONLY_APPLICABLE_IF = PROPERTY_BASE_URI+"node_is_only_applicable_if";
+
+    /**
+     * feature state properties
+     */
+    public static final String PROPERTY_FEATURE_STATE_HAS_FEATURE = PROPERTY_BASE_URI+"feature_state_has_feature";
+    public static final String PROPERTY_FEATURE_STATE_HAS_STATE = PROPERTY_BASE_URI+"feature_state_has_state";
 
     /**
      * feature properties
@@ -121,6 +134,7 @@ public class OwlUtil {
     public final static String TERM = "term";
     public final static String CHARACTER = "character";
     public final static String FEATURE = "feature";
+    public final static String FEATURE_STATE = "feature_state";
     public final static String MEDIA = "media";
 
     public static Property propHasSubStructure;
@@ -150,6 +164,12 @@ public class OwlUtil {
     public static Property propTermSymbol2;
     public static Property propTermIdInVocabulary;
     public static Property propTermIsTopLevel;
+
+    public static Property propNodeIsInapplicableIf;
+    public static Property propNodeIsOnlyApplicableIf;
+
+    public static Property propFeatureStateHasFeature;
+    public static Property propFeatureStateHasState;
 
     public static Property propFeatureIsQuantitative;
     public static Property propFeatureIsCategorical;
@@ -203,6 +223,14 @@ public class OwlUtil {
         propTermSymbol2 = model.createProperty(OwlUtil.PROPERTY_TERM_SYMBOL2);
         propTermIdInVocabulary = model.createProperty(OwlUtil.PROPERTY_TERM_ID_IN_VOCABULARY);
         propTermIsTopLevel = model.createProperty(OwlUtil.PROPERTY_TERM_IS_TOP_LEVEL);
+
+        // node
+        propNodeIsInapplicableIf = model.createProperty(OwlUtil.PROPERTY_NODE_IS_INAPPLICABLE_IF);
+        propNodeIsOnlyApplicableIf = model.createProperty(OwlUtil.PROPERTY_NODE_IS_ONLY_APPLICABLE_IF);
+
+        // feature state
+        propFeatureStateHasFeature = model.createProperty(OwlUtil.PROPERTY_FEATURE_STATE_HAS_FEATURE);
+        propFeatureStateHasState = model.createProperty(OwlUtil.PROPERTY_FEATURE_STATE_HAS_STATE);
 
         // feature
         propFeatureIsQuantitative = model.createProperty(OwlUtil.PROPERTY_FEATURE_IS_QUANTITATIVE);
