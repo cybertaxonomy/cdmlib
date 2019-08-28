@@ -48,7 +48,9 @@ import eu.etaxonomy.cdm.model.name.Rank;
 })
 @Entity
 @Audited
-public abstract class OrderedTermBase<T extends OrderedTermBase<?>> extends DefinedTermBase<T> {
+public abstract class OrderedTermBase<T extends OrderedTermBase<?>>
+        extends DefinedTermBase<T> {
+
     private static final long serialVersionUID = 8000797926720467399L;
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(OrderedTermBase.class);
