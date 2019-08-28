@@ -24,6 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.api.service.exception.RegistrationValidationException;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetManager;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -269,7 +270,9 @@ public class CdmLightClassificationExport
                 if (root.hasChildNodes()) {
                     childNodes = new ArrayList();
                     for (TaxonNode child : root.getChildNodes()) {
-                        childNodes.add(new TaxonNodeDto(child));
+                    	if (child != null) {
+                    		childNodes.add(new TaxonNodeDto(TaxonNode.class, child));
+                    	}
                     }
                     state.getNodeChildrenMap().put(root.getUuid(), childNodes);
                     // add root to node map
@@ -1212,10 +1215,10 @@ public class CdmLightClassificationExport
 
                 }
             }
-            TypeDesignationSetManager manager = new TypeDesignationSetManager(specimenTypeDesignations);
+            TypeDesignationSetManager manager = new TypeDesignationSetManager(specimenTypeDesignations, name);
             String typeDesignationString = createTypeDesignationString(manager.toTaggedText(), false);
             csvLine[table.getIndex(CdmLightExportTable.TYPE_SPECIMEN)] = typeDesignationString;
-
+            
             StringBuilder stringbuilder = new StringBuilder();
             int i = 1;
             for (TextualTypeDesignation typeDesignation : textualTypeDesignations) {
@@ -1624,12 +1627,12 @@ public class CdmLightClassificationExport
      * @param list
      * @return
      */
-    private String createTypeDesignationString(List<TaggedText> list, boolean homotypicGroup) {
+    private String createTypeDesignationString(List<TaggedText> list, boolean isHomotypicGroup) {
         StringBuffer homotypicalGroupTypeDesignationString = new StringBuffer();
 
         for (TaggedText text : list) {
             if (text != null && text.getText() != null
-                    && (text.getText().equals("Type:") || text.getText().equals("NameType:") || (text.getType().equals(TagEnum.name) && !homotypicGroup))) {
+                    && (text.getText().equals("Type:") || text.getText().equals("NameType:") || (text.getType().equals(TagEnum.name) && !isHomotypicGroup))) {
                 // do nothing
             } else if (text.getType().equals(TagEnum.reference)) {
                 homotypicalGroupTypeDesignationString.append(text.getText());

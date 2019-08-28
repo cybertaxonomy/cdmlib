@@ -121,14 +121,33 @@ public class TypeDesignationSetManager {
      * @throws RegistrationValidationException
      *
      */
-    public TypeDesignationSetManager(Collection<TypeDesignationBase> typeDesignations) throws RegistrationValidationException {
+    public TypeDesignationSetManager(Collection<TypeDesignationBase> typeDesignations) throws RegistrationValidationException{
+    	this(typeDesignations, null);
+    }
+    
+    /**
+     * @param containgEntity
+     * @param taxonName
+     * @throws RegistrationValidationException
+     *
+     */
+    public TypeDesignationSetManager(Collection<TypeDesignationBase> typeDesignations, TaxonName typifiedName) throws RegistrationValidationException {
         if (this.typeDesignations == null){
             this.typeDesignations = new HashMap<>();
         }
         for (TypeDesignationBase<?> typeDes:typeDesignations){
             this.typeDesignations.put(typeDes.getUuid(), typeDes);
         }
-        findTypifiedName();
+        try {
+        	findTypifiedName();
+        }catch (RegistrationValidationException e) {
+        	if (typifiedName == null) {
+        		throw e;
+        	}
+        	this.typifiedName = typifiedName;
+            this.typifiedNameRef = new EntityReference(typifiedName.getUuid(), typifiedName.getTitleCache());
+        }
+        
         mapAndSort();
     }
 
