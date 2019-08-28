@@ -17,13 +17,16 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ResIterator;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.rdf.model.StmtIterator;
 
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.descriptive.owl.OwlUtil;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.FeatureState;
+import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermNode;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
@@ -96,11 +99,39 @@ public class StructureTreeOwlImport extends CdmImportBase<StructureTreeOwlImport
         getVocabularyService().saveOrUpdate(vocabulary);
 
         TermNode<?> childNode = parent.addChild(term);
+        // inapplicable if
+        StmtIterator inapplicableIterator = nodeResource.listProperties(OwlUtil.propNodeIsInapplicableIf);
+        while(inapplicableIterator.hasNext()){
+            Statement statement = inapplicableIterator.next();
+            FeatureState featureState = createFeatureState(statement, model, state);
+            childNode.addInapplicableState(featureState);
+        }
+        // only applicable if
+        StmtIterator onlyApplicableIterator = nodeResource.listProperties(OwlUtil.propNodeIsOnlyApplicableIf);
+        while(onlyApplicableIterator.hasNext()){
+            Statement statement = onlyApplicableIterator.next();
+            FeatureState featureState = createFeatureState(statement, model, state);
+            childNode.addApplicableState(featureState);
+        }
 
         state.getConfig().getProgressMonitor().worked(1);
 
         nodeResource.listProperties(OwlUtil.propHasSubStructure).forEachRemaining(prop->createNode(childNode, prop, treeLabel, model, state));
     }
+
+    private FeatureState createFeatureState(Statement statement, Model model, StructureTreeOwlImportState state) {
+        Resource inapplicableFeatureStateResource = model.createResource(statement.getObject().toString());
+        Resource featureResouce = inapplicableFeatureStateResource.getPropertyResourceValue(OwlUtil.propFeatureStateHasFeature);
+        Resource stateResouce = inapplicableFeatureStateResource.getPropertyResourceValue(OwlUtil.propFeatureStateHasState);
+        Feature feature = (Feature) OwlImportUtil.createTerm(featureResouce, this, model, state);
+        State stateTerm = (State) OwlImportUtil.createTerm(stateResouce, this, model, state);
+        getTermService().saveOrUpdate(feature);
+        getTermService().saveOrUpdate(stateTerm);
+        FeatureState featureState = FeatureState.NewInstance(feature, stateTerm);
+        return featureState;
+    }
+
+
 
     @Override
     protected boolean isIgnore(StructureTreeOwlImportState state) {
