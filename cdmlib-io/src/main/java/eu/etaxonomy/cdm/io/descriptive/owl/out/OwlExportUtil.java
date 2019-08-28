@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.ResourceFactory;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -47,8 +48,13 @@ import eu.etaxonomy.cdm.persistence.dto.TermDto;
 public class OwlExportUtil {
 
     static Resource createVocabularyResource(TermVocabulary vocabulary, ICdmRepository repo, StructureTreeOwlExportState state) {
+        String vocabularyResourceUri = getVocabularyResourceUri(vocabulary, state);
+        //check if vocabulary exists
+        if(state.getModel().containsResource(ResourceFactory.createResource(vocabularyResourceUri))){
+            return state.getModel().createResource(vocabularyResourceUri);
+        }
         // create vocabulary resource
-        Resource vocabularyResource = getVocabularyResource(vocabulary, state)
+        Resource vocabularyResource = state.getModel().createResource(vocabularyResourceUri)
                 .addProperty(OwlUtil.propUuid, vocabulary.getUuid().toString())
                 .addProperty(OwlUtil.propType, vocabulary.getTermType().getKey())
                 .addProperty(OwlUtil.propIsA, OwlUtil.VOCABULARY)
@@ -266,7 +272,12 @@ public class OwlExportUtil {
     }
 
     static Resource createFeatureTreeResource(TermTree featureTree, ICdmRepository repo, StructureTreeOwlExportState state) {
-        Resource featureTreeResource = getFeatureTreeResource(featureTree, state)
+        String featureTreeResourceUri = getFeatureTreeResourceUri(featureTree, state);
+        //check if tree exists
+        if(state.getModel().containsResource(ResourceFactory.createResource(featureTreeResourceUri))){
+            return state.getModel().createResource(featureTreeResourceUri);
+        }
+        Resource featureTreeResource = state.getModel().createResource(featureTreeResourceUri)
                 .addProperty(OwlUtil.propUuid, featureTree.getUuid().toString())
                 .addProperty(OwlUtil.propLabel, featureTree.getTitleCache())
                 .addProperty(OwlUtil.propIsA, OwlUtil.TREE)
@@ -314,8 +325,8 @@ public class OwlExportUtil {
         return nodeResource;
     }
 
-    private static Resource getVocabularyResource(TermVocabulary vocabulary, StructureTreeOwlExportState state) {
-        return state.getModel().createResource(OwlUtil.RESOURCE_TERM_VOCABULARY+vocabulary.getUuid());
+    private static String getVocabularyResourceUri(TermVocabulary vocabulary, StructureTreeOwlExportState state) {
+        return OwlUtil.RESOURCE_TERM_VOCABULARY+vocabulary.getUuid();
     }
 
     private static Resource getSourceResource(IdentifiableSource source, StructureTreeOwlExportState state) {
@@ -343,8 +354,8 @@ public class OwlExportUtil {
         return state.getModel().createResource(OwlUtil.RESOURCE_NODE + node.getUuid().toString());
     }
 
-    private static Resource getFeatureTreeResource(TermTree featureTree, StructureTreeOwlExportState state) {
-        return state.getModel().createResource(OwlUtil.RESOURCE_FEATURE_TREE+featureTree.getUuid().toString());
+    private static String getFeatureTreeResourceUri(TermTree featureTree, StructureTreeOwlExportState state) {
+        return OwlUtil.RESOURCE_FEATURE_TREE+featureTree.getUuid().toString();
     }
 
 }
