@@ -145,8 +145,8 @@ public enum CdmLightExportTable {
     //Homotypic Group
     protected static final String HOMOTYPIC_GROUP_ID = "HomotypicGroup_ID";
     protected static final String HOMOTYPIC_GROUP_STRING = "HomotypicGroupString";
-    protected static final String TYPE_STRING = "TypeString";
-    protected static final String TYPE_CACHE = "TypeCache";
+    protected static final String TYPE_STRING = "TypeSpecimenString";
+    protected static final String TYPE_CACHE = "TypeStatementsString";
 
     //NomenclaturalAuthor
     protected static final String AUTHOR_ID = "PersonOrTeam_ID";
@@ -173,7 +173,7 @@ public enum CdmLightExportTable {
 
     //Specimen
 
-    protected static final String SPECIMEN_ID = "Specimen_Id";
+    protected static final String SPECIMEN_ID = "Specimen_ID";
     protected static final String SPECIMEN_CITATION = "SpecimenCitation";
     protected static final String FIELDUNIT_CITATION = "FieldUnitCitation";
     protected static final String LOCALITY= "Locality";
