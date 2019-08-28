@@ -290,7 +290,7 @@ public class OwlExportUtil {
         }
     }
 
-    static Resource createNodeResource(TermNode<Feature> node, boolean initFeatureTree, ICdmRepository repo, StructureTreeOwlExportState state) {
+    static Resource createNodeResource(TermNode<?> node, boolean initFeatureTree, ICdmRepository repo, StructureTreeOwlExportState state) {
         if(initFeatureTree){
             createFeatureTreeResource(node.getGraph(), repo, state);
             return getNodeResource(node, state);
