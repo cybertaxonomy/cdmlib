@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.io.descriptive.owl.out;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -33,8 +34,8 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermBase;
-import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermNode;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 
@@ -60,8 +61,13 @@ public class OwlExportUtil {
         vocabularyRepresentationResources.forEach(rep->vocabularyResource.addProperty(OwlUtil.propHasRepresentation, rep));
 
         // add terms
-        repo.getVocabularyService().getTopLevelTerms(vocabulary.getUuid()).forEach(termDto->addTopLevelTerm(termDto, vocabularyResource, repo, state));
-
+        Collection<TermDto> topLevelTerms = repo.getVocabularyService().getTopLevelTerms(vocabulary.getUuid());
+        for (TermDto termDto : topLevelTerms) {
+            if(state.getConfig().getProgressMonitor().isCanceled()){
+                break;
+            }
+            addTopLevelTerm(termDto, vocabularyResource, repo, state);
+        }
         return vocabularyResource;
     }
 
