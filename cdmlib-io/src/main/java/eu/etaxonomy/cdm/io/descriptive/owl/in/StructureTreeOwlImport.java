@@ -66,7 +66,7 @@ public class StructureTreeOwlImport extends CdmImportBase<StructureTreeOwlImport
             Resource rootNode = tree.getProperty(OwlUtil.propHasRootNode).getResource();
             rootNode.listProperties(OwlUtil.propHasSubStructure).forEachRemaining(prop->createNode(featureTree.getRoot(), prop, featureTree.getTitleCache(), state.getModel(), state));
 
-            getFeatureTreeService().save(featureTree);
+            getFeatureTreeService().saveOrUpdate(featureTree);
         }
     }
 
@@ -93,7 +93,7 @@ public class StructureTreeOwlImport extends CdmImportBase<StructureTreeOwlImport
         T term = (T)getTermService().find(termUuid);
         if(term==null){
             term = (T)OwlImportUtil.createTerm(termResource, this, model, state);
-            getTermService().save(term);
+            term = (T) getTermService().save(term);
             vocabulary.addTerm(term); // only add term if it does not already exist
         }
 
@@ -122,9 +122,9 @@ public class StructureTreeOwlImport extends CdmImportBase<StructureTreeOwlImport
     }
 
     private FeatureState createFeatureState(Statement statement, Model model, StructureTreeOwlImportState state) {
-        Resource inapplicableFeatureStateResource = model.createResource(statement.getObject().toString());
-        Resource featureResouce = inapplicableFeatureStateResource.getPropertyResourceValue(OwlUtil.propFeatureStateHasFeature);
-        Resource stateResouce = inapplicableFeatureStateResource.getPropertyResourceValue(OwlUtil.propFeatureStateHasState);
+        Resource featureStateResource = model.createResource(statement.getObject().toString());
+        Resource featureResouce = featureStateResource.getPropertyResourceValue(OwlUtil.propFeatureStateHasFeature);
+        Resource stateResouce = featureStateResource.getPropertyResourceValue(OwlUtil.propFeatureStateHasState);
 
         UUID featureUuid = UUID.fromString(featureResouce.getProperty(OwlUtil.propUuid).getString());
         Feature feature = (Feature)getTermService().find(featureUuid);
