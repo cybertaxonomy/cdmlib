@@ -199,7 +199,7 @@ public class OwlImportUtil {
 
     private static TermNode findNode(Resource termResource, ICdmRepository repo, Model model, StructureTreeOwlImportState state){
         UUID uuid = UUID.fromString(termResource.getProperty(OwlUtil.propUuid).getString());
-        return repo.getFeatureNodeService().find(uuid);
+        return repo.getTermNodeService().find(uuid);
     }
 
     private static Reference findReference(Resource resource, ICdmRepository repo){
