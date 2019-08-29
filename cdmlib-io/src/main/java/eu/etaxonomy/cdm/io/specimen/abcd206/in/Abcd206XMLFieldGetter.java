@@ -78,11 +78,15 @@ public class Abcd206XMLFieldGetter {
                     }
                 }
                 if (!typeFound) {
-                    dataHolder.getStatusList().add(null);
+                    if (dataHolder.getStatusList() != null){
+                        dataHolder.getStatusList().add(null);
+                    }else{
+                        dataHolder.setStatusList(new ArrayList<SpecimenTypeDesignationStatus>());
+                    }
                 }
             }
         } catch (NullPointerException e) {
-            System.err.println(e.getMessage());
+            
             dataHolder.setStatusList(new ArrayList<SpecimenTypeDesignationStatus>());
         }
     }
