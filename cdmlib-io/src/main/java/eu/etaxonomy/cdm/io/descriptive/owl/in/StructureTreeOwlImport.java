@@ -125,10 +125,19 @@ public class StructureTreeOwlImport extends CdmImportBase<StructureTreeOwlImport
         Resource inapplicableFeatureStateResource = model.createResource(statement.getObject().toString());
         Resource featureResouce = inapplicableFeatureStateResource.getPropertyResourceValue(OwlUtil.propFeatureStateHasFeature);
         Resource stateResouce = inapplicableFeatureStateResource.getPropertyResourceValue(OwlUtil.propFeatureStateHasState);
-        Feature feature = (Feature) OwlImportUtil.createTerm(featureResouce, this, model, state);
-        State stateTerm = (State) OwlImportUtil.createTerm(stateResouce, this, model, state);
-        getTermService().saveOrUpdate(feature);
-        getTermService().saveOrUpdate(stateTerm);
+
+        UUID featureUuid = UUID.fromString(featureResouce.getProperty(OwlUtil.propUuid).getString());
+        Feature feature = (Feature)getTermService().find(featureUuid);
+        if(feature==null){
+            feature = (Feature) OwlImportUtil.createTerm(featureResouce, this, model, state);
+            getTermService().saveOrUpdate(feature);
+        }
+        UUID stateUuid = UUID.fromString(stateResouce.getProperty(OwlUtil.propUuid).getString());
+        State stateTerm = (State)getTermService().find(stateUuid);
+        if(stateTerm==null){
+            stateTerm = (State) OwlImportUtil.createTerm(stateResouce, this, model, state);
+            getTermService().saveOrUpdate(stateTerm);
+        }
         FeatureState featureState = FeatureState.NewInstance(feature, stateTerm);
         return featureState;
     }
