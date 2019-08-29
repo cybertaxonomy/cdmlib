@@ -305,7 +305,7 @@ public class AbcdGgbnParser {
                     if(singleReadDirection != null && singleReadDirection.equals(FORWARD)){
                         singleRead.setDirection(SequenceDirection.Forward);
                     }
-                    else if(singleReadDirection != null &&singleReadDirection.equals(REVERSE)){
+                    else if(singleReadDirection != null && singleReadDirection.equals(REVERSE)){
                         singleRead.setDirection(SequenceDirection.Reverse);
                     }
                     //read pherogram URI
