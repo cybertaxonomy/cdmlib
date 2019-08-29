@@ -45,8 +45,8 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
 import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
@@ -67,7 +67,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
  * ("generalization of") features. "Kind of" / "generalization of" relations
  * are bidirectional (a feature F1 is a "Kind of" a feature F2 if and only
  * if the feature F2 is a "generalization of" the feature F1. This hierarchical
- * structure has nothing in common with {@link FeatureTree feature trees} used for determination.
+ * structure has nothing in common with {@link TermTree feature trees} used for determination.
  * <P>
  * A standard set of feature instances will be automatically
  * created as the project starts. But this class allows to extend this standard
@@ -122,6 +122,8 @@ public class Feature extends DefinedTermBase<Feature> {
 	private boolean supportsCategoricalData;
 
 	private boolean supportsCommonTaxonName;
+
+//	private EnumSet supportedClasses = EnumSet<Enum<E>>.of(null);
 
     /* for M:M see #4843 */
 	@ManyToMany(fetch = FetchType.LAZY)
@@ -1036,7 +1038,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	@Override
 	protected void setDefaultTerms(TermVocabulary<Feature> termVocabulary) {
 		if (termMap == null){  //needed because there are multiple feature vocabularies
-			termMap = new HashMap<UUID, Feature>();
+			termMap = new HashMap<>();
 		}
 		for (Feature term : termVocabulary.getTerms()){
 			termMap.put(term.getUuid(), term);

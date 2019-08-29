@@ -371,7 +371,7 @@ public class NonViralNameTest extends EntityTestBase {
 		INonViralName child2 = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
 		nonViralName1.addHybridParent(parent, HybridRelationshipType.FIRST_PARENT(), "parent rule");
 		nonViralName1.addHybridParent(parent2, HybridRelationshipType.SECOND_PARENT(), "parent rule2");
-		nonViralName1.addHybridChild(child, HybridRelationshipType.FEMALE_PARENT(), "child rule");
+		HybridRelationship childRel = nonViralName1.addHybridChild(child, HybridRelationshipType.FEMALE_PARENT(), "child rule");
 
 
 		INonViralName clone = (INonViralName)(nonViralName1).clone();
@@ -409,5 +409,8 @@ public class NonViralNameTest extends EntityTestBase {
 		Assert.assertSame("Child should be child in parentRelationship", child, parentRelation.getRelatedTo());
 		Assert.assertSame("Relationship type should be cloned correctly", HybridRelationshipType.FEMALE_PARENT(), parentRelation.getType());
 		Assert.assertEquals("Rule should be cloned correctly", "child rule", parentRelation.getRuleConsidered());
+        Assert.assertEquals("Rule should be cloned correctly", childRel.getRuleConsidered(), parentRelation.getRuleConsidered());
+        //TODO string can be same but RuleConsidered object must differ, but this has no getter currently
+//	    Assert.assertNotSame("Rule should be cloned correctly", childRel.getRuleConsidered(), parentRelation.getRuleConsidered());
 	}
 }

@@ -21,6 +21,7 @@ import org.joda.time.DateTime;
 import eu.etaxonomy.cdm.api.service.exception.RegistrationValidationException;
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 
@@ -199,11 +200,11 @@ public class RegistrationWorkingSet {
     }
 
     public DateTime getRegistrationDate() {
-        return registrationDTOs.get(0).getRegistrationDate();
+        return registrationDTOs.isEmpty()? null: registrationDTOs.get(0).getRegistrationDate();
     }
 
     public DateTime getCreationDate() {
-        return registrationDTOs.get(0).getCreated();
+        return registrationDTOs.isEmpty()? null: registrationDTOs.get(0).getCreated();
     }
 
     /**

@@ -9,12 +9,14 @@
 package eu.etaxonomy.cdm.database.update.v31_33;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.CaseType;
+import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdateResult;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -31,12 +33,12 @@ public class RankClassUpdater extends SchemaUpdaterStepBase {
 
 // **************************** STATIC METHODS ********************************/
 
-	public static final RankClassUpdater NewInstance(){
-		return new RankClassUpdater(stepName);
+	public static final RankClassUpdater NewInstance(List<ISchemaUpdaterStep> stepList){
+		return new RankClassUpdater(stepList, stepName);
 	}
 
-	protected RankClassUpdater(String stepName) {
-		super(stepName);
+	protected RankClassUpdater(List<ISchemaUpdaterStep> stepList, String stepName) {
+		super(stepList, stepName);
 	}
 
 	@Override

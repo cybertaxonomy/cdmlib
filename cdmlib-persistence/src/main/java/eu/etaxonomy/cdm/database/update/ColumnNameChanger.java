@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.database.update;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -29,38 +31,31 @@ public class ColumnNameChanger
 	private Datatype datatype;
 	private Integer size;  //only required for MySQL
 
-	private enum Datatype{
-		integer,
-		clob,
-		varchar,
-		date
+	public static ColumnNameChanger NewIntegerInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String oldColumnName, String newColumnName, boolean includeAudTable){
+		return new ColumnNameChanger(stepList, stepName, tableName, oldColumnName, newColumnName, includeAudTable, null, Datatype.INTEGER, null);
 	}
 
-	public static ColumnNameChanger NewIntegerInstance(String stepName, String tableName, String oldColumnName, String newColumnName, boolean includeAudTable){
-		return new ColumnNameChanger(stepName, tableName, oldColumnName, newColumnName, includeAudTable, null, Datatype.integer, null);
-	}
-
-	public static ColumnNameChanger NewClobInstance(String stepName, String tableName, String oldColumnName,
+	public static ColumnNameChanger NewClobInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String oldColumnName,
 	        String newColumnName, boolean includeAudTable){
-		return new ColumnNameChanger(stepName, tableName, oldColumnName, newColumnName, includeAudTable, null, Datatype.clob, null);
+		return new ColumnNameChanger(stepList, stepName, tableName, oldColumnName, newColumnName, includeAudTable, null, Datatype.CLOB, null);
 	}
 
-    public static ColumnNameChanger NewVarCharInstance(String stepName, String tableName, String oldColumnName,
+    public static ColumnNameChanger NewVarCharInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String oldColumnName,
             String newColumnName, int size, boolean includeAudTable){
-        return new ColumnNameChanger(stepName, tableName, oldColumnName, newColumnName, includeAudTable, null, Datatype.varchar, size);
+        return new ColumnNameChanger(stepList, stepName, tableName, oldColumnName, newColumnName, includeAudTable, null, Datatype.VARCHAR, size);
     }
 
 
-    public static ColumnNameChanger NewDateTimeInstance(String stepName, String tableName, String oldColumnName,
+    public static ColumnNameChanger NewDateTimeInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String oldColumnName,
             String newColumnName, boolean includeAudTable){
-        return new ColumnNameChanger(stepName, tableName, oldColumnName, newColumnName, includeAudTable, null, Datatype.date, null);
+        return new ColumnNameChanger(stepList, stepName, tableName, oldColumnName, newColumnName, includeAudTable, null, Datatype.DATETIME, null);
     }
 
 // **************************************** Constructor ***************************************/
 
-	protected ColumnNameChanger(String stepName, String tableName, String oldColumnName,
+	protected ColumnNameChanger(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String oldColumnName,
 	        String newColumnName, boolean includeAudTable, Object defaultValue, Datatype datatype, Integer size) {
-		super(stepName, tableName, includeAudTable);
+		super(stepList, stepName, tableName, includeAudTable);
 		this.newColumnName = newColumnName;
 		this.oldColumnName = oldColumnName;
 		this.datatype = datatype;
@@ -75,8 +70,8 @@ public class ColumnNameChanger
 			String updateQuery;
 
 			if (type.equals(DatabaseTypeEnum.SqlServer2005)){
-				logger.warn("SQLServer column name changer syntax not yet tested");
-				updateQuery = "EXEC sp_rename '@oldName', '@newName'";
+			    result.addWarning("SQLServer column name changer syntax not yet tested. Table name: " + this.tableName + "; old column name: " + oldColumnName + "; new column name: " + newColumnName);
+                updateQuery = "EXEC sp_rename '@oldName', '@newName'";
 			}else if (type.equals(DatabaseTypeEnum.H2)){
 				updateQuery = "ALTER TABLE @tableName ALTER COLUMN @oldColumnName RENAME TO @newColumnName";
 			}else if ( type.equals(DatabaseTypeEnum.MySQL)){
@@ -95,7 +90,7 @@ public class ColumnNameChanger
 			updateQuery = updateQuery.replace("@tableName", tableName);
 			updateQuery = updateQuery.replace("@oldColumnName", oldColumnName);
 			updateQuery = updateQuery.replace("@newColumnName", newColumnName);
-			updateQuery = updateQuery.replace("@definition", getDefinition());
+			updateQuery = updateQuery.replace("@definition", getDefinition(datasource));
 			datasource.executeUpdate(updateQuery);
 
 			return;
@@ -108,20 +103,8 @@ public class ColumnNameChanger
 		}
 	}
 
-
-	//TODO use same code as ColumnTypeChanger or ColumnAdder
-	private CharSequence getDefinition() {
-		if (this.datatype == Datatype.integer){
-			return "integer";
-		}else if (this.datatype == Datatype.clob){
-			return "longtext";
-		}else if (this.datatype == Datatype.varchar){
-            return "nvarchar("+size+")";
-		}else if (this.datatype == Datatype.date){
-            return "datetime";
-        }else{
-			throw new RuntimeException("Definition type not supported");
-		}
+	private CharSequence getDefinition(ICdmDataSource datasource) {
+		return datatype.format(datasource, size);
 	}
 
 }

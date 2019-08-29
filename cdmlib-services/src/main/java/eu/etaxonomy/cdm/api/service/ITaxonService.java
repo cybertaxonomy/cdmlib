@@ -55,6 +55,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
+import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -92,9 +93,10 @@ public interface ITaxonService
      *
      * @param synonym
      * @param acceptedTaxon
+     * @param setNameInSource
      * @return
      */
-    public UpdateResult swapSynonymAndAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon);
+    public UpdateResult swapSynonymAndAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, boolean setNameInSource);
 
     /**
      * Changes a synonym into an accepted taxon and removes
@@ -926,9 +928,10 @@ public interface ITaxonService
     /**
      * @param synonymUUid
      * @param acceptedTaxonUuid
+     * @param setNameInSource
      * @return
      */
-    public UpdateResult swapSynonymAndAcceptedTaxon(UUID synonymUUid, UUID acceptedTaxonUuid);
+    public UpdateResult swapSynonymAndAcceptedTaxon(UUID synonymUUid, UUID acceptedTaxonUuid, boolean setNameInSource);
 
     /**
      * @param taxonUuid

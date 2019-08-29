@@ -634,4 +634,30 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
         newInstance.setInverseSymbol(inverseLabelAbbrev);
         return newInstance;
     }
+
+    /**
+     * @return a set containing all UUIDs of relationship types representing
+     * a pro parte or partial synonym relationship (e.g.
+     * {@link #PRO_PARTE_SYNONYM_FOR()} or {@link #PARTIAL_SYNONYM_FOR()}
+     */
+    public static Set<UUID> proParteOrPartialSynonymUuids() {
+        Set<UUID> result = new HashSet<>();
+        result.add(uuidProParteSynonymFor);
+        result.add(uuidPartialSynonymFor);
+        return result;
+    }
+
+    /**
+     * @return a set containing all UUIDs of relationship types representing
+     * a misapplied name relationship (e.g. {@link #MISAPPLIED_NAME_FOR()},
+     * {@link #PRO_PARTE_MISAPPLIED_NAME_FOR()} and {@link #PARTIAL_MISAPPLIED_NAME_FOR()}
+     */
+    public static Set<UUID> misappliedNameUuids() {
+        Set<UUID> result = new HashSet<>();
+        result.add(uuidMisappliedNameFor);
+        result.add(uuidProParteMisappliedNameFor);
+        result.add(uuidPartialMisappliedNameFor);
+        return result;
+    }
+
 }

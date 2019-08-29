@@ -29,6 +29,7 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
+import eu.etaxonomy.cdm.api.service.config.PublishForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator;
@@ -48,6 +49,8 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.TreeIndex;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
@@ -64,6 +67,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
@@ -281,7 +285,7 @@ public class TaxonNodeServiceImpl
     @Override
     @Transactional(readOnly = false)
     public DeleteResult makeTaxonNodeASynonymOfAnotherTaxonNode(TaxonNode oldTaxonNode, TaxonNode newAcceptedTaxonNode,
-            SynonymType synonymType, Reference citation, String citationMicroReference)  {
+            SynonymType synonymType, Reference citation, String citationMicroReference, boolean setNameInSource)  {
 
         // TODO at the moment this method only moves synonym-, concept relations and descriptions to the new accepted taxon
         // in a future version we also want to move cdm data like annotations, marker, so., but we will need a policy for that
@@ -389,13 +393,21 @@ public class TaxonNodeServiceImpl
             taxonRelationship.setFromTaxon(null);
         }
 
-
         //Move descriptions to new taxon
         List<TaxonDescription> descriptions = new ArrayList<TaxonDescription>( oldTaxon.getDescriptions()); //to avoid concurrent modification errors (newAcceptedTaxon.addDescription() modifies also oldtaxon.descritpions())
         for(TaxonDescription description : descriptions){
             String message = "Description copied from former accepted taxon: %s (Old title: %s)";
             message = String.format(message, oldTaxon.getTitleCache(), description.getTitleCache());
             description.setTitleCache(message, true);
+            if (setNameInSource) {
+                for (DescriptionElementBase element: description.getElements()){
+                    for (DescriptionElementSource source: element.getSources()){
+                        if (source.getNameUsedInSource() == null){
+                            source.setNameUsedInSource(newSynonymName);
+                        }
+                    }
+                }
+            }
             //oldTaxon.removeDescription(description, false);
             newAcceptedTaxon.addDescription(description);
         }
@@ -435,10 +447,11 @@ public class TaxonNodeServiceImpl
             UUID newAcceptedTaxonNodeUUIDs,
             SynonymType synonymType,
             Reference citation,
-            String citationMicroReference) {
+            String citationMicroReference,
+            boolean setNameInSource) {
     	UpdateResult result = new UpdateResult();
     	for (UUID nodeUuid: oldTaxonNodeUuids) {
-    		result.includeResult(makeTaxonNodeASynonymOfAnotherTaxonNode(nodeUuid, newAcceptedTaxonNodeUUIDs, synonymType, citation, citationMicroReference));
+    		result.includeResult(makeTaxonNodeASynonymOfAnotherTaxonNode(nodeUuid, newAcceptedTaxonNodeUUIDs, synonymType, citation, citationMicroReference, setNameInSource));
     	}
     	return result;
     }
@@ -449,7 +462,8 @@ public class TaxonNodeServiceImpl
             UUID newAcceptedTaxonNodeUUID,
             SynonymType synonymType,
             Reference citation,
-            String citationMicroReference) {
+            String citationMicroReference,
+            boolean setNameInSource) {
 
         TaxonNode oldTaxonNode = dao.load(oldTaxonNodeUuid);
         TaxonNode oldTaxonParentNode = oldTaxonNode.getParent();
@@ -459,7 +473,7 @@ public class TaxonNodeServiceImpl
                 newTaxonNode,
                 synonymType,
                 citation,
-                citationMicroReference);
+                citationMicroReference, setNameInSource);
         result.addUpdatedCdmId(new CdmEntityIdentifier(oldTaxonParentNode.getId(), TaxonNode.class));
         result.addUpdatedCdmId(new CdmEntityIdentifier(newTaxonNode.getId(), TaxonNode.class));
         result.setCdmEntity(oldTaxonParentNode);
@@ -901,6 +915,7 @@ public class TaxonNodeServiceImpl
 
         child.setUnplaced(newTaxonNode.isUnplaced());
         child.setExcluded(newTaxonNode.isExcluded());
+        child.setDoubtful(newTaxonNode.isDoubtful());
         for (TaxonNodeAgentRelation agentRel :newTaxonNode.getAgentRelations()){
             child.addAgentRelation(agentRel.getType(), agentRel.getAgent());
         }
@@ -1017,26 +1032,29 @@ public class TaxonNodeServiceImpl
     }
 
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @Transactional(readOnly=false)
-    public UpdateResult setPublishForSubtree(UUID subtreeUuid, boolean publish, boolean includeAcceptedTaxa,
-            boolean includeSynonyms, boolean includeSharedTaxa, IProgressMonitor monitor) {
+    public UpdateResult setPublishForSubtree(PublishForSubtreeConfigurator config){
         UpdateResult result = new UpdateResult();
+        IProgressMonitor monitor = config.getMonitor();
         if (monitor == null){
             monitor = DefaultProgressMonitor.NewInstance();
         }
         TreeIndex subTreeIndex = null;
 
-        if (subtreeUuid == null){
+        if (config.getSubtreeUuid() == null){
             result.setError();
             result.addException(new NullPointerException("No subtree given"));
             monitor.done();
             return result;
         }
-        TaxonNode subTree = find(subtreeUuid);
+        TaxonNode subTree = find(config.getSubtreeUuid());
+        boolean includeAcceptedTaxa = config.isIncludeAcceptedTaxa();
+        boolean publish = config.isPublish();
+        boolean includeSynonyms = config.isIncludeSynonyms();
+        boolean includeSharedTaxa = config.isIncludeSharedTaxa();
+        boolean includeHybrids = config.isIncludeHybrids();
+        boolean includeRelatedTaxa = config.isIncludeProParteSynonyms() || config.isIncludeMisapplications();
         if (subTree == null){
             result.setError();
             result.addException(new NullPointerException("Subtree does not exist"));
@@ -1044,27 +1062,40 @@ public class TaxonNodeServiceImpl
             return result;
         }else{
             subTreeIndex = TreeIndex.NewInstance(subTree.treeIndex());
-            int count = includeAcceptedTaxa ? dao.countPublishForSubtreeAcceptedTaxa(subTreeIndex, publish, includeSharedTaxa):0;
-            count += includeSynonyms ? dao.countPublishForSubtreeSynonyms(subTreeIndex, publish, includeSharedTaxa):0;
+            int count = includeAcceptedTaxa ? dao.countPublishForSubtreeAcceptedTaxa(subTreeIndex, publish, includeSharedTaxa, includeHybrids):0;
+            count += includeSynonyms ? dao.countPublishForSubtreeSynonyms(subTreeIndex, publish, includeSharedTaxa, includeHybrids):0;
+            count += includeRelatedTaxa ? dao.countPublishForSubtreeRelatedTaxa(subTreeIndex, publish, includeSharedTaxa, includeHybrids):0;
             monitor.beginTask("Update publish flag", count);
         }
 
 
         if (includeAcceptedTaxa){
             monitor.subTask("Update Accepted Taxa");
-            Set<TaxonBase> updatedTaxa = dao.setPublishForSubtreeAcceptedTaxa(subTreeIndex, publish, includeSharedTaxa, monitor);
+            Set<TaxonBase> updatedTaxa = dao.setPublishForSubtreeAcceptedTaxa(subTreeIndex, publish, includeSharedTaxa, includeHybrids, monitor);
             result.addUpdatedObjects(updatedTaxa);
         }
         if (includeSynonyms){
             monitor.subTask("Update Synonyms");
-            Set<TaxonBase> updatedSynonyms = dao.setPublishForSubtreeSynonyms(subTreeIndex, publish, includeSharedTaxa, monitor);
+            Set<TaxonBase> updatedSynonyms = dao.setPublishForSubtreeSynonyms(subTreeIndex, publish, includeSharedTaxa, includeHybrids, monitor);
             result.addUpdatedObjects(updatedSynonyms);
+        }
+        if (includeRelatedTaxa){
+            monitor.subTask("Update Related Taxa");
+            Set<UUID> relationTypes = new HashSet<>();
+            if (config.isIncludeMisapplications()){
+                relationTypes.addAll(TaxonRelationshipType.misappliedNameUuids());
+            }
+            if (config.isIncludeProParteSynonyms()){
+                relationTypes.addAll(TaxonRelationshipType.proParteOrPartialSynonymUuids());
+            }
+            Set<TaxonBase> updatedTaxa = dao.setPublishForSubtreeRelatedTaxa(subTreeIndex, publish,
+                    relationTypes, includeSharedTaxa, includeHybrids, monitor);
+            result.addUpdatedObjects(updatedTaxa);
         }
 
         monitor.done();
         return result;
     }
-
 
     @Override
     public long count(TaxonNodeFilter filter){

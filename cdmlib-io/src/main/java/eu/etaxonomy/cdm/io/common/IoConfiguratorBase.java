@@ -48,7 +48,23 @@ public abstract class IoConfiguratorBase extends ObservableBase implements IIoCo
 
     //etc
 	private IProgressMonitor progressMonitor;
+	private String userFriendlyIOName;
 
+
+
+    /**
+     * @return the userFriendlyIOName
+     */
+    public String getUserFriendlyIOName() {
+        return userFriendlyIOName;
+    }
+
+    /**
+     * @param userFriendlyIOName the userFriendlyIOName to set
+     */
+    public void setUserFriendlyIOName(String userFriendlyIOName) {
+        this.userFriendlyIOName = userFriendlyIOName;
+    }
 
 	@Override
     public DbSchemaValidation getDbSchemaValidation() {

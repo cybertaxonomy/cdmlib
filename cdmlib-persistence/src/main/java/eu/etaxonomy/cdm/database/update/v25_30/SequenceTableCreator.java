@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.database.update.v25_30;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -19,6 +20,7 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.CaseType;
+import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdateResult;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 
@@ -49,12 +51,12 @@ public class SequenceTableCreator extends SchemaUpdaterStepBase {
 	/**
 	 * @param stepName
 	 */
-	protected SequenceTableCreator(String stepName) {
-		super(stepName);
+	protected SequenceTableCreator(List<ISchemaUpdaterStep> stepList, String stepName) {
+		super(stepList, stepName);
 	}
 
-	public static SequenceTableCreator NewInstance(String stepName){
-		return new SequenceTableCreator(stepName);
+	public static SequenceTableCreator NewInstance(List<ISchemaUpdaterStep> stepList, String stepName){
+		return new SequenceTableCreator(stepList, stepName);
 	}
 
     @Override

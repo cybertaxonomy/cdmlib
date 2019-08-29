@@ -21,64 +21,64 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import eu.etaxonomy.cdm.api.service.config.FeatureNodeDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
+import eu.etaxonomy.cdm.api.service.config.TermNodeDeletionConfigurator;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
-import eu.etaxonomy.cdm.model.term.FeatureNode;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermNode;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
-import eu.etaxonomy.cdm.persistence.dao.description.IFeatureNodeDao;
-import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
+import eu.etaxonomy.cdm.persistence.dao.term.ITermNodeDao;
+import eu.etaxonomy.cdm.persistence.dao.term.ITermTreeDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 @Service
 @Transactional(readOnly = false)
-public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree, IFeatureTreeDao> implements IFeatureTreeService {
+public class FeatureTreeServiceImpl extends IdentifiableServiceBase<TermTree, ITermTreeDao> implements IFeatureTreeService {
 
-    private IFeatureNodeDao featureNodeDao;
+    private ITermNodeDao termNodeDao;
 
     @Autowired
     private IFeatureNodeService featureNodeService;
 
     @Override
     @Autowired
-    protected void setDao(IFeatureTreeDao dao) {
+    protected void setDao(ITermTreeDao dao) {
         this.dao = dao;
     }
 
     @Autowired
-    protected void setFeatureNodeDao(IFeatureNodeDao featureNodeDao) {
-        this.featureNodeDao = featureNodeDao;
+    protected void setTermNodeDao(ITermNodeDao termNodeDao) {
+        this.termNodeDao = termNodeDao;
     }
 
     @Override
     @Transactional(readOnly = false)
-    public UpdateResult updateCaches(Class<? extends FeatureTree> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<FeatureTree> cacheStrategy, IProgressMonitor monitor) {
+    public UpdateResult updateCaches(Class<? extends TermTree> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<TermTree> cacheStrategy, IProgressMonitor monitor) {
         if (clazz == null){
-            clazz = FeatureTree.class;
+            clazz = TermTree.class;
         }
         return super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
     }
 
     @Override
-    public List<FeatureNode> getFeatureNodesAll() {
-        return featureNodeDao.list();
+    public List<TermNode> getFeatureNodesAll() {
+        return termNodeDao.list();
     }
 
     @Override
-    public Map<UUID, FeatureNode> saveFeatureNodesAll(Collection<FeatureNode> featureNodeCollection) {
-        return featureNodeDao.saveAll(featureNodeCollection);
+    public Map<UUID, TermNode> saveFeatureNodesAll(Collection<TermNode> featureNodeCollection) {
+        return termNodeDao.saveAll(featureNodeCollection);
     }
 
     @Override
-    public Map<UUID, FeatureNode> saveOrUpdateFeatureNodesAll(Collection<FeatureNode> featureNodeCollection) {
-        return featureNodeDao.saveOrUpdateAll(featureNodeCollection);
+    public Map<UUID, TermNode> saveOrUpdateFeatureNodesAll(Collection<TermNode> featureNodeCollection) {
+        return termNodeDao.saveOrUpdateAll(featureNodeCollection);
     }
 
     @Override
-    public FeatureTree loadWithNodes(UUID uuid, List<String> propertyPaths, List<String> nodePaths) {
+    public TermTree loadWithNodes(UUID uuid, List<String> propertyPaths, List<String> nodePaths) {
 
         if(nodePaths==null){
             nodePaths = new ArrayList<>();
@@ -88,7 +88,7 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree,
             nodePaths.add("children");
         }
 
-        List<String> rootPaths = new ArrayList<String>();
+        List<String> rootPaths = new ArrayList<>();
         rootPaths.add("root");
         for(String path : nodePaths) {
             rootPaths.add("root." + path);
@@ -98,11 +98,11 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree,
             rootPaths.addAll(propertyPaths);
         }
 
-        FeatureTree featureTree = load(uuid, rootPaths);
+        TermTree featureTree = load(uuid, rootPaths);
         if(featureTree == null){
             throw new EntityNotFoundException("No FeatureTree entity found for " + uuid);
         }
-        dao.deepLoadNodes(featureTree.getRoot().getChildNodes() ,nodePaths);
+        dao.deepLoadNodes(featureTree.getRoot().getChildNodes(), nodePaths);
         return featureTree;
     }
 
@@ -116,22 +116,22 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree,
      * @see eu.etaxonomy.cdm.api.service.ServiceBase#load(java.util.UUID, java.util.List)
      */
     @Override
-    public FeatureTree load(UUID uuid, List<String> propertyPaths) {
+    public TermTree load(UUID uuid, List<String> propertyPaths) {
         return super.load(uuid, propertyPaths);
     }
 
     @Override
-    public FeatureTree createTransientDefaultFeatureTree() {
-        return load(IFeatureTreeDao.DefaultFeatureTreeUuid);
+    public TermTree createTransientDefaultFeatureTree() {
+        return load(ITermTreeDao.DefaultFeatureTreeUuid);
     }
 
     @Override
     public DeleteResult delete(UUID featureTreeUuid){
         DeleteResult result = new DeleteResult();
-        FeatureTree tree = dao.load(featureTreeUuid);
+        TermTree tree = dao.load(featureTreeUuid);
 
-        FeatureNode rootNode = HibernateProxyHelper.deproxy(tree.getRoot());
-        FeatureNodeDeletionConfigurator config = new FeatureNodeDeletionConfigurator();
+        TermNode rootNode = HibernateProxyHelper.deproxy(tree.getRoot());
+        TermNodeDeletionConfigurator config = new TermNodeDeletionConfigurator();
         config.setChildHandling(ChildHandling.DELETE);
         result =featureNodeService.deleteFeatureNode(rootNode.getUuid(), config);
         //FIXME test if this is necessary
@@ -144,7 +144,7 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree,
     }
 
     @Override
-    public <S extends FeatureTree> List<UuidAndTitleCache<S>> getUuidAndTitleCacheByTermType(Class<S> clazz, TermType termType, Integer limit,
+    public <S extends TermTree> List<UuidAndTitleCache<S>> getUuidAndTitleCacheByTermType(Class<S> clazz, TermType termType, Integer limit,
             String pattern) {
         return dao.getUuidAndTitleCacheByTermType(clazz, termType, limit, pattern);
     }

@@ -68,6 +68,7 @@ public class JaxbExportConfigurator
     public JaxbExportConfigurator() {
         super(null);
         this.setResultType(ExportResultType.BYTE_ARRAY);
+        setUserFriendlyIOName("Jaxb Export");
     }
 
 	@Override

@@ -57,7 +57,6 @@ public class SchemaUpdater_341_35 extends SchemaUpdaterBase {
 
 		String stepName;
 		String tableName;
-		ISchemaUpdaterStep step;
 		String newColumnName;
 		String query;
 		String columnNames[];
@@ -76,21 +75,18 @@ public class SchemaUpdater_341_35 extends SchemaUpdaterBase {
 		referencedTables = new String[]{null, null, "AgentBase","Annotation","LanguageString","Media",
 				"SpecimenOrObservationBase","Reference","TaxonBase","TaxonNameBase"};
 		columnTypes = new String[]{"int","int","int","int","int","int","int","int","int","int"};
-		step = TableCreator.NewVersionableInstance(stepName, tableName, columnNames,
+		TableCreator.NewVersionableInstance(stepList, stepName, tableName, columnNames,
 				columnTypes, referencedTables, INCLUDE_AUDIT);
-		stepList.add(step);
 
 		//Drop EntityValidationResult and EntityConstraintViolation
 		//#4709
 		stepName = "Drop EntityConstraintViolation table";
 		tableName = "EntityConstraintViolation";
-		step = TableDroper.NewInstance(stepName, tableName, !INCLUDE_AUDIT);
-		stepList.add(step);
+		TableDroper.NewInstance(stepList, stepName, tableName, !INCLUDE_AUDIT);
 
 		stepName = "Drop EntityValidationResult table";
 		tableName = "EntityValidationResult";
-		step = TableDroper.NewInstance(stepName, tableName, !INCLUDE_AUDIT);
-		stepList.add(step);
+		TableDroper.NewInstance(stepList, stepName, tableName, !INCLUDE_AUDIT);
 
         //... and create new entity validation and
         stepName = "Create EntityValidation table";
@@ -99,8 +95,7 @@ public class SchemaUpdater_341_35 extends SchemaUpdaterBase {
                 "validatedentityclass","validatedentityid","validatedentityuuid", "validationcount", "status"};
         columnTypes = new String[]{"datetime","string_255","string_255","string_255","string_255","int","string_36","int","string_20"};
         referencedTables = new String[]{null,null,null,null,null,null,null,null,null};
-        step = TableCreator.NewNonVersionableInstance(stepName, tableName, columnNames, columnTypes, referencedTables);
-        stepList.add(step);
+        TableCreator.NewNonVersionableInstance(stepList, stepName, tableName, columnNames, columnTypes, referencedTables);
 
         //... constraint violation
 		stepName = "Create EntityConstraintViolation table";
@@ -109,35 +104,30 @@ public class SchemaUpdater_341_35 extends SchemaUpdaterBase {
         		"validationgroup","validator","entityvalidation_id"};
         columnTypes = new String[]{"string_255","string_255","string_255","string_255","string_255","string_255","string_255","int"};
         referencedTables = new String[]{null,null,null,null,null,null,null,"EntityValidationResult"};
-        step = TableCreator.NewNonVersionableInstance(stepName, tableName, columnNames, columnTypes, referencedTables);
-        stepList.add(step);
+        TableCreator.NewNonVersionableInstance(stepList, stepName, tableName, columnNames, columnTypes, referencedTables);
 
         //Delete orphaned taxon nodes #2341
         stepName = "Delete orhphaned taxon nodes";
         String sql = "DELETE FROM @@TaxonNode@@ WHERE classification_id IS NULL";
         tableName = "TaxonNode";
-        step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, sql, tableName, 0);
-        stepList.add(step);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName, 0);
 
         //identifier versionable -> annotatable
         stepName = "Upgrade identifier from versionable to annotatable";
         tableName = "Identifier";
-        step = ClassBaseTypeUpdater.NewVersionableToAnnotatableInstance(stepName, tableName, INCLUDE_AUDIT);
-        stepList.add(step);
+        ClassBaseTypeUpdater.NewVersionableToAnnotatableInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
 
         //agent - collector title  #4311
         stepName = "Add collector title for TeamOrPersonBase";
         tableName = "AgentBase";
         newColumnName = "collectorTitle";
-        step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT);
-        stepList.add(step);
+        ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT);
 
         //agent - collector title  #4311
         stepName = "Add protectedCollectorTitleCache to Team";
         tableName = "AgentBase";
         newColumnName = "protectedCollectorTitleCache";
-        step = ColumnAdder.NewBooleanInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
-        stepList.add(step);
+        ColumnAdder.NewBooleanInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
 
 
 		//update DerivationEvent.taxonname_id  #4578, #3448, #4203, #4518
@@ -146,8 +136,7 @@ public class SchemaUpdater_341_35 extends SchemaUpdaterBase {
 				" SET taxonname_id = (SELECT name_id FROM TaxonBase tb WHERE tb.id = taxon_id) " +
 				" WHERE taxon_id IS NOT NULL ";
 		tableName = "DeterminationEvent";
-		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "", -99);
-		stepList.add(step);
+		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "", -99);
 
 
         //#4110 update idInVocabulary for some new databases
@@ -177,26 +166,23 @@ public class SchemaUpdater_341_35 extends SchemaUpdaterBase {
 	    // Country => all
 		stepName = "Update idInVocabulary for Countries if necessary";
 		uuid = Country.uuidCountryVocabulary.toString();
-		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName,
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName,
 				String.format(queryVocUuid, uuid), 99)
 				.setDefaultAuditing(tableName);
-		stepList.add(step);
 
 		// TdwgAreas => all
 		stepName = "Update idInVocabulary for TDWG areas if necessary";
 		uuid = NamedArea.uuidTdwgAreaVocabulary.toString();
-		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName,
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName,
 				String.format(queryVocUuid, uuid), 99)
 				.setDefaultAuditing(tableName);
-		stepList.add(step);
 
 		// Waterbody => all
 		stepName = "Update idInVocabulary for Waterbody if necessary";
 		uuid = NamedArea.uuidWaterbodyVocabulary.toString();
-		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName,
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName,
 				String.format(queryVocUuid, uuid), 99)
 				.setDefaultAuditing(tableName);
-		stepList.add(step);
 
 		// Continent => None has an id
 

@@ -52,10 +52,6 @@ public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode>
         super(TaxonNode.class);
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public long count(TaxonNodeFilter filter){
         String queryStr = query(filter, "count(*) as n ");
@@ -65,9 +61,6 @@ public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode>
         return result;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<UUID> listUuids(TaxonNodeFilter filter){
         String queryStr = query(filter, "tn.uuid");
@@ -78,13 +71,11 @@ public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode>
         return list;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<Integer> idList(TaxonNodeFilter filter){
         String queryStr = query(filter, "tn.id");
         Query query = getSession().createQuery(queryStr);
+
         List<Integer> list = castToIntegerList(query.list());
 
         list = deduplicate(list);
@@ -111,9 +102,24 @@ public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode>
                 unpublishFilter);
 //        String groupBy = " GROUP BY tn.uuid ";
         String groupBy = "";
-        String fullQuery = select + from + " WHERE " + fullFilter + groupBy;
+        String orderBy = getOrderBy(filter, selectPart);
+        String fullQuery = select + from + " WHERE " + fullFilter + groupBy + orderBy;
+
         return fullQuery;
 
+    }
+
+    /**
+     * @param filter
+     * @param selectPart
+     * @return
+     */
+    private String getOrderBy(TaxonNodeFilter filter, String selectPart) {
+        String orderBy = "";
+        if (filter.getOrderBy()!= null && !selectPart.contains("count")){
+            orderBy = "ORDER BY " + filter.getOrderBy().getHql();
+        }
+        return orderBy;
     }
 
     private String getFrom(TaxonNodeFilter filter){

@@ -42,15 +42,13 @@ public class TestModelUpdate {
 
 
 	private void testSelectedDb(){
-		DbSchemaValidation schema = DbSchemaValidation.VALIDATE;
+		DbSchemaValidation schema = DbSchemaValidation.CREATE;
 
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 
-
-		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm50" : "cdm55");
+		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm55" : "cdm58");
+		database = "cdm_pesi_test_leer2";
 		CdmDataSource dataSource = getDatasource(dbType, database);
-
-
  		try {
 // 		    int n = dataSource.executeUpdate("UPDATE CdmMetaData SET value = '3.1.0.0.201607300000' WHERE propertyname = 0 ");
 			CdmUpdater updater = new CdmUpdater();
@@ -76,7 +74,7 @@ public class TestModelUpdate {
 
     		if (schema == DbSchemaValidation.CREATE){
     		    System.out.println("fillData");
-    		    appCtr.getCommonService().createFullSampleData();
+//    		    appCtr.getCommonService().createFullSampleData();
     		    appCtr.getNameService().list(null, null, null, null, null);
     		}
 
@@ -86,7 +84,6 @@ public class TestModelUpdate {
  		    e.printStackTrace();
  		}
  		System.out.println("Ready");
-		System.exit(0);
 	}
 
 
@@ -134,10 +131,37 @@ public class TestModelUpdate {
 	@SuppressWarnings("unused")  //enable only if needed
 	private void updateRemoteWebappTestH2(){
 	    String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\cdmlib\\cdmlib-remote-webapp\\";
-//	    String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\cdm-vaadin\\";
-//	    String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\taxeditor2\\eu.etaxonomy.taxeditor.test\\";
+	    updateH2(pathToProject);
+	}
 
-	    String pathInProject = "src\\test\\resources\\h2";
+    /**
+     * Updates the H2 test database in TaxEditor.
+     * Requires that the local path to the database is adapted
+     */
+    @SuppressWarnings("unused")  //enable only if needed
+    private void updateTaxEditorH2(){
+        String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\taxeditor2\\eu.etaxonomy.taxeditor.test\\";
+
+        updateH2(pathToProject);
+    }
+
+    /**
+     * Updates the H2 test database in CDM vaadin.
+     * Requires that the local path to the database is adapted
+     */
+    @SuppressWarnings("unused")  //enable only if needed
+    private void updateVaadinH2(){
+        String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\cdm-vaadin\\";
+
+        updateH2(pathToProject);
+    }
+
+
+    /**
+     * @param pathToProject
+     */
+    private void updateH2(String pathToProject) {
+        String pathInProject = "src\\test\\resources\\h2";
 
 	    String path = pathToProject + pathInProject;
 		ICdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("cdmTest", "sa", "", path);
@@ -156,35 +180,34 @@ public class TestModelUpdate {
 		appCtr = CdmApplicationController.NewInstance(dataSource,DbSchemaValidation.VALIDATE);
 		appCtr.close();
 		System.out.println("\nEnd Datasource");
-		System.exit(0);
-	}
+    }
 
-	   @SuppressWarnings("unused")  //enable only if needed
-	    private void updateEdaphobasePostgres(){
-	       String serverSql = "130.133.70.26";
-	       String database = "cdm_edaphobase";
-	       int port = 5433;
-	       String username = "edaphobase";
-	       String password = AccountStore.readOrStorePassword(database, serverSql, username, null);
 
-	       ICdmDataSource dataSource = CdmDataSource.NewPostgreSQLInstance(serverSql,
-	                database, port, username, password);
+    @SuppressWarnings("unused")  //enable only if needed
+    private void updateEdaphobasePostgres(){
+       String serverSql = "130.133.70.26";
+       String database = "cdm_edaphobase";
+       int port = 5433;
+       String username = "edaphobase";
+       String password = AccountStore.readOrStorePassword(database, serverSql, username, null);
 
-	        try {
-	            CdmUpdater updater = new CdmUpdater();
-	            SchemaUpdateResult result = updater.updateToCurrentVersion(dataSource, DefaultProgressMonitor.NewInstance());
-	            System.out.println(result.createReport());
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	        }
+       ICdmDataSource dataSource = CdmDataSource.NewPostgreSQLInstance(serverSql,
+                database, port, username, password);
 
-	        //CdmPersistentDataSource.save(dataSource.getName(), dataSource);
-	        CdmApplicationController appCtr;
-	        appCtr = CdmApplicationController.NewInstance(dataSource,DbSchemaValidation.VALIDATE);
-	        appCtr.close();
-	        System.out.println("\nEnd Datasource");
-	        System.exit(0);
-	    }
+        try {
+            CdmUpdater updater = new CdmUpdater();
+            SchemaUpdateResult result = updater.updateToCurrentVersion(dataSource, DefaultProgressMonitor.NewInstance());
+            System.out.println(result.createReport());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        //CdmPersistentDataSource.save(dataSource.getName(), dataSource);
+        CdmApplicationController appCtr;
+        appCtr = CdmApplicationController.NewInstance(dataSource,DbSchemaValidation.VALIDATE);
+        appCtr.close();
+        System.out.println("\nEnd Datasource");
+    }
 
 
 	private void test(){
@@ -192,17 +215,30 @@ public class TestModelUpdate {
 		testSelectedDb();
 
 //		updateRemoteWebappTestH2();  //also updates vaadin and taxeditor model
+//		updateAllTesetH2();
 //      updateEdaphobasePostgres();
 
 		System.out.println("\nEnd Datasource");
 	}
 
 	/**
+     * Updates all
+     */
+    private void updateAllTesetH2() {
+        updateRemoteWebappTestH2();
+        updateTaxEditorH2();
+        updateVaadinH2();
+    }
+
+
+
+    /**
 	 * @param args
 	 */
 	public static void  main(String[] args) {
 		TestModelUpdate cc = new TestModelUpdate();
     	cc.test();
+    	System.exit(0);
 	}
 
 }

@@ -57,7 +57,6 @@ import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
-import eu.etaxonomy.cdm.model.reference.IOriginalSource;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
@@ -1288,7 +1287,7 @@ public class DerivedUnitFacade {
 		getGatheringEvent(true).setDescription(description);
 	}
 
-	// gatering period
+	// gathering period
 	@Transient
 	public TimePeriod getGatheringPeriod() {
 		return (hasGatheringEvent() ? getGatheringEvent(true).getTimeperiod()
@@ -1322,7 +1321,7 @@ public class DerivedUnitFacade {
 	}
 
 	/**
-	 * convienience method for {@link #getLocality()}.
+	 * Convenience method for {@link #getLocality()}.
 	 * {@link LanguageString#getLanguage() getLanguage()}
 	 *
 	 * @return
@@ -2111,6 +2110,22 @@ public class DerivedUnitFacade {
 		return ! checkDerivedUnit()? null : derivedUnit.getAccessionNumber();
 	}
 
+
+	/**
+	 * The combination of collection code with accession number, barcode or collection number.
+	 *
+	 * @return
+	 */
+	public String getSpecimenLabel() {
+	    if(checkDerivedUnit()){
+	        if(derivedUnit.getCacheStrategy() instanceof DerivedUnitFacadeCacheStrategy){
+	            return ((DerivedUnitFacadeCacheStrategy)derivedUnit.getCacheStrategy()).getSpecimenLabel(this);
+	        }
+
+	    }
+	    return null;
+	}
+
 	public void setAccessionNumber(String accessionNumber) {
 		testDerivedUnit();
 		derivedUnit.setAccessionNumber(accessionNumber);
@@ -2179,7 +2194,6 @@ public class DerivedUnitFacade {
 	}
 
 	//preferred stable URI  #5606
-	@Transient
     public URI getPreferredStableUri(){
         return baseUnit().getPreferredStableUri();
     }

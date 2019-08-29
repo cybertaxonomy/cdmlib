@@ -51,25 +51,25 @@ public class SortIndexUpdater extends SchemaUpdaterStepBase {
 	private final boolean includeAudTable;
 	private Integer baseValue = 0;
 
-	public static final SortIndexUpdater NewInstance(String stepName, String tableName, String parentColumn, String sortIndexColumn, boolean includeAudTable){
-		return new SortIndexUpdater(stepName, tableName, parentColumn, sortIndexColumn, "id", "id", includeAudTable, 0);
+	public static final SortIndexUpdater NewInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String parentColumn, String sortIndexColumn, boolean includeAudTable){
+		return new SortIndexUpdater(stepList, stepName, tableName, parentColumn, sortIndexColumn, "id", "id", includeAudTable, 0);
 	}
 
-	public static final SortIndexUpdater NewInstance(String stepName, String tableName, String parentColumn, String sortIndexColumn, String idColumn, boolean includeAudTable){
-		return new SortIndexUpdater(stepName, tableName, parentColumn,sortIndexColumn, idColumn, idColumn, includeAudTable, 0);
+	public static final SortIndexUpdater NewInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String parentColumn, String sortIndexColumn, String idColumn, boolean includeAudTable){
+		return new SortIndexUpdater(stepList, stepName, tableName, parentColumn,sortIndexColumn, idColumn, idColumn, includeAudTable, 0);
 	}
 
     /**
      * Returns an SortIndexUpdater that updates an existing sortindex which might have missing sortindex numbers in between.
      *
      */
-    public static final SortIndexUpdater NewUpdateExistingSortindexInstance(String stepName, String tableName, String parentColumn, String sortIndexColumn, boolean includeAudTable){
-        return new SortIndexUpdater(stepName, tableName, parentColumn,sortIndexColumn, "id", sortIndexColumn, includeAudTable, 0);
+    public static final SortIndexUpdater NewUpdateExistingSortindexInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String parentColumn, String sortIndexColumn, boolean includeAudTable){
+        return new SortIndexUpdater(stepList, stepName, tableName, parentColumn,sortIndexColumn, "id", sortIndexColumn, includeAudTable, 0);
     }
 
 
-	protected SortIndexUpdater(String stepName, String tableName, String parentColumn, String sortIndexColumn, String idColumn, String currentSortColumn, boolean includeAudTable, Integer baseValue) {
-		super(stepName);
+	protected SortIndexUpdater(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String parentColumn, String sortIndexColumn, String idColumn, String currentSortColumn, boolean includeAudTable, Integer baseValue) {
+		super(stepList, stepName);
 		this.tableName = tableName;
 		this.parentColumn = parentColumn;
 		this.sortIndexColumn = sortIndexColumn;

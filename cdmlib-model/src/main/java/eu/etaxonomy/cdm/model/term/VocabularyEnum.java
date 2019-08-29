@@ -59,7 +59,8 @@ public enum VocabularyEnum {
 	HybridRelationshipType("fc4abe52-9c25-4cfa-a682-8615bf4bbf07", HybridRelationshipType.class),
 	NameRelationshipType("6878cb82-c1a4-4613-b012-7e73b413c8cd", NameRelationshipType.class),
 	TaxonRelationshipType("15db0cf7-7afc-4a86-a7d4-221c73b0c9ac", TaxonRelationshipType.class),
-	MarkerType("19dffff7-e142-429c-a420-5d28e4ebe305", MarkerType.class),
+	TermRelationshipType("4e5bb743-5ddf-4ee2-b893-36fbd386a5ee", TermRelationshipType.class),
+    MarkerType("19dffff7-e142-429c-a420-5d28e4ebe305", MarkerType.class),
 	AnnotationType("ca04609b-1ba0-4d31-9c2e-aa8eb2f4e62d", AnnotationType.class),
 	Feature("b187d555-f06f-4d65-9e53-da7c93f8eaa8", Feature.class),
 	NameFeature("a7ca3eef-4092-49e1-beec-ed5096193e5e", Feature.class),
@@ -79,6 +80,7 @@ public enum VocabularyEnum {
 	Scope("109bf76d-6f55-43d5-9ec5-6115d9490faa", DefinedTerm.class),
 	Stage("4d475bea-c3ae-4494-be16-6796f22fabac", DefinedTerm.class),
 	State("ceb65a53-c6cf-42bb-862f-daca7f2fc11d", State.class),
+    PresenceState("849d147c-2a43-4a30-a56e-b21c5d23a8a8", State.class),
 	TextFormat("ac3926d2-5f6b-45a5-9cf9-be2a5a43f9b3", TextFormat.class),
 //	NamedArea("57c25420-ae94-4848-9513-2aff9bdb502c", NamedArea.class),
 	NaturalLanguageTerm("fdaba4b0-5c14-11df-a08a-0800200c9a66", NaturalLanguageTerm.class),
@@ -92,7 +94,6 @@ public enum VocabularyEnum {
 	DnaQualityType("55746f7b-78a8-4e5f-8e70-ee9ce047c835", OrderedTerm.class),
 	TaxonNodeAgentRelationType("0aa8e0c6-c7b5-42dd-91b7-0bd273a64b2c", DefinedTerm.class)
 	;
-
 
 	private UUID uuid;
 	private Class<? extends DefinedTermBase<?>> clazz;

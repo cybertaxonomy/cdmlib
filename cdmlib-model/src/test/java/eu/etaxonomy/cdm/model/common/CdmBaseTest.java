@@ -1,20 +1,20 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
- 
+
 package eu.etaxonomy.cdm.model.common;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -32,6 +32,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 
@@ -42,7 +43,7 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 public class CdmBaseTest extends EntityTestBase{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmBaseTest.class);
-	
+
 	static CdmBase cdmBase;
 
 	static public class TestCdmBaseClass extends CdmBase{
@@ -51,42 +52,43 @@ public class CdmBaseTest extends EntityTestBase{
 		public float testFloat = 1.43446E-5f;
 		public boolean testBoolean = false;
 	}
-	
+
 	public class PropListener implements PropertyChangeListener {
 		private PropertyChangeEvent event;
 		public PropListener() {
 			event = null;
-		}	
-		
-		public void propertyChange(PropertyChangeEvent evt) {
+		}
+
+		@Override
+        public void propertyChange(PropertyChangeEvent evt) {
 			this.event = evt;
 		}
 
 		public boolean isChanged() {
 			return event != null;
 		}
-		
+
 		public Object getOldValue() {
 			return event.getOldValue();
 		}
-		
+
 		public Object getNewValue() {
 			return event.getNewValue();
 		}
-		
+
 		public String getChangedPropertyName() {
 			return event.getPropertyName();
 		}
-		
+
 	}
-	
+
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 	}
-	
+
 	private static CdmBase getTestCdmBase(){
 		return new TestCdmBaseClass();
 	}
@@ -114,7 +116,7 @@ public class CdmBaseTest extends EntityTestBase{
 	public void tearDown() throws Exception {
 	}
 
-	
+
 	private void removeExistingListeners(CdmBase cdmBase){
 		Field fieldPropChangeSupport;
 		PropertyChangeSupport propertyChangeSupport = null;
@@ -142,7 +144,7 @@ public class CdmBaseTest extends EntityTestBase{
 		assertFalse(cdmBase.hasListeners("uuid"));
 	}
 /*************** TESTS **************************************************/
-	
+
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.common.CdmBase#CdmBase()}.
@@ -159,16 +161,16 @@ public class CdmBaseTest extends EntityTestBase{
 	public void testAddPropertyChangeListenerPropertyChangeListener() {
 		removeExistingListeners(cdmBase);
 		assertFalse(cdmBase.hasListeners("uuid"));
-		
+
 		PropListener listener = new PropListener();
 		cdmBase.addPropertyChangeListener(listener);
 		UUID uuid = UUID.randomUUID();
-		
+
 		assertTrue(cdmBase.hasListeners("created"));
 		assertTrue(cdmBase.hasListeners("createdBy"));
 		assertTrue(cdmBase.hasListeners("id"));
 		assertTrue(cdmBase.hasListeners("uuid"));
-		
+
 		cdmBase.setUuid(uuid);
 		org.junit.Assert.assertTrue(listener.isChanged());
 	}
@@ -180,18 +182,18 @@ public class CdmBaseTest extends EntityTestBase{
 	public void testAddPropertyChangeListenerStringPropertyChangeListener() {
 		removeExistingListeners(cdmBase);
 		assertFalse(cdmBase.hasListeners("uuid"));
-		
+
 		PropListener listener = new PropListener();
 		cdmBase.addPropertyChangeListener("uuid", listener);
 		cdmBase.setId(22);
 		assertFalse(listener.isChanged());
 		assertTrue(cdmBase.hasListeners("uuid"));
-		
+
 		UUID uuid = UUID.randomUUID();
 		cdmBase.setUuid(uuid);
 		assertTrue(listener.isChanged());
 	}
-	
+
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.common.CdmBase#removePropertyChangeListener(java.beans.PropertyChangeListener)}.
@@ -200,20 +202,20 @@ public class CdmBaseTest extends EntityTestBase{
 	public void testRemovePropertyChangeListenerPropertyChangeListener() {
 		removeExistingListeners(cdmBase);
 		assertFalse(cdmBase.hasListeners("uuid"));
-		
+
 		PropListener listener = new PropListener();
 		cdmBase.addPropertyChangeListener(listener);
 		assertTrue(cdmBase.hasListeners("created"));
 		assertTrue(cdmBase.hasListeners("createdBy"));
 		assertTrue(cdmBase.hasListeners("id"));
 		assertTrue(cdmBase.hasListeners("uuid"));
-		
+
 		cdmBase.removePropertyChangeListener(listener);
 		assertFalse(cdmBase.hasListeners("created"));
 		assertFalse(cdmBase.hasListeners("createdBy"));
 		assertFalse(cdmBase.hasListeners("id"));
 		assertFalse(cdmBase.hasListeners("uuid"));
-		
+
 		UUID uuid = UUID.randomUUID();
 		cdmBase.setUuid(uuid);
 		assertFalse(listener.isChanged());
@@ -231,13 +233,13 @@ public class CdmBaseTest extends EntityTestBase{
 		PropListener listener = new PropListener();
 		cdmBase.addPropertyChangeListener(strUuid, listener);
 		assertTrue(cdmBase.hasListeners(strUuid));
-		
+
 		cdmBase.removePropertyChangeListener(strUuid, listener);
 		assertFalse(cdmBase.hasListeners(strUuid));
-		
+
 		UUID uuid = UUID.randomUUID();
 		cdmBase.setUuid(uuid);
-		assertFalse(listener.isChanged());	
+		assertFalse(listener.isChanged());
 	}
 
 	/**
@@ -248,14 +250,14 @@ public class CdmBaseTest extends EntityTestBase{
 		String prop = "uuid";
 		removeExistingListeners(cdmBase);
 		assertFalse(cdmBase.hasListeners(prop));
-		
+
 		PropListener listener = new PropListener();
 		cdmBase.addPropertyChangeListener(prop, listener);
 		assertTrue(cdmBase.hasListeners(prop));
-		
+
 		removeExistingListeners(cdmBase);
 		assertFalse(cdmBase.hasListeners(prop));
-		
+
 		cdmBase.addPropertyChangeListener(prop, listener);
 		assertTrue(cdmBase.hasListeners(prop));
 	}
@@ -274,7 +276,7 @@ public class CdmBaseTest extends EntityTestBase{
 		PropListener listener = new PropListener();
 		testCdm.addPropertyChangeListener(prop, listener);
 		assertTrue(testCdm.hasListeners(prop));
-		
+
 		//Test
 		String oldValue = testCdm.testString;
 		String newValue = "sdfklwekj";
@@ -297,7 +299,7 @@ public class CdmBaseTest extends EntityTestBase{
 		PropListener listener = new PropListener();
 		cdmBase.addPropertyChangeListener(prop, listener);
 		assertTrue(cdmBase.hasListeners(prop));
-		
+
 		//Test
 		int oldValue = cdmBase.getId();
 		int newValue = 45;
@@ -322,7 +324,7 @@ public class CdmBaseTest extends EntityTestBase{
 		PropListener listener = new PropListener();
 		testCdm.addPropertyChangeListener(prop, listener);
 		assertTrue(testCdm.hasListeners(prop));
-		
+
 		//Test
 		float oldValue = testCdm.testFloat;
 		float newValue = 1.40239846E-4f;
@@ -347,7 +349,7 @@ public class CdmBaseTest extends EntityTestBase{
 		PropListener listener = new PropListener();
 		testCdm.addPropertyChangeListener(prop, listener);
 		assertTrue(testCdm.hasListeners(prop));
-		
+
 		//Test
 		boolean oldValue = testCdm.testBoolean;
 		boolean newValue = ! testCdm.testBoolean;
@@ -370,7 +372,7 @@ public class CdmBaseTest extends EntityTestBase{
 		PropListener listener = new PropListener();
 		cdmBase.addPropertyChangeListener(prop, listener);
 		assertTrue(cdmBase.hasListeners(prop));
-		
+
 		//Test
 		UUID oldValue = cdmBase.getUuid();
 		UUID newValue = UUID.randomUUID();
@@ -392,7 +394,7 @@ public class CdmBaseTest extends EntityTestBase{
 		PropListener listener = new PropListener();
 		cdmBase.addPropertyChangeListener(prop, listener);
 		assertTrue(cdmBase.hasListeners(prop));
-		
+
 		//Test
 		UUID oldValue = cdmBase.getUuid();
 		UUID newValue = UUID.randomUUID();
@@ -485,7 +487,7 @@ public class CdmBaseTest extends EntityTestBase{
 	@Test
 	public void testGetCreatedBy() {
 		assertNull(cdmBase.getCreatedBy());
-		User user = new User();
+		User user = User.NewInstance(null, null);
 		cdmBase.setCreatedBy(user);
 		assertEquals(user, cdmBase.getCreatedBy());
 		assertSame(user, cdmBase.getCreatedBy());
@@ -496,10 +498,10 @@ public class CdmBaseTest extends EntityTestBase{
 	 */
 	@Test
 	public void testSetCreatedBy() {
-		User person = new User();
-		
-		User personFalse = new User();
-		
+		User person = User.NewInstance(null, null);
+
+		User personFalse = User.NewInstance(null, null);
+
 		cdmBase.setCreatedBy(person);
 		assertEquals(person, cdmBase.getCreatedBy());
 		assertSame(person, cdmBase.getCreatedBy());
@@ -544,14 +546,14 @@ public class CdmBaseTest extends EntityTestBase{
 			assertFalse(clone.getUuid().equals(cdmBase.getUuid()));
 			assertNotNull(clone.getCreated());
 			assertNull(clone.getCreatedBy());
-			
+
 		} catch (CloneNotSupportedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
-		
+
+
+
 	}
 
 

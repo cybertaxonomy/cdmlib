@@ -15,10 +15,10 @@ import org.junit.Test;
 import org.springframework.security.access.AccessDecisionVoter;
 
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.permission.CRUD;
+import eu.etaxonomy.cdm.model.permission.PermissionClass;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionClass;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.TargetEntityStates;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.voter.DescriptionBaseVoter;
 
@@ -36,11 +36,11 @@ public class DescriptionBaseVoterTest extends AbstractCdmPermissionVoterTest {
 
         int vote = voter.vote(
                 authentication(
-                        new CdmAuthority(CdmPermissionClass.DESCRIPTIONBASE, null, EnumSet.of(CRUD.UPDATE), null),
-                        new CdmAuthority(CdmPermissionClass.DESCRIPTIONBASE, null, EnumSet.of(CRUD.CREATE), null)
+                        new CdmAuthority(PermissionClass.DESCRIPTIONBASE, null, EnumSet.of(CRUD.UPDATE), null),
+                        new CdmAuthority(PermissionClass.DESCRIPTIONBASE, null, EnumSet.of(CRUD.CREATE), null)
                         ),
                 new TargetEntityStates(TaxonDescription.NewInstance()),
-                Arrays.asList(new CdmAuthority(CdmPermissionClass.DESCRIPTIONBASE, null, EnumSet.of(CRUD.UPDATE), null)));
+                Arrays.asList(new CdmAuthority(PermissionClass.DESCRIPTIONBASE, null, EnumSet.of(CRUD.UPDATE), null)));
         assertEquals(AccessDecisionVoter.ACCESS_GRANTED, vote);
     }
 
@@ -49,11 +49,11 @@ public class DescriptionBaseVoterTest extends AbstractCdmPermissionVoterTest {
         int vote = voter.vote(
                 authentication(
                         // reverse order
-                        new CdmAuthority(CdmPermissionClass.DESCRIPTIONBASE, null, EnumSet.of(CRUD.CREATE), null),
-                        new CdmAuthority(CdmPermissionClass.DESCRIPTIONBASE, null, EnumSet.of(CRUD.UPDATE), null)
+                        new CdmAuthority(PermissionClass.DESCRIPTIONBASE, null, EnumSet.of(CRUD.CREATE), null),
+                        new CdmAuthority(PermissionClass.DESCRIPTIONBASE, null, EnumSet.of(CRUD.UPDATE), null)
                         ),
                 new TargetEntityStates(TaxonDescription.NewInstance()),
-                Arrays.asList(new CdmAuthority(CdmPermissionClass.DESCRIPTIONBASE, null, EnumSet.of(CRUD.UPDATE), null)));
+                Arrays.asList(new CdmAuthority(PermissionClass.DESCRIPTIONBASE, null, EnumSet.of(CRUD.UPDATE), null)));
         assertEquals(AccessDecisionVoter.ACCESS_GRANTED, vote);
 
     }
@@ -63,10 +63,10 @@ public class DescriptionBaseVoterTest extends AbstractCdmPermissionVoterTest {
         int vote = voter.vote(
                 authentication(
                         // combined
-                        new CdmAuthority(CdmPermissionClass.DESCRIPTIONBASE, null, EnumSet.of(CRUD.CREATE, CRUD.UPDATE), null)
+                        new CdmAuthority(PermissionClass.DESCRIPTIONBASE, null, EnumSet.of(CRUD.CREATE, CRUD.UPDATE), null)
                         ),
                 new TargetEntityStates(TaxonDescription.NewInstance()),
-                Arrays.asList(new CdmAuthority(CdmPermissionClass.DESCRIPTIONBASE, null, EnumSet.of(CRUD.UPDATE), null)));
+                Arrays.asList(new CdmAuthority(PermissionClass.DESCRIPTIONBASE, null, EnumSet.of(CRUD.UPDATE), null)));
         assertEquals(AccessDecisionVoter.ACCESS_GRANTED, vote);
 
     }
@@ -76,10 +76,10 @@ public class DescriptionBaseVoterTest extends AbstractCdmPermissionVoterTest {
         int vote = voter.vote(
                 authentication(
                         // combined reverse
-                        new CdmAuthority(CdmPermissionClass.DESCRIPTIONBASE, null, EnumSet.of(CRUD.UPDATE, CRUD.CREATE), null)
+                        new CdmAuthority(PermissionClass.DESCRIPTIONBASE, null, EnumSet.of(CRUD.UPDATE, CRUD.CREATE), null)
                         ),
                 new TargetEntityStates(TaxonDescription.NewInstance()),
-                Arrays.asList(new CdmAuthority(CdmPermissionClass.DESCRIPTIONBASE, null, EnumSet.of(CRUD.UPDATE), null)));
+                Arrays.asList(new CdmAuthority(PermissionClass.DESCRIPTIONBASE, null, EnumSet.of(CRUD.UPDATE), null)));
         assertEquals(AccessDecisionVoter.ACCESS_GRANTED, vote);
 
     }
@@ -93,11 +93,11 @@ public class DescriptionBaseVoterTest extends AbstractCdmPermissionVoterTest {
         int vote = voter.vote(
                 authentication(
                         // insufficient grants
-                        new CdmAuthority(CdmPermissionClass.DESCRIPTIONBASE, null, EnumSet.of(CRUD.CREATE, CRUD.UPDATE), null)
+                        new CdmAuthority(PermissionClass.DESCRIPTIONBASE, null, EnumSet.of(CRUD.CREATE, CRUD.UPDATE), null)
                         ),
                 // an not orphan TaxonDescription since it is associated with a taxon
                 new TargetEntityStates(TaxonDescription.NewInstance(Taxon.NewInstance(null, null))),
-                Arrays.asList(new CdmAuthority(CdmPermissionClass.DESCRIPTIONBASE, null, EnumSet.of(CRUD.DELETE), null)));
+                Arrays.asList(new CdmAuthority(PermissionClass.DESCRIPTIONBASE, null, EnumSet.of(CRUD.DELETE), null)));
         assertEquals(AccessDecisionVoter.ACCESS_DENIED, vote);
     }
 
@@ -110,11 +110,11 @@ public class DescriptionBaseVoterTest extends AbstractCdmPermissionVoterTest {
         int vote = voter.vote(
                 authentication(
                         // insufficient grants
-                        new CdmAuthority(CdmPermissionClass.DESCRIPTIONBASE, null, EnumSet.of(CRUD.CREATE, CRUD.UPDATE), null)
+                        new CdmAuthority(PermissionClass.DESCRIPTIONBASE, null, EnumSet.of(CRUD.CREATE, CRUD.UPDATE), null)
                         ),
                 // an orphan TaxonDescription which has no taxon
                 new TargetEntityStates(TaxonDescription.NewInstance()),
-                Arrays.asList(new CdmAuthority(CdmPermissionClass.DESCRIPTIONBASE, null, EnumSet.of(CRUD.DELETE), null)));
+                Arrays.asList(new CdmAuthority(PermissionClass.DESCRIPTIONBASE, null, EnumSet.of(CRUD.DELETE), null)));
         assertEquals(AccessDecisionVoter.ACCESS_GRANTED, vote);
     }
 
@@ -126,10 +126,10 @@ public class DescriptionBaseVoterTest extends AbstractCdmPermissionVoterTest {
         int vote = voter.vote(
                 authentication(
                         // insufficient grants
-                        new CdmAuthority(CdmPermissionClass.TAXONBASE, null, EnumSet.of(CRUD.CREATE, CRUD.UPDATE), null)
+                        new CdmAuthority(PermissionClass.TAXONBASE, null, EnumSet.of(CRUD.CREATE, CRUD.UPDATE), null)
                         ),
                 new TargetEntityStates(TaxonDescription.NewInstance()),
-                Arrays.asList(new CdmAuthority(CdmPermissionClass.DESCRIPTIONBASE, null, EnumSet.of(CRUD.DELETE), null)));
+                Arrays.asList(new CdmAuthority(PermissionClass.DESCRIPTIONBASE, null, EnumSet.of(CRUD.DELETE), null)));
         assertEquals(AccessDecisionVoter.ACCESS_DENIED, vote);
     }
 

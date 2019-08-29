@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.io.specimen;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +37,8 @@ public class SpecimenDataHolder {
 
     private String gatheringElevationUnit;
     protected Double depth;
+
+    private URI preferredStableUri;
     /**
      * @return the depth
      */
@@ -509,5 +512,17 @@ public class SpecimenDataHolder {
      */
     public void setRecordBasis(String recordBasis) {
         this.recordBasis = recordBasis;
+    }
+
+
+
+    public URI getPreferredStableUri() {
+        return preferredStableUri;
+    }
+
+
+
+    public void setPreferredStableUri(URI preferredStableUri) {
+        this.preferredStableUri = preferredStableUri;
     }
 }

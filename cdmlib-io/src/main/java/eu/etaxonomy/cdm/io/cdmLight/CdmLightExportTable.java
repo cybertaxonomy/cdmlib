@@ -145,7 +145,8 @@ public enum CdmLightExportTable {
     //Homotypic Group
     protected static final String HOMOTYPIC_GROUP_ID = "HomotypicGroup_ID";
     protected static final String HOMOTYPIC_GROUP_STRING = "HomotypicGroupString";
-    protected static final String TYPE_STRING = "TypeString";
+    protected static final String TYPE_STRING = "TypeSpecimenString";
+    protected static final String TYPE_CACHE = "TypeStatementsString";
 
     //NomenclaturalAuthor
     protected static final String AUTHOR_ID = "PersonOrTeam_ID";
@@ -172,8 +173,9 @@ public enum CdmLightExportTable {
 
     //Specimen
 
-    protected static final String SPECIMEN_ID = "Specimen_Id";
+    protected static final String SPECIMEN_ID = "Specimen_ID";
     protected static final String SPECIMEN_CITATION = "SpecimenCitation";
+    protected static final String FIELDUNIT_CITATION = "FieldUnitCitation";
     protected static final String LOCALITY= "Locality";
     protected static final String COUNTRY = "Country";
     protected static final String AREA_CATEGORY1 = "AreaCategory1";
@@ -189,6 +191,10 @@ public enum CdmLightExportTable {
     protected static final String SPECIMEN_IMAGE_URIS = "SpecimenImageURIs";
     protected static final String HERBARIUM_ABBREV = "HerbariumAbbrev";
     protected static final String MEDIA_SPECIMEN_URL = "MediaSpecimenURI";
+    protected static final String PREFERREDSTABLE_ID = "PreferredStableId";
+    protected static final String BARCODE = "Barcode";
+    protected static final String ACCESSION_NUMBER = "AccessionNumber";
+    protected static final String CATALOGUE_NUMBER = "CatalogueNumber ";
     //other specimen attributes
 
 
@@ -219,12 +225,15 @@ public enum CdmLightExportTable {
     protected static final String NAME_IN_SOURCE_FK = "NameInSource_Fk";
     protected static final String FACT_TYPE = "FactType";
 
+    //Annotations
+
+
   //Identifiers
     protected static final String EXTERNAL_NAME_IDENTIFIER = "ExternalNameIdentifier";
     protected static final String IDENTIFIER_TYPE = "IdentifierType";
 
     final static String[] homotypicGroupColumns(){
-        return new String[]{HOMOTYPIC_GROUP_ID, HOMOTYPIC_GROUP_STRING, TYPE_STRING};
+        return new String[]{HOMOTYPIC_GROUP_ID, HOMOTYPIC_GROUP_STRING, TYPE_STRING, TYPE_CACHE};
     }
 
 
@@ -332,8 +341,8 @@ public enum CdmLightExportTable {
     }
 
     final static String[] specimenColumns() {
-        return new String[]{SPECIMEN_ID, SPECIMEN_CITATION, LOCALITY, COUNTRY, AREA_CATEGORY1, AREA_NAME1, AREA_CATEGORY2, AREA_NAME2, AREA_CATEGORY3, AREA_NAME3,
-                FURTHER_AREAS, COLLECTOR_STRING, COLLECTOR_NUMBER, COLLECTION_DATE, SPECIMEN_IMAGE_URIS, HERBARIUM_ABBREV, MEDIA_SPECIMEN_URL};
+        return new String[]{SPECIMEN_ID, SPECIMEN_CITATION, FIELDUNIT_CITATION, LOCALITY, COUNTRY, AREA_CATEGORY1, AREA_NAME1, AREA_CATEGORY2, AREA_NAME2, AREA_CATEGORY3, AREA_NAME3,
+                FURTHER_AREAS, COLLECTOR_STRING, COLLECTOR_NUMBER, COLLECTION_DATE, SPECIMEN_IMAGE_URIS, HERBARIUM_ABBREV, MEDIA_SPECIMEN_URL, PREFERREDSTABLE_ID, BARCODE, CATALOGUE_NUMBER, ACCESSION_NUMBER};
     }
 
 

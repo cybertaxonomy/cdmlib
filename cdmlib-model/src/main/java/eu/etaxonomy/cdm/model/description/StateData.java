@@ -294,7 +294,19 @@ public class StateData extends VersionableEntity implements IModifiable, IMultiL
         return this.modifyingText.remove(lang);
     }
 
+//*********************************** TO STRING *****************************************/
+
+
+    @Override
+    public String toString() {
+        return "[" + state
+                + (modifiers.isEmpty()? "": ", modifiers=" + modifiers)
+                + (modifyingText.isEmpty()?"": ", modifyingText=" + modifyingText)
+                + "]";
+    }
+
 //*********************************** CLONE *****************************************/
+
 
     /**
      * Clones <i>this</i> state data. This is a shortcut that enables to create

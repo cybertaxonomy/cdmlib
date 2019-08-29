@@ -9,10 +9,8 @@
 
 package eu.etaxonomy.cdm.model.term;
 
-
 import java.net.URI;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
@@ -21,10 +19,7 @@ import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -44,6 +39,7 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.common.ExternallyManaged;
 import eu.etaxonomy.cdm.model.common.Language;
 
 
@@ -56,28 +52,29 @@ import eu.etaxonomy.cdm.model.common.Language;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TermVocabulary", propOrder = {
     "termSourceUri",
-    "terms"
+    "terms",
+    "externallyManaged"
 })
 @XmlRootElement(name = "TermVocabulary")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
 //@Indexed(index = "eu.etaxonomy.cdm.model.term.TermVocabulary")
 @Audited
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public class TermVocabulary<T extends DefinedTermBase> extends TermBase implements Iterable<T> {
-	private static final long serialVersionUID = 1925052321596648672L;
+public class TermVocabulary<T extends DefinedTermBase>
+        extends TermCollection<T,TermNode> {
+
+    private static final long serialVersionUID = 1925052321596648672L;
 	private static final Logger logger = Logger.getLogger(TermVocabulary.class);
 
-	//The vocabulary source (e.g. ontology) defining the terms to be loaded when a database is created for the first time.
-	// Software can go and grap these terms incl labels and description.
+	//The vocabulary source (e.g. ontology) defining the terms to be loaded when a database
+	//is created for the first time.
+	// Software can go and grap these terms incl. labels and description.
 	// UUID needed? Further vocs can be setup through our own ontology.
 	@XmlElement(name = "TermSourceURI")
 	@Type(type="uriUserType")
 	@Field(analyze = Analyze.NO)
 	private URI termSourceUri;
 
-
-	//TODO Changed
 	@XmlElementWrapper(name = "Terms")
 	@XmlElement(name = "Term")
     @XmlIDREF
@@ -86,7 +83,9 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 	@Type(type="DefinedTermBase")
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	@IndexedEmbedded(depth = 2)
-	protected Set<T> terms = getNewTermSet();
+	protected Set<T> terms = newTermSet();
+
+    private ExternallyManaged externallyManaged;
 
 // ********************************* FACTORY METHODS *****************************************/
 
@@ -121,6 +120,10 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 	}
 
 
+	protected Set<T> newTermSet(){
+	    return new HashSet<>();
+	}
+
 // ******************* METHODS *************************************************/
 
 	public T findTermByUuid(UUID uuid){
@@ -132,10 +135,6 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 		return null;
 	}
 
-	@Transient
-	Set<T> getNewTermSet() {
-		return new HashSet<T>();
-	}
 
 	public Set<T> getTerms() {
 		return terms;
@@ -158,6 +157,11 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 		this.termSourceUri = vocabularyUri;
 	}
 
+	@Deprecated //deprecated for now as only needed for property path handling; but may become generally public in future
+    public Set<TermNode> getTermRelations() {
+        return super.termRelations();
+    }
+
     /**
      * Returns the first term found having the defined idInVocabulary.
      * If number of terms with given idInVoc > 1 the result is not deterministic.
@@ -173,15 +177,9 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
         return null;
     }
 
-	@Override
-    public Iterator<T> iterator() {
-		return terms.iterator();  // OLD: new TermIterator<T>(this.terms);
-	}
-
 	public int size(){
 		return terms.size();
 	}
-
 
 	/**
 	 * Returns all terms of this vocabulary sorted by their representation defined by the given language.
@@ -190,10 +188,10 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 	 * @return
 	 */
 	public SortedSet<T> getTermsOrderedByLabels(Language language){
-		TermLanguageComparator<T> comp = new TermLanguageComparator<T>();
+		TermLanguageComparator<T> comp = new TermLanguageComparator<>();
 		comp.setCompareLanguage(language);
 
-		SortedSet<T> result = new TreeSet<T>(comp);
+		SortedSet<T> result = new TreeSet<>(comp);
 		result.addAll(getTerms());
 		return result;
 	}

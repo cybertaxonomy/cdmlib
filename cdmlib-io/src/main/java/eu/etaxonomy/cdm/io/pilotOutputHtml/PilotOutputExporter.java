@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.TermType;
 
 /**
  * @author h.fradin (from a.babadshanjan)
@@ -239,7 +240,7 @@ public class PilotOutputExporter
 		if (pilotOutputExpConfig.isDoFeatureData() == true) {
 			if (featureDataRows == 0) { featureDataRows = MAX_ROWS; }
 			logger.info("# Feature Tree, Feature Node");
-			sddDataSet.setFeatureData(getFeatureTreeService().getFeatureNodesAll());
+			sddDataSet.setFeatureData(getTermNodeService().list(TermType.Feature,null,null,null,null));
 			sddDataSet.addFeatureData(getFeatureTreeService().list(null,null,null,null,null));
 		}
 	}

@@ -24,14 +24,18 @@ import org.hibernate.usertype.ParameterizedType;
 import org.hibernate.usertype.UserType;
 import org.jadira.usertype.dateandtime.shared.spi.AbstractUserType;
 
+import eu.etaxonomy.cdm.model.common.AuthorityType;
+import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.media.ExternalLinkType;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName;
 import eu.etaxonomy.cdm.model.molecular.SequenceDirection;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCodeEdition;
 import eu.etaxonomy.cdm.model.name.RankClass;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
-import eu.etaxonomy.cdm.model.reference.AuthorityType;
+import eu.etaxonomy.cdm.model.permission.CRUD;
+import eu.etaxonomy.cdm.model.permission.PermissionClass;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.term.IKeyTerm;
@@ -110,6 +114,9 @@ public class EnumUserType<E extends Enum<E>>  extends AbstractUserType implement
         //NomenclaturalCode
         }else if (clazz.equals(NomenclaturalCode.class)){
         	return NomenclaturalCode.getByKey(val);
+        //NomenclaturalCode
+        }else if (clazz.equals(NomenclaturalCodeEdition.class)){
+            return NomenclaturalCodeEdition.getByKey(val);
         //RankClass
         }else if (clazz.equals(RankClass.class)){
         	return RankClass.getByKey(val);
@@ -131,6 +138,12 @@ public class EnumUserType<E extends Enum<E>>  extends AbstractUserType implement
         //ExternalLinkType
         }else if (clazz.equals(ExternalLinkType.class)){
             return ExternalLinkType.getByKey(val);
+        }else if (clazz.equals(PermissionClass.class)){
+            return PermissionClass.getByKey(val);
+        }else if (clazz.equals(CRUD.class)){
+            return CRUD.getByKey(val);
+        }else if (clazz.equals(DescriptionType.class)){
+            return DescriptionType.getByKey(val);
         }else{
         	throw new IllegalArgumentException(String.format("EnumType %s not supported by %s.", clazz.getSimpleName(), EnumUserType.class.getSimpleName()));
         }

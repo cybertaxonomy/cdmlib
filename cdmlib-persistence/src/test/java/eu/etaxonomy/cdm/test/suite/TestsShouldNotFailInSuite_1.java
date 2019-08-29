@@ -13,8 +13,8 @@ import org.apache.log4j.Logger;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DefinedTermDaoImplTest;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBaseTest;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.term.DefinedTermDaoImplTest;
 
 
 @RunWith(Suite.class)

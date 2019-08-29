@@ -22,10 +22,6 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.model.term.OrderedTermBase;
-import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
-import eu.etaxonomy.cdm.model.term.TermType;
-import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 
@@ -81,8 +77,8 @@ public class OrderedTermVocabularyTest extends EntityTestBase {
 
 	@Test
 	public final void testGetNewTermSet() {
-		assertNotNull(oVoc1.getNewTermSet());
-		assertTrue(SortedSet.class.isAssignableFrom(oVoc1.getNewTermSet().getClass()));
+		assertNotNull(oVoc1.newTermSet());
+		assertTrue(SortedSet.class.isAssignableFrom(oVoc1.newTermSet().getClass()));
 	}
 
 

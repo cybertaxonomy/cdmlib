@@ -58,23 +58,14 @@ public abstract class AbstractBeanInitializer implements IBeanInitializer{
         return beanAutoInitializers;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.persistence.dao.BeanInitializer#initializeInstance(java.lang.Object)
-     */
     @Override
     public abstract Object initializeInstance(Object proxy);
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.persistence.dao.BeanInitializer#load(eu.etaxonomy.cdm.model.common.CdmBase)
-     */
     @Override
     public void load(Object bean) {
         initializeBean(bean, true, false);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.persistence.dao.BeanInitializer#loadFully(eu.etaxonomy.cdm.model.common.CdmBase)
-     */
     @Override
     public void loadFully(Object bean) {
         initializeBean(bean, true, true);
@@ -95,7 +86,7 @@ public abstract class AbstractBeanInitializer implements IBeanInitializer{
     public void initializeBean(Object bean, boolean cdmEntities, boolean collections){
 
         if(logger.isDebugEnabled()){logger.debug(">> starting wildcard initializeBean() of " + bean + " ;class:" + bean.getClass().getSimpleName()); }
-        Set<Class<?>> restrictions = new HashSet<Class<?>>();
+        Set<Class<?>> restrictions = new HashSet<>();
         if(cdmEntities){
             restrictions.add(CdmBase.class);
         }
@@ -121,9 +112,6 @@ public abstract class AbstractBeanInitializer implements IBeanInitializer{
         }
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.persistence.dao.BeanInitializer#initializeProperties(java.lang.Object, java.util.List)
-     */
     //TODO optimize algorithm ..
     @Override
     public void initialize(Object bean, List<String> propertyPaths) {
@@ -396,7 +384,7 @@ public abstract class AbstractBeanInitializer implements IBeanInitializer{
      */
     public static Set<PropertyDescriptor> getProperties(Object bean, Set<Class<?>> typeRestrictions) {
 
-        Set<PropertyDescriptor> properties = new HashSet<PropertyDescriptor>();
+        Set<PropertyDescriptor> properties = new HashSet<>();
         PropertyDescriptor[] props = PropertyUtils.getPropertyDescriptors(bean);
 
         for (PropertyDescriptor prop : props) {

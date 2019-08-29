@@ -17,12 +17,12 @@ import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
+import eu.etaxonomy.cdm.model.permission.CRUD;
+import eu.etaxonomy.cdm.model.permission.PermissionClass;
+import eu.etaxonomy.cdm.model.permission.GrantedAuthorityImpl;
+import eu.etaxonomy.cdm.model.permission.Operation;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthorityParsingException;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionClass;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.Operation;
 
 /**
  * @author c.mathew
@@ -49,7 +49,7 @@ public class CdmAuthorityTest {
 	@Test
 	public final void testGetAuthority() throws CdmAuthorityParsingException {
 		// create CdmAuthority object manually
-		CdmPermissionClass tnClass = CdmPermissionClass.TAXONBASE;
+		PermissionClass tnClass = PermissionClass.TAXONBASE;
 		String property = "Taxon";
 		EnumSet<CRUD> operation = EnumSet.noneOf(CRUD.class);
 		operation.add(CRUD.READ);
@@ -106,7 +106,7 @@ public class CdmAuthorityTest {
     @Test
 	public final void testFromString_issue7027_A() throws CdmAuthorityParsingException {
         TestCdmAuthority auth = new TestCdmAuthority("REGISTRATION(PREPARATION,READY).[UPDATE, DELETE]{e0358c98-4222-4d17-811c-7ce18bd565ee}");
-        assertEquals(CdmPermissionClass.REGISTRATION, auth.getPermissionClass());
+        assertEquals(PermissionClass.REGISTRATION, auth.getPermissionClass());
         assertEquals("PREPARATION,READY", auth.getProperty());
         assertEquals(EnumSet.of(CRUD.UPDATE, CRUD.DELETE), auth.getOperation());
         assertEquals("e0358c98-4222-4d17-811c-7ce18bd565ee", auth.getTargetUUID().toString());
@@ -122,7 +122,7 @@ public class CdmAuthorityTest {
 	@Test
 	public final void testFromString_issue7027_B() throws CdmAuthorityParsingException {
         TestCdmAuthority auth = new TestCdmAuthority("REGISTRATION(PREPARATION,READY).[UPDATE,DELETE]{e0358c98-4222-4d17-811c-7ce18bd565ee}");
-        assertEquals(CdmPermissionClass.REGISTRATION, auth.getPermissionClass());
+        assertEquals(PermissionClass.REGISTRATION, auth.getPermissionClass());
         assertEquals("PREPARATION,READY", auth.getProperty());
         assertEquals(EnumSet.of(CRUD.UPDATE, CRUD.DELETE), auth.getOperation());
         assertEquals("e0358c98-4222-4d17-811c-7ce18bd565ee", auth.getTargetUUID().toString());
@@ -134,7 +134,7 @@ public class CdmAuthorityTest {
 
 	    public TestCdmAuthority() {
 	        // just create a dummy instance
-	        super(CdmPermissionClass.REGISTRATION, Operation.UPDATE);
+	        super(PermissionClass.REGISTRATION, Operation.UPDATE);
 	    }
 
 	    public TestCdmAuthority(String string) throws CdmAuthorityParsingException {

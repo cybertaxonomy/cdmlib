@@ -227,7 +227,7 @@ public class TaxonPortalController extends TaxonController{
             "childNodes.taxon",
     });
 
-    private static final String featureTreeUuidPattern = "^/taxon(?:(?:/)([^/?#&\\.]+))+.*";
+    private static final String termTreeUuidPattern = "^/taxon(?:(?:/)([^/?#&\\.]+))+.*";
 
 
     public TaxonPortalController(){
@@ -635,7 +635,7 @@ public class TaxonPortalController extends TaxonController{
 //		TaxonBase tb = getCdmBase(request, response, null, Taxon.class);
 //		if(tb instanceof Taxon){
 //			//T O D O this is a quick and dirty implementation -> generalize
-//			UUID featureTreeUuid = readValueUuid(request, featureTreeUuidPattern);
+//			UUID featureTreeUuid = readValueUuid(request, termTreeUuidPattern);
 //
 //			FeatureTree featureTree = descriptionService.getFeatureTreeByUuid(featureTreeUuid);
 //			Pager<TaxonDescription> p = descriptionService.getTaxonDescriptions((Taxon)tb, null, null, null, null, TAXONDESCRIPTION_INIT_STRATEGY);

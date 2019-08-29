@@ -57,7 +57,7 @@ public class KeyStatement extends VersionableEntity implements IMultiLanguageTex
 	@MapKeyJoinColumn(name="label_mapkey_id")
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE })
 //    @IndexedEmbedded
-    private Map<Language, LanguageString> label = new HashMap<Language, LanguageString>();
+    private Map<Language, LanguageString> label = new HashMap<>();
 
 	//private mediaObjects needs to be discussed (how to implement the role of the media)
 

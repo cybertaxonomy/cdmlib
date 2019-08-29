@@ -25,20 +25,20 @@ import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.LanguageStringBase;
-import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.FeatureNode;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermTree;
+import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
@@ -117,8 +117,8 @@ public class JaxbImport
 		List<DescriptionBase> descriptions;
 		List<TypeDesignationBase<?>> typeDesignations;
 		List<SpecimenOrObservationBase> occurrences;
-		List<FeatureTree> featureTrees;
-		List<FeatureNode> featureNodes;
+		List<TermTree> featureTrees;
+		List<TermNode> termNodes;
 		List<Media> media;
 		List<LanguageStringBase> languageData;
 		List<TermVocabulary<DefinedTermBase>> termVocabularies;
@@ -318,7 +318,7 @@ public class JaxbImport
 		//txStatus = startTransaction();
 		try {
 			if (jaxbImpConfig.isDoFeatureData() == true) {
-				if ((featureTrees = dataSet.getFeatureTrees()).size() > 0) {
+				if ((featureTrees = dataSet.getTermTrees()).size() > 0) {
 					logger.info("Feature data: " + featureTrees.size());
 					getFeatureTreeService().saveOrUpdate(featureTrees);
 				}

@@ -83,10 +83,10 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.FeatureNode;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermBase;
+import eu.etaxonomy.cdm.model.term.TermNode;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
@@ -106,7 +106,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
     private Map<String,String> citations = new HashMap<>();
     private Map<String,String> defaultUnitPrefixes = new HashMap<>();
     private Map<String,Person> editors = new HashMap<>();
-    private Map<String,FeatureNode<Feature>> featureNodes = new HashMap<>();
+    private Map<String,TermNode<Feature>> termNodes = new HashMap<>();
     private Map<String,Feature> features = new HashMap<>();
     private Map<String,String> locations = new HashMap<>();
     private Map<String,List<CdmBase>> mediaObject_ListCdmBase = new HashMap<>();
@@ -142,7 +142,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 
 	private Set<StatisticalMeasure> statisticalMeasures = new HashSet<>();
 	private Set<VersionableEntity> featureData = new HashSet<>();
-	private Set<FeatureTree> featureTrees = new HashSet<>();
+	private Set<TermTree> featureTrees = new HashSet<>();
 	private Set<Classification> classifications = new HashSet<>();
 
 	private final UUID uuidAnnotationTypeLocation = UUID.fromString("a3737e07-72e3-46d2-986d-fa4cf5de0b63");
@@ -161,7 +161,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 	    citations = new HashMap<>();
 	    defaultUnitPrefixes = new HashMap<>();
 	    editors = new HashMap<>();
-	    featureNodes = new HashMap<>();
+	    termNodes = new HashMap<>();
 	    features = new HashMap<>();
 	    locations = new HashMap<>();
 	    mediaObject_ListCdmBase = new HashMap<>();
@@ -675,7 +675,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 			getReferenceService().save(source);
 		}
 
-		for (FeatureTree featureTree : featureTrees) {
+		for (TermTree featureTree : featureTrees) {
 			getFeatureTreeService().save(featureTree);
 		}
 		getDescriptiveDataSetService().save(descriptiveDataSet);
@@ -1751,9 +1751,9 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 					String label = (String)ImportHelper.getXmlInputValue(elRepresentation,"Label",sddNamespace);
 					//Element elDesignedFor = elCharacterTree.getChild("DesignedFor",sddNamespace);//TODO ?
 
-					FeatureTree featureTree =  FeatureTree.NewInstance();
+					TermTree featureTree =  TermTree.NewFeatureInstance();
 					importRepresentation(elCharacterTree, sddNamespace, featureTree, "", cdmState);
-					FeatureNode<Feature> root = featureTree.getRoot();
+					TermNode<Feature> root = featureTree.getRoot();
 					List<Element> listeOfNodes = elCharacterTree.getChildren("Nodes", sddNamespace);
 
 					//Nodes of CharacterTrees in SDD always refer to DescriptiveConcepts
@@ -1776,7 +1776,6 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 				if ((++j % modCount) == 0){ logger.info("CharacterTrees handled: " + j);}
 
 			}
-
 		}
 	}
 
@@ -1785,12 +1784,12 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 	 * @param root
 	 * @param elNodes
 	 */
-	private void handleCharacterNodes(Namespace sddNamespace, FeatureNode<Feature> root, Element elNodes) {
+	private void handleCharacterNodes(Namespace sddNamespace, TermNode<Feature> root, Element elNodes) {
 		List<Element> listNodes = elNodes.getChildren("Node", sddNamespace);
 		if (listNodes != null) {
 			for (Element elNode : listNodes){
 				String idN = elNode.getAttributeValue("id");
-				FeatureNode<Feature> fn = null;
+				TermNode<Feature> fn = null;
 				Feature dc = null;
 				if (idN!=null) {
 					// DescriptiveConcepts are used as nodes in CharacterTrees
@@ -1804,7 +1803,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 					if (elParent!=null){
 						String refP = elParent.getAttributeValue("ref");
 						if (refP!=null) {
-							FeatureNode<Feature> parent = featureNodes.get(refP);
+							TermNode<Feature> parent = termNodes.get(refP);
 							if (parent==null){
 							    // if no parent found or the reference is broken, add the node to the root of the tree
 							    fn = (dc==null)?root.addChild():root.addChild(dc);
@@ -1819,7 +1818,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
                         fn = (dc==null)?root.addChild():root.addChild(dc);
 					}
 				}
-				featureNodes.put(idN, fn);
+				termNodes.put(idN, fn);
 			}
 		}
 
@@ -1831,12 +1830,12 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 				Element elParent = elCharNode.getChild("Parent", sddNamespace);
 				Element elCharacter = elCharNode.getChild("Character", sddNamespace);
 				Element elDependencyRules = elCharNode.getChild("DependencyRules", sddNamespace);
-				FeatureNode<Feature> fn = null;
+				TermNode<Feature> fn = null;
 
                 if (elParent!=null){
                     String refP = elParent.getAttributeValue("ref");
                     if ((refP!=null)&&(!refP.equals(""))) {
-                        FeatureNode<Feature> parent = featureNodes.get(refP);
+                        TermNode<Feature> parent = termNodes.get(refP);
                         if (parent==null){
                             parent = root; // if no parent found or the reference is broken, add the node to the root of the tree
                         }
@@ -1853,9 +1852,10 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 						List<Element> listStates = elInapplicableIf.getChildren("State", sddNamespace);
 						for (Element stateElement : listStates) {
 							String refState = stateElement.getAttributeValue("ref");
-							if ((refState!=null)&&(!refState.equals(""))) {
-								State state = states.get(refState);
-								fn.addInapplicableState(state);
+							if (StringUtils.isNotBlank(refState)) {
+	                            State state = states.get(refState);
+								//FIXME handle feature
+								fn.addInapplicableState(null, state);
 							}
 						}
 					}
@@ -1864,9 +1864,10 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 						List<Element> listStates = elInapplicableIf.getChildren("State", sddNamespace);
 						for (Element stateElement : listStates) {
 							String refState = stateElement.getAttributeValue("ref");
-							if ((refState!=null)&&(!refState.equals(""))) {
+							if (StringUtils.isNotBlank(refState)) {
 								State state = states.get(refState);
-								fn.addApplicableState(state);
+								//FIXME handle feature
+								fn.addApplicableState(null, state);
 							}
 						}
 					}
@@ -1876,7 +1877,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 				if ((refC!=null)&&(!refC.equals(""))){
 					Feature character = features.get(refC);
 					fn.setTerm(character);
-					featureNodes.put(refC, fn);
+					termNodes.put(refC, fn);
 				}
 			}
 		}

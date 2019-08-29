@@ -111,7 +111,7 @@ public abstract class TermBase
     }
 
     private void initCacheStrategy() {
-        this.cacheStrategy = new TermDefaultCacheStrategy<TermBase>();
+        this.cacheStrategy = new TermDefaultCacheStrategy<>();
     }
 
 //******************** GETTER /SETTER ********************************/

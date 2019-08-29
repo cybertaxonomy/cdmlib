@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.database.update;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -29,19 +31,19 @@ public class ClassChanger
 	private final boolean isAnnotatable;
 	private final boolean isSourcable;
 
-	public static final ClassChanger NewIdentifiableInstance(String stepName, String tableName, String newClassNamePath, String[] oldClassNames, boolean includeAudTable){
-		return new ClassChanger(stepName, tableName, newClassNamePath, oldClassNames, includeAudTable, true, true, true);
+	public static final ClassChanger NewIdentifiableInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String newClassNamePath, String[] oldClassNames, boolean includeAudTable){
+		return new ClassChanger(stepList, stepName, tableName, newClassNamePath, oldClassNames, includeAudTable, true, true, true);
 	}
-	public static final ClassChanger NewAnnotatableInstance(String stepName, String tableName, String newClassNamePath, String[] oldClassNames, boolean includeAudTable){
-		return new ClassChanger(stepName, tableName, newClassNamePath, oldClassNames, includeAudTable, true, false, false);
+	public static final ClassChanger NewAnnotatableInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String newClassNamePath, String[] oldClassNames, boolean includeAudTable){
+		return new ClassChanger(stepList, stepName, tableName, newClassNamePath, oldClassNames, includeAudTable, true, false, false);
 	}
-	public static final ClassChanger NewDescriptionElementInstance(String stepName, String tableName, String newClassNamePath, String[] oldClassNames, boolean includeAudTable){
-		return new ClassChanger(stepName, tableName, newClassNamePath, oldClassNames, includeAudTable, true, true, false);
+	public static final ClassChanger NewDescriptionElementInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String newClassNamePath, String[] oldClassNames, boolean includeAudTable){
+		return new ClassChanger(stepList, stepName, tableName, newClassNamePath, oldClassNames, includeAudTable, true, true, false);
 	}
 
 
-	protected ClassChanger(String stepName, String tableName, String newClassName, String[] oldClassNames, boolean includeAudTable, boolean isAnnotatable, boolean isSourcable, boolean isIdentifiable) {
-		super(stepName, tableName, includeAudTable);
+	protected ClassChanger(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String newClassName, String[] oldClassNames, boolean includeAudTable, boolean isAnnotatable, boolean isSourcable, boolean isIdentifiable) {
+		super(stepList, stepName, tableName, includeAudTable);
 		this.newClassName = newClassName;
 		this.oldClassNames = oldClassNames;
 		this.isIdentifiable = isIdentifiable;

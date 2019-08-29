@@ -17,8 +17,37 @@ import javax.xml.bind.annotation.XmlEnumValue;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.common.Language;
-
+import eu.etaxonomy.cdm.model.description.CategoricalData;
+import eu.etaxonomy.cdm.model.description.Character;
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.description.MeasurementUnit;
+import eu.etaxonomy.cdm.model.description.SpecimenDescription;
+import eu.etaxonomy.cdm.model.description.StateData;
+import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.Point;
+import eu.etaxonomy.cdm.model.media.Rights;
+import eu.etaxonomy.cdm.model.molecular.Amplification;
+import eu.etaxonomy.cdm.model.molecular.DnaQuality;
+import eu.etaxonomy.cdm.model.name.HybridRelationship;
+import eu.etaxonomy.cdm.model.name.NameRelationship;
+import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
+import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 
 
 /**
@@ -456,7 +485,7 @@ public enum TermType implements IEnumTerm<TermType>{
     StructureModifier(UUID.fromString("41617e59-17c9-47f5-8fe6-319e117447ce"), "Structure Modifier", "STMO", Modifier),
 
 
-    //37
+    //40
     /**
      * The type for {@link Character characters}. Is subtype of {@link #Feature}
      * @see TermType#Feature
@@ -467,6 +496,12 @@ public enum TermType implements IEnumTerm<TermType>{
     @Deprecated
     Character(UUID.fromString("70baa056-4a3c-4a79-860f-934765c626c4"), "Character", "CHA", Feature),
 
+    //41
+    /**
+     * The type for term relationships.
+     **/
+    @XmlEnumValue("TermRelationType")
+    TermRelationType(UUID.fromString("2541032f-3d24-4ce0-a414-f028054f98ef"), "Term relation type", "TERT", null),
 
     ;
 
@@ -484,42 +519,6 @@ public enum TermType implements IEnumTerm<TermType>{
         delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, defaultString, key, parent);
     }
 
-
-// *************************** DELEGATE **************************************/
-
-    private static EnumeratedTermVoc<TermType> delegateVoc;
-    private IEnumTerm<TermType> delegateVocTerm;
-
-    static {
-        delegateVoc = EnumeratedTermVoc.getVoc(TermType.class);
-    }
-
-    @Override
-    public String getKey(){return delegateVocTerm.getKey();}
-
-    @Override
-    public String getMessage(){return delegateVocTerm.getMessage();}
-
-    @Override
-    public String getMessage(Language language){return delegateVocTerm.getMessage(language);}
-
-    @Override
-    public UUID getUuid() {return delegateVocTerm.getUuid();}
-
-    @Override
-    public TermType getKindOf() {return delegateVocTerm.getKindOf();}
-
-    @Override
-    public Set<TermType> getGeneralizationOf() {return delegateVocTerm.getGeneralizationOf();}
-
-    @Override
-    public boolean isKindOf(TermType ancestor) {return delegateVocTerm.isKindOf(ancestor);	}
-
-    @Override
-    public Set<TermType> getGeneralizationOf(boolean recursive) {return delegateVocTerm.getGeneralizationOf(recursive);}
-
-    public static TermType getByKey(String key){return delegateVoc.getByKey(key);}
-    public static TermType getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
 
     /**
      * Returns a defined term base object corresponding to this term type object
@@ -559,10 +558,48 @@ public enum TermType implements IEnumTerm<TermType>{
             case NamedAreaType:
                 return eu.etaxonomy.cdm.model.location.NamedAreaType.NewInstance(null, "Untitled", null);
             case PresenceAbsenceTerm:
-            	return eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm.NewPresenceInstance(null, "Untitled", null);
+                return eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm.NewPresenceInstance(null, "Untitled", null);
             default:
                 return null;
         }
     }
 
+
+// *************************** DELEGATE **************************************/
+
+    private static EnumeratedTermVoc<TermType> delegateVoc;
+    private IEnumTerm<TermType> delegateVocTerm;
+
+    static {
+        delegateVoc = EnumeratedTermVoc.getVoc(TermType.class);
+    }
+
+    @Override
+    public String getKey(){return delegateVocTerm.getKey();}
+
+    @Override
+    public String getMessage(){return delegateVocTerm.getMessage();}
+
+    @Override
+    public String getMessage(Language language){return delegateVocTerm.getMessage(language);}
+
+    @Override
+    public UUID getUuid() {return delegateVocTerm.getUuid();}
+
+    @Override
+    public TermType getKindOf() {return delegateVocTerm.getKindOf();}
+
+    @Override
+    public Set<TermType> getGeneralizationOf() {return delegateVocTerm.getGeneralizationOf();}
+
+    @Override
+    public boolean isKindOf(TermType ancestor) {return delegateVocTerm.isKindOf(ancestor);	}
+
+    @Override
+    public Set<TermType> getGeneralizationOf(boolean recursive) {return delegateVocTerm.getGeneralizationOf(recursive);}
+
+    public static TermType getByKey(String key){return delegateVoc.getByKey(key);}
+    public static TermType getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
+
 }
+

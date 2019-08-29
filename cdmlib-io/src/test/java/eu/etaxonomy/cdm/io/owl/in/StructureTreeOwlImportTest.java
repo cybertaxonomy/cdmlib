@@ -37,15 +37,16 @@ import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.descriptive.owl.in.StructureTreeOwlImportConfigurator;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.FeatureNode;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
 import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermTree;
+import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
@@ -95,22 +96,22 @@ public class StructureTreeOwlImportTest extends CdmTransactionalIntegrationTest 
         this.endTransaction();
 
         String treeLabel = "test_structures";
-        List<FeatureTree> trees = featureTreeService.listByTitle(FeatureTree.class, treeLabel, MatchMode.EXACT, null, null, null, null, null);
+        List<TermTree> trees = featureTreeService.listByTitle(TermTree.class, treeLabel, MatchMode.EXACT, null, null, null, null, null);
         List<String> nodeProperties = new ArrayList<>();
         nodeProperties.add("term");
         nodeProperties.add("term.media");
-        FeatureTree tree = featureTreeService.loadWithNodes(trees.iterator().next().getUuid(), null, nodeProperties);
+        TermTree<Feature> tree = featureTreeService.loadWithNodes(trees.iterator().next().getUuid(), null, nodeProperties);
         assertNotNull("featureTree should not be null", tree);
 
         assertEquals("Tree has wrong term type", TermType.Structure, tree.getTermType());
-        assertEquals("Wrong number of distinct features", 4, tree.getDistinctFeatures().size());
+        assertEquals("Wrong number of distinct features", 4, tree.getDistinctTerms().size());
         List rootChildren = tree.getRootChildren();
         assertEquals("Wrong number of root children", 1, rootChildren.size());
         Object entirePlant = rootChildren.iterator().next();
-        assertTrue("Root is no feature node", entirePlant instanceof FeatureNode);
-        assertEquals("Root node has wrong term type", TermType.Structure, ((FeatureNode)entirePlant).getTermType());
-        FeatureNode<DefinedTerm> entirePlantNode = (FeatureNode<DefinedTerm>) entirePlant;
-        List<FeatureNode<DefinedTerm>> childNodes = entirePlantNode.getChildNodes();
+        assertTrue("Root is no feature node", entirePlant instanceof TermNode);
+        assertEquals("Root node has wrong term type", TermType.Structure, ((TermNode)entirePlant).getTermType());
+        TermNode<DefinedTerm> entirePlantNode = (TermNode<DefinedTerm>) entirePlant;
+        List<TermNode<DefinedTerm>> childNodes = entirePlantNode.getChildNodes();
         assertEquals("Wrong number of children", 2, childNodes.size());
 
         String inflorescenceLabel = "inflorescence";
@@ -120,13 +121,13 @@ public class StructureTreeOwlImportTest extends CdmTransactionalIntegrationTest 
         DefinedTerm inflorescence = records.iterator().next();
         assertEquals(inflorescenceLabel, inflorescence.getLabel(Language.ENGLISH()));
 
-        for (FeatureNode<DefinedTerm> featureNode : childNodes) {
-            assertTrue("Child node not found. Found node with term: "+featureNode.getTerm().getLabel(),
-                    featureNode.getTerm().getUuid().equals(inflorescence.getUuid())
-                    || featureNode.getTerm().getLabel(Language.ENGLISH()).equals("Flower"));
-            if(featureNode.getTerm().getUuid().equals(inflorescence.getUuid())){
-                assertEquals("Term mismatch", inflorescence, featureNode.getTerm());
-                inflorescence = featureNode.getTerm();
+        for (TermNode<DefinedTerm> termNode : childNodes) {
+            assertTrue("Child node not found. Found node with term: "+termNode.getTerm().getLabel(),
+                    termNode.getTerm().getUuid().equals(inflorescence.getUuid())
+                    || termNode.getTerm().getLabel(Language.ENGLISH()).equals("Flower"));
+            if(termNode.getTerm().getUuid().equals(inflorescence.getUuid())){
+                assertEquals("Term mismatch", inflorescence, termNode.getTerm());
+                inflorescence = termNode.getTerm();
 
                 assertEquals("wrong id in vocabulary", "inflorescence", inflorescence.getIdInVocabulary());
                 assertEquals("wrong symbol", "infloSymbol", inflorescence.getSymbol());
@@ -182,14 +183,14 @@ public class StructureTreeOwlImportTest extends CdmTransactionalIntegrationTest 
         this.endTransaction();
 
         String treeLabel = "properties 1.0";
-        List<FeatureTree> trees = featureTreeService.listByTitle(FeatureTree.class, treeLabel, MatchMode.EXACT, null, null, null, null, null);
+        List<TermTree> trees = featureTreeService.listByTitle(TermTree.class, treeLabel, MatchMode.EXACT, null, null, null, null, null);
         List<String> nodeProperties = new ArrayList<>();
         nodeProperties.add("term");
-        FeatureTree tree = featureTreeService.loadWithNodes(trees.iterator().next().getUuid(), null, nodeProperties);
+        TermTree tree = featureTreeService.loadWithNodes(trees.iterator().next().getUuid(), null, nodeProperties);
         assertNotNull("featureTree should not be null", tree);
 
         assertEquals("Tree has wrong term type", TermType.Property, tree.getTermType());
-        assertEquals("Wrong number of distinct features", 12, tree.getDistinctFeatures().size());
+        assertEquals("Wrong number of distinct features", 12, tree.getDistinctTerms().size());
         List rootChildren = tree.getRootChildren();
 
         String vocLabel = "Plant Glossary Properties";

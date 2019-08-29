@@ -29,9 +29,9 @@ public abstract class IoStateBase<CONFIG extends IIoConfigurator, IO extends ICd
 
 	private RESULT result;
 
-//	private IProgressMonitor currentMonitor;
 
-	//TODO config not necessary ones it it implemented in constructor for IOs too.
+
+    //TODO config not necessary ones it it implemented in constructor for IOs too.
 	public void initialize(CONFIG config){
 	    this.config = config;
 	}

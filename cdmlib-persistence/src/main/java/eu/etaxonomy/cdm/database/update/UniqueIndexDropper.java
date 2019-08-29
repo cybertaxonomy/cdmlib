@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.database.update;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -32,14 +33,14 @@ public class UniqueIndexDropper extends AuditedSchemaUpdaterStepBase {
 
 	private final String indexColumn;
 
-	public static final UniqueIndexDropper NewInstance(String tableName, String indexColumn, boolean includeAudTable){
+	public static final UniqueIndexDropper NewInstance(List<ISchemaUpdaterStep> stepList, String tableName, String indexColumn, boolean includeAudTable){
 		String stepName = "Drop index " + tableName + "-" + indexColumn;
-		return new UniqueIndexDropper(stepName, tableName, indexColumn, includeAudTable);
+		return new UniqueIndexDropper(stepList, stepName, tableName, indexColumn, includeAudTable);
 	}
 
 
-	protected UniqueIndexDropper(String stepName, String tableName, String indexColumn, boolean includeAudTable) {
-		super(stepName, tableName, includeAudTable);
+	protected UniqueIndexDropper(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String indexColumn, boolean includeAudTable) {
+		super(stepList, stepName, tableName, includeAudTable);
 		this.indexColumn = indexColumn;
 	}
 

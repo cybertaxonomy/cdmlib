@@ -41,7 +41,6 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * </ul>
  *
  * @author m.doering
- * @version 1.0
  * @since 08-Nov-2007 13:06:26
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -55,15 +54,17 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 @Audited
 public class HybridRelationship
         extends RelationshipBase<INonViralName, INonViralName, HybridRelationshipType>
-        implements Comparable<HybridRelationship>{
+        implements Comparable<HybridRelationship>, IRuleConsidered{
 
     private static final long serialVersionUID = -78515930138896939L;
     private static final Logger logger = Logger.getLogger(HybridRelationship.class);
 
-	//The nomenclatural code rule considered. The article/note/recommendation in the code in question that is commented on in
-	//the note property.
-	@XmlElement(name = "RuleConsidered")
-	private String ruleConsidered;
+//	//The nomenclatural code rule considered. The article/note/recommendation in the code in question that is commented on in
+//	//the note property.
+//	@XmlElement(name = "RuleConsidered")
+//	private String ruleConsidered;
+
+    private RuleConsidered ruleConsidered;
 
 	@XmlElement(name = "RelatedFrom")
     @XmlIDREF
@@ -174,14 +175,33 @@ public class HybridRelationship
 	 * the string representing the (child) hybrid {@link BotanicalName taxon name}
 	 * within <i>this</i> hybrid relationship.
 	 */
-	public String getRuleConsidered(){
-		return this.ruleConsidered;
+	@Override
+    public String getRuleConsidered(){
+		return this.ruleConsidered().getText();
 	}
 	/**
 	 * @see  #getRuleConsidered()
 	 */
-	public void setRuleConsidered(String ruleConsidered){
-		this.ruleConsidered = ruleConsidered;
+	@Override
+    public void setRuleConsidered(String ruleConsidered){
+		this.ruleConsidered().setText(ruleConsidered);
+	}
+	/**
+     * The {@link NomenclaturalCodeEdition code edition} for the {@link #getRuleConsidered() rule considered}.
+     */
+    @Override
+    public NomenclaturalCodeEdition getCodeEdition() {
+        return ruleConsidered().getCodeEdition();
+    }
+    @Override
+    public void setCodeEdition(NomenclaturalCodeEdition codeEdition) {
+        ruleConsidered().setCodeEdition(codeEdition);
+    }
+	private RuleConsidered ruleConsidered(){
+	    if(this.ruleConsidered==null){
+	        ruleConsidered = new RuleConsidered();
+	    }
+	    return ruleConsidered;
 	}
 
 	@Override
@@ -259,6 +279,7 @@ public class HybridRelationship
 		HybridRelationship result;
 		try {
 			result = (HybridRelationship)super.clone();
+			result.ruleConsidered = this.ruleConsidered == null? null : this.ruleConsidered.clone();
 			//no changes to: relatedFrom, relatedTo, type
 			return result;
 		} catch (CloneNotSupportedException e) {

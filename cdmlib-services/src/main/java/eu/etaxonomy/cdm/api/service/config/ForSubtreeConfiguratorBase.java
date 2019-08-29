@@ -18,11 +18,8 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
  *
  * @author a.mueller
  * @since 06.01.2017
- *
  */
-public abstract class ForSubtreeConfiguratorBase implements Serializable{//<CONFIG extends ImportConfiguratorBase>
-//        extends ImportConfiguratorBase<DefaultImportState<CONFIG>, Object>
-//        implements IImportConfigurator{
+public abstract class ForSubtreeConfiguratorBase<T extends ForSubtreeConfiguratorBase> implements Serializable{
 
     private static final long serialVersionUID = 2756961021157678305L;
 
@@ -33,18 +30,10 @@ public abstract class ForSubtreeConfiguratorBase implements Serializable{//<CONF
     private IProgressMonitor monitor;
 
     /**
-     * @param monitor the monitor to set
-     */
-    public void setMonitor(IProgressMonitor monitor) {
-        this.monitor = monitor;
-    }
-
-    /**
      * @param subtreeUuid
      * @param newSecundum
      */
-    public ForSubtreeConfiguratorBase(UUID subtreeUuid, IProgressMonitor monitor) {
-//        super(null);
+    protected ForSubtreeConfiguratorBase(UUID subtreeUuid, IProgressMonitor monitor) {
         this.subtreeUuid = subtreeUuid;
         this.monitor = monitor;
     }
@@ -53,10 +42,23 @@ public abstract class ForSubtreeConfiguratorBase implements Serializable{//<CONF
      * @param subtreeUuid
      * @param newSecundum
      */
-    public ForSubtreeConfiguratorBase(UUID subtreeUuid) {
+    protected ForSubtreeConfiguratorBase(UUID subtreeUuid) {
 //        super(null);
         this.subtreeUuid = subtreeUuid;
     }
+
+    protected ForSubtreeConfiguratorBase(UUID subtreeUuid, boolean includeAcceptedTaxa, boolean includeSynonyms,
+            boolean includeSharedTaxa, IProgressMonitor monitor) {
+        super();
+        this.subtreeUuid = subtreeUuid;
+        this.includeAcceptedTaxa = includeAcceptedTaxa;
+        this.includeSynonyms = includeSynonyms;
+        this.includeSharedTaxa = includeSharedTaxa;
+        this.monitor = monitor;
+    }
+
+// ************************** GETTER / SETTER ********************************/
+
 
     public UUID getSubtreeUuid() {
         return subtreeUuid;
@@ -71,6 +73,7 @@ public abstract class ForSubtreeConfiguratorBase implements Serializable{//<CONF
     }
     public void setIncludeSynonyms(boolean includeSynonyms) {
         this.includeSynonyms = includeSynonyms;
+
     }
 
     public boolean isIncludeAcceptedTaxa() {
@@ -78,6 +81,7 @@ public abstract class ForSubtreeConfiguratorBase implements Serializable{//<CONF
     }
     public void setIncludeAcceptedTaxa(boolean includeAcceptedTaxa) {
         this.includeAcceptedTaxa = includeAcceptedTaxa;
+
     }
 
     public boolean isIncludeSharedTaxa() {
@@ -85,36 +89,17 @@ public abstract class ForSubtreeConfiguratorBase implements Serializable{//<CONF
     }
     public void setIncludeSharedTaxa(boolean includeSharedTaxa) {
         this.includeSharedTaxa = includeSharedTaxa;
+
     }
 
-    /**
-     * @return
-     */
     public IProgressMonitor getMonitor() {
-
         return monitor;
     }
+    public void setMonitor(IProgressMonitor monitor) {
+        this.monitor = monitor;
 
-//    /**
-//     * {@inheritDoc}
-//     */
-//    @SuppressWarnings("rawtypes")
-//    @Override
-//    public DefaultImportState getNewState() {
-//      return new DefaultImportState(this);
-//    }
+    }
 
-//    /**
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    public Reference getSourceReference() {
-//        return null;
-//    }
-//
-//    @Override
-//    public boolean isValid(){
-//        return true;
-//    }
+
 
 }

@@ -3,20 +3,22 @@
  */
 package eu.etaxonomy.cdm.database.update;
 
+import java.util.List;
+
 /**
  * @author a.mueller
  *
  */
 public class LanguageStringTableCreator extends MapTableCreator {
 
-	public static LanguageStringTableCreator NewLanguageStringInstance(String stepName, String tableName, String attributeName, boolean includeAudTable){
-		LanguageStringTableCreator result = new LanguageStringTableCreator(stepName, tableName, tableName, attributeName, includeAudTable);
+	public static LanguageStringTableCreator NewLanguageStringInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String attributeName, boolean includeAudTable){
+		LanguageStringTableCreator result = new LanguageStringTableCreator(stepList, stepName, tableName, tableName, attributeName, includeAudTable);
 		return result;
 	}
 
 
-	protected LanguageStringTableCreator(String stepName, String firstTableName, String firstTableAlias, String attributeName, boolean includeAudTable) {
-		super(stepName, firstTableName, firstTableAlias, "LanguageString", attributeName, "DefinedTermBase", includeAudTable);
+	protected LanguageStringTableCreator(List<ISchemaUpdaterStep> stepList, String stepName, String firstTableName, String firstTableAlias, String attributeName, boolean includeAudTable) {
+		super(stepList, stepName, firstTableName, firstTableAlias, "LanguageString", attributeName, "DefinedTermBase", includeAudTable);
 	}
 
 //	@Override

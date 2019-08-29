@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.model.media;
 
@@ -52,14 +52,14 @@ public abstract class IdentifiableMediaEntity<S extends IIdentifiableEntityCache
 	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	//TODO
 	@Merge(MergeMode.ADD_CLONE)
-    private Set<Media> media = new HashSet<Media>();
-	
-	
+    private Set<Media> media = new HashSet<>();
+
+
     @Override
 	public Set<Media> getMedia() {
 		return media;
 	}
-	
+
     @Override
 	public void addMedia(Media media) {
 		this.media.add(media);
@@ -68,14 +68,14 @@ public abstract class IdentifiableMediaEntity<S extends IIdentifiableEntityCache
 	public void removeMedia(Media media) {
 		this.media.remove(media);
 	}
-	
+
 //******************** CLONE **********************************************/
-	
+
 	@Override
 	public Object clone() throws CloneNotSupportedException{
 		IdentifiableMediaEntity<?> result = (IdentifiableMediaEntity<?>)super.clone();
 		//Media
-		result.media = new HashSet<Media>();
+		result.media = new HashSet<>();
 		for(Media media : this.media) {
 			result.addMedia(media);
 		}

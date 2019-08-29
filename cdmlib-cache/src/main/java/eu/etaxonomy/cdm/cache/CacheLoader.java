@@ -66,7 +66,7 @@ public class CacheLoader {
         } else if (obj instanceof Collection) {
             return (T) load((Collection<T>)obj, recursive, update);
         } else if(obj instanceof Pager) {
-            load(((Pager)obj).getRecords(), recursive, update);
+            load(((Pager<?>)obj).getRecords(), recursive, update);
             return obj;
         } else if(obj instanceof MergeResult) {
             return (T) load((MergeResult<CdmBase>)obj, recursive, update);
@@ -87,7 +87,7 @@ public class CacheLoader {
         } else if (obj instanceof Collection) {
             return (T) load((Collection<T>)obj, alreadyVisitedEntities, update);
         } else if (obj instanceof MergeResult) {
-            return (T) loadRecursive((MergeResult)obj, alreadyVisitedEntities, update);
+            return (T) loadRecursive((MergeResult<CdmBase>)obj, alreadyVisitedEntities, update);
         }
 
         if (logger.isInfoEnabled()){logger.info("No caching yet for type " + obj.getClass().getName());}
@@ -203,7 +203,7 @@ public class CacheLoader {
         return new MergeResult<>(cdmBase, mergeResult.getNewEntities());
     }
 
-    public MergeResult<CdmBase> loadRecursive(MergeResult<CdmBase> mergeResult,List<Object> alreadyVisitedEntities, boolean update) {
+    public MergeResult<CdmBase> loadRecursive(MergeResult<CdmBase> mergeResult, List<Object> alreadyVisitedEntities, boolean update) {
         CdmBase cdmBase = loadRecursive(mergeResult.getMergedEntity(), alreadyVisitedEntities, update);
         loadRecursive(mergeResult.getNewEntities(), alreadyVisitedEntities, update);
         return new MergeResult<>(cdmBase, mergeResult.getNewEntities());
@@ -423,9 +423,9 @@ public class CacheLoader {
                         }
                     }
                 } else if(o instanceof Map && !checkForIdenticalCdmEntity(alreadyVisitedEntities, o)) {
-                    loadRecursive((Map)o, alreadyVisitedEntities, update);
+                    loadRecursive((Map<?,?>)o, alreadyVisitedEntities, update);
                 } else if(o instanceof Collection && !checkForIdenticalCdmEntity(alreadyVisitedEntities, o)) {
-                    loadRecursive((Collection)o, alreadyVisitedEntities, update);
+                    loadRecursive((Collection<?>)o, alreadyVisitedEntities, update);
                 }
             }
             // we return the original cdm entity in the sub graph because we

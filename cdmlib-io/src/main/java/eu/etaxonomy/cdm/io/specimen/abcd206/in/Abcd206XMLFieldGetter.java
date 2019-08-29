@@ -1,5 +1,6 @@
 package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -77,11 +78,15 @@ public class Abcd206XMLFieldGetter {
                     }
                 }
                 if (!typeFound) {
-                    dataHolder.getStatusList().add(null);
+                    if (dataHolder.getStatusList() != null){
+                        dataHolder.getStatusList().add(null);
+                    }else{
+                        dataHolder.setStatusList(new ArrayList<SpecimenTypeDesignationStatus>());
+                    }
                 }
             }
         } catch (NullPointerException e) {
-            System.err.println(e.getMessage());
+            
             dataHolder.setStatusList(new ArrayList<SpecimenTypeDesignationStatus>());
         }
     }
@@ -572,6 +577,20 @@ public class Abcd206XMLFieldGetter {
             dataHolder.setUnitID(group.item(0).getTextContent());
         } catch (NullPointerException e) {
             dataHolder.setUnitID("");
+        }
+        try {
+            group = root.getElementsByTagName(prefix + "UnitGUID");
+            path = group.item(0).getNodeName();
+            getHierarchie(group.item(0));
+            dataHolder.knownABCDelements.add(path);
+            path = "";
+            try{
+                dataHolder.setPreferredStableUri(URI.create(group.item(0).getTextContent()));
+            }catch(IllegalArgumentException e){
+                dataHolder.setPreferredStableUri(null);
+            }
+        } catch (NullPointerException e) {
+            dataHolder.setPreferredStableUri(null);
         }
     }
 

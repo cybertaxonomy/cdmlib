@@ -11,12 +11,13 @@ package eu.etaxonomy.cdm.persistence.hibernate.permission;
 import java.util.EnumSet;
 import java.util.StringTokenizer;
 
+import eu.etaxonomy.cdm.model.permission.CRUD;
+
 
 /**
  *
  * @author k.luther
  * @author a.kohlbecker
- *
  */
 public class Operation {
 
@@ -62,7 +63,7 @@ public class Operation {
 
     public static boolean isOperation(Object o){
         try {
-        return o instanceof EnumSet<?> && ALL.containsAll((EnumSet<?>)o);
+            return o instanceof EnumSet<?> && ALL.containsAll((EnumSet<?>)o);
         } catch (Throwable e){
             return false;
         }

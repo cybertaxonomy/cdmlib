@@ -79,9 +79,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.FeatureNode;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
 import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermTree;
+import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
@@ -132,9 +132,9 @@ public class SDDDataSet {
     protected List<VersionableEntity> agentData;
 
     @XmlElementWrapper(name = "FeatureData")
-        @XmlElements({
-        @XmlElement(name = "FeatureNode", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = FeatureNode.class),
-        @XmlElement(name = "FeatureTree", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = FeatureTree.class)
+    @XmlElements({
+        @XmlElement(name = "FeatureNode", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = TermNode.class),
+        @XmlElement(name = "FeatureTree", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = TermTree.class)
     })
 //    protected List<VersionableEntity> featureData;
     protected List<VersionableEntity> featureData;

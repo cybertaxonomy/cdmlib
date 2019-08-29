@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.database.update;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -21,8 +23,7 @@ import eu.etaxonomy.cdm.model.common.ITreeNode;
  *
  */
 public class TreeIndexUpdater
-        extends AuditedSchemaUpdaterStepBase
-        implements ISchemaUpdaterStep {
+        extends AuditedSchemaUpdaterStepBase {
 
     private static final Logger logger = Logger.getLogger(TreeIndexUpdater.class);
 
@@ -30,17 +31,17 @@ public class TreeIndexUpdater
 	private final String treeIdColumnName;
 	private final String parentIdColumnName = "parent_id";
 
-	public static final TreeIndexUpdater NewInstance(String stepName, String tableName, String treeIdColumnName, boolean includeAudTable){
-		return new TreeIndexUpdater(stepName, tableName, treeIdColumnName, null, includeAudTable);
+	public static final TreeIndexUpdater NewInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String treeIdColumnName, boolean includeAudTable){
+		return new TreeIndexUpdater(stepList, stepName, tableName, treeIdColumnName, null, includeAudTable);
 	}
 
-	public static final TreeIndexUpdater NewInstance(String stepName, String tableName, String treeIdColumnName, String indexColumnName, boolean includeAudTable){
-		return new TreeIndexUpdater(stepName, tableName, treeIdColumnName, indexColumnName, includeAudTable);
+	public static final TreeIndexUpdater NewInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String treeIdColumnName, String indexColumnName, boolean includeAudTable){
+		return new TreeIndexUpdater(stepList, stepName, tableName, treeIdColumnName, indexColumnName, includeAudTable);
 	}
 
 
-	protected TreeIndexUpdater(String stepName, String tableName, String treeIdColumnName, String indexColumnName, boolean includeAudTable) {
-		super(stepName, tableName, includeAudTable);
+	protected TreeIndexUpdater(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String treeIdColumnName, String indexColumnName, boolean includeAudTable) {
+		super(stepList, stepName, tableName, includeAudTable);
 		this.treeIdColumnName = treeIdColumnName;
 		this.indexColumnName = indexColumnName == null ? this.indexColumnName : indexColumnName;
 	}

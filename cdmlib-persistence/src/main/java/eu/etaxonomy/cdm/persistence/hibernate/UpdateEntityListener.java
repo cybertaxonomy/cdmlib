@@ -17,8 +17,8 @@ import org.joda.time.DateTime;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import eu.etaxonomy.cdm.model.permission.User;
 
 
 public class UpdateEntityListener implements SaveOrUpdateEventListener {

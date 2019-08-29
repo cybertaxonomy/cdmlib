@@ -72,14 +72,14 @@ public interface IXMLEntityFactory {
 	 * @param uuid
 	 * @return
 	 */
-	public Element getFeatureNode(UUID uuid);
+	public Element getTermNode(UUID uuid);
 	
 	/**
 	 * 
 	 * @param uuid
 	 * @return
 	 */
-	public Element getFeatureForFeatureNode(UUID uuid);
+	public Element getFeatureForTermNode(UUID uuid);
 	
 	/***************** Harvesting methods *********************/
 	

@@ -48,6 +48,20 @@ public class TaxonNodeFilter implements Serializable{
 
     private boolean includeUnpublished = false;
 
+    private ORDER orderBy = null;
+
+    public enum ORDER{
+        ID("tn.id"),
+        TREEINDEX("tn.treeIndex");
+        String hql;
+        private ORDER(String hql){
+            this.hql = hql;
+        }
+        public String getHql(){
+            return hql;
+        }
+    }
+
     //********************** FACTORY ***************************/
 
     public static TaxonNodeFilter NewTaxonNodeInstance(UUID taxonNodeUuid){
@@ -362,6 +376,23 @@ public class TaxonNodeFilter implements Serializable{
     public TaxonNodeFilter setIncludeRootNodes(boolean includeRootNodes) {
         this.includeRootNodes = includeRootNodes;
         return this;
+    }
+
+    public boolean hasClassificationFilter(){
+        return getClassificationFilter() != null  //just in case, but should never be null
+                && !getClassificationFilter().isEmpty();
+    }
+
+    public boolean hasSubtreeFilter(){
+        return getSubtreeFilter() != null  //just in case, but should never be null
+                && !getSubtreeFilter().isEmpty();
+    }
+
+    public ORDER getOrderBy() {
+        return orderBy;
+    }
+    public void setOrder(ORDER orderBy) {
+        this.orderBy = orderBy;
     }
 
 }

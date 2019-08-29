@@ -33,18 +33,18 @@ public class ClassBaseTypeUpdater extends AuditedSchemaUpdaterStepBase {
 	protected List<ISchemaUpdaterStep> columnAdderStepList = new ArrayList<>();
 
 
-	public static final ClassBaseTypeUpdater NewVersionableToAnnotatableInstance(String stepName, String tableName, boolean includeAudTable){
-		return new ClassBaseTypeUpdater(stepName, tableName, includeAudTable, true, false);
+	public static final ClassBaseTypeUpdater NewVersionableToAnnotatableInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, boolean includeAudTable){
+		return new ClassBaseTypeUpdater(stepList, stepName, tableName, includeAudTable, true, false);
 	}
-	public static final ClassBaseTypeUpdater NewAnnotatableToIdentifiableInstance(String stepName, String tableName, boolean includeAudTable){
-		return new ClassBaseTypeUpdater(stepName, tableName, includeAudTable, false, true);
+	public static final ClassBaseTypeUpdater NewAnnotatableToIdentifiableInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, boolean includeAudTable){
+		return new ClassBaseTypeUpdater(stepList, stepName, tableName, includeAudTable, false, true);
 	}
-	public static final ClassBaseTypeUpdater NewVersionableToIdentifiableInstance(String stepName, String tableName, boolean includeAudTable){
-		return new ClassBaseTypeUpdater(stepName, tableName, includeAudTable, true, true);
+	public static final ClassBaseTypeUpdater NewVersionableToIdentifiableInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, boolean includeAudTable){
+		return new ClassBaseTypeUpdater(stepList, stepName, tableName, includeAudTable, true, true);
 	}
 
-	protected ClassBaseTypeUpdater(String stepName, String tableName, boolean includeAudit, boolean includeAnnotatable, boolean includeIdentifiable) {
-		super(stepName, tableName, includeAudit);
+	protected ClassBaseTypeUpdater(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, boolean includeAudit, boolean includeAnnotatable, boolean includeIdentifiable) {
+		super(stepList, stepName, tableName, includeAudit);
 		this.includeAnnotatableEntity = includeAnnotatable;
 		this.includeIdentifiableEntity = includeIdentifiable;
 		TableCreator.makeMnTables(mnTablesStepList, tableName, includeAnnotatable, includeIdentifiable);
@@ -61,51 +61,44 @@ public class ClassBaseTypeUpdater extends AuditedSchemaUpdaterStepBase {
 			//lsid authority
 			innerStepName = "-add lsid_authority";
 			newColumnName = "lsid_authority";
-			adder = ColumnAdder.NewStringInstance(stepName + innerStepName, tableName,
+			adder = ColumnAdder.NewStringInstance(columnAdderStepList, stepName + innerStepName, tableName,
 					newColumnName, SchemaUpdaterBase.INCLUDE_AUDIT);
-			this.columnAdderStepList.add(adder);
 
 			//lsid lsid
 			innerStepName = "-add lsid_lsid";
 			newColumnName = "lsid_lsid";
-			adder = ColumnAdder.NewStringInstance(stepName + innerStepName, tableName,
+			adder = ColumnAdder.NewStringInstance(columnAdderStepList, stepName + innerStepName, tableName,
 					newColumnName, SchemaUpdaterBase.INCLUDE_AUDIT);
-			this.columnAdderStepList.add(adder);
 
 			//lsid namespace
 			innerStepName = "-add lsid_namespace";
 			newColumnName = "lsid_namespace";
-			adder = ColumnAdder.NewStringInstance(stepName + innerStepName, tableName,
+			adder = ColumnAdder.NewStringInstance(columnAdderStepList, stepName + innerStepName, tableName,
 					newColumnName, SchemaUpdaterBase.INCLUDE_AUDIT);
-			this.columnAdderStepList.add(adder);
 
 			//lsid object
 			innerStepName = "-add lsid_object";
 			newColumnName = "lsid_object";
-			adder = ColumnAdder.NewStringInstance(stepName + innerStepName, tableName,
+			adder = ColumnAdder.NewStringInstance(columnAdderStepList, stepName + innerStepName, tableName,
 					newColumnName, SchemaUpdaterBase.INCLUDE_AUDIT);
-			this.columnAdderStepList.add(adder);
 
 			//lsid revision
 			innerStepName = "-add lsid_revision";
 			newColumnName = "lsid_revision";
-			adder = ColumnAdder.NewStringInstance(stepName + innerStepName, tableName,
+			adder = ColumnAdder.NewStringInstance(columnAdderStepList, stepName + innerStepName, tableName,
 					newColumnName, SchemaUpdaterBase.INCLUDE_AUDIT);
-			this.columnAdderStepList.add(adder);
 
 			//protected title cache
 			innerStepName = "-add protected title cache";
 			newColumnName = "protectedTitleCache";
-			adder = ColumnAdder.NewBooleanInstance(innerStepName, tableName, newColumnName,
+			adder = ColumnAdder.NewBooleanInstance(columnAdderStepList, innerStepName, tableName, newColumnName,
 					SchemaUpdaterBase.INCLUDE_AUDIT, false);
-			this.columnAdderStepList.add(adder);
 
 			//title cache
 			innerStepName = "-add titleCache";
 			newColumnName = "titleCache";
-			adder = ColumnAdder.NewStringInstance(stepName + innerStepName, tableName,
+			adder = ColumnAdder.NewStringInstance(columnAdderStepList, stepName + innerStepName, tableName,
 					newColumnName, SchemaUpdaterBase.INCLUDE_AUDIT);
-			this.columnAdderStepList.add(adder);
 		}
 	}
 

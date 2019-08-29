@@ -653,7 +653,6 @@ public class Point implements Cloneable, Serializable {
      * Clones <i>this</i> point. This is a shortcut that enables to
      * create a new instance that differs only slightly from <i>this</i> point
      * by modifying only some of the attributes.<BR>
-     * This method overrides the clone method from {@link DerivedUnit DerivedUnit}.
      *
      * @see java.lang.Object#clone()
      */
@@ -670,6 +669,4 @@ public class Point implements Cloneable, Serializable {
             return null;
         }
     }
-
-
 }

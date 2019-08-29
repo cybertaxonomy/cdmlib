@@ -20,7 +20,8 @@ import com.hp.hpl.jena.rdf.model.Resource;
 
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.term.TermTree;
 
 /**
  * @author pplitzner
@@ -48,7 +49,7 @@ public class StructureTreeOwlExport extends CdmExportBase<StructureTreeOwlExport
                 break;
             }
             state.getConfig().getProgressMonitor().worked(1);
-            FeatureTree featureTree = getFeatureTreeService().load(uuid);
+            TermTree<Feature> featureTree = getFeatureTreeService().load(uuid);
             Resource featureTreeResource = OwlExportUtil.createFeatureTreeResource(featureTree, this, state);
         }
 

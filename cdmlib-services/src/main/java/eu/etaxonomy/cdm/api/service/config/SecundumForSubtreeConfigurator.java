@@ -20,15 +20,15 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  *
  * @author a.mueller
  * @since 06.01.2017
- *
  */
 public class SecundumForSubtreeConfigurator extends ForSubtreeConfiguratorBase{
+
+    private static final long serialVersionUID = -5181147074062916234L;
 
     private Reference newSecundum;
     private boolean overwriteExistingAccepted = true;
     private boolean overwriteExistingSynonyms = true;
     private boolean emptySecundumDetail = true;
-
 
 
     /**

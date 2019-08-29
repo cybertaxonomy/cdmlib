@@ -90,7 +90,7 @@ public class EnumeratedTermVoc<T extends IEnumTerm<T>> {
 
 		@Override
 		public Set<T> getGeneralizationOf(boolean recursive) {
-			Set<T> result = new HashSet<T>();
+			Set<T> result = new HashSet<>();
 			result.addAll(this.children);
 			if (recursive){
 				for (T child : this.children){

@@ -72,6 +72,7 @@ import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
 import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
@@ -198,8 +199,7 @@ public class TaxonName
 
 
     /**
-     * The {@link TermType type} of this term. Needs to be the same type in a {@link DefinedTermBase defined term}
-     * and in it's {@link TermVocabulary vocabulary}.
+     * The {@link NomenclaturalCode nomenclatural code} this taxon name is ruled by.
      */
     @XmlAttribute(name ="NameType")
     @Column(name="nameType", length=15)
@@ -2334,7 +2334,7 @@ public class TaxonName
 
     @Override
     public void setNomenclaturalSource(DescriptionElementSource nomenclaturalSource) throws IllegalArgumentException {
-        if (!OriginalSourceType.NomenclaturalReference.equals(nomenclaturalSource.getType()) ){
+        if (nomenclaturalSource != null && !OriginalSourceType.NomenclaturalReference.equals(nomenclaturalSource.getType()) ){
             throw new IllegalArgumentException("Nomenclatural source must be of type " + OriginalSourceType.NomenclaturalReference.getMessage());
         }
         this.nomenclaturalSource = nomenclaturalSource;
@@ -2630,6 +2630,20 @@ public class TaxonName
         SpecimenTypeDesignation specimenTypeDesignation = new SpecimenTypeDesignation(typeSpecimen, status, citation, citationMicroReference, originalNameString, isNotDesignated);
         addTypeDesignation(specimenTypeDesignation, addToAllHomotypicNames);
         return specimenTypeDesignation;
+    }
+
+    @Override
+    public TextualTypeDesignation addTextualTypeDesignation(
+                String text,
+                Language language,
+                boolean isVerbatim,
+                Reference citation,
+                String citationMicroReference,
+                String originalNameString,
+                boolean addToAllHomotypicNames) {
+        TextualTypeDesignation textualTypeDesignation = TextualTypeDesignation.NewInstance(text, language, isVerbatim, citation, citationMicroReference, originalNameString);
+        addTypeDesignation(textualTypeDesignation, addToAllHomotypicNames);
+        return textualTypeDesignation;
     }
 
     //used by merge strategy

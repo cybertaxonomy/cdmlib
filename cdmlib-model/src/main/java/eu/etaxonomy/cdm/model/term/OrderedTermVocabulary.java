@@ -36,10 +36,12 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 @XmlType(name = "OrderedTermVocabulary")
 @XmlRootElement(name = "OrderedTermVocabulary")
 @Entity
-//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.term.TermVocabulary")
 @Audited
-public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabulary<T> {
+public class OrderedTermVocabulary<T extends OrderedTermBase>
+        extends TermVocabulary<T>
+        implements ITermGraph<T, TermNode>    {
+
+
 	private static final long serialVersionUID = 7871741306306371242L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(OrderedTermVocabulary.class);
@@ -102,7 +104,7 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 
 	@Transient
 	@Override
-	public Set<T> getNewTermSet() {
+	protected Set<T> newTermSet() {
 		return new TreeSet<T>();
 	}
 
@@ -297,5 +299,19 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
         }
 		return sortedSet;
 	}
+
+    @Override
+    public Set<TermNode> getTermRelations() {
+        return super.termRelations();
+    }
+    /**
+     * For now protected to avoid type checking etc. Might become
+     * public in future
+     * @param termRelations
+     */
+//    @Override  //not yet public
+    protected void setTermRelations(Set<TermNode> termRelations) {
+        super.termRelations(termRelations);
+    }
 
 }

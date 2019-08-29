@@ -63,7 +63,9 @@ import eu.etaxonomy.cdm.api.service.IRegistrationService;
 import eu.etaxonomy.cdm.api.service.IRightsService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.api.service.ITermNodeService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.ITermTreeService;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.api.service.molecular.IAmplificationService;
@@ -160,6 +162,10 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
 	private IFeatureTreeService featureTreeService;
 	@Autowired
 	private IFeatureNodeService featureNodeService;
+	@Autowired
+	private ITermTreeService termTreeService;
+	@Autowired
+	private ITermNodeService termNodeService;
 	@Autowired
 	private IVocabularyService vocabularyService;
 	@Autowired
@@ -365,9 +371,19 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
 	}
 
 	@Override
+	public ITermTreeService getTermTreeService(){
+	    return termTreeService;
+	}
+
+	@Override
 	public IFeatureNodeService getFeatureNodeService(){
 		return featureNodeService;
 	}
+
+    @Override
+    public ITermNodeService getTermNodeService(){
+        return termNodeService;
+    }
 
 	@Override
     public IPreferenceService getPreferenceService(){
@@ -468,6 +484,13 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
 		txManager.commit(txStatus);
 		return;
 	}
+
+    @Override
+    public void rollbackTransaction(TransactionStatus txStatus){
+        PlatformTransactionManager txManager = getTransactionManager();
+        txManager.rollback(txStatus);
+        return;
+    }
 
 	@Override
 	public void authenticate(String username, String password){

@@ -15,9 +15,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.EnumSet;
-import java.util.HashSet;
 import java.util.Properties;
-import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -35,7 +33,9 @@ import eu.etaxonomy.cdm.model.term.IKeyTerm;
  * @author a.mueller
  * @since 25-02-2019
  */
-public class EnumSetUserType<E extends Enum<E>>  extends AbstractUserType implements UserType, ParameterizedType {
+public class EnumSetUserType<E extends Enum<E>>
+        extends AbstractUserType
+        implements UserType, ParameterizedType {
 
     private static final long serialVersionUID = 1060802925284271666L;
     @SuppressWarnings("unused")
@@ -83,15 +83,18 @@ public class EnumSetUserType<E extends Enum<E>>  extends AbstractUserType implem
 		if(val == null) {
 			return null;
 		} else {
-		    Set<E> result = new HashSet<>();
+		    EnumSet<E> result = EnumSet.noneOf(clazz);
 			String[] splits = val.split(SEP);
 			for (String split:splits){
 			    if (StringUtils.isNotEmpty(split)) {
-                    result.add((E)EnumUserType.getTerm(clazz, split));
+			        E term = (E)EnumUserType.getTerm(clazz, split);
+			        if (term == null){
+			            throw new IllegalArgumentException(split + " is not a valid key value for enumeration " + clazz.getCanonicalName());
+			        }
+                    result.add(term);
                 }
 			}
-			EnumSet<E> enumSet = EnumSet.copyOf(result);
-			return enumSet;
+			return result;
 		}
 	}
 
@@ -120,6 +123,4 @@ public class EnumSetUserType<E extends Enum<E>>  extends AbstractUserType implem
 	public int[] sqlTypes() {
 		return SQL_TYPES;
 	}
-
-
 }

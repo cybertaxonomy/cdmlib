@@ -57,6 +57,10 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 
 
+/**
+ * @author k.luther
+ * @since 2015-Apr
+ */
 @Component
 public class CsvNameExport extends CsvNameExportBase {
     private static final long serialVersionUID = 7289805663701807425L;
@@ -64,12 +68,12 @@ public class CsvNameExport extends CsvNameExportBase {
     private static final Logger logger = Logger.getLogger(CsvNameExport.class);
 
     @Autowired
-    IEditGeoService geoService;
+    private IEditGeoService geoService;
 
-    HashMap<UUID, HashMap<String,String>> familyMap = new HashMap();
-    HashMap<UUID, HashMap<String,String>> genusMap = new HashMap();
+    private HashMap<UUID, HashMap<String,String>> familyMap = new HashMap<>();
+    private HashMap<UUID, HashMap<String,String>> genusMap = new HashMap<>();
 
-    List<HashMap<String,String>> nameRecords = new ArrayList<>();
+    private List<HashMap<String,String>> nameRecords = new ArrayList<>();
 
     public CsvNameExport() {
         super();
@@ -79,7 +83,6 @@ public class CsvNameExport extends CsvNameExportBase {
     @Override
     protected void doInvoke(CsvNameExportState state) {
         CsvNameExportConfigurator config = state.getConfig();
-
 
         PrintWriter writer = null;
 
@@ -99,7 +102,6 @@ public class CsvNameExport extends CsvNameExportBase {
                 break;
             default:
                 break;
-
             }
 
             List<HashMap<String, String>> result;
@@ -147,7 +149,7 @@ public class CsvNameExport extends CsvNameExportBase {
     @Override
     public long countSteps(CsvNameExportState state) {
         TaxonNodeFilter filter = state.getConfig().getTaxonNodeFilter();
-        return taxonNodeService.count(filter);
+        return getTaxonNodeService().count(filter);
     }
 
 
@@ -181,7 +183,7 @@ public class CsvNameExport extends CsvNameExportBase {
 //            rootNode = classification.getRootNode();
 //        }
 //        rootNode = getTaxonNodeService().load(rootNode.getUuid(), propertyPaths);
-//        Set<UUID> childrenUuids = new HashSet<UUID>();
+//        Set<UUID> childrenUuids = new HashSet<>();
 //
 //
 //        rootNode = CdmBase.deproxy(rootNode);
@@ -190,19 +192,19 @@ public class CsvNameExport extends CsvNameExportBase {
 //            child = CdmBase.deproxy(child);
 //            childrenUuids.add(child.getUuid());
 //        }
-//        Set<UUID> parentsNodesUUID = new HashSet<UUID>(childrenUuids);
+//        Set<UUID> parentsNodesUUID = new HashSet<>(childrenUuids);
 //        childrenUuids.clear();
-//        List<TaxonNode> childrenNodes = new ArrayList<TaxonNode>();
+//        List<TaxonNode> childrenNodes = new ArrayList<>();
 //
 //        findChildren(state, childrenUuids, parentsNodesUUID);
 
         IProgressMonitor monitor = state.getConfig().getProgressMonitor();
-         @SuppressWarnings("unchecked")
+        @SuppressWarnings("unchecked")
         TaxonNodeOutStreamPartitioner<XmlExportState> partitioner
           = TaxonNodeOutStreamPartitioner.NewInstance(
                 this, state, state.getConfig().getTaxonNodeFilter(),
                 100, monitor, null);
-
+        partitioner.setReadOnly(false);
 
             monitor.subTask("Start partitioning");
 //            List<HashMap<String,String>> nameRecords = new ArrayList<>();
@@ -458,7 +460,7 @@ public class CsvNameExport extends CsvNameExportBase {
             }
         }
         if (state.getConfig().isCondensedDistribution()){
-            List<Language> langs = new ArrayList<Language>();
+            List<Language> langs = new ArrayList<>();
             langs.add(Language.ENGLISH());
 
             CondensedDistribution conDis = geoService.getCondensedDistribution(distributions, true, null,null,CondensedDistributionRecipe.FloraCuba, langs );

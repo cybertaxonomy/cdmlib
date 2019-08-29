@@ -90,8 +90,8 @@ public class MarkerType extends DefinedTermBase<MarkerType> {
 
 	/**
 	 * A flag indicating if markers of this type are user content or technical information
-	 * to be used by applications only. E.g. a FeatureTree may have a marker that defines
-	 * the role of this FeatureTree ("for ordering") whereas a {@link eu.etaxonomy.cdm.model.taxon.Taxon taxon}
+	 * to be used by applications only. E.g. a TermTree may have a marker that defines
+	 * the role of this TermTree ("for ordering") whereas a {@link eu.etaxonomy.cdm.model.taxon.Taxon taxon}
 	 * may have a user defined marker "completed" that indicates that this taxon does not
 	 * need further investigation. The earlier will be flagged isTechnical=true whereas
 	 * the later will be flagged as isTechnical=false

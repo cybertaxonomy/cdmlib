@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.CaseType;
+import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdateResult;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -41,12 +42,12 @@ public class TermVocabularyRepresentationUpdater
 
 // **************************** STATIC METHODS ********************************/
 
-	public static final TermVocabularyRepresentationUpdater NewInstance(){
-		return new TermVocabularyRepresentationUpdater(stepName);
+	public static final TermVocabularyRepresentationUpdater NewInstance(List<ISchemaUpdaterStep> stepList){
+		return new TermVocabularyRepresentationUpdater(stepList, stepName);
 	}
 
-	protected TermVocabularyRepresentationUpdater(String stepName) {
-		super(stepName);
+	protected TermVocabularyRepresentationUpdater(List<ISchemaUpdaterStep> stepList, String stepName) {
+		super(stepList, stepName);
 	}
 
 	@Override

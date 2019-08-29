@@ -18,6 +18,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.ContextStartedEvent;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -32,13 +33,13 @@ import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.NullProgressMonitor;
 import eu.etaxonomy.cdm.config.Configuration;
-import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
-import eu.etaxonomy.cdm.model.common.Group;
-import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
+import eu.etaxonomy.cdm.model.permission.CRUD;
+import eu.etaxonomy.cdm.model.permission.GrantedAuthorityImpl;
+import eu.etaxonomy.cdm.model.permission.Group;
+import eu.etaxonomy.cdm.model.permission.PermissionClass;
+import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionClass;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.Role;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -81,34 +82,34 @@ public class FirstDataInserter extends AbstractDataInserter {
     public static final Logger logger = Logger.getLogger(FirstDataInserter.class);
 
     public static final String[] EDITOR_GROUP_AUTHORITIES = new String[]{
-            new CdmAuthority(CdmPermissionClass.REFERENCE, CREATE_READ).toString(),
-            new CdmAuthority(CdmPermissionClass.TAXONNAME, CREATE_READ_UPDATE).toString(),
-            new CdmAuthority(CdmPermissionClass.TEAMORPERSONBASE, CREATE_READ).toString(),
-            new CdmAuthority(CdmPermissionClass.TAXONBASE, CREATE_READ_UPDATE_DELETE).toString(),
-            new CdmAuthority(CdmPermissionClass.DESCRIPTIONBASE, CREATE_READ_UPDATE_DELETE).toString(),
-            new CdmAuthority(CdmPermissionClass.DESCRIPTIONELEMENTBASE, CREATE_READ_UPDATE_DELETE).toString(),
-            new CdmAuthority(CdmPermissionClass.SPECIMENOROBSERVATIONBASE, CREATE_READ_UPDATE_DELETE).toString(),
-            new CdmAuthority(CdmPermissionClass.COLLECTION, CREATE_READ_UPDATE_DELETE).toString(),
+            new CdmAuthority(PermissionClass.REFERENCE, CREATE_READ).toString(),
+            new CdmAuthority(PermissionClass.TAXONNAME, CREATE_READ_UPDATE).toString(),
+            new CdmAuthority(PermissionClass.TEAMORPERSONBASE, CREATE_READ).toString(),
+            new CdmAuthority(PermissionClass.TAXONBASE, CREATE_READ_UPDATE_DELETE).toString(),
+            new CdmAuthority(PermissionClass.DESCRIPTIONBASE, CREATE_READ_UPDATE_DELETE).toString(),
+            new CdmAuthority(PermissionClass.DESCRIPTIONELEMENTBASE, CREATE_READ_UPDATE_DELETE).toString(),
+            new CdmAuthority(PermissionClass.SPECIMENOROBSERVATIONBASE, CREATE_READ_UPDATE_DELETE).toString(),
+            new CdmAuthority(PermissionClass.COLLECTION, CREATE_READ_UPDATE_DELETE).toString(),
     };
 
     /**
      * This group will in future replace the group Editor, see issue #7150
      */
     public static final String[] EDITOR_GROUP_EXTENDED_CREATE_GROUP_AUTHORITIES = new String[]{
-            new CdmAuthority(CdmPermissionClass.REFERENCE, CREATE_READ).toString(),
-            new CdmAuthority(CdmPermissionClass.TAXONNAME, CREATE_READ).toString(),
-            new CdmAuthority(CdmPermissionClass.TEAMORPERSONBASE, CREATE_READ).toString(),
-            new CdmAuthority(CdmPermissionClass.TAXONBASE, CREATE_READ).toString(),
-            new CdmAuthority(CdmPermissionClass.DESCRIPTIONBASE, CREATE_READ).toString(),
-            new CdmAuthority(CdmPermissionClass.DESCRIPTIONELEMENTBASE, CREATE_READ).toString(),
-            new CdmAuthority(CdmPermissionClass.SPECIMENOROBSERVATIONBASE, CREATE_READ).toString(),
-            new CdmAuthority(CdmPermissionClass.COLLECTION, CREATE_READ).toString(),
+            new CdmAuthority(PermissionClass.REFERENCE, CREATE_READ).toString(),
+            new CdmAuthority(PermissionClass.TAXONNAME, CREATE_READ).toString(),
+            new CdmAuthority(PermissionClass.TEAMORPERSONBASE, CREATE_READ).toString(),
+            new CdmAuthority(PermissionClass.TAXONBASE, CREATE_READ).toString(),
+            new CdmAuthority(PermissionClass.DESCRIPTIONBASE, CREATE_READ).toString(),
+            new CdmAuthority(PermissionClass.DESCRIPTIONELEMENTBASE, CREATE_READ).toString(),
+            new CdmAuthority(PermissionClass.SPECIMENOROBSERVATIONBASE, CREATE_READ).toString(),
+            new CdmAuthority(PermissionClass.COLLECTION, CREATE_READ).toString(),
     };
 
     public static final String[] PROJECT_MANAGER_GROUP_AUTHORITIES = new String[]{
-            new CdmAuthority(CdmPermissionClass.REFERENCE, UPDATE_DELETE).toString(),
-            new CdmAuthority(CdmPermissionClass.TAXONNAME, EnumSet.of(CRUD.DELETE)).toString(),
-            new CdmAuthority(CdmPermissionClass.TEAMORPERSONBASE, UPDATE_DELETE).toString(),
+            new CdmAuthority(PermissionClass.REFERENCE, UPDATE_DELETE).toString(),
+            new CdmAuthority(PermissionClass.TAXONNAME, EnumSet.of(CRUD.DELETE)).toString(),
+            new CdmAuthority(PermissionClass.TEAMORPERSONBASE, UPDATE_DELETE).toString(),
             Role.ROLE_PROJECT_MANAGER.toString(),
     };
 
@@ -311,7 +312,7 @@ public class FirstDataInserter extends AbstractDataInserter {
     }
 
     private void checkAdminRole(User admin) {
-        Set<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
+        Set<GrantedAuthority> authorities = new HashSet<>();
 
 
         authorities = (Set<GrantedAuthority>) admin.getAuthorities();

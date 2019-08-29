@@ -14,14 +14,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.model.term.FeatureNode;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermNode;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
-public interface IFeatureTreeService extends IIdentifiableEntityService<FeatureTree> {
+/**
+* @deprecated use {@link ITermTreeService} instead
+*/
+@Deprecated
+public interface IFeatureTreeService extends IIdentifiableEntityService<TermTree> {
 
-	public List<FeatureNode> getFeatureNodesAll();
+	/**
+	 * @deprecated use {@link ITermTreeService#list(Class, Integer, Integer, List, List)} instead
+	 */
+	@Deprecated
+    public List<TermNode> getFeatureNodesAll();
 
 	/**
 	 * Loads a feature tree including all of its nodes (all the way down to the tips of the tree).
@@ -32,14 +40,14 @@ public interface IFeatureTreeService extends IIdentifiableEntityService<FeatureT
 	 * to initialize (e.g. feature).
 	 *
 	 */
-	public FeatureTree loadWithNodes(UUID uuid, List<String> propertyPaths, List<String> nodePaths);
+	public TermTree loadWithNodes(UUID uuid, List<String> propertyPaths, List<String> nodePaths);
 
-	public Map<UUID, FeatureNode> saveFeatureNodesAll(Collection<FeatureNode> featureNodeCollection);
+	public Map<UUID, TermNode> saveFeatureNodesAll(Collection<TermNode> featureNodeCollection);
 
-	public Map<UUID, FeatureNode> saveOrUpdateFeatureNodesAll(Collection<FeatureNode> featureNodeCollection);
+	public Map<UUID, TermNode> saveOrUpdateFeatureNodesAll(Collection<TermNode> featureNodeCollection);
 
-	public FeatureTree createTransientDefaultFeatureTree();
+	public TermTree createTransientDefaultFeatureTree();
 
-	public <S extends FeatureTree> List<UuidAndTitleCache<S>> getUuidAndTitleCacheByTermType(Class<S> clazz, TermType termType, Integer limit,
+	public <S extends TermTree> List<UuidAndTitleCache<S>> getUuidAndTitleCacheByTermType(Class<S> clazz, TermType termType, Integer limit,
             String pattern);
 }

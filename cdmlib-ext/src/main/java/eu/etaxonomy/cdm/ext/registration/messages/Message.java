@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.ext.registration.messages;
 
 import java.util.Date;
 
-import eu.etaxonomy.cdm.model.common.User;
+import eu.etaxonomy.cdm.model.permission.User;
 
 /**
  * @author a.kohlbecker

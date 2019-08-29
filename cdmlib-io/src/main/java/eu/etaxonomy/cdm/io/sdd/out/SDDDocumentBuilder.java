@@ -53,6 +53,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.FeatureState;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
@@ -78,10 +79,10 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.FeatureNode;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermBase;
+import eu.etaxonomy.cdm.model.term.TermNode;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
@@ -89,9 +90,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
  *
  * @author h.fradin
  * @since 10.12.2008
- * @version 1.0
  */
-
 public class SDDDocumentBuilder {
 
 	private final DocumentImpl document;
@@ -103,7 +102,6 @@ public class SDDDocumentBuilder {
 	private final Map<Person, String> agents = new HashMap<>();
 	private final Map<TaxonName, String> taxonNames = new HashMap<>();
 	private final Map<Feature, String> characters = new HashMap<>();
-	private final Map<FeatureNode, String> featureNodes = new HashMap<>();
 	private final Map<Feature, String> descriptiveConcepts = new HashMap<>();
 	private final Map<TaxonDescription, String> codedDescriptions = new HashMap<>();
 	private final Map<Media, String> medias = new HashMap<>();
@@ -115,7 +113,6 @@ public class SDDDocumentBuilder {
 	private final Map<NamedArea, String> namedAreas = new HashMap<>();
 	private final Map<DerivedUnit, String> specimens = new HashMap<>();
 
-	private final Map<VersionableEntity, String> features = new HashMap<>();
 	private int agentsCount = 0;
 	private int articlesCount = 0;
 	private int codedDescriptionsCount = 0;
@@ -201,9 +198,7 @@ public class SDDDocumentBuilder {
 	private final String NEWLINE = System.getProperty("line.separator");
 
 	public SDDDocumentBuilder() throws SAXException, IOException {
-
 		document = new DocumentImpl();
-
 	}
 
 	public void marshal(SDDDataSet cdmSource, File sddDestination)
@@ -1189,8 +1184,8 @@ public class SDDDocumentBuilder {
 
 			for (int i = 0; i < cdmSource.getFeatureData().size(); i++) {
 				VersionableEntity featu = cdmSource.getFeatureData().get(i);
-				if (featu instanceof FeatureTree) {
-					FeatureTree ft = (FeatureTree) featu;
+				if (featu instanceof TermTree) {
+					TermTree ft = (TermTree) featu;
 					ElementImpl elChartree = new ElementImpl(document,
 							CHARACTER_TREE);
 					chartreeCount = buildReference(featu, featuretrees, ID,
@@ -1199,10 +1194,10 @@ public class SDDDocumentBuilder {
 					elChartrees.appendChild(elChartree);
 					ElementImpl elNodes = new ElementImpl(document, NODES);
 					elChartree.appendChild(elNodes);
-					List<FeatureNode> roots = ft.getRootChildren();
-					for (Iterator<FeatureNode> fn = roots.iterator(); fn
+					List<TermNode> roots = ft.getRootChildren();
+					for (Iterator<TermNode> fn = roots.iterator(); fn
 							.hasNext();) {
-						FeatureNode featureNode = fn.next();
+						TermNode featureNode = fn.next();
 						buildBranches(featureNode, elNodes, true);
 					}
 				}
@@ -1272,14 +1267,14 @@ public class SDDDocumentBuilder {
 		}
 	}
 
-	public void buildBranches(FeatureNode<Feature> parent, ElementImpl element,
+	public void buildBranches(TermNode<Feature> parent, ElementImpl element,
 			boolean isRoot) {
-		List<FeatureNode<Feature>> children = parent.getChildNodes();
+		List<TermNode<Feature>> children = parent.getChildNodes();
 		if (!parent.isLeaf()) {
 			ElementImpl elCharNode = new ElementImpl(document, NODE);
 			charnodeCount = buildReference(parent, featuretrees, ID,
 					elCharNode, "cn", charnodeCount);
-			FeatureNode grandparent = parent.getParent();
+			TermNode grandparent = parent.getParent();
 			if ((grandparent != null) && (!isRoot)) {
 				ElementImpl elParent = new ElementImpl(document, PARENT);
 				charnodeCount = buildReference(grandparent, featuretrees, REF,
@@ -1293,14 +1288,14 @@ public class SDDDocumentBuilder {
 					REF, elDescriptiveConcept, "dc", descriptiveConceptCount);
 			elCharNode.appendChild(elDescriptiveConcept);
 			element.appendChild(elCharNode);
-			for (Iterator<FeatureNode<Feature>> ifn = children.iterator(); ifn.hasNext();) {
-				FeatureNode fn = ifn.next();
+			for (Iterator<TermNode<Feature>> ifn = children.iterator(); ifn.hasNext();) {
+				TermNode fn = ifn.next();
 				buildBranches(fn, element, false);
 			}
 		} else {
 			ElementImpl elCharNode = new ElementImpl(document, CHAR_NODE);
 			ElementImpl elParent = new ElementImpl(document, PARENT);
-			FeatureNode grandparent = parent.getParent();
+			TermNode grandparent = parent.getParent();
 			charnodeCount = buildReference(grandparent, featuretrees, REF,
 					elParent, "cn", charnodeCount);
 			charnodeCount = buildReference(parent, featuretrees, ID,
@@ -1311,10 +1306,10 @@ public class SDDDocumentBuilder {
 			ElementImpl elDependecyRules = new ElementImpl(document,
 					"DependecyRules");
 			if (parent.getInapplicableIf() != null) {
-				Set<State> innaplicableIf = parent.getInapplicableIf();
-				ElementImpl elInnaplicableIf = new ElementImpl(document,
-						"InapplicableIf");
-				for (State state : innaplicableIf) {
+				Set<FeatureState> innaplicableIf = parent.getInapplicableIf();
+				ElementImpl elInnaplicableIf = new ElementImpl(document, "InapplicableIf");
+				for (FeatureState featureState : innaplicableIf) {
+				    State state = featureState.getState();
 					ElementImpl elState = new ElementImpl(document, STATE);
 					buildReference(state, states, REF, elState, "State",
 							statesCount);
@@ -1324,12 +1319,13 @@ public class SDDDocumentBuilder {
 				dependencies = true;
 			}
 			if (parent.getOnlyApplicableIf() != null) {
-				Set<State> onlyApplicableIf = parent.getOnlyApplicableIf();
+				Set<FeatureState> onlyApplicableIf = parent.getOnlyApplicableIf();
 				ElementImpl elOnlyApplicableIf = new ElementImpl(document,
 						"OnlyApplicableIf");
-				for (State state : onlyApplicableIf) {
+				for (FeatureState featureState : onlyApplicableIf) {
 					ElementImpl elState = new ElementImpl(document, STATE);
-					buildReference(state, states, REF, elState, "State",
+					State state = featureState.getState();
+                    buildReference(state, states, REF, elState, "State",
 							statesCount);
 					elOnlyApplicableIf.appendChild(elState);
 				}

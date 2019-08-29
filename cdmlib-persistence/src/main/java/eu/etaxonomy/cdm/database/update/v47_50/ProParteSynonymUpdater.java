@@ -44,15 +44,16 @@ public class ProParteSynonymUpdater extends SchemaUpdaterStepBase {
 // **************************** STATIC METHODS ********************************/
 
 	public static final ProParteSynonymUpdater NewInstance(List<ISchemaUpdaterStep> stepList){
-		ProParteSynonymUpdater result = new ProParteSynonymUpdater();
-		stepList.add(result);
+		ProParteSynonymUpdater result = new ProParteSynonymUpdater(stepList);
 
 		return result;
 	}
 
-	private ProParteSynonymUpdater() {
-		super(stepName);
+	private ProParteSynonymUpdater(List<ISchemaUpdaterStep> stepList) {
+		super(stepList, stepName);
 	}
+
+//*************************** END *************************/
 
     @Override
     public void invoke(ICdmDataSource datasource, IProgressMonitor monitor,
@@ -126,7 +127,7 @@ public class ProParteSynonymUpdater extends SchemaUpdaterStepBase {
             UUID uuidVocabulary = UUID.fromString("15db0cf7-7afc-4a86-a7d4-221c73b0c9ac");
             UUID uuidLanguage = Language.uuidEnglish;
             boolean isOrdered = true;
-            ISchemaUpdaterStep step = SingleTermUpdater.NewReverseInstance(stepName, TermType.TaxonRelationshipType,
+            ISchemaUpdaterStep step = SingleTermUpdater.NewReverseInstance(null, stepName, TermType.TaxonRelationshipType,
                     uuidTerm, idInVocabulary, symbol,
                     description, label, abbrev, reverseDescription, reverseLabel, reverseAbbrev,
                     dtype, uuidVocabulary, uuidLanguage, isOrdered, uuidAfterTerm);

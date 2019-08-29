@@ -48,7 +48,8 @@ import eu.etaxonomy.cdm.model.agent.Person;
 })
 @Entity
 @Audited
-public class Annotation extends LanguageStringBase implements Cloneable, IIntextReferencable {
+public class Annotation extends LanguageStringBase implements IIntextReferencable {
+
 	private static final long serialVersionUID = -4484677078599520233L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Annotation.class);
@@ -78,6 +79,7 @@ public class Annotation extends LanguageStringBase implements Cloneable, IIntext
 		return new Annotation(text, Language.DEFAULT());
 	}
 
+// ***************************** ATTRIBUTES **************************/
 
     //TODO do we need to add it to JAXB? #4706
     @XmlElementWrapper(name = "IntextReferences", nillable = true)

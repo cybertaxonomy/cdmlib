@@ -29,6 +29,7 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.config.IncludedTaxonConfiguration;
+import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
 import eu.etaxonomy.cdm.api.service.config.NameDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
 import eu.etaxonomy.cdm.api.service.config.SynonymDeletionConfigurator;
@@ -250,20 +251,25 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 			e.printStackTrace();
 		}
 
-        service.swapSynonymAndAcceptedTaxon(synonym, taxWithSyn);
+        UpdateResult result = service.swapSynonymAndAcceptedTaxon(synonym, taxWithSyn, true);
 
         // find forces flush
-        Taxon tax = (Taxon)service.find(uuidTaxWithSyn);
-        tax.removeSynonym(synonym);
-        tax.addHomotypicSynonym(synonym);
-        service.saveOrUpdate(tax);
-        TaxonBase<?> syn = service.find(uuidSyn);
+        Taxon tax = (Taxon)service.find(result.getCdmEntity().getUuid());
+        MatchingTaxonConfigurator configurator = MatchingTaxonConfigurator.NewInstance();
+        configurator.setTaxonNameTitle("Test3");
+        List<TaxonBase> synList = service.findTaxaByName(configurator);
+        HomotypicalGroup groupTest2 = null;
+        if (synList.size() > 0){
+            TaxonBase syn = synList.get(0);
+            groupTest2 = syn.getHomotypicGroup();
+            assertTrue(tax.getSynonyms().contains(syn));
+        }else{
+            Assert.fail("There should be a synonym with name Test3");
+        }
 
         assertTrue(tax.getName().getTitleCache().equals("Test2"));
 
-        HomotypicalGroup groupTest = tax.getHomotypicGroup();
-        HomotypicalGroup groupTest2 = syn.getHomotypicGroup();
-        assertEquals(groupTest, groupTest2);
+
 
     }
 
@@ -1111,7 +1117,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet("../../database/BlankDataSet.xml")
+    @DataSet("../../database/ClearDBDataSet.xml")
     public final void testTaxonDeletionConfig(){
         final String[]tableNames = {}
 //                "Classification", "Classification_AUD",
@@ -1229,7 +1235,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
 
     @Test
-    @DataSet(value="../../database/BlankDataSet.xml")
+    @DataSet(value="../../database/ClearDBDataSet.xml")
     public final void testDeleteTaxon(){
 
         //create a small classification
@@ -1285,7 +1291,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(value="../../database/BlankDataSet.xml")
+    @DataSet(value="../../database/ClearDBDataSet.xml")
     public final void testDeleteTaxonWithAnnotations(){
 
         //create a small classification
@@ -1342,7 +1348,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(value="../../database/BlankDataSet.xml")
+    @DataSet(value="../../database/ClearDBDataSet.xml")
     public final void testDeleteTaxonUsedInTaxonRelation(){
 
         //create a small classification
@@ -1404,7 +1410,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="../../database/BlankDataSet.xml")
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="../../database/ClearDBDataSet.xml")
     public final void testDeleteTaxonDeleteSynonymRelations(){
 
     	 final String[]tableNames = {
@@ -1444,7 +1450,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
 
     @Test
-    @DataSet(value="../../database/BlankDataSet.xml")
+    @DataSet(value="../../database/ClearDBDataSet.xml")
     public final void testDeleteTaxonNameUsedInOtherContext(){
 
         //create a small classification
@@ -1477,7 +1483,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(value="../../database/BlankDataSet.xml")
+    @DataSet(value="../../database/ClearDBDataSet.xml")
     public final void testDeleteTaxonNameUsedInTwoClassificationsDeleteAllNodes(){
         commitAndStartNewTransaction(null);
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator();
@@ -1514,7 +1520,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(value="../../database/BlankDataSet.xml")
+    @DataSet(value="../../database/ClearDBDataSet.xml")
     public final void testDeleteTaxonNameUsedInTwoClassificationsDoNotDeleteAllNodes(){
         // delete the taxon only in second classification, this should delete only the nodes, not the taxa
         Taxon testTaxon = getTestTaxon();
@@ -1552,7 +1558,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(value="../../database/BlankDataSet.xml")
+    @DataSet(value="../../database/ClearDBDataSet.xml")
     public final void testTaxonNodeDeletionConfiguratorMoveToParent(){
         //test childHandling MOVE_TO_PARENT:
         Taxon testTaxon = getTestTaxon();
@@ -1590,7 +1596,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(value="../../database/BlankDataSet.xml")
+    @DataSet(value="../../database/ClearDBDataSet.xml")
     public final void testTaxonNodeDeletionConfiguratorDeleteChildren(){
         //test childHandling DELETE:
         Taxon testTaxon = getTestTaxon();
@@ -1630,7 +1636,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
 
     @Test
-    @DataSet(value="../../database/BlankDataSet.xml")
+    @DataSet(value="../../database/ClearDBDataSet.xml")
     public final void testTaxonDeletionConfiguratorDeleteMarker(){
         //test childHandling DELETE:
         Taxon testTaxon = getTestTaxon();
@@ -1669,7 +1675,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
 
     @Test
-    @DataSet(value="../../database/BlankDataSet.xml")
+    @DataSet(value="../../database/ClearDBDataSet.xml")
     public final void testTaxonDeletionConfiguratorTaxonWithMisappliedName(){
 
         Taxon testTaxon = getTestTaxon();
@@ -1698,7 +1704,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
     }
     @Test
-    @DataSet(value="../../database/BlankDataSet.xml")
+    @DataSet(value="../../database/ClearDBDataSet.xml")
     public final void testTaxonDeletionConfiguratorTaxonWithMisappliedNameDoNotDelete(){
 
         Taxon testTaxon = getTestTaxon();
@@ -1728,7 +1734,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(value="../../database/BlankDataSet.xml")
+    @DataSet(value="../../database/ClearDBDataSet.xml")
     public final void testTaxonDeletionConfiguratorTaxonMisappliedName(){
 
         Taxon testTaxon = getTestTaxon();
@@ -1765,7 +1771,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(value="../../database/BlankDataSet.xml")
+    @DataSet(value="../../database/ClearDBDataSet.xml")
     public final void testLlistIncludedTaxa(){
     	Reference citation = null;
     	String microcitation = null;

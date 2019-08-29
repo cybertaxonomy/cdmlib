@@ -88,7 +88,7 @@ public abstract class AbstractIdentifiableListController <T extends Identifiable
             )
              throws IOException {
 
-        logger.info("doFind : " + request.getRequestURI() + "?" + request.getQueryString() );
+        logger.info("doFind() : " + requestPathAndQuery(request) );
 
         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
         pagerParams.normalizeAndValidate(response);
@@ -135,7 +135,7 @@ public abstract class AbstractIdentifiableListController <T extends Identifiable
     		definedTerm = CdmBase.deproxy(termService.find(identifierTypeUUID), DefinedTerm.class);
     	}
 
-        logger.info("doFind : " + request.getRequestURI() + "?" + request.getQueryString() );
+        logger.info("doFindByIdentifier() : " + requestPathAndQuery(request) );
 
         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber).normalizeAndValidate(response);
 
@@ -179,7 +179,7 @@ public abstract class AbstractIdentifiableListController <T extends Identifiable
             }
         }
 
-        if (logger.isDebugEnabled()){logger.info("doFindByMarker [subtreeUuid]  : " + request.getRequestURI() + "?" + request.getQueryString() );}
+        logger.info("doFindByMarker() " + requestPathAndQuery(request));
 
         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber).normalizeAndValidate(response);
 
@@ -207,7 +207,7 @@ public abstract class AbstractIdentifiableListController <T extends Identifiable
             )
             throws IOException {
 
-        if (logger.isDebugEnabled()){logger.info("doGetUuidAndTitleCache  : " + request.getRequestURI() + "?" + request.getQueryString() );}
+        logger.info("doGetUuidAndTitleCache() " + requestPathAndQuery(request));
 
         return service.getUuidAndTitleCache(type, limit, pattern);
     }

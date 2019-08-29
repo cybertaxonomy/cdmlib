@@ -64,7 +64,6 @@ public class SchemaUpdater_47_50 extends SchemaUpdaterBase {
 
 		String stepName;
 		String tableName;
-		ISchemaUpdaterStep step;
 		String newColumnName;
 		String query;
 
@@ -75,30 +74,26 @@ public class SchemaUpdater_47_50 extends SchemaUpdaterBase {
 		query = "UPDATE @@LSIDAuthority_namespaces@@ "
 		        + " SET namespaces_element = 'eu.etaxonomy.cdm.model.name.TaxonName' "
 		        + " WHERE namespaces_element = 'eu.etaxonomy.cdm.model.name.TaxonNameBase'";
-		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query, -99);
-		stepList.add(step);
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, -99);
 
 		//#6699 delete term version
 		stepName = "Delete term version";
 		query = "DELETE FROM @@CdmMetaData@@ WHERE propertyName = 'TERM_VERSION'";
-		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query, -99);
-        stepList.add(step);
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, -99);
 
         //#6581 make nomenclatural reference and OriginalSource
         stepName = "Make nomenclatural reference and OriginalSource";
         tableName = "TaxonName";
         newColumnName = "nomenclaturalSource_id";
         String referencedTable = "OriginalSourceBase";
-        step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
-        stepList.add(step);
+        ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
 
 		//#7109 nom. valid => nom. val.
 		stepName = "nom valid => nom. val. (abbrevLabel)";
 		UUID uuidTerm = UUID.fromString("bd036217-5499-4ccd-8f4c-72e06158db93");
 		UUID uuidLanguage = UUID.fromString("160a5b6c-87f5-4422-9bda-78cd404c179e");
-		step = TermRepresentationUpdater.NewInstance(stepName, uuidTerm,
+		TermRepresentationUpdater.NewInstance(stepList, stepName, uuidTerm,
 		        null, null, "nom. val.", uuidLanguage);
-		stepList.add(step);
 
 		//... idInVoc
 		stepName = "nom valid => nom. val. (idInVocabulary)";
@@ -106,8 +101,7 @@ public class SchemaUpdater_47_50 extends SchemaUpdaterBase {
                 + " SET idInVocabulary = 'nom. val.' "
                 + " WHERE uuid = '" + uuidTerm + "'";
 		tableName = "DefinedTermBase";
-		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, tableName, -99);
-		stepList.add(step);
+		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName, -99);
 
 		//#7074 change type for Media.mediaCreated
 		changeTypeMediaCreated(stepList);
@@ -116,24 +110,21 @@ public class SchemaUpdater_47_50 extends SchemaUpdaterBase {
 	    stepName = "Add Reference.datePublished_verbatimDate";
 	    tableName = "Reference";
 	    newColumnName = "datePublished_verbatimDate";
-	    step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT);
-	    stepList.add(step);
+	    ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT);
 
 		//#7096 Add second symbol attribute to DefinedTermBase
 		stepName = "Add second symbol to DefinedTermBase";
 		tableName = "DefinedTermBase";
 		newColumnName = "symbol2";
 		int length = 30;
-		step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
-		stepList.add(step);
+		ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
 
 		//#6879 Update uuid and name for admin user group
 	    stepName = "Update uuid and name for admin user group";
         query = "UPDATE @@PermissionGroup@@ "
                 + " SET uuid='1739df71-bf73-4dc6-8320-aaaf72cb555f', name='Admin' "
                 + " WHERE  name='admin' or name='Admin'";
-        step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query, -99);
-        stepList.add(step);
+        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, -99);
 
         //#7405 Rename WorkingSet to DescriptiveDataSet
         String oldTableName = "WorkingSet";
@@ -162,8 +153,7 @@ public class SchemaUpdater_47_50 extends SchemaUpdaterBase {
         //#2335 Make DescriptiveDataSet IdentifiableEntity
         stepName = "Make DescriptiveDataSet IdentifiableEntity";
         tableName = "DescriptiveDataSet";
-        step = ClassBaseTypeUpdater.NewAnnotatableToIdentifiableInstance(stepName, tableName, INCLUDE_AUDIT);
-        stepList.add(step);
+        ClassBaseTypeUpdater.NewAnnotatableToIdentifiableInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
 
         //TODO add titleCache updater, but maybe not necessary as real data does not really exist
         //except for Campanula test data, and it is easy to update via TaxEditor cache updater
@@ -174,9 +164,7 @@ public class SchemaUpdater_47_50 extends SchemaUpdaterBase {
         query = "UPDATE @@FeatureTree@@ "
                 + " SET protectedTitleCache = @TRUE@ ";
         tableName = "FeatureTree";
-        step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, tableName, -99);
-        stepList.add(step);
-
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName, -99);
 
         //#7238 rename lastName and firstName
         stepName = "rename lastName";
@@ -184,8 +172,7 @@ public class SchemaUpdater_47_50 extends SchemaUpdaterBase {
         String oldColumnName = "lastname";
         newColumnName = "familyName";
         int size = 255;
-        step = ColumnNameChanger.NewVarCharInstance(stepName, tableName, oldColumnName, newColumnName, size, INCLUDE_AUDIT);
-        stepList.add(step);
+        ColumnNameChanger.NewVarCharInstance(stepList, stepName, tableName, oldColumnName, newColumnName, size, INCLUDE_AUDIT);
 
         //... firstName
         stepName = "rename firstName";
@@ -193,47 +180,41 @@ public class SchemaUpdater_47_50 extends SchemaUpdaterBase {
         oldColumnName = "firstname";
         newColumnName = "givenName";
         size = 255;
-        step = ColumnNameChanger.NewVarCharInstance(stepName, tableName, oldColumnName, newColumnName, size, INCLUDE_AUDIT);
-        stepList.add(step);
+        ColumnNameChanger.NewVarCharInstance(stepList, stepName, tableName, oldColumnName, newColumnName, size, INCLUDE_AUDIT);
 
         //#7210 Add salt field for User
         stepName = "Add salt field for User";
         tableName = "UserAccount";
         newColumnName = "salt";
-        step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
-        stepList.add(step);
+        ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
 
         //#6943 Add combination 'in'-author
         stepName = "Add combination 'in'-author";
         tableName = "TaxonName";
         newColumnName = "inCombinationAuthorship_id";
         referencedTable = "AgentBase";
-        step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
-        stepList.add(step);
+        ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
 
         //#6943 Add basionym 'in'-author
         stepName = "Add basionym 'in'-author";
         tableName = "TaxonName";
         newColumnName = "inBasionymAuthorship_id";
         referencedTable = "AgentBase";
-        step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
-        stepList.add(step);
+        ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
 
         //#6916 Link IntextReference to OriginalSource
         stepName = "Link IntextReference to OriginalSource";
         tableName = "IntextReference";
         newColumnName = "source_id";
         referencedTable = "OriginalSourceBase";
-        step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
-        stepList.add(step);
+        ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
 
         //#6720 Make individual count a string
         stepName = "Make individual count a string";
         tableName = "SpecimenOrObservationBase";
         String columnName = "individualCount";
         size = 255;
-        step = ColumnTypeChanger.NewInt2StringInstance(stepName, tableName, columnName, size, INCLUDE_AUDIT, null, !NOT_NULL);
-        stepList.add(step);
+        ColumnTypeChanger.NewInt2StringInstance(stepList, stepName, tableName, columnName, size, INCLUDE_AUDIT, null, !NOT_NULL);
 
         updateSpecimenTypeDesignationStatusOrder(stepList);
 
@@ -242,8 +223,7 @@ public class SchemaUpdater_47_50 extends SchemaUpdaterBase {
         query = " UPDATE @@DefinedTermBase@@ " +
                 " SET level_id = ( SELECT id FROM (SELECT id FROM DefinedTermBase WHERE uuid = '79db63a4-1563-461e-8e41-48f5722feca4') as drv) " +
                 " WHERE DTYPE = 'Country' ";
-        step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query, -99);
-        stepList.add(step);
+        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, -99);
 
         //#6588
         stepName = "Add ExternalLink table";
@@ -251,16 +231,14 @@ public class SchemaUpdater_47_50 extends SchemaUpdaterBase {
         String[] columnNames = new String[]{"linkType","uri","size"};
         String[] referencedTables = new String[]{null, null, null};
         String[] columnTypes = new String[]{"string_10","clob","int"};
-        step = TableCreator.NewVersionableInstance(stepName, tableName,
+        TableCreator.NewVersionableInstance(stepList, stepName, tableName,
                 columnNames, columnTypes, referencedTables, INCLUDE_AUDIT);
-        stepList.add(step);
 
         //add i18n description
         stepName= "Add i18n description to ExternalLink";
         String firstTableName = "ExternalLink";
         String attributeName = "description";
-        step = MnTableCreator.NewDescriptionInstance(stepName, firstTableName, null, attributeName, INCLUDE_AUDIT);
-        stepList.add(step);
+        MnTableCreator.NewDescriptionInstance(stepList, stepName, firstTableName, null, attributeName, INCLUDE_AUDIT);
 
         //#6588 add link to sources
         stepName= "Add external link to sources";
@@ -268,21 +246,10 @@ public class SchemaUpdater_47_50 extends SchemaUpdaterBase {
         String secondTableName = "ExternalLink";
         attributeName = "links";
         boolean isList = false;
-        step = MnTableCreator.NewMnInstance(stepName, firstTableName, null, secondTableName, null, attributeName, INCLUDE_AUDIT, isList, IS_1_TO_M);
-        stepList.add(step);
+        MnTableCreator.NewMnInstance(stepList, stepName, firstTableName, null, secondTableName, null, attributeName, INCLUDE_AUDIT, isList, IS_1_TO_M);
 
         //#7334 Make pro parte/partial concept relationships
-        step = ProParteSynonymUpdater.NewInstance(stepList);
-
-
-//        //7276  Make User.emailAddress a unique field
-//        //TODO H2 / PostGreSQL / SQL Server
-//        //User.email unique
-//        stepName = "Update User.emailAdress unique index";
-//        tableName = "UserAccount";
-//        columnName = "emailAddress";
-//        step = UsernameConstraintUpdater.NewInstance(stepName, tableName, columnName);
-//        stepList.add(step);
+        ProParteSynonymUpdater.NewInstance(stepList);
 
         return stepList;
     }
@@ -296,26 +263,22 @@ public class SchemaUpdater_47_50 extends SchemaUpdaterBase {
         String tableName = "Media";
         String oldColumnName = "mediaCreated";
         String newColumnName = "mediaCreatedOld";
-        ISchemaUpdaterStep step = ColumnNameChanger.NewDateTimeInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
-        stepList.add(step);
+        ColumnNameChanger.NewDateTimeInstance(stepList, stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
 
         //add timeperiod columns
         stepName = "Add mediaCreated_start";
         tableName = "Media";
         newColumnName = "mediaCreated_start";
         int size = 50;
-        step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, size, INCLUDE_AUDIT);
-        stepList.add(step);
+        ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, size, INCLUDE_AUDIT);
 
         stepName = "Add mediaCreated_end";
         newColumnName = "mediaCreated_end";
-        step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, size, INCLUDE_AUDIT);
-        stepList.add(step);
+        ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, size, INCLUDE_AUDIT);
 
         stepName = "Add mediaCreated_freetext";
         newColumnName = "mediaCreated_freetext";
-        step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT);
-        stepList.add(step);
+        ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT);
 
         //move data
         stepName = "Copy mediaCreated to new columns";
@@ -324,19 +287,14 @@ public class SchemaUpdater_47_50 extends SchemaUpdaterBase {
                 + " WHERE mediaCreatedOld IS NOT NULL ";
         String queryDefault = String.format(queryTemplate, "Left(Replace(Replace(Replace(mediaCreatedOld, '-', ''), ':', ''), ' ', '_'), 13)");
         String queryPostgres = String.format(queryTemplate, "to_char(mediaCreatedOld,'YYYYMMDD HH24MI')");
-        step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, queryDefault, tableName, -99)
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, queryDefault, tableName, -99)
                   .put(DatabaseTypeEnum.PostgreSQL, queryPostgres)
                   .putAudited(DatabaseTypeEnum.PostgreSQL, queryPostgres);
-        stepList.add(step);
 
         //delete old column
         stepName = "Remove old mediaCreated";
         String columnName = "mediaCreatedOld";
-        ColumnRemover.NewInstance(stepName, tableName, columnName, INCLUDE_AUDIT);
-        stepList.add(step);
-
-
-
+        ColumnRemover.NewInstance(stepList, stepName, tableName, columnName, INCLUDE_AUDIT);
     }
 
     /**
@@ -375,9 +333,8 @@ public class SchemaUpdater_47_50 extends SchemaUpdaterBase {
         String newTableName = oldTableName.replace("WorkingSet", "DescriptiveDataSet");
         boolean includeDtype = !oldTableName.contains("_");
 
-        ISchemaUpdaterStep step = TableNameChanger.NewInstance(stepName, oldTableName,
+        TableNameChanger.NewInstance(stepList, stepName, oldTableName,
                 newTableName, INCLUDE_AUDIT, includeDtype);
-        stepList.add(step);
 
         if (oldTableName.contains("_")){
             stepName = "Rename " +  oldTableName + ".workingSet_id";
@@ -387,8 +344,7 @@ public class SchemaUpdater_47_50 extends SchemaUpdaterBase {
                 oldColumnName = "WorkingSets_id";
                 newColumnName = "DescriptiveDataSets_id";
             }
-            step = ColumnNameChanger.NewIntegerInstance(stepName, newTableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
-            stepList.add(step);
+            ColumnNameChanger.NewIntegerInstance(stepList, stepName, newTableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
         }
     }
 

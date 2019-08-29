@@ -30,9 +30,9 @@ import eu.etaxonomy.cdm.database.PermissionDeniedException;
 import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IPublishable;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
+import eu.etaxonomy.cdm.model.permission.CRUD;
+import eu.etaxonomy.cdm.model.permission.Operation;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.ICdmPermissionEvaluator;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.Operation;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.Role;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.TargetEntityStates;
 

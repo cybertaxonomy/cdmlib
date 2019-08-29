@@ -62,7 +62,9 @@ import eu.etaxonomy.cdm.api.service.IRegistrationService;
 import eu.etaxonomy.cdm.api.service.IRightsService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.api.service.ITermNodeService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.ITermTreeService;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.api.service.molecular.IAmplificationService;
@@ -76,9 +78,9 @@ import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.permission.CRUD;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.persistence.hibernate.HibernateConfiguration;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.ICdmPermissionEvaluator;
 
 /**
@@ -594,6 +596,11 @@ public class CdmApplicationController implements ICdmRepository {
 		return configuration.getFeatureTreeService();
 	}
 
+    @Override
+    public final ITermTreeService getTermTreeService(){
+        return configuration.getTermTreeService();
+    }
+
 	@Override
 	public final IPreferenceService getPreferenceService(){
 	    return configuration.getPreferenceService();
@@ -604,6 +611,11 @@ public class CdmApplicationController implements ICdmRepository {
 	public final IFeatureNodeService getFeatureNodeService(){
 		return configuration.getFeatureNodeService();
 	}
+
+    @Override
+    public final ITermNodeService getTermNodeService(){
+        return configuration.getTermNodeService();
+    }
 
 
 	@Override
@@ -743,6 +755,13 @@ public class CdmApplicationController implements ICdmRepository {
 		txManager.commit(txStatus);
 		return;
 	}
+
+    @Override
+    public void rollbackTransaction(TransactionStatus txStatus){
+        PlatformTransactionManager txManager = configuration.getTransactionManager();
+        txManager.rollback(txStatus);
+        return;
+    }
 
 
     /**

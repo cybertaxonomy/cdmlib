@@ -40,6 +40,7 @@ import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -55,20 +56,19 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptiveDataSetDao;
-import eu.etaxonomy.cdm.persistence.dao.description.IFeatureDao;
-import eu.etaxonomy.cdm.persistence.dao.description.IFeatureNodeDao;
-import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IStatisticalMeasurementValueDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
+import eu.etaxonomy.cdm.persistence.dao.term.ITermNodeDao;
+import eu.etaxonomy.cdm.persistence.dao.term.ITermTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
@@ -91,10 +91,9 @@ public class DescriptionServiceImpl
     private static final Logger logger = Logger.getLogger(DescriptionServiceImpl.class);
 
     protected IDescriptionElementDao descriptionElementDao;
-    protected IFeatureTreeDao featureTreeDao;
+    protected ITermTreeDao featureTreeDao;
     protected IDescriptiveDataSetDao descriptiveDataSetDao;
-    protected IFeatureNodeDao featureNodeDao;
-    protected IFeatureDao featureDao;
+    protected ITermNodeDao termNodeDao;
     protected ITermVocabularyDao vocabularyDao;
     protected IDefinedTermDao definedTermDao;
     protected IStatisticalMeasurementValueDao statisticalMeasurementValueDao;
@@ -111,7 +110,7 @@ public class DescriptionServiceImpl
     private NaturalLanguageGenerator naturalLanguageGenerator;
 
     @Autowired
-    protected void setFeatureTreeDao(IFeatureTreeDao featureTreeDao) {
+    protected void setFeatureTreeDao(ITermTreeDao featureTreeDao) {
         this.featureTreeDao = featureTreeDao;
     }
 
@@ -121,13 +120,8 @@ public class DescriptionServiceImpl
     }
 
     @Autowired
-    protected void setFeatureNodeDao(IFeatureNodeDao featureNodeDao) {
-        this.featureNodeDao = featureNodeDao;
-    }
-
-    @Autowired
-    protected void setFeatureDao(IFeatureDao featureDao) {
-        this.featureDao = featureDao;
+    protected void setTermNodeDao(ITermNodeDao featureNodeDao) {
+        this.termNodeDao = featureNodeDao;
     }
 
     @Autowired
@@ -589,7 +583,7 @@ public class DescriptionServiceImpl
     }
 
     @Override
-    public String generateNaturalLanguageDescription(FeatureTree featureTree,
+    public String generateNaturalLanguageDescription(TermTree featureTree,
             TaxonDescription description, List<Language> preferredLanguages, String separator) {
 
         Language lang = preferredLanguages.size() > 0 ? preferredLanguages.get(0) : Language.DEFAULT();
@@ -708,7 +702,8 @@ public class DescriptionServiceImpl
     public UpdateResult moveDescriptionElementsToDescription(
             Collection<DescriptionElementBase> descriptionElements,
             DescriptionBase targetDescription,
-            boolean isCopy) {
+            boolean isCopy,
+            boolean setNameInSource) {
 
         UpdateResult result = new UpdateResult();
         if (descriptionElements.isEmpty() || descriptionElements.iterator().next() == null){
@@ -725,9 +720,28 @@ public class DescriptionServiceImpl
         }
         for (DescriptionElementBase element : descriptionElements){
             DescriptionBase<?> description = element.getInDescription();
-            description = dao.load(description.getUuid());
+            description = HibernateProxyHelper.deproxy(dao.load(description.getUuid()));
+            Taxon taxon;
+            TaxonName name = null;
+            if (description instanceof TaxonDescription){
+                TaxonDescription taxonDescription = HibernateProxyHelper.deproxy(description, TaxonDescription.class);
+                if (taxonDescription.getTaxon() != null){
+                    taxon = (Taxon) taxonDao.load(taxonDescription.getTaxon().getUuid());
+                    name = taxon.getName();
+                }
+
+
+            }
             try {
                 DescriptionElementBase newElement = (DescriptionElementBase)element.clone();
+                if (setNameInSource) {
+                    for (DescriptionElementSource source: newElement.getSources()){
+                            if (source.getNameUsedInSource() == null){
+                                source.setNameUsedInSource(name);
+                            }
+                        }
+
+                }
                 targetDescription.addElement(newElement);
             } catch (CloneNotSupportedException e) {
                 throw new RuntimeException ("Clone not yet implemented for class " + element.getClass().getName(), e);
@@ -766,7 +780,7 @@ public class DescriptionServiceImpl
     public UpdateResult moveDescriptionElementsToDescription(
             Set<UUID> descriptionElementUUIDs,
             UUID targetDescriptionUuid,
-            boolean isCopy) {
+            boolean isCopy, boolean setNameInSource) {
         Set<DescriptionElementBase> descriptionElements = new HashSet<DescriptionElementBase>();
         for(UUID deUuid : descriptionElementUUIDs) {
             DescriptionElementBase element = descriptionElementDao.load(deUuid);
@@ -776,7 +790,7 @@ public class DescriptionServiceImpl
         }
         DescriptionBase targetDescription = dao.load(targetDescriptionUuid);
 
-        return moveDescriptionElementsToDescription(descriptionElements, targetDescription, isCopy);
+        return moveDescriptionElementsToDescription(descriptionElements, targetDescription, isCopy, setNameInSource);
     }
 
     @Override
@@ -784,7 +798,7 @@ public class DescriptionServiceImpl
     public UpdateResult moveDescriptionElementsToDescription(
             Set<UUID> descriptionElementUUIDs,
             DescriptionBase targetDescription,
-            boolean isCopy) {
+            boolean isCopy, boolean setNameInSource) {
         Set<DescriptionElementBase> descriptionElements = new HashSet<DescriptionElementBase>();
         for(UUID deUuid : descriptionElementUUIDs) {
             DescriptionElementBase element = descriptionElementDao.load(deUuid);
@@ -813,7 +827,7 @@ public class DescriptionServiceImpl
             newTargetDescription.setTitleCache(targetDescription.getTitleCache(), targetDescription.isProtectedTitleCache());
 
         }
-        return moveDescriptionElementsToDescription(descriptionElements, newTargetDescription, isCopy);
+        return moveDescriptionElementsToDescription(descriptionElements, newTargetDescription, isCopy, setNameInSource);
     }
 
 
@@ -823,7 +837,7 @@ public class DescriptionServiceImpl
             Set<UUID> descriptionElementUUIDs,
             UUID targetTaxonUuid,
             String moveMessage,
-            boolean isCopy) {
+            boolean isCopy, boolean setNameInSource) {
         Taxon targetTaxon = CdmBase.deproxy(taxonDao.load(targetTaxonUuid), Taxon.class);
         DescriptionBase targetDescription = TaxonDescription.NewInstance(targetTaxon);
         targetDescription.setTitleCache(moveMessage, true);
@@ -837,7 +851,7 @@ public class DescriptionServiceImpl
             descriptionElements.add(descriptionElementDao.load(deUuid));
         }
 
-        return moveDescriptionElementsToDescription(descriptionElements, targetDescription, isCopy);
+        return moveDescriptionElementsToDescription(descriptionElements, targetDescription, isCopy, setNameInSource);
     }
 
     @Override
@@ -853,18 +867,18 @@ public class DescriptionServiceImpl
 
     @Override
     @Transactional(readOnly = false)
-    public UpdateResult moveTaxonDescriptions(Taxon sourceTaxon, Taxon targetTaxon) {
+    public UpdateResult moveTaxonDescriptions(Taxon sourceTaxon, Taxon targetTaxon, boolean setNameInSource) {
         List<TaxonDescription> descriptions = new ArrayList<>(sourceTaxon.getDescriptions());
         UpdateResult result = new UpdateResult();
         result.addUpdatedObject(sourceTaxon);
         result.addUpdatedObject(targetTaxon);
         for(TaxonDescription description : descriptions){
-            targetTaxon.addDescription(prepareDescriptionForMove(description, sourceTaxon));
+            targetTaxon.addDescription(prepareDescriptionForMove(description, sourceTaxon, setNameInSource));
         }
         return result;
     }
 
-    private TaxonDescription prepareDescriptionForMove(TaxonDescription description, Taxon sourceTaxon){
+    private TaxonDescription prepareDescriptionForMove(TaxonDescription description, Taxon sourceTaxon, boolean setNameInSource){
         String moveMessage = String.format("Description moved from %s", sourceTaxon);
         if(description.isProtectedTitleCache()){
             String separator = "";
@@ -879,21 +893,30 @@ public class DescriptionServiceImpl
         Annotation annotation = Annotation.NewInstance(moveMessage, Language.getDefaultLanguage());
         annotation.setAnnotationType(AnnotationType.TECHNICAL());
         description.addAnnotation(annotation);
+        if(setNameInSource){
+            for (DescriptionElementBase element: description.getElements()){
+                for (DescriptionElementSource source: element.getSources()){
+                    if (source.getNameUsedInSource() == null){
+                        source.setNameUsedInSource(sourceTaxon.getName());
+                    }
+                }
+            }
+        }
         return description;
     }
 
     @Override
     @Transactional(readOnly = false)
-    public UpdateResult moveTaxonDescriptions(UUID sourceTaxonUuid, UUID targetTaxonUuid) {
+    public UpdateResult moveTaxonDescriptions(UUID sourceTaxonUuid, UUID targetTaxonUuid, boolean setNameInSource) {
         Taxon sourceTaxon = HibernateProxyHelper.deproxy(taxonDao.load(sourceTaxonUuid), Taxon.class);
         Taxon targetTaxon = HibernateProxyHelper.deproxy(taxonDao.load(targetTaxonUuid), Taxon.class);
-        return moveTaxonDescriptions(sourceTaxon, targetTaxon);
+        return moveTaxonDescriptions(sourceTaxon, targetTaxon, setNameInSource);
 
     }
 
     @Override
     @Transactional(readOnly = false)
-    public UpdateResult moveTaxonDescription(UUID descriptionUuid, UUID targetTaxonUuid){
+    public UpdateResult moveTaxonDescription(UUID descriptionUuid, UUID targetTaxonUuid, boolean setNameInSource){
         TaxonDescription description = HibernateProxyHelper.deproxy(dao.load(descriptionUuid), TaxonDescription.class);
         Taxon targetTaxon = HibernateProxyHelper.deproxy(taxonDao.load(targetTaxonUuid), Taxon.class);
         Taxon sourceTaxon = description.getTaxon();
@@ -901,7 +924,7 @@ public class DescriptionServiceImpl
         result.addUpdatedObject(sourceTaxon);
         result.addUpdatedObject(targetTaxon);
 
-        targetTaxon.addDescription(prepareDescriptionForMove(description, sourceTaxon));
+        targetTaxon.addDescription(prepareDescriptionForMove(description, sourceTaxon, setNameInSource));
         return result;
 
     }

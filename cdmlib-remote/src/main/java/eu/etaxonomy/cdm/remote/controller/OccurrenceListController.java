@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
@@ -122,17 +121,14 @@ public class OccurrenceListController extends AbstractIdentifiableListController
     }
 
     @RequestMapping(value = "specimensOrObservationsByAssociatedTaxon", method = RequestMethod.GET)
-    public ModelAndView doListOccurrencesByAssociatedTaxon(
+    public List<FieldUnitDTO> doListOccurrencesByAssociatedTaxon(
             @RequestParam(value = "uuid", required = true) UUID uuid,
             HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
-        logger.info("doListSpecimensOrObservations() - " + request.getRequestURI());
+            HttpServletResponse response) {
+        logger.info("doListOccurrencesByAssociatedTaxon() - " + requestPathAndQuery(request));
 
-        ModelAndView mv = new ModelAndView();
         List<FieldUnitDTO> fieldUnitDtos = service.findFieldUnitDTOByAssociatedTaxon(null, uuid);
-           // List<SpecimenOrObservationBase<?>> specimensOrObservations = occurrenceService.listByAssociatedTaxon(null, null, (Taxon)tb, null, null, null, orderHints, null);
-        mv.addObject(fieldUnitDtos);
-        return mv;
+        return fieldUnitDtos;
     }
 
     /**
@@ -155,7 +151,7 @@ public class OccurrenceListController extends AbstractIdentifiableListController
      * @throws ParseException
      */
     @RequestMapping(method = RequestMethod.GET, value={"findByFullText"})
-    public Pager<SearchResult<SpecimenOrObservationBase>> dofindByFullText(
+    public Pager<SearchResult<SpecimenOrObservationBase>> doFindByFullText(
             @RequestParam(value = "clazz", required = false) Class<? extends SpecimenOrObservationBase<?>> clazz,
             @RequestParam(value = "query", required = false) String queryString,
             @RequestParam(value = "bbox", required = false) Rectangle boundingBox,
@@ -168,7 +164,7 @@ public class OccurrenceListController extends AbstractIdentifiableListController
             )
              throws IOException, LuceneParseException {
 
-         logger.info("dofindByFullText() " + requestPathAndQuery(request) );
+         logger.info("doFindByFullText() " + requestPathAndQuery(request) );
 
          PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
          pagerParams.normalizeAndValidate(response);
@@ -224,17 +220,11 @@ public class OccurrenceListController extends AbstractIdentifiableListController
 //   }
 
     @RequestMapping(method = RequestMethod.GET, value = "byGeneticAccessionNumber" )
-    public FieldUnitDTO doFindByGeneticAccessionNumber(
+    public FieldUnitDTO doGetByGeneticAccessionNumber(
             @RequestParam(value="accessionNumber", required = true) String accessionNumber,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-        logger.info("doListSpecimensOrObservations() - " + request.getRequestURI());
-
-        if(accessionNumber == null ) {
-            response.setHeader("Failure", "Query must be given");
-            HttpStatusMessage.create("Query must be given", 400).send(response);
-            return null;
-        }
+        logger.info("doGetByGeneticAccessionNumber() - " + requestPathAndQuery(request));
 
        FieldUnitDTO fieldUnitDto = service.findByAccessionNumber(accessionNumber, null,this.initializationStrategy);
        if(fieldUnitDto == null ) {

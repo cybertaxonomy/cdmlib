@@ -92,6 +92,16 @@
     </property>
   </bean>
 
+  <bean id="httpTermNodeService"
+    class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+    <property name="service">
+      <ref bean="termNodeServiceImpl" />
+    </property>
+    <property name="serviceInterface">
+      <value>eu.etaxonomy.cdm.api.service.ITermNodeService</value>
+    </property>
+  </bean>
+
   <bean id="httpFeatureTreeService"
     class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
     <property name="service">
@@ -101,7 +111,17 @@
       <value>eu.etaxonomy.cdm.api.service.IFeatureTreeService</value>
     </property>
   </bean>
-
+  
+  <bean id="httpTermTreeService"
+    class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+    <property name="service">
+      <ref bean="termTreeServiceImpl" />
+    </property>
+    <property name="serviceInterface">
+      <value>eu.etaxonomy.cdm.api.service.ITermTreeService</value>
+    </property>
+  </bean>
+  
   <bean id="httpGroupService"
     class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
     <property name="service">

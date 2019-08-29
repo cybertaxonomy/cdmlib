@@ -34,6 +34,9 @@ public class CdmLightExportConfigurator
 
 
     private CsvIOConfigurator csvIOConfig = CsvIOConfigurator.NewInstance();
+    {
+        csvIOConfig.setFieldsTerminatedBy(",");
+    }
 
     private boolean isHighlightPrimaryCollector = false;
 
@@ -53,6 +56,7 @@ public class CdmLightExportConfigurator
         super(transformer);
         this.resultType = ExportResultType.MAP_BYTE_ARRAY;
         this.setTarget(TARGET.EXPORT_DATA);
+        setUserFriendlyIOName("Cdm Light Export");
     }
 
 
@@ -91,17 +95,11 @@ public class CdmLightExportConfigurator
         this.csvIOConfig.setFieldsTerminatedBy(fieldsTerminatedBy);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CdmLightExportState getNewState() {
         return new CdmLightExportState(this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getDestinationNameString() {
         // TODO Auto-generated method stub
@@ -115,12 +113,7 @@ public class CdmLightExportConfigurator
         };
     }
 
-//    public Set<UUID> getClassificationUuids() {
-//        return classificationUuids;
-//    }
-//    public void setClassificationUuids(Set<UUID> classificationUuids) {
-//        this.classificationUuids = classificationUuids;
-//    }
+
     public boolean isHighLightPrimaryCollector() {
         return isHighlightPrimaryCollector;
     }
@@ -136,74 +129,24 @@ public class CdmLightExportConfigurator
     public boolean isFilterIntextReferences() {
         return isFilterIntextReferences;
     }
-
-
     public void setRemoveIntextReferences(boolean isRemoveIntextReferences) {
         this.isFilterIntextReferences = isRemoveIntextReferences;
     }
 
 
-    /**
-     * @return the comparator
-     */
     public Comparator<TaxonNodeDto> getComparator() {
         return comparator;
     }
-
-
-    /**
-     * @param comparator the comparator to set
-     */
     public void setComparator(Comparator<TaxonNodeDto> comparator) {
         this.comparator = comparator;
     }
 
 
-    /**
-     * @return
-     */
-//    public boolean isCreateCondensedDistributionString() {
-//        return isCreateCondensedDistributionString;
-//    }
-//
-//    public void setCreateCondensedDistributionString(boolean isCreateCondensedDistributionString) {
-//        this.isCreateCondensedDistributionString = isCreateCondensedDistributionString;
-//    }
-//
-//
-//    /**
-//     * @return
-//     */
-//    public CondensedDistributionRecipe getCondensedDistributionRecipe() {
-//        return recipe;
-//    }
-//
-//    public void setCondensedDistributionRecipe(CondensedDistributionRecipe recipe) {
-//        this.recipe = recipe;
-//    }
-
-
-    /**
-     * @return
-     */
     public boolean isFilterImportSources() {
         return isFilterImportSources;
     }
-
     public void setFilterImportSources(boolean isFilterImportSources) {
         this.isFilterImportSources = isFilterImportSources;
     }
-
-//    public Set<UUID> getTaxonNodeUuids() {
-//        return taxonNodeUuids;
-//    }
-//
-//
-//    public void setTaxonNodeUuids(Set<UUID> taxonNodeUuids) {
-//        this.taxonNodeUuids = taxonNodeUuids;
-//    }
-
-
-
 
 }

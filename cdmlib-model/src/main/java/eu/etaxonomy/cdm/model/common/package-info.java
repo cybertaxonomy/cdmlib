@@ -130,7 +130,7 @@
         @MetaValue(value = "Synonym", targetEntity = Synonym.class),
         @MetaValue(value = "Taxon", targetEntity = Taxon.class),
 
-        @MetaValue(value = "FeatureTree", targetEntity = FeatureTree.class),
+        @MetaValue(value = "TermTree", targetEntity = TermTree.class),
         @MetaValue(value = "PhylogeneticTree", targetEntity = PhylogeneticTree.class),
         @MetaValue(value = "MediaSpecimen", targetEntity = MediaSpecimen.class),
         @MetaValue(value = "TermVocabulary", targetEntity = TermVocabulary.class),
@@ -287,6 +287,7 @@ import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.MaterialOrMethodEvent;
 import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
+import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -297,9 +298,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
 import eu.etaxonomy.cdm.model.term.OrderedTerm;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 

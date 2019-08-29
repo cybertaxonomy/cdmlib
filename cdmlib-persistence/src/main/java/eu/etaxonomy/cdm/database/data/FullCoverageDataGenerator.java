@@ -6,6 +6,7 @@ package eu.etaxonomy.cdm.database.data;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.hibernate.Session;
 import org.joda.time.DateTime;
@@ -25,7 +26,6 @@ import eu.etaxonomy.cdm.model.common.Credit;
 import eu.etaxonomy.cdm.model.common.EventBase;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
-import eu.etaxonomy.cdm.model.common.Group;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Identifier;
@@ -37,7 +37,6 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
@@ -96,6 +95,7 @@ import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCodeEdition;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -116,6 +116,12 @@ import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
+import eu.etaxonomy.cdm.model.permission.CdmAuthority;
+import eu.etaxonomy.cdm.model.permission.Group;
+import eu.etaxonomy.cdm.model.permission.Operation;
+import eu.etaxonomy.cdm.model.permission.PermissionClass;
+import eu.etaxonomy.cdm.model.permission.Role;
+import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -128,9 +134,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
-import eu.etaxonomy.cdm.model.term.FeatureNode;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
 import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermNode;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
@@ -175,13 +181,24 @@ public class FullCoverageDataGenerator {
 
 		createSupplemental(cdmBases);
 
+		createUserAuthority(cdmBases);
+
 		for (CdmBase cdmBase: cdmBases){
 			session.save(cdmBase);
 		}
 	}
 
 
-	private void createSupplemental(List<CdmBase> cdmBases)  {
+	/**
+     * @param cdmBases
+     */
+    private void createUserAuthority(List<CdmBase> cdmBases) {
+        // TODO Auto-generated method stub
+
+    }
+
+
+    private void createSupplemental(List<CdmBase> cdmBases)  {
 
 		Reference ref = ReferenceFactory.newBook();
 
@@ -209,10 +226,15 @@ public class FullCoverageDataGenerator {
 		User user = User.NewInstance("myUser", "12345");
 		Group group = Group.NewInstance("MyGroup");
 		group.addMember(user);
+		CdmAuthority authority = CdmAuthority.NewInstance(PermissionClass.TAXONNAME,
+		        "a property", Operation.CREATE, UUID.fromString("f1653cb8-5956-429e-852a-4a3b57893f49"));
+		group.addAuthority(authority);
+		Role role = Role.NewInstance("my role");
+		user.addAuthority(role);
 
 		cdmBases.add(user);
 		cdmBases.add(group);
-
+		cdmBases.add(authority);
 
 		cdmBases.add(ref);
 
@@ -412,18 +434,18 @@ public class FullCoverageDataGenerator {
 
 
 		//Feature Tree
-		FeatureTree featureTree = FeatureTree.NewInstance();
+		TermTree<Feature> featureTree = TermTree.NewFeatureInstance();
 //		featureTree
-		FeatureNode descriptionFeatureNode = featureTree.getRoot().addChild(Feature.DESCRIPTION());
-		FeatureNode leaveLengthNode = descriptionFeatureNode.addChild(leaveLength);
+        TermNode<Feature> descriptionTermNode = featureTree.getRoot().addChild(Feature.DESCRIPTION());
+        TermNode<Feature> leaveLengthNode = descriptionTermNode.addChild(leaveLength);
 		handleIdentifiableEntity(featureTree);
 
 		State inapplicableState = State.NewInstance("inapplicableState", "inapplicableState", null);
 		State applicableState = State.NewInstance("only applicable state", "only applicable state", null);
 		cdmBases.add(applicableState);
 		cdmBases.add(inapplicableState);
-		leaveLengthNode.addInapplicableState(inapplicableState);
-		leaveLengthNode.addApplicableState(applicableState);
+		leaveLengthNode.addInapplicableState(leaveLength, inapplicableState);  //this is semantically not correct, should be a parent feature
+		leaveLengthNode.addApplicableState(leaveLength, applicableState);
 		cdmBases.add(featureTree);
 		cdmBases.add(leaveLengthNode);
 
@@ -864,6 +886,7 @@ public class FullCoverageDataGenerator {
 		zooName.setNomenclaturalMicroReference("p. 123");
 		zooName.setNomenclaturalReference(getReference());
 		NameRelationship rel = zooName.addRelationshipFromName(botName, NameRelationshipType.LATER_HOMONYM() , "ruleConsidered");
+		rel.setCodeEdition(NomenclaturalCodeEdition.ICN_2017_SHENZHEN);
 		NomenclaturalStatus status = NomenclaturalStatus.NewInstance(NomenclaturalStatusType.CONSERVED(), getReference(), "p. 222");
 		zooName.addStatus(status);
 		handleAnnotatableEntity(rel);
@@ -878,6 +901,9 @@ public class FullCoverageDataGenerator {
 		SpecimenTypeDesignation specimenDesig = speciesZooName.addSpecimenTypeDesignation(getSpecimen(), SpecimenTypeDesignationStatus.HOLOTYPE(),
 				getReference(), "p,22", "original name", false, true);
 		handleAnnotatableEntity(specimenDesig);
+		speciesZooName.addTextualTypeDesignation("A textual type designation", Language.ENGLISH(), true,
+		        getReference(), "123", "Species orginalus", false);
+
 
 		TaxonName viralName = TaxonNameFactory.NewViralInstance(Rank.GENUS());
 		viralName.setAcronym("acronym");

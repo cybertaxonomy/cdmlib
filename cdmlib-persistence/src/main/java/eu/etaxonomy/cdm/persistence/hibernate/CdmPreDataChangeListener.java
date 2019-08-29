@@ -21,12 +21,12 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.molecular.Amplification;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**

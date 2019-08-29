@@ -32,24 +32,24 @@ public class TermMover extends SchemaUpdaterStepBase{
 
     private static final Logger logger = Logger.getLogger(TermMover.class);
 
-	public static final TermMover NewInstance(String stepName, UUID newVocabulary, String uuidTerm){
-		List<String> terms = new ArrayList<String>();
+	public static final TermMover NewInstance(List<ISchemaUpdaterStep> stepList, String stepName, UUID newVocabulary, String uuidTerm){
+		List<String> terms = new ArrayList<>();
 		terms.add(uuidTerm);
-		return new TermMover(stepName, newVocabulary, terms);
+		return new TermMover(stepList, stepName, newVocabulary, terms);
 	}
 
 
-	public static final TermMover NewInstance(String stepName, UUID newVocabulary, List<String> terms){
-		return new TermMover(stepName, newVocabulary, terms);
+	public static final TermMover NewInstance(List<ISchemaUpdaterStep> stepList, String stepName, UUID newVocabulary, List<String> terms){
+		return new TermMover(stepList, stepName, newVocabulary, terms);
 	}
 
 
 	private String uuidNewVocabulary ;
-	private List<String> termUuids = new ArrayList<String>();
+	private List<String> termUuids = new ArrayList<>();
 
 
-	private TermMover(String stepName, UUID newVocabulary, List<String> terms) {
-		super(stepName);
+	private TermMover(List<ISchemaUpdaterStep> stepList, String stepName, UUID newVocabulary, List<String> terms) {
+		super(stepList, stepName);
 		this.uuidNewVocabulary = newVocabulary.toString();
 		this.termUuids = terms;
 	}

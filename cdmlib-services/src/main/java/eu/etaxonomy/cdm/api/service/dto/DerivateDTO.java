@@ -26,8 +26,10 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
+import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
 
@@ -70,6 +72,25 @@ public abstract class DerivateDTO extends TypedEntityReference{
 
     private Set<IdentifiableSource> sources;
     private List<MediaDTO> listOfMedia = new ArrayList<>();
+
+    /**
+     * Factory method to create a new instance of the passed <code>SpecimenOrObservationBase</code> with the matching sub
+     * type of <code>DerivateDTO</code>
+     *
+     * @param sob
+     * @return
+     */
+    public static DerivateDTO newInstance(SpecimenOrObservationBase sob){
+        DerivateDTO derivateDto;
+        if (sob.isInstanceOf(FieldUnit.class)){
+            derivateDto = FieldUnitDTO.newInstance((FieldUnit)sob);
+        } else if (sob instanceof DnaSample){
+            derivateDto = new DNASampleDTO((DnaSample)sob);
+        } else {
+            derivateDto = new PreservedSpecimenDTO((DerivedUnit)sob);
+        }
+        return derivateDto;
+    }
 
     public DerivateDTO(SpecimenOrObservationBase specimenOrObservation) {
         super(specimenOrObservation.getClass(), specimenOrObservation.getUuid(), specimenOrObservation.getTitleCache());

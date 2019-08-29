@@ -32,10 +32,10 @@ public class MnTableRemover extends AuditedSchemaUpdaterStepBase {
 	private final String parentTableName;
 	private final String childTableName;
 
-	protected List<ISchemaUpdaterStep> innerStepList = new ArrayList<ISchemaUpdaterStep>();
+	protected List<ISchemaUpdaterStep> innerStepList = new ArrayList<>();
 
 
-	public static MnTableRemover NewInstance(String stepName, String mnTableName,
+	public static MnTableRemover NewInstance(List<ISchemaUpdaterStep> stepList, String stepName, String mnTableName,
             String fkColumnName,
             String mnParentFkColumnName,
             String mnChildFkColumnName,
@@ -43,7 +43,7 @@ public class MnTableRemover extends AuditedSchemaUpdaterStepBase {
             String childTableName,
             boolean includeAudited){
 
-		MnTableRemover result = new MnTableRemover(stepName,
+		MnTableRemover result = new MnTableRemover(stepList, stepName,
 		        mnTableName, fkColumnName, mnParentFkColumnName,
 		        mnChildFkColumnName, parentTableName, childTableName, includeAudited);
 		return result;
@@ -55,14 +55,14 @@ public class MnTableRemover extends AuditedSchemaUpdaterStepBase {
 //	}
 
 
-	protected MnTableRemover(String stepName, String mnTableName,
+	protected MnTableRemover(List<ISchemaUpdaterStep> stepList, String stepName, String mnTableName,
 	        String fkColumnName,
 	        String mnParentFkColumnName,
 	        String mnChildFkColumnName,
 	        String parentTableName,
 	        String childTableName,
 	        boolean includeAudited) {
-	    super(stepName, mnTableName, includeAudited);
+	    super(stepList, stepName, mnTableName, includeAudited);
 		this.fkColumnName = fkColumnName;
 		this.mnParentFkColumnName = mnParentFkColumnName;
 		this.mnChildFkColumnName = mnChildFkColumnName;
@@ -82,14 +82,13 @@ public class MnTableRemover extends AuditedSchemaUpdaterStepBase {
         //Create new column
         boolean notNull = false; //??
         ISchemaUpdaterStep step = ColumnAdder.NewIntegerInstance(
+                innerStepList,
                 "Create foreign key column to parent table to replace MN table",
                 childTableName,
                 fkColumnName,
                 includeAudTable,
                 notNull,
                 parentTableName);
-        innerStepList.add(step);
-
 
         //copy data to new column
         String stepName = "Copy data to new column";
@@ -109,12 +108,10 @@ public class MnTableRemover extends AuditedSchemaUpdaterStepBase {
                 +       " (SELECT " + mnParentFkColumnName
                         + " FROM " + mnTableAud + " MN "
                         + " WHERE MN." + mnChildFkColumnName + " = c.id AND c.REV = MN.REV) ";
-        SimpleSchemaUpdaterStep dataUpdateStep = SimpleSchemaUpdaterStep.NewExplicitAuditedInstance(stepName, sql, sqlAudited, 99);
-        innerStepList.add(dataUpdateStep);
+        SimpleSchemaUpdaterStep.NewExplicitAuditedInstance(innerStepList, stepName, sql, sqlAudited, 99);
 
         //delete old table
-        step = TableDroper.NewInstance("Drop MN table", mnTableName, includeAudTable, true);
-        innerStepList.add(step);
+        step = TableDroper.NewInstance(innerStepList, "Drop MN table", mnTableName, includeAudTable, true);
 
         return;
     }

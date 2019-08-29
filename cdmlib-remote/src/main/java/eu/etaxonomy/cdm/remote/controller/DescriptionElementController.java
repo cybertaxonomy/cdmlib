@@ -28,8 +28,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
-import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.ITermTreeService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
 import eu.etaxonomy.cdm.model.common.Annotation;
@@ -73,7 +73,7 @@ public class DescriptionElementController
 
 
     @Autowired
-    private IFeatureTreeService featureTreeService;
+    private ITermTreeService termTreeService;
 
     @Autowired
     private ITermService termService;

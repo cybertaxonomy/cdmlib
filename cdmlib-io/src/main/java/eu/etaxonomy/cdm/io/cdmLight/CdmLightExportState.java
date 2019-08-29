@@ -60,6 +60,7 @@ public class CdmLightExportState
     protected CdmLightExportState(CdmLightExportConfigurator config) {
         super(config);
         result = ExportResult.NewInstance(config.getResultType());
+
     }
 
     /**
@@ -231,7 +232,6 @@ public class CdmLightExportState
     public UUID getRootId() {
         return rootUuid;
     }
-
     public void setRootId(UUID rootId) {
         this.rootUuid = rootId;
     }

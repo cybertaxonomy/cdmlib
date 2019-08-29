@@ -270,6 +270,7 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
             MatchResult matchResult,
             Map<String, List<MatchMode>> replaceMatchers, FieldMatcher fieldMatcher,
             boolean failAll) throws Exception {
+
         MatchResult fieldResult;
         Field field = fieldMatcher.getField();
         List<MatchMode> replaceModeList = replaceMatchers.get(fieldMatcher.getPropertyName());
@@ -314,14 +315,14 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
         return;
     }
 
-
 	/**
 	 * @throws Exception
 	 *
 	 */
 	private <T extends IMatchable> MatchResult matchPrimitiveField(T matchFirst, T matchSecond,
 	        FieldMatcher fieldMatcher, List<MatchMode> replaceModeList, boolean failAll) throws Exception {
-		Field field = fieldMatcher.getField();
+
+	    Field field = fieldMatcher.getField();
 		Object value1 = checkEmpty(field.get(matchFirst));
 		Object value2 = checkEmpty(field.get(matchSecond));
 		IMatchStrategy matchStrategy = fieldMatcher.getMatchStrategy();
@@ -334,16 +335,14 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 		return fieldResult;
 	}
 
-	/**
-	 * @throws Exception
-	 *
-	 */
-	private <T extends IMatchable> MatchResult matchCollectionField(T matchFirst, T matchSecond,
+    private <T extends IMatchable> MatchResult matchCollectionField(T matchFirst, T matchSecond,
 	        FieldMatcher fieldMatcher, List<MatchMode> replaceModeList, boolean failAll) throws Exception {
 
 	    MatchResult fieldResult = new MatchResult();
 		Field field = fieldMatcher.getField();
-		Collection<?> value1 = (Collection)field.get(matchFirst);
+		@SuppressWarnings("rawtypes")
+        Collection<?> value1 = (Collection)field.get(matchFirst);
+		@SuppressWarnings("rawtypes")
 		Collection<?> value2 = (Collection)field.get(matchSecond);
 		MatchMode matchMode = fieldMatcher.getMatchMode();
 		Class<?> fieldType = fieldMatcher.getField().getType();
@@ -385,6 +384,7 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
      */
     private MatchResult makeReplaceModeMatching(MatchResult fieldResult,
             List<MatchMode> replaceModeList, Object value1, Object value2, FieldMatcher fieldMatcher, boolean failAll) throws MatchException {
+
         if (fieldResult.isFailed()){
             for (MatchMode replaceMode : replaceModeList){
                 //TODO is the property name correct here?

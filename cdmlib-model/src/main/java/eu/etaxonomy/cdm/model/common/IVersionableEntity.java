@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.model.common;
 
 import org.joda.time.DateTime;
 
+import eu.etaxonomy.cdm.model.permission.User;
+
 /**
  * @author n.hoffmann
  * @since Sep 15, 2010

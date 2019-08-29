@@ -57,25 +57,19 @@ public class SchemaUpdater_30_301 extends SchemaUpdaterBase {
 		List<ISchemaUpdaterStep> stepList = new ArrayList<>();
 
 		//drop unique index for DefinedTermBase_media.media_id
-		ISchemaUpdaterStep step = UniqueIndexDropper.NewInstance("DefinedTermBase_media", "media_id", ! INCLUDE_AUDIT);
-		stepList.add(step);
+		 UniqueIndexDropper.NewInstance(stepList, "DefinedTermBase_media", "media_id", ! INCLUDE_AUDIT);
 
 		//drop unique index for StateData_DefinedTermBase.modifier_id
 		//this was part of schema version 2.5 but an updater was never written
-		step = UniqueIndexDropper.NewInstance("StateData_definedtermbase", "modifiers_id", ! INCLUDE_AUDIT);
-		stepList.add(step);
+		UniqueIndexDropper.NewInstance(stepList, "StateData_definedtermbase", "modifiers_id", ! INCLUDE_AUDIT);
 
 		//drop unique index for StateData_DefinedTermBase.modifier_id
 		//this was part of schema version 2.5 but an updater was never written
-		step = UniqueIndexDropper.NewInstance("StatisticalMeasurementValue_definedtermbase", "modifiers_id", ! INCLUDE_AUDIT);
-		stepList.add(step);
+		UniqueIndexDropper.NewInstance(stepList, "StatisticalMeasurementValue_definedtermbase", "modifiers_id", ! INCLUDE_AUDIT);
 
 		//Makes PolytomousKeyNode parent-child bidirectional
-		step = ColumnAdder.NewIntegerInstance("Add parent_id to PolytomousKeyNode_AUD", "PolytomousKeyNode_AUD", "parent_id", ! INCLUDE_AUDIT, false, "PolytomousKeyNode");
-		stepList.add(step);
-		step = TableDroper.NewInstance("Drop PolytomousKeyNode_PolytomousKeyNode_AUD table", "PolytomousKeyNode_PolytomousKeyNode_AUD", ! INCLUDE_AUDIT);
-		stepList.add(step);
-
+		ColumnAdder.NewIntegerInstance(stepList, "Add parent_id to PolytomousKeyNode_AUD", "PolytomousKeyNode_AUD", "parent_id", ! INCLUDE_AUDIT, false, "PolytomousKeyNode");
+		TableDroper.NewInstance(stepList, "Drop PolytomousKeyNode_PolytomousKeyNode_AUD table", "PolytomousKeyNode_PolytomousKeyNode_AUD", ! INCLUDE_AUDIT);
 
 		return stepList;
 	}

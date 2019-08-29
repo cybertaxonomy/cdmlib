@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.database.update;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -26,13 +28,13 @@ public class ColumnRemover
 
 	private final String oldColumnName;
 
-	public static final ColumnRemover NewInstance(String stepName, String tableName, String oldColumnName, boolean includeAudTable){
-		return new ColumnRemover(stepName, tableName, oldColumnName, includeAudTable);
+	public static final ColumnRemover NewInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String oldColumnName, boolean includeAudTable){
+		return new ColumnRemover(stepList, stepName, tableName, oldColumnName, includeAudTable);
 	}
 
 
-	protected ColumnRemover(String stepName, String tableName, String oldColumnName, boolean includeAudTable) {
-		super(stepName, tableName, includeAudTable);
+	protected ColumnRemover(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String oldColumnName, boolean includeAudTable) {
+		super(stepList, stepName, tableName, includeAudTable);
 		this.oldColumnName = oldColumnName;
 	}
 

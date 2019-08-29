@@ -306,12 +306,12 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
         return new StringResultDTO(String.valueOf(countSpecimen));
     }
 
-    @RequestMapping(value = "specimensOrObservationDTOs", method = RequestMethod.GET)
-    public List<FieldUnitDTO> doListSpecimensOrObservationDTOs(
+    @RequestMapping(value = "fieldUnitDTOs", method = RequestMethod.GET)
+    public List<FieldUnitDTO> doListFieldUnitDTOs(
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-        logger.info("doListSpecimensOrObservations() - " + request.getRequestURI());
+        logger.info("doListFieldUnitDTOs() - " + request.getRequestURI());
 
         List<FieldUnitDTO> fieldUnitDtos = occurrenceService.findFieldUnitDTOByAssociatedTaxon(null, uuid);
            // List<SpecimenOrObservationBase<?>> specimensOrObservations = occurrenceService.listByAssociatedTaxon(null, null, (Taxon)tb, null, null, null, orderHints, null);

@@ -105,7 +105,7 @@ public class ExcelStreamImportTest extends CdmTransactionalIntegrationTest{
 
 	@Test
     @DataSets({
-        @DataSet(/*loadStrategy=CleanSweepInsertLoadStrategy.class, */value="/eu/etaxonomy/cdm/database/BlankDataSet.xml"),
+        @DataSet(/*loadStrategy=CleanSweepInsertLoadStrategy.class, */value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml"),
 //        @DataSet( value="AbcdGgbnImportTest.testNoAttachDnaSampleToDerivedUnit.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
     })
 	public void testDoInvoke() {

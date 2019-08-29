@@ -56,8 +56,8 @@ import org.springframework.util.ReflectionUtils;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IPublishable;
-import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
@@ -463,13 +463,13 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
     }
 
     @Override
-    public List<T> loadList(Collection<Integer> ids, List<String> propertyPaths) throws DataAccessException {
+    public List<T> loadList(Collection<Integer> ids, List<OrderHint> orderHints, List<String> propertyPaths) throws DataAccessException {
 
         if (ids.isEmpty()) {
-            return new ArrayList<T>(0);
+            return new ArrayList<>(0);
         }
 
-        Criteria criteria = prepareList(null, ids, null, null, null, "id");
+        Criteria criteria = prepareList(null, ids, null, null, orderHints, "id");
 
         if (logger.isDebugEnabled()) {
             logger.debug(criteria.toString());

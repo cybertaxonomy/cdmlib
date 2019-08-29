@@ -27,9 +27,9 @@ public class MnTableCreator extends TableCreator {
 	private boolean is1toM;
 	private String sortIndexOrMapkeyColName;
 
-	public static MnTableCreator NewMnInstance(String stepName, String firstTableName,
+	public static MnTableCreator NewMnInstance(List<ISchemaUpdaterStep> stepList, String stepName, String firstTableName,
 	        String secondTableName, boolean includeAudTable, boolean isList, boolean is1toM){
-		MnTableCreator result = new MnTableCreator(stepName, firstTableName, null, null,
+		MnTableCreator result = new MnTableCreator(stepList, stepName, firstTableName, null, null,
 		        secondTableName, null, null, new String[]{}, new String[]{}, null, null,
 		        includeAudTable, isList, is1toM, false, false, false, null);
 		return result;
@@ -50,17 +50,17 @@ public class MnTableCreator extends TableCreator {
 	 * <code>true</code> but for {@link List lists} should be <code>false</code>.
 	 * @return
 	 */
-	public static MnTableCreator NewMnInstance(String stepName, String firstTableName, String firstTableAlias,
+	public static MnTableCreator NewMnInstance(List<ISchemaUpdaterStep> stepList, String stepName, String firstTableName, String firstTableAlias,
 	        String secondTableName, String secondTableAlias, String attributeName,
 	        boolean includeAudTable, boolean isList, boolean is1toM){
-		MnTableCreator result = new MnTableCreator(stepName, firstTableName, firstTableAlias, null, secondTableName, secondTableAlias, attributeName,
+		MnTableCreator result = new MnTableCreator(stepList, stepName, firstTableName, firstTableAlias, null, secondTableName, secondTableAlias, attributeName,
 		        new String[]{}, new String[]{}, null, null,
 		        includeAudTable, isList, is1toM, false, false, false, null);
 		return result;
 	}
-    public static MnTableCreator NewDescriptionInstance(String stepName, String firstTableName, String firstTableAlias,
+    public static MnTableCreator NewDescriptionInstance(List<ISchemaUpdaterStep> stepList, String stepName, String firstTableName, String firstTableAlias,
             String attributeName, boolean includeAudTable){
-        MnTableCreator result = new MnTableCreator(stepName, firstTableName, firstTableAlias, null, "LanguageString", null, attributeName,
+        MnTableCreator result = new MnTableCreator(stepList, stepName, firstTableName, firstTableAlias, null, "LanguageString", null, attributeName,
                 new String[]{}, new String[]{}, null, null,
                 includeAudTable, true, true, false, false, false, attributeName + "_mapkey_id");
         return result;
@@ -83,9 +83,9 @@ public class MnTableCreator extends TableCreator {
     * <code>true</code> but for {@link List lists} should be <code>false</code>.
     * @return
     */
-   public static MnTableCreator NewMnInstance(String stepName, String firstTableName, String firstTableAlias, String firstColumnName, String secondTableName, String secondTableAlias, String secondColumnName,
+   public static MnTableCreator NewMnInstance(List<ISchemaUpdaterStep> stepList, String stepName, String firstTableName, String firstTableAlias, String firstColumnName, String secondTableName, String secondTableAlias, String secondColumnName,
            boolean includeAudTable, boolean isList, boolean is1toM){
-       MnTableCreator result = new MnTableCreator(stepName, firstTableName, firstTableAlias, firstColumnName, secondTableName, secondTableAlias, secondColumnName,
+       MnTableCreator result = new MnTableCreator(stepList, stepName, firstTableName, firstTableAlias, firstColumnName, secondTableName, secondTableAlias, secondColumnName,
                new String[]{}, new String[]{}, null, null,
                includeAudTable, isList, is1toM, false, false, false, null);
        return result;
@@ -93,13 +93,13 @@ public class MnTableCreator extends TableCreator {
 
 // ****************************** CONSTRUCTOR *********************************/
 
-	protected MnTableCreator(String stepName, String firstTableName, String firstTableAlias,
+	protected MnTableCreator(List<ISchemaUpdaterStep> stepList, String stepName, String firstTableName, String firstTableAlias,
 	        String firstColumnName, String secondTableName, String secondTableAlias, String secondColumnName,
 	        String[] columnNames, String[] columnTypes, List<Object> defaultValues, List<Boolean> isNull,
 	        boolean includeAudTable, boolean isList, boolean is1toM,
 	        boolean includeCdmBaseAttributes, boolean includeAnnotatableEntity, boolean includeIdentifiableEntity,
 	        String description_mapkey_id) {
-		super(stepName, makeAlias(firstTableName, firstTableAlias) + "_" + makeAlias(secondTableName, secondTableAlias),
+		super(stepList, stepName, makeAlias(firstTableName, firstTableAlias) + "_" + makeAlias(secondTableName, secondTableAlias),
 		        Arrays.asList(columnNames), Arrays.asList(columnTypes), defaultValues,
 		        isNull,	new ArrayList<>(), includeAudTable,
 		        includeCdmBaseAttributes, includeAnnotatableEntity, includeIdentifiableEntity, false);
@@ -126,13 +126,11 @@ public class MnTableCreator extends TableCreator {
 
 
 	protected void addMyColumns(){
-	    ColumnAdder firstColAdder = ColumnAdder.NewIntegerInstance(stepName, tableName, getFirstIdColumn(), false, true, this.firstTableName);
-		this.columnAdders.add(firstColAdder);
-		ColumnAdder secondColAdder = ColumnAdder.NewIntegerInstance(stepName, tableName, getSecondIdColumn(), false, true, this.secondTableName);
+	    ColumnAdder.NewIntegerInstance(columnAdders, stepName, tableName, getFirstIdColumn(), false, true, this.firstTableName);
+		ColumnAdder.NewIntegerInstance(columnAdders, stepName, tableName, getSecondIdColumn(), false, true, this.secondTableName);
 //		secondColAdder.addIndex(tableName+"_"+getSecondIdColumn(), null);
-		this.columnAdders.add(secondColAdder);
 		if (this.isList){
-			this.columnAdders.add(ColumnAdder.NewIntegerInstance(stepName, tableName, this.sortIndexOrMapkeyColName, false, true, null));
+			ColumnAdder.NewIntegerInstance(columnAdders, stepName, tableName, this.sortIndexOrMapkeyColName, false, true, null);
 		}
 	}
 

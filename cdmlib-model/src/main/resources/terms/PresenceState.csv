@@ -1,0 +1,3 @@
+"849d147c-2a43-4a30-a56e-b21c5d23a8a8",,"Presence states","States to represent the presence of absence of e.g. a given biological structure","STA","1"
+"4f90d908-2061-4627-b251-0683c55b9c2e",,"present","if a structure is present","+"
+"f193112f-68b2-4c74-bb82-05791892d2c4",,"absent","if a structure is absent","-"

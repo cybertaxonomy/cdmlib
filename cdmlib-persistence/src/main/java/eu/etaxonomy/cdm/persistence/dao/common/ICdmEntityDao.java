@@ -21,6 +21,7 @@ import org.hibernate.criterion.Criterion;
 import org.springframework.dao.DataAccessException;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -322,7 +323,7 @@ public interface ICdmEntityDao<T extends CdmBase> {
      * @return
      * @throws DataAccessException
      */
-    public List<T> loadList(Collection<Integer> ids, List<String> propertyPaths) throws DataAccessException;
+    public List<T> loadList(Collection<Integer> ids, List<OrderHint> orderHints, List<String> propertyPaths) throws DataAccessException;
 
     /**
      * @param Uuid

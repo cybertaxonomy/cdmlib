@@ -115,7 +115,7 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 	private Boolean unknownData = false;
 
 
-// ******************************** FACTORY METHOD *******************************/
+// ******************************** FACTORY METHODS *******************************/
 
 	/**
 	 * Creates a new empty quantitative data instance.
@@ -124,14 +124,25 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 		return new QuantitativeData();
 	}
 
-// ******************************** FACTORY METHOD *******************************/
-
 	/**
-	 * Creates a new empty quantitative data instance.
+	 * Creates a new quantitative data instance of type feature.
 	 */
 	public static QuantitativeData NewInstance(Feature feature){
 		return new QuantitativeData(feature);
 	}
+
+    /**
+     * Creates a new quantitative data instance of type feature.
+     */
+    public static QuantitativeData NewMinMaxInstance(Feature feature, float min, float max){
+        QuantitativeData result = new QuantitativeData(feature);
+        StatisticalMeasurementValue minValue = StatisticalMeasurementValue.NewInstance(StatisticalMeasure.MIN(),min);
+        result.addStatisticalValue(minValue);
+        StatisticalMeasurementValue maxValue = StatisticalMeasurementValue.NewInstance(StatisticalMeasure.MAX(), max);
+        result.addStatisticalValue(maxValue);
+        return result;
+    }
+
 
 
 // ******************************** CONSTRUCTOR *******************************/

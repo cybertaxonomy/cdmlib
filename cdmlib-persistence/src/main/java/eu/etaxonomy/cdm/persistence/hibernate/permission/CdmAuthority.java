@@ -22,14 +22,17 @@ import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.core.GrantedAuthority;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
+import eu.etaxonomy.cdm.model.permission.CRUD;
+import eu.etaxonomy.cdm.model.permission.PermissionClass;
+import eu.etaxonomy.cdm.model.permission.GrantedAuthorityImpl;
+import eu.etaxonomy.cdm.model.permission.Operation;
 
 /**
  * A <code>CdmAuthority</code> consists basically of two parts which are separated
  * by a dot character '.'.
  *
  * <ul>
- * <li><code>permissionClass</code>: an {@link CdmPermissionClass} instance with represents a cdm
+ * <li><code>permissionClass</code>: an {@link PermissionClass} instance with represents a cdm
  * type or a part of the cdm type hierarchy. The className is always represented
  * as an upper case string.</li>
  * <li><code>property</code>: The <code>CdmAuthority</code> only applies to instances
@@ -71,7 +74,7 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
 
     private static Map<String, CdmAuthority> grantedAuthorityCache = new HashMap<>();
 
-    private CdmPermissionClass permissionClass;
+    private PermissionClass permissionClass;
     private String property;
     // Making sure that operation is always initialized, for both
     // - the string representation to have a '[]'
@@ -81,7 +84,7 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
 
     public CdmAuthority(CdmBase targetDomainObject, EnumSet<CRUD> operation){
 
-        this.permissionClass = CdmPermissionClass.getValueOf(targetDomainObject);
+        this.permissionClass = PermissionClass.getValueOf(targetDomainObject);
         this.property = null;
         if(operation != null) {
         	this.operation = operation;
@@ -93,7 +96,7 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
     }
 
      public CdmAuthority(CdmBase targetDomainObject, String property, EnumSet<CRUD> operation){
-         this.permissionClass = CdmPermissionClass.getValueOf(targetDomainObject);
+         this.permissionClass = PermissionClass.getValueOf(targetDomainObject);
           this.property = property;
           if(operation != null) {
               this.operation = operation;
@@ -102,7 +105,7 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
       }
 
      public CdmAuthority(Class<? extends CdmBase> targetDomainType, String property, EnumSet<CRUD> operation, UUID uuid){
-         this.permissionClass = CdmPermissionClass.getValueOf(targetDomainType);
+         this.permissionClass = PermissionClass.getValueOf(targetDomainType);
           this.property = property;
           if(operation != null) {
               this.operation = operation;
@@ -111,7 +114,7 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
       }
 
 
-    public CdmAuthority(CdmPermissionClass permissionClass, String property, EnumSet<CRUD> operation, UUID uuid){
+    public CdmAuthority(PermissionClass permissionClass, String property, EnumSet<CRUD> operation, UUID uuid){
         this.permissionClass = permissionClass;
         this.property = property;
         if(operation != null) {
@@ -120,7 +123,7 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
         this.targetUuid = uuid;
     }
 
-    public CdmAuthority(CdmPermissionClass permissionClass, EnumSet<CRUD> operation){
+    public CdmAuthority(PermissionClass permissionClass, EnumSet<CRUD> operation){
         this.permissionClass = permissionClass;
         if(operation != null) {
             this.operation = operation;
@@ -133,7 +136,7 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
         // className must never be null
 
         try {
-            permissionClass = CdmPermissionClass.valueOf(tokens[0]);
+            permissionClass = PermissionClass.valueOf(tokens[0]);
         } catch (IllegalArgumentException e) {
             throw new CdmAuthorityParsingException(authority);
         }
@@ -152,7 +155,7 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
         }
     }
 
-    public CdmPermissionClass getPermissionClass(){
+    public PermissionClass getPermissionClass(){
         return permissionClass;
     }
 

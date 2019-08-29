@@ -41,8 +41,6 @@ import org.unitils.spring.annotation.SpringBean;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.database.PermissionDeniedException;
-import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
-import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -50,6 +48,11 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
+import eu.etaxonomy.cdm.model.permission.CRUD;
+import eu.etaxonomy.cdm.model.permission.GrantedAuthorityImpl;
+import eu.etaxonomy.cdm.model.permission.Operation;
+import eu.etaxonomy.cdm.model.permission.PermissionClass;
+import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -57,12 +60,9 @@ import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthorityParsingException;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionClass;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.ICdmPermissionEvaluator;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.Operation;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
@@ -315,7 +315,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
         Exception exception = null;
         try {
-            taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(n_acherontia_styx, n_acherontia_lachersis, SynonymType.HETEROTYPIC_SYNONYM_OF(), book , "33");
+            taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(n_acherontia_styx, n_acherontia_lachersis, SynonymType.HETEROTYPIC_SYNONYM_OF(), book , "33", true);
             commitAndStartNewTransaction(null);
         } catch (AccessDeniedException e){
             logger.error("Unexpected failure of evaluation.", e);
@@ -346,7 +346,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
         Exception exception = null;
         try {
-            taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(n_acherontia_lachersis, n_acherontia_styx, SynonymType.HOMOTYPIC_SYNONYM_OF(), book , "33");
+            taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(n_acherontia_lachersis, n_acherontia_styx, SynonymType.HOMOTYPIC_SYNONYM_OF(), book , "33", true);
             commitAndStartNewTransaction(null);
         } catch (AccessDeniedException e){
             logger.error("Unexpected failure of evaluation.", e);
@@ -375,7 +375,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         User taxonEditor = userService.load(TAXON_EDITOR_UUID);
         Set<GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();
         grantedAuthorities.addAll(taxonEditor.getGrantedAuthorities());
-        GrantedAuthorityImpl referenceUpdate_ga = new CdmAuthority(CdmPermissionClass.REFERENCE, null, EnumSet.of(CRUD.UPDATE), null).asNewGrantedAuthority();
+        GrantedAuthorityImpl referenceUpdate_ga = new CdmAuthority(PermissionClass.REFERENCE, null, EnumSet.of(CRUD.UPDATE), null).asNewGrantedAuthority();
         grantedAuthorities.add(referenceUpdate_ga);
         taxonEditor.setGrantedAuthorities(grantedAuthorities);
         userService.saveOrUpdate(taxonEditor);
@@ -897,7 +897,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         TaxonDescription description_acherontia_lachesis = t_acherontia_lachesis.getDescriptions().iterator().next();
 
         try {
-            descriptionService.moveDescriptionElementsToDescription(description_acherontia_styx.getElements(), description_acherontia_lachesis, false);
+            descriptionService.moveDescriptionElementsToDescription(description_acherontia_styx.getElements(), description_acherontia_lachesis, false, true);
             commitAndStartNewTransaction(null);
         } catch (RuntimeException e){
             securityException = findSecurityRuntimeException(e);
@@ -938,7 +938,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
 
         try {
-            taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(n_acherontia_lachesis, n_acherontia_styx, SynonymType.SYNONYM_OF(), null, null);
+            taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(n_acherontia_lachesis, n_acherontia_styx, SynonymType.SYNONYM_OF(), null, null, true);
 //            synonymUuid = synonym.getUuid();
 //            taxonService.saveOrUpdate(synonym);
             commitAndStartNewTransaction(null);

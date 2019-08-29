@@ -38,7 +38,7 @@ public abstract class ExportConfiguratorBase<STATE extends ExportStateBase, TRAN
 
     protected Class<ICdmIO>[] ioClassList;
 
-	 private TaxonNodeFilter taxonNodeFilter = new TaxonNodeFilter();
+	private TaxonNodeFilter taxonNodeFilter = new TaxonNodeFilter();
 
 	protected ExportResultType resultType;
 	/**
@@ -98,11 +98,6 @@ public abstract class ExportConfiguratorBase<STATE extends ExportStateBase, TRAN
 		this.destination = destination;
 	}
 
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSourceReference()
-	 */
 //	@Override
 	public IDatabase getSourceReference() {
 		//TODO //needed
@@ -202,11 +197,10 @@ public abstract class ExportConfiguratorBase<STATE extends ExportStateBase, TRAN
 
 	@Override
 	public ExportResultType getResultType(){return resultType;}
+
 	public TaxonNodeFilter getTaxonNodeFilter() {
         return taxonNodeFilter;
     }
-
-
     public void setTaxonNodeFilter(TaxonNodeFilter taxonNodeFilter) {
         this.taxonNodeFilter = taxonNodeFilter;
     }

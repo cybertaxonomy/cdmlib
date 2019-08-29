@@ -24,13 +24,11 @@ import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.Group;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
-import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
-import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.molecular.Amplification;
 import eu.etaxonomy.cdm.model.molecular.Primer;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
@@ -40,14 +38,16 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.permission.Group;
+import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.FeatureNode;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermNode;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
@@ -78,8 +78,9 @@ class BatchValidationUtil {
         services.add(new EntityValidationUnit(Collection.class, appConfig.getCollectionService()));
 //        services.add(new EntityValidationUnit(OriginalSourceBase.class, appConfig.getCommonService()));
         services.add(new EntityValidationUnit(DescriptionBase.class, appConfig.getDescriptionService()));
-        services.add(new EntityValidationUnit(FeatureNode.class, appConfig.getFeatureNodeService()));
-        services.add(new EntityValidationUnit(FeatureTree.class, appConfig.getFeatureTreeService()));
+        services.add(new EntityValidationUnit(TermNode.class, appConfig.getTermNodeService()));
+        services.add(new EntityValidationUnit(TermTree.class, appConfig.getTermTreeService()));
+
         services.add(new EntityValidationUnit(Group.class, appConfig.getGroupService()));
         // Causes some AOP-related error when calling list() method on it
         //services.add(new EntityValidationUnit(DefinedTermBase.class, appConfig.getLocationService()));

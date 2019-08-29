@@ -9,11 +9,13 @@
 package eu.etaxonomy.cdm.database.update.permissions;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.config.Configuration;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.CaseType;
+import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdateResult;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 
@@ -25,12 +27,12 @@ public class PermissionsUpdater extends SchemaUpdaterStepBase  {
 
 	private static final String stepName = "Update granted authorities and grantedAuthorities_useraccount";
 
-	public static final PermissionsUpdater NewInstance(){
-		return new PermissionsUpdater(stepName);
+	public static final PermissionsUpdater NewInstance(List<ISchemaUpdaterStep> stepList){
+		return new PermissionsUpdater(stepList, stepName);
 	}
 
-	protected PermissionsUpdater(String stepName) {
-		super(stepName);
+	protected PermissionsUpdater(List<ISchemaUpdaterStep> stepList, String stepName) {
+		super(stepList, stepName);
 	}
 
     @Override

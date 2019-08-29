@@ -117,20 +117,14 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 		this.transformer = transformer;
 	}
 
-	/**
-	 * @param source the source to set
-	 */
+    @Override
+    public SOURCE getSource() {
+        return source;
+    }
 	public void setSource(SOURCE source) {
 		this.source = source;
 	}
 
-	/**
-	 * @param source the source to get
-	 */
-	@Override
-    public SOURCE getSource() {
-		return source;
-	}
 
 	@Override
     public boolean isValid(){

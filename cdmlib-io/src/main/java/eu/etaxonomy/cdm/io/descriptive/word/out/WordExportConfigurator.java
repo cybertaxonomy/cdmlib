@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.XmlExportConfiguratorBase;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermTree;
 
 
 /**
@@ -31,15 +31,15 @@ public class WordExportConfigurator extends XmlExportConfiguratorBase<WordExport
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(WordExportConfigurator.class);
 
-    private FeatureTree featureTree;
+    private TermTree featureTree;
 
 
-    private WordExportConfigurator(ICdmDataSource source, File destinationFolder, FeatureTree featureTree) {
+    private WordExportConfigurator(ICdmDataSource source, File destinationFolder, TermTree featureTree) {
         super(destinationFolder, source, null);
         this.featureTree = featureTree;
     }
 
-    public static WordExportConfigurator NewInstance(ICdmDataSource source, File destinationFolder, FeatureTree featureTree) {
+    public static WordExportConfigurator NewInstance(ICdmDataSource source, File destinationFolder, TermTree featureTree) {
         return new WordExportConfigurator(source, destinationFolder, featureTree);
     }
 
@@ -55,7 +55,7 @@ public class WordExportConfigurator extends XmlExportConfiguratorBase<WordExport
         };
     }
 
-    public FeatureTree getFeatureTree() {
+    public TermTree getFeatureTree() {
         return featureTree;
     }
 

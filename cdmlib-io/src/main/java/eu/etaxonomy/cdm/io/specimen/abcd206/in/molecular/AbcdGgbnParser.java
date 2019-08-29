@@ -301,10 +301,11 @@ public class AbcdGgbnParser {
                     NodeList sequencingDirectionList = singleSequencing.getElementsByTagName(prefix+"sequencingDirection");
                     //read direction
                     String singleReadDirection = AbcdParseUtility.parseFirstTextContent(sequencingDirectionList);
-                    if(singleReadDirection.equals(FORWARD)){
+
+                    if(singleReadDirection != null && singleReadDirection.equals(FORWARD)){
                         singleRead.setDirection(SequenceDirection.Forward);
                     }
-                    else if(singleReadDirection.equals(REVERSE)){
+                    else if(singleReadDirection != null && singleReadDirection.equals(REVERSE)){
                         singleRead.setDirection(SequenceDirection.Reverse);
                     }
                     //read pherogram URI

@@ -7,14 +7,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.api.service.config.DescriptionAggregationConfiguration;
 import eu.etaxonomy.cdm.api.service.dto.RowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenRowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonRowWrapperDTO;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
-import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
-import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.DescriptiveSystemRole;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -53,11 +53,11 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
     /**
      * Returns a collection of {@link RowWrapperDTO} objects for the given {@link DescriptiveDataSet}.<br>
      * A RowWrapper represents on row in the character matrix.
-     * @param descriptiveDataSet the working set for which the row wrapper objects should be fetched
+     * @param descriptiveDataSetUuid the working set for which the row wrapper objects should be fetched
      * @param the progress monitor
      * @return a list of row wrapper objects
      */
-    public ArrayList<RowWrapperDTO> getRowWrapper(DescriptiveDataSet descriptiveDataSet, IProgressMonitor monitor);
+    public ArrayList<RowWrapperDTO> getRowWrapper(UUID descriptiveDataSetUuid, IProgressMonitor monitor);
 
     /**
      * Loads all available specimens wrapped in a {@link SpecimenNodeWrapper} object for
@@ -86,13 +86,13 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
 
     /**
      * Returns a {@link TaxonDescription} for a given taxon node with corresponding
-     * features according to the {@link DescriptiveDataSet} and the having the given {@link MarkerType}.<br>
+     * features according to the {@link DescriptiveDataSet} and the having the given {@link DescriptionType}.<br>
      * @param descriptiveDataSetUuid the uuid of the dataset defining the features
      * @param taxonNodeUuid the uuid of the taxon node that links to the taxon
-     * @param markerType the {@link MarkerType} that the description should have
+     * @param descriptionType the {@link DescriptionType} that the description should have
      * @return the found taxon description or <code>null</code>
      */
-    public TaxonDescription findTaxonDescriptionByMarkerType(UUID dataSetUuid, UUID taxonNodeUuid, MarkerType markerType);
+    public TaxonDescription findTaxonDescriptionByDescriptionType(UUID dataSetUuid, UUID taxonNodeUuid, DescriptionType descriptionType);
 
     /**
      * Creates a taxon row wrapper object for the given description
@@ -120,11 +120,10 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      * taxon associated with the given taxon node.
      * @param descriptiveDataSetUuid the uuid of the dataset defining the features
      * @param taxonNodeUuid the uuid of the taxon node that links to the taxon
-     * @param markerType the type of the description
-     * @param markerFlag the flag of the marker
+     * @param descriptionType the type of the description
      * @return a taxon row wrapper of the description with the features defined in the data set
      */
-    public TaxonRowWrapperDTO createTaxonDescription(UUID dataSetUuid, UUID taxonNodeUuid, MarkerType markerType, boolean markerFlag);
+    public TaxonRowWrapperDTO createTaxonDescription(UUID dataSetUuid, UUID taxonNodeUuid, DescriptionType descriptionType);
 
     /**
      * Removes the description specified by the given {@link UUID} from the given {@link DescriptiveDataSet}.
@@ -144,27 +143,17 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
     public List<TaxonNode> loadFilteredTaxonNodes(DescriptiveDataSet descriptiveDataSet, List<String> propertyPaths);
 
     /**
-     * Aggregates the character data of the given descriptions and creates a new description
-     * for the given taxon with the aggregated data.
-     * @param taxonUuid the UUID of the taxon where the new description with the
-     * aggregated data will be stored
-     * @param descriptionUuids the uuid of the descriptions that are aggregated
-     * @param descriptionTitle the new title of the description
+     * Aggregates the character data of the given {@link DescriptiveDataSet}.<br>
+     * <br>
+     * For all {@link SpecimenDescription}s belonging to this data set new,
+     * aggregated {@link TaxonDescription}s are created for every taxon the specimens are
+     * directly associated with.
      * @param descriptiveDataSetUuid the uuid of the descriptive data set to which the
-     * aggregated description will be added to
+     * aggregated descriptions will be added to
+     * @param config the aggregation configuration
+     * @param monitor the progress monitor
      * @return the result of the operation
      */
-    public UpdateResult aggregateDescription(UUID taxonUuid, List<UUID> descriptionUuids, String descriptionTitle
-            , UUID descriptiveDataSetUuid);
+    public UpdateResult aggregate(UUID descriptiveDataSetUuid,  DescriptionAggregationConfiguration config, IProgressMonitor monitor);
 
-    /**
-     * Aggregates all {@link TaxonDescription}s of all sub nodes that have a "computed" marker
-     * @param taxonNodeUuid the parent taxon node
-     * @param descriptiveDataSetUuid the uuid of the descriptive data set to which the
-     * aggregated description will be added to
-     * @param monitor the progress monitor
-     * @return the update result
-     */
-    public UpdateResult aggregateTaxonDescription(UUID taxonNodeUuid, UUID descriptiveDataSetUuid,
-            IRemotingProgressMonitor monitor);
 }

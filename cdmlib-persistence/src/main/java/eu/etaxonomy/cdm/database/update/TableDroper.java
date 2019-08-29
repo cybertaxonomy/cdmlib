@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.database.update;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -26,8 +28,8 @@ public class TableDroper
 
 	private boolean ifExists = true;
 
-	public static final TableDroper NewInstance(String stepName, String tableName, boolean includeAudTable){
-		return new TableDroper(stepName, tableName, includeAudTable, true);
+	public static final TableDroper NewInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, boolean includeAudTable){
+		return new TableDroper(stepList, stepName, tableName, includeAudTable, true);
 	}
 
 	/**
@@ -38,13 +40,13 @@ public class TableDroper
 	 * @see #NewInstance(String, String, boolean)
 	 * @return
 	 */
-	public static final TableDroper NewInstance(String stepName, String tableName, boolean includeAudTable, boolean ifExists){
-		return new TableDroper(stepName, tableName, includeAudTable, ifExists);
+	public static final TableDroper NewInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, boolean includeAudTable, boolean ifExists){
+		return new TableDroper(stepList, stepName, tableName, includeAudTable, ifExists);
 	}
 
 
-	protected TableDroper(String stepName, String tableName, boolean includeAudTable, boolean ifExists) {
-		super(stepName, tableName, includeAudTable);
+	protected TableDroper(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, boolean includeAudTable, boolean ifExists) {
+		super(stepList, stepName, tableName, includeAudTable);
 		this.ifExists = ifExists;
 	}
 

@@ -149,4 +149,10 @@ public interface IVocabularyService extends IIdentifiableEntityService<TermVocab
     public <S extends TermVocabulary> List<UuidAndTitleCache<S>> getUuidAndTitleCache(Class<S> clazz, TermType termType,
             Integer limit, String pattern);
 
+    /**
+     * @param vocUuid
+     * @return
+     */
+    TermVocabularyDto findVocabularyDtoByVocabularyUuid(UUID vocUuid);
+
 }

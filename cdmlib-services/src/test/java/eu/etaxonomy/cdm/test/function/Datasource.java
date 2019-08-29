@@ -36,7 +36,9 @@ import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -52,30 +54,33 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.init.TermNotFoundException;
+import eu.etaxonomy.cdm.strategy.generate.PolytomousKeyGenerator;
+import eu.etaxonomy.cdm.strategy.generate.PolytomousKeyGeneratorConfigurator;
 
 public class Datasource {
 	private static final Logger logger = Logger.getLogger(Datasource.class);
 
 
 	private void testNewConfigControler(){
-		List<CdmPersistentDataSource> lsDataSources = CdmPersistentDataSource.getAllDataSources();
+
 		DbSchemaValidation schema = DbSchemaValidation.VALIDATE;
 
 		String server;
 		String database;
 		String username;
-
-		System.out.println(lsDataSources);
 		ICdmDataSource dataSource;
 
-		dataSource = lsDataSources.get(1);
+//      List<CdmPersistentDataSource> lsDataSources = CdmPersistentDataSource.getAllDataSources();
+//     System.out.println(lsDataSources);
+//     dataSource = lsDataSources.get(1);
+
 //		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 
-//		String server = "localhost";
-//		database = "cdm36";
-////		database = "cdm_production_edaphobase";
-//		String username = "edit";
-//		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
+		server = "localhost";
+		database = "test";
+//		database = "cdm_production_edaphobase";
+		username = "edit";
+		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
 //		String server = "160.45.63.171";
 //		String database = "cdm_production_xxx";
@@ -95,12 +100,12 @@ public class Datasource {
 //		dataSource = CdmDataSource.NewInstance(DatabaseTypeEnum.PostgreSQL, server, database, DatabaseTypeEnum.PostgreSQL.getDefaultPort(), username, AccountStore.readOrStorePassword(server, database, username, null));
 
 
-		//SQLServer
-		server = "BGBM-PESISQL";
-		database = "cdm36";
-		int port = 1433;
-		username = "cdmupdater";
-		dataSource = CdmDataSource.NewSqlServer2012Instance(server, database, port, username, AccountStore.readOrStorePassword(server, database, username, null));
+//		//SQLServer
+//		server = "BGBM-PESISQL";
+//		database = "cdm36";
+//		int port = 1433;
+//		username = "cdmupdater";
+//		dataSource = CdmDataSource.NewSqlServer2012Instance(server, database, port, username, AccountStore.readOrStorePassword(server, database, username, null));
 //
 //		//H2
 //        String path = "C:\\Users\\a.mueller\\.cdmLibrary\\writableResources\\h2\\LocalH2";
@@ -130,11 +135,15 @@ public class Datasource {
 		//CdmPersistentDataSource.save(dataSource.getName(), dataSource);
 		CdmApplicationController appCtr;
 		appCtr = CdmApplicationController.NewInstance(dataSource, schema);
-//		Classification classification = appCtr.getClassificationService().list(null, null, null, null, null).get(0);
-//		logger.warn(classification.getMicroReference());
-//        logger.warn(classification.getName());
 
-//		TransactionStatus tx = appCtr.startTransaction();
+		TransactionStatus tx = appCtr.startTransaction();
+		DescriptiveDataSet dataset = appCtr.getDescriptiveDataSetService().list(null, null, null, null, null).get(0);
+		PolytomousKeyGeneratorConfigurator config = new PolytomousKeyGeneratorConfigurator();
+		config.setDataSet(dataset);
+		PolytomousKey key = new PolytomousKeyGenerator().invoke(config);
+		key.print(System.out);
+
+		appCtr.commitTransaction(tx);
 
 //		testGroupedTaxa(appCtr);
 
@@ -232,15 +241,15 @@ public class Datasource {
 //		appCtr.getTaxonNodeService().saveOrUpdate(node3);
 //		appCtr.getClassificationService().saveOrUpdate(cl);
 //
-//		FeatureTree ft1 = FeatureTree.NewInstance();
-//		FeatureNode fn1 = FeatureNode.NewInstance((Feature)null);
+//		TermTree<Feature> ft1 = TermTree.NewInstance();
+//		FeatureNode fn1 = TermNode.NewInstance((Feature)null);
 //		ft1.getRoot().addChild(fn1);
 //		appCtr.getFeatureNodeService().save(fn1);
 //
-//		FeatureNode fn2 = FeatureNode.NewInstance((Feature)null);
+//		TermNode fn2 = TermNode.NewInstance((Feature)null);
 //		fn1.addChild(fn2);
 //
-//		FeatureNode fn3 = FeatureNode.NewInstance((Feature)null);
+//		TermNode fn3 = TermNode.NewInstance((Feature)null);
 //		fn1.addChild(fn2, 0);
 //
 //		appCtr.getFeatureNodeService().saveOrUpdate(fn1);

@@ -28,17 +28,17 @@ import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
-import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 public class CdmIDResolver extends IDResolver {
@@ -168,7 +168,7 @@ public class CdmIDResolver extends IDResolver {
 					  return resolveObject(uuid, targetType, vocabularyService);
 				  } else if(DescriptionBase.class.isAssignableFrom(targetType)) {
 					  return resolveObject(uuid, targetType, descriptionService);
-				  } else if(FeatureTree.class.isAssignableFrom(targetType)) {
+				  } else if(TermTree.class.isAssignableFrom(targetType)) {
 					  return resolveObject(uuid, targetType, featureTreeService);
 				  } else if(Media.class.isAssignableFrom(targetType)) {
 					  return resolveObject(uuid, targetType, mediaService);

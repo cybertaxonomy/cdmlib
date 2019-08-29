@@ -65,7 +65,7 @@ import eu.etaxonomy.cdm.validation.Level2;
 @Entity
 @Audited
 @Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
-public class CategoricalData extends DescriptionElementBase implements Cloneable{
+public class CategoricalData extends DescriptionElementBase {
     private static final long serialVersionUID = -6298361966947668998L;
     private static final Logger logger = Logger.getLogger(CategoricalData.class);
 
@@ -242,6 +242,17 @@ public class CategoricalData extends DescriptionElementBase implements Cloneable
         return true;
     }
 
+//********************************** toString **************************************/
+
+
+    @Override
+    public String toString() {
+        return "[" + stateData +
+                (orderRelevant? ", orderRelevant=" + orderRelevant:"") +
+                (unknownData? ", unknownData=" + unknownData:"")
+                + "]";
+    }
+
 
 //*********************************** CLONE *****************************************/
 
@@ -274,6 +285,7 @@ public class CategoricalData extends DescriptionElementBase implements Cloneable
             return null;
         }
     }
+
 
 
 }

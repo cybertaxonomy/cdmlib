@@ -76,7 +76,7 @@ public class FloraCubaCondensedDistributionComposerOld extends CondensedDistribu
         OrderedTermVocabulary<NamedArea> areaVocabulary = CdmBase.deproxy(filteredDistributions.iterator().next().getArea().getVocabulary(), OrderedTermVocabulary.class);
 
         //deproxy and reverse order
-        List<NamedArea> areaList = new ArrayList<NamedArea>();
+        List<NamedArea> areaList = new ArrayList<>();
         for (DefinedTermBase<NamedArea> dtb : areaVocabulary.getOrderedTerms()){
             areaList.add(0, (NamedArea)CdmBase.deproxy(dtb));
         }

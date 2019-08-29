@@ -11,26 +11,26 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.api.service.config.FeatureNodeDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.config.TermNodeDeletionConfigurator;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.FeatureNode;
+import eu.etaxonomy.cdm.model.term.TermNode;
 
 /**
  * @author n.hoffmann
  * @since Aug 5, 2010
- * @version 1.0
+ * @deprecated use ITermNodeService instead
  */
-public interface IFeatureNodeService extends IVersionableService<FeatureNode>{
+@Deprecated
+public interface IFeatureNodeService extends IVersionableService<TermNode>{
 
+    DeleteResult isDeletable(UUID nodeUuid, TermNodeDeletionConfigurator config);
 
-    DeleteResult isDeletable(UUID nodeUuid, FeatureNodeDeletionConfigurator config);
-
-    DeleteResult deleteFeatureNode(UUID nodeUuid, FeatureNodeDeletionConfigurator config);
+    DeleteResult deleteFeatureNode(UUID nodeUuid, TermNodeDeletionConfigurator config);
 
 
     /**
      * <b>Saves</b> and adds the specified feature as a child node to the given feature node.
-     * @see IFeatureNodeService#addChildFeatureNode(FeatureNode, DefinedTermBase)
+     * @see ITermNodeService#addChildFeatureNode(FeatureNode, DefinedTermBase)
      * @param parentNodeUuid the feature node where the new feature should be added
      * @param term the term which should be <b>saved</b> and added to the given feature node
      * @param vocabularyUuid the UUID of the vocabulary where the term should be saved
@@ -56,7 +56,7 @@ public interface IFeatureNodeService extends IVersionableService<FeatureNode>{
     public UpdateResult addChildFeatureNode(UUID parentNodeUUID, UUID termChildUuid, int position);
 
     /**
-     * Moves a given {@link FeatureNode} to the target node at the given position;
+     * Moves a given {@link TermNode} to the target node at the given position;
      * @param movedNodeUuid the node to move
      * @param targetNodeUuid the target node
      * @param position the position in the list of children of the target node
@@ -65,7 +65,7 @@ public interface IFeatureNodeService extends IVersionableService<FeatureNode>{
     public UpdateResult moveFeatureNode(UUID movedNodeUuid, UUID targetNodeUuid, int position);
 
     /**
-     * Moves a given {@link FeatureNode} to the target node;
+     * Moves a given {@link TermNode} to the target node;
      * @param movedNodeUuid the node to move
      * @param targetNodeUuid the target node
      * @return the result of the operation

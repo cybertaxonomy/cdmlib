@@ -25,7 +25,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.common.User;
+import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.persistence.dao.common.IAnnotationDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;

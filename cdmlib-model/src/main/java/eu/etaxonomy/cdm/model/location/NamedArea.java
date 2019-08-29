@@ -84,7 +84,8 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 @ClassBridge(impl=DefinedTermBaseClassBridge.class, params={
     @Parameter(name="includeParentTerms", value="true")
 })
-public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
+public class NamedArea extends OrderedTermBase<NamedArea> {
+
     private static final long serialVersionUID = 6248434369557403036L;
     private static final Logger logger = Logger.getLogger(NamedArea.class);
 
@@ -174,7 +175,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="DefinedTermBase_Country")
-    private final Set<Country> countries = new HashSet<Country>();
+    private final Set<Country> countries = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     private NamedAreaType type;

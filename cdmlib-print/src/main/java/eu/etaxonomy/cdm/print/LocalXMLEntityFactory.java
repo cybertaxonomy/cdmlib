@@ -30,9 +30,9 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DaoBase;
 import eu.etaxonomy.cdm.print.XMLHelper.EntityType;
 import eu.etaxonomy.cdm.remote.controller.ClassificationController;
 import eu.etaxonomy.cdm.remote.controller.ClassificationListController;
-import eu.etaxonomy.cdm.remote.controller.FeatureNodeController;
-import eu.etaxonomy.cdm.remote.controller.FeatureTreeController;
-import eu.etaxonomy.cdm.remote.controller.FeatureTreeListController;
+import eu.etaxonomy.cdm.remote.controller.TermNodeController;
+import eu.etaxonomy.cdm.remote.controller.TermTreeController;
+import eu.etaxonomy.cdm.remote.controller.TermTreeListController;
 import eu.etaxonomy.cdm.remote.controller.NameController;
 import eu.etaxonomy.cdm.remote.controller.TaxonNodePrintAppController;
 import eu.etaxonomy.cdm.remote.controller.TaxonPortalController;
@@ -72,16 +72,16 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
     @Autowired
     private NameController nameController;
     @Autowired
-    private FeatureTreeListController featureTreeListController;
+    private TermTreeListController featureTreeListController;
 
     @Autowired
     private TaxonPortalController taxonPortalController;
 
     @Autowired
-    private FeatureTreeController featureTreeController;
+    private TermTreeController featureTreeController;
 
     @Autowired
-    private FeatureNodeController featureNodeController;
+    private TermNodeController termNodeController;
 
     @Autowired
     private PolytomousKeyNodeDtoController polytomousKeyNodeDtoController;
@@ -118,11 +118,11 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
     	nameController = (NameController) applicationConfiguration
     			.getBean("nameController");
 
-    	featureTreeListController = (FeatureTreeListController) applicationConfiguration
+    	featureTreeListController = (TermTreeListController) applicationConfiguration
     			.getBean("featureTreeListController");
-    	featureTreeController = (FeatureTreeController) applicationConfiguration
+    	featureTreeController = (TermTreeController) applicationConfiguration
     			.getBean("featureTreeController");
-    	featureNodeController = (FeatureNodeController) applicationConfiguration
+    	termNodeController = (TermNodeController) applicationConfiguration
     			.getBean("featureNodeController");
 
     	taxonPortalController = (TaxonPortalController) applicationConfiguration
@@ -205,11 +205,11 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
     }
 
     @Override
-    public Element getFeatureNode(UUID uuid) {
+    public Element getTermNode(UUID uuid) {
         xmlView.setJsonConfig(jsonConfig);
         Object resultObject = null;
         try {
-            resultObject = featureNodeController.doGet(uuid, null, null);
+            resultObject = termNodeController.doGet(uuid, null, null);
         } catch (IOException e) {
             monitor.warning(e.getLocalizedMessage(), e);
             logger.error(e);
@@ -220,11 +220,11 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
     }
 
     @Override
-    public Element getFeatureForFeatureNode(UUID uuid) {
+    public Element getFeatureForTermNode(UUID uuid) {
         xmlView.setJsonConfig(jsonConfig);
         Object resultObject = null;
         try {
-            resultObject = featureNodeController.getCdmBaseProperty(uuid,
+            resultObject = termNodeController.getCdmBaseProperty(uuid,
                     "feature", null);
         } catch (IOException e) {
             monitor.warning(e.getLocalizedMessage(), e);

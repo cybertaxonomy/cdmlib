@@ -122,7 +122,7 @@ public class DescriptionServiceImplTest extends CdmTransactionalIntegrationTest 
         Set<DescriptionElementBase> tmpSet = new HashSet<DescriptionElementBase>(descLoaded1.getElements());
 
         //test for #4806
-        service.moveDescriptionElementsToDescription(tmpSet, descLoaded2, false);
+        service.moveDescriptionElementsToDescription(tmpSet, descLoaded2, false, true);
         try {
             commitAndStartNewTransaction(null);
         } catch (Exception e) {
@@ -169,7 +169,7 @@ public class DescriptionServiceImplTest extends CdmTransactionalIntegrationTest 
         sourceCollection.remove(element3Data);  //should work as it works on equal
         Assert.assertEquals(2, sourceCollection.size());
 
-        service.moveDescriptionElementsToDescription(sourceCollection, targetDescription, false);
+        service.moveDescriptionElementsToDescription(sourceCollection, targetDescription, false, true);
 
         Assert.assertEquals("Source description should have 1 element left", 1, sourceDescription.getElements().size());
         Assert.assertEquals("Target description should have 2 new elements", 2, targetDescription.getElements().size());
@@ -184,7 +184,7 @@ public class DescriptionServiceImplTest extends CdmTransactionalIntegrationTest 
         assertNotNull(sourceDescription);
         assertNotNull(targetDescription);
         try {
-            service.moveDescriptionElementsToDescription(targetDescription.getElements(), sourceDescription, false);
+            service.moveDescriptionElementsToDescription(targetDescription.getElements(), sourceDescription, false, true);
         } catch (Exception e) {
             //asserting that no ConcurrentModificationException is thrown when the elements collection is passed as a parameter
             e.printStackTrace();
@@ -234,7 +234,7 @@ public class DescriptionServiceImplTest extends CdmTransactionalIntegrationTest 
         Assert.assertEquals(3, sourceDescription.getElements().size());
 
         TaxonDescription targetDescription = (TaxonDescription)this.service.find(targetDescriptionData.getId());
-        service.moveDescriptionElementsToDescription(sourceDescription.getElements(), targetDescription, false);
+        service.moveDescriptionElementsToDescription(sourceDescription.getElements(), targetDescription, false, true);
         //the description is not removed anymore to avoid deletion of not persisted description elements
 
 //        TaxonDescription removedDescription = (TaxonDescription) this.service.find(sourceDescription.getUuid());

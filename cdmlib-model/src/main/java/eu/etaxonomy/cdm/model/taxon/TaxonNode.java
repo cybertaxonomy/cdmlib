@@ -177,11 +177,11 @@ public class TaxonNode
     public boolean isUnplaced() {return unplaced;}
     public void setUnplaced(boolean unplaced) {this.unplaced = unplaced;}
 
-//    //#8281 indicates a preliminary placement
-//    @XmlAttribute(name= "doubtful")
-//    private boolean doubtful = false;
-//    public boolean isDoubtful() {return doubtful;}
-//    public void setDoubtful(boolean doubtful) {this.doubtful = doubtful;}
+    //#8281 indicates a preliminary placement
+    @XmlAttribute(name= "doubtful")
+    private boolean doubtful = false;
+    public boolean isDoubtful() {return doubtful;}
+    public void setDoubtful(boolean doubtful) {this.doubtful = doubtful;}
 
     @XmlAttribute(name= "excluded")
     private boolean excluded = false;
@@ -279,7 +279,7 @@ public class TaxonNode
     }
     /**
      * THIS METHOD SHOULD NOT BE CALLED!
-     * invisible part of the bidirectional relationship, for public use TaxonomicView.addRoot() or TaxonNode.addChild()
+     * invisible part of the bidirectional relationship, for public use Classification.addRoot() or TaxonNode.addChild()
      * @param classification
      * @deprecated for internal use only
      */
@@ -413,30 +413,18 @@ public class TaxonNode
 
 // ****************** Agent Relations ****************************/
 
-
-    /**
-     * @return
-     */
     public Set<TaxonNodeAgentRelation> getAgentRelations() {
         return this.agentRelations;
     }
-
     public TaxonNodeAgentRelation addAgentRelation(DefinedTerm type, TeamOrPersonBase<?> agent){
         TaxonNodeAgentRelation result = TaxonNodeAgentRelation.NewInstance(this, agent, type);
         return result;
     }
-    /**
-     * @param nodeAgentRelation
-     */
-    protected void addAgentRelation(TaxonNodeAgentRelation agentRelation) {
+    public void addAgentRelation(TaxonNodeAgentRelation agentRelation) {
         agentRelation.setTaxonNode(this);
         this.agentRelations.add(agentRelation);
     }
-
-    /**
-     * @param nodeAgentRelation
-     */
-    public void removeNodeAgent(TaxonNodeAgentRelation agentRelation) {
+    public void removeAgentRelation(TaxonNodeAgentRelation agentRelation) {
         agentRelation.setTaxonNode(this);
         agentRelations.remove(agentRelation);
     }
@@ -566,7 +554,7 @@ public class TaxonNode
         node.setTaxon(null);
 
 
-        ArrayList<TaxonNode> childNodes = new ArrayList<TaxonNode>(node.getChildNodes());
+        ArrayList<TaxonNode> childNodes = new ArrayList<>(node.getChildNodes());
         for(TaxonNode childNode : childNodes){
             HibernateProxyHelper.deproxy(childNode, TaxonNode.class);
             node.deleteChildNode(childNode);
@@ -588,12 +576,12 @@ public class TaxonNode
         node.setTaxon(null);
         taxon.removeTaxonNode(node);
         if (deleteChildren){
-            ArrayList<TaxonNode> childNodes = new ArrayList<TaxonNode>(node.getChildNodes());
+            ArrayList<TaxonNode> childNodes = new ArrayList<>(node.getChildNodes());
             for(TaxonNode childNode : childNodes){
                 node.deleteChildNode(childNode, deleteChildren);
             }
         } else{
-        	ArrayList<TaxonNode> childNodes = new ArrayList<TaxonNode>(node.getChildNodes());
+        	ArrayList<TaxonNode> childNodes = new ArrayList<>(node.getChildNodes());
             for(TaxonNode childNode : childNodes){
              this.addChildNode(childNode, null, null);
             }
@@ -766,7 +754,9 @@ public class TaxonNode
        // this.getParent().removeNullValueFromChildren();
         this.getParent().updateSortIndex(index);
         //only for debugging
-        if (! this.getSortIndex().equals(index)){
+        if (this.getSortIndex() == null){
+            logger.warn("sortindex is null. This should not happen.");
+        }else if (! this.getSortIndex().equals(index)){
         	logger.warn("index and sortindex are not equal: " +  this.getSortIndex() + ";" + index);
         }
 

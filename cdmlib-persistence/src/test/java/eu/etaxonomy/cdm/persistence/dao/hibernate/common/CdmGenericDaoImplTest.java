@@ -47,8 +47,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Credit;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
-import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
-import eu.etaxonomy.cdm.model.common.Group;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Identifier;
@@ -60,7 +58,6 @@ import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
@@ -130,6 +127,9 @@ import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.permission.GrantedAuthorityImpl;
+import eu.etaxonomy.cdm.model.permission.Group;
+import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.IBookSection;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
@@ -146,11 +146,11 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.FeatureNode;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
 import eu.etaxonomy.cdm.model.term.OrderedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermNode;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
@@ -212,7 +212,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		List<Reference> list = cdmGenericDao.list(Reference.class, 10, 0, null, null);
 //        System.out.println("ref1: " + ref1Uuid + " ref2: " + ref2Uuid);
         for (Reference ref: list){
-            System.out.println("reference: " + ref.getUuid());
+//            System.out.println("reference: " + ref.getUuid());
         }
 		try {
 			cdmGenericDao.merge(ref2, ref1, null);
@@ -247,9 +247,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		logger.warn("Not yet implemented");
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmGenericDaoImpl#getAllPersistedClasses(boolean)}.
-	 */
 	@Test
 	public void testGetAllPersistedClasses() {
 		Class<?>[] existingClassesArray = {
@@ -291,8 +288,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 				DescriptionElementBase.class,
 				Distribution.class,
 				Feature.class,
-				FeatureNode.class,
-				FeatureTree.class,
+				TermNode.class,
+				TermTree.class,
 				MediaKey.class,
 				IndividualsAssociation.class,
 				MeasurementUnit.class,

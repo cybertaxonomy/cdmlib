@@ -145,6 +145,14 @@ public interface ITermVocabularyDao extends IIdentifiableDao<TermVocabulary> {
     public List<TermVocabularyDto> findVocabularyDtoByTermTypes(Set<TermType> termType);
 
     /**
+     * Returns term vocabulary for UUID
+     *
+     * @param UUID the {@link UUID} of the vocabulary
+     * @return term vocabularies
+     */
+    public TermVocabularyDto findVocabularyDtoByUuid(UUID vocUuid);
+
+    /**
      *
      * Like {@link #getUuidAndTitleCache(Class, Integer, String)} but filtering
      * the results by {@link TermType} of the vocabularies.

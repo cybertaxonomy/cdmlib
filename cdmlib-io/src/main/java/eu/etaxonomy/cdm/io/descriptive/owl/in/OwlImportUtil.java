@@ -35,8 +35,8 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.FeatureNode;
 import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
@@ -106,22 +106,30 @@ public class OwlImportUtil {
         stateVocs.forEach(stateVoc->feature.addSupportedCategoricalEnumeration(stateVoc));
     }
 
-    private static void addCharacterProperties(Character character, Resource termResource, ICdmRepository repo, Model model, StructureTreeOwlImportState state){
+    static void addCharacterProperties(Character character, Resource termResource, ICdmRepository repo, Model model, StructureTreeOwlImportState state){
         addFeatureProperties(character, termResource, repo, model, state);
         // TODO import/export of complete term tree of structures and properties belonging to a character is necessary
-        // import structure
-        Statement structureStatement = termResource.getProperty(OwlUtil.propCharacterHasStructure);
-        Resource structureResource = model.createResource(structureStatement.getObject().toString());
-        FeatureNode structureNode = findNode(structureResource, repo, model, state);
-        if(structureNode!=null){
-            character.setStructure(structureNode);
-        }
         // import property
         Statement propertyStatement = termResource.getProperty(OwlUtil.propCharacterHasProperty);
         Resource propertyResource = model.createResource(propertyStatement.getObject().toString());
-        FeatureNode propertyNode = findNode(propertyResource, repo, model, state);
+        TermNode propertyNode = findNode(propertyResource, repo, model, state);
         if(propertyNode!=null){
             character.setProperty(propertyNode);
+        }
+        else{
+            logger.error("Property not found for character: "+character);
+            return;
+        }
+        // import structure
+        Statement structureStatement = termResource.getProperty(OwlUtil.propCharacterHasStructure);
+        Resource structureResource = model.createResource(structureStatement.getObject().toString());
+        TermNode structureNode = findNode(structureResource, repo, model, state);
+        if(structureNode!=null){
+            character.setStructure(structureNode);
+        }
+        else{
+            logger.error("Structure not found for character: "+character);
+            return;
         }
         // import structure modifier
         if(termResource.hasProperty(OwlUtil.propCharacterHasStructureModfier)){
@@ -175,7 +183,7 @@ public class OwlImportUtil {
         term.addSource(importSource);
     }
 
-    private static <T extends DefinedTermBase> T findTerm(Class<T> clazz, Resource termResource, ICdmRepository repo, Model model, StructureTreeOwlImportState state){
+    static <T extends DefinedTermBase> T findTerm(Class<T> clazz, Resource termResource, ICdmRepository repo, Model model, StructureTreeOwlImportState state){
         UUID termUuid = UUID.fromString(termResource.getProperty(OwlUtil.propUuid).getString());
         List<T> terms = repo.getTermService().find(clazz, Collections.singleton(termUuid));
         if(!terms.isEmpty()){
@@ -189,9 +197,9 @@ public class OwlImportUtil {
         return repo.getVocabularyService().find(termUuid);
     }
 
-    private static FeatureNode findNode(Resource termResource, ICdmRepository repo, Model model, StructureTreeOwlImportState state){
+    private static TermNode findNode(Resource termResource, ICdmRepository repo, Model model, StructureTreeOwlImportState state){
         UUID uuid = UUID.fromString(termResource.getProperty(OwlUtil.propUuid).getString());
-        return repo.getFeatureNodeService().find(uuid);
+        return repo.getTermNodeService().find(uuid);
     }
 
     private static Reference findReference(Resource resource, ICdmRepository repo){
@@ -217,7 +225,6 @@ public class OwlImportUtil {
         Character character = findTerm(Character.class, termResource, repo, model, state);
         if(character==null){
             character = Character.NewInstance();
-            addCharacterProperties(character, termResource, repo, model, state);
         }
         return character;
     }
@@ -270,6 +277,9 @@ public class OwlImportUtil {
     static Reference createReference(Resource citationResource, Model model){
         String titleString = citationResource.getProperty(OwlUtil.propReferenceTitle).getString();
         Reference citation = ReferenceFactory.newGeneric();
+        // FIXME setting the UUID leads to org.hibernate.NonUniqueObjectException:
+        // A different object with the same identifier value was already associated with the session : [eu.etaxonomy.cdm.model.reference.Reference#12]
+//        citation.setUuid(UUID.fromString(citationResource.getProperty(OwlUtil.propUuid).getString()));
         citation.setTitle(titleString);
         return citation;
     }

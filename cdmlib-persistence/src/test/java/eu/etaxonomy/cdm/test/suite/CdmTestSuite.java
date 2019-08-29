@@ -17,9 +17,9 @@ import eu.etaxonomy.cdm.database.CdmDataSourceTest;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnumTest;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBaseTest;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DaoBaseTest;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DefinedTermDaoImplTest;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBaseTest;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImplTest;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.term.DefinedTermDaoImplTest;
 
 
 @RunWith(Suite.class)

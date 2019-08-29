@@ -17,9 +17,9 @@ import org.springframework.security.access.AccessDecisionVoter;
 
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TextData;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
+import eu.etaxonomy.cdm.model.permission.CRUD;
+import eu.etaxonomy.cdm.model.permission.PermissionClass;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionClass;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.TargetEntityStates;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.voter.DescriptionElementVoter;
 
@@ -50,11 +50,11 @@ public class DescriptionElementVoterTest extends AbstractCdmPermissionVoterTest 
 
         int vote = voter.vote(
                 authentication(
-                        new CdmAuthority(CdmPermissionClass.DESCRIPTIONELEMENTBASE, ecology.getLabel(), EnumSet.of(CRUD.UPDATE), null),
-                        new CdmAuthority(CdmPermissionClass.DESCRIPTIONELEMENTBASE, ecology.getLabel(), EnumSet.of(CRUD.CREATE), null)
+                        new CdmAuthority(PermissionClass.DESCRIPTIONELEMENTBASE, ecology.getLabel(), EnumSet.of(CRUD.UPDATE), null),
+                        new CdmAuthority(PermissionClass.DESCRIPTIONELEMENTBASE, ecology.getLabel(), EnumSet.of(CRUD.CREATE), null)
                         ),
                 textDataEco,
-                Arrays.asList(new CdmAuthority(CdmPermissionClass.DESCRIPTIONELEMENTBASE, null, EnumSet.of(CRUD.CREATE), null)));
+                Arrays.asList(new CdmAuthority(PermissionClass.DESCRIPTIONELEMENTBASE, null, EnumSet.of(CRUD.CREATE), null)));
         assertEquals(AccessDecisionVoter.ACCESS_GRANTED, vote);
     }
 
@@ -63,11 +63,11 @@ public class DescriptionElementVoterTest extends AbstractCdmPermissionVoterTest 
         int vote = voter.vote(
                 authentication(
                         // reverse order
-                        new CdmAuthority(CdmPermissionClass.DESCRIPTIONELEMENTBASE, ecology.getLabel(), EnumSet.of(CRUD.CREATE), null),
-                        new CdmAuthority(CdmPermissionClass.DESCRIPTIONELEMENTBASE, ecology.getLabel(), EnumSet.of(CRUD.UPDATE), null)
+                        new CdmAuthority(PermissionClass.DESCRIPTIONELEMENTBASE, ecology.getLabel(), EnumSet.of(CRUD.CREATE), null),
+                        new CdmAuthority(PermissionClass.DESCRIPTIONELEMENTBASE, ecology.getLabel(), EnumSet.of(CRUD.UPDATE), null)
                         ),
                 textDataEco,
-                Arrays.asList(new CdmAuthority(CdmPermissionClass.DESCRIPTIONELEMENTBASE, null, EnumSet.of(CRUD.CREATE), null)));
+                Arrays.asList(new CdmAuthority(PermissionClass.DESCRIPTIONELEMENTBASE, null, EnumSet.of(CRUD.CREATE), null)));
         assertEquals(AccessDecisionVoter.ACCESS_GRANTED, vote);
     }
 
@@ -76,10 +76,10 @@ public class DescriptionElementVoterTest extends AbstractCdmPermissionVoterTest 
         int vote = voter.vote(
                 authentication(
                         // combined
-                        new CdmAuthority(CdmPermissionClass.DESCRIPTIONELEMENTBASE, ecology.getLabel(), EnumSet.of(CRUD.CREATE, CRUD.UPDATE), null)
+                        new CdmAuthority(PermissionClass.DESCRIPTIONELEMENTBASE, ecology.getLabel(), EnumSet.of(CRUD.CREATE, CRUD.UPDATE), null)
                         ),
                 textDataEco,
-                Arrays.asList(new CdmAuthority(CdmPermissionClass.DESCRIPTIONELEMENTBASE, null, EnumSet.of(CRUD.CREATE), null)));
+                Arrays.asList(new CdmAuthority(PermissionClass.DESCRIPTIONELEMENTBASE, null, EnumSet.of(CRUD.CREATE), null)));
         assertEquals(AccessDecisionVoter.ACCESS_GRANTED, vote);
     }
 
@@ -88,10 +88,10 @@ public class DescriptionElementVoterTest extends AbstractCdmPermissionVoterTest 
         int vote = voter.vote(
                 authentication(
                         // combined
-                        new CdmAuthority(CdmPermissionClass.DESCRIPTIONELEMENTBASE, ecology.getLabel(), EnumSet.of(CRUD.CREATE, CRUD.UPDATE), null)
+                        new CdmAuthority(PermissionClass.DESCRIPTIONELEMENTBASE, ecology.getLabel(), EnumSet.of(CRUD.CREATE, CRUD.UPDATE), null)
                         ),
                 textDataEco,
-                Arrays.asList(new CdmAuthority(CdmPermissionClass.DESCRIPTIONELEMENTBASE, null, EnumSet.of(CRUD.CREATE), null)));
+                Arrays.asList(new CdmAuthority(PermissionClass.DESCRIPTIONELEMENTBASE, null, EnumSet.of(CRUD.CREATE), null)));
         assertEquals(AccessDecisionVoter.ACCESS_GRANTED, vote);
     }
 
@@ -100,10 +100,10 @@ public class DescriptionElementVoterTest extends AbstractCdmPermissionVoterTest 
         int vote = voter.vote(
                 authentication(
                         // combined
-                        new CdmAuthority(CdmPermissionClass.DESCRIPTIONELEMENTBASE, morphology.getLabel(), EnumSet.of(CRUD.CREATE, CRUD.UPDATE), null)
+                        new CdmAuthority(PermissionClass.DESCRIPTIONELEMENTBASE, morphology.getLabel(), EnumSet.of(CRUD.CREATE, CRUD.UPDATE), null)
                         ),
                 textDataEco,
-                Arrays.asList(new CdmAuthority(CdmPermissionClass.DESCRIPTIONELEMENTBASE, null, EnumSet.of(CRUD.CREATE), null)));
+                Arrays.asList(new CdmAuthority(PermissionClass.DESCRIPTIONELEMENTBASE, null, EnumSet.of(CRUD.CREATE), null)));
         assertEquals(AccessDecisionVoter.ACCESS_DENIED, vote);
     }
 
@@ -112,10 +112,10 @@ public class DescriptionElementVoterTest extends AbstractCdmPermissionVoterTest 
         int vote = voter.vote(
                 authentication(
                         // combined
-                        new CdmAuthority(CdmPermissionClass.DESCRIPTIONELEMENTBASE, ecology.getLabel(), EnumSet.of(CRUD.CREATE, CRUD.UPDATE), null)
+                        new CdmAuthority(PermissionClass.DESCRIPTIONELEMENTBASE, ecology.getLabel(), EnumSet.of(CRUD.CREATE, CRUD.UPDATE), null)
                         ),
                 new TargetEntityStates(new TextData()),
-                Arrays.asList(new CdmAuthority(CdmPermissionClass.DESCRIPTIONELEMENTBASE, null, EnumSet.of(CRUD.CREATE), null)));
+                Arrays.asList(new CdmAuthority(PermissionClass.DESCRIPTIONELEMENTBASE, null, EnumSet.of(CRUD.CREATE), null)));
         assertEquals(AccessDecisionVoter.ACCESS_DENIED, vote);
     }
 
@@ -124,10 +124,10 @@ public class DescriptionElementVoterTest extends AbstractCdmPermissionVoterTest 
         int vote = voter.vote(
                 authentication(
                         // combined
-                        new CdmAuthority(CdmPermissionClass.DESCRIPTIONELEMENTBASE, ecology.getLabel(), EnumSet.of(CRUD.CREATE, CRUD.UPDATE), null)
+                        new CdmAuthority(PermissionClass.DESCRIPTIONELEMENTBASE, ecology.getLabel(), EnumSet.of(CRUD.CREATE, CRUD.UPDATE), null)
                         ),
                 new TargetEntityStates(new TextData()),
-                Arrays.asList(new CdmAuthority(CdmPermissionClass.TAXONBASE, null, EnumSet.of(CRUD.CREATE), null)));
+                Arrays.asList(new CdmAuthority(PermissionClass.TAXONBASE, null, EnumSet.of(CRUD.CREATE), null)));
         assertEquals(AccessDecisionVoter.ACCESS_DENIED, vote);
     }
 
@@ -136,10 +136,10 @@ public class DescriptionElementVoterTest extends AbstractCdmPermissionVoterTest 
         int vote = voter.vote(
                 authentication(
                         // combined
-                        new CdmAuthority(CdmPermissionClass.DESCRIPTIONELEMENTBASE, ecology.getLabel(), EnumSet.of(CRUD.READ, CRUD.UPDATE), null)
+                        new CdmAuthority(PermissionClass.DESCRIPTIONELEMENTBASE, ecology.getLabel(), EnumSet.of(CRUD.READ, CRUD.UPDATE), null)
                         ),
                 textDataEco,
-                Arrays.asList(new CdmAuthority(CdmPermissionClass.DESCRIPTIONELEMENTBASE, null, EnumSet.of(CRUD.CREATE), null)));
+                Arrays.asList(new CdmAuthority(PermissionClass.DESCRIPTIONELEMENTBASE, null, EnumSet.of(CRUD.CREATE), null)));
         assertEquals(AccessDecisionVoter.ACCESS_DENIED, vote);
     }
 

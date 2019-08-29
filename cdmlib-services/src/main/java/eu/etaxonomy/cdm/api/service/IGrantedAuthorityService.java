@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
-import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
+import eu.etaxonomy.cdm.model.permission.GrantedAuthorityImpl;
 
 /**
  * @author andreas kohlbecker

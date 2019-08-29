@@ -51,7 +51,8 @@ public class DescriptiveDataSetDao
 	        	query.setFirstResult(0);
 	        }
 	    }
-		List<DescriptionBase> descriptions = query.list();
+		@SuppressWarnings("unchecked")
+        List<DescriptionBase> descriptions = query.list();
 		Map<DescriptionBase, Set<DescriptionElementBase>> result = new HashMap<>();
 		for(DescriptionBase description : descriptions) {
 			Criteria criteria = getSession().createCriteria(DescriptionElementBase.class);
@@ -60,7 +61,8 @@ public class DescriptiveDataSetDao
 				criteria.add(Restrictions.in("feature", features));
 			}
 
-			List<DescriptionElementBase> r = criteria.list();
+			@SuppressWarnings("unchecked")
+            List<DescriptionElementBase> r = criteria.list();
 			defaultBeanInitializer.initializeAll(r, propertyPaths);
 			result.put(description, new HashSet<>(r));
 		}
@@ -89,7 +91,7 @@ public class DescriptiveDataSetDao
 			List<?> trees = queryTree.list();
 
 
-			String ftSelect = "SELECT feature.id FROM FeatureNode node join node.feature as feature " +
+			String ftSelect = "SELECT feature.id FROM TermNode node join node.feature as feature " +
 					" WHERE node.featureTree.id in (:trees) ";
 			Query ftQuery = getSession().createQuery(ftSelect);
 			ftQuery.setParameterList("trees", trees);

@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.database.update;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -36,22 +37,22 @@ public class IndexRenamer extends SchemaUpdaterStepBase {
 
 // ********************** FACTORY ****************************************/
 
-    public static final IndexRenamer NewStringInstance(String tableName, String oldIndexName,
+    public static final IndexRenamer NewStringInstance(List<ISchemaUpdaterStep> stepList, String tableName, String oldIndexName,
             String newIndexName, String columnName, Integer length){
-        return new IndexRenamer(tableName, oldIndexName,
+        return new IndexRenamer(stepList, tableName, oldIndexName,
                 newIndexName, columnName, length == null ? 255 : length);
     }
 
-    public static final IndexRenamer NewIntegerInstance(String tableName, String oldIndexName,
+    public static final IndexRenamer NewIntegerInstance(List<ISchemaUpdaterStep> stepList, String tableName, String oldIndexName,
             String newIndexName, String columnName){
-        return new IndexRenamer(tableName, oldIndexName, newIndexName, columnName, null);
+        return new IndexRenamer(stepList, tableName, oldIndexName, newIndexName, columnName, null);
     }
     /**
      * @param stepName
      */
-    protected IndexRenamer(String tableName, String oldIndexName,
+    protected IndexRenamer(List<ISchemaUpdaterStep> stepList, String tableName, String oldIndexName,
             String newIndexName, String columnName, Integer length) {
-        super("Rename index " + oldIndexName + " to " + newIndexName);
+        super(stepList, "Rename index " + oldIndexName + " to " + newIndexName);
         this.tableName = tableName;
         this.oldIndexName = oldIndexName;
         this.newIndexName = newIndexName;

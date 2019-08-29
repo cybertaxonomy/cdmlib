@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.database.update.v25_30;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -35,12 +36,12 @@ public class PolytomousKeyDataMover extends SchemaUpdaterStepBase implements ISc
 	private String polytomousKeyNodeTableName;
 	private boolean includeAudTable;
 
-	public static final PolytomousKeyDataMover NewInstance(String stepName, boolean includeAudTable){
-		return new PolytomousKeyDataMover(stepName, includeAudTable);
+	public static final PolytomousKeyDataMover NewInstance(List<ISchemaUpdaterStep> stepList, String stepName, boolean includeAudTable){
+		return new PolytomousKeyDataMover(stepList, stepName, includeAudTable);
 	}
 
-	protected PolytomousKeyDataMover(String stepName,  boolean includeAudTable) {
-		super(stepName);
+	protected PolytomousKeyDataMover(List<ISchemaUpdaterStep> stepList, String stepName,  boolean includeAudTable) {
+		super(stepList, stepName);
 		this.featureTreeTableName = "FeatureTree";
 		this.featureNodeTableName = "FeatureNode";
 		this.polytomousKeyTableName = "PolytomousKey";

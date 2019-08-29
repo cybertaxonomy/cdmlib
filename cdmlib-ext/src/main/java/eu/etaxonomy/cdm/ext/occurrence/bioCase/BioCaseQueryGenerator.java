@@ -90,6 +90,7 @@ public class BioCaseQueryGenerator {
     private static final String UNIT_PATH = "/DataSets/DataSet/Units/Unit";
     private static final String UNIT_ID_PATH_ABCD_2_0 = UNIT_PATH + "/UnitID";
     private static final String TAXON_NAME_PATH_ABCD_2_0 = UNIT_PATH + "/Identifications/Identification/Result/TaxonIdentified/ScientificName/FullScientificNameString";
+    private static final String TAXON_HIGHER_TAXON = UNIT_PATH + "/Identifications/Identification/Result/TaxonIdentified/HigherTaxa/HigherTaxon/HigherTaxonName";
     private static final String LOCALITY_PATH_ABCD_2_0 = UNIT_PATH + "/Gathering/LocalityText";
     private static final String HERBARIUM_PATH_ABCD_2_0 = UNIT_PATH + "/SourceID";
     private static final String COUNTRY_PATH_ABCD_2_0 = UNIT_PATH + "/Gathering/Country/ISO3166Code";
@@ -217,6 +218,9 @@ public class BioCaseQueryGenerator {
             }
             if(query.taxonName!=null && !query.taxonName.trim().isEmpty()){
                 addLikeFilter(elAnd, query.taxonName, TAXON_NAME_PATH_ABCD_2_0);
+            }
+            if(query.higherTaxon!=null && !query.higherTaxon.trim().isEmpty()){
+                addLikeFilter(elAnd, query.higherTaxon, TAXON_HIGHER_TAXON);
             }
             if(query.hasImage ){
                 addNotEqualsFilter(elAnd, "*", MEDIA_ABCD_2_0);

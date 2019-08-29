@@ -111,6 +111,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.persistence.dao.initializer.AbstractBeanInitializer;
+import eu.etaxonomy.cdm.persistence.dao.initializer.AdvancedBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
@@ -323,18 +324,19 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     @Override
-    public DerivedUnitFacade getDerivedUnitFacade(DerivedUnit derivedUnit, List<String> propertyPaths) throws DerivedUnitFacadeNotSupportedException {
+    public DerivedUnitFacade getDerivedUnitFacade(DerivedUnit derivedUnit, List<String> derivedUnitFacadeInitStrategy) throws DerivedUnitFacadeNotSupportedException {
         derivedUnit = (DerivedUnit) dao.load(derivedUnit.getUuid(), null);
         DerivedUnitFacadeConfigurator config = DerivedUnitFacadeConfigurator.NewInstance();
         config.setThrowExceptionForNonSpecimenPreservationMethodRequest(false);
         DerivedUnitFacade derivedUnitFacade = DerivedUnitFacade.NewInstance(derivedUnit, config);
-        beanInitializer.initialize(derivedUnitFacade, propertyPaths);
+        Logger.getLogger(AdvancedBeanInitializer.class).setLevel(org.apache.log4j.Level.TRACE);
+        beanInitializer.initialize(derivedUnitFacade, derivedUnitFacadeInitStrategy);
         return derivedUnitFacade;
     }
 
     @Override
     public List<DerivedUnitFacade> listDerivedUnitFacades(
-            DescriptionBase description, List<String> propertyPaths) {
+            DescriptionBase description, List<String> derivedUnitFacadeInitStrategy) {
 
         List<DerivedUnitFacade> derivedUnitFacadeList = new ArrayList<>();
         IndividualsAssociation tempIndividualsAssociation;
@@ -354,7 +356,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             }
         }
 
-        beanInitializer.initializeAll(derivedUnitFacadeList, propertyPaths);
+        beanInitializer.initializeAll(derivedUnitFacadeList, derivedUnitFacadeInitStrategy);
 
         return derivedUnitFacadeList;
     }
@@ -825,7 +827,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 occurrenceIds.add(o.getId());
             }
         }
-        occurrences = (List<T>) dao.loadList(occurrenceIds, propertyPaths);
+        occurrences = (List<T>) dao.loadList(occurrenceIds, null, propertyPaths);
 
         return new DefaultPagerImpl<T>(pageNumber, Long.valueOf(occurrences.size()), pageSize, occurrences);
 
@@ -843,7 +845,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<FieldUnitDTO> findFieldUnitDTOByAssociatedTaxon(Set<TaxonRelationshipEdge> includedRelationships,
             UUID associatedTaxonUuid) {
@@ -990,7 +991,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         //from which this DerivedUnit was derived until all FieldUnits are found.
 
         // FIXME: use HQL queries to increase performance
-    	
+
         SpecimenOrObservationBase<?> specimen = load(derivedUnitUuid, propertyPaths);
 //        specimen = HibernateProxyHelper.deproxy(specimen, SpecimenOrObservationBase.class);
         Collection<FieldUnit> fieldUnits = new ArrayList<>();
@@ -1025,6 +1026,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
 
     @Override
+    @Transactional(readOnly=true)
     public FieldUnitDTO findFieldUnitDTO(DerivateDTO derivedUnitDTO, Collection<FieldUnitDTO> fieldUnits, HashMap<UUID, DerivateDTO> alreadyCollectedSpecimen) {
         //It will search recursively over all {@link DerivationEvent}s and get the "originals" ({@link SpecimenOrObservationBase})
         //from which this DerivedUnit was derived until all FieldUnits are found.
@@ -1077,6 +1079,89 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         return fieldUnitDto;
 
     }
+
+    @Override
+    @Transactional(readOnly=true)
+    public FieldUnitDTO loadFieldUnitDTO(UUID derivedUnitUuid) {
+
+        FieldUnitDTO fieldUnitDTO = null;
+        DerivateDTO derivedUnitDTO = null;
+
+        Map<UUID, DerivateDTO> cycleDetectionMap = new HashMap<>();
+        SpecimenOrObservationBase derivative = dao.load(derivedUnitUuid);
+        if(derivative != null){
+            derivedUnitDTO = DerivateDTO.newInstance(derivative);
+            while(true){
+                Set<DerivateDTO> originals = originalDTOs(derivedUnitUuid);
+
+                if(originals.isEmpty()){
+                    break;
+                }
+                if (originals.size() > 1){
+                    logger.debug("The derived unit with uuid " + derivedUnitUuid + "has more than one orginal, ignoring all but the first one.");
+                }
+
+                DerivateDTO originalDTO = originals.iterator().next();
+
+                // cycle detection and handling
+                if(cycleDetectionMap.containsKey(originalDTO.getUuid())){
+                    // cycle detected!!!
+                    try {
+                        throw new Exception();
+                    } catch(Exception e){
+                        logger.error("Cycle in derivate graph detected at DerivedUnit with uuid=" + originalDTO.getUuid() , e);
+                    }
+                    // to solve the situation for the output we remove the derivate from the more distant graph node
+                    // by removing it from the derivatives of its original
+                    // but let the derivate to be added to the original which is closer to the FieldUnit (below at originalDTO.addDerivate(derivedUnitDTO);)
+                    for(DerivateDTO seenOriginal: cycleDetectionMap.values()){
+                        for(DerivateDTO derivateDTO : seenOriginal.getDerivates()){
+                            if(derivateDTO.equals(originalDTO)){
+                                seenOriginal.getDerivates().remove(originalDTO);
+                            }
+                        }
+                    }
+                } else {
+                    cycleDetectionMap.put(originalDTO.getUuid(), originalDTO);
+                }
+
+
+                if (originalDTO instanceof FieldUnitDTO){
+                    fieldUnitDTO = (FieldUnitDTO)originalDTO;
+                    if(derivedUnitDTO != null){
+                        fieldUnitDTO.addDerivate(derivedUnitDTO);
+                    }
+                    break;
+                }else{
+                    if (derivedUnitDTO == null){
+                        derivedUnitDTO = originalDTO;
+                    } else {
+                        originalDTO.addDerivate(derivedUnitDTO);
+                        derivedUnitDTO = originalDTO;
+                    }
+                }
+            }
+        }
+        return fieldUnitDTO;
+
+    }
+
+    /**
+     * @param originalDTO
+     * @return
+     */
+    private Set<DerivateDTO> originalDTOs(UUID derivativeUuid) {
+
+        Set<DerivateDTO> dtos = new HashSet<>();
+
+        List<SpecimenOrObservationBase> specimens = dao.findOriginalsForDerivedUnit(derivativeUuid, null);
+        for(SpecimenOrObservationBase sob : specimens){
+            dtos.add(DerivateDTO.newInstance(sob));
+        }
+
+        return dtos;
+    }
+
 
     @Override
     @Transactional(readOnly = false)

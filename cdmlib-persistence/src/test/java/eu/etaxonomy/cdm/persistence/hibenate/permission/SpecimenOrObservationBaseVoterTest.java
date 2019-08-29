@@ -20,9 +20,9 @@ import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
+import eu.etaxonomy.cdm.model.permission.CRUD;
+import eu.etaxonomy.cdm.model.permission.PermissionClass;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionClass;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.TargetEntityStates;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.voter.SpecimenOrObservationBaseVoter;
 
@@ -59,7 +59,7 @@ public class SpecimenOrObservationBaseVoterTest extends AbstractCdmPermissionVot
                 new CdmAuthority(du, UPDATE)
                 ),
                 new TargetEntityStates(du),
-                Arrays.asList(new CdmAuthority(CdmPermissionClass.SPECIMENOROBSERVATIONBASE, UPDATE))
+                Arrays.asList(new CdmAuthority(PermissionClass.SPECIMENOROBSERVATIONBASE, UPDATE))
              );
         assertEquals(AccessDecisionVoter.ACCESS_GRANTED, vote);
     }
@@ -80,7 +80,7 @@ public class SpecimenOrObservationBaseVoterTest extends AbstractCdmPermissionVot
                     new CdmAuthority(fuA, UPDATE)
                 ),
                 new TargetEntityStates(du1),
-                Arrays.asList(new CdmAuthority(CdmPermissionClass.SPECIMENOROBSERVATIONBASE, UPDATE))
+                Arrays.asList(new CdmAuthority(PermissionClass.SPECIMENOROBSERVATIONBASE, UPDATE))
              );
         assertEquals(AccessDecisionVoter.ACCESS_GRANTED, vote);
     }
@@ -94,7 +94,7 @@ public class SpecimenOrObservationBaseVoterTest extends AbstractCdmPermissionVot
                 new CdmAuthority(duAB, UPDATE)
                 ),
                 new TargetEntityStates(du2),
-                Arrays.asList(new CdmAuthority(CdmPermissionClass.SPECIMENOROBSERVATIONBASE, UPDATE))
+                Arrays.asList(new CdmAuthority(PermissionClass.SPECIMENOROBSERVATIONBASE, UPDATE))
              );
         assertEquals(AccessDecisionVoter.ACCESS_GRANTED, vote);
 
@@ -109,7 +109,7 @@ public class SpecimenOrObservationBaseVoterTest extends AbstractCdmPermissionVot
                 new CdmAuthority(fuA, UPDATE)
                 ),
                 new TargetEntityStates(du2),
-                Arrays.asList(new CdmAuthority(CdmPermissionClass.SPECIMENOROBSERVATIONBASE, UPDATE))
+                Arrays.asList(new CdmAuthority(PermissionClass.SPECIMENOROBSERVATIONBASE, UPDATE))
              );
         assertEquals(AccessDecisionVoter.ACCESS_DENIED, vote);
 
@@ -126,7 +126,7 @@ public class SpecimenOrObservationBaseVoterTest extends AbstractCdmPermissionVot
                 new CdmAuthority(fuB, UPDATE)
                 ),
                 new TargetEntityStates(du2),
-                Arrays.asList(new CdmAuthority(CdmPermissionClass.SPECIMENOROBSERVATIONBASE, UPDATE))
+                Arrays.asList(new CdmAuthority(PermissionClass.SPECIMENOROBSERVATIONBASE, UPDATE))
              );
         assertEquals(AccessDecisionVoter.ACCESS_GRANTED, vote);
     }

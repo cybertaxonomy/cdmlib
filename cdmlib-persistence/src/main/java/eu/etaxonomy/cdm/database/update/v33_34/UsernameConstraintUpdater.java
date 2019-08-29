@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.database.update.v33_34;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -19,6 +20,7 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.CaseType;
+import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdateResult;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 
@@ -34,13 +36,13 @@ public class UsernameConstraintUpdater
 
 	private String columnName;
 
-	public static final UsernameConstraintUpdater NewInstance(String stepName, String tableName, String columnName){
-		return new UsernameConstraintUpdater(stepName, tableName, columnName);
+	public static final UsernameConstraintUpdater NewInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String columnName){
+		return new UsernameConstraintUpdater(stepList, stepName, tableName, columnName);
 	}
 
 
-	protected UsernameConstraintUpdater(String stepName, String tableName, String columnName) {
-		super(stepName);
+	protected UsernameConstraintUpdater(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String columnName) {
+		super(stepList, stepName);
 		this.tableName = tableName;
 		this.columnName = columnName;
 	}

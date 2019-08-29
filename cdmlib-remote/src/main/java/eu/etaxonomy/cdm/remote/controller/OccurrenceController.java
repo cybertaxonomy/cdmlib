@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.remote.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,9 +27,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
-import eu.etaxonomy.cdm.api.service.dto.DerivateDTO;
 import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
-import eu.etaxonomy.cdm.api.service.dto.PreservedSpecimenDTO;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -99,26 +96,39 @@ public class OccurrenceController extends AbstractIdentifiableController<Specime
     }
 
 
-    @RequestMapping(value = { "occurrencesDTO" }, method = RequestMethod.GET)
-    public  FieldUnitDTO doGetOccurencesDTO(
+    @RequestMapping(value = { "fieldUnitDTO" }, method = RequestMethod.GET)
+    public  FieldUnitDTO doGetFieldUnitDTO(
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
-        logger.info("doGetDerivedFrom()" + requestPathAndQuery(request));
+        logger.info("doGetFieldUnitDTO()" + requestPathAndQuery(request));
 
         DerivedUnit sob = (DerivedUnit) getCdmBaseInstance(uuid, response, DERIVED_UNIT_INIT_STRATEGY);
 
         sob = checkExistsAndAccess(sob, NO_UNPUBLISHED, response);
 
         FieldUnitDTO fieldUnitDto = null;
-        if(sob instanceof DerivedUnit){
-
-            fieldUnitDto = service.findFieldUnitDTO(new PreservedSpecimenDTO(sob) , new ArrayList<FieldUnitDTO>(), new HashMap<UUID, DerivateDTO>());
-
+        if(sob != null){
+            fieldUnitDto = service.loadFieldUnitDTO(uuid);
         }
 
         return fieldUnitDto;
+    }
+
+    @RequestMapping(value = { "fieldUnitDTOs" }, method = RequestMethod.GET)
+    public  List<FieldUnitDTO> doListFieldUnitDTO(
+            @PathVariable("uuid") List<UUID> uuids,
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+
+        logger.info("doListFieldUnitDTO()" + requestPathAndQuery(request));
+        List<FieldUnitDTO> dtos = new ArrayList<>(uuids.size());
+        for(UUID uuid : uuids){
+            dtos.add(service.loadFieldUnitDTO(uuid));
+        }
+
+        return dtos;
     }
 
 //    @RequestMapping(value = { "specimenTypeDesignations" }, method = RequestMethod.GET)
@@ -154,10 +164,10 @@ public class OccurrenceController extends AbstractIdentifiableController<Specime
     @RequestMapping(value = { "extensions" }, method = RequestMethod.GET)
     public Object doGetExtensions(
             @PathVariable("uuid") UUID uuid, HttpServletRequest request,
-            // doPage request parametes
+            // doPage request parameters
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
-            // doList request parametes
+            // doList request parameters
             @RequestParam(value = "start", required = false) Integer start,
             @RequestParam(value = "limit", required = false) Integer limit,
             HttpServletResponse response) throws IOException {

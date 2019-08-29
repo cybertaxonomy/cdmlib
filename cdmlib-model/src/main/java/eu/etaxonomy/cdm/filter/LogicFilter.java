@@ -114,5 +114,14 @@ public class LogicFilter<T extends CdmBase> implements Serializable{
         this.treeIndex = treeIndex;
     }
 
+// **************************** to String *******************************************/
+
+    @Override
+    public String toString() {
+        return "LogicFilter [operator=" + operator + ", uuid=" + uuid + ", treeIndex=" + treeIndex + ", clazz=" + clazz
+                + "]";
+    }
+
+
 }
 

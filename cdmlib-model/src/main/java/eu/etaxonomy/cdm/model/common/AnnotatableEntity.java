@@ -125,7 +125,7 @@ public abstract class AnnotatableEntity extends VersionableEntity implements IAn
 		}
 	}
 
-	 public void setAnnotations(Set<Annotation> annotations) throws SetterAdapterException {
+	public void setAnnotations(Set<Annotation> annotations) throws SetterAdapterException {
 	     new EntityCollectionSetterAdapter<AnnotatableEntity, Annotation>(AnnotatableEntity.class, Annotation.class, "annotations").setCollection(this, annotations);
     }
 

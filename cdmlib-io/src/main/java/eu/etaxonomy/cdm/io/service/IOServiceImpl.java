@@ -43,7 +43,6 @@ import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportConfigurator;
 /**
  * @author cmathew
  * @since 31 Jul 2015
- *
  */
 @Service
 @Transactional(readOnly = false)

@@ -115,4 +115,10 @@ public interface IIoConfigurator extends IIoObservable{
      */
     public HibernateConfiguration getHibernateConfig();
 
+
+    /**
+     * @return
+     */
+    public String getUserFriendlyIOName();
+
 }

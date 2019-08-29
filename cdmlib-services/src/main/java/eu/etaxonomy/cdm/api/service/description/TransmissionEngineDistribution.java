@@ -859,12 +859,11 @@ private List<Rank> rankInterval(Rank lowerRank, Rank upperRank) {
     }
 
     /**
-     * returns the next higher rank
+     * Returns the next higher rank
      *
      * TODO better implement OrderedTermBase.getNextHigherTerm() and OrderedTermBase.getNextLowerTerm()?
      *
-     * @param rank
-     * @return
+     * @param rank the lower rank
      */
     private Rank findNextHigherRank(Rank rank) {
         rank = (Rank) termService.load(rank.getUuid());

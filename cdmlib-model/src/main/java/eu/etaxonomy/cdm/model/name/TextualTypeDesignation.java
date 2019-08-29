@@ -69,10 +69,8 @@ public class TextualTypeDesignation extends TypeDesignationBase<SpecimenTypeDesi
     @Field(name="text", store=Store.YES)
     @FieldBridge(impl=MultilanguageTextFieldBridge.class)
     @NotNull
-    @Transient
     private Map<Language, LanguageString> text = new HashMap<>();
 
-    @Transient
     private boolean isVerbatim;
 
     @XmlTransient
@@ -82,11 +80,32 @@ public class TextualTypeDesignation extends TypeDesignationBase<SpecimenTypeDesi
 //********************** FACTORY *********************************/
 
     public static TextualTypeDesignation NewInstance() {
-        return new TextualTypeDesignation();
+        TextualTypeDesignation result = new TextualTypeDesignation();
+        return result;
     }
+
+    public static TextualTypeDesignation NewInstance(String text, Language language, boolean isVerbatim,
+            Reference citation, String citationMicroReference, String originalNameString) {
+        TextualTypeDesignation result = new TextualTypeDesignation(text, language, isVerbatim,
+                citation, citationMicroReference, originalNameString);
+        return result;
+    }
+
+
 
 //********************** CONSTRUCTOR *********************************/
 
+    protected TextualTypeDesignation() {
+        super();
+    }
+
+    protected TextualTypeDesignation(String text, Language language, boolean isVerbatim, Reference citation, String citationMicroReference, String originalNameString) {
+        super(citation, citationMicroReference, originalNameString);
+        language = Language.UNDETERMINED();
+        LanguageString ls = LanguageString.NewInstance(text, language);
+        this.putText(ls);
+        this.setVerbatim(isVerbatim);
+    }
 
 //********************** GETTER /SETTER *********************************/
 

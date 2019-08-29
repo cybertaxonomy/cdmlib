@@ -9,12 +9,14 @@
 package eu.etaxonomy.cdm.database.update.v30_31;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.CaseType;
+import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdateResult;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 
@@ -30,12 +32,12 @@ public class LanguageLabelUpdater extends SchemaUpdaterStepBase{
 
 // **************************** STATIC METHODS ********************************/
 
-	public static final LanguageLabelUpdater NewInstance(){
-		return new LanguageLabelUpdater(stepName);
+	public static final LanguageLabelUpdater NewInstance(List<ISchemaUpdaterStep> stepList){
+		return new LanguageLabelUpdater(stepList, stepName);
 	}
 
-	protected LanguageLabelUpdater(String stepName) {
-		super(stepName);
+	protected LanguageLabelUpdater(List<ISchemaUpdaterStep> stepList, String stepName) {
+		super(stepList, stepName);
 	}
 
     @Override

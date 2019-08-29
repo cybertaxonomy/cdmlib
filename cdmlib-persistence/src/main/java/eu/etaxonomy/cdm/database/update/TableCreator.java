@@ -51,39 +51,39 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase {
 	private String uniqueParams_AUD;
 
 
-	public static final TableCreator NewInstance(String stepName, String tableName, List<String> columnNames, List<String> columnTypes, boolean includeAudTable, boolean includeCdmBaseAttributes){
-		return new TableCreator(stepName, tableName, columnNames, columnTypes, null, null, null, includeAudTable, includeCdmBaseAttributes, false, false, false);
+	public static final TableCreator NewInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, List<String> columnNames, List<String> columnTypes, boolean includeAudTable, boolean includeCdmBaseAttributes){
+		return new TableCreator(stepList, stepName, tableName, columnNames, columnTypes, null, null, null, includeAudTable, includeCdmBaseAttributes, false, false, false);
 	}
 
-	public static final TableCreator NewInstance(String stepName, String tableName, String[] columnNames, String[] columnTypes, String[] referencedTables, boolean includeAudTable, boolean includeCdmBaseAttributes){
-		return new TableCreator(stepName, tableName, Arrays.asList(columnNames), Arrays.asList(columnTypes), null, null, Arrays.asList(referencedTables), includeAudTable, includeCdmBaseAttributes, false, false, false);
+	public static final TableCreator NewInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String[] columnNames, String[] columnTypes, String[] referencedTables, boolean includeAudTable, boolean includeCdmBaseAttributes){
+		return new TableCreator(stepList, stepName, tableName, Arrays.asList(columnNames), Arrays.asList(columnTypes), null, null, Arrays.asList(referencedTables), includeAudTable, includeCdmBaseAttributes, false, false, false);
 	}
 
-	public static final TableCreator NewNonVersionableInstance(String stepName, String tableName, String[] columnNames, String[] columnTypes, String[] referencedTables){
-		return new TableCreator(stepName, tableName, Arrays.asList(columnNames), Arrays.asList(columnTypes), null, null, Arrays.asList(referencedTables), false, true, false, false, true);
+	public static final TableCreator NewNonVersionableInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String[] columnNames, String[] columnTypes, String[] referencedTables){
+		return new TableCreator(stepList, stepName, tableName, Arrays.asList(columnNames), Arrays.asList(columnTypes), null, null, Arrays.asList(referencedTables), false, true, false, false, true);
 	}
 
-	public static final TableCreator NewVersionableInstance(String stepName, String tableName, String[] columnNames, String[] columnTypes, String[] referencedTables, boolean includeAudTable){
-		return new TableCreator(stepName, tableName, Arrays.asList(columnNames), Arrays.asList(columnTypes), null, null, Arrays.asList(referencedTables), includeAudTable, true, false, false, false);
+	public static final TableCreator NewVersionableInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String[] columnNames, String[] columnTypes, String[] referencedTables, boolean includeAudTable){
+		return new TableCreator(stepList, stepName, tableName, Arrays.asList(columnNames), Arrays.asList(columnTypes), null, null, Arrays.asList(referencedTables), includeAudTable, true, false, false, false);
 	}
 
-	public static final TableCreator NewAnnotatableInstance(String stepName, String tableName, String[] columnNames, String[] columnTypes, String[] referencedTables, boolean includeAudTable){
-		return new TableCreator(stepName, tableName, Arrays.asList(columnNames), Arrays.asList(columnTypes), null, null, Arrays.asList(referencedTables), includeAudTable, true, true, false, false);
+	public static final TableCreator NewAnnotatableInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String[] columnNames, String[] columnTypes, String[] referencedTables, boolean includeAudTable){
+		return new TableCreator(stepList, stepName, tableName, Arrays.asList(columnNames), Arrays.asList(columnTypes), null, null, Arrays.asList(referencedTables), includeAudTable, true, true, false, false);
 	}
 
-	public static final TableCreator NewEventInstance(String stepName, String tableName, String[] columnNames, String[] columnTypes, String[] referencedTables, boolean includeAudTable){
-		TableCreator result = new TableCreator(stepName, tableName, Arrays.asList(columnNames), Arrays.asList(columnTypes), null, null, Arrays.asList(referencedTables), includeAudTable, true, true, false, false);
+	public static final TableCreator NewEventInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String[] columnNames, String[] columnTypes, String[] referencedTables, boolean includeAudTable){
+		TableCreator result = new TableCreator(stepList, stepName, tableName, Arrays.asList(columnNames), Arrays.asList(columnTypes), null, null, Arrays.asList(referencedTables), includeAudTable, true, true, false, false);
 		result.includeEventBase = true;
 		return result;
 	}
 
-	public static final TableCreator NewIdentifiableInstance(String stepName, String tableName, String[] columnNames, String[] columnTypes, String[] referencedTables, boolean includeAudTable){
-		return new TableCreator(stepName, tableName, Arrays.asList(columnNames), Arrays.asList(columnTypes), null, null, Arrays.asList(referencedTables), includeAudTable, true, true, true, false);
+	public static final TableCreator NewIdentifiableInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String[] columnNames, String[] columnTypes, String[] referencedTables, boolean includeAudTable){
+		return new TableCreator(stepList, stepName, tableName, Arrays.asList(columnNames), Arrays.asList(columnTypes), null, null, Arrays.asList(referencedTables), includeAudTable, true, true, true, false);
 	}
 
-	protected TableCreator(String stepName, String tableName, List<String> columnNames, List<String> columnTypes, List<Object> defaultValues, List<Boolean> isNotNull, List<String> referencedTables,
+	protected TableCreator(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, List<String> columnNames, List<String> columnTypes, List<Object> defaultValues, List<Boolean> isNotNull, List<String> referencedTables,
 			boolean includeAudTable, boolean includeCdmBaseAttributes, boolean includeAnnotatableEntity, boolean includeIdentifiableEntity, boolean excludeVersionableAttributes) {
-		super(stepName, tableName, includeAudTable);
+		super(stepList, stepName, tableName, includeAudTable);
 		this.columnNames = columnNames;
 		this.columnTypes = columnTypes;
 		this.defaultValues = defaultValues;
@@ -116,28 +116,21 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase {
 				boolean isNotNull = this.isNotNull == null ? false : this.isNotNull.get(i);
 				if ("integer".equals(columnTypes.get(i)) || "int".equals(columnTypes.get(i))){
 					String referencedTable = (this.referencedTables == null) ?  null : this.referencedTables.get(i);
-					ColumnAdder adder = ColumnAdder.NewIntegerInstance(this.getStepName(), this.tableName, this.columnNames.get(i), includeAudTable, isNotNull, referencedTable);
-					this.columnAdders.add(adder);
+					ColumnAdder.NewIntegerInstance(columnAdders, this.getStepName(), this.tableName, this.columnNames.get(i), includeAudTable, isNotNull, referencedTable);
 				}else if ("boolean".equals(columnTypes.get(i)) || "bit".equals(columnTypes.get(i))){
 					String defaultValue = this.defaultValues == null ? null : this.defaultValues.get(i).toString();
-					ColumnAdder adder = ColumnAdder.NewBooleanInstance(getStepName(), this.tableName,  this.columnNames.get(i), includeAudTable, Boolean.valueOf(defaultValue));
-					this.columnAdders.add(adder);
+					ColumnAdder.NewBooleanInstance(columnAdders, getStepName(), this.tableName,  this.columnNames.get(i), includeAudTable, Boolean.valueOf(defaultValue));
 				}else if (columnTypes.get(i).startsWith("string")){
 					Integer length = Integer.valueOf(columnTypes.get(i).substring("string_".length()));
-					ColumnAdder adder = ColumnAdder.NewStringInstance(this.getStepName(), this.tableName, this.columnNames.get(i), length, includeAudTable);
-					this.columnAdders.add(adder);
+					ColumnAdder.NewStringInstance(columnAdders, getStepName(), this.tableName, this.columnNames.get(i), length, includeAudTable);
 				}else if (columnTypes.get(i).startsWith("clob")){
-					ColumnAdder adder = ColumnAdder.NewClobInstance(this.getStepName(), this.tableName, this.columnNames.get(i), includeAudTable);
-					this.columnAdders.add(adder);
+					ColumnAdder.NewClobInstance(columnAdders, this.getStepName(), this.tableName, this.columnNames.get(i), includeAudTable);
 				}else if ("tinyint".equals(columnTypes.get(i)) ){
-					ColumnAdder adder = ColumnAdder.NewTinyIntegerInstance(this.getStepName(), this.tableName, this.columnNames.get(i), includeAudTable, isNotNull);
-					this.columnAdders.add(adder);
+					ColumnAdder.NewTinyIntegerInstance(columnAdders, this.getStepName(), this.tableName, this.columnNames.get(i), includeAudTable, isNotNull);
 				}else if ("datetime".equals(columnTypes.get(i)) ){
-					ColumnAdder adder = ColumnAdder.NewDateTimeInstance(this.getStepName(), this.tableName, this.columnNames.get(i), includeAudTable, isNotNull);
-					this.columnAdders.add(adder);
+					ColumnAdder.NewDateTimeInstance(columnAdders, this.getStepName(), this.tableName, this.columnNames.get(i), includeAudTable, isNotNull);
 				}else if ("double".equals(columnTypes.get(i)) ){
-					ColumnAdder adder = ColumnAdder.NewDoubleInstance(this.getStepName(), this.tableName, this.columnNames.get(i), includeAudTable, isNotNull);
-					this.columnAdders.add(adder);
+					ColumnAdder.NewDoubleInstance(columnAdders, this.getStepName(), this.tableName, this.columnNames.get(i), includeAudTable, isNotNull);
 				}else{
 					throw new RuntimeException("Column type " + columnTypes.get(i) + " not yet supported");
 				}
@@ -152,21 +145,19 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase {
 	 * @param mnTablesStepList, String tableName
 	 */
 	public static void makeMnTables(List<ISchemaUpdaterStep> mnTablesStepList, String tableName, boolean includeAnnotatable, boolean includeIdentifiable) {
-		TableCreator tableCreator;
-		String stepName;
+
+	    String stepName;
 
 		if (includeAnnotatable){
 			//annotations
 			stepName= "Add @tableName annotations";
 			stepName = stepName.replace("@tableName", tableName);
-			tableCreator = MnTableCreator.NewMnInstance(stepName, tableName, "Annotation", SchemaUpdaterBase.INCLUDE_AUDIT, !IS_LIST, IS_1_TO_M);
-			mnTablesStepList.add(tableCreator);
+			MnTableCreator.NewMnInstance(mnTablesStepList, stepName, tableName, "Annotation", SchemaUpdaterBase.INCLUDE_AUDIT, !IS_LIST, IS_1_TO_M);
 
 			//marker
 			stepName= "Add @tableName marker";
 			stepName = stepName.replace("@tableName", tableName);
-			tableCreator = MnTableCreator.NewMnInstance(stepName, tableName, "Marker", SchemaUpdaterBase.INCLUDE_AUDIT, !IS_LIST, IS_1_TO_M);
-			mnTablesStepList.add(tableCreator);
+			MnTableCreator.NewMnInstance(mnTablesStepList, stepName, tableName, "Marker", SchemaUpdaterBase.INCLUDE_AUDIT, !IS_LIST, IS_1_TO_M);
 		}
 
 		if (includeIdentifiable){
@@ -174,32 +165,27 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase {
 			//credits
 			stepName= "Add @tableName credits";
 			stepName = stepName.replace("@tableName", tableName);
-			tableCreator = MnTableCreator.NewMnInstance(stepName, tableName, null, "Credit", null, null, SchemaUpdaterBase.INCLUDE_AUDIT, IS_LIST, IS_1_TO_M);
-			mnTablesStepList.add(tableCreator);
+			MnTableCreator.NewMnInstance(mnTablesStepList, stepName, tableName, null, "Credit", null, null, SchemaUpdaterBase.INCLUDE_AUDIT, IS_LIST, IS_1_TO_M);
 
 			//identifier
 			stepName= "Add @tableName identifiers";
 			stepName = stepName.replace("@tableName", tableName);
-			tableCreator = MnTableCreator.NewMnInstance(stepName, tableName, null, "Identifier", null, null, SchemaUpdaterBase.INCLUDE_AUDIT, IS_LIST, IS_1_TO_M);
-			mnTablesStepList.add(tableCreator);
+			MnTableCreator.NewMnInstance(mnTablesStepList, stepName, tableName, null, "Identifier", null, null, SchemaUpdaterBase.INCLUDE_AUDIT, IS_LIST, IS_1_TO_M);
 
 			//extensions
 			stepName= "Add @tableName extensions";
 			stepName = stepName.replace("@tableName", tableName);
-			tableCreator = MnTableCreator.NewMnInstance(stepName, tableName, "Extension", SchemaUpdaterBase.INCLUDE_AUDIT, !IS_LIST, IS_1_TO_M);
-			mnTablesStepList.add(tableCreator);
+			MnTableCreator.NewMnInstance(mnTablesStepList, stepName, tableName, "Extension", SchemaUpdaterBase.INCLUDE_AUDIT, !IS_LIST, IS_1_TO_M);
 
 			//OriginalSourceBase
 			stepName= "Add @tableName sources";
 			stepName = stepName.replace("@tableName", tableName);
-			tableCreator = MnTableCreator.NewMnInstance(stepName, tableName, null, "OriginalSourceBase", null, "sources", SchemaUpdaterBase.INCLUDE_AUDIT, ! IS_LIST, IS_1_TO_M);
-			mnTablesStepList.add(tableCreator);
+			MnTableCreator.NewMnInstance(mnTablesStepList, stepName, tableName, null, "OriginalSourceBase", null, "sources", SchemaUpdaterBase.INCLUDE_AUDIT, ! IS_LIST, IS_1_TO_M);
 
 			//Rights
 			stepName= "Add @tableName rights";
 			stepName = stepName.replace("@tableName", tableName);
-			tableCreator = MnTableCreator.NewMnInstance(stepName, tableName, null, "RightsInfo", null, "rights", SchemaUpdaterBase.INCLUDE_AUDIT, !IS_LIST, IS_M_TO_M);
-            mnTablesStepList.add(tableCreator);
+			MnTableCreator.NewMnInstance(mnTablesStepList, stepName, tableName, null, "RightsInfo", null, "rights", SchemaUpdaterBase.INCLUDE_AUDIT, !IS_LIST, IS_M_TO_M);
 		}
 	}
 
@@ -212,15 +198,15 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase {
 			String updateQuery = "CREATE TABLE @tableName (";
 			//AUDIT
 			if (isAuditing){
-				updateQuery += " REV integer not null, revtype " + ColumnAdder.getDatabaseColumnType(datasource, "tinyint") + ", ";
+				updateQuery += " REV integer not null, revtype " + Datatype.TINYINTEGER.format(datasource, null) + ", ";
 			}
 			//CdmBase
 			if (includeCdmBaseAttributes){
 					String uuidNull = isAuditing? "": "NOT NULL";
 			        updateQuery += " id integer NOT NULL,"
-						+ " created " + ColumnAdder.getDatabaseColumnType(datasource, "datetime") + ", "
+						+ " created " + Datatype.DATETIME.format(datasource, null) + ", "
 						+ " uuid varchar(36) "+uuidNull+","
-						+ (excludeVersionableAttributes? "" : " updated " + ColumnAdder.getDatabaseColumnType(datasource, "datetime") + ", ")
+						+ (excludeVersionableAttributes? "" : " updated " + Datatype.DATETIME.format(datasource, null) + ", ")
 						+ " createdby_id integer,"
 						+ (excludeVersionableAttributes ? "" : " updatedby_id integer, ");
 			}
@@ -373,7 +359,7 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase {
 			return;
 		}else{
 		    //create only index
-			IndexAdder indexAdder = IndexAdder.NewIntegerInstance("Add index instead of Foreign Key", tableName, columnName);
+			IndexAdder indexAdder = IndexAdder.NewIntegerInstance(null, "Add index instead of Foreign Key", tableName, columnName);
 			try {
                 indexAdder.invoke(datasource, monitor, caseType, result);
             } catch (Exception e) {
@@ -447,7 +433,7 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase {
 			return this.primaryKeyParams_AUD;
 		}
 
-		if (includeCdmBaseAttributes || ! includeCdmBaseAttributes){ //TODO how to handle not CDMBase includes
+		if (includeCdmBaseAttributes || ! includeCdmBaseAttributes){ //TODO how to handle not CDMBase includes => via this.primaryKeyParams
 			if (! isAudit){
 				result = "id";
 			}else{
@@ -479,13 +465,15 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase {
 		}
 	}
 
-	public void setPrimaryKeyParams(String primaryKeyParams, String primaryKeyParams_AUD) {
+	public TableCreator setPrimaryKeyParams(String primaryKeyParams, String primaryKeyParams_AUD) {
 		this.primaryKeyParams = primaryKeyParams;
 		this.primaryKeyParams_AUD = primaryKeyParams_AUD;
+		return this;
 	}
 
-	public void setUniqueParams(String uniqueParams, String uniqueParams_AUD) {
+	public TableCreator setUniqueParams(String uniqueParams, String uniqueParams_AUD) {
 		this.uniqueParams = uniqueParams;
 		this.uniqueParams_AUD = uniqueParams_AUD;
+		return this;
 	}
 }

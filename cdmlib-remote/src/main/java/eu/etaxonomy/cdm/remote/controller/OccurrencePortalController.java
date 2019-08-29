@@ -23,7 +23,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITermService;
@@ -79,7 +78,6 @@ public class OccurrencePortalController extends OccurrenceController
     private ITermService termService;
 
 
-
     /**
      *
      */
@@ -104,8 +102,6 @@ public class OccurrencePortalController extends OccurrenceController
             HttpServletResponse response) throws IOException {
 
         logger.info("doGetDerivateHierarchy() " + requestPathAndQuery(request));
-
-        ModelAndView mv = new ModelAndView();
 
         SpecimenOrObservationBase sob = service.load(uuid);
         if(sob instanceof FieldUnit){

@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.description;
 
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,8 +22,10 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
@@ -33,6 +36,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.ClassBridge;
 import org.hibernate.search.annotations.ClassBridges;
@@ -74,7 +78,8 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
     "descriptiveDataSets",
     "descriptionElements",
     "imageGallery",
-    "isDefault"
+    "isDefault",
+    "types"
 })
 @Entity
 @Audited
@@ -133,9 +138,18 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
     @XmlElement(name = "ImageGallery")
     private boolean imageGallery;
 
+    //TODO make it a DescriptionState
     @XmlElement(name = "isDefault")
     private boolean isDefault;
 
+    @XmlAttribute(name ="Operations")
+    @NotNull
+    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumSetUserType",
+        parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.description.DescriptionType")}
+    )
+    private EnumSet<DescriptionType> types = EnumSet.noneOf(DescriptionType.class);
+
+//******************************** GETTER / SETTER ***************************/
 
     /**
      * Returns a {@link SpecimenOrObservationBase specimen or observation} involved in
@@ -150,7 +164,6 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
 		return describedSpecimenOrObservation;
 	}
 
-
 	/**
 	 * @see #getDescribedSpecimenOrObservation()
 	 * @param describedSpecimenOrObservation
@@ -158,7 +171,9 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
 	//TODO bidirectional method should maybe removed as a description should belong to its specimen or taxon
     public void setDescribedSpecimenOrObservation(SpecimenOrObservationBase describedSpecimenOrObservation) {
 		if (describedSpecimenOrObservation == null ){
-			this.describedSpecimenOrObservation.removeDescription(this);
+			if (this.describedSpecimenOrObservation != null){
+			    this.describedSpecimenOrObservation.removeDescription(this);
+			}
 		}else if (! describedSpecimenOrObservation.getDescriptions().contains(this)){
 			describedSpecimenOrObservation.addDescription(this);
 		}
@@ -166,44 +181,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
 	}
 
 
-	/**
-     * Returns the set of {@link Reference references} used as sources for <i>this</i> description as a
-     * whole. More than one source can be used for a general description without
-     * assigning for each data element of the description one of those sources.
-     *
-     * @see    #addDescriptionSource(Reference)
-     * @see    #removeDescriptionSource(Reference)
-     */
-    @Deprecated //will probably be removed in future versions due to #2240
-    public Set<Reference> getDescriptionSources() {
-        return this.descriptionSources;
-    }
 
-    /**
-     * Adds an existing {@link Reference reference} to the set of
-     * {@link #getDescriptionSources() references} used as sources for <i>this</i>
-     * description.
-     *
-     * @param descriptionSource	the reference source to be added to <i>this</i> description
-     * @see    	   				#getDescriptionSources()
-     */
-    @Deprecated //will probably be removed in future versions due to #2240
-    public void addDescriptionSource(Reference descriptionSource) {
-        this.descriptionSources.add(descriptionSource);
-    }
-
-    /**
-     * Removes one element from the set of {@link #getDescriptionSources() references} used as
-     * sources for <i>this</i> description.
-     *
-     * @param  descriptionSource	the reference source which should be deleted
-     * @see     		  			#getDescriptionSources()
-     * @see     		  			#addDescriptionSource(Reference)
-     */
-    @Deprecated //will probably be removed in future versions due to #2240
-    public void removeDescriptionSource(Reference descriptionSource) {
-        this.descriptionSources.remove(descriptionSource);
-    }
 
     /**
      * Returns the set of {@link DescriptionElementBase elementary description data} which constitute
@@ -274,16 +252,9 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
         return this.descriptionElements.size();
     }
 
-    /**
-     * @return the imageGallery
-     */
     public boolean isImageGallery() {
         return imageGallery;
     }
-
-    /**
-     * @param imageGallery the imageGallery to set
-     */
     public void setImageGallery(boolean imageGallery) {
         this.imageGallery = imageGallery;
     }
@@ -291,16 +262,21 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
     public boolean isDefault() {
         return isDefault;
     }
-
     public void setDefault(boolean isDefault) {
         this.isDefault = isDefault;
+    }
+
+    public EnumSet<DescriptionType> getTypes() {
+        return types;
+    }
+    public void setTypes(EnumSet<DescriptionType> types) {
+        this.types = types;
     }
 
 
     public Set<DescriptiveDataSet> getDescriptiveDataSets() {
         return descriptiveDataSets;
     }
-
     public boolean addDescriptiveDataSet(DescriptiveDataSet descriptiveDataSet){
         boolean result = this.descriptiveDataSets.add(descriptiveDataSet);
         if (! descriptiveDataSet.getDescriptions().contains(this)){
@@ -308,7 +284,6 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
         }
         return result;
     }
-
     public boolean removeDescriptiveDataSet(DescriptiveDataSet descriptiveDataSet){
         boolean result = this.descriptiveDataSets.remove(descriptiveDataSet);
         if (descriptiveDataSet.getDescriptions().contains(this)){
@@ -316,14 +291,53 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
         }
         return result;
     }
-
     protected void setDescriptiveDataSet(Set<DescriptiveDataSet> descriptiveDataSets) {
         this.descriptiveDataSets = descriptiveDataSets;
     }
 
+    /**
+     * Returns the set of {@link Reference references} used as sources for <i>this</i> description as a
+     * whole. More than one source can be used for a general description without
+     * assigning for each data element of the description one of those sources.
+     *
+     * @see    #addDescriptionSource(Reference)
+     * @see    #removeDescriptionSource(Reference)
+     */
+    @Deprecated //will probably be removed in future versions due to #2240
+    public Set<Reference> getDescriptionSources() {
+        return this.descriptionSources;
+    }
 
+    /**
+     * Adds an existing {@link Reference reference} to the set of
+     * {@link #getDescriptionSources() references} used as sources for <i>this</i>
+     * description.
+     *
+     * @param descriptionSource the reference source to be added to <i>this</i> description
+     * @see                     #getDescriptionSources()
+     */
+    @Deprecated //will probably be removed in future versions due to #2240
+    public void addDescriptionSource(Reference descriptionSource) {
+        this.descriptionSources.add(descriptionSource);
+    }
+
+    /**
+     * Removes one element from the set of {@link #getDescriptionSources() references} used as
+     * sources for <i>this</i> description.
+     *
+     * @param  descriptionSource    the reference source which should be deleted
+     * @see                         #getDescriptionSources()
+     * @see                         #addDescriptionSource(Reference)
+     */
+    @Deprecated //will probably be removed in future versions due to #2240
+    public void removeDescriptionSource(Reference descriptionSource) {
+        this.descriptionSources.remove(descriptionSource);
+    }
+
+// *********************** METHODS ******************************/
 
     @Transient
+    //TODO this is not correct
     public boolean hasStructuredData(){
         for (DescriptionElementBase element : this.getElements()){
             if (element.isInstanceOf(QuantitativeData.class) ||
@@ -332,6 +346,27 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
             }
         }
         return false;
+    }
+
+    /**
+     * if this is of type {@link DescriptionType#COMPUTED} computed.<BR><BR>
+     * Note: Computed is a base type. It has children like {@link DescriptionType#AGGREGATED}.
+     * Also for them this method returns <code>true</code>.
+     */
+    public boolean isComputed() {
+        return DescriptionType.isComputed(types);
+    }
+    public boolean isAggregated() {
+        return DescriptionType.includesType(types, DescriptionType.AGGREGATED);
+    }
+    public boolean isCloneForSource() {
+        return DescriptionType.includesType(types, DescriptionType.CLONE_FOR_SOURCE);
+    }
+    public static boolean isDefaultForAggregation(EnumSet<DescriptionType> set) {
+        return DescriptionType.includesType(set, DescriptionType.DEFAULT_VALUES_FOR_AGGREGATION);
+    }
+    public static boolean isSecondaryData(EnumSet<DescriptionType> set) {
+        return DescriptionType.includesType(set, DescriptionType.SECONDARY_DATA);
     }
 
 
@@ -359,23 +394,25 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
             result = (DescriptionBase<?>)super.clone();
 
             //working set
-            result.descriptiveDataSets = new HashSet<DescriptiveDataSet>();
+            result.descriptiveDataSets = new HashSet<>();
             for (DescriptiveDataSet descriptiveDataSet : getDescriptiveDataSets()){
                 descriptiveDataSet.addDescription(result);
             }
 
             //descriptions
-            result.descriptionSources = new HashSet<Reference>();
+            result.descriptionSources = new HashSet<>();
             for (Reference reference : getDescriptionSources()){
                 result.descriptionSources.add(reference);
             }
 
             //elements
-            result.descriptionElements = new HashSet<DescriptionElementBase>();
+            result.descriptionElements = new HashSet<>();
             for (DescriptionElementBase element : getElements()){
                 DescriptionElementBase newElement = (DescriptionElementBase)element.clone();
                 result.addElement(newElement);
             }
+
+            result.types = this.types.clone();
 
             //no changes to: imageGallery
             return result;

@@ -4,18 +4,19 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Iterator;
 
+/**
+ * @author k.luther
+ * @since 2015-Apr
+ */
 public class CsvRecord {
-	private HashMap<String,String> record;
+
+    private HashMap<String,String> record;
 	private boolean isFirst;
 
-
-
-
     public CsvRecord(HashMap<String, String> record, boolean isFirst) {
-    		this.record = record;
-    		this.isFirst = isFirst;
-    	}
-
+		this.record = record;
+		this.isFirst = isFirst;
+    }
 
     protected void print(PrintWriter writer, CsvNameExportConfigurator config) {
     	String strToPrint ="";
@@ -49,26 +50,18 @@ public class CsvRecord {
     			//strToPrint.concat(config.getLinesTerminatedBy());
     			writer.println(strToPrint);
     	}
-
-
     }
-
 
     public HashMap<String,String> getRecord() {
     	return record;
     }
-
-
     public void setRecord(HashMap<String,String> record) {
     	this.record = record;
     }
 
-
     public boolean isFirst() {
     	return isFirst;
     }
-
-
     public void setFirst(boolean isFirst) {
     	this.isFirst = isFirst;
     }

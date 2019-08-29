@@ -22,8 +22,8 @@ import org.hibernate.event.spi.MergeEventListener;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.model.term.FeatureNode;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
+import eu.etaxonomy.cdm.model.term.TermTree;
+import eu.etaxonomy.cdm.model.term.TermNode;
 
 /**
  * @author cmathew
@@ -100,20 +100,20 @@ public class PostMergeEntityListener implements MergeEventListener {
 
                 }
 
-            }   else if(FeatureTree.class.isAssignableFrom(entityClazz)){
+            }   else if(TermTree.class.isAssignableFrom(entityClazz)){
 
-                FeatureTree<?> tree = (FeatureTree)entity;
-                for (FeatureNode<?> node:tree.getRootChildren()){
+                TermTree<?> tree = (TermTree)entity;
+                for (TermNode<?> node:tree.getRootChildren()){
                     node.removeNullValueFromChildren();
                     if (node.getChildNodes() != null){
-                        for (FeatureNode childNode: node.getChildNodes()){
+                        for (TermNode childNode: node.getChildNodes()){
                             removeNullFromCollections(childNode);
                         }
                     }
 
                 }
-            } else if (FeatureNode.class.isAssignableFrom(entityClazz)){
-                FeatureNode node = (FeatureNode)entity;
+            } else if (TermNode.class.isAssignableFrom(entityClazz)){
+                TermNode node = (TermNode)entity;
                 node.removeNullValueFromChildren();
             }
 

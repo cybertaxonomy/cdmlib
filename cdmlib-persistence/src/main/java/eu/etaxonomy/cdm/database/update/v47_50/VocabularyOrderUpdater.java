@@ -39,13 +39,12 @@ public class VocabularyOrderUpdater extends SchemaUpdaterStepBase {
 // **************************** STATIC METHODS ********************************/
 
 	public static final VocabularyOrderUpdater NewInstance(List<ISchemaUpdaterStep> stepList){
-		VocabularyOrderUpdater result = new VocabularyOrderUpdater();
-		stepList.add(result);
+		VocabularyOrderUpdater result = new VocabularyOrderUpdater(stepList);
 		return result;
 	}
 
-	private VocabularyOrderUpdater() {
-		super(stepName);
+	private VocabularyOrderUpdater(List<ISchemaUpdaterStep> stepList) {
+		super(stepList, stepName);
 	}
 
 	public void add(String uuid, Integer id){

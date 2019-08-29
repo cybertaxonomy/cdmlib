@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.api.service.config.PublishForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.TaxonDistributionDTO;
@@ -120,10 +121,11 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	 * @param synonymType
 	 * @param citation
 	 * @param citationMicroReference
+	 * @param setNameInSource
 	 * @return
 	 *
 	 */
-	public DeleteResult makeTaxonNodeASynonymOfAnotherTaxonNode(TaxonNode oldTaxonNode, TaxonNode newAcceptedTaxonNode, SynonymType synonymType, Reference citation, String citationMicroReference) ;
+	public DeleteResult makeTaxonNodeASynonymOfAnotherTaxonNode(TaxonNode oldTaxonNode, TaxonNode newAcceptedTaxonNode, SynonymType synonymType, Reference citation, String citationMicroReference, boolean setNameInSource) ;
 
 	/**
 	 * Changes the taxa associated with the given taxon nodes into synonyms of the new accepted taxon node.
@@ -134,18 +136,20 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	 * @param synonymType
 	 * @param citation
 	 * @param citationMicroReference
+	 * @param setNameInSource
 	 * @return
 	 *
 	 */
 	UpdateResult makeTaxonNodeSynonymsOfAnotherTaxonNode(Set<UUID> oldTaxonNodeUuids, UUID newAcceptedTaxonNodeUUIDs,
-			SynonymType synonymType, Reference citation, String citationMicroReference);
+			SynonymType synonymType, Reference citation, String citationMicroReference, boolean setNameInSource);
 
 
 	public UpdateResult makeTaxonNodeASynonymOfAnotherTaxonNode(UUID oldTaxonNodeUuid,
 	        UUID newAcceptedTaxonNodeUUID,
 	        SynonymType synonymType,
 	        Reference citation,
-	        String citationMicroReference) ;
+	        String citationMicroReference,
+	        boolean setNameInSource) ;
 
 
     /**
@@ -274,19 +278,10 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 
     /**
      * Sets the publish flag for all taxa and/or synonyms of the subtree.
-     * @param subtreeUuid
-     * @param publish
-     * @param includeAcceptedTaxa
-     * @param includeSynonyms
-     * @param overwriteExistingAccepted
-     * @param overwriteExistingSynonyms
-     * @param includeSharedTaxa
-     * @param progressMonitor
+     * @param configurator
      * @return
      */
-    public UpdateResult setPublishForSubtree(UUID subtreeUuid, boolean publish, boolean includeAcceptedTaxa,
-            boolean includeSynonyms, boolean includeSharedTaxa, IProgressMonitor progressMonitor);
-
+    public UpdateResult setPublishForSubtree(PublishForSubtreeConfigurator configurator);
 
     /**
      * Returns a list of taxon node {@link UUID uuids} according to the given filter.
@@ -381,5 +376,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      */
     public <S extends TaxonNode> Pager<S> page(Class<S> clazz, List<Restriction<?>> restrictions, Integer pageSize, Integer pageIndex,
             List<OrderHint> orderHints, List<String> propertyPaths, boolean includeUnpublished);
+
+
 
 }

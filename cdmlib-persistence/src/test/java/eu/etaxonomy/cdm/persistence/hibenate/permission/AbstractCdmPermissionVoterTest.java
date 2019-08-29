@@ -16,7 +16,7 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
-import eu.etaxonomy.cdm.model.common.User;
+import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
 
 /**

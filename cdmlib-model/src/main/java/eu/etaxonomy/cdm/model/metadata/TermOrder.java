@@ -16,7 +16,7 @@ package eu.etaxonomy.cdm.model.metadata;
 public enum TermOrder implements IKeyLabel{
 
     IdInVoc("IdInVoc", "Id in Vocabulary"),
-    Title("Lable", "Lable"),
+    Label("Label", "Label"),
     Natural("Natural", "Natural");
 
 

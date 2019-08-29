@@ -71,8 +71,7 @@ import javafx.stage.Stage;
 @Audited
 @Configurable
 public class TaxonDescription
-            extends DescriptionBase<IIdentifiableEntityCacheStrategy<TaxonDescription>>
-            implements Cloneable{
+            extends DescriptionBase<IIdentifiableEntityCacheStrategy<TaxonDescription>>{
 
     private static final long serialVersionUID = 8065879180505546803L;
     @SuppressWarnings("unused")

@@ -40,7 +40,8 @@ public class StructureTreeOwlImportConfigurator extends ImportConfiguratorBase<S
     protected void makeIoClassList() {
         ioClassList = new Class[] {
                 TermVocabularyOwlImport.class,
-                StructureTreeOwlImport.class
+                StructureTreeOwlImport.class,
+                CharacterOwlImport.class
         };
     }
 

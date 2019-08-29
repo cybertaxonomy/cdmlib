@@ -846,6 +846,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
 
                     ti.setResponseTaxon(tb.getTitleCache(),
                             nvn.getTitleCache(),
+                            nvn.getUuid(),
                             nvn.getRank().getTitleCache(),
                             ACCEPTED_NAME_STATUS,
                             buildFlagMap(tb),
@@ -889,6 +890,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
                         ti.addToResponseRelatedTaxa(uuid,
                                 title,
                                 name,
+                                synnvn.getUuid(),
                                 rank,
                                 status,
                                 relLabel,
@@ -930,6 +932,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
                         ti.addToResponseRelatedTaxa(uuid,
                                 titleTo,
                                 name,
+                                tonvn.getUuid(),
                                 rank,
                                 status,
                                 relLabel,
@@ -972,6 +975,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
                         ti.addToResponseRelatedTaxa(uuid,
                                 titleFrom,
                                 name,
+                                fromnvn.getUuid(),
                                 rank,
                                 status,
                                 relLabel,
@@ -995,6 +999,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
                     String secTitle = (synonym.getSec() == null) ? "" : synonym.getSec().getTitleCache();
                     ti.setResponseTaxon(synonym.getTitleCache(),
                             nvn.getTitleCache(),
+                            nvn.getUuid(),
                             nvn.getRank().getTitleCache(),
                             SYNONYM_STATUS,
                             buildFlagMap(synonym),
@@ -1029,6 +1034,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
                         ti.addToResponseRelatedTaxa(uuid,
                                 title,
                                 name,
+                                accnvn.getUuid(),
                                 rank,
                                 status,
                                 relLabel,
@@ -1309,18 +1315,20 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
         while(sourcesItr.hasNext()) {
             IdentifiableSource source = sourcesItr.next();
             Reference ref = source.getCitation();
-            Set<IdentifiableSource> ref_sources = ref.getSources();
-            Iterator<IdentifiableSource> ref_itr = ref_sources.iterator();
-            while(ref_itr.hasNext()) {
-                IdentifiableSource ref_source = ref_itr.next();
-                if(ref_source.getIdNamespace().equals(DWC_DATASET_ID)) {
-                    didname[0] = ref_source.getIdInSource();
+            if(ref != null){
+                Set<IdentifiableSource> ref_sources = ref.getSources();
+                Iterator<IdentifiableSource> ref_itr = ref_sources.iterator();
+                while(ref_itr.hasNext()) {
+                    IdentifiableSource ref_source = ref_itr.next();
+                    if(ref_source.getIdNamespace().equals(DWC_DATASET_ID)) {
+                        didname[0] = ref_source.getIdInSource();
+                        break;
+                    }
+                }
+                if(!didname[0].isEmpty()) {
+                    didname[1] = ref.getTitleCache();
                     break;
                 }
-            }
-            if(!didname[0].isEmpty()) {
-                didname[1] = ref.getTitleCache();
-                break;
             }
         }
         return didname;

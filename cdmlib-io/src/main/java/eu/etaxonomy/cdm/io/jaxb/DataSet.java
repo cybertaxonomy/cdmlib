@@ -31,12 +31,9 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.EventBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
-import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
-import eu.etaxonomy.cdm.model.common.Group;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.MediaKey;
@@ -73,6 +70,9 @@ import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.permission.GrantedAuthorityImpl;
+import eu.etaxonomy.cdm.model.permission.Group;
+import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -83,8 +83,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.FeatureTree;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
@@ -100,7 +100,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 		"eventBases",
 	    "references",
 	    "typeDesignations",
-	    "featureTrees",
+	    "termTrees",
 	    "polytomousKeys",
 	    "taxonNodes",
 	    "classifications",
@@ -181,11 +181,11 @@ public class DataSet implements IExportData {
     @XmlElement(name = "Collection", namespace = "http://etaxonomy.eu/cdm/model/occurrence/1.0")
     protected List<eu.etaxonomy.cdm.model.occurrence.Collection> collections = new ArrayList<>();
 
-    @XmlElementWrapper(name = "FeatureTrees")
+    @XmlElementWrapper(name = "TermTrees")
     @XmlElements({
-      @XmlElement(name = "FeatureTree", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = FeatureTree.class)
+      @XmlElement(name = "TermTree", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = TermTree.class)
     })
-    protected List<FeatureTree> featureTrees = new ArrayList<>();
+    protected List<TermTree> termTrees = new ArrayList<>();
 
     @XmlElementWrapper(name = "PolytomousKeys")
     @XmlElements({
@@ -334,8 +334,8 @@ public class DataSet implements IExportData {
         this.references = value;
     }
 
-    public List<FeatureTree> getFeatureTrees() {
-        return featureTrees;
+    public List<TermTree> getTermTrees() {
+        return termTrees;
     }
 
     public List<PolytomousKey> getPolytomousKeys() {
@@ -356,8 +356,8 @@ public class DataSet implements IExportData {
         return taxonNodes;
     }
 
-    public void setFeatureTrees(List<FeatureTree> value) {
-    	this.featureTrees = value;
+    public void setFeatureTrees(List<TermTree> value) {
+    	this.termTrees = value;
     }
 
     public void setPolytomousKeys(List<PolytomousKey> value) {
