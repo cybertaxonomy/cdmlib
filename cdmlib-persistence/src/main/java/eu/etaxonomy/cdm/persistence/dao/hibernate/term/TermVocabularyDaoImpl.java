@@ -299,13 +299,24 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 
     @Override
     public List<TermVocabularyDto> findVocabularyDtoByTermTypes(Set<TermType> termTypes) {
+        return findVocabularyDtoByTermTypes(termTypes, true);
+    }
+
+    @Override
+    public List<TermVocabularyDto> findVocabularyDtoByTermTypes(Set<TermType> termTypes, boolean includeSubtypes) {
+        Set<TermType> termTypeWithSubType = new HashSet<>(termTypes);
+        if(includeSubtypes){
+            for (TermType termType : termTypes) {
+                termTypeWithSubType.addAll(termType.getGeneralizationOf(true));
+            }
+        }
         String queryString = ""
                 + "select v.uuid, v.termType, r "
                 + "from TermVocabulary as v LEFT JOIN v.representations AS r "
                 + "where v.termType in (:termTypes) "
                 ;
         Query query =  getSession().createQuery(queryString);
-        query.setParameterList("termTypes", termTypes);
+        query.setParameterList("termTypes", termTypeWithSubType);
 
         @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
