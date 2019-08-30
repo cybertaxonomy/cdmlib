@@ -181,15 +181,6 @@ public class ClassificationServiceImpl
     }
 
     @Override
-    public List<TaxonNode> listRankSpecificRootNodes(Classification classification, Rank rank,
-            boolean includeUnpublished, Integer pageSize, Integer pageIndex, List<String> propertyPaths) {
-        return listRankSpecificRootNodes(classification, null, rank, includeUnpublished, pageSize, pageIndex, propertyPaths);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public List<TaxonNode> listRankSpecificRootNodes(Classification classification,
             TaxonNode subtree, Rank rank,
             boolean includeUnpublished, Integer pageSize, Integer pageIndex, List<String> propertyPaths) {
