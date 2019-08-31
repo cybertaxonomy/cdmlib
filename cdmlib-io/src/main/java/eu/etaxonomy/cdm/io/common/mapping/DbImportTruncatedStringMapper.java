@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -22,10 +22,9 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 /**
  * @author a.mueller
  * @since 24.02.2010
- * @version 1.0
  */
 public class DbImportTruncatedStringMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, CdmBase>{
-	
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbImportTruncatedStringMapper.class);
 	
@@ -73,9 +72,6 @@ public class DbImportTruncatedStringMapper extends DbSingleAttributeImportMapper
 		super(dbAttributeString, cdmAttributeString, defaultValue, obligatory);
 		this.longTextAttribute = longTextAttribute;
 	}
-	
-	
-	
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.mapping.DbSingleAttributeImportMapperBase#initialize(eu.etaxonomy.cdm.io.common.DbImportStateBase, java.lang.Class)
@@ -93,10 +89,7 @@ public class DbImportTruncatedStringMapper extends DbSingleAttributeImportMapper
 			throw new RuntimeException(e);
 		}
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.DbSingleAttributeImportMapperBase#doInvoke(eu.etaxonomy.cdm.model.common.CdmBase)
-	 */
+
 	@Override
 	protected CdmBase doInvoke(CdmBase cdmBase, Object value) throws SQLException {
 		CdmBase result;
@@ -133,14 +126,8 @@ public class DbImportTruncatedStringMapper extends DbSingleAttributeImportMapper
 		throw new RuntimeException("Problems when invoking long text method");
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase#getTypeClass()
-	 */
 	@Override
 	public Class getTypeClass() {
 		return String.class;
 	}
-	
-
 }
