@@ -545,6 +545,24 @@ public class Language extends DefinedTermBase<Language> {
     public static final UUID uuidUnknownLanguage = UUID.fromString("3d05ab93-2d92-400d-a3dd-fc8dcc5f8203");
     public static final UUID uuidOriginalLanguage = UUID.fromString("42b893f3-16dd-417d-aa92-96cf6c695ca1");
 
+    //iso 639_3 languages (not yet implemented as CDM vocabulary)
+    public static final UUID uuidLanguageIso639_3Vocabulary = UUID.fromString("ff2a1325-6209-486f-8e5a-b100deed1c1c");
+    public static final UUID uuidLangNenets = UUID.fromString("4697b87e-2718-4986-8f9b-361dd47b0c90");   //yrk
+    public static final UUID uuidLangHassaniyya = UUID.fromString("ece61834-448c-4897-98ed-a90d1253a215");    //mey
+    public static final UUID uuidLangEvenki = UUID.fromString("2773fa25-8b37-4c58-8936-b666ccbb8e1c");  //evn
+    public static final UUID uuidLangKrio = UUID.fromString("93a1899a-dd23-4d55-b159-a427dc44ab19");   //  kri
+    public static final UUID uuidLangLigurian = UUID.fromString("22448bd7-e761-456a-a5eb-364e200a6761");   //  lij
+    public static final UUID uuidLangEven= UUID.fromString("6ff3e21e-cabe-4583-b416-11b7120c5c0a");   //eve
+    public static final UUID uuidLangKoryak = UUID.fromString("e5c71f03-691c-440c-ad5c-2e120b2795d7");    //kpy
+    public static final UUID uuidLangChukot = UUID.fromString("f85797cc-5ab3-454d-b9eb-beb75bc8eb37");   //ckt
+    public static final UUID uuidLangKiswahiliSwahili = UUID.fromString("404b6467-ffda-4424-a194-925c9d6a70dd");    //swh
+    public static final UUID uuidLangMalay = UUID.fromString("fb0e1d36-54ba-451f-b8c2-71c50a27cc35");    //zlm
+    public static final UUID uuidLangSouthernBalochi = UUID.fromString("f325f109-4909-46b0-a018-005192e7b1a6");    //bcc
+    public static final UUID uuidLangTunisianArabic = UUID.fromString("543dd18c-6d83-4997-b90e-88dab71632a3");    //aeb
+    public static final UUID uuidLangAnusKorur = UUID.fromString("d39fb79e-ad47-4779-882b-dc34d6f7657f");    //auq
+    public static final UUID uuidLangKhanty = UUID.fromString("c73f0654-0d9b-4d60-9b2a-ac23cd19efef");    //kca
+
+
 
     protected static Map<UUID, Language> termMap = null;
 
