@@ -1229,8 +1229,7 @@ public class Language extends DefinedTermBase<Language> {
 
             return newInstance;
         } catch (Exception e) {
-            logger.error(e);
-            return null;
+            throw new RuntimeException("Error when reading Language from csv line");
         }
     }
 
