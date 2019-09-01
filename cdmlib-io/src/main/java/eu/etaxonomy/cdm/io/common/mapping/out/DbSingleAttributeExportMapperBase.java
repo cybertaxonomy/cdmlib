@@ -176,9 +176,7 @@ public abstract class DbSingleAttributeExportMapperBase<STATE extends DbExportSt
 			e.printStackTrace();
 			return false;
 		}
-
 	}
-
 
 	protected int getPrecision(){
 		return this.precision;
@@ -206,12 +204,10 @@ public abstract class DbSingleAttributeExportMapperBase<STATE extends DbExportSt
 		}
 	}
 
-
 	@Override
     public String toString(){
 		String sourceAtt = CdmUtils.Nz(getSourceAttribute());
 		String destAtt = CdmUtils.Nz(getDestinationAttribute());
 		return this.getClass().getSimpleName() +"[" + sourceAtt + "->" + destAtt + "]";
 	}
-
 }
