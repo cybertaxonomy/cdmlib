@@ -1194,6 +1194,7 @@ public class Language extends DefinedTermBase<Language> {
         return getIdInVocabulary();
     }
 
+//is idInVocabulary now
 //    public void setIso639_2(String iso639_2) {
 //        if (iso639_2 != null){
 //            iso639_2 = iso639_2.trim();
@@ -1214,7 +1215,7 @@ public class Language extends DefinedTermBase<Language> {
                 DefinedTermBase.readCsvLine(newInstance,csvLine,(Language)terms.get(Language.uuidEnglish), abbrevAsId);
             }
 
-//          newInstance.setIso639_2(csvLine.get(4).trim());   //does not exist anymore
+//          newInstance.setIso639_2(csvLine.get(4).trim());   //does not exist anymore -> idInVocabulary
 //          newInstance.setIdInVocabulary(csvLine.get(4).trim());  //same as abbrev
 
             newInstance.setIso639_1(CdmUtils.Ne(csvLine.get(5).trim()));

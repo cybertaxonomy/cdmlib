@@ -244,6 +244,4 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<DbImpor
 		}
 		return (CdmBase.deproxy(taxonBase, Taxon.class));
 	}
-
-
 }

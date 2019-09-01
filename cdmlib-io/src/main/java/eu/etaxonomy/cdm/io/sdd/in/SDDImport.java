@@ -983,7 +983,8 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 
 				// <StateDefinition id="s1">
 				List<Element> elStateDefinitions = elStates.getChildren("StateDefinition",sddNamespace);
-				TermVocabulary<State> termVocabularyState = TermVocabulary.NewInstance(TermType.State, null, null, null, null);
+				TermVocabulary<State> termVocabularyState = TermVocabulary.NewInstance(TermType.State,
+				        State.class, null, null, null, null);
 
 				vocabularies.add(termVocabularyState);
 
@@ -1713,7 +1714,8 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
     						Element elModifiers = elDescriptiveConcept.getChild("Modifiers", sddNamespace);
     					if (elModifiers !=null){
     						List<Element> listModifiers = elModifiers.getChildren("Modifier", sddNamespace);
-    							TermVocabulary<DefinedTerm> termVocabularyState = TermVocabulary.NewInstance(TermType.Modifier, null, null, null, null);
+    							TermVocabulary<DefinedTerm> termVocabularyState = TermVocabulary.NewInstance(
+    							        TermType.Modifier, DefinedTerm.class, null, null, null, null);
     						for (Element elModifier : listModifiers) {
     							DefinedTerm modif = DefinedTerm.NewModifierInstance(null, null, null);
     							String idmod = elModifier.getAttributeValue("id");

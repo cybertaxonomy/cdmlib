@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Credit;
 import eu.etaxonomy.cdm.model.common.EventBase;
@@ -301,8 +302,8 @@ public class FullCoverageDataGenerator {
 
 	private void createDescriptions(List<CdmBase> cdmBases) {
 
-		TermVocabulary<?> voc = TermVocabulary.NewInstance(TermType.AnnotationType, "my termVoc desc",
-				"myTerm voc", "mtv", URI.create("http://www.abc.de"));
+		TermVocabulary<AnnotationType> voc = TermVocabulary.NewInstance(TermType.AnnotationType, AnnotationType.class,
+		        "my termVoc desc", "myTerm voc", "mtv", URI.create("http://www.abc.de"));
 		handleIdentifiableEntity(voc);
 		cdmBases.add(voc);
 

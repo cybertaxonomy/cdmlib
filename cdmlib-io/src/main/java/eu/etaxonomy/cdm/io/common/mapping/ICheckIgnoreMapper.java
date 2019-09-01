@@ -12,12 +12,9 @@ package eu.etaxonomy.cdm.io.common.mapping;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import eu.etaxonomy.cdm.io.common.mapping.IDbImportMapper;
-
 /**
  * @author a.mueller
  * @since 02.03.2010
- * @version 1.0
  */
 public interface ICheckIgnoreMapper {
 

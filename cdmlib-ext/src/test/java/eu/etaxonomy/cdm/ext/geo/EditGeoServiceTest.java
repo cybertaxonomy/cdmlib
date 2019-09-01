@@ -247,7 +247,8 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
 
         termService.saveOrUpdate(areaLevel);
 
-        TermVocabulary<NamedArea> areaVocabulary = TermVocabulary.NewInstance(TermType.NamedArea, "Cyprus devisions", "Cyprus divisions", null, null);
+        TermVocabulary<NamedArea> areaVocabulary = TermVocabulary.NewInstance(TermType.NamedArea,
+                NamedArea.class, "Cyprus devisions", "Cyprus divisions", null, null);
         areaVocabulary.setUuid(uuidCyprusDivisionsVocabulary);
 
 
@@ -329,9 +330,10 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    public void testGetWebServiceUrlBangka() throws ClientProtocolException, IOException, URISyntaxException {
+    public void testGetWebServiceUrlBangka() throws ClientProtocolException, IOException {
         NamedArea areaBangka = NamedArea.NewInstance("Bangka", "Bangka", null);
-        TermVocabulary<NamedArea> voc = TermVocabulary.NewInstance(TermType.NamedArea, "test Voc", "test voc", null, null);
+        TermVocabulary<NamedArea> voc = TermVocabulary.NewInstance(TermType.NamedArea,
+                NamedArea.class, "test Voc", "test voc", null, null);
         voc.addTerm(areaBangka);
 
         GeoServiceArea geoServiceArea = new GeoServiceArea();
@@ -345,7 +347,7 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
         Set<Distribution> distributions = new HashSet<Distribution>();
         distributions.add(Distribution.NewInstance(areaBangka, PresenceAbsenceTerm.PRESENT()));
 
-        Map<PresenceAbsenceTerm, Color> presenceAbsenceColorMap = new HashMap<PresenceAbsenceTerm, Color>();
+        Map<PresenceAbsenceTerm, Color> presenceAbsenceColorMap = new HashMap<>();
         presenceAbsenceColorMap.put(PresenceAbsenceTerm.PRESENT(), Color.BLUE);
 
         presenceAbsenceColorMap = null;

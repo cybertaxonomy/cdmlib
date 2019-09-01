@@ -117,7 +117,8 @@ public class IkeyPlusImport extends CdmImportBase<IkeyPlusImportConfigurator, Ik
 
         cdmKey = PolytomousKey.NewTitledInstance(singleAccessKey.getLabel() + "_1");
 
-        featureVoc = TermVocabulary.NewInstance(TermType.Feature, singleAccessKey.getLabel(), singleAccessKey.getLabel(), null, null);
+        featureVoc = TermVocabulary.NewInstance(TermType.Feature, Feature.class,
+                singleAccessKey.getLabel(), singleAccessKey.getLabel(), null, null);
 
         Set<PolytomousKeyNode> rootNode = recursivlyCreateKeyNodes(singleAccessKey.getRoot(), null);
 //        Assert.assertEquals(1, rootNode.size());

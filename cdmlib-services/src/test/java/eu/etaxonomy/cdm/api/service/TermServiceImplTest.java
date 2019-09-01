@@ -207,7 +207,8 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
                 "DefinedTermBase","Representation"};
 
     	commitAndStartNewTransaction(tableNames);
-    	TermVocabulary<State> vocStates = TermVocabulary.NewInstance(TermType.State, "Test States", null, null, null);
+    	TermVocabulary<State> vocStates = TermVocabulary.NewInstance(TermType.State,
+    	        State.class, "Test States", null, null, null);
     	vocStates.addTerm(State.NewInstance("green", "green", "gn"));
     	vocabularyService.save(vocStates);
     	Pager<DefinedTermBase> term = termService.findByRepresentationText("green", DefinedTermBase.class, null, null);
@@ -216,7 +217,8 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
     		assertTrue(result.isOk());
     		commitAndStartNewTransaction(tableNames);
        	}
-    	TermVocabulary<DefinedTerm> vocDna = TermVocabulary.NewInstance(TermType.DnaMarker, "Test DNA marker", null, null, null);
+    	TermVocabulary<DefinedTerm> vocDna = TermVocabulary.NewInstance(TermType.DnaMarker,
+    	        DefinedTerm.class, "Test DNA marker", null, null, null);
     	vocDna.addTerm(DefinedTerm.NewDnaMarkerInstance("test", "marker", "t"));
     	vocabularyService.save(vocDna);
 

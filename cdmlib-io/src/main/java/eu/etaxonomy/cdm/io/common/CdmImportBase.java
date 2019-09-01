@@ -921,11 +921,12 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 
         List<String> propPath = Arrays.asList(new String[]{"terms"});
         voc = getVocabularyService().load(uuid, propPath);
+        Class<T> clazz = null;
         if (voc == null){
             if (isOrdered){
                 voc = OrderedTermVocabulary.NewInstance(termType, description, label, abbrev, termSourceUri);
             }else{
-                voc = TermVocabulary.NewInstance(termType, description, label, abbrev, termSourceUri);
+                voc = TermVocabulary.NewInstance(termType, clazz, description, label, abbrev, termSourceUri);
             }
             voc.setUuid(uuid);
             getVocabularyService().save(voc);
