@@ -58,13 +58,10 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<DbImpor
 	private String alternativeAttribute;
 	private String alternativeNamespace;
 
-
 //********************************* CONSTRUCTOR ****************************************/
-	/**
-	 * @param relatedObjectNamespace
-	 * @param mappingImport
-	 */
-	protected DbImportTaxIncludedInMapper(String fromAttribute, String fromNamespace, String toAttribute, String toNamespace, String alternativeAttribute, String alternativeNamespace, String treeAttribute, String citationAttribute, String citationNamespace) {
+
+	protected DbImportTaxIncludedInMapper(String fromAttribute, String fromNamespace,
+	        String toAttribute, String toNamespace, String alternativeAttribute, String alternativeNamespace, String treeAttribute, String citationAttribute, String citationNamespace) {
 		super();
 		//TODO make it a single attribute mapper
 		this.fromAttribute = fromAttribute;
@@ -102,7 +99,6 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<DbImpor
 		if (toId == null){
 			return fromObject;
 		}
-
 
 		Reference citation = (Reference)getRelatedObject(rs, citationAttribute, citationNamespace);
 		String microCitation = null;

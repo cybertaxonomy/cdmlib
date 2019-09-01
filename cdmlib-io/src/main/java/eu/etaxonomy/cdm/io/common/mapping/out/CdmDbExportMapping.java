@@ -36,7 +36,6 @@ public class CdmDbExportMapping<STATE extends DbExportStateBase<CONFIG, TRANSFOR
 	private String dbTableName;
 	private List<CollectionExportMapping<STATE,CONFIG, TRANSFORM>> collectionMappingList = new ArrayList<>();
 
-
 	public CdmDbExportMapping(String tableName){
 		this.dbTableName = tableName;
 	}
@@ -70,8 +69,7 @@ public class CdmDbExportMapping<STATE extends DbExportStateBase<CONFIG, TRANSFOR
 		}
 	}
 
-
-	public boolean invoke(CdmBase cdmBase) throws SQLException{
+	public boolean invoke(CdmBase cdmBase){
 		try {
 			boolean result = true;
 			for (CdmMapperBase mapper : this.mapperList){
@@ -107,7 +105,6 @@ public class CdmDbExportMapping<STATE extends DbExportStateBase<CONFIG, TRANSFOR
 		}
 	}
 
-
 	public void addCollectionMapping(CollectionExportMapping<STATE,CONFIG, TRANSFORM> collectionMapping){
 		this.collectionMappingList.add(collectionMapping);
 	}
@@ -128,30 +125,16 @@ public class CdmDbExportMapping<STATE extends DbExportStateBase<CONFIG, TRANSFOR
 		return result;
 	}
 
-	/**
-	 * @return the berlinModelTableName
-	 */
 	public String getDbTableName() {
 		return dbTableName;
 	}
-
-	/**
-	 * @param berlinModelTableName the berlinModelTableName to set
-	 */
 	public void setDbTableName(String dbTableName) {
 		this.dbTableName = dbTableName;
 	}
 
-	/**
-	 * @return the preparedStatement
-	 */
 	protected PreparedStatement getPreparedStatement() {
 		return preparedStatement;
 	}
-
-	/**
-	 * @param preparedStatement the preparedStatement to set
-	 */
 	protected void setPreparedStatement(PreparedStatement preparedStatement) {
 		this.preparedStatement = preparedStatement;
 	}
@@ -160,6 +143,4 @@ public class CdmDbExportMapping<STATE extends DbExportStateBase<CONFIG, TRANSFOR
 //		List<CdmAttributeMapperBase> list = this.mapperList;
 //		return list;
 //	}
-
-
 }

@@ -34,7 +34,7 @@ public abstract class DbSingleAttributeExportMapperBase<STATE extends DbExportSt
 
     private static final Logger logger = Logger.getLogger(DbSingleAttributeExportMapperBase.class);
 
-	protected DbExportMapperBase<STATE> exportMapperHelper = new DbExportMapperBase<STATE>();
+	protected DbExportMapperBase<STATE> exportMapperHelper = new DbExportMapperBase<>();
 	private Integer precision = null;
 	protected boolean obligatory = true;
 
@@ -55,19 +55,12 @@ public abstract class DbSingleAttributeExportMapperBase<STATE extends DbExportSt
 		this.obligatory = obligatory;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.IStatefulDbExportMapper#initialize(java.sql.PreparedStatement, eu.etaxonomy.cdm.io.berlinModel.out.mapper.IndexCounter, eu.etaxonomy.cdm.io.berlinModel.out.DbExportState)
-	 */
 	@Override
     public void initialize(PreparedStatement stmt, IndexCounter index, STATE state, String tableName) {
 		exportMapperHelper.initialize(stmt, index, state, tableName);
 		this.precision = getDbColumnIntegerInfo("c.prec");
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.IDbExportMapper#invoke(eu.etaxonomy.cdm.model.common.CdmBase)
-	 */
 	@Override
     public boolean invoke(CdmBase cdmBase) throws SQLException {
 		if (exportMapperHelper.preparedStatement == null){
@@ -149,31 +142,18 @@ public abstract class DbSingleAttributeExportMapperBase<STATE extends DbExportSt
 
 	protected abstract int getSqlType();
 
-	/**
-	 * @return the preparedStatement
-	 */
 	public PreparedStatement getPreparedStatement() {
 		return exportMapperHelper.getPreparedStatement();
 	}
 
-	/**
-	 * @return the index
-	 */
 	public int getIndex() {
 		return exportMapperHelper.getIndex();
 	}
 
-	/**
-	 * @return the state
-	 */
 	public STATE getState() {
 		return exportMapperHelper.getState();
 	}
 
-
-	/**
-	 * @return the state
-	 */
 	public String getTableName() {
 		return exportMapperHelper.getTableName();
 	}

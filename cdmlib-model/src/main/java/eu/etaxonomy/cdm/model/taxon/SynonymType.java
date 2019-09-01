@@ -50,7 +50,8 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 //@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
 public class SynonymType extends RelationshipTermBase<SynonymType> {
-	private static final long serialVersionUID = -3775216614202923889L;
+
+    private static final long serialVersionUID = -3775216614202923889L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SynonymType.class);
 
