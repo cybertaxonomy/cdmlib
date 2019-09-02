@@ -35,8 +35,10 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
  * @author a.mueller
  * @since 01.03.2010
  */
-public class DbImportAnnotationMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, AnnotatableEntity> implements IDbImportMapper<DbImportStateBase<?,?>,AnnotatableEntity>{
-	private static final Logger logger = Logger.getLogger(DbImportAnnotationMapper.class);
+public class DbImportAnnotationMapper
+            extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, AnnotatableEntity>{
+
+    private static final Logger logger = Logger.getLogger(DbImportAnnotationMapper.class);
 
 	/**
 	 * FIXME Warning: the annotation type creation is not yet implemented
