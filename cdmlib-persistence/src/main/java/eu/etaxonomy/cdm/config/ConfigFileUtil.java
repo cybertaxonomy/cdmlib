@@ -84,7 +84,7 @@ public class ConfigFileUtil implements EnvironmentAware {
 
     /**
      * suggested sub folder for web app related data and configurations.
-     * Each webapp instance should use a dedicated subfolder or file
+     * Each webapp instance should use a dedicated sub-folder or file
      * which is named by the data source bean id.
      */
     public static final String SUBFOLDER_WEBAPP = "remote-webapp";
@@ -118,7 +118,7 @@ public class ConfigFileUtil implements EnvironmentAware {
     }
 
     /**
-     * Provides subfolders of <code>${user.home}./cdmLibrary</code> folder without taking
+     * Provides sub-folders of <code>${user.home}./cdmLibrary</code> folder without taking
      * additional property sources into account which could be configured in
      * the Spring application context.
      * <p>
@@ -143,7 +143,7 @@ public class ConfigFileUtil implements EnvironmentAware {
      * Non existing folders will be created.
      *
      * @param subFolderName
-     *      The name of a subfolded. In most cases this will be {@link #SUBFOLDER_WEBAPP}
+     *      The name of a sub-folder. In most cases this will be {@link #SUBFOLDER_WEBAPP}
      * @param instanceName
      *      The name of the application instance. The name should be related to the data source id.
      * @return the sub folder or null in case the folder did not exist ant the attempt to create it has failed.
@@ -188,6 +188,7 @@ public class ConfigFileUtil implements EnvironmentAware {
     }
 
     public ConfigFileUtil setDefaultContent(String content) {
+        this.getClass().getClassLoader().getResource("");
         if(content != null){
             defaultContent = content;
         }

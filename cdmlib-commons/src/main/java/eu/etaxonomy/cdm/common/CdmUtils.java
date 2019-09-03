@@ -48,11 +48,12 @@ public class CdmUtils {
 
 
     /**
-     * Returns the folder separator. This depends on the operating system and the
+     * Returns the folder separator for locations of resources which an be loaded via the class loaded.
+     * This separator depends on the operating system and the
      * environment. If the system is within a jar the separator is different then in an ordinary folder.
      * @return
      */
-    static public String getFolderSeperator(){
+    static public String getResourceFolderSeperator(){
         if (folderSeparator == null){
             URL url = CdmUtils.class.getResource("/"+ MUST_EXIST_FILE);
             if ( url != null && ! urlIsJarOrBundle(url) ){

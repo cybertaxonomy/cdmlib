@@ -189,7 +189,7 @@ public class TermLoader implements ITermLoader {
 	 */
 	private CSVReader getCsvReader(VocabularyEnum vocType) throws IOException {
 		String filename = vocType.name()+".csv";
-		String strResourceFileName = "terms" + CdmUtils.getFolderSeperator() + filename;
+		String strResourceFileName = "terms" + CdmUtils.getResourceFolderSeperator() + filename;
 		if (logger.isDebugEnabled()){logger.debug("strResourceFileName is " + strResourceFileName);}
 		CSVReader reader = new CSVReader(CdmUtils.getUtf8ResourceReader(strResourceFileName));
 		return reader;
