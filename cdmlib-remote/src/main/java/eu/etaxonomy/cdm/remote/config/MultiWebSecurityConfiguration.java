@@ -50,6 +50,9 @@ public class MultiWebSecurityConfiguration {
 
     private static final String MANAGING_USERS_PROPERTIES = "managing-users.properties";
 
+    @Autowired
+    private ConfigFileUtil configFileUtil;
+
     /**
      * Check for full authentication for remoting services
      * @author a.kohlbecker
@@ -135,7 +138,7 @@ public class MultiWebSecurityConfiguration {
         // Add an inMemoryUserManager to  enable access to the global ROLE_MANAGE_CLIENTs.
         // This is the casue for the need to do the configuration explicitly.
         InMemoryUserDetailsManagerConfigurer<AuthenticationManagerBuilder> inMemoryAuthConf = auth.inMemoryAuthentication();
-        File managingUsersFile = new File(ConfigFileUtil.getCdmHomeDir(), MANAGING_USERS_PROPERTIES);
+        File managingUsersFile = new File(configFileUtil.perUserCdmFolder(), MANAGING_USERS_PROPERTIES);
         if(!managingUsersFile.exists()){
             makeManagingUsersPropertiesFile(managingUsersFile);
         }

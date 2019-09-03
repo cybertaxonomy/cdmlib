@@ -30,19 +30,20 @@ public class ConfigFileUtil implements EnvironmentAware {
 
     private static final Logger logger = Logger.getLogger(ConfigFileUtil.class);
 
-    private static String userHome = null;
 
     /**
      * The per user cdm folder name: ".cdmLibrary"
      */
     private static final String CDM_FOLDER_NAME = ".cdmLibrary";
 
+    private String userHome = null;
+
     /**
      * The per user cdm folder "~/.cdmLibrary"
      */
-    private static File perUserCdmFolder = null;
+    private File perUserCdmFolder = null;
 
-    public static File perUserCdmFolder() {
+    public File perUserCdmFolder() {
         return perUserCdmFolder;
     }
 
@@ -50,8 +51,8 @@ public class ConfigFileUtil implements EnvironmentAware {
      * @deprecated use {@link #perUserCdmFolder()} instead
      */
     @Deprecated
-    public static File getCdmHomeDir() {
-        return perUserCdmFolder;
+    public File getCdmHomeDir() {
+        return perUserCdmFolder();
     }
 
     /**
@@ -94,9 +95,9 @@ public class ConfigFileUtil implements EnvironmentAware {
     public void setEnvironment(Environment environment) {
         this.env = environment;
         if(userHome == null){
-            ConfigFileUtil.userHome = env.getRequiredProperty("user.home");
-            ConfigFileUtil.perUserCdmFolder = new File(userHome, CDM_FOLDER_NAME);
-            logger.info("user.home is set to " + ConfigFileUtil.userHome);
+            userHome = env.getRequiredProperty("user.home");
+            perUserCdmFolder = new File(userHome, CDM_FOLDER_NAME);
+            logger.info("user.home is set to " + userHome);
         }
     }
 
@@ -110,7 +111,7 @@ public class ConfigFileUtil implements EnvironmentAware {
      *
      * @see {@link #SUBFOLDER_WEBAPP}
      */
-    public static File getCdmHomeSubDir(String subFolderName) {
+    public File getCdmHomeSubDir(String subFolderName) {
 
         File parentFolder = getCdmHomeDir();
         return ensureSubfolderExists(parentFolder, subFolderName);
@@ -131,7 +132,7 @@ public class ConfigFileUtil implements EnvironmentAware {
      *
      */
     @Deprecated
-    public static File getCdmHomeSubDirFallback(String subFolderName) {
+    public File getCdmHomeSubDirFallback(String subFolderName) {
 
         File parentFolder = perUserCdmFolderFallback();
         return ensureSubfolderExists(parentFolder, subFolderName);
@@ -149,7 +150,7 @@ public class ConfigFileUtil implements EnvironmentAware {
      *
      * @see {@link #SUBFOLDER_WEBAPP}
      */
-    public static File getCdmInstanceSubDir(String subFolderName, String instanceName) {
+    public File getCdmInstanceSubDir(String subFolderName, String instanceName) {
 
         File subfolder = ensureSubfolderExists(getCdmHomeDir(), subFolderName);
         return ensureSubfolderExists(subfolder, instanceName);
@@ -160,7 +161,7 @@ public class ConfigFileUtil implements EnvironmentAware {
      * @param parentFolder
      * @return
      */
-    private static File ensureSubfolderExists(File parentFolder, String subFolderName) {
+    private File ensureSubfolderExists(File parentFolder, String subFolderName) {
         if (!parentFolder.exists()){
             if (!parentFolder.mkdir()) {
                 throw new RuntimeException("Parent folder could not be created: " + parentFolder.getAbsolutePath());
@@ -219,7 +220,7 @@ public class ConfigFileUtil implements EnvironmentAware {
         if(override != null){
             return new File(override);
         } else {
-            File configFolder = ConfigFileUtil.getCdmInstanceSubDir(ConfigFileUtil.SUBFOLDER_WEBAPP, instanceName);
+            File configFolder = getCdmInstanceSubDir(ConfigFileUtil.SUBFOLDER_WEBAPP, instanceName);
             return new File(configFolder, propertiesSet + ".properties");
         }
     }

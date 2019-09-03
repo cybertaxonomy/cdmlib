@@ -31,7 +31,7 @@ public class ConfigFileUtilTest {
 	//be removed in future
 	public void testGetHomeDir() {
 	    String userHome = System.getProperty("user.home");
-		Assert.assertEquals(userHome, ConfigFileUtil.getCdmHomeDir());
+		Assert.assertEquals(userHome, ConfigFileUtil.getCdmHomeDirFallback());
 	}
 
 	@Test

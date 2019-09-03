@@ -7,6 +7,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -25,7 +27,6 @@ import org.jdom.output.XMLOutputter;
 import org.jdom.xpath.XPath;
 
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
-import eu.etaxonomy.cdm.config.ConfigFileUtil;
 import eu.etaxonomy.cdm.print.IXMLEntityFactory;
 import eu.etaxonomy.cdm.print.PublishConfigurator;
 import eu.etaxonomy.cdm.print.Publisher;
@@ -48,9 +49,6 @@ public class Cdm2MediawikiExporter {
 
 	//constants
 	private static final String MEDIAWIKI_CDM_SUB_DIR = "mediawiki_tmp";
-
-	private static final String IMAGE_DIR = MEDIAWIKI_CDM_SUB_DIR
-			+ File.separator + "images";
 
 	private static final String CDM_EXPORT_FILE_NAME = "cdm_output";
 
@@ -260,15 +258,16 @@ public class Cdm2MediawikiExporter {
 	 *
 	 */
 	private void createTemporaryExportFolder() {
-		temporaryExportFolder = ConfigFileUtil.getCdmHomeSubDir(MEDIAWIKI_CDM_SUB_DIR);
-		if (temporaryExportFolder != null) {
-			logger.info("using " + temporaryExportFolder.getAbsolutePath()
-					+ " as temporary directory.");
-		} else {
-			logger.error("could not create directory"
-					+ temporaryExportFolder.getAbsolutePath());
-			return;
-		}
+	    Path temporaryExportPath;
+        try {
+            temporaryExportPath = Files.createTempDirectory(MEDIAWIKI_CDM_SUB_DIR);
+            temporaryExportFolder = temporaryExportPath.toFile();
+            logger.info("using " + temporaryExportFolder.getAbsolutePath()
+                + " as temporary directory.");
+
+        } catch (IOException | UnsupportedOperationException e) {
+            logger.error("could not create temp directory", e);
+        }
 	}
 
 	/**

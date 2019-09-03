@@ -353,7 +353,7 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
     public Properties hibernateProperties(){
         Properties props = getHibernateProperties();
         props.setProperty(HIBERNATE_DIALECT, inferHibernateDialectName());
-        String searchPath = ConfigFileUtil.getCdmHomeSubDir(ConfigFileUtil.SUBFOLDER_WEBAPP).getPath();
+        String searchPath = configFileUtil.getCdmHomeSubDir(ConfigFileUtil.SUBFOLDER_WEBAPP).getPath();
         props.setProperty(HIBERNATE_SEARCH_DEFAULT_INDEX_BASE,
                 searchPath +
                 "/index/".replace("/", File.separator) +

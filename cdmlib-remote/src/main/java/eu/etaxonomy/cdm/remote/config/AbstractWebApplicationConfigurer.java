@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -28,12 +29,15 @@ import eu.etaxonomy.cdm.config.ConfigFileUtil;
  * @since 20.07.2010
  *
  */
-public abstract class AbstractWebApplicationConfigurer {
+public abstract class AbstractWebApplicationConfigurer  implements InitializingBean {
 
     public static final Logger logger = Logger.getLogger(AbstractWebApplicationConfigurer.class);
 
     @Autowired
     protected ConfigurableEnvironment env;
+
+    @Autowired
+    private ConfigFileUtil configFileUtil;
 
     private static final String CDMLIB_REMOTE_PROPERTIES = "cdmlib-remote.properties";
 
@@ -45,13 +49,17 @@ public abstract class AbstractWebApplicationConfigurer {
 
     protected WebApplicationContext webApplicationContext;
 
-    static Properties userDefinedProperties = null;
-    static {
+    private Properties userDefinedProperties = null;
+
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+
         if(userDefinedProperties == null) {
             userDefinedProperties = new Properties();
             try {
                 InputStream in = new FileInputStream(
-                            ConfigFileUtil.perUserCdmFolder()
+                        configFileUtil.perUserCdmFolder()
                             + java.io.File.separator
                             + CDMLIB_REMOTE_PROPERTIES
                     );

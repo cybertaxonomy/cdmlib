@@ -14,6 +14,7 @@ import java.io.File;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -23,10 +24,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @TestPropertySource(properties={"user.home=/home/oldshatterhand"})
 public class ConfigFileUtilTestWithContext1 {
 
+    @Autowired
+    ConfigFileUtil configFileUtil;
 
 	@Test
     public void testGetHomeDir() {
-        Assert.assertEquals("/home/oldshatterhand" + File.separator + ".cdmLibrary", ConfigFileUtil.getCdmHomeDir().getAbsolutePath());
+        Assert.assertEquals("/home/oldshatterhand" + File.separator + ".cdmLibrary", configFileUtil.getCdmHomeDir().getAbsolutePath());
     }
 
 
