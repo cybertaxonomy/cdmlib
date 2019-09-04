@@ -184,6 +184,10 @@ public String toString(){
       result.append(":");
       result.append(this.isAddIndividualsAssociationsSuchAsSpecimenAndObservations());
       result.append(";");
+      result.append("addIndividualsAssociationsForFieldUnits");
+      result.append(":");
+      result.append(this.isAddIndividualsAssociationsForFieldUnits());
+      result.append(";");
       result.append("reuseExistingTaxaWhenPossible");
       result.append(":");
       result.append(this.isReuseExistingTaxaWhenPossible());

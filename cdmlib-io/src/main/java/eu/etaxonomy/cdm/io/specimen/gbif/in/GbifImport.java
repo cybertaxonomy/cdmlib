@@ -318,7 +318,8 @@ public class GbifImport extends SpecimenImportBase<GbifImportConfigurator, Speci
             }
             if (bestMatchingName != null){
                 Taxon taxon = getOrCreateTaxonForName(bestMatchingName, state);
-                if (state.getConfig().isAddIndividualsAssociationsSuchAsSpecimenAndObservations()) {
+                if (state.getConfig().isAddIndividualsAssociationsSuchAsSpecimenAndObservations()
+                        || state.getConfig().isAddIndividualsAssociationsForFieldUnits()) {
                     //do not add IndividualsAssociation to non-preferred taxa
                     if(logger.isDebugEnabled()){
                         logger.info("isDoCreateIndividualsAssociations");
