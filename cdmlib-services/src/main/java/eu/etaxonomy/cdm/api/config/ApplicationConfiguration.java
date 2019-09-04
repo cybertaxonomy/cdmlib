@@ -43,6 +43,9 @@ public class ApplicationConfiguration {
     @Autowired
     Environment env;
 
+    @Autowired
+    ConfigFileUtil configFileUtil;
+
     Map<String, Properties> configurations = new HashMap<>();
 
     public String getProperty(ApplicationConfigurationFile configFile, String key){
@@ -62,7 +65,7 @@ public class ApplicationConfiguration {
             try {
                 if(env.getProperty(TEST_MODE) == null){
                     // PRODUCTION MODE
-                    props = new ConfigFileUtil()
+                    props = configFileUtil
                             .setDefaultContent(configFile.getDefaultContet())
                             .getProperties(currentDataSourceId, configFile.getFileName());
                 } else {
