@@ -51,9 +51,13 @@ public class DbLastActionMapper
 		if (cdmBase.isInstanceOf(VersionableEntity.class)){
 			//exclude objects marked as 'hasNoM
 			if (cdmBase.isInstanceOf(AnnotatableEntity.class)){
-				IAnnotatableEntity annoEnti = cdmBase.deproxy(cdmBase, AnnotatableEntity.class);
-				if (annoEnti.hasMarker(uuidMarkerTypeHasNoLastAction, true)){
+				AnnotatableEntity annotatableEntity = CdmBase.deproxy(cdmBase, AnnotatableEntity.class);
+				if (annotatableEntity.hasMarker(uuidMarkerTypeHasNoLastAction, true)){
 					return null;
+				}
+				UUID uuidType = isActionType ? uuidAnnotationTypeLastAction : uuidAnnotationTypeLastActionDate;
+				for (Annotation annotation : annotatableEntity.getAnnotations(uuidType)){
+				    return annotation.getText();
 				}
 			}
 			//return updated or created

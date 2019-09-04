@@ -117,6 +117,15 @@ public abstract class AnnotatableEntity extends VersionableEntity implements IAn
 			getAnnotations().add(annotation);
 		}
 	}
+    public Set<Annotation> getAnnotations(UUID uuidAnnotationType){
+        Set<Annotation> result = new HashSet<>();
+        for (Annotation annotation: getAnnotations()){
+            if (annotation.getAnnotationType().getUuid().equals(uuidAnnotationType)){
+                result.add(annotation);
+            }
+        }
+        return result;
+    }
 
 	@Override
     public void removeAnnotation(Annotation annotation){
