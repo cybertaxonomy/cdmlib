@@ -17,6 +17,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
@@ -58,8 +59,13 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 			config.setFirePropertyChangeEvents(false);
 			facade = DerivedUnitFacade.NewInstance(derivedUnit, config);
 
-			if(!skipFieldUnit){
-			    result += fieldStrategy.getFieldData(facade);
+			FieldUnit fieldUnit = facade.getFieldUnit(false);
+			if(!skipFieldUnit && fieldUnit != null){
+			    if(fieldUnit.isProtectedTitleCache()){
+			        result += fieldUnit.getTitleCache();
+			    } else {
+			        result += fieldStrategy.getFieldData(facade);
+			    }
 			}
 			//Exsiccatum
 			String exsiccatum = null;
