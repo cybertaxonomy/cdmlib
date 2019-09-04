@@ -132,7 +132,7 @@ public class ConfigFileUtil implements EnvironmentAware {
      *
      */
     @Deprecated
-    public File getCdmHomeSubDirFallback(String subFolderName) {
+    public static File getCdmHomeSubDirFallback(String subFolderName) {
 
         File parentFolder = perUserCdmFolderFallback();
         return ensureSubfolderExists(parentFolder, subFolderName);
@@ -161,7 +161,7 @@ public class ConfigFileUtil implements EnvironmentAware {
      * @param parentFolder
      * @return
      */
-    private File ensureSubfolderExists(File parentFolder, String subFolderName) {
+    private static File ensureSubfolderExists(File parentFolder, String subFolderName) {
         if (!parentFolder.exists()){
             if (!parentFolder.mkdir()) {
                 throw new RuntimeException("Parent folder could not be created: " + parentFolder.getAbsolutePath());
@@ -177,6 +177,8 @@ public class ConfigFileUtil implements EnvironmentAware {
         }
         return subfolder;
     }
+
+
     public static final String CDM_CONFIGFILE_OVERRIDE = "cdm.configfile.override.";
 
     private Properties props = null;
