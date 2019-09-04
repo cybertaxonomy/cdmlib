@@ -144,7 +144,7 @@ public class DbImportAnnotationMapper
 	protected AnnotatableEntity doInvoke(AnnotatableEntity annotatableEntity, Object dbValue){
 		String strAnnotation = (String)dbValue;
 		if (StringUtils.isNotBlank(strAnnotation)){
-			Annotation annotation = Annotation.NewInstance(strAnnotation, annotationType, language);
+			Annotation annotation = Annotation.NewInstance(strAnnotation.trim(), annotationType, language);
 			if (annotatableEntity != null){
 				annotatableEntity.addAnnotation(annotation);
 			}

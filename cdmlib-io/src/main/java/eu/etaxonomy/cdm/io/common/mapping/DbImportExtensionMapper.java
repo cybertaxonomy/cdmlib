@@ -163,7 +163,7 @@ public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<D
 			return identifiableEntity;
 		}
 		if (StringUtils.isNotBlank(dbValue)){
-			Extension.NewInstance(identifiableEntity, dbValue, extensionType);
+			Extension.NewInstance(identifiableEntity, dbValue.trim(), extensionType);
 			if (extensionType == null){
 				logger.warn("No extension type available for extension");
 			}

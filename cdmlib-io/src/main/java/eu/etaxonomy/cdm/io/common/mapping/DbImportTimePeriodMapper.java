@@ -51,12 +51,13 @@ public class DbImportTimePeriodMapper extends DbSingleAttributeImportMapperBase<
 	}
 
 	@Override
-	protected CdmBase doInvoke(CdmBase cdmBase, Object value) throws SQLException {
+	protected CdmBase doInvoke(CdmBase cdmBase, Object value){
 		if (value != null && ! (value instanceof TimePeriod) ){
+		    String strValue = String.valueOf(value).trim();
 		    if (isVerbatim){
-                value = TimePeriodParser.parseStringVerbatim(String.valueOf(value));
+                value = TimePeriodParser.parseStringVerbatim(strValue);
 		    }else{
-		        value = TimePeriodParser.parseString(String.valueOf(value));
+		        value = TimePeriodParser.parseString(strValue);
 		    }
 		}
 		return super.doInvoke(cdmBase, value);

@@ -11,8 +11,8 @@ package eu.etaxonomy.cdm.io.common.mapping;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.sql.SQLException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
@@ -84,26 +84,27 @@ public class DbImportTruncatedStringMapper extends DbSingleAttributeImportMapper
 	}
 
 	@Override
-	protected CdmBase doInvoke(CdmBase cdmBase, Object value) throws SQLException {
+	protected CdmBase doInvoke(CdmBase cdmBase, Object value) {
 		String strValue = (String)value;
-		if (strValue != null && strValue.length() > truncatedLength){
-			return invokeTruncatedValue(cdmBase, value);
+		strValue = StringUtils.isBlank(strValue)? null:strValue.trim();
+        if (strValue != null && strValue.length() > truncatedLength){
+			return invokeTruncatedValue(cdmBase, strValue);
 		}else{
-			return doNotTruncate(cdmBase, value);
+			return doNotTruncate(cdmBase, strValue);
 
 		}
 	}
 
-    private CdmBase doNotTruncate(CdmBase cdmBase, Object value) throws SQLException {
+    private CdmBase doNotTruncate(CdmBase cdmBase, String value) {
         if (isProtectedTitleCache && cdmBase.isInstanceOf(IdentifiableEntity.class)){
-            (CdmBase.deproxy(cdmBase, IdentifiableEntity.class)).setTitleCache((String)value, true);
+            (CdmBase.deproxy(cdmBase, IdentifiableEntity.class)).setTitleCache(value, true);
             return cdmBase;
         }else{
             return super.doInvoke(cdmBase, value);
         }
     }
 
-    private CdmBase invokeTruncatedValue(CdmBase cdmBase, Object value) throws SQLException {
+    private CdmBase invokeTruncatedValue(CdmBase cdmBase, Object value) {
 		CdmBase result;
 		String truncatedValue = ((String)value).substring(0, truncatedLength - 3) + "...";
 		result = doNotTruncate(cdmBase, truncatedValue);

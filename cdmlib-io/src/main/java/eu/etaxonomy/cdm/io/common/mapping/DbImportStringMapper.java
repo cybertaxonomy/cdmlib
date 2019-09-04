@@ -9,8 +9,7 @@
 
 package eu.etaxonomy.cdm.io.common.mapping;
 
-import java.sql.SQLException;
-
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
@@ -45,8 +44,9 @@ public class DbImportStringMapper extends DbSingleAttributeImportMapperBase<DbIm
 	}
 
 	@Override
-	protected CdmBase doInvoke(CdmBase cdmBase, Object value) throws SQLException {
-		return super.doInvoke(cdmBase, value);
+	protected CdmBase doInvoke(CdmBase cdmBase, Object value){
+	    String str = StringUtils.isBlank((String)value)? null:((String)value).trim();
+		return super.doInvoke(cdmBase, str);
 	}
 
 	@Override
