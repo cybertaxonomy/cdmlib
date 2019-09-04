@@ -17,40 +17,35 @@ import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
+import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.IAnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
 /**
  * @author a.mueller
  * @since 12.05.2009
- * @version 1.0
  */
-public class DbLastActionMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer> {
-	@SuppressWarnings("unused")
+public class DbLastActionMapper
+        extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>>{
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbLastActionMapper.class);
 
 	public static final UUID uuidMarkerTypeHasNoLastAction = UUID.fromString("99652d5a-bc92-4251-b57d-0fec4d258ab7");
+	public static final UUID uuidAnnotationTypeLastAction = UUID.fromString("d0423ffd-d1dc-4571-ba05-eb724eec3c77");
+	public static final UUID uuidAnnotationTypeLastActionDate = UUID.fromString("f666fd60-b5dc-4950-9d6a-d3ded7d596d7");
+
 	boolean isActionType;
 
 	public static DbLastActionMapper NewInstance(String dbAttributeString, boolean isActionType){
-		return new DbLastActionMapper(dbAttributeString, null, true, isActionType);
+		return new DbLastActionMapper(dbAttributeString, null, isActionType);
 	}
 
-	/**
-	 * @param dbAttributeString
-	 * @param cdmAttributeString
-	 */
-	private DbLastActionMapper(String dbAttributeString, String defaultValue, boolean obligatory, boolean isActionType) {
+	private DbLastActionMapper(String dbAttributeString, String defaultValue, boolean isActionType) {
 		super("updated, created", dbAttributeString, defaultValue, false);
 		this.isActionType = isActionType;
 	}
 
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValue(eu.etaxonomy.cdm.model.common.CdmBase)
-	 */
 	@Override
 	protected Object getValue(CdmBase cdmBase) {
 		if (cdmBase.isInstanceOf(VersionableEntity.class)){
@@ -90,11 +85,6 @@ public class DbLastActionMapper extends DbSingleAttributeExportMapperBase<DbExpo
 		}
 	}
 
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValueType()
-	 */
 	@Override
 	protected int getSqlType() {
 		if (isActionType){
@@ -104,10 +94,6 @@ public class DbLastActionMapper extends DbSingleAttributeExportMapperBase<DbExpo
 		}
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase#getTypeClass()
-	 */
 	@Override
 	public Class<?> getTypeClass() {
 		return DateTime.class;

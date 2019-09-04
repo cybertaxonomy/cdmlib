@@ -161,7 +161,7 @@ public final class DOI implements java.io.Serializable{
 		}
 
 		if (! doi.startsWith("10.")){
-			throw new IllegalArgumentException("DOI not parsable. DOI must start with 10. or an URI or URN prefix ");
+			throw new IllegalArgumentException("DOI not parsable. DOI must start with 10. or an URI or URN prefix. But was " + doi);
 		}
 		doi = doi.substring(3);
 		String sep = isUrn? ":" : "/";
@@ -180,7 +180,7 @@ public final class DOI implements java.io.Serializable{
         }
 		if (! suffix.matches("\\p{Print}+")){
 			String message = "Suffix should only include printable characters";
-			throw new IllegalArgumentException(message);
+			throw new IllegalArgumentException(message + ": " + suffix);
 		}
 		if (isUrn){
 			//TODO do some other replacements according to http://www.doi.org/doi_handbook/2_Numbering.html#2.6.3

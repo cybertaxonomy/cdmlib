@@ -171,16 +171,9 @@ public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<D
 		return identifiableEntity;
 	}
 
+	protected ExtensionType getExtensionType(CdmImportBase<?, ?> currentImport, UUID uuid, String label,
+	        String text, String labelAbbrev){
 
-	/**
-	 * @param service
-	 * @param uuid
-	 * @param label
-	 * @param text
-	 * @param labelAbbrev
-	 * @return
-	 */
-	protected ExtensionType getExtensionType(CdmImportBase<?, ?> currentImport, UUID uuid, String label, String text, String labelAbbrev){
 		ITermService termService = currentImport.getTermService();
 		ExtensionType extensionType = (ExtensionType)termService.find(uuid);
 		if (extensionType == null){

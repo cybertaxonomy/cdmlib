@@ -152,14 +152,6 @@ public class DbImportAnnotationMapper
 		return annotatableEntity;
 	}
 
-	/**
-	 * @param service
-	 * @param uuid
-	 * @param label
-	 * @param text
-	 * @param labelAbbrev
-	 * @return
-	 */
 	protected AnnotationType getAnnotationType(CdmImportBase<?, ?> currentImport, UUID uuid, String label, String text, String labelAbbrev){
 		ITermService termService = currentImport.getTermService();
 		AnnotationType annotationType = (AnnotationType)termService.find(uuid);

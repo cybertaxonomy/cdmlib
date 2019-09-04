@@ -9,8 +9,6 @@
 
 package eu.etaxonomy.cdm.io.common.mapping;
 
-import java.sql.SQLException;
-
 import org.apache.log4j.Logger;
 
 import com.ibm.lsid.MalformedLSIDException;
@@ -48,7 +46,7 @@ public class DbImportLsidMapper extends DbSingleAttributeImportMapperBase<DbImpo
 	}
 
 	@Override
-	protected CdmBase doInvoke(CdmBase cdmBase, Object value) throws SQLException {
+	protected CdmBase doInvoke(CdmBase cdmBase, Object value) {
 		if (value != null && ! (value instanceof LSID) ){
 			try {
 				value = new LSID(String.valueOf(value));

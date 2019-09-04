@@ -176,7 +176,7 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 		return doInvoke(cdmBase, dbValue);
 	}
 
-	protected CDM_BASE doInvoke(CDM_BASE cdmBase, Object value) throws SQLException {
+	protected CDM_BASE doInvoke(CDM_BASE cdmBase, Object value) {
 		Method method = getMethod();
 		try {
 			Object objectToInvoke = getObjectToInvoke(cdmBase);

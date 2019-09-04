@@ -9,8 +9,6 @@
 
 package eu.etaxonomy.cdm.io.common.mapping;
 
-import java.sql.SQLException;
-
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
@@ -20,7 +18,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author a.mueller
- * @since 24.02.2010
+ * @since 02.09.2019
  */
 public class DbImportTimePeriodMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, CdmBase>{
 
