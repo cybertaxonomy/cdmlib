@@ -62,6 +62,6 @@ public class DbTimePeriodMapper extends DbSingleAttributeExportMapperBase<DbExpo
 
 	@Override
 	public Class<?> getTypeClass() {
-		return String.class;
+		return TimePeriod.class;
 	}
 }

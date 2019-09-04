@@ -269,10 +269,13 @@ public class TimePeriod implements Cloneable, Serializable {
     public static VerbatimTimePeriod toVerbatim(TimePeriod timePeriod){
         if (timePeriod == null){
             return null;
+        }else if (timePeriod instanceof VerbatimTimePeriod){
+            return (VerbatimTimePeriod)timePeriod;
+        }else{
+            VerbatimTimePeriod result = VerbatimTimePeriod.NewVerbatimInstance();
+            copyCloned(timePeriod, result);
+            return result;
         }
-        VerbatimTimePeriod result = VerbatimTimePeriod.NewVerbatimInstance();
-        copyCloned(timePeriod, result);
-        return result;
     }
     public VerbatimTimePeriod toVerbatim(){
         return toVerbatim(this);
