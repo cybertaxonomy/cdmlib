@@ -190,7 +190,6 @@ public class ConfigFileUtil implements EnvironmentAware {
     }
 
     public ConfigFileUtil setDefaultContent(String content) {
-        this.getClass().getClassLoader().getResource("");
         if(content != null){
             defaultContent = content;
         }
