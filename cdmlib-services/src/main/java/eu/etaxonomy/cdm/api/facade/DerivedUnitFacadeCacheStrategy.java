@@ -24,7 +24,6 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 /**
  * @author a.mueller
  * @since 03.06.2010
- *
  */
 public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIdentifiableEntityCacheStrategy<DerivedUnit> {
 	private static final long serialVersionUID = 1578628591216605619L;
@@ -34,9 +33,7 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 	private static final UUID uuid = UUID.fromString("df4672c1-ce5c-4724-af6d-91e2b326d4a4");
 
 	@Override
-	protected UUID getUuid() {
-		return uuid;
-	}
+	protected UUID getUuid() {return uuid;}
 
 	private boolean includeEmptySeconds = false;
 	private boolean includeReferenceSystem = true;
@@ -45,7 +42,6 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
     public String getTitleCache(DerivedUnit derivedUnit) {
 	    return getTitleCache(derivedUnit, false);
 	}
-
 
 	public String getTitleCache(DerivedUnit derivedUnit, boolean skipFieldUnit) {
 		DerivedUnitFacadeFieldUnitCacheStrategy fieldStrategy = new DerivedUnitFacadeFieldUnitCacheStrategy();

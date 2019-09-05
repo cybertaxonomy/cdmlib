@@ -34,7 +34,6 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 /**
  * @author a.mueller
  * @since 03.06.2010
- *
  */
 public class DerivedUnitFacadeFieldUnitCacheStrategy extends StrategyBase implements IIdentifiableEntityCacheStrategy<FieldUnit> {
 	private static final long serialVersionUID = 1578628591216605619L;
@@ -43,9 +42,7 @@ public class DerivedUnitFacadeFieldUnitCacheStrategy extends StrategyBase implem
 	private static final UUID uuid = UUID.fromString("df4672c1-ce5c-4724-af6d-91e2b326d4a4");
 
 	@Override
-	protected UUID getUuid() {
-		return uuid;
-	}
+	protected UUID getUuid() {return uuid;}
 
 	private boolean includeEmptySeconds = false;
 	private boolean includeReferenceSystem = true;
@@ -63,13 +60,11 @@ public class DerivedUnitFacadeFieldUnitCacheStrategy extends StrategyBase implem
 		return result;
 	}
 
-
 	protected String getFieldData(DerivedUnitFacade facade) {
 		String ALTITUDE_PREFIX = "alt. ";
 //		String ALTITUDE_POSTFIX = " m";
 
 		String result = "";
-
 
 		//country
 		String strCountry = null;
@@ -105,10 +100,8 @@ public class DerivedUnitFacadeFieldUnitCacheStrategy extends StrategyBase implem
 		String collectorAndFieldNumber = getCollectorAndFieldNumber(facade);
 		result = CdmUtils.concat(", ", result, collectorAndFieldNumber);
 
-
 		return result;
 	}
-
 
 	protected String addPlantDescription(String result, DerivedUnitFacade facade) {
 
@@ -120,8 +113,6 @@ public class DerivedUnitFacadeFieldUnitCacheStrategy extends StrategyBase implem
 
 		return result;
 	}
-
-
 
 	private String getCollectorAndFieldNumber(DerivedUnitFacade facade) {
 		String result = "";
@@ -170,15 +161,12 @@ public class DerivedUnitFacadeFieldUnitCacheStrategy extends StrategyBase implem
 			}
 			return result;
 		}
-
 	}
 
 	private String addFieldNumber(String str, String fieldNumber) {
 		String result = CdmUtils.concat(" ", str, fieldNumber);
 		return result;
 	}
-
-
 
 	/**
 	 * Strategy to format a collector team member name
@@ -197,8 +185,6 @@ public class DerivedUnitFacadeFieldUnitCacheStrategy extends StrategyBase implem
 		}
 	}
 
-
-
 	private boolean testPrimaryCollectorInCollectorTeam(AgentBase collector, Person primaryCollector) {
 		if (collector.isInstanceOf(Person.class)){
 			return collector.equals(primaryCollector);
@@ -210,8 +196,6 @@ public class DerivedUnitFacadeFieldUnitCacheStrategy extends StrategyBase implem
 			return false;
 		}
 	}
-
-
 
 	/**
 	 * @param facade
@@ -241,24 +225,14 @@ public class DerivedUnitFacadeFieldUnitCacheStrategy extends StrategyBase implem
 	public boolean isIncludeSeconds() {
 		return includeEmptySeconds;
 	}
-
-
-
 	public void setIncludeSeconds(boolean includeSeconds) {
 		this.includeEmptySeconds = includeSeconds;
 	}
 
-
-
 	public void setIncludeReferenceSystem(boolean includeReferenceSystem) {
 		this.includeReferenceSystem = includeReferenceSystem;
 	}
-
-
-
 	public boolean isIncludeReferenceSystem() {
 		return includeReferenceSystem;
 	}
-
-
 }
