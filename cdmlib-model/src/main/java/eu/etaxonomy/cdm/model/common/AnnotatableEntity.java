@@ -81,6 +81,11 @@ public abstract class AnnotatableEntity extends VersionableEntity implements IAn
 			getMarkers().add(marker);
 		}
 	}
+    public Marker addMarker(MarkerType type, boolean value){
+        Marker marker = Marker.NewInstance(type, value);
+        addMarker(marker);
+        return marker;
+    }
 	@Override
     public void removeMarker(Marker marker){
 		if(getMarkers().contains(marker)) {

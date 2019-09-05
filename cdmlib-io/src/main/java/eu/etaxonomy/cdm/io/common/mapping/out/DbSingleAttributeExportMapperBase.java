@@ -114,9 +114,16 @@ public abstract class DbSingleAttributeExportMapperBase<STATE extends DbExportSt
 				}else if (sqlType == Types.BOOLEAN){
 					getPreparedStatement().setBoolean(getIndex(), (Boolean)value);
 				}else if (sqlType == Types.DATE){
-					java.util.Date date = ((DateTime)value).toDate();
-					long t = date.getTime();
-					java.sql.Timestamp sqlTimestamp = new java.sql.Timestamp(t);
+				    java.sql.Timestamp sqlTimestamp;
+				    if(value instanceof String){
+				        String strDate = (String)value;
+				        sqlTimestamp = java.sql.Timestamp.valueOf(strDate);
+				    }else{
+				        DateTime dateTime = (DateTime)value;
+				        java.util.Date date = dateTime.toDate();
+				        long t = date.getTime();
+				        sqlTimestamp = new java.sql.Timestamp(t);
+				    }
 					getPreparedStatement().setTimestamp(getIndex(), sqlTimestamp);
 				}else{
 					throw new IllegalArgumentException("SqlType not yet supported yet: " + sqlType);
