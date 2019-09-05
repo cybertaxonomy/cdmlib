@@ -286,9 +286,9 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 			boolean isProParte,
 			boolean isPartial) {
 		if (type == null){
-			record.setTaxonomicStatus(name.getNomenclaturalCode().acceptedTaxonStatusLabel());
+			record.setTaxonomicStatus(name.getNameType().acceptedTaxonStatusLabel());
 		}else{
-			String status = name.getNomenclaturalCode().synonymStatusLabel();
+			String status = name.getNameType().synonymStatusLabel();
 			if (type.equals(SynonymType.HETEROTYPIC_SYNONYM_OF())){
 				status = "heterotypicSynonym";
 			}else if(type.equals(SynonymType.HOMOTYPIC_SYNONYM_OF())){

@@ -308,7 +308,7 @@ public class NonViralNameParserImplTest {
         assertEquals( "Abies", nameZoo1.getGenusOrUninomial());
         assertEquals( "alba", nameZoo1.getSpecificEpithet());
         assertEquals("Mueller & L.",  nameZoo1.getCombinationAuthorship().getNomenclaturalTitle());
-        assertEquals(NomenclaturalCode.ICZN, nameZoo1.getNomenclaturalCode() );
+        assertEquals(NomenclaturalCode.ICZN, nameZoo1.getNameType() );
         assertEquals(Integer.valueOf(1822), nameZoo1.getPublicationYear());
         assertTrue(nameZoo1.getCombinationAuthorship() instanceof Team);
         Team teamZoo = (Team)nameZoo1.getCombinationAuthorship();
@@ -1328,7 +1328,7 @@ public class NonViralNameParserImplTest {
         list = nameZooRefNotParsabel.getNomenclaturalReference().getParsingProblems();
         assertTrue("List must contain detail and year warning ", list.contains(ParserProblem.CheckDetailOrYear));
 
-        assertEquals(NomenclaturalCode.ICZN, nameZooRefNotParsabel.getNomenclaturalCode());
+        assertEquals(NomenclaturalCode.ICZN, nameZooRefNotParsabel.getNameType());
         assertEquals(Integer.valueOf(1923), nameZooRefNotParsabel.getPublicationYear());
         assertEquals(1, nameZooRefNotParsabel.getStatus().size());
 

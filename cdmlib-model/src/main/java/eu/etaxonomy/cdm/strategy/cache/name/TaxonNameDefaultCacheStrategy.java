@@ -65,8 +65,6 @@ public class TaxonNameDefaultCacheStrategy
 
     protected String zooAuthorYearSeperator = ", ";
 
-
-
     @Override
     public UUID getUuid(){
         return uuid;

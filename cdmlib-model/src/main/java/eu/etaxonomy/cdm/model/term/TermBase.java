@@ -190,9 +190,7 @@ public abstract class TermBase
                 }
             }
         }
-        if(repr == null){
-            repr = getRepresentation(Language.DEFAULT());
-        }
+        repr = getRepresentation(Language.DEFAULT());
         if(repr == null){
             Iterator<Representation> it = getRepresentations().iterator();
             if(it.hasNext()){

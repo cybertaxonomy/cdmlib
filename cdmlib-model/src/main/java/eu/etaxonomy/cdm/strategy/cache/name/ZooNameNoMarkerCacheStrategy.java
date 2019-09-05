@@ -28,29 +28,16 @@ public class ZooNameNoMarkerCacheStrategy
 	private static final long serialVersionUID = 2821727191810867550L;
 
 	final static UUID uuid = UUID.fromString("8ffa5f04-0303-4875-be44-dac5ff95b874");
-
-
 	@Override
-	public UUID getUuid(){
-		return uuid;
-	}
+	public UUID getUuid(){return uuid;}
 
-
-	/**
-	 * Factory method
-	 * @return
-	 */
 	public static ZooNameNoMarkerCacheStrategy NewInstance(){
 		return new ZooNameNoMarkerCacheStrategy();
 	}
 
-	/**
-	 * Constructor
-	 */
 	private ZooNameNoMarkerCacheStrategy(){
 		super();
 	}
-
 
 	@Override
 	protected List<TaggedText> getInfraSpeciesTaggedNameCache(TaxonName nonViralName){
@@ -58,9 +45,18 @@ public class ZooNameNoMarkerCacheStrategy
 		return getInfraSpeciesTaggedNameCache(nonViralName, includeMarker);
 	}
 
+	@Override
+    protected boolean includeInfraSpecificMarkerForZooNames(TaxonName name){
+        boolean result = super.includeInfraSpecificMarkerForZooNames(name);
+	    if (Rank.SUBSPECIES().equals(name.getRank())){
+	        result = false;
+	    }
+        return result;
+    }
 
 	@Override
-	protected void addInfraGenericPart(INonViralName name, List<TaggedText> tags, String infraGenericMarker, String infraGenEpi) {
+	protected void addInfraGenericPart(INonViralName name, List<TaggedText> tags, String infraGenericMarker,
+	        String infraGenEpi) {
 		//add epitheton
 		if (StringUtils.isNotBlank(infraGenEpi)){
 	        tags.add(new TaggedText(TagEnum.name, "(" + infraGenEpi + ")"));

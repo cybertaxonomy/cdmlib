@@ -48,9 +48,9 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  * @author a.mueller
  * @since 26.11.2008
  */
-public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase{
+public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase{
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(NonViralNameDefaultCacheStrategyTest.class);
+	private static final Logger logger = Logger.getLogger(TaxonNameDefaultCacheStrategyTest.class);
 
     private TaxonNameDefaultCacheStrategy strategy;
 
@@ -83,9 +83,6 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
         vocabularyStore.initialize();
     }
 
-    /**
-     * @throws java.lang.Exception
-     */
     @Before
     public void setUp() throws Exception {
         strategy = TaxonNameDefaultCacheStrategy.NewInstance();
@@ -206,9 +203,6 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
 
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.TaxonNameDefaultCacheStrategy#getNameCache(eu.etaxonomy.cdm.model.name.NonViralName)}.
-     */
     @Test
     public void testNameCacheWithInfraGenericEpithet() {
         speciesName.setInfraGenericEpithet("Infraabies");

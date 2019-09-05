@@ -62,9 +62,6 @@ public interface ITaxonNameBase
     @Transient
     public String getFullTitleCache();
 
-    @Transient
-    public NomenclaturalCode getNomenclaturalCode();
-
     public List<TaggedText> getTaggedName();
 
     public List<TaggedText> getTaggedFullTitle();

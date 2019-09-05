@@ -32,7 +32,6 @@ import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 
 /**
  * @author a.mueller
- *
  */
 public class ZoologicalNameCacheStrategyTest extends NameCacheStrategyTestBase {
 	@SuppressWarnings("unused")
@@ -64,20 +63,12 @@ public class ZoologicalNameCacheStrategyTest extends NameCacheStrategyTestBase {
 	private final Integer publicationYear = 1928;
 	private final Integer originalPublicationYear = 1860;
 
-
-
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@BeforeClass
 	public static void setUpBeforeClass() {
 		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
 		vocabularyStore.initialize();
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 		strategy = TaxonNameDefaultCacheStrategy.NewInstance();
@@ -109,26 +100,17 @@ public class ZoologicalNameCacheStrategyTest extends NameCacheStrategyTestBase {
 
 /********* TEST *******************************************/
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy#NewInstance()}.
-	 */
 	@Test
 	public final void testNewInstance() {
 		assertNotNull(strategy);
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy#getNameCache(eu.etaxonomy.cdm.model.common.CdmBase)}.
-	 */
 	@Test
 	public final void testGetNameCache() {
 		assertEquals(subSpeciesNameString, subSpeciesName.getNameCache());
 		assertNull(subSpeciesNameString, strategy.getNameCache(null));
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy#getFullNameCache(eu.etaxonomy.cdm.model.common.CdmBase)}.
-	 */
 	@Test
 	public final void testGetTitleCache() {
 		assertNull(subSpeciesNameString, strategy.getTitleCache(null));
@@ -159,9 +141,6 @@ public class ZoologicalNameCacheStrategyTest extends NameCacheStrategyTestBase {
 		assertEquals(speciesNameWithGenusEpiString, strategy.getTitleCache(speciesNameWithInfrGenEpi));
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy#getAuthorCache(eu.etaxonomy.cdm.model.common.CdmBase)}.
-	 */
 	@Test
 	public final void testGetAuthorshipCache() {
 		subSpeciesName.setCombinationAuthorship(author);
@@ -193,17 +172,11 @@ public class ZoologicalNameCacheStrategyTest extends NameCacheStrategyTestBase {
 
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy#getUninomialNameCache(eu.etaxonomy.cdm.model.name.BotanicalName)}.
-	 */
 	@Test
 	public final void testGetGenusOrUninomialNameCache() {
 		assertEquals(familyNameString, strategy.getNameCache(familyName));
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy#getInfraGenusNameCache(eu.etaxonomy.cdm.model.name.BotanicalName)}.
-	 */
 	@Test
 	public final void testGetInfraGenusTaggedNameCache() {
 		String methodName = "getInfraGenusTaggedNameCache";
@@ -213,26 +186,17 @@ public class ZoologicalNameCacheStrategyTest extends NameCacheStrategyTestBase {
 		assertEquals("Genus subg. InfraGenericPart", strategy.getNameCache(subGenusName));
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy#getSpeciesNameCache(eu.etaxonomy.cdm.model.name.BotanicalName)}.
-	 */
 	@Test
 	public final void testGetSpeciesNameCache() {
 		assertEquals(speciesNameString, strategy.getNameCache(speciesName));
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy#getInfraSpeciesNameCache(eu.etaxonomy.cdm.model.name.BotanicalName)}.
-	 */
 	@Test
 	public final void testGetInfraSpeciesNameCache() {
 		assertEquals(subSpeciesNameString, strategy.getNameCache(subSpeciesName));
 	}
 
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy#getInfraSpeciesNameCache(eu.etaxonomy.cdm.model.name.BotanicalName)}.
-	 */
 	@Test
 	public final void testAutonyms() {
 		subSpeciesName.setInfraSpecificEpithet("alba");
@@ -245,6 +209,4 @@ public class ZoologicalNameCacheStrategyTest extends NameCacheStrategyTestBase {
 		assertEquals("Abies alba subsp. alba", strategy.getNameCache(subSpeciesName));
 		assertEquals("Abies alba subsp. alba L.", strategy.getTitleCache(subSpeciesName));
 	}
-
-
 }

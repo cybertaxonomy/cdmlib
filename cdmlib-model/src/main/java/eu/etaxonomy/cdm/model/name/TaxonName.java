@@ -3289,14 +3289,12 @@ public class TaxonName
      * @see  	#getHasProblem()
      * @deprecated use {@link #getNameType()} instead
      */
-    @Override
     @Deprecated
     @Transient
     @java.beans.Transient
     public NomenclaturalCode getNomenclaturalCode() {
         return nameType;
     }
-
 
     /**
      * Generates and returns the string with the scientific name of <i>this</i>

@@ -819,7 +819,7 @@ public class NonViralNameParserImpl
                         nameToBeFilled.setBinomHybrid(true);
                         infraGenericRankMarker = infraGenericRankMarker.substring(1);
                     }
-                    infraGenericRank = Rank.getRankByIdInVoc(infraGenericRankMarker, nameToBeFilledOrig.getNomenclaturalCode());
+                    infraGenericRank = Rank.getRankByIdInVoc(infraGenericRankMarker, nameToBeFilledOrig.getNameType());
 				}
 				nameToBeFilled.setRank(infraGenericRank);
 				nameToBeFilled.setGenusOrUninomial(epi[0]);
@@ -959,7 +959,7 @@ public class NonViralNameParserImpl
 				 givenNameString = givenNameString.trim();
 				 secondNameString = secondNameString.trim();
 				 nameToBeFilled.setHybridFormula(true);
-				 NomenclaturalCode code = nameToBeFilled.getNomenclaturalCode();
+				 NomenclaturalCode code = nameToBeFilled.getNameType();
 				 INonViralName firstName = this.parseFullName(givenNameString, code, rank);
 				 if (secondNameString.matches(abbrevHybridSecondPart)){
 				     secondNameString = extendSecondHybridPart(firstName, secondNameString);
