@@ -561,7 +561,7 @@ public class Language extends DefinedTermBase<Language> {
     public static final UUID uuidLangTunisianArabic = UUID.fromString("543dd18c-6d83-4997-b90e-88dab71632a3");    //aeb
     public static final UUID uuidLangAnusKorur = UUID.fromString("d39fb79e-ad47-4779-882b-dc34d6f7657f");    //auq
     public static final UUID uuidLangKhanty = UUID.fromString("c73f0654-0d9b-4d60-9b2a-ac23cd19efef");    //kca
-
+    public static final UUID uuidLangVlaams = UUID.fromString("101e0f83-611c-4cae-bb11-355e6e90b426");    //vls
 
 
     protected static Map<UUID, Language> termMap = null;
