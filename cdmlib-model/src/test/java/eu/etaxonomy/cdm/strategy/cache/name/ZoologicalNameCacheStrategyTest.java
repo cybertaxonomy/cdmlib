@@ -43,6 +43,7 @@ public class ZoologicalNameCacheStrategyTest extends NameCacheStrategyTestBase {
 	private TaxonName subGenusName;
 	private TaxonName speciesName;
 	private TaxonName subSpeciesName;
+	private TaxonName varName;
 	private TaxonName speciesNameWithInfrGenEpi;
 	private TeamOrPersonBase<?> author;
 	private TeamOrPersonBase<?> exAuthor;
@@ -53,7 +54,8 @@ public class ZoologicalNameCacheStrategyTest extends NameCacheStrategyTestBase {
 	private final String genusNameString = "Genus";
 	private final String speciesNameString = "Abies alba";
 	private final String subSpeciesNameString = "Abies alba subsp. beta";
-	private final String speciesNameWithGenusEpiString = "Bacanius (Mullerister) rombophorus (Aube, 1843)";
+	private final String varietyNameString = "Abies alba var. beta";
+    private final String speciesNameWithGenusEpiString = "Bacanius (Mullerister) rombophorus (Aube, 1843)";
 
 	private final String authorString = "L.";
 	private final String exAuthorString = "Exaut.";
@@ -81,6 +83,7 @@ public class ZoologicalNameCacheStrategyTest extends NameCacheStrategyTestBase {
 
 		speciesName = TaxonNameFactory.PARSED_ZOOLOGICAL(speciesNameString);
 		subSpeciesName = TaxonNameFactory.PARSED_ZOOLOGICAL(subSpeciesNameString);
+		varName = TaxonNameFactory.PARSED_ZOOLOGICAL(varietyNameString);
 		speciesNameWithInfrGenEpi = TaxonNameFactory.PARSED_ZOOLOGICAL(speciesNameWithGenusEpiString);
 		Assert.assertFalse(speciesName.hasProblem());  //guarantee names are well past
 		Assert.assertFalse(speciesNameWithInfrGenEpi.hasProblem());
@@ -194,6 +197,7 @@ public class ZoologicalNameCacheStrategyTest extends NameCacheStrategyTestBase {
 	@Test
 	public final void testGetInfraSpeciesNameCache() {
 		assertEquals(subSpeciesNameString, strategy.getNameCache(subSpeciesName));
+		assertEquals(varietyNameString, strategy.getNameCache(varName));
 	}
 
 
