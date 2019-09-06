@@ -886,8 +886,7 @@ public class FullCoverageDataGenerator {
 		zooName.addDescription(TaxonNameDescription.NewInstance());
 		zooName.setNomenclaturalMicroReference("p. 123");
 		zooName.setNomenclaturalReference(getReference());
-		NameRelationship rel = zooName.addRelationshipFromName(botName, NameRelationshipType.LATER_HOMONYM() , "ruleConsidered");
-		rel.setCodeEdition(NomenclaturalCodeEdition.ICN_2017_SHENZHEN);
+		NameRelationship rel = zooName.addRelationshipFromName(botName, NameRelationshipType.LATER_HOMONYM() , "ruleConsidered", NomenclaturalCodeEdition.ICN_2017_SHENZHEN);
 		NomenclaturalStatus status = NomenclaturalStatus.NewInstance(NomenclaturalStatusType.CONSERVED(), getReference(), "p. 222");
 		zooName.addStatus(status);
 		handleAnnotatableEntity(rel);

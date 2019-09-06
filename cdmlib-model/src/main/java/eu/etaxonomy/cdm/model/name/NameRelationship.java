@@ -107,13 +107,14 @@ public class NameRelationship
 	 * @param fromName			the taxon name to be set as source for the new name relationship
 	 * @param type				the relationship type to be assigned to the new name relationship
 	 * @param ruleConsidered	the string indicating the article of the nomenclatural code for the new name relationship
+     * @param codeEdition           the edition of the nomenclatural code where the <code>ruleConsidered</code> has been published.
 	 * @see						#NameRelationship(TaxonName, TaxonName, NameRelationshipType, Reference, String, String)
 	 * @see						TaxonName#addNameRelationship(NameRelationship)
 	 * @see						TaxonName#addRelationshipFromName(TaxonName, NameRelationshipType, String)
 	 * @see						TaxonName#addRelationshipToName(TaxonName, NameRelationshipType, String)
 	 */
-	protected NameRelationship(TaxonName toName, TaxonName fromName, NameRelationshipType type, String ruleConsidered) {
-		this(toName, fromName, type, null, null, ruleConsidered);
+	protected NameRelationship(TaxonName toName, TaxonName fromName, NameRelationshipType type, String ruleConsidered, NomenclaturalCodeEdition codeEdition) {
+		this(toName, fromName, type, null, null, ruleConsidered, codeEdition);
 	}
 
 	/**
@@ -127,14 +128,16 @@ public class NameRelationship
 	 * @param citation				the reference source for the new name relationship
 	 * @param citationMicroReference	the string with the details describing the exact localisation within the reference
 	 * @param ruleConsidered		the string indicating the article of the nomenclatural code justifying the new name relationship
+	 * @param codeEdition           the edition of the nomenclatural code where the <code>ruleConsidered</code> has been published.
 	 * @see							#NameRelationship(TaxonName, TaxonName, NameRelationshipType, String)
 	 * @see							TaxonName#addNameRelationship(NameRelationship)
 	 * @see							TaxonName#addRelationshipFromName(TaxonName, NameRelationshipType, String)
 	 * @see							TaxonName#addRelationshipToName(TaxonName, NameRelationshipType, String)
 	 */
-	protected NameRelationship(TaxonName  toName, TaxonName fromName, NameRelationshipType type, Reference citation, String citationMicroReference, String ruleConsidered) {
+	protected NameRelationship(TaxonName  toName, TaxonName fromName, NameRelationshipType type, Reference citation, String citationMicroReference, String ruleConsidered, NomenclaturalCodeEdition codeEdition) {
 		super(fromName, toName, type, citation, citationMicroReference);
 		this.setRuleConsidered(ruleConsidered);
+		this.setCodeEdition(codeEdition);
 	}
 
 	//********* METHODS **************************************/

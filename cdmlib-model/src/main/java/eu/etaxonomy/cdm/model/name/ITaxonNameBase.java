@@ -101,7 +101,7 @@ public interface ITaxonNameBase
      * @see                   #addRelationshipFromName(TaxonName, NameRelationshipType, String)
      * @see                   #addNameRelationship(NameRelationship)
      */
-    public NameRelationship addRelationshipToName(TaxonName toName, NameRelationshipType type, String ruleConsidered);
+    public NameRelationship addRelationshipToName(TaxonName toName, NameRelationshipType type, String ruleConsidered, NomenclaturalCodeEdition codeEdition);
 
     /**
      * Creates a new {@link NameRelationship#NameRelationship(TaxonName, TaxonName, NameRelationshipType, String) name relationship} from <i>this</i> taxon name to another taxon name
@@ -118,7 +118,7 @@ public interface ITaxonNameBase
      * @see                   #addNameRelationship(NameRelationship)
      */
     public NameRelationship addRelationshipToName(TaxonName toName, NameRelationshipType type, Reference citation,
-            String microCitation, String ruleConsidered);
+            String microCitation, String ruleConsidered, NomenclaturalCodeEdition codeEdition);
 
     /**
      * Creates a new {@link NameRelationship#NameRelationship(TaxonName, TaxonName, NameRelationshipType, String) name relationship} from another taxon name to <i>this</i> taxon name
@@ -135,7 +135,7 @@ public interface ITaxonNameBase
      * @see                   #addRelationshipToName(TaxonName, NameRelationshipType, String)
      * @see                   #addNameRelationship(NameRelationship)
      */
-    public NameRelationship addRelationshipFromName(TaxonName fromName, NameRelationshipType type, String ruleConsidered);
+    public NameRelationship addRelationshipFromName(TaxonName fromName, NameRelationshipType type, String ruleConsidered, NomenclaturalCodeEdition codeEdition);
 
     /**
      * Creates a new {@link NameRelationship#NameRelationship(TaxonName, TaxonName, NameRelationshipType, String) name relationship} from another taxon name to <i>this</i> taxon name
@@ -153,7 +153,7 @@ public interface ITaxonNameBase
      * @see                   #addNameRelationship(NameRelationship)
      */
     public NameRelationship addRelationshipFromName(TaxonName fromName, NameRelationshipType type, Reference citation,
-            String microCitation, String ruleConsidered);
+            String microCitation, String ruleConsidered, NomenclaturalCodeEdition codeEdition);
 
     /**
      * Removes one {@link NameRelationship name relationship} from one of both sets of
@@ -289,7 +289,7 @@ public interface ITaxonNameBase
      * @see                     #getBasionym()
      * @see                     #addBasionym(TaxonName)
      */
-    public NameRelationship addBasionym(TaxonName basionym, Reference citation, String microcitation, String ruleConsidered);
+    public NameRelationship addBasionym(TaxonName basionym, Reference citation, String microcitation, String ruleConsidered, NomenclaturalCodeEdition codeEdition);
 
     /**
      * Returns the set of taxon names which are the {@link NameRelationshipType#REPLACED_SYNONYM() replaced synonyms} of <i>this</i> taxon name.
@@ -310,7 +310,7 @@ public interface ITaxonNameBase
      * @see                     #addBasionym(TaxonName)
      */
     //TODO: Check if true: The replaced synonym cannot have itself a replaced synonym (?).
-    public void addReplacedSynonym(TaxonName replacedSynonym, Reference citation, String microcitation, String ruleConsidered);
+    public void addReplacedSynonym(TaxonName replacedSynonym, Reference citation, String microcitation, String ruleConsidered, NomenclaturalCodeEdition codeEdition);
 
     /**
      * Removes the {@link NameRelationshipType#BASIONYM() basionym} {@link NameRelationship relationship} from the set of

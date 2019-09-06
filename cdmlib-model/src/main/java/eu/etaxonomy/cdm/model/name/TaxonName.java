@@ -1676,6 +1676,7 @@ public class TaxonName
      * @param toName		  the taxon name of the target for this new name relationship
      * @param type			  the type of this new name relationship
      * @param ruleConsidered  the string which specifies the rule on which this name relationship is based
+     * @param codeEdition     the edition of the nomenclatural code where the <code>ruleConsidered</code> has been published.
      * @return
      * @see    				  #getRelationsToThisName()
      * @see    				  #getNameRelations()
@@ -1683,8 +1684,8 @@ public class TaxonName
      * @see    				  #addNameRelationship(NameRelationship)
      */
     @Override
-    public NameRelationship addRelationshipToName(TaxonName toName, NameRelationshipType type, String ruleConsidered){
-        return addRelationshipToName(toName, type, null, null, ruleConsidered);
+    public NameRelationship addRelationshipToName(TaxonName toName, NameRelationshipType type, String ruleConsidered, NomenclaturalCodeEdition codeEdition){
+        return addRelationshipToName(toName, type, null, null, ruleConsidered, codeEdition);
     }
 
     /**
@@ -1695,6 +1696,7 @@ public class TaxonName
      * @param toName		  the taxon name of the target for this new name relationship
      * @param type			  the type of this new name relationship
      * @param ruleConsidered  the string which specifies the rule on which this name relationship is based
+     * @param codeEdition     the edition of the nomenclatural code where the <code>ruleConsidered</code> has been published.
      * @return
      * @see    				  #getRelationsToThisName()
      * @see    				  #getNameRelations()
@@ -1702,11 +1704,11 @@ public class TaxonName
      * @see    				  #addNameRelationship(NameRelationship)
      */
     @Override
-    public NameRelationship addRelationshipToName(TaxonName toName, NameRelationshipType type, Reference citation, String microCitation, String ruleConsidered){
+    public NameRelationship addRelationshipToName(TaxonName toName, NameRelationshipType type, Reference citation, String microCitation, String ruleConsidered, NomenclaturalCodeEdition codeEdition){
         if (toName == null){
             throw new NullPointerException("Null is not allowed as name for a name relationship");
         }
-        NameRelationship rel = new NameRelationship(toName, this, type, citation, microCitation, ruleConsidered);
+        NameRelationship rel = new NameRelationship(toName, this, type, citation, microCitation, ruleConsidered, codeEdition);
         return rel;
     }
 
@@ -1718,6 +1720,7 @@ public class TaxonName
      * @param fromName		  the taxon name of the source for this new name relationship
      * @param type			  the type of this new name relationship
      * @param ruleConsidered  the string which specifies the rule on which this name relationship is based
+     * @param codeEdition           the edition of the nomenclatural code where the <code>ruleConsidered</code> has been published.
      * @param citation		  the reference in which this relation was described
      * @param microCitation	  the reference detail for this relation (e.g. page)
      * @see    				  #getRelationsFromThisName()
@@ -1726,9 +1729,9 @@ public class TaxonName
      * @see    				  #addNameRelationship(NameRelationship)
      */
     @Override
-    public NameRelationship addRelationshipFromName(TaxonName fromName, NameRelationshipType type, String ruleConsidered){
+    public NameRelationship addRelationshipFromName(TaxonName fromName, NameRelationshipType type, String ruleConsidered, NomenclaturalCodeEdition codeEdition){
         //fromName.addRelationshipToName(this, type, null, null, ruleConsidered);
-        return this.addRelationshipFromName(fromName, type, null, null, ruleConsidered);
+        return this.addRelationshipFromName(fromName, type, null, null, ruleConsidered, codeEdition);
     }
     /**
      * Creates a new {@link NameRelationship#NameRelationship(TaxonName, TaxonName, NameRelationshipType, String) name relationship} from another taxon name to <i>this</i> taxon name
@@ -1738,6 +1741,7 @@ public class TaxonName
      * @param fromName		  the taxon name of the source for this new name relationship
      * @param type			  the type of this new name relationship
      * @param ruleConsidered  the string which specifies the rule on which this name relationship is based
+     * @param codeEdition           the edition of the nomenclatural code where the <code>ruleConsidered</code> has been published.
      * @param citation		  the reference in which this relation was described
      * @param microCitation	  the reference detail for this relation (e.g. page)
      * @see    				  #getRelationsFromThisName()
@@ -1746,8 +1750,8 @@ public class TaxonName
      * @see    				  #addNameRelationship(NameRelationship)
      */
     @Override
-    public NameRelationship addRelationshipFromName(TaxonName fromName, NameRelationshipType type, Reference citation, String microCitation, String ruleConsidered){
-        return fromName.addRelationshipToName(this, type, citation, microCitation, ruleConsidered);
+    public NameRelationship addRelationshipFromName(TaxonName fromName, NameRelationshipType type, Reference citation, String microCitation, String ruleConsidered, NomenclaturalCodeEdition codeEdition){
+        return fromName.addRelationshipToName(this, type, citation, microCitation, ruleConsidered, codeEdition);
     }
 
     /**
@@ -2137,7 +2141,7 @@ public class TaxonName
      */
     @Override
     public void addBasionym(TaxonName basionym){
-        addBasionym(basionym, null, null, null);
+        addBasionym(basionym, null, null, null, null);
     }
     /**
      * Assigns a taxon name as {@link NameRelationshipType#BASIONYM() basionym} of <i>this</i> taxon name
@@ -2149,14 +2153,15 @@ public class TaxonName
      *
      * @param  basionym			the taxon name to be set as the basionym of <i>this</i> taxon name
      * @param  ruleConsidered	the string identifying the nomenclatural rule
+     * @param codeEdition     the edition of the nomenclatural code where the <code>ruleConsidered</code> has been published.
      * @return
      * @see  					#getBasionym()
      * @see  					#addBasionym(TaxonName)
      */
     @Override
-    public NameRelationship addBasionym(TaxonName basionym, Reference citation, String microcitation, String ruleConsidered){
+    public NameRelationship addBasionym(TaxonName basionym, Reference citation, String microcitation, String ruleConsidered, NomenclaturalCodeEdition codeEdition){
         if (basionym != null){
-            return basionym.addRelationshipToName(this, NameRelationshipType.BASIONYM(), citation, microcitation, ruleConsidered);
+            return basionym.addRelationshipToName(this, NameRelationshipType.BASIONYM(), citation, microcitation, ruleConsidered, codeEdition);
         }else{
             return null;
         }
@@ -2182,14 +2187,15 @@ public class TaxonName
      *
      * @param  basionym			the taxon name to be set as the basionym of <i>this</i> taxon name
      * @param  ruleConsidered	the string identifying the nomenclatural rule
+     * @param codeEdition     the edition of the nomenclatural code where the <code>ruleConsidered</code> has been published.
      * @see  					#getBasionym()
      * @see  					#addBasionym(TaxonName)
      */
     //TODO: Check if true: The replaced synonym cannot have itself a replaced synonym (?).
     @Override
-    public void addReplacedSynonym(TaxonName replacedSynonym, Reference citation, String microcitation, String ruleConsidered){
+    public void addReplacedSynonym(TaxonName replacedSynonym, Reference citation, String microcitation, String ruleConsidered, NomenclaturalCodeEdition codeEdition){
         if (replacedSynonym != null){
-            replacedSynonym.addRelationshipToName(this, NameRelationshipType.REPLACED_SYNONYM(), citation, microcitation, ruleConsidered);
+            replacedSynonym.addRelationshipToName(this, NameRelationshipType.REPLACED_SYNONYM(), citation, microcitation, ruleConsidered, codeEdition);
         }
     }
 
@@ -3364,7 +3370,7 @@ public class TaxonName
 
                     // Then create it
                     name.addRelationshipFromName(this,
-                            NameRelationshipType.BASIONYM(), null);
+                            NameRelationshipType.BASIONYM(), null, null);
                 }
             }
         }

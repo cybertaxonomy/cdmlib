@@ -263,7 +263,7 @@ public class TcsXmlTaxonNameRelationsImport extends TcsXmlImportBase implements 
 						String id = elTaxonName.getAttributeValue("id");
 
 						TaxonName relatedTaxonName =  taxonNameMap.get(removeVersionOfRef(id));
-						taxonName.addRelationshipFromName(relatedTaxonName, nameRelType, ruleConsidered);
+						taxonName.addRelationshipFromName(relatedTaxonName, nameRelType, ruleConsidered, null);
 					}
 				}
 
@@ -337,9 +337,9 @@ public class TcsXmlTaxonNameRelationsImport extends TcsXmlImportBase implements 
 
 		//TODO note, microreference
 		if (inverse == false){
-			toName.addRelationshipToName(fromName, relType, ruleConsidered);
+			toName.addRelationshipToName(fromName, relType, ruleConsidered, null);
 		}else{
-			fromName.addRelationshipToName(toName, relType, ruleConsidered);
+			fromName.addRelationshipToName(toName, relType, ruleConsidered, null);
 		}
 		nameStore.add(fromName);
 		return true;

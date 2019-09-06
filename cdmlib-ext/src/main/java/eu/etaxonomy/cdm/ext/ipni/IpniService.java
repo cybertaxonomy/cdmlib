@@ -588,7 +588,7 @@ public class IpniService  implements IIpniService{
 		if (config.isDoBasionyms() && valueMap.get(REPLACED_SYNONYM)!= null){
 		    TaxonName replacedSynoynm = TaxonNameFactory.NewBotanicalInstance(null);
 		    replacedSynoynm.setTitleCache(valueMap.get(REPLACED_SYNONYM), true);
-		    name.addReplacedSynonym(replacedSynoynm, null, null, null);
+		    name.addReplacedSynonym(replacedSynoynm, null, null, null, null);
 		}
 
 		//type information

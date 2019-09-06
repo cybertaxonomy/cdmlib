@@ -332,7 +332,7 @@ public class DefaultMergeStrategyTest {
 		botName2.setAnamorphic(false);
 
 		//name relations
-		botName2.addBasionym(botName3, book1, "p.22", null);
+		botName2.addBasionym(botName3, book1, "p.22", null, null);
 		DerivedUnit specimen1 = DerivedUnit.NewPreservedSpecimenInstance();
 		botName2.addSpecimenTypeDesignation(specimen1, SpecimenTypeDesignationStatus.HOLOTYPE(), book2, "p.56", "originalNameString", false, true);
 

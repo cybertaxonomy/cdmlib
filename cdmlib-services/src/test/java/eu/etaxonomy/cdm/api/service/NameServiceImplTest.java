@@ -154,7 +154,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         nameWithBasionym.setTitleCache("nameWithBasionym", true);
 
         NameRelationshipType nameRelType = (NameRelationshipType)termService.find(NameRelationshipType.BASIONYM().getUuid());
-        name1.addRelationshipToName(nameWithBasionym,nameRelType , null, null, null);
+        name1.addRelationshipToName(nameWithBasionym,nameRelType , null, null, null, null);
 //		nameWithBasionym.addBasionym(name1);
         nameService.save(name1);
         nameService.save(nameWithBasionym);
@@ -199,7 +199,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         nameWithBasionym.setTitleCache("nameWithBasionym", true);
 
         NameRelationshipType nameRelType = (NameRelationshipType)termService.find(NameRelationshipType.BASIONYM().getUuid());
-        name1.addRelationshipToName(nameWithBasionym,nameRelType , null, null, null);
+        name1.addRelationshipToName(nameWithBasionym,nameRelType , null, null, null, null);
         nameService.save(name1);
         nameService.save(nameWithBasionym);
         commitAndStartNewTransaction(tableNames);
@@ -236,7 +236,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         nameWithBasionym.setTitleCache("nameWithBasionym", true);
 
         NameRelationshipType nameRelType = (NameRelationshipType)termService.find(NameRelationshipType.BASIONYM().getUuid());
-        name1.addRelationshipToName(nameWithBasionym,nameRelType , null, null, null);
+        name1.addRelationshipToName(nameWithBasionym,nameRelType , null, null, null, null);
         nameService.save(name1);
         nameService.save(nameWithBasionym);
         commitAndStartNewTransaction(tableNames);
@@ -273,7 +273,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         basionym.setTitleCache("basionym", true);
 
         NameRelationshipType nameRelType = (NameRelationshipType)termService.find(NameRelationshipType.BASIONYM().getUuid());
-        basionym.addRelationshipToName(name1,nameRelType , null, null, null);
+        basionym.addRelationshipToName(name1,nameRelType , null, null, null, null);
         nameService.save(name1);
         nameService.save(basionym);
         commitAndStartNewTransaction(tableNames);

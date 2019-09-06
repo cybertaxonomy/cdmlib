@@ -442,7 +442,7 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
     				if (basionymNameStr != null){
     				    Synonym syn = createSynonym(state,taxonBase,basionymNameStr);
                         acceptedTaxon.addSynonym(syn, SynonymType.HOMOTYPIC_SYNONYM_OF());
-                        syn.getName().addRelationshipToName(acceptedTaxon.getName(), NameRelationshipType.BASIONYM(), null);
+                        syn.getName().addRelationshipToName(acceptedTaxon.getName(), NameRelationshipType.BASIONYM(), null, null);
     				}
     				nameUsedInSource = taxonBase.getName();
 
