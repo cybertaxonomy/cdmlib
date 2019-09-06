@@ -1151,8 +1151,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	        }
 	        save(state.getDerivedUnitBase(), state);
 
-	        if ((config.isAddIndividualsAssociationsSuchAsSpecimenAndObservations() || config.isAddIndividualsAssociationsForFieldUnits())
-	                && preferredFlag) {
+	        if (config.isAddIndividualsAssociationsSuchAsSpecimenAndObservations() && preferredFlag) {
 	            //do not add IndividualsAssociation to non-preferred taxa
 	            if (logger.isDebugEnabled()){
 	                logger.debug("isDoCreateIndividualsAssociations");
@@ -1257,15 +1256,8 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	        state.setDescriptionGroup(taxonDescription);
 
 	        IndividualsAssociation indAssociation = IndividualsAssociation.NewInstance();
-	        Feature feature;
-	        if(state.getConfig().isAddIndividualsAssociationsForFieldUnits()){
-	            feature = makeFeature(state.getFieldUnit(state.getDataHolder().getFieldNumber()));
-	            indAssociation.setAssociatedSpecimenOrObservation(state.getFieldUnit(state.getDataHolder().getFieldNumber()));
-	        }
-	        else{
-	            feature = makeFeature(state.getDerivedUnitBase());
-	            indAssociation.setAssociatedSpecimenOrObservation(state.getDerivedUnitBase());
-	        }
+	        Feature feature = makeFeature(state.getDerivedUnitBase());
+	        indAssociation.setAssociatedSpecimenOrObservation(state.getDerivedUnitBase());
 	        indAssociation.setFeature(feature);
 //
 //	        if (((Abcd206ImportConfigurator) state.getConfig()).isInteractWithUser()){
@@ -1448,7 +1440,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 
 	        if (type.isFeatureObservation()){
 	            return Feature.OBSERVATION();
-	        }else if (type.isFeatureSpecimen() || type.isFieldUnit()){
+	        }else if (type.isFeatureSpecimen()){
 	            return Feature.SPECIMEN();
 	        }else if (type == SpecimenOrObservationType.DerivedUnit){
 	            return Feature.OBSERVATION();
