@@ -225,6 +225,14 @@ public class OwlImportUtil {
         return feature;
     }
 
+    static State createState(Resource termResource, ICdmRepository repo, Model model, StructureTreeOwlImportState state){
+        State stateTerm = findTerm(State.class, termResource, repo, model, state);
+        if(stateTerm==null){
+            stateTerm = State.NewInstance();
+        }
+        return stateTerm;
+    }
+
     private static Character createCharacter(Resource termResource, ICdmRepository repo, Model model, StructureTreeOwlImportState state){
         Character character = findTerm(Character.class, termResource, repo, model, state);
         if(character==null){
@@ -239,6 +247,9 @@ public class OwlImportUtil {
         // create new term
         if(termType.equals(TermType.Feature)){
             term = createFeature(termResource, repo, model, state);
+        }
+        else if(termType.equals(TermType.State)){
+            term = createState(termResource, repo, model, state);
         }
         else if(termType.equals(TermType.Character)){
             term = createCharacter(termResource, repo, model, state);
