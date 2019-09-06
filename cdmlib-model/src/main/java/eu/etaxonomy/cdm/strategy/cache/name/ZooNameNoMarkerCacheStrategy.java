@@ -41,12 +41,6 @@ public class ZooNameNoMarkerCacheStrategy
 	}
 
 	@Override
-	protected List<TaggedText> getInfraSpeciesTaggedNameCache(TaxonName nonViralName){
-		boolean includeMarker = false;
-		return getInfraSpeciesTaggedNameCache(nonViralName, includeMarker);
-	}
-
-	@Override
     protected boolean includeInfraSpecificMarkerForZooNames(TaxonName name){
         boolean result = super.includeInfraSpecificMarkerForZooNames(name);
 	    if (Rank.SUBSPECIES().equals(name.getRank())){
