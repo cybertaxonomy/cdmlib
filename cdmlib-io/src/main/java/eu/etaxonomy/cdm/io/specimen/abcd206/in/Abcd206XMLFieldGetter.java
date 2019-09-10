@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -86,7 +87,7 @@ public class Abcd206XMLFieldGetter {
                 }
             }
         } catch (NullPointerException e) {
-            
+
             dataHolder.setStatusList(new ArrayList<SpecimenTypeDesignationStatus>());
         }
     }
@@ -1190,6 +1191,16 @@ public class Abcd206XMLFieldGetter {
                                 dataHolder.setGatheringDateText(dateTimes.item(k).getTextContent());
                             }
                         }
+
+                        for (int k = 0; k < dateTimes.getLength(); k++) {
+                            if (dateTimes.item(k).getNodeName().equals(prefix + "DateText")) {
+                                path = dateTimes.item(k).getNodeName();
+                                getHierarchie(dateTimes.item(k));
+                                dataHolder.knownABCDelements.add(path);
+                                path = "";
+                                dataHolder.setGatheringDateText(dateTimes.item(k).getTextContent());
+                            }
+                        }
                     }
 
                 }
@@ -1277,9 +1288,11 @@ public class Abcd206XMLFieldGetter {
             }
 
         } catch (NullPointerException e) {
-            dataHolder.gatheringAgentsText = "";
-            dataHolder.gatheringAgentsList = new ArrayList<String>();
-        }
+            if (StringUtils.isBlank(dataHolder.gatheringAgentsText) &&  dataHolder.gatheringAgentsList == null){
+                dataHolder.gatheringAgentsText = "";
+                dataHolder.gatheringAgentsList = new ArrayList<String>();
+            }
+       }
 
     }
 

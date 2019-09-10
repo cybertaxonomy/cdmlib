@@ -555,7 +555,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             // heightUnit);
             if (state.getDataHolder().gatheringAgentsList.isEmpty()) {
                 unitsGatheringEvent.setCollector(state.getPersonStore().get(state.getDataHolder().gatheringAgentsText),
-                        config);
+                            config);
+
             } else {
                 unitsGatheringEvent.setCollector(
                         state.getPersonStore().get(state.getDataHolder().gatheringAgentsList.toString()), config);
@@ -588,21 +589,54 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 derivedUnitFacade.setFieldUnit(fieldUnit);
             }
 
-            derivedUnitFacade.setLocality(gatheringEvent.getLocality());
-            derivedUnitFacade.setExactLocation(gatheringEvent.getExactLocation());
-            derivedUnitFacade.setCollector(gatheringEvent.getCollector());
-            derivedUnitFacade.setCountry((NamedArea) areaCountry);
-            derivedUnitFacade.setAbsoluteElevationText(gatheringEvent.getAbsoluteElevationText());
-            derivedUnitFacade.setAbsoluteElevation(gatheringEvent.getAbsoluteElevation());
-            derivedUnitFacade.setAbsoluteElevationMax(gatheringEvent.getAbsoluteElevationMax());
-            derivedUnitFacade.setDistanceToGroundText(gatheringEvent.getDistanceToGroundText());
-            derivedUnitFacade.setDistanceToGroundMax(gatheringEvent.getDistanceToGroundMax());
-            derivedUnitFacade.setDistanceToGround(gatheringEvent.getDistanceToGround());
-            derivedUnitFacade.setDistanceToWaterSurfaceText(gatheringEvent.getDistanceToWaterSurfaceText());
-            derivedUnitFacade.setDistanceToWaterSurfaceMax(gatheringEvent.getDistanceToWaterSurfaceMax());
-            derivedUnitFacade.setDistanceToWaterSurface(gatheringEvent.getDistanceToWaterSurface());
-            derivedUnitFacade.setGatheringPeriod(gatheringEvent.getTimeperiod());
-            derivedUnitFacade.setCollectingMethod(gatheringEvent.getCollectingMethod());
+            if (derivedUnitFacade.getLocality() == null && gatheringEvent.getLocality() != null){
+                derivedUnitFacade.setLocality(gatheringEvent.getLocality());
+            }
+            if (derivedUnitFacade.getExactLocation() == null && gatheringEvent.getExactLocation() != null){
+                derivedUnitFacade.setExactLocation(gatheringEvent.getExactLocation());
+            }
+
+            if (derivedUnitFacade.getCollector() == null && gatheringEvent.getCollector() != null){
+                derivedUnitFacade.setCollector(gatheringEvent.getCollector());
+            }
+            if (derivedUnitFacade.getCountry() == null && areaCountry != null){
+                derivedUnitFacade.setCountry((NamedArea) areaCountry);
+            }
+            if (StringUtils.isBlank(derivedUnitFacade.getAbsoluteElevationText()) && StringUtils.isNotBlank(gatheringEvent.getAbsoluteElevationText())){
+                derivedUnitFacade.setAbsoluteElevationText(gatheringEvent.getAbsoluteElevationText());
+            }
+            if (derivedUnitFacade.getAbsoluteElevation() == null && gatheringEvent.getAbsoluteElevation() != null){
+                derivedUnitFacade.setAbsoluteElevation(gatheringEvent.getAbsoluteElevation());
+            }
+            if (derivedUnitFacade.getAbsoluteElevationMaximum() == null && gatheringEvent.getAbsoluteElevationMax() != null){
+                derivedUnitFacade.setAbsoluteElevationMax(gatheringEvent.getAbsoluteElevationMax());
+            }
+            if (StringUtils.isBlank(derivedUnitFacade.getDistanceToGroundText()) && StringUtils.isNotBlank(gatheringEvent.getDistanceToGroundText())){
+                derivedUnitFacade.setDistanceToGroundText(gatheringEvent.getDistanceToGroundText());
+            }
+            if (derivedUnitFacade.getDistanceToGroundMax() == null && gatheringEvent.getDistanceToGroundMax() != null){
+                derivedUnitFacade.setDistanceToGroundMax(gatheringEvent.getDistanceToGroundMax());
+            }
+            if (derivedUnitFacade.getDistanceToGround() == null && gatheringEvent.getDistanceToGround() != null){
+                derivedUnitFacade.setDistanceToGround(gatheringEvent.getDistanceToGround());
+            }
+            if (StringUtils.isBlank(derivedUnitFacade.getDistanceToWaterSurfaceText()) && StringUtils.isNotBlank(gatheringEvent.getDistanceToWaterSurfaceText())){
+                derivedUnitFacade.setDistanceToWaterSurfaceText(gatheringEvent.getDistanceToWaterSurfaceText());
+            }
+            if (derivedUnitFacade.getDistanceToWaterSurfaceMax() == null && gatheringEvent.getDistanceToWaterSurfaceMax() != null){
+                derivedUnitFacade.setDistanceToWaterSurfaceMax(gatheringEvent.getDistanceToWaterSurfaceMax());
+            }
+            if (derivedUnitFacade.getDistanceToWaterSurface() == null && gatheringEvent.getDistanceToWaterSurface() != null){
+                derivedUnitFacade.setDistanceToWaterSurface(gatheringEvent.getDistanceToWaterSurface());
+            }
+            if (derivedUnitFacade.getGatheringPeriod() == null && gatheringEvent.getTimeperiod() != null){
+                derivedUnitFacade.setGatheringPeriod(gatheringEvent.getTimeperiod());
+            }
+            if (derivedUnitFacade.getCollectingMethod() == null && gatheringEvent.getCollectingMethod() != null){
+                derivedUnitFacade.setCollectingMethod(gatheringEvent.getCollectingMethod());
+            }
+
+
 
             for (DefinedTermBase<?> area : unitsGatheringArea.getAreas()) {
                 derivedUnitFacade.addCollectingArea((NamedArea) area);
@@ -831,7 +865,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             if (handleAssociatedUnits) {
                 importAssociatedUnits(state, item, derivedUnitFacade);
             }
-            if (state.getConfig().getDnaSoure() != null) {
+            if (state.getConfig().getDnaSoure() != null ) {
                 importAssociatedDna(state, item, derivedUnitFacade);
             }
             // siblings/ other children
@@ -1143,9 +1177,9 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                         String associationType = AbcdParseUtility
                                 .parseFirstTextContent(((Element) associatedUnits.item(m))
                                         .getElementsByTagName(state.getPrefix() + "AssociationType"));
-
+                        Abcd206XMLFieldGetter fieldGetter = new Abcd206XMLFieldGetter(state.getDataHolder(), unitAssociationWrapper.getPrefix());
                         Abcd206ImportParser.setUnitPropertiesXML((Element) associatedUnits.item(m),
-                                new Abcd206XMLFieldGetter(state.getDataHolder(), unitAssociationWrapper.getPrefix()),
+                                fieldGetter,
                                 state);
                         // logger.debug("derived unit: " +
                         // state.getDerivedUnitBase().toString() + " associated
@@ -1444,6 +1478,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                             }
                         }
                     }
+                    teamOrPerson = team;
                 }
                 if (!state.getPersonStore().containsId(state.getDataHolder().gatheringAgentsList.toString())) {
                     state.getPersonStore().put(state.getDataHolder().gatheringAgentsList.toString(), teamOrPerson);

@@ -62,7 +62,7 @@ public class AbcdDnaParser {
         if(specimenUnitList.item(0)!=null && specimenUnitList.item(0) instanceof Element){
             parseSpecimenUnit((Element)specimenUnitList.item(0), dnaSample);
         }
-        NodeList unitExtensions = item.getElementsByTagName(prefix+"UnitExtension");
+        NodeList unitExtensions = item.getElementsByTagName(prefix+"UnitExtensions");
         for(int i=0;i<unitExtensions.getLength();i++){
             if(unitExtensions.item(i) instanceof Element){
                 Element unitExtension = (Element) unitExtensions.item(i);
