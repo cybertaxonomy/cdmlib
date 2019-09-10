@@ -204,19 +204,29 @@ public class TaxonServiceImpl
     @Override
     @Transactional(readOnly = false)
     public UpdateResult swapSynonymAndAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, boolean setNameInSource){
-    	UpdateResult result = new UpdateResult();
-        TaxonName synonymName = synonym.getName();
+        UpdateResult result = new UpdateResult();
+    	acceptedTaxon.removeSynonym(synonym);
+    	TaxonName synonymName = synonym.getName();
+    	boolean sameHomotypicGroup = synonymName.getHomotypicalGroup().equals(acceptedTaxon.getName().getHomotypicalGroup());
+
         synonymName.removeTaxonBase(synonym);
-        boolean sameHomotypicGroup = synonymName.getHomotypicalGroup().equals(acceptedTaxon.getName().getHomotypicalGroup());
-        TaxonName taxonName = acceptedTaxon.getName();
-        taxonName.removeTaxonBase(acceptedTaxon);
+
+        TaxonName taxonName = HibernateProxyHelper.deproxy(acceptedTaxon.getName(), TaxonName.class);
+        //taxonName.removeTaxonBase(acceptedTaxon);
         Taxon newTaxon = Taxon.NewInstance(synonymName, synonym.getSec());
         List<Synonym> synonyms = new ArrayList<>();
         for (Synonym syn: acceptedTaxon.getSynonyms()){
+            syn = HibernateProxyHelper.deproxy(syn, Synonym.class);
             synonyms.add(syn);
         }
         for (Synonym syn: synonyms){
-            newTaxon.addSynonym(syn, syn.getType());
+            acceptedTaxon.removeSynonym(syn);
+        }
+
+        for (Synonym syn: synonyms){
+            if (!syn.getName().equals(newTaxon.getName())){
+                newTaxon.addSynonym(syn, syn.getType());
+            }
         }
 
         //move all data to new taxon
@@ -265,8 +275,12 @@ public class TaxonServiceImpl
         }
         List<TaxonNode> nodes = new ArrayList(acceptedTaxon.getTaxonNodes());
         for (TaxonNode node: nodes){
-            node.setTaxon(newTaxon);
+            node = HibernateProxyHelper.deproxy(node, TaxonNode.class);
+            TaxonNode parent = node.getParent();
             acceptedTaxon.removeTaxonNode(node);
+            node.setTaxon(newTaxon);
+            parent.addChildNode(node, null, null);
+
         }
         Synonym newSynonym = Synonym.NewInstance(taxonName, acceptedTaxon.getSec());
         if (sameHomotypicGroup){
@@ -274,12 +288,7 @@ public class TaxonServiceImpl
         }else{
             newTaxon.addSynonym(newSynonym, SynonymType.HETEROTYPIC_SYNONYM_OF());
         }
-//        synonym.setName(taxonName);
-//        synonym.setTitleCache(null, false);
-//        synonym.getTitleCache();
-//        acceptedTaxon.setName(synonymName);
-//        acceptedTaxon.setTitleCache(null, false);
-//        acceptedTaxon.getTitleCache();
+
         saveOrUpdate(newSynonym);
         saveOrUpdate(newTaxon);
         TaxonDeletionConfigurator conf = new TaxonDeletionConfigurator();
@@ -293,9 +302,7 @@ public class TaxonServiceImpl
         result.includeResult(deleteResult);
 		return result;
 
-        // the accepted taxon needs a new uuid because the concept has changed
-        // FIXME this leads to an error "HibernateException: immutable natural identifier of an instance of eu.etaxonomy.cdm.model.taxon.Taxon was altered"
-        //acceptedTaxon.setUuid(UUID.randomUUID());
+
     }
 
 
