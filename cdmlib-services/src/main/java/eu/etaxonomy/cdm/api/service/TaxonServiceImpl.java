@@ -213,7 +213,7 @@ public class TaxonServiceImpl
 
         TaxonName taxonName = HibernateProxyHelper.deproxy(acceptedTaxon.getName(), TaxonName.class);
         //taxonName.removeTaxonBase(acceptedTaxon);
-        Taxon newTaxon = Taxon.NewInstance(synonymName, synonym.getSec());
+
         List<Synonym> synonyms = new ArrayList<>();
         for (Synonym syn: acceptedTaxon.getSynonyms()){
             syn = HibernateProxyHelper.deproxy(syn, Synonym.class);
@@ -222,7 +222,9 @@ public class TaxonServiceImpl
         for (Synonym syn: synonyms){
             acceptedTaxon.removeSynonym(syn);
         }
-
+        Taxon newTaxon = (Taxon)acceptedTaxon.clone();
+        newTaxon.setName(synonymName);
+        newTaxon.setSec(synonym.getSec());
         for (Synonym syn: synonyms){
             if (!syn.getName().equals(newTaxon.getName())){
                 newTaxon.addSynonym(syn, syn.getType());
@@ -231,6 +233,11 @@ public class TaxonServiceImpl
 
         //move all data to new taxon
         //Move Taxon RelationShips to new Taxon
+        for(TaxonRelationship taxonRelationship : newTaxon.getTaxonRelations()){
+            newTaxon.removeTaxonRelation(taxonRelationship);
+        }
+
+
         for(TaxonRelationship taxonRelationship : acceptedTaxon.getTaxonRelations()){
             Taxon fromTaxon = HibernateProxyHelper.deproxy(taxonRelationship.getFromTaxon());
             Taxon toTaxon = HibernateProxyHelper.deproxy(taxonRelationship.getToTaxon());
@@ -256,7 +263,7 @@ public class TaxonServiceImpl
 
 
         //Move descriptions to new taxon
-        List<TaxonDescription> descriptions = new ArrayList<TaxonDescription>( acceptedTaxon.getDescriptions()); //to avoid concurrent modification errors (newAcceptedTaxon.addDescription() modifies also oldtaxon.descritpions())
+        List<TaxonDescription> descriptions = new ArrayList<TaxonDescription>( newTaxon.getDescriptions()); //to avoid concurrent modification errors (newAcceptedTaxon.addDescription() modifies also oldtaxon.descritpions())
         for(TaxonDescription description : descriptions){
             String message = "Description copied from former accepted taxon: %s (Old title: %s)";
             message = String.format(message, acceptedTaxon.getTitleCache(), description.getTitleCache());
@@ -270,8 +277,8 @@ public class TaxonServiceImpl
                     }
                 }
             }
-            //oldTaxon.removeDescription(description, false);
-            newTaxon.addDescription(description);
+//            //oldTaxon.removeDescription(description, false);
+ //           newTaxon.addDescription(description);
         }
         List<TaxonNode> nodes = new ArrayList(acceptedTaxon.getTaxonNodes());
         for (TaxonNode node: nodes){
@@ -282,7 +289,9 @@ public class TaxonServiceImpl
             parent.addChildNode(node, null, null);
 
         }
-        Synonym newSynonym = Synonym.NewInstance(taxonName, acceptedTaxon.getSec());
+        Synonym newSynonym = (Synonym)synonym.clone();
+        newSynonym.setName(taxonName);
+        newSynonym.setSec(acceptedTaxon.getSec());
         if (sameHomotypicGroup){
             newTaxon.addSynonym(newSynonym, SynonymType.HOMOTYPIC_SYNONYM_OF());
         }else{
