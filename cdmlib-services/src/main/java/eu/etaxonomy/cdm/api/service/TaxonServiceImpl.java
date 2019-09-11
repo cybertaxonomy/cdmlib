@@ -286,7 +286,9 @@ public class TaxonServiceImpl
             TaxonNode parent = node.getParent();
             acceptedTaxon.removeTaxonNode(node);
             node.setTaxon(newTaxon);
-            parent.addChildNode(node, null, null);
+            if (parent != null){
+                parent.addChildNode(node, null, null);
+            }
 
         }
         Synonym newSynonym = (Synonym)synonym.clone();
