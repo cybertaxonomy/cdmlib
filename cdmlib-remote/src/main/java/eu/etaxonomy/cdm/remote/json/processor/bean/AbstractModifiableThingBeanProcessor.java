@@ -14,6 +14,8 @@ import java.util.List;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
+ * An abstract bean processor for DescriptionElement classes having <code>modifyingText</code>
+ *
  * @author a.kohlbecker
  * @since Dec 4, 2013
  *
@@ -21,6 +23,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 public abstract class AbstractModifiableThingBeanProcessor<T extends CdmBase> extends AbstractCdmBeanProcessor<T> implements IMultilanguageTextBeanProcessor{
 
     private static final List<String> IGNORE_LIST = Arrays.asList(new String[]{"modifyingText"});
+
     private boolean replaceMultilanguageText = false;
 
     @Override

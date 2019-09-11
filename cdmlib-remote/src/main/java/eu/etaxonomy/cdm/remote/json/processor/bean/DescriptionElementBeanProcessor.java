@@ -8,10 +8,8 @@
 */
 package eu.etaxonomy.cdm.remote.json.processor.bean;
 
+import java.util.Arrays;
 import java.util.List;
-
-import net.sf.json.JSONObject;
-import net.sf.json.JsonConfig;
 
 import org.hibernate.Hibernate;
 
@@ -21,6 +19,8 @@ import eu.etaxonomy.cdm.model.common.MultilanguageTextHelper;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
+import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
 
 
 /**
@@ -31,6 +31,9 @@ import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
  *
  */
 public class DescriptionElementBeanProcessor extends AbstractModifiableThingBeanProcessor<DescriptionElementBase> {
+
+    private static final List<String> IGNORE_LIST = Arrays.asList(new String[]{"modifyingText", "multilanguageText"});
+
 
     @Override
     public JSONObject processBeanSecondStep(DescriptionElementBase bean, JSONObject json, JsonConfig jsonConfig) {
@@ -64,6 +67,11 @@ public class DescriptionElementBeanProcessor extends AbstractModifiableThingBean
             }
         }
         return json;
+    }
+
+    @Override
+    public List<String> getMultilanguageTextIgnoreList() {
+        return IGNORE_LIST;
     }
 
 

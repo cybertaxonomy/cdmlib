@@ -35,7 +35,8 @@ public class TypeDesignationPortalController extends TypeDesignationController {
             "typifiedNames.nomenclaturalReference.inReference.inReference.authorship.$",
             "citation.authorship.$",
             "typeSpecimen.media",
-            "registrations.institution"
+            "registrations.institution",
+            "text"
     });
 
     public TypeDesignationPortalController() {
