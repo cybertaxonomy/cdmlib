@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -22,17 +22,17 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
  * This Mapper creates a distribution and adds it to a taxon.
  * @author a.mueller
  * @since 11.03.2010
- * @version 1.0
  */
-public class DbImportDistributionCreationMapper<STATE extends DbImportStateBase<?,?>> extends DbImportDescriptionElementCreationMapperBase<Distribution, DbImportStateBase<?,?>> {
+public class DbImportDistributionCreationMapper<STATE extends DbImportStateBase<?,?>>
+        extends DbImportDescriptionElementCreationMapperBase<Distribution, DbImportStateBase<?,?>> {
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbImportDistributionCreationMapper.class);
 
 //******************************** FACTORY METHOD ***************************************************/
 
-	
 	/**
-	 * Creates a Distribution and adds it to the description of a taxon. 
+	 * Creates a Distribution and adds it to the description of a taxon.
 	 * @param dbIdAttribute
 	 * @param objectToCreateNamespace
 	 * @param dbTaxonFkAttribute
@@ -41,34 +41,22 @@ public class DbImportDistributionCreationMapper<STATE extends DbImportStateBase<
 	 */
 	public static DbImportDistributionCreationMapper<?> NewInstance(String dbIdAttribute, String objectToCreateNamespace, String dbTaxonFkAttribute, String taxonNamespace){
 		PresenceAbsenceTerm status = null;
-		return new DbImportDistributionCreationMapper(dbIdAttribute, objectToCreateNamespace, dbTaxonFkAttribute, taxonNamespace, status);
+		return new DbImportDistributionCreationMapper<>(dbIdAttribute, objectToCreateNamespace, dbTaxonFkAttribute, taxonNamespace, status);
 	}
-	
-	
+
 	/**
-	 * Creates a Distribution with status <code>status</code> and adds it to the description of a taxon. 
-	 * @param dbIdAttribute
-	 * @param objectToCreateNamespace
-	 * @param dbTaxonFkAttribute
-	 * @param taxonNamespace
-	 * @param status
-	 * @return
+	 * Creates a Distribution with status <code>status</code> and adds it to the description of a taxon.
 	 */
 	public static DbImportDistributionCreationMapper<?> NewFixedStatusInstance(String dbIdAttribute, String objectToCreateNamespace, String dbTaxonFkAttribute, String taxonNamespace, PresenceAbsenceTerm status){
-		return new DbImportDistributionCreationMapper(dbIdAttribute, objectToCreateNamespace, dbTaxonFkAttribute, taxonNamespace, status);
+		return new DbImportDistributionCreationMapper<>(dbIdAttribute, objectToCreateNamespace, dbTaxonFkAttribute, taxonNamespace, status);
 	}
-	
+
 //******************************* ATTRIBUTES ***************************************/
 
 	protected PresenceAbsenceTerm status;
-	
+
 //********************************* CONSTRUCTOR ****************************************/
-	/**
-	 * @param dbIdAttribute
-	 * @param objectToCreateNamespace
-	 * @param dbTaxonFkAttribute
-	 * @param taxonNamespace
-	 */
+
 	protected DbImportDistributionCreationMapper(String dbIdAttribute, String objectToCreateNamespace, String dbTaxonFkAttribute, String taxonNamespace, PresenceAbsenceTerm status) {
 		super(dbIdAttribute, objectToCreateNamespace, dbTaxonFkAttribute, taxonNamespace);
 	}
@@ -81,5 +69,4 @@ public class DbImportDistributionCreationMapper<STATE extends DbImportStateBase<
 		distribution.setStatus(status);
 		return distribution;
 	}
-
 }

@@ -31,9 +31,11 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @since 11.03.2010
  */
 public abstract class DbImportDescriptionElementCreationMapperBase<ELEMENT extends DescriptionElementBase, STATE extends DbImportStateBase<?,?>> extends DbImportObjectCreationMapperBase<ELEMENT, STATE> {
-	private static final Logger logger = Logger.getLogger(DbImportDescriptionElementCreationMapperBase.class);
+
+    private static final Logger logger = Logger.getLogger(DbImportDescriptionElementCreationMapperBase.class);
 
 //******************************* ATTRIBUTES ***************************************/
+
 	protected String taxonNamespace;
 	protected String dbTaxonFkAttribute;
 	protected boolean isImageGallery = false;
@@ -41,11 +43,8 @@ public abstract class DbImportDescriptionElementCreationMapperBase<ELEMENT exten
 	protected String sourceNamespace;
 	protected String dbMicroCitationAttribute;
 
-
 //********************************* CONSTRUCTOR ****************************************/
-	/**
-	 * @param mappingImport
-	 */
+
 	protected DbImportDescriptionElementCreationMapperBase(String dbIdAttribute, String objectToCreateNamespace, String dbTaxonFkAttribute, String taxonNamespace) {
 		super(dbIdAttribute, objectToCreateNamespace);
 		this.taxonNamespace = taxonNamespace;
@@ -61,9 +60,6 @@ public abstract class DbImportDescriptionElementCreationMapperBase<ELEMENT exten
 		return this;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.IDbImportMapper#invoke(java.sql.ResultSet, eu.etaxonomy.cdm.model.common.CdmBase)
-	 */
 	@Override
 	protected ELEMENT doInvoke(ResultSet rs, ELEMENT element) throws SQLException {
 		Taxon taxon = getAcceptedTaxon(rs);
@@ -77,25 +73,14 @@ public abstract class DbImportDescriptionElementCreationMapperBase<ELEMENT exten
 			addSource(rs, element);
 		}
 		return element;
-
 	}
 
-	/**
-	 * @param rs
-	 * @param element
-	 * @throws SQLException
-	 */
 	private void addSource(ResultSet rs, ELEMENT element) throws SQLException {
 		String microCitation = getStringDbValue(rs, dbMicroCitationAttribute);
 		Reference citation = (Reference) getState().getRelatedObject(sourceNamespace, String.valueOf(rs.getObject(dbCitationAttribute)));
 		element.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, citation, microCitation);
 	}
 
-	/**
-	 * @param taxonFk
-	 * @return
-	 * @throws SQLException
-	 */
 	protected Taxon getAcceptedTaxon(ResultSet rs) throws SQLException {
 		String taxonFk = getForeignKey(rs, dbTaxonFkAttribute);
 		TaxonBase<?> taxonBase = (TaxonBase<?>)getRelatedObject(taxonNamespace, taxonFk);
@@ -119,12 +104,9 @@ public abstract class DbImportDescriptionElementCreationMapperBase<ELEMENT exten
 		return taxon;
 	}
 
-
 	/**
 	 * Adds a description element to the taxon's first description which is not an image gallery.
 	 * If no such description exists a new one is generated. Returns the element or, if null if taxon is null.
-	 * @param taxon
-	 * @param element
 	 */
 	protected ELEMENT addDescriptionElement(Taxon taxon, ELEMENT element) {
 		if (taxon == null){
@@ -136,10 +118,6 @@ public abstract class DbImportDescriptionElementCreationMapperBase<ELEMENT exten
 		}
 	}
 
-	/**
-	 * @param taxon
-	 * @return
-	 */
 	protected TaxonDescription getTaxonDescription(Taxon taxon, boolean isImageGallery) {
 		Set<TaxonDescription> descriptions = taxon.getDescriptions();
 		TaxonDescription description = null;
@@ -156,6 +134,4 @@ public abstract class DbImportDescriptionElementCreationMapperBase<ELEMENT exten
 		}
 		return description;
 	}
-
-
 }

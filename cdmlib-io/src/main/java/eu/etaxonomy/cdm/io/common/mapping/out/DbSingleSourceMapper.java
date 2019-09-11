@@ -30,8 +30,10 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @author a.mueller
  * @since 06.02.2012
  */
-public class DbSingleSourceMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{
-	private static final Logger logger = Logger.getLogger(DbSingleSourceMapper.class);
+public class DbSingleSourceMapper
+            extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>>{
+
+    private static final Logger logger = Logger.getLogger(DbSingleSourceMapper.class);
 
 	public enum EXCLUDE{
 		NONE,
@@ -49,10 +51,6 @@ public class DbSingleSourceMapper extends DbSingleAttributeExportMapperBase<DbEx
 		return new DbSingleSourceMapper(dbAttributeString, exclude, isCache, null);
 	}
 
-	/**
-	 * @param dbAttributeString
-	 * @param cdmAttributeString
-	 */
 	protected DbSingleSourceMapper(String dbAttributeString, EnumSet<EXCLUDE> exclude, boolean isCache, Object defaultValue) {
 		super("sources", dbAttributeString, defaultValue);
 		this.isCache = isCache;
@@ -66,7 +64,7 @@ public class DbSingleSourceMapper extends DbSingleAttributeExportMapperBase<DbEx
 			//find source candidates
 			DescriptionElementBase el = CdmBase.deproxy(cdmBase, DescriptionElementBase.class);
 			Set<DescriptionElementSource> sourceCandidates = el.getSources();
-			Set<DescriptionElementSource> filteredSources = new HashSet<DescriptionElementSource>();
+			Set<DescriptionElementSource> filteredSources = new HashSet<>();
 			for (DescriptionElementSource sourceCandidate : sourceCandidates){
 				if (isPesiSource(sourceCandidate)){  //TODO pesi should not appear here
 					filteredSources.add(sourceCandidate);

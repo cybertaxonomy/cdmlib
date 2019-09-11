@@ -26,7 +26,6 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * It adds the reference and the microReference.
  * @author a.mueller
  * @since 11.03.2010
- * @version 1.0
  */
 public class DbImportDescriptionElementSourceCreationMapper extends DbImportObjectCreationMapperBase<DescriptionElementSource, DbImportStateBase<?,?>> {
 	@SuppressWarnings("unused")
@@ -47,7 +46,6 @@ public class DbImportDescriptionElementSourceCreationMapper extends DbImportObje
 		return new DbImportDescriptionElementSourceCreationMapper(dbDescriptionElementFkAttribute, descriptionElementNamespace, dbReferenceFkAttribute, referenceNamespace, dbMicroReferenceAttribute);
 	}
 
-
 	/**
 	 * Returns an description element source creation mapper.
 	 * @param dbDescriptionElementFkAttribute
@@ -61,7 +59,6 @@ public class DbImportDescriptionElementSourceCreationMapper extends DbImportObje
 		return new DbImportDescriptionElementSourceCreationMapper(dbDescriptionElementFkAttribute, descriptionElementNamespace, dbReferenceFkAttribute, referenceNamespace, dbMicroReferenceAttribute);
 	}
 
-
 //******************************* VARIABLES ***********************************************/
 
 	protected String descriptionElementNamespace;
@@ -73,10 +70,6 @@ public class DbImportDescriptionElementSourceCreationMapper extends DbImportObje
 
 //******************************* CONSTRUCTOR ***********************************************/
 
-	/**
-	 * @param dbIdAttribute
-	 * @param objectToCreateNamespace
-	 */
 	protected DbImportDescriptionElementSourceCreationMapper(String dbDescriptionElementFkAttribute, String descriptionElementNamespace, String dbReferenceFkAttribute, String referenceNamespace, String dbMicroReferenceAttribute) {
 		super(null, null);  // idAttribute and objectToCreateNamespace not needed
 		this.descriptionElementNamespace = descriptionElementNamespace;
@@ -88,18 +81,12 @@ public class DbImportDescriptionElementSourceCreationMapper extends DbImportObje
 
 //******************************* METHODS ***********************************************/
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.DbImportObjectCreationMapperBase#createObject(java.sql.ResultSet)
-	 */
 	@Override
 	protected DescriptionElementSource createObject(ResultSet rs)throws SQLException {
 		DescriptionElementSource source = DescriptionElementSource.NewInstance(OriginalSourceType.PrimaryTaxonomicSource);
 		return source;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.DbImportObjectCreationMapperBase#doInvoke(java.sql.ResultSet, eu.etaxonomy.cdm.model.common.VersionableEntity)
-	 */
 	@Override
 	protected DescriptionElementSource doInvoke(ResultSet rs, DescriptionElementSource source) throws SQLException {
 		addCitation(rs, source);
@@ -108,22 +95,12 @@ public class DbImportDescriptionElementSourceCreationMapper extends DbImportObje
 		return source;
 	}
 
-	/**
-	 * @param rs
-	 * @param source
-	 * @throws SQLException
-	 */
 	private void setDescriptionElement(ResultSet rs,
 			DescriptionElementSource source) throws SQLException {
 		DescriptionElementBase descriptionElement = (DescriptionElementBase)getRelatedObject(rs, descriptionElementNamespace, dbDescriptionElementFkAttribute);
 		descriptionElement.addSource(source);
 	}
 
-	/**
-	 * @param rs
-	 * @param source
-	 * @throws SQLException
-	 */
 	private void addMicroCitation(ResultSet rs, DescriptionElementSource source) throws SQLException {
 		String microReference = null;
 		if (StringUtils.isNotBlank(dbMicroReferenceAttribute)){
@@ -132,14 +109,8 @@ public class DbImportDescriptionElementSourceCreationMapper extends DbImportObje
 		source.setCitationMicroReference(microReference);
 	}
 
-	/**
-	 * @param rs
-	 * @param source
-	 * @throws SQLException
-	 */
 	private void addCitation(ResultSet rs, DescriptionElementSource source) throws SQLException {
 		Reference citation = (Reference)getRelatedObject(rs, referenceNamespace, dbReferenceFkAttribute);
 		source.setCitation(citation);
 	}
-
 }

@@ -24,8 +24,10 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @author a.mueller
  * @since 12.05.2009
  */
-public class DbImportMapping<STATE extends DbImportStateBase, CONFIG extends IImportConfigurator> extends CdmIoMapping {
-	private static final Logger logger = Logger.getLogger(DbImportMapping.class);
+public class DbImportMapping<STATE extends DbImportStateBase, CONFIG extends IImportConfigurator>
+            extends CdmIoMapping {
+
+    private static final Logger logger = Logger.getLogger(DbImportMapping.class);
 
 	private boolean isInitialized = false;
 	private Class<? extends CdmBase> destinationClass;
@@ -76,11 +78,6 @@ public class DbImportMapping<STATE extends DbImportStateBase, CONFIG extends IIm
 
 	/**
 	 * Invokes the mapping. If secondPath is true, the secondPath mapping is invoked if it exists.
-	 * @param rs
-	 * @param objectsToSave
-	 * @param secondPath
-	 * @return
-	 * @throws SQLException
 	 */
 	public boolean invoke(ResultSet rs, Set<CdmBase> objectsToSave, boolean secondPath) throws SQLException{
 		boolean result = true;

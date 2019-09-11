@@ -116,23 +116,12 @@ public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<D
 		}
 	}
 
-
-	/**
-	 * @param valueMap
-	 * @param cdmBase
-	 * @return
-	 */
 	public boolean invoke(Map<String, Object> valueMap, CdmBase cdmBase){
 		Object dbValueObject = valueMap.get(this.getSourceAttribute().toLowerCase());
 		String dbValue = dbValueObject == null? null: dbValueObject.toString();
 		return invoke(dbValue, cdmBase);
 	}
 
-	/**
-	 * @param dbValue
-	 * @param cdmBase
-	 * @return
-	 */
 	private boolean invoke(String dbValue, CdmBase cdmBase){
 		if (ignore){
 			return true;
@@ -153,11 +142,6 @@ public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<D
 		return invoke(dbValue, identifiableEntity);
 	}
 
-	/**
-	 * @param dbValue
-	 * @param identifiableEntity
-	 * @return
-	 */
 	private IdentifiableEntity invoke(String dbValue, IdentifiableEntity identifiableEntity){
 		if (ignore){
 			return identifiableEntity;
