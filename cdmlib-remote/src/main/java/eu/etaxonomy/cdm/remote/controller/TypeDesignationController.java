@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.dto.MediaDTO;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
@@ -46,7 +47,8 @@ import io.swagger.annotations.Api;
 @Controller
 @Api(value = "typeDesignation")
 @RequestMapping(value = {"/typedesignation/{uuid}"})
-public class TypeDesignationController extends AbstractController<TaxonName, INameService> {
+/* can not use BaseController since the getMethod needs to call service.loadTypeDesignatio() which is generically not possible */
+public class TypeDesignationController extends AbstractController<TaxonName, INameService>  {
 
 
     private static final Logger logger = Logger.getLogger(TypeDesignationController.class);
@@ -108,6 +110,24 @@ public class TypeDesignationController extends AbstractController<TaxonName, INa
             HttpStatusMessage.UUID_NOT_FOUND.send(response);
         }
         return dtb;
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value="annotations")
+    public Collection<Annotation> doGetAnnotations(
+            @PathVariable("uuid") UUID uuid,
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+
+        String servletPath = request.getServletPath();
+        String propertyName = FilenameUtils.getBaseName(servletPath);
+
+        logger.info("doGetAnnotations() - " + requestPathAndQuery(request));
+
+        TypeDesignationBase<?> dtb = service.loadTypeDesignation(uuid, Arrays.asList("$", "annotations"));
+        if(dtb == null){
+            HttpStatusMessage.UUID_NOT_FOUND.send(response);
+        }
+        return dtb.getAnnotations();
     }
 
 }
