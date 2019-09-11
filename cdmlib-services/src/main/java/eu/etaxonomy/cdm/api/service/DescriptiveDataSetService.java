@@ -112,7 +112,12 @@ public class DescriptiveDataSetService
                 return new ArrayList<>();
             }
             RowWrapperDTO rowWrapper = null;
-            if(HibernateProxyHelper.isInstanceOf(description, TaxonDescription.class)){
+            // only viable descriptions are aggregated, literature or default descriptions
+            if(HibernateProxyHelper.isInstanceOf(description, TaxonDescription.class) &&
+                    (description.getTypes().contains(DescriptionType.AGGREGATED)
+                            || description.getTypes().contains(DescriptionType.DEFAULT_VALUES_FOR_AGGREGATION)
+                            || description.getTypes().contains(DescriptionType.SECONDARY_DATA)
+                            )){
                 rowWrapper = createTaxonRowWrapper(description.getUuid(), descriptiveDataSet.getUuid());
             }
             else if (HibernateProxyHelper.isInstanceOf(description, SpecimenDescription.class)){
