@@ -36,7 +36,8 @@ public class TypeDesignationPortalController extends TypeDesignationController {
             "citation.authorship.$",
             "typeSpecimen.media",
             "registrations.institution",
-            "text"
+            "text",
+            "sources.links.description"
     });
 
     public TypeDesignationPortalController() {
