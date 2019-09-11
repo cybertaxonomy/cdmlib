@@ -536,9 +536,13 @@ public class OccurrenceDaoHibernateImpl
         return results;
     }
 
-    private List<SpecimenNodeWrapper> querySpecimen(
-            Query query, List<UUID> taxonNodeUuids,
+    private List<SpecimenNodeWrapper> querySpecimen(Query query, List<UUID> taxonNodeUuids,
             Integer limit, Integer start){
+        return querySpecimen(query, taxonNodeUuids, false, limit, start);
+    }
+
+    private List<SpecimenNodeWrapper> querySpecimen(Query query, List<UUID> taxonNodeUuids,
+            boolean isIndividualsAssociation, Integer limit, Integer start){
         query.setParameterList("taxonNodeUuids", taxonNodeUuids);
 
         addLimitAndStart(query, limit, start);
@@ -552,7 +556,9 @@ public class OccurrenceDaoHibernateImpl
                             (UUID) object[0],
                             (Integer) object[1],
                             (String) object[2]),
-                    (TaxonNode)object[3]));
+                    (SpecimenOrObservationType)object[3],
+                    isIndividualsAssociation,
+                    (TaxonNode)object[4]));
         }
         return list;
     }
@@ -563,6 +569,7 @@ public class OccurrenceDaoHibernateImpl
                 + "de.associatedSpecimenOrObservation.uuid, "
                 + "de.associatedSpecimenOrObservation.id, "
                 + "de.associatedSpecimenOrObservation.titleCache, "
+                + "de.associatedSpecimenOrObservation.recordBasis, "
                 + "tn "
                 + "FROM DescriptionElementBase AS de "
                 + "LEFT JOIN de.inDescription AS d "
@@ -572,7 +579,7 @@ public class OccurrenceDaoHibernateImpl
                 + "AND tn.uuid in (:taxonNodeUuids) "
                 ;
         Query query = getSession().createQuery(queryString);
-        return querySpecimen(query, taxonNodeUuids, limit, start);
+        return querySpecimen(query, taxonNodeUuids, true, limit, start);
     }
 
     private List<SpecimenNodeWrapper> queryTypeSpecimen(List<UUID> taxonNodeUuids,
@@ -581,6 +588,7 @@ public class OccurrenceDaoHibernateImpl
                 + "td.typeSpecimen.uuid, "
                 + "td.typeSpecimen.id, "
                 + "td.typeSpecimen.titleCache, "
+                + "td.typeSpecimen.recordBasis, "
                 + "tn "
                 + "FROM SpecimenTypeDesignation AS td "
                 + "LEFT JOIN td.typifiedNames AS tn "
@@ -598,6 +606,7 @@ public class OccurrenceDaoHibernateImpl
                 + "det.identifiedUnit.uuid, "
                 + "det.identifiedUnit.id, "
                 + "det.identifiedUnit.titleCache, "
+                + "det.identifiedUnit.recordBasis, "
                 + "tn "
                 + "FROM DeterminationEvent AS det "
                 + "LEFT JOIN det.taxon AS t "
@@ -614,6 +623,7 @@ public class OccurrenceDaoHibernateImpl
                 + "det.identifiedUnit.uuid, "
                 + "det.identifiedUnit.id, "
                 + "det.identifiedUnit.titleCache, "
+                + "det.identifiedUnit.recordBasis, "
                 + "tn "
                 + "FROM DeterminationEvent AS det "
                 + "LEFT JOIN det.taxonName AS n "

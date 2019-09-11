@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.persistence.dto;
 import java.io.Serializable;
 
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
@@ -23,14 +24,28 @@ public class SpecimenNodeWrapper implements Serializable{
     private static final long serialVersionUID = -7137923139085928830L;
 
     private UuidAndTitleCache<SpecimenOrObservationBase> uuidAndTitleCache;
+    private SpecimenOrObservationType type;
+    private boolean isIndividualsAssociation;
     private TaxonNode taxonNode;
-    public SpecimenNodeWrapper(UuidAndTitleCache<SpecimenOrObservationBase> uuidAndTitleCache, TaxonNode taxonNode) {
+
+    public SpecimenNodeWrapper(UuidAndTitleCache<SpecimenOrObservationBase> uuidAndTitleCache,
+            SpecimenOrObservationType type,
+            boolean isIndividualsAssociation,
+            TaxonNode taxonNode) {
         super();
         this.uuidAndTitleCache = uuidAndTitleCache;
+        this.type = type;
+        this.isIndividualsAssociation = isIndividualsAssociation;
         this.taxonNode = taxonNode;
     }
     public UuidAndTitleCache<SpecimenOrObservationBase> getUuidAndTitleCache() {
         return uuidAndTitleCache;
+    }
+    public SpecimenOrObservationType getType() {
+        return type;
+    }
+    public boolean isIndividualsAssociation() {
+        return isIndividualsAssociation;
     }
     public TaxonNode getTaxonNode() {
         return taxonNode;
