@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.persistence.dto;
 
 import java.io.Serializable;
 
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -25,17 +26,15 @@ public class SpecimenNodeWrapper implements Serializable{
 
     private UuidAndTitleCache<SpecimenOrObservationBase> uuidAndTitleCache;
     private SpecimenOrObservationType type;
-    private boolean isIndividualsAssociation;
     private TaxonNode taxonNode;
+    private TaxonDescription taxonDescription;
 
     public SpecimenNodeWrapper(UuidAndTitleCache<SpecimenOrObservationBase> uuidAndTitleCache,
             SpecimenOrObservationType type,
-            boolean isIndividualsAssociation,
             TaxonNode taxonNode) {
         super();
         this.uuidAndTitleCache = uuidAndTitleCache;
         this.type = type;
-        this.isIndividualsAssociation = isIndividualsAssociation;
         this.taxonNode = taxonNode;
     }
     public UuidAndTitleCache<SpecimenOrObservationBase> getUuidAndTitleCache() {
@@ -44,11 +43,14 @@ public class SpecimenNodeWrapper implements Serializable{
     public SpecimenOrObservationType getType() {
         return type;
     }
-    public boolean isIndividualsAssociation() {
-        return isIndividualsAssociation;
-    }
     public TaxonNode getTaxonNode() {
         return taxonNode;
+    }
+    public TaxonDescription getTaxonDescription() {
+        return taxonDescription;
+    }
+    public void setTaxonDescription(TaxonDescription taxonDescription) {
+        this.taxonDescription = taxonDescription;
     }
 
     @Override

@@ -33,6 +33,7 @@ import org.springframework.stereotype.Repository;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
@@ -538,11 +539,6 @@ public class OccurrenceDaoHibernateImpl
 
     private List<SpecimenNodeWrapper> querySpecimen(Query query, List<UUID> taxonNodeUuids,
             Integer limit, Integer start){
-        return querySpecimen(query, taxonNodeUuids, false, limit, start);
-    }
-
-    private List<SpecimenNodeWrapper> querySpecimen(Query query, List<UUID> taxonNodeUuids,
-            boolean isIndividualsAssociation, Integer limit, Integer start){
         query.setParameterList("taxonNodeUuids", taxonNodeUuids);
 
         addLimitAndStart(query, limit, start);
@@ -551,14 +547,17 @@ public class OccurrenceDaoHibernateImpl
         @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
         for(Object[] object : result){
-            list.add(new SpecimenNodeWrapper(
+            SpecimenNodeWrapper wrapper = new SpecimenNodeWrapper(
                     new UuidAndTitleCache<>(
                             (UUID) object[0],
                             (Integer) object[1],
                             (String) object[2]),
                     (SpecimenOrObservationType)object[3],
-                    isIndividualsAssociation,
-                    (TaxonNode)object[4]));
+                    (TaxonNode)object[4]);
+            if(object.length>5) {
+                wrapper.setTaxonDescription((TaxonDescription)object[5]);
+            }
+            list.add(wrapper);
         }
         return list;
     }
@@ -570,7 +569,8 @@ public class OccurrenceDaoHibernateImpl
                 + "de.associatedSpecimenOrObservation.id, "
                 + "de.associatedSpecimenOrObservation.titleCache, "
                 + "de.associatedSpecimenOrObservation.recordBasis, "
-                + "tn "
+                + "tn, "
+                + "d "
                 + "FROM DescriptionElementBase AS de "
                 + "LEFT JOIN de.inDescription AS d "
                 + "LEFT JOIN d.taxon AS t "
@@ -579,7 +579,7 @@ public class OccurrenceDaoHibernateImpl
                 + "AND tn.uuid in (:taxonNodeUuids) "
                 ;
         Query query = getSession().createQuery(queryString);
-        return querySpecimen(query, taxonNodeUuids, true, limit, start);
+        return querySpecimen(query, taxonNodeUuids, limit, start);
     }
 
     private List<SpecimenNodeWrapper> queryTypeSpecimen(List<UUID> taxonNodeUuids,
