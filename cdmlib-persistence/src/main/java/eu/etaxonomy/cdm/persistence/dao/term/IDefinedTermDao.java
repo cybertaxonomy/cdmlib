@@ -23,11 +23,13 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.metadata.NamedAreaSearchField;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
+import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -259,6 +261,21 @@ public interface IDefinedTermDao extends IIdentifiableDao<DefinedTermBase>, ITit
      */
     public List<NamedArea> listNamedArea(List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern, MatchMode matchMode);
 
+    /**
+     * @param vocs
+     * @param limit
+     * @param pattern
+     * @return
+     */
+    public List<NamedArea> listNamedAreaByAbbrev(List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern, MatchMode matchmode, NamedAreaSearchField type);
+
+    /**
+     * @param vocs
+     * @param limit
+     * @param pattern
+     * @return
+     */
+    public List<NamedArea> listNamedAreaByAbbrev(List<TermVocabulary> vocs, Integer limit, String pattern, NamedAreaSearchField type);
 
 
 }

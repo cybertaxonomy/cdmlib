@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.metadata.NamedAreaSearchField;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
@@ -253,6 +254,17 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
      * @return a collection of matching term DTOs
      */
     public Collection<TermDto> findByUriAsDto(URI uri, String termLabel, TermType termType);
+
+    /**
+     * Returns a list of {@link UuidAndTitleCache} of named areas with IdInVocabulary matches search parameter
+     * @param vocs
+     * @param limit
+     * @param pattern
+     * @param lang
+     * @return
+     */
+    List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCacheNamedAreaByAbbrev(List<TermVocabulary> vocs, Integer limit,
+            String pattern, Language lang, NamedAreaSearchField type);
 
 
 }
