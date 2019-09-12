@@ -33,7 +33,6 @@ import org.springframework.stereotype.Repository;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
-import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
@@ -555,7 +554,7 @@ public class OccurrenceDaoHibernateImpl
                     (SpecimenOrObservationType)object[3],
                     (TaxonNode)object[4]);
             if(object.length>5) {
-                wrapper.setTaxonDescription((TaxonDescription)object[5]);
+                wrapper.setTaxonDescriptionUuid((UUID)object[5]);
             }
             list.add(wrapper);
         }
@@ -570,7 +569,7 @@ public class OccurrenceDaoHibernateImpl
                 + "de.associatedSpecimenOrObservation.titleCache, "
                 + "de.associatedSpecimenOrObservation.recordBasis, "
                 + "tn, "
-                + "d "
+                + "d.uuid "
                 + "FROM DescriptionElementBase AS de "
                 + "LEFT JOIN de.inDescription AS d "
                 + "LEFT JOIN d.taxon AS t "

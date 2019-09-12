@@ -77,12 +77,22 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
     public List<UUID> findFilteredTaxonNodes(DescriptiveDataSet descriptiveDataSet);
 
     /**
+     * Creates a {@link SpecimenRowWrapperDTO} from the given SpecimenNodeWrapper.<br>
+     * This service method is used when adding new specimen to the character matrix resp.
+     * to the {@link DescriptiveDataSet}.
+     * @param wrapper the specimen wrapper to use for creating the row wrapper
+     * @param datasetUuid the target dataset
+     * @return the row wrapper to be added to the character matrix
+     */
+    public SpecimenRowWrapperDTO addRowWrapperToDataset(SpecimenNodeWrapper wrapper, UUID datasetUuid);
+
+    /**
      * Creates a specimen row wrapper object for the given description
      * @param description the specimen description for which the wrapper should be created
-     * @param descriptiveDataSet the data set it should be used in
+     * @param descriptiveDataSetUuid the data set it should be used in
      * @return the created row wrapper
      */
-    public SpecimenRowWrapperDTO createSpecimenRowWrapper(SpecimenDescription description, DescriptiveDataSet descriptiveDataSet);
+    public SpecimenRowWrapperDTO createSpecimenRowWrapper(SpecimenDescription description, UUID descriptiveDataSetUuid);
 
     /**
      * Returns a {@link TaxonDescription} for a given taxon node with corresponding

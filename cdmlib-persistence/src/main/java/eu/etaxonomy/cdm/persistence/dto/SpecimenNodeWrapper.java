@@ -9,8 +9,8 @@
 package eu.etaxonomy.cdm.persistence.dto;
 
 import java.io.Serializable;
+import java.util.UUID;
 
-import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -27,7 +27,7 @@ public class SpecimenNodeWrapper implements Serializable{
     private UuidAndTitleCache<SpecimenOrObservationBase> uuidAndTitleCache;
     private SpecimenOrObservationType type;
     private TaxonNode taxonNode;
-    private TaxonDescription taxonDescription;
+    private UUID taxonDescriptionUuid;
 
     public SpecimenNodeWrapper(UuidAndTitleCache<SpecimenOrObservationBase> uuidAndTitleCache,
             SpecimenOrObservationType type,
@@ -46,11 +46,11 @@ public class SpecimenNodeWrapper implements Serializable{
     public TaxonNode getTaxonNode() {
         return taxonNode;
     }
-    public TaxonDescription getTaxonDescription() {
-        return taxonDescription;
+    public UUID getTaxonDescriptionUuid() {
+        return taxonDescriptionUuid;
     }
-    public void setTaxonDescription(TaxonDescription taxonDescription) {
-        this.taxonDescription = taxonDescription;
+    public void setTaxonDescriptionUuid(UUID taxonDescriptionUuid) {
+        this.taxonDescriptionUuid = taxonDescriptionUuid;
     }
 
     @Override
