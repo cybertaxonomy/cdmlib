@@ -80,31 +80,18 @@ public abstract class DbImportConfiguratorBase<STATE extends DbImportStateBase>
 		}
 	}
 
-	/**
-	 * @return the limitSave
-	 */
+
 	public int getRecordsPerTransaction() {
 		return recordsPerTransaction;
 	}
-
-	/**
-	 * @param limitSave the limitSave to set
-	 */
 	public void setRecordsPerTransaction(int recordsPerTransaction) {
 		this.recordsPerTransaction = recordsPerTransaction;
 	}
 
 
-	/**
-	 * @return the userTransformationMethod
-	 */
 	public Method getUserTransformationMethod() {
 		return userTransformationMethod;
 	}
-
-	/**
-	 * @param userTransformationMethod the userTransformationMethod to set
-	 */
 	public void setUserTransformationMethod(Method userTransformationMethod) {
 		this.userTransformationMethod = userTransformationMethod;
 	}

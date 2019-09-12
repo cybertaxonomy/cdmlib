@@ -1210,7 +1210,8 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 */
 	public SpecimenDescription getSpecimenDescription(SpecimenOrObservationBase specimen, Reference ref, boolean isImageGallery, boolean createNewIfNotExists) {
 		SpecimenDescription result = null;
-		Set<SpecimenDescription> descriptions= specimen.getDescriptions();
+		@SuppressWarnings("unchecked")
+        Set<SpecimenDescription> descriptions= specimen.getDescriptions();
 		for (SpecimenDescription description : descriptions){
 			if (description.isImageGallery() == isImageGallery){
 				if (hasCorrespondingSource(ref, description)){
@@ -1588,6 +1589,4 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
             getNameService().saveOrUpdate(rel.getToName());
         }
     }
-
-
 }

@@ -70,7 +70,8 @@ public class DbImportDescriptionElementSourceCreationMapper extends DbImportObje
 
 //******************************* CONSTRUCTOR ***********************************************/
 
-	protected DbImportDescriptionElementSourceCreationMapper(String dbDescriptionElementFkAttribute, String descriptionElementNamespace, String dbReferenceFkAttribute, String referenceNamespace, String dbMicroReferenceAttribute) {
+	protected DbImportDescriptionElementSourceCreationMapper(String dbDescriptionElementFkAttribute,
+	        String descriptionElementNamespace, String dbReferenceFkAttribute, String referenceNamespace, String dbMicroReferenceAttribute) {
 		super(null, null);  // idAttribute and objectToCreateNamespace not needed
 		this.descriptionElementNamespace = descriptionElementNamespace;
 		this.dbDescriptionElementFkAttribute = dbDescriptionElementFkAttribute;
@@ -89,8 +90,8 @@ public class DbImportDescriptionElementSourceCreationMapper extends DbImportObje
 
 	@Override
 	protected DescriptionElementSource doInvoke(ResultSet rs, DescriptionElementSource source) throws SQLException {
-		addCitation(rs, source);
-		addMicroCitation(rs, source);
+		setCitation(rs, source);
+		setMicroCitation(rs, source);
 		setDescriptionElement(rs, source);
 		return source;
 	}
@@ -101,7 +102,7 @@ public class DbImportDescriptionElementSourceCreationMapper extends DbImportObje
 		descriptionElement.addSource(source);
 	}
 
-	private void addMicroCitation(ResultSet rs, DescriptionElementSource source) throws SQLException {
+	private void setMicroCitation(ResultSet rs, DescriptionElementSource source) throws SQLException {
 		String microReference = null;
 		if (StringUtils.isNotBlank(dbMicroReferenceAttribute)){
 			microReference = rs.getString(dbMicroReferenceAttribute);
@@ -109,7 +110,7 @@ public class DbImportDescriptionElementSourceCreationMapper extends DbImportObje
 		source.setCitationMicroReference(microReference);
 	}
 
-	private void addCitation(ResultSet rs, DescriptionElementSource source) throws SQLException {
+	private void setCitation(ResultSet rs, DescriptionElementSource source) throws SQLException {
 		Reference citation = (Reference)getRelatedObject(rs, referenceNamespace, dbReferenceFkAttribute);
 		source.setCitation(citation);
 	}
