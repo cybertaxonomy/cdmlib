@@ -172,4 +172,10 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
             Integer limit, String pattern) {
         return dao.getUuidAndTitleCache(clazz, termType, limit, pattern);
     }
+
+
+    @Override
+    public List<TermVocabularyDto> findVocabularyDtoByVocabularyUuids(List<UUID> vocUuids) {
+        return dao.findVocabularyDtoByUuids(vocUuids);
+    }
 }

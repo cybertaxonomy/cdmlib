@@ -88,7 +88,7 @@ public class TermDto extends AbstractTermDto{
                         term.getTermType(),
                         (partOf!=null?partOf.getUuid():null),
                         (kindOf!=null?kindOf.getUuid():null),
-                        vocabulary.getUuid(),
+                        (vocabulary!=null?vocabulary.getUuid():null),
                         (term instanceof OrderedTermBase)?((OrderedTermBase) term).getOrderIndex():null,
                          term.getIdInVocabulary());
         dto.setUri(term.getUri());
@@ -100,7 +100,9 @@ public class TermDto extends AbstractTermDto{
                 dto.setKindOfDto(fromTerm(kindOf, initializeToTop));
             }
         }
-        dto.setVocabularyDto(new TermVocabularyDto(vocabulary.getUuid(), vocabulary.getRepresentations(), term.getTermType()));
+        if (vocabulary != null){
+            dto.setVocabularyDto(new TermVocabularyDto(vocabulary.getUuid(), vocabulary.getRepresentations(), term.getTermType()));
+        }
         if(term.getMedia()!=null){
             Collection<UUID> mediaUuids = new HashSet<>();
             Set<Media> media = term.getMedia();

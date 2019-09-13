@@ -153,6 +153,12 @@ public interface IVocabularyService extends IIdentifiableEntityService<TermVocab
      * @param vocUuid
      * @return
      */
-    TermVocabularyDto findVocabularyDtoByVocabularyUuid(UUID vocUuid);
+    public TermVocabularyDto findVocabularyDtoByVocabularyUuid(UUID vocUuid);
+
+    /**
+     * @param vocUuid
+     * @return
+     */
+    public List<TermVocabularyDto> findVocabularyDtoByVocabularyUuids(List<UUID> vocUuid);
 
 }
