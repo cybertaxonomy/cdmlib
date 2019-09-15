@@ -9,12 +9,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureState;
 import eu.etaxonomy.cdm.model.description.KeyStatement;
@@ -63,7 +65,8 @@ public class PolytomousKeyGenerator {
         }
         PolytomousKey polytomousKey = PolytomousKey.NewInstance();
         PolytomousKeyNode root = polytomousKey.getRoot();
-        buildBranches(root, config.getFeatures(), (Set)config.getTaxonDescriptions(), true);
+        Set descriptions = config.getTaxonDescriptions().stream().filter(desc->desc.getTypes().contains(DescriptionType.AGGREGATED)).collect(Collectors.toSet());
+        buildBranches(root, config.getFeatures(), descriptions, true);
         return polytomousKey;
     }
 
