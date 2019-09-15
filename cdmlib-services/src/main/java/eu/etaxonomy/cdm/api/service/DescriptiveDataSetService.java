@@ -340,6 +340,7 @@ public class DescriptiveDataSetService
         monitor.beginTask("Aggregate data set", descriptions.size()*2);
 
         UpdateResult result = new UpdateResult();
+        result.setCdmEntity(dataSet);
 
         // clone specimen descriptions
         // create a snapshot of those descriptions that were used to create the aggregated descriptions
