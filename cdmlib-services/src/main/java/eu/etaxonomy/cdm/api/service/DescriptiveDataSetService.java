@@ -208,9 +208,10 @@ public class DescriptiveDataSetService
         DescriptiveDataSet dataSet = load(datasetUuid);
         result.setCdmEntity(dataSet);
         for (SpecimenNodeWrapper wrapper : wrappers) {
-            TaxonDescription taxonDescription = (TaxonDescription) descriptionService.load(wrapper.getTaxonDescriptionUuid());
-            if(taxonDescription!=null){
-                taxonDescription = (TaxonDescription) descriptionService.load(taxonDescription.getUuid());
+            UUID taxonDescriptionUuid = wrapper.getTaxonDescriptionUuid();
+            TaxonDescription taxonDescription = null;
+            if(taxonDescriptionUuid!=null){
+                taxonDescription = (TaxonDescription) descriptionService.load(taxonDescriptionUuid);
             }
             if(taxonDescription==null){
                 Optional<TaxonDescription> associationDescriptionOptional = wrapper.getTaxonNode().getTaxon().getDescriptions().stream()
