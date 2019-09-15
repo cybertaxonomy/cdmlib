@@ -202,39 +202,50 @@ public class DescriptiveDataSetService
     }
 
     @Override
-    public SpecimenRowWrapperDTO addRowWrapperToDataset(SpecimenNodeWrapper wrapper, UUID datasetUuid){
-        TaxonDescription taxonDescription = (TaxonDescription) descriptionService.load(wrapper.getTaxonDescriptionUuid());
-        if(taxonDescription!=null){
-            taxonDescription = (TaxonDescription) descriptionService.load(taxonDescription.getUuid());
-        }
-        if(taxonDescription==null){
-            Optional<TaxonDescription> associationDescriptionOptional = wrapper.getTaxonNode().getTaxon().getDescriptions().stream()
-            .filter(desc->desc.getTypes().contains(DescriptionType.INDIVIDUALS_ASSOCIATION))
-            .findFirst();
-            Taxon taxon = wrapper.getTaxonNode().getTaxon();
-            if(!associationDescriptionOptional.isPresent()){
-                taxonDescription = TaxonDescription.NewInstance(taxon);
-            }
-            else{
-                taxonDescription = associationDescriptionOptional.get();
-            }
-
-            SpecimenOrObservationBase specimen = occurrenceService.load(wrapper.getUuidAndTitleCache().getUuid());
-            IndividualsAssociation association = IndividualsAssociation.NewInstance(specimen);
-            taxonDescription.addElement(association);
-            taxonService.saveOrUpdate(wrapper.getTaxonNode().getTaxon());
-        }
-        SpecimenDescription specimenDescription = findSpecimenDescription(datasetUuid, wrapper.getUuidAndTitleCache().getUuid(), true);
-        SpecimenRowWrapperDTO rowWrapper = createSpecimenRowWrapper(specimenDescription, wrapper.getTaxonNode().getUuid(), datasetUuid);
-        if(rowWrapper==null){
-            return null;
-        }
+    @Transactional(readOnly=false)
+    public UpdateResult addRowWrapperToDataset(Collection<SpecimenNodeWrapper> wrappers, UUID datasetUuid){
+        UpdateResult result = new UpdateResult();
         DescriptiveDataSet dataSet = load(datasetUuid);
-        //add specimen description to data set
-        dataSet.addDescription(specimenDescription);
-        //add taxon description with IndividualsAssociation to the specimen to data set
-        dataSet.addDescription(taxonDescription);
-        return rowWrapper;
+        result.setCdmEntity(dataSet);
+        for (SpecimenNodeWrapper wrapper : wrappers) {
+            TaxonDescription taxonDescription = (TaxonDescription) descriptionService.load(wrapper.getTaxonDescriptionUuid());
+            if(taxonDescription!=null){
+                taxonDescription = (TaxonDescription) descriptionService.load(taxonDescription.getUuid());
+            }
+            if(taxonDescription==null){
+                Optional<TaxonDescription> associationDescriptionOptional = wrapper.getTaxonNode().getTaxon().getDescriptions().stream()
+                        .filter(desc->desc.getTypes().contains(DescriptionType.INDIVIDUALS_ASSOCIATION))
+                        .findFirst();
+                Taxon taxon = wrapper.getTaxonNode().getTaxon();
+                if(!associationDescriptionOptional.isPresent()){
+                    taxonDescription = TaxonDescription.NewInstance(taxon);
+                }
+                else{
+                    taxonDescription = associationDescriptionOptional.get();
+                }
+
+                SpecimenOrObservationBase specimen = occurrenceService.load(wrapper.getUuidAndTitleCache().getUuid());
+                IndividualsAssociation association = IndividualsAssociation.NewInstance(specimen);
+                taxonDescription.addElement(association);
+                taxonService.saveOrUpdate(taxon);
+                result.addUpdatedObject(taxon);
+            }
+            SpecimenDescription specimenDescription = findSpecimenDescription(datasetUuid, wrapper.getUuidAndTitleCache().getUuid(), true);
+            SpecimenRowWrapperDTO rowWrapper = createSpecimenRowWrapper(specimenDescription, wrapper.getTaxonNode().getUuid(), datasetUuid);
+            if(rowWrapper==null){
+                result.addException(new IllegalArgumentException("Could not create wrapper for "+specimenDescription));
+                continue;
+            }
+            //add specimen description to data set
+            rowWrapper.getDescription().addDescriptiveDataSet(dataSet);
+            //add taxon description with IndividualsAssociation to the specimen to data set
+            taxonDescription.addDescriptiveDataSet(dataSet);
+
+            result.addUpdatedObject(rowWrapper.getDescription());
+            result.addUpdatedObject(taxonDescription);
+        }
+        saveOrUpdate(dataSet);
+        return result;
     }
 
     private SpecimenRowWrapperDTO createSpecimenRowWrapper(SpecimenDescription description, UUID taxonNodeUuid,

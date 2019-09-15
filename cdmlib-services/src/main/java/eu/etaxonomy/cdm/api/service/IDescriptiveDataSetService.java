@@ -82,9 +82,9 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      * to the {@link DescriptiveDataSet}.
      * @param wrapper the specimen wrapper to use for creating the row wrapper
      * @param datasetUuid the target dataset
-     * @return the row wrapper to be added to the character matrix
+     * @return the result of the operation
      */
-    public SpecimenRowWrapperDTO addRowWrapperToDataset(SpecimenNodeWrapper wrapper, UUID datasetUuid);
+    public UpdateResult addRowWrapperToDataset(Collection<SpecimenNodeWrapper> wrapper, UUID datasetUuid);
 
     /**
      * Creates a specimen row wrapper object for the given description
