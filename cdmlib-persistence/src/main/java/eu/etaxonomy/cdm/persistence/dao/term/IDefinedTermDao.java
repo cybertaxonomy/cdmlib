@@ -277,5 +277,11 @@ public interface IDefinedTermDao extends IIdentifiableDao<DefinedTermBase>, ITit
      */
     public List<NamedArea> listNamedAreaByAbbrev(List<TermVocabulary> vocs, Integer limit, String pattern, NamedAreaSearchField type);
 
+    /**
+     * Returns all states for all supportedCategoricalEnumeration of this categorical feature
+     * @param featureUuid the feature which has to support categorical data
+     * @return list of all supported states
+     */
+    public List<TermDto> getSupportedStatesForFeature(UUID featureUuid);
 
 }

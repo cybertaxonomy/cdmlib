@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
+import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
 
@@ -124,6 +125,13 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      * @return either the found specimen description or a newly created one
      */
     public SpecimenDescription findSpecimenDescription(UUID descriptiveDataSetUuid, UUID specimenUuid, boolean addDatasetSource);
+
+    /**
+     * Returns all states for all supportedCategoricalEnumeration of this categorical feature
+     * @param featureUuid the feature which has to support categorical data
+     * @return list of all supported states
+     */
+    public List<TermDto> getSupportedStatesForFeature(UUID featureUuid);
 
     /**
      * Creates a new taxon description with the features defined in the dataset for the

@@ -54,8 +54,10 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptiveDataSetDao;
+import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
+import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
@@ -72,6 +74,9 @@ public class DescriptiveDataSetService
 
     @Autowired
     private ITaxonService taxonService;
+
+    @Autowired
+    private IDefinedTermDao termDao;
 
     @Autowired
     private IDescriptionService descriptionService;
@@ -584,6 +589,11 @@ public class DescriptiveDataSetService
         dataSet.addDescription(newTaxonDescription);
 
         return createTaxonRowWrapper(newTaxonDescription.getUuid(), dataSet.getUuid());
+    }
+
+    @Override
+    public List<TermDto> getSupportedStatesForFeature(UUID featureUuid){
+        return termDao.getSupportedStatesForFeature(featureUuid);
     }
 
     @Override
