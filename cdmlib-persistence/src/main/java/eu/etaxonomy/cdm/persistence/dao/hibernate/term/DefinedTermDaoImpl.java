@@ -869,6 +869,9 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
                     ((Feature) load).getSupportedCategoricalEnumerations().stream()
                     .map(catEnum->catEnum.getUuid())
                     .collect(Collectors.toSet());
+            if(vocabularyUuids.isEmpty()){
+                return list;
+            }
             String queryString = TermDto.getTermDtoSelect()
                     + "where v.uuid in :vocabularyUuids "
                     + "order by a.titleCache";
