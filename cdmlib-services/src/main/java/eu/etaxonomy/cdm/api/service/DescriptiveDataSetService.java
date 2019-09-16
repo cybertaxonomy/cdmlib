@@ -535,6 +535,22 @@ public class DescriptiveDataSetService
         else{
             boolean success = dataSet.removeDescription(descriptionBase);
             result.addDeletedObject(descriptionBase);
+            // remove taxon description with IndividualsAssociation from data set
+            if(descriptionBase instanceof SpecimenDescription){
+                Set<IndividualsAssociation> associations = (Set<IndividualsAssociation>) dataSet.getDescriptions()
+                        .stream()
+                        .flatMap(desc->desc.getElements().stream())// put all description element in one stream
+                        .filter(element->element instanceof IndividualsAssociation)
+                        .map(ia->(IndividualsAssociation)ia)
+                        .collect(Collectors.toSet());
+                Classification classification = dataSet.getTaxonSubtreeFilter().iterator().next().getClassification();
+                for (IndividualsAssociation individualsAssociation : associations) {
+                    if(individualsAssociation.getAssociatedSpecimenOrObservation().equals(descriptionBase.getDescribedSpecimenOrObservation())){
+                        dataSet.removeDescription(individualsAssociation.getInDescription());
+                        result.addDeletedObject(individualsAssociation.getInDescription());
+                    }
+                }
+            }
             result.addUpdatedObject(dataSet);
             result.setStatus(success?Status.OK:Status.ERROR);
         }
