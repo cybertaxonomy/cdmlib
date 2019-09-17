@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
@@ -37,15 +38,22 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
 
     private TaxonNodeDto taxonNode;
     private Map<Feature, DescriptionElementBase> featureToElementMap;
+    private Map<Feature, String> featureToDisplayDataMap;
 
     public RowWrapperDTO(T description, TaxonNodeDto taxonNode) {
         this.taxonNode = taxonNode;
         this.featureToElementMap = new HashMap<>();
+        this.featureToDisplayDataMap = new HashMap<>();
         this.description = description;
+
         Set<DescriptionElementBase> elements = description.getElements();
         for (DescriptionElementBase descriptionElementBase : elements) {
             Feature feature = descriptionElementBase.getFeature();
             featureToElementMap.put(feature, descriptionElementBase);
+            String displayData = generateDisplayString(descriptionElementBase);
+            if(displayData!=null){
+                featureToDisplayDataMap.put(feature, displayData);
+            }
         }
     }
 
@@ -71,9 +79,24 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
         return taxonNode;
     }
 
+    public String getDisplayDataForFeature(Feature feature){
+        return featureToDisplayDataMap.get(feature);
+    }
+
     public DescriptionElementBase getDataValueForFeature(Feature feature){
         DescriptionElementBase descriptionElementBase = featureToElementMap.get(feature);
         return descriptionElementBase;
+    }
+
+    private String generateDisplayString(DescriptionElementBase descriptionElementBase){
+        String displayData = null;
+        if(descriptionElementBase instanceof CategoricalData){
+            CategoricalData categoricalData = (CategoricalData)descriptionElementBase;
+            displayData = categoricalData.getStatesOnly().stream()
+                    .map(state->state.getLabel())
+                    .collect(Collectors.joining(","));
+        }
+        return displayData;
     }
 
     public void setDataValueForFeature(Feature feature, List<State> states){
@@ -85,6 +108,9 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
         if(descriptionElementBase!=null && descriptionElementBase.isInstanceOf(CategoricalData.class)){
             CategoricalData categoricalData = HibernateProxyHelper.deproxy(descriptionElementBase, CategoricalData.class);
             categoricalData.setStateDataOnly(states);
+            // update display data cache
+            String displayData = generateDisplayString(categoricalData);
+            featureToDisplayDataMap.put(feature, displayData);
         }
     }
 
