@@ -1056,7 +1056,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             }
         }else{
             if (specimen.isInstanceOf(FieldUnit.class)){
-                fieldUnitDto = FieldUnitDTO.newInstance((FieldUnit)specimen);
+                fieldUnitDto = new FieldUnitDTO((FieldUnit)specimen);
                 fieldUnitDto.addDerivate(derivedUnitDTO);
                 fieldUnits.add(fieldUnitDto);
             }else{

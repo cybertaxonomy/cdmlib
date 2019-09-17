@@ -29,20 +29,10 @@ public class FieldUnitDTO extends DerivateDTO{
      */
     public FieldUnitDTO(FieldUnit fieldUnit) {
         super(fieldUnit);
+        gatheringEvent = GatheringEventDTO.newInstance(fieldUnit.getGatheringEvent());
+        setRecordBase(fieldUnit.getRecordBasis().getMessage());
+        setListLabel(fieldUnit.getTitleCache());
     }
-
-
-    public static FieldUnitDTO newInstance(FieldUnit fieldUnit){
-	    FieldUnitDTO fieldUnitDto = new FieldUnitDTO(fieldUnit);
-	    if (fieldUnit.getGatheringEvent() != null){
-	        fieldUnitDto.gatheringEvent = GatheringEventDTO.newInstance(fieldUnit.getGatheringEvent());
-	    }
-	    fieldUnitDto.setRecordBase(fieldUnit.getRecordBasis().getMessage());
-	    fieldUnitDto.setListLabel(fieldUnit.getTitleCache());
-
-	    return fieldUnitDto;
-
-	}
 
     /**
      * @return the country
