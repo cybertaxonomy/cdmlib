@@ -91,6 +91,8 @@ public abstract class DbImportDefinedTermCreationMapperBase<TERM extends Defined
 
 	protected abstract TERM createDefinedTerm(ResultSet rs) throws SQLException;
 
+	protected abstract void handleTermWithObject(TERMED termed, TERM term);
+
 	/**
 	 * Returns the term if it is available via the transformer, or via the state (uuidMap or relatedObject)
 	 */

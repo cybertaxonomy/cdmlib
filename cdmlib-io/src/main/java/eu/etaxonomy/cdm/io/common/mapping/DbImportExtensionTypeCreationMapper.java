@@ -20,7 +20,9 @@ import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 
 /**
- * This class retrives or creates an existing or a new extension type.
+ * This class retrieves or creates an existing or a new extension type.
+ * Does NOT create and add an extension to the passed object as further information
+ * is needed to create an extension.
  *
  * @see DbImportDefinedTermCreationMapperBase
  * @author a.mueller
@@ -95,4 +97,10 @@ public class DbImportExtensionTypeCreationMapper<STATE extends DbImportStateBase
 			return null;
 		}
 	}
+
+    @Override
+    protected void handleTermWithObject(IdentifiableEntity entity, ExtensionType extensionType) {
+        //Not yet implemented. Needs further information on extension, which is not available here
+    }
+
 }

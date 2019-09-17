@@ -20,7 +20,8 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 
 /**
- * This class retrives or creates an existing or a new feature.
+ * This class retrieves or creates an existing or a new feature and adds it to
+ * passed {@link DescriptionElementBase description item}.
  *
  * @see DbImportDefinedTermCreationMapperBase
  * @author a.mueller
@@ -84,4 +85,8 @@ public class DbImportFeatureCreationMapper<STATE extends DbImportStateBase<?,?>>
 		}
 	}
 
+    @Override
+    protected void handleTermWithObject(DescriptionElementBase element, Feature feature) {
+        element.setFeature(feature);
+    }
 }
