@@ -115,9 +115,11 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
         Criteria criteria = null;
 
         criteria = getSession().createCriteria(Reference.class);
-        criteria.add(Restrictions.in("uuid", uuids ) );
+
         if (refType != null){
-            criteria.add(Restrictions.eq("type", refType));
+            criteria.add(Restrictions.and(Restrictions.in("uuid", uuids ),Restrictions.eq("type", refType)));
+        }else{
+            criteria.add(Restrictions.in("uuid", uuids ) );
         }
 
         return criteria.list();
@@ -400,6 +402,10 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
     public List<UuidAndTitleCache<Reference>> getUuidAndTitle(Set<UUID> uuids, ReferenceType refType) {
         List<Reference> result = getReferenceListForUuids(uuids, refType);
         List<UuidAndTitleCache<Reference>> list = new ArrayList<UuidAndTitleCache<Reference>>();
+        for(Reference object : result){
+                list.add(new UuidAndTitleCache<Reference>(type, object.getUuid(), object.getId(), object.getTitleCache()));
+        }
+
         return list;
     }
 }
