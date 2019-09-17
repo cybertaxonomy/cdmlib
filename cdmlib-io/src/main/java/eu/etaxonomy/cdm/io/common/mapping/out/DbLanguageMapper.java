@@ -73,7 +73,7 @@ public class DbLanguageMapper
 	protected Object getValue(CdmBase cdmBase) {
 		if (cdmBase.isInstanceOf(cdmClass)){
 			try {
-				Language language = (Language)method.invoke(cdmBase, (Object)null);
+				Language language = (Language)method.invoke(cdmBase, null);
 				IExportTransformer transformer = getState().getTransformer();
 				if (isCache){
 					return transformer.getCacheByLanguage(language);
