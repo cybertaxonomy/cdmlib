@@ -885,7 +885,8 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                         alreadyCollectedSpecimen.put(derivedUnitDTO.getUuid(), derivedUnitDTO);
                     }
                     derivedUnitDTO.addAllDerivates(getDerivedUnitDTOsFor(derivedUnitDTO, derivedUnit, alreadyCollectedSpecimen));
-                    this.findFieldUnitDTO(derivedUnitDTO, fieldUnitDTOs, alreadyCollectedSpecimen);
+                    this.findFieldUnitDTO(derivedUnitDTO, //fieldUnitDTOs,
+                            alreadyCollectedSpecimen);
                 }
             }
 
@@ -910,7 +911,8 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             derivedUnitDTO = new DNASampleDTO(dnaSample);
             alreadyCollectedSpecimen.put(derivedUnitDTO.getUuid(), derivedUnitDTO);
             derivedUnitDTO.addAllDerivates(getDerivedUnitDTOsFor(derivedUnitDTO, dnaSample, alreadyCollectedSpecimen));
-            FieldUnitDTO fieldUnit = this.findFieldUnitDTO(derivedUnitDTO, fieldUnitDTOs, alreadyCollectedSpecimen);
+            FieldUnitDTO fieldUnit = this.findFieldUnitDTO(derivedUnitDTO, //fieldUnitDTOs,
+                    alreadyCollectedSpecimen);
 
             return fieldUnit;
         }
@@ -1027,7 +1029,8 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
     @Override
     @Transactional(readOnly=true)
-    public FieldUnitDTO findFieldUnitDTO(DerivateDTO derivedUnitDTO, Collection<FieldUnitDTO> fieldUnits, HashMap<UUID, DerivateDTO> alreadyCollectedSpecimen) {
+    public FieldUnitDTO findFieldUnitDTO(DerivateDTO derivedUnitDTO, //Collection<FieldUnitDTO> fieldUnits,
+            HashMap<UUID, DerivateDTO> alreadyCollectedSpecimen) {
         //It will search recursively over all {@link DerivationEvent}s and get the "originals" ({@link SpecimenOrObservationBase})
         //from which this DerivedUnit was derived until all FieldUnits are found.
         List<SpecimenOrObservationBase> specimens = new ArrayList<>();
@@ -1051,14 +1054,14 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         FieldUnitDTO fieldUnitDto = null;
         if (alreadyCollectedSpecimen.get(specimen.getUuid()) != null){
             alreadyCollectedSpecimen.get(specimen.getUuid()).addDerivate(derivedUnitDTO);
-            if ( alreadyCollectedSpecimen.get(specimen.getUuid()) instanceof FieldUnitDTO){
-                ((FieldUnitDTO)alreadyCollectedSpecimen.get(specimen.getUuid())).getTaxonRelatedDerivedUnits().add(derivedUnitDTO.getUuid());
-            }
+//            if ( alreadyCollectedSpecimen.get(specimen.getUuid()) instanceof FieldUnitDTO){
+//                ((FieldUnitDTO)alreadyCollectedSpecimen.get(specimen.getUuid())).getTaxonRelatedDerivedUnits().add(derivedUnitDTO.getUuid());
+//            }
         }else{
             if (specimen.isInstanceOf(FieldUnit.class)){
                 fieldUnitDto = new FieldUnitDTO((FieldUnit)specimen);
                 fieldUnitDto.addDerivate(derivedUnitDTO);
-                fieldUnits.add(fieldUnitDto);
+                //fieldUnits.add(fieldUnitDto);
             }else{
                 DerivateDTO originalDTO;
                 if (specimen instanceof DnaSample){
@@ -1067,15 +1070,16 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                     originalDTO = new PreservedSpecimenDTO((DerivedUnit)specimen);
                 }
                 originalDTO.addDerivate(derivedUnitDTO);
-                fieldUnitDto = findFieldUnitDTO(originalDTO, fieldUnits, alreadyCollectedSpecimen);
+                fieldUnitDto = findFieldUnitDTO(originalDTO, //fieldUnits,
+                        alreadyCollectedSpecimen);
             }
 
         }
       //  }
         alreadyCollectedSpecimen.put(derivedUnitDTO.getUuid(), derivedUnitDTO);
-        if (fieldUnitDto != null){
-            fieldUnitDto.addTaxonRelatedDerivedUnits(derivedUnitDTO);
-        }
+//        if (fieldUnitDto != null){
+//            fieldUnitDto.addTaxonRelatedDerivedUnits(derivedUnitDTO);
+//        }
         return fieldUnitDto;
 
     }
