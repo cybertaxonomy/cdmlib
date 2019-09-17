@@ -805,7 +805,7 @@ public class PolytomousKeyGenerator {
 					Set<State> differentStates = new HashSet<>();
 					for (DescriptionBase<?> td : taxaCovered){
 						DescriptionElementBase deb = getDescriptionElementByFeature(td, feature);
-						if (deb.isInstanceOf(CategoricalData.class)) {
+						if (deb!=null && deb.isInstanceOf(CategoricalData.class)) {
 						    CategoricalData catdat = (CategoricalData)deb;
 							List<StateData> stateDatas = catdat.getStateData();
 							for (StateData sd : stateDatas) {
