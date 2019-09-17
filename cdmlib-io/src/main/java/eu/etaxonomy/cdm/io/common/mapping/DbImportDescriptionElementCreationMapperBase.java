@@ -64,7 +64,7 @@ public abstract class DbImportDescriptionElementCreationMapperBase<ELEMENT exten
 	protected ELEMENT doInvoke(ResultSet rs, ELEMENT element) throws SQLException {
 		Taxon taxon = getAcceptedTaxon(rs);
 		if (taxon != null){
-			addDescriptionElement(taxon, element);
+			element = addDescriptionElement(taxon, element);
 		}else{
 			logger.info("Taxon could not be determined. Description element was not add to any description or taxon");
 		}
