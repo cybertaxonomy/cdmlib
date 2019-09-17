@@ -87,6 +87,8 @@ public class DbImportFeatureCreationMapper<STATE extends DbImportStateBase<?,?>>
 
     @Override
     protected void handleTermWithObject(DescriptionElementBase element, Feature feature) {
-        element.setFeature(feature);
+        if(element!= null){
+            element.setFeature(feature);
+        }
     }
 }

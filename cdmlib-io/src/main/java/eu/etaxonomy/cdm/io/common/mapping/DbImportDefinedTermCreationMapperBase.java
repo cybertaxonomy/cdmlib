@@ -78,6 +78,7 @@ public abstract class DbImportDefinedTermCreationMapperBase<TERM extends Defined
 					getState().addRelatedObject(objectToCreateNamespace, getKeyString(rs), definedTerm);
 				}
 			}
+			handleTermWithObject(noObject, definedTerm);
 		}
 		return noObject;
 	}
