@@ -57,6 +57,7 @@ public class DbSingleSourceMapper
 		this.exclude = exclude;
 	}
 
+	boolean moreSourcesExistWarning = true;
 	@Override
 	protected Object getValue(CdmBase cdmBase) {
 		//TODO implement also for Identifiable sources
@@ -74,7 +75,13 @@ public class DbSingleSourceMapper
 			if (filteredSources.size() == 0 ){
 				return null;
 			}else if (filteredSources.size() > 1){
-				logger.warn("There is more than 1 accepted source for description element " + el.getUuid() + ". Arbitrary first source is used.");
+			    if (moreSourcesExistWarning){
+			        logger.warn("More then one source exists but is not allowed in given context. (This warning is shown only once but may appear often)");
+			        moreSourcesExistWarning = false;
+			    }
+				if (logger.isDebugEnabled()) {
+                    logger.debug("There is more than 1 accepted source for description element " + el.getUuid() + ". Arbitrary first source is used.");
+                }
 			}
 			DescriptionElementSource source = filteredSources.iterator().next();
 			Reference ref = source.getCitation();
