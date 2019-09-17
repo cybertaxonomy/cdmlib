@@ -193,8 +193,19 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<Reference,IRef
      * {@inheritDoc}
      */
     @Override
-    public List<UuidAndTitleCache<Reference>> getUuidAndTitleCacheForUUIDS(Set<UUID> uuids) {
+    public List<UuidAndTitleCache<Reference>> getUuidAndTitleCacheForUUIDS(Set<UUID> uuids, ReferenceType refType ) {
+
+        return dao.getUuidAndTitle(uuids, getInReferenceType(refType));
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<UuidAndTitleCache<Reference>> getUuidAndTitleCacheForUUIDS(Set<UUID> uuids ) {
         return dao.getUuidAndTitle(uuids);
+
     }
 
 }

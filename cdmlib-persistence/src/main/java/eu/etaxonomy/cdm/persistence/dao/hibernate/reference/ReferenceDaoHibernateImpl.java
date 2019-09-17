@@ -99,25 +99,29 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 
 	@Override
     public List<UuidAndTitleCache<Reference>> getUuidAndTitle(Set<UUID> uuids){
-	    if (uuids.isEmpty()){
-	        return null;
-	    }
+	    List<Reference> result = getReferenceListForUuids(uuids, null);
         List<UuidAndTitleCache<Reference>> list = new ArrayList<UuidAndTitleCache<Reference>>();
-
-        Criteria criteria = null;
-
-        criteria = getSession().createCriteria(Reference.class);
-        criteria.add(Restrictions.in("uuid", uuids ) );
-
-        @SuppressWarnings("unchecked")
-        List<Reference> result = criteria.list();
-
         for(Reference object : result){
             list.add(new UuidAndTitleCache<Reference>(type, object.getUuid(), object.getId(), object.getTitleCache()));
         }
 
         return list;
     }
+
+	private List<Reference> getReferenceListForUuids(Set<UUID> uuids, ReferenceType refType){
+	    if (uuids.isEmpty()){
+            return null;
+        }
+        Criteria criteria = null;
+
+        criteria = getSession().createCriteria(Reference.class);
+        criteria.add(Restrictions.in("uuid", uuids ) );
+        if (refType != null){
+            criteria.add(Restrictions.eq("type", refType));
+        }
+
+        return criteria.list();
+	}
 
 	@Override
 	public List<UuidAndTitleCache<Reference>> getUuidAndTitleCache(Integer limit, String pattern, ReferenceType refType) {
@@ -390,5 +394,12 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
         query.setParameter("pattern", pattern);
         return getUuidAndAbbrevTitleCache(query);
 
+    }
+
+    @Override
+    public List<UuidAndTitleCache<Reference>> getUuidAndTitle(Set<UUID> uuids, ReferenceType refType) {
+        List<Reference> result = getReferenceListForUuids(uuids, refType);
+        List<UuidAndTitleCache<Reference>> list = new ArrayList<UuidAndTitleCache<Reference>>();
+        return list;
     }
 }
