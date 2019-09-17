@@ -30,15 +30,16 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @since 12.05.2009
  */
 //TODO remove ANNOTATABLE by ISourcable (but this is not CDMBase yet therefore not trivial
-public abstract class DbImportObjectCreationMapperBase<CREATE extends VersionableEntity, STATE extends DbImportStateBase<?,?>> extends DbImportMultiAttributeMapperBase<CREATE, STATE>  {
-	private static final Logger logger = Logger.getLogger(DbImportObjectCreationMapperBase.class);
+public abstract class DbImportObjectCreationMapperBase<CREATE extends VersionableEntity, STATE extends DbImportStateBase<?,?>>
+        extends DbImportMultiAttributeMapperBase<CREATE, STATE>  {
 
+    private static final Logger logger = Logger.getLogger(DbImportObjectCreationMapperBase.class);
 
 //******************************* ATTRIBUTES ***************************************/
+
 	protected String dbIdAttribute;
 	//TODO get standard namespace from mappingImport
 	protected String objectToCreateNamespace;
-
 
 //********************************* CONSTRUCTOR ****************************************/
 
@@ -108,5 +109,4 @@ public abstract class DbImportObjectCreationMapperBase<CREATE extends Versionabl
 	protected IInputTransformer getTransformer(){
 		return getState().getTransformer();
 	}
-
 }
