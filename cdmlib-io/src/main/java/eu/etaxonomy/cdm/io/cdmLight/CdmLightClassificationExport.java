@@ -24,7 +24,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.api.service.exception.RegistrationValidationException;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetManager;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -80,6 +79,7 @@ import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
@@ -1218,11 +1218,23 @@ public class CdmLightClassificationExport
             TypeDesignationSetManager manager = new TypeDesignationSetManager(specimenTypeDesignations, name);
             String typeDesignationString = createTypeDesignationString(manager.toTaggedText(), false);
             csvLine[table.getIndex(CdmLightExportTable.TYPE_SPECIMEN)] = typeDesignationString;
-            
+
             StringBuilder stringbuilder = new StringBuilder();
             int i = 1;
             for (TextualTypeDesignation typeDesignation : textualTypeDesignations) {
                 stringbuilder.append(typeDesignation.getPreferredText(Language.DEFAULT()));
+                if (typeDesignation.getSources() != null && !typeDesignation.getSources().isEmpty() ){
+                    stringbuilder.append( " [");
+                    int index = 1;
+                    for (OriginalSourceBase source: typeDesignation.getSources()){
+                        stringbuilder.append(((DefaultReferenceCacheStrategy)source.getCitation().getCacheStrategy()).getCitation(source.getCitation()));
+                        if (index < typeDesignation.getSources().size()) {
+                            stringbuilder.append( ", ");
+                        }
+                        index++;
+                    }
+                    stringbuilder.append( "]");
+                }
                 if (i < textualTypeDesignations.size()) {
                     stringbuilder.append( "; ");
                 } else {
@@ -1572,7 +1584,7 @@ public class CdmLightClassificationExport
             List<TypeDesignationBase<?>> designationList = new ArrayList<>();
             designationList.addAll(typeDesigantionSet);
             Collections.sort(designationList, new TypeComparator());
-            
+
             List<TaggedText> list = new ArrayList<>();
             if (!designationList.isEmpty()) {
                 TypeDesignationSetManager manager = new TypeDesignationSetManager(group);
@@ -1585,7 +1597,7 @@ public class CdmLightClassificationExport
             		typeTextDesignations = typeTextDesignations + ((TextualTypeDesignation)typeDes).getText(Language.getDefaultLanguage());
             		typeTextDesignations =  typeTextDesignations + "; ";
             	}
-            	
+
             }
             if (typeTextDesignations.equals("; ")) {
             	typeTextDesignations = "";
@@ -1594,8 +1606,8 @@ public class CdmLightClassificationExport
             	typeTextDesignations = typeTextDesignations.substring(0, typeTextDesignations.length()-2);
             }
             String specimenTypeString = !list.isEmpty()? createTypeDesignationString(list, true):"";
-            
-            
+
+
             // typeDesignations = typeDesignationString.toString();
             if (StringUtils.isNotBlank(specimenTypeString)) {
                 if (!specimenTypeString.endsWith(".")) {
