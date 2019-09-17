@@ -38,18 +38,10 @@ public abstract class DbSingleAttributeExportMapperBase<STATE extends DbExportSt
 	private Integer precision = null;
 	protected boolean obligatory = true;
 
-	/**
-	 * @param dbAttributString
-	 * @param cdmAttributeString
-	 */
 	protected DbSingleAttributeExportMapperBase(String cdmAttributeString, String dbAttributString, Object defaultValue) {
 		super(cdmAttributeString, dbAttributString, defaultValue);
 	}
 
-	/**
-	 * @param dbAttributString
-	 * @param cdmAttributeString
-	 */
 	protected DbSingleAttributeExportMapperBase(String cdmAttributeString, String dbAttributString, Object defaultValue, boolean obligatory) {
 		super(cdmAttributeString, dbAttributString, defaultValue);
 		this.obligatory = obligatory;

@@ -775,391 +775,221 @@ public class ResultSetProxy implements ResultSet {
 		resultSet.moveToInsertRow();
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.sql.ResultSet#next()
-	 */
 	@Override
 	public boolean next() throws SQLException {
 		newProxyMap();
 		return resultSet.next();
 	}
 
-
-
-	/* (non-Javadoc)
-	 * @see java.sql.ResultSet#previous()
-	 */
 	@Override
 	public boolean previous() throws SQLException {
 		newProxyMap();
 		return resultSet.previous();
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.sql.ResultSet#refreshRow()
-	 */
 	@Override
 	public void refreshRow() throws SQLException {
 		newProxyMap();
 		resultSet.refreshRow();
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.sql.ResultSet#relative(int)
-	 */
 	@Override
 	public boolean relative(int rows) throws SQLException {
 		newProxyMap();
 		return resultSet.relative(rows);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.sql.ResultSet#rowDeleted()
-	 */
 	@Override
 	public boolean rowDeleted() throws SQLException {
 		return resultSet.rowDeleted();
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.sql.ResultSet#rowInserted()
-	 */
 	@Override
 	public boolean rowInserted() throws SQLException {
 		return resultSet.rowInserted();
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.sql.ResultSet#rowUpdated()
-	 */
 	@Override
 	public boolean rowUpdated() throws SQLException {
 		return resultSet.rowUpdated();
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.sql.ResultSet#setFetchDirection(int)
-	 */
 	@Override
 	public void setFetchDirection(int direction) throws SQLException {
 		resultSet.setFetchDirection(direction);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.sql.ResultSet#setFetchSize(int)
-	 */
 	@Override
 	public void setFetchSize(int rows) throws SQLException {
 		resultSet.setFetchSize(rows);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.sql.Wrapper#unwrap(java.lang.Class)
-	 */
 	@Override
 	public <T> T unwrap(Class<T> iface) throws SQLException {
 		return resultSet.unwrap(iface);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.sql.ResultSet#updateArray(int, java.sql.Array)
-	 */
 	@Override
 	public void updateArray(int columnIndex, Array x) throws SQLException {
 		resultSet.updateArray(columnIndex, x);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.sql.ResultSet#updateArray(java.lang.String, java.sql.Array)
-	 */
 	@Override
 	public void updateArray(String columnLabel, Array x) throws SQLException {
 		resultSet.updateArray(columnLabel, x);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.sql.ResultSet#updateAsciiStream(int, java.io.InputStream, int)
-	 */
 	@Override
 	public void updateAsciiStream(int columnIndex, InputStream x, int length) throws SQLException {
 		resultSet.updateAsciiStream(columnIndex, x, length);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.sql.ResultSet#updateAsciiStream(int, java.io.InputStream, long)
-	 */
 	@Override
 	public void updateAsciiStream(int columnIndex, InputStream x, long length) throws SQLException {
 		resultSet.updateAsciiStream(columnIndex, x, length);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.sql.ResultSet#updateAsciiStream(int, java.io.InputStream)
-	 */
 	@Override
 	public void updateAsciiStream(int columnIndex, InputStream x) throws SQLException {
 		resultSet.updateAsciiStream(columnIndex, x);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.sql.ResultSet#updateAsciiStream(java.lang.String, java.io.InputStream, int)
-	 */
 	@Override
 	public void updateAsciiStream(String columnLabel, InputStream x, int length) throws SQLException {
 		resultSet.updateAsciiStream(columnLabel, x, length);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.sql.ResultSet#updateAsciiStream(java.lang.String, java.io.InputStream, long)
-	 */
 	@Override
 	public void updateAsciiStream(String columnLabel, InputStream x, long length) throws SQLException {
 		resultSet.updateAsciiStream(columnLabel, x, length);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.sql.ResultSet#updateAsciiStream(java.lang.String, java.io.InputStream)
-	 */
 	@Override
 	public void updateAsciiStream(String columnLabel, InputStream x) throws SQLException {
 		resultSet.updateAsciiStream(columnLabel, x);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.sql.ResultSet#updateBigDecimal(int, java.math.BigDecimal)
-	 */
 	@Override
 	public void updateBigDecimal(int columnIndex, BigDecimal x) throws SQLException {
 		resultSet.updateBigDecimal(columnIndex, x);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.sql.ResultSet#updateBigDecimal(java.lang.String, java.math.BigDecimal)
-	 */
 	@Override
 	public void updateBigDecimal(String columnLabel, BigDecimal x) throws SQLException {
 		resultSet.updateBigDecimal(columnLabel, x);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.sql.ResultSet#updateBinaryStream(int, java.io.InputStream, int)
-	 */
 	@Override
 	public void updateBinaryStream(int columnIndex, InputStream x, int length) throws SQLException {
 		resultSet.updateBinaryStream(columnIndex, x, length);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.sql.ResultSet#updateBinaryStream(int, java.io.InputStream, long)
-	 */
 	@Override
 	public void updateBinaryStream(int columnIndex, InputStream x, long length) throws SQLException {
 		resultSet.updateBinaryStream(columnIndex, x, length);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.sql.ResultSet#updateBinaryStream(int, java.io.InputStream)
-	 */
 	@Override
 	public void updateBinaryStream(int columnIndex, InputStream x) throws SQLException {
 		resultSet.updateBinaryStream(columnIndex, x);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.sql.ResultSet#updateBinaryStream(java.lang.String, java.io.InputStream, int)
-	 */
 	@Override
 	public void updateBinaryStream(String columnLabel, InputStream x, int length) throws SQLException {
 		resultSet.updateBinaryStream(columnLabel, x, length);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.sql.ResultSet#updateBinaryStream(java.lang.String, java.io.InputStream, long)
-	 */
 	@Override
 	public void updateBinaryStream(String columnLabel, InputStream x, long length) throws SQLException {
 		resultSet.updateBinaryStream(columnLabel, x, length);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.sql.ResultSet#updateBinaryStream(java.lang.String, java.io.InputStream)
-	 */
 	@Override
 	public void updateBinaryStream(String columnLabel, InputStream x) throws SQLException {
 		resultSet.updateBinaryStream(columnLabel, x);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.sql.ResultSet#updateBlob(int, java.sql.Blob)
-	 */
 	@Override
 	public void updateBlob(int columnIndex, Blob x) throws SQLException {
 		resultSet.updateBlob(columnIndex, x);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.sql.ResultSet#updateBlob(int, java.io.InputStream, long)
-	 */
 	@Override
 	public void updateBlob(int columnIndex, InputStream inputStream, long length) throws SQLException {
 		resultSet.updateBlob(columnIndex, inputStream, length);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.sql.ResultSet#updateBlob(int, java.io.InputStream)
-	 */
 	@Override
 	public void updateBlob(int columnIndex, InputStream inputStream) throws SQLException {
 		resultSet.updateBlob(columnIndex, inputStream);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.sql.ResultSet#updateBlob(java.lang.String, java.sql.Blob)
-	 */
 	@Override
 	public void updateBlob(String columnLabel, Blob x) throws SQLException {
 		resultSet.updateBlob(columnLabel, x);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.sql.ResultSet#updateBlob(java.lang.String, java.io.InputStream, long)
-	 */
 	@Override
 	public void updateBlob(String columnLabel, InputStream inputStream, long length) throws SQLException {
 		resultSet.updateBlob(columnLabel, inputStream, length);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.sql.ResultSet#updateBlob(java.lang.String, java.io.InputStream)
-	 */
 	@Override
 	public void updateBlob(String columnLabel, InputStream inputStream)	throws SQLException {
 		resultSet.updateBlob(columnLabel, inputStream);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.sql.ResultSet#updateBoolean(int, boolean)
-	 */
 	@Override
 	public void updateBoolean(int columnIndex, boolean x) throws SQLException {
 		resultSet.updateBoolean(columnIndex, x);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.sql.ResultSet#updateBoolean(java.lang.String, boolean)
-	 */
 	@Override
 	public void updateBoolean(String columnLabel, boolean x) throws SQLException {
 		resultSet.updateBoolean(columnLabel, x);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.sql.ResultSet#updateByte(int, byte)
-	 */
 	@Override
 	public void updateByte(int columnIndex, byte x) throws SQLException {
 		resultSet.updateByte(columnIndex, x);
 	}
-
 
 	@Override
 	public void updateByte(String columnLabel, byte x) throws SQLException {
 		resultSet.updateByte(columnLabel, x);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.sql.ResultSet#updateBytes(int, byte[])
-	 */
 	@Override
 	public void updateBytes(int columnIndex, byte[] x) throws SQLException {
 		resultSet.updateBytes(columnIndex, x);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.sql.ResultSet#updateBytes(java.lang.String, byte[])
-	 */
 	@Override
 	public void updateBytes(String columnLabel, byte[] x) throws SQLException {
 		resultSet.updateBytes(columnLabel, x);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.sql.ResultSet#updateCharacterStream(int, java.io.Reader, int)
-	 */
 	@Override
 	public void updateCharacterStream(int columnIndex, Reader x, int length) throws SQLException {
 		resultSet.updateCharacterStream(columnIndex, x, length);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.sql.ResultSet#updateCharacterStream(int, java.io.Reader, long)
-	 */
 	@Override
 	public void updateCharacterStream(int columnIndex, Reader x, long length) throws SQLException {
 		resultSet.updateCharacterStream(columnIndex, x, length);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.sql.ResultSet#updateCharacterStream(int, java.io.Reader)
-	 */
 	@Override
 	public void updateCharacterStream(int columnIndex, Reader x) throws SQLException {
 		resultSet.updateCharacterStream(columnIndex, x);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.sql.ResultSet#updateCharacterStream(java.lang.String, java.io.Reader, int)
-	 */
 	@Override
 	public void updateCharacterStream(String columnLabel, Reader reader,
 			int length) throws SQLException {
 		resultSet.updateCharacterStream(columnLabel, reader, length);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.sql.ResultSet#updateCharacterStream(java.lang.String, java.io.Reader, long)
-	 */
 	@Override
 	public void updateCharacterStream(String columnLabel, Reader reader,
 			long length) throws SQLException {

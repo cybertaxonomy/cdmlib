@@ -41,7 +41,8 @@ public class DbImportDescriptionElementSourceCreationMapper extends DbImportObje
 	 * @param referenceNamespace
 	 * @return
 	 */
-	public static DbImportDescriptionElementSourceCreationMapper NewInstance(String dbDescriptionElementFkAttribute, String descriptionElementNamespace, String dbReferenceFkAttribute, String referenceNamespace){
+	public static DbImportDescriptionElementSourceCreationMapper NewInstance(String dbDescriptionElementFkAttribute,
+	        String descriptionElementNamespace, String dbReferenceFkAttribute, String referenceNamespace){
 		String dbMicroReferenceAttribute = null;
 		return new DbImportDescriptionElementSourceCreationMapper(dbDescriptionElementFkAttribute, descriptionElementNamespace, dbReferenceFkAttribute, referenceNamespace, dbMicroReferenceAttribute);
 	}
@@ -66,7 +67,6 @@ public class DbImportDescriptionElementSourceCreationMapper extends DbImportObje
 	protected String referenceNamespace;
 	protected String dbReferenceFkAttribute;
 	protected String dbMicroReferenceAttribute;
-
 
 //******************************* CONSTRUCTOR ***********************************************/
 

@@ -40,17 +40,14 @@ public class DbImportMediaMapper extends DbImportMultiAttributeMapperBase<Descri
 		return new DbImportMediaMapper(dbFirstUriAttribute, dbSecondUriAttribute);
 	}
 
-
 //********************************** VARIABLES ***************************************
+
 	private String dbFirstUriAttribute;
 	private String dbSecondUriAttribute;
 
-
 //********************************** METHODS ***************************************
 
-
 	public DbImportMediaMapper(String dbFirstUriAttribute, String dbSecondUriAttribute) {
-		super();
 		this.dbFirstUriAttribute = dbFirstUriAttribute;
 		this.dbSecondUriAttribute = dbSecondUriAttribute;
 	}
@@ -87,6 +84,4 @@ public class DbImportMediaMapper extends DbImportMultiAttributeMapperBase<Descri
 		element.addMedia(media);
 		return element;
 	}
-
-
 }

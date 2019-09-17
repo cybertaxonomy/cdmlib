@@ -81,7 +81,8 @@ public class DbLanguageMapper
 					return transformer.getKeyByLanguage(language);
 				}
 			} catch (Exception e) {
-				logger.error("Exception when invoking method: " + e.getLocalizedMessage());
+				logger.error("Exception when invoking method: " + e.getMessage());
+				e.printStackTrace();
 				return null;
 			}
 
