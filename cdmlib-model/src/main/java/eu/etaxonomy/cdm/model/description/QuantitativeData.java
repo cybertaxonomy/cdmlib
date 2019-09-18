@@ -114,7 +114,6 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 	@XmlElement(name = "UnknownData")
 	private Boolean unknownData = false;
 
-
 // ******************************** FACTORY METHODS *******************************/
 
 	/**
@@ -132,7 +131,7 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 	}
 
     /**
-     * Creates a new quantitative data instance of type feature.
+     * Creates a new quantitative data instance of type feature with defined min and may value.
      */
     public static QuantitativeData NewMinMaxInstance(Feature feature, float min, float max){
         QuantitativeData result = new QuantitativeData(feature);
@@ -143,7 +142,17 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
         return result;
     }
 
-
+    /**
+     * Creates a new quantitative data instance of type feature with defined exact value.
+     */
+    public static QuantitativeData NewExactValueInstance(Feature feature, float... exactValues){
+        QuantitativeData result = new QuantitativeData(feature);
+        for (float exactVal : exactValues){
+            StatisticalMeasurementValue exactValue = StatisticalMeasurementValue.NewInstance(StatisticalMeasure.EXACT_VALUE(), exactVal);
+            result.addStatisticalValue(exactValue);
+        }
+        return result;
+    }
 
 // ******************************** CONSTRUCTOR *******************************/
 

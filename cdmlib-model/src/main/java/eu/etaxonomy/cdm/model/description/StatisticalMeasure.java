@@ -17,6 +17,7 @@ import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
@@ -44,7 +45,8 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 //@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
 public class StatisticalMeasure extends DefinedTermBase<StatisticalMeasure> {
-	private static final long serialVersionUID = 9168097283660941430L;
+
+    private static final long serialVersionUID = 9168097283660941430L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(StatisticalMeasure.class);
 
@@ -109,21 +111,6 @@ public class StatisticalMeasure extends DefinedTermBase<StatisticalMeasure> {
 
 //************************** METHODS ********************************
 
-	@Override
-	public void resetTerms(){
-		termMap = null;
-	}
-
-
-
-	protected static StatisticalMeasure getTermByUuid(UUID uuid){
-        if (termMap == null || termMap.isEmpty()){
-            return getTermByClassAndUUID(StatisticalMeasure.class, uuid);
-        } else {
-            return termMap.get(uuid);
-        }
-	}
-
 	public static final StatisticalMeasure MIN(){
 		return getTermByUuid(uuidMin);
 	}
@@ -160,12 +147,54 @@ public class StatisticalMeasure extends DefinedTermBase<StatisticalMeasure> {
         return getTermByUuid(uuidExactValue);
     }
 
+//***************************** IS_XXX ********************************************/
+
+    @XmlTransient
+    public boolean isMax() {
+        return getUuid().equals(uuidMax);
+    }
+
+    @XmlTransient
+    public boolean isMin() {
+        return getUuid().equals(uuidMin);
+    }
+    @XmlTransient
+    public boolean isAverage() {
+        return getUuid().equals(uuidAverage);
+    }
+    @XmlTransient
+    public boolean isTypicalLowerBoundary() {
+        return getUuid().equals(uuidTypicalLowerBoundary);
+    }
+    @XmlTransient
+    public boolean isTypicalUpperBoundary() {
+        return getUuid().equals(uuidTypicalUpperBoundary);
+    }
+    @XmlTransient
+    public boolean isExactValue() {
+        return getUuid().equals(uuidExactValue);
+    }
+
+//***************************** TERM_MAP ********************************************/
+
 	@Override
 	protected void setDefaultTerms(TermVocabulary<StatisticalMeasure> termVocabulary) {
-		termMap = new HashMap<UUID, StatisticalMeasure>();
+		termMap = new HashMap<>();
 		for (StatisticalMeasure term : termVocabulary.getTerms()){
 			termMap.put(term.getUuid(), term);
 		}
 	}
 
+    @Override
+    public void resetTerms(){
+        termMap = null;
+    }
+
+    protected static StatisticalMeasure getTermByUuid(UUID uuid){
+        if (termMap == null || termMap.isEmpty()){
+            return getTermByClassAndUUID(StatisticalMeasure.class, uuid);
+        } else {
+            return termMap.get(uuid);
+        }
+    }
 }

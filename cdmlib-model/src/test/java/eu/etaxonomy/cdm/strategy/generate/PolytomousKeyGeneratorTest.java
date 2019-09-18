@@ -41,15 +41,15 @@ public class PolytomousKeyGeneratorTest {
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(PolytomousKeyGeneratorTest.class);
 
+    private static final boolean debug = true;
 
     private static final String GT_3 = " > 3.0";
+    private static final String GT_3_5 = " > 3.5";
     private static final String LESS_3 = " < 3.0";
+    private static final String LESS_3_5 = " < 3.5";
 
 	private static final boolean QUANTITATIVE = true;
 	private static final boolean CATEGORICAL = false;
-
-    private static final boolean debug = true;
-
 
 	private Feature featureShape;
 	private Feature featurePresence;
@@ -81,7 +81,6 @@ public class PolytomousKeyGeneratorTest {
 	private TaxonDescription taxond6;
 	private TaxonDescription taxond7;
 	private TaxonDescription taxond8;
-
 
     private CategoricalData catd11;
     private CategoricalData catd12;
@@ -181,7 +180,8 @@ public class PolytomousKeyGeneratorTest {
 
 		/*************************/
 
-		qtd31 = QuantitativeData.NewMinMaxInstance(featureLength, 0, 3);
+		qtd31 = QuantitativeData.NewExactValueInstance(featureLength, 0.0f, 3.0f);
+//        qtd31 = QuantitativeData.NewMinMaxInstance(featureLength, 0, 3);
 		qtd32 = QuantitativeData.NewMinMaxInstance(featureLength, 0, 3);
 		qtd33 = QuantitativeData.NewMinMaxInstance(featureLength, 6, 9);
 		qtd34 = QuantitativeData.NewMinMaxInstance(featureLength, 6, 9);
@@ -242,7 +242,7 @@ public class PolytomousKeyGeneratorTest {
 //		taxond8.addElement(qtd38); // This taxon has no wings
 		taxond8.addElement(catd48);  //color blue
 
-		/*************************/
+//*************************************************/
 
 		taxa = new HashSet<>();
 		taxa.add(taxond1);
@@ -253,12 +253,9 @@ public class PolytomousKeyGeneratorTest {
 		taxa.add(taxond6);
 		taxa.add(taxond7);
 		taxa.add(taxond8);
-
 	}
 
-
 //*************************** TESTS *********************** /
-
 
 	@Test
 	public void testInvokeMergeModeOff() {
@@ -298,7 +295,7 @@ public class PolytomousKeyGeneratorTest {
 
             //<3
             less3Node = triangularNode.getChildAt(0);
-            assertInnerNode(less3Node, LESS_3, featureColour);
+
 
                 //blue
                 assertSingleTaxon(less3Node.getChildAt(0), taxon1, blue);
@@ -474,10 +471,8 @@ public class PolytomousKeyGeneratorTest {
     @Test
     public void testDependencyScore() {
         generator = new PolytomousKeyGenerator();
-        PolytomousKeyGeneratorConfigurator configurator = new PolytomousKeyGeneratorConfigurator();
-        DescriptiveDataSet dataSet = createDataSet();
-        configurator.setDataSet(dataSet);
-        dataSet.getDescriptiveSystem().getRoot().removeChild(0); //remove shape feature
+        PolytomousKeyGeneratorConfigurator configurator = createDefaultConfig(); //new PolytomousKeyGeneratorConfigurator();
+        configurator.getDataSet().getDescriptiveSystem().getRoot().removeChild(0); //remove shape feature
         configurator.setMerge(true);
         configurator.setUseDependencies(true);
 
@@ -490,16 +485,8 @@ public class PolytomousKeyGeneratorTest {
         PolytomousKeyNode root = result.getRoot();
         Assert.assertEquals("Root feature should be 'presence' as it inherits score from 'length of wings'", featurePresence, root.getFeature());
         //...otherwise it would be colour, both have a score of 12.0 but presence comes first in list
-
     }
 
-
-
-    /**
-     * @param circularNode
-     * @param label
-     * @param featurePresence2
-     */
     private void assertInnerNode(PolytomousKeyNode node, String label, Feature feature) {
         Assert.assertEquals(label, label(node));
         Assert.assertEquals(feature, node.getFeature());
@@ -511,12 +498,6 @@ public class PolytomousKeyGeneratorTest {
         return node;
     }
 
-
-    /**
-     * @param childAt
-     * @param taxon72
-     * @param string
-     */
     private void assertSingleTaxon(PolytomousKeyNode node, Taxon taxon, String statement) {
         Assert.assertNotNull(node.getStatement());
         Assert.assertEquals(statement, label(node));
@@ -525,11 +506,6 @@ public class PolytomousKeyGeneratorTest {
 
     }
 
-    /**
-     * @param string
-	 * @param blueNode
-     * @param taxon12
-     */
     private void assertSingleTaxon(PolytomousKeyNode node, Taxon taxon, State state) {
         assertSingleTaxon(node, taxon, state.getLabel());
     }
