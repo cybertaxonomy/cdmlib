@@ -1121,6 +1121,12 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                                                                                                   // deleted
                                     ) {
                                         currentFieldUnit.removeDerivationEvent(currentDerivedFrom);
+                                        if (associatedFieldUnit.getGatheringEvent().getActor() == null && currentFieldUnit.getGatheringEvent().getActor() != null){
+                                            associatedFieldUnit.getGatheringEvent().setActor(currentFieldUnit.getGatheringEvent().getActor());
+                                        }
+                                        if (associatedFieldUnit.getFieldNumber() == null && currentFieldUnit.getFieldNumber() != null) {
+                                            associatedFieldUnit.setFieldNumber(currentFieldUnit.getFieldNumber());
+                                        }
 
                                         if (currentFieldUnit.getDerivationEvents().isEmpty()) {
                                             DeleteResult result = state.getCdmRepository().getOccurrenceService()
@@ -1212,8 +1218,15 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                             updatedDerivationEvent.setDescription(associationType);
                             if (associatedFieldUnit != null && associatedFieldUnit != currentFieldUnit) {
                                 associatedFieldUnit.removeDerivationEvent(updatedDerivationEvent);
-                                // if
-                                // (associatedFieldUnit.getDerivationEvents().isEmpty()){
+                                if (associatedFieldUnit.getGatheringEvent().getActor() != null && currentFieldUnit.getGatheringEvent().getActor() == null){
+                                    currentFieldUnit.getGatheringEvent().setActor(associatedFieldUnit.getGatheringEvent().getActor());
+                                }
+                                if (associatedFieldUnit.getFieldNumber() != null && currentFieldUnit.getFieldNumber() == null){
+                                    currentFieldUnit.setFieldNumber(associatedFieldUnit.getFieldNumber());
+                                }
+
+
+
                                 SpecimenDeleteConfigurator deleteConfig = new SpecimenDeleteConfigurator();
                                 deleteConfig.setDeleteChildren(false);
                                 DeleteResult result = state.getCdmRepository().getOccurrenceService()
@@ -1480,8 +1493,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     }
                     teamOrPerson = team;
                 }
-                if (!state.getPersonStore().containsId(state.getDataHolder().gatheringAgentsList.toString())) {
-                    state.getPersonStore().put(state.getDataHolder().gatheringAgentsList.toString(), teamOrPerson);
+                if (!state.getPersonStore().containsId(teamOrPerson.getTitleCache())) {
+                    state.getPersonStore().put(teamOrPerson.getTitleCache(), teamOrPerson);
                     if (logger.isDebugEnabled()) {
                         logger.debug("Stored author " + state.getDataHolder().gatheringAgentsList.toString());
                     }
@@ -1501,8 +1514,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 // team.addTeamMember(person);
                 // }
                 // }
-                if (!state.getPersonStore().containsId(state.getDataHolder().gatheringAgentsText)) {
-                    state.getPersonStore().put(state.getDataHolder().gatheringAgentsText, teamOrPerson);
+                if (!state.getPersonStore().containsId(teamOrPerson.getTitleCache())) {
+                    state.getPersonStore().put(teamOrPerson.getTitleCache(), teamOrPerson);
                     if (logger.isDebugEnabled()) {
                         logger.debug("Stored author " + state.getDataHolder().gatheringAgentsText);
                     }
