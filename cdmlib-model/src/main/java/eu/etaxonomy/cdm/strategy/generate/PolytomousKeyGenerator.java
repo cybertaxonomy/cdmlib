@@ -52,7 +52,6 @@ public class PolytomousKeyGenerator {
     /**
      * Creates the key and prints it
      */
-
     public PolytomousKey invoke(PolytomousKeyGeneratorConfigurator config){
         if (config == null){
             throw new NullPointerException("PolytomousKeyGeneratorConfigurator must not be null");
@@ -830,9 +829,6 @@ public class PolytomousKeyGenerator {
 	/**
 	 * This function calculates the mean score, i.e. the score a feature dividing the taxa in two equal parts
 	 * would have.
-	 *
-	 * @param nTaxa
-	 * @return
 	 */
 	private float defaultMeanScore(int nTaxa){
 		int i;
@@ -842,7 +838,6 @@ public class PolytomousKeyGenerator {
 		}
 		return score;
 	}
-
 
 	/**
 	 * This function fills the map of features (keys) with their respecting scores (values)
@@ -928,49 +923,14 @@ public class PolytomousKeyGenerator {
 	 */
 	private float quantitativeFeatureScore(Feature feature, Set<DescriptionBase<?>> coveredTaxa, Map<Feature,Float> quantitativeFeaturesThresholds){
 		List<Float> allValues = new ArrayList<>();
-		boolean lowerboundarypresent;
-		boolean upperboundarypresent;
-		float lowerboundary=0;
-		float upperboundary=0;
+
 		for (DescriptionBase<?> td : coveredTaxa){
 			Set<DescriptionElementBase> elements = td.getElements();
 			for (DescriptionElementBase deb : elements){
 				if (deb.getFeature().equals(feature)) {
 					if (deb.isInstanceOf(QuantitativeData.class)) {
-						QuantitativeData qd = (QuantitativeData)deb;
-						Set<StatisticalMeasurementValue> values = qd.getStatisticalValues();
-						lowerboundarypresent = false;
-						upperboundarypresent = false;
-						for (StatisticalMeasurementValue smv : values){
-							StatisticalMeasure type = smv.getType();
-							// DONT FORGET sample size, MEAN etc
-							if (type.equals(StatisticalMeasure.MAX())) {
-								upperboundary = smv.getValue();
-								upperboundarypresent=true;
-							}
-							if (type.equals(StatisticalMeasure.MIN())) {
-								lowerboundary = smv.getValue();
-								lowerboundarypresent=true;
-							}
-							if (type.equals(StatisticalMeasure.TYPICAL_UPPER_BOUNDARY()) && upperboundarypresent==false) {
-								upperboundary = smv.getValue();
-								upperboundarypresent=true;
-							}
-							if (type.equals(StatisticalMeasure.TYPICAL_LOWER_BOUNDARY()) && lowerboundarypresent==false) {
-								lowerboundary = smv.getValue();
-								lowerboundarypresent=true;
-							}
-							if (type.equals(StatisticalMeasure.AVERAGE()) && upperboundarypresent==false && lowerboundarypresent==false) {
-								lowerboundary = smv.getValue();
-								upperboundary = lowerboundary;
-								lowerboundarypresent=true;
-								upperboundarypresent=true;
-							}
-						}
-						if (lowerboundarypresent && upperboundarypresent) {
-							allValues.add(lowerboundary);
-							allValues.add(upperboundary);
-						}
+					    QuantitativeData qd = (QuantitativeData)deb;
+						computeLowerUpperBoundary(allValues, qd);
 					}
 				}
 			}
@@ -1009,6 +969,42 @@ public class PolytomousKeyGenerator {
 		}
 		return defaultQuantitativeScore;
 	}
+
+    private void computeLowerUpperBoundary(List<Float> allValues, QuantitativeData qd) {
+        boolean lowerboundarypresent;
+        boolean upperboundarypresent;
+        Set<StatisticalMeasurementValue> values = qd.getStatisticalValues();
+        float lowerboundary=0;
+        float upperboundary=0;
+        lowerboundarypresent = false;
+        upperboundarypresent = false;
+        for (StatisticalMeasurementValue smv : values){
+        	StatisticalMeasure type = smv.getType();
+        	// DONT FORGET sample size, MEAN etc
+        	if (type.equals(StatisticalMeasure.MAX())) {
+        		upperboundary = smv.getValue();
+        		upperboundarypresent=true;
+        	}else if (type.equals(StatisticalMeasure.MIN())) {
+        		lowerboundary = smv.getValue();
+        		lowerboundarypresent=true;
+        	}else if (type.equals(StatisticalMeasure.TYPICAL_UPPER_BOUNDARY()) && upperboundarypresent==false) {
+        		upperboundary = smv.getValue();
+        		upperboundarypresent=true;
+        	}else if (type.equals(StatisticalMeasure.TYPICAL_LOWER_BOUNDARY()) && lowerboundarypresent==false) {
+        		lowerboundary = smv.getValue();
+        		lowerboundarypresent=true;
+        	}else if (type.equals(StatisticalMeasure.AVERAGE()) && upperboundarypresent==false && lowerboundarypresent==false) {
+        		lowerboundary = smv.getValue();
+        		upperboundary = lowerboundary;
+        		lowerboundarypresent=true;
+        		upperboundarypresent=true;
+        	}
+        }
+        if (lowerboundarypresent && upperboundarypresent) {
+        	allValues.add(lowerboundary);
+        	allValues.add(upperboundary);
+        }
+    }
 
 
 
