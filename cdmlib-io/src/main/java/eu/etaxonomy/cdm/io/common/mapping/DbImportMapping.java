@@ -34,10 +34,6 @@ public class DbImportMapping<STATE extends DbImportStateBase, CONFIG extends IIm
 	private DbImportMapping<STATE, CONFIG> secondPathMapping;
 	private boolean blankToNull = false;
 
-	public DbImportMapping(){
-//		this.dbTableName = tableName;
-	}
-
 	public boolean initialize(DbImportStateBase<?,?> state, Class<? extends CdmBase> destinationClass){
 		if (!isInitialized){
 			//	this.dbTableName = tableName;
@@ -108,7 +104,7 @@ public class DbImportMapping<STATE extends DbImportStateBase, CONFIG extends IIm
 				logger.warn("The objectToSave was (null). Please check that your mappers work correctly.");
 			}
 			return result;
-	}
+		}
 	}
 
 	public void setSecondPathMapping(DbImportMapping<STATE, CONFIG> secondPathMapping){
@@ -130,26 +126,4 @@ public class DbImportMapping<STATE extends DbImportStateBase, CONFIG extends IIm
 	public void setBlankToNull(boolean blankToNull) {
 		this.blankToNull = blankToNull;
 	}
-
-//	/**
-//	 * @return the berlinModelTableName
-//	 */
-//	public String getDbTableName() {
-//		return dbTableName;
-//	}
-//
-//	/**
-//	 * @param berlinModelTableName the berlinModelTableName to set
-//	 */
-//	public void setDbTableName(String dbTableName) {
-//		this.dbTableName = dbTableName;
-//	}
-//
-//
-//	protected List<CdmAttributeMapperBase> getAttributeMapperList(){
-//		List<CdmAttributeMapperBase> list = this.mapperList;
-//		return list;
-//	}
-
-
 }

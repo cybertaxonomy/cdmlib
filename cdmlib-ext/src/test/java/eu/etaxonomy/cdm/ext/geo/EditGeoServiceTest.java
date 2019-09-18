@@ -386,7 +386,7 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
         Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors = null;
         List<Language> langs = null;
 
-        List<TaxonDescription> taxonDescriptions = new ArrayList<TaxonDescription>();
+        List<TaxonDescription> taxonDescriptions = new ArrayList<>();
         TaxonDescription description1 = TaxonDescription.NewInstance();
         taxonDescriptions.add(description1);
         Distribution distribution1 = Distribution.NewInstance(Country.GERMANY(), null);

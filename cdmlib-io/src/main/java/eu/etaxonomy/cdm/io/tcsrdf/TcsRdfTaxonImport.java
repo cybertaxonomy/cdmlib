@@ -50,7 +50,6 @@ public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<TcsRd
 		super();
 	}
 
-
 	@Override
 	public boolean doCheck(TcsRdfImportState state){
 		boolean result = true;
@@ -65,7 +64,6 @@ public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<TcsRd
 //		new CdmTextElementMapper("genusPart", "genusOrUninomial")
 
 	};
-
 
 	protected static CdmSingleAttributeRDFMapperBase[] operationalMappers = new CdmSingleAttributeRDFMapperBase[]{
 		 new CdmUnclearMapper("hasName")
@@ -83,8 +81,6 @@ public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<TcsRd
 		, new CdmUnclearMapper("TaxonName", nsTn)
 		, new CdmUnclearMapper("dateOfEntry", nsTpalm)
 	};
-
-
 
 	@Override
 	protected void doInvoke(TcsRdfImportState state){
@@ -113,12 +109,6 @@ public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<TcsRd
 		return;
 	}
 
-
-	/**
-	 * @param rdfNamespace
-	 * @param elTaxonConcept
-	 * @return
-	 */
 	private boolean isSynonym(Element elTaxonConcept, Namespace tpalmNamespace) {
 		if (elTaxonConcept == null || ! "TaxonConcept".equalsIgnoreCase(elTaxonConcept.getName()) ){
 			return false;
@@ -146,7 +136,6 @@ public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<TcsRd
 			}
 		}
 	}
-
 
 	private boolean hasIsSynonymRelation(Element elTaxonConcept, Namespace rdfNamespace){
 		boolean result = false;
@@ -191,13 +180,8 @@ public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<TcsRd
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
-	 */
 	@Override
     protected boolean isIgnore(TcsRdfImportState state){
 		return ! state.getConfig().isDoTaxa();
 	}
-
-
 }
