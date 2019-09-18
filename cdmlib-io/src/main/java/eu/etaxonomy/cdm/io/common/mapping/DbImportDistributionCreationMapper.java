@@ -59,6 +59,7 @@ public class DbImportDistributionCreationMapper<STATE extends DbImportStateBase<
 
 	protected DbImportDistributionCreationMapper(String dbIdAttribute, String objectToCreateNamespace, String dbTaxonFkAttribute, String taxonNamespace, PresenceAbsenceTerm status) {
 		super(dbIdAttribute, objectToCreateNamespace, dbTaxonFkAttribute, taxonNamespace);
+		this.status = status;
 	}
 
 //************************************ METHODS *******************************************/
