@@ -883,7 +883,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                         alreadyCollectedSpecimen.put(derivedUnitDTO.getUuid(), derivedUnitDTO);
                     }
                     derivedUnitDTO.addAllDerivates(getDerivedUnitDTOsFor(derivedUnitDTO, derivedUnit, alreadyCollectedSpecimen));
-                    this.findFieldUnitDTO(derivedUnitDTO, //fieldUnitDTOs,
+                    this.findFieldUnitDTO(derivedUnitDTO, fieldUnitDTOs,
                             alreadyCollectedSpecimen);
                 }
             }
@@ -909,7 +909,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             derivedUnitDTO = new DNASampleDTO(dnaSample);
             alreadyCollectedSpecimen.put(derivedUnitDTO.getUuid(), derivedUnitDTO);
             derivedUnitDTO.addAllDerivates(getDerivedUnitDTOsFor(derivedUnitDTO, dnaSample, alreadyCollectedSpecimen));
-            FieldUnitDTO fieldUnit = this.findFieldUnitDTO(derivedUnitDTO, //fieldUnitDTOs,
+            FieldUnitDTO fieldUnit = this.findFieldUnitDTO(derivedUnitDTO, fieldUnitDTOs,
                     alreadyCollectedSpecimen);
 
             return fieldUnit;
@@ -1027,7 +1027,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
     @Override
     @Transactional(readOnly=true)
-    public FieldUnitDTO findFieldUnitDTO(DerivateDTO derivedUnitDTO, //Collection<FieldUnitDTO> fieldUnits,
+    public FieldUnitDTO findFieldUnitDTO(DerivateDTO derivedUnitDTO, Collection<FieldUnitDTO> fieldUnits,
             HashMap<UUID, DerivateDTO> alreadyCollectedSpecimen) {
         //It will search recursively over all {@link DerivationEvent}s and get the "originals" ({@link SpecimenOrObservationBase})
         //from which this DerivedUnit was derived until all FieldUnits are found.
@@ -1036,6 +1036,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
         propertyPaths.add("descriptions.elements.media.title");
         propertyPaths.add("kindOfUnit");
+        propertyPaths.add("derivedFrom");
 
         specimens = dao.findOriginalsForDerivedUnit(derivedUnitDTO.getUuid(), propertyPaths);
 
@@ -1059,7 +1060,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             if (specimen.isInstanceOf(FieldUnit.class)){
                 fieldUnitDto = new FieldUnitDTO((FieldUnit)specimen);
                 fieldUnitDto.addDerivate(derivedUnitDTO);
-                //fieldUnits.add(fieldUnitDto);
+                fieldUnits.add(fieldUnitDto);
             }else{
                 DerivateDTO originalDTO;
                 if (specimen instanceof DnaSample){
@@ -1068,7 +1069,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                     originalDTO = new PreservedSpecimenDTO((DerivedUnit)specimen);
                 }
                 originalDTO.addDerivate(derivedUnitDTO);
-                fieldUnitDto = findFieldUnitDTO(originalDTO, //fieldUnits,
+                fieldUnitDto = findFieldUnitDTO(originalDTO, fieldUnits,
                         alreadyCollectedSpecimen);
             }
 
