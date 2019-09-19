@@ -347,6 +347,14 @@ public class DescriptiveDataSetService
         UpdateResult result = new UpdateResult();
         result.setCdmEntity(dataSet);
 
+        // delete all aggregation description of this dataset (DescriptionType.AGGREGATED)
+        Set<DescriptionBase> aggregations = dataSet.getDescriptions().stream()
+        .filter(aggDesc->aggDesc instanceof TaxonDescription)
+        .filter(desc -> desc.getTypes().stream().anyMatch(type -> type.equals(DescriptionType.AGGREGATED)))
+        .collect(Collectors.toSet());
+
+        aggregations.forEach(aggregation->dataSet.removeDescription(aggregation));
+
         // clone specimen descriptions
         // create a snapshot of those descriptions that were used to create the aggregated descriptions
         // TODO implement when the clones descriptions can be attached to taxon descriptions as sources
@@ -370,9 +378,11 @@ public class DescriptiveDataSetService
 
             if(descriptionBase instanceof SpecimenDescription){
                 SpecimenDescription specimenDescription = HibernateProxyHelper.deproxy(descriptionBase, SpecimenDescription.class);
-                TaxonNode taxonNode = findTaxonNodeForDescription(specimenDescription, dataSet);
-                if(taxonNode!=null){
-                    addDescriptionToTaxonNodeMap(specimenDescription.getUuid(), taxonNode, taxonNodeToSpecimenDescriptionMap);
+                if(specimenDescription.getElements().stream().anyMatch(element->hasCharacterData(element))){
+                    TaxonNode taxonNode = findTaxonNodeForDescription(specimenDescription, dataSet);
+                    if(taxonNode!=null){
+                        addDescriptionToTaxonNodeMap(specimenDescription.getUuid(), taxonNode, taxonNodeToSpecimenDescriptionMap);
+                    }
                 }
             }
             monitor.worked(1);
@@ -393,6 +403,13 @@ public class DescriptiveDataSetService
         }
         monitor.done();
         return result;
+    }
+
+
+    private boolean hasCharacterData(DescriptionElementBase element) {
+        return (element instanceof CategoricalData && !((CategoricalData) element).getStatesOnly().isEmpty())
+                || (element instanceof QuantitativeData
+                        && !((QuantitativeData) element).getStatisticalValues().isEmpty());
     }
 
     private void addDescriptionToTaxonNodeMap(UUID descriptionUuid, TaxonNode taxonNode, Map<TaxonNode, Set<UUID>> taxonNodeToSpecimenDescriptionMap){
@@ -480,19 +497,6 @@ public class DescriptiveDataSetService
                 featureToElementMap.put(HibernateProxyHelper.deproxy(descriptionElement.getFeature(), Character.class), list);
             });
         });
-
-        // delete all aggregation description of this dataset for this taxon (DescriptionType.AGGREGATED)
-        List<TaxonDescription> toRemove = dataSet.getDescriptions().stream()
-        .filter(aggDesc->aggDesc instanceof TaxonDescription)
-        .filter(desc -> desc.getTypes().stream().anyMatch(type -> type.equals(DescriptionType.AGGREGATED)))
-        .map(aggDesc->(TaxonDescription)aggDesc)
-        .collect(Collectors.toList());
-        for (TaxonDescription taxonDescription : toRemove) {
-            if(taxon.getDescriptions().contains(taxonDescription)){
-                dataSet.removeDescription(taxonDescription);
-                taxon.removeDescription(taxonDescription);
-            }
-        }
 
         // create new aggregation
         TaxonDescription description = TaxonDescription.NewInstance(taxon);
