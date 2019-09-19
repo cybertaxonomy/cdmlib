@@ -170,8 +170,10 @@ public class PolytomousKeyGenerator {
 
 		if (taxonStatesMap.size()<=1){
 		    if (notEmpty(featureDependencies.get(winnerFeature))){
+		        //TODO is empty list correctly handled here? Seems to happen if incorrect data (e.g. only Max values) for quantdata exist
+		        List<State> stateList = taxonStatesMap.isEmpty()? new ArrayList<>(): taxonStatesMap.values().iterator().next();
 		        Set<Feature> featuresAdded = new HashSet<>();
-		        addDependentFeatures(featuresLeft, winnerFeature, featuresAdded, taxonStatesMap.values().iterator().next());
+		        addDependentFeatures(featuresLeft, winnerFeature, featuresAdded, stateList);
 		        featuresLeft.remove(winnerFeature);
 		        buildBranches(father, featuresLeft, taxaCovered, false);
 		        removeAddedDependendFeatures(featuresLeft, featuresAdded);
@@ -301,8 +303,8 @@ public class PolytomousKeyGenerator {
      * @param featuresAdded
      * @param listOfStates
      */
-    private void addDependentFeatures(List<Feature> featuresLeft, Feature winnerFeature, Set<Feature> featuresAdded,
-            List<State> listOfStates) {
+    private void addDependentFeatures(List<Feature> featuresLeft, Feature winnerFeature,
+            Set<Feature> featuresAdded, List<State> listOfStates) {
 
         Set<Feature> newFeatureCandidates = new HashSet<>(featureDependencies.get(winnerFeature));
         newFeatureCandidates.remove(null);
