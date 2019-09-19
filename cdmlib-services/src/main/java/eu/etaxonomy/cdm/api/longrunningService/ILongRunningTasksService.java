@@ -68,6 +68,14 @@ public interface ILongRunningTasksService {
     public UUID addRowWrapperToDataset(Collection<SpecimenNodeWrapper> wrapper, UUID datasetUuid);
 
     /**
+     * Monitored invocation of {@link IDescriptiveDataSetService#generatePolytomousKey(UUID, UUID))}
+     * @param datasetUuid the data set
+     * @param taxonUuid the taxonomic scope of the key
+     * @return the uuid of the monitor
+     */
+    public UUID generatePolytomousKey(UUID datasetUuid, UUID taxonUuid);
+
+    /**
      * Monitored invocation of {@link IDescriptiveDataSetService#getRowWrapper(DescriptiveDataSet, IProgressMonitor)}
      * @param descriptiveDataSetUuid the working set for which getRowWrapper() is invoked
      * @return the uuid of the monitor

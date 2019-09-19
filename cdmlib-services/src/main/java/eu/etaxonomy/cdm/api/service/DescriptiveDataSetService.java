@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.api.service.config.DescriptionAggregationConfiguration;
+import eu.etaxonomy.cdm.api.service.config.IdentifiableServiceConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.dto.RowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenRowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonRowWrapperDTO;
@@ -37,6 +38,7 @@ import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.DescriptiveSystemRole;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
+import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.StateData;
@@ -60,6 +62,8 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.strategy.generate.PolytomousKeyGenerator;
+import eu.etaxonomy.cdm.strategy.generate.PolytomousKeyGeneratorConfigurator;
 
 @Service
 @Transactional(readOnly=true)
@@ -74,6 +78,9 @@ public class DescriptiveDataSetService
 
     @Autowired
     private ITaxonService taxonService;
+
+    @Autowired
+    private IPolytomousKeyService polytomousKeyService;
 
     @Autowired
     private IDefinedTermDao termDao;
@@ -458,6 +465,33 @@ public class DescriptiveDataSetService
             }
         }
         return false;
+    }
+
+    @Override
+    @Transactional(readOnly=false)
+    public UpdateResult generatePolytomousKey(UUID descriptiveDataSetUuid, UUID taxonUuid) {
+        UpdateResult result = new UpdateResult();
+
+        PolytomousKeyGeneratorConfigurator keyConfig = new PolytomousKeyGeneratorConfigurator();
+        DescriptiveDataSet descriptiveDataSet = load(descriptiveDataSetUuid);
+        keyConfig.setDataSet(descriptiveDataSet);
+        PolytomousKey key = new PolytomousKeyGenerator().invoke(keyConfig);
+        IdentifiableServiceConfiguratorImpl<PolytomousKey> serviceConfig= new IdentifiableServiceConfiguratorImpl<>();
+        serviceConfig.setTitleSearchString(descriptiveDataSet.getTitleCache());
+        List<PolytomousKey> list = polytomousKeyService.findByTitle(serviceConfig).getRecords();
+        if(list!=null){
+            list.forEach(polytomousKey->polytomousKeyService.delete(polytomousKey));
+        }
+        key.setTitleCache(descriptiveDataSet.getTitleCache(), true);
+
+        Taxon taxon = (Taxon) taxonService.load(taxonUuid);
+        key.addTaxonomicScope(taxon);
+
+        polytomousKeyService.saveOrUpdate(key);
+
+        result.setCdmEntity(key);
+        result.addUpdatedObject(taxon);
+        return result;
     }
 
     @SuppressWarnings("unchecked")

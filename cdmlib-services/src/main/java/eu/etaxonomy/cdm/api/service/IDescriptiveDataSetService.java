@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.DescriptiveSystemRole;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -173,5 +174,14 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      * @return the result of the operation
      */
     public UpdateResult aggregate(UUID descriptiveDataSetUuid,  DescriptionAggregationConfiguration config, IProgressMonitor monitor);
+
+    /**
+     * Generates a {@link PolytomousKey} for the given {@link DescriptiveDataSet} and sets
+     * the given taxon as the taxonomic scope
+     * @param datasetUuid the data set
+     * @param taxonUuid the taxonomic scope of the key
+     * @return the uuid of the monitor
+     */
+    UpdateResult generatePolytomousKey(UUID descriptiveDataSetUuid, UUID taxonUuid);
 
 }

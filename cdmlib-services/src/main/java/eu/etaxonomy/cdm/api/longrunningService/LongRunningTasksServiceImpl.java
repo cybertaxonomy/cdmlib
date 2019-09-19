@@ -111,6 +111,26 @@ public class LongRunningTasksServiceImpl implements ILongRunningTasksService{
     }
 
     @Override
+    public UUID generatePolytomousKey(UUID datasetUuid, UUID taxonUuid){
+        RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
+            @Override
+            public Serializable doRun(IRemotingProgressMonitor monitor) {
+                UpdateResult updateResult = descriptiveDataSetService.generatePolytomousKey(datasetUuid, taxonUuid);
+                for(Exception e : updateResult.getExceptions()) {
+                    monitor.addReport(e.getMessage());
+                }
+                monitor.setResult(updateResult);
+                return updateResult;
+
+            }
+        };
+        UUID uuid = progressMonitorService.registerNewRemotingMonitor(monitorThread);
+        monitorThread.setPriority(2);
+        monitorThread.start();
+        return uuid;
+    }
+
+    @Override
     public UUID monitLongRunningTask(ForSubtreeConfiguratorBase config) {
 
         RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
