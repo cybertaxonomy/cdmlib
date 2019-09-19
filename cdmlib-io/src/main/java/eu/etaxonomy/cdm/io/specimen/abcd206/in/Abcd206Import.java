@@ -554,12 +554,21 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             // unitsGatheringEvent.setHeight(heightText, heightMin, heightMax,
             // heightUnit);
             if (state.getDataHolder().gatheringAgentsList.isEmpty()) {
-                unitsGatheringEvent.setCollector(state.getPersonStore().get(state.getDataHolder().gatheringAgentsText),
+                TeamOrPersonBase team = state.getPersonStore().get(state.getDataHolder().gatheringAgentsText);
+                if (team == null){
+                    team = parseAuthorString(state.getDataHolder().gatheringAgentsText);
+                    state.getPersonStore().put(team.getTitleCache(), team);
+                }
+                unitsGatheringEvent.setCollector(team,
                             config);
 
             } else {
-                unitsGatheringEvent.setCollector(
-                        state.getPersonStore().get(state.getDataHolder().gatheringAgentsList.toString()), config);
+                TeamOrPersonBase team = state.getPersonStore().get(state.getDataHolder().gatheringAgentsList.toString());
+                if (team == null){
+                    team = parseAuthorString(state.getDataHolder().gatheringAgentsList.toString());
+                    state.getPersonStore().put(team.getTitleCache(), team);
+                }
+                unitsGatheringEvent.setCollector(team, config);
             }
             // count
             UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea();
@@ -1121,10 +1130,10 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                                                                                                   // deleted
                                     ) {
                                         currentFieldUnit.removeDerivationEvent(currentDerivedFrom);
-                                        if (associatedFieldUnit.getGatheringEvent().getActor() == null && currentFieldUnit.getGatheringEvent().getActor() != null){
+                                        if (associatedFieldUnit != null && associatedFieldUnit.getGatheringEvent() != null && associatedFieldUnit.getGatheringEvent().getActor() == null && currentFieldUnit.getGatheringEvent().getActor() != null){
                                             associatedFieldUnit.getGatheringEvent().setActor(currentFieldUnit.getGatheringEvent().getActor());
                                         }
-                                        if (associatedFieldUnit.getFieldNumber() == null && currentFieldUnit.getFieldNumber() != null) {
+                                        if (associatedFieldUnit != null && associatedFieldUnit.getFieldNumber() == null && currentFieldUnit.getFieldNumber() != null) {
                                             associatedFieldUnit.setFieldNumber(currentFieldUnit.getFieldNumber());
                                         }
 
