@@ -111,7 +111,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.persistence.dao.initializer.AbstractBeanInitializer;
-import eu.etaxonomy.cdm.persistence.dao.initializer.AdvancedBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
@@ -329,7 +328,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         DerivedUnitFacadeConfigurator config = DerivedUnitFacadeConfigurator.NewInstance();
         config.setThrowExceptionForNonSpecimenPreservationMethodRequest(false);
         DerivedUnitFacade derivedUnitFacade = DerivedUnitFacade.NewInstance(derivedUnit, config);
-        Logger.getLogger(AdvancedBeanInitializer.class).setLevel(org.apache.log4j.Level.TRACE);
         beanInitializer.initialize(derivedUnitFacade, derivedUnitFacadeInitStrategy);
         return derivedUnitFacade;
     }
