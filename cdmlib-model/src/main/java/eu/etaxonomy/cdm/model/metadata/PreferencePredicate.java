@@ -152,9 +152,6 @@ public enum PreferencePredicate implements IEnumTerm<PreferencePredicate>, IPref
     NamedAreaSearchForAbbrev(UUID.fromString("1db58b79-048b-4981-9cd1-51cb2b915c8a"), "Search Field for Names Areas", "search.selectionDialog.searchField", NamedAreaSearchField.NoAbbrev),
 
 
-
-
-
     ;
 
     private Object defaultValue;
