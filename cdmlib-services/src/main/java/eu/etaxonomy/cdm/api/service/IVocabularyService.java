@@ -120,6 +120,26 @@ public interface IVocabularyService extends IIdentifiableEntityService<TermVocab
     public List<TermVocabularyDto> findVocabularyDtoByTermTypes(Set<TermType> termTypes);
 
     /**
+     * Returns term vocabularies that contain terms of a certain {@link TermType} e.g. Feature, Modifier, State.
+     *
+     * @param termType the {@link TermType} of the terms in the vocabulary and of the vocabulary
+     * @param includeSubtypes if <code>true</code> also vocabularies with subtypes of the given type
+     * will be returned
+     * @return a list of term vocabulary DTOs
+     */
+    public List<TermVocabularyDto> findVocabularyDtoByTermType(TermType termType, boolean includeSubtypes);
+
+    /**
+     * Returns term vocabularies that contain terms of the given types {@link TermType} e.g. Feature, Modifier, State.
+     *
+     * @param termTypes a set of {@link TermType}s of the terms in the vocabulary and of the vocabulary
+     * @param includeSubtypes if <code>true</code> also vocabularies with subtypes of the given type
+     * will be returned
+     * @return a list of term vocabulary DTOs
+     */
+    public List<TermVocabularyDto> findVocabularyDtoByTermTypes(Set<TermType> termTypes, boolean includeSubtypes);
+
+    /**
      * Creates a new term as a direct child of the given vocabulary.
      * @param termType the {@link TermType} of the term to create
      * @param vocabularyUUID the {@link UUID} of the vocabulary
