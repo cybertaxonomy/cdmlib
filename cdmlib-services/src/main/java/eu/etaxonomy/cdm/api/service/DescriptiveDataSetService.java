@@ -133,7 +133,8 @@ public class DescriptiveDataSetService
                             )){
                 rowWrapper = createTaxonRowWrapper(description.getUuid(), descriptiveDataSet.getUuid());
             }
-            else if (HibernateProxyHelper.isInstanceOf(description, SpecimenDescription.class)){
+            else if (HibernateProxyHelper.isInstanceOf(description, SpecimenDescription.class)&&
+                    !description.getTypes().contains(DescriptionType.CLONE_FOR_SOURCE)){
                 rowWrapper = createSpecimenRowWrapper(HibernateProxyHelper.deproxy(description, SpecimenDescription.class), descriptiveDataSetUuid);
             }
             if(rowWrapper!=null){
@@ -355,25 +356,30 @@ public class DescriptiveDataSetService
         result.setCdmEntity(dataSet);
 
         // delete all aggregation description of this dataset (DescriptionType.AGGREGATED)
-        Set<DescriptionBase> aggregations = dataSet.getDescriptions().stream()
+        Set<TaxonDescription> aggregations = dataSet.getDescriptions().stream()
         .filter(aggDesc->aggDesc instanceof TaxonDescription)
-        .filter(desc -> desc.getTypes().stream().anyMatch(type -> type.equals(DescriptionType.AGGREGATED)))
+        .map(aggDesc->(TaxonDescription)aggDesc)
+        .filter(desc -> desc.getTypes().contains(DescriptionType.AGGREGATED))
         .collect(Collectors.toSet());
-
         aggregations.forEach(aggregation->dataSet.removeDescription(aggregation));
-
-        // clone specimen descriptions
-        // create a snapshot of those descriptions that were used to create the aggregated descriptions
-        // TODO implement when the clones descriptions can be attached to taxon descriptions as sources
-//        for (DescriptionBase<?> descriptionBase : descriptions) {
-//            if(descriptionBase instanceof SpecimenDescription){
-//                SpecimenDescription specimenDescription = (SpecimenDescription)descriptionBase;
-//                SpecimenOrObservationBase<?> specimenOrObservation = specimenDescription.getDescribedSpecimenOrObservation();
-//                SpecimenDescription clone = (SpecimenDescription) specimenDescription.clone();
-//                clone.setDescriptionType(DescriptionType.AggregationClone);
-//                specimenOrObservation.addDescription(clone);
-//            }
-//        }
+        // also delete all their cloned source descriptions
+        Set<String> sourceUuids = aggregations.stream()
+        .flatMap(aggDesc->aggDesc.getSources().stream())
+        .filter(source->source.getType().equals(OriginalSourceType.Aggregation))
+        .map(aggSource->aggSource.getIdInSource())
+        .collect(Collectors.toSet());
+        for (String string : sourceUuids) {
+            try {
+                UUID uuid = UUID.fromString(string);
+                DescriptionBase sourceClone = descriptionService.load(uuid);
+                sourceClone.setDescribedSpecimenOrObservation(null);
+                descriptionService.delete(sourceClone);
+            } catch (IllegalArgumentException|NullPointerException e) {
+                // ignore
+            }
+        }
+        //finally delete the aggregation description itself
+        aggregations.forEach(aggDesc->descriptionService.delete(aggDesc));
 
         // sort descriptions by taxa
         Map<TaxonNode, Set<UUID>> taxonNodeToSpecimenDescriptionMap = new HashMap<>();
@@ -495,7 +501,7 @@ public class DescriptiveDataSetService
     }
 
     @SuppressWarnings("unchecked")
-    private UpdateResult aggregateDescription(UUID taxonUuid, Set<UUID> descriptionUuids, UUID descriptiveDataSetUuid) {
+    private UpdateResult aggregateDescription(UUID taxonUuid, Set<UUID> specimenDescriptionUuids, UUID descriptiveDataSetUuid) {
         UpdateResult result = new UpdateResult();
 
         TaxonBase taxonBase = taxonService.load(taxonUuid);
@@ -505,7 +511,7 @@ public class DescriptiveDataSetService
             return result;
         }
         Taxon taxon = (Taxon)taxonBase;
-        List<DescriptionBase> descriptions = descriptionService.load(new ArrayList<>(descriptionUuids), null);
+        List<DescriptionBase> descriptions = descriptionService.load(new ArrayList<>(specimenDescriptionUuids), null);
         Map<Character, List<DescriptionElementBase>> featureToElementMap = new HashMap<>();
 
         DescriptiveDataSet dataSet = load(descriptiveDataSetUuid);
@@ -536,8 +542,7 @@ public class DescriptiveDataSetService
         TaxonDescription description = TaxonDescription.NewInstance(taxon);
         description.setTitleCache("[Aggregation] "+dataSet.getTitleCache(), true);
         description.getTypes().add(DescriptionType.AGGREGATED);
-        IdentifiableSource source = IdentifiableSource.NewInstance(OriginalSourceType.Aggregation);
-        description.addSource(source);
+        description.addSource(IdentifiableSource.NewInstance(OriginalSourceType.Aggregation));
         description.addDescriptiveDataSet(dataSet);
 
         featureToElementMap.forEach((feature, elements)->{
@@ -560,6 +565,24 @@ public class DescriptiveDataSetService
                 description.addElement(aggregate);
             }
         });
+
+        // add sources to aggregation description
+        // create a snapshot of those descriptions that were used to create the aggregated descriptions
+        // TODO implement when the clones descriptions can be attached to taxon descriptions as sources
+        for (DescriptionBase<?> descriptionBase : descriptions) {
+            if(descriptionBase instanceof SpecimenDescription){
+                SpecimenDescription specimenDescription = (SpecimenDescription)descriptionBase;
+                SpecimenOrObservationBase<?> specimenOrObservation = specimenDescription.getDescribedSpecimenOrObservation();
+                SpecimenDescription clone = (SpecimenDescription) specimenDescription.clone();
+                clone.getTypes().add(DescriptionType.CLONE_FOR_SOURCE);
+                specimenOrObservation.addDescription(clone);
+                IdentifiableSource source = IdentifiableSource.NewInstance(OriginalSourceType.Aggregation);
+                source.setIdInSource(clone.getUuid().toString());
+                description.addSource(source);
+
+            }
+        }
+
         result.addUpdatedObject(taxon);
         result.addUpdatedObject(description);
 
