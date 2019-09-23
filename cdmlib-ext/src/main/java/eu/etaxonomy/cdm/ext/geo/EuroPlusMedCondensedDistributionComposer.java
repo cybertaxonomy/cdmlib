@@ -51,7 +51,7 @@ public class EuroPlusMedCondensedDistributionComposer extends CondensedDistribut
         // Mapping as defined in ticket http://dev.e-taxonomy.eu/trac/ticket/3907
         // ==================================================
 
-        statusSymbols = new HashMap<UUID, String> ();
+        statusSymbols = new HashMap<> ();
         // â—� endemic (U+25CF BLACK CIRCLE)
         statusSymbols.put(PresenceAbsenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA().getUuid(), "\u25CF");
 
@@ -79,7 +79,7 @@ public class EuroPlusMedCondensedDistributionComposer extends CondensedDistribut
         statusSymbols.put(PresenceAbsenceTerm.INTRODUCED().getUuid(), ""); //wanted? differs from default "i"
 
         // [aLu] casual alien = introduced: adventitious (casual)
-        statusSymbols.put(PresenceAbsenceTerm.INTRODUCED_ADVENTITIOUS().getUuid(), "a");
+        statusSymbols.put(PresenceAbsenceTerm.CASUAL().getUuid(), "a");
 
         // [cLu] cultivated
         statusSymbols.put(PresenceAbsenceTerm.CULTIVATED() .getUuid(), "c");
@@ -92,7 +92,7 @@ public class EuroPlusMedCondensedDistributionComposer extends CondensedDistribut
         foreignStatusUuids = new HashSet<UUID>();
         foreignStatusUuids.add(PresenceAbsenceTerm.INTRODUCED().getUuid());
         foreignStatusUuids.add(PresenceAbsenceTerm.NATURALISED().getUuid());
-        foreignStatusUuids.add(PresenceAbsenceTerm.INTRODUCED_ADVENTITIOUS().getUuid());
+        foreignStatusUuids.add(PresenceAbsenceTerm.CASUAL().getUuid());
         foreignStatusUuids.add(PresenceAbsenceTerm.INTRODUCED_CULTIVATED().getUuid());
         foreignStatusUuids.add(PresenceAbsenceTerm.NATURALISED().getUuid());
         foreignStatusUuids.add(PresenceAbsenceTerm.CULTIVATED().getUuid());
@@ -105,23 +105,19 @@ public class EuroPlusMedCondensedDistributionComposer extends CondensedDistribut
         condensedDistribution = new CondensedDistribution();
     }
 
-    /**
-     * {@inheritDoc}
-     * @return
-     */
     @Override
     public CondensedDistribution createCondensedDistribution(Collection<Distribution> filteredDistributions,
             List<Language> langs) {
 
         //1. group by PresenceAbsenceTerms
-        Map<PresenceAbsenceTerm, Collection<NamedArea>> areasByStatus = new HashMap<PresenceAbsenceTerm, Collection<NamedArea>>();
+        Map<PresenceAbsenceTerm, Collection<NamedArea>> areasByStatus = new HashMap<>();
         for(Distribution d : filteredDistributions) {
             PresenceAbsenceTerm status = d.getStatus();
             if(status == null) {
                 continue;
             }
             if(!areasByStatus.containsKey(status)) {
-                areasByStatus.put(status, new HashSet<NamedArea>());
+                areasByStatus.put(status, new HashSet<>());
             }
             areasByStatus.get(status).add(d.getArea());
         }
@@ -129,7 +125,7 @@ public class EuroPlusMedCondensedDistributionComposer extends CondensedDistribut
         //2. build the area hierarchy
         for(PresenceAbsenceTerm status : areasByStatus.keySet()) {
 
-            Map<NamedArea, AreaNode> areaNodeMap = new HashMap<NamedArea, AreaNode>();
+            Map<NamedArea, AreaNode> areaNodeMap = new HashMap<>();
 
             for(NamedArea area : areasByStatus.get(status)) {
                 AreaNode node;
@@ -201,13 +197,8 @@ public class EuroPlusMedCondensedDistributionComposer extends CondensedDistribut
         return foreignStatusUuids.contains(status.getUuid());
     }
 
-    /**
-     * @param langs
-     * @param node
-     * @param areaString
-     * @param statusSymbol
-     */
-    private void subAreaLabels(List<Language> langs, Collection<AreaNode> nodes, StringBuilder areaString, String statusSymbol, String parentLabel) {
+    private void subAreaLabels(List<Language> langs, Collection<AreaNode> nodes, StringBuilder areaString,
+            String statusSymbol, String parentLabel) {
 
         List<String> subAreaLabels = new ArrayList<String>();
 
@@ -235,9 +226,5 @@ public class EuroPlusMedCondensedDistributionComposer extends CondensedDistribut
         }
         Collections.sort(subAreaLabels);
         areaString.append(StringUtils.join(subAreaLabels, " "));
-
     }
-
-
-
 }
