@@ -372,8 +372,7 @@ public class DescriptiveDataSetService
             try {
                 UUID uuid = UUID.fromString(string);
                 DescriptionBase sourceClone = descriptionService.load(uuid);
-                sourceClone.setDescribedSpecimenOrObservation(null);
-                descriptionService.delete(sourceClone);
+                descriptionService.deleteDescription(sourceClone);
             } catch (IllegalArgumentException|NullPointerException e) {
                 // ignore
             }
