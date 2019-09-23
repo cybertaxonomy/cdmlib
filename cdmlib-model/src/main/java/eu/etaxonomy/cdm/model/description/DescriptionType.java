@@ -70,6 +70,12 @@ public enum DescriptionType implements IEnumTerm<DescriptionType>{
     @XmlEnumValue("DVA")
     DEFAULT_VALUES_FOR_AGGREGATION(UUID.fromString("e4a51ab3-7040-4f60-9d08-51782c2255a1"), "Default Values for Aggregation", "DVA", null),
 
+    /**
+     * Designated descriptions for {@link IndividualsAssociation}s of specimens to taxa.
+     */
+    @XmlEnumValue("IAS")
+    INDIVIDUALS_ASSOCIATION(UUID.fromString("b8a1346d-9521-4ea2-ada8-c6774cf9175a"), "Specimens", "IAS", null),
+
     ;
 
     @SuppressWarnings("unused")
@@ -141,6 +147,10 @@ public enum DescriptionType implements IEnumTerm<DescriptionType>{
 
     public static boolean isDefaultForAggregation(EnumSet<DescriptionType> set) {
         return includesType(set, DescriptionType.DEFAULT_VALUES_FOR_AGGREGATION);
+    }
+
+    public static boolean isSpecimenDescription(EnumSet<DescriptionType> set) {
+        return includesType(set, DescriptionType.INDIVIDUALS_ASSOCIATION);
     }
 
     /**

@@ -149,7 +149,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		//nameRelations
 
 		TaxonName relatedName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
-		t1.getName().addRelationshipFromName(relatedName, NameRelationshipType.ALTERNATIVE_NAME(), null );
+		t1.getName().addRelationshipFromName(relatedName, NameRelationshipType.ALTERNATIVE_NAME(), null, null );
 
 		//taxonRelations
 		Taxon relatedTaxon = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES()), null);
@@ -241,7 +241,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
 		//nameRelations
 		TaxonName relatedName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
-		t1.getName().addRelationshipFromName(relatedName, NameRelationshipType.ALTERNATIVE_NAME(), null );
+		t1.getName().addRelationshipFromName(relatedName, NameRelationshipType.ALTERNATIVE_NAME(), null, null );
 		TaxonName name1 = t1.getName();
 		UUID name1UUID = name1.getUuid();
 		//taxonRelations

@@ -49,6 +49,12 @@ public class CharacterOwlImport extends CdmImportBase<StructureTreeOwlImportConf
             Resource characterResource = iterator.next();
             Character character = OwlImportUtil.findTerm(Character.class, characterResource, this, state.getModel(), state);
             character = (Character) getTermService().load(character.getUuid(), Arrays.asList(new String[] {
+                    "structure",
+                    "structure.term",
+                    "property",
+                    "property.term",
+                    "structureModifier",
+                    "propertyModifier",
                     "recommendedModifierEnumeration",
                     "recommendedStatisticalMeasures",
                     "recommendedMeasurementUnits",

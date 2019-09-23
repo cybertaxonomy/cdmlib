@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.lucene.index.CorruptIndexException;
 import org.hibernate.search.spatial.impl.Rectangle;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,20 +37,28 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
+import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
+import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
+import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
+import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -710,7 +719,8 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @return
      */
 
-    FieldUnitDTO findFieldUnitDTO(DerivateDTO derivedUnitDTO, Collection<FieldUnitDTO> fieldUnits, HashMap<UUID, DerivateDTO> alreadyCollectedSpecimen);
+    FieldUnitDTO findFieldUnitDTO(DerivateDTO derivedUnitDTO, //Collection<FieldUnitDTO> fieldUnits,
+            HashMap<UUID, DerivateDTO> alreadyCollectedSpecimen);
 
 
     /**

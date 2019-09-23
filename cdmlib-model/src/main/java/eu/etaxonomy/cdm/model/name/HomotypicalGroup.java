@@ -243,10 +243,10 @@ public class HomotypicalGroup extends AnnotatableEntity {
      */
 	@Transient
 	public void setGroupBasionym(TaxonName basionymName) throws IllegalArgumentException{
-    	setGroupBasionym(basionymName, null, null, null);
+    	setGroupBasionym(basionymName, null, null, null, null);
     }
 
-	public void setGroupBasionym(TaxonName basionymName, Reference citation, String microCitation, String ruleConsidered)
+	public void setGroupBasionym(TaxonName basionymName, Reference citation, String microCitation, String ruleConsidered, NomenclaturalCodeEdition codeEdition)
     			throws IllegalArgumentException {
     	if (! typifiedNames.contains(basionymName)){
         	throw new IllegalArgumentException("Name to be set as basionym/original combination must be part of the homotypical group but is not");
@@ -260,7 +260,7 @@ public class HomotypicalGroup extends AnnotatableEntity {
         }
         for (TaxonName name : typified) {
     		if (!name.equals(basionymName)) {
-		    	name.addRelationshipFromName(basionymName, NameRelationshipType.BASIONYM(), citation, microCitation, ruleConsidered);
+		    	name.addRelationshipFromName(basionymName, NameRelationshipType.BASIONYM(), citation, microCitation, ruleConsidered, codeEdition);
 			}
     	}
         typifiedNames= typified;

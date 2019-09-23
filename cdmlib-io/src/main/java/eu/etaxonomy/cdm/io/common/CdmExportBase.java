@@ -10,11 +10,15 @@
 package eu.etaxonomy.cdm.io.common;
 
 import java.io.ByteArrayOutputStream;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Extension;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
@@ -85,6 +89,20 @@ public abstract class CdmExportBase<CONFIG extends ExportConfiguratorBase<STATE,
     protected boolean isUnpublished(CONFIG config, Taxon relatedSynonymOrMisappliedName) {
         return ! (relatedSynonymOrMisappliedName.isPublish()
                 || config.getTaxonNodeFilter().isIncludeUnpublished());
+    }
+
+
+    protected static String getExtension(IdentifiableEntity identifiableEntity, UUID uuidExtensionType){
+        String result = null;
+        for (Object obj : identifiableEntity.getExtensions()){
+            Extension extension = (Extension)obj;
+            if (uuidExtensionType == null){
+                logger.warn("Extension Type uuid is null");
+            }else if (uuidExtensionType.equals(extension.getType().getUuid())){
+                result = CdmUtils.concat("; ", result, extension.getValue());
+            }
+        }
+        return result;
     }
 
 }

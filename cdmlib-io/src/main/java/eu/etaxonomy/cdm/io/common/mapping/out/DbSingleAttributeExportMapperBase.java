@@ -34,40 +34,25 @@ public abstract class DbSingleAttributeExportMapperBase<STATE extends DbExportSt
 
     private static final Logger logger = Logger.getLogger(DbSingleAttributeExportMapperBase.class);
 
-	protected DbExportMapperBase<STATE> exportMapperHelper = new DbExportMapperBase<STATE>();
+	protected DbExportMapperBase<STATE> exportMapperHelper = new DbExportMapperBase<>();
 	private Integer precision = null;
 	protected boolean obligatory = true;
 
-	/**
-	 * @param dbAttributString
-	 * @param cdmAttributeString
-	 */
 	protected DbSingleAttributeExportMapperBase(String cdmAttributeString, String dbAttributString, Object defaultValue) {
 		super(cdmAttributeString, dbAttributString, defaultValue);
 	}
 
-	/**
-	 * @param dbAttributString
-	 * @param cdmAttributeString
-	 */
 	protected DbSingleAttributeExportMapperBase(String cdmAttributeString, String dbAttributString, Object defaultValue, boolean obligatory) {
 		super(cdmAttributeString, dbAttributString, defaultValue);
 		this.obligatory = obligatory;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.IStatefulDbExportMapper#initialize(java.sql.PreparedStatement, eu.etaxonomy.cdm.io.berlinModel.out.mapper.IndexCounter, eu.etaxonomy.cdm.io.berlinModel.out.DbExportState)
-	 */
 	@Override
     public void initialize(PreparedStatement stmt, IndexCounter index, STATE state, String tableName) {
 		exportMapperHelper.initialize(stmt, index, state, tableName);
 		this.precision = getDbColumnIntegerInfo("c.prec");
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.IDbExportMapper#invoke(eu.etaxonomy.cdm.model.common.CdmBase)
-	 */
 	@Override
     public boolean invoke(CdmBase cdmBase) throws SQLException {
 		if (exportMapperHelper.preparedStatement == null){
@@ -121,9 +106,16 @@ public abstract class DbSingleAttributeExportMapperBase<STATE extends DbExportSt
 				}else if (sqlType == Types.BOOLEAN){
 					getPreparedStatement().setBoolean(getIndex(), (Boolean)value);
 				}else if (sqlType == Types.DATE){
-					java.util.Date date = ((DateTime)value).toDate();
-					long t = date.getTime();
-					java.sql.Timestamp sqlTimestamp = new java.sql.Timestamp(t);
+				    java.sql.Timestamp sqlTimestamp;
+				    if(value instanceof String){
+				        String strDate = (String)value;
+				        sqlTimestamp = java.sql.Timestamp.valueOf(strDate);
+				    }else{
+				        DateTime dateTime = (DateTime)value;
+				        java.util.Date date = dateTime.toDate();
+				        long t = date.getTime();
+				        sqlTimestamp = new java.sql.Timestamp(t);
+				    }
 					getPreparedStatement().setTimestamp(getIndex(), sqlTimestamp);
 				}else{
 					throw new IllegalArgumentException("SqlType not yet supported yet: " + sqlType);
@@ -149,31 +141,18 @@ public abstract class DbSingleAttributeExportMapperBase<STATE extends DbExportSt
 
 	protected abstract int getSqlType();
 
-	/**
-	 * @return the preparedStatement
-	 */
 	public PreparedStatement getPreparedStatement() {
 		return exportMapperHelper.getPreparedStatement();
 	}
 
-	/**
-	 * @return the index
-	 */
 	public int getIndex() {
 		return exportMapperHelper.getIndex();
 	}
 
-	/**
-	 * @return the state
-	 */
 	public STATE getState() {
 		return exportMapperHelper.getState();
 	}
 
-
-	/**
-	 * @return the state
-	 */
 	public String getTableName() {
 		return exportMapperHelper.getTableName();
 	}
@@ -196,9 +175,7 @@ public abstract class DbSingleAttributeExportMapperBase<STATE extends DbExportSt
 			e.printStackTrace();
 			return false;
 		}
-
 	}
-
 
 	protected int getPrecision(){
 		return this.precision;
@@ -218,14 +195,13 @@ public abstract class DbSingleAttributeExportMapperBase<STATE extends DbExportSt
 			rs.next();
 			n = rs.getInt("result");
 			return n;
-		} catch (SQLException e) {
-			logger.error(e.getMessage() + ", selectPart: " + CdmUtils.Nz(selectPart) + ", table: " + CdmUtils.Nz(getTableName()) +", destination: " + CdmUtils.Nz(getDestinationAttribute()));
+		} catch (Exception e) {
+			System.out.println(strQuery);
+		    logger.error(e.getMessage() + ", selectPart: " + CdmUtils.Nz(selectPart) + ", table: " + CdmUtils.Nz(getTableName()) +", destination: " + CdmUtils.Nz(getDestinationAttribute()));
 			e.printStackTrace();
 			return -1;
 		}
-
 	}
-
 
 	@Override
     public String toString(){
@@ -233,5 +209,4 @@ public abstract class DbSingleAttributeExportMapperBase<STATE extends DbExportSt
 		String destAtt = CdmUtils.Nz(getDestinationAttribute());
 		return this.getClass().getSimpleName() +"[" + sourceAtt + "->" + destAtt + "]";
 	}
-
 }

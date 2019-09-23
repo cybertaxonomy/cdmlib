@@ -30,8 +30,10 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @author a.mueller
  * @since 06.02.2012
  */
-public class DbSingleSourceMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{
-	private static final Logger logger = Logger.getLogger(DbSingleSourceMapper.class);
+public class DbSingleSourceMapper
+            extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>>{
+
+    private static final Logger logger = Logger.getLogger(DbSingleSourceMapper.class);
 
 	public enum EXCLUDE{
 		NONE,
@@ -49,16 +51,13 @@ public class DbSingleSourceMapper extends DbSingleAttributeExportMapperBase<DbEx
 		return new DbSingleSourceMapper(dbAttributeString, exclude, isCache, null);
 	}
 
-	/**
-	 * @param dbAttributeString
-	 * @param cdmAttributeString
-	 */
 	protected DbSingleSourceMapper(String dbAttributeString, EnumSet<EXCLUDE> exclude, boolean isCache, Object defaultValue) {
 		super("sources", dbAttributeString, defaultValue);
 		this.isCache = isCache;
 		this.exclude = exclude;
 	}
 
+	boolean moreSourcesExistWarning = true;
 	@Override
 	protected Object getValue(CdmBase cdmBase) {
 		//TODO implement also for Identifiable sources
@@ -66,7 +65,7 @@ public class DbSingleSourceMapper extends DbSingleAttributeExportMapperBase<DbEx
 			//find source candidates
 			DescriptionElementBase el = CdmBase.deproxy(cdmBase, DescriptionElementBase.class);
 			Set<DescriptionElementSource> sourceCandidates = el.getSources();
-			Set<DescriptionElementSource> filteredSources = new HashSet<DescriptionElementSource>();
+			Set<DescriptionElementSource> filteredSources = new HashSet<>();
 			for (DescriptionElementSource sourceCandidate : sourceCandidates){
 				if (isPesiSource(sourceCandidate)){  //TODO pesi should not appear here
 					filteredSources.add(sourceCandidate);
@@ -76,7 +75,13 @@ public class DbSingleSourceMapper extends DbSingleAttributeExportMapperBase<DbEx
 			if (filteredSources.size() == 0 ){
 				return null;
 			}else if (filteredSources.size() > 1){
-				logger.warn("There is more than 1 accepted source for description element " + el.getUuid() + ". Arbitrary first source is used.");
+			    if (moreSourcesExistWarning){
+			        logger.warn("More then one source exists but is not allowed in given context. (This warning is shown only once but may appear often)");
+			        moreSourcesExistWarning = false;
+			    }
+				if (logger.isDebugEnabled()) {
+                    logger.debug("There is more than 1 accepted source for description element " + el.getUuid() + ". Arbitrary first source is used.");
+                }
 			}
 			DescriptionElementSource source = filteredSources.iterator().next();
 			Reference ref = source.getCitation();

@@ -111,7 +111,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.persistence.dao.initializer.AbstractBeanInitializer;
-import eu.etaxonomy.cdm.persistence.dao.initializer.AdvancedBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
@@ -329,7 +328,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         DerivedUnitFacadeConfigurator config = DerivedUnitFacadeConfigurator.NewInstance();
         config.setThrowExceptionForNonSpecimenPreservationMethodRequest(false);
         DerivedUnitFacade derivedUnitFacade = DerivedUnitFacade.NewInstance(derivedUnit, config);
-        Logger.getLogger(AdvancedBeanInitializer.class).setLevel(org.apache.log4j.Level.TRACE);
         beanInitializer.initialize(derivedUnitFacade, derivedUnitFacadeInitStrategy);
         return derivedUnitFacade;
     }
@@ -885,7 +883,8 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                         alreadyCollectedSpecimen.put(derivedUnitDTO.getUuid(), derivedUnitDTO);
                     }
                     derivedUnitDTO.addAllDerivates(getDerivedUnitDTOsFor(derivedUnitDTO, derivedUnit, alreadyCollectedSpecimen));
-                    this.findFieldUnitDTO(derivedUnitDTO, fieldUnitDTOs, alreadyCollectedSpecimen);
+                    this.findFieldUnitDTO(derivedUnitDTO,
+                            alreadyCollectedSpecimen);
                 }
             }
 
@@ -910,7 +909,8 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             derivedUnitDTO = new DNASampleDTO(dnaSample);
             alreadyCollectedSpecimen.put(derivedUnitDTO.getUuid(), derivedUnitDTO);
             derivedUnitDTO.addAllDerivates(getDerivedUnitDTOsFor(derivedUnitDTO, dnaSample, alreadyCollectedSpecimen));
-            FieldUnitDTO fieldUnit = this.findFieldUnitDTO(derivedUnitDTO, fieldUnitDTOs, alreadyCollectedSpecimen);
+            FieldUnitDTO fieldUnit = this.findFieldUnitDTO(derivedUnitDTO,
+                    alreadyCollectedSpecimen);
 
             return fieldUnit;
         }
@@ -1027,7 +1027,8 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
     @Override
     @Transactional(readOnly=true)
-    public FieldUnitDTO findFieldUnitDTO(DerivateDTO derivedUnitDTO, Collection<FieldUnitDTO> fieldUnits, HashMap<UUID, DerivateDTO> alreadyCollectedSpecimen) {
+    public FieldUnitDTO findFieldUnitDTO(DerivateDTO derivedUnitDTO,
+            HashMap<UUID, DerivateDTO> alreadyCollectedSpecimen) {
         //It will search recursively over all {@link DerivationEvent}s and get the "originals" ({@link SpecimenOrObservationBase})
         //from which this DerivedUnit was derived until all FieldUnits are found.
         List<SpecimenOrObservationBase> specimens = new ArrayList<>();
@@ -1035,6 +1036,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
         propertyPaths.add("descriptions.elements.media.title");
         propertyPaths.add("kindOfUnit");
+        propertyPaths.add("derivedFrom");
 
         specimens = dao.findOriginalsForDerivedUnit(derivedUnitDTO.getUuid(), propertyPaths);
 
@@ -1051,14 +1053,14 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         FieldUnitDTO fieldUnitDto = null;
         if (alreadyCollectedSpecimen.get(specimen.getUuid()) != null){
             alreadyCollectedSpecimen.get(specimen.getUuid()).addDerivate(derivedUnitDTO);
-            if ( alreadyCollectedSpecimen.get(specimen.getUuid()) instanceof FieldUnitDTO){
-                ((FieldUnitDTO)alreadyCollectedSpecimen.get(specimen.getUuid())).getTaxonRelatedDerivedUnits().add(derivedUnitDTO.getUuid());
-            }
+//            if ( alreadyCollectedSpecimen.get(specimen.getUuid()) instanceof FieldUnitDTO){
+//                ((FieldUnitDTO)alreadyCollectedSpecimen.get(specimen.getUuid())).getTaxonRelatedDerivedUnits().add(derivedUnitDTO.getUuid());
+//            }
         }else{
             if (specimen.isInstanceOf(FieldUnit.class)){
-                fieldUnitDto = FieldUnitDTO.newInstance((FieldUnit)specimen);
+                fieldUnitDto = new FieldUnitDTO((FieldUnit)specimen);
                 fieldUnitDto.addDerivate(derivedUnitDTO);
-                fieldUnits.add(fieldUnitDto);
+
             }else{
                 DerivateDTO originalDTO;
                 if (specimen instanceof DnaSample){
@@ -1067,15 +1069,16 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                     originalDTO = new PreservedSpecimenDTO((DerivedUnit)specimen);
                 }
                 originalDTO.addDerivate(derivedUnitDTO);
-                fieldUnitDto = findFieldUnitDTO(originalDTO, fieldUnits, alreadyCollectedSpecimen);
+                fieldUnitDto = findFieldUnitDTO(originalDTO,
+                        alreadyCollectedSpecimen);
             }
 
         }
       //  }
         alreadyCollectedSpecimen.put(derivedUnitDTO.getUuid(), derivedUnitDTO);
-        if (fieldUnitDto != null){
-            fieldUnitDto.addTaxonRelatedDerivedUnits(derivedUnitDTO);
-        }
+//        if (fieldUnitDto != null){
+//            fieldUnitDto.addTaxonRelatedDerivedUnits(derivedUnitDTO);
+//        }
         return fieldUnitDto;
 
     }

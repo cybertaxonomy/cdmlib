@@ -48,9 +48,9 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  * @author a.mueller
  * @since 26.11.2008
  */
-public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase{
+public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase{
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(NonViralNameDefaultCacheStrategyTest.class);
+	private static final Logger logger = Logger.getLogger(TaxonNameDefaultCacheStrategyTest.class);
 
     private TaxonNameDefaultCacheStrategy strategy;
 
@@ -83,9 +83,6 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
         vocabularyStore.initialize();
     }
 
-    /**
-     * @throws java.lang.Exception
-     */
     @Before
     public void setUp() throws Exception {
         strategy = TaxonNameDefaultCacheStrategy.NewInstance();
@@ -206,9 +203,6 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
 
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.TaxonNameDefaultCacheStrategy#getNameCache(eu.etaxonomy.cdm.model.name.NonViralName)}.
-     */
     @Test
     public void testNameCacheWithInfraGenericEpithet() {
         speciesName.setInfraGenericEpithet("Infraabies");
@@ -317,7 +311,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
     	Assert.assertEquals("Preconditions are wrong", "Abies alpa", originalName.getTitleCache());
         Assert.assertEquals("Name cache should not show original spelling", "Abies alpa", originalName.getNameCache());
 
-    	speciesName.addRelationshipFromName(originalName, origSpellingType, null);
+    	speciesName.addRelationshipFromName(originalName, origSpellingType, null, null);
     	Assert.assertEquals("Abies alba [as \"alpa\"]", speciesName.getFullTitleCache());
         Assert.assertEquals("Abies alba", speciesName.getTitleCache());
         Assert.assertEquals("Name cache should not show original spelling", "Abies alba", speciesName.getNameCache());
@@ -332,7 +326,7 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
     	//#3665
     	INonViralName correctName = NonViralNameParserImpl.NewInstance().parseFullName("Nepenthes glabrata J.R.Turnbull & A.T.Middleton");
     	TaxonName originalSpelling = (TaxonName)NonViralNameParserImpl.NewInstance().parseFullName("Nepenthes glabratus");
-    	correctName.addRelationshipFromName(originalSpelling, origSpellingType, null);
+    	correctName.addRelationshipFromName(originalSpelling, origSpellingType, null, null);
     	Assert.assertEquals("Nepenthes glabrata", correctName.getNameCache());
     	Assert.assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton", correctName.getTitleCache());
     	Assert.assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton [as \"glabratus\"]", correctName.getFullTitleCache());

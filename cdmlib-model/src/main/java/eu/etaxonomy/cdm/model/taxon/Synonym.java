@@ -65,12 +65,11 @@ import eu.etaxonomy.cdm.validation.annotation.HomotypicSynonymsShouldBelongToGro
 @Configurable
 @HomotypicSynonymsShouldBelongToGroup(groups = Level3.class)
 public class Synonym extends TaxonBase<ITaxonCacheStrategy<Synonym>> {
-    private static final long serialVersionUID = 6977221584815363620L;
 
+    private static final long serialVersionUID = 6977221584815363620L;
 
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Synonym.class);
-
 
     @XmlElement(name = "acceptedTaxon")
     @XmlIDREF

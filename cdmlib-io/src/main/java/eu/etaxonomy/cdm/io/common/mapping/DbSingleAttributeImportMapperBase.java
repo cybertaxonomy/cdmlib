@@ -37,27 +37,14 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 	protected Method destinationMethod = null;
 	protected Class<?> targetClass;
 
-	/**
-	 * @param dbAttributString
-	 * @param cdmAttributeString
-	 */
 	protected DbSingleAttributeImportMapperBase(String dbAttributString, String cdmAttributeString) {
 		super(dbAttributString, cdmAttributeString);
 	}
 
-
-	/**
-	 * @param dbAttributString
-	 * @param cdmAttributeString
-	 */
 	protected DbSingleAttributeImportMapperBase(String dbAttributString, String cdmAttributeString, Object defaultValue) {
 		super(dbAttributString, cdmAttributeString, defaultValue);
 	}
 
-	/**
-	 * @param dbAttributString
-	 * @param cdmAttributeString
-	 */
 	protected DbSingleAttributeImportMapperBase(String dbAttributeString, String cdmAttributeString, Object defaultValue, boolean obligatory) {
 		super(dbAttributeString, cdmAttributeString, defaultValue);
 		this.obligatory = obligatory;
@@ -189,7 +176,7 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 		return doInvoke(cdmBase, dbValue);
 	}
 
-	protected CDM_BASE doInvoke(CDM_BASE cdmBase, Object value) throws SQLException {
+	protected CDM_BASE doInvoke(CDM_BASE cdmBase, Object value) {
 		Method method = getMethod();
 		try {
 			Object objectToInvoke = getObjectToInvoke(cdmBase);
@@ -199,29 +186,13 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 				method.invoke(objectToInvoke, value);
 			}
 			return cdmBase;
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
+		} catch (IllegalArgumentException|IllegalAccessException|InvocationTargetException|
+		        SecurityException|NoSuchMethodException e) {
 			e.printStackTrace();
 		}
 		throw new RuntimeException("Problems when invoking target method");
 	}
 
-	/**
-	 * @param cdmBase
-	 * @return
-	 * @throws NoSuchMethodException
-	 * @throws SecurityException
-	 * @throws InvocationTargetException
-	 * @throws IllegalAccessException
-	 * @throws IllegalArgumentException
-	 */
 	private Object getObjectToInvoke(CDM_BASE cdmBase) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 		Object objectToInvoke = cdmBase;
 		String destinationAttribute = getDestinationAttribute();
@@ -237,9 +208,6 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 	}
 
 
-	/**
-	 * @return
-	 */
 	private Method getMethod() {
 		if (destinationMethod != null){
 			return destinationMethod;
@@ -280,10 +248,6 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 		return importMapperHelper.getState();
 	}
 
-
-	/**
-	 * @return the state
-	 */
 	protected String getTableName() {
 		return importMapperHelper.getTableName();
 	}

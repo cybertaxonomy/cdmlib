@@ -18,37 +18,22 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 /**
  * @author a.kohlbecker
  * @since Jun 25, 2015
- *
  */
 public class CondensedDistribution {
 
     private List<DistributionItem> indigenous = new ArrayList<DistributionItem>();
     private List<DistributionItem> foreign = new ArrayList<DistributionItem>();
 
-    /**
-     * @return the foreign
-     */
     public List<DistributionItem> getForeign() {
         return foreign;
     }
-
-    /**
-     * @param foreign the foreign to set
-     */
     public void setForeign(List<DistributionItem> foreign) {
         this.foreign = foreign;
     }
 
-    /**
-     * @param indigenous the indigenous to set
-     */
     public void setIndigenous(List<DistributionItem> indigenous) {
         this.indigenous = indigenous;
     }
-
-    /**
-     * @return the indigenous
-     */
     public List<DistributionItem> getIndigenous() {
         return indigenous;
     }
@@ -109,38 +94,21 @@ public class CondensedDistribution {
         private String areaStatusLabel;
         private final String sortString;
 
-        /**
-         * @param status
-         * @param areaStatusLabel
-         */
         public DistributionItem(PresenceAbsenceTerm status, String areaStatusLabel, String sortString) {
             this.status = status;
             this.areaStatusLabel = areaStatusLabel;
             this.sortString = sortString;
         }
-        /**
-         * @return the status
-         */
         public PresenceAbsenceTerm getStatus() {
             return status;
         }
-
-        /**
-         * @return the areaStatusLabel
-         */
-        public String getAreaStatusLabel() {
-            return areaStatusLabel;
-        }
-
-        /**
-         * @param status the status to set
-         */
         public void setStatus(PresenceAbsenceTerm status) {
             this.status = status;
         }
-        /**
-         * @param areaStatusLabel the areaStatusLabel to set
-         */
+
+        public String getAreaStatusLabel() {
+            return areaStatusLabel;
+        }
         public void setAreaStatusLabel(String areaStatusLabel) {
             this.areaStatusLabel = areaStatusLabel;
         }
@@ -148,15 +116,9 @@ public class CondensedDistribution {
 
     class CondensedDistributionComparator implements Comparator<DistributionItem>{
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public int compare(DistributionItem o1, DistributionItem o2) {
             return o1.sortString.compareToIgnoreCase(o2.sortString);
         }
-
-
-
     }
 }

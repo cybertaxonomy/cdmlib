@@ -18,41 +18,32 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 
 /**
- * Maps text data to a database string field. (Only handles one language)
+ * TODO under construction (maybe needs to be a multi-attribute mapper as it maps to taxon column
+ * and to (multiple) uri columns.
  * @author a.mueller
  * @since 06.02.2012
- * @version 1.0
  */
-public class DbImageMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{
-	@SuppressWarnings("unused")
+public class DbImageMapper
+            extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>>
+            implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbImageMapper.class);
 
-	public static DbImageMapper NewInstance(Language language, String dbAttributeString){
-		return new DbImageMapper(language, dbAttributeString, null);
+	public static DbImageMapper NewInstance(String dbAttributeString){
+		return new DbImageMapper(dbAttributeString, null);
 	}
 
-	public static DbImageMapper NewInstance(Language language, String dbAttributeString, String defaultValue){
-		return new DbImageMapper(language, dbAttributeString, defaultValue);
-	}
-
-	/**
-	 * @param dbAttributeString
-	 * @param cdmAttributeString
-	 */
-	protected DbImageMapper(Language language, String dbAttributeString, Object defaultValue) {
+	protected DbImageMapper(String dbAttributeString, Object defaultValue) {
 		super("multiLanguageText", dbAttributeString, defaultValue);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValue(eu.etaxonomy.cdm.model.common.CdmBase)
-	 */
 	@Override
 	protected Object getValue(CdmBase cdmBase) {
 		if (cdmBase.isInstanceOf(TextData.class)){
@@ -85,18 +76,11 @@ public class DbImageMapper extends DbSingleAttributeExportMapperBase<DbExportSta
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValueType()
-	 */
 	@Override
 	protected int getSqlType() {
 		return Types.VARCHAR;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase#getTypeClass()
-	 */
 	@Override
 	public Class<?> getTypeClass() {
 		return String.class;

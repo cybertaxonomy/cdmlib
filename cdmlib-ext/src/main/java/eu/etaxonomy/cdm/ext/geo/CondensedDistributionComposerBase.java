@@ -30,34 +30,19 @@ public abstract class CondensedDistributionComposerBase implements ICondensedDis
 
     protected static Map<UUID, String> statusSymbols;
 
-
-
     protected String areaPreTag = "<b>";
-
     protected String areaPostTag = "</b>";
-
 
     protected boolean replaceCommonAreaLabelStart;
 
     //for future use in combined DistributionComposer
     private boolean sortByStatus;
 
-
-    /**
-     * @param langs
-     * @param area
-     * @return
-     */
     protected String makeAreaLabel(List<Language> langs, NamedArea area) {
         String result = area.getIdInVocabulary() != null ? area.getIdInVocabulary() :area.getPreferredRepresentation(langs).getAbbreviatedLabel();
         return areaPreTag + result + areaPostTag;
     }
 
-
-    /**
-     * @param status
-     * @return
-     */
     protected String statusSymbol(PresenceAbsenceTerm status) {
         if(status == null) {
             return "";
@@ -129,13 +114,12 @@ public abstract class CondensedDistributionComposerBase implements ICondensedDis
         }
 
         public Collection<NamedArea> getSubareas() {
-            Collection<NamedArea> areas = new HashSet<NamedArea>();
+            Collection<NamedArea> areas = new HashSet<>();
             for(AreaNode node : subAreas) {
                 areas.add(node.area);
             }
             return areas;
         }
-
 
         @Override
         public String toString() {
@@ -177,7 +161,4 @@ public abstract class CondensedDistributionComposerBase implements ICondensedDis
     public void setAreaPostTag(String areaPostTag) {
         this.areaPostTag = areaPostTag;
     }
-
-
-
 }

@@ -65,8 +65,6 @@ public class TaxonNameDefaultCacheStrategy
 
     protected String zooAuthorYearSeperator = ", ";
 
-
-
     @Override
     public UUID getUuid(){
         return uuid;
@@ -746,18 +744,17 @@ public class TaxonNameDefaultCacheStrategy
         return tags;
     }
 
-    /**
-     * Creates the tag list for an infraspecific taxon. In include is true the result will contain
-     * @param nonViralName
-     * @return
-     */
-    protected List<TaggedText> getInfraSpeciesTaggedNameCache(TaxonName nonViralName){
-        if (nonViralName.getNameType().isZoological()){
-            boolean includeMarker = ! (nonViralName.isAutonym());
-            return getInfraSpeciesTaggedNameCache(nonViralName, includeMarker);
+    protected List<TaggedText> getInfraSpeciesTaggedNameCache(TaxonName name){
+        if (name.getNameType().isZoological()){
+            boolean includeMarker =includeInfraSpecificMarkerForZooNames(name);
+            return getInfraSpeciesTaggedNameCache(name, includeMarker);
         }else{
-            return getInfraSpeciesTaggedNameCache(nonViralName, true);
+            return getInfraSpeciesTaggedNameCache(name, true);
         }
+    }
+
+    protected boolean includeInfraSpecificMarkerForZooNames(TaxonName name){
+        return ! (name.isAutonym());  //only exclude marker if autonym, see also ZooNameNoMarkerCacheStrategy
     }
 
     /**

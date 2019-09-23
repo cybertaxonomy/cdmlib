@@ -441,14 +441,14 @@ public class CsvDemoExport extends CsvDemoBase {
 			RelationshipTermBase<?> type,
 			boolean isProParte,
 			boolean isPartial) {
-		if (type == null && name.getNomenclaturalCode()!= null && name.getNomenclaturalCode().acceptedTaxonStatusLabel() != null){
-			String acceptedTaxonStatusLabel = name.getNomenclaturalCode().acceptedTaxonStatusLabel();
+		if (type == null && name.getNameType()!= null && name.getNameType().acceptedTaxonStatusLabel() != null){
+			String acceptedTaxonStatusLabel = name.getNameType().acceptedTaxonStatusLabel();
 			if(StringUtils.isEmpty(acceptedTaxonStatusLabel)){
 				acceptedTaxonStatusLabel="";
 			}
 			record.setTaxonomicStatus(acceptedTaxonStatusLabel);
-		}else if(name.getNomenclaturalCode() != null && name.getNomenclaturalCode().synonymStatusLabel() != null){
-			String status = name.getNomenclaturalCode().synonymStatusLabel();
+		}else if(name.getNameType() != null && name.getNameType().synonymStatusLabel() != null){
+			String status = name.getNameType().synonymStatusLabel();
 			if (type.equals(SynonymType.HETEROTYPIC_SYNONYM_OF())){
 				status = "heterotypicSynonym";
 			}else if(type.equals(SynonymType.HOMOTYPIC_SYNONYM_OF())){

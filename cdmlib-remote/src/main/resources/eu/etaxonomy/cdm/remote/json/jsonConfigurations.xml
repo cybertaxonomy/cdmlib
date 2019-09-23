@@ -366,6 +366,11 @@
             </property>
           </bean>
         </entry>
+        <entry key="eu.etaxonomy.cdm.model.name.TypeDesignationBase">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TypeDesignationBaseBeanProcessor">
+                <property name="replaceMultilanguageText" value="true" />
+            </bean>
+         </entry>
         <entry key="eu.etaxonomy.cdm.model.name.NameRelationship">
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.bean.NameRelationshipBeanProcessor" />

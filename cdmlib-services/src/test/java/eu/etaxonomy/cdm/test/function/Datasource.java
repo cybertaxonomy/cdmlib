@@ -422,7 +422,7 @@ public class Datasource {
 		    TaxonName botName1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 			TaxonName botName2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 			IBotanicalName hybridName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
-			botName1.addRelationshipToName(botName2, NameRelationshipType.ORTHOGRAPHIC_VARIANT(), null);
+			botName1.addRelationshipToName(botName2, NameRelationshipType.ORTHOGRAPHIC_VARIANT(), null, null);
 			UUID uuid1 = botName1.getUuid();
 			UUID uuid2 = botName2.getUuid();
 			try {

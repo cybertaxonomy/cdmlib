@@ -691,7 +691,7 @@ public class TaxonNameTest {
 		TaxonName basionym = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
 		TaxonName earlierHomonym = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
 		taxonName1.addBasionym(basionym);
-		taxonName1.addRelationshipToName(earlierHomonym, NameRelationshipType.LATER_HOMONYM(), "later homonym rule");
+		taxonName1.addRelationshipToName(earlierHomonym, NameRelationshipType.LATER_HOMONYM(), "later homonym rule", null);
 		//status
 		Reference statusReference = ReferenceFactory.newArticle();
 		NomenclaturalStatus nomStatus = NomenclaturalStatus.NewInstance(NomenclaturalStatusType.CONSERVED(), statusReference, "55");

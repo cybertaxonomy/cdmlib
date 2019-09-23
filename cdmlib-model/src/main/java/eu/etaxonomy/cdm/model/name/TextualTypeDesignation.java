@@ -47,7 +47,6 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  *
  * @author a.mueller
  * @since 23.01.2019
- *
  */
 @XmlRootElement(name = "TextualTypeDesignation")
 @XmlAccessorType(XmlAccessType.FIELD)

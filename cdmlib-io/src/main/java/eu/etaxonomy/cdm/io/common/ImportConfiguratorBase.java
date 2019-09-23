@@ -111,7 +111,6 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
     public IInputTransformer getTransformer() {
 		return this.transformer;
 	}
-
 	@Override
     public void setTransformer(IInputTransformer transformer){
 		this.transformer = transformer;
@@ -142,8 +141,6 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 		return result;
 	}
 
-
-
 /* ****************** GETTER/SETTER **************************/
 
 
@@ -158,10 +155,6 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 		}
 		return ioClassList;
 	}
-
-	/**
-	 * @param ioClassList
-	 */
 	public void setIoClassList(Class<ICdmImport>[] ioClassList){
 		this.ioClassList = ioClassList;
 	}
@@ -170,24 +163,15 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
     public CHECK getCheck() {
 		return this.check;
 	}
-
 	@Override
     public void setCheck(CHECK check) {
 		this.check = check;
 	}
 
-
-	/**
-	 * @return the editor
-	 */
 	@Override
     public EDITOR getEditor() {
 		return editor;
 	}
-
-	/**
-	 * @param editor the editor to set
-	 */
 	@Override
     public void setEditor(EDITOR editor) {
 		ImportConfiguratorBase.editor = editor;
@@ -203,10 +187,6 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
     public boolean isIgnoreNull() {
 		return ignoreNull;
 	}
-
-	/**
-	 * @param ignoreNull the ignoreNull to set
-	 */
 	@Override
     public void setIgnoreNull(boolean ignoreNull) {
 		this.ignoreNull = ignoreNull;
@@ -227,6 +207,7 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
     public void setSourceReference(Reference sourceReference) {
 		this.sourceReference = sourceReference;
 	}
+
 	@Override
     public String getSourceReferenceTitle() {
 		return getSourceReference().getTitleCache();
@@ -240,24 +221,15 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
     public Person getCommentator() {
 		return commentator;
 	}
-
 	@Override
     public void setCommentator(Person commentator) {
 		this.commentator = commentator;
 	}
 
-	/**
-	 * @return the nomenclaturalCode
-	 */
 	@Override
     public NomenclaturalCode getNomenclaturalCode() {
 		return nomenclaturalCode;
 	}
-
-
-	/**
-	 * @param nomenclaturalCode the nomenclaturalCode to set
-	 */
 	@Override
     public void setNomenclaturalCode(NomenclaturalCode nomenclaturalCode) {
 		this.nomenclaturalCode = nomenclaturalCode;
@@ -267,13 +239,10 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
     public UUID getClassificationUuid() {
 		return classificationUuid;
 	}
-
-
 	@Override
     public void setClassificationUuid(UUID classificationUuid) {
 		this.classificationUuid = classificationUuid;
 	}
-
 
 	@Override
     public UUID getSecUuid() {
@@ -284,36 +253,20 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 		this.secUuid = secUuid;
 	}
 
-	/**
-	 * @return the sourceSecId
-	 */
 	@Override
     public Object getSourceSecId() {
 		return sourceSecId;
 	}
-
-	/**
-	 * @param sourceSecId the sourceSecId to set
-	 */
 	public void setSourceSecId(Object sourceSecId) {
 		this.sourceSecId = sourceSecId;
 	}
 
-
-	/**
-	 * @return the featureMap
-	 */
 	public Map<Integer, Feature>  getFeatureMap() {
 		return featureMap;
 	}
-
-	/**
-	 * @param featureMap the featureMap to set
-	 */
 	public void setFeatureMap(Map<Integer, Feature>  featureMap) {
 		this.featureMap = featureMap;
 	}
-
 
 	protected static Method getDefaultFunction(Class<?> clazz, String methodName){
 		try {
@@ -353,21 +306,13 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 	public void setClassificationName(String classificationName) {
 		this.classificationName = classificationName;
 	}
-
-	/**
-	 * @return the classificationName
-	 */
 	public String getClassificationName() {
 		return classificationName;
 	}
 
-
 	public UUID getSourceRefUuid() {
 		return sourceRefUuid;
 	}
-
-
-
 	public void setSourceRefUuid(UUID sourceRefUuid) {
 		this.sourceRefUuid = sourceRefUuid;
 	}
@@ -391,7 +336,6 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 	public boolean isInteractWithUser() {
         return askUserForHelp;
     }
-
     public void setInteractWithUser (boolean interaction){
         askUserForHelp=interaction;
     }
@@ -399,7 +343,6 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
     public UUID getUuidFeatureTree() {
         return uuidFeatureTree;
     }
-
     public void setUuidFeatureTree(UUID uuidFeatureTree) {
         this.uuidFeatureTree = uuidFeatureTree;
     }
@@ -407,11 +350,9 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
     public String getFeatureTreeTitle() {
         return featureTreeTitle;
     }
-
     public void setFeatureTreeTitle(String featureTreeTitle) {
         this.featureTreeTitle = featureTreeTitle;
     }
-
 
     private static final DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-dd");
 

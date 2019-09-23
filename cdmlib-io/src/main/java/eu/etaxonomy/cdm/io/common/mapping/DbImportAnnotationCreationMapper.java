@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -22,18 +22,17 @@ import eu.etaxonomy.cdm.model.common.Language;
 
 
 /**
- * Object creation mapper which creates a marker.
- * 
+ * Object creation mapper which creates an annotation type and an annotation.
+ *
  * @author a.mueller
  * @since 11.03.2010
- * @version 1.0
  */
 public class DbImportAnnotationCreationMapper extends DbImportSupplementCreationMapperBase<Annotation, AnnotatableEntity, DbImportStateBase<?, ?>, AnnotationType> {
 	private static final Logger logger = Logger.getLogger(DbImportAnnotationCreationMapper.class);
 
 //************************** FACTORY METHODS ***************************************************************/
-	
-	
+
+
 	/**
 	 * @param dbAnnotatedObjectAttribute
 	 * @param annotatedObjectNamespace
@@ -42,7 +41,7 @@ public class DbImportAnnotationCreationMapper extends DbImportSupplementCreation
 	public static DbImportAnnotationCreationMapper NewInstance(String dbAnnotatedObjectAttribute, String annotatedObjectNamespace){
 		return new DbImportAnnotationCreationMapper(dbAnnotatedObjectAttribute, annotatedObjectNamespace, null, null, null, null);
 	}
-	
+
 	/**
 	 * Creates an annotation mapper which creates an annotation and sets the annotation text,
 	 * the annotation language and annotation (added to this annotation) holding the original
@@ -60,11 +59,11 @@ public class DbImportAnnotationCreationMapper extends DbImportSupplementCreation
 	public static DbImportAnnotationCreationMapper NewInstance(String dbAnnotatedObjectAttribute, String annotatedObjectNamespace, String dbAnnotationTextAttribute, Language language, String dbIdAttribute, AnnotationType annotationType){
 		return new DbImportAnnotationCreationMapper(dbAnnotatedObjectAttribute, annotatedObjectNamespace, dbAnnotationTextAttribute, language, dbIdAttribute, annotationType);
 	}
-	
+
 // *******************************  VARIABLES ****************************************/
-	
+
 	protected Language language;
-	
+
 //********************************* CONSTRUCTOR ****************************************/
 
 	/**
@@ -81,9 +80,6 @@ public class DbImportAnnotationCreationMapper extends DbImportSupplementCreation
 
 //************************************ METHODS *******************************************/
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.DbImportSupplementCreationMapperBase#addSupplement(eu.etaxonomy.cdm.model.common.AnnotatableEntity, java.lang.String, eu.etaxonomy.cdm.model.common.AnnotatableEntity)
-	 */
 	@Override
 	protected boolean addSupplement(Annotation annotation, AnnotatableEntity annotatableEntity, String id) {
 		if (annotatableEntity != null){
@@ -96,19 +92,12 @@ public class DbImportAnnotationCreationMapper extends DbImportSupplementCreation
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.DbImportSupplementCreationMapperBase#setSupplementValue(java.lang.Object)
-	 */
 	@Override
 	protected void setSupplementValue(ResultSet rs, Annotation annotation) throws SQLException {
 		String value = rs.getString(dbSupplementValueAttribute);
 		annotation.setText(value);
-		
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.DbImportObjectCreationMapperBase#createObject(java.sql.ResultSet)
-	 */
 	@Override
 	protected Annotation createObject(ResultSet rs) throws SQLException {
 		Annotation annotation = Annotation.NewInstance(null, supplementType, null);
@@ -117,6 +106,4 @@ public class DbImportAnnotationCreationMapper extends DbImportSupplementCreation
 		}
 		return annotation;
 	}
-
-	
 }

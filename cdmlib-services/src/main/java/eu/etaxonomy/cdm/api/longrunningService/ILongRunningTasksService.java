@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.longrunningService;
 
+import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
 
@@ -18,6 +19,7 @@ import eu.etaxonomy.cdm.api.service.config.ForSubtreeConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.SortIndexUpdaterConfigurator;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
+import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 
 /**
  * @author cmathew
@@ -56,6 +58,22 @@ public interface ILongRunningTasksService {
      * @return the uuid of the monitor
      */
     public UUID aggregateDescriptiveDataSet(UUID descriptiveDataSetUuid,  DescriptionAggregationConfiguration config);
+
+    /**
+     * Monitored invocation of {@link IDescriptiveDataSetService#addRowWrapperToDataset(Collection, UUID)}
+     * @param wrapper the specimen wrapper to use for creating the row wrapper
+     * @param datasetUuid the target dataset
+     * @return the uuid of the monitor
+     */
+    public UUID addRowWrapperToDataset(Collection<SpecimenNodeWrapper> wrapper, UUID datasetUuid);
+
+    /**
+     * Monitored invocation of {@link IDescriptiveDataSetService#generatePolytomousKey(UUID, UUID))}
+     * @param datasetUuid the data set
+     * @param taxonUuid the taxonomic scope of the key
+     * @return the uuid of the monitor
+     */
+    public UUID generatePolytomousKey(UUID datasetUuid, UUID taxonUuid);
 
     /**
      * Monitored invocation of {@link IDescriptiveDataSetService#getRowWrapper(DescriptiveDataSet, IProgressMonitor)}

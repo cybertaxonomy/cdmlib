@@ -20,10 +20,11 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 /**
  * @author a.mueller
  * @since 12.05.2009
- * @version 1.0
  */
-public class DbUriMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer> {
-	private static final Logger logger = Logger.getLogger(DbUriMapper.class);
+public class DbUriMapper
+            extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> {
+
+    private static final Logger logger = Logger.getLogger(DbUriMapper.class);
 
 	private static final int MAX_PRECISION = -1;  //precision for datatype nvarchar(max) == clob (SQL Server 2008)
 
@@ -43,19 +44,10 @@ public class DbUriMapper extends DbSingleAttributeExportMapperBase<DbExportState
 		return new DbUriMapper(cdmAttributeString, dbAttributeString, defaultValue, obligatory);
 	}
 
-	/**
-	 * @param dbAttributeString
-	 * @param cdmAttributeString
-	 */
 	private DbUriMapper(String cdmAttributeString, String dbAttributeString, String defaultValue, boolean obligatory) {
 		super(cdmAttributeString, dbAttributeString, defaultValue, obligatory);
 	}
 
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValue(eu.etaxonomy.cdm.model.common.CdmBase)
-	 */
 	@Override
 	protected Object getValue(CdmBase cdmBase) {
 		URI uri = (URI)super.getValue(cdmBase);
@@ -67,23 +59,13 @@ public class DbUriMapper extends DbSingleAttributeExportMapperBase<DbExportState
 		return result;
 	}
 
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValueType()
-	 */
 	@Override
 	protected int getSqlType() {
 		return Types.VARCHAR;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase#getTypeClass()
-	 */
 	@Override
 	public Class<?> getTypeClass() {
 		return URI.class;
 	}
-
 }

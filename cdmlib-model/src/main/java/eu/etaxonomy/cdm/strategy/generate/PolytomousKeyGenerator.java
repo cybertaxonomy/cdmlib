@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
@@ -34,6 +36,8 @@ import eu.etaxonomy.cdm.model.term.TermNode;
  */
 public class PolytomousKeyGenerator {
 
+    private static final Logger logger = Logger.getLogger(PolytomousKeyGenerator.class);
+
     private PolytomousKeyGeneratorConfigurator config;
 
 	private Map<State,Set<Feature>> iAifDependencies = new HashMap<>(); // map of a set of Features (value) inapplicables if a State (key) is present
@@ -52,7 +56,6 @@ public class PolytomousKeyGenerator {
     /**
      * Creates the key and prints it
      */
-
     public PolytomousKey invoke(PolytomousKeyGeneratorConfigurator config){
         if (config == null){
             throw new NullPointerException("PolytomousKeyGeneratorConfigurator must not be null");
@@ -86,7 +89,9 @@ public class PolytomousKeyGenerator {
 			// this map stores the thresholds giving the best dichotomy of taxa for the corresponding feature supporting quantitative data
 			Map<Feature,Float> quantitativeFeaturesThresholds = new HashMap<>();
 			// the scores of the different features are calculated, the thresholds in the same time
-			if (config.isDebug()){System.out.println("Feature left: " + featuresLeft + ", taxa: " + taxaCovered);}
+			if (config.isDebug()){
+			    System.out.println("Feature left: " + featuresLeft + ", taxa: " + taxaCovered);
+			}
 			Feature winnerFeature = computeScores(featuresLeft, taxaCovered, quantitativeFeaturesThresholds);
 
 			/************** either the feature supports quantitative data... **************/
@@ -110,7 +115,6 @@ public class PolytomousKeyGenerator {
 			    featuresLeft.add(winnerFeature);
 			}
 		}
-
 	}
 
     /**
@@ -166,8 +170,10 @@ public class PolytomousKeyGenerator {
 
 		if (taxonStatesMap.size()<=1){
 		    if (notEmpty(featureDependencies.get(winnerFeature))){
+		        //TODO is empty list correctly handled here? Seems to happen if incorrect data (e.g. only Max values) for quantdata exist
+		        List<State> stateList = taxonStatesMap.isEmpty()? new ArrayList<>(): taxonStatesMap.values().iterator().next();
 		        Set<Feature> featuresAdded = new HashSet<>();
-		        addDependentFeatures(featuresLeft, winnerFeature, featuresAdded, taxonStatesMap.values().iterator().next());
+		        addDependentFeatures(featuresLeft, winnerFeature, featuresAdded, stateList);
 		        featuresLeft.remove(winnerFeature);
 		        buildBranches(father, featuresLeft, taxaCovered, false);
 		        removeAddedDependendFeatures(featuresLeft, featuresAdded);
@@ -297,8 +303,8 @@ public class PolytomousKeyGenerator {
      * @param featuresAdded
      * @param listOfStates
      */
-    private void addDependentFeatures(List<Feature> featuresLeft, Feature winnerFeature, Set<Feature> featuresAdded,
-            List<State> listOfStates) {
+    private void addDependentFeatures(List<Feature> featuresLeft, Feature winnerFeature,
+            Set<Feature> featuresAdded, List<State> listOfStates) {
 
         Set<Feature> newFeatureCandidates = new HashSet<>(featureDependencies.get(winnerFeature));
         newFeatureCandidates.remove(null);
@@ -805,7 +811,7 @@ public class PolytomousKeyGenerator {
 					Set<State> differentStates = new HashSet<>();
 					for (DescriptionBase<?> td : taxaCovered){
 						DescriptionElementBase deb = getDescriptionElementByFeature(td, feature);
-						if (deb.isInstanceOf(CategoricalData.class)) {
+						if (deb!=null && deb.isInstanceOf(CategoricalData.class)) {
 						    CategoricalData catdat = (CategoricalData)deb;
 							List<StateData> stateDatas = catdat.getStateData();
 							for (StateData sd : stateDatas) {
@@ -830,9 +836,6 @@ public class PolytomousKeyGenerator {
 	/**
 	 * This function calculates the mean score, i.e. the score a feature dividing the taxa in two equal parts
 	 * would have.
-	 *
-	 * @param nTaxa
-	 * @return
 	 */
 	private float defaultMeanScore(int nTaxa){
 		int i;
@@ -842,7 +845,6 @@ public class PolytomousKeyGenerator {
 		}
 		return score;
 	}
-
 
 	/**
 	 * This function fills the map of features (keys) with their respecting scores (values)
@@ -898,12 +900,12 @@ public class PolytomousKeyGenerator {
 						for (StatisticalMeasurementValue smv : values){
 							StatisticalMeasure type = smv.getType();
 							//TODO DONT FORGET sample size, MEAN etc
-							if (type.equals(StatisticalMeasure.MAX()) || type.equals(StatisticalMeasure.TYPICAL_UPPER_BOUNDARY()) || type.equals(StatisticalMeasure.AVERAGE())) {
+							if (type.isMax() || type.isTypicalUpperBoundary() || type.isAverage() || type.isExactValue()) {
 								if (smv.getValue()>threshold){
 									taxaAfter.add(td);
 								}
 							}
-							if (type.equals(StatisticalMeasure.MIN()) || type.equals(StatisticalMeasure.TYPICAL_LOWER_BOUNDARY()) || type.equals(StatisticalMeasure.AVERAGE())) {
+							if (type.isMin() || type.isTypicalLowerBoundary() || type.isAverage() || type.isExactValue()) {
 								if (smv.getValue()<=threshold){
 									taxaBefore.add(td);
 								}
@@ -916,8 +918,6 @@ public class PolytomousKeyGenerator {
 		return list;
 	}
 
-
-
 	/**
 	 * This function returns the score of a quantitative feature.
 	 *
@@ -928,49 +928,14 @@ public class PolytomousKeyGenerator {
 	 */
 	private float quantitativeFeatureScore(Feature feature, Set<DescriptionBase<?>> coveredTaxa, Map<Feature,Float> quantitativeFeaturesThresholds){
 		List<Float> allValues = new ArrayList<>();
-		boolean lowerboundarypresent;
-		boolean upperboundarypresent;
-		float lowerboundary=0;
-		float upperboundary=0;
+
 		for (DescriptionBase<?> td : coveredTaxa){
 			Set<DescriptionElementBase> elements = td.getElements();
 			for (DescriptionElementBase deb : elements){
 				if (deb.getFeature().equals(feature)) {
 					if (deb.isInstanceOf(QuantitativeData.class)) {
-						QuantitativeData qd = (QuantitativeData)deb;
-						Set<StatisticalMeasurementValue> values = qd.getStatisticalValues();
-						lowerboundarypresent = false;
-						upperboundarypresent = false;
-						for (StatisticalMeasurementValue smv : values){
-							StatisticalMeasure type = smv.getType();
-							// DONT FORGET sample size, MEAN etc
-							if (type.equals(StatisticalMeasure.MAX())) {
-								upperboundary = smv.getValue();
-								upperboundarypresent=true;
-							}
-							if (type.equals(StatisticalMeasure.MIN())) {
-								lowerboundary = smv.getValue();
-								lowerboundarypresent=true;
-							}
-							if (type.equals(StatisticalMeasure.TYPICAL_UPPER_BOUNDARY()) && upperboundarypresent==false) {
-								upperboundary = smv.getValue();
-								upperboundarypresent=true;
-							}
-							if (type.equals(StatisticalMeasure.TYPICAL_LOWER_BOUNDARY()) && lowerboundarypresent==false) {
-								lowerboundary = smv.getValue();
-								lowerboundarypresent=true;
-							}
-							if (type.equals(StatisticalMeasure.AVERAGE()) && upperboundarypresent==false && lowerboundarypresent==false) {
-								lowerboundary = smv.getValue();
-								upperboundary = lowerboundary;
-								lowerboundarypresent=true;
-								upperboundarypresent=true;
-							}
-						}
-						if (lowerboundarypresent && upperboundarypresent) {
-							allValues.add(lowerboundary);
-							allValues.add(upperboundary);
-						}
+					    QuantitativeData qd = (QuantitativeData)deb;
+						computeAllValues(allValues, qd);
 					}
 				}
 			}
@@ -1009,6 +974,56 @@ public class PolytomousKeyGenerator {
 		}
 		return defaultQuantitativeScore;
 	}
+
+    private void computeAllValues(List<Float> allValues, QuantitativeData qd) {
+        Set<StatisticalMeasurementValue> values = qd.getStatisticalValues();
+        Float lowerboundary=null;
+        Float upperboundary=null;
+        for (StatisticalMeasurementValue smv : values){
+        	StatisticalMeasure type = smv.getType();
+        	float value = smv.getValue();
+        	// DONT FORGET sample size, MEAN etc
+        	if(type.isMin() || type.isTypicalLowerBoundary() || type.isAverage() || type.isExactValue()){
+        	    if (lowerboundary == null){
+        	        lowerboundary = value;
+        	    }else{
+        	        lowerboundary = Math.min(lowerboundary, value);
+        	    }
+        	}
+        	if(type.isMax() || type.isTypicalUpperBoundary() || type.isAverage() || type.isExactValue()){
+                if (upperboundary == null){
+                    upperboundary = value;
+                }else{
+                    upperboundary = Math.max(upperboundary, value);
+                }
+            }
+
+//        	if (type.isMax()) {
+//        		upperboundary = smv.getValue();
+//        		upperboundarypresent=true;
+//        	}else if (type.equals(StatisticalMeasure.MIN())) {
+//        		lowerboundary = smv.getValue();
+//        		lowerboundarypresent=true;
+//        	}else if (type.equals(StatisticalMeasure.TYPICAL_UPPER_BOUNDARY()) && upperboundarypresent==false) {
+//        		upperboundary = smv.getValue();
+//        		upperboundarypresent=true;
+//        	}else if (type.equals(StatisticalMeasure.TYPICAL_LOWER_BOUNDARY()) && lowerboundarypresent==false) {
+//        		lowerboundary = smv.getValue();
+//        		lowerboundarypresent=true;
+//        	}else if (type.equals(StatisticalMeasure.AVERAGE()) && upperboundarypresent==false && lowerboundarypresent==false) {
+//        		lowerboundary = smv.getValue();
+//        		upperboundary = lowerboundary;
+//        		lowerboundarypresent=true;
+//        		upperboundarypresent=true;
+//        	}
+        }
+        if (lowerboundary != null && upperboundary != null) {
+        	allValues.add(lowerboundary);
+        	allValues.add(upperboundary);
+        }else if(lowerboundary != null || upperboundary != null){
+            logger.warn("Only one of upper or lower boundary is defined. Statistical measurement value not used.");
+        }
+    }
 
 
 

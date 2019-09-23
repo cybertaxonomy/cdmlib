@@ -114,5 +114,12 @@ public interface IReferenceDao extends IIdentifiableDao<Reference>, ITitledDao<R
      */
     List<UuidAndTitleCache<Reference>> getUuidAndTitle(Set<UUID> uuids);
 
+    /**
+     * @param uuids
+     * @param refType
+     * @return
+     */
+    List<UuidAndTitleCache<Reference>> getUuidAndTitle(Set<UUID> uuids, ReferenceType refType);
+
 
 }

@@ -16,6 +16,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.name.INonViralName;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
@@ -28,39 +29,29 @@ public class ZooNameNoMarkerCacheStrategy
 	private static final long serialVersionUID = 2821727191810867550L;
 
 	final static UUID uuid = UUID.fromString("8ffa5f04-0303-4875-be44-dac5ff95b874");
-
-
 	@Override
-	public UUID getUuid(){
-		return uuid;
-	}
+	public UUID getUuid(){return uuid;}
 
-
-	/**
-	 * Factory method
-	 * @return
-	 */
 	public static ZooNameNoMarkerCacheStrategy NewInstance(){
 		return new ZooNameNoMarkerCacheStrategy();
 	}
 
-	/**
-	 * Constructor
-	 */
 	private ZooNameNoMarkerCacheStrategy(){
 		super();
 	}
 
+	@Override
+    protected boolean includeInfraSpecificMarkerForZooNames(TaxonName name){
+        boolean result = super.includeInfraSpecificMarkerForZooNames(name);
+	    if (Rank.SUBSPECIES().equals(name.getRank())){
+	        result = false;
+	    }
+        return result;
+    }
 
 	@Override
-	protected List<TaggedText> getInfraSpeciesTaggedNameCache(TaxonName nonViralName){
-		boolean includeMarker = false;
-		return getInfraSpeciesTaggedNameCache(nonViralName, includeMarker);
-	}
-
-
-	@Override
-	protected void addInfraGenericPart(INonViralName name, List<TaggedText> tags, String infraGenericMarker, String infraGenEpi) {
+	protected void addInfraGenericPart(INonViralName name, List<TaggedText> tags, String infraGenericMarker,
+	        String infraGenEpi) {
 		//add epitheton
 		if (StringUtils.isNotBlank(infraGenEpi)){
 	        tags.add(new TaggedText(TagEnum.name, "(" + infraGenEpi + ")"));

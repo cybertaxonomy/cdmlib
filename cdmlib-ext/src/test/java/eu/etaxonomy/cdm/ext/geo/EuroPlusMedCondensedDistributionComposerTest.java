@@ -27,27 +27,29 @@ import eu.etaxonomy.cdm.test.TermTestBase;
 /**
  * @author a.mueller
  * @since 15.06.2016
- *
  */
 @Ignore
 public class EuroPlusMedCondensedDistributionComposerTest extends TermTestBase {
 
-
     @Test
     public void testGetCondensedDistribution() {
 
+        //Germany
         NamedArea germany = NamedArea.NewInstance("Germany", "", "GER");
         NamedArea berlin = NamedArea.NewInstance("Berlin", "", "GER(B)");
         berlin.setPartOf(germany);
         NamedArea bawue = NamedArea.NewInstance("Baden Württemberg", "", "GER(BW)");
         bawue.setPartOf(germany);
+        //France
         NamedArea france = NamedArea.NewInstance("France", "", "FR");
         NamedArea ileDeFrance = NamedArea.NewInstance("Ile-de-France", "", "FR(J)");
         ileDeFrance.setPartOf(france);
+        //Italy
         NamedArea italy = NamedArea.NewInstance("Italy", "", "IT");
+        //Spain
         NamedArea spain = NamedArea.NewInstance("Spain", "", "S");
 
-        Set<Distribution> distributions = new HashSet<Distribution>();
+        Set<Distribution> distributions = new HashSet<>();
         distributions.add(Distribution.NewInstance(germany, PresenceAbsenceTerm.NATIVE()));
         distributions.add(Distribution.NewInstance(bawue, PresenceAbsenceTerm.NATIVE()));
         distributions.add(Distribution.NewInstance(berlin, PresenceAbsenceTerm.NATIVE()));
@@ -57,7 +59,7 @@ public class EuroPlusMedCondensedDistributionComposerTest extends TermTestBase {
         distributions.add(Distribution.NewInstance(ileDeFrance, PresenceAbsenceTerm.CULTIVATED()));
         distributions.add(Distribution.NewInstance(spain, PresenceAbsenceTerm.NATURALISED()));
 
-        List<Language> languages = new ArrayList<Language>();
+        List<Language> languages = new ArrayList<>();
 
         CondensedDistribution condensedDistribution = EditGeoServiceUtilities.getCondensedDistribution(
                 distributions,

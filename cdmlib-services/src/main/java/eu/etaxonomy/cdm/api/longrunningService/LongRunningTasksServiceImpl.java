@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.api.longrunningService;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
 
@@ -30,6 +31,7 @@ import eu.etaxonomy.cdm.api.service.util.CacheUpdater;
 import eu.etaxonomy.cdm.api.service.util.SortIndexUpdaterWrapper;
 import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitorThread;
+import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 
 /**
  * @author k.luther
@@ -74,6 +76,46 @@ public class LongRunningTasksServiceImpl implements ILongRunningTasksService{
             @Override
             public Serializable doRun(IRemotingProgressMonitor monitor) {
                 UpdateResult updateResult = descriptiveDataSetService.aggregate(descriptiveDataSetUuid, config, monitor);
+                for(Exception e : updateResult.getExceptions()) {
+                    monitor.addReport(e.getMessage());
+                }
+                monitor.setResult(updateResult);
+                return updateResult;
+
+            }
+        };
+        UUID uuid = progressMonitorService.registerNewRemotingMonitor(monitorThread);
+        monitorThread.setPriority(2);
+        monitorThread.start();
+        return uuid;
+    }
+
+    @Override
+    public UUID addRowWrapperToDataset(Collection<SpecimenNodeWrapper> wrapper, UUID datasetUuid){
+        RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
+            @Override
+            public Serializable doRun(IRemotingProgressMonitor monitor) {
+                UpdateResult updateResult = descriptiveDataSetService.addRowWrapperToDataset(wrapper, datasetUuid);
+                for(Exception e : updateResult.getExceptions()) {
+                    monitor.addReport(e.getMessage());
+                }
+                monitor.setResult(updateResult);
+                return updateResult;
+
+            }
+        };
+        UUID uuid = progressMonitorService.registerNewRemotingMonitor(monitorThread);
+        monitorThread.setPriority(2);
+        monitorThread.start();
+        return uuid;
+    }
+
+    @Override
+    public UUID generatePolytomousKey(UUID datasetUuid, UUID taxonUuid){
+        RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
+            @Override
+            public Serializable doRun(IRemotingProgressMonitor monitor) {
+                UpdateResult updateResult = descriptiveDataSetService.generatePolytomousKey(datasetUuid, taxonUuid);
                 for(Exception e : updateResult.getExceptions()) {
                     monitor.addReport(e.getMessage());
                 }

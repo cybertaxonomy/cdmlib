@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.common;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -40,30 +39,6 @@ import org.apache.log4j.Logger;
 public class CdmUtils {
 
     private static final Logger logger = Logger.getLogger(CdmUtils.class);
-
-    //folder separator
-    static String folderSeparator;
-
-    static final String MUST_EXIST_FILE = "MUST-EXIST.txt";
-
-
-    /**
-     * Returns the folder separator. This depends on the operating system and the
-     * environment. If the system is within a jar the separator is different then in an ordinary folder.
-     * @return
-     */
-    static public String getFolderSeperator(){
-        if (folderSeparator == null){
-            URL url = CdmUtils.class.getResource("/"+ MUST_EXIST_FILE);
-            if ( url != null && ! urlIsJarOrBundle(url) ){
-                folderSeparator =  File.separator;
-            }else{
-                folderSeparator = "/";
-            }
-        }
-        return folderSeparator;
-    }
-
 
     /**
      * @param url

@@ -116,23 +116,12 @@ public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<D
 		}
 	}
 
-
-	/**
-	 * @param valueMap
-	 * @param cdmBase
-	 * @return
-	 */
 	public boolean invoke(Map<String, Object> valueMap, CdmBase cdmBase){
 		Object dbValueObject = valueMap.get(this.getSourceAttribute().toLowerCase());
 		String dbValue = dbValueObject == null? null: dbValueObject.toString();
 		return invoke(dbValue, cdmBase);
 	}
 
-	/**
-	 * @param dbValue
-	 * @param cdmBase
-	 * @return
-	 */
 	private boolean invoke(String dbValue, CdmBase cdmBase){
 		if (ignore){
 			return true;
@@ -153,17 +142,12 @@ public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<D
 		return invoke(dbValue, identifiableEntity);
 	}
 
-	/**
-	 * @param dbValue
-	 * @param identifiableEntity
-	 * @return
-	 */
 	private IdentifiableEntity invoke(String dbValue, IdentifiableEntity identifiableEntity){
 		if (ignore){
 			return identifiableEntity;
 		}
 		if (StringUtils.isNotBlank(dbValue)){
-			Extension.NewInstance(identifiableEntity, dbValue, extensionType);
+			Extension.NewInstance(identifiableEntity, dbValue.trim(), extensionType);
 			if (extensionType == null){
 				logger.warn("No extension type available for extension");
 			}
@@ -171,16 +155,9 @@ public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<D
 		return identifiableEntity;
 	}
 
+	protected ExtensionType getExtensionType(CdmImportBase<?, ?> currentImport, UUID uuid, String label,
+	        String text, String labelAbbrev){
 
-	/**
-	 * @param service
-	 * @param uuid
-	 * @param label
-	 * @param text
-	 * @param labelAbbrev
-	 * @return
-	 */
-	protected ExtensionType getExtensionType(CdmImportBase<?, ?> currentImport, UUID uuid, String label, String text, String labelAbbrev){
 		ITermService termService = currentImport.getTermService();
 		ExtensionType extensionType = (ExtensionType)termService.find(uuid);
 		if (extensionType == null){

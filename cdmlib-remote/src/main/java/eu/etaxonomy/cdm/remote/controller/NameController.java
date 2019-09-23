@@ -59,6 +59,7 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
             "typeName",
             "citation",
             "citation.authorship.$",
+            "text"
     });
 
     private static final List<String> FULL_TITLE_CACHE_INIT_STRATEGY = Arrays.asList(new String []{

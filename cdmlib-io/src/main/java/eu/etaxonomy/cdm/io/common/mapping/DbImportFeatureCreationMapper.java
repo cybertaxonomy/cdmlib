@@ -20,56 +20,30 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 
 /**
- * This class retrives or creates an existing or a new feature.
+ * This class retrieves or creates an existing or a new feature and adds it to
+ * passed {@link DescriptionElementBase description item}.
  *
  * @see DbImportDefinedTermCreationMapperBase
  * @author a.mueller
  * @since 11.03.2010
  */
-public class DbImportFeatureCreationMapper<STATE extends DbImportStateBase<?,?>> extends DbImportDefinedTermCreationMapperBase<Feature, DescriptionElementBase, DbImportStateBase<?,?>> {
-	@SuppressWarnings("unused")
+public class DbImportFeatureCreationMapper<STATE extends DbImportStateBase<?,?>>
+        extends DbImportDefinedTermCreationMapperBase<Feature, DescriptionElementBase, DbImportStateBase<?,?>> {
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbImportFeatureCreationMapper.class);
 
 //******************************** FACTORY METHOD ***************************************************/
 
-
-	/**
-	 *
-	 * @param dbIdAttribute
-	 * @param dbTermAttribute
-	 * @param dbLabelAttribute
-	 * @param dbLabelAbbrevAttribute
-	 * @return
-	 */
-	public static DbImportFeatureCreationMapper<?> NewInstance(String dbIdAttribute, String featureNamespace, String dbTermAttribute, String dbLabelAttribute, String dbLabelAbbrevAttribute){
-		return new DbImportFeatureCreationMapper(dbIdAttribute, featureNamespace, dbTermAttribute, dbLabelAttribute, dbLabelAbbrevAttribute);
+	public static DbImportFeatureCreationMapper<?> NewInstance(String dbIdAttribute, String featureNamespace, String dbTermAttribute,
+	        String dbLabelAttribute, String dbLabelAbbrevAttribute){
+		return new DbImportFeatureCreationMapper<>(dbIdAttribute, featureNamespace, dbTermAttribute, dbLabelAttribute, dbLabelAbbrevAttribute);
 	}
 
-
-//	/**
-//	 * Creates a Distribution with status <code>status</code> and adds it to the description of a taxon.
-//	 * @param dbIdAttribute
-//	 * @param objectToCreateNamespace
-//	 * @param dbTaxonFkAttribute
-//	 * @param taxonNamespace
-//	 * @param status
-//	 * @return
-//	 */
-//	public static DbImportFeatureCreationMapper<?> NewInstance(String dbIdAttribute, String dbTermAttribute, String dbLabelAttribute, String dbLabelAbbrevAttribute){
-//		return new DbImportFeatureCreationMapper(dbIdAttribute, objectToCreateNamespace, dbTaxonFkAttribute, taxonNamespace, dbTextAttribute, language, feature, format);
-//	}
-
-//******************************* ATTRIBUTES ***************************************/
-
-
 //********************************* CONSTRUCTOR ****************************************/
-	/**
-	 * @param dbIdAttribute
-	 * @param objectToCreateNamespace
-	 * @param dbTaxonFkAttribute
-	 * @param taxonNamespace
-	 */
-	protected DbImportFeatureCreationMapper(String dbIdAttribute, String featureNamespace, String dbTermAttribute, String dbLabelAttribute, String dbLabelAbbrevAttribute) {
+
+	protected DbImportFeatureCreationMapper(String dbIdAttribute, String featureNamespace, String dbTermAttribute,
+	        String dbLabelAttribute, String dbLabelAbbrevAttribute) {
 		super(dbIdAttribute, featureNamespace, dbTermAttribute, dbLabelAttribute, dbLabelAbbrevAttribute);
 	}
 
@@ -77,12 +51,14 @@ public class DbImportFeatureCreationMapper<STATE extends DbImportStateBase<?,?>>
 
 	@Override
 	protected Feature getTermFromState(UUID uuid) {
-		return getState().getFeature(uuid);
+		Feature result = getState().getFeature(uuid);
+		return result;
 	}
 
 	@Override
 	protected Feature getTermFromTransformer(String key, IInputTransformer transformer) throws UndefinedTransformerMethodException {
-		return transformer.getFeatureByKey(key);
+		Feature result = transformer.getFeatureByKey(key);
+		return result;
 	}
 
 	@Override
@@ -94,21 +70,7 @@ public class DbImportFeatureCreationMapper<STATE extends DbImportStateBase<?,?>>
 	@Override
 	protected void saveTermToState(Feature feature) {
 		getState().putFeature(feature);
-
 	}
-
-//	@Override
-//	protected Feature createObject(ResultSet rs) throws SQLException {
-//		String term = this.getStringDbValue(rs, dbTermAttribute);
-//		String label = this.getStringDbValue(rs, dbLabelAttribute);
-//		String labelAbbrev = this.getStringDbValue(rs, dbLabelAbbrevAttribute);
-//		if (term != null || label != null || labelAbbrev != null){
-//			Feature feature = Feature.NewInstance(term, label, labelAbbrev);
-//			return feature;
-//		}else{
-//			return null;
-//		}
-//	}
 
 	@Override
 	protected Feature createDefinedTerm(ResultSet rs) throws SQLException {
@@ -123,4 +85,10 @@ public class DbImportFeatureCreationMapper<STATE extends DbImportStateBase<?,?>>
 		}
 	}
 
+    @Override
+    protected void handleTermWithObject(DescriptionElementBase element, Feature feature) {
+        if(element!= null){
+            element.setFeature(feature);
+        }
+    }
 }

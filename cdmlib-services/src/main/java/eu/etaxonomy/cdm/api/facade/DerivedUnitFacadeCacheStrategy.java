@@ -17,13 +17,13 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 /**
  * @author a.mueller
  * @since 03.06.2010
- *
  */
 public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIdentifiableEntityCacheStrategy<DerivedUnit> {
 	private static final long serialVersionUID = 1578628591216605619L;
@@ -33,9 +33,7 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 	private static final UUID uuid = UUID.fromString("df4672c1-ce5c-4724-af6d-91e2b326d4a4");
 
 	@Override
-	protected UUID getUuid() {
-		return uuid;
-	}
+	protected UUID getUuid() {return uuid;}
 
 	private boolean includeEmptySeconds = false;
 	private boolean includeReferenceSystem = true;
@@ -44,7 +42,6 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
     public String getTitleCache(DerivedUnit derivedUnit) {
 	    return getTitleCache(derivedUnit, false);
 	}
-
 
 	public String getTitleCache(DerivedUnit derivedUnit, boolean skipFieldUnit) {
 		DerivedUnitFacadeFieldUnitCacheStrategy fieldStrategy = new DerivedUnitFacadeFieldUnitCacheStrategy();
@@ -58,8 +55,13 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 			config.setFirePropertyChangeEvents(false);
 			facade = DerivedUnitFacade.NewInstance(derivedUnit, config);
 
-			if(!skipFieldUnit){
-			    result += fieldStrategy.getFieldData(facade);
+			FieldUnit fieldUnit = facade.getFieldUnit(false);
+			if(!skipFieldUnit && fieldUnit != null){
+			    if(fieldUnit.isProtectedTitleCache()){
+			        result += fieldUnit.getTitleCache();
+			    } else {
+			        result += fieldStrategy.getFieldData(facade);
+			    }
 			}
 			//Exsiccatum
 			String exsiccatum = null;

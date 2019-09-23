@@ -111,10 +111,10 @@ public enum PreferencePredicate implements IEnumTerm<PreferencePredicate>, IPref
     ShowCollectingAreasInGeneralSection(UUID.fromString("578a1195-64ce-4dfb-9be9-6f2823288678"), "Show Collecting Area in General Section", "specimen.detail.showCollectingAreaInGeneralSection", Boolean.FALSE),
     ShowTaxonAssociations(UUID.fromString("849c24f9-b62b-4f70-b0a0-1b02182b3433"), "Show Taxon Associations", "specimen.detail.showTaxonAssociations", Boolean.FALSE),
     ShowLifeForm(UUID.fromString("85870e7d-a6a3-4c9b-97d6-eb27e6516860"), "Show Life Form", "showLifeForm", Boolean.FALSE),
-
+    MeasurementUnit(UUID.fromString("f1d6a2e7-8903-46e0-b1ea-deb74110f83a"), "Measurement Units", "measurementUnits", ""),
     //Taxa
     DefaultBehaviourForPublishFlag(UUID.fromString("24e636fc-ef3b-4a2c-8c9e-018143e66949"), "Default behaviour for publish flag", "defaultBehaviourForPublishFlag", PublishEnum.InheritFromParent),
-    ConceptRelationships(UUID.fromString("04e4c69c-6741-4224-81ef-8df0a03bb81e"), "Concept Relationships", "ConceptRelationships", null),
+    ConceptRelationshipType(UUID.fromString("04e4c69c-6741-4224-81ef-8df0a03bb81e"), "Concept Relationship Types", "conceptRelationshipTypes", null),
 
     ShowExperimentalFeatures(UUID.fromString("ba617c58-1801-4feb-9819-859aea5869a2"), "Show Experimental Features", "editor.experimentalFeatures", Boolean.TRUE),
 
@@ -128,12 +128,13 @@ public enum PreferencePredicate implements IEnumTerm<PreferencePredicate>, IPref
     NamedAreaTypes(UUID.fromString("960088e6-c02f-44c4-9fa1-c4552e030ce3"), "Named Area Types", "facts.namedArea.types", null),
     NameFeatures(UUID.fromString("ad0dc9f9-7d14-406d-b0e0-478182fca8f6"), "Name Fetaures", "facts.nameFeatures", null),
     TaxonFeatures(UUID.fromString("ee50e338-4adf-49be-993e-efcbee2c801f"), "Taxon Fetaures", "facts.taxonFeatures", null),
+    Stage(UUID.fromString("01ed3f58-c07a-43fd-84e8-7e7cba4e462e"), "Stages", "facts.stages", null),
 
 
     //Names
     AvailableRanks(UUID.fromString("d6559e49-9d05-43bb-b13a-4a70514100af"), "Available Ranks", "AvailableRanks", null),
     AvailableNomenclaturalStatus(UUID.fromString("fd36dc63-fd98-4d86-9a11-edced6773bd3"), "Available Nomenclatural Status", "name.nomenclaturalStatus", null),
-    NameRelationships(UUID.fromString("c1830d41-0101-480f-8444-f9c0b07a5f2f"), "Name Relationships", "name.nameRelationships", null),
+    NameRelationshipType(UUID.fromString("c1830d41-0101-480f-8444-f9c0b07a5f2f"), "Name Relationship Types", "name.nameRelationshipType", null),
     TypeDesignations(UUID.fromString("7b824a7e-49e1-4484-956f-6f6f14628956"), "Type Designations", "name.typeDesignations", null),
     SpecimenTypeDesignationStatus(UUID.fromString("8a155724-2667-42a7-b789-7d826d0cafc9"), "Specimen Type Designation Status", "name.specimenTypeDesignationStatus", null),
     NameTypeDesignationStatus(UUID.fromString("6091668a-9bcf-4c79-8c53-7e4b98de1ccb"), "Name Type Designation Status", "name.nameTypeDesignationStatus", null),
@@ -148,10 +149,7 @@ public enum PreferencePredicate implements IEnumTerm<PreferencePredicate>, IPref
     SearchForIdentifierAsDefault(UUID.fromString("b059f371-c9ee-4dca-b419-bdf142f14876"), "Search For Identifier As Default", "search.selectionDialog.searchForIdentifierAsDefault", Boolean.FALSE),
     SearchForIdentifierAndTitleCache(UUID.fromString("5b5c2c6d-071a-4b3c-b645-8db5c704b63b"), "Search For Identifier And TitleCache", "search.selectionDialog.searchForIdentifierAndTitleCache", Boolean.TRUE),
     SortTaxaByRankAndName(UUID.fromString("2b7e90b2-1722-4bbf-989a-113281fa0b30"), "Sort Taxa By Rank And Name", "search.selectionDialog.sortTaxaByRankAndName", Boolean.FALSE),
-
-
-
-
+    NamedAreaSearchForAbbrev(UUID.fromString("1db58b79-048b-4981-9cd1-51cb2b915c8a"), "Search Field for Names Areas", "search.selectionDialog.searchField", NamedAreaSearchField.NoAbbrev),
 
 
     ;

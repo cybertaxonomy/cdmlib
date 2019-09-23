@@ -45,30 +45,22 @@ public class SpecimenDescription extends DescriptionBase<IIdentifiableEntityCach
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SpecimenDescription.class);
 
+// ************************ FACTORY *******************************/
 
-	/**
-	 * Class constructor: creates a new empty specimen description instance.
-	 */
-	public SpecimenDescription() {
+    public static SpecimenDescription NewInstance(){
+        return new SpecimenDescription();
+    }
+
+    public static SpecimenDescription NewInstance(SpecimenOrObservationBase specimen){
+        SpecimenDescription description =  new SpecimenDescription();
+        description.setDescribedSpecimenOrObservation(specimen);
+        return description;
+    }
+
+// ***************************** CONSTRUCTOR *********************/
+    public SpecimenDescription() {
 		super();
 		this.cacheStrategy = new SpecimenDescriptionDefaultCacheStrategy();
-	}
-
-
-	/**
-	 * Creates a new empty specimen description instance.
-	 */
-	public static SpecimenDescription NewInstance(){
-		return new SpecimenDescription();
-	}
-
-	/**
-	 * Creates a new empty specimen description instance.
-	 */
-	public static SpecimenDescription NewInstance(SpecimenOrObservationBase specimen){
-		SpecimenDescription description =  new SpecimenDescription();
-		description.setDescribedSpecimenOrObservation(specimen);
-		return description;
 	}
 
 //*********************** CLONE ********************************************************/
@@ -88,6 +80,4 @@ public class SpecimenDescription extends DescriptionBase<IIdentifiableEntityCach
 		//no changes to: taxonName
 		return result;
 	}
-
-
 }

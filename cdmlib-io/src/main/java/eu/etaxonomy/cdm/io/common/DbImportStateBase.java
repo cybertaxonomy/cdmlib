@@ -23,8 +23,11 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @author a.mueller
  * @since 11.05.2009
  */
-public abstract class DbImportStateBase<CONFIG extends DbImportConfiguratorBase, STATE extends DbImportStateBase> extends ImportStateBase<CONFIG, CdmImportBase> implements IPartitionedState {
-	@SuppressWarnings("unused")
+public abstract class DbImportStateBase<CONFIG extends DbImportConfiguratorBase, STATE extends DbImportStateBase>
+        extends ImportStateBase<CONFIG, CdmImportBase>
+        implements IPartitionedState {
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbImportStateBase.class);
 
 	public static final String CURRENT_OBJECT_NAMESPACE = "CurrentObjectNamespace";
@@ -32,17 +35,12 @@ public abstract class DbImportStateBase<CONFIG extends DbImportConfiguratorBase,
 
 	private final Map<String, User> usernameMap = new HashMap<String, User>();
 
-
 	private Reference partitionSourceReference;
 
 	private final RelatedObjectsHelper relatedObjectsHelper = new RelatedObjectsHelper();
 	//holds the classifications needed for this partition, the key is a value that differentiate classifications
 	//like the taxons reference (secundum)
 
-
-	/**
-	 * @param config
-	 */
 	protected DbImportStateBase(CONFIG config) {
 		super(config);
 	}
@@ -98,10 +96,7 @@ public abstract class DbImportStateBase<CONFIG extends DbImportConfiguratorBase,
 	public User getUser(String username){
 		return usernameMap.get(username);
 	}
-
 	public void putUser(String username, User user){
 		usernameMap.put(username, user);
 	}
-
-
 }

@@ -865,7 +865,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         TaxonName name2 = nameService.load(uuidSynonymName2);
         UUID name3Uuid = synonym1.getName().getUuid();
         TaxonName name3 = nameService.load(name3Uuid);
-        name3.addRelationshipFromName(name2, NameRelationshipType.LATER_HOMONYM(), null);
+        name3.addRelationshipFromName(name2, NameRelationshipType.LATER_HOMONYM(), null, null);
 
         service.saveOrUpdate(synonym1);
 
@@ -920,7 +920,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         TaxonName name2 = nameService.load(uuidSynonymName2);
         UUID name3Uuid = synonym1.getName().getUuid();
         TaxonName name3 = nameService.load(name3Uuid);
-        name3.addRelationshipFromName(name2, NameRelationshipType.LATER_HOMONYM(), null);
+        name3.addRelationshipFromName(name2, NameRelationshipType.LATER_HOMONYM(), null, null);
 
         service.saveOrUpdate(synonym1);
 
@@ -968,7 +968,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         TaxonName synName2 = nameService.load(uuidSynonymName2);
         UUID name3Uuid = synonym1.getName().getUuid();
         TaxonName synName1 = nameService.load(name3Uuid);
-        synName1.addRelationshipFromName(synName2, NameRelationshipType.BASIONYM(), null);
+        synName1.addRelationshipFromName(synName2, NameRelationshipType.BASIONYM(), null, null);
 
         service.saveOrUpdate(synonym1);
 
@@ -1024,7 +1024,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
         Synonym synonym1 = (Synonym)service.load(uuidSynonym1);
         TaxonName name2 = nameService.load(uuidSynonymName2);
-        synonym1.getName().addRelationshipFromName(name2, NameRelationshipType.LATER_HOMONYM(), null);
+        synonym1.getName().addRelationshipFromName(name2, NameRelationshipType.LATER_HOMONYM(), null, null);
 
         service.deleteSynonym(synonym1, new SynonymDeletionConfigurator());
 
@@ -1062,7 +1062,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
         Synonym synonym1 = (Synonym)service.load(uuidSynonym1);
         TaxonName name2 = nameService.load(uuidSynonymName2);
-        synonym1.getName().addRelationshipFromName(name2, NameRelationshipType.LATER_HOMONYM(), null);
+        synonym1.getName().addRelationshipFromName(name2, NameRelationshipType.LATER_HOMONYM(), null, null);
 
         service.saveOrUpdate(synonym1);
         nRelations = service.countSynonyms(true);
@@ -1463,7 +1463,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         IBotanicalName taxonName = nameService.find(SPECIES1_NAME_UUID);
         assertNotNull(taxonName);
         TaxonName fromName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
-        taxonName.addRelationshipFromName(fromName, NameRelationshipType.VALIDATED_BY_NAME(), null);
+        taxonName.addRelationshipFromName(fromName, NameRelationshipType.VALIDATED_BY_NAME(), null, null);
         nameService.save(fromName);
 
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator();
@@ -1984,7 +1984,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
             basionym.setGenusOrUninomial("Hieracilla");
             basionym.setCombinationAuthorship(deCandolle);
             basionym.setUuid(BASIONYM_UUID);
-            botName.addBasionym(basionym, null, null,"216");
+            botName.addBasionym(basionym, null, null,"216", null);
             nameService.saveOrUpdate(basionym);
             //species taxon that is the child of genus taxon
             IBotanicalName botSpecies = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());

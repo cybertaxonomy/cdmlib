@@ -30,20 +30,19 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @since 12.05.2009
  */
 //TODO remove ANNOTATABLE by ISourcable (but this is not CDMBase yet therefore not trivial
-public abstract class DbImportObjectCreationMapperBase<CREATE extends VersionableEntity, STATE extends DbImportStateBase<?,?>> extends DbImportMultiAttributeMapperBase<CREATE, STATE>  {
-	private static final Logger logger = Logger.getLogger(DbImportObjectCreationMapperBase.class);
+public abstract class DbImportObjectCreationMapperBase<CREATE extends VersionableEntity, STATE extends DbImportStateBase<?,?>>
+        extends DbImportMultiAttributeMapperBase<CREATE, STATE>  {
 
+    private static final Logger logger = Logger.getLogger(DbImportObjectCreationMapperBase.class);
 
 //******************************* ATTRIBUTES ***************************************/
+
 	protected String dbIdAttribute;
 	//TODO get standard namespace from mappingImport
 	protected String objectToCreateNamespace;
 
-
 //********************************* CONSTRUCTOR ****************************************/
-	/**
-	 * @param mappingImport
-	 */
+
 	protected DbImportObjectCreationMapperBase(String dbIdAttribute, String objectToCreateNamespace) {
 		super();
 		//TODO make it a single attribute mapper
@@ -61,11 +60,6 @@ public abstract class DbImportObjectCreationMapperBase<CREATE extends Versionabl
 		return result;
 	}
 
-	/**
-	 * @param rs
-	 * @param result
-	 * @throws SQLException
-	 */
 	protected abstract CREATE doInvoke(ResultSet rs, CREATE createdObject) throws SQLException;
 
 	/**
@@ -80,15 +74,15 @@ public abstract class DbImportObjectCreationMapperBase<CREATE extends Versionabl
 
 	/**
 	 * TODO also implemented in CdmImportBase (reduce redundance)
-	 * @throws SQLException
 	 */
 	public void addOriginalSource(ResultSet rs, CREATE cdmBase) throws SQLException {
 		if (cdmBase instanceof ISourceable ){
 			if (StringUtils.isBlank(dbIdAttribute)){
 				return;
 			}
-			IOriginalSource source;
-			ISourceable sourceable = (ISourceable<?>)cdmBase;
+			IOriginalSource<?> source;
+			@SuppressWarnings("unchecked")
+            ISourceable<IOriginalSource<?>> sourceable = (ISourceable<IOriginalSource<?>>)cdmBase;
 			Object id = rs.getObject(dbIdAttribute);
 			String strId = String.valueOf(id);
 			String idNamespace = this.objectToCreateNamespace;
@@ -115,5 +109,4 @@ public abstract class DbImportObjectCreationMapperBase<CREATE extends Versionabl
 	protected IInputTransformer getTransformer(){
 		return getState().getTransformer();
 	}
-
 }

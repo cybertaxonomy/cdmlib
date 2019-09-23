@@ -18,10 +18,12 @@ import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.DescriptiveSystemRole;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
+import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
 
@@ -77,12 +79,22 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
     public List<UUID> findFilteredTaxonNodes(DescriptiveDataSet descriptiveDataSet);
 
     /**
+     * Creates a {@link SpecimenRowWrapperDTO} from the given SpecimenNodeWrapper.<br>
+     * This service method is used when adding new specimen to the character matrix resp.
+     * to the {@link DescriptiveDataSet}.
+     * @param wrapper the specimen wrapper to use for creating the row wrapper
+     * @param datasetUuid the target dataset
+     * @return the result of the operation
+     */
+    public UpdateResult addRowWrapperToDataset(Collection<SpecimenNodeWrapper> wrapper, UUID datasetUuid);
+
+    /**
      * Creates a specimen row wrapper object for the given description
      * @param description the specimen description for which the wrapper should be created
-     * @param descriptiveDataSet the data set it should be used in
+     * @param descriptiveDataSetUuid the data set it should be used in
      * @return the created row wrapper
      */
-    public SpecimenRowWrapperDTO createSpecimenRowWrapper(SpecimenDescription description, DescriptiveDataSet descriptiveDataSet);
+    public SpecimenRowWrapperDTO createSpecimenRowWrapper(SpecimenDescription description, UUID descriptiveDataSetUuid);
 
     /**
      * Returns a {@link TaxonDescription} for a given taxon node with corresponding
@@ -114,6 +126,13 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      * @return either the found specimen description or a newly created one
      */
     public SpecimenDescription findSpecimenDescription(UUID descriptiveDataSetUuid, UUID specimenUuid, boolean addDatasetSource);
+
+    /**
+     * Returns all states for all supportedCategoricalEnumeration of this categorical feature
+     * @param featureUuid the feature which has to support categorical data
+     * @return list of all supported states
+     */
+    public List<TermDto> getSupportedStatesForFeature(UUID featureUuid);
 
     /**
      * Creates a new taxon description with the features defined in the dataset for the
@@ -155,5 +174,14 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      * @return the result of the operation
      */
     public UpdateResult aggregate(UUID descriptiveDataSetUuid,  DescriptionAggregationConfiguration config, IProgressMonitor monitor);
+
+    /**
+     * Generates a {@link PolytomousKey} for the given {@link DescriptiveDataSet} and sets
+     * the given taxon as the taxonomic scope
+     * @param datasetUuid the data set
+     * @param taxonUuid the taxonomic scope of the key
+     * @return the uuid of the monitor
+     */
+    UpdateResult generatePolytomousKey(UUID descriptiveDataSetUuid, UUID taxonUuid);
 
 }

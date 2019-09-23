@@ -6,17 +6,14 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.config.ConfigFileUtil;
-
-@Component
+// @Component
 public class DataSourceBeanLoader {
 
     private static final Logger logger = Logger.getLogger(DataSourceBeanLoader.class);
 
     private static final String DATASOURCE_BEANDEF_FILE = "datasources.xml";
-    private static final String DATASOURCE_BEANDEF_PATH = ConfigFileUtil.getCdmHomeDir().getPath();
+    // see #8506 private static final String DATASOURCE_BEANDEF_PATH = ConfigFileUtil.getCdmHomeDir().getPath();
 
     private static String userdefinedBeanDefinitionFile = null;
 
@@ -31,7 +28,7 @@ public class DataSourceBeanLoader {
     public static <T> Map<String, T> loadDataSources(final Class<T> requiredType) {
 
         Map<String, T> dataSources = new HashMap<String, T>();
-        String path = DATASOURCE_BEANDEF_PATH + (userdefinedBeanDefinitionFile == null ? DATASOURCE_BEANDEF_FILE : userdefinedBeanDefinitionFile);
+        String path = ""; // commented to avoid compile problems see #8506// DATASOURCE_BEANDEF_PATH + (userdefinedBeanDefinitionFile == null ? DATASOURCE_BEANDEF_FILE : userdefinedBeanDefinitionFile);
 
         logger.info("loading DataSourceBeans from: " + path);
         FileSystemResource file = new FileSystemResource(path);

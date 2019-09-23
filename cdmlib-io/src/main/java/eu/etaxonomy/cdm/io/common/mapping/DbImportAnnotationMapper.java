@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
@@ -35,8 +36,12 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
  * @author a.mueller
  * @since 01.03.2010
  */
-public class DbImportAnnotationMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, AnnotatableEntity> implements IDbImportMapper<DbImportStateBase<?,?>,AnnotatableEntity>{
-	private static final Logger logger = Logger.getLogger(DbImportAnnotationMapper.class);
+public class DbImportAnnotationMapper
+            extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, AnnotatableEntity>{
+
+    private static final Logger logger = Logger.getLogger(DbImportAnnotationMapper.class);
+
+    private MarkerType ifNullMarkerType;
 
 	/**
 	 * FIXME Warning: the annotation type creation is not yet implemented
@@ -47,11 +52,23 @@ public class DbImportAnnotationMapper extends DbSingleAttributeImportMapperBase<
 	 * @param labelAbbrev
 	 * @return
 	 */
+    @Deprecated
 	public static DbImportAnnotationMapper NewInstance(String dbAttributeString, UUID uuid, String label, String text, String labelAbbrev){
 		Language language = null;
 		AnnotationType annotationType = null;
-		return new DbImportAnnotationMapper(dbAttributeString, language, annotationType);
+		return new DbImportAnnotationMapper(dbAttributeString, language, annotationType, null);
 	}
+
+    /**
+     * @param dbAttributeString
+     * @param annotationType
+     * @param ifNullMarkerType the type of marker to set if the annotation value is null
+     * @return
+     */
+    public static DbImportAnnotationMapper NewInstance(String dbAttributeString, AnnotationType annotationType,
+            MarkerType ifNullMarkerType) {
+        return new DbImportAnnotationMapper(dbAttributeString, null, annotationType, ifNullMarkerType);
+    }
 
 	/**
 	 * * FIXME Warning: the annotation type creation is not yet implemented
@@ -64,7 +81,7 @@ public class DbImportAnnotationMapper extends DbSingleAttributeImportMapperBase<
 	 */
 	public static DbImportAnnotationMapper NewInstance(String dbAttributeString, UUID uuid, String label, String text, String labelAbbrev, Language language){
 		AnnotationType annotationType = null;
-		return new DbImportAnnotationMapper(dbAttributeString, language, annotationType);
+		return new DbImportAnnotationMapper(dbAttributeString, language, annotationType, null);
 	}
 
 	/**
@@ -84,24 +101,20 @@ public class DbImportAnnotationMapper extends DbSingleAttributeImportMapperBase<
 	 * @return
 	 */
 	public static DbImportAnnotationMapper NewInstance(String dbAttributeString, AnnotationType annotationType, Language language){
-		return new DbImportAnnotationMapper(dbAttributeString, language, annotationType);
+		return new DbImportAnnotationMapper(dbAttributeString, language, annotationType, null);
 	}
 
 
 	private AnnotationType annotationType;
 	private Language language;
 
-	/**
-	 * @param dbAttributeString
-	 * @param uuid
-	 * @param label
-	 * @param text
-	 * @param labelAbbrev
-	 */
-	private DbImportAnnotationMapper(String dbAttributeString, Language language, AnnotationType annotationType) {
+
+	private DbImportAnnotationMapper(String dbAttributeString, Language language, AnnotationType annotationType,
+	        MarkerType ifNullMarkerType) {
 		super(dbAttributeString, dbAttributeString);
 		this.language = language;
 		this.annotationType = annotationType;
+		this.ifNullMarkerType = ifNullMarkerType;
 	}
 
 	@Override
@@ -142,22 +155,16 @@ public class DbImportAnnotationMapper extends DbSingleAttributeImportMapperBase<
 	protected AnnotatableEntity doInvoke(AnnotatableEntity annotatableEntity, Object dbValue){
 		String strAnnotation = (String)dbValue;
 		if (StringUtils.isNotBlank(strAnnotation)){
-			Annotation annotation = Annotation.NewInstance(strAnnotation, annotationType, language);
+			Annotation annotation = Annotation.NewInstance(strAnnotation.trim(), annotationType, language);
 			if (annotatableEntity != null){
 				annotatableEntity.addAnnotation(annotation);
 			}
+		}else if(this.ifNullMarkerType != null){
+		    annotatableEntity.addMarker(ifNullMarkerType, true);
 		}
 		return annotatableEntity;
 	}
 
-	/**
-	 * @param service
-	 * @param uuid
-	 * @param label
-	 * @param text
-	 * @param labelAbbrev
-	 * @return
-	 */
 	protected AnnotationType getAnnotationType(CdmImportBase<?, ?> currentImport, UUID uuid, String label, String text, String labelAbbrev){
 		ITermService termService = currentImport.getTermService();
 		AnnotationType annotationType = (AnnotationType)termService.find(uuid);

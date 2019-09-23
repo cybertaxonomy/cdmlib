@@ -18,7 +18,6 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.context.event.ContextStartedEvent;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -183,6 +182,7 @@ public class FirstDataInserter extends AbstractDataInserter {
             checkAdminUser();
             checkDefaultGroups();
             assureRole_REMOTING_forEditors();
+            assureRole(Role.ROLE_USER_MANAGER);
             checkMetadata();
             firstDataInserted = true;
 

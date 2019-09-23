@@ -121,7 +121,7 @@ public class CdmUtilsTest {
 
     @Test
     public void testGetReadableResourceStream() {
-        String resourceFileName = CdmUtils.MUST_EXIST_FILE;
+        String resourceFileName = "MUST-EXIST.txt";
         try {
             InputStream inputStream = CdmUtils.getReadableResourceStream(resourceFileName);
             assertNotNull(inputStream);

@@ -97,8 +97,8 @@ public class TestTaxonServices {
 		name1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(),"Name1",null,"arvensis",null,(TeamOrPersonBase)linne,null,"p.1", null);
 		name2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(),"Name2",null,"lanzae",null,(TeamOrPersonBase)linne,null,"p.2", null);
 
-		name1.addRelationshipToName(name2, NameRelationshipType.BASIONYM(), "ruleTo");
-		name2.addRelationshipFromName(name1, NameRelationshipType.BASIONYM(), "ruleFrom");
+		name1.addRelationshipToName(name2, NameRelationshipType.BASIONYM(), "ruleTo", null);
+		name2.addRelationshipFromName(name1, NameRelationshipType.BASIONYM(), "ruleFrom", null);
 
 		appCtr.getNameService().save(name1);
 		appCtr.getNameService().save(name2);

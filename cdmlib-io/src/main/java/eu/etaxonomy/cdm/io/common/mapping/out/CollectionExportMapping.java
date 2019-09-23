@@ -74,7 +74,7 @@ public class CollectionExportMapping<STATE extends DbExportStateBase<CONFIG, TRA
 
 
 	@Override
-	public boolean invoke(CdmBase parent) throws SQLException{
+	public boolean invoke(CdmBase parent) {
 		try {
 			boolean result = true;
 			Collection<CdmBase> collection = getCollection(parent);

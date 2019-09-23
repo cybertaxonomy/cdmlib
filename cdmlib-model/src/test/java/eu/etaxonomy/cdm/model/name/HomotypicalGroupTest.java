@@ -93,7 +93,7 @@ public class HomotypicalGroupTest {
 
 	@Test
 	public void testGetReplacedSynonym() {
-		name3.addReplacedSynonym(name4, null, null, null);
+		name3.addReplacedSynonym(name4, null, null, null, null);
 		Set<TaxonName> replacedSyn =  name3.getHomotypicalGroup().getReplacedSynonym();
 		Assert.assertNotNull("Replaced synonym set should not be null", replacedSyn);
 		Assert.assertEquals("Number of replaced synonym should be 1", 1, replacedSyn.size());
@@ -103,7 +103,7 @@ public class HomotypicalGroupTest {
 	public void testGetBasionymAndReplacedSynonymRelations(){
 		name1.addBasionym(name2);
 		name3.addBasionym(name2);
-		name4.addReplacedSynonym(name2, null, null, null);
+		name4.addReplacedSynonym(name2, null, null, null, null);
 		Set<NameRelationship> rels = name2.getHomotypicalGroup().getBasionymAndReplacedSynonymRelations();
 		Assert.assertEquals("Number of relations should be 3", 3, rels.size());
 
@@ -112,7 +112,7 @@ public class HomotypicalGroupTest {
 	@Test
 	public void testGetUnrelatedNames(){
 		name1.addBasionym(name2);
-		name4.addReplacedSynonym(name2, null, null, null);
+		name4.addReplacedSynonym(name2, null, null, null, null);
 		Set<TaxonName> unrelatedNames = name2.getHomotypicalGroup().getUnrelatedNames();
 		Assert.assertEquals("Number of unrelatedNames should be 0", 0, unrelatedNames.size());
 		name1.getHomotypicalGroup().merge(name3.getHomotypicalGroup());

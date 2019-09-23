@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -38,6 +39,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.State;
@@ -50,6 +52,7 @@ import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.RightsType;
+import eu.etaxonomy.cdm.model.metadata.NamedAreaSearchField;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
@@ -701,6 +704,46 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
         return results;
     }
 
+
+    @Override
+    public List<NamedArea> listNamedAreaByAbbrev(List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern, MatchMode matchmode, NamedAreaSearchField abbrevType){
+        Session session = getSession();
+
+        Criteria crit = getSession().createCriteria(type, "namedArea");
+        if (!StringUtils.isBlank(pattern)){
+            if (matchmode == MatchMode.EXACT) {
+                crit.add(Restrictions.eq(abbrevType.getKey(), matchmode.queryStringFrom(pattern)));
+            } else {
+    //          crit.add(Restrictions.ilike("titleCache", matchmode.queryStringFrom(queryString)));
+                crit.add(Restrictions.like(abbrevType.getKey(), matchmode.queryStringFrom(pattern)));
+            }
+        }
+        if (limit != null && limit >= 0) {
+            crit.setMaxResults(limit);
+        }
+
+        if (vocs != null &&!vocs.isEmpty()){
+            crit.createAlias("namedArea.vocabulary", "voc");
+            Disjunction or = Restrictions.disjunction();
+            for (TermVocabulary voc: vocs){
+                Criterion criterion = Restrictions.eq("voc.id", voc.getId());
+                or.add(criterion);
+            }
+            crit.add(or);
+        }
+
+        crit.addOrder(Order.asc(abbrevType.getKey()));
+        if (limit == null){
+            limit = 1;
+        }
+        int firstItem = (pageNumber - 1) * limit;
+
+        crit.setFirstResult(0);
+        @SuppressWarnings("unchecked")
+        List<NamedArea> results = crit.list();
+        return results;
+    }
+
     @Override
     public long count(List<TermVocabulary> vocs, String pattern){
         Session session = getSession();
@@ -808,6 +851,39 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 
         return listNamedArea(vocs, 0, limit, pattern, MatchMode.BEGINNING);
 
+    }
+
+    @Override
+    public List<NamedArea> listNamedAreaByAbbrev(List<TermVocabulary> vocs, Integer limit, String pattern, NamedAreaSearchField type) {
+
+        return listNamedAreaByAbbrev(vocs, 0, limit, pattern, MatchMode.BEGINNING, type);
+
+    }
+
+    @Override
+    public List<TermDto> getSupportedStatesForFeature(UUID featureUuid){
+        List<TermDto> list = new ArrayList<>();
+        DefinedTermBase load = load(featureUuid);
+        if(load instanceof Feature){
+            Set<UUID> vocabularyUuids =
+                    ((Feature) load).getSupportedCategoricalEnumerations().stream()
+                    .map(catEnum->catEnum.getUuid())
+                    .collect(Collectors.toSet());
+            if(vocabularyUuids.isEmpty()){
+                return list;
+            }
+            String queryString = TermDto.getTermDtoSelect()
+                    + "where v.uuid in :vocabularyUuids "
+                    + "order by a.titleCache";
+            Query query =  getSession().createQuery(queryString);
+            query.setParameterList("vocabularyUuids", vocabularyUuids);
+
+            @SuppressWarnings("unchecked")
+            List<Object[]> result = query.list();
+
+            list = TermDto.termDtoListFrom(result);
+        }
+        return list;
     }
 
 }

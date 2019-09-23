@@ -1,9 +1,5 @@
 package eu.etaxonomy.cdm.api.service.dto;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 
 
@@ -19,7 +15,7 @@ public class FieldUnitDTO extends DerivateDTO{
 	private String collectionString;
 
 	private boolean hasType;
-	private List<UUID> taxonRelatedDerivedUnits = new ArrayList<>();
+	//private List<UUID> taxonRelatedDerivedUnits = new ArrayList<>();
 
 	private GatheringEventDTO gatheringEvent;
 
@@ -29,20 +25,12 @@ public class FieldUnitDTO extends DerivateDTO{
      */
     public FieldUnitDTO(FieldUnit fieldUnit) {
         super(fieldUnit);
+        if (fieldUnit.getGatheringEvent() != null){
+            gatheringEvent = GatheringEventDTO.newInstance(fieldUnit.getGatheringEvent());
+        }
+        setRecordBase(fieldUnit.getRecordBasis().getMessage());
+        setListLabel(fieldUnit.getTitleCache());
     }
-
-
-    public static FieldUnitDTO newInstance(FieldUnit fieldUnit){
-	    FieldUnitDTO fieldUnitDto = new FieldUnitDTO(fieldUnit);
-	    if (fieldUnit.getGatheringEvent() != null){
-	        fieldUnitDto.gatheringEvent = GatheringEventDTO.newInstance(fieldUnit.getGatheringEvent());
-	    }
-	    fieldUnitDto.setRecordBase(fieldUnit.getRecordBasis().getMessage());
-	    fieldUnitDto.setListLabel(fieldUnit.getTitleCache());
-
-	    return fieldUnitDto;
-
-	}
 
     /**
      * @return the country
@@ -120,31 +108,31 @@ public class FieldUnitDTO extends DerivateDTO{
     }
 
 
-    /**
-     * @return the taxonRelatedDerivedUnits
-     */
-    public List<UUID> getTaxonRelatedDerivedUnits() {
-        return taxonRelatedDerivedUnits;
-    }
+//    /**
+//     * @return the taxonRelatedDerivedUnits
+//     */
+//    public List<UUID> getTaxonRelatedDerivedUnits() {
+//        return taxonRelatedDerivedUnits;
+//    }
+//
+//
+//    /**
+//     * @param taxonRelatedDerivedUnits the taxonRelatedDerivedUnits to set
+//     */
+//    public void setTaxonRelatedDerivedUnits(List<UUID> taxonRelatedDerivedUnits) {
+//        this.taxonRelatedDerivedUnits = taxonRelatedDerivedUnits;
+//    }
 
 
-    /**
-     * @param taxonRelatedDerivedUnits the taxonRelatedDerivedUnits to set
-     */
-    public void setTaxonRelatedDerivedUnits(List<UUID> taxonRelatedDerivedUnits) {
-        this.taxonRelatedDerivedUnits = taxonRelatedDerivedUnits;
-    }
-
-
-    /**
-     * @param derivedUnitDTO
-     */
-    public void addTaxonRelatedDerivedUnits(DerivateDTO derivedUnitDTO) {
-        if (this.taxonRelatedDerivedUnits == null){
-            this.taxonRelatedDerivedUnits = new ArrayList<>();
-        }
-        this.taxonRelatedDerivedUnits.add(derivedUnitDTO.getUuid());
-
-    }
+//    /**
+//     * @param derivedUnitDTO
+//     */
+//    public void addTaxonRelatedDerivedUnits(DerivateDTO derivedUnitDTO) {
+//        if (this.taxonRelatedDerivedUnits == null){
+//            this.taxonRelatedDerivedUnits = new ArrayList<>();
+//        }
+//        this.taxonRelatedDerivedUnits.add(derivedUnitDTO.getUuid());
+//
+//    }
 
 }

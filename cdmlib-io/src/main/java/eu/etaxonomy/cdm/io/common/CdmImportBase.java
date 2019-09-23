@@ -921,11 +921,12 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 
         List<String> propPath = Arrays.asList(new String[]{"terms"});
         voc = getVocabularyService().load(uuid, propPath);
+        Class<T> clazz = null;
         if (voc == null){
             if (isOrdered){
                 voc = OrderedTermVocabulary.NewInstance(termType, description, label, abbrev, termSourceUri);
             }else{
-                voc = TermVocabulary.NewInstance(termType, description, label, abbrev, termSourceUri);
+                voc = TermVocabulary.NewInstance(termType, clazz, description, label, abbrev, termSourceUri);
             }
             voc.setUuid(uuid);
             getVocabularyService().save(voc);
@@ -1209,7 +1210,8 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 */
 	public SpecimenDescription getSpecimenDescription(SpecimenOrObservationBase specimen, Reference ref, boolean isImageGallery, boolean createNewIfNotExists) {
 		SpecimenDescription result = null;
-		Set<SpecimenDescription> descriptions= specimen.getDescriptions();
+		@SuppressWarnings("unchecked")
+        Set<SpecimenDescription> descriptions= specimen.getDescriptions();
 		for (SpecimenDescription description : descriptions){
 			if (description.isImageGallery() == isImageGallery){
 				if (hasCorrespondingSource(ref, description)){
@@ -1587,6 +1589,4 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
             getNameService().saveOrUpdate(rel.getToName());
         }
     }
-
-
 }

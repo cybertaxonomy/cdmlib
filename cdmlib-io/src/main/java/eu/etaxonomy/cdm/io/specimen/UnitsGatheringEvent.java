@@ -98,8 +98,10 @@ public class UnitsGatheringEvent {
             String date, String gatheringNotes, String gatheringMethod, ReferenceSystem referenceSystem,
              Abcd206ImportConfigurator config) {
         this.setLocality(termService, locality, languageIso);
-
-        Integer errorRadiusInt = Integer.getInteger(errorRadius);
+        Integer errorRadiusInt = null;
+        if (errorRadius != null){
+            errorRadiusInt = Integer.getInteger(errorRadius);
+        }
 
         this.setCoordinates(longitude, latitude, referenceSystem, errorRadiusInt);
         this.setDate(date);

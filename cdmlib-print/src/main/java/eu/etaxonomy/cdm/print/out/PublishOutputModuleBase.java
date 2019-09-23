@@ -174,7 +174,7 @@ public abstract class PublishOutputModuleBase implements IPublishOutputModule {
 		locationList.add(shippedStylesheetsDir);
 
 		// TODO this should be configured in a central place, see #2387
-		File userdir = new File(ConfigFileUtil.perUserCdmFolder() + l + "stylesheets"
+		File userdir = new File(ConfigFileUtil.perUserCdmFolderFallback() + l + "stylesheets"
 				+ l + getOutputFileSuffix());
 		locationList.add(userdir);
 

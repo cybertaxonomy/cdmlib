@@ -198,6 +198,24 @@ public class Source {
         }
     }
 
+    public Object getUniqueResult (String query){
+        ResultSet rs = getResultSet(query);
+        try {
+            if (!rs.next()){
+                throw new IllegalStateException("No result for unique result query: " + query);
+            }
+            Object result = rs.getObject(1);
+            return result;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public int getUniqueInteger (String query){
+        Object result = getUniqueResult(query);
+        return (Integer)result;
+    }
+
     //******* INSERT, UPDATE, DELETE *******************//
     /**
      * Executes an insert, update or delete statement.

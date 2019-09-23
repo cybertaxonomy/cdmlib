@@ -44,7 +44,7 @@ public class TermMapping {
 
 
 	private void readMapping(String filename) throws IOException {
-		String strResourceFileName = "mapping" + CdmUtils.getFolderSeperator() + filename;
+		String strResourceFileName = "mapping/" + filename;
 		InputStreamReader isr = CdmUtils.getUtf8ResourceReader(strResourceFileName);
 		CSVReader reader = new CSVReader(isr, separator);
 

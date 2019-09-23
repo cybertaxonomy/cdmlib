@@ -434,8 +434,7 @@ public class TimePeriodParser {
 	    timePeriod = parseString(timePeriod, strDateOnly);
 	    if (timePeriod.getFreeText()!= null){
 	        //if date could not be parsed, handle only as freetext
-	        timePeriod.setFreeText(strPeriod);
-
+	        timePeriod.setFreeText(strPeriod.trim());
 	    }
 	    return timePeriod;
 	}

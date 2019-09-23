@@ -30,19 +30,20 @@ public class ConfigFileUtil implements EnvironmentAware {
 
     private static final Logger logger = Logger.getLogger(ConfigFileUtil.class);
 
-    private static String userHome = null;
 
     /**
      * The per user cdm folder name: ".cdmLibrary"
      */
     private static final String CDM_FOLDER_NAME = ".cdmLibrary";
 
+    private String userHome = null;
+
     /**
      * The per user cdm folder "~/.cdmLibrary"
      */
-    private static File perUserCdmFolder = null;
+    private File perUserCdmFolder = null;
 
-    public static File perUserCdmFolder() {
+    public File perUserCdmFolder() {
         return perUserCdmFolder;
     }
 
@@ -50,8 +51,8 @@ public class ConfigFileUtil implements EnvironmentAware {
      * @deprecated use {@link #perUserCdmFolder()} instead
      */
     @Deprecated
-    public static File getCdmHomeDir() {
-        return perUserCdmFolder;
+    public File getCdmHomeDir() {
+        return perUserCdmFolder();
     }
 
     /**
@@ -83,7 +84,7 @@ public class ConfigFileUtil implements EnvironmentAware {
 
     /**
      * suggested sub folder for web app related data and configurations.
-     * Each webapp instance should use a dedicated subfolder or file
+     * Each webapp instance should use a dedicated sub-folder or file
      * which is named by the data source bean id.
      */
     public static final String SUBFOLDER_WEBAPP = "remote-webapp";
@@ -94,9 +95,9 @@ public class ConfigFileUtil implements EnvironmentAware {
     public void setEnvironment(Environment environment) {
         this.env = environment;
         if(userHome == null){
-            ConfigFileUtil.userHome = env.getRequiredProperty("user.home");
-            ConfigFileUtil.perUserCdmFolder = new File(userHome, CDM_FOLDER_NAME);
-            logger.info("user.home is set to " + ConfigFileUtil.userHome);
+            userHome = env.getRequiredProperty("user.home");
+            perUserCdmFolder = new File(userHome, CDM_FOLDER_NAME);
+            logger.info("user.home is set to " + userHome);
         }
     }
 
@@ -110,14 +111,14 @@ public class ConfigFileUtil implements EnvironmentAware {
      *
      * @see {@link #SUBFOLDER_WEBAPP}
      */
-    public static File getCdmHomeSubDir(String subFolderName) {
+    public File getCdmHomeSubDir(String subFolderName) {
 
         File parentFolder = getCdmHomeDir();
         return ensureSubfolderExists(parentFolder, subFolderName);
     }
 
     /**
-     * Provides subfolders of <code>${user.home}./cdmLibrary</code> folder without taking
+     * Provides sub-folders of <code>${user.home}./cdmLibrary</code> folder without taking
      * additional property sources into account which could be configured in
      * the Spring application context.
      * <p>
@@ -142,14 +143,14 @@ public class ConfigFileUtil implements EnvironmentAware {
      * Non existing folders will be created.
      *
      * @param subFolderName
-     *      The name of a subfolded. In most cases this will be {@link #SUBFOLDER_WEBAPP}
+     *      The name of a sub-folder. In most cases this will be {@link #SUBFOLDER_WEBAPP}
      * @param instanceName
      *      The name of the application instance. The name should be related to the data source id.
      * @return the sub folder or null in case the folder did not exist ant the attempt to create it has failed.
      *
      * @see {@link #SUBFOLDER_WEBAPP}
      */
-    public static File getCdmInstanceSubDir(String subFolderName, String instanceName) {
+    public File getCdmInstanceSubDir(String subFolderName, String instanceName) {
 
         File subfolder = ensureSubfolderExists(getCdmHomeDir(), subFolderName);
         return ensureSubfolderExists(subfolder, instanceName);
@@ -176,6 +177,8 @@ public class ConfigFileUtil implements EnvironmentAware {
         }
         return subfolder;
     }
+
+
     public static final String CDM_CONFIGFILE_OVERRIDE = "cdm.configfile.override.";
 
     private Properties props = null;
@@ -219,7 +222,7 @@ public class ConfigFileUtil implements EnvironmentAware {
         if(override != null){
             return new File(override);
         } else {
-            File configFolder = ConfigFileUtil.getCdmInstanceSubDir(ConfigFileUtil.SUBFOLDER_WEBAPP, instanceName);
+            File configFolder = getCdmInstanceSubDir(ConfigFileUtil.SUBFOLDER_WEBAPP, instanceName);
             return new File(configFolder, propertiesSet + ".properties");
         }
     }

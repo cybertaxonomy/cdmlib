@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
@@ -22,6 +23,8 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.State;
+import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
+import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 
 /**
@@ -37,15 +40,22 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
 
     private TaxonNodeDto taxonNode;
     private Map<Feature, DescriptionElementBase> featureToElementMap;
+    private Map<Feature, String> featureToDisplayDataMap;
 
     public RowWrapperDTO(T description, TaxonNodeDto taxonNode) {
         this.taxonNode = taxonNode;
         this.featureToElementMap = new HashMap<>();
+        this.featureToDisplayDataMap = new HashMap<>();
         this.description = description;
+
         Set<DescriptionElementBase> elements = description.getElements();
         for (DescriptionElementBase descriptionElementBase : elements) {
             Feature feature = descriptionElementBase.getFeature();
             featureToElementMap.put(feature, descriptionElementBase);
+            String displayData = generateDisplayString(descriptionElementBase);
+            if(displayData!=null){
+                featureToDisplayDataMap.put(feature, displayData);
+            }
         }
     }
 
@@ -71,20 +81,70 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
         return taxonNode;
     }
 
+    public String getDisplayDataForFeature(Feature feature){
+        return featureToDisplayDataMap.get(feature);
+    }
+
     public DescriptionElementBase getDataValueForFeature(Feature feature){
         DescriptionElementBase descriptionElementBase = featureToElementMap.get(feature);
         return descriptionElementBase;
     }
 
-    public void setDataValueForFeature(Feature feature, List<State> states){
-        /* Only CategoricalData is handled here because for QuantitativeData the value
-         * is set in the ModifyListener of the swt.Text in the CellEditor
-         * for each StatisticalMeasure. So no need to set it again here.
-         */
+    private String generateDisplayString(DescriptionElementBase descriptionElementBase){
+        String displayData = null;
+        if(descriptionElementBase instanceof CategoricalData){
+            CategoricalData categoricalData = (CategoricalData)descriptionElementBase;
+            displayData = categoricalData.getStatesOnly().stream()
+                    .map(state->state.getLabel())
+                    .collect(Collectors.joining(","));
+        }
+        if(descriptionElementBase instanceof QuantitativeData){
+            QuantitativeData quantitativeData = HibernateProxyHelper.deproxy(descriptionElementBase, QuantitativeData.class);
+            displayData = "";
+            Float min = quantitativeData.getMin();
+            Float max = quantitativeData.getMax();
+            if(min!=null||max!=null){
+                displayData += "["+(min!=null?min.toString():"?")+"-"+(max!=null?max.toString():"?")+"] ";
+            }
+            displayData += quantitativeData.getStatisticalValues().stream().
+            filter(value->value.getType().equals(StatisticalMeasure.EXACT_VALUE()))
+            .map(exact->Float.toString(exact.getValue()))
+            .collect(Collectors.joining(", "));
+        }
+        return displayData;
+    }
+
+    public void setDataValueForCategoricalData(Feature feature, List<State> states){
         DescriptionElementBase descriptionElementBase = featureToElementMap.get(feature);
         if(descriptionElementBase!=null && descriptionElementBase.isInstanceOf(CategoricalData.class)){
             CategoricalData categoricalData = HibernateProxyHelper.deproxy(descriptionElementBase, CategoricalData.class);
             categoricalData.setStateDataOnly(states);
+            // update display data cache
+            String displayData = generateDisplayString(categoricalData);
+            featureToDisplayDataMap.put(feature, displayData);
+        }
+    }
+
+    public void setDataValueForQuantitativeData(Feature feature, Map<StatisticalMeasure, List<String>> textFields){
+        DescriptionElementBase descriptionElementBase = featureToElementMap.get(feature);
+        if(descriptionElementBase instanceof QuantitativeData){
+            QuantitativeData quantitativeData = HibernateProxyHelper.deproxy(descriptionElementBase, QuantitativeData.class);
+            //clear values
+            quantitativeData.getStatisticalValues().clear();
+            //add back all values from text fields
+            textFields.forEach((measure, texts)->{
+                texts.forEach(text->{
+                    String string = text;
+                    try {
+                        float exactValue = Float.parseFloat(string);
+                        quantitativeData.addStatisticalValue(StatisticalMeasurementValue.NewInstance(measure, exactValue));
+                    } catch (NumberFormatException e) {
+                    }
+                });
+            });
+            // update display data cache
+            String displayData = generateDisplayString(quantitativeData);
+            featureToDisplayDataMap.put(feature, displayData);
         }
     }
 

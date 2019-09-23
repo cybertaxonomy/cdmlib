@@ -20,19 +20,20 @@ import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 
 /**
- * This class retrives or creates an existing or a new extension type.
+ * This class retrieves or creates an existing or a new extension type.
+ * Does NOT create and add an extension to the passed object as further information
+ * is needed to create an extension.
  *
  * @see DbImportDefinedTermCreationMapperBase
  * @author a.mueller
  * @since 11.03.2010
- * @version 1.0
  */
-public class DbImportExtensionTypeCreationMapper<STATE extends DbImportStateBase<?,?>> extends DbImportDefinedTermCreationMapperBase<ExtensionType, IdentifiableEntity, DbImportStateBase<?,?>> {
-	@SuppressWarnings("unused")
+public class DbImportExtensionTypeCreationMapper<STATE extends DbImportStateBase<?,?>>
+        extends DbImportDefinedTermCreationMapperBase<ExtensionType, IdentifiableEntity, DbImportStateBase<?,?>> {
+
 	private static final Logger logger = Logger.getLogger(DbImportExtensionTypeCreationMapper.class);
 
 //******************************** FACTORY METHOD ***************************************************/
-
 
 	/**
 	 *
@@ -44,25 +45,8 @@ public class DbImportExtensionTypeCreationMapper<STATE extends DbImportStateBase
 	 * @return
 	 */
 	public static DbImportExtensionTypeCreationMapper<?> NewInstance(String dbIdAttribute, String extensionTypeNamespace, String dbTermAttribute, String dbLabelAttribute, String dbLabelAbbrevAttribute){
-		return new DbImportExtensionTypeCreationMapper(dbIdAttribute, extensionTypeNamespace, dbTermAttribute, dbLabelAttribute, dbLabelAbbrevAttribute);
+		return new DbImportExtensionTypeCreationMapper<>(dbIdAttribute, extensionTypeNamespace, dbTermAttribute, dbLabelAttribute, dbLabelAbbrevAttribute);
 	}
-
-
-//	/**
-//	 * Creates a Distribution with status <code>status</code> and adds it to the description of a taxon.
-//	 * @param dbIdAttribute
-//	 * @param objectToCreateNamespace
-//	 * @param dbTaxonFkAttribute
-//	 * @param taxonNamespace
-//	 * @param status
-//	 * @return
-//	 */
-//	public static DbImportFeatureCreationMapper<?> NewInstance(String dbIdAttribute, String dbTermAttribute, String dbLabelAttribute, String dbLabelAbbrevAttribute){
-//		return new DbImportFeatureCreationMapper(dbIdAttribute, objectToCreateNamespace, dbTaxonFkAttribute, taxonNamespace, dbTextAttribute, language, feature, format);
-//	}
-
-//******************************* ATTRIBUTES ***************************************/
-
 
 //********************************* CONSTRUCTOR ****************************************/
 
@@ -73,7 +57,8 @@ public class DbImportExtensionTypeCreationMapper<STATE extends DbImportStateBase
 	 * @param dbLabelAttribute
 	 * @param dbLabelAbbrevAttribute
 	 */
-	protected DbImportExtensionTypeCreationMapper(String dbIdAttribute, String extensionTypeNamespace, String dbTermAttribute, String dbLabelAttribute, String dbLabelAbbrevAttribute) {
+	protected DbImportExtensionTypeCreationMapper(String dbIdAttribute, String extensionTypeNamespace,
+	        String dbTermAttribute, String dbLabelAttribute, String dbLabelAbbrevAttribute) {
 		super(dbIdAttribute, extensionTypeNamespace, dbTermAttribute, dbLabelAttribute, dbLabelAbbrevAttribute);
 	}
 
@@ -98,7 +83,6 @@ public class DbImportExtensionTypeCreationMapper<STATE extends DbImportStateBase
 	@Override
 	protected void saveTermToState(ExtensionType extensionType) {
 		getState().putExtensionType(extensionType);
-
 	}
 
 	@Override
@@ -112,6 +96,11 @@ public class DbImportExtensionTypeCreationMapper<STATE extends DbImportStateBase
 		}else{
 			return null;
 		}
-
 	}
+
+    @Override
+    protected void handleTermWithObject(IdentifiableEntity entity, ExtensionType extensionType) {
+        //Not yet implemented. Needs further information on extension, which is not available here
+    }
+
 }

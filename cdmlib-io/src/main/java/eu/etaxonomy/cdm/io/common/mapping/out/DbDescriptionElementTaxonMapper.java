@@ -25,7 +25,6 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 /**
  * @author a.mueller
  * @since 12.05.2009
- * @version 1.0
  */
 public class DbDescriptionElementTaxonMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{
 	@SuppressWarnings("unused")
@@ -42,19 +41,12 @@ public class DbDescriptionElementTaxonMapper extends DbSingleAttributeExportMapp
 		return new DbDescriptionElementTaxonMapper(dbAttributeString, isCache, cacheIsNameTitleCache, defaultValue);
 	}
 
-	/**
-	 * @param dbAttributeString
-	 * @param cdmAttributeString
-	 */
 	protected DbDescriptionElementTaxonMapper(String dbAttributeString, boolean isCache, boolean cacheIsNameTitleCache, Object defaultValue) {
 		super("inDescription.taxon", dbAttributeString, defaultValue);
 		this.isCache = isCache;
 		this.cacheIsNameTitleCache = cacheIsNameTitleCache;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValue(eu.etaxonomy.cdm.model.common.CdmBase)
-	 */
 	@Override
 	protected Object getValue(CdmBase cdmBase) {
 		Object result = null;
@@ -94,9 +86,6 @@ public class DbDescriptionElementTaxonMapper extends DbSingleAttributeExportMapp
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValueType()
-	 */
 	@Override
 	protected int getSqlType() {
 		if (isCache){
@@ -106,10 +95,6 @@ public class DbDescriptionElementTaxonMapper extends DbSingleAttributeExportMapp
 		}
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase#getTypeClass()
-	 */
 	@Override
 	public Class<?> getTypeClass() {
 		if (isCache){

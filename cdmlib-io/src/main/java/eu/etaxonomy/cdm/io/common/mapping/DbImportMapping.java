@@ -24,17 +24,15 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @author a.mueller
  * @since 12.05.2009
  */
-public class DbImportMapping<STATE extends DbImportStateBase, CONFIG extends IImportConfigurator> extends CdmIoMapping {
-	private static final Logger logger = Logger.getLogger(DbImportMapping.class);
+public class DbImportMapping<STATE extends DbImportStateBase, CONFIG extends IImportConfigurator>
+            extends CdmIoMapping {
+
+    private static final Logger logger = Logger.getLogger(DbImportMapping.class);
 
 	private boolean isInitialized = false;
 	private Class<? extends CdmBase> destinationClass;
 	private DbImportMapping<STATE, CONFIG> secondPathMapping;
 	private boolean blankToNull = false;
-
-	public DbImportMapping(){
-//		this.dbTableName = tableName;
-	}
 
 	public boolean initialize(DbImportStateBase<?,?> state, Class<? extends CdmBase> destinationClass){
 		if (!isInitialized){
@@ -76,11 +74,6 @@ public class DbImportMapping<STATE extends DbImportStateBase, CONFIG extends IIm
 
 	/**
 	 * Invokes the mapping. If secondPath is true, the secondPath mapping is invoked if it exists.
-	 * @param rs
-	 * @param objectsToSave
-	 * @param secondPath
-	 * @return
-	 * @throws SQLException
 	 */
 	public boolean invoke(ResultSet rs, Set<CdmBase> objectsToSave, boolean secondPath) throws SQLException{
 		boolean result = true;
@@ -111,7 +104,7 @@ public class DbImportMapping<STATE extends DbImportStateBase, CONFIG extends IIm
 				logger.warn("The objectToSave was (null). Please check that your mappers work correctly.");
 			}
 			return result;
-	}
+		}
 	}
 
 	public void setSecondPathMapping(DbImportMapping<STATE, CONFIG> secondPathMapping){
@@ -133,26 +126,4 @@ public class DbImportMapping<STATE extends DbImportStateBase, CONFIG extends IIm
 	public void setBlankToNull(boolean blankToNull) {
 		this.blankToNull = blankToNull;
 	}
-
-//	/**
-//	 * @return the berlinModelTableName
-//	 */
-//	public String getDbTableName() {
-//		return dbTableName;
-//	}
-//
-//	/**
-//	 * @param berlinModelTableName the berlinModelTableName to set
-//	 */
-//	public void setDbTableName(String dbTableName) {
-//		this.dbTableName = dbTableName;
-//	}
-//
-//
-//	protected List<CdmAttributeMapperBase> getAttributeMapperList(){
-//		List<CdmAttributeMapperBase> list = this.mapperList;
-//		return list;
-//	}
-
-
 }

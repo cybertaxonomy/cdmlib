@@ -30,7 +30,6 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 /**
  * @author a.mueller
  * @since Apr 05, 2016
- *
  */
 public class FloraCubaCondensedDistributionComposer extends CondensedDistributionComposerBase {
 
@@ -63,17 +62,12 @@ public class FloraCubaCondensedDistributionComposer extends CondensedDistributio
     public String getInternalAreaSeparator() {
         return internalAreaSeparator;
     }
-
     public void setInternalAreaSeparator(String internalAreaSeparator) {
         this.internalAreaSeparator = internalAreaSeparator;
     }
 
 // ***********************************************************************
 
-    /*
-     * {@inheritDoc}
-     * @return
-     */
     @Override
     public CondensedDistribution createCondensedDistribution(Collection<Distribution> filteredDistributions,
             List<Language> languages) {

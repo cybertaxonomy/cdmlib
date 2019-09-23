@@ -171,7 +171,7 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
                 TaxonName basionym;
                 try {
                     basionym = getName(state, ORIGINAL_NAME_USAGE_ID);
-                    name.addBasionym(basionym, sec, null, null);
+                    name.addBasionym(basionym, sec, null, null, null);
                     TaxonBase<?> basionymTaxon = getCdmTaxon(state, basionym, ORIGINAL_NAME_USAGE_ID, Synonym.class);
                     if (basionymTaxon.isInstanceOf(Synonym.class)){
                         Synonym basioSynonym = CdmBase.deproxy(basionymTaxon, Synonym.class);
@@ -304,7 +304,7 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
             if (state.getCurrentRecord().get(ORIGINAL_NAME_USAGE_ID)!= null){
                 try{
                     TaxonName basionym = getName(state, ORIGINAL_NAME_USAGE_ID);
-                    name.addBasionym(basionym, getTransactionalSourceReference(state), null, null);
+                    name.addBasionym(basionym, getTransactionalSourceReference(state), null, null, null);
 
                     TaxonBase<?> basionymTaxon = getCdmTaxon(state, basionym, ORIGINAL_NAME_USAGE_ID, TaxonBase.class);
                     if (basionymTaxon.isInstanceOf(Taxon.class)){
@@ -397,7 +397,7 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
 //                TaxonName basionym = makeDoubtfulBasionym(state, ORIGINAL_NAME_USAGE_ID, sec);
                   try {
                       TaxonName basionym = getName(state, ORIGINAL_NAME_USAGE_ID);
-                      name.addBasionym(basionym, sec, null, null);
+                      name.addBasionym(basionym, sec, null, null, null);
                 } catch (Exception e) {
                     String message = "Problem when handling basionym for " + name.getTitleCache();
                     state.getResult().addError(message, state.getRow());

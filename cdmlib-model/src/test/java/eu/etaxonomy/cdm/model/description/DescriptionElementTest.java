@@ -61,7 +61,8 @@ private static Logger logger = Logger.getLogger(DescriptionElementTest.class);
 		data.addStateData(stateData);
 
 		TermType modifierType = TermType.Modifier;
-		TermVocabulary<DefinedTerm> plantPartVoc = TermVocabulary.NewInstance(modifierType,"plant parts", "plant parts", "parts", null);
+		TermVocabulary<DefinedTerm> plantPartVoc = TermVocabulary.NewInstance(modifierType,
+		        DefinedTerm.class, "plant parts", "plant parts", "parts", null);
 		DefinedTerm leaf = DefinedTerm.NewModifierInstance("leaf", "leaf", null);
 		plantPartVoc.addTerm(leaf);
 		data.addModifier(leaf);
@@ -71,7 +72,8 @@ private static Logger logger = Logger.getLogger(DescriptionElementTest.class);
 		DefinedTerm notExistingPart = DefinedTerm.NewModifierInstance("not existing part", "not existing part", null);
 		plantPartVoc.addTerm(notExistingPart);
 
-		TermVocabulary<DefinedTerm> ethnicGroupVoc = TermVocabulary.NewInstance(TermType.Modifier,"An ethnic group", "ethnic group", null, null);
+		TermVocabulary<DefinedTerm> ethnicGroupVoc = TermVocabulary.NewInstance(TermType.Modifier,
+		        DefinedTerm.class, "An ethnic group", "ethnic group", null, null);
 		DefinedTerm scots = DefinedTerm.NewModifierInstance("Scots ", "Scots", null);
 		ethnicGroupVoc.addTerm(scots);
 		data.addModifier(scots);

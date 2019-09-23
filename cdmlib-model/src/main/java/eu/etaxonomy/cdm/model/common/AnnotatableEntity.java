@@ -81,6 +81,11 @@ public abstract class AnnotatableEntity extends VersionableEntity implements IAn
 			getMarkers().add(marker);
 		}
 	}
+    public Marker addMarker(MarkerType type, boolean value){
+        Marker marker = Marker.NewInstance(type, value);
+        addMarker(marker);
+        return marker;
+    }
 	@Override
     public void removeMarker(Marker marker){
 		if(getMarkers().contains(marker)) {
@@ -117,6 +122,15 @@ public abstract class AnnotatableEntity extends VersionableEntity implements IAn
 			getAnnotations().add(annotation);
 		}
 	}
+    public Set<Annotation> getAnnotations(UUID uuidAnnotationType){
+        Set<Annotation> result = new HashSet<>();
+        for (Annotation annotation: getAnnotations()){
+            if (annotation.getAnnotationType().getUuid().equals(uuidAnnotationType)){
+                result.add(annotation);
+            }
+        }
+        return result;
+    }
 
 	@Override
     public void removeAnnotation(Annotation annotation){

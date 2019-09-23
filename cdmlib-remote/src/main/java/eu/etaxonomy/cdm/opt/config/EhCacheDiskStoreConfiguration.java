@@ -31,11 +31,14 @@ public class EhCacheDiskStoreConfiguration {
     @Autowired
     private DataSourceProperties dataSourceProperties = null;
 
+    @Autowired
+    private ConfigFileUtil configFileUtil;
+
     @Bean
     public DiskStoreConfiguration diskStoreConfiguration(){
 
         DiskStoreConfiguration diskStoreConfiguration = new DiskStoreConfiguration();
-        File ehcacheFolder = ConfigFileUtil.getCdmHomeSubDir("ehcache");
+        File ehcacheFolder = configFileUtil.getCdmHomeSubDir("ehcache");
         String instanceName = dataSourceProperties.getCurrentDataSourceId();
         File instanceCacheFolder = new File(ehcacheFolder, instanceName);
         logger.debug("Setting ehcache diskstore location to " + instanceCacheFolder.getAbsolutePath());

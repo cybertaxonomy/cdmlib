@@ -22,6 +22,7 @@ import java.util.UUID;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
@@ -299,13 +300,24 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 
     @Override
     public List<TermVocabularyDto> findVocabularyDtoByTermTypes(Set<TermType> termTypes) {
+        return findVocabularyDtoByTermTypes(termTypes, true);
+    }
+
+    @Override
+    public List<TermVocabularyDto> findVocabularyDtoByTermTypes(Set<TermType> termTypes, boolean includeSubtypes) {
+        Set<TermType> termTypeWithSubType = new HashSet<>(termTypes);
+        if(includeSubtypes){
+            for (TermType termType : termTypes) {
+                termTypeWithSubType.addAll(termType.getGeneralizationOf(true));
+            }
+        }
         String queryString = ""
                 + "select v.uuid, v.termType, r "
                 + "from TermVocabulary as v LEFT JOIN v.representations AS r "
                 + "where v.termType in (:termTypes) "
                 ;
         Query query =  getSession().createQuery(queryString);
-        query.setParameterList("termTypes", termTypes);
+        query.setParameterList("termTypes", termTypeWithSubType);
 
         @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
@@ -386,6 +398,34 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
         }
 
         return dto;
+    }
+
+    @Override
+    public List<TermVocabularyDto> findVocabularyDtoByUuids(List<UUID> vocUuids) {
+        Session session = getSession();
+        Criteria crit = session.createCriteria(type);
+        Disjunction or = Restrictions.disjunction();
+        for (UUID uuid: vocUuids){
+            or.add(Restrictions.or(Restrictions.eq("uuid", uuid)));
+        }
+        crit.add(or);
+        crit.addOrder(Order.desc("created"));
+        List<TermVocabulary> result = crit.list();
+
+        if (result.size() == 0){
+            return null;
+        }
+        List<TermVocabularyDto> dtos = new ArrayList<>();
+        for (TermVocabulary voc: result){
+            TermVocabularyDto dto = new TermVocabularyDto(voc.getUuid(), voc.getRepresentations(), voc.getTermType());
+            for (Object o: voc.getTerms()){
+                DefinedTermBase term = (DefinedTermBase)o;
+                dto.addTerm(TermDto.fromTerm(term));
+            }
+            dtos.add(dto);
+
+        }
+        return dtos;
     }
 
 }

@@ -16,14 +16,20 @@ import java.io.InputStream;
 import java.net.URL;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.FileCopy;
 import eu.etaxonomy.cdm.config.CdmPersistentXMLSource;
 import eu.etaxonomy.cdm.config.ConfigFileUtil;
 
-public class CdmApplicationUtils {
+public class CdmApplicationUtils implements ApplicationContextAware {
     private static final Logger logger = Logger.getLogger(CdmApplicationUtils.class);
+
+    private static ApplicationContext applicationContext;
+
 
     //directory of the resources (configfiles etc.)
     static File fileResourceDir;
@@ -52,7 +58,15 @@ public class CdmApplicationUtils {
                 if (file.exists()){
                     fileResourceDir = file.getParentFile();
                 }else{
-                    File homeDir = ConfigFileUtil.getCdmHomeDir();
+                    File homeDir = null;
+                    if(applicationContext != null){
+                        try {
+                        ConfigFileUtil configFileUtil = applicationContext.getBean(ConfigFileUtil.class);
+                        homeDir = configFileUtil.perUserCdmFolder();
+                        } catch(Exception e) {
+                            logger.info("Can not use ConfigFileUtil to determine perUserCdmFolder, due to: " + e.getClass().toString() + " - " +  e.getMessage());
+                        }
+                    }
                     if (homeDir == null){
                         //no application context available
                         homeDir = ConfigFileUtil.getCdmHomeDirFallback();
@@ -97,6 +111,14 @@ public class CdmApplicationUtils {
             throw new RuntimeException(e);
         }
         return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
     }
 
 

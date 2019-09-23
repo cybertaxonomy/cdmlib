@@ -23,8 +23,11 @@ import eu.etaxonomy.cdm.model.common.Language;
  * @author a.mueller
  * @since 06.02.2012
  */
-public class DbLanguageMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{
-	private static final Logger logger = Logger.getLogger(DbLanguageMapper.class);
+public class DbLanguageMapper
+            extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>>
+            implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{
+
+    private static final Logger logger = Logger.getLogger(DbLanguageMapper.class);
 
 	private Method method;
 	private boolean isCache;
@@ -42,12 +45,6 @@ public class DbLanguageMapper extends DbSingleAttributeExportMapperBase<DbExport
 		return new DbLanguageMapper(cdmClass, methodName,  (Class<?>[])null, cdmAttribute, dbAttributeString, isCache, null);
 	}
 
-	/**
-	 * @param clazz
-	 * @param parameterTypes
-	 * @param dbAttributeString
-	 * @param cdmAttributeString
-	 */
 	protected DbLanguageMapper(Class<? extends CdmBase> clazz, String methodName, Class<?>[] parameterTypes, String cdmAttribute, String dbAttributeString, boolean isCache, Object defaultValue) {
 		super(cdmAttribute, dbAttributeString, defaultValue);
 		cdmClass =  clazz;
@@ -84,7 +81,8 @@ public class DbLanguageMapper extends DbSingleAttributeExportMapperBase<DbExport
 					return transformer.getKeyByLanguage(language);
 				}
 			} catch (Exception e) {
-				logger.error("Exception when invoking method: " + e.getLocalizedMessage());
+				logger.error("Exception when invoking method: " + e.getMessage());
+				e.printStackTrace();
 				return null;
 			}
 

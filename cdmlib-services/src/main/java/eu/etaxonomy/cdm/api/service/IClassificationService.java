@@ -114,16 +114,6 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
 
 
     /**
-     * @see #listRankSpecificRootNodes(Classification, TaxonNode, Rank, boolean, Integer, Integer, List)
-     * @deprecated keep this for compatibility to older versions, might be removed in versions >5.3
-     */
-    @Deprecated
-    public List<TaxonNode> listRankSpecificRootNodes(Classification classification,
-            Rank rank, boolean includeUnpublished, Integer pageSize, Integer pageIndex,
-            List<String> propertyPaths);
-
-
-    /**
      * Loads all TaxonNodes of the specified classification for a given Rank or lower.
      * If a branch of the classification tree is not containing a TaxonNode with a Taxon at the given
      * Rank the according node associated with the next lower Rank is taken as root node in this case.

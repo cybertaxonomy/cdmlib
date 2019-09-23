@@ -101,8 +101,6 @@ public class VerbatimTimePeriod extends TimePeriod {
          return new VerbatimTimePeriod(startDate, endDate);
      }
 
-
-
      /**
       * Factory method to create a TimePeriod from a <code>Calendar</code>. The Calendar is stored as the starting instant.
       * @return

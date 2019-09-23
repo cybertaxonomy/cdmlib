@@ -75,7 +75,8 @@ public class OwlExportTest  extends CdmTransactionalIntegrationTest{
 
     public List<UUID> createFeatureTree() {
         TermTree<Feature> tree = TermTree.NewFeatureInstance();
-        TermVocabulary<Feature> voc = TermVocabulary.NewInstance(TermType.Feature, "voc description", "vocabulary", "voc", URI.create("http://test.voc"));
+        TermVocabulary<Feature> voc = TermVocabulary.NewInstance(TermType.Feature, Feature.class,
+                "voc description", "vocabulary", "voc", URI.create("http://test.voc"));
 
         Feature featureA = Feature.NewInstance("A", "A", "A");
         voc.addTerm(featureA);
