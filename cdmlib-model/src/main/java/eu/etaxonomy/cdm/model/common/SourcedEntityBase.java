@@ -93,7 +93,8 @@ public abstract class SourcedEntityBase<SOURCE extends OriginalSourceBase<? exte
     }
 
     @Override
-    public SOURCE addSource(OriginalSourceType type, String id, String idNamespace, Reference citation, String microCitation) {
+    public SOURCE addSource(OriginalSourceType type, String id, String idNamespace,
+            Reference citation, String microCitation) {
         if (id == null && idNamespace == null && citation == null && microCitation == null){
             return null;
         }
@@ -101,6 +102,18 @@ public abstract class SourcedEntityBase<SOURCE extends OriginalSourceBase<? exte
         addSource(source);
         return source;
     }
+
+    @Override
+    public SOURCE addSource(OriginalSourceType type, Reference reference, String microReference,
+            String originalInformation) {
+        if (reference == null && isBlank(microReference) && isBlank(originalInformation)){
+            return null;
+        }
+        SOURCE source = createNewSource(type, null, null, reference, microReference, originalInformation);
+        addSource(source);
+        return source;
+    }
+
 
     @Override
     public void addSources(Set<SOURCE> sources){
@@ -160,7 +173,8 @@ public abstract class SourcedEntityBase<SOURCE extends OriginalSourceBase<? exte
         this.sources.clear();
     }
 
-    protected abstract SOURCE createNewSource(OriginalSourceType type, String idInSource, String idNamespace, Reference citation, String microReference, String originalNameString);
+    protected abstract SOURCE createNewSource(OriginalSourceType type, String idInSource, String idNamespace,
+            Reference citation, String microReference, String originalInformation);
 
 //****************** CLONE ************************************************/
 

@@ -39,10 +39,19 @@ public interface ISourceable<T extends IOriginalSource> {
      * @param type the {@link OriginalSourceType type} of the source
      * @param idInSource the id used in the source
      * @param idNamespace the namespace for the id in the source
-     * @param citation the source as a {@link Reference reference}
+     * @param reference the source as a {@link Reference reference}
      * @param microReference the details (e.g. page number) in the reference
 	 */
-	public T addSource(OriginalSourceType type, String id, String idNamespace, Reference citation, String microCitation);
+	public T addSource(OriginalSourceType type, String id, String idNamespace, Reference reference, String microReference);
+
+    /**
+     * @param type
+     * @param reference
+     * @param microReference
+     * @param originalInformation
+     * @return
+     */
+	public T addSource(OriginalSourceType type, Reference reference, String microReference, String originalInformation);
 
 
 	/**
@@ -57,27 +66,27 @@ public interface ISourceable<T extends IOriginalSource> {
      *
      * @param idInSource the id used in the source
      * @param idNamespace the namespace for the id in the source
-     * @param citation the source as a {@link Reference reference}
+     * @param reference the source as a {@link Reference reference}
      * @param microReference the details (e.g. page number) in the reference
      */
-	public T addImportSource(String id, String idNamespace, Reference citation, String microCitation);
+	public T addImportSource(String id, String idNamespace, Reference reference, String microReference);
 
     /**
      * Adds a {@link IOriginalSource source} of type {@link OriginalSourceType#PrimaryTaxonomicSource}
      * to this object.
      *
-     * @param citation the source as a {@link Reference reference}
+     * @param reference the source as a {@link Reference reference}
      * @param microReference the details (e.g. page number) in the reference
      */
-	public T addPrimaryTaxonomicSource(Reference citation, String microCitation);
+	public T addPrimaryTaxonomicSource(Reference reference, String microReference);
 
     /**
      * Adds a {@link IOriginalSource source} of type
      * {@link OriginalSourceType#PrimaryTaxonomicSource}
      * to this object.
      *
-     * @param citation the source as a {@link Reference reference}
+     * @param reference the source as a {@link Reference reference}
      */
-	public T addPrimaryTaxonomicSource(Reference citation);
+	public T addPrimaryTaxonomicSource(Reference reference);
 
 }

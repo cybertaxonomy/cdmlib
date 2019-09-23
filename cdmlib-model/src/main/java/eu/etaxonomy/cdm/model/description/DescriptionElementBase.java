@@ -407,11 +407,13 @@ public abstract class DescriptionElementBase extends AnnotatableEntity
     }
 
     @Override
-    public DescriptionElementSource addSource(OriginalSourceType type, String id, String idNamespace, Reference citation, String microCitation) {
-        if (id == null && idNamespace == null && citation == null && microCitation == null){
+    public DescriptionElementSource addSource(OriginalSourceType type, String id, String idNamespace,
+            Reference reference, String microReference) {
+        if (id == null && idNamespace == null && reference == null && microReference == null){
             return null;
         }
-        DescriptionElementSource source = DescriptionElementSource.NewInstance(type, id, idNamespace, citation, microCitation);
+        DescriptionElementSource source = DescriptionElementSource.NewInstance(type, id, idNamespace,
+                reference, microReference);
         addSource(source);
         return source;
     }
@@ -424,28 +426,39 @@ public abstract class DescriptionElementBase extends AnnotatableEntity
     }
 
     @Override
-    public DescriptionElementSource addImportSource(String id, String idNamespace, Reference citation, String microCitation) {
-        if (id == null && idNamespace == null && citation == null && microCitation == null){
+    public DescriptionElementSource addImportSource(String id, String idNamespace, Reference reference, String microReference) {
+        if (id == null && idNamespace == null && reference == null && microReference == null){
             return null;
         }
-        DescriptionElementSource source = DescriptionElementSource.NewInstance(OriginalSourceType.Import, id, idNamespace, citation, microCitation);
+        DescriptionElementSource source = DescriptionElementSource.NewInstance(OriginalSourceType.Import, id, idNamespace, reference, microReference);
         addSource(source);
         return source;
     }
 
     @Override
-    public DescriptionElementSource addPrimaryTaxonomicSource(Reference citation, String microCitation) {
-        if (citation == null && microCitation == null){
+    public DescriptionElementSource addPrimaryTaxonomicSource(Reference reference, String microReference) {
+        if (reference == null && microReference == null){
             return null;
         }
-        DescriptionElementSource source = DescriptionElementSource.NewPrimarySourceInstance(citation, microCitation);
+        DescriptionElementSource source = DescriptionElementSource.NewPrimarySourceInstance(reference, microReference);
         addSource(source);
         return source;
     }
 
     @Override
-    public DescriptionElementSource addPrimaryTaxonomicSource(Reference citation) {
-        return addPrimaryTaxonomicSource(citation, null);
+    public DescriptionElementSource addPrimaryTaxonomicSource(Reference reference) {
+        return addPrimaryTaxonomicSource(reference, null);
+    }
+
+
+
+    @Override
+    public DescriptionElementSource addSource(OriginalSourceType type, Reference reference,
+            String microReference, String originalInformation) {
+        DescriptionElementSource newSource = DescriptionElementSource.NewInstance(type, null, null,
+                reference, microReference, null, originalInformation);
+        addSource(newSource);
+        return newSource;
     }
 
     /**
@@ -453,14 +466,17 @@ public abstract class DescriptionElementBase extends AnnotatableEntity
      * @param type the type of the source
      * @param idInSource the id used in the source
      * @param idNamespace the namespace for the id in the source
-     * @param citation the source as a {@link Reference reference}
+     * @param reference the source as a {@link Reference reference}
      * @param microReference the details (e.g. page number) in the reference
      * @param nameUsedInSource the taxon name used in the source
      * @param originalNameString the name as text used in the source
      */
-    public void addSource(OriginalSourceType type, String idInSource, String idNamespace, Reference citation, String microReference, TaxonName nameUsedInSource, String originalNameString){
-        DescriptionElementSource newSource = DescriptionElementSource.NewInstance(type, idInSource, idNamespace, citation, microReference, nameUsedInSource, originalNameString);
+    public DescriptionElementSource addSource(OriginalSourceType type, String idInSource, String idNamespace,
+            Reference reference, String microReference, TaxonName nameUsedInSource, String originalNameString){
+        DescriptionElementSource newSource = DescriptionElementSource.NewInstance(type, idInSource, idNamespace,
+                reference, microReference, nameUsedInSource, originalNameString);
         addSource(newSource);
+        return newSource;
     }
 
     @Override
@@ -510,8 +526,6 @@ public abstract class DescriptionElementBase extends AnnotatableEntity
     public boolean isCharacterData() {
         return false;
     }
-
-
 
 //************************** CLONE **********************************************************/
 
