@@ -521,95 +521,120 @@ public class DescriptiveDataSetService
         }
 
         //extract all character description elements
-        descriptions.forEach(description->{
-            description.getElements()
-            .stream()
+        for (DescriptionBase<?> description : descriptions) {
+            description.getElements().stream()
             //filter out elements that do not have a Character as Feature
-            .filter(element->HibernateProxyHelper.isInstanceOf(((DescriptionElementBase)element).getFeature(), Character.class))
-            .forEach(ele->{
-                DescriptionElementBase descriptionElement = (DescriptionElementBase)ele;
-                List<DescriptionElementBase> list = featureToElementMap.get(descriptionElement.getFeature());
-                if(list==null){
-                    list = new ArrayList<>();
-                }
-                list.add(descriptionElement);
-                featureToElementMap.put(HibernateProxyHelper.deproxy(descriptionElement.getFeature(), Character.class), list);
-            });
-        });
+            .filter(element->HibernateProxyHelper.isInstanceOf(element.getFeature(), Character.class))
+            .forEach(ele->addCharacterToMap(featureToElementMap, ele));
+        }
 
-        // create new aggregation
-        TaxonDescription description = TaxonDescription.NewInstance(taxon);
-        description.setTitleCache("[Aggregation] "+dataSet.getTitleCache(), true);
-        description.getTypes().add(DescriptionType.AGGREGATED);
-        description.addSource(IdentifiableSource.NewInstance(OriginalSourceType.Aggregation));
-        description.addDescriptiveDataSet(dataSet);
+        TaxonDescription aggregationDescription = createAggregationDescription(taxon, dataSet);
 
-        featureToElementMap.forEach((feature, elements)->{
-            //aggregate categorical data
-            if(feature.isSupportsCategoricalData()){
-                CategoricalData aggregate = CategoricalData.NewInstance(feature);
-                elements.stream()
-                .filter(element->element instanceof CategoricalData)
-                .forEach(categoricalData->((CategoricalData)categoricalData).getStateData()
-                        .forEach(stateData->aggregate.addStateData((StateData) stateData.clone())));
-                description.addElement(aggregate);
-            }
-            //aggregate quantitative data
-            else if(feature.isSupportsQuantitativeData()){
-                QuantitativeData aggregate = QuantitativeData.NewInstance(feature);
-                List<Float> values = new ArrayList<>();
-                for (DescriptionElementBase element : elements) {
-                    if(element instanceof QuantitativeData){
-                        QuantitativeData quantitativeData = (QuantitativeData)element;
-                        values.addAll(quantitativeData.getStatisticalValues().stream()
-                        .filter(value->value.getType().equals(StatisticalMeasure.EXACT_VALUE()))
-                        .map(exact->exact.getValue())
-                        .collect(Collectors.toList()));
-                        if(quantitativeData.getMin()!=null){
-                            values.add(quantitativeData.getMin());
-                        }
-                        if(quantitativeData.getMax()!=null){
-                            values.add(quantitativeData.getMax());
-                        }
-                    }
-                }
-                OptionalDouble min = values.stream().mapToDouble(value->(double)value).min();
-                OptionalDouble max = values.stream().mapToDouble(value->(double)value).max();
-                OptionalDouble avg = values.stream().mapToDouble(value->(double)value).average();
-                if(min.isPresent()){
-                    aggregate.setMinimum((float)min.getAsDouble(), null);
-                }
-                if(max.isPresent()){
-                    aggregate.setMaximum((float)max.getAsDouble(), null);
-                }
-                if(avg.isPresent()){
-                    aggregate.setAverage((float)avg.getAsDouble(), null);
-                }
-                description.addElement(aggregate);
-            }
-        });
+        aggregateCharacterData(featureToElementMap, aggregationDescription);
 
         // add sources to aggregation description
         // create a snapshot of those descriptions that were used to create the aggregated descriptions
         // TODO implement when the clones descriptions can be attached to taxon descriptions as sources
         for (DescriptionBase<?> descriptionBase : descriptions) {
-            if(descriptionBase instanceof SpecimenDescription){
-                SpecimenDescription specimenDescription = (SpecimenDescription)descriptionBase;
-                SpecimenOrObservationBase<?> specimenOrObservation = specimenDescription.getDescribedSpecimenOrObservation();
-                SpecimenDescription clone = (SpecimenDescription) specimenDescription.clone();
-                clone.getTypes().add(DescriptionType.CLONE_FOR_SOURCE);
-                specimenOrObservation.addDescription(clone);
-                IdentifiableSource source = IdentifiableSource.NewInstance(OriginalSourceType.Aggregation);
-                source.setIdInSource(clone.getUuid().toString());
-                description.addSource(source);
-
-            }
+            addSourceDescription(aggregationDescription, descriptionBase);
         }
 
         result.addUpdatedObject(taxon);
-        result.addUpdatedObject(description);
+        result.addUpdatedObject(aggregationDescription);
 
         return result;
+    }
+
+    private void aggregateCharacterData(Map<Character, List<DescriptionElementBase>> featureToElementMap,
+            TaxonDescription aggregationDescription) {
+        for(Entry<Character, List<DescriptionElementBase>> entry:featureToElementMap.entrySet()){
+            Character character = entry.getKey();
+            List<DescriptionElementBase> elements = entry.getValue();
+            //aggregate categorical data
+            if(character.isSupportsCategoricalData()){
+                aggregateCategoricalData(aggregationDescription, character, elements);
+            }
+            //aggregate quantitative data
+            else if(character.isSupportsQuantitativeData()){
+                aggregateQuantitativeData(aggregationDescription, character, elements);
+            }
+        }
+    }
+
+    private TaxonDescription createAggregationDescription(Taxon taxon, DescriptiveDataSet dataSet) {
+        TaxonDescription aggregationDescription = TaxonDescription.NewInstance(taxon);
+        aggregationDescription.setTitleCache("[Aggregation] "+dataSet.getTitleCache(), true);
+        aggregationDescription.getTypes().add(DescriptionType.AGGREGATED);
+        aggregationDescription.addSource(IdentifiableSource.NewInstance(OriginalSourceType.Aggregation));
+        aggregationDescription.addDescriptiveDataSet(dataSet);
+        return aggregationDescription;
+    }
+
+    private void addSourceDescription(TaxonDescription description, DescriptionBase<?> descriptionBase) {
+        if(descriptionBase instanceof SpecimenDescription){
+            SpecimenDescription specimenDescription = (SpecimenDescription)descriptionBase;
+            SpecimenOrObservationBase<?> specimenOrObservation = specimenDescription.getDescribedSpecimenOrObservation();
+            SpecimenDescription clone = (SpecimenDescription) specimenDescription.clone();
+            clone.getTypes().add(DescriptionType.CLONE_FOR_SOURCE);
+            specimenOrObservation.addDescription(clone);
+            IdentifiableSource source = IdentifiableSource.NewInstance(OriginalSourceType.Aggregation);
+            source.setIdInSource(clone.getUuid().toString());
+            description.addSource(source);
+
+        }
+    }
+
+    private void aggregateQuantitativeData(TaxonDescription description, Character character,
+            List<DescriptionElementBase> elements) {
+        QuantitativeData aggregate = QuantitativeData.NewInstance(character);
+        List<Float> values = new ArrayList<>();
+        for (DescriptionElementBase element : elements) {
+            if(element instanceof QuantitativeData){
+                QuantitativeData quantitativeData = (QuantitativeData)element;
+                values.addAll(quantitativeData.getStatisticalValues().stream()
+                .filter(value->value.getType().equals(StatisticalMeasure.EXACT_VALUE()))
+                .map(exact->exact.getValue())
+                .collect(Collectors.toList()));
+                if(quantitativeData.getMin()!=null){
+                    values.add(quantitativeData.getMin());
+                }
+                if(quantitativeData.getMax()!=null){
+                    values.add(quantitativeData.getMax());
+                }
+            }
+        }
+        OptionalDouble min = values.stream().mapToDouble(value->(double)value).min();
+        OptionalDouble max = values.stream().mapToDouble(value->(double)value).max();
+        OptionalDouble avg = values.stream().mapToDouble(value->(double)value).average();
+        if(min.isPresent()){
+            aggregate.setMinimum((float)min.getAsDouble(), null);
+        }
+        if(max.isPresent()){
+            aggregate.setMaximum((float)max.getAsDouble(), null);
+        }
+        if(avg.isPresent()){
+            aggregate.setAverage((float)avg.getAsDouble(), null);
+        }
+        description.addElement(aggregate);
+    }
+
+    private void aggregateCategoricalData(TaxonDescription description, Character character,
+            List<DescriptionElementBase> elements) {
+        CategoricalData aggregate = CategoricalData.NewInstance(character);
+        elements.stream()
+        .filter(element->element instanceof CategoricalData)
+        .forEach(categoricalData->((CategoricalData)categoricalData).getStateData()
+                .forEach(stateData->aggregate.addStateData((StateData) stateData.clone())));
+        description.addElement(aggregate);
+    }
+
+    private void addCharacterToMap(Map<Character, List<DescriptionElementBase>> featureToElementMap, DescriptionElementBase descriptionElement) {
+        List<DescriptionElementBase> list = featureToElementMap.get(descriptionElement.getFeature());
+        if(list==null){
+            list = new ArrayList<>();
+        }
+        list.add(descriptionElement);
+        featureToElementMap.put(HibernateProxyHelper.deproxy(descriptionElement.getFeature(), Character.class), list);
     }
 
     @Override
