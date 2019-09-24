@@ -214,8 +214,6 @@ public class ResultSetPartitioner<STATE extends IPartitionedState> {
 		return partitionResultSet;
 	}
 
-
-
 	/**
 	 * Computes the value result set needed to handle a partition by using the <code>currentIdList</code>
 	 * created during {@link #nextPartition}
@@ -239,11 +237,6 @@ public class ResultSetPartitioner<STATE extends IPartitionedState> {
 		return resultSet;
 	}
 
-	/**
-	 * @param id
-	 * @param i
-	 * @return
-	 */
 	private String addApostropheIfNeeded(String id, int sqlType) {
 		String result = id;
 		if (isStringType(sqlType)){
@@ -252,10 +245,6 @@ public class ResultSetPartitioner<STATE extends IPartitionedState> {
 		return result;
 	}
 
-	/**
-	 * @param sqlType
-	 * @return
-	 */
 	private boolean isStringType(int sqlType) {
 		if(sqlType == Types.INTEGER){
 			return false;  //standard case
