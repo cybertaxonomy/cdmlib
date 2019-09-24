@@ -96,6 +96,7 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
             CategoricalData categoricalData = (CategoricalData)descriptionElementBase;
             displayData = categoricalData.getStatesOnly().stream()
                     .map(state->state.getLabel())
+                    .distinct()
                     .collect(Collectors.joining(","));
         }
         if(descriptionElementBase instanceof QuantitativeData){
