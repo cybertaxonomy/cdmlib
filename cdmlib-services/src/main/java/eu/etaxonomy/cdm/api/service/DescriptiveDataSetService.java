@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.OptionalDouble;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -43,7 +44,6 @@ import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
-import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -557,10 +557,34 @@ public class DescriptiveDataSetService
             //aggregate quantitative data
             else if(feature.isSupportsQuantitativeData()){
                 QuantitativeData aggregate = QuantitativeData.NewInstance(feature);
-                elements.stream()
-                .filter(element->element instanceof QuantitativeData)
-                .forEach(categoricalData->((QuantitativeData)categoricalData).getStatisticalValues()
-                        .forEach(statisticalValue->aggregate.addStatisticalValue((StatisticalMeasurementValue) statisticalValue.clone())));
+                List<Float> values = new ArrayList<>();
+                for (DescriptionElementBase element : elements) {
+                    if(element instanceof QuantitativeData){
+                        QuantitativeData quantitativeData = (QuantitativeData)element;
+                        values.addAll(quantitativeData.getStatisticalValues().stream()
+                        .filter(value->value.getType().equals(StatisticalMeasure.EXACT_VALUE()))
+                        .map(exact->exact.getValue())
+                        .collect(Collectors.toList()));
+                        if(quantitativeData.getMin()!=null){
+                            values.add(quantitativeData.getMin());
+                        }
+                        if(quantitativeData.getMax()!=null){
+                            values.add(quantitativeData.getMax());
+                        }
+                    }
+                }
+                OptionalDouble min = values.stream().mapToDouble(value->(double)value).min();
+                OptionalDouble max = values.stream().mapToDouble(value->(double)value).max();
+                OptionalDouble avg = values.stream().mapToDouble(value->(double)value).average();
+                if(min.isPresent()){
+                    aggregate.setMinimum((float)min.getAsDouble(), null);
+                }
+                if(max.isPresent()){
+                    aggregate.setMaximum((float)max.getAsDouble(), null);
+                }
+                if(avg.isPresent()){
+                    aggregate.setAverage((float)avg.getAsDouble(), null);
+                }
                 description.addElement(aggregate);
             }
         });
