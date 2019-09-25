@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -39,7 +38,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.State;
@@ -863,26 +861,27 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
     @Override
     public List<TermDto> getSupportedStatesForFeature(UUID featureUuid){
         List<TermDto> list = new ArrayList<>();
-        DefinedTermBase load = load(featureUuid);
-        if(load instanceof Feature){
-            Set<UUID> vocabularyUuids =
-                    ((Feature) load).getSupportedCategoricalEnumerations().stream()
-                    .map(catEnum->catEnum.getUuid())
-                    .collect(Collectors.toSet());
-            if(vocabularyUuids.isEmpty()){
-                return list;
-            }
-            String queryString = TermDto.getTermDtoSelect()
-                    + "where v.uuid in :vocabularyUuids "
-                    + "order by a.titleCache";
-            Query query =  getSession().createQuery(queryString);
-            query.setParameterList("vocabularyUuids", vocabularyUuids);
-
-            @SuppressWarnings("unchecked")
-            List<Object[]> result = query.list();
-
-            list = TermDto.termDtoListFrom(result);
+        String supportedCategoriesQueryString = "SELECT cat.uuid "
+                + "from DefinedTermBase t "
+                + "join t.supportedCategoricalEnumerations as cat "
+                + "where t.uuid = :featureUuid";
+        Query supportedCategoriesQuery =  getSession().createQuery(supportedCategoriesQueryString);
+        supportedCategoriesQuery.setParameter("featureUuid", featureUuid);
+        List<UUID> supportedCategories = supportedCategoriesQuery.list();
+        if(supportedCategories.isEmpty()){
+            return list;
         }
+
+        String queryString = TermDto.getTermDtoSelect()
+                + "where v.uuid in (:supportedCategories) "
+                + "order by a.titleCache";
+        Query query =  getSession().createQuery(queryString);
+        query.setParameterList("supportedCategories", supportedCategories);
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> result = query.list();
+
+        list = TermDto.termDtoListFrom(result);
         return list;
     }
 
