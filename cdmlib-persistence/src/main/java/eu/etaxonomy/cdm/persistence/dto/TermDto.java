@@ -224,6 +224,7 @@ public class TermDto extends AbstractTermDto{
         return getTermDtoSelect("DefinedTermBase");
     }
 
+
     public Collection<UUID> getMedia() {
         return media;
     }
@@ -258,6 +259,9 @@ public class TermDto extends AbstractTermDto{
                 + "LEFT JOIN v.representations as voc_rep "
                 ;
     }
+
+
+
 
     public static List<TermDto> termDtoListFrom(List<Object[]> results) {
         List<TermDto> dtos = new ArrayList<>(); // list to ensure order

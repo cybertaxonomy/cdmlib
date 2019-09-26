@@ -290,4 +290,11 @@ public interface IDefinedTermDao extends IIdentifiableDao<DefinedTermBase>, ITit
      */
     public Collection<TermDto> findByUUIDsAsDto(List<UUID> uuidList);
 
+
+    /**
+     * @param uuidList
+     * @return
+     */
+    public Collection<TermDto> findByTypeAsDto(TermType termType);
+
 }

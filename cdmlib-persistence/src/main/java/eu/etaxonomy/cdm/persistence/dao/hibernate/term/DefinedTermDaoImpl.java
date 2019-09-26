@@ -819,6 +819,26 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
     }
 
     @Override
+    public Collection<TermDto> findByTypeAsDto(TermType termType) {
+        if (termType == null){
+            return null;
+        }
+        String queryString = TermDto.getTermDtoSelect()
+                + " where a.termType = :termType ";
+        Query query =  getSession().createQuery(queryString);
+
+        if(termType!=null){
+            query.setParameter("termType", termType);
+        }
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> result = query.list();
+
+        List<TermDto> list = TermDto.termDtoListFrom(result);
+        return list;
+    }
+
+    @Override
     public Collection<TermDto> findByUriAsDto(URI uri, String termLabel, TermType termType) {
         String queryString = TermDto.getTermDtoSelect()
                 + " where a.uri like :uri "
@@ -893,7 +913,7 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
         }
 
         String queryString = TermDto.getTermDtoSelect()
-                + "where v.uuid in (:uuidList) "
+                + "where a.uuid in :uuidList "
                 + "order by a.titleCache";
         Query query =  getSession().createQuery(queryString);
         query.setParameterList("uuidList", uuidList);
