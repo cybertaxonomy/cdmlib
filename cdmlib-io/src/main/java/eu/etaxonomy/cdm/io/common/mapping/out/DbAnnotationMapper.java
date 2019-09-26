@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.io.common.mapping.out;
 
 import java.sql.Types;
+import java.util.Collection;
+import java.util.HashSet;
 
 import org.apache.log4j.Logger;
 
@@ -17,6 +19,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
@@ -33,25 +36,27 @@ public class DbAnnotationMapper extends DbSingleAttributeExportMapperBase<DbExpo
 
 	private final String annotationPrefix;
 	private String separator = ";";
+	private Collection<AnnotationType> excludedTypes = new HashSet<>();
 
 	public static DbAnnotationMapper NewInstance(String annotationPrefix, String dbAttributeString){
-		return new DbAnnotationMapper(annotationPrefix, dbAttributeString, null, null);
+		return new DbAnnotationMapper(annotationPrefix, dbAttributeString, null, null, null);
 	}
 
 	public static DbAnnotationMapper NewInstance(String annotationPrefix, String dbAttributeString, String defaultValue){
-		return new DbAnnotationMapper(annotationPrefix, dbAttributeString, defaultValue, null);
+		return new DbAnnotationMapper(annotationPrefix, dbAttributeString, null, defaultValue, null);
 	}
 
-	/**
-	 * @param dbAttributeString
-	 * @param cdmAttributeString
-	 */
-	protected DbAnnotationMapper(String annotationPrefix, String dbAttributeString, Object defaultValue, String separator) {
+    public static DbAnnotationMapper NewInstance(Collection<AnnotationType> excludedTypes, String dbAttributeString){
+        return new DbAnnotationMapper(null, dbAttributeString, excludedTypes, null, null);
+    }
+
+	protected DbAnnotationMapper(String annotationPrefix, String dbAttributeString, Collection<AnnotationType> excludedTypes, Object defaultValue, String separator) {
 		super("annotations", dbAttributeString, defaultValue);
 		this.annotationPrefix  = annotationPrefix;
 		if (separator != null){
 			this.separator = separator;
 		}
+		this.excludedTypes = excludedTypes == null? new HashSet<>(): excludedTypes;
 	}
 
 	@Override
@@ -60,7 +65,10 @@ public class DbAnnotationMapper extends DbSingleAttributeExportMapperBase<DbExpo
 		if (cdmBase.isInstanceOf(AnnotatableEntity.class)){
 			AnnotatableEntity annotatableEntity = (AnnotatableEntity)cdmBase;
 			for (Annotation annotation : annotatableEntity.getAnnotations()){
-				String text = annotation.getText();
+				if (excludedTypes.contains(annotation.getAnnotationType())){
+				    break;
+				}
+			    String text = annotation.getText();
 				if (text != null){
 					if (this.annotationPrefix != null && text.startsWith(this.annotationPrefix) ){
 						if (text.startsWith(this.annotationPrefix)){
