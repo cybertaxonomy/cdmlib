@@ -720,49 +720,6 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
         return (Long) criteria.uniqueResult();
     }
 
-    @Override
-    public List<RelationshipBase> getAllRelationships(Integer limit, Integer start) {
-        AuditEvent auditEvent = getAuditEventFromContext();
-        if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            // for some reason the HQL .class discriminator didn't work here so I created this preliminary
-            // implementation for now. Should be cleaned in future.
-
-            @SuppressWarnings("rawtypes")
-            List<RelationshipBase> result = new ArrayList<>();
-
-            int nameRelSize = countAllRelationships(NameRelationship.class);
-            if (nameRelSize > start){
-
-                String hql = " FROM %s as rb ORDER BY rb.id ";
-                hql = String.format(hql, NameRelationship.class.getSimpleName());
-                Query query = getSession().createQuery(hql);
-                query.setFirstResult(start);
-                if (limit != null){
-                    query.setMaxResults(limit);
-                }
-                result = query.list();
-            }
-            limit = limit - result.size();
-            if (limit > 0){
-                String hql = " FROM HybridRelationship as rb ORDER BY rb.id ";
-                hql = String.format(hql, HybridRelationship.class.getSimpleName());
-                Query query = getSession().createQuery(hql);
-                start = (nameRelSize > start) ? 0 : (start - nameRelSize);
-                query.setFirstResult(start);
-                if (limit != null){
-                    query.setMaxResults(limit);
-                }
-                result.addAll( query.list());
-            }
-            return result;
-        } else {
-            AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(RelationshipBase.class,auditEvent.getRevisionNumber());
-            @SuppressWarnings("unchecked")
-            List<RelationshipBase> result = query.getResultList();
-            return result;
-        }
-    }
-
 
     /**
      * TODO not yet in interface
@@ -1072,7 +1029,87 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
         return hql;
     }
 
+    @Override
+    public long countNameRelationships(Set<NameRelationshipType> types) {
+        Criteria criteria = getSession().createCriteria(NameRelationship.class);
 
+        if (types != null) {
+            if (types.isEmpty()){
+                return 0l;
+            }else{
+                criteria.add(Restrictions.in("type", types) );
+            }
+        }
+        //count
+        criteria.setProjection(Projections.rowCount());
+        long result = (Long)criteria.uniqueResult();
+
+        return result;
+    }
+
+    @Override
+    public List<NameRelationship> getNameRelationships(Set<NameRelationshipType> types,
+            Integer pageSize, Integer pageNumber,
+            List<OrderHint> orderHints, List<String> propertyPaths) {
+
+        Criteria criteria = getCriteria(NameRelationship.class);
+        if (types != null) {
+            if (types.isEmpty()){
+                return new ArrayList<>();
+            }else{
+                criteria.add(Restrictions.in("type", types) );
+            }
+        }
+        addOrder(criteria,orderHints);
+        addPageSizeAndNumber(criteria, pageSize, pageNumber);
+
+        @SuppressWarnings("unchecked")
+        List<NameRelationship> results = criteria.list();
+        defaultBeanInitializer.initializeAll(results, propertyPaths);
+
+        return results;
+    }
+
+    @Override
+    public long countHybridRelationships(Set<HybridRelationshipType> types) {
+        Criteria criteria = getSession().createCriteria(HybridRelationship.class);
+
+        if (types != null) {
+            if (types.isEmpty()){
+                return 0l;
+            }else{
+                criteria.add(Restrictions.in("type", types) );
+            }
+        }
+        //count
+        criteria.setProjection(Projections.rowCount());
+        long result = (Long)criteria.uniqueResult();
+
+        return result;
+    }
+
+    @Override
+    public List<HybridRelationship> getHybridRelationships(Set<HybridRelationshipType> types,
+            Integer pageSize, Integer pageNumber,
+            List<OrderHint> orderHints, List<String> propertyPaths) {
+
+        Criteria criteria = getCriteria(HybridRelationship.class);
+        if (types != null) {
+            if (types.isEmpty()){
+                return new ArrayList<>();
+            }else{
+                criteria.add(Restrictions.in("type", types) );
+            }
+        }
+        addOrder(criteria,orderHints);
+        addPageSizeAndNumber(criteria, pageSize, pageNumber);
+
+        @SuppressWarnings("unchecked")
+        List<HybridRelationship> results = criteria.list();
+        defaultBeanInitializer.initializeAll(results, propertyPaths);
+
+        return results;
+    }
 
 
 }

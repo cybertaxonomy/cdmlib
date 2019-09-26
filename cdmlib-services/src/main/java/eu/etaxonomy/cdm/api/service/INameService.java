@@ -28,7 +28,6 @@ import eu.etaxonomy.cdm.api.service.search.LuceneParseException;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.utility.TaxonNamePartsFilter;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
@@ -42,18 +41,21 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
+import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
+import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 public interface INameService
         extends IIdentifiableEntityService<TaxonName> {
 
 	/**
-	 * Deletes a name. Depening on the configurator state links to the name will either be
+	 * Deletes a name. Depending on the configurator state links to the name will either be
 	 * deleted or throw exceptions.<BR>
 	 * If name is <code>null</code> this method has no effect.
 	 * @param name
@@ -300,9 +302,37 @@ public interface INameService
 
     public List<HomotypicalGroup> getAllHomotypicalGroups(int limit, int start);
 
-	@Deprecated
-    public List<RelationshipBase> getAllRelationships(int limit, int start);
+	/**
+     * Returns all or a page of all taxon name relationships in the database.
+     * The result can be filtered by relationship types.
+     * It does NOT contain hybrid relationships
+     * (see {@link #listHybridRelationships(Set, Integer, Integer, List, List)})
+     *
+     * @param types The name relationship type filter, if <code>null</code> no filter is set, if empty the result will also be empty
+     * @param pageSize the page size
+     * @param pageStart the number of the page
+     * @param orderHints the order hints
+     * @param propertyPaths the property path to initialize the resulting objects
+     * @return list of name relationships matching the filter criteria
+     */
+    public List<NameRelationship> listNameRelationships(Set<NameRelationshipType> types,
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
+    /**
+     * Returns all or a page of all hybrid relationships in the database.
+     * The result can be filtered by relationship types.
+     * It does NOT contain ordinary name relationships
+     * (see {@link #listNameRelationships(Set, Integer, Integer, List, List)})
+     *
+     * @param types The hybrid relationship type filter, if <code>null</code> no filter is set, if empty the result will also be empty
+     * @param pageSize the page size
+     * @param pageStart the number of the page
+     * @param orderHints the order hints
+     * @param propertyPaths the property path to initialize the resulting objects
+     * @return list of hybrid relationships matching the filter criteria
+     */
+    public List<HybridRelationship> listHybridRelationships(Set<HybridRelationshipType> types,
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
 	 * Return a List of name relationships in which this name is related to

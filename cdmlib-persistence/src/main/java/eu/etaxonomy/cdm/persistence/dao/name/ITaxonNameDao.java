@@ -12,11 +12,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import org.hibernate.criterion.Criterion;
 
-import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.INonViralName;
@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
+import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -306,8 +307,6 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 	public Integer countByName(String queryString,
 			MatchMode matchmode, List<Criterion> criteria);
 
-	public List<RelationshipBase> getAllRelationships(Integer limit, Integer start);
-
 	public List<UuidAndTitleCache> getUuidAndTitleCacheOfNames(Integer limit, String pattern);
 
 	/**
@@ -321,7 +320,9 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 	 * @param propertyPaths TODO
 	 * @return
 	 */
-	public List<TaxonName> findByName(Class<TaxonName> clazz,	String queryString, MatchMode matchmode, List<Criterion> criteria,Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths);
+	public List<TaxonName> findByName(Class<TaxonName> clazz, String queryString,
+	        MatchMode matchmode, List<Criterion> criteria,Integer pageSize, Integer pageNumber,
+	        List<OrderHint> orderHints,	List<String> propertyPaths);
 
 	/**
 	 * @param clazz
@@ -338,9 +339,11 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 
 	/**
 	 * Supports using wildcards in the query parameters.
-	 * If a name part passed to the method contains the asterisk character ('*') it will be translated into '%' the related field is search with a LIKE clause.
+	 * If a name part passed to the method contains the
+	 * asterisk character ('*') it will be translated into '%' the related field is search with a LIKE clause.
 	 * <p>
-	 * A query parameter which is passed as <code>NULL</code> value will be ignored. A parameter passed as {@link Optional} object containing a <code>NULL</code> value will be used
+	 * A query parameter which is passed as <code>NULL</code> value will be ignored.
+	 * A parameter passed as {@link Optional} object containing a <code>NULL</code> value will be used
 	 * to filter select taxon names where the according field is <code>null</code>.
 	 *
 	 * @param genusOrUninomial
@@ -371,24 +374,31 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
     public long countTaxonNameParts(Optional<String> genusOrUninomial, Optional<String> infraGenericEpithet, Optional<String> specificEpithet, Optional<String> infraSpecificEpithet,
             Rank rank, Collection<UUID> excludedNames);
 
-    /**
-     * @param type
-     * @param restrictions
-     * @param limit
-     * @param start
-     * @param orderHints
-     * @param propertyPaths
-     * @param includePublished
-     * @return
-     */
     public <S extends TaxonName>List<S> list(Class<S> type, List<Restriction<?>> restrictions, Integer limit, Integer start,
             List<OrderHint> orderHints, List<String> propertyPaths, boolean includePublished);
 
-    /**
-     * @param type
-     * @param restrictions
-     * @param includePublished
-     * @return
-     */
     long count(Class<? extends TaxonName> type, List<Restriction<?>> restrictions, boolean includePublished);
+
+    /**
+     * Returns the number of name relationships of the given name relationship types or
+     * all types if types is <code>null</code>.
+     * @param types
+     * @return the number of name relationships
+     */
+    public long countNameRelationships(Set<NameRelationshipType> types);
+
+    public List<NameRelationship> getNameRelationships(Set<NameRelationshipType> types, Integer pageSize,
+            Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+
+    /**
+     * Returns the number of hybrid relationships of the given hybrid relationship types or
+     * all types if types is <code>null</code>.
+     * @param types
+     * @return the number of hybrid relationships
+     */
+    public long countHybridRelationships(Set<HybridRelationshipType> types);
+
+    public List<HybridRelationship> getHybridRelationships(Set<HybridRelationshipType> types, Integer pageSize,
+            Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+
 }
