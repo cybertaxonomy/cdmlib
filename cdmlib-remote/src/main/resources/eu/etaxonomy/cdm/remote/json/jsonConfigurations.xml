@@ -36,6 +36,7 @@
              <value>PolytomousKeyNode.feature</value>
              <value>PolytomousKeyNode.statement</value>
              <value>PolytomousKeyNode.modifyingText</value>
+             <value>PolytomousKeyNode.otherNode</value>
 
              <value>LinkedPolytomousKeyNodeRowDto.childStatement</value>
              <value>LinkedPolytomousKeyNodeRowDto.rowQuestion</value>
