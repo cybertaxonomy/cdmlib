@@ -403,6 +403,7 @@ public class DescriptiveDataSetService
             propagateDescriptionsToParentNodes(dataSet, taxonNodeToSpecimenDescriptionMap);
         }
         // aggregate per taxa
+        Map<UUID, UUID> specimenToClonedSourceDescription = new HashMap<>();
         for (Entry<TaxonNode, Set<UUID>> entry: taxonNodeToSpecimenDescriptionMap.entrySet()) {
             if(monitor.isCanceled()){
                 result.setAbort();
@@ -410,7 +411,8 @@ public class DescriptiveDataSetService
             }
             UUID taxonUuid = entry.getKey().getTaxon().getUuid();
             Set<UUID> specimenDescriptionUuids = entry.getValue();
-            result.includeResult(aggregateDescription(taxonUuid , specimenDescriptionUuids, descriptiveDataSetUuid));
+            result.includeResult(aggregateDescription(taxonUuid, specimenDescriptionUuids, descriptiveDataSetUuid,
+                    specimenToClonedSourceDescription));
             monitor.worked(1);
         }
         monitor.done();
@@ -500,7 +502,8 @@ public class DescriptiveDataSetService
     }
 
     @SuppressWarnings("unchecked")
-    private UpdateResult aggregateDescription(UUID taxonUuid, Set<UUID> specimenDescriptionUuids, UUID descriptiveDataSetUuid) {
+    private UpdateResult aggregateDescription(UUID taxonUuid, Set<UUID> specimenDescriptionUuids,
+            UUID descriptiveDataSetUuid, Map<UUID, UUID> specimenToClonedSourceDescription) {
         UpdateResult result = new UpdateResult();
 
         TaxonBase taxonBase = taxonService.load(taxonUuid);
@@ -511,6 +514,10 @@ public class DescriptiveDataSetService
         }
         Taxon taxon = (Taxon)taxonBase;
         List<DescriptionBase> descriptions = descriptionService.load(new ArrayList<>(specimenDescriptionUuids), null);
+        List<SpecimenDescription> specimenDescriptions = descriptions.stream()
+                .filter(d -> d instanceof SpecimenDescription)
+                .map(d -> (SpecimenDescription) d)
+                .collect(Collectors.toList());
         Map<Character, List<DescriptionElementBase>> featureToElementMap = new HashMap<>();
 
         DescriptiveDataSet dataSet = load(descriptiveDataSetUuid);
@@ -521,7 +528,7 @@ public class DescriptiveDataSetService
         }
 
         //extract all character description elements
-        for (DescriptionBase<?> description : descriptions) {
+        for (DescriptionBase<?> description : specimenDescriptions) {
             description.getElements().stream()
             //filter out elements that do not have a Character as Feature
             .filter(element->HibernateProxyHelper.isInstanceOf(element.getFeature(), Character.class))
@@ -534,10 +541,10 @@ public class DescriptiveDataSetService
 
         // add sources to aggregation description
         // create a snapshot of those descriptions that were used to create the aggregated descriptions
-        // TODO implement when the clones descriptions can be attached to taxon descriptions as sources
-        for (DescriptionBase<?> descriptionBase : descriptions) {
-            addSourceDescription(aggregationDescription, descriptionBase);
-        }
+        // TODO implement when the clones descriptions can be attached to taxon
+        // descriptions as sources
+        specimenDescriptions.forEach(specimenDescription -> addSourceDescription(aggregationDescription, specimenDescription,
+                specimenToClonedSourceDescription));
 
         result.addUpdatedObject(taxon);
         result.addUpdatedObject(aggregationDescription);
@@ -570,18 +577,28 @@ public class DescriptiveDataSetService
         return aggregationDescription;
     }
 
-    private void addSourceDescription(TaxonDescription description, DescriptionBase<?> descriptionBase) {
-        if(descriptionBase instanceof SpecimenDescription){
-            SpecimenDescription specimenDescription = (SpecimenDescription)descriptionBase;
+    private void addSourceDescription(TaxonDescription taxonDescription, SpecimenDescription specimenDescription,
+            Map<UUID, UUID> specimenToClonedSourceDescription) {
+        UUID sourceCloneUuid = specimenToClonedSourceDescription.get(specimenDescription.getUuid());
+        if(sourceCloneUuid!=null){
+            addAggregationSource(taxonDescription, sourceCloneUuid);
+        }
+        else{
             SpecimenOrObservationBase<?> specimenOrObservation = specimenDescription.getDescribedSpecimenOrObservation();
             SpecimenDescription clone = (SpecimenDescription) specimenDescription.clone();
             clone.getTypes().add(DescriptionType.CLONE_FOR_SOURCE);
             specimenOrObservation.addDescription(clone);
-            IdentifiableSource source = IdentifiableSource.NewInstance(OriginalSourceType.Aggregation);
-            source.setIdInSource(clone.getUuid().toString());
-            description.addSource(source);
 
+            addAggregationSource(taxonDescription, clone.getUuid());
+            specimenToClonedSourceDescription.put(specimenDescription.getUuid(), clone.getUuid());
         }
+    }
+
+    private void addAggregationSource(TaxonDescription taxonDescription, UUID cloneUuid) {
+        IdentifiableSource source = IdentifiableSource.NewInstance(OriginalSourceType.Aggregation);
+        source.setIdInSource(cloneUuid.toString());
+        source.setIdNamespace("SpecimenDescription");
+        taxonDescription.addSource(source);
     }
 
     private void aggregateQuantitativeData(TaxonDescription description, Character character,
