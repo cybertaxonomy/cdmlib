@@ -643,8 +643,8 @@ public class DescriptiveDataSetService
         CategoricalData aggregate = CategoricalData.NewInstance(character);
         elements.stream()
         .filter(element->element instanceof CategoricalData)
-        .forEach(categoricalData->((CategoricalData)categoricalData).getStateData()
-                .forEach(stateData->aggregate.addStateData((StateData) stateData.clone())));
+        .flatMap(categoricalData->((CategoricalData)categoricalData).getStateData().stream())
+        .forEach(stateData->aggregate.addStateData((StateData) stateData.clone()));
         description.addElement(aggregate);
     }
 
