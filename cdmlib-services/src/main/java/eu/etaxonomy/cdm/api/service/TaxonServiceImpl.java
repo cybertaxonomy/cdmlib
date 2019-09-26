@@ -578,12 +578,12 @@ public class TaxonServiceImpl
 
     @Override
     public List<TaxonRelationship> listTaxonRelationships(Set<TaxonRelationshipType> types,
-            Integer pageSize, Integer pageStart, List<OrderHint> orderHints, List<String> propertyPaths) {
-        Long numberOfResults = dao.countTaxonRelationships(types);
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 
+        Long numberOfResults = dao.countTaxonRelationships(types);
         List<TaxonRelationship> results = new ArrayList<>();
         if(numberOfResults > 0) {
-            results = dao.getTaxonRelationships(types, pageSize, pageStart, orderHints, propertyPaths);
+            results = dao.getTaxonRelationships(types, pageSize, pageNumber, orderHints, propertyPaths);
         }
         return results;
     }

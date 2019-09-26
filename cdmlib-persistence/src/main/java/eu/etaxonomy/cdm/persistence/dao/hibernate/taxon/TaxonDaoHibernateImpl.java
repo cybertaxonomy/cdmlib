@@ -1951,8 +1951,8 @@ public class TaxonDaoHibernateImpl
     public List<TaxonRelationship> getTaxonRelationships(Set<TaxonRelationshipType> types,
             Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints, List<String> propertyPaths) {
-        Criteria criteria = getCriteria(TaxonRelationship.class);
 
+        Criteria criteria = getCriteria(TaxonRelationship.class);
         if (types != null) {
             if (types.isEmpty()){
                 return new ArrayList<>();

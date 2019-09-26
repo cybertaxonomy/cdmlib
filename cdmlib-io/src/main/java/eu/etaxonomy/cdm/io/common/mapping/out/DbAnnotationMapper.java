@@ -25,8 +25,10 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @author a.mueller
  * @since 12.05.2009
  */
-public class DbAnnotationMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{
-	@SuppressWarnings("unused")
+public class DbAnnotationMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>>
+        implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbAnnotationMapper.class);
 
 	private final String annotationPrefix;

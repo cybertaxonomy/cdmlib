@@ -350,13 +350,13 @@ public interface ITaxonService
      *
      * @param types The taxon relationship type filter, if <code>null</code> no filter is set, if empty the result will also be empty
      * @param pageSize the page size
-     * @param pageStart the number of the start page
+     * @param pageStart the number of the page
      * @param orderHints the order hints
      * @param propertyPaths the property path to initialize the resulting objects
      * @return list of taxon relationships matching the filter criteria
      */
     public List<TaxonRelationship> listTaxonRelationships(Set<TaxonRelationshipType> types,
-            Integer pageSize, Integer pageStart, List<OrderHint> orderHints, List<String> propertyPaths);
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Lists all classifications the given taxon/synonym is used in{@link Synonym}
