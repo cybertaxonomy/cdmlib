@@ -885,4 +885,24 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
         return list;
     }
 
+    @Override
+    public Collection<TermDto> findByUUIDsAsDto(List<UUID> uuidList) {
+        List<TermDto> list = new ArrayList<>();
+        if (uuidList == null || uuidList.isEmpty()){
+            return null;
+        }
+
+        String queryString = TermDto.getTermDtoSelect()
+                + "where v.uuid in (:uuidList) "
+                + "order by a.titleCache";
+        Query query =  getSession().createQuery(queryString);
+        query.setParameterList("uuidList", uuidList);
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> result = query.list();
+
+        list = TermDto.termDtoListFrom(result);
+        return list;
+    }
+
 }

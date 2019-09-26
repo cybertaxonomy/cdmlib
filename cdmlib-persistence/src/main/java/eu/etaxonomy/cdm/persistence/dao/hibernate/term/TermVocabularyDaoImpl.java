@@ -22,8 +22,6 @@ import java.util.UUID;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.criterion.Disjunction;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
@@ -380,52 +378,45 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 
     @Override
     public TermVocabularyDto findVocabularyDtoByUuid(UUID vocUuid) {
-        Session session = getSession();
-        Criteria crit = session.createCriteria(type);
-        crit.add(Restrictions.eq("uuid", vocUuid));
-        crit.addOrder(Order.desc("created"));
-        List<TermVocabulary> result = crit.list();
-
-        if (result.size() == 0){
+        if (vocUuid == null ){
             return null;
         }
 
-        TermVocabulary resultVoc = result.get(0);
-        TermVocabularyDto dto = new TermVocabularyDto(resultVoc.getUuid(), resultVoc.getRepresentations(), resultVoc.getTermType());
-        for (Object o: resultVoc.getTerms()){
-            DefinedTermBase term = (DefinedTermBase)o;
-            dto.addTerm(TermDto.fromTerm(term));
-        }
+        String queryString = TermVocabularyDto.getTermDtoSelect()
+                + "where a.uuid like :uuid ";
+//                + "order by a.titleCache";
+        Query query =  getSession().createQuery(queryString);
+        query.setParameter("uuid", vocUuid);
 
-        return dto;
+        @SuppressWarnings("unchecked")
+        List<Object[]> result = query.list();
+        if (result.size() == 1){
+            return TermVocabularyDto.termDtoListFrom(result).get(0);
+        }
+        return null;
     }
 
     @Override
     public List<TermVocabularyDto> findVocabularyDtoByUuids(List<UUID> vocUuids) {
-        Session session = getSession();
-        Criteria crit = session.createCriteria(type);
-        Disjunction or = Restrictions.disjunction();
-        for (UUID uuid: vocUuids){
-            or.add(Restrictions.or(Restrictions.eq("uuid", uuid)));
-        }
-        crit.add(or);
-        crit.addOrder(Order.desc("created"));
-        List<TermVocabulary> result = crit.list();
 
-        if (result.size() == 0){
+        if (vocUuids == null || vocUuids.isEmpty()){
             return null;
         }
-        List<TermVocabularyDto> dtos = new ArrayList<>();
-        for (TermVocabulary voc: result){
-            TermVocabularyDto dto = new TermVocabularyDto(voc.getUuid(), voc.getRepresentations(), voc.getTermType());
-            for (Object o: voc.getTerms()){
-                DefinedTermBase term = (DefinedTermBase)o;
-                dto.addTerm(TermDto.fromTerm(term));
-            }
-            dtos.add(dto);
+        List<TermVocabularyDto> list = new ArrayList<>();
 
-        }
-        return dtos;
+
+        String queryString = TermVocabularyDto.getTermDtoSelect()
+                + "where a.uuid in :uuidList ";
+//                + "order by a.titleCache";
+        Query query =  getSession().createQuery(queryString);
+        query.setParameterList("uuidList", vocUuids);
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> result = query.list();
+
+        list = TermVocabularyDto.termDtoListFrom(result);
+        return list;
+
     }
 
 }
