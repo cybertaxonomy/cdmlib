@@ -605,6 +605,7 @@ public class DescriptiveDataSetService
             List<DescriptionElementBase> elements) {
         QuantitativeData aggregate = QuantitativeData.NewInstance(character);
         List<Float> values = new ArrayList<>();
+        float sampleSize = 0;
         for (DescriptionElementBase element : elements) {
             if(element instanceof QuantitativeData){
                 QuantitativeData quantitativeData = (QuantitativeData)element;
@@ -618,8 +619,10 @@ public class DescriptiveDataSetService
                 if(quantitativeData.getMax()!=null){
                     values.add(quantitativeData.getMax());
                 }
+                sampleSize++;
             }
         }
+        aggregate.setSampleSize(sampleSize, null);
         OptionalDouble min = values.stream().mapToDouble(value->(double)value).min();
         OptionalDouble max = values.stream().mapToDouble(value->(double)value).max();
         OptionalDouble avg = values.stream().mapToDouble(value->(double)value).average();
