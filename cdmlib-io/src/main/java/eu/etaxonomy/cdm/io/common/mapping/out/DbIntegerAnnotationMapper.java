@@ -33,7 +33,7 @@ public class DbIntegerAnnotationMapper extends DbAnnotationMapper {
 	}
 
 	private DbIntegerAnnotationMapper(String annotationPrefix, String dbAttributeString, Integer defaultValue) {
-		super("annotations", dbAttributeString, null, defaultValue, null);
+		super(dbAttributeString, "annotations", null, null, defaultValue, null);
 	}
 
 	@Override
