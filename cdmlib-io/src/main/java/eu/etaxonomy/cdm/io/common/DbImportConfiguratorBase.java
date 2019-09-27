@@ -27,25 +27,20 @@ public abstract class DbImportConfiguratorBase<STATE extends DbImportStateBase>
             extends ImportConfiguratorBase<STATE, Source> {
 
     private static final long serialVersionUID = 3474072167155099394L;
-	private static Logger logger = Logger.getLogger(DbImportConfiguratorBase.class);
+	@SuppressWarnings("unused")
+    private static Logger logger = Logger.getLogger(DbImportConfiguratorBase.class);
 
 	private Method userTransformationMethod;
 
 	/* Max number of records to be saved with one service call */
 	private int recordsPerTransaction = 1000;
 
-	/**
-	 * @param source
-	 * @param destination
-	 * @param code
-	 */
 	protected DbImportConfiguratorBase(Source source, ICdmDataSource destination, NomenclaturalCode code, IInputTransformer defaultTransformer) {
 	   super(defaultTransformer);
 	   setNomenclaturalCode(code);
 	   setSource(source);
 	   setDestination(destination);
 	}
-
 
 	@Override
     public Source getSource() {
@@ -55,7 +50,6 @@ public abstract class DbImportConfiguratorBase<STATE extends DbImportStateBase>
     public void setSource(Source berlinModelSource) {
 		super.setSource(berlinModelSource);
 	}
-
 
 	@Override
     public Reference getSourceReference() {
@@ -80,7 +74,6 @@ public abstract class DbImportConfiguratorBase<STATE extends DbImportStateBase>
 		}
 	}
 
-
 	public int getRecordsPerTransaction() {
 		return recordsPerTransaction;
 	}
@@ -88,13 +81,10 @@ public abstract class DbImportConfiguratorBase<STATE extends DbImportStateBase>
 		this.recordsPerTransaction = recordsPerTransaction;
 	}
 
-
 	public Method getUserTransformationMethod() {
 		return userTransformationMethod;
 	}
 	public void setUserTransformationMethod(Method userTransformationMethod) {
 		this.userTransformationMethod = userTransformationMethod;
 	}
-
-
 }
