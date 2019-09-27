@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.common;
 
 import java.lang.reflect.Method;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -55,7 +56,9 @@ public abstract class DbImportConfiguratorBase<STATE extends DbImportStateBase>
     public Reference getSourceReference() {
 		if (sourceReference == null){
 			sourceReference =  ReferenceFactory.newDatabase();
-			if (getSource() != null){
+			if (StringUtils.isNotBlank(getSourceReferenceTitle())){
+			    sourceReference.setTitleCache(getSourceReferenceTitle(), true);
+			}else if (getSource() != null){
 				sourceReference.setTitleCache(getSource().getDatabase(), true);
 			}
 			if (getSourceRefUuid() != null){
