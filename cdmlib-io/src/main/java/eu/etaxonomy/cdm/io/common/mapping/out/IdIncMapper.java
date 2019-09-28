@@ -33,9 +33,10 @@ public class IdIncMapper
 
     private Integer startValue;
     private IndexCounter counter;
+    private IdIncMapper master;
 
 	public static IdIncMapper NewInstance(Integer startValue, String dbIdAttributeString){
-		return new IdIncMapper(startValue, dbIdAttributeString);
+		return new IdIncMapper(startValue, dbIdAttributeString, null);
 	}
 
     /**
@@ -43,12 +44,18 @@ public class IdIncMapper
      * @param dbIdAttributeString the target DB id attribute
      */
     public static IdIncMapper NewComputedInstance(String dbIdAttributeString){
-        return new IdIncMapper(null, dbIdAttributeString);
+        return new IdIncMapper(null, dbIdAttributeString, null);
     }
 
-	protected IdIncMapper(Integer startValue, String dbIdAttributeString) {
+    public static IdIncMapper NewDependendInstance(String dbIdAttributeString, IdIncMapper masterMapper) {
+        IdIncMapper result = new IdIncMapper(null, dbIdAttributeString, masterMapper);
+        return result;
+    }
+
+	protected IdIncMapper(Integer startValue, String dbIdAttributeString, IdIncMapper masterMapper) {
 		super(null, dbIdAttributeString, null);
 		this.startValue = startValue;
+		this.master = masterMapper;
 	}
 
 	@Override
@@ -58,14 +65,22 @@ public class IdIncMapper
 
 	@Override
 	protected Object getValue(CdmBase cdmBase) {
-	    if (counter == null){
-	        if (startValue == null){
-	            startValue = computeStartValue();
-	        }
-	        counter = new IndexCounter(startValue);
-	    }
-	    return counter.getIncreasing();
+	    return getCounter().getIncreasing();
 	}
+
+    private IndexCounter getCounter() {
+        if (master != null){
+            return master.getCounter();
+        }else{
+            if (counter == null){
+                if (startValue == null){
+    	            startValue = computeStartValue();
+    	        }
+                counter = new IndexCounter(startValue);
+            }
+            return counter;
+        }
+    }
 
     private Integer computeStartValue() {
         String sql = "SELECT max("+this.getDestinationAttribute()+") FROM " + this.getTableName();
