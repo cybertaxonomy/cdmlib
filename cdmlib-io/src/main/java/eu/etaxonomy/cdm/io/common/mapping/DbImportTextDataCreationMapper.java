@@ -83,6 +83,7 @@ public class DbImportTextDataCreationMapper<STATE extends DbImportStateBase<?,?>
 	        Feature feature, TextFormat format) {
 		super(dbIdAttribute, objectToCreateNamespace, dbTaxonFkAttribute, taxonNamespace);
 		this.defaultFeature = feature;
+		this.dbTextAttribute = dbTextAttribute;
 		this.defaultLanguage = language;
 		this.defaultFormat = format;
 	}

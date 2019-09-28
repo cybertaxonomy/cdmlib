@@ -52,12 +52,12 @@ public class DbLastActionMapper
 			//exclude objects marked as 'hasNoM
 			if (cdmBase.isInstanceOf(AnnotatableEntity.class)){
 				AnnotatableEntity annotatableEntity = CdmBase.deproxy(cdmBase, AnnotatableEntity.class);
-				if (annotatableEntity.hasMarker(uuidMarkerTypeHasNoLastAction, true)){
-					return null;
-				}
 				UUID uuidType = isActionType ? uuidAnnotationTypeLastAction : uuidAnnotationTypeLastActionDate;
 				for (Annotation annotation : annotatableEntity.getAnnotations(uuidType)){
 				    return annotation.getText();
+				}
+				if (annotatableEntity.hasMarker(uuidMarkerTypeHasNoLastAction, true)){
+					return null;
 				}
 			}
 			//return updated or created

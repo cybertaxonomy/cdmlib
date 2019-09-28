@@ -135,12 +135,10 @@ public class DbImportMarkerMapper extends DbSingleAttributeImportMapperBase<DbIm
 		}
 
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.DbSingleAttributeImportMapperBase#invoke(java.sql.ResultSet, eu.etaxonomy.cdm.model.common.CdmBase)
-	 */
-	public AnnotatableEntity invoke(ResultSet rs, AnnotatableEntity annotatableEntity) throws SQLException {
-		Boolean dbValue = rs.getBoolean(getSourceAttribute());
+
+	@Override
+    public AnnotatableEntity invoke(ResultSet rs, AnnotatableEntity annotatableEntity) throws SQLException {
+		Boolean dbValue = (Boolean)rs.getObject(getSourceAttribute());
 		return invoke(dbValue, annotatableEntity);
 	}
 
