@@ -49,6 +49,12 @@ public class MethodMapper
 		return result;
 	}
 
+	public static <T extends DbExportBase> MethodMapper NewInstance(String dbAttributeString, Class<?> clazz, Class<?>... parameterTypes){
+	    String methodName = getMethodName(dbAttributeString);
+        MethodMapper result = new MethodMapper(dbAttributeString, clazz, methodName, parameterTypes);
+        return result;
+    }
+
 	public static <T extends DbExportBase> MethodMapper NewInstance(String dbAttributeString, Class<?> clazz, String methodName, Class<?>... parameterTypes){
 		MethodMapper result = new MethodMapper(dbAttributeString, clazz, methodName, parameterTypes);
 		return result;
