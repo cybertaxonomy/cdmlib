@@ -113,6 +113,16 @@ public abstract class AnnotatableEntity
 		return false;
 	}
 
+    @Override
+    public Boolean markerValue(UUID uuidMarkerType){
+        for (Marker marker: getMarkers()){
+            if (marker.getMarkerType().getUuid().equals(uuidMarkerType)){
+                 return marker.getFlag();
+            }
+        }
+        return null;
+    }
+
 //*************** ANNOTATIONS **********************************************
 
 	@Override

@@ -29,5 +29,6 @@ public interface IAnnotatableEntity extends IVersionableEntity {
 
 	public boolean hasMarker(MarkerType type, boolean value);
 	public boolean hasMarker(UUID uuidMarkerType, boolean value);
+	public Boolean markerValue(UUID uuidMarkerType);
 
 }
