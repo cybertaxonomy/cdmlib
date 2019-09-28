@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -18,24 +18,21 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.mapping.out.ObjectChangeMapper;
 
-
-
 /**
  * @author a.mueller
  * @since 27.07.2008
- * @version 1.0
  */
 public class CdmIoMapping {
+
 	private static final Logger logger = Logger.getLogger(CdmIoMapping.class);
-	
-	//protected List<CdmAttributeMapperBase> mapperList = new ArrayList<CdmAttributeMapperBase>();
-	protected List<CdmMapperBase> mapperList = new ArrayList<CdmMapperBase>();
-	Set<String> sourceAttributes = new HashSet<String>();
-	Set<String> destinationAttributes = new HashSet<String>();
-	List<String> sourceAttributeList = new ArrayList<String>();
-	List<String> destinationAttributeList = new ArrayList<String>();
-	
-	
+
+	//protected List<CdmAttributeMapperBase> mapperList = new ArrayList<>();
+	protected List<CdmMapperBase> mapperList = new ArrayList<>();
+	Set<String> sourceAttributes = new HashSet<>();
+	Set<String> destinationAttributes = new HashSet<>();
+	List<String> sourceAttributeList = new ArrayList<>();
+	List<String> destinationAttributeList = new ArrayList<>();
+
 	public void addMapper(CdmAttributeMapperBase mapper){
 		if (mapper == null){
 			return;
@@ -59,21 +56,21 @@ public class CdmIoMapping {
 			sourceAttributeList.addAll(changeMapper.getSourceAttributes());
 			destinationAttributes.addAll(changeMapper.getDestinationAttributes());
 			destinationAttributeList.addAll(changeMapper.getDestinationAttributeList());
-			
+
 		}else{
 			logger.error("Unknown mapper type: " + mapper.getClass().getSimpleName());
 			throw new IllegalArgumentException("Unknown mapper type: " + mapper.getClass().getSimpleName());
 		}
 	}
-	
+
 	public Set<String> getSourceAttributes(){
-		Set<String> result = new HashSet<String>();
+		Set<String> result = new HashSet<>();
 		result.addAll(sourceAttributes);
 		return result;
 	}
-	
+
 	public Set<String> getSourceAttributesLowerCase(){
-		Set<String> result = new HashSet<String>();
+		Set<String> result = new HashSet<>();
 		for(String attr : sourceAttributes){
 			if (attr != null){
 				result.add(attr.toLowerCase());
@@ -83,17 +80,16 @@ public class CdmIoMapping {
 		}
 		return result;
 	}
-	
+
 	public Set<String> getDestinationAttributes(){
-		Set<String> result = new HashSet<String>();
+		Set<String> result = new HashSet<>();
 		result.addAll(destinationAttributes);
 		return result;
 	}
-	
+
 	public List<String> getDestinationAttributeList(){
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		result.addAll(destinationAttributeList);
 		return result;
 	}
-	
 }

@@ -23,8 +23,11 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
  * @author a.mueller
  * @since 12.05.2009
  */
-public class DbObjectMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer> {
-	@SuppressWarnings("unused")
+public class DbObjectMapper
+        extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>>
+        implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer> {
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbObjectMapper.class);
 
 	boolean isCache;
@@ -37,10 +40,6 @@ public class DbObjectMapper extends DbSingleAttributeExportMapperBase<DbExportSt
 		return new DbObjectMapper(cdmAttributeString, dbAttributeString, null, isCache);
 	}
 
-	/**
-	 * @param dbAttributeString
-	 * @param cdmAttributeString
-	 */
 	protected DbObjectMapper(String cdmAttributeString, String dbAttributeString, Object defaultValue, boolean isCache) {
 		super(cdmAttributeString, dbAttributeString, defaultValue);
 		this.isCache = isCache;
@@ -67,13 +66,12 @@ public class DbObjectMapper extends DbSingleAttributeExportMapperBase<DbExportSt
 			result = getId(value);
 		}
 
-//		getState().getConfig().getCdmAppController().commitTransaction(tx);
 		return result;
 	}
 
 	protected Integer getId(CdmBase cdmBase){
 		DbExportStateBase<?, IExportTransformer> state = getState();
-		DbExportConfiguratorBase config = state.getConfig();
+		DbExportConfiguratorBase<?,?,?> config = state.getConfig();
 		if (false && config.getIdType() == DbExportConfiguratorBase.IdType.CDM_ID){
 			return cdmBase.getId();
 		}else{
