@@ -33,12 +33,11 @@ public class DbImportMultiLanguageTextMapper<CDMBASE extends CdmBase>
 	private static final Logger logger = Logger.getLogger(DbImportMultiLanguageTextMapper.class);
 
 //****************************** FACTORY METHOD ********************************************/
-	
-	public static DbImportMultiLanguageTextMapper<CdmBase> NewInstance(String dbTextAttribute, String dbLanguageAttribute, String languageNamespace, String cdmMultiLanguageTextAttribute){
-		return new DbImportMultiLanguageTextMapper<CdmBase>(dbTextAttribute, dbLanguageAttribute, languageNamespace, cdmMultiLanguageTextAttribute);
+
+	public static DbImportMultiLanguageTextMapper<CdmBase> NewInstance(String dbTextAttribute, String dbLanguageAttribute, String languageNamespace, String cdmMultiLanguageTextAttribute, boolean trim){
+		return new DbImportMultiLanguageTextMapper<CdmBase>(dbTextAttribute, dbLanguageAttribute, languageNamespace, cdmMultiLanguageTextAttribute, trim);
 	}
-	
-	
+
 //***************************** VARIABLES *************************************************/
 
 	private String dbTextAttribute;
@@ -46,15 +45,17 @@ public class DbImportMultiLanguageTextMapper<CDMBASE extends CdmBase>
 	private String languageNamespace;
 	private String cdmMultiLanguageTextAttribute;
 	private Method destinationMethod;
-	
+	private boolean trim = true;
+
 //***************************** CONSTRUCTOR *************************************************/
 
-	protected DbImportMultiLanguageTextMapper(String dbTextAttribute, String dbLanguageAttribute, String languageNamespace, String cdmMultiLanguageTextAttribute){
-		super();
+	protected DbImportMultiLanguageTextMapper(String dbTextAttribute, String dbLanguageAttribute,
+	        String languageNamespace, String cdmMultiLanguageTextAttribute, boolean trim){
 		this.dbTextAttribute = dbTextAttribute;
 		this.dbLanguageAttribute = dbLanguageAttribute;
 		this.languageNamespace = languageNamespace;
 		this.cdmMultiLanguageTextAttribute = cdmMultiLanguageTextAttribute;
+		this.trim = trim;
 	}
 
 	@Override
@@ -99,7 +100,7 @@ public class DbImportMultiLanguageTextMapper<CDMBASE extends CdmBase>
 		//TODO make this a definedTermMapper
 		Language language = (Language)getRelatedObject(rs, languageNamespace, dbLanguageAttribute);
 		String text = getStringDbValue(rs, dbTextAttribute);
-		
+		text = (trim && text != null)? text.trim(): text;
 		LanguageString languageString = LanguageString.NewInstance(text, language);
 		try {
 			destinationMethod.invoke(cdmBase, languageString);
