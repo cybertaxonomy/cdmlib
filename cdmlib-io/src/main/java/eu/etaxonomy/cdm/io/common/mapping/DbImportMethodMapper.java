@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -23,27 +23,26 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 /**
  * @author a.mueller
  * @since 12.05.2009
- * @version 1.0
  */
 //TODO remove ANNOTATABLE by ISourcable (but this is not CDMBase yet therefore not trivial
 public class DbImportMethodMapper<CDMBASE extends VersionableEntity, STATE extends DbImportStateBase<?,?>> extends DbImportMultiAttributeMapperBase<CDMBASE, STATE>  {
 	private static final Logger logger = Logger.getLogger(DbImportMethodMapper.class);
-	
+
 	//******************************* ATTRIBUTES ***************************************/
-	
+
 	private Method method;
 	private Class<?>[] parameterTypes;
 	private Object objectToInvoke;
-	
+
 
 // **************************** FACTORY METHODS ***************************************************/
 
 //	public static <T extends DbImportStateBase> DbImportMethodMapperBase NewInstance(DbImportStateBase importBase, String methodName){
-//		
+//
 ////		Class<?> parameterTypes = importBase.getStandardMethodParameter();
 //		Class<?> parameterType1 = ResultSet.class;
 //		Class<?> parameterType2 = DbImportStateBase.class;
-//		
+//
 //		DbImportMethodMapperBase result = new DbImportMethodMapperBase(importBase.getClass(), methodName, parameterType1, parameterType2);
 //		return result;
 //	}
@@ -64,12 +63,7 @@ public class DbImportMethodMapper<CDMBASE extends VersionableEntity, STATE exten
 	}
 	
 //********************************* CONSTRUCTOR ****************************************/
-	
-	/**
-	 * @param clazz
-	 * @param methodName
-	 * @param parameterTypes
-	 */
+
 	protected DbImportMethodMapper(Class<?> clazz, Object objectToInoke, String methodName, Class<?>... parameterTypes) {
 		super();
 		this.objectToInvoke = objectToInoke;
@@ -117,14 +111,11 @@ public class DbImportMethodMapper<CDMBASE extends VersionableEntity, STATE exten
 			return null;
 		}
 	}
-	
-	
+
 	/**
 	 * Returns the transformer from the configuration
-	 * @return
 	 */
 	protected IInputTransformer getTransformer(){
 		return getState().getTransformer();
 	}
-	
 }
