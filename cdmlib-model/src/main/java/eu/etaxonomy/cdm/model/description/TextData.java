@@ -263,11 +263,27 @@ public class TextData extends DescriptionElementBase implements IMultiLanguageTe
      * TODO think about this fall-back strategy &
      * see also {@link TermBase#getPreferredRepresentation(List)}
      *
-     * @param languages
-     * @return
+     * @param languages the ordered list of preferred languages
+     * @return the best matching language string
+     * @see MultilanguageTextHelper#getPreferredLanguageString(Map, List, boolean)
      */
     public LanguageString getPreferredLanguageString(List<Language> languages) {
-        return MultilanguageTextHelper.getPreferredLanguageString(getMultilanguageText(), languages);
+        boolean restrictToGivenLanguages = false;
+        return getPreferredLanguageString(languages, restrictToGivenLanguages);
+    }
+
+    /**
+     * Like {@link #getPreferredLanguageString(List)}. If restrictToGivenLanguages is <code>true</code>
+     * a non-<code>null</code> result is returned if a language representation for one
+     * of the given languages exists. No default or arbitrary representation is used.
+     *
+     * @param languages the ordered list of preferred languages
+     * @param restrictToGivenLanguages
+     * @return the best matching language string
+     * @see MultilanguageTextHelper#getPreferredLanguageString(Map, List, boolean)
+     */
+    public LanguageString getPreferredLanguageString(List<Language> languages, boolean restrictToGivenLanguages) {
+        return MultilanguageTextHelper.getPreferredLanguageString(getMultilanguageText(), languages, restrictToGivenLanguages);
     }
 
     private void fixHashMapHibernateBug() {
