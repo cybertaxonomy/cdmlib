@@ -228,6 +228,14 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         this.protectedTitleCache = protectCache;
     }
 
+    @Override
+    public String resetTitleCache() {
+        if(!protectedTitleCache){
+            titleCache = null;
+        }
+        return getTitleCache();
+    }
+
     /**
      * @param cache
      * @return
