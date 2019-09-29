@@ -16,6 +16,7 @@ import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
@@ -47,21 +48,28 @@ public class DbImportMethodMapper<CDMBASE extends VersionableEntity, STATE exten
 //		return result;
 //	}
 
-	public static <T extends DbImportStateBase<?,?>> DbImportMethodMapper NewInstance(Class<?> clazz, String methodName, Class parameterTypes){
-		DbImportMethodMapper<?,T> result = new DbImportMethodMapper<VersionableEntity,T>(clazz, null, methodName, parameterTypes);
+	public static <T extends DbImportStateBase<?,?>> DbImportMethodMapper NewDefaultInstance(CdmImportBase<?, ?> cdmImport, String methodName,
+	        Class<? extends CdmBase> cdmBaseClass, Class<? extends DbImportStateBase> importStateClass){
+	    DbImportMethodMapper<?,?> result = new DbImportMethodMapper<VersionableEntity, T>(cdmImport.getClass(), cdmImport, methodName, cdmBaseClass, ResultSet.class, importStateClass);
+	    return result;
+	}
+
+	public static <T extends DbImportStateBase<?,?>> DbImportMethodMapper NewInstance(Class<?> clazz, String methodName, Class parameterType){
+		DbImportMethodMapper<?,T> result = new DbImportMethodMapper<VersionableEntity,T>(clazz, null, methodName, parameterType);
 		return result;
 	}
-	
-	public static <T extends DbImportStateBase<?,?>> DbImportMethodMapper NewInstance(Object objectToInvoke, String methodName, Class<?> parameterType1, Class<?> parameterType2){
-		DbImportMethodMapper<?,?> result = new DbImportMethodMapper<VersionableEntity, T>(objectToInvoke.getClass(), objectToInvoke, methodName, parameterType1,parameterType2);
-		return result;
-	}
-	
-	public static <T extends DbImportStateBase<?,?>> DbImportMethodMapper NewInstance(Object objectToInvoke, String methodName, Class<?>... parameterTypes){
-		DbImportMethodMapper<?,?> result = new DbImportMethodMapper<VersionableEntity,T>(objectToInvoke.getClass(), objectToInvoke, methodName, parameterTypes);
-		return result;
-	}
-	
+
+
+//	public static <T extends DbImportStateBase<?,?>> DbImportMethodMapper NewInstance(Object objectToInvoke, String methodName, Class<?> parameterType1, Class<?> parameterType2){
+//		DbImportMethodMapper<?,?> result = new DbImportMethodMapper<VersionableEntity, T>(objectToInvoke.getClass(), objectToInvoke, methodName, parameterType1,parameterType2);
+//		return result;
+//	}
+//
+//	public static <T extends DbImportStateBase<?,?>> DbImportMethodMapper NewInstance(Object objectToInvoke, String methodName, Class<?>... parameterTypes){
+//		DbImportMethodMapper<?,?> result = new DbImportMethodMapper<VersionableEntity,T>(objectToInvoke.getClass(), objectToInvoke, methodName, parameterTypes);
+//		return result;
+//	}
+
 //********************************* CONSTRUCTOR ****************************************/
 
 	protected DbImportMethodMapper(Class<?> clazz, Object objectToInoke, String methodName, Class<?>... parameterTypes) {
@@ -77,29 +85,26 @@ public class DbImportMethodMapper<CDMBASE extends VersionableEntity, STATE exten
 			logger.error("NoSuchMethodException", e);
 		}
 	}
+
 //************************************ METHODS *******************************************/
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.IDbImportMapper#initialize(eu.etaxonomy.cdm.io.common.DbImportStateBase, java.lang.Class)
-	 */
-	public void initialize(STATE state, Class<? extends CdmBase> destinationClass) {
+	@Override
+    public void initialize(STATE state, Class<? extends CdmBase> destinationClass) {
 		super.initialize(state, destinationClass);
 		//initialize when this logging is not needed anymore
 	}
-	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.IDbImportMapper#invoke(java.sql.ResultSet, eu.etaxonomy.cdm.model.common.CdmBase)
-	 */
-	public CDMBASE invoke(ResultSet rs, CDMBASE cdmBase) throws SQLException {
+
+	@Override
+    public CDMBASE invoke(ResultSet rs, CDMBASE cdmBase) throws SQLException {
 		try{
-	//		if (this.parameterTypes.length > 1 && DbExportStateBase.class.isAssignableFrom(parameterTypes[1])){
-			getState().addRelatedObject(getState().CURRENT_OBJECT_NAMESPACE, getState().CURRENT_OBJECT_ID, cdmBase);
+            //		if (this.parameterTypes.length > 1 && DbExportStateBase.class.isAssignableFrom(parameterTypes[1])){
+			getState().addRelatedObject(DbImportStateBase.CURRENT_OBJECT_NAMESPACE,
+			        DbImportStateBase.CURRENT_OBJECT_ID, cdmBase);
 			CDMBASE result = (CDMBASE)method.invoke(objectToInvoke, rs, getState());
 	//		}else{
 	//			return (CDMBASE)method.invoke(null, rs);
 	//		}
-			
+
 	//		CDMBASE result = doInvoke(rs, result);
 			return result;
 		} catch (InvocationTargetException e) {
