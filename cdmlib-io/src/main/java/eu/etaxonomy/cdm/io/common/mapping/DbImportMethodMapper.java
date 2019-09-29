@@ -49,8 +49,8 @@ public class DbImportMethodMapper<CDMBASE extends VersionableEntity, STATE exten
 //	}
 
 	public static <T extends DbImportStateBase<?,?>> DbImportMethodMapper NewDefaultInstance(CdmImportBase<?, ?> cdmImport, String methodName,
-	        Class<? extends CdmBase> cdmBaseClass, Class<? extends DbImportStateBase> importStateClass){
-	    DbImportMethodMapper<?,?> result = new DbImportMethodMapper<VersionableEntity, T>(cdmImport.getClass(), cdmImport, methodName, cdmBaseClass, ResultSet.class, importStateClass);
+	        Class<? extends DbImportStateBase> importStateClass){
+	    DbImportMethodMapper<?,?> result = new DbImportMethodMapper<VersionableEntity, T>(cdmImport.getClass(), cdmImport, methodName, ResultSet.class, importStateClass);
 	    return result;
 	}
 
