@@ -23,7 +23,6 @@ import eu.etaxonomy.cdm.model.description.TextData;
  * Maps text data to a database string field. (Only handles one language)
  * @author a.mueller
  * @since 06.02.2012
- * @version 1.0
  */
 public class DbTextDataMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{
 	@SuppressWarnings("unused")
@@ -51,9 +50,6 @@ public class DbTextDataMapper extends DbSingleAttributeExportMapperBase<DbExport
 		this.language  = language;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValue(eu.etaxonomy.cdm.model.common.CdmBase)
-	 */
 	@Override
 	protected Object getValue(CdmBase cdmBase) {
 		if (cdmBase.isInstanceOf(TextData.class)){
@@ -69,18 +65,11 @@ public class DbTextDataMapper extends DbSingleAttributeExportMapperBase<DbExport
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValueType()
-	 */
 	@Override
 	protected int getSqlType() {
 		return Types.VARCHAR;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase#getTypeClass()
-	 */
 	@Override
 	public Class<?> getTypeClass() {
 		return String.class;

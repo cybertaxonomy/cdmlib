@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.model.common;
 
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +25,6 @@ import org.hibernate.envers.Audited;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
-
 
 /**
  * Extension types similar to dynamically defined attributes. These are not data

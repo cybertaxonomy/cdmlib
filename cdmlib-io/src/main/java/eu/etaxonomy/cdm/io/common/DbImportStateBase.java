@@ -33,7 +33,7 @@ public abstract class DbImportStateBase<CONFIG extends DbImportConfiguratorBase,
 	public static final String CURRENT_OBJECT_NAMESPACE = "CurrentObjectNamespace";
 	public static final String CURRENT_OBJECT_ID = "CurrentObjectId";
 
-	private final Map<String, User> usernameMap = new HashMap<String, User>();
+	private final Map<String, User> usernameMap = new HashMap<>();
 
 	private Reference partitionSourceReference;
 

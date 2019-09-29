@@ -31,7 +31,6 @@ import org.hibernate.envers.Audited;
  * "attributes" as an ExtensionType and add data to Identifiable instances via
  * Extension instances.
  * @author m.doering
- * @version 1.0
  * @since 08-Nov-2007 13:06:23
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -103,7 +102,6 @@ public class Extension extends VersionableEntity implements Cloneable {
 			return super.toString();
 		}
 	}
-
 
 //****************** CLONE ************************************************/
 
