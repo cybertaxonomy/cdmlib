@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.io.common.mapping.out;
 
 import java.sql.Types;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
@@ -17,6 +18,7 @@ import org.hibernate.Hibernate;
 import eu.etaxonomy.cdm.io.common.DbExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 
 /**
@@ -58,7 +60,17 @@ public class DbObjectMapper
 		if (isCache){
 			if (value.isInstanceOf(IdentifiableEntity.class)){
 				IdentifiableEntity<?> identEntity = CdmBase.deproxy(value, IdentifiableEntity.class);
-				result = identEntity.getTitleCache();
+				String titleCache = identEntity.getTitleCache();
+				if (titleCache == null || titleCache.length()>250 || titleCache.endsWith("...")){
+				    Set<String> fullCache = identEntity.getExtensions(ExtensionType.uuidExtNonTruncatedCache);
+				    if (!fullCache.isEmpty()){
+				        titleCache = fullCache.iterator().next();
+				        if (fullCache.size()>1){
+				            logger.warn("Entity has more than 1 'Non truncated cache' extensions. This should not happen. Arbitrary one taken.");
+				        }
+				    }
+				}
+				result = titleCache;
 			}else{
 				result = value.toString();
 			}
