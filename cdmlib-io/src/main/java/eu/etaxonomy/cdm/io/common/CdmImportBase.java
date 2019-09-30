@@ -111,10 +111,8 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	public static final UUID uuidUserDefinedMarkerTypeVocabulary = UUID.fromString("5f02a261-fd7d-4fce-bbe4-21472de8cd51");
 	public static final UUID uuidUserDefinedRankVocabulary = UUID.fromString("4dc57931-38e2-46c3-974d-413b087646ba");
 	public static final UUID uuidUserDefinedPresenceAbsenceVocabulary = UUID.fromString("6b8a2581-1471-4ea6-b8ad-b2d931cfbc23");
-
 	public static final UUID uuidUserDefinedModifierVocabulary = UUID.fromString("2a8b3838-3a95-49ea-9ab2-3049614b5884");
 	public static final UUID uuidUserDefinedKindOfUnitVocabulary = UUID.fromString("e7c5deb2-f485-4a66-9104-0c5398efd481");
-
 	public static final UUID uuidUserDefinedLanguageVocabulary = UUID.fromString("463a96f1-20ba-4a4c-9133-854c1682bd9b");
 
 

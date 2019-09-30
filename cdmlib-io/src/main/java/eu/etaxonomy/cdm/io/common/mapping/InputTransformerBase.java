@@ -50,9 +50,7 @@ public class InputTransformerBase implements IInputTransformer, Serializable {
 	public UUID getFeatureUuid(String key) throws UndefinedTransformerMethodException {
 		String warning = "getFeatureUuid is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
-
 	}
-
 
 	@Override
 	public State getStateByKey(String key) throws UndefinedTransformerMethodException {
@@ -64,14 +62,12 @@ public class InputTransformerBase implements IInputTransformer, Serializable {
 	public UUID getStateUuid(String key) throws UndefinedTransformerMethodException {
 		String warning = "getStateByKey is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
-
 	}
 
 	@Override
 	public Language getLanguageByKey(String key) throws UndefinedTransformerMethodException {
 		String warning = "getLanguageByKey is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
-
 	}
 
 	@Override
@@ -150,7 +146,6 @@ public class InputTransformerBase implements IInputTransformer, Serializable {
 		throw new UndefinedTransformerMethodException(warning);
 	}
 
-
 	@Override
 	public PresenceAbsenceTerm getPresenceTermByKey(String key) throws UndefinedTransformerMethodException {
 		String warning = "getPresenceTermByKey is not implemented in implementing transformer class";
@@ -167,7 +162,6 @@ public class InputTransformerBase implements IInputTransformer, Serializable {
 	public NamedArea getNamedAreaByKey(String key) throws UndefinedTransformerMethodException {
 		String warning = "getNamedAreaByKey is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
-
 	}
 
 	@Override
