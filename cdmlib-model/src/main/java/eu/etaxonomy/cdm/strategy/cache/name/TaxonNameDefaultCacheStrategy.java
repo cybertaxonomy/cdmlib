@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.strategy.cache.name;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -344,14 +345,18 @@ public class TaxonNameDefaultCacheStrategy
             String nomStatusStr = "not defined";
             if(ncStatus.getType() != null){
                 NomenclaturalStatusType statusType =  ncStatus.getType();
-                Language lang = Language.LATIN();
-                Representation repr = statusType.getRepresentation(lang);
+                List<Language> prefLangs = Arrays.asList(new Language[]{Language.LATIN(), Language.DEFAULT()});
+                Representation repr = statusType.getPreferredRepresentation(prefLangs);
                 if (repr != null){
+                    if(!Language.LATIN().equals(repr.getLanguage())){
+                        String message = "No latin representation available for nom. status. " + statusType.getTitleCache();
+                        logger.warn(message);
+                    }
                     nomStatusStr = repr.getAbbreviatedLabel();
                 }else{
-                    String message = "No latin representation available for nom. status. " + statusType.getTitleCache();
+                    String message = "No representation available for nom. status. " + statusType.getTitleCache();
                     logger.warn(message);
-                    throw new IllegalStateException(message);
+                    nomStatusStr = statusType.getTitleCache();
                 }
             }else if(StringUtils.isNotBlank(ncStatus.getRuleConsidered())){
                 nomStatusStr = ncStatus.getRuleConsidered();

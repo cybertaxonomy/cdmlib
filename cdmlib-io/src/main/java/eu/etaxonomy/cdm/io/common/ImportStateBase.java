@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -87,7 +88,9 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	private Map<UUID, Rank> rankMap = new HashMap<>();
 	private Map<UUID, DefinedTerm> kindOfUnitMap = new HashMap<>();
 
-	private Map<UUID, TermVocabulary<?>> termedVocabularyMap = new HashMap();
+	private Map<UUID, TermVocabulary<?>> termedVocabularyMap = new HashMap<>();
+
+	private Map<UUID, NomenclaturalStatusType> nomenclaturalStatusTypeMap = new HashMap<>();
 
 	protected IService<CdmBase> service = null;
 
@@ -133,8 +136,9 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 		languageMap = new HashMap<>();
 		taxonRelationshipTypeMap = new HashMap<>();
 
-		referenceSystemMap = new HashMap<UUID, ReferenceSystem>();
-		rankMap = new HashMap<UUID, Rank>();
+		referenceSystemMap = new HashMap<>();
+		rankMap = new HashMap<>();
+		nomenclaturalStatusTypeMap = new HashMap<>();
 	}
 
 
@@ -266,6 +270,13 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	public void putFeature(Feature feature){
 		featureMap.put(feature.getUuid(), feature);
 	}
+
+	public NomenclaturalStatusType getNomenclaturalStatusType(UUID uuid){
+        return nomenclaturalStatusTypeMap.get(uuid);
+    }
+    public void putNomenclaturalStatusType(NomenclaturalStatusType feature){
+        nomenclaturalStatusTypeMap.put(feature.getUuid(), feature);
+    }
 
 	public DefinedTerm getKindOfUnit(UUID uuid){
 		return kindOfUnitMap.get(uuid);
