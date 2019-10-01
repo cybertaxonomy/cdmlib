@@ -14,6 +14,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.springframework.security.core.Authentication;
+
+import eu.etaxonomy.cdm.api.service.config.DoubtfulForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.PublishForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
@@ -284,6 +287,13 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
     public UpdateResult setPublishForSubtree(PublishForSubtreeConfigurator configurator);
 
     /**
+     * Sets the doubtful flag for all taxa of the subtree.
+     * @param doubtful
+     * @return
+     */
+    public UpdateResult setDoubtfulForSubtree(DoubtfulForSubtreeConfigurator configurator);
+
+    /**
      * Returns a list of taxon node {@link UUID uuids} according to the given filter.
      * @param filter
      * @return
@@ -353,6 +363,14 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
     /**
      * @param parentNodeUuid
      * @param areas
+     * @param authentication
+     * @return
+     */
+    List<TaxonDistributionDTO> getTaxonDistributionDTOForSubtree(UUID parentNodeUuid, List<String> propertyPaths, Authentication authentication);
+
+    /**
+     * @param parentNodeUuid
+     * @param areas
      * @return
      */
     List<TaxonDistributionDTO> getTaxonDistributionDTOForSubtree(UUID parentNodeUuid, List<String> propertyPaths);
@@ -376,6 +394,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      */
     public <S extends TaxonNode> Pager<S> page(Class<S> clazz, List<Restriction<?>> restrictions, Integer pageSize, Integer pageIndex,
             List<OrderHint> orderHints, List<String> propertyPaths, boolean includeUnpublished);
+
 
 
 

@@ -23,11 +23,13 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
+import eu.etaxonomy.cdm.api.service.config.DoubtfulForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
 import eu.etaxonomy.cdm.api.service.config.PublishForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SecundumForSubtreeConfigurator;
@@ -56,6 +58,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.permission.Operation;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.HomotypicGroupTaxonComparator;
@@ -75,6 +78,7 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeFilterDao;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.ICdmPermissionEvaluator;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -115,6 +119,8 @@ public class TaxonNodeServiceImpl
     @Autowired
     IProgressMonitorService progressMonitorService;
 
+    @Autowired
+    private ICdmPermissionEvaluator permissionEvaluator;
 
     @Override
     public List<TaxonNode> loadChildNodesOfTaxonNode(TaxonNode taxonNode,
@@ -1098,6 +1104,30 @@ public class TaxonNodeServiceImpl
     }
 
     @Override
+    @Transactional(readOnly=false)
+    public UpdateResult setDoubtfulForSubtree(DoubtfulForSubtreeConfigurator configurator){
+        UpdateResult result = new UpdateResult();
+        IProgressMonitor monitor = configurator.getMonitor();
+        if (monitor == null){
+            monitor = DefaultProgressMonitor.NewInstance();
+        }
+        TreeIndex subTreeIndex = null;
+
+        if (configurator.getSubtreeUuid() == null){
+            result.setError();
+            result.addException(new NullPointerException("No subtree given"));
+            monitor.done();
+            return result;
+        }
+        TaxonNode subTree = find(configurator.getSubtreeUuid());
+
+
+
+        return result;
+
+    }
+
+    @Override
     public long count(TaxonNodeFilter filter){
         return nodeFilterDao.count(filter);
     }
@@ -1156,13 +1186,21 @@ public class TaxonNodeServiceImpl
         return commonParent;
     }
 
+
+
     @Override
-    public List<TaxonDistributionDTO> getTaxonDistributionDTOForSubtree(UUID parentNodeUuid, List<String> propertyPaths){
+    public List<TaxonDistributionDTO> getTaxonDistributionDTOForSubtree(UUID parentNodeUuid, List<String> propertyPaths, Authentication authentication){
         List<TaxonNode> nodes = listChildrenOf(load(parentNodeUuid), null, null,
                true, true, propertyPaths);
         List<TaxonDistributionDTO> result = new ArrayList<>();
+        boolean hasPermission = true;
+
         for(TaxonNode node:nodes){
-            if (node.getTaxon() != null){
+            if (authentication != null) {
+                hasPermission = permissionEvaluator.hasPermission(authentication, node, Operation.UPDATE);
+            }
+
+            if (node.getTaxon() != null && hasPermission){
                 try{
                     TaxonDistributionDTO dto = new TaxonDistributionDTO(node.getTaxon());
                     result.add(dto);
@@ -1196,6 +1234,12 @@ public class TaxonNodeServiceImpl
         }
         Pager<S> pager = new DefaultPagerImpl<>(pageIndex, resultSize, pageSize, records);
         return pager;
+    }
+
+    @Override
+    public List<TaxonDistributionDTO> getTaxonDistributionDTOForSubtree(UUID parentNodeUuid,
+            List<String> propertyPaths) {
+        return getTaxonDistributionDTOForSubtree(parentNodeUuid, propertyPaths, null);
     }
 
 
