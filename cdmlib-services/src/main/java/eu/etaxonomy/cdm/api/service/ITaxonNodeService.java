@@ -16,7 +16,6 @@ import java.util.UUID;
 
 import org.springframework.security.core.Authentication;
 
-import eu.etaxonomy.cdm.api.service.config.DoubtfulForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.PublishForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
@@ -286,12 +285,6 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      */
     public UpdateResult setPublishForSubtree(PublishForSubtreeConfigurator configurator);
 
-    /**
-     * Sets the doubtful flag for all taxa of the subtree.
-     * @param doubtful
-     * @return
-     */
-    public UpdateResult setDoubtfulForSubtree(DoubtfulForSubtreeConfigurator configurator);
 
     /**
      * Returns a list of taxon node {@link UUID uuids} according to the given filter.

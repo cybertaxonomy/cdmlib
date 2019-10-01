@@ -29,7 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
-import eu.etaxonomy.cdm.api.service.config.DoubtfulForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
 import eu.etaxonomy.cdm.api.service.config.PublishForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SecundumForSubtreeConfigurator;
@@ -1103,29 +1102,7 @@ public class TaxonNodeServiceImpl
         return result;
     }
 
-    @Override
-    @Transactional(readOnly=false)
-    public UpdateResult setDoubtfulForSubtree(DoubtfulForSubtreeConfigurator configurator){
-        UpdateResult result = new UpdateResult();
-        IProgressMonitor monitor = configurator.getMonitor();
-        if (monitor == null){
-            monitor = DefaultProgressMonitor.NewInstance();
-        }
-        TreeIndex subTreeIndex = null;
 
-        if (configurator.getSubtreeUuid() == null){
-            result.setError();
-            result.addException(new NullPointerException("No subtree given"));
-            monitor.done();
-            return result;
-        }
-        TaxonNode subTree = find(configurator.getSubtreeUuid());
-
-
-
-        return result;
-
-    }
 
     @Override
     public long count(TaxonNodeFilter filter){
