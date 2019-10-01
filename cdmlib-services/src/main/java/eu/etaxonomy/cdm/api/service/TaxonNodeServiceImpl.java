@@ -1170,13 +1170,15 @@ public class TaxonNodeServiceImpl
         List<TaxonNode> nodes = listChildrenOf(load(parentNodeUuid), null, null,
                true, true, propertyPaths);
         List<TaxonDistributionDTO> result = new ArrayList<>();
-        boolean hasPermission = true;
-
+        boolean hasPermission = false;
+        TaxonDescription instance = TaxonDescription.NewInstance();
+        hasPermission = permissionEvaluator.hasPermission(authentication, instance, Operation.UPDATE);
         for(TaxonNode node:nodes){
-            if (authentication != null) {
+            if (authentication != null && !hasPermission) {
                 hasPermission = permissionEvaluator.hasPermission(authentication, node, Operation.UPDATE);
+            }else if (authentication == null){
+                hasPermission = true;
             }
-
             if (node.getTaxon() != null && hasPermission){
                 try{
                     TaxonDistributionDTO dto = new TaxonDistributionDTO(node.getTaxon());
