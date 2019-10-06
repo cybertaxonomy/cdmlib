@@ -663,4 +663,19 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
         return result;
     }
 
+    /**
+     * @return a set containing all UUIDs of relationship types representing
+     * a pseudo taxon relationship (a synonym relationship expressed as
+     * taxon relationship as the synonym side for some reason must be
+     * handled as pseudo accepted taxon, e.g. because factual data
+     * is attached from an import)
+     */
+    public static Set<UUID> pseudoTaxonUuids() {
+        Set<UUID> result = new HashSet<>();
+        result.add(uuidHomotypicSynonymTaxonRelationship);
+        result.add(uuidHeterotypicSynonymTaxonRelationship);
+        result.add(uuidSynonymOfTaxonRelationship);
+        return result;
+    }
+
 }

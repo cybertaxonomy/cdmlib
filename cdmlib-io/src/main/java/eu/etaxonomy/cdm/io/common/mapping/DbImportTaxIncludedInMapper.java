@@ -37,11 +37,28 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<DbImpor
 
 //******************************** FACTORY METHOD ***************************************************/
 
-	public static DbImportTaxIncludedInMapper<?> NewInstance(String dbChildAttribute, String dbChildNamespace, String dbParentAttribute, String parentNamespace, String dbAlternativeParentAttribute, String alternativeParentNamespace, String dbTreeAttribute){
+	public static DbImportTaxIncludedInMapper<?> NewInstance(String dbChildAttribute, String dbChildNamespace, String dbParentAttribute, String parentNamespace, String dbTreeAttribute){
 		String citationNamespace = null;
 		String citationAttribute = null;
-		return new DbImportTaxIncludedInMapper<>(dbChildAttribute, dbChildNamespace, dbParentAttribute, parentNamespace, dbAlternativeParentAttribute, alternativeParentNamespace, dbTreeAttribute, citationAttribute, citationNamespace);
+		return new DbImportTaxIncludedInMapper<>(dbChildAttribute, dbChildNamespace, dbParentAttribute, parentNamespace, null, null, dbTreeAttribute, citationAttribute, citationNamespace);
 	}
+
+    /**
+     * @param dbChildAttribute
+     * @param dbChildNamespace
+     * @param dbParentAttribute
+     * @param parentNamespace
+     * @param dbAlternativeParentAttribute if the object represented by dbParentAttribute is of class
+     *          Synonym the alternative parent is taken
+     * @param alternativeParentNamespace
+     * @param dbTreeAttribute
+     * @return
+     */
+    public static DbImportTaxIncludedInMapper<?> NewInstance(String dbChildAttribute, String dbChildNamespace, String dbParentAttribute, String parentNamespace, String dbAlternativeParentAttribute, String alternativeParentNamespace, String dbTreeAttribute){
+        String citationNamespace = null;
+        String citationAttribute = null;
+        return new DbImportTaxIncludedInMapper<>(dbChildAttribute, dbChildNamespace, dbParentAttribute, parentNamespace, dbAlternativeParentAttribute, alternativeParentNamespace, dbTreeAttribute, citationAttribute, citationNamespace);
+    }
 
 //******************************* ATTRIBUTES ***************************************/
 	private String fromAttribute;
