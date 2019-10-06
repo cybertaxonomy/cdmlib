@@ -138,7 +138,7 @@ public abstract class AnnotatableEntity
     public Set<Annotation> getAnnotations(UUID uuidAnnotationType){
         Set<Annotation> result = new HashSet<>();
         for (Annotation annotation: getAnnotations()){
-            if (annotation.getAnnotationType().getUuid().equals(uuidAnnotationType)){
+            if (annotation.getAnnotationType() != null && annotation.getAnnotationType().getUuid().equals(uuidAnnotationType)){
                 result.add(annotation);
             }
         }
