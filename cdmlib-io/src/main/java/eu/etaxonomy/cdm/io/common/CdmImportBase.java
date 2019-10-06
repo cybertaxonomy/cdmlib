@@ -701,6 +701,9 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
         if (nomStatusType == null){
             nomStatusType = (NomenclaturalStatusType)getTermService().find(uuid);
             if (nomStatusType == null && ! hasNoLabel(label, description, labelAbbrev)){
+                if (language == null){
+                    language = Language.UNKNOWN_LANGUAGE();
+                }
                 nomStatusType = NomenclaturalStatusType.NewInstance(description, label, labelAbbrev, language);
                 nomStatusType.setUuid(uuid);
                 if (voc == null){
