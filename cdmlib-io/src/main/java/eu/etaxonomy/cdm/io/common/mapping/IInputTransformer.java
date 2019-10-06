@@ -11,19 +11,24 @@ package eu.etaxonomy.cdm.io.common.mapping;
 
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
+import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
+import eu.etaxonomy.cdm.model.taxon.SynonymType;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 
 
@@ -102,5 +107,15 @@ public interface IInputTransformer {
     public DefinedTerm getIdentifierTypeByKey(String key) throws UndefinedTransformerMethodException;
 
     public UUID getIdentifierTypeUuid(String key) throws UndefinedTransformerMethodException;
+
+    /**
+     * Array of relationship types required for a synonym relationship. As this can be
+     * {@link SynonymType synonym types} as well as {@link TaxonRelationshipType taxon relationship types}
+     * (for pro parte or misapplied name relationships as well as in some cases also
+     * {@link NameRelationshipType name relationship types} the return type is generic and
+     * allows 4 results, [0] for synonym type, [1] for taxon relationship type
+     * [2] for name relationship type and [3] for hybrid relationship type.
+     */
+    public RelationshipTermBase<?>[] getSynonymRelationTypesByKey(String key, DbImportStateBase<?,?> state);
 
 }
