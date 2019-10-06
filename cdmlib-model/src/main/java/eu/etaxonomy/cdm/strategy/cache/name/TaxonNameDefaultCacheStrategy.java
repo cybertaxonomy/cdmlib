@@ -350,7 +350,7 @@ public class TaxonNameDefaultCacheStrategy
                 if (repr != null){
                     if(!Language.LATIN().equals(repr.getLanguage())){
                         String message = "No latin representation available for nom. status. " + statusType.getTitleCache();
-                        logger.warn(message);
+                        logger.info(message);
                     }
                     nomStatusStr = repr.getAbbreviatedLabel();
                 }else{
