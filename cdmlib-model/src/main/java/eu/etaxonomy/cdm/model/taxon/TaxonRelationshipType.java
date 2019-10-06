@@ -103,7 +103,11 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	private static final UUID uuidUnclear = UUID.fromString("4c48ba25-c1d0-4bdd-9260-c1fa2e42a5d3");
     private static final UUID uuidNotYetWorkedOn = UUID.fromString("8d47e59a-790d-428f-8060-01d443519166");
 
-
+    //currently only used for ERMS import for synonym relationship where the synonym needs to be of class
+    //Taxon for some reason.
+    public static final UUID uuidHeterotypicSynonymTaxonRelationship = UUID.fromString("8f1be54b-c693-4d58-ab36-6f389fc9bd1f");
+    public static final UUID uuidHomotypicSynonymTaxonRelationship = UUID.fromString("bfe114b9-1a25-4199-b8b0-6599eb53ae8a");
+    public static final UUID uuidSynonymOfTaxonRelationship = UUID.fromString("cc648276-0823-47b1-9deb-fa7c046e4afd");
 
 
 
