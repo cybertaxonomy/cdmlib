@@ -95,7 +95,7 @@ public interface ITaxonNameBase
      * @param toName          the taxon name of the target for this new name relationship
      * @param type            the type of this new name relationship
      * @param ruleConsidered  the string which specifies the rule on which this name relationship is based
-     * @return
+     * @returnthe             created relationship
      * @see                   #getRelationsToThisName()
      * @see                   #getNameRelations()
      * @see                   #addRelationshipFromName(TaxonName, NameRelationshipType, String)
@@ -111,7 +111,24 @@ public interface ITaxonNameBase
      * @param toName          the taxon name of the target for this new name relationship
      * @param type            the type of this new name relationship
      * @param ruleConsidered  the string which specifies the rule on which this name relationship is based
-     * @return
+     * @param codeEdition     the edition of the nomenclatural code where the <code>ruleConsidered</code> has been published.
+     * @return                the created relationship
+     * @see                   #getRelationsToThisName()
+     * @see                   #getNameRelations()
+     * @see                   #addRelationshipFromName(TaxonName, NameRelationshipType, String)
+     * @see                   #addNameRelationship(NameRelationship)
+     */
+    public NameRelationship addRelationshipToName(TaxonName toName, NameRelationshipType type);
+
+    /**
+     * Creates a new {@link NameRelationship#NameRelationship(TaxonName, TaxonName, NameRelationshipType, String) name relationship} from <i>this</i> taxon name to another taxon name
+     * and adds it both to the set of {@link #getRelationsFromThisName() relations from <i>this</i> taxon name} and
+     * to the set of {@link #getRelationsToThisName() relations to the other taxon name}.
+     *
+     * @param toName          the taxon name of the target for this new name relationship
+     * @param type            the type of this new name relationship
+     * @param ruleConsidered  the string which specifies the rule on which this name relationship is based
+     * @return                the created relationship
      * @see                   #getRelationsToThisName()
      * @see                   #getNameRelations()
      * @see                   #addRelationshipFromName(TaxonName, NameRelationshipType, String)
@@ -147,6 +164,7 @@ public interface ITaxonNameBase
      * @param ruleConsidered  the string which specifies the rule on which this name relationship is based
      * @param citation        the reference in which this relation was described
      * @param microCitation   the reference detail for this relation (e.g. page)
+     * @param codeEditrion    the nomenclatural code used for the considered rule
      * @see                   #getRelationsFromThisName()
      * @see                   #getNameRelations()
      * @see                   #addRelationshipToName(TaxonName, NameRelationshipType, String)

@@ -25,16 +25,25 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 
 /**
- * TODO synonyms are no relationships anymore, maybe we need to change something here
  * @author a.mueller
  * @since 02.03.2010
- * @param <CDM_BASE>
- * @param <STATE>
  */
 public class DbImportSynonymMapper<STATE extends DbImportStateBase<?,?>>
         extends DbImportMultiAttributeMapperBase<CdmBase, STATE> {
 
     private static final Logger logger = Logger.getLogger(DbImportSynonymMapper.class);
+
+//******************************* ATTRIBUTES ***************************************/
+      private String fromAttribute;
+      private String toAttribute;
+      private TaxonRelationshipType taxonRelType;
+      private SynonymType synType;
+      private String relatedObjectNamespace;
+      private String citationAttribute;
+      private String microCitationAttribute;
+      private String relationshipTypeAttribute;
+      boolean forceTaxonLevelRelation = true;
+      boolean saveSourceValueAsAnnotation;
 
 //******************************** FACTORY METHOD ***************************************************/
 
@@ -43,24 +52,14 @@ public class DbImportSynonymMapper<STATE extends DbImportStateBase<?,?>>
 	 * @param dbFromAttribute
 	 * @param dbToAttribute
 	 * @param relatedObjectNamespace
-	 * @param relTypeAttribute
-	 * @param taxonRelationshipType this relationship type is taken for accepted taxa being synonyms (may be the case if data are dirty)
+	 * @param relTypeAttribute the attribute in the source DB to compute the relationship type(s) from
+	 * @param defaultTaxonRelationshipType this relationship type is taken for accepted taxa
+	 *        being synonyms (may be the case if data are dirty)
 	 * @return
 	 */
 	public static DbImportSynonymMapper<?> NewInstance(String dbFromAttribute, String dbToAttribute, String relatedObjectNamespace, String relTypeAttribute, TaxonRelationshipType taxonRelationshipType){
 		return new DbImportSynonymMapper(dbFromAttribute, dbToAttribute, taxonRelationshipType, relatedObjectNamespace, relTypeAttribute);
 	}
-
-//******************************* ATTRIBUTES ***************************************/
-	private String fromAttribute;
-	private String toAttribute;
-	private TaxonRelationshipType relType;
-	private String relatedObjectNamespace;
-	private String citationAttribute;
-	private String microCitationAttribute;
-	private String relationshipTypeAttribute;
-	private boolean useTaxonRelationship;
-
 
 //********************************* CONSTRUCTOR ****************************************/
 	/**
@@ -141,10 +140,6 @@ public class DbImportSynonymMapper<STATE extends DbImportStateBase<?,?>>
 
 	/**
 	 *	//TODO copied from DbImportObjectMapper. Maybe these can be merged again in future
-	 * @param rs
-	 * @param dbAttribute
-	 * @return
-	 * @throws SQLException
 	 */
 	protected CdmBase getRelatedObject(ResultSet rs, String dbAttribute) throws SQLException {
 		CdmBase result = null;
@@ -157,10 +152,8 @@ public class DbImportSynonymMapper<STATE extends DbImportStateBase<?,?>>
 		return result;
 	}
 
-
 	/**
 	 * Checks if cdmBase is of type Taxon
-	 * @param fromObject
 	 */
 	private Taxon checkTaxonType(TaxonBase<?> taxonBase, String typeString, String id) {
 		if (! taxonBase.isInstanceOf(Taxon.class)){
@@ -187,6 +180,4 @@ public class DbImportSynonymMapper<STATE extends DbImportStateBase<?,?>>
 		}
 		return (CdmBase.deproxy(cdmBase, TaxonBase.class));
 	}
-
-
 }

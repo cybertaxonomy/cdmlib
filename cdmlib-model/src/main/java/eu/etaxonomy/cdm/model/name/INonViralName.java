@@ -14,6 +14,7 @@ import java.util.Set;
 import javax.persistence.Transient;
 
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
@@ -59,6 +60,30 @@ public interface INonViralName extends ITaxonNameBase{
      * @see                   #addNameRelationship(NameRelationship)
      */
     public HybridRelationship addHybridParent(INonViralName parentName, HybridRelationshipType type, String ruleConsidered);
+
+    /**
+     * Creates a new {@link HybridRelationship#HybridRelationship(TaxonName, TaxonName, HybridRelationshipType, String) hybrid relationship}
+     * to <i>this</i> non viral name. A HybridRelationship may be of type
+     * "is first/second parent" or "is male/female parent". By invoking this
+     * method <i>this</i> non viral name becomes a hybrid child of the parent
+     * non viral name.
+     *
+     * @param parentName      the non viral name of the parent for this new hybrid name relationship
+     * @param type            the type of this new name relationship
+     * @param reference       the reference for this relationship
+     * @param microReference  the micro reference (e.g. page no.) of this relationship
+     * @param ruleConsidered  the string which specifies the rule on which this name relationship is based
+     * @param codeEditrion    the nomenclatural code used for the considered rule
+     * @return
+     * @see                   #addHybridChild(TaxonName, HybridRelationshipType,String )
+     * @see                   #getRelationsToThisName()
+     * @see                   #getNameRelations()
+     * @see                   #addRelationshipFromName(TaxonName, NameRelationshipType, String)
+     * @see                   #addNameRelationship(NameRelationship)
+     */
+    public HybridRelationship addHybridParent(INonViralName parentName, HybridRelationshipType type,
+            Reference reference, String microReference, String ruleConsidered, NomenclaturalCodeEdition codeEdition);
+
 
     /**
      * Shortcut. Returns the basionym authors title cache. Returns null if no basionym author exists.

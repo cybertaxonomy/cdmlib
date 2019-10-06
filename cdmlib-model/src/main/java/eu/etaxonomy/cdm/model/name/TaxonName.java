@@ -1668,41 +1668,16 @@ public class TaxonName
         return rels;
     }
 
-    /**
-     * Creates a new {@link NameRelationship#NameRelationship(TaxonName, TaxonName, NameRelationshipType, String) name relationship} from <i>this</i> taxon name to another taxon name
-     * and adds it both to the set of {@link #getRelationsFromThisName() relations from <i>this</i> taxon name} and
-     * to the set of {@link #getRelationsToThisName() relations to the other taxon name}.
-     *
-     * @param toName		  the taxon name of the target for this new name relationship
-     * @param type			  the type of this new name relationship
-     * @param ruleConsidered  the string which specifies the rule on which this name relationship is based
-     * @param codeEdition     the edition of the nomenclatural code where the <code>ruleConsidered</code> has been published.
-     * @return
-     * @see    				  #getRelationsToThisName()
-     * @see    				  #getNameRelations()
-     * @see    				  #addRelationshipFromName(TaxonName, NameRelationshipType, String)
-     * @see    				  #addNameRelationship(NameRelationship)
-     */
     @Override
     public NameRelationship addRelationshipToName(TaxonName toName, NameRelationshipType type, String ruleConsidered, NomenclaturalCodeEdition codeEdition){
         return addRelationshipToName(toName, type, null, null, ruleConsidered, codeEdition);
     }
 
-    /**
-     * Creates a new {@link NameRelationship#NameRelationship(TaxonName, TaxonName, NameRelationshipType, String) name relationship} from <i>this</i> taxon name to another taxon name
-     * and adds it both to the set of {@link #getRelationsFromThisName() relations from <i>this</i> taxon name} and
-     * to the set of {@link #getRelationsToThisName() relations to the other taxon name}.
-     *
-     * @param toName		  the taxon name of the target for this new name relationship
-     * @param type			  the type of this new name relationship
-     * @param ruleConsidered  the string which specifies the rule on which this name relationship is based
-     * @param codeEdition     the edition of the nomenclatural code where the <code>ruleConsidered</code> has been published.
-     * @return
-     * @see    				  #getRelationsToThisName()
-     * @see    				  #getNameRelations()
-     * @see    				  #addRelationshipFromName(TaxonName, NameRelationshipType, String)
-     * @see    				  #addNameRelationship(NameRelationship)
-     */
+    @Override
+    public NameRelationship addRelationshipToName(TaxonName toName, NameRelationshipType type){
+        return addRelationshipToName(toName, type, null, null, null, null);
+    }
+
     @Override
     public NameRelationship addRelationshipToName(TaxonName toName, NameRelationshipType type, Reference citation, String microCitation, String ruleConsidered, NomenclaturalCodeEdition codeEdition){
         if (toName == null){
@@ -1712,43 +1687,12 @@ public class TaxonName
         return rel;
     }
 
-    /**
-     * Creates a new {@link NameRelationship#NameRelationship(TaxonName, TaxonName, NameRelationshipType, String) name relationship} from another taxon name to <i>this</i> taxon name
-     * and adds it both to the set of {@link #getRelationsToThisName() relations to <i>this</i> taxon name} and
-     * to the set of {@link #getRelationsFromThisName() relations from the other taxon name}.
-     *
-     * @param fromName		  the taxon name of the source for this new name relationship
-     * @param type			  the type of this new name relationship
-     * @param ruleConsidered  the string which specifies the rule on which this name relationship is based
-     * @param codeEdition           the edition of the nomenclatural code where the <code>ruleConsidered</code> has been published.
-     * @param citation		  the reference in which this relation was described
-     * @param microCitation	  the reference detail for this relation (e.g. page)
-     * @see    				  #getRelationsFromThisName()
-     * @see    				  #getNameRelations()
-     * @see    				  #addRelationshipToName(TaxonName, NameRelationshipType, String)
-     * @see    				  #addNameRelationship(NameRelationship)
-     */
     @Override
     public NameRelationship addRelationshipFromName(TaxonName fromName, NameRelationshipType type, String ruleConsidered, NomenclaturalCodeEdition codeEdition){
         //fromName.addRelationshipToName(this, type, null, null, ruleConsidered);
         return this.addRelationshipFromName(fromName, type, null, null, ruleConsidered, codeEdition);
     }
-    /**
-     * Creates a new {@link NameRelationship#NameRelationship(TaxonName, TaxonName, NameRelationshipType, String) name relationship} from another taxon name to <i>this</i> taxon name
-     * and adds it both to the set of {@link #getRelationsToThisName() relations to <i>this</i> taxon name} and
-     * to the set of {@link #getRelationsFromThisName() relations from the other taxon name}.
-     *
-     * @param fromName		  the taxon name of the source for this new name relationship
-     * @param type			  the type of this new name relationship
-     * @param ruleConsidered  the string which specifies the rule on which this name relationship is based
-     * @param codeEdition           the edition of the nomenclatural code where the <code>ruleConsidered</code> has been published.
-     * @param citation		  the reference in which this relation was described
-     * @param microCitation	  the reference detail for this relation (e.g. page)
-     * @see    				  #getRelationsFromThisName()
-     * @see    				  #getNameRelations()
-     * @see    				  #addRelationshipToName(TaxonName, NameRelationshipType, String)
-     * @see    				  #addNameRelationship(NameRelationship)
-     */
+
     @Override
     public NameRelationship addRelationshipFromName(TaxonName fromName, NameRelationshipType type, Reference citation, String microCitation, String ruleConsidered, NomenclaturalCodeEdition codeEdition){
         return fromName.addRelationshipToName(this, type, citation, microCitation, ruleConsidered, codeEdition);
@@ -2858,7 +2802,7 @@ public class TaxonName
     @Transient
     public Set<Taxon> getTaxa(){
         Set<Taxon> result = new HashSet<>();
-        for (TaxonBase taxonBase : this.taxonBases){
+        for (TaxonBase<?> taxonBase : this.taxonBases){
             if (taxonBase instanceof Taxon){
                 result.add((Taxon)taxonBase);
             }
@@ -2879,7 +2823,7 @@ public class TaxonName
     @Transient
     public Set<Synonym> getSynonyms() {
         Set<Synonym> result = new HashSet<>();
-        for (TaxonBase taxonBase : this.taxonBases){
+        for (TaxonBase<?> taxonBase : this.taxonBases){
             if (taxonBase instanceof Synonym){
                 result.add((Synonym)taxonBase);
             }
@@ -2887,7 +2831,7 @@ public class TaxonName
         return result;
     }
 
-    //******* REGISTRATION *****************/
+//***************** REGISTRATION *****************/
 
     @Override
     public Set<Registration> getRegistrations() {
@@ -2896,7 +2840,6 @@ public class TaxonName
 
 
 // ************* RELATIONSHIPS *****************************/
-
 
     /**
      * Returns the hybrid child relationships ordered by relationship type, or if equal
@@ -2911,30 +2854,17 @@ public class TaxonName
         Collections.sort(result);
         Collections.reverse(result);
         return result;
-
     }
 
-
-    /**
-     * Creates a new {@link HybridRelationship#HybridRelationship(BotanicalName, BotanicalName, HybridRelationshipType, String) hybrid relationship}
-     * to <i>this</i> botanical name. A HybridRelationship may be of type
-     * "is first/second parent" or "is male/female parent". By invoking this
-     * method <i>this</i> botanical name becomes a hybrid child of the parent
-     * botanical name.
-     *
-     * @param parentName      the botanical name of the parent for this new hybrid name relationship
-     * @param type            the type of this new name relationship
-     * @param ruleConsidered  the string which specifies the rule on which this name relationship is based
-     * @return
-     * @see                   #addHybridChild(BotanicalName, HybridRelationshipType,String )
-     * @see                   #getRelationsToThisName()
-     * @see                   #getNameRelations()
-     * @see                   #addRelationshipFromName(TaxonName, NameRelationshipType, String)
-     * @see                   #addNameRelationship(NameRelationship)
-     */
     @Override
     public HybridRelationship addHybridParent(INonViralName parentName, HybridRelationshipType type, String ruleConsidered){
-        return new HybridRelationship(this, parentName, type, ruleConsidered);
+        return addHybridParent(parentName, type, null, null, ruleConsidered, null);
+    }
+
+    @Override
+    public HybridRelationship addHybridParent(INonViralName parentName, HybridRelationshipType type, Reference reference,
+            String microReference, String ruleConsidered, NomenclaturalCodeEdition codeEdition){
+        return new HybridRelationship(this, parentName, type, reference, microReference, ruleConsidered, codeEdition);
     }
 
     /**

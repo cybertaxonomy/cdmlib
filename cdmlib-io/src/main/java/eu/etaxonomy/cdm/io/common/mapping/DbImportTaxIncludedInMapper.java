@@ -29,11 +29,11 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 /**
  * @author a.mueller
  * @since 02.03.2010
- * @param <CDM_BASE>
- * @param <STATE>
  */
-public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<DbImportConfiguratorBase<STATE>,?>> extends DbImportMultiAttributeMapperBase<CdmBase, STATE> {
-	private static final Logger logger = Logger.getLogger(DbImportTaxIncludedInMapper.class);
+public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<DbImportConfiguratorBase<STATE>,?>>
+        extends DbImportMultiAttributeMapperBase<CdmBase, STATE> {
+
+    private static final Logger logger = Logger.getLogger(DbImportTaxIncludedInMapper.class);
 
 //******************************** FACTORY METHOD ***************************************************/
 
@@ -62,7 +62,6 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<DbImpor
 
 	protected DbImportTaxIncludedInMapper(String fromAttribute, String fromNamespace,
 	        String toAttribute, String toNamespace, String alternativeAttribute, String alternativeNamespace, String treeAttribute, String citationAttribute, String citationNamespace) {
-		super();
 		//TODO make it a single attribute mapper
 		this.fromAttribute = fromAttribute;
 		this.fromNamespace = fromNamespace;

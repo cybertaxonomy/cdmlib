@@ -62,7 +62,6 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 
 	protected static Map<UUID, TaxonRelationshipType> termMap = null;
 
-	@Deprecated //will be removed in future versions. Use Classification/TaxonNode instead
 	private static final UUID uuidTaxonomicallyIncludedIn = UUID.fromString("d13fecdf-eb44-4dd7-9244-26679c05df1c");
 
 	private static final UUID uuidMisappliedNameFor = UUID.fromString("1ed87175-59dd-437e-959e-0d71583d8417");
