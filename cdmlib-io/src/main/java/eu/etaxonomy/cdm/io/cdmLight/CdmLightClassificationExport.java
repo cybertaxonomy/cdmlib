@@ -950,6 +950,9 @@ public class CdmLightClassificationExport
             csvLine[table.getIndex(CdmLightExportTable.SYNONYM_ID)] = getId(state, synonym);
             csvLine[table.getIndex(CdmLightExportTable.TAXON_FK)] = getId(state, synonym.getAcceptedTaxon());
             csvLine[table.getIndex(CdmLightExportTable.NAME_FK)] = getId(state, name);
+            if (synonym.getSec() != null && !state.getReferenceStore().contains(synonym.getSec().getUuid())) {
+                handleReference(state, synonym.getSec());
+            }
             csvLine[table.getIndex(CdmLightExportTable.SYN_SEC_REFERENCE_FK)] = getId(state, synonym.getSec());
             csvLine[table.getIndex(CdmLightExportTable.SYN_SEC_REFERENCE)] = getTitleCache(synonym.getSec());
             csvLine[table.getIndex(CdmLightExportTable.PUBLISHED)] = synonym.isPublish() ? "1" : "0";
@@ -1202,10 +1205,23 @@ public class CdmLightClassificationExport
             List<TextualTypeDesignation> textualTypeDesignations = new ArrayList();
             for (TypeDesignationBase typeDesignation : name.getTypeDesignations()) {
                 if (typeDesignation.isInstanceOf(TextualTypeDesignation.class)) {
-                    if (((TextualTypeDesignation) typeDesignation).isVerbatim()) {
-                        csvLine[table.getIndex(
-                                CdmLightExportTable.PROTOLOGUE_TYPE_STATEMENT)] = ((TextualTypeDesignation) typeDesignation)
-                                        .getPreferredText(Language.DEFAULT());
+
+                    if (((TextualTypeDesignation) typeDesignation).isVerbatim()  ){
+                        Set<OriginalSourceBase> sources =  typeDesignation.getSources();
+                        boolean isProtologue = false;
+                        if (sources != null && !sources.isEmpty()){
+                            OriginalSourceBase source = sources.iterator().next();
+                            if (name.getNomenclaturalReference() != null){
+                                isProtologue = source.getCitation().getUuid().equals(name.getNomenclaturalReference().getUuid());
+                            }
+                        }
+                        if (isProtologue){
+                            csvLine[table.getIndex(CdmLightExportTable.PROTOLOGUE_TYPE_STATEMENT)] = ((TextualTypeDesignation) typeDesignation)
+                                    .getPreferredText(Language.DEFAULT());
+                        }else{
+                            textualTypeDesignations.add((TextualTypeDesignation) typeDesignation);
+                        }
+
                     } else {
                         textualTypeDesignations.add((TextualTypeDesignation) typeDesignation);
                     }
@@ -1227,7 +1243,9 @@ public class CdmLightClassificationExport
                     stringbuilder.append( " [");
                     int index = 1;
                     for (OriginalSourceBase source: typeDesignation.getSources()){
-                        stringbuilder.append(((DefaultReferenceCacheStrategy)source.getCitation().getCacheStrategy()).getCitation(source.getCitation()));
+                        if (source.getCitation() != null){
+                            stringbuilder.append(((DefaultReferenceCacheStrategy)source.getCitation().getCacheStrategy()).getCitation(source.getCitation()));
+                        }
                         if (index < typeDesignation.getSources().size()) {
                             stringbuilder.append( ", ");
                         }
@@ -1274,6 +1292,7 @@ public class CdmLightClassificationExport
         } catch (Exception e) {
             state.getResult().addException(e,
                     "An unexpected error occurred when handling synonym " + cdmBaseStr(name) + ": " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -1904,6 +1923,9 @@ public class CdmLightClassificationExport
                 index++;
                 String concat = concatString(authorTeam, authorTeam.getTeamMembers(), index);
                 fullAuthorship += concat + teamMember.getTitleCache();
+            }
+            if (StringUtils.isBlank(fullAuthorship)){
+                fullAuthorship = authorTeam.getTitleCache();
             }
 
         }
