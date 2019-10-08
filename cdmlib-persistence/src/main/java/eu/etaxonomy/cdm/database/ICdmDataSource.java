@@ -21,7 +21,8 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import eu.etaxonomy.cdm.config.ICdmSource;
 import eu.etaxonomy.cdm.persistence.hibernate.HibernateConfiguration;
 
-public interface ICdmDataSource  extends DataSource,ICdmSource {
+public interface ICdmDataSource
+        extends DataSource, ICdmSource {
 
 	/**
 	 * Returns a BeanDefinition object of type  DataSource that contains

@@ -50,18 +50,10 @@ public abstract class IoConfiguratorBase extends ObservableBase implements IIoCo
 	private IProgressMonitor progressMonitor;
 	private String userFriendlyIOName;
 
-
-
-    /**
-     * @return the userFriendlyIOName
-     */
+    @Override
     public String getUserFriendlyIOName() {
         return userFriendlyIOName;
     }
-
-    /**
-     * @param userFriendlyIOName the userFriendlyIOName to set
-     */
     public void setUserFriendlyIOName(String userFriendlyIOName) {
         this.userFriendlyIOName = userFriendlyIOName;
     }
@@ -80,26 +72,14 @@ public abstract class IoConfiguratorBase extends ObservableBase implements IIoCo
     public ICdmRepository getCdmAppController(){
 		return this.cdmApp;
 	}
-
-	/**
-	 * @param cdmApp the cdmApp to set
-	 */
 	@Override
     public void setCdmAppController(ICdmRepository cdmApp) {
 		this.cdmApp = cdmApp;
 	}
 
-	/**
-	 * @return the useClassification
-	 */
 	public boolean isUseClassification() {
 		return useClassification;
 	}
-
-
-	/**
-	 * @param useClassification the useClassification to set
-	 */
 	public void setUseClassification(boolean useClassification) {
 		this.useClassification = useClassification;
 	}
@@ -118,11 +98,9 @@ public abstract class IoConfiguratorBase extends ObservableBase implements IIoCo
 	public UsernamePasswordAuthenticationToken getAuthenticationToken() {
 		return this.authenticationToken;
 	}
-
 	@Override
 	public void setAuthenticationToken(UsernamePasswordAuthenticationToken authenticationToken) {
 		this.authenticationToken = authenticationToken;
-
 	}
 
 	@Override
@@ -140,6 +118,4 @@ public abstract class IoConfiguratorBase extends ObservableBase implements IIoCo
     public HibernateConfiguration getHibernateConfig() {
         return hibernateConfig;
     }
-
-
 }
