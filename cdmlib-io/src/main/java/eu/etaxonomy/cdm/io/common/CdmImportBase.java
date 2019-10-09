@@ -408,24 +408,15 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 
 	/**
 	 * Returns a named area for a given uuid by first . If the named area does not
-	 * @param state
-	 * @param uuid
-	 * @param label
-	 * @param text
-	 * @param labelAbbrev
-	 * @param areaType
-	 * @param level
-	 * @return
 	 */
 	protected NamedArea getNamedArea(STATE state, UUID uuid, String label, String text, String labelAbbrev, NamedAreaType areaType, NamedAreaLevel level){
 		return getNamedArea(state, uuid, label, text, labelAbbrev, areaType, level, null, null);
 	}
 
 	protected NamedArea getNamedArea(STATE state, UUID uuid, String label, String text, String labelAbbrev, NamedAreaType areaType,
-	        NamedAreaLevel level, TermVocabulary voc, TermMatchMode matchMode){
+	        NamedAreaLevel level, TermVocabulary<?> voc, TermMatchMode matchMode){
 		return getNamedArea(state, uuid, label, text, labelAbbrev, areaType, level, voc, matchMode, null);
 	}
-
 
 	protected NamedArea getNamedArea(STATE state, UUID uuid, String label, String text, String labelAbbrev, NamedAreaType areaType,
 	        NamedAreaLevel level, TermVocabulary voc, TermMatchMode matchMode, List<TermVocabulary<NamedArea>> vocabularyPreference){
@@ -448,7 +439,6 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				vocabularyPreference.add(Country.GERMANY().getVocabulary());
 				vocabularyPreference.add(TdwgAreaProvider.getAreaByTdwgAbbreviation("GER").getVocabulary());
 			}
-
 
 			//TODO matching still experimental
 			if (namedArea == null && (matchMode.equals(TermMatchMode.UUID_LABEL) || matchMode.equals(TermMatchMode.UUID_LABEL_ABBREVLABEL ))){
@@ -953,7 +943,9 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		return language;
 	}
 
-    protected <T extends DefinedTermBase> TermVocabulary<T> getVocabulary(STATE state, TermType termType, UUID uuid, String description, String label, String abbrev, URI termSourceUri, boolean isOrdered, T type) {
+    protected <T extends DefinedTermBase> TermVocabulary<T> getVocabulary(STATE state, TermType termType, UUID uuid, String description, String label,
+            String abbrev, URI termSourceUri, boolean isOrdered, T type) {
+
         TermVocabulary<T> voc = state != null? state.getTermedVocabulary(uuid): null;
         if (voc != null){
             return voc;
