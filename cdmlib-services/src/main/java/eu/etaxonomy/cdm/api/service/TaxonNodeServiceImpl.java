@@ -177,34 +177,22 @@ public class TaxonNodeServiceImpl
         return dao.getParentUuidAndTitleCache(child);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(UuidAndTitleCache<TaxonNode> parent) {
         return dao.listChildNodesAsTaxonNodeDto(parent);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(UuidAndTitleCache<TaxonNode> parent) {
         return dao.listChildNodesAsUuidAndTitleCache(parent);
     }
 
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<UuidAndTitleCache<TaxonNode>> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid) {
         return dao.getUuidAndTitleCache(limit, pattern, classificationUuid);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(ITaxonTreeNode parent) {
         UUID uuid = parent.getUuid();
@@ -220,15 +208,12 @@ public class TaxonNodeServiceImpl
         UuidAndTitleCache<TaxonNode> uuidAndTitleCache = new UuidAndTitleCache<>(uuid, id, null);
         return listChildNodesAsUuidAndTitleCache(uuidAndTitleCache);
     }
-    
+
     @Override
     public TaxonNodeDto taxonNodeDtoParentRank(Classification classification, Rank rank, TaxonName name) {
     	return dao.taxonNodeDtoParentRank(classification, rank, name);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Pager<TaxonNodeDto> pageChildNodesDTOs(UUID taxonNodeUuid, boolean recursive,  boolean includeUnpublished,
             boolean doSynonyms, NodeSortMode sortMode,
