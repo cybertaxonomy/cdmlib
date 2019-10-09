@@ -29,6 +29,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
@@ -1405,35 +1406,53 @@ public class TaxonDaoHibernateImpl
     }
 
     @Override
-    public List<TaxonName> findIdenticalNamesNew(List<String> propertyPaths){
+    public List<UUID> findIdenticalNamesNew(List<String> propertyPaths){
 
-        //Hole die beiden Source_ids von "Fauna Europaea" und "Erms" und in sources der names darf jeweils nur das entgegengesetzte auftreten (i member of tmb.taxonBases)
-        Query query = getSession().createQuery("SELECT id "
-                + "FROM Reference "
-                + " WHERE titleCache LIKE 'Fauna Europaea database'");
-        @SuppressWarnings("unchecked")
-        List<String> secRefFauna = query.list();
-        query = getSession().createQuery("Select id from Reference where titleCache like 'ERMS'");
-        @SuppressWarnings("unchecked")
-        List<String> secRefErms = query.list();
+        //Hole die beiden Sourcs von "Fauna Europaea" und "Erms" und in sources der names darf jeweils nur das entgegengesetzte auftreten (i member of tmb.taxonBases)
+        Criteria refFaunaEu = getSession().createCriteria(Reference.class);
+        refFaunaEu.add(Restrictions.like("titleCache", "Fauna Europaea database"));
+        
+        List<Reference> secRefFaunaEu = refFaunaEu.list();
+        Criteria refErms = getSession().createCriteria(Reference.class);
+        refErms.add(Restrictions.like("titleCache", "Fauna Europaea database"));
+       
+        List<Reference> secRefErms = refErms.list();
         //Query query = getSession().createQuery("select tmb2.nameCache from ZoologicalName tmb, TaxonBase tb1, ZoologicalName tmb2, TaxonBase tb2 where tmb.id != tmb2.id and tb1.name = tmb and tb2.name = tmb2 and tmb.nameCache = tmb2.nameCache and tb1.sec != tb2.sec");
         //Get all names of fauna europaea
-        query = getSession().createQuery("select zn.nameCache from ZoologicalName zn, TaxonBase tb where tb.name = zn and tb.sec.id = :secRefFauna");
-        query.setParameter("secRefFauna", secRefFauna.get(0));
+        Reference faunaEuSec = null;
+        if (secRefFaunaEu.size() == 1 ) {
+        	faunaEuSec = secRefFaunaEu.get(0);
+        }else {
+        	logger.error("There should be only one reference for Fauna Europaea database");
+        }
+        Reference ermsSec = null;
+        if (secRefErms.size() == 1) {
+        	ermsSec = secRefErms.get(0);
+        }else {
+        	logger.error("There should be only one reference for Erms database");
+        }
+        Criteria namesFaunaEu = getSession().createCriteria(TaxonName.class);
+        Criteria taxaFaunaEu = namesFaunaEu.createCriteria("taxonBases");
+        taxaFaunaEu.add(Restrictions.eq("sec", faunaEuSec));
+    
+        ProjectionList projList = Projections.projectionList();
+        projList.add(Projections.property("nameCache"));
+       // projList.add(Projections.property("name.uuid"));
+        namesFaunaEu.setProjection(projList);
         @SuppressWarnings("unchecked")
-        List<String> namesFauna= query.list();
+        List<String> namesFauna =  namesFaunaEu.list();
 
         //Get all names of erms
-
-        query = getSession().createQuery("select zn.nameCache from ZoologicalName zn, TaxonBase tb where tb.name = zn and tb.sec.id = :secRefErms");
-        query.setParameter("secRefErms", secRefErms.get(0));
-
+        Criteria namesCritErms = getSession().createCriteria(TaxonName.class);
+        Criteria taxaErms = taxaFaunaEu.createCriteria("taxonBases");
+        taxaErms.add(Restrictions.eq("sec", ermsSec));
+    
+       
+        namesCritErms.setProjection(projList);
+        namesCritErms.addOrder(Order.asc("nameCache"));
         @SuppressWarnings("unchecked")
-        List<String> namesErms = query.list();
-        /*TaxonNameComparator comp = new TaxonNameComparator();
-        Collections.sort(namesFauna);
-        Collections.sort(namesErms);
-        */
+        List<String> namesErms= namesCritErms.list();
+       
         List <String> identicalNames = new ArrayList<>();
 
         for (String nameFauna: namesFauna){
@@ -1441,23 +1460,27 @@ public class TaxonDaoHibernateImpl
                 identicalNames.add(nameFauna);
             }
         }
+        List<UUID> result = new ArrayList();
+        for (int i = 0; i<identicalNames.size(); i = i+500) {
+        	int toIndex = i + 500;
+        	if (identicalNames.size() < toIndex) {
+        		toIndex = identicalNames.size();
+        	}
+        	List<String> subList = identicalNames.subList(i, toIndex);
+	        Criteria crit = getSession().createCriteria(TaxonName.class);
+	        crit.add(Restrictions.in("nameCache", subList));
+	        ProjectionList projList2 = Projections.projectionList();
+	        projList2.add(Projections.property("uuid"));
+	
+	        result.addAll(crit.list());
+	        
+        }
 
-        query = getSession().createQuery("from ZoologicalName zn where zn.nameCache IN (:identicalNames)");
-        query.setParameterList("identicalNames", identicalNames);
-        List<TaxonName> result = query.list();
-        TaxonName tempName = result.get(0);
-
-        Iterator<IdentifiableSource> sources = tempName.getSources().iterator();
-
-        TaxonNameComparator taxComp = new TaxonNameComparator();
-        Collections.sort(result, taxComp);
-        defaultBeanInitializer.initializeAll(result, propertyPaths);
         return result;
 
     }
 
-//
-//
+
 //    @Override
 //    public String getPhylumName(TaxonName name){
 //        List results = new ArrayList();

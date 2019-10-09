@@ -349,7 +349,7 @@ public interface ITaxonDao
 
     public List<UUID> findIdenticalTaxonNameIds(List<String> propertyPath);
 
-    public List<TaxonName> findIdenticalNamesNew(List <String> propertyPaths);
+    public List<UUID> findIdenticalNamesNew(List <String> propertyPaths);
 
     public List<UuidAndTitleCache<? extends IdentifiableEntity>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doNamesWithoutTaxa,
             boolean doMisappliedNames, boolean doCommonNames, boolean includeUnpublished,

@@ -25,6 +25,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.Query;
+import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,8 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.TreeIndex;
+import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -557,6 +560,53 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         }
         return result;
     }
+    
+    @Override
+    public TaxonNodeDto taxonNodeDtoParentRank(Classification classification, Rank rank, TaxonName name) {
+    	
+    	Set<Taxon> taxa = name.getTaxa();
+    	TaxonNode node = null;
+    	String treeIndex = null;
+    	for (Taxon taxon:taxa) {
+    		node = taxon.getTaxonNode(classification);
+    		if (node != null) {
+    			break;
+    		}
+    	}
+    	if (node != null) {
+    		treeIndex = node.treeIndex();
+    	}
+    	Criteria nodeCrit = getSession().createCriteria(TaxonNode.class);
+    	Criteria taxonCrit = nodeCrit.createCriteria("taxon");
+    	Criteria nameCrit = taxonCrit.createCriteria("name");
+    	nodeCrit.add(Restrictions.eq("classification", classification));
+    	nameCrit.add(Restrictions.eq("rank", rank));
+    	
+    	 ProjectionList projList = Projections.projectionList();
+         projList.add(Projections.property("treeIndex"));
+         projList.add(Projections.property("uuid"));
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> list = nodeCrit.list();
+        UUID uuid = null;
+        if (list.size() > 0) {
+        	for (Object o: list) {
+        		 Object[] objectArray = (Object[]) o;
+                 uuid = (UUID)objectArray[1];
+                 String treeIndexParent = (String) objectArray[0];
+                 if (treeIndex.startsWith(treeIndexParent)) {
+                	 node = load(uuid);
+                	 break;
+                 }
+        	}
+        	TaxonNodeDto dto = new TaxonNodeDto(node);
+        	return dto;
+        }
+        
+        return null;
+    }
+    
+    
 
     /**
      * {@inheritDoc}

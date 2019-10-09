@@ -795,7 +795,7 @@ public interface ITaxonService
 
     public List<TaxonName> findIdenticalTaxonNames(List<String> propertyPath);
 
-    public List<TaxonName> findIdenticalTaxonNameIds(List<String> propertyPath);
+    public List<UUID> findIdenticalTaxonNameIds(List<String> propertyPath);
 //
 //    public String getPhylumName(TaxonName name);
 

@@ -17,8 +17,11 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.TreeIndex;
+import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
@@ -229,5 +232,11 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
      * @return
      */
     long count(Class<? extends TaxonNode> type, List<Restriction<?>> restrictions, boolean includePublished);
+    /**
+     * @param classification
+     * @param rank
+     * @return
+     */
+	public TaxonNodeDto taxonNodeDtoParentRank( Classification classification, Rank rank, TaxonName name);
 
 }

@@ -56,6 +56,7 @@ import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.permission.Operation;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -218,6 +219,11 @@ public class TaxonNodeServiceImpl
         int id = parent.getId();
         UuidAndTitleCache<TaxonNode> uuidAndTitleCache = new UuidAndTitleCache<>(uuid, id, null);
         return listChildNodesAsUuidAndTitleCache(uuidAndTitleCache);
+    }
+    
+    @Override
+    public TaxonNodeDto taxonNodeDtoParentRank(Classification classification, Rank rank, TaxonName name) {
+    	return dao.taxonNodeDtoParentRank(classification, rank, name);
     }
 
     /**
