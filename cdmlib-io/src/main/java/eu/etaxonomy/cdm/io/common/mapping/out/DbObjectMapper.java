@@ -26,10 +26,8 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
  * @since 12.05.2009
  */
 public class DbObjectMapper
-        extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>>
-        implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer> {
+        extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>>{
 
-    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbObjectMapper.class);
 
 	boolean isCache;

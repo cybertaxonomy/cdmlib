@@ -29,18 +29,26 @@ public class DbTimePeriodMapper extends DbSingleAttributeExportMapperBase<DbExpo
 		return new DbTimePeriodMapper(cdmAttributeString, dbAttributeString, null, true);
 	}
 
-	public static DbTimePeriodMapper NewFacultativeInstance(String cdmAttributeString, String dbAttributeString){
-		return new DbTimePeriodMapper(cdmAttributeString, dbAttributeString, null, false);
-	}
-
 	public static DbTimePeriodMapper NewInstance(String cdmAttributeString, String dbAttributeString, String defaultValue){
 		return new DbTimePeriodMapper(cdmAttributeString, dbAttributeString, defaultValue, false);
 	}
 
+	/**
+     * @param cdmAttributeString source attribute (CDM)
+     * @param dbAttributString target attribute (export DB)
+     * @param defaultValue default value if source value is <code>null</code>
+     * @param obligatory if the source attribute is obligatory, but value may be <code>null</code>
+     */
 	public static DbTimePeriodMapper NewInstance(String cdmAttributeString, String dbAttributeString, String defaultValue, boolean obligatory){
 		return new DbTimePeriodMapper(cdmAttributeString, dbAttributeString, defaultValue, obligatory);
 	}
 
+	/**
+     * @param cdmAttributeString source attribute (CDM)
+     * @param dbAttributString target attribute (export DB)
+     * @param defaultValue default value if source value is <code>null</code>
+     * @param obligatory if the source attribute is obligatory, but value may be <code>null</code>
+     */
 	private DbTimePeriodMapper(String cdmAttributeString, String dbAttributeString, String defaultValue, boolean obligatory) {
 		super(cdmAttributeString, dbAttributeString, defaultValue, obligatory);
 	}

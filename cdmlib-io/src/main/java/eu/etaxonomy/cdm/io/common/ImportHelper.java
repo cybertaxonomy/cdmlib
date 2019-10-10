@@ -51,8 +51,7 @@ public class ImportHelper {
 	public static final boolean  FACULTATIVE = false;
 
 
-
-	public static boolean setOriginalSource(ISourceable sourceable, Reference sourceReference, long sourceId, String namespace){
+	public static boolean setOriginalSource(ISourceable<?> sourceable, Reference sourceReference, long sourceId, String namespace){
 		return setOriginalSource(sourceable, sourceReference, String.valueOf(sourceId), namespace);
 	}
 
@@ -63,7 +62,8 @@ public class ImportHelper {
 	 * @param sourceId
 	 * @return
 	 */
-	public static boolean setOriginalSource(ISourceable sourceable, Reference sourceReference, String sourceId, String namespace){
+	public static boolean  setOriginalSource(@SuppressWarnings("rawtypes") ISourceable sourceable,
+	        Reference sourceReference, String sourceId, String namespace){
 		IOriginalSource<?> originalSource;
 		OriginalSourceType type = OriginalSourceType.Import;
 		if (HibernateProxyHelper.isInstanceOf(sourceable, IdentifiableEntity.class)){
@@ -89,7 +89,8 @@ public class ImportHelper {
 		return addValue(rs, cdmBase, dbAttrName, cdmAttrName, boolean.class, OVERWRITE, false);
 	}
 
-	public static boolean addValue(ResultSet rs, ICdmBase cdmBase, String dbAttrName, String cdmAttrName, Class clazz, boolean overwriteNull, boolean blankToNull){
+	public static boolean addValue(ResultSet rs, ICdmBase cdmBase, String dbAttrName, String cdmAttrName,
+	        Class<?> clazz, boolean overwriteNull, boolean blankToNull){
 		Object strValue;
 		try {
 			strValue = rs.getObject(dbAttrName);
@@ -104,9 +105,7 @@ public class ImportHelper {
 			logger.error("SQLException: " +  e);
 			return false;
 		}
-
 	}
-
 
 	public static boolean addXmlStringValue(Element root, CdmBase cdmBase, String xmlElementName, Namespace namespace, String cdmAttrName){
 		return addXmlValue(root, cdmBase, xmlElementName, namespace, cdmAttrName, String.class, OVERWRITE);
@@ -121,11 +120,13 @@ public class ImportHelper {
 	}
 
 
-	public static boolean addXmlValue(Element root, CdmBase cdmBase, String xmlElementName, Namespace namespace, String cdmAttrName, Class clazz, boolean overwriteNull){
+	public static boolean addXmlValue(Element root, CdmBase cdmBase, String xmlElementName, Namespace namespace,
+	        String cdmAttrName, Class<?> clazz, boolean overwriteNull){
 		return addXmlValue(root, cdmBase, xmlElementName, namespace, cdmAttrName, clazz, overwriteNull, OBLIGATORY);
 	}
 
-	public static boolean addXmlValue(Element root, CdmBase cdmBase, String xmlElementName, Namespace namespace, String cdmAttrName, Class clazz, boolean overwriteNull, boolean obligat){
+	public static boolean addXmlValue(Element root, CdmBase cdmBase, String xmlElementName, Namespace namespace,
+	        String cdmAttrName, Class<?> clazz, boolean overwriteNull, boolean obligat){
 		Object strValue;
 		strValue = getXmlInputValue(root, xmlElementName, namespace);
 		return addValue(strValue, cdmBase, cdmAttrName, clazz, overwriteNull, obligat);
@@ -222,7 +223,9 @@ public class ImportHelper {
 		return true;
 	}
 
-	public static boolean addMultipleValues(List<Object> sourceValues, CdmBase cdmBase, String cdmAttrName, List<Class> classes, boolean overwriteNull, boolean obligat){
+	public static boolean addMultipleValues(List<Object> sourceValues, CdmBase cdmBase, String cdmAttrName,
+	        @SuppressWarnings("rawtypes") List<Class> classes, boolean overwriteNull, boolean obligat){
+
 		String methodName;
 //		Object strValue;
 		try {
@@ -287,8 +290,6 @@ public class ImportHelper {
 		}
 	}
 
-
-
 	public static Object getXmlInputValue(Element root, String xmlElementName, Namespace namespace){
 		Object result = null;
 		Element child = root.getChild(xmlElementName, namespace);
@@ -297,7 +298,6 @@ public class ImportHelper {
 		}
 		return result;
 	}
-
 
 	public static VerbatimTimePeriod getDatePublished(String refYear){
 	    VerbatimTimePeriod resultNew;
@@ -313,16 +313,16 @@ public class ImportHelper {
 	//************** EXPORT *******************/
 
 
-	public static<T extends Object> T getValue(CdmBase cdmBase, String cdmAttrName, boolean isBoolean, boolean obligatory){
-		String methodName;
-		T result;
+	public static<T extends Object> T getValue(CdmBase cdmBase, String cdmAttrName,
+	        boolean isBoolean, boolean obligatory){
 		try {
-			methodName = getGetterMethodName(cdmAttrName, isBoolean);
+		    String methodName = getGetterMethodName(cdmAttrName, isBoolean);
 			if (cdmBase.isInstanceOf(TaxonName.class)){
 				cdmBase = CdmBase.deproxy(cdmBase);
 			}
 			Method cdmMethod = cdmBase.getClass().getMethod(methodName);
-			result = (T)cdmMethod.invoke(cdmBase);
+			@SuppressWarnings("unchecked")
+            T result = (T)cdmMethod.invoke(cdmBase);
 			return result;
 		} catch (NullPointerException e) {
 			logger.error("NullPointerException: " + e.getMessage());
@@ -348,7 +348,6 @@ public class ImportHelper {
 				return null;
 			}
 		}
-
 	}
 
 	/**

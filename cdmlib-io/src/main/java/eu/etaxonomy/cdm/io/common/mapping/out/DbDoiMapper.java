@@ -34,18 +34,32 @@ public class DbDoiMapper
         return new DbDoiMapper(cdmAttributeString, dbAttributeString, null, true);
     }
 
-    public static DbDoiMapper NewFacultativeInstance(String cdmAttributeString, String dbAttributeString){
-        return new DbDoiMapper(cdmAttributeString, dbAttributeString, null, false);
-    }
-
+    /**
+     * @param cdmAttributeString source attribute (CDM)
+     * @param dbAttributString target attribute (export DB)
+     * @param defaultValue default value if source value is <code>null</code>
+     * @param obligatory if the source attribute is obligatory, but value may be <code>null</code>
+     */
     public static DbDoiMapper NewInstance(String cdmAttributeString, String dbAttributeString, String defaultValue){
         return new DbDoiMapper(cdmAttributeString, dbAttributeString, defaultValue, false);
     }
 
+    /**
+     * @param cdmAttributeString source attribute (CDM)
+     * @param dbAttributString target attribute (export DB)
+     * @param defaultValue default value if source value is <code>null</code>
+     * @param obligatory if the source attribute is obligatory, but value may be <code>null</code>
+     */
     public static DbDoiMapper NewInstance(String cdmAttributeString, String dbAttributeString, String defaultValue, boolean obligatory){
         return new DbDoiMapper(cdmAttributeString, dbAttributeString, defaultValue, obligatory);
     }
 
+    /**
+     * @param cdmAttributeString source attribute (CDM)
+     * @param dbAttributString target attribute (export DB)
+     * @param defaultValue default value if source value is <code>null</code>
+     * @param obligatory if the source attribute is obligatory, but value may be <code>null</code>
+     */
     private DbDoiMapper(String cdmAttributeString, String dbAttributeString, String defaultValue, boolean obligatory) {
         super(cdmAttributeString, dbAttributeString, defaultValue, obligatory);
     }

@@ -17,10 +17,13 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 /**
+ * Mapper base class mapping a single source attribute to a single destination attribute.
+ *
  * @author a.mueller
  * @since 05.08.2008
  */
 public abstract class CdmSingleAttributeMapperBase extends CdmAttributeMapperBase{
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmSingleAttributeMapperBase.class);
 
@@ -29,7 +32,7 @@ public abstract class CdmSingleAttributeMapperBase extends CdmAttributeMapperBas
 	protected Object defaultValue;
 
 	protected CdmSingleAttributeMapperBase(String sourceAttributString, String destinationAttributeString){
-		this(sourceAttributString,destinationAttributeString, null);
+		this(sourceAttributString, destinationAttributeString, null);
 	}
 
 	protected CdmSingleAttributeMapperBase(String sourceAttributString, String destinationAttributeString, Object defaultValue){
@@ -54,8 +57,8 @@ public abstract class CdmSingleAttributeMapperBase extends CdmAttributeMapperBas
 	}
 
 	@Override
-	public Set<String>  getDestinationAttributes(){
-		Set<String>  result = new HashSet<>();
+	public Set<String> getDestinationAttributes(){
+		Set<String> result = new HashSet<>();
 		if(destinationValue != null){
 			result.add(destinationValue);
 		}
@@ -64,19 +67,20 @@ public abstract class CdmSingleAttributeMapperBase extends CdmAttributeMapperBas
 
 	@Override
 	public List<String> getSourceAttributeList(){
-		List<String>  result = new ArrayList<>();
+		List<String> result = new ArrayList<>();
 		result.add(sourceValue);
 		return result;
 	}
 
 	@Override
-	public List<String>  getDestinationAttributeList(){
-		List<String>  result = new ArrayList<>();
+	public List<String> getDestinationAttributeList(){
+		List<String> result = new ArrayList<>();
 		if(destinationValue != null){
 			result.add(destinationValue);
 		}
 		return result;
 	}
 
-	public abstract Class getTypeClass();
+	@SuppressWarnings("rawtypes")
+    public abstract Class getTypeClass();
 }
