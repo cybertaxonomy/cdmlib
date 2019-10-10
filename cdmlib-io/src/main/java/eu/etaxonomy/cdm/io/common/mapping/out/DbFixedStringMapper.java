@@ -35,7 +35,7 @@ public class DbFixedStringMapper
 	}
 
 	private DbFixedStringMapper(String fixString, String dbAttributeString) {
-		super(null, dbAttributeString, fixString, true);
+		super(null, dbAttributeString, fixString, true, false);
 		this.fixString = fixString;
 	}
 

@@ -42,7 +42,7 @@ public class DbLastActionMapper
 	}
 
 	private DbLastActionMapper(String dbAttributeString, String defaultValue, boolean isActionType) {
-		super("updated, created", dbAttributeString, defaultValue, false);
+		super("updated, created", dbAttributeString, defaultValue, false, false);
 		this.isActionType = isActionType;
 	}
 

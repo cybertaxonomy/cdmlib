@@ -37,7 +37,7 @@ public class DbFixedIntegerMapper
 	}
 
 	private DbFixedIntegerMapper(Integer fixInteger, String dbAttributeString) {
-		super(null, dbAttributeString, fixInteger, true);
+		super(null, dbAttributeString, fixInteger, true, false);
 		this.fixInteger = fixInteger;
 	}
 

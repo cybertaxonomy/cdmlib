@@ -56,7 +56,7 @@ public class DbBooleanMapper
      * @param obligatory if the source attribute is obligatory, but value may be <code>null</code>
      */
 	private DbBooleanMapper(String cdmAttributeString, String dbAttributeString, Boolean defaultValue, Boolean obligatory) {
-		super(cdmAttributeString, dbAttributeString, defaultValue, obligatory);
+		super(cdmAttributeString, dbAttributeString, defaultValue, obligatory, false);
 	}
 
 	@Override

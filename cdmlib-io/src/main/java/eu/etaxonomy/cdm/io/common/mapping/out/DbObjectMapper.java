@@ -33,14 +33,18 @@ public class DbObjectMapper
 	boolean isCache;
 
 	public static DbObjectMapper NewInstance(String cdmAttributeString, String dbAttributeString){
-		return new DbObjectMapper(cdmAttributeString, dbAttributeString, null, false);
+		return new DbObjectMapper(cdmAttributeString, dbAttributeString, null, false, false);
 	}
+
+    public static DbObjectMapper NewNotNullInstance(String cdmAttributeString, String dbAttributeString){
+        return new DbObjectMapper(cdmAttributeString, dbAttributeString, null, false, true);
+    }
 
 	public static DbObjectMapper NewInstance(String cdmAttributeString, String dbAttributeString, boolean isCache){
-		return new DbObjectMapper(cdmAttributeString, dbAttributeString, null, isCache);
+		return new DbObjectMapper(cdmAttributeString, dbAttributeString, null, isCache, false);
 	}
 
-	protected DbObjectMapper(String cdmAttributeString, String dbAttributeString, Object defaultValue, boolean isCache) {
+	protected DbObjectMapper(String cdmAttributeString, String dbAttributeString, Object defaultValue, boolean isCache, boolean notNull) {
 		super(cdmAttributeString, dbAttributeString, defaultValue);
 		this.isCache = isCache;
 	}
