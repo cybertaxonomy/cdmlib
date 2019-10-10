@@ -30,7 +30,7 @@ public class DbTimePeriodMapper extends DbSingleAttributeExportMapperBase<DbExpo
 	}
 
 	public static DbTimePeriodMapper NewInstance(String cdmAttributeString, String dbAttributeString, String defaultValue){
-		return new DbTimePeriodMapper(cdmAttributeString, dbAttributeString, defaultValue, false);
+		return new DbTimePeriodMapper(cdmAttributeString, dbAttributeString, defaultValue, true);
 	}
 
 	/**

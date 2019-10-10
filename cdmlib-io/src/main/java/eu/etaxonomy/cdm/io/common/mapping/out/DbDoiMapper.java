@@ -41,7 +41,7 @@ public class DbDoiMapper
      * @param obligatory if the source attribute is obligatory, but value may be <code>null</code>
      */
     public static DbDoiMapper NewInstance(String cdmAttributeString, String dbAttributeString, String defaultValue){
-        return new DbDoiMapper(cdmAttributeString, dbAttributeString, defaultValue, false);
+        return new DbDoiMapper(cdmAttributeString, dbAttributeString, defaultValue, true);
     }
 
     /**
