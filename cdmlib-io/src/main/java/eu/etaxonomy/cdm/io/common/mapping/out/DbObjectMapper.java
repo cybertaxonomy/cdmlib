@@ -47,6 +47,7 @@ public class DbObjectMapper
 	protected DbObjectMapper(String cdmAttributeString, String dbAttributeString, Object defaultValue, boolean isCache, boolean notNull) {
 		super(cdmAttributeString, dbAttributeString, defaultValue);
 		this.isCache = isCache;
+		this.notNull = notNull;
 	}
 
 	@Override
