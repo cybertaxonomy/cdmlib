@@ -77,7 +77,8 @@ public class DbAnnotationMapper
 			AnnotatableEntity annotatableEntity = (AnnotatableEntity)cdmBase;
 			for (Annotation annotation : annotatableEntity.getAnnotations()){
 			    //include + exclude
-			    if (includedTypes != null && annotation.getAnnotationType() != null && !includedTypes.contains(annotation.getAnnotationType().getUuid())){
+			    if (includedTypes != null &&
+			            (annotation.getAnnotationType() == null || !includedTypes.contains(annotation.getAnnotationType().getUuid()))){
                     continue;
                 }
 			    if (excludedTypes.contains(annotation.getAnnotationType())){
