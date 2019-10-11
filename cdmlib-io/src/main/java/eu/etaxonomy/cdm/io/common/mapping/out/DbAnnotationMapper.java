@@ -60,7 +60,8 @@ public class DbAnnotationMapper
 
 	protected DbAnnotationMapper(String dbAttributeString, String annotationPrefix, Collection<UUID> includedTypes,
 	        Collection<AnnotationType> excludedTypes, Object defaultValue, String separator) {
-		super("annotations", dbAttributeString, defaultValue);
+
+	    super("annotations", dbAttributeString, defaultValue);
 		this.annotationPrefix  = annotationPrefix;
 		if (separator != null){
 			this.separator = separator;

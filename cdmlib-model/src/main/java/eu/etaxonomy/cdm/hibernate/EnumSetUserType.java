@@ -64,7 +64,6 @@ public class EnumSetUserType<E extends Enum<E>>
 
 	private static final int[] SQL_TYPES = { Types.VARCHAR };
 
-
 	@Override
 	public Object deepCopy(Object o) throws HibernateException {
 		return o;
@@ -87,7 +86,8 @@ public class EnumSetUserType<E extends Enum<E>>
 			String[] splits = val.split(SEP);
 			for (String split:splits){
 			    if (StringUtils.isNotEmpty(split)) {
-			        E term = (E)EnumUserType.getTerm(clazz, split);
+			        @SuppressWarnings("unchecked")
+                    E term = (E)EnumUserType.getTerm(clazz, split);
 			        if (term == null){
 			            throw new IllegalArgumentException(split + " is not a valid key value for enumeration " + clazz.getCanonicalName());
 			        }
