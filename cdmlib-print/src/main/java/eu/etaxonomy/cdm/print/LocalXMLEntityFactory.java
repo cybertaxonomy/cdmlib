@@ -30,12 +30,12 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DaoBase;
 import eu.etaxonomy.cdm.print.XMLHelper.EntityType;
 import eu.etaxonomy.cdm.remote.controller.ClassificationController;
 import eu.etaxonomy.cdm.remote.controller.ClassificationListController;
-import eu.etaxonomy.cdm.remote.controller.TermNodeController;
-import eu.etaxonomy.cdm.remote.controller.TermTreeController;
-import eu.etaxonomy.cdm.remote.controller.TermTreeListController;
 import eu.etaxonomy.cdm.remote.controller.NameController;
 import eu.etaxonomy.cdm.remote.controller.TaxonNodePrintAppController;
 import eu.etaxonomy.cdm.remote.controller.TaxonPortalController;
+import eu.etaxonomy.cdm.remote.controller.TermNodeController;
+import eu.etaxonomy.cdm.remote.controller.TermTreeController;
+import eu.etaxonomy.cdm.remote.controller.TermTreeListController;
 import eu.etaxonomy.cdm.remote.controller.dto.PolytomousKeyNodeDtoController;
 import eu.etaxonomy.cdm.remote.view.JsonView;
 import eu.etaxonomy.cdm.remote.view.JsonView.Type;
@@ -352,7 +352,7 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
 		Object resultObject = null;
 
 		try {
-			resultObject = taxonPortalController.doGetDescriptions(uuid, null,
+			resultObject = taxonPortalController.doGetDescriptions(uuid, null, null,
 					null, null);
 		} catch (IOException e) {
 			monitor.warning(e.getLocalizedMessage(), e);

@@ -20,6 +20,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -33,6 +34,7 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
@@ -194,7 +196,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 
     @Override
     public long countTaxonDescriptions(Taxon taxon, Set<DefinedTerm> scopes,
-            Set<NamedArea> geographicalScopes, Set<MarkerType> markerTypes) {
+            Set<NamedArea> geographicalScopes, Set<MarkerType> markerTypes, Set<DescriptionType> descriptionTypes) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
             Criteria criteria = getCriteria(TaxonDescription.class);
@@ -220,6 +222,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
             }
 
             addMarkerTypesCriterion(markerTypes, criteria);
+            addDescriptionTypesCriterion(descriptionTypes, criteria);
 
             criteria.setProjection(Projections.rowCount());
 
@@ -240,6 +243,15 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
         }
     }
 
+    private void addDescriptionTypesCriterion(Set<DescriptionType> descriptionTypes, Criteria criteria) {
+        if(descriptionTypes != null && !descriptionTypes.isEmpty()) {
+            Set<Criterion> typeCriteria = new HashSet<>();
+            for (DescriptionType descriptionType : descriptionTypes) {
+                typeCriteria.add(Restrictions.sqlRestriction("{alias}.types like '%"+descriptionType.getKey()+"%'"));
+            }
+            criteria.add(Restrictions.and(typeCriteria.toArray(new Criterion[]{})));
+        }
+    }
     /**
      * @param markerTypes
      * @param criteria
@@ -355,7 +367,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
     }
 
     @Override
-    public List<TaxonDescription> listTaxonDescriptions(Taxon taxon, Set<DefinedTerm> scopes, Set<NamedArea> geographicalScopes, Set<MarkerType> markerTypes, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+    public List<TaxonDescription> listTaxonDescriptions(Taxon taxon, Set<DefinedTerm> scopes, Set<NamedArea> geographicalScopes, Set<MarkerType> markerTypes, Set<DescriptionType> descriptionTypes, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
             Criteria criteria = getSession().createCriteria(TaxonDescription.class);
@@ -381,6 +393,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
             }
 
             addMarkerTypesCriterion(markerTypes, criteria);
+            addDescriptionTypesCriterion(descriptionTypes, criteria);
 
             if(pageSize != null) {
                 criteria.setMaxResults(pageSize);

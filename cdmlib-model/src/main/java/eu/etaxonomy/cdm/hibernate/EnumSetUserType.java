@@ -37,6 +37,10 @@ public class EnumSetUserType<E extends Enum<E>>
         extends AbstractUserType
         implements UserType, ParameterizedType {
 
+    /*
+     * For current usage with hibernate Criterion see DescriptionDaoImpl.addDescriptionTypesCriterion()
+     */
+
     private static final long serialVersionUID = 1060802925284271666L;
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(EnumSetUserType.class);
