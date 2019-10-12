@@ -42,8 +42,9 @@ public class OriginalSourceDaoImpl extends CdmEntityDaoBase<OriginalSourceBase> 
 	}
 
 	@Override
-    public Map<String, ISourceable> findOriginalSourcesByIdInSource(Class clazz, Set<String> idInSourceSet, String idNamespace) {
-		Session session = getSession();
+    public <S extends ISourceable> Map<String, S> findOriginalSourcesByIdInSource(Class<S> clazz, Set<String> idInSourceSet, String idNamespace) {
+
+	    Session session = getSession();
 		String idInSourceString = "";
 		for (String idInSource : idInSourceSet){
 			idInSourceString = CdmUtils.concat("','", idInSourceString, idInSource);
@@ -51,7 +52,8 @@ public class OriginalSourceDaoImpl extends CdmEntityDaoBase<OriginalSourceBase> 
 		idInSourceString = "'"+ idInSourceString + "'";
 
 		Query q = session.createQuery(
-                "SELECT source.idInSource, c FROM " + clazz.getSimpleName() + " AS c " +
+                "SELECT source.idInSource, c " +
+                "FROM " + clazz.getSimpleName() + " AS c " +
                 "INNER JOIN c.sources AS source " +
                 "WHERE source.idInSource IN ( " + idInSourceString + " )" +
                 	" AND source.idNamespace = :idNamespace"
@@ -59,11 +61,12 @@ public class OriginalSourceDaoImpl extends CdmEntityDaoBase<OriginalSourceBase> 
 		q.setString("idNamespace", idNamespace);
 		//TODO integrate reference in where
 
-		Map<String, ISourceable> result = new HashMap<>();
+		Map<String, S> result = new HashMap<>();
 
-		List<Object[]> list = q.list();
+		@SuppressWarnings("unchecked")
+        List<Object[]> list = q.list();
 		for (Object[] pair : list){
-			result.put((String)pair[0], (ISourceable)pair[1]);
+			result.put((String)pair[0], (S)pair[1]);
 		}
 
 		return result;
@@ -98,7 +101,8 @@ public class OriginalSourceDaoImpl extends CdmEntityDaoBase<OriginalSourceBase> 
 			crit.add(Restrictions.eq("idNamespace", idNamespace));
 		}
 		crit.addOrder(Order.desc("created"));
-		List<OriginalSourceBase> results = crit.list();
+		@SuppressWarnings({ "unchecked", "rawtypes" })
+        List<OriginalSourceBase> results = crit.list();
 
 		return results;
 	}

@@ -30,7 +30,7 @@ public interface IOriginalSourceDao extends ICdmEntityDao<OriginalSourceBase>{
 	 * @param idNamespace
 	 * @return
 	 */
-	public Map<String, ISourceable> findOriginalSourcesByIdInSource(Class clazz, Set<String> idInSourceSet, String idNamespace);
+	public <S extends ISourceable> Map<String, S> findOriginalSourcesByIdInSource(Class<S> clazz, Set<String> idInSourceSet, String idNamespace);
 
 
 	/**

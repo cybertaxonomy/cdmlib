@@ -88,6 +88,13 @@ public class CommonServiceImpl /*extends ServiceBase<OriginalSourceBase,IOrigina
     }
 
     @Override
+    public <S extends ISourceable> Map<String, S> getSourcedObjectsByIdInSourceC(Class<S> clazz, Set<String> idInSourceSet, String idNamespace){
+        Map<String, S> list = originalSourceDao.findOriginalSourcesByIdInSource(clazz, idInSourceSet, idNamespace);
+        return list;
+    }
+
+
+    @Override
     public <S extends ISourceable> S getSourcedObjectByIdInSource(Class<S> clazz, String idInSource, String idNamespace) {
         S result = null;
         List<S> list = originalSourceDao.findOriginalSourceByIdInSource(clazz, idInSource, idNamespace);
