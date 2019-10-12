@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName;
 import eu.etaxonomy.cdm.model.reference.ISourceable;
@@ -89,9 +88,9 @@ public class CommonServiceImpl /*extends ServiceBase<OriginalSourceBase,IOrigina
     }
 
     @Override
-    public ISourceable getSourcedObjectByIdInSource(Class clazz, String idInSource, String idNamespace) {
-        ISourceable<?> result = null;
-        List<IdentifiableEntity> list = originalSourceDao.findOriginalSourceByIdInSource(clazz, idInSource, idNamespace);
+    public <S extends ISourceable> S getSourcedObjectByIdInSource(Class<S> clazz, String idInSource, String idNamespace) {
+        S result = null;
+        List<S> list = originalSourceDao.findOriginalSourceByIdInSource(clazz, idInSource, idNamespace);
         if (! list.isEmpty()){
             result = list.get(0);
         }return result;

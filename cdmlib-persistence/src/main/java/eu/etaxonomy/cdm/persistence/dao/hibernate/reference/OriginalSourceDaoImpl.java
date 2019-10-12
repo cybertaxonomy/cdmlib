@@ -23,7 +23,6 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.reference.ISourceable;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase;
@@ -71,18 +70,19 @@ public class OriginalSourceDaoImpl extends CdmEntityDaoBase<OriginalSourceBase> 
 	}
 
 	@Override
-    public List<IdentifiableEntity> findOriginalSourceByIdInSource(Class clazz, String idInSource, String idNamespace) {
+    public <S extends ISourceable> List<S> findOriginalSourceByIdInSource(Class<S> clazz, String idInSource, String idNamespace) {
 		Session session = getSession();
 		Query q = session.createQuery(
-                "Select c from " + clazz.getSimpleName() + " as c " +
-                "inner join c.sources as source " +
-                "where source.idInSource = :idInSource " +
+                "SELECT c FROM " + clazz.getSimpleName() + " as c " +
+                "  INNER JOIN c.sources as source " +
+                "WHERE source.idInSource = :idInSource " +
                 	" AND source.idNamespace = :idNamespace"
             );
 		q.setString("idInSource", idInSource);
 		q.setString("idNamespace", idNamespace);
 		//TODO integrate reference in where
-		List<IdentifiableEntity> results = q.list();
+		@SuppressWarnings("unchecked")
+        List<S> results = q.list();
 
 		return results;
 	}

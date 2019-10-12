@@ -194,7 +194,7 @@ public class TaxonXDescriptionImport
 
 		String originalSourceId = config.getOriginalSourceId();
 		String namespace = config.getOriginalSourceTaxonNamespace();
-		result = (Taxon)commonService.getSourcedObjectByIdInSource(Taxon.class, originalSourceId , namespace);
+		result = commonService.getSourcedObjectByIdInSource(Taxon.class, originalSourceId , namespace);
 		if (result == null){
 			logger.warn("Taxon (id: " + originalSourceId + ", namespace: " + namespace + ") could not be found");
 		}

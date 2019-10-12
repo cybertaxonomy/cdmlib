@@ -73,7 +73,7 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
 	 * @param idNamespace
 	 * @return
 	 */
-	public ISourceable getSourcedObjectByIdInSource(Class clazz, String idInSource, String idNamespace);
+	public <S extends ISourceable> S getSourcedObjectByIdInSource(Class<S> clazz, String idInSource, String idNamespace);
 
 
 	/**
