@@ -43,7 +43,10 @@ import eu.etaxonomy.cdm.strategy.merge.MergeException;
 
 @Service
 @Transactional(readOnly = true)
-public class CommonServiceImpl /*extends ServiceBase<OriginalSourceBase,IOriginalSourceDao>*/ implements ICommonService {
+public class CommonServiceImpl
+        /*extends ServiceBase<OriginalSourceBase,IOriginalSourceDao>*/
+        implements ICommonService {
+
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(CommonServiceImpl.class);
 
@@ -79,12 +82,6 @@ public class CommonServiceImpl /*extends ServiceBase<OriginalSourceBase,IOrigina
     @Override
     public <T extends CdmBase> T find(Class<T> clazz, UUID uuid, List<String> propertyPaths) {
         return uuid == null ? null : genericDao.find(clazz, uuid, propertyPaths);
-    }
-
-    @Override
-    public Map<String, ? extends ISourceable> getSourcedObjectsByIdInSource(Class clazz, Set<String> idInSourceSet, String idNamespace) {
-        Map<String, ? extends ISourceable> list = originalSourceDao.findOriginalSourcesByIdInSource(clazz, idInSourceSet, idNamespace);
-        return list;
     }
 
     @Override
