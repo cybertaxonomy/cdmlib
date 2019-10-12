@@ -663,6 +663,31 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
         return result;
     }
 
+
+    /**
+     * @return a set containing all UUIDs of relationship types representing
+     * a partial relationship (e.g. {@link #PARTIAL_SYNONYM_FOR()} and
+     * {@link #PARTIAL_MISAPPLIED_NAME_FOR()})
+     */
+    public static Set<UUID> partialUuids() {
+        Set<UUID> result = new HashSet<>();
+        result.add(uuidPartialSynonymFor);
+        result.add(uuidPartialSynonymFor);
+        return result;
+    }
+
+    /**
+     * @return a set containing all UUIDs of relationship types representing
+     * a pro parte relationship (e.g. {@link #PRO_PARTE_SYNONYM_FOR()} and
+     * {@link #PRO_PARTE_MISAPPLIED_NAME_FOR()})
+     */
+    public static Set<UUID> proParteUuids() {
+        Set<UUID> result = new HashSet<>();
+        result.add(uuidProParteSynonymFor);
+        result.add(uuidProParteMisappliedNameFor);
+        return result;
+    }
+
     /**
      * @return a set containing all UUIDs of relationship types representing
      * a pseudo taxon relationship (a synonym relationship expressed as
