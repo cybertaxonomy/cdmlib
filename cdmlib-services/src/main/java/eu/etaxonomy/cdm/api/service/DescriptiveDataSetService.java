@@ -305,7 +305,9 @@ public class DescriptiveDataSetService
                 taxonNode.getUuid(), DescriptionType.DEFAULT_VALUES_FOR_AGGREGATION);
         TaxonRowWrapperDTO taxonRowWrapper = defaultTaxonDescription != null
                 ? createTaxonRowWrapper(defaultTaxonDescription.getUuid(), descriptiveDataSet.getUuid()) : null;
-        return new SpecimenRowWrapperDTO(description, new TaxonNodeDto(taxonNode), fieldUnit, identifier, country);
+        SpecimenRowWrapperDTO specimenRowWrapperDTO = new SpecimenRowWrapperDTO(description, new TaxonNodeDto(taxonNode), fieldUnit, identifier, country);
+        specimenRowWrapperDTO.setDefaultDescription(taxonRowWrapper);
+        return specimenRowWrapperDTO;
     }
 
     @Override

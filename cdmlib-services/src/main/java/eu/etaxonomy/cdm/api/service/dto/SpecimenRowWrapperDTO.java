@@ -24,6 +24,7 @@ public class SpecimenRowWrapperDTO extends RowWrapperDTO<SpecimenDescription> {
 
     private static final long serialVersionUID = 5198447592554976471L;
 
+    private TaxonRowWrapperDTO defaultDescription;
     private SpecimenOrObservationBase specimen;
     private FieldUnit fieldUnit;
     private String identifier;
@@ -54,4 +55,11 @@ public class SpecimenRowWrapperDTO extends RowWrapperDTO<SpecimenDescription> {
         return country;
     }
 
+    public void setDefaultDescription(TaxonRowWrapperDTO defaultDescription) {
+        this.defaultDescription = defaultDescription;
+    }
+
+    public TaxonRowWrapperDTO getDefaultDescription() {
+        return defaultDescription;
+    }
 }
