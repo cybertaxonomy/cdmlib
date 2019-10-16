@@ -166,6 +166,22 @@ public class DescriptiveDataSetService
         return taxonNodeService.load(findFilteredTaxonNodes(descriptiveDataSet), propertyPaths);
     }
 
+    @Override
+    public TaxonDescription findDefaultDescription(UUID specimenDescriptionUuid, UUID dataSetUuid){
+        SpecimenDescription specimenDescription = (SpecimenDescription) descriptionService.load(specimenDescriptionUuid);
+        DescriptiveDataSet dataSet = load(dataSetUuid);
+        TaxonNode node = findTaxonNodeForDescription(specimenDescription, dataSet);
+        return recurseDefaultDescription(node, dataSet);
+    }
+
+    private TaxonDescription recurseDefaultDescription(TaxonNode node, DescriptiveDataSet dataSet){
+        TaxonDescription defaultDescription = findTaxonDescriptionByDescriptionType(dataSet, node.getTaxon(), DescriptionType.DEFAULT_VALUES_FOR_AGGREGATION);
+        if(defaultDescription==null && node.getParent()!=null){
+            defaultDescription = recurseDefaultDescription(node.getParent(), dataSet);
+        }
+        return defaultDescription;
+    }
+
     private TaxonNode findTaxonNodeForDescription(SpecimenDescription description, DescriptiveDataSet descriptiveDataSet){
         SpecimenOrObservationBase specimen = description.getDescribedSpecimenOrObservation();
         TaxonNode taxonNode = null;
@@ -181,16 +197,6 @@ public class DescriptiveDataSetService
         for (IndividualsAssociation individualsAssociation : associations) {
             if(individualsAssociation.getAssociatedSpecimenOrObservation().equals(specimen)){
                 return ((TaxonDescription) individualsAssociation.getInDescription()).getTaxon().getTaxonNode(classification);
-            }
-        }
-        return null;
-    }
-
-    private TaxonNode findTaxonNodeForSpecimen(TaxonNode taxonNode, SpecimenOrObservationBase<?> specimen){
-        Collection<SpecimenNodeWrapper> nodeWrapper = occurrenceService.listUuidAndTitleCacheByAssociatedTaxon(Arrays.asList(taxonNode.getUuid()), null, null);
-        for (SpecimenNodeWrapper specimenNodeWrapper : nodeWrapper) {
-            if(specimenNodeWrapper.getUuidAndTitleCache().getId().equals(specimen.getId())){
-                return taxonNode;
             }
         }
         return null;
@@ -326,11 +332,9 @@ public class DescriptiveDataSetService
     }
 
     private TaxonDescription findTaxonDescriptionByDescriptionType(DescriptiveDataSet dataSet, Taxon taxon, DescriptionType descriptionType){
-        Set<DescriptionBase> dataSetDescriptions = dataSet.getDescriptions();
-        //filter by DEFAULT descriptions
         Optional<TaxonDescription> first = taxon.getDescriptions().stream()
                 .filter(desc -> desc.getTypes().stream().anyMatch(type -> type.equals(descriptionType)))
-                .filter(defaultDescription->dataSetDescriptions.contains(defaultDescription))
+                .filter(desc -> dataSet.getDescriptions().contains(desc))
                 .findFirst();
         if(first.isPresent()){
             return HibernateProxyHelper.deproxy(descriptionService.load(first.get().getUuid(),
