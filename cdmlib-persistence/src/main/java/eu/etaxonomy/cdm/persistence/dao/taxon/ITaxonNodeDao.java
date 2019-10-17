@@ -233,10 +233,11 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
      */
     long count(Class<? extends TaxonNode> type, List<Restriction<?>> restrictions, boolean includePublished);
     /**
+     * get taxonNodeDto of parent with given rank
      * @param classification
      * @param rank
      * @return
      */
-	public TaxonNodeDto taxonNodeDtoParentRank( Classification classification, Rank rank, TaxonName name);
+	public TaxonNodeDto getParentTaxonNodeDtoForRank( Classification classification, Rank rank, TaxonName name);
 
 }

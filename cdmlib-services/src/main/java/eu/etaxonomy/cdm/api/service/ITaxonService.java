@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.api.service;
 import java.io.IOException;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -795,7 +796,7 @@ public interface ITaxonService
 
     public List<TaxonName> findIdenticalTaxonNames(List<String> propertyPath);
 
-    public List<UUID> findIdenticalTaxonNameIds(List<String> propertyPath);
+    public Map<String, List<TaxonName>> findIdenticalTaxonNameIds(Reference sec1, Reference sec2, List<String> propertyPaths);
 //
 //    public String getPhylumName(TaxonName name);
 

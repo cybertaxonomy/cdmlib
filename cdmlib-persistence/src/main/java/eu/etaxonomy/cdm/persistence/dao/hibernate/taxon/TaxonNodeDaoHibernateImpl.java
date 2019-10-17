@@ -41,6 +41,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -562,15 +563,23 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     }
     
     @Override
-    public TaxonNodeDto taxonNodeDtoParentRank(Classification classification, Rank rank, TaxonName name) {
+    public TaxonNodeDto getParentTaxonNodeDtoForRank(Classification classification, Rank rank, TaxonName name) {
     	
-    	Set<Taxon> taxa = name.getTaxa();
+    	Set<TaxonBase> taxa = name.getTaxonBases();
     	TaxonNode node = null;
     	String treeIndex = null;
-    	for (Taxon taxon:taxa) {
-    		node = taxon.getTaxonNode(classification);
-    		if (node != null) {
-    			break;
+    	Taxon taxon = null; 
+    	for (TaxonBase taxonBase:taxa) {
+    		if (taxonBase instanceof Taxon) {
+    			taxon = HibernateProxyHelper.deproxy(taxonBase, Taxon.class);
+    		}else {
+    			taxon = HibernateProxyHelper.deproxy(((Synonym)taxonBase).getAcceptedTaxon(), Taxon.class);
+    		}
+    		if (taxon != null) {
+    			node = taxon.getTaxonNode(classification);
+	    		if (node != null) {
+	    			break;
+	    		}
     		}
     	}
     	if (node != null) {
@@ -585,7 +594,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     	 ProjectionList projList = Projections.projectionList();
          projList.add(Projections.property("treeIndex"));
          projList.add(Projections.property("uuid"));
-
+         nodeCrit.setProjection(projList);
         @SuppressWarnings("unchecked")
         List<Object[]> list = nodeCrit.list();
         UUID uuid = null;
@@ -594,13 +603,20 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         		 Object[] objectArray = (Object[]) o;
                  uuid = (UUID)objectArray[1];
                  String treeIndexParent = (String) objectArray[0];
+                 try {
                  if (treeIndex.startsWith(treeIndexParent)) {
                 	 node = load(uuid);
                 	 break;
                  }
+                 }catch(NullPointerException e) {
+                	 System.err.println("Parent: " + treeIndexParent + " treeIndex: " + treeIndex + " taxon: " + taxon != null?taxon.getTitleCache(): "");
+                 }
         	}
-        	TaxonNodeDto dto = new TaxonNodeDto(node);
-        	return dto;
+        	if (node != null) {
+        		TaxonNodeDto dto = new TaxonNodeDto(node);
+        		return dto;
+        	}
+        	
         }
         
         return null;

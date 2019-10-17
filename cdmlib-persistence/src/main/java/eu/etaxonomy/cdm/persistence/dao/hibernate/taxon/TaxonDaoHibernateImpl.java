@@ -12,13 +12,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -1371,112 +1374,81 @@ public class TaxonDaoHibernateImpl
     }
 
     //TODO: mal nur mit UUID probieren (ohne fetch all properties), vielleicht geht das schneller?
+//    @Override
+//    public List<UUID> findIdenticalTaxonNameIds(List<String> propertyPaths){
+//        Query query=getSession().createQuery(
+//                   "SELECT tmb2 "
+//                + " FROM ZoologicalName tmb, ZoologicalName tmb2 FETCH ALL properties "
+//                + " WHERE tmb.id != tmb2.id AND tmb.nameCache = tmb2.nameCache");
+//        @SuppressWarnings("unchecked")
+//        List<UUID> zooNames = query.list();
+//
+//        return zooNames;
+//
+//    }
+
+//    @Override
+//    public List<TaxonName> findIdenticalTaxonNames(List<String> propertyPaths) {
+//
+//        Query query=getSession().createQuery(
+//                  " SELECT tmb2 "
+//                + " FROM ZoologicalName tmb, ZoologicalName tmb2 FETCH ALL properties "
+//                + " WHERE tmb.id != tmb2.id AND tmb.nameCache = tmb2.nameCache");
+//
+//        @SuppressWarnings("unchecked")
+//        List<TaxonName> zooNames = query.list();
+//
+//        TaxonNameComparator taxComp = new TaxonNameComparator();
+//        Collections.sort(zooNames, taxComp);
+//
+//        for (TaxonName taxonName: zooNames){
+//            defaultBeanInitializer.initialize(taxonName, propertyPaths);
+//        }
+//
+//        return zooNames;
+//    }
+
+    /**
+     * Returns a map of nameCaches and names available for sec1 and sec2
+     * this is used for the merging of two instances into one
+     * 
+     * @param secRef1
+     * @param secRef2
+     * return map 
+     * 
+     */
     @Override
-    public List<UUID> findIdenticalTaxonNameIds(List<String> propertyPaths){
-        Query query=getSession().createQuery(
-                   "SELECT tmb2 "
-                + " FROM ZoologicalName tmb, ZoologicalName tmb2 FETCH ALL properties "
-                + " WHERE tmb.id != tmb2.id AND tmb.nameCache = tmb2.nameCache");
-        @SuppressWarnings("unchecked")
-        List<UUID> zooNames = query.list();
+    public Map<String, List<TaxonName>> findIdenticalNamesNew(Reference sec1, Reference sec2, List<String> propertyPaths){
 
-        return zooNames;
 
-    }
-
-    @Override
-    public List<TaxonName> findIdenticalTaxonNames(List<String> propertyPaths) {
-
-        Query query=getSession().createQuery(
-                  " SELECT tmb2 "
-                + " FROM ZoologicalName tmb, ZoologicalName tmb2 FETCH ALL properties "
-                + " WHERE tmb.id != tmb2.id AND tmb.nameCache = tmb2.nameCache");
-
-        @SuppressWarnings("unchecked")
-        List<TaxonName> zooNames = query.list();
-
-        TaxonNameComparator taxComp = new TaxonNameComparator();
-        Collections.sort(zooNames, taxComp);
-
-        for (TaxonName taxonName: zooNames){
-            defaultBeanInitializer.initialize(taxonName, propertyPaths);
-        }
-
-        return zooNames;
-    }
-
-    @Override
-    public List<UUID> findIdenticalNamesNew(List<String> propertyPaths){
-
-        //Hole die beiden Sourcs von "Fauna Europaea" und "Erms" und in sources der names darf jeweils nur das entgegengesetzte auftreten (i member of tmb.taxonBases)
-        Criteria refFaunaEu = getSession().createCriteria(Reference.class);
-        refFaunaEu.add(Restrictions.like("titleCache", "Fauna Europaea database"));
+        //get all names from erms 
+        Query query=getSession().createQuery("SELECT DISTINCT ermsName from TaxonName ermsName join ermsName.taxonBases ermsTaxon WHERE ermsTaxon.sec = :ermsSec AND ermsName.nameCache IN ( Select faunaName.nameCache FROM TaxonName faunaName JOIN faunaName.taxonBases faunaTaxon WHERE faunaTaxon.sec = :faunaSec) ORDER BY ermsName.nameCache");
+        query.setParameter("ermsSec", sec1);
+        query.setParameter("faunaSec", sec2);
+        List <TaxonName> identicalErmsNames = query.list();
+        defaultBeanInitializer.initializeAll(identicalErmsNames, propertyPaths);
         
-        List<Reference> secRefFaunaEu = refFaunaEu.list();
-        Criteria refErms = getSession().createCriteria(Reference.class);
-        refErms.add(Restrictions.like("titleCache", "Fauna Europaea database"));
+        //get all nameCaches
+        List<String> nameCacheList = identicalErmsNames.stream().map(TaxonName::getNameCache).collect(Collectors.toList());
+        
+        //get all names from fauna europaea having the same nameCache as a name from erms
+        query=getSession().createQuery("SELECT DISTINCT faunaEuName from TaxonName faunaEuName join faunaEuName.taxonBases faunaTaxon WHERE faunaTaxon.sec = :faunaSec AND faunaEuName.nameCache IN (:ermsNameCaches) ORDER BY faunaEuName.nameCache");
+        query.setParameter("faunaSec", sec2);
+        query.setParameterList("ermsNameCaches", nameCacheList);
+        
+        List <TaxonName> identicalFaunaEuNames = query.list();
+        defaultBeanInitializer.initializeAll(identicalFaunaEuNames, propertyPaths);
+        //create a map with nameCache and list of identical names
+       Map<String, List<TaxonName>> nameCacheNameMap = new HashMap();
+       for (String nameCache: nameCacheList) {
+    	   List<TaxonName> names = identicalErmsNames.stream().filter(name-> name.getNameCache().equals(nameCache)).collect(Collectors.toList());
+    	   names.addAll(identicalFaunaEuNames.stream().filter(name-> name.getNameCache().equals(nameCache)).collect(Collectors.toList()));
+    	   nameCacheNameMap.put(nameCache, names);
+    	   
+       }
+      
        
-        List<Reference> secRefErms = refErms.list();
-        //Query query = getSession().createQuery("select tmb2.nameCache from ZoologicalName tmb, TaxonBase tb1, ZoologicalName tmb2, TaxonBase tb2 where tmb.id != tmb2.id and tb1.name = tmb and tb2.name = tmb2 and tmb.nameCache = tmb2.nameCache and tb1.sec != tb2.sec");
-        //Get all names of fauna europaea
-        Reference faunaEuSec = null;
-        if (secRefFaunaEu.size() == 1 ) {
-        	faunaEuSec = secRefFaunaEu.get(0);
-        }else {
-        	logger.error("There should be only one reference for Fauna Europaea database");
-        }
-        Reference ermsSec = null;
-        if (secRefErms.size() == 1) {
-        	ermsSec = secRefErms.get(0);
-        }else {
-        	logger.error("There should be only one reference for Erms database");
-        }
-        Criteria namesFaunaEu = getSession().createCriteria(TaxonName.class);
-        Criteria taxaFaunaEu = namesFaunaEu.createCriteria("taxonBases");
-        taxaFaunaEu.add(Restrictions.eq("sec", faunaEuSec));
-    
-        ProjectionList projList = Projections.projectionList();
-        projList.add(Projections.property("nameCache"));
-       // projList.add(Projections.property("name.uuid"));
-        namesFaunaEu.setProjection(projList);
-        @SuppressWarnings("unchecked")
-        List<String> namesFauna =  namesFaunaEu.list();
-
-        //Get all names of erms
-        Criteria namesCritErms = getSession().createCriteria(TaxonName.class);
-        Criteria taxaErms = taxaFaunaEu.createCriteria("taxonBases");
-        taxaErms.add(Restrictions.eq("sec", ermsSec));
-    
-       
-        namesCritErms.setProjection(projList);
-        namesCritErms.addOrder(Order.asc("nameCache"));
-        @SuppressWarnings("unchecked")
-        List<String> namesErms= namesCritErms.list();
-       
-        List <String> identicalNames = new ArrayList<>();
-
-        for (String nameFauna: namesFauna){
-            if (namesErms.contains(nameFauna)){
-                identicalNames.add(nameFauna);
-            }
-        }
-        List<UUID> result = new ArrayList();
-        for (int i = 0; i<identicalNames.size(); i = i+500) {
-        	int toIndex = i + 500;
-        	if (identicalNames.size() < toIndex) {
-        		toIndex = identicalNames.size();
-        	}
-        	List<String> subList = identicalNames.subList(i, toIndex);
-	        Criteria crit = getSession().createCriteria(TaxonName.class);
-	        crit.add(Restrictions.in("nameCache", subList));
-	        ProjectionList projList2 = Projections.projectionList();
-	        projList2.add(Projections.property("uuid"));
-	
-	        result.addAll(crit.list());
-	        
-        }
-
-        return result;
+        return nameCacheNameMap;
 
     }
 
