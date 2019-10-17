@@ -1373,40 +1373,7 @@ public class TaxonDaoHibernateImpl
         return taxonNames;
     }
 
-    //TODO: mal nur mit UUID probieren (ohne fetch all properties), vielleicht geht das schneller?
-//    @Override
-//    public List<UUID> findIdenticalTaxonNameIds(List<String> propertyPaths){
-//        Query query=getSession().createQuery(
-//                   "SELECT tmb2 "
-//                + " FROM ZoologicalName tmb, ZoologicalName tmb2 FETCH ALL properties "
-//                + " WHERE tmb.id != tmb2.id AND tmb.nameCache = tmb2.nameCache");
-//        @SuppressWarnings("unchecked")
-//        List<UUID> zooNames = query.list();
-//
-//        return zooNames;
-//
-//    }
-
-//    @Override
-//    public List<TaxonName> findIdenticalTaxonNames(List<String> propertyPaths) {
-//
-//        Query query=getSession().createQuery(
-//                  " SELECT tmb2 "
-//                + " FROM ZoologicalName tmb, ZoologicalName tmb2 FETCH ALL properties "
-//                + " WHERE tmb.id != tmb2.id AND tmb.nameCache = tmb2.nameCache");
-//
-//        @SuppressWarnings("unchecked")
-//        List<TaxonName> zooNames = query.list();
-//
-//        TaxonNameComparator taxComp = new TaxonNameComparator();
-//        Collections.sort(zooNames, taxComp);
-//
-//        for (TaxonName taxonName: zooNames){
-//            defaultBeanInitializer.initialize(taxonName, propertyPaths);
-//        }
-//
-//        return zooNames;
-//    }
+   
 
     /**
      * Returns a map of nameCaches and names available for sec1 and sec2
@@ -1451,22 +1418,6 @@ public class TaxonDaoHibernateImpl
         return nameCacheNameMap;
 
     }
-
-
-//    @Override
-//    public String getPhylumName(TaxonName name){
-//        List results = new ArrayList();
-//        try{
-//        Query query = getSession().createSQLQuery("select getPhylum("+ name.getId()+");");
-//        results = query.list();
-//        }catch(Exception e){
-//            System.err.println(name.getUuid());
-//            return null;
-//        }
-//        System.err.println("phylum of "+ name.getTitleCache() );
-//        return (String)results.get(0);
-//    }
-
 
     @Override
     public long countTaxaByCommonName(String searchString,
