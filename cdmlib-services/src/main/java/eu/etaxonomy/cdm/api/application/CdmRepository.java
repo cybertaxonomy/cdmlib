@@ -33,6 +33,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
+import eu.etaxonomy.cdm.api.longrunningService.ILongRunningTasksService;
 import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.IAnnotationService;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
@@ -186,6 +187,8 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
     private IRightsService rightsService;
     @Autowired
     private IRegistrationService registrationService;
+    @Autowired
+    private ILongRunningTasksService longRunningTasksService;
 	@Autowired
 	private IEntityConstraintViolationService entityConstraintViolationService;
 	@Autowired
@@ -509,6 +512,11 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
     public IRegistrationService getRegistrationService() {
         return registrationService;
     }
+    
+    @Override
+	public ILongRunningTasksService getLongRunningTasksService() {
+		return longRunningTasksService;
+	}
 
     public SessionFactory getSessionFactory() {
         return factory;
@@ -536,5 +544,8 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
         }
 
     }
+
+
+	
 
 }

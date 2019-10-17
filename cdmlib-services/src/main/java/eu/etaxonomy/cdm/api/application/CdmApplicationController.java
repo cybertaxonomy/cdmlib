@@ -32,6 +32,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
+import eu.etaxonomy.cdm.api.longrunningService.ILongRunningTasksService;
 import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.IAnnotationService;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
@@ -471,6 +472,11 @@ public class CdmApplicationController implements ICdmRepository {
 	@Override
 	public final IClassificationService getClassificationService(){
 		return configuration.getClassificationService();
+	}
+	
+	@Override
+	public final ILongRunningTasksService getLongRunningTasksService(){
+		return configuration.getLongRunningTasksService();
 	}
 
 
