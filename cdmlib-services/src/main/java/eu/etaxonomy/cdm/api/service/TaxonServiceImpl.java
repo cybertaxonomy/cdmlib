@@ -993,10 +993,7 @@ public class TaxonServiceImpl
         return this.dao.countSynonyms(onlyAttachedToTaxon);
     }
 
-    @Override
-    public List<TaxonName> findIdenticalTaxonNames(List<String> propertyPath) {
-        return this.dao.findIdenticalTaxonNames(propertyPath);
-    }
+
 
     @Override
     @Transactional(readOnly=false)

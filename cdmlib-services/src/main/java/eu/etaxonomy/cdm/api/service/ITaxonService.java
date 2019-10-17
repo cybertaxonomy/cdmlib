@@ -794,11 +794,10 @@ public interface ITaxonService
      */
     public long countSynonyms(boolean onlyAttachedToTaxon);
 
-    public List<TaxonName> findIdenticalTaxonNames(List<String> propertyPath);
+    
 
     public Map<String, List<TaxonName>> findIdenticalTaxonNameIds(Reference sec1, Reference sec2, List<String> propertyPaths);
-//
-//    public String getPhylumName(TaxonName name);
+
 
     /**
      * Returns all {@link Taxon taxa} which are {@link TaxonRelationshipType#CONGRUENT_TO() congruent} or
