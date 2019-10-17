@@ -6,7 +6,7 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-package eu.etaxonomy.cdm.api.longrunningService;
+package eu.etaxonomy.cdm.api.service.longrunningService;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -38,9 +38,9 @@ import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
  * @since 04 May 2018
  *
  */
-@Service
+@Service("longRunningTasksService")
 @Transactional(readOnly = false)
-public class LongRunningTasksServiceImpl implements ILongRunningTasksService{
+public class LongRunningTasksService implements ILongRunningTasksService{
     @Autowired
     ITaxonNodeService taxonNodeService;
 
