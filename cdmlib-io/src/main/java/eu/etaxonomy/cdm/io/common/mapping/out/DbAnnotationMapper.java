@@ -26,11 +26,12 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 /**
  * Maps all Annotations belonging to an AnnotatableEntity to a DB field, using <code>separator</code>
  * as separator. If annotationPrefix is not <code>null</code>, only Annotations with the given prefix are used.
+ *
  * @author a.mueller
  * @since 12.05.2009
  */
-public class DbAnnotationMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>>
-        implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{
+public class DbAnnotationMapper
+            extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>>{
 
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbAnnotationMapper.class);
@@ -59,7 +60,8 @@ public class DbAnnotationMapper extends DbSingleAttributeExportMapperBase<DbExpo
 
 	protected DbAnnotationMapper(String dbAttributeString, String annotationPrefix, Collection<UUID> includedTypes,
 	        Collection<AnnotationType> excludedTypes, Object defaultValue, String separator) {
-		super("annotations", dbAttributeString, defaultValue);
+
+	    super("annotations", dbAttributeString, defaultValue);
 		this.annotationPrefix  = annotationPrefix;
 		if (separator != null){
 			this.separator = separator;
@@ -75,7 +77,8 @@ public class DbAnnotationMapper extends DbSingleAttributeExportMapperBase<DbExpo
 			AnnotatableEntity annotatableEntity = (AnnotatableEntity)cdmBase;
 			for (Annotation annotation : annotatableEntity.getAnnotations()){
 			    //include + exclude
-			    if (includedTypes != null && annotation.getAnnotationType() != null && !includedTypes.contains(annotation.getAnnotationType().getUuid())){
+			    if (includedTypes != null &&
+			            (annotation.getAnnotationType() == null || !includedTypes.contains(annotation.getAnnotationType().getUuid()))){
                     continue;
                 }
 			    if (excludedTypes.contains(annotation.getAnnotationType())){

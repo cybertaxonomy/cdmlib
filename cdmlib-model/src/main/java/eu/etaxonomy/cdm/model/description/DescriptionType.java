@@ -23,7 +23,6 @@ import eu.etaxonomy.cdm.model.term.IEnumTerm;
 /**
  * @author a.mueller
  * @since 14.08.2019
- *
  */
 public enum DescriptionType implements IEnumTerm<DescriptionType>{
 

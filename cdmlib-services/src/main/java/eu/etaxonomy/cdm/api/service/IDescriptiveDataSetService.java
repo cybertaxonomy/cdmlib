@@ -184,4 +184,13 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      */
     UpdateResult generatePolytomousKey(UUID descriptiveDataSetUuid, UUID taxonUuid);
 
+    /**
+     * Returns the first {@link TaxonDescription} with {@link DescriptionType#DEFAULT_VALUES_FOR_AGGREGATION}
+     * found in the taxon node hierarchy of the associated taxon
+     * @param specimenDescriptionUuid the specimen description
+     * @param dataSetUuid the data set
+     * @return the first found default description or <code>null</code>
+     */
+    public TaxonDescription findDefaultDescription(UUID specimenDescriptionUuid, UUID dataSetUuid);
+
 }

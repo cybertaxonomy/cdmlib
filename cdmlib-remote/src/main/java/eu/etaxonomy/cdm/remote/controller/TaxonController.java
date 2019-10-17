@@ -48,6 +48,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -441,6 +442,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
     public Pager<TaxonDescription> doGetDescriptions(
             @PathVariable("uuid") UUID uuid,
             @RequestParam(value = "markerTypes", required = false) List<MarkerType> markerTypes,
+            @RequestParam(value = "descriptionTypes", required = false) List<DescriptionType> descriptionTypes,
             HttpServletRequest request,
             HttpServletResponse response)throws IOException {
 
@@ -455,8 +457,12 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
         if (markerTypes != null) {
             markerTypesSet.addAll(markerTypes);
         }
+        Set<DescriptionType> descriptionTypesSet = new HashSet<>();
+        if (descriptionTypes != null) {
+            descriptionTypesSet.addAll(descriptionTypes);
+        }
 
-        Pager<TaxonDescription> p = descriptionService.pageTaxonDescriptions(taxon, null, null, markerTypesSet, null, null, getTaxonDescriptionInitStrategy());
+        Pager<TaxonDescription> p = descriptionService.pageTaxonDescriptions(taxon, null, null, markerTypesSet, descriptionTypesSet, null, null, getTaxonDescriptionInitStrategy());
 
         return p;
     }
@@ -466,6 +472,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             @PathVariable("uuid") UUID uuid,
             @PathVariable("classSimpleName") String classSimpleName,
             @RequestParam(value = "markerTypes", required = false) List<MarkerType> markerTypes,
+            @RequestParam(value = "descriptionTypes", required = false) List<DescriptionType> descriptionTypes,
             @RequestParam(value = "count", required = false, defaultValue = "false") Boolean doCount,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
@@ -491,9 +498,13 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
         if (markerTypes == null) {
             markerTypesSet.addAll(markerTypes);
         }
+        Set<DescriptionType> descriptionTypesSet = new HashSet<>();
+        if (descriptionTypes != null) {
+            descriptionTypesSet.addAll(descriptionTypes);
+        }
 
         List<TaxonDescription> taxonDescriptions = descriptionService.listTaxonDescriptions(
-                taxon, null, null, markerTypesSet, null, null, null);
+                taxon, null, null, markerTypesSet, descriptionTypesSet, null, null, null);
         try {
             Class type;
             type = Class.forName("eu.etaxonomy.cdm.model.description."

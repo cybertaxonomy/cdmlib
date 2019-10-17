@@ -35,6 +35,10 @@ public class DbExportMapperBase<STATE extends DbExportStateBase<?, IExportTransf
 		this.tableName = tableName;
 	}
 
+	/**
+	 * Initialize the mapper in a way that it does not add any data
+	 * to the prepared statement.
+	 */
 	public void initializeNull(PreparedStatement stmt, STATE state, String tableName) {
 		this.preparedStatement = stmt;
 		this.index = -1;

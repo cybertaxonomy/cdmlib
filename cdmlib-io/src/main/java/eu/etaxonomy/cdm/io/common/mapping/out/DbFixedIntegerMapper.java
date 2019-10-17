@@ -17,12 +17,15 @@ import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
+ * Mapper for a fixed integer value.
+ *
+ * TODO deduplicate with {@link DbConstantMapper}
+ *
  * @author a.mueller
  * @since 28.09.2019
  */
 public class DbFixedIntegerMapper
-        extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>>
-        implements IDbExportMapper<DbExportStateBase<?,IExportTransformer>, IExportTransformer> {
+        extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> {
 
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(DbFixedIntegerMapper.class);
@@ -34,7 +37,7 @@ public class DbFixedIntegerMapper
 	}
 
 	private DbFixedIntegerMapper(Integer fixInteger, String dbAttributeString) {
-		super(null, dbAttributeString, fixInteger, true);
+		super(null, dbAttributeString, fixInteger, true, false);
 		this.fixInteger = fixInteger;
 	}
 

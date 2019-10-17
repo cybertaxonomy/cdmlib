@@ -36,16 +36,25 @@ public abstract class DbSingleAttributeExportMapperBase<STATE extends DbExportSt
 
 	protected DbExportMapperBase<STATE> exportMapperHelper = new DbExportMapperBase<>();
 	private Integer precision = null;
+	//if the source attribute (not the value) is obligatory, currently results in error logging only
 	protected boolean obligatory = true;
+	protected boolean notNull = false;
 
 	protected DbSingleAttributeExportMapperBase(String cdmAttributeString, String dbAttributString, Object defaultValue) {
 		super(cdmAttributeString, dbAttributString, defaultValue);
 	}
 
-	protected DbSingleAttributeExportMapperBase(String cdmAttributeString, String dbAttributString, Object defaultValue, boolean obligatory) {
-		super(cdmAttributeString, dbAttributString, defaultValue);
-		this.obligatory = obligatory;
-	}
+	/**
+     * @param cdmAttributeString source attribute (CDM)
+     * @param dbAttributString target attribute (export DB)
+     * @param defaultValue default value if source value is <code>null</code>
+     * @param obligatory if the source attribute is obligatory, but value may be <code>null</code>
+     */
+    protected DbSingleAttributeExportMapperBase(String cdmAttributeString, String dbAttributString, Object defaultValue, boolean obligatory, boolean notNull) {
+        super(cdmAttributeString, dbAttributString, defaultValue);
+        this.notNull = notNull;
+        this.obligatory = obligatory;
+    }
 
 	@Override
     public void initialize(PreparedStatement stmt, IndexCounter index, STATE state, String tableName) {
@@ -72,7 +81,12 @@ public abstract class DbSingleAttributeExportMapperBase<STATE extends DbExportSt
 				value = defaultValue;
 			}
 			if (value == null){
-				getPreparedStatement().setNull(getIndex(), sqlType);
+			    if (notNull){
+			        logger.error("Value for '"+this.getSourceAttribute()+"' is null but a value is required. Object: " + cdmBase.toString());
+			        return false;
+			    }else{
+			        getPreparedStatement().setNull(getIndex(), sqlType);
+			    }
 			}else{
 				if (sqlType == Types.INTEGER){
 					try{

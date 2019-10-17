@@ -22,8 +22,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @since 12.05.2009
  */
 public class DbStringMapper
-        extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>>
-        implements IDbExportMapper<DbExportStateBase<?,IExportTransformer>, IExportTransformer> {
+        extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> {
 
     private static final Logger logger = Logger.getLogger(DbStringMapper.class);
 
@@ -34,20 +33,40 @@ public class DbStringMapper
 		return new DbStringMapper(cdmAttributeString, dbAttributeString, null, true);
 	}
 
+	/**
+     * Returns a string mapper which does not require that the source attribute exists.
+     *
+     * @param cdmAttributeString source attribute (CDM)
+     * @param dbAttributString target attribute (export DB)
+     * @param defaultValue default value if source value is <code>null</code>
+     * @param obligatory if the source attribute is obligatory, but value may be <code>null</code>
+     */
 	public static DbStringMapper NewFacultativeInstance(String cdmAttributeString, String dbAttributeString){
 		return new DbStringMapper(cdmAttributeString, dbAttributeString, null, false);
 	}
 
+	/**
+     * @param cdmAttributeString source attribute (CDM)
+     * @param dbAttributString target attribute (export DB)
+     * @param defaultValue default value if source value is <code>null</code>
+     * @param obligatory if the source attribute is obligatory, but value may be <code>null</code>
+     */
 	public static DbStringMapper NewInstance(String cdmAttributeString, String dbAttributeString, String defaultValue){
 		return new DbStringMapper(cdmAttributeString, dbAttributeString, defaultValue, false);
 	}
 
+	/**
+     * @param cdmAttributeString source attribute (CDM)
+     * @param dbAttributString target attribute (export DB)
+     * @param defaultValue default value if source value is <code>null</code>
+     * @param obligatory if the source attribute is obligatory, but value may be <code>null</code>
+     */
 	public static DbStringMapper NewInstance(String cdmAttributeString, String dbAttributeString, String defaultValue, boolean obligatory){
 		return new DbStringMapper(cdmAttributeString, dbAttributeString, defaultValue, obligatory);
 	}
 
 	private DbStringMapper(String cdmAttributeString, String dbAttributeString, String defaultValue, boolean obligatory) {
-		super(cdmAttributeString, dbAttributeString, defaultValue, obligatory);
+		super(cdmAttributeString, dbAttributeString, defaultValue, obligatory, false);
 	}
 
 	@Override

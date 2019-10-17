@@ -17,6 +17,7 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
@@ -68,9 +69,10 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
      * @param scopes Restrict the results to those descriptions which are scoped by one of the Scope instances passed (can be null or empty)
      * @param geographicalScope Restrict the results to those descriptions which have a geographical scope that overlaps with the NamedArea instances passed (can be null or empty)
      * @param markerType Restrict the results to those descriptions which are marked as true by one of the given marker types (can be null or empty)
+     * @param descriptionTypes Restrict the results to those descriptions of the given types (can be null or empty)
      * @return a count of TaxonDescription instances
      */
-    public long countTaxonDescriptions(Taxon taxon, Set<DefinedTerm> scopes, Set<NamedArea> geographicalScope, Set<MarkerType> markerType);
+    public long countTaxonDescriptions(Taxon taxon, Set<DefinedTerm> scopes, Set<NamedArea> geographicalScope, Set<MarkerType> markerType, Set<DescriptionType> descriptionTypes);
 
     /**
      * Returns description elements of type <TYPE>, belonging to a given description, optionally filtered by one or more features
@@ -155,12 +157,13 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
      * @param scopes Restrict the results to those descriptions which are scoped by one of the Scope instances passed (can be null or empty)
      * @param geographicalScope Restrict the results to those descriptions which have a geographical scope that overlaps with the NamedArea instances passed (can be null or empty)
      * @param markerTypes Restrict the results to those descriptions which are marked as true by one of the given marker types (can be null or empty)
+     * @param descriptionTypes Restrict the results to those descriptions of the given types (can be null or empty)
      * @param pageSize The maximum number of descriptions returned (can be null for all descriptions)
      * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link IBeanInitializer#initialize(Object, List)}
      * @return a List of TaxonDescription instances
      */
-    List<TaxonDescription> listTaxonDescriptions(Taxon taxon, Set<DefinedTerm> scopes, Set<NamedArea> geographicalScope, Set<MarkerType> markerTypes, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+    List<TaxonDescription> listTaxonDescriptions(Taxon taxon, Set<DefinedTerm> scopes, Set<NamedArea> geographicalScope, Set<MarkerType> markerTypes, Set<DescriptionType> descriptionTypes, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
      * Returns a List of Media instances, optionally filtered by parameters passed to this method.
