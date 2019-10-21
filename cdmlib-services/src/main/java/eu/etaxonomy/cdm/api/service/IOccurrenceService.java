@@ -719,7 +719,7 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @return
      */
 
-    FieldUnitDTO findFieldUnitDTO(DerivateDTO derivedUnitDTO, //Collection<FieldUnitDTO> fieldUnits,
+    FieldUnitDTO findFieldUnitDTO(DerivateDTO derivedUnitDTO, Collection<FieldUnitDTO> fieldUnits,
             HashMap<UUID, DerivateDTO> alreadyCollectedSpecimen);
 
 
