@@ -42,7 +42,7 @@ public class LectotypeSourceValidator implements ConstraintValidator<ValidLectot
         }else if (typeDesignation.getTypeStatus() == null){
             isValid = false;
         }else{
-            isValid = typeDesignation.isLectoType();
+            isValid = typeDesignation.hasDesignationSource();
         }
         return isValid;
     }

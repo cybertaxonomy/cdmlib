@@ -921,7 +921,7 @@ public class TypeDesignationSetManager {
         protected void setDefaultTerms(TermVocabulary<NullTypeDesignationStatus> termVocabulary) {}
 
         @Override
-        public boolean isLectotype() {
+        public boolean hasDesignationSource() {
             return false;
         }
 

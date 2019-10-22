@@ -96,10 +96,11 @@ public abstract class TypeDesignationStatusBase<T extends TypeDesignationStatusB
     /**
      * Returns the boolean value indicating whether <i>this</i> type designation
      * status is itself "lectotype" or a kind of "lectotype" (<code>true</code>) or not
-     * (<code>false</code>).<BR>
+     * (<code>false</code>). Lectotyp is used in a wider sense here including all
+     * status requiring a designation source including neotypes and epitypes.<BR>
      *
-     * A lectotype is a {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnit specimen or illustration}
-     * or a {@link TaxonName taxon name}
+     * A "lectotype" in the wider sense is a {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnit
+     * specimen or illustration} or a {@link TaxonName taxon name}
      * designated as the nomenclatural type, when no holotype was indicated at the time of
      * publication of the "type-providing" {@link TaxonName taxon name}, when the
      * holotype is found to be assigned to taxon names belonging to more than
@@ -109,5 +110,5 @@ public abstract class TypeDesignationStatusBase<T extends TypeDesignationStatusB
      * @see  #HOLOTYPE()
      * @see  eu.etaxonomy.cdm.model.term.DefinedTermBase#getKindOf()
      */
-    public abstract boolean isLectotype();
+    public abstract boolean hasDesignationSource();
 }

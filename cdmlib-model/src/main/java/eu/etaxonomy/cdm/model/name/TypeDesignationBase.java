@@ -285,11 +285,11 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
 
     @Override
     @Transient
-    public boolean isLectoType() {
+    public boolean hasDesignationSource() {
         if (getTypeStatus() == null) {
             return false;
         }
-        return getTypeStatus().isLectotype();
+        return getTypeStatus().hasDesignationSource();
     }
 
 //*********************** CLONE ********************************************************/
