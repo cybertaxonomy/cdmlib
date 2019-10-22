@@ -19,19 +19,12 @@ import eu.etaxonomy.cdm.validation.annotation.ValidLectotypeSource;
 /**
  * @author a.mueller
  * @since 25.02.2019
- *
  */
 public class LectotypeSourceValidator implements ConstraintValidator<ValidLectotypeSource, TypeDesignationBase<?>> {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void initialize(ValidLectotypeSource constraintAnnotation) {}
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isValid(TypeDesignationBase<?> typeDesignation, ConstraintValidatorContext context) {
         boolean isValid;
