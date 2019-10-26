@@ -277,6 +277,7 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
                 .filter(matchFilter)
                 .findAny();
     }
+
     private <T extends TeamOrPersonBase<?>> T getTeamOrPerson(T agent){
         T result = agent;
         if (agent.isInstanceOf(Person.class)){
