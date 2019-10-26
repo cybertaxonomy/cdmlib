@@ -2072,6 +2072,16 @@ public class TaxonName
         return result;
     }
 
+    @Override
+    @Deprecated
+    public NameRelationship addOriginalSpelling(TaxonName originalSpelling, Reference citation, String microcitation){
+        if (originalSpelling != null){
+            return originalSpelling.addRelationshipToName(this, NameRelationshipType.ORIGINAL_SPELLING(), citation, microcitation, null, null);
+        }else{
+            return null;
+        }
+    }
+
     /**
      * Assigns a taxon name as {@link NameRelationshipType#BASIONYM() basionym} of <i>this</i> taxon name.
      * The basionym {@link NameRelationship relationship} will be added to <i>this</i> taxon name
@@ -2084,8 +2094,8 @@ public class TaxonName
      * @see  				#addBasionym(TaxonName, String)
      */
     @Override
-    public void addBasionym(TaxonName basionym){
-        addBasionym(basionym, null, null, null, null);
+    public NameRelationship addBasionym(TaxonName basionym){
+        return addBasionym(basionym, null, null, null, null);
     }
     /**
      * Assigns a taxon name as {@link NameRelationshipType#BASIONYM() basionym} of <i>this</i> taxon name
@@ -2113,12 +2123,10 @@ public class TaxonName
 
     /**
      * Returns the set of taxon names which are the {@link NameRelationshipType#REPLACED_SYNONYM() replaced synonyms} of <i>this</i> taxon name.
-     *
      */
     @Override
     @Transient
     public Set<TaxonName> getReplacedSynonyms(){
-
         return getRelatedNames(Direction.relatedTo, NameRelationshipType.REPLACED_SYNONYM());
     }
 

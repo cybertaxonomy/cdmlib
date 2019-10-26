@@ -288,10 +288,11 @@ public interface ITaxonNameBase
      * will be {@link HomotypicalGroup#merge(HomotypicalGroup) merged}.
      *
      * @param  basionym     the taxon name to be set as the basionym of <i>this</i> taxon name
+     * @return
      * @see                 #getBasionym()
      * @see                 #addBasionym(TaxonName, String)
      */
-    public void addBasionym(TaxonName basionym);
+    public NameRelationship addBasionym(TaxonName basionym);
 
     /**
      * Assigns a taxon name as {@link NameRelationshipType#BASIONYM() basionym} of <i>this</i> taxon name
@@ -308,6 +309,17 @@ public interface ITaxonNameBase
      * @see                     #addBasionym(TaxonName)
      */
     public NameRelationship addBasionym(TaxonName basionym, Reference citation, String microcitation, String ruleConsidered, NomenclaturalCodeEdition codeEdition);
+
+    /**
+     * Removes the {@link NameRelationshipType#BASIONYM() basionym} {@link NameRelationship relationship} from the set of
+     * {@link #getRelationsToThisName() name relationships to} <i>this</i> taxon name. The same relationhip will be
+     * removed from the set of {@link #getRelationsFromThisName() name relationships from} the taxon name
+     * previously used as basionym.
+     *
+     * @see   #getBasionym()
+     * @see   #addBasionym(TaxonName)
+     */
+    public void removeBasionyms();
 
     /**
      * Returns the set of taxon names which are the {@link NameRelationshipType#REPLACED_SYNONYM() replaced synonyms} of <i>this</i> taxon name.
@@ -331,15 +343,11 @@ public interface ITaxonNameBase
     public void addReplacedSynonym(TaxonName replacedSynonym, Reference citation, String microcitation, String ruleConsidered, NomenclaturalCodeEdition codeEdition);
 
     /**
-     * Removes the {@link NameRelationshipType#BASIONYM() basionym} {@link NameRelationship relationship} from the set of
-     * {@link #getRelationsToThisName() name relationships to} <i>this</i> taxon name. The same relationhip will be
-     * removed from the set of {@link #getRelationsFromThisName() name relationships from} the taxon name
-     * previously used as basionym.
-     *
-     * @see   #getBasionym()
-     * @see   #addBasionym(TaxonName)
+     * @deprecated in future original spellings will be stored with nomenclatural source
+     * so this method may be deleted then
      */
-    public void removeBasionyms();
+    @Deprecated
+    public NameRelationship addOriginalSpelling(TaxonName originalSpelling, Reference citation, String microcitation);
 
     /**
      * Returns the taxonomic {@link Rank rank} of <i>this</i> taxon name.
