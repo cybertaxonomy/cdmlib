@@ -65,12 +65,12 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<Reference,IRef
     }
 
     @Override
-    public List<Reference> getAllReferencesForPublishing(){
+    public List<Reference> listReferencesForPublishing(){
         return dao.getAllNotNomenclaturalReferencesForPublishing();
     }
 
     @Override
-    public List<Reference> getAllNomenclaturalReferences() {
+    public List<Reference> listNomenclaturalReferences() {
         return dao.getAllNomenclaturalReferences();
     }
 

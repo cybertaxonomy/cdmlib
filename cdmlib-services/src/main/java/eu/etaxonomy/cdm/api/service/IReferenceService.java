@@ -15,6 +15,7 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.dto.IdentifiedEntityDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -53,16 +54,14 @@ public interface IReferenceService extends IIdentifiableEntityService<Reference>
 	public List<UuidAndTitleCache<Reference>> getUuidAndTitle();
 
 	/**
-	 * TODO candidate for harmonization: rename to listForPublishing
-	 * @return
+	 * lists all references marked as "publish" and not used as nomenclatural references
 	 */
-	public List<Reference> getAllReferencesForPublishing();
+	public List<Reference> listReferencesForPublishing();
 
 	/**
-	 * TODO candidate for harmonization: rename to listNomenclaturalReferences
-	 * @return
+	 * Lists all references used as nomenclatural references in at least 1 {@link TaxonName}
 	 */
-	public List<Reference> getAllNomenclaturalReferences();
+	public List<Reference> listNomenclaturalReferences();
 
 	/**
 	 * returns
