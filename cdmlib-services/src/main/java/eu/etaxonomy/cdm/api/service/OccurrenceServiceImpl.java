@@ -552,9 +552,11 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         if (CdmUtils.isBlank(specimenIdentifier)) {
             collectionKey = FormatKey.COLLECTION_NAME;
         }
-        specimenIdentifier = CdmFormatterFactory.format(derivedUnit, new FormatKey[] {
-                collectionKey, FormatKey.SPACE, FormatKey.OPEN_BRACKET,
-                FormatKey.MOST_SIGNIFICANT_IDENTIFIER, FormatKey.CLOSE_BRACKET });
+        if(CdmUtils.isNotBlank(derivedUnit.getMostSignificantIdentifier())){
+            specimenIdentifier = CdmFormatterFactory.format(derivedUnit, new FormatKey[] {
+                    collectionKey, FormatKey.SPACE, FormatKey.OPEN_BRACKET,
+                    FormatKey.MOST_SIGNIFICANT_IDENTIFIER, FormatKey.CLOSE_BRACKET });
+        }
         if(CdmUtils.isBlank(specimenIdentifier)){
             specimenIdentifier = derivedUnit.getTitleCache();
         }
