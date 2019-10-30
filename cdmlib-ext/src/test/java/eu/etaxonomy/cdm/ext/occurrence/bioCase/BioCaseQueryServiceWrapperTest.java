@@ -96,9 +96,9 @@ public class BioCaseQueryServiceWrapperTest {
             BioCaseQueryServiceWrapper service = new BioCaseQueryServiceWrapper();
             try {
                 Set<String[]> unitIds = new HashSet<String[]>();
-                String[] unitIdArray ={"29596"};
+                String[] unitIdArray ={"B 10 0463639"};
                 unitIds.add(unitIdArray);
-                InputStream queryForSingleUnit = service.query(new OccurenceQuery(unitIds), URI.create("http://www.flora-mv.de/biocase/pywrapper.cgi?dsa=hoeherePflanzen"));
+                InputStream queryForSingleUnit = service.query(new OccurenceQuery(unitIds), URI.create("https://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=Herbar"));
 
                 if(queryForSingleUnit==null){
                     logger.error("SKIPPING TEST: No response from BioCase provider");
