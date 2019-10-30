@@ -14,6 +14,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
@@ -448,7 +449,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
         assertTrue(derivedUnits.contains(derivedUnit));
 
     }
-	
+
 	@Test
     @DataSet( value="AbcdGgbnImportTest.testAttachDnaSampleToDerivedUnit.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
     public void testIgnoreExistingSpecimensWithDna(){
@@ -463,6 +464,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
         Abcd206ImportConfigurator importConfigurator = null;
         try {
             importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+            importConfigurator.setDnaSoure(URI.create("https://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=DNA_Bank"));
 
         } catch (URISyntaxException e) {
             e.printStackTrace();
