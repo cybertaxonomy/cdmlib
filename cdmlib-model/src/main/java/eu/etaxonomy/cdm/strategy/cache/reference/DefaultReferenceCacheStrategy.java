@@ -540,7 +540,7 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
         if ("".equals(year)){
             result = string + afterYear;
         }else{
-            result = string + beforeYear + year + afterYear;
+            result = string.trim() + beforeYear + year + afterYear;
         }
         return result;
     }
