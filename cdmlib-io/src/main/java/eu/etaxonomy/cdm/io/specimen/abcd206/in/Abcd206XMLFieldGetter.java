@@ -920,6 +920,8 @@ public class Abcd206XMLFieldGetter {
             }
         } catch (NullPointerException e) {
             logger.info(e);
+
+            e.printStackTrace();
         }
     }
 
@@ -937,6 +939,7 @@ public class Abcd206XMLFieldGetter {
         NodeList licenceNodes;
         NodeList license;
         NodeList copyrights;
+
         String fileUri = "";
         for (int k = 0; k < multimedia.getLength(); k++) {
             if (multimedia.item(k).getNodeName().equalsIgnoreCase(prefix + "fileURI")) {
@@ -997,7 +1000,7 @@ public class Abcd206XMLFieldGetter {
                                         Node node = license.item(n);
                                         NodeList children = node.getChildNodes();
                                         for (int o = 0; o < children.getLength(); o++){
-                                            if (children.item(n).getNodeName().equalsIgnoreCase(prefix + "Text")){
+                                            if (children.item(o).getNodeName().equalsIgnoreCase(prefix + "Text")){
                                                 mediaObjectMap.put("License", children.item(n).getTextContent());
                                             }
 
