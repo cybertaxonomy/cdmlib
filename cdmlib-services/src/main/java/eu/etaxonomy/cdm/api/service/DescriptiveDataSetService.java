@@ -175,9 +175,12 @@ public class DescriptiveDataSetService
     }
 
     private TaxonDescription recurseDefaultDescription(TaxonNode node, DescriptiveDataSet dataSet){
-        TaxonDescription defaultDescription = findTaxonDescriptionByDescriptionType(dataSet, node.getTaxon(), DescriptionType.DEFAULT_VALUES_FOR_AGGREGATION);
-        if(defaultDescription==null && node.getParent()!=null){
-            defaultDescription = recurseDefaultDescription(node.getParent(), dataSet);
+        TaxonDescription defaultDescription = null;
+        if(node!=null && node.getTaxon()!=null){
+            defaultDescription = findTaxonDescriptionByDescriptionType(dataSet, node.getTaxon(), DescriptionType.DEFAULT_VALUES_FOR_AGGREGATION);
+            if(defaultDescription==null && node.getParent()!=null){
+                defaultDescription = recurseDefaultDescription(node.getParent(), dataSet);
+            }
         }
         return defaultDescription;
     }
