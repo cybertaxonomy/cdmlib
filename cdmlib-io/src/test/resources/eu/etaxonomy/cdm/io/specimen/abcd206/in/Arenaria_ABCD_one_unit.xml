@@ -1,0 +1,162 @@
+<?xml version='1.0' encoding='UTF-8'?>
+    <abcd21:DataSets>
+      <abcd21:DataSet>
+        <abcd21:TechnicalContacts>
+          <abcd21:TechnicalContact>
+            <abcd21:Name>Botanic Garden and Botanical Museum Berlin-Dahlem</abcd21:Name>
+            <abcd21:Email>biodiversitydata@bgbm.org</abcd21:Email>
+            <abcd21:Address>Königin-Luise-Str. 6-8, 14195 Berlin, Germany</abcd21:Address>
+          </abcd21:TechnicalContact>
+        </abcd21:TechnicalContacts>
+        <abcd21:ContentContacts>
+          <abcd21:ContentContact>
+            <abcd21:Name>Botanic Garden and Botanical Museum Berlin-Dahlem</abcd21:Name>
+            <abcd21:Email>biodiversitydata@bgbm.org</abcd21:Email>
+            <abcd21:Address>Königin-Luise-Str. 6-8, 14195 Berlin, Germany</abcd21:Address>
+          </abcd21:ContentContact>
+        </abcd21:ContentContacts>
+        <abcd21:Metadata>
+          <abcd21:Description>
+            <abcd21:Representation language="en">
+              <abcd21:Title>Herbarium Berolinense</abcd21:Title>
+              <abcd21:Details>The herbarium of the Botanic Garden and Botanical Museum Berlin-Dahlem (herbarium acronym: B) is the largest in Germany and holds a collection of more than 3.5 million preserved specimens. All plant groups – flowering plants, ferns, mosses, liverworts, and algae, as well as fungi and lichens – are represented in the collections which are worldwide in scope. Associated with the general herbarium are special collections of dried fruits and seeds, wood samples, and specimens preserved in alcohol. The collections of the herbarium are growing constantly through field research conducted by staff, and through gifts, acquisitions, and exchanges of specimens from other herbaria</abcd21:Details>
+            </abcd21:Representation>
+          </abcd21:Description>
+          <abcd21:IconURI>http://ww3.bgbm.org/providerResources/BGBM.jpg</abcd21:IconURI>
+          <abcd21:RevisionData>
+            <abcd21:Creators>Herbarium Berolinense</abcd21:Creators>
+            <abcd21:DateCreated>2003-06-01T00:00:00</abcd21:DateCreated>
+            <abcd21:DateModified>2008-02-21T11:00:00</abcd21:DateModified>
+          </abcd21:RevisionData>
+          <abcd21:Owners>
+            <abcd21:Owner>
+              <abcd21:Organisation>
+                <abcd21:Name>
+                  <abcd21:Representation language="en">
+                    <abcd21:Text>Botanic Garden and Botanical Museum Berlin-Dahlem</abcd21:Text>
+                    <abcd21:Abbreviation>BGBM</abcd21:Abbreviation>
+                  </abcd21:Representation>
+                </abcd21:Name>
+              </abcd21:Organisation>
+              <abcd21:Addresses>
+                <abcd21:Address>Königin-Luise-Str. 6-8, 14195 Berlin, Germany</abcd21:Address>
+              </abcd21:Addresses>
+              <abcd21:EmailAddresses>
+                <abcd21:EmailAddress>biodiversitydata@bgbm.org</abcd21:EmailAddress>
+              </abcd21:EmailAddresses>
+              <abcd21:URIs>
+                <abcd21:URL>http://www.bgbm.org</abcd21:URL>
+              </abcd21:URIs>
+            </abcd21:Owner>
+          </abcd21:Owners>
+          <abcd21:IPRStatements>
+            <abcd21:TermsOfUseStatements>
+              <abcd21:TermsOfUse language="en">
+                <abcd21:Text>Textual metadata on specimens from the Herbarium Berolinense (B) are released under the Creative Commons 1.0 Public Domain Dedication waiver [http://creativecommons.org/publicdomain/zero/1.0/].</abcd21:Text>
+              </abcd21:TermsOfUse>
+            </abcd21:TermsOfUseStatements>
+            <abcd21:Citations>
+              <abcd21:Citation language="en">
+                <abcd21:Text>Röpert D. (ed.) 2000+ [continuously updated]: Digital specimen images at the Herbarium Berolinense. - Published at http://ww2.bgbm.org/herbarium/default.cfm [accessed dd Mmm yyyy].     For reference to a specimen cite the stable identifier as shown on the specimen detail page   (e.g. http://herbarium.bgbm.org/object/B200072053).     For reference to an individual image, cite the barcode of the specimen as well as the image ID as shown on the image detail page.</abcd21:Text>
+              </abcd21:Citation>
+            </abcd21:Citations>
+          </abcd21:IPRStatements>
+        </abcd21:Metadata>
+        <abcd21:Units>
+          <abcd21:Unit>
+            <abcd21:UnitGUID>http://herbarium.bgbm.org/object/B100463639</abcd21:UnitGUID>
+            <abcd21:SourceInstitutionID>BGBM</abcd21:SourceInstitutionID>
+            <abcd21:SourceID>Herbarium Berolinense</abcd21:SourceID>
+            <abcd21:UnitID>B 10 0463639</abcd21:UnitID>
+            <abcd21:Identifications>
+              <abcd21:Identification>
+                <abcd21:Result>
+                  <abcd21:TaxonIdentified>
+                    <abcd21:HigherTaxa>
+                      <abcd21:HigherTaxon>
+                        <abcd21:HigherTaxonName>CARYOPHYLLACEAE</abcd21:HigherTaxonName>
+                        <abcd21:HigherTaxonRank>familia</abcd21:HigherTaxonRank>
+                      </abcd21:HigherTaxon>
+                    </abcd21:HigherTaxa>
+                    <abcd21:ScientificName>
+                      <abcd21:FullScientificNameString>Arenaria serpyllifolia L. subsp. serpyllifolia</abcd21:FullScientificNameString>
+                      <abcd21:NameAtomised>
+                        <abcd21:Botanical>
+                          <abcd21:GenusOrMonomial>Arenaria</abcd21:GenusOrMonomial>
+                          <abcd21:FirstEpithet>serpyllifolia</abcd21:FirstEpithet>
+                          <abcd21:InfraspecificEpithet>serpyllifolia</abcd21:InfraspecificEpithet>
+                          <abcd21:Rank>subsp.</abcd21:Rank>
+                          <abcd21:AuthorTeam>L.</abcd21:AuthorTeam>
+                        </abcd21:Botanical>
+                      </abcd21:NameAtomised>
+                    </abcd21:ScientificName>
+                  </abcd21:TaxonIdentified>
+                </abcd21:Result>
+                <abcd21:PreferredFlag>1</abcd21:PreferredFlag>
+                <abcd21:Identifiers>
+                  <abcd21:Identifier>
+                    <abcd21:PersonName>
+                      <abcd21:FullName>R. Hand</abcd21:FullName>
+                    </abcd21:PersonName>
+                  </abcd21:Identifier>
+                </abcd21:Identifiers>
+                <abcd21:Date>
+                  <abcd21:DateText>2012</abcd21:DateText>
+                </abcd21:Date>
+              </abcd21:Identification>
+            </abcd21:Identifications>
+            <abcd21:RecordBasis>PreservedSpecimen</abcd21:RecordBasis>
+            <abcd21:KindOfUnit>herbarium sheet</abcd21:KindOfUnit>
+            <abcd21:MultiMediaObjects>
+              <abcd21:MultiMediaObject>
+                <abcd21:FileURI>http://ww2.bgbm.org/herbarium/images/B/10/04/63/63/B_10_0463639.jpg</abcd21:FileURI>
+                <abcd21:fileFormat>image/jpeg</abcd21:fileFormat>
+                <abcd21:IPR>
+                  <abcd21:Licenses>
+                    <abcd21:License language="en">
+                      <abcd21:Text>Partial images provided by this server are released under the Creative Commons cc-by-sa 3.0 (generic) licence [http://creativecommons.org/licenses/by-sa/3.0/de/]. Please credit images to BGBM following our citation guidelines [http://ww2.bgbm.org/Herbarium/cite.cfm]. If you would like to use images in a format or resolution which is not provided here, please contact us (d.roepert[at]bgbm.org).</abcd21:Text>
+                      <abcd21:URI>http://creativecommons.org/licenses/by-sa/3.0/</abcd21:URI>
+                    </abcd21:License>
+                  </abcd21:Licenses>
+                </abcd21:IPR>
+              </abcd21:MultiMediaObject>
+            </abcd21:MultiMediaObjects>
+            <abcd21:Gathering>
+              <abcd21:DateTime>
+                <abcd21:DateText>19.06.2012</abcd21:DateText>
+                <abcd21:ISODateTimeBegin>2012-06-19</abcd21:ISODateTimeBegin>
+              </abcd21:DateTime>
+              <abcd21:Agents>
+                <abcd21:GatheringAgentsText>R. Hand</abcd21:GatheringAgentsText>
+              </abcd21:Agents>
+              <abcd21:LocalityText>Rheinland-Pfalz. Trier-Ost, Petrisberg, am Weinlehrpfad, unweit Beginn an Sitzbank, TK 6205/4.</abcd21:LocalityText>
+              <abcd21:Country>
+                <abcd21:Name>Germany</abcd21:Name>
+                <abcd21:ISO3166Code>DE</abcd21:ISO3166Code>
+              </abcd21:Country>
+              <abcd21:NamedAreas>
+                <abcd21:NamedArea>
+                  <abcd21:AreaClass language="en">Continent</abcd21:AreaClass>
+                  <abcd21:AreaName language="en">Europe</abcd21:AreaName>
+                </abcd21:NamedArea>
+              </abcd21:NamedAreas>
+              <abcd21:SiteCoordinateSets>
+                <abcd21:SiteCoordinates>
+                  <abcd21:CoordinatesLatLong>
+                    <abcd21:LongitudeDecimal>6.65138912201</abcd21:LongitudeDecimal>
+                    <abcd21:LatitudeDecimal>49.7463874817</abcd21:LatitudeDecimal>
+                  </abcd21:CoordinatesLatLong>
+                </abcd21:SiteCoordinates>
+              </abcd21:SiteCoordinateSets>
+              <abcd21:Biotope>
+                <abcd21:Text>an schiefriger Böschung</abcd21:Text>
+              </abcd21:Biotope>
+              <abcd21:Notes language="en">GBOL577, Silikaprobe genommen</abcd21:Notes>
+            </abcd21:Gathering>
+            <abcd21:CollectorsFieldNumber>6047</abcd21:CollectorsFieldNumber>
+            <abcd21:Notes>GBOL577, Silikaprobe genommen</abcd21:Notes>
+            <abcd21:RecordURI>http://herbarium.bgbm.org/object/B100463639</abcd21:RecordURI>
+          </abcd21:Unit>
+        </abcd21:Units>
+      </abcd21:DataSet>
+    </abcd21:DataSets>
