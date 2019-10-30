@@ -1208,7 +1208,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
     }
 
     @Override
-    public List<T> list(T example, Set<String> includeProperties, Integer limit, Integer start,
+    public <S extends T> List<S> list(S example, Set<String> includeProperties, Integer limit, Integer start,
             List<OrderHint> orderHints, List<String> propertyPaths) {
         Criteria criteria = getSession().createCriteria(example.getClass());
         addExample(criteria, example, includeProperties);
@@ -1218,7 +1218,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         addOrder(criteria, orderHints);
 
         @SuppressWarnings("unchecked")
-        List<T> results = criteria.list();
+        List<S> results = criteria.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
     }

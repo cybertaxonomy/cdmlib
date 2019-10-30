@@ -464,7 +464,7 @@ public interface ICdmEntityDao<T extends CdmBase> {
      * @param propertyPaths paths initialized on the returned objects - only applied to the objects returned from the first grouping
      * @return a list of matching objects
      */
-    public List<T> list(T example, Set<String> includeProperties, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+    public <S extends T> List<S> list(S example, Set<String> includeProperties, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     public  <S extends T> List<S> findByParamWithRestrictions(Class<S> clazz, String param, String queryString, MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize,
             Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);

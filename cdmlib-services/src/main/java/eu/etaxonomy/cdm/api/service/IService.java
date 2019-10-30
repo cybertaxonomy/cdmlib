@@ -375,7 +375,7 @@ public interface IService<T extends ICdmBase>{
      * @param propertyPaths paths initialized on the returned objects - only applied to the objects returned from the first grouping
      * @return a list of matching objects
      */
-    public List<T> list(T example, Set<String> includeProperties, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+    public <S extends T> List<S> list(S example, Set<String> includeProperties, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	public DeleteResult delete(T persistentObject);
 
