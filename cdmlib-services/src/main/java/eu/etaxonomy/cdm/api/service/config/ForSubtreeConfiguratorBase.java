@@ -19,7 +19,8 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
  * @author a.mueller
  * @since 06.01.2017
  */
-public abstract class ForSubtreeConfiguratorBase<T extends ForSubtreeConfiguratorBase> implements Serializable{
+public abstract class ForSubtreeConfiguratorBase
+            implements Serializable{
 
     private static final long serialVersionUID = 2756961021157678305L;
 
@@ -29,19 +30,11 @@ public abstract class ForSubtreeConfiguratorBase<T extends ForSubtreeConfigurato
     private boolean includeSharedTaxa = true;
     private IProgressMonitor monitor;
 
-    /**
-     * @param subtreeUuid
-     * @param newSecundum
-     */
     protected ForSubtreeConfiguratorBase(UUID subtreeUuid, IProgressMonitor monitor) {
         this.subtreeUuid = subtreeUuid;
         this.monitor = monitor;
     }
 
-    /**
-     * @param subtreeUuid
-     * @param newSecundum
-     */
     protected ForSubtreeConfiguratorBase(UUID subtreeUuid) {
 //        super(null);
         this.subtreeUuid = subtreeUuid;
@@ -59,7 +52,6 @@ public abstract class ForSubtreeConfiguratorBase<T extends ForSubtreeConfigurato
 
 // ************************** GETTER / SETTER ********************************/
 
-
     public UUID getSubtreeUuid() {
         return subtreeUuid;
     }
@@ -67,13 +59,11 @@ public abstract class ForSubtreeConfiguratorBase<T extends ForSubtreeConfigurato
         this.subtreeUuid = subtreeUuid;
     }
 
-
     public boolean isIncludeSynonyms() {
         return includeSynonyms;
     }
     public void setIncludeSynonyms(boolean includeSynonyms) {
         this.includeSynonyms = includeSynonyms;
-
     }
 
     public boolean isIncludeAcceptedTaxa() {
@@ -81,7 +71,6 @@ public abstract class ForSubtreeConfiguratorBase<T extends ForSubtreeConfigurato
     }
     public void setIncludeAcceptedTaxa(boolean includeAcceptedTaxa) {
         this.includeAcceptedTaxa = includeAcceptedTaxa;
-
     }
 
     public boolean isIncludeSharedTaxa() {
@@ -89,7 +78,6 @@ public abstract class ForSubtreeConfiguratorBase<T extends ForSubtreeConfigurato
     }
     public void setIncludeSharedTaxa(boolean includeSharedTaxa) {
         this.includeSharedTaxa = includeSharedTaxa;
-
     }
 
     public IProgressMonitor getMonitor() {
@@ -97,9 +85,5 @@ public abstract class ForSubtreeConfiguratorBase<T extends ForSubtreeConfigurato
     }
     public void setMonitor(IProgressMonitor monitor) {
         this.monitor = monitor;
-
     }
-
-
-
 }

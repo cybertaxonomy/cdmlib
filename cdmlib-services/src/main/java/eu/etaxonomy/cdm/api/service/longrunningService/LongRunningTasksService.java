@@ -36,7 +36,6 @@ import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 /**
  * @author k.luther
  * @since 04 May 2018
- *
  */
 @Service("longRunningTasksService")
 @Transactional(readOnly = false)
@@ -183,9 +182,6 @@ public class LongRunningTasksService implements ILongRunningTasksService{
         return uuid;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public UUID monitLongRunningTask(CacheUpdaterConfigurator configurator) {
         RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
@@ -210,9 +206,6 @@ public class LongRunningTasksService implements ILongRunningTasksService{
         return uuid;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public UUID monitLongRunningTask(SortIndexUpdaterConfigurator configurator) {
         RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
@@ -235,6 +228,4 @@ public class LongRunningTasksService implements ILongRunningTasksService{
         monitorThread.start();
         return uuid;
     }
-
-
 }

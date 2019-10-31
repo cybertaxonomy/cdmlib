@@ -78,7 +78,7 @@ import eu.etaxonomy.cdm.persistence.dto.ClassificationLookupDTO;
  *
  *   When generating maps from the accumulated distribution information some special cases have to be handled:
  * <ol>
- *   <li>if a entered or imported status information exist for the same area for which calculated (accumulated)
+ *   <li>if an entered or imported status information exists for the same area for which calculated (accumulated)
  *       data is available, the calculated data has to be given preference over other data.
  *   </li>
  *   <li>If there is an area with a sub area and both areas have the same calculated status only the subarea
@@ -176,7 +176,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
      *
      * @return the byAreaIgnoreStatusList
      */
-    public List<PresenceAbsenceTerm> getByAreaIgnoreStatusList() {
+    private List<PresenceAbsenceTerm> getByAreaIgnoreStatusList() {
         if(byAreaIgnoreStatusList == null ){
             byAreaIgnoreStatusList = Arrays.asList(
                     new PresenceAbsenceTerm[] {
@@ -191,9 +191,6 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
         return byAreaIgnoreStatusList;
     }
 
-    /**
-     * @param byAreaIgnoreStatusList the byAreaIgnoreStatusList to set
-     */
     public void setByAreaIgnoreStatusList(List<PresenceAbsenceTerm> byAreaIgnoreStatusList) {
         this.byAreaIgnoreStatusList = byAreaIgnoreStatusList;
     }
@@ -206,7 +203,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
      *
      * @return the byRankIgnoreStatusList
      */
-    public List<PresenceAbsenceTerm> getByRankIgnoreStatusList() {
+    private List<PresenceAbsenceTerm> getByRankIgnoreStatusList() {
 
         if (byRankIgnoreStatusList == null) {
             byRankIgnoreStatusList = Arrays.asList(
@@ -217,17 +214,10 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
         return byRankIgnoreStatusList;
     }
 
-    /**
-     * @param byRankIgnoreStatusList the byRankIgnoreStatusList to set
-     */
     public void setByRankIgnoreStatusList(List<PresenceAbsenceTerm> byRankIgnoreStatusList) {
         this.byRankIgnoreStatusList = byRankIgnoreStatusList;
     }
 
-    /**
-     *
-     * @param superAreas
-     */
     public TransmissionEngineDistribution() {
     }
 
@@ -826,7 +816,7 @@ private List<Rank> rankInterval(Rank lowerRank, Rank upperRank) {
 
 
     // TODO merge with CdmRepository#startTransaction() into common base class
-    public TransactionStatus startTransaction(Boolean readOnly) {
+    private TransactionStatus startTransaction(Boolean readOnly) {
 
         DefaultTransactionDefinition defaultTxDef = new DefaultTransactionDefinition();
         defaultTxDef.setReadOnly(readOnly);
@@ -852,7 +842,7 @@ private List<Rank> rankInterval(Rank lowerRank, Rank upperRank) {
     }
 
     // TODO merge with CdmRepository#startTransaction() into common base class
-    public void commitTransaction(TransactionStatus txStatus){
+    private void commitTransaction(TransactionStatus txStatus){
         logger.debug("commiting transaction ...");
         transactionManager.commit(txStatus);
         return;
@@ -1072,16 +1062,6 @@ private List<Rank> rankInterval(Rank lowerRank, Rank upperRank) {
         }
     }
 
-    /**
-     * @return the batchMinFreeHeap
-     */
-    public long getBatchMinFreeHeap() {
-        return batchMinFreeHeap;
-    }
-
-    /**
-     * @param batchMinFreeHeap the batchMinFreeHeap to set
-     */
     public void setBatchMinFreeHeap(long batchMinFreeHeap) {
         this.batchMinFreeHeap = batchMinFreeHeap;
     }

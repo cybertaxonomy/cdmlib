@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
  * @since 13.09.2017
  */
 public class PublishForSubtreeConfigurator
-            extends ForSubtreeConfiguratorBase<PublishForSubtreeConfigurator>{
+            extends ForSubtreeConfiguratorBase{
 
     private static final long serialVersionUID = 1202667588493272030L;
 

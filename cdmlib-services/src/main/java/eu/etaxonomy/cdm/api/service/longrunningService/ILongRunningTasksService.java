@@ -28,27 +28,10 @@ import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
  */
 public interface ILongRunningTasksService {
 
-
-    /**
-     * @param configurator
-     * @return
-     */
     public UUID monitLongRunningTask(ForSubtreeConfiguratorBase configurator);
 
-    /**
-     * @param configurator
-     * @return
-     */
     public UUID monitLongRunningTask(CacheUpdaterConfigurator configurator);
 
-
-    /**
-     * @param movingUuids
-     * @param targetTreeNodeUuid
-     * @param movingType
-     * @param monitor
-     * @return
-     */
     UUID monitLongRunningTask(Set<UUID> movingUuids, UUID targetTreeNodeUuid, int movingType);
 
     /**
@@ -82,9 +65,5 @@ public interface ILongRunningTasksService {
      */
     public UUID monitGetRowWrapper(UUID descriptiveDataSetUuid);
 
-    /**
-     * @param configurator
-     * @return
-     */
     UUID monitLongRunningTask(SortIndexUpdaterConfigurator configurator);
 }
