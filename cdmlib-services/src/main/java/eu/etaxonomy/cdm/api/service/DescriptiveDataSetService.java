@@ -42,6 +42,7 @@ import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
+import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -648,11 +649,31 @@ public class DescriptiveDataSetService
 
     private void aggregateCategoricalData(TaxonDescription description, Character character,
             List<DescriptionElementBase> elements) {
+        Map<State, Integer> stateToCountMap = new HashMap<>();
         CategoricalData aggregate = CategoricalData.NewInstance(character);
-        elements.stream()
-        .filter(element->element instanceof CategoricalData)
-        .flatMap(categoricalData->((CategoricalData)categoricalData).getStateData().stream())
-        .forEach(stateData->aggregate.addStateData((StateData) stateData.clone()));
+        for (DescriptionElementBase element: elements) {
+            if(element instanceof CategoricalData){
+                CategoricalData categoricalData = (CategoricalData)element;
+                List<StateData> stateDataList = categoricalData.getStateData();
+                for (StateData stateData : stateDataList) {
+                    State state = stateData.getState();
+                    Integer integer = stateToCountMap.get(state);
+                    if(integer==null){
+                        integer = 1;
+                    }
+                    else{
+                        integer++;
+                    }
+                    stateToCountMap.put(state, integer);
+                }
+            }
+        }
+        stateToCountMap.forEach((state, count) -> {
+            StateData stateData = StateData.NewInstance(state);
+            stateData.setCount(count);
+            aggregate.addStateData(stateData);
+        });
+
         description.addElement(aggregate);
     }
 
