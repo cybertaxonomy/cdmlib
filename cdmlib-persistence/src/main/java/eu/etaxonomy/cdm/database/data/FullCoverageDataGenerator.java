@@ -326,6 +326,7 @@ public class FullCoverageDataGenerator {
 		State nextState = State.NewInstance();
 		cdmBases.add(nextState);
 		StateData stateData2 = StateData.NewInstance(nextState);
+		stateData2.setCount(3);
 		stateData2.putModifyingText(Language.ENGLISH(), "State2 modifying text");
 		categoricalData.addStateData(stateData2);
 		categoricalData.setOrderRelevant(true);
