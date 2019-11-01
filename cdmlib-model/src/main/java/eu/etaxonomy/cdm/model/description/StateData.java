@@ -125,7 +125,6 @@ public class StateData
         return new StateData();
     }
 
-
     /**
      * Creates a new empty state data instance.
      *
@@ -162,7 +161,6 @@ public class StateData
         this.state = state;
     }
 
-
     /**
      * Returns the number of single data using this state if <B>this</B>
      * StateData was created by aggregation.
@@ -197,7 +195,6 @@ public class StateData
         this.categoricalData = categoricalData;
     }
 
-
     /**
      * Returns the set of {@link Modifier modifiers} used to qualify the validity
      * of <i>this</i> state data. This is only metainformation.
@@ -230,7 +227,6 @@ public class StateData
     public void removeModifier(DefinedTerm modifier){
         this.modifiers.remove(modifier);
     }
-
 
     /**
      * Returns the {@link MultilanguageText multilanguage text} used to qualify the validity
@@ -281,22 +277,6 @@ public class StateData
      */
     public LanguageString putModifyingText(Language language, String text){
         return this.modifyingText.put(language, LanguageString.NewInstance(text, language));
-    }
-    /**
-     * Adds a translated {@link LanguageString text in a particular language}
-     * to the {@link MultilanguageText multilanguage text} used to qualify the validity
-     * of <i>this</i> state data.
-     *
-     * @param text	the language string describing the validity
-     * 				in a particular language
-     * @see    	   	#getModifyingText()
-     * @see    	   	#putModifyingText(Language, String)
-     * @deprecated	should follow the put semantic of maps, this method will be removed in v4.0
-     * 				Use the {@link #putModifyingText(LanguagString) putModifyingText} method instead
-     */
-    @Deprecated
-    public LanguageString addModifyingText(LanguageString text){
-        return this.putModifyingText(text);
     }
 
     /**

@@ -115,30 +115,16 @@ public class CdmMetaData extends CdmBase{
 
 //****************** instance methods ****************************/
 
-	/**
-	 * @return the propertyName
-	 */
 	public CdmMetaDataPropertyName getPropertyName() {
 		return propertyName;
 	}
-
-	/**
-	 * @param propertyName the propertyName to set
-	 */
 	public void setPropertyName(CdmMetaDataPropertyName propertyName) {
 		this.propertyName = propertyName;
 	}
 
-	/**
-	 * @return the value
-	 */
 	public String getValue() {
 		return value;
 	}
-
-	/**
-	 * @param value the value to set
-	 */
 	public void setValue(String value) {
 		this.value = value;
 	}
@@ -196,7 +182,6 @@ public class CdmMetaData extends CdmBase{
 			}
 			throw exception;
 		}
-
 	}
 
 	/**

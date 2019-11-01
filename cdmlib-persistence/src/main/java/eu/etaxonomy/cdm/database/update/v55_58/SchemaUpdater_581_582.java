@@ -40,10 +40,6 @@ public class SchemaUpdater_581_582 extends SchemaUpdaterBase {
 		return new SchemaUpdater_581_582();
 	}
 
-	/**
-	 * @param startSchemaVersion
-	 * @param endSchemaVersion
-	 */
 	protected SchemaUpdater_581_582() {
 		super(startSchemaVersion, endSchemaVersion);
 	}
