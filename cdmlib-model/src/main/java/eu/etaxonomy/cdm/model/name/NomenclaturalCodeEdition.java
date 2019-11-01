@@ -288,7 +288,6 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
         return getMessage();
     }
 
-
 	@Override
 	public String toString() {
 		return this.name();

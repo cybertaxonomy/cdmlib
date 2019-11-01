@@ -21,7 +21,6 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 /**
  * @author a.kohlbecker
  * @since Sep 3, 2015
- *
  */
 public class ClassificationLookupDTO {
 
@@ -30,30 +29,18 @@ public class ClassificationLookupDTO {
     private final Map<Integer,Set<Integer>> childTaxonMap = new HashMap<>();
     private Classification classification = null;
 
-    /**
-     * @return the taxonIds
-     */
     public Set<Integer> getTaxonIds() {
         return taxonIdToParentId.keySet();
     }
 
-    /**
-     * @return the taxonIdByRank
-     */
     public Map<Rank, Set<Integer>> getTaxonIdByRank() {
         return taxonIdByRank;
     }
 
-    /**
-     * @return the childTaxonMap
-     */
     public Map<Integer, Set<Integer>> getChildTaxonMap() {
         return childTaxonMap;
     }
 
-    /**
-     * @return the classification
-     */
     public Classification getClassification() {
         return classification;
     }
