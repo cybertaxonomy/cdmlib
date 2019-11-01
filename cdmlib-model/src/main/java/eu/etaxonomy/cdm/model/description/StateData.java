@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
@@ -64,8 +65,9 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "StateData", propOrder = {
-    "state",
     "categoricalData",
+    "state",
+    "count",
     "modifiers",
     "modifyingText"
 })
@@ -92,6 +94,10 @@ public class StateData
     @ManyToOne(fetch = FetchType.LAZY)
     @IndexedEmbedded(depth=1)
     private State state;
+
+    //#8625 for statistically counting aggregated state data
+    @Column(name="number")  //rename to avoid conflicts with SQL syntax
+    private Integer count;
 
     @XmlElementWrapper(name = "Modifiers")
     @XmlElement(name = "Modifier")
@@ -154,6 +160,28 @@ public class StateData
      */
     public void setState(State state){
         this.state = state;
+    }
+
+
+    /**
+     * Returns the number of single data using this state if <B>this</B>
+     * StateData was created by aggregation.
+     */
+    public Integer getCount() {
+        return count;
+    }
+    /**
+     * @see #getCount()
+     */
+    public void setCount(Integer count) {
+        this.count = count;
+    }
+    /**
+     * Increments the count by 1.
+     * @see #getCount()
+     */
+    public void incrementCount(){
+        count++;
     }
 
     /**

@@ -96,9 +96,11 @@ public class CdmMetaDataTest {
 		String strSchemaVersion = CdmMetaData.getDbSchemaVersion();
 		assertNotNull(strSchemaVersion);
 		int indexFirst = strSchemaVersion.indexOf(".");
-		int indexLast = strSchemaVersion.lastIndexOf(".");
 		assertTrue(indexFirst >0 );
-		assertTrue("DB schema version is not in the correct format", indexLast == 7);
+//		int indexLast = strSchemaVersion.lastIndexOf(".");
+//		assertTrue("DB schema version is not in the correct format", indexLast == 7);
+		String regEx = "\\d{1,2}\\.\\d{1,2}\\.\\d{1,2}\\.\\d{1,2}\\.\\d{8}";
+		assertTrue("DB schema version is not in the correct format", strSchemaVersion.matches(regEx));
 	}
 
 	/**
@@ -111,8 +113,8 @@ public class CdmMetaDataTest {
 
 	@Test
 	public void testCompareVersion(){
-		String version1 = "2.1.2.5.12343244234";
-		String version2 = "2.1.3.5.11654354355";
+		String version1 = "2.1.2.5.12343244";
+		String version2 = "2.1.3.5.11654354";
 		String version3 = "2.1.2";
 
 		int compare = CdmMetaData.compareVersion(version1, version2, 4, null);
