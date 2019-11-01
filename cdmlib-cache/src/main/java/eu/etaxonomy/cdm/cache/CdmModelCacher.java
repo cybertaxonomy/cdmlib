@@ -36,7 +36,6 @@ import net.sf.ehcache.Element;
  *
  * @author c.mathew
  * @since 2015
- *
  */
 public class CdmModelCacher {
 
@@ -47,8 +46,6 @@ public class CdmModelCacher {
     public static final String CDM_MAP_SER_FILE = "cdm.map.ser";
     public static final String CDM_MAP_SER_FOLDER = "/eu/etaxonomy/cdm/mappings/";
     public static final String CDM_MAP_SER_FILE_PATH = CDM_MAP_SER_FOLDER + CDM_MAP_SER_FILE;
-
-
 
 
     public void cacheGetterFields(Cache cache) throws IOException, ClassNotFoundException, URISyntaxException {
@@ -134,11 +131,11 @@ public class CdmModelCacher {
 
     private void addGetters(PersistentClass persistentClass, CdmModelFieldPropertyFromClass cmgmfc) {
         if (persistentClass != null) {
-            Iterator propertyIt = persistentClass.getPropertyIterator();
+            @SuppressWarnings("unchecked")
+            Iterator<Property> propertyIt = persistentClass.getPropertyIterator();
 
-            while(propertyIt.hasNext())
-            {
-                Property property = (Property)propertyIt.next();
+            while(propertyIt.hasNext()){
+                Property property = propertyIt.next();
                 Getter getter = property.getGetter(persistentClass.getMappedClass());
                 if(getter != null && getter.getMember() != null) {
                     Field field = (Field)getter.getMember();
@@ -183,6 +180,4 @@ public class CdmModelCacher {
         }
 
     }
-
-
 }

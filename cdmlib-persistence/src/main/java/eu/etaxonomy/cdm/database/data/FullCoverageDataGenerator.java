@@ -958,7 +958,6 @@ public class FullCoverageDataGenerator {
 		Identifier<?> identifier = identifiableEntity.addIdentifier("ident23", DefinedTerm.SEX_FEMALE());
 		handleAnnotatableEntity(identifier);
 
-
 		//Rights
 		Rights rights = Rights.NewInstance("right", Language.ENGLISH());
 		rights.setUri(URI.create("http://rights.abc.de"));
@@ -985,10 +984,7 @@ public class FullCoverageDataGenerator {
 		} catch (MalformedLSIDException e) {
 			e.printStackTrace();
 		}
-
-
 	}
-
 
 	private Reference getReference() {
 		 Reference result = ReferenceFactory.newGeneric();
@@ -996,19 +992,15 @@ public class FullCoverageDataGenerator {
 		 return result;
 	}
 
-
 	private DerivedUnit getSpecimen() {
 		DerivedUnit derivedUnit = DerivedUnit.NewPreservedSpecimenInstance();
 		return derivedUnit;
 	}
-
-
 
 	private Taxon getTaxon() {
 		Reference sec = getReference();
 		TaxonName name = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
 		Taxon taxon = Taxon.NewInstance(name, sec);
 		return taxon;
-
 	}
 }

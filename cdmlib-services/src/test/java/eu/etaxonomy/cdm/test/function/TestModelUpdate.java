@@ -87,12 +87,6 @@ public class TestModelUpdate {
 	}
 
 
-
-/**
-     * @param dbType
-     * @param database
-     * @return
-     */
     private CdmDataSource getDatasource(DatabaseTypeEnum dbType, String database) {
         String server = "localhost";
         String username = "edit";
@@ -214,27 +208,22 @@ public class TestModelUpdate {
 		System.out.println("Start TestModelUpdate");
 		testSelectedDb();
 
-//		updateRemoteWebappTestH2();  //also updates vaadin and taxeditor model
-//		updateAllTesetH2();
+//		updateRemoteWebappTestH2();
+//		updateAllTestH2();
 //      updateEdaphobasePostgres();
 
 		System.out.println("\nEnd Datasource");
 	}
 
 	/**
-     * Updates all
+     * Updates all H2 test DBs
      */
-    private void updateAllTesetH2() {
+    private void updateAllTestH2() {
         updateRemoteWebappTestH2();
         updateTaxEditorH2();
         updateVaadinH2();
     }
 
-
-
-    /**
-	 * @param args
-	 */
 	public static void  main(String[] args) {
 		TestModelUpdate cc = new TestModelUpdate();
     	cc.test();
