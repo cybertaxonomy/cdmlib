@@ -72,9 +72,19 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 @XmlRootElement(name = "StateData")
 @Entity
 @Audited
-public class StateData extends VersionableEntity implements IModifiable, IMultiLanguageTextHolder, Cloneable{
+public class StateData
+        extends VersionableEntity
+        implements IModifiable, IMultiLanguageTextHolder{
+
     private static final long serialVersionUID = -4380314126624505415L;
     private static final Logger logger = Logger.getLogger(StateData.class);
+
+    @XmlElement(name = "CategoricalData")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @IndexedEmbedded(depth=1)
+    private CategoricalData categoricalData;
 
     @XmlElement(name = "State")
     @XmlIDREF
@@ -82,13 +92,6 @@ public class StateData extends VersionableEntity implements IModifiable, IMultiL
     @ManyToOne(fetch = FetchType.LAZY)
     @IndexedEmbedded(depth=1)
     private State state;
-
-    @XmlElement(name = "CategoricalData")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY )
-    @IndexedEmbedded(depth=1)
-    private CategoricalData categoricalData;
 
     @XmlElementWrapper(name = "Modifiers")
     @XmlElement(name = "Modifier")
@@ -339,4 +342,5 @@ public class StateData extends VersionableEntity implements IModifiable, IMultiL
             return null;
         }
     }
+
 }
