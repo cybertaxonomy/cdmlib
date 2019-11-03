@@ -98,10 +98,10 @@ public class MethodMapper
 			}
 		} catch (IllegalAccessException e) {
 			logger.error("IllegalAccessException: " + e.getMessage() + " when invoking MethodMapper " +  this.toString());
-			return false;
+			throw new RuntimeException(e);
 		} catch (InvocationTargetException e) {
 			logger.error("InvocationTargetException: " + e.getMessage() + " when invoking MethodMapper " +  this.toString());
-			return false;
+			throw new RuntimeException(e);
 		} catch (Exception e) {
 			logger.error("Any Exception: " + e.getMessage() + " when invoking MethodMapper " +  this.toString());
 			throw new RuntimeException(e);
