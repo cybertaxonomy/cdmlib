@@ -39,6 +39,9 @@ public class DefaultCategoricalDescriptionBuilder extends AbstractCategoricalDes
 			if(state!=null){
 			    categoricalDescription.append(" " + getRightText(state.getPreferredRepresentation(languages)));
 			}
+			if(stateData.getCount()!=null){
+			    categoricalDescription.append(" ("+stateData.getCount()+")");
+			}
 			if (sd.hasNext()) {
                 categoricalDescription.append(separator);
             }
