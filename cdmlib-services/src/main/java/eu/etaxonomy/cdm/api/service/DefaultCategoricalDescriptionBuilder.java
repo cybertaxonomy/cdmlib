@@ -20,9 +20,9 @@ public class DefaultCategoricalDescriptionBuilder extends AbstractCategoricalDes
 		Language language = null;
 		for (Iterator<StateData> sd = states.iterator() ; sd.hasNext() ;){
 			StateData stateData = sd.next();
-			State s = stateData.getState();
-			if(s != null && language==null) {
-			    language = s.getPreferredRepresentation(languages).getLanguage();
+			State state = stateData.getState();
+			if(state != null && language==null) {
+			    language = state.getPreferredRepresentation(languages).getLanguage();
 			}
 			if (language==null) {
 			    language = Language.DEFAULT();
@@ -36,8 +36,8 @@ public class DefaultCategoricalDescriptionBuilder extends AbstractCategoricalDes
 				DefinedTerm modifier = mod.next();
 				categoricalDescription.append(" " + getRightText(modifier.getPreferredRepresentation(languages)));
 			}
-			if(s!=null){
-			    categoricalDescription.append(" " + getRightText(s.getPreferredRepresentation(languages)));
+			if(state!=null){
+			    categoricalDescription.append(" " + getRightText(state.getPreferredRepresentation(languages)));
 			}
 			if (sd.hasNext()) {
                 categoricalDescription.append(separator);
