@@ -154,12 +154,14 @@ public class StructuredDescriptionAggregation
         SpecimenOrObservationBase<?> specimen = description.getDescribedSpecimenOrObservation();
 
         //get taxon node
-        Set<IndividualsAssociation> associations = descriptiveDataSet.getDescriptions()
+        Set<? extends DescriptionElementBase> elements = descriptiveDataSet.getDescriptions()
                 .stream()
                 .flatMap(desc->desc.getElements().stream())// put all description element in one stream
                 .filter(element->element instanceof IndividualsAssociation)
                 .map(ia->(IndividualsAssociation)ia)
                 .collect(Collectors.toSet());
+        @SuppressWarnings("unchecked") //on linux the above code does not compile if the above stream result is not explicitly casted to Set<IndividualsAssociation>, on windows the cast is automatically removed during save due to group code settings
+        Set<IndividualsAssociation> associations = (Set<IndividualsAssociation>)elements;
         Classification classification = descriptiveDataSet.getTaxonSubtreeFilter().iterator().next().getClassification();
         for (IndividualsAssociation individualsAssociation : associations) {
             if(individualsAssociation.getAssociatedSpecimenOrObservation().equals(specimen)){
