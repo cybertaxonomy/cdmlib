@@ -493,10 +493,6 @@ public class DescriptionServiceImpl
         return descriptionElementDao.delete(descriptionElement);
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IDescriptionService#deleteDescriptionElement(java.util.UUID)
-     */
     @Override
     public UUID deleteDescriptionElement(UUID descriptionElementUuid) {
         return deleteDescriptionElement(descriptionElementDao.load(descriptionElementUuid));
@@ -516,7 +512,7 @@ public class DescriptionServiceImpl
     	}
     	else if (HibernateProxyHelper.isInstanceOf(description, SpecimenDescription.class)){
     	    SpecimenDescription specimenDescription = HibernateProxyHelper.deproxy(description, SpecimenDescription.class);
-    	    SpecimenOrObservationBase specimen = specimenDescription.getDescribedSpecimenOrObservation();
+    	    SpecimenOrObservationBase<?> specimen = specimenDescription.getDescribedSpecimenOrObservation();
     	    specimen.removeDescription(specimenDescription);
     	    deleteResult.addUpdatedObject(specimen);
     	}

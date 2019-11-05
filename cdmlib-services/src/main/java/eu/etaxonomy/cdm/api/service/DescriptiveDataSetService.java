@@ -188,10 +188,9 @@ public class DescriptiveDataSetService
 
     private TaxonNode findTaxonNodeForDescription(SpecimenDescription description, DescriptiveDataSet descriptiveDataSet){
         SpecimenOrObservationBase specimen = description.getDescribedSpecimenOrObservation();
-        TaxonNode taxonNode = null;
         //get taxon node
 
-        Set<IndividualsAssociation> associations = (Set<IndividualsAssociation>) descriptiveDataSet.getDescriptions()
+        Set<IndividualsAssociation> associations = descriptiveDataSet.getDescriptions()
                 .stream()
                 .flatMap(desc->desc.getElements().stream())// put all description element in one stream
                 .filter(element->element instanceof IndividualsAssociation)
@@ -380,7 +379,7 @@ public class DescriptiveDataSetService
         for (String string : sourceUuids) {
             try {
                 UUID uuid = UUID.fromString(string);
-                DescriptionBase sourceClone = descriptionService.load(uuid);
+                DescriptionBase<?> sourceClone = descriptionService.load(uuid);
                 descriptionService.deleteDescription(sourceClone);
             } catch (IllegalArgumentException|NullPointerException e) {
                 // ignore
@@ -391,7 +390,7 @@ public class DescriptiveDataSetService
 
         // sort descriptions by taxa
         Map<TaxonNode, Set<UUID>> taxonNodeToSpecimenDescriptionMap = new HashMap<>();
-        for (DescriptionBase descriptionBase : descriptions) {
+        for (DescriptionBase<?> descriptionBase : descriptions) {
             if(monitor.isCanceled()){
                 result.setAbort();
                 return result;
@@ -510,12 +509,11 @@ public class DescriptiveDataSetService
         return result;
     }
 
-    @SuppressWarnings("unchecked")
     private UpdateResult aggregateDescription(UUID taxonUuid, Set<UUID> specimenDescriptionUuids,
             UUID descriptiveDataSetUuid, Map<UUID, UUID> specimenToClonedSourceDescription) {
         UpdateResult result = new UpdateResult();
 
-        TaxonBase taxonBase = taxonService.load(taxonUuid);
+        TaxonBase<?> taxonBase = taxonService.load(taxonUuid);
         if(!(taxonBase instanceof Taxon)){
             result.addException(new ClassCastException("The given taxonUUID does not belong to a taxon"));
             result.setError();
@@ -700,7 +698,7 @@ public class DescriptiveDataSetService
             result.addDeletedObject(descriptionBase);
             // remove taxon description with IndividualsAssociation from data set
             if(descriptionBase instanceof SpecimenDescription){
-                Set<IndividualsAssociation> associations = (Set<IndividualsAssociation>) dataSet.getDescriptions()
+                Set<IndividualsAssociation> associations = dataSet.getDescriptions()
                         .stream()
                         .flatMap(desc->desc.getElements().stream())// put all description element in one stream
                         .filter(element->element instanceof IndividualsAssociation)

@@ -13,9 +13,11 @@ import java.io.Serializable;
 /**
  * @author pplitzner
  * @since Aug 8, 2019
- *
  */
 public class DescriptionAggregationConfiguration implements Serializable {
+
+    private static final long serialVersionUID = -9127288595075132134L;
+
     boolean recursiveAggregation = true;
     boolean includeDefault = true;
     boolean includeLiterature = false;

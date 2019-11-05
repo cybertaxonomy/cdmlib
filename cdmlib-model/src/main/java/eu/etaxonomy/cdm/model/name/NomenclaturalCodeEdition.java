@@ -362,8 +362,6 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
         return this.doi;
     }
 
-
-
 // *************************** DELEGATE **************************************/
 
 	private static EnumeratedTermVoc<NomenclaturalCodeEdition> delegateVoc;
