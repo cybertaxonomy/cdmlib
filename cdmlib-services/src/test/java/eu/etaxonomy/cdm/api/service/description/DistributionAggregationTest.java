@@ -34,8 +34,7 @@ import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
-import eu.etaxonomy.cdm.api.service.description.TransmissionEngineDistribution;
-import eu.etaxonomy.cdm.api.service.description.TransmissionEngineDistribution.AggregationMode;
+import eu.etaxonomy.cdm.api.service.description.DistributionAggregation.AggregationMode;
 import eu.etaxonomy.cdm.common.JvmLimitsException;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.MarkerType;
@@ -61,9 +60,9 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @since Feb 26, 2013
  *
  */
-public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrationTest {
+public class DistributionAggregationTest extends CdmTransactionalIntegrationTest {
 
-    private static Logger logger = Logger.getLogger(TransmissionEngineDistributionTest.class);
+    private static Logger logger = Logger.getLogger(DistributionAggregationTest.class);
 
     private static final UUID T_LAPSANA_UUID = UUID.fromString("f65d47bd-4f49-4ab1-bc4a-bc4551eaa1a8");
 
@@ -91,7 +90,7 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
     private IReferenceService referenceService;
 
     @SpringBeanByType
-    private TransmissionEngineDistribution engine;
+    private DistributionAggregation engine;
 
     // --- Distributions --- //
     // tdwg3 level YUG :  Yugoslavia
@@ -150,14 +149,14 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
     public void testPriorities(){
 
         Set<Extension> extensions = termService.load(PresenceAbsenceTerm.CULTIVATED().getUuid()).getExtensions();
-        assertEquals(TransmissionEngineDistribution.EXTENSION_VALUE_PREFIX + "45", extensions.iterator().next().getValue());
+        assertEquals(DistributionAggregation.EXTENSION_VALUE_PREFIX + "45", extensions.iterator().next().getValue());
     }
 
     @Test
     @DataSets({
         @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
-        @DataSet(value="TransmissionEngineDistributionTest.xml"),
+        @DataSet(value="DistributionAggregationTest.xml"),
     })
 //  @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class) //, value="./ClearDBDataSet.xml")
     public void test_ignore() throws JvmLimitsException {
@@ -200,7 +199,7 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
     @DataSets({
         @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
-        @DataSet(value="TransmissionEngineDistributionTest.xml"),
+        @DataSet(value="DistributionAggregationTest.xml"),
     })
     public void testArea_area() throws JvmLimitsException {
 
@@ -246,7 +245,7 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
     @DataSets({
         @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
-        @DataSet(value="TransmissionEngineDistributionTest.xml"),
+        @DataSet(value="DistributionAggregationTest.xml"),
     })
     public void testArea_rank_and_area_1() throws JvmLimitsException {
 
@@ -326,7 +325,7 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
     @DataSets({
         @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
-        @DataSet(value="TransmissionEngineDistributionTest.xml"),
+        @DataSet(value="DistributionAggregationTest.xml"),
     })
     public void testArea_rank_and_area_2() throws JvmLimitsException {
 
@@ -374,7 +373,7 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
     @DataSets({
         @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
-        @DataSet(value="TransmissionEngineDistributionTest.xml"),
+        @DataSet(value="DistributionAggregationTest.xml"),
     })
     public void testArea_rank_and_area_3() throws JvmLimitsException {
 
@@ -432,7 +431,7 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
     @DataSets({
         @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
-        @DataSet(value="TransmissionEngineDistributionTest.xml"),
+        @DataSet(value="DistributionAggregationTest.xml"),
     })
     public void testArea_rank_and_area_4() throws JvmLimitsException {
 

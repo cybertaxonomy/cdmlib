@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
-import eu.etaxonomy.cdm.api.service.description.TransmissionEngineDistribution;
+import eu.etaxonomy.cdm.api.service.description.DistributionAggregation;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
@@ -72,7 +72,7 @@ public class DescriptionElementListController {
     private IEditGeoService geoService;
 
     @Autowired
-    public TransmissionEngineDistribution transmissionEngineDistribution;
+    public DistributionAggregation distributionAggregation;
 
     @Autowired
     public ProgressMonitorController progressMonitorController;

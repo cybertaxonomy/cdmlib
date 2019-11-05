@@ -8,8 +8,6 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-
 import java.awt.Color;
 import java.io.IOException;
 import java.util.Arrays;
@@ -39,8 +37,8 @@ import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
-import eu.etaxonomy.cdm.api.service.description.TransmissionEngineDistribution;
-import eu.etaxonomy.cdm.api.service.description.TransmissionEngineDistribution.AggregationMode;
+import eu.etaxonomy.cdm.api.service.description.DistributionAggregation;
+import eu.etaxonomy.cdm.api.service.description.DistributionAggregation.AggregationMode;
 import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO;
 import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO.InfoPart;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -66,6 +64,7 @@ import eu.etaxonomy.cdm.remote.editor.DefinedTermBaseList;
 import eu.etaxonomy.cdm.remote.editor.TermBaseListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.TermBasePropertyEditor;
 import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
+import io.swagger.annotations.Api;
 
 /**
  * TODO write controller documentation
@@ -92,7 +91,7 @@ public class DescriptionListController extends AbstractIdentifiableListControlle
     private IEditGeoService geoService;
 
     @Autowired
-    public TransmissionEngineDistribution transmissionEngineDistribution;
+    public DistributionAggregation distributionAggregation;
 
     @Autowired
     public ProgressMonitorController progressMonitorController;
@@ -131,7 +130,7 @@ public class DescriptionListController extends AbstractIdentifiableListControlle
 
 
     /**
-     * Runs the {@link TransmissionEngineDistribution} in a separate Thread and
+     * Runs the {@link DistributionAggregation} in a separate Thread and
      * responds with a redirect to a progress monitor REST service end point.
      * <p>
      *
@@ -168,7 +167,7 @@ public class DescriptionListController extends AbstractIdentifiableListControlle
 
         logger.info("doAccumulateDistributions()" + request.getRequestURI());
 
-//        transmissionEngineDistribution.updatePriorities();
+//        distributionAggregation.updatePriorities();
 
         String processLabel = "accumulating distributions";
 
@@ -189,7 +188,7 @@ public class DescriptionListController extends AbstractIdentifiableListControlle
                     Pager<NamedArea> areaPager = termService.list(targetAreaLevel, (NamedAreaType) null,
                             null, null, (List<OrderHint>) null, term_init_strategy);
                     try {
-                        transmissionEngineDistribution.accumulate(mode, areaPager.getRecords(), _lowerRank, _upperRank,
+                        distributionAggregation.accumulate(mode, areaPager.getRecords(), _lowerRank, _upperRank,
                                 null, progressMonitorController.getMonitor(transmissionEngineMonitorUuid));
                     } catch (JvmLimitsException e) {
                         IRestServiceProgressMonitor monitor = progressMonitorController.getMonitor(transmissionEngineMonitorUuid);

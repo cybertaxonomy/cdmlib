@@ -90,10 +90,10 @@ import eu.etaxonomy.cdm.persistence.dto.ClassificationLookupDTO;
  * @since Feb 22, 2013
  */
 @Service
-public class TransmissionEngineDistribution
-            extends DescriptionAggregationBase<TransmissionEngineDistribution, DescriptionAggregationConfiguration>{ //TODO extends IoBase?
+public class DistributionAggregation
+            extends DescriptionAggregationBase<DistributionAggregation, DescriptionAggregationConfiguration>{ //TODO extends IoBase?
 
-    public static final Logger logger = Logger.getLogger(TransmissionEngineDistribution.class);
+    public static final Logger logger = Logger.getLogger(DistributionAggregation.class);
 
     public static final String EXTENSION_VALUE_PREFIX = "transmissionEngineDistribution.priority:";
 
@@ -159,7 +159,7 @@ public class TransmissionEngineDistribution
     private long batchMinFreeHeap = BATCH_MIN_FREE_HEAP;
 
 
-    public TransmissionEngineDistribution() {
+    public DistributionAggregation() {
     }
 
     /**
@@ -309,6 +309,14 @@ public class TransmissionEngineDistribution
         }
         logger.warn("no priority defined for '" + term.getLabel() + "'");
         return null;
+    }
+
+
+
+    @Override
+    protected UpdateResult doInvoke() {
+        // TODO Auto-generated method stub
+        return super.doInvoke();
     }
 
     /**
@@ -926,9 +934,9 @@ public class TransmissionEngineDistribution
     }
 
     /**
-     * This method avoids problems when running the TransmissionEngineDistribution test.
+     * This method avoids problems when running the {@link DistributionAggregation} test.
      * For some unknown reason entities are not in the PersitenceContext even if they are
-     * loaded by a service method. Setting these entities to readonly would raise a
+     * loaded by a service method. Setting these entities to read-only would raise a
      * TransientObjectException("Instance was not associated with this persistence context")
      *
      * @param entity
