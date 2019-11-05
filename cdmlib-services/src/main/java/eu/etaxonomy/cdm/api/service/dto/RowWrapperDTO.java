@@ -122,7 +122,8 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
     }
 
     private String generateStateDataString(StateData stateData) {
-        return stateData.getState().getLabel()+(stateData.getCount()!=null?" ("+stateData.getCount()+")":"");
+        return (stateData.getState()!=null?stateData.getState().getLabel():"[no state]")
+                +(stateData.getCount()!=null?" ("+stateData.getCount()+")":"");
     }
 
     public void setDataValueForCategoricalData(Feature feature, List<State> states){
