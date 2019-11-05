@@ -33,9 +33,9 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
-import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.UpdateResult;
 import eu.etaxonomy.cdm.common.DynamicBatch;
 import eu.etaxonomy.cdm.common.JvmLimitsException;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -90,7 +90,8 @@ import eu.etaxonomy.cdm.persistence.dto.ClassificationLookupDTO;
  * @since Feb 22, 2013
  */
 @Service
-public class TransmissionEngineDistribution { //TODO extends IoBase?
+public class TransmissionEngineDistribution
+            extends DescriptionAggregationBase<TransmissionEngineDistribution, DescriptionAggregationConfiguration>{ //TODO extends IoBase?
 
     public static final Logger logger = Logger.getLogger(TransmissionEngineDistribution.class);
 
@@ -141,9 +142,6 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
 
     @Autowired
     private IClassificationService classificationService;
-
-    @Autowired
-    private INameService mameService;
 
     @Autowired
     private HibernateTransactionManager transactionManager;
@@ -1015,7 +1013,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
         commitTransaction(txStatus);
     }
 
-    public void addSourcesDeduplicated(Set<DescriptionElementSource> target, Set<DescriptionElementSource> sources) {
+    private void addSourcesDeduplicated(Set<DescriptionElementSource> target, Set<DescriptionElementSource> sources) {
         for(DescriptionElementSource source : sources) {
             boolean contained = false;
             for(DescriptionElementSource existingSource: target) {
@@ -1058,5 +1056,23 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
         public void addSources(Set<DescriptionElementSource> sources) {
             addSourcesDeduplicated(this.sources, sources);
         }
+    }
+
+    @Override
+    protected UpdateResult invokeOnSingleTaxon() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    protected UpdateResult removeExistingAggregationOnTaxon() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    protected UpdateResult invokeHigherRankAggregation() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

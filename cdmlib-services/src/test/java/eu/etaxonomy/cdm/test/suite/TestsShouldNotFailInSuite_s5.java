@@ -17,7 +17,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses(
 		{
-		    eu.etaxonomy.cdm.api.service.TransmissionEngineDistributionTest.class,
+		    eu.etaxonomy.cdm.api.service.description.TransmissionEngineDistributionTest.class,
 		    eu.etaxonomy.cdm.api.service.UserAndGroupServiceImplTest.class,
 		    eu.etaxonomy.cdm.api.utility.DerivedUnitConverterIntegrationTest.class
 		    /*
