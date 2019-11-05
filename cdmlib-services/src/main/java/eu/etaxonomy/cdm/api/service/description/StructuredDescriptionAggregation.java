@@ -153,9 +153,10 @@ public class StructuredDescriptionAggregation
 
         SpecimenOrObservationBase<?> specimen = description.getDescribedSpecimenOrObservation();
 
+        Set<DescriptionBase<?>> descriptions = (Set)descriptiveDataSet.getDescriptions();
         //get taxon node
         @SuppressWarnings("rawtypes") //on linux the code does not compile if the stream result is not explicitly casted to Set<IndividualsAssociation>, on windows the cast is automatically removed during save due to group code settings, therefore this workaround
-        Set elements = descriptiveDataSet.getDescriptions()
+        Set elements = descriptions
                 .stream()
                 .flatMap(desc->desc.getElements().stream())// put all description element in one stream
                 .filter(element->element instanceof IndividualsAssociation)
