@@ -55,7 +55,6 @@ import javafx.stage.Stage;
  * </ul>
  *
  * @author m.doering
- * @version 1.0
  * @since 08-Nov-2007 13:06:20
  */
 @XmlAccessorType(XmlAccessType.FIELD)
