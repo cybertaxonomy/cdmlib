@@ -86,25 +86,17 @@ public class NonViralNameParserImplTest {
     private NonViralNameParserImpl parser ;
     private NomenclaturalCode botanicCode;
 
-    /**
-     * @throws java.lang.Exception
-     */
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         DefaultTermInitializer termInitializer = new DefaultTermInitializer();
         termInitializer.initialize();
     }
 
-
-    /**
-     * @throws java.lang.Exception
-     */
     @Before
     public void setUp() throws Exception {
         parser = NonViralNameParserImpl.NewInstance();
         botanicCode = ICNAFP;
     }
-
 
 /*************** TEST *********************************************/
 

@@ -527,7 +527,6 @@ public class TaxonNameDefaultCacheStrategy
 	            tags.add(new TaggedText(TagEnum.authors, authorCache));
 	        }
 
-
 	        //infra species marker
 	        if (nonViralName.getRank() == null || !nonViralName.getRank().isInfraSpecific()){
 	            //TODO handle exception
@@ -568,12 +567,11 @@ public class TaxonNameDefaultCacheStrategy
 	            }
 	        }
 
-	        //infra species
+	        //infra genus
 	        String infraGenericPart = CdmUtils.Nz(nonViralName.getInfraGenericEpithet()).trim();
 	        if (StringUtils.isNotBlank(infraGenericPart)){
 	            tags.add(new TaggedText(TagEnum.name, infraGenericPart));
 	        }
-
         }
 
         return tags;
@@ -863,10 +861,6 @@ public class TaxonNameDefaultCacheStrategy
         }
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected List<TaggedText> doGetTaggedTitle(TaxonName taxonName) {
         List<TaggedText> tags = new ArrayList<>();
