@@ -577,7 +577,7 @@ public class DescriptiveDataSetService
 
     private TaxonDescription createAggregationDescription(Taxon taxon, DescriptiveDataSet dataSet) {
         TaxonDescription aggregationDescription = TaxonDescription.NewInstance(taxon);
-        aggregationDescription.setTitleCache("[Aggregation] "+dataSet.getTitleCache(), true);
+        aggregationDescription.setTitleCache(dataSet.getTitleCache(), true);
         aggregationDescription.getTypes().add(DescriptionType.AGGREGATED);
         aggregationDescription.addSource(IdentifiableSource.NewInstance(OriginalSourceType.Aggregation));
         aggregationDescription.addDescriptiveDataSet(dataSet);
@@ -724,14 +724,7 @@ public class DescriptiveDataSetService
         DescriptiveDataSet dataSet = load(dataSetUuid);
         TaxonNode taxonNode = taxonNodeService.load(taxonNodeUuid, Arrays.asList("taxon"));
         TaxonDescription newTaxonDescription = TaxonDescription.NewInstance(taxonNode.getTaxon());
-        String tag = "";
-        if(descriptionType.equals(DescriptionType.DEFAULT_VALUES_FOR_AGGREGATION)){
-            tag = "[Default]";
-        }
-        else if(descriptionType.equals(DescriptionType.SECONDARY_DATA)){
-            tag = "[Literature]";
-        }
-        newTaxonDescription.setTitleCache(tag+" "+dataSet.getLabel()+": "+newTaxonDescription.generateTitle(), true); //$NON-NLS-2$
+        newTaxonDescription.setTitleCache(dataSet.getLabel()+": "+newTaxonDescription.generateTitle(), true); //$NON-NLS-2$
         newTaxonDescription.getTypes().add(descriptionType);
 
         dataSet.getDescriptiveSystem().getDistinctTerms().forEach(wsFeature->{

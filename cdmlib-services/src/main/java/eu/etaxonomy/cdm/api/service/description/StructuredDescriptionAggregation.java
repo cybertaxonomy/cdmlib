@@ -290,7 +290,7 @@ public class StructuredDescriptionAggregation
 
     private TaxonDescription createAggregationDescription(Taxon taxon, DescriptiveDataSet dataSet) {
         TaxonDescription aggregationDescription = TaxonDescription.NewInstance(taxon);
-        aggregationDescription.setTitleCache("[Aggregation] " + dataSet.getTitleCache(), true);
+        aggregationDescription.setTitleCache(dataSet.getTitleCache(), true);
         aggregationDescription.getTypes().add(DescriptionType.AGGREGATED);
         aggregationDescription.addSource(IdentifiableSource.NewInstance(OriginalSourceType.Aggregation));
         aggregationDescription.addDescriptiveDataSet(dataSet);
