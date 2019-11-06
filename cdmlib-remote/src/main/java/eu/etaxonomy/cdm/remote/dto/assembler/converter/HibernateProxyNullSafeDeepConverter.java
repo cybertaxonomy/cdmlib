@@ -50,7 +50,7 @@ public class HibernateProxyNullSafeDeepConverter
 
 	protected Mapper getMapper() {
 		if(mapper == null) {
-			this.setMapper((Mapper)this.applicationContext.getBean("dozerMapper", Mapper.class)); 
+			this.setMapper(this.applicationContext.getBean("dozerMapper", Mapper.class));
 		}
 		return mapper;
 	}
