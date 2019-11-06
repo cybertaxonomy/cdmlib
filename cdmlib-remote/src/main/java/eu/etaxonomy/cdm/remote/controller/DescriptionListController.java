@@ -34,7 +34,6 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
-import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.api.service.description.DistributionAggregation;
@@ -50,7 +49,6 @@ import eu.etaxonomy.cdm.ext.geo.EditGeoServiceUtilities;
 import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
-import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
@@ -85,9 +83,6 @@ public class DescriptionListController extends AbstractIdentifiableListControlle
     private IVocabularyService vocabularyService ;
 
     @Autowired
-    private ITaxonService taxonService;
-
-    @Autowired
     private IEditGeoService geoService;
 
     @Autowired
@@ -119,9 +114,9 @@ public class DescriptionListController extends AbstractIdentifiableListControlle
     @Override
     public void initBinder(WebDataBinder binder) {
         super.initBinder(binder);
-        binder.registerCustomEditor(DefinedTermBaseList.class, new TermBaseListPropertyEditor<Feature>(termService));
-        binder.registerCustomEditor(NamedAreaLevel.class, new TermBasePropertyEditor<NamedAreaLevel>(termService));
-        binder.registerCustomEditor(Rank.class, new TermBasePropertyEditor<Rank>(termService));
+        binder.registerCustomEditor(DefinedTermBaseList.class, new TermBaseListPropertyEditor<>(termService));
+        binder.registerCustomEditor(NamedAreaLevel.class, new TermBasePropertyEditor<>(termService));
+        binder.registerCustomEditor(Rank.class, new TermBasePropertyEditor<>(termService));
     }
 
     protected List<String> getDescriptionInfoInitStrategy(){

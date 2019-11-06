@@ -11,13 +11,11 @@ package eu.etaxonomy.cdm.common;
 /**
  * @author a.kohlbecker
  * @since Jul 4, 2016
- *
  */
 public class JvmLimitsException extends Exception {
 
-    /**
-     * @param string
-     */
+    private static final long serialVersionUID = -7003546422002227928L;
+
     public JvmLimitsException(String string) {
         super(string);
     }
