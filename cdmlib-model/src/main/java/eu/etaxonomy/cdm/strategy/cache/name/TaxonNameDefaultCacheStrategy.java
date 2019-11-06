@@ -551,6 +551,11 @@ public class TaxonNameDefaultCacheStrategy
         	//genus part
 	       tags =getGenusOrUninomialTaggedNameCache(nonViralName);
 
+	       //author
+           String authorCache = getAuthorshipCache(nonViralName);
+           if (StringUtils.isNotBlank(authorCache)){
+               tags.add(new TaggedText(TagEnum.authors, authorCache));
+           }
 
 	        //infra species marker
 	        if (nonViralName.getRank() == null || !nonViralName.getRank().isInfraGeneric()){

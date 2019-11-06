@@ -281,12 +281,13 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String zooInfraSpecies = species + oWs + "(" + infraSpeciesMarker + oWs +")?" + "("+hybridPart+")?" + nonCapitalEpiWord;
     protected static String oldInfraSpecies = capitalEpiWord + oWs +  nonCapitalEpiWord + oWs + oldInfraSpeciesMarker + oWs + nonCapitalEpiWord;
     protected static String autonym = capitalEpiWord + oWs + "(" + nonCapitalEpiWord +")" + oWs + fullBotanicAuthorString +  oWs + infraSpeciesMarker + oWs + "\\1";  //2-nd word and last word are the same
+    protected static String genusAutonym = "("+capitalEpiWord+")" + oWs + fullBotanicAuthorString + oWs + InfraGenusMarker + oWs + "\\1";  //1st word and last word are the same
     //autonym pattern used within anyBotanicalFullName pattern
-    protected static String autonym2 = capitalEpiWord + oWs + "\u00D7?(" + nonCapitalEpiWord +")" + oWs + fullBotanicAuthorString +  oWs + infraSpeciesMarker + oWs + "\\2";  //2-nd word and last word are the same
+    protected static String autonym2 = capitalEpiWord + oWs + hybridSign + "?(" + nonCapitalEpiWord +")" + oWs + fullBotanicAuthorString +  oWs + infraSpeciesMarker + oWs + "\\2";  //2-nd word and last word are the same
 
 
     protected static String anyBotanicName = "(" + genusOrSupraGenus + "|" + infraGenus + "|" + aggrOrGroup + "|" + species + "|" +
-                    speciesWithInfraGen + "|" + infraSpecies + "|" + oldInfraSpecies + "|" + autonym   + ")+";
+                    speciesWithInfraGen + "|" + infraSpecies + "|" + oldInfraSpecies + "|" + autonym + "|" + genusAutonym + ")+";
     protected static String anyZooName = "(" + genusOrSupraGenus + "|" + infraGenus + "|" + aggrOrGroup + "|" + species + "|" +
                     speciesWithInfraGen + "|" +zooInfraSpecies + "|" +  oldInfraSpecies + ")+";
     protected static String anyBotanicFullName = "(" + autonym2 + "|" + anyBotanicName + oWs + fullBotanicAuthorString + ")"  ;
@@ -315,6 +316,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static Pattern zooInfraSpeciesPattern = Pattern.compile(pStart + zooInfraSpecies + facultFullAuthorString2 + end);
     protected static Pattern oldInfraSpeciesPattern = Pattern.compile(pStart + oldInfraSpecies + facultFullAuthorString2 + end);
     protected static Pattern autonymPattern = Pattern.compile(pStart + autonym + fWs + end);
+    protected static Pattern genusAutonymPattern = Pattern.compile(pStart + genusAutonym + fWs + end);
     protected static Pattern hybridFormulaPattern = Pattern.compile(pStart + hybridFullName + fWs + end);
 
 

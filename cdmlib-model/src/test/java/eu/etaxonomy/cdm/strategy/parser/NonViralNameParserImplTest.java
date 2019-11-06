@@ -333,7 +333,8 @@ public class NonViralNameParserImplTest {
         //Autonym
         IBotanicalName autonymName = (IBotanicalName)parser.parseFullName("Abies alba Mill. var. alba", ICNAFP, null);
         assertFalse("Autonym should be parsable", autonymName.hasProblem());
-
+        autonymName = (IBotanicalName)parser.parseFullName("Abies Mill. sect. Abies", ICNAFP, null);
+        assertFalse("Genus autonym should be parsable", autonymName.hasProblem());
 
         //empty
         INonViralName nameEmpty = parser.parseFullName(strNameEmpty);
