@@ -16,10 +16,10 @@ import eu.etaxonomy.cdm.common.DOI;
 /**
  * @author a.mueller
  * @since Sep 05, 2013
- *
  */
 public class DoiBridge implements StringBridge {
 
+    @Override
     public String objectToString(Object object) {
         if(object != null) {
             return ((DOI)object).toString();
