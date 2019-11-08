@@ -106,7 +106,7 @@ public class SchemaUpdater_582_511 extends SchemaUpdaterBase {
 
     @Override
 	public ISchemaUpdater getNextUpdater() {
-		return null;
+		return SchemaUpdater_511_5111.NewInstance();
 	}
 
 	@Override

@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.common.DOI;
 import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.Contact;
+import eu.etaxonomy.cdm.model.agent.ORCID;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -293,6 +294,8 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
         }else if(fieldType == URI.class){
             fieldResult = matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList, failAll);
         }else if(fieldType == DOI.class){
+            fieldResult = matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList, failAll);
+        }else if(fieldType == ORCID.class){
             fieldResult = matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList, failAll);
         }else if(isSingleCdmBaseObject(fieldType)){
             matchResult.addPath(fieldMatcher.getPropertyName());

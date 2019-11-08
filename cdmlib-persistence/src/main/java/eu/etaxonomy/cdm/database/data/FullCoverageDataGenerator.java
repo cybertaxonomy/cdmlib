@@ -17,6 +17,7 @@ import eu.etaxonomy.cdm.common.DOI;
 import eu.etaxonomy.cdm.model.agent.Address;
 import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.agent.Institution;
+import eu.etaxonomy.cdm.model.agent.ORCID;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
@@ -241,10 +242,6 @@ public class FullCoverageDataGenerator {
 
 	}
 
-
-	/**
-	 * @param cdmBases
-	 */
 	private void createAgents(List<CdmBase> cdmBases) {
 		//Person
 		Person person = Person.NewTitledInstance("Person Title");
@@ -253,6 +250,7 @@ public class FullCoverageDataGenerator {
 		person.setLifespan(TimePeriodParser.parseString("1905-1995"));
 		person.setPrefix("prefix");
 		person.setSuffix("suffix");
+		person.setOrcid(ORCID.fromString("0000-0001-5000-0007"));
 
 		handleIdentifiableEntity(person);
 
@@ -298,7 +296,6 @@ public class FullCoverageDataGenerator {
 		cdmBases.add(team);
 		cdmBases.add(institution);
 	}
-
 
 	private void createDescriptions(List<CdmBase> cdmBases) {
 

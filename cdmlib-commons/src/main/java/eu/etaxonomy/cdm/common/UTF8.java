@@ -11,9 +11,12 @@ package eu.etaxonomy.cdm.common;
  */
 public enum UTF8 {
 
-
+    HYPHEN("\u2010"),   // hyphen https://www.fileformat.info/info/unicode/char/2010/index.htm
+    HYPHEN_NO_BREAK("\u2011"),   // non breaking hyphen https://www.fileformat.info/info/unicode/char/2011/index.htm
+    FIGURE_DASH("\u2012"),    //figure dash https://www.fileformat.info/info/unicode/char/2012/index.htm
 	EN_DASH("\u2013"),   // https://de.wikipedia.org/wiki/Halbgeviertstrich
 	EM_DASH("\u2014"),   // https://de.wikipedia.org/wiki/Geviertstrich
+	BAR_HORIZON("\u2015"),   // horizontal bar  https://www.fileformat.info/info/unicode/char/2015/index.htm
 	EM_DASH_DOUBLE("\u2E3A"),   //https://de.wikipedia.org/wiki/Doppelgeviertstrich
 	SPATIUM("\u202F"),   //very short non-breaking space
 	EN_DASH_SPATIUM("\u202F\u2013\u202F"),
@@ -45,6 +48,10 @@ public enum UTF8 {
 
 	private UTF8(String value) {
 		this.value = value;
+	}
+
+	public static String ANY_DASH_RE(){
+	    return SPATIUM+"?[\\-"+HYPHEN+HYPHEN_NO_BREAK+FIGURE_DASH+EN_DASH+EM_DASH+BAR_HORIZON+EM_DASH_DOUBLE+"]"+SPATIUM+"?";
 	}
 
 	@Override
