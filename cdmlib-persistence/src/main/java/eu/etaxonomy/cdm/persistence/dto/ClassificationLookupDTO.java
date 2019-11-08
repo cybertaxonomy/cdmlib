@@ -60,12 +60,12 @@ public class ClassificationLookupDTO {
         taxonIdToParentId.put(taxonId, parentId);
 
         if(!childTaxonMap.containsKey(parentId)) {
-            childTaxonMap.put(parentId, new HashSet<Integer>());
+            childTaxonMap.put(parentId, new HashSet<>());
         }
         childTaxonMap.get(parentId).add(taxonId);
 
         if(!taxonIdByRank.containsKey(rank)) {
-            taxonIdByRank.put(rank, new HashSet<Integer>());
+            taxonIdByRank.put(rank, new HashSet<>());
         }
         taxonIdByRank.get(rank).add(taxonId);
     }
