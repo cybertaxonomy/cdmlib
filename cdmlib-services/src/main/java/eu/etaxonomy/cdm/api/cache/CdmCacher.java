@@ -66,8 +66,6 @@ public abstract class CdmCacher implements ICdmUuidCacher {
 
     /**
      * Returns the default cache configuration.
-     *
-     * @return
      */
     protected CacheConfiguration getDefaultCacheConfiguration() {
         CacheEventListenerFactoryConfiguration factory;
@@ -199,9 +197,6 @@ public abstract class CdmCacher implements ICdmUuidCacher {
 
     /**
      * Finds CDM Entity by uuid
-     *
-     * @param uuid
-     * @return
      */
     protected abstract CdmBase findByUuid(UUID uuid);
 
