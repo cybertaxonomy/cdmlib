@@ -56,7 +56,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String dotWord = "(" + capitalWord + "|" + nonCapitalWord + ")\\.?"; //word (capital or non-capital) with facultative '.' at the end
     protected static String obligateDotWord = "(" + capitalWord + "|" + nonCapitalWord + ")\\.+"; //word (capital or non-capital) with obligate '.' at the end
 
-    //Words used in an epithet for a TaxonName
+    //Words used in an epithet/name part for a TaxonName
     protected static String nonCapitalEpiWord = "[a-z\u00EF\u00EB\u00F6\\-]+";   //a-z + diaeresis for ieo
     protected static String capitalEpiWord = "[A-Z]"+ nonCapitalEpiWord;
 
@@ -282,9 +282,11 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String oldInfraSpecies = capitalEpiWord + oWs +  nonCapitalEpiWord + oWs + oldInfraSpeciesMarker + oWs + nonCapitalEpiWord;
     protected static String autonym = capitalEpiWord + oWs + "(" + nonCapitalEpiWord +")" + oWs + fullBotanicAuthorString +  oWs + infraSpeciesMarker + oWs + "\\1";  //2-nd word and last word are the same
     protected static String genusAutonym = "("+capitalEpiWord+")" + oWs + fullBotanicAuthorString + oWs + InfraGenusMarker + oWs + "\\1";  //1st word and last word are the same
-    //autonym pattern used within anyBotanicalFullName pattern
-    protected static String autonym2 = capitalEpiWord + oWs + hybridSign + "?(" + nonCapitalEpiWord +")" + oWs + fullBotanicAuthorString +  oWs + infraSpeciesMarker + oWs + "\\2";  //2-nd word and last word are the same
-
+    //autonym patterns used within anyBotanicalFullName pattern as we need another group number there
+    protected static String autonym2 =     "("+capitalEpiWord+")" + oWs
+            + "(" + hybridSign + "?(" + nonCapitalEpiWord +")" + oWs + fullBotanicAuthorString + oWs + infraSpeciesMarker + oWs + "\\4|"  //infraspecific autonym
+            +       fullBotanicAuthorString + oWs + InfraGenusMarker + oWs + "\\2"  //infrageneric autonym
+            + ")";  //2-nd word and last word are the same
 
     protected static String anyBotanicName = "(" + genusOrSupraGenus + "|" + infraGenus + "|" + aggrOrGroup + "|" + species + "|" +
                     speciesWithInfraGen + "|" + infraSpecies + "|" + oldInfraSpecies + "|" + autonym + "|" + genusAutonym + ")+";

@@ -329,13 +329,6 @@ public class NonViralNameParserImplTest {
         assertFalse("Subsp. without marker should be parsable", nameZoo5.hasProblem());
         assertEquals("Variety should be recognized", Rank.VARIETY(), nameZoo5.getRank());
 
-
-        //Autonym
-        IBotanicalName autonymName = (IBotanicalName)parser.parseFullName("Abies alba Mill. var. alba", ICNAFP, null);
-        assertFalse("Autonym should be parsable", autonymName.hasProblem());
-        autonymName = (IBotanicalName)parser.parseFullName("Abies Mill. sect. Abies", ICNAFP, null);
-        assertFalse("Genus autonym should be parsable", autonymName.hasProblem());
-
         //empty
         INonViralName nameEmpty = parser.parseFullName(strNameEmpty);
         assertNotNull(nameEmpty);
@@ -372,6 +365,23 @@ public class NonViralNameParserImplTest {
         assertNotNull(name.getBasionymAuthorship());
         assertEquals("Vict.", name.getBasionymAuthorship().getNomenclaturalTitle());
 
+    }
+
+    @Test
+    public final void testAutonyms(){
+        TaxonName autonymName;
+        //infraspecific
+        autonymName = (TaxonName)parser.parseFullName("Abies alba Mill. var. alba", ICNAFP, null);
+        assertFalse("Autonym should be parsable", autonymName.hasProblem());
+        autonymName = parser.parseReferencedName("Abies alba Mill. var. alba", ICNAFP, null);
+        assertFalse("Autonym should be parsable", autonymName.hasProblem());
+        //infrageneric
+        autonymName = (TaxonName)parser.parseFullName("Abies Mill. sect. Abies", ICNAFP, null);
+        assertFalse("Genus autonym should be parsable", autonymName.hasProblem());
+        assertEquals("Rank should be section (bot.)", Rank.SECTION_BOTANY(), autonymName.getRank());
+        autonymName = parser.parseReferencedName("Achnanthes Bory sect. Achnanthes", ICNAFP, null);
+        assertFalse("Genus autonym should be parsable", autonymName.hasProblem());
+        assertEquals("Rank should be section (bot.)", Rank.SECTION_BOTANY(), autonymName.getRank());
     }
 
     @Test
