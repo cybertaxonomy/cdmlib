@@ -3,6 +3,7 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -149,6 +150,9 @@ public class DescriptiveDataSetService
     @Override
     public Collection<SpecimenNodeWrapper> loadSpecimens(DescriptiveDataSet descriptiveDataSet){
         List<UUID> filteredNodes = findFilteredTaxonNodes(descriptiveDataSet);
+        if(filteredNodes.isEmpty()){
+            return Collections.EMPTY_SET;
+        }
         return occurrenceService.listUuidAndTitleCacheByAssociatedTaxon(filteredNodes, null, null);
     }
 
