@@ -70,7 +70,6 @@ public class CdmUpdater {
 
     /**
      * Returns the current CDM updater
-     * @return
      */
     private ISchemaUpdater getCurrentSchemaUpdater() {
         return SchemaUpdater_511_5111.NewInstance();
@@ -128,8 +127,6 @@ public class CdmUpdater {
         return result;
     }
 
-
-
     /**
      * Updating terms often inserts new terms, vocabularies and representations.
      * Therefore the counter in hibernate_sequences must be increased.
@@ -160,16 +157,6 @@ public class CdmUpdater {
         return;
     }
 
-    /**
-     *
-     * @param datasource
-     * @param monitor
-     * @param table
-     * @param oldVal
-     * @param caseType
-     * @param result
-     * @return
-     */
     private void updateSingleValue(ICdmDataSource datasource, IProgressMonitor monitor, String table,
                 Integer oldVal, CaseType caseType, SchemaUpdateResult result){
         if (table.equals("default")){  //found in flora central africa test database
@@ -215,8 +202,6 @@ public class CdmUpdater {
     }
 
     /**
-     *
-     *
      * @param args SERVER DB_NAME1[,DB_NAME2,...] [USER] [PASSWORD] [PORT]
      */
     public static void main(String[] args) {
