@@ -37,6 +37,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.SourcedEntityBase;
+import eu.etaxonomy.cdm.model.reference.ICdmTarget;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.validation.Level2;
@@ -272,14 +273,10 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
         }
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IdentifiableSource createNewSource(OriginalSourceType type, String idInSource, String idNamespace,
-            Reference reference, String microReference, String originalInfo) {
-        return IdentifiableSource.NewInstance(type, idInSource, idNamespace, reference, microReference, originalInfo);
+            Reference reference, String microReference, String originalInfo, ICdmTarget target) {
+        return IdentifiableSource.NewInstance(type, idInSource, idNamespace, reference, microReference, originalInfo, target);
     }
 
 

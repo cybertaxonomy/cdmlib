@@ -401,6 +401,8 @@ public class FullCoverageDataGenerator {
 		taxonDescription.addGeoScope(Country.GERMANY());
 		handleIdentifiableEntity(taxonDescription);
 
+		taxon.addAggregationSource(taxonDescription);
+
 		cdmBases.add(taxon);
 
 		//DescriptionElmenetBase  + source
@@ -416,7 +418,7 @@ public class FullCoverageDataGenerator {
 		source.addLink(link);
 		handleAnnotatableEntity(source);
 
-		taxonDescription.addDescriptionSource(ref);
+		taxonDescription.addDescriptionSource(ref);  //as long as it still exists
 
 
 		//Specimen description

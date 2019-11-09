@@ -52,6 +52,7 @@ import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.reference.ICdmTarget;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -89,7 +90,8 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
     @ClassBridge(impl=GroupByTaxonClassBridge.class)
 })
 public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy>
-        extends IdentifiableEntity<S> {
+        extends IdentifiableEntity<S>
+        implements ICdmTarget{
 
     private static final long serialVersionUID = 5504218413819040193L;
     private static final Logger logger = Logger.getLogger(DescriptionBase.class);

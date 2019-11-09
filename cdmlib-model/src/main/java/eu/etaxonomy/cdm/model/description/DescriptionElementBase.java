@@ -55,6 +55,7 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.reference.ICdmTarget;
 import eu.etaxonomy.cdm.model.reference.IOriginalSource;
 import eu.etaxonomy.cdm.model.reference.ISourceable;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
@@ -96,7 +97,8 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 @Entity
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public abstract class DescriptionElementBase extends AnnotatableEntity
+public abstract class DescriptionElementBase
+        extends AnnotatableEntity
         implements ISourceable<DescriptionElementSource>, IModifiable, IMultiLanguageTextHolder{
 
     private static final long serialVersionUID = 5000910777835755905L;
@@ -477,6 +479,15 @@ public abstract class DescriptionElementBase extends AnnotatableEntity
                 reference, microReference, nameUsedInSource, originalNameString);
         addSource(newSource);
         return newSource;
+    }
+
+    @Override
+    public DescriptionElementSource addAggregationSource(ICdmTarget target) {
+        DescriptionElementSource source = DescriptionElementSource.NewInstance(
+                OriginalSourceType.Aggregation, null, null, null, null,
+                null, null, target);
+        addSource(source);
+        return source;
     }
 
     @Override

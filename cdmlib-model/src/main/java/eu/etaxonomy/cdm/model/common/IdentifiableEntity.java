@@ -55,6 +55,7 @@ import eu.etaxonomy.cdm.hibernate.search.StripHtmlBridge;
 import eu.etaxonomy.cdm.jaxb.FormattedTextAdapter;
 import eu.etaxonomy.cdm.jaxb.LSIDAdapter;
 import eu.etaxonomy.cdm.model.media.Rights;
+import eu.etaxonomy.cdm.model.reference.ICdmTarget;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -578,14 +579,10 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         }
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IdentifiableSource createNewSource(OriginalSourceType type, String idInSource, String idNamespace,
-            Reference reference, String microReference, String originalInfo) {
-        return IdentifiableSource.NewInstance(type, idInSource, idNamespace, reference, microReference, originalInfo);
+            Reference reference, String microReference, String originalInfo, ICdmTarget target) {
+        return IdentifiableSource.NewInstance(type, idInSource, idNamespace, reference, microReference, originalInfo, target);
     }
 
 //******************************** TO STRING *****************************************************/
