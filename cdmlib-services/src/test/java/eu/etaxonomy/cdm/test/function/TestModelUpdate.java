@@ -206,10 +206,10 @@ public class TestModelUpdate {
 
 	private void test(){
 		System.out.println("Start TestModelUpdate");
-//		testSelectedDb();
+		testSelectedDb();
 
 //		updateRemoteWebappTestH2();
-		updateAllTestH2();
+//		updateAllTestH2();
 //		updateEdaphobasePostgres();
 
 		System.out.println("\nEnd Datasource");

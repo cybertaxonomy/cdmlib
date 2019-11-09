@@ -203,8 +203,6 @@ public class UpdateResult implements Serializable{
         return this.status == Status.ERROR;
     }
 
-
-
     @Override
     public String toString(){
         String separator = ", ";

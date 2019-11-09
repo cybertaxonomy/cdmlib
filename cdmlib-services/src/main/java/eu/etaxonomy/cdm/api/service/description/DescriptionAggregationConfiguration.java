@@ -27,6 +27,7 @@ public class DescriptionAggregationConfiguration {
     private IProgressMonitor monitor;
 
 // ****************** GETTER / SETTER *****************/
+
     public IProgressMonitor getMonitor() {
         return monitor;
     }

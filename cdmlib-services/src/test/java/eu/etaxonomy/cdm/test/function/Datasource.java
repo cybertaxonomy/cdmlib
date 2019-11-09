@@ -36,9 +36,7 @@ import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.agent.Person;
-import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.Distribution;
-import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -50,12 +48,11 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.init.TermNotFoundException;
-import eu.etaxonomy.cdm.strategy.generate.PolytomousKeyGenerator;
-import eu.etaxonomy.cdm.strategy.generate.PolytomousKeyGeneratorConfigurator;
 
 public class Datasource {
 	private static final Logger logger = Logger.getLogger(Datasource.class);
@@ -76,11 +73,11 @@ public class Datasource {
 
 //		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 
-		server = "localhost";
-		database = "test";
-//		database = "cdm_production_edaphobase";
-		username = "edit";
-		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
+//		server = "localhost";
+//		database = "test";
+////		database = "cdm_production_edaphobase";
+//		username = "edit";
+//		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
 //		String server = "160.45.63.171";
 //		String database = "cdm_production_xxx";
@@ -88,11 +85,10 @@ public class Datasource {
 //		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
 
-//		String server = "test.e-taxonomy.eu";
-////		String database = "cdm_test";
-//		String database = "cdm_edit_flora_malesiana";
-//		String username = "edit";
-//		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
+		server = "test.e-taxonomy.eu";
+		database = "cdm_rem_conf_am";
+		username = "edit";
+		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
 //		String server = "localhost";
 //		String database = "testCDM";
@@ -136,12 +132,13 @@ public class Datasource {
 		CdmApplicationController appCtr;
 		appCtr = CdmApplicationController.NewInstance(dataSource, schema);
 
-		TransactionStatus tx = appCtr.startTransaction();
-		DescriptiveDataSet dataset = appCtr.getDescriptiveDataSetService().list(null, null, null, null, null).get(0);
-		PolytomousKeyGeneratorConfigurator config = new PolytomousKeyGeneratorConfigurator();
-		config.setDataSet(dataset);
-		PolytomousKey key = new PolytomousKeyGenerator().invoke(config);
-		key.print(System.out);
+		TransactionStatus tx = appCtr.startTransaction(true);
+
+//		DescriptiveDataSet dataset = appCtr.getDescriptiveDataSetService().list(null, null, null, null, null).get(0);
+//		PolytomousKeyGeneratorConfigurator config = new PolytomousKeyGeneratorConfigurator();
+//		config.setDataSet(dataset);
+//		PolytomousKey key = new PolytomousKeyGenerator().invoke(config);
+//		key.print(System.out);
 
 		appCtr.commitTransaction(tx);
 
@@ -174,6 +171,20 @@ public class Datasource {
 		appCtr.close();
 		System.exit(0);
 	}
+
+
+    /**
+     * @param appCtr
+     * @param propertyPaths
+     */
+    private void listClassification(CdmApplicationController appCtr, List<String> propertyPaths) {
+        try {
+            List<Classification> list = appCtr.getClassificationService().list(null, null, null, null, propertyPaths);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.warn(e.getMessage());
+        }
+    }
 
 
     /**
