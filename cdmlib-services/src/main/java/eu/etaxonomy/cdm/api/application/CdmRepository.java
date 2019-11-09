@@ -33,7 +33,6 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
-import eu.etaxonomy.cdm.api.service.longrunningService.ILongRunningTasksService;
 import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.IAnnotationService;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
@@ -69,6 +68,7 @@ import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.ITermTreeService;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
+import eu.etaxonomy.cdm.api.service.longrunningService.ILongRunningTasksService;
 import eu.etaxonomy.cdm.api.service.molecular.IAmplificationService;
 import eu.etaxonomy.cdm.api.service.molecular.IPrimerService;
 import eu.etaxonomy.cdm.api.service.molecular.ISequenceService;
@@ -84,7 +84,8 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.ICdmPermissionEvaluator
  */
 @Component
 public class CdmRepository implements ICdmRepository, ApplicationContextAware {
-	private static final Logger logger = Logger.getLogger(CdmRepository.class);
+
+    private static final Logger logger = Logger.getLogger(CdmRepository.class);
 
 	protected ApplicationContext applicationContext;
 
@@ -512,7 +513,7 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
     public IRegistrationService getRegistrationService() {
         return registrationService;
     }
-    
+
     @Override
 	public ILongRunningTasksService getLongRunningTasksService() {
 		return longRunningTasksService;
@@ -546,6 +547,6 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
     }
 
 
-	
+
 
 }
