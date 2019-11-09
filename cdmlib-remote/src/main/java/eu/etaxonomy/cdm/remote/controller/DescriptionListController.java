@@ -29,7 +29,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import org.unitils.spring.annotation.SpringBeanByType;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -76,8 +75,8 @@ import io.swagger.annotations.Api;
 @Controller
 @Api("description")
 @RequestMapping(value = {"/description"})
-public class DescriptionListController extends AbstractIdentifiableListController<DescriptionBase, IDescriptionService> {
-
+public class DescriptionListController
+        extends AbstractIdentifiableListController<DescriptionBase, IDescriptionService> {
 
     @Autowired
     private ITermService termService;
@@ -88,7 +87,7 @@ public class DescriptionListController extends AbstractIdentifiableListControlle
     @Autowired
     private IEditGeoService geoService;
 
-    @SpringBeanByType
+    @Autowired
     private ICdmRepository repository;
 
     @Autowired
@@ -125,7 +124,6 @@ public class DescriptionListController extends AbstractIdentifiableListControlle
     protected List<String> getDescriptionInfoInitStrategy(){
         return getInitializationStrategy();
     }
-
 
     /**
      * Runs the {@link DistributionAggregation} in a separate Thread and
