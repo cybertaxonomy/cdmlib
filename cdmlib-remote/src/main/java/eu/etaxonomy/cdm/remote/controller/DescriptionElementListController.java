@@ -28,9 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
-import eu.etaxonomy.cdm.api.service.description.DistributionAggregation;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -69,12 +67,6 @@ public class DescriptionElementListController {
     private ITaxonService taxonService;
 
     @Autowired
-    private IEditGeoService geoService;
-
-    @Autowired
-    public DistributionAggregation distributionAggregation;
-
-    @Autowired
     public ProgressMonitorController progressMonitorController;
 
     protected IDescriptionService service;
@@ -91,10 +83,6 @@ public class DescriptionElementListController {
         return DESCRIPTION_ELEMENT_INIT_STRATEGY;
     }
 
-    /**
-     * @param request
-     * @return
-     */
     private String requestPathAndQuery(HttpServletRequest request) {
         return AbstractController.requestPathAndQuery(request);
     }
@@ -226,13 +214,5 @@ public class DescriptionElementListController {
 
        return pager;
    }
-
-    /**
-     * @return
-     */
-    protected List<String> getDistributionInfoInitStrategy() {
-        // TODO Auto-generated method stub
-        return null;
-    }
 
 }
