@@ -147,7 +147,7 @@ public class DynamicBatch {
         return items;
     }
 
-    public void incementCounter() {
+    public void incrementCounter() {
         batchItemCount++;
     }
 

@@ -29,15 +29,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.unitils.spring.annotation.SpringBeanByType;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
+import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.api.service.description.DistributionAggregation;
 import eu.etaxonomy.cdm.api.service.description.DistributionAggregation.AggregationMode;
+import eu.etaxonomy.cdm.api.service.description.DistributionAggregationConfiguration;
 import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO;
 import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO.InfoPart;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -85,8 +88,8 @@ public class DescriptionListController extends AbstractIdentifiableListControlle
     @Autowired
     private IEditGeoService geoService;
 
-    @Autowired
-    public DistributionAggregation distributionAggregation;
+    @SpringBeanByType
+    private ICdmRepository repository;
 
     @Autowired
     public ProgressMonitorController progressMonitorController;
@@ -183,8 +186,11 @@ public class DescriptionListController extends AbstractIdentifiableListControlle
                     Pager<NamedArea> areaPager = termService.list(targetAreaLevel, (NamedAreaType) null,
                             null, null, (List<OrderHint>) null, term_init_strategy);
                     try {
-                        distributionAggregation.accumulate(mode, areaPager.getRecords(), _lowerRank, _upperRank,
+                        DistributionAggregationConfiguration config = DistributionAggregationConfiguration.NewInstance(
+                                mode, areaPager.getRecords(), _lowerRank, _upperRank,
                                 null, progressMonitorController.getMonitor(transmissionEngineMonitorUuid));
+                        DistributionAggregation distrAggr = new DistributionAggregation();
+                        distrAggr.invoke(config, repository);
                     } catch (JvmLimitsException e) {
                         IRestServiceProgressMonitor monitor = progressMonitorController.getMonitor(transmissionEngineMonitorUuid);
                         monitor.setIsFailed(true);

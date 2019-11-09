@@ -57,7 +57,7 @@ public class StructuredDescriptionAggregation
         DescriptiveDataSet dataSet = loadDataSet(getConfig().getDataset().getUuid());
         Set<DescriptionBase> descriptions = dataSet.getDescriptions();
 
-        getMonitor().beginTask("Aggregate data set", descriptions.size()*2);
+        beginTask("Aggregate data set", descriptions.size()*2);
 
         result.setCdmEntity(dataSet);
 

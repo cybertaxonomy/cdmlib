@@ -30,6 +30,7 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
@@ -76,6 +77,8 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
 
     private static final UUID CLASSIFICATION_UUID = UUID.fromString("4b266053-a841-4980-b548-3f21d8d7d712");
 
+    @SpringBeanByType
+    private ICdmRepository repository;
 
     @SpringBeanByType
     private ITermService termService;
@@ -89,7 +92,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
     @SpringBeanByType
     private IReferenceService referenceService;
 
-    @SpringBeanByType
+//    @SpringBeanByType
     private DistributionAggregation engine;
 
     // --- Distributions --- //
@@ -140,14 +143,15 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         book_b = ReferenceFactory.newBook();
         book_b.setTitle("book_a");
 
+        engine = new DistributionAggregation();
         engine.setBatchMinFreeHeap(100 * 1024 * 1024);
-        engine.updatePriorities();
+//        engine.updatePriorities();
     }
 
     @Test
     @DataSet
+    @Ignore  //priorities setting is done differently in future (via term trees), so we rewrite or delete this test
     public void testPriorities(){
-
         Set<Extension> extensions = termService.load(PresenceAbsenceTerm.CULTIVATED().getUuid()).getExtensions();
         assertEquals(DistributionAggregation.EXTENSION_VALUE_PREFIX + "45", extensions.iterator().next().getValue());
     }
@@ -174,7 +178,8 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
                })
             );
 
-        engine.accumulate(AggregationMode.byAreasAndRanks, superAreas, lowerRank, upperRank, null, null);
+        DistributionAggregationConfiguration config = DistributionAggregationConfiguration.NewInstance(AggregationMode.byAreasAndRanks, superAreas, lowerRank, upperRank, null, null);
+        engine.invoke(config, repository);
 
         Taxon lapsana_communis_alpina  = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_ALPINA_UUID);
         assertEquals(2, lapsana_communis_alpina.getDescriptions().size());
@@ -218,7 +223,9 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         Taxon lapsana_communis_alpina  = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_ALPINA_UUID);
         assertEquals(1, lapsana_communis_alpina.getDescriptions().size());
 
-        engine.accumulate(AggregationMode.byAreas, superAreas, lowerRank, upperRank, classification, null);
+        DistributionAggregationConfiguration config = DistributionAggregationConfiguration.NewInstance(
+                AggregationMode.byAreas, superAreas, lowerRank, upperRank, classification, null);
+        engine.invoke(config, repository);
 
         lapsana_communis_alpina  = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_ALPINA_UUID);
         assertEquals(2, lapsana_communis_alpina.getDescriptions().size());
@@ -269,7 +276,9 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
                 distributions_LC
             );
 
-        engine.accumulate(AggregationMode.byAreasAndRanks, superAreas, lowerRank, upperRank, null, null);
+        DistributionAggregationConfiguration config = DistributionAggregationConfiguration.NewInstance(
+                AggregationMode.byAreasAndRanks, superAreas, lowerRank, upperRank, null, null);
+        engine.invoke(config, repository);
 
         Taxon lapsana_communis  = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_UUID);
         assertEquals("Lapsana communis alpina must only have 2 Descriptions", 2, lapsana_communis.getDescriptions().size());
@@ -338,7 +347,8 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
                 distributions_LCA
             );
 
-        engine.accumulate(AggregationMode.byAreasAndRanks, superAreas, lowerRank, upperRank, null, null);
+        DistributionAggregationConfiguration config = DistributionAggregationConfiguration.NewInstance(AggregationMode.byAreasAndRanks, superAreas, lowerRank, upperRank, null, null);
+        engine.invoke(config, repository);
 
         Taxon lapsana_communis = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_UUID);
         int computedDescriptionsCnt = 0;
@@ -395,7 +405,9 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
                 distributions_LC
             );
 
-        engine.accumulate(AggregationMode.byAreasAndRanks, superAreas, lowerRank, upperRank, null, null);
+        DistributionAggregationConfiguration config = DistributionAggregationConfiguration.NewInstance(
+                AggregationMode.byAreasAndRanks, superAreas, lowerRank, upperRank, null, null);
+        engine.invoke(config, repository);
 
         Taxon lapsana_communis = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_UUID);
         int computedDescriptionsCnt = 0;
@@ -451,7 +463,9 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
                 distributions_LC
             );
 
-        engine.accumulate(AggregationMode.byAreasAndRanks, superAreas, lowerRank, upperRank, null, null);
+        DistributionAggregationConfiguration config = DistributionAggregationConfiguration.NewInstance(
+                AggregationMode.byAreasAndRanks, superAreas, lowerRank, upperRank, null, null);
+        engine.invoke(config, repository);
 
         Taxon lapsana_communis = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_UUID);
         int computedDescriptionsCnt = 0;
@@ -470,13 +484,6 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         assertEquals(1, computedDescriptionsCnt);
     }
 
-    /**
-     * @param referenceTitle
-     * @param area
-     * @param status
-     * @param microCitation
-     * @return
-     */
     private Distribution newDistribution(Reference reference, NamedArea area, PresenceAbsenceTerm status,
             String microCitation) {
         DescriptionElementSource source = DescriptionElementSource.NewPrimarySourceInstance(reference, microCitation);

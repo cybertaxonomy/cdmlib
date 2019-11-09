@@ -20,26 +20,14 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.hibernate.FlushMode;
 import org.hibernate.HibernateException;
-import org.hibernate.Session;
 import org.hibernate.search.Search;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate5.HibernateTransactionManager;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
 
-import eu.etaxonomy.cdm.api.service.IClassificationService;
-import eu.etaxonomy.cdm.api.service.IDescriptionService;
-import eu.etaxonomy.cdm.api.service.ITaxonService;
-import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.UpdateResult;
 import eu.etaxonomy.cdm.common.DynamicBatch;
 import eu.etaxonomy.cdm.common.JvmLimitsException;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
-import eu.etaxonomy.cdm.common.monitor.NullProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Extension;
@@ -89,9 +77,8 @@ import eu.etaxonomy.cdm.persistence.dto.ClassificationLookupDTO;
  * @author Andreas Kohlbecker (2013, porting Transmission Engine Occurrence to Java)
  * @since Feb 22, 2013
  */
-@Service
 public class DistributionAggregation
-            extends DescriptionAggregationBase<DistributionAggregation, DescriptionAggregationConfiguration>{ //TODO extends IoBase?
+            extends DescriptionAggregationBase<DistributionAggregation,DistributionAggregationConfiguration>{ //TODO extends IoBase?
 
     public static final Logger logger = Logger.getLogger(DistributionAggregation.class);
 
@@ -131,21 +118,6 @@ public class DistributionAggregation
      */
     private Map<PresenceAbsenceTerm, Integer> statusPriorityMap = null;
 
-    @Autowired
-    private IDescriptionService descriptionService;
-
-    @Autowired
-    private ITermService termService;
-
-    @Autowired
-    private ITaxonService taxonService;
-
-    @Autowired
-    private IClassificationService classificationService;
-
-    @Autowired
-    private HibernateTransactionManager transactionManager;
-
     private List<PresenceAbsenceTerm> byAreaIgnoreStatusList = null;
 
     private List<PresenceAbsenceTerm> byRankIgnoreStatusList = null;
@@ -158,9 +130,131 @@ public class DistributionAggregation
 
     private long batchMinFreeHeap = BATCH_MIN_FREE_HEAP;
 
+// ******************* CONSTRUCTOR *********************************/
 
     public DistributionAggregation() {
     }
+
+// ********************* METHODS *****************************************/
+
+
+    /**
+     * runs both steps
+     * <ul>
+     * <li>Step 1: Accumulate occurrence records by area</li>
+     * <li>Step 2: Accumulate by ranks starting from lower rank to upper rank,
+     * the status of all children are accumulated on each rank starting from
+     * lower rank to upper rank.</li>
+     * </ul>
+     *
+     * @param superAreas
+     *            the areas to which the subordinate areas should be projected.
+     * @param lowerRank
+     * @param upperRank
+     * @param classification
+     * @param classification
+     *            limit the accumulation process to a specific classification
+     *            (not yet implemented)
+     * @param monitor
+     *            the progress monitor to use for reporting progress to the
+     *            user. It is the caller's responsibility to call done() on the
+     *            given monitor. Accepts null, indicating that no progress
+     *            should be reported and that the operation cannot be cancelled.
+     * @throws JvmLimitsException
+     */
+    @Override
+    public UpdateResult doInvoke() throws JvmLimitsException {
+
+        //TODO FIXME use UpdateResult
+        UpdateResult result = new UpdateResult();
+
+        // only for debugging:
+        //logger.setLevel(Level.TRACE); // TRACE will slow down a lot since it forces loading all term representations
+        //Logger.getLogger("org.hibernate.SQL").setLevel(Level.DEBUG);
+
+        logger.info("Hibernate JDBC Batch size: "
+                +  getSession().getSessionFactory().getSessionFactoryOptions().getJdbcBatchSize());
+
+        Set<Classification> classifications = new HashSet<>();
+        //TODO AM handle via subtree
+        if(getConfig().getClassification() == null) {
+            classifications.addAll(getClassificationService().listClassifications(null, null, null, null));
+        } else {
+            classifications.add(getConfig().getClassification());
+        }
+
+        int aggregationWorkTicks;
+        switch(getConfig().getAggregationMode()){
+            case byAreasAndRanks:
+                aggregationWorkTicks = byAreasTicks + byRankTicks;
+                break;
+            case byAreas:
+                aggregationWorkTicks = byAreasTicks;
+                break;
+            case byRanks:
+                aggregationWorkTicks = byRankTicks;
+                break;
+            default:
+                aggregationWorkTicks = 0;
+                break;
+        }
+
+        // take start time for performance testing
+        // NOTE: use ONLY_FISRT_BATCH = true to measure only one batch
+        double start = System.currentTimeMillis();
+
+        beginTask("Accumulating distributions", (classifications.size() * aggregationWorkTicks) + 1 );
+
+        updatePriorities();
+
+        List<Rank> ranks = rankInterval(getConfig().getLowerRank(), getConfig().getUpperRank());
+
+        worked(1);
+
+        for(Classification myClassification : classifications) {
+
+            ClassificationLookupDTO classificationLookupDto = getClassificationService().classificationLookup(myClassification);
+            classificationLookupDto.filterInclude(ranks);
+
+            double end1 = System.currentTimeMillis();
+            logger.info("Time elapsed for classificationLookup() : " + (end1 - start) / (1000) + "s");
+            double start2 = System.currentTimeMillis();
+
+            subTask("Accumulating distributions to super areas for " + myClassification.getTitleCache());
+            if (getConfig().getAggregationMode().equals(AggregationMode.byAreas) || getConfig().getAggregationMode().equals(AggregationMode.byAreasAndRanks)) {
+                boolean doClearExistingDistribution = true;
+                //TODO AM move to invokeOnSingleTaxon()
+                accumulateByArea(getConfig().getSuperAreas(),
+                        classificationLookupDto,
+                        new SubProgressMonitor(getMonitor(), byAreasTicks),
+                        doClearExistingDistribution);
+            }
+
+            double end2 = System.currentTimeMillis();
+            logger.info("Time elapsed for accumulateByArea() : " + (end2 - start2) / (1000) + "s");
+
+            subTask("Accumulating distributions to higher ranks for " + myClassification.getTitleCache());
+            double start3 = System.currentTimeMillis();
+            if (getConfig().getAggregationMode().equals(AggregationMode.byRanks) || getConfig().getAggregationMode().equals(AggregationMode.byAreasAndRanks)) {
+                //TODO AM move to invokeHigherRankAggregation()
+                accumulateByRank(ranks, classificationLookupDto, new SubProgressMonitor(getMonitor(), byRankTicks), getConfig().getAggregationMode().equals(AggregationMode.byRanks));
+            }
+
+            double end3 = System.currentTimeMillis();
+            logger.info("Time elapsed for accumulateByRank() : " + (end3 - start3) / (1000) + "s");
+            logger.info("Time elapsed for accumulate(): " + (end3 - start) / (1000) + "s");
+
+            if(ONLY_FISRT_BATCH) {
+                done();
+                break;
+            }
+        }
+        done();
+
+        return result;
+    }
+
+
 
     /**
      * byAreaIgnoreStatusList contains by default:
@@ -227,7 +321,7 @@ public class DistributionAggregation
         Integer priority;
 
         // PresenceTerms
-        for(PresenceAbsenceTerm term : termService.list(PresenceAbsenceTerm.class, null, null, null, null)){
+        for(PresenceAbsenceTerm term : getTermService().list(PresenceAbsenceTerm.class, null, null, null, null)){
             priority = getPriorityFor(term);
             if(priority != null){
                 statusPriorityMap.put(term, priority);
@@ -312,121 +406,6 @@ public class DistributionAggregation
     }
 
 
-
-    @Override
-    protected UpdateResult doInvoke() {
-        // TODO Auto-generated method stub
-        return super.doInvoke();
-    }
-
-    /**
-     * runs both steps
-     * <ul>
-     * <li>Step 1: Accumulate occurrence records by area</li>
-     * <li>Step 2: Accumulate by ranks starting from lower rank to upper rank,
-     * the status of all children are accumulated on each rank starting from
-     * lower rank to upper rank.</li>
-     * </ul>
-     *
-     * @param superAreas
-     *            the areas to which the subordinate areas should be projected.
-     * @param lowerRank
-     * @param upperRank
-     * @param classification
-     * @param classification
-     *            limit the accumulation process to a specific classification
-     *            (not yet implemented)
-     * @param monitor
-     *            the progress monitor to use for reporting progress to the
-     *            user. It is the caller's responsibility to call done() on the
-     *            given monitor. Accepts null, indicating that no progress
-     *            should be reported and that the operation cannot be cancelled.
-     */
-    public void accumulate(AggregationMode mode, List<NamedArea> superAreas, Rank lowerRank, Rank upperRank,
-            Classification classification, IProgressMonitor monitor) throws JvmLimitsException {
-
-        if (monitor == null) {
-            monitor = new NullProgressMonitor();
-        }
-
-        // only for debugging:
-        //logger.setLevel(Level.TRACE); // TRACE will slow down a lot since it forces loading all term representations
-        //Logger.getLogger("org.hibernate.SQL").setLevel(Level.DEBUG);
-
-        logger.info("Hibernate JDBC Batch size: "
-                +  getSession().getSessionFactory().getSessionFactoryOptions().getJdbcBatchSize());
-
-        Set<Classification> classifications = new HashSet<>();
-        if(classification == null) {
-            classifications.addAll(classificationService.listClassifications(null, null, null, null));
-        } else {
-            classifications.add(classification);
-        }
-
-        int aggregationWorkTicks;
-        switch(mode){
-        case byAreasAndRanks:
-            aggregationWorkTicks = byAreasTicks + byRankTicks;
-            break;
-        case byAreas:
-            aggregationWorkTicks = byAreasTicks;
-            break;
-        case byRanks:
-            aggregationWorkTicks = byRankTicks;
-            break;
-        default:
-            aggregationWorkTicks = 0;
-            break;
-        }
-
-        // take start time for performance testing
-        // NOTE: use ONLY_FISRT_BATCH = true to measure only one batch
-        double start = System.currentTimeMillis();
-
-        monitor.beginTask("Accumulating distributions", (classifications.size() * aggregationWorkTicks) + 1 );
-
-        updatePriorities();
-
-        List<Rank> ranks = rankInterval(lowerRank, upperRank);
-
-        monitor.worked(1);
-
-        for(Classification myClassification : classifications) {
-
-            ClassificationLookupDTO classificationLookupDao = classificationService.classificationLookup(myClassification);
-            classificationLookupDao.filterInclude(ranks);
-
-            double end1 = System.currentTimeMillis();
-            logger.info("Time elapsed for classificationLookup() : " + (end1 - start) / (1000) + "s");
-            double start2 = System.currentTimeMillis();
-
-            monitor.subTask("Accumulating distributions to super areas for " + myClassification.getTitleCache());
-            if (mode.equals(AggregationMode.byAreas) || mode.equals(AggregationMode.byAreasAndRanks)) {
-                accumulateByArea(superAreas, classificationLookupDao, new SubProgressMonitor(monitor, byAreasTicks), true);
-            }
-
-            double end2 = System.currentTimeMillis();
-            logger.info("Time elapsed for accumulateByArea() : " + (end2 - start2) / (1000) + "s");
-
-            monitor.subTask("Accumulating distributions to higher ranks for " + myClassification.getTitleCache());
-            double start3 = System.currentTimeMillis();
-            if (mode.equals(AggregationMode.byRanks) || mode.equals(AggregationMode.byAreasAndRanks)) {
-                accumulateByRank(ranks, classificationLookupDao, new SubProgressMonitor(monitor, byRankTicks), mode.equals(AggregationMode.byRanks));
-            }
-
-            double end3 = System.currentTimeMillis();
-            logger.info("Time elapsed for accumulateByRank() : " + (end3 - start3) / (1000) + "s");
-            logger.info("Time elapsed for accumulate(): " + (end3 - start) / (1000) + "s");
-
-            if(ONLY_FISRT_BATCH) {
-                monitor.done();
-                break;
-            }
-        }
-        monitor.done();
-    }
-
-
     /**
      * Step 1: Accumulate occurrence records by area
      * <ul>
@@ -440,11 +419,11 @@ public class DistributionAggregation
      *
      * @param superAreas
      *      the areas to which the subordinate areas should be projected
-     * @param classificationLookupDao
+     * @param classificationLookupDto
      * @throws JvmLimitsException
      *
      */
-    protected void accumulateByArea(List<NamedArea> superAreas, ClassificationLookupDTO classificationLookupDao,  IProgressMonitor subMonitor, boolean doClearDescriptions) throws JvmLimitsException {
+    protected void accumulateByArea(List<NamedArea> superAreas, ClassificationLookupDTO classificationLookupDto,  IProgressMonitor subMonitor, boolean doClearDescriptions) throws JvmLimitsException {
 
         DynamicBatch batch = new DynamicBatch(BATCH_SIZE_BY_AREA, batchMinFreeHeap);
         batch.setRequiredFreeHeap(BATCH_FREE_HEAP_RATIO);
@@ -458,8 +437,8 @@ public class DistributionAggregation
         }
 
         // visit all accepted taxa
-        subMonitor.beginTask("Accumulating by area ", classificationLookupDao.getTaxonIds().size());
-        Iterator<Integer> taxonIdIterator = classificationLookupDao.getTaxonIds().iterator();
+        subMonitor.beginTask("Accumulating by area ", classificationLookupDto.getTaxonIds().size());
+        Iterator<Integer> taxonIdIterator = classificationLookupDto.getTaxonIds().iterator();
 
         while (taxonIdIterator.hasNext() || batch.hasUnprocessedItems()) {
 
@@ -469,12 +448,13 @@ public class DistributionAggregation
             }
 
             // the session is cleared after each batch, so load the superAreaList for each batch
-            List<NamedArea> superAreaList = (List)termService.find(superAreaUuids);
+            //TODO AM reload areas needed? Terms do not cascade!
+            List<NamedArea> superAreaList = getTermService().find(NamedArea.class, superAreaUuids);
 
             // load taxa for this batch
             List<Integer> taxonIds = batch.nextItems(taxonIdIterator);
 //            logger.debug("accumulateByArea() - taxon " + taxonPager.getFirstRecord() + " to " + taxonPager.getLastRecord() + " of " + taxonPager.getCount() + "]");
-            List<TaxonBase> taxa = taxonService.loadByIds(taxonIds, TAXONDESCRIPTION_INIT_STRATEGY);
+            List<TaxonBase> taxa = getTaxonService().loadByIds(taxonIds, TAXONDESCRIPTION_INIT_STRATEGY);
 
             // iterate over the taxa and accumulate areas
             // start processing the new batch
@@ -509,7 +489,7 @@ public class DistributionAggregation
             logger.debug("accumulateByArea() - taxon :" + taxonToString(taxonBase));
         }
 
-        batch.incementCounter();
+        batch.incrementCounter();
 
         Taxon taxon = CdmBase.deproxy(taxonBase, Taxon.class);
         TaxonDescription description = findComputedDescription(taxon, doClearDescriptions);
@@ -528,7 +508,8 @@ public class DistributionAggregation
                 }
                 // step through all distributions for the given subArea
                 for(Distribution distribution : distributions){
-                    if(distribution.getArea() != null && distribution.getArea().equals(subArea) && distribution.getStatus() != null) {
+                    //TODO AM is the status handling here correct? The mapping to CDM handled
+                    if(subArea.equals(distribution.getArea()) && distribution.getStatus() != null) {
                         PresenceAbsenceTerm status = distribution.getStatus();
                         if(logger.isTraceEnabled()){
                             logger.trace("accumulateByArea() - \t\t" + termToString(subArea) + ": " + termToString(status));
@@ -549,14 +530,15 @@ public class DistributionAggregation
                 // store new distribution element for superArea in taxon description
                 Distribution newDistribitionElement = Distribution.NewInstance(superArea, accumulatedStatusAndSources.status);
                 newDistribitionElement.getSources().addAll(accumulatedStatusAndSources.sources);
+                //TODO AM needed?
                 newDistribitionElement.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
                 description.addElement(newDistribitionElement);
             }
 
         } // next super area ....
 
-        descriptionService.saveOrUpdate(description);
-        taxonService.saveOrUpdate(taxon);
+        getDescriptionService().saveOrUpdate(description);
+        getTaxonService().saveOrUpdate(taxon);
         subMonitor.worked(1);
     }
 
@@ -625,7 +607,7 @@ public class DistributionAggregation
                 // load taxa for this batch
                 List<Integer> taxonIds = batch.nextItems(taxonIdIterator);
 
-                taxa = taxonService.loadByIds(taxonIds, null);
+                taxa = getTaxonService().loadByIds(taxonIds, null);
 
 //                if(logger.isDebugEnabled()){
 //                           logger.debug("accumulateByRank() - taxon " + taxonPager.getFirstRecord() + " to " + taxonPager.getLastRecord() + " of " + taxonPager.getCount() + "]");
@@ -633,7 +615,7 @@ public class DistributionAggregation
 
                 for(TaxonBase<?> taxonBase : taxa) {
 
-                    batch.incementCounter();
+                    batch.incrementCounter();
 
                     Taxon taxon = (Taxon)taxonBase;
                     if (taxaProcessedIds.contains(taxon.getId())) {
@@ -656,7 +638,7 @@ public class DistributionAggregation
                         childTaxonIds.addAll(childSet);
                     }
                     if(!childTaxonIds.isEmpty()) {
-                        childTaxa = taxonService.loadByIds(childTaxonIds, TAXONDESCRIPTION_INIT_STRATEGY);
+                        childTaxa = getTaxonService().loadByIds(childTaxonIds, TAXONDESCRIPTION_INIT_STRATEGY);
                         @SuppressWarnings("rawtypes")
                         LinkedList<TaxonBase> childStack = new LinkedList<>(childTaxa);
                         childTaxa = null; // allow to be garbage collected
@@ -707,8 +689,8 @@ public class DistributionAggregation
 
                                 description.addElement(distribition);
                             }
-                            taxonService.saveOrUpdate(taxon);
-                            descriptionService.saveOrUpdate(description);
+                            getTaxonService().saveOrUpdate(taxon);
+                            getDescriptionService().saveOrUpdate(description);
                         }
 
                     }
@@ -778,16 +760,6 @@ public class DistributionAggregation
         return ranks;
     }
 
-    /**
-     * @return
-     */
-    private Session getSession() {
-        return descriptionService.getSession();
-    }
-
-    /**
-     *
-     */
     private void flush() {
         logger.debug("flushing session ...");
         getSession().flush();
@@ -802,48 +774,12 @@ public class DistributionAggregation
         }
     }
 
-    /**
-    *
-    */
-   private void flushAndClear() {
+    private void flushAndClear() {
        flush();
        logger.debug("clearing session ...");
        getSession().clear();
    }
 
-
-    // TODO merge with CdmRepository#startTransaction() into common base class
-    private TransactionStatus startTransaction(Boolean readOnly) {
-
-        DefaultTransactionDefinition defaultTxDef = new DefaultTransactionDefinition();
-        defaultTxDef.setReadOnly(readOnly);
-        TransactionDefinition txDef = defaultTxDef;
-
-        // Log some transaction-related debug information.
-        if (logger.isTraceEnabled()) {
-            logger.trace("Transaction name = " + txDef.getName());
-            logger.trace("Transaction facets:");
-            logger.trace("Propagation behavior = " + txDef.getPropagationBehavior());
-            logger.trace("Isolation level = " + txDef.getIsolationLevel());
-            logger.trace("Timeout = " + txDef.getTimeout());
-            logger.trace("Read Only = " + txDef.isReadOnly());
-            // org.springframework.orm.hibernate5.HibernateTransactionManager
-            // provides more transaction/session-related debug information.
-        }
-
-        TransactionStatus txStatus = transactionManager.getTransaction(txDef);
-
-        getSession().setFlushMode(FlushMode.COMMIT);
-
-        return txStatus;
-    }
-
-    // TODO merge with CdmRepository#startTransaction() into common base class
-    private void commitTransaction(TransactionStatus txStatus){
-        logger.debug("commiting transaction ...");
-        transactionManager.commit(txStatus);
-        return;
-    }
 
     /**
      * Returns the next higher rank
@@ -853,7 +789,7 @@ public class DistributionAggregation
      * @param rank the lower rank
      */
     private Rank findNextHigherRank(Rank rank) {
-        rank = (Rank) termService.load(rank.getUuid());
+        rank = (Rank) getTermService().load(rank.getUuid());
         return rank.getNextHigherTerm();
 //        OrderedTermVocabulary<Rank> rankVocabulary = mameService.getRankVocabulary();;
 //        return rankVocabulary.getNextHigherTerm(rank);
@@ -865,7 +801,7 @@ public class DistributionAggregation
      *
      * @param taxon
      * @param doClear will remove all existing Distributions if the taxon already
-     * has a MarkerType.COMPUTED() TaxonDescription
+     *     has a MarkerType.COMPUTED() TaxonDescription
      * @return
      */
     private TaxonDescription findComputedDescription(Taxon taxon, boolean doClear) {
@@ -874,6 +810,7 @@ public class DistributionAggregation
 
         // find existing one
         for (TaxonDescription description : taxon.getDescriptions()) {
+            // TODO description.isAggregated();
             if (description.hasMarker(MarkerType.COMPUTED(), true)) {
                 logger.debug("reusing computed description for " + taxon.getTitleCache());
                 if (doClear) {
@@ -887,11 +824,11 @@ public class DistributionAggregation
                     if(deleteCandidates.size() > 0){
                         for(DescriptionElementBase descriptionElement : deleteCandidates) {
                             description.removeElement(descriptionElement);
-                            descriptionService.deleteDescriptionElement(descriptionElement);
+                            getDescriptionService().deleteDescriptionElement(descriptionElement);
                             descriptionElement = null;
                             deleteCount++;
                         }
-                        descriptionService.saveOrUpdate(description);
+                        getDescriptionService().saveOrUpdate(description);
                         logger.debug("\t" + deleteCount +" distributions cleared");
                     }
 
@@ -904,6 +841,7 @@ public class DistributionAggregation
         logger.debug("creating new description for " + taxon.getTitleCache());
         TaxonDescription description = TaxonDescription.NewInstance(taxon);
         description.setTitleCache(descriptionTitle, true);
+        //TODO AM use description types instead
         description.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
         return description;
     }
@@ -924,9 +862,9 @@ public class DistributionAggregation
         for(TaxonDescription description: taxon.getDescriptions()) {
             readOnlyIfInSession(description);
             for(DescriptionElementBase deb : description.getElements()) {
-                if(deb instanceof Distribution) {
+                if(deb.isInstanceOf(Distribution.class)) {
                     readOnlyIfInSession(deb);
-                    distributions.add((Distribution)deb);
+                    distributions.add(CdmBase.deproxy(deb, Distribution.class));
                 }
             }
         }
@@ -934,7 +872,7 @@ public class DistributionAggregation
     }
 
     /**
-     * This method avoids problems when running the {@link DistributionAggregation} test.
+     * This method avoids problems when running the {@link DistributionAggregationTest}.
      * For some unknown reason entities are not in the PersitenceContext even if they are
      * loaded by a service method. Setting these entities to read-only would raise a
      * TransientObjectException("Instance was not associated with this persistence context")
@@ -992,7 +930,7 @@ public class DistributionAggregation
 
         for(PresenceAbsenceTerm term : priorityMap.keySet()) {
             // load the term
-            term = (PresenceAbsenceTerm) termService.load(term.getUuid());
+            term = (PresenceAbsenceTerm) getTermService().load(term.getUuid());
             // find the extension
             Extension priorityExtension = null;
             Set<Extension> extensions = term.getExtensions();
@@ -1012,7 +950,7 @@ public class DistributionAggregation
             priorityExtension.setValue(EXTENSION_VALUE_PREFIX + priorityMap.get(term));
 
             // save the term
-            termService.saveOrUpdate(term);
+            getTermService().saveOrUpdate(term);
             if (logger.isDebugEnabled()) {
                 logger.debug("Priority updated for " + term.getLabel());
             }
