@@ -33,7 +33,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
-import eu.etaxonomy.cdm.api.application.ICdmRepository;
+import eu.etaxonomy.cdm.api.application.CdmRepository;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
@@ -88,7 +88,7 @@ public class DescriptionListController
     private IEditGeoService geoService;
 
     @Autowired
-    private ICdmRepository repository;
+    private CdmRepository repository;
 
     @Autowired
     public ProgressMonitorController progressMonitorController;
