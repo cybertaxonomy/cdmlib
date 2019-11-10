@@ -37,7 +37,6 @@ import eu.etaxonomy.cdm.ref.TypedEntityReference;
 /**
  * @author pplitzner
  * @since Mar 27, 2015
- *
  */
 public abstract class DerivateDTO extends TypedEntityReference{
 
@@ -47,9 +46,6 @@ public abstract class DerivateDTO extends TypedEntityReference{
     private DerivateDataDTO derivateDataDTO;
     protected String taxonName;
     protected String listLabel;
-
-
-
 
     protected String citation;
     protected boolean hasDetailImage;
@@ -83,7 +79,7 @@ public abstract class DerivateDTO extends TypedEntityReference{
     public static DerivateDTO newInstance(SpecimenOrObservationBase sob){
         DerivateDTO derivateDto;
         if (sob.isInstanceOf(FieldUnit.class)){
-            derivateDto = FieldUnitDTO.newInstance((FieldUnit)sob);
+            derivateDto = FieldUnitDTO.newInstance(sob);
         } else if (sob instanceof DnaSample){
             derivateDto = new DNASampleDTO((DnaSample)sob);
         } else {
