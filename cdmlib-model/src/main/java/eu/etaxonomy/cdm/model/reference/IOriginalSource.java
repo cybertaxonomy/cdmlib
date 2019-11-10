@@ -108,15 +108,21 @@ public interface IOriginalSource<T extends ISourceable> {
 	 */
 	public void setCitation(Reference citation);
 
-	/**
-	 * @return the link to another CDM object which is the source
-	 */
-	public CdmLinkSource getCdmSource();
+//	/**
+//	 * @return the link to another CDM object which is the source
+//	 */
+//	public CdmLinkSource getCdmSource();
 
-    /**
-     * @see #getCdmSource()
+	/**
+     * @return the CDM object being the source
      */
-    public void setCdmSource(CdmLinkSource cdmLinkSource);
+    public ICdmTarget getCdmSource();
+
+//
+//    /**
+//     * @see #getCdmSource()
+//     */
+//    public void setCdmSource(CdmLinkSource cdmLinkSource);
 
     /**
      * Shortcut to add a {@link CdmLinkSource}

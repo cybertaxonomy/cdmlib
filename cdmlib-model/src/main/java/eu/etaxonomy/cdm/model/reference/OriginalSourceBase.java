@@ -100,8 +100,8 @@ public abstract class OriginalSourceBase<T extends ISourceable>
     @XmlElement(name = "CdmSource")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @OneToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    @OneToOne(fetch = FetchType.LAZY, orphanRemoval=true)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
     private CdmLinkSource cdmSource;
 
     @XmlElementWrapper(name = "Links", nillable = true)
@@ -163,13 +163,13 @@ public abstract class OriginalSourceBase<T extends ISourceable>
 	}
 
 	@Override
-    public CdmLinkSource getCdmSource() {
-        return cdmSource;
+    public ICdmTarget getCdmSource() {
+        return cdmSource.getTarget();
     }
-	@Override
-    public void setCdmSource(CdmLinkSource cdmSource) {
-        this.cdmSource = cdmSource;
-    }
+//	@Override
+//    public void setCdmSource(CdmLinkSource cdmSource) {
+//        this.cdmSource = cdmSource;
+//    }
     @Override
     public void setCdmSource(ICdmTarget cdmTarget){
         if (cdmTarget != null){
@@ -212,7 +212,7 @@ public abstract class OriginalSourceBase<T extends ISourceable>
 		}
 
 		if (this.cdmSource != null){
-		    result.setCdmSource((CdmLinkSource)this.cdmSource.clone());
+		    result.setCdmSource(this.cdmSource.getTarget());
 		}
 
 		//no changes to: idInSource
