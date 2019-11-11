@@ -52,7 +52,8 @@ public class TaxonNodeFilter implements Serializable{
 
     public enum ORDER{
         ID("tn.id"),
-        TREEINDEX("tn.treeIndex");
+        TREEINDEX("tn.treeIndex"),
+        TREEINDEX_DESC("tn.treeIndex DESC");
         String hql;
         private ORDER(String hql){
             this.hql = hql;
@@ -97,6 +98,11 @@ public class TaxonNodeFilter implements Serializable{
     public static TaxonNodeFilter NewRankInstance(Rank rankMin, Rank rankMax){
         return new TaxonNodeFilter().setRankMin(rankMin).setRankMax(rankMax);
     }
+
+    public static TaxonNodeFilter NewInstance(){
+        return NewInstance(null, null, null, null, null, null, null);
+    }
+
 
     public static TaxonNodeFilter NewInstance(Collection<UUID> classificationUuids,
             Collection<UUID> subtreeUuids, Collection<UUID> taxonNodeUuids,

@@ -29,6 +29,8 @@ import eu.etaxonomy.cdm.common.DynamicBatch;
 import eu.etaxonomy.cdm.common.JvmLimitsException;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
+import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
+import eu.etaxonomy.cdm.filter.TaxonNodeFilter.ORDER;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
@@ -41,12 +43,16 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.OrderedTermBase;
-import eu.etaxonomy.cdm.persistence.dto.ClassificationLookupDTO;
+import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
+import eu.etaxonomy.cdm.model.term.TermCollection;
+import eu.etaxonomy.cdm.model.term.TermNode;
+import eu.etaxonomy.cdm.model.term.TermTree;
+import eu.etaxonomy.cdm.model.term.VocabularyEnum;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  *
@@ -116,7 +122,7 @@ public class DistributionAggregation
      * A map which contains the status terms as key and the priority as value
      * The map will contain both, the PresenceTerms and the AbsenceTerms
      */
-    private Map<PresenceAbsenceTerm, Integer> statusPriorityMap = null;
+    private List<PresenceAbsenceTerm> statusOrder = null;
 
     private List<PresenceAbsenceTerm> byAreaIgnoreStatusList = null;
 
@@ -175,35 +181,46 @@ public class DistributionAggregation
         logger.info("Hibernate JDBC Batch size: "
                 +  getSession().getSessionFactory().getSessionFactoryOptions().getJdbcBatchSize());
 
-        Set<Classification> classifications = new HashSet<>();
-        //TODO AM handle via subtree
-        if(getConfig().getClassification() == null) {
-            classifications.addAll(getClassificationService().listClassifications(null, null, null, null));
-        } else {
-            classifications.add(getConfig().getClassification());
-        }
+        TaxonNodeFilter filter = getConfig().getTaxonNodeFilter();
+        filter.setOrder(ORDER.TREEINDEX_DESC);
+        Long countTaxonNodes = getTaxonNodeService().count(filter);
 
-        int aggregationWorkTicks;
-        switch(getConfig().getAggregationMode()){
-            case byAreasAndRanks:
-                aggregationWorkTicks = byAreasTicks + byRankTicks;
-                break;
-            case byAreas:
-                aggregationWorkTicks = byAreasTicks;
-                break;
-            case byRanks:
-                aggregationWorkTicks = byRankTicks;
-                break;
-            default:
-                aggregationWorkTicks = 0;
-                break;
-        }
+
+        List<Integer> taxonNodeIdList = getTaxonNodeService().idList(filter);
+
+//        Set<Classification> classifications = new HashSet<>();
+//
+//
+//        //TODO AM handle via subtree
+//        if(getConfig().getClassification() == null) {
+//            classifications.addAll(getClassificationService().listClassifications(null, null, null, null));
+//        } else {
+//            classifications.add(getConfig().getClassification());
+//        }
+//
+//        int aggregationWorkTicks;
+//        switch(getConfig().getAggregationMode()){
+//            case byAreasAndRanks:
+//                aggregationWorkTicks = byAreasTicks + byRankTicks;
+//                break;
+//            case byAreas:
+//                aggregationWorkTicks = byAreasTicks;
+//                break;
+//            case byRanks:
+//                aggregationWorkTicks = byRankTicks;
+//                break;
+//            default:
+//                aggregationWorkTicks = 0;
+//                break;
+//        }
 
         // take start time for performance testing
         // NOTE: use ONLY_FISRT_BATCH = true to measure only one batch
         double start = System.currentTimeMillis();
 
-        beginTask("Accumulating distributions", (classifications.size() * aggregationWorkTicks) + 1 );
+        int aggregationWorkTicks = countTaxonNodes.intValue();
+        int nClassifications = 1;
+        beginTask("Accumulating distributions", (nClassifications * aggregationWorkTicks) + 1 );
 
         updatePriorities();
 
@@ -211,44 +228,36 @@ public class DistributionAggregation
 
         worked(1);
 
-        for(Classification myClassification : classifications) {
+        double end1 = System.currentTimeMillis();
+        logger.info("Time elapsed for classificationLookup() : " + (end1 - start) / (1000) + "s");
+        double start2 = System.currentTimeMillis();
 
-            ClassificationLookupDTO classificationLookupDto = getClassificationService().classificationLookup(myClassification);
-            classificationLookupDto.filterInclude(ranks);
-
-            double end1 = System.currentTimeMillis();
-            logger.info("Time elapsed for classificationLookup() : " + (end1 - start) / (1000) + "s");
-            double start2 = System.currentTimeMillis();
-
-            subTask("Accumulating distributions to super areas for " + myClassification.getTitleCache());
-            if (getConfig().getAggregationMode().equals(AggregationMode.byAreas) || getConfig().getAggregationMode().equals(AggregationMode.byAreasAndRanks)) {
-                boolean doClearExistingDistribution = true;
-                //TODO AM move to invokeOnSingleTaxon()
-                accumulateByArea(getConfig().getSuperAreas(),
-                        classificationLookupDto,
-                        new SubProgressMonitor(getMonitor(), byAreasTicks),
-                        doClearExistingDistribution);
-            }
-
-            double end2 = System.currentTimeMillis();
-            logger.info("Time elapsed for accumulateByArea() : " + (end2 - start2) / (1000) + "s");
-
-            subTask("Accumulating distributions to higher ranks for " + myClassification.getTitleCache());
-            double start3 = System.currentTimeMillis();
-            if (getConfig().getAggregationMode().equals(AggregationMode.byRanks) || getConfig().getAggregationMode().equals(AggregationMode.byAreasAndRanks)) {
-                //TODO AM move to invokeHigherRankAggregation()
-                accumulateByRank(ranks, classificationLookupDto, new SubProgressMonitor(getMonitor(), byRankTicks), getConfig().getAggregationMode().equals(AggregationMode.byRanks));
-            }
-
-            double end3 = System.currentTimeMillis();
-            logger.info("Time elapsed for accumulateByRank() : " + (end3 - start3) / (1000) + "s");
-            logger.info("Time elapsed for accumulate(): " + (end3 - start) / (1000) + "s");
-
-            if(ONLY_FISRT_BATCH) {
-                done();
-                break;
-            }
+        //TODO AM toString for filter
+        subTask("Accumulating distributions to super areas for " + filter.toString());
+        if (getConfig().getAggregationMode().equals(AggregationMode.byAreas) || getConfig().getAggregationMode().equals(AggregationMode.byAreasAndRanks)) {
+            boolean doClearExistingDistribution = true;
+            //TODO AM move to invokeOnSingleTaxon()
+            accumulateByArea(getConfig().getSuperAreas(),
+                    filter, taxonNodeIdList,
+                    new SubProgressMonitor(getMonitor(), byAreasTicks),
+                    doClearExistingDistribution);
         }
+
+        double end2 = System.currentTimeMillis();
+        logger.info("Time elapsed for accumulateByArea() : " + (end2 - start2) / (1000) + "s");
+
+        //TODO AM toString for filter
+        subTask("Accumulating distributions to higher ranks for " + filter.toString());
+        double start3 = System.currentTimeMillis();
+        if (getConfig().getAggregationMode().equals(AggregationMode.byRanks) || getConfig().getAggregationMode().equals(AggregationMode.byAreasAndRanks)) {
+            //TODO AM move to invokeHigherRankAggregation()
+            accumulateByRank(ranks, filter, taxonNodeIdList, new SubProgressMonitor(getMonitor(), byRankTicks), getConfig().getAggregationMode().equals(AggregationMode.byRanks));
+        }
+
+        double end3 = System.currentTimeMillis();
+        logger.info("Time elapsed for accumulateByRank() : " + (end3 - start3) / (1000) + "s");
+        logger.info("Time elapsed for accumulate(): " + (end3 - start) / (1000) + "s");
+
         done();
 
         return result;
@@ -310,25 +319,6 @@ public class DistributionAggregation
         this.byRankIgnoreStatusList = byRankIgnoreStatusList;
     }
 
-
-    /**
-     * initializes the map which contains the status terms as key and the priority as value
-     * The map will contain both, the PresenceTerms and the AbsenceTerms
-     */
-    private void initializeStatusPriorityMap() {
-
-        statusPriorityMap = new HashMap<>();
-        Integer priority;
-
-        // PresenceTerms
-        for(PresenceAbsenceTerm term : getTermService().list(PresenceAbsenceTerm.class, null, null, null, null)){
-            priority = getPriorityFor(term);
-            if(priority != null){
-                statusPriorityMap.put(term, priority);
-            }
-        }
-    }
-
     /**
      * Compares the PresenceAbsenceTermBase terms contained in <code>a.status</code> and <code>b.status</code> after
      * the priority as stored in the statusPriorityMap. The StatusAndSources object with
@@ -345,11 +335,8 @@ public class DistributionAggregation
      *  In the case when <code>b</code> is preferred over <code>a</code> these Set of sources will be added to the sources of <code>b</code>
      * @return
      */
-    private StatusAndSources choosePreferred(StatusAndSources a, StatusAndSources b, Set<DescriptionElementSource> sourcesForWinnerB){
-
-        if (statusPriorityMap == null) {
-            initializeStatusPriorityMap();
-        }
+    private StatusAndSources choosePreferred(
+            StatusAndSources a, StatusAndSources b, Set<DescriptionElementSource> sourcesForWinnerB){
 
         if (b == null || b.status == null) {
             return a;
@@ -358,23 +345,26 @@ public class DistributionAggregation
             return b;
         }
 
-        if (statusPriorityMap.get(a.status) == null) {
-            logger.warn("No priority found in map for " + a.status.getLabel());
-            return b;
-        }
-        if (statusPriorityMap.get(b.status) == null) {
+        Integer indexA = statusOrder.indexOf(a.status);
+        Integer indexB = statusOrder.indexOf(b.status);
+
+        if (indexB == -1) {
             logger.warn("No priority found in map for " + b.status.getLabel());
             return a;
         }
-        if(statusPriorityMap.get(a.status) < statusPriorityMap.get(b.status)){
+        if (indexA == -1) {
+            logger.warn("No priority found in map for " + a.status.getLabel());
+            return b;
+        }
+        if(indexA < indexB){
             if(sourcesForWinnerB != null) {
                 b.addSources(sourcesForWinnerB);
             }
             return b;
-        } else if (statusPriorityMap.get(a.status) == statusPriorityMap.get(b.status)){
-            a.addSources(b.sources);
-            return a;
         } else {
+            if (indexA == indexB){
+                a.addSources(b.sources);
+            }
             return a;
         }
     }
@@ -385,7 +375,7 @@ public class DistributionAggregation
      * @param term
      * @return the priority value
      */
-    private Integer getPriorityFor(DefinedTermBase<?> term) {
+    private Integer getPriorityFor(PresenceAbsenceTerm term) {
         Set<Extension> extensions = term.getExtensions();
         for(Extension extension : extensions){
             if(!extension.getType().equals(ExtensionType.ORDER())) {
@@ -423,7 +413,8 @@ public class DistributionAggregation
      * @throws JvmLimitsException
      *
      */
-    protected void accumulateByArea(List<NamedArea> superAreas, ClassificationLookupDTO classificationLookupDto,  IProgressMonitor subMonitor, boolean doClearDescriptions) throws JvmLimitsException {
+    protected void accumulateByArea(List<NamedArea> superAreas, TaxonNodeFilter filter,
+            List<Integer> taxonNodeIdList, IProgressMonitor subMonitor, boolean doClearDescriptions) throws JvmLimitsException {
 
         DynamicBatch batch = new DynamicBatch(BATCH_SIZE_BY_AREA, batchMinFreeHeap);
         batch.setRequiredFreeHeap(BATCH_FREE_HEAP_RATIO);
@@ -437,8 +428,10 @@ public class DistributionAggregation
         }
 
         // visit all accepted taxa
-        subMonitor.beginTask("Accumulating by area ", classificationLookupDto.getTaxonIds().size());
-        Iterator<Integer> taxonIdIterator = classificationLookupDto.getTaxonIds().iterator();
+        subMonitor.beginTask("Accumulating by area ", taxonNodeIdList.size());
+
+        //TODO FIXME this was a Taxon not a TaxonNode id list
+        Iterator<Integer> taxonIdIterator = taxonNodeIdList.iterator();
 
         while (taxonIdIterator.hasNext() || batch.hasUnprocessedItems()) {
 
@@ -454,13 +447,17 @@ public class DistributionAggregation
             // load taxa for this batch
             List<Integer> taxonIds = batch.nextItems(taxonIdIterator);
 //            logger.debug("accumulateByArea() - taxon " + taxonPager.getFirstRecord() + " to " + taxonPager.getLastRecord() + " of " + taxonPager.getCount() + "]");
-            List<TaxonBase> taxa = getTaxonService().loadByIds(taxonIds, TAXONDESCRIPTION_INIT_STRATEGY);
+
+            //TODO AM adapt init-strat to taxonnode if it stays a taxon node list
+            List<OrderHint> orderHints = new ArrayList<>();
+            orderHints.add(OrderHint.BY_TREE_INDEX_DESC);
+            List<TaxonNode> taxonNodes = getTaxonNodeService().loadByIds(taxonIds, orderHints, TAXONDESCRIPTION_INIT_STRATEGY);
 
             // iterate over the taxa and accumulate areas
             // start processing the new batch
 
-            for(TaxonBase<?> taxonBase : taxa) {
-                accumulateByAreaSingleTaxon(subMonitor, doClearDescriptions, batch, superAreaList, taxonBase);
+            for(TaxonNode taxonNode : taxonNodes) {
+                accumulateByAreaSingleTaxon(subMonitor, doClearDescriptions, batch, superAreaList, taxonNode);
                 if(!batch.isWithinJvmLimits()) {
                     break; // flushAndClear and start with new batch
                 }
@@ -483,15 +480,15 @@ public class DistributionAggregation
     }
 
     private void accumulateByAreaSingleTaxon(IProgressMonitor subMonitor, boolean doClearDescriptions,
-            DynamicBatch batch, List<NamedArea> superAreaList, TaxonBase<?> taxonBase) {
+            DynamicBatch batch, List<NamedArea> superAreaList, TaxonNode taxonNode) {
 
+        Taxon taxon = CdmBase.deproxy(taxonNode.getTaxon());
         if(logger.isDebugEnabled()){
-            logger.debug("accumulateByArea() - taxon :" + taxonToString(taxonBase));
+            logger.debug("accumulateByArea() - taxon :" + taxonToString(taxon));
         }
 
         batch.incrementCounter();
 
-        Taxon taxon = CdmBase.deproxy(taxonBase, Taxon.class);
         TaxonDescription description = findComputedDescription(taxon, doClearDescriptions);
         List<Distribution> distributions = distributionsFor(taxon);
 
@@ -556,7 +553,8 @@ public class DistributionAggregation
     *</ul>
     * @throws JvmLimitsException
     */
-    protected void accumulateByRank(List<Rank> rankInterval, ClassificationLookupDTO classificationLookupDao,  IProgressMonitor subMonitor, boolean doClearDescriptions) throws JvmLimitsException {
+    protected void accumulateByRank(List<Rank> rankInterval, TaxonNodeFilter filter,
+            List<Integer> taxonNodeIdList, IProgressMonitor subMonitor, boolean doClearDescriptions) throws JvmLimitsException {
 
         DynamicBatch batch = new DynamicBatch(BATCH_SIZE_BY_RANK, batchMinFreeHeap);
         batch.setRequiredFreeHeap(BATCH_FREE_HEAP_RATIO);
@@ -571,33 +569,31 @@ public class DistributionAggregation
         // if no taxon of the specified rank exists, so we need to
         // remember which taxa have been processed already
         Set<Integer> taxaProcessedIds = new HashSet<>();
-        List<TaxonBase> taxa = null;
-        List<TaxonBase> childTaxa = null;
 
         List<Rank> ranks = rankInterval;
 
         subMonitor.beginTask("Accumulating by rank", ranks.size() * ticksPerRank);
 
-        for (Rank rank : ranks) {
+//        for (Rank rank : ranks) {
 
-            if(logger.isDebugEnabled()){
-                logger.debug("accumulateByRank() - at Rank '" + termToString(rank) + "'");
-            }
+//            if(logger.isDebugEnabled()){
+//                logger.debug("accumulateByRank() - at Rank '" + termToString(rank) + "'");
+//            }
 
-            Set<Integer> taxonIdsPerRank = classificationLookupDao.getTaxonIdByRank().get(rank);
+//            Set<Integer> taxonIdsPerRank = classificationLookupDao.getTaxonIdByRank().get(rank);
 
-            int taxonCountperRank = taxonIdsPerRank != null ? taxonIdsPerRank.size() : 0;
+            int taxonCountPerRank = taxonNodeIdList.size();
 
-            SubProgressMonitor taxonSubMonitor = new SubProgressMonitor(subMonitor, ticksPerRank);
-            taxonSubMonitor.beginTask("Accumulating by rank " + termToString(rank), taxonCountperRank);
+//            SubProgressMonitor taxonSubMonitor = new SubProgressMonitor(subMonitor, ticksPerRank);
+//            taxonSubMonitor.beginTask("Accumulating by rank " + termToString(rank), taxonCountperRank);
 
-            if(taxonCountperRank == 0) {
-                taxonSubMonitor.done();
-                continue;
-            }
+//            if(taxonCountPerRank == 0) {
+//                taxonSubMonitor.done();
+//                continue;
+//            }
 
-            Iterator<Integer> taxonIdIterator = taxonIdsPerRank.iterator();
-            while (taxonIdIterator.hasNext() || batch.hasUnprocessedItems()) {
+            Iterator<Integer> taxonNodeIdIterator = taxonNodeIdList.iterator();
+            while (taxonNodeIdIterator.hasNext() || batch.hasUnprocessedItems()) {
 
                 if(txStatus == null) {
                     // transaction has been committed at the end of this batch, start a new one
@@ -605,96 +601,20 @@ public class DistributionAggregation
                 }
 
                 // load taxa for this batch
-                List<Integer> taxonIds = batch.nextItems(taxonIdIterator);
+                List<Integer> taxonIds = batch.nextItems(taxonNodeIdIterator);
 
-                taxa = getTaxonService().loadByIds(taxonIds, null);
+                List<OrderHint> orderHints = new ArrayList<>();
+                orderHints.add(OrderHint.BY_TREE_INDEX_DESC);
+                List<TaxonNode> nodes = getTaxonNodeService().loadByIds(taxonIds, orderHints, null);
 
 //                if(logger.isDebugEnabled()){
 //                           logger.debug("accumulateByRank() - taxon " + taxonPager.getFirstRecord() + " to " + taxonPager.getLastRecord() + " of " + taxonPager.getCount() + "]");
 //                }
 
-                for(TaxonBase<?> taxonBase : taxa) {
+                for(TaxonNode taxonNode : nodes) {
 
-                    batch.incrementCounter();
-
-                    Taxon taxon = (Taxon)taxonBase;
-                    if (taxaProcessedIds.contains(taxon.getId())) {
-                        if(logger.isDebugEnabled()){
-                            logger.debug("accumulateByRank() - skipping already processed taxon :" + taxonToString(taxon));
-                        }
-                        continue;
-                    }
-                    taxaProcessedIds.add(taxon.getId());
-                    if(logger.isDebugEnabled()){
-                        logger.debug("accumulateByRank() [" + rank.getLabel() + "] - taxon :" + taxonToString(taxon));
-                    }
-
-                    // Step through direct taxonomic children for accumulation
-                    Map<NamedArea, StatusAndSources> accumulatedStatusMap = new HashMap<NamedArea, StatusAndSources>();
-
-                    List<Integer> childTaxonIds = new ArrayList<>();
-                    Set<Integer> childSet = classificationLookupDao.getChildTaxonMap().get(taxon.getId());
-                    if(childSet != null) {
-                        childTaxonIds.addAll(childSet);
-                    }
-                    if(!childTaxonIds.isEmpty()) {
-                        childTaxa = getTaxonService().loadByIds(childTaxonIds, TAXONDESCRIPTION_INIT_STRATEGY);
-                        @SuppressWarnings("rawtypes")
-                        LinkedList<TaxonBase> childStack = new LinkedList<>(childTaxa);
-                        childTaxa = null; // allow to be garbage collected
-
-                        while(childStack.size() > 0){
-
-                            TaxonBase<?> childTaxonBase = childStack.pop();
-                            getSession().setReadOnly(childTaxonBase, true);
-
-                            Taxon childTaxon = (Taxon) childTaxonBase;
-                            getSession().setReadOnly(childTaxon, true);
-                            if(logger.isTraceEnabled()){
-                                logger.trace("                   subtaxon :" + taxonToString(childTaxon));
-                            }
-
-                            for(Distribution distribution : distributionsFor(childTaxon) ) {
-                                PresenceAbsenceTerm status = distribution.getStatus();
-                                NamedArea area = distribution.getArea();
-                                if (status == null || getByRankIgnoreStatusList().contains(status)){
-                                  continue;
-                                }
-
-                                StatusAndSources subStatusAndSources = new StatusAndSources(status, distribution.getSources());
-                                accumulatedStatusMap.put(area, choosePreferred(accumulatedStatusMap.get(area), subStatusAndSources, null));
-                             }
-
-                            // evict all initialized entities of the childTaxon
-                            // TODO consider using cascade="evict" in the model classes
-//                            for( TaxonDescription description : ((Taxon)childTaxonBase).getDescriptions()) {
-//                                for (DescriptionElementBase deb : description.getElements()) {
-//                                    getSession().evict(deb);
-//                                }
-//                                getSession().evict(description); // this causes in some cases the taxon object to be detached from the session
-//                            }
-                            getSession().evict(childTaxonBase); // no longer needed, save heap
-                        }
-
-                        if(accumulatedStatusMap.size() > 0) {
-                            TaxonDescription description = findComputedDescription(taxon, doClearDescriptions);
-                            for (NamedArea area : accumulatedStatusMap.keySet()) {
-                                Distribution distribition = findDistribution(description, area, accumulatedStatusMap.get(area).status);
-                                if(distribition == null) {
-                                    // create a new distribution element
-                                    distribition = Distribution.NewInstance(area, accumulatedStatusMap.get(area).status);
-                                    distribition.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
-                                }
-                                addSourcesDeduplicated(distribition.getSources(), accumulatedStatusMap.get(area).sources);
-
-                                description.addElement(distribition);
-                            }
-                            getTaxonService().saveOrUpdate(taxon);
-                            getDescriptionService().saveOrUpdate(description);
-                        }
-
-                    }
-                    taxonSubMonitor.worked(1); // one taxon worked
+                    accumulateByRankSingleTaxon(
+                            doClearDescriptions, batch, taxaProcessedIds, taxonNode);
                     if(!batch.isWithinJvmLimits()) {
                         break; // flushAndClear and start with new batch
                     }
@@ -720,16 +640,96 @@ public class DistributionAggregation
                 }
             } // next batch
 
-            taxonSubMonitor.done();
-            subMonitor.worked(1);
+            subMonitor.done();
+//            subMonitor.worked(1);
 
-            if(ONLY_FISRT_BATCH) {
-                break;
-            }
-        } // next Rank
+//        } // next Rank
 
         logger.info("accumulateByRank() - done");
         subMonitor.done();
+    }
+
+    private void accumulateByRankSingleTaxon(boolean doClearDescriptions, DynamicBatch batch,
+            Set<Integer> taxaProcessedIds, TaxonNode taxonNode) {
+        batch.incrementCounter();
+
+        Taxon taxon = CdmBase.deproxy(taxonNode.getTaxon());
+        if (taxaProcessedIds.contains(taxon.getId())) {
+            if(logger.isDebugEnabled()){
+                logger.debug("accumulateByRank() - skipping already processed taxon :" + taxonToString(taxon));
+            }
+            return;
+        }
+        taxaProcessedIds.add(taxon.getId());
+        if(logger.isDebugEnabled()){
+            logger.debug("accumulateByRank() [" + /*rank.getLabel() +*/ "] - taxon :" + taxonToString(taxon));
+        }
+
+        // Step through direct taxonomic children for accumulation
+        Map<NamedArea, StatusAndSources> accumulatedStatusMap = new HashMap<>();
+
+    //                    List<Integer> childTaxonIds = new ArrayList<>();
+    //                    Set<Integer> childSet = classificationLookupDao.getChildTaxonMap().get(taxon.getId());
+    //                    if(childSet != null) {
+    //                        childTaxonIds.addAll(childSet);
+    //                    }
+        if(!taxonNode.getChildNodes().isEmpty()) {
+    //                        childTaxa = getTaxonService().loadByIds(childTaxonIds, TAXONDESCRIPTION_INIT_STRATEGY);
+
+            LinkedList<Taxon> childStack = new LinkedList<>();
+            for (TaxonNode node : taxonNode.getChildNodes()){
+                childStack.add(CdmBase.deproxy(node.getTaxon()));
+            }
+
+            while(childStack.size() > 0){
+
+                Taxon childTaxon = childStack.pop();
+                getSession().setReadOnly(childTaxon, true);
+                if(logger.isTraceEnabled()){
+                    logger.trace("                   subtaxon :" + taxonToString(childTaxon));
+                }
+
+                for(Distribution distribution : distributionsFor(childTaxon) ) {
+                    PresenceAbsenceTerm status = distribution.getStatus();
+                    NamedArea area = distribution.getArea();
+                    if (status == null || getByRankIgnoreStatusList().contains(status)){
+                        continue;
+                    }
+
+                    StatusAndSources subStatusAndSources = new StatusAndSources(status, distribution.getSources());
+                    accumulatedStatusMap.put(area, choosePreferred(accumulatedStatusMap.get(area), subStatusAndSources, null));
+                 }
+
+                // evict all initialized entities of the childTaxon
+                // TODO consider using cascade="evict" in the model classes
+    //                            for( TaxonDescription description : ((Taxon)childTaxonBase).getDescriptions()) {
+    //                                for (DescriptionElementBase deb : description.getElements()) {
+    //                                    getSession().evict(deb);
+    //                                }
+    //                                getSession().evict(description); // this causes in some cases the taxon object to be detached from the session
+    //                            }
+                getSession().evict(childTaxon); // no longer needed, save heap
+            }
+
+            if(accumulatedStatusMap.size() > 0) {
+                TaxonDescription description = findComputedDescription(taxon, doClearDescriptions);
+                for (NamedArea area : accumulatedStatusMap.keySet()) {
+                    Distribution distribition = findDistribution(description, area, accumulatedStatusMap.get(area).status);
+                    if(distribition == null) {
+                        // create a new distribution element
+                        distribition = Distribution.NewInstance(area, accumulatedStatusMap.get(area).status);
+                        distribition.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
+                    }
+                    addSourcesDeduplicated(distribition.getSources(), accumulatedStatusMap.get(area).sources);
+
+                    description.addElement(distribition);
+                }
+                getTaxonService().saveOrUpdate(taxon);
+                getDescriptionService().saveOrUpdate(description);
+            }
+
+        }
+    //                    taxonSubMonitor.worked(1); // one taxon worked
     }
 
     private Distribution findDistribution(TaxonDescription description, NamedArea area, PresenceAbsenceTerm status) {
@@ -745,16 +745,20 @@ public class DistributionAggregation
         return null;
     }
 
-    private List<Rank> rankInterval(Rank lowerRank, Rank upperRank) {
+    private List<Rank> rankInterval(UUID lowerRankUuid, UUID upperRankUuid) {
 
         TransactionStatus txStatus = startTransaction(false);
+        Rank lowerRank = (Rank)getTermService().load(lowerRankUuid);
+        Rank upperRank = (Rank)getTermService().load(upperRankUuid);
+
         Rank currentRank = lowerRank;
         List<Rank> ranks = new ArrayList<>();
-        ranks.add(currentRank);
-        while (!currentRank.isHigher(upperRank)) {
-            currentRank = findNextHigherRank(currentRank);
+        do {
             ranks.add(currentRank);
-        }
+            currentRank = findNextHigherRank(currentRank);
+        }while (!currentRank.isHigher(upperRank));
+
+
         commitTransaction(txStatus);
         txStatus = null;
         return ranks;
@@ -905,58 +909,77 @@ public class DistributionAggregation
      * Sets the priorities for presence and absence terms, the priorities are stored in extensions.
      * This method will start a new transaction and commits it after the work is done.
      */
-    public void updatePriorities() {
+    private void updatePriorities() {
 
         TransactionStatus txStatus = startTransaction(false);
 
-        Map<PresenceAbsenceTerm, Integer> priorityMap = new HashMap<>();
-
-        priorityMap.put(PresenceAbsenceTerm.CULTIVATED_REPORTED_IN_ERROR(), 1);
-        priorityMap.put(PresenceAbsenceTerm.INTRODUCED_UNCERTAIN_DEGREE_OF_NATURALISATION(), 2);
-        priorityMap.put(PresenceAbsenceTerm.INTRODUCED_FORMERLY_INTRODUCED(), 3);
-        priorityMap.put(PresenceAbsenceTerm.INTRODUCED_REPORTED_IN_ERROR(), 20);
-        priorityMap.put(PresenceAbsenceTerm.NATIVE_REPORTED_IN_ERROR(), 30);
-        priorityMap.put(PresenceAbsenceTerm.CULTIVATED(), 45);
-        priorityMap.put(PresenceAbsenceTerm.NATIVE_FORMERLY_NATIVE(), 40);
-        priorityMap.put(PresenceAbsenceTerm.NATIVE_PRESENCE_QUESTIONABLE(), 60);
-        priorityMap.put(PresenceAbsenceTerm.INTRODUCED_PRESENCE_QUESTIONABLE(), 50);
-        priorityMap.put(PresenceAbsenceTerm.INTRODUCED_DOUBTFULLY_INTRODUCED(), 80);
-        priorityMap.put(PresenceAbsenceTerm.INTRODUCED(), 90);
-        priorityMap.put(PresenceAbsenceTerm.CASUAL(), 100);
-        priorityMap.put(PresenceAbsenceTerm.NATURALISED(), 110);
-        priorityMap.put(PresenceAbsenceTerm.NATIVE_DOUBTFULLY_NATIVE(), 120); // null
-        priorityMap.put(PresenceAbsenceTerm.NATIVE(), 130); // null
-        priorityMap.put(PresenceAbsenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA(), 999);
-
-        for(PresenceAbsenceTerm term : priorityMap.keySet()) {
-            // load the term
-            term = (PresenceAbsenceTerm) getTermService().load(term.getUuid());
-            // find the extension
-            Extension priorityExtension = null;
-            Set<Extension> extensions = term.getExtensions();
-            for(Extension extension : extensions){
-                if (!extension.getType().equals(ExtensionType.ORDER())) {
-                    continue;
-                }
-                int pos = extension.getValue().indexOf(EXTENSION_VALUE_PREFIX);
-                if(pos == 0){ // if starts with EXTENSION_VALUE_PREFIX
-                    priorityExtension = extension;
-                    break;
-                }
-            }
-            if(priorityExtension == null) {
-                priorityExtension = Extension.NewInstance(term, null, ExtensionType.ORDER());
-            }
-            priorityExtension.setValue(EXTENSION_VALUE_PREFIX + priorityMap.get(term));
-
-            // save the term
-            getTermService().saveOrUpdate(term);
-            if (logger.isDebugEnabled()) {
-                logger.debug("Priority updated for " + term.getLabel());
-            }
+        @SuppressWarnings("rawtypes")
+        TermCollection<PresenceAbsenceTerm, TermNode> stOrder = getConfig().getStatusOrder();
+        if (stOrder == null){
+            stOrder = defaultStatusOrder();
+        }
+        if (stOrder.isInstanceOf(TermTree.class)){
+            statusOrder = CdmBase.deproxy(stOrder, TermTree.class).asTermList();
+        }else if (stOrder.isInstanceOf(OrderedTermVocabulary.class)){
+            statusOrder = new ArrayList<>(CdmBase.deproxy(stOrder, OrderedTermVocabulary.class).getOrderedTerms());
+        }else{
+            throw new RuntimeException("TermCollection type for status order not supported: " + statusOrder.getClass().getSimpleName());
         }
 
+//        Map<PresenceAbsenceTerm, Integer> priorityMap = new HashMap<>();
+//
+//        priorityMap.put(PresenceAbsenceTerm.CULTIVATED_REPORTED_IN_ERROR(), 1);
+//        priorityMap.put(PresenceAbsenceTerm.INTRODUCED_UNCERTAIN_DEGREE_OF_NATURALISATION(), 2);
+//        priorityMap.put(PresenceAbsenceTerm.INTRODUCED_FORMERLY_INTRODUCED(), 3);
+//        priorityMap.put(PresenceAbsenceTerm.INTRODUCED_REPORTED_IN_ERROR(), 20);
+//        priorityMap.put(PresenceAbsenceTerm.NATIVE_REPORTED_IN_ERROR(), 30);
+//        priorityMap.put(PresenceAbsenceTerm.CULTIVATED(), 45);
+//        priorityMap.put(PresenceAbsenceTerm.NATIVE_FORMERLY_NATIVE(), 40);
+//        priorityMap.put(PresenceAbsenceTerm.INTRODUCED_PRESENCE_QUESTIONABLE(), 50);
+//        priorityMap.put(PresenceAbsenceTerm.NATIVE_PRESENCE_QUESTIONABLE(), 60);
+//        priorityMap.put(PresenceAbsenceTerm.INTRODUCED_DOUBTFULLY_INTRODUCED(), 80);
+//        priorityMap.put(PresenceAbsenceTerm.INTRODUCED(), 90);
+//        priorityMap.put(PresenceAbsenceTerm.CASUAL(), 100);
+//        priorityMap.put(PresenceAbsenceTerm.NATURALISED(), 110);
+//        priorityMap.put(PresenceAbsenceTerm.NATIVE_DOUBTFULLY_NATIVE(), 120); // null
+//        priorityMap.put(PresenceAbsenceTerm.NATIVE(), 130); // null
+//        priorityMap.put(PresenceAbsenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA(), 999);
+
+//        for(PresenceAbsenceTerm term : priorityMap.keySet()) {
+//            // load the term
+//            term = (PresenceAbsenceTerm) getTermService().load(term.getUuid());
+//            // find the extension
+//            Extension priorityExtension = null;
+//            Set<Extension> extensions = term.getExtensions();
+//            for(Extension extension : extensions){
+//                if (!extension.getType().equals(ExtensionType.ORDER())) {
+//                    continue;
+//                }
+//                int pos = extension.getValue().indexOf(EXTENSION_VALUE_PREFIX);
+//                if(pos == 0){ // if starts with EXTENSION_VALUE_PREFIX
+//                    priorityExtension = extension;
+//                    break;
+//                }
+//            }
+//            if(priorityExtension == null) {
+//                priorityExtension = Extension.NewInstance(term, null, ExtensionType.ORDER());
+//            }
+//            priorityExtension.setValue(EXTENSION_VALUE_PREFIX + priorityMap.get(term));
+//
+//            // save the term
+//            getTermService().saveOrUpdate(term);
+//            if (logger.isDebugEnabled()) {
+//                logger.debug("Priority updated for " + term.getLabel());
+//            }
+//        }
+
         commitTransaction(txStatus);
+    }
+
+    private OrderedTermVocabulary<PresenceAbsenceTerm> defaultStatusOrder() {
+        @SuppressWarnings("unchecked")
+        OrderedTermVocabulary<PresenceAbsenceTerm> voc = (OrderedTermVocabulary<PresenceAbsenceTerm>)getRepository().getVocabularyService().find(VocabularyEnum.PresenceAbsenceTerm.getUuid());
+        return voc;
     }
 
     private void addSourcesDeduplicated(Set<DescriptionElementSource> target, Set<DescriptionElementSource> sources) {

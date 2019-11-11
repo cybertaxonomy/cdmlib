@@ -86,8 +86,11 @@ public class OrderHint implements Serializable {
 
     public static final OrderHint BY_ORDER_INDEX = new OrderHint("orderIndex", SortOrder.ASCENDING);
 
-    public static final OrderHint BY_ORDER_INDEX_DESC = new OrderHint("orderIndex", SortOrder.ASCENDING);
+    public static final OrderHint BY_ORDER_INDEX_DESC = new OrderHint("orderIndex", SortOrder.DESCENDING);
 
+    public static final OrderHint BY_TREE_INDEX = new OrderHint("treeIndex", SortOrder.ASCENDING);
+
+    public static final OrderHint BY_TREE_INDEX_DESC = new OrderHint("treeIndex", SortOrder.DESCENDING);
 
     public List<OrderHint> asList() {
         return Arrays.asList(new OrderHint[]{this});

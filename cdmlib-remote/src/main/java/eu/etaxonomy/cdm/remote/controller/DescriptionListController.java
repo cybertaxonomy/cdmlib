@@ -50,6 +50,7 @@ import eu.etaxonomy.cdm.common.monitor.IRestServiceProgressMonitor;
 import eu.etaxonomy.cdm.ext.geo.CondensedDistributionRecipe;
 import eu.etaxonomy.cdm.ext.geo.EditGeoServiceUtilities;
 import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
+import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
@@ -186,9 +187,10 @@ public class DescriptionListController
                     Pager<NamedArea> areaPager = termService.list(targetAreaLevel, (NamedAreaType) null,
                             null, null, (List<OrderHint>) null, term_init_strategy);
                     try {
+                        TaxonNodeFilter filter = TaxonNodeFilter.NewInstance(null, null
+                                , null, null, null, _lowerRank.getUuid(), _upperRank.getUuid());
                         DistributionAggregationConfiguration config = DistributionAggregationConfiguration.NewInstance(
-                                mode, areaPager.getRecords(), _lowerRank, _upperRank,
-                                null, progressMonitorController.getMonitor(transmissionEngineMonitorUuid));
+                                mode, areaPager.getRecords(), filter, progressMonitorController.getMonitor(transmissionEngineMonitorUuid));
                         DistributionAggregation distrAggr = new DistributionAggregation();
                         distrAggr.invoke(config, repository);
                     } catch (JvmLimitsException e) {

@@ -37,6 +37,8 @@ import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.description.DistributionAggregation.AggregationMode;
 import eu.etaxonomy.cdm.common.JvmLimitsException;
+import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -53,6 +55,9 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
+import eu.etaxonomy.cdm.model.term.TermTree;
+import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
@@ -92,7 +97,6 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
     @SpringBeanByType
     private IReferenceService referenceService;
 
-//    @SpringBeanByType
     private DistributionAggregation engine;
 
     // --- Distributions --- //
@@ -114,11 +118,12 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
     Rank upperRank = null;
     Rank lowerRank = null;
 
-    private Classification classification;
+//    private Classification classification;
 
     private Reference book_a = null;
     private Reference book_b = null;
 
+    private TermTree<PresenceAbsenceTerm> statusOrder;
 
     @Before
     public void setUp() {
@@ -128,8 +133,6 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         });
         lowerRank = Rank.SUBSPECIES();
         upperRank = Rank.GENUS();
-
-        classification = classificationService.load(CLASSIFICATION_UUID);
 
         yug = termService.getAreaByTdwgAbbreviation("YUG");
         yug_bh = termService.getAreaByTdwgAbbreviation("YUG-BH");
@@ -145,7 +148,19 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
 
         engine = new DistributionAggregation();
         engine.setBatchMinFreeHeap(100 * 1024 * 1024);
-//        engine.updatePriorities();
+        makeStatusOrder();
+    }
+
+    private void makeStatusOrder() {
+        if (statusOrder == null){
+            statusOrder = TermTree.NewInstance(TermType.PresenceAbsenceTerm);
+
+            @SuppressWarnings("unchecked")
+            OrderedTermVocabulary<PresenceAbsenceTerm> voc = CdmBase.deproxy(termService.find(PresenceAbsenceTerm.uuidNative).getVocabulary(), OrderedTermVocabulary.class);
+            for (PresenceAbsenceTerm term : voc.getTerms()){
+                statusOrder.getRoot().addChild(term);
+            }
+        }
     }
 
     @Test
@@ -178,7 +193,10 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
                })
             );
 
-        DistributionAggregationConfiguration config = DistributionAggregationConfiguration.NewInstance(AggregationMode.byAreasAndRanks, superAreas, lowerRank, upperRank, null, null);
+        TaxonNodeFilter filter = TaxonNodeFilter.NewInstance(null, null, null, null, null, lowerRank.getUuid(), upperRank.getUuid());
+
+        DistributionAggregationConfiguration config = DistributionAggregationConfiguration.NewInstance(
+                AggregationMode.byAreasAndRanks, superAreas, filter, null);
         engine.invoke(config, repository);
 
         Taxon lapsana_communis_alpina  = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_ALPINA_UUID);
@@ -223,8 +241,11 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         Taxon lapsana_communis_alpina  = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_ALPINA_UUID);
         assertEquals(1, lapsana_communis_alpina.getDescriptions().size());
 
+        Set<UUID> classificationUuids = new HashSet<>();
+        classificationUuids.add(CLASSIFICATION_UUID);
+        TaxonNodeFilter filter = TaxonNodeFilter.NewInstance(classificationUuids, null, null, null, null, lowerRank.getUuid(), upperRank.getUuid());
         DistributionAggregationConfiguration config = DistributionAggregationConfiguration.NewInstance(
-                AggregationMode.byAreas, superAreas, lowerRank, upperRank, classification, null);
+                AggregationMode.byAreas, superAreas, filter, statusOrder, null);
         engine.invoke(config, repository);
 
         lapsana_communis_alpina  = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_ALPINA_UUID);
@@ -276,8 +297,9 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
                 distributions_LC
             );
 
+        TaxonNodeFilter filter = TaxonNodeFilter.NewInstance(null, null, null, null, null, lowerRank.getUuid(), upperRank.getUuid());
         DistributionAggregationConfiguration config = DistributionAggregationConfiguration.NewInstance(
-                AggregationMode.byAreasAndRanks, superAreas, lowerRank, upperRank, null, null);
+                AggregationMode.byAreasAndRanks, superAreas, filter, null);
         engine.invoke(config, repository);
 
         Taxon lapsana_communis  = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_UUID);
@@ -347,7 +369,9 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
                 distributions_LCA
             );
 
-        DistributionAggregationConfiguration config = DistributionAggregationConfiguration.NewInstance(AggregationMode.byAreasAndRanks, superAreas, lowerRank, upperRank, null, null);
+        TaxonNodeFilter filter = TaxonNodeFilter.NewInstance(null, null, null, null, null, lowerRank.getUuid(), upperRank.getUuid());
+        DistributionAggregationConfiguration config = DistributionAggregationConfiguration.NewInstance(
+                AggregationMode.byAreasAndRanks, superAreas, filter, null);
         engine.invoke(config, repository);
 
         Taxon lapsana_communis = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_UUID);
@@ -405,8 +429,9 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
                 distributions_LC
             );
 
+        TaxonNodeFilter filter = TaxonNodeFilter.NewInstance(null, null, null, null, null, lowerRank.getUuid(), upperRank.getUuid());
         DistributionAggregationConfiguration config = DistributionAggregationConfiguration.NewInstance(
-                AggregationMode.byAreasAndRanks, superAreas, lowerRank, upperRank, null, null);
+                AggregationMode.byAreasAndRanks, superAreas, filter, null);
         engine.invoke(config, repository);
 
         Taxon lapsana_communis = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_UUID);
@@ -463,8 +488,9 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
                 distributions_LC
             );
 
+        TaxonNodeFilter filter = TaxonNodeFilter.NewInstance(null, null, null, null, null, lowerRank.getUuid(), upperRank.getUuid());
         DistributionAggregationConfiguration config = DistributionAggregationConfiguration.NewInstance(
-                AggregationMode.byAreasAndRanks, superAreas, lowerRank, upperRank, null, null);
+                AggregationMode.byAreasAndRanks, superAreas, filter, null);
         engine.invoke(config, repository);
 
         Taxon lapsana_communis = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_UUID);
@@ -486,9 +512,8 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
 
     private Distribution newDistribution(Reference reference, NamedArea area, PresenceAbsenceTerm status,
             String microCitation) {
-        DescriptionElementSource source = DescriptionElementSource.NewPrimarySourceInstance(reference, microCitation);
         Distribution distribution = Distribution.NewInstance(area, status);
-        distribution.getSources().add(source);
+        distribution.addPrimaryTaxonomicSource(reference, microCitation);
         return distribution;
     }
 

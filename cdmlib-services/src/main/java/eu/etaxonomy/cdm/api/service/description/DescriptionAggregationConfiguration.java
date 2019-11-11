@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 public class DescriptionAggregationConfiguration {
 
     private DescriptiveDataSet dataset;
-    private TaxonNodeFilter additionalTaxonNodefilter;
+    private TaxonNodeFilter taxonNodeFilter;
     private boolean aggregateToHigherRanks;
 
     private IProgressMonitor monitor;
@@ -47,5 +47,12 @@ public class DescriptionAggregationConfiguration {
     }
     public void setAggregateToHigherRanks(boolean aggregateToHigherRanks) {
         this.aggregateToHigherRanks = aggregateToHigherRanks;
+    }
+
+    public TaxonNodeFilter getTaxonNodeFilter() {
+        return taxonNodeFilter;
+    }
+    public void setTaxonNodeFilter(TaxonNodeFilter taxonNodeFilter) {
+        this.taxonNodeFilter = taxonNodeFilter;
     }
 }

@@ -9,12 +9,18 @@
 package eu.etaxonomy.cdm.api.service.description;
 
 import java.util.List;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.description.DistributionAggregation.AggregationMode;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.filter.LogicFilter;
+import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.term.TermCollection;
+import eu.etaxonomy.cdm.model.term.TermNode;
+import eu.etaxonomy.cdm.model.term.TermTree;
 
 /**
  * @author a.mueller
@@ -26,25 +32,33 @@ public class DistributionAggregationConfiguration extends DescriptionAggregation
 
     private List<NamedArea> superAreas;
 
-    private Rank lowerRank;
-    private Rank upperRank;
+    private TermCollection<PresenceAbsenceTerm, TermNode> statusOrder;
 
-    private Classification classification;
+//    private Rank lowerRank;
+//    private Rank upperRank;
+
+//    private Classification classification;
 
     public static DistributionAggregationConfiguration NewInstance(AggregationMode aggregationMode, List<NamedArea> superAreas,
-            Rank lowerRank, Rank upperRank, Classification classification, IProgressMonitor monitor){
-        return new DistributionAggregationConfiguration(aggregationMode, superAreas, lowerRank, upperRank, classification, monitor);
+            TaxonNodeFilter filter, IProgressMonitor monitor){
+        return new DistributionAggregationConfiguration(aggregationMode, superAreas, filter, monitor);
     }
+
+    public static DistributionAggregationConfiguration NewInstance(AggregationMode aggregationMode, List<NamedArea> superAreas,
+            TaxonNodeFilter filter, TermTree<PresenceAbsenceTerm> statusOrder,  IProgressMonitor monitor){
+        DistributionAggregationConfiguration result = new DistributionAggregationConfiguration(aggregationMode, superAreas, filter, monitor);
+        result.setStatusOrder(statusOrder);
+        return result;
+    }
+
 
 // ************************ CONSTRUCTOR *****************************/
 
     private DistributionAggregationConfiguration(AggregationMode aggregationMode, List<NamedArea> superAreas,
-            Rank lowerRank, Rank upperRank, Classification classification, IProgressMonitor monitor) {
+            TaxonNodeFilter filter, IProgressMonitor monitor) {
         this.aggregationMode = aggregationMode;
         this.superAreas = superAreas;
-        this.lowerRank = lowerRank;
-        this.upperRank = upperRank;
-        this.classification = classification;
+        this.setTaxonNodeFilter(filter);
         setMonitor(monitor);
     }
 
@@ -64,25 +78,28 @@ public class DistributionAggregationConfiguration extends DescriptionAggregation
         this.superAreas = superAreas;
     }
 
-    public Rank getLowerRank() {
-        return lowerRank;
-    }
-    public void setLowerRank(Rank lowerRank) {
-        this.lowerRank = lowerRank;
+    public UUID getLowerRank() {
+        LogicFilter<Rank> rankMin = getTaxonNodeFilter().getRankMin();
+        return rankMin == null ? null: rankMin.getUuid();
     }
 
-    public Rank getUpperRank() {
-        return upperRank;
-    }
-    public void setUpperRank(Rank upperRank) {
-        this.upperRank = upperRank;
+    public UUID getUpperRank() {
+        LogicFilter<Rank> rankMax = getTaxonNodeFilter().getRankMax();
+        return rankMax == null ? null: rankMax.getUuid();
     }
 
-    public Classification getClassification() {
-        return classification;
+    public TermCollection<PresenceAbsenceTerm, TermNode> getStatusOrder() {
+        return statusOrder;
     }
-    public void setClassification(Classification classification) {
-        this.classification = classification;
+    public void setStatusOrder(TermCollection<PresenceAbsenceTerm, TermNode> statusOrder) {
+        this.statusOrder = statusOrder;
     }
+
+//    public Classification getClassification() {
+//        return classification;
+//    }
+//    public void setClassification(Classification classification) {
+//        this.classification = classification;
+//    }
 
 }
