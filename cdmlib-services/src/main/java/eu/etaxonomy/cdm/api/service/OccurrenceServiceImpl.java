@@ -1015,7 +1015,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         if (originals != null && !originals.isEmpty()) {
             for (SpecimenOrObservationBase<?> original : originals) {
                 if (original.isInstanceOf(FieldUnit.class)) {
-                    fieldUnits.add((FieldUnit) load(original.getUuid(), propertyPaths));
+                    fieldUnits.add(HibernateProxyHelper.deproxy(load(original.getUuid(), propertyPaths), FieldUnit.class));
                 }
                 else if(original.isInstanceOf(DerivedUnit.class)){
                     fieldUnits.addAll(getFieldUnits(HibernateProxyHelper.deproxy(original, DerivedUnit.class), propertyPaths));
