@@ -75,6 +75,15 @@ public enum DescriptionType implements IEnumTerm<DescriptionType>{
     @XmlEnumValue("IAS")
     INDIVIDUALS_ASSOCIATION(UUID.fromString("b8a1346d-9521-4ea2-ada8-c6774cf9175a"), "Specimens", "IAS", null),
 
+
+    /**
+     * The description has been computed by a machine by aggregation of distribution data.
+     * Usually such descriptions should not be edited by users manually.
+     */
+    @XmlEnumValue("AGD")
+    AGGREGATED_DISTRIBUTION(UUID.fromString("7f4ceecc-aa97-4f97-8a79-ed390c44fe76"), "Aggregated Distribution", "AGD", AGGREGATED),
+
+
     ;
 
     @SuppressWarnings("unused")
@@ -134,6 +143,10 @@ public enum DescriptionType implements IEnumTerm<DescriptionType>{
 
     public static boolean isAggregated(EnumSet<DescriptionType> set) {
         return includesType(set, AGGREGATED);
+    }
+
+    public static boolean isAggregatedDistribution(EnumSet<DescriptionType> set) {
+        return includesType(set, AGGREGATED_DISTRIBUTION);
     }
 
     public static boolean isCloneForSource(EnumSet<DescriptionType> set) {

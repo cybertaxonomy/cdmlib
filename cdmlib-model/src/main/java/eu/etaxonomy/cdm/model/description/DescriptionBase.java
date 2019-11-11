@@ -274,6 +274,12 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
     public void setTypes(EnumSet<DescriptionType> types) {
         this.types = types;
     }
+    public void addType(DescriptionType type) {
+        this.types.add(type);
+    }
+    public void addTypes(Set<DescriptionType> types) {
+        this.types.addAll(types);
+    }
 
 
     public Set<DescriptiveDataSet> getDescriptiveDataSets() {
@@ -360,6 +366,9 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
     }
     public boolean isAggregated() {
         return DescriptionType.includesType(types, DescriptionType.AGGREGATED);
+    }
+    public boolean isAggregatedDistribution() {
+        return DescriptionType.includesType(types, DescriptionType.AGGREGATED_DISTRIBUTION);
     }
     public boolean isCloneForSource() {
         return DescriptionType.includesType(types, DescriptionType.CLONE_FOR_SOURCE);

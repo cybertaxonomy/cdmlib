@@ -34,10 +34,10 @@ import eu.etaxonomy.cdm.filter.TaxonNodeFilter.ORDER;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
-import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
+import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -84,7 +84,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  * @since Feb 22, 2013
  */
 public class DistributionAggregation
-            extends DescriptionAggregationBase<DistributionAggregation,DistributionAggregationConfiguration>{ //TODO extends IoBase?
+            extends DescriptionAggregationBase<DistributionAggregation,DistributionAggregationConfiguration>{
 
     public static final Logger logger = Logger.getLogger(DistributionAggregation.class);
 
@@ -183,6 +183,8 @@ public class DistributionAggregation
 
         TaxonNodeFilter filter = getConfig().getTaxonNodeFilter();
         filter.setOrder(ORDER.TREEINDEX_DESC);
+
+
         Long countTaxonNodes = getTaxonNodeService().count(filter);
 
 
@@ -222,10 +224,7 @@ public class DistributionAggregation
         int nClassifications = 1;
         beginTask("Accumulating distributions", (nClassifications * aggregationWorkTicks) + 1 );
 
-        updatePriorities();
-
-        List<Rank> ranks = rankInterval(getConfig().getLowerRank(), getConfig().getUpperRank());
-
+        makeStatusOrder();
         worked(1);
 
         double end1 = System.currentTimeMillis();
@@ -251,7 +250,7 @@ public class DistributionAggregation
         double start3 = System.currentTimeMillis();
         if (getConfig().getAggregationMode().equals(AggregationMode.byRanks) || getConfig().getAggregationMode().equals(AggregationMode.byAreasAndRanks)) {
             //TODO AM move to invokeHigherRankAggregation()
-            accumulateByRank(ranks, filter, taxonNodeIdList, new SubProgressMonitor(getMonitor(), byRankTicks), getConfig().getAggregationMode().equals(AggregationMode.byRanks));
+            accumulateByRank(filter, taxonNodeIdList, new SubProgressMonitor(getMonitor(), byRankTicks), getConfig().getAggregationMode().equals(AggregationMode.byRanks));
         }
 
         double end3 = System.currentTimeMillis();
@@ -527,8 +526,8 @@ public class DistributionAggregation
                 // store new distribution element for superArea in taxon description
                 Distribution newDistribitionElement = Distribution.NewInstance(superArea, accumulatedStatusAndSources.status);
                 newDistribitionElement.getSources().addAll(accumulatedStatusAndSources.sources);
-                //TODO AM needed?
-                newDistribitionElement.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
+                //TODO AM element marker needed?
+//                newDistribitionElement.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
                 description.addElement(newDistribitionElement);
             }
 
@@ -553,7 +552,7 @@ public class DistributionAggregation
     *</ul>
     * @throws JvmLimitsException
     */
-    protected void accumulateByRank(List<Rank> rankInterval, TaxonNodeFilter filter,
+    protected void accumulateByRank(TaxonNodeFilter filter,
             List<Integer> taxonNodeIdList, IProgressMonitor subMonitor, boolean doClearDescriptions) throws JvmLimitsException {
 
         DynamicBatch batch = new DynamicBatch(BATCH_SIZE_BY_RANK, batchMinFreeHeap);
@@ -570,9 +569,7 @@ public class DistributionAggregation
         // remember which taxa have been processed already
         Set<Integer> taxaProcessedIds = new HashSet<>();
 
-        List<Rank> ranks = rankInterval;
-
-        subMonitor.beginTask("Accumulating by rank", ranks.size() * ticksPerRank);
+        subMonitor.beginTask("Accumulating by rank", ticksPerRank);
 
 //        for (Rank rank : ranks) {
 
@@ -718,7 +715,8 @@ public class DistributionAggregation
                     if(distribition == null) {
                         // create a new distribution element
                         distribition = Distribution.NewInstance(area, accumulatedStatusMap.get(area).status);
-                        distribition.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
+                        //TODO element marker needed
+//                        distribition.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
                     }
                     addSourcesDeduplicated(distribition.getSources(), accumulatedStatusMap.get(area).sources);
 
@@ -805,7 +803,8 @@ public class DistributionAggregation
      *
      * @param taxon
      * @param doClear will remove all existing Distributions if the taxon already
-     *     has a MarkerType.COMPUTED() TaxonDescription
+     *     has a description of type {@link DescriptionType#AGGREGATED_DISTRIBUTION}
+     *     (or a MarkerType COMPUTED for historical reasons, will be removed in future)
      * @return
      */
     private TaxonDescription findComputedDescription(Taxon taxon, boolean doClear) {
@@ -814,14 +813,14 @@ public class DistributionAggregation
 
         // find existing one
         for (TaxonDescription description : taxon.getDescriptions()) {
-            // TODO description.isAggregated();
-            if (description.hasMarker(MarkerType.COMPUTED(), true)) {
+            // TODO remove COMPUTED;
+            if (description.isAggregatedDistribution() || description.hasMarker(MarkerType.COMPUTED(), true)) {
                 logger.debug("reusing computed description for " + taxon.getTitleCache());
                 if (doClear) {
                     int deleteCount = 0;
                     Set<DescriptionElementBase> deleteCandidates = new HashSet<>();
                     for (DescriptionElementBase descriptionElement : description.getElements()) {
-                        if(descriptionElement instanceof Distribution) {
+                        if(descriptionElement.isInstanceOf(Distribution.class)) {
                             deleteCandidates.add(descriptionElement);
                         }
                     }
@@ -845,8 +844,7 @@ public class DistributionAggregation
         logger.debug("creating new description for " + taxon.getTitleCache());
         TaxonDescription description = TaxonDescription.NewInstance(taxon);
         description.setTitleCache(descriptionTitle, true);
-        //TODO AM use description types instead
-        description.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
+        description.addType(DescriptionType.AGGREGATED_DISTRIBUTION);
         return description;
     }
 
@@ -909,7 +907,7 @@ public class DistributionAggregation
      * Sets the priorities for presence and absence terms, the priorities are stored in extensions.
      * This method will start a new transaction and commits it after the work is done.
      */
-    private void updatePriorities() {
+    private void makeStatusOrder() {
 
         TransactionStatus txStatus = startTransaction(false);
 
@@ -925,53 +923,6 @@ public class DistributionAggregation
         }else{
             throw new RuntimeException("TermCollection type for status order not supported: " + statusOrder.getClass().getSimpleName());
         }
-
-//        Map<PresenceAbsenceTerm, Integer> priorityMap = new HashMap<>();
-//
-//        priorityMap.put(PresenceAbsenceTerm.CULTIVATED_REPORTED_IN_ERROR(), 1);
-//        priorityMap.put(PresenceAbsenceTerm.INTRODUCED_UNCERTAIN_DEGREE_OF_NATURALISATION(), 2);
-//        priorityMap.put(PresenceAbsenceTerm.INTRODUCED_FORMERLY_INTRODUCED(), 3);
-//        priorityMap.put(PresenceAbsenceTerm.INTRODUCED_REPORTED_IN_ERROR(), 20);
-//        priorityMap.put(PresenceAbsenceTerm.NATIVE_REPORTED_IN_ERROR(), 30);
-//        priorityMap.put(PresenceAbsenceTerm.CULTIVATED(), 45);
-//        priorityMap.put(PresenceAbsenceTerm.NATIVE_FORMERLY_NATIVE(), 40);
-//        priorityMap.put(PresenceAbsenceTerm.INTRODUCED_PRESENCE_QUESTIONABLE(), 50);
-//        priorityMap.put(PresenceAbsenceTerm.NATIVE_PRESENCE_QUESTIONABLE(), 60);
-//        priorityMap.put(PresenceAbsenceTerm.INTRODUCED_DOUBTFULLY_INTRODUCED(), 80);
-//        priorityMap.put(PresenceAbsenceTerm.INTRODUCED(), 90);
-//        priorityMap.put(PresenceAbsenceTerm.CASUAL(), 100);
-//        priorityMap.put(PresenceAbsenceTerm.NATURALISED(), 110);
-//        priorityMap.put(PresenceAbsenceTerm.NATIVE_DOUBTFULLY_NATIVE(), 120); // null
-//        priorityMap.put(PresenceAbsenceTerm.NATIVE(), 130); // null
-//        priorityMap.put(PresenceAbsenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA(), 999);
-
-//        for(PresenceAbsenceTerm term : priorityMap.keySet()) {
-//            // load the term
-//            term = (PresenceAbsenceTerm) getTermService().load(term.getUuid());
-//            // find the extension
-//            Extension priorityExtension = null;
-//            Set<Extension> extensions = term.getExtensions();
-//            for(Extension extension : extensions){
-//                if (!extension.getType().equals(ExtensionType.ORDER())) {
-//                    continue;
-//                }
-//                int pos = extension.getValue().indexOf(EXTENSION_VALUE_PREFIX);
-//                if(pos == 0){ // if starts with EXTENSION_VALUE_PREFIX
-//                    priorityExtension = extension;
-//                    break;
-//                }
-//            }
-//            if(priorityExtension == null) {
-//                priorityExtension = Extension.NewInstance(term, null, ExtensionType.ORDER());
-//            }
-//            priorityExtension.setValue(EXTENSION_VALUE_PREFIX + priorityMap.get(term));
-//
-//            // save the term
-//            getTermService().saveOrUpdate(term);
-//            if (logger.isDebugEnabled()) {
-//                logger.debug("Priority updated for " + term.getLabel());
-//            }
-//        }
 
         commitTransaction(txStatus);
     }
