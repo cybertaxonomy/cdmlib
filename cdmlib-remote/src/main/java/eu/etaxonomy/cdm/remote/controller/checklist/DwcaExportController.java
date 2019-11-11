@@ -218,7 +218,7 @@ public class DwcaExportController
 
             @RequestParam(value = "area", required = false) final UuidList areaUuids,
             @RequestParam(value = "minRank", required = false) final UUID minRank,
-            @RequestParam(value = "minRank", required = false) final UUID maxRank,
+            @RequestParam(value = "maxRank", required = false) final UUID maxRank,
 
             @RequestParam(value = "downloadTokenValueId", required = false) final String downloadTokenValueId,
             @RequestParam(value = "priority", required = false) Integer priority,
