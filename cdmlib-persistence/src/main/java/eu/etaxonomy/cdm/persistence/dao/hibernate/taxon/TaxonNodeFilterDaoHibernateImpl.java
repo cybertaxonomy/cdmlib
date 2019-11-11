@@ -109,11 +109,6 @@ public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode>
 
     }
 
-    /**
-     * @param filter
-     * @param selectPart
-     * @return
-     */
     private String getOrderBy(TaxonNodeFilter filter, String selectPart) {
         String orderBy = "";
         if (filter.getOrderBy()!= null && !selectPart.contains("count")){
@@ -134,15 +129,11 @@ public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode>
         return from;
     }
 
-    /**
-     * @return
-     */
     private boolean hasTaxonFilter(TaxonNodeFilter filter) {
         boolean result = !filter.getAreaFilter().isEmpty()
                 || !filter.isIncludeUnpublished();
         return result;
     }
-
 
     private String getAreaFilter(TaxonNodeFilter filter) {
         String result = "";

@@ -56,9 +56,6 @@ public class LocationServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTer
     @Autowired
     protected IOrderedTermVocabularyDao orderedVocabularyDao;
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.ServiceBase#setDao(eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao)
-     */
     @Override
     protected void setDao(IDefinedTermDao dao) {
         this.dao = dao;
@@ -71,6 +68,7 @@ public class LocationServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTer
      * FIXME Candidate for harmonization
      * is this method a duplicate of termService.getVocabulary(VocabularyEnum.PresenceTerm)
      */
+    @Deprecated
     @Override
     public OrderedTermVocabulary<PresenceAbsenceTerm> getPresenceAbsenceTermVocabulary() {
         String uuidString = "adbbbe15-c4d3-47b7-80a8-c7d104e53a05";
@@ -80,9 +78,6 @@ public class LocationServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTer
         return presenceTermVocabulary;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.ILocationService#getNamedAreaVocabularyTypes()
-     */
     @Override
     public List<NamedAreaVocabularyType> getNamedAreaVocabularyTypes() {
         List<NamedAreaVocabularyType> result = new ArrayList<NamedAreaVocabularyType>(3);
@@ -93,9 +88,6 @@ public class LocationServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTer
         return result;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.ILocationService#getNamedAreas(java.lang.Object)
-     */
     @Override
     public OrderedTermVocabulary<NamedArea> getNamedAreaVocabulary(NamedAreaVocabularyType vocabularyType) {
 
@@ -116,9 +108,6 @@ public class LocationServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTer
         return (OrderedTermVocabulary)orderedVocabularyDao.findByUuid(namedAreaVocabularyUuid);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.ILocationService#getNamedAreaLevelVocabulary()
-     */
     @Override
     public OrderedTermVocabulary<NamedAreaLevel> getNamedAreaLevelVocabulary() {
         // TODO return namedAreaLevel filtered by NamedAreaVocabularyType
