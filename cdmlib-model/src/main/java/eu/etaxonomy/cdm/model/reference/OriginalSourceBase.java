@@ -164,7 +164,7 @@ public abstract class OriginalSourceBase<T extends ISourceable>
 
 	@Override
     public ICdmTarget getCdmSource() {
-        return cdmSource.getTarget();
+        return cdmSource == null? null: cdmSource.getTarget();
     }
 //	@Override
 //    public void setCdmSource(CdmLinkSource cdmSource) {
