@@ -65,6 +65,7 @@ import eu.etaxonomy.cdm.remote.controller.util.ProgressMonitorUtil;
 import eu.etaxonomy.cdm.remote.editor.DefinedTermBaseList;
 import eu.etaxonomy.cdm.remote.editor.TermBaseListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.TermBasePropertyEditor;
+import eu.etaxonomy.cdm.remote.editor.UuidList;
 import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
 import io.swagger.annotations.Api;
 
@@ -159,8 +160,20 @@ public class DescriptionListController
             @RequestParam(value = "frontendBaseUrl", required = false) String frontendBaseUrl,
             @RequestParam(value = "priority", required = false) Integer priority,
             @RequestParam(value = "targetAreaLevel", required = true) final NamedAreaLevel targetAreaLevel,
-            @RequestParam(value = "lowerRank", required = false) Rank lowerRank,
-            @RequestParam(value = "upperRank", required = false) Rank upperRank,
+//            @RequestParam(value = "lowerRank", required = false) Rank lowerRank,
+//            @RequestParam(value = "upperRank", required = false) Rank upperRank,
+
+            @RequestParam(value = "subtrees", required = false) final UuidList subtreeUuids,
+//            @RequestParam(value = "clearCache", required = false) final boolean clearCache,
+            @RequestParam(value = "classifications", required = false) final UuidList classificationUuids,
+            @RequestParam(value = "taxa", required = false) final UuidList taxonUuids,
+            @RequestParam(value = "taxonnodes", required = false) final UuidList taxonNodeUuids,
+//            @RequestParam(value = "includeUnpublished", defaultValue="false") Boolean includeUnpublished,  //for now we do not allow unpublished data to be exported via webservice as long as read authentication is not implemented
+
+//            @RequestParam(value = "area", required = false) final UuidList areaUuids,
+            @RequestParam(value = "minRank", required = false) final UUID lowerRank,
+            @RequestParam(value = "maxRank", required = false) final UUID upperRank,
+
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
@@ -170,8 +183,8 @@ public class DescriptionListController
 
         String processLabel = "accumulating distributions";
 
-        final Rank _lowerRank = lowerRank != null ? lowerRank : Rank.UNKNOWN_RANK(); // this is the lowest rank
-        final Rank _upperRank = upperRank != null ? upperRank : Rank.GENUS();
+//        final UUID lowerRankUuid = lowerRank != null ? lowerRank.getUuid() : null; //Rank.UNKNOWN_RANK(); // this is the lowest rank
+//        final UUID upperRankUuid = upperRank != null ? upperRank.getUuid() : null; // Rank.GENUS();
 
         ProgressMonitorUtil progressUtil = new ProgressMonitorUtil(progressMonitorController);
 
@@ -187,8 +200,8 @@ public class DescriptionListController
                     Pager<NamedArea> areaPager = termService.list(targetAreaLevel, (NamedAreaType) null,
                             null, null, (List<OrderHint>) null, term_init_strategy);
                     try {
-                        TaxonNodeFilter filter = TaxonNodeFilter.NewInstance(null, null
-                                , null, null, null, _lowerRank.getUuid(), _upperRank.getUuid());
+                        TaxonNodeFilter filter = TaxonNodeFilter.NewInstance(classificationUuids, subtreeUuids
+                                , taxonNodeUuids, taxonUuids, null, lowerRank, upperRank);
                         DistributionAggregationConfiguration config = DistributionAggregationConfiguration.NewInstance(
                                 mode, areaPager.getRecords(), filter, progressMonitorController.getMonitor(transmissionEngineMonitorUuid));
                         DistributionAggregation distrAggr = new DistributionAggregation();
