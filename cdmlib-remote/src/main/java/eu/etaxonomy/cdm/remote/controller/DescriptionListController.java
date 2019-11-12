@@ -65,6 +65,7 @@ import eu.etaxonomy.cdm.remote.controller.util.ProgressMonitorUtil;
 import eu.etaxonomy.cdm.remote.editor.DefinedTermBaseList;
 import eu.etaxonomy.cdm.remote.editor.TermBaseListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.TermBasePropertyEditor;
+import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
 import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
 import io.swagger.annotations.Api;
@@ -123,6 +124,7 @@ public class DescriptionListController
         binder.registerCustomEditor(DefinedTermBaseList.class, new TermBaseListPropertyEditor<>(termService));
         binder.registerCustomEditor(NamedAreaLevel.class, new TermBasePropertyEditor<>(termService));
         binder.registerCustomEditor(Rank.class, new TermBasePropertyEditor<>(termService));
+        binder.registerCustomEditor(UuidList.class, new UUIDListPropertyEditor());
     }
 
     protected List<String> getDescriptionInfoInitStrategy(){
@@ -171,7 +173,7 @@ public class DescriptionListController
 //            @RequestParam(value = "includeUnpublished", defaultValue="false") Boolean includeUnpublished,  //for now we do not allow unpublished data to be exported via webservice as long as read authentication is not implemented
 
 //            @RequestParam(value = "area", required = false) final UuidList areaUuids,
-            @RequestParam(value = "minRank", required = false) final UUID lowerRank,
+            @RequestParam(value = "minRank", required = false) UUID lowerRank,
             @RequestParam(value = "maxRank", required = false) final UUID upperRank,
 
             HttpServletRequest request,
