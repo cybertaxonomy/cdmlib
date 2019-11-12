@@ -187,25 +187,8 @@ public class DistributionAggregation
 
 
         List<Integer> taxonNodeIdList = getTaxonNodeService().idList(filter);
-//
-//        int aggregationWorkTicks;
-//        switch(getConfig().getAggregationMode()){
-//            case byAreasAndRanks:
-//                aggregationWorkTicks = byAreasTicks + byRankTicks;
-//                break;
-//            case byAreas:
-//                aggregationWorkTicks = byAreasTicks;
-//                break;
-//            case byRanks:
-//                aggregationWorkTicks = byRankTicks;
-//                break;
-//            default:
-//                aggregationWorkTicks = 0;
-//                break;
-//        }
 
         // take start time for performance testing
-        // NOTE: use ONLY_FISRT_BATCH = true to measure only one batch
         double start = System.currentTimeMillis();
 
         int aggregationWorkTicks = countTaxonNodes.intValue();
@@ -449,9 +432,12 @@ public class DistributionAggregation
                 batch.incrementCounter();
 
                 TaxonDescription description = findComputedDescriptionX(taxon, doClearDescriptions);
-                accumulateByAreaSingleTaxon(subMonitor, description, superAreaList, taxonNode);
-                accumulateByRankSingleTaxon(description, batch, taxonNode);
-
+                if (getConfig().getAggregationMode().isByRank()){
+                    accumulateByRankSingleTaxon(description, batch, taxonNode);
+                }
+                if (getConfig().getAggregationMode().isByArea()){
+                    accumulateByAreaSingleTaxon(subMonitor, description, superAreaList, taxonNode);
+                }
                 //TODO handle canceled better
                 if(subMonitor.isCanceled()){
                     return;
@@ -957,7 +943,13 @@ public class DistributionAggregation
     public enum AggregationMode {
         byAreas,
         byRanks,
-        byAreasAndRanks
+        byAreasAndRanks;
+        public boolean isByRank() {
+           return this==byRanks || this == byAreasAndRanks;
+        }
+        public boolean isByArea() {
+            return this==byAreas || this == byAreasAndRanks;
+         }
     }
 
     private class StatusAndSources {
