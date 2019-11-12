@@ -14,7 +14,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,7 +31,6 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
-import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
@@ -47,14 +45,12 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
-import eu.etaxonomy.cdm.model.name.TaxonNameComparator;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -891,8 +887,8 @@ public class TaxonDaoHibernateImpl
     }
 
     @Override
-    public long countTaxaByName(Class<? extends TaxonBase> clazz, String genusOrUninomial, String infraGenericEpithet, String specificEpithet,	String infraSpecificEpithet, Rank rank) {
-        checkNotInPriorView("TaxonDaoHibernateImpl.countTaxaByName(Boolean accepted, String genusOrUninomial,	String infraGenericEpithet, String specificEpithet,	String infraSpecificEpithet, Rank rank)");
+    public long countTaxaByName(Class<? extends TaxonBase> clazz, String genusOrUninomial, String infraGenericEpithet, String specificEpithet,	String infraSpecificEpithet, String authorship, Rank rank) {
+        checkNotInPriorView("TaxonDaoHibernateImpl.countTaxaByName(Boolean accepted, String genusOrUninomial,	String infraGenericEpithet, String specificEpithet,	String infraSpecificEpithet, String authorship, Rank rank)");
         Criteria criteria = null;
 
         criteria = getCriteria(clazz);
@@ -923,6 +919,12 @@ public class TaxonDaoHibernateImpl
             criteria.add(Restrictions.isNull("name.infraSpecificEpithet"));
         } else if(!infraSpecificEpithet.equals("*")) {
             criteria.add(Restrictions.eq("name.infraSpecificEpithet", infraSpecificEpithet));
+        }
+
+        if(authorship == null) {
+            criteria.add(Restrictions.eq("name.authorshipCache", ""));
+        } else if(!authorship.equals("*")) {
+            criteria.add(Restrictions.eq("name.authorshipCache", authorship));
         }
 
         if(rank != null) {
@@ -1373,36 +1375,36 @@ public class TaxonDaoHibernateImpl
         return taxonNames;
     }
 
-   
+
 
     /**
      * Returns a map of nameCaches and names available for sec1 and sec2
      * this is used for the merging of two instances into one
-     * 
+     *
      * @param secRef1
      * @param secRef2
-     * return map 
-     * 
+     * return map
+     *
      */
     @Override
     public Map<String, List<TaxonName>> findIdenticalNamesNew(Reference sec1, Reference sec2, List<String> propertyPaths){
 
 
-        //get all names from erms 
+        //get all names from erms
         Query query=getSession().createQuery("SELECT DISTINCT ermsName from TaxonName ermsName join ermsName.taxonBases ermsTaxon WHERE ermsTaxon.sec = :ermsSec AND ermsName.nameCache IN ( Select faunaName.nameCache FROM TaxonName faunaName JOIN faunaName.taxonBases faunaTaxon WHERE faunaTaxon.sec = :faunaSec) ORDER BY ermsName.nameCache");
         query.setParameter("ermsSec", sec1);
         query.setParameter("faunaSec", sec2);
         List <TaxonName> identicalErmsNames = query.list();
         defaultBeanInitializer.initializeAll(identicalErmsNames, propertyPaths);
-        
+
         //get all nameCaches
         List<String> nameCacheList = identicalErmsNames.stream().map(TaxonName::getNameCache).collect(Collectors.toList());
-        
+
         //get all names from fauna europaea having the same nameCache as a name from erms
         query=getSession().createQuery("SELECT DISTINCT faunaEuName from TaxonName faunaEuName join faunaEuName.taxonBases faunaTaxon WHERE faunaTaxon.sec = :faunaSec AND faunaEuName.nameCache IN (:ermsNameCaches) ORDER BY faunaEuName.nameCache");
         query.setParameter("faunaSec", sec2);
         query.setParameterList("ermsNameCaches", nameCacheList);
-        
+
         List <TaxonName> identicalFaunaEuNames = query.list();
         defaultBeanInitializer.initializeAll(identicalFaunaEuNames, propertyPaths);
         //create a map with nameCache and list of identical names
@@ -1411,10 +1413,10 @@ public class TaxonDaoHibernateImpl
     	   List<TaxonName> names = identicalErmsNames.stream().filter(name-> name.getNameCache().equals(nameCache)).collect(Collectors.toList());
     	   names.addAll(identicalFaunaEuNames.stream().filter(name-> name.getNameCache().equals(nameCache)).collect(Collectors.toList()));
     	   nameCacheNameMap.put(nameCache, names);
-    	   
+
        }
-      
-       
+
+
         return nameCacheNameMap;
 
     }

@@ -142,7 +142,7 @@ public interface ITaxonDao
      * @param rank
      * @return a count of TaxonBase instances
      */
-    public long countTaxaByName(Class <? extends TaxonBase> clazz, String uninomial, String infragenericEpithet,String specificEpithet, String infraspecificEpithet, Rank rank);
+    public long countTaxaByName(Class <? extends TaxonBase> clazz, String uninomial, String infragenericEpithet,String specificEpithet, String infraspecificEpithet, String authorship, Rank rank);
 
     /**
      * Returns a list of TaxonBase instances where the
@@ -350,7 +350,7 @@ public interface ITaxonDao
 
  //   public List<UUID> findIdenticalTaxonNameIds(List<String> propertyPath);
 
-    
+
     /**
      * finds all names with identical nameCache but belonging to taxa with different sec references
      * @param sec1
