@@ -432,11 +432,11 @@ public class DistributionAggregation
                 batch.incrementCounter();
 
                 TaxonDescription description = findComputedDescriptionX(taxon, doClearDescriptions);
-                if (getConfig().getAggregationMode().isByRank()){
-                    accumulateByRankSingleTaxon(description, batch, taxonNode);
-                }
                 if (getConfig().getAggregationMode().isByArea()){
                     accumulateByAreaSingleTaxon(subMonitor, description, superAreaList, taxonNode);
+                }
+                if (getConfig().getAggregationMode().isByRank()){
+                    accumulateByRankSingleTaxon(description, batch, taxonNode);
                 }
                 //TODO handle canceled better
                 if(subMonitor.isCanceled()){
