@@ -111,11 +111,6 @@ public final class ORCID implements java.io.Serializable{
 		if (orcid.startsWith("http:") ){
 		    orcid = orcid.replaceFirst("http:", "https:").trim();  //https is the current display standard
 		}
-//		Matcher matcher = orcidPattern.matcher(orcid);
-//		if (matcher.find()){
-//		    orcid = matcher.replaceFirst("").trim();
-//		}
-
 
 		//replace URI prefix
 		if (orcid.startsWith(HTTP_ORCID_ORG)){
@@ -124,16 +119,15 @@ public final class ORCID implements java.io.Serializable{
 		    orcid = orcid.replaceFirst(ORCID_ORG, "");
         }
 
-
 		//now we should have the pure orcid
 		if (orcid.length() != 15 && orcid.length() != 16 && orcid.length() != 18 && orcid.length() != 19){
 			//for persistence reason we currently restrict the length of DOIs to 1000
-			throw new IllegalArgumentException("ORCIDs must have exactly 16 numbers and 3 dashes ('-').");
+			throw new IllegalArgumentException("ORCIDs must have exactly 16 digits. 3 dashes ('-') may be included after each group of 4 digits.");
 		}
 
 		Matcher matcher = orcidPattern.matcher(orcid);
 		if (!matcher.find()){
-            throw new IllegalArgumentException("ORCID can not be parsed. It must have exactly 16 numbers and 3 dashes ('-').");
+            throw new IllegalArgumentException("ORCID can not be parsed. It must have exactly 16 digits. 3 dashes ('-') may be included after each group of 4 digits.");
 		}
 
 		orcid = orcid.replaceAll(UTF8.ANY_DASH_RE(), "");
@@ -148,7 +142,6 @@ public final class ORCID implements java.io.Serializable{
 		    this.baseNumber = orcid;
 		    this.checkSum = checkDigit(baseNumber);
 		}
-
 	}
 
 	private String makeOrcid(){
