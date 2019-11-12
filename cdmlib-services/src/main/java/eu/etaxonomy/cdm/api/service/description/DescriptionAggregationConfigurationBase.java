@@ -12,11 +12,9 @@ import java.io.Serializable;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
-import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 
 /**
  * Configurator base class for all {@link DescriptionAggregationBase description aggregations}.
-
  * @author a.mueller
  * @since 03.11.2019
  */
@@ -24,11 +22,18 @@ public abstract class DescriptionAggregationConfigurationBase<TASK extends Descr
 
     private static final long serialVersionUID = -7914819539239986722L;
 
-    private DescriptiveDataSet dataset;
     private TaxonNodeFilter taxonNodeFilter;
+
     private boolean aggregateToHigherRanks;
 
     private IProgressMonitor monitor;
+
+//******************* CONSTRUCTOR **********************/
+
+    protected DescriptionAggregationConfigurationBase(TaxonNodeFilter filter, IProgressMonitor monitor) {
+        this.taxonNodeFilter = filter;
+        this.monitor = monitor;
+    }
 
 // ****************** GETTER / SETTER *****************/
 
@@ -37,13 +42,6 @@ public abstract class DescriptionAggregationConfigurationBase<TASK extends Descr
     }
     public void setMonitor(IProgressMonitor monitor) {
         this.monitor = monitor;
-    }
-
-    public DescriptiveDataSet getDataset() {
-        return dataset;
-    }
-    public void setDataset(DescriptiveDataSet dataset) {
-        this.dataset = dataset;
     }
 
     public boolean isAggregateToHigherRanks() {

@@ -59,10 +59,9 @@ public class DistributionAggregationConfiguration
 
     private DistributionAggregationConfiguration(AggregationMode aggregationMode, List<NamedArea> superAreas,
             TaxonNodeFilter filter, IProgressMonitor monitor) {
+        super(filter, monitor);
         this.aggregationMode = aggregationMode;
         this.superAreas = superAreas;
-        this.setTaxonNodeFilter(filter);
-        setMonitor(monitor);
     }
 
 // ******************** METHOD **************************************/
@@ -104,6 +103,4 @@ public class DistributionAggregationConfiguration
     public void setStatusOrder(TermCollection<PresenceAbsenceTerm, TermNode> statusOrder) {
         this.statusOrder = statusOrder;
     }
-
-
 }

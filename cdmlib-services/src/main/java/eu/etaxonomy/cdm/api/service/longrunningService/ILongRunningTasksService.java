@@ -25,7 +25,6 @@ import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 /**
  * @author cmathew
  * @since 31 Jul 2015
- *
  */
 public interface ILongRunningTasksService {
 
@@ -37,6 +36,7 @@ public interface ILongRunningTasksService {
 
     /**
      * Monitored invocation of {@link DescriptionAggregationBase#invoke(DescriptionAggregationConfigurationBase, eu.etaxonomy.cdm.api.application.ICdmRepository)}
+     * In future not only Aggregation Tasks but all Standardtasks should be called via this method.
      * @param config configuration
      * @return the uuid of the monitor
      */

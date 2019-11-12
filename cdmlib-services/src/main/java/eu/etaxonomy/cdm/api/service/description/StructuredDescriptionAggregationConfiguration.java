@@ -8,6 +8,10 @@
 */
 package eu.etaxonomy.cdm.api.service.description;
 
+import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
+import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
+
 /**
  * @author a.mueller
  * @since 12.11.2019
@@ -17,9 +21,36 @@ public class StructuredDescriptionAggregationConfiguration
 
     private static final long serialVersionUID = 7485291596888612932L;
 
+    private DescriptiveDataSet dataset;
+
     boolean includeDefault = true;
     boolean includeLiterature = false;
 
+// ******************* FACTORY ***************************************/
+
+    public static StructuredDescriptionAggregationConfiguration NewInstance(
+            TaxonNodeFilter filter, IProgressMonitor monitor){
+        return new StructuredDescriptionAggregationConfiguration(filter, monitor, null, null);
+    }
+
+
+    public static StructuredDescriptionAggregationConfiguration NewInstance(TaxonNodeFilter filter,
+            IProgressMonitor monitor, Boolean includeDefault, Boolean includeLiterature){
+        return new StructuredDescriptionAggregationConfiguration(filter, monitor, includeDefault, includeLiterature);
+    }
+
+// ******************* CONSTRUCTOR ***********************************/
+
+    protected StructuredDescriptionAggregationConfiguration(TaxonNodeFilter filter,
+            IProgressMonitor monitor, Boolean includeDefault, Boolean includeLiterature) {
+        super(filter, monitor);
+        if (includeDefault != null){
+            this.includeDefault = includeDefault;
+        }
+        if (includeLiterature != null){
+            this.includeLiterature = includeLiterature;
+        }
+    }
 
 // ******************** METHOD **************************************/
 
@@ -36,10 +67,18 @@ public class StructuredDescriptionAggregationConfiguration
     public void setIncludeDefault(boolean includeDefault) {
         this.includeDefault = includeDefault;
     }
+
     public boolean isIncludeLiterature() {
         return includeLiterature;
     }
     public void setIncludeLiterature(boolean includeLiterature) {
         this.includeLiterature = includeLiterature;
+    }
+
+    public DescriptiveDataSet getDataset() {
+        return dataset;
+    }
+    public void setDataset(DescriptiveDataSet dataset) {
+        this.dataset = dataset;
     }
 }
