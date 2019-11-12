@@ -41,11 +41,9 @@ import eu.etaxonomy.cdm.remote.editor.MatchModePropertyEditor;
 /**
  * @author l.morris
  * @since 27 Mar 2012
- *
  */
 public abstract class AbstractIdentifiableListController <T extends IdentifiableEntity, SERVICE extends IIdentifiableEntityService<T>>
             extends BaseListController<T,SERVICE>  {
-
 
     @InitBinder
     @Override
@@ -96,11 +94,10 @@ public abstract class AbstractIdentifiableListController <T extends Identifiable
         matchMode = matchMode != null ? matchMode : MatchMode.BEGINNING;
 
         return service.findByTitleWithRestrictions(null, query, matchMode, null, pagerParams.getPageSize(), pagerParams.getPageIndex(), null, initializationStrategy);
-
     }
 
     /**
-     * list IdentifiableEntity objects by identifiers
+     * List IdentifiableEntity objects by identifiers
      *
      * @param type
      * @param identifierType

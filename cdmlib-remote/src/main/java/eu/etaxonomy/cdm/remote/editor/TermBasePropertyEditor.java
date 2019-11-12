@@ -22,8 +22,9 @@ import eu.etaxonomy.cdm.model.term.DefinedTermBase;
  * @author a.kohlbecker
  * @since Jun 25, 2013
  *
- * @deprecated better avoid using this PropertyEditor since it will cause Hibernate to load the
- *             term the data base. Use plain uuids instead for better performance where possible!
+ * @deprecated better avoid using this PropertyEditor since it will cause Hibernate
+ *         to load the term from the data base. Use plain uuids instead for better
+ *         performance where possible!
  *
  */
 @Deprecated

@@ -50,19 +50,16 @@ import io.swagger.annotations.Api;
 @RequestMapping(value="/portal/classification")
 public class ClassificationPortalListController extends AbstractIdentifiableListController<Classification,IClassificationService> {
 
+    public static final Logger logger = Logger.getLogger(ClassificationPortalListController.class);
 
     private static final List<String> CLASSIFICATION_INIT_STRATEGY = Arrays.asList(new String[]{
             "reference.authorship"
-
     });
 
     private static final List<String> NODE_INIT_STRATEGY = Arrays.asList(new String[]{
             "taxon.name.rank",
             "taxon.sec"
-            });
-
-
-    public static final Logger logger = Logger.getLogger(ClassificationPortalListController.class);
+    });
 
     private ITaxonService taxonService;
     private ITaxonNodeService taxonNodeService;
