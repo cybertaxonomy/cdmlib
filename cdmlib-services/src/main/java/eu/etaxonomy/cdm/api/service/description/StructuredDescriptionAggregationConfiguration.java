@@ -13,12 +13,20 @@ package eu.etaxonomy.cdm.api.service.description;
  * @since 12.11.2019
  */
 public class StructuredDescriptionAggregationConfiguration
-        extends DescriptionAggregationConfigurationBase {
+        extends DescriptionAggregationConfigurationBase<StructuredDescriptionAggregation> {
 
     private static final long serialVersionUID = 7485291596888612932L;
 
     boolean includeDefault = true;
     boolean includeLiterature = false;
+
+
+// ******************** METHOD **************************************/
+
+    @Override
+    public StructuredDescriptionAggregation getTaskInstance() {
+        return new StructuredDescriptionAggregation();
+    }
 
 // *********************** GETTER / SETTER ****************************/
 

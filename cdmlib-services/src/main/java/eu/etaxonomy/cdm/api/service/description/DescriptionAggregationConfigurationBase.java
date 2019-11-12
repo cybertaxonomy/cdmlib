@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
  * @author a.mueller
  * @since 03.11.2019
  */
-public abstract class DescriptionAggregationConfigurationBase implements Serializable {
+public abstract class DescriptionAggregationConfigurationBase<TASK extends DescriptionAggregationBase> implements Serializable {
 
     private static final long serialVersionUID = -7914819539239986722L;
 
@@ -59,4 +59,6 @@ public abstract class DescriptionAggregationConfigurationBase implements Seriali
     public void setTaxonNodeFilter(TaxonNodeFilter taxonNodeFilter) {
         this.taxonNodeFilter = taxonNodeFilter;
     }
+
+    public abstract TASK getTaskInstance();
 }

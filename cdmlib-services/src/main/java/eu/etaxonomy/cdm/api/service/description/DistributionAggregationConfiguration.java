@@ -26,7 +26,10 @@ import eu.etaxonomy.cdm.model.term.TermTree;
  * @author a.mueller
  * @since 05.11.2019
  */
-public class DistributionAggregationConfiguration extends DescriptionAggregationConfigurationBase {
+public class DistributionAggregationConfiguration
+        extends DescriptionAggregationConfigurationBase<DistributionAggregation> {
+
+    private static final long serialVersionUID = 2542246141660930545L;
 
     private AggregationMode aggregationMode;
 
@@ -62,6 +65,13 @@ public class DistributionAggregationConfiguration extends DescriptionAggregation
         setMonitor(monitor);
     }
 
+// ******************** METHOD **************************************/
+
+    @Override
+    public DistributionAggregation getTaskInstance() {
+        return new DistributionAggregation();
+    }
+
 // ******************* GETTER / SETTER ****************************/
 
     public AggregationMode getAggregationMode() {
@@ -95,11 +105,5 @@ public class DistributionAggregationConfiguration extends DescriptionAggregation
         this.statusOrder = statusOrder;
     }
 
-//    public Classification getClassification() {
-//        return classification;
-//    }
-//    public void setClassification(Classification classification) {
-//        this.classification = classification;
-//    }
 
 }

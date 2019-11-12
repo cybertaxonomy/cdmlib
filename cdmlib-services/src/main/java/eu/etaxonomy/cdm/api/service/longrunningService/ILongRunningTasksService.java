@@ -16,7 +16,8 @@ import eu.etaxonomy.cdm.api.service.IDescriptiveDataSetService;
 import eu.etaxonomy.cdm.api.service.config.CacheUpdaterConfigurator;
 import eu.etaxonomy.cdm.api.service.config.ForSubtreeConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.SortIndexUpdaterConfigurator;
-import eu.etaxonomy.cdm.api.service.description.StructuredDescriptionAggregationConfiguration;
+import eu.etaxonomy.cdm.api.service.description.DescriptionAggregationBase;
+import eu.etaxonomy.cdm.api.service.description.DescriptionAggregationConfigurationBase;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
@@ -35,12 +36,12 @@ public interface ILongRunningTasksService {
     UUID monitLongRunningTask(Set<UUID> movingUuids, UUID targetTreeNodeUuid, int movingType);
 
     /**
-     * Monitored invocation of {@link IDescriptiveDataSetService#aggregate(UUID, IProgressMonitor)}
-     * @param descriptiveDataSetUuid the data set which should be aggregated
-     * @param config the aggregation configuration
+     * Monitored invocation of {@link DescriptionAggregationBase#invoke(DescriptionAggregationConfigurationBase, eu.etaxonomy.cdm.api.application.ICdmRepository)}
+     * @param config configuration
      * @return the uuid of the monitor
      */
-    public UUID aggregateDescriptiveDataSet(UUID descriptiveDataSetUuid, StructuredDescriptionAggregationConfiguration config);
+    public <T extends DescriptionAggregationBase<T,C>, C extends DescriptionAggregationConfigurationBase<T>>
+            UUID invoke(C config);
 
     /**
      * Monitored invocation of {@link IDescriptiveDataSetService#addRowWrapperToDataset(Collection, UUID)}
@@ -65,5 +66,6 @@ public interface ILongRunningTasksService {
      */
     public UUID monitGetRowWrapper(UUID descriptiveDataSetUuid);
 
-    UUID monitLongRunningTask(SortIndexUpdaterConfigurator configurator);
+    public UUID monitLongRunningTask(SortIndexUpdaterConfigurator configurator);
+
 }

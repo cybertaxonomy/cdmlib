@@ -28,8 +28,8 @@ import eu.etaxonomy.cdm.api.service.config.ForSubtreeConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.PublishForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SortIndexUpdaterConfigurator;
-import eu.etaxonomy.cdm.api.service.description.StructuredDescriptionAggregation;
-import eu.etaxonomy.cdm.api.service.description.StructuredDescriptionAggregationConfiguration;
+import eu.etaxonomy.cdm.api.service.description.DescriptionAggregationBase;
+import eu.etaxonomy.cdm.api.service.description.DescriptionAggregationConfigurationBase;
 import eu.etaxonomy.cdm.api.service.util.CacheUpdater;
 import eu.etaxonomy.cdm.api.service.util.SortIndexUpdaterWrapper;
 import eu.etaxonomy.cdm.common.JvmLimitsException;
@@ -77,22 +77,23 @@ public class LongRunningTasksService implements ILongRunningTasksService{
         return uuid;
     }
 
+
     @Override
-    public UUID aggregateDescriptiveDataSet(UUID descriptiveDataSetUuid,  StructuredDescriptionAggregationConfiguration config){
+    public <T extends DescriptionAggregationBase<T,C>, C extends DescriptionAggregationConfigurationBase<T>>
+                UUID invoke(C config){
+
         RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
             @Override
             public Serializable doRun(IRemotingProgressMonitor monitor) {
-                StructuredDescriptionAggregation aggregation = new StructuredDescriptionAggregation();
+                T task = config.getTaskInstance();
                 UpdateResult updateResult = null;
                 try{
-                    //FIXME: dataset should be settabel as UUID in the config
-                    config.setDataset(descriptiveDataSetService.load(descriptiveDataSetUuid));
-                    updateResult = aggregation.invoke(config, repository);
-                for(Exception e : updateResult.getExceptions()) {
-                    monitor.addReport(e.getMessage());
-                }
+                    updateResult = task.invoke(config, repository);
+                    for(Exception e : updateResult.getExceptions()) {
+                        monitor.addReport(e.getMessage());
+                    }
                 } catch (JvmLimitsException e) {
-                    // TODO implement exception feedback
+                    monitor.warning("Memory problem. Java Virtual Machine limits exceeded. Task was interrupted", e);
                 }
                 monitor.setResult(updateResult);
                 return updateResult;
@@ -104,6 +105,7 @@ public class LongRunningTasksService implements ILongRunningTasksService{
         monitorThread.start();
         return uuid;
     }
+
 
     @Override
     public UUID addRowWrapperToDataset(Collection<SpecimenNodeWrapper> wrapper, UUID datasetUuid){
@@ -244,4 +246,5 @@ public class LongRunningTasksService implements ILongRunningTasksService{
         monitorThread.start();
         return uuid;
     }
+
 }
