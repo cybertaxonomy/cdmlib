@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.api.service.config.IdentifiableServiceConfiguratorImpl;
-import eu.etaxonomy.cdm.api.service.description.DescriptionAggregationConfiguration;
+import eu.etaxonomy.cdm.api.service.description.DescriptionAggregationConfigurationBase;
 import eu.etaxonomy.cdm.api.service.dto.RowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenRowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonRowWrapperDTO;
@@ -358,7 +358,7 @@ public class DescriptiveDataSetService
 
     @Override
     @Transactional(readOnly=false)
-    public UpdateResult aggregate(UUID descriptiveDataSetUuid, DescriptionAggregationConfiguration config, IProgressMonitor monitor) {
+    public UpdateResult aggregate(UUID descriptiveDataSetUuid, DescriptionAggregationConfigurationBase config, IProgressMonitor monitor) {
         DescriptiveDataSet dataSet = load(descriptiveDataSetUuid);
         Set<DescriptionBase> descriptions = dataSet.getDescriptions();
 

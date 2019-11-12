@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.model.media.Media;
  * @author a.mueller
  * @since 03.11.2019
  */
-public abstract class DescriptionAggregationBase<T extends DescriptionAggregationBase<T, CONFIG>, CONFIG extends DescriptionAggregationConfiguration> {
+public abstract class DescriptionAggregationBase<T extends DescriptionAggregationBase<T, CONFIG>, CONFIG extends DescriptionAggregationConfigurationBase> {
 
     public static final Logger logger = Logger.getLogger(DescriptionAggregationBase.class);
 

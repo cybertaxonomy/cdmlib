@@ -20,28 +20,13 @@ import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
  * @author a.mueller
  * @since 03.11.2019
  */
-public class DescriptionAggregationConfiguration implements Serializable {
+public abstract class DescriptionAggregationConfigurationBase implements Serializable {
 
     private static final long serialVersionUID = -7914819539239986722L;
 
     private DescriptiveDataSet dataset;
     private TaxonNodeFilter taxonNodeFilter;
     private boolean aggregateToHigherRanks;
-    boolean includeDefault = true;
-    boolean includeLiterature = false;
-
-    public boolean isIncludeDefault() {
-        return includeDefault;
-    }
-    public void setIncludeDefault(boolean includeDefault) {
-        this.includeDefault = includeDefault;
-    }
-    public boolean isIncludeLiterature() {
-        return includeLiterature;
-    }
-    public void setIncludeLiterature(boolean includeLiterature) {
-        this.includeLiterature = includeLiterature;
-    }
 
     private IProgressMonitor monitor;
 

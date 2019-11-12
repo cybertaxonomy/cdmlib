@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.term.TermTree;
  * @author a.mueller
  * @since 05.11.2019
  */
-public class DistributionAggregationConfiguration extends DescriptionAggregationConfiguration {
+public class DistributionAggregationConfiguration extends DescriptionAggregationConfigurationBase {
 
     private AggregationMode aggregationMode;
 

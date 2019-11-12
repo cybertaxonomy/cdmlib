@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.api.service.IDescriptiveDataSetService;
 import eu.etaxonomy.cdm.api.service.config.CacheUpdaterConfigurator;
 import eu.etaxonomy.cdm.api.service.config.ForSubtreeConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.SortIndexUpdaterConfigurator;
-import eu.etaxonomy.cdm.api.service.description.DescriptionAggregationConfiguration;
+import eu.etaxonomy.cdm.api.service.description.StructuredDescriptionAggregationConfiguration;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
@@ -40,7 +40,7 @@ public interface ILongRunningTasksService {
      * @param config the aggregation configuration
      * @return the uuid of the monitor
      */
-    public UUID aggregateDescriptiveDataSet(UUID descriptiveDataSetUuid,  DescriptionAggregationConfiguration config);
+    public UUID aggregateDescriptiveDataSet(UUID descriptiveDataSetUuid, StructuredDescriptionAggregationConfiguration config);
 
     /**
      * Monitored invocation of {@link IDescriptiveDataSetService#addRowWrapperToDataset(Collection, UUID)}

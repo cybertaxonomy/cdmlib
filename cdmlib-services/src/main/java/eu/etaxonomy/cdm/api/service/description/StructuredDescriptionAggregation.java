@@ -49,7 +49,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @since 03.11.2019
  */
 public class StructuredDescriptionAggregation
-        extends DescriptionAggregationBase<StructuredDescriptionAggregation, DescriptionAggregationConfiguration>{
+        extends DescriptionAggregationBase<StructuredDescriptionAggregation, StructuredDescriptionAggregationConfiguration>{
 
     @Override
     protected UpdateResult doInvoke(){

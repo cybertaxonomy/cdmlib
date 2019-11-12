@@ -28,8 +28,8 @@ import eu.etaxonomy.cdm.api.service.config.ForSubtreeConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.PublishForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SortIndexUpdaterConfigurator;
-import eu.etaxonomy.cdm.api.service.description.DescriptionAggregationConfiguration;
 import eu.etaxonomy.cdm.api.service.description.StructuredDescriptionAggregation;
+import eu.etaxonomy.cdm.api.service.description.StructuredDescriptionAggregationConfiguration;
 import eu.etaxonomy.cdm.api.service.util.CacheUpdater;
 import eu.etaxonomy.cdm.api.service.util.SortIndexUpdaterWrapper;
 import eu.etaxonomy.cdm.common.JvmLimitsException;
@@ -78,7 +78,7 @@ public class LongRunningTasksService implements ILongRunningTasksService{
     }
 
     @Override
-    public UUID aggregateDescriptiveDataSet(UUID descriptiveDataSetUuid,  DescriptionAggregationConfiguration config){
+    public UUID aggregateDescriptiveDataSet(UUID descriptiveDataSetUuid,  StructuredDescriptionAggregationConfiguration config){
         RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
             @Override
             public Serializable doRun(IRemotingProgressMonitor monitor) {
