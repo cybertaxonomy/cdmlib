@@ -11,14 +11,13 @@ import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 /**
  * @author a.kohlbecker
  * @since Jun 25, 2013
- *
  */
 public class DefinedTermBaseList<T extends DefinedTermBase> extends ArrayList<T> {
 
     private static final long serialVersionUID = 1L;
 
     public Set<T> asSet() {
-        HashSet<T> tmpSet = new HashSet<T>(this.size());
+        HashSet<T> tmpSet = new HashSet<>(this.size());
 
         Iterator<T> e = iterator();
         while (e.hasNext()) {
@@ -26,5 +25,4 @@ public class DefinedTermBaseList<T extends DefinedTermBase> extends ArrayList<T>
         }
         return tmpSet;
     }
-
 }
