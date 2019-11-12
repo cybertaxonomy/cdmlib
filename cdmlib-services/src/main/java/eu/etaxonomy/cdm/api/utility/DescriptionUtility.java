@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.api.service.DistributionTree;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -152,7 +153,7 @@ public class DescriptionUtility {
             for (NamedArea area : filteredDistributions.keySet()) {
                 for (Distribution distribution : filteredDistributions.get(area)) {
                     // this is only required for rule 1
-                    if(distribution.hasMarker(MarkerType.COMPUTED(), true)){
+                    if(isAggregated(distribution)){
                         if(!computedDistributions.containsKey(area)){
                             computedDistributions.put(area, new HashSet<>());
                         }
@@ -217,6 +218,18 @@ public class DescriptionUtility {
         // -------------------------------------------------------------------
 
         return valuesOfAllInnerSets(filteredDistributions.values());
+    }
+
+    private static boolean isAggregated(Distribution distribution) {
+        if (distribution.hasMarker(MarkerType.COMPUTED(), true)){
+            return true;
+        }else{
+            DescriptionBase<?> desc = distribution.getInDescription();
+            if (desc != null && desc.isAggregatedDistribution()){
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

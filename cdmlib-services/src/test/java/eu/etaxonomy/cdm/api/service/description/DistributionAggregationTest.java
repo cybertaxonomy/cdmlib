@@ -40,7 +40,6 @@ import eu.etaxonomy.cdm.common.JvmLimitsException;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Extension;
-import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Distribution;
@@ -496,7 +495,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         Taxon lapsana_communis = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_UUID);
         int computedDescriptionsCnt = 0;
         for(TaxonDescription description : lapsana_communis.getDescriptions()) {
-            if(description.hasMarker(MarkerType.COMPUTED(), true)) {
+            if(description.isAggregatedDistribution()) {
                 computedDescriptionsCnt++;
                 assertEquals(2, description.getElements().size());
                 Distribution distribution = (Distribution)description.getElements().iterator().next();
