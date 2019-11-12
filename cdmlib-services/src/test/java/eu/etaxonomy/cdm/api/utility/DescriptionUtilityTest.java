@@ -31,10 +31,8 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 /**
  * @author a.kohlbecker
  * @since Jan 27, 2014
- *
  */
 public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
-
 
     @SpringBeanByType
     private ITermService termService;
@@ -49,7 +47,7 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
 
     @Before
     public void setup(){
-        distributions = new ArrayList<Distribution>();
+        distributions = new ArrayList<>();
 
         berlin = NamedArea.NewInstance("Berlin", "Berlin", "BER");
         berlin.setPartOf(Country.GERMANY());
@@ -266,15 +264,7 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals(jugoslavia, filteredDistributions.iterator().next().getArea());
     }
 
-
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 
 }

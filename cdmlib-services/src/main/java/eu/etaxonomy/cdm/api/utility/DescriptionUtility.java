@@ -85,9 +85,10 @@ public class DescriptionUtility {
      * @return the filtered collection of distribution elements.
      */
     public static Set<Distribution> filterDistributions(Collection<Distribution> distributions,
-            Set<MarkerType> hiddenAreaMarkerTypes, boolean preferComputed, boolean statusOrderPreference, boolean subAreaPreference) {
+            Set<MarkerType> hiddenAreaMarkerTypes, boolean preferComputed, boolean statusOrderPreference,
+            boolean subAreaPreference) {
 
-        Map<NamedArea, Set<Distribution>> filteredDistributions = new HashMap<NamedArea, Set<Distribution>>(100); // start with a big map from the beginning!
+        Map<NamedArea, Set<Distribution>> filteredDistributions = new HashMap<>(100); // start with a big map from the beginning!
 
         // sort Distributions by the area
         for(Distribution distribution : distributions){
@@ -98,7 +99,7 @@ public class DescriptionUtility {
             }
 
             if(!filteredDistributions.containsKey(area)){
-                filteredDistributions.put(area, new HashSet<Distribution>());
+                filteredDistributions.put(area, new HashSet<>());
             }
             filteredDistributions.get(area).add(distribution);
         }
@@ -107,7 +108,7 @@ public class DescriptionUtility {
         // 1) skip distributions having an area with markers matching hideMarkedAreas
         //    but keep distributions for fallback areas
         if(hiddenAreaMarkerTypes != null && !hiddenAreaMarkerTypes.isEmpty()) {
-            Set<NamedArea> areasHiddenByMarker = new HashSet<NamedArea>();
+            Set<NamedArea> areasHiddenByMarker = new HashSet<>();
             for(NamedArea area : filteredDistributions.keySet()) {
                 if(checkAreaMarkedHidden(hiddenAreaMarkerTypes, area)) {
                     boolean showAsFallbackArea = false;
@@ -145,20 +146,20 @@ public class DescriptionUtility {
         //    distributions exists
         //
         if(preferComputed) {
-            Map<NamedArea, Set<Distribution>> computedDistributions = new HashMap<NamedArea, Set<Distribution>>(distributions.size());
-            Map<NamedArea, Set<Distribution>> otherDistributions = new HashMap<NamedArea, Set<Distribution>>(distributions.size());
+            Map<NamedArea, Set<Distribution>> computedDistributions = new HashMap<>(distributions.size());
+            Map<NamedArea, Set<Distribution>> otherDistributions = new HashMap<>(distributions.size());
             // separate computed and edited Distributions
             for (NamedArea area : filteredDistributions.keySet()) {
                 for (Distribution distribution : filteredDistributions.get(area)) {
                     // this is only required for rule 1
                     if(distribution.hasMarker(MarkerType.COMPUTED(), true)){
                         if(!computedDistributions.containsKey(area)){
-                            computedDistributions.put(area, new HashSet<Distribution>());
+                            computedDistributions.put(area, new HashSet<>());
                         }
                         computedDistributions.get(area).add(distribution);
                     } else {
                         if(!otherDistributions.containsKey(area)){
-                            otherDistributions.put(area, new HashSet<Distribution>());
+                            otherDistributions.put(area, new HashSet<>());
                         }
                         otherDistributions.get(area).add(distribution);
                     }
@@ -171,13 +172,13 @@ public class DescriptionUtility {
             filteredDistributions.clear();
             for(NamedArea key : computedDistributions.keySet()){
                 if(!filteredDistributions.containsKey(key)) {
-                    filteredDistributions.put(key, new HashSet<Distribution>());
+                    filteredDistributions.put(key, new HashSet<>());
                 }
                 filteredDistributions.get(key).addAll(computedDistributions.get(key));
             }
             for(NamedArea key : otherDistributions.keySet()){
                 if(!filteredDistributions.containsKey(key)) {
-                    filteredDistributions.put(key, new HashSet<Distribution>());
+                    filteredDistributions.put(key, new HashSet<>());
                 }
                 filteredDistributions.get(key).addAll(otherDistributions.get(key));
             }
@@ -200,7 +201,7 @@ public class DescriptionUtility {
         // -------------------------------------------------------------------
         // 4) Sub area preference rule
         if(subAreaPreference){
-            Set<NamedArea> removeCandidatesArea = new HashSet<NamedArea>();
+            Set<NamedArea> removeCandidatesArea = new HashSet<>();
             for(NamedArea key : filteredDistributions.keySet()){
                 if(removeCandidatesArea.contains(key)){
                     continue;
@@ -279,7 +280,7 @@ public class DescriptionUtility {
      */
     private static Set<Distribution> byHighestOrderPresenceAbsenceTerm(Set<Distribution> distributions){
 
-        Set<Distribution> preferred = new HashSet<Distribution>();
+        Set<Distribution> preferred = new HashSet<>();
         PresenceAbsenceTerm highestStatus = null;  //we need to leave generics here as for some reason highestStatus.compareTo later jumps into the wrong class for calling compareTo
         int compareResult;
         for (Distribution distribution : distributions) {

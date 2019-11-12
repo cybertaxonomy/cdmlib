@@ -431,7 +431,7 @@ public class DistributionAggregation
                 }
                 batch.incrementCounter();
 
-                TaxonDescription description = findComputedDescriptionX(taxon, doClearDescriptions);
+                TaxonDescription description = findComputedDescription(taxon, doClearDescriptions);
                 if (getConfig().getAggregationMode().isByArea()){
                     accumulateByAreaSingleTaxon(subMonitor, description, superAreaList, taxonNode);
                 }
@@ -790,7 +790,7 @@ public class DistributionAggregation
      *     (or a MarkerType COMPUTED for historical reasons, will be removed in future)
      * @return
      */
-    private TaxonDescription findComputedDescriptionX(Taxon taxon, boolean doClear) {
+    private TaxonDescription findComputedDescription(Taxon taxon, boolean doClear) {
 
         String descriptionTitle = this.getClass().getSimpleName();
 
