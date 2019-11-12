@@ -159,23 +159,19 @@ public class DescriptionListController
     @RequestMapping(value = { "accumulateDistributions" }, method = RequestMethod.GET)
     public ModelAndView doAccumulateDistributions(
             @RequestParam(value= "mode", required = true) final AggregationMode mode,
+            @RequestParam(value = "targetAreaLevel", required = true) UUID targetAreaLevelUuid,
             @RequestParam(value = "frontendBaseUrl", required = false) String frontendBaseUrl,
             @RequestParam(value = "priority", required = false) Integer priority,
-            @RequestParam(value = "targetAreaLevel", required = true) final NamedAreaLevel targetAreaLevel,
 //            @RequestParam(value = "lowerRank", required = false) Rank lowerRank,
 //            @RequestParam(value = "upperRank", required = false) Rank upperRank,
-
-            @RequestParam(value = "subtrees", required = false) final UuidList subtreeUuids,
-//            @RequestParam(value = "clearCache", required = false) final boolean clearCache,
-            @RequestParam(value = "classifications", required = false) final UuidList classificationUuids,
-            @RequestParam(value = "taxa", required = false) final UuidList taxonUuids,
-            @RequestParam(value = "taxonnodes", required = false) final UuidList taxonNodeUuids,
-//            @RequestParam(value = "includeUnpublished", defaultValue="false") Boolean includeUnpublished,  //for now we do not allow unpublished data to be exported via webservice as long as read authentication is not implemented
-
-//            @RequestParam(value = "area", required = false) final UuidList areaUuids,
             @RequestParam(value = "minRank", required = false) UUID lowerRank,
-            @RequestParam(value = "maxRank", required = false) final UUID upperRank,
-
+            @RequestParam(value = "maxRank", required = false) UUID upperRank,
+            @RequestParam(value = "subtrees", required = false) UuidList subtreeUuids,
+            @RequestParam(value = "classifications", required = false) UuidList classificationUuids,
+            @RequestParam(value = "taxa", required = false) UuidList taxonUuids,
+            @RequestParam(value = "taxonnodes", required = false) UuidList taxonNodeUuids,
+//            @RequestParam(value = "includeUnpublished", defaultValue="false") Boolean includeUnpublished,  //for now we do not allow unpublished data to be exported via webservice as long as read authentication is not implemented
+//            @RequestParam(value = "area", required = false) UuidList areaUuids,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
@@ -185,14 +181,12 @@ public class DescriptionListController
 
         String processLabel = "accumulating distributions";
 
-//        final UUID lowerRankUuid = lowerRank != null ? lowerRank.getUuid() : null; //Rank.UNKNOWN_RANK(); // this is the lowest rank
-//        final UUID upperRankUuid = upperRank != null ? upperRank.getUuid() : null; // Rank.GENUS();
-
         ProgressMonitorUtil progressUtil = new ProgressMonitorUtil(progressMonitorController);
 
         final List<String> term_init_strategy = Arrays.asList(new String []{
                 "representations"
         });
+        NamedAreaLevel targetAreaLevel = (NamedAreaLevel)termService.load(targetAreaLevelUuid, term_init_strategy);
 
         if (!progressMonitorController.isMonitorRunning(transmissionEngineMonitorUuid)) {
             transmissionEngineMonitorUuid = progressUtil.registerNewMonitor();
