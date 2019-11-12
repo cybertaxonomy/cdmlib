@@ -70,7 +70,7 @@ public class CdmLinkSource extends CdmLinkBase {
 //******************* CONSTRUCTOR *********************/
 
     @SuppressWarnings("unused")
-    private CdmLinkSource(){}  //for JAXB
+    public CdmLinkSource(){}  //for JAXB
 
     public CdmLinkSource(ICdmTarget target) {
 //        this.source = source;

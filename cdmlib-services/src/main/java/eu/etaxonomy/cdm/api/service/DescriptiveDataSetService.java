@@ -21,8 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
-import eu.etaxonomy.cdm.api.service.config.DescriptionAggregationConfiguration;
 import eu.etaxonomy.cdm.api.service.config.IdentifiableServiceConfiguratorImpl;
+import eu.etaxonomy.cdm.api.service.description.DescriptionAggregationConfiguration;
 import eu.etaxonomy.cdm.api.service.dto.RowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenRowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonRowWrapperDTO;
@@ -411,7 +411,7 @@ public class DescriptiveDataSetService
             }
             monitor.worked(1);
         }
-        if(config.isRecursiveAggregation()){
+        if(config.isAggregateToHigherRanks()){
             propagateDescriptionsToParentNodes(dataSet, taxonNodeToSpecimenDescriptionMap);
         }
         // aggregate per taxa

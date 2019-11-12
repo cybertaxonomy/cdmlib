@@ -14,21 +14,25 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.service.IDescriptiveDataSetService;
 import eu.etaxonomy.cdm.api.service.IProgressMonitorService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.UpdateResult;
 import eu.etaxonomy.cdm.api.service.config.CacheUpdaterConfigurator;
-import eu.etaxonomy.cdm.api.service.config.DescriptionAggregationConfiguration;
 import eu.etaxonomy.cdm.api.service.config.ForSubtreeConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.PublishForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SortIndexUpdaterConfigurator;
+import eu.etaxonomy.cdm.api.service.description.DescriptionAggregationConfiguration;
+import eu.etaxonomy.cdm.api.service.description.StructuredDescriptionAggregation;
 import eu.etaxonomy.cdm.api.service.util.CacheUpdater;
 import eu.etaxonomy.cdm.api.service.util.SortIndexUpdaterWrapper;
+import eu.etaxonomy.cdm.common.JvmLimitsException;
 import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitorThread;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
@@ -55,6 +59,10 @@ public class LongRunningTasksService implements ILongRunningTasksService{
     @Autowired
     SortIndexUpdaterWrapper sortIndexUpdater;
 
+    @Autowired
+    @Qualifier("cdmRepository")
+    private ICdmRepository repository;
+
     @Override
     public UUID monitGetRowWrapper(UUID descriptiveDataSetUuid) {
         RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
@@ -74,9 +82,17 @@ public class LongRunningTasksService implements ILongRunningTasksService{
         RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
             @Override
             public Serializable doRun(IRemotingProgressMonitor monitor) {
-                UpdateResult updateResult = descriptiveDataSetService.aggregate(descriptiveDataSetUuid, config, monitor);
+                StructuredDescriptionAggregation aggregation = new StructuredDescriptionAggregation();
+                UpdateResult updateResult = null;
+                try{
+                    //FIXME: dataset should be settabel as UUID in the config
+                    config.setDataset(descriptiveDataSetService.load(descriptiveDataSetUuid));
+                    updateResult = aggregation.invoke(config, repository);
                 for(Exception e : updateResult.getExceptions()) {
                     monitor.addReport(e.getMessage());
+                }
+                } catch (JvmLimitsException e) {
+                    // TODO implement exception feedback
                 }
                 monitor.setResult(updateResult);
                 return updateResult;

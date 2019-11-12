@@ -18,6 +18,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.transaction.TransactionStatus;
+
 import eu.etaxonomy.cdm.api.service.UpdateResult;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -50,7 +52,8 @@ public class StructuredDescriptionAggregation
         extends DescriptionAggregationBase<StructuredDescriptionAggregation, DescriptionAggregationConfiguration>{
 
     @Override
-    public UpdateResult doInvoke(){
+    protected UpdateResult doInvoke(){
+        TransactionStatus transactionStatus = getRepository().startTransaction(false);
 
         UpdateResult result = new UpdateResult();
 
@@ -118,7 +121,7 @@ public class StructuredDescriptionAggregation
         }
 
         // aggregate per taxon
-        Map<UUID, UUID> specimenToClonedSourceDescription = new HashMap<>();
+        Map<UUID, SpecimenDescription> specimenToClonedSourceDescription = new HashMap<>();
         for (TaxonNode node: taxonNodeToSpecimenDescriptionMap.keySet()) {
             if(getConfig().getMonitor().isCanceled()){
                 result.setAbort();
@@ -135,6 +138,7 @@ public class StructuredDescriptionAggregation
 
         //done
         getConfig().getMonitor().done();
+        getRepository().commitTransaction(transactionStatus);
         return result;
     }
 
@@ -221,7 +225,7 @@ public class StructuredDescriptionAggregation
     }
 
     private UpdateResult aggregateDescription(UUID taxonUuid, Set<UUID> specimenDescriptionUuids,
-            UUID descriptiveDataSetUuid, Map<UUID, UUID> specimenToClonedSourceDescription) {
+            UUID descriptiveDataSetUuid, Map<UUID, SpecimenDescription> specimenToClonedSourceDescription) {
 
         UpdateResult result = new UpdateResult();
 
@@ -262,8 +266,6 @@ public class StructuredDescriptionAggregation
 
         // add sources to aggregation description
         // create a snapshot of those descriptions that were used to create the aggregated descriptions
-        // TODO implement when the clones descriptions can be attached to taxon
-        // descriptions as sources
         specimenDescriptions.forEach(specimenDescription -> addSourceDescription(aggregationDescription, specimenDescription,
                 specimenToClonedSourceDescription));
 
@@ -298,10 +300,10 @@ public class StructuredDescriptionAggregation
     }
 
     private void addSourceDescription(TaxonDescription taxonDescription, SpecimenDescription specimenDescription,
-            Map<UUID, UUID> specimenToClonedSourceDescription) {
-        UUID sourceCloneUuid = specimenToClonedSourceDescription.get(specimenDescription.getUuid());
-        if(sourceCloneUuid!=null){
-            addAggregationSource(taxonDescription, sourceCloneUuid);
+            Map<UUID, SpecimenDescription> specimenToClonedSourceDescription) {
+        SpecimenDescription sourceClone = specimenToClonedSourceDescription.get(specimenDescription.getUuid());
+        if(sourceClone!=null){
+            taxonDescription.addAggregationSource(sourceClone);
         }
         else{
             SpecimenOrObservationBase<?> specimenOrObservation = specimenDescription.getDescribedSpecimenOrObservation();
@@ -309,18 +311,11 @@ public class StructuredDescriptionAggregation
             clone.getTypes().add(DescriptionType.CLONE_FOR_SOURCE);
             specimenOrObservation.addDescription(clone);
 
-            addAggregationSource(taxonDescription, clone.getUuid());
-            specimenToClonedSourceDescription.put(specimenDescription.getUuid(), clone.getUuid());
+            taxonDescription.addAggregationSource(clone);
+            specimenToClonedSourceDescription.put(specimenDescription.getUuid(), clone);
         }
     }
 
-
-    private void addAggregationSource(TaxonDescription taxonDescription, UUID cloneUuid) {
-        IdentifiableSource source = IdentifiableSource.NewInstance(OriginalSourceType.Aggregation);
-        source.setIdInSource(cloneUuid.toString());
-        source.setIdNamespace("SpecimenDescription");
-        taxonDescription.addSource(source);
-    }
 
     private void aggregateQuantitativeData(TaxonDescription description, Character character,
             List<DescriptionElementBase> elements) {
@@ -401,20 +396,17 @@ public class StructuredDescriptionAggregation
 
     @Override
     protected UpdateResult invokeOnSingleTaxon() {
-        // TODO Auto-generated method stub
         return null;
     }
 
 
     @Override
     protected UpdateResult invokeHigherRankAggregation() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     protected UpdateResult removeExistingAggregationOnTaxon() {
-        // TODO Auto-generated method stub
         return null;
     }
 
