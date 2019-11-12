@@ -253,7 +253,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
 
         Distribution accumulatedDistribution = null;
         for (TaxonDescription description : lapsana_communis_alpina.getDescriptions()) {
-            if(description.hasMarker(MarkerType.COMPUTED(), true)) {
+            if(description.isAggregatedDistribution()) {
                 assertNull("only one computed Distribution should exists", accumulatedDistribution);
                 assertEquals("the computed Decsription should have only one element", 1, description.getElements().size());
                 accumulatedDistribution = (Distribution) description.getElements().iterator().next();
@@ -308,7 +308,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         Taxon lapsana = (Taxon) taxonService.load(T_LAPSANA_UUID);
         assertEquals("Lapsana communis must only have 1 Description", 1, lapsana.getDescriptions().size());
         TaxonDescription description = lapsana.getDescriptions().iterator().next();
-        assertTrue(description.hasMarker(MarkerType.COMPUTED(), true));
+        assertTrue(description.isAggregatedDistribution());
         assertEquals(3, description.getElements().size());
         int numExpectedFound = 0;
         for (DescriptionElementBase element : description.getElements()){
@@ -377,7 +377,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         Taxon lapsana_communis = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_UUID);
         int computedDescriptionsCnt = 0;
         for(TaxonDescription description : lapsana_communis.getDescriptions()) {
-            if(description.hasMarker(MarkerType.COMPUTED(), true)) {
+            if(description.isAggregatedDistribution()) {
                 computedDescriptionsCnt++;
                 assertEquals(2, description.getElements().size()); // yug, yug_ko
                 for(DescriptionElementBase distribution : description.getElements()) {
@@ -437,7 +437,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         Taxon lapsana_communis = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_UUID);
         int computedDescriptionsCnt = 0;
         for(TaxonDescription description : lapsana_communis.getDescriptions()) {
-            if(description.hasMarker(MarkerType.COMPUTED(), true)) {
+            if(description.isAggregatedDistribution()) {
                 computedDescriptionsCnt++;
                 assertEquals(2, description.getElements().size());
                 for(DescriptionElementBase distribution : description.getElements()) {
