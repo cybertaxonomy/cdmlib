@@ -116,7 +116,7 @@ public interface IOriginalSource<T extends ISourceable> {
 	/**
      * @return the CDM object being the source
      */
-    public ICdmTarget getCdmSource();
+    public ICdmTarget getCdmSourceTarget();
 
 //
 //    /**
@@ -129,4 +129,9 @@ public interface IOriginalSource<T extends ISourceable> {
      * @see #setCdmSource()
      */
     public void setCdmSource(ICdmTarget cdmTarget);
+
+    /**
+     * @return the {@link CdmLinkSource}
+     */
+    public CdmLinkSource getCdmSource();
 }

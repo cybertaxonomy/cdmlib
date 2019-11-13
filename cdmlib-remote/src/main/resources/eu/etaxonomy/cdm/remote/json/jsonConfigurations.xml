@@ -170,6 +170,9 @@
          <entry key="eu.etaxonomy.cdm.model.description.DescriptionElementBase">
               <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.DescriptionElementBeanProcessor" />
          </entry>
+         <entry key="eu.etaxonomy.cdm.model.reference.CdmLinkSource">
+              <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.CdmLinkSourceBeanProcessor" />
+         </entry>
          <entry key="eu.etaxonomy.cdm.model.description.StateData">
               <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.StateDataBeanProcessor" />
          </entry>
@@ -236,6 +239,7 @@
         <value>cacheStrategy</value>
         <value>createdBy</value>
         <value>updatedBy</value>
+        <value>cdmSourceTarget</value><!-- OriginalSourceBase.getCdmSourceTarget() -->
       </list>
     </property>
   </bean>
@@ -427,6 +431,9 @@
         <entry key="eu.etaxonomy.cdm.model.agent.TeamOrPersonBase">
           <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TeamOrPersonBaseBeanProcessor" />
         </entry>
+        <entry key="eu.etaxonomy.cdm.model.reference.CdmLinkSource">
+              <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.CdmLinkSourceBeanProcessor" />
+         </entry>
         <entry key="org.apache.lucene.document.Document">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.LuceneDocumentBeanProcessor" />
         </entry>
@@ -498,6 +505,7 @@
         <value>createdBy</value>
         <value>updatedBy</value>
         <value>inDescription</value>
+        <value>cdmSourceTarget</value><!-- OriginalSourceBase.getCdmSourceTarget() -->
       </list>
     </property>
   </bean>
