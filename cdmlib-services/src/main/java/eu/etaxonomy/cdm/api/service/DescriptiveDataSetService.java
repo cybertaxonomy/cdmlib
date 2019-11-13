@@ -8,9 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.OptionalDouble;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -22,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.api.service.config.IdentifiableServiceConfiguratorImpl;
-import eu.etaxonomy.cdm.api.service.description.DescriptionAggregationConfigurationBase;
 import eu.etaxonomy.cdm.api.service.dto.RowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenRowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonRowWrapperDTO;
@@ -32,7 +29,6 @@ import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
-import eu.etaxonomy.cdm.model.description.Character;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionType;
@@ -43,8 +39,6 @@ import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
-import eu.etaxonomy.cdm.model.description.State;
-import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -52,10 +46,8 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptiveDataSetDao;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
@@ -358,136 +350,6 @@ public class DescriptiveDataSetService
 
     @Override
     @Transactional(readOnly=false)
-    public UpdateResult aggregate(UUID descriptiveDataSetUuid, DescriptionAggregationConfigurationBase config, IProgressMonitor monitor) {
-        DescriptiveDataSet dataSet = load(descriptiveDataSetUuid);
-        Set<DescriptionBase> descriptions = dataSet.getDescriptions();
-
-        monitor.beginTask("Aggregate data set", descriptions.size()*2);
-
-        UpdateResult result = new UpdateResult();
-        result.setCdmEntity(dataSet);
-
-        // delete all aggregation description of this dataset (DescriptionType.AGGREGATED)
-        Set<TaxonDescription> aggregations = dataSet.getDescriptions().stream()
-        .filter(aggDesc->aggDesc instanceof TaxonDescription)
-        .map(aggDesc->(TaxonDescription)aggDesc)
-        .filter(desc -> desc.getTypes().contains(DescriptionType.AGGREGATED))
-        .collect(Collectors.toSet());
-        aggregations.forEach(aggregation->dataSet.removeDescription(aggregation));
-        // also delete all their cloned source descriptions
-        Set<String> sourceUuids = aggregations.stream()
-        .flatMap(aggDesc->aggDesc.getSources().stream())
-        .filter(source->source.getType().equals(OriginalSourceType.Aggregation))
-        .map(aggSource->aggSource.getIdInSource())
-        .collect(Collectors.toSet());
-        for (String string : sourceUuids) {
-            try {
-                UUID uuid = UUID.fromString(string);
-                DescriptionBase<?> sourceClone = descriptionService.load(uuid);
-                descriptionService.deleteDescription(sourceClone);
-            } catch (IllegalArgumentException|NullPointerException e) {
-                // ignore
-            }
-        }
-        //finally delete the aggregation description itself
-        aggregations.forEach(aggDesc->descriptionService.delete(aggDesc));
-
-        // sort descriptions by taxa
-        Map<TaxonNode, Set<UUID>> taxonNodeToSpecimenDescriptionMap = new HashMap<>();
-        for (DescriptionBase<?> descriptionBase : descriptions) {
-            if(monitor.isCanceled()){
-                result.setAbort();
-                return result;
-            }
-
-            if(descriptionBase instanceof SpecimenDescription){
-                SpecimenDescription specimenDescription = HibernateProxyHelper.deproxy(descriptionBase, SpecimenDescription.class);
-                if(specimenDescription.getElements().stream().anyMatch(element->hasCharacterData(element))){
-                    TaxonNode taxonNode = findTaxonNodeForDescription(specimenDescription, dataSet);
-                    if(taxonNode!=null){
-                        addDescriptionToTaxonNodeMap(specimenDescription.getUuid(), taxonNode, taxonNodeToSpecimenDescriptionMap);
-                    }
-                }
-            }
-            monitor.worked(1);
-        }
-        if(config.isAggregateToHigherRanks()){
-            propagateDescriptionsToParentNodes(dataSet, taxonNodeToSpecimenDescriptionMap);
-        }
-        // aggregate per taxa
-        Map<UUID, UUID> specimenToClonedSourceDescription = new HashMap<>();
-        for (Entry<TaxonNode, Set<UUID>> entry: taxonNodeToSpecimenDescriptionMap.entrySet()) {
-            if(monitor.isCanceled()){
-                result.setAbort();
-                return result;
-            }
-            UUID taxonUuid = entry.getKey().getTaxon().getUuid();
-            Set<UUID> specimenDescriptionUuids = entry.getValue();
-            result.includeResult(aggregateDescription(taxonUuid, specimenDescriptionUuids, descriptiveDataSetUuid,
-                    specimenToClonedSourceDescription));
-            monitor.worked(1);
-        }
-        monitor.done();
-        return result;
-    }
-
-
-    private boolean hasCharacterData(DescriptionElementBase element) {
-        return (element instanceof CategoricalData && !((CategoricalData) element).getStatesOnly().isEmpty())
-                || (element instanceof QuantitativeData
-                        && !((QuantitativeData) element).getStatisticalValues().isEmpty());
-    }
-
-    private void addDescriptionToTaxonNodeMap(UUID descriptionUuid, TaxonNode taxonNode, Map<TaxonNode, Set<UUID>> taxonNodeToSpecimenDescriptionMap){
-        Set<UUID> specimenDescriptionUuids = taxonNodeToSpecimenDescriptionMap.get(taxonNode);
-        if(specimenDescriptionUuids==null){
-            specimenDescriptionUuids = new HashSet<>();
-        }
-        specimenDescriptionUuids.add(descriptionUuid);
-        taxonNodeToSpecimenDescriptionMap.put(taxonNode, specimenDescriptionUuids);
-    }
-
-    private void propagateDescriptionsToParentNodes(DescriptiveDataSet dataSet, Map<TaxonNode, Set<UUID>> taxonNodeToSpecimenDescriptionMap){
-        Map<TaxonNode, Set<UUID>> parentMap = new HashMap<>();
-        for (Entry<TaxonNode, Set<UUID>> entry: taxonNodeToSpecimenDescriptionMap.entrySet()) {
-            Set<UUID> descriptionUuids = entry.getValue();
-            TaxonNode node = entry.getKey();
-            TaxonNode parentNode = node.getParent();
-            while(parentNode!=null && isTaxonNodeInDescriptiveDataSet(parentNode, dataSet)){
-                for (UUID uuid : descriptionUuids) {
-                    addDescriptionToTaxonNodeMap(uuid, node.getParent(), parentMap);
-                }
-                parentNode = parentNode.getParent();
-            }
-        }
-        // merge parent map
-        for (Entry<TaxonNode, Set<UUID>> entry: parentMap.entrySet()) {
-            Set<UUID> descriptionUuids = entry.getValue();
-            TaxonNode node = entry.getKey();
-            for (UUID uuid : descriptionUuids) {
-                addDescriptionToTaxonNodeMap(uuid, node, taxonNodeToSpecimenDescriptionMap);
-            }
-        }
-    }
-
-    private boolean isTaxonNodeInDescriptiveDataSet(TaxonNode taxonNode, DescriptiveDataSet dataSet){
-        Set<TaxonNode> taxonSubtreeFilter = dataSet.getTaxonSubtreeFilter();
-        for (TaxonNode datasetNode : taxonSubtreeFilter) {
-            if(datasetNode.getUuid().equals(taxonNode.getUuid())){
-                return true;
-            }
-            List<TaxonNode> allChildren = taxonNodeService.loadChildNodesOfTaxonNode(datasetNode, null, true, true, null);
-            for (TaxonNode childNode : allChildren) {
-                if(childNode.getUuid().equals(taxonNode.getUuid())){
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    @Override
-    @Transactional(readOnly=false)
     public UpdateResult generatePolytomousKey(UUID descriptiveDataSetUuid, UUID taxonUuid) {
         UpdateResult result = new UpdateResult();
 
@@ -511,181 +373,6 @@ public class DescriptiveDataSetService
         result.setCdmEntity(key);
         result.addUpdatedObject(taxon);
         return result;
-    }
-
-    private UpdateResult aggregateDescription(UUID taxonUuid, Set<UUID> specimenDescriptionUuids,
-            UUID descriptiveDataSetUuid, Map<UUID, UUID> specimenToClonedSourceDescription) {
-        UpdateResult result = new UpdateResult();
-
-        TaxonBase<?> taxonBase = taxonService.load(taxonUuid);
-        if(!(taxonBase instanceof Taxon)){
-            result.addException(new ClassCastException("The given taxonUUID does not belong to a taxon"));
-            result.setError();
-            return result;
-        }
-        Taxon taxon = (Taxon)taxonBase;
-        List<DescriptionBase> descriptions = descriptionService.load(new ArrayList<>(specimenDescriptionUuids), null);
-        List<SpecimenDescription> specimenDescriptions = descriptions.stream()
-                .filter(d -> d instanceof SpecimenDescription)
-                .map(d -> (SpecimenDescription) d)
-                .collect(Collectors.toList());
-        Map<Character, List<DescriptionElementBase>> featureToElementMap = new HashMap<>();
-
-        DescriptiveDataSet dataSet = load(descriptiveDataSetUuid);
-        if(dataSet==null){
-            result.addException(new IllegalArgumentException("Could not find data set for uuid "+descriptiveDataSetUuid));
-            result.setAbort();
-            return result;
-        }
-
-        //extract all character description elements
-        for (DescriptionBase<?> description : specimenDescriptions) {
-            description.getElements().stream()
-            //filter out elements that do not have a Character as Feature
-            .filter(element->HibernateProxyHelper.isInstanceOf(element.getFeature(), Character.class))
-            .forEach(ele->addCharacterToMap(featureToElementMap, ele));
-        }
-
-        TaxonDescription aggregationDescription = createAggregationDescription(taxon, dataSet);
-
-        aggregateCharacterData(featureToElementMap, aggregationDescription);
-
-        // add sources to aggregation description
-        // create a snapshot of those descriptions that were used to create the aggregated descriptions
-        // TODO implement when the clones descriptions can be attached to taxon
-        // descriptions as sources
-        specimenDescriptions.forEach(specimenDescription -> addSourceDescription(aggregationDescription, specimenDescription,
-                specimenToClonedSourceDescription));
-
-        result.addUpdatedObject(taxon);
-        result.addUpdatedObject(aggregationDescription);
-
-        return result;
-    }
-
-    private void aggregateCharacterData(Map<Character, List<DescriptionElementBase>> featureToElementMap,
-            TaxonDescription aggregationDescription) {
-        for(Entry<Character, List<DescriptionElementBase>> entry:featureToElementMap.entrySet()){
-            Character character = entry.getKey();
-            List<DescriptionElementBase> elements = entry.getValue();
-            //aggregate categorical data
-            if(character.isSupportsCategoricalData()){
-                aggregateCategoricalData(aggregationDescription, character, elements);
-            }
-            //aggregate quantitative data
-            else if(character.isSupportsQuantitativeData()){
-                aggregateQuantitativeData(aggregationDescription, character, elements);
-            }
-        }
-    }
-
-    private TaxonDescription createAggregationDescription(Taxon taxon, DescriptiveDataSet dataSet) {
-        TaxonDescription aggregationDescription = TaxonDescription.NewInstance(taxon);
-        aggregationDescription.setTitleCache(dataSet.getTitleCache(), true);
-        aggregationDescription.getTypes().add(DescriptionType.AGGREGATED);
-        aggregationDescription.addSource(IdentifiableSource.NewInstance(OriginalSourceType.Aggregation));
-        aggregationDescription.addDescriptiveDataSet(dataSet);
-        return aggregationDescription;
-    }
-
-    private void addSourceDescription(TaxonDescription taxonDescription, SpecimenDescription specimenDescription,
-            Map<UUID, UUID> specimenToClonedSourceDescription) {
-        UUID sourceCloneUuid = specimenToClonedSourceDescription.get(specimenDescription.getUuid());
-        if(sourceCloneUuid!=null){
-            addAggregationSource(taxonDescription, sourceCloneUuid);
-        }
-        else{
-            SpecimenOrObservationBase<?> specimenOrObservation = specimenDescription.getDescribedSpecimenOrObservation();
-            SpecimenDescription clone = (SpecimenDescription) specimenDescription.clone();
-            clone.getTypes().add(DescriptionType.CLONE_FOR_SOURCE);
-            specimenOrObservation.addDescription(clone);
-
-            addAggregationSource(taxonDescription, clone.getUuid());
-            specimenToClonedSourceDescription.put(specimenDescription.getUuid(), clone.getUuid());
-        }
-    }
-
-    private void addAggregationSource(TaxonDescription taxonDescription, UUID cloneUuid) {
-        IdentifiableSource source = IdentifiableSource.NewInstance(OriginalSourceType.Aggregation);
-        source.setIdInSource(cloneUuid.toString());
-        source.setIdNamespace("SpecimenDescription");
-        taxonDescription.addSource(source);
-    }
-
-    private void aggregateQuantitativeData(TaxonDescription description, Character character,
-            List<DescriptionElementBase> elements) {
-        QuantitativeData aggregate = QuantitativeData.NewInstance(character);
-        List<Float> values = new ArrayList<>();
-        float sampleSize = 0;
-        for (DescriptionElementBase element : elements) {
-            if(element instanceof QuantitativeData){
-                QuantitativeData quantitativeData = (QuantitativeData)element;
-                values.addAll(quantitativeData.getStatisticalValues().stream()
-                .filter(value->value.getType().equals(StatisticalMeasure.EXACT_VALUE()))
-                .map(exact->exact.getValue())
-                .collect(Collectors.toList()));
-                if(quantitativeData.getMin()!=null){
-                    values.add(quantitativeData.getMin());
-                }
-                if(quantitativeData.getMax()!=null){
-                    values.add(quantitativeData.getMax());
-                }
-                sampleSize++;
-            }
-        }
-        aggregate.setSampleSize(sampleSize, null);
-        OptionalDouble min = values.stream().mapToDouble(value->(double)value).min();
-        OptionalDouble max = values.stream().mapToDouble(value->(double)value).max();
-        OptionalDouble avg = values.stream().mapToDouble(value->(double)value).average();
-        if(min.isPresent()){
-            aggregate.setMinimum((float)min.getAsDouble(), null);
-        }
-        if(max.isPresent()){
-            aggregate.setMaximum((float)max.getAsDouble(), null);
-        }
-        if(avg.isPresent()){
-            aggregate.setAverage((float)avg.getAsDouble(), null);
-        }
-        description.addElement(aggregate);
-    }
-
-    private void aggregateCategoricalData(TaxonDescription description, Character character,
-            List<DescriptionElementBase> elements) {
-        Map<State, Integer> stateToCountMap = new HashMap<>();
-        CategoricalData aggregate = CategoricalData.NewInstance(character);
-        for (DescriptionElementBase element: elements) {
-            if(element instanceof CategoricalData){
-                CategoricalData categoricalData = (CategoricalData)element;
-                List<StateData> stateDataList = categoricalData.getStateData();
-                for (StateData stateData : stateDataList) {
-                    State state = stateData.getState();
-                    Integer integer = stateToCountMap.get(state);
-                    if(integer==null){
-                        integer = 1;
-                    }
-                    else{
-                        integer++;
-                    }
-                    stateToCountMap.put(state, integer);
-                }
-            }
-        }
-        stateToCountMap.forEach((state, count) -> {
-            StateData stateData = StateData.NewInstance(state);
-            stateData.setCount(count);
-            aggregate.addStateData(stateData);
-        });
-
-        description.addElement(aggregate);
-    }
-
-    private void addCharacterToMap(Map<Character, List<DescriptionElementBase>> featureToElementMap, DescriptionElementBase descriptionElement) {
-        List<DescriptionElementBase> list = featureToElementMap.get(descriptionElement.getFeature());
-        if(list==null){
-            list = new ArrayList<>();
-        }
-        list.add(descriptionElement);
-        featureToElementMap.put(HibernateProxyHelper.deproxy(descriptionElement.getFeature(), Character.class), list);
     }
 
     @Override

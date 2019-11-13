@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.api.service.description.DescriptionAggregationConfigurationBase;
 import eu.etaxonomy.cdm.api.service.dto.RowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenRowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonRowWrapperDTO;
@@ -160,20 +159,6 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      *
      */
     public List<TaxonNode> loadFilteredTaxonNodes(DescriptiveDataSet descriptiveDataSet, List<String> propertyPaths);
-
-    /**
-     * Aggregates the character data of the given {@link DescriptiveDataSet}.<br>
-     * <br>
-     * For all {@link SpecimenDescription}s belonging to this data set new,
-     * aggregated {@link TaxonDescription}s are created for every taxon the specimens are
-     * directly associated with.
-     * @param descriptiveDataSetUuid the uuid of the descriptive data set to which the
-     * aggregated descriptions will be added to
-     * @param config the aggregation configuration
-     * @param monitor the progress monitor
-     * @return the result of the operation
-     */
-    public UpdateResult aggregate(UUID descriptiveDataSetUuid,  DescriptionAggregationConfigurationBase config, IProgressMonitor monitor);
 
     /**
      * Generates a {@link PolytomousKey} for the given {@link DescriptiveDataSet} and sets
