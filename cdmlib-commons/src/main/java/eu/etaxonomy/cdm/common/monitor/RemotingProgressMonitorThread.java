@@ -35,9 +35,6 @@ public abstract class RemotingProgressMonitorThread extends Thread {
         this.monitor = monitor;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void run() {
         try {
@@ -71,9 +68,6 @@ public abstract class RemotingProgressMonitorThread extends Thread {
         return monitorsInProgress.get(monitor);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void interrupt() {
         super.interrupt();
@@ -81,5 +75,4 @@ public abstract class RemotingProgressMonitorThread extends Thread {
         monitor.done();
         monitorsInProgress.remove(monitor);
     }
-
 }
