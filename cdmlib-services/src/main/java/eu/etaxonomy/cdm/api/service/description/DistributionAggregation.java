@@ -128,10 +128,6 @@ public class DistributionAggregation
 
     private final Map<NamedArea, Set<NamedArea>> subAreaMap = new HashMap<>();
 
-    private int byRankTicks = 300;
-    private int byAreasTicks = 100;
-
-
     private long batchMinFreeHeap = BATCH_MIN_FREE_HEAP;
 
 // ******************* CONSTRUCTOR *********************************/
@@ -180,11 +176,9 @@ public class DistributionAggregation
                 +  getSession().getSessionFactory().getSessionFactoryOptions().getJdbcBatchSize());
 
         TaxonNodeFilter filter = getConfig().getTaxonNodeFilter();
-        filter.setOrder(ORDER.TREEINDEX_DESC);
-
+        filter.setOrder(ORDER.TREEINDEX_DESC); //DESC guarantees that child taxa are aggregated before parent
 
         Long countTaxonNodes = getTaxonNodeService().count(filter);
-
 
         List<Integer> taxonNodeIdList = getTaxonNodeService().idList(filter);
 
@@ -192,8 +186,7 @@ public class DistributionAggregation
         double start = System.currentTimeMillis();
 
         int aggregationWorkTicks = countTaxonNodes.intValue();
-        int nClassifications = 1;
-        beginTask("Accumulating distributions", (nClassifications * aggregationWorkTicks) + 1 );
+        beginTask("Accumulating distributions", (aggregationWorkTicks) + 1 );
 
         makeStatusOrder();
         worked(1);
@@ -204,26 +197,16 @@ public class DistributionAggregation
 
         //TODO AM toString for filter
         subTask("Accumulating distributions to super areas for " + filter.toString());
-            boolean doClearExistingDistribution = true;
-            //TODO AM move to invokeOnSingleTaxon()
-            accumulate(getConfig().getSuperAreas(),
+
+        boolean doClearExistingDistribution = true;
+
+        //TODO AM move to invokeOnSingleTaxon()
+        accumulate(getConfig().getSuperAreas(),
                     taxonNodeIdList,
-                    new SubProgressMonitor(getMonitor(), byAreasTicks),
+                    new SubProgressMonitor(getMonitor(), aggregationWorkTicks),
                     doClearExistingDistribution);
 
-//        double end2 = System.currentTimeMillis();
-//        logger.info("Time elapsed for accumulate() : " + (end2 - start2) / (1000) + "s");
-
-//        //TODO AM toString for filter
-//        subTask("Accumulating distributions to higher ranks for " + filter.toString());
-//        double start3 = System.currentTimeMillis();
-//        if (getConfig().getAggregationMode().equals(AggregationMode.byRanks) || getConfig().getAggregationMode().equals(AggregationMode.byAreasAndRanks)) {
-//            //TODO AM move to invokeHigherRankAggregation()
-//            accumulateByRank(taxonNodeIdList, new SubProgressMonitor(getMonitor(), byRankTicks), getConfig().getAggregationMode().equals(AggregationMode.byRanks));
-//        }
-//
         double end3 = System.currentTimeMillis();
-//        logger.info("Time elapsed for accumulateByRank() : " + (end3 - start3) / (1000) + "s");
         logger.info("Time elapsed for accumulate(): " + (end3 - start) / (1000) + "s");
 
         done();
@@ -267,6 +250,9 @@ public class DistributionAggregation
      * byRankIgnoreStatusList contains by default
      *  <ul>
      *    <li>PresenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA()</li>
+     *    <li>PresenceTerm.ENDEMIC_DOUBTFULLY_PRESENT()</li>
+     *    <li>PresenceTerm.ENDEMIC_REPORTED_IN_ERROR()</li>
+     *    <li>PresenceTerm.NOT_ENDEMIC_FOR_THE_RELEVANT_AREA()</li>
      *  </ul>
      *
      * @return the byRankIgnoreStatusList
@@ -276,7 +262,10 @@ public class DistributionAggregation
         if (byRankIgnoreStatusList == null) {
             byRankIgnoreStatusList = Arrays.asList(
                     new PresenceAbsenceTerm[] {
-                    		PresenceAbsenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA()
+                    		PresenceAbsenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA(),
+                    		PresenceAbsenceTerm.ENDEMIC_DOUBTFULLY_PRESENT(),
+                            PresenceAbsenceTerm.ENDEMIC_REPORTED_IN_ERROR(),
+                            PresenceAbsenceTerm.NOT_ENDEMIC_FOR_THE_RELEVANT_AREA()
                     });
         }
         return byRankIgnoreStatusList;
