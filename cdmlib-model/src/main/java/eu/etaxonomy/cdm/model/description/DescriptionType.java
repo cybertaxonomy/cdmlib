@@ -54,7 +54,7 @@ public enum DescriptionType implements IEnumTerm<DescriptionType>{
      * Usually such descriptions should not be edited by users manually.
      */
     @XmlEnumValue("AGSD")
-    AGGREGATED_STRUC_DESC(UUID.fromString(""), "Aggregated Structured Descriptions", "AGSD", AGGREGATED),
+    AGGREGATED_STRUC_DESC(UUID.fromString("a613459c-82af-45ff-b950-cc769a7bb486"), "Aggregated Structured Descriptions", "AGSD", AGGREGATED),
 
     /**
      * Description is a clone which was used to fix a certain state of data to define
