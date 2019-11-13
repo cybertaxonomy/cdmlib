@@ -69,29 +69,6 @@ public class RemotingProgressMonitor extends RestServiceProgressMonitor implemen
         }
     }
 
-//    /**
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    public void interrupt() {
-//
-//        if(monitorThread.isAlive()) {
-//            monitorThread.interrupt();
-//        }
-//    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-//    @Override
-//    public RemotingProgressMonitorThread getThread() {
-//        return monitorThread;
-//    }
-
-//    /**
-//     * {@inheritDoc}
-//     */
     @Override
     public boolean isMonitorThreadRunning() {
         RemotingProgressMonitorThread monitorThread = RemotingProgressMonitorThread.getMonitorThread(this);

@@ -32,15 +32,11 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 /**
  * @author a.mueller
  * @since 22.11.2011
- *
  */
 public class CategoricalDataTest {
 
     private CategoricalData categorialData;
 
-    /**
-     * @throws java.lang.Exception
-     */
     @Before
     public void setUp() throws Exception {
         categorialData = CategoricalData.NewInstance();
