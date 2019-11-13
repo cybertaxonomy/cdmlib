@@ -807,6 +807,7 @@ public class DistributionAggregation
                             deleteCandidates.add(descriptionElement);
                         }
                     }
+                    description.addType(DescriptionType.AGGREGATED_DISTRIBUTION);
                     if(deleteCandidates.size() > 0){
                         for(DescriptionElementBase descriptionElement : deleteCandidates) {
                             description.removeElement(descriptionElement);
