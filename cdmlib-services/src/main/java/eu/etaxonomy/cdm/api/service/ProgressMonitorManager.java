@@ -25,16 +25,15 @@ import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitorThread;
  *
  * @author cmathew
  * @since 14 Oct 2015
- *
  */
 @Component
 public class ProgressMonitorManager<T extends IRestServiceProgressMonitor> {
 
-    private final Map<UUID, T> monitors = new ConcurrentHashMap<UUID, T>();
+    private final Map<UUID, T> monitors = new ConcurrentHashMap<>();
     private final Map<UUID, RemotingProgressMonitorThread> threads = new ConcurrentHashMap<>();
 
 
-    private final Map<UUID, Long> timeoutMap = new HashMap<UUID, Long>();
+    private final Map<UUID, Long> timeoutMap = new HashMap<>();
 
     private Thread cleanUpThread = null;
 

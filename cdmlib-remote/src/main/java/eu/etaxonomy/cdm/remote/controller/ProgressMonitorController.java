@@ -34,7 +34,6 @@ import io.swagger.annotations.Api;
 /**
  * @author Andreas Kohlbecker
  * @since Jul 16, 2012
- *
  */
 @Controller
 @CrossOrigin(origins="*")
@@ -43,7 +42,6 @@ import io.swagger.annotations.Api;
         + "HTTP requests that trigger long term processes.")
 @RequestMapping(value="/progress/")
 public class ProgressMonitorController {
-
 
     @Autowired
     private ProgressMonitorManager<IRestServiceProgressMonitor> progressMonitorManager;

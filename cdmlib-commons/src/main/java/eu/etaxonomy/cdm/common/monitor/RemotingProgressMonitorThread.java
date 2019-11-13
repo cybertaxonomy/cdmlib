@@ -18,15 +18,15 @@ import org.apache.log4j.Logger;
  *
  * @author cmathew
  * @since 22 Oct 2015
- *
  */
 public abstract class RemotingProgressMonitorThread extends Thread {
 
-    private static ConcurrentHashMap<IRemotingProgressMonitor, RemotingProgressMonitorThread> monitorsInProgress =
-            new ConcurrentHashMap<IRemotingProgressMonitor, RemotingProgressMonitorThread>();
+    private static final Logger logger = Logger.getLogger(RemotingProgressMonitorThread.class);
+
+    private static ConcurrentHashMap<IRemotingProgressMonitor, RemotingProgressMonitorThread>
+        monitorsInProgress = new ConcurrentHashMap<>();
 
     private IRemotingProgressMonitor monitor;
-    private static final Logger logger = Logger.getLogger(RemotingProgressMonitorThread.class);
 
     public void setMonitor(IRemotingProgressMonitor monitor) {
         if(monitor == null) {

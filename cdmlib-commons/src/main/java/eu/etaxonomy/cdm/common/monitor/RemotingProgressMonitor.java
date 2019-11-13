@@ -22,7 +22,7 @@ public class RemotingProgressMonitor extends RestServiceProgressMonitor implemen
     private static final long serialVersionUID = -3173248814638886884L;
 
     private Serializable result;
-    private List<String> reports = new ArrayList<String>();
+    private List<String> reports = new ArrayList<>();
     private boolean serviceDone;
 //    private transient RemotingProgressMonitorThread monitorThread;
 
@@ -38,18 +38,11 @@ public class RemotingProgressMonitor extends RestServiceProgressMonitor implemen
 
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getResult() {
         return result;
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setResult(Serializable result) {
         this.result = result;
@@ -58,19 +51,11 @@ public class RemotingProgressMonitor extends RestServiceProgressMonitor implemen
         }
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<String> getReports() {
         return reports;
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void addReport(String report) {
         reports.add(report);
