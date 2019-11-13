@@ -161,7 +161,7 @@ public class DescriptionListController
             @RequestParam(value= "mode", required = true) final AggregationMode mode,
             @RequestParam(value = "targetAreaLevel", required = true) UUID targetAreaLevelUuid,
             @RequestParam(value = "frontendBaseUrl", required = false) String frontendBaseUrl,
-            @RequestParam(value = "priority", required = false) Integer priority,
+            @RequestParam(value = "priority", required = false, defaultValue="3") Integer priority,
 //            @RequestParam(value = "lowerRank", required = false) Rank lowerRank,
 //            @RequestParam(value = "upperRank", required = false) Rank upperRank,
             @RequestParam(value = "minRank", required = false) UUID lowerRank,
