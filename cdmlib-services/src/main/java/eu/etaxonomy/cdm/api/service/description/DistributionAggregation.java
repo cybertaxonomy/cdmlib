@@ -321,32 +321,6 @@ public class DistributionAggregation
             return a;
         }
     }
-//
-//    /**
-//     * reads the priority for the given status term from the extensions.
-//     *
-//     * @param term
-//     * @return the priority value
-//     */
-//    private Integer getPriorityFor(PresenceAbsenceTerm term) {
-//        Set<Extension> extensions = term.getExtensions();
-//        for(Extension extension : extensions){
-//            if(!extension.getType().equals(ExtensionType.ORDER())) {
-//                continue;
-//            }
-//            int pos = extension.getValue().indexOf(EXTENSION_VALUE_PREFIX);
-//            if(pos == 0){ // if starts with EXTENSION_VALUE_PREFIX
-//                try {
-//                    Integer priority = Integer.valueOf(extension.getValue().substring(EXTENSION_VALUE_PREFIX.length()));
-//                    return priority;
-//                } catch (NumberFormatException e) {
-//                    logger.warn("Invalid number format in Extension:" + extension.getValue());
-//                }
-//            }
-//        }
-//        logger.warn("no priority defined for '" + term.getLabel() + "'");
-//        return null;
-//    }
 
 
     /**
@@ -456,23 +430,73 @@ public class DistributionAggregation
             logger.debug("accumulate - taxon :" + taxonToString(taxon));
         }
 
-        TaxonDescription description = getComputedDescription(taxon);
-        if (getConfig().getAggregationMode().isByArea()){
-            accumulateByAreaSingleTaxon(description, taxonNode, superAreaList);
-        }
+        Map<NamedArea, StatusAndSources> accumulatedStatusMap = new HashMap<>();
         if (getConfig().getAggregationMode().isByRank()){
-            accumulateByRankSingleTaxon(description, taxonNode);
+            accumulateByRankSingleTaxon(taxonNode, accumulatedStatusMap);
+        }
+        if (getConfig().getAggregationMode().isByArea()){
+            accumulateByAreaSingleTaxon(taxonNode, superAreaList, accumulatedStatusMap);
+        }
+        addAggregationResultToDescription(taxon, accumulatedStatusMap);
+    }
+
+    private void addAggregationResultToDescription(Taxon taxon, Map<NamedArea, StatusAndSources> accumulatedStatusMap) {
+        TaxonDescription aggregationDescription = getComputedDescription(taxon);
+        Set<Distribution> toDelete = new HashSet<>();
+        if (getConfig().isDoClearExistingDistribution()){
+            clearDescription(aggregationDescription);
+        }else{
+            //TODO only distributions (but nothing else expected)
+            toDelete = new HashSet<>((Set)aggregationDescription.getElements());
+        }
+        for (NamedArea area : accumulatedStatusMap.keySet()) {
+            Distribution distribution = findDistributionForAreaAndStatus(aggregationDescription, area, accumulatedStatusMap.get(area).status);
+            if(distribution == null) {
+                // create a new distribution element
+                distribution = Distribution.NewInstance(area, accumulatedStatusMap.get(area).status);
+                aggregationDescription.addElement(distribution);
+            }else{
+                toDelete.remove(distribution);
+                //TODO improve source reuse
+                distribution.getSources().clear();
+            }
+            addSourcesDeduplicated(distribution.getSources(), accumulatedStatusMap.get(area).sources);
+
+        }
+        for(Distribution toDelteDist: toDelete){
+            aggregationDescription.removeElement(toDelteDist);
         }
     }
 
-    private void accumulateByAreaSingleTaxon(TaxonDescription description, TaxonNode taxonNode, List<NamedArea> superAreaList) {
+    private void clearDescription(TaxonDescription aggregationDescription) {
+        int deleteCount = 0;
+        Set<DescriptionElementBase> deleteCandidates = new HashSet<>();
+        for (DescriptionElementBase descriptionElement : aggregationDescription.getElements()) {
+            if(descriptionElement.isInstanceOf(Distribution.class)) {
+                deleteCandidates.add(descriptionElement);
+            }
+        }
+        aggregationDescription.addType(DescriptionType.AGGREGATED_DISTRIBUTION);
+        if(deleteCandidates.size() > 0){
+            for(DescriptionElementBase descriptionElement : deleteCandidates) {
+                aggregationDescription.removeElement(descriptionElement);
+                getDescriptionService().deleteDescriptionElement(descriptionElement);
+                descriptionElement = null;
+                deleteCount++;
+            }
+            getDescriptionService().saveOrUpdate(aggregationDescription);
+            logger.debug("\t" + deleteCount +" distributions cleared");
+        }
+    }
+
+    private void accumulateByAreaSingleTaxon(TaxonNode taxonNode,
+            List<NamedArea> superAreaList, Map<NamedArea, StatusAndSources> accumulatedStatusMap) {
 
         Taxon taxon = CdmBase.deproxy(taxonNode.getTaxon());
         if(logger.isDebugEnabled()){
             logger.debug("accumulateByArea() - taxon :" + taxonToString(taxon));
         }
 
-//        TaxonDescription description = findComputedDescription(taxon, doClearDescriptions);
         List<Distribution> distributions = distributionsFor(taxon);
 
         // Step through superAreas for accumulation of subAreas
@@ -503,151 +527,24 @@ public class DistributionAggregation
                     }
                 }
             } // next sub area
+
+
             if (accumulatedStatusAndSources != null) {
-                if(logger.isDebugEnabled()){
-                    logger.debug("accumulateByArea() - \t >> " + termToString(superArea) + ": " + termToString(accumulatedStatusAndSources.status));
-                }
-                // store new distribution element for superArea in taxon description
-                Distribution newDistribitionElement = Distribution.NewInstance(superArea, accumulatedStatusAndSources.status);
-                newDistribitionElement.getSources().addAll(accumulatedStatusAndSources.sources);
-                //TODO AM element marker needed?
-//                newDistribitionElement.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
-                description.addElement(newDistribitionElement);
+                StatusAndSources preferedStatus = choosePreferredOrMerge(accumulatedStatusMap.get(superArea), accumulatedStatusAndSources, null);
+                accumulatedStatusMap.put(superArea, preferedStatus);
             }
 
         } // next super area ....
-
-//        getDescriptionService().saveOrUpdate(description);
-//        getTaxonService().saveOrUpdate(taxon);
     }
 
-//   /**
-//    * Step 2: Accumulate by ranks starting from lower rank to upper rank, the status of all children
-//    * are accumulated on each rank starting from lower rank to upper rank.
-//    * <ul>
-//    * <li>aggregate distribution of included taxa of the next lower rank for any rank level starting from the lower rank (e.g. sub species)
-//    *    up to upper rank (e.g. Genus)</li>
-//    *  <li>the accumulation id done for each distribution area found in the included taxa</li>
-//    *  <li>areas of subtaxa with status endemic are ignored</li>
-//    *  <li>the status with the highest priority determines the value for the accumulated distribution</li>
-//    *  <li>the source reference of the accumulated distributions are also accumulated into the new distribution,
-//    *    this has been especially implemented for the EuroMed Checklist Vol2 and might not be a general requirement</li>
-//    *</ul>
-//    * @throws JvmLimitsException
-//    */
-//    protected void accumulateByRank(List<Integer> taxonNodeIdList, IProgressMonitor subMonitor,
-//            boolean doClearDescriptions) throws JvmLimitsException {
-//
-//        DynamicBatch batch = new DynamicBatch(BATCH_SIZE_BY_RANK, batchMinFreeHeap);
-//        batch.setRequiredFreeHeap(BATCH_FREE_HEAP_RATIO);
-//        batch.setMaxAllowedGcIncreases(10);
-//
-//        TransactionStatus txStatus = startTransaction(false);
-//
-//        // the loadRankSpecificRootNodes() method not only finds
-//        // taxa of the specified rank but also taxa of lower ranks
-//        // if no taxon of the specified rank exists, so we need to
-//        // remember which taxa have been processed already
-//        Set<Integer> taxaProcessedIds = new HashSet<>();
-//
-////        subMonitor.beginTask("Accumulating by rank", ticksPerRank);
-//
-////        for (Rank rank : ranks) {
-//
-////            if(logger.isDebugEnabled()){
-////                logger.debug("accumulateByRank() - at Rank '" + termToString(rank) + "'");
-////            }
-//
-////            Set<Integer> taxonIdsPerRank = classificationLookupDao.getTaxonIdByRank().get(rank);
-//
-////            int taxonCountPerRank = taxonNodeIdList.size();
-//
-////            SubProgressMonitor taxonSubMonitor = new SubProgressMonitor(subMonitor, ticksPerRank);
-////            taxonSubMonitor.beginTask("Accumulating by rank " + termToString(rank), taxonCountperRank);
-//
-////            if(taxonCountPerRank == 0) {
-////                taxonSubMonitor.done();
-////                continue;
-////            }
-//
-//            Iterator<Integer> taxonNodeIdIterator = taxonNodeIdList.iterator();
-//            while (taxonNodeIdIterator.hasNext() || batch.hasUnprocessedItems()) {
-//
-//                if(txStatus == null) {
-//                    // transaction has been committed at the end of this batch, start a new one
-//                    txStatus = startTransaction(false);
-//                }
-//
-//                // load taxa for this batch
-//                List<Integer> taxonNodeIds = batch.nextItems(taxonNodeIdIterator);
-//
-//                List<OrderHint> orderHints = new ArrayList<>();
-//                orderHints.add(OrderHint.BY_TREE_INDEX_DESC);
-//                List<TaxonNode> nodes = getTaxonNodeService().loadByIds(taxonNodeIds, orderHints, null);
-//
-////                if(logger.isDebugEnabled()){
-////                           logger.debug("accumulateByRank() - taxon " + taxonPager.getFirstRecord() + " to " + taxonPager.getLastRecord() + " of " + taxonPager.getCount() + "]");
-////                }
-//
-//                for(TaxonNode taxonNode : nodes) {
-//
-//                    accumulateByRankSingleTaxon(
-//                            doClearDescriptions, batch, taxonNode);
-//                    if(!batch.isWithinJvmLimits()) {
-//                        break; // flushAndClear and start with new batch
-//                    }
-//
-//                } // next taxon ....
-//
-//                flushAndClear();
-//
-//                // commit for every batch, otherwise the persistent context
-//                // may grow too much and eats up all the heap
-//                commitTransaction(txStatus);
-//                txStatus = null;
-//
-//                // flushing the session and to the index (flushAndClear() ) can impose a
-//                // massive heap consumption. therefore we explicitly do a check after the
-//                // flush to detect these situations and to reduce the batch size.
-//                if(batch.getJvmMonitor().getGCRateSiceLastCheck() > 0.05) {
-//                    batch.reduceSize(0.5);
-//                }
-//
-//            } // next batch
-//
-//            subMonitor.done();
-////            subMonitor.worked(1);
-//
-////        } // next Rank
-//
-//        logger.info("accumulateByRank() - done");
-//        subMonitor.done();
-//    }
-
-    private void accumulateByRankSingleTaxon(TaxonDescription description, TaxonNode taxonNode) {
+    private void accumulateByRankSingleTaxon(TaxonNode taxonNode,
+            Map<NamedArea, StatusAndSources> accumulatedStatusMap) {
 
         Taxon taxon = CdmBase.deproxy(taxonNode.getTaxon());
-//        if (taxaProcessedIds.contains(taxon.getId())) {
-//            if(logger.isDebugEnabled()){
-//                logger.debug("accumulateByRank() - skipping already processed taxon :" + taxonToString(taxon));
-//            }
-//            return;
-//        }
-//        taxaProcessedIds.add(taxon.getId());
         if(logger.isDebugEnabled()){
             logger.debug("accumulateByRank() [" + /*rank.getLabel() +*/ "] - taxon :" + taxonToString(taxon));
         }
 
-        // Step through direct taxonomic children for accumulation
-        Map<NamedArea, StatusAndSources> accumulatedStatusMap = new HashMap<>();
-
-    //                    List<Integer> childTaxonIds = new ArrayList<>();
-    //                    Set<Integer> childSet = classificationLookupDao.getChildTaxonMap().get(taxon.getId());
-    //                    if(childSet != null) {
-    //                        childTaxonIds.addAll(childSet);
-    //                    }
-
-        //                        childTaxa = getTaxonService().loadByIds(childTaxonIds, TAXONDESCRIPTION_INIT_STRATEGY);
         if(!taxonNode.getChildNodes().isEmpty()) {
 
             LinkedList<Taxon> childStack = new LinkedList<>();
@@ -671,7 +568,8 @@ public class DistributionAggregation
                     }
 
                     StatusAndSources childStatusAndSources = new StatusAndSources(status, distribution.getSources());
-                    accumulatedStatusMap.put(area, choosePreferredOrMerge(accumulatedStatusMap.get(area), childStatusAndSources, null));
+                    StatusAndSources preferedStatus = choosePreferredOrMerge(accumulatedStatusMap.get(area), childStatusAndSources, null);
+                    accumulatedStatusMap.put(area, preferedStatus);
                 }
 
                 // evict all initialized entities of the childTaxon
@@ -684,31 +582,15 @@ public class DistributionAggregation
     //                            }
     //            getSession().evict(childTaxon); // no longer needed, save heap
             }
-
-            for (NamedArea area : accumulatedStatusMap.keySet()) {
-                Distribution distribition = findDistribution(description, area, accumulatedStatusMap.get(area).status);
-                if(distribition == null) {
-                    // create a new distribution element
-                    distribition = Distribution.NewInstance(area, accumulatedStatusMap.get(area).status);
-                    //TODO element marker needed
-//                  distribition.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
-                }
-                addSourcesDeduplicated(distribition.getSources(), accumulatedStatusMap.get(area).sources);
-
-                description.addElement(distribition);
-//              getTaxonService().saveOrUpdate(taxon);
-//              getDescriptionService().saveOrUpdate(description);
-            }
-
         }
     }
 
-    private Distribution findDistribution(TaxonDescription description, NamedArea area, PresenceAbsenceTerm status) {
+    private Distribution findDistributionForAreaAndStatus(TaxonDescription description, NamedArea area, PresenceAbsenceTerm status) {
         for(DescriptionElementBase item : description.getElements()) {
-            if(!(item instanceof Distribution)) {
+            if(!(item.isInstanceOf(Distribution.class))) {
                 continue;
             }
-            Distribution distribution = ((Distribution)item);
+            Distribution distribution = CdmBase.deproxy(item, Distribution.class);
             if(distribution.getArea().equals(area) && distribution.getStatus().equals(status)) {
                 return distribution;
             }
@@ -782,32 +664,12 @@ public class DistributionAggregation
      */
     private TaxonDescription getComputedDescription(Taxon taxon) {
 
-        boolean doClearDescriptions = getConfig().isDoClearExistingDistribution();
         // find existing one
         for (TaxonDescription description : taxon.getDescriptions()) {
             // TODO remove COMPUTED;
             if (description.isAggregatedDistribution() || description.hasMarker(MarkerType.COMPUTED(), true)) {
                 logger.debug("reusing computed description for " + taxon.getTitleCache());
-                if (doClearDescriptions) {
-                    int deleteCount = 0;
-                    Set<DescriptionElementBase> deleteCandidates = new HashSet<>();
-                    for (DescriptionElementBase descriptionElement : description.getElements()) {
-                        if(descriptionElement.isInstanceOf(Distribution.class)) {
-                            deleteCandidates.add(descriptionElement);
-                        }
-                    }
-                    description.addType(DescriptionType.AGGREGATED_DISTRIBUTION);
-                    if(deleteCandidates.size() > 0){
-                        for(DescriptionElementBase descriptionElement : deleteCandidates) {
-                            description.removeElement(descriptionElement);
-                            getDescriptionService().deleteDescriptionElement(descriptionElement);
-                            descriptionElement = null;
-                            deleteCount++;
-                        }
-                        getDescriptionService().saveOrUpdate(description);
-                        logger.debug("\t" + deleteCount +" distributions cleared");
-                    }
-                }
+
                 return description;
             }
         }
@@ -816,11 +678,6 @@ public class DistributionAggregation
         return createNewDescription(taxon);
     }
 
-    /**
-     * @param taxon
-     * @param descriptionTitle
-     * @return
-     */
     private TaxonDescription createNewDescription(Taxon taxon) {
         String title = taxon.getTitleCache();
         logger.debug("creating new description for " + title);
