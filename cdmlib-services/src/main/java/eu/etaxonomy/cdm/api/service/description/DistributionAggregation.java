@@ -179,35 +179,32 @@ public class DistributionAggregation
         filter.setOrder(ORDER.TREEINDEX_DESC); //DESC guarantees that child taxa are aggregated before parent
 
         Long countTaxonNodes = getTaxonNodeService().count(filter);
+        int aggregationWorkTicks = countTaxonNodes.intValue();
+        int getIdListTicks = 1;
+        int makeStatusOrderTicks = 1;
+        beginTask("Accumulating distributions", (aggregationWorkTicks) + getIdListTicks + makeStatusOrderTicks);
 
         List<Integer> taxonNodeIdList = getTaxonNodeService().idList(filter);
+        worked(getIdListTicks);
 
         // take start time for performance testing
         double start = System.currentTimeMillis();
 
-        int aggregationWorkTicks = countTaxonNodes.intValue();
-        beginTask("Accumulating distributions", (aggregationWorkTicks) + 1 );
-
         makeStatusOrder();
-        worked(1);
+        worked(makeStatusOrderTicks);
 
         double end1 = System.currentTimeMillis();
-        logger.info("Time elapsed for classificationLookup() : " + (end1 - start) / (1000) + "s");
-//        double start2 = System.currentTimeMillis();
+        logger.info("Time elapsed for fetching taxon node id list and making status order() : " + (end1 - start) / (1000) + "s");
 
         //TODO AM toString for filter
-        subTask("Accumulating distributions to super areas for " + filter.toString());
-
-        boolean doClearExistingDistribution = true;
+        subTask("Accumulating distributions per taxon for taxon filter " + filter.toString());
 
         //TODO AM move to invokeOnSingleTaxon()
-        accumulate(getConfig().getSuperAreas(),
-                    taxonNodeIdList,
-                    new SubProgressMonitor(getMonitor(), aggregationWorkTicks),
-                    doClearExistingDistribution);
+        accumulate(taxonNodeIdList, new SubProgressMonitor(getMonitor(), aggregationWorkTicks));
 
         double end3 = System.currentTimeMillis();
-        logger.info("Time elapsed for accumulate(): " + (end3 - start) / (1000) + "s");
+        logger.info("Time elapsed for accumulate only(): " + (end3 - end1) / (1000) + "s");
+        logger.info("Time elapsed for invoking task(): " + (end3 - start) / (1000) + "s");
 
         done();
 
@@ -369,8 +366,10 @@ public class DistributionAggregation
      * @throws JvmLimitsException
      *
      */
-    protected void accumulate(List<NamedArea> superAreas, List<Integer> taxonNodeIdList,
-            IProgressMonitor subMonitor, boolean doClearDescriptions) throws JvmLimitsException {
+    protected void accumulate(List<Integer> taxonNodeIdList,
+            IProgressMonitor subMonitor) throws JvmLimitsException {
+
+        List<NamedArea> superAreas = getConfig().getSuperAreas();
 
         DynamicBatch batch = new DynamicBatch(BATCH_SIZE_BY_AREA, batchMinFreeHeap);
         batch.setRequiredFreeHeap(BATCH_FREE_HEAP_RATIO);
@@ -414,20 +413,13 @@ public class DistributionAggregation
             // start processing the new batch
 
             for(TaxonNode taxonNode : taxonNodes) {
-                Taxon taxon = CdmBase.deproxy(taxonNode.getTaxon());
-                if(logger.isDebugEnabled()){
-                    logger.debug("accumulate - taxon :" + taxonToString(taxon));
-                }
+
+                accumulateSingleTaxon(taxonNode, superAreaList);
                 batch.incrementCounter();
 
-                TaxonDescription description = findComputedDescription(taxon, doClearDescriptions);
-                if (getConfig().getAggregationMode().isByArea()){
-                    accumulateByAreaSingleTaxon(subMonitor, description, superAreaList, taxonNode);
-                }
-                if (getConfig().getAggregationMode().isByRank()){
-                    accumulateByRankSingleTaxon(description, batch, taxonNode);
-                }
-                //TODO handle canceled better
+                subMonitor.worked(1);
+
+                //TODO handle canceled better if needed
                 if(subMonitor.isCanceled()){
                     return;
                 }
@@ -437,7 +429,7 @@ public class DistributionAggregation
                 }
             } // next taxon
 
-            flushAndClear();
+//            flushAndClear();
 
             // commit for every batch, otherwise the persistent context
             // may grow too much and eats up all the heap
@@ -457,8 +449,23 @@ public class DistributionAggregation
         subMonitor.done();
     }
 
-    private void accumulateByAreaSingleTaxon(IProgressMonitor subMonitor, TaxonDescription description,
-            List<NamedArea> superAreaList, TaxonNode taxonNode) {
+    private void accumulateSingleTaxon(TaxonNode taxonNode, List<NamedArea> superAreaList) {
+
+        Taxon taxon = CdmBase.deproxy(taxonNode.getTaxon());
+        if(logger.isDebugEnabled()){
+            logger.debug("accumulate - taxon :" + taxonToString(taxon));
+        }
+
+        TaxonDescription description = getComputedDescription(taxon);
+        if (getConfig().getAggregationMode().isByArea()){
+            accumulateByAreaSingleTaxon(description, taxonNode, superAreaList);
+        }
+        if (getConfig().getAggregationMode().isByRank()){
+            accumulateByRankSingleTaxon(description, taxonNode);
+        }
+    }
+
+    private void accumulateByAreaSingleTaxon(TaxonDescription description, TaxonNode taxonNode, List<NamedArea> superAreaList) {
 
         Taxon taxon = CdmBase.deproxy(taxonNode.getTaxon());
         if(logger.isDebugEnabled()){
@@ -487,7 +494,7 @@ public class DistributionAggregation
                         if(logger.isTraceEnabled()){
                             logger.trace("accumulateByArea() - \t\t" + termToString(subArea) + ": " + termToString(status));
                         }
-                        // skip all having a status value different of those in byAreaIgnoreStatusList
+                        // skip all having a status value not in the ignore list
                         if (getByAreaIgnoreStatusList().contains(status)){
                             continue;
                         }
@@ -512,7 +519,6 @@ public class DistributionAggregation
 
         getDescriptionService().saveOrUpdate(description);
         getTaxonService().saveOrUpdate(taxon);
-        subMonitor.worked(1);
     }
 
 //   /**
@@ -618,9 +624,7 @@ public class DistributionAggregation
 //        subMonitor.done();
 //    }
 
-    private void accumulateByRankSingleTaxon(TaxonDescription description, DynamicBatch batch,
-            TaxonNode taxonNode) {
-        batch.incrementCounter();
+    private void accumulateByRankSingleTaxon(TaxonDescription description, TaxonNode taxonNode) {
 
         Taxon taxon = CdmBase.deproxy(taxonNode.getTaxon());
 //        if (taxaProcessedIds.contains(taxon.getId())) {
@@ -677,7 +681,7 @@ public class DistributionAggregation
     //                                }
     //                                getSession().evict(description); // this causes in some cases the taxon object to be detached from the session
     //                            }
-                getSession().evict(childTaxon); // no longer needed, save heap
+    //            getSession().evict(childTaxon); // no longer needed, save heap
             }
 
             if(accumulatedStatusMap.size() > 0) {
@@ -699,7 +703,6 @@ public class DistributionAggregation
             }
 
         }
-    //                    taxonSubMonitor.worked(1); // one taxon worked
     }
 
     private Distribution findDistribution(TaxonDescription description, NamedArea area, PresenceAbsenceTerm status) {
@@ -779,16 +782,15 @@ public class DistributionAggregation
      *     (or a MarkerType COMPUTED for historical reasons, will be removed in future)
      * @return
      */
-    private TaxonDescription findComputedDescription(Taxon taxon, boolean doClear) {
+    private TaxonDescription getComputedDescription(Taxon taxon) {
 
-        String descriptionTitle = this.getClass().getSimpleName();
-
+        boolean doClearDescriptions = getConfig().isDoClearExistingDistribution(
         // find existing one
         for (TaxonDescription description : taxon.getDescriptions()) {
             // TODO remove COMPUTED;
             if (description.isAggregatedDistribution() || description.hasMarker(MarkerType.COMPUTED(), true)) {
                 logger.debug("reusing computed description for " + taxon.getTitleCache());
-                if (doClear) {
+                if (doClearDescriptions) {
                     int deleteCount = 0;
                     Set<DescriptionElementBase> deleteCandidates = new HashSet<>();
                     for (DescriptionElementBase descriptionElement : description.getElements()) {
@@ -813,9 +815,19 @@ public class DistributionAggregation
         }
 
         // create a new one
-        logger.debug("creating new description for " + taxon.getTitleCache());
+        return createNewDescription(taxon);
+    }
+
+    /**
+     * @param taxon
+     * @param descriptionTitle
+     * @return
+     */
+    private TaxonDescription createNewDescription(Taxon taxon) {
+        String title = taxon.getTitleCache();
+        logger.debug("creating new description for " + title);
         TaxonDescription description = TaxonDescription.NewInstance(taxon);
-        description.setTitleCache(descriptionTitle, true);
+        description.setTitleCache("Aggregated distribution for " + title, true);
         description.addType(DescriptionType.AGGREGATED_DISTRIBUTION);
         return description;
     }
