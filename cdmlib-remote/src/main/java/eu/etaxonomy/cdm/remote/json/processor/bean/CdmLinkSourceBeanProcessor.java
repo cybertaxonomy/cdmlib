@@ -41,7 +41,7 @@ public class CdmLinkSourceBeanProcessor implements JsonBeanProcessor {
         } else {
             logger.error("Ivalid bean type " + bean.getClass() + " can not be processed in " + this.getClass());
         }
-        return null;
+        return new JSONObject(true);
 
     }
 
