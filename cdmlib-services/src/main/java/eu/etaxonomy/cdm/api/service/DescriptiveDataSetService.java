@@ -186,7 +186,7 @@ public class DescriptiveDataSetService
         SpecimenOrObservationBase specimen = description.getDescribedSpecimenOrObservation();
         //get taxon node
 
-        Set<IndividualsAssociation> associations = descriptiveDataSet.getDescriptions()
+        Set<IndividualsAssociation> associations = (Set<IndividualsAssociation>)descriptiveDataSet.getDescriptions()
                 .stream()
                 .flatMap(desc->desc.getElements().stream())// put all description element in one stream
                 .filter(element->element instanceof IndividualsAssociation)
@@ -389,7 +389,7 @@ public class DescriptiveDataSetService
             result.addDeletedObject(descriptionBase);
             // remove taxon description with IndividualsAssociation from data set
             if(descriptionBase instanceof SpecimenDescription){
-                Set<IndividualsAssociation> associations = dataSet.getDescriptions()
+                Set<IndividualsAssociation> associations = (Set<IndividualsAssociation>)dataSet.getDescriptions()
                         .stream()
                         .flatMap(desc->desc.getElements().stream())// put all description element in one stream
                         .filter(element->element instanceof IndividualsAssociation)
