@@ -288,8 +288,8 @@ public class DistributionAggregation
      *  In the case when <code>b</code> is preferred over <code>a</code> these Set of sources will be added to the sources of <code>b</code>
      * @return
      */
-    private StatusAndSources choosePreferred(
-            StatusAndSources a, StatusAndSources b, Set<DescriptionElementSource> sourcesForWinnerB){
+    private StatusAndSources choosePreferredOrMerge(StatusAndSources a, StatusAndSources b,
+            Set<DescriptionElementSource> sourcesForWinnerB){
 
         if (b == null || b.status == null) {
             return a;
@@ -499,7 +499,7 @@ public class DistributionAggregation
                             continue;
                         }
                         StatusAndSources subStatusAndSources = new StatusAndSources(status, distribution.getSources());
-                        accumulatedStatusAndSources = choosePreferred(accumulatedStatusAndSources, subStatusAndSources, null);
+                        accumulatedStatusAndSources = choosePreferredOrMerge(accumulatedStatusAndSources, subStatusAndSources, null);
                     }
                 }
             } // next sub area
@@ -517,8 +517,8 @@ public class DistributionAggregation
 
         } // next super area ....
 
-        getDescriptionService().saveOrUpdate(description);
-        getTaxonService().saveOrUpdate(taxon);
+//        getDescriptionService().saveOrUpdate(description);
+//        getTaxonService().saveOrUpdate(taxon);
     }
 
 //   /**
@@ -646,8 +646,9 @@ public class DistributionAggregation
     //                    if(childSet != null) {
     //                        childTaxonIds.addAll(childSet);
     //                    }
+
+        //                        childTaxa = getTaxonService().loadByIds(childTaxonIds, TAXONDESCRIPTION_INIT_STRATEGY);
         if(!taxonNode.getChildNodes().isEmpty()) {
-    //                        childTaxa = getTaxonService().loadByIds(childTaxonIds, TAXONDESCRIPTION_INIT_STRATEGY);
 
             LinkedList<Taxon> childStack = new LinkedList<>();
             for (TaxonNode node : taxonNode.getChildNodes()){
@@ -669,9 +670,9 @@ public class DistributionAggregation
                         continue;
                     }
 
-                    StatusAndSources subStatusAndSources = new StatusAndSources(status, distribution.getSources());
-                    accumulatedStatusMap.put(area, choosePreferred(accumulatedStatusMap.get(area), subStatusAndSources, null));
-                 }
+                    StatusAndSources childStatusAndSources = new StatusAndSources(status, distribution.getSources());
+                    accumulatedStatusMap.put(area, choosePreferredOrMerge(accumulatedStatusMap.get(area), childStatusAndSources, null));
+                }
 
                 // evict all initialized entities of the childTaxon
                 // TODO consider using cascade="evict" in the model classes
@@ -684,22 +685,19 @@ public class DistributionAggregation
     //            getSession().evict(childTaxon); // no longer needed, save heap
             }
 
-            if(accumulatedStatusMap.size() > 0) {
-//                TaxonDescription description = findComputedDescription(taxon, doClearDescriptions);
-                for (NamedArea area : accumulatedStatusMap.keySet()) {
-                    Distribution distribition = findDistribution(description, area, accumulatedStatusMap.get(area).status);
-                    if(distribition == null) {
-                        // create a new distribution element
-                        distribition = Distribution.NewInstance(area, accumulatedStatusMap.get(area).status);
-                        //TODO element marker needed
-//                        distribition.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
-                    }
-                    addSourcesDeduplicated(distribition.getSources(), accumulatedStatusMap.get(area).sources);
-
-                    description.addElement(distribition);
+            for (NamedArea area : accumulatedStatusMap.keySet()) {
+                Distribution distribition = findDistribution(description, area, accumulatedStatusMap.get(area).status);
+                if(distribition == null) {
+                    // create a new distribution element
+                    distribition = Distribution.NewInstance(area, accumulatedStatusMap.get(area).status);
+                    //TODO element marker needed
+//                  distribition.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
                 }
-                getTaxonService().saveOrUpdate(taxon);
-                getDescriptionService().saveOrUpdate(description);
+                addSourcesDeduplicated(distribition.getSources(), accumulatedStatusMap.get(area).sources);
+
+                description.addElement(distribition);
+//              getTaxonService().saveOrUpdate(taxon);
+//              getDescriptionService().saveOrUpdate(description);
             }
 
         }
