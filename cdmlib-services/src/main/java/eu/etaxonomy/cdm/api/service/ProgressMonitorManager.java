@@ -43,9 +43,6 @@ public class ProgressMonitorManager<T extends IRestServiceProgressMonitor> {
      */
     private final int cleanUpTimeout = 1;
 
-    /**
-     *
-     */
     private final int cleanUpInterval = 1000 * 10; // 10 seconds
 
     public ProgressMonitorManager() {
@@ -74,7 +71,7 @@ public class ProgressMonitorManager<T extends IRestServiceProgressMonitor> {
      */
     private void scheduledCleanUp() {
 
-        List<UUID> timedOutMonitors = new ArrayList<UUID>();
+        List<UUID> timedOutMonitors = new ArrayList<>();
         IRestServiceProgressMonitor monitor;
 
         long now = System.currentTimeMillis();
@@ -107,18 +104,12 @@ public class ProgressMonitorManager<T extends IRestServiceProgressMonitor> {
             timeoutMap.remove(uuid);
             monitors.remove(uuid);
             threads.remove(uuid);
-
         }
-
     }
 
-    /**
-     * @return the threads
-     */
     public RemotingProgressMonitorThread getThread(UUID uuid) {
         return threads.get(uuid);
     }
-
 
     public UUID registerMonitor(T monitor, RemotingProgressMonitorThread thread){
         UUID uuid = UUID.randomUUID();

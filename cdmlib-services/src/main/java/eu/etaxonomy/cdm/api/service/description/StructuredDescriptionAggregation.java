@@ -268,7 +268,7 @@ public class StructuredDescriptionAggregation
                 .forEach(ele->addCharacterToMap(featureToElementMap, ele));
         }
 
-        TaxonDescription aggregationDescription = createAggregationDescription(taxon, dataSet);
+        TaxonDescription aggregationDescription = createNewDescription(taxon, dataSet);
 
         aggregateCharacterData(featureToElementMap, aggregationDescription);
 
@@ -298,7 +298,7 @@ public class StructuredDescriptionAggregation
         }
     }
 
-    private TaxonDescription createAggregationDescription(Taxon taxon, DescriptiveDataSet dataSet) {
+    private TaxonDescription createNewDescription(Taxon taxon, DescriptiveDataSet dataSet) {
         TaxonDescription aggregationDescription = TaxonDescription.NewInstance(taxon);
         aggregationDescription.setTitleCache(dataSet.getTitleCache(), true);
         aggregationDescription.getTypes().add(DescriptionType.AGGREGATED_STRUC_DESC);

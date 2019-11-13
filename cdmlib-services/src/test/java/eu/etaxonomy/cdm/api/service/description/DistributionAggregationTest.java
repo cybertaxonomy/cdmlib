@@ -39,7 +39,6 @@ import eu.etaxonomy.cdm.api.service.description.DistributionAggregation.Aggregat
 import eu.etaxonomy.cdm.common.JvmLimitsException;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Distribution;
@@ -161,14 +160,14 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
             }
         }
     }
-
-    @Test
-    @DataSet
-    @Ignore  //priorities setting is done differently in future (via term trees), so we rewrite or delete this test
-    public void testPriorities(){
-        Set<Extension> extensions = termService.load(PresenceAbsenceTerm.CULTIVATED().getUuid()).getExtensions();
-        assertEquals(DistributionAggregation.EXTENSION_VALUE_PREFIX + "45", extensions.iterator().next().getValue());
-    }
+//
+//    @Test
+//    @DataSet
+//    @Ignore  //priorities setting is done differently in future (via term trees), so we rewrite or delete this test
+//    public void testPriorities(){
+//        Set<Extension> extensions = termService.load(PresenceAbsenceTerm.CULTIVATED().getUuid()).getExtensions();
+//        assertEquals(DistributionAggregation.EXTENSION_VALUE_PREFIX + "45", extensions.iterator().next().getValue());
+//    }
 
     @Test
     @DataSets({
