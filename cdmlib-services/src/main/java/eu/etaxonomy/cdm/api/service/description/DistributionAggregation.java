@@ -167,7 +167,7 @@ public class DistributionAggregation
      * @throws JvmLimitsException
      */
     @Override
-    public UpdateResult doInvoke() throws JvmLimitsException {
+    protected UpdateResult doInvoke() throws JvmLimitsException {
 
         //TODO FIXME use UpdateResult
         UpdateResult result = new UpdateResult();
@@ -817,7 +817,6 @@ public class DistributionAggregation
                         getDescriptionService().saveOrUpdate(description);
                         logger.debug("\t" + deleteCount +" distributions cleared");
                     }
-
                 }
                 return description;
             }

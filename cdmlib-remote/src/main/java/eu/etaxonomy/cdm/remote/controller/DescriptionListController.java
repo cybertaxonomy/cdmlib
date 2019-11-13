@@ -177,8 +177,6 @@ public class DescriptionListController
 
         logger.info("doAccumulateDistributions()" + request.getRequestURI());
 
-//        distributionAggregation.updatePriorities();
-
         String processLabel = "accumulating distributions";
 
         ProgressMonitorUtil progressUtil = new ProgressMonitorUtil(progressMonitorController);
@@ -196,8 +194,8 @@ public class DescriptionListController
                     Pager<NamedArea> areaPager = termService.list(targetAreaLevel, (NamedAreaType) null,
                             null, null, (List<OrderHint>) null, term_init_strategy);
                     try {
-                        TaxonNodeFilter filter = TaxonNodeFilter.NewInstance(classificationUuids, subtreeUuids
-                                , taxonNodeUuids, taxonUuids, null, lowerRank, upperRank);
+                        TaxonNodeFilter filter = TaxonNodeFilter.NewInstance(classificationUuids, subtreeUuids,
+                                taxonNodeUuids, taxonUuids, null, lowerRank, upperRank);
                         DistributionAggregationConfiguration config = DistributionAggregationConfiguration.NewInstance(
                                 mode, areaPager.getRecords(), filter, progressMonitorController.getMonitor(transmissionEngineMonitorUuid));
                         DistributionAggregation distrAggr = new DistributionAggregation();

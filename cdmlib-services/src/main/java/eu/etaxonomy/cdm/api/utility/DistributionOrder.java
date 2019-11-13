@@ -21,7 +21,6 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
  *
  * @author a.mueller
  * @since 04.04.2016
- *
  */
 public enum DistributionOrder {
     LABEL,
