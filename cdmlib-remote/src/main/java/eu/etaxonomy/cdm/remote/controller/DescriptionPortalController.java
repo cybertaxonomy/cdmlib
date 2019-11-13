@@ -63,6 +63,7 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
     protected static final List<String> DESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
             "sources.$",
+            "sources.cdmSource",
             "elements.$",
             "elements.multilanguageText.*",
             "elements.annotations",
