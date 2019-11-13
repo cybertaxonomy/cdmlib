@@ -389,6 +389,7 @@ public class DescriptiveDataSetService
             result.addDeletedObject(descriptionBase);
             // remove taxon description with IndividualsAssociation from data set
             if(descriptionBase instanceof SpecimenDescription){
+                @SuppressWarnings("cast")
                 Set<IndividualsAssociation> associations = (Set<IndividualsAssociation>)dataSet.getDescriptions()
                         .stream()
                         .flatMap(desc->desc.getElements().stream())// put all description element in one stream
