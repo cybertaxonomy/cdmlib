@@ -45,7 +45,15 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
+ * Aggregates the character data for a given {@link DescriptiveDataSet}.<br>
+ * <br>
+ * For all {@link SpecimenDescription}s belonging to this data set a new
+ * aggregated {@link TaxonDescription}s are created for every taxon the
+ * specimens are directly associated with.<BR>
+ * Also lower rank taxon descriptions are aggregated to upper rank taxa.
+ *
  * @author a.mueller
+ * @author p.plitzner
  * @since 03.11.2019
  */
 public class StructuredDescriptionAggregation
@@ -70,7 +78,7 @@ public class StructuredDescriptionAggregation
         Set<TaxonDescription> aggregations = dataSet.getDescriptions().stream()
                 .filter(aggDesc->aggDesc instanceof TaxonDescription)
                 .map(aggDesc->(TaxonDescription)aggDesc)
-                .filter(desc -> desc.getTypes().contains(DescriptionType.AGGREGATED))
+                .filter(desc -> desc.isAggregatedStructuredDescription())
                 .collect(Collectors.toSet());
         aggregations.forEach(aggregation->dataSet.removeDescription(aggregation));
 
@@ -293,7 +301,7 @@ public class StructuredDescriptionAggregation
     private TaxonDescription createAggregationDescription(Taxon taxon, DescriptiveDataSet dataSet) {
         TaxonDescription aggregationDescription = TaxonDescription.NewInstance(taxon);
         aggregationDescription.setTitleCache(dataSet.getTitleCache(), true);
-        aggregationDescription.getTypes().add(DescriptionType.AGGREGATED);
+        aggregationDescription.getTypes().add(DescriptionType.AGGREGATED_STRUC_DESC);
         aggregationDescription.addSource(IdentifiableSource.NewInstance(OriginalSourceType.Aggregation));
         aggregationDescription.addDescriptiveDataSet(dataSet);
         return aggregationDescription;

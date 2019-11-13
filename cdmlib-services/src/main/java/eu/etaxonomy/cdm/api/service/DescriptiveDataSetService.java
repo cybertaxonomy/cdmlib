@@ -121,7 +121,7 @@ public class DescriptiveDataSetService
             RowWrapperDTO rowWrapper = null;
             // only viable descriptions are aggregated, literature or default descriptions
             if(HibernateProxyHelper.isInstanceOf(description, TaxonDescription.class) &&
-                    (description.getTypes().contains(DescriptionType.AGGREGATED)
+                    (description.isAggregatedStructuredDescription()
                             || description.getTypes().contains(DescriptionType.DEFAULT_VALUES_FOR_AGGREGATION)
                             || description.getTypes().contains(DescriptionType.SECONDARY_DATA)
                             )){
@@ -186,7 +186,7 @@ public class DescriptiveDataSetService
         SpecimenOrObservationBase specimen = description.getDescribedSpecimenOrObservation();
         //get taxon node
 
-        Set<IndividualsAssociation> associations = (Set<IndividualsAssociation>)descriptiveDataSet.getDescriptions()
+        Set<IndividualsAssociation> associations = descriptiveDataSet.getDescriptions()
                 .stream()
                 .flatMap(desc->desc.getElements().stream())// put all description element in one stream
                 .filter(element->element instanceof IndividualsAssociation)
@@ -389,7 +389,7 @@ public class DescriptiveDataSetService
             result.addDeletedObject(descriptionBase);
             // remove taxon description with IndividualsAssociation from data set
             if(descriptionBase instanceof SpecimenDescription){
-                Set<IndividualsAssociation> associations = (Set<IndividualsAssociation>)dataSet.getDescriptions()
+                Set<IndividualsAssociation> associations = dataSet.getDescriptions()
                         .stream()
                         .flatMap(desc->desc.getElements().stream())// put all description element in one stream
                         .filter(element->element instanceof IndividualsAssociation)

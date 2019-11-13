@@ -370,6 +370,9 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
     public boolean isAggregatedDistribution() {
         return DescriptionType.includesType(types, DescriptionType.AGGREGATED_DISTRIBUTION);
     }
+    public boolean isAggregatedStructuredDescription() {
+        return DescriptionType.includesType(types, DescriptionType.AGGREGATED_STRUC_DESC);
+    }
     public boolean isCloneForSource() {
         return DescriptionType.includesType(types, DescriptionType.CLONE_FOR_SOURCE);
     }
