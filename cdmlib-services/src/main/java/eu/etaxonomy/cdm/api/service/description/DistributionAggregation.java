@@ -784,7 +784,7 @@ public class DistributionAggregation
      */
     private TaxonDescription getComputedDescription(Taxon taxon) {
 
-        boolean doClearDescriptions = getConfig().isDoClearExistingDistribution(
+        boolean doClearDescriptions = getConfig().isDoClearExistingDistribution();
         // find existing one
         for (TaxonDescription description : taxon.getDescriptions()) {
             // TODO remove COMPUTED;
