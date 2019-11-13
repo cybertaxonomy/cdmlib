@@ -38,7 +38,7 @@ public class ProgressMonitorServiceImpl implements IProgressMonitorService {
 
     @Override
     public UUID registerNewRemotingMonitor(RemotingProgressMonitorThread monitorThread) {
-        RemotingProgressMonitor monitor = new RemotingProgressMonitor(monitorThread);
+        RemotingProgressMonitor monitor = new RemotingProgressMonitor();
         monitorThread.setMonitor(monitor);
         UUID uuid = progressMonitorManager.registerMonitor(monitor, monitorThread);
         User user = User.getCurrentAuthenticatedUser();

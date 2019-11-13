@@ -16,23 +16,16 @@ import java.util.List;
 /**
  * @author cmathew
  * @since 14 Oct 2015
- *
  */
-public class RemotingProgressMonitor extends RestServiceProgressMonitor implements IRemotingProgressMonitor {
+public class RemotingProgressMonitor
+            extends RestServiceProgressMonitor
+            implements IRemotingProgressMonitor {
+
     private static final long serialVersionUID = -3173248814638886884L;
 
     private Serializable result;
     private List<String> reports = new ArrayList<>();
     private boolean serviceDone;
-//    private transient RemotingProgressMonitorThread monitorThread;
-
-
-    public RemotingProgressMonitor(RemotingProgressMonitorThread monitorThread) {
-//        if(monitorThread == null) {
-//            throw new IllegalStateException("Monitor Thread is null");
-//        }
-//        this.monitorThread = monitorThread;
-    }
 
     public RemotingProgressMonitor() {
 
