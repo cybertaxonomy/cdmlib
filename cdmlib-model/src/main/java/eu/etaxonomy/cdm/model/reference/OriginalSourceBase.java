@@ -163,10 +163,11 @@ public abstract class OriginalSourceBase<T extends ISourceable>
 	}
 
 	@Override
-    public ICdmTarget getCdmSourceTarget() {
+    public ICdmTarget getCdmSource() {
         return cdmSource == null? null: cdmSource.getTarget();
     }
-
+     /* this method was implemented in the context of the CdmLinkSourceBeanProcessor which is unused
+      *  method is preserved for the time when the REST API will be revised (#8637)
     @Override
     public CdmLinkSource getCdmSource() {
         if(cdmSource != null){
@@ -174,6 +175,7 @@ public abstract class OriginalSourceBase<T extends ISourceable>
         }
         return cdmSource;
     }
+	*/
 
 
 //	@Override

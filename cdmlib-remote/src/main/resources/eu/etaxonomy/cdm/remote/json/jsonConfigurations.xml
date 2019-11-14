@@ -170,9 +170,11 @@
          <entry key="eu.etaxonomy.cdm.model.description.DescriptionElementBase">
               <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.DescriptionElementBeanProcessor" />
          </entry>
+         <!-- TODO this bean processor is unused but preserved for the time when the REST API will be revised (#8637)
          <entry key="eu.etaxonomy.cdm.model.reference.CdmLinkSource">
               <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.CdmLinkSourceBeanProcessor" />
          </entry>
+         -->
          <entry key="eu.etaxonomy.cdm.model.description.StateData">
               <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.StateDataBeanProcessor" />
          </entry>
@@ -239,7 +241,8 @@
         <value>cacheStrategy</value>
         <value>createdBy</value>
         <value>updatedBy</value>
-        <value>cdmSourceTarget</value><!-- OriginalSourceBase.getCdmSourceTarget() -->
+        <!-- TODO this bean processor is unused but preserved for the time when the REST API will be revised (#8637)
+        <value>cdmSourceTarget</value><! - - OriginalSourceBase.getCdmSourceTarget() -->
       </list>
     </property>
   </bean>
@@ -431,9 +434,11 @@
         <entry key="eu.etaxonomy.cdm.model.agent.TeamOrPersonBase">
           <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TeamOrPersonBaseBeanProcessor" />
         </entry>
+        <!-- TODO this bean processor is unused but preserved for the time when the REST API will be revised (#8637)
         <entry key="eu.etaxonomy.cdm.model.reference.CdmLinkSource">
               <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.CdmLinkSourceBeanProcessor" />
          </entry>
+         -->
         <entry key="org.apache.lucene.document.Document">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.LuceneDocumentBeanProcessor" />
         </entry>
@@ -505,7 +510,8 @@
         <value>createdBy</value>
         <value>updatedBy</value>
         <value>inDescription</value>
-        <value>cdmSourceTarget</value><!-- OriginalSourceBase.getCdmSourceTarget() -->
+        <!-- TODO this bean processor is unused but preserved for the time when the REST API will be revised (#8637)
+        <value>cdmSourceTarget</value>< !- - OriginalSourceBase.getCdmSourceTarget() -->
       </list>
     </property>
   </bean>

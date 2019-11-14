@@ -125,7 +125,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
     }
 
     protected List<String> getTaxonDescriptionInitStrategy() {
-        return getInitializationStrategy();
+        return getInitializationStrategy(); // return Arrays.asList("$", "")
     }
 
     protected List<String> getTaxonDescriptionElementInitStrategy() {
@@ -462,7 +462,8 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             descriptionTypesSet.addAll(descriptionTypes);
         }
 
-        Pager<TaxonDescription> p = descriptionService.pageTaxonDescriptions(taxon, null, null, markerTypesSet, descriptionTypesSet, null, null, getTaxonDescriptionInitStrategy());
+        List<String> taxonDescriptionInitStrategy = getTaxonDescriptionInitStrategy();
+        Pager<TaxonDescription> p = descriptionService.pageTaxonDescriptions(taxon, null, null, markerTypesSet, descriptionTypesSet, null, null, taxonDescriptionInitStrategy);
 
         return p;
     }

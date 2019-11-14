@@ -22,6 +22,8 @@ import net.sf.json.processors.JsonBeanProcessor;
  * @author a.kohlbecker
  * @since 24.03.2011
  *
+ * TODO this bean processor is unused but preserved for the time when the REST API will be revised
+ *
  */
 public class CdmLinkSourceBeanProcessor implements JsonBeanProcessor {
 
@@ -29,7 +31,6 @@ public class CdmLinkSourceBeanProcessor implements JsonBeanProcessor {
 
     @Override
     public JSONObject processBean(Object bean, JsonConfig jsonConfig) {
-        logger.error("processing cdmLinkSource");
         if(bean instanceof CdmLinkSource){
             CdmLinkSource cdmLinkSource = (CdmLinkSource)bean;
             if(Hibernate.isInitialized(cdmLinkSource.getTarget())){
@@ -37,6 +38,7 @@ public class CdmLinkSourceBeanProcessor implements JsonBeanProcessor {
                         TypedEntityReference<CdmLinkSource> entityReference = new TypedEntityReference<>(CdmLinkSource.class, ((CdmBase)cdmLinkSource .getTarget()).getUuid());
                         return JSONObject.fromObject(entityReference);
                     }
+            } else {
             }
         } else {
             logger.error("Ivalid bean type " + bean.getClass() + " can not be processed in " + this.getClass());
