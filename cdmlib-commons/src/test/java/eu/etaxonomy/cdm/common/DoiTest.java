@@ -9,11 +9,9 @@
 package eu.etaxonomy.cdm.common;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
- *
  * Test class for testing the {@link DOI} class.
  *
  * For doi syntax see also http://www.doi.org/doi_handbook/2_Numbering.html
@@ -21,16 +19,8 @@ import org.junit.Test;
  * http://stackoverflow.com/questions/27910/finding-a-doi-in-a-document-or-page
  *
  * @author a.mueller
- *
  */
 public class DoiTest {
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-	}
 
 	@Test
 	public void testValidParser() {
@@ -154,8 +144,6 @@ public class DoiTest {
 		Assert.assertEquals(DOI.HTTP_DOI_ORG + "10.1002/1234%5b56%5d78%6090%7c12%5c34%2b56", uri);
 
 	}
-
-
 
 
 	private void testInvalid(String invalidDoi) {

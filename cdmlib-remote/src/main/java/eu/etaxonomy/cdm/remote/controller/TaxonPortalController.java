@@ -50,6 +50,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
+import eu.etaxonomy.cdm.persistence.dao.initializer.EntityInitStrategy;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.remote.controller.util.ControllerUtils;
 import eu.etaxonomy.cdm.remote.editor.CdmTypePropertyEditor;
@@ -177,22 +178,7 @@ public class TaxonPortalController extends TaxonController{
 
     });
 
-    protected static final List<String> TAXONDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String [] {
-            "$",
-            "elements.$",
-            "elements.stateData.$",
-            "elements.sources.citation.authorship",
-            "elements.sources.nameUsedInSource",
-            "elements.multilanguageText",
-            "elements.media",
-            "elements.modifyingText",
-            "elements.modifiers",
-            "elements.kindOfUnit",
-            "name.$",
-            "name.rank.representations",
-            "name.status.type.representations",
-            "sources.$",
-    });
+    protected static final EntityInitStrategy TAXONDESCRIPTION_INIT_STRATEGY = DescriptionPortalController.DESCRIPTION_INIT_STRATEGY;
 
     protected static final List<String> DESCRIPTION_ELEMENT_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
@@ -342,7 +328,7 @@ public class TaxonPortalController extends TaxonController{
      */
     @Override
     protected List<String> getTaxonDescriptionInitStrategy() {
-        return TAXONDESCRIPTION_INIT_STRATEGY;
+        return TAXONDESCRIPTION_INIT_STRATEGY.getPropertyPaths();
     }
 
     @Override

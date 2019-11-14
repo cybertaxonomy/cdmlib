@@ -17,6 +17,7 @@ import eu.etaxonomy.cdm.common.DOI;
 import eu.etaxonomy.cdm.model.agent.Address;
 import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.agent.Institution;
+import eu.etaxonomy.cdm.model.agent.ORCID;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
@@ -241,10 +242,6 @@ public class FullCoverageDataGenerator {
 
 	}
 
-
-	/**
-	 * @param cdmBases
-	 */
 	private void createAgents(List<CdmBase> cdmBases) {
 		//Person
 		Person person = Person.NewTitledInstance("Person Title");
@@ -253,6 +250,7 @@ public class FullCoverageDataGenerator {
 		person.setLifespan(TimePeriodParser.parseString("1905-1995"));
 		person.setPrefix("prefix");
 		person.setSuffix("suffix");
+		person.setOrcid(ORCID.fromString("0000-0001-5000-0007"));
 
 		handleIdentifiableEntity(person);
 
@@ -299,7 +297,6 @@ public class FullCoverageDataGenerator {
 		cdmBases.add(institution);
 	}
 
-
 	private void createDescriptions(List<CdmBase> cdmBases) {
 
 		TermVocabulary<AnnotationType> voc = TermVocabulary.NewInstance(TermType.AnnotationType, AnnotationType.class,
@@ -326,6 +323,7 @@ public class FullCoverageDataGenerator {
 		State nextState = State.NewInstance();
 		cdmBases.add(nextState);
 		StateData stateData2 = StateData.NewInstance(nextState);
+		stateData2.setCount(3);
 		stateData2.putModifyingText(Language.ENGLISH(), "State2 modifying text");
 		categoricalData.addStateData(stateData2);
 		categoricalData.setOrderRelevant(true);
@@ -403,6 +401,8 @@ public class FullCoverageDataGenerator {
 		taxonDescription.addGeoScope(Country.GERMANY());
 		handleIdentifiableEntity(taxonDescription);
 
+		taxon.addAggregationSource(taxonDescription);
+
 		cdmBases.add(taxon);
 
 		//DescriptionElmenetBase  + source
@@ -418,7 +418,7 @@ public class FullCoverageDataGenerator {
 		source.addLink(link);
 		handleAnnotatableEntity(source);
 
-		taxonDescription.addDescriptionSource(ref);
+		taxonDescription.addDescriptionSource(ref);  //as long as it still exists
 
 
 		//Specimen description
@@ -957,7 +957,6 @@ public class FullCoverageDataGenerator {
 		Identifier<?> identifier = identifiableEntity.addIdentifier("ident23", DefinedTerm.SEX_FEMALE());
 		handleAnnotatableEntity(identifier);
 
-
 		//Rights
 		Rights rights = Rights.NewInstance("right", Language.ENGLISH());
 		rights.setUri(URI.create("http://rights.abc.de"));
@@ -984,10 +983,7 @@ public class FullCoverageDataGenerator {
 		} catch (MalformedLSIDException e) {
 			e.printStackTrace();
 		}
-
-
 	}
-
 
 	private Reference getReference() {
 		 Reference result = ReferenceFactory.newGeneric();
@@ -995,19 +991,15 @@ public class FullCoverageDataGenerator {
 		 return result;
 	}
 
-
 	private DerivedUnit getSpecimen() {
 		DerivedUnit derivedUnit = DerivedUnit.NewPreservedSpecimenInstance();
 		return derivedUnit;
 	}
-
-
 
 	private Taxon getTaxon() {
 		Reference sec = getReference();
 		TaxonName name = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
 		Taxon taxon = Taxon.NewInstance(name, sec);
 		return taxon;
-
 	}
 }

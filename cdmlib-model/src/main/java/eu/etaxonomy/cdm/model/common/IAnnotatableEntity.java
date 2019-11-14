@@ -24,10 +24,13 @@ public interface IAnnotatableEntity extends IVersionableEntity {
 
 
 	public Set<Marker> getMarkers();
+	public Set<Marker> getMarkers(UUID uuidMarkerType);
 	public void addMarker(Marker marker);
 	public void removeMarker(Marker marker);
+	public void removeMarker(UUID markerTypeUuid);  //removes the marker no matter what value it has
 
 	public boolean hasMarker(MarkerType type, boolean value);
 	public boolean hasMarker(UUID uuidMarkerType, boolean value);
+	public Boolean markerValue(UUID uuidMarkerType);
 
 }

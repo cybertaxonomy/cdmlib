@@ -266,5 +266,12 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
     List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCacheNamedAreaByAbbrev(List<TermVocabulary> vocs, Integer limit,
             String pattern, Language lang, NamedAreaSearchField type);
 
+    /**
+     * Returns a list of {@link TermDto} of terms with uuid matches one of uuids in list
+     * @param uuidList
+     * @return
+     */
+    Collection<TermDto> findByUUIDsAsDto(List<UUID> uuidList);
+
 
 }

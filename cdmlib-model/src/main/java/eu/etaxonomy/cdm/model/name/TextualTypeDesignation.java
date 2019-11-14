@@ -233,7 +233,7 @@ public class TextualTypeDesignation extends TypeDesignationBase<SpecimenTypeDesi
      */
     @Deprecated
     @Override
-    public boolean isLectoType() {
+    public boolean hasDesignationSource() {
         return false;
     }
 

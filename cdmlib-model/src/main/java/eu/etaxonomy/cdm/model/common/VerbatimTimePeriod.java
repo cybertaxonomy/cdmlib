@@ -57,6 +57,14 @@ public class VerbatimTimePeriod extends TimePeriod {
          return new VerbatimTimePeriod();
      }
 
+     /**
+      * Factory method a date representing the current date and time
+      * @return
+      */
+     public static final VerbatimTimePeriod NewVerbatimNowInstance(){
+         return NewVerbatimInstance(Calendar.getInstance());
+     }
+
 
      /**
       * Factory method

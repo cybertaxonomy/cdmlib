@@ -29,19 +29,36 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 /**
  * @author a.mueller
  * @since 02.03.2010
- * @param <CDM_BASE>
- * @param <STATE>
  */
-public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<DbImportConfiguratorBase<STATE>,?>> extends DbImportMultiAttributeMapperBase<CdmBase, STATE> {
-	private static final Logger logger = Logger.getLogger(DbImportTaxIncludedInMapper.class);
+public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<DbImportConfiguratorBase<STATE>,?>>
+        extends DbImportMultiAttributeMapperBase<CdmBase, STATE> {
+
+    private static final Logger logger = Logger.getLogger(DbImportTaxIncludedInMapper.class);
 
 //******************************** FACTORY METHOD ***************************************************/
 
-	public static DbImportTaxIncludedInMapper<?> NewInstance(String dbChildAttribute, String dbChildNamespace, String dbParentAttribute, String parentNamespace, String dbAlternativeParentAttribute, String alternativeParentNamespace, String dbTreeAttribute){
+	public static DbImportTaxIncludedInMapper<?> NewInstance(String dbChildAttribute, String dbChildNamespace, String dbParentAttribute, String parentNamespace, String dbTreeAttribute){
 		String citationNamespace = null;
 		String citationAttribute = null;
-		return new DbImportTaxIncludedInMapper<>(dbChildAttribute, dbChildNamespace, dbParentAttribute, parentNamespace, dbAlternativeParentAttribute, alternativeParentNamespace, dbTreeAttribute, citationAttribute, citationNamespace);
+		return new DbImportTaxIncludedInMapper<>(dbChildAttribute, dbChildNamespace, dbParentAttribute, parentNamespace, null, null, dbTreeAttribute, citationAttribute, citationNamespace);
 	}
+
+    /**
+     * @param dbChildAttribute
+     * @param dbChildNamespace
+     * @param dbParentAttribute
+     * @param parentNamespace
+     * @param dbAlternativeParentAttribute if the object represented by dbParentAttribute is of class
+     *          Synonym the alternative parent is taken
+     * @param alternativeParentNamespace
+     * @param dbTreeAttribute
+     * @return
+     */
+    public static DbImportTaxIncludedInMapper<?> NewInstance(String dbChildAttribute, String dbChildNamespace, String dbParentAttribute, String parentNamespace, String dbAlternativeParentAttribute, String alternativeParentNamespace, String dbTreeAttribute){
+        String citationNamespace = null;
+        String citationAttribute = null;
+        return new DbImportTaxIncludedInMapper<>(dbChildAttribute, dbChildNamespace, dbParentAttribute, parentNamespace, dbAlternativeParentAttribute, alternativeParentNamespace, dbTreeAttribute, citationAttribute, citationNamespace);
+    }
 
 //******************************* ATTRIBUTES ***************************************/
 	private String fromAttribute;
@@ -62,7 +79,6 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<DbImpor
 
 	protected DbImportTaxIncludedInMapper(String fromAttribute, String fromNamespace,
 	        String toAttribute, String toNamespace, String alternativeAttribute, String alternativeNamespace, String treeAttribute, String citationAttribute, String citationNamespace) {
-		super();
 		//TODO make it a single attribute mapper
 		this.fromAttribute = fromAttribute;
 		this.fromNamespace = fromNamespace;

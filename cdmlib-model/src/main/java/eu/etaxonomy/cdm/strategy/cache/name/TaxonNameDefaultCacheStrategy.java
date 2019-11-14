@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.strategy.cache.name;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -344,14 +345,18 @@ public class TaxonNameDefaultCacheStrategy
             String nomStatusStr = "not defined";
             if(ncStatus.getType() != null){
                 NomenclaturalStatusType statusType =  ncStatus.getType();
-                Language lang = Language.LATIN();
-                Representation repr = statusType.getRepresentation(lang);
+                List<Language> prefLangs = Arrays.asList(new Language[]{Language.LATIN(), Language.DEFAULT()});
+                Representation repr = statusType.getPreferredRepresentation(prefLangs);
                 if (repr != null){
+                    if(!Language.LATIN().equals(repr.getLanguage())){
+                        String message = "No latin representation available for nom. status. " + statusType.getTitleCache();
+                        logger.info(message);
+                    }
                     nomStatusStr = repr.getAbbreviatedLabel();
                 }else{
-                    String message = "No latin representation available for nom. status. " + statusType.getTitleCache();
+                    String message = "No representation available for nom. status. " + statusType.getTitleCache();
                     logger.warn(message);
-                    throw new IllegalStateException(message);
+                    nomStatusStr = statusType.getTitleCache();
                 }
             }else if(StringUtils.isNotBlank(ncStatus.getRuleConsidered())){
                 nomStatusStr = ncStatus.getRuleConsidered();
@@ -522,7 +527,6 @@ public class TaxonNameDefaultCacheStrategy
 	            tags.add(new TaggedText(TagEnum.authors, authorCache));
 	        }
 
-
 	        //infra species marker
 	        if (nonViralName.getRank() == null || !nonViralName.getRank().isInfraSpecific()){
 	            //TODO handle exception
@@ -547,6 +551,11 @@ public class TaxonNameDefaultCacheStrategy
         	//genus part
 	       tags =getGenusOrUninomialTaggedNameCache(nonViralName);
 
+	       //author
+           String authorCache = getAuthorshipCache(nonViralName);
+           if (StringUtils.isNotBlank(authorCache)){
+               tags.add(new TaggedText(TagEnum.authors, authorCache));
+           }
 
 	        //infra species marker
 	        if (nonViralName.getRank() == null || !nonViralName.getRank().isInfraGeneric()){
@@ -563,12 +572,11 @@ public class TaxonNameDefaultCacheStrategy
 	            }
 	        }
 
-	        //infra species
+	        //infra genus
 	        String infraGenericPart = CdmUtils.Nz(nonViralName.getInfraGenericEpithet()).trim();
 	        if (StringUtils.isNotBlank(infraGenericPart)){
 	            tags.add(new TaggedText(TagEnum.name, infraGenericPart));
 	        }
-
         }
 
         return tags;
@@ -858,10 +866,6 @@ public class TaxonNameDefaultCacheStrategy
         }
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected List<TaggedText> doGetTaggedTitle(TaxonName taxonName) {
         List<TaggedText> tags = new ArrayList<>();

@@ -59,6 +59,10 @@ public class MarkerType extends DefinedTermBase<MarkerType> {
     private static final UUID uuidCommonNameReference = UUID.fromString("ad315454-5fdc-492d-8c8c-5d98a5ec4b7f");
     private static final UUID uuidDistributionEditorFact = UUID.fromString("bc55aea8-5a99-49b6-8ad2-fa6eecf27736");
 
+    //E+M, maybe general in future
+    public static final UUID uuidEpublished = UUID.fromString("212158af-c8cf-4b15-ab22-8d06667ea7e1");
+
+
 	protected static Map<UUID, MarkerType> termMap = null;
 
     @XmlAttribute(name = "isTechnical")

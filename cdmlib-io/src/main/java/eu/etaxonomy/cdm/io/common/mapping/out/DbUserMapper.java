@@ -20,10 +20,11 @@ import eu.etaxonomy.cdm.model.permission.User;
 /**
  * @author a.mueller
  * @since 12.05.2009
- * @version 1.0
  */
-public class DbUserMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer> {
-	@SuppressWarnings("unused")
+public class DbUserMapper
+            extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> {
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbUserMapper.class);
 
 	public static DbUserMapper NewInstance(String cdmAttributeString, String dbAttributeString){
@@ -42,19 +43,10 @@ public class DbUserMapper extends DbSingleAttributeExportMapperBase<DbExportStat
 		return new DbUserMapper(cdmAttributeString, dbAttributeString, defaultValue, obligatory);
 	}
 
-	/**
-	 * @param dbAttributeString
-	 * @param cdmAttributeString
-	 */
 	private DbUserMapper(String cdmAttributeString, String dbAttributeString, String defaultValue, boolean obligatory) {
-		super(cdmAttributeString, dbAttributeString, defaultValue, obligatory);
+		super(cdmAttributeString, dbAttributeString, defaultValue, obligatory, false);
 	}
 
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValue(eu.etaxonomy.cdm.model.common.CdmBase)
-	 */
 	@Override
 	protected Object getValue(CdmBase cdmBase) {
 		String result = null;
@@ -65,23 +57,13 @@ public class DbUserMapper extends DbSingleAttributeExportMapperBase<DbExportStat
 		return result;
 	}
 
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValueType()
-	 */
 	@Override
 	protected int getSqlType() {
 		return Types.VARCHAR;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase#getTypeClass()
-	 */
 	@Override
 	public Class<?> getTypeClass() {
 		return String.class;
 	}
-
 }

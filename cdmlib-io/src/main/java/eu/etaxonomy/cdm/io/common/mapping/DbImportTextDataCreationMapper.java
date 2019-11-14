@@ -26,8 +26,10 @@ import eu.etaxonomy.cdm.model.description.TextFormat;
  * @author a.mueller
  * @since 11.03.2010
  */
-public class DbImportTextDataCreationMapper<STATE extends DbImportStateBase<?,?>> extends DbImportDescriptionElementCreationMapperBase<TextData, DbImportStateBase<?,?>> {
-	@SuppressWarnings("unused")
+public class DbImportTextDataCreationMapper<STATE extends DbImportStateBase<?,?>>
+        extends DbImportDescriptionElementCreationMapperBase<TextData, DbImportStateBase<?,?>> {
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbImportTextDataCreationMapper.class);
 
 //******************************** FACTORY METHOD ***************************************************/
@@ -81,6 +83,7 @@ public class DbImportTextDataCreationMapper<STATE extends DbImportStateBase<?,?>
 	        Feature feature, TextFormat format) {
 		super(dbIdAttribute, objectToCreateNamespace, dbTaxonFkAttribute, taxonNamespace);
 		this.defaultFeature = feature;
+		this.dbTextAttribute = dbTextAttribute;
 		this.defaultLanguage = language;
 		this.defaultFormat = format;
 	}

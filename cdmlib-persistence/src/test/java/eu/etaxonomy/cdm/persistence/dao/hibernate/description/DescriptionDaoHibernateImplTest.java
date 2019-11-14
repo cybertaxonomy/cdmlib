@@ -436,9 +436,9 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
         Assert.assertNotNull("MarkerType for 'complete' should exist", completeMarkerType);
         Set<MarkerType> markerTypes = new HashSet<MarkerType>();
         markerTypes.add(completeMarkerType);
-        long n1 = this.descriptionDao.countTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes);
+        long n1 = this.descriptionDao.countTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, null);
         Assert.assertEquals("There should be 1 description marked 'complete'", 1, n1);
-        List<TaxonDescription> descriptions = this.descriptionDao.listTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, pageSize, pageNumber, propertyPaths);
+        List<TaxonDescription> descriptions = this.descriptionDao.listTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, null, pageSize, pageNumber, propertyPaths);
         Assert.assertEquals("There should be 1 description marked 'complete'", 1, descriptions.size());
 
         //doubtful
@@ -446,9 +446,9 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
         Assert.assertNotNull("MarkerType for 'doubtful' should exist", isDoubtfulMarkerType);
         markerTypes = new HashSet<MarkerType>();  //reset
         markerTypes.add(isDoubtfulMarkerType);
-        long n2 = this.descriptionDao.countTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes);
+        long n2 = this.descriptionDao.countTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, null);
         Assert.assertEquals("There should be no description marked 'doubtful'", 0, n2);
-        descriptions = this.descriptionDao.listTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, pageSize, pageNumber, propertyPaths);
+        descriptions = this.descriptionDao.listTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, null, pageSize, pageNumber, propertyPaths);
         Assert.assertEquals("There should be 0 description marked 'doubtful'", 0, descriptions.size());
 
         //imported = false
@@ -457,12 +457,12 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
         Assert.assertNotNull("MarkerType for 'imported' should exist", completeMarkerType);
         markerTypes = new HashSet<MarkerType>();
         markerTypes.add(importedMarkerType);
-        long n3 = this.descriptionDao.countTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes);
+        long n3 = this.descriptionDao.countTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, null);
         Assert.assertEquals("There should be no description marked 'imported' as true", 0, n3);
-        descriptions = this.descriptionDao.listTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, pageSize, pageNumber, propertyPaths);
+        descriptions = this.descriptionDao.listTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, null, pageSize, pageNumber, propertyPaths);
         Assert.assertEquals("There should be no description marked 'imported' as true", 0, descriptions.size());
         markerTypes = null;
-        descriptions = this.descriptionDao.listTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, pageSize, pageNumber, propertyPaths);
+        descriptions = this.descriptionDao.listTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, null, pageSize, pageNumber, propertyPaths);
         Assert.assertEquals("There should be 1 description", 1, descriptions.size());
         TaxonDescription desc = descriptions.iterator().next();
         boolean hasMarkerImportedAsFalse = desc.hasMarker(importedMarkerType, false);

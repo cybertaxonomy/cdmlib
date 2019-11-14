@@ -168,12 +168,6 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
         return result;
     }
 
-
-    /**
-     * @param result
-     * @param reference
-     * @return
-     */
     private String addPages(String result, Reference reference) {
         //pages
         if (isNotBlank(reference.getPages())){
@@ -183,11 +177,6 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
         return result;
     }
 
-
-    /**
-     * @param nz
-     * @return
-     */
     private static String RemoveTrailingDot(String str) {
         if (str != null && str.endsWith(".")){
             str = str.substring(0, str.length()-1);
@@ -279,10 +268,6 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
         return stringBuilder.toString();
     }
 
-    /**
-     * @param reference
-     * @return
-     */
     public String createShortCitation(Reference reference) {
         TeamOrPersonBase<?> authorship = reference.getAuthorship();
         String shortCitation = "";
@@ -351,13 +336,6 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
 
 // ************************ TITLE CACHE SUBS ********************************************/
 
-    /**
-     * @param reference
-     * @param type
-     * @param inRef
-     * @param hasInRef
-     * @return
-     */
     private String titleCacheRealInRef(Reference reference, boolean isAbbrev) {
         ReferenceType type = reference.getType();
         Reference inRef = reference.getInReference();
@@ -416,11 +394,6 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
         return result;
     }
 
-
-    /**
-     * @param reference
-     * @return
-     */
     private String titleCacheJournal(Reference reference, boolean isAbbrev) {
         String result;
         //copied from Journal
@@ -446,11 +419,6 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
         return result;
     }
 
-    /**
-     * @param reference
-     * @param isNotAbbrev
-     * @return
-     */
     private String titleCacheDefaultReference(Reference reference, boolean isAbbrev) {
         String result;
         //copied from ReferenceDefaultCacheStrategy
@@ -505,10 +473,6 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
         return TitleWithoutYearAndAuthorHelper.getTitleWithoutYearAndAuthorGeneric(ref, isAbbrev);
     }
 
-    /**
-     * @param type
-     * @return
-     */
     private Object getUndefinedLabel(ReferenceType type) {
         if (type == ReferenceType.BookSection){
             return "book";
@@ -566,9 +530,6 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
 
     /**
      * Returns year information as originally computed by {@link ReferenceDefaultCacheStrategy}
-     * @param string
-     * @param ref
-     * @return
      */
     private String addYearReferenceDefault(String string, Reference ref){
         String result;
@@ -579,7 +540,7 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
         if ("".equals(year)){
             result = string + afterYear;
         }else{
-            result = string + beforeYear + year + afterYear;
+            result = string.trim() + beforeYear + year + afterYear;
         }
         return result;
     }
@@ -617,11 +578,6 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
         return result;
     }
 
-    /**
-     * @param nomenclaturalReference
-     * @param microRef
-     * @return
-     */
     private String handleDetailAndYearForProtected(Reference nomenclaturalReference, String cache, String microReference) {
         String microRef = isNotBlank(microReference) ? getBeforeMicroReference() + microReference : "";
         if (cache == null){
@@ -748,12 +704,6 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
         return result;
     }
 
-
-    /**
-     * @param microReference
-     * @param result
-     * @return
-     */
     private String replaceMicroRefToken(String microReference, String string) {
         int index = string.indexOf(INomenclaturalReference.MICRO_REFERENCE_TOKEN);
 
@@ -774,12 +724,7 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
     }
 
 // *************************** EXTERNAL USE *******************************************/
-   /**
-    *
-    * @param referenceTitleCache
-    * @param authorTitleCache
-    * @return
-    */
+
    public static String putAuthorToEndOfString(String referenceTitleCache, String authorTitleCache) {
        if(authorTitleCache != null){
            referenceTitleCache = referenceTitleCache.replace(authorTitleCache + ", ", "");

@@ -108,4 +108,21 @@ public interface IOriginalSource<T extends ISourceable> {
 	 */
 	public void setCitation(Reference citation);
 
+
+	/**
+     * @return the CDM object being the source
+     */
+    public ICdmTarget getCdmSource();
+
+
+    /**
+     * Shortcut to add a {@link CdmLinkSource}
+     * @see #setCdmSource()
+     */
+    public void setCdmSource(ICdmTarget cdmTarget);
+
+    /* this method was implemented in the context of the CdmLinkSourceBeanProcessor which is unused
+      *  method is preserved for the time when the REST API will be revised (#8637)
+    public CdmLinkSource getCdmSource();
+    */
 }

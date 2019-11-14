@@ -45,7 +45,7 @@ public class DbUriMapper
 	}
 
 	private DbUriMapper(String cdmAttributeString, String dbAttributeString, String defaultValue, boolean obligatory) {
-		super(cdmAttributeString, dbAttributeString, defaultValue, obligatory);
+		super(cdmAttributeString, dbAttributeString, defaultValue, obligatory, false);
 	}
 
 	@Override

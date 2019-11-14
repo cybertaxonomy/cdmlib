@@ -8,8 +8,6 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-
 import java.awt.Color;
 import java.io.IOException;
 import java.util.Arrays;
@@ -23,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -35,12 +34,13 @@ import org.springframework.web.servlet.ModelAndView;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
+import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
-import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
-import eu.etaxonomy.cdm.api.service.description.TransmissionEngineDistribution;
-import eu.etaxonomy.cdm.api.service.description.TransmissionEngineDistribution.AggregationMode;
+import eu.etaxonomy.cdm.api.service.description.DistributionAggregation;
+import eu.etaxonomy.cdm.api.service.description.DistributionAggregation.AggregationMode;
+import eu.etaxonomy.cdm.api.service.description.DistributionAggregationConfiguration;
 import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO;
 import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO.InfoPart;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -50,9 +50,9 @@ import eu.etaxonomy.cdm.common.monitor.IRestServiceProgressMonitor;
 import eu.etaxonomy.cdm.ext.geo.CondensedDistributionRecipe;
 import eu.etaxonomy.cdm.ext.geo.EditGeoServiceUtilities;
 import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
+import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
-import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
@@ -65,7 +65,10 @@ import eu.etaxonomy.cdm.remote.controller.util.ProgressMonitorUtil;
 import eu.etaxonomy.cdm.remote.editor.DefinedTermBaseList;
 import eu.etaxonomy.cdm.remote.editor.TermBaseListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.TermBasePropertyEditor;
+import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
+import eu.etaxonomy.cdm.remote.editor.UuidList;
 import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
+import io.swagger.annotations.Api;
 
 /**
  * TODO write controller documentation
@@ -76,8 +79,8 @@ import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
 @Controller
 @Api("description")
 @RequestMapping(value = {"/description"})
-public class DescriptionListController extends AbstractIdentifiableListController<DescriptionBase, IDescriptionService> {
-
+public class DescriptionListController
+        extends AbstractIdentifiableListController<DescriptionBase, IDescriptionService> {
 
     @Autowired
     private ITermService termService;
@@ -86,13 +89,11 @@ public class DescriptionListController extends AbstractIdentifiableListControlle
     private IVocabularyService vocabularyService ;
 
     @Autowired
-    private ITaxonService taxonService;
-
-    @Autowired
     private IEditGeoService geoService;
 
     @Autowired
-    public TransmissionEngineDistribution transmissionEngineDistribution;
+    @Qualifier("cdmRepository")
+    private ICdmRepository repository;
 
     @Autowired
     public ProgressMonitorController progressMonitorController;
@@ -120,18 +121,18 @@ public class DescriptionListController extends AbstractIdentifiableListControlle
     @Override
     public void initBinder(WebDataBinder binder) {
         super.initBinder(binder);
-        binder.registerCustomEditor(DefinedTermBaseList.class, new TermBaseListPropertyEditor<Feature>(termService));
-        binder.registerCustomEditor(NamedAreaLevel.class, new TermBasePropertyEditor<NamedAreaLevel>(termService));
-        binder.registerCustomEditor(Rank.class, new TermBasePropertyEditor<Rank>(termService));
+        binder.registerCustomEditor(DefinedTermBaseList.class, new TermBaseListPropertyEditor<>(termService));
+        binder.registerCustomEditor(NamedAreaLevel.class, new TermBasePropertyEditor<>(termService));
+        binder.registerCustomEditor(Rank.class, new TermBasePropertyEditor<>(termService));
+        binder.registerCustomEditor(UuidList.class, new UUIDListPropertyEditor());
     }
 
     protected List<String> getDescriptionInfoInitStrategy(){
         return getInitializationStrategy();
     }
 
-
     /**
-     * Runs the {@link TransmissionEngineDistribution} in a separate Thread and
+     * Runs the {@link DistributionAggregation} in a separate Thread and
      * responds with a redirect to a progress monitor REST service end point.
      * <p>
      *
@@ -158,28 +159,32 @@ public class DescriptionListController extends AbstractIdentifiableListControlle
     @RequestMapping(value = { "accumulateDistributions" }, method = RequestMethod.GET)
     public ModelAndView doAccumulateDistributions(
             @RequestParam(value= "mode", required = true) final AggregationMode mode,
+            @RequestParam(value = "targetAreaLevel", required = true) UUID targetAreaLevelUuid,
             @RequestParam(value = "frontendBaseUrl", required = false) String frontendBaseUrl,
-            @RequestParam(value = "priority", required = false) Integer priority,
-            @RequestParam(value = "targetAreaLevel", required = true) final NamedAreaLevel targetAreaLevel,
-            @RequestParam(value = "lowerRank", required = false) Rank lowerRank,
-            @RequestParam(value = "upperRank", required = false) Rank upperRank,
+            @RequestParam(value = "priority", required = false, defaultValue="3") Integer priority,
+//            @RequestParam(value = "lowerRank", required = false) Rank lowerRank,
+//            @RequestParam(value = "upperRank", required = false) Rank upperRank,
+            @RequestParam(value = "minRank", required = false) UUID lowerRank,
+            @RequestParam(value = "maxRank", required = false) UUID upperRank,
+            @RequestParam(value = "subtrees", required = false) UuidList subtreeUuids,
+            @RequestParam(value = "classifications", required = false) UuidList classificationUuids,
+            @RequestParam(value = "taxa", required = false) UuidList taxonUuids,
+            @RequestParam(value = "taxonnodes", required = false) UuidList taxonNodeUuids,
+//            @RequestParam(value = "includeUnpublished", defaultValue="false") Boolean includeUnpublished,  //for now we do not allow unpublished data to be exported via webservice as long as read authentication is not implemented
+//            @RequestParam(value = "area", required = false) UuidList areaUuids,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
         logger.info("doAccumulateDistributions()" + request.getRequestURI());
 
-//        transmissionEngineDistribution.updatePriorities();
-
         String processLabel = "accumulating distributions";
-
-        final Rank _lowerRank = lowerRank != null ? lowerRank : Rank.UNKNOWN_RANK(); // this is the lowest rank
-        final Rank _upperRank = upperRank != null ? upperRank : Rank.GENUS();
 
         ProgressMonitorUtil progressUtil = new ProgressMonitorUtil(progressMonitorController);
 
         final List<String> term_init_strategy = Arrays.asList(new String []{
                 "representations"
         });
+        NamedAreaLevel targetAreaLevel = (NamedAreaLevel)termService.load(targetAreaLevelUuid, term_init_strategy);
 
         if (!progressMonitorController.isMonitorRunning(transmissionEngineMonitorUuid)) {
             transmissionEngineMonitorUuid = progressUtil.registerNewMonitor();
@@ -189,8 +194,12 @@ public class DescriptionListController extends AbstractIdentifiableListControlle
                     Pager<NamedArea> areaPager = termService.list(targetAreaLevel, (NamedAreaType) null,
                             null, null, (List<OrderHint>) null, term_init_strategy);
                     try {
-                        transmissionEngineDistribution.accumulate(mode, areaPager.getRecords(), _lowerRank, _upperRank,
-                                null, progressMonitorController.getMonitor(transmissionEngineMonitorUuid));
+                        TaxonNodeFilter filter = TaxonNodeFilter.NewInstance(classificationUuids, subtreeUuids,
+                                taxonNodeUuids, taxonUuids, null, lowerRank, upperRank);
+                        DistributionAggregationConfiguration config = DistributionAggregationConfiguration.NewInstance(
+                                mode, areaPager.getRecords(), filter, progressMonitorController.getMonitor(transmissionEngineMonitorUuid));
+                        DistributionAggregation distrAggr = new DistributionAggregation();
+                        distrAggr.invoke(config, repository);
                     } catch (JvmLimitsException e) {
                         IRestServiceProgressMonitor monitor = progressMonitorController.getMonitor(transmissionEngineMonitorUuid);
                         monitor.setIsFailed(true);

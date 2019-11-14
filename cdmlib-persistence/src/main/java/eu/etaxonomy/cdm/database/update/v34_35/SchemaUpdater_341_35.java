@@ -63,7 +63,7 @@ public class SchemaUpdater_341_35 extends SchemaUpdaterBase {
 		String referencedTables[];
 		String columnTypes[];
 
-		List<ISchemaUpdaterStep> stepList = new ArrayList<ISchemaUpdaterStep>();
+		List<ISchemaUpdaterStep> stepList = new ArrayList<>();
 
 
 		//IntextReference

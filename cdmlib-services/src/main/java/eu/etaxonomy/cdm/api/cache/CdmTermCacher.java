@@ -30,7 +30,6 @@ public class CdmTermCacher extends CdmCacher {
 		return termService.findWithoutFlush(uuid);
 	}
 
-
     @Override
     public boolean isCachable(CdmBase cdmEntity) {
         if(cdmEntity != null && cdmEntity instanceof DefinedTermBase) {
@@ -48,6 +47,5 @@ public class CdmTermCacher extends CdmCacher {
            cachedCdmEntity = cdmEntity;
         }
         return cachedCdmEntity;
-
     }
 }

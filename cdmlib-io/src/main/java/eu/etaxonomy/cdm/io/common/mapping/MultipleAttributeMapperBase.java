@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -16,9 +16,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-
-import eu.etaxonomy.cdm.common.CdmUtils;
 
 
 
@@ -31,17 +30,17 @@ public abstract class MultipleAttributeMapperBase<SINGLE_MAPPER extends CdmSingl
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MultipleAttributeMapperBase.class);
 
-	
+
 //******************************* ATTRIBUTES ***************************************/
 
 	protected List<SINGLE_MAPPER> singleMappers = new ArrayList<SINGLE_MAPPER>();
 
-	
-	
+
+
 //********************************* CONSTRUCTOR ****************************************/
 
 	/**
-	 * 
+	 *
 	 */
 	public MultipleAttributeMapperBase() {
 		singleMappers = new ArrayList<SINGLE_MAPPER>();
@@ -49,7 +48,7 @@ public abstract class MultipleAttributeMapperBase<SINGLE_MAPPER extends CdmSingl
 
 
 //************************************ METHODS *******************************************/
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmAttributeMapperBase#getDestinationAttributeList()
 	 */
@@ -93,18 +92,14 @@ public abstract class MultipleAttributeMapperBase<SINGLE_MAPPER extends CdmSingl
 		result.addAll(getSourceAttributeList());
 		return result;
 	}
-	
+
 
 /**
 	 * Returns the value of a result set attribute in its String representation.
 	 * Better move this to a subclass for DbImportMappers (does not exist yet)
-	 * @param rs
-	 * @param attribute
-	 * @return
-	 * @throws SQLException
 	 */
 	protected String getStringDbValue(ResultSet rs, String attribute) throws SQLException {
-		if (CdmUtils.isEmpty(attribute)){
+		if (StringUtils.isBlank(attribute)){
 			return null;
 		}
 		Object oId = rs.getObject(attribute);

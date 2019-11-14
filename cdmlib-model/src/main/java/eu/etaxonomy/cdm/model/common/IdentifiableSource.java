@@ -15,6 +15,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.model.reference.ICdmTarget;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -79,6 +80,14 @@ public class IdentifiableSource
         result.setOriginalNameString(originalInfo);
         return result;
     }
+
+   public static IdentifiableSource NewInstance(OriginalSourceType type, String id, String idNamespace, Reference
+           reference, String microReference, String originalInfo, ICdmTarget target){
+        IdentifiableSource result = NewInstance(type, id, idNamespace, reference,
+                microReference, originalInfo);
+       result.setCdmSource(target);
+       return result;
+   }
 
 	public static IdentifiableSource NewPrimarySourceInstance(Reference citation, String microCitation){
 		IdentifiableSource result = NewInstance(OriginalSourceType.PrimaryTaxonomicSource);

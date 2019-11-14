@@ -62,8 +62,11 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
 @XmlJavaTypeAdapter(value=DateTimeAdapter.class,type=DateTime.class)
 @MappedSuperclass
 @Audited
-public abstract class VersionableEntity extends CdmBase implements IVersionableEntity{
-	private static final long serialVersionUID = 1409299200302758513L;
+public abstract class VersionableEntity
+        extends CdmBase
+        implements IVersionableEntity{
+
+    private static final long serialVersionUID = 1409299200302758513L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(VersionableEntity.class);
 

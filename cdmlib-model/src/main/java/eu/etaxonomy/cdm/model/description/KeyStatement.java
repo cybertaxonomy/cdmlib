@@ -88,9 +88,8 @@ public class KeyStatement extends VersionableEntity implements IMultiLanguageTex
 		return result;
 	}
 
-	/**
-	 *
-	 */
+//*************************** CONSTRUCTOR ***********************************/
+
 	public KeyStatement() {
 	}
 
@@ -161,25 +160,6 @@ public class KeyStatement extends VersionableEntity implements IMultiLanguageTex
 	 * and the given {@link Language language}, returns it and adds it to the multilanguage
 	 * text representing the content of <i>this</i> text data.
 	 *
-	 * @param text		the string representing the content of the text data
-	 * 					in a particular language
-	 * @param language	the language in which the text string is formulated
-	 * @return			the language string
-	 * @see    	   		#getMultilanguageText()
-	 * @see    	   		#putText(LanguageString)
-	 * @deprecated 		should follow the put semantic of maps, this method will be removed in v4.0
-	 * 					Use the {@link #putLabel(Language, String) putLabel} method
-	 */
-	@Deprecated
-    public LanguageString putLabel(String label, Language language) {
-		return putLabel(language, label);
-	}
-
-	/**
-	 * Creates a {@link LanguageString language string} based on the given text string
-	 * and the given {@link Language language}, returns it and adds it to the multilanguage
-	 * text representing the content of <i>this</i> text data.
-	 *
 	 * @param language	the language in which the text string is formulated
 	 * @param text		the string representing the content of the text data
 	 * 					in a particular language
@@ -211,41 +191,6 @@ public class KeyStatement extends VersionableEntity implements IMultiLanguageTex
 			Language language = languageString.getLanguage();
 			return this.label.put(language, languageString);
 		}
-	}
-
-	/**
-	 * Adds a translated {@link LanguageString text in a particular language}
-	 * to the label.
-	 * The given language string will be returned.
-	 *
-	 * @param languageString	the language string representing the content of
-	 * 							the text data in a particular language
-	 * @return					the language string
-	 * @see    	   				#getLabel()
-	 * @see    	   				#putLabel(String, Language)
-	 * @deprecated				This method will be removed in v4.0
-	 * 							Use the {@link #putLabel(LanguageString) putLabel} method instead
-	 */
-	@Deprecated
-    public LanguageString putText(LanguageString languageString) {
-		return putLabel(languageString);
-	}
-
-	/**
-	 * Removes from label the one {@link LanguageString language string}
-	 * with the given {@link Language language}. Returns the removed
-	 * language string.
-	 *
-	 * @param  language	the language in which the language string to be removed
-	 * 					has been formulated
-	 * @return			the language string associated with the given language
-	 * @see     		#getLabelText()
-	 * @deprecated		This method will be removed in v4.0
-	 * 					Use the {@link #removeLabel(Language)} method instead
-	 */
-	@Deprecated
-    public LanguageString removeText(Language language) {
-		return removeLabel(language);
 	}
 
 	/**

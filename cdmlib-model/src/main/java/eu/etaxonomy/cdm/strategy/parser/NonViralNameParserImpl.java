@@ -871,6 +871,17 @@ public class NonViralNameParserImpl
 				int lenInfraSpecies =  2 + epi[epi.length - 2].length() + epi[epi.length - 1].length();
 				authorString = fullNameString.substring(lenSpecies, fullNameString.length() - lenInfraSpecies);
 			}
+	        //genus autonym
+            else if (genusAutonymPattern.matcher(fullNameString.replace(UTF8.HYBRID.toString(), "")).matches()){
+                String infraGenRankMarker = epi[epi.length - 2];
+
+                nameToBeFilled.setRank(Rank.getRankByIdInVoc(infraGenRankMarker));
+                nameToBeFilled.setGenusOrUninomial(epi[0]);
+                nameToBeFilled.setInfraGenericEpithet(epi[epi.length - 1]);
+                int lenGenus = 1 + epi[0].length();
+                int lenInfraGenus =  2 + epi[epi.length - 2].length() + epi[epi.length - 1].length();
+                authorString = fullNameString.substring(lenGenus, fullNameString.length() - lenInfraGenus);
+            }
 			 //infraSpecies
 			 else if (infraSpeciesPattern.matcher(fullNameString).matches()){
 				String infraSpecRankMarker = epi[2];

@@ -26,12 +26,15 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.joda.time.Partial;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import eu.etaxonomy.cdm.hibernate.search.OrcidBridge;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.strategy.cache.agent.PersonDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
@@ -66,6 +69,7 @@ import javassist.compiler.ast.Keyword;
 	    "initials",
 	    "suffix",
 	    "lifespan",
+	    "orcid",
 	    "institutionalMemberships"
 })
 @XmlRootElement(name = "Person")
@@ -118,6 +122,13 @@ public class Person extends TeamOrPersonBase<Person>{
   //TODO Val #3379    check carefully what the condition is that lifespan is really null in legacy data
 //    @NotNull
 	private TimePeriod lifespan = TimePeriod.NewInstance();
+
+    @XmlElement(name = "Orcid")
+    @Field
+    @FieldBridge(impl = OrcidBridge.class)
+    @Type(type="orcidUserType")
+    @Column(length=16)
+    private ORCID orcid;
 
     @XmlElementWrapper(name = "InstitutionalMemberships", nillable = true)
     @XmlElement(name = "InstitutionalMembership")
@@ -369,6 +380,22 @@ public class Person extends TeamOrPersonBase<Person>{
 		}
 		this.lifespan = lifespan;
 	}
+
+
+    /**
+     * The {@link ORCID ORCiD} of this person.<BR>
+     * See https://orcid.org/ for information on ORCiD.
+     * @return the ORCiD
+     */
+    public ORCID getOrcid() {
+        return orcid;
+    }
+    /**
+     * @see #getOrcid()
+     */
+    public void setOrcid(ORCID orcid) {
+        this.orcid = orcid;
+    }
 
     @Override
     public boolean updateCaches(){

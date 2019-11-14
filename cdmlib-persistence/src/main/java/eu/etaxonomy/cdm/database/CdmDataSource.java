@@ -26,7 +26,6 @@ import eu.etaxonomy.cdm.persistence.hibernate.HibernateConfiguration;
 
 /**
  * @author a.mueller
- *
  */
 public class CdmDataSource extends CdmDataSourceBase {
 	@SuppressWarnings("unused")

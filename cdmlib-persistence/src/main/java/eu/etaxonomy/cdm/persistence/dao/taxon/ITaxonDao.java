@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.persistence.dao.taxon;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -141,7 +142,7 @@ public interface ITaxonDao
      * @param rank
      * @return a count of TaxonBase instances
      */
-    public long countTaxaByName(Class <? extends TaxonBase> clazz, String uninomial, String infragenericEpithet,String specificEpithet, String infraspecificEpithet, Rank rank);
+    public long countTaxaByName(Class <? extends TaxonBase> clazz, String uninomial, String infragenericEpithet,String specificEpithet, String infraspecificEpithet, String authorship, Rank rank);
 
     /**
      * Returns a list of TaxonBase instances where the
@@ -341,15 +342,23 @@ public interface ITaxonDao
      */
     public long countSynonyms(Synonym synonym, SynonymType type);
 
-    public List<TaxonName> findIdenticalTaxonNames(List<String> propertyPath);
+ //   public List<TaxonName> findIdenticalTaxonNames(List<String> propertyPath);
 
     public long countTaxaByCommonName(String searchString,
             Classification classification, MatchMode matchMode,
             Set<NamedArea> namedAreas);
 
-    public List<UUID> findIdenticalTaxonNameIds(List<String> propertyPath);
+ //   public List<UUID> findIdenticalTaxonNameIds(List<String> propertyPath);
 
-    public List<TaxonName> findIdenticalNamesNew(List <String> propertyPaths);
+
+    /**
+     * finds all names with identical nameCache but belonging to taxa with different sec references
+     * @param sec1
+     * @param sec2
+     * @param propertyPaths
+     * @return
+     */
+    public Map<String, List<TaxonName>> findIdenticalNamesNew(Reference sec1, Reference sec2, List<String> propertyPaths);
 
     public List<UuidAndTitleCache<? extends IdentifiableEntity>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doNamesWithoutTaxa,
             boolean doMisappliedNames, boolean doCommonNames, boolean includeUnpublished,

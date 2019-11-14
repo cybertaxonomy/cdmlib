@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.model.common;
 
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +25,6 @@ import org.hibernate.envers.Audited;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
-
 
 /**
  * Extension types similar to dynamically defined attributes. These are not data
@@ -57,6 +55,10 @@ public class ExtensionType extends DefinedTermBase<ExtensionType> {
 	private static final UUID uuidOrder = UUID.fromString("ecb7770d-a295-49ee-a88f-e9e137a7cabb");
 	private static final UUID uuidInformalCategory = UUID.fromString("11bbc52f-a085-43d3-9f9b-cbe0d1eb9a91");
 	private static final UUID uuidUrl = UUID.fromString("d769fa9f-51ee-4e11-8152-b5ce72b7f413");
+
+	//for storing the full, non truncated cache (title cache is limited to size 800) => TODO make it a CDM extension type
+	public static final UUID uuidExtNonTruncatedCache = UUID.fromString("4839605b-b72d-493a-94fb-e8f8acb393f9");
+
 
 	protected static Map<UUID, ExtensionType> termMap = null;
 

@@ -869,7 +869,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
         service.saveOrUpdate(synonym1);
 
-        long nRelations = nameService.getAllRelationships(1000, 0).size();
+        long nRelations = nameService.listNameRelationships(null, 1000, 0, null, null).size();
         logger.info("number of name relations: " + nRelations);
         Assert.assertEquals("There should be 1 name relationship left in the database", 1, nRelations);
         SynonymDeletionConfigurator config = new SynonymDeletionConfigurator();
@@ -884,7 +884,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("There should be 4 names left in the database (name is related to synonymName2)", 4, nNames);
         nRelations = service.countSynonyms(true);
         //may change with better implementation of countAllRelationships (see #2653)
-        nRelations = nameService.getAllRelationships(1000, 0).size();
+        nRelations = nameService.listNameRelationships(null, 1000, 0, null, null).size();
         logger.info("number of name relations: " + nRelations);
         Assert.assertEquals("There should be 1 name relationship left in the database", 1, nRelations);
 
@@ -924,7 +924,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
         service.saveOrUpdate(synonym1);
 
-        long nRelations = nameService.getAllRelationships(1000, 0).size();
+        long nRelations = nameService.listNameRelationships(null, 1000, 0, null, null).size();
         logger.info("number of name relations: " + nRelations);
         Assert.assertEquals("There should be 1 name relationship left in the database", 1, nRelations);
         SynonymDeletionConfigurator config = new SynonymDeletionConfigurator();
@@ -942,7 +942,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("There should be 3 names left in the database ", 3, nNames);
         nRelations = service.countSynonyms(true);
         //may change with better implementation of countAllRelationships (see #2653)
-        nRelations = nameService.getAllRelationships(1000, 0).size();
+        nRelations = nameService.listNameRelationships(null, 1000, 0, null, null).size();
         logger.info("number of name relations: " + nRelations);
         Assert.assertEquals("There should be no name relationship left in the database", 0, nRelations);
     }
@@ -972,7 +972,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
         service.saveOrUpdate(synonym1);
 
-        long nRelations = nameService.getAllRelationships(1000, 0).size();
+        long nRelations = nameService.listNameRelationships(null, 1000, 0, null, null).size();
         logger.info("number of name relations: " + nRelations);
         Assert.assertEquals("There should be 1 name relationship left in the database", 1, nRelations);
         SynonymDeletionConfigurator config = new SynonymDeletionConfigurator();
@@ -995,7 +995,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("There should be 3 names left in the database ", 3, nNames);
         nRelations = service.countSynonyms(true);
         //may change with better implementation of countAllRelationships (see #2653)
-        nRelations = nameService.getAllRelationships(1000, 0).size();
+        nRelations = nameService.listNameRelationships(null, 1000, 0, null, null).size();
         logger.info("number of name relations: " + nRelations);
         Assert.assertEquals("There should be no name relationship left in the database", 0, nRelations);
     }
@@ -1083,7 +1083,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("There should be 4 names left in the database", 4, nNames);
         nRelations = service.countSynonyms(true);
         Assert.assertEquals("There should be no taxon or synonym relationship in the database", 1, nRelations);
-        nRelations = nameService.getAllRelationships(1000,0).size();
+        nRelations = nameService.listNameRelationships(null, 1000, 0, null, null).size();
         Assert.assertEquals("There should be one name relationship in the database", 1, nRelations);
 
     }

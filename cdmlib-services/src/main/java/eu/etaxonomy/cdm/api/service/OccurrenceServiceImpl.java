@@ -552,9 +552,11 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         if (CdmUtils.isBlank(specimenIdentifier)) {
             collectionKey = FormatKey.COLLECTION_NAME;
         }
-        specimenIdentifier = CdmFormatterFactory.format(derivedUnit, new FormatKey[] {
-                collectionKey, FormatKey.SPACE, FormatKey.OPEN_BRACKET,
-                FormatKey.MOST_SIGNIFICANT_IDENTIFIER, FormatKey.CLOSE_BRACKET });
+        if(CdmUtils.isNotBlank(derivedUnit.getMostSignificantIdentifier())){
+            specimenIdentifier = CdmFormatterFactory.format(derivedUnit, new FormatKey[] {
+                    collectionKey, FormatKey.SPACE, FormatKey.OPEN_BRACKET,
+                    FormatKey.MOST_SIGNIFICANT_IDENTIFIER, FormatKey.CLOSE_BRACKET });
+        }
         if(CdmUtils.isBlank(specimenIdentifier)){
             specimenIdentifier = derivedUnit.getTitleCache();
         }
@@ -883,7 +885,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                         alreadyCollectedSpecimen.put(derivedUnitDTO.getUuid(), derivedUnitDTO);
                     }
                     derivedUnitDTO.addAllDerivates(getDerivedUnitDTOsFor(derivedUnitDTO, derivedUnit, alreadyCollectedSpecimen));
-                    this.findFieldUnitDTO(derivedUnitDTO,
+                    this.findFieldUnitDTO(derivedUnitDTO, fieldUnitDTOs,
                             alreadyCollectedSpecimen);
                 }
             }
@@ -909,7 +911,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             derivedUnitDTO = new DNASampleDTO(dnaSample);
             alreadyCollectedSpecimen.put(derivedUnitDTO.getUuid(), derivedUnitDTO);
             derivedUnitDTO.addAllDerivates(getDerivedUnitDTOsFor(derivedUnitDTO, dnaSample, alreadyCollectedSpecimen));
-            FieldUnitDTO fieldUnit = this.findFieldUnitDTO(derivedUnitDTO,
+            FieldUnitDTO fieldUnit = this.findFieldUnitDTO(derivedUnitDTO, fieldUnitDTOs,
                     alreadyCollectedSpecimen);
 
             return fieldUnit;
@@ -1013,7 +1015,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         if (originals != null && !originals.isEmpty()) {
             for (SpecimenOrObservationBase<?> original : originals) {
                 if (original.isInstanceOf(FieldUnit.class)) {
-                    fieldUnits.add((FieldUnit) load(original.getUuid(), propertyPaths));
+                    fieldUnits.add(HibernateProxyHelper.deproxy(load(original.getUuid(), propertyPaths), FieldUnit.class));
                 }
                 else if(original.isInstanceOf(DerivedUnit.class)){
                     fieldUnits.addAll(getFieldUnits(HibernateProxyHelper.deproxy(original, DerivedUnit.class), propertyPaths));
@@ -1027,7 +1029,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
     @Override
     @Transactional(readOnly=true)
-    public FieldUnitDTO findFieldUnitDTO(DerivateDTO derivedUnitDTO,
+    public FieldUnitDTO findFieldUnitDTO(DerivateDTO derivedUnitDTO, Collection<FieldUnitDTO> fieldUnits,
             HashMap<UUID, DerivateDTO> alreadyCollectedSpecimen) {
         //It will search recursively over all {@link DerivationEvent}s and get the "originals" ({@link SpecimenOrObservationBase})
         //from which this DerivedUnit was derived until all FieldUnits are found.
@@ -1060,6 +1062,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             if (specimen.isInstanceOf(FieldUnit.class)){
                 fieldUnitDto = new FieldUnitDTO((FieldUnit)specimen);
                 fieldUnitDto.addDerivate(derivedUnitDTO);
+                fieldUnits.add(fieldUnitDto);
 
             }else{
                 DerivateDTO originalDTO;
@@ -1069,7 +1072,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                     originalDTO = new PreservedSpecimenDTO((DerivedUnit)specimen);
                 }
                 originalDTO.addDerivate(derivedUnitDTO);
-                fieldUnitDto = findFieldUnitDTO(originalDTO,
+                fieldUnitDto = findFieldUnitDTO(originalDTO, fieldUnits,
                         alreadyCollectedSpecimen);
             }
 

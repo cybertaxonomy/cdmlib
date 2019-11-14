@@ -135,7 +135,6 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  *
  * @author a.mueller
  * @since 13-Oct-2010
- *
  */
 @SuppressWarnings("serial")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -185,8 +184,6 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
 	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE })
 	private List<PolytomousKeyNode> children = new ArrayList<>();
-
-
 
 	@XmlElement(name = "Parent")
 	@XmlIDREF
@@ -252,7 +249,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	@OneToMany(fetch = FetchType.LAZY)
 	@MapKeyJoinColumn(name="modifyingtext_mapkey_id")
     @Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE })
-	private Map<Language, LanguageString> modifyingText = new HashMap<Language, LanguageString>();
+	private Map<Language, LanguageString> modifyingText = new HashMap<>();
 
 // ************************** FACTORY ********************************/
 
@@ -378,7 +375,9 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	}
 
 	/**
-	 * @return
+	 * A link to another sub-node, which has not *this*
+	 * node as primary parent. The sub-node may be within
+	 * this key or within another key.
 	 * @see #setOtherNode(PolytomousKeyNode)
 	 * @see #getTaxon()
 	 * @see #getChildren()
@@ -400,15 +399,12 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	public void setFeature(Feature feature) {
 		this.feature = feature;
 	}
-
 	public Feature getFeature() {
 		return feature;
 	}
 
 	/**
 	 * Returns the parent node of <code>this</code> child.
-	 *
-	 * @return
 	 */
 	public PolytomousKeyNode getParent() {
 		return parent;
@@ -419,23 +415,22 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	 *
 	 * @param parent
 	 */
-	   protected void setParent(PolytomousKeyNode parent) {
-	        PolytomousKeyNode oldParent = this.parent;
-	        if (oldParent != null){
-	            if (oldParent.getChildren().contains(this)){
-	                    oldParent.removeChild(this);
-	            }
-	        }
-	        this.parent = parent;
+	protected void setParent(PolytomousKeyNode parent) {
+        PolytomousKeyNode oldParent = this.parent;
+        if (oldParent != null){
+            if (oldParent.getChildren().contains(this)){
+                    oldParent.removeChild(this);
+            }
+        }
+        this.parent = parent;
 
-	    }
+    }
 
 	/**
 	 * Returns the (ordered) list of feature nodes which are children nodes of
 	 * <i>this</i> feature node.
 	 */
 	public List<PolytomousKeyNode> getChildren() {
-
 		return children;
 	}
 
@@ -512,8 +507,6 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 			removeChild(index);
 		}
 	}
-
-
 
 	/**
 	 * Removes the feature node placed at the given (index + 1) position from
@@ -615,9 +608,6 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		}
 		return newNodeN;
 	}
-
-
-
 
 	/**
 	 * Returns the feature node placed at the given (childIndex + 1) position
@@ -789,46 +779,9 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	 *            language
 	 * @see #getModifyingText()
 	 * @see #putModifyingText(Language, String)
-	 * @deprecated should follow the put semantic of maps, this method will be
-	 *             removed in v4.0 Use the
-	 *             {@link #putModifyingText(LanguageString) putModifyingText}
-	 *             method instead
-	 */
-	@Deprecated
-	public LanguageString addModifyingText(LanguageString description) {
-		return this.putModifyingText(description);
-	}
-
-	/**
-	 * See {@link #getModifyingText}
-	 *
-	 * @param description
-	 *            the language string describing the validity in a particular
-	 *            language
-	 * @see #getModifyingText()
-	 * @see #putModifyingText(Language, String)
 	 */
 	public LanguageString putModifyingText(LanguageString description) {
 		return this.modifyingText.put(description.getLanguage(), description);
-	}
-
-	/**
-	 * See {@link #getModifyingText}
-	 *
-	 * @param text
-	 *            the string describing the validity in a particular language
-	 * @param language
-	 *            the language in which the text string is formulated
-	 * @see #getModifyingText()
-	 * @see #putModifyingText(LanguageString)
-	 * @deprecated should follow the put semantic of maps, this method will be
-	 *             removed in v4.0 Use the
-	 *             {@link #putModifyingText(Language, String) putModifyingText}
-	 *             method instead
-	 */
-	@Deprecated
-	public LanguageString addModifyingText(String text, Language language) {
-		return this.putModifyingText(language, text);
 	}
 
 	/**

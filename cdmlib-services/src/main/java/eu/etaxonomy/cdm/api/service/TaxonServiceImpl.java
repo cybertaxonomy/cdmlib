@@ -506,7 +506,7 @@ public class TaxonServiceImpl
 
     @Override
     public Pager<TaxonBase> findTaxaByName(Class<? extends TaxonBase> clazz, String uninomial,	String infragenericEpithet, String specificEpithet,	String infraspecificEpithet, String authorship, Rank rank, Integer pageSize,Integer pageNumber) {
-        long numberOfResults = dao.countTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, rank);
+        long numberOfResults = dao.countTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, authorship, rank);
 
         List<TaxonBase> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again
@@ -517,8 +517,8 @@ public class TaxonServiceImpl
     }
 
     @Override
-    public List<TaxonBase> listTaxaByName(Class<? extends TaxonBase> clazz, String uninomial, String infragenericEpithet, String specificEpithet,	String infraspecificEpithet, String authorship, Rank rank, Integer pageSize,Integer pageNumber) {
-        long numberOfResults = dao.countTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, rank);
+    public List<TaxonBase> listTaxaByName(Class<? extends TaxonBase> clazz, String uninomial, String infragenericEpithet, String specificEpithet, String infraspecificEpithet, String authorship, Rank rank, Integer pageSize,Integer pageNumber) {
+        long numberOfResults = dao.countTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, authorship, rank);
 
         List<TaxonBase> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again
@@ -578,12 +578,12 @@ public class TaxonServiceImpl
 
     @Override
     public List<TaxonRelationship> listTaxonRelationships(Set<TaxonRelationshipType> types,
-            Integer pageSize, Integer pageStart, List<OrderHint> orderHints, List<String> propertyPaths) {
-        Long numberOfResults = dao.countTaxonRelationships(types);
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 
+        Long numberOfResults = dao.countTaxonRelationships(types);
         List<TaxonRelationship> results = new ArrayList<>();
         if(numberOfResults > 0) {
-            results = dao.getTaxonRelationships(types, pageSize, pageStart, orderHints, propertyPaths);
+            results = dao.getTaxonRelationships(types, pageSize, pageNumber, orderHints, propertyPaths);
         }
         return results;
     }
@@ -993,10 +993,7 @@ public class TaxonServiceImpl
         return this.dao.countSynonyms(onlyAttachedToTaxon);
     }
 
-    @Override
-    public List<TaxonName> findIdenticalTaxonNames(List<String> propertyPath) {
-        return this.dao.findIdenticalTaxonNames(propertyPath);
-    }
+
 
     @Override
     @Transactional(readOnly=false)
@@ -1260,9 +1257,9 @@ public class TaxonServiceImpl
     }
 
     @Override
-    public List<TaxonName> findIdenticalTaxonNameIds(List<String> propertyPath) {
+    public Map<String,List<TaxonName>> findIdenticalTaxonNameIds(Reference sec1, Reference sec2, List<String> propertyPaths) {
 
-        return this.dao.findIdenticalNamesNew(propertyPath);
+        return this.dao.findIdenticalNamesNew(sec1, sec2, propertyPaths);
     }
 
 

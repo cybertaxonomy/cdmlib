@@ -227,6 +227,10 @@ public class Abcd206XMLFieldGetter {
                     }else if (identifications.item(m).getNodeName().equals(prefix +"Date")){
                         dateStr = this.getDateIdentified(identifications.item(m));
                     }
+//                    if (identifications.item(m).getNodeName()
+//                            .equals(prefix + "PreferredFlag")) {
+//                        hasPref = true;
+//                    }
                 }
                 if (dataHolder.getNomenclatureCode() != null&& dataHolder.getNomenclatureCode() != "" ) {
                     // logger.info("TMP NAME P" + tmpName);
@@ -236,35 +240,35 @@ public class Abcd206XMLFieldGetter {
                 }
             }
         }
-        boolean hasPref = false;
-        for (int j = 0; j < group.getLength(); j++) {
-            if (group.item(j).getNodeName().equals(prefix + "Identification")) {
-                dataHolder.setNomenclatureCode("");
-                identifications = group.item(j).getChildNodes();
-                for (int m = 0; m < identifications.getLength(); m++) {
-                    if (identifications.item(m).getNodeName().equals(prefix + "Result")) {
-                        results = identifications.item(m).getChildNodes();
-                        for (int k = 0; k < results.getLength(); k++) {
-                            if (results.item(k).getNodeName().equals(prefix + "TaxonIdentified")) {
-                                tmpName = this.getScientificName(results.item(k));
-                            }
-                        }
-                    }
-                    if (identifications.item(m).getNodeName()
-                            .equals(prefix + "PreferredFlag")) {
-                        hasPref = true;
-                    }
-                }
-                if (!hasPref && tmpName != null) {
-                    if (dataHolder.getNomenclatureCode() != null
-                            && dataHolder.getNomenclatureCode() != "") {
-                        dataHolder.getIdentificationList().add(new Identification(tmpName, "0", dataHolder.getNomenclatureCode(), null, dateStr));
-                    } else {
-                        dataHolder.getIdentificationList().add(new Identification(tmpName, "0", null, dateStr));
-                    }
-                }
-            }
-        }
+
+//        for (int j = 0; j < group.getLength(); j++) {
+//            if (group.item(j).getNodeName().equals(prefix + "Identification")) {
+//                dataHolder.setNomenclatureCode("");
+//                identifications = group.item(j).getChildNodes();
+//                for (int m = 0; m < identifications.getLength(); m++) {
+//                    if (identifications.item(m).getNodeName().equals(prefix + "Result")) {
+//                        results = identifications.item(m).getChildNodes();
+//                        for (int k = 0; k < results.getLength(); k++) {
+//                            if (results.item(k).getNodeName().equals(prefix + "TaxonIdentified")) {
+//                                tmpName = this.getScientificName(results.item(k));
+//                            }
+//                        }
+//                    }
+//                    if (identifications.item(m).getNodeName()
+//                            .equals(prefix + "PreferredFlag")) {
+//                        hasPref = true;
+//                    }
+//                }
+//                if (!hasPref && tmpName != null) {
+//                    if (dataHolder.getNomenclatureCode() != null
+//                            && dataHolder.getNomenclatureCode() != "") {
+//                        dataHolder.getIdentificationList().add(new Identification(tmpName, "0", dataHolder.getNomenclatureCode(), null, dateStr));
+//                    } else {
+//                        dataHolder.getIdentificationList().add(new Identification(tmpName, "0", null, dateStr));
+//                    }
+//                }
+//            }
+//        }
     }
 
     /**
@@ -920,6 +924,8 @@ public class Abcd206XMLFieldGetter {
             }
         } catch (NullPointerException e) {
             logger.info(e);
+
+            e.printStackTrace();
         }
     }
 
@@ -937,6 +943,7 @@ public class Abcd206XMLFieldGetter {
         NodeList licenceNodes;
         NodeList license;
         NodeList copyrights;
+
         String fileUri = "";
         for (int k = 0; k < multimedia.getLength(); k++) {
             if (multimedia.item(k).getNodeName().equalsIgnoreCase(prefix + "fileURI")) {
@@ -997,7 +1004,7 @@ public class Abcd206XMLFieldGetter {
                                         Node node = license.item(n);
                                         NodeList children = node.getChildNodes();
                                         for (int o = 0; o < children.getLength(); o++){
-                                            if (children.item(n).getNodeName().equalsIgnoreCase(prefix + "Text")){
+                                            if (children.item(o).getNodeName().equalsIgnoreCase(prefix + "Text")){
                                                 mediaObjectMap.put("License", children.item(n).getTextContent());
                                             }
 

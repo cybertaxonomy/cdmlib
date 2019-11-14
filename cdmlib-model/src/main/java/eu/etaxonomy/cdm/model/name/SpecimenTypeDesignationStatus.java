@@ -130,7 +130,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	//#8140
 	@Transient
 	@Override
-	public boolean isLectotype(){
+	public boolean hasDesignationSource(){
 		if (this.equals(LECTOTYPE()) ||
 				this.equals(ISOLECTOTYPE()) ||
 				this.equals(SECOND_STEP_LECTOTYPE()) ||

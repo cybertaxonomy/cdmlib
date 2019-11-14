@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.model.common;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -54,6 +55,8 @@ import eu.etaxonomy.cdm.hibernate.search.StripHtmlBridge;
 import eu.etaxonomy.cdm.jaxb.FormattedTextAdapter;
 import eu.etaxonomy.cdm.jaxb.LSIDAdapter;
 import eu.etaxonomy.cdm.model.media.Rights;
+import eu.etaxonomy.cdm.model.reference.ICdmTarget;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
@@ -224,6 +227,14 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         titleCache = getTruncatedCache(titleCache);
         this.titleCache = titleCache;
         this.protectedTitleCache = protectCache;
+    }
+
+    @Override
+    public String resetTitleCache() {
+        if(!protectedTitleCache){
+            titleCache = null;
+        }
+        return getTitleCache();
     }
 
     /**
@@ -447,6 +458,15 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         }
         return this.extensions;
     }
+    public Set<Extension> getFilteredExtensions(UUID extensionTypeUuid){
+        Set<Extension> result = new HashSet<>();
+        for (Extension extension : getExtensions()){
+            if (extension.getType() != null && extension.getType().getUuid().equals(extensionTypeUuid)){
+                result.add(extension);
+            }
+        }
+        return result;
+     }
     /**
      * @param type
      * @return a Set of extension value strings
@@ -469,12 +489,33 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         return result;
     }
 
+    /**
+     * @see #getExtensionsConcat(Collection, String)
+     */
     public String getExtensionsConcat(UUID extensionTypeUuid, String separator){
         String result = null;
         for (Extension extension : getExtensions()){
             if (extension.getType() != null && extension.getType().getUuid().equals(extensionTypeUuid)){
                 result = CdmUtils.concat(separator, result, extension.getValue());
             }
+        }
+        return result;
+    }
+
+    /**
+     * Return all extensions matching the given extension type as
+     * concatenated string. If extensionTypeUuids is a sorted collection
+     * it is given in the correct order.
+     * @param extensionTypeUuids collection of the extension types to be considered
+     * @param separator the separator for concatenation
+     * @return the concatenated extension string
+     * @see #getExtensionsConcat(Collection, String)
+     */
+    public String getExtensionsConcat(Collection<UUID> extensionTypeUuids, String separator){
+        String result = null;
+        for (UUID uuid : extensionTypeUuids){
+            String extension = getExtensionsConcat(uuid, separator);
+            result = CdmUtils.concat(separator, result, extension);
         }
         return result;
     }
@@ -538,14 +579,10 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         }
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IdentifiableSource createNewSource(OriginalSourceType type, String idInSource, String idNamespace,
-            Reference reference, String microReference, String originalInfo) {
-        return IdentifiableSource.NewInstance(type, idInSource, idNamespace, reference, microReference, originalInfo);
+            Reference reference, String microReference, String originalInfo, ICdmTarget target) {
+        return IdentifiableSource.NewInstance(type, idInSource, idNamespace, reference, microReference, originalInfo, target);
     }
 
 //******************************** TO STRING *****************************************************/

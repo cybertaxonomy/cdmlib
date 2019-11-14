@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.api.service.config.DescriptionAggregationConfiguration;
 import eu.etaxonomy.cdm.api.service.dto.RowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenRowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonRowWrapperDTO;
@@ -162,20 +161,6 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
     public List<TaxonNode> loadFilteredTaxonNodes(DescriptiveDataSet descriptiveDataSet, List<String> propertyPaths);
 
     /**
-     * Aggregates the character data of the given {@link DescriptiveDataSet}.<br>
-     * <br>
-     * For all {@link SpecimenDescription}s belonging to this data set new,
-     * aggregated {@link TaxonDescription}s are created for every taxon the specimens are
-     * directly associated with.
-     * @param descriptiveDataSetUuid the uuid of the descriptive data set to which the
-     * aggregated descriptions will be added to
-     * @param config the aggregation configuration
-     * @param monitor the progress monitor
-     * @return the result of the operation
-     */
-    public UpdateResult aggregate(UUID descriptiveDataSetUuid,  DescriptionAggregationConfiguration config, IProgressMonitor monitor);
-
-    /**
      * Generates a {@link PolytomousKey} for the given {@link DescriptiveDataSet} and sets
      * the given taxon as the taxonomic scope
      * @param datasetUuid the data set
@@ -183,5 +168,14 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      * @return the uuid of the monitor
      */
     UpdateResult generatePolytomousKey(UUID descriptiveDataSetUuid, UUID taxonUuid);
+
+    /**
+     * Returns the first {@link TaxonDescription} with {@link DescriptionType#DEFAULT_VALUES_FOR_AGGREGATION}
+     * found in the taxon node hierarchy of the associated taxon
+     * @param specimenDescriptionUuid the specimen description
+     * @param dataSetUuid the data set
+     * @return the first found default description or <code>null</code>
+     */
+    public TaxonDescription findDefaultDescription(UUID specimenDescriptionUuid, UUID dataSetUuid);
 
 }

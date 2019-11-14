@@ -62,7 +62,6 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 
 	protected static Map<UUID, TaxonRelationshipType> termMap = null;
 
-	@Deprecated //will be removed in future versions. Use Classification/TaxonNode instead
 	private static final UUID uuidTaxonomicallyIncludedIn = UUID.fromString("d13fecdf-eb44-4dd7-9244-26679c05df1c");
 
 	private static final UUID uuidMisappliedNameFor = UUID.fromString("1ed87175-59dd-437e-959e-0d71583d8417");
@@ -104,7 +103,11 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	private static final UUID uuidUnclear = UUID.fromString("4c48ba25-c1d0-4bdd-9260-c1fa2e42a5d3");
     private static final UUID uuidNotYetWorkedOn = UUID.fromString("8d47e59a-790d-428f-8060-01d443519166");
 
-
+    //currently only used for ERMS import for synonym relationship where the synonym needs to be of class
+    //Taxon for some reason.
+    public static final UUID uuidHeterotypicSynonymTaxonRelationship = UUID.fromString("8f1be54b-c693-4d58-ab36-6f389fc9bd1f");
+    public static final UUID uuidHomotypicSynonymTaxonRelationship = UUID.fromString("bfe114b9-1a25-4199-b8b0-6599eb53ae8a");
+    public static final UUID uuidSynonymOfTaxonRelationship = UUID.fromString("cc648276-0823-47b1-9deb-fa7c046e4afd");
 
 
 
@@ -657,6 +660,46 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
         result.add(uuidMisappliedNameFor);
         result.add(uuidProParteMisappliedNameFor);
         result.add(uuidPartialMisappliedNameFor);
+        return result;
+    }
+
+
+    /**
+     * @return a set containing all UUIDs of relationship types representing
+     * a partial relationship (e.g. {@link #PARTIAL_SYNONYM_FOR()} and
+     * {@link #PARTIAL_MISAPPLIED_NAME_FOR()})
+     */
+    public static Set<UUID> partialUuids() {
+        Set<UUID> result = new HashSet<>();
+        result.add(uuidPartialSynonymFor);
+        result.add(uuidPartialSynonymFor);
+        return result;
+    }
+
+    /**
+     * @return a set containing all UUIDs of relationship types representing
+     * a pro parte relationship (e.g. {@link #PRO_PARTE_SYNONYM_FOR()} and
+     * {@link #PRO_PARTE_MISAPPLIED_NAME_FOR()})
+     */
+    public static Set<UUID> proParteUuids() {
+        Set<UUID> result = new HashSet<>();
+        result.add(uuidProParteSynonymFor);
+        result.add(uuidProParteMisappliedNameFor);
+        return result;
+    }
+
+    /**
+     * @return a set containing all UUIDs of relationship types representing
+     * a pseudo taxon relationship (a synonym relationship expressed as
+     * taxon relationship as the synonym side for some reason must be
+     * handled as pseudo accepted taxon, e.g. because factual data
+     * is attached from an import)
+     */
+    public static Set<UUID> pseudoTaxonUuids() {
+        Set<UUID> result = new HashSet<>();
+        result.add(uuidHomotypicSynonymTaxonRelationship);
+        result.add(uuidHeterotypicSynonymTaxonRelationship);
+        result.add(uuidSynonymOfTaxonRelationship);
         return result;
     }
 

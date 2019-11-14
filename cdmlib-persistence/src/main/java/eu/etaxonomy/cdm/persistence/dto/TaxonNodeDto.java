@@ -21,7 +21,6 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 /**
  * @author a.kohlbecker
  * @since Jun 13, 2016
- *
  */
 public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
 
@@ -76,9 +75,6 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
     private final String treeIndex;
     private final Integer sortIndex;
 
-    /**
-     * @param taxonNode
-     */
     public TaxonNodeDto(TaxonNode taxonNode) {
         this(null, taxonNode);
     }
@@ -111,9 +107,6 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
         sortIndex = taxonNode.getSortIndex();
     }
 
-    /**
-     * @param taxonNode
-     */
     public TaxonNodeDto(Synonym synonym, boolean isHomotypic) {
         super(null, synonym.getName().getTitleCache());
 
@@ -135,67 +128,38 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
 
     }
 
-
-
-    /**
-     * @return the taxonomicChildrenCount
-     */
     public int getTaxonomicChildrenCount() {
         return taxonomicChildrenCount;
     }
 
-    /**
-     * @return the secUuid
-     */
     public UUID getSecUuid() {
         return secUuid;
     }
 
-    /**
-     * @return the taxonUuid
-     */
     public UUID getTaxonUuid() {
         return taxonUuid;
     }
 
-
-    /**
-     * @return the taggedTitle
-     */
     public List<TaggedText> getTaggedTitle() {
         return taggedTitle;
     }
 
-    /**
-     * @return the unplaced
-     */
     public boolean isUnplaced() {
         return unplaced;
     }
 
-    /**
-     * @return the excluded
-     */
     public boolean isExcluded() {
         return excluded;
     }
 
-    /**
-     * @return the doubtful
-     */
     public boolean isDoubtful() {
         return doubtful;
     }
-    /**
-     * @return the rankLabel
-     */
+
     public String getRankLabel() {
         return rankLabel;
     }
 
-    /**
-     * @return the status
-     */
     public TaxonStatus getStatus() {
         return status;
     }
@@ -228,7 +192,6 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
         return getTitleCache();
     }
 
-
     @Override
     public boolean equals(Object node2){
         if (node2 instanceof TaxonNodeDto){
@@ -236,9 +199,5 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
         } else{
             return false;
         }
-
-
     }
-
-
 }

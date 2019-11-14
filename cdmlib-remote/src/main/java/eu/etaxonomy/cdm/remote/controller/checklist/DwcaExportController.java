@@ -108,8 +108,6 @@ public class DwcaExportController
 
     private final static long DAY_IN_MILLIS = HOUR_IN_MILLIS * 24;
 
-
-
     private static final Logger logger = Logger.getLogger(DwcaExportController.class);
 
     /**
@@ -122,9 +120,6 @@ public class DwcaExportController
         binder.registerCustomEditor(UuidList.class, new UUIDListPropertyEditor());
 //        binder.registerCustomEditor(NamedArea.class, new TermBaseListPropertyEditor<>(termService));
     }
-
-
-
 
     /**
      * Documentation webservice for this controller.
@@ -218,7 +213,7 @@ public class DwcaExportController
 
             @RequestParam(value = "area", required = false) final UuidList areaUuids,
             @RequestParam(value = "minRank", required = false) final UUID minRank,
-            @RequestParam(value = "minRank", required = false) final UUID maxRank,
+            @RequestParam(value = "maxRank", required = false) final UUID maxRank,
 
             @RequestParam(value = "downloadTokenValueId", required = false) final String downloadTokenValueId,
             @RequestParam(value = "priority", required = false) Integer priority,

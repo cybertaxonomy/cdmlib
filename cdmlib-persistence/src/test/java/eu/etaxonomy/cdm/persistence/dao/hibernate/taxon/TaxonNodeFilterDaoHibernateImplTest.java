@@ -187,8 +187,21 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         //and therefore we expect the given result
         Assert.assertEquals(expectedList, listUuid);
 
+        filter.setOrder(TaxonNodeFilter.ORDER.TREEINDEX_DESC);
+        listUuid = filterDao.listUuids(filter);
+        Assert.assertEquals("All 5 children but not root node should be returned", 5, listUuid.size());
 
+        expectedList = Arrays.asList(new UUID[]{uuidNode2, uuidNode5, uuidNode4, uuidNode3, uuidNode1});
+        //in theory node1 and 3 as well as node4 and 5 could be exchanged depending on the id they get. But we expect
+        //in this test environment that node1.id < node2.id and node4.id < node5.id
+        Assert.assertEquals(expectedList, listUuid);
 
+        idList = filterDao.idList(filter);
+        Assert.assertEquals((Integer)node2.getId(), idList.get(0));
+        Assert.assertEquals((Integer)node5.getId(), idList.get(1));
+        Assert.assertEquals((Integer)node4.getId(), idList.get(2));
+        Assert.assertEquals((Integer)node3.getId(), idList.get(3));
+        Assert.assertEquals((Integer)node1.getId(), idList.get(4));
     }
 
     @Test

@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.common;
 
 import java.lang.reflect.Method;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -27,25 +28,20 @@ public abstract class DbImportConfiguratorBase<STATE extends DbImportStateBase>
             extends ImportConfiguratorBase<STATE, Source> {
 
     private static final long serialVersionUID = 3474072167155099394L;
-	private static Logger logger = Logger.getLogger(DbImportConfiguratorBase.class);
+	@SuppressWarnings("unused")
+    private static Logger logger = Logger.getLogger(DbImportConfiguratorBase.class);
 
 	private Method userTransformationMethod;
 
 	/* Max number of records to be saved with one service call */
 	private int recordsPerTransaction = 1000;
 
-	/**
-	 * @param source
-	 * @param destination
-	 * @param code
-	 */
 	protected DbImportConfiguratorBase(Source source, ICdmDataSource destination, NomenclaturalCode code, IInputTransformer defaultTransformer) {
 	   super(defaultTransformer);
 	   setNomenclaturalCode(code);
 	   setSource(source);
 	   setDestination(destination);
 	}
-
 
 	@Override
     public Source getSource() {
@@ -56,12 +52,13 @@ public abstract class DbImportConfiguratorBase<STATE extends DbImportStateBase>
 		super.setSource(berlinModelSource);
 	}
 
-
 	@Override
     public Reference getSourceReference() {
 		if (sourceReference == null){
 			sourceReference =  ReferenceFactory.newDatabase();
-			if (getSource() != null){
+			if (StringUtils.isNotBlank(getSourceReferenceTitle())){
+			    sourceReference.setTitleCache(getSourceReferenceTitle(), true);
+			}else if (getSource() != null){
 				sourceReference.setTitleCache(getSource().getDatabase(), true);
 			}
 			if (getSourceRefUuid() != null){
@@ -80,7 +77,6 @@ public abstract class DbImportConfiguratorBase<STATE extends DbImportStateBase>
 		}
 	}
 
-
 	public int getRecordsPerTransaction() {
 		return recordsPerTransaction;
 	}
@@ -88,13 +84,10 @@ public abstract class DbImportConfiguratorBase<STATE extends DbImportStateBase>
 		this.recordsPerTransaction = recordsPerTransaction;
 	}
 
-
 	public Method getUserTransformationMethod() {
 		return userTransformationMethod;
 	}
 	public void setUserTransformationMethod(Method userTransformationMethod) {
 		this.userTransformationMethod = userTransformationMethod;
 	}
-
-
 }

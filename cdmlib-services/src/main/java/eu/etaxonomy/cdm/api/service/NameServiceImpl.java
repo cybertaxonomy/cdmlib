@@ -57,7 +57,6 @@ import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
-import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.common.SourcedEntityBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
@@ -385,6 +384,7 @@ public class NameServiceImpl
      * findByTitle
      */
     @Override
+    @Deprecated
     public List<TaxonName> findNamesByTitleCache(String titleCache, MatchMode matchMode, List<String> propertyPaths){
         List result = dao.findByTitle(titleCache, matchMode, null, null, null, propertyPaths);
         return result;
@@ -397,6 +397,7 @@ public class NameServiceImpl
      * findByTitle
      */
     @Override
+    @Deprecated
     public List<TaxonName> findNamesByNameCache(String nameCache, MatchMode matchMode, List<String> propertyPaths){
         List<TaxonName> result = dao.findByName(false, nameCache, matchMode, null, null, null , propertyPaths);
         return result;
@@ -502,16 +503,29 @@ public class NameServiceImpl
         return homotypicalGroupDao.list(limit, start);
     }
 
-    /**
-     * FIXME Candidate for harmonization
-     * remove
-     */
     @Override
-    @Deprecated
-    public List<RelationshipBase> getAllRelationships(int limit, int start){
-        return dao.getAllRelationships(limit, start);
+    public List<NameRelationship> listNameRelationships(Set<NameRelationshipType> types,
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+
+        Long numberOfResults = dao.countNameRelationships(types);
+        List<NameRelationship> results = new ArrayList<>();
+        if(numberOfResults > 0) {
+            results = dao.getNameRelationships(types, pageSize, pageNumber, orderHints, propertyPaths);
+        }
+        return results;
     }
 
+    @Override
+    public List<HybridRelationship> listHybridRelationships(Set<HybridRelationshipType> types,
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+
+        Long numberOfResults = dao.countHybridRelationships(types);
+        List<HybridRelationship> results = new ArrayList<>();
+        if(numberOfResults > 0) {
+            results = dao.getHybridRelationships(types, pageSize, pageNumber, orderHints, propertyPaths);
+        }
+        return results;
+    }
 
 
     @Override

@@ -19,6 +19,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -26,7 +27,9 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.lang.StringUtils;
@@ -57,6 +60,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
     "type",
 	"idInSource",
     "idNamespace",
+    "cdmSource",
     "links"
 })
 @XmlRootElement(name = "OriginalSource")
@@ -66,7 +70,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 @Table(name="OriginalSourceBase")
 public abstract class OriginalSourceBase<T extends ISourceable>
         extends ReferencedEntityBase
-        implements IOriginalSource<T>, IIntextReferenceTarget,Cloneable {
+        implements IOriginalSource<T>, IIntextReferenceTarget {
 
 	private static final long serialVersionUID = -1972959999261181462L;
 	@SuppressWarnings("unused")
@@ -92,6 +96,13 @@ public abstract class OriginalSourceBase<T extends ISourceable>
 
 	@XmlElement(name = "IdNamespace")
 	private String idNamespace;
+
+    @XmlElement(name = "CdmSource")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @OneToOne(fetch = FetchType.EAGER, orphanRemoval=true)  //EAGER to avoid LIEs cdmSource should always be part of the OriginalSource itself
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
+    private CdmLinkSource cdmSource;
 
     @XmlElementWrapper(name = "Links", nillable = true)
     @XmlElement(name = "Link")
@@ -151,7 +162,37 @@ public abstract class OriginalSourceBase<T extends ISourceable>
 		this.type = type;
 	}
 
+	@Override
+    public ICdmTarget getCdmSource() {
+        return cdmSource == null? null: cdmSource.getTarget();
+    }
+     /* this method was implemented in the context of the CdmLinkSourceBeanProcessor which is unused
+      *  method is preserved for the time when the REST API will be revised (#8637)
+    @Override
+    public CdmLinkSource getCdmSource() {
+        if(cdmSource != null){
+            logger.error("NOT NULL");
+        }
+        return cdmSource;
+    }
+	*/
+
+
+//	@Override
+//    public void setCdmSource(CdmLinkSource cdmSource) {
+//        this.cdmSource = cdmSource;
+//    }
+    @Override
+    public void setCdmSource(ICdmTarget cdmTarget){
+        if (cdmTarget != null){
+            this.cdmSource = CdmLinkSource.NewInstance(cdmTarget);
+        }else{
+            this.cdmSource = null;
+        }
+    }
+
 //********************** External Links **********************************************
+
 
     public Set<ExternalLink> getLinks(){
         return this.links;
@@ -182,6 +223,10 @@ public abstract class OriginalSourceBase<T extends ISourceable>
 		    result.addLink((ExternalLink)link.clone());
 		}
 
+		if (this.cdmSource != null){
+		    result.setCdmSource(this.cdmSource.getTarget());
+		}
+
 		//no changes to: idInSource
 		return result;
 	}
@@ -190,7 +235,7 @@ public abstract class OriginalSourceBase<T extends ISourceable>
 //************************ toString ***************************************/
 	@Override
 	public String toString(){
-		if (StringUtils.isNotBlank(idInSource) || StringUtils.isNotBlank(idNamespace) ){
+		if (isNotBlank(idInSource) || isNotBlank(idNamespace) ){
 			return "OriginalSource:" + CdmUtils.concat(":", idNamespace, idInSource);
 		}else{
 			return super.toString();
@@ -199,9 +244,6 @@ public abstract class OriginalSourceBase<T extends ISourceable>
 
 //*********************************** EQUALS *********************************************************/
 
-	/**
-     * {@inheritDoc}
-     */
     @Override
     public boolean equalsByShallowCompare(ReferencedEntityBase other) {
 

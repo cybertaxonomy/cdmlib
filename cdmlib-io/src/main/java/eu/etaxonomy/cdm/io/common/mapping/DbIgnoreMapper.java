@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -23,26 +23,27 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * attribute does not need to be mapped.
  * @author a.mueller
  * @since 25.02.2010
- * @version 1.0
  */
-public class DbIgnoreMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, CdmBase> {
-	private static final Logger logger = Logger.getLogger(DbIgnoreMapper.class);
-	
+public class DbIgnoreMapper
+        extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, CdmBase> {
+
+    private static final Logger logger = Logger.getLogger(DbIgnoreMapper.class);
+
 //*************************** FACTORY ***************************************************************//
 
 	public static DbIgnoreMapper NewInstance(String dbAttributeToIgnore){
 		return new DbIgnoreMapper(dbAttributeToIgnore, null, null, null);
 	}
-	
+
 	public static DbIgnoreMapper NewInstance(String dbAttributeToIgnore, String ignoreReason){
 		return new DbIgnoreMapper(dbAttributeToIgnore, null, null, ignoreReason);
 	}
-	
+
 //*************************** VARIABLES ***************************************************************//
 	private String ignoreReason;
-	
+
 //*************************** CONSTRUCTOR ***************************************************************//
-	
+
 	/**
 	 * @param dbAttributString
 	 * @param cdmAttributeString
@@ -60,7 +61,7 @@ public class DbIgnoreMapper extends DbSingleAttributeImportMapperBase<DbImportSt
 	public CdmBase invoke(ResultSet rs, CdmBase cdmBase) throws SQLException {
 		return cdmBase; //do nothing
 	}
-	
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase#getTypeClass()
@@ -81,7 +82,7 @@ public class DbIgnoreMapper extends DbSingleAttributeImportMapperBase<DbImportSt
 	}
 		logger.warn(this.getSourceAttribute() +  " ignored" +  localIgnoreReason);
 	}
-	
-	
+
+
 
 }

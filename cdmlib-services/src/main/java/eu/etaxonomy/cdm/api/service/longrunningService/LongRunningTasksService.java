@@ -6,7 +6,7 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-package eu.etaxonomy.cdm.api.longrunningService;
+package eu.etaxonomy.cdm.api.service.longrunningService;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -14,21 +14,25 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.service.IDescriptiveDataSetService;
 import eu.etaxonomy.cdm.api.service.IProgressMonitorService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.UpdateResult;
 import eu.etaxonomy.cdm.api.service.config.CacheUpdaterConfigurator;
-import eu.etaxonomy.cdm.api.service.config.DescriptionAggregationConfiguration;
 import eu.etaxonomy.cdm.api.service.config.ForSubtreeConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.PublishForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SortIndexUpdaterConfigurator;
+import eu.etaxonomy.cdm.api.service.description.DescriptionAggregationBase;
+import eu.etaxonomy.cdm.api.service.description.DescriptionAggregationConfigurationBase;
 import eu.etaxonomy.cdm.api.service.util.CacheUpdater;
 import eu.etaxonomy.cdm.api.service.util.SortIndexUpdaterWrapper;
+import eu.etaxonomy.cdm.common.JvmLimitsException;
 import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitorThread;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
@@ -36,11 +40,10 @@ import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 /**
  * @author k.luther
  * @since 04 May 2018
- *
  */
-@Service
+@Service("longRunningTasksService")
 @Transactional(readOnly = false)
-public class LongRunningTasksServiceImpl implements ILongRunningTasksService{
+public class LongRunningTasksService implements ILongRunningTasksService{
     @Autowired
     ITaxonNodeService taxonNodeService;
 
@@ -56,6 +59,10 @@ public class LongRunningTasksServiceImpl implements ILongRunningTasksService{
     @Autowired
     SortIndexUpdaterWrapper sortIndexUpdater;
 
+    @Autowired
+    @Qualifier("cdmRepository")
+    private ICdmRepository repository;
+
     @Override
     public UUID monitGetRowWrapper(UUID descriptiveDataSetUuid) {
         RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
@@ -70,14 +77,23 @@ public class LongRunningTasksServiceImpl implements ILongRunningTasksService{
         return uuid;
     }
 
+
     @Override
-    public UUID aggregateDescriptiveDataSet(UUID descriptiveDataSetUuid,  DescriptionAggregationConfiguration config){
+    public <T extends DescriptionAggregationBase<T,C>, C extends DescriptionAggregationConfigurationBase<T>>
+                UUID invoke(C config){
+
         RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
             @Override
             public Serializable doRun(IRemotingProgressMonitor monitor) {
-                UpdateResult updateResult = descriptiveDataSetService.aggregate(descriptiveDataSetUuid, config, monitor);
-                for(Exception e : updateResult.getExceptions()) {
-                    monitor.addReport(e.getMessage());
+                T task = config.getTaskInstance();
+                UpdateResult updateResult = null;
+                try{
+                    updateResult = task.invoke(config, repository);
+                    for(Exception e : updateResult.getExceptions()) {
+                        monitor.addReport(e.getMessage());
+                    }
+                } catch (JvmLimitsException e) {
+                    monitor.warning("Memory problem. Java Virtual Machine limits exceeded. Task was interrupted", e);
                 }
                 monitor.setResult(updateResult);
                 return updateResult;
@@ -89,6 +105,7 @@ public class LongRunningTasksServiceImpl implements ILongRunningTasksService{
         monitorThread.start();
         return uuid;
     }
+
 
     @Override
     public UUID addRowWrapperToDataset(Collection<SpecimenNodeWrapper> wrapper, UUID datasetUuid){
@@ -183,9 +200,6 @@ public class LongRunningTasksServiceImpl implements ILongRunningTasksService{
         return uuid;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public UUID monitLongRunningTask(CacheUpdaterConfigurator configurator) {
         RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
@@ -210,9 +224,6 @@ public class LongRunningTasksServiceImpl implements ILongRunningTasksService{
         return uuid;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public UUID monitLongRunningTask(SortIndexUpdaterConfigurator configurator) {
         RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
@@ -235,6 +246,5 @@ public class LongRunningTasksServiceImpl implements ILongRunningTasksService{
         monitorThread.start();
         return uuid;
     }
-
 
 }

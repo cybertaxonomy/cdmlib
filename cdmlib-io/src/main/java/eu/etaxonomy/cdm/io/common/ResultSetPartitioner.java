@@ -87,10 +87,20 @@ public class ResultSetPartitioner<STATE extends IPartitionedState> {
 	 */
 	private int[] currentIdListType;
 
+	private String lastPartitionHighestIDs;
+
+	boolean nextAlreadyCalled = false;
+
 	/**
 	 * counter for the partitions
 	 */
 	private int currentPartition;
+
+
+	/**
+	 * counter for all records
+	 */
+	private int allRecords;
 
 	/**
 	 * number of records in the current partition
@@ -175,27 +185,36 @@ public class ResultSetPartitioner<STATE extends IPartitionedState> {
 		ResultSetMetaData metaData = idResultSet.getMetaData();
 		int nOfIdColumns = metaData.getColumnCount();
 		currentPartition++;
-		currentIdLists = new ArrayList[nOfIdColumns];
+
+		currentIdLists = new List[nOfIdColumns];
 		currentIdListType = new int[nOfIdColumns];
 
 		for (int col = 0; col< currentIdLists.length; col++){
 			currentIdLists[col] = new ArrayList<>();
 			currentIdListType[col] = metaData.getColumnType(col + 1);
 		}
-		List<String> currentIdList;
 
 		int i = 0;
 		//for each record
-		for (i = 0; i < partitionSize; i++){
-			if (idResultSet.next() == false){
-				break;
+		for (i = 0; i < partitionSize || !firstIdIsNew(); i++){
+			if( !nextAlreadyCalled){
+			    if (!idResultSet.next()){
+			        break;
+			    }
+			}else if (idResultSet.isAfterLast()){
+			    break;
 			}
+			nextAlreadyCalled = false;
+		    allRecords++;
 			//for each column
 			for (int colIndex = 0; colIndex < nOfIdColumns; colIndex++){
-				Object oNextId = idResultSet.getObject(colIndex + 1);
-				String strNextId = String.valueOf(oNextId);
-				currentIdList = currentIdLists[colIndex];
+
+			    String strNextId = String.valueOf(idResultSet.getObject(colIndex + 1));
+				List<String> currentIdList = currentIdLists[colIndex];
 				currentIdList.add(strNextId);
+				if(colIndex == 0){
+				    lastPartitionHighestIDs = strNextId;
+				}
 			}
 			result = true; //true if at least one record was read
 		}
@@ -204,17 +223,40 @@ public class ResultSetPartitioner<STATE extends IPartitionedState> {
 		return result;
 	}
 
+    /**
+     * Checks if the current partition may have duplicates that were handled already.
+     * This may happen if the result set has >1 columns and if the first column does
+     * not change it value with the first record but with a later record and the
+     * following columns jump back with there values.
+     * E.g. first result set contains (x1=1,x2=3) and with the second result set
+     * we ask for x1 in (1,2) x2 in (1-5, 10-15) where the 1-5 comes from x1=2.
+     * This should not happen and therefore we increase the partition a bit such that
+     * the first column always changes its value and therefore it is guranteed that
+     * such duplicates will never exist.
+     * The reason for this problem is, that we do not create tuples in the WHERE clause
+     * of getIdRecord but we handle the range for each column separately. This is not correct
+     * but handling of tuples is more difficult in SQL.
+     * As multiple columns do not appear so often this workaround seems acceptable.
+     * @return
+     * @throws SQLException
+     */
+    private boolean firstIdIsNew() throws SQLException {
+        String last = lastPartitionHighestIDs;
+        if (!idResultSet.next()){
+            return true;
+        }
+        nextAlreadyCalled = true;
+        String current = String.valueOf(idResultSet.getObject(1));
+        return !current.equals(last);
+    }
 
-
-	/**
+    /**
 	 * Returns the underlying resultSet holding all records needed to handle the partition.<BR>
 	 * @return
 	 */
 	public ResultSet getResultSet(){
 		return partitionResultSet;
 	}
-
-
 
 	/**
 	 * Computes the value result set needed to handle a partition by using the <code>currentIdList</code>
@@ -239,11 +281,6 @@ public class ResultSetPartitioner<STATE extends IPartitionedState> {
 		return resultSet;
 	}
 
-	/**
-	 * @param id
-	 * @param i
-	 * @return
-	 */
 	private String addApostropheIfNeeded(String id, int sqlType) {
 		String result = id;
 		if (isStringType(sqlType)){
@@ -252,10 +289,6 @@ public class ResultSetPartitioner<STATE extends IPartitionedState> {
 		return result;
 	}
 
-	/**
-	 * @param sqlType
-	 * @return
-	 */
 	private boolean isStringType(int sqlType) {
 		if(sqlType == Types.INTEGER){
 			return false;  //standard case
@@ -277,7 +310,8 @@ public class ResultSetPartitioner<STATE extends IPartitionedState> {
 	 *
 	 */
 	private int getCurrentNumberOfRows() {
-		return ((currentPartition - 1) * partitionSize + rowsInCurrentPartition);
+	    return allRecords;
+//		return ((currentPartition - 1) * partitionSize + rowsInCurrentPartition);
 	}
 
 

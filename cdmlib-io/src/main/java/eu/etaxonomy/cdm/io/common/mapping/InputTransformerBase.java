@@ -12,13 +12,15 @@ package eu.etaxonomy.cdm.io.common.mapping;
 import java.io.Serializable;
 import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.State;
@@ -50,9 +52,7 @@ public class InputTransformerBase implements IInputTransformer, Serializable {
 	public UUID getFeatureUuid(String key) throws UndefinedTransformerMethodException {
 		String warning = "getFeatureUuid is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
-
 	}
-
 
 	@Override
 	public State getStateByKey(String key) throws UndefinedTransformerMethodException {
@@ -64,14 +64,12 @@ public class InputTransformerBase implements IInputTransformer, Serializable {
 	public UUID getStateUuid(String key) throws UndefinedTransformerMethodException {
 		String warning = "getStateByKey is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
-
 	}
 
 	@Override
 	public Language getLanguageByKey(String key) throws UndefinedTransformerMethodException {
 		String warning = "getLanguageByKey is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
-
 	}
 
 	@Override
@@ -118,7 +116,7 @@ public class InputTransformerBase implements IInputTransformer, Serializable {
 
 	@Override
 	public SpecimenTypeDesignationStatus getSpecimenTypeDesignationStatusByKey(String key) throws UndefinedTransformerMethodException {
-		if (StringUtils.isBlank(key)){return null;
+		if (isBlank(key)){return null;
 		}else if (key.matches("(?i)(T|Type)")){return SpecimenTypeDesignationStatus.TYPE();
 		}else if (key.matches("(?i)(HT|Holotype)")){return SpecimenTypeDesignationStatus.HOLOTYPE();
 		}else if (key.matches("(?i)(LT|Lectotype)")){return SpecimenTypeDesignationStatus.LECTOTYPE();
@@ -150,7 +148,6 @@ public class InputTransformerBase implements IInputTransformer, Serializable {
 		throw new UndefinedTransformerMethodException(warning);
 	}
 
-
 	@Override
 	public PresenceAbsenceTerm getPresenceTermByKey(String key) throws UndefinedTransformerMethodException {
 		String warning = "getPresenceTermByKey is not implemented in implementing transformer class";
@@ -167,7 +164,6 @@ public class InputTransformerBase implements IInputTransformer, Serializable {
 	public NamedArea getNamedAreaByKey(String key) throws UndefinedTransformerMethodException {
 		String warning = "getNamedAreaByKey is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
-
 	}
 
 	@Override
@@ -238,5 +234,18 @@ public class InputTransformerBase implements IInputTransformer, Serializable {
         throw new UndefinedTransformerMethodException(warning);
     }
 
+    protected boolean isBlank(String str){
+        return StringUtils.isBlank(str);
+    }
+    protected boolean isNotBlank(String str){
+        return StringUtils.isNotBlank(str);
+    }
+
+    @Override
+    public RelationshipTermBase<?>[] getSynonymRelationTypesByKey(String key, DbImportStateBase<?,?> state) {
+        String warning = "getSynonymRelationTypesByKey is not implemented in implementing transformer class";
+        logger.warn(warning);
+        return null;
+    }
 
 }

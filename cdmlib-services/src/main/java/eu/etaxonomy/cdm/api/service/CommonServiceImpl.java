@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName;
 import eu.etaxonomy.cdm.model.reference.ISourceable;
@@ -44,7 +43,10 @@ import eu.etaxonomy.cdm.strategy.merge.MergeException;
 
 @Service
 @Transactional(readOnly = true)
-public class CommonServiceImpl /*extends ServiceBase<OriginalSourceBase,IOriginalSourceDao>*/ implements ICommonService {
+public class CommonServiceImpl
+        /*extends ServiceBase<OriginalSourceBase,IOriginalSourceDao>*/
+        implements ICommonService {
+
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(CommonServiceImpl.class);
 
@@ -83,15 +85,16 @@ public class CommonServiceImpl /*extends ServiceBase<OriginalSourceBase,IOrigina
     }
 
     @Override
-    public Map<String, ? extends ISourceable> getSourcedObjectsByIdInSource(Class clazz, Set<String> idInSourceSet, String idNamespace) {
-        Map<String, ? extends ISourceable> list = originalSourceDao.findOriginalSourcesByIdInSource(clazz, idInSourceSet, idNamespace);
+    public <S extends ISourceable> Map<String, S> getSourcedObjectsByIdInSourceC(Class<S> clazz, Set<String> idInSourceSet, String idNamespace){
+        Map<String, S> list = originalSourceDao.findOriginalSourcesByIdInSource(clazz, idInSourceSet, idNamespace);
         return list;
     }
 
+
     @Override
-    public ISourceable getSourcedObjectByIdInSource(Class clazz, String idInSource, String idNamespace) {
-        ISourceable<?> result = null;
-        List<IdentifiableEntity> list = originalSourceDao.findOriginalSourceByIdInSource(clazz, idInSource, idNamespace);
+    public <S extends ISourceable> S getSourcedObjectByIdInSource(Class<S> clazz, String idInSource, String idNamespace) {
+        S result = null;
+        List<S> list = originalSourceDao.findOriginalSourceByIdInSource(clazz, idInSource, idNamespace);
         if (! list.isEmpty()){
             result = list.get(0);
         }return result;

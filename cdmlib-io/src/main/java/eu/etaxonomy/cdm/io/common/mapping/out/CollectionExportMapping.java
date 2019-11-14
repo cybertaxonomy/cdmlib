@@ -75,13 +75,13 @@ public class CollectionExportMapping<STATE extends DbExportStateBase<CONFIG, TRA
 
 	@Override
 	public boolean invoke(CdmBase parent) {
-		try {
-			boolean result = true;
-			Collection<CdmBase> collection = getCollection(parent);
-			if (this.sequenceMapper != null){
-				this.sequenceMapper.reset();
-			}
-			for(CdmBase collectionObject : collection){
+		boolean result = true;
+		Collection<CdmBase> collection = getCollection(parent);
+		if (this.sequenceMapper != null){
+			this.sequenceMapper.reset();
+		}
+		for(CdmBase collectionObject : collection){
+		    try {
 				if (collectionObject == null){
 					logger.warn("Collection object was null");
 					result = false;
@@ -91,36 +91,44 @@ public class CollectionExportMapping<STATE extends DbExportStateBase<CONFIG, TRA
 					continue;
 				}
 				for (CdmMapperBase mapper : this.mapperList){
-					if (mapper == this.parentMapper){
-						parentMapper.invoke(parent);
-					}else if (mapper == this.sequenceMapper){
-						this.sequenceMapper.invoke(null);
-					}else if (mapper instanceof IDbExportMapper){
-						IDbExportMapper<DbExportStateBase<?, TRANSFORM>, TRANSFORM> dbMapper = (IDbExportMapper)mapper;
-						try {
-							result &= dbMapper.invoke(collectionObject);
-						} catch (Exception e) {
-							result = false;
-							logger.error("Error occurred in mapping.invoke");
-							e.printStackTrace();
-							continue;
-						}
-					}else{
-						logger.warn("mapper is not of type " + IDbExportMapper.class.getSimpleName());
-					}
+					result &= handleSingleMapper(parent, collectionObject, mapper);
 				}
 				int count = getPreparedStatement().executeUpdate();
 				if (logger.isDebugEnabled()) {
                     logger.debug("Number of rows affected: " + count);
                 }
-			}
-			return result;
-		} catch(SQLException e){
-			e.printStackTrace();
-			logger.error(e.getMessage() + ": " + parent.toString());
-			return false;
+			} catch(SQLException e){
+                e.printStackTrace();
+                logger.error(e.getMessage() + ": " + parent.toString());
+                result = false;
+            }
 		}
+		return result;
 	}
+
+    private boolean handleSingleMapper(CdmBase parent, CdmBase collectionObject, CdmMapperBase mapper)
+            throws SQLException {
+
+        boolean result = true;
+        if (mapper == this.parentMapper){
+        	parentMapper.invoke(parent);
+        }else if (mapper == this.sequenceMapper){
+        	this.sequenceMapper.invoke(null);
+        }else if (mapper instanceof IDbExportMapper){
+        	IDbExportMapper<DbExportStateBase<?, TRANSFORM>, TRANSFORM> dbMapper = (IDbExportMapper)mapper;
+        	try {
+        		result &= dbMapper.invoke(collectionObject);
+        	} catch (Exception e) {
+        		result = false;
+        		logger.error("Error occurred in mapping.invoke");
+        		e.printStackTrace();
+        		return result;
+        	}
+        }else{
+        	logger.warn("mapper is not of type " + IDbExportMapper.class.getSimpleName());
+        }
+        return result;
+    }
 
 	private boolean isFiltered(CdmBase cdmBase) throws SQLException {
 		for (DbSimpleFilterMapper filterMapper : this.filterMapper){

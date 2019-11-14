@@ -73,10 +73,6 @@ public class TropicosNameImport<STATE extends TropicosNameImportState>
     private static final String NOM_PUB_TYPE = "NomPubType";
     private static final String IPNI_ID = "IPNI-ID";
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void handleSingleLine(STATE state) {
         TaxonName name = makeName(state);
@@ -123,11 +119,6 @@ public class TropicosNameImport<STATE extends TropicosNameImportState>
 
     }
 
-
-    /**
-     * @param state
-     * @param name
-     */
     private void makeNomStatus(STATE state, TaxonName name) {
         String nomStatusStr = state.getCurrentRecord().get(OUTPUT_NOM_STATUS);
         if (nomStatusStr == null || nomStatusStr.equalsIgnoreCase("No opinion")){
@@ -153,10 +144,6 @@ public class TropicosNameImport<STATE extends TropicosNameImportState>
         }
     }
 
-    /**
-     * @param state
-     * @param name
-     */
     private void makeProtologue(STATE state, TaxonName name) {
         String bhlLink = state.getCurrentRecord().get(OUTPUT_BHL_LINK);
         if (bhlLink == null){
@@ -194,12 +181,7 @@ public class TropicosNameImport<STATE extends TropicosNameImportState>
         }
     }
 
-    /**
-     * @param state
-     * @param name
-     */
     private void makeReference(STATE state, TaxonName name) {
-
 
         Map<String, String> record = state.getCurrentRecord();
         String type = record.get(NOM_PUB_TYPE);
@@ -307,10 +289,6 @@ public class TropicosNameImport<STATE extends TropicosNameImportState>
 
     private NonViralNameParserImpl parser = NonViralNameParserImpl.NewInstance();
 
-    /**
-     * @param state
-     * @return
-     */
     private TaxonName makeName(STATE state) {
         Map<String, String> record = state.getCurrentRecord();
         String fullNameStr = record.get(OUTPUT_FULL_NAME_WITH_AUTHORS);
@@ -351,25 +329,15 @@ public class TropicosNameImport<STATE extends TropicosNameImportState>
         return (TaxonName)name;
     }
 
-    /**
-     * @param state
-     * @param name
-     */
     private void addSourceReference(STATE state, IdentifiableEntity<?> entity) {
         entity.addImportSource(null, null, getTransactionalSourceReference(state), "line " + state.getLine());
     }
-
 
     @Override
     protected void refreshTransactionStatus(STATE state) {
         super.refreshTransactionStatus(state);
     }
 
-
-    /**
-     * @param state
-     * @param name
-     */
     private void makeTaxon(STATE state, TaxonName name) {
         if (!state.getConfig().isCreateTaxa()){
             return;
@@ -394,9 +362,6 @@ public class TropicosNameImport<STATE extends TropicosNameImportState>
 
     /**
      * Transactional save method to retrieve the parent node
-     * @param state
-     * @param sec
-     * @return
      */
     protected TaxonNode getParentNode(STATE state) {
         TaxonNode parentNode = state.getParentNode();
@@ -419,12 +384,6 @@ public class TropicosNameImport<STATE extends TropicosNameImportState>
         return parentNode;
     }
 
-
-    /**
-     * @param state
-     * @param sec
-     * @return
-     */
     protected Classification makeClassification(STATE state) {
         Reference ref = getTransactionalSourceReference(state);
         String classificationStr = state.getConfig().getClassificationName();
@@ -434,7 +393,4 @@ public class TropicosNameImport<STATE extends TropicosNameImportState>
         Classification classification = Classification.NewInstance(classificationStr, ref, Language.UNDETERMINED());
         return classification;
     }
-
-
-
 }

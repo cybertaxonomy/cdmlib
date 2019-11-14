@@ -22,8 +22,10 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -31,10 +33,8 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 /**
  * @author a.kohlbecker
  * @since Jan 27, 2014
- *
  */
 public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
-
 
     @SpringBeanByType
     private ITermService termService;
@@ -49,7 +49,7 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
 
     @Before
     public void setup(){
-        distributions = new ArrayList<Distribution>();
+        distributions = new ArrayList<>();
 
         berlin = NamedArea.NewInstance("Berlin", "Berlin", "BER");
         berlin.setPartOf(Country.GERMANY());
@@ -67,11 +67,16 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
          * available, the computed data has to be given preference over other
          * data.
          */
-        distributions.add(Distribution.NewInstance(Country.GERMANY(), PresenceAbsenceTerm.NATIVE()));
+        TaxonDescription aggregatedDescription = TaxonDescription.NewInstance();
+        aggregatedDescription.addType(DescriptionType.AGGREGATED_DISTRIBUTION);
 
-        Distribution computedDistribution = Distribution.NewInstance(Country.GERMANY(), PresenceAbsenceTerm.INTRODUCED());
-        computedDistribution.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
-        distributions.add(computedDistribution);
+        Distribution germanyNative = Distribution.NewInstance(Country.GERMANY(), PresenceAbsenceTerm.NATIVE());
+        distributions.add(germanyNative);
+
+        Distribution germanyIntroduced = Distribution.NewInstance(Country.GERMANY(), PresenceAbsenceTerm.INTRODUCED());
+        aggregatedDescription.addElement(germanyIntroduced);
+
+        distributions.add(germanyIntroduced);
 
         statusOrderPreference= true;
         filteredDistributions = DescriptionUtility.filterDistributions(distributions, hideMarkedAreas, true, statusOrderPreference, subAreaPreference);
@@ -81,8 +86,11 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
        /* distributions for parent areas are only
         * removed if direct sub areas have the same status and if subAreaPreference=TRUE which is not the case here
         */
+        TaxonDescription aggParentDescription = TaxonDescription.NewInstance();
+        aggParentDescription.addType(DescriptionType.AGGREGATED_DISTRIBUTION);
+
         Distribution parentComputedDistribution = Distribution.NewInstance(berlin, PresenceAbsenceTerm.INTRODUCED());
-        parentComputedDistribution.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
+        aggParentDescription.addElement(parentComputedDistribution);
         distributions.add(parentComputedDistribution);
 
         filteredDistributions = DescriptionUtility.filterDistributions(distributions, hideMarkedAreas, true, statusOrderPreference, subAreaPreference);
@@ -266,15 +274,7 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals(jugoslavia, filteredDistributions.iterator().next().getArea());
     }
 
-
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 
 }

@@ -115,7 +115,7 @@ public class Classification
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="Classification_GeoScope")
 //    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})  remove cascade #5755
-    private Set<NamedArea> geoScopes = new HashSet<NamedArea>();
+    private Set<NamedArea> geoScopes = new HashSet<>();
 
 	@XmlElement(name = "Description")
 	@XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
@@ -126,7 +126,6 @@ public class Classification
 //	@Field(name="text", store=Store.YES)
 //    @FieldBridge(impl=MultilanguageTextFieldBridge.class)
     private Map<Language,LanguageString> description = new HashMap<>();
-
 
 
 //	/**
@@ -245,11 +244,6 @@ public class Classification
         return result;
     }
 
-    /**
-     *
-     * @param node
-     * @return
-     */
     protected boolean removeChildNode(TaxonNode node){
         boolean result = false;
         rootNode = HibernateProxyHelper.deproxy(rootNode, TaxonNode.class);
@@ -275,7 +269,6 @@ public class Classification
             result = true;
         }
         return result;
-
     }
 
     /**
@@ -303,7 +296,6 @@ public class Classification
         }
         otherNode.addChildNode(topmostNode, ref, microReference);
     }
-
 
     /**
      * Checks if the given taxon is part of <b>this</b> tree.
@@ -343,7 +335,6 @@ public class Classification
     public boolean isTopmostInTree(Taxon taxon){
         return (getTopmostNode(taxon) != null);
     }
-
 
     /**
      * Checks if the taxon is a direct child of the root of <b>this</b> tree and returns the according node if true.
@@ -470,7 +461,6 @@ public class Classification
         }
     }
 
-
     @Override
     @Transient
     public Reference getCitation() {
@@ -480,7 +470,6 @@ public class Classification
     public LanguageString getName() {
         return name;
     }
-
     public void setName(LanguageString name) {
         this.name = name;
     }
@@ -495,7 +484,7 @@ public class Classification
      */
     @Transient
     public Set<TaxonNode> getAllNodes() {
-        Set<TaxonNode> allNodes = new HashSet<TaxonNode>();
+        Set<TaxonNode> allNodes = new HashSet<>();
 
         for(TaxonNode rootNode : getChildNodes()){
             allNodes.addAll(rootNode.getDescendants());
@@ -514,7 +503,6 @@ public class Classification
     public Reference getReference() {
         return reference;
     }
-
     public void setReference(Reference reference) {
         this.reference = reference;
     }
@@ -524,10 +512,6 @@ public class Classification
     public String getMicroReference() {
         return microReference;
     }
-
-    /**
-     * @param microReference the microReference to set
-     */
     public void setMicroReference(String microReference) {
         this.microReference = microReference;
     }

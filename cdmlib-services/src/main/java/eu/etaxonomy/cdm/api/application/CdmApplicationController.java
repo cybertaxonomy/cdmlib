@@ -67,6 +67,7 @@ import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.ITermTreeService;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
+import eu.etaxonomy.cdm.api.service.longrunningService.ILongRunningTasksService;
 import eu.etaxonomy.cdm.api.service.molecular.IAmplificationService;
 import eu.etaxonomy.cdm.api.service.molecular.IPrimerService;
 import eu.etaxonomy.cdm.api.service.molecular.ISequenceService;
@@ -87,7 +88,8 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.ICdmPermissionEvaluator
  * @author a.mueller
  */
 public class CdmApplicationController implements ICdmRepository {
-	private static final Logger logger = Logger.getLogger(CdmApplicationController.class);
+
+    private static final Logger logger = Logger.getLogger(CdmApplicationController.class);
 
 	public static final String DEFAULT_APPLICATION_CONTEXT_RESOURCE = "/eu/etaxonomy/cdm/defaultApplicationContext.xml";
 
@@ -98,7 +100,6 @@ public class CdmApplicationController implements ICdmRepository {
 	private final IProgressMonitor progressMonitor;
 
 	final protected static DbSchemaValidation defaultDbSchemaValidation = DbSchemaValidation.VALIDATE;
-
 
 	/**
 	 * Constructor, opens a spring ApplicationContext by using the default data source
@@ -111,7 +112,6 @@ public class CdmApplicationController implements ICdmRepository {
 		DbSchemaValidation dbSchemaValidation = defaultDbSchemaValidation;
 		return CdmApplicationController.NewInstance(null, dataSource, dbSchemaValidation, false);
 	}
-
 
 	/**
 	 * Constructor, opens a spring ApplicationContext by using the default data source
@@ -471,6 +471,11 @@ public class CdmApplicationController implements ICdmRepository {
 	@Override
 	public final IClassificationService getClassificationService(){
 		return configuration.getClassificationService();
+	}
+
+	@Override
+	public final ILongRunningTasksService getLongRunningTasksService(){
+		return configuration.getLongRunningTasksService();
 	}
 
 

@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
@@ -64,17 +65,28 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "StateData", propOrder = {
-    "state",
     "categoricalData",
+    "state",
+    "count",
     "modifiers",
     "modifyingText"
 })
 @XmlRootElement(name = "StateData")
 @Entity
 @Audited
-public class StateData extends VersionableEntity implements IModifiable, IMultiLanguageTextHolder, Cloneable{
+public class StateData
+        extends VersionableEntity
+        implements IModifiable, IMultiLanguageTextHolder{
+
     private static final long serialVersionUID = -4380314126624505415L;
     private static final Logger logger = Logger.getLogger(StateData.class);
+
+    @XmlElement(name = "CategoricalData")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @IndexedEmbedded(depth=1)
+    private CategoricalData categoricalData;
 
     @XmlElement(name = "State")
     @XmlIDREF
@@ -83,12 +95,9 @@ public class StateData extends VersionableEntity implements IModifiable, IMultiL
     @IndexedEmbedded(depth=1)
     private State state;
 
-    @XmlElement(name = "CategoricalData")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY )
-    @IndexedEmbedded(depth=1)
-    private CategoricalData categoricalData;
+    //#8625 for statistically counting aggregated state data
+    @Column(name="number")  //rename to avoid conflicts with SQL syntax
+    private Integer count;
 
     @XmlElementWrapper(name = "Modifiers")
     @XmlElement(name = "Modifier")
@@ -115,7 +124,6 @@ public class StateData extends VersionableEntity implements IModifiable, IMultiL
     public static StateData NewInstance(){
         return new StateData();
     }
-
 
     /**
      * Creates a new empty state data instance.
@@ -154,6 +162,27 @@ public class StateData extends VersionableEntity implements IModifiable, IMultiL
     }
 
     /**
+     * Returns the number of single data using this state if <B>this</B>
+     * StateData was created by aggregation.
+     */
+    public Integer getCount() {
+        return count;
+    }
+    /**
+     * @see #getCount()
+     */
+    public void setCount(Integer count) {
+        this.count = count;
+    }
+    /**
+     * Increments the count by 1.
+     * @see #getCount()
+     */
+    public void incrementCount(){
+        count++;
+    }
+
+    /**
      * Returns the {@link CategoricalData state term} <i>this</i> state data
      * belongs to.
      */
@@ -165,7 +194,6 @@ public class StateData extends VersionableEntity implements IModifiable, IMultiL
     protected void setCategoricalData(CategoricalData categoricalData) {
         this.categoricalData = categoricalData;
     }
-
 
     /**
      * Returns the set of {@link Modifier modifiers} used to qualify the validity
@@ -199,7 +227,6 @@ public class StateData extends VersionableEntity implements IModifiable, IMultiL
     public void removeModifier(DefinedTerm modifier){
         this.modifiers.remove(modifier);
     }
-
 
     /**
      * Returns the {@link MultilanguageText multilanguage text} used to qualify the validity
@@ -250,22 +277,6 @@ public class StateData extends VersionableEntity implements IModifiable, IMultiL
      */
     public LanguageString putModifyingText(Language language, String text){
         return this.modifyingText.put(language, LanguageString.NewInstance(text, language));
-    }
-    /**
-     * Adds a translated {@link LanguageString text in a particular language}
-     * to the {@link MultilanguageText multilanguage text} used to qualify the validity
-     * of <i>this</i> state data.
-     *
-     * @param text	the language string describing the validity
-     * 				in a particular language
-     * @see    	   	#getModifyingText()
-     * @see    	   	#putModifyingText(Language, String)
-     * @deprecated	should follow the put semantic of maps, this method will be removed in v4.0
-     * 				Use the {@link #putModifyingText(LanguagString) putModifyingText} method instead
-     */
-    @Deprecated
-    public LanguageString addModifyingText(LanguageString text){
-        return this.putModifyingText(text);
     }
 
     /**
@@ -339,4 +350,5 @@ public class StateData extends VersionableEntity implements IModifiable, IMultiL
             return null;
         }
     }
+
 }

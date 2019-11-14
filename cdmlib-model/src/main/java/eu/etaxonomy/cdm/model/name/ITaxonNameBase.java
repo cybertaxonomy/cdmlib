@@ -95,7 +95,7 @@ public interface ITaxonNameBase
      * @param toName          the taxon name of the target for this new name relationship
      * @param type            the type of this new name relationship
      * @param ruleConsidered  the string which specifies the rule on which this name relationship is based
-     * @return
+     * @returnthe             created relationship
      * @see                   #getRelationsToThisName()
      * @see                   #getNameRelations()
      * @see                   #addRelationshipFromName(TaxonName, NameRelationshipType, String)
@@ -111,7 +111,24 @@ public interface ITaxonNameBase
      * @param toName          the taxon name of the target for this new name relationship
      * @param type            the type of this new name relationship
      * @param ruleConsidered  the string which specifies the rule on which this name relationship is based
-     * @return
+     * @param codeEdition     the edition of the nomenclatural code where the <code>ruleConsidered</code> has been published.
+     * @return                the created relationship
+     * @see                   #getRelationsToThisName()
+     * @see                   #getNameRelations()
+     * @see                   #addRelationshipFromName(TaxonName, NameRelationshipType, String)
+     * @see                   #addNameRelationship(NameRelationship)
+     */
+    public NameRelationship addRelationshipToName(TaxonName toName, NameRelationshipType type);
+
+    /**
+     * Creates a new {@link NameRelationship#NameRelationship(TaxonName, TaxonName, NameRelationshipType, String) name relationship} from <i>this</i> taxon name to another taxon name
+     * and adds it both to the set of {@link #getRelationsFromThisName() relations from <i>this</i> taxon name} and
+     * to the set of {@link #getRelationsToThisName() relations to the other taxon name}.
+     *
+     * @param toName          the taxon name of the target for this new name relationship
+     * @param type            the type of this new name relationship
+     * @param ruleConsidered  the string which specifies the rule on which this name relationship is based
+     * @return                the created relationship
      * @see                   #getRelationsToThisName()
      * @see                   #getNameRelations()
      * @see                   #addRelationshipFromName(TaxonName, NameRelationshipType, String)
@@ -147,6 +164,7 @@ public interface ITaxonNameBase
      * @param ruleConsidered  the string which specifies the rule on which this name relationship is based
      * @param citation        the reference in which this relation was described
      * @param microCitation   the reference detail for this relation (e.g. page)
+     * @param codeEditrion    the nomenclatural code used for the considered rule
      * @see                   #getRelationsFromThisName()
      * @see                   #getNameRelations()
      * @see                   #addRelationshipToName(TaxonName, NameRelationshipType, String)
@@ -270,10 +288,11 @@ public interface ITaxonNameBase
      * will be {@link HomotypicalGroup#merge(HomotypicalGroup) merged}.
      *
      * @param  basionym     the taxon name to be set as the basionym of <i>this</i> taxon name
+     * @return
      * @see                 #getBasionym()
      * @see                 #addBasionym(TaxonName, String)
      */
-    public void addBasionym(TaxonName basionym);
+    public NameRelationship addBasionym(TaxonName basionym);
 
     /**
      * Assigns a taxon name as {@link NameRelationshipType#BASIONYM() basionym} of <i>this</i> taxon name
@@ -290,6 +309,17 @@ public interface ITaxonNameBase
      * @see                     #addBasionym(TaxonName)
      */
     public NameRelationship addBasionym(TaxonName basionym, Reference citation, String microcitation, String ruleConsidered, NomenclaturalCodeEdition codeEdition);
+
+    /**
+     * Removes the {@link NameRelationshipType#BASIONYM() basionym} {@link NameRelationship relationship} from the set of
+     * {@link #getRelationsToThisName() name relationships to} <i>this</i> taxon name. The same relationhip will be
+     * removed from the set of {@link #getRelationsFromThisName() name relationships from} the taxon name
+     * previously used as basionym.
+     *
+     * @see   #getBasionym()
+     * @see   #addBasionym(TaxonName)
+     */
+    public void removeBasionyms();
 
     /**
      * Returns the set of taxon names which are the {@link NameRelationshipType#REPLACED_SYNONYM() replaced synonyms} of <i>this</i> taxon name.
@@ -313,15 +343,11 @@ public interface ITaxonNameBase
     public void addReplacedSynonym(TaxonName replacedSynonym, Reference citation, String microcitation, String ruleConsidered, NomenclaturalCodeEdition codeEdition);
 
     /**
-     * Removes the {@link NameRelationshipType#BASIONYM() basionym} {@link NameRelationship relationship} from the set of
-     * {@link #getRelationsToThisName() name relationships to} <i>this</i> taxon name. The same relationhip will be
-     * removed from the set of {@link #getRelationsFromThisName() name relationships from} the taxon name
-     * previously used as basionym.
-     *
-     * @see   #getBasionym()
-     * @see   #addBasionym(TaxonName)
+     * @deprecated in future original spellings will be stored with nomenclatural source
+     * so this method may be deleted then
      */
-    public void removeBasionyms();
+    @Deprecated
+    public NameRelationship addOriginalSpelling(TaxonName originalSpelling, Reference citation, String microcitation);
 
     /**
      * Returns the taxonomic {@link Rank rank} of <i>this</i> taxon name.

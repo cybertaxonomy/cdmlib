@@ -68,6 +68,7 @@ import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.ITermTreeService;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
+import eu.etaxonomy.cdm.api.service.longrunningService.ILongRunningTasksService;
 import eu.etaxonomy.cdm.api.service.molecular.IAmplificationService;
 import eu.etaxonomy.cdm.api.service.molecular.IPrimerService;
 import eu.etaxonomy.cdm.api.service.molecular.ISequenceService;
@@ -83,7 +84,8 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.ICdmPermissionEvaluator
  */
 @Component
 public class CdmRepository implements ICdmRepository, ApplicationContextAware {
-	private static final Logger logger = Logger.getLogger(CdmRepository.class);
+
+    private static final Logger logger = Logger.getLogger(CdmRepository.class);
 
 	protected ApplicationContext applicationContext;
 
@@ -186,6 +188,8 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
     private IRightsService rightsService;
     @Autowired
     private IRegistrationService registrationService;
+    @Autowired
+    private ILongRunningTasksService longRunningTasksService;
 	@Autowired
 	private IEntityConstraintViolationService entityConstraintViolationService;
 	@Autowired
@@ -510,6 +514,11 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
         return registrationService;
     }
 
+    @Override
+	public ILongRunningTasksService getLongRunningTasksService() {
+		return longRunningTasksService;
+	}
+
     public SessionFactory getSessionFactory() {
         return factory;
     }
@@ -536,5 +545,8 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
         }
 
     }
+
+
+
 
 }

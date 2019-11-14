@@ -56,9 +56,9 @@ import eu.etaxonomy.cdm.strategy.merge.IMergable;
 import eu.etaxonomy.cdm.strategy.merge.IMergeStrategy;
 import eu.etaxonomy.cdm.strategy.merge.MergeException;
 
-public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO extends IIdentifiableDao<T>> extends AnnotatableServiceBase<T,DAO>
-						implements IIdentifiableEntityService<T>{
-
+public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO extends IIdentifiableDao<T>>
+        extends AnnotatableServiceBase<T,DAO>
+		implements IIdentifiableEntityService<T>{
 
 	protected static final int UPDATE_TITLE_CACHE_DEFAULT_STEP_SIZE = 1000;
 	protected static final  Logger logger = Logger.getLogger(IdentifiableServiceBase.class);

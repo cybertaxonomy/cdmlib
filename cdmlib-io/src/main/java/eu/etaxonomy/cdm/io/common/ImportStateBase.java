@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -87,7 +88,9 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	private Map<UUID, Rank> rankMap = new HashMap<>();
 	private Map<UUID, DefinedTerm> kindOfUnitMap = new HashMap<>();
 
-	private Map<UUID, TermVocabulary<?>> termedVocabularyMap = new HashMap();
+	private Map<UUID, TermVocabulary<?>> termedVocabularyMap = new HashMap<>();
+
+	private Map<UUID, NomenclaturalStatusType> nomenclaturalStatusTypeMap = new HashMap<>();
 
 	protected IService<CdmBase> service = null;
 
@@ -117,61 +120,44 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	 * This is usually needed when a a new transaction is opened and user defined terms are reused.
 	 */
 	public void resetUuidTermMaps(){
-		extensionTypeMap = new HashMap<UUID, ExtensionType>();
-		markerTypeMap = new HashMap<UUID, MarkerType>();
-		annotationTypeMap = new HashMap<UUID, AnnotationType>();
+		extensionTypeMap = new HashMap<>();
+		markerTypeMap = new HashMap<>();
+		annotationTypeMap = new HashMap<>();
 
-		namedAreaMap = new HashMap<UUID, NamedArea>();
-		namedAreaLevelMap = new HashMap<UUID, NamedAreaLevel>();
-		featureMap = new HashMap<UUID, Feature>();
-		stateTermMap = new HashMap<UUID, State>();
-		measurementUnitMap = new HashMap<UUID, MeasurementUnit>();
-		statisticalMeasureMap = new HashMap<UUID, StatisticalMeasure>();
-		modifierMap = new HashMap<UUID, DefinedTerm>();
+		namedAreaMap = new HashMap<>();
+		namedAreaLevelMap = new HashMap<>();
+		featureMap = new HashMap<>();
+		stateTermMap = new HashMap<>();
+		measurementUnitMap = new HashMap<>();
+		statisticalMeasureMap = new HashMap<>();
+		modifierMap = new HashMap<>();
 
-		presenceTermMap = new HashMap<UUID, PresenceAbsenceTerm>();;
-		languageMap = new HashMap<UUID, Language>();
-		taxonRelationshipTypeMap = new HashMap<UUID, TaxonRelationshipType>();
+		presenceTermMap = new HashMap<>();
+		languageMap = new HashMap<>();
+		taxonRelationshipTypeMap = new HashMap<>();
 
-		referenceSystemMap = new HashMap<UUID, ReferenceSystem>();
-		rankMap = new HashMap<UUID, Rank>();
+		referenceSystemMap = new HashMap<>();
+		rankMap = new HashMap<>();
+		nomenclaturalStatusTypeMap = new HashMap<>();
 	}
 
 
 	//different type of stores that are used by the known imports
 	protected Map<String, MapWrapper<? extends CdmBase>> stores = new HashMap<String, MapWrapper<? extends CdmBase>>();
 
-
-	/**
-	 * @return the stores
-	 */
 	public Map<String, MapWrapper<? extends CdmBase>> getStores() {
 		return stores;
 	}
-
-	/**
-	 * @param stores the stores to set
-	 */
 	public void setStores(Map<String, MapWrapper<? extends CdmBase>> stores) {
 		this.stores = stores;
 	}
-
-
  	public MapWrapper<? extends CdmBase> getStore(String storeLabel){
  		return stores.get(storeLabel);
  	}
 
-
-	/**
-	 * @return the treeMap
-	 */
 	public Classification getTree(Object ref) {
 		return treeMap.get(ref);
 	}
-
-	/**
-	 * @param treeMap the treeMap to set
-	 */
 	public void putTree(Object ref, Classification tree) {
 		if (tree != null){
 			this.treeMap.put(ref, tree);
@@ -209,7 +195,6 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	public void putClassificationUuidInt(int classificationKeyId, Classification classification) {
 		putClassificationUuid(String.valueOf(classificationKeyId), classification);
 	}
-
 	public void putClassificationUuid(String treeKey, Classification tree) {
 		if (tree != null &&  tree.getUuid() != null){
 			this.classificationKeyUuidMap.put(treeKey, tree.getUuid());
@@ -219,16 +204,13 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	public UUID getTreeUuidByIntTreeKey(int treeKey) {
 		return classificationKeyUuidMap.get(String.valueOf(treeKey));
 	}
-
 	public UUID getTreeUuidByTreeKey(String treeKey) {
 		return classificationKeyUuidMap.get(treeKey);
 	}
 
-
 	public DefinedTerm getIdentifierType(UUID uuid){
 		return identifierTypeMap.get(uuid);
 	}
-
 	public void putIdentifierType(DefinedTerm identifierType){
 		identifierTypeMap.put(identifierType.getUuid(), identifierType);
 	}
@@ -236,7 +218,6 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	public ExtensionType getExtensionType(UUID uuid){
 		return extensionTypeMap.get(uuid);
 	}
-
 	public void putExtensionType(ExtensionType extensionType){
 		extensionTypeMap.put(extensionType.getUuid(), extensionType);
 	}
@@ -244,7 +225,6 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	public MarkerType getMarkerType(UUID uuid){
 		return markerTypeMap.get(uuid);
 	}
-
 	public void putMarkerType(MarkerType markerType){
 		markerTypeMap.put(markerType.getUuid(), markerType);
 	}
@@ -252,7 +232,6 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	public AnnotationType getAnnotationType(UUID uuid){
 		return annotationTypeMap.get(uuid);
 	}
-
 	public void putAnnotationType(AnnotationType annotationType){
 		annotationTypeMap.put(annotationType.getUuid(), annotationType);
 	}
@@ -260,7 +239,6 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	public NamedArea getNamedArea(UUID uuid){
 		return namedAreaMap.get(uuid);
 	}
-
 	public void putNamedArea(NamedArea namedArea){
 		namedAreaMap.put(namedArea.getUuid(), namedArea);
 	}
@@ -268,8 +246,6 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	public NamedAreaLevel getNamedAreaLevel(UUID uuid){
 		return namedAreaLevelMap.get(uuid);
 	}
-
-
 	public void putNamedAreaLevel(NamedAreaLevel namedAreaLevel){
 		namedAreaLevelMap.put(namedAreaLevel.getUuid(), namedAreaLevel);
 	}
@@ -277,8 +253,6 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	public Rank getRank(UUID uuid){
 		return rankMap.get(uuid);
 	}
-
-
 	public void putRank(Rank rank){
 		rankMap.put(rank.getUuid(), rank);
 	}
@@ -286,7 +260,6 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	public State getStateTerm(UUID uuid){
 		return stateTermMap.get(uuid);
 	}
-
 	public void putStateTerm(State stateTerm){
 		stateTermMap.put(stateTerm.getUuid(), stateTerm);
 	}
@@ -294,15 +267,20 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	public Feature getFeature(UUID uuid){
 		return featureMap.get(uuid);
 	}
-
 	public void putFeature(Feature feature){
 		featureMap.put(feature.getUuid(), feature);
 	}
 
+	public NomenclaturalStatusType getNomenclaturalStatusType(UUID uuid){
+        return nomenclaturalStatusTypeMap.get(uuid);
+    }
+    public void putNomenclaturalStatusType(NomenclaturalStatusType feature){
+        nomenclaturalStatusTypeMap.put(feature.getUuid(), feature);
+    }
+
 	public DefinedTerm getKindOfUnit(UUID uuid){
 		return kindOfUnitMap.get(uuid);
 	}
-
 	public void putKindOfUnit(DefinedTerm unit){
 		kindOfUnitMap.put(unit.getUuid(), unit);
 	}

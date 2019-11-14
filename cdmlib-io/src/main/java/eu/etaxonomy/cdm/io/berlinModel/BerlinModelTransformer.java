@@ -49,7 +49,7 @@ public class BerlinModelTransformer {
 	public static final UUID uuidSourceRefEuroMed = UUID.fromString("0603a84a-f024-4454-ab92-9e2ac0139126");
 
 	//named areas
-	public static UUID euroMedUuid = UUID.fromString("9fe09988-58c0-4c06-8474-f660a0c50014");
+	public static UUID euroMedUuid = UUID.fromString("111bdf38-7a32-440a-9808-8af1c9e54b51");
 
 	public static UUID uuidEasternEuropeanRussia = UUID.fromString("3f013375-0e0a-40c3-8a14-84c0535fab40");
 	public static UUID uuidSerbiaMontenegro = UUID.fromString("8926dbe6-863e-47a9-98a0-7dc9ed2c57f7");
@@ -93,13 +93,77 @@ public class BerlinModelTransformer {
 	public static UUID uuidEastAegeanIslands = UUID.fromString("1c429593-c493-46e6-971a-0d70be690da8");
 	public static UUID uuidTurkishEastAegeanIslands = UUID.fromString("ba35dba3-ac70-41ae-81c2-2070943f44f2");
 	public static UUID uuidBalticStates = UUID.fromString("bf9d64f6-3183-4fa5-8e90-73090e7a2282");
-	public static final UUID uuidTurkey = UUID.fromString("d344ee2c-14c8-438d-b03d-11538edb1268");
-	public static final UUID uuidCaucasia = UUID.fromString("ebfd3fd1-3859-4e5e-95c7-f66010599d7e");
+	public static UUID uuidTurkey = UUID.fromString("d344ee2c-14c8-438d-b03d-11538edb1268");
+	public static UUID uuidCaucasia = UUID.fromString("ebfd3fd1-3859-4e5e-95c7-f66010599d7e");
 
     //E+M common name areas
-    public static UUID uuidVocEuroMedCommonNameAreas = UUID.fromString("d3681d0d-aff5-4a27-aa19-1bf6115e4bb4");
+    public static UUID uuidVocEuroMedCommonNameAreas = UUID.fromString("aff33e27-41b0-40a3-a07e-c674213e971f");
+    public static UUID uuidEMAreaCommonNameAlbania = UUID.fromString("0e79622b-07ad-44f0-b518-c799b113117f");
+    public static UUID uuidEMAreaCommonNameAndorra = UUID.fromString("7a7b5692-e94a-4535-bb98-3177ce9c6c6f");
+    public static UUID uuidEMAreaCommonNameArmenia = UUID.fromString("3d0fa3da-eafd-4a68-bdb7-2ca874436d00");
+    public static UUID uuidEMAreaCommonNameAustria = UUID.fromString("675c0eb1-715d-42b2-98e3-4205b22893ef");
+    public static UUID uuidEMAreaCommonNameAzerbaijan = UUID.fromString("48b9c57e-a089-4ca5-8171-6560f006c088");
+    public static UUID uuidEMAreaCommonNameAzores = UUID.fromString("14eeaacf-aa01-4cf1-ae4d-6b9d0541bb51");
+    public static UUID uuidEMAreaCommonNameBaleares = UUID.fromString("e772bae3-2950-45b3-866e-3f34a1baaf8d");
+    public static UUID uuidEMAreaCommonNameBelarus = UUID.fromString("b751b9b2-d8b0-412f-b8b4-aa4c2b750563");
+    public static UUID uuidEMAreaCommonNameBelgium = UUID.fromString("a0c709cf-9f0e-4cbc-b15e-37c0dad72e67");
+    public static UUID uuidEMAreaCommonNameBulgaria = UUID.fromString("78a5d158-5770-47e4-b16f-ef171d75117a");
+    public static UUID uuidEMAreaCommonNameCanaryIs = UUID.fromString("1263a706-b4dc-4c78-9799-265db9aef08c");
+    public static UUID uuidEMAreaCommonNameCorse = UUID.fromString("b61abf50-6bc3-4a00-a14c-62dac001590d");
+    public static UUID uuidEMAreaCommonNameCrete = UUID.fromString("fa7d968e-8924-4a9a-b875-73cba3ecb5db");
+    public static UUID uuidEMAreaCommonNameCrimea = UUID.fromString("32480a59-2803-4444-83a3-1a505242ec69");
+    public static UUID uuidEMAreaCommonNameCroatia = UUID.fromString("28cf3bce-c621-4624-ab31-0c344e347608");
+    public static UUID uuidEMAreaCommonNameCzechRepublic = UUID.fromString("1630e820-82e8-4ea1-b233-733db0ecaa9f");
+    public static UUID uuidEMAreaCommonNameDenmark = UUID.fromString("e7cea4f8-b59b-4716-b79a-5cc452ef6c72");
+    public static UUID uuidEMAreaCommonNameEastAegeanIslands = UUID.fromString("4b4ecaad-8337-4db8-9955-a0757462db33");
+    public static UUID uuidEMAreaCommonNameEstonia = UUID.fromString("37b8726e-8fd7-4bb7-b628-f6203b47a412");
+    public static UUID uuidEMAreaCommonNameFaroer = UUID.fromString("acc4cffd-bc29-4f40-9dc5-8ba3339c26ed");
+    public static UUID uuidEMAreaCommonNameFinland = UUID.fromString("31e10b9b-bdd8-486c-86e0-6768318540b4");
+    public static UUID uuidEMAreaCommonNameFinlandWithAhvenanmaa = UUID.fromString("30ddc63b-45b1-4b58-b536-22e700e84dca");
+    public static UUID uuidEMAreaCommonNameFrance = UUID.fromString("b63ca9b8-6840-4789-a300-825104d8dda6");
+    public static UUID uuidEMAreaCommonNameGeorgia = UUID.fromString("97e1cdf6-7e6e-48de-915e-0f90421deb0d");
+    public static UUID uuidEMAreaCommonNameGermany = UUID.fromString("49f6e579-885f-452a-a160-dfa0a123bd0d");
+    public static UUID uuidEMAreaCommonNameGreatBritain = UUID.fromString("679a5679-381e-417b-a7e6-20af3345aa46");
+    public static UUID uuidEMAreaCommonNameGreece = UUID.fromString("f1c4c5c2-da4a-4cd7-9b1f-e4cb72a82ce4");
+    public static UUID uuidEMAreaCommonNameHungary = UUID.fromString("848c2b14-8b4d-483c-9d35-600fc19065e8");
+    public static UUID uuidEMAreaCommonNameIbizaWithFormentera = UUID.fromString("a3dadbc6-11b3-4df2-9794-f92fbc458fd0");
+    public static UUID uuidEMAreaCommonNameIceland = UUID.fromString("95863923-79cc-4bb6-a475-69b99978599a");
+    public static UUID uuidEMAreaCommonNameIreland = UUID.fromString("2890c6cb-838f-4e7a-8823-4267dea4a4a1");
+    public static UUID uuidEMAreaCommonNameIsrael = UUID.fromString("9cfb7aed-a00d-44e2-b052-92b9f61c061e");
+    public static UUID uuidEMAreaCommonNameItaly = UUID.fromString("ca77b4d1-057c-4254-bf79-11cfbc220e09");
+    public static UUID uuidEMAreaCommonNameLaPalma = UUID.fromString("8e6a84ca-2b77-43e8-ad5d-0790902e0a6c");
+    public static UUID uuidEMAreaCommonNameLativa = UUID.fromString("9b55b5af-3530-4937-a4af-4faa40fe168f");
+    public static UUID uuidEMAreaCommonNameLebanon = UUID.fromString("b8f021e6-9b46-4637-9aee-4b3e1489813a");
+    public static UUID uuidEMAreaCommonNameLibya = UUID.fromString("0dc1a7a7-324e-48ed-a317-ffcb816749cc");
+    public static UUID uuidEMAreaCommonNameLithuania = UUID.fromString("a110eab7-c0e8-4f6c-8e53-4c616e896dfe");
+    public static UUID uuidEMAreaCommonNameMadeira = UUID.fromString("ecefeda2-7d8c-4921-9610-5a23aa3b291d");
+    public static UUID uuidEMAreaCommonNameMallorca = UUID.fromString("b55a484b-faaf-4077-a76d-e24ec3841e70");
+    public static UUID uuidEMAreaCommonNameMalta = UUID.fromString("6d3e211a-f8be-4e2a-9933-5f50bea7e4a6");
+    public static UUID uuidEMAreaCommonNameMenorca = UUID.fromString("bb57089f-3d95-4c74-98ec-54508b8c8f3c");
+    public static UUID uuidEMAreaCommonNameMoldova = UUID.fromString("51d8c588-a0aa-4586-9e89-3db43c6f857b");
+    public static UUID uuidEMAreaCommonNameMorocco = UUID.fromString("0ce657e5-a7d8-4bfb-a099-5e459eb42520");
+    public static UUID uuidEMAreaCommonNameNetherlands = UUID.fromString("5d6c22cd-a2e5-401b-97b0-41f06febe6d1");
+    public static UUID uuidEMAreaCommonNameNorway = UUID.fromString("fea24b9c-20d6-4d45-9459-273d13063f4b");
+    public static UUID uuidEMAreaCommonNamePoland = UUID.fromString("27f8e6f0-7547-4923-818d-a33943f9f94d");
+    public static UUID uuidEMAreaCommonNamePortugal = UUID.fromString("7374ded9-9159-4862-bb1b-e88b270f3a8b");
+    public static UUID uuidEMAreaCommonNameRomania = UUID.fromString("3162d5ee-9fc2-4215-acc9-9e22a5a76b40");
+    public static UUID uuidEMAreaCommonNameRussiaCentral = UUID.fromString("12e08af4-7c33-49d8-a36f-8992480870b1");
+    public static UUID uuidEMAreaCommonNameRussianFederation = UUID.fromString("21796f6f-cbbf-4b5c-90e4-93c790cd9a68");
+    public static UUID uuidEMAreaCommonNameSardegna = UUID.fromString("d9f5934e-357b-477d-b8d5-1d719a2a8146");
+    public static UUID uuidEMAreaCommonNameSerbiaMontenegro = UUID.fromString("c71b5bff-93b1-40d3-a4c9-e7fb9b5d7778");
+    public static UUID uuidEMAreaCommonNameSlovakia = UUID.fromString("e9948c7c-1a2b-48a2-9744-c4609f8ba829");
+    public static UUID uuidEMAreaCommonNameSlovenia = UUID.fromString("960d01d2-e3ae-4931-b738-6835420f25aa");
+    public static UUID uuidEMAreaCommonNameSouthEuropeanRussia = UUID.fromString("0aedc386-db44-4b2d-9897-1694b0344035");
+    public static UUID uuidEMAreaCommonNameSpain = UUID.fromString("e512a268-02a7-4c65-a431-264c7349fd39");
+    public static UUID uuidEMAreaCommonNameSweden = UUID.fromString("8cb32914-6c23-4f6a-a26f-47cc9da0a65a");
+    public static UUID uuidEMAreaCommonNameSwitzerland = UUID.fromString("20cebdad-5ac2-47fb-94d3-6eaac7242001");
+    public static UUID uuidEMAreaCommonNameSyria = UUID.fromString("a09866fc-07d0-49c7-b7ca-70c03e6126c8");
+    public static UUID uuidEMAreaCommonNameTenerife = UUID.fromString("18569798-b177-4210-8bcc-3c762d82ed3d");
+    public static UUID uuidEMAreaCommonNameTurkey = UUID.fromString("7259bdc6-f07f-4501-afe3-3e863bc14188");
+    public static UUID uuidEMAreaCommonNameUkraine = UUID.fromString("8d1622b9-02e5-4001-b8da-8ad9e6d2d0b6");
+    public static UUID uuidEMAreaCommonNameWales = UUID.fromString("f66ce4c2-2a1a-43cb-aff7-1776768f725f");
 
-	//E+M areas
+    //E+M areas
 	public static UUID uuidVocEuroMedAreas = UUID.fromString("625a4962-c211-4597-816e-5804083efe26");
 	public static UUID uuidEM = UUID.fromString("111BDF38-7A32-440A-9808-8AF1C9E54B51");
 	public static UUID uuidEUR = UUID.fromString("80B3CEEE-2F78-45CE-B4F4-E473F5ED8343");

@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.reference.CdmLinkSource;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -39,7 +40,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @see #4706
  *
  * @author a.mueller
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "IntextReference", propOrder = {
@@ -58,8 +58,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 })
 @Entity
 @Audited
-public class IntextReference extends VersionableEntity {
-	private static final long serialVersionUID = -7002541566256975424L;
+public class IntextReference extends CdmLinkBase {
+
+    private static final long serialVersionUID = -7002541566256975424L;
 
     @XmlElement(name = "TaxonName")
     @XmlIDREF
@@ -230,7 +231,7 @@ public class IntextReference extends VersionableEntity {
     * Returns the target object. Throws an {@link IllegalStateException} if no target
     * is defined.
     *
-    * @return
+    * @see CdmLinkSource#getTarget()
     */
    public IIntextReferenceTarget getTarget() {
        if (agent != null){

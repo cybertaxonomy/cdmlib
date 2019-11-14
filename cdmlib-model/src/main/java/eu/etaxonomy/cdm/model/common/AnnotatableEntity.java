@@ -44,8 +44,11 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 })
 @Audited
 @MappedSuperclass
-public abstract class AnnotatableEntity extends VersionableEntity implements IAnnotatableEntity {
-	private static final long serialVersionUID = 9151211842542443102L;
+public abstract class AnnotatableEntity
+        extends VersionableEntity
+        implements IAnnotatableEntity {
+
+    private static final long serialVersionUID = 9151211842542443102L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AnnotatableEntity.class);
 
@@ -93,6 +96,13 @@ public abstract class AnnotatableEntity extends VersionableEntity implements IAn
 		}
 	}
 
+    @Override
+    public void removeMarker(UUID markerTypeUuid){
+        for(Marker marker : getMarkers(markerTypeUuid)) {
+            removeMarker(marker);
+        }
+    }
+
 	@Override
     public boolean hasMarker(MarkerType type, boolean value){
 		return hasMarker(type.getUuid(), value);
@@ -100,15 +110,34 @@ public abstract class AnnotatableEntity extends VersionableEntity implements IAn
 
 	@Override
     public boolean hasMarker(UUID uuidMarkerType, boolean value){
-		for (Marker marker: getMarkers()){
-			if (marker.getMarkerType().getUuid().equals(uuidMarkerType)){
-				if (marker.getFlag() == value){
-					return true;
-				}
+		for (Marker marker: getMarkers(uuidMarkerType)){
+			if (marker.getFlag() == value){
+			    return true;
 			}
 		}
 		return false;
 	}
+
+    @Override
+    public Set<Marker> getMarkers(UUID uuidMarkerType){
+        Set<Marker> result = new HashSet<>();
+        for (Marker marker: getMarkers()){
+            if (marker.getMarkerType().getUuid().equals(uuidMarkerType)){
+                result.add(marker);
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public Boolean markerValue(UUID uuidMarkerType){
+        for (Marker marker: getMarkers()){
+            if (marker.getMarkerType().getUuid().equals(uuidMarkerType)){
+                 return marker.getFlag();
+            }
+        }
+        return null;
+    }
 
 //*************** ANNOTATIONS **********************************************
 
@@ -125,7 +154,7 @@ public abstract class AnnotatableEntity extends VersionableEntity implements IAn
     public Set<Annotation> getAnnotations(UUID uuidAnnotationType){
         Set<Annotation> result = new HashSet<>();
         for (Annotation annotation: getAnnotations()){
-            if (annotation.getAnnotationType().getUuid().equals(uuidAnnotationType)){
+            if (annotation.getAnnotationType() != null && annotation.getAnnotationType().getUuid().equals(uuidAnnotationType)){
                 result.add(annotation);
             }
         }

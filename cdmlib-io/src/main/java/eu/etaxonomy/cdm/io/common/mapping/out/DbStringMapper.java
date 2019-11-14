@@ -20,10 +20,11 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 /**
  * @author a.mueller
  * @since 12.05.2009
- * @version 1.0
  */
-public class DbStringMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?,IExportTransformer>, IExportTransformer> {
-	private static final Logger logger = Logger.getLogger(DbStringMapper.class);
+public class DbStringMapper
+        extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> {
+
+    private static final Logger logger = Logger.getLogger(DbStringMapper.class);
 
 	private static final int MAX_PRECISION = -1;  //precision for datatype nvarchar(max) == clob (SQL Server 2008)
 	private boolean blankToNull = false;
@@ -32,31 +33,42 @@ public class DbStringMapper extends DbSingleAttributeExportMapperBase<DbExportSt
 		return new DbStringMapper(cdmAttributeString, dbAttributeString, null, true);
 	}
 
+	/**
+     * Returns a string mapper which does not require that the source attribute exists.
+     *
+     * @param cdmAttributeString source attribute (CDM)
+     * @param dbAttributString target attribute (export DB)
+     * @param defaultValue default value if source value is <code>null</code>
+     * @param obligatory if the source attribute is obligatory, but value may be <code>null</code>
+     */
 	public static DbStringMapper NewFacultativeInstance(String cdmAttributeString, String dbAttributeString){
 		return new DbStringMapper(cdmAttributeString, dbAttributeString, null, false);
 	}
 
+	/**
+     * @param cdmAttributeString source attribute (CDM)
+     * @param dbAttributString target attribute (export DB)
+     * @param defaultValue default value if source value is <code>null</code>
+     * @param obligatory if the source attribute is obligatory, but value may be <code>null</code>
+     */
 	public static DbStringMapper NewInstance(String cdmAttributeString, String dbAttributeString, String defaultValue){
 		return new DbStringMapper(cdmAttributeString, dbAttributeString, defaultValue, false);
 	}
 
+	/**
+     * @param cdmAttributeString source attribute (CDM)
+     * @param dbAttributString target attribute (export DB)
+     * @param defaultValue default value if source value is <code>null</code>
+     * @param obligatory if the source attribute is obligatory, but value may be <code>null</code>
+     */
 	public static DbStringMapper NewInstance(String cdmAttributeString, String dbAttributeString, String defaultValue, boolean obligatory){
 		return new DbStringMapper(cdmAttributeString, dbAttributeString, defaultValue, obligatory);
 	}
 
-	/**
-	 * @param dbAttributeString
-	 * @param cdmAttributeString
-	 */
 	private DbStringMapper(String cdmAttributeString, String dbAttributeString, String defaultValue, boolean obligatory) {
-		super(cdmAttributeString, dbAttributeString, defaultValue, obligatory);
+		super(cdmAttributeString, dbAttributeString, defaultValue, obligatory, false);
 	}
 
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValue(eu.etaxonomy.cdm.model.common.CdmBase)
-	 */
 	@Override
 	protected Object getValue(CdmBase cdmBase) {
 		String result = (String)super.getValue(cdmBase);
@@ -84,7 +96,6 @@ public class DbStringMapper extends DbSingleAttributeExportMapperBase<DbExportSt
 	public boolean isBlankToNull() {
 		return blankToNull;
 	}
-
 	/**
 	 * @see #isBlankToNull()
 	 * @param blankToNull
@@ -94,23 +105,13 @@ public class DbStringMapper extends DbSingleAttributeExportMapperBase<DbExportSt
 		return this;
 	}
 
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValueType()
-	 */
 	@Override
 	protected int getSqlType() {
 		return Types.VARCHAR;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase#getTypeClass()
-	 */
 	@Override
 	public Class<?> getTypeClass() {
 		return String.class;
 	}
-
 }

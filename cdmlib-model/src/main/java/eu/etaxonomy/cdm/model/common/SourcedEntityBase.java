@@ -28,6 +28,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.model.reference.ICdmTarget;
 import eu.etaxonomy.cdm.model.reference.ISourceable;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
@@ -98,7 +99,7 @@ public abstract class SourcedEntityBase<SOURCE extends OriginalSourceBase<? exte
         if (id == null && idNamespace == null && citation == null && microCitation == null){
             return null;
         }
-        SOURCE source = createNewSource(type, id, idNamespace, citation, microCitation, null);
+        SOURCE source = createNewSource(type, id, idNamespace, citation, microCitation, null, null);
         addSource(source);
         return source;
     }
@@ -109,7 +110,15 @@ public abstract class SourcedEntityBase<SOURCE extends OriginalSourceBase<? exte
         if (reference == null && isBlank(microReference) && isBlank(originalInformation)){
             return null;
         }
-        SOURCE source = createNewSource(type, null, null, reference, microReference, originalInformation);
+        SOURCE source = createNewSource(type, null, null, reference, microReference, originalInformation, null);
+        addSource(source);
+        return source;
+    }
+
+    @Override
+    public SOURCE addAggregationSource(ICdmTarget target) {
+        SOURCE source = createNewSource(OriginalSourceType.Aggregation, null, null, null,
+                null, null, target);
         addSource(source);
         return source;
     }
@@ -129,7 +138,7 @@ public abstract class SourcedEntityBase<SOURCE extends OriginalSourceBase<? exte
         if (id == null && idNamespace == null && citation == null && microCitation == null){
             return null;
         }
-        SOURCE source = createNewSource(OriginalSourceType.Import, id, idNamespace, citation, microCitation, null);
+        SOURCE source = createNewSource(OriginalSourceType.Import, id, idNamespace, citation, microCitation, null, null);
         addSource(source);
         return source;
     }
@@ -139,7 +148,7 @@ public abstract class SourcedEntityBase<SOURCE extends OriginalSourceBase<? exte
         if (citation == null && microCitation == null){
             return null;
         }
-        SOURCE source = createNewSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, citation, microCitation, null);
+        SOURCE source = createNewSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, citation, microCitation, null, null);
         addSource(source);
         return source;
     }
@@ -174,7 +183,7 @@ public abstract class SourcedEntityBase<SOURCE extends OriginalSourceBase<? exte
     }
 
     protected abstract SOURCE createNewSource(OriginalSourceType type, String idInSource, String idNamespace,
-            Reference citation, String microReference, String originalInformation);
+            Reference citation, String microReference, String originalInformation, ICdmTarget target);
 
 //****************** CLONE ************************************************/
 

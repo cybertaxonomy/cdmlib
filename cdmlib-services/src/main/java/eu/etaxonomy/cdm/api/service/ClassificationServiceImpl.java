@@ -91,6 +91,7 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 public class ClassificationServiceImpl
              extends IdentifiableServiceBase<Classification, IClassificationDao>
              implements IClassificationService {
+
     private static final Logger logger = Logger.getLogger(ClassificationServiceImpl.class);
 
     @Autowired
@@ -695,14 +696,10 @@ public class ClassificationServiceImpl
 		return childNodes;
 	}
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ClassificationLookupDTO classificationLookup(Classification classification) {
         return dao.classificationLookup(classification);
     }
-
 
     @Override
     @Transactional
@@ -803,9 +800,6 @@ public class ClassificationServiceImpl
         return result;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<GroupedTaxonDTO> groupTaxaByMarkedParents(List<UUID> originalTaxonUuids, UUID classificationUuid,
             MarkerType markerType, Boolean flag) {
@@ -844,9 +838,6 @@ public class ClassificationServiceImpl
         return result;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public UUID getTaxonNodeUuidByTaxonUuid(UUID classificationUuid, UUID taxonUuid) {
         Map<UUID, UUID> map = dao.getTaxonNodeUuidByTaxonUuid(classificationUuid, Arrays.asList(taxonUuid));
@@ -854,9 +845,6 @@ public class ClassificationServiceImpl
         return taxonNodeUuid;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public TaxonInContextDTO getTaxonInContext(UUID classificationUuid, UUID taxonBaseUuid,
             Boolean doChildren, Boolean doSynonyms, boolean includeUnpublished, List<UUID> ancestorMarkers,
@@ -977,11 +965,6 @@ public class ClassificationServiceImpl
         return result;
     }
 
-    /**
-     * @param classificationUuid
-     * @param acceptedTaxon
-     * @return
-     */
     private Taxon getParentTaxon(UUID classificationUuid, Taxon acceptedTaxon) {
         if (classificationUuid == null){
             return null;
@@ -998,11 +981,6 @@ public class ClassificationServiceImpl
         return null;
     }
 
-    /**
-     * @param result
-     * @param markerTypes
-     * @param node
-     */
     private void handleAncestorsForMarkersRecursive(TaxonInContextDTO result, List<MarkerType> markerTypes, TaxonNode node) {
        for (MarkerType type : markerTypes){
             Taxon taxon = node.getTaxon();
@@ -1018,36 +996,24 @@ public class ClassificationServiceImpl
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
             Classification classification) {
         return getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, false);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
             UUID classificationUuid) {
         return getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classificationUuid, false);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
             UUID classificationUuid, Integer limit, String pattern) {
         return  getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classificationUuid,  limit, pattern, false);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
             Classification classification, Integer limit, String pattern) {

@@ -21,25 +21,26 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 /**
  * @author a.mueller
  * @since 02-Jul-2010 13:06:43
- *
  */
 public class CacheUpdaterConfigurator implements Serializable{
-	@SuppressWarnings("unused")
+
+    private static final long serialVersionUID = 6102562152485923714L;
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CacheUpdaterConfigurator.class);
 
-
+	private List<Class<? extends IdentifiableEntity>> classList;
+	private IProgressMonitor monitor;
 	private boolean updateCacheStrategies = false;
 
-	private IProgressMonitor monitor;
 
-
+//******************** CONSTRUCTOR *********************************/
 
     public static CacheUpdaterConfigurator NewInstance(){
 		return new CacheUpdaterConfigurator(false);
 	}
 
 	/**
-	 * Returns a new Configurator with all boolean values set to false
+	 * Returns a new configurator with all boolean values set to false
 	 * @param allFalse
 	 * @return
 	 */
@@ -55,20 +56,25 @@ public class CacheUpdaterConfigurator implements Serializable{
 
 	public static CacheUpdaterConfigurator NewInstance(Collection<String> classListNames) throws ClassNotFoundException{
 		CacheUpdaterConfigurator result = new CacheUpdaterConfigurator(true);
-		List<Class<? extends IdentifiableEntity>> classList = new ArrayList<Class<? extends IdentifiableEntity>>();
+		@SuppressWarnings("rawtypes")
+        List<Class<? extends IdentifiableEntity>> classList = new ArrayList<>();
 		for (String className : classListNames){
-			Class clazz = Class.forName(className);
+			@SuppressWarnings({ "rawtypes", "unchecked" })
+            Class<? extends IdentifiableEntity> clazz = (Class<? extends IdentifiableEntity>) Class.forName(className);
 			classList.add(clazz);
 		}
 		result.setClassList(classList);
 		return result;
 	}
 
-	public static CacheUpdaterConfigurator NewInstance(Collection<String> classListNames, boolean doUpdateCacheStrategies) throws ClassNotFoundException{
+	@SuppressWarnings("unchecked")
+    public static CacheUpdaterConfigurator NewInstance(Collection<String> classListNames, boolean doUpdateCacheStrategies) throws ClassNotFoundException{
 		CacheUpdaterConfigurator result = new CacheUpdaterConfigurator( false);
-		List<Class<? extends IdentifiableEntity>> classList = new ArrayList<Class<? extends IdentifiableEntity>>();
+		@SuppressWarnings({ "rawtypes" })
+        List<Class<? extends IdentifiableEntity>> classList = new ArrayList<>();
 		for (String className : classListNames){
-			Class clazz = Class.forName(className);
+			@SuppressWarnings("rawtypes")
+            Class clazz = Class.forName(className);
 			classList.add(clazz);
 		}
 		result.setClassList(classList);
@@ -76,31 +82,13 @@ public class CacheUpdaterConfigurator implements Serializable{
 		return result;
 	}
 
-	/**
-     * @return the monitor
-     */
-    public IProgressMonitor getMonitor() {
-        return monitor;
-    }
-
-    /**
-     * @param monitor the monitor to set
-     */
-    public void setMonitor(IProgressMonitor monitor) {
-        this.monitor = monitor;
-    }
-
-
-	private List<Class<? extends IdentifiableEntity>> classList;
+// ********************* CONSTRUCTOR ******************************/
 
 	private CacheUpdaterConfigurator(boolean allFalse){
-		this.classList = new ArrayList<Class<? extends IdentifiableEntity>>();
-
+		this.classList = new ArrayList<>();
 	}
 
-
-
-// **************** GETTER / SETTER ************************************
+// **************** GETTER / SETTER **********************************/
 
 
 	public List<Class<? extends IdentifiableEntity>> getClassList(){
@@ -110,19 +98,18 @@ public class CacheUpdaterConfigurator implements Serializable{
 		this.classList = classList;
 	}
 
-
-
-
-
-
-	public boolean doUpdateCacheStrategy() {
+	public boolean isUpdateCacheStrategy() {
 		return updateCacheStrategies;
 	}
-
 	public void setUpdateCacheStrategy(boolean doUpdateCacheStrategies){
 		this.updateCacheStrategies = doUpdateCacheStrategies;
 	}
 
-
+    public IProgressMonitor getMonitor() {
+        return monitor;
+    }
+    public void setMonitor(IProgressMonitor monitor) {
+        this.monitor = monitor;
+    }
 
 }

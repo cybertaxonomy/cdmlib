@@ -48,6 +48,13 @@ public interface IIdentifiableEntity extends ISourceable<IdentifiableSource>, IA
     public String getTitleCache();
 
     /**
+     * Recomputes the titleCache if it is not protected and returns
+     * the new value;
+     * @return the computed or protected titleCache
+     */
+    public String resetTitleCache();
+
+    /**
      * Sets the title cache without changing the <code>protectCache</code> flag.<BR><BR>
      * NOTE: Use with care. If this flag is <code>false</code> the <code>titleCache</code> may be
      * recomputed with the next call of {@link #getTitleCache()}, which is automatically the case when

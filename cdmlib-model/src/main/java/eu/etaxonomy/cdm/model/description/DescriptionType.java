@@ -23,7 +23,6 @@ import eu.etaxonomy.cdm.model.term.IEnumTerm;
 /**
  * @author a.mueller
  * @since 14.08.2019
- *
  */
 public enum DescriptionType implements IEnumTerm<DescriptionType>{
 
@@ -42,6 +41,20 @@ public enum DescriptionType implements IEnumTerm<DescriptionType>{
      */
     @XmlEnumValue("AGG")
     AGGREGATED(UUID.fromString("d1c02cbf-e27c-49ee-919a-7393d953ef36"), "Aggregated", "AGG", COMPUTED),
+
+    /**
+     * The description has been computed by a machine by aggregation of distribution data.
+     * Usually such descriptions should not be edited by users manually.
+     */
+    @XmlEnumValue("AGD")
+    AGGREGATED_DISTRIBUTION(UUID.fromString("7f4ceecc-aa97-4f97-8a79-ed390c44fe76"), "Aggregated Distribution", "AGD", AGGREGATED),
+
+    /**
+     * The description has been computed by a machine by aggregation of structured descriptive data.
+     * Usually such descriptions should not be edited by users manually.
+     */
+    @XmlEnumValue("AGSD")
+    AGGREGATED_STRUC_DESC(UUID.fromString("a613459c-82af-45ff-b950-cc769a7bb486"), "Aggregated Structured Descriptions", "AGSD", AGGREGATED),
 
     /**
      * Description is a clone which was used to fix a certain state of data to define
@@ -75,6 +88,7 @@ public enum DescriptionType implements IEnumTerm<DescriptionType>{
      */
     @XmlEnumValue("IAS")
     INDIVIDUALS_ASSOCIATION(UUID.fromString("b8a1346d-9521-4ea2-ada8-c6774cf9175a"), "Specimens", "IAS", null),
+
 
     ;
 
@@ -135,6 +149,14 @@ public enum DescriptionType implements IEnumTerm<DescriptionType>{
 
     public static boolean isAggregated(EnumSet<DescriptionType> set) {
         return includesType(set, AGGREGATED);
+    }
+
+    public static boolean isAggregatedDistribution(EnumSet<DescriptionType> set) {
+        return includesType(set, AGGREGATED_DISTRIBUTION);
+    }
+
+    public static boolean isAggregatedStructuredDescription(EnumSet<DescriptionType> set) {
+        return includesType(set, AGGREGATED_STRUC_DESC);
     }
 
     public static boolean isCloneForSource(EnumSet<DescriptionType> set) {

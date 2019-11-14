@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -25,19 +25,19 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
 /**
  * @author a.mueller
  * @since 15.03.2010
- * @version 1.0
  */
-public class DbImportMultiLanguageTextMapper<CDMBASE extends CdmBase> extends DbImportMultiAttributeMapperBase<CDMBASE, DbImportStateBase<?,?>> {
-	@SuppressWarnings("unused")
+public class DbImportMultiLanguageTextMapper<CDMBASE extends CdmBase>
+        extends DbImportMultiAttributeMapperBase<CDMBASE, DbImportStateBase<?,?>> {
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbImportMultiLanguageTextMapper.class);
 
 //****************************** FACTORY METHOD ********************************************/
-	
-	public static DbImportMultiLanguageTextMapper<CdmBase> NewInstance(String dbTextAttribute, String dbLanguageAttribute, String languageNamespace, String cdmMultiLanguageTextAttribute){
-		return new DbImportMultiLanguageTextMapper<CdmBase>(dbTextAttribute, dbLanguageAttribute, languageNamespace, cdmMultiLanguageTextAttribute);
+
+	public static DbImportMultiLanguageTextMapper<CdmBase> NewInstance(String dbTextAttribute, String dbLanguageAttribute, String languageNamespace, String cdmMultiLanguageTextAttribute, boolean trim){
+		return new DbImportMultiLanguageTextMapper<CdmBase>(dbTextAttribute, dbLanguageAttribute, languageNamespace, cdmMultiLanguageTextAttribute, trim);
 	}
-	
-	
+
 //***************************** VARIABLES *************************************************/
 
 	private String dbTextAttribute;
@@ -45,20 +45,19 @@ public class DbImportMultiLanguageTextMapper<CDMBASE extends CdmBase> extends Db
 	private String languageNamespace;
 	private String cdmMultiLanguageTextAttribute;
 	private Method destinationMethod;
-	
+	private boolean trim = true;
+
 //***************************** CONSTRUCTOR *************************************************/
 
-	protected DbImportMultiLanguageTextMapper(String dbTextAttribute, String dbLanguageAttribute, String languageNamespace, String cdmMultiLanguageTextAttribute){
-		super();
+	protected DbImportMultiLanguageTextMapper(String dbTextAttribute, String dbLanguageAttribute,
+	        String languageNamespace, String cdmMultiLanguageTextAttribute, boolean trim){
 		this.dbTextAttribute = dbTextAttribute;
 		this.dbLanguageAttribute = dbLanguageAttribute;
 		this.languageNamespace = languageNamespace;
 		this.cdmMultiLanguageTextAttribute = cdmMultiLanguageTextAttribute;
+		this.trim = trim;
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.DbImportMultiAttributeMapperBase#initialize(eu.etaxonomy.cdm.io.common.DbImportStateBase, java.lang.Class)
-	 */
+
 	@Override
 	public void initialize(DbImportStateBase<?,?> state, Class<? extends CdmBase> destinationClass) {
 		super.initialize(state, destinationClass);
@@ -95,15 +94,13 @@ public class DbImportMultiLanguageTextMapper<CDMBASE extends CdmBase> extends Db
 	protected Class<?> getTargetClass(Class<?> destinationClass) throws SecurityException, NoSuchMethodException{
 		return destinationClass;
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.IDbImportMapper#invoke(java.sql.ResultSet, eu.etaxonomy.cdm.model.common.CdmBase)
-	 */
-	public CDMBASE invoke(ResultSet rs, CDMBASE cdmBase) throws SQLException {
+
+	@Override
+    public CDMBASE invoke(ResultSet rs, CDMBASE cdmBase) throws SQLException {
 		//TODO make this a definedTermMapper
 		Language language = (Language)getRelatedObject(rs, languageNamespace, dbLanguageAttribute);
 		String text = getStringDbValue(rs, dbTextAttribute);
-		
+		text = (trim && text != null)? text.trim(): text;
 		LanguageString languageString = LanguageString.NewInstance(text, language);
 		try {
 			destinationMethod.invoke(cdmBase, languageString);
@@ -116,6 +113,4 @@ public class DbImportMultiLanguageTextMapper<CDMBASE extends CdmBase> extends Db
 		}
 		return cdmBase;
 	}
-	
-
 }

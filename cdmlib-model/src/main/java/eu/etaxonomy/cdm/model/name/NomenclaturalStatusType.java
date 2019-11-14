@@ -111,6 +111,10 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	private static final UUID uuidZooOblitum = UUID.fromString("6a6f7a88-991f-4f76-8ce9-4110839fae8b");
 
 
+    public static NomenclaturalStatusType NewLatinInstance(String description, String label, String labelAbbrev) {
+        return new NomenclaturalStatusType(description, label, labelAbbrev, Language.LATIN());
+    }
+
 	public static NomenclaturalStatusType NewInstance(String description, String label, String labelAbbrev, Language language) {
 		return new NomenclaturalStatusType(description, label, labelAbbrev, language);
 	}

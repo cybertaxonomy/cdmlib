@@ -40,8 +40,8 @@ import io.swagger.annotations.Api;
 @CrossOrigin(origins="*")
 @RequestMapping(value = { "/manage" })
 public class ManagementController {
-    public static final Logger logger = Logger
-            .getLogger(ManagementController.class);
+
+    public static final Logger logger = Logger.getLogger(ManagementController.class);
 
     // @Autowired
     private DataSourceReloader datasoucrceLoader;
@@ -71,7 +71,6 @@ public class ManagementController {
 
     /*
      * return page not found http error (404) for unknown or incorrect UUIDs
-     * (non-Javadoc)
      *
      * @see
      * org.springframework.web.servlet.mvc.AbstractController#handleRequestInternal
@@ -153,9 +152,6 @@ public class ManagementController {
                 indexMonitorUuid, dataRedirect, request, response);
     }
 
-    /**
-     * @param types
-     */
     private List<Class<? extends CdmBase>> asList(Class<? extends CdmBase>[] types) {
 
     	List<Class<? extends CdmBase>> typeList = null;
@@ -258,7 +254,5 @@ public class ManagementController {
         return progressUtil.respondWithMonitor(frontendBaseUrl, processLabel,
                 indexMonitorUuid, dataRedirect, request, response);
     }
-
-
 
 }

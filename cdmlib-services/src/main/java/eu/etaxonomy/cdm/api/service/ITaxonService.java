@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.api.service;
 import java.io.IOException;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -350,13 +351,13 @@ public interface ITaxonService
      *
      * @param types The taxon relationship type filter, if <code>null</code> no filter is set, if empty the result will also be empty
      * @param pageSize the page size
-     * @param pageStart the number of the start page
+     * @param pageStart the number of the page
      * @param orderHints the order hints
      * @param propertyPaths the property path to initialize the resulting objects
      * @return list of taxon relationships matching the filter criteria
      */
     public List<TaxonRelationship> listTaxonRelationships(Set<TaxonRelationshipType> types,
-            Integer pageSize, Integer pageStart, List<OrderHint> orderHints, List<String> propertyPaths);
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Lists all classifications the given taxon/synonym is used in{@link Synonym}
@@ -793,11 +794,10 @@ public interface ITaxonService
      */
     public long countSynonyms(boolean onlyAttachedToTaxon);
 
-    public List<TaxonName> findIdenticalTaxonNames(List<String> propertyPath);
+    
 
-    public List<TaxonName> findIdenticalTaxonNameIds(List<String> propertyPath);
-//
-//    public String getPhylumName(TaxonName name);
+    public Map<String, List<TaxonName>> findIdenticalTaxonNameIds(Reference sec1, Reference sec2, List<String> propertyPaths);
+
 
     /**
      * Returns all {@link Taxon taxa} which are {@link TaxonRelationshipType#CONGRUENT_TO() congruent} or

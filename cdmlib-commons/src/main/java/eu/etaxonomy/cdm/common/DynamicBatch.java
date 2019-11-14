@@ -125,7 +125,7 @@ public class DynamicBatch {
                    items.add(nextUnprocessed);
                 } else {
                     if(remainingUnprocessed == null) {
-                        remainingUnprocessed = new ArrayList<Integer>(unprocessedIds.size() - i + 1);
+                        remainingUnprocessed = new ArrayList<>(unprocessedIds.size() - i + 1);
                     }
                     remainingUnprocessed.add(nextUnprocessed);
                 }
@@ -147,13 +147,10 @@ public class DynamicBatch {
         return items;
     }
 
-    public void incementCounter() {
+    public void incrementCounter() {
         batchItemCount++;
     }
 
-    /**
-     *
-     */
     private void reduceSize() {
         manageUnprocessedItems();
         batchSize = itemWhereLimitsTouched;
@@ -170,9 +167,6 @@ public class DynamicBatch {
         }
     }
 
-    /**
-     *
-     */
     protected void manageUnprocessedItems() {
 
         if(itemWhereLimitsTouched > 0) {

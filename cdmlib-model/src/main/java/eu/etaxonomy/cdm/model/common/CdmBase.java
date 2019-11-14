@@ -39,6 +39,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
@@ -51,7 +52,6 @@ import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Store;
 import org.joda.time.DateTime;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.hibernate.search.DateTimeBridge;
 import eu.etaxonomy.cdm.hibernate.search.NotNullAwareIdBridge;
@@ -504,13 +504,23 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
 
 
     /**
-     * Returns true if the given String is blank.
+     * Returns <code>true</code> if the given String is blank.
      * @param str the String to check
-     * @see CdmUtils#isBlank(String)
-     * @return true if str is blank
+     * @see StringUtils#isBlank(String)
+     * @return <code>true</code> if str is blank, <code>false</code> otherwise
      */
     protected boolean isBlank(String str) {
-        return CdmUtils.isBlank(str);
+        return StringUtils.isBlank(str);
+    }
+
+    /**
+     * Returns <code>true</code> if the given String is not blank.
+     * @param str the String to check
+     * @see StringUtils#isNotBlank(String)
+     * @return <code>true</code> if str is not blank, <code>false</code> otherwise
+     */
+    protected boolean isNotBlank(String str) {
+        return StringUtils.isNotBlank(str);
     }
 
 

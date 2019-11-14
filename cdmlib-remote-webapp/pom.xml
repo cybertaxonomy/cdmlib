@@ -4,7 +4,7 @@
   <parent>
     <artifactId>cdmlib-parent</artifactId>
     <groupId>eu.etaxonomy</groupId>
-    <version>5.10.0</version>
+    <version>5.11.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -215,6 +215,10 @@
           <stopPort>9199</stopPort>
           <scanIntervalSeconds>10</scanIntervalSeconds>
           <useTestScope>true</useTestScope>
+          <!-- 
+                jvmArgs will only be used when running mvn jetty:run-forked 
+          -->
+          <jvmArgs>-Xmx2000M -Dcdm.datasource=h2_cdmTest -Duser.home=${basedir}/target/target/ -Dcdm.beanDefinitionFile=${project.build.directory}/test-classes/datasources.xml -Dspring.profiles.active=remoting</jvmArgs>
           <jettyXml>${basedir}/src/test/resources/etc/jetty/jetty.xml,${basedir}/src/test/resources/etc/jetty/jetty-http.xml</jettyXml>
           <!-- <jettyXml>./src/test/resources/etc/jetty/jetty.xml,./src/test/resources/etc/jetty/jetty-http.xml,./src/test/resources/etc/jetty/jetty-ssl.xml,./src/test/resources/etc/jetty/jetty-https.xml</jettyXml> -->
           <systemProperties>

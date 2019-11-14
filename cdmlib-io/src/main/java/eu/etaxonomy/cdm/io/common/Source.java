@@ -213,6 +213,10 @@ public class Source {
 
     public int getUniqueInteger (String query){
         Object result = getUniqueResult(query);
+        if (result instanceof Long){
+            Long theLong = (Long)result;
+            result = Math.toIntExact(theLong);
+        }
         return (Integer)result;
     }
 

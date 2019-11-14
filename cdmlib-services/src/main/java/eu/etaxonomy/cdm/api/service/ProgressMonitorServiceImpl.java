@@ -26,7 +26,6 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.Role;
 /**
  * @author cmathew
  * @since 14 Oct 2015
- *
  */
 @Service
 public class ProgressMonitorServiceImpl implements IProgressMonitorService {
@@ -37,12 +36,9 @@ public class ProgressMonitorServiceImpl implements IProgressMonitorService {
     @Autowired
     public ICdmPermissionEvaluator permissionEvaluator;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public UUID registerNewRemotingMonitor(RemotingProgressMonitorThread monitorThread) {
-        RemotingProgressMonitor monitor = new RemotingProgressMonitor(monitorThread);
+        RemotingProgressMonitor monitor = new RemotingProgressMonitor();
         monitorThread.setMonitor(monitor);
         UUID uuid = progressMonitorManager.registerMonitor(monitor, monitorThread);
         User user = User.getCurrentAuthenticatedUser();
@@ -53,10 +49,6 @@ public class ProgressMonitorServiceImpl implements IProgressMonitorService {
         return uuid;
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IRemotingProgressMonitor getRemotingMonitor(UUID uuid) {
         try{
@@ -80,9 +72,6 @@ public class ProgressMonitorServiceImpl implements IProgressMonitorService {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void interrupt(UUID uuid) {
         IRemotingProgressMonitor remotingMonitor = getRemotingMonitor(uuid);
@@ -92,9 +81,6 @@ public class ProgressMonitorServiceImpl implements IProgressMonitorService {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isMonitorThreadRunning(UUID uuid) {
         IRemotingProgressMonitor remotingMonitor = getRemotingMonitor(uuid);
@@ -104,22 +90,15 @@ public class ProgressMonitorServiceImpl implements IProgressMonitorService {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void cancel(UUID uuid) {
         IRestServiceProgressMonitor monitor = progressMonitorManager.getMonitor(uuid);
         if(monitor != null) {
             monitor.setCanceled(true);
             monitor.done();
-
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setFeedback(UUID uuid, Serializable feedback) {
         IRemotingProgressMonitor remotingMonitor = getRemotingMonitor(uuid);
@@ -127,8 +106,4 @@ public class ProgressMonitorServiceImpl implements IProgressMonitorService {
             remotingMonitor.setFeedback(feedback);
         }
     }
-
-
-
-
 }

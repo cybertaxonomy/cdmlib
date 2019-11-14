@@ -37,6 +37,7 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
+import eu.etaxonomy.cdm.persistence.dao.initializer.EntityInitStrategy;
 import eu.etaxonomy.cdm.remote.editor.DefinedTermBaseList;
 import eu.etaxonomy.cdm.remote.editor.NamedAreaLevelPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.TermBaseListPropertyEditor;
@@ -60,22 +61,27 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
 
     private static final Logger logger = Logger.getLogger(DescriptionPortalController.class);
 
-    protected static final List<String> DESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
+    public static final EntityInitStrategy DESCRIPTION_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String [] {
             "$",
             "elements.$",
-            "elements.multilanguageText.*",
             "elements.annotations",
+            "elements.multilanguageText.*",
+            "elements.stateData.*",
             "elements.sources.citation.authorship.$",
             "elements.sources.nameUsedInSource",
-            "elements.area.level",
+            "elements.media",
             "elements.modifyingText",
-            "elements.stateData.*",
+            "elements.modifiers",
+            "elements.area.level",
             "elements.statisticalValues.*",
             "elements.unit",
-            "elements.media",
-            "elements.kindOfUnit"
-
-    });
+            "elements.kindOfUnit",
+            "name.$",
+            "name.rank.representations",
+            "name.status.type.representations",
+            "sources.$",
+            "sources.cdmSource.target",
+    }));
 
     protected static final List<String> ORDERED_DISTRIBUTION_INIT_STRATEGY = Arrays.asList(new String []{
             "elements.$",
@@ -105,7 +111,7 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
 
     public DescriptionPortalController() {
         super();
-        setInitializationStrategy(DESCRIPTION_INIT_STRATEGY);
+        setInitializationStrategy(DESCRIPTION_INIT_STRATEGY.getPropertyPaths());
     }
 
     @InitBinder

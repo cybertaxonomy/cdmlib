@@ -27,20 +27,16 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 public class IdMapper
         extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>>
         implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{
-	private static final Logger logger = Logger.getLogger(IdMapper.class);
+
+    private static final Logger logger = Logger.getLogger(IdMapper.class);
 
 	public static IdMapper NewInstance(String dbIdAttributeString){
 		return new IdMapper(dbIdAttributeString);
 	}
 
-	/**
-	 * @param dbAttributString
-	 * @param cdmAttributeString
-	 */
 	protected IdMapper(String dbIdAttributeString) {
 		super(null, dbIdAttributeString, null);
 	}
-
 
 	@Override
 	public Class<?> getTypeClass() {
@@ -52,7 +48,6 @@ public class IdMapper
 		boolean result = super.doInvoke(cdmBase);
 		getState().putDbId(cdmBase, (Integer)getValue(cdmBase));
 		return result;
-
 	}
 
 	@Override
@@ -76,14 +71,8 @@ public class IdMapper
 		}
 	}
 
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValueType()
-	 */
 	@Override
 	protected int getSqlType() {
 		return Types.INTEGER;
 	}
-
 }

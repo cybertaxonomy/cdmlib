@@ -18,7 +18,7 @@ import org.apache.commons.lang.StringUtils;
  * A class for handling DOIs (http://www.doi.org).
  * It offers parsing and formatting functionality as well as validation.
  * A {@link DOI} object can only be created by syntactic valid input.
- * It internally stores a doi 2 strings, the first one being the registrant number
+ * It internally stores 2 strings, the first one being the registrant number
  * (including sub numbers), the second being the suffix.
  *
  *

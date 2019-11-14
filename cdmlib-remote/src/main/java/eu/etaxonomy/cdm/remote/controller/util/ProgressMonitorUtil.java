@@ -26,7 +26,6 @@ import eu.etaxonomy.cdm.remote.json.JsonpUtil;
 /**
  * @author Andreas Kohlbecker
  * @since Sep 21, 2012
- *
  */
 public class ProgressMonitorUtil {
 

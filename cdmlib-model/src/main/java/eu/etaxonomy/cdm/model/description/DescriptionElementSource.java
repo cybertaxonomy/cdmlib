@@ -24,6 +24,7 @@ import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.reference.ICdmTarget;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -100,6 +101,13 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
 		result.setOriginalNameString(originalNameString);
 		return result;
 	}
+
+    public static DescriptionElementSource NewInstance(OriginalSourceType type, String id, String idNamespace,
+            Reference citation, String microReference, TaxonName nameUsedInSource, String originalNameString, ICdmTarget target){
+        DescriptionElementSource result = NewInstance(type, id, idNamespace, citation, microReference, nameUsedInSource, originalNameString);
+        result.setCdmSource(target);
+        return result;
+    }
 
 	public static DescriptionElementSource NewPrimarySourceInstance(Reference citation, String microCitation){
 		DescriptionElementSource result = NewInstance(OriginalSourceType.PrimaryTaxonomicSource);

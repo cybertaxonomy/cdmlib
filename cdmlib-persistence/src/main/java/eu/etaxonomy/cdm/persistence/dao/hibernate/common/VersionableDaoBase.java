@@ -395,8 +395,8 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 	}
 
 	@Override
-    public List<T> list(T example, Set<String> includeProperties, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
-		this.checkNotInPriorView("list(T example, Set<String> includeProperties, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {");
+    public <S extends T> List<S> list(S example, Set<String> includeProperties, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+		this.checkNotInPriorView("list(S example, Set<String> includeProperties, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {");
 		return super.list(example, includeProperties, limit, start, orderHints, propertyPaths);
 	}
 }

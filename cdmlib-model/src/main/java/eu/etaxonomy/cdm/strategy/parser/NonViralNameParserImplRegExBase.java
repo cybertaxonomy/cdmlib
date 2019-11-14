@@ -56,7 +56,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String dotWord = "(" + capitalWord + "|" + nonCapitalWord + ")\\.?"; //word (capital or non-capital) with facultative '.' at the end
     protected static String obligateDotWord = "(" + capitalWord + "|" + nonCapitalWord + ")\\.+"; //word (capital or non-capital) with obligate '.' at the end
 
-    //Words used in an epithet for a TaxonName
+    //Words used in an epithet/name part for a TaxonName
     protected static String nonCapitalEpiWord = "[a-z\u00EF\u00EB\u00F6\\-]+";   //a-z + diaeresis for ieo
     protected static String capitalEpiWord = "[A-Z]"+ nonCapitalEpiWord;
 
@@ -281,12 +281,15 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String zooInfraSpecies = species + oWs + "(" + infraSpeciesMarker + oWs +")?" + "("+hybridPart+")?" + nonCapitalEpiWord;
     protected static String oldInfraSpecies = capitalEpiWord + oWs +  nonCapitalEpiWord + oWs + oldInfraSpeciesMarker + oWs + nonCapitalEpiWord;
     protected static String autonym = capitalEpiWord + oWs + "(" + nonCapitalEpiWord +")" + oWs + fullBotanicAuthorString +  oWs + infraSpeciesMarker + oWs + "\\1";  //2-nd word and last word are the same
-    //autonym pattern used within anyBotanicalFullName pattern
-    protected static String autonym2 = capitalEpiWord + oWs + "\u00D7?(" + nonCapitalEpiWord +")" + oWs + fullBotanicAuthorString +  oWs + infraSpeciesMarker + oWs + "\\2";  //2-nd word and last word are the same
-
+    protected static String genusAutonym = "("+capitalEpiWord+")" + oWs + fullBotanicAuthorString + oWs + InfraGenusMarker + oWs + "\\1";  //1st word and last word are the same
+    //autonym patterns used within anyBotanicalFullName pattern as we need another group number there
+    protected static String autonym2 =     "("+capitalEpiWord+")" + oWs
+            + "(" + hybridSign + "?(" + nonCapitalEpiWord +")" + oWs + fullBotanicAuthorString + oWs + infraSpeciesMarker + oWs + "\\4|"  //infraspecific autonym
+            +       fullBotanicAuthorString + oWs + InfraGenusMarker + oWs + "\\2"  //infrageneric autonym
+            + ")";  //2-nd word and last word are the same
 
     protected static String anyBotanicName = "(" + genusOrSupraGenus + "|" + infraGenus + "|" + aggrOrGroup + "|" + species + "|" +
-                    speciesWithInfraGen + "|" + infraSpecies + "|" + oldInfraSpecies + "|" + autonym   + ")+";
+                    speciesWithInfraGen + "|" + infraSpecies + "|" + oldInfraSpecies + "|" + autonym + "|" + genusAutonym + ")+";
     protected static String anyZooName = "(" + genusOrSupraGenus + "|" + infraGenus + "|" + aggrOrGroup + "|" + species + "|" +
                     speciesWithInfraGen + "|" +zooInfraSpecies + "|" +  oldInfraSpecies + ")+";
     protected static String anyBotanicFullName = "(" + autonym2 + "|" + anyBotanicName + oWs + fullBotanicAuthorString + ")"  ;
@@ -315,6 +318,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static Pattern zooInfraSpeciesPattern = Pattern.compile(pStart + zooInfraSpecies + facultFullAuthorString2 + end);
     protected static Pattern oldInfraSpeciesPattern = Pattern.compile(pStart + oldInfraSpecies + facultFullAuthorString2 + end);
     protected static Pattern autonymPattern = Pattern.compile(pStart + autonym + fWs + end);
+    protected static Pattern genusAutonymPattern = Pattern.compile(pStart + genusAutonym + fWs + end);
     protected static Pattern hybridFormulaPattern = Pattern.compile(pStart + hybridFullName + fWs + end);
 
 

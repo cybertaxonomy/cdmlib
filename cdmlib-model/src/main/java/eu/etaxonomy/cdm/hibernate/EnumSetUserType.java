@@ -37,6 +37,10 @@ public class EnumSetUserType<E extends Enum<E>>
         extends AbstractUserType
         implements UserType, ParameterizedType {
 
+    /*
+     * For current usage with hibernate Criterion see DescriptionDaoImpl.addDescriptionTypesCriterion()
+     */
+
     private static final long serialVersionUID = 1060802925284271666L;
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(EnumSetUserType.class);
@@ -64,7 +68,6 @@ public class EnumSetUserType<E extends Enum<E>>
 
 	private static final int[] SQL_TYPES = { Types.VARCHAR };
 
-
 	@Override
 	public Object deepCopy(Object o) throws HibernateException {
 		return o;
@@ -87,7 +90,8 @@ public class EnumSetUserType<E extends Enum<E>>
 			String[] splits = val.split(SEP);
 			for (String split:splits){
 			    if (StringUtils.isNotEmpty(split)) {
-			        E term = (E)EnumUserType.getTerm(clazz, split);
+			        @SuppressWarnings("unchecked")
+                    E term = (E)EnumUserType.getTerm(clazz, split);
 			        if (term == null){
 			            throw new IllegalArgumentException(split + " is not a valid key value for enumeration " + clazz.getCanonicalName());
 			        }

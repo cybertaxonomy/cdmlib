@@ -1189,9 +1189,10 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 for (int m = 0; m < associatedUnits.getLength(); m++) {
                     if (associatedUnits.item(m) instanceof Element) {
                         state.reset();
+
                         String associationType = AbcdParseUtility
                                 .parseFirstTextContent(((Element) associatedUnits.item(m))
-                                        .getElementsByTagName(state.getPrefix() + "AssociationType"));
+                                        .getElementsByTagName(unitAssociationWrapper.getPrefix() + "AssociationType"));
                         Abcd206XMLFieldGetter fieldGetter = new Abcd206XMLFieldGetter(state.getDataHolder(), unitAssociationWrapper.getPrefix());
                         Abcd206ImportParser.setUnitPropertiesXML((Element) associatedUnits.item(m),
                                 fieldGetter,
@@ -1500,7 +1501,9 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                             }
                         }
                     }
-                    teamOrPerson = team;
+                    if (team.getTeamMembers() != null && team.getTeamMembers().isEmpty()){
+                        teamOrPerson = team;
+                    }
                 }
                 if (!state.getPersonStore().containsId(teamOrPerson.getTitleCache())) {
                     state.getPersonStore().put(teamOrPerson.getTitleCache(), teamOrPerson);

@@ -63,6 +63,7 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.RankClass;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -111,11 +112,11 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	public static final UUID uuidUserDefinedMarkerTypeVocabulary = UUID.fromString("5f02a261-fd7d-4fce-bbe4-21472de8cd51");
 	public static final UUID uuidUserDefinedRankVocabulary = UUID.fromString("4dc57931-38e2-46c3-974d-413b087646ba");
 	public static final UUID uuidUserDefinedPresenceAbsenceVocabulary = UUID.fromString("6b8a2581-1471-4ea6-b8ad-b2d931cfbc23");
-
 	public static final UUID uuidUserDefinedModifierVocabulary = UUID.fromString("2a8b3838-3a95-49ea-9ab2-3049614b5884");
 	public static final UUID uuidUserDefinedKindOfUnitVocabulary = UUID.fromString("e7c5deb2-f485-4a66-9104-0c5398efd481");
-
 	public static final UUID uuidUserDefinedLanguageVocabulary = UUID.fromString("463a96f1-20ba-4a4c-9133-854c1682bd9b");
+	public static final UUID uuidUserDefinedNomenclaturalStatusTypeVocabulary = UUID.fromString("1a5c7745-5588-4151-bc43-9ca22561977b");
+
 
 
 	private static final String UuidOnly = "UUIDOnly";
@@ -407,24 +408,15 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 
 	/**
 	 * Returns a named area for a given uuid by first . If the named area does not
-	 * @param state
-	 * @param uuid
-	 * @param label
-	 * @param text
-	 * @param labelAbbrev
-	 * @param areaType
-	 * @param level
-	 * @return
 	 */
 	protected NamedArea getNamedArea(STATE state, UUID uuid, String label, String text, String labelAbbrev, NamedAreaType areaType, NamedAreaLevel level){
 		return getNamedArea(state, uuid, label, text, labelAbbrev, areaType, level, null, null);
 	}
 
 	protected NamedArea getNamedArea(STATE state, UUID uuid, String label, String text, String labelAbbrev, NamedAreaType areaType,
-	        NamedAreaLevel level, TermVocabulary voc, TermMatchMode matchMode){
+	        NamedAreaLevel level, TermVocabulary<?> voc, TermMatchMode matchMode){
 		return getNamedArea(state, uuid, label, text, labelAbbrev, areaType, level, voc, matchMode, null);
 	}
-
 
 	protected NamedArea getNamedArea(STATE state, UUID uuid, String label, String text, String labelAbbrev, NamedAreaType areaType,
 	        NamedAreaLevel level, TermVocabulary voc, TermMatchMode matchMode, List<TermVocabulary<NamedArea>> vocabularyPreference){
@@ -447,7 +439,6 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				vocabularyPreference.add(Country.GERMANY().getVocabulary());
 				vocabularyPreference.add(TdwgAreaProvider.getAreaByTdwgAbbreviation("GER").getVocabulary());
 			}
-
 
 			//TODO matching still experimental
 			if (namedArea == null && (matchMode.equals(TermMatchMode.UUID_LABEL) || matchMode.equals(TermMatchMode.UUID_LABEL_ABBREVLABEL ))){
@@ -678,6 +669,45 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		return feature;
 	}
 
+	/**
+     * Returns a {@link NomenclaturalStatusType nomenclatural status type} for a given uuid by first
+     * checking if the uuid has already been used in this import, if not
+     * checking if the status type exists in the database, if not creating it anew (with vocabulary etc.).
+     * If label, text and labelAbbrev are all <code>null</code> no status type is created.
+     * @param state
+     * @param uuid
+     * @param label
+     * @param text
+     * @param language
+     * @param labelAbbrev
+     * @return
+     */
+    protected NomenclaturalStatusType getNomenclaturalStatusType(STATE state, UUID uuid, String label,
+            String description, String labelAbbrev, Language language, TermVocabulary<NomenclaturalStatusType> voc){
+        if (uuid == null){
+            return null;
+        }
+        NomenclaturalStatusType nomStatusType = state.getNomenclaturalStatusType(uuid);
+        if (nomStatusType == null){
+            nomStatusType = (NomenclaturalStatusType)getTermService().find(uuid);
+            if (nomStatusType == null && ! hasNoLabel(label, description, labelAbbrev)){
+                if (language == null){
+                    language = Language.UNKNOWN_LANGUAGE();
+                }
+                nomStatusType = NomenclaturalStatusType.NewInstance(description, label, labelAbbrev, language);
+                nomStatusType.setUuid(uuid);
+                if (voc == null){
+                    boolean isOrdered = false;
+                    voc = getVocabulary(state, TermType.NomenclaturalStatusType, uuidUserDefinedNomenclaturalStatusTypeVocabulary, "User defined vocabulary for nomenclatural status type", "User Defined NomenclaturalStatusTypes", null, null, isOrdered, nomStatusType);
+                }
+                voc.addTerm(nomStatusType);
+                getTermService().save(nomStatusType);
+                state.putNomenclaturalStatusType(nomStatusType);
+            }
+        }
+        return nomStatusType;
+    }
+
 	protected DefinedTerm getKindOfUnit(STATE state, UUID uuid, String label, String description, String labelAbbrev, TermVocabulary<DefinedTerm> voc){
 		if (uuid == null){
 		    uuid = UUID.randomUUID();
@@ -810,7 +840,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @param labelAbbrev
 	 * @return
 	 */
-	protected TaxonRelationshipType getTaxonRelationshipType(STATE state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<TaxonRelationshipType> voc){
+	public TaxonRelationshipType getTaxonRelationshipType(STATE state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<TaxonRelationshipType> voc){
 		if (uuid == null){
 			return null;
 		}
@@ -913,7 +943,9 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		return language;
 	}
 
-    protected <T extends DefinedTermBase> TermVocabulary<T> getVocabulary(STATE state, TermType termType, UUID uuid, String description, String label, String abbrev, URI termSourceUri, boolean isOrdered, T type) {
+    protected <T extends DefinedTermBase> TermVocabulary<T> getVocabulary(STATE state, TermType termType, UUID uuid, String description, String label,
+            String abbrev, URI termSourceUri, boolean isOrdered, T type) {
+
         TermVocabulary<T> voc = state != null? state.getTermedVocabulary(uuid): null;
         if (voc != null){
             return voc;

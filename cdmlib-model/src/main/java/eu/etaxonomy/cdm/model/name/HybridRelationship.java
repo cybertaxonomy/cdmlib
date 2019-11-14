@@ -109,7 +109,7 @@ public class HybridRelationship
 	 * @see						TaxonName#addHybridRelationship(HybridRelationship)
 	 */
 	protected HybridRelationship(INonViralName hybridName, INonViralName parentName, HybridRelationshipType type, String ruleConsidered) {
-		this(hybridName, parentName, type, null, null, ruleConsidered);
+		this(hybridName, parentName, type, null, null, ruleConsidered, null);
 	}
 
 	/**
@@ -126,9 +126,11 @@ public class HybridRelationship
 	 * @see							#HybridRelationship(BotanicalName, BotanicalName, HybridRelationshipType, String)
 	 * @see							TaxonName#addHybridRelationship(HybridRelationship)
 	 */
-	protected HybridRelationship(INonViralName  hybridName, INonViralName parentName, HybridRelationshipType type, Reference citation, String citationMicroReference, String ruleConsidered) {
+	protected HybridRelationship(INonViralName  hybridName, INonViralName parentName, HybridRelationshipType type, Reference citation,
+	        String citationMicroReference, String ruleConsidered, NomenclaturalCodeEdition codeEdition) {
 		super(parentName, hybridName, type, citation, citationMicroReference);
 		this.setRuleConsidered(ruleConsidered);
+		this.setCodeEdition(codeEdition);
 	}
 
 	//********* METHODS **************************************/

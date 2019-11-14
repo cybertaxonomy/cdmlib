@@ -14,6 +14,8 @@ import java.util.Set;
 import javax.persistence.Transient;
 
 /**
+ * Common interface for all type designation subclasses.
+ *
  * @author a.mueller
  * @since 07.08.2008
  */
@@ -22,13 +24,14 @@ public interface ITypeDesignation {
 
     /**
      * Shortcut to retrieve the information if the status of
-     * <i>this</i> is considered to be a "lectotype" status.
-     * For details see Type {@link TypeDesignationStatusBase#isLectotype()}
+     * <i>this</i> type designation is considered to be a "lectotype" status
+     * in the sense that it usually should have a designation reference.
+     * For details see Type {@link TypeDesignationStatusBase#hasDesignationSource()}
      *
-     * @see  TypeDesignationStatusBase#isLectotype()
+     * @see  TypeDesignationStatusBase#hasDesignationSource()
      */
     @Transient
-    public boolean isLectoType();
+    public boolean hasDesignationSource();
 
 //	/**
 //	 * Returns the {@link HomotypicalGroup homotypical group} that is typified

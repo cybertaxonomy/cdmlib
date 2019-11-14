@@ -15,22 +15,18 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 /**
  * @author cmathew
  * @since 24 Jun 2015
- *
  */
 public class CdmEntityIdentifier implements Serializable {
 
-
     private static final long serialVersionUID = 1479948194282284147L;
-
 
     private final int id;
     private final Class<? extends CdmBase> cdmClass;
 
-    public CdmEntityIdentifier(int id, Class cdmClass) {
+    public CdmEntityIdentifier(int id, Class<? extends CdmBase> cdmClass) {
         this.id = id;
         this.cdmClass = cdmClass;
     }
-
 
     public int getId() {
         return id;

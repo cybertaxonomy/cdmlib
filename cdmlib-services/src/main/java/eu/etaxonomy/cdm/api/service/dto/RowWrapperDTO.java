@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.State;
+import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
@@ -94,24 +95,35 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
         String displayData = null;
         if(descriptionElementBase instanceof CategoricalData){
             CategoricalData categoricalData = (CategoricalData)descriptionElementBase;
-            displayData = categoricalData.getStatesOnly().stream()
-                    .map(state->state.getLabel())
+            displayData = categoricalData.getStateData().stream()
+                    .map(stateData->generateStateDataString(stateData))
                     .collect(Collectors.joining(","));
         }
         if(descriptionElementBase instanceof QuantitativeData){
             QuantitativeData quantitativeData = HibernateProxyHelper.deproxy(descriptionElementBase, QuantitativeData.class);
-            displayData = "";
-            Float min = quantitativeData.getMin();
-            Float max = quantitativeData.getMax();
-            if(min!=null||max!=null){
-                displayData += "["+(min!=null?min.toString():"?")+"-"+(max!=null?max.toString():"?")+"] ";
-            }
-            displayData += quantitativeData.getStatisticalValues().stream().
-            filter(value->value.getType().equals(StatisticalMeasure.EXACT_VALUE()))
-            .map(exact->Float.toString(exact.getValue()))
-            .collect(Collectors.joining(", "));
+            displayData = generateQuantitativeDataString(quantitativeData);
         }
         return displayData;
+    }
+
+    private String generateQuantitativeDataString(QuantitativeData quantitativeData) {
+        String displayData;
+        displayData = "";
+        Float min = quantitativeData.getMin();
+        Float max = quantitativeData.getMax();
+        if(min!=null||max!=null){
+            displayData += "["+(min!=null?min.toString():"?")+"-"+(max!=null?max.toString():"?")+"] ";
+        }
+        displayData += quantitativeData.getStatisticalValues().stream().
+        filter(value->value.getType().equals(StatisticalMeasure.EXACT_VALUE()))
+        .map(exact->Float.toString(exact.getValue()))
+        .collect(Collectors.joining(", "));
+        return displayData;
+    }
+
+    private String generateStateDataString(StateData stateData) {
+        return (stateData.getState()!=null?stateData.getState().getLabel():"[no state]")
+                +(stateData.getCount()!=null?" ("+stateData.getCount()+")":"");
     }
 
     public void setDataValueForCategoricalData(Feature feature, List<State> states){

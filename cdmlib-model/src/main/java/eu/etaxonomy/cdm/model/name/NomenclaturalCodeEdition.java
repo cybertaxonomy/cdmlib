@@ -288,7 +288,6 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
         return getMessage();
     }
 
-
 	@Override
 	public String toString() {
 		return this.name();
@@ -362,8 +361,6 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
     public DOI getDoi() {
         return this.doi;
     }
-
-
 
 // *************************** DELEGATE **************************************/
 

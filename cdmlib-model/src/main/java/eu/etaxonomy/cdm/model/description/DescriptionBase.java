@@ -52,6 +52,7 @@ import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.reference.ICdmTarget;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -89,7 +90,8 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
     @ClassBridge(impl=GroupByTaxonClassBridge.class)
 })
 public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy>
-        extends IdentifiableEntity<S> {
+        extends IdentifiableEntity<S>
+        implements ICdmTarget{
 
     private static final long serialVersionUID = 5504218413819040193L;
     private static final Logger logger = Logger.getLogger(DescriptionBase.class);
@@ -272,6 +274,12 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
     public void setTypes(EnumSet<DescriptionType> types) {
         this.types = types;
     }
+    public void addType(DescriptionType type) {
+        this.types.add(type);
+    }
+    public void addTypes(Set<DescriptionType> types) {
+        this.types.addAll(types);
+    }
 
 
     public Set<DescriptiveDataSet> getDescriptiveDataSets() {
@@ -358,6 +366,12 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
     }
     public boolean isAggregated() {
         return DescriptionType.includesType(types, DescriptionType.AGGREGATED);
+    }
+    public boolean isAggregatedDistribution() {
+        return DescriptionType.includesType(types, DescriptionType.AGGREGATED_DISTRIBUTION);
+    }
+    public boolean isAggregatedStructuredDescription() {
+        return DescriptionType.includesType(types, DescriptionType.AGGREGATED_STRUC_DESC);
     }
     public boolean isCloneForSource() {
         return DescriptionType.includesType(types, DescriptionType.CLONE_FOR_SOURCE);

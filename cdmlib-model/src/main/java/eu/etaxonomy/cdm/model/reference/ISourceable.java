@@ -34,8 +34,8 @@ public interface ISourceable<T extends IOriginalSource> {
 
 	/**
 	 * Adds a source that is newly created by its components. If all components except for the
-	 * type are <code>null</null>
-	 * no source is added.
+	 * type are <code>null</null> no source is added.
+	 *
      * @param type the {@link OriginalSourceType type} of the source
      * @param idInSource the id used in the source
      * @param idNamespace the namespace for the id in the source
@@ -49,10 +49,16 @@ public interface ISourceable<T extends IOriginalSource> {
      * @param reference
      * @param microReference
      * @param originalInformation
-     * @return
+     * @return the added source
      */
 	public T addSource(OriginalSourceType type, Reference reference, String microReference, String originalInformation);
 
+	/**
+	 * Adds a source which links to another CDM object as source.
+	 * @param target the target CDM source
+	 * @return the aggregation source
+	 */
+	public T addAggregationSource(ICdmTarget target);
 
 	/**
 	 * Removes a source from this object

@@ -35,18 +35,11 @@ public class DbDistributionStatusMapper extends DbSingleAttributeExportMapperBas
 		return new DbDistributionStatusMapper(dbAttributeString, isCache, null);
 	}
 
-	/**
-	 * @param dbAttributeString
-	 * @param cdmAttributeString
-	 */
 	protected DbDistributionStatusMapper(String dbAttributeString, boolean isCache, Object defaultValue) {
 		super("status", dbAttributeString, defaultValue);
 		this.isCache = isCache;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValue(eu.etaxonomy.cdm.model.common.CdmBase)
-	 */
 	@Override
 	protected Object getValue(CdmBase cdmBase) {
 		if (cdmBase.isInstanceOf(Distribution.class)){
@@ -68,9 +61,6 @@ public class DbDistributionStatusMapper extends DbSingleAttributeExportMapperBas
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValueType()
-	 */
 	@Override
 	protected int getSqlType() {
 		if (isCache){
@@ -80,10 +70,6 @@ public class DbDistributionStatusMapper extends DbSingleAttributeExportMapperBas
 		}
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase#getTypeClass()
-	 */
 	@Override
 	public Class<?> getTypeClass() {
 		if (isCache){

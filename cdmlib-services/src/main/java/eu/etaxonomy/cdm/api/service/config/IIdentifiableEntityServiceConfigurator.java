@@ -23,7 +23,8 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  * @author a.babadshanjan
  * @since 03.03.2009
  */
-public interface IIdentifiableEntityServiceConfigurator<T extends IIdentifiableEntity> extends Serializable {
+public interface IIdentifiableEntityServiceConfigurator<T extends IIdentifiableEntity>
+            extends Serializable {
 
 	public Class<? extends T> getClazz();
 

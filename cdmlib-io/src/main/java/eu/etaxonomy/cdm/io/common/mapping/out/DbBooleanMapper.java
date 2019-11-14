@@ -15,12 +15,16 @@ import org.apache.log4j.Logger;
 
 
 /**
+ * Mapper mapping a boolean CDM to a boolean export DB value.
+ *
  * @author a.mueller
  * @since 12.05.2009
- * @version 1.0
  */
-public class DbBooleanMapper extends DbSingleAttributeExportMapperBase implements IDbExportMapper {
-	@SuppressWarnings("unused")
+public class DbBooleanMapper
+        extends DbSingleAttributeExportMapperBase
+        implements IDbExportMapper {
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbBooleanMapper.class);
 
 	public static DbBooleanMapper NewInstance(String cdmAttributeString, String dbAttributeString){
@@ -35,34 +39,33 @@ public class DbBooleanMapper extends DbSingleAttributeExportMapperBase implement
 		return new DbBooleanMapper(cdmAttributeString, dbAttributeString, false, false);
 	}
 
-	public static DbBooleanMapper NewInstance(String cdmAttributeString, String dbAttributeString, Boolean defaultValue, Boolean obligatory){
-		return new DbBooleanMapper(cdmAttributeString, dbAttributeString, false, obligatory);
-	}
-
 	/**
-	 * @param dbAttributeString
-	 * @param cdmAttributeString
-	 */
-	private DbBooleanMapper(String cdmAttributeString, String dbAttributeString, Boolean defaultValue, Boolean obligatory) {
-		super(cdmAttributeString, dbAttributeString, defaultValue, obligatory);
+     * @param cdmAttributeString source attribute (CDM)
+     * @param dbAttributString target attribute (export DB)
+     * @param defaultValue default value if source value is <code>null</code>
+     * @param obligatory if the source attribute is obligatory, but value may be <code>null</code>
+     */
+	public static DbBooleanMapper NewInstance(String cdmAttributeString, String dbAttributeString, Boolean defaultValue, Boolean obligatory){
+		return new DbBooleanMapper(cdmAttributeString, dbAttributeString, defaultValue, obligatory);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValueType()
-	 */
+    /**
+     * @param cdmAttributeString source attribute (CDM)
+     * @param dbAttributString target attribute (export DB)
+     * @param defaultValue default value if source value is <code>null</code>
+     * @param obligatory if the source attribute is obligatory, but value may be <code>null</code>
+     */
+	private DbBooleanMapper(String cdmAttributeString, String dbAttributeString, Boolean defaultValue, Boolean obligatory) {
+		super(cdmAttributeString, dbAttributeString, defaultValue, obligatory, false);
+	}
+
 	@Override
 	protected int getSqlType() {
 		return Types.BOOLEAN;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase#getTypeClass()
-	 */
 	@Override
 	public Class<?> getTypeClass() {
 		return Boolean.class;
 	}
-
-
-
 }

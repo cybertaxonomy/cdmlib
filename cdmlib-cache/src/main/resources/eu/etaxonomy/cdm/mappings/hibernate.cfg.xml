@@ -77,6 +77,7 @@ Difference are to be found in
       <mapping class="eu.etaxonomy.cdm.model.common.Annotation"/>
       <mapping class="eu.etaxonomy.cdm.model.common.AnnotationType"/>
       <mapping class="eu.etaxonomy.cdm.model.common.Credit"/>
+      <mapping class="eu.etaxonomy.cdm.model.common.CdmLinkBase"/>
       <mapping class="eu.etaxonomy.cdm.model.common.Extension"/>
       <mapping class="eu.etaxonomy.cdm.model.common.ExtensionType"/>
       <mapping class="eu.etaxonomy.cdm.model.common.IdentifiableSource"/>
@@ -88,7 +89,6 @@ Difference are to be found in
       <mapping class="eu.etaxonomy.cdm.model.common.LSIDAuthority"/>
       <mapping class="eu.etaxonomy.cdm.model.common.Marker"/>
       <mapping class="eu.etaxonomy.cdm.model.common.MarkerType"/>
-      <mapping class="eu.etaxonomy.cdm.model.reference.OriginalSourceBase"/>
       <mapping class="eu.etaxonomy.cdm.model.common.RelationshipTermBase"/>
       
       <!-- Description Package -->
@@ -200,7 +200,9 @@ Difference are to be found in
       
       <!-- Reference Package -->
       <mapping class="eu.etaxonomy.cdm.model.reference.Reference"/>
-
+      <mapping class="eu.etaxonomy.cdm.model.reference.OriginalSourceBase"/>
+      <mapping class="eu.etaxonomy.cdm.model.reference.CdmLinkSource"/>
+      
       <!-- Taxon Package -->
       <mapping class="eu.etaxonomy.cdm.model.taxon.Synonym"/>
       <mapping class="eu.etaxonomy.cdm.model.taxon.SynonymType"/>

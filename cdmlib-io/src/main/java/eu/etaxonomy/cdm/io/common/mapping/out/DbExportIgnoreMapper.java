@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -19,70 +19,70 @@ import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
- * This mapper does not change any import object, but keeps the information that a database
- * attribute needs to be mapped but is not yet mapped.
+ * This mapper does not change any import object, but logs the information that a database
+ * attribute is ignored for the mapping.
+ *
+ * @see DbNullMapper
+ *
  * @author a.mueller
  * @since 25.02.2010
- * @version 1.0
  */
-public class DbExportIgnoreMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> {
-	private static final Logger logger = Logger.getLogger(DbExportIgnoreMapper.class);
-	
+public class DbExportIgnoreMapper
+            extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> {
+
+    private static final Logger logger = Logger.getLogger(DbExportIgnoreMapper.class);
+
 	public static DbExportIgnoreMapper NewInstance(String dbAttributeToIgnore){
-		return new DbExportIgnoreMapper(dbAttributeToIgnore, null, null, null);
+		return new DbExportIgnoreMapper(null, dbAttributeToIgnore, null, null);
 	}
 
 	public static DbExportIgnoreMapper NewInstance(String dbAttributeToIgnore, String reason){
-		return new DbExportIgnoreMapper(dbAttributeToIgnore, null, null, reason);
+		return new DbExportIgnoreMapper(null, dbAttributeToIgnore, null, reason);
 	}
 
 //*************************** VARIABLES ***************************************************************//
-	private String ignoreReason;
-	
+
+	protected String ignoreReason;
+	protected String dbAttributeString;
+
 //*************************** CONSTRUCTOR ***************************************************************//
-	
-	/**
-	 * @param dbAttributString
-	 * @param cdmAttributeString
-	 * @param defaultValue
-	 */
-	protected DbExportIgnoreMapper(String dbAttributString, String cdmAttributeString, Object defaultValue, String ignoreReason) {
-		super(dbAttributString, cdmAttributeString, defaultValue);
+
+	protected DbExportIgnoreMapper(String cdmAttributeString, String dbAttributeString, Object defaultValue, String ignoreReason) {
+		super(cdmAttributeString, null, defaultValue);
+		//we do not pass to parent, otherwise this is part of the prepared statement
+		//once we check if all fields of a table are mapped this behavior needs to be changed
+		//or at least the checking mechanism needs to know that this attribute is handled (but ignored)
+		this.dbAttributeString = dbAttributeString;
 		this.ignoreReason = ignoreReason;
 	}
 
 	@Override
 	public void initialize(PreparedStatement stmt, IndexCounter index, DbExportStateBase state, String tableName) {
-		String attributeName = this.getSourceAttribute();
-		String localReason = "";
-		if (StringUtils.isNotBlank(ignoreReason)){
-			localReason = " (" + ignoreReason +")";
-		}
-		logger.warn(attributeName + " ignored . " +  localReason);
+		initializeLogging();
 		exportMapperHelper.initializeNull(stmt, state, tableName);
 	}
 
-	@Override
+    protected void initializeLogging() {
+        String attributeName = dbAttributeString; //this.getDestinationAttribute();
+        String localReason = "";
+        if (StringUtils.isNotBlank(ignoreReason)){
+            localReason = " (" + ignoreReason +")";
+        }
+        logger.warn(attributeName + " ignored" +  localReason + ".");
+    }
+
+    @Override
 	protected boolean doInvoke(CdmBase cdmBase) throws SQLException {
 		return true;   // do nothing
 	}
-	
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase#getTypeClass()
-	 */
 	@Override
 	public Class getTypeClass() {
 		return null;  //not needed
 	}
-	
 
 	@Override
 	protected int getSqlType() {
 		return -1;  // not needed
 	}
-
-	
-	
-	
 }

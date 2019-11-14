@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -38,9 +38,9 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
  */
 public class DbImportMarkerMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, AnnotatableEntity> implements IDbImportMapper<DbImportStateBase<?,?>,AnnotatableEntity>{
 	private static final Logger logger = Logger.getLogger(DbImportMarkerMapper.class);
-	
+
 //************************** FACTORY METHODS ***************************************************************/
-	
+
 	/**
 	 * @param dbAttributeString
 	 * @param uuid
@@ -52,13 +52,13 @@ public class DbImportMarkerMapper extends DbSingleAttributeImportMapperBase<DbIm
 	public static DbImportMarkerMapper NewInstance(String dbAttributeString, UUID uuid, String label, String text, String labelAbbrev, Boolean ignoreValue){
 		return new DbImportMarkerMapper(dbAttributeString, uuid, label, text, labelAbbrev, ignoreValue);
 	}
-	
+
 	public static DbImportMarkerMapper NewInstance(String dbAttributeString, MarkerType markerType, Boolean ignoreValue){
 		return new DbImportMarkerMapper(dbAttributeString, markerType, ignoreValue);
 	}
-	
+
 //***************** VARIABLES **********************************************************/
-	
+
 	private MarkerType markerType;
 	private String label;
 	private String text;
@@ -82,7 +82,7 @@ public class DbImportMarkerMapper extends DbSingleAttributeImportMapperBase<DbIm
 		this.labelAbbrev = labelAbbrev;
 		this.ignoreValue = ignoreValue;
 	}
-	
+
 	/**
 	 * @param dbAttributeString
 	 * @param extensionType
@@ -92,20 +92,17 @@ public class DbImportMarkerMapper extends DbSingleAttributeImportMapperBase<DbIm
 		this.markerType = markerType;
 		this.ignoreValue = ignoreValue;
 	}
-	
+
 //****************************** METHODS ***************************************************/
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.DbSingleAttributeImportMapperBase#initialize(eu.etaxonomy.cdm.io.common.DbImportStateBase, java.lang.Class)
-	 */
+
 	@Override
 	public void initialize(DbImportStateBase<?,?> state, Class<? extends CdmBase> destinationClass) {
 		importMapperHelper.initialize(state, destinationClass);
 		CdmImportBase<?, ?> currentImport = state.getCurrentIO();
 		if (currentImport == null){
-			throw new IllegalStateException("Current import is not available. Please make sure the the state knows about the current import (state.setCurrentImport())) !"); 
+			throw new IllegalStateException("Current import is not available. Please make sure the the state knows about the current import (state.setCurrentImport())) !");
 		}
-		
+
 		try {
 			if (  checkDbColumnExists()){
 				if (this.markerType == null){
@@ -118,24 +115,13 @@ public class DbImportMarkerMapper extends DbSingleAttributeImportMapperBase<DbIm
 			//do nothing  - checkDbColumnExists is not possible
 		}
 	}
-	
-	
-	/**
-	 * @param valueMap
-	 * @param cdmBase
-	 * @return
-	 */
+
 	public boolean invoke(Map<String, Object> valueMap, CdmBase cdmBase){
 		Object dbValueObject = valueMap.get(this.getSourceAttribute().toLowerCase());
 		Boolean dbValue = (Boolean) (dbValueObject == null? null: dbValueObject);
 		return invoke(dbValue, cdmBase);
 	}
-	
-	/**
-	 * @param dbValue
-	 * @param cdmBase
-	 * @return
-	 */
+
 	private boolean invoke(Boolean dbValue, CdmBase cdmBase){
 		if (ignore){
 			return true;
@@ -147,22 +133,15 @@ public class DbImportMarkerMapper extends DbSingleAttributeImportMapperBase<DbIm
 		}else{
 			throw new IllegalArgumentException("marked object must be of type annotatable entity.");
 		}
-		
+
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.DbSingleAttributeImportMapperBase#invoke(java.sql.ResultSet, eu.etaxonomy.cdm.model.common.CdmBase)
-	 */
-	public AnnotatableEntity invoke(ResultSet rs, AnnotatableEntity annotatableEntity) throws SQLException {
-		Boolean dbValue = rs.getBoolean(getSourceAttribute());
+
+	@Override
+    public AnnotatableEntity invoke(ResultSet rs, AnnotatableEntity annotatableEntity) throws SQLException {
+		Boolean dbValue = (Boolean)rs.getObject(getSourceAttribute());
 		return invoke(dbValue, annotatableEntity);
 	}
-	
-	/**
-	 * @param dbValue
-	 * @param identifiableEntity
-	 * @return
-	 */
+
 	private AnnotatableEntity invoke(Boolean dbValue, AnnotatableEntity annotatableEntity){
 		if (ignore){
 			return annotatableEntity;
@@ -175,8 +154,8 @@ public class DbImportMarkerMapper extends DbSingleAttributeImportMapperBase<DbIm
 		}
 		return annotatableEntity;
 	}
-	
-	
+
+
 	/**
 	 * @param currentImport
 	 * @param uuid
@@ -214,10 +193,11 @@ public class DbImportMarkerMapper extends DbSingleAttributeImportMapperBase<DbIm
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase#getTypeClass()
 	 */
-	public Class<Boolean> getTypeClass(){
+	@Override
+    public Class<Boolean> getTypeClass(){
 		return Boolean.class;
 	}
 
-	
+
 
 }

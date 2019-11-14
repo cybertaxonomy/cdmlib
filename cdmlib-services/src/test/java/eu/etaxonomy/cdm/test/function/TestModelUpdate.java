@@ -46,8 +46,8 @@ public class TestModelUpdate {
 
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 
-		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm55" : "cdm58");
-		database = "cdm_pesi_test_leer2";
+		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm58" : "cdm511");
+
 		CdmDataSource dataSource = getDatasource(dbType, database);
  		try {
 // 		    int n = dataSource.executeUpdate("UPDATE CdmMetaData SET value = '3.1.0.0.201607300000' WHERE propertyname = 0 ");
@@ -74,7 +74,7 @@ public class TestModelUpdate {
 
     		if (schema == DbSchemaValidation.CREATE){
     		    System.out.println("fillData");
-//    		    appCtr.getCommonService().createFullSampleData();
+    		    appCtr.getCommonService().createFullSampleData();
     		    appCtr.getNameService().list(null, null, null, null, null);
     		}
 
@@ -87,12 +87,6 @@ public class TestModelUpdate {
 	}
 
 
-
-/**
-     * @param dbType
-     * @param database
-     * @return
-     */
     private CdmDataSource getDatasource(DatabaseTypeEnum dbType, String database) {
         String server = "localhost";
         String username = "edit";
@@ -214,27 +208,22 @@ public class TestModelUpdate {
 		System.out.println("Start TestModelUpdate");
 		testSelectedDb();
 
-//		updateRemoteWebappTestH2();  //also updates vaadin and taxeditor model
-//		updateAllTesetH2();
-//      updateEdaphobasePostgres();
+//		updateRemoteWebappTestH2();
+//		updateAllTestH2();
+//		updateEdaphobasePostgres();
 
 		System.out.println("\nEnd Datasource");
 	}
 
 	/**
-     * Updates all
+     * Updates all H2 test DBs
      */
-    private void updateAllTesetH2() {
+    private void updateAllTestH2() {
         updateRemoteWebappTestH2();
         updateTaxEditorH2();
         updateVaadinH2();
     }
 
-
-
-    /**
-	 * @param args
-	 */
 	public static void  main(String[] args) {
 		TestModelUpdate cc = new TestModelUpdate();
     	cc.test();

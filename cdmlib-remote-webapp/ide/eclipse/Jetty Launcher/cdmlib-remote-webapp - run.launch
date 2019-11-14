@@ -20,7 +20,7 @@
 <stringAttribute key="net.sourceforge.eclipsejetty.launcher.jetty.config.path.0" value=""/>
 <stringAttribute key="net.sourceforge.eclipsejetty.launcher.jetty.config.type.0" value="DEFAULT"/>
 <booleanAttribute key="net.sourceforge.eclipsejetty.launcher.jetty.embedded" value="false"/>
-<intAttribute key="net.sourceforge.eclipsejetty.launcher.jetty.microVersion" value="2"/>
+<intAttribute key="net.sourceforge.eclipsejetty.launcher.jetty.microVersion" value="1"/>
 <intAttribute key="net.sourceforge.eclipsejetty.launcher.jetty.minorVersion" value="4"/>
 <stringAttribute key="net.sourceforge.eclipsejetty.launcher.jetty.path" value="${jetty-runtime-9}"/>
 <stringAttribute key="net.sourceforge.eclipsejetty.launcher.jetty.version" value="JETTY_9_3"/>

@@ -284,4 +284,17 @@ public interface IDefinedTermDao extends IIdentifiableDao<DefinedTermBase>, ITit
      */
     public List<TermDto> getSupportedStatesForFeature(UUID featureUuid);
 
+    /**
+     * @param uuidList
+     * @return
+     */
+    public Collection<TermDto> findByUUIDsAsDto(List<UUID> uuidList);
+
+
+    /**
+     * @param uuidList
+     * @return
+     */
+    public Collection<TermDto> findByTypeAsDto(TermType termType);
+
 }

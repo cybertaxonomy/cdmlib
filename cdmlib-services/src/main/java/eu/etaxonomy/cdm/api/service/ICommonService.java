@@ -54,17 +54,16 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
 	 */
 	public Map<CdmMetaDataPropertyName, CdmMetaData> getCdmMetaData();
 
-
-	/**
-	 * Returns a map of identifiable entities of class <code>clazz</code> which have an original source of
-	 * with namespace <code>idNamespace</code> and with an idInSource in <code>idInSourceSet</code> <BR>
-	 * The key of the map is the idInSource. If there are multiple objects that have the same id an arbitrary one is chosen.
-	 * @param clazz
-	 * @param idInSourceSet
-	 * @param idNamespace
-	 * @return
-	 */
-	public Map<String, ? extends ISourceable> getSourcedObjectsByIdInSource(Class clazz, Set<String> idInSourceSet, String idNamespace);
+	 /**
+     * Returns a map of identifiable entities of class <code>clazz</code> which have an original source of
+     * with namespace <code>idNamespace</code> and with an idInSource in <code>idInSourceSet</code> <BR>
+     * The key of the map is the idInSource. If there are multiple objects that have the same id an arbitrary one is chosen.
+     * @param clazz
+     * @param idInSourceSet
+     * @param idNamespace
+     * @return
+     */
+	public <S extends ISourceable> Map<String, S> getSourcedObjectsByIdInSourceC(Class<S> clazz, Set<String> idInSourceSet, String idNamespace);
 
 	/**
 	 * Returns a list of identifiable entities according to their class, idInSource and idNamespace
@@ -73,7 +72,7 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
 	 * @param idNamespace
 	 * @return
 	 */
-	public ISourceable getSourcedObjectByIdInSource(Class clazz, String idInSource, String idNamespace);
+	public <S extends ISourceable> S getSourcedObjectByIdInSource(Class<S> clazz, String idInSource, String idNamespace);
 
 
 	/**

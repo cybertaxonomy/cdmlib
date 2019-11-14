@@ -59,29 +59,18 @@ public class DescriptionElementDaoHibernateImplTest extends CdmTransactionalInte
 	ITaxonDao taxonDao;
 
 
-
 	private final UUID uuidSingleTextData = UUID.fromString("31a0160a-51b2-4565-85cf-2be58cb561d6");
 	private final UUID uuidDobuleTextData = UUID.fromString("50f6b799-3585-40a7-b69d-e7be77b2651a");
 
 	private final boolean printDatasets = false;
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
+	public static void setUpBeforeClass() throws Exception {}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
-	public void setUp() throws Exception {
-	}
+	public void setUp() throws Exception {}
 
 // ***************************** TESTS ************************************/
-
-
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.description.DescriptionElementDaoImpl#countMedia(eu.etaxonomy.cdm.model.description.DescriptionElementBase)}.

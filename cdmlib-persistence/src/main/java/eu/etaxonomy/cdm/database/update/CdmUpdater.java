@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.database.update.v55_58.SchemaUpdater_581_582;
+import eu.etaxonomy.cdm.database.update.v58_511.SchemaUpdater_5111_5112;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
 
 /**
@@ -70,10 +70,9 @@ public class CdmUpdater {
 
     /**
      * Returns the current CDM updater
-     * @return
      */
     private ISchemaUpdater getCurrentSchemaUpdater() {
-        return SchemaUpdater_581_582.NewInstance();
+        return SchemaUpdater_5111_5112.NewInstance();
     }
 
     /**
@@ -128,8 +127,6 @@ public class CdmUpdater {
         return result;
     }
 
-
-
     /**
      * Updating terms often inserts new terms, vocabularies and representations.
      * Therefore the counter in hibernate_sequences must be increased.
@@ -160,16 +157,6 @@ public class CdmUpdater {
         return;
     }
 
-    /**
-     *
-     * @param datasource
-     * @param monitor
-     * @param table
-     * @param oldVal
-     * @param caseType
-     * @param result
-     * @return
-     */
     private void updateSingleValue(ICdmDataSource datasource, IProgressMonitor monitor, String table,
                 Integer oldVal, CaseType caseType, SchemaUpdateResult result){
         if (table.equals("default")){  //found in flora central africa test database
@@ -215,8 +202,6 @@ public class CdmUpdater {
     }
 
     /**
-     *
-     *
      * @param args SERVER DB_NAME1[,DB_NAME2,...] [USER] [PASSWORD] [PORT]
      */
     public static void main(String[] args) {

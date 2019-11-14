@@ -25,6 +25,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.Query;
+import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +37,11 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.TreeIndex;
+import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -557,6 +561,68 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         }
         return result;
     }
+    
+    @Override
+    public TaxonNodeDto getParentTaxonNodeDtoForRank(Classification classification, Rank rank, TaxonName name) {
+    	
+    	Set<TaxonBase> taxa = name.getTaxonBases();
+    	TaxonNode node = null;
+    	String treeIndex = null;
+    	Taxon taxon = null; 
+    	for (TaxonBase taxonBase:taxa) {
+    		if (taxonBase instanceof Taxon) {
+    			taxon = HibernateProxyHelper.deproxy(taxonBase, Taxon.class);
+    		}else {
+    			taxon = HibernateProxyHelper.deproxy(((Synonym)taxonBase).getAcceptedTaxon(), Taxon.class);
+    		}
+    		if (taxon != null) {
+    			node = taxon.getTaxonNode(classification);
+	    		if (node != null) {
+	    			break;
+	    		}
+    		}
+    	}
+    	if (node != null) {
+    		treeIndex = node.treeIndex();
+    	}
+    	Criteria nodeCrit = getSession().createCriteria(TaxonNode.class);
+    	Criteria taxonCrit = nodeCrit.createCriteria("taxon");
+    	Criteria nameCrit = taxonCrit.createCriteria("name");
+    	nodeCrit.add(Restrictions.eq("classification", classification));
+    	nameCrit.add(Restrictions.eq("rank", rank));
+    	
+    	 ProjectionList projList = Projections.projectionList();
+         projList.add(Projections.property("treeIndex"));
+         projList.add(Projections.property("uuid"));
+         nodeCrit.setProjection(projList);
+        @SuppressWarnings("unchecked")
+        List<Object[]> list = nodeCrit.list();
+        UUID uuid = null;
+        if (list.size() > 0) {
+        	for (Object o: list) {
+        		 Object[] objectArray = (Object[]) o;
+                 uuid = (UUID)objectArray[1];
+                 String treeIndexParent = (String) objectArray[0];
+                 try {
+                 if (treeIndex.startsWith(treeIndexParent)) {
+                	 node = load(uuid);
+                	 break;
+                 }
+                 }catch(NullPointerException e) {
+                	 System.err.println("Parent: " + treeIndexParent + " treeIndex: " + treeIndex + " taxon: " + taxon != null?taxon.getTitleCache(): "");
+                 }
+        	}
+        	if (node != null) {
+        		TaxonNodeDto dto = new TaxonNodeDto(node);
+        		return dto;
+        	}
+        	
+        }
+        
+        return null;
+    }
+    
+    
 
     /**
      * {@inheritDoc}

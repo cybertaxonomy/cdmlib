@@ -204,7 +204,7 @@ public class NameTypeDesignationStatus extends TypeDesignationStatusBase<NameTyp
 	//#8140
 	@Override
     @Transient
-	public boolean isLectotype(){
+	public boolean hasDesignationSource(){
 		if (
 				this.equals(LECTOTYPE()) ||
 				this.equals(SUBSEQUENT_DESIGNATION()) ||

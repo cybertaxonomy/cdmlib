@@ -32,12 +32,8 @@ public class DbIntegerAnnotationMapper extends DbAnnotationMapper {
 		return new DbIntegerAnnotationMapper(annotationPrefix, dbAttributeString, defaultValue);
 	}
 
-	/**
-	 * @param dbAttributeString
-	 * @param cdmAttributeString
-	 */
 	private DbIntegerAnnotationMapper(String annotationPrefix, String dbAttributeString, Integer defaultValue) {
-		super("annotations", dbAttributeString, defaultValue, null);
+		super(dbAttributeString, "annotations", null, null, defaultValue, null);
 	}
 
 	@Override

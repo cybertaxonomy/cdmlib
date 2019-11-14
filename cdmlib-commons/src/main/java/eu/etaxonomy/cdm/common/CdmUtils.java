@@ -566,5 +566,20 @@ public class CdmUtils {
         return Pattern.quote(regEx).replace("*", "\\E.*\\Q").replace("\\Q\\E", "");
     }
 
+    public static int diffIndex(String str1, String str2) {
+        if (str1 == null || str2 == null){
+            return 0;
+        }
+        for (int i = 0; i<str1.length() && i<str2.length() ;i++) {
+            if (str1.charAt(i)!= str2.charAt(i)){
+                return i;
+            }
+        }
+        if(str1.length()!=str2.length()){
+            return Math.max(str1.length(), str2.length());
+        }
+        return -1;
+    }
+
 
 }

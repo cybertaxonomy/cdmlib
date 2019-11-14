@@ -23,6 +23,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
@@ -55,7 +56,9 @@ import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.permission.Operation;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.HomotypicGroupTaxonComparator;
@@ -75,6 +78,7 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeFilterDao;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.ICdmPermissionEvaluator;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -115,6 +119,8 @@ public class TaxonNodeServiceImpl
     @Autowired
     IProgressMonitorService progressMonitorService;
 
+    @Autowired
+    private ICdmPermissionEvaluator permissionEvaluator;
 
     @Override
     public List<TaxonNode> loadChildNodesOfTaxonNode(TaxonNode taxonNode,
@@ -171,34 +177,22 @@ public class TaxonNodeServiceImpl
         return dao.getParentUuidAndTitleCache(child);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(UuidAndTitleCache<TaxonNode> parent) {
         return dao.listChildNodesAsTaxonNodeDto(parent);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(UuidAndTitleCache<TaxonNode> parent) {
         return dao.listChildNodesAsUuidAndTitleCache(parent);
     }
 
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<UuidAndTitleCache<TaxonNode>> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid) {
         return dao.getUuidAndTitleCache(limit, pattern, classificationUuid);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(ITaxonTreeNode parent) {
         UUID uuid = parent.getUuid();
@@ -215,9 +209,11 @@ public class TaxonNodeServiceImpl
         return listChildNodesAsUuidAndTitleCache(uuidAndTitleCache);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
+    public TaxonNodeDto taxonNodeDtoParentRank(Classification classification, Rank rank, TaxonName name) {
+    	return dao.getParentTaxonNodeDtoForRank(classification, rank, name);
+    }
+
     @Override
     public Pager<TaxonNodeDto> pageChildNodesDTOs(UUID taxonNodeUuid, boolean recursive,  boolean includeUnpublished,
             boolean doSynonyms, NodeSortMode sortMode,
@@ -1097,6 +1093,8 @@ public class TaxonNodeServiceImpl
         return result;
     }
 
+
+
     @Override
     public long count(TaxonNodeFilter filter){
         return nodeFilterDao.count(filter);
@@ -1156,13 +1154,23 @@ public class TaxonNodeServiceImpl
         return commonParent;
     }
 
+
+
     @Override
-    public List<TaxonDistributionDTO> getTaxonDistributionDTOForSubtree(UUID parentNodeUuid, List<String> propertyPaths){
+    public List<TaxonDistributionDTO> getTaxonDistributionDTOForSubtree(UUID parentNodeUuid, List<String> propertyPaths, Authentication authentication){
         List<TaxonNode> nodes = listChildrenOf(load(parentNodeUuid), null, null,
                true, true, propertyPaths);
         List<TaxonDistributionDTO> result = new ArrayList<>();
+        boolean hasPermission = false;
+        TaxonDescription instance = TaxonDescription.NewInstance();
+        hasPermission = permissionEvaluator.hasPermission(authentication, instance, Operation.UPDATE);
         for(TaxonNode node:nodes){
-            if (node.getTaxon() != null){
+            if (authentication != null && !hasPermission) {
+                hasPermission = permissionEvaluator.hasPermission(authentication, node, Operation.UPDATE);
+            }else if (authentication == null){
+                hasPermission = true;
+            }
+            if (node.getTaxon() != null && hasPermission){
                 try{
                     TaxonDistributionDTO dto = new TaxonDistributionDTO(node.getTaxon());
                     result.add(dto);
@@ -1196,6 +1204,12 @@ public class TaxonNodeServiceImpl
         }
         Pager<S> pager = new DefaultPagerImpl<>(pageIndex, resultSize, pageSize, records);
         return pager;
+    }
+
+    @Override
+    public List<TaxonDistributionDTO> getTaxonDistributionDTOForSubtree(UUID parentNodeUuid,
+            List<String> propertyPaths) {
+        return getTaxonDistributionDTOForSubtree(parentNodeUuid, propertyPaths, null);
     }
 
 
