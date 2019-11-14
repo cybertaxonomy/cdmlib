@@ -1501,7 +1501,9 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                             }
                         }
                     }
-                    teamOrPerson = team;
+                    if (team.getTeamMembers() != null && team.getTeamMembers().isEmpty()){
+                        teamOrPerson = team;
+                    }
                 }
                 if (!state.getPersonStore().containsId(teamOrPerson.getTitleCache())) {
                     state.getPersonStore().put(teamOrPerson.getTitleCache(), teamOrPerson);
