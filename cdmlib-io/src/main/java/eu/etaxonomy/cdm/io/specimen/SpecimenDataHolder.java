@@ -381,6 +381,9 @@ public class SpecimenDataHolder {
     }
 
     public void putMultiMediaObject(String uri, Map<String, String> attributes){
+        if (this.multimediaObjects == null){
+            this.multimediaObjects = new HashMap<>();
+        }
         this.multimediaObjects.put(uri, attributes);
     }
 
@@ -401,6 +404,9 @@ public class SpecimenDataHolder {
     }
 
     public void putGatheringMultiMediaObject(String uri, Map<String, String> attributes){
+        if (gatheringMultimediaObjects == null){
+            gatheringMultimediaObjects = new HashMap<>();
+        }
         this.gatheringMultimediaObjects.put(uri, attributes);
     }
 
