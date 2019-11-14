@@ -321,6 +321,7 @@ public class SpecimenDataHolder {
         gatheringSpatialDatum = null;
         gatheringCoordinateErrorMethod = null;
         depth = null;
+        fieldNumber = null;
 
 
     }
