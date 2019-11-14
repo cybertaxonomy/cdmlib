@@ -40,7 +40,6 @@ import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -441,7 +440,7 @@ public class DistributionAggregation
     }
 
     private void addAggregationResultToDescription(Taxon taxon, Map<NamedArea, StatusAndSources> accumulatedStatusMap) {
-        TaxonDescription aggregationDescription = getComputedDescription(taxon);
+        TaxonDescription aggregationDescription = getAggregatedDescription(taxon);
         Set<Distribution> toDelete = new HashSet<>();
         if (getConfig().isDoClearExistingDistribution()){
             clearDescription(aggregationDescription);
@@ -598,24 +597,24 @@ public class DistributionAggregation
         return null;
     }
 
-    private List<Rank> rankInterval(UUID lowerRankUuid, UUID upperRankUuid) {
-
-        TransactionStatus txStatus = startTransaction(false);
-        Rank lowerRank = (Rank)getTermService().load(lowerRankUuid);
-        Rank upperRank = (Rank)getTermService().load(upperRankUuid);
-
-        Rank currentRank = lowerRank;
-        List<Rank> ranks = new ArrayList<>();
-        do {
-            ranks.add(currentRank);
-            currentRank = findNextHigherRank(currentRank);
-        }while (!currentRank.isHigher(upperRank));
-
-
-        commitTransaction(txStatus);
-        txStatus = null;
-        return ranks;
-    }
+//    private List<Rank> rankInterval(UUID lowerRankUuid, UUID upperRankUuid) {
+//
+//        TransactionStatus txStatus = startTransaction(false);
+//        Rank lowerRank = (Rank)getTermService().load(lowerRankUuid);
+//        Rank upperRank = (Rank)getTermService().load(upperRankUuid);
+//
+//        Rank currentRank = lowerRank;
+//        List<Rank> ranks = new ArrayList<>();
+//        do {
+//            ranks.add(currentRank);
+//            currentRank = findNextHigherRank(currentRank);
+//        }while (!currentRank.isHigher(upperRank));
+//
+//
+//        commitTransaction(txStatus);
+//        txStatus = null;
+//        return ranks;
+//    }
 
     private void flush() {
         logger.debug("flushing session ...");
@@ -637,20 +636,20 @@ public class DistributionAggregation
        getSession().clear();
    }
 
-
-    /**
-     * Returns the next higher rank
-     *
-     * TODO better implement OrderedTermBase.getNextHigherTerm() and OrderedTermBase.getNextLowerTerm()?
-     *
-     * @param rank the lower rank
-     */
-    private Rank findNextHigherRank(Rank rank) {
-        rank = (Rank) getTermService().load(rank.getUuid());
-        return rank.getNextHigherTerm();
-//        OrderedTermVocabulary<Rank> rankVocabulary = mameService.getRankVocabulary();;
-//        return rankVocabulary.getNextHigherTerm(rank);
-    }
+//
+//    /**
+//     * Returns the next higher rank
+//     *
+//     * TODO better implement OrderedTermBase.getNextHigherTerm() and OrderedTermBase.getNextLowerTerm()?
+//     *
+//     * @param rank the lower rank
+//     */
+//    private Rank findNextHigherRank(Rank rank) {
+//        rank = (Rank) getTermService().load(rank.getUuid());
+//        return rank.getNextHigherTerm();
+////        OrderedTermVocabulary<Rank> rankVocabulary = mameService.getRankVocabulary();;
+////        return rankVocabulary.getNextHigherTerm(rank);
+//    }
 
     /**
      * Either finds an existing taxon description of the given taxon or creates a new one.
@@ -662,14 +661,20 @@ public class DistributionAggregation
      *     (or a MarkerType COMPUTED for historical reasons, will be removed in future)
      * @return
      */
-    private TaxonDescription getComputedDescription(Taxon taxon) {
+    private TaxonDescription getAggregatedDescription(Taxon taxon) {
 
         // find existing one
         for (TaxonDescription description : taxon.getDescriptions()) {
             // TODO remove COMPUTED;
             if (description.isAggregatedDistribution() || description.hasMarker(MarkerType.COMPUTED(), true)) {
                 logger.debug("reusing computed description for " + taxon.getTitleCache());
-
+                if (description.hasMarker(MarkerType.COMPUTED(), true)){
+                    description.removeMarker(MarkerType.COMPUTED().getUuid());
+                }
+                if(!description.isAggregatedDistribution()){
+                    description.addType(DescriptionType.AGGREGATED_DISTRIBUTION);
+                }
+                setDescriptionTitle(description, taxon);  //maybe we want to redefine the title
                 return description;
             }
         }
@@ -682,9 +687,15 @@ public class DistributionAggregation
         String title = taxon.getTitleCache();
         logger.debug("creating new description for " + title);
         TaxonDescription description = TaxonDescription.NewInstance(taxon);
-        description.setTitleCache("Aggregated distribution for " + title, true);
         description.addType(DescriptionType.AGGREGATED_DISTRIBUTION);
+        setDescriptionTitle(description, taxon);
         return description;
+    }
+
+    private void setDescriptionTitle(TaxonDescription description, Taxon taxon) {
+        String title = taxon.getTitleCache();
+        description.setTitleCache("Aggregated distribution for " + title, true);
+        return;
     }
 
     private Set<NamedArea> getSubAreasFor(NamedArea superArea) {
@@ -701,10 +712,10 @@ public class DistributionAggregation
     private List<Distribution> distributionsFor(Taxon taxon) {
         List<Distribution> distributions = new ArrayList<>();
         for(TaxonDescription description: taxon.getDescriptions()) {
-            readOnlyIfInSession(description);
+//            readOnlyIfInSession(description);
             for(DescriptionElementBase deb : description.getElements()) {
                 if(deb.isInstanceOf(Distribution.class)) {
-                    readOnlyIfInSession(deb);
+//                    readOnlyIfInSession(deb);
                     distributions.add(CdmBase.deproxy(deb, Distribution.class));
                 }
             }

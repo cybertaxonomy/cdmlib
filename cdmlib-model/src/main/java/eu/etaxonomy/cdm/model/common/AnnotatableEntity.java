@@ -96,6 +96,13 @@ public abstract class AnnotatableEntity
 		}
 	}
 
+    @Override
+    public void removeMarker(UUID markerTypeUuid){
+        for(Marker marker : getMarkers(markerTypeUuid)) {
+            removeMarker(marker);
+        }
+    }
+
 	@Override
     public boolean hasMarker(MarkerType type, boolean value){
 		return hasMarker(type.getUuid(), value);
@@ -103,15 +110,24 @@ public abstract class AnnotatableEntity
 
 	@Override
     public boolean hasMarker(UUID uuidMarkerType, boolean value){
-		for (Marker marker: getMarkers()){
-			if (marker.getMarkerType().getUuid().equals(uuidMarkerType)){
-				if (marker.getFlag() == value){
-					return true;
-				}
+		for (Marker marker: getMarkers(uuidMarkerType)){
+			if (marker.getFlag() == value){
+			    return true;
 			}
 		}
 		return false;
 	}
+
+    @Override
+    public Set<Marker> getMarkers(UUID uuidMarkerType){
+        Set<Marker> result = new HashSet<>();
+        for (Marker marker: getMarkers()){
+            if (marker.getMarkerType().getUuid().equals(uuidMarkerType)){
+                result.add(marker);
+            }
+        }
+        return result;
+    }
 
     @Override
     public Boolean markerValue(UUID uuidMarkerType){
