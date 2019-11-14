@@ -37,10 +37,7 @@ public class DistributionAggregationConfiguration
 
     private TermCollection<PresenceAbsenceTerm, TermNode> statusOrder;
 
-//    private Rank lowerRank;
-//    private Rank upperRank;
-
-//    private Classification classification;
+// **************************************** FACTORY ************************************/
 
     public static DistributionAggregationConfiguration NewInstance(AggregationMode aggregationMode, List<NamedArea> superAreas,
             TaxonNodeFilter filter, IProgressMonitor monitor){
