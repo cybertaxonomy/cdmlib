@@ -28,7 +28,7 @@ public abstract class DescriptionAggregationConfigurationBase<TASK extends Descr
 
     private IProgressMonitor monitor;
 
-    private boolean doClearExistingDistribution = true;
+    private boolean doClearExistingDistribution = false;
 
 //******************* CONSTRUCTOR **********************/
 
