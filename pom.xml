@@ -1267,7 +1267,7 @@
 		  NOTE: not so critical anymore as we use cdmlib-db
 		  now for both projects
         -->
-        <version>0.9.5.2</version>
+        <version>0.9.5.4</version>
       </dependency>
       <dependency>
         <groupId>org.hibernate.common</groupId>
