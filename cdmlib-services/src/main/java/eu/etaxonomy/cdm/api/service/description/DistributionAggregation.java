@@ -442,7 +442,7 @@ public class DistributionAggregation
     private void addAggregationResultToDescription(Taxon taxon, Map<NamedArea, StatusAndSources> accumulatedStatusMap) {
         TaxonDescription aggregationDescription = getAggregatedDescription(taxon);
         Set<Distribution> toDelete = new HashSet<>();
-        if (getConfig().isDoClearExistingDistribution()){
+        if (getConfig().isDoClearExistingDescription()){
             clearDescription(aggregationDescription);
         }else{
             //TODO only distributions (but nothing else expected)

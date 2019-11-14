@@ -28,7 +28,7 @@ public abstract class DescriptionAggregationConfigurationBase<TASK extends Descr
 
     private IProgressMonitor monitor;
 
-    private boolean doClearExistingDistribution = false;
+    private boolean doClearExistingDescription = false;
 
 //******************* CONSTRUCTOR **********************/
 
@@ -64,11 +64,11 @@ public abstract class DescriptionAggregationConfigurationBase<TASK extends Descr
         this.taxonNodeFilter = taxonNodeFilter;
     }
 
-    public boolean isDoClearExistingDistribution() {
-        return doClearExistingDistribution;
+    public boolean isDoClearExistingDescription() {
+        return doClearExistingDescription;
     }
 
-    public void setDoClearExistingDistribution(boolean doClearExistingDistribution) {
-        this.doClearExistingDistribution = doClearExistingDistribution;
+    public void setDoClearExistingDescription(boolean doClearExistingDescription) {
+        this.doClearExistingDescription = doClearExistingDescription;
     }
 }

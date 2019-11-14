@@ -354,7 +354,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         addDistributions(T_LAPSANA_COMMUNIS_ALPINA_UUID, nativ_mn_distr);
         commitAndStartNewTransaction(null);
 
-        config.setDoClearExistingDistribution(false);
+        config.setDoClearExistingDescription(false);
         engine.invoke(config, repository);
 
         lapsana_communis  = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_UUID);
