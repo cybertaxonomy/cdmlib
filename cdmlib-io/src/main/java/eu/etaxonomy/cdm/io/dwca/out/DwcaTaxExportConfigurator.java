@@ -103,6 +103,7 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	    this.emlRecord = emlRecord;
 	    this.setDestination(destination);
 	    this.setSource(source);
+	    this.setUserFriendlyIOName("DwC-A Export");
 	}
 
 	@Override
