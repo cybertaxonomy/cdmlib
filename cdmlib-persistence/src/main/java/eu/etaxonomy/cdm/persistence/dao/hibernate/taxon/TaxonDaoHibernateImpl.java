@@ -506,7 +506,7 @@ public class TaxonDaoHibernateImpl
 
             hql = String.format(hql, classString);
 
-            if (hql == "") {
+            if (hql.isEmpty()) {
                 return null;
             }
             if(!doCount){
