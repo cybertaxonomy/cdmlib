@@ -109,6 +109,12 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
         return result;
     }
 
+    public static DescriptionElementSource NewAggregationInstance(ICdmTarget target){
+        DescriptionElementSource result = NewInstance(OriginalSourceType.Aggregation);
+        result.setCdmSource(target);
+        return result;
+    }
+
 	public static DescriptionElementSource NewPrimarySourceInstance(Reference citation, String microCitation){
 		DescriptionElementSource result = NewInstance(OriginalSourceType.PrimaryTaxonomicSource);
 		result.setCitation(citation);

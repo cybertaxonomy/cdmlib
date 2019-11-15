@@ -27,11 +27,15 @@ public abstract class DescriptionAggregationConfigurationBase<TASK extends Descr
 
     private TaxonNodeFilter taxonNodeFilter;
 
-    private boolean aggregateToHigherRanks;
-
-    private IProgressMonitor monitor;
+    private SourceMode toParentSourceMode = SourceMode.DESCRIPTION;
+    private SourceMode withinTaxonSourceMode = SourceMode.ALL_SAMEVALUE;
 
     private boolean doClearExistingDescription = false;
+    private boolean doReuseDescriptions = false;
+    private boolean doReuseDescriptionElements = false;
+    private boolean doReuseSources = false;
+
+    private IProgressMonitor monitor;
 
     private EnumSet<OriginalSourceType> aggregatingSourceTypes = EnumSet.of(
             OriginalSourceType.PrimaryTaxonomicSource, OriginalSourceType.PrimaryMediaSource);
@@ -49,6 +53,13 @@ public abstract class DescriptionAggregationConfigurationBase<TASK extends Descr
             return this==byAreas || this == byAreasAndRanks;
          }
     }
+
+    public enum SourceMode {
+        NONE,
+        ALL,
+        ALL_SAMEVALUE,
+        DESCRIPTION;
+     }
 
 //******************* CONSTRUCTOR **********************/
 
@@ -96,5 +107,19 @@ public abstract class DescriptionAggregationConfigurationBase<TASK extends Descr
     }
     public boolean removeAggregatingSourceTypes(OriginalSourceType sourceTypeToRemove){
         return this.aggregatingSourceTypes.remove(sourceTypeToRemove);
+    }
+
+    public SourceMode getToParentSourceMode() {
+        return toParentSourceMode;
+    }
+    public void setToParentSourceMode(SourceMode toParentSourceMode) {
+        this.toParentSourceMode = toParentSourceMode;
+    }
+
+    public SourceMode getWithinTaxonSourceMode() {
+        return withinTaxonSourceMode;
+    }
+    public void setWithinTaxonSourceMode(SourceMode withinTaxonSourceMode) {
+        this.withinTaxonSourceMode = withinTaxonSourceMode;
     }
 }

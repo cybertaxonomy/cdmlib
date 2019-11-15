@@ -25,6 +25,7 @@ import org.hibernate.search.Search;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.service.UpdateResult;
+import eu.etaxonomy.cdm.api.service.description.DescriptionAggregationConfigurationBase.SourceMode;
 import eu.etaxonomy.cdm.common.DynamicBatch;
 import eu.etaxonomy.cdm.common.JvmLimitsException;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -40,6 +41,7 @@ import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -282,43 +284,47 @@ public class DistributionAggregation
      *
      * @see initializeStatusPriorityMap()
      *
-     * @param a
-     * @param b
-     * @param sourcesForWinnerB
-     *  In the case when <code>b</code> is preferred over <code>a</code> these Set of sources will be added to the sources of <code>b</code>
+     * @param accumulatedStatus
+     * @param newStatus
+     * @param additionalSourcesForWinningNewStatus Not in Use!
+     *  In the case when <code>newStatus</code> is preferred over <code>accumulatedStatus</code> these Set of sources will be added to the sources of <code>b</code>
+     * @param sourceMode
      * @return
      */
-    private StatusAndSources choosePreferredOrMerge(StatusAndSources a, StatusAndSources b,
-            Set<DescriptionElementSource> sourcesForWinnerB){
+    private StatusAndSources choosePreferredOrMerge(StatusAndSources accumulatedStatus, StatusAndSources newStatus,
+            Set<DescriptionElementSource> additionalSourcesForWinningNewStatus, SourceMode sourceMode){
 
-        if (b == null || b.status == null) {
-            return a;
+        if (newStatus == null || newStatus.status == null) {
+            return accumulatedStatus;
         }
-        if (a == null || a.status == null) {
-            return b;
+        if (accumulatedStatus == null || accumulatedStatus.status == null) {
+            return newStatus;
         }
 
-        Integer indexA = statusOrder.indexOf(a.status);
-        Integer indexB = statusOrder.indexOf(b.status);
+        Integer indexAcc = statusOrder.indexOf(accumulatedStatus.status);
+        Integer indexNew = statusOrder.indexOf(newStatus.status);
 
-        if (indexB == -1) {
-            logger.warn("No priority found in map for " + b.status.getLabel());
-            return a;
+        if (indexNew == -1) {
+            logger.warn("No priority found in map for " + newStatus.status.getLabel());
+            return accumulatedStatus;
         }
-        if (indexA == -1) {
-            logger.warn("No priority found in map for " + a.status.getLabel());
-            return b;
+        if (indexAcc == -1) {
+            logger.warn("No priority found in map for " + accumulatedStatus.status.getLabel());
+            return newStatus;
         }
-        if(indexA < indexB){
-            if(sourcesForWinnerB != null) {
-                b.addSources(sourcesForWinnerB);
+        if(indexAcc < indexNew){
+            if(additionalSourcesForWinningNewStatus != null) {
+                newStatus.addSources(additionalSourcesForWinningNewStatus);
             }
-            return b;
+            if (sourceMode == SourceMode.ALL){
+                newStatus.addSources(accumulatedStatus.sources);
+            }
+            return newStatus;
         } else {
-            if (indexA == indexB){
-                a.addSources(b.sources);
+            if (indexAcc == indexNew || sourceMode == SourceMode.ALL){
+                accumulatedStatus.addSources(newStatus.sources);
             }
-            return a;
+            return accumulatedStatus;
         }
     }
 
@@ -440,7 +446,7 @@ public class DistributionAggregation
         if (getConfig().getAggregationMode().isByArea()){
             Set<TaxonDescription> excludedDescriptions = new HashSet<>();
             excludedDescriptions.add(targetDescription);
-            accumulateByAreaSingleTaxon(taxonNode, superAreaList, accumulatedStatusMap, excludedDescriptions);
+            accumulateByAreaSingleTaxon(taxon, superAreaList, accumulatedStatusMap, excludedDescriptions);
         }
         addAggregationResultToDescription(targetDescription, accumulatedStatusMap);
     }
@@ -510,11 +516,10 @@ public class DistributionAggregation
         }
     }
 
-    private void accumulateByAreaSingleTaxon(TaxonNode taxonNode,
+    private void accumulateByAreaSingleTaxon(Taxon taxon,
             List<NamedArea> superAreaList, Map<NamedArea, StatusAndSources> accumulatedStatusMap,
             Set<TaxonDescription> excludedDescriptions) {
 
-        Taxon taxon = CdmBase.deproxy(taxonNode.getTaxon());
         if(logger.isDebugEnabled()){
             logger.debug("accumulateByArea() - taxon :" + taxonToString(taxon));
         }
@@ -527,6 +532,7 @@ public class DistributionAggregation
 
             // accumulate all sub area status
             StatusAndSources accumulatedStatusAndSources = null;
+            SourceMode sourceMode = getConfig().getWithinTaxonSourceMode();
             // TODO consider using the TermHierarchyLookup (only in local branch a.kohlbecker)
             Set<NamedArea> subAreas = getSubAreasFor(superArea);
             for(NamedArea subArea : subAreas){
@@ -545,15 +551,15 @@ public class DistributionAggregation
                         if (getByAreaIgnoreStatusList().contains(status)){
                             continue;
                         }
-                        StatusAndSources subStatusAndSources = new StatusAndSources(status, distribution.getSources());
-                        accumulatedStatusAndSources = choosePreferredOrMerge(accumulatedStatusAndSources, subStatusAndSources, null);
+                        StatusAndSources subAreaStatusAndSources = new StatusAndSources(status, distribution, sourceMode);
+                        accumulatedStatusAndSources = choosePreferredOrMerge(accumulatedStatusAndSources, subAreaStatusAndSources, null, sourceMode);
                     }
                 }
             } // next sub area
 
 
             if (accumulatedStatusAndSources != null) {
-                StatusAndSources preferedStatus = choosePreferredOrMerge(accumulatedStatusMap.get(superArea), accumulatedStatusAndSources, null);
+                StatusAndSources preferedStatus = choosePreferredOrMerge(accumulatedStatusMap.get(superArea), accumulatedStatusAndSources, null, sourceMode);
                 accumulatedStatusMap.put(superArea, preferedStatus);
             }
 
@@ -573,7 +579,15 @@ public class DistributionAggregation
 
             LinkedList<Taxon> childStack = new LinkedList<>();
             for (TaxonNode node : taxonNode.getChildNodes()){
-                childStack.add(CdmBase.deproxy(node.getTaxon()));
+                Taxon child = CdmBase.deproxy(node.getTaxon());
+                //TODO maybe we should also use child catching from taxon node filter
+                //     we could e.g. clone the filter and set the parent as subtree filter
+                //     and this way get all children via service layer, this may improve also
+                //     memory usage
+                if (getConfig().getTaxonNodeFilter().isIncludeUnpublished()||
+                        taxon.isPublish()){
+                    childStack.add(child);
+                }
             }
 
             while(childStack.size() > 0){
@@ -592,8 +606,11 @@ public class DistributionAggregation
                         continue;
                     }
 
-                    StatusAndSources childStatusAndSources = new StatusAndSources(status, distribution.getSources());
-                    StatusAndSources preferedStatus = choosePreferredOrMerge(accumulatedStatusMap.get(area), childStatusAndSources, null);
+                    SourceMode sourceMode = getConfig().getToParentSourceMode();
+
+                    StatusAndSources childStatusAndSources = new StatusAndSources(status, distribution, sourceMode);
+                    StatusAndSources preferedStatus = choosePreferredOrMerge(accumulatedStatusMap.get(area),
+                            childStatusAndSources, null, sourceMode );
                     accumulatedStatusMap.put(area, preferedStatus);
                 }
 
@@ -820,7 +837,7 @@ public class DistributionAggregation
     private void addSourcesDeduplicated(Set<DescriptionElementSource> target, Set<DescriptionElementSource> sourcesToAdd) {
         for(DescriptionElementSource source : sourcesToAdd) {
             boolean contained = false;
-            if (!getConfig().getAggregatingSourceTypes().contains(source.getType())){  //only aggregate sources of defined source types
+            if (!hasValidSourceType(source)&& !isAggregationSource(source)){  //only aggregate sources of defined source types
                 continue;
             }
             for(DescriptionElementSource existingSource: target) {
@@ -838,6 +855,14 @@ public class DistributionAggregation
                 }
             }
         }
+    }
+
+    private boolean isAggregationSource(DescriptionElementSource source) {
+        return source.getType().equals(OriginalSourceType.Aggregation) && source.getCdmSource() != null;
+    }
+
+    private boolean hasValidSourceType(DescriptionElementSource source) {
+        return getConfig().getAggregatingSourceTypes().contains(source.getType());
     }
 
     private void replaceSources(Set<DescriptionElementSource> oldSources, Set<DescriptionElementSource> newSources) {
@@ -874,9 +899,17 @@ public class DistributionAggregation
         private final PresenceAbsenceTerm status;
         private final Set<DescriptionElementSource> sources = new HashSet<>();
 
-        public StatusAndSources(PresenceAbsenceTerm status, Set<DescriptionElementSource> sources) {
+        public StatusAndSources(PresenceAbsenceTerm status, DescriptionElementBase deb, SourceMode sourceMode) {
             this.status = status;
-            addSourcesDeduplicated(this.sources, sources);
+            if (sourceMode == SourceMode.NONE){
+                return;
+            }else if (sourceMode == SourceMode.DESCRIPTION){
+                sources.add(DescriptionElementSource.NewAggregationInstance(deb.getInDescription()));
+            }else if (sourceMode == SourceMode.ALL || sourceMode == SourceMode.ALL_SAMEVALUE){
+                addSourcesDeduplicated(this.sources, deb.getSources());
+            }else{
+                throw new RuntimeException("Unhandled source aggregation mode: " + sourceMode);
+            }
         }
 
         public void addSources(Set<DescriptionElementSource> sources) {
