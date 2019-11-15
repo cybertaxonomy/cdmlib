@@ -178,7 +178,7 @@ public class DistributionAggregation
 
         TaxonNodeFilter filter = getConfig().getTaxonNodeFilter();
         filter.setOrder(ORDER.TREEINDEX_DESC); //DESC guarantees that child taxa are aggregated before parent
-        filter.setIncludeRootNodes(false);
+        filter.setIncludeRootNodes(false);  //root nodes do not make sense for aggregation
 
         Long countTaxonNodes = getTaxonNodeService().count(filter);
         int aggregationWorkTicks = countTaxonNodes.intValue();
@@ -344,7 +344,6 @@ public class DistributionAggregation
      *      the areas to which the subordinate areas should be projected
      * @param classificationLookupDto
      * @throws JvmLimitsException
-     *
      */
     protected void accumulate(List<Integer> taxonNodeIdList,
             IProgressMonitor subMonitor) throws JvmLimitsException {

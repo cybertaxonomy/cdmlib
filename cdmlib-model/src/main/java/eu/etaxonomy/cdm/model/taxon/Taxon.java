@@ -54,6 +54,7 @@ import eu.etaxonomy.cdm.hibernate.search.TaxonRelationshipClassBridge;
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.description.IDescribable;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
@@ -232,8 +233,6 @@ public class Taxon
 
 //********* METHODS **************************************/
 
-
-
     /**
      * Returns the set of {@link eu.etaxonomy.cdm.model.description.TaxonDescription taxon descriptions}
      * concerning <i>this</i> taxon.
@@ -245,9 +244,19 @@ public class Taxon
     @Override
     public Set<TaxonDescription> getDescriptions() {
         if(descriptions == null) {
-            descriptions = new HashSet<TaxonDescription>();
+            descriptions = new HashSet<>();
         }
         return descriptions;
+    }
+
+    public Set<TaxonDescription> getDescriptions(DescriptionType type) {
+        Set<TaxonDescription> result = new HashSet<>();
+        for (TaxonDescription description : getDescriptions()){
+            if (description.getTypes().contains(type)){
+                result.add(description);
+            }
+        }
+        return result;
     }
 
     /**
