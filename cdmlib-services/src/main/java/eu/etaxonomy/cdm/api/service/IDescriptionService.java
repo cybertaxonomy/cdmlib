@@ -164,6 +164,9 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
     @Deprecated
     public <T extends DescriptionElementBase> Pager<T> getDescriptionElements(DescriptionBase description,Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
+    public <T extends DescriptionElementBase> Pager<T> listDescriptionElementsSortedByFeatureTree(
+            DescriptionBase description, TermTree<Feature> termTree, Class<? extends DescriptionBase> descriptionType,
+            Class<T> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
      * Returns description elements of type <TYPE>, belonging to a given

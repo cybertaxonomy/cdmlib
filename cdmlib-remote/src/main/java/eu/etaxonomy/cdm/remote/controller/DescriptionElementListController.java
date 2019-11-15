@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.ITermTreeService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -35,6 +36,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.editor.CdmTypePropertyEditor;
@@ -62,6 +64,9 @@ public class DescriptionElementListController {
 
     @Autowired
     private ITermService termService;
+
+    @Autowired
+    private ITermTreeService termTreeService;
 
     @Autowired
     private ITaxonService taxonService;
@@ -178,6 +183,42 @@ public class DescriptionElementListController {
 
         Pager<T> pager = service.pageDescriptionElementsForTaxon(taxon, features != null ? features.asSet() : null, type, pageSize,
                 pageNumber, getInitializationStrategy());
+        return pager;
+    }
+
+    @RequestMapping(value = "elementsSortbyTree", method = {RequestMethod.GET, RequestMethod.POST})
+    public <T extends DescriptionElementBase> Pager<T> doGetDescriptionElementsSortedByTermTree(
+            @RequestParam(value = "description", required = true) UUID description_uuid,
+            @RequestParam(value = "termTree", required = true) UUID term_tree_uuid,
+            @RequestParam(value = "type", required = false) Class<T> type,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize,
+            @RequestParam(value = "pageNumber", required = false) Integer pageNumber, HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+
+        logger.info("listDescriptionElementsSortedByFeatureTree : " + requestPathAndQuery(request));
+
+        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
+        pagerParams.normalizeAndValidate(response);
+
+        DescriptionBase description = null;
+        if( description_uuid!= null){
+            try {
+                description = service.load(description_uuid);
+            } catch (Exception e) {
+                HttpStatusMessage.UUID_NOT_FOUND.send(response);
+            }
+        }
+        TermTree termTree = null;
+        if(term_tree_uuid!= null){
+            try {
+                termTree = termTreeService.load(term_tree_uuid);
+            } catch (Exception e) {
+                HttpStatusMessage.UUID_NOT_FOUND.send(response);
+            }
+        }
+
+        Pager<T> pager = service.listDescriptionElementsSortedByFeatureTree(description, termTree, null, type, pageSize, pageNumber, getInitializationStrategy());
+
         return pager;
     }
 
