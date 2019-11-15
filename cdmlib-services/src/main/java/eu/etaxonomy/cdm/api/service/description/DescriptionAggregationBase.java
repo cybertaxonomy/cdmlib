@@ -176,8 +176,9 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
         getMonitor().beginTask(name, totalWork);
     }
 
-    public void worked(int work){
+    public void workedAndNewTask(int work, String newTask){
         getMonitor().worked(work);
+        getMonitor().subTask(newTask);
     }
 
     public void subTask(String name){

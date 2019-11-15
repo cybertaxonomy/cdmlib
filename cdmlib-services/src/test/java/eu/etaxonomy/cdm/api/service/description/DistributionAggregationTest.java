@@ -137,7 +137,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
 
     private TermTree<PresenceAbsenceTerm> statusOrder;
 
-    private IProgressMonitor monitor = DefaultProgressMonitor.NewInstance();
+    private IProgressMonitor monitor;
 
     @Before
     public void setUp() {
@@ -163,6 +163,8 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         engine = new DistributionAggregation();
         engine.setBatchMinFreeHeap(100 * 1024 * 1024);
         makeStatusOrder();
+
+        monitor = DefaultProgressMonitor.NewInstance();
     }
 
     private void makeStatusOrder() {

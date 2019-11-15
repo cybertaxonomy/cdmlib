@@ -186,23 +186,24 @@ public class DistributionAggregation
         int makeStatusOrderTicks = 1;
         beginTask("Accumulating distributions", (aggregationWorkTicks) + getIdListTicks + makeStatusOrderTicks);
 
+        subTask("Get taxon node ID list");
         List<Integer> taxonNodeIdList = getTaxonNodeService().idList(filter);
-        worked(getIdListTicks);
+        workedAndNewTask(getIdListTicks, "make status order");
 
         // take start time for performance testing
         double start = System.currentTimeMillis();
 
         makeStatusOrder();
-        worked(makeStatusOrderTicks);
 
         double end1 = System.currentTimeMillis();
         logger.info("Time elapsed for fetching taxon node id list and making status order() : " + (end1 - start) / (1000) + "s");
 
         //TODO AM toString for filter
-        subTask("Accumulating distributions per taxon for taxon filter " + filter.toString());
+        workedAndNewTask(makeStatusOrderTicks, "Accumulating distributions per taxon for taxon filter " + filter.toString());
 
         //TODO AM move to invokeOnSingleTaxon()
-        accumulate(taxonNodeIdList, new SubProgressMonitor(getMonitor(), aggregationWorkTicks));
+        IProgressMonitor subMonitor = new SubProgressMonitor(getMonitor(), aggregationWorkTicks);
+        accumulate(taxonNodeIdList, subMonitor);
 
         double end3 = System.currentTimeMillis();
         logger.info("Time elapsed for accumulate only(): " + (end3 - end1) / (1000) + "s");
@@ -363,7 +364,8 @@ public class DistributionAggregation
         }
 
         // visit all accepted taxa
-        subMonitor.beginTask("Accumulating bottom up ", taxonNodeIdList.size());
+        subMonitor.beginTask("Work on taxa.", taxonNodeIdList.size());
+//      subMonitor.subTask("Accumulating bottom up " + taxonNodeIdList.size() + " taxa.");
 
         //TODO FIXME this was a Taxon not a TaxonNode id list
         Iterator<Integer> taxonIdIterator = taxonNodeIdList.iterator();
@@ -392,6 +394,7 @@ public class DistributionAggregation
             // start processing the new batch
 
             for(TaxonNode taxonNode : taxonNodes) {
+                subMonitor.subTask("Accumulating " + taxonNode.getTaxon().getTitleCache());
 
                 accumulateSingleTaxon(taxonNode, superAreaList);
                 batch.incrementCounter();
