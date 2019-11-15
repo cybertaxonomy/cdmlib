@@ -610,7 +610,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
         }
 
         Pager<TaxonBase> result = service.findTaxaByName(null, genusOrUninomial, infragenericEpithet, specificEpithet, infraspecificEpithet,
-                authorshipCache, rank, pageSize, pageNumber);
+                authorshipCache, rank, pageSize, pageNumber, initializationStrategy);
 
         return result;
     }

@@ -169,7 +169,7 @@ public interface ITaxonDao
      * @return a list of TaxonBase instances
      */
     public List<TaxonBase> findTaxaByName(Class<? extends TaxonBase> clazz, String uninomial, String infragenericEpithet, String specificEpithet,
-            String infraspecificEpithet, String authorshipCache, Rank rank, Integer pageSize, Integer pageNumber);
+            String infraspecificEpithet, String authorshipCache, Rank rank, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
      * Find taxa by searching for Taxa and Synonyms where the
