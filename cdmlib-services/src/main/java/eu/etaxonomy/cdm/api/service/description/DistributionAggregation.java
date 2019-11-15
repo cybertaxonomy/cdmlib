@@ -176,6 +176,7 @@ public class DistributionAggregation
 
         TaxonNodeFilter filter = getConfig().getTaxonNodeFilter();
         filter.setOrder(ORDER.TREEINDEX_DESC); //DESC guarantees that child taxa are aggregated before parent
+        filter.setIncludeRootNodes(false);
 
         Long countTaxonNodes = getTaxonNodeService().count(filter);
         int aggregationWorkTicks = countTaxonNodes.intValue();

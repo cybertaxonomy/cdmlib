@@ -217,7 +217,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
             Distribution distribution = (Distribution)element;
             if(distribution.getArea().equals(yug_ko)){
                 numExpectedFound++;
-                assertEquals("aggregated status of area YUG-KO wrong", PresenceAbsenceTerm.INTRODUCED_FORMERLY_INTRODUCED().getLabel(), distribution.getStatus().getLabel());
+                assertEquals("aggregated status of area YUG-KO wrong", PresenceAbsenceTerm.INTRODUCED_FORMERLY_INTRODUCED(), distribution.getStatus());
             }
         }
         assertEquals("All three expected areas should have been found before", numExpectedFound, 1);
@@ -263,7 +263,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
                 assertEquals("the computed Decsription should have only one element", 1, description.getElements().size());
                 accumulatedDistribution = (Distribution) description.getElements().iterator().next();
                 assertEquals("Expecting area to be YUG", yug, accumulatedDistribution.getArea());
-                assertEquals("Expecting status to be NATIVE", PresenceAbsenceTerm.NATIVE().getLabel(), accumulatedDistribution.getStatus().getLabel());
+                assertEquals("Expecting status to be NATIVE", PresenceAbsenceTerm.NATIVE(), accumulatedDistribution.getStatus());
             }
         }
         assertNotNull("The area YUG should have been found", accumulatedDistribution);
@@ -338,7 +338,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
             }
             if(distribution.getArea().equals(yug_ko)){
                 numExpectedFound++;
-                assertEquals("aggregated status of area YUG-KO wrong", PresenceAbsenceTerm.NATIVE().getLabel(), distribution.getStatus().getLabel());
+                assertEquals("aggregated status of area YUG-KO wrong", PresenceAbsenceTerm.NATIVE(), distribution.getStatus());
                 assertEquals(2, distribution.getSources().size());
                 // should contain source_LCA_yug_ma and source_LCA_yug_ko, testing the microreference which is unique in the tests
                 assertTrue(sourceExists(distribution.getSources(), book_a, "2"));
@@ -382,7 +382,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
             if(lapsanaDistr.getArea().equals(yug)){
                 numExpectedFound++;
                 assertEquals(yugDistributionUuid, lapsanaDistr.getUuid());
-                assertEquals("aggregated status of area YUG is wrong", PresenceAbsenceTerm.NATIVE().getLabel(), lapsanaDistr.getStatus().getLabel());
+                assertEquals("aggregated status of area YUG is wrong", PresenceAbsenceTerm.NATIVE(), lapsanaDistr.getStatus());
                 assertEquals(1, lapsanaDistr.getSources().size());
                 assertFalse(sourceExists(lapsanaDistr.getSources(), book_a, "2"));
                 assertFalse(sourceExists(lapsanaDistr.getSources(), book_a, "4"));
@@ -632,7 +632,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
     private String sourcesToString(DescriptionElementBase deb) {
         StringBuffer out = new StringBuffer();
         for ( DescriptionElementSource source : deb.getSources()) {
-            out.append(source.getCitation().getTitle() + " : " + source.getCitationMicroReference() + ", ");
+            out.append(source.getCitation()==null?"":source.getCitation().getTitle() + " : " + source.getCitationMicroReference() + ", ");
         }
         return out.toString();
     }

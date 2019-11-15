@@ -17,6 +17,7 @@ import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 
 /**
  * Configurator base class for all {@link DescriptionAggregationBase description aggregations}.
+ *
  * @author a.mueller
  * @since 03.11.2019
  */
@@ -35,6 +36,7 @@ public abstract class DescriptionAggregationConfigurationBase<TASK extends Descr
     private EnumSet<OriginalSourceType> aggregatingSourceTypes = EnumSet.of(
             OriginalSourceType.PrimaryTaxonomicSource, OriginalSourceType.PrimaryMediaSource);
 
+// ************************** ENUMS ******************************/
 
     public enum AggregationMode {
         byAreas,
@@ -66,13 +68,6 @@ public abstract class DescriptionAggregationConfigurationBase<TASK extends Descr
     }
     public void setMonitor(IProgressMonitor monitor) {
         this.monitor = monitor;
-    }
-
-    public boolean isAggregateToHigherRanks() {
-        return aggregateToHigherRanks;
-    }
-    public void setAggregateToHigherRanks(boolean aggregateToHigherRanks) {
-        this.aggregateToHigherRanks = aggregateToHigherRanks;
     }
 
     public TaxonNodeFilter getTaxonNodeFilter() {

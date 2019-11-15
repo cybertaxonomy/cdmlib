@@ -23,6 +23,10 @@ public class StructuredDescriptionAggregationConfiguration
 
     private DescriptiveDataSet dataset;
 
+
+    //TODO merge with DistributionAggregationConfiguration.aggregationMode
+    private boolean aggregateToHigherRanks;
+
     boolean includeDefault = true;
     boolean includeLiterature = false;
 
@@ -60,6 +64,14 @@ public class StructuredDescriptionAggregationConfiguration
     }
 
 // *********************** GETTER / SETTER ****************************/
+
+
+    public boolean isAggregateToHigherRanks() {
+        return aggregateToHigherRanks;
+    }
+    public void setAggregateToHigherRanks(boolean aggregateToHigherRanks) {
+        this.aggregateToHigherRanks = aggregateToHigherRanks;
+    }
 
     public boolean isIncludeDefault() {
         return includeDefault;
