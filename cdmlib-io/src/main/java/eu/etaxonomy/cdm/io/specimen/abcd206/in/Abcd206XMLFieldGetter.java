@@ -232,7 +232,7 @@ public class Abcd206XMLFieldGetter {
 //                        hasPref = true;
 //                    }
                 }
-                if (dataHolder.getNomenclatureCode() != null&& dataHolder.getNomenclatureCode() != "" ) {
+                if (StringUtils.isNoneBlank(dataHolder.getNomenclatureCode())) {
                     // logger.info("TMP NAME P" + tmpName);
                     dataHolder.getIdentificationList().add(new Identification(tmpName, preferredFlag, dataHolder.getNomenclatureCode(), identifierStr, dateStr));
                 } else {

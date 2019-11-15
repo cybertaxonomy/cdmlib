@@ -302,7 +302,7 @@ public class SpecimenDataHolder {
      *
      */
     public void reset() {
-        nomenclatureCode = null;
+        //nomenclatureCode = null;
         atomisedIdentificationList = new ArrayList<HashMap<String,String>>();
         gatheringDateText = null;
         gatheringNotes = null;
