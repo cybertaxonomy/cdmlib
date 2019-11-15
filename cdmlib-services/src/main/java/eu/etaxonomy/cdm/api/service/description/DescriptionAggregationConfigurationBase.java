@@ -9,9 +9,11 @@
 package eu.etaxonomy.cdm.api.service.description;
 
 import java.io.Serializable;
+import java.util.EnumSet;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 
 /**
  * Configurator base class for all {@link DescriptionAggregationBase description aggregations}.
@@ -29,6 +31,9 @@ public abstract class DescriptionAggregationConfigurationBase<TASK extends Descr
     private IProgressMonitor monitor;
 
     private boolean doClearExistingDescription = false;
+
+    private EnumSet<OriginalSourceType> aggregatingSourceTypes = EnumSet.of(
+            OriginalSourceType.PrimaryTaxonomicSource, OriginalSourceType.PrimaryMediaSource);
 
 //******************* CONSTRUCTOR **********************/
 
@@ -70,5 +75,18 @@ public abstract class DescriptionAggregationConfigurationBase<TASK extends Descr
 
     public void setDoClearExistingDescription(boolean doClearExistingDescription) {
         this.doClearExistingDescription = doClearExistingDescription;
+    }
+
+    public EnumSet<OriginalSourceType> getAggregatingSourceTypes() {
+        return aggregatingSourceTypes;
+    }
+    public void setAggregatingSourceTypes(EnumSet<OriginalSourceType> aggregatingSourceTypes) {
+        this.aggregatingSourceTypes = aggregatingSourceTypes;
+    }
+    public void addAggregatingSourceTypes(OriginalSourceType sourceTypeToAdd){
+        this.aggregatingSourceTypes.add(sourceTypeToAdd);
+    }
+    public boolean removeAggregatingSourceTypes(OriginalSourceType sourceTypeToRemove){
+        return this.aggregatingSourceTypes.remove(sourceTypeToRemove);
     }
 }

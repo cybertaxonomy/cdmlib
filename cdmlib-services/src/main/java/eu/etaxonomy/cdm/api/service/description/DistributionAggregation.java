@@ -429,44 +429,65 @@ public class DistributionAggregation
             logger.debug("accumulate - taxon :" + taxonToString(taxon));
         }
 
+        TaxonDescription targetDescription = getAggregatedDescription(taxon);
         Map<NamedArea, StatusAndSources> accumulatedStatusMap = new HashMap<>();
         if (getConfig().getAggregationMode().isByRank()){
-            accumulateByRankSingleTaxon(taxonNode, accumulatedStatusMap);
+            Set<TaxonDescription> excludedDescriptions = new HashSet<>();
+//            excludedDescriptions.add(targetDescription); //not possible because aggregating from children
+            accumulateByRankSingleTaxon(taxonNode, accumulatedStatusMap, excludedDescriptions);
         }
         if (getConfig().getAggregationMode().isByArea()){
-            accumulateByAreaSingleTaxon(taxonNode, superAreaList, accumulatedStatusMap);
+            Set<TaxonDescription> excludedDescriptions = new HashSet<>();
+            excludedDescriptions.add(targetDescription);
+            accumulateByAreaSingleTaxon(taxonNode, superAreaList, accumulatedStatusMap, excludedDescriptions);
         }
-        addAggregationResultToDescription(taxon, accumulatedStatusMap);
+        addAggregationResultToDescription(targetDescription, accumulatedStatusMap);
     }
 
-    private void addAggregationResultToDescription(Taxon taxon, Map<NamedArea, StatusAndSources> accumulatedStatusMap) {
-        TaxonDescription aggregationDescription = getAggregatedDescription(taxon);
+    private void addAggregationResultToDescription(TaxonDescription targetDescription, Map<NamedArea, StatusAndSources> accumulatedStatusMap) {
+
         Set<Distribution> toDelete = new HashSet<>();
         if (getConfig().isDoClearExistingDescription()){
-            clearDescription(aggregationDescription);
+            clearDescription(targetDescription);
         }else{
-            //TODO only distributions (but nothing else expected)
-            toDelete = new HashSet<>((Set)aggregationDescription.getElements());
+            toDelete = new HashSet<>(getDistributions(targetDescription));
         }
         for (NamedArea area : accumulatedStatusMap.keySet()) {
-            Distribution distribution = findDistributionForAreaAndStatus(aggregationDescription, area, accumulatedStatusMap.get(area).status);
+            PresenceAbsenceTerm status = accumulatedStatusMap.get(area).status;
+            Distribution distribution = findDistributionForArea(targetDescription, area);
+            //old: if we want to reuse distribution only with exact same status
+//          Distribution distribution = findDistributionForAreaAndStatus(aggregationDescription, area, status);
+
             if(distribution == null) {
                 // create a new distribution element
-                distribution = Distribution.NewInstance(area, accumulatedStatusMap.get(area).status);
-                aggregationDescription.addElement(distribution);
+                distribution = Distribution.NewInstance(area, status);
+                targetDescription.addElement(distribution);
             }else{
-                toDelete.remove(distribution);
-                //TODO improve source reuse
-                distribution.getSources().clear();
+                distribution.setStatus(status);
+                toDelete.remove(distribution);  //we keep the distribution for reuse
             }
-            addSourcesDeduplicated(distribution.getSources(), accumulatedStatusMap.get(area).sources);
-
+            replaceSources(distribution.getSources(), accumulatedStatusMap.get(area).sources);
+//            addSourcesDeduplicated(distribution.getSources(), accumulatedStatusMap.get(area).sources);
         }
         for(Distribution toDelteDist: toDelete){
-            aggregationDescription.removeElement(toDelteDist);
+            targetDescription.removeElement(toDelteDist);
         }
     }
 
+    private Set<Distribution> getDistributions(TaxonDescription aggregationDescription) {
+        Set<Distribution> result = new HashSet<>();
+        for (DescriptionElementBase deb: aggregationDescription.getElements()){
+            if (deb.isInstanceOf(Distribution.class)){
+                result.add(CdmBase.deproxy(deb,Distribution.class));
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Removes all description elements of type {@link Distribution} from the
+     * (aggregation) description.
+     */
     private void clearDescription(TaxonDescription aggregationDescription) {
         int deleteCount = 0;
         Set<DescriptionElementBase> deleteCandidates = new HashSet<>();
@@ -489,14 +510,16 @@ public class DistributionAggregation
     }
 
     private void accumulateByAreaSingleTaxon(TaxonNode taxonNode,
-            List<NamedArea> superAreaList, Map<NamedArea, StatusAndSources> accumulatedStatusMap) {
+            List<NamedArea> superAreaList, Map<NamedArea, StatusAndSources> accumulatedStatusMap,
+            Set<TaxonDescription> excludedDescriptions) {
 
         Taxon taxon = CdmBase.deproxy(taxonNode.getTaxon());
         if(logger.isDebugEnabled()){
             logger.debug("accumulateByArea() - taxon :" + taxonToString(taxon));
         }
 
-        List<Distribution> distributions = distributionsFor(taxon);
+        Set<TaxonDescription> descriptions = descriptionsFor(taxon, excludedDescriptions);
+        Set<Distribution> distributions = distributionsFor(descriptions);
 
         // Step through superAreas for accumulation of subAreas
         for (NamedArea superArea : superAreaList){
@@ -537,7 +560,8 @@ public class DistributionAggregation
     }
 
     private void accumulateByRankSingleTaxon(TaxonNode taxonNode,
-            Map<NamedArea, StatusAndSources> accumulatedStatusMap) {
+            Map<NamedArea, StatusAndSources> accumulatedStatusMap,
+            Set<TaxonDescription> excludedDescriptions) {
 
         Taxon taxon = CdmBase.deproxy(taxonNode.getTaxon());
         if(logger.isDebugEnabled()){
@@ -559,7 +583,8 @@ public class DistributionAggregation
                     logger.trace("                   subtaxon :" + taxonToString(childTaxon));
                 }
 
-                for(Distribution distribution : distributionsFor(childTaxon) ) {
+                Set<Distribution> distributions = distributionsFor(descriptionsFor(childTaxon, excludedDescriptions));
+                for(Distribution distribution : distributions) {
                     PresenceAbsenceTerm status = distribution.getStatus();
                     NamedArea area = distribution.getArea();
                     if (status == null || getByRankIgnoreStatusList().contains(status)){
@@ -584,6 +609,23 @@ public class DistributionAggregation
         }
     }
 
+    private Distribution findDistributionForArea(TaxonDescription description, NamedArea area) {
+        for(DescriptionElementBase item : description.getElements()) {
+            if(!(item.isInstanceOf(Distribution.class))) {
+                continue;
+            }
+            Distribution distribution = CdmBase.deproxy(item, Distribution.class);
+            if(distribution.getArea().equals(area)) {
+                return distribution;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Old: For if we want to reuse distributions only for the exact same status or
+     * if we aggregate for each status separately. Otherwise use {@link #findDistributionForArea(TaxonDescription, NamedArea)}
+     */
     private Distribution findDistributionForAreaAndStatus(TaxonDescription description, NamedArea area, PresenceAbsenceTerm status) {
         for(DescriptionElementBase item : description.getElements()) {
             if(!(item.isInstanceOf(Distribution.class))) {
@@ -596,25 +638,6 @@ public class DistributionAggregation
         }
         return null;
     }
-
-//    private List<Rank> rankInterval(UUID lowerRankUuid, UUID upperRankUuid) {
-//
-//        TransactionStatus txStatus = startTransaction(false);
-//        Rank lowerRank = (Rank)getTermService().load(lowerRankUuid);
-//        Rank upperRank = (Rank)getTermService().load(upperRankUuid);
-//
-//        Rank currentRank = lowerRank;
-//        List<Rank> ranks = new ArrayList<>();
-//        do {
-//            ranks.add(currentRank);
-//            currentRank = findNextHigherRank(currentRank);
-//        }while (!currentRank.isHigher(upperRank));
-//
-//
-//        commitTransaction(txStatus);
-//        txStatus = null;
-//        return ranks;
-//    }
 
     private void flush() {
         logger.debug("flushing session ...");
@@ -693,7 +716,7 @@ public class DistributionAggregation
     }
 
     private void setDescriptionTitle(TaxonDescription description, Taxon taxon) {
-        String title = taxon.getTitleCache();
+        String title = taxon.getName() != null? taxon.getName().getTitleCache() : taxon.getTitleCache();
         description.setTitleCache("Aggregated distribution for " + title, true);
         return;
     }
@@ -709,18 +732,28 @@ public class DistributionAggregation
         return subAreaMap.get(superArea);
     }
 
-    private List<Distribution> distributionsFor(Taxon taxon) {
-        List<Distribution> distributions = new ArrayList<>();
+    private Set<TaxonDescription> descriptionsFor(Taxon taxon, Set<TaxonDescription> excludedDescriptions) {
+        Set<TaxonDescription> result = new HashSet<>();
         for(TaxonDescription description: taxon.getDescriptions()) {
-//            readOnlyIfInSession(description);
+//            readOnlyIfInSession(description); //not needed for tests anymore
+            if (!excludedDescriptions.contains(description)){
+                result.add(description);
+            }
+        }
+        return result;
+    }
+
+    private Set<Distribution> distributionsFor(Set<TaxonDescription> descriptions) {
+        Set<Distribution> result = new HashSet<>();
+        for(TaxonDescription description: descriptions) {
             for(DescriptionElementBase deb : description.getElements()) {
                 if(deb.isInstanceOf(Distribution.class)) {
-//                    readOnlyIfInSession(deb);
-                    distributions.add(CdmBase.deproxy(deb, Distribution.class));
+//                    readOnlyIfInSession(deb); //not needed for tests anymore
+                    result.add(CdmBase.deproxy(deb, Distribution.class));
                 }
             }
         }
-        return distributions;
+        return result;
     }
 
     /**
@@ -783,9 +816,12 @@ public class DistributionAggregation
         return voc;
     }
 
-    private void addSourcesDeduplicated(Set<DescriptionElementSource> target, Set<DescriptionElementSource> sources) {
-        for(DescriptionElementSource source : sources) {
+    private void addSourcesDeduplicated(Set<DescriptionElementSource> target, Set<DescriptionElementSource> sourcesToAdd) {
+        for(DescriptionElementSource source : sourcesToAdd) {
             boolean contained = false;
+            if (!getConfig().getAggregatingSourceTypes().contains(source.getType())){  //only aggregate sources of defined source types
+                continue;
+            }
             for(DescriptionElementSource existingSource: target) {
                 if(existingSource.equalsByShallowCompare(source)) {
                     contained = true;
@@ -800,6 +836,31 @@ public class DistributionAggregation
                     throw new RuntimeException(e);
                 }
             }
+        }
+    }
+
+    private void replaceSources(Set<DescriptionElementSource> oldSources, Set<DescriptionElementSource> newSources) {
+        Set<DescriptionElementSource> toDeleteSources = new HashSet<>(oldSources);
+        for(DescriptionElementSource newSource : newSources) {
+            boolean contained = false;
+            for(DescriptionElementSource existingSource: oldSources) {
+                if(existingSource.equalsByShallowCompare(newSource)) {
+                    contained = true;
+                    toDeleteSources.remove(existingSource);
+                    break;
+                }
+            }
+            if(!contained) {
+                try {
+                    oldSources.add((DescriptionElementSource)newSource.clone());
+                } catch (CloneNotSupportedException e) {
+                    // should never happen
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        for (DescriptionElementSource toDeleteSource : toDeleteSources){
+            oldSources.remove(toDeleteSource);
         }
     }
 
