@@ -868,18 +868,6 @@ public class DistributionAggregation
         this.batchMinFreeHeap = batchMinFreeHeap;
     }
 
-    public enum AggregationMode {
-        byAreas,
-        byRanks,
-        byAreasAndRanks;
-        public boolean isByRank() {
-           return this==byRanks || this == byAreasAndRanks;
-        }
-        public boolean isByArea() {
-            return this==byAreas || this == byAreasAndRanks;
-         }
-    }
-
     private class StatusAndSources {
 
         private final PresenceAbsenceTerm status;

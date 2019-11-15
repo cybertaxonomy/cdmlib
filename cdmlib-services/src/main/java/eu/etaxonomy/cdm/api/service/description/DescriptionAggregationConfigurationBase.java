@@ -35,6 +35,19 @@ public abstract class DescriptionAggregationConfigurationBase<TASK extends Descr
     private EnumSet<OriginalSourceType> aggregatingSourceTypes = EnumSet.of(
             OriginalSourceType.PrimaryTaxonomicSource, OriginalSourceType.PrimaryMediaSource);
 
+
+    public enum AggregationMode {
+        byAreas,
+        byRanks,
+        byAreasAndRanks;
+        public boolean isByRank() {
+           return this==byRanks || this == byAreasAndRanks;
+        }
+        public boolean isByArea() {
+            return this==byAreas || this == byAreasAndRanks;
+         }
+    }
+
 //******************* CONSTRUCTOR **********************/
 
     protected DescriptionAggregationConfigurationBase(TaxonNodeFilter filter, IProgressMonitor monitor) {

@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.api.service.description;
 import java.util.List;
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.api.service.description.DistributionAggregation.AggregationMode;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.filter.LogicFilter;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
