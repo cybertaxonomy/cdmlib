@@ -82,7 +82,6 @@ public class TropicosNameImportTest extends CdmTransactionalIntegrationTest{
 
     @Test
     @DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
-    //@Ignore
     public void testShort() {
         configShort.setCreateTaxa(true);
         ImportResult result = defaultImport.invoke(configShort);

@@ -253,7 +253,7 @@ public abstract class OriginalSourceBase<T extends ISourceable>
         @SuppressWarnings("unchecked")
         OriginalSourceBase<T> theOther = (OriginalSourceBase<T>)other;
         if(!StringUtils.equals(this.getIdInSource(), theOther.getIdInSource())
-                || !StringUtils.equals(this.getIdNamespace(), theOther.getIdNamespace())
+                || !CdmUtils.nullSafeEqual(this.getIdNamespace(), theOther.getIdNamespace())
                 || !CdmUtils.nullSafeEqual(this.getType(), theOther.getType())
                 || !CdmUtils.nullSafeEqual(this.getCdmSource(), theOther.getCdmSource())
                 || !CdmUtils.nullSafeEqual(this.getLinks(), theOther.getLinks())) {

@@ -27,7 +27,6 @@ import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
  *
  * @author k.luther
  * @since 11.02.2015
- *
  */
 public class UpdateResult implements Serializable{
 

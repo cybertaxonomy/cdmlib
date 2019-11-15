@@ -82,14 +82,13 @@ public class EditGeoServiceUtilities {
         return defaultSpecimenOrObservationTypeColors;
     }
 
-
     private static HashMap<PresenceAbsenceTerm, Color> defaultPresenceAbsenceTermBaseColors = null;
 
     private static List<UUID>  presenceAbsenceTermVocabularyUuids = null;
 
     private static HashMap<PresenceAbsenceTerm, Color> getDefaultPresenceAbsenceTermBaseColors() {
         if(defaultPresenceAbsenceTermBaseColors == null){
-            defaultPresenceAbsenceTermBaseColors = new HashMap<PresenceAbsenceTerm, Color>();
+            defaultPresenceAbsenceTermBaseColors = new HashMap<>();
             defaultPresenceAbsenceTermBaseColors.put(PresenceAbsenceTerm.PRESENT(), Color.decode("0x4daf4a"));
             defaultPresenceAbsenceTermBaseColors.put(PresenceAbsenceTerm.NATIVE(), Color.decode("0x4daf4a"));
             defaultPresenceAbsenceTermBaseColors.put(PresenceAbsenceTerm.NATIVE_DOUBTFULLY_NATIVE(), Color.decode("0x377eb8"));
@@ -102,14 +101,11 @@ public class EditGeoServiceUtilities {
         return defaultPresenceAbsenceTermBaseColors;
     }
 
-
-
     private static final String SUBENTRY_DELIMITER = ",";
     private static final String ENTRY_DELIMITER = ";";
     static final String ID_FROM_VALUES_SEPARATOR = ":";
     static final String VALUE_LIST_ENTRY_SEPARATOR = "|";
     static final String VALUE_SUPER_LIST_ENTRY_SEPARATOR = "||";
-
 
     /**
      * Returns the parameter String for the EDIT geo webservice to create a
@@ -151,7 +147,6 @@ public class EditGeoServiceUtilities {
             String projectToLayer,
             List<Language> languages){
 
-
         /*
          * generateMultipleAreaDataParameters switches between the two possible styles:
          * 1. ad=layername1:area-data||layername2:area-data
@@ -166,7 +161,6 @@ public class EditGeoServiceUtilities {
         String borderWidth = "0.1";
         String borderColorRgb = "";
         String borderDashingPattern = "";
-
 
         //handle empty set
         if(filteredDistributions == null || filteredDistributions.size() == 0){
@@ -367,12 +361,8 @@ public class EditGeoServiceUtilities {
         }
     }
 
-
-
     /**
      * URI encode the given String
-     * @param string
-     * @return
      */
     private static String encode(String string) {
         String encoded = string;

@@ -86,7 +86,8 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 	private ICdmDataSource destination;
 	private Person commentator =  Person.NewTitledInstance("automatic CDM importer");
 
-	protected Class<ICdmImport>[] ioClassList;
+	@SuppressWarnings("rawtypes")
+    protected Class<ICdmImport>[] ioClassList;
 
 	protected ICdmIO[] ioList;
 

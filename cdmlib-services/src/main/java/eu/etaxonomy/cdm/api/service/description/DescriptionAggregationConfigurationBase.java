@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 
 /**
- * Configurator base class for all {@link DescriptionAggregationBase description aggregations}.
+ * Configuration base class for all {@link DescriptionAggregationBase description aggregations}.
  *
  * @author a.mueller
  * @since 03.11.2019

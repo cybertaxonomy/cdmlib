@@ -42,7 +42,6 @@ import eu.etaxonomy.cdm.common.XmlHelp;
  *
  * @author a.mueller
  * @since 11.08.2011
- *
  */
 public class GeoServiceArea {
     @SuppressWarnings("unused")
@@ -71,7 +70,7 @@ public class GeoServiceArea {
         }
     }
 
-    private final TreeSet<SubArea> subAreas = new TreeSet<SubArea>();
+    private final TreeSet<SubArea> subAreas = new TreeSet<>();
     private URL serviceUri;
     private GeoServiceType type;
 
@@ -120,8 +119,6 @@ public class GeoServiceArea {
                 return compareValue;
             }
         }
-
-
     }
 
     public void add(String layer, String field, String value){
@@ -137,32 +134,31 @@ public class GeoServiceArea {
      * @return
      */
     public Map<String, Map<String, List<String>>> getAreasMap(){
-        Map<String, Map<String, List<String>>> result = new HashMap<String, Map<String,List<String>>>();
+        Map<String, Map<String, List<String>>> result = new HashMap<>();
 
         for (SubArea area : subAreas){
             //layer
             Map<String, List<String>> layer = result.get(area.layer);
             if (layer == null ){
-                layer = new HashMap<String, List<String>>();
+                layer = new HashMap<>();
                 result.put(area.layer, layer);
             }
             //field
             List<String> field = layer.get(area.field);
             if (field == null ){
-                field = new ArrayList<String>();
+                field = new ArrayList<>();
                 layer.put(area.field, field);
             }
             //value
             if (! field.contains(area.value)){
                 field.add(area.value);
             }
-
         }
         return result;
     }
 
     public List<SubArea> getAreasList(){
-        List<SubArea> result = new ArrayList<SubArea>();
+        List<SubArea> result = new ArrayList<>();
         for (SubArea area : subAreas){
             result.add(area);
         }
@@ -211,8 +207,6 @@ public class GeoServiceArea {
                 }
                 return result;
             }
-
-
         } catch (JDOMException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
@@ -220,10 +214,6 @@ public class GeoServiceArea {
         }
     }
 
-    /**
-     * @return
-     * @throws XMLStreamException
-     */
     //TODO use JAXB or other marshalling techniques
     public String toXml() throws XMLStreamException{
         XMLStreamWriter writer = null;
@@ -233,7 +223,6 @@ public class GeoServiceArea {
 
             String rootNamespace = MAP_SERVICE_NAMESPACE;
             String rootName = MAP_SERVICE;
-
 
             // create header
             writer.writeStartDocument();
@@ -279,12 +268,9 @@ public class GeoServiceArea {
                 writer.writeEndElement();
             }
         }
-
     }
-
 
     public int size() {
         return this.subAreas.size();
     }
-
 }

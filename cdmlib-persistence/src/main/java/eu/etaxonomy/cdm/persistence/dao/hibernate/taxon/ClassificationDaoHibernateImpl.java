@@ -198,7 +198,8 @@ public class ClassificationDaoHibernateImpl
     @Override
     public List<TaxonNode> listChildrenOf(Taxon taxon, Classification classification, TaxonNode subtree, boolean includeUnpublished,
             Integer pageSize, Integer pageIndex, List<String> propertyPaths){
-    	 Query query = prepareListChildrenOf(taxon, classification, subtree, false, includeUnpublished);
+
+        Query query = prepareListChildrenOf(taxon, classification, subtree, false, includeUnpublished);
 
          setPagingParameter(query, pageSize, pageIndex);
 

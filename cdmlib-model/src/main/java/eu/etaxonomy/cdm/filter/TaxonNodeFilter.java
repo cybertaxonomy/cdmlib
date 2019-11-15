@@ -25,9 +25,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
- *
  * @author a.mueller
- *
  */
 public class TaxonNodeFilter implements Serializable{
 
@@ -399,6 +397,16 @@ public class TaxonNodeFilter implements Serializable{
     }
     public void setOrder(ORDER orderBy) {
         this.orderBy = orderBy;
+    }
+
+// ************************** toString *********************************/
+
+    @Override
+    public String toString() {
+        return "TaxonNodeFilter [subtrees=" + subtrees + ", taxonNodes=" + taxonNodes + ", classifications="
+                + classifications + ", taxa=" + taxa + ", rankMin=" + rankMin + ", rankMax=" + rankMax + ", areaFilter="
+                + areaFilter + ", distributionStatusFilter=" + distributionStatusFilter + ", includeRootNodes="
+                + includeRootNodes + ", includeUnpublished=" + includeUnpublished + ", orderBy=" + orderBy + "]";
     }
 
 }
