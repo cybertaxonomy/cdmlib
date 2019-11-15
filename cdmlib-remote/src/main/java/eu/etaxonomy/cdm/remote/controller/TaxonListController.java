@@ -590,7 +590,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
             @RequestParam(value = "infragenericEpithet", required = false) String infragenericEpithet,
             @RequestParam(value = "specificEpithet", required = false) String specificEpithet,
             @RequestParam(value = "infraspecificEpithet", required = false) String infraspecificEpithet,
-            @RequestParam(value = "authorship", required = false) String authorship,
+            @RequestParam(value = "authorshipCache", required = false) String authorshipCache,
             @RequestParam(value = "rankUuid", required = false) UUID rankUuid,
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
@@ -609,7 +609,8 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
              rank = findRank(rankUuid);
         }
 
-        Pager<TaxonBase> result = service.findTaxaByName(null, genusOrUninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, authorship, rank, pageSize, pageNumber);
+        Pager<TaxonBase> result = service.findTaxaByName(null, genusOrUninomial, infragenericEpithet, specificEpithet, infraspecificEpithet,
+                authorshipCache, rank, pageSize, pageNumber);
 
         return result;
     }

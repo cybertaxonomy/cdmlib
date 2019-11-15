@@ -505,24 +505,26 @@ public class TaxonServiceImpl
 
 
     @Override
-    public Pager<TaxonBase> findTaxaByName(Class<? extends TaxonBase> clazz, String uninomial,	String infragenericEpithet, String specificEpithet,	String infraspecificEpithet, String authorship, Rank rank, Integer pageSize,Integer pageNumber) {
-        long numberOfResults = dao.countTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, authorship, rank);
+    public Pager<TaxonBase> findTaxaByName(Class<? extends TaxonBase> clazz, String uninomial,	String infragenericEpithet, String specificEpithet,
+            String infraspecificEpithet, String authorshipCache, Rank rank, Integer pageSize,Integer pageNumber) {
+        long numberOfResults = dao.countTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, authorshipCache, rank);
 
         List<TaxonBase> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again
-            results = dao.findTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, authorship, rank, pageSize, pageNumber);
+            results = dao.findTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, authorshipCache, rank, pageSize, pageNumber);
         }
 
         return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
     }
 
     @Override
-    public List<TaxonBase> listTaxaByName(Class<? extends TaxonBase> clazz, String uninomial, String infragenericEpithet, String specificEpithet, String infraspecificEpithet, String authorship, Rank rank, Integer pageSize,Integer pageNumber) {
-        long numberOfResults = dao.countTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, authorship, rank);
+    public List<TaxonBase> listTaxaByName(Class<? extends TaxonBase> clazz, String uninomial, String infragenericEpithet, String specificEpithet,
+            String infraspecificEpithet, String authorshipCache, Rank rank, Integer pageSize,Integer pageNumber) {
+        long numberOfResults = dao.countTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, authorshipCache, rank);
 
         List<TaxonBase> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again
-            results = dao.findTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, authorship, rank, pageSize, pageNumber);
+            results = dao.findTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, authorshipCache, rank, pageSize, pageNumber);
         }
 
         return results;

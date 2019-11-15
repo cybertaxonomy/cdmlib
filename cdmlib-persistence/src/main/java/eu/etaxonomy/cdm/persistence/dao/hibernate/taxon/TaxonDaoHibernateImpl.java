@@ -887,8 +887,9 @@ public class TaxonDaoHibernateImpl
     }
 
     @Override
-    public long countTaxaByName(Class<? extends TaxonBase> clazz, String genusOrUninomial, String infraGenericEpithet, String specificEpithet,	String infraSpecificEpithet, String authorship, Rank rank) {
-        checkNotInPriorView("TaxonDaoHibernateImpl.countTaxaByName(Boolean accepted, String genusOrUninomial,	String infraGenericEpithet, String specificEpithet,	String infraSpecificEpithet, String authorship, Rank rank)");
+    public long countTaxaByName(Class<? extends TaxonBase> clazz, String genusOrUninomial, String infraGenericEpithet, String specificEpithet,
+            String infraSpecificEpithet, String authorshipCache, Rank rank) {
+        checkNotInPriorView("TaxonDaoHibernateImpl.countTaxaByName(Boolean accepted, String genusOrUninomial,	String infraGenericEpithet, String specificEpithet,	String infraSpecificEpithet, String authorshipCache, Rank rank)");
         Criteria criteria = null;
 
         criteria = getCriteria(clazz);
@@ -921,10 +922,10 @@ public class TaxonDaoHibernateImpl
             criteria.add(Restrictions.eq("name.infraSpecificEpithet", infraSpecificEpithet));
         }
 
-        if(authorship == null) {
+        if(authorshipCache == null) {
             criteria.add(Restrictions.eq("name.authorshipCache", ""));
-        } else if(!authorship.equals("*")) {
-            criteria.add(Restrictions.eq("name.authorshipCache", authorship));
+        } else if(!authorshipCache.equals("*")) {
+            criteria.add(Restrictions.eq("name.authorshipCache", authorshipCache));
         }
 
         if(rank != null) {

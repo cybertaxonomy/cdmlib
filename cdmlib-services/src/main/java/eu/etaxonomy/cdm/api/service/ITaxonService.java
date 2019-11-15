@@ -56,7 +56,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
-import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -469,7 +468,7 @@ public interface ITaxonService
      * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @return a list of TaxonBase instances
      */
-    public Pager<TaxonBase> findTaxaByName(Class<? extends TaxonBase> clazz, String uninomial, String infragenericEpithet, String specificEpithet, String infraspecificEpithet, String authorship, Rank rank, Integer pageSize, Integer pageNumber);
+    public Pager<TaxonBase> findTaxaByName(Class<? extends TaxonBase> clazz, String uninomial, String infragenericEpithet, String specificEpithet, String infraspecificEpithet, String authorshipCache, Rank rank, Integer pageSize, Integer pageNumber);
 
     /**
      * Returns a list of TaxonBase instances where the
@@ -482,11 +481,13 @@ public interface ITaxonService
      * @param specificEpithet
      * @param infraspecificEpithet
      * @param rank
+     * @param authorshipCache
      * @param pageSize The maximum number of taxa returned (can be null for all matching taxa)
      * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @return a List of TaxonBase instances
      */
-    public List<TaxonBase> listTaxaByName(Class<? extends TaxonBase> clazz, String uninomial, String infragenericEpithet, String specificEpithet, String infraspecificEpithet, String authorship, Rank rank, Integer pageSize, Integer pageNumber);
+    public List<TaxonBase> listTaxaByName(Class<? extends TaxonBase> clazz, String uninomial, String infragenericEpithet, String specificEpithet,
+            String infraspecificEpithet, String authorshipCache, Rank rank, Integer pageSize, Integer pageNumber);
 
     /**
      * Returns a list of IdentifiableEntity instances (in particular, TaxonName and TaxonBase instances)
@@ -794,7 +795,7 @@ public interface ITaxonService
      */
     public long countSynonyms(boolean onlyAttachedToTaxon);
 
-    
+
 
     public Map<String, List<TaxonName>> findIdenticalTaxonNameIds(Reference sec1, Reference sec2, List<String> propertyPaths);
 

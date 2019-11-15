@@ -140,9 +140,11 @@ public interface ITaxonDao
      * @param specificEpithet
      * @param infraspecificEpithet
      * @param rank
+     * @param authorshipCache
      * @return a count of TaxonBase instances
      */
-    public long countTaxaByName(Class <? extends TaxonBase> clazz, String uninomial, String infragenericEpithet,String specificEpithet, String infraspecificEpithet, String authorship, Rank rank);
+    public long countTaxaByName(Class <? extends TaxonBase> clazz, String uninomial, String infragenericEpithet,String specificEpithet,
+            String infraspecificEpithet, String authorshipCache, Rank rank);
 
     /**
      * Returns a list of TaxonBase instances where the
@@ -161,11 +163,13 @@ public interface ITaxonDao
      * @param specificEpithet
      * @param infraspecificEpithet
      * @param rank
+     * @param authorshipCache
      * @param pageSize The maximum number of taxa returned (can be null for all matching taxa)
      * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @return a list of TaxonBase instances
      */
-    public List<TaxonBase> findTaxaByName(Class<? extends TaxonBase> clazz, String uninomial, String infragenericEpithet, String specificEpithet, String infraspecificEpithet, String authorship, Rank rank, Integer pageSize, Integer pageNumber);
+    public List<TaxonBase> findTaxaByName(Class<? extends TaxonBase> clazz, String uninomial, String infragenericEpithet, String specificEpithet,
+            String infraspecificEpithet, String authorshipCache, Rank rank, Integer pageSize, Integer pageNumber);
 
     /**
      * Find taxa by searching for Taxa and Synonyms where the
