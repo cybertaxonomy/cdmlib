@@ -1668,8 +1668,8 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             }
             /*TODO: #6484 Neither isRetrieveIndirectlyAssociatedSpecimens() nor the AssignmentStatus
              * is currently reflected in the HQL query. So using these in the count method will
-             * significantly slow down this method as we have to retreive the entities instead of
-             * the just the amount.
+             * significantly slow down this method as we have to retrieve the entities instead of
+             * just the amount.
              */
             if(occurrenceConfig.isRetrieveIndirectlyAssociatedSpecimens() || !occurrenceConfig.getAssignmentStatus().equals(AssignmentStatus.ALL_SPECIMENS)){
                 List<SpecimenOrObservationBase> occurrences = new ArrayList<>();
