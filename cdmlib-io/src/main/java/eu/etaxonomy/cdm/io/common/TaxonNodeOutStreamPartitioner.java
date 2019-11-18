@@ -161,6 +161,8 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase>
 	private int currentPartition;
 
 	private TransactionStatus txStatus;
+	private Map<TaxonNode, TransactionStatus> txMap = new HashMap<>();
+	private TransactionStatus txStatus_old;
 
     private boolean readOnly = true;
 
@@ -270,6 +272,8 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase>
 	    commitTransaction();
 	}
 
+
+	int i = 0;
     private List<TaxonNode> getNextPartition() {
         List<Integer> partList = new ArrayList<>();
 
@@ -298,14 +302,24 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase>
         return partition;
     }
 
+    public void commit(TaxonNode node){
+        txMap.remove(node);
+    }
+
     private void commitTransaction() {
-        if (!txStatus.isCompleted()){
+//        TransactionStatus txStatus = null;
+//        if(this.txStatus.size()>0){
+//            txStatus =  this.txStatus.poll();
+//        }
+//        TransactionStatus txStatus = txStatus_old;
+        if (txStatus != null && !txStatus.isCompleted()){
             if (this.readOnly){
                 repository.rollbackTransaction(txStatus);
             }else{
                 repository.commitTransaction(txStatus);
             }
         }
+//        txStatus_old = this.txStatus;
     }
 
     private TransactionStatus startTransaction() {
