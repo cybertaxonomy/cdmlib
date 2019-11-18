@@ -45,6 +45,8 @@ import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.Identifier;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
@@ -1358,40 +1360,104 @@ public class CdmLightClassificationExport
      * @param state
      * @param name
      */
-    private void handleIdentifier(CdmLightExportState state, TaxonName name) {
+    private void handleIdentifier(CdmLightExportState state, CdmBase cdmBase) {
         CdmLightExportTable table = CdmLightExportTable.IDENTIFIER;
         String[] csvLine;
         try {
-            Set<String> IPNIidentifiers = name.getIdentifiers(DefinedTerm.IDENTIFIER_NAME_IPNI());
-            Set<String> tropicosIdentifiers = name.getIdentifiers(DefinedTerm.IDENTIFIER_NAME_TROPICOS());
-            Set<String> WFOIdentifiers = name.getIdentifiers(DefinedTerm.uuidWfoNameIdentifier);
-            if (!IPNIidentifiers.isEmpty()) {
-                csvLine = new String[table.getSize()];
-                csvLine[table.getIndex(CdmLightExportTable.NAME_FK)] = getId(state, name);
-                csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = IPNI_NAME_IDENTIFIER;
-                csvLine[table.getIndex(CdmLightExportTable.EXTERNAL_NAME_IDENTIFIER)] = extractIdentifier(
-                        IPNIidentifiers);
-                state.getProcessor().put(table, name, csvLine);
+            if (cdmBase instanceof TaxonName){
+                TaxonName name = (TaxonName)cdmBase;
+
+                Set<String> IPNIidentifiers = name.getIdentifiers(DefinedTerm.IDENTIFIER_NAME_IPNI());
+                Set<String> tropicosIdentifiers = name.getIdentifiers(DefinedTerm.IDENTIFIER_NAME_TROPICOS());
+                Set<String> WFOIdentifiers = name.getIdentifiers(DefinedTerm.uuidWfoNameIdentifier);
+                if (!IPNIidentifiers.isEmpty()) {
+                    csvLine = new String[table.getSize()];
+                    csvLine[table.getIndex(CdmLightExportTable.FK)] = getId(state, name);
+                    csvLine[table.getIndex(CdmLightExportTable.REF_TABLE)] = "ScientificName";
+                    csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = IPNI_NAME_IDENTIFIER;
+                    csvLine[table.getIndex(CdmLightExportTable.EXTERNAL_NAME_IDENTIFIER)] = extractIdentifier(
+                            IPNIidentifiers);
+                    state.getProcessor().put(table, name, csvLine);
+                }
+                if (!tropicosIdentifiers.isEmpty()) {
+                    csvLine = new String[table.getSize()];
+                    csvLine[table.getIndex(CdmLightExportTable.FK)] = getId(state, name);
+                    csvLine[table.getIndex(CdmLightExportTable.REF_TABLE)] = "ScientificName";
+                    csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = TROPICOS_NAME_IDENTIFIER;
+                    csvLine[table.getIndex(CdmLightExportTable.EXTERNAL_NAME_IDENTIFIER)] = extractIdentifier(
+                            tropicosIdentifiers);
+                    state.getProcessor().put(table, name, csvLine);
+                }
+                if (!WFOIdentifiers.isEmpty()) {
+                    csvLine = new String[table.getSize()];
+                    csvLine[table.getIndex(CdmLightExportTable.FK)] = getId(state, name);
+                    csvLine[table.getIndex(CdmLightExportTable.REF_TABLE)] = "ScientificName";
+                    csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = WFO_NAME_IDENTIFIER;
+                    csvLine[table.getIndex(CdmLightExportTable.EXTERNAL_NAME_IDENTIFIER)] = extractIdentifier(
+                            WFOIdentifiers);
+                    state.getProcessor().put(table, name, csvLine);
+                }
+            }else{
+                if (cdmBase instanceof IdentifiableEntity){
+                    IdentifiableEntity identifiableEntity = (IdentifiableEntity) cdmBase;
+                    List<Identifier> identifiers = identifiableEntity.getIdentifiers();
+                    String tableName = null;
+                    if (cdmBase instanceof Reference){
+                        tableName = "Reference";
+                    }else if (cdmBase instanceof SpecimenOrObservationBase){
+                        tableName = "Specimen";
+                    }else if (cdmBase instanceof Taxon){
+                        tableName = "Taxon";
+                    }else if (cdmBase instanceof Synonym){
+                        tableName = "Synonym";
+                    }else if (cdmBase instanceof TeamOrPersonBase){
+                        tableName = "PersonOrTeam";
+                    }
+                    for (Identifier identifier: identifiers){
+                        csvLine = new String[table.getSize()];
+                        csvLine[table.getIndex(CdmLightExportTable.FK)] = getId(state, cdmBase);
+
+                        if (tableName != null){
+                            csvLine[table.getIndex(CdmLightExportTable.REF_TABLE)] = tableName;
+                            csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = identifier.getType().getLabel();
+                            csvLine[table.getIndex(CdmLightExportTable.EXTERNAL_NAME_IDENTIFIER)] = identifier.getIdentifier();
+                            state.getProcessor().put(table, cdmBase, csvLine);
+                        }
+                    }
+                    if (cdmBase instanceof Reference ){
+                        Reference ref = (Reference)cdmBase;
+                        if (ref.getDoi() != null){
+                            csvLine = new String[table.getSize()];
+                            csvLine[table.getIndex(CdmLightExportTable.FK)] = getId(state, cdmBase);
+                            csvLine[table.getIndex(CdmLightExportTable.REF_TABLE)] = tableName;
+                            csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = "DOI";
+                            csvLine[table.getIndex(CdmLightExportTable.EXTERNAL_NAME_IDENTIFIER)] = ref.getDoiString();
+                            state.getProcessor().put(table, cdmBase, csvLine);
+                        }
+
+                    }
+
+                    if (cdmBase instanceof TeamOrPersonBase){
+                        TeamOrPersonBase person= HibernateProxyHelper.deproxy(cdmBase, TeamOrPersonBase.class);
+                        if (person instanceof Person &&  ((Person)person).getOrcid() != null){
+                            csvLine = new String[table.getSize()];
+                            csvLine[table.getIndex(CdmLightExportTable.FK)] = getId(state, cdmBase);
+                            csvLine[table.getIndex(CdmLightExportTable.REF_TABLE)] = tableName;
+                            csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = "ORCID";
+                            csvLine[table.getIndex(CdmLightExportTable.EXTERNAL_NAME_IDENTIFIER)]=  ((Person)person).getOrcid().asURI();
+                            state.getProcessor().put(table, cdmBase, csvLine);
+                        }
+
+                    }
+
+
+                }
             }
-            if (!tropicosIdentifiers.isEmpty()) {
-                csvLine = new String[table.getSize()];
-                csvLine[table.getIndex(CdmLightExportTable.NAME_FK)] = getId(state, name);
-                csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = TROPICOS_NAME_IDENTIFIER;
-                csvLine[table.getIndex(CdmLightExportTable.EXTERNAL_NAME_IDENTIFIER)] = extractIdentifier(
-                        tropicosIdentifiers);
-                state.getProcessor().put(table, name, csvLine);
-            }
-            if (!WFOIdentifiers.isEmpty()) {
-                csvLine = new String[table.getSize()];
-                csvLine[table.getIndex(CdmLightExportTable.NAME_FK)] = getId(state, name);
-                csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = WFO_NAME_IDENTIFIER;
-                csvLine[table.getIndex(CdmLightExportTable.EXTERNAL_NAME_IDENTIFIER)] = extractIdentifier(
-                        WFOIdentifiers);
-                state.getProcessor().put(table, name, csvLine);
-            }
+
         } catch (Exception e) {
             state.getResult().addException(e, "An unexpected error occurred when handling identifiers for "
-                    + cdmBaseStr(name) + ": " + e.getMessage());
+                    + cdmBaseStr(cdmBase) + ": " + e.getMessage());
+            e.printStackTrace();
 
         }
     }
@@ -1469,6 +1535,7 @@ public class CdmLightClassificationExport
                 return;
             }
             state.addAuthorToStore(author);
+            handleIdentifier(state, author);
             CdmLightExportTable table = CdmLightExportTable.NOMENCLATURAL_AUTHOR;
             String[] csvLine = new String[table.getSize()];
             CdmLightExportTable tableAuthorRel = CdmLightExportTable.NOMENCLATURAL_AUTHOR_TEAM_RELATION;
@@ -1841,6 +1908,8 @@ public class CdmLightClassificationExport
             state.addReferenceToStore(reference);
             CdmLightExportTable table = CdmLightExportTable.REFERENCE;
             reference = HibernateProxyHelper.deproxy(reference, Reference.class);
+
+            handleIdentifier(state, reference);
             String[] csvLine = new String[table.getSize()];
             csvLine[table.getIndex(CdmLightExportTable.REFERENCE_ID)] = getId(state, reference);
             // TODO short citations correctly
@@ -1893,6 +1962,9 @@ public class CdmLightClassificationExport
             csvLine[table.getIndex(CdmLightExportTable.REF_TYPE)] = reference.getType().getKey();
 
             state.getProcessor().put(table, reference, csvLine);
+
+
+
         } catch (Exception e) {
             state.getResult().addException(e, "An unexpected error occurred when handling reference "
                     + cdmBaseStr(reference) + ": " + e.getMessage());
