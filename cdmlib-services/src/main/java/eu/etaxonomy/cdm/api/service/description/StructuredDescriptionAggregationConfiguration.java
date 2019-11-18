@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.api.service.description;
 
+import java.util.List;
+
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
@@ -34,20 +36,20 @@ public class StructuredDescriptionAggregationConfiguration
 
     public static StructuredDescriptionAggregationConfiguration NewInstance(
             TaxonNodeFilter filter, IProgressMonitor monitor){
-        return new StructuredDescriptionAggregationConfiguration(filter, monitor, null, null);
+        return new StructuredDescriptionAggregationConfiguration(filter, null, monitor, null, null);
     }
 
 
     public static StructuredDescriptionAggregationConfiguration NewInstance(TaxonNodeFilter filter,
             IProgressMonitor monitor, Boolean includeDefault, Boolean includeLiterature){
-        return new StructuredDescriptionAggregationConfiguration(filter, monitor, includeDefault, includeLiterature);
+        return new StructuredDescriptionAggregationConfiguration(filter, null, monitor, includeDefault, includeLiterature);
     }
 
 // ******************* CONSTRUCTOR ***********************************/
 
     protected StructuredDescriptionAggregationConfiguration(TaxonNodeFilter filter,
-            IProgressMonitor monitor, Boolean includeDefault, Boolean includeLiterature) {
-        super(filter, monitor);
+            List<AggregationMode> aggregationModes, IProgressMonitor monitor, Boolean includeDefault, Boolean includeLiterature) {
+        super(filter, monitor, aggregationModes);
         if (includeDefault != null){
             this.includeDefault = includeDefault;
         }
@@ -65,9 +67,12 @@ public class StructuredDescriptionAggregationConfiguration
 
 // *********************** GETTER / SETTER ****************************/
 
-
+    //TODO remove
+//    public boolean isAggregateToHigherRanks() {
+//        return getAggregationModes().contains(AggregationMode.ToParent);
+//    }
     public boolean isAggregateToHigherRanks() {
-        return aggregateToHigherRanks;
+        return this.aggregateToHigherRanks;
     }
     public void setAggregateToHigherRanks(boolean aggregateToHigherRanks) {
         this.aggregateToHigherRanks = aggregateToHigherRanks;

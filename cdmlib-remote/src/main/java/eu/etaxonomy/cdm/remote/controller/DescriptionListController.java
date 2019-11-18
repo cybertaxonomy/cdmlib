@@ -158,7 +158,8 @@ public class DescriptionListController
      */
     @RequestMapping(value = { "accumulateDistributions" }, method = RequestMethod.GET)
     public ModelAndView doAccumulateDistributions(
-            @RequestParam(value= "mode", required = true) final AggregationMode mode,
+            @RequestParam(value= "mode", required = true) AggregationMode mode,
+            @RequestParam(value= "mode2", required = true) AggregationMode mode2,
             @RequestParam(value = "targetAreaLevel", required = true) UUID targetAreaLevelUuid,
             @RequestParam(value = "frontendBaseUrl", required = false) String frontendBaseUrl,
             @RequestParam(value = "priority", required = false, defaultValue="3") Integer priority,
@@ -196,8 +197,10 @@ public class DescriptionListController
                     try {
                         TaxonNodeFilter filter = TaxonNodeFilter.NewInstance(classificationUuids, subtreeUuids,
                                 taxonNodeUuids, taxonUuids, null, lowerRank, upperRank);
+                        List<AggregationMode> modes = Arrays.asList(new AggregationMode[]{mode, mode2});
+                        modes.remove(null);
                         DistributionAggregationConfiguration config = DistributionAggregationConfiguration.NewInstance(
-                                mode, areaPager.getRecords(), filter, progressMonitorController.getMonitor(transmissionEngineMonitorUuid));
+                                modes, areaPager.getRecords(), filter, progressMonitorController.getMonitor(transmissionEngineMonitorUuid));
                         DistributionAggregation distrAggr = new DistributionAggregation();
                         distrAggr.invoke(config, repository);
                     } catch (JvmLimitsException e) {

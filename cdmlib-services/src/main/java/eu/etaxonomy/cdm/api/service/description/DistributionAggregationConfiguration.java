@@ -30,22 +30,20 @@ public class DistributionAggregationConfiguration
 
     private static final long serialVersionUID = 2542246141660930545L;
 
-    private AggregationMode aggregationMode;
-
     private List<NamedArea> superAreas;
 
     private TermCollection<PresenceAbsenceTerm, TermNode> statusOrder;
 
 // **************************************** FACTORY ************************************/
 
-    public static DistributionAggregationConfiguration NewInstance(AggregationMode aggregationMode, List<NamedArea> superAreas,
+    public static DistributionAggregationConfiguration NewInstance(List<AggregationMode> aggregationModes, List<NamedArea> superAreas,
             TaxonNodeFilter filter, IProgressMonitor monitor){
-        return new DistributionAggregationConfiguration(aggregationMode, superAreas, filter, monitor);
+        return new DistributionAggregationConfiguration(aggregationModes, superAreas, filter, monitor);
     }
 
-    public static DistributionAggregationConfiguration NewInstance(AggregationMode aggregationMode, List<NamedArea> superAreas,
+    public static DistributionAggregationConfiguration NewInstance(List<AggregationMode> aggregationModes, List<NamedArea> superAreas,
             TaxonNodeFilter filter, TermTree<PresenceAbsenceTerm> statusOrder,  IProgressMonitor monitor){
-        DistributionAggregationConfiguration result = new DistributionAggregationConfiguration(aggregationMode, superAreas, filter, monitor);
+        DistributionAggregationConfiguration result = new DistributionAggregationConfiguration(aggregationModes, superAreas, filter, monitor);
         result.setStatusOrder(statusOrder);
         return result;
     }
@@ -53,10 +51,9 @@ public class DistributionAggregationConfiguration
 
 // ************************ CONSTRUCTOR *****************************/
 
-    private DistributionAggregationConfiguration(AggregationMode aggregationMode, List<NamedArea> superAreas,
+    private DistributionAggregationConfiguration(List<AggregationMode> aggregationModes, List<NamedArea> superAreas,
             TaxonNodeFilter filter, IProgressMonitor monitor) {
-        super(filter, monitor);
-        this.aggregationMode = aggregationMode;
+        super(filter, monitor, aggregationModes);
         this.superAreas = superAreas;
     }
 
@@ -68,13 +65,6 @@ public class DistributionAggregationConfiguration
     }
 
 // ******************* GETTER / SETTER ****************************/
-
-    public AggregationMode getAggregationMode() {
-        return aggregationMode;
-    }
-    public void setAggregationMode(AggregationMode aggregationMode) {
-        this.aggregationMode = aggregationMode;
-    }
 
     public List<NamedArea> getSuperAreas() {
         return superAreas;

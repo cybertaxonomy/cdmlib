@@ -9,7 +9,9 @@
 package eu.etaxonomy.cdm.api.service.description;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.List;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
@@ -30,6 +32,8 @@ public abstract class DescriptionAggregationConfigurationBase<TASK extends Descr
     private SourceMode toParentSourceMode = SourceMode.DESCRIPTION;
     private SourceMode withinTaxonSourceMode = SourceMode.ALL_SAMEVALUE;
 
+    private List<AggregationMode> aggregationModes;
+
     private boolean doClearExistingDescription = false;
     private boolean doReuseDescriptions = false;
     private boolean doReuseDescriptionElements = false;
@@ -43,15 +47,24 @@ public abstract class DescriptionAggregationConfigurationBase<TASK extends Descr
 // ************************** ENUMS ******************************/
 
     public enum AggregationMode {
-        byAreas,
-        byRanks,
-        byAreasAndRanks;
-        public boolean isByRank() {
-           return this==byRanks || this == byAreasAndRanks;
+        WithinTaxon,
+        ToParent;
+//        public boolean isByRank() {
+//           return this==byRanks || this == byAreasAndRanks;
+//        }
+//        public boolean isByArea() {
+//            return this==byAreas || this == byAreasAndRanks;
+//         }
+        public static List<AggregationMode> byAreasAndRanks(){
+            return Arrays.asList(new AggregationMode[]{AggregationMode.WithinTaxon, AggregationMode.ToParent});
         }
-        public boolean isByArea() {
-            return this==byAreas || this == byAreasAndRanks;
-         }
+        public static List<AggregationMode> byAreas(){
+            return Arrays.asList(new AggregationMode[]{AggregationMode.WithinTaxon});
+        }
+        public static List<AggregationMode> byRanks(){
+            return Arrays.asList(new AggregationMode[]{AggregationMode.ToParent});
+        }
+
     }
 
     public enum SourceMode {
@@ -63,8 +76,13 @@ public abstract class DescriptionAggregationConfigurationBase<TASK extends Descr
 
 //******************* CONSTRUCTOR **********************/
 
-    protected DescriptionAggregationConfigurationBase(TaxonNodeFilter filter, IProgressMonitor monitor) {
+    protected DescriptionAggregationConfigurationBase(TaxonNodeFilter filter,
+            IProgressMonitor monitor, List<AggregationMode> aggregationModes) {
         this.taxonNodeFilter = filter;
+        this.aggregationModes = aggregationModes;
+        if(aggregationModes == null){
+            aggregationModes = Arrays.asList(new AggregationMode[]{AggregationMode.WithinTaxon, AggregationMode.ToParent});
+        }
         this.monitor = monitor;
     }
 
@@ -73,6 +91,13 @@ public abstract class DescriptionAggregationConfigurationBase<TASK extends Descr
     public abstract TASK getTaskInstance();
 
 // ****************** GETTER / SETTER *****************/
+
+    public List<AggregationMode> getAggregationModes() {
+        return aggregationModes;
+    }
+    public void setAggregationMode(List<AggregationMode> aggregationModes) {
+        this.aggregationModes = aggregationModes;
+    }
 
     public IProgressMonitor getMonitor() {
         return monitor;

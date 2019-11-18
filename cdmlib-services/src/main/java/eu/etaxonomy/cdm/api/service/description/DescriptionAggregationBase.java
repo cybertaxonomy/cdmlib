@@ -8,6 +8,12 @@
 */
 package eu.etaxonomy.cdm.api.service.description;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.log4j.Logger;
 import org.hibernate.FlushMode;
 import org.hibernate.Session;
@@ -24,12 +30,26 @@ import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.UpdateResult;
+import eu.etaxonomy.cdm.api.service.description.DescriptionAggregationConfigurationBase.AggregationMode;
+import eu.etaxonomy.cdm.common.DynamicBatch;
 import eu.etaxonomy.cdm.common.JvmLimitsException;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.NullProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
+import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
+import eu.etaxonomy.cdm.filter.TaxonNodeFilter.ORDER;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
+import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * A common base class to run aggregation tasks on descriptive data.
@@ -45,9 +65,22 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
 
     public static final Logger logger = Logger.getLogger(DescriptionAggregationBase.class);
 
+    private static final long BATCH_MIN_FREE_HEAP = 800  * 1024 * 1024;
+    /**
+     * ratio of the initially free heap which should not be used
+     * during the batch processing. This amount of the heap is reserved
+     * for the flushing of the session and to the index
+     */
+    private static final double BATCH_FREE_HEAP_RATIO = 0.9;
+//    private static final int BATCH_SIZE_BY_AREA = 1000;
+//    private static final int BATCH_SIZE_BY_RANK = 500;
+    private static final int BATCH_SIZE_BY_TAXON = 200;
+
     private ICdmRepository repository;
     private CONFIG config;
     private UpdateResult result;
+
+    private long batchMinFreeHeap = BATCH_MIN_FREE_HEAP;
 
 
     public final UpdateResult invoke(CONFIG config, ICdmRepository repository) throws JvmLimitsException{
@@ -56,15 +89,206 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
     }
 
     protected UpdateResult doInvoke() throws JvmLimitsException {
-        UpdateResult resultTaxon = invokeOnSingleTaxon();
 
-        UpdateResult resultRank = invokeHigherRankAggregation();
+        //TODO FIXME use UpdateResult
+        UpdateResult result = new UpdateResult();
 
-        UpdateResult result = merge(resultTaxon, resultRank);
+        double start = System.currentTimeMillis();
+
+        // only for debugging:
+        //logger.setLevel(Level.TRACE); // TRACE will slow down a lot since it forces loading all term representations
+        //Logger.getLogger("org.hibernate.SQL").setLevel(Level.DEBUG);
+        logger.info("Hibernate JDBC Batch size: " +  getSession().getSessionFactory().getSessionFactoryOptions().getJdbcBatchSize());
+
+        TaxonNodeFilter filter = getConfig().getTaxonNodeFilter();
+        filter.setOrder(ORDER.TREEINDEX_DESC); //DESC guarantees that child taxa are aggregated before parent
+        filter.setIncludeRootNodes(false);  //root nodes do not make sense for aggregation
+
+        Long countTaxonNodes = getTaxonNodeService().count(filter);
+        int aggregationWorkTicks = countTaxonNodes.intValue();
+        int getIdListTicks = 1;
+        int preAccumulateTicks = 1;
+        beginTask("Accumulating " + pluralDataType(), (aggregationWorkTicks) + getIdListTicks + preAccumulateTicks);
+
+        subTask("Get taxon node ID list");
+        List<Integer> taxonNodeIdList = getTaxonNodeService().idList(filter);
+
+        worked(getIdListTicks);
+
+        preAccumulate();
+
+        workedAndNewTask(preAccumulateTicks, "Accumulating "+pluralDataType()+" per taxon for taxon filter " + filter.toString());
+
+        double startAccumulate = System.currentTimeMillis();
+
+        //TODO AM move to invokeOnSingleTaxon()
+        IProgressMonitor subMonitor = new SubProgressMonitor(getMonitor(), aggregationWorkTicks);
+        accumulate(taxonNodeIdList, subMonitor);
+
+        double end = System.currentTimeMillis();
+        logger.info("Time elapsed for accumulate only(): " + (end - startAccumulate) / (1000) + "s");
+        logger.info("Time elapsed for invoking task(): " + (end - start) / (1000) + "s");
+
+        done();
 
         return result;
+    }
+
+    protected void accumulate(List<Integer> taxonNodeIdList, IProgressMonitor subMonitor)  throws JvmLimitsException {
+
+        DynamicBatch batch = new DynamicBatch(BATCH_SIZE_BY_TAXON, batchMinFreeHeap);
+        batch.setRequiredFreeHeap(BATCH_FREE_HEAP_RATIO);
+        //TODO AM from aggByRank          batch.setMaxAllowedGcIncreases(10);
+
+        TransactionStatus txStatus = startTransaction(false);
+
+        // visit all accepted taxa
+        subMonitor.beginTask("Work on taxa.", taxonNodeIdList.size());
+//      subMonitor.subTask("Accumulating bottom up " + taxonNodeIdList.size() + " taxa.");
+
+        //TODO FIXME this was a Taxon not a TaxonNode id list
+        Iterator<Integer> taxonIdIterator = taxonNodeIdList.iterator();
+
+        while (taxonIdIterator.hasNext() || batch.hasUnprocessedItems()) {
+
+            if(txStatus == null) {
+                // transaction has been committed at the end of this batch, start a new one
+                txStatus = startTransaction(false);
+            }
+
+            // load taxa for this batch
+            List<Integer> taxonIds = batch.nextItems(taxonIdIterator);
+//            logger.debug("accumulateByArea() - taxon " + taxonPager.getFirstRecord() + " to " + taxonPager.getLastRecord() + " of " + taxonPager.getCount() + "]");
+
+            //TODO AM adapt init-strat to taxonnode if it stays a taxon node list
+            List<OrderHint> orderHints = new ArrayList<>();
+            orderHints.add(OrderHint.BY_TREE_INDEX_DESC);
+            List<TaxonNode> taxonNodes = getTaxonNodeService().loadByIds(taxonIds, orderHints, descriptionInitStrategy());
+
+            // iterate over the taxa and accumulate areas
+            // start processing the new batch
+
+            for(TaxonNode taxonNode : taxonNodes) {
+                subMonitor.subTask("Accumulating " + taxonNode.getTaxon().getTitleCache());
+
+                accumulateSingleTaxon(taxonNode);
+                batch.incrementCounter();
+
+                subMonitor.worked(1);
+
+                //TODO handle canceled better if needed
+                if(subMonitor.isCanceled()){
+                    return;
+                }
+
+                if(!batch.isWithinJvmLimits()) {
+                    break; // flushAndClear and start with new batch
+                }
+            } // next taxon
+
+//            flushAndClear();
+
+            // commit for every batch, otherwise the persistent context
+            // may grow too much and eats up all the heap
+            commitTransaction(txStatus);
+            txStatus = null;
+
+
+            // flushing the session and to the index (flushAndClear() ) can impose a
+            // massive heap consumption. therefore we explicitly do a check after the
+            // flush to detect these situations and to reduce the batch size.
+            if(batch.getJvmMonitor().getGCRateSiceLastCheck() > 0.05) {
+                batch.reduceSize(0.5);
+            }
+
+        } // next batch of taxa
+
+        subMonitor.done();
+    }
+
+    protected interface ResultHolder{
 
     }
+
+    protected void accumulateSingleTaxon(TaxonNode taxonNode){
+
+        Taxon taxon = CdmBase.deproxy(taxonNode.getTaxon());
+        if(logger.isDebugEnabled()){
+            logger.debug("accumulate - taxon :" + taxonToString(taxon));
+        }
+
+        TaxonDescription targetDescription = getAggregatedDescription(taxon);
+        ResultHolder resultHolder = createResultHolder();
+        for (AggregationMode mode : getConfig().getAggregationModes()){
+            if (mode == AggregationMode.ToParent){
+                Set<TaxonDescription> excludedDescriptions = new HashSet<>();
+//            excludedDescriptions.add(targetDescription); //not possible because aggregating from children
+                aggregateToParentTaxon(taxonNode, resultHolder, excludedDescriptions);
+            }
+            if (mode == AggregationMode.WithinTaxon){
+                Set<TaxonDescription> excludedDescriptions = new HashSet<>();
+                excludedDescriptions.add(targetDescription);
+                aggregateWithinSingleTaxon(taxon, resultHolder, excludedDescriptions);
+            }
+        }
+        addAggregationResultToDescription(targetDescription, resultHolder);
+    }
+
+    protected abstract void addAggregationResultToDescription(TaxonDescription targetDescription,
+            ResultHolder resultHolder);
+
+    protected abstract void aggregateToParentTaxon(TaxonNode taxonNode, ResultHolder resultHolder,
+            Set<TaxonDescription> excludedDescriptions);
+
+    protected abstract void aggregateWithinSingleTaxon(Taxon taxon, ResultHolder resultHolder,
+            Set<TaxonDescription> excludedDescriptions);
+
+    protected abstract ResultHolder createResultHolder();
+
+    /**
+     * Either finds an existing taxon description of the given taxon or creates a new one.
+     * If the doClear is set all existing description elements will be cleared.
+     *
+     * @param taxon
+     * @param doClear will remove all existing Distributions if the taxon already
+     *     has a description of type {@link DescriptionType#AGGREGATED_DISTRIBUTION}
+     *     (or a MarkerType COMPUTED for historical reasons, will be removed in future)
+     * @return
+     */
+    private TaxonDescription getAggregatedDescription(Taxon taxon) {
+
+        // find existing one
+        for (TaxonDescription description : taxon.getDescriptions()) {
+            if (hasDescriptionType(description)){
+                logger.debug("reusing computed description for " + taxonToString(taxon));
+                setDescriptionTitle(description, taxon);  //maybe we want to redefine the title
+                return description;
+            }
+        }
+
+        // create a new one
+        return createNewDescription(taxon);
+    }
+
+    protected abstract TaxonDescription createNewDescription(Taxon taxon);
+
+    protected abstract boolean hasDescriptionType(TaxonDescription description);
+
+    protected abstract void setDescriptionTitle(TaxonDescription description, Taxon taxon) ;
+
+    protected String taxonToString(TaxonBase<?> taxon) {
+        if(logger.isTraceEnabled()) {
+            return taxon.getTitleCache();
+        } else {
+            return taxon.toString();
+        }
+    }
+
+    protected abstract List<String> descriptionInitStrategy();
+
+    protected abstract void preAccumulate();
+
+    protected abstract String pluralDataType();
 
     private void init(CONFIG config, ICdmRepository repository) {
         this.repository = repository;
@@ -75,19 +299,36 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
         result = new UpdateResult();
     }
 
-
-    //TODO or should we handle all in *one* UpdateResult
-    private UpdateResult merge(UpdateResult resultTaxon, UpdateResult resultRank) {
-        //TODO merge
-        return null;
+    protected void addSourcesDeduplicated(Set<DescriptionElementSource> target, Set<DescriptionElementSource> sourcesToAdd) {
+        for(DescriptionElementSource source : sourcesToAdd) {
+            boolean contained = false;
+            if (!hasValidSourceType(source)&& !isAggregationSource(source)){  //only aggregate sources of defined source types
+                continue;
+            }
+            for(DescriptionElementSource existingSource: target) {
+                if(existingSource.equalsByShallowCompare(source)) {
+                    contained = true;
+                    break;
+                }
+            }
+            if(!contained) {
+                try {
+                    target.add((DescriptionElementSource)source.clone());
+                } catch (CloneNotSupportedException e) {
+                    // should never happen
+                    throw new RuntimeException(e);
+                }
+            }
+        }
     }
 
-    protected abstract UpdateResult invokeOnSingleTaxon();
+    private boolean hasValidSourceType(DescriptionElementSource source) {
+        return getConfig().getAggregatingSourceTypes().contains(source.getType());
+    }
 
-    protected abstract UpdateResult removeExistingAggregationOnTaxon();
-
-    //TODO abstract maybe not needed
-    protected abstract UpdateResult invokeHigherRankAggregation();
+    private boolean isAggregationSource(DescriptionElementSource source) {
+        return source.getType().equals(OriginalSourceType.Aggregation) && source.getCdmSource() != null;
+    }
 
 // ******************** GETTER / SETTER *************************/
 
@@ -176,6 +417,10 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
         getMonitor().beginTask(name, totalWork);
     }
 
+    public void worked(int work){
+        getMonitor().worked(work);
+    }
+
     public void workedAndNewTask(int work, String newTask){
         getMonitor().worked(work);
         getMonitor().subTask(newTask);
@@ -188,4 +433,9 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
     public void done(){
         getMonitor().done();
     }
+
+    public void setBatchMinFreeHeap(long batchMinFreeHeap) {
+        this.batchMinFreeHeap = batchMinFreeHeap;
+    }
+
 }

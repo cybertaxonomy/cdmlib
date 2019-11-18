@@ -114,7 +114,7 @@ public class TestAggregations {
 		TaxonNodeFilter filter = TaxonNodeFilter.NewSubtreeInstance(uuidArnoseris);
 
 		DistributionAggregationConfiguration config = DistributionAggregationConfiguration
-		        .NewInstance(AggregationMode.byAreasAndRanks, areaPager.getRecords(), filter, monitor);
+		        .NewInstance(AggregationMode.byAreasAndRanks(), areaPager.getRecords(), filter, monitor);
 		config.setToParentSourceMode(SourceMode.DESCRIPTION);
         config.setWithinTaxonSourceMode(SourceMode.ALL_SAMEVALUE);
 		try {

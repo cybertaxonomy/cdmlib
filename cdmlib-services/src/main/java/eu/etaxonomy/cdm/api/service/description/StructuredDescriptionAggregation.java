@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
@@ -60,15 +61,33 @@ public class StructuredDescriptionAggregation
         extends DescriptionAggregationBase<StructuredDescriptionAggregation, StructuredDescriptionAggregationConfiguration>{
 
     @Override
+    protected String pluralDataType(){
+        return "structured descriptive data";
+    }
+
+    @Override
+    protected void preAccumulate() {
+        subTask("preAccumulate - nothing to do");
+
+        // take start time for performance testing
+        double start = System.currentTimeMillis();
+
+//        makeStatusOrder();
+
+        double end1 = System.currentTimeMillis();
+        logger.info("Time elapsed for pre-accumulate() : " + (end1 - start) / (1000) + "s");
+    }
+
+    @Override
     protected UpdateResult doInvoke(){
         TransactionStatus transactionStatus = getRepository().startTransaction(false);
 
         UpdateResult result = new UpdateResult();
 
         DescriptiveDataSet dataSet = loadDataSet(getConfig().getDataset().getUuid());
-        Set<DescriptionBase> descriptions = dataSet.getDescriptions();
+        Set<DescriptionBase> dataSetDescriptions = dataSet.getDescriptions();
 
-        beginTask("Aggregate data set", descriptions.size()*2);
+        beginTask("Aggregate data set", dataSetDescriptions.size()*2);
 
         result.setCdmEntity(dataSet);
 
@@ -104,7 +123,7 @@ public class StructuredDescriptionAggregation
 
         // sort descriptions by taxa
         Map<TaxonNode, Set<UUID>> taxonNodeToSpecimenDescriptionMap = new HashMap<>();
-        for (DescriptionBase<?> descriptionBase : descriptions) {
+        for (DescriptionBase<?> descriptionBase : dataSetDescriptions) {
             if(getConfig().getMonitor().isCanceled()){
                 result.setAbort();
                 return result;
@@ -403,19 +422,122 @@ public class StructuredDescriptionAggregation
     }
 
     @Override
-    protected UpdateResult invokeOnSingleTaxon() {
-        return null;
-    }
-
-
-    @Override
-    protected UpdateResult invokeHigherRankAggregation() {
-        return null;
+    protected void setDescriptionTitle(TaxonDescription description, Taxon taxon) {
+        String title = taxon.getName() != null? taxon.getName().getTitleCache() : taxon.getTitleCache();
+        description.setTitleCache("Aggregated description for " + title, true);
+        return;
     }
 
     @Override
-    protected UpdateResult removeExistingAggregationOnTaxon() {
-        return null;
+    protected TaxonDescription createNewDescription(Taxon taxon) {
+        String title = taxon.getTitleCache();
+        logger.debug("creating new description for " + title);
+        TaxonDescription description = TaxonDescription.NewInstance(taxon);
+        description.addType(DescriptionType.AGGREGATED_STRUC_DESC);
+        setDescriptionTitle(description, taxon);
+        return description;
+    }
+
+    @Override
+    protected boolean hasDescriptionType(TaxonDescription description) {
+        return description.isAggregatedStructuredDescription();
+    }
+
+
+
+    @Override
+    protected List<String> descriptionInitStrategy() {
+        return new ArrayList<>();
+    }
+
+    @Override
+    protected void addAggregationResultToDescription(TaxonDescription targetDescription,
+            ResultHolder resultHolder) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    protected void aggregateToParentTaxon(TaxonNode taxonNode,
+            ResultHolder resultHolder,
+            Set<TaxonDescription> excludedDescriptions) {
+        StructuredDescriptionResultHolder descriptiveResultHolder = (StructuredDescriptionResultHolder)resultHolder;
+//        Set<SpecimenDescription> specimenDescriptions = getTaxonDescriptions(taxonNode);
+//        // TODO AM only basic
+//        for (SpecimenDescription desc:specimenDescriptions){
+//            for (DescriptionElementBase deb:desc.getElements()){
+//                if (deb.isCharacterData()){
+//                    if (deb.isInstanceOf(CategoricalData.class)){
+//                        addToCategorical(CdmBase.deproxy(deb, CategoricalData.class), descriptiveResultHolder);
+//                    }else if (deb.isInstanceOf(QuantitativeData.class)){
+//                        addToQuantitative(CdmBase.deproxy(deb, QuantitativeData.class), descriptiveResultHolder);
+//                    }
+//                }
+//            }
+//        }
+
+    }
+
+    @Override
+    protected void aggregateWithinSingleTaxon(Taxon taxon,
+            ResultHolder resultHolder,
+            Set<TaxonDescription> excludedDescriptions) {
+        StructuredDescriptionResultHolder descriptiveResultHolder = (StructuredDescriptionResultHolder)resultHolder;
+        Set<SpecimenDescription> specimenDescriptions = getSpecimenDescriptions(taxon);
+        // TODO AM only basic
+        for (SpecimenDescription desc:specimenDescriptions){
+            for (DescriptionElementBase deb:desc.getElements()){
+                if (deb.isCharacterData()){
+                    if (deb.isInstanceOf(CategoricalData.class)){
+                        addToCategorical(CdmBase.deproxy(deb, CategoricalData.class), descriptiveResultHolder);
+                    }else if (deb.isInstanceOf(QuantitativeData.class)){
+                        addToQuantitative(CdmBase.deproxy(deb, QuantitativeData.class), descriptiveResultHolder);
+                    }
+                }
+            }
+        }
+    }
+
+    private void addToQuantitative(QuantitativeData qd,
+            StructuredDescriptionResultHolder resultHolder) {
+        resultHolder.quantitativeMap.put(qd.getFeature(), qd);
+        // TODO Auto-generated method stub
+    }
+
+    private void addToCategorical(CategoricalData cd,
+            StructuredDescriptionResultHolder resultHolder) {
+        resultHolder.categoricalMap.put(cd.getFeature(), cd);
+        // TODO Auto-generated method stub
+
+    }
+
+    private Set<SpecimenDescription> getSpecimenDescriptions(Taxon taxon) {
+        Set<SpecimenDescription> result = new HashSet<>();
+        for (TaxonDescription taxonDesc: taxon.getDescriptions()){
+            for (DescriptionElementBase taxonDeb : taxonDesc.getElements()){
+                if (taxonDeb.isInstanceOf(IndividualsAssociation.class)){
+                    IndividualsAssociation indAss = CdmBase.deproxy(taxonDeb, IndividualsAssociation.class);
+                    SpecimenOrObservationBase<?> spec = indAss.getAssociatedSpecimenOrObservation();
+                     Set<SpecimenDescription> descriptions = (Set)spec.getDescriptions();
+                     for(SpecimenDescription specimenDescription : descriptions){
+                         //TODO check if in dataset
+                         result.add(specimenDescription);
+                     }
+                }
+            }
+        }
+        return result;
+    }
+
+    @Override
+    protected StructuredDescriptionResultHolder createResultHolder() {
+        return new StructuredDescriptionResultHolder();
+    }
+
+    private class StructuredDescriptionResultHolder implements ResultHolder{
+        Map<Feature, CategoricalData> categoricalMap = new HashMap<>();
+        Map<Feature, QuantitativeData> quantitativeMap = new HashMap<>();
+
     }
 
 }
