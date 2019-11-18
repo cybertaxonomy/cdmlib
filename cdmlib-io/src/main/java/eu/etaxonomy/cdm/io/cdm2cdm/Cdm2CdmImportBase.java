@@ -85,6 +85,7 @@ import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -187,10 +188,6 @@ public abstract class Cdm2CdmImportBase
         }
     }
 
-    /**
-     * @param class1
-     * @return
-     */
     private Set<UUID> loadExistingUuids(Class<? extends CdmBase> clazz) {
         List<UUID> list = getCommonService().listUuid(clazz);
         Set<UUID> result = new HashSet<>(list);
@@ -687,6 +684,7 @@ public abstract class Cdm2CdmImportBase
             result.setGrantedAuthorities(new HashSet<>());
             setInvisible(result, "groups", new HashSet<>());
         }
+        result.setPerson(detache(user.getPerson()));
         return result;
     }
 
@@ -701,7 +699,7 @@ public abstract class Cdm2CdmImportBase
     protected Rights handlePersistedRights(Rights rights) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         Rights result = handlePersisted((LanguageStringBase)rights);
         result.setAgent(detache(rights.getAgent()));
-        result.setType(rights.getType());
+        result.setType(detache(rights.getType()));
         //complete
         return result;
     }
@@ -759,15 +757,36 @@ public abstract class Cdm2CdmImportBase
     protected <T extends SourcedEntityBase> T  handlePersisted(SourcedEntityBase sourcedEntity) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         int originalId = sourcedEntity.getId();
         T result = handlePersisted((AnnotatableEntity)sourcedEntity);
-        if (!result.isPersited() && getState().getConfig().isAddSources()){
-            Reference sourceRef = getSourceReference(getState());
-//            OriginalSourceBase<?> newSource = result.addImportSource(String.valueOf(originalId), sourcedEntity.getClass().getSimpleName(),
-//                    sourceRef, null);
-//            getCommonService().save(newSource);
-        }
         //complete
         handleCollection(result, SourcedEntityBase.class, "sources", OriginalSourceBase.class);
+        if (!result.isPersited()){
+            if(getState().getConfig().isRemoveImportSources()){
+                filterImportSources(result.getSources());
+            }
+            if (getState().getConfig().isAddSources()){
+                Reference sourceRef = getSourceReference(getState());
+                OriginalSourceBase<?> newSource = result.addImportSource(String.valueOf(originalId), sourcedEntity.getClass().getSimpleName(),
+                        sourceRef, null);
+                getCommonService().save(newSource);
+                addExistingObject(newSource);
+            }
+        }
         return result;
+    }
+
+    /**
+     * @param sources
+     */
+    private void filterImportSources(Set<OriginalSourceBase<?>> sources) {
+        Set<OriginalSourceBase<?>> toDelete = new HashSet<>();
+        for (OriginalSourceBase<?> osb: sources){
+            if (osb.getType() == OriginalSourceType.Import){
+                toDelete.add(osb);
+            }
+        }
+        for (OriginalSourceBase<?> osb: toDelete){
+            sources.remove(osb);
+        }
     }
 
     protected <T extends IdentifiableEntity> T  handlePersisted(IdentifiableEntity identifiableEntity) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {

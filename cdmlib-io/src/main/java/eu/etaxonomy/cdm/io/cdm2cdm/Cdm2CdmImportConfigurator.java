@@ -35,6 +35,7 @@ public  class Cdm2CdmImportConfigurator
     private boolean doTaxa = true;
     private boolean doDescriptions = true;
     private boolean addSources = true;
+    private boolean removeImportSources = false;
 
 //***************************** NewInstance ************************/
 
@@ -114,5 +115,12 @@ public  class Cdm2CdmImportConfigurator
     }
     public void setAddSources(boolean addSources) {
         this.addSources = addSources;
+    }
+
+    public boolean isRemoveImportSources() {
+        return removeImportSources;
+    }
+    public void setRemoveImportSources(boolean removeImportSources) {
+        this.removeImportSources = removeImportSources;
     }
 }
