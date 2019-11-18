@@ -1019,10 +1019,6 @@ public class Rank extends OrderedTermBase<Rank> {
         Representation representation = rank.getRepresentation(lang);
         String abbrevLabel = representation.getAbbreviatedLabel();
         String label = representation.getLabel();
-        String idInVoc = rank.getIdInVocabulary();
-        if (isBlank(idInVoc)){
-            idInVoc = abbrevLabel;
-        }
 
         //initialize maps
         if (idInVocMap == null){
