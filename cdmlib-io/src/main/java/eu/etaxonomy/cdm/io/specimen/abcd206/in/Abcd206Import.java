@@ -379,7 +379,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 for (int m = 0; m < associatedUnits.getLength(); m++) {
                     if (associatedUnits.item(m) instanceof Element) {
                         state.reset();
-                        state.getDataHolder().setNomenclatureCode(state.getConfig().getNomenclaturalCode() != null ? state.getConfig().getNomenclaturalCode().getKey(): null);
                         String associationType = AbcdParseUtility
                                 .parseFirstTextContent(((Element) associatedUnits.item(m))
                                         .getElementsByTagName(state.getPrefix() + "AssociationType"));
@@ -1006,7 +1005,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                             for (int m = 0; m < associatedUnits.getLength(); m++) {
                                 if (associatedUnits.item(m) instanceof Element) {
                                     state.reset();
-                                    state.getDataHolder().setNomenclatureCode(state.getConfig().getNomenclaturalCode().getKey());
                                     state.setPrefix(associationWrapper.getPrefix());
                                     Abcd206ImportParser.setUnitPropertiesXML((Element) associatedUnits.item(m),
                                             new Abcd206XMLFieldGetter(state.getDataHolder(), state.getPrefix()), state);
@@ -1194,7 +1192,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 for (int m = 0; m < associatedUnits.getLength(); m++) {
                     if (associatedUnits.item(m) instanceof Element) {
                         state.reset();
-                        state.getDataHolder().setNomenclatureCode(state.getConfig().getNomenclaturalCode().getKey());
                         String associationType = AbcdParseUtility
                                 .parseFirstTextContent(((Element) associatedUnits.item(m))
                                         .getElementsByTagName(unitAssociationWrapper.getPrefix() + "AssociationType"));
