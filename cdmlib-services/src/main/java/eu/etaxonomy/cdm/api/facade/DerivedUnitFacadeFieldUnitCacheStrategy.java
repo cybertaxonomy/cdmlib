@@ -64,6 +64,12 @@ public class DerivedUnitFacadeFieldUnitCacheStrategy
 	}
 
 	protected String getFieldData(DerivedUnitFacade facade) {
+
+	    FieldUnit fieldUnit = facade.getFieldUnit(false);
+	    if (fieldUnit != null && fieldUnit.isProtectedTitleCache()){
+	        return fieldUnit.getTitleCache();
+	    }
+
 		String ALTITUDE_PREFIX = "alt. ";
 //		String ALTITUDE_POSTFIX = " m";
 

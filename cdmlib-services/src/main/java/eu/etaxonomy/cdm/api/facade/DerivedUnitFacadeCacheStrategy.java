@@ -58,14 +58,9 @@ public class DerivedUnitFacadeCacheStrategy
 			config.setFirePropertyChangeEvents(false);
 			facade = DerivedUnitFacade.NewInstance(derivedUnit, config);
 
-			FieldUnit fieldUnit = facade.getFieldUnit(false);
-			if(!skipFieldUnit && fieldUnit != null){
-			    if(fieldUnit.isProtectedTitleCache()){
-			        result += fieldUnit.getTitleCache();
-			    } else {
-			        result += fieldStrategy.getFieldData(facade);
-			    }
-			}
+	        if(!skipFieldUnit){
+	                result += fieldStrategy.getFieldData(facade);
+
 			//Exsiccatum
 			String exsiccatum = null;
 			try {
