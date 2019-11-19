@@ -88,16 +88,11 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
     @SpringBeanByType
     private ITaxonService taxonService ;
 
-
-    /**
-     * @throws java.lang.Exception
-     */
     @Before
     public void setUp() throws Exception {
         System.setProperty("ONLY-A-TEST", "TRUE"); // allows EditGeoServiceUtilities to skip some line of code
         editMapServiceUri = new URI(EDIT_MAPSERVICE_URI_STING);
     }
-
 
 //******************************************** TESTS**************
 
@@ -133,7 +128,7 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
     @Test
     public void testGetWebServiceUrlTdwg() throws MalformedURLException, IOException {
         //String webServiceUrl = "http://www.test.de/webservice";
-        Set<Distribution> distributions = new HashSet<Distribution>();
+        Set<Distribution> distributions = new HashSet<>();
         distributions.add(Distribution.NewInstance(termService.getAreaByTdwgAbbreviation("SPA"), PresenceAbsenceTerm.PRESENT()));
         distributions.add(Distribution.NewInstance(termService.getAreaByTdwgAbbreviation("GER"), PresenceAbsenceTerm.INTRODUCED()));
         distributions.add(Distribution.NewInstance(termService.getAreaByTdwgAbbreviation("14"), PresenceAbsenceTerm.CULTIVATED()));
@@ -141,7 +136,7 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
         distributions.add(Distribution.NewInstance(termService.getAreaByTdwgAbbreviation("FRA"), PresenceAbsenceTerm.ABSENT()));
         distributions.add(Distribution.NewInstance(termService.getAreaByTdwgAbbreviation("IND-AP"), PresenceAbsenceTerm.PRESENT()));
 
-        Map<PresenceAbsenceTerm, Color> presenceAbsenceColorMap = new HashMap<PresenceAbsenceTerm, Color>();
+        Map<PresenceAbsenceTerm, Color> presenceAbsenceColorMap = new HashMap<>();
         presenceAbsenceColorMap.put(PresenceAbsenceTerm.PRESENT(), Color.BLUE);
         presenceAbsenceColorMap.put(PresenceAbsenceTerm.INTRODUCED(), Color.BLACK);
         presenceAbsenceColorMap.put(PresenceAbsenceTerm.CULTIVATED(), Color.YELLOW);
@@ -149,7 +144,7 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
         String backLayer ="";
         presenceAbsenceColorMap = null;
         String bbox="-20,0,120,70";
-        List<Language> languages = new ArrayList<Language>();
+        List<Language> languages = new ArrayList<>();
 
         boolean subAreaPreference = false;
         boolean statusOrderPreference = false;
@@ -370,7 +365,6 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
         subTestWithEditMapService(result);
     }
 
-
     @SuppressWarnings("deprecation")
 //    @Test
     @DataSet( value="EditGeoServiceTest.getDistributionServiceRequestParameterString.xml")
@@ -432,7 +426,6 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
 
         taxonService.save(taxon);
 
-
         setComplete();
         endTransaction();
 
@@ -442,8 +435,5 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
                 "HIBERNATE_SEQUENCES" // IMPORTANT!!!
                 },
                 "getDistributionServiceRequestParameterString", true );
-
     }
-
-
 }

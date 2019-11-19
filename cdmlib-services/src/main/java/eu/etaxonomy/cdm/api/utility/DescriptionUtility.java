@@ -114,23 +114,23 @@ public class DescriptionUtility {
                 if(checkAreaMarkedHidden(hiddenAreaMarkerTypes, area)) {
                     boolean showAsFallbackArea = false;
                     // if at least one sub area is not hidden by a marker
-                    // this area is a fall back area for this sub area
+                    // this area is a fall-back area for this sub area
                     for(NamedArea subArea : area.getIncludes()) {
                         if (!areasHiddenByMarker.contains(subArea) && checkAreaMarkedHidden(hiddenAreaMarkerTypes, subArea)) {
                             if(filteredDistributions.containsKey(subArea)) {
                                 areasHiddenByMarker.add(subArea);
                             }
                         }
-                        // if this subarea is not marked to be hidden
+                        // if this sub-area is not marked to be hidden
                         // the parent area must be visible if there is no
-                        // data for the subarea
-                        boolean subAreaVisible = filteredDistributions.containsKey(subArea) &&  !areasHiddenByMarker.contains(subArea);
+                        // data for the sub-area
+                        boolean subAreaVisible = filteredDistributions.containsKey(subArea)
+                                && !areasHiddenByMarker.contains(subArea);
                         showAsFallbackArea = !subAreaVisible || showAsFallbackArea;
                     }
                     if (!showAsFallbackArea) {
                         // this area does not need to be shown as
-                        // fallback for another area
-                        // so it will be hidden.
+                        // fall-back for another area so it will be hidden.
                         areasHiddenByMarker.add(area);
                     }
                 }
@@ -232,12 +232,6 @@ public class DescriptionUtility {
         return false;
     }
 
-    /**
-     * @param hiddenAreaMarkerTypes
-     * @param area
-     * @param isMarkedHidden
-     * @return
-     */
     public static boolean checkAreaMarkedHidden(Set<MarkerType> hiddenAreaMarkerTypes, NamedArea area) {
         if(hiddenAreaMarkerTypes != null) {
             for(MarkerType markerType : hiddenAreaMarkerTypes){

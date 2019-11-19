@@ -397,6 +397,7 @@ public class EditGeoServiceUtilities {
     }
 
     private static String getAreaCode(Distribution distribution, IGeoServiceAreaMapping mapping){
+
         NamedArea area = distribution.getArea();
         TermVocabulary<NamedArea> voc = area.getVocabulary();
         String result = null;
@@ -419,15 +420,13 @@ public class EditGeoServiceUtilities {
                     result = CdmUtils.concat(SUBENTRY_DELIMITER, result, value);
                 }
             }
-
         }
         return CdmUtils.Nz(result, "-");
-
     }
 
     private static List<String> projectToWMSSubLayer(NamedArea area){
 
-        List<String> layerNames = new ArrayList<String>();
+        List<String> layerNames = new ArrayList<>();
         String matchedLayerName = null;
         TermVocabulary<NamedArea> voc = area.getVocabulary();
         //TDWG areas
@@ -501,7 +500,6 @@ public class EditGeoServiceUtilities {
         return null;
     }
 
-
     private static void addDistributionToStyleMap(Distribution distribution, Map<Integer, Set<Distribution>> styleMap,
             List<PresenceAbsenceTerm> statusList) {
         PresenceAbsenceTerm status = distribution.getStatus();
@@ -539,8 +537,8 @@ public class EditGeoServiceUtilities {
             List<Point> fieldUnitPoints,
             List<Point> derivedUnitPoints,
             Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors) {
-        OccurrenceServiceRequestParameterDto dto = new OccurrenceServiceRequestParameterDto();
 
+        OccurrenceServiceRequestParameterDto dto = new OccurrenceServiceRequestParameterDto();
 
         specimenOrObservationTypeColors = mergeMaps(getDefaultSpecimenOrObservationTypeColors(), specimenOrObservationTypeColors);
 
@@ -566,13 +564,6 @@ public class EditGeoServiceUtilities {
         return dto;
     }
 
-    /**
-     * @param <T>
-     * @param <S>
-     * @param defaultMap
-     * @param overrideMap
-     * @return
-     */
     private static <T, S> Map<T, S> mergeMaps(Map<T, S> defaultMap, Map<T, S> overrideMap) {
         Map<T, S> tmpMap = new HashMap<T, S>();
         tmpMap.putAll(defaultMap);
@@ -605,14 +596,11 @@ public class EditGeoServiceUtilities {
         }
     }
 
-
     /**
      * transform an integer (style counter) into a valid character representing a style.
      * 0-25 => a-z<br>
      * 26-51 => A-Z<br>
      * i not in {0,...,51} is undefined
-     * @param i
-     * @return
      */
     private static char getStyleAbbrev(int i){
         i++;
@@ -631,8 +619,9 @@ public class EditGeoServiceUtilities {
      * @throws JsonParseException
      * @throws JsonMappingException
      */
-    public static Map<PresenceAbsenceTerm, Color> buildStatusColorMap(String statusColorJson, ITermService termService, IVocabularyService vocabularyService) throws IOException, JsonParseException,
-            JsonMappingException {
+    public static Map<PresenceAbsenceTerm, Color> buildStatusColorMap(String statusColorJson,
+            ITermService termService, IVocabularyService vocabularyService)
+            throws IOException, JsonParseException, JsonMappingException {
 
         Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors = null;
         if(StringUtils.isNotEmpty(statusColorJson)){
@@ -644,7 +633,7 @@ public class EditGeoServiceUtilities {
             MapType mapType = typeFactory.constructMapType(HashMap.class, String.class, String.class);
 
             Map<String,String> statusColorMap = mapper.readValue(statusColorJson, mapType);
-            presenceAbsenceTermColors = new HashMap<PresenceAbsenceTerm, Color>();
+            presenceAbsenceTermColors = new HashMap<>();
             PresenceAbsenceTerm paTerm = null;
             for(String statusId : statusColorMap.keySet()){
                 try {
@@ -679,48 +668,35 @@ public class EditGeoServiceUtilities {
 
         if(EditGeoServiceUtilities.presenceAbsenceTermVocabularyUuids == null) {
 
-            List<UUID> uuids = new ArrayList<UUID>();
+            List<UUID> uuids = new ArrayList<>();
             // the default as first entry
             UUID presenceTermVocabUuid = PresenceAbsenceTerm.NATIVE().getVocabulary().getUuid();
             uuids.add(presenceTermVocabUuid);
 
-
-            for(TermVocabulary vocab : vocabularyService.findByTermType(TermType.PresenceAbsenceTerm, null)) {
+            for(TermVocabulary<?> vocab : vocabularyService.findByTermType(TermType.PresenceAbsenceTerm, null)) {
                 if(!uuids.contains(vocab.getUuid())) {
                     uuids.add(vocab.getUuid());
                 }
             }
-
             EditGeoServiceUtilities.presenceAbsenceTermVocabularyUuids = uuids;
         }
-
         return EditGeoServiceUtilities.presenceAbsenceTermVocabularyUuids;
     }
 
-
-    /**
-     * @param filteredDistributions
-     * @param recipe
-     * @param hideMarkedAreas
-     * @param langs
-     * @return
-     */
     public static CondensedDistribution getCondensedDistribution(Collection<Distribution> filteredDistributions,
             CondensedDistributionRecipe recipe, List<Language> langs) {
+
         ICondensedDistributionComposer composer;
         if(recipe == null) {
             throw new NullPointerException("parameter recipe must not be null");
         }
         try {
             composer = recipe.newCondensedDistributionComposerInstance();
-        } catch (InstantiationException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
+        } catch (InstantiationException|IllegalAccessException e) {
             throw new RuntimeException(e);
         }
         CondensedDistribution condensedDistribution = composer.createCondensedDistribution(
                 filteredDistributions,  langs);
         return condensedDistribution;
     }
-
 }

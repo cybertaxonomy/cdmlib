@@ -60,11 +60,11 @@ import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
 /**
  * @author a.kohlbecker
  * @since 18.06.2009
- *
  */
 @Service
 @Transactional(readOnly = true)
 public class EditGeoService implements IEditGeoService {
+
     public static final Logger logger = Logger.getLogger(EditGeoService.class);
 
     @Autowired
@@ -89,10 +89,6 @@ public class EditGeoService implements IEditGeoService {
         return distributionFeature;
     }
 
-    /**
-     * @param taxonDescriptions
-     * @return
-     */
     private Set<Distribution> getDistributionsOf(List<TaxonDescription> taxonDescriptions) {
         Set<Distribution> result = new HashSet<>();
 
@@ -124,9 +120,6 @@ public class EditGeoService implements IEditGeoService {
         return result;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getDistributionServiceRequestParameterString(List<TaxonDescription> taxonDescriptions,
             boolean subAreaPreference,
@@ -147,9 +140,6 @@ public class EditGeoService implements IEditGeoService {
         return uriParams;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getDistributionServiceRequestParameterString(
             Set<Distribution> distributions,
@@ -162,7 +152,6 @@ public class EditGeoService implements IEditGeoService {
         Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distributions,
                 hideMarkedAreas, true, statusOrderPreference, subAreaPreference);
 
-
         String uriParams = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(
                 filteredDistributions,
                 areaMapping,
@@ -171,9 +160,6 @@ public class EditGeoService implements IEditGeoService {
         return uriParams;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @Deprecated
     public String getDistributionServiceRequestParameterString(TaxonDescription taxonDescription,
@@ -194,9 +180,6 @@ public class EditGeoService implements IEditGeoService {
                 langs);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public OccurrenceServiceRequestParameterDto getOccurrenceServiceRequestParameterString(
             List<SpecimenOrObservationBase> specimensOrObersvations,
@@ -222,7 +205,6 @@ public class EditGeoService implements IEditGeoService {
 
         return EditGeoServiceUtilities.getOccurrenceServiceRequestParameterString(fieldUnitPoints,
                 derivedUnitPoints, specimenOrObservationTypeColors);
-
     }
 
     public CondensedDistribution getCondensedDistribution(List<TaxonDescription> taxonDescriptions,
@@ -246,21 +228,13 @@ public class EditGeoService implements IEditGeoService {
 
         Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(
                 distributions, hideMarkedAreas, true, statusOrderPreference, false);
-
-
-
         CondensedDistribution condensedDistribution = EditGeoServiceUtilities.getCondensedDistribution(
                 filteredDistributions,
                 recipe,
                 langs);
-
         return condensedDistribution;
     }
 
-    /**
-     * @param derivedUnit
-     * @param derivedUnitPoints
-     */
     private void registerDerivedUnitLocations(DerivedUnit derivedUnit, List<Point> derivedUnitPoints) {
 
         Set<SpecimenOrObservationBase> originals = derivedUnit.getOriginals();
@@ -289,22 +263,13 @@ public class EditGeoService implements IEditGeoService {
                 }
             }
         }
-
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setMapping(NamedArea area, GeoServiceArea geoServiceArea) {
         areaMapping.set(area, geoServiceArea);
-
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @Transactional(readOnly=false)
     public Map<NamedArea, String> mapShapeFileToNamedAreas(Reader csvReader,
@@ -332,9 +297,6 @@ public class EditGeoService implements IEditGeoService {
         return resultMap;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public DistributionInfoDTO composeDistributionInfoFor(EnumSet<DistributionInfoDTO.InfoPart> parts, UUID taxonUUID,
             boolean subAreaPreference, boolean statusOrderPreference, Set<MarkerType> hiddenAreaMarkerTypes,
@@ -381,17 +343,20 @@ public class EditGeoService implements IEditGeoService {
         }
 
         if(parts.contains(InfoPart.tree)) {
-            DistributionTree tree = DescriptionUtility.orderDistributions(termDao, omitLevels, filteredDistributions, hiddenAreaMarkerTypes,distributionOrder);
+            DistributionTree tree = DescriptionUtility.orderDistributions(termDao, omitLevels,
+                    filteredDistributions, hiddenAreaMarkerTypes,distributionOrder);
             dto.setTree(tree);
         }
 
         if(parts.contains(InfoPart.condensedDistribution)) {
-            dto.setCondensedDistribution(EditGeoServiceUtilities.getCondensedDistribution(filteredDistributions, recipe, languages));
+            dto.setCondensedDistribution(EditGeoServiceUtilities.getCondensedDistribution(
+                    filteredDistributions, recipe, languages));
         }
 
         if (parts.contains(InfoPart.mapUriParams)) {
             // only apply the subAreaPreference rule for the maps
-            Set<Distribution> filteredMapDistributions = DescriptionUtility.filterDistributions(filteredDistributions, null, false, false, subAreaPreference);
+            Set<Distribution> filteredMapDistributions = DescriptionUtility.filterDistributions(
+                    filteredDistributions, null, false, false, subAreaPreference);
 
             dto.setMapUriParams(EditGeoServiceUtilities.getDistributionServiceRequestParameterString(filteredMapDistributions,
                     areaMapping,
