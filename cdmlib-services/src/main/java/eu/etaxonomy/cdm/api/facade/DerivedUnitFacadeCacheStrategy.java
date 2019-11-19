@@ -25,8 +25,11 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  * @author a.mueller
  * @since 03.06.2010
  */
-public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIdentifiableEntityCacheStrategy<DerivedUnit> {
-	private static final long serialVersionUID = 1578628591216605619L;
+public class DerivedUnitFacadeCacheStrategy
+        extends StrategyBase implements
+        IIdentifiableEntityCacheStrategy<DerivedUnit> {
+
+    private static final long serialVersionUID = 1578628591216605619L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DerivedUnitFacadeCacheStrategy.class);
 
@@ -44,9 +47,9 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 	}
 
 	public String getTitleCache(DerivedUnit derivedUnit, boolean skipFieldUnit) {
-		DerivedUnitFacadeFieldUnitCacheStrategy fieldStrategy = new DerivedUnitFacadeFieldUnitCacheStrategy();
 
-		String result = "";
+	    String result = "";
+	    DerivedUnitFacadeFieldUnitCacheStrategy fieldStrategy = new DerivedUnitFacadeFieldUnitCacheStrategy();
 
 		DerivedUnitFacade facade;
 		// NOTE: regarding the string representations of MediaTypes, see https://dev.e-taxonomy.eu/redmine/issues/7608
