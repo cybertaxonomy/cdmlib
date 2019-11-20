@@ -190,7 +190,7 @@ public class DescriptionUtility {
         // -------------------------------------------------------------------
         // 3) statusOrderPreference
         if (statusOrderPreference) {
-            Map<NamedArea, Set<Distribution>> tmpMap = new HashMap<NamedArea, Set<Distribution>>(filteredDistributions.size());
+            Map<NamedArea, Set<Distribution>> tmpMap = new HashMap<>(filteredDistributions.size());
             for(NamedArea key : filteredDistributions.keySet()){
                 tmpMap.put(key, byHighestOrderPresenceAbsenceTerm(filteredDistributions.get(key)));
             }

@@ -114,7 +114,6 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals(PresenceAbsenceTerm.NATIVE(), filteredDistributions.iterator().next().getStatus());
     }
 
-
     @Test
     public void testFilterDistributions_subAreaPreference(){
         subAreaPreference = true;
