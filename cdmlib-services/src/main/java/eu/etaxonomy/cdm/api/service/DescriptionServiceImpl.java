@@ -16,7 +16,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -58,7 +57,6 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
-import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
@@ -219,35 +217,6 @@ public class DescriptionServiceImpl
     }
 
 
-    @Override
-    public <T extends DescriptionElementBase> Pager<T> listDescriptionElementsSortedByFeatureTree(
-            DescriptionBase description, TermTree<Feature> termTree, Class<? extends DescriptionBase> descriptionType,
-            Class<T> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-
-        List<T> descriptionElements = dao.getDescriptionElements(description, descriptionType, null, type, pageSize,
-                pageNumber, propertyPaths);
-
-        termTree = featureTreeDao.load(termTree.getUuid());
-        List<T> sortedResults = initFeatureList(termTree.getRoot(), descriptionElements);
-
-        return new DefaultPagerImpl<>(pageNumber, sortedResults.size(), pageSize, sortedResults);
-
-    }
-
-    private <T extends DescriptionElementBase> List<T> initFeatureList(TermNode<Feature> node, List<T> results){
-        List<T> features = new ArrayList<>();
-        List<TermNode<Feature>> childNodes = node.getChildNodes();
-        for (TermNode<Feature> termNode : childNodes) {
-            Optional<T> findFirst = results.stream()
-            .filter(element->element.getFeature().equals(termNode.getTerm()))
-            .findFirst();
-            if(findFirst.isPresent()){
-                features.add(findFirst.get());
-            }
-            features.addAll(initFeatureList(termNode, results));
-        }
-        return features;
-    }
 
     @Override
     public <T extends DescriptionElementBase> List<T> listDescriptionElements(DescriptionBase description,
