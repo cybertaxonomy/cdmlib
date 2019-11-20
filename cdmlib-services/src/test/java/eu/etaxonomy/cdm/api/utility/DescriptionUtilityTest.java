@@ -60,11 +60,14 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
 
         /* 1.
          * Computed elements are preferred over entered or imported elements.
-         * (Computed description elements are identified by the
-         * MarkerType.COMPUTED()). This means if a entered or imported status
-         * information exist for the same area for which computed data is
-         * available, the computed data has to be given preference over other
-         * data.
+         * (Computed description elements are identified by belonging to descriptions
+         * which have the type DescriptionType#AGGREGATED_DISTRIBUTION).
+         * This means if a entered or imported status information exist for the same
+         * area for which computed data is available, the computed data has to be
+         * given preference over other data.
+         * Note by AM: be aware that according to #5050 the preference of computed
+         * distributions is not valid anymore (for the E+M usecase). However, the functionality
+         * might be interesting for future use-cases.
          */
         TaxonDescription aggregatedDescription = TaxonDescription.NewInstance();
         aggregatedDescription.addType(DescriptionType.AGGREGATED_DISTRIBUTION);
@@ -124,6 +127,14 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
          * and both areas have the same status only the information on
          * the sub area should be reported, whereas the super area should be
          * ignored.
+         * TODO Note by AM  to me this test is unclear, there seems to be no difference between
+         * "no", "mixed" and "all". From what I saw in the code the "preferComputed" rule
+         * works only on the exact same area so as we use Germany versus Berlin here it may not
+         * have any influence and the last 2 tests could be deleted.
+         * NOTE2: From now on the marker computed on distributions has no effect anymore.
+         * Computed (or better Aggregated_Distribution) can only be defined on description
+         * level not on description element level. But this change had no effect on this test
+         * so also from this perspective the 2 "Computed" tests can be deleted.
          */
         Distribution distGermany = Distribution.NewInstance(Country.GERMANY(), PresenceAbsenceTerm.NATIVE());
         Distribution distBerlin = Distribution.NewInstance(berlin, PresenceAbsenceTerm.NATIVE());

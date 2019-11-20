@@ -221,13 +221,9 @@ public class DescriptionUtility {
     }
 
     private static boolean isAggregated(Distribution distribution) {
-        if (distribution.hasMarker(MarkerType.COMPUTED(), true)){
+        DescriptionBase<?> desc = distribution.getInDescription();
+        if (desc != null && desc.isAggregatedDistribution()){
             return true;
-        }else{
-            DescriptionBase<?> desc = distribution.getInDescription();
-            if (desc != null && desc.isAggregatedDistribution()){
-                return true;
-            }
         }
         return false;
     }
