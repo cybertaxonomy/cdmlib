@@ -560,18 +560,29 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 TeamOrPersonBase team = state.getPersonStore().get(state.getDataHolder().gatheringAgentsText);
                 if (team == null){
                     team = parseAuthorString(state.getDataHolder().gatheringAgentsText);
-                    state.getPersonStore().put(team.getTitleCache(), team);
+                    if (team != null){
+                        state.getPersonStore().put(team.getTitleCache(), team);
+                    }
                 }
-                unitsGatheringEvent.setCollector(team,
+                if (team != null){
+                    unitsGatheringEvent.setCollector(team,
                             config);
+                }
+
 
             } else {
                 TeamOrPersonBase team = state.getPersonStore().get(state.getDataHolder().gatheringAgentsList.toString());
                 if (team == null){
                     team = parseAuthorString(state.getDataHolder().gatheringAgentsList.toString());
-                    state.getPersonStore().put(team.getTitleCache(), team);
+                    if (team != null){
+                        state.getPersonStore().put(team.getTitleCache(), team);
+                    }
+
                 }
-                unitsGatheringEvent.setCollector(team, config);
+                if (team != null){
+                    unitsGatheringEvent.setCollector(team,
+                            config);
+                }
             }
             // count
             UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea();
