@@ -67,6 +67,11 @@ public class DescriptionController extends AbstractIdentifiableController<Descri
 
     protected static final List<String> TAXONDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
+            "descriptiveDataSets",
+            "descriptiveDataSets.descriptiveSystem",
+            "descriptiveDataSets.descriptiveSystem.root",
+            "descriptiveDataSets.descriptiveSystem.root.childNodes",
+            "descriptiveDataSets.descriptiveSystem.root.childNodes.term",
             "elements.$",
             "elements.sources.citation.authorship",
             "elements.sources.nameUsedInSource",
