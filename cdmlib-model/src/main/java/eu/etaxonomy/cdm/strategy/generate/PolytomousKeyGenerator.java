@@ -1062,8 +1062,8 @@ public class PolytomousKeyGenerator {
 	private void createDependencies(TermNode<Feature> node){
 
 	    //the featureDependencies handling was originally in defaultCategoricalPower(cat, cat)
-	    //needs to be checked if it is ok to handle them here
-        if (node.isDependend() && !featureDependencies.containsKey(node.getTerm())){
+	    //needs to be checked if it is OK to handle them here
+        if (node.isDependent() && !featureDependencies.containsKey(node.getTerm())){
             featureDependencies.put(node.getParent().getTerm(), new HashSet<>());
             for (FeatureState featureState : node.getOnlyApplicableIf()){
                 State state = featureState.getState();

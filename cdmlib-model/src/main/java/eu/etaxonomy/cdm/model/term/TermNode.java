@@ -594,15 +594,13 @@ public class TermNode <T extends DefinedTermBase>
 
     /**
      * Returns all terms that are contained in this node or a child node
-     * as long as this node or the child nodes are not {@link #isDependend() dependend}
+     * as long as this node or the child nodes are not {@link #isDependent() dependent}
      * on higher nodes/feature states.
-     * @param terms
-     * @return
      */
     @Transient
     public Set<T> getIndependentTermsRecursive(){
         Set<T> terms = new HashSet<>();
-        if (!isDependend()){
+        if (!isDependent()){
             T term = this.getTerm();
             if(term != null){
                 terms.add(term);
@@ -622,7 +620,7 @@ public class TermNode <T extends DefinedTermBase>
      */
     @Transient
     @XmlTransient
-    public boolean isDependend() {
+    public boolean isDependent() {
         return inapplicableIf.size()>0 || onlyApplicableIf.size()>0;
     }
 
