@@ -91,6 +91,7 @@ public class StructuredDescriptionAggregation
 
         result.setCdmEntity(dataSet);
 
+        subTask("Remove existing aggregations from dataset");
         //TODO AM memory loading of all descriptions not possible
         //TODO why not reusing descriptions and only adding new data and new sources
         // delete all aggregation description of this dataset (DescriptionType.AGGREGATED)
@@ -101,6 +102,7 @@ public class StructuredDescriptionAggregation
                 .collect(Collectors.toSet());
         aggregations.forEach(aggregation->dataSet.removeDescription(aggregation));
 
+        subTask("Delete cloned sources");
         // also delete all their cloned source descriptions
         Set<String> sourceUuids = aggregations.stream()
                 .flatMap(aggDesc->aggDesc.getSources().stream())
@@ -118,12 +120,16 @@ public class StructuredDescriptionAggregation
             }
         }
 
+        subTask("Remove existing aggregations from database");
         //finally delete the aggregation description itself
         aggregations.forEach(aggDesc->getDescriptionService().delete(aggDesc));
+
+        // START Aggregation
 
         // sort descriptions by taxa
         Map<TaxonNode, Set<UUID>> taxonNodeToSpecimenDescriptionMap = new HashMap<>();
         for (DescriptionBase<?> descriptionBase : dataSetDescriptions) {
+            subTask("Aggregate description " + descriptionBase.getTitleCache());
             if(getConfig().getMonitor().isCanceled()){
                 result.setAbort();
                 return result;
@@ -139,7 +145,7 @@ public class StructuredDescriptionAggregation
                     }
                 }
             }
-            getConfig().getMonitor().worked(1);
+            worked(1);
         }
 
         //aggregate to higher taxa
@@ -154,17 +160,19 @@ public class StructuredDescriptionAggregation
                 result.setAbort();
                 return result;
             }
+            subTask("Aggregate taxon " + node.getTaxon().getTitleCache());
+
             UUID taxonUuid = node.getTaxon().getUuid();
             Set<UUID> specimenDescriptionUuids = taxonNodeToSpecimenDescriptionMap.get(node);
             UpdateResult aggregationResult = aggregateDescription(taxonUuid,
                     specimenDescriptionUuids, getConfig().getDataset().getUuid(),
                     specimenToClonedSourceDescription);
             result.includeResult(aggregationResult);
-            getConfig().getMonitor().worked(1);
+            worked(1);
         }
 
         //done
-        getConfig().getMonitor().done();
+        done();
         getRepository().commitTransaction(transactionStatus);
         return result;
     }
