@@ -38,23 +38,24 @@ public class PolytomousKeyGenerator {
 
     private static final Logger logger = Logger.getLogger(PolytomousKeyGenerator.class);
 
+    /**
+     * These strings are used for generating the statements of the key.
+     */
+    private static final String before="<";
+    private static final String after=">";
+    private static final String separator = " or ";
+
+
     private PolytomousKeyGeneratorConfigurator config;
 
 	private Map<State,Set<Feature>> iAifDependencies = new HashMap<>(); // map of a set of Features (value) inapplicables if a State (key) is present
 	private Map<State,Set<Feature>> oAifDependencies = new HashMap<>(); // map of a set of Features (value) only applicables if a State (key) is present
 	private Map<Feature,Set<Feature>> featureDependencies = new HashMap<>(); // map of all the sets of features (values) which have dependencies with states of other features (keys)
 
-
-	/**
-	 * These strings are used for generating the statements of the key.
-	 */
-	private static final String before="<";
-	private static final String after=">";
-	private static final String separator = " or ";
-
+// *************************** METHODS ***************************************/
 
     /**
-     * Creates the key and prints it
+     * Creates the key
      */
     public PolytomousKey invoke(PolytomousKeyGeneratorConfigurator config){
         if (config == null){
@@ -70,18 +71,16 @@ public class PolytomousKeyGenerator {
         return polytomousKey;
     }
 
-
 	/**
 	 * Recursive function that builds the branches of the identification key
 	 *
-	 * @param father the node considered
+	 * @param parent the node considered
 	 * @param featuresLeft List of features that can be used at this point
 	 * @param taxaCovered the taxa left at this point (i.e. that verify the description corresponding to the path leading to this node)
 	 * @param taxaDiscriminatedInPreviousStep if in the previous level the taxa discriminated are the same, this boolean is set to true,
 	 *           thus if the taxa, again, are not discriminated at this level the function stops
 	 */
-	private void buildBranches(PolytomousKeyNode father, List<Feature> featuresLeft, Set<DescriptionBase<?>> taxaCovered, boolean taxaDiscriminatedInPreviousStep){
-
+	private void buildBranches(PolytomousKeyNode parent, List<Feature> featuresLeft, Set<DescriptionBase<?>> taxaCovered, boolean taxaDiscriminatedInPreviousStep){
 
 		if (taxaCovered.size()<=1){
 		    //do nothing
@@ -97,7 +96,7 @@ public class PolytomousKeyGenerator {
 			/************** either the feature supports quantitative data... **************/
 			// NB: in this version, "quantitative features" are dealt with in a dichotomous way
 			if (winnerFeature != null && winnerFeature.isSupportsQuantitativeData()) {
-				handleQuantitativeData(father, featuresLeft, taxaCovered,
+				handleQuantitativeData(parent, featuresLeft, taxaCovered,
                         quantitativeFeaturesThresholds, winnerFeature, taxaDiscriminatedInPreviousStep);
 			}
 
@@ -106,7 +105,7 @@ public class PolytomousKeyGenerator {
 //	        Set<Feature> featuresAdded = new HashSet<>();
 
 			if (winnerFeature!=null && winnerFeature.isSupportsCategoricalData()) {
-			    handleCategorialFeature(father, featuresLeft, taxaCovered,
+			    handleCategorialFeature(parent, featuresLeft, taxaCovered,
 			            winnerFeature,
                         taxaDiscriminatedInPreviousStep);
 			}
@@ -117,46 +116,30 @@ public class PolytomousKeyGenerator {
 		}
 	}
 
-    /**
-     * @param father
-     * @param taxaCovered
-     *
-     */
-    private void handleLeaf(PolytomousKeyNode father, Set<DescriptionBase<?>> taxaCovered) {
-        KeyStatement fatherStatement = father.getStatement();
+    private void handleLeaf(PolytomousKeyNode parent, Set<DescriptionBase<?>> taxaCovered) {
+        KeyStatement parentStatement = parent.getStatement();
         for(DescriptionBase<?> description: taxaCovered){
             description = CdmBase.deproxy(description);
             if  (description instanceof TaxonDescription){
-                father.setOrAddTaxon(((TaxonDescription)description).getTaxon());
+                parent.setOrAddTaxon(((TaxonDescription)description).getTaxon());
             }else{
                 //FIXME handle other descriptions like specimen descriptions better
-                if (fatherStatement!=null){
-                    String statementString = fatherStatement.getLabelText(Language.DEFAULT());
+                if (parentStatement!=null){
+                    String statementString = parentStatement.getLabelText(Language.DEFAULT());
                     if (statementString !=null && description != null){
                         String label = statementString + " --> " + description.getTitleCache();
-                        fatherStatement.putLabel(Language.DEFAULT(), label);
+                        parentStatement.putLabel(Language.DEFAULT(), label);
                     }
                 }
             }
         }
-
     }
 
     /**
      * "categorical features" may present several different states/branches,
      * each one of these might correspond to one child
-     * @param father
-     * @param featuresLeft
-     * @param taxaCovered
-     * @param taxaDiscriminatedInPreviousStep
-     * @param childrenExist
-     * @param innapplicables
-     * @param applicables
-     * @param winnerFeature
-     * @param statesDone
-     * @return
      */
-    private void handleCategorialFeature(PolytomousKeyNode father, List<Feature> featuresLeft,
+    private void handleCategorialFeature(PolytomousKeyNode parent, List<Feature> featuresLeft,
             Set<DescriptionBase<?>> taxaCovered,
             Feature winnerFeature, boolean taxaDiscriminatedInPreviousStep) {
 
@@ -175,12 +158,12 @@ public class PolytomousKeyGenerator {
 		        Set<Feature> featuresAdded = new HashSet<>();
 		        addDependentFeatures(featuresLeft, winnerFeature, featuresAdded, stateList);
 		        featuresLeft.remove(winnerFeature);
-		        buildBranches(father, featuresLeft, taxaCovered, false);
+		        buildBranches(parent, featuresLeft, taxaCovered, false);
 		        removeAddedDependendFeatures(featuresLeft, featuresAdded);
 		        return;
 		    }else{
 		        //if only 1 branch is left we can handle this as a leaf, no matter how many taxa are left
-		        handleLeaf(father, taxaCovered);
+		        handleLeaf(parent, taxaCovered);
 		        return;
 		    }
 		}
@@ -194,23 +177,16 @@ public class PolytomousKeyGenerator {
 
 		for (Set<DescriptionBase<?>> newTaxaCovered : sortedKeys){
 		    //handle each branch
-		    handleCategoricalBranch(father, featuresLeft, taxaCovered, winnerFeature,
+		    handleCategoricalBranch(parent, featuresLeft, taxaCovered, winnerFeature,
                     reuseWinner, taxonStatesMap, newTaxaCovered);
 		}
 
     }
 
-
-    /**
-     * @param taxaCovered
-     * @param winnerFeature
-     * @param reuseWinner
-     * @param taxonStatesMap
-     * @return
-     */
     private Map<Set<DescriptionBase<?>>, List<State>> handleMerge(Set<DescriptionBase<?>> taxaCovered,
             Feature winnerFeature, Map<Set<DescriptionBase<?>>, Boolean> reuseWinner,
             Map<Set<DescriptionBase<?>>, List<State>> taxonStatesMap) {
+
         // creates a map between the different states of the winnerFeature and the sets of states "incompatible" with them
         Map<State,Set<State>> exclusions = new HashMap<>();
         computeExclusions(winnerFeature, taxaCovered, exclusions);
@@ -228,19 +204,7 @@ public class PolytomousKeyGenerator {
         return taxonStatesMap;
     }
 
-
-    /**
-     * @param father
-     * @param featuresLeft
-     * @param taxaCovered
-     * @param innapplicables
-     * @param applicables
-     * @param winnerFeature
-     * @param reuseWinner
-     * @param taxonStatesMap
-     * @param newTaxaCovered
-     */
-    private void handleCategoricalBranch(PolytomousKeyNode father, List<Feature> featuresLeft,
+    private void handleCategoricalBranch(PolytomousKeyNode parent, List<Feature> featuresLeft,
             Set<DescriptionBase<?>> taxaCovered,
             Feature winnerFeature, Map<Set<DescriptionBase<?>>, Boolean> reuseWinner,
             Map<Set<DescriptionBase<?>>, List<State>> taxonStatesMap, Set<DescriptionBase<?>> newTaxaCovered) {
@@ -248,10 +212,10 @@ public class PolytomousKeyGenerator {
         Set<Feature> featuresAdded = new HashSet<>();
         boolean areTheTaxaDiscriminated = false;
         PolytomousKeyNode pkNode = PolytomousKeyNode.NewInstance();
-        father.addChild(pkNode);
+        parent.addChild(pkNode);
 
         List<State> listOfStates = taxonStatesMap.get(newTaxaCovered);
-        if ((newTaxaCovered.size()>0)){ //old: if the taxa are discriminated compared to those of the father node, a child is created
+        if ((newTaxaCovered.size()>0)){ //old: if the taxa are discriminated compared to those of the parent node, a child is created
         	areTheTaxaDiscriminated = newTaxaCovered.size()!=taxaCovered.size();
 
         	int numberOfStates = listOfStates.size()-1;
@@ -267,7 +231,7 @@ public class PolytomousKeyGenerator {
         	String statementLabel = createStatement(listOfStates, numberOfStates);
             KeyStatement statement = KeyStatement.NewInstance(statementLabel);
         	pkNode.setStatement(statement);
-        	father.setFeature(winnerFeature);
+        	parent.setFeature(winnerFeature);
 
         	if (reuseWinner.get(newTaxaCovered)== Boolean.TRUE){
         	    featuresLeft.add(winnerFeature);
@@ -285,24 +249,12 @@ public class PolytomousKeyGenerator {
         removeAddedDependendFeatures(featuresLeft, featuresAdded);
     }
 
-
-    /**
-     * @param featuresLeft
-     * @param featuresAdded
-     */
     private void removeAddedDependendFeatures(List<Feature> featuresLeft, Set<Feature> featuresAdded) {
         for (Feature addedFeature : featuresAdded) {
             featuresLeft.remove(addedFeature);
         }
     }
 
-
-    /**
-     * @param featuresLeft
-     * @param winnerFeature
-     * @param featuresAdded
-     * @param listOfStates
-     */
     private void addDependentFeatures(List<Feature> featuresLeft, Feature winnerFeature,
             Set<Feature> featuresAdded, List<State> listOfStates) {
 
@@ -326,21 +278,10 @@ public class PolytomousKeyGenerator {
         featuresAdded.addAll(newFeatureCandidates);
     }
 
-
-    /**
-     * @param set
-     * @return
-     */
     private boolean notEmpty(Set<?> set) {
         return (set != null) && !set.isEmpty();
     }
 
-
-    /**
-     * @param listOfStates
-     * @param numberOfStates
-     * @return
-     */
     private String createStatement(List<State> listOfStates, int numberOfStates) {
         StringBuilder statementLabel = new StringBuilder();
         for (State state : listOfStates) {
@@ -352,11 +293,6 @@ public class PolytomousKeyGenerator {
         return statementLabel.toString();
     }
 
-    /**
-     * @param sortedKeys
-     * @param taxonStatesMap
-     * @return
-     */
     private Map<Set<DescriptionBase<?>>, List<State>> renewTaxonStatesMap(Map<Set<DescriptionBase<?>>, List<State>> taxonStatesMap) {
         Map<Set<DescriptionBase<?>>, List<State>> result = new HashMap<>();
         for (Map.Entry<Set<DescriptionBase<?>>, List<State>> entry : taxonStatesMap.entrySet()){
@@ -365,10 +301,6 @@ public class PolytomousKeyGenerator {
         return result;
     }
 
-    /**
-     * @param taxonStatesMap
-     * @return
-     */
     private List<Set<DescriptionBase<?>>> sortKeys(Map<Set<DescriptionBase<?>>, List<State>> taxonStatesMap) {
         //for now this is a dummy sorting
         List<Map.Entry<Set<DescriptionBase<?>>, List<State>>> sortedEntries = new ArrayList<>();
@@ -382,9 +314,6 @@ public class PolytomousKeyGenerator {
         return result;
     }
 
-//    private static Comparator<? super Entry<Set<DescriptionBase<?>>, List<State>>> taxonStatesComparator
-
-
     //TODO use a general term comparator here
     private static final Comparator<State> stateComparator = (a,b)-> {
 
@@ -397,7 +326,6 @@ public class PolytomousKeyGenerator {
         }
         return 0;
     };
-
 
     private static final Comparator<? super Entry<Set<DescriptionBase<?>>, List<State>>> entryComparator =  (a,b)-> {
         if (a.getKey().size()!=b.getKey().size()){
@@ -426,15 +354,9 @@ public class PolytomousKeyGenerator {
 //                }
 //            }
             throw new RuntimeException("Compare for same state lists with different unit descriptions not yet implemented");
-
         }
     };
 
-
-    /**
-     * @param winnerFeature
-     * @param taxaCovered
-     */
     private Set<State> getAllStates(Feature winnerFeature, Set<DescriptionBase<?>> taxaCovered) {
         Set<State> states = new HashSet<>();
         for (DescriptionBase<?> td : taxaCovered){
@@ -451,12 +373,6 @@ public class PolytomousKeyGenerator {
         return states;
     }
 
-    /**
-     * @param winnerFeature
-     * @param td
-     * @param debConcerned
-     * @return
-     */
     private DescriptionElementBase getDescriptionElementForFeature(Feature winnerFeature, DescriptionBase<?> td) {
         DescriptionElementBase result = null;
         for (DescriptionElementBase deb : td.getElements()) {
@@ -467,17 +383,7 @@ public class PolytomousKeyGenerator {
         return result;
     }
 
-    /**
-     * @param father
-     * @param featuresLeft
-     * @param taxaCovered
-     * @param taxaDiscriminatedInPreviousStep
-     * @param childrenExist
-     * @param quantitativeFeaturesThresholds
-     * @param winnerFeature
-     * @return
-     */
-    private void handleQuantitativeData(PolytomousKeyNode father, List<Feature> featuresLeft,
+    private void handleQuantitativeData(PolytomousKeyNode parent, List<Feature> featuresLeft,
             Set<DescriptionBase<?>> taxaCovered, Map<Feature, Float> quantitativeFeaturesThresholds,
             Feature winnerFeature, boolean taxaDiscriminatedInPreviousStep) {
 
@@ -485,29 +391,18 @@ public class PolytomousKeyGenerator {
         float threshold = quantitativeFeaturesThresholds.get(winnerFeature);
         StringBuilder unit = new StringBuilder();
         // then determine which taxa are before and which are after this threshold (dichotomy)
-        //in order to create the children of the father node
+        //in order to create the children of the parent node
         List<Set<DescriptionBase<?>>> quantitativeStates = determineQuantitativeStates(threshold, winnerFeature, taxaCovered, unit);
         // thus the list contains two sets of DescriptionBase, the first corresponding to
         //those before, the second to those after the threshold
         for (int i=0; i<2; i++) {
-        	handleQuantitativeBranch(father, featuresLeft, taxaCovered, winnerFeature, threshold, unit,
+        	handleQuantitativeBranch(parent, featuresLeft, taxaCovered, winnerFeature, threshold, unit,
                     quantitativeStates, i);
         }
         return;
     }
 
-
-    /**
-     * @param father
-     * @param featuresLeft
-     * @param taxaCovered
-     * @param winnerFeature
-     * @param threshold
-     * @param unit
-     * @param quantitativeStates
-     * @param i 1=before threshold, 2=after threshold
-     */
-    private void handleQuantitativeBranch(PolytomousKeyNode father, List<Feature> featuresLeft,
+    private void handleQuantitativeBranch(PolytomousKeyNode parent, List<Feature> featuresLeft,
             Set<DescriptionBase<?>> taxaCovered, Feature winnerFeature, float threshold, StringBuilder unit,
             List<Set<DescriptionBase<?>>> quantitativeStates, int i) {
         String sign;
@@ -519,10 +414,10 @@ public class PolytomousKeyGenerator {
         }
         if (newTaxaCovered.size()>0 /* && !((newTaxaCovered.size()==taxaCovered.size()) && !taxaDiscriminatedInPreviousStep)*/){ // if the taxa are discriminated compared to those of the father node, a child is created
         	PolytomousKeyNode pkNode = PolytomousKeyNode.NewInstance();
-        	father.setFeature(winnerFeature);
+        	parent.setFeature(winnerFeature);
         	KeyStatement statement = KeyStatement.NewInstance( " " + sign + " " + threshold + unit);
         	pkNode.setStatement(statement);
-        	father.addChild(pkNode);
+        	parent.addChild(pkNode);
         	boolean areTheTaxaDiscriminated = newTaxaCovered.size()<taxaCovered.size();
         	boolean childrenExist = areTheTaxaDiscriminated && newTaxaCovered.size()>1;
         	if (childrenExist){
@@ -533,12 +428,6 @@ public class PolytomousKeyGenerator {
         }
     }
 
-    /**
-     * @param featuresLeft
-     * @param taxaCovered
-     * @param quantitativeFeaturesThresholds
-     * @return
-     */
     private Feature computeScores(List<Feature> featuresLeft, Set<DescriptionBase<?>> taxaCovered,
             Map<Feature, Float> quantitativeFeaturesThresholds) {
         Map<Feature,Float> scoreMap = featureScores(featuresLeft, taxaCovered, quantitativeFeaturesThresholds);
@@ -553,24 +442,16 @@ public class PolytomousKeyGenerator {
         return winnerFeature;
     }
 
-
-
 	/**
 	 * Dependencies can be seen as a hierarchy.
 	 * If the dependencies are on, this function calculates the score of all children features and give the highest score
-	 * of these to their father (of course, if its score is lower). This way, if a feature has a good score but is
+	 * of these to their parent (of course, if its score is lower). This way, if a feature has a good score but is
 	 * "onlyApplicableIf" or "InapplicableIf", the feature it depends can be chosen in order to build a better key.
-	 *
-	 * @param scoreMap
-	 * @param featuresLeft
-	 * @param coveredTaxa
-	 * @param quantitativeFeaturesThresholds
 	 */
 	private void dependenciesScores(Map<Feature,Float> scoreMap, List<Feature> featuresLeft,
 	        Set<DescriptionBase<?>> coveredTaxa, Map<Feature,Float> quantitativeFeaturesThresholds){
 
 	    //TODO maybe we need to do this recursive?
-
 
 	    //old: but I don't understand why we should include the existing featureList, this is only necessary
 	    //if the single cores depend on the set of features
@@ -595,9 +476,9 @@ public class PolytomousKeyGenerator {
     			if (scoreMap.containsKey(parentFeature)){
     				for (Feature dependendFeature : featureDependencies.get(parentFeature)){
     					if (newScoreMap.containsKey(dependendFeature)) {
-    						// if a feature has a better than the "father" feature it depends on
+    						// if a feature has a better than the "parent" feature it depends on
     						if (newScoreMap.get(dependendFeature) > scoreMap.get(parentFeature)){
-    							// the "father" feature gets its score in the original score map
+    							// the "parent" feature gets its score in the original score map
     							scoreMap.put(parentFeature, newScoreMap.get(dependendFeature));
     						}
     					}
@@ -662,8 +543,6 @@ public class PolytomousKeyGenerator {
 		    reuseWinner.put(firstBranch.getKey(), Boolean.TRUE);
 		}
 	}
-
-
 
 	/**
 	 * This function looks for the largest clique of States
@@ -742,11 +621,6 @@ public class PolytomousKeyGenerator {
 
 	/**
 	 * Returns the list of taxa from previously covered taxa, which have the state featureState for the given feature
-	 *
-	 * @param feature
-	 * @param featureState
-	 * @param taxaCovered
-	 * @return
 	 */
 	private Set<DescriptionBase<?>> taxaByFeatureState(Feature feature, State featureState, Set<DescriptionBase<?>> taxaCovered){
 		Set<DescriptionBase<?>> newCoveredTaxa = new HashSet<>();
@@ -768,15 +642,9 @@ public class PolytomousKeyGenerator {
 		return newCoveredTaxa;
 	}
 
-
 	/**
 	 * This function returns the feature with the highest score. However, if several features have the same score
 	 * the one which leads to less options is chosen (this way, the key is easier to read).
-	 *
-	 * @param nTaxa
-	 * @param scores
-	 * @param taxaCovered
-	 * @return
 	 */
 	private Feature lessStatesWinner(Map<Feature,Float> scores, Set<DescriptionBase<?>> taxaCovered){
 		int nTaxa = taxaCovered.size();
@@ -833,7 +701,6 @@ public class PolytomousKeyGenerator {
 		}
 	}
 
-
 	/**
 	 * This function calculates the mean score, i.e. the score a feature dividing the taxa in two equal parts
 	 * would have.
@@ -849,11 +716,6 @@ public class PolytomousKeyGenerator {
 
 	/**
 	 * This function fills the map of features (keys) with their respecting scores (values)
-	 *
-	 * @param featuresLeft
-	 * @param coveredTaxa
-	 * @param quantitativeFeaturesThresholds
-	 * @return
 	 */
 	private Map<Feature,Float> featureScores(List<Feature> featuresLeft, Set<DescriptionBase<?>> coveredTaxa, Map<Feature,Float> quantitativeFeaturesThresholds){
 		Map<Feature,Float> scoreMap = new HashMap<>();
@@ -873,12 +735,6 @@ public class PolytomousKeyGenerator {
 	 * for a given quantitative feature, present either a lower or higher value than a given threshold.
 	 * It returns two Sets of DescriptionBase, one with the taxa under this threshold (taxaBefore) and another one
 	 * with the taxa over (taxaAfter).
-	 *
-	 * @param threshold
-	 * @param feature
-	 * @param taxa
-	 * @param unit
-	 * @return
 	 */
 	private List<Set<DescriptionBase<?>>> determineQuantitativeStates (Float threshold, Feature feature,
 	        Set<DescriptionBase<?>> taxa, StringBuilder unit){
@@ -921,11 +777,6 @@ public class PolytomousKeyGenerator {
 
 	/**
 	 * This function returns the score of a quantitative feature.
-	 *
-	 * @param feature
-	 * @param coveredTaxa
-	 * @param quantitativeFeaturesThresholds
-	 * @return
 	 */
 	private float quantitativeFeatureScore(Feature feature, Set<DescriptionBase<?>> coveredTaxa, Map<Feature,Float> quantitativeFeaturesThresholds){
 		List<Float> allValues = new ArrayList<>();
@@ -1026,17 +877,10 @@ public class PolytomousKeyGenerator {
         }
     }
 
-
-
 	/**
 	 * This function returns the score of a categorical feature
 	 * by comparing each taxon with each other. If the feature
 	 * discriminates a single pair of taxa the score is increased.
-	 *
-	 *
-	 * @param feature
-	 * @param coveredTaxa
-	 * @return
 	 */
 	private float categoricalFeatureScore(Feature feature, Set<DescriptionBase<?>> coveredTaxa){
 		int i,j;
@@ -1054,11 +898,8 @@ public class PolytomousKeyGenerator {
 		return score;
 	}
 
-
 	/**
 	 * This recursive function fills the maps of dependencies by reading the tree containing the dependencies.
-	 *
-	 * @param node
 	 */
 	private void createDependencies(TermNode<Feature> node){
 
@@ -1095,11 +936,6 @@ public class PolytomousKeyGenerator {
 
 	/**
 	 * This function fills the exclusions map.
-	 *
-	 * @param feature
-	 * @param coveredTaxa
-	 * @param exclusions
-	 * @return
 	 */
 	private float computeExclusions(Feature feature, Set<DescriptionBase<?>> coveredTaxa, Map<State,Set<State>> exclusions){
 		//unclear what the score is fore here
@@ -1139,16 +975,10 @@ public class PolytomousKeyGenerator {
 		return score;
 	}
 
-
-
 	/**
      * finds the DescriptionElementBase corresponding to the concerned Feature
      *
      * FIXME: handle multiple occurrences of a feature in the description
-     *
-     * @param description
-	 * @param feature
-     * @return
      */
     private DescriptionElementBase getDescriptionElementByFeature(DescriptionBase<?> description, Feature feature) {
         for (DescriptionElementBase deb : description.getElements()){
@@ -1162,10 +992,6 @@ public class PolytomousKeyGenerator {
     /**
 	 * Returns the score between two DescriptionElementBase. If one of them is null, returns -1.
 	 * If they are not of the same type (Categorical) returns 0.
-	 *
-	 * @param deb1
-	 * @param deb2
-	 * @return
 	 */
 	private float defaultCategoricalPower(DescriptionElementBase deb1, DescriptionElementBase deb2){
 		if (deb1==null || deb2==null) {
@@ -1180,10 +1006,6 @@ public class PolytomousKeyGenerator {
 
 	/**
 	 * Returns the score of a categorical feature.
-	 *
-	 * @param cd1
-	 * @param cd2
-	 * @return
 	 */
 	private float defaultCategoricalPower(CategoricalData cd1, CategoricalData cd2){
 	    //FIXME see defaultCategoricalPower_old for additional code on dependencies
@@ -1223,13 +1045,8 @@ public class PolytomousKeyGenerator {
 	    }
 	    float result = (float)nDiscriminative/states.size();
 	    return result;
-
 	}
 
-	   /**
-     * @param cd
-     * @return
-     */
     private boolean hasState(State state, CategoricalData cd) {
         boolean result = false;
         for (StateData stateData:cd.getStateData()){
@@ -1238,11 +1055,6 @@ public class PolytomousKeyGenerator {
         return result;
     }
 
-    /**
-     * @param cd1
-     * @param cd2
-     * @return
-     */
     private Set<State> getStates(CategoricalData... cds) {
         Set<State> result = new HashSet<>();
         for (CategoricalData cd : cds){
@@ -1254,8 +1066,7 @@ public class PolytomousKeyGenerator {
         return result;
     }
 
-
-    //keep as long as the handling of featureDependencies is not yet checked or handled in
+    //TODO keep as long as the handling of featureDependencies is not yet checked or handled in
     //the new method defaultCategoricalPower()
     private float defaultCategoricalPower_old(CategoricalData deb1, CategoricalData deb2){
 	        List<StateData> states1 = deb1.getStateData();
@@ -1297,13 +1108,10 @@ public class PolytomousKeyGenerator {
 	            }
 	        }
 
-
 	        if (bool) {
 	            return 0;
 	        } else {
 	            return 1;
 	        }
 	    }
-
 }
-
