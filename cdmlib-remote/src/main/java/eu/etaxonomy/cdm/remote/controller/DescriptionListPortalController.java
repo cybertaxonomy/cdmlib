@@ -8,14 +8,14 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-
 import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import io.swagger.annotations.Api;
 
 /**
  *
@@ -47,6 +47,7 @@ public class DescriptionListPortalController extends DescriptionListController {
     protected static final List<String> DISTRIBUTION_INFO_INIT_STRATEGY = Arrays.asList(new String []{
             "sources.citation.authorship.$",
             "sources.nameUsedInSource",
+            "sources.cdmSource.target",
             "annotations"
     });
 
