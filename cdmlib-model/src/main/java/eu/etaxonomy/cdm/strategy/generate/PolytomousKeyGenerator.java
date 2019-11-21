@@ -48,8 +48,8 @@ public class PolytomousKeyGenerator {
 
     private PolytomousKeyGeneratorConfigurator config;
 
-	private Map<State,Set<Feature>> iAifDependencies = new HashMap<>(); // map of a set of Features (value) inapplicables if a State (key) is present
-	private Map<State,Set<Feature>> oAifDependencies = new HashMap<>(); // map of a set of Features (value) only applicables if a State (key) is present
+	private Map<FeatureState,Set<Feature>> iAifDependencies = new HashMap<>(); // map of a set of Features (value) inapplicables if a State (key) is present
+	private Map<FeatureState,Set<Feature>> oAifDependencies = new HashMap<>(); // map of a set of Features (value) only applicables if a State (key) is present
 	private Map<Feature,Set<Feature>> featureDependencies = new HashMap<>(); // map of all the sets of features (values) which have dependencies with states of other features (keys)
 
 // *************************** METHODS ***************************************/
@@ -261,14 +261,16 @@ public class PolytomousKeyGenerator {
         Set<Feature> newFeatureCandidates = new HashSet<>(featureDependencies.get(winnerFeature));
         newFeatureCandidates.remove(null);
         for (State state : listOfStates) {
-            if (notEmpty(iAifDependencies.get(state))) {
-                newFeatureCandidates.removeAll(iAifDependencies.get(state));
-            }
-            if (notEmpty(oAifDependencies.get(state))) {
+            //in-applicable
+            List<Feature> inapplicableFeatures = getApplicableFeatures(winnerFeature, state, iAifDependencies);
+            newFeatureCandidates.removeAll(inapplicableFeatures);
+            //only-applicable
+            List<Feature> onlyApplicableFeatures = getApplicableFeatures(winnerFeature, state, oAifDependencies);
+            if (!onlyApplicableFeatures.isEmpty()){
                 Iterator<Feature> it = newFeatureCandidates.iterator();
                 while (it.hasNext()){
                     Feature featureCandidate = it.next();
-                    if (!oAifDependencies.get(state).contains(featureCandidate)){
+                    if (!onlyApplicableFeatures.contains(featureCandidate)){
                         it.remove();
                     }
                 }
@@ -276,6 +278,17 @@ public class PolytomousKeyGenerator {
         }
         featuresLeft.addAll(newFeatureCandidates);
         featuresAdded.addAll(newFeatureCandidates);
+    }
+
+    private List<Feature> getApplicableFeatures(Feature feature, State state,
+            Map<FeatureState, Set<Feature>> applicabilityDependencies) {
+        List<Feature> result = new ArrayList<>();
+        for (FeatureState featureState : applicabilityDependencies.keySet()){
+            if(featureState.getFeature().equals(feature) && featureState.getState().equals(state)){
+                result.addAll(applicabilityDependencies.get(featureState));
+            }
+        }
+        return result;
     }
 
     private boolean notEmpty(Set<?> set) {
@@ -906,23 +919,22 @@ public class PolytomousKeyGenerator {
 	    //the featureDependencies handling was originally in defaultCategoricalPower(cat, cat)
 	    //needs to be checked if it is OK to handle them here
         if (node.isDependent() && !featureDependencies.containsKey(node.getTerm())){
-            featureDependencies.put(node.getParent().getTerm(), new HashSet<>());
+            Feature parentFeature = node.getParent().getTerm();
+            featureDependencies.put(parentFeature, new HashSet<>());
             for (FeatureState featureState : node.getOnlyApplicableIf()){
-                State state = featureState.getState();
-                if (!oAifDependencies.containsKey(state)) {
-                    oAifDependencies.put(state, new HashSet<>());
+                if (!oAifDependencies.containsKey(featureState)) {
+                    oAifDependencies.put(featureState, new HashSet<>());
                 }
-                oAifDependencies.get(state).add(node.getTerm());
+                oAifDependencies.get(featureState).add(node.getTerm());
                 //TODO: we only guess that it is the state of the parent feature here
                 //needs to be improved
                 featureDependencies.get(node.getParent().getTerm()).add(node.getTerm());
             }
             for (FeatureState featureState : node.getInapplicableIf()){
-                State state = featureState.getState();
-                if (!iAifDependencies.containsKey(state)) {
-                    iAifDependencies.put(state, new HashSet<>());
+                if (!iAifDependencies.containsKey(featureState)) {
+                    iAifDependencies.put(featureState, new HashSet<>());
                 }
-                iAifDependencies.get(state).add(node.getTerm());
+                iAifDependencies.get(featureState).add(node.getTerm());
                 //TODO: we only guess that it is the state of the parent feature here
                 //needs to be improved
                 featureDependencies.get(node.getParent().getTerm()).add(node.getTerm());
