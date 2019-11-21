@@ -12,7 +12,6 @@ import java.io.FileNotFoundException;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
@@ -72,7 +71,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
 
     private StructuredDescriptionAggregation engine;
 
-    @Test
+//    @Test
     @Override
     public void createTestDataSet() throws FileNotFoundException {
 
