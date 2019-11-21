@@ -12,6 +12,7 @@ import java.io.FileNotFoundException;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
@@ -70,6 +71,11 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
     private IReferenceService referenceService;
 
     private StructuredDescriptionAggregation engine;
+
+    @Test
+    public void dummy(){
+        logger.warn("Can be removed if other test exists");
+    }
 
 //    @Test
     @Override
