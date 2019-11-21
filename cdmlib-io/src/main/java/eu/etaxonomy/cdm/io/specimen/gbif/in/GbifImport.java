@@ -164,6 +164,7 @@ public class GbifImport extends SpecimenImportBase<GbifImportConfigurator, Speci
 
         for (GbifResponse response:results) {
             if(state.getConfig().getProgressMonitor().isCanceled()){
+                logger.info("Import has been canceled");
                 break;
             }
 
