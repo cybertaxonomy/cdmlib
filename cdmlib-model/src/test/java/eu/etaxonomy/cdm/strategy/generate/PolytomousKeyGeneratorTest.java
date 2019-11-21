@@ -15,12 +15,16 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
+import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
@@ -241,6 +245,13 @@ public class PolytomousKeyGeneratorTest {
 		taxond8.addElement(catd28);  //absent
 //		taxond8.addElement(qtd38); // This taxon has no wings
 		taxond8.addElement(catd48);  //color blue
+
+		/******* add non-character data, this should have no influence **/
+		TaxonDescription nonCharacterDesc = TaxonDescription.NewInstance(taxon1);
+		Distribution distribution = Distribution.NewInstance(Country.GERMANY(), PresenceAbsenceTerm.PRESENT());
+		nonCharacterDesc.addElement(distribution);
+
+		taxond2.addElement(TextData.NewInstance(Feature.ANATOMY(), "Test", Language.DEFAULT(), null));
 
 //*************************************************/
 

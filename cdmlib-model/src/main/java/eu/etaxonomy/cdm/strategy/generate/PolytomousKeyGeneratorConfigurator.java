@@ -15,6 +15,7 @@ import java.util.Set;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -81,11 +82,20 @@ public class PolytomousKeyGeneratorConfigurator {
     public Set<TaxonDescription> getTaxonDescriptions() {
         Set<TaxonDescription> result = new HashSet<>();
         for (DescriptionBase<?> desc: getDescriptions()){
-            if (desc.isInstanceOf(TaxonDescription.class)){
+            if (desc.isInstanceOf(TaxonDescription.class) && hasStructuredDescriptiveData(desc)){
                 result.add(CdmBase.deproxy(desc, TaxonDescription.class));
             }
         }
         return result;
+    }
+
+    private boolean hasStructuredDescriptiveData(DescriptionBase<?> desc) {
+        for (DescriptionElementBase el : desc.getElements()){
+            if (el.isCharacterData()){
+                return true;
+            }
+        }
+        return false;
     }
 
     public List<Feature> getFeatures() {
