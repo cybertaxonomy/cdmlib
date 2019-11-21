@@ -498,6 +498,10 @@ public class PolytomousKeyGeneratorTest {
         //...otherwise it would be colour, both have a score of 12.0 but presence comes first in list
     }
 
+    /**
+     * Asserts that the node is an inner node (has no taxon) and uses the given feature
+     * and has the given statement label.
+     */
     private void assertInnerNode(PolytomousKeyNode node, String label, Feature feature) {
         Assert.assertEquals(label, label(node));
         Assert.assertEquals(feature, node.getFeature());
@@ -554,9 +558,6 @@ public class PolytomousKeyGeneratorTest {
         return dataset;
     }
 
-	/**
-     * @return
-     */
     private TermTree<Feature> createFeatureTree() {
         TermTree<Feature> result = TermTree.NewInstance(TermType.Feature, Feature.class);
         result.getRoot().addChild(featureShape);

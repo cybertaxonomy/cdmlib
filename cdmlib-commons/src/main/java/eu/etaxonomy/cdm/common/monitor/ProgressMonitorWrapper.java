@@ -2,8 +2,6 @@ package eu.etaxonomy.cdm.common.monitor;
 
 import java.io.Serializable;
 
-
-
 /*******************************************************************************
  * Copyright (c) 2000, 2006 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
@@ -190,76 +188,46 @@ public abstract class ProgressMonitorWrapper implements
         progressMonitor.worked(work);
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void waitForFeedback() {
         progressMonitor.waitForFeedback();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setFeedback(Serializable feedback) {
         progressMonitor.setFeedback(feedback);
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Serializable getFeedback() {
         return progressMonitor.getFeedback();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean getIsWaitingForFeedback() {
         return progressMonitor.getIsWaitingForFeedback();
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void waitForFeedback(long feedbackWaitTimeout) {
         progressMonitor.waitForFeedback(feedbackWaitTimeout);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean hasFeedbackWaitTimedOut() {
         return progressMonitor.hasFeedbackWaitTimedOut();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getOwner() {
         return progressMonitor.getOwner();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setOwner(String owner) {
        progressMonitor.setOwner(owner);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void interrupt() {
         progressMonitor.interrupt();
