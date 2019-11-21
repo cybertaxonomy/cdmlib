@@ -549,6 +549,7 @@ public class PolytomousKeyGenerator {
         featuresLeft.remove(winnerFeature);
         if (config.isDebug()){System.out.println("   ScoreMap: " + scoreMap);}
         if (config.isDebug()){System.out.println("   quantitativeThreshold: " + quantitativeFeaturesThresholds);}
+        if (config.isDebug()){System.out.println("   winner: " + winnerFeature);}
         return winnerFeature;
     }
 
@@ -1168,7 +1169,7 @@ public class PolytomousKeyGenerator {
 	 */
 	private float defaultCategoricalPower(DescriptionElementBase deb1, DescriptionElementBase deb2){
 		if (deb1==null || deb2==null) {
-			return -1; //what if the two taxa don't have this feature in common ?
+			return 0; //TODO what if the two taxa don't have this feature in common ?
 		}
 		if ((deb1.isInstanceOf(CategoricalData.class))&&(deb2.isInstanceOf(CategoricalData.class))) {
 			return defaultCategoricalPower((CategoricalData)deb1, (CategoricalData)deb2);
@@ -1206,6 +1207,8 @@ public class PolytomousKeyGenerator {
 	    //get all states of both categorical data
         Set<State> states = getStates(cd1, cd2);
         if (states.size() == 0){
+            return 0;
+        }else if (cd1.getStateData().isEmpty() || cd2.getStateData().isEmpty()){
             return 0;
         }
 
