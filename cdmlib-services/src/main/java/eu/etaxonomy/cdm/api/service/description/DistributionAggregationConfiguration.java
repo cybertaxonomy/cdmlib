@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.service.description;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,6 +34,19 @@ public class DistributionAggregationConfiguration
     private List<NamedArea> superAreas;
 
     private TermCollection<PresenceAbsenceTerm, TermNode> statusOrder;
+
+    private boolean ignoreAbsentStatusByArea = true;
+
+    private boolean ignoreAbsentStatusByRank = true;
+
+//    private boolean ignoreEndemicStatusByArea = true;
+//
+//    private boolean ignoreEndemicStatusByRank = true;
+
+
+    private List<PresenceAbsenceTerm> byAreaIgnoreStatusList = null;
+
+    private List<PresenceAbsenceTerm> byRankIgnoreStatusList = null;
 
 // **************************************** FACTORY ************************************/
 
@@ -88,5 +102,80 @@ public class DistributionAggregationConfiguration
     }
     public void setStatusOrder(TermCollection<PresenceAbsenceTerm, TermNode> statusOrder) {
         this.statusOrder = statusOrder;
+    }
+
+    /**
+     * byAreaIgnoreStatusList contains by default:
+     *  <ul>
+     *    <li>AbsenceTerm.CULTIVATED_REPORTED_IN_ERROR()</li>
+     *    <li>AbsenceTerm.INTRODUCED_REPORTED_IN_ERROR()</li>
+     *    <li>AbsenceTerm.INTRODUCED_FORMERLY_INTRODUCED()</li>
+     *    <li>AbsenceTerm.NATIVE_REPORTED_IN_ERROR()</li>
+     *    <li>AbsenceTerm.NATIVE_FORMERLY_NATIVE()</li>
+     *  </ul>
+     *
+     * @return the byAreaIgnoreStatusList
+     */
+    public List<PresenceAbsenceTerm> getByAreaIgnoreStatusList() {
+        if(byAreaIgnoreStatusList == null ){
+            byAreaIgnoreStatusList = Arrays.asList(
+                    new PresenceAbsenceTerm[] {
+                            PresenceAbsenceTerm.CULTIVATED_REPORTED_IN_ERROR(),
+                            PresenceAbsenceTerm.INTRODUCED_REPORTED_IN_ERROR(),
+                            PresenceAbsenceTerm.NATIVE_REPORTED_IN_ERROR(),
+                            PresenceAbsenceTerm.INTRODUCED_FORMERLY_INTRODUCED(),
+                            PresenceAbsenceTerm.NATIVE_FORMERLY_NATIVE()
+                            // TODO what about PresenceAbsenceTerm.ABSENT() also ignore?
+                    });
+        }
+        return byAreaIgnoreStatusList;
+    }
+
+    public void setByAreaIgnoreStatusList(List<PresenceAbsenceTerm> byAreaIgnoreStatusList) {
+        this.byAreaIgnoreStatusList = byAreaIgnoreStatusList;
+    }
+
+    /**
+     * Ranks to be ignored if aggregated to next higher rank.
+     * byRankIgnoreStatusList contains by default
+     *  <ul>
+     *    <li>PresenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA()</li>
+     *    <li>PresenceTerm.ENDEMIC_DOUBTFULLY_PRESENT()</li>
+     *    <li>PresenceTerm.ENDEMIC_REPORTED_IN_ERROR()</li>
+     *    <li>PresenceTerm.NOT_ENDEMIC_FOR_THE_RELEVANT_AREA()</li>
+     *  </ul>
+     *
+     * @return the byRankIgnoreStatusList
+     */
+    public List<PresenceAbsenceTerm> getByRankIgnoreStatusList() {
+
+        if (byRankIgnoreStatusList == null) {
+            byRankIgnoreStatusList = Arrays.asList(
+                    new PresenceAbsenceTerm[] {
+                            PresenceAbsenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA(),
+                            PresenceAbsenceTerm.ENDEMIC_DOUBTFULLY_PRESENT(),
+                            PresenceAbsenceTerm.ENDEMIC_REPORTED_IN_ERROR(),
+                            PresenceAbsenceTerm.NOT_ENDEMIC_FOR_THE_RELEVANT_AREA()
+                    });
+        }
+        return byRankIgnoreStatusList;
+    }
+
+    public void setByRankIgnoreStatusList(List<PresenceAbsenceTerm> byRankIgnoreStatusList) {
+        this.byRankIgnoreStatusList = byRankIgnoreStatusList;
+    }
+
+    public boolean isIgnoreAbsentStatusByArea() {
+        return ignoreAbsentStatusByArea;
+    }
+    public void setIgnoreAbsentStatusByArea(boolean ignoreAbsentStatusByArea) {
+        this.ignoreAbsentStatusByArea = ignoreAbsentStatusByArea;
+    }
+
+    public boolean isIgnoreAbsentStatusByRank() {
+        return ignoreAbsentStatusByRank;
+    }
+    public void setIgnoreAbsentStatusByRank(boolean ignoreAbsentStatusByRank) {
+        this.ignoreAbsentStatusByRank = ignoreAbsentStatusByRank;
     }
 }

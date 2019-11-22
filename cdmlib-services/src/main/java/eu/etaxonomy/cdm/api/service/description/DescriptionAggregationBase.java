@@ -232,6 +232,13 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
             }
         }
         addAggregationResultToDescription(targetDescription, resultHolder);
+        removeDescriptionIfEmpty(targetDescription);
+    }
+
+    private void removeDescriptionIfEmpty(TaxonDescription description) {
+        if (description.getElements().isEmpty()){
+            description.getTaxon().removeDescription(description);
+        }
     }
 
     protected abstract void addAggregationResultToDescription(TaxonDescription targetDescription,
