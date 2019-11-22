@@ -93,7 +93,7 @@ public class PolytomousKeyGenerator {
 
         @Override
         public String toString() {
-            return "KeyTaxon [uuid=" + uuid + "]";
+            return "KeyTaxon [uuid=" + uuid + (taxon != null? ", " + taxon.getTitleCache():"") + "]";
         }
 	}
 

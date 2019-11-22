@@ -42,19 +42,24 @@ public class PolytomousKeyGeneratorConfigurator {
     public boolean isMerge() {
         return merge;
     }
-
+    /**
+     * @see #isMerge()
+     */
     public void setMerge(boolean merge) {
         this.merge = merge;
     }
 
     /**
-     * If true allows the generator to use the dependencies given by the function "setDependencies".
-     * If false prevents the generator from using dependencies.
+     * If <code>true</code> allows the generator to use the dependencies
+     * given by the function "setDependencies".
+     * If <code>false</code> prevents the generator from using dependencies.
      */
     public boolean isUseDependencies() {
         return useDependencies;
     }
-
+    /**
+     * @see #isUseDependencies()
+     */
     public void setUseDependencies(boolean useDependencies) {
         this.useDependencies = useDependencies;
     }
@@ -62,14 +67,13 @@ public class PolytomousKeyGeneratorConfigurator {
     public DescriptiveDataSet getDataSet() {
         return dataSet;
     }
-
+    /**
+     * @see #getDataSet()
+     */
     public void setDataSet(DescriptiveDataSet dataSet) {
         this.dataSet = dataSet;
     }
 
-    /**
-     * @return
-     */
     public Set<DescriptionBase<?>> getDescriptions() {
         Set<DescriptionBase<?>> result = (Set)dataSet.getDescriptions();
         if (result == null || result.isEmpty()){
