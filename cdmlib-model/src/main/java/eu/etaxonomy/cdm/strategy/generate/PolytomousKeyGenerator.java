@@ -197,7 +197,7 @@ public class PolytomousKeyGenerator {
     private void handleLeaf(PolytomousKeyNode parent, Set<KeyTaxon> taxaCovered) {
         KeyStatement parentStatement = parent.getStatement();
         for(KeyTaxon taxon: taxaCovered){
-            if  (taxon.taxon instanceof Taxon){
+            if  (taxon.taxon != null){
                 parent.setOrAddTaxon(taxon.taxon);
             }else{
                 //FIXME handle other descriptions like specimen descriptions better
@@ -219,8 +219,7 @@ public class PolytomousKeyGenerator {
     private void handleCategorialFeature(PolytomousKeyNode parent, List<Feature> featuresLeft,
             Set<KeyTaxon> taxaCovered,
             Feature winnerFeature,
-            Map<Feature, Set<State>> featureStatesFilter,
-            boolean taxaDiscriminatedInPreviousStep) {
+            Map<Feature, Set<State>> featureStatesFilter) {
 
         Map<Set<KeyTaxon>,Boolean> reuseWinner = new HashMap<>();
 
@@ -288,13 +287,15 @@ public class PolytomousKeyGenerator {
             Feature winnerFeature, Map<Set<KeyTaxon>, Boolean> reuseWinner,
             Map<Set<KeyTaxon>, List<State>> taxonStatesMap, Set<KeyTaxon> newTaxaCovered, Map<Feature,Set<State>> featureStatesFilter) {
 
+        //to restore old state
+        Set<State> oldFilterSet = featureStatesFilter.get(winnerFeature);
         Set<Feature> featuresAdded = new HashSet<>();
+
         boolean areTheTaxaDiscriminated = false;
-        PolytomousKeyNode pkNode = PolytomousKeyNode.NewInstance();
-        parent.addChild(pkNode);
+        PolytomousKeyNode childNode = PolytomousKeyNode.NewInstance();
+        parent.addChild(childNode);
 
         List<State> listOfStates = taxonStatesMap.get(newTaxaCovered);
-        Set<State> oldFilterSet = featureStatesFilter.get(winnerFeature);
         if ((newTaxaCovered.size() > 0)){ //old: if the taxa are discriminated compared to those of the parent node, a child is created
         	areTheTaxaDiscriminated = (newTaxaCovered.size()!=taxaCovered.size());
 
@@ -310,12 +311,12 @@ public class PolytomousKeyGenerator {
 
         	String statementLabel = createStatement(listOfStates, numberOfStates);
             KeyStatement statement = KeyStatement.NewInstance(statementLabel);
-        	pkNode.setStatement(statement);
+        	childNode.setStatement(statement);
         	parent.setFeature(winnerFeature);
 
         	if (reuseWinner.get(newTaxaCovered)== Boolean.TRUE){
         	    featuresLeft.add(winnerFeature);
-        	    addStatesToFilter(featureStatesFilter, winnerFeature, listOfStates);
+        	    setStatesFilter(featureStatesFilter, winnerFeature, listOfStates);
         	}else{
         	    featuresLeft.remove(winnerFeature);
         	}
@@ -323,15 +324,16 @@ public class PolytomousKeyGenerator {
 
         boolean hasChildren = areTheTaxaDiscriminated && newTaxaCovered.size()>1;
         if (hasChildren){
-            buildBranches(pkNode, featuresLeft, newTaxaCovered, featureStatesFilter, areTheTaxaDiscriminated);
+            buildBranches(childNode, featuresLeft, newTaxaCovered, featureStatesFilter, areTheTaxaDiscriminated);
         }else{
-            handleLeaf(pkNode, newTaxaCovered);
+            handleLeaf(childNode, newTaxaCovered);
         }
+        //restore old state before returning to parent node
         removeAddedDependendFeatures(featuresLeft, featuresAdded);
         featureStatesFilter.put(winnerFeature, oldFilterSet);
     }
 
-    private void addStatesToFilter(Map<Feature, Set<State>> filter, Feature feature,
+    private void setStatesFilter(Map<Feature, Set<State>> filter, Feature feature,
             List<State> listOfStates) {
         if (filter.get(feature)==null){
             filter.put(feature, new HashSet<>(listOfStates));
