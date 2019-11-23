@@ -388,6 +388,7 @@ public class PolytomousKeyGeneratorTest {
         taxond3.removeElement(qtd33);
         taxond4.removeElement(qtd34);
         catd12.addStateData(oval);
+        catd12.addStateData(circular);
         configurator.setMerge(true);
         PolytomousKey result = generator.invoke(configurator);
         result.setTitleCache("Merge Key with feature reuse", true);
@@ -400,16 +401,30 @@ public class PolytomousKeyGeneratorTest {
         Assert.assertEquals(featureShape, root.getFeature());
 
         //triangular or oval
-        PolytomousKeyNode ovalOrTriangularNode = root.getChildAt(0);
+        PolytomousKeyNode ovalOrTriangularNode = root.getChildren().stream()
+                .filter(pkn->pkn.getStatement().getLabelText(Language.DEFAULT()).equals("Oval or Triangular"))
+                .findFirst().get();
         Assert.assertEquals("Oval or Triangular", label(ovalOrTriangularNode));
 
             //blue
             PolytomousKeyNode blueNode = ovalOrTriangularNode.getChildAt(0);
             Assert.assertEquals(blue.getLabel(), label(blueNode));
 
-                //triangular or oval
+                //triangular
                 PolytomousKeyNode triangularNode = blueNode.getChildAt(0);
                 Assert.assertEquals("Shape of head should be reused in this branch", "Triangular", label(triangularNode));
+
+            //yellow
+            PolytomousKeyNode yellowNode = ovalOrTriangularNode.getChildAt(1);
+            Assert.assertEquals(yellow.getLabel(), label(yellowNode));
+
+                //triangular
+                PolytomousKeyNode ovalNode = yellowNode.getChildAt(1);
+                Assert.assertEquals("Shape of head should be reused in this branch, "
+                        + "but only for remaining states triangular and oval. "
+                        + "'Circular' must not be available anymore", "Oval", label(ovalNode));
+
+
     }
 
 
