@@ -424,7 +424,21 @@ public class PolytomousKeyGeneratorTest {
                         + "but only for remaining states triangular and oval. "
                         + "'Circular' must not be available anymore", "Oval", label(ovalNode));
 
+        PolytomousKeyNode circularNode = root.getChildren().stream()
+                .filter(pkn->pkn.getStatement().getLabelText(Language.DEFAULT()).equals("Circular"))
+                .findFirst().get();
 
+            //presence yes
+            PolytomousKeyNode presenceNode = circularNode.getChildAt(0);
+            Assert.assertEquals(yes.getLabel(), label(presenceNode));
+
+                //blue
+                blueNode = presenceNode.getChildAt(0);
+                Assert.assertEquals(blue.getLabel(), label(blueNode));
+
+                    //length
+                    PolytomousKeyNode lowerNode = blueNode.getChildAt(0);
+                    assertIsTaxonList(lowerNode, LESS_3, taxon5, taxon6);  //test no feature left
     }
 
 
