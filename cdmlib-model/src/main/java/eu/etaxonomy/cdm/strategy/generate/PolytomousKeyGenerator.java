@@ -271,9 +271,6 @@ public class PolytomousKeyGenerator {
             Set<KeyTaxon> dependetCandidates = getAllBranchesTaxa(dependendFeatures, taxaCovered, featureStatesFilter);
             candidates.retainAll(dependetCandidates);
         }
-        if(!candidates.isEmpty()){
-            logger.warn("Candidates: " + candidates);
-        }
         return candidates;
     }
 
@@ -345,110 +342,6 @@ public class PolytomousKeyGenerator {
             }
 		}
 		return;
-    }
-
-    private Map<PolytomousKeyNode, Set<KeyTaxon>> handleAllBranchesResult(
-            Map<PolytomousKeyNode, Set<KeyTaxon>> taxaCoveredByAllSubBranches, PolytomousKeyNode parent) {
-
-        if(taxaCoveredByAllSubBranches.isEmpty()){
-            return taxaCoveredByAllSubBranches;
-        }
-        Set<KeyTaxon> start = taxaCoveredByAllSubBranches.values().iterator().next();
-        if(start == null){
-            return taxaCoveredByAllSubBranches;
-        }
-        //compute taxon intersection
-        Set<KeyTaxon> taxonIntersection = new HashSet<>(start);  //just taxa any as start
-        for (Set<KeyTaxon> taxaOfSingleBranch : taxaCoveredByAllSubBranches.values()){
-            taxonIntersection.retainAll(taxaOfSingleBranch);
-        }
-        Map<PolytomousKeyNode, Set<KeyTaxon>> remainingCoveredTaxa = new HashMap<>();
-        //and add those taxa to parent
-        remainingCoveredTaxa.put(parent, new HashSet<>(taxonIntersection));
-
-        //handle non common taxa
-        Set<PolytomousKeyNode> singularCandidates = new HashSet<>();
-        for (PolytomousKeyNode node : taxaCoveredByAllSubBranches.keySet()){
-            Set<KeyTaxon> remainingTaxa = taxaCoveredByAllSubBranches.get(node);
-            remainingTaxa.removeAll(taxonIntersection);
-            if(remainingTaxa.isEmpty() && node.getChildren().isEmpty()){
-                PolytomousKeyNode myParent = node.getParent();
-                myParent.removeChild(node);
-                singularCandidates.add(myParent);
-            }else{
-                handleLeaf(node, remainingTaxa);
-            }
-        }
-        for (PolytomousKeyNode cand : singularCandidates){
-            checkSingularParent(cand);
-        }
-
-        return remainingCoveredTaxa;
-    }
-
-    private void checkSingularParent(PolytomousKeyNode parent) {
-//        if(parent.getChildren().size()==1){
-//            PolytomousKeyNode child = parent.getChildren().get(0);
-//            parent.setFeature(child.getFeature());
-//            parent.setTaxon(child.getTaxon());
-//            Set<PolytomousKeyNode> children = new HashSet<>(child.getChildren());
-//            for (PolytomousKeyNode childChild : children){
-//                parent.addChild(childChild);
-//            }
-//            parent.removeChild(child);
-//        }
-    }
-
-    private void mergeBranchResults(Map<PolytomousKeyNode, Set<KeyTaxon>> taxaCoveredByAllSubBranches,
-            Map<PolytomousKeyNode, Set<KeyTaxon>> taxaCoveredByBranch) {
-        if (taxaCoveredByBranch == null){
-            return;
-        }
-
-        for (PolytomousKeyNode node : taxaCoveredByBranch.keySet()){
-            Set<KeyTaxon> existingNode = taxaCoveredByAllSubBranches.get(node);
-            if (existingNode != null){
-                throw new RuntimeException("Branches should be distinct.");
-            }else{
-                taxaCoveredByAllSubBranches.put(node, taxaCoveredByBranch.get(node));
-            }
-        }
-    }
-
-//    /**
-//     * Sets the taxa which are linked by all sub-branches as taxa of the common parent
-//     * and removes the taxa from the sub-branches.
-//     * @param parent the common parent node of the sub-branches
-//     * @param taxaCoveredByAllSubBranches taxa linking to all subbranches
-//     */
-//    private void handleTaxaCoveredByAllSubBranches(PolytomousKeyNode parent,
-//            Map<PolytomousKeyNode,Set<KeyTaxon>> taxaCoveredByAllSubBranches) {
-//
-//        if (taxaCoveredByAllSubBranches.isEmpty()){
-//            return;
-//        }
-//        for (KeyTaxon taxon : taxaCoveredByAllSubBranches){
-//            for (PolytomousKeyNode node : parent.getChildren()){
-//                //TODO we do not need to do this recursive any more as we remove them in each step
-////                removeTaxonRecursive(node, taxon);
-//                if (taxon.taxon.equals(node.getTaxon())){
-//                    //TODO remove empty leaf nodes
-//                    node.removeTaxon();
-//                }
-//            }
-//        }
-//        //TODO check if correctly handled if size > 1, might be a model problem
-////        handleLeaf(parent, taxaCoveredByAllSubBranches);
-//    }
-
-    private void removeTaxonRecursive(PolytomousKeyNode parent, KeyTaxon taxon) {
-        for (PolytomousKeyNode node : parent.getChildren()){
-            removeTaxonRecursive(node, taxon);
-        }
-        if (taxon.taxon.equals(parent.getTaxon())){
-            //TODO remove empty leafe nodes
-            parent.removeTaxon();
-        }
     }
 
     private Map<Set<KeyTaxon>, List<State>> handleMerge(Set<KeyTaxon> taxaCovered,
@@ -697,7 +590,6 @@ public class PolytomousKeyGenerator {
             handleQuantitativeBranch(parent, featuresLeft, taxaCovered.size(), winnerFeature, threshold, unit,
                     quantitativeStates, featureStatesFilter, i);
         }
-//        taxaCoveredByAllSubBranches = handleAllBranchesResult(taxaCoveredByAllSubBranches, parent);
 
         return;
     }
@@ -814,14 +706,14 @@ public class PolytomousKeyGenerator {
 	 */
 	private void mergeBranches(List<State> clique, Map<Set<KeyTaxon>, List<State>> taxonStatesMap,
 	        Map<Set<KeyTaxon>, Boolean> reuseWinner, Set<State> filter){
-	    //TODO filter use needed?
-	    logger.warn("Test if filter needed");
+
 	    boolean isExact = true;
 	    if (clique.size()<=1){
 	        return;
 	    }
 	    Map.Entry<Set<KeyTaxon>,List<State>> firstBranch = null;
 	    List<Set<KeyTaxon>> tdToDelete = new ArrayList<>();
+	    //TODO is the stateFilter needed here somehow?
 	    for (Map.Entry<Set<KeyTaxon>, List<State>> branch : taxonStatesMap.entrySet()){
 		    boolean stateFound = false;
 			// looks for one state of the clique in this branch
@@ -834,8 +726,8 @@ public class PolytomousKeyGenerator {
 			// if one state is found...
 			if (stateFound == true){
 				// ...for the first time, the branch becomes the one to which the others will be merged
-				if (firstBranch==null){
-					firstBranch=branch;
+				if (firstBranch == null){
+					firstBranch = branch;
 				}
 				// ... else the branch is merged to the first one.
 				else {
