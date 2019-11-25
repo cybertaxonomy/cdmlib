@@ -418,7 +418,9 @@ public class StructuredDescriptionAggregation
             aggregate.addStateData(stateData);
         });
 
-        description.addElement(aggregate);
+        if(!aggregate.getStatesOnly().isEmpty()){
+            description.addElement(aggregate);
+        }
     }
 
     private void addCharacterToMap(Map<Character, List<DescriptionElementBase>> featureToElementMap,
