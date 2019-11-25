@@ -231,8 +231,39 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 
 // ******************************** TRANSIENT METHODS *******************************/
 
+    @Transient
+    public Float getOverallMin(){
+        float result = Float.MAX_VALUE;
+        for (StatisticalMeasurementValue value : statisticalValues){
+            if (withRangeValue(value)){
+                result = Math.min(result, value.getValue());;
+            }
+        }
+        return (result == Float.MAX_VALUE)? null: result;
+    }
 
-	/**
+    @Transient
+    public Float getOverallMax(){
+        float result = Float.MIN_VALUE;
+        for (StatisticalMeasurementValue value : statisticalValues){
+            if (withRangeValue(value)){
+                result = Math.max(result, value.getValue());;
+            }
+        }
+        return (result == Float.MIN_VALUE)? null: result;
+    }
+
+    private boolean withRangeValue(StatisticalMeasurementValue value) {
+        StatisticalMeasure type = value.getType();
+        if (type != null){
+            if (type.isAverage()|| type.isMin() || type.isTypicalLowerBoundary()||type.isMax()||type.isTypicalUpperBoundary()||type.isExactValue()){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
 	 * Returns the numerical value of the one {@link StatisticalMeasurementValue statistical measurement value}
 	 * with the corresponding {@link StatisticalMeasure statistical measure} "minimum" and
 	 * belonging to <i>this</i> quantitative data. Returns <code>null</code> if no such
@@ -264,6 +295,11 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 	public Float getTypicalLowerBoundary(){
 		return getSpecificStatisticalValue(StatisticalMeasure.TYPICAL_LOWER_BOUNDARY());
 	}
+
+	@Transient
+    public Float getExactValue(){
+        return getSpecificStatisticalValue(StatisticalMeasure.EXACT_VALUE());
+    }
 
 	/**
 	 * Returns the numerical value of the one {@link StatisticalMeasurementValue statistical measurement value}

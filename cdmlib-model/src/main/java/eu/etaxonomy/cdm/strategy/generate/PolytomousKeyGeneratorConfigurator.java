@@ -104,7 +104,7 @@ public class PolytomousKeyGeneratorConfigurator {
 
     public List<Feature> getFeatures() {
         List<Feature> result;
-        if(!useDependencies){
+        if(!isUseDependencies()){
             result = dataSet.getDescriptiveSystem().asTermList();
         }else{
             result = new ArrayList<>(dataSet.getDescriptiveSystem().independentTerms());
