@@ -386,7 +386,9 @@ public class StructuredDescriptionAggregation
         if(avg.isPresent()){
             aggregate.setAverage((float)avg.getAsDouble(), null);
         }
-        description.addElement(aggregate);
+        if(min.isPresent() || max.isPresent() || avg.isPresent()){
+            description.addElement(aggregate);
+        }
     }
 
     private void aggregateCategoricalData(TaxonDescription description, Character character,
