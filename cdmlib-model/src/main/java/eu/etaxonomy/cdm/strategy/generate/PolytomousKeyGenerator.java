@@ -154,15 +154,17 @@ public class PolytomousKeyGenerator {
      * @param featureStatesFilter
      * @return taxa which exist in ALL sub-branches and therefore can be linked on higher level
 	 */
-	private Set<KeyTaxon> buildBranches(PolytomousKeyNode parent, List<Feature> featuresLeft, Set<KeyTaxon> taxaCovered,
+	private Map<PolytomousKeyNode,Set<KeyTaxon>> buildBranches(PolytomousKeyNode parent, List<Feature> featuresLeft, Set<KeyTaxon> taxaCovered,
 	        Map<Feature, Set<State>> featureStatesFilter){
 
-	    Set<KeyTaxon> taxaCoveredByAllSubBranches;
+	    Map<PolytomousKeyNode,Set<KeyTaxon>> taxaCoveredByAllSubBranches;
 
 	    if (taxaCovered.size()<=1){
 		    //do nothing
 	        logger.warn("Only 1 or no taxon covered. This should currently only be possible on top level and is not yet handled. ");
-	        taxaCoveredByAllSubBranches = taxaCovered;
+            //old: taxaCoveredByAllSubBranches = taxaCovered;
+	        taxaCoveredByAllSubBranches = new HashMap<>();
+            taxaCoveredByAllSubBranches.put(parent, taxaCovered);
 		}else {
 			// this map stores the thresholds giving the best dichotomy of taxa for the corresponding feature supporting quantitative data
 			Map<Feature,Float> quantitativeFeaturesThresholds = new HashMap<>();
@@ -189,11 +191,13 @@ public class PolytomousKeyGenerator {
 			    // the winner features are put back to the features left once the branch is done
 			    featuresLeft.add(winnerFeature);
 			}else if (featuresLeft.isEmpty()){
-			    taxaCoveredByAllSubBranches = handleLeaf(parent, taxaCovered);
+			    //old: handleLeaf(parent, taxaCovered);
+			    taxaCoveredByAllSubBranches = new HashMap<>();
+			    taxaCoveredByAllSubBranches.put(parent, taxaCovered);
 			}else{
 			    throw new RuntimeException("No winner feature but features left to handle should not happen.");
 			}
-			handletaxaCoveredByAllSubBranches(parent, taxaCoveredByAllSubBranches);
+//			handleTaxaCoveredByAllSubBranches(parent, taxaCoveredByAllSubBranches);
 		}
         return taxaCoveredByAllSubBranches;
 	}
@@ -227,12 +231,12 @@ public class PolytomousKeyGenerator {
      * each one of these might correspond to one child.
      * @return taxa which exist in ALL sub-branches and therefore can be linked on higher level
      */
-    private Set<KeyTaxon> handleCategorialFeature(PolytomousKeyNode parent, List<Feature> featuresLeft,
+    private Map<PolytomousKeyNode,Set<KeyTaxon>> handleCategorialFeature(PolytomousKeyNode parent, List<Feature> featuresLeft,
             Set<KeyTaxon> taxaCovered,
             Feature winnerFeature,
             Map<Feature, Set<State>> featureStatesFilter) {
 
-        Set<KeyTaxon> taxaCoveredByAllSubBranches;
+        Map<PolytomousKeyNode,Set<KeyTaxon>> taxaCoveredByAllSubBranches;
         Map<Set<KeyTaxon>,Boolean> reuseWinner = new HashMap<>();
 
         Set<State> states = getAllStates(winnerFeature, taxaCovered, featureStatesFilter.get(winnerFeature));
@@ -252,7 +256,9 @@ public class PolytomousKeyGenerator {
 		        removeAddedDependendFeatures(featuresLeft, featuresAdded);
 		    }else{
 		        //if only 1 branch is left we can handle this as a leaf, no matter how many taxa are left
-		        taxaCoveredByAllSubBranches = handleLeaf(parent, taxaCovered);
+		        //old: taxaCoveredByAllSubBranches = handleLeaf(parent, taxaCovered);
+	            taxaCoveredByAllSubBranches = new HashMap<>();
+	            taxaCoveredByAllSubBranches.put(parent, taxaCovered);
 		    }
 		}else {
 		    // if the merge option is ON, branches with the same discriminative power will be merged (see Vignes & Lebbes, 1989)
@@ -261,46 +267,111 @@ public class PolytomousKeyGenerator {
 		                taxonStatesMap, featureStatesFilter.get(winnerFeature));
 		    }
 		    List<Set<KeyTaxon>> sortedKeys = sortKeys(taxonStatesMap);
-		    taxaCoveredByAllSubBranches = null;
+		    taxaCoveredByAllSubBranches = new HashMap<>();
             for (Set<KeyTaxon> newTaxaCovered : sortedKeys){
 		        //handle each branch
-		        Set<KeyTaxon> taxaCovererByBranch = handleCategoricalBranch(parent, featuresLeft, taxaCovered, winnerFeature,
-		                reuseWinner, taxonStatesMap, newTaxaCovered, featureStatesFilter);
-		        if (taxaCoveredByAllSubBranches == null){
-		            taxaCoveredByAllSubBranches = taxaCovererByBranch;
-		        }else{
-		            taxaCoveredByAllSubBranches.retainAll(taxaCovererByBranch);
-		        }
-		    }
+                Map<PolytomousKeyNode,Set<KeyTaxon>> taxaCoveredByBranch = handleCategoricalBranch(parent, featuresLeft,
+                        taxaCovered, winnerFeature, reuseWinner, taxonStatesMap, newTaxaCovered, featureStatesFilter);
+                mergeBranchResults(taxaCoveredByAllSubBranches, taxaCoveredByBranch);
+            }
+            taxaCoveredByAllSubBranches = handleAllBranchesResult(taxaCoveredByAllSubBranches, parent);
 		}
 		return taxaCoveredByAllSubBranches;
     }
 
-    /**
-     * Sets the taxa which are linked by all sub-branches as taxa of the common parent
-     * and removes the taxa from the sub-branches.
-     * @param parent the common parent node of the sub-branches
-     * @param taxaCoveredByAllSubBranches taxa linking to all subbranches
-     */
-    private void handletaxaCoveredByAllSubBranches(PolytomousKeyNode parent,
-            Set<KeyTaxon> taxaCoveredByAllSubBranches) {
+    private Map<PolytomousKeyNode, Set<KeyTaxon>> handleAllBranchesResult(
+            Map<PolytomousKeyNode, Set<KeyTaxon>> taxaCoveredByAllSubBranches, PolytomousKeyNode parent) {
 
-        if (taxaCoveredByAllSubBranches.isEmpty()){
-            return;
+        if(taxaCoveredByAllSubBranches.isEmpty()){
+            return taxaCoveredByAllSubBranches;
         }
-        for (KeyTaxon taxon : taxaCoveredByAllSubBranches){
-            for (PolytomousKeyNode node : parent.getChildren()){
-                //TODO we do not need to do this recursive any more as we remove them in each step
-//                removeTaxonRecursive(node, taxon);
-                if (taxon.taxon.equals(node.getTaxon())){
-                    //TODO remove empty leaf nodes
-//                    node.removeTaxon();
-                }
+        Set<KeyTaxon> start = taxaCoveredByAllSubBranches.values().iterator().next();
+        if(start == null){
+            return taxaCoveredByAllSubBranches;
+        }
+        //compute taxon intersection
+        Set<KeyTaxon> taxonIntersection = new HashSet<>(start);  //just taxa any as start
+        for (Set<KeyTaxon> taxaOfSingleBranch : taxaCoveredByAllSubBranches.values()){
+            taxonIntersection.retainAll(taxaOfSingleBranch);
+        }
+        Map<PolytomousKeyNode, Set<KeyTaxon>> remainingCoveredTaxa = new HashMap<>();
+        //and add those taxa to parent
+        remainingCoveredTaxa.put(parent, new HashSet<>(taxonIntersection));
+
+        //handle non common taxa
+        Set<PolytomousKeyNode> singularCandidates = new HashSet<>();
+        for (PolytomousKeyNode node : taxaCoveredByAllSubBranches.keySet()){
+            Set<KeyTaxon> remainingTaxa = taxaCoveredByAllSubBranches.get(node);
+            remainingTaxa.removeAll(taxonIntersection);
+            if(remainingTaxa.isEmpty() && node.getChildren().isEmpty()){
+                PolytomousKeyNode myParent = node.getParent();
+                myParent.removeChild(node);
+                singularCandidates.add(myParent);
+            }else{
+                handleLeaf(node, remainingTaxa);
             }
         }
-        //TODO check if correctly handled if size > 1, might be a model problem
-//        handleLeaf(parent, taxaCoveredByAllSubBranches);
+        for (PolytomousKeyNode cand : singularCandidates){
+            checkSingularParent(cand);
+        }
+
+        return remainingCoveredTaxa;
     }
+
+    private void checkSingularParent(PolytomousKeyNode parent) {
+//        if(parent.getChildren().size()==1){
+//            PolytomousKeyNode child = parent.getChildren().get(0);
+//            parent.setFeature(child.getFeature());
+//            parent.setTaxon(child.getTaxon());
+//            Set<PolytomousKeyNode> children = new HashSet<>(child.getChildren());
+//            for (PolytomousKeyNode childChild : children){
+//                parent.addChild(childChild);
+//            }
+//            parent.removeChild(child);
+//        }
+    }
+
+    private void mergeBranchResults(Map<PolytomousKeyNode, Set<KeyTaxon>> taxaCoveredByAllSubBranches,
+            Map<PolytomousKeyNode, Set<KeyTaxon>> taxaCoveredByBranch) {
+        if (taxaCoveredByBranch == null){
+            return;
+        }
+
+        for (PolytomousKeyNode node : taxaCoveredByBranch.keySet()){
+            Set<KeyTaxon> existingNode = taxaCoveredByAllSubBranches.get(node);
+            if (existingNode != null){
+                throw new RuntimeException("Branches should be distinct.");
+            }else{
+                taxaCoveredByAllSubBranches.put(node, taxaCoveredByBranch.get(node));
+            }
+        }
+    }
+
+//    /**
+//     * Sets the taxa which are linked by all sub-branches as taxa of the common parent
+//     * and removes the taxa from the sub-branches.
+//     * @param parent the common parent node of the sub-branches
+//     * @param taxaCoveredByAllSubBranches taxa linking to all subbranches
+//     */
+//    private void handleTaxaCoveredByAllSubBranches(PolytomousKeyNode parent,
+//            Map<PolytomousKeyNode,Set<KeyTaxon>> taxaCoveredByAllSubBranches) {
+//
+//        if (taxaCoveredByAllSubBranches.isEmpty()){
+//            return;
+//        }
+//        for (KeyTaxon taxon : taxaCoveredByAllSubBranches){
+//            for (PolytomousKeyNode node : parent.getChildren()){
+//                //TODO we do not need to do this recursive any more as we remove them in each step
+////                removeTaxonRecursive(node, taxon);
+//                if (taxon.taxon.equals(node.getTaxon())){
+//                    //TODO remove empty leaf nodes
+//                    node.removeTaxon();
+//                }
+//            }
+//        }
+//        //TODO check if correctly handled if size > 1, might be a model problem
+////        handleLeaf(parent, taxaCoveredByAllSubBranches);
+//    }
 
     private void removeTaxonRecursive(PolytomousKeyNode parent, KeyTaxon taxon) {
         for (PolytomousKeyNode node : parent.getChildren()){
@@ -336,12 +407,14 @@ public class PolytomousKeyGenerator {
     /**
      * @return taxa which exist in ALL sub-branches and therefore can be linked on higher level
      */
-    private Set<KeyTaxon> handleCategoricalBranch(PolytomousKeyNode parent, List<Feature> featuresLeft,
+    private Map<PolytomousKeyNode,Set<KeyTaxon>> handleCategoricalBranch(PolytomousKeyNode parent, List<Feature> featuresLeft,
             Set<KeyTaxon> taxaCovered,
             Feature winnerFeature, Map<Set<KeyTaxon>, Boolean> reuseWinner,
-            Map<Set<KeyTaxon>, List<State>> taxonStatesMap, Set<KeyTaxon> newTaxaCovered, Map<Feature,Set<State>> featureStatesFilter) {
+            Map<Set<KeyTaxon>, List<State>> taxonStatesMap,
+            Set<KeyTaxon> newTaxaCovered,
+            Map<Feature,Set<State>> featureStatesFilter) {
 
-        Set<KeyTaxon> taxaCoveredByAllSubBranches;
+        Map<PolytomousKeyNode,Set<KeyTaxon>> taxaCoveredByAllSubBranches;
 
         //to restore old state
         Set<State> oldFilterSet = featureStatesFilter.get(winnerFeature);
@@ -382,7 +455,9 @@ public class PolytomousKeyGenerator {
         if (hasChildren){
             taxaCoveredByAllSubBranches = buildBranches(childNode, featuresLeft, newTaxaCovered, featureStatesFilter);
         }else{
-            taxaCoveredByAllSubBranches = handleLeaf(childNode, newTaxaCovered);
+            //old: taxaCoveredByAllSubBranches = handleLeaf(childNode, newTaxaCovered);
+            taxaCoveredByAllSubBranches = new HashMap<>();
+            taxaCoveredByAllSubBranches.put(childNode, newTaxaCovered);
         }
 
         //restore old state before returning to parent node
@@ -545,11 +620,11 @@ public class PolytomousKeyGenerator {
     /**
      * @return taxa which exist in ALL sub-branches and therefore can be linked on higher level
      */
-    private Set<KeyTaxon> handleQuantitativeData(PolytomousKeyNode parent, List<Feature> featuresLeft,
+    private Map<PolytomousKeyNode,Set<KeyTaxon>> handleQuantitativeData(PolytomousKeyNode parent, List<Feature> featuresLeft,
             Set<KeyTaxon> taxaCovered, Map<Feature, Float> quantitativeFeaturesThresholds,
             Feature winnerFeature, Map<Feature, Set<State>> featureStatesFilter) {
 
-        Set<KeyTaxon> taxaCoveredByAllSubBranches = null;
+        Map<PolytomousKeyNode,Set<KeyTaxon>> taxaCoveredByAllSubBranches = null;
 
         // first, get the threshold
         float threshold = quantitativeFeaturesThresholds.get(winnerFeature);
@@ -560,15 +635,15 @@ public class PolytomousKeyGenerator {
         List<Set<KeyTaxon>> quantitativeStates = determineQuantitativeStates(threshold, winnerFeature, taxaCovered, unit);
         // thus the list contains two sets of KeyTaxon, the first corresponding to
         // those before, the second to those after the threshold
+        taxaCoveredByAllSubBranches = new HashMap<>();
         for (int i=0; i<2; i++) {
-            Set<KeyTaxon> taxaCovererByBranch = handleQuantitativeBranch(parent, featuresLeft, taxaCovered, winnerFeature, threshold, unit,
+            Map<PolytomousKeyNode,Set<KeyTaxon>> taxaCoveredByBranch = handleQuantitativeBranch(parent, featuresLeft, taxaCovered, winnerFeature, threshold, unit,
                     quantitativeStates, featureStatesFilter, i);
-            if(taxaCoveredByAllSubBranches == null){
-                taxaCoveredByAllSubBranches = taxaCovererByBranch;
-            }else{
-                taxaCoveredByAllSubBranches.retainAll(taxaCovererByBranch);
-            }
+            mergeBranchResults(taxaCoveredByAllSubBranches, taxaCoveredByBranch);
         }
+
+        taxaCoveredByAllSubBranches = handleAllBranchesResult(taxaCoveredByAllSubBranches, parent);
+
         return taxaCoveredByAllSubBranches;
     }
 
@@ -577,11 +652,11 @@ public class PolytomousKeyGenerator {
      * TODO if the quantitative feature has dependent features they are not yet handled
      * @return taxa which exist in ALL sub-branches and therefore can be linked on higher level
      */
-    private Set<KeyTaxon> handleQuantitativeBranch(PolytomousKeyNode parent, List<Feature> featuresLeft,
+    private Map<PolytomousKeyNode,Set<KeyTaxon>> handleQuantitativeBranch(PolytomousKeyNode parent, List<Feature> featuresLeft,
             Set<KeyTaxon> taxaCovered, Feature winnerFeature, float threshold, StringBuilder unit,
             List<Set<KeyTaxon>> quantitativeStates, Map<Feature, Set<State>> featureStatesFilter, int i) {
 
-        Set<KeyTaxon> taxaCoveredByAllSubBranches;
+        Map<PolytomousKeyNode,Set<KeyTaxon>> taxaCoveredByAllSubBranches;
         String sign;
         Set<KeyTaxon> newTaxaCovered = quantitativeStates.get(i);
         if (i==0){
@@ -601,11 +676,13 @@ public class PolytomousKeyGenerator {
         	if (childrenExist){
         	    taxaCoveredByAllSubBranches = buildBranches(childNode, featuresLeft, newTaxaCovered, featureStatesFilter);
         	}else{
-        	    taxaCoveredByAllSubBranches = handleLeaf(childNode, newTaxaCovered);
+        	    //old: taxaCoveredByAllSubBranches = handleLeaf(childNode, newTaxaCovered);
+                taxaCoveredByAllSubBranches = new HashMap<>();
+                taxaCoveredByAllSubBranches.put(childNode, newTaxaCovered);
         	}
         }else{
             //TODO do we need to check the 0 case, can this happen at all, shouldn't we throw a warning instead?
-            taxaCoveredByAllSubBranches = new HashSet<>();
+            taxaCoveredByAllSubBranches = new HashMap<>();
         }
         return taxaCoveredByAllSubBranches;
     }
