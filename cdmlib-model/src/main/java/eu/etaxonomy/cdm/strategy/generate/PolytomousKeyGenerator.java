@@ -309,11 +309,11 @@ public class PolytomousKeyGenerator {
 
         Map<Set<KeyTaxon>,Boolean> reuseWinner = new HashMap<>();
 
-        Set<State> states = getAllStates(winnerFeature, taxaCovered, featureStatesFilter.get(winnerFeature));
+        Set<State> allStates = getAllStates(winnerFeature, taxaCovered, featureStatesFilter.get(winnerFeature));
 		// a map is created, the key being the set of taxa that present the state(s) stored in the corresponding value
         // this key represents a single branch in the decision tree
 		Map<Set<KeyTaxon>, List<State>> taxonStatesMap
-		        = determineCategoricalStates(states, winnerFeature, taxaCovered, featureStatesFilter.get(winnerFeature));
+		        = determineCategoricalStates(allStates, winnerFeature, taxaCovered, featureStatesFilter.get(winnerFeature));
 
 		if (taxonStatesMap.size()<=1){
 		    if (notEmpty(featureDependencies.get(winnerFeature))){
@@ -332,7 +332,7 @@ public class PolytomousKeyGenerator {
 		    // if the merge option is ON, branches with the same discriminative power will be merged (see Vignes & Lebbes, 1989)
 		    if (config.isMerge()){
 		        taxonStatesMap = handleMerge(taxaCovered, winnerFeature, reuseWinner,
-		                taxonStatesMap, featureStatesFilter.get(winnerFeature));
+		                taxonStatesMap, allStates, featureStatesFilter.get(winnerFeature));
 		    }
 		    List<Set<KeyTaxon>> sortedKeys = sortKeys(taxonStatesMap);
             for (Set<KeyTaxon> newTaxaCovered : sortedKeys){
@@ -346,7 +346,7 @@ public class PolytomousKeyGenerator {
 
     private Map<Set<KeyTaxon>, List<State>> handleMerge(Set<KeyTaxon> taxaCovered,
             Feature winnerFeature, Map<Set<KeyTaxon>, Boolean> reuseWinner,
-            Map<Set<KeyTaxon>, List<State>> taxonStatesMap, Set<State> filter) {
+            Map<Set<KeyTaxon>, List<State>> taxonStatesMap, Set<State> allStates, Set<State> filter) {
 
         // creates a map between the different states of the winnerFeature and the sets of states "incompatible" with them
         Map<State,Set<State>> exclusions = new HashMap<>();
@@ -355,6 +355,9 @@ public class PolytomousKeyGenerator {
         while (!exclusions.isEmpty()){
         	// looks for the largest clique, i.e. the state with less exclusions
         	List<State> clique = returnBestClique(exclusions);
+        	if(clique.containsAll(allStates)){
+        	    continue;
+        	}
         	// then merges the corresponding branches
         	mergeBranches(clique, taxonStatesMap, reuseWinner, filter);
         }
