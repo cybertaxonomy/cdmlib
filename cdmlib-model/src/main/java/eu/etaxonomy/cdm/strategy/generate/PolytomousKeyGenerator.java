@@ -254,8 +254,8 @@ public class PolytomousKeyGenerator {
                         Set<QuantitativeData> tqds = taxon.quantitativeData.get(feature);
                         tqds = tqds == null? new HashSet<>(): tqds;
                         for (QuantitativeData qd : tqds){
-                            staysCandidate &= qd.getOverallMin() == null || qd.getOverallMin() > min;
-                            staysCandidate &= qd.getOverallMax() == null || qd.getOverallMax() > max;
+                            staysCandidate &= qd.getOverallMin() == null || qd.getOverallMin() >= min;
+                            staysCandidate &= qd.getOverallMax() == null || qd.getOverallMax() <= max;
                         }
                         if (!staysCandidate){
                             break;
