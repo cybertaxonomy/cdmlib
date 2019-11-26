@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.test.function;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -125,7 +126,7 @@ public class TestAggregations {
 		filter.setRankMax(Rank.uuidGenus);
 
 		List<AggregationMode> modes = AggregationMode.byRanks();
-		List<UUID> areaList = null;//areaPager.getRecords();
+		List<UUID> areaList = makeUuidList(areaPager.getRecords());//areaPager.getRecords();
 		DistributionAggregationConfiguration config = DistributionAggregationConfiguration
 		        .NewInstance(modes, areaList, filter, monitor);
 		config.setToParentSourceMode(SourceMode.NONE);
@@ -141,7 +142,15 @@ public class TestAggregations {
 
 	}
 
-	private void test(){
+    private List<UUID> makeUuidList(List<NamedArea> records) {
+        List<UUID> result = new ArrayList<>();
+        for(NamedArea area:records){
+            result.add(area.getUuid());
+        }
+        return result;
+    }
+
+    private void test(){
 		System.out.println("Start Datasource");
 		testNewConfigControler();
 
