@@ -1269,6 +1269,14 @@ public class Abcd206XMLFieldGetter {
                         }
                     }
 
+                    if (children.item(j).getNodeName().equals(prefix + "AgentText")){
+                        if (!children.item(j).getTextContent().trim().equalsIgnoreCase("none")) {
+                            dataHolder.gatheringAgentsText=children.item(j).getTextContent();
+                        }
+
+
+                    }
+
                 }
             }
 
@@ -1279,7 +1287,7 @@ public class Abcd206XMLFieldGetter {
                     if (children.item(j).getNodeName().equals(prefix + "Agents")) {
                         NodeList persons = children.item(j).getChildNodes();
                         for (int k = 0; k < persons.getLength(); k++) {
-                            if (persons.item(k).getNodeName().equals(prefix + "GatheringAgentsText")) {
+                            if (persons.item(k).getNodeName().equals(prefix + "GatheringAgentsText") ) {
                                 path = persons.item(k).getNodeName();
                                 getHierarchie(persons.item(k));
                                 dataHolder.knownABCDelements.add(path);
@@ -1288,6 +1296,9 @@ public class Abcd206XMLFieldGetter {
                                     dataHolder.gatheringAgentsText=persons.item(k).getTextContent();
                                 }
                             }
+
+
+
                         }
                     }
 
