@@ -983,8 +983,8 @@ public class Abcd206XMLFieldGetter {
                     if (iprNodes.item(l).getNodeName().equalsIgnoreCase(prefix + "Copyrights")){
                         copyRightNodes = iprNodes.item(l).getChildNodes();
                         for (int m = 0; m < copyRightNodes.getLength(); m++) {
-                            if (copyRightNodes.item(l).getNodeName().equalsIgnoreCase(prefix + "Copyright")){
-                                copyrights = copyRightNodes.item(l).getChildNodes();
+                            if (copyRightNodes.item(m).getNodeName().equalsIgnoreCase(prefix + "Copyright")){
+                                copyrights = copyRightNodes.item(m).getChildNodes();
                                 for (int n = 0; n < copyrights.getLength(); n++){
                                     if (copyrights.item(n).getNodeName().equalsIgnoreCase(prefix + "text")){
                                         mediaObjectMap.put("Copyright", copyrights.item(n).getTextContent());
@@ -995,8 +995,8 @@ public class Abcd206XMLFieldGetter {
                     } else if (iprNodes.item(l).getNodeName().equalsIgnoreCase(prefix + "Licenses")){
                         licenceNodes = iprNodes.item(l).getChildNodes();
                         for (int m = 0; m < licenceNodes.getLength(); m++) {
-                            if (licenceNodes.item(l).getNodeName().equalsIgnoreCase(prefix + "License")){
-                                license = licenceNodes.item(l).getChildNodes();
+                            if (licenceNodes.item(m).getNodeName().equalsIgnoreCase(prefix + "License")){
+                                license = licenceNodes.item(m).getChildNodes();
                                 for (int n = 0; n < license.getLength(); n++){
                                     if (license.item(n).getNodeName().equalsIgnoreCase(prefix + "Text")){
                                         mediaObjectMap.put("License", license.item(n).getTextContent());
