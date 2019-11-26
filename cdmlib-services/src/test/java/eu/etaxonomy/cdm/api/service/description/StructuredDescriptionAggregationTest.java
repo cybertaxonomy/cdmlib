@@ -181,20 +181,28 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         Assert.assertEquals(UpdateResult.Status.OK, result.getStatus());
 
         Taxon taxLapsanaCommunisAlpina = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ALPINA_UUID);
-        testAggregatedDescription(taxLapsanaCommunisAlpina, 2, 2f, 5f, 7f, 6f);
+        TaxonDescription aggrDescLapsanaCommunisAlpina = testTaxonDescriptions(taxLapsanaCommunisAlpina, 3);
+        testCategoricalData(uuidFeatureLeafPA, State.uuidPresent, 2, aggrDescLapsanaCommunisAlpina);
+        testAggregatedDescription(uuidFeatureLeafLength, 2f, 5f, 7f, 6f, aggrDescLapsanaCommunisAlpina);
 
         Taxon taxLapsanaCommunisAdenophora = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ADENOPHORA_UUID);
-        testAggregatedDescription(taxLapsanaCommunisAdenophora, 1, 1f, 12f, 12f, 12f);
+        TaxonDescription aggrDescLapsanaCommunisAdenophora = testTaxonDescriptions(taxLapsanaCommunisAdenophora, 2);
+        testCategoricalData(uuidFeatureLeafPA, State.uuidPresent, 1, aggrDescLapsanaCommunisAdenophora);
+        testAggregatedDescription(uuidFeatureLeafLength, 1f, 12f, 12f, 12f, aggrDescLapsanaCommunisAdenophora);
 
         Taxon taxLapsanaCommunis = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_UUID);
-        testAggregatedDescription(taxLapsanaCommunis, 3, 3f, 5f, 12f, 8f);
+        TaxonDescription aggrDescLapsanaCommunis = testTaxonDescriptions(taxLapsanaCommunis, 3);
+        testCategoricalData(uuidFeatureLeafPA, State.uuidPresent, 3, aggrDescLapsanaCommunis);
+        testAggregatedDescription(uuidFeatureLeafLength, 3f, 5f, 12f, 8f, aggrDescLapsanaCommunis);
 
         Taxon taxLapsana = (Taxon)taxonService.find(T_LAPSANA_UUID);
-        testAggregatedDescription(taxLapsana, 3, 3f, 5f, 12f, 8f);
+        TaxonDescription aggrDescLapsana = testTaxonDescriptions(taxLapsana, 3);
+        testCategoricalData(uuidFeatureLeafPA, State.uuidPresent, 3, aggrDescLapsana);
+        testAggregatedDescription(uuidFeatureLeafLength, 3f, 5f, 12f, 8f, aggrDescLapsana);
 
     }
 
-    private void testAggregatedDescription(Taxon taxon, Integer paStateCount, Float leafLengthSampleSize, Float leafLengthMin, Float leafLengthMax, Float leafLengthAvg) {
+    private TaxonDescription testTaxonDescriptions(Taxon taxon, int elementSize){
         Set<TaxonDescription> taxonDescriptions = taxon.getDescriptions().stream()
                 .filter(desc->desc.getTypes().contains(DescriptionType.AGGREGATED_STRUC_DESC))
                 .collect(Collectors.toSet());
@@ -202,30 +210,36 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         Assert.assertEquals(1, taxonDescriptions.size());
         TaxonDescription aggrDesc = taxonDescriptions.iterator().next();
         Set<DescriptionElementBase> elements = aggrDesc.getElements();
-        Assert.assertEquals(2, elements.size());
+        Assert.assertEquals(elementSize, elements.size());
+        return aggrDesc;
+    }
 
-        Set<CategoricalData> paElements = elements.stream()
-                .filter(element->element.getFeature().getUuid().equals(uuidFeatureLeafPA))
-                .map(catData->CdmBase.deproxy(catData, CategoricalData.class))
-                .collect(Collectors.toSet());
-        Assert.assertEquals(1, paElements.size());
-        CategoricalData paElement = paElements.iterator().next();
-        List<StateData> stateDatas = paElement.getStateData();
-        Assert.assertEquals(1, stateDatas.size());
-        StateData stateData = stateDatas.iterator().next();
-        Assert.assertEquals(paStateCount, stateData.getCount());
-        Assert.assertEquals(State.uuidPresent, stateData.getState().getUuid());
-
-        Set<QuantitativeData> leafLengths = elements.stream()
-                .filter(element->element.getFeature().getUuid().equals(uuidFeatureLeafLength))
+    private void testAggregatedDescription(UUID featureUuid, Float sampleSize, Float min, Float max, Float avg, TaxonDescription aggrDesc) {
+        Set<QuantitativeData> quantitativeDatas = aggrDesc.getElements().stream()
+                .filter(element->element.getFeature().getUuid().equals(featureUuid))
                 .map(catData->CdmBase.deproxy(catData, QuantitativeData.class))
                 .collect(Collectors.toSet());
-        Assert.assertEquals(1, leafLengths.size());
-        QuantitativeData leafLength = leafLengths.iterator().next();
-        Assert.assertEquals(leafLengthSampleSize, leafLength.getSampleSize());
-        Assert.assertEquals(leafLengthMin, leafLength.getMin());
-        Assert.assertEquals(leafLengthMax, leafLength.getMax());
-        Assert.assertEquals(leafLengthAvg, leafLength.getAverage());
+        Assert.assertEquals(1, quantitativeDatas.size());
+        QuantitativeData leafLength = quantitativeDatas.iterator().next();
+        Assert.assertEquals(sampleSize, leafLength.getSampleSize());
+        Assert.assertEquals(min, leafLength.getMin());
+        Assert.assertEquals(max, leafLength.getMax());
+        Assert.assertEquals(avg, leafLength.getAverage());
+    }
+
+
+    private void testCategoricalData(UUID featureUuid, UUID stateUuid, Integer stateDataCount, TaxonDescription taxonDescription) {
+        Set<CategoricalData> categoricalDatas = taxonDescription.getElements().stream()
+                .filter(element->element.getFeature().getUuid().equals(featureUuid))
+                .map(catData->CdmBase.deproxy(catData, CategoricalData.class))
+                .collect(Collectors.toSet());
+        Assert.assertEquals(1, categoricalDatas.size());
+        CategoricalData categoricalData = categoricalDatas.iterator().next();
+        List<StateData> stateDatas = categoricalData.getStateData();
+        Assert.assertEquals(1, stateDatas.size());
+        StateData stateData = stateDatas.iterator().next();
+        Assert.assertEquals(stateDataCount, stateData.getCount());
+        Assert.assertEquals(stateUuid, stateData.getState().getUuid());
     }
 
     private void addQuantitativeData(SpecimenDescription specDesc, UUID uuidFeature, StatisticalMeasure type, float value) {
