@@ -150,13 +150,17 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         DescriptiveDataSet dataSet = DescriptiveDataSet.NewInstance();
         datasetService.save(dataSet);
 
-        SpecimenDescription specDesc = createSpecimenDescription(dataSet, T_LAPSANA_COMMUNIS_ALPINA_UUID, "alpina specimen1");
-        addCategoricalData(specDesc, uuidFeatureLeafPA, State.uuidPresent);
-        addQuantitativeData(specDesc, uuidFeatureLeafLength, StatisticalMeasure.EXACT_VALUE(), 5.0f);
+        SpecimenDescription specDescAlpina1 = createSpecimenDescription(dataSet, T_LAPSANA_COMMUNIS_ALPINA_UUID, "alpina specimen1");
+        addCategoricalData(specDescAlpina1, uuidFeatureLeafPA, State.uuidPresent);
+        addQuantitativeData(specDescAlpina1, uuidFeatureLeafLength, StatisticalMeasure.EXACT_VALUE(), 5.0f);
 
-        SpecimenDescription specDesc2 = createSpecimenDescription(dataSet, T_LAPSANA_COMMUNIS_ALPINA_UUID, "alpina specimen2");
-        addCategoricalData(specDesc2, uuidFeatureLeafPA, State.uuidPresent);
-        addQuantitativeData(specDesc2, uuidFeatureLeafLength, StatisticalMeasure.EXACT_VALUE(), 7.0f);
+        SpecimenDescription specDescAlpina2 = createSpecimenDescription(dataSet, T_LAPSANA_COMMUNIS_ALPINA_UUID, "alpina specimen2");
+        addCategoricalData(specDescAlpina2, uuidFeatureLeafPA, State.uuidPresent);
+        addQuantitativeData(specDescAlpina2, uuidFeatureLeafLength, StatisticalMeasure.EXACT_VALUE(), 7.0f);
+
+        SpecimenDescription specDescAdenophora = createSpecimenDescription(dataSet, T_LAPSANA_COMMUNIS_ADENOPHORA_UUID, "adenophora specimen2");
+        addCategoricalData(specDescAdenophora, uuidFeatureLeafPA, State.uuidPresent);
+        addQuantitativeData(specDescAdenophora, uuidFeatureLeafLength, StatisticalMeasure.EXACT_VALUE(), 12.0f);
 
         TaxonNode tnLapsana = taxonNodeService.find(TN_LAPSANA_UUID);
         Assert.assertNotNull(tnLapsana);
@@ -176,18 +180,21 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         UpdateResult result = engine.invoke(config, repository);
         Assert.assertEquals(UpdateResult.Status.OK, result.getStatus());
 
-        Taxon taxAlpina = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ALPINA_UUID);
-        testAggregatedDescription(taxAlpina);
+        Taxon taxLapsanaCommunisAlpina = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ALPINA_UUID);
+        testAggregatedDescription(taxLapsanaCommunisAlpina, 2, 2f, 5f, 7f, 6f);
+
+        Taxon taxLapsanaCommunisAdenophora = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ADENOPHORA_UUID);
+        testAggregatedDescription(taxLapsanaCommunisAdenophora, 1, 1f, 12f, 12f, 12f);
 
         Taxon taxLapsanaCommunis = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_UUID);
-        testAggregatedDescription(taxLapsanaCommunis);
+        testAggregatedDescription(taxLapsanaCommunis, 3, 3f, 5f, 12f, 8f);
 
         Taxon taxLapsana = (Taxon)taxonService.find(T_LAPSANA_UUID);
-        testAggregatedDescription(taxLapsana);
+        testAggregatedDescription(taxLapsana, 3, 3f, 5f, 12f, 8f);
 
     }
 
-    private void testAggregatedDescription(Taxon taxon) {
+    private void testAggregatedDescription(Taxon taxon, Integer paStateCount, Float leafLengthSampleSize, Float leafLengthMin, Float leafLengthMax, Float leafLengthAvg) {
         Set<TaxonDescription> taxonDescriptions = taxon.getDescriptions().stream()
                 .filter(desc->desc.getTypes().contains(DescriptionType.AGGREGATED_STRUC_DESC))
                 .collect(Collectors.toSet());
@@ -206,7 +213,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         List<StateData> stateDatas = paElement.getStateData();
         Assert.assertEquals(1, stateDatas.size());
         StateData stateData = stateDatas.iterator().next();
-        Assert.assertEquals((Integer)2, stateData.getCount());
+        Assert.assertEquals(paStateCount, stateData.getCount());
         Assert.assertEquals(State.uuidPresent, stateData.getState().getUuid());
 
         Set<QuantitativeData> leafLengths = elements.stream()
@@ -215,10 +222,10 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
                 .collect(Collectors.toSet());
         Assert.assertEquals(1, leafLengths.size());
         QuantitativeData leafLength = leafLengths.iterator().next();
-        Assert.assertEquals((Float)2f, leafLength.getSampleSize());
-        Assert.assertEquals((Float)5f, leafLength.getMin());
-        Assert.assertEquals((Float)7f, leafLength.getMax());
-        Assert.assertEquals((Float)6f, leafLength.getAverage());
+        Assert.assertEquals(leafLengthSampleSize, leafLength.getSampleSize());
+        Assert.assertEquals(leafLengthMin, leafLength.getMin());
+        Assert.assertEquals(leafLengthMax, leafLength.getMax());
+        Assert.assertEquals(leafLengthAvg, leafLength.getAverage());
     }
 
     private void addQuantitativeData(SpecimenDescription specDesc, UUID uuidFeature, StatisticalMeasure type, float value) {
