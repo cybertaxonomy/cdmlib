@@ -25,7 +25,6 @@ import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
-import eu.etaxonomy.cdm.model.description.Character;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionType;
@@ -84,7 +83,7 @@ public class StructuredDescriptionAggregation
 
         UpdateResult result = new UpdateResult();
 
-        DescriptiveDataSet dataSet = loadDataSet(getConfig().getDataset().getUuid());
+        DescriptiveDataSet dataSet = loadDataSet(getConfig().getDatasetUuid());
         Set<DescriptionBase> dataSetDescriptions = dataSet.getDescriptions();
 
         beginTask("Aggregate data set", dataSetDescriptions.size()*2);
@@ -165,7 +164,7 @@ public class StructuredDescriptionAggregation
             UUID taxonUuid = node.getTaxon().getUuid();
             Set<UUID> specimenDescriptionUuids = taxonNodeToSpecimenDescriptionMap.get(node);
             UpdateResult aggregationResult = aggregateDescription(taxonUuid,
-                    specimenDescriptionUuids, getConfig().getDataset().getUuid(),
+                    specimenDescriptionUuids, getConfig().getDatasetUuid(),
                     specimenToClonedSourceDescription);
             result.includeResult(aggregationResult);
             worked(1);
@@ -228,7 +227,7 @@ public class StructuredDescriptionAggregation
             TaxonNode parentNode = node.getParent();
             while(parentNode != null && isTaxonNodeInDescriptiveDataSet(parentNode, dataSet)){
                 for (UUID uuid : descriptionUuids) {
-                    addDescriptionToTaxonNodeMap(uuid, node.getParent(), parentMap);
+                    addDescriptionToTaxonNodeMap(uuid, parentNode, parentMap);
                 }
                 parentNode = parentNode.getParent();
             }
@@ -286,12 +285,12 @@ public class StructuredDescriptionAggregation
         }
 
         //extract all character description elements
-        Map<Character, List<DescriptionElementBase>> featureToElementMap = new HashMap<>();
+        Map<Feature, List<DescriptionElementBase>> featureToElementMap = new HashMap<>();
         for (DescriptionBase<?> description : specimenDescriptions) {
             description.getElements().stream()
                 //TODO AM do we really only allow Characters, no features?
                 //filter out elements that do not have a Character as Feature
-                .filter(element->HibernateProxyHelper.isInstanceOf(element.getFeature(), Character.class))
+//                .filter(element->HibernateProxyHelper.isInstanceOf(element.getFeature(), Character.class))
                 .forEach(ele->addCharacterToMap(featureToElementMap, ele));
         }
 
@@ -310,17 +309,17 @@ public class StructuredDescriptionAggregation
         return result;
     }
 
-    private void aggregateCharacterData(Map<Character, List<DescriptionElementBase>> featureToElementMap,
+    private void aggregateCharacterData(Map<Feature, List<DescriptionElementBase>> featureToElementMap,
             TaxonDescription aggregationDescription) {
-        for(Character character:featureToElementMap.keySet()){
-            List<DescriptionElementBase> elements = featureToElementMap.get(character);
+        for(Feature feature:featureToElementMap.keySet()){
+            List<DescriptionElementBase> elements = featureToElementMap.get(feature);
             //aggregate categorical data
-            if(character.isSupportsCategoricalData()){
-                aggregateCategoricalData(aggregationDescription, character, elements);
+            if(feature.isSupportsCategoricalData()){
+                aggregateCategoricalData(aggregationDescription, feature, elements);
             }
             //aggregate quantitative data
-            else if(character.isSupportsQuantitativeData()){
-                aggregateQuantitativeData(aggregationDescription, character, elements);
+            else if(feature.isSupportsQuantitativeData()){
+                aggregateQuantitativeData(aggregationDescription, feature, elements);
             }
         }
     }
@@ -352,7 +351,7 @@ public class StructuredDescriptionAggregation
     }
 
 
-    private void aggregateQuantitativeData(TaxonDescription description, Character character,
+    private void aggregateQuantitativeData(TaxonDescription description, Feature character,
             List<DescriptionElementBase> elements) {
         QuantitativeData aggregate = QuantitativeData.NewInstance(character);
         List<Float> values = new ArrayList<>();
@@ -361,9 +360,9 @@ public class StructuredDescriptionAggregation
             if(element instanceof QuantitativeData){
                 QuantitativeData quantitativeData = (QuantitativeData)element;
                 values.addAll(quantitativeData.getStatisticalValues().stream()
-                .filter(value->value.getType().equals(StatisticalMeasure.EXACT_VALUE()))
-                .map(exact->exact.getValue())
-                .collect(Collectors.toList()));
+                        .filter(value->value.getType().equals(StatisticalMeasure.EXACT_VALUE()))
+                        .map(exact->exact.getValue())
+                        .collect(Collectors.toList()));
                 if(quantitativeData.getMin()!=null){
                     values.add(quantitativeData.getMin());
                 }
@@ -391,7 +390,7 @@ public class StructuredDescriptionAggregation
         }
     }
 
-    private void aggregateCategoricalData(TaxonDescription description, Character character,
+    private void aggregateCategoricalData(TaxonDescription description, Feature character,
             List<DescriptionElementBase> elements) {
         Map<State, Integer> stateToCountMap = new HashMap<>();
         CategoricalData aggregate = CategoricalData.NewInstance(character);
@@ -423,12 +422,12 @@ public class StructuredDescriptionAggregation
         }
     }
 
-    private void addCharacterToMap(Map<Character, List<DescriptionElementBase>> featureToElementMap,
+    private void addCharacterToMap(Map<Feature, List<DescriptionElementBase>> featureToElementMap,
             DescriptionElementBase descriptionElement) {
         List<DescriptionElementBase> list = featureToElementMap.get(descriptionElement.getFeature());
         if(list==null){
             list = new ArrayList<>();
-            featureToElementMap.put(HibernateProxyHelper.deproxy(descriptionElement.getFeature(), Character.class), list);
+            featureToElementMap.put(HibernateProxyHelper.deproxy(descriptionElement.getFeature(), Feature.class), list);
         }
         list.add(descriptionElement);
     }

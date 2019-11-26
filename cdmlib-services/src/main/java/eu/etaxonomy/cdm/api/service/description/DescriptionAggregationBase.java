@@ -91,7 +91,6 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
     protected UpdateResult doInvoke() throws JvmLimitsException {
 
         //TODO FIXME use UpdateResult
-        UpdateResult result = new UpdateResult();
 
         double start = System.currentTimeMillis();
 

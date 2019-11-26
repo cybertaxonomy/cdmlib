@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.api.service.description;
 
 import java.util.List;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
@@ -24,6 +25,7 @@ public class StructuredDescriptionAggregationConfiguration
     private static final long serialVersionUID = 7485291596888612932L;
 
     private DescriptiveDataSet dataset;
+    private UUID datasetUuid;
 
 
     //TODO merge with DistributionAggregationConfiguration.aggregationMode
@@ -92,10 +94,18 @@ public class StructuredDescriptionAggregationConfiguration
         this.includeLiterature = includeLiterature;
     }
 
-    public DescriptiveDataSet getDataset() {
-        return dataset;
+//    public DescriptiveDataSet getDataset() {
+//        return dataset;
+//    }
+//    public void setDataset(DescriptiveDataSet dataset) {
+//        this.dataset = dataset;
+//    }
+
+
+    public UUID getDatasetUuid() {
+        return datasetUuid;
     }
-    public void setDataset(DescriptiveDataSet dataset) {
-        this.dataset = dataset;
+    public void setDatasetUuid(UUID datasetUuid) {
+        this.datasetUuid = datasetUuid;
     }
 }
