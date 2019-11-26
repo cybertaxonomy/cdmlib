@@ -128,18 +128,15 @@ public class DistributionAggregation
 
     private void makeSuperAreas() {
         TransactionStatus tx = startTransaction(true);
-        List<NamedArea> superAreas = getConfig().getSuperAreas();
-
-        Set<UUID> superAreaUuids = new HashSet<>(superAreas.size());
-        for (NamedArea superArea : superAreas){
-            superAreaUuids.add(superArea.getUuid());
-        }
-        superAreaList = getTermService().find(NamedArea.class, superAreaUuids);
-        for (NamedArea superArea : superAreaList){
-            Set<NamedArea> subAreas = getSubAreasFor(superArea);
-            for(NamedArea subArea : subAreas){
-                if (logger.isTraceEnabled()) {
-                    logger.trace("Initialize " + subArea.getTitleCache());
+        Set<UUID> superAreaUuids = new HashSet(getConfig().getSuperAreas());
+        if (superAreaUuids != null){
+            superAreaList = getTermService().find(NamedArea.class, superAreaUuids);
+            for (NamedArea superArea : superAreaList){
+                Set<NamedArea> subAreas = getSubAreasFor(superArea);
+                for(NamedArea subArea : subAreas){
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Initialize " + subArea.getTitleCache());
+                    }
                 }
             }
         }
@@ -584,7 +581,7 @@ public class DistributionAggregation
             stOrder = defaultStatusOrder();
         }
         if (stOrder.isInstanceOf(TermTree.class)){
-            statusOrder = CdmBase.deproxy(stOrder, TermTree.class).asTermList();
+            statusOrder = getRepository().getTermTreeService().load(stOrder.getUuid()).asTermList();
         }else if (stOrder.isInstanceOf(OrderedTermVocabulary.class)){
             statusOrder = new ArrayList<>(CdmBase.deproxy(stOrder, OrderedTermVocabulary.class).getOrderedTerms());
         }else{

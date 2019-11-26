@@ -16,7 +16,6 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.filter.LogicFilter;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
-import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.term.TermCollection;
 import eu.etaxonomy.cdm.model.term.TermNode;
@@ -31,7 +30,7 @@ public class DistributionAggregationConfiguration
 
     private static final long serialVersionUID = 2542246141660930545L;
 
-    private List<NamedArea> superAreas;
+    private List<UUID> superAreasUuids;
 
     private TermCollection<PresenceAbsenceTerm, TermNode> statusOrder;
 
@@ -50,25 +49,29 @@ public class DistributionAggregationConfiguration
 
 // **************************************** FACTORY ************************************/
 
-    public static DistributionAggregationConfiguration NewInstance(List<AggregationMode> aggregationModes, List<NamedArea> superAreas,
+    public static DistributionAggregationConfiguration NewInstance(List<AggregationMode> aggregationModes, List<UUID> superAreas,
             TaxonNodeFilter filter, IProgressMonitor monitor){
+
+
         return new DistributionAggregationConfiguration(aggregationModes, superAreas, filter, monitor);
     }
 
-    public static DistributionAggregationConfiguration NewInstance(List<AggregationMode> aggregationModes, List<NamedArea> superAreas,
+    public static DistributionAggregationConfiguration NewInstance(List<AggregationMode> aggregationModes, List<UUID> superAreas,
             TaxonNodeFilter filter, TermTree<PresenceAbsenceTerm> statusOrder,  IProgressMonitor monitor){
+
         DistributionAggregationConfiguration result = new DistributionAggregationConfiguration(aggregationModes, superAreas, filter, monitor);
         result.setStatusOrder(statusOrder);
         return result;
     }
 
 
+
 // ************************ CONSTRUCTOR *****************************/
 
-    private DistributionAggregationConfiguration(List<AggregationMode> aggregationModes, List<NamedArea> superAreas,
+    private DistributionAggregationConfiguration(List<AggregationMode> aggregationModes, List<UUID> superAreas,
             TaxonNodeFilter filter, IProgressMonitor monitor) {
         super(filter, monitor, aggregationModes);
-        this.superAreas = superAreas;
+        this.superAreasUuids = superAreas;
     }
 
 // ******************** METHOD **************************************/
@@ -80,11 +83,11 @@ public class DistributionAggregationConfiguration
 
 // ******************* GETTER / SETTER ****************************/
 
-    public List<NamedArea> getSuperAreas() {
-        return superAreas;
+    public List<UUID> getSuperAreas() {
+        return superAreasUuids;
     }
-    public void setSuperAreas(List<NamedArea> superAreas) {
-        this.superAreas = superAreas;
+    public void setSuperAreas(List<UUID> superAreas) {
+        this.superAreasUuids = superAreas;
     }
 
     public UUID getLowerRank() {

@@ -127,7 +127,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
     private NamedArea yug_ma = null;
     private NamedArea yug_mn = null;
 
-    List<NamedArea> superAreas = null;
+    List<UUID> superAreas = null;
     Rank upperRank = null;
     Rank lowerRank = null;
 
@@ -142,8 +142,8 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
     @Before
     public void setUp() {
 
-        superAreas = Arrays.asList(new NamedArea[]{
-        		termService.getAreaByTdwgAbbreviation("YUG")
+        superAreas = Arrays.asList(new UUID[]{
+        		termService.getAreaByTdwgAbbreviation("YUG").getUuid()
         });
         lowerRank = Rank.SUBSPECIES();
         upperRank = Rank.GENUS();

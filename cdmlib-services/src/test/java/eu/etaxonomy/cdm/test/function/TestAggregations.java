@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.test.function;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -112,9 +113,10 @@ public class TestAggregations {
 		UUID uuidCichorium = UUID.fromString("6a7ac1ad-2fd9-4218-8132-12dd463d04b9");
 		UUID uuidArnoseris = UUID.fromString("0f71555c-676b-4d66-8a0c-281787ac72f6");
 		TaxonNodeFilter filter = TaxonNodeFilter.NewSubtreeInstance(uuidArnoseris);
-
+		List<UUID> areaUuids = new ArrayList();
+        areaPager.getRecords().forEach(p ->areaUuids.add(p.getUuid()));
 		DistributionAggregationConfiguration config = DistributionAggregationConfiguration
-		        .NewInstance(AggregationMode.byAreasAndRanks(), areaPager.getRecords(), filter, monitor);
+		        .NewInstance(AggregationMode.byAreasAndRanks(), areaUuids, filter, monitor);
 		config.setToParentSourceMode(SourceMode.DESCRIPTION);
         config.setWithinTaxonSourceMode(SourceMode.ALL_SAMEVALUE);
 		try {
