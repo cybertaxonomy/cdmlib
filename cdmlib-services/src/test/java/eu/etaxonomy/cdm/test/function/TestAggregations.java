@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.test.function;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,6 +29,7 @@ import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -58,14 +58,13 @@ public class TestAggregations {
 
 //		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 
-//		String server = "160.45.63.171";
-//		String database = "cdm_production_xxx";
-//		String username = "edit";
+//		server = "160.45.63.171";
+//		database = "cdm_production_cichorieae";
+//		username = "edit";
 //		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
-
 		server = "test.e-taxonomy.eu";
-		database = "cdm_edit_cichorieae";
+		database = "cdm_test_euromed";
 		username = "edit";
 		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
@@ -73,7 +72,6 @@ public class TestAggregations {
 //		String database = "testCDM";
 //		String username = "postgres";
 //		dataSource = CdmDataSource.NewInstance(DatabaseTypeEnum.PostgreSQL, server, database, DatabaseTypeEnum.PostgreSQL.getDefaultPort(), username, AccountStore.readOrStorePassword(server, database, username, null));
-
 
 //		//SQLServer
 //		server = "BGBM-PESISQL";
@@ -108,17 +106,31 @@ public class TestAggregations {
 		Pager<NamedArea> areaPager = appCtr.getTermService().list(targetAreaLevel, (NamedAreaType) null,
                 null, null, (List<OrderHint>) null, null);
 		IProgressMonitor monitor = DefaultProgressMonitor.NewInstance();
+		//Cichorieae
 		UUID uuidCichorieae = UUID.fromString("2343071c-d5f4-4434-89b4-cdf7b2ff7f39");
 		UUID uuidCichoriinae = UUID.fromString("2b05bf1a-950e-43ad-8367-41fe8d3e6c92");
 		UUID uuidCichorium = UUID.fromString("6a7ac1ad-2fd9-4218-8132-12dd463d04b9");
 		UUID uuidArnoseris = UUID.fromString("0f71555c-676b-4d66-8a0c-281787ac72f6");
-		TaxonNodeFilter filter = TaxonNodeFilter.NewSubtreeInstance(uuidArnoseris);
-		List<UUID> areaUuids = new ArrayList();
-        areaPager.getRecords().forEach(p ->areaUuids.add(p.getUuid()));
+
+		UUID uuidAlternativeClassificationRoot = UUID.fromString("9672a9e0-87bd-416a-9268-983c60debce5");
+		//Asteraceae
+		UUID uuidAsteracea = UUID.fromString("29e37083-5ae2-4e31-94f6-0007f78c3397");
+
+		//E+M
+		UUID uuidPlantae = UUID.fromString("d049b868-941a-4f07-8110-d506abcc2bb5");
+
+		uuidAlternativeClassificationRoot = UUID.fromString("9672a9e0-87bd-416a-9268-983c60debce5");
+
+		TaxonNodeFilter filter = TaxonNodeFilter.NewSubtreeInstance(uuidPlantae);
+		filter.setRankMax(Rank.uuidGenus);
+
+		List<AggregationMode> modes = AggregationMode.byRanks();
+		List<UUID> areaList = null;//areaPager.getRecords();
 		DistributionAggregationConfiguration config = DistributionAggregationConfiguration
-		        .NewInstance(AggregationMode.byAreasAndRanks(), areaUuids, filter, monitor);
-		config.setToParentSourceMode(SourceMode.DESCRIPTION);
-        config.setWithinTaxonSourceMode(SourceMode.ALL_SAMEVALUE);
+		        .NewInstance(modes, areaList, filter, monitor);
+		config.setToParentSourceMode(SourceMode.NONE);
+        config.setWithinTaxonSourceMode(SourceMode.NONE);
+
 		try {
             config.getTaskInstance().invoke(config, appCtr);
         } catch (Exception e) {
