@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.remote.controller;
 
 import java.awt.Color;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
@@ -199,8 +200,10 @@ public class DescriptionListController
                                 taxonNodeUuids, taxonUuids, null, lowerRank, upperRank);
                         List<AggregationMode> modes = Arrays.asList(new AggregationMode[]{mode, mode2});
                         modes.remove(null);
+                        List<UUID> areaUuids = new ArrayList();
+                        areaPager.getRecords().forEach(p ->areaUuids.add(p.getUuid()));
                         DistributionAggregationConfiguration config = DistributionAggregationConfiguration.NewInstance(
-                                modes, areaPager.getRecords(), filter, progressMonitorController.getMonitor(transmissionEngineMonitorUuid));
+                                modes, areaUuids, filter, progressMonitorController.getMonitor(transmissionEngineMonitorUuid));
                         DistributionAggregation distrAggr = new DistributionAggregation();
                         distrAggr.invoke(config, repository);
                     } catch (JvmLimitsException e) {
