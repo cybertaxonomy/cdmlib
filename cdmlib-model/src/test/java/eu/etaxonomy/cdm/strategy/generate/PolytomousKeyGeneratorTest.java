@@ -10,6 +10,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.Language;
@@ -524,7 +525,29 @@ public class PolytomousKeyGeneratorTest {
         assertNotNull("Key should exist.", result);
         PolytomousKeyNode root = result.getRoot();
         Assert.assertEquals("Root feature should be 'presence' as it inherits score from 'length of wings'", featurePresence, root.getFeature());
-        //...otherwise it would be colour, both have a score of 12.0 but presence comes first in list
+        //...otherwise it would be color, both have a score of 12.0 but presence comes first in list
+    }
+
+    @Test
+    @Ignore
+    public void testMultipleDependencies() {
+
+        //TODO test only if multiple dependencies are supported for 1 parent feature; not yet implemented; requires restructuring the feature tree, created by createDefaultConfig()
+//        generator = new PolytomousKeyGenerator();
+//        PolytomousKeyGeneratorConfigurator configurator = createDefaultConfig(); //new PolytomousKeyGeneratorConfigurator();
+//        configurator.getDataSet().getDescriptiveSystem().getRoot().removeChild(0); //remove shape feature
+//        configurator.setMerge(true);
+//        configurator.setUseDependencies(true);
+//
+//        PolytomousKey result = generator.invoke(configurator);
+//        result.setTitleCache("Test Dependency Score Key", true);
+//        if (debug) {result.print(System.out);}
+//
+//        //Assertions
+//        assertNotNull("Key should exist.", result);
+//        PolytomousKeyNode root = result.getRoot();
+//        Assert.assertEquals("Root feature should be 'presence' as it inherits score from 'length of wings'", featurePresence, root.getFeature());
+//        //...otherwise it would be colour, both have a score of 12.0 but presence comes first in list
     }
 
     /**
@@ -620,22 +643,12 @@ public class PolytomousKeyGeneratorTest {
         return result;
     }
 
-    /**
-     * @param string
-     * @return
-     */
     private State createState(String label) {
         State state = State.NewInstance("", label, "");
         state.getTitleCache();  //for better debugging
         return state;
     }
 
-    /**
-     * @param title
-     * @param uuid
-     * @param isQuantitative
-     * @return
-     */
     private Feature createFeature(String title, UUID uuid, boolean isQuantitative) {
         Feature result = Feature.NewInstance("",title,"");
         result.getTitleCache();
@@ -648,10 +661,6 @@ public class PolytomousKeyGeneratorTest {
         return result;
     }
 
-    /**
-     * @param i
-     * @return
-     */
     private Taxon getTaxon(int i) {
         TaxonName tn = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
         tn.setGenusOrUninomial("Taxon");
