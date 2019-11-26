@@ -51,11 +51,13 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
 
         Set<DescriptionElementBase> elements = description.getElements();
         for (DescriptionElementBase descriptionElementBase : elements) {
-            Feature feature = descriptionElementBase.getFeature();
-            featureToElementMap.put(feature, descriptionElementBase);
-            String displayData = generateDisplayString(descriptionElementBase);
-            if(displayData!=null){
-                featureToDisplayDataMap.put(feature, displayData);
+            if(hasData(descriptionElementBase)){
+                Feature feature = descriptionElementBase.getFeature();
+                featureToElementMap.put(feature, descriptionElementBase);
+                String displayData = generateDisplayString(descriptionElementBase);
+                if(displayData!=null){
+                    featureToDisplayDataMap.put(feature, displayData);
+                }
             }
         }
     }
@@ -128,6 +130,10 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
 
     public void setDataValueForCategoricalData(Feature feature, List<State> states){
         DescriptionElementBase descriptionElementBase = featureToElementMap.get(feature);
+        if(states.isEmpty()){
+            removeFeature(feature, descriptionElementBase);
+            return;
+        }
         if(descriptionElementBase!=null && descriptionElementBase.isInstanceOf(CategoricalData.class)){
             CategoricalData categoricalData = HibernateProxyHelper.deproxy(descriptionElementBase, CategoricalData.class);
             categoricalData.setStateDataOnly(states);
@@ -137,9 +143,21 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
         }
     }
 
+    private void removeFeature(Feature feature, DescriptionElementBase descriptionElementBase) {
+        featureToElementMap.remove(feature);
+        featureToDisplayDataMap.remove(feature);
+        if(descriptionElementBase!=null){
+            description.removeElement(descriptionElementBase);
+        }
+    }
+
     public void setDataValueForQuantitativeData(Feature feature, Map<StatisticalMeasure, List<String>> textFields){
         DescriptionElementBase descriptionElementBase = featureToElementMap.get(feature);
-        if(descriptionElementBase instanceof QuantitativeData){
+        if(textFields.values().stream().allMatch(listOfStrings->listOfStrings.isEmpty())){
+            removeFeature(feature, descriptionElementBase);
+            return;
+        }
+        if(descriptionElementBase.isInstanceOf(QuantitativeData.class)){
             QuantitativeData quantitativeData = HibernateProxyHelper.deproxy(descriptionElementBase, QuantitativeData.class);
             //clear values
             quantitativeData.getStatisticalValues().clear();
@@ -204,6 +222,18 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
             return false;
         }
         return true;
+    }
+
+    public static boolean hasData(DescriptionElementBase element){
+        if(element.isInstanceOf(CategoricalData.class)){
+            CategoricalData categoricalData = HibernateProxyHelper.deproxy(element, CategoricalData.class);
+            return !categoricalData.getStatesOnly().isEmpty();
+        }
+        else if(element.isInstanceOf(QuantitativeData.class)){
+            QuantitativeData quantitativeData = HibernateProxyHelper.deproxy(element, QuantitativeData.class);
+            return !quantitativeData.getStatisticalValues().isEmpty();
+        }
+        return false;
     }
 
 }

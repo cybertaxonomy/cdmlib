@@ -459,7 +459,7 @@ public class DescriptiveDataSetService
             for (DescriptionElementBase specimenDescriptionElement : specimenDescription.getElements()) {
                 Feature feature = specimenDescriptionElement.getFeature();
                 specimenDescriptionFeatures.add(feature);
-                if(datasetFeatures.contains(feature)){
+                if(datasetFeatures.contains(feature) && RowWrapperDTO.hasData(specimenDescriptionElement)){
                     matchingDescriptionElements.add(specimenDescriptionElement);
                 }
             }
@@ -525,24 +525,6 @@ public class DescriptiveDataSetService
             }
         }
 
-        //add all remaining description elements to the new description
-        for(Feature wsFeature:datasetFeatures){
-            boolean featureFound = false;
-            for(DescriptionElementBase element:newDesription.getElements()){
-                if(element.getFeature().equals(wsFeature)){
-                    featureFound = true;
-                    break;
-                }
-            }
-            if(!featureFound){
-                if(wsFeature.isSupportsCategoricalData()){
-                    newDesription.addElement(CategoricalData.NewInstance(wsFeature));
-                }
-                else if(wsFeature.isSupportsQuantitativeData()){
-                    newDesription.addElement(QuantitativeData.NewInstance(wsFeature));
-                }
-            }
-        }
         //add sources of data set
         if(addDatasetSource){
             dataSet.getSources().forEach(source->{
