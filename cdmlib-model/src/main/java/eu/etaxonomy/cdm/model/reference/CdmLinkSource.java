@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.CdmLinkBase;
 import eu.etaxonomy.cdm.model.common.IntextReference;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
  * Class to link to other CdmBase objects within the context of
@@ -86,7 +87,9 @@ public class CdmLinkSource extends CdmLinkBase {
      * @see IntextReference#getTarget()
      */
     public ICdmTarget getTarget() {
-        if (description != null){
+        if (taxon != null){
+            return (Taxon)taxon;
+        }else if (description != null){
             return description;
         }else{
             throw new IllegalStateException("CdmSource has no target object defined");
@@ -97,6 +100,8 @@ public class CdmLinkSource extends CdmLinkBase {
         target = CdmBase.deproxy(target);
         if (target instanceof DescriptionBase<?>){
             this.description = (DescriptionBase<?>)target;
+        }else if (target instanceof Taxon){
+            this.taxon = (Taxon)target;
         }else{
             throw new IllegalArgumentException("Target class not supported by CdmSource");
         }

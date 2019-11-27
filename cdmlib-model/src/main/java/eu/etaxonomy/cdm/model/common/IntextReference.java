@@ -68,12 +68,6 @@ public class IntextReference extends CdmLinkBase {
     @ManyToOne(fetch = FetchType.LAZY)
 	private TaxonName taxonName;
 
-    @XmlElement(name = "Taxon")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY)
-	private TaxonBase<?> taxon;
-
     @XmlElement(name = "Occurrence")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")

@@ -9,14 +9,21 @@
 package eu.etaxonomy.cdm.model.common;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.hibernate.envers.Audited;
+
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * Base class for subclasses linking to other CDM objects.
@@ -34,6 +41,12 @@ import org.hibernate.envers.Audited;
 public abstract class CdmLinkBase extends VersionableEntity {
 
     private static final long serialVersionUID = -1418100748281536524L;
+
+    @XmlElement(name = "Taxon")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    protected TaxonBase<?> taxon;
 
 // ************************* CLONE *******************/
 
