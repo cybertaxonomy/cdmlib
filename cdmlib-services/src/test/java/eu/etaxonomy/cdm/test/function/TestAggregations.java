@@ -60,7 +60,7 @@ public class TestAggregations {
 //		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 
 //		server = "160.45.63.171";
-//		database = "cdm_production_cichorieae";
+//		database = "cdm_production_euromed";
 //		username = "edit";
 //		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
@@ -112,15 +112,13 @@ public class TestAggregations {
 		UUID uuidCichoriinae = UUID.fromString("2b05bf1a-950e-43ad-8367-41fe8d3e6c92");
 		UUID uuidCichorium = UUID.fromString("6a7ac1ad-2fd9-4218-8132-12dd463d04b9");
 		UUID uuidArnoseris = UUID.fromString("0f71555c-676b-4d66-8a0c-281787ac72f6");
-
 		UUID uuidAlternativeClassificationRoot = UUID.fromString("9672a9e0-87bd-416a-9268-983c60debce5");
+
 		//Asteraceae
 		UUID uuidAsteracea = UUID.fromString("29e37083-5ae2-4e31-94f6-0007f78c3397");
 
 		//E+M
 		UUID uuidPlantae = UUID.fromString("d049b868-941a-4f07-8110-d506abcc2bb5");
-
-		uuidAlternativeClassificationRoot = UUID.fromString("9672a9e0-87bd-416a-9268-983c60debce5");
 
 		TaxonNodeFilter filter = TaxonNodeFilter.NewSubtreeInstance(uuidPlantae);
 		filter.setRankMax(Rank.uuidGenus);

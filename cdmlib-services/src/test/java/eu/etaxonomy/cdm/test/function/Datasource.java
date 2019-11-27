@@ -36,7 +36,9 @@ import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -53,6 +55,8 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.init.TermNotFoundException;
+import eu.etaxonomy.cdm.strategy.generate.PolytomousKeyGenerator;
+import eu.etaxonomy.cdm.strategy.generate.PolytomousKeyGeneratorConfigurator;
 
 public class Datasource {
 	private static final Logger logger = Logger.getLogger(Datasource.class);
@@ -86,7 +90,7 @@ public class Datasource {
 
 
 		server = "test.e-taxonomy.eu";
-		database = "cdm_rem_conf_am";
+		database = "cdm_caryo_spp";
 		username = "edit";
 		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
@@ -134,11 +138,14 @@ public class Datasource {
 
 		TransactionStatus tx = appCtr.startTransaction(true);
 
-//		DescriptiveDataSet dataset = appCtr.getDescriptiveDataSetService().list(null, null, null, null, null).get(0);
-//		PolytomousKeyGeneratorConfigurator config = new PolytomousKeyGeneratorConfigurator();
-//		config.setDataSet(dataset);
-//		PolytomousKey key = new PolytomousKeyGenerator().invoke(config);
-//		key.print(System.out);
+		DescriptiveDataSet dataset = appCtr.getDescriptiveDataSetService().find(10);
+		PolytomousKeyGeneratorConfigurator config = new PolytomousKeyGeneratorConfigurator();
+		config.setDataSet(dataset);
+		config.setDebug(true);
+		PolytomousKey key = new PolytomousKeyGenerator().invoke(config);
+//		appCtr.getPolytomousKeyService().save(key);
+		key.print(System.out);
+		System.out.println(key.getUuid());
 
 		appCtr.commitTransaction(tx);
 
