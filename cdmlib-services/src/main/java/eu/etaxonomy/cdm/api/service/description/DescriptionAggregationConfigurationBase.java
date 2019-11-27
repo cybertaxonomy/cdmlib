@@ -71,7 +71,8 @@ public abstract class DescriptionAggregationConfigurationBase<TASK extends Descr
         NONE,
         ALL,
         ALL_SAMEVALUE,
-        DESCRIPTION;
+        DESCRIPTION,
+        TAXON;
      }
 
 //******************* CONSTRUCTOR **********************/

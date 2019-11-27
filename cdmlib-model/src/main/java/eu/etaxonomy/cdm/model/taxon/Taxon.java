@@ -60,6 +60,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.reference.ICdmTarget;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.taxon.ITaxonCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
@@ -94,7 +95,7 @@ import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
 })
 public class Taxon
             extends TaxonBase<ITaxonCacheStrategy<Taxon>>
-            implements IRelated<RelationshipBase>, IDescribable<TaxonDescription>{
+            implements IRelated<RelationshipBase>, IDescribable<TaxonDescription>, ICdmTarget{
 
     private static final long serialVersionUID = -584946869762749006L;
     private static final Logger logger = Logger.getLogger(Taxon.class);

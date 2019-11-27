@@ -361,6 +361,13 @@ public class DistributionAggregation
                 return;
             }else if (sourceMode == SourceMode.DESCRIPTION){
                 sources.add(DescriptionElementSource.NewAggregationInstance(deb.getInDescription()));
+            }else if (sourceMode == SourceMode.TAXON){
+                if (deb.getInDescription().isInstanceOf(TaxonDescription.class)){
+                    TaxonDescription td = CdmBase.deproxy(deb.getInDescription(), TaxonDescription.class);
+                    sources.add(DescriptionElementSource.NewAggregationInstance(td.getTaxon()));
+                }else{
+                    logger.warn("Description is not of type TaxonDescription. Adding source not possible");
+                }
             }else if (sourceMode == SourceMode.ALL || sourceMode == SourceMode.ALL_SAMEVALUE){
                 addSourcesDeduplicated(this.sources, deb.getSources());
             }else{
