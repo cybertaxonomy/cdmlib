@@ -316,6 +316,7 @@ public class StateData
         return "[" + state
                 + (modifiers.isEmpty()? "": ", modifiers=" + modifiers)
                 + (modifyingText.isEmpty()?"": ", modifyingText=" + modifyingText)
+                + (count==null?"": " ("+count+")")
                 + "]";
     }
 
