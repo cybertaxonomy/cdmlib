@@ -179,6 +179,9 @@ public class StateData
      * @see #getCount()
      */
     public void incrementCount(){
+        if(count==null){
+            count = 0;
+        }
         count++;
     }
 
