@@ -188,38 +188,42 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
 
         Taxon taxLapsanaCommunisAlpina = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ALPINA_UUID);
         TaxonDescription aggrDescLapsanaCommunisAlpina = testTaxonDescriptions(taxLapsanaCommunisAlpina, 3);
-        testCategoricalData(uuidFeatureLeafPA, State.uuidPresent, 2, aggrDescLapsanaCommunisAlpina);
-//        testCategoricalData(uuidFeatureLeafColor, uuidLeafColorBlue, 2, aggrDescLapsanaCommunisAlpina);
-//        testCategoricalData(uuidFeatureLeafColor, uuidLeafColorYellow, 0, aggrDescLapsanaCommunisAlpina);
+        testState(testCategoricalData(uuidFeatureLeafPA, 1, aggrDescLapsanaCommunisAlpina), State.uuidPresent, 2);
+        List<StateData> sdAlpinaLeafColor = testCategoricalData(uuidFeatureLeafColor, 1, aggrDescLapsanaCommunisAlpina);
+        testState(sdAlpinaLeafColor, uuidLeafColorBlue, 2);
+        testState(sdAlpinaLeafColor, uuidLeafColorYellow, 0);
         testAggregatedDescription(uuidFeatureLeafLength, 2f, 5f, 7f, 6f, aggrDescLapsanaCommunisAlpina);
 
         Taxon taxLapsanaCommunisAdenophora = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ADENOPHORA_UUID);
         TaxonDescription aggrDescLapsanaCommunisAdenophora = testTaxonDescriptions(taxLapsanaCommunisAdenophora, 3);
-        testCategoricalData(uuidFeatureLeafPA, State.uuidPresent, 1, aggrDescLapsanaCommunisAdenophora);
-//        testCategoricalData(uuidFeatureLeafColor, uuidLeafColorBlue, 0, aggrDescLapsanaCommunisAdenophora);
-//        testCategoricalData(uuidFeatureLeafColor, uuidLeafColorYellow, 1, aggrDescLapsanaCommunisAdenophora);
+        testState(testCategoricalData(uuidFeatureLeafPA, 1, aggrDescLapsanaCommunisAdenophora), State.uuidPresent, 1);
+        List<StateData> sdAdenophoraLeafColor = testCategoricalData(uuidFeatureLeafColor, 1, aggrDescLapsanaCommunisAdenophora);
+        testState(sdAdenophoraLeafColor, uuidLeafColorBlue, 0);
+        testState(sdAdenophoraLeafColor, uuidLeafColorYellow, 1);
         testAggregatedDescription(uuidFeatureLeafLength, 1f, 12f, 12f, 12f, aggrDescLapsanaCommunisAdenophora);
 
         Taxon taxLapsanaCommunis = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_UUID);
         TaxonDescription aggrDescLapsanaCommunis = testTaxonDescriptions(taxLapsanaCommunis, 3);
-        testCategoricalData(uuidFeatureLeafPA, State.uuidPresent, 3, aggrDescLapsanaCommunis);
-//        testCategoricalData(uuidFeatureLeafColor, uuidLeafColorBlue, 2, aggrDescLapsanaCommunis);
-//        testCategoricalData(uuidFeatureLeafColor, uuidLeafColorYellow, 1, aggrDescLapsanaCommunis);
+        testState(testCategoricalData(uuidFeatureLeafPA, 1, aggrDescLapsanaCommunis), State.uuidPresent, 3);
+        List<StateData> sdCommunisLeafColor = testCategoricalData(uuidFeatureLeafColor, 2, aggrDescLapsanaCommunis);
+        testState(sdCommunisLeafColor, uuidLeafColorBlue, 2);
+        testState(sdCommunisLeafColor, uuidLeafColorYellow, 1);
         testAggregatedDescription(uuidFeatureLeafLength, 3f, 5f, 12f, 8f, aggrDescLapsanaCommunis);
 
         Taxon taxLapsana = (Taxon)taxonService.find(T_LAPSANA_UUID);
         TaxonDescription aggrDescLapsana = testTaxonDescriptions(taxLapsana, 3);
-        testCategoricalData(uuidFeatureLeafPA, State.uuidPresent, 3, aggrDescLapsana);
-//        testCategoricalData(uuidFeatureLeafColor, uuidLeafColorBlue, 2, aggrDescLapsana);
-//        testCategoricalData(uuidFeatureLeafColor, uuidLeafColorYellow, 1, aggrDescLapsana);
+        testState(testCategoricalData(uuidFeatureLeafPA, 1, aggrDescLapsana), State.uuidPresent, 3);
+        List<StateData> sdLapsanLeafColor = testCategoricalData(uuidFeatureLeafColor, 2, aggrDescLapsana);
+        testState(sdLapsanLeafColor, uuidLeafColorBlue, 2);
+        testState(sdLapsanLeafColor, uuidLeafColorYellow, 1);
         testAggregatedDescription(uuidFeatureLeafLength, 3f, 5f, 12f, 8f, aggrDescLapsana);
 
     }
 
     private TaxonDescription testTaxonDescriptions(Taxon taxon, int elementSize){
-        Set<TaxonDescription> taxonDescriptions = taxon.getDescriptions().stream()
+        List<TaxonDescription> taxonDescriptions = taxon.getDescriptions().stream()
                 .filter(desc->desc.getTypes().contains(DescriptionType.AGGREGATED_STRUC_DESC))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
 
         Assert.assertEquals(1, taxonDescriptions.size());
         TaxonDescription aggrDesc = taxonDescriptions.iterator().next();
@@ -229,10 +233,10 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
     }
 
     private void testAggregatedDescription(UUID featureUuid, Float sampleSize, Float min, Float max, Float avg, TaxonDescription aggrDesc) {
-        Set<QuantitativeData> quantitativeDatas = aggrDesc.getElements().stream()
+        List<QuantitativeData> quantitativeDatas = aggrDesc.getElements().stream()
                 .filter(element->element.getFeature().getUuid().equals(featureUuid))
                 .map(catData->CdmBase.deproxy(catData, QuantitativeData.class))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
         Assert.assertEquals(1, quantitativeDatas.size());
         QuantitativeData leafLength = quantitativeDatas.iterator().next();
         Assert.assertEquals(sampleSize, leafLength.getSampleSize());
@@ -242,16 +246,29 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
     }
 
 
-    private void testCategoricalData(UUID featureUuid, UUID stateUuid, Integer stateDataCount, TaxonDescription taxonDescription) {
-        Set<CategoricalData> categoricalDatas = taxonDescription.getElements().stream()
+    private List<StateData> testCategoricalData(UUID featureUuid, int stateDataCount, TaxonDescription taxonDescription) {
+        List<CategoricalData> categoricalDatas = taxonDescription.getElements().stream()
                 .filter(element->element.getFeature().getUuid().equals(featureUuid))
                 .map(catData->CdmBase.deproxy(catData, CategoricalData.class))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
         Assert.assertEquals(1, categoricalDatas.size());
         CategoricalData categoricalData = categoricalDatas.iterator().next();
         List<StateData> stateDatas = categoricalData.getStateData();
-        Assert.assertEquals(1, stateDatas.size());
-        StateData stateData = stateDatas.iterator().next();
+        Assert.assertEquals(stateDataCount, stateDatas.size());
+        return stateDatas;
+    }
+
+    private void testState(List<StateData> stateDatas, UUID stateUuid, Integer stateDataCount){
+        List<StateData> filteredStateDatas = stateDatas.stream()
+                .filter(stateData->stateData.getState().getUuid().equals(stateUuid))
+                .collect(Collectors.toList());
+        if(stateDataCount==0){
+            // non-existence test
+            Assert.assertEquals(0, filteredStateDatas.size());
+            return;
+        }
+        Assert.assertEquals(1, filteredStateDatas.size());
+        StateData stateData = filteredStateDatas.iterator().next();
         Assert.assertEquals(stateDataCount, stateData.getCount());
         Assert.assertEquals(stateUuid, stateData.getState().getUuid());
     }
