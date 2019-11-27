@@ -18,8 +18,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.springframework.transaction.TransactionStatus;
-
 import eu.etaxonomy.cdm.api.service.UpdateResult;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -77,104 +75,105 @@ public class StructuredDescriptionAggregation
         logger.info("Time elapsed for pre-accumulate() : " + (end1 - start) / (1000) + "s");
     }
 
-    @Override
-    protected UpdateResult doInvoke(){
-        TransactionStatus transactionStatus = getRepository().startTransaction(false);
 
-        UpdateResult result = new UpdateResult();
-
-        DescriptiveDataSet dataSet = loadDataSet(getConfig().getDatasetUuid());
-        Set<DescriptionBase> dataSetDescriptions = dataSet.getDescriptions();
-
-        beginTask("Aggregate data set", dataSetDescriptions.size()*2);
-
-        result.setCdmEntity(dataSet);
-
-        subTask("Remove existing aggregations from dataset");
-        //TODO AM memory loading of all descriptions not possible
-        //TODO why not reusing descriptions and only adding new data and new sources
-        // delete all aggregation description of this dataset (DescriptionType.AGGREGATED)
-        Set<TaxonDescription> aggregations = dataSet.getDescriptions().stream()
-                .filter(aggDesc->aggDesc instanceof TaxonDescription)
-                .map(aggDesc->(TaxonDescription)aggDesc)
-                .filter(desc -> desc.isAggregatedStructuredDescription())
-                .collect(Collectors.toSet());
-        aggregations.forEach(aggregation->dataSet.removeDescription(aggregation));
-
-        subTask("Delete cloned sources");
-        // also delete all their cloned source descriptions
-        Set<String> sourceUuids = aggregations.stream()
-                .flatMap(aggDesc->aggDesc.getSources().stream())
-                .filter(source->source.getType().equals(OriginalSourceType.Aggregation))
-                .map(aggSource->aggSource.getIdInSource())
-                .collect(Collectors.toSet());
-
-        for (String string : sourceUuids) {
-            try {
-                UUID uuid = UUID.fromString(string);
-                DescriptionBase<?> sourceClone = getDescriptionService().load(uuid);
-                getDescriptionService().deleteDescription(sourceClone);
-            } catch (IllegalArgumentException|NullPointerException e) {
-                // ignore
-            }
-        }
-
-        subTask("Remove existing aggregations from database");
-        //finally delete the aggregation description itself
-        aggregations.forEach(aggDesc->getDescriptionService().delete(aggDesc));
-
-        // START Aggregation
-
-        // sort descriptions by taxa
-        Map<TaxonNode, Set<UUID>> taxonNodeToSpecimenDescriptionMap = new HashMap<>();
-        for (DescriptionBase<?> descriptionBase : dataSetDescriptions) {
-            subTask("Aggregate description " + descriptionBase.getTitleCache());
-            if(getConfig().getMonitor().isCanceled()){
-                result.setAbort();
-                return result;
-            }
-
-            if(descriptionBase instanceof SpecimenDescription){
-                SpecimenDescription specimenDescription = CdmBase.deproxy(descriptionBase, SpecimenDescription.class);
-                if(specimenDescription.getElements().stream().anyMatch(element->hasCharacterData(element))){
-                    //TODO AM why taxon node and not only taxon
-                    TaxonNode taxonNode = findTaxonNodeForDescription(specimenDescription, dataSet);
-                    if(taxonNode!=null){
-                        addDescriptionToTaxonNodeMap(specimenDescription.getUuid(), taxonNode, taxonNodeToSpecimenDescriptionMap);
-                    }
-                }
-            }
-            worked(1);
-        }
-
-        //aggregate to higher taxa
-        if(getConfig().isAggregateToHigherRanks()){
-            propagateDescriptionsToParentNodes(dataSet, taxonNodeToSpecimenDescriptionMap);
-        }
-
-        // aggregate per taxon
-        Map<UUID, SpecimenDescription> specimenToClonedSourceDescription = new HashMap<>();
-        for (TaxonNode node: taxonNodeToSpecimenDescriptionMap.keySet()) {
-            if(getConfig().getMonitor().isCanceled()){
-                result.setAbort();
-                return result;
-            }
-            subTask("Aggregate taxon " + node.getTaxon().getTitleCache());
-
-            UUID taxonUuid = node.getTaxon().getUuid();
-            Set<UUID> specimenDescriptionUuids = taxonNodeToSpecimenDescriptionMap.get(node);
-            UpdateResult aggregationResult = aggregateDescription(taxonUuid,
-                    specimenDescriptionUuids, getConfig().getDatasetUuid(),
-                    specimenToClonedSourceDescription);
-            result.includeResult(aggregationResult);
-            worked(1);
-        }
-
-        //done
-        done();
-        getRepository().commitTransaction(transactionStatus);
-        return result;
-    }
+//    @Override
+//    protected UpdateResult doInvoke(){
+//        TransactionStatus transactionStatus = getRepository().startTransaction(false);
+//
+//        UpdateResult result = super.getResult();
+//
+//        DescriptiveDataSet dataSet = loadDataSet(getConfig().getDatasetUuid());
+//        Set<DescriptionBase> dataSetDescriptions = dataSet.getDescriptions();
+//
+//        beginTask("Aggregate data set", dataSetDescriptions.size()*2);
+//
+//        result.setCdmEntity(dataSet);
+//
+//        subTask("Remove existing aggregations from dataset");
+//        //TODO AM memory loading of all descriptions not possible
+//        //TODO why not reusing descriptions and only adding new data and new sources
+//        // delete all aggregation description of this dataset (DescriptionType.AGGREGATED)
+//        Set<TaxonDescription> aggregations = dataSet.getDescriptions().stream()
+//                .filter(aggDesc->aggDesc instanceof TaxonDescription)
+//                .map(aggDesc->(TaxonDescription)aggDesc)
+//                .filter(desc -> desc.isAggregatedStructuredDescription())
+//                .collect(Collectors.toSet());
+//        aggregations.forEach(aggregation->dataSet.removeDescription(aggregation));
+//
+//        subTask("Delete cloned sources");
+//        // also delete all their cloned source descriptions
+//        Set<String> sourceUuids = aggregations.stream()
+//                .flatMap(aggDesc->aggDesc.getSources().stream())
+//                .filter(source->source.getType().equals(OriginalSourceType.Aggregation))
+//                .map(aggSource->aggSource.getIdInSource())
+//                .collect(Collectors.toSet());
+//
+//        for (String string : sourceUuids) {
+//            try {
+//                UUID uuid = UUID.fromString(string);
+//                DescriptionBase<?> sourceClone = getDescriptionService().load(uuid);
+//                getDescriptionService().deleteDescription(sourceClone);
+//            } catch (IllegalArgumentException|NullPointerException e) {
+//                // ignore
+//            }
+//        }
+//
+//        subTask("Remove existing aggregations from database");
+//        //finally delete the aggregation description itself
+//        aggregations.forEach(aggDesc->getDescriptionService().delete(aggDesc));
+//
+//        // START Aggregation
+//
+//        // sort descriptions by taxa
+//        Map<TaxonNode, Set<UUID>> taxonNodeToSpecimenDescriptionMap = new HashMap<>();
+//        for (DescriptionBase<?> descriptionBase : dataSetDescriptions) {
+//            subTask("Aggregate description " + descriptionBase.getTitleCache());
+//            if(getConfig().getMonitor().isCanceled()){
+//                result.setAbort();
+//                return result;
+//            }
+//
+//            if(descriptionBase instanceof SpecimenDescription){
+//                SpecimenDescription specimenDescription = CdmBase.deproxy(descriptionBase, SpecimenDescription.class);
+//                if(specimenDescription.getElements().stream().anyMatch(element->hasCharacterData(element))){
+//                    //TODO AM why taxon node and not only taxon
+//                    TaxonNode taxonNode = findTaxonNodeForDescription(specimenDescription, dataSet);
+//                    if(taxonNode!=null){
+//                        addDescriptionToTaxonNodeMap(specimenDescription.getUuid(), taxonNode, taxonNodeToSpecimenDescriptionMap);
+//                    }
+//                }
+//            }
+//            worked(1);
+//        }
+//
+//        //aggregate to higher taxa
+//        if(getConfig().isAggregateToHigherRanks()){
+//            propagateDescriptionsToParentNodes(dataSet, taxonNodeToSpecimenDescriptionMap);
+//        }
+//
+//        // aggregate per taxon
+//        Map<UUID, SpecimenDescription> specimenToClonedSourceDescription = new HashMap<>();
+//        for (TaxonNode node: taxonNodeToSpecimenDescriptionMap.keySet()) {
+//            if(getConfig().getMonitor().isCanceled()){
+//                result.setAbort();
+//                return result;
+//            }
+//            subTask("Aggregate taxon " + node.getTaxon().getTitleCache());
+//
+//            UUID taxonUuid = node.getTaxon().getUuid();
+//            Set<UUID> specimenDescriptionUuids = taxonNodeToSpecimenDescriptionMap.get(node);
+//            UpdateResult aggregationResult = aggregateDescription(taxonUuid,
+//                    specimenDescriptionUuids, getConfig().getDatasetUuid(),
+//                    specimenToClonedSourceDescription);
+//            result.includeResult(aggregationResult);
+//            worked(1);
+//        }
+//
+//        //done
+//        done();
+//        getRepository().commitTransaction(transactionStatus);
+//        return result;
+//    }
 
     private DescriptiveDataSet loadDataSet(UUID uuid) {
         return getDescriptiveDatasetService().load(uuid);
@@ -464,8 +463,9 @@ public class StructuredDescriptionAggregation
     @Override
     protected void addAggregationResultToDescription(TaxonDescription targetDescription,
             ResultHolder resultHolder) {
-        // TODO Auto-generated method stub
-
+        StructuredDescriptionResultHolder structuredResultHolder = (StructuredDescriptionResultHolder)resultHolder;
+        structuredResultHolder.categoricalMap.forEach((key, value)->targetDescription.addElement(value));
+        structuredResultHolder.quantitativeMap.forEach((key, value)->targetDescription.addElement(value));
     }
 
     @Override
@@ -498,7 +498,7 @@ public class StructuredDescriptionAggregation
         // TODO AM only basic
         for (SpecimenDescription desc:specimenDescriptions){
             for (DescriptionElementBase deb:desc.getElements()){
-                if (deb.isCharacterData()){
+                if (hasCharacterData(deb)){
                     if (deb.isInstanceOf(CategoricalData.class)){
                         addToCategorical(CdmBase.deproxy(deb, CategoricalData.class), descriptiveResultHolder);
                     }else if (deb.isInstanceOf(QuantitativeData.class)){
@@ -509,17 +509,44 @@ public class StructuredDescriptionAggregation
         }
     }
 
-    private void addToQuantitative(QuantitativeData qd,
-            StructuredDescriptionResultHolder resultHolder) {
+    private void addToQuantitative(QuantitativeData qd, StructuredDescriptionResultHolder resultHolder) {
         resultHolder.quantitativeMap.put(qd.getFeature(), qd);
-        // TODO Auto-generated method stub
     }
 
-    private void addToCategorical(CategoricalData cd,
-            StructuredDescriptionResultHolder resultHolder) {
-        resultHolder.categoricalMap.put(cd.getFeature(), cd);
-        // TODO Auto-generated method stub
+    private void addToCategorical(CategoricalData cd, StructuredDescriptionResultHolder resultHolder) {
+        CategoricalData aggregatedCategoricalData = resultHolder.categoricalMap.get(cd.getFeature());
+        if(aggregatedCategoricalData==null){
+            // no CategoricalData with this feature yet found
+            aggregatedCategoricalData = (CategoricalData) cd.clone();
+            // set count to 1 if not set
+            aggregatedCategoricalData.getStateData().stream().filter(sd->sd.getCount()==null).forEach(sd->sd.incrementCount());
+            resultHolder.categoricalMap.put(aggregatedCategoricalData.getFeature(), aggregatedCategoricalData);
+        }
+        else{
+            // filter all StateData with states exist already
+            List<State> statesOnly = aggregatedCategoricalData.getStatesOnly();
+            List<StateData> sdWithExistingStateInAggregation = cd.getStateData().stream().filter(sd->statesOnly.contains(sd.getState())).collect(Collectors.toList());
+            List<StateData> sdWithNoExistingStateInAggregation = cd.getStateData().stream().filter(sd->!statesOnly.contains(sd.getState())).collect(Collectors.toList());
 
+            for (StateData sd : sdWithNoExistingStateInAggregation) {
+                StateData clone = (StateData) sd.clone();
+                // set count to 1 if not set
+                if(clone.getCount()==null){
+                    clone.incrementCount();
+                }
+                aggregatedCategoricalData.addStateData(clone);
+            }
+
+            for (StateData sdExist : sdWithExistingStateInAggregation) {
+                aggregatedCategoricalData.getStateData().stream()
+                .filter(sd->hasSameState(sdExist, sd))
+                .forEach(sd->sd.incrementCount());
+            }
+        }
+    }
+
+    private boolean hasSameState(StateData sd1, StateData sd2) {
+        return sd2.getState().getUuid().equals(sd1.getState().getUuid());
     }
 
     private Set<SpecimenDescription> getSpecimenDescriptions(Taxon taxon) {
@@ -548,7 +575,6 @@ public class StructuredDescriptionAggregation
     private class StructuredDescriptionResultHolder implements ResultHolder{
         Map<Feature, CategoricalData> categoricalMap = new HashMap<>();
         Map<Feature, QuantitativeData> quantitativeMap = new HashMap<>();
-
     }
 
 }
