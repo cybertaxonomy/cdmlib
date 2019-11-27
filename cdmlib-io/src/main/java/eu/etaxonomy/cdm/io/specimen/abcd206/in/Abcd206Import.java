@@ -783,6 +783,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 IdentifiableSource sour = getIdentifiableSource(reference, citationDetail);
                 sour.getCitation().setUri(state.getActualAccessPoint());
                 sour.setType(OriginalSourceType.PrimaryTaxonomicSource);
+
                 try {
                     if (sour.getCitation() != null) {
                         if (StringUtils.isNotBlank(sour.getCitationMicroReference())) {
@@ -816,7 +817,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
             IdentifiableSource sour = getIdentifiableSource(state.getRef(), null);
             String idInSource = derivedUnitFacade.getAccessionNumber() != null ? derivedUnitFacade.getAccessionNumber()
-                    : derivedUnitFacade.getCatalogNumber();
+                    : derivedUnitFacade.getCatalogNumber() != null ? derivedUnitFacade.getCatalogNumber() : derivedUnitFacade.getBarcode();
             sour.getCitation().setUri(state.getActualAccessPoint());
             sour.setIdInSource(idInSource);
             try {

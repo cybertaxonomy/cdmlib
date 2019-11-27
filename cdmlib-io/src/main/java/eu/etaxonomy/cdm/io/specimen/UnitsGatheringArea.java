@@ -37,6 +37,7 @@ import eu.etaxonomy.cdm.io.specimen.excel.in.SpecimenSynthesysExcelImportConfigu
 import eu.etaxonomy.cdm.io.taxonx2013.TaxonXImportConfigurator;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.term.TermType;
@@ -94,14 +95,10 @@ public class UnitsGatheringArea {
      */
     @SuppressWarnings("rawtypes")
     public void setAreaNames(Map<String, String> namedAreaList, ImportConfiguratorBase<?, ?> config, ITermService termService, IVocabularyService vocabularyService){
-        List<NamedArea> termsList = termService.list(NamedArea.class,0,0,null,null);
-        termsList.addAll(termService.list(Country.class, 0, 0, null, null));
 
         if (DEBUG) {
             logger.info(termService.list(NamedArea.class, 0, 0, null, null));
         }
-
-
 
         HashSet<UUID> areaSet = new HashSet<UUID>();
 
@@ -129,6 +126,10 @@ public class UnitsGatheringArea {
                    if(exactMatchingContinentTerms.size()==1){
                        areaUUID = exactMatchingContinentTerms.iterator().next().getUuid();
                    }
+                }else{
+                    if(exactMatchingTerms.size()==1){
+                        areaUUID = exactMatchingTerms.iterator().next().getUuid();
+                    }
                 }
             }
             if (areaUUID == null && config.isInteractWithUser()){
@@ -185,6 +186,26 @@ public class UnitsGatheringArea {
             IVocabularyService vocabularyService, String namedAreaStr, String namedAreaClass) {
         if (!StringUtils.isBlank(namedAreaStr)){
             NamedArea ar = NamedArea.NewInstance(namedAreaStr, namedAreaStr, namedAreaStr);
+            if (namedAreaClass.equalsIgnoreCase("province")){
+                ar.setLevel(NamedAreaLevel.PROVINCE());
+            }
+            if (namedAreaClass.equalsIgnoreCase("state")){
+                ar.setLevel(NamedAreaLevel.STATE());
+            }
+            if (namedAreaClass.equalsIgnoreCase("departmenet")){
+                ar.setLevel(NamedAreaLevel.DEPARTMENT());
+            }
+            if (namedAreaClass.equalsIgnoreCase("town")){
+                ar.setLevel(NamedAreaLevel.TOWN());
+            }
+            if (namedAreaClass.equalsIgnoreCase("country")){
+                ar.setLevel(NamedAreaLevel.COUNTRY());
+            }
+            if (namedAreaClass.equalsIgnoreCase("nature_reserve")){
+                ar.setLevel(NamedAreaLevel.NATURE_RESERVE());
+            }
+
+
             ar.setTitleCache(namedAreaStr, true);
             if (specimenImportVocabulary == null){
                 specimenImportVocabulary = vocabularyService.load(CdmImportBase.uuidUserDefinedNamedAreaVocabulary);

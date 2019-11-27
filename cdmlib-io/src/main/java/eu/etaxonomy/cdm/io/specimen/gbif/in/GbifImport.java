@@ -336,8 +336,8 @@ public class GbifImport extends SpecimenImportBase<GbifImportConfigurator, Speci
 
             // handle collection data
             handleCollectionData(state, derivedUnitFacade);
-            save(item.getDerivedUnitFacade().baseUnit(), state);
-            save(item.getDerivedUnitFacade().getFieldUnit(false), state);
+//            save(item.getDerivedUnitFacade().baseUnit(), state);
+//            save(item.getDerivedUnitFacade().getFieldUnit(false), state);
             importAssociatedUnits(state, item, derivedUnitFacade);
             /*
             if(state.getConfig().isIgnoreImportOfExistingSpecimens()){
