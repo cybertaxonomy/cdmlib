@@ -92,6 +92,9 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
     private static UUID uuidFeatureLeafLength = UUID.fromString("3c19b50b-4a8e-467e-b7d4-89ebc05a33e1");
     private static UUID uuidFeatureLeafColor = UUID.fromString("1e8f503c-5aeb-4788-b4f9-84128f7141c7");
 
+    private static UUID uuidLeafColorBlue = UUID.fromString("9b4df19d-f89d-4788-9d71-d1f6f7cae910");
+    private static UUID uuidLeafColorYellow = UUID.fromString("4cf0881b-0e7b-489a-9fdb-adbe6ae4e0ae");
+
     private static UUID uuidFeatureTree = UUID.fromString("c8a29a94-2754-4d78-9faa-dff3e1387b2d");
 
 
@@ -153,14 +156,17 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         SpecimenDescription specDescAlpina1 = createSpecimenDescription(dataSet, T_LAPSANA_COMMUNIS_ALPINA_UUID, "alpina specimen1");
         addCategoricalData(specDescAlpina1, uuidFeatureLeafPA, State.uuidPresent);
         addQuantitativeData(specDescAlpina1, uuidFeatureLeafLength, StatisticalMeasure.EXACT_VALUE(), 5.0f);
+        addCategoricalData(specDescAlpina1, uuidFeatureLeafColor, uuidLeafColorBlue);
 
         SpecimenDescription specDescAlpina2 = createSpecimenDescription(dataSet, T_LAPSANA_COMMUNIS_ALPINA_UUID, "alpina specimen2");
         addCategoricalData(specDescAlpina2, uuidFeatureLeafPA, State.uuidPresent);
         addQuantitativeData(specDescAlpina2, uuidFeatureLeafLength, StatisticalMeasure.EXACT_VALUE(), 7.0f);
+        addCategoricalData(specDescAlpina2, uuidFeatureLeafColor, uuidLeafColorBlue);
 
-        SpecimenDescription specDescAdenophora = createSpecimenDescription(dataSet, T_LAPSANA_COMMUNIS_ADENOPHORA_UUID, "adenophora specimen2");
+        SpecimenDescription specDescAdenophora = createSpecimenDescription(dataSet, T_LAPSANA_COMMUNIS_ADENOPHORA_UUID, "adenophora specimen");
         addCategoricalData(specDescAdenophora, uuidFeatureLeafPA, State.uuidPresent);
         addQuantitativeData(specDescAdenophora, uuidFeatureLeafLength, StatisticalMeasure.EXACT_VALUE(), 12.0f);
+        addCategoricalData(specDescAdenophora, uuidFeatureLeafColor, uuidLeafColorYellow);
 
         TaxonNode tnLapsana = taxonNodeService.find(TN_LAPSANA_UUID);
         Assert.assertNotNull(tnLapsana);
@@ -183,21 +189,29 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         Taxon taxLapsanaCommunisAlpina = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ALPINA_UUID);
         TaxonDescription aggrDescLapsanaCommunisAlpina = testTaxonDescriptions(taxLapsanaCommunisAlpina, 3);
         testCategoricalData(uuidFeatureLeafPA, State.uuidPresent, 2, aggrDescLapsanaCommunisAlpina);
+//        testCategoricalData(uuidFeatureLeafColor, uuidLeafColorBlue, 2, aggrDescLapsanaCommunisAlpina);
+//        testCategoricalData(uuidFeatureLeafColor, uuidLeafColorYellow, 0, aggrDescLapsanaCommunisAlpina);
         testAggregatedDescription(uuidFeatureLeafLength, 2f, 5f, 7f, 6f, aggrDescLapsanaCommunisAlpina);
 
         Taxon taxLapsanaCommunisAdenophora = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ADENOPHORA_UUID);
-        TaxonDescription aggrDescLapsanaCommunisAdenophora = testTaxonDescriptions(taxLapsanaCommunisAdenophora, 2);
+        TaxonDescription aggrDescLapsanaCommunisAdenophora = testTaxonDescriptions(taxLapsanaCommunisAdenophora, 3);
         testCategoricalData(uuidFeatureLeafPA, State.uuidPresent, 1, aggrDescLapsanaCommunisAdenophora);
+//        testCategoricalData(uuidFeatureLeafColor, uuidLeafColorBlue, 0, aggrDescLapsanaCommunisAdenophora);
+//        testCategoricalData(uuidFeatureLeafColor, uuidLeafColorYellow, 1, aggrDescLapsanaCommunisAdenophora);
         testAggregatedDescription(uuidFeatureLeafLength, 1f, 12f, 12f, 12f, aggrDescLapsanaCommunisAdenophora);
 
         Taxon taxLapsanaCommunis = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_UUID);
         TaxonDescription aggrDescLapsanaCommunis = testTaxonDescriptions(taxLapsanaCommunis, 3);
         testCategoricalData(uuidFeatureLeafPA, State.uuidPresent, 3, aggrDescLapsanaCommunis);
+//        testCategoricalData(uuidFeatureLeafColor, uuidLeafColorBlue, 2, aggrDescLapsanaCommunis);
+//        testCategoricalData(uuidFeatureLeafColor, uuidLeafColorYellow, 1, aggrDescLapsanaCommunis);
         testAggregatedDescription(uuidFeatureLeafLength, 3f, 5f, 12f, 8f, aggrDescLapsanaCommunis);
 
         Taxon taxLapsana = (Taxon)taxonService.find(T_LAPSANA_UUID);
         TaxonDescription aggrDescLapsana = testTaxonDescriptions(taxLapsana, 3);
         testCategoricalData(uuidFeatureLeafPA, State.uuidPresent, 3, aggrDescLapsana);
+//        testCategoricalData(uuidFeatureLeafColor, uuidLeafColorBlue, 2, aggrDescLapsana);
+//        testCategoricalData(uuidFeatureLeafColor, uuidLeafColorYellow, 1, aggrDescLapsana);
         testAggregatedDescription(uuidFeatureLeafLength, 3f, 5f, 12f, 8f, aggrDescLapsana);
 
     }
@@ -283,9 +297,10 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         return feature;
     }
 
-    private State createState(String label) {
+    private State createState(String label, UUID uuid) {
         State state = State.NewInstance("", label, "");
         state.getTitleCache();  //for better debugging
+        state.setUuid(uuid);
         termService.save(state);
         return state;
     }
@@ -303,8 +318,8 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         leafPANode.addChild(featureLeafLength);
         Feature featureLeafColor = createFeature(uuidFeatureLeafColor, "LeafColor", false);
         leafPANode.addChild(featureLeafColor);
-        State yellow = createState("Yellow");
-        State blue = createState("Blue");
+        State yellow = createState("Yellow", uuidLeafColorYellow);
+        State blue = createState("Blue", uuidLeafColorBlue);
         TermVocabulary<State> stateVoc = TermVocabulary.NewInstance(TermType.State, State.class, "", "Colors", null, null);
         stateVoc.addTerm(yellow);
         stateVoc.addTerm(blue);
