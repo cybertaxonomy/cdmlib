@@ -36,7 +36,6 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "CdmLinkSource", propOrder = {
-//    "source",
     "description"
 })
 @XmlRootElement(name = "CdmLinkSource")
@@ -70,8 +69,7 @@ public class CdmLinkSource extends CdmLinkBase {
 
 //******************* CONSTRUCTOR *********************/
 
-    @SuppressWarnings("unused")
-    public CdmLinkSource(){}  //for JAXB
+    public CdmLinkSource(){}  //mayb protected is enough, needs to be tested for loading
 
     public CdmLinkSource(ICdmTarget target) {
 //        this.source = source;

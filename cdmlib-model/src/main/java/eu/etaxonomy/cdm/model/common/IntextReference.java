@@ -44,7 +44,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "IntextReference", propOrder = {
     "taxonName",
-    "taxon",
     "occurrence",
     "agent",
     "reference",

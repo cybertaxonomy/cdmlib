@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "CdmLink", propOrder = {
+        "taxon"
 })
 @Entity
 @Audited
