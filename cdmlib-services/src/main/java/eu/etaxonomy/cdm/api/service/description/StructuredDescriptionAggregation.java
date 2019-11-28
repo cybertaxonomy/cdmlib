@@ -77,9 +77,21 @@ public class StructuredDescriptionAggregation
 
 
     private boolean hasCharacterData(DescriptionElementBase element) {
-        return (element instanceof CategoricalData && !((CategoricalData) element).getStatesOnly().isEmpty())
-                || (element instanceof QuantitativeData
-                        && !((QuantitativeData) element).getStatisticalValues().isEmpty());
+        return hasCategoricalData(element) || hasQuantitativeData(element);
+    }
+
+    private boolean hasQuantitativeData(DescriptionElementBase element) {
+        if(element instanceof QuantitativeData
+                && !((QuantitativeData) element).getStatisticalValues().isEmpty()){
+            QuantitativeData quantitativeData = (QuantitativeData)element;
+            return !getExactValues(quantitativeData).isEmpty()
+                    || (quantitativeData.getMin()!=null && quantitativeData.getMax()!=null);
+        }
+        return false;
+    }
+
+    private boolean hasCategoricalData(DescriptionElementBase element) {
+        return element instanceof CategoricalData && !((CategoricalData) element).getStatesOnly().isEmpty();
     }
 
     @Override
@@ -269,6 +281,12 @@ public class StructuredDescriptionAggregation
         else{
             // qd is already aggregated
             aggQD = (QuantitativeData) qd.clone();
+            if(aggQD.getSampleSize()==null){
+                aggQD.setSampleSize(1f, null);
+            }
+            if(aggQD.getAverage()==null){
+                aggQD.setAverage((aggQD.getMax()-aggQD.getMin()), null);
+            }
         }
         return aggQD;
     }
