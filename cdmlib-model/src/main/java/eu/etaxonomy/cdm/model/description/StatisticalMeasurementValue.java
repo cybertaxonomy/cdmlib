@@ -222,4 +222,11 @@ public class StatisticalMeasurementValue extends VersionableEntity implements IM
 		}
 	}
 
+	@Override
+	public String toString() {
+	    return (modifiers!=null?modifiers.toString():"")+
+	            (type!=null?type:"")
+	            +"value= "+value;
+	}
+
 }

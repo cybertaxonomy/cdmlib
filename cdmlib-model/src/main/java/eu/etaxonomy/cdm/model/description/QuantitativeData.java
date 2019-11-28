@@ -629,4 +629,12 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 		}
 	}
 
+	@Override
+	public String toString() {
+        return "[" + statisticalValues +
+                (unit!=null? ", unit=" +unit:"") +
+                (unknownData? ", unknownData=" + unknownData:"")
+                + "]";
+	}
+
 }
