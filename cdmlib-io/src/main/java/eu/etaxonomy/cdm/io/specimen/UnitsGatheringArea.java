@@ -186,23 +186,25 @@ public class UnitsGatheringArea {
             IVocabularyService vocabularyService, String namedAreaStr, String namedAreaClass) {
         if (!StringUtils.isBlank(namedAreaStr)){
             NamedArea ar = NamedArea.NewInstance(namedAreaStr, namedAreaStr, namedAreaStr);
-            if (namedAreaClass.equalsIgnoreCase("province")){
-                ar.setLevel(NamedAreaLevel.PROVINCE());
-            }
-            if (namedAreaClass.equalsIgnoreCase("state")){
-                ar.setLevel(NamedAreaLevel.STATE());
-            }
-            if (namedAreaClass.equalsIgnoreCase("departmenet")){
-                ar.setLevel(NamedAreaLevel.DEPARTMENT());
-            }
-            if (namedAreaClass.equalsIgnoreCase("town")){
-                ar.setLevel(NamedAreaLevel.TOWN());
-            }
-            if (namedAreaClass.equalsIgnoreCase("country")){
-                ar.setLevel(NamedAreaLevel.COUNTRY());
-            }
-            if (namedAreaClass.equalsIgnoreCase("nature_reserve")){
-                ar.setLevel(NamedAreaLevel.NATURE_RESERVE());
+            if (namedAreaClass != null ){
+                if (namedAreaClass.equalsIgnoreCase("province")){
+                    ar.setLevel(NamedAreaLevel.PROVINCE());
+                }
+                if (namedAreaClass.equalsIgnoreCase("state")){
+                    ar.setLevel(NamedAreaLevel.STATE());
+                }
+                if (namedAreaClass.equalsIgnoreCase("departmenet")){
+                    ar.setLevel(NamedAreaLevel.DEPARTMENT());
+                }
+                if (namedAreaClass.equalsIgnoreCase("town")){
+                    ar.setLevel(NamedAreaLevel.TOWN());
+                }
+                if (namedAreaClass.equalsIgnoreCase("country")){
+                    ar.setLevel(NamedAreaLevel.COUNTRY());
+                }
+                if (namedAreaClass.equalsIgnoreCase("nature_reserve")){
+                    ar.setLevel(NamedAreaLevel.NATURE_RESERVE());
+                }
             }
 
 
