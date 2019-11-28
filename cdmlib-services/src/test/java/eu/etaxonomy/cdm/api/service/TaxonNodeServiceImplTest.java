@@ -465,7 +465,12 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         node1 = taxonNodeService.load(node1Uuid);
         assertNull(newNode);
         assertNull(node1);
-        assertNotNull(taxonNodeService.load(nodeUUID));
+        List<String> propertyPath = new ArrayList<>();
+        propertyPath.add("taxon.name.*");
+        nodeClassification2 =taxonNodeService.load(nodeUUID, propertyPath);
+        assertNotNull(nodeClassification2);
+        assertNotNull(nodeClassification2.getTaxon());
+        assertNotNull(nodeClassification2.getTaxon().getName());
 
         t1 = (Taxon) taxonService.load(t1Uuid);
         assertNotNull(t1);
