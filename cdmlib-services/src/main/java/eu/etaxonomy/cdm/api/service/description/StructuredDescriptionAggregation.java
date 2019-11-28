@@ -10,18 +10,12 @@ package eu.etaxonomy.cdm.api.service.description;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import org.apache.commons.math3.stat.descriptive.AggregateSummaryStatistics;
-import org.apache.commons.math3.stat.descriptive.StatisticalSummary;
-import org.apache.commons.math3.stat.descriptive.StatisticalSummaryValues;
-import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
@@ -35,7 +29,6 @@ import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
-import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -121,8 +114,7 @@ public class StructuredDescriptionAggregation
             ResultHolder resultHolder) {
         StructuredDescriptionResultHolder structuredResultHolder = (StructuredDescriptionResultHolder)resultHolder;
         structuredResultHolder.categoricalMap.forEach((key, value)->targetDescription.addElement(value));
-        structuredResultHolder.quantitativeMap.entrySet().stream()
-        .forEach(entry->targetDescription.addElement(convertStatisticalSummaryValuesToQuantitativeData(entry.getKey(), entry.getValue())));
+        structuredResultHolder.quantitativeMap.forEach((key, value)->targetDescription.addElement(value));
         dataSet.addDescription(targetDescription);
     }
 
@@ -165,13 +157,13 @@ public class StructuredDescriptionAggregation
     }
 
     private void addToQuantitative(QuantitativeData qd, StructuredDescriptionResultHolder resultHolder) {
-        StatisticalSummaryValues aggregatedQuantitativeData = resultHolder.quantitativeMap.get(qd.getFeature());
+        QuantitativeData aggregatedQuantitativeData = resultHolder.quantitativeMap.get(qd.getFeature());
         if(aggregatedQuantitativeData==null){
             // no QuantitativeData with this feature in aggregation
-            aggregatedQuantitativeData = mergeQuantitativeData(convertQuantitativeDataToSummaryStatistics(qd));
+            aggregatedQuantitativeData = aggregateSingleQuantitativeData(qd);
         }
         else{
-            aggregatedQuantitativeData = mergeQuantitativeData(aggregatedQuantitativeData, convertQuantitativeDataToSummaryStatistics(qd));
+            aggregatedQuantitativeData = mergeQuantitativeData(aggregatedQuantitativeData, qd);
         }
         resultHolder.quantitativeMap.put(qd.getFeature(), aggregatedQuantitativeData);
     }
@@ -223,7 +215,7 @@ public class StructuredDescriptionAggregation
 
     private class StructuredDescriptionResultHolder implements ResultHolder{
         Map<Feature, CategoricalData> categoricalMap = new HashMap<>();
-        Map<Feature, StatisticalSummaryValues> quantitativeMap = new HashMap<>();
+        Map<Feature, QuantitativeData> quantitativeMap = new HashMap<>();
     }
 
     /*
@@ -260,65 +252,68 @@ public class StructuredDescriptionAggregation
         return result;
     }
 
-    private static StatisticalSummaryValues mergeQuantitativeData(StatisticalSummary... summaryStatistics) {
-        Collection<StatisticalSummary> statistics = new ArrayList<>();
-        for (StatisticalSummary statistic : summaryStatistics) {
-            statistics.add(statistic);
-        }
-        return AggregateSummaryStatistics.aggregate(statistics);
-    }
-
-    private static QuantitativeData convertStatisticalSummaryValuesToQuantitativeData(Feature feature,
-            StatisticalSummaryValues aggregate) {
-        QuantitativeData aggregatedQuantitativeData = QuantitativeData.NewInstance(feature);
-        aggregatedQuantitativeData.setMinimum(new Float(aggregate.getMin()), null);
-        aggregatedQuantitativeData.setMaximum(new Float(aggregate.getMax()), null);
-        aggregatedQuantitativeData.setAverage(new Float(aggregate.getMean()), null);
-        aggregatedQuantitativeData.setStandardDeviation(new Float(aggregate.getStandardDeviation()), null);
-        aggregatedQuantitativeData.setSampleSize(new Float(aggregate.getN()), null);
-        return aggregatedQuantitativeData;
-    }
-
-    private static StatisticalSummary convertQuantitativeDataToSummaryStatistics(QuantitativeData qd) {
-        SummaryStatistics summaryStatistics = new SummaryStatistics();
-        List<StatisticalMeasurementValue> exactValues = qd.getStatisticalValues().stream()
-        .filter(value->value.getType().equals(StatisticalMeasure.EXACT_VALUE()))
-        .collect(Collectors.toList());
-        // has exact values -> ignore statistical values
+    private static QuantitativeData aggregateSingleQuantitativeData(QuantitativeData qd){
+        QuantitativeData aggQD = QuantitativeData.NewInstance(qd.getFeature());
+        List<Float> exactValues = getExactValues(qd);
         if(!exactValues.isEmpty()){
-            exactValues.forEach(exact->summaryStatistics.addValue(exact.getValue()));
+            // qd is not already aggregated
+            float exactValueSampleSize = exactValues.size();
+            float exactValueMin = new Float(exactValues.stream().mapToDouble(value->(double)value).min().getAsDouble());
+            float exactValueMax = new Float(exactValues.stream().mapToDouble(value->(double)value).max().getAsDouble());
+            float exactValueAvg = new Float(exactValues.stream().mapToDouble(value->(double)value).average().getAsDouble());
+            aggQD.setSampleSize(exactValueSampleSize, null);
+            aggQD.setMinimum(exactValueMin, null);
+            aggQD.setMaximum(exactValueMax, null);
+            aggQD.setAverage(exactValueAvg, null);
         }
-        // has statistical values
-        else if(qd.getSampleSize()!=null
-                && qd.getSampleSize()!=0f
-                && qd.getMin()!=null
-                && qd.getMin()!=null
-                && qd.getAverage()!=null){
-            Float count = qd.getSampleSize();
-            if(count==1f){
-                // sample size == 1 -> only add average
-                summaryStatistics.addValue(qd.getAverage());
-            }
-            else {
-                float min = qd.getMin();
-                float max = qd.getMax();
-                float average = qd.getAverage();
-                float sampleSize = qd.getSampleSize();
-
-                summaryStatistics.addValue(min);
-                summaryStatistics.addValue(max);
-                count -= 2;
-                float averageFiller = ((average*sampleSize)-(min+max))/(sampleSize-2);
-                while(count>0){
-                    // fill with dummy values that do not change the average
-                    // to assert the correct sample size
-                    summaryStatistics.addValue(averageFiller);
-                    count -= 1;
-                }
-            }
+        else{
+            // qd is already aggregated
+            aggQD = (QuantitativeData) qd.clone();
         }
-        return summaryStatistics;
+        return aggQD;
     }
+
+    private static QuantitativeData mergeQuantitativeData(QuantitativeData aggregatedQD, QuantitativeData qd) {
+        List<Float> exactValues = getExactValues(qd);
+
+        Float min = null;
+        Float max = null;
+        Float average = null;
+        Float sampleSize = null;
+        if(!exactValues.isEmpty()){
+            // qd is not already aggregated
+            float exactValueSampleSize = exactValues.size();
+            float exactValueMin = new Float(exactValues.stream().mapToDouble(value->(double)value).min().getAsDouble());
+            float exactValueMax = new Float(exactValues.stream().mapToDouble(value->(double)value).max().getAsDouble());
+            float exactValueAvg = new Float(exactValues.stream().mapToDouble(value->(double)value).average().getAsDouble());
+
+            min = Math.min(exactValueMin, aggregatedQD.getMin());
+            max = Math.max(exactValueMax, aggregatedQD.getMax());
+            average = new Float(((aggregatedQD.getAverage()*aggregatedQD.getSampleSize())+exactValueAvg*exactValueSampleSize)/(aggregatedQD.getSampleSize()+exactValueSampleSize));
+            sampleSize = exactValueSampleSize+aggregatedQD.getSampleSize();
+        }
+        else{
+            // qd is already aggregated
+            min = Math.min(aggregatedQD.getMin(), qd.getMin());
+            max = Math.max(aggregatedQD.getMax(), qd.getMax());
+            average = new Float(((aggregatedQD.getAverage()*aggregatedQD.getSampleSize())+qd.getAverage()*qd.getSampleSize())/(aggregatedQD.getSampleSize()+qd.getSampleSize()));
+            sampleSize = qd.getSampleSize()+aggregatedQD.getSampleSize();
+        }
+        aggregatedQD.setAverage(average, null);
+        aggregatedQD.setMinimum(min, null);
+        aggregatedQD.setMaximum(max, null);
+        aggregatedQD.setSampleSize(sampleSize, null);
+        return aggregatedQD;
+    }
+
+    private static List<Float> getExactValues(QuantitativeData qd) {
+        List<Float> exactValues = qd.getStatisticalValues().stream()
+                .filter(value->value.getType().equals(StatisticalMeasure.EXACT_VALUE()))
+                .map(exact->exact.getValue())
+                .collect(Collectors.toList());
+        return exactValues;
+    }
+
 
     private static boolean hasSameState(StateData sd1, StateData sd2) {
         return sd2.getState().getUuid().equals(sd1.getState().getUuid());
