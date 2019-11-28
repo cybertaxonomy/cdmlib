@@ -235,16 +235,16 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
     }
 
     private void testQuantitativeData(UUID featureUuid, Float sampleSize, Float min, Float max, Float avg, TaxonDescription aggrDesc) {
-//        List<QuantitativeData> quantitativeDatas = aggrDesc.getElements().stream()
-//                .filter(element->element.getFeature().getUuid().equals(featureUuid))
-//                .map(catData->CdmBase.deproxy(catData, QuantitativeData.class))
-//                .collect(Collectors.toList());
-//        Assert.assertEquals(1, quantitativeDatas.size());
-//        QuantitativeData leafLength = quantitativeDatas.iterator().next();
-//        Assert.assertEquals(sampleSize, leafLength.getSampleSize());
-//        Assert.assertEquals(min, leafLength.getMin());
-//        Assert.assertEquals(max, leafLength.getMax());
-//        Assert.assertEquals(avg, leafLength.getAverage());
+        List<QuantitativeData> quantitativeDatas = aggrDesc.getElements().stream()
+                .filter(element->element.getFeature().getUuid().equals(featureUuid))
+                .map(catData->CdmBase.deproxy(catData, QuantitativeData.class))
+                .collect(Collectors.toList());
+        Assert.assertEquals(1, quantitativeDatas.size());
+        QuantitativeData leafLength = quantitativeDatas.iterator().next();
+        Assert.assertEquals(sampleSize, leafLength.getSampleSize());
+        Assert.assertEquals(min, leafLength.getMin());
+        Assert.assertEquals(max, leafLength.getMax());
+        Assert.assertEquals(avg, leafLength.getAverage());
     }
 
 

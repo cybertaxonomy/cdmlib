@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.api.service.description;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -17,6 +18,11 @@ import java.util.OptionalDouble;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import org.apache.commons.math3.stat.descriptive.AggregateSummaryStatistics;
+import org.apache.commons.math3.stat.descriptive.StatisticalSummary;
+import org.apache.commons.math3.stat.descriptive.StatisticalSummaryValues;
+import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
 import eu.etaxonomy.cdm.api.service.UpdateResult;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -465,7 +471,8 @@ public class StructuredDescriptionAggregation
             ResultHolder resultHolder) {
         StructuredDescriptionResultHolder structuredResultHolder = (StructuredDescriptionResultHolder)resultHolder;
         structuredResultHolder.categoricalMap.forEach((key, value)->targetDescription.addElement(value));
-        structuredResultHolder.quantitativeMap.forEach((key, value)->targetDescription.addElement(value));
+        structuredResultHolder.quantitativeMap.entrySet().stream()
+        .forEach(entry->targetDescription.addElement(convertStatisticalSummaryValuesToQuantitativeData(entry.getKey(), entry.getValue())));
     }
 
     @Override
@@ -510,20 +517,61 @@ public class StructuredDescriptionAggregation
     }
 
     private void addToQuantitative(QuantitativeData qd, StructuredDescriptionResultHolder resultHolder) {
-        resultHolder.quantitativeMap.put(qd.getFeature(), qd);
+        StatisticalSummaryValues aggregatedQuantitativeData = resultHolder.quantitativeMap.get(qd.getFeature());
+        if(aggregatedQuantitativeData==null){
+            // no QuantitativeData with this feature in aggregation
+            aggregatedQuantitativeData = mergeQuantitativeData(convertQuantitativeDataToSummaryStatistics(qd));
+        }
+        else{
+            aggregatedQuantitativeData = mergeQuantitativeData(aggregatedQuantitativeData, convertQuantitativeDataToSummaryStatistics(qd));
+        }
+        resultHolder.quantitativeMap.put(qd.getFeature(), aggregatedQuantitativeData);
+    }
+
+    private StatisticalSummaryValues mergeQuantitativeData(StatisticalSummary... summaryStatistics) {
+        Collection<StatisticalSummary> statistics = new ArrayList<>();
+        for (StatisticalSummary statistic : summaryStatistics) {
+            statistics.add(statistic);
+        }
+        return AggregateSummaryStatistics.aggregate(statistics);
+    }
+
+    private QuantitativeData convertStatisticalSummaryValuesToQuantitativeData(Feature feature,
+            StatisticalSummaryValues aggregate) {
+        QuantitativeData aggregatedQuantitativeData = QuantitativeData.NewInstance(feature);
+        aggregatedQuantitativeData.setMinimum(new Float(aggregate.getMin()), null);
+        aggregatedQuantitativeData.setMaximum(new Float(aggregate.getMax()), null);
+        aggregatedQuantitativeData.setAverage(new Float(aggregate.getMean()), null);
+        aggregatedQuantitativeData.setStandardDeviation(new Float(aggregate.getStandardDeviation()), null);
+        aggregatedQuantitativeData.setSampleSize(new Float(aggregate.getN()), null);
+        return aggregatedQuantitativeData;
+    }
+
+    private StatisticalSummary convertQuantitativeDataToSummaryStatistics(QuantitativeData qd) {
+        SummaryStatistics summaryStatistics = new SummaryStatistics();
+        qd.getStatisticalValues().stream()
+                .filter(value->value.getType().equals(StatisticalMeasure.EXACT_VALUE()))
+                .forEach(exact->summaryStatistics.addValue(exact.getValue()));
+        if(qd.getMin()!=null){
+            summaryStatistics.addValue(qd.getMin());
+        }
+        if(qd.getMax()!=null){
+            summaryStatistics.addValue(qd.getMax());
+        }
+        return summaryStatistics;
     }
 
     private void addToCategorical(CategoricalData cd, StructuredDescriptionResultHolder resultHolder) {
         CategoricalData aggregatedCategoricalData = resultHolder.categoricalMap.get(cd.getFeature());
         if(aggregatedCategoricalData==null){
-            // no CategoricalData with this feature yet found
+            // no CategoricalData with this feature in aggregation
             aggregatedCategoricalData = (CategoricalData) cd.clone();
             // set count to 1 if not set
             aggregatedCategoricalData.getStateData().stream().filter(sd->sd.getCount()==null).forEach(sd->sd.incrementCount());
             resultHolder.categoricalMap.put(aggregatedCategoricalData.getFeature(), aggregatedCategoricalData);
         }
         else{
-            // filter all StateData with states exist already
+            // split all StateData into those where the state already exists and those where it doesn't
             List<State> statesOnly = aggregatedCategoricalData.getStatesOnly();
             List<StateData> sdWithExistingStateInAggregation = cd.getStateData().stream().filter(sd->statesOnly.contains(sd.getState())).collect(Collectors.toList());
             List<StateData> sdWithNoExistingStateInAggregation = cd.getStateData().stream().filter(sd->!statesOnly.contains(sd.getState())).collect(Collectors.toList());
@@ -574,7 +622,7 @@ public class StructuredDescriptionAggregation
 
     private class StructuredDescriptionResultHolder implements ResultHolder{
         Map<Feature, CategoricalData> categoricalMap = new HashMap<>();
-        Map<Feature, QuantitativeData> quantitativeMap = new HashMap<>();
+        Map<Feature, StatisticalSummaryValues> quantitativeMap = new HashMap<>();
     }
 
 }
