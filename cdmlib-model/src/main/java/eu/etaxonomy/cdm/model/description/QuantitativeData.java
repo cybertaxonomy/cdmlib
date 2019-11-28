@@ -631,7 +631,8 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 
 	@Override
 	public String toString() {
-        return "[" + statisticalValues +
+        return getFeature()!=null?getFeature().getLabel():""+
+                "[" + statisticalValues +
                 (unit!=null? ", unit=" +unit:"") +
                 (unknownData? ", unknownData=" + unknownData:"")
                 + "]";
