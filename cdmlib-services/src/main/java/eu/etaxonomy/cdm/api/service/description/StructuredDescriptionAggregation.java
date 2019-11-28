@@ -63,6 +63,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 public class StructuredDescriptionAggregation
         extends DescriptionAggregationBase<StructuredDescriptionAggregation, StructuredDescriptionAggregationConfiguration>{
 
+    private DescriptiveDataSet dataSet;
+
     @Override
     protected String pluralDataType(){
         return "structured descriptive data";
@@ -75,7 +77,7 @@ public class StructuredDescriptionAggregation
         // take start time for performance testing
         double start = System.currentTimeMillis();
 
-//        makeStatusOrder();
+        dataSet = getDescriptiveDatasetService().load(getConfig().getDatasetUuid());
 
         double end1 = System.currentTimeMillis();
         logger.info("Time elapsed for pre-accumulate() : " + (end1 - start) / (1000) + "s");
@@ -606,8 +608,9 @@ public class StructuredDescriptionAggregation
                     SpecimenOrObservationBase<?> spec = indAss.getAssociatedSpecimenOrObservation();
                      Set<SpecimenDescription> descriptions = (Set)spec.getDescriptions();
                      for(SpecimenDescription specimenDescription : descriptions){
-                         //TODO check if in dataset
-                         result.add(specimenDescription);
+                         if(dataSet.getDescriptions().contains(specimenDescription)){
+                             result.add(specimenDescription);
+                         }
                      }
                 }
             }
