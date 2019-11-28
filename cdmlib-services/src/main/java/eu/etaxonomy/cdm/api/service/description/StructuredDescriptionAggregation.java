@@ -40,6 +40,7 @@ import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
+import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
@@ -461,8 +462,6 @@ public class StructuredDescriptionAggregation
         return description.isAggregatedStructuredDescription();
     }
 
-
-
     @Override
     protected List<String> descriptionInitStrategy() {
         return new ArrayList<>();
@@ -475,6 +474,7 @@ public class StructuredDescriptionAggregation
         structuredResultHolder.categoricalMap.forEach((key, value)->targetDescription.addElement(value));
         structuredResultHolder.quantitativeMap.entrySet().stream()
         .forEach(entry->targetDescription.addElement(convertStatisticalSummaryValuesToQuantitativeData(entry.getKey(), entry.getValue())));
+        dataSet.addDescription(targetDescription);
     }
 
     @Override
@@ -482,20 +482,18 @@ public class StructuredDescriptionAggregation
             ResultHolder resultHolder,
             Set<TaxonDescription> excludedDescriptions) {
         StructuredDescriptionResultHolder descriptiveResultHolder = (StructuredDescriptionResultHolder)resultHolder;
-//        Set<SpecimenDescription> specimenDescriptions = getTaxonDescriptions(taxonNode);
-//        // TODO AM only basic
-//        for (SpecimenDescription desc:specimenDescriptions){
-//            for (DescriptionElementBase deb:desc.getElements()){
-//                if (deb.isCharacterData()){
-//                    if (deb.isInstanceOf(CategoricalData.class)){
-//                        addToCategorical(CdmBase.deproxy(deb, CategoricalData.class), descriptiveResultHolder);
-//                    }else if (deb.isInstanceOf(QuantitativeData.class)){
-//                        addToQuantitative(CdmBase.deproxy(deb, QuantitativeData.class), descriptiveResultHolder);
-//                    }
-//                }
-//            }
-//        }
-
+        Set<TaxonDescription> childTaxonDescriptions = getChildTaxonDescriptions(taxonNode, dataSet);
+        for (TaxonDescription desc:childTaxonDescriptions){
+            for (DescriptionElementBase deb:desc.getElements()){
+                if (deb.isCharacterData()){
+                    if (deb.isInstanceOf(CategoricalData.class)){
+                        addToCategorical(CdmBase.deproxy(deb, CategoricalData.class), descriptiveResultHolder);
+                    }else if (deb.isInstanceOf(QuantitativeData.class)){
+                        addToQuantitative(CdmBase.deproxy(deb, QuantitativeData.class), descriptiveResultHolder);
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -503,8 +501,7 @@ public class StructuredDescriptionAggregation
             ResultHolder resultHolder,
             Set<TaxonDescription> excludedDescriptions) {
         StructuredDescriptionResultHolder descriptiveResultHolder = (StructuredDescriptionResultHolder)resultHolder;
-        Set<SpecimenDescription> specimenDescriptions = getSpecimenDescriptions(taxon);
-        // TODO AM only basic
+        Set<SpecimenDescription> specimenDescriptions = getSpecimenDescriptions(taxon, dataSet);
         for (SpecimenDescription desc:specimenDescriptions){
             for (DescriptionElementBase deb:desc.getElements()){
                 if (hasCharacterData(deb)){
@@ -528,39 +525,6 @@ public class StructuredDescriptionAggregation
             aggregatedQuantitativeData = mergeQuantitativeData(aggregatedQuantitativeData, convertQuantitativeDataToSummaryStatistics(qd));
         }
         resultHolder.quantitativeMap.put(qd.getFeature(), aggregatedQuantitativeData);
-    }
-
-    private StatisticalSummaryValues mergeQuantitativeData(StatisticalSummary... summaryStatistics) {
-        Collection<StatisticalSummary> statistics = new ArrayList<>();
-        for (StatisticalSummary statistic : summaryStatistics) {
-            statistics.add(statistic);
-        }
-        return AggregateSummaryStatistics.aggregate(statistics);
-    }
-
-    private QuantitativeData convertStatisticalSummaryValuesToQuantitativeData(Feature feature,
-            StatisticalSummaryValues aggregate) {
-        QuantitativeData aggregatedQuantitativeData = QuantitativeData.NewInstance(feature);
-        aggregatedQuantitativeData.setMinimum(new Float(aggregate.getMin()), null);
-        aggregatedQuantitativeData.setMaximum(new Float(aggregate.getMax()), null);
-        aggregatedQuantitativeData.setAverage(new Float(aggregate.getMean()), null);
-        aggregatedQuantitativeData.setStandardDeviation(new Float(aggregate.getStandardDeviation()), null);
-        aggregatedQuantitativeData.setSampleSize(new Float(aggregate.getN()), null);
-        return aggregatedQuantitativeData;
-    }
-
-    private StatisticalSummary convertQuantitativeDataToSummaryStatistics(QuantitativeData qd) {
-        SummaryStatistics summaryStatistics = new SummaryStatistics();
-        qd.getStatisticalValues().stream()
-                .filter(value->value.getType().equals(StatisticalMeasure.EXACT_VALUE()))
-                .forEach(exact->summaryStatistics.addValue(exact.getValue()));
-        if(qd.getMin()!=null){
-            summaryStatistics.addValue(qd.getMin());
-        }
-        if(qd.getMax()!=null){
-            summaryStatistics.addValue(qd.getMax());
-        }
-        return summaryStatistics;
     }
 
     private void addToCategorical(CategoricalData cd, StructuredDescriptionResultHolder resultHolder) {
@@ -588,18 +552,47 @@ public class StructuredDescriptionAggregation
             }
 
             for (StateData sdExist : sdWithExistingStateInAggregation) {
-                aggregatedCategoricalData.getStateData().stream()
+                List<StateData> aggregatedSameStateData = aggregatedCategoricalData.getStateData().stream()
                 .filter(sd->hasSameState(sdExist, sd))
-                .forEach(sd->sd.incrementCount());
+                .collect(Collectors.toList());
+                for (StateData stateData : aggregatedSameStateData) {
+                    if(sdExist.getCount()==null){
+                        stateData.incrementCount();
+                    }
+                    else{
+                        stateData.setCount(stateData.getCount()+sdExist.getCount());
+                    }
+                }
             }
         }
     }
 
-    private boolean hasSameState(StateData sd1, StateData sd2) {
-        return sd2.getState().getUuid().equals(sd1.getState().getUuid());
+    @Override
+    protected StructuredDescriptionResultHolder createResultHolder() {
+        return new StructuredDescriptionResultHolder();
     }
 
-    private Set<SpecimenDescription> getSpecimenDescriptions(Taxon taxon) {
+    private class StructuredDescriptionResultHolder implements ResultHolder{
+        Map<Feature, CategoricalData> categoricalMap = new HashMap<>();
+        Map<Feature, StatisticalSummaryValues> quantitativeMap = new HashMap<>();
+    }
+
+    /*
+     * Static utility methods
+     */
+    private static Set<TaxonDescription> getChildTaxonDescriptions(TaxonNode taxonNode, DescriptiveDataSet dataSet) {
+        Set<TaxonDescription> result = new HashSet<>();
+        List<TaxonNode> childNodes = taxonNode.getChildNodes();
+        for (TaxonNode childNode : childNodes) {
+            result.addAll(childNode.getTaxon().getDescriptions().stream()
+            .filter(desc->desc.getTypes().contains(DescriptionType.AGGREGATED_STRUC_DESC))
+            .filter(desc->dataSet.getDescriptions().contains(desc))
+            .collect(Collectors.toSet()));
+        }
+        return result;
+    }
+
+    private static Set<SpecimenDescription> getSpecimenDescriptions(Taxon taxon, DescriptiveDataSet dataSet) {
         Set<SpecimenDescription> result = new HashSet<>();
         for (TaxonDescription taxonDesc: taxon.getDescriptions()){
             for (DescriptionElementBase taxonDeb : taxonDesc.getElements()){
@@ -618,14 +611,68 @@ public class StructuredDescriptionAggregation
         return result;
     }
 
-    @Override
-    protected StructuredDescriptionResultHolder createResultHolder() {
-        return new StructuredDescriptionResultHolder();
+    private static StatisticalSummaryValues mergeQuantitativeData(StatisticalSummary... summaryStatistics) {
+        Collection<StatisticalSummary> statistics = new ArrayList<>();
+        for (StatisticalSummary statistic : summaryStatistics) {
+            statistics.add(statistic);
+        }
+        return AggregateSummaryStatistics.aggregate(statistics);
     }
 
-    private class StructuredDescriptionResultHolder implements ResultHolder{
-        Map<Feature, CategoricalData> categoricalMap = new HashMap<>();
-        Map<Feature, StatisticalSummaryValues> quantitativeMap = new HashMap<>();
+    private static QuantitativeData convertStatisticalSummaryValuesToQuantitativeData(Feature feature,
+            StatisticalSummaryValues aggregate) {
+        QuantitativeData aggregatedQuantitativeData = QuantitativeData.NewInstance(feature);
+        aggregatedQuantitativeData.setMinimum(new Float(aggregate.getMin()), null);
+        aggregatedQuantitativeData.setMaximum(new Float(aggregate.getMax()), null);
+        aggregatedQuantitativeData.setAverage(new Float(aggregate.getMean()), null);
+        aggregatedQuantitativeData.setStandardDeviation(new Float(aggregate.getStandardDeviation()), null);
+        aggregatedQuantitativeData.setSampleSize(new Float(aggregate.getN()), null);
+        return aggregatedQuantitativeData;
+    }
+
+    private static StatisticalSummary convertQuantitativeDataToSummaryStatistics(QuantitativeData qd) {
+        SummaryStatistics summaryStatistics = new SummaryStatistics();
+        List<StatisticalMeasurementValue> exactValues = qd.getStatisticalValues().stream()
+        .filter(value->value.getType().equals(StatisticalMeasure.EXACT_VALUE()))
+        .collect(Collectors.toList());
+        // has exact values -> ignore statistical values
+        if(!exactValues.isEmpty()){
+            exactValues.forEach(exact->summaryStatistics.addValue(exact.getValue()));
+        }
+        // has statistical values
+        else if(qd.getSampleSize()!=null
+                && qd.getSampleSize()!=0f
+                && qd.getMin()!=null
+                && qd.getMin()!=null
+                && qd.getAverage()!=null){
+            Float count = qd.getSampleSize();
+            if(count==1f){
+                // sample size == 1 -> only add average
+                summaryStatistics.addValue(qd.getAverage());
+            }
+            else {
+                float min = qd.getMin();
+                float max = qd.getMax();
+                float average = qd.getAverage();
+                float sampleSize = qd.getSampleSize();
+
+                summaryStatistics.addValue(min);
+                summaryStatistics.addValue(max);
+                count -= 2;
+                float averageFiller = ((average*sampleSize)-(min+max))/(sampleSize-2);
+                while(count>0){
+                    // fill with dummy values that do not change the average
+                    // to assert the correct sample size
+                    summaryStatistics.addValue(averageFiller);
+                    count -= 1;
+                }
+            }
+        }
+        return summaryStatistics;
+    }
+
+    private static boolean hasSameState(StateData sd1, StateData sd2) {
+        return sd2.getState().getUuid().equals(sd1.getState().getUuid());
     }
 
 }

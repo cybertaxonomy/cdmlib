@@ -204,21 +204,21 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         testState(sdAdenophoraLeafColor, uuidLeafColorYellow, 1);
         testQuantitativeData(uuidFeatureLeafLength, 1f, 12f, 12f, 12f, aggrDescLapsanaCommunisAdenophora);
 
-//        Taxon taxLapsanaCommunis = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_UUID);
-//        TaxonDescription aggrDescLapsanaCommunis = testTaxonDescriptions(taxLapsanaCommunis, 3);
-//        testState(testCategoricalData(uuidFeatureLeafPA, 1, aggrDescLapsanaCommunis), State.uuidPresent, 3);
-//        List<StateData> sdCommunisLeafColor = testCategoricalData(uuidFeatureLeafColor, 2, aggrDescLapsanaCommunis);
-//        testState(sdCommunisLeafColor, uuidLeafColorBlue, 2);
-//        testState(sdCommunisLeafColor, uuidLeafColorYellow, 1);
-//        testQuantitativeData(uuidFeatureLeafLength, 3f, 5f, 12f, 8f, aggrDescLapsanaCommunis);
-//
-//        Taxon taxLapsana = (Taxon)taxonService.find(T_LAPSANA_UUID);
-//        TaxonDescription aggrDescLapsana = testTaxonDescriptions(taxLapsana, 3);
-//        testState(testCategoricalData(uuidFeatureLeafPA, 1, aggrDescLapsana), State.uuidPresent, 3);
-//        List<StateData> sdLapsanLeafColor = testCategoricalData(uuidFeatureLeafColor, 2, aggrDescLapsana);
-//        testState(sdLapsanLeafColor, uuidLeafColorBlue, 2);
-//        testState(sdLapsanLeafColor, uuidLeafColorYellow, 1);
-//        testQuantitativeData(uuidFeatureLeafLength, 3f, 5f, 12f, 8f, aggrDescLapsana);
+        Taxon taxLapsanaCommunis = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_UUID);
+        TaxonDescription aggrDescLapsanaCommunis = testTaxonDescriptions(taxLapsanaCommunis, 3);
+        testState(testCategoricalData(uuidFeatureLeafPA, 1, aggrDescLapsanaCommunis), State.uuidPresent, 3);
+        List<StateData> sdCommunisLeafColor = testCategoricalData(uuidFeatureLeafColor, 2, aggrDescLapsanaCommunis);
+        testState(sdCommunisLeafColor, uuidLeafColorBlue, 2);
+        testState(sdCommunisLeafColor, uuidLeafColorYellow, 1);
+        testQuantitativeData(uuidFeatureLeafLength, 3f, 5f, 12f, 8f, aggrDescLapsanaCommunis);
+
+        Taxon taxLapsana = (Taxon)taxonService.find(T_LAPSANA_UUID);
+        TaxonDescription aggrDescLapsana = testTaxonDescriptions(taxLapsana, 3);
+        testState(testCategoricalData(uuidFeatureLeafPA, 1, aggrDescLapsana), State.uuidPresent, 3);
+        List<StateData> sdLapsanLeafColor = testCategoricalData(uuidFeatureLeafColor, 2, aggrDescLapsana);
+        testState(sdLapsanLeafColor, uuidLeafColorBlue, 2);
+        testState(sdLapsanLeafColor, uuidLeafColorYellow, 1);
+        testQuantitativeData(uuidFeatureLeafLength, 3f, 5f, 12f, 8f, aggrDescLapsana);
 
     }
 
