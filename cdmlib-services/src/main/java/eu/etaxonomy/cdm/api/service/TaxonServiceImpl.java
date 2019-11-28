@@ -1010,6 +1010,7 @@ public class TaxonServiceImpl
     	}
     	taxon = HibernateProxyHelper.deproxy(taxon);
     	Classification classification = HibernateProxyHelper.deproxy(classificationDao.load(classificationUuid), Classification.class);
+    	config.setClassificationUuid(classificationUuid);
         result = isDeletable(taxonUUID, config);
 
         if (result.isOk()){
@@ -2990,7 +2991,11 @@ public class TaxonServiceImpl
         Set<CdmBase> references = commonService.getReferencingObjectsForDeletion(taxonBase);
         if (taxonBase instanceof Taxon){
             TaxonDeletionConfigurator taxonConfig = (TaxonDeletionConfigurator) config;
-            result = isDeletableForTaxon(references, taxonConfig);
+            List<String> propertyPaths = new ArrayList();
+            propertyPaths.add("taxonNodes");
+            Taxon taxon = (Taxon)load(taxonBaseUuid, propertyPaths);
+
+            result = isDeletableForTaxon(references, taxonConfig );
         }else{
             SynonymDeletionConfigurator synonymConfig = (SynonymDeletionConfigurator) config;
             result = isDeletableForSynonym(references, synonymConfig);
@@ -3013,6 +3018,8 @@ public class TaxonServiceImpl
         return result;
     }
 
+
+
     private DeleteResult isDeletableForTaxon(Set<CdmBase> references, TaxonDeletionConfigurator config){
         String message = null;
         DeleteResult result = new DeleteResult();
@@ -3027,7 +3034,12 @@ public class TaxonServiceImpl
                 }
 
                 if (!config.isDeleteTaxonNodes() && (ref instanceof TaxonNode)){
+
                     message = "The taxon can't be deleted as long as it belongs to a taxon node.";
+                }
+                if (ref instanceof TaxonNode && config.getClassificationUuid() != null && !config.isDeleteInAllClassifications() && !((TaxonNode)ref).getClassification().getUuid().equals(config.getClassificationUuid())){
+                    message = "The taxon can't be deleted as long as it is used in more than one classification";
+
                 }
                 if (!config.isDeleteTaxonRelationships() && (ref instanceof TaxonRelationship)){
                     if (!config.isDeleteMisappliedNamesAndInvalidDesignations() &&

@@ -551,6 +551,7 @@ public class TaxonNodeServiceImpl
 	            		    saveOrUpdate(taxonNode);
 
 			            	TaxonDeletionConfigurator configNew = new TaxonDeletionConfigurator();
+			            	configNew.setClassificationUuid(classification.getUuid());
 			            	DeleteResult resultTaxon = taxonService.deleteTaxon(taxon.getUuid(), configNew, classification.getUuid());
 			            	if (!resultTaxon.isOk()){
                                 result.addExceptions(resultTaxon.getExceptions());
@@ -562,7 +563,7 @@ public class TaxonNodeServiceImpl
             		classification = null;
 
 	            } else {
-	            	classification = null;
+	            	//classification = null;
 	            	Taxon taxon = taxonNode.getTaxon();
 	            	taxon = HibernateProxyHelper.deproxy(taxon, Taxon.class);
 	            	if (taxon != null){
@@ -571,7 +572,7 @@ public class TaxonNodeServiceImpl
 			            	TaxonDeletionConfigurator configNew = new TaxonDeletionConfigurator();
 			            	saveOrUpdate(taxonNode);
 			            	taxonService.saveOrUpdate(taxon);
-			            	DeleteResult resultTaxon = taxonService.deleteTaxon(taxon.getUuid(), configNew, null);
+			            	DeleteResult resultTaxon = taxonService.deleteTaxon(taxon.getUuid(), configNew, classification.getUuid());
 
                             if (!resultTaxon.isOk()){
                                 result.addExceptions(resultTaxon.getExceptions());
@@ -1162,10 +1163,10 @@ public class TaxonNodeServiceImpl
                true, true, propertyPaths);
         List<TaxonDistributionDTO> result = new ArrayList<>();
         boolean hasPermission = false;
-        TaxonDescription instance = TaxonDescription.NewInstance();
-        hasPermission = permissionEvaluator.hasPermission(authentication, instance, Operation.UPDATE);
+        //TaxonDescription instance = TaxonDescription.NewInstance();
+        //hasPermission = permissionEvaluator.hasPermission(authentication, instance, Operation.UPDATE);
         for(TaxonNode node:nodes){
-            if (authentication != null && !hasPermission) {
+            if (authentication != null ) {
                 hasPermission = permissionEvaluator.hasPermission(authentication, node, Operation.UPDATE);
             }else if (authentication == null){
                 hasPermission = true;

@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.api.service.config;
 
+import java.util.UUID;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.ITaxonService;
@@ -64,6 +66,8 @@ public class TaxonDeletionConfigurator extends TaxonBaseDeletionConfigurator {
     private boolean deleteDescriptions = true;
 
     private boolean deleteInAllClassifications = false;
+
+    private UUID classificationUuid = null;
 
 
 
@@ -188,6 +192,16 @@ public class TaxonDeletionConfigurator extends TaxonBaseDeletionConfigurator {
      */
     public void setDeleteConceptRelationships(boolean deleteConceptRelationships) {
         this.deleteConceptRelationships = deleteConceptRelationships;
+    }
+
+
+    public UUID getClassificationUuid() {
+        return classificationUuid;
+    }
+
+
+    public void setClassificationUuid(UUID classificationUuid) {
+        this.classificationUuid = classificationUuid;
     }
 
 
