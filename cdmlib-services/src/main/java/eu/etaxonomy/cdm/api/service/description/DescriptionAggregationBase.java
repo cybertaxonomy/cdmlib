@@ -234,7 +234,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
         removeDescriptionIfEmpty(targetDescription);
     }
 
-    private void removeDescriptionIfEmpty(TaxonDescription description) {
+    protected void removeDescriptionIfEmpty(TaxonDescription description) {
         if (description.getElements().isEmpty()){
             description.getTaxon().removeDescription(description);
         }

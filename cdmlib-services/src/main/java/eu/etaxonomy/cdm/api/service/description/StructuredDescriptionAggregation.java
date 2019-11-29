@@ -49,7 +49,15 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 public class StructuredDescriptionAggregation
         extends DescriptionAggregationBase<StructuredDescriptionAggregation, StructuredDescriptionAggregationConfiguration>{
 
-    private DescriptiveDataSet dataSet;
+    private static final List<String> DATASET_INIT_STRATEGY = Arrays.asList(new String[] {
+            "descriptions", //$NON-NLS-1$
+            "descriptions.sources", //$NON-NLS-1$
+            "descriptions.descriptionElements", //$NON-NLS-1$
+            "descriptions.descriptionElements.stateData", //$NON-NLS-1$
+            "descriptions.descriptionElements.stateData.state", //$NON-NLS-1$
+            "descriptions.descriptionElements.feature", //$NON-NLS-1$
+            "descriptions.descriptiveDataSets", //$NON-NLS-1$
+    });
 
     @Override
     protected String pluralDataType(){
@@ -63,13 +71,8 @@ public class StructuredDescriptionAggregation
         // take start time for performance testing
         double start = System.currentTimeMillis();
 
-        dataSet = getDescriptiveDatasetService().load(getConfig().getDatasetUuid(), Arrays.asList(new String[] {
-                "descriptions", //$NON-NLS-1$
-                "descriptions.descriptionElements", //$NON-NLS-1$
-                "descriptions.descriptionElements.stateData", //$NON-NLS-1$
-                "descriptions.descriptionElements.stateData.state", //$NON-NLS-1$
-                "descriptions.descriptionElements.feature", //$NON-NLS-1$
-        }));
+        DescriptiveDataSet dataSet = getDescriptiveDatasetService().load(getConfig().getDatasetUuid(), DATASET_INIT_STRATEGY);
+        getResult().setCdmEntity(dataSet);
 
         double end1 = System.currentTimeMillis();
         logger.info("Time elapsed for pre-accumulate() : " + (end1 - start) / (1000) + "s");
@@ -124,16 +127,29 @@ public class StructuredDescriptionAggregation
     @Override
     protected void addAggregationResultToDescription(TaxonDescription targetDescription,
             ResultHolder resultHolder) {
+        DescriptiveDataSet dataSet = getDescriptiveDatasetService().load(getConfig().getDatasetUuid(), DATASET_INIT_STRATEGY);
         StructuredDescriptionResultHolder structuredResultHolder = (StructuredDescriptionResultHolder)resultHolder;
         structuredResultHolder.categoricalMap.forEach((key, value)->targetDescription.addElement(value));
         structuredResultHolder.quantitativeMap.forEach((key, value)->targetDescription.addElement(value));
-        dataSet.addDescription(targetDescription);
+        if(!targetDescription.getElements().isEmpty()){
+            dataSet.addDescription(targetDescription);
+        }
+    }
+
+    @Override
+    protected void removeDescriptionIfEmpty(TaxonDescription description) {
+        super.removeDescriptionIfEmpty(description);
+        if (description.getElements().isEmpty()){
+            DescriptiveDataSet dataSet = getDescriptiveDatasetService().load(getConfig().getDatasetUuid(), DATASET_INIT_STRATEGY);
+            dataSet.removeDescription(description);
+        }
     }
 
     @Override
     protected void aggregateToParentTaxon(TaxonNode taxonNode,
             ResultHolder resultHolder,
             Set<TaxonDescription> excludedDescriptions) {
+        DescriptiveDataSet dataSet = getDescriptiveDatasetService().load(getConfig().getDatasetUuid(), DATASET_INIT_STRATEGY);
         StructuredDescriptionResultHolder descriptiveResultHolder = (StructuredDescriptionResultHolder)resultHolder;
         Set<TaxonDescription> childTaxonDescriptions = getChildTaxonDescriptions(taxonNode, dataSet);
         for (TaxonDescription desc:childTaxonDescriptions){
@@ -153,6 +169,7 @@ public class StructuredDescriptionAggregation
     protected void aggregateWithinSingleTaxon(Taxon taxon,
             ResultHolder resultHolder,
             Set<TaxonDescription> excludedDescriptions) {
+        DescriptiveDataSet dataSet = getDescriptiveDatasetService().load(getConfig().getDatasetUuid(), DATASET_INIT_STRATEGY);
         StructuredDescriptionResultHolder descriptiveResultHolder = (StructuredDescriptionResultHolder)resultHolder;
         Set<SpecimenDescription> specimenDescriptions = getSpecimenDescriptions(taxon, dataSet);
         for (SpecimenDescription desc:specimenDescriptions){
