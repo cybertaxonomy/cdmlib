@@ -147,47 +147,43 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
         @DataSet(value="StructuredDescriptionAggregationTest.xml"),
     })
-    public void aggregationTest() throws JvmLimitsException{
-
+    public void reaggregationTest() throws JvmLimitsException{
         createDefaultFeatureTree();
-
-        DescriptiveDataSet dataSet = DescriptiveDataSet.NewInstance();
-        datasetService.save(dataSet);
-
-        SpecimenDescription specDescAlpina1 = createSpecimenDescription(dataSet, T_LAPSANA_COMMUNIS_ALPINA_UUID, "alpina specimen1");
-        addCategoricalData(specDescAlpina1, uuidFeatureLeafPA, State.uuidPresent);
-        addQuantitativeData(specDescAlpina1, uuidFeatureLeafLength, StatisticalMeasure.EXACT_VALUE(), 5.0f);
-        addCategoricalData(specDescAlpina1, uuidFeatureLeafColor, uuidLeafColorBlue);
-
-        SpecimenDescription specDescAlpina2 = createSpecimenDescription(dataSet, T_LAPSANA_COMMUNIS_ALPINA_UUID, "alpina specimen2");
-        addCategoricalData(specDescAlpina2, uuidFeatureLeafPA, State.uuidPresent);
-        addQuantitativeData(specDescAlpina2, uuidFeatureLeafLength, StatisticalMeasure.EXACT_VALUE(), 7.0f);
-        addCategoricalData(specDescAlpina2, uuidFeatureLeafColor, uuidLeafColorBlue);
-
-        SpecimenDescription specDescAdenophora = createSpecimenDescription(dataSet, T_LAPSANA_COMMUNIS_ADENOPHORA_UUID, "adenophora specimen");
-        addCategoricalData(specDescAdenophora, uuidFeatureLeafPA, State.uuidPresent);
-        addQuantitativeData(specDescAdenophora, uuidFeatureLeafLength, StatisticalMeasure.EXACT_VALUE(), 12.0f);
-        addCategoricalData(specDescAdenophora, uuidFeatureLeafColor, uuidLeafColorYellow);
-
-        TaxonNode tnLapsana = taxonNodeService.find(TN_LAPSANA_UUID);
-        Assert.assertNotNull(tnLapsana);
-        dataSet.addTaxonSubtree(tnLapsana);
-
-        @SuppressWarnings("unchecked")
-        TermTree<Feature> descriptiveSystem = termTreeService.find(uuidFeatureTree);
-        dataSet.setDescriptiveSystem(descriptiveSystem);
-
+        DescriptiveDataSet dataSet = createTestDataset();
         commitAndStartNewTransaction();
 
-        TaxonNodeFilter filter = TaxonNodeFilter.NewSubtreeInstance(TN_LAPSANA_UUID);
-        StructuredDescriptionAggregationConfiguration config =
-                StructuredDescriptionAggregationConfiguration.NewInstance(filter, monitor);
-        config.setDatasetUuid(dataSet.getUuid());
-        config.setAggregateToHigherRanks(true);
-        config.setAggregationMode(AggregationMode.byAreasAndRanks());
+        StructuredDescriptionAggregationConfiguration config = createConfig(dataSet);
+
+        // 1st aggregation
         UpdateResult result = engine.invoke(config, repository);
         Assert.assertEquals(UpdateResult.Status.OK, result.getStatus());
+        testAggregatedDescription();
 
+        // 2nd aggregation
+        result = engine.invoke(config, repository);
+        Assert.assertEquals(UpdateResult.Status.OK, result.getStatus());
+        testAggregatedDescription();
+    }
+
+    @Test
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
+        @DataSet(value="StructuredDescriptionAggregationTest.xml"),
+    })
+    public void aggregationTest() throws JvmLimitsException{
+        createDefaultFeatureTree();
+        DescriptiveDataSet dataSet = createTestDataset();
+        commitAndStartNewTransaction();
+
+        StructuredDescriptionAggregationConfiguration config = createConfig(dataSet);
+
+        UpdateResult result = engine.invoke(config, repository);
+        Assert.assertEquals(UpdateResult.Status.OK, result.getStatus());
+        testAggregatedDescription();
+    }
+
+    private void testAggregatedDescription() {
         Taxon taxLapsanaCommunisAlpina = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ALPINA_UUID);
         TaxonDescription aggrDescLapsanaCommunisAlpina = testTaxonDescriptions(taxLapsanaCommunisAlpina, 3);
         testState(testCategoricalData(uuidFeatureLeafPA, 1, aggrDescLapsanaCommunisAlpina), State.uuidPresent, 2);
@@ -219,7 +215,45 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         testState(sdLapsanLeafColor, uuidLeafColorBlue, 2);
         testState(sdLapsanLeafColor, uuidLeafColorYellow, 1);
         testQuantitativeData(uuidFeatureLeafLength, 3f, 5f, 12f, 8f, aggrDescLapsana);
+    }
 
+    private StructuredDescriptionAggregationConfiguration createConfig(DescriptiveDataSet dataSet) {
+        TaxonNodeFilter filter = TaxonNodeFilter.NewSubtreeInstance(TN_LAPSANA_UUID);
+        StructuredDescriptionAggregationConfiguration config =
+                StructuredDescriptionAggregationConfiguration.NewInstance(filter, monitor);
+        config.setDatasetUuid(dataSet.getUuid());
+        config.setAggregateToHigherRanks(true);
+        config.setAggregationMode(AggregationMode.byAreasAndRanks());
+        return config;
+    }
+
+    private DescriptiveDataSet createTestDataset() {
+        DescriptiveDataSet dataSet = DescriptiveDataSet.NewInstance();
+        datasetService.save(dataSet);
+
+        SpecimenDescription specDescAlpina1 = createSpecimenDescription(dataSet, T_LAPSANA_COMMUNIS_ALPINA_UUID, "alpina specimen1");
+        addCategoricalData(specDescAlpina1, uuidFeatureLeafPA, State.uuidPresent);
+        addQuantitativeData(specDescAlpina1, uuidFeatureLeafLength, StatisticalMeasure.EXACT_VALUE(), 5.0f);
+        addCategoricalData(specDescAlpina1, uuidFeatureLeafColor, uuidLeafColorBlue);
+
+        SpecimenDescription specDescAlpina2 = createSpecimenDescription(dataSet, T_LAPSANA_COMMUNIS_ALPINA_UUID, "alpina specimen2");
+        addCategoricalData(specDescAlpina2, uuidFeatureLeafPA, State.uuidPresent);
+        addQuantitativeData(specDescAlpina2, uuidFeatureLeafLength, StatisticalMeasure.EXACT_VALUE(), 7.0f);
+        addCategoricalData(specDescAlpina2, uuidFeatureLeafColor, uuidLeafColorBlue);
+
+        SpecimenDescription specDescAdenophora = createSpecimenDescription(dataSet, T_LAPSANA_COMMUNIS_ADENOPHORA_UUID, "adenophora specimen");
+        addCategoricalData(specDescAdenophora, uuidFeatureLeafPA, State.uuidPresent);
+        addQuantitativeData(specDescAdenophora, uuidFeatureLeafLength, StatisticalMeasure.EXACT_VALUE(), 12.0f);
+        addCategoricalData(specDescAdenophora, uuidFeatureLeafColor, uuidLeafColorYellow);
+
+        TaxonNode tnLapsana = taxonNodeService.find(TN_LAPSANA_UUID);
+        Assert.assertNotNull(tnLapsana);
+        dataSet.addTaxonSubtree(tnLapsana);
+
+        @SuppressWarnings("unchecked")
+        TermTree<Feature> descriptiveSystem = termTreeService.find(uuidFeatureTree);
+        dataSet.setDescriptiveSystem(descriptiveSystem);
+        return dataSet;
     }
 
     private TaxonDescription testTaxonDescriptions(Taxon taxon, int elementSize){

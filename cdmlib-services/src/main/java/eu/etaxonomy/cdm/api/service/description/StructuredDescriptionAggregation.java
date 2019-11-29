@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -129,10 +130,34 @@ public class StructuredDescriptionAggregation
             ResultHolder resultHolder) {
         DescriptiveDataSet dataSet = getDescriptiveDatasetService().load(getConfig().getDatasetUuid(), DATASET_INIT_STRATEGY);
         StructuredDescriptionResultHolder structuredResultHolder = (StructuredDescriptionResultHolder)resultHolder;
-        structuredResultHolder.categoricalMap.forEach((key, value)->targetDescription.addElement(value));
-        structuredResultHolder.quantitativeMap.forEach((key, value)->targetDescription.addElement(value));
+
+        replaceExistingDescriptionElements(targetDescription, structuredResultHolder.categoricalMap);
+        replaceExistingDescriptionElements(targetDescription, structuredResultHolder.quantitativeMap);
+
         if(!targetDescription.getElements().isEmpty()){
             dataSet.addDescription(targetDescription);
+        }
+    }
+
+    private void replaceExistingDescriptionElements(TaxonDescription targetDescription,
+            Map<Feature, ? extends DescriptionElementBase> elementMap) {
+        for (Entry<Feature, ? extends DescriptionElementBase> entry : elementMap.entrySet()) {
+            DescriptionElementBase elementToRemove = null;
+            DescriptionElementBase elementReplacement = null;
+            for (DescriptionElementBase descriptionElementBase : targetDescription.getElements()) {
+                if(descriptionElementBase.getFeature().equals(entry.getKey())){
+                    elementToRemove = descriptionElementBase;
+                    elementReplacement = entry.getValue();
+                    break;
+                }
+            }
+            if(elementToRemove!=null && elementReplacement!=null){
+                targetDescription.removeElement(elementToRemove);
+                targetDescription.addElement(elementReplacement);
+            }
+            else{
+                targetDescription.addElement(entry.getValue());
+            }
         }
     }
 
