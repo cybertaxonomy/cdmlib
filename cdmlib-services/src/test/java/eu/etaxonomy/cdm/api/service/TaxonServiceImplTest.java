@@ -1553,8 +1553,9 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         assertNotNull(tax);
         Taxon childTaxon = (Taxon)service.find(childUUID);
         assertNotNull(tax);
+        //when calling delete taxon and the taxon can not be deleted the children should not be deleted as well. If children should be deleted call delete taxonnode
         node = nodeService.find(childNodeUUID);
-        assertNull(node);
+        assertNotNull(node);
     }
 
     @Test
