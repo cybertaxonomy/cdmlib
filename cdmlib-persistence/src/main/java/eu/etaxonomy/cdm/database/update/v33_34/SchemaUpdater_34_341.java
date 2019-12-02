@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TableCreator;
-import eu.etaxonomy.cdm.database.update.TableDroper;
+import eu.etaxonomy.cdm.database.update.TableDropper;
 import eu.etaxonomy.cdm.database.update.v34_35.SchemaUpdater_341_35;
 
 /**
@@ -112,7 +112,7 @@ public class SchemaUpdater_34_341 extends SchemaUpdaterBase {
 		//SingleReadAlignment #4529
 		stepName = "Remove Sequence_SingleRead";  //we assume that this field is not yet used
 		tableName = "Sequence_SingleRead";
-		TableDroper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT, true);
+		TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT, true);
 
  		//Add SingleReadAlignment #4529
  		stepName = "Add SingleReadAlignment";
@@ -163,7 +163,7 @@ public class SchemaUpdater_34_341 extends SchemaUpdaterBase {
 		//drop Amplification_SingleRead #4541
 		stepName = "Drop Amplification_SingleRead";
 		tableName = "Amplification_SingleRead";
-		TableDroper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT, true);
+		TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT, true);
 
 		//remove successful, successText, ...
 		stepName = "Remove successful ... from Amplification";
@@ -188,7 +188,7 @@ public class SchemaUpdater_34_341 extends SchemaUpdaterBase {
 		//SpecimenOrObservationBase_Sequence (was incorrect mapping before)
 		stepName = "Remove SpecimenOrObservationBase_Sequence";
 		tableName = "SpecimenOrObservationBase_Sequence";
-		TableDroper.NewInstance(stepList, stepName, tableName, true, true);
+		TableDropper.NewInstance(stepList, stepName, tableName, true, true);
 
 		return stepList;
 

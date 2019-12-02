@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.database.update.ColumnTypeChanger;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
-import eu.etaxonomy.cdm.database.update.TableDroper;
+import eu.etaxonomy.cdm.database.update.TableDropper;
 
 /**
  * @author a.mueller
@@ -103,12 +103,12 @@ public class SchemaUpdater_5112_5120 extends SchemaUpdaterBase {
         //#8468 remove old inapplicableIf tables
         stepName = "Remove old inapplicableIf tables";
         tableName = "TermNode_DefinedTermBase_InapplicableIf";
-        TableDroper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT, true);
+        TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT, true);
 
         //#8468 remove old onlyapplicableIf tables
         stepName = "Remove old onlyapplicableIf tables";
         tableName = "TermNode_DefinedTermBase_OnlyApplicable";
-        TableDroper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT, true);
+        TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT, true);
 
         return stepList;
     }

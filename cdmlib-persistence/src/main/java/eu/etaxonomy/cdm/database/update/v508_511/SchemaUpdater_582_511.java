@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
-import eu.etaxonomy.cdm.database.update.TableDroper;
+import eu.etaxonomy.cdm.database.update.TableDropper;
 import eu.etaxonomy.cdm.database.update.v505_508.SchemaUpdater_581_582;
 
 /**
@@ -68,39 +68,39 @@ public class SchemaUpdater_582_511 extends SchemaUpdaterBase {
         //#8466
         String tableName = "FeatureTree_Annotation";
         String stepName = "Drop table " + tableName;
-        TableDroper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT, true);
+        TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT, true);
 
         tableName = "FeatureTree_Credit";
         stepName = "Drop table " + tableName;
-        TableDroper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT, true);
+        TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT, true);
 
         tableName = "FeatureTree_Extension";
         stepName = "Drop table " + tableName;
-        TableDroper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT, true);
+        TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT, true);
 
         tableName = "FeatureTree_Identifier";
         stepName = "Drop table " + tableName;
-        TableDroper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT, true);
+        TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT, true);
 
         tableName = "FeatureTree_Marker";
         stepName = "Drop table " + tableName;
-        TableDroper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT, true);
+        TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT, true);
 
         tableName = "FeatureTree_OriginalSourceBase";
         stepName = "Drop table " + tableName;
-        TableDroper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT, true);
+        TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT, true);
 
         tableName = "FeatureTree_Representation";
         stepName = "Drop table " + tableName;
-        TableDroper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT, true);
+        TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT, true);
 
         tableName = "FeatureTree_RightsInfo";
         stepName = "Drop table " + tableName;
-        TableDroper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT, true);
+        TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT, true);
 
         tableName = "FeatureTree";
         stepName = "Drop table " + tableName;
-        TableDroper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT, true);
+        TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT, true);
 
     }
 

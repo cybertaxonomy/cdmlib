@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.database.update.MapTableCreator;
 import eu.etaxonomy.cdm.database.update.MnTableCreator;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.TableCreator;
-import eu.etaxonomy.cdm.database.update.TableDroper;
+import eu.etaxonomy.cdm.database.update.TableDropper;
 import eu.etaxonomy.cdm.database.update.TableNameChanger;
 import eu.etaxonomy.cdm.database.update.v24_25.SchemaUpdater_24_25;
 import eu.etaxonomy.cdm.database.update.v30_31.SchemaUpdater_30_301;
@@ -122,7 +122,7 @@ public class SchemaUpdater_25_30 extends SchemaUpdaterBase {
 
 		//Remove featureNode_representation
 		stepName = "Remove FeatureNode_Representation MN";
-		TableDroper.NewInstance(stepList, stepName, "FeatureNode_Representation", INCLUDE_AUDIT);
+		TableDropper.NewInstance(stepList, stepName, "FeatureNode_Representation", INCLUDE_AUDIT);
 
 		//add exsiccatum
 		stepName = "Add exsiccatum to specimen";

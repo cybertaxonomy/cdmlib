@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
-import eu.etaxonomy.cdm.database.update.TableDroper;
+import eu.etaxonomy.cdm.database.update.TableDropper;
 import eu.etaxonomy.cdm.database.update.UniqueIndexDropper;
 import eu.etaxonomy.cdm.database.update.v25_30.SchemaUpdater_25_30;
 import eu.etaxonomy.cdm.database.update.v31_33.SchemaUpdater_31_33;
@@ -69,7 +69,7 @@ public class SchemaUpdater_30_301 extends SchemaUpdaterBase {
 
 		//Makes PolytomousKeyNode parent-child bidirectional
 		ColumnAdder.NewIntegerInstance(stepList, "Add parent_id to PolytomousKeyNode_AUD", "PolytomousKeyNode_AUD", "parent_id", ! INCLUDE_AUDIT, false, "PolytomousKeyNode");
-		TableDroper.NewInstance(stepList, "Drop PolytomousKeyNode_PolytomousKeyNode_AUD table", "PolytomousKeyNode_PolytomousKeyNode_AUD", ! INCLUDE_AUDIT);
+		TableDropper.NewInstance(stepList, "Drop PolytomousKeyNode_PolytomousKeyNode_AUD table", "PolytomousKeyNode_PolytomousKeyNode_AUD", ! INCLUDE_AUDIT);
 
 		return stepList;
 	}
