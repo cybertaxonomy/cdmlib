@@ -107,15 +107,6 @@ public class ColumnTypeChanger
 		}
 	}
 
-    /**
-     * @param tableName
-     * @param datasource
-     * @param monitor
-     * @param result
-     * @param caseType
-     * @throws DatabaseTypeNotSupportedException
-     * @throws SQLException
-     */
     protected void changeType(String tableName, ICdmDataSource datasource, IProgressMonitor monitor,
             CaseType caseType, SchemaUpdateResult result)
             throws DatabaseTypeNotSupportedException, SQLException {
@@ -127,7 +118,6 @@ public class ColumnTypeChanger
             datasource.executeUpdate(updateQuery);
         }
     }
-
 
     private String getNotNullUpdateQuery(String tableName) {
 		String query = " UPDATE %s SET %s = %s WHERE %s IS NULL ";

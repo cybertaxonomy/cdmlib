@@ -14,8 +14,6 @@ import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -27,27 +25,15 @@ import eu.etaxonomy.cdm.database.update.v24_25.SchemaUpdater_24_25;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
 
 /**
+ * Tests the recursive back and forth linking of CdmUpdater classes.
+ *
  * @author a.mueller
  * @since 14.09.2010
- *
  */
 public class CdmUpdaterTest {
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmUpdaterTest.class);
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-	}
 
 // ******************** TESTS ****************************************************/
 
