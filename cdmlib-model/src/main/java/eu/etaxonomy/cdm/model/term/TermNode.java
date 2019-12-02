@@ -20,7 +20,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
@@ -106,24 +105,6 @@ public class TermNode <T extends DefinedTermBase>
     //see https://dev.e-taxonomy.eu/trac/ticket/3722
     private Integer sortIndex;
 
-	@XmlElementWrapper(name = "OnlyApplicableIf_old")
-	@XmlElement(name = "OnlyApplicableIf")
-	@XmlIDREF
-	@XmlSchemaType(name="IDREF")
-	@ManyToMany(fetch = FetchType.LAZY)
-//	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})  remove cascade #5755
-	@JoinTable(name="TermNode_DefinedTermBase_OnlyApplicable")
-	private final Set<State> onlyApplicableIf_old = new HashSet<>();
-
-	@XmlElementWrapper(name = "InapplicableIf_old")
-	@XmlElement(name = "InapplicableIf")
-	@XmlIDREF
-	@XmlSchemaType(name="IDREF")
-	@ManyToMany(fetch = FetchType.LAZY)
-//	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})  remove cascade #5755
-	@JoinTable(name="TermNode_DefinedTermBase_InapplicableIf")
-	private final Set<State> inapplicableIf_old = new HashSet<>();
-
     @XmlElementWrapper(name = "OnlyApplicableIf")
     @XmlElement(name = "OnlyApplicableIf")
     @XmlIDREF
@@ -184,7 +165,6 @@ public class TermNode <T extends DefinedTermBase>
 	}
 
 //** ********************** CHILDREN ******************************/
-
 
 	/**
 	 * @deprecated for internal use only.
