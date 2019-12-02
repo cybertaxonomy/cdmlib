@@ -7,7 +7,7 @@
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
 
-package eu.etaxonomy.cdm.database.update.v58_511;
+package eu.etaxonomy.cdm.database.update.v508_511;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.TableDroper;
-import eu.etaxonomy.cdm.database.update.v55_58.SchemaUpdater_581_582;
+import eu.etaxonomy.cdm.database.update.v505_508.SchemaUpdater_581_582;
 
 /**
  * @author a.mueller
