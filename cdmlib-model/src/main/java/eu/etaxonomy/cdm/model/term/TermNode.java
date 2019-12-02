@@ -67,9 +67,7 @@ import eu.etaxonomy.cdm.model.description.State;
 		"sortIndex",
 		"children",
 		"onlyApplicableIf",
-		"inapplicableIf",
-		"onlyApplicableIf_old",
-		"inapplicableIf_old"
+		"inapplicableIf"
 })
 @XmlRootElement(name = "TermNode")
 @Entity
