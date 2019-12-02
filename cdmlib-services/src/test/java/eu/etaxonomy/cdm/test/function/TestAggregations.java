@@ -59,15 +59,15 @@ public class TestAggregations {
 
 //		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 
-//		server = "160.45.63.171";
-//		database = "cdm_production_euromed";
-//		username = "edit";
-//		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
-
-		server = "test.e-taxonomy.eu";
-		database = "cdm_test_euromed";
+		server = "160.45.63.171";
+		database = "cdm_production_euromed";
 		username = "edit";
 		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
+
+//		server = "test.e-taxonomy.eu";
+//		database = "cdm_test_euromed";
+//		username = "edit";
+//		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
 //		String server = "localhost";
 //		String database = "testCDM";
