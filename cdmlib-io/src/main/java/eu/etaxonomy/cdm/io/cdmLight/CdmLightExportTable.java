@@ -347,8 +347,6 @@ public enum CdmLightExportTable {
                 FURTHER_AREAS, COLLECTOR_STRING, COLLECTOR_NUMBER, COLLECTION_DATE, SPECIMEN_IMAGE_URIS, HERBARIUM_ABBREV, MEDIA_SPECIMEN_URL, PREFERREDSTABLE_ID, BARCODE, CATALOGUE_NUMBER, ACCESSION_NUMBER};
     }
 
-
-
     private String tableName;
     private String[] columnNames;
 
@@ -367,10 +365,6 @@ public enum CdmLightExportTable {
 
     public String[] getColumnNames(){return columnNames;}
 
-    /**
-     * @param taxonId
-     * @return
-     */
     public int getIndex(String columnName) {
         int index= 0;
         for(String column : getColumnNames()){
@@ -381,6 +375,4 @@ public enum CdmLightExportTable {
         }
         return -1;
     }
-
-
 }
