@@ -351,7 +351,7 @@ public class TermDto extends AbstractTermDto{
                         vocRepresentations);
                 termDto.setUri((URI)elements[9]);
                 termDto.setMedia(mediaUuids);
-                if (elements[11] != null){
+                if (elements.length>11 && elements[11] != null){
                     termDto.setLevel((NamedAreaLevel)elements[11]);
                 }
 
