@@ -140,6 +140,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
         //TODO AM from aggByRank          batch.setMaxAllowedGcIncreases(10);
 
         TransactionStatus txStatus = startTransaction(false);
+        initTransaction();
 
         // visit all accepted taxa
         subMonitor.beginTask("Work on taxa.", taxonNodeIdList.size());
@@ -153,6 +154,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
             if(txStatus == null) {
                 // transaction has been committed at the end of this batch, start a new one
                 txStatus = startTransaction(false);
+                initTransaction();
             }
 
             // load taxa for this batch
@@ -196,7 +198,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
             // flushing the session and to the index (flushAndClear() ) can impose a
             // massive heap consumption. therefore we explicitly do a check after the
             // flush to detect these situations and to reduce the batch size.
-            if(batch.getJvmMonitor().getGCRateSiceLastCheck() > 0.05) {
+            if(getConfig().isAdaptBatchSize() && batch.getJvmMonitor().getGCRateSiceLastCheck() > 0.05) {
                 batch.reduceSize(0.5);
             }
 
@@ -293,6 +295,11 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
     protected abstract List<String> descriptionInitStrategy();
 
     protected abstract void preAccumulate();
+
+    /**
+     * hook for initializing object when a new transaction starts
+     */
+    protected abstract void initTransaction();
 
     protected abstract String pluralDataType();
 

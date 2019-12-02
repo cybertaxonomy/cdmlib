@@ -59,6 +59,7 @@ public class StructuredDescriptionAggregation
             "descriptions.descriptionElements.feature", //$NON-NLS-1$
             "descriptions.descriptiveDataSets", //$NON-NLS-1$
     });
+    private DescriptiveDataSet dataSet;
 
     @Override
     protected String pluralDataType(){
@@ -72,8 +73,7 @@ public class StructuredDescriptionAggregation
         // take start time for performance testing
         double start = System.currentTimeMillis();
 
-        DescriptiveDataSet dataSet = getDescriptiveDatasetService().load(getConfig().getDatasetUuid(), DATASET_INIT_STRATEGY);
-        getResult().setCdmEntity(dataSet);
+        getResult().setCdmEntity(getDescriptiveDatasetService().load(getConfig().getDatasetUuid(), DATASET_INIT_STRATEGY));
 
         double end1 = System.currentTimeMillis();
         logger.info("Time elapsed for pre-accumulate() : " + (end1 - start) / (1000) + "s");
@@ -117,7 +117,7 @@ public class StructuredDescriptionAggregation
 
     @Override
     protected boolean hasDescriptionType(TaxonDescription description) {
-        return description.isAggregatedStructuredDescription();
+        return dataSet.getDescriptions().contains(description) && description.isAggregatedStructuredDescription();
     }
 
     @Override
@@ -128,7 +128,6 @@ public class StructuredDescriptionAggregation
     @Override
     protected void addAggregationResultToDescription(TaxonDescription targetDescription,
             ResultHolder resultHolder) {
-        DescriptiveDataSet dataSet = getDescriptiveDatasetService().load(getConfig().getDatasetUuid(), DATASET_INIT_STRATEGY);
         StructuredDescriptionResultHolder structuredResultHolder = (StructuredDescriptionResultHolder)resultHolder;
 
         replaceExistingDescriptionElements(targetDescription, structuredResultHolder.categoricalMap);
@@ -162,10 +161,14 @@ public class StructuredDescriptionAggregation
     }
 
     @Override
+    protected void initTransaction() {
+        dataSet = getDescriptiveDatasetService().load(getConfig().getDatasetUuid(), DATASET_INIT_STRATEGY);
+    }
+
+    @Override
     protected void removeDescriptionIfEmpty(TaxonDescription description) {
         super.removeDescriptionIfEmpty(description);
         if (description.getElements().isEmpty()){
-            DescriptiveDataSet dataSet = getDescriptiveDatasetService().load(getConfig().getDatasetUuid(), DATASET_INIT_STRATEGY);
             dataSet.removeDescription(description);
         }
     }
@@ -174,7 +177,6 @@ public class StructuredDescriptionAggregation
     protected void aggregateToParentTaxon(TaxonNode taxonNode,
             ResultHolder resultHolder,
             Set<TaxonDescription> excludedDescriptions) {
-        DescriptiveDataSet dataSet = getDescriptiveDatasetService().load(getConfig().getDatasetUuid(), DATASET_INIT_STRATEGY);
         StructuredDescriptionResultHolder descriptiveResultHolder = (StructuredDescriptionResultHolder)resultHolder;
         Set<TaxonDescription> childTaxonDescriptions = getChildTaxonDescriptions(taxonNode, dataSet);
         for (TaxonDescription desc:childTaxonDescriptions){
@@ -194,7 +196,6 @@ public class StructuredDescriptionAggregation
     protected void aggregateWithinSingleTaxon(Taxon taxon,
             ResultHolder resultHolder,
             Set<TaxonDescription> excludedDescriptions) {
-        DescriptiveDataSet dataSet = getDescriptiveDatasetService().load(getConfig().getDatasetUuid(), DATASET_INIT_STRATEGY);
         StructuredDescriptionResultHolder descriptiveResultHolder = (StructuredDescriptionResultHolder)resultHolder;
         Set<SpecimenDescription> specimenDescriptions = getSpecimenDescriptions(taxon, dataSet);
         for (SpecimenDescription desc:specimenDescriptions){

@@ -34,6 +34,8 @@ public abstract class DescriptionAggregationConfigurationBase<TASK extends Descr
 
     private List<AggregationMode> aggregationModes;
 
+    private boolean adaptBatchSize = true;
+
     private boolean doClearExistingDescription = false;
     private boolean doReuseDescriptions = false;
     private boolean doReuseDescriptionElements = false;
@@ -147,5 +149,11 @@ public abstract class DescriptionAggregationConfigurationBase<TASK extends Descr
     }
     public void setWithinTaxonSourceMode(SourceMode withinTaxonSourceMode) {
         this.withinTaxonSourceMode = withinTaxonSourceMode;
+    }
+    public boolean isAdaptBatchSize() {
+        return adaptBatchSize;
+    }
+    public void setAdaptBatchSize(boolean adaptBatchSize) {
+        this.adaptBatchSize = adaptBatchSize;
     }
 }

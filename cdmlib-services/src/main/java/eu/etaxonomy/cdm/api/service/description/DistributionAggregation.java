@@ -124,6 +124,10 @@ public class DistributionAggregation
 
     }
 
+    @Override
+    protected void initTransaction() {
+    }
+
     List<NamedArea> superAreaList;
 
     private void makeSuperAreas() {
