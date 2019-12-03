@@ -46,7 +46,7 @@ public class TestModelUpdate {
 
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 
-		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm58" : "cdm511");
+		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm511" : "cdm512");
 
 		CdmDataSource dataSource = getDatasource(dbType, database);
  		try {
