@@ -9,7 +9,6 @@
 package eu.etaxonomy.cdm.api.service.description;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -19,7 +18,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
@@ -32,6 +33,7 @@ import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
@@ -50,15 +52,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 public class StructuredDescriptionAggregation
         extends DescriptionAggregationBase<StructuredDescriptionAggregation, StructuredDescriptionAggregationConfiguration>{
 
-    private static final List<String> DATASET_INIT_STRATEGY = Arrays.asList(new String[] {
-            "descriptions", //$NON-NLS-1$
-            "descriptions.sources", //$NON-NLS-1$
-            "descriptions.descriptionElements", //$NON-NLS-1$
-            "descriptions.descriptionElements.stateData", //$NON-NLS-1$
-            "descriptions.descriptionElements.stateData.state", //$NON-NLS-1$
-            "descriptions.descriptionElements.feature", //$NON-NLS-1$
-            "descriptions.descriptiveDataSets", //$NON-NLS-1$
-    });
     private DescriptiveDataSet dataSet;
 
     @Override
@@ -73,7 +66,7 @@ public class StructuredDescriptionAggregation
         // take start time for performance testing
         double start = System.currentTimeMillis();
 
-        getResult().setCdmEntity(getDescriptiveDatasetService().load(getConfig().getDatasetUuid(), DATASET_INIT_STRATEGY));
+        getResult().setCdmEntity(getDescriptiveDatasetService().load(getConfig().getDatasetUuid()));
 
         double end1 = System.currentTimeMillis();
         logger.info("Time elapsed for pre-accumulate() : " + (end1 - start) / (1000) + "s");
@@ -132,9 +125,44 @@ public class StructuredDescriptionAggregation
 
         replaceExistingDescriptionElements(targetDescription, structuredResultHolder.categoricalMap);
         replaceExistingDescriptionElements(targetDescription, structuredResultHolder.quantitativeMap);
+        addAggregationSources(targetDescription, structuredResultHolder);
 
         if(!targetDescription.getElements().isEmpty()){
             dataSet.addDescription(targetDescription);
+        }
+    }
+
+    private void addAggregationSources(TaxonDescription targetDescription,
+            StructuredDescriptionResultHolder structuredResultHolder) {
+        //FIXME Re-use sources if possible
+        //Remove sources from description
+        Set<IdentifiableSource> sourcesToRemove = targetDescription.getSources().stream()
+                .filter(source->source.getType().equals(OriginalSourceType.Aggregation))
+                .collect(Collectors.toSet());
+
+        for (IdentifiableSource source : sourcesToRemove) {
+            targetDescription.removeSource(source);
+        }
+
+        Set<DescriptionBase> sourceDescriptions = structuredResultHolder.sourceDescriptions;
+        for (DescriptionBase descriptionBase : sourceDescriptions) {
+            DescriptionBase sourceDescription = null;
+            if(descriptionBase.isInstanceOf(SpecimenDescription.class)){
+                DescriptionBase clone = (DescriptionBase)descriptionBase.clone();
+                clone.removeDescriptiveDataSet(dataSet);
+                clone.getTypes().add(DescriptionType.CLONE_FOR_SOURCE);
+                SpecimenOrObservationBase specimen = CdmBase.deproxy(descriptionBase, SpecimenDescription.class).getDescribedSpecimenOrObservation();
+                specimen.addDescription(CdmBase.deproxy(clone, SpecimenDescription.class));
+                sourceDescription=clone;
+            }
+            else if(descriptionBase.isInstanceOf(TaxonDescription.class)){
+                Taxon taxon = CdmBase.deproxy(descriptionBase, TaxonDescription.class).getTaxon();
+                taxon.addDescription(CdmBase.deproxy(descriptionBase, TaxonDescription.class));
+                sourceDescription=descriptionBase;
+            }
+            if(sourceDescription!=null){
+                targetDescription.addAggregationSource(sourceDescription);
+            }
         }
     }
 
@@ -162,7 +190,7 @@ public class StructuredDescriptionAggregation
 
     @Override
     protected void initTransaction() {
-        dataSet = getDescriptiveDatasetService().load(getConfig().getDatasetUuid(), DATASET_INIT_STRATEGY);
+        dataSet = getDescriptiveDatasetService().load(getConfig().getDatasetUuid());
     }
 
     @Override
@@ -178,18 +206,7 @@ public class StructuredDescriptionAggregation
             ResultHolder resultHolder,
             Set<TaxonDescription> excludedDescriptions) {
         StructuredDescriptionResultHolder descriptiveResultHolder = (StructuredDescriptionResultHolder)resultHolder;
-        Set<TaxonDescription> childTaxonDescriptions = getChildTaxonDescriptions(taxonNode, dataSet);
-        for (TaxonDescription desc:childTaxonDescriptions){
-            for (DescriptionElementBase deb:desc.getElements()){
-                if (deb.isCharacterData()){
-                    if (deb.isInstanceOf(CategoricalData.class)){
-                        addToCategorical(CdmBase.deproxy(deb, CategoricalData.class), descriptiveResultHolder);
-                    }else if (deb.isInstanceOf(QuantitativeData.class)){
-                        addToQuantitative(CdmBase.deproxy(deb, QuantitativeData.class), descriptiveResultHolder);
-                    }
-                }
-            }
-        }
+        addDescriptionElement(descriptiveResultHolder, getChildTaxonDescriptions(taxonNode, dataSet));
     }
 
     @Override
@@ -197,16 +214,26 @@ public class StructuredDescriptionAggregation
             ResultHolder resultHolder,
             Set<TaxonDescription> excludedDescriptions) {
         StructuredDescriptionResultHolder descriptiveResultHolder = (StructuredDescriptionResultHolder)resultHolder;
-        Set<SpecimenDescription> specimenDescriptions = getSpecimenDescriptions(taxon, dataSet);
-        for (SpecimenDescription desc:specimenDescriptions){
-            for (DescriptionElementBase deb:desc.getElements()){
+        addDescriptionElement(descriptiveResultHolder, getSpecimenDescriptions(taxon, dataSet));
+    }
+
+    private void addDescriptionElement(StructuredDescriptionResultHolder descriptiveResultHolder,
+            Set<? extends DescriptionBase> descriptions) {
+        boolean descriptionWasUsed = false;
+        for (DescriptionBase desc:descriptions){
+            for (DescriptionElementBase deb:(Set<DescriptionElementBase>)desc.getElements()){
                 if (hasCharacterData(deb)){
                     if (deb.isInstanceOf(CategoricalData.class)){
                         addToCategorical(CdmBase.deproxy(deb, CategoricalData.class), descriptiveResultHolder);
+                        descriptionWasUsed = true;
                     }else if (deb.isInstanceOf(QuantitativeData.class)){
                         addToQuantitative(CdmBase.deproxy(deb, QuantitativeData.class), descriptiveResultHolder);
+                        descriptionWasUsed = true;
                     }
                 }
+            }
+            if(descriptionWasUsed){
+                descriptiveResultHolder.sourceDescriptions.add(desc);
             }
         }
     }
@@ -271,6 +298,7 @@ public class StructuredDescriptionAggregation
     private class StructuredDescriptionResultHolder implements ResultHolder{
         Map<Feature, CategoricalData> categoricalMap = new HashMap<>();
         Map<Feature, QuantitativeData> quantitativeMap = new HashMap<>();
+        Set<DescriptionBase> sourceDescriptions = new HashSet<>();
     }
 
     /*
