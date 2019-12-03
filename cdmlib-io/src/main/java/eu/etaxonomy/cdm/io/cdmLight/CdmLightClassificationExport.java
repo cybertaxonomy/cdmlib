@@ -1254,35 +1254,42 @@ public class CdmLightClassificationExport
             if (cdmBase instanceof TaxonName){
                 TaxonName name = (TaxonName)cdmBase;
 
-                Set<String> IPNIidentifiers = name.getIdentifiers(DefinedTerm.IDENTIFIER_NAME_IPNI());
-                Set<String> tropicosIdentifiers = name.getIdentifiers(DefinedTerm.IDENTIFIER_NAME_TROPICOS());
-                Set<String> WFOIdentifiers = name.getIdentifiers(DefinedTerm.uuidWfoNameIdentifier);
-                if (!IPNIidentifiers.isEmpty()) {
-                    csvLine = new String[table.getSize()];
-                    csvLine[table.getIndex(CdmLightExportTable.FK)] = getId(state, name);
-                    csvLine[table.getIndex(CdmLightExportTable.REF_TABLE)] = "ScientificName";
-                    csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = IPNI_NAME_IDENTIFIER;
-                    csvLine[table.getIndex(CdmLightExportTable.EXTERNAL_NAME_IDENTIFIER)] = extractIdentifier(
-                            IPNIidentifiers);
-                    state.getProcessor().put(table, name, csvLine);
-                }
-                if (!tropicosIdentifiers.isEmpty()) {
-                    csvLine = new String[table.getSize()];
-                    csvLine[table.getIndex(CdmLightExportTable.FK)] = getId(state, name);
-                    csvLine[table.getIndex(CdmLightExportTable.REF_TABLE)] = "ScientificName";
-                    csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = TROPICOS_NAME_IDENTIFIER;
-                    csvLine[table.getIndex(CdmLightExportTable.EXTERNAL_NAME_IDENTIFIER)] = extractIdentifier(
-                            tropicosIdentifiers);
-                    state.getProcessor().put(table, name, csvLine);
-                }
-                if (!WFOIdentifiers.isEmpty()) {
-                    csvLine = new String[table.getSize()];
-                    csvLine[table.getIndex(CdmLightExportTable.FK)] = getId(state, name);
-                    csvLine[table.getIndex(CdmLightExportTable.REF_TABLE)] = "ScientificName";
-                    csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = WFO_NAME_IDENTIFIER;
-                    csvLine[table.getIndex(CdmLightExportTable.EXTERNAL_NAME_IDENTIFIER)] = extractIdentifier(
-                            WFOIdentifiers);
-                    state.getProcessor().put(table, name, csvLine);
+                try{
+                    Set<String> IPNIidentifiers = name.getIdentifiers(DefinedTerm.IDENTIFIER_NAME_IPNI());
+                    Set<String> tropicosIdentifiers = name.getIdentifiers(DefinedTerm.IDENTIFIER_NAME_TROPICOS());
+                    Set<String> WFOIdentifiers = name.getIdentifiers(DefinedTerm.uuidWfoNameIdentifier);
+                    if (!IPNIidentifiers.isEmpty()) {
+                        csvLine = new String[table.getSize()];
+                        csvLine[table.getIndex(CdmLightExportTable.FK)] = getId(state, name);
+                        csvLine[table.getIndex(CdmLightExportTable.REF_TABLE)] = "ScientificName";
+                        csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = IPNI_NAME_IDENTIFIER;
+                        csvLine[table.getIndex(CdmLightExportTable.EXTERNAL_NAME_IDENTIFIER)] = extractIdentifier(
+                                IPNIidentifiers);
+                        state.getProcessor().put(table, name, csvLine);
+                    }
+                    if (!tropicosIdentifiers.isEmpty()) {
+                        csvLine = new String[table.getSize()];
+                        csvLine[table.getIndex(CdmLightExportTable.FK)] = getId(state, name);
+                        csvLine[table.getIndex(CdmLightExportTable.REF_TABLE)] = "ScientificName";
+                        csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = TROPICOS_NAME_IDENTIFIER;
+                        csvLine[table.getIndex(CdmLightExportTable.EXTERNAL_NAME_IDENTIFIER)] = extractIdentifier(
+                                tropicosIdentifiers);
+                        state.getProcessor().put(table, name, csvLine);
+                    }
+                    if (!WFOIdentifiers.isEmpty()) {
+                        csvLine = new String[table.getSize()];
+                        csvLine[table.getIndex(CdmLightExportTable.FK)] = getId(state, name);
+                        csvLine[table.getIndex(CdmLightExportTable.REF_TABLE)] = "ScientificName";
+                        csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = WFO_NAME_IDENTIFIER;
+                        csvLine[table.getIndex(CdmLightExportTable.EXTERNAL_NAME_IDENTIFIER)] = extractIdentifier(
+                                WFOIdentifiers);
+                        state.getProcessor().put(table, name, csvLine);
+                    }
+                }catch(Exception e){
+                    state.getResult().addWarning("Please check the identifiers for "
+                            + cdmBaseStr(cdmBase) + " maybe there is an empty identifier");
+
+
                 }
             }else{
                 if (cdmBase instanceof IdentifiableEntity){
@@ -1300,13 +1307,20 @@ public class CdmLightClassificationExport
                     }else if (cdmBase instanceof TeamOrPersonBase){
                         tableName = "PersonOrTeam";
                     }
-                    for (Identifier<?> identifier: identifiers){
+
+                    for (Identifier identifier: identifiers){
+                        if (identifier.getType() == null && identifier.getIdentifier() == null){
+                            state.getResult().addWarning("Please check the identifiers for "
+                                    + cdmBaseStr(cdmBase) + " there is an empty identifier");
+                            continue;
+                        }
+
                         csvLine = new String[table.getSize()];
                         csvLine[table.getIndex(CdmLightExportTable.FK)] = getId(state, cdmBase);
 
                         if (tableName != null){
                             csvLine[table.getIndex(CdmLightExportTable.REF_TABLE)] = tableName;
-                            csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = identifier.getType().getLabel();
+                            csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = identifier.getType() != null? identifier.getType().getLabel():null;
                             csvLine[table.getIndex(CdmLightExportTable.EXTERNAL_NAME_IDENTIFIER)] = identifier.getIdentifier();
                             state.getProcessor().put(table, cdmBase, csvLine);
                         }

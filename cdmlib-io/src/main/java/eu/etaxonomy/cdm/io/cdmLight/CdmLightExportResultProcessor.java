@@ -117,7 +117,7 @@ public class CdmLightExportResultProcessor {
                     if (table.equals(CdmLightExportTable.SIMPLE_FACT) && data.size() == 1){
                         String[] csvLine = new String[table.getSize()];
                         csvLine[table.getIndex(CdmLightExportTable.FACT_ID)] = "<UUID>";
-                        csvLine[table.getIndex(CdmLightExportTable.TAXON_FK)]= state.getRootId().toString();
+                        csvLine[table.getIndex(CdmLightExportTable.TAXON_FK)]= state.getRootId() != null? state.getRootId().toString(): "UUID";
                         csvLine[table.getIndex(CdmLightExportTable.FACT_TEXT)]= "Dummy";
                         data.add(createCsvLine(config, csvLine));
                     }
