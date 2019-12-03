@@ -352,6 +352,12 @@ public class StructuredDescriptionAggregation
         else{
             // qd is already aggregated
             aggQD = (QuantitativeData) qd.clone();
+            if(aggQD.getMin()==null){
+                aggQD.setMinimum(aggQD.getMax(), null);
+            }
+            if(aggQD.getMax()==null){
+                aggQD.setMaximum(aggQD.getMin(), null);
+            }
             if(aggQD.getSampleSize()==null){
                 aggQD.setSampleSize(1f, null);
             }
