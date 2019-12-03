@@ -422,20 +422,20 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
         getMonitor().beginTask(name, totalWork);
     }
 
-    public void worked(int work){
+    protected void worked(int work){
         getMonitor().worked(work);
     }
 
-    public void workedAndNewTask(int work, String newTask){
+    protected void workedAndNewTask(int work, String newTask){
         getMonitor().worked(work);
         getMonitor().subTask(newTask);
     }
 
-    public void subTask(String name){
+    protected void subTask(String name){
         getMonitor().subTask(name);
     }
 
-    public void done(){
+    protected void done(){
         getMonitor().done();
     }
 
