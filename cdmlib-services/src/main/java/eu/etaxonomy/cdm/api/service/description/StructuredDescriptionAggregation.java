@@ -352,12 +352,7 @@ public class StructuredDescriptionAggregation
         else{
             // qd is already aggregated
             aggQD = (QuantitativeData) qd.clone();
-            if(aggQD.getMin()==null){
-                aggQD.setMinimum(aggQD.getMax(), null);
-            }
-            if(aggQD.getMax()==null){
-                aggQD.setMaximum(aggQD.getMin(), null);
-            }
+            fixMinMax(aggQD);
             if(aggQD.getSampleSize()==null){
                 aggQD.setSampleSize(1f, null);
             }
@@ -366,6 +361,15 @@ public class StructuredDescriptionAggregation
             }
         }
         return aggQD;
+    }
+
+    public static void fixMinMax(QuantitativeData aggQD) {
+        if(aggQD.getMin()==null){
+            aggQD.setMinimum(aggQD.getMax(), null);
+        }
+        if(aggQD.getMax()==null){
+            aggQD.setMaximum(aggQD.getMin(), null);
+        }
     }
 
     private static QuantitativeData mergeQuantitativeData(QuantitativeData aggregatedQD, QuantitativeData qd) {

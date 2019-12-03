@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import eu.etaxonomy.cdm.api.service.description.StructuredDescriptionAggregation;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
@@ -172,6 +173,7 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
                     }
                 });
             });
+            StructuredDescriptionAggregation.fixMinMax(quantitativeData);
             // update display data cache
             String displayData = generateDisplayString(quantitativeData);
             featureToDisplayDataMap.put(feature, displayData);
