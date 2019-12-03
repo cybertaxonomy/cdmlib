@@ -41,7 +41,6 @@ import eu.etaxonomy.cdm.filter.TaxonNodeFilter.ORDER;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
-import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -255,20 +254,13 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
 
     /**
      * Either finds an existing taxon description of the given taxon or creates a new one.
-     * If the doClear is set all existing description elements will be cleared.
-     *
-     * @param taxon
-     * @param doClear will remove all existing Distributions if the taxon already
-     *     has a description of type {@link DescriptionType#AGGREGATED_DISTRIBUTION}
-     *     (or a MarkerType COMPUTED for historical reasons, will be removed in future)
-     * @return
      */
     private TaxonDescription getAggregatedDescription(Taxon taxon) {
 
         // find existing one
         for (TaxonDescription description : taxon.getDescriptions()) {
             if (hasDescriptionType(description)){
-                logger.debug("reusing computed description for " + taxonToString(taxon));
+                logger.debug("reusing existing aggregated description for " + taxonToString(taxon));
                 setDescriptionTitle(description, taxon);  //maybe we want to redefine the title
                 return description;
             }
