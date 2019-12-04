@@ -82,7 +82,8 @@ public class StructuredDescriptionAggregation
                 && !((QuantitativeData) element).getStatisticalValues().isEmpty()){
             QuantitativeData quantitativeData = (QuantitativeData)element;
             return !getExactValues(quantitativeData).isEmpty()
-                    || (quantitativeData.getMin()!=null && quantitativeData.getMax()!=null);
+                    || quantitativeData.getMin()!=null
+                    || quantitativeData.getMax()!=null;
         }
         return false;
     }
@@ -352,20 +353,24 @@ public class StructuredDescriptionAggregation
         else{
             // qd is already aggregated
             aggQD = (QuantitativeData) qd.clone();
-            fixMinMax(aggQD);
-            if(aggQD.getSampleSize()==null){
-                aggQD.setSampleSize(1f, null);
-            }
-            if(aggQD.getAverage()==null){
-                aggQD.setAverage((aggQD.getMax()-aggQD.getMin()), null);
-            }
+            fixQuantitativeData(aggQD);
         }
         return aggQD;
     }
 
+    private static void fixQuantitativeData(QuantitativeData qD) {
+        fixMinMax(qD);
+        if(qD.getSampleSize()==null){
+            qD.setSampleSize(1f, null);
+        }
+        if(qD.getAverage()==null){
+            qD.setAverage((qD.getMax()+qD.getMin())/2, null);
+        }
+    }
+
     public static void fixMinMax(QuantitativeData aggQD) {
         if(aggQD.getMin()==null){
-            aggQD.setMinimum(aggQD.getMax(), null);
+            aggQD.setMinimum(0f, null);
         }
         if(aggQD.getMax()==null){
             aggQD.setMaximum(aggQD.getMin(), null);
@@ -393,6 +398,7 @@ public class StructuredDescriptionAggregation
         }
         else{
             // qd is already aggregated
+            fixQuantitativeData(qd);
             min = Math.min(aggregatedQD.getMin(), qd.getMin());
             max = Math.max(aggregatedQD.getMax(), qd.getMax());
             average = new Float(((aggregatedQD.getAverage()*aggregatedQD.getSampleSize())+qd.getAverage()*qd.getSampleSize())/(aggregatedQD.getSampleSize()+qd.getSampleSize()));

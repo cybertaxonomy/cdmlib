@@ -173,6 +173,41 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
         @DataSet(value="StructuredDescriptionAggregationTest.xml"),
     })
+    public void aggregatedQuantitativeDataTest() throws JvmLimitsException{
+        createDefaultFeatureTree();
+        DescriptiveDataSet dataSet = DescriptiveDataSet.NewInstance();
+        datasetService.save(dataSet);
+
+        SpecimenDescription specDescAlpina1 = createSpecimenDescription(dataSet, T_LAPSANA_COMMUNIS_ALPINA_UUID, "alpina specimen1");
+        addQuantitativeData(specDescAlpina1, uuidFeatureLeafLength, StatisticalMeasure.MIN(), 5.0f);
+
+        SpecimenDescription specDescAlpina2 = createSpecimenDescription(dataSet, T_LAPSANA_COMMUNIS_ALPINA_UUID, "alpina specimen2");
+        addQuantitativeData(specDescAlpina2, uuidFeatureLeafLength, StatisticalMeasure.MAX(), 7.0f);
+
+        TaxonNode tnLapsana = taxonNodeService.find(TN_LAPSANA_UUID);
+        Assert.assertNotNull(tnLapsana);
+        dataSet.addTaxonSubtree(tnLapsana);
+
+        @SuppressWarnings("unchecked")
+        TermTree<Feature> descriptiveSystem = termTreeService.find(uuidFeatureTree);
+        dataSet.setDescriptiveSystem(descriptiveSystem);
+        commitAndStartNewTransaction();
+
+        StructuredDescriptionAggregationConfiguration config = createConfig(dataSet);
+
+        UpdateResult result = engine.invoke(config, repository);
+        Assert.assertEquals(UpdateResult.Status.OK, result.getStatus());
+
+        Taxon taxLapsanaCommunisAlpina = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ALPINA_UUID);
+        TaxonDescription aggrDescLapsanaCommunisAlpina = testTaxonDescriptions(taxLapsanaCommunisAlpina, 1);
+        testQuantitativeData(uuidFeatureLeafLength, 2f, 0f, 7f, 4.25f, aggrDescLapsanaCommunisAlpina);
+    }
+    @Test
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
+        @DataSet(value="StructuredDescriptionAggregationTest.xml"),
+    })
     public void aggregationTest() throws JvmLimitsException{
         createDefaultFeatureTree();
         DescriptiveDataSet dataSet = createTestDataset();
