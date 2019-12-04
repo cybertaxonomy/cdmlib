@@ -23,14 +23,14 @@ public enum AggregationSourceMode implements IKeyTerm{
 
     private String key;
     private String message;
-    private boolean isWithinTaxon;
-    private boolean isToParent;
+    private boolean supportsWithinTaxon;
+    private boolean supportsToParent;
 
-    private AggregationSourceMode(String key, String message, boolean isWithinTaxon, boolean isToParent) {
+    private AggregationSourceMode(String key, String message, boolean supportsWithinTaxon, boolean supportsToParent) {
         this.key = key;
         this.message = message;
-        this.isWithinTaxon = isWithinTaxon;
-        this.isToParent = isToParent;
+        this.supportsWithinTaxon = supportsWithinTaxon;
+        this.supportsToParent = supportsToParent;
     }
 
     @Override
@@ -49,6 +49,14 @@ public enum AggregationSourceMode implements IKeyTerm{
         return message;
     }
 
+    public boolean isSupportsWithinTaxon() {
+        return supportsWithinTaxon;
+    }
+
+    public boolean isSupportsToParent() {
+        return supportsToParent;
+    }
+
     /**
      * Returns a list of {@link AggregationSourceMode}s available for the
      * given {@link AggregationMode} and {@link AggregationType}
@@ -57,9 +65,9 @@ public enum AggregationSourceMode implements IKeyTerm{
         //TODO currently aggType is not yet used as all source modes are available for all aggTypes
         List<AggregationSourceMode> result = new ArrayList<>();
         for(AggregationSourceMode mode : values()){
-            if (aggregationMode == AggregationMode.WithinTaxon && mode.isWithinTaxon){
+            if (aggregationMode == AggregationMode.WithinTaxon && mode.supportsWithinTaxon){
                 result.add(mode);
-            }else if (aggregationMode == AggregationMode.ToParent && mode.isToParent){
+            }else if (aggregationMode == AggregationMode.ToParent && mode.supportsToParent){
                 result.add(mode);
             }
         }
