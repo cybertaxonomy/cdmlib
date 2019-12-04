@@ -148,6 +148,9 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
         Iterator<Integer> taxonIdIterator = taxonNodeIdList.iterator();
 
         while (taxonIdIterator.hasNext() || batch.hasUnprocessedItems()) {
+            if(getConfig().getMonitor().isCanceled()){
+                break;
+            }
 
             if(txStatus == null) {
                 // transaction has been committed at the end of this batch, start a new one
@@ -168,6 +171,9 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
             // start processing the new batch
 
             for(TaxonNode taxonNode : taxonNodes) {
+                if(getConfig().getMonitor().isCanceled()){
+                    break;
+                }
                 subMonitor.subTask("Accumulating " + taxonNode.getTaxon().getTitleCache());
 
                 accumulateSingleTaxon(taxonNode);
