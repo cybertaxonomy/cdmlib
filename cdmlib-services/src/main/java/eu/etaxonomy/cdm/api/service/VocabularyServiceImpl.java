@@ -111,8 +111,13 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
     }
 
     @Override
+    public Collection<TermDto> getNamedAreaTerms(List<UUID> vocabularyUuids) {
+        return dao.getNamedAreaTerms(vocabularyUuids);
+    }
+
+    @Override
     public Collection<TermDto> getCompleteTermHierarchy(TermVocabularyDto vocabularyDto) {
-        Collection<TermDto> topLevelTerms = dao.getTopLevelTerms(vocabularyDto.getUuid());
+        Collection<TermDto> topLevelTerms = dao.getTopLevelTerms(vocabularyDto.getUuid(), vocabularyDto.getTermType());
         for (TermDto termDto : topLevelTerms) {
             termDto.setVocabularyDto(vocabularyDto);
             initializeIncludes(termDto);
