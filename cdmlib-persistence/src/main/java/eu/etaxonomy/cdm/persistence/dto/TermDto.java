@@ -255,7 +255,17 @@ public class TermDto extends AbstractTermDto{
 
 
     public static String getTermDtoSelect(String fromTable){
-        return ""
+        String[] result = createSqlParts(fromTable);
+
+        return result[0]+result[1]+result[2];
+    }
+
+    /**
+     * @param fromTable
+     * @return
+     */
+    private static String[] createSqlParts(String fromTable) {
+        String sqlSelectString = ""
                 + "select a.uuid, "
                 + "r, "
                 + "p.uuid, "
@@ -266,39 +276,27 @@ public class TermDto extends AbstractTermDto{
                 + "voc_rep,  "
                 + "a.termType,  "
                 + "a.uri,  "
-                + "m  "
-                + "from "+fromTable+" as a "
-                + "LEFT JOIN a.partOf as p "
+                + "m  ";
+        String sqlFromString =   "from "+fromTable+" as a ";
+
+        String sqlJoinString =  "LEFT JOIN a.partOf as p "
                 + "LEFT JOIN a.kindOf as k "
                 + "LEFT JOIN a.media as m "
                 + "LEFT JOIN a.representations AS r "
                 + "LEFT JOIN a.vocabulary as v "
                 + "LEFT JOIN v.representations as voc_rep "
                 ;
+
+        String[] result = new String[3];
+        result[0] = sqlSelectString;
+        result[1] = sqlFromString;
+        result[2] = sqlJoinString;
+        return result;
     }
 
     public static String getTermDtoSelectNamedArea(){
-        return ""
-                + "select a.uuid, "
-                + "r, "
-                + "p.uuid, "
-                + "k.uuid, "
-                + "v.uuid, "
-                + "a.orderIndex, "
-                + "a.idInVocabulary, "
-                + "voc_rep,  "
-                + "a.termType,  "
-                + "a.uri,  "
-                + "m,  "
-                + "a.level  "
-                + "from NamedArea as a "
-                + "LEFT JOIN a.partOf as p "
-                + "LEFT JOIN a.kindOf as k "
-                + "LEFT JOIN a.media as m "
-                + "LEFT JOIN a.representations AS r "
-                + "LEFT JOIN a.vocabulary as v "
-                + "LEFT JOIN v.representations as voc_rep "
-                ;
+        String[] result = createSqlParts("NamedArea");
+        return result[0]+  ", level  " + result[1] + result[2]+ "LEFT JOIN a.level as level ";
     }
 
 
