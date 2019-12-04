@@ -43,11 +43,11 @@ public class JvmMonitor {
 
         //logger.setLevel(Level.DEBUG);
 
-        long gcTime = -1;
+        long gcTimeSum = -1;
         long collectorGcTime;
         for(GarbageCollectorMXBean gcMXBean : gcMXBeans){
-                if(gcTime == -1) {
-                    gcTime = 0;
+                if(gcTimeSum == -1) {
+                    gcTimeSum = 0;
                 }
                 collectorGcTime = gcMXBean.getCollectionTime();
                 logger.debug("cgMxBean: " + gcMXBean.getName()
@@ -55,11 +55,11 @@ public class JvmMonitor {
                         + " gcCount = " + gcMXBean.getCollectionCount());
                 if(collectorGcTime != -1) {
                     // only sum up if the time is defined
-                    gcTime = gcMXBean.getCollectionTime();
+                    gcTimeSum += gcMXBean.getCollectionTime();
                 }
         }
-        logger.debug("gcTimeSum = " + gcTime);
-        return gcTime;
+        logger.debug("gcTimeSum = " + gcTimeSum);
+        return gcTimeSum;
 
     }
 
