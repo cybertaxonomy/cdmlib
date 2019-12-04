@@ -15,7 +15,7 @@ import javax.persistence.Transient;
  * @author a.mueller
  * @since 14-Jul-1913
  */
-public interface ISimpleTerm<T extends ISimpleTerm> {
+public interface ISimpleTerm<T extends ISimpleTerm<T>> {
 
 	@Transient
 	public UUID getUuid();
