@@ -16,9 +16,9 @@ import java.util.stream.Collectors;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.api.service.description.DescriptionAggregationConfigurationBase.AggregationMode;
-import eu.etaxonomy.cdm.api.service.description.DescriptionAggregationConfigurationBase.SourceMode;
 import eu.etaxonomy.cdm.api.service.description.DistributionAggregationConfiguration;
+import eu.etaxonomy.cdm.api.service.description.AggregationMode;
+import eu.etaxonomy.cdm.api.service.description.AggregationSourceMode;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -127,8 +127,8 @@ public class TestAggregations {
 		List<UUID> areaList = areaPager.getRecords().stream().map(p ->p.getUuid()).collect(Collectors.toList());
 		DistributionAggregationConfiguration config = DistributionAggregationConfiguration
 		        .NewInstance(modes, areaList, filter, monitor);
-		config.setToParentSourceMode(SourceMode.NONE);
-        config.setWithinTaxonSourceMode(SourceMode.NONE);
+		config.setToParentSourceMode(AggregationSourceMode.NONE);
+        config.setWithinTaxonSourceMode(AggregationSourceMode.NONE);
 
 		try {
             config.getTaskInstance().invoke(config, appCtr);

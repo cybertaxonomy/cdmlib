@@ -29,8 +29,8 @@ public abstract class DescriptionAggregationConfigurationBase<TASK extends Descr
 
     private TaxonNodeFilter taxonNodeFilter;
 
-    private SourceMode toParentSourceMode = SourceMode.DESCRIPTION;
-    private SourceMode withinTaxonSourceMode = SourceMode.ALL_SAMEVALUE;
+    private AggregationSourceMode toParentSourceMode = AggregationSourceMode.DESCRIPTION;
+    private AggregationSourceMode withinTaxonSourceMode = AggregationSourceMode.ALL_SAMEVALUE;
 
     private List<AggregationMode> aggregationModes;
 
@@ -45,37 +45,6 @@ public abstract class DescriptionAggregationConfigurationBase<TASK extends Descr
 
     private EnumSet<OriginalSourceType> aggregatingSourceTypes = EnumSet.of(
             OriginalSourceType.PrimaryTaxonomicSource, OriginalSourceType.PrimaryMediaSource);
-
-// ************************** ENUMS ******************************/
-
-    public enum AggregationMode {
-        WithinTaxon,
-        ToParent;
-//        public boolean isByRank() {
-//           return this==byRanks || this == byAreasAndRanks;
-//        }
-//        public boolean isByArea() {
-//            return this==byAreas || this == byAreasAndRanks;
-//         }
-        public static List<AggregationMode> byAreasAndRanks(){
-            return Arrays.asList(new AggregationMode[]{AggregationMode.WithinTaxon, AggregationMode.ToParent});
-        }
-        public static List<AggregationMode> byAreas(){
-            return Arrays.asList(new AggregationMode[]{AggregationMode.WithinTaxon});
-        }
-        public static List<AggregationMode> byRanks(){
-            return Arrays.asList(new AggregationMode[]{AggregationMode.ToParent});
-        }
-
-    }
-
-    public enum SourceMode {
-        NONE,
-        ALL,
-        ALL_SAMEVALUE,
-        DESCRIPTION,
-        TAXON;
-     }
 
 //******************* CONSTRUCTOR **********************/
 
@@ -137,17 +106,17 @@ public abstract class DescriptionAggregationConfigurationBase<TASK extends Descr
         return this.aggregatingSourceTypes.remove(sourceTypeToRemove);
     }
 
-    public SourceMode getToParentSourceMode() {
+    public AggregationSourceMode getToParentSourceMode() {
         return toParentSourceMode;
     }
-    public void setToParentSourceMode(SourceMode toParentSourceMode) {
+    public void setToParentSourceMode(AggregationSourceMode toParentSourceMode) {
         this.toParentSourceMode = toParentSourceMode;
     }
 
-    public SourceMode getWithinTaxonSourceMode() {
+    public AggregationSourceMode getWithinTaxonSourceMode() {
         return withinTaxonSourceMode;
     }
-    public void setWithinTaxonSourceMode(SourceMode withinTaxonSourceMode) {
+    public void setWithinTaxonSourceMode(AggregationSourceMode withinTaxonSourceMode) {
         this.withinTaxonSourceMode = withinTaxonSourceMode;
     }
     public boolean isAdaptBatchSize() {

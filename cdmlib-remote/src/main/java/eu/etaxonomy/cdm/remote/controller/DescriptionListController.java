@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
-import eu.etaxonomy.cdm.api.service.description.DescriptionAggregationConfigurationBase.AggregationMode;
+import eu.etaxonomy.cdm.api.service.description.AggregationMode;
 import eu.etaxonomy.cdm.api.service.description.DistributionAggregation;
 import eu.etaxonomy.cdm.api.service.description.DistributionAggregationConfiguration;
 import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO;

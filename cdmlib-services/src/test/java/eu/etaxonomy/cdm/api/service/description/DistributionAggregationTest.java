@@ -40,8 +40,6 @@ import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
-import eu.etaxonomy.cdm.api.service.description.DescriptionAggregationConfigurationBase.AggregationMode;
-import eu.etaxonomy.cdm.api.service.description.DescriptionAggregationConfigurationBase.SourceMode;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.JvmLimitsException;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
@@ -310,7 +308,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         TaxonNodeFilter filter = TaxonNodeFilter.NewInstance(null, null, null, null, null, lowerRank.getUuid(), upperRank.getUuid());
         DistributionAggregationConfiguration config = DistributionAggregationConfiguration.NewInstance(
                 AggregationMode.byAreasAndRanks(), superAreas, filter, monitor);
-        config.setToParentSourceMode(SourceMode.ALL_SAMEVALUE);
+        config.setToParentSourceMode(AggregationSourceMode.ALL_SAMEVALUE);
         engine.invoke(config, repository);
 
         //test
@@ -463,7 +461,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         TaxonNodeFilter filter = TaxonNodeFilter.NewInstance(null, null, null, null, null, lowerRank.getUuid(), upperRank.getUuid());
         DistributionAggregationConfiguration config = DistributionAggregationConfiguration.NewInstance(
                 AggregationMode.byAreasAndRanks(), superAreas, filter, monitor);
-        config.setToParentSourceMode(SourceMode.ALL_SAMEVALUE);
+        config.setToParentSourceMode(AggregationSourceMode.ALL_SAMEVALUE);
         engine.invoke(config, repository);
 
         Taxon lapsana_communis = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_UUID);
@@ -518,7 +516,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         TaxonNodeFilter filter = TaxonNodeFilter.NewInstance(null, null, null, null, null, lowerRank.getUuid(), upperRank.getUuid());
         DistributionAggregationConfiguration config = DistributionAggregationConfiguration.NewInstance(
                 AggregationMode.byAreasAndRanks(), superAreas, filter, monitor);
-        config.setToParentSourceMode(SourceMode.ALL_SAMEVALUE);
+        config.setToParentSourceMode(AggregationSourceMode.ALL_SAMEVALUE);
         engine.invoke(config, repository);
 
         Taxon lapsana_communis = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_UUID);
@@ -598,7 +596,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
     }
 
     /**
-     * Test to check if {@link SourceMode#DESCRIPTION} works for toParentAggregation.
+     * Test to check if {@link AggregationSourceMode#DESCRIPTION} works for toParentAggregation.
      */
     @Test
     @DataSets({
@@ -621,7 +619,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         TaxonNodeFilter filter = TaxonNodeFilter.NewInstance(null, null, null, null, null, lowerRank.getUuid(), upperRank.getUuid());
         DistributionAggregationConfiguration config = DistributionAggregationConfiguration.NewInstance(
                 AggregationMode.byRanks(), superAreas, filter, monitor);
-        config.setToParentSourceMode(SourceMode.DESCRIPTION);
+        config.setToParentSourceMode(AggregationSourceMode.DESCRIPTION);
         engine.invoke(config, repository);
 
         Taxon lapsana_communis = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_UUID);
@@ -636,7 +634,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
     }
 
     /**
-     * Test to check if {@link SourceMode#DESCRIPTION} works for toParentAggregation.
+     * Test to check if {@link AggregationSourceMode#DESCRIPTION} works for toParentAggregation.
      */
     @Test
     @DataSets({
@@ -660,7 +658,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         DistributionAggregationConfiguration config = DistributionAggregationConfiguration.NewInstance(
                 AggregationMode.byAreasAndRanks(), superAreas, filter, monitor);
         config.setAggregatingSourceTypes(EnumSet.of(OriginalSourceType.PrimaryTaxonomicSource));
-        config.setToParentSourceMode(SourceMode.ALL);
+        config.setToParentSourceMode(AggregationSourceMode.ALL);
         engine.invoke(config, repository);
 
         //test

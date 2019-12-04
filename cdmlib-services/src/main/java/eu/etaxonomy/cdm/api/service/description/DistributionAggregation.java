@@ -23,7 +23,6 @@ import org.hibernate.HibernateException;
 import org.hibernate.search.Search;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.api.service.description.DescriptionAggregationConfigurationBase.SourceMode;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
@@ -181,11 +180,11 @@ public class DistributionAggregation
      * @param newStatus
      * @param additionalSourcesForWinningNewStatus Not in Use!
      *  In the case when <code>newStatus</code> is preferred over <code>accumulatedStatus</code> these Set of sources will be added to the sources of <code>b</code>
-     * @param sourceMode
+     * @param aggregationSourceMode
      * @return
      */
     private StatusAndSources choosePreferredOrMerge(StatusAndSources accumulatedStatus, StatusAndSources newStatus,
-            Set<DescriptionElementSource> additionalSourcesForWinningNewStatus, SourceMode sourceMode){
+            Set<DescriptionElementSource> additionalSourcesForWinningNewStatus, AggregationSourceMode aggregationSourceMode){
 
         if (newStatus == null || newStatus.status == null) {
             return accumulatedStatus;
@@ -209,12 +208,12 @@ public class DistributionAggregation
             if(additionalSourcesForWinningNewStatus != null) {
                 newStatus.addSources(additionalSourcesForWinningNewStatus);
             }
-            if (sourceMode == SourceMode.ALL){
+            if (aggregationSourceMode == AggregationSourceMode.ALL){
                 newStatus.addSources(accumulatedStatus.sources);
             }
             return newStatus;
         } else {
-            if (indexAcc == indexNew || sourceMode == SourceMode.ALL){
+            if (indexAcc == indexNew || aggregationSourceMode == AggregationSourceMode.ALL){
                 accumulatedStatus.addSources(newStatus.sources);
             }
             return accumulatedStatus;
@@ -310,7 +309,7 @@ public class DistributionAggregation
 
             // accumulate all sub area status
             StatusAndSources accumulatedStatusAndSources = null;
-            SourceMode sourceMode = getConfig().getWithinTaxonSourceMode();
+            AggregationSourceMode aggregationSourceMode = getConfig().getWithinTaxonSourceMode();
             // TODO consider using the TermHierarchyLookup (only in local branch a.kohlbecker)
             Set<NamedArea> subAreas = getSubAreasFor(superArea);
             for(NamedArea subArea : subAreas){
@@ -330,15 +329,15 @@ public class DistributionAggregation
                                 || (getConfig().isIgnoreAbsentStatusByArea() && status.isAbsenceTerm())){
                             continue;
                         }
-                        StatusAndSources subAreaStatusAndSources = new StatusAndSources(status, distribution, sourceMode);
-                        accumulatedStatusAndSources = choosePreferredOrMerge(accumulatedStatusAndSources, subAreaStatusAndSources, null, sourceMode);
+                        StatusAndSources subAreaStatusAndSources = new StatusAndSources(status, distribution, aggregationSourceMode);
+                        accumulatedStatusAndSources = choosePreferredOrMerge(accumulatedStatusAndSources, subAreaStatusAndSources, null, aggregationSourceMode);
                     }
                 }
             } // next sub area
 
 
             if (accumulatedStatusAndSources != null) {
-                StatusAndSources preferedStatus = choosePreferredOrMerge(accumulatedStatusMap.get(superArea), accumulatedStatusAndSources, null, sourceMode);
+                StatusAndSources preferedStatus = choosePreferredOrMerge(accumulatedStatusMap.get(superArea), accumulatedStatusAndSources, null, aggregationSourceMode);
                 accumulatedStatusMap.put(superArea, preferedStatus);
             }
 
@@ -359,23 +358,23 @@ public class DistributionAggregation
         private final PresenceAbsenceTerm status;
         private final Set<DescriptionElementSource> sources = new HashSet<>();
 
-        public StatusAndSources(PresenceAbsenceTerm status, DescriptionElementBase deb, SourceMode sourceMode) {
+        public StatusAndSources(PresenceAbsenceTerm status, DescriptionElementBase deb, AggregationSourceMode aggregationSourceMode) {
             this.status = status;
-            if (sourceMode == SourceMode.NONE){
+            if (aggregationSourceMode == AggregationSourceMode.NONE){
                 return;
-            }else if (sourceMode == SourceMode.DESCRIPTION){
+            }else if (aggregationSourceMode == AggregationSourceMode.DESCRIPTION){
                 sources.add(DescriptionElementSource.NewAggregationInstance(deb.getInDescription()));
-            }else if (sourceMode == SourceMode.TAXON){
+            }else if (aggregationSourceMode == AggregationSourceMode.TAXON){
                 if (deb.getInDescription().isInstanceOf(TaxonDescription.class)){
                     TaxonDescription td = CdmBase.deproxy(deb.getInDescription(), TaxonDescription.class);
                     sources.add(DescriptionElementSource.NewAggregationInstance(td.getTaxon()));
                 }else{
                     logger.warn("Description is not of type TaxonDescription. Adding source not possible");
                 }
-            }else if (sourceMode == SourceMode.ALL || sourceMode == SourceMode.ALL_SAMEVALUE){
+            }else if (aggregationSourceMode == AggregationSourceMode.ALL || aggregationSourceMode == AggregationSourceMode.ALL_SAMEVALUE){
                 addSourcesDeduplicated(this.sources, deb.getSources());
             }else{
-                throw new RuntimeException("Unhandled source aggregation mode: " + sourceMode);
+                throw new RuntimeException("Unhandled source aggregation mode: " + aggregationSourceMode);
             }
         }
 
@@ -430,11 +429,11 @@ public class DistributionAggregation
                     }
 
                     NamedArea area = distribution.getArea();
-                    SourceMode sourceMode = getConfig().getToParentSourceMode();
+                    AggregationSourceMode aggregationSourceMode = getConfig().getToParentSourceMode();
 
-                    StatusAndSources childStatusAndSources = new StatusAndSources(status, distribution, sourceMode);
+                    StatusAndSources childStatusAndSources = new StatusAndSources(status, distribution, aggregationSourceMode);
                     StatusAndSources preferedStatus = choosePreferredOrMerge(accumulatedStatusMap.get(area),
-                            childStatusAndSources, null, sourceMode );
+                            childStatusAndSources, null, aggregationSourceMode );
                     accumulatedStatusMap.put(area, preferedStatus);
                 }
 
