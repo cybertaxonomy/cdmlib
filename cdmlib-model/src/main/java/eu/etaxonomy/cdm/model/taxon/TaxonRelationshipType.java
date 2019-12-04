@@ -64,7 +64,7 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 
 	private static final UUID uuidTaxonomicallyIncludedIn = UUID.fromString("d13fecdf-eb44-4dd7-9244-26679c05df1c");
 
-	private static final UUID uuidMisappliedNameFor = UUID.fromString("1ed87175-59dd-437e-959e-0d71583d8417");
+	public static final UUID uuidMisappliedNameFor = UUID.fromString("1ed87175-59dd-437e-959e-0d71583d8417");
 	private static final UUID uuidProParteMisappliedNameFor = UUID.fromString("b59b4bd2-11ff-45d1-bae2-146efdeee206");
 	private static final UUID uuidPartialMisappliedNameFor = UUID.fromString("859fb615-b0e8-440b-866e-8a19f493cd36");
 	public static final UUID uuidProParteSynonymFor = UUID.fromString("8a896603-0fa3-44c6-9cd7-df2d8792e577");
