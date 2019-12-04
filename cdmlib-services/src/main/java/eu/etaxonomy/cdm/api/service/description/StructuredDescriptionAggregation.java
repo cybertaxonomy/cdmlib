@@ -326,7 +326,7 @@ public class StructuredDescriptionAggregation
                     SpecimenOrObservationBase<?> spec = indAss.getAssociatedSpecimenOrObservation();
                      Set<SpecimenDescription> descriptions = (Set)spec.getDescriptions();
                      for(SpecimenDescription specimenDescription : descriptions){
-                         if(dataSet.getDescriptions().contains(specimenDescription)){
+                         if(dataSet.getDescriptions().contains(specimenDescription) && specimenDescription.getTypes().stream().noneMatch(type->type.equals(DescriptionType.CLONE_FOR_SOURCE))){
                              result.add(specimenDescription);
                          }
                      }
