@@ -424,7 +424,9 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
     }
 
     protected void beginTask(String name, int totalWork){
-        getMonitor().beginTask(name, totalWork);
+        if (! (getMonitor() instanceof SubProgressMonitor)){
+            getMonitor().beginTask(name, totalWork);
+        }
     }
 
     protected void worked(int work){
