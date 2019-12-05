@@ -172,7 +172,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
         @DataSet(value="StructuredDescriptionAggregationTest.xml"),
     })
-    public void aggregatedQuantitativeDataTest() throws JvmLimitsException{
+    public void incompleteQuantitativeDataTest() throws JvmLimitsException{
         createDefaultFeatureTree();
         DescriptiveDataSet dataSet = DescriptiveDataSet.NewInstance();
         datasetService.save(dataSet);
@@ -201,6 +201,42 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         TaxonDescription aggrDescLapsanaCommunisAlpina = testTaxonDescriptions(taxLapsanaCommunisAlpina, 1);
         testQuantitativeData(uuidFeatureLeafLength, 2f, 0f, 7f, 4.25f, aggrDescLapsanaCommunisAlpina);
     }
+
+    @Test
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
+        @DataSet(value="StructuredDescriptionAggregationTest.xml"),
+    })
+    public void incompleteCategoricalDataTest() throws JvmLimitsException{
+        createDefaultFeatureTree();
+        DescriptiveDataSet dataSet = DescriptiveDataSet.NewInstance();
+        datasetService.save(dataSet);
+
+        SpecimenDescription specDescAlpina1 = createSpecimenDescription(dataSet, T_LAPSANA_COMMUNIS_ALPINA_UUID, "alpina specimen1");
+        addCategoricalData(specDescAlpina1, uuidFeatureLeafColor, null);
+
+        TaxonNode tnLapsana = taxonNodeService.find(TN_LAPSANA_UUID);
+        Assert.assertNotNull(tnLapsana);
+        dataSet.addTaxonSubtree(tnLapsana);
+
+        @SuppressWarnings("unchecked")
+        TermTree<Feature> descriptiveSystem = termTreeService.find(uuidFeatureTree);
+        dataSet.setDescriptiveSystem(descriptiveSystem);
+        commitAndStartNewTransaction();
+
+        StructuredDescriptionAggregationConfiguration config = createConfig(dataSet);
+
+        UpdateResult result = engine.invoke(config, repository);
+        Assert.assertEquals(UpdateResult.Status.OK, result.getStatus());
+
+        Taxon taxLapsanaCommunisAlpina = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ALPINA_UUID);
+        TaxonDescription aggrDescLapsanaCommunisAlpina = testTaxonDescriptions(taxLapsanaCommunisAlpina, 1);
+        List<StateData> sdAlpinaLeafColor = testCategoricalData(uuidFeatureLeafColor, 1, aggrDescLapsanaCommunisAlpina);
+        testState(sdAlpinaLeafColor, uuidLeafColorBlue, 0);
+        testState(sdAlpinaLeafColor, uuidLeafColorYellow, 0);
+    }
+
     @Test
     @DataSets({
         @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
@@ -332,7 +368,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
 
     private void testState(List<StateData> stateDatas, UUID stateUuid, Integer stateDataCount){
         List<StateData> filteredStateDatas = stateDatas.stream()
-                .filter(stateData->stateData.getState().getUuid().equals(stateUuid))
+                .filter(stateData->stateData.getState()!=null && stateData.getState().getUuid().equals(stateUuid))
                 .collect(Collectors.toList());
         if(stateDataCount==0){
             // non-existence test
@@ -354,10 +390,10 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
     }
 
     private void addCategoricalData(SpecimenDescription specDesc, UUID featureUuid, UUID stateUUID) {
-        Feature featureLeafPA = (Feature)termService.find(featureUuid);
-        State statePresent = (State)termService.find(stateUUID);
-        CategoricalData cdPresent = CategoricalData.NewInstance(statePresent, featureLeafPA);
-        specDesc.addElement(cdPresent);
+        Feature feature = (Feature)termService.find(featureUuid);
+        State state = (State)termService.find(stateUUID);
+        CategoricalData cd = CategoricalData.NewInstance(state, feature);
+        specDesc.addElement(cd);
     }
 
     private SpecimenDescription createSpecimenDescription(DescriptiveDataSet dataSet, UUID taxonUuid, String specLabel ) {
