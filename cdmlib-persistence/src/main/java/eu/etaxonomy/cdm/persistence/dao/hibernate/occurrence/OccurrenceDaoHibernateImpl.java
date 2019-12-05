@@ -678,7 +678,7 @@ public class OccurrenceDaoHibernateImpl
 
     private <T extends SpecimenOrObservationBase> Query createSpecimenQuery(String select, Class<T> clazz,
             Taxon associatedTaxon, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths){
-        Set<SpecimenOrObservationBase> setOfAll = new HashSet<>();
+//        Set<SpecimenOrObservationBase> setOfAll = new HashSet<>();
         Set<Integer> setOfAllIds = new HashSet<>();
 
         Criteria criteria = null;
@@ -737,7 +737,7 @@ public class OccurrenceDaoHibernateImpl
         for(HomotypicalGroup homotypicalGroup :  associatedTaxon.getHomotypicSynonymyGroups()) {
             List<SpecimenTypeDesignation> byHomotypicalGroup = homotypicalGroupDao.getTypeDesignations(homotypicalGroup, SpecimenTypeDesignation.class, null, null, 0, null);
             for (SpecimenTypeDesignation specimenTypeDesignation : byHomotypicalGroup) {
-                setOfAll.add(specimenTypeDesignation.getTypeSpecimen());
+                setOfAllIds.add(specimenTypeDesignation.getTypeSpecimen().getId());
             }
         }
 
