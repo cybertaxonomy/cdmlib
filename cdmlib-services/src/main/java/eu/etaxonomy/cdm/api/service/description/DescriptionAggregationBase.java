@@ -88,50 +88,65 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
 
     protected UpdateResult doInvoke() throws JvmLimitsException {
 
-        //TODO FIXME use UpdateResult
+        try {
+            //TODO FIXME use UpdateResult
 
-        double start = System.currentTimeMillis();
+            double start = System.currentTimeMillis();
 
-        // only for debugging:
-        //logger.setLevel(Level.TRACE); // TRACE will slow down a lot since it forces loading all term representations
-        //Logger.getLogger("org.hibernate.SQL").setLevel(Level.DEBUG);
-        logger.info("Hibernate JDBC Batch size: " +  getSession().getSessionFactory().getSessionFactoryOptions().getJdbcBatchSize());
+            // only for debugging:
+            //logger.setLevel(Level.TRACE); // TRACE will slow down a lot since it forces loading all term representations
+            //Logger.getLogger("org.hibernate.SQL").setLevel(Level.DEBUG);
+            logger.info("Hibernate JDBC Batch size: " +  getSession().getSessionFactory().getSessionFactoryOptions().getJdbcBatchSize());
 
-        TaxonNodeFilter filter = getConfig().getTaxonNodeFilter();
-        filter.setOrder(ORDER.TREEINDEX_DESC); //DESC guarantees that child taxa are aggregated before parent
-        filter.setIncludeRootNodes(false);  //root nodes do not make sense for aggregation
+            TaxonNodeFilter filter = getConfig().getTaxonNodeFilter();
+            filter.setOrder(ORDER.TREEINDEX_DESC); //DESC guarantees that child taxa are aggregated before parent
+            filter.setIncludeRootNodes(false);  //root nodes do not make sense for aggregation
 
-        Long countTaxonNodes = getTaxonNodeService().count(filter);
-        int aggregationWorkTicks = countTaxonNodes.intValue();
-        int getIdListTicks = 1;
-        int preAccumulateTicks = 1;
-        beginTask("Accumulating " + pluralDataType(), (aggregationWorkTicks) + getIdListTicks + preAccumulateTicks);
+            Long countTaxonNodes = getTaxonNodeService().count(filter);
+            int aggregationWorkTicks = countTaxonNodes.intValue();
+            int getIdListTicks = 1;
+            int preAccumulateTicks = 1;
+            beginTask("Accumulating " + pluralDataType(), (aggregationWorkTicks) + getIdListTicks + preAccumulateTicks);
 
-        subTask("Get taxon node ID list");
-        List<Integer> taxonNodeIdList = getTaxonNodeService().idList(filter);
+            subTask("Get taxon node ID list");
+            List<Integer> taxonNodeIdList = getTaxonNodeService().idList(filter);
 
-        worked(getIdListTicks);
+            worked(getIdListTicks);
 
-        preAccumulate();
+            try {
+                preAggregate();
+            } catch (Exception e) {
+                result.addException(new RuntimeException("Unhandled error during pre-aggregation", e));
+                return result;
+            }
 
-        workedAndNewTask(preAccumulateTicks, "Accumulating "+pluralDataType()+" per taxon for taxon filter " + filter.toString());
+            workedAndNewTask(preAccumulateTicks, "Accumulating "+pluralDataType()+" per taxon for taxon filter " + filter.toString());
 
-        double startAccumulate = System.currentTimeMillis();
+            double startAccumulate = System.currentTimeMillis();
 
-        //TODO AM move to invokeOnSingleTaxon()
-        IProgressMonitor subMonitor = new SubProgressMonitor(getMonitor(), aggregationWorkTicks);
-        accumulate(taxonNodeIdList, subMonitor);
+            //TODO AM move to invokeOnSingleTaxon()
+            IProgressMonitor subMonitor = new SubProgressMonitor(getMonitor(), aggregationWorkTicks);
+            try {
+                aggregate(taxonNodeIdList, subMonitor);
+            } catch (Exception e) {
+                result.addException(new RuntimeException("Unhandled error during aggregation", e));
+                return result;
+            }
 
-        double end = System.currentTimeMillis();
-        logger.info("Time elapsed for accumulate only(): " + (end - startAccumulate) / (1000) + "s");
-        logger.info("Time elapsed for invoking task(): " + (end - start) / (1000) + "s");
+            double end = System.currentTimeMillis();
+            logger.info("Time elapsed for accumulate only(): " + (end - startAccumulate) / (1000) + "s");
+            logger.info("Time elapsed for invoking task(): " + (end - start) / (1000) + "s");
 
-        done();
+            done();
+            return result;
+        } catch (Exception e) {
+            result.addException(new RuntimeException("Unhandled error during doInvoke", e));
+            return result;
+        }
 
-        return result;
     }
 
-    protected void accumulate(List<Integer> taxonNodeIdList, IProgressMonitor subMonitor)  throws JvmLimitsException {
+    protected void aggregate(List<Integer> taxonNodeIdList, IProgressMonitor subMonitor)  throws JvmLimitsException {
 
         DynamicBatch batch = new DynamicBatch(BATCH_SIZE_BY_TAXON, batchMinFreeHeap);
         batch.setRequiredFreeHeap(BATCH_FREE_HEAP_RATIO);
@@ -291,7 +306,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
 
     protected abstract List<String> descriptionInitStrategy();
 
-    protected abstract void preAccumulate();
+    protected abstract void preAggregate();
 
     /**
      * hook for initializing object when a new transaction starts

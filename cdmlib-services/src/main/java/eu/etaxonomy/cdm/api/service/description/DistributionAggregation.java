@@ -106,7 +106,7 @@ public class DistributionAggregation
 // ********************* METHODS *********************************/
 
     @Override
-    protected void preAccumulate() {
+    protected void preAggregate() {
         subTask("make status order");
 
         // take start time for performance testing
@@ -132,21 +132,17 @@ public class DistributionAggregation
     private void makeSuperAreas() {
         TransactionStatus tx = startTransaction(true);
         if (getConfig().getSuperAreas()!= null){
-            Set<UUID> superAreaUuids = new HashSet(getConfig().getSuperAreas());
-            if (superAreaUuids != null){
-                superAreaList = getTermService().find(NamedArea.class, superAreaUuids);
-                for (NamedArea superArea : superAreaList){
-                    Set<NamedArea> subAreas = getSubAreasFor(superArea);
-                    for(NamedArea subArea : subAreas){
-                        if (logger.isTraceEnabled()) {
-                            logger.trace("Initialize " + subArea.getTitleCache());
-                        }
+            Set<UUID> superAreaUuids = new HashSet<>(getConfig().getSuperAreas());
+            superAreaList = getTermService().find(NamedArea.class, superAreaUuids);
+            for (NamedArea superArea : superAreaList){
+                Set<NamedArea> subAreas = getSubAreasFor(superArea);
+                for(NamedArea subArea : subAreas){
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Initialize " + subArea.getTitleCache());
                     }
                 }
             }
         }
-
-
         commitTransaction(tx);
     }
 

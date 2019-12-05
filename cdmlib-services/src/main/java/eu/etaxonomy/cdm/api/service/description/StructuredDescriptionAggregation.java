@@ -60,7 +60,7 @@ public class StructuredDescriptionAggregation
     }
 
     @Override
-    protected void preAccumulate() {
+    protected void preAggregate() {
         subTask("preAccumulate - nothing to do");
 
         // take start time for performance testing
