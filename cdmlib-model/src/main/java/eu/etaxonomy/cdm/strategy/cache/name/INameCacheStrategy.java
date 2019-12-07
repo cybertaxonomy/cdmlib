@@ -87,17 +87,18 @@ public interface INameCacheStrategy extends IIdentifiableEntityCacheStrategy<Tax
 	public String getTitleCache(TaxonName nonViralName, HTMLTagRules htmlTagRules);
 
 	/**
-     * Returns the composed scientific taxon name string without authors nor year.
+     * Returns the composed scientific taxon name string without authors or year.
      * For viral names this returns <code>null</code>. This may be discussed
      * as for some functionality the nameCache is crucial and therefore
      * we maybe prefer to return the titleCache instead.
-     *
-     * @param object
-     * @return
      */
     public String getNameCache(TaxonName taxonName);
 
-
+    /**
+     * Returns the composed scientific taxon name string without authors or year.
+     * Like {@link #getNameCache(TaxonName)} but using the given tag rules.
+     */
+    public String getNameCache(TaxonName nonViralName, HTMLTagRules htmlTagRules);
 
     /**
      * Same as {@link #getTaggedTitle(TaxonName)} but not including authorship.
@@ -112,5 +113,7 @@ public interface INameCacheStrategy extends IIdentifiableEntityCacheStrategy<Tax
      * @return
      */
     public String getAuthorshipCache(TaxonName nonViralName);
+
+
 
 }
