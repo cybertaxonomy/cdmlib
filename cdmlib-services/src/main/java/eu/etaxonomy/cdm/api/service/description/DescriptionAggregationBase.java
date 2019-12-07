@@ -117,6 +117,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
                 preAggregate();
             } catch (Exception e) {
                 result.addException(new RuntimeException("Unhandled error during pre-aggregation", e));
+                done();
                 return result;
             }
 
@@ -130,6 +131,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
                 aggregate(taxonNodeIdList, subMonitor);
             } catch (Exception e) {
                 result.addException(new RuntimeException("Unhandled error during aggregation", e));
+                done();
                 return result;
             }
 
