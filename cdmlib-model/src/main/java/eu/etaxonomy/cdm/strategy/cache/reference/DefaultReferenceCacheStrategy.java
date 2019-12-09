@@ -614,7 +614,7 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
         String result;
         //use generics's publication date if it exists
         if (inRef == null ||  (thisRef.hasDatePublished() ) ){
-            getTitleWithoutYearAndAuthorGeneric(inRef, true);
+
             result =  inRef == null ? "" : getTitleWithoutYearAndAuthorGeneric(inRef, true);
             //added //TODO unify with non-inRef references formatting
 
