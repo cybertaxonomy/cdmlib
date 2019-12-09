@@ -272,7 +272,7 @@ public class TitleWithoutYearAndAuthorHelper {
         }
         result += volumePart;
 
-        //delete .
+        //delete .   //TODO needed? Creates problems e.g. if vol ends with dot, like vol="3, Suppl.", this is not handled correctly
         while (result.endsWith(".")){
             result = result.substring(0, result.length()-1);
         }
