@@ -515,7 +515,7 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
     }
 
     /**
-     * Returns year information as originally computed by {@link ReferenceDefaultCacheStrategy}
+     * Returns year information as originally computed by {@link ReferenceDefaultCacheStrategy}.
      */
     private String addYearReferenceDefault(String string, Reference ref){
         String result;
@@ -530,7 +530,6 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
         }
         return result;
     }
-
 
 // ********************* Nomenclatural title ***************************************/
 
@@ -614,7 +613,6 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
         String result;
         //use generics's publication date if it exists
         if (inRef == null ||  (thisRef.hasDatePublished() ) ){
-
             result =  inRef == null ? "" : getTitleWithoutYearAndAuthorGeneric(inRef, true);
             //added //TODO unify with non-inRef references formatting
 

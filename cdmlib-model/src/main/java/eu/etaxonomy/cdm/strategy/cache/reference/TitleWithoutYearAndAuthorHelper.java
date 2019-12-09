@@ -302,7 +302,6 @@ public class TitleWithoutYearAndAuthorHelper {
 //      }
 //      nomRefCache += publisherPart;
 
-
         //delete .
         while (nomRefCache.endsWith(".")){
             nomRefCache = nomRefCache.substring(0, nomRefCache.length()-1);
@@ -310,11 +309,6 @@ public class TitleWithoutYearAndAuthorHelper {
         return nomRefCache.trim();
     }
 
-    /**
-     * @param ref
-     * @param isAbbrev
-     * @return
-     */
     private static String getTitleWithoutYearAndAuthorThesis(Reference ref, boolean isAbbrev) {
         //FIXME this is only a very fast copy and paste from "Generic". Must still be cleaned !
 
@@ -337,11 +331,6 @@ public class TitleWithoutYearAndAuthorHelper {
         return nomRefCache.trim();
     }
 
-    /**
-     * @param ref
-     * @param isAbbrev
-     * @return
-     */
     private static String getTitleWithoutYearAndAuthorWebPage(Reference ref, boolean isAbbrev) {
         //FIXME this is only a very fast copy and paste from "Generic". Must still be cleaned !
 
