@@ -179,11 +179,6 @@ public class Datasource {
 		System.exit(0);
 	}
 
-
-    /**
-     * @param appCtr
-     * @param propertyPaths
-     */
     private void listClassification(CdmApplicationController appCtr, List<String> propertyPaths) {
         try {
             List<Classification> list = appCtr.getClassificationService().list(null, null, null, null, propertyPaths);
@@ -193,10 +188,6 @@ public class Datasource {
         }
     }
 
-
-    /**
-     * @param appCtr
-     */
     private void testGroupedTaxa(CdmApplicationController appCtr) {
         UUID classificationUuid = UUID.fromString("91231ebf-1c7a-47b9-a56c-b45b33137244");
 		UUID taxonUuid1 = UUID.fromString("3bae1c86-1235-4e2e-be63-c7f8c4410527");
@@ -208,13 +199,11 @@ public class Datasource {
         System.out.println(groupedTaxa);
     }
 
-
     private void addPerson(CdmApplicationController appCtr) {
         TransactionStatus tx = appCtr.startTransaction();
 		appCtr.getAgentService().save(Person.NewInstance());
 		appCtr.commitTransaction(tx);
     }
-
 
 	private void deleteHighLevelNode(CdmApplicationController appCtr) {
 		TransactionStatus tx = appCtr.startTransaction();
@@ -325,7 +314,6 @@ public class Datasource {
 		appCtr.close();
 
 	}
-
 
 	private void testLocalHsql(){
 		CdmApplicationController appCtr = null;
