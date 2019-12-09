@@ -400,7 +400,7 @@ public class StructuredDescriptionAggregation
         return aggQD;
     }
 
-    private QuantitativeData mergeQuantitativeData(QuantitativeData aggregatedQd, QuantitativeData newQd) {
+    private QuantitativeData mergeQuantitativeData(QuantitativeData aggQd, QuantitativeData newQd) {
 
         newQd = aggregateSingleQuantitativeData(newQd); //alternatively we could check, if newQd is already basically aggregated, but for this we need a cleear definition what the minimum requirements are and how ExactValues and MinMax if existing in parallel should be handled.
 
@@ -408,21 +408,24 @@ public class StructuredDescriptionAggregation
         Float max = null;
         Float average = null;
         Float sampleSize = null;
-        handleMissingValues(newQd);
-        min = Math.min(aggregatedQd.getMin(), newQd.getMin());
-        max = Math.max(aggregatedQd.getMax(), newQd.getMax());
-        if (newQd.getSampleSize()!= null && aggregatedQd.getSampleSize() != null){
-            sampleSize = newQd.getSampleSize()+aggregatedQd.getSampleSize();
+        newQd = handleMissingValues(newQd);
+        if (newQd == null){
+            return aggQd;
         }
-        if (sampleSize != null && !sampleSize.equals(0f) && aggregatedQd.getAverage() != null && newQd.getAverage() != null){
-            float totalSum = aggregatedQd.getAverage()*aggregatedQd.getSampleSize() + newQd.getAverage() * newQd.getSampleSize();
+        min = Math.min(aggQd.getMin(), newQd.getMin());
+        max = Math.max(aggQd.getMax(), newQd.getMax());
+        if (newQd.getSampleSize()!= null && aggQd.getSampleSize() != null){
+            sampleSize = newQd.getSampleSize()+aggQd.getSampleSize();
+        }
+        if (sampleSize != null && !sampleSize.equals(0f) && aggQd.getAverage() != null && newQd.getAverage() != null){
+            float totalSum = aggQd.getAverage()*aggQd.getSampleSize() + newQd.getAverage() * newQd.getSampleSize();
             average = new Float(totalSum/sampleSize);
         }
-        aggregatedQd.setMinimum(min, null);
-        aggregatedQd.setMaximum(max, null);
-        aggregatedQd.setSampleSize(sampleSize, null);
-        aggregatedQd.setAverage(average, null);
-        return aggregatedQd;
+        aggQd.setMinimum(min, null);
+        aggQd.setMaximum(max, null);
+        aggQd.setSampleSize(sampleSize, null);
+        aggQd.setAverage(average, null);
+        return aggQd;
     }
 
     private static List<Float> getExactValues(QuantitativeData qd) {
