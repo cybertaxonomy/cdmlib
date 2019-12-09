@@ -297,8 +297,8 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 	}
 
 	@Transient
-    public Float getExactValue(){
-        return getSpecificStatisticalValue(StatisticalMeasure.EXACT_VALUE());
+    public Set<Float> getExactValues(){
+        return getSpecificStatisticalValues(StatisticalMeasure.EXACT_VALUE());
     }
 
 	/**
@@ -362,6 +362,16 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 		}
 		return result;
 	}
+
+    public Set<Float> getSpecificStatisticalValues(StatisticalMeasure type){
+        Set<Float> result = new HashSet<>();
+        for (StatisticalMeasurementValue value : statisticalValues){
+            if (type.equals(value.getType())){
+                result.add(value.getValue());
+            }
+        }
+        return result;
+    }
 
 
 	/**

@@ -32,6 +32,9 @@ public class StructuredDescriptionAggregationConfiguration
     boolean includeDefault = true;
     boolean includeLiterature = false;
 
+    private MissingMinimumMode missingMinimumMode = MissingMinimumMode.MinToZero;
+    private MissingMaximumMode missingMaximumMode = MissingMaximumMode.MaxToMin;
+
 // ******************* FACTORY ***************************************/
 
     public static StructuredDescriptionAggregationConfiguration NewInstance(
@@ -97,5 +100,19 @@ public class StructuredDescriptionAggregationConfiguration
     }
     public void setDatasetUuid(UUID datasetUuid) {
         this.datasetUuid = datasetUuid;
+    }
+
+    public MissingMinimumMode getMissingMinimumMode() {
+        return missingMinimumMode;
+    }
+    public void setMissingMinimumMode(MissingMinimumMode missingMinimumMode) {
+        this.missingMinimumMode = missingMinimumMode;
+    }
+
+    public MissingMaximumMode getMissingMaximumMode() {
+        return missingMaximumMode;
+    }
+    public void setMissingMaximumMode(MissingMaximumMode missingMaximumMode) {
+        this.missingMaximumMode = missingMaximumMode;
     }
 }

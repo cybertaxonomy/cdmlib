@@ -248,7 +248,9 @@ public class StructuredDescriptionAggregation
         else{
             aggregatedQuantitativeData = mergeQuantitativeData(aggregatedQuantitativeData, qd);
         }
-        resultHolder.quantitativeMap.put(qd.getFeature(), aggregatedQuantitativeData);
+        if (aggregatedQuantitativeData != null){
+            resultHolder.quantitativeMap.put(qd.getFeature(), aggregatedQuantitativeData);
+        }
     }
 
     private void addToCategorical(CategoricalData cd, StructuredDescriptionResultHolder resultHolder) {
@@ -336,79 +338,108 @@ public class StructuredDescriptionAggregation
         return result;
     }
 
-    private static QuantitativeData aggregateSingleQuantitativeData(QuantitativeData qd){
-        QuantitativeData aggQD = QuantitativeData.NewInstance(qd.getFeature());
-        List<Float> exactValues = getExactValues(qd);
+    private QuantitativeData aggregateSingleQuantitativeData(QuantitativeData sourceQd){
+        QuantitativeData aggQD = QuantitativeData.NewInstance(sourceQd.getFeature());
+        Set<Float> exactValues = sourceQd.getExactValues();
         if(!exactValues.isEmpty()){
             // qd is not already aggregated
             float exactValueSampleSize = exactValues.size();
             float exactValueMin = new Float(exactValues.stream().mapToDouble(value->(double)value).min().getAsDouble());
             float exactValueMax = new Float(exactValues.stream().mapToDouble(value->(double)value).max().getAsDouble());
             float exactValueAvg = new Float(exactValues.stream().mapToDouble(value->(double)value).average().getAsDouble());
-            aggQD.setSampleSize(exactValueSampleSize, null);
-            aggQD.setMinimum(exactValueMin, null);
-            aggQD.setMaximum(exactValueMax, null);
-            aggQD.setAverage(exactValueAvg, null);
+            //TODO also check for typical boundary data
+            if(sourceQd.getMin() == null && sourceQd.getMax() == null){
+                aggQD.setSampleSize(exactValueSampleSize, null);
+                aggQD.setAverage(exactValueAvg, null);
+            }
+            aggQD.setMinimum(sourceQd.getMin() == null ? exactValueMin: Math.min(sourceQd.getMin(), exactValueMin), null);
+            aggQD.setMaximum(sourceQd.getMax() == null ? exactValueMax: Math.min(sourceQd.getMax(), exactValueMax), null);
         }
         else{
-            // qd is already aggregated
-            aggQD = (QuantitativeData) qd.clone();
-            fixQuantitativeData(aggQD);
+            // qd has only min, max, ... but no exact values
+            aggQD = (QuantitativeData) sourceQd.clone();
+            aggQD = handleMissingValues(aggQD);
         }
         return aggQD;
     }
 
-    private static void fixQuantitativeData(QuantitativeData qD) {
-        fixMinMax(qD);
-        if(qD.getSampleSize()==null){
-            qD.setSampleSize(1f, null);
+    private QuantitativeData handleMissingValues(QuantitativeData qd) {
+        qd = handleMissingMinOrMax(qd);
+        if (qd != null && qd.getAverage() == null){
+            Float n = qd.getSampleSize();
+            if(n != null && !n.equals(0f)){
+                qd.setAverage((qd.getMax()+qd.getMin())/n, null);
+            }
         }
-        if(qD.getAverage()==null){
-            qD.setAverage((qD.getMax()+qD.getMin())/2, null);
-        }
+        return qd;
     }
 
-    public static void fixMinMax(QuantitativeData aggQD) {
-        if(aggQD.getMin()==null){
-            aggQD.setMinimum(0f, null);
-        }
-        if(aggQD.getMax()==null){
-            aggQD.setMaximum(aggQD.getMin(), null);
-        }
+    private QuantitativeData handleMissingMinOrMax(QuantitativeData qd) {
+        return handleMissingMinOrMax(qd, getConfig().getMissingMinimumMode(), getConfig().getMissingMaximumMode());
     }
 
-    private static QuantitativeData mergeQuantitativeData(QuantitativeData aggregatedQD, QuantitativeData qd) {
-        List<Float> exactValues = getExactValues(qd);
 
+    public static QuantitativeData handleMissingMinOrMax(QuantitativeData aggQD, MissingMinimumMode missingMinMode,
+            MissingMaximumMode missingMaxMode) {
+        if(aggQD.getMin() == null && aggQD.getMax() != null){
+            if (missingMinMode == MissingMinimumMode.MinToZero) {
+                aggQD.setMinimum(0f, null);
+            }else if (missingMinMode == MissingMinimumMode.MinToMax){
+                aggQD.setMinimum(aggQD.getMax(), null);
+            }else if (missingMinMode == MissingMinimumMode.SkipRecord){
+                return null;
+            }
+        }
+        if(aggQD.getMax() == null && aggQD.getMin() != null){
+            if (missingMaxMode == MissingMaximumMode.MaxToMin){
+                aggQD.setMaximum(aggQD.getMin(), null);
+            }else if (missingMaxMode == MissingMaximumMode.SkipRecord){
+                return null;
+            }
+        }
+        return aggQD;
+    }
+
+    private QuantitativeData mergeQuantitativeData(QuantitativeData aggregatedQd, QuantitativeData newQd) {
+
+        newQd = aggregateSingleQuantitativeData(newQd);
+
+//        Set<Float> newExactValues = newQd.getExactValues();
+//
         Float min = null;
         Float max = null;
         Float average = null;
         Float sampleSize = null;
-        if(!exactValues.isEmpty()){
-            // qd is not already aggregated
-            float exactValueSampleSize = exactValues.size();
-            float exactValueMin = new Float(exactValues.stream().mapToDouble(value->(double)value).min().getAsDouble());
-            float exactValueMax = new Float(exactValues.stream().mapToDouble(value->(double)value).max().getAsDouble());
-            float exactValueAvg = new Float(exactValues.stream().mapToDouble(value->(double)value).average().getAsDouble());
-
-            min = Math.min(exactValueMin, aggregatedQD.getMin());
-            max = Math.max(exactValueMax, aggregatedQD.getMax());
-            average = new Float(((aggregatedQD.getAverage()*aggregatedQD.getSampleSize())+exactValueAvg*exactValueSampleSize)/(aggregatedQD.getSampleSize()+exactValueSampleSize));
-            sampleSize = exactValueSampleSize+aggregatedQD.getSampleSize();
-        }
-        else{
+//        if(!newExactValues.isEmpty()){
+//            // newQd is not already aggregated
+//            float exactValueSampleSize = newExactValues.size();
+//            float exactValueMin = new Float(newExactValues.stream().mapToDouble(value->(double)value).min().getAsDouble());
+//            float exactValueMax = new Float(newExactValues.stream().mapToDouble(value->(double)value).max().getAsDouble());
+//            float exactValueAvg = new Float(newExactValues.stream().mapToDouble(value->(double)value).average().getAsDouble());
+//
+//            min = Math.min(exactValueMin, aggregatedQd.getMin());
+//            max = Math.max(exactValueMax, aggregatedQd.getMax());
+//            average = new Float(((aggregatedQd.getAverage()*aggregatedQd.getSampleSize())+exactValueAvg*exactValueSampleSize)/(aggregatedQd.getSampleSize()+exactValueSampleSize));
+//            sampleSize = exactValueSampleSize+aggregatedQd.getSampleSize();
+//        }
+//        else{
             // qd is already aggregated
-            fixQuantitativeData(qd);
-            min = Math.min(aggregatedQD.getMin(), qd.getMin());
-            max = Math.max(aggregatedQD.getMax(), qd.getMax());
-            average = new Float(((aggregatedQD.getAverage()*aggregatedQD.getSampleSize())+qd.getAverage()*qd.getSampleSize())/(aggregatedQD.getSampleSize()+qd.getSampleSize()));
-            sampleSize = qd.getSampleSize()+aggregatedQD.getSampleSize();
-        }
-        aggregatedQD.setAverage(average, null);
-        aggregatedQD.setMinimum(min, null);
-        aggregatedQD.setMaximum(max, null);
-        aggregatedQD.setSampleSize(sampleSize, null);
-        return aggregatedQD;
+            handleMissingValues(newQd);
+            min = Math.min(aggregatedQd.getMin(), newQd.getMin());
+            max = Math.max(aggregatedQd.getMax(), newQd.getMax());
+            if (newQd.getSampleSize()!= null && aggregatedQd.getSampleSize() != null){
+                sampleSize = newQd.getSampleSize()+aggregatedQd.getSampleSize();
+            }
+            if (sampleSize != null && !sampleSize.equals(0f) && aggregatedQd.getAverage() != null && newQd.getAverage() != null){
+                float totalSum = aggregatedQd.getAverage()*aggregatedQd.getSampleSize() + newQd.getAverage() * newQd.getSampleSize();
+                average = new Float(totalSum/sampleSize);
+            }
+//        }
+        aggregatedQd.setMinimum(min, null);
+        aggregatedQd.setMaximum(max, null);
+        aggregatedQd.setSampleSize(sampleSize, null);
+        aggregatedQd.setAverage(average, null);
+        return aggregatedQd;
     }
 
     private static List<Float> getExactValues(QuantitativeData qd) {

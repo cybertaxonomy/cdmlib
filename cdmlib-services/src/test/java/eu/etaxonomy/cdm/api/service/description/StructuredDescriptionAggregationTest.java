@@ -199,7 +199,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
 
         Taxon taxLapsanaCommunisAlpina = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ALPINA_UUID);
         TaxonDescription aggrDescLapsanaCommunisAlpina = testTaxonDescriptions(taxLapsanaCommunisAlpina, 1);
-        testQuantitativeData(uuidFeatureLeafLength, 2f, 0f, 7f, 4.25f, aggrDescLapsanaCommunisAlpina);
+        testQuantitativeData(uuidFeatureLeafLength, null, 0f, 7f, null, aggrDescLapsanaCommunisAlpina);
     }
 
     @Test

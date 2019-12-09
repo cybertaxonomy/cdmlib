@@ -16,6 +16,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import eu.etaxonomy.cdm.api.service.description.MissingMaximumMode;
+import eu.etaxonomy.cdm.api.service.description.MissingMinimumMode;
 import eu.etaxonomy.cdm.api.service.description.StructuredDescriptionAggregation;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
@@ -32,7 +34,6 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 /**
  * @author pplitzner
  * @since 16.04.2018
- *
  */
 public abstract class RowWrapperDTO <T extends DescriptionBase> implements Serializable {
 
@@ -173,9 +174,10 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
                     }
                 });
             });
-            StructuredDescriptionAggregation.fixMinMax(quantitativeData);
+            QuantitativeData fixedQuantitativeData = StructuredDescriptionAggregation.handleMissingMinOrMax(quantitativeData,
+                    MissingMinimumMode.MinToZero, MissingMaximumMode.MaxToMin);
             // update display data cache
-            String displayData = generateDisplayString(quantitativeData);
+            String displayData = generateDisplayString(fixedQuantitativeData);
             featureToDisplayDataMap.put(feature, displayData);
         }
     }
