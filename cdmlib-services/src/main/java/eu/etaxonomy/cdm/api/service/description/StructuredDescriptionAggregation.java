@@ -402,39 +402,22 @@ public class StructuredDescriptionAggregation
 
     private QuantitativeData mergeQuantitativeData(QuantitativeData aggregatedQd, QuantitativeData newQd) {
 
-        newQd = aggregateSingleQuantitativeData(newQd);
+        newQd = aggregateSingleQuantitativeData(newQd); //alternatively we could check, if newQd is already basically aggregated, but for this we need a cleear definition what the minimum requirements are and how ExactValues and MinMax if existing in parallel should be handled.
 
-//        Set<Float> newExactValues = newQd.getExactValues();
-//
         Float min = null;
         Float max = null;
         Float average = null;
         Float sampleSize = null;
-//        if(!newExactValues.isEmpty()){
-//            // newQd is not already aggregated
-//            float exactValueSampleSize = newExactValues.size();
-//            float exactValueMin = new Float(newExactValues.stream().mapToDouble(value->(double)value).min().getAsDouble());
-//            float exactValueMax = new Float(newExactValues.stream().mapToDouble(value->(double)value).max().getAsDouble());
-//            float exactValueAvg = new Float(newExactValues.stream().mapToDouble(value->(double)value).average().getAsDouble());
-//
-//            min = Math.min(exactValueMin, aggregatedQd.getMin());
-//            max = Math.max(exactValueMax, aggregatedQd.getMax());
-//            average = new Float(((aggregatedQd.getAverage()*aggregatedQd.getSampleSize())+exactValueAvg*exactValueSampleSize)/(aggregatedQd.getSampleSize()+exactValueSampleSize));
-//            sampleSize = exactValueSampleSize+aggregatedQd.getSampleSize();
-//        }
-//        else{
-            // qd is already aggregated
-            handleMissingValues(newQd);
-            min = Math.min(aggregatedQd.getMin(), newQd.getMin());
-            max = Math.max(aggregatedQd.getMax(), newQd.getMax());
-            if (newQd.getSampleSize()!= null && aggregatedQd.getSampleSize() != null){
-                sampleSize = newQd.getSampleSize()+aggregatedQd.getSampleSize();
-            }
-            if (sampleSize != null && !sampleSize.equals(0f) && aggregatedQd.getAverage() != null && newQd.getAverage() != null){
-                float totalSum = aggregatedQd.getAverage()*aggregatedQd.getSampleSize() + newQd.getAverage() * newQd.getSampleSize();
-                average = new Float(totalSum/sampleSize);
-            }
-//        }
+        handleMissingValues(newQd);
+        min = Math.min(aggregatedQd.getMin(), newQd.getMin());
+        max = Math.max(aggregatedQd.getMax(), newQd.getMax());
+        if (newQd.getSampleSize()!= null && aggregatedQd.getSampleSize() != null){
+            sampleSize = newQd.getSampleSize()+aggregatedQd.getSampleSize();
+        }
+        if (sampleSize != null && !sampleSize.equals(0f) && aggregatedQd.getAverage() != null && newQd.getAverage() != null){
+            float totalSum = aggregatedQd.getAverage()*aggregatedQd.getSampleSize() + newQd.getAverage() * newQd.getSampleSize();
+            average = new Float(totalSum/sampleSize);
+        }
         aggregatedQd.setMinimum(min, null);
         aggregatedQd.setMaximum(max, null);
         aggregatedQd.setSampleSize(sampleSize, null);

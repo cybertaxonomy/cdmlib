@@ -203,7 +203,7 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
         if (getClass() != obj.getClass()) {
             return false;
         }
-        RowWrapperDTO other = (RowWrapperDTO) obj;
+        RowWrapperDTO<?> other = (RowWrapperDTO<?>) obj;
         if (description == null) {
             if (other.description != null) {
                 return false;
