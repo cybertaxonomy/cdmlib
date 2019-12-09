@@ -145,14 +145,14 @@ public class StructuredDescriptionAggregation
             targetDescription.removeSource(source);
         }
 
-        Set<DescriptionBase> sourceDescriptions = structuredResultHolder.sourceDescriptions;
-        for (DescriptionBase descriptionBase : sourceDescriptions) {
-            DescriptionBase sourceDescription = null;
+        Set<DescriptionBase<?>> sourceDescriptions = structuredResultHolder.sourceDescriptions;
+        for (DescriptionBase<?> descriptionBase : sourceDescriptions) {
+            DescriptionBase<?> sourceDescription = null;
             if(descriptionBase.isInstanceOf(SpecimenDescription.class)){
-                DescriptionBase clone = (DescriptionBase)descriptionBase.clone();
+                DescriptionBase<?> clone = (DescriptionBase<?>)descriptionBase.clone();
                 clone.removeDescriptiveDataSet(dataSet);
                 clone.getTypes().add(DescriptionType.CLONE_FOR_SOURCE);
-                SpecimenOrObservationBase specimen = CdmBase.deproxy(descriptionBase, SpecimenDescription.class).getDescribedSpecimenOrObservation();
+                SpecimenOrObservationBase<?> specimen = CdmBase.deproxy(descriptionBase, SpecimenDescription.class).getDescribedSpecimenOrObservation();
                 specimen.addDescription(CdmBase.deproxy(clone, SpecimenDescription.class));
                 sourceDescription=clone;
             }
@@ -219,10 +219,10 @@ public class StructuredDescriptionAggregation
     }
 
     private void addDescriptionElement(StructuredDescriptionResultHolder descriptiveResultHolder,
-            Set<? extends DescriptionBase> descriptions) {
+            Set<? extends DescriptionBase<?>> descriptions) {
         boolean descriptionWasUsed = false;
-        for (DescriptionBase desc:descriptions){
-            for (DescriptionElementBase deb:(Set<DescriptionElementBase>)desc.getElements()){
+        for (DescriptionBase<?> desc:descriptions){
+            for (DescriptionElementBase deb: desc.getElements()){
                 if (hasCharacterData(deb)){
                     if (deb.isInstanceOf(CategoricalData.class)){
                         addToCategorical(CdmBase.deproxy(deb, CategoricalData.class), descriptiveResultHolder);
@@ -299,7 +299,7 @@ public class StructuredDescriptionAggregation
     private class StructuredDescriptionResultHolder implements ResultHolder{
         Map<Feature, CategoricalData> categoricalMap = new HashMap<>();
         Map<Feature, QuantitativeData> quantitativeMap = new HashMap<>();
-        Set<DescriptionBase> sourceDescriptions = new HashSet<>();
+        Set<DescriptionBase<?>> sourceDescriptions = new HashSet<>();
     }
 
     /*
@@ -323,8 +323,8 @@ public class StructuredDescriptionAggregation
             for (DescriptionElementBase taxonDeb : taxonDesc.getElements()){
                 if (taxonDeb.isInstanceOf(IndividualsAssociation.class)){
                     IndividualsAssociation indAss = CdmBase.deproxy(taxonDeb, IndividualsAssociation.class);
-                    SpecimenOrObservationBase<?> spec = indAss.getAssociatedSpecimenOrObservation();
-                     Set<SpecimenDescription> descriptions = (Set)spec.getDescriptions();
+                    SpecimenOrObservationBase<?> specimen = indAss.getAssociatedSpecimenOrObservation();
+                     Set<SpecimenDescription> descriptions = (Set)specimen.getDescriptions();
                      for(SpecimenDescription specimenDescription : descriptions){
                          if(dataSet.getDescriptions().contains(specimenDescription) && specimenDescription.getTypes().stream().noneMatch(type->type.equals(DescriptionType.CLONE_FOR_SOURCE))){
                              result.add(specimenDescription);
