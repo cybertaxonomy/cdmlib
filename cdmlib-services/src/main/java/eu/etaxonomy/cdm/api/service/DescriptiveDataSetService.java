@@ -48,6 +48,7 @@ import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptiveDataSetDao;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
@@ -225,18 +226,26 @@ public class DescriptiveDataSetService
         UpdateResult result = new UpdateResult();
         DescriptiveDataSet dataSet = load(datasetUuid);
         result.setCdmEntity(dataSet);
+
+        List<UUID> taxonUuids = wrappers.stream().map(wrapper->wrapper.getTaxonNode().getTaxon().getUuid()).collect(Collectors.toList());
+        List<TaxonBase> taxa = taxonService.load(taxonUuids, Arrays.asList(new String[]{"descriptions"}));
+
         for (SpecimenNodeWrapper wrapper : wrappers) {
-            TaxonNode taxonNode = taxonNodeService.load(wrapper.getTaxonNode().getUuid());
+            Optional<TaxonBase> findAny = taxa.stream().filter(taxon->taxon.getUuid().equals(wrapper.getTaxonNode().getTaxon().getUuid())).findAny();
+            if(!findAny.isPresent()){
+                result.addException(new IllegalArgumentException("Could not create wrapper for "+wrapper.getUuidAndTitleCache().getTitleCache()));
+                continue;
+            }
+            Taxon taxon = (Taxon) findAny.get();
             UUID taxonDescriptionUuid = wrapper.getTaxonDescriptionUuid();
             TaxonDescription taxonDescription = null;
             if(taxonDescriptionUuid!=null){
                 taxonDescription = (TaxonDescription) descriptionService.load(taxonDescriptionUuid);
             }
             if(taxonDescription==null){
-                Optional<TaxonDescription> associationDescriptionOptional = taxonNode.getTaxon().getDescriptions().stream()
+                Optional<TaxonDescription> associationDescriptionOptional = taxon.getDescriptions().stream()
                         .filter(desc->desc.getTypes().contains(DescriptionType.INDIVIDUALS_ASSOCIATION))
                         .findFirst();
-                Taxon taxon = taxonNode.getTaxon();
                 if(!associationDescriptionOptional.isPresent()){
                     taxonDescription = TaxonDescription.NewInstance(taxon);
                 }
@@ -251,7 +260,7 @@ public class DescriptiveDataSetService
                 result.addUpdatedObject(taxon);
             }
             SpecimenDescription specimenDescription = findSpecimenDescription(datasetUuid, wrapper.getUuidAndTitleCache().getUuid(), true);
-            SpecimenRowWrapperDTO rowWrapper = createSpecimenRowWrapper(specimenDescription, taxonNode.getUuid(), datasetUuid);
+            SpecimenRowWrapperDTO rowWrapper = createSpecimenRowWrapper(specimenDescription, wrapper.getTaxonNode().getUuid(), datasetUuid);
             if(rowWrapper==null){
                 result.addException(new IllegalArgumentException("Could not create wrapper for "+specimenDescription));
                 continue;
