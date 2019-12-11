@@ -226,16 +226,17 @@ public class DescriptiveDataSetService
         DescriptiveDataSet dataSet = load(datasetUuid);
         result.setCdmEntity(dataSet);
         for (SpecimenNodeWrapper wrapper : wrappers) {
+            TaxonNode taxonNode = taxonNodeService.load(wrapper.getTaxonNode().getUuid());
             UUID taxonDescriptionUuid = wrapper.getTaxonDescriptionUuid();
             TaxonDescription taxonDescription = null;
             if(taxonDescriptionUuid!=null){
                 taxonDescription = (TaxonDescription) descriptionService.load(taxonDescriptionUuid);
             }
             if(taxonDescription==null){
-                Optional<TaxonDescription> associationDescriptionOptional = wrapper.getTaxonNode().getTaxon().getDescriptions().stream()
+                Optional<TaxonDescription> associationDescriptionOptional = taxonNode.getTaxon().getDescriptions().stream()
                         .filter(desc->desc.getTypes().contains(DescriptionType.INDIVIDUALS_ASSOCIATION))
                         .findFirst();
-                Taxon taxon = wrapper.getTaxonNode().getTaxon();
+                Taxon taxon = taxonNode.getTaxon();
                 if(!associationDescriptionOptional.isPresent()){
                     taxonDescription = TaxonDescription.NewInstance(taxon);
                 }
@@ -250,7 +251,7 @@ public class DescriptiveDataSetService
                 result.addUpdatedObject(taxon);
             }
             SpecimenDescription specimenDescription = findSpecimenDescription(datasetUuid, wrapper.getUuidAndTitleCache().getUuid(), true);
-            SpecimenRowWrapperDTO rowWrapper = createSpecimenRowWrapper(specimenDescription, wrapper.getTaxonNode().getUuid(), datasetUuid);
+            SpecimenRowWrapperDTO rowWrapper = createSpecimenRowWrapper(specimenDescription, taxonNode.getUuid(), datasetUuid);
             if(rowWrapper==null){
                 result.addException(new IllegalArgumentException("Could not create wrapper for "+specimenDescription));
                 continue;
