@@ -23,7 +23,6 @@ import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.CdmLinkBase;
-import eu.etaxonomy.cdm.model.common.IntextReference;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
@@ -86,7 +85,7 @@ public class CdmLinkSource extends CdmLinkBase {
      */
     public ICdmTarget getTarget() {
         if (taxon != null){
-            return (Taxon)taxon;
+            return CdmBase.deproxy(taxon, Taxon.class);
         }else if (description != null){
             return description;
         }else{
