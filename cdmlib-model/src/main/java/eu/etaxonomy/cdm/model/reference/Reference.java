@@ -950,15 +950,9 @@ public class Reference
 			logger.warn("No CacheStrategy defined for "+ typeName + ": " + this.getUuid());
 			return null;
 		}else{
-		    if (getCacheStrategy() instanceof INomenclaturalReferenceCacheStrategy){
-				return cacheStrategy.getNomenclaturalCitation(this, microReference);
-			}else {
-				logger.warn("No INomenclaturalReferenceCacheStrategy defined for "+ typeName + ": " + this.getUuid());
-				return null;
-			}
+		    return cacheStrategy.getNomenclaturalCitation(this, microReference);
 		}
 	}
-
 
 	/**
 	 * Generates, according to the {@link eu.etaxonomy.cdm.strategy.strategy.cache.reference.IReferenceBaseCacheStrategy cache strategy}
