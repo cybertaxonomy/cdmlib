@@ -138,6 +138,7 @@ public class TermNodeServiceImpl
 	     if(!node.getGraph().isAllowDuplicates() && node.getGraph().getDistinctTerms().contains(child)){
 	         result.setError();
 	         result.addException(new Exception("This term tree does not allow duplicate terms."));
+	         return result;
 	     }
 
 	     TermNode childNode;
