@@ -611,7 +611,9 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             if (fieldUnit != null) {
                 derivedUnitFacade.setFieldUnit(fieldUnit);
             }
-
+            if (derivedUnitFacade.getGatheringPeriod() == null && gatheringEvent.getTimeperiod() != null){
+                derivedUnitFacade.setGatheringPeriod(gatheringEvent.getTimeperiod());
+            }
             if (derivedUnitFacade.getLocality() == null && gatheringEvent.getLocality() != null){
                 derivedUnitFacade.setLocality(gatheringEvent.getLocality());
             }
