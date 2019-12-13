@@ -187,13 +187,7 @@ public class UnitsGatheringEvent {
     }
 
     public void setDate(String date){
-        TimePeriod timeperiod = this.gatheringEvent.getTimeperiod();
-        if(timeperiod==null){
-            timeperiod = TimePeriod.NewInstance();
-            this.gatheringEvent.setTimeperiod(timeperiod);
-        }else{
             this.gatheringEvent.setTimeperiod(TimePeriodParser.parseString(date));
-        }
 
     }
 
