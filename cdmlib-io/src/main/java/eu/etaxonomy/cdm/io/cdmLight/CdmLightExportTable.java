@@ -229,7 +229,7 @@ public enum CdmLightExportTable {
 
 
   //Identifiers
-    protected static final String EXTERNAL_NAME_IDENTIFIER = "ExternalNameIdentifier";
+    protected static final String EXTERNAL_NAME_IDENTIFIER = "ExternalIdentifier";
     protected static final String IDENTIFIER_TYPE = "IdentifierType";
     protected static final String FK = "ForeignKey";
     protected static final String REF_TABLE = "ReferencedTable";
