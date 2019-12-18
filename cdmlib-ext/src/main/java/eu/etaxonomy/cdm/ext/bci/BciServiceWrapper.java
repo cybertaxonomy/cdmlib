@@ -46,19 +46,19 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 * This service allows to query the Biodiversity collection index {@link http://www.biodiversitycollectionsindex.org}
 * @author a.mueller
 * @since Aug 16, 2010
-* @version 1.0
- *
  */
 @Component
-public class BciServiceWrapper extends ServiceWrapperBase<Collection> implements IBciServiceWrapper{
-	private static final Logger logger = Logger.getLogger(BciServiceWrapper.class);
+public class BciServiceWrapper
+        extends ServiceWrapperBase<Collection>
+        implements IBciServiceWrapper{
+
+    private static final Logger logger = Logger.getLogger(BciServiceWrapper.class);
 
 	 private enum ServiceType{
 		 AUTHOR,
 		 NAME,
 		 PUBLICATION,
 	 }
-
 
 //	private URL serviceUrl;
 
@@ -77,17 +77,12 @@ public class BciServiceWrapper extends ServiceWrapperBase<Collection> implements
 
 // ****************************** METHODS ****************************************************/
 
-	/**
-	 *
-	 * @param restRequest
-	 * @return
-	 */
 	@Override
     public List<Collection> getCollectionsByCode(String code, ICdmRepository appConfig){
 
 		SchemaAdapterBase<Collection> schemaAdapter = schemaAdapterMap.get("recordSchema");
 		if(schemaAdapter == null){
-			logger.error("No SchemaAdapter found for " + "recordSchema");
+			throw new RuntimeException("No SchemaAdapter found for " + "recordSchema");
 		}
 
 		String SruOperation = "searchRetrieve";
@@ -100,11 +95,8 @@ public class BciServiceWrapper extends ServiceWrapperBase<Collection> implements
 
 		try {
 			URI requestUri = createUri(null, pairs);
-
-
 			InputStream stream = executeHttpGet(requestUri, requestHeaders);
 			return schemaAdapter.getCmdEntities(stream);
-
 		} catch (IOException e) {
 			// thrown by doHttpGet
 			logger.error(e);
@@ -113,22 +105,14 @@ public class BciServiceWrapper extends ServiceWrapperBase<Collection> implements
 			logger.error(e);
 		}
 
-//		return null;
-
-
-
 		code = normalizeParameter(code);
 		String request = code;
 
-		return (List)queryService(request, appConfig, getServiceUrl(IBciServiceWrapper.LOOKUP_CODE_REST), ServiceType.AUTHOR);
+		@SuppressWarnings("unchecked")
+        List<Collection> result = (List<Collection>)queryService(request, appConfig, getServiceUrl(IBciServiceWrapper.LOOKUP_CODE_REST), ServiceType.AUTHOR);
+		return result;
 	}
 
-
-	/**
-	 *
-	 * @param restRequest
-	 * @return
-	*/
 	private List<? extends IdentifiableEntity> queryService(String request, ICdmRepository appConfig, URL serviceUrl, ServiceType serviceType){
 		try {
             // create the request url
@@ -142,7 +126,6 @@ public class BciServiceWrapper extends ServiceWrapperBase<Collection> implements
             // set the accept property to XML so we can use jdom to handle the content
             //connection.setRequestProperty("Accept", "text/xml");
 
-
             logger.info("Firing request for URL: " + newUrl);
 
             int responseCode = connection.getResponseCode();
@@ -151,7 +134,7 @@ public class BciServiceWrapper extends ServiceWrapperBase<Collection> implements
             InputStream content = (InputStream) connection.getContent();
 
             // build the result
-            List<? extends IdentifiableEntity> result;
+            List<? extends IdentifiableEntity<?>> result;
             if (serviceType.equals(ServiceType.AUTHOR)){
             	result = buildCollectionList(content, appConfig);
             }else if (serviceType.equals(ServiceType.NAME)){
@@ -194,7 +177,6 @@ public class BciServiceWrapper extends ServiceWrapperBase<Collection> implements
 
 		return result;
 	}
-
 
 	private Collection getCollectionFromLine(String line, ICdmRepository appConfig) {
 		//urn:lsid:biocol.org:col:15727	http://biocol.org/urn:lsid:biocol.org:col:15727	University of Bergen Herbarium
@@ -252,32 +234,18 @@ public class BciServiceWrapper extends ServiceWrapperBase<Collection> implements
 		return bciReference;
 	}
 
-	/**
-	 * @return
-	 */
 	private Reference getNewBciReference() {
 		Reference bciReference;
 		bciReference = ReferenceFactory.newDatabase();
-		bciReference.setTitleCache("Biodiversity Collection Index (BCI))");
+		bciReference.setTitleCache("Biodiversity Collection Index (BCI))", true);
 		return bciReference;
 	}
 
-
-	/**
-	 * @param parameter
-	 */
 	private String normalizeParameter(String parameter) {
 		String result = CdmUtils.Nz(parameter).replace(" ", "+");
 		return result;
 	}
 
-
-
-	/**
-	 * The service url
-	 *
-	 * @return the serviceUrl
-	 */
 	@Override
     public URL getServiceUrl(String url) {
 		URL serviceUrl;
@@ -288,7 +256,4 @@ public class BciServiceWrapper extends ServiceWrapperBase<Collection> implements
 		}
 		return serviceUrl;
 	}
-
-
-
 }
