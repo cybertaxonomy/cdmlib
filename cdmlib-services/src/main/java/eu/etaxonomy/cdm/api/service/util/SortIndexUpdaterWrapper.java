@@ -85,7 +85,6 @@ public class SortIndexUpdaterWrapper implements Serializable {
             result.includeResult(update(updater, monitor));
         }
         return result;
-
     }
 
     private UpdateResult update(SortIndexUpdater updater,  IProgressMonitor  monitor){
@@ -99,29 +98,24 @@ public class SortIndexUpdaterWrapper implements Serializable {
 
             List<?> data = sqlQuery.list();
             int c = 2;
-            if (updater.getTableName().equals("TaxonNode")){
+            if (updater.getTableName().equals(TAXON_NODE)){
                 c= 3;
             }
             monitor.beginTask("Update index", data.size()*c);
             monitor.subTask("Create new index");
             IProgressMonitor subMonitor = new SubProgressMonitor(monitor, data.size());
             List<Integer[]> result = new ArrayList<>();
-            int id;
-            int parentId;
-            Object oId;
-            Object oParentId;
-            Integer[] rowArray = new Integer[2];
             int done = 0;
             for(Object object : data){
                Object[] row = (Object[])object;
-               oId = row[0];
+               Object oId = row[0];
 
                 if (oId != null){
-                    id = Integer.valueOf(oId.toString());
-                    rowArray = new Integer[2];
-                    oParentId = row[1];
+                    int id = Integer.valueOf(oId.toString());
+                    Integer[] rowArray = new Integer[2];
+                    Object oParentId = row[1];
                     if (oParentId != null){
-                        parentId = Integer.valueOf(oParentId.toString());
+                        int parentId = Integer.valueOf(oParentId.toString());
                         rowArray[1]= parentId;
 
                     }else{
@@ -150,7 +144,7 @@ public class SortIndexUpdaterWrapper implements Serializable {
             }
             subMonitor.done();
             //Update childrenCount
-            if (updater.getTableName().equals("TaxonNode")){
+            if (updater.getTableName().equals(TAXON_NODE)){
 
                 query = updater.getChildrenCountQuery();
                 sqlQuery = taxonService.getSession().createSQLQuery(query);
@@ -163,7 +157,7 @@ public class SortIndexUpdaterWrapper implements Serializable {
                    Object[] row = (Object[])object;
                    realCount =  ((Number) row[0]).intValue();
                    countChildren = ((Number) row[1]).intValue();
-                   id = ((Number) row[2]).intValue();
+                   int id = ((Number) row[2]).intValue();
 
                    if (realCount != countChildren){
                        query = updater.getUpdateChildrenCount(realCount, id);
