@@ -25,7 +25,7 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
-import eu.etaxonomy.cdm.api.application.CdmRepository;
+import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.UpdateResult;
 import eu.etaxonomy.cdm.api.service.config.SortIndexUpdaterConfigurator;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -49,8 +49,10 @@ public class SortIndexUpdaterWrapper implements Serializable {
 
     @Autowired
     private HibernateTransactionManager transactionManager;
+//    @Autowired
+//    private CdmRepository repository;  //TODO not unique therefore byName or so is needed
     @Autowired
-    private CdmRepository repository;
+    private ITaxonService repository;
 
     public UpdateResult doInvoke(SortIndexUpdaterConfigurator config) {
 
