@@ -2,6 +2,7 @@ package eu.etaxonomy.cdm.strategy.generate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,18 +34,19 @@ import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.TermNode;
 
 /**
  * @author m.venin
- *
+ * @author a.mueller
  */
 public class PolytomousKeyGenerator {
 
     private static final Logger logger = Logger.getLogger(PolytomousKeyGenerator.class);
 
     /**
-     * These strings are used for generating the statements of the key.
+     * Strings used for generating the statements of the key.
      */
     private static final String before="<";
     private static final String after=">";
@@ -63,6 +65,7 @@ public class PolytomousKeyGenerator {
 	    private SpecimenOrObservationBase<?> specimen;
 	    private Map<Feature,Set<CategoricalData>> categoricalData = new HashMap<>();
         private Map<Feature,Set<QuantitativeData>> quantitativeData = new HashMap<>();
+        private Set<KeyTaxon> children = new HashSet<>();
 
         private Set<CategoricalData> getCategoricalData(Feature feature){
             return categoricalData.get(feature) == null? new HashSet<>():categoricalData.get(feature);
@@ -113,7 +116,10 @@ public class PolytomousKeyGenerator {
         }
         PolytomousKey polytomousKey = PolytomousKey.NewInstance();
         PolytomousKeyNode root = polytomousKey.getRoot();
+        @SuppressWarnings("unchecked")
         Set<KeyTaxon> taxaCovered = makeKeyTaxa((Set)config.getTaxonDescriptions());
+        taxaCovered = replaceSingleRoot(taxaCovered);
+
         //filter if a feature is available only for certain states in this branche
         Map<Feature, Set<State>> featureStatesFilter = new HashMap<>();
         //TODO what if size(taxaCovered) <= 1, is this covered by algo? Write test to check
@@ -121,7 +127,21 @@ public class PolytomousKeyGenerator {
         return polytomousKey;
     }
 
+    /**
+     * If the root taxon is a single taxon but has children
+     * it will be replaced by it's children.
+     */
+    private Set<KeyTaxon> replaceSingleRoot(Set<KeyTaxon> taxaCovered) {
+        if (this.config.isUseTaxonHierarchy() && taxaCovered.size()==1
+                && !taxaCovered.iterator().next().children.isEmpty()){
+            return replaceSingleRoot(taxaCovered.iterator().next().children);
+        }else{
+            return taxaCovered;
+        }
+    }
+
     private Set<KeyTaxon> makeKeyTaxa(Set<DescriptionBase<?>> descriptions) {
+
         Map<UUID,KeyTaxon> taxonMap = new HashMap<>();
         for (DescriptionBase<?> db : descriptions){
             KeyTaxon taxon = new KeyTaxon();
@@ -143,7 +163,68 @@ public class PolytomousKeyGenerator {
             }
             taxon.addDescription(db);
         }
+
+        createTaxonHierarchy(taxonMap);
+
         return new HashSet<>(taxonMap.values());
+    }
+
+    private void createTaxonHierarchy(Map<UUID, KeyTaxon> taxonMap) {
+        if(config.isUseTaxonHierarchy()==false){
+            return;
+        }
+        Set<KeyTaxon> taxaToTest = new HashSet<>(taxonMap.values());
+        for(KeyTaxon taxon:taxaToTest){
+            KeyTaxon parent = getBestTaxonParent(taxon, taxaToTest);
+            if (parent != null){
+                parent.children.add(taxon);
+                taxonMap.remove(taxon.uuid);
+            }
+        }
+    }
+
+    private KeyTaxon getBestTaxonParent(KeyTaxon taxon, Collection<KeyTaxon> values) {
+        KeyTaxon parent = null;
+        String parentIndex = "";
+        String myTreeIndex = getTaxonTreeIndex(taxon);
+        if (myTreeIndex != null) {
+            for (KeyTaxon candidate:values){
+                String candidateIndex = getTaxonTreeIndex(candidate);
+                if (candidateIndex == null || myTreeIndex.equals(candidateIndex)){
+                    continue;
+                }
+                if (myTreeIndex.startsWith(candidateIndex)){
+                    if (candidateIndex.length()> parentIndex.length()){
+                        parent = candidate;
+                        parentIndex = candidateIndex;
+                    }
+                }
+            }
+        }
+        return parent;
+    }
+
+    private String getTaxonTreeIndex(KeyTaxon taxon) {
+        if (taxon.taxon.getTaxonNodes().isEmpty()){
+            return null;
+        }
+        //TODOO size>1  or classification check
+        TaxonNode node = taxon.taxon.getTaxonNodes().iterator().next();
+        String treeIndex = node.treeIndex();
+        if (treeIndex == null){
+            //unpersisted, this should only happen during test, create provisional treeindex
+            treeIndex = getParentTreeIndex(node) + node.getUuid().toString() + "#" ;
+        }
+        return treeIndex;
+    }
+
+    private String getParentTreeIndex(TaxonNode node) {
+        TaxonNode parent = node.getParent();
+        if (parent == null ){
+            return "#";
+        }else{
+            return getParentTreeIndex(parent) + parent.getUuid().toString() + "#" ;
+        }
     }
 
     /**
@@ -157,7 +238,7 @@ public class PolytomousKeyGenerator {
 	private void buildBranches(PolytomousKeyNode parent, List<Feature> featuresLeft, Set<KeyTaxon> taxaCovered,
 	        Map<Feature, Set<State>> featureStatesFilter){
 
-	    //handle all branches taxa
+	    //handle all branches taxa =>
         Set<KeyTaxon> allBranchesTaxa = getAllBranchesTaxa(featuresLeft, taxaCovered, featureStatesFilter);
         if (allBranchesTaxa.size()>0){
             if (allBranchesTaxa.size()>1){
@@ -338,7 +419,7 @@ public class PolytomousKeyGenerator {
             for (Set<KeyTaxon> newTaxaCovered : sortedKeys){
 		        //handle each branch
                 handleCategoricalBranch(parent, featuresLeft,
-                        taxaCovered, winnerFeature, reuseWinner, taxonStatesMap, newTaxaCovered, featureStatesFilter);
+                        taxaCovered.size(), winnerFeature, reuseWinner, taxonStatesMap, newTaxaCovered, featureStatesFilter);
             }
 		}
 		return;
@@ -369,7 +450,7 @@ public class PolytomousKeyGenerator {
     }
 
     private void handleCategoricalBranch(PolytomousKeyNode parent, List<Feature> featuresLeft,
-            Set<KeyTaxon> taxaCovered,
+            int taxaCoveredSize,
             Feature winnerFeature, Map<Set<KeyTaxon>, Boolean> reuseWinner,
             Map<Set<KeyTaxon>, List<State>> taxonStatesMap,
             Set<KeyTaxon> newTaxaCovered,
@@ -385,7 +466,7 @@ public class PolytomousKeyGenerator {
 
         List<State> listOfStates = taxonStatesMap.get(newTaxaCovered);
         if ((newTaxaCovered.size() > 0)){ //old: if the taxa are discriminated compared to those of the parent node, a child is created
-        	areTheTaxaDiscriminated = (newTaxaCovered.size()!=taxaCovered.size());
+        	areTheTaxaDiscriminated = (newTaxaCovered.size() != taxaCoveredSize);
 
         	int numberOfStates = listOfStates.size()-1;
         	listOfStates.sort(stateComparator);
@@ -415,6 +496,11 @@ public class PolytomousKeyGenerator {
             buildBranches(childNode, featuresLeft, newTaxaCovered, featureStatesFilter);
         }else{
             handleLeaf(childNode, newTaxaCovered);
+            Set<KeyTaxon> taxonChildren = getTaxonChildren(newTaxaCovered);
+            if(!taxonChildren.isEmpty()){
+                //TODO FIXME featuresLeft probably needs to include all features, similar for featureStatesFilter
+                buildBranches(childNode, featuresLeft, taxonChildren, featureStatesFilter);
+            }
         }
 
         //restore old state before returning to parent node
@@ -422,6 +508,14 @@ public class PolytomousKeyGenerator {
         featureStatesFilter.put(winnerFeature, oldFilterSet);
 
         return;
+    }
+
+    private Set<KeyTaxon> getTaxonChildren(Set<KeyTaxon> newTaxaCovered) {
+        Set<KeyTaxon> result = new HashSet<>();
+        for (KeyTaxon taxon:newTaxaCovered){
+            result.addAll(taxon.children);
+        }
+        return result;
     }
 
     private void setStatesFilter(Map<Feature, Set<State>> filter, Feature feature,

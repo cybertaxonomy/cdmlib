@@ -33,7 +33,10 @@ public class PolytomousKeyGeneratorConfigurator {
 
     private boolean useDependencies = true; // if this boolean is true, the dependencies are taken into account
 
+    private boolean useTaxonHierarchy = true; //if true the taxa are resolved hierarchically, first the top taxa are resolved, and in a further step their children, and in again a further step the children of the children
+
     private DescriptiveDataSet dataSet;
+
 
     /**
      * If true allows the generator to merge branches if the corresponding states can be used together without diminishing their score.
@@ -72,6 +75,13 @@ public class PolytomousKeyGeneratorConfigurator {
      */
     public void setDataSet(DescriptiveDataSet dataSet) {
         this.dataSet = dataSet;
+    }
+
+    public boolean isUseTaxonHierarchy() {
+        return useTaxonHierarchy;
+    }
+    public void setUseTaxonHierarchy(boolean useTaxonHierarchy) {
+        this.useTaxonHierarchy = useTaxonHierarchy;
     }
 
     public Set<DescriptionBase<?>> getDescriptions() {
@@ -118,6 +128,8 @@ public class PolytomousKeyGeneratorConfigurator {
 
     public boolean isDebug() {return debug;}
     public void setDebug(boolean debug) {this.debug = debug;}
+
+
 
 
 }

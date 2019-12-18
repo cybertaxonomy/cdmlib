@@ -2,8 +2,10 @@ package eu.etaxonomy.cdm.strategy.generate;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -15,6 +17,7 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -30,7 +33,9 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
@@ -69,6 +74,9 @@ public class PolytomousKeyGeneratorTest {
 	private State yes;
 	private State no;
 
+	Classification classification;
+
+	private Taxon taxonGenus;
 	private Taxon taxon1;
 	private Taxon taxon2;
 	private Taxon taxon3;
@@ -78,19 +86,21 @@ public class PolytomousKeyGeneratorTest {
 	private Taxon taxon7;
 	private Taxon taxon8;
 
-	private TaxonDescription taxond1;
-	private TaxonDescription taxond2;
-	private TaxonDescription taxond3;
-	private TaxonDescription taxond4;
-	private TaxonDescription taxond5;
-	private TaxonDescription taxond6;
-	private TaxonDescription taxond7;
-	private TaxonDescription taxond8;
+	private TaxonDescription tdGenus;
+    private TaxonDescription td1;
+	private TaxonDescription td2;
+	private TaxonDescription td3;
+	private TaxonDescription td4;
+	private TaxonDescription td5;
+	private TaxonDescription td6;
+	private TaxonDescription td7;
+	private TaxonDescription td8;
 
     private CategoricalData catd11;
     private CategoricalData catd12;
     private CategoricalData catd13;
     private CategoricalData catd14;
+    private CategoricalData catd15;
     private CategoricalData catd27;
     private CategoricalData catd28;
 	private QuantitativeData qtd31;
@@ -109,7 +119,8 @@ public class PolytomousKeyGeneratorTest {
 	private static UUID uuidFeatureLength = UUID.fromString("5de4f981-83fb-41d2-9900-b52cf5782a85");
 	private static UUID uuidFeatureColour = UUID.fromString("7a8deb1a-144f-4be5-ba0d-9e77724697cb");
 
-	private static UUID uuidTd1 = UUID.fromString("b392720c-8c64-4cbf-8207-992146f51fd5");
+	private static UUID uuidTdGenus = UUID.fromString("cbdfa57e-1773-4503-9e56-469c9894f6fc");
+    private static UUID uuidTd1 = UUID.fromString("b392720c-8c64-4cbf-8207-992146f51fd5");
     private static UUID uuidTd2 = UUID.fromString("341d8ef1-fd07-4a91-8d53-dd6e729ad20b");
     private static UUID uuidTd3 = UUID.fromString("f174180f-86fe-475f-88f4-d0231fa96725");
     private static UUID uuidTd4 = UUID.fromString("3c90104f-ff81-43eb-a0f1-17eec1e77f49");
@@ -117,7 +128,6 @@ public class PolytomousKeyGeneratorTest {
     private static UUID uuidTd6 = UUID.fromString("8df21f07-3bc0-4a88-a270-6c6050509975");
     private static UUID uuidTd7 = UUID.fromString("fc064338-adef-4657-bc69-34b0a9cc51a6");
     private static UUID uuidTd8 = UUID.fromString("b0458406-8e76-4f1a-9034-79cc661caf2a");
-
 
 	private PolytomousKeyGenerator generator = new PolytomousKeyGenerator();
 
@@ -132,8 +142,8 @@ public class PolytomousKeyGeneratorTest {
 	    featureLength = createFeature("Length of wings", uuidFeatureLength, QUANTITATIVE);
 	    featureColour = createFeature("Colour", uuidFeatureColour, CATEGORICAL);
 
-
-		taxon1 = getTaxon(1);
+	    taxonGenus = getTaxon(0);
+        taxon1 = getTaxon(1);
 		taxon2 = getTaxon(2);
 		taxon3 = getTaxon(3);
 		taxon4 = getTaxon(4);
@@ -142,15 +152,15 @@ public class PolytomousKeyGeneratorTest {
 		taxon7 = getTaxon(7);
 		taxon8 = getTaxon(8);
 
-
-		taxond1 = createTaxonDescription(taxon1, "td1", uuidTd1);
-		taxond2 = createTaxonDescription(taxon2, "td2", uuidTd2);
-		taxond3 = createTaxonDescription(taxon3, "td3", uuidTd3);
-		taxond4 = createTaxonDescription(taxon4, "td4", uuidTd4);
-		taxond5 = createTaxonDescription(taxon5, "td5", uuidTd5);
-		taxond6 = createTaxonDescription(taxon6, "td6", uuidTd6);
-		taxond7 = createTaxonDescription(taxon7, "td7", uuidTd7);
-		taxond8 = createTaxonDescription(taxon8, "td8", uuidTd8);
+		tdGenus = createTaxonDescription(taxonGenus, "tdGenus", uuidTdGenus);
+        td1 = createTaxonDescription(taxon1, "td1", uuidTd1);
+		td2 = createTaxonDescription(taxon2, "td2", uuidTd2);
+		td3 = createTaxonDescription(taxon3, "td3", uuidTd3);
+		td4 = createTaxonDescription(taxon4, "td4", uuidTd4);
+		td5 = createTaxonDescription(taxon5, "td5", uuidTd5);
+		td6 = createTaxonDescription(taxon6, "td6", uuidTd6);
+		td7 = createTaxonDescription(taxon7, "td7", uuidTd7);
+		td8 = createTaxonDescription(taxon8, "td8", uuidTd8);
 
 		triangular = createState("Triangular");
 		circular = createState("Circular");
@@ -167,12 +177,12 @@ public class PolytomousKeyGeneratorTest {
 		catd12 = CategoricalData.NewInstance(triangular, featureShape);
 		catd13 = CategoricalData.NewInstance(triangular, featureShape);
 		catd14 = CategoricalData.NewInstance(triangular, featureShape);
-		CategoricalData catd15 = CategoricalData.NewInstance(circular, featureShape);
+		catd15 = CategoricalData.NewInstance(circular, featureShape);
 		CategoricalData catd16 = CategoricalData.NewInstance(circular, featureShape);
 		CategoricalData catd17 = CategoricalData.NewInstance(circular, featureShape);
 		CategoricalData catd18 = CategoricalData.NewInstance(circular, featureShape);
 
-		/*************************/
+		//*************************/
 
 		CategoricalData catd21 = CategoricalData.NewInstance(yes, featurePresence);
 		CategoricalData catd22 = CategoricalData.NewInstance(yes, featurePresence);
@@ -183,7 +193,7 @@ public class PolytomousKeyGeneratorTest {
 		catd27 = CategoricalData.NewInstance(yes, featurePresence);
 		catd28 = CategoricalData.NewInstance(no, featurePresence);
 
-		/*************************/
+		//*************************/
 
 		qtd31 = QuantitativeData.NewExactValueInstance(featureLength, 0.0f, 3.0f);
 //        qtd31 = QuantitativeData.NewMinMaxInstance(featureLength, 0, 3);
@@ -195,7 +205,7 @@ public class PolytomousKeyGeneratorTest {
 		qtd37 = QuantitativeData.NewMinMaxInstance(featureLength, 6, 9);
 		qtd38 = QuantitativeData.NewMinMaxInstance(featureLength, 0, 3);
 
-		/*************************/
+		//*************************/
 
 		CategoricalData catd41 = CategoricalData.NewInstance(blue, featureColour);
 		CategoricalData catd42 = CategoricalData.NewInstance(yellow, featureColour);
@@ -206,65 +216,81 @@ public class PolytomousKeyGeneratorTest {
 		CategoricalData catd47 = CategoricalData.NewInstance(blue, featureColour);
 		CategoricalData catd48 = CategoricalData.NewInstance(blue, featureColour);
 
-		/*************************/
-		taxond1.addElement(catd11); //Shape triangular
-		taxond1.addElement(catd21); //present
-		taxond1.addElement(qtd31);  //length 0-3
-		taxond1.addElement(catd41); //color blue
+		//*************************/
 
-		taxond2.addElement(catd12);  //Shape triangular
-		taxond2.addElement(catd22);  //present
-		taxond2.addElement(qtd32);   //length 0-3
-		taxond2.addElement(catd42);  //color yellow
+		catd11.clone(tdGenus); //Shape triangular
 
-		taxond3.addElement(catd13);  //Shape triangular
-		taxond3.addElement(catd23);  //present
-		taxond3.addElement(qtd33);   //length 6-9
-		taxond3.addElement(catd43);  //color blue
+		td1.addElement(catd11); //Shape triangular
+		td1.addElement(catd21); //present
+		td1.addElement(qtd31);  //length 0-3
+		td1.addElement(catd41); //color blue
 
-		taxond4.addElement(catd14);  //Shape triangular
-		taxond4.addElement(catd24);  //present
-		taxond4.addElement(qtd34);   //length 6-9
-		taxond4.addElement(catd44);  //color yellow
+		td2.addElement(catd12);  //Shape triangular
+		td2.addElement(catd22);  //present
+		td2.addElement(qtd32);   //length 0-3
+		td2.addElement(catd42);  //color yellow
 
-		taxond5.addElement(catd15);  //Shape circular
-		taxond5.addElement(catd25);  //present
-		taxond5.addElement(qtd35);   //length 0-3
-		taxond5.addElement(catd45);  //color blue
+		td3.addElement(catd13);  //Shape triangular
+		td3.addElement(catd23);  //present
+		td3.addElement(qtd33);   //length 6-9
+		td3.addElement(catd43);  //color blue
 
-		taxond6.addElement(catd16);  //Shape circular
-		taxond6.addElement(catd26);  //present
-		taxond6.addElement(qtd36);   //length 0-3
-		taxond6.addElement(catd46);  //color blue
+		td4.addElement(catd14);  //Shape triangular
+		td4.addElement(catd24);  //present
+		td4.addElement(qtd34);   //length 6-9
+		td4.addElement(catd44);  //color yellow
 
-		taxond7.addElement(catd17);  //Shape circular
-		taxond7.addElement(catd27);  //present
-		taxond7.addElement(qtd37);   //length 6-9
-		taxond7.addElement(catd47);  //color blue
+		td5.addElement(catd15);  //Shape circular
+		td5.addElement(catd25);  //present
+		td5.addElement(qtd35);   //length 0-3
+		td5.addElement(catd45);  //color blue
 
-		taxond8.addElement(catd18);  //Shape circular
-		taxond8.addElement(catd28);  //absent
+		td6.addElement(catd16);  //Shape circular
+		td6.addElement(catd26);  //present
+		td6.addElement(qtd36);   //length 0-3
+		td6.addElement(catd46);  //color blue
+
+		td7.addElement(catd17);  //Shape circular
+		td7.addElement(catd27);  //present
+		td7.addElement(qtd37);   //length 6-9
+		td7.addElement(catd47);  //color blue
+
+		td8.addElement(catd18);  //Shape circular
+		td8.addElement(catd28);  //absent
 //		taxond8.addElement(qtd38); // This taxon has no wings
-		taxond8.addElement(catd48);  //color blue
+		td8.addElement(catd48);  //color blue
 
 		/******* add non-character data, this should have no influence **/
 		TaxonDescription nonCharacterDesc = TaxonDescription.NewInstance(taxon1);
 		Distribution distribution = Distribution.NewInstance(Country.GERMANY(), PresenceAbsenceTerm.PRESENT());
 		nonCharacterDesc.addElement(distribution);
 
-		taxond2.addElement(TextData.NewInstance(Feature.ANATOMY(), "Test", Language.DEFAULT(), null));
+		td2.addElement(TextData.NewInstance(Feature.ANATOMY(), "Test", Language.DEFAULT(), null));
 
-//*************************************************/
+		//*************************************************/
 
 		taxa = new HashSet<>();
-		taxa.add(taxond1);
-		taxa.add(taxond2);
-		taxa.add(taxond3);
-		taxa.add(taxond4);
-		taxa.add(taxond5);
-		taxa.add(taxond6);
-		taxa.add(taxond7);
-		taxa.add(taxond8);
+		taxa.add(tdGenus);
+        taxa.add(td1);
+		taxa.add(td2);
+		taxa.add(td3);
+		taxa.add(td4);
+		taxa.add(td5);
+		taxa.add(td6);
+		taxa.add(td7);
+		taxa.add(td8);
+
+		classification = Classification.NewInstance("Test Classification");
+		Taxon rootTaxon = taxonGenus;
+		TaxonNode genusTaxonNode = classification.addChildTaxon(rootTaxon, null, null);
+		genusTaxonNode.addChildTaxon(taxon1, null, null);
+		genusTaxonNode.addChildTaxon(taxon2, null, null);
+		genusTaxonNode.addChildTaxon(taxon3, null, null);
+		genusTaxonNode.addChildTaxon(taxon4, null, null);
+		genusTaxonNode.addChildTaxon(taxon5, null, null);
+		genusTaxonNode.addChildTaxon(taxon6, null, null);
+		genusTaxonNode.addChildTaxon(taxon7, null, null);
+		genusTaxonNode.addChildTaxon(taxon8, null, null);
 	}
 
 //*************************** TESTS *********************** /
@@ -327,7 +353,6 @@ public class PolytomousKeyGeneratorTest {
         assertSingleTaxon(root.getChildAt(2), taxon1, oval);
 	}
 
-
     @Test
     public void testInvokeMergeModeON() {
         PolytomousKeyGeneratorConfigurator configurator = createDefaultConfig();
@@ -384,10 +409,10 @@ public class PolytomousKeyGeneratorTest {
     @Test
     public void testInvokeMergeReuseFeature() {
         PolytomousKeyGeneratorConfigurator configurator = createDefaultConfig();
-        taxond1.removeElement(qtd31);
-        taxond2.removeElement(qtd32);
-        taxond3.removeElement(qtd33);
-        taxond4.removeElement(qtd34);
+        td1.removeElement(qtd31);
+        td2.removeElement(qtd32);
+        td3.removeElement(qtd33);
+        td4.removeElement(qtd34);
         catd12.addStateData(oval);
         catd12.addStateData(circular);
         configurator.setMerge(true);
@@ -459,7 +484,7 @@ public class PolytomousKeyGeneratorTest {
         configurator.setMerge(true);
         configurator.setUseDependencies(true);
         catd27.getStateData().get(0).setState(no);
-        taxond8.addElement(qtd38);
+        td8.addElement(qtd38);
 
         PolytomousKey result = generator.invoke(configurator);
         result.setTitleCache("Merge Key with dependency", true);
@@ -507,6 +532,105 @@ public class PolytomousKeyGeneratorTest {
 
             //yes
             assertIsTaxonList(circularNode.getChildAt(1), yes, taxon5, taxon6);
+    }
+
+    @Test
+    public void testTaxonomicHierarchy() throws CloneNotSupportedException {
+
+        tdGenus.getElements().clear();
+        tdGenus.addElements(mergeTaxDescriptions(td1, td2, td3, td4));
+        TaxonNode genus1Node = classification.getRootNode().getChildNodes().iterator().next();
+        removeTaxon5_8(genus1Node);
+
+        UUID uuidTdGenus2 = UUID.fromString("3eed217a-fd40-4a38-997f-1f4360133d0d");
+        Taxon taxonGenus2 = getTaxon(10);
+        TaxonDescription tdGenus2 = createTaxonDescription(taxonGenus2, "tdGenus2", uuidTdGenus2);
+        taxa.add(tdGenus2);
+        TaxonNode genus2Node = classification.getRootNode().addChildTaxon(taxonGenus2, null, null);
+        genus2Node.addChildTaxon(taxon5, null, null);
+        genus2Node.addChildTaxon(taxon6, null, null);
+        genus2Node.addChildTaxon(taxon7, null, null);
+        genus2Node.addChildTaxon(taxon8, null, null);
+        tdGenus2.addElements(mergeTaxDescriptions(td5, td6, td7, td8));
+
+        PolytomousKeyGeneratorConfigurator configurator = createDefaultConfig();
+        PolytomousKey result = generator.invoke(configurator);
+        result.setTitleCache("Merge Key", true);
+        assertNotNull("Key should exist (merge mode ON).", result);
+        if (debug) {result.print(System.out);}
+
+        //Assertions
+        assertNotNull("Key should exist.", result);
+        PolytomousKeyNode root = result.getRoot();
+        Assert.assertEquals(featureShape, root.getFeature());
+        Assert.assertNull(root.getTaxon());
+
+        //triangular or oval
+        PolytomousKeyNode triangularNode = root.getChildAt(0);
+        assertInnerNodeWithTaxon(triangularNode, "Oval or Triangular", featureLength, taxonGenus);
+
+            //<3
+            PolytomousKeyNode lessNode = triangularNode.getChildAt(0);
+            assertInnerNode(lessNode, LESS_3 , featureColour);
+                //blue
+                assertSingleTaxon(lessNode.getChildAt(0), taxon1, blue);
+                //yellow
+                assertSingleTaxon(lessNode.getChildAt(1), taxon2, yellow);
+
+            //>3
+            PolytomousKeyNode gtNode = triangularNode.getChildAt(1);
+            assertInnerNode(gtNode, GT_3, featureColour);
+                //blue
+                assertSingleTaxon(gtNode.getChildAt(0), taxon3, blue);
+                //yellow
+                assertSingleTaxon(gtNode.getChildAt(1), taxon4, yellow);
+
+        //circular
+        PolytomousKeyNode circularNode = root.getChildAt(1);
+        assertInnerNodeWithTaxon(circularNode, circular, featurePresence, taxonGenus2);
+
+            //yes
+            PolytomousKeyNode yesNode = circularNode.getChildAt(0);
+            assertInnerNode(yesNode, yes, featureLength);
+
+                //<3
+                assertIsTaxonList(yesNode.getChildAt(0), LESS_3 , taxon5, taxon6);
+
+                //>3
+                assertSingleTaxon(yesNode.getChildAt(1), taxon7, GT_3);
+
+            //no
+            assertSingleTaxon(circularNode.getChildAt(1), taxon8, no);
+    }
+
+    private DescriptionElementBase[] mergeTaxDescriptions(TaxonDescription td5, TaxonDescription td6, TaxonDescription td7,
+            TaxonDescription td8) {
+        List<DescriptionElementBase> list = new ArrayList<>();
+        list.addAll(clonedDescElements(td5.getElements()));
+        list.addAll(clonedDescElements(td6.getElements()));
+        list.addAll(clonedDescElements(td7.getElements()));
+        list.addAll(clonedDescElements(td8.getElements()));
+
+        return list.toArray(new DescriptionElementBase[0]);
+    }
+
+    private Set<DescriptionElementBase> clonedDescElements(Set<DescriptionElementBase> elements) {
+        Set<DescriptionElementBase> result = new HashSet<>();
+        for (DescriptionElementBase deb : elements){
+            try {
+                result.add((DescriptionElementBase)deb.clone());
+            } catch (CloneNotSupportedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return result;
+    }
+
+    private void removeTaxon5_8(TaxonNode genus1Node) {
+        genus1Node.removeChild(7);
+        genus1Node.removeChild(6);
+        genus1Node.removeChild(5);
+        genus1Node.removeChild(4);
     }
 
     @Test
@@ -560,8 +684,18 @@ public class PolytomousKeyGeneratorTest {
         Assert.assertNull(node.getTaxon());
     }
 
+    private void assertInnerNodeWithTaxon(PolytomousKeyNode node, String label, Feature feature, Taxon taxon) {
+        Assert.assertEquals(label, label(node));
+        Assert.assertEquals(feature, node.getFeature());
+        Assert.assertEquals(taxon, node.getTaxon());
+    }
+
     private PolytomousKeyNode assertInnerNode(PolytomousKeyNode node, State state, Feature feature) {
         assertInnerNode(node, state.getLabel(), feature);
+        return node;
+    }
+    private PolytomousKeyNode assertInnerNodeWithTaxon(PolytomousKeyNode node, State state, Feature feature, Taxon taxon) {
+        assertInnerNodeWithTaxon(node, state.getLabel(), feature, taxon);
         return node;
     }
 
@@ -651,13 +785,13 @@ public class PolytomousKeyGeneratorTest {
 
     private Feature createFeature(String title, UUID uuid, boolean isQuantitative) {
         Feature result = Feature.NewInstance("",title,"");
-        result.getTitleCache();
         result.setUuid(uuid);
         if (isQuantitative){
             result.setSupportsQuantitativeData(true);
         }else{
             result.setSupportsCategoricalData(true);
         }
+        result.getTitleCache();
         return result;
     }
 
