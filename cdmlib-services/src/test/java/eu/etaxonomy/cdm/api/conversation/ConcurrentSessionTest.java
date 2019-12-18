@@ -7,7 +7,7 @@
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
 
-package eu.etaxonomy.cdm.test.function;
+package eu.etaxonomy.cdm.api.conversation;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -56,6 +56,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
+import eu.etaxonomy.cdm.test.function.TestConversationEnabled;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 /**
@@ -63,7 +64,6 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
  * implemented in the CDM Library by the {@link eu.etaxonomy.cdm.api.conversation.ConversationHolder ConversationHolder}.
  *
  * @author n.hoffmann
- *
  */
 @Transactional(TransactionMode.DISABLED)
 public class ConcurrentSessionTest extends CdmIntegrationTest {

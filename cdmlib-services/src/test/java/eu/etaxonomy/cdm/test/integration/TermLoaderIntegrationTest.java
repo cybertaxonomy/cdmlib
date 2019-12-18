@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.test.integration;
 
@@ -24,19 +24,19 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 
 /**
  * @author a.mueller
- *
  */
 public class TermLoaderIntegrationTest extends CdmIntegrationTest {
-	@SuppressWarnings("unused")
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TermLoaderIntegrationTest.class);
 
 	private UUID taxonomicallyIncludedInUuid;
-	
+
     @Before
 	public void setUp() {
     	taxonomicallyIncludedInUuid = UUID.fromString("d13fecdf-eb44-4dd7-9244-26679c05df1c");
     }
-	
+
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.ConceptRelationshipType#TAXONOMICALLY_INCLUDED_IN()}.
 	 */
@@ -45,7 +45,7 @@ public class TermLoaderIntegrationTest extends CdmIntegrationTest {
 		assertNotNull("TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN should have been initialized",TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN());
 		assertEquals("TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN should have a uuid of " + taxonomicallyIncludedInUuid.toString(),taxonomicallyIncludedInUuid, TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN().getUuid());
 	}
-	
+
 	@Test
 	public void testUnlazyStatusTerms() {
 			assertNotNull("NomenclaturalStatusType.SUPERFLUOUS should exist",NomenclaturalStatusType.SUPERFLUOUS());
@@ -62,12 +62,6 @@ public class TermLoaderIntegrationTest extends CdmIntegrationTest {
 			assertNotNull("NomenclaturalStatusType.VALID should exist",NomenclaturalStatusType.VALID());
 	}
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-        
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 }

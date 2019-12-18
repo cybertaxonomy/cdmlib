@@ -4,7 +4,7 @@
 * http://www.e-taxonomy.eu
 */
 
-package eu.etaxonomy.cdm.test.integration;
+package eu.etaxonomy.cdm.test.function;
 
 import java.util.Set;
 import java.util.UUID;
