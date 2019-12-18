@@ -19,7 +19,6 @@ import org.hibernate.event.spi.SaveOrUpdateEventListener;
  *
  * @author a.mueller
  * @since 12.08.2013
- *
  */
 public interface ITreeNode<T extends ITreeNode<T>> extends ICdmBase {
 
@@ -32,7 +31,6 @@ public interface ITreeNode<T extends ITreeNode<T>> extends ICdmBase {
 
 
 	//METHODS
-
 
 	/**
 	 * Returns the tree index of this tree node.
