@@ -395,7 +395,7 @@ public class Taxon
         TaxonNode node;
         TaxonNode parent;
         boolean success = false;
-        List<TaxonNode> removeNodes = new ArrayList<TaxonNode>();
+        List<TaxonNode> removeNodes = new ArrayList<>();
         while (nodesIterator.hasNext()){
             node = nodesIterator.next();
             if (!deleteChildren){
