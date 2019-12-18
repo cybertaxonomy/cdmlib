@@ -94,13 +94,9 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             createFullTestDataSet();
         }
 
-
-
-
         @Test
         @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
         public void testSubTree(){
-
 
             CdmLightExportConfigurator config = new CdmLightExportConfigurator(null);
             config.setTaxonNodeFilter(TaxonNodeFilter.NewSubtreeInstance(UUID.fromString("f8c9933a-fe3a-42ce-8a92-000e27bfdfac")));
@@ -110,7 +106,6 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             ExportDataWrapper<?> exportData = result.getExportData();
             @SuppressWarnings("unchecked")
             Map<String, byte[]> data = (Map<String, byte[]>) exportData.getExportData();
-
 
             byte[] taxon = data.get(CdmLightExportTable.TAXON.getTableName());
             Assert.assertNotNull("Taxon table must not be null", taxon);
@@ -151,7 +146,6 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             Assert.assertNotNull("Reference table must not be null", homotypicGroup);
             expected ="\"Genus species subsp. subspec Mill.\",\"\"";
             Assert.assertTrue(homotypicGroupString.contains(expected));
-
         }
 
         @Test
@@ -233,7 +227,6 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             Assert.assertNotNull("Reference table must not be null", homotypicGroup);
             expected ="\"Genus species subsp. subspec Mill.\",\"\"";
             Assert.assertTrue(homotypicGroupString.contains(expected));
-
         }
 
         @Test
@@ -284,9 +277,6 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             }
         }
 
-        /**
-         * {@inheritDoc}
-         */
         public void createFullTestDataSet() {
             Set<TaxonNode> nodesToSave = new HashSet<>();
 
@@ -318,7 +308,6 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             TaxonNode node2 = node1.addChildTaxon(genus, sec1, "33");
             setUuid(node2, "43ca733b-fe3a-42ce-8a92-000e27badf44");
             nodesToSave.add(node2);
-
 
             TaxonName speciesName = parser.parseReferencedName("Genus species Mill., The book of botany 3: 22. 1804",
                     NomenclaturalCode.ICNAFP, Rank.SPECIES());
@@ -359,7 +348,6 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             setUuid(node5, "81d9c9b2-c8fd-4d4f-a0b4-e7e656dcdc20");
             nodesToSave.add(node5);
 
-
             classificationService.save(classification);
             taxonNodeService.save(nodesToSave);
 
@@ -371,8 +359,10 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
 
             subspecies.addDescription(description);
             commitAndStartNewTransaction(null);
+        }
 
-
+        private void setUuid(CdmBase cdmBase, String uuidStr) {
+            cdmBase.setUuid(UUID.fromString(uuidStr));
         }
 
         @Override
@@ -385,12 +375,4 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             //      e.printStackTrace();
             //  }
         }
-
-
-        private void setUuid(CdmBase cdmBase, String uuidStr) {
-            cdmBase.setUuid(UUID.fromString(uuidStr));
-        }
-
-
-
 }
