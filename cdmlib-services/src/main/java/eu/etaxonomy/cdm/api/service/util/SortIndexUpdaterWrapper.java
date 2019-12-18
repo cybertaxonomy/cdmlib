@@ -25,13 +25,11 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
-import eu.etaxonomy.cdm.api.service.IAgentService;
-import eu.etaxonomy.cdm.api.service.IProgressMonitorService;
-import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
-import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.api.application.CdmRepository;
 import eu.etaxonomy.cdm.api.service.UpdateResult;
 import eu.etaxonomy.cdm.api.service.config.SortIndexUpdaterConfigurator;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.NullProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
 import eu.etaxonomy.cdm.database.update.SortIndexUpdater;
 
@@ -50,18 +48,9 @@ public class SortIndexUpdaterWrapper implements Serializable {
     private static final String POLYTOMOUS_KEY_NODE = "PolytomousKeyNode";
 
     @Autowired
-    IAgentService agentService;
-    @Autowired
-    ITaxonService taxonService;
-    @Autowired
-    ITaxonNodeService taxonNodeService;
-    @Autowired
-    protected IProgressMonitorService progressMonitorService;
-
-    @Autowired
     private HibernateTransactionManager transactionManager;
-//    @Autowired
-//    private CdmRepository repository;
+    @Autowired
+    private CdmRepository repository;
 
     public UpdateResult doInvoke(SortIndexUpdaterConfigurator config) {
 
@@ -70,6 +59,9 @@ public class SortIndexUpdaterWrapper implements Serializable {
        // CaseType caseType = CaseType.caseTypeOfDatasource(config.getDestination());
 
         IProgressMonitor  monitor = config.getMonitor();
+        if (monitor == null){
+            monitor = new NullProgressMonitor();
+        }
 
         if (config.isDoTaxonNode()){
             updater = SortIndexUpdater.NewInstance(null, "Update taxon node sortindex", TAXON_NODE, "parent_id", "sortIndex", true);
@@ -88,15 +80,15 @@ public class SortIndexUpdaterWrapper implements Serializable {
     }
 
     private UpdateResult update(SortIndexUpdater updater,  IProgressMonitor  monitor){
+
+        //TODO change to long running task result
         UpdateResult updateResult = new UpdateResult();
         try {
 
-            TransactionStatus tx;
-            tx = startTransaction(true);
+            TransactionStatus tx = startTransaction(true);
             String query = updater.createIndexMapQuery();
-            SQLQuery sqlQuery = agentService.getSession().createSQLQuery(query);
+            List<?> data = getSqlResult(query);
 
-            List<?> data = sqlQuery.list();
             int c = 2;
             if (updater.getTableName().equals(TAXON_NODE)){
                 c= 3;
@@ -107,8 +99,8 @@ public class SortIndexUpdaterWrapper implements Serializable {
             List<Integer[]> result = new ArrayList<>();
             int done = 0;
             for(Object object : data){
-               Object[] row = (Object[])object;
-               Object oId = row[0];
+                Object[] row = (Object[])object;
+                Object oId = row[0];
 
                 if (oId != null){
                     int id = Integer.valueOf(oId.toString());
@@ -128,7 +120,7 @@ public class SortIndexUpdaterWrapper implements Serializable {
                 subMonitor.internalWorked(done);
             }
             subMonitor.done();
-            monitor.subTask("update indeces");
+            monitor.subTask("update indices");
 
             Map<Integer, Set<Integer>> indexMap =  updater.makeIndexMap(result);
             subMonitor = new SubProgressMonitor(monitor, indexMap.size());
@@ -136,9 +128,8 @@ public class SortIndexUpdaterWrapper implements Serializable {
             for (Map.Entry<Integer, Set<Integer>> entry: indexMap.entrySet()){
                 String idSet = SortIndexUpdater.makeIdSetString(entry.getValue());
                 query = updater.createUpdateIndicesQuery(null,entry.getKey(), idSet);
-                sqlQuery = agentService.getSession().createSQLQuery(query);
-                int resultInt = sqlQuery.executeUpdate();
-                logger.debug("update all indice with index "+entry.getKey()+ " - " + resultInt);
+                int resultInt = executeSqlResult(query);
+                logger.debug("update all indice with index " + entry.getKey() + " - " + resultInt);
                 done++;
                 subMonitor.internalWorked(done);
             }
@@ -147,8 +138,7 @@ public class SortIndexUpdaterWrapper implements Serializable {
             if (updater.getTableName().equals(TAXON_NODE)){
 
                 query = updater.getChildrenCountQuery();
-                sqlQuery = taxonService.getSession().createSQLQuery(query);
-                data = sqlQuery.list();
+                data = getSqlResult(query);
                 subMonitor = new SubProgressMonitor(monitor, data.size());
                 int realCount;
                 int countChildren;
@@ -161,8 +151,7 @@ public class SortIndexUpdaterWrapper implements Serializable {
 
                    if (realCount != countChildren){
                        query = updater.getUpdateChildrenCount(realCount, id);
-                       sqlQuery = taxonNodeService.getSession().createSQLQuery(query);
-                       int resultInt = sqlQuery.executeUpdate();
+                       int resultInt = executeSqlResult(query);
                        logger.debug("update all childrenCount "+ resultInt);
                    }
                    work ++;
@@ -180,6 +169,17 @@ public class SortIndexUpdaterWrapper implements Serializable {
             updateResult.addException(e);
         }
         return null;
+    }
+
+    private List<?> getSqlResult(String query) {
+        SQLQuery sqlQuery = getSession().createSQLQuery(query);
+        List<?> data = sqlQuery.list();
+        return data;
+    }
+
+    private int executeSqlResult(String query) {
+        SQLQuery sqlQuery = getSession().createSQLQuery(query);
+        return sqlQuery.executeUpdate();
     }
 
     public TransactionStatus startTransaction(Boolean readOnly) {
@@ -202,13 +202,14 @@ public class SortIndexUpdaterWrapper implements Serializable {
 
         TransactionStatus txStatus = transactionManager.getTransaction(txDef);
 
+        //TODO is this really necessary
         getSession().setFlushMode(FlushMode.COMMIT);
 
         return txStatus;
     }
 
     private Session getSession() {
-        return agentService.getSession();
+        return repository.getSession();
     }
 
     public void commitTransaction(TransactionStatus txStatus){
