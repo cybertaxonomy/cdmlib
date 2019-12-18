@@ -651,6 +651,7 @@ public class TaxonNode
             child.setTreeIndex(null);
             updateSortIndex(index);
             child.setSortIndex(null);
+            child.getTaxon().removeTaxonNode(child);
         }
     }
 
