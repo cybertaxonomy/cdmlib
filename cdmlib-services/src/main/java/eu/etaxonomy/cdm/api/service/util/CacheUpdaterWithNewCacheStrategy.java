@@ -39,7 +39,7 @@ public class CacheUpdaterWithNewCacheStrategy extends CacheUpdater {
 			if (DefinedTermBase.class.isAssignableFrom(clazz)){
 				termService.updateCaches((Class) clazz, null, null, null);
 			}else if (TermTree.class.isAssignableFrom(clazz)){
-				featureTreeService.updateCaches((Class) clazz, null, null, null);
+				termTreeService.updateCaches((Class) clazz, null, null, null);
 			}else if (TermVocabulary.class.isAssignableFrom(clazz)){
 				vocabularyService.updateCaches((Class) clazz, null, null, null);
 			}

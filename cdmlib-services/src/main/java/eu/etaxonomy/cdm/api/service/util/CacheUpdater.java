@@ -20,7 +20,6 @@ import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ICollectionService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
-import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.IMediaService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
@@ -29,6 +28,7 @@ import eu.etaxonomy.cdm.api.service.IProgressMonitorService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.ITermTreeService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.api.service.UpdateResult;
 import eu.etaxonomy.cdm.api.service.config.CacheUpdaterConfigurator;
@@ -78,8 +78,7 @@ public class CacheUpdater implements Serializable {
     @Autowired
     protected ICollectionService collectionService;
     @Autowired
-    protected IFeatureTreeService featureTreeService;
-
+    protected ITermTreeService termTreeService;
     @Autowired
     protected IVocabularyService vocabularyService;
     @Autowired
@@ -161,7 +160,7 @@ public class CacheUpdater implements Serializable {
 			if (DefinedTermBase.class.isAssignableFrom(clazz)){
 			    result.includeResult(termService.updateCaches((Class) clazz, null, null, subMonitor));
 			}else if (TermTree.class.isAssignableFrom(clazz)){
-			    result.includeResult(featureTreeService.updateCaches((Class) clazz, null, null, subMonitor));
+			    result.includeResult(termTreeService.updateCaches((Class) clazz, null, null, subMonitor));
 			}else if (TermVocabulary.class.isAssignableFrom(clazz)){
 			    result.includeResult(vocabularyService.updateCaches((Class) clazz, null, null, subMonitor));
 			}
