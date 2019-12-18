@@ -61,7 +61,6 @@ public class SortIndexUpdater extends SchemaUpdaterStepBase {
 
     /**
      * Returns an SortIndexUpdater that updates an existing sortindex which might have missing sortindex numbers in between.
-     *
      */
     public static final SortIndexUpdater NewUpdateExistingSortindexInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String parentColumn, String sortIndexColumn, boolean includeAudTable){
         return new SortIndexUpdater(stepList, stepName, tableName, parentColumn,sortIndexColumn, "id", sortIndexColumn, includeAudTable, 0);
@@ -138,14 +137,11 @@ public class SortIndexUpdater extends SchemaUpdaterStepBase {
 		}
         return makeIndexMap( result);
 
-
-
-
 		//increase index with each row, set to 0 if parent is not the same as the previous one
 
 	}
 
-	public Map<Integer, Set<Integer>> makeIndexMap(List<Integer[]> oldIndexMap) throws NumberFormatException, SQLException{
+	public Map<Integer, Set<Integer>> makeIndexMap(List<Integer[]> oldIndexMap) throws NumberFormatException{
 	    int oldParentId = -1;
 	    Integer index = baseValue;
 	    Map<Integer, Set<Integer>> indexMap = new HashMap<>();
@@ -181,7 +177,6 @@ public class SortIndexUpdater extends SchemaUpdaterStepBase {
         updateQuery = updateQuery.replace("@idList", idSetString);
         updateQuery = updateQuery.replace("@id", idColumn);
         return updateQuery;
-
 	}
 
 	private void updateIndices(String tableName, ICdmDataSource datasource, Map<Integer, Set<Integer>> indexMap)
@@ -216,13 +211,11 @@ public class SortIndexUpdater extends SchemaUpdaterStepBase {
 		set.add(id);
 	}
 
-
 	public String getChildrenCountQuery(){
 
         String countSelect = "SELECT COUNT(child.id) as realCount, parent.countChildren as countChildren, parent.id as parentID FROM @tableName child RIGHT JOIN @tableName parent ON child.parent_id = parent.id GROUP BY parent.id";
         countSelect = countSelect.replace("@tableName", tableName);
         return countSelect;
-
 	}
 
 	public String getUpdateChildrenCount(int count, int id){
@@ -230,15 +223,13 @@ public class SortIndexUpdater extends SchemaUpdaterStepBase {
         String countUpdate =  "UPDATE @tableName SET countChildren = " + count+" WHERE id = " + id;
         countUpdate = countUpdate.replace("@tableName", tableName);
 
-
         return countUpdate;
 
     }
 
 	public void updateChildrenCount(String select, ICdmDataSource datasource) throws SQLException{
-	    ResultSet rs;
 
-        rs = datasource.executeQuery(select);
+	    ResultSet rs = datasource.executeQuery(select);
 
         List<Integer[]> result = new ArrayList<Integer[]>();
         int count ;
@@ -254,7 +245,5 @@ public class SortIndexUpdater extends SchemaUpdaterStepBase {
                 datasource.executeUpdate(updateQuery);
             }
         }
-
 	}
-
 }

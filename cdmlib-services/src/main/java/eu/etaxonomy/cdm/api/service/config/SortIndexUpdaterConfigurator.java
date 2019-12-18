@@ -15,34 +15,25 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 /**
  * @author k.luther
  * @since 08.07.2016
- *
  */
 public class SortIndexUpdaterConfigurator implements Serializable{
 
+    private static final long serialVersionUID = 6006504717504371170L;
 
     private boolean doTaxonNode = true;
     private boolean doTermNode = true;
     private boolean doPolytomousKeyNode = true;
     private IProgressMonitor monitor;
 
-    private SortIndexUpdaterConfigurator(){
+//********************* FACTORY **************************************/
 
-    }
-
-    /**
-     * @param destination
-     * @return
-     */
     public static SortIndexUpdaterConfigurator NewInstance() {
         SortIndexUpdaterConfigurator result = new SortIndexUpdaterConfigurator();
         return result;
     }
 
-    /**
-     * @param destination
-     * @return
-     */
-    public static SortIndexUpdaterConfigurator NewInstance(boolean doTaxonNode, boolean doTermNode, boolean doPolytomousKeyNode) {
+    public static SortIndexUpdaterConfigurator NewInstance(boolean doTaxonNode,
+            boolean doTermNode, boolean doPolytomousKeyNode) {
         SortIndexUpdaterConfigurator result = new SortIndexUpdaterConfigurator();
         result.doTermNode = doTermNode;
         result.doTaxonNode = doTaxonNode;
@@ -50,6 +41,9 @@ public class SortIndexUpdaterConfigurator implements Serializable{
         return result;
     }
 
+//*********************** CONSTRUCTOR *****************************/
+
+    private SortIndexUpdaterConfigurator(){}
 
  // **************** GETTER / SETTER ************************************
 
@@ -77,12 +71,7 @@ public class SortIndexUpdaterConfigurator implements Serializable{
     public IProgressMonitor getMonitor() {
         return monitor;
     }
-
     public void setMonitor(IProgressMonitor monitor) {
         this.monitor = monitor;
     }
-
-
-
-
 }

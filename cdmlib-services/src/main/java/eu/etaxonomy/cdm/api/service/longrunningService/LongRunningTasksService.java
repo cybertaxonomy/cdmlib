@@ -44,6 +44,7 @@ import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 @Service("longRunningTasksService")
 @Transactional(readOnly = false)
 public class LongRunningTasksService implements ILongRunningTasksService{
+
     @Autowired
     ITaxonNodeService taxonNodeService;
 
